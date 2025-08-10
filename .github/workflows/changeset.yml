@@ -1,0 +1,56 @@
+name: Changeset
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  changeset:
+    name: Changeset Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Check for changeset
+        run: pnpm changeset status --since=origin/main
+        
+      - name: Comment on PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `⚠️ **Missing Changeset**
+            
+            This PR is missing a changeset file. Please run \`pnpm changeset\` to add a changeset describing your changes.
+            
+            If this PR doesn't require a version bump (e.g., documentation, CI, or internal changes), you can create an empty changeset by running:
+            \`\`\`
+            pnpm changeset --empty
+            \`\`\`
+            
+            Learn more about [changesets](https://github.com/changesets/changesets/blob/main/docs/adding-a-changeset.md).`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

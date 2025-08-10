@@ -1,0 +1,58 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 10
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "svelte"
+          - "@sveltejs/*"
+          - "typescript"
+        update-types:
+          - "minor"
+          - "patch"
+      svelte:
+        patterns:
+          - "svelte"
+          - "@sveltejs/*"
+      typescript:
+        patterns:
+          - "typescript"
+          - "@typescript-eslint/*"
+          - "typescript-eslint"
+    assignees:
+      - "equaltoai/devops"
+    reviewers:
+      - "equaltoai/core-team"
+    labels:
+      - "dependencies"
+      - "security"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    
+  # Enable security updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    assignees:
+      - "equaltoai/devops"
+    reviewers:
+      - "equaltoai/devops"
+    labels:
+      - "github-actions"
+      - "dependencies"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

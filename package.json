@@ -1,0 +1,58 @@
+{
+  "name": "greater-components",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Fediverse UI components built with Svelte 5, TypeScript, and pnpm workspaces",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/equaltoai/greater-components.git"
+  },
+  "license": "AGPL-3.0-only",
+  "author": "Equal To AI",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r build",
+    "changeset": "changeset",
+    "check": "pnpm -r check",
+    "clean": "pnpm -r clean && rm -rf node_modules",
+    "dev": "pnpm -r --parallel dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte --fix",
+    "preinstall": "npx only-allow pnpm",
+    "prepare": "husky",
+    "release": "changeset publish",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm -r test:e2e",
+    "test:unit": "pnpm -r test:unit",
+    "typecheck": "tsc --noEmit",
+    "version": "changeset version && pnpm install --no-frozen-lockfile"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@eslint/js": "^9.9.0",
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.2.0",
+    "@typescript-eslint/parser": "^8.2.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.43.0",
+    "globals": "^15.9.0",
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.2.6",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.2.0",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.5"
+  },
+  "packageManager": "pnpm@9.7.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}

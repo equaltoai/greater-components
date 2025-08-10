@@ -1,0 +1,41 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "svelte"
+  ],
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "files.associations": {
+    "*.css": "css",
+    ".prettierrc": "json",
+    ".eslintrc": "json",
+    "*.svelte": "svelte"
+  },
+  "emmet.includeLanguages": {
+    "svelte": "html"
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.svelte-kit": true,
+    "**/coverage": true,
+    "pnpm-lock.yaml": true
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  }
+}

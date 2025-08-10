@@ -1,0 +1,59 @@
+name: Snapshot Release
+
+on:
+  schedule:
+    # Run at 3 AM UTC every day
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  snapshot:
+    name: Snapshot Release
+    runs-on: ubuntu-latest
+    if: github.repository == 'equaltoai/greater-components'
+    permissions:
+      contents: write
+      id-token: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Build packages
+        run: pnpm build
+        
+      - name: Version packages as snapshot
+        run: |
+          pnpm changeset version --snapshot next
+          echo "SNAPSHOT_VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        
+      - name: Publish snapshot
+        run: |
+          pnpm changeset publish --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+          
+      - name: Create snapshot tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "snapshot-${{ env.SNAPSHOT_VERSION }}" -m "Snapshot release ${{ env.SNAPSHOT_VERSION }}"
+          git push origin "snapshot-${{ env.SNAPSHOT_VERSION }}"

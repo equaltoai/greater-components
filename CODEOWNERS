@@ -1,0 +1,32 @@
+# CODEOWNERS for greater-components repository
+# These owners will be the default owners for everything in the repo
+# unless a later match takes precedence.
+
+# Global owners
+* @equaltoai/core-team
+
+# Package-specific ownership
+/packages/tokens/ @equaltoai/design-system
+/packages/icons/ @equaltoai/design-system
+/packages/primitives/ @equaltoai/ui-team
+/packages/fediverse/ @equaltoai/fediverse-team
+/packages/adapters/ @equaltoai/backend-team
+/packages/utils/ @equaltoai/core-team
+
+# App ownership
+/apps/playground/ @equaltoai/docs-team
+/apps/docs/ @equaltoai/docs-team
+
+# Infrastructure and configuration
+/.github/ @equaltoai/devops
+/scripts/ @equaltoai/devops
+*.config.* @equaltoai/devops
+.changeset/ @equaltoai/release-team
+
+# Documentation
+*.md @equaltoai/docs-team
+/docs/ @equaltoai/docs-team
+
+# License and legal
+LICENSE @equaltoai/legal
+CONTRIBUTING.md @equaltoai/legal @equaltoai/core-team

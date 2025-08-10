@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "jsx": "preserve",
+    
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "inlineSources": false,
+    
+    "incremental": true,
+    "composite": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".svelte-kit",
+    "coverage",
+    "test-results",
+    "playwright-report",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.js",
+    "**/*.test.js"
+  ]
+}

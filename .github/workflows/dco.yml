@@ -1,0 +1,32 @@
+name: DCO Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  dco:
+    name: DCO Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get PR Commits
+        id: get-pr-commits
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commits = await github.rest.pulls.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            return commits.data.map(commit => ({
+              sha: commit.sha,
+              message: commit.commit.message,
+              author: commit.commit.author
+            }));
+            
+      - name: DCO Check
+        uses: dco-org/dco@v1
+        with:
+          continue-on-error: false
