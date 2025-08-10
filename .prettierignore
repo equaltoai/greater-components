@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.svelte-kit/
+package/
+coverage/
+storybook-static/
+
+# Test outputs
+playwright-report/
+test-results/
+
+# Cache
+.turbo/
+.cache/
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Misc
+*.min.js
+*.min.css
+LICENSE
+.changeset/*.md
+
+# Generated files
+*.generated.*
+**/generated/**
