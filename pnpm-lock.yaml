@@ -191,8 +191,8 @@ importers:
         specifier: ^8.4.7
         version: 8.6.14(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(storybook@8.6.14(prettier@3.6.2))
       '@storybook/svelte':
-        specifier: ^8.4.7
-        version: 8.6.14(storybook@8.6.14(prettier@3.6.2))(svelte@5.38.0)
+        specifier: ^9.1.1
+        version: 9.1.1(storybook@8.6.14(prettier@3.6.2))(svelte@5.38.0)
       '@storybook/sveltekit':
         specifier: ^8.4.7
         version: 8.6.14(@babel/core@7.28.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.38.0)(vite@5.4.19(@types/node@24.2.1)(terser@5.43.1)))(postcss-load-config@3.1.4(postcss@8.5.6))(postcss@8.5.6)(storybook@8.6.14(prettier@3.6.2))(svelte@5.38.0)(vite@5.4.19(@types/node@24.2.1)(terser@5.43.1))
@@ -289,8 +289,8 @@ importers:
         specifier: ^8.6.14
         version: 8.6.14(react@19.1.1)(storybook@8.6.14(prettier@3.6.2))
       '@storybook/svelte':
-        specifier: ^8.6.14
-        version: 8.6.14(storybook@8.6.14(prettier@3.6.2))(svelte@5.38.0)
+        specifier: ^9.1.1
+        version: 9.1.1(storybook@8.6.14(prettier@3.6.2))(svelte@5.38.0)
       '@storybook/test':
         specifier: ^8.6.14
         version: 8.6.14(storybook@8.6.14(prettier@3.6.2))
@@ -1986,6 +1986,13 @@ packages:
     peerDependencies:
       storybook: ^8.6.14
       svelte: ^4.0.0 || ^5.0.0
+
+  '@storybook/svelte@9.1.1':
+    resolution: {integrity: sha512-/T76u1/j4/gquB9iEUDsrwtgXPBU0OU4OKZaVoVyaJ0k3LvVXUKf/QelRTXeSKwOIUuhMmQIg4z1+5k/ar1IJQ==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      storybook: ^9.1.1
+      svelte: ^5.0.0
 
   '@storybook/sveltekit@8.6.14':
     resolution: {integrity: sha512-N8Zp5wWf/tPcbs3EufvQhLM4yX5FQ6c6UdT5GrhVAi1UPH9oCpdyJFMHju5tFYe+rn64sRaETKeM3j5kkbp18A==}
@@ -6913,6 +6920,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@storybook/svelte@9.1.1(storybook@8.6.14(prettier@3.6.2))(svelte@5.38.0)':
+    dependencies:
+      storybook: 8.6.14(prettier@3.6.2)
+      svelte: 5.38.0
+      ts-dedent: 2.2.0
+      type-fest: 2.19.0
+
   '@storybook/sveltekit@8.6.14(@babel/core@7.28.0)(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.38.0)(vite@5.4.19(@types/node@24.2.1)(terser@5.43.1)))(postcss-load-config@3.1.4(postcss@8.5.6))(postcss@8.5.6)(storybook@8.6.14(prettier@3.6.2))(svelte@5.38.0)(vite@5.4.19(@types/node@24.2.1)(terser@5.43.1))':
     dependencies:
       '@storybook/addon-actions': 8.6.14(storybook@8.6.14(prettier@3.6.2))
@@ -7471,7 +7485,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.14
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@types/node@20.19.10)(@vitest/ui@2.1.9)(jsdom@26.1.0)(terser@5.43.1)
+      vitest: 2.1.9(@types/node@20.19.10)(@vitest/ui@2.1.9)(jsdom@24.1.3)(terser@5.43.1)
 
   '@vitest/utils@1.6.1':
     dependencies:
