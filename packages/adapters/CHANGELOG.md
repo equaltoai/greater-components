@@ -1,5 +1,145 @@
 # @greater/adapters
 
+## 2.0.0
+
+### Major Changes
+
+- # Greater Components v1.0.0 - General Availability Release 🎉
+
+  **The first stable release of Greater Components is here!** This major release represents the completion of all 6 implementation phases, delivering a comprehensive, production-ready UI component library specifically designed for building modern Fediverse applications.
+
+  ## ✨ What's New in v1.0.0
+
+  ### 🎯 Complete Component Library
+  - **21 Production Components** across 7 packages
+  - **296 Tree-shakable Icons** including Fediverse-specific glyphs
+  - **Advanced Design System** with light, dark, and high-contrast themes
+  - **Real-time Transport Layer** with WebSocket, SSE, and HTTP polling
+  - **Accessibility-first** with WCAG 2.1 AA compliance
+
+  ### 📦 Core Packages
+
+  #### `@greater/tokens`
+
+  Complete design token system with:
+  - 112+ semantic design tokens
+  - 3 built-in themes (light, dark, high-contrast)
+  - CSS custom properties for easy customization
+  - TypeScript definitions for design consistency
+
+  #### `@greater/icons`
+
+  Comprehensive icon library featuring:
+  - 287 Feather icons + 9 Fediverse-specific icons
+  - Tree-shakable Svelte components
+  - 28 semantic aliases (boost, unboost, globe, etc.)
+  - Consistent sizing and styling system
+
+  #### `@greater/primitives`
+
+  Foundation UI components including:
+  - Button, TextField, Modal (foundational set)
+  - Menu, Tooltip, Tabs, Avatar, Skeleton (extended set)
+  - ThemeProvider, ThemeSwitcher (theming components)
+  - All with comprehensive accessibility and keyboard support
+
+  #### `@greater/utils`
+
+  Essential utilities for Fediverse apps:
+  - HTML sanitization with DOMPurify
+  - Relative time formatting with i18n
+  - Mention/hashtag linkification
+  - Keyboard shortcuts helper
+
+  #### `@greater/adapters`
+
+  Advanced real-time data layer featuring:
+  - WebSocket, SSE, and HTTP polling clients
+  - Transport manager with automatic fallback
+  - Reactive stores with Svelte 5 runes
+  - Mastodon and Lesser GraphQL payload mappers
+
+  #### `@greater/fediverse`
+
+  Specialized Fediverse components:
+  - StatusCard, TimelineVirtualized (display components)
+  - ComposeBox, ActionBar (interaction components)
+  - NotificationsFeed, ProfileHeader (advanced components)
+  - SettingsPanel (configuration component)
+
+  #### `@greater/testing`
+
+  Comprehensive testing infrastructure:
+  - Accessibility testing utilities with axe integration
+  - Visual regression testing helpers
+  - Keyboard navigation test utilities
+  - Storybook and Playwright integration
+
+  ## 🚀 Developer Experience
+
+  ### Modern Technology Stack
+  - **Svelte 5** with runes for optimal reactivity
+  - **TypeScript Strict** for type safety and great DX
+  - **Vite** for fast development and optimized builds
+  - **Storybook** for component development and documentation
+
+  ### Production-Ready Features
+  - **Enterprise CI/CD** with automated testing and publishing
+  - **Accessibility Audits** built into the development workflow
+  - **Visual Regression Testing** to prevent UI breakage
+  - **Security-First** design with npm provenance
+
+  ### Comprehensive Documentation
+  - **Interactive Documentation Site** with live examples
+  - **Complete API Reference** with TypeScript definitions
+  - **Migration Guides** for integrating with existing projects
+  - **Accessibility Scorecards** for each component
+
+  ## 🎯 Perfect For
+  - **Fediverse Applications** (Mastodon clients, social platforms)
+  - **Real-time Social Apps** requiring live updates
+  - **Accessible Web Applications** with strict accessibility requirements
+  - **Design System Implementation** for consistent UIs
+  - **Svelte 5 Projects** wanting modern reactive patterns
+
+  ## 🏗️ Architecture Highlights
+
+  ### Accessibility-First Design
+
+  Every component meets WCAG 2.1 AA standards with:
+  - Comprehensive keyboard navigation
+  - Screen reader compatibility
+  - High contrast mode support
+  - Focus management and visual indicators
+
+  ### Real-time Capabilities
+
+  Built-in support for live data with:
+  - Automatic transport negotiation (WebSocket → SSE → HTTP)
+  - Optimistic updates and conflict resolution
+  - Streaming timeline and notification updates
+  - Connection recovery and state synchronization
+
+  ### Advanced Theming System
+
+  Flexible theming with:
+  - CSS custom properties for easy customization
+  - System preference detection (dark mode, reduced motion)
+  - User preference persistence
+  - Smooth theme transitions
+
+  ## 🎉 Community & Governance
+  - **AGPL-3.0 License** ensuring open source ecosystem growth
+  - **Developer Certificate of Origin** for contribution clarity
+  - **Professional Issue Templates** for bug reports and feature requests
+  - **Security Policy** with responsible disclosure process
+
+  ***
+
+  This release represents months of development focused on creating the most comprehensive, accessible, and developer-friendly component library for the Fediverse ecosystem. Every component has been battle-tested with extensive unit tests, accessibility audits, and visual regression tests.
+
+  **Ready to build the next generation of social web applications!** 🌐✨
+
 ## 1.0.0
 
 ### Major Changes
