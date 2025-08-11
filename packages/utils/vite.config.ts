@@ -24,10 +24,24 @@ export default defineConfig({
     globals: true,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov'],
+      reportsDirectory: './coverage',
+      thresholds: {
+        global: {
+          branches: 90,
+          functions: 90,
+          lines: 90,
+          statements: 90
+        }
+      },
+      include: ['src/**/*.{ts,js}'],
       exclude: [
-        'node_modules/',
-        'dist/',
+        'src/**/*.d.ts',
+        'src/**/*.test.{ts,js}',
+        'src/**/*.spec.{ts,js}',
+        'tests/**/*',
+        'dist/**/*',
+        'node_modules/**/*',
         '*.config.ts'
       ]
     }

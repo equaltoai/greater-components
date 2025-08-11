@@ -1,6 +1,6 @@
 {
   "name": "@greater/utils",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Utility functions for Greater Components",
   "license": "AGPL-3.0-only",
@@ -22,6 +22,7 @@
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
+    "@vitest/coverage-v8": "^2.0.5",
     "@vitest/ui": "^2.0.5",
     "jsdom": "^24.1.1",
     "typescript": "^5.5.4",

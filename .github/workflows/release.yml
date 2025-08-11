@@ -3,17 +3,61 @@ name: Release
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  # Quality gates before release
+  quality-gates:
+    name: Quality Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Type check
+        run: pnpm typecheck
+        
+      - name: Lint
+        run: pnpm lint
+        
+      - name: Build packages
+        run: pnpm build
+        
+      - name: Test
+        run: pnpm test
+        
+      - name: Test coverage
+        run: pnpm test:coverage
+
   release:
     name: Release
+    needs: quality-gates
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
       id-token: write
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
     
     steps:
       - name: Checkout repository
@@ -45,10 +89,95 @@ jobs:
         with:
           publish: pnpm release
           version: pnpm version
-          commit: 'chore: version packages'
-          title: 'chore: version packages'
+          commit: 'chore: release packages'
+          title: 'chore: release packages'
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
+
+  # Post-release validation
+  validate-release:
+    name: Validate Release
+    needs: release
+    runs-on: ubuntu-latest
+    if: needs.release.outputs.published == 'true'
+    steps:
+      - name: Wait for npm propagation
+        run: sleep 60
+
+      - name: Validate package installation
+        run: |
+          # Create temporary test directory
+          mkdir -p /tmp/test-install
+          cd /tmp/test-install
+          
+          # Initialize package.json
+          echo '{"name": "test-install", "type": "module", "private": true}' > package.json
+          
+          # Test installing core packages
+          npm install @greater/primitives@latest --verbose
+          npm install @greater/tokens@latest --verbose
+          npm install @greater/icons@latest --verbose
+          
+          # Verify TypeScript definitions exist
+          packages=("primitives" "tokens" "icons")
+          for pkg in "${packages[@]}"; do
+            if [ ! -f "node_modules/@greater/$pkg/dist/index.d.ts" ]; then
+              echo "❌ TypeScript definitions missing for @greater/$pkg"
+              exit 1
+            fi
+            echo "✅ TypeScript definitions found for @greater/$pkg"
+          done
+          
+          echo "✅ All packages installed successfully"
+
+      - name: Verify npm provenance
+        run: |
+          # Check provenance attestations
+          packages=("primitives" "tokens" "icons" "fediverse" "utils")
+          for pkg in "${packages[@]}"; do
+            echo "Checking provenance for @greater/$pkg..."
+            if ! npm view @greater/$pkg --json | jq -e '.dist.attestations' > /dev/null 2>&1; then
+              echo "⚠️  No provenance attestation found for @greater/$pkg (this is expected for first-time packages)"
+            else
+              echo "✅ Provenance verified for @greater/$pkg"
+            fi
+          done
+
+  # Update documentation
+  update-docs:
+    name: Update Documentation
+    needs: [release, validate-release]
+    runs-on: ubuntu-latest
+    if: needs.release.outputs.published == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Build Storybook
+        run: |
+          cd apps/playground
+          pnpm build-storybook
+        
+      # Future: Deploy to documentation hosting service
+      - name: Archive Storybook build
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-build
+          path: apps/playground/storybook-static

@@ -1,6 +1,6 @@
 {
   "name": "@greater/fediverse",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Fediverse UI components built with Svelte 5",
   "license": "AGPL-3.0-only",
@@ -28,6 +28,7 @@
     "test": "vitest run",
     "test:unit": "vitest run",
     "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "storybook": "storybook dev -p 6006",

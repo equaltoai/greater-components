@@ -155,11 +155,11 @@ describe('@greater/tokens', () => {
 
       const tsContent = fs.readFileSync(tsPath, 'utf8');
       
-      expect(tsContent).toContain('export const tokens');
-      expect(tsContent).toContain('export const themes');
+      expect(tsContent).toContain('export declare const tokens');
+      expect(tsContent).toContain('export declare const themes');
       expect(tsContent).toContain('export type TokenCategory');
       expect(tsContent).toContain('export type ThemeName');
-      expect(tsContent).toContain('export function getCSSVar');
+      expect(tsContent).toContain('export declare function getCSSVar');
     });
   });
 

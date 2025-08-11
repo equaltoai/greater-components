@@ -1,0 +1,279 @@
+name: ♿ Accessibility Issue
+description: Report accessibility issues or violations in Greater Components
+title: "[A11y]: "
+labels: ["accessibility", "bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping us make Greater Components more accessible! Accessibility is a core principle of our library, and we take all accessibility issues seriously.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist
+      description: Please check the following before submitting
+      options:
+        - label: I have tested this issue with assistive technology (screen reader, keyboard-only, etc.)
+          required: true
+        - label: I have checked the WCAG 2.1 guidelines related to this issue
+          required: true
+        - label: I have tested in multiple browsers (if applicable)
+          required: true
+        - label: I have searched existing accessibility issues
+          required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Greater Components Version
+      description: What version are you using?
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component(s)
+      description: Which component has the accessibility issue?
+      options:
+        - "Button"
+        - "Modal"
+        - "TextField" 
+        - "Menu"
+        - "Tooltip"
+        - "Tabs"
+        - "Avatar"
+        - "Skeleton"
+        - "ThemeSwitcher"
+        - "ThemeProvider"
+        - "StatusCard"
+        - "TimelineVirtualized"
+        - "NotificationsFeed"
+        - "ComposeBox"
+        - "Multiple components"
+        - "Other/Custom component"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: wcag-level
+    attributes:
+      label: WCAG Conformance Level
+      description: What WCAG level does this issue violate?
+      options:
+        - "Level A (minimum)"
+        - "Level AA (standard)"  
+        - "Level AAA (enhanced)"
+        - "Not sure/Multiple levels"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: wcag-guidelines
+    attributes:
+      label: WCAG Guidelines Affected
+      description: Which WCAG success criteria are violated? (Check all that apply)
+      options:
+        - label: "1.1 Text Alternatives"
+        - label: "1.2 Time-based Media"
+        - label: "1.3 Adaptable (Structure, relationships, sequence)"
+        - label: "1.4 Distinguishable (Color, contrast, resize text)"
+        - label: "2.1 Keyboard Accessible"
+        - label: "2.2 Enough Time"
+        - label: "2.3 Seizures and Physical Reactions"
+        - label: "2.4 Navigable (Focus, titles, headings)"
+        - label: "2.5 Input Modalities"
+        - label: "3.1 Readable"
+        - label: "3.2 Predictable"
+        - label: "3.3 Input Assistance"
+        - label: "4.1 Compatible (Parsing, name/role/value)"
+
+  - type: dropdown
+    id: assistive-tech
+    attributes:
+      label: Assistive Technology
+      description: What assistive technology did you test with?
+      options:
+        - "NVDA (Windows)"
+        - "JAWS (Windows)"
+        - "VoiceOver (macOS/iOS)"
+        - "Orca (Linux)"
+        - "TalkBack (Android)"
+        - "Dragon NaturallySpeaking"
+        - "Switch navigation"
+        - "Keyboard-only navigation"
+        - "High contrast mode"
+        - "Zoom/magnification software"
+        - "Multiple tools"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Accessibility Issue Description
+      description: Clearly describe the accessibility problem
+      placeholder: |
+        When using [assistive technology], the component behaves as follows:
+        - Issue 1
+        - Issue 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Accessible Behavior
+      description: What should happen for this to be accessible?
+      placeholder: |
+        For this to be accessible, the component should:
+        - Expected behavior 1
+        - Expected behavior 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-impact
+    attributes:
+      label: User Impact
+      description: How does this issue affect users with disabilities?
+      placeholder: |
+        This issue affects users by:
+        - Impact on screen reader users
+        - Impact on keyboard-only users
+        - Impact on users with motor disabilities
+        - Impact on users with visual impairments
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction Steps
+      description: Detailed steps to reproduce the accessibility issue
+      placeholder: |
+        To reproduce this accessibility issue:
+        1. Turn on [assistive technology]
+        2. Navigate to the component
+        3. Try to [interact with component]
+        4. Observe the problem
+    validations:
+      required: true
+
+  - type: textarea
+    id: code-example
+    attributes:
+      label: Code Example
+      description: Minimal code that demonstrates the accessibility issue
+      render: svelte
+      placeholder: |
+        <script>
+          import { ComponentName } from '@greater/primitives';
+        </script>
+        
+        <ComponentName prop="value">
+          Content that has accessibility issues
+        </ComponentName>
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Testing Environment
+      description: Environment details for accessibility testing
+      render: yaml
+      placeholder: |
+        OS: [e.g. Windows 11, macOS 14]
+        Browser: [e.g. Chrome 119, Firefox 120]
+        Assistive Technology: [e.g. NVDA 2023.3, VoiceOver]
+        Screen Resolution: [e.g. 1920x1080]
+        Zoom Level: [e.g. 100%, 200%]
+        High Contrast: [On/Off]
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      description: How severe is this accessibility issue?
+      options:
+        - "Low - Minor usability issue"
+        - "Medium - Makes feature difficult to use"
+        - "High - Makes feature unusable for some users"
+        - "Critical - Complete barrier to access"
+    validations:
+      required: true
+
+  - type: textarea
+    id: testing-tools
+    attributes:
+      label: Automated Testing Results
+      description: Results from accessibility testing tools (if any)
+      placeholder: |
+        axe-core results:
+        - Violation 1: [description]
+        - Violation 2: [description]
+        
+        WAVE results:
+        - Error 1: [description]
+        
+        Lighthouse accessibility score: [score/100]
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current Workaround
+      description: Is there a temporary workaround for this issue?
+      placeholder: |
+        Current workaround (if any):
+        - Workaround description
+        - Limitations of workaround
+
+  - type: textarea
+    id: suggested-fix
+    attributes:
+      label: Suggested Fix
+      description: If you have ideas for fixing this issue, please share them
+      placeholder: |
+        Potential solutions:
+        1. Add proper ARIA labels
+        2. Implement keyboard event handlers
+        3. Improve focus management
+        
+        Reference implementations:
+        - Link to examples in other libraries
+
+  - type: checkboxes
+    id: testing-help
+    attributes:
+      label: Testing Assistance
+      description: Can you help test accessibility fixes?
+      options:
+        - label: I can test fixes with my assistive technology setup
+        - label: I can provide additional testing with different tools
+        - label: I have access to users who can test this
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information about this accessibility issue
+      placeholder: |
+        Additional context:
+        - Related accessibility issues
+        - Standards/guidelines references
+        - User research or feedback
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Would you be willing to help fix this issue?
+      options:
+        - label: I would be willing to submit a PR to fix this issue
+        - label: I would be willing to help with accessibility testing
+        - label: I would be willing to help with documentation updates
