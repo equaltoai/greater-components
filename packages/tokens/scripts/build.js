@@ -113,6 +113,14 @@ combinedThemeCSS += `
 // Write combined theme CSS
 fs.writeFileSync(path.join(distPath, 'theme.css'), combinedThemeCSS);
 
+// Copy high-contrast CSS if it exists
+const highContrastPath = path.join(__dirname, '../src/high-contrast.css');
+if (fs.existsSync(highContrastPath)) {
+  const highContrastCSS = fs.readFileSync(highContrastPath, 'utf8');
+  fs.writeFileSync(path.join(distPath, 'high-contrast.css'), highContrastCSS);
+  console.log('  - High contrast CSS copied');
+}
+
 // Generate TypeScript definitions
 let tsContent = `// Auto-generated token definitions
 // Do not edit manually

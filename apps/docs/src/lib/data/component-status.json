@@ -1,0 +1,188 @@
+{
+	"components": {
+		"primitives": {
+			"Button": {
+				"status": "stable",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Initial release"]
+					}
+				]
+			},
+			"TextField": {
+				"status": "stable",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Initial release"]
+					}
+				]
+			},
+			"Modal": {
+				"status": "stable",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Initial release with focus trap", "Keyboard navigation support"]
+					}
+				]
+			},
+			"Tooltip": {
+				"status": "stable",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Initial release"]
+					}
+				]
+			},
+			"Menu": {
+				"status": "beta",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Beta release", "Keyboard navigation", "ARIA support"]
+					}
+				]
+			},
+			"Tabs": {
+				"status": "beta",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Beta release", "Roving tabindex", "ARIA tabs pattern"]
+					}
+				]
+			},
+			"Avatar": {
+				"status": "stable",
+				"version": "0.1.0",
+				"wcag": "A",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Initial release"]
+					}
+				]
+			},
+			"Skeleton": {
+				"status": "stable",
+				"version": "0.1.0",
+				"wcag": "A",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Initial release", "Reduced motion support"]
+					}
+				]
+			},
+			"ThemeSwitcher": {
+				"status": "stable",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Initial release", "System preference detection"]
+					}
+				]
+			}
+		},
+		"fediverse": {
+			"Timeline": {
+				"status": "beta",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Beta release", "Virtual scrolling", "Real-time updates"]
+					}
+				]
+			},
+			"StatusCard": {
+				"status": "beta",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Beta release", "Media support", "Interaction buttons"]
+					}
+				]
+			},
+			"ComposeBox": {
+				"status": "alpha",
+				"version": "0.1.0",
+				"wcag": "A",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Alpha release", "Basic text composition", "Emoji support"]
+					}
+				]
+			},
+			"NotificationsFeed": {
+				"status": "beta",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Beta release", "Notification grouping", "Real-time updates"]
+					}
+				]
+			},
+			"ProfileHeader": {
+				"status": "beta",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Beta release", "Profile stats", "Follow/unfollow actions"]
+					}
+				]
+			},
+			"ActionBar": {
+				"status": "beta",
+				"version": "0.1.0",
+				"wcag": "AA",
+				"changelog": [
+					{
+						"version": "0.1.0",
+						"date": "2024-01-01",
+						"changes": ["Beta release", "Reply, boost, favorite actions"]
+					}
+				]
+			}
+		}
+	}
+}

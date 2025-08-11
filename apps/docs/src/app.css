@@ -1,0 +1,242 @@
+/* Base styles */
+:root {
+	--font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+	
+	/* Documentation specific tokens */
+	--doc-sidebar-width: 280px;
+	--doc-header-height: 64px;
+	--doc-toc-width: 240px;
+	--doc-content-max-width: 1200px;
+	
+	/* Colors - Light theme */
+	--doc-bg: #ffffff;
+	--doc-text: #1a1a1a;
+	--doc-border: #e5e5e5;
+	--doc-link: #2563eb;
+	--doc-link-hover: #1d4ed8;
+	--doc-surface-secondary: #f9fafb;
+	--doc-surface-tertiary: #f3f4f6;
+	
+	/* Shadows */
+	--doc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+	--doc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+	--doc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.dark {
+	--doc-bg: #0a0a0a;
+	--doc-text: #fafafa;
+	--doc-border: #262626;
+	--doc-link: #60a5fa;
+	--doc-link-hover: #93bbfc;
+	--doc-surface-secondary: #171717;
+	--doc-surface-tertiary: #262626;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	font-family: var(--font-sans);
+	color: var(--doc-text);
+	background: var(--doc-bg);
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 600;
+	line-height: 1.25;
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+p {
+	margin-bottom: 1em;
+}
+
+a {
+	color: var(--doc-link);
+	text-decoration: none;
+	transition: color 0.2s;
+}
+
+a:hover {
+	color: var(--doc-link-hover);
+	text-decoration: underline;
+}
+
+code {
+	font-family: var(--font-mono);
+	font-size: 0.875em;
+	background: var(--doc-surface-secondary);
+	padding: 0.125em 0.25em;
+	border-radius: 0.25rem;
+}
+
+pre {
+	font-family: var(--font-mono);
+	font-size: 0.875rem;
+	line-height: 1.5;
+	background: var(--doc-surface-secondary);
+	padding: 1rem;
+	border-radius: 0.5rem;
+	overflow-x: auto;
+	margin-bottom: 1.5rem;
+}
+
+pre code {
+	background: none;
+	padding: 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--doc-surface-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--doc-border);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: var(--doc-text);
+	opacity: 0.5;
+}
+
+/* Status badges */
+.status-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 0.125rem 0.5rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	border-radius: 9999px;
+	text-transform: uppercase;
+	letter-spacing: 0.025em;
+}
+
+.status-badge.alpha {
+	background: #fef3c7;
+	color: #92400e;
+}
+
+.status-badge.beta {
+	background: #dbeafe;
+	color: #1e40af;
+}
+
+.status-badge.stable {
+	background: #d1fae5;
+	color: #065f46;
+}
+
+.status-badge.deprecated {
+	background: #fee2e2;
+	color: #991b1b;
+}
+
+.dark .status-badge.alpha {
+	background: #78350f;
+	color: #fef3c7;
+}
+
+.dark .status-badge.beta {
+	background: #1e3a8a;
+	color: #dbeafe;
+}
+
+.dark .status-badge.stable {
+	background: #064e3b;
+	color: #d1fae5;
+}
+
+.dark .status-badge.deprecated {
+	background: #7f1d1d;
+	color: #fee2e2;
+}
+
+/* Accessibility indicators */
+.a11y-indicator {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	background: var(--doc-surface-secondary);
+	border: 1px solid var(--doc-border);
+	border-radius: 0.25rem;
+	font-size: 0.875rem;
+}
+
+.a11y-indicator.wcag-a {
+	border-color: #3b82f6;
+	background: #eff6ff;
+}
+
+.a11y-indicator.wcag-aa {
+	border-color: #10b981;
+	background: #f0fdf4;
+}
+
+.a11y-indicator.wcag-aaa {
+	border-color: #059669;
+	background: #ecfdf5;
+}
+
+.dark .a11y-indicator.wcag-a {
+	border-color: #60a5fa;
+	background: #1e3a8a;
+}
+
+.dark .a11y-indicator.wcag-aa {
+	border-color: #34d399;
+	background: #064e3b;
+}
+
+.dark .a11y-indicator.wcag-aaa {
+	border-color: #10b981;
+	background: #022c22;
+}
+
+/* Utilities */
+.container {
+	max-width: var(--doc-content-max-width);
+	margin: 0 auto;
+	padding: 0 1rem;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}

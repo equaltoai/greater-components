@@ -1,0 +1,243 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for Greater Components
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible to help us understand and evaluate your request.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission checklist
+      description: Please check the following before submitting your feature request
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I have checked the roadmap and planned features
+          required: true
+        - label: This feature would benefit the broader community
+          required: true
+        - label: I have considered if this can be built as an extension/wrapper
+          required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - "New Component"
+        - "Component Enhancement"
+        - "Design System/Tokens"
+        - "Icon Addition"
+        - "Accessibility Improvement"
+        - "Performance Optimization"
+        - "Developer Experience"
+        - "Testing Utilities"
+        - "Documentation"
+        - "Tooling/Build"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Target Package
+      description: Which package would this feature belong to?
+      options:
+        - "@greater/primitives"
+        - "@greater/fediverse"  
+        - "@greater/tokens"
+        - "@greater/icons"
+        - "@greater/utils"
+        - "@greater/adapters"
+        - "@greater/testing"
+        - "New package"
+        - "Multiple packages"
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A clear and concise summary of the feature you'd like to see
+      placeholder: I would like to see...
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What user need does it address?
+      placeholder: |
+        Currently, users face the following problem:
+        - Problem 1
+        - Problem 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How do you envision this feature working?
+      placeholder: |
+        I propose implementing this feature by:
+        1. Step 1
+        2. Step 2
+        3. Step 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: api-design
+    attributes:
+      label: API Design (if applicable)
+      description: If this is a component or API change, show the proposed interface
+      render: svelte
+      placeholder: |
+        // Proposed component API
+        <NewComponent 
+          prop1="value"
+          prop2={variable}
+          onEvent={handler}
+        >
+          Content here
+        </NewComponent>
+        
+        // Or function API
+        const result = newUtility({ option: 'value' });
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Use Cases
+      description: Describe specific scenarios where this feature would be useful
+      placeholder: |
+        This feature would be useful for:
+        1. Use case 1: When building...
+        2. Use case 2: When developers need to...
+        3. Use case 3: For applications that...
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples
+      description: Provide examples of similar features in other libraries or applications
+      placeholder: |
+        Similar features exist in:
+        - Library X: [link or description]
+        - Application Y: [link or description]
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      description: How important is this feature to you and your use case?
+      options:
+        - "Low - Nice to have"
+        - "Medium - Would improve workflow"
+        - "High - Blocks current development"
+        - "Critical - Essential for adoption"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: requirements
+    attributes:
+      label: Requirements
+      description: What requirements should this feature meet?
+      options:
+        - label: Must be accessible (WCAG 2.1 AA compliant)
+        - label: Must work with keyboard navigation
+        - label: Must work with screen readers
+        - label: Must support theming/customization
+        - label: Must include TypeScript definitions
+        - label: Must have comprehensive tests
+        - label: Must have documentation/examples
+        - label: Must be responsive/mobile-friendly
+
+  - type: checkboxes
+    id: breaking-changes
+    attributes:
+      label: Breaking Changes
+      description: Would implementing this feature require breaking changes?
+      options:
+        - label: This feature would require breaking changes to existing APIs
+        - label: This feature could be implemented without breaking changes
+        - label: I'm not sure about breaking change implications
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What alternative solutions or workarounds have you considered?
+      placeholder: |
+        I have considered these alternatives:
+        1. Alternative 1: But this doesn't work because...
+        2. Alternative 2: This is possible but...
+
+  - type: textarea
+    id: migration
+    attributes:
+      label: Migration Strategy (if breaking)
+      description: If this requires breaking changes, how should users migrate?
+      placeholder: |
+        Migration steps would be:
+        1. Step 1
+        2. Step 2
+        
+        Deprecated APIs should be supported for X months.
+
+  - type: dropdown
+    id: target-version
+    attributes:
+      label: Target Version
+      description: What version should this feature target?
+      options:
+        - "Next minor version (1.x.0)"
+        - "Next major version (2.0.0)"
+        - "Any version"
+        - "No preference"
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any additional context, mockups, or information
+      placeholder: |
+        Additional information:
+        - Context 1
+        - Context 2
+        
+        [Attach mockups, diagrams, or related links]
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Would you be willing to contribute to implementing this feature?
+      options:
+        - label: I would be willing to submit a PR for this feature
+        - label: I would be willing to help with design/planning
+        - label: I would be willing to help with testing
+        - label: I would be willing to help with documentation
+
+  - type: textarea
+    id: community-impact
+    attributes:
+      label: Community Impact
+      description: How would this feature benefit the broader Greater Components community?
+      placeholder: |
+        This feature would benefit the community by:
+        - Benefit 1
+        - Benefit 2

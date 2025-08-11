@@ -1,6 +1,6 @@
 {
   "name": "@greater/primitives",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Primitive UI components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -32,6 +32,7 @@
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
@@ -43,6 +44,7 @@
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@testing-library/svelte": "^5.0.0",
     "@types/node": "^20.11.5",
+    "@vitest/coverage-v8": "^1.2.1",
     "jsdom": "^24.0.0",
     "svelte": "^5.0.0",
     "typescript": "^5.3.3",
