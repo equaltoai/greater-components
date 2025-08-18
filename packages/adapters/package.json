@@ -27,7 +27,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^20.14.0",
+    "@types/node": "^24.3.0",
     "@vitest/ui": "^2.0.5",
     "jsdom": "^24.1.1",
     "typescript": "^5.5.4",

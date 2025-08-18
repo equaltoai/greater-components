@@ -43,7 +43,7 @@
     "@greater/tokens": "workspace:*",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@testing-library/svelte": "^5.0.0",
-    "@types/node": "^20.11.5",
+    "@types/node": "^24.3.0",
     "@vitest/coverage-v8": "^1.2.1",
     "jsdom": "^24.0.0",
     "svelte": "^5.0.0",

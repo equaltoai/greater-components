@@ -40,7 +40,7 @@
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/svelte": "^4.0.5",
-    "@types/node": "^20.11.5",
+    "@types/node": "^24.3.0",
     "@vitest/coverage-v8": "^1.2.1",
     "chokidar": "^3.5.3",
     "feather-icons": "^4.29.1",
