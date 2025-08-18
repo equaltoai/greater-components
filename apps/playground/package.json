@@ -31,7 +31,7 @@
     "@storybook/addon-links": "^8.4.7",
     "@storybook/addon-viewport": "^8.4.7",
     "@storybook/blocks": "^8.4.7",
-    "@storybook/svelte": "^8.4.7",
+    "@storybook/svelte": "^9.1.2",
     "@storybook/sveltekit": "^8.4.7",
     "@storybook/test": "^8.4.7",
     "@sveltejs/adapter-auto": "^3.0.0",
