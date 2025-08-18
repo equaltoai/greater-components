@@ -14,7 +14,7 @@
 		"@sveltejs/adapter-static": "^3.0.9",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.5",
-		"@types/node": "^24.2.1",
+		"@types/node": "^24.3.0",
 		"mdsvex": "^0.12.6",
 		"shiki": "^3.9.2",
 		"svelte": "^5.6.5",
