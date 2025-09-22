@@ -38,15 +38,15 @@
   },
   "dependencies": {
     "axe-core": "^4.10.2",
-    "axe-playwright": "^2.0.3",
+    "axe-playwright": "^2.2.2",
     "@axe-core/playwright": "^4.10.1",
     "focus-trap": "^7.6.2",
     "tabbable": "^6.2.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1",
+    "@playwright/test": "^1.55.0",
     "@testing-library/svelte": "^5.2.6",
-    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/user-event": "^14.6.1",
     "@vitest/ui": "^2.1.8",
     "@percy/playwright": "^1.0.8",
     "chromatic": "^11.20.0",
@@ -56,7 +56,7 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
     "vitest": "^2.1.8",
-    "playwright": "^1.49.1"
+    "playwright": "^1.55.0"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"
