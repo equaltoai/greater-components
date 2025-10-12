@@ -3,7 +3,7 @@
  * Utilities for accessibility-focused visual regression testing
  */
 
-import { Page, expect } from '@playwright/test';
+import { Page, expect, Locator } from '@playwright/test';
 
 export interface VisualTestOptions {
   threshold?: number;
@@ -11,7 +11,7 @@ export interface VisualTestOptions {
   animations?: 'disabled' | 'allow';
   clip?: { x: number; y: number; width: number; height: number };
   fullPage?: boolean;
-  mask?: string[];
+  mask?: Locator[];
   mode?: 'light' | 'dark' | 'high-contrast';
   density?: 'compact' | 'comfortable' | 'spacious';
 }
@@ -203,7 +203,7 @@ export async function testHighContrastVisual(
     `,
   });
   
-  await page.emulateMedia({ 'prefers-contrast': 'high' });
+  await page.emulateMedia({ contrast: 'more' });
   await page.waitForTimeout(200);
   
   await expect(page).toHaveScreenshot(`${testName}-high-contrast.png`, {
@@ -229,7 +229,7 @@ export async function testReducedMotionVisual(
   });
   
   // Reduced motion
-  await page.emulateMedia({ 'prefers-reduced-motion': 'reduce' });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.waitForTimeout(200);
   
   await expect(page).toHaveScreenshot(`${testName}-reduced-motion.png`, {
@@ -281,7 +281,7 @@ export async function testColorSchemeVisual(
   
   for (const scheme of schemes) {
     // Apply color scheme
-    await page.emulateMedia({ 'prefers-color-scheme': scheme });
+    await page.emulateMedia({ colorScheme: scheme });
     await page.evaluate((schemeName) => {
       document.documentElement.setAttribute('data-theme', schemeName);
     }, scheme);

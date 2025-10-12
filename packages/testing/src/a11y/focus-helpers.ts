@@ -4,7 +4,7 @@
  */
 
 import { createFocusTrap, FocusTrap } from 'focus-trap';
-import { tabbable, focusable, isTabbable, isFocusable } from 'tabbable';
+import { tabbable, focusable, isTabbable, isFocusable, type FocusableElement } from 'tabbable';
 
 export interface FocusTestResult {
   passed: boolean;
@@ -32,8 +32,16 @@ export function testFocusTrap(container: HTMLElement): FocusTestResult {
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
 
+    if (!firstElement || !lastElement) {
+      return {
+        passed: false,
+        description: 'Focus trap test',
+        error: 'Not enough focusable elements found',
+      };
+    }
+
     // Focus first element
-    firstElement.focus();
+    (firstElement as HTMLElement).focus();
     const firstFocused = document.activeElement === firstElement;
 
     if (!firstFocused) {
@@ -45,14 +53,14 @@ export function testFocusTrap(container: HTMLElement): FocusTestResult {
     }
 
     // Simulate Tab from last element (should wrap to first)
-    lastElement.focus();
+    (lastElement as HTMLElement).focus();
     const event = new KeyboardEvent('keydown', {
       key: 'Tab',
       code: 'Tab',
       bubbles: true,
       cancelable: true,
     });
-    lastElement.dispatchEvent(event);
+    (lastElement as HTMLElement).dispatchEvent(event);
 
     // In a real focus trap, focus should wrap to first element
     // This is a simplified test - actual implementation would need proper focus trap library
@@ -93,8 +101,8 @@ export function testFocusRestoration(
 
     // Open modal (focus should move to modal)
     const modalFocusableElements = tabbable(modalContainer);
-    if (modalFocusableElements.length > 0) {
-      modalFocusableElements[0].focus();
+    if (modalFocusableElements.length > 0 && modalFocusableElements[0]) {
+      (modalFocusableElements[0] as HTMLElement).focus();
     }
 
     // Close modal
@@ -121,9 +129,9 @@ export function testFocusRestoration(
 /**
  * Test focus order matches visual order
  */
-export function testFocusOrder(expectedOrder: HTMLElement[]): FocusTestResult {
+export function testFocusOrder(expectedOrder: FocusableElement[]): FocusTestResult {
   try {
-    const actualOrder: HTMLElement[] = [];
+    const actualOrder: FocusableElement[] = [];
     const allTabbable = tabbable(document.body);
 
     // Filter to only elements in expected order
@@ -140,8 +148,8 @@ export function testFocusOrder(expectedOrder: HTMLElement[]): FocusTestResult {
     return {
       passed: orderMatches,
       description: 'Focus order test',
-      currentFocus: actualOrder.map(getElementSelector).join(' -> '),
-      expectedFocus: expectedOrder.map(getElementSelector).join(' -> '),
+      currentFocus: actualOrder.map((el) => getElementSelector(el as HTMLElement)).join(' -> '),
+      expectedFocus: expectedOrder.map((el) => getElementSelector(el as HTMLElement)).join(' -> '),
     };
   } catch (error) {
     return {
@@ -341,7 +349,7 @@ export function createAndTestFocusTrap(
  */
 export function getFocusableElements(
   container: HTMLElement = document.body
-): HTMLElement[] {
+): FocusableElement[] {
   return focusable(container);
 }
 
@@ -350,7 +358,7 @@ export function getFocusableElements(
  */
 export function getTabbableElements(
   container: HTMLElement = document.body
-): HTMLElement[] {
+): FocusableElement[] {
   return tabbable(container);
 }
 

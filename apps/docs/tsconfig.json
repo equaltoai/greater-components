@@ -8,17 +8,6 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true,
-		"moduleResolution": "bundler",
-		"paths": {
-			"$lib": ["./src/lib"],
-			"$lib/*": ["./src/lib/*"],
-			"$components": ["./src/lib/components"],
-			"$components/*": ["./src/lib/components/*"],
-			"$content": ["./src/content"],
-			"$content/*": ["./src/content/*"],
-			"$utils": ["./src/lib/utils"],
-			"$utils/*": ["./src/lib/utils/*"]
-		}
+		"strict": true
 	}
 }

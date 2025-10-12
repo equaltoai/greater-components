@@ -1,0 +1,241 @@
+# Account Mutations
+# Mutations for managing accounts and relationships
+
+#import "../fragments/account.graphql"
+
+# Follow an account
+mutation FollowAccount($id: ID!, $reblogs: Boolean = true, $notify: Boolean = false) {
+  followAccount(id: $id, reblogs: $reblogs, notify: $notify) {
+    ...RelationshipFields
+  }
+}
+
+# Unfollow an account
+mutation UnfollowAccount($id: ID!) {
+  unfollowAccount(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Block an account
+mutation BlockAccount($id: ID!) {
+  blockAccount(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Unblock an account
+mutation UnblockAccount($id: ID!) {
+  unblockAccount(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Mute an account
+mutation MuteAccount(
+  $id: ID!
+  $notifications: Boolean = true
+  $duration: Int = 0
+) {
+  muteAccount(id: $id, notifications: $notifications, duration: $duration) {
+    ...RelationshipFields
+  }
+}
+
+# Unmute an account
+mutation UnmuteAccount($id: ID!) {
+  unmuteAccount(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Block a domain
+mutation BlockDomain($domain: String!) {
+  blockDomain(domain: $domain)
+}
+
+# Unblock a domain
+mutation UnblockDomain($domain: String!) {
+  unblockDomain(domain: $domain)
+}
+
+# Accept a follow request
+mutation AcceptFollowRequest($id: ID!) {
+  acceptFollowRequest(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Reject a follow request
+mutation RejectFollowRequest($id: ID!) {
+  rejectFollowRequest(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Feature/endorse an account
+mutation FeatureAccount($id: ID!) {
+  featureAccount(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Unfeature/unendorse an account
+mutation UnfeatureAccount($id: ID!) {
+  unfeatureAccount(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Set a note on an account
+mutation SetAccountNote($id: ID!, $note: String!) {
+  setAccountNote(id: $id, note: $note) {
+    ...RelationshipFields
+  }
+}
+
+# Update current account profile
+mutation UpdateAccount(
+  $displayName: String
+  $note: String
+  $avatar: Upload
+  $header: Upload
+  $locked: Boolean
+  $bot: Boolean
+  $discoverable: Boolean
+  $fieldsAttributes: [FieldInput!]
+  $source: AccountSourceInput
+) {
+  updateAccount(
+    input: {
+      displayName: $displayName
+      note: $note
+      avatar: $avatar
+      header: $header
+      locked: $locked
+      bot: $bot
+      discoverable: $discoverable
+      fieldsAttributes: $fieldsAttributes
+      source: $source
+    }
+  ) {
+    ...AccountFields
+  }
+}
+
+# Report an account
+mutation ReportAccount(
+  $accountId: ID!
+  $statusIds: [ID!]
+  $comment: String
+  $forward: Boolean = false
+  $category: ReportCategory = other
+  $ruleIds: [ID!]
+) {
+  reportAccount(
+    input: {
+      accountId: $accountId
+      statusIds: $statusIds
+      comment: $comment
+      forward: $forward
+      category: $category
+      ruleIds: $ruleIds
+    }
+  ) {
+    id
+    actionTaken
+  }
+}
+
+# Remove account from followers
+mutation RemoveAccountFromFollowers($id: ID!) {
+  removeAccountFromFollowers(id: $id) {
+    ...RelationshipFields
+  }
+}
+
+# Feature a hashtag
+mutation FeatureHashtag($name: String!) {
+  featureHashtag(name: $name) {
+    name
+    url
+    statusesCount
+    lastUsedAt
+  }
+}
+
+# Unfeature a hashtag
+mutation UnfeatureHashtag($name: String!) {
+  unfeatureHashtag(name: $name)
+}
+
+# Reorder featured hashtags
+mutation ReorderFeaturedHashtags($hashtags: [String!]!) {
+  reorderFeaturedHashtags(hashtags: $hashtags)
+}
+
+# Reorder endorsed accounts
+mutation ReorderEndorsedAccounts($accountIds: [ID!]!) {
+  reorderEndorsedAccounts(accountIds: $accountIds)
+}
+
+# Update privacy settings
+mutation UpdatePrivacySettings(
+  $privacy: Privacy
+  $sensitive: Boolean
+  $locked: Boolean
+  $discoverable: Boolean
+  $indexable: Boolean
+  $hideCollections: Boolean
+  $noindex: Boolean
+  $showApplications: Boolean
+) {
+  updatePrivacySettings(
+    input: {
+      privacy: $privacy
+      sensitive: $sensitive
+      locked: $locked
+      discoverable: $discoverable
+      indexable: $indexable
+      hideCollections: $hideCollections
+      noindex: $noindex
+      showApplications: $showApplications
+    }
+  ) {
+    privacy
+    sensitive
+    language
+    locked
+    discoverable
+    indexable
+    hideCollections
+    noindex
+    showApplications
+  }
+}
+
+# Initiate account migration
+mutation InitiateMigration($targetAccount: String!) {
+  initiateMigration(targetAccount: $targetAccount) {
+    id
+    targetAccount {
+      ...AccountFields
+    }
+    status
+    followersCount
+    createdAt
+  }
+}
+
+# Cancel account migration
+mutation CancelMigration {
+  cancelMigration
+}
+
+# Verify a profile field
+mutation VerifyProfileField($fieldName: String!) {
+  verifyProfileField(fieldName: $fieldName) {
+    ...AccountFields
+  }
+}
+

@@ -4,6 +4,7 @@
 
 **Modern UI components for building accessible Fediverse applications**
 
+[![JSR](https://jsr.io/badges/@greater/primitives)](https://jsr.io/@greater/primitives)
 [![npm version](https://img.shields.io/npm/v/@greater/primitives.svg)](https://www.npmjs.com/package/@greater/primitives)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
@@ -32,6 +33,27 @@ Greater Components is a comprehensive, production-ready UI component library des
 
 ### Installation
 
+#### Via JSR (Recommended)
+
+```bash
+# Headless components (NEW - for maximum flexibility)
+npx jsr add @greater/headless
+
+# Core styled components
+npx jsr add @greater/primitives @greater/tokens
+
+# Icons (recommended)
+npx jsr add @greater/icons
+
+# Fediverse-specific components (for social apps)
+npx jsr add @greater/fediverse
+
+# Utilities (optional)
+npx jsr add @greater/utils
+```
+
+#### Via npm
+
 ```bash
 # Core components (required)
 npm install @greater/primitives @greater/tokens
@@ -47,6 +69,8 @@ npm install @greater/utils
 ```
 
 ### Basic Usage
+
+#### Styled Components (Quick Start)
 
 ```svelte
 <script>
@@ -77,6 +101,43 @@ npm install @greater/utils
 </ThemeProvider>
 ```
 
+#### Headless Components (Maximum Control) 🆕
+
+```svelte
+<script>
+  import { createButton } from '@greater/headless/button';
+  import { SettingsIcon } from '@greater/icons';
+  
+  const button = createButton({
+    onClick: () => console.log('Clicked!'),
+    loading: false
+  });
+</script>
+
+<!-- Style however you want -->
+<button use:button.actions.button class="your-custom-styles">
+  <SettingsIcon />
+  {#if button.state.loading}
+    Loading...
+  {:else}
+    Open Settings
+  {/if}
+</button>
+
+<style>
+  .your-custom-styles {
+    /* Complete styling freedom */
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+```
+
 ### Fediverse Example
 
 ```svelte
@@ -104,6 +165,7 @@ npm install @greater/utils
 
 | Package | Description | Version |
 |---------|-------------|---------|
+| **[@greater/headless](./packages/headless)** | 🆕 Headless UI primitives - behavior without styling | [![npm](https://img.shields.io/npm/v/@greater/headless.svg)](https://www.npmjs.com/package/@greater/headless) |
 | **[@greater/primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) | [![npm](https://img.shields.io/npm/v/@greater/primitives.svg)](https://www.npmjs.com/package/@greater/primitives) |
 | **[@greater/tokens](./packages/tokens)** | Design system tokens and theming | [![npm](https://img.shields.io/npm/v/@greater/tokens.svg)](https://www.npmjs.com/package/@greater/tokens) |
 | **[@greater/icons](./packages/icons)** | 300+ SVG icons including Fediverse-specific ones | [![npm](https://img.shields.io/npm/v/@greater/icons.svg)](https://www.npmjs.com/package/@greater/icons) |

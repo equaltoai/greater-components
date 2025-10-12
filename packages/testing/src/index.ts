@@ -3,11 +3,11 @@
  * Comprehensive accessibility, keyboard navigation, and visual regression testing
  */
 
-// Re-export all accessibility testing utilities
-export * from './a11y';
+// Re-export accessibility testing utilities (a11y namespace for clarity)
+export * as a11y from './a11y';
 
-// Re-export Playwright utilities
-export * from './playwright';
+// Re-export Playwright utilities (playwright namespace for clarity)
+export * as playwright from './playwright';
 
 // Re-export Vitest utilities
 export * from './vitest';

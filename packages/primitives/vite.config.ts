@@ -12,13 +12,29 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: path.resolve(__dirname, 'src/index.ts'),
+        'components/Button': path.resolve(__dirname, 'src/components/Button.svelte'),
+        'components/Modal': path.resolve(__dirname, 'src/components/Modal.svelte'),
+        'components/TextField': path.resolve(__dirname, 'src/components/TextField.svelte'),
+        'components/Menu': path.resolve(__dirname, 'src/components/Menu.svelte'),
+        'components/Tooltip': path.resolve(__dirname, 'src/components/Tooltip.svelte'),
+        'components/Tabs': path.resolve(__dirname, 'src/components/Tabs.svelte'),
+        'components/Avatar': path.resolve(__dirname, 'src/components/Avatar.svelte'),
+        'components/Skeleton': path.resolve(__dirname, 'src/components/Skeleton.svelte'),
+        'components/ThemeSwitcher': path.resolve(__dirname, 'src/components/ThemeSwitcher.svelte'),
+        'components/ThemeProvider': path.resolve(__dirname, 'src/components/ThemeProvider.svelte'),
+      },
       name: 'GreaterPrimitives',
-      fileName: 'index'
+      formats: ['es']
     },
     rollupOptions: {
       external: ['svelte', 'svelte/store', 'svelte/internal', '@greater/tokens'],
       output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        exports: 'named',
+        entryFileNames: '[name].js',
         globals: {
           svelte: 'Svelte',
           '@greater/tokens': 'GreaterTokens'
@@ -26,7 +42,8 @@ export default defineConfig({
       }
     },
     outDir: 'dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    sourcemap: true
   },
   test: {
     environment: 'jsdom',

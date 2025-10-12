@@ -4,8 +4,8 @@
  */
 
 import { Page, expect } from '@playwright/test';
-import { injectAxe, checkA11y, configureAxe } from 'axe-playwright';
-import type { AxeResults, RunOptions } from 'axe-core';
+import { injectAxe, configureAxe } from 'axe-playwright';
+import type { AxeResults } from 'axe-core';
 import { defaultAxeConfig, strictAxeConfig, themeConfigs, densityConfigs, formatAxeResults } from '../a11y/axe-helpers';
 
 export interface PlaywrightAxeOptions {
@@ -53,7 +53,7 @@ export async function setupAxe(page: Page, options: PlaywrightAxeOptions = {}): 
     };
   }
   
-  await configureAxe(page, config);
+  await configureAxe(page, config as any);
 }
 
 /**
@@ -269,7 +269,6 @@ export async function generateA11yReport(
     themes = ['light', 'dark'],
     densities = ['comfortable'],
     viewports = [{ name: 'desktop', width: 1280, height: 720 }],
-    testName = 'component',
   } = options;
   
   const results = {

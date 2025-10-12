@@ -1,0 +1,52 @@
+{
+	"name": "@greater/cli",
+	"version": "0.1.0",
+	"description": "CLI for adding Greater Components to your project",
+	"type": "module",
+	"bin": {
+		"greater": "./dist/index.js"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"dev": "tsup --watch",
+		"build": "tsup",
+		"typecheck": "tsc --noEmit"
+	},
+	"keywords": [
+		"greater",
+		"components",
+		"cli",
+		"activitypub",
+		"fediverse",
+		"svelte"
+	],
+	"author": "Greater Components Team",
+	"license": "MIT",
+	"dependencies": {
+		"commander": "^12.1.0",
+		"prompts": "^2.4.2",
+		"chalk": "^5.4.1",
+		"ora": "^8.1.1",
+		"execa": "^9.5.2",
+		"fs-extra": "^11.2.0",
+		"node-fetch": "^3.3.2",
+		"zod": "^3.24.1"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^11.0.4",
+		"@types/node": "^24.2.1",
+		"@types/prompts": "^2.4.9",
+		"tsup": "^8.3.5",
+		"typescript": "^5.8.1"
+	}
+}
+

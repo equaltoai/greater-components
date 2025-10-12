@@ -1,0 +1,73 @@
+# Account Fragment
+# Reusable fragment for account/profile data
+
+fragment AccountFields on Account {
+  id
+  username
+  acct
+  displayName
+  locked
+  bot
+  discoverable
+  group
+  createdAt
+  note
+  url
+  avatar
+  avatarStatic
+  header
+  headerStatic
+  followersCount
+  followingCount
+  statusesCount
+  lastStatusAt
+  
+  # Emojis in display name/bio
+  emojis {
+    ...EmojiFields
+  }
+  
+  # Custom fields
+  fields {
+    name
+    value
+    verifiedAt
+  }
+}
+
+# Relationship fragment
+fragment RelationshipFields on Relationship {
+  id
+  following
+  followedBy
+  blocking
+  blockedBy
+  muting
+  mutingNotifications
+  requested
+  domainBlocking
+  showingReblogs
+  endorsed
+  notifying
+  note
+}
+
+# Account with relationship
+fragment AccountWithRelationship on Account {
+  ...AccountFields
+  relationship {
+    ...RelationshipFields
+  }
+}
+
+# Compact account fragment
+fragment AccountCompact on Account {
+  id
+  username
+  acct
+  displayName
+  avatar
+  locked
+  bot
+}
+

@@ -14,17 +14,20 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'GreaterIcons',
-      fileName: 'index'
+      fileName: 'index',
+      formats: ['es']
     },
     rollupOptions: {
       external: ['svelte', 'svelte/store', 'svelte/internal'],
       output: {
-        globals: {
-          svelte: 'Svelte'
-        }
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        exports: 'named',
+        entryFileNames: '[name].js'
       }
     },
     outDir: 'dist',
-    emptyOutDir: true
+    emptyOutDir: true,
+    sourcemap: true
   }
 });

@@ -1,0 +1,167 @@
+# Status Mutations
+# Mutations for creating, updating, and managing statuses
+
+#import "../fragments/status.graphql"
+#import "../fragments/media.graphql"
+#import "../fragments/common.graphql"
+
+# Create a new status
+mutation CreateStatus(
+  $status: String!
+  $spoilerText: String
+  $visibility: VisibilityType = public
+  $sensitive: Boolean = false
+  $language: String
+  $mediaIds: [ID!]
+  $poll: PollInput
+  $inReplyToId: ID
+  $contentWarning: String
+  $scheduledAt: DateTime
+) {
+  createStatus(
+    input: {
+      status: $status
+      spoilerText: $spoilerText
+      visibility: $visibility
+      sensitive: $sensitive
+      language: $language
+      mediaIds: $mediaIds
+      poll: $poll
+      inReplyToId: $inReplyToId
+      contentWarning: $contentWarning
+      scheduledAt: $scheduledAt
+    }
+  ) {
+    ...StatusFields
+  }
+}
+
+# Edit an existing status
+mutation EditStatus(
+  $id: ID!
+  $status: String!
+  $spoilerText: String
+  $sensitive: Boolean
+  $language: String
+  $mediaIds: [ID!]
+  $poll: PollInput
+  $contentWarning: String
+) {
+  editStatus(
+    input: {
+      id: $id
+      status: $status
+      spoilerText: $spoilerText
+      sensitive: $sensitive
+      language: $language
+      mediaIds: $mediaIds
+      poll: $poll
+      contentWarning: $contentWarning
+    }
+  ) {
+    ...StatusFields
+  }
+}
+
+# Delete a status
+mutation DeleteStatus($id: ID!) {
+  deleteStatus(id: $id) {
+    id
+  }
+}
+
+# Favourite a status
+mutation FavouriteStatus($id: ID!) {
+  favouriteStatus(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Unfavourite a status
+mutation UnfavouriteStatus($id: ID!) {
+  unfavouriteStatus(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Reblog/boost a status
+mutation ReblogStatus($id: ID!, $visibility: VisibilityType = public) {
+  reblogStatus(id: $id, visibility: $visibility) {
+    ...StatusFields
+  }
+}
+
+# Unreblog/unboost a status
+mutation UnreblogStatus($id: ID!) {
+  unreblogStatus(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Bookmark a status
+mutation BookmarkStatus($id: ID!) {
+  bookmarkStatus(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Unbookmark a status
+mutation UnbookmarkStatus($id: ID!) {
+  unbookmarkStatus(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Pin a status to profile
+mutation PinStatus($id: ID!) {
+  pinStatus(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Unpin a status from profile
+mutation UnpinStatus($id: ID!) {
+  unpinStatus(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Mute a conversation
+mutation MuteConversation($id: ID!) {
+  muteConversation(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Unmute a conversation
+mutation UnmuteConversation($id: ID!) {
+  unmuteConversation(id: $id) {
+    ...StatusFields
+  }
+}
+
+# Vote in a poll
+mutation VotePoll($pollId: ID!, $choices: [Int!]!) {
+  votePoll(pollId: $pollId, choices: $choices) {
+    ...PollFields
+  }
+}
+
+# Upload media attachment
+mutation UploadMedia(
+  $file: Upload!
+  $description: String
+  $focus: FocusInput
+) {
+  uploadMedia(file: $file, description: $description, focus: $focus) {
+    ...MediaFields
+  }
+}
+
+# Update media description
+mutation UpdateMedia($id: ID!, $description: String, $focus: FocusInput) {
+  updateMedia(id: $id, description: $description, focus: $focus) {
+    ...MediaFields
+  }
+}
+

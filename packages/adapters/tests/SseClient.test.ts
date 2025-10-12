@@ -263,7 +263,7 @@ describe('SseClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateMessage(JSON.stringify({
         type: 'test-event',
         data: { content: 'Test' },
@@ -289,7 +289,7 @@ describe('SseClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateMessage('Plain text message');
 
       expect(messageHandler).toHaveBeenCalledWith(
@@ -312,7 +312,7 @@ describe('SseClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateMessage('test', 'event-456');
 
       expect(mockStorage.getItem('sse_last_event_id')).toBe('event-456');
@@ -331,7 +331,7 @@ describe('SseClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       // Custom events are processed as messages with type
       eventSource.simulateCustomEvent('ping', JSON.stringify({ type: 'ping', timestamp: Date.now() }));
 
@@ -384,7 +384,7 @@ describe('SseClient', () => {
       const timestamp = Date.now();
       client['pendingPings'].set(timestamp, timestamp - 50);
       
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateMessage(JSON.stringify({
         type: 'pong',
         timestamp
@@ -450,7 +450,7 @@ describe('SseClient', () => {
       expect(client.getState().status).toBe('connected');
 
       // Simulate connection error
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateError();
 
       // Wait for error and close events to propagate
@@ -459,9 +459,9 @@ describe('SseClient', () => {
       // Should trigger reconnection
       expect(reconnectingHandler).toHaveBeenCalled();
       
-      const firstCall = reconnectingHandler.mock.calls[0][0];
-      expect(firstCall.data.attempt).toBe(1);
-      expect(firstCall.data.delay).toBe(100);
+      const firstCall = reconnectingHandler.mock.calls[0]?.[0];
+      expect(firstCall?.data.attempt).toBe(1);
+      expect(firstCall?.data.delay).toBe(100);
 
       vi.restoreAllMocks();
     });
@@ -482,7 +482,7 @@ describe('SseClient', () => {
       await vi.advanceTimersByTimeAsync(20);
 
       // Simulate connection error
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateError();
 
       // Wait for error and close events to propagate
@@ -490,8 +490,8 @@ describe('SseClient', () => {
 
       expect(reconnectingHandler).toHaveBeenCalled();
       
-      const call = reconnectingHandler.mock.calls[0][0];
-      const delay = call.data.delay;
+      const call = reconnectingHandler.mock.calls[0]?.[0];
+      const delay = call?.data.delay;
       
       // Delay should be between 100 and 150
       expect(delay).toBeGreaterThanOrEqual(100);
@@ -515,7 +515,7 @@ describe('SseClient', () => {
       expect(client.getState().status).toBe('connected');
 
       // Simulate connection error
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateError();
 
       // Wait for error handling
@@ -787,7 +787,7 @@ describe('SseClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       eventSource.simulateMessage('test', 'event-789');
 
       // Should not throw even without storage
@@ -809,7 +809,7 @@ describe('SseClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const eventSource = client['eventSource'] as MockEventSource;
+      const eventSource = client['eventSource'] as unknown as MockEventSource;
       
       // Should not throw even with storage errors
       expect(() => {

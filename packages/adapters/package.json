@@ -4,6 +4,12 @@
   "type": "module",
   "description": "Transport adapters and state management for Greater Components",
   "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/adapters"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -25,7 +31,12 @@
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@apollo/client": "^3.11.0",
+    "@apollo/client-react-streaming": "^0.11.0",
+    "graphql": "^16.9.0",
+    "graphql-ws": "^5.16.0"
+  },
   "devDependencies": {
     "@types/node": "^20.14.0",
     "@vitest/ui": "^2.0.5",

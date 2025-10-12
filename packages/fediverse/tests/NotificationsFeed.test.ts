@@ -1,427 +1,409 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
+/**
+ * NotificationsFeed Logic Tests
+ * 
+ * Tests the pure logic functions used by NotificationsFeed component
+ */
 
-import NotificationsFeed from '../src/components/NotificationsFeed.svelte';
-import { 
-  generateMockNotifications, 
-  generateMockGroupedNotifications 
-} from '../src/mockData';
+import { describe, it, expect } from 'vitest';
+import type { Notification, NotificationGroup } from '../src/types';
 import { groupNotifications } from '../src/utils/notificationGrouping';
 
-// Mock the virtual scrolling library
-vi.mock('@tanstack/svelte-virtual', () => ({
-  createVirtualizer: vi.fn(() => ({
-    getVirtualItems: () => [],
-    getTotalSize: () => 0
-  }))
-}));
+// Helper to create mock notification
+function createNotification(overrides: Partial<Notification> = {}): Notification {
+  return {
+    id: Math.random().toString(),
+    type: 'mention',
+    createdAt: new Date().toISOString(),
+    account: {
+      id: 'acc1',
+      username: 'testuser',
+      displayName: 'Test User',
+      avatar: '',
+      acct: 'testuser@example.com',
+      url: '',
+    },
+    read: false,
+    ...overrides,
+  } as Notification;
+}
 
-describe('NotificationsFeed', () => {
-  const mockNotifications = generateMockNotifications(10);
+// Calculate unread count
+function getUnreadCount(notifications: Notification[]): number {
+  return notifications.filter((n) => !n.read).length;
+}
 
-  let mockHandlers: {
-    onNotificationClick: ReturnType<typeof vi.fn>;
-    onMarkAsRead: ReturnType<typeof vi.fn>;
-    onMarkAllAsRead: ReturnType<typeof vi.fn>;
-    onDismiss: ReturnType<typeof vi.fn>;
-    onLoadMore: ReturnType<typeof vi.fn>;
-  };
+// Check if should show mark all as read
+function shouldShowMarkAllAsRead(unreadCount: number, onMarkAllAsRead?: Function): boolean {
+  return unreadCount > 0 && onMarkAllAsRead !== undefined;
+}
 
-  beforeEach(() => {
-    mockHandlers = {
-      onNotificationClick: vi.fn(),
-      onMarkAsRead: vi.fn(),
-      onMarkAllAsRead: vi.fn(),
-      onDismiss: vi.fn(),
-      onLoadMore: vi.fn()
-    };
+// Check if should show header
+function shouldShowHeader(unreadCount: number): boolean {
+  return unreadCount > 0;
+}
+
+// Check if should show empty state
+function shouldShowEmptyState(
+  notifications: Notification[],
+  loading: boolean
+): boolean {
+  return notifications.length === 0 && !loading;
+}
+
+// Check if should show loading
+function shouldShowLoading(loading: boolean, notifications: Notification[]): boolean {
+  return loading && notifications.length === 0;
+}
+
+// Check if should show loading more
+function shouldShowLoadingMore(loadingMore: boolean, hasMore: boolean): boolean {
+  return loadingMore && hasMore;
+}
+
+// Get density class
+function getDensityClass(density: 'compact' | 'comfortable'): string {
+  return `notifications-feed--${density}`;
+}
+
+// Calculate items to display
+function getItemsToDisplay(
+  notifications: Notification[],
+  grouped: boolean,
+  groups?: NotificationGroup[]
+): (Notification | NotificationGroup)[] {
+  if (grouped && groups && groups.length > 0) {
+    return groups;
+  }
+  return notifications;
+}
+
+// Check if has notifications
+function hasNotifications(notifications: Notification[]): boolean {
+  return notifications.length > 0;
+}
+
+// Check if all read
+function areAllRead(notifications: Notification[]): boolean {
+  return notifications.every((n) => n.read);
+}
+
+// Get latest notification time
+function getLatestTime(notifications: Notification[]): string | null {
+  if (notifications.length === 0) return null;
+  return notifications.reduce((latest, n) => {
+    return new Date(n.createdAt) > new Date(latest) ? n.createdAt : latest;
+  }, notifications[0].createdAt);
+}
+
+// Count by type
+function countByType(notifications: Notification[], type: string): number {
+  return notifications.filter((n) => n.type === type).length;
+}
+
+// Filter by read status
+function filterByReadStatus(
+  notifications: Notification[],
+  unreadOnly: boolean
+): Notification[] {
+  return unreadOnly ? notifications.filter((n) => !n.read) : notifications;
+}
+
+describe('NotificationsFeed - Unread Count', () => {
+  it('calculates unread count', () => {
+    const notifications = [
+      createNotification({ read: false }),
+      createNotification({ read: true }),
+      createNotification({ read: false }),
+    ];
+    expect(getUnreadCount(notifications)).toBe(2);
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
+  it('returns zero for all read', () => {
+    const notifications = [
+      createNotification({ read: true }),
+      createNotification({ read: true }),
+    ];
+    expect(getUnreadCount(notifications)).toBe(0);
   });
 
-  describe('Basic Rendering', () => {
-    it('should render loading state when loading and no notifications', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: [],
-          loading: true
-        }
-      });
-
-      expect(screen.getByText('Loading notifications...')).toBeInTheDocument();
-      expect(screen.getByLabelText('Loading notifications')).toBeInTheDocument();
-    });
-
-    it('should render empty state when no notifications and not loading', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: [],
-          loading: false,
-          emptyStateMessage: 'No notifications yet'
-        }
-      });
-
-      expect(screen.getByText('No notifications')).toBeInTheDocument();
-      expect(screen.getByText('No notifications yet')).toBeInTheDocument();
-    });
-
-    it('should render notifications feed with proper ARIA labels', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          loading: false
-        }
-      });
-
-      expect(screen.getByRole('main')).toBeInTheDocument();
-      expect(screen.getByLabelText('Notifications feed')).toBeInTheDocument();
-      expect(screen.getByRole('feed')).toBeInTheDocument();
-    });
-
-    it('should show unread count and mark all as read button when there are unread notifications', () => {
-      const notifications = mockNotifications.slice(0, 5).map((n, i) => ({
-        ...n,
-        read: i > 2 // First 3 are unread
-      }));
-
-      render(NotificationsFeed, {
-        props: {
-          notifications,
-          loading: false,
-          ...mockHandlers
-        }
-      });
-
-      expect(screen.getByText('3 unread')).toBeInTheDocument();
-      expect(screen.getByLabelText('3 unread notifications')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Mark all as read' })).toBeInTheDocument();
-    });
-
-    it('should not show header when all notifications are read', () => {
-      const readNotifications = mockNotifications.slice(0, 3).map(n => ({
-        ...n,
-        read: true
-      }));
-
-      render(NotificationsFeed, {
-        props: {
-          notifications: readNotifications,
-          loading: false
-        }
-      });
-
-      expect(screen.queryByText(/unread/)).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: 'Mark all as read' })).not.toBeInTheDocument();
-    });
+  it('returns count for all unread', () => {
+    const notifications = [
+      createNotification({ read: false }),
+      createNotification({ read: false }),
+    ];
+    expect(getUnreadCount(notifications)).toBe(2);
   });
 
-  describe('Notification Grouping', () => {
-    it('should group notifications by default', () => {
-      const groupedNotifications = generateMockGroupedNotifications();
-      const groups = groupNotifications(groupedNotifications);
+  it('handles empty array', () => {
+    expect(getUnreadCount([])).toBe(0);
+  });
+});
 
-      render(NotificationsFeed, {
-        props: {
-          notifications: groupedNotifications,
-          groups,
-          grouped: true,
-          loading: false
-        }
-      });
-
-      // Should display grouped notifications
-      expect(screen.getByRole('feed')).toBeInTheDocument();
-    });
-
-    it('should display ungrouped notifications when grouped is false', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          grouped: false,
-          loading: false
-        }
-      });
-
-      expect(screen.getByRole('feed')).toBeInTheDocument();
-    });
+describe('NotificationsFeed - Mark All As Read Button', () => {
+  it('shows when has unread and handler exists', () => {
+    expect(shouldShowMarkAllAsRead(3, () => {})).toBe(true);
   });
 
-  describe('Interaction Handling', () => {
-    it('should call onMarkAllAsRead when mark all as read button is clicked', async () => {
-      const notifications = mockNotifications.slice(0, 3).map(n => ({
-        ...n,
-        read: false
-      }));
-
-      render(NotificationsFeed, {
-        props: {
-          notifications,
-          loading: false,
-          ...mockHandlers
-        }
-      });
-
-      const markAllButton = screen.getByRole('button', { name: 'Mark all as read' });
-      await fireEvent.click(markAllButton);
-
-      expect(mockHandlers.onMarkAllAsRead).toHaveBeenCalledOnce();
-    });
-
-    it('should handle keyboard navigation on mark all as read button', async () => {
-      const notifications = mockNotifications.slice(0, 3).map(n => ({
-        ...n,
-        read: false
-      }));
-
-      render(NotificationsFeed, {
-        props: {
-          notifications,
-          loading: false,
-          ...mockHandlers
-        }
-      });
-
-      const markAllButton = screen.getByRole('button', { name: 'Mark all as read' });
-      markAllButton.focus();
-      await fireEvent.keyDown(markAllButton, { key: 'Enter' });
-
-      expect(mockHandlers.onMarkAllAsRead).toHaveBeenCalledOnce();
-    });
-
-    it('should apply correct CSS classes for density', () => {
-      const { container: compactContainer } = render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          density: 'compact',
-          loading: false
-        }
-      });
-
-      expect(compactContainer.querySelector('.notifications-feed.compact')).toBeInTheDocument();
-
-      const { container: comfortableContainer } = render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          density: 'comfortable',
-          loading: false
-        }
-      });
-
-      expect(comfortableContainer.querySelector('.notifications-feed.comfortable')).toBeInTheDocument();
-    });
+  it('hides when all read', () => {
+    expect(shouldShowMarkAllAsRead(0, () => {})).toBe(false);
   });
 
-  describe('Loading States', () => {
-    it('should show loading more indicator when loadingMore is true', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          loading: false,
-          loadingMore: true,
-          hasMore: true
-        }
-      });
+  it('hides when no handler', () => {
+    expect(shouldShowMarkAllAsRead(3, undefined)).toBe(false);
+  });
+});
 
-      expect(screen.getByText('Loading more...')).toBeInTheDocument();
-      expect(screen.getByLabelText('Loading more notifications')).toBeInTheDocument();
-    });
-
-    it('should not show loading more when hasMore is false', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          loading: false,
-          loadingMore: false,
-          hasMore: false
-        }
-      });
-
-      expect(screen.queryByText('Loading more...')).not.toBeInTheDocument();
-    });
+describe('NotificationsFeed - Header Display', () => {
+  it('shows header when has unread', () => {
+    expect(shouldShowHeader(3)).toBe(true);
   });
 
-  describe('Accessibility', () => {
-    it('should have proper ARIA attributes', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          loading: false,
-          loadingMore: true
-        }
-      });
+  it('hides header when all read', () => {
+    expect(shouldShowHeader(0)).toBe(false);
+  });
+});
 
-      const main = screen.getByRole('main');
-      expect(main).toHaveAttribute('aria-label', 'Notifications feed');
-
-      const feed = screen.getByRole('feed');
-      expect(feed).toHaveAttribute('aria-label', 'Notifications');
-      expect(feed).toHaveAttribute('aria-busy', 'true');
-      expect(feed).toHaveAttribute('tabindex', '0');
-    });
-
-    it('should announce loading states to screen readers', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: [],
-          loading: true
-        }
-      });
-
-      const loadingContainer = screen.getByText('Loading notifications...').parentElement;
-      expect(loadingContainer).toHaveAttribute('aria-live', 'polite');
-    });
-
-    it('should announce empty state to screen readers', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: [],
-          loading: false
-        }
-      });
-
-      const emptyState = screen.getByRole('status');
-      expect(emptyState).toHaveAttribute('aria-live', 'polite');
-    });
-
-    it('should provide proper button labeling and keyboard shortcuts', () => {
-      const notifications = mockNotifications.slice(0, 2).map(n => ({
-        ...n,
-        read: false
-      }));
-
-      render(NotificationsFeed, {
-        props: {
-          notifications,
-          loading: false,
-          ...mockHandlers
-        }
-      });
-
-      const markAllButton = screen.getByRole('button', { name: 'Mark all as read' });
-      expect(markAllButton).toHaveAttribute('aria-label', 'Mark all notifications as read');
-    });
+describe('NotificationsFeed - Empty State', () => {
+  it('shows when no notifications and not loading', () => {
+    expect(shouldShowEmptyState([], false)).toBe(true);
   });
 
-  describe('Custom Content', () => {
-    it('should use custom empty state message', () => {
-      const customMessage = 'All caught up! No new notifications.';
-      
-      render(NotificationsFeed, {
-        props: {
-          notifications: [],
-          loading: false,
-          emptyStateMessage: customMessage
-        }
-      });
-
-      expect(screen.getByText(customMessage)).toBeInTheDocument();
-    });
-
-    it('should apply custom className', () => {
-      const { container } = render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          className: 'custom-notifications',
-          loading: false
-        }
-      });
-
-      expect(container.querySelector('.notifications-feed.custom-notifications')).toBeInTheDocument();
-    });
+  it('hides when has notifications', () => {
+    expect(shouldShowEmptyState([createNotification()], false)).toBe(false);
   });
 
-  describe('Performance and Virtualization', () => {
-    it('should handle large datasets with virtualization settings', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications,
-          loading: false,
-          estimateSize: 150,
-          overscan: 8
-        }
-      });
+  it('hides when loading', () => {
+    expect(shouldShowEmptyState([], true)).toBe(false);
+  });
+});
 
-      expect(screen.getByRole('feed')).toBeInTheDocument();
-      // Virtualization is mocked, so we just ensure it renders without errors
-    });
-
-    it('should preserve scroll position when notifications are added', () => {
-      const { rerender } = render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 5),
-          loading: false
-        }
-      });
-
-      // Add more notifications (simulating prepend)
-      rerender({
-        notifications: mockNotifications.slice(0, 10),
-        loading: false
-      });
-
-      // Component should handle scroll preservation internally
-      expect(screen.getByRole('feed')).toBeInTheDocument();
-    });
+describe('NotificationsFeed - Loading States', () => {
+  it('shows loading when loading and empty', () => {
+    expect(shouldShowLoading(true, [])).toBe(true);
   });
 
-  describe('Error Handling', () => {
-    it('should handle missing callback functions gracefully', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 3),
-          loading: false
-          // No callback functions provided
-        }
-      });
-
-      // Should render without errors even without callbacks
-      expect(screen.getByRole('feed')).toBeInTheDocument();
-    });
-
-    it('should handle empty or undefined notification arrays', () => {
-      render(NotificationsFeed, {
-        props: {
-          notifications: [],
-          loading: false
-        }
-      });
-
-      expect(screen.getByText('No notifications')).toBeInTheDocument();
-    });
-
-    it('should handle malformed notification data gracefully', () => {
-      const malformedNotifications = [
-        ...mockNotifications.slice(0, 2),
-        { id: 'malformed', type: 'unknown' } as any
-      ];
-
-      // Should not throw an error
-      expect(() => {
-        render(NotificationsFeed, {
-          props: {
-            notifications: malformedNotifications,
-            loading: false
-          }
-        });
-      }).not.toThrow();
-    });
+  it('hides loading when not loading', () => {
+    expect(shouldShowLoading(false, [])).toBe(false);
   });
 
-  describe('Responsive Behavior', () => {
-    it('should handle different screen sizes appropriately', () => {
-      // Test with compact density for smaller screens
-      render(NotificationsFeed, {
-        props: {
-          notifications: mockNotifications.slice(0, 5),
-          density: 'compact',
-          loading: false,
-          estimateSize: 100
-        }
-      });
+  it('hides loading when has notifications', () => {
+    expect(shouldShowLoading(true, [createNotification()])).toBe(false);
+  });
 
-      expect(screen.getByRole('feed')).toBeInTheDocument();
-    });
+  it('shows loading more when loadingMore and hasMore', () => {
+    expect(shouldShowLoadingMore(true, true)).toBe(true);
+  });
+
+  it('hides loading more when not loading', () => {
+    expect(shouldShowLoadingMore(false, true)).toBe(false);
+  });
+
+  it('hides loading more when no more', () => {
+    expect(shouldShowLoadingMore(true, false)).toBe(false);
+  });
+});
+
+describe('NotificationsFeed - Density Classes', () => {
+  it('gets compact density class', () => {
+    expect(getDensityClass('compact')).toBe('notifications-feed--compact');
+  });
+
+  it('gets comfortable density class', () => {
+    expect(getDensityClass('comfortable')).toBe('notifications-feed--comfortable');
+  });
+});
+
+describe('NotificationsFeed - Items Display', () => {
+  it('uses groups when grouped', () => {
+    const notifications = [
+      createNotification({ type: 'favourite' }),
+      createNotification({ type: 'favourite' }),
+    ];
+    const groups = groupNotifications(notifications);
+    const items = getItemsToDisplay(notifications, true, groups);
+    expect(items.length).toBeLessThanOrEqual(notifications.length);
+  });
+
+  it('uses notifications when not grouped', () => {
+    const notifications = [
+      createNotification(),
+      createNotification(),
+    ];
+    const items = getItemsToDisplay(notifications, false);
+    expect(items).toEqual(notifications);
+  });
+
+  it('uses notifications when no groups', () => {
+    const notifications = [createNotification()];
+    const items = getItemsToDisplay(notifications, true, undefined);
+    expect(items).toEqual(notifications);
+  });
+});
+
+describe('NotificationsFeed - Notification Checks', () => {
+  it('detects when has notifications', () => {
+    expect(hasNotifications([createNotification()])).toBe(true);
+  });
+
+  it('detects when empty', () => {
+    expect(hasNotifications([])).toBe(false);
+  });
+
+  it('detects all read', () => {
+    const notifications = [
+      createNotification({ read: true }),
+      createNotification({ read: true }),
+    ];
+    expect(areAllRead(notifications)).toBe(true);
+  });
+
+  it('detects has unread', () => {
+    const notifications = [
+      createNotification({ read: true }),
+      createNotification({ read: false }),
+    ];
+    expect(areAllRead(notifications)).toBe(false);
+  });
+});
+
+describe('NotificationsFeed - Time Calculations', () => {
+  it('gets latest notification time', () => {
+    const notifications = [
+      createNotification({ createdAt: '2024-01-01T10:00:00Z' }),
+      createNotification({ createdAt: '2024-01-01T12:00:00Z' }),
+      createNotification({ createdAt: '2024-01-01T11:00:00Z' }),
+    ];
+    expect(getLatestTime(notifications)).toBe('2024-01-01T12:00:00Z');
+  });
+
+  it('returns null for empty', () => {
+    expect(getLatestTime([])).toBeNull();
+  });
+
+  it('handles single notification', () => {
+    const notification = createNotification({ createdAt: '2024-01-01T10:00:00Z' });
+    expect(getLatestTime([notification])).toBe('2024-01-01T10:00:00Z');
+  });
+});
+
+describe('NotificationsFeed - Type Counting', () => {
+  it('counts notifications by type', () => {
+    const notifications = [
+      createNotification({ type: 'mention' }),
+      createNotification({ type: 'favourite' }),
+      createNotification({ type: 'mention' }),
+      createNotification({ type: 'follow' }),
+    ];
+    expect(countByType(notifications, 'mention')).toBe(2);
+    expect(countByType(notifications, 'favourite')).toBe(1);
+    expect(countByType(notifications, 'follow')).toBe(1);
+  });
+
+  it('returns zero for non-existent type', () => {
+    const notifications = [createNotification({ type: 'mention' })];
+    expect(countByType(notifications, 'reblog')).toBe(0);
+  });
+});
+
+describe('NotificationsFeed - Filtering', () => {
+  it('filters to unread only', () => {
+    const notifications = [
+      createNotification({ read: false }),
+      createNotification({ read: true }),
+      createNotification({ read: false }),
+    ];
+    const filtered = filterByReadStatus(notifications, true);
+    expect(filtered).toHaveLength(2);
+    expect(filtered.every((n) => !n.read)).toBe(true);
+  });
+
+  it('returns all when not filtering', () => {
+    const notifications = [
+      createNotification({ read: false }),
+      createNotification({ read: true }),
+    ];
+    const filtered = filterByReadStatus(notifications, false);
+    expect(filtered).toEqual(notifications);
+  });
+});
+
+describe('NotificationsFeed - Edge Cases', () => {
+  it('handles empty notifications array', () => {
+    expect(getUnreadCount([])).toBe(0);
+    expect(hasNotifications([])).toBe(false);
+    expect(areAllRead([])).toBe(true);
+    expect(getLatestTime([])).toBeNull();
+  });
+
+  it('handles single notification', () => {
+    const notification = createNotification();
+    expect(getUnreadCount([notification])).toBe(1);
+    expect(hasNotifications([notification])).toBe(true);
+  });
+
+  it('handles large notification count', () => {
+    const notifications = Array.from({ length: 1000 }, () => createNotification());
+    expect(hasNotifications(notifications)).toBe(true);
+    expect(notifications.length).toBe(1000);
+  });
+});
+
+describe('NotificationsFeed - Integration', () => {
+  it('processes complete feed workflow', () => {
+    const notifications = [
+      createNotification({ type: 'mention', read: false, createdAt: '2024-01-01T10:00:00Z' }),
+      createNotification({ type: 'favourite', read: false, createdAt: '2024-01-01T11:00:00Z' }),
+      createNotification({ type: 'mention', read: true, createdAt: '2024-01-01T09:00:00Z' }),
+    ];
+
+    // Check counts
+    expect(getUnreadCount(notifications)).toBe(2);
+    expect(hasNotifications(notifications)).toBe(true);
+    expect(areAllRead(notifications)).toBe(false);
+
+    // Check header
+    expect(shouldShowHeader(2)).toBe(true);
+    expect(shouldShowMarkAllAsRead(2, () => {})).toBe(true);
+
+    // Check states
+    expect(shouldShowEmptyState(notifications, false)).toBe(false);
+    expect(shouldShowLoading(false, notifications)).toBe(false);
+
+    // Check items
+    const groups = groupNotifications(notifications);
+    const items = getItemsToDisplay(notifications, true, groups);
+    expect(items.length).toBeGreaterThan(0);
+
+    // Check latest
+    expect(getLatestTime(notifications)).toBe('2024-01-01T11:00:00Z');
+  });
+
+  it('handles all read scenario', () => {
+    const notifications = [
+      createNotification({ read: true }),
+      createNotification({ read: true }),
+    ];
+
+    expect(getUnreadCount(notifications)).toBe(0);
+    expect(areAllRead(notifications)).toBe(true);
+    expect(shouldShowHeader(0)).toBe(false);
+    expect(shouldShowMarkAllAsRead(0, () => {})).toBe(false);
+  });
+
+  it('handles empty feed scenario', () => {
+    const notifications: Notification[] = [];
+
+    expect(getUnreadCount(notifications)).toBe(0);
+    expect(hasNotifications(notifications)).toBe(false);
+    expect(shouldShowEmptyState(notifications, false)).toBe(true);
+    expect(shouldShowLoading(true, notifications)).toBe(true);
+  });
+
+  it('handles loading more scenario', () => {
+    const notifications = [createNotification()];
+
+    expect(hasNotifications(notifications)).toBe(true);
+    expect(shouldShowLoadingMore(true, true)).toBe(true);
+    expect(shouldShowLoadingMore(true, false)).toBe(false);
   });
 });

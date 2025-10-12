@@ -3,8 +3,7 @@
  * Utilities for testing keyboard navigation and interactions in Playwright
  */
 
-import { Page, Locator, expect } from '@playwright/test';
-import { KeyboardPatterns, KeyboardShortcuts } from '../a11y/keyboard-helpers';
+import { Page, Locator } from '@playwright/test';
 
 export interface KeyboardTestOptions {
   skipFocusCheck?: boolean;
@@ -27,9 +26,8 @@ export interface KeyboardTestResult {
 export async function simulateKeyboardNavigation(
   page: Page,
   keys: string[],
-  options: KeyboardTestOptions = {}
+  _options: KeyboardTestOptions = {}
 ): Promise<KeyboardTestResult> {
-  const { timeout = 5000 } = options;
   const focusPath: string[] = [];
   
   try {
@@ -112,8 +110,10 @@ export async function testTabOrder(
     }
     
     const orderMatches = actualOrder.every((selector, index) => {
-      return expectedSelectors[index] && 
-             selector.includes(expectedSelectors[index].split('.')[0].split('#')[0]);
+      const expected = expectedSelectors[index];
+      if (!expected) return false;
+      const baseSelector = expected.split('.')[0]?.split('#')[0];
+      return baseSelector && selector.includes(baseSelector);
     });
     
     return {
@@ -384,7 +384,7 @@ export async function testSkipLinks(page: Page): Promise<KeyboardTestResult[]> {
         expectedFocus: `#${targetId}`,
         error: !targetExists ? `Target element #${targetId} not found` :
                !targetFocused ? 'Target element did not receive focus' : undefined,
-        focusPath: [text || 'skip-link', `#${targetId}`],
+        focusPath: [text ?? 'skip-link', `#${targetId}`],
       });
     } catch (error) {
       results.push({
@@ -418,7 +418,6 @@ export async function testRovingTabindex(
     );
     
     const activeItems = initialTabindices.filter(t => t === '0').length;
-    const inactiveItems = initialTabindices.filter(t => t === '-1').length;
     
     if (activeItems !== 1) {
       return {
@@ -465,10 +464,10 @@ export async function testRovingTabindex(
 /**
  * Get focused element information
  */
-async function getFocusedElementInfo(page: Page): Promise<string | null> {
+async function getFocusedElementInfo(page: Page): Promise<string | undefined> {
   return await page.evaluate(() => {
     const active = document.activeElement;
-    if (!active) return null;
+    if (!active) return undefined;
     
     let selector = active.tagName.toLowerCase();
     if (active.id) selector += `#${active.id}`;

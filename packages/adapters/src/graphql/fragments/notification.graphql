@@ -1,0 +1,34 @@
+# Notification Fragment
+# Reusable fragment for notification data
+
+fragment NotificationFields on Notification {
+  id
+  type
+  createdAt
+  
+  # Account that triggered the notification
+  account {
+    ...AccountCompact
+  }
+  
+  # Status (for favorite, reblog, mention, poll, status notifications)
+  status {
+    ...StatusCompact
+  }
+}
+
+# Full notification with complete data
+fragment NotificationFull on Notification {
+  id
+  type
+  createdAt
+  
+  account {
+    ...AccountFields
+  }
+  
+  status {
+    ...StatusFields
+  }
+}
+

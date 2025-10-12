@@ -1,0 +1,27 @@
+{
+  "name": "@greater/primitives",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components/*": "./src/components/*.svelte",
+    "./styles.css": "./dist/styles.css"
+  },
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.svelte",
+      "dist/styles.css",
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "**/tests/**",
+      "**/__tests__/**"
+    ]
+  }
+}
+
+

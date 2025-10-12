@@ -1,0 +1,25 @@
+{
+  "name": "@greater/adapters",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "**/tests/**",
+      "**/__tests__/**",
+      "src/fixtures/**",
+      "src/examples/**"
+    ]
+  }
+}
+
+

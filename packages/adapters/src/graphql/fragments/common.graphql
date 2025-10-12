@@ -1,0 +1,72 @@
+# Common Fragments
+# Reusable fragments for polls, emojis, cards, etc.
+
+fragment PollFields on Poll {
+  id
+  expiresAt
+  expired
+  multiple
+  votesCount
+  votersCount
+  voted
+  ownVotes
+  options {
+    title
+    votesCount
+  }
+  emojis {
+    ...EmojiFields
+  }
+}
+
+fragment EmojiFields on CustomEmoji {
+  shortcode
+  url
+  staticUrl
+  visibleInPicker
+  category
+}
+
+fragment CardFields on Card {
+  url
+  title
+  description
+  type
+  authorName
+  authorUrl
+  providerName
+  providerUrl
+  html
+  width
+  height
+  image
+  embedUrl
+  blurhash
+}
+
+fragment ConversationFields on Conversation {
+  id
+  unread
+  lastStatus {
+    ...StatusCompact
+  }
+  accounts {
+    ...AccountCompact
+  }
+}
+
+fragment ListFields on List {
+  id
+  title
+  repliesPolicy
+}
+
+fragment FilterFields on Filter {
+  id
+  phrase
+  context
+  expiresAt
+  irreversible
+  wholeWord
+}
+

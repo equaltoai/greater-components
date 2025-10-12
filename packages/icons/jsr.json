@@ -1,0 +1,26 @@
+{
+  "name": "@greater/icons",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./icons/*": "./src/icons/*.svelte"
+  },
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.svelte",
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "**/tests/**",
+      "**/__tests__/**",
+      "scripts/**"
+    ]
+  }
+}
+
+
