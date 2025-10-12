@@ -1,0 +1,68 @@
+# GraphQL Code Generator Configuration
+# Generates TypeScript types from GraphQL schema and operations
+
+overwrite: true
+schema:
+  # Lesser GraphQL endpoint (replace with actual endpoint)
+  - "https://api.lesser.social/graphql"
+  # Or use a local schema file during development
+  # - "./src/graphql/schema.graphql"
+
+documents:
+  - "src/graphql/**/*.graphql"
+
+generates:
+  # Generate TypeScript types from GraphQL operations
+  src/graphql/types.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-generic-sdk"
+    config:
+      skipTypename: false
+      withHooks: false
+      withComponent: false
+      withHOC: false
+      enumsAsTypes: true
+      constEnums: false
+      immutableTypes: true
+      maybeValue: T | null | undefined
+      inputMaybeValue: T | null
+      scalars:
+        DateTime: string
+        Upload: File
+        JSON: any
+        Cursor: string
+      namingConvention:
+        typeNames: pascal-case#pascalCase
+        enumValues: upper-case#upperCase
+        transformUnderscore: true
+      avoidOptionals:
+        field: false
+        inputValue: false
+        object: false
+      nonOptionalTypename: true
+      
+  # Generate Apollo Client hooks (optional)
+  # src/graphql/hooks.ts:
+  #   preset: import-types
+  #   presetConfig:
+  #     typesPath: ./types
+  #   plugins:
+  #     - typescript-react-apollo
+
+  # Generate introspection result for cache configuration
+  src/graphql/introspection.json:
+    plugins:
+      - "introspection"
+
+  # Generate schema types for possible types in cache
+  src/graphql/possible-types.ts:
+    plugins:
+      - fragment-matcher
+
+hooks:
+  afterAllFileWrite:
+    - prettier --write
+    - eslint --fix
+

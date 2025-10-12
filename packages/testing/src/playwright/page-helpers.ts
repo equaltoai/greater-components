@@ -49,12 +49,12 @@ export async function setupPageForA11yTesting(
   
   // Apply reduced motion preference
   if (reducedMotion) {
-    await page.emulateMedia({ 'prefers-reduced-motion': 'reduce' });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
   }
   
   // Apply high contrast preference
   if (highContrast) {
-    await page.emulateMedia({ 'prefers-contrast': 'high' });
+    await page.emulateMedia({ contrast: 'more' });
   }
   
   // Disable animations for consistent testing
@@ -130,7 +130,8 @@ export async function setupPageForA11yTesting(
         'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
       )).filter(el => {
         const element = el as HTMLElement;
-        return element.offsetParent !== null && !element.disabled;
+        const disabled = (element as any).disabled;
+        return element.offsetParent !== null && !disabled;
       });
     };
     
@@ -187,7 +188,8 @@ export async function getFocusableElements(page: Page): Promise<string[]> {
       'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
     )).map(el => {
       const element = el as HTMLElement;
-      if (element.offsetParent === null || element.disabled) return null;
+      const disabled = (element as any).disabled;
+      if (element.offsetParent === null || disabled) return null;
       
       let selector = element.tagName.toLowerCase();
       if (element.id) selector += `#${element.id}`;
@@ -349,7 +351,9 @@ export async function getCommonA11yIssues(page: Page): Promise<string[]> {
     let skippedLevels = false;
     
     headings.forEach(heading => {
-      const level = parseInt(heading.tagName[1]);
+      const levelStr = heading.tagName[1];
+      if (!levelStr) return;
+      const level = parseInt(levelStr, 10);
       if (lastLevel > 0 && level - lastLevel > 1) {
         skippedLevels = true;
       }
@@ -389,18 +393,18 @@ export async function emulateUserPreferences(
   }
 ): Promise<void> {
   if (preferences.colorScheme) {
-    await page.emulateMedia({ 'prefers-color-scheme': preferences.colorScheme });
+    await page.emulateMedia({ colorScheme: preferences.colorScheme });
   }
   
   if (preferences.reducedMotion) {
-    await page.emulateMedia({ 'prefers-reduced-motion': 'reduce' });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
   }
   
   if (preferences.highContrast) {
-    await page.emulateMedia({ 'prefers-contrast': 'high' });
+    await page.emulateMedia({ contrast: 'more' });
   }
   
   if (preferences.forcedColors) {
-    await page.emulateMedia({ 'forced-colors': preferences.forcedColors });
+    await page.emulateMedia({ forcedColors: preferences.forcedColors });
   }
 }

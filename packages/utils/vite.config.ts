@@ -6,13 +6,15 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'GreaterUtils',
-      fileName: 'index',
       formats: ['es']
     },
     rollupOptions: {
       external: ['svelte', 'dompurify', 'isomorphic-dompurify'],
       output: {
-        preserveModules: false
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        exports: 'named',
+        entryFileNames: '[name].js'
       }
     },
     sourcemap: true,

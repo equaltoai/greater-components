@@ -12,15 +12,40 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        'components/StatusCard': resolve(__dirname, 'src/components/StatusCard.svelte'),
+        'components/TimelineVirtualized': resolve(__dirname, 'src/components/TimelineVirtualized.svelte'),
+        'components/ComposeBox': resolve(__dirname, 'src/components/ComposeBox.svelte'),
+        'components/ActionBar': resolve(__dirname, 'src/components/ActionBar.svelte'),
+        'components/ContentRenderer': resolve(__dirname, 'src/components/ContentRenderer.svelte'),
+        'components/ProfileHeader': resolve(__dirname, 'src/components/ProfileHeader.svelte'),
+        'components/NotificationsFeed': resolve(__dirname, 'src/components/NotificationsFeed.svelte'),
+        'components/NotificationItem': resolve(__dirname, 'src/components/NotificationItem.svelte'),
+        'components/SettingsPanel': resolve(__dirname, 'src/components/SettingsPanel.svelte'),
+        'components/TimelineVirtualizedReactive': resolve(__dirname, 'src/components/TimelineVirtualizedReactive.svelte'),
+        'components/NotificationsFeedReactive': resolve(__dirname, 'src/components/NotificationsFeedReactive.svelte'),
+        'components/RealtimeWrapper': resolve(__dirname, 'src/components/RealtimeWrapper.svelte'),
+      },
       name: 'GreaterFediverse',
-      fileName: 'index',
       formats: ['es']
     },
     rollupOptions: {
-      external: ['svelte', '@greater/tokens', '@greater/utils', '@greater/primitives', '@greater/icons', '@tanstack/svelte-virtual'],
+      external: [
+        'svelte',
+        '@greater/tokens',
+        '@greater/utils',
+        '@greater/primitives',
+        '@greater/icons',
+        '@greater/headless',
+        /@greater\/headless\/.*/,  // Match all @greater/headless subpaths
+        '@tanstack/svelte-virtual'
+      ],
       output: {
-        preserveModules: false
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        exports: 'named',
+        entryFileNames: '[name].js'
       }
     },
     sourcemap: true,

@@ -268,7 +268,7 @@ export function testScreenReaderAnnouncement(
   // Get accessible name computation
   const nameComputation = getAccessibleNameComputation(element);
   const roleComputation = getARIARoleComputation(element);
-  const { states, properties } = getARIAStatesAndProperties(element);
+  const { states } = getARIAStatesAndProperties(element);
   
   // Build expected announcement
   let actualAnnouncement = '';

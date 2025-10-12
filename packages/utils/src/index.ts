@@ -34,3 +34,9 @@ export * from './linkifyMentions.js';
  * @public
  */
 export * from './keyboardShortcuts.js';
+
+/**
+ * Performance optimization utilities (debounce, throttle, caching, etc.).
+ * @public
+ */
+export * from './performance.js';

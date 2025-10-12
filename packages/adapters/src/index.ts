@@ -9,6 +9,43 @@ export { HttpPollingClient } from './HttpPollingClient';
 export { TransportFallback } from './TransportFallback';
 export { TransportManager } from './TransportManager';
 
+// WebSocket Connection Pool
+export {
+  WebSocketPool,
+  getGlobalWebSocketPool,
+  resetGlobalWebSocketPool
+} from './WebSocketPool';
+
+export type {
+  WebSocketPoolConfig,
+  PooledWebSocket
+} from './WebSocketPool';
+
+// GraphQL Client & Adapter
+export {
+  createGraphQLClient,
+  getGraphQLClient,
+  closeGraphQLClient,
+  LesserGraphQLAdapter,
+  createLesserGraphQLAdapter,
+  typePolicies,
+  cacheConfig,
+  evictStaleCache,
+  limitCacheSize,
+  optimistic
+} from './graphql';
+
+export type {
+  GraphQLClientConfig,
+  GraphQLClientInstance,
+  LesserGraphQLAdapterConfig,
+  TimelineVariables,
+  CreateStatusVariables,
+  PollInput,
+  SearchVariables,
+  SubscriptionEvent
+} from './graphql';
+
 // Reactive Stores (Svelte 5 Runes)
 export { 
   createTimelineStore,

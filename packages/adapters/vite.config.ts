@@ -6,13 +6,22 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'GreaterAdapters',
-      fileName: 'index',
       formats: ['es']
     },
     rollupOptions: {
-      external: ['svelte'],
+      external: (id) => {
+        return (
+          id.startsWith('svelte') ||
+          id.startsWith('@apollo/client') ||
+          id.startsWith('graphql') ||
+          id === 'graphql-ws'
+        );
+      },
       output: {
-        preserveModules: false
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        exports: 'named',
+        entryFileNames: '[name].js'
       }
     },
     sourcemap: true,

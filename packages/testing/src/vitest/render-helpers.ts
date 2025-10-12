@@ -69,12 +69,13 @@ export function createThemeContextWrapper(options: Partial<ThemeContextOptions> 
  * Render component with theme context
  */
 export function renderWithTheme<T extends SvelteComponent>(
-  Component: new (...args: any[]) => T,
+  Component: any,
   props?: any,
   themeOptions?: Partial<ThemeContextOptions>,
   renderOptions?: Omit<RenderOptions<T>, 'wrapper'>
-) {
-  const wrapper = createThemeContextWrapper(themeOptions);
+): ReturnType<typeof render> {
+  // Create wrapper for theme context
+  createThemeContextWrapper(themeOptions);
   
   return render(Component, {
     ...renderOptions,
@@ -240,13 +241,13 @@ export function setupTestEnvironment(options: {
  */
 export function createCustomRender(globalOptions: Partial<ThemeContextOptions> = {}) {
   return function customRender<T extends SvelteComponent>(
-    Component: new (...args: any[]) => T,
+    Component: any,
     props?: any,
     options?: {
       theme?: Partial<ThemeContextOptions>;
       render?: Omit<RenderOptions<T>, 'wrapper'>;
     }
-  ) {
+  ): ReturnType<typeof render> {
     const mergedThemeOptions = { ...globalOptions, ...options?.theme };
     
     return renderWithTheme(

@@ -3,9 +3,9 @@
  * Utilities for testing Svelte components with accessibility focus
  */
 
-import { render, cleanup, type ComponentProps } from '@testing-library/svelte';
+import { render, cleanup } from '@testing-library/svelte';
 import { afterEach } from 'vitest';
-import type { SvelteComponent } from 'svelte';
+import type { SvelteComponent, ComponentProps } from 'svelte';
 
 // Auto cleanup after each test
 afterEach(() => {
@@ -25,7 +25,7 @@ export interface A11yRenderOptions {
  * Render component with accessibility context
  */
 export function renderWithA11yContext<T extends SvelteComponent>(
-  Component: new (...args: any[]) => T,
+  Component: any,
   props?: ComponentProps<T>,
   options: A11yRenderOptions = {}
 ): ReturnType<typeof render> {
@@ -190,7 +190,8 @@ export function setupA11yTestEnvironment() {
 /**
  * Create test doubles for common component props
  */
-export function createComponentMocks() {
+export async function createComponentMocks() {
+  const { vi } = await import('vitest');
   return {
     onClose: vi.fn(),
     onClick: vi.fn(),

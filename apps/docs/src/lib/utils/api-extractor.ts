@@ -1,5 +1,3 @@
-import type { ComponentType } from 'svelte';
-
 export interface PropDefinition {
 	name: string;
 	type: string;
@@ -50,12 +48,17 @@ export function extractPropsFromInterface(interfaceCode: string): PropDefinition
 	let match;
 	
 	while ((match = propRegex.exec(interfaceCode)) !== null) {
-		props.push({
-			name: match[1],
-			type: match[3].trim(),
-			required: !match[2],
-			description: '' // Would need JSDoc parsing for descriptions
-		});
+		const name = match[1];
+		const optional = match[2];
+		const type = match[3];
+		if (name && type) {
+			props.push({
+				name,
+				type: type.trim(),
+				required: !optional,
+				description: '' // Would need JSDoc parsing for descriptions
+			});
+		}
 	}
 	
 	return props;

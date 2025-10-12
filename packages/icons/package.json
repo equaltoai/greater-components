@@ -7,7 +7,7 @@
   "author": "Greater Contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/greater/greater-components.git",
+    "url": "https://github.com/equaltoai/greater-components.git",
     "directory": "packages/icons"
   },
   "main": "./dist/index.js",

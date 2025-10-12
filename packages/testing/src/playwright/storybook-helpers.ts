@@ -111,14 +111,14 @@ export async function getStoryMetadata(
   parameters: Record<string, any>;
   args: Record<string, any>;
   argTypes: Record<string, any>;
-}> {
+} | null> {
   await page.goto(`${config.baseUrl}/iframe.html?id=${storyId}`);
   
-  return await page.evaluate(() => {
+  return await page.evaluate((id) => {
     const storyStore = (window as any).__STORYBOOK_STORY_STORE__;
     if (!storyStore) return null;
     
-    const story = storyStore.fromId ? storyStore.fromId(storyId) : null;
+    const story = storyStore.fromId ? storyStore.fromId(id) : null;
     if (!story) return null;
     
     return {
@@ -309,8 +309,6 @@ export async function runStoryA11yTests(
     axe = true,
     keyboard = true,
     focusManagement = true,
-    colorContrast = true,
-    screenReader = true,
   } = tests;
   
   await gotoStory(page, storyId, {}, config);
@@ -324,10 +322,10 @@ export async function runStoryA11yTests(
     totalTests++;
     try {
       // This would use the axe-playwright utilities we created
-      results.axe = { passed: true, violations: [] };
+      results['axe'] = { passed: true, violations: [] };
       passedTests++;
     } catch (error) {
-      results.axe = {
+      results['axe'] = {
         passed: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       };
@@ -344,17 +342,17 @@ export async function runStoryA11yTests(
       if (interactiveElements.length > 0) {
         await page.keyboard.press('Tab');
         const focused = await page.evaluate(() => document.activeElement?.tagName);
-        results.keyboard = { 
+        results['keyboard'] = { 
           passed: !!focused,
           interactiveElements: interactiveElements.length,
         };
         if (focused) passedTests++;
       } else {
-        results.keyboard = { passed: true, interactiveElements: 0 };
+        results['keyboard'] = { passed: true, interactiveElements: 0 };
         passedTests++;
       }
     } catch (error) {
-      results.keyboard = {
+      results['keyboard'] = {
         passed: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       };
@@ -382,10 +380,10 @@ export async function runStoryA11yTests(
         return hasVisibleFocus;
       });
       
-      results.focusManagement = { passed: elementsWithFocus };
+      results['focusManagement'] = { passed: elementsWithFocus };
       if (elementsWithFocus) passedTests++;
     } catch (error) {
-      results.focusManagement = {
+      results['focusManagement'] = {
         passed: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       };

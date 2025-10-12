@@ -1,10 +1,11 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
-import shiki from 'shiki';
+import { createHighlighter } from 'shiki';
 
-const highlighter = await shiki.getHighlighter({
-	theme: 'github-dark',
+// Initialize highlighter (shiki v3+)
+const highlighter = await createHighlighter({
+	themes: ['github-dark'],
 	langs: ['javascript', 'typescript', 'svelte', 'html', 'css', 'bash', 'json']
 });
 
@@ -13,7 +14,10 @@ const mdsvexOptions = {
 	extensions: ['.md', '.mdx'],
 	highlight: {
 		highlighter: (code, lang) => {
-			const html = highlighter.codeToHtml(code, { lang });
+			const html = highlighter.codeToHtml(code, { 
+				lang: lang || 'text',
+				theme: 'github-dark'
+			});
 			return `{@html \`${html}\`}`;
 		}
 	},

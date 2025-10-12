@@ -160,6 +160,10 @@ export async function simulateKeyPress(
   };
   const keyName = parts[parts.length - 1];
 
+  if (!keyName) {
+    throw new Error('Invalid keyboard shortcut: no key name found');
+  }
+
   const event = new KeyboardEvent('keydown', {
     key: keyName,
     code: getKeyCode(keyName),
@@ -293,9 +297,11 @@ export function testKeyboardTrap(container: HTMLElement): boolean {
   const firstElement = focusableElements[0];
   const lastElement = focusableElements[focusableElements.length - 1];
 
+  if (!firstElement || !lastElement) return false;
+
   // Simulate Tab from last element
-  lastElement.focus();
-  simulateKeyPress(lastElement, 'Tab');
+  (lastElement as HTMLElement).focus();
+  simulateKeyPress(lastElement as HTMLElement, 'Tab');
 
   // Check if focus wraps to first element
   return document.activeElement === firstElement;

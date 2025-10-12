@@ -3,12 +3,12 @@
  * Utilities for running axe-core accessibility tests with custom configurations
  */
 
-import type { AxeResults, RunOptions, Spec } from 'axe-core';
+import type { AxeResults, RunOptions } from 'axe-core';
 
 export interface AxeTestOptions {
   rules?: RunOptions['rules'];
   runOnly?: RunOptions['runOnly'];
-  reporter?: 'v1' | 'v2' | 'no-passes' | 'raw' | 'raw-env';
+  reporter?: 'v1' | 'v2' | 'no-passes';
   resultTypes?: string[];
   selectors?: boolean;
   ancestry?: boolean;

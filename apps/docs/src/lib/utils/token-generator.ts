@@ -37,10 +37,10 @@ export function parseTokensFromJSON(tokensJSON: any): TokenCategory[] {
 		
 		Object.entries(tokensJSON.colors).forEach(([key, values]: [string, any]) => {
 			if (typeof values === 'object') {
-				Object.entries(values).forEach(([shade, value]: [string, string]) => {
+				Object.entries(values).forEach(([shade, value]) => {
 					colorTokens.push({
 						name: `${key}-${shade}`,
-						value: value,
+						value: String(value),
 						cssVar: `--color-${key}-${shade}`,
 						preview: 'color'
 					});
@@ -64,9 +64,9 @@ export function parseTokensFromJSON(tokensJSON: any): TokenCategory[] {
 	
 	// Spacing
 	if (tokensJSON.spacing) {
-		const spacingTokens: Token[] = Object.entries(tokensJSON.spacing).map(([key, value]: [string, string]) => ({
+		const spacingTokens: Token[] = Object.entries(tokensJSON.spacing).map(([key, value]) => ({
 			name: key,
-			value: value,
+			value: String(value),
 			cssVar: `--spacing-${key}`,
 			preview: 'spacing'
 		}));
@@ -83,10 +83,10 @@ export function parseTokensFromJSON(tokensJSON: any): TokenCategory[] {
 		const typographyTokens: Token[] = [];
 		
 		if (tokensJSON.typography.fontSize) {
-			Object.entries(tokensJSON.typography.fontSize).forEach(([key, value]: [string, string]) => {
+			Object.entries(tokensJSON.typography.fontSize).forEach(([key, value]) => {
 				typographyTokens.push({
 					name: `font-size-${key}`,
-					value: value,
+					value: String(value),
 					cssVar: `--font-size-${key}`,
 					preview: 'typography'
 				});
@@ -94,10 +94,10 @@ export function parseTokensFromJSON(tokensJSON: any): TokenCategory[] {
 		}
 		
 		if (tokensJSON.typography.fontWeight) {
-			Object.entries(tokensJSON.typography.fontWeight).forEach(([key, value]: [string, string]) => {
+			Object.entries(tokensJSON.typography.fontWeight).forEach(([key, value]) => {
 				typographyTokens.push({
 					name: `font-weight-${key}`,
-					value: value,
+					value: String(value),
 					cssVar: `--font-weight-${key}`
 				});
 			});
@@ -112,9 +112,9 @@ export function parseTokensFromJSON(tokensJSON: any): TokenCategory[] {
 	
 	// Shadows
 	if (tokensJSON.shadows) {
-		const shadowTokens: Token[] = Object.entries(tokensJSON.shadows).map(([key, value]: [string, string]) => ({
+		const shadowTokens: Token[] = Object.entries(tokensJSON.shadows).map(([key, value]) => ({
 			name: key,
-			value: value,
+			value: String(value),
 			cssVar: `--shadow-${key}`,
 			preview: 'shadow'
 		}));
@@ -128,9 +128,9 @@ export function parseTokensFromJSON(tokensJSON: any): TokenCategory[] {
 	
 	// Border Radius
 	if (tokensJSON.radius) {
-		const radiusTokens: Token[] = Object.entries(tokensJSON.radius).map(([key, value]: [string, string]) => ({
+		const radiusTokens: Token[] = Object.entries(tokensJSON.radius).map(([key, value]) => ({
 			name: key,
-			value: value,
+			value: String(value),
 			cssVar: `--radius-${key}`,
 			preview: 'radius'
 		}));

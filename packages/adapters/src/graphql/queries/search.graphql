@@ -1,0 +1,145 @@
+# Search Queries
+# Queries for searching accounts, statuses, and hashtags
+
+#import "../fragments/status.graphql"
+#import "../fragments/account.graphql"
+
+# Unified search
+query Search(
+  $query: String!
+  $type: SearchType
+  $resolve: Boolean = false
+  $following: Boolean = false
+  $accountId: ID
+  $excludeUnreviewed: Boolean = false
+  $limit: Int = 20
+  $offset: Int = 0
+) {
+  search(
+    query: $query
+    type: $type
+    resolve: $resolve
+    following: $following
+    accountId: $accountId
+    excludeUnreviewed: $excludeUnreviewed
+    limit: $limit
+    offset: $offset
+  ) {
+    accounts {
+      ...AccountFields
+    }
+    statuses {
+      ...StatusFields
+    }
+    hashtags {
+      name
+      url
+      history {
+        day
+        uses
+        accounts
+      }
+    }
+  }
+}
+
+# Search accounts only
+query SearchAccounts(
+  $query: String!
+  $resolve: Boolean = false
+  $following: Boolean = false
+  $limit: Int = 40
+  $offset: Int = 0
+  $maxId: ID
+) {
+  searchAccounts(
+    query: $query
+    resolve: $resolve
+    following: $following
+    limit: $limit
+    offset: $offset
+    maxId: $maxId
+  ) {
+    edges {
+      node {
+        ...AccountFields
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+# Search statuses only
+query SearchStatuses(
+  $query: String!
+  $resolve: Boolean = false
+  $accountId: ID
+  $limit: Int = 20
+  $offset: Int = 0
+  $maxId: ID
+) {
+  searchStatuses(
+    query: $query
+    resolve: $resolve
+    accountId: $accountId
+    limit: $limit
+    offset: $offset
+    maxId: $maxId
+  ) {
+    edges {
+      node {
+        ...StatusFields
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+# Search hashtags only
+query SearchHashtags($query: String!, $limit: Int = 20, $offset: Int = 0) {
+  searchHashtags(query: $query, limit: $limit, offset: $offset) {
+    edges {
+      node {
+        name
+        url
+        history {
+          day
+          uses
+          accounts
+        }
+      }
+      cursor
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+# Get search suggestions
+query SearchSuggestions($query: String!, $limit: Int = 10) {
+  searchSuggestions(query: $query, limit: $limit) {
+    accounts {
+      ...AccountCompact
+    }
+    hashtags {
+      name
+    }
+  }
+}
+

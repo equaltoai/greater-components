@@ -19,7 +19,58 @@
       "svelte": "./dist/index.js",
       "import": "./dist/index.js"
     },
+    "./Button": {
+      "types": "./dist/components/Button.d.ts",
+      "svelte": "./dist/components/Button.svelte.js",
+      "import": "./dist/components/Button.js"
+    },
+    "./Modal": {
+      "types": "./dist/components/Modal.d.ts",
+      "svelte": "./dist/components/Modal.svelte.js",
+      "import": "./dist/components/Modal.js"
+    },
+    "./TextField": {
+      "types": "./dist/components/TextField.d.ts",
+      "svelte": "./dist/components/TextField.svelte.js",
+      "import": "./dist/components/TextField.js"
+    },
+    "./Menu": {
+      "types": "./dist/components/Menu.d.ts",
+      "svelte": "./dist/components/Menu.svelte.js",
+      "import": "./dist/components/Menu.js"
+    },
+    "./Tooltip": {
+      "types": "./dist/components/Tooltip.d.ts",
+      "svelte": "./dist/components/Tooltip.svelte.js",
+      "import": "./dist/components/Tooltip.js"
+    },
+    "./Tabs": {
+      "types": "./dist/components/Tabs.d.ts",
+      "svelte": "./dist/components/Tabs.svelte.js",
+      "import": "./dist/components/Tabs.js"
+    },
+    "./Avatar": {
+      "types": "./dist/components/Avatar.d.ts",
+      "svelte": "./dist/components/Avatar.svelte.js",
+      "import": "./dist/components/Avatar.js"
+    },
+    "./Skeleton": {
+      "types": "./dist/components/Skeleton.d.ts",
+      "svelte": "./dist/components/Skeleton.svelte.js",
+      "import": "./dist/components/Skeleton.js"
+    },
+    "./ThemeSwitcher": {
+      "types": "./dist/components/ThemeSwitcher.d.ts",
+      "svelte": "./dist/components/ThemeSwitcher.svelte.js",
+      "import": "./dist/components/ThemeSwitcher.js"
+    },
+    "./ThemeProvider": {
+      "types": "./dist/components/ThemeProvider.d.ts",
+      "svelte": "./dist/components/ThemeProvider.svelte.js",
+      "import": "./dist/components/ThemeProvider.js"
+    },
     "./components/*": "./dist/components/*",
+    "./stores/*": "./dist/stores/*",
     "./styles.css": "./dist/styles.css"
   },
   "files": [

@@ -1,0 +1,74 @@
+{
+  "name": "@greater/headless",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Headless UI primitives for Greater Components - behavior without styling",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/headless"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "import": "./dist/index.js"
+    },
+    "./button": {
+      "types": "./dist/primitives/button.d.ts",
+      "import": "./dist/primitives/button.js"
+    },
+    "./modal": {
+      "types": "./dist/primitives/modal.d.ts",
+      "import": "./dist/primitives/modal.js"
+    },
+    "./menu": {
+      "types": "./dist/primitives/menu.d.ts",
+      "import": "./dist/primitives/menu.js"
+    },
+    "./tooltip": {
+      "types": "./dist/primitives/tooltip.d.ts",
+      "import": "./dist/primitives/tooltip.js"
+    },
+    "./tabs": {
+      "types": "./dist/primitives/tabs.d.ts",
+      "import": "./dist/primitives/tabs.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@testing-library/svelte": "^5.0.0",
+    "@types/node": "^20.11.5",
+    "@vitest/coverage-v8": "^1.2.1",
+    "jsdom": "^24.0.0",
+    "svelte": "^5.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.1"
+  },
+  "dependencies": {
+    "focus-trap": "^7.5.4",
+    "tabbable": "^6.2.0"
+  }
+}
+

@@ -221,7 +221,9 @@ export function testWCAGCriterion(
       const headings = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'));
       let lastLevel = 0;
       headings.forEach((heading) => {
-        const level = parseInt(heading.tagName[1]);
+        const levelStr = heading.tagName[1];
+        if (!levelStr) return;
+        const level = parseInt(levelStr, 10);
         if (lastLevel > 0 && level - lastLevel > 1) {
           warnings.push(`Heading hierarchy skipped from h${lastLevel} to h${level}`);
           elements.push(heading as HTMLElement);

@@ -1,0 +1,29 @@
+{
+  "name": "@greater/tokens",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./theme.css": "./dist/theme.css",
+    "./themes/*": "./dist/themes/*"
+  },
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.json",
+      "src/**/*.css",
+      "dist/theme.css",
+      "dist/themes/**",
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE"
+    ],
+    "exclude": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      "**/tests/**",
+      "**/__tests__/**"
+    ]
+  }
+}
+
+

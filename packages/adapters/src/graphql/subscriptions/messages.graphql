@@ -1,0 +1,35 @@
+# Messages Subscriptions
+# Real-time subscriptions for direct message updates
+
+#import "../fragments/common.graphql"
+#import "../fragments/status.graphql"
+#import "../fragments/account.graphql"
+
+# Subscribe to conversation updates
+subscription SubscribeToConversations {
+  conversationUpdate {
+    event
+    payload {
+      ...ConversationFields
+    }
+  }
+}
+
+# Subscribe to a specific conversation
+subscription SubscribeToConversationMessages($conversationId: ID!) {
+  conversationMessagesUpdate(conversationId: $conversationId) {
+    event
+    payload {
+      ...StatusFields
+    }
+  }
+}
+
+# Subscribe to typing indicators
+subscription SubscribeToTypingIndicators($conversationId: ID!) {
+  typingIndicator(conversationId: $conversationId) {
+    accountId
+    typing
+  }
+}
+

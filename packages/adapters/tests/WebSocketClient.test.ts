@@ -280,7 +280,7 @@ describe('WebSocketClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateMessage({
         type: 'test-event',
         data: { content: 'Test' },
@@ -302,7 +302,7 @@ describe('WebSocketClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateMessage({
         type: 'test',
         id: 'event-456'
@@ -416,7 +416,7 @@ describe('WebSocketClient', () => {
       await vi.advanceTimersByTimeAsync(20);
 
       // Simulate connection loss
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateClose(1006, 'Connection lost');
 
       // First reconnect attempt (100ms with jitter factor 0, Math.random should have no effect)
@@ -455,7 +455,7 @@ describe('WebSocketClient', () => {
       await vi.advanceTimersByTimeAsync(20);
 
       // Simulate connection loss
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateClose(1006, 'Connection lost');
 
       const call = reconnectingHandler.mock.calls[0]![0];
@@ -484,7 +484,7 @@ describe('WebSocketClient', () => {
 
       // Simulate multiple connection losses
       for (let i = 0; i < 5; i++) {
-        const ws = client['socket'] as MockWebSocket;
+        const ws = client['socket'] as unknown as MockWebSocket;
         ws.simulateClose(1006, 'Connection lost');
         await vi.advanceTimersByTimeAsync(1000);
       }
@@ -590,7 +590,7 @@ describe('WebSocketClient', () => {
       await vi.advanceTimersByTimeAsync(20);
 
       // Simulate connection loss
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateClose(1006, 'Connection lost');
 
       // Wait for reconnection
@@ -806,7 +806,7 @@ describe('WebSocketClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
       
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateError();
       
       expect(client.getState().error).toBeInstanceOf(Error);
@@ -851,7 +851,7 @@ describe('WebSocketClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateMessage({
         type: 'test',
         id: 'event-789'
@@ -876,7 +876,7 @@ describe('WebSocketClient', () => {
       client.connect();
       await vi.advanceTimersByTimeAsync(20);
 
-      const ws = client['socket'] as MockWebSocket;
+      const ws = client['socket'] as unknown as MockWebSocket;
       
       // Should not throw even with storage errors
       expect(() => {
