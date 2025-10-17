@@ -1,3 +1,8 @@
+  const flushTimers = async (ms = 0) => {
+    await vi.advanceTimersByTimeAsync(ms);
+    await Promise.resolve();
+  };
+
 /**
  * Presence Store Tests - Comprehensive testing for reactivity and memory safety
  */
@@ -97,7 +102,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       
       // Wait for initialization effect
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.currentUser).toBeTruthy();
@@ -110,7 +115,7 @@ describe('Presence Store', () => {
     it('should initialize with location tracking when enabled', async () => {
       const store = createPresenceStore(config);
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.currentUser?.location).toBeTruthy();
@@ -121,7 +126,7 @@ describe('Presence Store', () => {
       const disabledConfig = { ...config, enableLocationTracking: false };
       const store = createPresenceStore(disabledConfig);
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.currentUser?.location).toBeUndefined();
@@ -152,7 +157,7 @@ describe('Presence Store', () => {
       
       store.updatePresence({ status: 'busy' });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       expect(callCount).toBeGreaterThan(1);
       expect(lastState.currentUser?.status).toBe('busy');
       
@@ -182,9 +187,9 @@ describe('Presence Store', () => {
       const state = store.get();
       state.users.set('user1', user1);
       state.users.set('user2', user2);
-      
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
+
+      await flushTimers(10);
+
       const updatedState = store.get();
       expect(updatedState.stats.totalUsers).toBe(3); // Including current user
       expect(updatedState.stats.onlineUsers).toBe(3);
@@ -197,7 +202,7 @@ describe('Presence Store', () => {
     it('should update current user presence', async () => {
       const store = createPresenceStore(config);
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       store.updatePresence({
         status: 'busy',
@@ -213,7 +218,7 @@ describe('Presence Store', () => {
     it('should update location', async () => {
       const store = createPresenceStore(config);
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       store.updateLocation({
         page: '/dashboard',
@@ -230,7 +235,7 @@ describe('Presence Store', () => {
     it('should set status with message', async () => {
       const store = createPresenceStore(config);
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       store.setStatus('away', 'Gone for lunch');
       
@@ -243,7 +248,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       store.updatePresence({ status: 'busy' });
       
@@ -317,7 +322,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Fast forward past heartbeat interval
       vi.advanceTimersByTime(1001);
@@ -335,7 +340,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Trigger heartbeat
       vi.advanceTimersByTime(1001);
@@ -355,7 +360,7 @@ describe('Presence Store', () => {
       
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Trigger heartbeat
       vi.advanceTimersByTime(1001);
@@ -392,7 +397,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Fast forward past inactivity threshold
       vi.advanceTimersByTime(5001);
@@ -405,7 +410,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Set to idle first
       store.setStatus('idle');
@@ -419,7 +424,7 @@ describe('Presence Store', () => {
         activityHandler();
       }
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.currentUser?.status).toBe('active');
@@ -445,7 +450,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Change window location
       mockWindow.location.pathname = '/new-page';
@@ -459,7 +464,7 @@ describe('Presence Store', () => {
         popstateHandler();
       }
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.currentUser?.location?.page).toBe('/new-page');
@@ -488,7 +493,7 @@ describe('Presence Store', () => {
       });
       
       // Wait for debounce
-      await new Promise(resolve => setTimeout(resolve, 110));
+      await vi.advanceTimersByTimeAsync(110);
       
       const state = store.get();
       expect(state.users.get('remote-user')).toEqual(userPresence);
@@ -513,7 +518,7 @@ describe('Presence Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 110));
+      await vi.advanceTimersByTimeAsync(110);
       
       const state = store.get();
       expect(state.users.get('new-user')).toEqual(newUser);
@@ -542,7 +547,7 @@ describe('Presence Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 110));
+      await vi.advanceTimersByTimeAsync(110);
       
       const updatedState = store.get();
       const leftUser = updatedState.users.get('leaving-user');
@@ -569,7 +574,7 @@ describe('Presence Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.sessions.get('session-123')).toEqual(sessionInfo);
@@ -603,7 +608,7 @@ describe('Presence Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 110));
+      await vi.advanceTimersByTimeAsync(110);
       
       const state = store.get();
       expect(state.users.get('bulk-user-1')).toEqual(users[0]);
@@ -632,8 +637,8 @@ describe('Presence Store', () => {
         });
       }
       
-      await new Promise(resolve => setTimeout(resolve, 110));
-      
+      await flushTimers(110);
+
       const state = store.get();
       const updatedUser = state.users.get('rapid-user');
       expect(updatedUser?.status).toBe('idle'); // Should have latest update
@@ -658,7 +663,7 @@ describe('Presence Store', () => {
       
       mockTransport.emit('open', {});
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.connectionHealth.status).toBe('healthy');
@@ -681,7 +686,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       mockTransport.emit('close', {});
       
@@ -721,7 +726,7 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Add some data
       const state = store.get();
@@ -817,7 +822,7 @@ describe('Presence Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 110));
+      await vi.advanceTimersByTimeAsync(110);
       
       // Should not crash
       expect(true).toBe(true);
@@ -834,7 +839,7 @@ describe('Presence Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 110));
+      await vi.advanceTimersByTimeAsync(110);
       
       // Should not crash
       expect(true).toBe(true);
@@ -844,14 +849,14 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       // Send multiple concurrent updates
       store.updatePresence({ status: 'busy' });
       store.setStatus('idle');
       store.updateLocation({ page: '/new' });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       // Should have applied all updates

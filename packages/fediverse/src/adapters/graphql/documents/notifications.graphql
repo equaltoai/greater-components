@@ -1,0 +1,43 @@
+# Notifications query
+
+#import "./fragments.graphql"
+
+query Notifications(
+  $types: [String!]
+  $excludeTypes: [String!]
+  $first: Int = 20
+  $after: Cursor
+) {
+  notifications(types: $types, excludeTypes: $excludeTypes, first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        type
+        read
+        createdAt
+        account {
+          ...ActorSummary
+        }
+        status {
+          ...ObjectFields
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+mutation DismissNotification($id: ID!) {
+  dismissNotification(id: $id)
+}
+
+mutation ClearNotifications {
+  clearNotifications
+}

@@ -1,0 +1,82 @@
+# Subscriptions
+
+#import "./fragments.graphql"
+
+subscription TimelineUpdates($type: TimelineType!, $listId: ID) {
+  timelineUpdates(type: $type, listId: $listId) {
+    ...ObjectFields
+  }
+}
+
+subscription NotificationStream($types: [String!]) {
+  notificationStream(types: $types) {
+    id
+    type
+    read
+    createdAt
+    account {
+      ...ActorSummary
+    }
+    status {
+      ...ObjectFields
+    }
+  }
+}
+
+subscription ConversationUpdates {
+  conversationUpdates {
+    id
+    unread
+    createdAt
+    updatedAt
+    accounts {
+      ...ActorSummary
+    }
+    lastStatus {
+      ...ObjectFields
+    }
+  }
+}
+
+subscription ListUpdates($listId: ID!) {
+  listUpdates(listId: $listId) {
+    type
+    timestamp
+    list {
+      id
+      title
+      repliesPolicy
+      exclusive
+      accountCount
+    }
+    account {
+      ...ActorSummary
+    }
+  }
+}
+
+subscription QuoteActivity($noteId: ID!) {
+  quoteActivity(noteId: $noteId) {
+    type
+    timestamp
+    quote {
+      ...ObjectFields
+    }
+    quoter {
+      ...ActorSummary
+    }
+  }
+}
+
+subscription HashtagActivity($hashtags: [String!]!) {
+  hashtagActivity(hashtags: $hashtags) {
+    hashtag
+    timestamp
+    post {
+      ...ObjectFields
+    }
+    author {
+      ...ActorSummary
+    }
+  }
+}

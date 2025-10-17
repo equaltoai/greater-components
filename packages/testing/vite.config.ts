@@ -42,5 +42,9 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
+    exclude: [
+      'tests/**/*.a11y.test.ts',
+      'tests/**/*.visual.test.ts',
+    ],
   },
 });

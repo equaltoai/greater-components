@@ -11,6 +11,14 @@ import type {
   PresenceConfig
 } from './types';
 
+const STATUS_PRIORITY: Record<UserPresence['status'], number> = {
+  active: 1,
+  busy: 2,
+  away: 3,
+  idle: 4,
+  offline: 5
+};
+
 // Simple reactive state implementation that works everywhere
 class ReactiveState<T> {
   private _value: T;
@@ -50,12 +58,68 @@ class ReactiveState<T> {
   }
 }
 
+function createReactiveMap<K, V>(
+  source: Map<K, V> | Iterable<[K, V]> | undefined,
+  onChange: () => void
+): Map<K, V> {
+  const base = source instanceof Map
+    ? new Map(source)
+    : source
+      ? new Map(source)
+      : new Map<K, V>();
+
+  const proxy = new Proxy(base, {
+    get(target, prop, receiver) {
+      if (prop === 'size') {
+        return target.size;
+      }
+
+      if (prop === 'set') {
+        return (key: K, value: V) => {
+          target.set(key, value);
+          onChange();
+          return receiver;
+        };
+      }
+
+      if (prop === 'delete') {
+        return (key: K) => {
+          const removed = target.delete(key);
+          if (removed) {
+            onChange();
+          }
+          return removed;
+        };
+      }
+
+      if (prop === 'clear') {
+        return () => {
+          if (target.size > 0) {
+            target.clear();
+            onChange();
+          } else {
+            target.clear();
+          }
+        };
+      }
+
+      const value = Reflect.get(target, prop, receiver);
+      if (typeof value === 'function') {
+        return value.bind(target);
+      }
+      return value;
+    }
+  });
+
+  return proxy as Map<K, V>;
+}
+
 export function createPresenceStore(config: PresenceConfig): PresenceStore {
   // Create reactive state
   const state = new ReactiveState<PresenceState>({
     currentUser: null,
-    users: new Map<string, UserPresence>(),
-    sessions: new Map<string, SessionInfo>(),
+    users: createReactiveUsersMap(),
+    sessions: createReactiveSessionsMap(),
     connectionHealth: {
       status: 'disconnected',
       latency: null,
@@ -89,11 +153,16 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
       }
     };
     
-    state.update(current => ({
-      ...current,
-      currentUser: currentUserPresence,
-      users: new Map(current.users).set(config.currentUser.userId, currentUserPresence)
-    }));
+    state.update(current => {
+      const users = cloneUsersMap(current.users);
+      users.set(config.currentUser.userId, currentUserPresence);
+
+      return {
+        ...current,
+        currentUser: currentUserPresence,
+        users
+      };
+    });
   }
 
   // Initialize computed values
@@ -109,17 +178,91 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
   let streamingUnsubscribers: (() => void)[] = [];
   let pendingPresenceUpdates: Map<string, UserPresence> = new Map();
 
+  function createReactiveUsersMap(source?: Map<string, UserPresence>): Map<string, UserPresence> {
+    return createReactiveMap(source, updateDerivedValues);
+  }
+
+  function createReactiveSessionsMap(source?: Map<string, SessionInfo>): Map<string, SessionInfo> {
+    return createReactiveMap(source, () => {});
+  }
+
+  function cloneUsersMap(source: Map<string, UserPresence>): Map<string, UserPresence> {
+    return createReactiveUsersMap(source);
+  }
+
+  function cloneSessionsMap(source: Map<string, SessionInfo>): Map<string, SessionInfo> {
+    return createReactiveSessionsMap(source);
+  }
+
+  function mergePresence(existing: UserPresence | undefined, incoming: UserPresence): UserPresence {
+    if (!existing) {
+      return { ...incoming };
+    }
+
+    const existingPriority = STATUS_PRIORITY[existing.status] ?? 0;
+    const incomingPriority = STATUS_PRIORITY[incoming.status] ?? 0;
+    const nextStatus = incomingPriority >= existingPriority ? incoming.status : existing.status;
+
+    const location = mergeLocation(existing.location, incoming.location);
+    const connection = mergeConnection(existing.connection, incoming.connection);
+
+    return {
+      ...existing,
+      ...incoming,
+      status: nextStatus,
+      lastSeen: Math.max(existing.lastSeen, incoming.lastSeen),
+      location,
+      connection
+    };
+  }
+
+  function mergeLocation(
+    existing: UserPresence['location'],
+    incoming: UserPresence['location']
+  ): UserPresence['location'] {
+    if (!existing && !incoming) {
+      return undefined;
+    }
+
+    return {
+      ...(existing || {}),
+      ...(incoming || {})
+    };
+  }
+
+  function mergeConnection(
+    existing: UserPresence['connection'],
+    incoming: UserPresence['connection']
+  ): UserPresence['connection'] {
+    if (!existing && !incoming) {
+      return undefined;
+    }
+
+    return {
+      ...(existing || {}),
+      ...(incoming || {})
+    };
+  }
+
   function updateDerivedValues(): void {
     const currentState = state.value;
     const users = Array.from(currentState.users.values());
-    
+
     const stats = {
       totalUsers: users.length,
       onlineUsers: users.filter(u => u.isOnline).length,
       activeUsers: users.filter(u => u.status === 'active').length,
       idleUsers: users.filter(u => u.status === 'idle').length
     };
-    
+
+    const existing = currentState.stats;
+    if (existing.totalUsers === stats.totalUsers &&
+        existing.onlineUsers === stats.onlineUsers &&
+        existing.activeUsers === stats.activeUsers &&
+        existing.idleUsers === stats.idleUsers) {
+      return;
+    }
+
     state.update(current => ({
       ...current,
       stats
@@ -132,25 +275,31 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
     const updates = new Map(pendingPresenceUpdates);
     pendingPresenceUpdates.clear();
 
-    // Apply all pending updates
-    updates.forEach((presence, userId) => {
-      state.update(current => {
-        const newUsers = new Map(current.users);
-        newUsers.set(userId, presence);
-        
-        return {
-          ...current,
-          users: newUsers,
-          currentUser: userId === config.currentUser.userId ? presence : current.currentUser
-        };
+    state.update(current => {
+      const users = cloneUsersMap(current.users);
+
+      updates.forEach((presence, userId) => {
+        users.set(userId, presence);
       });
+
+      const updatedCurrentUser = updates.get(config.currentUser.userId) ?? current.currentUser;
+
+      return {
+        ...current,
+        users,
+        currentUser: updatedCurrentUser ?? current.currentUser
+      };
     });
-    
+
     updateDerivedValues();
   }
 
   function schedulePresenceUpdate(presence: UserPresence): void {
-    pendingPresenceUpdates.set(presence.userId, presence);
+    const existingPending = pendingPresenceUpdates.get(presence.userId);
+    const currentPresence = state.value.users.get(presence.userId);
+    const mergedPresence = mergePresence(existingPending ?? currentPresence, presence);
+
+    pendingPresenceUpdates.set(presence.userId, mergedPresence);
     
     if (updateDebounceTimer) {
       clearTimeout(updateDebounceTimer);
@@ -296,33 +445,38 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
 
   // Store methods
   function updatePresence(presenceUpdates: Partial<Omit<UserPresence, 'userId'>>): void {
-    if (!state.value.currentUser) return;
+    const currentUserPresence = state.value.currentUser;
+    if (!currentUserPresence) return;
 
-    const updatedPresence: UserPresence = {
-      ...state.value.currentUser,
+    let mergedPresence = mergePresence(currentUserPresence, {
+      ...currentUserPresence,
       ...presenceUpdates,
+      userId: currentUserPresence.userId,
       lastSeen: Date.now()
-    };
+    });
+
+    if (typeof presenceUpdates.status !== 'undefined') {
+      mergedPresence = { ...mergedPresence, status: presenceUpdates.status };
+    }
 
     state.update(current => {
-      const newUsers = new Map(current.users);
-      newUsers.set(updatedPresence.userId, updatedPresence);
+      const users = cloneUsersMap(current.users);
+      users.set(mergedPresence.userId, mergedPresence);
       
       return {
         ...current,
-        currentUser: updatedPresence,
-        users: newUsers
+        currentUser: mergedPresence,
+        users
       };
     });
     
     updateDerivedValues();
 
-    // Send to server if streaming is active
     if (state.value.isStreaming && config.transportManager) {
       try {
         config.transportManager.send({
           type: 'presence_update',
-          data: updatedPresence
+          data: mergedPresence
         });
       } catch (error) {
         state.update(current => ({
@@ -400,18 +554,18 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
     const closeHandler = config.transportManager.on('close', () => {
       state.update(current => {
         const currentUser = current.currentUser;
-        const newUsers = new Map(current.users);
+        const users = cloneUsersMap(current.users);
         
         if (currentUser) {
           const offlineUser = { ...currentUser, isOnline: false };
-          newUsers.set(offlineUser.userId, offlineUser);
+          users.set(offlineUser.userId, offlineUser);
         }
         
         return {
           ...current,
           isStreaming: false,
           currentUser: currentUser ? { ...currentUser, isOnline: false } : null,
-          users: newUsers,
+          users,
           connectionHealth: { ...current.connectionHealth, status: 'disconnected' }
         };
       });
@@ -516,9 +670,9 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
         if (data.data?.sessionId) {
           const sessionInfo = data.data as SessionInfo;
           state.update(current => {
-            const newSessions = new Map(current.sessions);
-            newSessions.set(sessionInfo.sessionId, sessionInfo);
-            return { ...current, sessions: newSessions };
+            const sessions = cloneSessionsMap(current.sessions);
+            sessions.set(sessionInfo.sessionId, sessionInfo);
+            return { ...current, sessions };
           });
         }
         break;
@@ -550,8 +704,8 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
     // Clear all state
     state.update(() => ({
       currentUser: null,
-      users: new Map<string, UserPresence>(),
-      sessions: new Map<string, SessionInfo>(),
+      users: createReactiveUsersMap(),
+      sessions: createReactiveSessionsMap(),
       connectionHealth: {
         status: 'disconnected',
         latency: null,

@@ -171,39 +171,47 @@ export class TransportFallback implements TransportAdapter {
   }
 
   private connectSse(): void {
+    const instantiateClient = () => new SseClient(this.config.primary);
+    let sseClient: TransportAdapter | null = null;
+
     try {
-      this.transportType = 'sse';
-      this.currentTransport = new SseClient(this.config.primary);
-
-      // Subscribe existing handlers
-      this.subscribeHandlers();
-
-      // Add error handler for fallback
-      if (this.config.autoFallback) {
-        const errorUnsubscribe = this.currentTransport.on('error', (event) => {
-          // Check if we should fallback
-          if (this.shouldFallback(event.error)) {
-            errorUnsubscribe();
-            this.fallbackToPolling();
-          }
-        });
-
-        // Store unsubscriber
-        if (!this.unsubscribers.has('_fallback_error')) {
-          this.unsubscribers.set('_fallback_error', []);
-        }
-        this.unsubscribers.get('_fallback_error')!.push(errorUnsubscribe);
-      }
-
-      this.currentTransport.connect();
+      sseClient = instantiateClient();
     } catch (error) {
-      // SSE failed to initialize, fallback to polling
       if (this.config.autoFallback) {
         this.fallbackToPolling();
-      } else {
-        throw error;
+        return;
+      }
+
+      // Retry once for manual mode to recover from transient constructor errors
+      try {
+        sseClient = instantiateClient();
+      } catch (retryError) {
+        this.cleanupTransport();
+        throw retryError;
       }
     }
+
+    this.transportType = 'sse';
+    this.currentTransport = sseClient;
+
+    // Subscribe existing handlers
+    this.subscribeHandlers();
+
+    if (this.config.autoFallback && this.currentTransport) {
+      const errorUnsubscribe = this.currentTransport.on('error', (event) => {
+        if (this.shouldFallback(event.error)) {
+          errorUnsubscribe();
+          this.fallbackToPolling();
+        }
+      });
+
+      if (!this.unsubscribers.has('_fallback_error')) {
+        this.unsubscribers.set('_fallback_error', []);
+      }
+      this.unsubscribers.get('_fallback_error')!.push(errorUnsubscribe);
+    }
+
+    this.currentTransport.connect();
   }
 
   private connectPolling(): void {

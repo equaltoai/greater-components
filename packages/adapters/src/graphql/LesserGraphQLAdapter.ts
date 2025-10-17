@@ -1,696 +1,529 @@
 /**
- * Lesser GraphQL Adapter
- * 
- * Main adapter class for interacting with Lesser's GraphQL API.
- * Provides methods for all queries, mutations, and subscriptions.
+ * Lesser GraphQL Adapter aligned with the current Lesser schema.
+ *
+ * Provides typed accessors and convenience helpers around the generated
+ * GraphQL operations. Consumers should migrate towards the generic timeline
+ * and object accessors rather than the legacy Mastodon-style wrappers.
  */
 
-import { gql, type Observable, type FetchResult } from '@apollo/client/core';
-import { createGraphQLClient, type GraphQLClientConfig, type GraphQLClientInstance } from './client.js';
-import * as optimistic from './optimistic.js';
+import { Observable, type FetchResult } from '@apollo/client/core';
+import type { DocumentNode } from '@graphql-typed-document-node/core';
 
-// Import query/mutation/subscription documents
-// Note: In production, these would be imported from compiled .graphql files
-// For now, we'll define them inline using gql`` template literals
+import {
+	createGraphQLClient,
+	type GraphQLClientConfig,
+	type GraphQLClientInstance,
+} from './client.js';
 
-/**
- * Lesser GraphQL Adapter configuration
- */
-export interface LesserGraphQLAdapterConfig extends GraphQLClientConfig {
-	/**
-	 * Enable optimistic updates for better UX
-	 * @default true
-	 */
-	enableOptimisticUpdates?: boolean;
+import type {
+	TimelineQuery,
+	TimelineQueryVariables,
+	TimelineType,
+	NotificationsQuery,
+	NotificationsQueryVariables,
+	DismissNotificationMutation,
+	DismissNotificationMutationVariables,
+	ClearNotificationsMutation,
+	ClearNotificationsMutationVariables,
+	SearchQuery,
+	SearchQueryVariables,
+	ObjectByIdQuery,
+	ObjectByIdQueryVariables,
+	ActorByIdQuery,
+	ActorByIdQueryVariables,
+	ActorByUsernameQuery,
+	ActorByUsernameQueryVariables,
+	CreateNoteMutation,
+	CreateNoteMutationVariables,
+	CreateQuoteNoteMutation,
+	CreateQuoteNoteMutationVariables,
+	DeleteObjectMutation,
+	DeleteObjectMutationVariables,
+	LikeObjectMutation,
+	LikeObjectMutationVariables,
+	UnlikeObjectMutation,
+	UnlikeObjectMutationVariables,
+	ShareObjectMutation,
+	ShareObjectMutationVariables,
+	UnshareObjectMutation,
+	UnshareObjectMutationVariables,
+	BookmarkObjectMutation,
+	BookmarkObjectMutationVariables,
+	UnbookmarkObjectMutation,
+	UnbookmarkObjectMutationVariables,
+	PinObjectMutation,
+	PinObjectMutationVariables,
+	UnpinObjectMutation,
+	UnpinObjectMutationVariables,
+	ListsQuery,
+	ListQuery,
+	ListQueryVariables,
+	ListAccountsQuery,
+	ListAccountsQueryVariables,
+	CreateListMutation,
+	CreateListMutationVariables,
+	UpdateListMutation,
+	UpdateListMutationVariables,
+	DeleteListMutation,
+	DeleteListMutationVariables,
+	AddAccountsToListMutation,
+	AddAccountsToListMutationVariables,
+	RemoveAccountsFromListMutation,
+	RemoveAccountsFromListMutationVariables,
+	ConversationsQuery,
+	ConversationsQueryVariables,
+	ConversationQuery,
+	ConversationQueryVariables,
+	MarkConversationReadMutation,
+	MarkConversationReadMutationVariables,
+	DeleteConversationMutation,
+	DeleteConversationMutationVariables,
+	RelationshipQuery,
+	RelationshipQueryVariables,
+	RelationshipsQuery,
+	RelationshipsQueryVariables,
+	FollowActorMutation,
+	FollowActorMutationVariables,
+	UnfollowActorMutation,
+	UnfollowActorMutationVariables,
+	BlockActorMutation,
+	BlockActorMutationVariables,
+	UnblockActorMutation,
+	UnblockActorMutationVariables,
+	MuteActorMutation,
+	MuteActorMutationVariables,
+	UnmuteActorMutation,
+	UnmuteActorMutationVariables,
+	UpdateRelationshipMutation,
+	UpdateRelationshipMutationVariables,
+	TimelineUpdatesSubscription,
+	TimelineUpdatesSubscriptionVariables,
+	NotificationStreamSubscription,
+	NotificationStreamSubscriptionVariables,
+	ConversationUpdatesSubscription,
+	ConversationUpdatesSubscriptionVariables,
+	ListUpdatesSubscription,
+	ListUpdatesSubscriptionVariables,
+	QuoteActivitySubscription,
+	QuoteActivitySubscriptionVariables,
+	HashtagActivitySubscription,
+	HashtagActivitySubscriptionVariables,
+} from './generated/types.js';
 
-	/**
-	 * Cache time-to-live in seconds
-	 * @default 300 (5 minutes)
-	 */
-	cacheTTL?: number;
-}
+import {
+	TimelineDocument,
+	NotificationsDocument,
+	DismissNotificationDocument,
+	ClearNotificationsDocument,
+	SearchDocument,
+	ObjectByIdDocument,
+	ActorByIdDocument,
+	ActorByUsernameDocument,
+	CreateNoteDocument,
+	CreateQuoteNoteDocument,
+	DeleteObjectDocument,
+	LikeObjectDocument,
+	UnlikeObjectDocument,
+	ShareObjectDocument,
+	UnshareObjectDocument,
+	BookmarkObjectDocument,
+	UnbookmarkObjectDocument,
+	PinObjectDocument,
+	UnpinObjectDocument,
+	ListsDocument,
+	ListDocument,
+	ListAccountsDocument,
+	CreateListDocument,
+	UpdateListDocument,
+	DeleteListDocument,
+	AddAccountsToListDocument,
+	RemoveAccountsFromListDocument,
+	ConversationsDocument,
+	ConversationDocument,
+	MarkConversationReadDocument,
+	DeleteConversationDocument,
+	RelationshipDocument,
+	RelationshipsDocument,
+	FollowActorDocument,
+	UnfollowActorDocument,
+	BlockActorDocument,
+	UnblockActorDocument,
+	MuteActorDocument,
+	UnmuteActorDocument,
+	UpdateRelationshipDocument,
+	TimelineUpdatesDocument,
+	NotificationStreamDocument,
+	ConversationUpdatesDocument,
+	ListUpdatesDocument,
+	QuoteActivityDocument,
+	HashtagActivityDocument,
+} from './generated/types.js';
 
-/**
- * Timeline query variables
- */
-export interface TimelineVariables {
-	limit?: number;
-	maxId?: string;
-	minId?: string;
-	sinceId?: string;
-}
+export interface LesserGraphQLAdapterConfig extends GraphQLClientConfig {}
 
-/**
- * Status mutation variables
- */
-export interface CreateStatusVariables {
-	status: string;
-	spoilerText?: string;
-	visibility?: 'public' | 'unlisted' | 'private' | 'direct';
-	sensitive?: boolean;
-	language?: string;
-	mediaIds?: string[];
-	poll?: PollInput;
-	inReplyToId?: string;
-	contentWarning?: string;
-	scheduledAt?: string;
-}
+export type TimelineVariables = TimelineQueryVariables;
+export type SearchVariables = SearchQueryVariables;
+export type CreateNoteVariables = CreateNoteMutationVariables;
 
-export interface PollInput {
-	options: string[];
-	expiresIn: number;
-	multiple?: boolean;
-	hideTotals?: boolean;
-}
-
-/**
- * Search variables
- */
-export interface SearchVariables {
-	query: string;
-	type?: 'accounts' | 'hashtags' | 'statuses';
-	resolve?: boolean;
-	following?: boolean;
-	limit?: number;
-	offset?: number;
-}
-
-/**
- * Subscription event
- */
-export interface SubscriptionEvent<T = any> {
-	event: 'update' | 'delete' | 'notification' | 'filters_changed' | 'conversation';
-	payload?: T;
-}
-
-/**
- * Lesser GraphQL Adapter
- * 
- * Provides a high-level API for interacting with Lesser's GraphQL endpoint.
- */
 export class LesserGraphQLAdapter {
-	private client: GraphQLClientInstance;
-	private enableOptimisticUpdates: boolean;
+	private readonly client: GraphQLClientInstance;
 
 	constructor(config: LesserGraphQLAdapterConfig) {
 		this.client = createGraphQLClient(config);
-		this.enableOptimisticUpdates = config.enableOptimisticUpdates ?? true;
 	}
 
-	/**
-	 * Update authentication token
-	 */
 	updateToken(token: string | null): void {
 		this.client.updateToken(token);
 	}
 
-	/**
-	 * Close client and cleanup resources
-	 */
 	close(): void {
 		this.client.close();
 	}
 
-	// ============================================================================
-	// TIMELINE QUERIES
-	// ============================================================================
+	private async query<TData, TVariables = Record<string, never>>(
+		document: DocumentNode<TData, TVariables>,
+		variables?: TVariables,
+		fetchPolicy: 'cache-first' | 'network-only' = 'network-only'
+	): Promise<TData> {
+		const { data } = await this.client.client.query<TData, TVariables>({
+			query: document,
+			variables,
+			fetchPolicy,
+		});
 
-	/**
-	 * Fetch home timeline
-	 */
-	async fetchHomeTimeline(variables?: TimelineVariables) {
-		const result = await this.client.client.query({
-			query: gql`
-				query HomeTimeline($limit: Int, $maxId: ID, $minId: ID, $sinceId: ID) {
-					homeTimeline(limit: $limit, maxId: $maxId, minId: $minId, sinceId: $sinceId) {
-						edges {
-							node {
-								id
-								content
-								createdAt
-								# ... other fields
-							}
-							cursor
-						}
-						pageInfo {
-							hasNextPage
-							endCursor
-						}
-					}
-				}
-			`,
+		return data;
+	}
+
+	private async mutate<TData, TVariables = Record<string, never>>(
+		document: DocumentNode<TData, TVariables>,
+		variables?: TVariables
+	): Promise<TData> {
+		const { data } = await this.client.client.mutate<TData, TVariables>({
+			mutation: document,
 			variables,
 		});
 
-		return result.data.homeTimeline;
+		if (!data) {
+			throw new Error('Mutation completed without returning data.');
+		}
+
+		return data;
 	}
 
-	/**
-	 * Fetch public timeline
-	 */
-	async fetchPublicTimeline(variables?: TimelineVariables & { local?: boolean }) {
-		const result = await this.client.client.query({
-			query: gql`
-				query PublicTimeline($limit: Int, $maxId: ID, $local: Boolean) {
-					publicTimeline(limit: $limit, maxId: $maxId, local: $local) {
-						edges {
-							node {
-								id
-								content
-								createdAt
-							}
-							cursor
-						}
-						pageInfo {
-							hasNextPage
-							endCursor
-						}
-					}
-				}
-			`,
-			variables,
+	async fetchTimeline(variables: TimelineQueryVariables) {
+		const data = await this.query(TimelineDocument, variables);
+		return data.timeline;
+	}
+
+	async fetchHomeTimeline(
+		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>
+	) {
+		return this.fetchTimeline({
+			type: 'HOME',
+			first: pagination?.first,
+			after: pagination?.after,
 		});
-
-		return result.data.publicTimeline;
 	}
 
-	/**
-	 * Fetch hashtag timeline
-	 */
-	async fetchHashtagTimeline(hashtag: string, variables?: TimelineVariables) {
-		const result = await this.client.client.query({
-			query: gql`
-				query HashtagTimeline($hashtag: String!, $limit: Int, $maxId: ID) {
-					hashtagTimeline(hashtag: $hashtag, limit: $limit, maxId: $maxId) {
-						edges {
-							node {
-								id
-								content
-								createdAt
-							}
-							cursor
-						}
-						pageInfo {
-							hasNextPage
-							endCursor
-						}
-					}
-				}
-			`,
-			variables: { hashtag, ...variables },
+	async fetchPublicTimeline(
+		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>,
+		scope: Extract<TimelineType, 'PUBLIC' | 'LOCAL'> = 'PUBLIC'
+	) {
+		return this.fetchTimeline({
+			type: scope,
+			first: pagination?.first,
+			after: pagination?.after,
 		});
-
-		return result.data.hashtagTimeline;
 	}
 
-	// ============================================================================
-	// STATUS QUERIES & MUTATIONS
-	// ============================================================================
-
-	/**
-	 * Get a single status by ID
-	 */
-	async getStatus(id: string) {
-		const result = await this.client.client.query({
-			query: gql`
-				query GetStatus($id: ID!) {
-					status(id: $id) {
-						id
-						content
-						createdAt
-						favourited
-						reblogged
-						bookmarked
-					}
-				}
-			`,
-			variables: { id },
+	async fetchDirectTimeline(
+		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>
+	) {
+		return this.fetchTimeline({
+			type: 'DIRECT',
+			first: pagination?.first,
+			after: pagination?.after,
 		});
-
-		return result.data.status;
 	}
 
-	/**
-	 * Create a new status
-	 */
-	async createStatus(variables: CreateStatusVariables) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation CreateStatus($status: String!, $visibility: VisibilityType, $mediaIds: [ID!]) {
-					createStatus(input: { status: $status, visibility: $visibility, mediaIds: $mediaIds }) {
-						id
-						content
-						createdAt
-					}
-				}
-			`,
-			variables,
-			// Optimistically update cache
-			update: (cache, { data }) => {
-				if (data?.createStatus) {
-					optimistic.addStatusToCache(cache, data.createStatus);
-				}
-			},
+	async fetchHashtagTimeline(
+		hashtag: string,
+		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>
+	) {
+		return this.fetchTimeline({
+			type: 'HASHTAG',
+			hashtag,
+			first: pagination?.first,
+			after: pagination?.after,
 		});
-
-		return result.data?.createStatus;
 	}
 
-	/**
-	 * Delete a status
-	 */
-	async deleteStatus(id: string) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation DeleteStatus($id: ID!) {
-					deleteStatus(id: $id) {
-						id
-					}
-				}
-			`,
-			variables: { id },
-			optimisticResponse: this.enableOptimisticUpdates
-				? optimistic.optimisticDeleteStatus(id)
-				: undefined,
-			update: (cache) => {
-				optimistic.removeStatusFromCache(cache, id);
-			},
+	async fetchListTimeline(
+		listId: string,
+		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>
+	) {
+		return this.fetchTimeline({
+			type: 'LIST',
+			listId,
+			first: pagination?.first,
+			after: pagination?.after,
 		});
-
-		return result.data?.deleteStatus;
 	}
 
-	/**
-	 * Favourite a status
-	 */
-	async favouriteStatus(id: string, currentState = false) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation FavouriteStatus($id: ID!) {
-					favouriteStatus(id: $id) {
-						id
-						favourited
-						favouritesCount
-					}
-				}
-			`,
-			variables: { id },
-			optimisticResponse: this.enableOptimisticUpdates
-				? { favouriteStatus: optimistic.optimisticFavourite(id, currentState) }
-				: undefined,
-			update: (cache, { data }) => {
-				if (data?.favouriteStatus) {
-					optimistic.updateCacheAfterFavourite(cache, id, data.favouriteStatus.favourited);
-				}
-			},
-		});
-
-		return result.data?.favouriteStatus;
+	async getObject(id: string) {
+		const data = await this.query(ObjectByIdDocument, { id });
+		return data.object;
 	}
 
-	/**
-	 * Unfavourite a status
-	 */
-	async unfavouriteStatus(id: string) {
-		return this.favouriteStatus(id, true);
+	async getActorById(id: string) {
+		const data = await this.query(ActorByIdDocument, { id });
+		return data.actor;
 	}
 
-	/**
-	 * Reblog/boost a status
-	 */
-	async reblogStatus(id: string, currentState = false) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation ReblogStatus($id: ID!) {
-					reblogStatus(id: $id) {
-						id
-						reblogged
-						reblogsCount
-					}
-				}
-			`,
-			variables: { id },
-			optimisticResponse: this.enableOptimisticUpdates
-				? { reblogStatus: optimistic.optimisticReblog(id, currentState) }
-				: undefined,
-			update: (cache, { data }) => {
-				if (data?.reblogStatus) {
-					optimistic.updateCacheAfterReblog(cache, id, data.reblogStatus.reblogged);
-				}
-			},
-		});
-
-		return result.data?.reblogStatus;
+	async getActorByUsername(username: string) {
+		const data = await this.query(ActorByUsernameDocument, { username });
+		return data.actor;
 	}
 
-	/**
-	 * Unreblog/unboost a status
-	 */
-	async unreblogStatus(id: string) {
-		return this.reblogStatus(id, true);
+	async search(variables: SearchQueryVariables) {
+		const data = await this.query(SearchDocument, variables);
+		return data.search;
 	}
 
-	/**
-	 * Bookmark a status
-	 */
-	async bookmarkStatus(id: string, currentState = false) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation BookmarkStatus($id: ID!) {
-					bookmarkStatus(id: $id) {
-						id
-						bookmarked
-					}
-				}
-			`,
-			variables: { id },
-			optimisticResponse: this.enableOptimisticUpdates
-				? { bookmarkStatus: optimistic.optimisticBookmark(id, currentState) }
-				: undefined,
-			update: (cache, { data }) => {
-				if (data?.bookmarkStatus) {
-					optimistic.updateCacheAfterBookmark(cache, id, data.bookmarkStatus.bookmarked);
-				}
-			},
-		});
-
-		return result.data?.bookmarkStatus;
+	async fetchNotifications(variables: NotificationsQueryVariables) {
+		const data = await this.query(NotificationsDocument, variables);
+		return data.notifications;
 	}
 
-	/**
-	 * Unbookmark a status
-	 */
-	async unbookmarkStatus(id: string) {
-		return this.bookmarkStatus(id, true);
+	async dismissNotification(id: string) {
+		const data = await this.mutate(DismissNotificationDocument, { id });
+		return data.dismissNotification;
 	}
 
-	// ============================================================================
-	// ACCOUNT QUERIES & MUTATIONS
-	// ============================================================================
-
-	/**
-	 * Get account by ID
-	 */
-	async getAccount(id: string) {
-		const result = await this.client.client.query({
-			query: gql`
-				query GetAccount($id: ID!) {
-					account(id: $id) {
-						id
-						username
-						displayName
-						avatar
-					}
-				}
-			`,
-			variables: { id },
-		});
-
-		return result.data.account;
+	async clearNotifications() {
+		const data = await this.mutate(ClearNotificationsDocument);
+		return data.clearNotifications;
 	}
 
-	/**
-	 * Follow an account
-	 */
-	async followAccount(id: string, currentState = false, locked = false) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation FollowAccount($id: ID!) {
-					followAccount(id: $id) {
-						id
-						following
-						requested
-					}
-				}
-			`,
-			variables: { id },
-			optimisticResponse: this.enableOptimisticUpdates
-				? { followAccount: optimistic.optimisticFollow(id, currentState) }
-				: undefined,
-			update: (cache, { data }) => {
-				if (data?.followAccount) {
-					optimistic.updateCacheAfterFollow(cache, id, data.followAccount.following, locked);
-				}
-			},
-		});
-
-		return result.data?.followAccount;
+	async getConversations(variables: ConversationsQueryVariables) {
+		const data = await this.query(ConversationsDocument, variables);
+		return data.conversations;
 	}
 
-	/**
-	 * Unfollow an account
-	 */
-	async unfollowAccount(id: string) {
-		return this.followAccount(id, true);
+	async getConversation(id: string) {
+		const data = await this.query(ConversationDocument, { id });
+		return data.conversation;
 	}
 
-	/**
-	 * Block an account
-	 */
-	async blockAccount(id: string, currentState = false) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation BlockAccount($id: ID!) {
-					blockAccount(id: $id) {
-						id
-						blocking
-					}
-				}
-			`,
-			variables: { id },
-			optimisticResponse: this.enableOptimisticUpdates
-				? { blockAccount: optimistic.optimisticBlock(id, currentState) }
-				: undefined,
-			update: (cache, { data }) => {
-				if (data?.blockAccount) {
-					optimistic.updateCacheAfterBlock(cache, id, data.blockAccount.blocking);
-				}
-			},
-		});
-
-		return result.data?.blockAccount;
+	async markConversationAsRead(id: string) {
+		const data = await this.mutate(MarkConversationReadDocument, { id });
+		return data.markConversationAsRead;
 	}
 
-	/**
-	 * Unblock an account
-	 */
-	async unblockAccount(id: string) {
-		return this.blockAccount(id, true);
+	async deleteConversation(id: string) {
+		const data = await this.mutate(DeleteConversationDocument, { id });
+		return data.deleteConversation;
 	}
 
-	/**
-	 * Mute an account
-	 */
-	async muteAccount(id: string, notifications = true, currentState = false) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation MuteAccount($id: ID!, $notifications: Boolean) {
-					muteAccount(id: $id, notifications: $notifications) {
-						id
-						muting
-						mutingNotifications
-					}
-				}
-			`,
-			variables: { id, notifications },
-			optimisticResponse: this.enableOptimisticUpdates
-				? { muteAccount: optimistic.optimisticMute(id, currentState, notifications) }
-				: undefined,
-			update: (cache, { data }) => {
-				if (data?.muteAccount) {
-					optimistic.updateCacheAfterMute(cache, id, data.muteAccount.muting, notifications);
-				}
-			},
-		});
-
-		return result.data?.muteAccount;
+	async getLists() {
+		const data = await this.query(ListsDocument);
+		return data.lists;
 	}
 
-	/**
-	 * Unmute an account
-	 */
-	async unmuteAccount(id: string) {
-		return this.muteAccount(id, true, true);
+	async getList(id: string) {
+		const data = await this.query(ListDocument, { id });
+		return data.list;
 	}
 
-	// ============================================================================
-	// SEARCH
-	// ============================================================================
-
-	/**
-	 * Search for accounts, statuses, and hashtags
-	 */
-	async search(variables: SearchVariables) {
-		const result = await this.client.client.query({
-			query: gql`
-				query Search($query: String!, $type: SearchType, $limit: Int) {
-					search(query: $query, type: $type, limit: $limit) {
-						accounts {
-							id
-							username
-							displayName
-						}
-						statuses {
-							id
-							content
-						}
-						hashtags {
-							name
-						}
-					}
-				}
-			`,
-			variables,
-		});
-
-		return result.data.search;
+	async getListAccounts(id: string) {
+		const data = await this.query(ListAccountsDocument, { id });
+		return data.listAccounts;
 	}
 
-	// ============================================================================
-	// NOTIFICATIONS
-	// ============================================================================
-
-	/**
-	 * Fetch notifications
-	 */
-	async fetchNotifications(variables?: { types?: string[]; limit?: number; maxId?: string }) {
-		const result = await this.client.client.query({
-			query: gql`
-				query GetNotifications($types: [NotificationType!], $limit: Int, $maxId: ID) {
-					notifications(types: $types, limit: $limit, maxId: $maxId) {
-						edges {
-							node {
-								id
-								type
-								createdAt
-								account {
-									id
-									username
-								}
-							}
-							cursor
-						}
-						pageInfo {
-							hasNextPage
-							endCursor
-						}
-					}
-				}
-			`,
-			variables,
-		});
-
-		return result.data.notifications;
+	async createList(input: CreateListMutationVariables['input']) {
+		const data = await this.mutate(CreateListDocument, { input });
+		return data.createList;
 	}
 
-	/**
-	 * Mark notifications as read
-	 */
-	async markNotificationsAsRead(ids: string[]) {
-		const result = await this.client.client.mutate({
-			mutation: gql`
-				mutation MarkNotificationsAsRead($ids: [ID!]!) {
-					markNotificationsAsRead(ids: $ids)
-				}
-			`,
-			variables: { ids },
-		});
-
-		return result.data?.markNotificationsAsRead;
+	async updateList(id: string, input: UpdateListMutationVariables['input']) {
+		const data = await this.mutate(UpdateListDocument, { id, input });
+		return data.updateList;
 	}
 
-	// ============================================================================
-	// SUBSCRIPTIONS
-	// ============================================================================
+	async deleteList(id: string) {
+		const data = await this.mutate(DeleteListDocument, { id });
+		return data.deleteList;
+	}
 
-	/**
-	 * Subscribe to home timeline updates
-	 */
-	subscribeToHomeTimeline(): Observable<FetchResult<SubscriptionEvent>> {
+	async addAccountsToList(id: string, accountIds: string[]) {
+		const data = await this.mutate(AddAccountsToListDocument, { id, accountIds });
+		return data.addAccountsToList;
+	}
+
+	async removeAccountsFromList(id: string, accountIds: string[]) {
+		const data = await this.mutate(RemoveAccountsFromListDocument, { id, accountIds });
+		return data.removeAccountsFromList;
+	}
+
+	async createNote(variables: CreateNoteMutationVariables) {
+		const data = await this.mutate(CreateNoteDocument, variables);
+		return data.createNote;
+	}
+
+	async createQuoteNote(variables: CreateQuoteNoteMutationVariables) {
+		const data = await this.mutate(CreateQuoteNoteDocument, variables);
+		return data.createQuoteNote;
+	}
+
+	async deleteObject(id: string) {
+		const data = await this.mutate(DeleteObjectDocument, { id });
+		return data.deleteObject;
+	}
+
+	async likeObject(id: string) {
+		const data = await this.mutate(LikeObjectDocument, { id });
+		return data.likeObject;
+	}
+
+	async unlikeObject(id: string) {
+		const data = await this.mutate(UnlikeObjectDocument, { id });
+		return data.unlikeObject;
+	}
+
+	async shareObject(id: string) {
+		const data = await this.mutate(ShareObjectDocument, { id });
+		return data.shareObject;
+	}
+
+	async unshareObject(id: string) {
+		const data = await this.mutate(UnshareObjectDocument, { id });
+		return data.unshareObject;
+	}
+
+	async bookmarkObject(id: string) {
+		const data = await this.mutate(BookmarkObjectDocument, { id });
+		return data.bookmarkObject;
+	}
+
+	async unbookmarkObject(id: string) {
+		const data = await this.mutate(UnbookmarkObjectDocument, { id });
+		return data.unbookmarkObject;
+	}
+
+	async pinObject(id: string) {
+		const data = await this.mutate(PinObjectDocument, { id });
+		return data.pinObject;
+	}
+
+	async unpinObject(id: string) {
+		const data = await this.mutate(UnpinObjectDocument, { id });
+		return data.unpinObject;
+	}
+
+	async getRelationship(id: string) {
+		const data = await this.query(RelationshipDocument, { id });
+		return data.relationship;
+	}
+
+	async getRelationships(ids: string[]) {
+		const data = await this.query(RelationshipsDocument, { ids });
+		return data.relationships;
+	}
+
+	async followActor(id: string) {
+		const data = await this.mutate(FollowActorDocument, { id });
+		return data.followActor;
+	}
+
+	async unfollowActor(id: string) {
+		const data = await this.mutate(UnfollowActorDocument, { id });
+		return data.unfollowActor;
+	}
+
+	async blockActor(id: string) {
+		const data = await this.mutate(BlockActorDocument, { id });
+		return data.blockActor;
+	}
+
+	async unblockActor(id: string) {
+		const data = await this.mutate(UnblockActorDocument, { id });
+		return data.unblockActor;
+	}
+
+	async muteActor(id: string, notifications?: boolean) {
+		const data = await this.mutate(MuteActorDocument, { id, notifications });
+		return data.muteActor;
+	}
+
+	async unmuteActor(id: string) {
+		const data = await this.mutate(UnmuteActorDocument, { id });
+		return data.unmuteActor;
+	}
+
+	async updateRelationship(
+		id: string,
+		input: UpdateRelationshipMutationVariables['input']
+	) {
+		const data = await this.mutate(UpdateRelationshipDocument, { id, input });
+		return data.updateRelationship;
+	}
+
+	subscribeToTimelineUpdates(
+		variables: TimelineUpdatesSubscriptionVariables
+	): Observable<FetchResult<TimelineUpdatesSubscription>> {
 		return this.client.client.subscribe({
-			query: gql`
-				subscription SubscribeToHomeTimeline {
-					homeTimelineUpdate {
-						event
-						payload {
-							id
-							content
-							createdAt
-						}
-					}
-				}
-			`,
+			query: TimelineUpdatesDocument,
+			variables,
 		});
 	}
 
-	/**
-	 * Subscribe to notifications
-	 */
-	subscribeToNotifications(types?: string[]): Observable<FetchResult<SubscriptionEvent>> {
+	subscribeToNotificationStream(
+		variables?: NotificationStreamSubscriptionVariables
+	): Observable<FetchResult<NotificationStreamSubscription>> {
 		return this.client.client.subscribe({
-			query: gql`
-				subscription SubscribeToNotifications($types: [NotificationType!]) {
-					notificationUpdate(types: $types) {
-						event
-						payload {
-							id
-							type
-							createdAt
-						}
-					}
-				}
-			`,
-			variables: { types },
+			query: NotificationStreamDocument,
+			variables,
 		});
 	}
 
-	/**
-	 * Subscribe to public timeline updates
-	 */
-	subscribeToPublicTimeline(local = false): Observable<FetchResult<SubscriptionEvent>> {
+	subscribeToConversationUpdates(): Observable<
+		FetchResult<ConversationUpdatesSubscription>
+	> {
 		return this.client.client.subscribe({
-			query: gql`
-				subscription SubscribeToPublicTimeline($local: Boolean) {
-					publicTimelineUpdate(local: $local) {
-						event
-						payload {
-							id
-							content
-							createdAt
-						}
-					}
-				}
-			`,
-			variables: { local },
+			query: ConversationUpdatesDocument,
 		});
 	}
 
-	/**
-	 * Subscribe to hashtag timeline updates
-	 */
-	subscribeToHashtagTimeline(hashtag: string): Observable<FetchResult<SubscriptionEvent>> {
+	subscribeToListUpdates(
+		variables: ListUpdatesSubscriptionVariables
+	): Observable<FetchResult<ListUpdatesSubscription>> {
 		return this.client.client.subscribe({
-			query: gql`
-				subscription SubscribeToHashtagTimeline($hashtag: String!) {
-					hashtagTimelineUpdate(hashtag: $hashtag) {
-						event
-						payload {
-							id
-							content
-							createdAt
-						}
-					}
-				}
-			`,
-			variables: { hashtag },
+			query: ListUpdatesDocument,
+			variables,
+		});
+	}
+
+	subscribeToQuoteActivity(
+		variables: QuoteActivitySubscriptionVariables
+	): Observable<FetchResult<QuoteActivitySubscription>> {
+		return this.client.client.subscribe({
+			query: QuoteActivityDocument,
+			variables,
+		});
+	}
+
+	subscribeToHashtagActivity(
+		variables: HashtagActivitySubscriptionVariables
+	): Observable<FetchResult<HashtagActivitySubscription>> {
+		return this.client.client.subscribe({
+			query: HashtagActivityDocument,
+			variables,
 		});
 	}
 }
 
-/**
- * Create a new Lesser GraphQL Adapter instance
- */
-export function createLesserGraphQLAdapter(config: LesserGraphQLAdapterConfig): LesserGraphQLAdapter {
+export function createLesserGraphQLAdapter(
+	config: LesserGraphQLAdapterConfig
+): LesserGraphQLAdapter {
 	return new LesserGraphQLAdapter(config);
 }
-

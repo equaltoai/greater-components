@@ -1,0 +1,112 @@
+# Relationship queries and mutations
+
+#import "./fragments.graphql"
+
+query Relationship($id: ID!) {
+  relationship(id: $id) {
+    id
+    following
+    followedBy
+    blocking
+    blockedBy
+    muting
+    mutingNotifications
+    requested
+    domainBlocking
+    showingReblogs
+    notifying
+    languages
+    note
+  }
+}
+
+query Relationships($ids: [ID!]!) {
+  relationships(ids: $ids) {
+    id
+    following
+    followedBy
+    blocking
+    blockedBy
+    muting
+    mutingNotifications
+    requested
+    domainBlocking
+    showingReblogs
+    notifying
+    languages
+    note
+  }
+}
+
+# Mutations
+mutation FollowActor($id: ID!) {
+  followActor(id: $id) {
+    ...ActivityFields
+  }
+}
+
+mutation UnfollowActor($id: ID!) {
+  unfollowActor(id: $id)
+}
+
+mutation BlockActor($id: ID!) {
+  blockActor(id: $id) {
+    id
+    following
+    followedBy
+    blocking
+    blockedBy
+    muting
+    mutingNotifications
+    requested
+    domainBlocking
+    showingReblogs
+    notifying
+    languages
+    note
+  }
+}
+
+mutation UnblockActor($id: ID!) {
+  unblockActor(id: $id)
+}
+
+mutation MuteActor($id: ID!, $notifications: Boolean) {
+  muteActor(id: $id, notifications: $notifications) {
+    id
+    following
+    followedBy
+    blocking
+    blockedBy
+    muting
+    mutingNotifications
+    requested
+    domainBlocking
+    showingReblogs
+    notifying
+    languages
+    note
+  }
+}
+
+mutation UnmuteActor($id: ID!) {
+  unmuteActor(id: $id)
+}
+
+mutation UpdateRelationship($id: ID!, $input: UpdateRelationshipInput!) {
+  updateRelationship(id: $id, input: $input) {
+    id
+    following
+    followedBy
+    blocking
+    blockedBy
+    muting
+    mutingNotifications
+    requested
+    domainBlocking
+    showingReblogs
+    notifying
+    languages
+    note
+  }
+}

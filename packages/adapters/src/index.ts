@@ -40,10 +40,8 @@ export type {
   GraphQLClientInstance,
   LesserGraphQLAdapterConfig,
   TimelineVariables,
-  CreateStatusVariables,
-  PollInput,
-  SearchVariables,
-  SubscriptionEvent
+  CreateNoteVariables,
+  SearchVariables
 } from './graphql';
 
 // Reactive Stores (Svelte 5 Runes)

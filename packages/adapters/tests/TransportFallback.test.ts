@@ -122,12 +122,13 @@ vi.mock('../src/HttpPollingClient', () => {
 
 describe('TransportFallback', () => {
   let client: TransportFallback;
+  let baseConfig: TransportFallbackConfig;
   let config: TransportFallbackConfig;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
-    config = {
+
+    baseConfig = {
       primary: {
         url: 'http://localhost:8080/sse',
         authToken: 'test-token'
@@ -137,6 +138,8 @@ describe('TransportFallback', () => {
         pollingInterval: 5000
       }
     };
+
+    config = structuredClone(baseConfig);
   });
 
   afterEach(() => {

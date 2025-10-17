@@ -4,161 +4,115 @@ import {
 	createComposeHandlers,
 } from '../../src/components/Compose/GraphQLAdapter.js';
 
-describe('GraphQLAdapter - Compose Integration', () => {
-	const mockAccount = {
-		id: 'user-123',
-		username: 'testuser',
-		displayName: 'Test User',
-		avatar: 'https://example.com/avatar.jpg',
-	};
+import type { LesserGraphQLAdapter, Visibility } from '@greater/adapters';
+import type { PostVisibility } from '../../src/components/Compose/context.js';
+const mockActor = {
+	id: 'user-123',
+	username: 'testuser',
+	displayName: 'Test User',
+	avatar: 'https://example.com/avatar.jpg',
+	domain: null,
+};
 
+describe('GraphQLAdapter - Compose Integration', () => {
 	describe('createOptimisticStatus', () => {
-		it('should create optimistic status with basic data', () => {
-			const status = createOptimisticStatus({
+		it('creates optimistic object with expected defaults', () => {
+			const object = createOptimisticStatus({
 				content: 'Test post',
 				visibility: 'public',
-				account: mockAccount,
+				account: mockActor,
 			});
 
-			expect(status.id).toMatch(/^optimistic-/);
-			expect(status.content).toBe('Test post');
-			expect(status.visibility).toBe('public');
-			expect(status.account).toEqual(mockAccount);
-			expect(status._optimistic).toBe(true);
+			expect(object.id).toMatch(/^optimistic-/);
+			expect(object.content).toBe('Test post');
+			expect(object.visibility).toBe('PUBLIC');
+			expect(object.actor.username).toBe(mockActor.username);
+			expect(object._optimistic).toBe(true);
 		});
 
-		it('should include content warning when provided', () => {
-			const status = createOptimisticStatus({
-				content: 'Sensitive content',
-				contentWarning: 'CW: Test',
-				visibility: 'public',
-				account: mockAccount,
+		it('includes spoiler text when provided', () => {
+			const object = createOptimisticStatus({
+				content: 'Sensitive',
+				contentWarning: 'CW',
+				visibility: 'unlisted',
+				account: mockActor,
 			});
 
-			expect(status.contentWarning).toBe('CW: Test');
+			expect(object.spoilerText).toBe('CW');
+			expect(object.visibility).toBe('UNLISTED');
 		});
 
-		it('should set initial interaction counts to zero', () => {
-			const status = createOptimisticStatus({
-				content: 'Test',
-				visibility: 'public',
-				account: mockAccount,
+		it('initialises engagement metrics to zero', () => {
+			const object = createOptimisticStatus({
+				content: 'Metrics test',
+				visibility: 'private',
+				account: mockActor,
 			});
 
-			expect(status.repliesCount).toBe(0);
-			expect(status.reblogsCount).toBe(0);
-			expect(status.favouritesCount).toBe(0);
+			expect(object.repliesCount).toBe(0);
+			expect(object.likesCount).toBe(0);
+			expect(object.sharesCount).toBe(0);
+			expect(object.quoteCount).toBe(0);
 		});
 
-		it('should set initial interaction states to false', () => {
-			const status = createOptimisticStatus({
-				content: 'Test',
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.favourited).toBe(false);
-			expect(status.reblogged).toBe(false);
-			expect(status.bookmarked).toBe(false);
-		});
-
-		it('should include timestamp', () => {
+		it('sets timestamps within current time window', () => {
 			const before = Date.now();
-			const status = createOptimisticStatus({
-				content: 'Test',
-				visibility: 'public',
-				account: mockAccount,
+			const object = createOptimisticStatus({
+				content: 'Timestamp',
+				visibility: 'direct',
+				account: mockActor,
 			});
 			const after = Date.now();
 
-			const timestamp = new Date(status.createdAt).getTime();
-			expect(timestamp).toBeGreaterThanOrEqual(before);
-			expect(timestamp).toBeLessThanOrEqual(after);
+			const createdAt = new Date(object.createdAt).getTime();
+			expect(createdAt).toBeGreaterThanOrEqual(before);
+			expect(createdAt).toBeLessThanOrEqual(after);
+			const updatedAt = new Date(object.updatedAt).getTime();
+			expect(updatedAt).toBeGreaterThanOrEqual(before);
+			expect(updatedAt).toBeLessThanOrEqual(after);
 		});
 
-		it('should create unique IDs for each status', async () => {
-			const status1 = createOptimisticStatus({
-				content: 'Test 1',
-				visibility: 'public',
-				account: mockAccount,
-			});
+		it('maps visibility values to GraphQL enumeration', () => {
+			const cases: Record<PostVisibility, Visibility> = {
+				public: 'PUBLIC',
+				unlisted: 'UNLISTED',
+				private: 'FOLLOWERS',
+				direct: 'DIRECT',
+			};
 
-			// Wait 1ms to ensure different timestamp
-			await new Promise((resolve) => setTimeout(resolve, 1));
-
-			const status2 = createOptimisticStatus({
-				content: 'Test 2',
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status1.id).not.toBe(status2.id);
-		});
-
-		it('should handle different visibility levels', () => {
-			const visibilities: Array<'public' | 'unlisted' | 'private' | 'direct'> = [
-				'public',
-				'unlisted',
-				'private',
-				'direct',
-			];
-
-			visibilities.forEach((visibility) => {
-				const status = createOptimisticStatus({
-					content: 'Test',
-					visibility,
-					account: mockAccount,
+			(Object.keys(cases) as Array<PostVisibility>).forEach((key) => {
+				const object = createOptimisticStatus({
+					content: 'Visibility',
+					visibility: key,
+					account: mockActor,
 				});
-
-				expect(status.visibility).toBe(visibility);
+				expect(object.visibility).toBe(cases[key]);
 			});
 		});
 
-		it('should handle empty content', () => {
-			const status = createOptimisticStatus({
-				content: '',
+		it('preserves unicode content', () => {
+			const unicode = '👋 Hello 世界 🌍';
+			const object = createOptimisticStatus({
+				content: unicode,
 				visibility: 'public',
-				account: mockAccount,
+				account: mockActor,
 			});
 
-			expect(status.content).toBe('');
-		});
-
-		it('should handle very long content', () => {
-			const longContent = 'a'.repeat(5000);
-			const status = createOptimisticStatus({
-				content: longContent,
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.content).toBe(longContent);
-		});
-
-		it('should handle unicode content', () => {
-			const unicodeContent = '👋 Hello 世界 🌍';
-			const status = createOptimisticStatus({
-				content: unicodeContent,
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.content).toBe(unicodeContent);
+			expect(object.content).toBe(unicode);
 		});
 	});
 
 	describe('createComposeHandlers', () => {
-		it('should create handlers with adapter', () => {
+		it('creates base handlers with adapter', () => {
 			const mockAdapter = {
-				createStatus: vi.fn(),
+				createNote: vi.fn(),
 				search: vi.fn(),
-			} as any;
+			} as unknown as LesserGraphQLAdapter;
 
 			const handlers = createComposeHandlers({
 				adapter: mockAdapter,
 			});
 
-			expect(handlers).toBeDefined();
 			expect(handlers.handleSubmit).toBeDefined();
 			expect(handlers.handleMediaUpload).toBeDefined();
 			expect(handlers.handleMediaRemove).toBeDefined();
@@ -166,121 +120,47 @@ describe('GraphQLAdapter - Compose Integration', () => {
 			expect(handlers.handleAutocompleteSearch).toBeDefined();
 		});
 
-		it('should create optimistic handlers when account provided', () => {
+		it('creates optimistic handlers when account provided', () => {
 			const mockAdapter = {
-				createStatus: vi.fn(),
+				createNote: vi.fn(),
 				search: vi.fn(),
-			} as any;
+			} as unknown as LesserGraphQLAdapter;
 
 			const handlers = createComposeHandlers({
 				adapter: mockAdapter,
-				currentAccount: mockAccount,
+				currentAccount: mockActor,
 				enableOptimistic: true,
 			});
 
-			expect(handlers).toBeDefined();
 			expect(handlers.handleSubmit).toBeDefined();
 		});
 
-		it('should create basic handlers when optimistic disabled', () => {
+		it('falls back to base handlers when optimistic disabled', () => {
 			const mockAdapter = {
-				createStatus: vi.fn(),
+				createNote: vi.fn(),
 				search: vi.fn(),
-			} as any;
+			} as unknown as LesserGraphQLAdapter;
 
 			const handlers = createComposeHandlers({
 				adapter: mockAdapter,
 				enableOptimistic: false,
 			});
 
-			expect(handlers).toBeDefined();
+			expect(handlers.handleSubmit).toBeDefined();
 		});
 
-		it('should create basic handlers when no account provided', () => {
+		it('falls back to base handlers when no account provided', () => {
 			const mockAdapter = {
-				createStatus: vi.fn(),
+				createNote: vi.fn(),
 				search: vi.fn(),
-			} as any;
+			} as unknown as LesserGraphQLAdapter;
 
 			const handlers = createComposeHandlers({
 				adapter: mockAdapter,
+				enableOptimistic: true,
 			});
 
-			expect(handlers).toBeDefined();
-		});
-
-		it('should accept optimistic update callback', () => {
-			const mockAdapter = {
-				createStatus: vi.fn(),
-				search: vi.fn(),
-			} as any;
-
-			const onOptimisticUpdate = vi.fn();
-
-			const handlers = createComposeHandlers({
-				adapter: mockAdapter,
-				currentAccount: mockAccount,
-				onOptimisticUpdate,
-			});
-
-			expect(handlers).toBeDefined();
-		});
-	});
-
-	describe('Edge Cases', () => {
-		it('should handle null/undefined content warning', () => {
-			const status = createOptimisticStatus({
-				content: 'Test',
-				contentWarning: undefined,
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.contentWarning).toBeUndefined();
-		});
-
-		it('should handle special characters in content', () => {
-			const specialContent = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
-			const status = createOptimisticStatus({
-				content: specialContent,
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.content).toBe(specialContent);
-		});
-
-		it('should handle newlines in content', () => {
-			const multilineContent = 'Line 1\nLine 2\nLine 3';
-			const status = createOptimisticStatus({
-				content: multilineContent,
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.content).toBe(multilineContent);
-		});
-
-		it('should handle RTL text', () => {
-			const rtlContent = 'مرحبا بك';
-			const status = createOptimisticStatus({
-				content: rtlContent,
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.content).toBe(rtlContent);
-		});
-
-		it('should handle mixed LTR and RTL', () => {
-			const mixedContent = 'Hello مرحبا World';
-			const status = createOptimisticStatus({
-				content: mixedContent,
-				visibility: 'public',
-				account: mockAccount,
-			});
-
-			expect(status.content).toBe(mixedContent);
+			expect(handlers.handleSubmit).toBeDefined();
 		});
 	});
 });

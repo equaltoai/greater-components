@@ -11,16 +11,12 @@ export { LesserGraphQLAdapter, createLesserGraphQLAdapter } from './LesserGraphQ
 export type {
 	LesserGraphQLAdapterConfig,
 	TimelineVariables,
-	CreateStatusVariables,
-	PollInput,
+	CreateNoteVariables,
 	SearchVariables,
-	SubscriptionEvent,
 } from './LesserGraphQLAdapter.js';
 
+export * from './generated/types.js';
 export { typePolicies, cacheConfig, evictStaleCache, limitCacheSize } from './cache.js';
 
 export * as optimistic from './optimistic.js';
-
-// Re-export all GraphQL operations (when using codegen, these would be generated)
-// For now, they're defined inline in the adapter class
 

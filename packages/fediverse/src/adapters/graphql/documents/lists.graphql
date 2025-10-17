@@ -1,0 +1,84 @@
+# List queries and mutations
+
+#import "./fragments.graphql"
+
+query Lists {
+  lists {
+    id
+    title
+    repliesPolicy
+    exclusive
+    accountCount
+    createdAt
+    updatedAt
+  }
+}
+
+query List($id: ID!) {
+  list(id: $id) {
+    id
+    title
+    repliesPolicy
+    exclusive
+    accountCount
+    accounts {
+      ...ActorSummary
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+query ListAccounts($id: ID!) {
+  listAccounts(id: $id) {
+    ...ActorSummary
+  }
+}
+
+mutation CreateList($input: CreateListInput!) {
+  createList(input: $input) {
+    id
+    title
+    repliesPolicy
+    exclusive
+    accountCount
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateList($id: ID!, $input: UpdateListInput!) {
+  updateList(id: $id, input: $input) {
+    id
+    title
+    repliesPolicy
+    exclusive
+    accountCount
+    createdAt
+    updatedAt
+  }
+}
+
+mutation DeleteList($id: ID!) {
+  deleteList(id: $id)
+}
+
+mutation AddAccountsToList($id: ID!, $accountIds: [ID!]!) {
+  addAccountsToList(id: $id, accountIds: $accountIds) {
+    id
+    accountCount
+    accounts {
+      ...ActorSummary
+    }
+  }
+}
+
+mutation RemoveAccountsFromList($id: ID!, $accountIds: [ID!]!) {
+  removeAccountsFromList(id: $id, accountIds: $accountIds) {
+    id
+    accountCount
+    accounts {
+      ...ActorSummary
+    }
+  }
+}
