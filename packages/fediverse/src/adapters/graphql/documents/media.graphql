@@ -1,0 +1,36 @@
+# Media queries and mutations
+
+#import "./fragments.graphql"
+
+query Media($id: ID!) {
+  media(id: $id) {
+    id
+    type
+    url
+    previewUrl
+    description
+    blurhash
+    width
+    height
+    duration
+    size
+    mimeType
+    uploadedBy {
+      ...ActorSummary
+    }
+    createdAt
+  }
+}
+
+mutation UpdateMedia($id: ID!, $input: UpdateMediaInput!) {
+  updateMedia(id: $id, input: $input) {
+    id
+    description
+    blurhash
+    width
+    height
+    duration
+    url
+    previewUrl
+  }
+}

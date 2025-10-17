@@ -76,9 +76,52 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
   const dismissalTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   // Transport event handlers
+  const persistentUnsubscribers: (() => void)[] = [];
   let streamingUnsubscribers: (() => void)[] = [];
   let updateDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   let pendingNotifications: Notification[] = [];
+
+  function enforceNotificationLimit(notifications: Notification[]): {
+    trimmed: Notification[];
+    removed: Notification[];
+  } {
+    if (!config.maxNotifications || notifications.length <= config.maxNotifications) {
+      return { trimmed: notifications, removed: [] };
+    }
+
+    let toRemove = notifications.length - config.maxNotifications;
+    const removalQueue: Notification[] = [];
+
+    const sortedRead = notifications
+      .filter(notification => notification.isRead)
+      .sort((a, b) => a.timestamp - b.timestamp);
+
+    for (const notification of sortedRead) {
+      if (toRemove === 0) break;
+      removalQueue.push(notification);
+      toRemove--;
+    }
+
+    if (toRemove > 0) {
+      const remaining = notifications
+        .filter(notification => !removalQueue.includes(notification))
+        .sort((a, b) => a.timestamp - b.timestamp);
+
+      for (const notification of remaining) {
+        if (toRemove === 0) break;
+        removalQueue.push(notification);
+        toRemove--;
+      }
+    }
+
+    const removalIds = new Set(removalQueue.map(notification => notification.id));
+    const trimmed = notifications.filter(notification => !removalIds.has(notification.id));
+
+    return {
+      trimmed,
+      removed: removalQueue
+    };
+  }
 
   function updateDerivedValues(notifications?: Notification[], filter?: NotificationFilter): void {
     const currentState = state.value;
@@ -175,43 +218,33 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
     const notifications = [...pendingNotifications];
     pendingNotifications = [];
 
-    // Deduplicate notifications by ID
+    // Deduplicate notifications by ID and ignore already stored items
     const notificationMap = new Map<string, Notification>();
-    notifications.forEach(n => notificationMap.set(n.id, n));
+    notifications.forEach(notification => notificationMap.set(notification.id, notification));
 
-    // Add new notifications
     const newNotifications = Array.from(notificationMap.values())
-      .filter(n => !state.value.notifications.some(existing => existing.id === n.id));
+      .filter(notification => !state.value.notifications.some(existing => existing.id === notification.id));
 
-    if (newNotifications.length > 0) {
-      state.update(current => ({
-        ...current,
-        notifications: [...current.notifications, ...newNotifications]
-      }));
-      
-      // Schedule auto-dismiss for new notifications
-      newNotifications.forEach(scheduleAutoDismiss);
-      
-      // Limit total notifications if configured
-      const currentNotifications = state.value.notifications;
-      if (config.maxNotifications && currentNotifications.length > config.maxNotifications) {
-        const excess = currentNotifications.length - config.maxNotifications;
-        const readNotifications = currentNotifications.filter(n => n.isRead);
-        const toRemove = readNotifications.slice(0, Math.min(excess, readNotifications.length));
-        
-        if (toRemove.length > 0) {
-          state.update(current => ({
-            ...current,
-            notifications: current.notifications.filter(n => !toRemove.some(r => r.id === n.id))
-          }));
-          
-          // Clear timers for removed notifications
-          toRemove.forEach(n => clearAutoDismiss(n.id));
-        }
-      }
-      
-      updateDerivedValues();
+    if (newNotifications.length === 0) {
+      return;
     }
+
+    const newNotificationIds = new Set(newNotifications.map(notification => notification.id));
+    const mergedNotifications = [...state.value.notifications, ...newNotifications];
+    const { trimmed, removed } = enforceNotificationLimit(mergedNotifications);
+
+    state.update(current => ({
+      ...current,
+      notifications: trimmed
+    }));
+
+    trimmed
+      .filter(notification => newNotificationIds.has(notification.id))
+      .forEach(scheduleAutoDismiss);
+
+    removed.forEach(notification => clearAutoDismiss(notification.id));
+
+    updateDerivedValues(trimmed);
   }
 
   function scheduleNotificationUpdate(notification: Notification): void {
@@ -239,17 +272,24 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
       isRead: false,
       dismissAfter: notificationData.dismissAfter || config.defaultDismissAfter
     };
-    
+
+    const mergedNotifications = [...state.value.notifications, notification];
+    const { trimmed, removed } = enforceNotificationLimit(mergedNotifications);
+    const isNotificationKept = trimmed.some(item => item.id === id);
+
     state.update(current => ({
       ...current,
-      notifications: [...current.notifications, notification]
+      notifications: trimmed
     }));
-    
-    scheduleAutoDismiss(notification);
-    updateDerivedValues();
-    
-    // Send to server if streaming is active
-    if (state.value.isStreaming && config.transportManager) {
+
+    if (isNotificationKept) {
+      scheduleAutoDismiss(notification);
+    }
+
+    removed.forEach(item => clearAutoDismiss(item.id));
+    updateDerivedValues(trimmed);
+
+    if (isNotificationKept && state.value.isStreaming && config.transportManager) {
       try {
         config.transportManager.send({
           type: 'notification_add',
@@ -263,7 +303,7 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
         console.error('Failed to send notification to server:', error);
       }
     }
-    
+
     return id;
   }
 
@@ -422,54 +462,31 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 
   function startStreaming(): void {
     if (state.value.isStreaming || !config.transportManager) return;
-    
+
+    ensureMessageSubscription();
+
     state.update(current => ({
       ...current,
       isStreaming: true,
       error: null
     }));
-    
-    // Subscribe to new notifications
-    const messageHandler = config.transportManager.on('message', (event) => {
-      if (event.data && typeof event.data === 'object' && 'type' in event.data) {
-        const eventData = event.data as any;
-        if (eventData.type === 'notification_received' && eventData.data) {
-          const notification = eventData.data as Notification;
-          scheduleNotificationUpdate(notification);
-        } else if (eventData.type === 'notification_updated' && eventData.data) {
-          const { id, updates } = eventData.data;
-          if (id && updates) {
-            updateNotificationFromStream(id, updates);
-          }
-        } else if (eventData.type === 'notification_removed' && eventData.data) {
-          const { id } = eventData.data;
-          if (id) {
-            removeNotification(id);
-          }
-        }
-      }
-    });
-    
-    streamingUnsubscribers.push(messageHandler);
-    
-    // Subscribe to connection events
+
     const errorHandler = config.transportManager.on('error', (event) => {
       state.update(current => ({
         ...current,
         error: event.error || new Error('Streaming connection error')
       }));
     });
-    
+
     const closeHandler = config.transportManager.on('close', () => {
       state.update(current => ({
         ...current,
         isStreaming: false
       }));
     });
-    
+
     streamingUnsubscribers.push(errorHandler, closeHandler);
-    
-    // Start the transport connection
+
     try {
       config.transportManager.connect();
     } catch (error) {
@@ -498,6 +515,54 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
     }
     pendingNotifications = [];
   }
+
+  function handleTransportMessage(event: { data?: unknown }): void {
+    if (!event?.data || typeof event.data !== 'object' || !('type' in event.data)) {
+      return;
+    }
+
+    const eventData = event.data as { type?: string; data?: unknown };
+    if (!eventData.type) {
+      return;
+    }
+
+    switch (eventData.type) {
+      case 'notification_received':
+        if (eventData.data) {
+          scheduleNotificationUpdate(eventData.data as Notification);
+        }
+        break;
+      case 'notification_updated': {
+        const payload = eventData.data as { id?: string; updates?: Partial<Notification> } | undefined;
+        if (payload?.id && payload.updates) {
+          updateNotificationFromStream(payload.id, payload.updates);
+        }
+        break;
+      }
+      case 'notification_removed': {
+        const payload = eventData.data as { id?: string } | undefined;
+        if (payload?.id) {
+          removeNotification(payload.id);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  function ensureMessageSubscription(): void {
+    if (!config.transportManager) {
+      return;
+    }
+
+    if (persistentUnsubscribers.length === 0) {
+      const unsubscribe = config.transportManager.on('message', handleTransportMessage);
+      persistentUnsubscribers.push(unsubscribe);
+    }
+  }
+
+  ensureMessageSubscription();
 
   function updateNotificationFromStream(id: string, updates: Partial<Notification>): void {
     const currentState = state.value;
@@ -551,7 +616,11 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
     // Clear debounce timer
     if (updateDebounceTimer) {
       clearTimeout(updateDebounceTimer);
+      updateDebounceTimer = null;
     }
+
+    persistentUnsubscribers.forEach(unsubscribe => unsubscribe());
+    persistentUnsubscribers.length = 0;
     
     // Clear state
     state.update(() => ({

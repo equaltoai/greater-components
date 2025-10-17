@@ -1,0 +1,149 @@
+# Shared GraphQL fragments for Lesser schema
+
+fragment FieldFields on Field {
+  name
+  value
+  verifiedAt
+}
+
+fragment ActorSummary on Actor {
+  id
+  username
+  domain
+  displayName
+  summary
+  avatar
+  header
+  followers
+  following
+  statusesCount
+  bot
+  locked
+  createdAt
+  updatedAt
+  trustScore
+  fields {
+    ...FieldFields
+  }
+}
+
+fragment AttachmentFields on Attachment {
+  id
+  type
+  url
+  preview
+  description
+  blurhash
+  width
+  height
+  duration
+}
+
+fragment TagFields on Tag {
+  name
+  url
+}
+
+fragment MentionFields on Mention {
+  id
+  username
+  domain
+  url
+}
+
+fragment CommunityNoteFields on CommunityNote {
+  id
+  content
+  helpful
+  notHelpful
+  createdAt
+  author {
+    ...ActorSummary
+  }
+}
+
+fragment QuoteContextFields on QuoteContext {
+  quoteAllowed
+  quoteType
+  withdrawn
+  originalAuthor {
+    ...ActorSummary
+  }
+  originalNote {
+    id
+    type
+  }
+}
+
+fragment ObjectFields on Object {
+  id
+  type
+  content
+  contentMap {
+    language
+    content
+  }
+  visibility
+  sensitive
+  spoilerText
+  attachments {
+    ...AttachmentFields
+  }
+  tags {
+    ...TagFields
+  }
+  mentions {
+    ...MentionFields
+  }
+  createdAt
+  updatedAt
+  repliesCount
+  likesCount
+  sharesCount
+  estimatedCost
+  moderationScore
+  quoteUrl
+  quoteable
+  quotePermissions
+  quoteContext {
+    ...QuoteContextFields
+  }
+  quoteCount
+  communityNotes {
+    ...CommunityNoteFields
+  }
+  actor {
+    ...ActorSummary
+  }
+  inReplyTo {
+    id
+    type
+    actor {
+      ...ActorSummary
+    }
+  }
+}
+
+fragment ActivityFields on Activity {
+  id
+  type
+  published
+  cost
+  actor {
+    ...ActorSummary
+  }
+  object {
+    id
+    type
+  }
+  target {
+    id
+    type
+  }
+}
+
+fragment CostUpdateFields on CostUpdate {
+  operationCost
+  dailyTotal
+  monthlyProjection
+}

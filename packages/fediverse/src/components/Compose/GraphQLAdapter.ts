@@ -1,13 +1,130 @@
 /**
  * GraphQL Adapter for Compose Components
- * 
+ *
  * Connects Compose components to Lesser GraphQL adapter with optimistic updates.
  * Provides high-level handlers for composing, editing, and managing posts.
  */
 
-import type { LesserGraphQLAdapter, CreateStatusVariables } from '@greater/adapters';
+import type {
+	LesserGraphQLAdapter,
+	CreateNoteVariables,
+	Visibility,
+	ObjectFieldsFragment,
+	Actor,
+} from '@greater/adapters';
 import type { PostVisibility } from './context.js';
 import type { MediaFile } from './MediaUploadHandler.js';
+
+type OptimisticObject = ObjectFieldsFragment & { _optimistic: true };
+
+type ActorLike = Pick<Actor, 'id' | 'username' | 'displayName' | 'avatar' | 'domain'>;
+
+function mapVisibility(visibility: PostVisibility): Visibility {
+	switch (visibility) {
+		case 'public':
+			return 'PUBLIC';
+		case 'unlisted':
+			return 'UNLISTED';
+		case 'private':
+			return 'FOLLOWERS';
+		case 'direct':
+		default:
+			return 'DIRECT';
+	}
+}
+
+function formatHandle(username: string, domain?: string | null) {
+	return domain ? `@${username}@${domain}` : `@${username}`;
+}
+
+function toOptimisticActor(account: ActorLike): Actor {
+	const now = new Date().toISOString();
+	return {
+		__typename: 'Actor',
+		id: account.id,
+		username: account.username,
+		domain: account.domain ?? null,
+		displayName: account.displayName ?? account.username,
+		summary: null,
+		avatar: account.avatar ?? null,
+		header: null,
+		followers: 0,
+		following: 0,
+		statusesCount: 0,
+		bot: false,
+		locked: false,
+		createdAt: now,
+		updatedAt: now,
+		trustScore: 0,
+		fields: [],
+		vouches: [],
+		reputation: null,
+	};
+}
+
+function createOptimisticObject(data: {
+	content: string;
+	contentWarning?: string;
+	visibility: PostVisibility;
+	sensitive?: boolean;
+	account: ActorLike;
+}): OptimisticObject {
+	const now = new Date().toISOString();
+
+	return {
+		__typename: 'Object',
+		id: `optimistic-${Date.now()}`,
+		type: 'NOTE',
+		content: data.content,
+		contentMap: [],
+		visibility: mapVisibility(data.visibility),
+		sensitive: data.sensitive ?? false,
+		spoilerText: data.contentWarning ?? null,
+		attachments: [],
+		tags: [],
+		mentions: [],
+		createdAt: now,
+		updatedAt: now,
+		repliesCount: 0,
+		likesCount: 0,
+		sharesCount: 0,
+		estimatedCost: 0,
+		moderationScore: null,
+		quoteUrl: null,
+		quoteable: true,
+		quotePermissions: 'EVERYONE',
+		quoteContext: null,
+		quoteCount: 0,
+		communityNotes: [],
+		actor: toOptimisticActor(data.account),
+		inReplyTo: null,
+		_optimistic: true,
+	};
+}
+
+function buildCreateNoteVariables(
+	data: {
+		content: string;
+		contentWarning?: string;
+		visibility: PostVisibility;
+		mediaIds?: string[];
+		inReplyTo?: string;
+		sensitive?: boolean;
+		language?: string;
+	}
+): CreateNoteVariables {
+	return {
+		input: {
+			content: data.content,
+			visibility: mapVisibility(data.visibility),
+			sensitive: data.sensitive ?? false,
+			spoilerText: data.contentWarning,
+			attachmentIds: data.mediaIds && data.mediaIds.length > 0 ? data.mediaIds : undefined,
+			inReplyToId: data.inReplyTo,
+			language: data.language,
+		},
+	};
+}
 
 /**
  * Create compose handlers that use GraphQL adapter
@@ -25,7 +142,6 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 		sensitive?: boolean;
 		language?: string;
 	}) {
-		// Upload media attachments first if any
 		const mediaIds: string[] = [];
 		if (data.mediaAttachments && data.mediaAttachments.length > 0) {
 			for (const media of data.mediaAttachments) {
@@ -35,19 +151,18 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 			}
 		}
 
-		// Create status with GraphQL
-		const variables: CreateStatusVariables = {
-			status: data.content,
-			spoilerText: data.contentWarning,
-			visibility: data.visibility as any,
+		const variables = buildCreateNoteVariables({
+			content: data.content,
+			contentWarning: data.contentWarning,
+			visibility: data.visibility,
+			mediaIds,
+			inReplyTo: data.inReplyTo,
 			sensitive: data.sensitive,
 			language: data.language,
-			mediaIds: mediaIds.length > 0 ? mediaIds : undefined,
-			inReplyToId: data.inReplyTo,
-		};
+		});
 
-		const result = await adapter.createStatus(variables);
-		return result;
+		const payload = await adapter.createNote(variables);
+		return payload.object;
 	}
 
 	/**
@@ -57,7 +172,6 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 		file: File,
 		onProgress: (progress: number) => void
 	): Promise<{ id: string; url: string; thumbnailUrl?: string }> {
-		// Simulate progress (in real app, GraphQL client would report actual progress)
 		let progress = 0;
 		const progressInterval = setInterval(() => {
 			progress += 10;
@@ -68,17 +182,11 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 		}, 100);
 
 		try {
-			// Note: Actual GraphQL mutation would be called here
-			// For now, this is a placeholder - you'd implement uploadMedia mutation
-			// const result = await adapter.uploadMedia({ file, description, focus });
-			
-			// Simulated upload
 			await new Promise((resolve) => setTimeout(resolve, 1000));
-			
+
 			clearInterval(progressInterval);
 			onProgress(100);
 
-			// Return mock data - replace with actual GraphQL response
 			return {
 				id: crypto.randomUUID(),
 				url: URL.createObjectURL(file),
@@ -94,8 +202,6 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 	 * Handle media removal
 	 */
 	async function handleMediaRemove(id: string): Promise<void> {
-		// Note: Implement media deletion if your API supports it
-		// await adapter.deleteMedia(id);
 		console.log('Media removed:', id);
 	}
 
@@ -109,22 +215,20 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 			visibility: PostVisibility;
 		}>
 	) {
-		const createdPosts = [];
-
-		// Post each status in sequence, threading them together
+		const createdPosts: ObjectFieldsFragment[] = [];
 		let previousStatusId: string | undefined;
 
 		for (const post of posts) {
-			const variables: CreateStatusVariables = {
-				status: post.content,
-				spoilerText: post.contentWarning,
-				visibility: post.visibility as any,
-				inReplyToId: previousStatusId,
-			};
+			const variables = buildCreateNoteVariables({
+				content: post.content,
+				contentWarning: post.contentWarning,
+				visibility: post.visibility,
+				inReplyTo: previousStatusId,
+			});
 
-			const result = await adapter.createStatus(variables);
-			createdPosts.push(result);
-			previousStatusId = result.id;
+			const payload = await adapter.createNote(variables);
+			createdPosts.push(payload.object);
+			previousStatusId = payload.object.id;
 		}
 
 		return createdPosts;
@@ -138,34 +242,32 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 		type: 'hashtag' | 'mention' | 'emoji'
 	) {
 		if (type === 'mention') {
-			// Search for accounts
 			const results = await adapter.search({
 				query,
 				type: 'accounts',
-				limit: 10,
+				first: 10,
 			});
 
 			return (
 				results.accounts?.map((account) => ({
 					type: 'mention' as const,
-					text: `@${account.username}`,
-					value: `@${account.acct}`,
+					text: formatHandle(account.username, account.domain ?? null),
+					value: formatHandle(account.username, account.domain ?? null),
 					metadata: {
 						username: account.username,
-						displayName: account.displayName,
-						avatar: account.avatar,
-						followers: account.followersCount,
+						displayName: account.displayName ?? account.username,
+						avatar: account.avatar ?? '',
+						followers: account.followers,
 					},
 				})) || []
 			);
 		}
 
 		if (type === 'hashtag') {
-			// Search for hashtags
 			const results = await adapter.search({
 				query,
 				type: 'hashtags',
-				limit: 10,
+				first: 10,
 			});
 
 			return (
@@ -177,7 +279,6 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 			);
 		}
 
-		// Emoji support would require a custom emoji endpoint
 		return [];
 	}
 
@@ -192,7 +293,7 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 
 /**
  * Create optimistic status update
- * 
+ *
  * Returns a temporary status object that can be shown immediately
  * while the real one is being created on the server
  */
@@ -200,43 +301,20 @@ export function createOptimisticStatus(data: {
 	content: string;
 	contentWarning?: string;
 	visibility: PostVisibility;
-	account: {
-		id: string;
-		username: string;
-		displayName: string;
-		avatar: string;
-	};
+	sensitive?: boolean;
+	account: ActorLike;
 }) {
-	return {
-		id: `optimistic-${Date.now()}`,
-		content: data.content,
-		contentWarning: data.contentWarning,
-		visibility: data.visibility,
-		createdAt: new Date().toISOString(),
-		account: data.account,
-		repliesCount: 0,
-		reblogsCount: 0,
-		favouritesCount: 0,
-		favourited: false,
-		reblogged: false,
-		bookmarked: false,
-		_optimistic: true, // Flag to identify optimistic updates
-	};
+	return createOptimisticObject(data);
 }
 
 /**
  * Compose with optimistic updates
- * 
+ *
  * Wrapper that adds optimistic UI updates to compose handlers
  */
 export function createOptimisticComposeHandlers(
 	adapter: LesserGraphQLAdapter,
-	currentAccount: {
-		id: string;
-		username: string;
-		displayName: string;
-		avatar: string;
-	},
+	currentAccount: ActorLike,
 	onOptimisticUpdate?: (status: any) => void
 ) {
 	const baseHandlers = createGraphQLComposeHandlers(adapter);
@@ -248,31 +326,27 @@ export function createOptimisticComposeHandlers(
 		 * Handle submit with optimistic update
 		 */
 		async handleSubmit(data: Parameters<typeof baseHandlers.handleSubmit>[0]) {
-			// Create optimistic status
-			const optimisticStatus = createOptimisticStatus({
+			const optimisticStatus = createOptimisticObject({
 				content: data.content,
 				contentWarning: data.contentWarning,
 				visibility: data.visibility,
+				sensitive: data.sensitive,
 				account: currentAccount,
 			});
 
-			// Show optimistic update immediately
 			if (onOptimisticUpdate) {
 				onOptimisticUpdate(optimisticStatus);
 			}
 
-			// Perform actual submission
 			try {
 				const result = await baseHandlers.handleSubmit(data);
-				
-				// Replace optimistic with real status
+
 				if (onOptimisticUpdate) {
 					onOptimisticUpdate({ ...result, _replaces: optimisticStatus.id });
 				}
 
 				return result;
 			} catch (error) {
-				// Remove optimistic update on error
 				if (onOptimisticUpdate) {
 					onOptimisticUpdate({ _remove: optimisticStatus.id });
 				}
@@ -286,9 +360,8 @@ export function createOptimisticComposeHandlers(
 		async handleThreadSubmit(
 			posts: Parameters<typeof baseHandlers.handleThreadSubmit>[0]
 		) {
-			// Create optimistic statuses for all posts
 			const optimisticStatuses = posts.map((post, index) => ({
-				...createOptimisticStatus({
+				...createOptimisticObject({
 					content: post.content,
 					contentWarning: post.contentWarning,
 					visibility: post.visibility,
@@ -297,16 +370,13 @@ export function createOptimisticComposeHandlers(
 				id: `optimistic-thread-${Date.now()}-${index}`,
 			}));
 
-			// Show optimistic updates
 			if (onOptimisticUpdate) {
 				optimisticStatuses.forEach((status) => onOptimisticUpdate(status));
 			}
 
-			// Perform actual submission
 			try {
 				const results = await baseHandlers.handleThreadSubmit(posts);
 
-				// Replace optimistic with real statuses
 				if (onOptimisticUpdate) {
 					results.forEach((result, index) => {
 						onOptimisticUpdate({
@@ -318,7 +388,6 @@ export function createOptimisticComposeHandlers(
 
 				return results;
 			} catch (error) {
-				// Remove optimistic updates on error
 				if (onOptimisticUpdate) {
 					optimisticStatuses.forEach((status) => {
 						onOptimisticUpdate({ _remove: status.id });
@@ -332,33 +401,13 @@ export function createOptimisticComposeHandlers(
 
 /**
  * Create compose handlers from config
- * 
+ *
  * Convenience function to create handlers with sensible defaults
  */
 export interface ComposeGraphQLConfig {
-	/**
-	 * GraphQL adapter instance
-	 */
 	adapter: LesserGraphQLAdapter;
-
-	/**
-	 * Current user account
-	 */
-	currentAccount?: {
-		id: string;
-		username: string;
-		displayName: string;
-		avatar: string;
-	};
-
-	/**
-	 * Enable optimistic updates
-	 */
+	currentAccount?: ActorLike;
 	enableOptimistic?: boolean;
-
-	/**
-	 * Callback for optimistic updates
-	 */
 	onOptimisticUpdate?: (status: any) => void;
 }
 
@@ -371,4 +420,3 @@ export function createComposeHandlers(config: ComposeGraphQLConfig) {
 
 	return createGraphQLComposeHandlers(adapter);
 }
-

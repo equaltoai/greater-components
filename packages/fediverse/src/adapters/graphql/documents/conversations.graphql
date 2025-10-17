@@ -1,0 +1,45 @@
+# Conversation queries and mutations
+
+#import "./fragments.graphql"
+
+query Conversations($first: Int = 20, $after: Cursor) {
+  conversations(first: $first, after: $after) {
+    id
+    unread
+    createdAt
+    updatedAt
+    accounts {
+      ...ActorSummary
+    }
+    lastStatus {
+      ...ObjectFields
+    }
+  }
+}
+
+query Conversation($id: ID!) {
+  conversation(id: $id) {
+    id
+    unread
+    createdAt
+    updatedAt
+    accounts {
+      ...ActorSummary
+    }
+    lastStatus {
+      ...ObjectFields
+    }
+  }
+}
+
+mutation MarkConversationRead($id: ID!) {
+  markConversationAsRead(id: $id) {
+    id
+    unread
+    updatedAt
+  }
+}
+
+mutation DeleteConversation($id: ID!) {
+  deleteConversation(id: $id)
+}

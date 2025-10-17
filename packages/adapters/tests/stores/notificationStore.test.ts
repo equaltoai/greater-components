@@ -51,6 +51,11 @@ describe('Notification Store', () => {
   let config: NotificationConfig;
   let initialNotifications: Notification[];
 
+  const flushTimers = async (ms = 0) => {
+    await vi.advanceTimersByTimeAsync(ms);
+    await Promise.resolve();
+  };
+
   beforeEach(() => {
     mockTransport = new MockTransportManager();
     vi.useFakeTimers();
@@ -152,7 +157,7 @@ describe('Notification Store', () => {
         priority: 'normal'
       });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       expect(callCount).toBeGreaterThan(1);
       expect(lastState.notifications).toHaveLength(4);
       
@@ -165,7 +170,7 @@ describe('Notification Store', () => {
       // Filter for unread notifications
       store.updateFilter({ readStatus: 'unread' });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       expect(state.filteredNotifications).toHaveLength(2);
@@ -258,7 +263,7 @@ describe('Notification Store', () => {
       
       store.updateFilter({ types: ['error'] });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       expect(state.filteredNotifications).toHaveLength(1);
@@ -270,7 +275,7 @@ describe('Notification Store', () => {
       
       store.updateFilter({ readStatus: 'read' });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       expect(state.filteredNotifications).toHaveLength(1);
@@ -282,7 +287,7 @@ describe('Notification Store', () => {
       
       store.updateFilter({ priority: ['high'] });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       expect(state.filteredNotifications).toHaveLength(1);
@@ -294,7 +299,7 @@ describe('Notification Store', () => {
       
       store.updateFilter({ query: 'welcome' });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       expect(state.filteredNotifications).toHaveLength(1);
@@ -312,7 +317,7 @@ describe('Notification Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       expect(state.filteredNotifications).toHaveLength(1);
@@ -327,7 +332,7 @@ describe('Notification Store', () => {
         readStatus: 'unread'
       });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       expect(state.filteredNotifications).toHaveLength(2);
@@ -415,7 +420,7 @@ describe('Notification Store', () => {
       });
       
       // Wait for debounce
-      await new Promise(resolve => setTimeout(resolve, 60));
+      await flushTimers(60);
       
       const state = store.get();
       expect(state.notifications.find(n => n.id === 'stream-notif-1')).toBeTruthy();
@@ -437,7 +442,7 @@ describe('Notification Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       const updatedNotification = state.notifications.find(n => n.id === targetNotification.id);
@@ -459,7 +464,7 @@ describe('Notification Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       
       const state = store.get();
       expect(state.notifications).toHaveLength(initialCount - 1);
@@ -489,7 +494,7 @@ describe('Notification Store', () => {
         });
       }
       
-      await new Promise(resolve => setTimeout(resolve, 60));
+      await vi.advanceTimersByTimeAsync(60);
       
       const state = store.get();
       const duplicates = state.notifications.filter(n => n.id === 'duplicate-notif');
@@ -550,17 +555,24 @@ describe('Notification Store', () => {
       store.markAllAsRead();
       
       // Add notifications beyond the limit
-      for (let i = 0; i < 10; i++) {
-        store.addNotification({
-          type: 'info',
-          title: `Notification ${i}`,
-          message: `Message ${i}`,
-          priority: 'normal'
-        });
-      }
-      
-      const state = store.get();
-      expect(state.notifications.length).toBeLessThanOrEqual(5);
+      const addNotifications = async () => {
+        for (let i = 0; i < 10; i++) {
+          store.addNotification({
+            type: 'info',
+            title: `Notification ${i}`,
+            message: `Message ${i}`,
+            priority: 'normal'
+          });
+
+          await flushTimers();
+        }
+      };
+
+      return addNotifications().then(async () => {
+        await flushTimers(100);
+        const state = store.get();
+        expect(state.notifications.length).toBeLessThanOrEqual(5);
+      });
     });
 
     it('should cleanup resources on destroy', () => {
@@ -650,7 +662,7 @@ describe('Notification Store', () => {
       
       store.updateFilter({ query: '' });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       // Empty query should show all notifications
@@ -667,7 +679,7 @@ describe('Notification Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await vi.advanceTimersByTimeAsync(10);
       const state = store.get();
       
       // Should not crash and return empty results
@@ -695,8 +707,8 @@ describe('Notification Store', () => {
         }
       });
       
-      await new Promise(resolve => setTimeout(resolve, 60));
-      
+      await flushTimers(60);
+
       const state = store.get();
       const addedNotification = state.notifications.find(n => n.id === 'incomplete');
       expect(addedNotification).toBeTruthy();

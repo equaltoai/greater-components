@@ -1,0 +1,27 @@
+# Timeline queries
+
+#import "./fragments.graphql"
+
+query Timeline(
+  $type: TimelineType!
+  $first: Int = 20
+  $after: Cursor
+  $hashtag: String
+  $listId: ID
+) {
+  timeline(type: $type, first: $first, after: $after, hashtag: $hashtag, listId: $listId) {
+    edges {
+      cursor
+      node {
+        ...ObjectFields
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}

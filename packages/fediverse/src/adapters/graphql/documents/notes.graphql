@@ -1,0 +1,75 @@
+# Note/Object mutations
+
+#import "./fragments.graphql"
+
+mutation CreateNote($input: CreateNoteInput!) {
+  createNote(input: $input) {
+    object {
+      ...ObjectFields
+    }
+    activity {
+      ...ActivityFields
+    }
+    cost {
+      ...CostUpdateFields
+    }
+  }
+}
+
+mutation CreateQuoteNote($input: CreateQuoteNoteInput!) {
+  createQuoteNote(input: $input) {
+    object {
+      ...ObjectFields
+    }
+    activity {
+      ...ActivityFields
+    }
+    cost {
+      ...CostUpdateFields
+    }
+  }
+}
+
+mutation DeleteObject($id: ID!) {
+  deleteObject(id: $id)
+}
+
+mutation LikeObject($id: ID!) {
+  likeObject(id: $id) {
+    ...ActivityFields
+  }
+}
+
+mutation UnlikeObject($id: ID!) {
+  unlikeObject(id: $id)
+}
+
+mutation ShareObject($id: ID!) {
+  shareObject(id: $id) {
+    ...ActivityFields
+  }
+}
+
+mutation UnshareObject($id: ID!) {
+  unshareObject(id: $id)
+}
+
+mutation BookmarkObject($id: ID!) {
+  bookmarkObject(id: $id) {
+    ...ObjectFields
+  }
+}
+
+mutation UnbookmarkObject($id: ID!) {
+  unbookmarkObject(id: $id)
+}
+
+mutation PinObject($id: ID!) {
+  pinObject(id: $id) {
+    ...ObjectFields
+  }
+}
+
+mutation UnpinObject($id: ID!) {
+  unpinObject(id: $id)
+}
