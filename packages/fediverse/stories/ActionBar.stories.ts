@@ -330,3 +330,32 @@ export const WithExtensions: Story = {
     }
   }
 };
+
+// With Quote button (Lesser feature)
+const quoteAction = action('actionbar: quote');
+
+export const WithQuoteButton: Story = {
+  args: {
+    counts: {
+      replies: 5,
+      boosts: 12,
+      favorites: 23,
+      quotes: 8
+    },
+    states: {},
+    readonly: false,
+    size: 'sm',
+    idPrefix: 'story-quote',
+    handlers: {
+      ...defaultHandlers,
+      onQuote: quoteAction
+    }
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Action bar with quote button enabled (Lesser-specific feature). Quote button appears when quoteCount is provided.'
+      }
+    }
+  }
+};

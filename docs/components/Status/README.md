@@ -693,6 +693,231 @@ describe('Status Components', () => {
 
 ---
 
-**Last Updated**: October 12, 2025  
-**Version**: 1.0.0
+## 🚀 Lesser-Specific Features
+
+### Status.LesserMetadata
+
+Display Lesser-specific metadata including cost estimates, trust scores, moderation warnings, and quote indicators.
+
+**Props:**
+- `showCost?: boolean` - Show cost estimate badge (default: `false`)
+- `showTrust?: boolean` - Show trust score badge (default: `false`)  
+- `showModeration?: boolean` - Show moderation warnings (default: `false`)
+- `showQuotes?: boolean` - Show quote indicators (default: `false`)
+- `costFormat?: 'USD' | 'microcents'` - Cost display format (default: `'USD'`)
+- `moderationThreshold?: number` - Threshold for showing warnings (default: `0.7`)
+
+**Usage:**
+
+```svelte
+<Status.Root {status}>
+  <Status.Header />
+  <Status.LesserMetadata 
+    showCost={true}
+    showTrust={true}
+    showModeration={true}
+    showQuotes={true}
+    costFormat="USD"
+    moderationThreshold={0.7}
+  />
+  <Status.Content />
+  <Status.Actions />
+</Status.Root>
+```
+
+**Features**:
+- **Cost Badge**: Displays estimated AWS cost in USD or microcents
+- **Trust Score**: Shows author trust score with color coding (green ≥0.8, yellow ≥0.5, red <0.5)
+- **Moderation Warning**: Displays AI-detected moderation flags (toxicity, NSFW, spam)
+- **Quote Indicator**: Shows if post is quoteable and quote count
+
+---
+
+### Status.CommunityNotes
+
+Display and interact with community notes (collaborative fact-checking).
+
+**Props:**
+- `enableVoting?: boolean` - Enable helpful/not-helpful voting (default: `false`)
+- `maxVisible?: number` - Maximum notes to show initially (default: `3`)
+- `onVote?: (noteId: string, helpful: boolean) => Promise<void>` - Vote handler
+
+**Usage:**
+
+```svelte
+<script lang="ts">
+  async function handleVote(noteId: string, helpful: boolean) {
+    await adapter.voteCommunityNote(noteId, helpful);
+    // Refresh status to show updated counts
+    await refreshStatus();
+  }
+</script>
+
+<Status.Root {status}>
+  <Status.Header />
+  <Status.Content />
+  <Status.CommunityNotes 
+    enableVoting={true}
+    maxVisible={3}
+    onVote={handleVote}
+  />
+  <Status.Actions />
+</Status.Root>
+```
+
+**Features**:
+- List of community notes with author information
+- Helpful/Not Helpful vote counts
+- Voting buttons (when `enableVoting` is `true`)
+- Pagination (expand to show more)
+- Formatted timestamps
+
+---
+
+### Status.Actions with Quote Support
+
+The `Status.Actions` component now supports quote post creation:
+
+**Additional Handler:**
+- `onQuote?: () => Promise<void>` - Quote post handler
+
+**Usage:**
+
+```svelte
+<script lang="ts">
+  async function handleQuote() {
+    // Open quote composer
+    showQuoteComposer = true;
+    quoteTargetUrl = status.url;
+  }
+</script>
+
+<Status.Root {status}>
+  <Status.Header />
+  <Status.Content />
+  <Status.Actions 
+    handlers={{
+      onReply,
+      onBoost,
+      onFavorite,
+      onShare,
+      onQuote: handleQuote
+    }}
+  />
+</Status.Root>
+
+<!-- Quote composer modal -->
+{#if showQuoteComposer}
+  <Compose.Root 
+    initialState={{
+      quoteUrl: quoteTargetUrl,
+      quoteType: 'COMMENTARY',
+      quotePermissions: 'EVERYONE'
+    }}
+    {handlers}
+  />
+{/if}
+```
+
+The quote button only appears when the status has a `quoteCount` field or is quoteable.
+
+---
+
+### Complete Lesser-Integrated Example
+
+Full example using all Lesser features:
+
+```svelte
+<script lang="ts">
+  import * as Status from '@greater/fediverse/Status';
+  import { LesserGraphQLAdapter } from '@greater/adapters';
+  
+  const adapter = new LesserGraphQLAdapter(config);
+  
+  async function voteOnNote(noteId: string, helpful: boolean) {
+    await adapter.voteCommunityNote(noteId, helpful);
+  }
+  
+  async function quoteStatus() {
+    // Open quote composer
+    showQuoteComposer = true;
+  }
+</script>
+
+<Status.Root {status}>
+  <!-- Standard components -->
+  <Status.Header />
+  
+  <!-- Lesser metadata badges -->
+  <Status.LesserMetadata 
+    showCost={true}
+    showTrust={true}
+    showModeration={true}
+    showQuotes={true}
+  />
+  
+  <!-- Content -->
+  <Status.Content />
+  <Status.Media />
+  
+  <!-- Community notes -->
+  <Status.CommunityNotes 
+    enableVoting={currentUser?.authenticated}
+    onVote={voteOnNote}
+  />
+  
+  <!-- Actions with quote support -->
+  <Status.Actions 
+    handlers={{
+      onReply,
+      onBoost,
+      onFavorite,
+      onShare,
+      onQuote: quoteStatus
+    }}
+  />
+</Status.Root>
+```
+
+---
+
+## 🔗 Related Components
+
+- **[Timeline Components](../Timeline/README.md)** - Display lists of statuses
+- **[Compose Components](../Compose/README.md)** - Create new statuses and quotes
+- **[Profile Components](../Profile/README.md)** - User profiles with trust badges
+- **[Admin.Insights](../Admin/Insights.md)** - AI analysis and moderation
+- **[Hashtags](../Hashtags/README.md)** - Hashtag management
+
+---
+
+## 📖 Additional Resources
+
+- [Lesser Integration Guide](../../lesser-integration-guide.md)
+- [Content Rendering Guide](../../guides/content-rendering.md)
+- [Media Handling Guide](../../guides/media-handling.md)
+- [Interaction Patterns](../../guides/interaction-patterns.md)
+- [Security Best Practices](../../guides/security.md)
+- [API Documentation](../../API_DOCUMENTATION.md)
+
+---
+
+## 💡 Tips
+
+1. **Use Optimistic Updates** for instant feedback
+2. **Sanitize Content** to prevent XSS attacks
+3. **Implement Content Warnings** for sensitive content
+4. **Add Alt Text** to all images for accessibility
+5. **Handle Errors Gracefully** with rollback on failure
+6. **Test with Screen Readers** to ensure accessibility
+7. **Optimize Media Loading** with lazy loading
+8. **Cache Interaction State** to reduce API calls
+9. **Enable Community Notes** for fact-checking on Lesser instances
+10. **Display Trust Scores** to help users identify reliable sources
+11. **Show Cost Estimates** for transparency in federated systems
+
+---
+
+**Last Updated**: October 18, 2025  
+**Version**: 1.0.0 (Lesser-aligned)
 
