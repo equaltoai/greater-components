@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 import {
   mapLesserAccount,
   mapLesserPost,
+  mapLesserObject,
   mapLesserNotification,
   mapLesserStreamingUpdate,
   handleLesserGraphQLResponse,
@@ -23,7 +24,8 @@ import {
   lesserGraphQLResponseFixtures,
   lesserTimelineConnectionFixture,
   lesserErrorFixtures,
-  lesserBatchFixtures
+  lesserBatchFixtures,
+  lesserAIAnalysisFixture,
 } from '../../src/fixtures/lesser.js';
 
 describe('Lesser Account Mapper', () => {
@@ -119,6 +121,405 @@ describe('Lesser Account Mapper', () => {
     const result = mapLesserAccount(minimalAccount);
     expect(result.success).toBe(true);
     expect(result.data?.fields).toEqual([]);
+  });
+});
+
+describe('Lesser Object Mapper', () => {
+  it('should map valid object with attachments and mentions', () => {
+    const mockObject = {
+      id: 'obj-123',
+      type: 'Note',
+      actor: lesserAccountFixtures[0],
+      content: 'Test content with @user mention',
+      inReplyTo: undefined,
+      visibility: 'PUBLIC' as const,
+      sensitive: false,
+      spoilerText: undefined,
+      attachments: [
+        {
+          id: 'att-1',
+          type: 'image',
+          url: 'https://example.com/image.jpg',
+          preview: 'https://example.com/preview.jpg',
+          description: 'Test image',
+          blurhash: 'L6PZfSi_.AyE_3t7t7R**0o#DgR4',
+          width: 800,
+          height: 600,
+          duration: undefined
+        }
+      ],
+      tags: [
+        {
+          name: 'test',
+          url: 'https://example.com/tags/test'
+        }
+      ],
+      mentions: [
+        {
+          id: 'mention-1',
+          username: 'user',
+          domain: 'example.com',
+          url: 'https://example.com/@user'
+        }
+      ],
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      repliesCount: 5,
+      likesCount: 10,
+      sharesCount: 2,
+      estimatedCost: 1000,
+      moderationScore: 0.2,
+      communityNotes: [],
+      quoteUrl: undefined,
+      quoteable: true,
+      quotePermissions: 'EVERYONE' as const,
+      quoteContext: undefined,
+      quoteCount: 0,
+      aiAnalysis: undefined
+    };
+
+    const result = mapLesserObject(mockObject);
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBeDefined();
+    expect(result.data?.id).toBe('obj-123');
+    expect(result.data?.content).toBe('Test content with @user mention');
+    expect(result.data?.estimatedCost).toBe(1000);
+    expect(result.data?.moderationScore).toBe(0.2);
+    expect(result.data?.quoteable).toBe(true);
+
+    // Check attachments mapping
+    expect(result.data?.mediaAttachments).toHaveLength(1);
+    expect(result.data?.mediaAttachments[0].id).toBe('att-1');
+    expect(result.data?.mediaAttachments[0].type).toBe('image');
+    expect(result.data?.mediaAttachments[0].url).toBe('https://example.com/image.jpg');
+    expect(result.data?.mediaAttachments[0].previewUrl).toBe('https://example.com/preview.jpg');
+    expect(result.data?.mediaAttachments[0].description).toBe('Test image');
+    expect(result.data?.mediaAttachments[0].blurhash).toBe('L6PZfSi_.AyE_3t7t7R**0o#DgR4');
+    expect(result.data?.mediaAttachments[0].meta?.original?.width).toBe(800);
+    expect(result.data?.mediaAttachments[0].meta?.original?.height).toBe(600);
+
+    // Check mentions mapping
+    expect(result.data?.mentions).toHaveLength(1);
+    expect(result.data?.mentions[0].id).toBe('mention-1');
+    expect(result.data?.mentions[0].username).toBe('user');
+    expect(result.data?.mentions[0].acct).toBe('user@example.com');
+    expect(result.data?.mentions[0].url).toBe('https://example.com/@user');
+
+    // Check tags mapping
+    expect(result.data?.tags).toHaveLength(1);
+    expect(result.data?.tags[0].name).toBe('test');
+    expect(result.data?.tags[0].url).toBe('https://example.com/tags/test');
+  });
+
+  it('should handle object without attachments or mentions', () => {
+    const mockObject = {
+      id: 'obj-456',
+      type: 'Note',
+      actor: lesserAccountFixtures[0],
+      content: 'Simple content',
+      inReplyTo: undefined,
+      visibility: 'PUBLIC' as const,
+      sensitive: false,
+      spoilerText: undefined,
+      attachments: [],
+      tags: [],
+      mentions: [],
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      repliesCount: 0,
+      likesCount: 0,
+      sharesCount: 0,
+      estimatedCost: 500,
+      moderationScore: undefined,
+      communityNotes: [],
+      quoteUrl: undefined,
+      quoteable: false,
+      quotePermissions: 'NONE' as const,
+      quoteContext: undefined,
+      quoteCount: 0,
+      aiAnalysis: undefined
+    };
+
+    const result = mapLesserObject(mockObject);
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBeDefined();
+    expect(result.data?.mediaAttachments).toHaveLength(0);
+    expect(result.data?.mentions).toHaveLength(0);
+    expect(result.data?.tags).toHaveLength(0);
+    expect(result.data?.estimatedCost).toBe(500);
+    expect(result.data?.moderationScore).toBe(0);
+    expect(result.data?.quoteable).toBe(false);
+  });
+
+  it('should handle invalid object gracefully', () => {
+    const result = mapLesserObject(null as any);
+
+    expect(result.success).toBe(false);
+    expect(result.error).toBeDefined();
+    expect(result.error?.type).toBe('validation');
+  });
+});
+
+describe('Lesser Notification Mapper', () => {
+  it('should map QUOTE notification with status', () => {
+    const mockNotification = {
+      id: 'notif-quote-123',
+      notificationType: 'QUOTE' as const,
+      createdAt: '2023-01-01T00:00:00Z',
+      triggerAccount: lesserAccountFixtures[0],
+      status: {
+        id: 'status-quoted-123',
+        type: 'Note',
+        actor: lesserAccountFixtures[0],
+        content: 'Quoted content',
+        inReplyTo: undefined,
+        visibility: 'PUBLIC' as const,
+        sensitive: false,
+        spoilerText: undefined,
+        attachments: [],
+        tags: [],
+        mentions: [],
+        createdAt: '2023-01-01T00:00:00Z',
+        updatedAt: '2023-01-01T00:00:00Z',
+        repliesCount: 0,
+        likesCount: 0,
+        sharesCount: 0,
+        estimatedCost: 500,
+        moderationScore: 0.1,
+        communityNotes: [],
+        quoteUrl: 'https://example.com/original-post',
+        quoteable: true,
+        quotePermissions: 'EVERYONE' as const,
+        quoteContext: undefined,
+        quoteCount: 1,
+        aiAnalysis: undefined
+      },
+      adminReport: undefined,
+      isRead: false
+    };
+
+    const result = mapLesserNotification(mockNotification);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.id).toBe('notif-quote-123');
+    expect(result.data?.type).toBe('quote');
+    expect(result.data?.quoteStatus).toBeDefined();
+    expect(result.data?.quoteStatus?.id).toBe('status-quoted-123');
+    expect(result.data?.quoteStatus?.quoteUrl).toBe('https://example.com/original-post');
+  });
+
+  it('should map COMMUNITY_NOTE notification', () => {
+    const mockNotification = {
+      id: 'notif-note-123',
+      notificationType: 'COMMUNITY_NOTE' as const,
+      createdAt: '2023-01-01T00:00:00Z',
+      triggerAccount: lesserAccountFixtures[0],
+      status: {
+        id: 'status-note-123',
+        type: 'Note',
+        actor: lesserAccountFixtures[0],
+        content: 'Content with community note',
+        inReplyTo: undefined,
+        visibility: 'PUBLIC' as const,
+        sensitive: false,
+        spoilerText: undefined,
+        attachments: [],
+        tags: [],
+        mentions: [],
+        createdAt: '2023-01-01T00:00:00Z',
+        updatedAt: '2023-01-01T00:00:00Z',
+        repliesCount: 0,
+        likesCount: 0,
+        sharesCount: 0,
+        estimatedCost: 500,
+        moderationScore: 0.1,
+        communityNotes: [
+          {
+            id: 'note-123',
+            author: lesserAccountFixtures[0],
+            content: 'This is misleading',
+            helpful: 5,
+            notHelpful: 2,
+            createdAt: '2023-01-01T00:00:00Z'
+          }
+        ],
+        quoteUrl: undefined,
+        quoteable: true,
+        quotePermissions: 'EVERYONE' as const,
+        quoteContext: undefined,
+        quoteCount: 0,
+        aiAnalysis: undefined
+      },
+      adminReport: undefined,
+      isRead: false
+    };
+
+    const result = mapLesserNotification(mockNotification);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.id).toBe('notif-note-123');
+    expect(result.data?.type).toBe('community_note');
+    expect(result.data?.communityNote).toBeDefined();
+    expect(result.data?.communityNote?.id).toBe('note-123');
+    expect(result.data?.communityNote?.content).toBe('This is misleading');
+    expect(result.data?.communityNote?.helpful).toBe(5);
+    expect(result.data?.communityNote?.notHelpful).toBe(2);
+  });
+
+  it('should map TRUST_UPDATE notification', () => {
+    const mockNotification = {
+      id: 'notif-trust-123',
+      notificationType: 'TRUST_UPDATE' as const,
+      createdAt: '2023-01-01T00:00:00Z',
+      triggerAccount: {
+        ...lesserAccountFixtures[0],
+        trustScore: 90
+      },
+      status: undefined,
+      adminReport: undefined,
+      isRead: false
+    };
+
+    const result = mapLesserNotification(mockNotification);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.id).toBe('notif-trust-123');
+    expect(result.data?.type).toBe('trust_update');
+    expect(result.data?.trustUpdate).toBeDefined();
+    expect(result.data?.trustUpdate?.newScore).toBe(90);
+  });
+
+  it('should map COST_ALERT notification', () => {
+    const mockNotification = {
+      id: 'notif-cost-123',
+      notificationType: 'COST_ALERT' as const,
+      createdAt: '2023-01-01T00:00:00Z',
+      triggerAccount: lesserAccountFixtures[0],
+      status: {
+        id: 'status-cost-123',
+        type: 'Note',
+        actor: lesserAccountFixtures[0],
+        content: 'Expensive content',
+        inReplyTo: undefined,
+        visibility: 'PUBLIC' as const,
+        sensitive: false,
+        spoilerText: undefined,
+        attachments: [],
+        tags: [],
+        mentions: [],
+        createdAt: '2023-01-01T00:00:00Z',
+        updatedAt: '2023-01-01T00:00:00Z',
+        repliesCount: 0,
+        likesCount: 0,
+        sharesCount: 0,
+        estimatedCost: 2000000, // High cost
+        moderationScore: 0.1,
+        communityNotes: [],
+        quoteUrl: undefined,
+        quoteable: true,
+        quotePermissions: 'EVERYONE' as const,
+        quoteContext: undefined,
+        quoteCount: 0,
+        aiAnalysis: undefined
+      },
+      adminReport: undefined,
+      isRead: false
+    };
+
+    const result = mapLesserNotification(mockNotification);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.id).toBe('notif-cost-123');
+    expect(result.data?.type).toBe('cost_alert');
+    expect(result.data?.costAlert).toBeDefined();
+    expect(result.data?.costAlert?.amount).toBe(2000000);
+    expect(result.data?.costAlert?.threshold).toBe(1000000);
+    expect(result.data?.costAlert?.message).toBe('Cost threshold exceeded');
+  });
+
+  it('should map MODERATION_ACTION notification', () => {
+    const mockNotification = {
+      id: 'notif-mod-123',
+      notificationType: 'MODERATION_ACTION' as const,
+      createdAt: '2023-01-01T00:00:00Z',
+      triggerAccount: lesserAccountFixtures[0],
+      status: {
+        id: 'status-mod-123',
+        type: 'Note',
+        actor: lesserAccountFixtures[0],
+        content: 'Content requiring moderation',
+        inReplyTo: undefined,
+        visibility: 'PUBLIC' as const,
+        sensitive: false,
+        spoilerText: undefined,
+        attachments: [],
+        tags: [],
+        mentions: [],
+        createdAt: '2023-01-01T00:00:00Z',
+        updatedAt: '2023-01-01T00:00:00Z',
+        repliesCount: 0,
+        likesCount: 0,
+        sharesCount: 0,
+        estimatedCost: 500,
+        moderationScore: 0.8,
+        communityNotes: [],
+        quoteUrl: undefined,
+        quoteable: true,
+        quotePermissions: 'EVERYONE' as const,
+        quoteContext: undefined,
+        quoteCount: 0,
+        aiAnalysis: {
+          id: 'ai-123',
+          objectId: 'status-mod-123',
+          objectType: 'Note',
+          textAnalysis: undefined,
+          imageAnalysis: undefined,
+          aiDetection: undefined,
+          spamAnalysis: undefined,
+          overallRisk: 0.8,
+          moderationAction: 'FLAG' as const,
+          confidence: 0.9,
+          analyzedAt: '2023-01-01T00:00:00Z'
+        }
+      },
+      adminReport: undefined,
+      isRead: false
+    };
+
+    const result = mapLesserNotification(mockNotification);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.id).toBe('notif-mod-123');
+    expect(result.data?.type).toBe('moderation_action');
+    expect(result.data?.moderationAction).toBeDefined();
+    expect(result.data?.moderationAction?.action).toBe('FLAG');
+    expect(result.data?.moderationAction?.reason).toBe('AI moderation action');
+    expect(result.data?.moderationAction?.statusId).toBe('status-mod-123');
+  });
+
+  it('should handle notification without status gracefully', () => {
+    const mockNotification = {
+      id: 'notif-simple-123',
+      notificationType: 'FOLLOW' as const,
+      createdAt: '2023-01-01T00:00:00Z',
+      triggerAccount: lesserAccountFixtures[0],
+      status: undefined,
+      adminReport: undefined,
+      isRead: false
+    };
+
+    const result = mapLesserNotification(mockNotification);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.id).toBe('notif-simple-123');
+    expect(result.data?.type).toBe('follow');
+    expect(result.data?.quoteStatus).toBeUndefined();
+    expect(result.data?.communityNote).toBeUndefined();
+    expect(result.data?.trustUpdate).toBeUndefined();
+    expect(result.data?.costAlert).toBeUndefined();
+    expect(result.data?.moderationAction).toBeUndefined();
   });
 });
 
@@ -229,22 +630,63 @@ describe('Lesser Post Mapper', () => {
   });
 
   it('should handle mentions and hashtags', () => {
-    const post = lesserPostFixtures[3]; // Has mentions and hashtags
-    const result = mapLesserPost(post);
+    const mockPost = {
+      id: 'post-mentions-123',
+      author: lesserAccountFixtures[0],
+      content: 'Post with @user mention and #hashtag',
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z',
+      visibility: 'PUBLIC' as const,
+      sensitive: false,
+      spoilerText: undefined,
+      mentions: [
+        {
+          id: 'mention-post-1',
+          username: 'user',
+          domain: 'example.com',
+          url: 'https://example.com/@user'
+        }
+      ],
+      hashtags: [
+        {
+          name: 'hashtag',
+          url: 'https://example.com/tags/hashtag'
+        }
+      ],
+      attachments: [],
+      tags: [],
+      emojis: [],
+      repliesCount: 0,
+      likesCount: 0,
+      sharesCount: 0,
+      estimatedCost: 500,
+      moderationScore: 0.1,
+      communityNotes: [],
+      quoteUrl: undefined,
+      quoteable: true,
+      quotePermissions: 'EVERYONE' as const,
+      quoteContext: undefined,
+      quoteCount: 0,
+      aiAnalysis: undefined
+    };
+    
+    const result = mapLesserPost(mockPost);
 
     expect(result.success).toBe(true);
-    expect(result.data?.mentions.length).toBe(post.mentions.length);
-    expect(result.data?.tags.length).toBe(post.hashtags.length);
+    expect(result.data?.mentions.length).toBe(mockPost.mentions.length);
+    expect(result.data?.tags.length).toBe(mockPost.hashtags.length);
     
     // Check mention mapping
     const firstMention = result.data?.mentions[0];
-    const originalMention = post.mentions[0];
-    expect(firstMention?.id).toBe(originalMention.account.id);
-    expect(firstMention?.acct).toBe(originalMention.account.handle);
+    const originalMention = mockPost.mentions[0];
+    expect(firstMention?.id).toBe(originalMention.id);
+    expect(firstMention?.username).toBe(originalMention.username);
+    expect(firstMention?.acct).toBe(`${originalMention.username}@${originalMention.domain}`);
+    expect(firstMention?.url).toBe(originalMention.url);
     
     // Check hashtag mapping
     const firstTag = result.data?.tags[0];
-    const originalTag = post.hashtags[0];
+    const originalTag = mockPost.hashtags[0];
     expect(firstTag?.name).toBe(originalTag.name);
     expect(firstTag?.url).toBe(originalTag.url);
   });
@@ -286,13 +728,48 @@ describe('Lesser Notification Mapper', () => {
     });
   });
 
-  it('should map notification with target post', () => {
-    const notification = lesserNotificationFixtures[0]; // FAVORITE with target post
-    const result = mapLesserNotification(notification);
+  it('should map notification with status', () => {
+    const mockNotification = {
+      id: 'notif-favorite-123',
+      notificationType: 'FAVORITE' as const,
+      createdAt: '2023-01-01T00:00:00Z',
+      triggerAccount: lesserAccountFixtures[0],
+      status: {
+        id: 'status-favorite-123',
+        type: 'Note',
+        actor: lesserAccountFixtures[0],
+        content: 'Favorited content',
+        inReplyTo: undefined,
+        visibility: 'PUBLIC' as const,
+        sensitive: false,
+        spoilerText: undefined,
+        attachments: [],
+        tags: [],
+        mentions: [],
+        createdAt: '2023-01-01T00:00:00Z',
+        updatedAt: '2023-01-01T00:00:00Z',
+        repliesCount: 0,
+        likesCount: 0,
+        sharesCount: 0,
+        estimatedCost: 500,
+        moderationScore: 0.1,
+        communityNotes: [],
+        quoteUrl: undefined,
+        quoteable: true,
+        quotePermissions: 'EVERYONE' as const,
+        quoteContext: undefined,
+        quoteCount: 0,
+        aiAnalysis: undefined
+      },
+      adminReport: undefined,
+      isRead: false
+    };
+    
+    const result = mapLesserNotification(mockNotification);
 
     expect(result.success).toBe(true);
     expect(result.data?.status).toBeDefined();
-    expect(result.data?.status?.id).toBe(notification.targetPost?.id);
+    expect(result.data?.status?.id).toBe('status-favorite-123');
   });
 
   it('should map notification without target post', () => {
@@ -646,5 +1123,40 @@ describe('Edge Cases and Error Handling', () => {
     expect(result.data?.note).toBe('');
     expect(result.data?.avatar).toBe('');
     expect(result.data?.header).toBe('');
+  });
+});
+
+describe('Lesser AI Analysis Mapper', () => {
+  it('should map post with full AI analysis', () => {
+    const post = lesserPostFixtures.find(p => p.id === 'post-with-ai-analysis');
+    const result = mapLesserPost(post!);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.aiAnalysis).toBeDefined();
+
+    const mappedAI = result.data!.aiAnalysis!;
+    const originalAI = lesserAIAnalysisFixture;
+
+    expect(mappedAI.id).toBe(originalAI.id);
+    expect(mappedAI.overallRisk).toBe(originalAI.overallRisk);
+    expect(mappedAI.moderationAction).toBe(originalAI.moderationAction);
+
+    // Text Analysis
+    expect(mappedAI.textAnalysis).toBeDefined();
+    expect(mappedAI.textAnalysis!.sentiment).toBe(originalAI.textAnalysis!.sentiment);
+    expect(mappedAI.textAnalysis!.toxicityScore).toBe(originalAI.textAnalysis!.toxicityScore);
+
+    // Image Analysis
+    expect(mappedAI.imageAnalysis).toBeDefined();
+    expect(mappedAI.imageAnalysis!.isNSFW).toBe(originalAI.imageAnalysis!.isNSFW);
+    expect(mappedAI.imageAnalysis!.violenceScore).toBe(originalAI.imageAnalysis!.violenceScore);
+
+    // AI Detection
+    expect(mappedAI.aiDetection).toBeDefined();
+    expect(mappedAI.aiDetection!.aiGeneratedProbability).toBe(originalAI.aiDetection!.aiGeneratedProbability);
+
+    // Spam Analysis
+    expect(mappedAI.spamAnalysis).toBeDefined();
+    expect(mappedAI.spamAnalysis!.spamScore).toBe(originalAI.spamAnalysis!.spamScore);
   });
 });

@@ -15,6 +15,35 @@ export interface BaseStore<T = any> {
 }
 
 // Timeline store types
+
+/**
+ * Lesser-specific metadata for timeline items
+ */
+export interface LesserTimelineMetadata {
+  /** Estimated cost in microcents */
+  estimatedCost?: number;
+  /** Moderation score (0-1) */
+  moderationScore?: number;
+  /** Has community notes attached */
+  hasCommunityNotes?: boolean;
+  /** Community notes count */
+  communityNotesCount?: number;
+  /** Is a quote post */
+  isQuote?: boolean;
+  /** Quote count */
+  quoteCount?: number;
+  /** Is quoteable */
+  quoteable?: boolean;
+  /** Quote permission level */
+  quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+  /** Trust score of author */
+  authorTrustScore?: number;
+  /** AI analysis result */
+  aiModerationAction?: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE' | 'SHADOW_BAN' | 'REVIEW';
+  /** AI confidence score */
+  aiConfidence?: number;
+}
+
 export interface TimelineItem {
   /** Unique identifier */
   id: string;
@@ -25,7 +54,10 @@ export interface TimelineItem {
   /** Item content/data */
   content: any;
   /** Item metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, any> & {
+    /** Typed Lesser-specific metadata */
+    lesser?: LesserTimelineMetadata;
+  };
   /** Version for optimistic updates */
   version?: number;
   /** Temporary/optimistic flag */
@@ -94,11 +126,48 @@ export interface JsonPatch {
 }
 
 // Notification store types
+
+/**
+ * Lesser-specific notification metadata
+ */
+export interface LesserNotificationMetadata {
+  /** For quote notifications */
+  quoteStatus?: {
+    id: string;
+    content: string;
+    author: string;
+  };
+  /** For community note notifications */
+  communityNote?: {
+    id: string;
+    content: string;
+    helpful: number;
+    notHelpful: number;
+  };
+  /** For trust update notifications */
+  trustUpdate?: {
+    newScore: number;
+    previousScore?: number;
+    reason?: string;
+  };
+  /** For cost alert notifications */
+  costAlert?: {
+    amount: number;
+    threshold: number;
+  };
+  /** For moderation action notifications */
+  moderationAction?: {
+    action: string;
+    reason: string;
+    statusId?: string;
+  };
+}
+
 export interface Notification {
   /** Unique identifier */
   id: string;
   /** Notification type */
-  type: 'info' | 'success' | 'warning' | 'error' | 'system';
+  type: 'info' | 'success' | 'warning' | 'error' | 'system' | 'quote' | 'community_note' | 'trust_update' | 'cost_alert' | 'moderation_action';
   /** Notification title */
   title: string;
   /** Notification message */
@@ -110,7 +179,10 @@ export interface Notification {
   /** Priority level */
   priority: 'low' | 'normal' | 'high' | 'urgent';
   /** Notification metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, any> & {
+    /** Typed Lesser-specific metadata */
+    lesser?: LesserNotificationMetadata;
+  };
   /** Auto-dismiss timeout in ms */
   dismissAfter?: number;
   /** Action buttons */
@@ -305,6 +377,18 @@ export interface TimelineStore extends BaseStore<TimelineState> {
   startStreaming(): void;
   /** Stop streaming updates */
   stopStreaming(): void;
+  
+  // Lesser-specific selectors
+  /** Get items with cost below threshold */
+  getItemsWithCost(maxCost?: number): TimelineItem[];
+  /** Get items with minimum trust score */
+  getItemsWithTrustScore(minScore: number): TimelineItem[];
+  /** Get items with community notes */
+  getItemsWithCommunityNotes(): TimelineItem[];
+  /** Get quote posts */
+  getQuotePosts(): TimelineItem[];
+  /** Get items flagged by moderation */
+  getModeratedItems(action?: string): TimelineItem[];
 }
 
 export interface NotificationStore extends BaseStore<NotificationState> {
@@ -324,6 +408,20 @@ export interface NotificationStore extends BaseStore<NotificationState> {
   startStreaming(): void;
   /** Stop streaming updates */
   stopStreaming(): void;
+  
+  // Lesser-specific selectors
+  /** Get quote notifications */
+  getQuoteNotifications(): Notification[];
+  /** Get community note notifications */
+  getCommunityNoteNotifications(): Notification[];
+  /** Get trust update notifications */
+  getTrustUpdateNotifications(): Notification[];
+  /** Get cost alert notifications */
+  getCostAlertNotifications(): Notification[];
+  /** Get moderation action notifications */
+  getModerationActionNotifications(): Notification[];
+  /** Get all unread Lesser notifications */
+  getUnreadLesserNotifications(): Notification[];
 }
 
 export interface PresenceStore extends BaseStore<PresenceState> {

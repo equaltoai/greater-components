@@ -607,6 +607,42 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     return `timeline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  // Lesser-specific filters and selectors
+  function getItemsWithCost(maxCost?: number): TimelineItem[] {
+    return state.value.items.filter(item => {
+      const cost = item.metadata?.lesser?.estimatedCost;
+      if (cost === undefined) return false;
+      return maxCost === undefined || cost <= maxCost;
+    });
+  }
+
+  function getItemsWithTrustScore(minScore: number): TimelineItem[] {
+    return state.value.items.filter(item => {
+      const score = item.metadata?.lesser?.authorTrustScore;
+      return score !== undefined && score >= minScore;
+    });
+  }
+
+  function getItemsWithCommunityNotes(): TimelineItem[] {
+    return state.value.items.filter(item => 
+      item.metadata?.lesser?.hasCommunityNotes === true
+    );
+  }
+
+  function getQuotePosts(): TimelineItem[] {
+    return state.value.items.filter(item => 
+      item.metadata?.lesser?.isQuote === true
+    );
+  }
+
+  function getModeratedItems(action?: string): TimelineItem[] {
+    return state.value.items.filter(item => {
+      const moderationAction = item.metadata?.lesser?.aiModerationAction;
+      if (moderationAction === undefined || moderationAction === 'NONE') return false;
+      return action === undefined || moderationAction === action;
+    });
+  }
+
   return {
     subscribe,
     destroy,
@@ -619,6 +655,12 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     loadMore,
     refresh,
     startStreaming,
-    stopStreaming
+    stopStreaming,
+    // Lesser-specific methods
+    getItemsWithCost,
+    getItemsWithTrustScore,
+    getItemsWithCommunityNotes,
+    getQuotePosts,
+    getModeratedItems
   };
 }

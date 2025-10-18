@@ -9,8 +9,10 @@
 ## Phase 2 – Model & Store Extensions
 
 - Extend shared TypeScript types (`packages/fediverse/src/generics/index.ts`, `packages/fediverse/src/types.ts`) with Lesser-specific fields (cost, trust, quotes, community notes) and update derived DTOs.
-- Update timeline/notification/list/conversation stores to persist new metadata and expose selectors consumed by compound components.
-- Adapt UI components (Status, Notifications, Lists, Messages) to render the enriched data or translate ActivityPub objects where required.
+- Surface Lesser metadata through the unified adapter layer by expanding `packages/adapters/src/models/unified.ts` plus the Lesser mappers (`packages/adapters/src/mappers/lesser/mappers.ts`) so cost/trust/quote/community-note data flows without manual extension lookups.
+- Update timeline/notification/list/conversation stores to persist new metadata, expose selectors consumed by compound components, and cover the new helpers with targeted tests.
+- Adapt UI components (Status, Notifications, Lists, Messages) to render the enriched data, preferring the unified model fields and only falling back to raw ActivityPub extensions when no typed surface exists.
+- Add/extend tests validating the end-to-end flow (adapter → stores → UI), including new notification/timeline selectors and component coverage for quotes, community notes, trust, and cost signals.
 
 ## Phase 3 – Real-time & Transport Coverage
 

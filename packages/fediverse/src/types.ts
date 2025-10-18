@@ -16,6 +16,47 @@ export interface MediaAttachment {
   };
 }
 
+/**
+ * Lesser-specific: Reputation information
+ */
+export interface Reputation {
+  actorId: string;
+  instance: string;
+  totalScore: number;
+  trustScore: number;
+  activityScore: number;
+  moderationScore: number;
+  communityScore: number;
+  calculatedAt: string | Date;
+  version: string;
+  evidence: {
+    totalPosts: number;
+    totalFollowers: number;
+    accountAge: number;
+    vouchCount: number;
+    trustingActors: number;
+    averageTrustScore: number;
+  };
+  signature?: string;
+}
+
+/**
+ * Lesser-specific: Vouch from one actor to another
+ */
+export interface Vouch {
+  id: string;
+  from: Account;
+  to: Account;
+  confidence: number;
+  context: string;
+  voucherReputation: number;
+  createdAt: string | Date;
+  expiresAt: string | Date;
+  active: boolean;
+  revoked: boolean;
+  revokedAt?: string | Date;
+}
+
 export interface Account {
   id: string;
   username: string;
@@ -34,6 +75,64 @@ export interface Account {
   locked?: boolean;
   verified?: boolean;
   createdAt: string | Date;
+  
+  // Lesser-specific fields
+  trustScore?: number;
+  reputation?: Reputation;
+  vouches?: Vouch[];
+}
+
+/**
+ * Lesser-specific: Community note on content
+ */
+export interface CommunityNote {
+  id: string;
+  author: Account;
+  content: string;
+  helpful: number;
+  notHelpful: number;
+  createdAt: string | Date;
+}
+
+/**
+ * Lesser-specific: Quote context
+ */
+export interface QuoteContext {
+  originalAuthor: Account;
+  originalNote?: Status;
+  quoteAllowed: boolean;
+  quoteType: 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
+  withdrawn: boolean;
+}
+
+/**
+ * Lesser-specific: Quote permission levels
+ */
+export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+
+/**
+ * Lesser-specific: AI analysis results
+ */
+export interface AIAnalysis {
+  id: string;
+  objectId: string;
+  objectType: string;
+  overallRisk: number;
+  moderationAction: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE' | 'SHADOW_BAN' | 'REVIEW';
+  confidence: number;
+  analyzedAt: string | Date;
+  textAnalysis?: {
+    sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MIXED';
+    toxicityScore: number;
+    containsPII: boolean;
+    dominantLanguage: string;
+  };
+  imageAnalysis?: {
+    isNSFW: boolean;
+    nsfwConfidence: number;
+    violenceScore: number;
+    weaponsDetected: boolean;
+  };
 }
 
 export interface Status {
@@ -64,6 +163,17 @@ export interface Status {
   poll?: Poll;
   inReplyToId?: string;
   inReplyToAccountId?: string;
+  
+  // Lesser-specific fields
+  estimatedCost?: number;
+  moderationScore?: number;
+  communityNotes?: CommunityNote[];
+  quoteUrl?: string;
+  quoteable?: boolean;
+  quotePermissions?: QuotePermission;
+  quoteContext?: QuoteContext;
+  quoteCount?: number;
+  aiAnalysis?: AIAnalysis;
 }
 
 export interface Mention {
@@ -119,7 +229,13 @@ export type NotificationType =
   | 'status'
   | 'update'
   | 'admin.sign_up'
-  | 'admin.report';
+  | 'admin.report'
+  // Lesser-specific notification types
+  | 'quote'
+  | 'community_note'
+  | 'trust_update'
+  | 'cost_alert'
+  | 'moderation_action';
 
 export interface BaseNotification {
   id: string;
@@ -128,6 +244,37 @@ export interface BaseNotification {
   account: Account;
   read?: boolean;
   dismissed?: boolean;
+  
+  // Metadata for Lesser-specific payloads (derived from status/account changes)
+  metadata?: {
+    lesser?: {
+      quoteStatus?: {
+        id: string;
+        content: string;
+        author: string;
+      };
+      communityNote?: {
+        id: string;
+        content: string;
+        helpful: number;
+        notHelpful: number;
+      };
+      trustUpdate?: {
+        newScore: number;
+        previousScore?: number;
+        reason?: string;
+      };
+      costAlert?: {
+        amount: number;
+        threshold: number;
+      };
+      moderationAction?: {
+        action: string;
+        reason: string;
+        statusId?: string;
+      };
+    };
+  };
 }
 
 export interface MentionNotification extends BaseNotification {
@@ -188,6 +335,40 @@ export interface AdminReportNotification extends BaseNotification {
   };
 }
 
+// Lesser-specific notification types
+export interface QuoteNotification extends BaseNotification {
+  type: 'quote';
+  status: Status;
+  quoteStatus: Status;
+}
+
+export interface CommunityNoteNotification extends BaseNotification {
+  type: 'community_note';
+  status: Status;
+  communityNote: CommunityNote;
+}
+
+export interface TrustUpdateNotification extends BaseNotification {
+  type: 'trust_update';
+  trustScore: number;
+  previousScore?: number;
+  reason?: string;
+}
+
+export interface CostAlertNotification extends BaseNotification {
+  type: 'cost_alert';
+  amount: number;
+  threshold: number;
+  message: string;
+}
+
+export interface ModerationActionNotification extends BaseNotification {
+  type: 'moderation_action';
+  status?: Status;
+  action: string;
+  reason: string;
+}
+
 export type Notification =
   | MentionNotification
   | ReblogNotification
@@ -198,7 +379,12 @@ export type Notification =
   | StatusNotification
   | UpdateNotification
   | AdminSignUpNotification
-  | AdminReportNotification;
+  | AdminReportNotification
+  | QuoteNotification
+  | CommunityNoteNotification
+  | TrustUpdateNotification
+  | CostAlertNotification
+  | ModerationActionNotification;
 
 export interface NotificationGroup {
   id: string;

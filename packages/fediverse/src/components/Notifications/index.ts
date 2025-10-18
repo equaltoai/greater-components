@@ -45,12 +45,14 @@ import NotificationsRoot from './Root.svelte';
 import NotificationsItem from './Item.svelte';
 import NotificationsGroup from './Group.svelte';
 import NotificationsFilter from './Filter.svelte';
+import NotificationsLesserNotificationItem from './LesserNotificationItem.svelte';
 
 export {
 	NotificationsRoot as Root,
 	NotificationsItem as Item,
 	NotificationsGroup as Group,
 	NotificationsFilter as Filter,
+	NotificationsLesserNotificationItem as LesserNotificationItem,
 };
 
 // Export types
@@ -94,6 +96,11 @@ export const Notifications = {
 	 * Filter tabs for notification types
 	 */
 	Filter: NotificationsFilter,
+
+	/**
+	 * Lesser-specific notification item (quote, community_note, trust_update, cost_alert, moderation_action)
+	 */
+	LesserNotificationItem: NotificationsLesserNotificationItem,
 };
 
 export default Notifications;

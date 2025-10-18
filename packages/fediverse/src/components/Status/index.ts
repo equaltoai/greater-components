@@ -59,6 +59,8 @@ import StatusHeader from './Header.svelte';
 import StatusContent from './Content.svelte';
 import StatusMedia from './Media.svelte';
 import StatusActions from './Actions.svelte';
+import StatusLesserMetadata from './LesserMetadata.svelte';
+import StatusCommunityNotes from './CommunityNotes.svelte';
 
 export {
   StatusRoot as Root,
@@ -66,6 +68,8 @@ export {
   StatusContent as Content,
   StatusMedia as Media,
   StatusActions as Actions,
+  StatusLesserMetadata as LesserMetadata,
+  StatusCommunityNotes as CommunityNotes,
 };
 
 // Export types
@@ -102,6 +106,16 @@ export const Status = {
    * Action buttons (reply, boost, favorite, share)
    */
   Actions: StatusActions,
+  
+  /**
+   * Lesser-specific metadata (cost, trust, moderation, quotes)
+   */
+  LesserMetadata: StatusLesserMetadata,
+  
+  /**
+   * Community notes from Lesser instances
+   */
+  CommunityNotes: StatusCommunityNotes,
 };
 
 export default Status;

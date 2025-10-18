@@ -576,5 +576,88 @@ describe('Timeline Type Safety', () => {
 		expect(item).toHaveProperty('object');
 		expect(item).toHaveProperty('createdAt');
 	});
+
+	it('should create timeline item with Lesser metadata', () => {
+		const status: GenericStatus = {
+			id: 'status-123',
+			activityPubObject: {
+				id: 'status-123',
+				type: 'Note',
+				extensions: {
+					estimatedCost: 1000,
+					moderationScore: 0.2,
+					communityNotes: [],
+					quoteUrl: undefined,
+					quoteable: true,
+					quotePermissions: 'EVERYONE',
+					quoteContext: undefined,
+					quoteCount: 0,
+					aiAnalysis: undefined,
+				}
+			} as any,
+			account: {
+				id: 'actor-123',
+				type: 'Person',
+				extensions: {
+					trustScore: 85,
+					reputation: { level: 'HIGH' },
+					vouches: []
+				}
+			} as any,
+			content: 'Test content',
+			contentWarning: undefined,
+			sensitive: false,
+			mediaAttachments: [],
+			mentions: [],
+			tags: [],
+			emojis: [],
+			createdAt: new Date('2023-01-01T00:00:00Z'),
+			updatedAt: undefined,
+			repliesCount: 5,
+			reblogsCount: 2,
+			favouritesCount: 10,
+			reblogged: false,
+			favourited: false,
+			bookmarked: false,
+			muted: false,
+			pinned: false,
+			inReplyToId: undefined,
+			reblog: undefined,
+			visibility: 'public',
+			url: 'https://example.com/status/123'
+		};
+
+		const item: GenericTimelineItem = {
+			id: 'item-123',
+			type: 'status',
+			status,
+			timestamp: new Date('2023-01-01T00:00:00Z'),
+			context: {
+				isThread: false,
+				isReply: false,
+				isBoost: false
+			},
+			metadata: {
+				lesser: {
+					estimatedCost: 1000,
+					moderationScore: 0.2,
+					hasCommunityNotes: false,
+					communityNotesCount: 0,
+					isQuote: false,
+					quoteCount: 0,
+					quoteable: true,
+					quotePermission: 'EVERYONE',
+					authorTrustScore: 85,
+					aiAnalysis: false
+				}
+			}
+		};
+
+		expect(item.metadata?.lesser).toBeDefined();
+		expect(item.metadata?.lesser?.estimatedCost).toBe(1000);
+		expect(item.metadata?.lesser?.moderationScore).toBe(0.2);
+		expect(item.metadata?.lesser?.quoteable).toBe(true);
+		expect(item.metadata?.lesser?.authorTrustScore).toBe(85);
+	});
 });
 

@@ -34,6 +34,11 @@ query Notifications(
   }
 }
 
+# Note: Lesser schema Notification type only has basic fields.
+# Lesser-specific notification payloads (quote, community note, trust, cost)
+# will need to be derived from status.communityNotes, status.quoteContext,
+# account.trustScore changes, etc. when those notifications arrive.
+
 mutation DismissNotification($id: ID!) {
   dismissNotification(id: $id)
 }

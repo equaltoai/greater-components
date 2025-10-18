@@ -56,6 +56,7 @@ export { default as FollowingList } from './FollowingList.svelte';
 export { default as EndorsedAccounts } from './EndorsedAccounts.svelte';
 export { default as FeaturedHashtags } from './FeaturedHashtags.svelte';
 export { default as AccountMigration } from './AccountMigration.svelte';
+export { default as TrustBadge } from './TrustBadge.svelte';
 
 // Export types and context utilities
 export type {
