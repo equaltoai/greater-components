@@ -23,9 +23,9 @@
     orientation = 'vertical',
     class: className = '',
     trigger,
-    onItemSelect,
-    ...restProps
+    onItemSelect
   }: Props = $props();
+  const restProps = $restProps();
 
   // State management
   let isOpen = $state(false);
@@ -59,8 +59,10 @@
       // Focus first item when opened via keyboard
       requestAnimationFrame(() => {
         const firstItem = menuElement?.querySelector('[role="menuitem"]:not([aria-disabled="true"])') as HTMLElement;
-        firstItem?.focus();
-        activeIndex = 0;
+        if (firstItem) {
+          firstItem.focus();
+          activeIndex = 0;
+        }
       });
     }
   }
@@ -108,7 +110,7 @@
         }
         break;
 
-      case 'ArrowRight':
+      case 'ArrowRight': {
         if (orientation === 'horizontal') {
           event.preventDefault();
           moveToNext();
@@ -121,8 +123,9 @@
           }
         }
         break;
+      }
 
-      case 'ArrowLeft':
+      case 'ArrowLeft': {
         if (orientation === 'horizontal') {
           event.preventDefault();
           moveToPrevious();
@@ -132,6 +135,7 @@
           expandedSubmenu = null;
         }
         break;
+      }
 
       case 'Home':
         event.preventDefault();
@@ -144,13 +148,14 @@
         break;
 
       case 'Enter':
-      case ' ':
+      case ' ': {
         event.preventDefault();
         const currentItem = focusableItems[activeIndex];
         if (currentItem) {
           selectItem(currentItem);
         }
         break;
+      }
 
       default:
         // Typeahead functionality
@@ -242,7 +247,7 @@
       tabindex="-1"
       {...restProps}
     >
-      {#each items as item, index}
+      {#each items as item (item.id)}
         {@const focusableIndex = focusableItems.findIndex(fi => fi.id === item.id)}
         <li
           role="none"
@@ -265,6 +270,13 @@
                 activeIndex = focusableIndex;
               }
             }}
+            onkeydown={(event) => {
+              if ((event.key === 'Enter' || event.key === ' ') && !item.disabled) {
+                event.preventDefault();
+                event.stopPropagation();
+                selectItem(item);
+              }
+            }}
           >
             <span class="gr-menu__item-label">{item.label}</span>
             {#if item.submenu}
@@ -282,7 +294,7 @@
               role="menu"
               aria-orientation="vertical"
             >
-              {#each item.submenu as subItem}
+              {#each item.submenu as subItem (subItem.id)}
                 <li role="none" class="gr-menu__item-wrapper">
                   <div
                     role="menuitem"
@@ -291,6 +303,13 @@
                     tabindex={subItem.disabled ? -1 : 0}
                     aria-disabled={subItem.disabled}
                     onclick={() => selectItem(subItem)}
+                    onkeydown={(event) => {
+                      if ((event.key === 'Enter' || event.key === ' ') && !subItem.disabled) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        selectItem(subItem);
+                      }
+                    }}
                   >
                     <span class="gr-menu__item-label">{subItem.label}</span>
                   </div>

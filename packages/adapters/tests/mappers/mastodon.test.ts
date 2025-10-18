@@ -2,7 +2,7 @@
  * Unit tests for Mastodon API mappers
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   mapMastodonAccount,
   mapMastodonStatus,
@@ -19,8 +19,15 @@ import {
   mastodonRelationshipFixtures,
   mastodonStreamingEventFixtures,
   mastodonErrorFixtures,
-  mastodonBatchFixtures
 } from '../../src/fixtures/mastodon.js';
+
+function expectResultData<T>(result: { data?: T | null; success: boolean }, message: string): T {
+  expect(result.data).toBeDefined();
+  if (result.data === null || result.data === undefined) {
+    throw new Error(message);
+  }
+  return result.data;
+}
 
 describe('Mastodon Account Mapper', () => {
   it('should map valid account successfully', () => {
@@ -239,11 +246,11 @@ describe('Mastodon Streaming Event Mapper', () => {
     const result = mapMastodonStreamingEvent(event);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for Mastodon update event');
     
-    if ('editType' in result.data!) {
-      expect(result.data.editType).toBe('content');
-      expect(result.data.id).toBeDefined();
+    if ('editType' in data) {
+      expect(data.editType).toBe('content');
+      expect(data.id).toBeDefined();
     }
   });
 
@@ -252,11 +259,11 @@ describe('Mastodon Streaming Event Mapper', () => {
     const result = mapMastodonStreamingEvent(event);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for Mastodon delete event');
     
-    if ('itemType' in result.data!) {
-      expect(result.data.itemType).toBe('status');
-      expect(result.data.id).toBe(event.payload);
+    if ('itemType' in data) {
+      expect(data.itemType).toBe('status');
+      expect(data.id).toBe(event.payload);
     }
   });
 
@@ -265,10 +272,10 @@ describe('Mastodon Streaming Event Mapper', () => {
     const result = mapMastodonStreamingEvent(event);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for Mastodon notification event');
     
-    if ('type' in result.data!) {
-      expect(result.data.type).toBe('notification');
+    if ('type' in data) {
+      expect(data.type).toBe('notification');
     }
   });
 

@@ -1,29 +1,47 @@
 import { SseClient } from './SseClient';
 import { HttpPollingClient } from './HttpPollingClient';
+import { resolveLogger } from './logger.js';
 import type {
   TransportFallbackConfig,
   TransportAdapter,
-  WebSocketEventHandler
+  WebSocketEventHandler,
+  TransportFallbackState,
+  TransportLogger,
+  SseClientState,
+  HttpPollingClientState,
+  WebSocketEvent
 } from './types';
 
 /**
  * Transport client with automatic fallback from SSE to HTTP Polling
  */
-export class TransportFallback implements TransportAdapter {
-  private config: TransportFallbackConfig;
-  private currentTransport: TransportAdapter | null = null;
+export class TransportFallback implements TransportAdapter<TransportFallbackState> {
+  private readonly config: TransportFallbackConfig & {
+    autoFallback: boolean;
+    forceTransport: 'sse' | 'polling' | 'auto';
+    logger: TransportLogger;
+  };
+  private currentTransport: TransportAdapter<SseClientState | HttpPollingClientState> | null = null;
   private transportType: 'sse' | 'polling' | null = null;
   private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();
   private unsubscribers: Map<string, (() => void)[]> = new Map();
   private isDestroyed = false;
   private fallbackAttempted = false;
+  private readonly logger: Required<TransportLogger>;
 
   constructor(config: TransportFallbackConfig) {
+    this.logger = resolveLogger(config.logger);
     this.config = {
       ...config,
+      primary: { ...config.primary },
+      fallback: { ...config.fallback },
       autoFallback: config.autoFallback !== false,
-      forceTransport: config.forceTransport || 'auto'
+      forceTransport: config.forceTransport ?? 'auto',
+      logger: config.logger ?? this.logger,
     };
+
+    this.config.primary.logger = this.config.primary.logger ?? this.logger;
+    this.config.fallback.logger = this.config.fallback.logger ?? this.logger;
   }
 
   /**
@@ -90,27 +108,25 @@ export class TransportFallback implements TransportAdapter {
    */
   on(event: string, handler: WebSocketEventHandler): () => void {
     // Store handler in our map
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set<WebSocketEventHandler>();
+      this.eventHandlers.set(event, handlers);
     }
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
 
     // Subscribe to current transport if connected
     if (this.currentTransport) {
       const unsubscribe = this.currentTransport.on(event, handler);
-      
-      if (!this.unsubscribers.has(event)) {
-        this.unsubscribers.set(event, []);
-      }
-      this.unsubscribers.get(event)!.push(unsubscribe);
+      this.addUnsubscribers(event, unsubscribe);
     }
 
     // Return unsubscribe function
     return () => {
-      const handlers = this.eventHandlers.get(event);
-      if (handlers) {
-        handlers.delete(handler);
-        if (handlers.size === 0) {
+      const storedHandlers = this.eventHandlers.get(event);
+      if (storedHandlers) {
+        storedHandlers.delete(handler);
+        if (storedHandlers.size === 0) {
           this.eventHandlers.delete(event);
         }
       }
@@ -127,18 +143,27 @@ export class TransportFallback implements TransportAdapter {
   /**
    * Get the current state
    */
-  getState(): any {
-    if (!this.currentTransport) {
+  getState(): TransportFallbackState {
+    if (!this.currentTransport || !this.transportType) {
       return {
         status: 'disconnected',
         transport: null,
-        error: null
+        error: null,
       };
     }
 
+    if (this.transportType === 'sse') {
+      const state = this.currentTransport.getState() as Readonly<SseClientState>;
+      return {
+        ...state,
+        transport: 'sse',
+      };
+    }
+
+    const state = this.currentTransport.getState() as Readonly<HttpPollingClientState>;
     return {
-      ...this.currentTransport.getState(),
-      transport: this.transportType
+      ...state,
+      transport: 'polling',
     };
   }
 
@@ -177,6 +202,9 @@ export class TransportFallback implements TransportAdapter {
     try {
       sseClient = instantiateClient();
     } catch (error) {
+      this.logger.warn('Failed to instantiate SSE client', {
+        error,
+      });
       if (this.config.autoFallback) {
         this.fallbackToPolling();
         return;
@@ -199,16 +227,13 @@ export class TransportFallback implements TransportAdapter {
 
     if (this.config.autoFallback && this.currentTransport) {
       const errorUnsubscribe = this.currentTransport.on('error', (event) => {
-        if (this.shouldFallback(event.error)) {
+        if (event.error && this.shouldFallback(event.error)) {
           errorUnsubscribe();
           this.fallbackToPolling();
         }
       });
 
-      if (!this.unsubscribers.has('_fallback_error')) {
-        this.unsubscribers.set('_fallback_error', []);
-      }
-      this.unsubscribers.get('_fallback_error')!.push(errorUnsubscribe);
+      this.addUnsubscribers('_fallback_error', errorUnsubscribe);
     }
 
     this.currentTransport.connect();
@@ -224,13 +249,22 @@ export class TransportFallback implements TransportAdapter {
     this.currentTransport.connect();
   }
 
+  private addUnsubscribers(event: string, ...entries: Array<() => void>): void {
+    const existing = this.unsubscribers.get(event);
+    if (existing) {
+      existing.push(...entries);
+      return;
+    }
+    this.unsubscribers.set(event, [...entries]);
+  }
+
   private fallbackToPolling(): void {
     if (this.fallbackAttempted || this.transportType === 'polling') {
       return; // Already using polling or fallback already attempted
     }
 
     this.fallbackAttempted = true;
-    console.warn('SSE connection failed, falling back to HTTP polling');
+    this.logger.warn('SSE connection failed, switching to HTTP polling');
 
     // Disconnect current transport
     if (this.currentTransport) {
@@ -275,17 +309,14 @@ export class TransportFallback implements TransportAdapter {
   }
 
   private subscribeHandlers(): void {
-    if (!this.currentTransport) return;
+    const adapter = this.currentTransport;
+    if (!adapter) return;
 
     // Subscribe all existing handlers to the new transport
     this.eventHandlers.forEach((handlers, event) => {
       handlers.forEach(handler => {
-        const unsubscribe = this.currentTransport!.on(event, handler);
-        
-        if (!this.unsubscribers.has(event)) {
-          this.unsubscribers.set(event, []);
-        }
-        this.unsubscribers.get(event)!.push(unsubscribe);
+        const unsubscribe = adapter.on(event, handler);
+        this.addUnsubscribers(event, unsubscribe);
       });
     });
   }
@@ -303,14 +334,21 @@ export class TransportFallback implements TransportAdapter {
 
   private emitToHandlers(event: string, data?: unknown): void {
     const handlers = this.eventHandlers.get(event);
-    if (handlers) {
-      handlers.forEach(handler => {
-        try {
-          handler({ type: event as any, data });
-        } catch (err) {
-          console.error(`Error in event handler for ${event}:`, err);
-        }
-      });
+    if (!handlers) {
+      return;
     }
+
+    const wsEvent: WebSocketEvent = {
+      type: event,
+      data,
+    };
+
+    handlers.forEach(handler => {
+      try {
+        handler(wsEvent);
+      } catch (error) {
+        this.logger.error(`Error in fallback event handler for ${event}`, error);
+      }
+    });
   }
 }

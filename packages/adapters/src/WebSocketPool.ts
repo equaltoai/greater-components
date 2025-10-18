@@ -1,3 +1,6 @@
+import { resolveLogger } from './logger.js';
+import type { TransportLogger } from './types.js';
+
 /**
  * WebSocket Connection Pool
  *
@@ -41,6 +44,11 @@ export interface WebSocketPoolConfig {
 	 * @default 300000 (5 minutes)
 	 */
 	idleTimeout?: number;
+
+	/**
+	 * Optional logger implementation for diagnostics
+	 */
+	logger?: TransportLogger;
 }
 
 export interface PooledWebSocket {
@@ -84,11 +92,13 @@ export interface PooledWebSocket {
  * WebSocket Connection Pool
  */
 export class WebSocketPool {
-	private config: Required<WebSocketPoolConfig>;
+	private config: Required<Omit<WebSocketPoolConfig, 'logger'>>;
 	private connections: Map<string, PooledWebSocket>;
 	private eventHandlers: Map<string, Set<(event: MessageEvent) => void>>;
+	private readonly logger: Required<TransportLogger>;
 
 	constructor(config: WebSocketPoolConfig = {}) {
+		this.logger = resolveLogger(config.logger);
 		this.config = {
 			maxConnections: config.maxConnections ?? 5,
 			connectionTimeout: config.connectionTimeout ?? 30000,
@@ -113,18 +123,16 @@ export class WebSocketPool {
 	 * Acquire a WebSocket connection for the given URL
 	 */
 	async acquire(url: string): Promise<PooledWebSocket> {
-		// Reuse existing connection if available
-		if (this.connections.has(url)) {
-			const connection = this.connections.get(url)!;
+		const existingConnection = this.connections.get(url);
 
-			if (connection.state === 'connected') {
-				connection.refCount++;
-				connection.lastActivity = Date.now();
-				return connection;
+		if (existingConnection) {
+			if (existingConnection.state === 'connected') {
+				existingConnection.refCount++;
+				existingConnection.lastActivity = Date.now();
+				return existingConnection;
 			}
 
-			// Remove disconnected connection
-			if (connection.state === 'disconnected') {
+			if (existingConnection.state === 'disconnected') {
 				this.connections.delete(url);
 			}
 		}
@@ -159,11 +167,13 @@ export class WebSocketPool {
 	 * Subscribe to messages on a WebSocket
 	 */
 	subscribe(url: string, handler: (event: MessageEvent) => void): () => void {
-		if (!this.eventHandlers.has(url)) {
-			this.eventHandlers.set(url, new Set());
+		let handlers = this.eventHandlers.get(url);
+		if (!handlers) {
+			handlers = new Set();
+			this.eventHandlers.set(url, handlers);
 		}
 
-		this.eventHandlers.get(url)!.add(handler);
+		handlers.add(handler);
 
 		// Return unsubscribe function
 		return () => {
@@ -288,25 +298,25 @@ export class WebSocketPool {
 		};
 
 		socket.onerror = (error) => {
-			console.error(`WebSocket error on ${url}:`, error);
+			this.logger.error(`WebSocket error on ${url}`, error);
 			connection.state = 'disconnected';
 		};
 
-		socket.onmessage = (event) => {
-			connection.lastActivity = Date.now();
+			socket.onmessage = (event) => {
+				connection.lastActivity = Date.now();
 
-			// Notify all subscribers
-			const handlers = this.eventHandlers.get(url);
-			if (handlers) {
-				for (const handler of handlers) {
-					try {
-						handler(event);
-					} catch (error) {
-						console.error('Error in WebSocket message handler:', error);
+				// Notify all subscribers
+				const handlers = this.eventHandlers.get(url);
+				if (handlers) {
+					for (const handler of handlers) {
+						try {
+							handler(event);
+						} catch (error) {
+							this.logger.error('Error in WebSocket message handler', error);
+						}
 					}
 				}
-			}
-		};
+			};
 
 		// Wait for connection with timeout
 		await this.waitForConnection(socket, this.config.connectionTimeout);
@@ -350,7 +360,7 @@ export class WebSocketPool {
 				try {
 					connection.socket.send(JSON.stringify({ type: 'ping' }));
 				} catch (error) {
-					console.error('Heartbeat failed:', error);
+					this.logger.error('Heartbeat failed', error);
 					this.reconnect(connection);
 				}
 			}
@@ -374,7 +384,7 @@ export class WebSocketPool {
 		connection.reconnectAttempts++;
 
 		if (connection.reconnectAttempts > this.config.maxReconnectAttempts) {
-			console.error(`Max reconnection attempts reached for ${connection.url}`);
+			this.logger.error(`Max reconnection attempts reached for ${connection.url}`);
 			this.connections.delete(connection.url);
 			return;
 		}
@@ -385,7 +395,7 @@ export class WebSocketPool {
 		try {
 			await this.createConnection(connection.url);
 		} catch (error) {
-			console.error(`Reconnection failed for ${connection.url}:`, error);
+			this.logger.error(`Reconnection failed for ${connection.url}`, error);
 		}
 	}
 
@@ -403,7 +413,7 @@ export class WebSocketPool {
 				connection.socket.close();
 			}
 		} catch (error) {
-			console.error('Error closing WebSocket:', error);
+			this.logger.error('Error closing WebSocket', error);
 		}
 
 		connection.state = 'disconnected';
@@ -419,7 +429,7 @@ export class WebSocketPool {
 			// Close connections with no active subscriptions and idle for too long
 			if (connection.refCount === 0 &&
 				now - connection.lastActivity > this.config.idleTimeout) {
-				console.log(`Closing idle connection: ${url}`);
+				this.logger.info('Closing idle connection', { url });
 				this.close(url);
 			}
 		}
@@ -443,7 +453,7 @@ export class WebSocketPool {
 		}
 
 		if (lruConnection && lruUrl) {
-			console.log(`Evicting LRU connection: ${lruUrl}`);
+			this.logger.info('Evicting least recently used connection', { url: lruUrl });
 			this.close(lruUrl);
 			return true;
 		}
@@ -476,4 +486,3 @@ export function resetGlobalWebSocketPool(): void {
 		globalPool = null;
 	}
 }
-

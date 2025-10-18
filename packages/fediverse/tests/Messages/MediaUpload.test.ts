@@ -485,7 +485,6 @@ describe('Messages.MediaUpload - Edge Cases', () => {
 describe('Messages.MediaUpload - Integration', () => {
 	it('handles complete upload flow', () => {
 		const maxAttachments = 4;
-		const maxFileSize = 10 * 1024 * 1024;
 		let attachments: MediaAttachment[] = [];
 
 		// Check can add
@@ -549,4 +548,3 @@ describe('Messages.MediaUpload - Integration', () => {
 		expect(isAudioFile(attachments[2].type)).toBe(true);
 	});
 });
-

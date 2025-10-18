@@ -5,7 +5,7 @@
 
 import { render, type RenderOptions } from '@testing-library/svelte';
 import { vi } from 'vitest';
-import type { SvelteComponent } from 'svelte';
+import type { ComponentType } from 'svelte';
 
 export interface ThemeContextOptions {
   theme: 'light' | 'dark' | 'high-contrast';
@@ -15,6 +15,9 @@ export interface ThemeContextOptions {
   highContrast: boolean;
   lang: string;
 }
+
+type ThemeOption = ThemeContextOptions['theme'];
+type DensityOption = ThemeContextOptions['density'];
 
 /**
  * Create theme context wrapper
@@ -30,7 +33,7 @@ export function createThemeContextWrapper(options: Partial<ThemeContextOptions> 
     ...options,
   };
   
-  return function ThemeContextWrapper(props: { children: any }) {
+  return function ThemeContextWrapper(props: { children: unknown }): unknown {
     // This would typically be a Svelte component that provides theme context
     // For testing, we'll set up the environment directly
     
@@ -68,16 +71,17 @@ export function createThemeContextWrapper(options: Partial<ThemeContextOptions> 
 /**
  * Render component with theme context
  */
-export function renderWithTheme<T extends SvelteComponent>(
-  Component: any,
-  props?: any,
+export function renderWithTheme<Props extends Record<string, unknown>>(
+  ComponentCtor: ComponentType<Props>,
+  props?: Props,
   themeOptions?: Partial<ThemeContextOptions>,
-  renderOptions?: Omit<RenderOptions<T>, 'wrapper'>
+  renderOptions?: Omit<RenderOptions<ComponentType<Props>>, 'wrapper'>
 ): ReturnType<typeof render> {
   // Create wrapper for theme context
-  createThemeContextWrapper(themeOptions);
+  const applyThemeContext = createThemeContextWrapper(themeOptions);
+  applyThemeContext({ children: null });
   
-  return render(Component, {
+  return render(ComponentCtor, {
     ...renderOptions,
     props,
     // Note: Svelte testing library doesn't have wrapper in the same way as React
@@ -240,18 +244,18 @@ export function setupTestEnvironment(options: {
  * Create custom render function with all context
  */
 export function createCustomRender(globalOptions: Partial<ThemeContextOptions> = {}) {
-  return function customRender<T extends SvelteComponent>(
-    Component: any,
-    props?: any,
+  return function customRender<Props extends Record<string, unknown>>(
+    ComponentCtor: ComponentType<Props>,
+    props?: Props,
     options?: {
       theme?: Partial<ThemeContextOptions>;
-      render?: Omit<RenderOptions<T>, 'wrapper'>;
+      render?: Omit<RenderOptions<ComponentType<Props>>, 'wrapper'>;
     }
   ): ReturnType<typeof render> {
     const mergedThemeOptions = { ...globalOptions, ...options?.theme };
     
     return renderWithTheme(
-      Component,
+      ComponentCtor,
       props,
       mergedThemeOptions,
       options?.render
@@ -264,16 +268,16 @@ export function createCustomRender(globalOptions: Partial<ThemeContextOptions> =
  */
 export function createThemeSnapshots() {
   return {
-    async captureThemeSnapshots<T extends SvelteComponent>(
-      Component: new (...args: any[]) => T,
-      props?: any,
-      themes: string[] = ['light', 'dark']
-    ) {
+    async captureThemeSnapshots<Props extends Record<string, unknown>>(
+      ComponentCtor: ComponentType<Props>,
+      props?: Props,
+      themes: ThemeOption[] = ['light', 'dark']
+    ): Promise<Record<string, string>> {
       const snapshots: Record<string, string> = {};
       
       for (const theme of themes) {
-        const { container } = renderWithTheme(Component, props, { 
-          theme: theme as any 
+        const { container } = renderWithTheme(ComponentCtor, props, { 
+          theme 
         });
         
         // Wait for any async operations
@@ -285,16 +289,16 @@ export function createThemeSnapshots() {
       return snapshots;
     },
     
-    async captureDensitySnapshots<T extends SvelteComponent>(
-      Component: new (...args: any[]) => T,
-      props?: any,
-      densities: string[] = ['compact', 'comfortable', 'spacious']
-    ) {
+    async captureDensitySnapshots<Props extends Record<string, unknown>>(
+      ComponentCtor: ComponentType<Props>,
+      props?: Props,
+      densities: DensityOption[] = ['compact', 'comfortable', 'spacious']
+    ): Promise<Record<string, string>> {
       const snapshots: Record<string, string> = {};
       
       for (const density of densities) {
-        const { container } = renderWithTheme(Component, props, { 
-          density: density as any 
+        const { container } = renderWithTheme(ComponentCtor, props, { 
+          density 
         });
         
         // Wait for any async operations

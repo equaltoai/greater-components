@@ -5,7 +5,7 @@
 
 import { render, cleanup } from '@testing-library/svelte';
 import { afterEach } from 'vitest';
-import type { SvelteComponent, ComponentProps } from 'svelte';
+import type { ComponentType } from 'svelte';
 
 // Auto cleanup after each test
 afterEach(() => {
@@ -21,12 +21,15 @@ export interface A11yRenderOptions {
   lang?: string;
 }
 
+type ThemeOption = NonNullable<A11yRenderOptions['theme']>;
+type DensityOption = NonNullable<A11yRenderOptions['density']>;
+
 /**
  * Render component with accessibility context
  */
-export function renderWithA11yContext<T extends SvelteComponent>(
-  Component: any,
-  props?: ComponentProps<T>,
+export function renderWithA11yContext<Props extends Record<string, unknown>>(
+  ComponentCtor: ComponentType<Props>,
+  props?: Props,
   options: A11yRenderOptions = {}
 ): ReturnType<typeof render> {
   const {
@@ -68,22 +71,20 @@ export function renderWithA11yContext<T extends SvelteComponent>(
     });
   }
   
-  return render(Component, { props: props as any });
+  return render(ComponentCtor, props ? { props } : undefined);
 }
 
 /**
  * Test component across different themes
  */
-export async function testComponentThemes<T extends SvelteComponent>(
-  Component: new (...args: any[]) => T,
-  props: ComponentProps<T>,
-  testFn: (container: HTMLElement, theme: string) => void | Promise<void>,
-  themes: string[] = ['light', 'dark']
+export async function testComponentThemes<Props extends Record<string, unknown>>(
+  ComponentCtor: ComponentType<Props>,
+  props: Props,
+  testFn: (container: HTMLElement, theme: ThemeOption) => void | Promise<void>,
+  themes: ThemeOption[] = ['light', 'dark']
 ): Promise<void> {
   for (const theme of themes) {
-    const { container } = renderWithA11yContext(Component, props, { 
-      theme: theme as 'light' | 'dark' 
-    });
+    const { container } = renderWithA11yContext(ComponentCtor, props, { theme });
     
     await testFn(container, theme);
     cleanup();
@@ -93,16 +94,14 @@ export async function testComponentThemes<T extends SvelteComponent>(
 /**
  * Test component across different densities
  */
-export async function testComponentDensities<T extends SvelteComponent>(
-  Component: new (...args: any[]) => T,
-  props: ComponentProps<T>,
-  testFn: (container: HTMLElement, density: string) => void | Promise<void>,
-  densities: string[] = ['compact', 'comfortable', 'spacious']
+export async function testComponentDensities<Props extends Record<string, unknown>>(
+  ComponentCtor: ComponentType<Props>,
+  props: Props,
+  testFn: (container: HTMLElement, density: DensityOption) => void | Promise<void>,
+  densities: DensityOption[] = ['compact', 'comfortable', 'spacious']
 ): Promise<void> {
   for (const density of densities) {
-    const { container } = renderWithA11yContext(Component, props, { 
-      density: density as 'compact' | 'comfortable' | 'spacious'
-    });
+    const { container } = renderWithA11yContext(ComponentCtor, props, { density });
     
     await testFn(container, density);
     cleanup();
@@ -112,7 +111,9 @@ export async function testComponentDensities<T extends SvelteComponent>(
 /**
  * Create mock accessibility context
  */
-export function createMockA11yContext(overrides: Partial<A11yRenderOptions> = {}) {
+export function createMockA11yContext(
+  overrides: Partial<A11yRenderOptions> = {}
+): A11yRenderOptions {
   return {
     theme: 'light',
     density: 'comfortable',
@@ -121,7 +122,7 @@ export function createMockA11yContext(overrides: Partial<A11yRenderOptions> = {}
     direction: 'ltr',
     lang: 'en',
     ...overrides,
-  } as A11yRenderOptions;
+  };
 }
 
 /**
@@ -129,20 +130,32 @@ export function createMockA11yContext(overrides: Partial<A11yRenderOptions> = {}
  */
 export function setupA11yTestEnvironment() {
   // Mock IntersectionObserver
-  global.IntersectionObserver = class IntersectionObserver {
-    constructor() {}
-    observe() {}
-    disconnect() {}
-    unobserve() {}
-  } as any;
+  class MockIntersectionObserver implements IntersectionObserver {
+    readonly root: Element | null = null;
+    readonly rootMargin = '0px';
+    readonly thresholds: ReadonlyArray<number> = [0];
+    constructor(private readonly callback: IntersectionObserverCallback) {
+      this.callback = callback;
+    }
+    observe(_target: Element): void {}
+    unobserve(_target: Element): void {}
+    disconnect(): void {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+  }
+  globalThis.IntersectionObserver = MockIntersectionObserver as typeof IntersectionObserver;
   
   // Mock ResizeObserver
-  global.ResizeObserver = class ResizeObserver {
-    constructor() {}
-    observe() {}
-    disconnect() {}
-    unobserve() {}
-  } as any;
+  class MockResizeObserver implements ResizeObserver {
+    constructor(private readonly callback: ResizeObserverCallback) {
+      this.callback = callback;
+    }
+    observe(_target: Element, _options?: ResizeObserverOptions): void {}
+    unobserve(_target: Element): void {}
+    disconnect(): void {}
+  }
+  globalThis.ResizeObserver = MockResizeObserver as typeof ResizeObserver;
   
   // Mock matchMedia
   Object.defineProperty(window, 'matchMedia', {

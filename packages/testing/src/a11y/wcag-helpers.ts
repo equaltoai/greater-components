@@ -216,7 +216,7 @@ export function testWCAGCriterion(
       });
       break;
 
-    case '1.3.1': // Info and Relationships
+    case '1.3.1': { // Info and Relationships
       // Check heading hierarchy
       const headings = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'));
       let lastLevel = 0;
@@ -242,6 +242,7 @@ export function testWCAGCriterion(
         }
       });
       break;
+    }
 
     case '2.1.1': // Keyboard
       container.querySelectorAll('[onclick]').forEach((element) => {
@@ -254,21 +255,22 @@ export function testWCAGCriterion(
       });
       break;
 
-    case '2.4.3': // Focus Order
+    case '2.4.3': { // Focus Order
       const focusableElements = container.querySelectorAll(
         'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
       
       focusableElements.forEach((element) => {
         const tabindex = element.getAttribute('tabindex');
-        if (tabindex && parseInt(tabindex) > 0) {
+        if (tabindex && parseInt(tabindex, 10) > 0) {
           warnings.push('Positive tabindex found - may affect focus order');
           elements.push(element as HTMLElement);
         }
       });
       break;
+    }
 
-    case '2.4.7': // Focus Visible
+    case '2.4.7': { // Focus Visible
       const interactiveElements = container.querySelectorAll(
         'a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
       );
@@ -284,6 +286,7 @@ export function testWCAGCriterion(
         }
       });
       break;
+    }
 
     case '4.1.2': // Name, Role, Value
       container.querySelectorAll('[role]').forEach((element) => {

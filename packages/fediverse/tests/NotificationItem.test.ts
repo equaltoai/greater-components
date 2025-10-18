@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import type { Notification, NotificationGroup, NotificationType } from '../src/types';
+import type { Notification, NotificationGroup, NotificationType, Account } from '../src/types';
 import {
   getNotificationIcon,
   getNotificationColor,
@@ -70,21 +70,26 @@ function isUnread(notification: Notification): boolean {
   return !notification.read;
 }
 
+type NotificationHandlers = {
+  onMarkAsRead?: (notificationId: string) => void;
+  onDismiss?: (notificationId: string) => void;
+};
+
 // Check if should show actions
-function shouldShowActions(showActions: boolean, handlers: {
-  onMarkAsRead?: Function;
-  onDismiss?: Function;
-}): boolean {
+function shouldShowActions(showActions: boolean, handlers: NotificationHandlers): boolean {
   return showActions && (handlers.onMarkAsRead !== undefined || handlers.onDismiss !== undefined);
 }
 
 // Check if should show mark as read button
-function shouldShowMarkAsRead(notification: Notification, onMarkAsRead?: Function): boolean {
+function shouldShowMarkAsRead(
+  notification: Notification,
+  onMarkAsRead?: (notificationId: string) => void
+): boolean {
   return !notification.read && onMarkAsRead !== undefined;
 }
 
 // Check if should show dismiss button
-function shouldShowDismiss(onDismiss?: Function): boolean {
+function shouldShowDismiss(onDismiss?: (notificationId: string) => void): boolean {
   return onDismiss !== undefined;
 }
 
@@ -94,7 +99,7 @@ function getDensityClass(density: 'compact' | 'comfortable'): string {
 }
 
 // Get avatars for display
-function getAvatars(notification: Notification, group?: NotificationGroup): any[] {
+function getAvatars(notification: Notification, group?: NotificationGroup): Account[] {
   if (group) {
     return group.accounts.slice(0, 4);
   }
@@ -193,12 +198,12 @@ describe('NotificationItem - Read Status', () => {
 
 describe('NotificationItem - Action Buttons', () => {
   it('shows actions when showActions is true and handlers exist', () => {
-    expect(shouldShowActions(true, { onMarkAsRead: () => {} })).toBe(true);
+    expect(shouldShowActions(true, { onMarkAsRead: (_id) => {} })).toBe(true);
     expect(shouldShowActions(true, { onDismiss: () => {} })).toBe(true);
   });
 
   it('hides actions when showActions is false', () => {
-    expect(shouldShowActions(false, { onMarkAsRead: () => {} })).toBe(false);
+    expect(shouldShowActions(false, { onMarkAsRead: (_id) => {} })).toBe(false);
   });
 
   it('hides actions when no handlers', () => {
@@ -207,12 +212,12 @@ describe('NotificationItem - Action Buttons', () => {
 
   it('shows mark as read for unread notifications', () => {
     const unread = createNotification({ read: false });
-    expect(shouldShowMarkAsRead(unread, () => {})).toBe(true);
+    expect(shouldShowMarkAsRead(unread, (_id) => {})).toBe(true);
   });
 
   it('hides mark as read for read notifications', () => {
     const read = createNotification({ read: true });
-    expect(shouldShowMarkAsRead(read, () => {})).toBe(false);
+    expect(shouldShowMarkAsRead(read, (_id) => {})).toBe(false);
   });
 
   it('hides mark as read when no handler', () => {
@@ -221,7 +226,7 @@ describe('NotificationItem - Action Buttons', () => {
   });
 
   it('shows dismiss when handler exists', () => {
-    expect(shouldShowDismiss(() => {})).toBe(true);
+    expect(shouldShowDismiss((_id) => {})).toBe(true);
   });
 
   it('hides dismiss when no handler', () => {
@@ -450,8 +455,8 @@ describe('NotificationItem - Integration', () => {
     expect(stripped).toBe('Hello world!');
 
     // Check actions
-    expect(shouldShowActions(true, { onMarkAsRead: () => {} })).toBe(true);
-    expect(shouldShowMarkAsRead(notification, () => {})).toBe(true);
+    expect(shouldShowActions(true, { onMarkAsRead: (_id) => {} })).toBe(true);
+    expect(shouldShowMarkAsRead(notification, (_id) => {})).toBe(true);
   });
 
   it('processes grouped notification workflow', () => {
@@ -488,6 +493,6 @@ describe('NotificationItem - Integration', () => {
 
     // Check read status
     expect(isUnread(notification)).toBe(false);
-    expect(shouldShowMarkAsRead(notification, () => {})).toBe(false);
+    expect(shouldShowMarkAsRead(notification, (_id) => {})).toBe(false);
   });
 });

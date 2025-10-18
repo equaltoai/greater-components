@@ -335,7 +335,6 @@ describe('Modal Primitive', () => {
 			document.body.appendChild(contentEl);
 
 			const action = modal.actions.content(contentEl);
-
 			const originalOverflow = document.body.style.overflow;
 
 			modal.helpers.close();
@@ -352,7 +351,6 @@ describe('Modal Primitive', () => {
 			document.body.appendChild(contentEl);
 
 			const action = modal.actions.content(contentEl);
-
 			const originalOverflow = document.body.style.overflow;
 
 			modal.helpers.open();
@@ -505,7 +503,7 @@ describe('Modal Primitive', () => {
 			const contentEl = document.createElement('div');
 			document.body.appendChild(contentEl);
 
-			const originalOverflow = document.body.style.overflow;
+			const _originalOverflow = document.body.style.overflow;
 			const action = modal.actions.content(contentEl);
 
 			action.destroy();
@@ -635,4 +633,3 @@ describe('Modal Primitive', () => {
 		});
 	});
 });
-

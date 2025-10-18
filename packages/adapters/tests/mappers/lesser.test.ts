@@ -24,9 +24,16 @@ import {
   lesserGraphQLResponseFixtures,
   lesserTimelineConnectionFixture,
   lesserErrorFixtures,
-  lesserBatchFixtures,
   lesserAIAnalysisFixture,
 } from '../../src/fixtures/lesser.js';
+
+function expectResultData<T>(result: { data?: T | null; success: boolean }, message: string): T {
+  expect(result.data).toBeDefined();
+  if (result.data === null || result.data === undefined) {
+    throw new Error(message);
+  }
+  return result.data;
+}
 
 describe('Lesser Account Mapper', () => {
   it('should map valid account successfully', () => {
@@ -249,7 +256,7 @@ describe('Lesser Object Mapper', () => {
     expect(result.data?.mentions).toHaveLength(0);
     expect(result.data?.tags).toHaveLength(0);
     expect(result.data?.estimatedCost).toBe(500);
-    expect(result.data?.moderationScore).toBe(0);
+    expect(result.data?.moderationScore).toBeUndefined();
     expect(result.data?.quoteable).toBe(false);
   });
 
@@ -719,7 +726,7 @@ describe('Lesser Notification Mapper', () => {
       { lesser: 'POLL_ENDED', unified: 'poll' }
     ];
 
-    typeMapping.forEach(({ lesser, unified }, index) => {
+    typeMapping.forEach(({ lesser: _lesser, unified }, index) => {
       const notification = lesserNotificationFixtures[index];
       const result = mapLesserNotification(notification);
       
@@ -818,10 +825,10 @@ describe('Lesser Streaming Update Mapper', () => {
     const result = mapLesserStreamingUpdate(update);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for POST_CREATED event');
     
-    if ('type' in result.data!) {
-      expect(result.data.type).toBe('status');
+    if ('type' in data) {
+      expect(data.type).toBe('status');
     }
   });
 
@@ -830,11 +837,11 @@ describe('Lesser Streaming Update Mapper', () => {
     const result = mapLesserStreamingUpdate(update);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for POST_DELETED event');
     
-    if ('itemType' in result.data!) {
-      expect(result.data.itemType).toBe('status');
-      expect(result.data.id).toBe('post_deleted_example_123');
+    if ('itemType' in data) {
+      expect(data.itemType).toBe('status');
+      expect(data.id).toBe('post_deleted_example_123');
     }
   });
 
@@ -843,10 +850,10 @@ describe('Lesser Streaming Update Mapper', () => {
     const result = mapLesserStreamingUpdate(update);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for POST_UPDATED event');
     
-    if ('editType' in result.data!) {
-      expect(result.data.editType).toBe('content');
+    if ('editType' in data) {
+      expect(data.editType).toBe('content');
     }
   });
 
@@ -855,10 +862,10 @@ describe('Lesser Streaming Update Mapper', () => {
     const result = mapLesserStreamingUpdate(update);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for NOTIFICATION_CREATED event');
     
-    if ('type' in result.data!) {
-      expect(result.data.type).toBe('notification');
+    if ('type' in data) {
+      expect(data.type).toBe('notification');
     }
   });
 
@@ -867,10 +874,10 @@ describe('Lesser Streaming Update Mapper', () => {
     const result = mapLesserStreamingUpdate(update);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
+    const data = expectResultData(result, 'Expected streaming update data for ACCOUNT_UPDATED event');
     
-    if ('type' in result.data!) {
-      expect(result.data.type).toBe('status'); // Generic mapping
+    if ('type' in data) {
+      expect(data.type).toBe('status'); // Generic mapping
     }
   });
 
@@ -887,10 +894,11 @@ describe('Lesser Streaming Update Mapper', () => {
     const result = mapLesserStreamingUpdate(update);
 
     expect(result.success).toBe(true);
+    const data = expectResultData(result, 'Expected streaming update data with timestamp');
     
-    if ('timestamp' in result.data!) {
-      expect(typeof result.data.timestamp).toBe('number');
-      expect(result.data.timestamp).toBeGreaterThan(0);
+    if ('timestamp' in data) {
+      expect(typeof data.timestamp).toBe('number');
+      expect(data.timestamp).toBeGreaterThan(0);
     }
   });
 });
@@ -1129,13 +1137,37 @@ describe('Edge Cases and Error Handling', () => {
 describe('Lesser AI Analysis Mapper', () => {
   it('should map post with full AI analysis', () => {
     const post = lesserPostFixtures.find(p => p.id === 'post-with-ai-analysis');
-    const result = mapLesserPost(post!);
+    expect(post).toBeDefined();
+    if (!post) {
+      throw new Error('Expected post fixture with AI analysis');
+    }
+    const result = mapLesserPost(post);
 
     expect(result.success).toBe(true);
-    expect(result.data?.aiAnalysis).toBeDefined();
+    const mappedPost = expectResultData(result, 'Expected mapped post data for AI analysis checks');
+    expect(mappedPost.aiAnalysis).toBeDefined();
 
-    const mappedAI = result.data!.aiAnalysis!;
+    const mappedAI = expectResultData(
+      { data: mappedPost.aiAnalysis, success: true },
+      'Expected AI analysis data on mapped post'
+    );
     const originalAI = lesserAIAnalysisFixture;
+    const originalTextAnalysis = expectResultData(
+      { data: originalAI.textAnalysis, success: true },
+      'Expected text analysis data on AI analysis fixture'
+    );
+    const originalImageAnalysis = expectResultData(
+      { data: originalAI.imageAnalysis, success: true },
+      'Expected image analysis data on AI analysis fixture'
+    );
+    const originalDetection = expectResultData(
+      { data: originalAI.aiDetection, success: true },
+      'Expected AI detection data on AI analysis fixture'
+    );
+    const originalSpam = expectResultData(
+      { data: originalAI.spamAnalysis, success: true },
+      'Expected spam analysis data on AI analysis fixture'
+    );
 
     expect(mappedAI.id).toBe(originalAI.id);
     expect(mappedAI.overallRisk).toBe(originalAI.overallRisk);
@@ -1143,20 +1175,36 @@ describe('Lesser AI Analysis Mapper', () => {
 
     // Text Analysis
     expect(mappedAI.textAnalysis).toBeDefined();
-    expect(mappedAI.textAnalysis!.sentiment).toBe(originalAI.textAnalysis!.sentiment);
-    expect(mappedAI.textAnalysis!.toxicityScore).toBe(originalAI.textAnalysis!.toxicityScore);
+    const textAnalysis = expectResultData(
+      { data: mappedAI.textAnalysis, success: true },
+      'Expected text analysis data on mapped AI analysis'
+    );
+    expect(textAnalysis.sentiment).toBe(originalTextAnalysis.sentiment);
+    expect(textAnalysis.toxicityScore).toBe(originalTextAnalysis.toxicityScore);
 
     // Image Analysis
     expect(mappedAI.imageAnalysis).toBeDefined();
-    expect(mappedAI.imageAnalysis!.isNSFW).toBe(originalAI.imageAnalysis!.isNSFW);
-    expect(mappedAI.imageAnalysis!.violenceScore).toBe(originalAI.imageAnalysis!.violenceScore);
+    const imageAnalysis = expectResultData(
+      { data: mappedAI.imageAnalysis, success: true },
+      'Expected image analysis data on mapped AI analysis'
+    );
+    expect(imageAnalysis.isNSFW).toBe(originalImageAnalysis.isNSFW);
+    expect(imageAnalysis.violenceScore).toBe(originalImageAnalysis.violenceScore);
 
     // AI Detection
     expect(mappedAI.aiDetection).toBeDefined();
-    expect(mappedAI.aiDetection!.aiGeneratedProbability).toBe(originalAI.aiDetection!.aiGeneratedProbability);
+    const aiDetection = expectResultData(
+      { data: mappedAI.aiDetection, success: true },
+      'Expected AI detection data on mapped AI analysis'
+    );
+    expect(aiDetection.aiGeneratedProbability).toBe(originalDetection.aiGeneratedProbability);
 
     // Spam Analysis
     expect(mappedAI.spamAnalysis).toBeDefined();
-    expect(mappedAI.spamAnalysis!.spamScore).toBe(originalAI.spamAnalysis!.spamScore);
+    const spamAnalysis = expectResultData(
+      { data: mappedAI.spamAnalysis, success: true },
+      'Expected spam analysis data on mapped AI analysis'
+    );
+    expect(spamAnalysis.spamScore).toBe(originalSpam.spamScore);
   });
 });

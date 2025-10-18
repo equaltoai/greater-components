@@ -5,12 +5,10 @@
 
 import { test, expect } from '@playwright/test';
 import { 
-  checkAccessibility, 
-  testThemeAccessibility 
+  checkAccessibility 
 } from '../../src/playwright/axe-playwright';
 import { 
-  testTabOrder,
-  simulateKeyboardNavigation 
+  testTabOrder 
 } from '../../src/playwright/keyboard-playwright';
 import { createStorybookTestSuite } from '../../src/playwright/storybook-helpers';
 

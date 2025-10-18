@@ -453,7 +453,12 @@ describe('Admin.Logs - Metadata', () => {
 	});
 
 	it('formats metadata', () => {
-		const formatted = formatMetadata(withMetadata.metadata!);
+		const metadata = withMetadata.metadata;
+		expect(metadata).toBeDefined();
+		if (!metadata) {
+			throw new Error('Expected metadata to exist for formatting');
+		}
+		const formatted = formatMetadata(metadata);
 		expect(formatted).toContain('statusCode');
 		expect(formatted).toContain('500');
 	});
@@ -836,8 +841,8 @@ describe('Admin.Logs - Integration', () => {
 		sorted.forEach((log) => {
 			expect(formatTimestamp(log.timestamp)).toBeTruthy();
 			expect(getBadgeClass(log.level)).toBeTruthy();
-			if (hasMetadata(log)) {
-				expect(formatMetadata(log.metadata!)).toBeTruthy();
+			if (hasMetadata(log) && log.metadata) {
+				expect(formatMetadata(log.metadata)).toBeTruthy();
 			}
 		});
 	});
@@ -860,4 +865,3 @@ describe('Admin.Logs - Integration', () => {
 		expect(countByCategory(logs, 'auth')).toBe(3);
 	});
 });
-

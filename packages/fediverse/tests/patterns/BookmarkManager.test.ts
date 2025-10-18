@@ -587,9 +587,10 @@ describe('BookmarkManager - Selection', () => {
 
 	it('should deselect all bookmarks', () => {
 		const selection = new Set(['1', '2', '3']);
-		const newSelection = new Set<string>();
 
-		expect(newSelection.size).toBe(0);
+		selection.clear();
+
+		expect(selection.size).toBe(0);
 	});
 });
 
@@ -848,4 +849,3 @@ describe('BookmarkManager - Type Safety', () => {
 		expect(folder).toHaveProperty('count');
 	});
 });
-

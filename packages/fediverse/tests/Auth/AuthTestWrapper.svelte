@@ -3,19 +3,21 @@
 	import AuthRoot from '../../src/components/Auth/Root.svelte';
 	import type { AuthHandlers, AuthState } from '../../src/components/Auth/context.js';
 
-	let {
-		component,
-		componentProps = {},
-		handlers = {},
-		initialState = {},
-	} = $props<{
-		component: ComponentType;
-		componentProps?: Record<string, unknown>;
-		handlers?: AuthHandlers;
-		initialState?: Partial<AuthState>;
-	}>();
+let {
+	component,
+	componentProps = {},
+	handlers = {},
+	initialState = {},
+} = $props<{
+	component: ComponentType;
+	componentProps?: Record<string, unknown>;
+	handlers?: AuthHandlers;
+	initialState?: Partial<AuthState>;
+}>();
+
 </script>
 
 <AuthRoot {initialState} {handlers}>
-	<svelte:component this={component} {...componentProps} />
+    {@const ComponentToRender = component}
+    <ComponentToRender {...componentProps} />
 </AuthRoot>

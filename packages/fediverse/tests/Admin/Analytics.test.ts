@@ -123,29 +123,6 @@ function calculateMedian(data: DataPoint[]): number {
 		: sorted[mid].count;
 }
 
-// Fill missing dates
-function fillMissingDates(
-	data: DataPoint[],
-	startDate: string,
-	endDate: string
-): DataPoint[] {
-	const filled: DataPoint[] = [];
-	const start = new Date(startDate);
-	const end = new Date(endDate);
-
-	const dataMap = new Map(data.map((d) => [d.date, d.count]));
-
-	for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
-		const dateStr = date.toISOString().split('T')[0];
-		filled.push({
-			date: dateStr,
-			count: dataMap.get(dateStr) || 0,
-		});
-	}
-
-	return filled;
-}
-
 // Check if has data
 function hasData(data: DataPoint[]): boolean {
 	return data.length > 0;
@@ -614,4 +591,3 @@ describe('Admin.Analytics - Integration', () => {
 		});
 	});
 });
-

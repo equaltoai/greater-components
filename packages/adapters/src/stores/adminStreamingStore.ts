@@ -170,6 +170,22 @@ export interface AdminStreamingStoreConfig {
 	alertSeverityThreshold?: 'INFO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 }
 
+type AdminEventMap = {
+	metricsUpdate: MetricsUpdate;
+	moderationAlert: ModerationAlert;
+	costAlert: CostAlert;
+	budgetAlert: BudgetAlert;
+	federationHealthUpdate: FederationHealthUpdate;
+	moderationQueueUpdate: ModerationQueueItem;
+	threatIntelligence: ThreatIntelligence;
+	performanceAlert: PerformanceAlert;
+	infrastructureEvent: InfrastructureEvent;
+	moderationAlertAcknowledged: { alertId: string };
+	cleared: undefined;
+};
+
+type AdminEventName = keyof AdminEventMap;
+
 /**
  * Admin Streaming Store for managing real-time admin events
  */
@@ -194,7 +210,7 @@ export class AdminStreamingStore {
 	};
 
 	private config: Required<AdminStreamingStoreConfig>;
-	private listeners = new Map<string, Set<(data: any) => void>>();
+	private listeners = new Map<AdminEventName, Set<(data: unknown) => void>>();
 
 	constructor(config: AdminStreamingStoreConfig = {}) {
 		this.config = {
@@ -243,21 +259,32 @@ export class AdminStreamingStore {
 	/**
 	 * Subscribe to specific admin event types
 	 */
-	on(event: string, callback: (data: any) => void): () => void {
-		if (!this.listeners.has(event)) {
-			this.listeners.set(event, new Set());
+	on<TEvent extends AdminEventName>(event: TEvent, callback: (data: AdminEventMap[TEvent]) => void): () => void {
+		let callbacks = this.listeners.get(event);
+		if (!callbacks) {
+			callbacks = new Set();
+			this.listeners.set(event, callbacks);
 		}
-		this.listeners.get(event)!.add(callback);
+
+		const wrapped = (data: unknown): void => {
+			callback(data as AdminEventMap[TEvent]);
+		};
+
+		callbacks.add(wrapped);
 
 		return () => {
-			this.listeners.get(event)?.delete(callback);
+			const existing = this.listeners.get(event);
+			existing?.delete(wrapped);
+			if (existing && existing.size === 0) {
+				this.listeners.delete(event);
+			}
 		};
 	}
 
 	/**
 	 * Emit event to all listeners
 	 */
-	private emit(event: string, data: any): void {
+	private emit<TEvent extends AdminEventName>(event: TEvent, data: AdminEventMap[TEvent]): void {
 		this.listeners.get(event)?.forEach((callback) => {
 			try {
 				callback(data);
@@ -278,20 +305,22 @@ export class AdminStreamingStore {
 		}
 
 		// Index by service
-		if (!this.state.metricsByService.has(metric.serviceName)) {
-			this.state.metricsByService.set(metric.serviceName, []);
+		let serviceMetrics = this.state.metricsByService.get(metric.serviceName);
+		if (!serviceMetrics) {
+			serviceMetrics = [];
+			this.state.metricsByService.set(metric.serviceName, serviceMetrics);
 		}
-		const serviceMetrics = this.state.metricsByService.get(metric.serviceName)!;
 		serviceMetrics.unshift(metric);
 		if (serviceMetrics.length > this.config.maxHistorySize) {
 			serviceMetrics.splice(this.config.maxHistorySize);
 		}
 
 		// Index by category
-		if (!this.state.metricsByCategory.has(metric.subscriptionCategory)) {
-			this.state.metricsByCategory.set(metric.subscriptionCategory, []);
+		let categoryMetrics = this.state.metricsByCategory.get(metric.subscriptionCategory);
+		if (!categoryMetrics) {
+			categoryMetrics = [];
+			this.state.metricsByCategory.set(metric.subscriptionCategory, categoryMetrics);
 		}
-		const categoryMetrics = this.state.metricsByCategory.get(metric.subscriptionCategory)!;
 		categoryMetrics.unshift(metric);
 		if (categoryMetrics.length > this.config.maxHistorySize) {
 			categoryMetrics.splice(this.config.maxHistorySize);
@@ -401,10 +430,12 @@ export class AdminStreamingStore {
 		// Index by priority
 		this.state.moderationQueueByPriority.clear();
 		for (const queueItem of this.state.moderationQueue) {
-			if (!this.state.moderationQueueByPriority.has(queueItem.priority)) {
-				this.state.moderationQueueByPriority.set(queueItem.priority, []);
+			let priorityQueue = this.state.moderationQueueByPriority.get(queueItem.priority);
+			if (!priorityQueue) {
+				priorityQueue = [];
+				this.state.moderationQueueByPriority.set(queueItem.priority, priorityQueue);
 			}
-			this.state.moderationQueueByPriority.get(queueItem.priority)!.push(queueItem);
+			priorityQueue.push(queueItem);
 		}
 
 		this.emit('moderationQueueUpdate', item);
@@ -586,7 +617,7 @@ export class AdminStreamingStore {
 			infrastructureEvents: [],
 			recentFailures: [],
 		};
-		this.emit('cleared', {});
+		this.emit('cleared', undefined);
 	}
 
 	/**
@@ -606,4 +637,3 @@ export function createAdminStreamingStore(
 ): AdminStreamingStore {
 	return new AdminStreamingStore(config);
 }
-

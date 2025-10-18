@@ -312,9 +312,13 @@ describe('Editor Logic', () => {
 		});
 
 		it('should have ascending durations', () => {
-			const durations = options.map(o => o.value).filter(v => v !== null);
+			const durations = options
+				.map(o => o.value)
+				.filter((value): value is number => value !== null);
 			for (let i = 1; i < durations.length; i++) {
-				expect(durations[i]!).toBeGreaterThan(durations[i-1]!);
+				const previous = durations[i - 1];
+				const current = durations[i];
+				expect(current).toBeGreaterThan(previous);
 			}
 		});
 	});
@@ -356,4 +360,3 @@ describe('Editor Logic', () => {
 		});
 	});
 });
-

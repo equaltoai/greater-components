@@ -7,8 +7,6 @@
  * @module primitives/textfield
  */
 
-import { untrack } from 'svelte';
-
 /**
  * TextField configuration
  */
@@ -509,4 +507,3 @@ export function createTextField(config: TextFieldConfig = {}): TextField {
 		},
 	};
 }
-

@@ -4,21 +4,27 @@
  */
 
 import type {
-  LesserAccountFragment,
-  LesserPostFragment,
-  LesserNotificationFragment,
-  LesserMediaFragment,
-  LesserMentionFragment,
-  LesserHashtagFragment,
-  LesserEmojiFragment,
-  LesserPollFragment,
-  LesserRelationshipFragment,
-  LesserStreamingUpdate,
-  LesserDeleteStreamingData,
-  LesserGraphQLResponse,
-  LesserGraphQLError,
-  LesserTimelineConnection,
-  LesserAIAnalysisFragment,
+	LesserAccountFragment,
+	LesserPostFragment,
+	LesserNotificationFragment,
+	LesserMediaFragment,
+	LesserAttachmentFragment,
+	LesserMentionFragment,
+	LesserHashtagFragment,
+	LesserEmojiFragment,
+	LesserPollFragment,
+	LesserRelationshipFragment,
+	LesserStreamingUpdate,
+	LesserDeleteStreamingData,
+	LesserPostStreamingData,
+	LesserNotificationStreamingData,
+	LesserAccountStreamingData,
+	LesserStreamingData,
+	LesserObjectFragment,
+	LesserGraphQLResponse,
+	LesserGraphQLError,
+	LesserTimelineConnection,
+	LesserAIAnalysisFragment,
 } from './types.js';
 
 import type {
@@ -31,14 +37,15 @@ import type {
   CustomEmoji,
   Poll,
   AccountRelationship,
-  StreamingUpdate,
-  StreamingDelete,
-  StreamingEdit,
-  MapperResult,
-  BatchMapperResult,
-  MappingError,
-  SourceMetadata,
-  AIAnalysis,
+	StreamingUpdate,
+	StreamingDelete,
+	StreamingEdit,
+	MapperResult,
+	BatchMapperResult,
+	MappingError,
+	SourceMetadata,
+	AIAnalysis,
+ 	AdminReport,
 } from '../../models/unified.js';
 
 /**
@@ -248,30 +255,74 @@ export function mapLesserAccount(account: LesserAccountFragment, relationship?: 
  * Map Lesser relationship to unified relationship model
  */
 function mapLesserRelationship(relationship: LesserRelationshipFragment): AccountRelationship {
-  return {
-    following: safeBoolean(relationship.isFollowing),
-    followedBy: safeBoolean(relationship.isFollowedBy),
-    requested: safeBoolean(relationship.hasPendingRequest),
+	return {
+		following: safeBoolean(relationship.isFollowing),
+		followedBy: safeBoolean(relationship.isFollowedBy),
+		requested: safeBoolean(relationship.hasPendingRequest),
     blocking: safeBoolean(relationship.isBlocking),
     muting: safeBoolean(relationship.isMuting),
     mutingNotifications: safeBoolean(relationship.isMutingNotifications),
     domainBlocking: safeBoolean(relationship.isDomainBlocked),
     endorsed: safeBoolean(relationship.isEndorsed),
     note: relationship.personalNote || undefined,
-  };
+	};
+}
+
+function normalizeAttachmentType(type: string): MediaAttachment['type'] {
+	return mapLesserMediaType(type?.toUpperCase() ?? 'UNKNOWN');
+}
+
+function mapLesserObjectAttachment(attachment: LesserAttachmentFragment): MediaAttachment {
+	return {
+		id: safeString(attachment.id),
+		type: normalizeAttachmentType(attachment.type),
+		url: safeString(attachment.url),
+		previewUrl: attachment.preview || undefined,
+		remoteUrl: undefined,
+		description: attachment.description || undefined,
+		blurhash: attachment.blurhash || undefined,
+		meta:
+			attachment.width && attachment.height
+				? {
+						original: {
+							width: safeNumber(attachment.width),
+							height: safeNumber(attachment.height),
+							aspect: attachment.height ? attachment.width / attachment.height : 0,
+						},
+					}
+				: undefined,
+	};
+}
+
+function isPostStreamingData(data: LesserStreamingData): data is LesserPostStreamingData {
+	return data.__typename === 'PostStreamingData';
+}
+
+function isNotificationStreamingData(
+	data: LesserStreamingData
+): data is LesserNotificationStreamingData {
+	return data.__typename === 'NotificationStreamingData';
+}
+
+function isAccountStreamingData(data: LesserStreamingData): data is LesserAccountStreamingData {
+	return data.__typename === 'AccountStreamingData';
+}
+
+function isDeleteStreamingData(data: LesserStreamingData): data is LesserDeleteStreamingData {
+	return data.__typename === 'DeleteStreamingData';
 }
 
 function mapLesserAIAnalysis(aiAnalysis: LesserAIAnalysisFragment): AIAnalysis {
-  return {
-    id: safeString(aiAnalysis.id),
-    objectId: safeString(aiAnalysis.objectId),
-    objectType: safeString(aiAnalysis.objectType),
+	return {
+		id: safeString(aiAnalysis.id),
+		objectId: safeString(aiAnalysis.objectId),
+		objectType: safeString(aiAnalysis.objectType),
     overallRisk: safeNumber(aiAnalysis.overallRisk),
-    moderationAction: aiAnalysis.moderationAction as any,
+    moderationAction: aiAnalysis.moderationAction,
     confidence: safeNumber(aiAnalysis.confidence),
     analyzedAt: safeString(aiAnalysis.analyzedAt),
     textAnalysis: aiAnalysis.textAnalysis ? {
-      sentiment: aiAnalysis.textAnalysis.sentiment as any,
+      sentiment: aiAnalysis.textAnalysis.sentiment,
       sentimentScores: {
         positive: safeNumber(aiAnalysis.textAnalysis.sentimentScores.positive),
         negative: safeNumber(aiAnalysis.textAnalysis.sentimentScores.negative),
@@ -362,16 +413,35 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
         error: createMappingError('transformation', 'Failed to map object actor', obj, 'actor'),
       };
     }
+    if (!accountResult.data) {
+      return {
+        success: false,
+        error: createMappingError('transformation', 'Mapped object actor missing data', obj, 'actor'),
+      };
+    }
+
+    const communityNotes = obj.communityNotes
+      ? obj.communityNotes.map(note => ({
+          id: safeString(note.id),
+          authorId: safeString(note.author?.id || ''),
+          authorUsername: safeString(note.author?.handle || ''),
+          authorDisplayName: safeString(note.author?.displayName || ''),
+          content: safeString(note.content),
+          helpful: safeNumber(note.helpful),
+          notHelpful: safeNumber(note.notHelpful),
+          createdAt: safeString(note.createdAt),
+        }))
+      : undefined;
 
     const unified: UnifiedStatus = {
       id: obj.id,
       createdAt: safeString(obj.createdAt),
       content: safeString(obj.content),
-      contentWarning: safeString(obj.spoilerText),
+      spoilerText: obj.spoilerText || undefined,
       sensitive: safeBoolean(obj.sensitive),
       visibility: mapLesserVisibility(obj.visibility),
       url: undefined, // Basic Object doesn't have URL
-      inReplyToId: safeString(obj.inReplyTo),
+      inReplyTo: undefined,
       reblog: undefined, // Basic Object doesn't have reblog info
       poll: undefined, // Basic Object doesn't have poll info
       card: undefined, // Basic Object doesn't have card info
@@ -382,61 +452,31 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
         url: safeString(tag.url),
       })) || [],
       emojis: [], // Basic Object doesn't have emojis
-      mediaAttachments: obj.attachments?.map(attachment => ({
-        id: safeString(attachment.id),
-        type: attachment.type as any, // Basic Object uses String, not enum
-        url: safeString(attachment.url),
-        previewUrl: safeString(attachment.preview),
-        remoteUrl: undefined, // Basic Object doesn't have remoteUrl
-        description: safeString(attachment.description),
-        blurhash: safeString(attachment.blurhash),
-        meta: attachment.width && attachment.height ? {
-          original: {
-            width: attachment.width,
-            height: attachment.height,
-            aspect: attachment.width / attachment.height,
-          },
-          small: {
-            width: attachment.width,
-            height: attachment.height,
-            aspect: attachment.width / attachment.height,
-          },
-        } : undefined,
-      })) || [],
-      account: accountResult.data!,
+      mediaAttachments: obj.attachments?.map(mapLesserObjectAttachment) || [],
+      account: accountResult.data,
       reblogsCount: safeNumber(obj.sharesCount),
       favouritesCount: safeNumber(obj.likesCount),
       repliesCount: safeNumber(obj.repliesCount),
       reblogged: false, // Would need to check user's interactions
       favourited: false, // Would need to check user's interactions
       bookmarked: false, // Would need to check user's interactions
-      muted: false, // Would need to check user's interactions
       pinned: false, // Would need to check user's interactions
-      
+
       // Lesser-specific fields
-      estimatedCost: safeNumber(obj.estimatedCost),
-      moderationScore: safeNumber(obj.moderationScore),
-      communityNotes: obj.communityNotes?.map(note => ({
-        id: safeString(note.id),
-        authorId: safeString(note.author?.id || ''),
-        authorUsername: safeString(note.author?.handle || ''),
-        authorDisplayName: safeString(note.author?.displayName || ''),
-        content: safeString(note.content),
-        helpful: safeNumber(note.helpful),
-        notHelpful: safeNumber(note.notHelpful),
-        createdAt: safeString(note.createdAt),
-      })) || [],
-      quoteUrl: safeString(obj.quoteUrl),
+      estimatedCost: obj.estimatedCost !== undefined ? safeNumber(obj.estimatedCost) : undefined,
+      moderationScore: obj.moderationScore !== undefined ? safeNumber(obj.moderationScore) : undefined,
+      communityNotes,
+      quoteUrl: obj.quoteUrl || undefined,
       quoteable: safeBoolean(obj.quoteable),
-      quotePermissions: obj.quotePermissions as any, // Type assertion needed
+      quotePermissions: obj.quotePermissions,
       quoteContext: obj.quoteContext ? {
-        originalAuthor: accountResult.data!, // Would need to map the actual original author
-        originalNote: undefined, // Would need to fetch the original note
+        originalAuthorId: safeString(obj.quoteContext.originalAuthor?.id || ''),
+        originalNoteId: obj.quoteContext.originalNote?.id || undefined,
         quoteAllowed: safeBoolean(obj.quoteContext.quoteAllowed),
-        quoteType: obj.quoteContext.quoteType as any,
+        quoteType: obj.quoteContext.quoteType,
         withdrawn: safeBoolean(obj.quoteContext.withdrawn),
       } : undefined,
-      quoteCount: safeNumber(obj.quoteCount),
+      quoteCount: obj.quoteCount !== undefined ? safeNumber(obj.quoteCount) : undefined,
       aiAnalysis: obj.aiAnalysis ? mapLesserAIAnalysis(obj.aiAnalysis) : undefined,
     };
 
@@ -485,12 +525,18 @@ export function mapLesserPost(post: LesserPostFragment): MapperResult<UnifiedSta
     }
 
     const accountResult = mapLesserAccount(post.author);
-    if (!accountResult.success) {
+    if (!accountResult.success || !accountResult.data) {
       return {
         success: false,
-        error: createMappingError('transformation', 'Failed to map post author', post, 'author'),
+        error:
+          accountResult.error ??
+          createMappingError('transformation', 'Failed to map post author', post, 'author'),
       };
     }
+
+    const account = accountResult.data;
+    const reblogResult = post.shareOf ? mapLesserPost(post.shareOf) : undefined;
+    const reblogStatus = reblogResult && reblogResult.success ? reblogResult.data : undefined;
 
     const unified: UnifiedStatus = {
       id: post.id,
@@ -500,7 +546,7 @@ export function mapLesserPost(post: LesserPostFragment): MapperResult<UnifiedSta
       visibility: mapLesserVisibility(post.visibility || 'PUBLIC'),
       sensitive: safeBoolean(post.isSensitive),
       language: post.language || undefined,
-      account: accountResult.data!,
+      account,
       mediaAttachments: (post.attachments || []).map(mapLesserMediaAttachment),
       mentions: (post.mentions || []).map(mapLesserMention),
       tags: (post.hashtags || []).map(mapLesserHashtag),
@@ -509,7 +555,7 @@ export function mapLesserPost(post: LesserPostFragment): MapperResult<UnifiedSta
         id: post.replyTo.id,
         accountId: safeString(post.replyTo.authorId),
       } : undefined,
-      reblog: post.shareOf ? mapLesserPost(post.shareOf).data : undefined,
+      reblog: reblogStatus,
       repliesCount: safeNumber(post.interactionCounts?.replies),
       reblogsCount: safeNumber(post.interactionCounts?.shares),
       favouritesCount: safeNumber(post.interactionCounts?.favorites),
@@ -673,20 +719,37 @@ export function mapLesserNotification(notification: LesserNotificationFragment):
     }
 
     const accountResult = mapLesserAccount(notification.triggerAccount);
-    if (!accountResult.success) {
+    if (!accountResult.success || !accountResult.data) {
       return {
         success: false,
-        error: createMappingError('transformation', 'Failed to map notification account', notification, 'triggerAccount'),
+        error:
+          accountResult.error ??
+          createMappingError('transformation', 'Failed to map notification account', notification, 'triggerAccount'),
       };
     }
 
-    let status: UnifiedStatus | undefined;
-    if (notification.status) {
-      // Map the basic Object to UnifiedStatus
-      // Note: notification.status is a basic Object, not a full LesserPostFragment
-      const statusResult = mapLesserObject(notification.status);
-      if (statusResult.success) {
-        status = statusResult.data;
+    const account = accountResult.data;
+    const statusResult = notification.status ? mapLesserObject(notification.status) : undefined;
+    const status = statusResult && statusResult.success ? statusResult.data : undefined;
+
+    let report: AdminReport | undefined;
+    if (notification.adminReport) {
+      const reportedAccountResult = mapLesserAccount(notification.adminReport.reportedAccount);
+      const reporterAccountResult = mapLesserAccount(notification.adminReport.reporterAccount);
+      if (
+        reportedAccountResult.success &&
+        reportedAccountResult.data &&
+        reporterAccountResult.success &&
+        reporterAccountResult.data
+      ) {
+        report = {
+          id: safeString(notification.adminReport.id),
+          targetAccount: reportedAccountResult.data,
+          account: reporterAccountResult.data,
+          comment: safeString(notification.adminReport.reason),
+          actionTaken: safeBoolean(notification.adminReport.isActionTaken),
+          createdAt: safeString(notification.adminReport.submittedAt),
+        };
       }
     }
 
@@ -694,24 +757,15 @@ export function mapLesserNotification(notification: LesserNotificationFragment):
       id: notification.id,
       type: mapLesserNotificationType(notification.notificationType),
       createdAt: safeString(notification.createdAt),
-      account: accountResult.data!,
+      account,
       status,
-      report: notification.adminReport ? {
-        id: safeString(notification.adminReport.id),
-        targetAccount: accountResult.data!, // Note: In real implementation, map the actual reported account
-        account: accountResult.data!,
-        comment: safeString(notification.adminReport.reason),
-        actionTaken: safeBoolean(notification.adminReport.isActionTaken),
-        createdAt: safeString(notification.adminReport.submittedAt),
-      } : undefined,
+      report,
       read: notification.isRead,
       metadata: createLesserMetadata(notification),
       
       // Derive Lesser-specific notification payloads from status/account fields
       // Since Lesser schema doesn't expose separate payload fields, we infer them
-      quoteStatus: (notification.notificationType === 'QUOTE' && notification.status) 
-        ? mapLesserObject(notification.status).data 
-        : undefined,
+      quoteStatus: notification.notificationType === 'QUOTE' ? status : undefined,
       communityNote: (notification.notificationType === 'COMMUNITY_NOTE' && notification.status?.communityNotes?.[0]) 
         ? {
             id: safeString(notification.status.communityNotes[0].id),
@@ -733,7 +787,7 @@ export function mapLesserNotification(notification: LesserNotificationFragment):
         : undefined,
       costAlert: notification.notificationType === 'COST_ALERT'
         ? {
-            amount: notification.status?.estimatedCost || 0,
+            amount: notification.status?.estimatedCost ? safeNumber(notification.status.estimatedCost) : 0,
             threshold: 1000000, // Default threshold, would come from user settings
             message: 'Cost threshold exceeded',
           }
@@ -781,13 +835,12 @@ export function mapLesserStreamingUpdate(update: LesserStreamingUpdate): MapperR
 
     const timestamp = new Date(update.timestamp).getTime();
     const metadata = createLesserMetadata(update);
+    const data = update.data;
 
-    // Handle delete events
-    if (update.eventType === 'POST_DELETED') {
-      const deleteData = update.data as LesserDeleteStreamingData;
+    if (update.eventType === 'POST_DELETED' && isDeleteStreamingData(data)) {
       const deleteUpdate: StreamingDelete = {
-        id: safeString(deleteData.deletedId),
-        itemType: deleteData.deletedType === 'POST' ? 'status' : deleteData.deletedType === 'ACCOUNT' ? 'account' : 'notification',
+        id: safeString(data.deletedId),
+        itemType: data.deletedType === 'POST' ? 'status' : data.deletedType === 'ACCOUNT' ? 'account' : 'notification',
         timestamp,
       };
 
@@ -803,42 +856,115 @@ export function mapLesserStreamingUpdate(update: LesserStreamingUpdate): MapperR
       };
     }
 
-    // Handle post created/updated events
-    if (update.eventType === 'POST_CREATED' || update.eventType === 'POST_UPDATED') {
-      const postData = update.data as any;
-      if (postData.post) {
-        const postResult = mapLesserPost(postData.post);
-        if (postResult.success) {
-          if (update.eventType === 'POST_UPDATED') {
-            const editUpdate: StreamingEdit = {
-              id: postResult.data!.id,
-              data: postResult.data!,
-              timestamp,
-              editType: 'content',
-            };
+    if ((update.eventType === 'POST_CREATED' || update.eventType === 'POST_UPDATED') && isPostStreamingData(data)) {
+      const postResult = mapLesserPost(data.post);
+      if (!postResult.success || !postResult.data) {
+        return {
+          success: false,
+          error:
+            postResult.error ??
+            createMappingError('transformation', 'Failed to map streaming post payload', data.post),
+        };
+      }
 
-            const endTime = performance.now();
-            return {
-              success: true,
-              data: editUpdate,
-              metrics: {
-                mappingTimeMs: endTime - startTime,
-                fieldsProcessed: Object.keys(postData.post).length,
-                fallbacksUsed: 0,
-              },
-            };
-          }
-        }
+      if (update.eventType === 'POST_UPDATED') {
+        const editUpdate: StreamingEdit = {
+          id: postResult.data.id,
+          data: postResult.data,
+          timestamp,
+          editType: 'content',
+        };
+
+        const endTime = performance.now();
+        return {
+          success: true,
+          data: editUpdate,
+          metrics: {
+            mappingTimeMs: endTime - startTime,
+            fieldsProcessed: Object.keys(data.post).length,
+            fallbacksUsed: 0,
+          },
+        };
+      }
+
+      const streamingUpdate: StreamingUpdate = {
+        type: 'status',
+        payload: postResult.data,
+        stream: data.timeline || 'lesser-stream',
+        timestamp,
+        metadata,
+      };
+
+      const endTime = performance.now();
+      return {
+        success: true,
+        data: streamingUpdate,
+        metrics: {
+          mappingTimeMs: endTime - startTime,
+          fieldsProcessed: Object.keys(data.post).length,
+          fallbacksUsed: 0,
+        },
+      };
+    }
+
+    if (update.eventType === 'NOTIFICATION_CREATED' && isNotificationStreamingData(data)) {
+      const notificationResult = mapLesserNotification(data.notification);
+      if (!notificationResult.success || !notificationResult.data) {
+        return {
+          success: false,
+          error:
+            notificationResult.error ??
+            createMappingError('transformation', 'Failed to map streaming notification payload', data.notification),
+        };
+      }
+
+      const streamingUpdate: StreamingUpdate = {
+        type: 'notification',
+        payload: notificationResult.data,
+        stream: 'lesser-stream',
+        timestamp,
+        metadata,
+      };
+
+      const endTime = performance.now();
+      return {
+        success: true,
+        data: streamingUpdate,
+        metrics: {
+          mappingTimeMs: endTime - startTime,
+          fieldsProcessed: Object.keys(data.notification).length,
+          fallbacksUsed: 0,
+        },
+      };
+    }
+
+    if (update.eventType === 'ACCOUNT_UPDATED' && isAccountStreamingData(data)) {
+      const accountResult = mapLesserAccount(data.account);
+      if (accountResult.success && accountResult.data) {
+        const streamingUpdate: StreamingUpdate = {
+          type: 'status',
+          payload: accountResult.data,
+          stream: 'lesser-stream',
+          timestamp,
+          metadata,
+        };
+
+        const endTime = performance.now();
+        return {
+          success: true,
+          data: streamingUpdate,
+          metrics: {
+            mappingTimeMs: endTime - startTime,
+            fieldsProcessed: Object.keys(data.account).length,
+            fallbacksUsed: 0,
+          },
+        };
       }
     }
 
-    // Handle generic streaming update
     const streamingUpdate: StreamingUpdate = {
-      type: update.eventType === 'POST_CREATED' ? 'status' :
-           update.eventType === 'NOTIFICATION_CREATED' ? 'notification' :
-           update.eventType === 'ACCOUNT_UPDATED' ? 'status' :
-           'status',
-      payload: update.data,
+      type: 'status',
+      payload: data,
       stream: 'lesser-stream',
       timestamp,
       metadata,

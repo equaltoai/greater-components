@@ -12,7 +12,7 @@
  * - Edge cases
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import type { GenericStatus, GenericActor } from '../../src/generics/index';
 
 // Helper to create mock actor
@@ -86,10 +86,12 @@ function buildThreadTree(root: GenericStatus, allReplies: GenericStatus[]): Thre
 		const parentId = reply.inReplyToId || root.id;
 		// Don't create circular references
 		if (parentId !== reply.id) {
-			if (!replyMap.has(parentId)) {
-				replyMap.set(parentId, []);
+			const existingReplies = replyMap.get(parentId);
+			if (existingReplies) {
+				existingReplies.push(reply);
+			} else {
+				replyMap.set(parentId, [reply]);
 			}
-			replyMap.get(parentId)!.push(reply);
 		}
 	}
 
@@ -691,4 +693,3 @@ describe('ThreadView - Type Safety', () => {
 		expect(node).toHaveProperty('isCollapsed');
 	});
 });
-

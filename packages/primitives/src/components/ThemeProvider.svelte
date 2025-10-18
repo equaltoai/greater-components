@@ -30,8 +30,6 @@
   onMount(() => {
     // The preferences store automatically initializes and applies theme
     // This is just to ensure it's initialized in case of SSR
-    const currentTheme = preferencesStore.state.resolvedColorScheme;
-    
     // If we have a theme prop, apply it
     if (theme) {
       preferencesStore.setColorScheme(theme);
@@ -44,83 +42,107 @@
   });
   
   // Generate inline script for preventing flash of unstyled content
-  const preventFlashScript = preventFlash ? `
-    (function() {
-      const stored = localStorage.getItem('gr-preferences-v1');
-      let theme = 'light';
-      let density = 'comfortable';
-      let fontSize = 'medium';
-      let motion = 'normal';
-      
-      if (stored) {
-        try {
-          const prefs = JSON.parse(stored);
-          
-          // Determine theme
-          if (prefs.highContrastMode || window.matchMedia('(prefers-contrast: high)').matches) {
-            theme = 'high-contrast';
-          } else if (prefs.colorScheme === 'auto') {
-            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          } else if (prefs.colorScheme) {
-            theme = prefs.colorScheme;
-          }
-          
-          // Get other preferences
-          density = prefs.density || 'comfortable';
-          fontSize = prefs.fontSize || 'medium';
-          motion = prefs.motion || 'normal';
-          
-          // Check system motion preference
-          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            motion = 'reduced';
-          }
-          
-          // Apply custom properties
-          if (prefs.customColors) {
-            const root = document.documentElement;
-            if (prefs.customColors.primary) {
-              root.style.setProperty('--gr-custom-primary', prefs.customColors.primary);
-            }
-            if (prefs.customColors.secondary) {
-              root.style.setProperty('--gr-custom-secondary', prefs.customColors.secondary);
-            }
-            if (prefs.customColors.accent) {
-              root.style.setProperty('--gr-custom-accent', prefs.customColors.accent);
-            }
-          }
-          
-          if (prefs.fontScale) {
-            document.documentElement.style.setProperty('--gr-font-scale', String(prefs.fontScale));
-          }
-        } catch (e) {
-          // Ignore errors and use defaults
-        }
-      } else {
-        // No stored preferences, check system preferences
-        if (window.matchMedia('(prefers-contrast: high)').matches) {
-          theme = 'high-contrast';
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          theme = 'dark';
-        }
-        
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          motion = 'reduced';
-        }
-      }
-      
-      // Apply theme attributes
-      document.documentElement.setAttribute('data-theme', theme);
-      document.documentElement.setAttribute('data-density', density);
-      document.documentElement.setAttribute('data-font-size', fontSize);
-      document.documentElement.setAttribute('data-motion', motion);
-    })();
-  `.trim() : '';
+  const preventFlashScript = $derived(() => buildPreventFlashScript());
+  $effect(() => {
+    preventFlashScript();
+  });
+
+  function buildPreventFlashScript(): string {
+    if (!preventFlash) {
+      return '';
+    }
+
+    const usePersistence = enablePersistence !== false;
+    const useSystemDetection = enableSystemDetection !== false;
+
+    const detectionLines = [
+      "if (window.matchMedia('(prefers-contrast: high)').matches) {",
+      "  theme = 'high-contrast';",
+      "} else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {",
+      "  theme = 'dark';",
+      "}",
+      "if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {",
+      "  motion = 'reduced';",
+      "}"
+    ];
+
+    const lines: string[] = [
+      '(function() {',
+      `  ${usePersistence ? "const stored = localStorage.getItem('gr-preferences-v1');" : 'const stored = null;'}`
+    ];
+
+    lines.push(
+      "  let theme = 'light';",
+      "  let density = 'comfortable';",
+      "  let fontSize = 'medium';",
+      "  let motion = 'normal';"
+    );
+
+    if (usePersistence) {
+      lines.push(
+        '  if (stored) {',
+        '    try {',
+        "      const prefs = JSON.parse(stored);",
+        "      if (prefs.highContrastMode || window.matchMedia('(prefers-contrast: high)').matches) {",
+        "        theme = 'high-contrast';",
+        "      } else if (prefs.colorScheme === 'auto') {",
+        "        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';",
+        "      } else if (prefs.colorScheme) {",
+        "        theme = prefs.colorScheme;",
+        "      }",
+        "      density = prefs.density || 'comfortable';",
+        "      fontSize = prefs.fontSize || 'medium';",
+        "      motion = prefs.motion || 'normal';",
+        "      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {",
+        "        motion = 'reduced';",
+        "      }",
+        "      if (prefs.customColors) {",
+        "        const root = document.documentElement;",
+        "        if (prefs.customColors.primary) {",
+        "          root.style.setProperty('--gr-custom-primary', prefs.customColors.primary);",
+        "        }",
+        "        if (prefs.customColors.secondary) {",
+        "          root.style.setProperty('--gr-custom-secondary', prefs.customColors.secondary);",
+        "        }",
+        "        if (prefs.customColors.accent) {",
+        "          root.style.setProperty('--gr-custom-accent', prefs.customColors.accent);",
+        "        }",
+        "      }",
+        "      if (prefs.fontScale) {",
+        "        document.documentElement.style.setProperty('--gr-font-scale', String(prefs.fontScale));",
+        "      }",
+        "    } catch (e) {",
+        "      // Ignore errors and use defaults",
+        "    }",
+        "  }"
+      );
+    }
+
+    if (useSystemDetection) {
+      lines.push('  if (!stored) {');
+      detectionLines.forEach((line) => {
+        lines.push(`    ${line}`);
+      });
+      lines.push('  }');
+    }
+
+    lines.push(
+      "  document.documentElement.setAttribute('data-theme', theme);",
+      "  document.documentElement.setAttribute('data-density', density);",
+      "  document.documentElement.setAttribute('data-font-size', fontSize);",
+      "  document.documentElement.setAttribute('data-motion', motion);",
+      '})();'
+    );
+
+    return lines.join('\n');
+  }
 </script>
 
-{#if preventFlash && typeof window === 'undefined'}
-  <!-- This will only render during SSR -->
-  {@html `<script>${preventFlashScript}</script>`}
-{/if}
+<svelte:head>
+  {#if preventFlash && typeof window === 'undefined'}
+    <script>{preventFlashScript()}</script>
+  {/if}
+</svelte:head>
 
 <div class="gr-theme-provider" data-theme-provider>
   {@render children()}

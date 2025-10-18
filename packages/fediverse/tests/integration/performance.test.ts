@@ -5,7 +5,7 @@
  * memory usage, and bundle size.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { 
 	generatePerformanceTestData,
 	generateLargeDataset,
@@ -16,13 +16,13 @@ import {
 	checkMemoryUsage,
 	measureFrameRate,
 	simulateRapidScroll,
-	waitFor,
 } from './utils/test-helpers.js';
 
 describe('Performance Tests', () => {
 	describe('Large Dataset Rendering', () => {
 		it('should render 100 timeline items efficiently', async () => {
 			const posts = generateMockTimeline(100);
+			expect(posts).toHaveLength(100);
 
 			const renderTime = await measureRenderTime(async () => {
 				// Simulate rendering timeline
@@ -36,6 +36,7 @@ describe('Performance Tests', () => {
 
 		it('should render 1000 timeline items efficiently', async () => {
 			const posts = generateMockTimeline(1000);
+			expect(posts).toHaveLength(1000);
 
 			const renderTime = await measureRenderTime(async () => {
 				// Simulate rendering with virtual scrolling
@@ -85,6 +86,7 @@ describe('Performance Tests', () => {
 	describe('Virtual Scrolling Performance', () => {
 		it('should maintain smooth scrolling with large dataset', async () => {
 			const posts = generateMockTimeline(10000);
+			expect(posts).toHaveLength(10000);
 
 			// Create mock scrollable element
 			const container = document.createElement('div');
@@ -137,6 +139,7 @@ describe('Performance Tests', () => {
 			// Simulate multiple render cycles
 			for (let i = 0; i < 10; i++) {
 				const posts = generateMockTimeline(100);
+				expect(posts).toHaveLength(100);
 				await measureRenderTime(async () => {
 					await new Promise(resolve => setTimeout(resolve, 5));
 				});
@@ -194,10 +197,14 @@ describe('Performance Tests', () => {
 			const postsWithMedia = posts.filter(p => p.mediaAttachments?.length);
 
 			// All images should have loading="lazy" attribute in real implementation
-			postsWithMedia.forEach(post => {
-				expect(post.mediaAttachments).toBeDefined();
-				expect(post.mediaAttachments!.length).toBeGreaterThan(0);
-			});
+		postsWithMedia.forEach(post => {
+			const { mediaAttachments } = post;
+			expect(mediaAttachments).toBeDefined();
+			if (!mediaAttachments) {
+				throw new Error('Expected media attachments for lazy-load verification');
+			}
+			expect(mediaAttachments.length).toBeGreaterThan(0);
+		});
 		});
 
 		it('should use preview URLs for thumbnails', () => {
@@ -208,14 +215,19 @@ describe('Performance Tests', () => {
 
 			const postsWithMedia = posts.filter(p => p.mediaAttachments?.length);
 
-			postsWithMedia.forEach(post => {
-				post.mediaAttachments!.forEach(media => {
-					expect(media.previewUrl).toBeDefined();
-					expect(media.url).toBeDefined();
-					// Preview should be different from full URL
-					expect(media.previewUrl).not.toBe(media.url);
-				});
+		postsWithMedia.forEach(post => {
+			const { mediaAttachments } = post;
+			expect(mediaAttachments).toBeDefined();
+			if (!mediaAttachments) {
+				throw new Error('Expected media attachments when verifying previews');
+			}
+			mediaAttachments.forEach(media => {
+				expect(media.previewUrl).toBeDefined();
+				expect(media.url).toBeDefined();
+				// Preview should be different from full URL
+				expect(media.previewUrl).not.toBe(media.url);
 			});
+		});
 		});
 	});
 
@@ -479,4 +491,3 @@ describe('Performance Tests', () => {
 		});
 	});
 });
-

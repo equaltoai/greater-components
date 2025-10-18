@@ -20,7 +20,7 @@
  * debouncedSearch('hello');
  * debouncedSearch('hello world'); // Only this will execute after 300ms
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
 	fn: T,
 	wait: number
 ): (...args: Parameters<T>) => void {
@@ -53,7 +53,7 @@ export function debounce<T extends (...args: any[]) => any>(
  *
  * window.addEventListener('scroll', throttledScroll);
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
 	fn: T,
 	limit: number,
 	options: {
@@ -106,7 +106,7 @@ export function throttle<T extends (...args: any[]) => any>(
  *
  * window.addEventListener('scroll', rafScroll);
  */
-export function rafThrottle<T extends (...args: any[]) => any>(
+export function rafThrottle<T extends (...args: unknown[]) => unknown>(
 	fn: T
 ): (...args: Parameters<T>) => void {
 	let rafId: number | null = null;
@@ -139,7 +139,7 @@ export function rafThrottle<T extends (...args: any[]) => any>(
  * debouncedSave({ foo: 'bar' }); // Executes immediately
  * debouncedSave({ foo: 'baz' }); // Debounced
  */
-export function debounceImmediate<T extends (...args: any[]) => any>(
+export function debounceImmediate<T extends (...args: unknown[]) => unknown>(
 	fn: T,
 	wait: number,
 	immediate: boolean = false
@@ -190,7 +190,7 @@ export function debounceImmediate<T extends (...args: any[]) => any>(
  * expensiveCalc(5); // Calculates
  * expensiveCalc(5); // Returns cached result
  */
-export function memoize<T extends (...args: any[]) => any>(
+export function memoize<T extends (...args: unknown[]) => unknown>(
 	fn: T,
 	keyResolver?: (...args: Parameters<T>) => string
 ): T & { cache: Map<string, ReturnType<T>> } {
@@ -200,17 +200,15 @@ export function memoize<T extends (...args: any[]) => any>(
 		const key = keyResolver ? keyResolver(...args) : JSON.stringify(args);
 
 		if (cache.has(key)) {
-			return cache.get(key)!;
+			return cache.get(key) as ReturnType<T>;
 		}
 
 		const result = fn(...args);
 		cache.set(key, result);
 		return result;
-	} as T & { cache: Map<string, ReturnType<T>> };
+	};
 
-	memoized.cache = cache;
-
-	return memoized;
+	return Object.assign(memoized, { cache }) as T & { cache: Map<string, ReturnType<T>> };
 }
 
 /**
@@ -312,7 +310,7 @@ export function createLRUCache<K, V>(maxSize: number): {
 			}
 
 			// Move to end (most recently used)
-			const value = cache.get(key)!;
+			const value = cache.get(key) as V;
 			cache.delete(key);
 			cache.set(key, value);
 
@@ -330,7 +328,9 @@ export function createLRUCache<K, V>(maxSize: number): {
 			// Evict oldest if over size
 			if (cache.size > maxSize) {
 				const firstKey = cache.keys().next().value;
-				cache.delete(firstKey);
+				if (firstKey !== undefined) {
+					cache.delete(firstKey);
+				}
 			}
 		},
 
@@ -352,6 +352,7 @@ export function createLRUCache<K, V>(maxSize: number): {
 	};
 }
 
+
 /**
  * Measure execution time of a function
  *
@@ -364,19 +365,21 @@ export function createLRUCache<K, V>(maxSize: number): {
  *   // expensive operation
  * }, 'Heavy Calculation');
  */
-export function measureTime<T extends (...args: any[]) => any>(
+export function measureTime<T extends (...args: unknown[]) => unknown>(
 	fn: T,
-	label?: string
+	label?: string,
+	logger: (message: string) => void = console.warn
 ): T {
 	return function measured(...args: Parameters<T>): ReturnType<T> {
 		const start = performance.now();
 		const result = fn(...args);
 		const end = performance.now();
 
+		const formatted = `${(end - start).toFixed(2)}ms`;
 		if (label) {
-			console.log(`${label}: ${(end - start).toFixed(2)}ms`);
+			logger(`${label}: ${formatted}`);
 		} else {
-			console.log(`Execution time: ${(end - start).toFixed(2)}ms`);
+			logger(`Execution time: ${formatted}`);
 		}
 
 		return result;
@@ -411,7 +414,10 @@ export function createResourcePool<T>(
 	return {
 		acquire(): T {
 			if (available.length > 0) {
-				return available.pop()!;
+				const resource = available.pop();
+				if (resource !== undefined) {
+					return resource;
+				}
 			}
 
 			if (created < maxSize) {
@@ -438,4 +444,3 @@ export function createResourcePool<T>(
 		},
 	};
 }
-

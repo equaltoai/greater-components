@@ -20,14 +20,27 @@ import {
   
   // Types work correctly
   type UnifiedAccount,
-  type UnifiedStatus,
-  type MastodonAccount,
-  type LesserAccountFragment,
 } from '../src/index.js';
 
 // Import fixtures
 import { mastodonAccountFixtures, mastodonStatusFixtures } from '../src/fixtures/mastodon.js';
 import { lesserAccountFixtures, lesserPostFixtures } from '../src/fixtures/lesser.js';
+
+function requireFixture<T>(fixtures: T[], index = 0): T {
+  const item = fixtures[index];
+  if (!item) {
+    throw new Error(`Expected fixture at index ${index}`);
+  }
+  return item;
+}
+
+function expectDefined<T>(value: T | null | undefined, message: string): T {
+  expect(value).toBeDefined();
+  if (value === null || value === undefined) {
+    throw new Error(message);
+  }
+  return value;
+}
 
 describe('Package Integration', () => {
   it('should export all mapper functions', () => {
@@ -54,26 +67,26 @@ describe('Package Integration', () => {
   });
 
   it('should successfully map Mastodon account to unified model', () => {
-    const mastodonAccount = mastodonAccountFixtures[0]!;
+    const mastodonAccount = requireFixture(mastodonAccountFixtures);
     const result = mapMastodonAccount(mastodonAccount);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
-    expect(result.data!.metadata.source).toBe('mastodon');
+    const data = expectDefined(result.data, 'Expected mapped Mastodon account data');
+    expect(data.metadata.source).toBe('mastodon');
   });
 
   it('should successfully map Lesser account to unified model', () => {
-    const lesserAccount = lesserAccountFixtures[0]!;
+    const lesserAccount = requireFixture(lesserAccountFixtures);
     const result = mapLesserAccount(lesserAccount);
 
     expect(result.success).toBe(true);
-    expect(result.data).toBeDefined();
-    expect(result.data!.metadata.source).toBe('lesser');
+    const data = expectDefined(result.data, 'Expected mapped Lesser account data');
+    expect(data.metadata.source).toBe('lesser');
   });
 
   it('should create consistent unified models from different sources', () => {
-    const mastodonAccount = mastodonAccountFixtures[0]!;
-    const lesserAccount = lesserAccountFixtures[0]!;
+    const mastodonAccount = requireFixture(mastodonAccountFixtures);
+    const lesserAccount = requireFixture(lesserAccountFixtures);
 
     const mastodonResult = mapMastodonAccount(mastodonAccount);
     const lesserResult = mapLesserAccount(lesserAccount);
@@ -82,8 +95,14 @@ describe('Package Integration', () => {
     expect(lesserResult.success).toBe(true);
 
     // Both should have the same unified structure
-    const mastodonUnified = mastodonResult.data!;
-    const lesserUnified = lesserResult.data!;
+    const mastodonUnified = expectDefined(
+      mastodonResult.data,
+      'Expected Mastodon unified data after mapping'
+    );
+    const lesserUnified = expectDefined(
+      lesserResult.data,
+      'Expected Lesser unified data after mapping'
+    );
 
     // Check that both have the same required fields
     expect(typeof mastodonUnified.id).toBe('string');
@@ -102,8 +121,8 @@ describe('Package Integration', () => {
   });
 
   it('should handle post/status mapping from both sources', () => {
-    const mastodonStatus = mastodonStatusFixtures[0]!;
-    const lesserPost = lesserPostFixtures[0]!;
+    const mastodonStatus = requireFixture(mastodonStatusFixtures);
+    const lesserPost = requireFixture(lesserPostFixtures);
 
     const mastodonResult = mapMastodonStatus(mastodonStatus);
     const lesserResult = mapLesserPost(lesserPost);
@@ -111,8 +130,14 @@ describe('Package Integration', () => {
     expect(mastodonResult.success).toBe(true);
     expect(lesserResult.success).toBe(true);
 
-    const mastodonUnified = mastodonResult.data!;
-    const lesserUnified = lesserResult.data!;
+    const mastodonUnified = expectDefined(
+      mastodonResult.data,
+      'Expected Mastodon unified status data after mapping'
+    );
+    const lesserUnified = expectDefined(
+      lesserResult.data,
+      'Expected Lesser unified post data after mapping'
+    );
 
     // Both should have unified structure
     expect(typeof mastodonUnified.id).toBe('string');
@@ -212,8 +237,11 @@ describe('Package Integration', () => {
     const result = mapMastodonAccount(invalidMastodonAccount as any);
 
     expect(result.success).toBe(false);
-    expect(result.error).toBeDefined();
-    expect(result.error!.type).toBe('validation');
+    const mappedError = expectDefined(
+      result.error,
+      'Expected validation error for invalid Mastodon account'
+    );
+    expect(mappedError.type).toBe('validation');
   });
 });
 

@@ -19,6 +19,8 @@ interface ActionStates {
   bookmarked?: boolean;
 }
 
+type ActionHandler = () => void;
+
 // Format count for display
 function formatCount(count: number): string {
   if (count >= 1000000) {
@@ -44,7 +46,7 @@ function isActionActive(action: 'boost' | 'favorite' | 'bookmark', states?: Acti
 }
 
 // Check if action is disabled
-function isActionDisabled(readonly: boolean, handler?: Function): boolean {
+function isActionDisabled(readonly: boolean, handler?: ActionHandler): boolean {
   return readonly || handler === undefined;
 }
 
@@ -70,7 +72,12 @@ function getActionLabel(action: 'reply' | 'boost' | 'favorite', count: number, s
 }
 
 // Check if any handler is provided
-function hasAnyHandler(handlers?: { onReply?: Function; onBoost?: Function; onFavorite?: Function; onShare?: Function }): boolean {
+function hasAnyHandler(handlers?: {
+  onReply?: ActionHandler;
+  onBoost?: ActionHandler;
+  onFavorite?: ActionHandler;
+  onShare?: ActionHandler;
+}): boolean {
   if (!handlers) return false;
   return !!(handlers.onReply || handlers.onBoost || handlers.onFavorite || handlers.onShare);
 }

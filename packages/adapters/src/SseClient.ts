@@ -1,3 +1,4 @@
+import { resolveLogger } from './logger.js';
 import type {
   SseClientConfig,
   SseClientState,
@@ -5,13 +6,21 @@ import type {
   WebSocketEventHandler,
   HeartbeatMessage,
   LatencySample,
-  TransportAdapter
+  TransportAdapter,
+  TransportLogger
 } from './types';
+
+type TransportMessage = {
+  type?: string;
+  data?: unknown;
+  timestamp?: number;
+  [key: string]: unknown;
+};
 
 /**
  * Server-Sent Events client with automatic reconnection, heartbeat, and latency sampling
  */
-export class SseClient implements TransportAdapter {
+export class SseClient implements TransportAdapter<SseClientState> {
   private config: Required<SseClientConfig>;
   private eventSource: EventSource | null = null;
   private state: SseClientState;
@@ -25,8 +34,10 @@ export class SseClient implements TransportAdapter {
   private isDestroyed = false;
   private isExplicitDisconnect = false;
   private abortController: AbortController | null = null;
+  private readonly logger: Required<TransportLogger>;
 
   constructor(config: SseClientConfig) {
+    this.logger = resolveLogger(config.logger);
     this.config = {
       url: config.url,
       authToken: config.authToken || '',
@@ -41,7 +52,8 @@ export class SseClient implements TransportAdapter {
       lastEventIdStorageKey: config.lastEventIdStorageKey || 'sse_last_event_id',
       storage: config.storage || (typeof window !== 'undefined' ? window.localStorage : undefined) as Storage,
       withCredentials: config.withCredentials || false,
-      headers: config.headers || {}
+      headers: config.headers || {},
+      logger: config.logger ?? this.logger
     };
 
     this.state = {
@@ -103,7 +115,7 @@ export class SseClient implements TransportAdapter {
         this.setupEventListeners();
       }
     } catch (error) {
-      this.handleError(error as Error);
+      this.handleError(error);
       this.scheduleReconnect();
     }
   }
@@ -170,11 +182,12 @@ export class SseClient implements TransportAdapter {
 
       // Connection closed
       this.handleClose();
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error) {
+      if (this.isAbortError(error)) {
         return; // Intentional disconnect
       }
-      this.handleError(error);
+      const resolvedError = error instanceof Error ? error : new Error(String(error));
+      this.handleError(resolvedError);
       this.scheduleReconnect();
     }
   }
@@ -229,11 +242,12 @@ export class SseClient implements TransportAdapter {
    * Subscribe to SSE events
    */
   on(event: string, handler: WebSocketEventHandler): () => void {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set<WebSocketEventHandler>();
+      this.eventHandlers.set(event, handlers);
     }
-    
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
 
     // Return unsubscribe function
     return () => {
@@ -272,17 +286,22 @@ export class SseClient implements TransportAdapter {
     this.eventSource.addEventListener('open', this.handleOpen.bind(this));
     this.eventSource.addEventListener('error', this.handleError.bind(this));
     this.eventSource.addEventListener('message', (event) => {
-      this.handleMessage(event.data, event.lastEventId);
+      this.handleEventSourceData(event);
     });
 
     // Listen for custom event types
-    this.eventSource.addEventListener('ping', (event: any) => {
-      this.handleMessage(event.data, event.lastEventId, 'ping');
+    this.eventSource.addEventListener('ping', (event) => {
+      this.handleEventSourceData(event, 'ping');
     });
 
-    this.eventSource.addEventListener('pong', (event: any) => {
-      this.handleMessage(event.data, event.lastEventId, 'pong');
+    this.eventSource.addEventListener('pong', (event) => {
+      this.handleEventSourceData(event, 'pong');
     });
+  }
+
+  private handleEventSourceData(event: Event, overrideType?: string): void {
+    const messageEvent = event as MessageEvent<string>;
+    this.handleMessage(messageEvent.data, messageEvent.lastEventId, overrideType);
   }
 
   private handleOpen(): void {
@@ -330,11 +349,12 @@ export class SseClient implements TransportAdapter {
     this.emit('close', {});
   }
 
-  private handleError(error: Error | Event): void {
+  private handleError(error: unknown): void {
     const errorObj = error instanceof Error ? error : new Error('SSE error');
     
     this.setState({ error: errorObj });
-    this.emit('error', {}, errorObj);
+    this.logger.error('SSE transport error', errorObj);
+    this.emit('error', { error: errorObj }, errorObj);
 
     // EventSource will automatically reconnect on error
     // But we want to control the reconnection logic
@@ -351,20 +371,18 @@ export class SseClient implements TransportAdapter {
         this.saveLastEventId(lastEventId);
       }
 
-      // Try to parse as JSON, fallback to string
-      let message: any;
-      try {
-        message = JSON.parse(data);
-      } catch {
-        message = { type: eventType || this.pendingEventType || 'message', data };
-      }
+      const fallbackType = eventType ?? this.pendingEventType ?? 'message';
+      const message = this.parseMessage(data, fallbackType);
 
       // Clear pending event type after use
       this.pendingEventType = undefined;
 
       // Handle heartbeat messages
       if (message.type === 'pong') {
-        this.handlePong(message as HeartbeatMessage);
+        const heartbeat = this.toHeartbeatMessage(message);
+        if (heartbeat) {
+          this.handlePong(heartbeat);
+        }
         return;
       }
 
@@ -372,12 +390,58 @@ export class SseClient implements TransportAdapter {
       this.emit('message', message);
 
       // Also emit type-specific event if type is present
-      if (message.type && message.data !== undefined) {
-        this.emit(message.type, message.data);
+      const messageType = typeof message.type === 'string' ? message.type : undefined;
+      if (messageType && Object.prototype.hasOwnProperty.call(message, 'data')) {
+        this.emit(messageType, message.data);
       }
     } catch (error) {
-      this.handleError(new Error(`Failed to process message: ${error}`));
+      const resolvedError = error instanceof Error ? error : new Error(String(error));
+      this.handleError(new Error(`Failed to process message: ${resolvedError.message}`));
     }
+  }
+
+  private parseMessage(data: string, fallbackType: string): TransportMessage {
+    try {
+      const parsed = JSON.parse(data) as unknown;
+      if (this.isTransportMessage(parsed)) {
+        return {
+          ...parsed,
+          type: typeof parsed.type === 'string' ? parsed.type : fallbackType,
+        };
+      }
+
+      return {
+        type: fallbackType,
+        data: parsed,
+      };
+    } catch {
+      return {
+        type: fallbackType,
+        data,
+      };
+    }
+  }
+
+  private isTransportMessage(value: unknown): value is TransportMessage {
+    return typeof value === 'object' && value !== null;
+  }
+
+  private toHeartbeatMessage(message: TransportMessage): HeartbeatMessage | null {
+    if (
+      (message.type === 'ping' || message.type === 'pong') &&
+      typeof message.timestamp === 'number'
+    ) {
+      return {
+        type: message.type,
+        timestamp: message.timestamp,
+      };
+    }
+
+    return null;
+  }
+
+  private isAbortError(error: unknown): error is { name: string } {
+    return typeof error === 'object' && error !== null && (error as { name?: unknown }).name === 'AbortError';
   }
 
   private startHeartbeat(): void {
@@ -425,7 +489,7 @@ export class SseClient implements TransportAdapter {
         credentials: this.config.withCredentials ? 'include' : 'same-origin'
       });
     } catch (error) {
-      // Ignore ping errors
+      this.logger.debug('SSE latency ping request failed', { error });
     }
   }
 
@@ -568,7 +632,7 @@ export class SseClient implements TransportAdapter {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       const wsEvent: WebSocketEvent = {
-        type: event as any,
+        type: event,
         data,
         error
       };
@@ -577,7 +641,7 @@ export class SseClient implements TransportAdapter {
         try {
           handler(wsEvent);
         } catch (err) {
-          console.error(`Error in event handler for ${event}:`, err);
+          this.logger.error(`Error in SSE event handler for ${event}`, err);
         }
       });
     }

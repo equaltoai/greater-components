@@ -25,9 +25,9 @@
     status,
     statusPosition = 'bottom-right',
     class: className = '',
-    fallback,
-    ...restProps
+    fallback
   }: Props = $props();
+  const restProps = $restProps();
 
   // State management
   let imageLoaded = $state(false);

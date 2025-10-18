@@ -5,7 +5,7 @@
 import type { TransportManager } from '../TransportManager';
 
 // Base store types
-export interface BaseStore<T = any> {
+export interface BaseStore<T = unknown> {
   /** Subscribe to store updates */
   subscribe(callback: (value: T) => void): () => void;
   /** Cleanup store resources */
@@ -52,9 +52,9 @@ export interface TimelineItem {
   /** Creation timestamp */
   timestamp: number;
   /** Item content/data */
-  content: any;
+  content: unknown;
   /** Item metadata */
-  metadata?: Record<string, any> & {
+  metadata?: Record<string, unknown> & {
     /** Typed Lesser-specific metadata */
     lesser?: LesserTimelineMetadata;
   };
@@ -109,7 +109,7 @@ export interface StreamingEdit {
   /** Target item ID */
   itemId: string;
   /** New/updated data */
-  data?: any;
+  data?: unknown;
   /** Patch operations for partial updates */
   patches?: JsonPatch[];
   /** Operation timestamp */
@@ -121,7 +121,7 @@ export interface StreamingEdit {
 export interface JsonPatch {
   op: 'add' | 'remove' | 'replace' | 'move' | 'copy' | 'test';
   path: string;
-  value?: any;
+  value?: unknown;
   from?: string;
 }
 
@@ -179,7 +179,7 @@ export interface Notification {
   /** Priority level */
   priority: 'low' | 'normal' | 'high' | 'urgent';
   /** Notification metadata */
-  metadata?: Record<string, any> & {
+  metadata?: Record<string, unknown> & {
     /** Typed Lesser-specific metadata */
     lesser?: LesserNotificationMetadata;
   };

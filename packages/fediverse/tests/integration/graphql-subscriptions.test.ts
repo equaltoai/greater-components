@@ -10,7 +10,6 @@ import { generateMockStatus, generateMockNotification } from './utils/mock-data.
 import { waitFor, MockWebSocket, createDeferred } from './utils/test-helpers.js';
 
 describe('GraphQL Subscriptions', () => {
-	let mockWebSocket: MockWebSocket;
 	let originalWebSocket: typeof WebSocket;
 
 	beforeEach(() => {
@@ -451,4 +450,3 @@ describe('GraphQL Subscriptions', () => {
 		});
 	});
 });
-

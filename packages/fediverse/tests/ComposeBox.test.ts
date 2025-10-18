@@ -157,7 +157,7 @@ function getRemainingCharacters(contentLength: number, maxLength: number): numbe
 }
 
 // Format character count display
-function formatCharacterCount(remaining: number, total: number): string {
+function formatCharacterCount(remaining: number, _total: number): string {
   return remaining >= 0 ? `${remaining}` : `${remaining}`;
 }
 

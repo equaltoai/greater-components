@@ -3,7 +3,7 @@ import { TransportManager } from '../src/TransportManager';
 import { WebSocketClient } from '../src/WebSocketClient';
 import { SseClient } from '../src/SseClient';
 import { HttpPollingClient } from '../src/HttpPollingClient';
-import type { TransportManagerConfig, TransportType } from '../src/types';
+import type { TransportManagerConfig } from '../src/types';
 
 // Mock WebSocketClient
 vi.mock('../src/WebSocketClient', () => {
@@ -26,15 +26,17 @@ vi.mock('../src/WebSocketClient', () => {
       this.connected = false;
     });
     
-    this.send = vi.fn((message: any) => {
+    this.send = vi.fn((_message: any) => {
       // Mock send
     });
     
     this.on = vi.fn((event: string, handler: any) => {
-      if (!this.handlers.has(event)) {
-        this.handlers.set(event, new Set());
+      let handlersForEvent = this.handlers.get(event);
+      if (!handlersForEvent) {
+        handlersForEvent = new Set();
+        this.handlers.set(event, handlersForEvent);
       }
-      this.handlers.get(event)!.add(handler);
+      handlersForEvent.add(handler);
       
       return () => {
         this.handlers.get(event)?.delete(handler);
@@ -89,10 +91,12 @@ vi.mock('../src/SseClient', () => {
     });
     
     this.on = vi.fn((event: string, handler: any) => {
-      if (!this.handlers.has(event)) {
-        this.handlers.set(event, new Set());
+      let handlersForEvent = this.handlers.get(event);
+      if (!handlersForEvent) {
+        handlersForEvent = new Set();
+        this.handlers.set(event, handlersForEvent);
       }
-      this.handlers.get(event)!.add(handler);
+      handlersForEvent.add(handler);
       
       return () => {
         this.handlers.get(event)?.delete(handler);
@@ -148,15 +152,17 @@ vi.mock('../src/HttpPollingClient', () => {
       this.connected = false;
     });
     
-    this.send = vi.fn((message: any) => {
+    this.send = vi.fn((_message: any) => {
       // Mock send
     });
     
     this.on = vi.fn((event: string, handler: any) => {
-      if (!this.handlers.has(event)) {
-        this.handlers.set(event, new Set());
+      let handlersForEvent = this.handlers.get(event);
+      if (!handlersForEvent) {
+        handlersForEvent = new Set();
+        this.handlers.set(event, handlersForEvent);
       }
-      this.handlers.get(event)!.add(handler);
+      handlersForEvent.add(handler);
       
       return () => {
         this.handlers.get(event)?.delete(handler);
@@ -240,11 +246,11 @@ describe('TransportManager', () => {
     });
 
     it('should detect missing features', () => {
-      // @ts-ignore - Testing feature detection
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
-      // @ts-ignore - Testing feature detection  
+      // @ts-expect-error: simulate missing EventSource support
       global.EventSource = undefined;
-      // @ts-ignore - Testing feature detection
+      // @ts-expect-error: simulate missing fetch support
       global.fetch = undefined;
 
       const features = TransportManager.getFeatureSupport();
@@ -262,7 +268,7 @@ describe('TransportManager', () => {
     });
 
     it('should handle partial feature support', () => {
-      // @ts-ignore - Testing partial support
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
       
       manager = new TransportManager(config);
@@ -284,7 +290,7 @@ describe('TransportManager', () => {
     });
 
     it('should use SSE when WebSocket is not supported', async () => {
-      // @ts-ignore - Testing fallback
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
       
       manager = new TransportManager(config);
@@ -297,9 +303,9 @@ describe('TransportManager', () => {
     });
 
     it('should use polling when WebSocket and SSE are not supported', async () => {
-      // @ts-ignore - Testing fallback
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
-      // @ts-ignore - Testing fallback
+      // @ts-expect-error: simulate missing EventSource support
       global.EventSource = undefined;
       
       manager = new TransportManager(config);
@@ -324,7 +330,7 @@ describe('TransportManager', () => {
     });
 
     it('should throw error when forced transport is not supported', () => {
-      // @ts-ignore - Testing error condition
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
       config.forceTransport = 'websocket';
       
@@ -334,11 +340,11 @@ describe('TransportManager', () => {
     });
 
     it('should throw error when no transports are supported', () => {
-      // @ts-ignore - Testing error condition
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
-      // @ts-ignore - Testing error condition
+      // @ts-expect-error: simulate missing EventSource support
       global.EventSource = undefined;
-      // @ts-ignore - Testing error condition
+      // @ts-expect-error: simulate missing fetch support
       global.fetch = undefined;
       
       manager = new TransportManager(config);
@@ -555,7 +561,7 @@ describe('TransportManager', () => {
     });
 
     it('should fallback from SSE to polling on errors', async () => {
-      // @ts-ignore - Testing fallback scenario
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
       config.maxFailuresBeforeSwitch = 1;
       
@@ -637,9 +643,9 @@ describe('TransportManager', () => {
     });
 
     it('should handle case when no fallback transport is available', async () => {
-      // @ts-ignore - Testing edge case
+      // @ts-expect-error: simulate missing EventSource support
       global.EventSource = undefined;
-      // @ts-ignore - Testing edge case
+      // @ts-expect-error: simulate missing fetch support
       global.fetch = undefined;
       config.maxFailuresBeforeSwitch = 1;
       
@@ -681,7 +687,7 @@ describe('TransportManager', () => {
     });
 
     it('should throw error when switching to unsupported transport', async () => {
-      // @ts-ignore - Testing error condition
+      // @ts-expect-error: simulate missing EventSource support
       global.EventSource = undefined;
       
       manager = new TransportManager(config);
@@ -798,9 +804,9 @@ describe('TransportManager', () => {
     });
 
     it('should indicate when fallback is not available', () => {
-      // @ts-ignore - Testing no fallback scenario
+      // @ts-expect-error: simulate missing EventSource support
       global.EventSource = undefined;
-      // @ts-ignore - Testing no fallback scenario
+      // @ts-expect-error: simulate missing fetch support
       global.fetch = undefined;
       
       manager = new TransportManager(config);
@@ -821,7 +827,7 @@ describe('TransportManager', () => {
     });
 
     it('should correctly identify unsupported transports', () => {
-      // @ts-ignore - Testing unsupported transport
+      // @ts-expect-error: simulate missing WebSocket support
       global.WebSocket = undefined;
       
       manager = new TransportManager(config);

@@ -14,6 +14,7 @@ import {
 	resolveComponentDependencies,
 	getAllComponentNames,
 } from '../registry/index.js';
+import type { ComponentFile } from '../registry/index.js';
 import { fetchComponents } from '../utils/fetch.js';
 import { writeComponentFiles } from '../utils/files.js';
 import {
@@ -21,6 +22,7 @@ import {
 	getMissingDependencies,
 	detectPackageManager,
 } from '../utils/packages.js';
+import { logger } from '../utils/logger.js';
 
 export const addCommand = new Command()
 	.name('add')
@@ -35,15 +37,15 @@ export const addCommand = new Command()
 
 		// Check if initialized
 		if (!(await configExists(cwd))) {
-			console.log(chalk.red('✖ Greater Components is not initialized'));
-			console.log(chalk.dim('  Run ') + chalk.cyan('greater init') + chalk.dim(' first\n'));
+			logger.error(chalk.red('✖ Greater Components is not initialized'));
+			logger.note(chalk.dim('  Run ') + chalk.cyan('greater init') + chalk.dim(' first\n'));
 			process.exit(1);
 		}
 
 		// Read config
 		const config = await readConfig(cwd);
 		if (!config) {
-			console.log(chalk.red('✖ Failed to read configuration'));
+			logger.error(chalk.red('✖ Failed to read configuration'));
 			process.exit(1);
 		}
 
@@ -69,7 +71,7 @@ export const addCommand = new Command()
 			});
 
 			if (!response.components || response.components.length === 0) {
-				console.log(chalk.yellow('\n✖ No components selected'));
+				logger.warn(chalk.yellow('\n✖ No components selected'));
 				process.exit(0);
 			}
 
@@ -79,8 +81,10 @@ export const addCommand = new Command()
 		// Validate components
 		const invalidComponents = selectedComponents.filter((name) => !getComponent(name));
 		if (invalidComponents.length > 0) {
-			console.log(chalk.red(`\n✖ Unknown components: ${invalidComponents.join(', ')}`));
-			console.log(chalk.dim('  Run ') + chalk.cyan('greater list') + chalk.dim(' to see available components\n'));
+			logger.error(chalk.red(`\n✖ Unknown components: ${invalidComponents.join(', ')}`));
+			logger.note(
+				chalk.dim('  Run ') + chalk.cyan('greater list') + chalk.dim(' to see available components\n')
+			);
 			process.exit(1);
 		}
 
@@ -93,15 +97,15 @@ export const addCommand = new Command()
 		const componentsToInstall = Array.from(allComponents);
 
 		// Show what will be installed
-		console.log(chalk.bold('\n📦 Components to install:\n'));
+		logger.info(chalk.bold('\n📦 Components to install:\n'));
 		for (const name of componentsToInstall) {
 			const meta = getComponent(name);
 			if (meta) {
 				const badge = chalk.dim(`[${meta.type}]`);
-				console.log(`  ${badge} ${name}`);
+				logger.info(`  ${badge} ${name}`);
 			}
 		}
-		console.log('');
+		logger.newline();
 
 		// Confirm
 		if (!options.yes) {
@@ -113,7 +117,7 @@ export const addCommand = new Command()
 			});
 
 			if (!response.confirm) {
-				console.log(chalk.yellow('\n✖ Installation cancelled'));
+				logger.warn(chalk.yellow('\n✖ Installation cancelled'));
 				process.exit(0);
 			}
 		}
@@ -121,7 +125,7 @@ export const addCommand = new Command()
 		// Fetch components
 		const fetchSpinner = ora('Fetching components...').start();
 
-		let componentFiles: Map<string, any>;
+		let componentFiles: Map<string, ComponentFile[]>;
 		try {
 			componentFiles = await fetchComponents(componentsToInstall, componentRegistry);
 			fetchSpinner.succeed(`Fetched ${componentsToInstall.length} component(s)`);
@@ -139,7 +143,7 @@ export const addCommand = new Command()
 				? path.resolve(cwd, options.path)
 				: resolveAlias(config.aliases.ui, config, cwd);
 
-			for (const [name, files] of componentFiles.entries()) {
+			for (const [, files] of componentFiles.entries()) {
 				await writeComponentFiles(files, targetDir);
 			}
 
@@ -170,19 +174,19 @@ export const addCommand = new Command()
 		const missingDevDeps = await getMissingDependencies(devDeps, cwd);
 
 		if (missingDeps.length > 0 || missingDevDeps.length > 0) {
-			console.log(chalk.bold('\n📦 Installing dependencies:\n'));
+			logger.info(chalk.bold('\n📦 Installing dependencies:\n'));
 
 			if (missingDeps.length > 0) {
-				console.log(chalk.dim('  Dependencies:'));
-				missingDeps.forEach((dep) => console.log(`    - ${dep.name}@${dep.version}`));
+				logger.note(chalk.dim('  Dependencies:'));
+				missingDeps.forEach((dep) => logger.info(`    - ${dep.name}@${dep.version}`));
 			}
 
 			if (missingDevDeps.length > 0) {
-				console.log(chalk.dim('  Dev Dependencies:'));
-				missingDevDeps.forEach((dep) => console.log(`    - ${dep.name}@${dep.version}`));
+				logger.note(chalk.dim('  Dev Dependencies:'));
+				missingDevDeps.forEach((dep) => logger.info(`    - ${dep.name}@${dep.version}`));
 			}
 
-			console.log('');
+			logger.newline();
 
 			const pm = await detectPackageManager(cwd);
 			const installSpinner = ora(`Installing with ${pm}...`).start();
@@ -205,8 +209,7 @@ export const addCommand = new Command()
 		}
 
 		// Success
-		console.log(chalk.green('\n✓ Components added successfully!\n'));
-		console.log(chalk.dim('Import and use in your components:'));
-		console.log(chalk.cyan(`  import { ... } from '${config.aliases.ui}'\n`));
+		logger.success(chalk.green('\n✓ Components added successfully!\n'));
+		logger.note(chalk.dim('Import and use in your components:'));
+		logger.note(chalk.cyan(`  import { ... } from '${config.aliases.ui}'\n`));
 	});
-

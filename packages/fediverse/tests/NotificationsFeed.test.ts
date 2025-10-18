@@ -33,7 +33,7 @@ function getUnreadCount(notifications: Notification[]): number {
 }
 
 // Check if should show mark all as read
-function shouldShowMarkAllAsRead(unreadCount: number, onMarkAllAsRead?: Function): boolean {
+function shouldShowMarkAllAsRead(unreadCount: number, onMarkAllAsRead?: () => void): boolean {
   return unreadCount > 0 && onMarkAllAsRead !== undefined;
 }
 

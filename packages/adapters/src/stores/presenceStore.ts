@@ -19,6 +19,9 @@ const STATUS_PRIORITY: Record<UserPresence['status'], number> = {
   offline: 5
 };
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
 // Simple reactive state implementation that works everywhere
 class ReactiveState<T> {
   private _value: T;
@@ -638,26 +641,29 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
     pendingPresenceUpdates.clear();
   }
 
-  function handlePresenceMessage(data: any): void {
-    if (!data || !data.type) return;
+  function handlePresenceMessage(rawData: unknown): void {
+    if (!isRecord(rawData) || typeof rawData.type !== 'string') {
+      return;
+    }
 
-    switch (data.type) {
+    const payload = isRecord(rawData) && 'data' in rawData ? rawData.data : undefined;
+
+    switch (rawData.type) {
       case 'presence_update':
-        if (data.data?.userId) {
-          schedulePresenceUpdate(data.data as UserPresence);
+        if (isRecord(payload) && typeof payload.userId === 'string') {
+          schedulePresenceUpdate(payload as UserPresence);
         }
         break;
 
       case 'presence_user_joined':
-        if (data.data?.userId) {
-          const userPresence = data.data as UserPresence;
-          schedulePresenceUpdate(userPresence);
+        if (isRecord(payload) && typeof payload.userId === 'string') {
+          schedulePresenceUpdate(payload as UserPresence);
         }
         break;
 
       case 'presence_user_left':
-        if (data.data?.userId) {
-          const userId = data.data.userId;
+        if (isRecord(payload) && typeof payload.userId === 'string') {
+          const userId = payload.userId;
           const existingUser = state.value.users.get(userId);
           if (existingUser) {
             const offlineUser = { ...existingUser, isOnline: false, status: 'offline' as const };
@@ -667,8 +673,8 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
         break;
 
       case 'presence_session_update':
-        if (data.data?.sessionId) {
-          const sessionInfo = data.data as SessionInfo;
+        if (isRecord(payload) && typeof payload.sessionId === 'string') {
+          const sessionInfo = payload as SessionInfo;
           state.update(current => {
             const sessions = cloneSessionsMap(current.sessions);
             sessions.set(sessionInfo.sessionId, sessionInfo);
@@ -678,15 +684,14 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
         break;
 
       case 'presence_bulk_update':
-        if (Array.isArray(data.data)) {
-          data.data.forEach((presence: UserPresence) => {
-            schedulePresenceUpdate(presence);
+        if (Array.isArray(payload)) {
+          payload.forEach((presence) => {
+            if (isRecord(presence) && typeof presence.userId === 'string') {
+              schedulePresenceUpdate(presence as UserPresence);
+            }
           });
         }
         break;
-
-      default:
-        console.debug('Unknown presence message type:', data.type);
     }
   }
 

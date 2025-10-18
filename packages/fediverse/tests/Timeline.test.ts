@@ -16,7 +16,6 @@ import {
 	createTimelineContext,
 	getTimelineContext,
 	hasTimelineContext,
-	type TimelineContext,
 	type TimelineCompoundConfig,
 	type TimelineHandlers,
 	type TimelineCompoundState,
@@ -660,4 +659,3 @@ describe('Timeline Type Safety', () => {
 		expect(item.metadata?.lesser?.authorTrustScore).toBe(85);
 	});
 });
-

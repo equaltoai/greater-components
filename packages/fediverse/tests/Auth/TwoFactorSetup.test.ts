@@ -416,7 +416,7 @@ describe('Auth.TwoFactorSetup - Completion Flow', () => {
 
 	it('should not finish while loading', async () => {
 		mockSetup.mockImplementation(() => new Promise(() => {})); // Never resolves
-		const promise = logic.handleStart(mockSetup);
+		logic.handleStart(mockSetup);
 		
 		// Now loading is true
 		const onComplete = vi.fn();

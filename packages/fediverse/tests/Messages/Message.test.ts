@@ -190,11 +190,6 @@ describe('Messages.Message - Avatar Display', () => {
 		read: true,
 	};
 
-	const messageWithAvatar: DirectMessage = {
-		...message,
-		sender: aliceWithAvatar,
-	};
-
 	it('shows avatar for other user messages', () => {
 		expect(shouldShowAvatar(message, 'user2')).toBe(true);
 	});
@@ -592,4 +587,3 @@ describe('Messages.Message - Integration', () => {
 		expect(hasMedia(message)).toBe(true);
 	});
 });
-

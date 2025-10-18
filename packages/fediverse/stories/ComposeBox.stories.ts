@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import type { Snippet } from 'svelte';
+import { action } from '@storybook/addon-actions';
 import ComposeBox from '../src/components/ComposeBox.svelte';
 import type { 
-  ComposeBoxDraft, 
   ComposeMediaAttachment, 
   ComposePoll,
   Status,
@@ -155,6 +154,8 @@ A comprehensive compose box component for creating posts in fediverse applicatio
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const mediaRemoveAction = action('compose-box: media remove');
 
 // Mock media slot component
 const createMediaSlot = () => {
@@ -395,7 +396,7 @@ export const WithContentWarning: Story = {
 export const WithMediaSupport: Story = {
   args: {
     onMediaUpload: mockMediaUpload,
-    onMediaRemove: (id: string) => console.log('Remove media:', id),
+    onMediaRemove: (id: string) => mediaRemoveAction(id),
     mediaSlot: createMediaSlot()
   },
   parameters: {
@@ -423,7 +424,7 @@ export const WithPollSupport: Story = {
 export const FullyFeatured: Story = {
   args: {
     onMediaUpload: mockMediaUpload,
-    onMediaRemove: (id: string) => console.log('Remove media:', id),
+    onMediaRemove: (id: string) => mediaRemoveAction(id),
     mediaSlot: createMediaSlot(),
     pollSlot: createPollSlot(),
     placeholder: 'Share your thoughts, add media, create polls...',

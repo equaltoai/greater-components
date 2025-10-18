@@ -5,7 +5,6 @@
 
 import { test, expect } from '@playwright/test';
 import { 
-  setupAxe, 
   checkAccessibility, 
   testThemeAccessibility,
   testDensityAccessibility,
@@ -13,12 +12,8 @@ import {
 } from '../../src/playwright/axe-playwright';
 import { 
   testTabOrder,
-  testKeyboardShortcuts,
   testFocusVisible 
 } from '../../src/playwright/keyboard-playwright';
-import { 
-  testAllInteractiveStatesVisual 
-} from '../../src/playwright/visual-regression';
 import { createStorybookTestSuite } from '../../src/playwright/storybook-helpers';
 
 const storybook = createStorybookTestSuite();

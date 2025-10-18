@@ -10,7 +10,7 @@
  * - Modal management
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 // Mock headless UI dependencies
 vi.mock('@greater/headless/button', () => ({
@@ -405,4 +405,3 @@ describe('Manager Logic', () => {
 		});
 	});
 });
-

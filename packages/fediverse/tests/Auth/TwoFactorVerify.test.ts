@@ -10,7 +10,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { AuthHandlers, TwoFactorData } from '../../src/components/Auth/context.js';
+import type { AuthHandlers } from '../../src/components/Auth/context.js';
 
 // Verification method type
 type VerifyMethod = 'totp' | 'backup';

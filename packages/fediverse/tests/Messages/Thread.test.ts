@@ -81,10 +81,12 @@ function groupMessagesByDate(messages: DirectMessage[]): Map<string, DirectMessa
 		const date = new Date(message.createdAt);
 		const dateKey = date.toLocaleDateString();
 
-		if (!groups.has(dateKey)) {
-			groups.set(dateKey, []);
+		const existingGroup = groups.get(dateKey);
+		if (existingGroup) {
+			existingGroup.push(message);
+		} else {
+			groups.set(dateKey, [message]);
 		}
-		groups.get(dateKey)!.push(message);
 	}
 
 	return groups;
@@ -713,4 +715,3 @@ describe('Messages.Thread - Integration', () => {
 		expect(shouldShowList(conversation, false, 5)).toBe(true);
 	});
 });
-

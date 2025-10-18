@@ -18,7 +18,6 @@ import {
 	createComposeContext,
 	getComposeContext,
 	hasComposeContext,
-	type ComposeContext,
 	type ComposeConfig,
 	type ComposeHandlers,
 	type ComposeState,
@@ -774,4 +773,3 @@ describe('Compose Type Safety', () => {
 		expect(context.state).toHaveProperty('contentWarningEnabled');
 	});
 });
-

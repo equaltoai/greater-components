@@ -15,6 +15,24 @@ export interface PageSetupOptions {
   disableAnimations?: boolean;
 }
 
+export interface AccessibilityTreeNode {
+  tag: string;
+  role: string | null;
+  name: string | null;
+  description: string | null;
+  children?: AccessibilityTreeNode[];
+}
+
+type ScreenReaderPriority = 'polite' | 'assertive';
+
+type DisableableHTMLElement = HTMLElement & { disabled?: boolean };
+
+type WindowWithAccessibilityHelpers = Window & {
+  getAccessibilityTree: () => AccessibilityTreeNode;
+  getFocusableElements: () => HTMLElement[];
+  announceToScreenReader: (message: string, priority?: ScreenReaderPriority) => void;
+};
+
 /**
  * Setup page for accessibility testing
  */
@@ -85,58 +103,67 @@ export async function setupPageForA11yTesting(
   
   // Add accessibility helper functions to page
   await page.addInitScript(() => {
-    // Helper to get accessibility tree
-    (window as any).getAccessibilityTree = () => {
-      const getNodeInfo = (node: Element) => {
-        const info: any = {
-          tag: node.tagName.toLowerCase(),
-          role: node.getAttribute('role') || null,
-          name: null,
-          description: null,
-        };
-        
-        // Get accessible name
-        if (node.hasAttribute('aria-label')) {
-          info.name = node.getAttribute('aria-label');
-        } else if (node.hasAttribute('aria-labelledby')) {
-          const ids = node.getAttribute('aria-labelledby')?.split(' ') || [];
-          info.name = ids.map(id => document.getElementById(id)?.textContent).join(' ');
-        } else if (node.id) {
-          const label = document.querySelector(`label[for="${node.id}"]`);
-          if (label) info.name = label.textContent;
-        }
-        
-        // Get accessible description
-        if (node.hasAttribute('aria-describedby')) {
-          const ids = node.getAttribute('aria-describedby')?.split(' ') || [];
-          info.description = ids.map(id => document.getElementById(id)?.textContent).join(' ');
-        }
-        
-        return info;
+    const helperWindow = window as WindowWithAccessibilityHelpers;
+
+    const collectNodeInfo = (node: Element): AccessibilityTreeNode => {
+      const element = node as HTMLElement;
+      const info: AccessibilityTreeNode = {
+        tag: element.tagName.toLowerCase(),
+        role: element.getAttribute('role'),
+        name: null,
+        description: null,
       };
-      
-      const traverse = (node: Element): any => {
-        const info = getNodeInfo(node);
-        const children = Array.from(node.children).map(traverse);
-        return children.length ? { ...info, children } : info;
-      };
-      
-      return traverse(document.body);
+
+      if (element.hasAttribute('aria-label')) {
+        info.name = element.getAttribute('aria-label');
+      } else if (element.hasAttribute('aria-labelledby')) {
+        const ids = element.getAttribute('aria-labelledby')?.split(' ') ?? [];
+        const labelText = ids
+          .map((id) => document.getElementById(id)?.textContent?.trim())
+          .filter((value): value is string => Boolean(value));
+        if (labelText.length > 0) {
+          info.name = labelText.join(' ');
+        }
+      } else if (element.id) {
+        const label = document.querySelector(`label[for="${element.id}"]`);
+        if (label?.textContent) {
+          info.name = label.textContent;
+        }
+      }
+
+      if (element.hasAttribute('aria-describedby')) {
+        const ids = element.getAttribute('aria-describedby')?.split(' ') ?? [];
+        const descriptionText = ids
+          .map((id) => document.getElementById(id)?.textContent?.trim())
+          .filter((value): value is string => Boolean(value));
+        if (descriptionText.length > 0) {
+          info.description = descriptionText.join(' ');
+        }
+      } else if (element.hasAttribute('title')) {
+        info.description = element.getAttribute('title');
+      }
+
+      const children = Array.from(node.children).map((child) => collectNodeInfo(child));
+      return children.length > 0 ? { ...info, children } : info;
     };
-    
-    // Helper to get all focusable elements
-    (window as any).getFocusableElements = () => {
-      return Array.from(document.querySelectorAll(
-        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      )).filter(el => {
-        const element = el as HTMLElement;
-        const disabled = (element as any).disabled;
-        return element.offsetParent !== null && !disabled;
+
+    helperWindow.getAccessibilityTree = () => collectNodeInfo(document.body);
+
+    helperWindow.getFocusableElements = () => {
+      return Array.from(
+        document.querySelectorAll<HTMLElement>(
+          'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((element) => {
+        const disableable = element as DisableableHTMLElement;
+        return element.offsetParent !== null && disableable.disabled !== true;
       });
     };
-    
-    // Helper to simulate screen reader announcement
-    (window as any).announceToScreenReader = (message: string, priority: string = 'polite') => {
+
+    helperWindow.announceToScreenReader = (
+      message: string,
+      priority: ScreenReaderPriority = 'polite'
+    ) => {
       const announcement = document.createElement('div');
       announcement.setAttribute('aria-live', priority);
       announcement.setAttribute('aria-atomic', 'true');
@@ -151,12 +178,11 @@ export async function setupPageForA11yTesting(
         white-space: nowrap !important;
         border: 0 !important;
       `;
-      
       document.body.appendChild(announcement);
-      
-      setTimeout(() => {
+
+      window.setTimeout(() => {
         announcement.textContent = message;
-        setTimeout(() => {
+        window.setTimeout(() => {
           document.body.removeChild(announcement);
         }, 1000);
       }, 100);
@@ -183,23 +209,28 @@ export async function waitForAnimations(page: Page, timeout: number = 5000): Pro
  * Get all focusable elements on the page
  */
 export async function getFocusableElements(page: Page): Promise<string[]> {
-  return await page.evaluate(() => {
-    return Array.from(document.querySelectorAll(
-      'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )).map(el => {
-      const element = el as HTMLElement;
-      const disabled = (element as any).disabled;
-      if (element.offsetParent === null || disabled) return null;
-      
+  return page.evaluate(() => {
+    const selectors = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).map((element) => {
+      const disableable = element as DisableableHTMLElement;
+      if (element.offsetParent === null || disableable.disabled === true) {
+        return null;
+      }
+
       let selector = element.tagName.toLowerCase();
       if (element.id) selector += `#${element.id}`;
       if (element.className) {
         const firstClass = element.className.split(' ')[0];
         if (firstClass) selector += `.${firstClass}`;
       }
-      
+
       return selector;
-    }).filter(Boolean) as string[];
+    });
+
+    return selectors.filter((value): value is string => value !== null);
   });
 }
 
@@ -312,9 +343,10 @@ export async function typeWithRealisticDelay(
 /**
  * Get page's accessibility tree
  */
-export async function getAccessibilityTree(page: Page): Promise<any> {
-  return await page.evaluate(() => {
-    return (window as any).getAccessibilityTree();
+export async function getAccessibilityTree(page: Page): Promise<AccessibilityTreeNode> {
+  return page.evaluate<AccessibilityTreeNode>(() => {
+    const helperWindow = window as WindowWithAccessibilityHelpers;
+    return helperWindow.getAccessibilityTree();
   });
 }
 

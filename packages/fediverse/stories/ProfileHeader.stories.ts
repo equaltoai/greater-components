@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
+import { action } from '@storybook/addon-actions';
 import ProfileHeader from '../src/components/ProfileHeader.svelte';
 import type { UnifiedAccount } from '@greater/adapters';
 
@@ -198,6 +199,10 @@ The component works with UnifiedAccount data from @greater/adapters and provides
 
 export default meta;
 type Story = StoryObj<ProfileHeader>;
+
+const followersClickAction = action('profile-header: followers click');
+const followingClickAction = action('profile-header: following click');
+const postsClickAction = action('profile-header: posts click');
 
 // Default story
 export const Default: Story = {
@@ -437,14 +442,14 @@ export const Interactive: Story = {
     showJoinDate: true,
     showCounts: true,
     clickableCounts: true,
-    onFollowersClick: () => console.log('Followers clicked'),
-    onFollowingClick: () => console.log('Following clicked'),
-    onPostsClick: () => console.log('Posts clicked')
+    onFollowersClick: () => followersClickAction(),
+    onFollowingClick: () => followingClickAction(),
+    onPostsClick: () => postsClickAction()
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive profile header with clickable counts (check browser console for click events).'
+        story: 'Interactive profile header with clickable counts (view the Storybook actions panel for click events).'
       }
     }
   }

@@ -564,9 +564,13 @@ describe('HttpPollingClient', () => {
       }
 
       // First reconnect attempt
-      const firstCall = reconnectingHandler.mock.calls[0]![0];
-      expect(firstCall.data.attempt).toBe(1);
-      expect(firstCall.data.delay).toBe(100);
+      const firstCall = reconnectingHandler.mock.calls[0];
+      if (!firstCall) {
+        throw new Error('Expected reconnectingHandler to be called at least once');
+      }
+      const [event] = firstCall;
+      expect(event.data.attempt).toBe(1);
+      expect(event.data.delay).toBe(100);
 
       vi.restoreAllMocks();
     });

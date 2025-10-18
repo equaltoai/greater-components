@@ -21,6 +21,8 @@ export interface FocusVisualTestOptions extends VisualTestOptions {
   interactionType?: 'keyboard' | 'programmatic';
 }
 
+type DisableableElement = HTMLElement & { disabled?: boolean };
+
 /**
  * Test focus state visual appearance
  */
@@ -150,7 +152,10 @@ export async function testDisabledStateVisual(
   // Enable state (if applicable)
   await element.evaluate((el) => {
     if ('disabled' in el) {
-      (el as any).disabled = false;
+      const disableable = el as DisableableElement;
+      if (typeof disableable.disabled === 'boolean') {
+        disableable.disabled = false;
+      }
     }
     el.removeAttribute('disabled');
     el.removeAttribute('aria-disabled');
@@ -164,7 +169,10 @@ export async function testDisabledStateVisual(
   // Disabled state
   await element.evaluate((el) => {
     if ('disabled' in el) {
-      (el as any).disabled = true;
+      const disableable = el as DisableableElement;
+      if (typeof disableable.disabled === 'boolean') {
+        disableable.disabled = true;
+      }
     } else {
       el.setAttribute('aria-disabled', 'true');
     }
@@ -388,7 +396,10 @@ export async function testAllInteractiveStatesVisual(
   if (canBeDisabled) {
     await element.evaluate((el) => {
       if ('disabled' in el) {
-        (el as any).disabled = true;
+        const disableable = el as DisableableElement;
+        if (typeof disableable.disabled === 'boolean') {
+          disableable.disabled = true;
+        }
       } else {
         el.setAttribute('aria-disabled', 'true');
       }

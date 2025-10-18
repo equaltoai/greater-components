@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createNotificationStore } from '../../src/stores/notificationStore.js';
-import type { NotificationConfig, Notification, LesserNotificationMetadata } from '../../src/stores/types.js';
+import type { NotificationConfig } from '../../src/stores/types.js';
 
 describe('NotificationStore - Lesser Integration', () => {
   let mockTransportManager: any;
@@ -345,4 +345,3 @@ describe('NotificationStore - Lesser Integration', () => {
     });
   });
 });
-

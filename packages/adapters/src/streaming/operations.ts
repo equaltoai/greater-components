@@ -13,6 +13,24 @@ import type {
   StreamingEdit,
 } from '../models/unified.js';
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const isUnifiedAccountRecord = (value: unknown): value is UnifiedAccount =>
+  isRecord(value) && typeof value.id === 'string' && typeof value.username === 'string';
+
+const isUnifiedStatusRecord = (value: unknown): value is UnifiedStatus =>
+  isRecord(value) &&
+  typeof value.id === 'string' &&
+  typeof value.content === 'string' &&
+  isUnifiedAccountRecord(value.account);
+
+const isUnifiedNotificationRecord = (value: unknown): value is UnifiedNotification =>
+  isRecord(value) &&
+  typeof value.id === 'string' &&
+  typeof value.type === 'string' &&
+  isUnifiedAccountRecord(value.account);
+
 // Streaming operation types
 export type StreamingOperation = 
   | StreamingUpdate
@@ -185,15 +203,12 @@ export class StreamingOperationsManager {
       return `delete-${operation.itemType}-${operation.id}`;
     }
     if ('type' in operation && 'payload' in operation) {
-      // Try to extract ID from payload
-      if (typeof operation.payload === 'object' && operation.payload && 'id' in operation.payload) {
-        return `${operation.type || 'unknown'}-${(operation.payload as any).id}`;
+      if (isRecord(operation.payload) && 'id' in operation.payload && typeof operation.payload.id === 'string') {
+        return `${operation.type || 'unknown'}-${operation.payload.id}`;
       }
       return `${operation.type || 'unknown'}-${operation.timestamp}`;
     }
-    // All streaming operations should have a timestamp
-    const timestamp = 'timestamp' in operation ? (operation as any).timestamp : Date.now();
-    return `unknown-${timestamp}`;
+    return `unknown-${operation.timestamp}`;
   }
 
   /**
@@ -227,10 +242,12 @@ export class StreamingOperationsManager {
       
       for (const operation of operations) {
         const type = this.getOperationType(operation);
-        if (!operationGroups.has(type)) {
-          operationGroups.set(type, []);
+        let group = operationGroups.get(type);
+        if (!group) {
+          group = [];
+          operationGroups.set(type, group);
         }
-        operationGroups.get(type)!.push(operation);
+        group.push(operation);
       }
 
       // Process each group
@@ -296,7 +313,7 @@ export class StreamingOperationsManager {
   /**
    * Handle incoming transport message
    */
-  private handleTransportMessage(data: any): void {
+  private handleTransportMessage(data: unknown): void {
     try {
       // The data should already be processed by API-specific mappers
       if (this.isStreamingOperation(data)) {
@@ -310,8 +327,12 @@ export class StreamingOperationsManager {
   /**
    * Type guard for streaming operations
    */
-  private isStreamingOperation(data: any): data is StreamingOperation {
-    return data && typeof data === 'object' && (
+  private isStreamingOperation(data: unknown): data is StreamingOperation {
+    if (!isRecord(data)) {
+      return false;
+    }
+
+    return (
       ('type' in data && 'payload' in data) ||
       ('id' in data && 'itemType' in data) ||
       ('id' in data && 'editType' in data)
@@ -345,18 +366,14 @@ export class TimelineStreamingHandler implements StreamingOperationHandler {
     if ('itemType' in operation && operation.itemType === 'status') {
       this.onStatusDelete(operation.id);
     } else if ('editType' in operation && 'data' in operation) {
-      if (this.isUnifiedStatus(operation.data)) {
+      if (isUnifiedStatusRecord(operation.data)) {
         this.onStatusEdit(operation.data);
       }
     } else if ('payload' in operation) {
-      if (this.isUnifiedStatus(operation.payload)) {
+      if (isUnifiedStatusRecord(operation.payload)) {
         this.onStatusUpdate(operation.payload);
       }
     }
-  }
-
-  private isUnifiedStatus(data: any): data is UnifiedStatus {
-    return data && typeof data.id === 'string' && typeof data.content === 'string' && data.account;
   }
 }
 
@@ -375,14 +392,10 @@ export class NotificationStreamingHandler implements StreamingOperationHandler {
     if ('itemType' in operation && operation.itemType === 'notification') {
       this.onNotificationDelete(operation.id);
     } else if ('payload' in operation) {
-      if (this.isUnifiedNotification(operation.payload)) {
+      if (isUnifiedNotificationRecord(operation.payload)) {
         this.onNotificationUpdate(operation.payload);
       }
     }
-  }
-
-  private isUnifiedNotification(data: any): data is UnifiedNotification {
-    return data && typeof data.id === 'string' && typeof data.type === 'string' && data.account;
   }
 }
 
@@ -401,18 +414,14 @@ export class AccountStreamingHandler implements StreamingOperationHandler {
     if ('itemType' in operation && operation.itemType === 'account') {
       this.onAccountDelete(operation.id);
     } else if ('payload' in operation) {
-      if (this.isUnifiedAccount(operation.payload)) {
+      if (isUnifiedAccountRecord(operation.payload)) {
         this.onAccountUpdate(operation.payload);
       }
     } else if ('editType' in operation && 'data' in operation) {
-      if (this.isUnifiedAccount(operation.data)) {
+      if (isUnifiedAccountRecord(operation.data)) {
         this.onAccountUpdate(operation.data);
       }
     }
-  }
-
-  private isUnifiedAccount(data: any): data is UnifiedAccount {
-    return data && typeof data.id === 'string' && typeof data.username === 'string';
   }
 }
 
@@ -507,7 +516,7 @@ export class StreamingStateManager {
   private applyEdit(operation: StreamingEdit): { applied: boolean; conflicts: string[] } {
     const conflicts: string[] = [];
     
-    if (this.isUnifiedStatus(operation.data)) {
+    if (isUnifiedStatusRecord(operation.data)) {
       const existing = this.statusCache.get(operation.id);
       if (existing) {
         // Check for edit conflicts
@@ -524,12 +533,12 @@ export class StreamingStateManager {
       return { applied: true, conflicts };
     }
 
-    if (this.isUnifiedAccount(operation.data)) {
+    if (isUnifiedAccountRecord(operation.data)) {
       this.accountCache.set(operation.id, operation.data);
       return { applied: true, conflicts };
     }
 
-    if (this.isUnifiedNotification(operation.data)) {
+    if (isUnifiedNotificationRecord(operation.data)) {
       this.notificationCache.set(operation.id, operation.data);
       return { applied: true, conflicts };
     }
@@ -541,17 +550,17 @@ export class StreamingStateManager {
    * Apply update operation
    */
   private applyUpdate(operation: StreamingUpdate): boolean {
-    if (this.isUnifiedStatus(operation.payload)) {
+    if (isUnifiedStatusRecord(operation.payload)) {
       this.statusCache.set(operation.payload.id, operation.payload);
       return true;
     }
 
-    if (this.isUnifiedAccount(operation.payload)) {
+    if (isUnifiedAccountRecord(operation.payload)) {
       this.accountCache.set(operation.payload.id, operation.payload);
       return true;
     }
 
-    if (this.isUnifiedNotification(operation.payload)) {
+    if (isUnifiedNotificationRecord(operation.payload)) {
       this.notificationCache.set(operation.payload.id, operation.payload);
       return true;
     }
@@ -588,17 +597,5 @@ export class StreamingStateManager {
       accounts: this.accountCache.size,
       notifications: this.notificationCache.size,
     };
-  }
-
-  private isUnifiedStatus(data: any): data is UnifiedStatus {
-    return data && typeof data.id === 'string' && typeof data.content === 'string' && data.account;
-  }
-
-  private isUnifiedAccount(data: any): data is UnifiedAccount {
-    return data && typeof data.id === 'string' && typeof data.username === 'string';
-  }
-
-  private isUnifiedNotification(data: any): data is UnifiedNotification {
-    return data && typeof data.id === 'string' && typeof data.type === 'string' && data.account;
   }
 }

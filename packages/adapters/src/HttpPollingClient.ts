@@ -1,3 +1,4 @@
+import { resolveLogger } from './logger.js';
 import type {
   HttpPollingClientConfig,
   HttpPollingClientState,
@@ -5,13 +6,14 @@ import type {
   WebSocketEvent,
   WebSocketEventHandler,
   LatencySample,
-  TransportAdapter
+  TransportAdapter,
+  TransportLogger
 } from './types';
 
 /**
  * HTTP Polling client with automatic reconnection and latency tracking
  */
-export class HttpPollingClient implements TransportAdapter {
+export class HttpPollingClient implements TransportAdapter<HttpPollingClientState> {
   private config: Required<HttpPollingClientConfig>;
   private state: HttpPollingClientState;
   private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();
@@ -23,8 +25,10 @@ export class HttpPollingClient implements TransportAdapter {
   private abortController: AbortController | null = null;
   private consecutiveErrors = 0;
   private maxConsecutiveErrors = 3;
+  private readonly logger: Required<TransportLogger>;
 
   constructor(config: HttpPollingClientConfig) {
+    this.logger = resolveLogger(config.logger);
     this.config = {
       url: config.url,
       authToken: config.authToken || '',
@@ -38,7 +42,8 @@ export class HttpPollingClient implements TransportAdapter {
       withCredentials: config.withCredentials || false,
       headers: config.headers || {},
       requestTimeout: config.requestTimeout || 30000,
-      enableLatencySampling: config.enableLatencySampling !== false
+      enableLatencySampling: config.enableLatencySampling !== false,
+      logger: config.logger ?? this.logger
     };
 
     this.state = {
@@ -128,8 +133,9 @@ export class HttpPollingClient implements TransportAdapter {
         throw new Error(`Failed to send message: ${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      this.handleError(error as Error);
-      throw error;
+      const resolvedError = this.resolveError(error);
+      this.handleError(resolvedError);
+      throw resolvedError;
     }
   }
 
@@ -137,18 +143,19 @@ export class HttpPollingClient implements TransportAdapter {
    * Subscribe to events
    */
   on(event: string, handler: WebSocketEventHandler): () => void {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set<WebSocketEventHandler>();
+      this.eventHandlers.set(event, handlers);
     }
-    
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
 
     // Return unsubscribe function
     return () => {
-      const handlers = this.eventHandlers.get(event);
-      if (handlers) {
-        handlers.delete(handler);
-        if (handlers.size === 0) {
+      const storedHandlers = this.eventHandlers.get(event);
+      if (storedHandlers) {
+        storedHandlers.delete(handler);
+        if (storedHandlers.size === 0) {
           this.eventHandlers.delete(event);
         }
       }
@@ -252,13 +259,14 @@ export class HttpPollingClient implements TransportAdapter {
       this.setState({ status: 'waiting' });
       this.scheduleNextPoll();
 
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error) {
+      if (this.isAbortError(error)) {
         return; // Intentional abort
       }
 
       this.consecutiveErrors++;
-      this.handleError(error);
+      const resolvedError = this.resolveError(error);
+      this.handleError(resolvedError);
 
       if (this.consecutiveErrors >= this.maxConsecutiveErrors) {
         this.handleDisconnection();
@@ -323,7 +331,16 @@ export class HttpPollingClient implements TransportAdapter {
 
   private handleError(error: Error): void {
     this.setState({ error });
-    this.emit('error', {}, error);
+    this.logger.error('HTTP polling transport error', error);
+    this.emit('error', { error }, error);
+  }
+
+  private resolveError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
+  }
+
+  private isAbortError(error: unknown): error is { name: string } {
+    return typeof error === 'object' && error !== null && (error as { name?: unknown }).name === 'AbortError';
   }
 
   private handleDisconnection(): void {
@@ -417,7 +434,7 @@ export class HttpPollingClient implements TransportAdapter {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       const wsEvent: WebSocketEvent = {
-        type: event as any,
+        type: event,
         data,
         error
       };
@@ -426,7 +443,7 @@ export class HttpPollingClient implements TransportAdapter {
         try {
           handler(wsEvent);
         } catch (err) {
-          console.error(`Error in event handler for ${event}:`, err);
+          this.logger.error(`Error in HTTP polling event handler for ${event}`, err);
         }
       });
     }

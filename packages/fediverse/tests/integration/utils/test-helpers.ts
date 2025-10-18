@@ -7,6 +7,16 @@
 
 import { tick } from 'svelte';
 
+interface PerformanceMemoryInfo {
+	usedJSHeapSize: number;
+	totalJSHeapSize: number;
+	jsHeapSizeLimit: number;
+}
+
+function hasPerformanceMemory(perf: Performance): perf is Performance & { memory: PerformanceMemoryInfo } {
+	return 'memory' in perf;
+}
+
 /**
  * Wait for a condition to be true
  */
@@ -52,7 +62,11 @@ export async function waitForElement(
 		{ timeout, timeoutMessage: `Element "${selector}" not found within ${timeout}ms` }
 	);
 
-	return element!;
+	if (!element) {
+		throw new Error(`Element "${selector}" not found after waiting for ${timeout}ms`);
+	}
+
+	return element;
 }
 
 /**
@@ -148,8 +162,8 @@ export function checkMemoryUsage(): {
 	totalJSHeapSize: number;
 	jsHeapSizeLimit: number;
 } {
-	if (typeof performance !== 'undefined' && 'memory' in performance) {
-		const memory = (performance as any).memory;
+	if (typeof performance !== 'undefined' && hasPerformanceMemory(performance)) {
+		const memory = performance.memory;
 		return {
 			usedJSHeapSize: memory.usedJSHeapSize,
 			totalJSHeapSize: memory.totalJSHeapSize,
@@ -286,10 +300,10 @@ export async function simulateTyping(
 export function createDeferred<T>(): {
 	promise: Promise<T>;
 	resolve: (value: T) => void;
-	reject: (reason?: any) => void;
+	reject: (reason?: unknown) => void;
 } {
 	let resolve!: (value: T) => void;
-	let reject!: (reason?: any) => void;
+	let reject!: (reason?: unknown) => void;
 
 	const promise = new Promise<T>((res, rej) => {
 		resolve = res;
@@ -327,7 +341,7 @@ export class MockWebSocket {
 		}, 100);
 	}
 
-	send(data: string): void {
+	send(_data: string): void {
 		if (this.readyState !== MockWebSocket.OPEN) {
 			throw new Error('WebSocket is not open');
 		}
@@ -345,7 +359,7 @@ export class MockWebSocket {
 	}
 
 	// Simulate receiving a message
-	simulateMessage(data: any): void {
+	simulateMessage<T>(data: T): void {
 		if (this.readyState === MockWebSocket.OPEN && this.onmessage) {
 			this.onmessage(new MessageEvent('message', { data: JSON.stringify(data) }));
 		}
@@ -438,4 +452,3 @@ export async function retryWithBackoff<T>(
 
 	throw new Error('Max retries exceeded');
 }
-

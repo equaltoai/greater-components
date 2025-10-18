@@ -8,7 +8,7 @@
  * - Helper functions
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { formatExpiration, calculateExpiresAt } from '../../src/components/Filters/context.js';
 
 describe('Filters Context Logic', () => {
@@ -445,4 +445,3 @@ describe('Filters Context Logic', () => {
 		});
 	});
 });
-

@@ -15,7 +15,6 @@ import {
 	createStatusContext,
 	getStatusContext,
 	hasStatusContext,
-	type StatusContext,
 	type StatusConfig,
 	type StatusActionHandlers,
 } from '../src/components/Status/context';
@@ -600,4 +599,3 @@ describe('Status Type Safety', () => {
 		expect(status.account).toHaveProperty('url');
 	});
 });
-

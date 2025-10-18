@@ -9,7 +9,7 @@
  * - UI state determination
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 // Interfaces
 interface MessageParticipant {
@@ -629,7 +629,12 @@ describe('Messages.Conversations - Integration', () => {
 		expect(hasLastMessage(conversation)).toBe(true);
 		expect(hasUnreadMessages(conversation)).toBe(true);
 		expect(getUnreadBadgeText(conversation.unreadCount)).toBe('5');
-		expect(truncatePreview(conversation.lastMessage!.content, 30)).toContain('...');
+		const lastMessage = conversation.lastMessage;
+		expect(lastMessage).toBeDefined();
+		if (!lastMessage) {
+			throw new Error('Expected last message to exist for preview truncation');
+		}
+		expect(truncatePreview(lastMessage.content, 30)).toContain('...');
 	});
 
 	it('handles conversation list operations', () => {
@@ -661,4 +666,3 @@ describe('Messages.Conversations - Integration', () => {
 		expect(shouldShowList(false, conversations.length)).toBe(true);
 	});
 });
-

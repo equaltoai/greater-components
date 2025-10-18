@@ -33,10 +33,12 @@ class MockEventSource {
   }
 
   addEventListener(type: string, listener: (event: any) => void): void {
-    if (!this.listeners.has(type)) {
-      this.listeners.set(type, new Set());
+    let listenersForType = this.listeners.get(type);
+    if (!listenersForType) {
+      listenersForType = new Set();
+      this.listeners.set(type, listenersForType);
     }
-    this.listeners.get(type)!.add(listener);
+    listenersForType.add(listener);
   }
 
   removeEventListener(type: string, listener: (event: any) => void): void {

@@ -19,9 +19,9 @@
     delay = { show: 500, hide: 100 },
     disabled = false,
     class: className = '',
-    children,
-    ...restProps
+    children
   }: Props = $props();
+  const restProps = $restProps();
 
   // Normalize delay prop
   const normalizedDelay = $derived(() => {
@@ -112,7 +112,7 @@
         top = triggerRect.top + (triggerRect.height - tooltipRect.height) / 2;
         left = triggerRect.right + 8;
         break;
-      case 'auto':
+      case 'auto': {
         // Smart placement - find the best position
         const positions = [
           { 
@@ -149,6 +149,7 @@
         left = bestPosition.left;
         finalPlacement = bestPosition.placement as typeof placement;
         break;
+      }
     }
 
     // Clamp to viewport bounds
@@ -271,23 +272,24 @@
 </script>
 
 <div class="gr-tooltip-container">
-  <div
+  <svelte:element
+    this={trigger === 'click' ? 'button' : 'div'}
+    type={trigger === 'click' ? 'button' : undefined}
     bind:this={triggerElement}
     class="gr-tooltip-trigger"
     aria-describedby={isVisible ? tooltipId : undefined}
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
-    onfocus={handleFocus}
-    onblur={handleBlur}
+    onfocusin={handleFocus}
+    onfocusout={handleBlur}
     onclick={handleClick}
     ontouchstart={handleTouchStart}
     ontouchend={handleTouchEnd}
     onkeydown={handleKeydown}
-    role={trigger === 'click' ? 'button' : undefined}
-    tabindex={trigger === 'click' ? 0 : undefined}
+    role={trigger === 'click' ? 'button' : 'presentation'}
   >
     {@render children()}
-  </div>
+  </svelte:element>
 
   {#if isVisible}
     <div

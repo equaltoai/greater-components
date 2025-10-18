@@ -567,7 +567,7 @@ describe('Auth.OAuthConsent - Denial Flow', () => {
 
 		// Start authorization to set loading to true
 		const mockAuthorize = vi.fn(() => new Promise(() => {})); // Never resolves
-		const promise = logic.handleAuthorize(mockAuthorize);
+		logic.handleAuthorize(mockAuthorize);
 
 		// Now loading is true
 		const mockDeny = vi.fn();

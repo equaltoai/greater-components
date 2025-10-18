@@ -23,10 +23,21 @@
   let state = $state(preferencesStore.state);
   
   // Local state for color picker
-  let primaryColor = $state(preferences.customColors.primary);
-  let secondaryColor = $state(preferences.customColors.secondary);
-  let accentColor = $state(preferences.customColors.accent || '#ec4899');
-  let fontScale = $state(preferences.fontScale);
+  let primaryColor = $state('#3b82f6');
+  let secondaryColor = $state('#8b5cf6');
+  let accentColor = $state('#ec4899');
+  let fontScale = $state(1);
+  
+  function syncPreferences() {
+    preferences = preferencesStore.preferences;
+    state = preferencesStore.state;
+    primaryColor = preferences.customColors.primary;
+    secondaryColor = preferences.customColors.secondary;
+    accentColor = preferences.customColors.accent || '#ec4899';
+    fontScale = preferences.fontScale;
+  }
+  
+  syncPreferences();
   
   // Theme options
   const colorSchemes: { value: ColorScheme; label: string; description: string }[] = [
@@ -56,30 +67,29 @@
   // Handlers
   function handleColorSchemeChange(scheme: ColorScheme) {
     preferencesStore.setColorScheme(scheme);
-    preferences = preferencesStore.preferences;
-    state = preferencesStore.state;
+    syncPreferences();
     onThemeChange?.(scheme);
   }
   
   function handleDensityChange(density: Density) {
     preferencesStore.setDensity(density);
-    preferences = preferencesStore.preferences;
+    syncPreferences();
   }
   
   function handleFontSizeChange(size: FontSize) {
     preferencesStore.setFontSize(size);
-    preferences = preferencesStore.preferences;
+    syncPreferences();
   }
   
   function handleFontScaleChange(scale: number) {
     fontScale = scale;
     preferencesStore.setFontScale(scale);
-    preferences = preferencesStore.preferences;
+    syncPreferences();
   }
   
   function handleMotionChange(motion: MotionPreference) {
     preferencesStore.setMotion(motion);
-    preferences = preferencesStore.preferences;
+    syncPreferences();
   }
   
   function handleColorChange(type: 'primary' | 'secondary' | 'accent', color: string) {
@@ -100,23 +110,17 @@
       secondary: secondaryColor,
       accent: accentColor
     });
-    preferences = preferencesStore.preferences;
+    syncPreferences();
   }
   
   function handleHighContrastToggle() {
     preferencesStore.setHighContrastMode(!preferences.highContrastMode);
-    preferences = preferencesStore.preferences;
-    state = preferencesStore.state;
+    syncPreferences();
   }
   
   function resetToDefaults() {
     preferencesStore.reset();
-    preferences = preferencesStore.preferences;
-    state = preferencesStore.state;
-    primaryColor = preferences.customColors.primary;
-    secondaryColor = preferences.customColors.secondary;
-    accentColor = preferences.customColors.accent || '#ec4899';
-    fontScale = preferences.fontScale;
+    syncPreferences();
   }
   
   function exportSettings() {
@@ -139,12 +143,7 @@
     reader.onload = (e) => {
       const json = e.target?.result as string;
       if (preferencesStore.import(json)) {
-        preferences = preferencesStore.preferences;
-        state = preferencesStore.state;
-        primaryColor = preferences.customColors.primary;
-        secondaryColor = preferences.customColors.secondary;
-        accentColor = preferences.customColors.accent || '#ec4899';
-        fontScale = preferences.fontScale;
+        syncPreferences();
       } else {
         alert('Invalid preferences file');
       }
@@ -157,7 +156,7 @@
   <div class="gr-theme-switcher__section">
     <h3 class="gr-theme-switcher__heading">Color Scheme</h3>
     <div class="gr-theme-switcher__options">
-      {#each colorSchemes as scheme}
+      {#each colorSchemes as scheme (scheme.value)}
         <label class="gr-theme-switcher__option">
           <input
             type="radio"
@@ -194,7 +193,7 @@
   <div class="gr-theme-switcher__section">
     <h3 class="gr-theme-switcher__heading">Density</h3>
     <div class="gr-theme-switcher__options">
-      {#each densities as density}
+      {#each densities as density (density.value)}
         <label class="gr-theme-switcher__option">
           <input
             type="radio"
@@ -216,7 +215,7 @@
   <div class="gr-theme-switcher__section">
     <h3 class="gr-theme-switcher__heading">Font Size</h3>
     <div class="gr-theme-switcher__options">
-      {#each fontSizes as size}
+      {#each fontSizes as size (size.value)}
         <label class="gr-theme-switcher__option">
           <input
             type="radio"
@@ -255,7 +254,7 @@
   <div class="gr-theme-switcher__section">
     <h3 class="gr-theme-switcher__heading">Motion</h3>
     <div class="gr-theme-switcher__options">
-      {#each motionPreferences as motion}
+      {#each motionPreferences as motion (motion.value)}
         <label class="gr-theme-switcher__option">
           <input
             type="radio"

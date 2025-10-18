@@ -10,7 +10,7 @@
  * - Field verification
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 // Interfaces
 interface UnifiedAccount {
@@ -90,7 +90,7 @@ function shouldShowBio(showBio: boolean, note?: string): boolean {
 }
 
 // Check if should show fields
-function shouldShowFields(showFields: boolean, fields?: any[]): boolean {
+function shouldShowFields(showFields: boolean, fields?: UnifiedAccount['fields']): boolean {
   return showFields && !!fields && fields.length > 0;
 }
 
@@ -105,12 +105,14 @@ function shouldShowCounts(showCounts: boolean): boolean {
 }
 
 // Check if count is clickable
-function isCountClickable(clickable: boolean, handler?: Function): boolean {
+type CountHandler = () => void;
+
+function isCountClickable(clickable: boolean, handler?: CountHandler): boolean {
   return clickable && handler !== undefined;
 }
 
 // Check if should call handler
-function shouldCallHandler(clickable: boolean, handler?: Function): boolean {
+function shouldCallHandler(clickable: boolean, handler?: CountHandler): boolean {
   return clickable && handler !== undefined;
 }
 
@@ -544,11 +546,25 @@ describe('ProfileHeader - Integration', () => {
 
     // Bio
     expect(shouldShowBio(true, fullAccount.note)).toBe(true);
-    expect(stripHtml(fullAccount.note!)).toBe('Hello world!');
+    const { note, fields, followersCount, followingCount, statusesCount } = fullAccount;
+    expect(note).toBeDefined();
+    if (!note) {
+      throw new Error('Expected profile note to exist for sanitization');
+    }
+    expect(stripHtml(note)).toBe('Hello world!');
 
     // Fields
-    expect(shouldShowFields(true, fullAccount.fields)).toBe(true);
-    expect(isFieldVerified(fullAccount.fields![0])).toBe(true);
+    expect(shouldShowFields(true, fields)).toBe(true);
+    expect(fields).toBeDefined();
+    if (!fields) {
+      throw new Error('Expected fields to exist for verification check');
+    }
+    const firstField = fields[0];
+    expect(firstField).toBeDefined();
+    if (!firstField) {
+      throw new Error('Expected at least one field for verification check');
+    }
+    expect(isFieldVerified(firstField)).toBe(true);
 
     // Join date
     expect(shouldShowJoinDate(true, fullAccount.createdAt)).toBe(true);
@@ -558,9 +574,19 @@ describe('ProfileHeader - Integration', () => {
     expect(joinDate.length).toBeGreaterThan(0);
 
     // Counts
-    expect(formatCount(fullAccount.followersCount!)).toBe('1.5K');
-    expect(formatCount(fullAccount.followingCount!)).toBe('250');
-    expect(formatCount(fullAccount.statusesCount!)).toBe('5.0K');
+    expect(followersCount).toBeDefined();
+    expect(followingCount).toBeDefined();
+    expect(statusesCount).toBeDefined();
+    if (
+      followersCount === undefined ||
+      followingCount === undefined ||
+      statusesCount === undefined
+    ) {
+      throw new Error('Expected interaction counts to be defined');
+    }
+    expect(formatCount(followersCount)).toBe('1.5K');
+    expect(formatCount(followingCount)).toBe('250');
+    expect(formatCount(statusesCount)).toBe('5.0K');
 
     // Badges
     expect(isBot(fullAccount)).toBe(false);
@@ -572,8 +598,8 @@ describe('ProfileHeader - Integration', () => {
   });
 
   it('handles clickable counts workflow', () => {
-    const followersHandler = () => console.log('followers');
-    const followingHandler = () => console.log('following');
+    const followersHandler = vi.fn();
+    const followingHandler = vi.fn();
 
     // Check clickability
     expect(isCountClickable(true, followersHandler)).toBe(true);

@@ -576,8 +576,13 @@ describe('Messages.Root - Integration', () => {
 
 		expect(getConversationName(conversation, 'user1')).toBe('Alice Johnson');
 		expect(hasUnreadMessages(conversation)).toBe(true);
-		expect(formatMessageTime(conversation.lastMessage!.createdAt)).toBe('5m ago');
-		expect(isMessageRead(conversation.lastMessage!)).toBe(false);
+		const lastMessage = conversation.lastMessage;
+		expect(lastMessage).toBeDefined();
+		if (!lastMessage) {
+			throw new Error('Expected last message to exist for formatting');
+		}
+		expect(formatMessageTime(lastMessage.createdAt)).toBe('5m ago');
+		expect(isMessageRead(lastMessage)).toBe(false);
 	});
 
 	it('sorts and filters conversations', () => {
@@ -609,4 +614,3 @@ describe('Messages.Root - Integration', () => {
 		expect(getTotalUnreadCount(conversations)).toBe(7);
 	});
 });
-

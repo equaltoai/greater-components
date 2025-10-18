@@ -32,10 +32,12 @@ class MockWebSocket {
   }
 
   addEventListener(type: string, listener: (event: any) => void): void {
-    if (!this.listeners.has(type)) {
-      this.listeners.set(type, new Set());
+    let listenersForType = this.listeners.get(type);
+    if (!listenersForType) {
+      listenersForType = new Set();
+      this.listeners.set(type, listenersForType);
     }
-    this.listeners.get(type)!.add(listener);
+    listenersForType.add(listener);
   }
 
   removeEventListener(type: string, listener: (event: any) => void): void {
@@ -420,9 +422,13 @@ describe('WebSocketClient', () => {
       ws.simulateClose(1006, 'Connection lost');
 
       // First reconnect attempt (100ms with jitter factor 0, Math.random should have no effect)
-      const firstCall = reconnectingHandler.mock.calls[0]![0];
-      expect(firstCall.data.attempt).toBe(1);
-      expect(firstCall.data.delay).toBe(100);
+      const firstCall = reconnectingHandler.mock.calls[0];
+      if (!firstCall) {
+        throw new Error('Expected reconnectingHandler to be called for first reconnect attempt');
+      }
+      const [firstEvent] = firstCall;
+      expect(firstEvent.data.attempt).toBe(1);
+      expect(firstEvent.data.delay).toBe(100);
 
       await vi.advanceTimersByTimeAsync(100);
       
@@ -431,9 +437,13 @@ describe('WebSocketClient', () => {
       ws2.simulateClose(1006, 'Connection lost');
 
       // Second reconnect attempt (200ms with jitter factor 0)
-      const secondCall = reconnectingHandler.mock.calls[1]![0];
-      expect(secondCall.data.attempt).toBe(2);
-      expect(secondCall.data.delay).toBe(200);
+      const secondCall = reconnectingHandler.mock.calls[1];
+      if (!secondCall) {
+        throw new Error('Expected reconnectingHandler to be called for second reconnect attempt');
+      }
+      const [secondEvent] = secondCall;
+      expect(secondEvent.data.attempt).toBe(2);
+      expect(secondEvent.data.delay).toBe(200);
 
       // Restore Math.random
       vi.restoreAllMocks();
@@ -458,8 +468,12 @@ describe('WebSocketClient', () => {
       const ws = client['socket'] as unknown as MockWebSocket;
       ws.simulateClose(1006, 'Connection lost');
 
-      const call = reconnectingHandler.mock.calls[0]![0];
-      const delay = call.data.delay;
+      const jitterCall = reconnectingHandler.mock.calls[0];
+      if (!jitterCall) {
+        throw new Error('Expected reconnectingHandler to be called to measure jitter delay');
+      }
+      const [event] = jitterCall;
+      const delay = event.data.delay;
       
       // Delay should be between 100 and 150 (base + up to 50% jitter)
       expect(delay).toBeGreaterThanOrEqual(100);
