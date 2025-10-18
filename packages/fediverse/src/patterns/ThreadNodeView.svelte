@@ -1,9 +1,10 @@
 <script lang="ts">
-	import ThreadNodeViewRecursive from './ThreadNodeView.svelte';
-	import type { Snippet } from 'svelte';
-	import type { GenericStatus } from '../generics/index.js';
-	import * as Status from '../components/Status/index.js';
-	import type { ThreadNode, ThreadViewHandlers } from './ThreadView.types.js';
+import ThreadNodeViewRecursive from './ThreadNodeView.svelte';
+import type { Snippet } from 'svelte';
+import type { GenericStatus } from '../generics/index.js';
+import * as Status from '../components/Status/index.js';
+import type { StatusActionHandlers } from '../components/Status/context.js';
+import type { ThreadNode, ThreadViewHandlers } from './ThreadView.types.js';
 
 	interface Props<T extends GenericStatus = GenericStatus> {
 		node: ThreadNode<T>;
@@ -39,8 +40,17 @@
 	const isAutoCollapsed = $derived(
 		autoCollapseThreshold > 0 && replyCount > autoCollapseThreshold
 	);
-	const isCollapsed = $derived(node.isCollapsed || isAutoCollapsed);
-	const isLoadingMore = $derived(loadingMore.has(node.status.id));
+const isCollapsed = $derived(node.isCollapsed || isAutoCollapsed);
+const isLoadingMore = $derived(loadingMore.has(node.status.id));
+
+const statusActionHandlers = $derived({
+	onReply: handlers.onReply,
+	onBoost: handlers.onBoost,
+	onFavorite: handlers.onLike,
+	onBookmark: handlers.onBookmark,
+	onShare: handlers.onShare,
+	onQuote: handlers.onQuote,
+} as StatusActionHandlers);
 </script>
 
 <div
@@ -67,17 +77,17 @@
 				</span>
 			{/if}
 		</button>
-	{:else}
-		<div class="thread-view__status">
-			{#if renderStatus}
-				{@render renderStatus(node.status, node.depth)}
-			{:else}
-				<Status.Root status={node.status} {handlers}>
-					<Status.Header />
-					<Status.Content />
-					<Status.Media />
-					<Status.Actions />
-				</Status.Root>
+		{:else}
+			<div class="thread-view__status">
+				{#if renderStatus}
+					{@render renderStatus(node.status, node.depth)}
+				{:else}
+					<Status.Root status={node.status} handlers={statusActionHandlers}>
+						<Status.Header />
+						<Status.Content />
+						<Status.Media />
+						<Status.Actions />
+					</Status.Root>
 			{/if}
 
 			{#if node.hasMore}

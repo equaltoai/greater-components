@@ -1,0 +1,17 @@
+<script lang="ts">
+  import { createSeveredRelationshipsContext } from '../../src/components/Admin/SeveredRelationships/context.js';
+  import SeveredRelationshipsList from '../../src/components/Admin/SeveredRelationships/List.svelte';
+  import type { LesserGraphQLAdapter } from '@greater/adapters';
+
+  let {
+    adapter,
+    class: className,
+  }: {
+    adapter: LesserGraphQLAdapter;
+    class?: string;
+  } = $props();
+
+  createSeveredRelationshipsContext({ adapter });
+</script>
+
+<SeveredRelationshipsList class={className} />

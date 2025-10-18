@@ -50,6 +50,7 @@ export interface ThreadViewHandlers<T extends GenericStatus = GenericStatus> {
 	onReply?: (status: T) => void;
 	onBookmark?: (status: T) => void;
 	onShare?: (status: T) => void;
+	onQuote?: (status: T) => Promise<void> | void;
 	onSyncThread?: (statusId: string) => Promise<void>;
 }
 

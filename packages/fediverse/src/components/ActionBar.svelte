@@ -77,6 +77,8 @@
 	let favoriteLoading = $state(false);
 	let shareLoading = $state(false);
 
+	const quotesCount = $derived(counts.quotes ?? 0);
+
 	// Derived state for action states
 	const isBoosted = $derived(states.boosted ?? false);
 	const isFavorited = $derived(states.favorited ?? false);
@@ -213,7 +215,7 @@
 	</Button>
 
 	<!-- Quote Button (Lesser-specific) -->
-	{#if counts.quotes !== undefined && handlers.onQuote}
+	{#if handlers.onQuote}
 		<Button
 			variant="ghost"
 			{size}
@@ -221,8 +223,8 @@
 			loading={quoteLoading}
 			onclick={handleQuote}
 			class="gr-action-bar__button gr-action-bar__button--quote"
-			aria-label={counts.quotes > 0
-				? `Quote this post. ${counts.quotes} quotes`
+			aria-label={quotesCount > 0
+				? `Quote this post. ${quotesCount} quotes`
 				: 'Quote this post'}
 			id={`${idPrefix}-quote`}
 		>
@@ -246,9 +248,9 @@
 				</svg>
 			{/snippet}
 
-			{#if counts.quotes > 0}
+			{#if quotesCount > 0}
 				<span class="gr-action-bar__count" aria-hidden="true">
-					{formatCount(counts.quotes)}
+					{formatCount(quotesCount)}
 				</span>
 			{/if}
 		</Button>

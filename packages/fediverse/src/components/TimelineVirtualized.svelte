@@ -2,6 +2,7 @@
   import { createVirtualizer } from '@tanstack/svelte-virtual';
   import StatusCard from './StatusCard.svelte';
   import type { Status } from '../types';
+  import type { StatusActionHandlers } from './Status/context.js';
   import type { Snippet } from 'svelte';
 
   interface Props {
@@ -53,6 +54,10 @@
      * Density for status cards
      */
     density?: 'compact' | 'comfortable';
+    /**
+     * Action handlers to pass into StatusCard
+     */
+    actionHandlers?: StatusActionHandlers | ((status: Status) => StatusActionHandlers | undefined);
   }
 
   let {
@@ -67,7 +72,8 @@
     gapLoader,
     endOfFeed,
     class: className = '',
-    density = 'comfortable'
+    density = 'comfortable',
+    actionHandlers,
   }: Props = $props();
 
   let scrollElement = $state<HTMLDivElement>();
@@ -157,6 +163,9 @@
     {#each virtualItems as virtualItem (items[virtualItem.index]?.id || virtualItem.index)}
       {@const item = items[virtualItem.index]}
       {#if item}
+        {@const handlersForItem = typeof actionHandlers === 'function'
+          ? actionHandlers(item)
+          : actionHandlers}
         <div
           data-index={virtualItem.index}
           style="
@@ -172,6 +181,7 @@
             status={item}
             {density}
             showActions={true}
+            actionHandlers={handlersForItem}
           />
         </div>
       {/if}

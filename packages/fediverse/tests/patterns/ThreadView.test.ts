@@ -12,8 +12,51 @@
  * - Edge cases
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/svelte';
+
+vi.mock('@greater/primitives', async () => ({
+	Button: (await import('../components/ButtonStub.svelte')).default,
+}));
+
+vi.mock('../../src/components/Status/index.js', async () => {
+	const Root = (await import('./__mocks__/StatusRootStub.svelte')).default;
+	const Actions = (await import('./__mocks__/StatusActionsStub.svelte')).default;
+	const Placeholder = (await import('./__mocks__/StatusPlaceholder.svelte')).default;
+
+	const statusExports = {
+		Root,
+		Header: Placeholder,
+		Content: Placeholder,
+		Media: Placeholder,
+		Actions,
+		LesserMetadata: Placeholder,
+		CommunityNotes: Placeholder,
+	};
+
+	return {
+		...statusExports,
+		Status: statusExports,
+		default: statusExports,
+	};
+});
+
+beforeAll(() => {
+	if (!window.matchMedia) {
+		window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+			matches: false,
+			media: query,
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+			addListener: vi.fn(),
+			removeListener: vi.fn(),
+			dispatchEvent: vi.fn(),
+		}));
+	}
+});
+import ThreadViewComponent from '../../src/patterns/ThreadView.svelte';
 import type { GenericStatus, GenericActor } from '../../src/generics/index';
+import type { ThreadViewHandlers } from '../../src/patterns/ThreadView.types';
 
 // Helper to create mock actor
 function createMockActor(id: string): GenericActor {
@@ -282,6 +325,53 @@ describe('ThreadView - Thread Tree Building', () => {
 			}
 		}
 	});
+});
+
+describe('ThreadView - Status Actions Integration', () => {
+  it('renders quote button and triggers handler when provided', async () => {
+    const root = createMockStatus('1');
+    Object.assign(root, { quoteCount: 0 });
+
+    const handlers: ThreadViewHandlers = {
+      onQuote: vi.fn(),
+    };
+
+    render(ThreadViewComponent, {
+      props: {
+        rootStatus: root,
+        replies: [],
+        handlers,
+      },
+    });
+
+    const quoteButton = await screen.findByRole('button', { name: /quote this post/i });
+    await fireEvent.click(quoteButton);
+
+    expect(handlers.onQuote).toHaveBeenCalledTimes(1);
+    expect(handlers.onQuote).toHaveBeenCalledWith(root);
+  });
+
+  it('invokes thread sync handler when sync button is pressed', async () => {
+    const root = createMockStatus('200');
+
+    const handlers: ThreadViewHandlers = {
+      onSyncThread: vi.fn(),
+    };
+
+    render(ThreadViewComponent, {
+      props: {
+        rootStatus: root,
+        replies: [],
+        handlers,
+      },
+    });
+
+    const syncButton = await screen.findByRole('button', { name: /sync thread/i });
+    await fireEvent.click(syncButton);
+
+    expect(handlers.onSyncThread).toHaveBeenCalledTimes(1);
+    expect(handlers.onSyncThread).toHaveBeenCalledWith(root.id);
+  });
 });
 
 describe('ThreadView - Reply Counting', () => {

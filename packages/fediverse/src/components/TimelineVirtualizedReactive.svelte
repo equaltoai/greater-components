@@ -2,6 +2,7 @@
   import { createVirtualizer } from '@tanstack/svelte-virtual';
   import StatusCard from './StatusCard.svelte';
   import type { Status } from '../types';
+  import type { StatusActionHandlers } from './Status/context.js';
   import type { Snippet } from 'svelte';
   import type { TimelineIntegrationConfig } from '../lib/integration';
   import { createTimelineIntegration } from '../lib/integration';
@@ -84,6 +85,10 @@
      * Show real-time status indicator
      */
     showRealtimeIndicator?: boolean;
+    /**
+     * Action handlers for timeline status cards
+     */
+    actionHandlers?: StatusActionHandlers | ((status: Status) => StatusActionHandlers | undefined);
   }
 
   let {
@@ -104,7 +109,8 @@
     class: className = '',
     density = 'comfortable',
     autoConnect = true,
-    showRealtimeIndicator = true
+    showRealtimeIndicator = true,
+    actionHandlers
   }: Props = $props();
 
   // Create integration instance if config is provided
@@ -299,6 +305,9 @@
       {#each virtualItems as virtualItem (items[virtualItem.index]?.id || virtualItem.index)}
         {@const item = items[virtualItem.index]}
         {#if item}
+          {@const handlersForItem = typeof actionHandlers === 'function'
+            ? actionHandlers(item)
+            : actionHandlers}
           <div
             data-index={virtualItem.index}
             style="
@@ -314,6 +323,7 @@
               status={item}
               {density}
               showActions={true}
+              actionHandlers={handlersForItem}
               onClick={() => handleStatusCardClick(item)}
             />
           </div>

@@ -127,6 +127,7 @@ describe('Status Context', () => {
 				onBoost: vi.fn(),
 				onFavorite: vi.fn(),
 				onShare: vi.fn(),
+				onQuote: vi.fn(),
 				onBookmark: vi.fn(),
 			};
 
@@ -137,6 +138,7 @@ describe('Status Context', () => {
 			expect(context.handlers.onBoost).toBe(handlers.onBoost);
 			expect(context.handlers.onFavorite).toBe(handlers.onFavorite);
 			expect(context.handlers.onShare).toBe(handlers.onShare);
+			expect(context.handlers.onQuote).toBe(handlers.onQuote);
 			expect(context.handlers.onBookmark).toBe(handlers.onBookmark);
 		});
 
@@ -150,6 +152,7 @@ describe('Status Context', () => {
 			expect(context.handlers.onBoost).toBeUndefined();
 			expect(context.handlers.onFavorite).toBeUndefined();
 			expect(context.handlers.onShare).toBeUndefined();
+			expect(context.handlers.onQuote).toBeUndefined();
 			expect(context.handlers.onBookmark).toBeUndefined();
 		});
 	});

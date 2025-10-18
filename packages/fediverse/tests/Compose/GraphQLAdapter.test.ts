@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import {
 	createOptimisticStatus,
 	createComposeHandlers,
+	createGraphQLComposeHandlers,
 } from '../../src/components/Compose/GraphQLAdapter.js';
 
 import type { LesserGraphQLAdapter, Visibility } from '@greater/adapters';
@@ -161,6 +162,43 @@ describe('GraphQLAdapter - Compose Integration', () => {
 			});
 
 			expect(handlers.handleSubmit).toBeDefined();
+		});
+	});
+
+	describe('createGraphQLComposeHandlers', () => {
+		it('delegates quote submissions to createQuoteNote', async () => {
+			const mockAdapter = {
+				createNote: vi.fn().mockResolvedValue({ object: { id: 'note-1' } }),
+				createQuoteNote: vi.fn().mockResolvedValue({ object: { id: 'quote-1' } }),
+			} as unknown as LesserGraphQLAdapter;
+
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+
+			await handlers.handleSubmit({
+				content: 'Quoting this status',
+				visibility: 'public',
+				quoteUrl: 'https://example.com/status/abc',
+			});
+
+			expect(mockAdapter.createQuoteNote).toHaveBeenCalledTimes(1);
+			expect(mockAdapter.createNote).not.toHaveBeenCalled();
+		});
+
+		it('uses createNote when quote data is absent', async () => {
+			const mockAdapter = {
+				createNote: vi.fn().mockResolvedValue({ object: { id: 'note-2' } }),
+				createQuoteNote: vi.fn().mockResolvedValue({ object: { id: 'quote-2' } }),
+			} as unknown as LesserGraphQLAdapter;
+
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+
+			await handlers.handleSubmit({
+				content: 'Regular post',
+				visibility: 'public',
+			});
+
+			expect(mockAdapter.createNote).toHaveBeenCalledTimes(1);
+			expect(mockAdapter.createQuoteNote).not.toHaveBeenCalled();
 		});
 	});
 });

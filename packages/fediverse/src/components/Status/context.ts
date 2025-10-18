@@ -75,6 +75,11 @@ export interface StatusActionHandlers {
   onShare?: (status: GenericStatus) => Promise<void> | void;
 
   /**
+   * Quote action handler
+   */
+  onQuote?: (status: GenericStatus) => Promise<void> | void;
+
+  /**
    * Bookmark action handler
    */
   onBookmark?: (status: GenericStatus) => Promise<void> | void;
@@ -179,4 +184,3 @@ export function hasStatusContext(): boolean {
     return false;
   }
 }
-

@@ -670,8 +670,8 @@ Since Lesser is the primary validation environment for Greater Components:
 
 ### Hashtag Management
 
-**GraphQL Support**: `followHashtag`, `unfollowHashtag`, `muteHashtag` mutations  
-**UI Components**: `Hashtags.Controls`, `Hashtags.FollowedList`  
+**GraphQL Support**: `followHashtag`, `unfollowHashtag`, `muteHashtag`, `updateHashtagNotifications`  
+**UI Components**: `Hashtags.Controls`, `Hashtags.FollowedList`, `Hashtags.MutedList`  
 **Usage**:
 
 ```svelte
@@ -682,6 +682,7 @@ Since Lesser is the primary validation environment for Greater Components:
 <Hashtags.Root {adapter}>
   <Hashtags.Controls hashtag="svelte" />
   <Hashtags.FollowedList />
+  <Hashtags.MutedList />
 </Hashtags.Root>
 ```
 
@@ -695,4 +696,3 @@ Since Lesser is the primary validation environment for Greater Components:
 ---
 
 **Remember:** Every component in Greater is battle-tested in Lesser first. Your feedback directly shapes the future of Fediverse UI development!
-

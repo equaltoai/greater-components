@@ -285,6 +285,7 @@ mutation ResumeFederation($domain: String!)
 mutation FollowHashtag($hashtag: String!, $notifyLevel: NotificationLevel)
 mutation UnfollowHashtag($hashtag: String!)
 mutation MuteHashtag($hashtag: String!, $until: Time)
+mutation UpdateHashtagNotifications($hashtag: String!, $settings: HashtagNotificationSettingsInput!)
 query FollowedHashtags($first: Int, $after: String)
 ```
 
@@ -292,11 +293,14 @@ query FollowedHashtags($first: Int, $after: String)
 - `followHashtag(hashtag, notifyLevel)` - Follow hashtag with notification preferences
 - `unfollowHashtag(hashtag)` - Unfollow hashtag
 - `muteHashtag(hashtag, until)` - Mute hashtag temporarily
+- `unmuteHashtag(hashtag, options)` - Clear hashtag mute while preserving notification level
+- `updateHashtagNotifications(hashtag, settings)` - Adjust hashtag notify level/mute state
 - `getFollowedHashtags(first, after)` - List followed hashtags
 
 **Key Features**:
 - Follow/unfollow controls with processing states
 - Mute duration support
+- Unmute actions wired through controls and muted list refresh
 - Followed hashtags list with unfollow actions
 - Notification level configuration (ALL/MUTUALS/FOLLOWING/NONE)
 
@@ -709,4 +713,3 @@ Phase 4 delivers complete feature parity between Greater Components and Lesser b
 ---
 
 *Phase 4 completed methodically and completely per specification. All changes uncommitted and ready for review.*
-

@@ -11,6 +11,7 @@ interface ActionCounts {
   replies: number;
   boosts: number;
   favorites: number;
+  quotes?: number;
 }
 
 interface ActionStates {
@@ -77,9 +78,16 @@ function hasAnyHandler(handlers?: {
   onBoost?: ActionHandler;
   onFavorite?: ActionHandler;
   onShare?: ActionHandler;
+  onQuote?: ActionHandler;
 }): boolean {
   if (!handlers) return false;
-  return !!(handlers.onReply || handlers.onBoost || handlers.onFavorite || handlers.onShare);
+  return !!(
+    handlers.onReply ||
+    handlers.onBoost ||
+    handlers.onFavorite ||
+    handlers.onShare ||
+    handlers.onQuote
+  );
 }
 
 // Get total interaction count
@@ -196,6 +204,7 @@ describe('ActionBar - Handler Detection', () => {
     expect(hasAnyHandler({ onBoost: () => {} })).toBe(true);
     expect(hasAnyHandler({ onFavorite: () => {} })).toBe(true);
     expect(hasAnyHandler({ onShare: () => {} })).toBe(true);
+    expect(hasAnyHandler({ onQuote: () => {} })).toBe(true);
   });
 
   it('detects when no handlers', () => {
