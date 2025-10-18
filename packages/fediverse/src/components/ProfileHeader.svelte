@@ -78,9 +78,10 @@
     onFollowersClick,
     onFollowingClick,
     onPostsClick,
-    emojiRenderer,
-    ...restProps
+    emojiRenderer
   }: ProfileHeaderProps = $props();
+
+  const restProps = $restProps<Omit<HTMLAttributes<HTMLElement>, 'role'>>();
 
   // State for banner image loading
   let bannerLoaded = $state(false);
@@ -112,6 +113,33 @@
     }
     return account.displayName || account.username;
   });
+
+  const sanitizedDisplayName = $derived(() =>
+    sanitizeHtml(processedDisplayName(), {
+      allowedTags: ['span', 'em', 'strong', 'b', 'i', 'u', 'img'],
+      allowedAttributes: [
+        'class',
+        'alt',
+        'src',
+        'title',
+        'aria-label',
+        'role',
+        'draggable',
+        'loading',
+        'width',
+        'height'
+      ]
+    })
+  );
+
+  function setHtml(node: HTMLElement, html: string) {
+    node.innerHTML = html;
+    return {
+      update(newHtml: string) {
+        node.innerHTML = newHtml;
+      }
+    };
+  }
 
   // Format large numbers
   function formatCount(count: number): string {
@@ -268,7 +296,7 @@
     <!-- Name and Handle -->
     <div class="gr-profile-header__identity">
       <h1 class="gr-profile-header__display-name">
-        {@html processedDisplayName()}
+        <span class="gr-profile-header__display-name-text" use:setHtml={sanitizedDisplayName}></span>
         {#if account.locked}
           <svg 
             class="gr-profile-header__lock-icon" 
@@ -301,13 +329,25 @@
     <!-- Metadata Fields -->
     {#if showFields && account.fields && account.fields.length > 0}
       <dl class="gr-profile-header__fields" id={fieldsId}>
-        {#each account.fields as field}
+        {#each account.fields as field (field.name)}
           <div class="gr-profile-header__field">
             <dt class="gr-profile-header__field-name">
-              {@html sanitizeHtml(field.name, { allowedTags: ['span', 'em', 'strong'], allowedAttributes: ['class'] })}
+              <span
+                class="gr-profile-header__field-name-content"
+                use:setHtml={sanitizeHtml(field.name, {
+                  allowedTags: ['span', 'em', 'strong'],
+                  allowedAttributes: ['class']
+                })}
+              ></span>
             </dt>
             <dd class="gr-profile-header__field-value">
-              {@html sanitizeHtml(field.value, { allowedTags: ['a', 'span', 'em', 'strong'], allowedAttributes: ['href', 'class', 'rel', 'target'] })}
+              <span
+                class="gr-profile-header__field-value-content"
+                use:setHtml={sanitizeHtml(field.value, {
+                  allowedTags: ['a', 'span', 'em', 'strong'],
+                  allowedAttributes: ['href', 'class', 'rel', 'target']
+                })}
+              ></span>
               {#if field.verifiedAt}
                 <svg 
                   class="gr-profile-header__field-verified" 
@@ -487,6 +527,18 @@
     line-height: var(--gr-typography-lineHeight-tight);
     color: var(--gr-semantic-foreground-primary);
     margin: 0 0 var(--gr-spacing-1) 0;
+  }
+
+  .gr-profile-header__display-name-text {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gr-spacing-1);
+  }
+
+  .gr-profile-header__display-name-text img {
+    height: 1em;
+    width: 1em;
+    vertical-align: middle;
   }
 
   .gr-profile-header__lock-icon {

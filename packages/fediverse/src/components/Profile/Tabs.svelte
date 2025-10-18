@@ -34,7 +34,7 @@
 
 <div class={`profile-tabs ${className}`}>
 	<div class="profile-tabs__list" use:tabs.actions.list role="tablist">
-		{#each profileState.tabs as tab}
+		{#each profileState.tabs as tab (tab.id)}
 			<button
 				class="profile-tabs__tab"
 				class:profile-tabs__tab--active={profileState.activeTab === tab.id}

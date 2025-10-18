@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Notification, NotificationGroup, Account, Status } from '../types';
+  import type { Notification, NotificationGroup, Status } from '../types';
   import {
     getGroupTitle,
     getNotificationIcon,
@@ -74,19 +74,28 @@
     return [notification.account];
   });
 
-  const hasStatus = $derived(() => {
-    return 'status' in notification && notification.status;
-  });
+  function getNotificationStatus(value: Notification): Status | null {
+    if ('status' in value && value.status) {
+      return value.status;
+    }
+    if (value.type === 'quote' && value.quoteStatus) {
+      return value.quoteStatus;
+    }
+    if (value.type === 'admin.report' && value.report?.status) {
+      return value.report.status;
+    }
+    return null;
+  }
+
+  const notificationStatus = $derived(() => getNotificationStatus(notification));
 
   const statusPreview = $derived(() => {
-    if (!hasStatus) return '';
-    
-    const status = (notification as any).status as Status;
-    if (!status.content) return '';
-    
+    const status = notificationStatus;
+    if (!status?.content) return '';
+
     // Strip HTML tags and truncate
     const text = status.content.replace(/<[^>]*>/g, '');
-    return text.length > 100 ? text.slice(0, 100) + '...' : text;
+    return text.length > 100 ? `${text.slice(0, 100)}...` : text;
   });
 
   function handleClick() {
@@ -114,10 +123,6 @@
   function handleDismiss(event: Event) {
     event.stopPropagation();
     onDismiss?.(notification.id);
-  }
-
-  function getAccountUrl(account: Account): string {
-    return account.url || `/@${account.acct}`;
   }
 </script>
 

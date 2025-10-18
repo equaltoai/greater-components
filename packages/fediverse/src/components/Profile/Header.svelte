@@ -14,7 +14,8 @@
 -->
 <script lang="ts">
 	import { createButton } from '@greater/headless/button';
-	import { getProfileContext, formatCount, getRelationshipText } from './context.js';
+	import { sanitizeHtml } from '@greater/utils';
+	import { getProfileContext, getRelationshipText } from './context.js';
 
 	interface Props {
 		/**
@@ -141,6 +142,41 @@
 		}
 		showMoreMenu = false;
 	}
+
+	function sanitizeProfileBio(bio: string): string {
+		return sanitizeHtml(bio, {
+			allowedTags: [
+				'p',
+				'br',
+				'span',
+				'a',
+				'strong',
+				'em',
+				'b',
+				'i',
+				'u',
+				'code',
+				'pre',
+			],
+			allowedAttributes: ['href', 'rel', 'target', 'class', 'title'],
+		});
+	}
+
+	function sanitizeProfileFieldValue(html: string): string {
+		return sanitizeHtml(html, {
+			allowedTags: ['a', 'span', 'em', 'strong', 'code'],
+			allowedAttributes: ['href', 'rel', 'target', 'class', 'title'],
+		});
+	}
+
+	function setHtml(node: HTMLElement, html: string) {
+		node.innerHTML = html;
+		return {
+			update(newHtml: string) {
+				node.innerHTML = newHtml;
+			},
+		};
+	}
 </script>
 
 {#if profileState.profile}
@@ -189,6 +225,9 @@
 							<button
 								use:moreButton.actions.button
 								class="profile-header__button profile-header__button--icon"
+								type="button"
+								aria-label="Open profile actions"
+								title="More actions"
 							>
 								<svg viewBox="0 0 24 24" fill="currentColor">
 									<path
@@ -275,18 +314,22 @@
 				<p class="profile-header__username">@{profileState.profile.username}</p>
 
 				{#if profileState.profile.bio}
-					<div class="profile-header__bio">
-						{@html profileState.profile.bio}
-					</div>
+					<div
+						class="profile-header__bio"
+						use:setHtml={sanitizeProfileBio(profileState.profile.bio)}
+					></div>
 				{/if}
 
 				{#if showFields && profileState.profile.fields && profileState.profile.fields.length > 0}
 					<div class="profile-header__fields">
-						{#each profileState.profile.fields as field}
+						{#each profileState.profile.fields as field (field.name)}
 							<div class="profile-header__field">
 								<dt class="profile-header__field-name">{field.name}</dt>
 								<dd class="profile-header__field-value">
-									{@html field.value}
+									<span
+										class="profile-header__field-value-content"
+										use:setHtml={sanitizeProfileFieldValue(field.value)}
+									></span>
 									{#if field.verifiedAt}
 										<svg
 											class="profile-header__field-verified"
@@ -526,6 +569,15 @@
 		word-break: break-word;
 	}
 
+	.profile-header__bio :global(a) {
+		color: var(--primary-color, #1d9bf0);
+		text-decoration: none;
+	}
+
+	.profile-header__bio :global(a:hover) {
+		text-decoration: underline;
+	}
+
 	/* Fields */
 	.profile-header__fields {
 		display: grid;
@@ -555,6 +607,15 @@
 		align-items: center;
 		gap: 0.5rem;
 		word-break: break-word;
+	}
+
+	.profile-header__field-value-content :global(a) {
+		color: var(--primary-color, #1d9bf0);
+		text-decoration: none;
+	}
+
+	.profile-header__field-value-content :global(a:hover) {
+		text-decoration: underline;
 	}
 
 	.profile-header__field-verified {

@@ -71,12 +71,6 @@
     onclick?.(status);
   }
 
-  function formatCount(count: number): string {
-    if (count < 1000) return count.toString();
-    if (count < 10000) return (count / 1000).toFixed(1) + 'K';
-    return Math.floor(count / 1000) + 'K';
-  }
-
   // Action handler wrappers that pass the status to the handlers
   const wrappedActionHandlers = $derived({
     onReply: actionHandlers?.onReply ? () => actionHandlers.onReply!(status) : undefined,

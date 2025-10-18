@@ -8,6 +8,57 @@ import { TimelineStore, type TimelineConfig } from './timelineStore';
 import { NotificationStore, type NotificationConfig } from './notificationStore';
 import { TransportManager, type TransportConfig } from './transport';
 
+type UnknownRecord = Record<string, unknown>;
+
+function normalizeError(error: unknown, message: string): Error {
+	const detail =
+		error instanceof Error
+			? error.message
+			: typeof error === 'string'
+				? error
+				: undefined;
+	const normalized = new Error(detail ? `${message}: ${detail}` : message);
+	(normalized as { cause?: unknown }).cause = error;
+	return normalized;
+}
+
+export class RealtimeErrorBoundary {
+	private errorHandlers = new Set<(error: Error) => void>();
+
+	onError(handler: (error: Error) => void): () => void {
+		this.errorHandlers.add(handler);
+
+		return () => {
+			this.errorHandlers.delete(handler);
+		};
+	}
+
+	handleError(error: Error): void {
+		let handlerError: Error | null = null;
+
+		for (const handler of this.errorHandlers) {
+			try {
+				handler(error);
+			} catch (err) {
+				handlerError = normalizeError(err, 'Realtime error handler failed');
+			}
+		}
+
+		if (handlerError) {
+			throw handlerError;
+		}
+	}
+}
+
+export const realtimeErrorBoundary = new RealtimeErrorBoundary();
+
+function invokeAsync(action: () => Promise<void>, message: string): void {
+	void action().catch((error) => {
+		const normalized = normalizeError(error, message);
+		realtimeErrorBoundary.handleError(normalized);
+	});
+}
+
 export interface ConnectionConfig {
   baseUrl: string;
   accessToken?: string;
@@ -62,8 +113,9 @@ export function createTimelineIntegration(config: TimelineIntegrationConfig) {
         await timeline.loadInitial(config.baseUrl, config.accessToken);
         connected = true;
       } catch (error) {
-        console.error('Failed to connect timeline:', error);
-        throw error;
+        const normalized = normalizeError(error, 'Failed to connect timeline');
+        realtimeErrorBoundary.handleError(normalized);
+        throw normalized;
       }
     },
 
@@ -170,8 +222,9 @@ export function createNotificationIntegration(config: NotificationIntegrationCon
         await notifications.loadInitial(config.baseUrl, config.accessToken);
         connected = true;
       } catch (error) {
-        console.error('Failed to connect notifications:', error);
-        throw error;
+        const normalized = normalizeError(error, 'Failed to connect notifications');
+        realtimeErrorBoundary.handleError(normalized);
+        throw normalized;
       }
     },
 
@@ -276,81 +329,111 @@ export interface RealtimeIndicatorProps {
   className?: string;
 }
 
+type TimelineIntegrationInstance = ReturnType<typeof createTimelineIntegration>;
+type NotificationIntegrationInstance = ReturnType<typeof createNotificationIntegration>;
+type RealtimeIntegration = TimelineIntegrationInstance | NotificationIntegrationInstance;
+
+type RealtimeEnhancements = {
+	connected: boolean;
+	onLoadMore?: () => void;
+	onLoadPrevious?: () => void;
+	onMarkAsRead?: (notificationId: string) => void;
+	onMarkAllAsRead?: () => void;
+	onDismiss?: (notificationId: string) => void;
+};
+
+type ComponentRenderer<P extends UnknownRecord> = (props: P) => unknown;
+
+function isTimelineIntegration(
+	integration: RealtimeIntegration,
+): integration is TimelineIntegrationInstance {
+	return 'loadOlder' in integration;
+}
+
+function isNotificationIntegration(
+	integration: RealtimeIntegration,
+): integration is NotificationIntegrationInstance {
+	return 'loadMore' in integration;
+}
+
 /**
  * Higher-order function to add real-time capabilities to existing components
  */
-export function withRealtime<T extends Record<string, any>>(
-  Component: any,
-  integration: ReturnType<typeof createTimelineIntegration> | ReturnType<typeof createNotificationIntegration>
+export function withRealtime<TProps extends UnknownRecord>(
+	Component: ComponentRenderer<TProps & UnknownRecord & RealtimeEnhancements>,
+	integration: RealtimeIntegration,
 ) {
-  return function RealtimeWrapper(props: T) {
-    let mounted = false;
+	return function RealtimeWrapper(props: TProps) {
+		let mounted = false;
 
-    // Connect on mount
-    $effect(() => {
-      if (!mounted) {
-        mounted = true;
-        integration.connect().catch(console.error);
-      }
-      
-      return () => {
-        if (mounted) {
-          integration.disconnect();
-        }
-      };
-    });
+		// Connect on mount
+		$effect(() => {
+			if (!mounted) {
+				mounted = true;
+				invokeAsync(() => integration.connect(), 'Failed to connect realtime integration');
+			}
 
-    return Component({
-      ...props,
-      // Merge store data with props
-      ...integration.state,
-      // Add real-time specific props
-      connected: integration.state.connected,
-      onLoadMore: (props as any).onLoadMore || (() => {
-        if ('loadMore' in integration) {
-          (integration as any).loadMore();
-        } else if ('loadOlder' in integration) {
-          (integration as any).loadOlder();
-        }
-      }),
-      onLoadPrevious: (props as any).onLoadPrevious || (() => {
-        if ('loadNewer' in integration) {
-          (integration as any).loadNewer();
-        }
-      }),
-      onMarkAsRead: (props as any).onMarkAsRead || ('markAsRead' in integration ? (integration as any).markAsRead : undefined),
-      onMarkAllAsRead: (props as any).onMarkAllAsRead || ('markAllAsRead' in integration ? (integration as any).markAllAsRead : undefined),
-      onDismiss: (props as any).onDismiss || ('dismiss' in integration ? (integration as any).dismiss : undefined)
-    });
-  };
+			return () => {
+				if (mounted) {
+					integration.disconnect();
+				}
+			};
+		});
+
+		const handlerProps = props as Partial<RealtimeEnhancements>;
+		const integrationState = integration.state as UnknownRecord & { connected?: boolean };
+		const timelineIntegration = isTimelineIntegration(integration) ? integration : null;
+		const notificationIntegration = isNotificationIntegration(integration) ? integration : null;
+
+		const enhancedProps: RealtimeEnhancements = {
+			connected: typeof integrationState.connected === 'boolean' ? integrationState.connected : false,
+			onLoadMore:
+				handlerProps.onLoadMore ??
+				(notificationIntegration
+					? () => invokeAsync(() => notificationIntegration.loadMore(), 'Failed to load more notifications')
+					: timelineIntegration
+						? () => invokeAsync(() => timelineIntegration.loadOlder(), 'Failed to load older timeline items')
+						: undefined),
+			onLoadPrevious:
+				handlerProps.onLoadPrevious ??
+				(timelineIntegration
+					? () => invokeAsync(() => timelineIntegration.loadNewer(), 'Failed to load newer timeline items')
+					: undefined),
+			onMarkAsRead:
+				handlerProps.onMarkAsRead ??
+				(notificationIntegration
+					? (notificationId: string) =>
+							invokeAsync(
+								() => notificationIntegration.markAsRead(notificationId),
+								'Failed to mark notification as read',
+							)
+					: undefined),
+			onMarkAllAsRead:
+				handlerProps.onMarkAllAsRead ??
+				(notificationIntegration
+					? () =>
+							invokeAsync(
+								() => notificationIntegration.markAllAsRead(),
+								'Failed to mark all notifications as read',
+							)
+					: undefined),
+			onDismiss:
+				handlerProps.onDismiss ??
+				(notificationIntegration
+					? (notificationId: string) =>
+							invokeAsync(
+								() => notificationIntegration.dismiss(notificationId),
+								'Failed to dismiss notification',
+							)
+					: undefined),
+		};
+
+		const combinedProps = {
+			...props,
+			...integrationState,
+			...enhancedProps,
+		} as TProps & UnknownRecord & RealtimeEnhancements;
+
+		return Component(combinedProps);
+	};
 }
-
-/**
- * Error boundary for real-time components
- */
-export class RealtimeErrorBoundary {
-  private errorHandlers = new Set<(error: Error) => void>();
-  
-  onError(handler: (error: Error) => void): () => void {
-    this.errorHandlers.add(handler);
-    
-    return () => {
-      this.errorHandlers.delete(handler);
-    };
-  }
-  
-  handleError(error: Error): void {
-    this.errorHandlers.forEach(handler => {
-      try {
-        handler(error);
-      } catch (err) {
-        console.error('Error in error handler:', err);
-      }
-    });
-  }
-}
-
-/**
- * Create a global error boundary instance
- */
-export const realtimeErrorBoundary = new RealtimeErrorBoundary();

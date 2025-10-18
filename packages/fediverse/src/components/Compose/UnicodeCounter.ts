@@ -9,6 +9,16 @@
  * - Mentions and hashtags
  */
 
+type GraphemeSegment = { segment: string };
+type GraphemeSegmenter = {
+	segment: (input: string) => IterableIterator<GraphemeSegment>;
+};
+
+type GraphemeSegmenterConstructor = new (
+	locales?: string | string[],
+	options?: { granularity: 'grapheme' }
+) => GraphemeSegmenter;
+
 /**
  * Count grapheme clusters (user-perceived characters)
  * This handles emojis, combining characters, etc.
@@ -18,8 +28,13 @@ export function countGraphemes(text: string): number {
 
 	// Use Intl.Segmenter if available (modern browsers)
 	if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
-		const segmenter = new (Intl as any).Segmenter('en', { granularity: 'grapheme' });
-		return Array.from(segmenter.segment(text)).length;
+		const SegmenterCtor = (Intl as typeof Intl & {
+			Segmenter?: GraphemeSegmenterConstructor;
+		}).Segmenter;
+		if (SegmenterCtor) {
+			const segmenter = new SegmenterCtor('en', { granularity: 'grapheme' });
+			return Array.from(segmenter.segment(text)).length;
+		}
 	}
 
 	// Fallback: Use Array.from which respects surrogate pairs
@@ -52,7 +67,7 @@ export interface CharacterCountOptions {
  * URL regex pattern
  */
 const URL_REGEX =
-	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gi;
+	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.+~#?&//=]*)/gi;
 
 /**
  * Count characters with platform-specific weighting
@@ -236,4 +251,3 @@ export function splitIntoChunks(
 
 	return chunks;
 }
-

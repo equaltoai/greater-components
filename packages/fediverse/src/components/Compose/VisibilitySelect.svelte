@@ -81,7 +81,7 @@ Dropdown for selecting post visibility (public, unlisted, private, direct).
 		disabled={context.state.submitting}
 		aria-label="Post visibility"
 	>
-		{#each visibilityOptions as option}
+		{#each visibilityOptions as option (option.value)}
 			<option value={option.value}>
 				{option.icon}
 				{option.label}

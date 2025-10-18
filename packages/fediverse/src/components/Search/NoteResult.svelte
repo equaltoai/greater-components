@@ -2,6 +2,7 @@
   Search.NoteResult - Note/Post Search Result Item
 -->
 <script lang="ts">
+	import { sanitizeHtml } from '@greater/utils';
 	import { getSearchContext, formatCount, highlightQuery } from './context.js';
 	import type { SearchNote } from './context.js';
 
@@ -14,9 +15,16 @@
 
 	const { state: searchState, handlers } = getSearchContext();
 
-	function handleClick() {
-		handlers.onNoteClick?.(note);
+function handleClick() {
+	handlers.onNoteClick?.(note);
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+	if (event.key === 'Enter' || event.key === ' ') {
+		event.preventDefault();
+		handleClick();
 	}
+}
 
 	function formatDate(date: string): string {
 		const d = new Date(date);
@@ -34,58 +42,91 @@
 		return `${seconds}s`;
 	}
 
-	const highlightedContent = $derived(highlightQuery(note.content, searchState.query));
+	const highlightedContent = $derived(() =>
+		sanitizeHtml(highlightQuery(note.content, searchState.query), {
+			allowedTags: ['mark', 'span', 'em', 'strong', 'b', 'i', 'u', 'br', 'p', 'a'],
+			allowedAttributes: ['class', 'href', 'rel', 'target', 'title'],
+		})
+	);
+
+	function setHtml(node: HTMLElement, html: string) {
+		node.innerHTML = html;
+		return {
+			update(newHtml: string) {
+				node.innerHTML = newHtml;
+			},
+		};
+	}
 </script>
 
-<article class={`note-result ${className}`} onclick={handleClick}>
-	<div class="note-result__avatar">
-		{#if note.author.avatar}
-			<img src={note.author.avatar} alt={note.author.displayName} />
-		{:else}
-			<div class="note-result__avatar-placeholder">
-				{note.author.displayName[0]?.toUpperCase()}
-			</div>
-		{/if}
-	</div>
-
-	<div class="note-result__content">
-		<div class="note-result__header">
-			<span class="note-result__author">{note.author.displayName}</span>
-			<span class="note-result__username">@{note.author.username}</span>
-			<span class="note-result__separator">·</span>
-			<time class="note-result__time">{formatDate(note.createdAt)}</time>
+<article class={`note-result ${className}`}>
+	<div
+		class="note-result__interactive"
+		role="button"
+		tabindex="0"
+		onclick={handleClick}
+		onkeydown={handleKeyDown}
+	>
+		<div class="note-result__avatar">
+			{#if note.author.avatar}
+				<img src={note.author.avatar} alt={note.author.displayName} />
+			{:else}
+				<div class="note-result__avatar-placeholder">
+					{note.author.displayName[0]?.toUpperCase()}
+				</div>
+			{/if}
 		</div>
 
-		<div class="note-result__text">{@html highlightedContent}</div>
+		<div class="note-result__content">
+			<div class="note-result__header">
+				<span class="note-result__author">{note.author.displayName}</span>
+				<span class="note-result__username">@{note.author.username}</span>
+				<span class="note-result__separator">·</span>
+				<time class="note-result__time">{formatDate(note.createdAt)}</time>
+			</div>
 
-		<div class="note-result__stats">
-			{#if note.repliesCount !== undefined}
-				<span>💬 {formatCount(note.repliesCount || 0)}</span>
-			{/if}
-			{#if note.reblogsCount !== undefined}
-				<span>🔁 {formatCount(note.reblogsCount || 0)}</span>
-			{/if}
-			{#if note.likesCount !== undefined}
-				<span>❤️ {formatCount(note.likesCount || 0)}</span>
-			{/if}
+			<div class="note-result__text" use:setHtml={highlightedContent}></div>
+
+			<div class="note-result__stats">
+				{#if note.repliesCount !== undefined}
+					<span>💬 {formatCount(note.repliesCount || 0)}</span>
+				{/if}
+				{#if note.reblogsCount !== undefined}
+					<span>🔁 {formatCount(note.reblogsCount || 0)}</span>
+				{/if}
+				{#if note.likesCount !== undefined}
+					<span>❤️ {formatCount(note.likesCount || 0)}</span>
+				{/if}
+			</div>
 		</div>
 	</div>
 </article>
 
 <style>
 	.note-result {
-		display: flex;
-		gap: 1rem;
 		padding: 1rem;
 		background: var(--bg-primary, #ffffff);
 		border: 1px solid var(--border-color, #e1e8ed);
 		border-radius: 0.75rem;
-		cursor: pointer;
-		transition: all 0.2s;
+		transition: background-color 0.2s, border-color 0.2s;
 	}
 
 	.note-result:hover {
 		background: var(--bg-hover, #eff3f4);
+	}
+
+	.note-result__interactive {
+		display: flex;
+		gap: 1rem;
+		width: 100%;
+		align-items: flex-start;
+		cursor: pointer;
+		outline: none;
+	}
+
+	.note-result__interactive:focus-visible {
+		box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.35);
+		border-radius: 0.5rem;
 	}
 
 	.note-result__avatar {
@@ -155,6 +196,15 @@
 		color: var(--text-primary, #0f1419);
 		padding: 0.125rem 0.25rem;
 		border-radius: 0.25rem;
+	}
+
+	.note-result__text :global(a) {
+		color: var(--primary-color, #1d9bf0);
+		text-decoration: none;
+	}
+
+	.note-result__text :global(a:hover) {
+		text-decoration: underline;
 	}
 
 	.note-result__stats {

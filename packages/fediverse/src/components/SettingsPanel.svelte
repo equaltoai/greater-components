@@ -171,6 +171,7 @@
           {@const Icon = section.icon}
           <li>
             <button
+              type="button"
               onclick={() => handleSectionChange(section.id)}
               class="gr-settings-panel__nav-item"
               class:gr-settings-panel__nav-item--active={currentSection === section.id}
@@ -183,11 +184,12 @@
                 <span class="gr-settings-panel__nav-label">{section.label}</span>
                 <span class="gr-settings-panel__nav-description">{section.description}</span>
               </div>
-              <ChevronRight
-                size={16}
+              <span
                 class="gr-settings-panel__nav-arrow"
                 class:gr-settings-panel__nav-arrow--active={currentSection === section.id}
-              />
+              >
+                <ChevronRight size={16} />
+              </span>
             </button>
           </li>
         {/each}

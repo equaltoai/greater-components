@@ -89,7 +89,7 @@ Uses handlers from context.
 	}
 
 	/* Compact density adjustments */
-	.status-root--compact .status-actions {
+	:global(.status-root--compact) .status-actions {
 		margin-top: var(--status-spacing-xs, 0.25rem);
 		padding-top: var(--status-spacing-xs, 0.25rem);
 	}

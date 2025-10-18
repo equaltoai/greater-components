@@ -16,6 +16,9 @@ import type { PostVisibility } from './context.js';
 import type { MediaFile } from './MediaUploadHandler.js';
 
 type OptimisticObject = ObjectFieldsFragment & { _optimistic: true };
+type OptimisticReplacement = ObjectFieldsFragment & { _replaces: string };
+type OptimisticRemoval = { _remove: string };
+type OptimisticUpdateEvent = OptimisticObject | OptimisticReplacement | OptimisticRemoval;
 
 type ActorLike = Pick<Actor, 'id' | 'username' | 'displayName' | 'avatar' | 'domain'>;
 
@@ -201,8 +204,8 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 	/**
 	 * Handle media removal
 	 */
-	async function handleMediaRemove(id: string): Promise<void> {
-		console.log('Media removed:', id);
+	async function handleMediaRemove(_id: string): Promise<void> {
+		// Media cleanup can be implemented when server-side deletion is required.
 	}
 
 	/**
@@ -315,7 +318,7 @@ export function createOptimisticStatus(data: {
 export function createOptimisticComposeHandlers(
 	adapter: LesserGraphQLAdapter,
 	currentAccount: ActorLike,
-	onOptimisticUpdate?: (status: any) => void
+	onOptimisticUpdate?: (status: OptimisticUpdateEvent) => void
 ) {
 	const baseHandlers = createGraphQLComposeHandlers(adapter);
 
@@ -408,7 +411,7 @@ export interface ComposeGraphQLConfig {
 	adapter: LesserGraphQLAdapter;
 	currentAccount?: ActorLike;
 	enableOptimistic?: boolean;
-	onOptimisticUpdate?: (status: any) => void;
+	onOptimisticUpdate?: (status: OptimisticUpdateEvent) => void;
 }
 
 export function createComposeHandlers(config: ComposeGraphQLConfig) {

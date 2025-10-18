@@ -135,7 +135,8 @@ export class GraphQLClient {
 		if (!this.subscriptions.has(subscriptionId)) {
 			this.subscriptions.set(subscriptionId, new Set());
 		}
-		this.subscriptions.get(subscriptionId)!.add(callback);
+		const callbacks = this.subscriptions.get(subscriptionId);
+		callbacks?.add(callback);
 
 		// Connect WebSocket if not already connected
 		if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
@@ -399,4 +400,3 @@ export class GraphQLClient {
 export function createGraphQLClient(config: GraphQLConfig): GraphQLClient {
 	return new GraphQLClient(config);
 }
-

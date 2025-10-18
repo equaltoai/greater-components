@@ -8,6 +8,7 @@
  */
 
 import { getContext, setContext } from 'svelte';
+import type { GenericTimelineItem } from '../../generics/index.js';
 
 const LISTS_CONTEXT_KEY = Symbol('lists-context');
 
@@ -90,7 +91,7 @@ export interface ListsHandlers {
 	/**
 	 * Fetch timeline for a list
 	 */
-	onFetchTimeline?: (listId: string, options?: { limit?: number; cursor?: string }) => Promise<any>;
+	onFetchTimeline?: (listId: string, options?: { limit?: number; cursor?: string }) => Promise<GenericTimelineItem[]>;
 
 	/**
 	 * Handle list click
@@ -235,7 +236,7 @@ export interface ListsContext {
  * @returns Lists context
  */
 export function createListsContext(handlers: ListsHandlers = {}): ListsContext {
-	let state = $state<ListsState>({
+	const state = $state<ListsState>({
 		lists: [],
 		selectedList: null,
 		members: [],
@@ -427,4 +428,3 @@ export function validateListForm(data: ListFormData): string | null {
 	}
 	return null;
 }
-

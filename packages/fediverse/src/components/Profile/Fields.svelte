@@ -14,6 +14,7 @@
 -->
 <script lang="ts">
 	import { getProfileContext } from './context.js';
+	import { sanitizeHtml } from '@greater/utils';
 
 	interface Props {
 		/**
@@ -39,16 +40,35 @@
 	const { state: profileState } = getProfileContext();
 
 	const displayFields = $derived(profileState.profile?.fields?.slice(0, maxFields) || []);
+
+	function sanitizeFieldValue(html: string): string {
+		return sanitizeHtml(html, {
+			allowedTags: ['a', 'span', 'strong', 'em', 'code'],
+			allowedAttributes: ['href', 'rel', 'target', 'class', 'title'],
+		});
+	}
+
+	function setHtml(node: HTMLElement, html: string) {
+		node.innerHTML = html;
+		return {
+			update(newHtml: string) {
+				node.innerHTML = newHtml;
+			},
+		};
+	}
 </script>
 
 {#if displayFields.length > 0}
 	<div class={`profile-fields ${className}`}>
 		<dl class="profile-fields__list">
-			{#each displayFields as field}
+			{#each displayFields as field (field.name)}
 				<div class="profile-fields__item" class:profile-fields__item--verified={field.verifiedAt}>
 					<dt class="profile-fields__name">{field.name}</dt>
 					<dd class="profile-fields__value">
-						{@html field.value}
+						<span
+							class="profile-fields__value-content"
+							use:setHtml={sanitizeFieldValue(field.value)}
+						></span>
 						{#if showVerification && field.verifiedAt}
 							<svg
 								class="profile-fields__verified-icon"

@@ -96,22 +96,6 @@ Provides context for child components and handles virtualization/infinite scroll
 		}
 	}
 
-	/**
-	 * Handle refresh request
-	 */
-	async function handleRefresh() {
-		if (!context.handlers.onRefresh || context.state.loading) return;
-
-		context.updateState({ loading: true, error: null });
-
-		try {
-			await context.handlers.onRefresh();
-		} catch (error) {
-			context.updateState({ error: error as Error });
-		} finally {
-			context.updateState({ loading: false });
-		}
-	}
 </script>
 
 <div

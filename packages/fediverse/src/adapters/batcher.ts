@@ -31,7 +31,21 @@ export interface BatcherOptions {
 	 * @default false
 	 */
 	debug?: boolean;
+
+	/**
+	 * Optional logger for debug messages
+	 */
+	logger?: DebugLogger;
 }
+
+export interface DebugLogEntry {
+	scope: 'batcher' | 'deduplicator' | 'cache' | 'optimistic';
+	action: string;
+	message: string;
+	stats: Record<string, unknown>;
+}
+
+export type DebugLogger = (entry: DebugLogEntry) => void;
 
 /**
  * Request Batcher
@@ -46,6 +60,7 @@ export class RequestBatcher<TRequest, TResponse> {
 	private executor: (requests: TRequest[]) => Promise<TResponse[]>;
 	private totalBatches: number;
 	private totalRequests: number;
+	private logger?: DebugLogger;
 
 	constructor(
 		executor: (requests: TRequest[]) => Promise<TResponse[]>,
@@ -59,6 +74,7 @@ export class RequestBatcher<TRequest, TResponse> {
 		this.flushTimer = null;
 		this.totalBatches = 0;
 		this.totalRequests = 0;
+		this.logger = options.logger;
 	}
 
 	/**
@@ -177,9 +193,22 @@ export class RequestBatcher<TRequest, TResponse> {
 	 * Debug logging
 	 */
 	private log(action: string, message: string): void {
-		if (this.debug) {
-			const stats = this.getStats();
-			console.log(
+		if (!this.debug) {
+			return;
+		}
+
+		const stats = this.getStats();
+		const entry: DebugLogEntry = {
+			scope: 'batcher',
+			action,
+			message,
+			stats,
+		};
+
+		if (this.logger) {
+			this.logger(entry);
+		} else if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+			console.warn(
 				`[Batcher] ${action}: ${message} (total: ${stats.totalRequests} requests in ${stats.totalBatches} batches, avg: ${stats.avgBatchSize.toFixed(1)})`
 			);
 		}
@@ -195,12 +224,14 @@ export class RequestDeduplicator<TKey, TResponse> {
 	private debug: boolean;
 	private hits: number;
 	private misses: number;
+	private logger?: DebugLogger;
 
-	constructor(options: { debug?: boolean } = {}) {
+	constructor(options: { debug?: boolean; logger?: DebugLogger } = {}) {
 		this.inFlight = new Map();
 		this.debug = options.debug ?? false;
 		this.hits = 0;
 		this.misses = 0;
+		this.logger = options.logger;
 	}
 
 	/**
@@ -258,12 +289,24 @@ export class RequestDeduplicator<TKey, TResponse> {
 	 * Debug logging
 	 */
 	private log(action: string, key: string): void {
-		if (this.debug) {
-			const stats = this.getStats();
-			console.log(
+		if (!this.debug) {
+			return;
+		}
+
+		const stats = this.getStats();
+		const entry: DebugLogEntry = {
+			scope: 'deduplicator',
+			action,
+			message: key,
+			stats,
+		};
+
+		if (this.logger) {
+			this.logger(entry);
+		} else if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+			console.warn(
 				`[Deduplicator] ${action} key="${key}" (${stats.inFlight} in-flight, dedupe rate: ${(stats.dedupeRate * 100).toFixed(1)}%)`
 			);
 		}
 	}
 }
-

@@ -155,6 +155,7 @@
 		<button
 			use:menu.actions.trigger
 			class="visibility-selector__trigger"
+			type="button"
 			{disabled}
 			aria-label="Select post visibility"
 		>
@@ -173,11 +174,13 @@
 
 		{#if menu.state.open}
 			<div use:menu.actions.menu class="visibility-selector__menu">
-				{#each availableOptions as option}
+				{#each availableOptions as option (option.value)}
 					<button
-						use:menu.actions.item(option.value)}
+						use:menu.actions.item={option.value}
 						class="visibility-selector__option"
 						class:visibility-selector__option--selected={option.value === value}
+						type="button"
+						onclick={() => select(option.value)}
 					>
 						{#if renderOption}
 							{@render renderOption(option, option.value === value)}
@@ -215,16 +218,17 @@
 		{/if}
 	{:else if mode === 'buttons'}
 		<!-- Button group mode -->
-		<div class="visibility-selector__buttons" role="radiogroup" aria-label="Post visibility">
-			{#each availableOptions as option}
-				<button
-					class="visibility-selector__button"
-					class:visibility-selector__button--selected={option.value === value}
-					onclick={() => select(option.value)}
-					role="radio"
-					aria-checked={option.value === value}
-					{disabled}
-				>
+	<div class="visibility-selector__buttons" role="radiogroup" aria-label="Post visibility">
+		{#each availableOptions as option (option.value)}
+			<button
+				class="visibility-selector__button"
+				class:visibility-selector__button--selected={option.value === value}
+				type="button"
+				onclick={() => select(option.value)}
+				role="radio"
+				aria-checked={option.value === value}
+				{disabled}
+			>
 					{#if renderOption}
 						{@render renderOption(option, option.value === value)}
 					{:else}
@@ -250,8 +254,8 @@
 		</div>
 	{:else}
 		<!-- Inline mode -->
-		<div class="visibility-selector__inline" role="radiogroup" aria-label="Post visibility">
-			{#each availableOptions as option}
+	<div class="visibility-selector__inline" role="radiogroup" aria-label="Post visibility">
+		{#each availableOptions as option (option.value)}
 				<label class="visibility-selector__inline-option">
 					<input
 						type="radio"

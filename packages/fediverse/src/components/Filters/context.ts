@@ -187,7 +187,7 @@ export interface FiltersContext {
  * @returns Filters context
  */
 export function createFiltersContext(handlers: FiltersHandlers = {}): FiltersContext {
-	let state = $state<FiltersState>({
+	const state = $state<FiltersState>({
 		filters: [],
 		selectedFilter: null,
 		loading: false,
@@ -367,4 +367,3 @@ export function calculateExpiresAt(expiresIn: number | null): string | null {
 	const expiresAt = new Date(now.getTime() + expiresIn * 1000);
 	return expiresAt.toISOString();
 }
-

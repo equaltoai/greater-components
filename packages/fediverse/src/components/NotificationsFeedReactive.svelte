@@ -242,12 +242,6 @@
     }
   }
 
-  function handleKeyDown(event: KeyboardEvent, notification: Notification) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleNotificationClick(notification);
-    }
-  }
 </script>
 
 <div 
@@ -705,8 +699,13 @@
 </style>
 
 <script module lang="ts">
-  function isNotificationGroup(item: any): item is NotificationGroup {
-    return item && typeof item === 'object' && 'notifications' in item && Array.isArray(item.notifications);
+  function isNotificationGroup(item: unknown): item is NotificationGroup {
+    return (
+      typeof item === 'object' &&
+      item !== null &&
+      'notifications' in item &&
+      Array.isArray((item as NotificationGroup).notifications)
+    );
   }
 
   function getItemId(item: Notification | NotificationGroup): string {

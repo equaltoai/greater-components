@@ -255,7 +255,7 @@ export function createSearchContext(
 	handlers: SearchHandlers = {},
 	initialQuery = ''
 ): SearchContext {
-	let state = $state<SearchState>({
+	const state = $state<SearchState>({
 		query: initialQuery,
 		type: 'all',
 		results: EMPTY_RESULTS,
@@ -418,4 +418,3 @@ export function formatCount(count: number): string {
 	}
 	return count.toString();
 }
-

@@ -196,9 +196,8 @@
 			'video/mp4',
 			'video/webm',
 		],
-		maxFileSize = 10 * 1024 * 1024, // 10MB
-		enableFocalPoint = true,
-		enableImageEdit: _enableImageEdit = false,
+	maxFileSize = 10 * 1024 * 1024, // 10MB
+	enableFocalPoint = true,
 		requireAltText = false,
 		layout = 'grid',
 		class: className = '',

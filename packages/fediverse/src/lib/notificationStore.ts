@@ -78,7 +78,7 @@ export class NotificationStore {
       this.state.error = null;
       
       if (this.config.enableRealtime) {
-        this.transport!.subscribeToNotifications();
+        transport.subscribeToNotifications();
       }
     });
 

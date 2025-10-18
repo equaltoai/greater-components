@@ -4,11 +4,12 @@
 <script lang="ts">
 	import { createButton } from '@greater/headless/button';
 	import { getSearchContext, formatCount } from './context.js';
-	import type { SearchActor } from './context.js';
+import ContentRenderer from '../ContentRenderer.svelte';
+import type { SearchActor } from './context.js';
 
-	interface Props {
-		actor: SearchActor;
-		class?: string;
+interface Props {
+	actor: SearchActor;
+	class?: string;
 	}
 
 	let { actor, class: className = '' }: Props = $props();
@@ -26,32 +27,49 @@
 	function handleClick() {
 		handlers.onActorClick?.(actor);
 	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleClick();
+		}
+	}
 </script>
 
-<article class={`actor-result ${className}`} onclick={handleClick}>
-	<div class="actor-result__avatar">
-		{#if actor.avatar}
-			<img src={actor.avatar} alt={actor.displayName} />
-		{:else}
-			<div class="actor-result__avatar-placeholder">
-				{actor.displayName[0]?.toUpperCase() || actor.username[0]?.toUpperCase()}
-			</div>
-		{/if}
-	</div>
-
-	<div class="actor-result__content">
-		<div class="actor-result__header">
-			<h4 class="actor-result__name">{actor.displayName}</h4>
-			<span class="actor-result__username">@{actor.username}</span>
+<article class={`actor-result ${className}`}>
+	<div
+		class="actor-result__interactive"
+		role="button"
+		tabindex="0"
+		onclick={handleClick}
+		onkeydown={handleKeyDown}
+	>
+		<div class="actor-result__avatar">
+			{#if actor.avatar}
+				<img src={actor.avatar} alt={actor.displayName || actor.username} />
+			{:else}
+				<div class="actor-result__avatar-placeholder">
+					{actor.displayName[0]?.toUpperCase() || actor.username[0]?.toUpperCase()}
+				</div>
+			{/if}
 		</div>
-		{#if actor.bio}
-			<p class="actor-result__bio">{@html actor.bio}</p>
-		{/if}
-		{#if actor.followersCount !== undefined}
-			<div class="actor-result__stats">
-				<span>{formatCount(actor.followersCount)} followers</span>
+
+		<div class="actor-result__content">
+			<div class="actor-result__header">
+				<h4 class="actor-result__name">{actor.displayName}</h4>
+				<span class="actor-result__username">@{actor.username}</span>
 			</div>
-		{/if}
+			{#if actor.bio}
+				<div class="actor-result__bio">
+					<ContentRenderer content={actor.bio} collapsed={false} class="actor-result__bio-content" />
+				</div>
+			{/if}
+			{#if actor.followersCount !== undefined}
+				<div class="actor-result__stats">
+					<span>{formatCount(actor.followersCount)} followers</span>
+				</div>
+			{/if}
+		</div>
 	</div>
 
 	<button
@@ -71,16 +89,30 @@
 	.actor-result {
 		display: flex;
 		gap: 1rem;
+		align-items: flex-start;
 		padding: 1rem;
 		background: var(--bg-primary, #ffffff);
 		border: 1px solid var(--border-color, #e1e8ed);
 		border-radius: 0.75rem;
-		cursor: pointer;
-		transition: all 0.2s;
+		transition: background-color 0.2s, border-color 0.2s;
 	}
 
 	.actor-result:hover {
 		background: var(--bg-hover, #eff3f4);
+	}
+
+	.actor-result__interactive {
+		display: flex;
+		gap: 1rem;
+		flex: 1;
+		align-items: flex-start;
+		cursor: pointer;
+		outline: none;
+	}
+
+	.actor-result__interactive:focus-visible {
+		box-shadow: 0 0 0 3px var(--focus-ring, rgba(29, 155, 240, 0.35));
+		border-radius: 0.5rem;
 	}
 
 	.actor-result__avatar {
@@ -135,14 +167,21 @@
 
 	.actor-result__bio {
 		margin: 0.25rem 0 0 0;
+	}
+
+	.actor-result__bio :global(.content-renderer) {
 		font-size: 0.9375rem;
 		color: var(--text-primary, #0f1419);
 		line-height: 1.4;
+	}
+
+	.actor-result__bio :global(.content-renderer .content) {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
+		margin: 0;
 	}
 
 	.actor-result__stats {

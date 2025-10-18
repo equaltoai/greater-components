@@ -68,11 +68,19 @@
 		return `"${phrases.join('", "')}"`;
 	}
 
-	// Reset revealed state when content or filters change
+	let previousContent = '';
+	let previousFilterSignature = '';
+
+	// Reset revealed state when content or matching filters change
 	$effect(() => {
-		content;
-		matchedFilters;
-		revealed = false;
+		const currentContent = content;
+		const currentSignature = matchedFilters.map((filter) => filter.id).join(',');
+
+		if (currentContent !== previousContent || currentSignature !== previousFilterSignature) {
+			previousContent = currentContent;
+			previousFilterSignature = currentSignature;
+			revealed = false;
+		}
 	});
 </script>
 

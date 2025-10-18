@@ -16,7 +16,9 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 ```
 -->
 
+
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { getComposeContext } from './context.js';
 	import AutocompleteMenu from './AutocompleteMenu.svelte';
 	import {
@@ -66,6 +68,12 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 	let selectedIndex = $state(0);
 	let loading = $state(false);
 	let menuPosition = $state({ x: 0, y: 0 });
+
+	if (autofocus) {
+		onMount(() => {
+			queueMicrotask(() => textareaEl?.focus());
+		});
+	}
 
 	/**
 	 * Auto-resize textarea based on content
@@ -220,7 +228,7 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		// Create a mirror div
 		const div = document.createElement('div');
 		const style = getComputedStyle(element);
-		const properties = [
+	const properties: Array<keyof CSSStyleDeclaration> = [
 			'boxSizing',
 			'width',
 			'height',
@@ -250,9 +258,12 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 			'wordSpacing',
 		];
 
-		properties.forEach((prop) => {
-			div.style[prop as any] = style[prop as any];
-		});
+	properties.forEach((prop) => {
+		const value = style[prop];
+		if (typeof value === 'string') {
+			div.style[prop] = value;
+		}
+	});
 
 		div.style.position = 'absolute';
 		div.style.visibility = 'hidden';
@@ -283,7 +294,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		bind:this={textareaEl}
 		class={`compose-editor ${className}`}
 		{rows}
-		{autofocus}
 		placeholder={context.config.placeholder}
 		value={context.state.content}
 		oninput={handleInput}

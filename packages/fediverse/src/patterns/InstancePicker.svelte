@@ -152,9 +152,8 @@
 	}: Props = $props();
 
 	const {
-		mode = 'dropdown',
-	showMetadata: _showMetadata = true,
-		showNotifications = true,
+	mode = 'dropdown',
+	showNotifications = true,
 		maxVisibleAccounts = 5,
 		class: className = '',
 		showAddAccount = true,

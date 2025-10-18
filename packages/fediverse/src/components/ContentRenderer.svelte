@@ -76,20 +76,22 @@
 
     // Replace mention links if we have mention data
     if (mentions.length > 0) {
-      mentions.forEach(mention => {
+      mentions.forEach((mention) => {
         const pattern = new RegExp(`@${mention.username}(@[\\w.-]+)?`, 'g');
+        const safeUrl = encodeURI(mention.url);
         processed = processed.replace(pattern, (match) => {
-          return `<a href={`$${mention.url}`} class="mention" rel="noopener noreferrer" target="_blank">${match}</a>`;
+          return `<a href="${safeUrl}" class="mention" rel="noopener noreferrer" target="_blank">${match}</a>`;
         });
       });
     }
 
     // Replace hashtag links if we have tag data
     if (tags.length > 0) {
-      tags.forEach(tag => {
+      tags.forEach((tag) => {
         const pattern = new RegExp(`#${tag.name}\\b`, 'gi');
+        const safeUrl = encodeURI(tag.url);
         processed = processed.replace(pattern, () => {
-          return `<a href={`$${tag.url}`} class="hashtag" rel="noopener noreferrer" target="_blank">#${tag.name}</a>`;
+          return `<a href="${safeUrl}" class="hashtag" rel="noopener noreferrer" target="_blank">#${tag.name}</a>`;
         });
       });
     }
@@ -108,6 +110,15 @@
   }
 
   const processedContent = $derived(processContent(content));
+
+  function setHtml(node: HTMLElement, html: string) {
+    node.innerHTML = html;
+    return {
+      update(newHtml: string) {
+        node.innerHTML = newHtml;
+      }
+    };
+  }
 </script>
 
 <div class={`content-renderer ${className}`}>
@@ -131,9 +142,8 @@
       class:collapsed={spoilerText && !expanded}
       id={`content-${Math.random().toString(36).substr(2, 9)}`}
       aria-hidden={spoilerText && !expanded}
-    >
-      {@html processedContent}
-    </div>
+      use:setHtml={processedContent}
+    ></div>
   {/if}
 </div>
 

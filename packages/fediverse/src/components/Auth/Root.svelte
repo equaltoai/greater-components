@@ -42,7 +42,7 @@
 	let { initialState = {}, handlers = {}, children, class: className = '' }: Props = $props();
 
 	// Create auth context
-	const context = createAuthContext(initialState, handlers);
+	createAuthContext(initialState, handlers);
 </script>
 
 <div class={`auth-root ${className}`}>

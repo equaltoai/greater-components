@@ -146,12 +146,13 @@
 	}
 </script>
 
-<div
+<svelte:element
+	this={onClick ? 'button' : 'div'}
+	type={onClick ? 'button' : undefined}
 	class={`federation-indicator federation-indicator--${mode} federation-indicator--${position} ${className}`}
 	class:federation-indicator--local={isLocal}
 	class:federation-indicator--remote={!isLocal}
 	role={onClick ? 'button' : undefined}
-	tabindex={onClick ? 0 : undefined}
 	title={showTooltip ? tooltip : undefined}
 	onclick={onClick ? handleClick : undefined}
 >
@@ -218,7 +219,7 @@
 			</span>
 		</span>
 	{/if}
-</div>
+</svelte:element>
 
 <style>
 	.federation-indicator {

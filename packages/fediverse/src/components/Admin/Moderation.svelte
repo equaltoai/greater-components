@@ -106,7 +106,7 @@
 
 		{#if searchResults.length > 0}
 			<div class="admin-moderation__results">
-				{#each searchResults as result}
+				{#each searchResults as result (result.id)}
 					<div class="admin-moderation__result-card">
 						<div class="admin-moderation__result-info">
 							<strong>@{result.username}</strong>

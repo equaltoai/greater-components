@@ -196,7 +196,7 @@
 		<div class="auth-oauth__permissions">
 			<h3 class="auth-oauth__permissions-title">This app will be able to:</h3>
 			<ul class="auth-oauth__permissions-list">
-				{#each scopes as scope}
+				{#each scopes as scope (scope.name)}
 					<li class="auth-oauth__permission">
 						{#if scope.icon}
 							<img src={scope.icon} alt="" class="auth-oauth__permission-icon" />

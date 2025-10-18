@@ -16,6 +16,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { sanitizeHtml } from '@greater/utils';
 
 	interface ContentWarningConfig {
 		/**
@@ -151,6 +152,39 @@
 	}
 
 	const preview = $derived(getPreview(htmlContent));
+	const sanitizedHtmlContent = $derived(() =>
+		htmlContent
+			? sanitizeHtml(htmlContent, {
+					allowedTags: [
+						'p',
+						'br',
+						'span',
+						'a',
+						'strong',
+						'em',
+						'b',
+						'i',
+						'u',
+						'code',
+						'pre',
+						'blockquote',
+						'ul',
+						'ol',
+						'li',
+						'img',
+					],
+					allowedAttributes: ['href', 'rel', 'target', 'class', 'title', 'src', 'alt'],
+			})
+			: ''
+	);
+
+	let sanitizedContentRef = $state<HTMLDivElement>();
+
+	$effect(() => {
+		if (sanitizedContentRef) {
+			sanitizedContentRef.innerHTML = sanitizedHtmlContent;
+		}
+	});
 
 	/**
 	 * Update content height for animation
@@ -249,8 +283,8 @@
 		<div class="cw-handler__content-inner">
 			{#if content}
 				{@render content()}
-			{:else if htmlContent}
-				{@html htmlContent}
+			{:else if sanitizedHtmlContent}
+				<div class="cw-handler__content-html" bind:this={sanitizedContentRef}></div>
 			{/if}
 		</div>
 	</div>

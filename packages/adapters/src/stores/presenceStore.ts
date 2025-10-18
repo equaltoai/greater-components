@@ -176,7 +176,7 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
 
   // Transport event handlers
   let streamingUnsubscribers: (() => void)[] = [];
-  let pendingPresenceUpdates: Map<string, UserPresence> = new Map();
+  const pendingPresenceUpdates: Map<string, UserPresence> = new Map();
 
   function createReactiveUsersMap(source?: Map<string, UserPresence>): Map<string, UserPresence> {
     return createReactiveMap(source, updateDerivedValues);

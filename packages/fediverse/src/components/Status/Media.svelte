@@ -141,7 +141,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 	}
 
 	/* Compact density adjustments */
-	.status-root--compact .status-media {
+	:global(.status-root--compact) .status-media {
 		margin: var(--status-spacing-xs, 0.25rem) 0;
 	}
 </style>

@@ -14,7 +14,7 @@ Automatically saves compose drafts and provides manual save/load controls.
 -->
 
 <script lang="ts">
-	import { getComposeContext } from './context.js';
+	import { getComposeContext, type PostVisibility } from './context.js';
 	import {
 		saveDraft,
 		loadDraft,
@@ -66,6 +66,15 @@ Automatically saves compose drafts and provides manual save/load controls.
 	let hasSavedDraft = $state(false);
 	let draftAge = $state<number | null>(null);
 
+	const VALID_VISIBILITIES: PostVisibility[] = ['public', 'unlisted', 'private', 'direct'];
+
+	function normalizeVisibility(value?: string | null): PostVisibility {
+		if (!value) return 'public';
+		return VALID_VISIBILITIES.includes(value as PostVisibility)
+			? (value as PostVisibility)
+			: 'public';
+	}
+
 	/**
 	 * Save current state as draft
 	 */
@@ -99,7 +108,7 @@ Automatically saves compose drafts and provides manual save/load controls.
 			context.updateState({
 				content: draft.content || '',
 				contentWarning: draft.contentWarning || '',
-				visibility: (draft.visibility as any) || 'public',
+				visibility: normalizeVisibility(draft.visibility),
 				inReplyTo: draft.inReplyTo,
 				contentWarningEnabled: draft.metadata?.sensitive ?? false,
 			});

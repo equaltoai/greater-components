@@ -497,7 +497,7 @@ export function createProfileContext(
 	handlers: ProfileHandlers = {},
 	isOwnProfile = false
 ): ProfileContext {
-	let state = $state<ProfileState>({
+	const state = $state<ProfileState>({
 		profile,
 		editMode: false,
 		loading: false,
@@ -570,4 +570,3 @@ export function getRelationshipText(relationship?: ProfileRelationship): string 
 	if (relationship.muting) return 'Muted';
 	return 'Follow';
 }
-

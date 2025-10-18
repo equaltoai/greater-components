@@ -55,7 +55,7 @@
 			<section class="search-results__section">
 				<h3 class="search-results__heading">People</h3>
 				<div class="search-results__list">
-					{#each searchState.results.actors as actor}
+					{#each searchState.results.actors as actor (actor.id)}
 						<ActorResult {actor} />
 					{/each}
 				</div>
@@ -66,7 +66,7 @@
 			<section class="search-results__section">
 				<h3 class="search-results__heading">Posts</h3>
 				<div class="search-results__list">
-					{#each searchState.results.notes as note}
+					{#each searchState.results.notes as note (note.id)}
 						<NoteResult {note} />
 					{/each}
 				</div>
@@ -77,7 +77,7 @@
 			<section class="search-results__section">
 				<h3 class="search-results__heading">Tags</h3>
 				<div class="search-results__tags">
-					{#each searchState.results.tags as tag}
+					{#each searchState.results.tags as tag (tag.id)}
 						<TagResult {tag} />
 					{/each}
 				</div>

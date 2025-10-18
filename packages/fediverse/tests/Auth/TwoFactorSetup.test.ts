@@ -65,7 +65,7 @@ function generateBackupCodes(count: number = 10): string[] {
 
 // Two-factor setup logic
 function createTwoFactorSetupLogic(email?: string) {
-	let state: TwoFactorSetupState = {
+	const state: TwoFactorSetupState = {
 		step: 'intro',
 		secret: '',
 		qrCodeUrl: '',

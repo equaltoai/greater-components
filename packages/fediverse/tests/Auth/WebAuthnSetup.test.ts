@@ -29,7 +29,7 @@ interface WebAuthnSetupState {
 function createWebAuthnSetupLogic(
 	initialStep: RegistrationStep = 'intro'
 ) {
-	let state: WebAuthnSetupState = {
+	const state: WebAuthnSetupState = {
 		step: initialStep,
 		error: null,
 		loading: false,

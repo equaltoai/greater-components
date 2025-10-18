@@ -292,7 +292,7 @@ describe('Filters Context Logic', () => {
 
 		it('should update filter count on delete', () => {
 			let filters = [{ id: '1' }, { id: '2' }] as any[];
-			let stats = { totalFilters: filters.length };
+			const stats = { totalFilters: filters.length };
 
 			filters = filters.filter(f => f.id !== '1');
 			stats.totalFilters = filters.length;
@@ -326,7 +326,7 @@ describe('Filters Context Logic', () => {
 
 	describe('Integration Scenarios', () => {
 		it('should handle full filter lifecycle', () => {
-			let state = {
+			const state = {
 				filters: [] as any[],
 				loading: false,
 				saving: false,

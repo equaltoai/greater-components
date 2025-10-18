@@ -62,7 +62,7 @@ function createOAuthConsentLogic(
 	oauthState: string,
 	user?: UserInfo
 ) {
-	let state: OAuthConsentState = {
+	const state: OAuthConsentState = {
 		loading: false,
 		error: null,
 	};

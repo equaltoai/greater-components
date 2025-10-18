@@ -261,7 +261,7 @@ export function createModal(config: ModalConfig = {}) {
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	 
 	let _backdropElement: HTMLElement | null = null;
 	let contentElement: HTMLElement | null = null;
 	let triggerElement: HTMLButtonElement | null = null;

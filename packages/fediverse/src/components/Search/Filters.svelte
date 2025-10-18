@@ -6,7 +6,7 @@
   @component
 -->
 <script lang="ts">
-	import { getSearchContext, formatResultCount } from './context.js';
+	import { getSearchContext } from './context.js';
 	import type { SearchResultType } from './context.js';
 
 	interface Props {
@@ -26,7 +26,7 @@
 </script>
 
 <div class={`search-filters ${className}`}>
-	{#each filters as filter}
+	{#each filters as filter (filter.id)}
 		<button
 			class="search-filters__tab"
 			class:search-filters__tab--active={searchState.type === filter.id}

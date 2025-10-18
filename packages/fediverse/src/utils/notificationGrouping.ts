@@ -12,9 +12,9 @@ export function groupNotifications(notifications: Notification[]): NotificationG
   
   for (const notification of notifications) {
     const groupKey = getGroupKey(notification);
+    const existingGroup = groups.get(groupKey);
     
-    if (groups.has(groupKey)) {
-      const existingGroup = groups.get(groupKey)!;
+    if (existingGroup) {
       existingGroup.notifications.push(notification);
       existingGroup.count = existingGroup.notifications.length;
       
