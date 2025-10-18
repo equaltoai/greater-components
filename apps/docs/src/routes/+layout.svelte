@@ -11,7 +11,9 @@
 	let isMobileMenuOpen = false;
 	
 	// Close mobile menu on route change
-	$: $page && (isMobileMenuOpen = false);
+	$: if ($page) {
+		isMobileMenuOpen = false;
+	}
 	
 	// Handle keyboard shortcuts
 	function handleKeydown(e: KeyboardEvent) {

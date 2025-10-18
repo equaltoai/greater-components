@@ -1,6 +1,6 @@
 import FlexSearch from 'flexsearch';
 
-interface SearchDocument {
+export interface SearchDocument {
 	id: string;
 	title: string;
 	content: string;
@@ -11,8 +11,14 @@ interface SearchDocument {
 	status?: 'alpha' | 'beta' | 'stable' | 'deprecated';
 }
 
+type FlexSearchIndex = {
+	add: (id: string, content: string) => void;
+	search: (query: string, options: { limit: number }) => string[];
+	clear: () => void;
+};
+
 class SearchIndex {
-	private index: any;
+	private index: FlexSearchIndex;
 	private documents: Map<string, SearchDocument>;
 	
 	constructor() {
@@ -31,7 +37,9 @@ class SearchIndex {
 	
 	search(query: string, limit = 10): SearchDocument[] {
 		const results = this.index.search(query, { limit });
-		return results.map((id: string) => this.documents.get(id)).filter(Boolean);
+		return results
+			.map((id) => this.documents.get(id))
+			.filter((doc): doc is SearchDocument => Boolean(doc));
 	}
 	
 	clear() {

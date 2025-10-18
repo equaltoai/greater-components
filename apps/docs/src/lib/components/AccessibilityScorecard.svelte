@@ -100,7 +100,7 @@
 		<div class="notes-section">
 			<h4>Notes</h4>
 			<ul>
-				{#each notes as note}
+				{#each notes as note, noteIndex (note + '-' + noteIndex)}
 					<li>{note}</li>
 				{/each}
 			</ul>
@@ -114,7 +114,7 @@
 				<h4>Known Issues</h4>
 			</div>
 			<ul>
-				{#each knownIssues as issue}
+				{#each knownIssues as issue, issueIndex (issue + '-' + issueIndex)}
 					<li>{issue}</li>
 				{/each}
 			</ul>
@@ -215,12 +215,12 @@
 		color: #065f46;
 	}
 	
-	.dark .feature-icon {
+	:global(.dark) .feature-icon {
 		background: #7f1d1d;
 		color: #fee2e2;
 	}
 	
-	.dark .feature-icon.supported {
+	:global(.dark) .feature-icon.supported {
 		background: #064e3b;
 		color: #d1fae5;
 	}
@@ -249,7 +249,7 @@
 		color: #f59e0b;
 	}
 	
-	.dark .issues-header {
+	:global(.dark) .issues-header {
 		color: #fbbf24;
 	}
 	

@@ -16,7 +16,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each events as event}
+			{#each events as event, eventIndex (`${eventIndex}-${event.name}`)}
 				<tr>
 					<td class="event-name">
 						<code>on:{event.name}</code>

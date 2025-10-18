@@ -15,7 +15,7 @@
 	}
 
 	function installCommand(pkg: string) {
-		return `npx @greater/cli add ${$page.params.slug}`;
+		return `npx @greater/cli add ${pkg}`;
 	}
 </script>
 
@@ -102,7 +102,7 @@
 						<dd>
 							{#if component.dependencies.length > 0}
 								<ul class="dep-list">
-									{#each component.dependencies as dep}
+									{#each component.dependencies as dep, depIndex (`${component.slug}-dep-${depIndex}-${dep}`)}
 										<li><code>{dep}</code></li>
 									{/each}
 								</ul>
@@ -115,7 +115,7 @@
 							<dt>Components</dt>
 							<dd>
 								<ul class="dep-list">
-									{#each component.registryDependencies as dep}
+									{#each component.registryDependencies as dep, depIndex (`${component.slug}-registry-${depIndex}-${dep}`)}
 										<li><a href="/components/{dep}">{dep}</a></li>
 									{/each}
 								</ul>
@@ -129,7 +129,7 @@
 				<section id="features">
 					<h2>Features</h2>
 					<ul class="features-list">
-						{#each component.features as feature}
+						{#each component.features as feature, featureIndex (`${component.slug}-feature-${featureIndex}-${feature}`)}
 							<li>{feature}</li>
 						{/each}
 					</ul>
@@ -140,7 +140,7 @@
 
 					{#if component.examples.length > 1}
 						<div class="example-tabs">
-							{#each component.examples as example, i}
+							{#each component.examples as example, i (`${component.slug}-tab-${i}-${example.name}`)}
 								<button
 									class="example-tab"
 									class:active={selectedExample === i}
@@ -152,7 +152,7 @@
 						</div>
 					{/if}
 
-					{#each component.examples as example, i}
+					{#each component.examples as example, i (`${component.slug}-example-${i}-${example.name}`)}
 						{#if selectedExample === i}
 							<div class="example">
 								<h3>{example.name}</h3>
@@ -189,7 +189,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										{#each component.api.props as prop}
+										{#each component.api.props as prop, propIndex (`${component.slug}-prop-${propIndex}-${prop.name}`)}
 											<tr>
 												<td>
 													<code>{prop.name}</code>
@@ -219,7 +219,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										{#each component.api.events as event}
+										{#each component.api.events as event, eventIndex (`${component.slug}-event-${eventIndex}-${event.name}`)}
 											<tr>
 												<td><code>{event.name}</code></td>
 												<td>{event.payload ? `<code>${event.payload}</code>` : '—'}</td>
@@ -243,7 +243,7 @@
 										</tr>
 									</thead>
 									<tbody>
-										{#each component.api.slots as slot}
+										{#each component.api.slots as slot, slotIndex (`${component.slug}-slot-${slotIndex}-${slot.name}`)}
 											<tr>
 												<td><code>{slot.name}</code></td>
 												<td>{slot.props ? `<code>${slot.props}</code>` : '—'}</td>
@@ -287,7 +287,7 @@
 
 					<h3>Accessibility Features</h3>
 					<ul class="features-list">
-						{#each component.accessibility.features as feature}
+						{#each component.accessibility.features as feature, featureIndex (`${component.slug}-a11y-${featureIndex}-${feature}`)}
 							<li>{feature}</li>
 						{/each}
 					</ul>

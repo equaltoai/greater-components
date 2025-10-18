@@ -19,7 +19,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each props as prop}
+			{#each props as prop, propIndex (`${propIndex}-${prop.name}`)}
 				<tr>
 					<td class="prop-name">
 						<code>{prop.name}</code>
@@ -92,7 +92,7 @@
 		text-transform: uppercase;
 	}
 	
-	.dark .required-badge {
+	:global(.dark) .required-badge {
 		background: #7f1d1d;
 		color: #fee2e2;
 	}

@@ -117,7 +117,7 @@
 			title="+layout.svelte"
 			code={`<script>
   import { ThemeProvider } from '@greater/primitives';
-</script>
+<` + `/script>
 
 <ThemeProvider>
   <slot />
@@ -133,7 +133,7 @@
   import { Button, TextField, Modal } from '@greater/primitives';
   
   let showModal = false;
-</script>
+<` + `/script>
 
 <Button on:click={() => showModal = true}>
   Open Modal
@@ -281,7 +281,7 @@ import type { ThemeConfig } from '@greater/tokens';`}
 		color: #92400e;
 	}
 	
-	.dark .note {
+	:global(.dark) .note {
 		background: #78350f;
 		border-color: #f59e0b;
 		color: #fef3c7;

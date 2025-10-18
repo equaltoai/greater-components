@@ -1,19 +1,15 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import CodeIcon from '@greater/icons/icons/code.svelte';
 	import EyeIcon from '@greater/icons/icons/eye.svelte';
+	import type { ComponentType } from 'svelte';
 	
-	export let component: any;
-	export let props: Record<string, any> = {};
+	export let component: ComponentType;
+	export let props: Record<string, unknown> = {};
 	export let showCode: boolean = false;
 	export let height: string = 'auto';
 	
 	let showCodeView = showCode;
 	let demoContainer: HTMLElement;
-	
-	function toggleView() {
-		showCodeView = !showCodeView;
-	}
 </script>
 
 <div class="live-demo">

@@ -6,11 +6,12 @@
 	import FileTextIcon from '@greater/icons/icons/file-text.svelte';
 	import HashIcon from '@greater/icons/icons/hash.svelte';
 	import { searchIndex } from '$lib/utils/search';
+	import type { SearchDocument } from '$lib/utils/search';
 	
 	export let open = false;
 	
 	let searchQuery = '';
-	let searchResults: any[] = [];
+	let searchResults: SearchDocument[] = [];
 	let selectedIndex = 0;
 	let searchInput: HTMLInputElement;
 	
@@ -24,13 +25,21 @@
 		searchInput.focus();
 	}
 	
+	$: {
+		if (searchResults.length === 0) {
+			selectedIndex = 0;
+		} else if (selectedIndex >= searchResults.length) {
+			selectedIndex = searchResults.length - 1;
+		}
+	}
+	
 	function handleKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') {
 			open = false;
-		} else if (e.key === 'ArrowDown') {
+		} else if (e.key === 'ArrowDown' && searchResults.length > 0) {
 			e.preventDefault();
 			selectedIndex = Math.min(selectedIndex + 1, searchResults.length - 1);
-		} else if (e.key === 'ArrowUp') {
+		} else if (e.key === 'ArrowUp' && searchResults.length > 0) {
 			e.preventDefault();
 			selectedIndex = Math.max(selectedIndex - 1, 0);
 		} else if (e.key === 'Enter' && searchResults[selectedIndex]) {
@@ -39,13 +48,13 @@
 		}
 	}
 	
-	function navigateToResult(result: any) {
+	function navigateToResult(result: SearchDocument) {
 		goto(result.href);
 		open = false;
 		searchQuery = '';
 	}
 	
-	function getIcon(type: string) {
+	function getIcon(type: SearchDocument['type']) {
 		switch (type) {
 			case 'component':
 				return FileTextIcon;
@@ -68,8 +77,8 @@
 </script>
 
 {#if open}
-	<div class="search-modal-overlay" on:click={() => open = false}>
-		<div class="search-modal" on:click|stopPropagation>
+	<div class="search-modal-overlay" on:pointerdown={() => open = false}>
+		<div class="search-modal" on:pointerdown|stopPropagation>
 			<div class="search-header">
 				<SearchIcon size={20} />
 				<input
@@ -87,7 +96,7 @@
 			
 			{#if searchResults.length > 0}
 				<div class="search-results">
-					{#each searchResults as result, i}
+					{#each searchResults as result, i (result.id)}
 						<button
 							class="search-result"
 							class:selected={i === selectedIndex}

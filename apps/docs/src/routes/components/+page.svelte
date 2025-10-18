@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { components, getComponentStats, getComponentsByCategory } from '$lib/data/registry.js';
+	import { components, getComponentStats } from '$lib/data/registry.js';
 	import type { Component } from '$lib/data/registry.js';
 
 	let searchQuery = $state('');
@@ -33,7 +33,7 @@
 		}
 
 		return filtered;
-	})();
+	});
 </script>
 
 <svelte:head>
@@ -112,7 +112,7 @@
 
 				<div class="component-meta">
 					<div class="tags">
-						{#each component.tags.slice(0, 3) as tag}
+						{#each component.tags.slice(0, 3) as tag, tagIndex (`${component.slug}-tag-${tagIndex}-${tag}`)}
 							<span class="tag">#{tag}</span>
 						{/each}
 					</div>

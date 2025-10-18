@@ -16,7 +16,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each slots as slot}
+			{#each slots as slot, slotIndex (`${slotIndex}-${slot.name}`)}
 				<tr>
 					<td class="slot-name">
 						<code>{slot.name || 'default'}</code>
