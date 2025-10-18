@@ -30,6 +30,26 @@ mutation CreateQuoteNote($input: CreateQuoteNoteInput!) {
   }
 }
 
+mutation WithdrawFromQuotes($noteId: ID!) {
+  withdrawFromQuotes(noteId: $noteId) {
+    success
+    note {
+      ...ObjectFields
+    }
+    withdrawnCount
+  }
+}
+
+mutation UpdateQuotePermissions($noteId: ID!, $quoteable: Boolean!, $permission: QuotePermission!) {
+  updateQuotePermissions(noteId: $noteId, quoteable: $quoteable, permission: $permission) {
+    success
+    note {
+      ...ObjectFields
+    }
+    affectedQuotes
+  }
+}
+
 mutation DeleteObject($id: ID!) {
   deleteObject(id: $id)
 }
@@ -72,4 +92,26 @@ mutation PinObject($id: ID!) {
 
 mutation UnpinObject($id: ID!) {
   unpinObject(id: $id)
+}
+
+# Quote queries - quotes are accessed via the Object.quotes field
+query ObjectWithQuotes($id: ID!, $first: Int = 20, $after: String) {
+  object(id: $id) {
+    ...ObjectFields
+    quotes(first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          ...ObjectFields
+        }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      totalCount
+    }
+  }
 }

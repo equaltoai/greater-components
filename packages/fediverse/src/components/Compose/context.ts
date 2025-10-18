@@ -21,6 +21,16 @@ const COMPOSE_CONTEXT_KEY = Symbol('compose-context');
 export type PostVisibility = 'public' | 'unlisted' | 'private' | 'direct';
 
 /**
+ * Quote permission levels (Lesser-specific)
+ */
+export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+
+/**
+ * Quote type (Lesser-specific)
+ */
+export type QuoteType = 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
+
+/**
  * Media attachment type for compose
  */
 export interface ComposeAttachment extends Partial<MediaAttachment> {
@@ -108,6 +118,9 @@ export interface ComposeHandlers {
 		contentWarning?: string;
 		mediaAttachments?: ComposeAttachment[];
 		inReplyTo?: string;
+		quoteUrl?: string;
+		quoteType?: QuoteType;
+		quotePermissions?: QuotePermission;
 	}) => Promise<void> | void;
 
 	/**
@@ -184,6 +197,21 @@ export interface ComposeState {
 	 * Whether content warning is enabled
 	 */
 	contentWarningEnabled: boolean;
+
+	/**
+	 * URL of status being quoted (Lesser-specific)
+	 */
+	quoteUrl?: string;
+
+	/**
+	 * Type of quote (Lesser-specific)
+	 */
+	quoteType?: QuoteType;
+
+	/**
+	 * Who can quote this post (Lesser-specific)
+	 */
+	quotePermissions?: QuotePermission;
 }
 
 /**

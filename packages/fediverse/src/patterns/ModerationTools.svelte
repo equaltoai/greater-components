@@ -21,7 +21,7 @@
 	import { createModal } from '@greater/headless/modal';
 	import type { ActivityPubActor, GenericStatus } from '../generics/index.js';
 
-	export type ModerationType = 'block' | 'mute' | 'report' | 'hide';
+	export type ModerationType = 'block' | 'mute' | 'report' | 'hide' | 'addNote';
 	export type ModerationTarget = 'account' | 'status' | 'domain';
 
 	interface ModerationAction {
@@ -90,6 +90,11 @@
 		 * Hide a status
 		 */
 		onHide?: (statusId: string) => Promise<void>;
+
+		/**
+		 * Add a community note (Lesser-specific)
+		 */
+		onAddNote?: (objectId: string, content: string) => Promise<void>;
 	}
 
 	interface Props {
@@ -190,6 +195,14 @@
 			requiresConfirmation: false,
 			severity: 'low',
 		},
+		addNote: {
+			type: 'addNote',
+			label: 'Add Community Note',
+			description: 'Contribute context or fact-checking to this post',
+			icon: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
+			requiresConfirmation: false,
+			severity: 'low',
+		},
 	};
 
 	const availableActions = $derived(actions.map((action) => moderationActions[action]));
@@ -200,6 +213,7 @@
 	let activeAction = $state<ModerationType | null>(null);
 	let reportReason = $state('');
 	let muteDuration = $state<number | undefined>(undefined);
+	let noteContent = $state('');
 	let loading = $state(false);
 
 	/**
@@ -211,6 +225,11 @@
 	});
 
 	const reportModal = createModal({
+		closeOnEscape: true,
+		closeOnBackdrop: false,
+	});
+
+	const noteModal = createModal({
 		closeOnEscape: true,
 		closeOnBackdrop: false,
 	});
@@ -237,6 +256,8 @@
 		if (actionDef.requiresConfirmation || alwaysConfirm) {
 			if (action === 'report') {
 				reportModal.helpers.open();
+			} else if (action === 'addNote') {
+				noteModal.helpers.open();
 			} else {
 				confirmModal.helpers.open();
 			}
@@ -277,16 +298,24 @@
 						await handlers.onHide?.(targetId);
 					}
 					break;
+
+				case 'addNote':
+					if (targetType === 'status' && noteContent.trim()) {
+						await handlers.onAddNote?.(targetId, noteContent.trim());
+					}
+					break;
 			}
 
 			// Close modals
 			confirmModal.helpers.close();
 			reportModal.helpers.close();
+			noteModal.helpers.close();
 
 			// Reset state
 			activeAction = null;
 			reportReason = '';
 			muteDuration = undefined;
+			noteContent = '';
 		} catch (error) {
 			console.error('Moderation action failed:', error);
 		} finally {
@@ -344,48 +373,48 @@
 				{/each}
 			</div>
 		{/if}
-{:else if mode === 'buttons'}
-	<!-- Button group mode -->
-	<div class="moderation-tools__buttons">
-		{#each availableActions as action (action.type)}
-			<button
-				class={`moderation-tools__button moderation-tools__button--${action.severity}`}
-				type="button"
-				onclick={() => initiateAction(action.type)}
-				{disabled}
-			>
-				{#if renderAction}
-					{@render renderAction(action)}
-				{:else}
-					{#if showIcons}
-						<svg class="moderation-tools__button-icon" viewBox="0 0 24 24" fill="currentColor">
-							<path d={action.icon} />
-						</svg>
-					{/if}
+	{:else if mode === 'buttons'}
+		<!-- Button group mode -->
+		<div class="moderation-tools__buttons">
+			{#each availableActions as action (action.type)}
+				<button
+					class={`moderation-tools__button moderation-tools__button--${action.severity}`}
+					type="button"
+					onclick={() => initiateAction(action.type)}
+					{disabled}
+				>
+					{#if renderAction}
+						{@render renderAction(action)}
+					{:else}
+						{#if showIcons}
+							<svg class="moderation-tools__button-icon" viewBox="0 0 24 24" fill="currentColor">
+								<path d={action.icon} />
+							</svg>
+						{/if}
 
-					<span class="moderation-tools__button-label">{action.label}</span>
-				{/if}
-			</button>
-		{/each}
-	</div>
-{:else}
-	<!-- Inline mode -->
-	<div class="moderation-tools__inline">
-		{#each availableActions as action (action.type)}
-			<button
-				class="moderation-tools__inline-button"
-				type="button"
-				onclick={() => initiateAction(action.type)}
-				title={action.description}
-				aria-label={action.label}
-				{disabled}
-			>
-				<svg class="moderation-tools__inline-icon" viewBox="0 0 24 24" fill="currentColor">
-					<path d={action.icon} />
-				</svg>
-			</button>
-		{/each}
-	</div>
+						<span class="moderation-tools__button-label">{action.label}</span>
+					{/if}
+				</button>
+			{/each}
+		</div>
+	{:else}
+		<!-- Inline mode -->
+		<div class="moderation-tools__inline">
+			{#each availableActions as action (action.type)}
+				<button
+					class="moderation-tools__inline-button"
+					type="button"
+					onclick={() => initiateAction(action.type)}
+					title={action.description}
+					aria-label={action.label}
+					{disabled}
+				>
+					<svg class="moderation-tools__inline-icon" viewBox="0 0 24 24" fill="currentColor">
+						<path d={action.icon} />
+					</svg>
+				</button>
+			{/each}
+		</div>
 	{/if}
 
 	<!-- Confirmation Modal -->
@@ -495,6 +524,60 @@
 						disabled={loading || !reportReason.trim()}
 					>
 						{loading ? 'Submitting...' : 'Submit Report'}
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Community Note Modal (Lesser-specific) -->
+	{#if noteModal.state.open}
+		<div use:noteModal.actions.backdrop class="moderation-tools__backdrop">
+			<div use:noteModal.actions.content class="moderation-tools__modal">
+				<div class="moderation-tools__modal-header">
+					<h3 class="moderation-tools__modal-title">Add Community Note</h3>
+					<button
+						use:noteModal.actions.close
+						class="moderation-tools__modal-close"
+						type="button"
+						aria-label="Close"
+					>
+						×
+					</button>
+				</div>
+
+				<div class="moderation-tools__modal-body">
+					<p>Provide context or fact-checking information for this post:</p>
+
+					<textarea
+						bind:value={noteContent}
+						class="moderation-tools__textarea"
+						placeholder="Add helpful context or corrections..."
+						rows="6"
+						required
+					></textarea>
+
+					<p class="moderation-tools__note-hint">
+						Your note will be visible to all users and can be voted on by the community.
+					</p>
+				</div>
+
+				<div class="moderation-tools__modal-footer">
+					<button
+						class="moderation-tools__modal-button moderation-tools__modal-button--cancel"
+						type="button"
+						onclick={() => noteModal.helpers.close()}
+						disabled={loading}
+					>
+						Cancel
+					</button>
+					<button
+						class="moderation-tools__modal-button moderation-tools__modal-button--confirm"
+						type="button"
+						onclick={() => executeAction('addNote')}
+						disabled={loading || !noteContent.trim()}
+					>
+						{loading ? 'Adding...' : 'Add Note'}
 					</button>
 				</div>
 			</div>
@@ -738,5 +821,12 @@
 	.moderation-tools__modal-button:disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
+	}
+
+	.moderation-tools__note-hint {
+		margin-top: 0.75rem;
+		font-size: 0.75rem;
+		color: var(--text-secondary, #536471);
+		font-style: italic;
 	}
 </style>

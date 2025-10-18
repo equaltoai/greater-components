@@ -8,9 +8,11 @@
 import type {
 	LesserGraphQLAdapter,
 	CreateNoteVariables,
+	CreateQuoteNoteMutationVariables,
 	Visibility,
 	ObjectFieldsFragment,
 	Actor,
+	QuoteType,
 } from '@greater/adapters';
 import type { PostVisibility } from './context.js';
 import type { MediaFile } from './MediaUploadHandler.js';
@@ -144,7 +146,14 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 		inReplyTo?: string;
 		sensitive?: boolean;
 		language?: string;
+		quoteUrl?: string;
+		quoteType?: 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
 	}) {
+		// If quoteUrl is present, delegate to quote handler
+		if (data.quoteUrl) {
+			return handleQuoteSubmit(data as Parameters<typeof handleQuoteSubmit>[0]);
+		}
+
 		const mediaIds: string[] = [];
 		if (data.mediaAttachments && data.mediaAttachments.length > 0) {
 			for (const media of data.mediaAttachments) {
@@ -165,6 +174,43 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 		});
 
 		const payload = await adapter.createNote(variables);
+		return payload.object;
+	}
+
+	/**
+	 * Handle quote post submission (Lesser-specific)
+	 */
+	async function handleQuoteSubmit(data: {
+		content: string;
+		quoteUrl: string;
+		contentWarning?: string;
+		visibility: PostVisibility;
+		mediaAttachments?: MediaFile[];
+		sensitive?: boolean;
+		quoteType?: 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
+	}) {
+		const mediaIds: string[] = [];
+		if (data.mediaAttachments && data.mediaAttachments.length > 0) {
+			for (const media of data.mediaAttachments) {
+				if (media.serverId) {
+					mediaIds.push(media.serverId);
+				}
+			}
+		}
+
+		const variables: CreateQuoteNoteMutationVariables = {
+			input: {
+				content: data.content,
+				quoteUrl: data.quoteUrl,
+				visibility: mapVisibility(data.visibility),
+				spoilerText: data.contentWarning || undefined,
+				sensitive: data.sensitive,
+				quoteType: data.quoteType as QuoteType | undefined,
+				mediaIds: mediaIds.length > 0 ? mediaIds : undefined,
+			},
+		};
+
+		const payload = await adapter.createQuoteNote(variables);
 		return payload.object;
 	}
 

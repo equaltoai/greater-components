@@ -30,12 +30,28 @@ Shows user-contributed context and fact-checking notes from the Lesser platform.
 		note?: Snippet<[CommunityNote]>;
 
 		/**
+		 * Vote handler for community notes
+		 */
+		onVote?: (noteId: string, helpful: boolean) => Promise<void> | void;
+
+		/**
+		 * Whether voting is enabled
+		 */
+		enableVoting?: boolean;
+
+		/**
 		 * Additional CSS class
 		 */
 		class?: string;
 	}
 
-	let { maxInitialNotes = 3, note, class: className = '' }: Props = $props();
+	let {
+		maxInitialNotes = 3,
+		note,
+		onVote,
+		enableVoting = true,
+		class: className = '',
+	}: Props = $props();
 
 	import type { Status as FediverseStatus } from '../../types.js';
 
@@ -66,10 +82,32 @@ Shows user-contributed context and fact-checking notes from the Lesser platform.
 			minute: '2-digit',
 		}).format(d);
 	}
+
+	// Voting state
+	let votingNotes = $state<Set<string>>(new Set());
+
+	async function handleVote(noteId: string, helpful: boolean) {
+		if (!onVote || !enableVoting || votingNotes.has(noteId)) return;
+
+		votingNotes.add(noteId);
+		try {
+			await onVote(noteId, helpful);
+		} catch (error) {
+			console.error('Failed to vote on community note:', error);
+		} finally {
+			votingNotes.delete(noteId);
+			// Trigger reactivity
+			votingNotes = new Set(votingNotes);
+		}
+	}
 </script>
 
 {#if hasNotes}
-	<div class={`status-community-notes ${className}`} role="complementary" aria-label="Community Notes">
+	<div
+		class={`status-community-notes ${className}`}
+		role="complementary"
+		aria-label="Community Notes"
+	>
 		<div class="community-notes__header">
 			<svg class="community-notes__icon" viewBox="0 0 24 24" aria-hidden="true">
 				<path
@@ -111,6 +149,9 @@ Shows user-contributed context and fact-checking notes from the Lesser platform.
 							<button
 								class="community-note__feedback-btn community-note__feedback-btn--helpful"
 								title="Helpful"
+								disabled={!enableVoting || votingNotes.has(communityNote.id)}
+								onclick={() => handleVote(communityNote.id, true)}
+								type="button"
 							>
 								<svg viewBox="0 0 24 24" aria-hidden="true">
 									<path
@@ -124,6 +165,9 @@ Shows user-contributed context and fact-checking notes from the Lesser platform.
 							<button
 								class="community-note__feedback-btn community-note__feedback-btn--not-helpful"
 								title="Not helpful"
+								disabled={!enableVoting || votingNotes.has(communityNote.id)}
+								onclick={() => handleVote(communityNote.id, false)}
+								type="button"
 							>
 								<svg viewBox="0 0 24 24" aria-hidden="true">
 									<path
@@ -242,6 +286,11 @@ Shows user-contributed context and fact-checking notes from the Lesser platform.
 		color: var(--status-text-secondary, #536471);
 		cursor: pointer;
 		transition: all 0.2s;
+	}
+
+	.community-note__feedback-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.community-note__feedback-btn svg {

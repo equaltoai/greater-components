@@ -1,0 +1,172 @@
+# Federation management, thread sync, and severed relationships
+
+#import "./fragments.graphql"
+
+# Thread Sync mutations
+mutation SyncThread($noteUrl: String!, $depth: Int) {
+  syncThread(noteUrl: $noteUrl, depth: $depth) {
+    success
+    thread {
+      rootNote {
+        ...ObjectFields
+      }
+      replyCount
+      participantCount
+      lastActivity
+      missingPosts
+      syncStatus
+    }
+    syncedPosts
+    errors
+  }
+}
+
+mutation SyncMissingReplies($noteId: ID!) {
+  syncMissingReplies(noteId: $noteId) {
+    success
+    syncedReplies
+    thread {
+      rootNote {
+        ...ObjectFields
+      }
+      replyCount
+      participantCount
+      lastActivity
+      missingPosts
+      syncStatus
+    }
+  }
+}
+
+# Thread Context query
+query ThreadContext($noteId: ID!) {
+  threadContext(noteId: $noteId) {
+    rootNote {
+      ...ObjectFields
+    }
+    replyCount
+    participantCount
+    lastActivity
+    missingPosts
+    syncStatus
+  }
+}
+
+# Severed Relationships queries and mutations
+query SeveredRelationships($instance: String, $first: Int, $after: String) {
+  severedRelationships(instance: $instance, first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        localInstance
+        remoteInstance
+        reason
+        affectedFollowers
+        affectedFollowing
+        timestamp
+        reversible
+        details {
+          description
+          metadata
+          adminNotes
+          autoDetected
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+
+mutation AcknowledgeSeverance($id: ID!) {
+  acknowledgeSeverance(id: $id) {
+    success
+    severedRelationship {
+      id
+      localInstance
+      remoteInstance
+    }
+    acknowledged
+  }
+}
+
+mutation AttemptReconnection($id: ID!) {
+  attemptReconnection(id: $id) {
+    success
+    severedRelationship {
+      id
+      localInstance
+      remoteInstance
+    }
+    reconnected
+    failed
+    errors
+  }
+}
+
+# Federation Health queries
+query FederationHealth($threshold: Float) {
+  federationHealth(threshold: $threshold) {
+    domain
+    status
+    reason
+    pausedUntil
+  }
+}
+
+query FederationStatus($domain: String!) {
+  federationStatus(domain: $domain) {
+    domain
+    reachable
+    lastContact
+    sharedInbox
+    publicKey
+    software
+    version
+  }
+}
+
+# Pause/Resume Federation mutations
+mutation PauseFederation($domain: String!, $reason: String!, $until: Time) {
+  pauseFederation(domain: $domain, reason: $reason, until: $until) {
+    domain
+    status
+    reason
+    pausedUntil
+    limits {
+      domain
+      ingressLimitMB
+      egressLimitMB
+      requestsPerMinute
+      monthlyBudgetUSD
+      active
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ResumeFederation($domain: String!) {
+  resumeFederation(domain: $domain) {
+    domain
+    status
+    reason
+    pausedUntil
+    limits {
+      domain
+      ingressLimitMB
+      egressLimitMB
+      requestsPerMinute
+      monthlyBudgetUSD
+      active
+      createdAt
+      updatedAt
+    }
+  }
+}
