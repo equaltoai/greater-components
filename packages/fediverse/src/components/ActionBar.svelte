@@ -141,7 +141,7 @@
 </script>
 
 <div 
-  class="gr-action-bar {className}"
+  class={`gr-action-bar ${className}`}
   role="group" 
   aria-label="Post actions"
 >
@@ -157,7 +157,7 @@
       ? `Reply to this post. ${counts.replies} replies` 
       : 'Reply to this post'
     }
-    id="{idPrefix}-reply"
+    id={`${idPrefix}-reply`}
   >
     {#snippet prefix()}
       <Reply size={size === 'sm' ? 16 : size === 'md' ? 18 : 20} />
@@ -185,7 +185,7 @@
         : 'Boost this post'
     }
     aria-pressed={isBoosted}
-    id="{idPrefix}-boost"
+    id={`${idPrefix}-boost`}
   >
     {#snippet prefix()}
       {#if isBoosted}
@@ -217,7 +217,7 @@
         : 'Add to favorites'
     }
     aria-pressed={isFavorited}
-    id="{idPrefix}-favorite"
+    id={`${idPrefix}-favorite`}
   >
     {#snippet prefix()}
       {#if isFavorited}
@@ -243,7 +243,7 @@
     onclick={handleShare}
     class="gr-action-bar__button gr-action-bar__button--share"
     aria-label="Share this post"
-    id="{idPrefix}-share"
+    id={`${idPrefix}-share`}
   >
     {#snippet prefix()}
       <Share size={size === 'sm' ? 16 : size === 'md' ? 18 : 20} />

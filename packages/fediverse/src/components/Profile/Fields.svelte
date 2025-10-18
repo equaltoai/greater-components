@@ -36,13 +36,13 @@
 
 	let { maxFields = 4, showVerification = true, class: className = '' }: Props = $props();
 
-	const { state } = getProfileContext();
+	const { state: profileState } = getProfileContext();
 
-	const displayFields = $derived(state.profile?.fields?.slice(0, maxFields) || []);
+	const displayFields = $derived(profileState.profile?.fields?.slice(0, maxFields) || []);
 </script>
 
 {#if displayFields.length > 0}
-	<div class="profile-fields {className}">
+	<div class={`profile-fields ${className}`}>
 		<dl class="profile-fields__list">
 			{#each displayFields as field}
 				<div class="profile-fields__item" class:profile-fields__item--verified={field.verifiedAt}>

@@ -54,7 +54,7 @@
 	});
 </script>
 
-<div class="search-root {className}">
+<div class={`search-root ${className}`}>
 	{#if children}
 		{@render children()}
 	{/if}

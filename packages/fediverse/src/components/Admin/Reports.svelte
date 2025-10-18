@@ -11,26 +11,26 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, fetchReports, handlers } = getAdminContext();
+	const { state: adminState, fetchReports, handlers } = getAdminContext();
 
 	onMount(() => {
 		fetchReports('pending');
 	});
 </script>
 
-<div class="admin-reports {className}">
+<div class={`admin-reports ${className}`}>
 	<h2 class="admin-reports__title">Reports</h2>
 
-	{#if state.loading}
+	{#if adminState.loading}
 		<div class="admin-reports__loading">Loading reports...</div>
 	{:else}
 		<div class="admin-reports__list">
-			{#each state.reports as report}
+			{#each adminState.reports as report}
 				<div class="admin-reports__card">
 					<div class="admin-reports__header">
 						<strong>@{report.reporter.username}</strong> reported
 						<strong>@{report.target.username}</strong>
-						<span class="admin-reports__badge admin-reports__badge--{report.status}"
+						<span class={`admin-reports__badge admin-reports__badge--${report.status}`}
 							>{report.status}</span
 						>
 					</div>

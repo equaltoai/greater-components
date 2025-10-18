@@ -16,9 +16,9 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, updateList } = getListsContext();
+	const { state: listsState, updateList } = getListsContext();
 
-	const currentList = $derived(state.selectedList);
+	const currentList = $derived(listsState.selectedList);
 
 	// Settings state
 	let visibility = $state<'public' | 'private'>('private');
@@ -67,7 +67,7 @@
 </script>
 
 {#if currentList}
-	<div class="list-settings {className}">
+	<div class={`list-settings ${className}`}>
 		<div class="list-settings__header">
 			<h3 class="list-settings__title">List Settings</h3>
 			<p class="list-settings__subtitle">

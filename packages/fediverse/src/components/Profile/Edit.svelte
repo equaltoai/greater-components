@@ -8,7 +8,7 @@
   @example
   ```svelte
   <Profile.Root {profile} {handlers} isOwnProfile={true}>
-    {#if state.editMode}
+    {#if profileState.editMode}
       <Profile.Edit maxFields={4} />
     {/if}
   </Profile.Root>
@@ -40,16 +40,16 @@
 
 	let { maxFields = 4, maxBioLength = 500, class: className = '' }: Props = $props();
 
-	const { state, handlers, toggleEdit, updateState } = getProfileContext();
+	const { state: profileState, handlers, toggleEdit, updateState } = getProfileContext();
 
 	// Form state
-	let displayName = $state(state.profile?.displayName || '');
-	let bio = $state(state.profile?.bio || '');
+	let displayName = $state(profileState.profile?.displayName || '');
+	let bio = $state(profileState.profile?.bio || '');
 	let avatarFile = $state<File | null>(null);
 	let headerFile = $state<File | null>(null);
-	let avatarPreview = $state<string | null>(state.profile?.avatar || null);
-	let headerPreview = $state<string | null>(state.profile?.header || null);
-	let fields = $state<ProfileField[]>(state.profile?.fields || []);
+	let avatarPreview = $state<string | null>(profileState.profile?.avatar || null);
+	let headerPreview = $state<string | null>(profileState.profile?.header || null);
+	let fields = $state<ProfileField[]>(profileState.profile?.fields || []);
 
 	let avatarInput: HTMLInputElement;
 	let headerInput: HTMLInputElement;
@@ -116,7 +116,7 @@
 	 * Handle form save
 	 */
 	async function handleSave() {
-		if (state.loading || bioOverLimit) return;
+		if (profileState.loading || bioOverLimit) return;
 
 		updateState({ loading: true, error: null });
 
@@ -153,19 +153,19 @@
 	 */
 	function handleCancel() {
 		// Reset form
-		displayName = state.profile?.displayName || '';
-		bio = state.profile?.bio || '';
+		displayName = profileState.profile?.displayName || '';
+		bio = profileState.profile?.bio || '';
 		avatarFile = null;
 		headerFile = null;
-		avatarPreview = state.profile?.avatar || null;
-		headerPreview = state.profile?.header || null;
-		fields = state.profile?.fields || [];
+		avatarPreview = profileState.profile?.avatar || null;
+		headerPreview = profileState.profile?.header || null;
+		fields = profileState.profile?.fields || [];
 
 		toggleEdit();
 	}
 </script>
 
-<div class="profile-edit {className}">
+<div class={`profile-edit ${className}`}>
 	<div class="profile-edit__header">
 		<h2 class="profile-edit__title">Edit Profile</h2>
 		<button use:cancelButton.actions.button class="profile-edit__close" aria-label="Close">
@@ -177,21 +177,21 @@
 		</button>
 	</div>
 
-	{#if state.error}
+	{#if profileState.error}
 		<div class="profile-edit__error" role="alert">
 			<svg viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			{state.error}
+			{profileState.error}
 		</div>
 	{/if}
 
 	<form class="profile-edit__form">
 		<!-- Header Image -->
 		<div class="profile-edit__section">
-			<label class="profile-edit__label">Cover Image</label>
+			<p class="profile-edit__label">Cover Image</p>
 			<div class="profile-edit__header-upload">
 				{#if headerPreview}
 					<img src={headerPreview} alt="Header preview" class="profile-edit__header-preview" />
@@ -228,7 +228,7 @@
 
 		<!-- Avatar -->
 		<div class="profile-edit__section">
-			<label class="profile-edit__label">Avatar</label>
+			<p class="profile-edit__label">Avatar</p>
 			<div class="profile-edit__avatar-upload">
 				<div class="profile-edit__avatar-preview">
 					{#if avatarPreview}
@@ -270,7 +270,7 @@
 				class="profile-edit__input"
 				bind:value={displayName}
 				placeholder="Your name"
-				disabled={state.loading}
+				disabled={profileState.loading}
 				maxlength="50"
 			/>
 		</div>
@@ -289,21 +289,21 @@
 				class:profile-edit__textarea--error={bioOverLimit}
 				bind:value={bio}
 				placeholder="Tell us about yourself"
-				disabled={state.loading}
+				disabled={profileState.loading}
 				rows="4"
-			/>
+			></textarea>
 		</div>
 
 		<!-- Custom Fields -->
 		<div class="profile-edit__section">
 			<div class="profile-edit__fields-header">
-				<label class="profile-edit__label">Custom Fields</label>
+				<p class="profile-edit__label">Custom Fields</p>
 				{#if fields.length < maxFields}
 					<button
 						type="button"
 						class="profile-edit__add-field"
 						onclick={addField}
-						disabled={state.loading}
+						disabled={profileState.loading}
 					>
 						<svg viewBox="0 0 24 24" fill="currentColor">
 							<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -315,7 +315,7 @@
 
 			{#if fields.length > 0}
 				<div class="profile-edit__fields">
-					{#each fields as field, index}
+					{#each fields as field, index (`${field.name}-${index}`)}
 						<div class="profile-edit__field">
 							<input
 								type="text"
@@ -323,7 +323,7 @@
 								bind:value={field.name}
 								onInput={(e) => updateField(index, 'name', e.currentTarget.value)}
 								placeholder="Label"
-								disabled={state.loading}
+								disabled={profileState.loading}
 								maxlength="30"
 							/>
 							<input
@@ -332,14 +332,14 @@
 								bind:value={field.value}
 								onInput={(e) => updateField(index, 'value', e.currentTarget.value)}
 								placeholder="Value"
-								disabled={state.loading}
+								disabled={profileState.loading}
 								maxlength="100"
 							/>
 							<button
 								type="button"
 								class="profile-edit__field-remove"
 								onclick={() => removeField(index)}
-								disabled={state.loading}
+								disabled={profileState.loading}
 								aria-label="Remove field"
 							>
 								<svg viewBox="0 0 24 24" fill="currentColor">
@@ -359,16 +359,16 @@
 		<button
 			use:cancelButton.actions.button
 			class="profile-edit__button profile-edit__button--secondary"
-			disabled={state.loading}
+			disabled={profileState.loading}
 		>
 			Cancel
 		</button>
 		<button
 			use:saveButton.actions.button
 			class="profile-edit__button profile-edit__button--primary"
-			disabled={state.loading || bioOverLimit}
+			disabled={profileState.loading || bioOverLimit}
 		>
-			{#if state.loading}
+			{#if profileState.loading}
 				<span class="profile-edit__spinner"></span>
 				Saving...
 			{:else}

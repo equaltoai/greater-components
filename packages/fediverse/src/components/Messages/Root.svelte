@@ -25,7 +25,7 @@
 	});
 </script>
 
-<div class="messages-root {className}">
+<div class={`messages-root ${className}`}>
 	{#if children}
 		{@render children()}
 	{/if}

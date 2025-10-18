@@ -69,7 +69,7 @@ Shows user-contributed context and fact-checking notes from the Lesser platform.
 </script>
 
 {#if hasNotes}
-	<div class="status-community-notes {className}" role="complementary" aria-label="Community Notes">
+	<div class={`status-community-notes ${className}`} role="complementary" aria-label="Community Notes">
 		<div class="community-notes__header">
 			<svg class="community-notes__icon" viewBox="0 0 24 24" aria-hidden="true">
 				<path

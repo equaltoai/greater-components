@@ -52,7 +52,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, updateState, clearError } = getAuthContext();
+	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	let setupStep = $state<'intro' | 'scan' | 'verify' | 'backup'>('intro');
 	let secret = $state<string>('');
@@ -81,7 +81,7 @@
 	 * Start 2FA setup
 	 */
 	async function handleStart() {
-		if (state.loading) return;
+		if (authState.loading) return;
 
 		clearError();
 		updateState({ loading: true });
@@ -109,7 +109,7 @@
 	 * Verify TOTP code
 	 */
 	async function handleVerify() {
-		if (state.loading || !verificationCode.trim()) return;
+		if (authState.loading || !verificationCode.trim()) return;
 
 		verificationError = null;
 		clearError();
@@ -139,7 +139,7 @@
 	 * Finish setup
 	 */
 	function handleFinish() {
-		if (state.loading) return;
+		if (authState.loading) return;
 		onComplete?.(backupCodes);
 	}
 
@@ -147,7 +147,7 @@
 	 * Cancel setup
 	 */
 	function handleCancel() {
-		if (state.loading) return;
+		if (authState.loading) return;
 		onCancel?.();
 	}
 
@@ -177,17 +177,17 @@
 	}
 </script>
 
-<div class="auth-2fa {className}">
+<div class={`auth-2fa ${className}`}>
 	<h2 class="auth-2fa__title">{title}</h2>
 
-	{#if state.error}
+	{#if authState.error}
 		<div class="auth-2fa__error" role="alert">
 			<svg class="auth-2fa__error-icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			{state.error}
+			{authState.error}
 		</div>
 	{/if}
 
@@ -230,8 +230,8 @@
 				</ul>
 			</div>
 
-			<button use:startButton.actions.button class="auth-2fa__button" disabled={state.loading}>
-				{#if state.loading}
+			<button use:startButton.actions.button class="auth-2fa__button" disabled={authState.loading}>
+				{#if authState.loading}
 					<span class="auth-2fa__spinner"></span>
 					Setting up...
 				{:else}
@@ -239,7 +239,7 @@
 				{/if}
 			</button>
 
-			<button use:cancelButton.actions.button class="auth-2fa__cancel" disabled={state.loading}>
+			<button use:cancelButton.actions.button class="auth-2fa__cancel" disabled={authState.loading}>
 				Maybe later
 			</button>
 		</div>
@@ -297,7 +297,7 @@
 					maxlength="6"
 					pattern="[0-9]*"
 					inputmode="numeric"
-					disabled={state.loading}
+					disabled={authState.loading}
 				/>
 				{#if verificationError}
 					<span class="auth-2fa__field-error">{verificationError}</span>
@@ -307,9 +307,9 @@
 			<button
 				use:verifyButton.actions.button
 				class="auth-2fa__button"
-				disabled={state.loading || verificationCode.length !== 6}
+				disabled={authState.loading || verificationCode.length !== 6}
 			>
-				{#if state.loading}
+				{#if authState.loading}
 					<span class="auth-2fa__spinner"></span>
 					Verifying...
 				{:else}
@@ -317,7 +317,7 @@
 				{/if}
 			</button>
 
-			<button use:cancelButton.actions.button class="auth-2fa__cancel" disabled={state.loading}>
+			<button use:cancelButton.actions.button class="auth-2fa__cancel" disabled={authState.loading}>
 				Cancel
 			</button>
 		</div>

@@ -18,18 +18,25 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, closeEditor, createList, updateList } = getListsContext();
+	const { state: listsState, closeEditor, createList, updateList } = getListsContext();
 
 	let title = $state('');
 	let description = $state('');
 	let visibility = $state<'public' | 'private'>('public');
 	let validationError = $state<string | null>(null);
 
-	const isOpen = $derived(state.editorOpen);
+	const isOpen = $derived(listsState.editorOpen);
 
 	const modal = createModal({
-		open: isOpen,
 		onClose: () => handleClose(),
+	});
+
+	$effect(() => {
+		if (isOpen) {
+			modal.helpers.open();
+		} else {
+			modal.helpers.close();
+		}
 	});
 
 	const saveButton = createButton({
@@ -42,10 +49,10 @@
 
 	// Initialize form when editing list changes
 	$effect(() => {
-		if (state.editingList) {
-			title = state.editingList.title;
-			description = state.editingList.description || '';
-			visibility = state.editingList.visibility;
+		if (listsState.editingList) {
+			title = listsState.editingList.title;
+			description = listsState.editingList.description || '';
+			visibility = listsState.editingList.visibility;
 		} else {
 			title = '';
 			description = '';
@@ -73,23 +80,23 @@
 		}
 
 		try {
-			if (state.editingList) {
-				await updateList(state.editingList.id, formData);
+			if (listsState.editingList) {
+				await updateList(listsState.editingList.id, formData);
 			} else {
 				await createList(formData);
 			}
-		} catch (error) {
+		} catch (_error) {
 			// Error handled by context
 		}
 	}
 </script>
 
-{#if state.editorOpen}
+{#if listsState.editorOpen}
 	<div class="lists-editor__backdrop" use:modal.actions.backdrop>
-		<div class="lists-editor {className}" use:modal.actions.content>
+		<div class={`lists-editor ${className}`} use:modal.actions.content>
 			<div class="lists-editor__header">
 				<h2 class="lists-editor__title">
-					{state.editingList ? 'Edit List' : 'Create New List'}
+					{listsState.editingList ? 'Edit List' : 'Create New List'}
 				</h2>
 				<button use:cancelButton.actions.button class="lists-editor__close" aria-label="Close">
 					<svg viewBox="0 0 24 24" fill="currentColor">
@@ -100,14 +107,14 @@
 				</button>
 			</div>
 
-			{#if state.error}
+			{#if listsState.error}
 				<div class="lists-editor__error" role="alert">
 					<svg viewBox="0 0 24 24" fill="currentColor">
 						<path
 							d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 						/>
 					</svg>
-					{state.error}
+					{listsState.error}
 				</div>
 			{/if}
 
@@ -133,16 +140,15 @@
 					<label for="list-title" class="lists-editor__label">
 						Title <span class="lists-editor__required">*</span>
 					</label>
-					<input
-						id="list-title"
-						type="text"
-						class="lists-editor__input"
-						bind:value={title}
-						placeholder="e.g. Tech News, Friends, etc."
-						disabled={state.loading}
-						maxlength="100"
-						autofocus
-					/>
+				<input
+					id="list-title"
+					type="text"
+					class="lists-editor__input"
+					bind:value={title}
+					placeholder="e.g. Tech News, Friends, etc."
+					disabled={listsState.loading}
+					maxlength="100"
+				/>
 					<p class="lists-editor__hint">{title.length}/100</p>
 				</div>
 
@@ -153,7 +159,7 @@
 						class="lists-editor__textarea"
 						bind:value={description}
 						placeholder="What is this list about?"
-						disabled={state.loading}
+						disabled={listsState.loading}
 						maxlength="500"
 						rows="3"
 					></textarea>
@@ -169,7 +175,7 @@
 								name="visibility"
 								value="public"
 								bind:group={visibility}
-								disabled={state.loading}
+								disabled={listsState.loading}
 							/>
 							<div class="lists-editor__radio-content">
 								<div class="lists-editor__radio-header">
@@ -190,7 +196,7 @@
 								name="visibility"
 								value="private"
 								bind:group={visibility}
-								disabled={state.loading}
+								disabled={listsState.loading}
 							/>
 							<div class="lists-editor__radio-content">
 								<div class="lists-editor__radio-header">
@@ -212,20 +218,20 @@
 				<button
 					use:cancelButton.actions.button
 					class="lists-editor__button lists-editor__button--secondary"
-					disabled={state.loading}
+					disabled={listsState.loading}
 				>
 					Cancel
 				</button>
 				<button
 					use:saveButton.actions.button
 					class="lists-editor__button lists-editor__button--primary"
-					disabled={state.loading}
+					disabled={listsState.loading}
 				>
-					{#if state.loading}
+					{#if listsState.loading}
 						<span class="lists-editor__spinner"></span>
-						{state.editingList ? 'Updating...' : 'Creating...'}
+						{listsState.editingList ? 'Updating...' : 'Creating...'}
 					{:else}
-						{state.editingList ? 'Update List' : 'Create List'}
+						{listsState.editingList ? 'Update List' : 'Create List'}
 					{/if}
 				</button>
 			</div>

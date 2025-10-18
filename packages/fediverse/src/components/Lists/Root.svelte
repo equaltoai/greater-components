@@ -55,7 +55,7 @@
 	});
 </script>
 
-<div class="lists-root {className}">
+<div class={`lists-root ${className}`}>
 	{#if children}
 		{@render children()}
 	{/if}

@@ -59,7 +59,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, updateState, clearError } = getAuthContext();
+	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	let registrationStep = $state<'intro' | 'registering' | 'success' | 'error'>('intro');
 
@@ -84,7 +84,7 @@
 	 * Handle WebAuthn setup
 	 */
 	async function handleSetup() {
-		if (state.loading || !isWebAuthnAvailable) return;
+		if (authState.loading || !isWebAuthnAvailable) return;
 
 		clearError();
 		registrationStep = 'registering';
@@ -108,7 +108,7 @@
 	 * Handle skip
 	 */
 	function handleSkip() {
-		if (state.loading) return;
+		if (authState.loading) return;
 		onSkip?.();
 	}
 
@@ -120,7 +120,7 @@
 	}
 </script>
 
-<div class="auth-webauthn {className}">
+<div class={`auth-webauthn ${className}`}>
 	<h2 class="auth-webauthn__title">{title}</h2>
 
 	{#if !isWebAuthnAvailable}
@@ -173,14 +173,14 @@
 				</ul>
 			</div>
 
-			{#if state.error}
+			{#if authState.error}
 				<div class="auth-webauthn__error" role="alert">
-					{state.error}
+					{authState.error}
 				</div>
 			{/if}
 
-			<button use:setupButton.actions.button class="auth-webauthn__setup" disabled={state.loading}>
-				{#if state.loading}
+			<button use:setupButton.actions.button class="auth-webauthn__setup" disabled={authState.loading}>
+				{#if authState.loading}
 					<span class="auth-webauthn__spinner"></span>
 					Setting up...
 				{:else}
@@ -189,7 +189,7 @@
 			</button>
 
 			{#if showSkip}
-				<button use:skipButton.actions.button class="auth-webauthn__skip" disabled={state.loading}>
+				<button use:skipButton.actions.button class="auth-webauthn__skip" disabled={authState.loading}>
 					Skip for now
 				</button>
 			{/if}
@@ -224,7 +224,7 @@
 			</svg>
 			<h3 class="auth-webauthn__subtitle">Setup Failed</h3>
 			<p class="auth-webauthn__description">
-				{state.error || "We couldn't set up your biometric authentication. Please try again."}
+				{authState.error || "We couldn't set up your biometric authentication. Please try again."}
 			</p>
 			<button use:setupButton.actions.button class="auth-webauthn__setup">Try Again</button>
 			{#if showSkip}

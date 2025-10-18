@@ -71,7 +71,7 @@ Automatically triggered with infinite scroll or manually by user.
 </script>
 
 {#if shouldShow || context.state.loadingMore}
-	<div class="timeline-load-more {className}" role="status" aria-live="polite">
+	<div class={`timeline-load-more ${className}`} role="status" aria-live="polite">
 		{#if context.state.loadingMore}
 			{#if loading}
 				{@render loading()}

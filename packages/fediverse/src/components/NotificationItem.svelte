@@ -122,7 +122,7 @@
 </script>
 
 <article
-  class="notification-item {density}"
+  class={`notification-item ${density}`}
   class:unread={isUnread}
   class:highlighted={shouldHighlight}
   class:grouped={isGrouped}
@@ -131,7 +131,7 @@
   onkeydown={onClick ? handleKeyDown : undefined}
   {...onClick ? { role: "button", tabindex: 0 } : {}}
   aria-label={onClick ? "{displayTitle}. {isUnread ? 'Unread. ' : ''}Press Enter to open, M to mark as read, X to dismiss" : displayTitle}
-  aria-describedby="notification-time-{notification.id}"
+  aria-describedby={`notification-time-${notification.id}`}
 >
   <!-- Unread indicator -->
   {#if isUnread}
@@ -139,7 +139,7 @@
   {/if}
 
   <!-- Icon -->
-  <div class="notification-icon" style="color: {iconColor}">
+  <div class="notification-icon" style={`color: ${iconColor}`}>
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       {#if iconName === 'at-sign'}
         <circle cx="12" cy="12" r="4"></circle>
@@ -191,7 +191,7 @@
     {#each avatars as account (account.id)}
       <img
         src={account.avatar}
-        alt="{account.displayName} (@{account.acct})"
+        alt={`${account.displayName} (@${account.acct})`}
         class="avatar"
         loading="lazy"
       />
@@ -209,7 +209,7 @@
       <h3 class="notification-title">{displayTitle}</h3>
       <time 
         class="notification-time"
-        id="notification-time-{notification.id}"
+        id={`notification-time-${notification.id}`}
         datetime={new Date(notification.createdAt).toISOString()}
         title={new Date(notification.createdAt).toLocaleString()}
       >

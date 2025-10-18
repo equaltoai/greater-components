@@ -153,7 +153,7 @@
 
 	const {
 		mode = 'dropdown',
-		showMetadata = true,
+	showMetadata: _showMetadata = true,
 		showNotifications = true,
 		maxVisibleAccounts = 5,
 		class: className = '',
@@ -207,6 +207,13 @@
 		}
 	}
 
+	function handleRemoveKey(event: KeyboardEvent, accountId: string) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			removeAccount(accountId, event);
+		}
+	}
+
 	/**
 	 * Get display name for account
 	 */
@@ -252,7 +259,7 @@
 	);
 </script>
 
-<div class="instance-picker instance-picker--{mode} {className}">
+<div class={`instance-picker instance-picker--${mode} ${className}`}>
 	{#if mode === 'dropdown'}
 		<!-- Dropdown mode -->
 		<button use:menu.actions.trigger class="instance-picker__trigger" disabled={switching}>
@@ -290,8 +297,8 @@
 
 		{#if menu.state.open}
 			<div use:menu.actions.menu class="instance-picker__menu">
-				<div class="instance-picker__accounts" style="max-height: {maxVisibleAccounts * 64}px">
-					{#each sortedAccounts as account}
+				<div class="instance-picker__accounts" style={`max-height: ${maxVisibleAccounts * 64}px`}>
+					{#each sortedAccounts as account (account.id)}
 						<button
 							use:menu.actions.item={account.id}
 							class="instance-picker__account"
@@ -327,27 +334,30 @@
 									</span>
 								{/if}
 
-								{#if account.id === currentAccount.id}
-									<svg class="instance-picker__check" viewBox="0 0 24 24" fill="currentColor">
-										<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-									</svg>
-								{:else}
-									<button
-										class="instance-picker__remove"
-										onclick={(e) => removeAccount(account.id, e)}
-										disabled={removingId === account.id}
-										aria-label="Remove account"
-									>
-										{#if removingId === account.id}
-											<svg class="instance-picker__spinner" viewBox="0 0 24 24">
-												<circle class="instance-picker__spinner-track" cx="12" cy="12" r="10" />
-												<circle class="instance-picker__spinner-path" cx="12" cy="12" r="10" />
-											</svg>
-										{:else}
-											×
-										{/if}
-									</button>
-								{/if}
+					{#if account.id === currentAccount.id}
+						<svg class="instance-picker__check" viewBox="0 0 24 24" fill="currentColor">
+							<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+						</svg>
+					{:else}
+						<span
+							class="instance-picker__remove"
+							role="button"
+							tabindex="0"
+							onclick={(e) => removeAccount(account.id, e)}
+							onkeydown={(event) => handleRemoveKey(event, account.id)}
+							aria-label="Remove account"
+							aria-disabled={removingId === account.id}
+						>
+							{#if removingId === account.id}
+								<svg class="instance-picker__spinner" viewBox="0 0 24 24">
+									<circle class="instance-picker__spinner-track" cx="12" cy="12" r="10" />
+									<circle class="instance-picker__spinner-path" cx="12" cy="12" r="10" />
+								</svg>
+							{:else}
+								×
+							{/if}
+						</span>
+					{/if}
 							{/if}
 						</button>
 					{/each}
@@ -371,7 +381,7 @@
 			</div>
 
 			<div class="instance-picker__sidebar-list">
-				{#each sortedAccounts as account}
+				{#each sortedAccounts as account (account.id)}
 					<button
 						class="instance-picker__sidebar-account"
 						class:instance-picker__sidebar-account--active={account.id === currentAccount.id}
@@ -398,8 +408,12 @@
 					</button>
 				{/each}
 
-				{#if showAddAccount}
-					<button class="instance-picker__sidebar-add" onclick={() => handlers.onAddAccount?.()}>
+			{#if showAddAccount}
+				<button
+					class="instance-picker__sidebar-add"
+					onclick={() => handlers.onAddAccount?.()}
+					aria-label="Add account"
+				>
 						<svg viewBox="0 0 24 24" fill="currentColor">
 							<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
 						</svg>

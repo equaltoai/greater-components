@@ -15,21 +15,21 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, setType } = getSearchContext();
+	const { state: searchState, setType } = getSearchContext();
 
 	const filters: Array<{ id: SearchResultType; label: string; getCount: () => number }> = [
-		{ id: 'all', label: 'All', getCount: () => state.results.total },
-		{ id: 'actors', label: 'People', getCount: () => state.results.actors.length },
-		{ id: 'notes', label: 'Posts', getCount: () => state.results.notes.length },
-		{ id: 'tags', label: 'Tags', getCount: () => state.results.tags.length },
+		{ id: 'all', label: 'All', getCount: () => searchState.results.total },
+		{ id: 'actors', label: 'People', getCount: () => searchState.results.actors.length },
+		{ id: 'notes', label: 'Posts', getCount: () => searchState.results.notes.length },
+		{ id: 'tags', label: 'Tags', getCount: () => searchState.results.tags.length },
 	];
 </script>
 
-<div class="search-filters {className}">
+<div class={`search-filters ${className}`}>
 	{#each filters as filter}
 		<button
 			class="search-filters__tab"
-			class:search-filters__tab--active={state.type === filter.id}
+			class:search-filters__tab--active={searchState.type === filter.id}
 			onclick={() => setType(filter.id)}
 		>
 			<span>{filter.label}</span>

@@ -99,7 +99,7 @@ Shows hashtag, mention, and emoji suggestions while typing.
 	 */
 	$effect(() => {
 		if (menuEl && selectedIndex >= 0) {
-			const selectedEl = menuEl.querySelector(`[data-index="${selectedIndex}"]`) as HTMLElement;
+			const selectedEl = menuEl.querySelector(`[data-index={`$${selectedIndex}`}]`) as HTMLElement;
 			if (selectedEl) {
 				selectedEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 			}
@@ -109,8 +109,8 @@ Shows hashtag, mention, and emoji suggestions while typing.
 
 <div
 	bind:this={menuEl}
-	class="autocomplete-menu {className}"
-	style="left: {position.x}px; top: {position.y}px;"
+	class={`autocomplete-menu ${className}`}
+	style={`left: ${position.x}px; top: ${position.y}px;`}
 	role="listbox"
 	aria-label="Autocomplete suggestions"
 >

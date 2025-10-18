@@ -86,7 +86,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, updateState, clearError } = getAuthContext();
+	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	const authorizeButton = createButton({
 		onClick: () => handleAuthorize(),
@@ -100,7 +100,7 @@
 	 * Handle authorization approval
 	 */
 	async function handleAuthorize() {
-		if (state.loading) return;
+		if (authState.loading) return;
 
 		clearError();
 		updateState({ loading: true });
@@ -127,12 +127,12 @@
 	 * Handle authorization denial
 	 */
 	function handleDeny() {
-		if (state.loading) return;
+		if (authState.loading) return;
 		handlers.onOAuthDeny?.();
 	}
 </script>
 
-<div class="auth-oauth {className}">
+<div class={`auth-oauth ${className}`}>
 	<div class="auth-oauth__header">
 		{#if clientInfo.icon}
 			<img src={clientInfo.icon} alt={clientInfo.name} class="auth-oauth__app-icon" />
@@ -161,14 +161,14 @@
 		{/if}
 	</div>
 
-	{#if state.error}
+	{#if authState.error}
 		<div class="auth-oauth__error" role="alert">
 			<svg class="auth-oauth__error-icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			{state.error}
+			{authState.error}
 		</div>
 	{/if}
 
@@ -228,9 +228,9 @@
 		<button
 			use:authorizeButton.actions.button
 			class="auth-oauth__authorize"
-			disabled={state.loading}
+			disabled={authState.loading}
 		>
-			{#if state.loading}
+			{#if authState.loading}
 				<span class="auth-oauth__spinner"></span>
 				Authorizing...
 			{:else}
@@ -238,7 +238,7 @@
 			{/if}
 		</button>
 
-		<button use:denyButton.actions.button class="auth-oauth__deny" disabled={state.loading}>
+		<button use:denyButton.actions.button class="auth-oauth__deny" disabled={authState.loading}>
 			Cancel
 		</button>
 	</div>

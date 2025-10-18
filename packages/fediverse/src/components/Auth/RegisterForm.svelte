@@ -64,7 +64,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, updateState, clearError } = getAuthContext();
+	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	let email = $state('');
 	let username = $state('');
@@ -158,7 +158,7 @@
 	 * Handle form submission
 	 */
 	async function handleSubmit() {
-		if (state.loading) return;
+		if (authState.loading) return;
 
 		clearError();
 
@@ -190,23 +190,23 @@
 	 * Handle enter key in form
 	 */
 	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !state.loading) {
+		if (event.key === 'Enter' && !authState.loading) {
 			handleSubmit();
 		}
 	}
 </script>
 
-<div class="auth-register {className}">
+<div class={`auth-register ${className}`}>
 	<h2 class="auth-register__title">{title}</h2>
 
-	{#if state.error}
+	{#if authState.error}
 		<div class="auth-register__error" role="alert">
 			<svg class="auth-register__error-icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			{state.error}
+			{authState.error}
 		</div>
 	{/if}
 
@@ -227,7 +227,7 @@
 				bind:value={email}
 				placeholder="you@example.com"
 				required
-				disabled={state.loading}
+				disabled={authState.loading}
 				autocomplete="email"
 				onkeydown={handleKeyDown}
 			/>
@@ -246,7 +246,7 @@
 				bind:value={username}
 				placeholder="username"
 				required
-				disabled={state.loading}
+				disabled={authState.loading}
 				autocomplete="username"
 				onkeydown={handleKeyDown}
 			/>
@@ -268,7 +268,7 @@
 				class="auth-register__input"
 				bind:value={displayName}
 				placeholder="Your Name"
-				disabled={state.loading}
+				disabled={authState.loading}
 				autocomplete="name"
 				onkeydown={handleKeyDown}
 			/>
@@ -285,7 +285,7 @@
 				bind:value={password}
 				placeholder="••••••••"
 				required
-				disabled={state.loading}
+				disabled={authState.loading}
 				autocomplete="new-password"
 				onkeydown={handleKeyDown}
 			/>
@@ -308,7 +308,7 @@
 				bind:value={confirmPassword}
 				placeholder="••••••••"
 				required
-				disabled={state.loading}
+				disabled={authState.loading}
 				autocomplete="new-password"
 				onkeydown={handleKeyDown}
 			/>
@@ -328,7 +328,7 @@
 					bind:value={inviteCode}
 					placeholder="Enter invite code"
 					required
-					disabled={state.loading}
+					disabled={authState.loading}
 					onkeydown={handleKeyDown}
 				/>
 				{#if inviteError}
@@ -339,7 +339,7 @@
 
 		<div class="auth-register__terms">
 			<label class="auth-register__checkbox" class:auth-register__checkbox--error={termsError}>
-				<input type="checkbox" bind:checked={agreeToTerms} disabled={state.loading} required />
+				<input type="checkbox" bind:checked={agreeToTerms} disabled={authState.loading} required />
 				<span>
 					I agree to the
 					{#if termsUrl}
@@ -361,9 +361,9 @@
 		<button
 			use:submitButton.actions.button
 			class="auth-register__submit"
-			disabled={state.loading || !agreeToTerms}
+			disabled={authState.loading || !agreeToTerms}
 		>
-			{#if state.loading}
+			{#if authState.loading}
 				<span class="auth-register__spinner"></span>
 				Creating account...
 			{:else}
@@ -378,7 +378,7 @@
 			<button
 				class="auth-register__link"
 				onclick={() => handlers.onNavigateToLogin?.()}
-				disabled={state.loading}
+				disabled={authState.loading}
 			>
 				Sign in
 			</button>

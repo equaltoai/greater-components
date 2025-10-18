@@ -45,7 +45,7 @@
 	const context = createAuthContext(initialState, handlers);
 </script>
 
-<div class="auth-root {className}">
+<div class={`auth-root ${className}`}>
 	{#if children}
 		{@render children()}
 	{/if}

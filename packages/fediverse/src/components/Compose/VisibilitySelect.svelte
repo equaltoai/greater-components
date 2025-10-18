@@ -71,7 +71,7 @@ Dropdown for selecting post visibility (public, unlisted, private, direct).
 	}
 </script>
 
-<div class="compose-visibility-select {className}">
+<div class={`compose-visibility-select ${className}`}>
 	<label for="compose-visibility" class="compose-visibility-select__label"> Visibility </label>
 	<select
 		id="compose-visibility"

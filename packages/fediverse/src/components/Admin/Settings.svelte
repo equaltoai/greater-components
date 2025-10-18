@@ -18,7 +18,7 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, fetchSettings, handlers } = getAdminContext();
+	const { state: adminState, fetchSettings, handlers } = getAdminContext();
 
 	let editedSettings = $state<InstanceSettings | null>(null);
 	let hasChanges = $state(false);
@@ -33,14 +33,14 @@
 	});
 
 	$effect(() => {
-		if (state.settings && !editedSettings) {
-			editedSettings = { ...state.settings };
+		if (adminState.settings && !editedSettings) {
+			editedSettings = { ...adminState.settings };
 		}
 	});
 
 	$effect(() => {
-		if (editedSettings && state.settings) {
-			hasChanges = JSON.stringify(editedSettings) !== JSON.stringify(state.settings);
+		if (editedSettings && adminState.settings) {
+			hasChanges = JSON.stringify(editedSettings) !== JSON.stringify(adminState.settings);
 		}
 	});
 
@@ -58,14 +58,14 @@
 	}
 
 	function handleReset() {
-		if (state.settings) {
-			editedSettings = { ...state.settings };
+		if (adminState.settings) {
+			editedSettings = { ...adminState.settings };
 			hasChanges = false;
 		}
 	}
 </script>
 
-<div class="admin-settings {className}">
+<div class={`admin-settings ${className}`}>
 	<div class="admin-settings__header">
 		<h2 class="admin-settings__title">Instance Settings</h2>
 		{#if hasChanges}
@@ -91,7 +91,7 @@
 		{/if}
 	</div>
 
-	{#if state.loading && !editedSettings}
+	{#if adminState.loading && !editedSettings}
 		<div class="admin-settings__loading">Loading settings...</div>
 	{:else if editedSettings}
 		<div class="admin-settings__sections">

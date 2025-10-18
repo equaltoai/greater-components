@@ -77,7 +77,7 @@ Provides context for child components and handles root-level interactions.
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <article
-	class="status-root {context.config.class}"
+	class={`status-root ${context.config.class}`}
 	class:status-root--compact={context.config.density === 'compact'}
 	class:status-root--comfortable={context.config.density === 'comfortable'}
 	class:status-root--clickable={context.config.clickable}

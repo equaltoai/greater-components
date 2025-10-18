@@ -17,7 +17,7 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, fetchInstances, handlers } = getAdminContext();
+	const { state: adminState, fetchInstances, handlers } = getAdminContext();
 
 	let blockModalOpen = $state(false);
 	let selectedDomain = $state<string | null>(null);
@@ -25,12 +25,19 @@
 	let filterStatus = $state<'all' | 'allowed' | 'limited' | 'blocked'>('all');
 
 	const blockModal = createModal({
-		open: blockModalOpen,
 		onClose: () => {
 			blockModalOpen = false;
 			blockReason = '';
 			selectedDomain = null;
 		},
+	});
+
+	$effect(() => {
+		if (blockModalOpen) {
+			blockModal.helpers.open();
+		} else {
+			blockModal.helpers.close();
+		}
 	});
 
 	onMount(() => {
@@ -39,8 +46,8 @@
 
 	const filteredInstances = $derived(
 		filterStatus === 'all'
-			? state.instances
-			: state.instances.filter((i) => i.status === filterStatus)
+			? adminState.instances
+			: adminState.instances.filter((i) => i.status === filterStatus)
 	);
 
 	function openBlockModal(domain: string) {
@@ -64,7 +71,7 @@
 	}
 </script>
 
-<div class="admin-federation {className}">
+<div class={`admin-federation ${className}`}>
 	<div class="admin-federation__header">
 		<h2 class="admin-federation__title">Federation Management</h2>
 		<div class="admin-federation__filters">
@@ -99,7 +106,7 @@
 		</div>
 	</div>
 
-	{#if state.loading}
+	{#if adminState.loading}
 		<div class="admin-federation__loading">
 			<div class="admin-federation__spinner"></div>
 			<p>Loading instances...</p>
@@ -117,8 +124,8 @@
 						<th>Actions</th>
 					</tr>
 				</thead>
-				<tbody>
-					{#each filteredInstances as instance}
+			<tbody>
+				{#each filteredInstances as instance (instance.domain)}
 						<tr>
 							<td class="admin-federation__domain">{instance.domain}</td>
 							<td>
@@ -133,7 +140,7 @@
 							</td>
 							<td>{instance.usersCount || '-'}</td>
 							<td>
-								<span class="admin-federation__badge admin-federation__badge--{instance.status}">
+								<span class={`admin-federation__badge admin-federation__badge--${instance.status}`}>
 									{instance.status}
 								</span>
 							</td>
@@ -486,4 +493,3 @@
 		cursor: not-allowed;
 	}
 </style>
-

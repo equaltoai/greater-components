@@ -6,14 +6,7 @@
     NotificationGroup, 
     NotificationsFeedProps 
   } from '../types';
-  import { 
-    groupNotifications, 
-    getGroupTitle, 
-    getNotificationIcon, 
-    getNotificationColor,
-    formatNotificationTime,
-    shouldHighlightNotification
-  } from '../utils/notificationGrouping';
+  import { groupNotifications } from '../utils/notificationGrouping';
   import NotificationItem from './NotificationItem.svelte';
   
   interface Props extends NotificationsFeedProps {
@@ -154,13 +147,6 @@
     onMarkAllAsRead?.();
   }
 
-  function handleKeyDown(event: KeyboardEvent, notification: Notification) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleNotificationClick(notification);
-    }
-  }
-
   // Count unread notifications
   const unreadCount = $derived(() => {
     return notifications.filter(n => !n.read).length;
@@ -168,7 +154,7 @@
 </script>
 
 <div 
-  class="notifications-feed {className} {density}"
+  class={`notifications-feed ${className} ${density}`}
   role="main"
   aria-label="Notifications feed"
 >
@@ -176,7 +162,7 @@
   {#if notifications.length > 0 && unreadCount > 0}
     <div class="feed-header">
       <div class="unread-indicator">
-        <span class="unread-count" aria-label="{unreadCount} unread notifications">
+        <span class="unread-count" aria-label={`${unreadCount} unread notifications`}>
           {unreadCount} unread
         </span>
       </div>
@@ -225,7 +211,7 @@
     >
       <div 
         class="virtual-list"
-        style="height: {totalSize}px; position: relative;"
+        style={`height: ${totalSize}px; position: relative;`}
       >
         {#each virtualItems as virtualItem (getItemId(processedItems[virtualItem.index]))}
           {@const item = processedItems[virtualItem.index]}
@@ -468,8 +454,14 @@
 </style>
 
 <script module lang="ts">
-  function isNotificationGroup(item: any): item is NotificationGroup {
-    return item && typeof item === 'object' && 'notifications' in item && Array.isArray(item.notifications);
+  import type { Notification, NotificationGroup } from '../types';
+
+  function isNotificationGroup(item: unknown): item is NotificationGroup {
+    if (!item || typeof item !== 'object') {
+      return false;
+    }
+
+    return 'notifications' in item && Array.isArray((item as NotificationGroup).notifications);
   }
 
   function getItemId(item: Notification | NotificationGroup): string {

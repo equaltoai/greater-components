@@ -66,7 +66,7 @@ Shows error message with retry action.
 	});
 </script>
 
-<div class="timeline-error {className}" role="alert">
+<div class={`timeline-error ${className}`} role="alert">
 	{#if children}
 		{@render children()}
 	{:else}

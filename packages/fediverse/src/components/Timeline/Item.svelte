@@ -67,7 +67,7 @@ Can be used with Status compound component or custom content.
 </script>
 
 <article
-	class="timeline-item {className}"
+	class={`timeline-item ${className}`}
 	data-index={index}
 	data-status-id={status.id}
 	onclick={context.handlers.onItemClick ? handleClick : undefined}

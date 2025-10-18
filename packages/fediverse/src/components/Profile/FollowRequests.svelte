@@ -209,7 +209,7 @@ Supports batch operations and request filtering.
 	}
 </script>
 
-<div class="follow-requests {className}">
+<div class={`follow-requests ${className}`}>
 	<div class="follow-requests__header">
 		<h2 class="follow-requests__title">
 			Follow Requests
@@ -283,7 +283,7 @@ Supports batch operations and request filtering.
 							checked={isSelected}
 							onchange={() => toggleSelection(request.id)}
 							disabled={isProcessing}
-							aria-label="Select request from {request.account.displayName}"
+							aria-label={`Select request from ${request.account.displayName}`}
 						/>
 					{/if}
 
@@ -324,7 +324,7 @@ Supports batch operations and request filtering.
 							onclick={() => handleApprove(request.id)}
 							disabled={isProcessing}
 							type="button"
-							aria-label="Approve follow request from {request.account.displayName}"
+							aria-label={`Approve follow request from ${request.account.displayName}`}
 						>
 							{isProcessing ? '...' : 'Approve'}
 						</button>
@@ -333,7 +333,7 @@ Supports batch operations and request filtering.
 							onclick={() => handleReject(request.id)}
 							disabled={isProcessing}
 							type="button"
-							aria-label="Reject follow request from {request.account.displayName}"
+							aria-label={`Reject follow request from ${request.account.displayName}`}
 						>
 							{isProcessing ? '...' : 'Reject'}
 						</button>

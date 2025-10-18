@@ -74,7 +74,7 @@ Main content editing textarea with auto-resize and placeholder.
 
 <textarea
 	bind:this={textareaEl}
-	class="compose-editor {className}"
+	class={`compose-editor ${className}`}
 	{rows}
 	{autofocus}
 	placeholder={context.config.placeholder}

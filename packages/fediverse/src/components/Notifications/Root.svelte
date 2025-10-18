@@ -90,7 +90,7 @@ Provides context for child components and handles overall notifications display.
 </script>
 
 <div
-	class="notifications-root notifications-root--{context.config.mode} {context.config.class}"
+	class={`notifications-root notifications-root--${context.config.mode} ${context.config.class}`}
 	class:notifications-root--loading={context.state.loading}
 	role="feed"
 	aria-busy={context.state.loading}

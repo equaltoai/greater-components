@@ -16,13 +16,13 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, handlers } = getListsContext();
+	const { state: listsState, handlers } = getListsContext();
 
 	let searchQuery = $state('');
 	let searchResults = $state<ListMember[]>([]);
 	let searching = $state(false);
 
-	const currentList = $derived(state.selectedList);
+	const currentList = $derived(listsState.selectedList);
 	const currentMembers = $derived(currentList?.members || []);
 
 	async function handleSearch() {
@@ -88,7 +88,7 @@
 </script>
 
 {#if currentList}
-	<div class="member-picker {className}">
+	<div class={`member-picker ${className}`}>
 		<div class="member-picker__header">
 			<h3 class="member-picker__title">Manage Members</h3>
 			<p class="member-picker__subtitle">

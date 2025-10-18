@@ -16,7 +16,6 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createButton } from '@greater/headless/button';
 	import { createMenu } from '@greater/headless/menu';
 	import type { Status } from '../types.js';
 
@@ -233,7 +232,6 @@
 	const {
 		enableFolders = true,
 		enableTags = true,
-		enableNotes = true,
 		enableArchive = true,
 		enableBulkActions = true,
 		enableExport = true,
@@ -255,7 +253,6 @@
 	let sortBy = $state(defaultSort);
 	let showArchived = $state(false);
 	let selectedBookmarks = $state<Set<string>>(new Set());
-	let editingNotesId = $state<string | null>(null);
 	let currentPage = $state(1);
 
 	// Menu for bulk actions
@@ -398,13 +395,6 @@
 	}
 
 	/**
-	 * Change folder
-	 */
-	async function changeFolder(bookmarkId: string, folder: string | null) {
-		await handlers.onFolderChange?.(bookmarkId, folder);
-	}
-
-	/**
 	 * Toggle tag
 	 */
 	function toggleTag(tag: string) {
@@ -434,7 +424,7 @@
 	}
 </script>
 
-<div class="bookmark-manager bookmark-manager--{viewMode} {className}">
+<div class={`bookmark-manager bookmark-manager--${viewMode} ${className}`}>
 	<div class="bookmark-manager__header">
 		<div class="bookmark-manager__title">
 			<h2>Bookmarks</h2>
@@ -491,6 +481,7 @@
 					class="bookmark-manager__export-btn"
 					onclick={() => handleExport('json')}
 					title="Export all"
+					aria-label="Export all bookmarks"
 				>
 					<svg viewBox="0 0 24 24" fill="currentColor">
 						<path
@@ -520,7 +511,7 @@
 		{/if}
 
 		<select bind:value={sortBy} class="bookmark-manager__sort">
-			{#each sortOptions as option}
+			{#each sortOptions as option (option.value)}
 				<option value={option.value}>{option.label}</option>
 			{/each}
 		</select>
@@ -551,7 +542,7 @@
 					<span class="bookmark-manager__folder-count">{bookmarks.length}</span>
 				</button>
 
-				{#each folders as folder}
+				{#each folders as folder (folder.name)}
 					<button
 						class="bookmark-manager__folder"
 						class:bookmark-manager__folder--active={selectedFolder === folder.name}
@@ -573,7 +564,7 @@
 			<div class="bookmark-manager__tags">
 				<h3>Tags</h3>
 				<div class="bookmark-manager__tag-list">
-					{#each availableTags as tag}
+					{#each availableTags as tag (tag)}
 						<button
 							class="bookmark-manager__tag"
 							class:bookmark-manager__tag--active={selectedTags.includes(tag)}
@@ -621,7 +612,7 @@
 			{/if}
 
 			<div class="bookmark-manager__list">
-				{#each paginatedBookmarks as bookmark}
+				{#each paginatedBookmarks as bookmark (bookmark.id)}
 					{#if renderBookmark}
 						{@render renderBookmark(bookmark, selectedBookmarks.has(bookmark.id))}
 					{:else}
@@ -651,19 +642,17 @@
 							</button>
 
 							<div class="bookmark-manager__item-actions">
-								{#if bookmark.folder}
-									<span
-										class="bookmark-manager__folder-badge"
-										style="background-color: {getFolderColor(
-											bookmark.folder
-										)}20; color: {getFolderColor(bookmark.folder)}"
-									>
+				{#if bookmark.folder}
+					<span
+						class="bookmark-manager__folder-badge"
+						style={`background-color: ${getFolderColor(bookmark.folder)}20; color: ${getFolderColor(bookmark.folder)}`}
+					>
 										{bookmark.folder}
 									</span>
 								{/if}
 
 								{#if bookmark.tags}
-									{#each bookmark.tags as tag}
+									{#each bookmark.tags as tag (tag)}
 										<span class="bookmark-manager__tag-badge">#{tag}</span>
 									{/each}
 								{/if}
@@ -672,6 +661,7 @@
 									class="bookmark-manager__action-btn"
 									onclick={() => removeBookmark(bookmark.id)}
 									title="Remove bookmark"
+									aria-label="Remove bookmark"
 								>
 									<svg viewBox="0 0 24 24" fill="currentColor">
 										<path

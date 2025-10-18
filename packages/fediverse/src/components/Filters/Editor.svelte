@@ -6,12 +6,7 @@
 <script lang="ts">
 	import { createButton } from '@greater/headless/button';
 	import { createModal } from '@greater/headless/modal';
-	import {
-		getFiltersContext,
-		calculateExpiresAt,
-		type FilterContext,
-		type FilterFormData,
-	} from './context.js';
+	import { getFiltersContext, type FilterContext, type FilterFormData } from './context.js';
 
 	interface Props {
 		class?: string;
@@ -19,7 +14,7 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, createFilter, updateFilter, closeEditor } = getFiltersContext();
+	const { state: filtersState, createFilter, updateFilter, closeEditor } = getFiltersContext();
 
 	// Form state
 	let phrase = $state('');
@@ -30,16 +25,16 @@
 
 	// Initialize form when editing
 	$effect(() => {
-		if (state.selectedFilter) {
-			phrase = state.selectedFilter.phrase;
-			contexts = [...state.selectedFilter.context];
-			irreversible = state.selectedFilter.irreversible;
-			wholeWord = state.selectedFilter.wholeWord;
+		if (filtersState.selectedFilter) {
+			phrase = filtersState.selectedFilter.phrase;
+			contexts = [...filtersState.selectedFilter.context];
+			irreversible = filtersState.selectedFilter.irreversible;
+			wholeWord = filtersState.selectedFilter.wholeWord;
 
 			// Calculate expiresIn from expiresAt
-			if (state.selectedFilter.expiresAt) {
+			if (filtersState.selectedFilter.expiresAt) {
 				const now = new Date();
-				const expires = new Date(state.selectedFilter.expiresAt);
+				const expires = new Date(filtersState.selectedFilter.expiresAt);
 				const diff = expires.getTime() - now.getTime();
 				expiresIn = Math.floor(diff / 1000);
 			} else {
@@ -55,13 +50,21 @@
 		}
 	});
 
-	const isOpen = $derived(state.editorOpen);
+	const isOpen = $derived(filtersState.editorOpen);
 	const isValid = $derived(phrase.trim().length > 0 && contexts.length > 0);
 
-	const modal = createModal({ open: isOpen });
+	const modal = createModal();
+
+	$effect(() => {
+		if (isOpen) {
+			modal.helpers.open();
+		} else {
+			modal.helpers.close();
+		}
+	});
 
 	async function handleSubmit() {
-		if (!isValid || state.saving) return;
+		if (!isValid || filtersState.saving) return;
 
 		const formData: FilterFormData = {
 			phrase: phrase.trim(),
@@ -72,12 +75,12 @@
 		};
 
 		try {
-			if (state.selectedFilter) {
-				await updateFilter(state.selectedFilter.id, formData);
+			if (filtersState.selectedFilter) {
+				await updateFilter(filtersState.selectedFilter.id, formData);
 			} else {
 				await createFilter(formData);
 			}
-		} catch (error) {
+		} catch (_error) {
 			// Error handled by context
 		}
 	}
@@ -139,10 +142,10 @@
 
 {#if isOpen}
 	<div use:modal.actions.backdrop class="filter-editor__backdrop">
-		<div use:modal.actions.content class="filter-editor__modal {className}">
+		<div use:modal.actions.content class={`filter-editor__modal ${className}`}>
 			<div class="filter-editor__header">
 				<h3 class="filter-editor__title">
-					{state.selectedFilter ? 'Edit Filter' : 'New Filter'}
+					{filtersState.selectedFilter ? 'Edit Filter' : 'New Filter'}
 				</h3>
 				<button use:modal.actions.close class="filter-editor__close" aria-label="Close"> × </button>
 			</div>
@@ -154,24 +157,23 @@
 					handleSubmit();
 				}}
 			>
-				{#if state.error}
+				{#if filtersState.error}
 					<div class="filter-editor__error" role="alert">
-						{state.error}
+						{filtersState.error}
 					</div>
 				{/if}
 
 				<!-- Phrase Input -->
 				<div class="filter-editor__field">
 					<label for="filter-phrase" class="filter-editor__label"> Keyword or phrase </label>
-					<input
-						id="filter-phrase"
-						type="text"
-						class="filter-editor__input"
-						bind:value={phrase}
-						placeholder="e.g., spoilers, politics, crypto"
-						required
-						autofocus
-					/>
+				<input
+					id="filter-phrase"
+					type="text"
+					class="filter-editor__input"
+					bind:value={phrase}
+					placeholder="e.g., spoilers, politics, crypto"
+					required
+				/>
 					<p class="filter-editor__hint">Posts containing this text will be filtered</p>
 				</div>
 
@@ -190,11 +192,11 @@
 					</p>
 				</div>
 
-				<!-- Contexts -->
-				<div class="filter-editor__field">
-					<label class="filter-editor__label"> Filter in </label>
-					<div class="filter-editor__contexts">
-						{#each allContexts as context}
+			<!-- Contexts -->
+			<div class="filter-editor__field">
+				<p class="filter-editor__label">Filter in</p>
+				<div class="filter-editor__contexts">
+					{#each allContexts as context (context.value)}
 							<button
 								type="button"
 								class="filter-editor__context-button"
@@ -224,9 +226,9 @@
 
 				<!-- Expiration -->
 				<div class="filter-editor__field">
-					<label for="filter-expires" class="filter-editor__label"> Expire after </label>
-					<select id="filter-expires" class="filter-editor__select" bind:value={expiresIn}>
-						{#each expirationOptions as option}
+				<label for="filter-expires" class="filter-editor__label"> Expire after </label>
+				<select id="filter-expires" class="filter-editor__select" bind:value={expiresIn}>
+					{#each expirationOptions as option (option.value ?? 'never')}
 							<option value={option.value}>
 								{option.label}
 							</option>
@@ -241,9 +243,9 @@
 					</p>
 				</div>
 
-				<!-- Filter Action -->
-				<div class="filter-editor__field">
-					<label class="filter-editor__label"> Filter action </label>
+			<!-- Filter Action -->
+			<div class="filter-editor__field">
+				<p class="filter-editor__label">Filter action</p>
 					<div class="filter-editor__radio-group">
 						<label class="filter-editor__radio">
 							<input
@@ -284,19 +286,19 @@
 				<button
 					use:cancelButton.actions.button
 					class="filter-editor__button filter-editor__button--secondary"
-					disabled={state.saving}
+					disabled={filtersState.saving}
 				>
 					Cancel
 				</button>
 				<button
 					use:saveButton.actions.button
 					class="filter-editor__button filter-editor__button--primary"
-					disabled={state.saving || !isValid}
+					disabled={filtersState.saving || !isValid}
 				>
-					{#if state.saving}
+					{#if filtersState.saving}
 						Saving...
 					{:else}
-						{state.selectedFilter ? 'Update Filter' : 'Create Filter'}
+						{filtersState.selectedFilter ? 'Update Filter' : 'Create Filter'}
 					{/if}
 				</button>
 			</div>

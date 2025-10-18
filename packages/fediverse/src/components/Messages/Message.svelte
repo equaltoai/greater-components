@@ -16,7 +16,7 @@
 	const isOwnMessage = $derived(message.sender.id === currentUserId);
 </script>
 
-<div class="message {className}" class:message--own={isOwnMessage}>
+<div class={`message ${className}`} class:message--own={isOwnMessage}>
 	{#if !isOwnMessage}
 		<div class="message__avatar">
 			{#if message.sender.avatar}

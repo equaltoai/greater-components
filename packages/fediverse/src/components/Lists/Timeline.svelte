@@ -7,7 +7,6 @@
   @component
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
 	import { getListsContext } from './context.js';
 
 	interface Props {
@@ -25,26 +24,26 @@
 
 	let { showMembers = true, class: className = '' }: Props = $props();
 
-	const { state, removeMember, handlers } = getListsContext();
+	const { state: listsState, removeMember } = getListsContext();
 
 	function handleRemoveMember(memberId: string) {
 		removeMember(memberId);
 	}
 </script>
 
-{#if state.selectedList}
-	<div class="lists-timeline {className}">
+{#if listsState.selectedList}
+	<div class={`lists-timeline ${className}`}>
 		<div class="lists-timeline__header">
 			<div>
-				<h2 class="lists-timeline__title">{state.selectedList.title}</h2>
-				{#if state.selectedList.description}
-					<p class="lists-timeline__description">{state.selectedList.description}</p>
+				<h2 class="lists-timeline__title">{listsState.selectedList.title}</h2>
+				{#if listsState.selectedList.description}
+					<p class="lists-timeline__description">{listsState.selectedList.description}</p>
 				{/if}
 			</div>
 			<div class="lists-timeline__meta">
 				<span class="lists-timeline__visibility">
 					<svg viewBox="0 0 24 24" fill="currentColor">
-						{#if state.selectedList.visibility === 'public'}
+						{#if listsState.selectedList.visibility === 'public'}
 							<path
 								d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
 							/>
@@ -54,20 +53,20 @@
 							/>
 						{/if}
 					</svg>
-					{state.selectedList.visibility === 'public' ? 'Public' : 'Private'}
+					{listsState.selectedList.visibility === 'public' ? 'Public' : 'Private'}
 				</span>
 				<span class="lists-timeline__count">
-					{state.selectedList.membersCount}
-					{state.selectedList.membersCount === 1 ? 'member' : 'members'}
+					{listsState.selectedList.membersCount}
+					{listsState.selectedList.membersCount === 1 ? 'member' : 'members'}
 				</span>
 			</div>
 		</div>
 
-		{#if showMembers && state.members.length > 0}
+		{#if showMembers && listsState.members.length > 0}
 			<div class="lists-timeline__members">
 				<h3 class="lists-timeline__members-title">Members</h3>
 				<div class="lists-timeline__members-list">
-					{#each state.members as member}
+					{#each listsState.members as member (member.id)}
 						<div class="lists-timeline__member">
 							<div class="lists-timeline__member-avatar">
 								{#if member.actor.avatar}
@@ -82,11 +81,12 @@
 								<span class="lists-timeline__member-name">{member.actor.displayName}</span>
 								<span class="lists-timeline__member-username">@{member.actor.username}</span>
 							</div>
-							<button
-								class="lists-timeline__member-remove"
-								onclick={() => handleRemoveMember(member.id)}
-								title="Remove from list"
-							>
+						<button
+							class="lists-timeline__member-remove"
+							onclick={() => handleRemoveMember(member.id)}
+							title="Remove from list"
+							aria-label="Remove member from list"
+						>
 								<svg viewBox="0 0 24 24" fill="currentColor">
 									<path
 										d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"

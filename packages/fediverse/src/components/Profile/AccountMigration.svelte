@@ -165,7 +165,7 @@ Handles account migration workflow:
 	);
 </script>
 
-<div class="account-migration {className}">
+<div class={`account-migration ${className}`}>
 	{#if !isOwnProfile && isCompleted}
 		<!-- Migration notice for visitors -->
 		<div class="account-migration__notice account-migration__notice--completed">
@@ -181,7 +181,7 @@ Handles account migration workflow:
 				<p class="account-migration__notice-text">The owner of this account has migrated to:</p>
 				{#if migration?.targetAccount}
 					<a
-						href="/profile/{migration.targetAccount.username}"
+						href={`/profile/${migration.targetAccount.username}`}
 						class="account-migration__target-link"
 					>
 						<img
@@ -213,7 +213,7 @@ Handles account migration workflow:
 
 			{#if hasMigration && migration}
 				<!-- Existing migration status -->
-				<div class="account-migration__status account-migration__status--{migration.status}">
+				<div class={`account-migration__status account-migration__status--${migration.status}`}>
 					<div class="account-migration__status-header">
 						{#if isPending}
 							<span

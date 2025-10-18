@@ -49,7 +49,7 @@ Allows users to filter notifications by type (all, mentions, follows, etc.).
 	}
 </script>
 
-<nav class="notification-filter {className}" aria-label="Filter notifications">
+<nav class={`notification-filter ${className}`} aria-label="Filter notifications">
 	<div class="notification-filter__tabs">
 		{#each filters as filter}
 			<button

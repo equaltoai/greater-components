@@ -66,7 +66,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, updateState, clearError } = getAuthContext();
+	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	let email = $state('');
 	let password = $state('');
@@ -110,7 +110,7 @@
 	 * Handle form submission
 	 */
 	async function handleSubmit() {
-		if (state.loading) return;
+		if (authState.loading) return;
 
 		clearError();
 
@@ -139,7 +139,7 @@
 	 * Handle WebAuthn login
 	 */
 	async function handleWebAuthn() {
-		if (state.loading) return;
+		if (authState.loading) return;
 
 		clearError();
 
@@ -170,23 +170,23 @@
 	 * Handle enter key in form
 	 */
 	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !state.loading) {
+		if (event.key === 'Enter' && !authState.loading) {
 			handleSubmit();
 		}
 	}
 </script>
 
-<div class="auth-login {className}">
+<div class={`auth-login ${className}`}>
 	<h2 class="auth-login__title">{title}</h2>
 
-	{#if state.error}
+	{#if authState.error}
 		<div class="auth-login__error" role="alert">
 			<svg class="auth-login__error-icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			{state.error}
+			{authState.error}
 		</div>
 	{/if}
 
@@ -207,7 +207,7 @@
 				bind:value={email}
 				placeholder="you@example.com"
 				required
-				disabled={state.loading}
+				disabled={authState.loading}
 				autocomplete="email"
 				onkeydown={handleKeyDown}
 			/>
@@ -226,7 +226,7 @@
 				bind:value={password}
 				placeholder="••••••••"
 				required
-				disabled={state.loading}
+				disabled={authState.loading}
 				autocomplete="current-password"
 				onkeydown={handleKeyDown}
 			/>
@@ -238,7 +238,7 @@
 		<div class="auth-login__options">
 			{#if showRememberMe}
 				<label class="auth-login__checkbox">
-					<input type="checkbox" bind:checked={remember} disabled={state.loading} />
+					<input type="checkbox" bind:checked={remember} disabled={authState.loading} />
 					<span>Remember me</span>
 				</label>
 			{/if}
@@ -248,7 +248,7 @@
 					type="button"
 					class="auth-login__link"
 					onclick={() => handlers.onNavigateToForgotPassword?.()}
-					disabled={state.loading}
+					disabled={authState.loading}
 				>
 					Forgot password?
 				</button>
@@ -258,9 +258,9 @@
 		<button
 			use:submitButton.actions.button
 			class="auth-login__submit"
-			disabled={state.loading || !email || !password}
+			disabled={authState.loading || !email || !password}
 		>
-			{#if state.loading}
+			{#if authState.loading}
 				<span class="auth-login__spinner"></span>
 				Signing in...
 			{:else}
@@ -277,7 +277,7 @@
 		<button
 			use:webAuthnButton.actions.button
 			class="auth-login__webauthn"
-			disabled={state.loading || !email}
+			disabled={authState.loading || !email}
 		>
 			<svg class="auth-login__webauthn-icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
@@ -294,7 +294,7 @@
 			<button
 				class="auth-login__link"
 				onclick={() => handlers.onNavigateToRegister?.()}
-				disabled={state.loading}
+				disabled={authState.loading}
 			>
 				Sign up
 			</button>

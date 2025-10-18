@@ -281,7 +281,7 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 <div class="editor-with-autocomplete">
 	<textarea
 		bind:this={textareaEl}
-		class="compose-editor {className}"
+		class={`compose-editor ${className}`}
 		{rows}
 		{autofocus}
 		placeholder={context.config.placeholder}

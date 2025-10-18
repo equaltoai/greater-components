@@ -54,7 +54,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, search, clear, toggleSemantic, updateState } = getSearchContext();
+	const { state: searchState, search, clear, toggleSemantic, updateState } = getSearchContext();
 
 	let showRecentDropdown = $state(false);
 
@@ -70,7 +70,7 @@
 	 * Handle search submission
 	 */
 	function handleSearch() {
-		if (state.query.trim()) {
+		if (searchState.query.trim()) {
 			search();
 			showRecentDropdown = false;
 		}
@@ -89,7 +89,7 @@
 	 */
 	function handleInput(value: string) {
 		updateState({ query: value });
-		showRecentDropdown = showRecent && !value.trim() && state.recentSearches.length > 0;
+		showRecentDropdown = showRecent && !value.trim() && searchState.recentSearches.length > 0;
 	}
 
 	/**
@@ -113,7 +113,7 @@
 	}
 </script>
 
-<div class="search-bar {className}">
+<div class={`search-bar ${className}`}>
 	<div class="search-bar__input-wrapper">
 		<svg class="search-bar__icon" viewBox="0 0 24 24" fill="currentColor">
 			<path
@@ -125,16 +125,16 @@
 			type="text"
 			class="search-bar__input"
 			{placeholder}
-			value={state.query}
+			value={searchState.query}
 			oninput={(e) => handleInput(e.currentTarget.value)}
 			onkeydown={handleKeyDown}
 			onfocus={() =>
-				(showRecentDropdown = showRecent && !state.query.trim() && state.recentSearches.length > 0)}
-			disabled={state.loading}
+				(showRecentDropdown = showRecent && !searchState.query.trim() && searchState.recentSearches.length > 0)}
+			disabled={searchState.loading}
 			{autofocus}
 		/>
 
-		{#if state.query}
+		{#if searchState.query}
 			<button use:clearButton.actions.button class="search-bar__clear" aria-label="Clear search">
 				<svg viewBox="0 0 24 24" fill="currentColor">
 					<path
@@ -147,9 +147,9 @@
 		{#if showSemantic}
 			<button
 				class="search-bar__semantic"
-				class:search-bar__semantic--active={state.semantic}
+				class:search-bar__semantic--active={searchState.semantic}
 				onclick={toggleSemantic}
-				disabled={state.loading}
+				disabled={searchState.loading}
 				title="AI Semantic Search"
 			>
 				<svg viewBox="0 0 24 24" fill="currentColor">
@@ -163,9 +163,9 @@
 		<button
 			use:searchButton.actions.button
 			class="search-bar__submit"
-			disabled={state.loading || !state.query.trim()}
+			disabled={searchState.loading || !searchState.query.trim()}
 		>
-			{#if state.loading}
+			{#if searchState.loading}
 				<span class="search-bar__spinner"></span>
 			{:else}
 				Search
@@ -184,7 +184,7 @@
 					</button>
 				</div>
 				<div class="search-bar__recent-list">
-					{#each state.recentSearches as recent}
+					{#each searchState.recentSearches as recent}
 						<button class="search-bar__recent-item" onclick={() => handleRecentClick(recent)}>
 							<svg viewBox="0 0 24 24" fill="currentColor">
 								<path

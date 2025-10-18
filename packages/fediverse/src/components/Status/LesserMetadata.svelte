@@ -102,7 +102,7 @@ for statuses from Lesser instances.
 </script>
 
 {#if hasLesserData}
-	<div class="status-lesser-metadata {className}">
+	<div class={`status-lesser-metadata ${className}`}>
 		{#if metadata}
 			{@render metadata()}
 		{:else}
@@ -123,8 +123,8 @@ for statuses from Lesser instances.
 				<!-- Trust Score Badge -->
 				{#if showTrust && trustScore !== undefined}
 					<span
-						class="lesser-badge lesser-badge--trust lesser-badge--trust-{trustColor()}"
-						title="Account trust score: {trustScore}/100"
+						class={`lesser-badge lesser-badge--trust lesser-badge--trust-${trustColor()}`}
+						title={`Account trust score: ${trustScore}/100`}
 					>
 						<svg class="lesser-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
 							<path
@@ -140,7 +140,7 @@ for statuses from Lesser instances.
 				{#if showModeration && hasModerationWarning}
 					<span
 						class="lesser-badge lesser-badge--moderation"
-						title="AI moderation: {aiAnalysis?.moderationAction}"
+						title={`AI moderation: ${aiAnalysis?.moderationAction}`}
 					>
 						<svg class="lesser-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
 							<path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
@@ -161,7 +161,7 @@ for statuses from Lesser instances.
 
 				<!-- Quote Count -->
 				{#if showQuotes && quoteCount !== undefined && quoteCount > 0}
-					<span class="lesser-badge lesser-badge--quote-count" title="{quoteCount} quotes">
+					<span class="lesser-badge lesser-badge--quote-count" title={`${quoteCount} quotes`}>
 						<svg class="lesser-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
 							<path fill="currentColor" d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
 						</svg>

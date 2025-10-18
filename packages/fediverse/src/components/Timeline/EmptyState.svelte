@@ -64,7 +64,7 @@ Shows a message and optional action when timeline is empty.
 	}: Props = $props();
 </script>
 
-<div class="timeline-empty {className}" role="status">
+<div class={`timeline-empty ${className}`} role="status">
 	{#if children}
 		{@render children()}
 	{:else}

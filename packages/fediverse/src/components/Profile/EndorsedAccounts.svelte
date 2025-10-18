@@ -152,7 +152,7 @@ Supports drag-and-drop reordering (for own profile).
 	}
 </script>
 
-<div class="endorsed-accounts {className}">
+<div class={`endorsed-accounts ${className}`}>
 	<div class="endorsed-accounts__header">
 		<h3 class="endorsed-accounts__title">Featured Accounts</h3>
 		{#if endorsed.length > 0}
@@ -231,7 +231,7 @@ Supports drag-and-drop reordering (for own profile).
 							onclick={() => handleRemoveEndorsement(account.id, account.displayName)}
 							disabled={isRemoving}
 							type="button"
-							aria-label="Remove {account.displayName} from featured accounts"
+							aria-label={`Remove ${account.displayName} from featured accounts`}
 						>
 							<svg
 								width="16"

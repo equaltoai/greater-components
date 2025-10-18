@@ -229,7 +229,7 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 	const canAddMore = $derived(files.length < maxFiles);
 </script>
 
-<div class="media-upload {className}">
+<div class={`media-upload ${className}`}>
 	<input
 		bind:this={fileInput}
 		type="file"
@@ -305,7 +305,7 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 											fill="none"
 											stroke="white"
 											stroke-width="3"
-											stroke-dasharray="{file.progress}, 100"
+											stroke-dasharray={`${file.progress}, 100`}
 										/>
 									</svg>
 									<span class="media-upload__progress-text">{Math.round(file.progress)}%</span>

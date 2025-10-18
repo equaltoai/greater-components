@@ -84,7 +84,7 @@
 	}
 </script>
 
-<div class="admin-moderation {className}">
+<div class={`admin-moderation ${className}`}>
 	<h2 class="admin-moderation__title">Moderation Tools</h2>
 
 	<!-- Quick Search -->
@@ -136,10 +136,10 @@
 					<strong>@{selectedUser.username}</strong>
 					<span>{selectedUser.email}</span>
 					<div class="admin-moderation__selected-meta">
-						<span class="admin-moderation__badge admin-moderation__badge--{selectedUser.role}">
+						<span class={`admin-moderation__badge admin-moderation__badge--${selectedUser.role}`}>
 							{selectedUser.role}
 						</span>
-						<span class="admin-moderation__badge admin-moderation__badge--{selectedUser.status}">
+						<span class={`admin-moderation__badge admin-moderation__badge--${selectedUser.status}`}>
 							{selectedUser.status}
 						</span>
 					</div>

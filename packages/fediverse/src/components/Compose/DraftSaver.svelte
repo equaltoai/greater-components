@@ -170,7 +170,7 @@ Automatically saves compose drafts and provides manual save/load controls.
 </script>
 
 {#if showIndicator}
-	<div class="draft-saver {className}">
+	<div class={`draft-saver ${className}`}>
 		{#if hasSavedDraft && !context.state.content}
 			<button type="button" class="draft-saver__load" onclick={() => load()}>
 				<svg viewBox="0 0 24 24" fill="currentColor">

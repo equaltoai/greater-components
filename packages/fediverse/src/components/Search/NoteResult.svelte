@@ -12,7 +12,7 @@
 
 	let { note, class: className = '' }: Props = $props();
 
-	const { state, handlers } = getSearchContext();
+	const { state: searchState, handlers } = getSearchContext();
 
 	function handleClick() {
 		handlers.onNoteClick?.(note);
@@ -34,10 +34,10 @@
 		return `${seconds}s`;
 	}
 
-	const highlightedContent = $derived(highlightQuery(note.content, state.query));
+	const highlightedContent = $derived(highlightQuery(note.content, searchState.query));
 </script>
 
-<article class="note-result {className}" onclick={handleClick}>
+<article class={`note-result ${className}`} onclick={handleClick}>
 	<div class="note-result__avatar">
 		{#if note.author.avatar}
 			<img src={note.author.avatar} alt={note.author.displayName} />

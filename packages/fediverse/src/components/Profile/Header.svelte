@@ -48,7 +48,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, toggleEdit } = getProfileContext();
+	const { state: profileState, handlers, toggleEdit } = getProfileContext();
 
 	const editButton = createButton({
 		onClick: () => toggleEdit(),
@@ -68,21 +68,21 @@
 	 * Handle follow/unfollow action
 	 */
 	async function handleFollow() {
-		if (!state.profile || state.loading) return;
+		if (!profileState.profile || profileState.loading) return;
 
-		const isFollowing = state.profile.relationship?.following;
+		const isFollowing = profileState.profile.relationship?.following;
 
-		state.loading = true;
+		profileState.loading = true;
 		try {
 			if (isFollowing) {
-				await handlers.onUnfollow?.(state.profile.id);
+				await handlers.onUnfollow?.(profileState.profile.id);
 			} else {
-				await handlers.onFollow?.(state.profile.id);
+				await handlers.onFollow?.(profileState.profile.id);
 			}
 		} catch (error) {
-			state.error = error instanceof Error ? error.message : 'Action failed';
+			profileState.error = error instanceof Error ? error.message : 'Action failed';
 		} finally {
-			state.loading = false;
+			profileState.loading = false;
 		}
 	}
 
@@ -98,8 +98,8 @@
 	 * Handle mention action
 	 */
 	function handleMention() {
-		if (state.profile) {
-			handlers.onMention?.(state.profile.username);
+		if (profileState.profile) {
+			handlers.onMention?.(profileState.profile.username);
 		}
 		showMoreMenu = false;
 	}
@@ -108,8 +108,8 @@
 	 * Handle message action
 	 */
 	function handleMessage() {
-		if (state.profile) {
-			handlers.onMessage?.(state.profile.id);
+		if (profileState.profile) {
+			handlers.onMessage?.(profileState.profile.id);
 		}
 		showMoreMenu = false;
 	}
@@ -118,8 +118,8 @@
 	 * Handle mute action
 	 */
 	async function handleMute() {
-		if (!state.profile) return;
-		await handlers.onMute?.(state.profile.id);
+		if (!profileState.profile) return;
+		await handlers.onMute?.(profileState.profile.id);
 		showMoreMenu = false;
 	}
 
@@ -127,8 +127,8 @@
 	 * Handle block action
 	 */
 	async function handleBlock() {
-		if (!state.profile) return;
-		await handlers.onBlock?.(state.profile.id);
+		if (!profileState.profile) return;
+		await handlers.onBlock?.(profileState.profile.id);
 		showMoreMenu = false;
 	}
 
@@ -136,30 +136,30 @@
 	 * Handle report action
 	 */
 	function handleReport() {
-		if (state.profile) {
-			handlers.onReport?.(state.profile.id);
+		if (profileState.profile) {
+			handlers.onReport?.(profileState.profile.id);
 		}
 		showMoreMenu = false;
 	}
 </script>
 
-{#if state.profile}
-	<div class="profile-header {className}">
-		{#if showCover && state.profile.header}
+{#if profileState.profile}
+	<div class={`profile-header ${className}`}>
+		{#if showCover && profileState.profile.header}
 			<div class="profile-header__cover">
-				<img src={state.profile.header} alt="Profile cover" class="profile-header__cover-img" />
+				<img src={profileState.profile.header} alt="Profile cover" class="profile-header__cover-img" />
 			</div>
 		{/if}
 
 		<div class="profile-header__content">
 			<div class="profile-header__avatar-wrapper">
 				<div class="profile-header__avatar">
-					{#if state.profile.avatar}
-						<img src={state.profile.avatar} alt={state.profile.displayName} />
+					{#if profileState.profile.avatar}
+						<img src={profileState.profile.avatar} alt={profileState.profile.displayName} />
 					{:else}
 						<div class="profile-header__avatar-placeholder">
-							{state.profile.displayName[0]?.toUpperCase() ||
-								state.profile.username[0]?.toUpperCase()}
+							{profileState.profile.displayName[0]?.toUpperCase() ||
+								profileState.profile.username[0]?.toUpperCase()}
 						</div>
 					{/if}
 				</div>
@@ -167,7 +167,7 @@
 
 			{#if showActions}
 				<div class="profile-header__actions">
-					{#if state.isOwnProfile}
+					{#if profileState.isOwnProfile}
 						<button
 							use:editButton.actions.button
 							class="profile-header__button profile-header__button--primary"
@@ -178,11 +178,11 @@
 						<button
 							use:followButton.actions.button
 							class="profile-header__button"
-							class:profile-header__button--primary={!state.profile.relationship?.following}
-							class:profile-header__button--following={state.profile.relationship?.following}
-							disabled={state.loading}
+							class:profile-header__button--primary={!profileState.profile.relationship?.following}
+							class:profile-header__button--following={profileState.profile.relationship?.following}
+							disabled={profileState.loading}
 						>
-							{getRelationshipText(state.profile.relationship)}
+							{getRelationshipText(profileState.profile.relationship)}
 						</button>
 
 						<div class="profile-header__more">
@@ -214,7 +214,7 @@
 												d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"
 											/>
 										</svg>
-										Mention @{state.profile.username}
+										Mention @{profileState.profile.username}
 									</button>
 
 									<button class="profile-header__menu-item" onclick={handleMessage}>
@@ -237,7 +237,7 @@
 												d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
 											/>
 										</svg>
-										Mute @{state.profile.username}
+										Mute @{profileState.profile.username}
 									</button>
 
 									<button
@@ -249,7 +249,7 @@
 												d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z"
 											/>
 										</svg>
-										Block @{state.profile.username}
+										Block @{profileState.profile.username}
 									</button>
 
 									<button
@@ -261,7 +261,7 @@
 												d="M15.73 3H8.27L3 8.27v7.46L8.27 21h7.46L21 15.73V8.27L15.73 3zM12 17.3c-.72 0-1.3-.58-1.3-1.3 0-.72.58-1.3 1.3-1.3.72 0 1.3.58 1.3 1.3 0 .72-.58 1.3-1.3 1.3zm1-4.3h-2V7h2v6z"
 											/>
 										</svg>
-										Report @{state.profile.username}
+										Report @{profileState.profile.username}
 									</button>
 								</div>
 							{/if}
@@ -271,18 +271,18 @@
 			{/if}
 
 			<div class="profile-header__info">
-				<h1 class="profile-header__name">{state.profile.displayName}</h1>
-				<p class="profile-header__username">@{state.profile.username}</p>
+				<h1 class="profile-header__name">{profileState.profile.displayName}</h1>
+				<p class="profile-header__username">@{profileState.profile.username}</p>
 
-				{#if state.profile.bio}
+				{#if profileState.profile.bio}
 					<div class="profile-header__bio">
-						{@html state.profile.bio}
+						{@html profileState.profile.bio}
 					</div>
 				{/if}
 
-				{#if showFields && state.profile.fields && state.profile.fields.length > 0}
+				{#if showFields && profileState.profile.fields && profileState.profile.fields.length > 0}
 					<div class="profile-header__fields">
-						{#each state.profile.fields as field}
+						{#each profileState.profile.fields as field}
 							<div class="profile-header__field">
 								<dt class="profile-header__field-name">{field.name}</dt>
 								<dd class="profile-header__field-value">
@@ -302,14 +302,14 @@
 					</div>
 				{/if}
 
-				{#if state.profile.createdAt}
+				{#if profileState.profile.createdAt}
 					<div class="profile-header__meta">
 						<svg viewBox="0 0 24 24" fill="currentColor">
 							<path
 								d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
 							/>
 						</svg>
-						Joined {new Date(state.profile.createdAt).toLocaleDateString('en-US', {
+						Joined {new Date(profileState.profile.createdAt).toLocaleDateString('en-US', {
 							year: 'numeric',
 							month: 'long',
 						})}

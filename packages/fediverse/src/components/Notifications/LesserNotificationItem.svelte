@@ -141,15 +141,15 @@ Handles quote, community_note, trust_update, cost_alert, and moderation_action n
 </script>
 
 <button
-	class="lesser-notification-item {className}"
+	class={`lesser-notification-item ${className}`}
 	class:unread={!notification.isRead}
 	type="button"
-	aria-label="{notification.type} notification"
+	aria-label={`${notification.type} notification`}
 	onclick={handleClick}
 >
 	<div
 		class="lesser-notification-item__icon"
-		style="color: {colorMap[notification.type as LesserNotificationType]}"
+		style={`color: ${colorMap[notification.type as LesserNotificationType]}`}
 	>
 		<svg viewBox="0 0 24 24" aria-hidden="true">
 			<path fill="currentColor" d={iconMap[notification.type as LesserNotificationType]} />

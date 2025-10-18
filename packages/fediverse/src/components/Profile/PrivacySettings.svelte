@@ -236,7 +236,7 @@ Manages account privacy settings including:
 	}
 </script>
 
-<div class="privacy-settings {className}">
+<div class={`privacy-settings ${className}`}>
 	<div class="privacy-settings__header">
 		<h2 class="privacy-settings__title">Privacy & Safety</h2>
 		<p class="privacy-settings__subtitle">

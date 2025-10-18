@@ -11,7 +11,7 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, sendMessage } = getMessagesContext();
+	const { state: messagesState, sendMessage } = getMessagesContext();
 
 	let content = $state('');
 
@@ -20,7 +20,7 @@
 	});
 
 	async function handleSend() {
-		if (!content.trim() || state.loading) return;
+		if (!content.trim() || messagesState.loading) return;
 
 		try {
 			await sendMessage(content.trim());
@@ -38,25 +38,25 @@
 	}
 </script>
 
-{#if state.selectedConversation}
-	<div class="messages-composer {className}">
+{#if messagesState.selectedConversation}
+	<div class={`messages-composer ${className}`}>
 		<textarea
 			class="messages-composer__input"
 			bind:value={content}
 			onkeydown={handleKeyDown}
 			placeholder="Write a message..."
-			disabled={state.loading}
+			disabled={messagesState.loading}
 			rows="3"
 		></textarea>
 		<button
 			use:sendButton.actions.button
 			class="messages-composer__send"
-			disabled={state.loading || !content.trim()}
+			disabled={messagesState.loading || !content.trim()}
 		>
 			<svg viewBox="0 0 24 24" fill="currentColor">
 				<path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
 			</svg>
-			{state.loading ? 'Sending...' : 'Send'}
+			{messagesState.loading ? 'Sending...' : 'Send'}
 		</button>
 	</div>
 {/if}

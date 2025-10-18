@@ -66,7 +66,7 @@
 	});
 </script>
 
-<div class="profile-root {className}">
+<div class={`profile-root ${className}`}>
 	{#if children}
 		{@render children()}
 	{/if}

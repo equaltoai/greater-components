@@ -45,12 +45,12 @@ Shows current character count and limit with visual warning.
 
 <div
 	id="compose-character-count"
-	class="compose-character-count {className}"
+	class={`compose-character-count ${className}`}
 	class:compose-character-count--near-limit={isNearLimit}
 	class:compose-character-count--over-limit={isOverLimit}
 	role="status"
 	aria-live="polite"
-	aria-label="{context.state.characterCount} of {context.config.characterLimit} characters used"
+	aria-label={`${context.state.characterCount} of ${context.config.characterLimit} characters used`}
 >
 	{#if showProgress}
 		<svg class="compose-character-count__progress" width="32" height="32" viewBox="0 0 32 32">

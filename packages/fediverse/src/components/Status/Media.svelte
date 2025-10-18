@@ -40,7 +40,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 
 {#if hasMedia}
 	<div
-		class="status-media {className}"
+		class={`status-media ${className}`}
 		class:status-media--single={actualStatus.mediaAttachments!.length === 1}
 		class:status-media--multiple={actualStatus.mediaAttachments!.length > 1}
 	>
