@@ -473,7 +473,43 @@ export interface AdminReport {
 // Streaming operation models
 export interface StreamingUpdate {
   /** Update type */
-  type: 'status' | 'delete' | 'notification' | 'filters_changed' | 'conversation' | 'announcement';
+  type: 
+    // Core Mastodon events
+    | 'status' 
+    | 'delete' 
+    | 'notification' 
+    | 'filters_changed' 
+    | 'conversation' 
+    | 'announcement'
+    // Lesser Timeline & Social events
+    | 'timelineUpdates'
+    | 'notificationStream'
+    | 'conversationUpdates'
+    | 'listUpdates'
+    | 'activityStream'
+    | 'relationshipUpdates'
+    // Lesser Quote Posts events
+    | 'quoteActivity'
+    // Lesser Hashtag events
+    | 'hashtagActivity'
+    // Lesser Trust & Moderation events
+    | 'trustUpdates'
+    | 'moderationEvents'
+    | 'moderationAlerts'
+    | 'moderationQueueUpdate'
+    | 'threatIntelligence'
+    // Lesser AI Analysis events
+    | 'aiAnalysisUpdates'
+    // Lesser Cost & Budget events
+    | 'costUpdates'
+    | 'costAlerts'
+    | 'budgetAlerts'
+    // Lesser Metrics & Performance events
+    | 'metricsUpdates'
+    | 'performanceAlert'
+    // Lesser Federation & Infrastructure events
+    | 'federationHealthUpdates'
+    | 'infrastructureEvent';
   /** Event data */
   payload: unknown;
   /** Stream this came from */

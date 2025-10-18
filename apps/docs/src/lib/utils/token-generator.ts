@@ -12,6 +12,22 @@ export interface Token {
 	preview?: 'color' | 'spacing' | 'typography' | 'shadow' | 'radius';
 }
 
+type TokenValue = string | number;
+
+type TokenJSON = {
+	colors?: Record<string, TokenValue | Record<string, TokenValue>>;
+	spacing?: Record<string, TokenValue>;
+	typography?: {
+		fontSize?: Record<string, TokenValue>;
+		fontWeight?: Record<string, TokenValue>;
+	};
+	shadows?: Record<string, TokenValue>;
+	radius?: Record<string, TokenValue>;
+};
+
+const isTokenValueRecord = (value: unknown): value is Record<string, TokenValue> =>
+	typeof value === 'object' && value !== null && !Array.isArray(value);
+
 // Generate color swatches
 export function generateColorSwatch(color: string): string {
 	return `<div class="color-swatch" style="background: ${color}"></div>`;
@@ -28,15 +44,15 @@ export function generateTypographyPreview(value: string): string {
 }
 
 // Parse tokens from JSON
-export function parseTokensFromJSON(tokensJSON: any): TokenCategory[] {
+export function parseTokensFromJSON(tokensJSON: TokenJSON): TokenCategory[] {
 	const categories: TokenCategory[] = [];
 	
 	// Colors
 	if (tokensJSON.colors) {
 		const colorTokens: Token[] = [];
 		
-		Object.entries(tokensJSON.colors).forEach(([key, values]: [string, any]) => {
-			if (typeof values === 'object') {
+		Object.entries(tokensJSON.colors).forEach(([key, values]) => {
+			if (isTokenValueRecord(values)) {
 				Object.entries(values).forEach(([shade, value]) => {
 					colorTokens.push({
 						name: `${key}-${shade}`,
@@ -178,7 +194,7 @@ export function generateSCSSVariables(categories: TokenCategory[]): string {
 }
 
 // Sample token data (would be loaded from actual tokens.json)
-export const sampleTokens = {
+export const sampleTokens: TokenJSON = {
 	colors: {
 		primary: {
 			'50': '#eff6ff',

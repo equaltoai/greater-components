@@ -21,6 +21,7 @@ export interface StreamingMessage {
 }
 
 export interface TransportEventMap {
+  // Core events
   'status.update': Status;
   'status.delete': { id: string };
   'notification.new': Notification;
@@ -29,6 +30,42 @@ export interface TransportEventMap {
   'connection.close': void;
   'connection.error': Error;
   'connection.reconnecting': { attempt: number };
+  
+  // Lesser Timeline & Social events
+  'timeline.update': any;
+  'conversation.update': any;
+  'list.update': any;
+  'activity.stream': any;
+  'relationship.update': any;
+  
+  // Lesser Quote Posts events
+  'quote.activity': any;
+  
+  // Lesser Hashtag events
+  'hashtag.activity': any;
+  
+  // Lesser Trust & Moderation events
+  'trust.update': any;
+  'moderation.event': any;
+  'moderation.alert': any;
+  'moderation.queue': any;
+  'threat.intelligence': any;
+  
+  // Lesser AI Analysis events
+  'ai.analysis': any;
+  
+  // Lesser Cost & Budget events
+  'cost.update': any;
+  'cost.alert': any;
+  'budget.alert': any;
+  
+  // Lesser Metrics & Performance events
+  'metrics.update': any;
+  'performance.alert': any;
+  
+  // Lesser Federation & Infrastructure events
+  'federation.health': any;
+  'infrastructure.event': any;
 }
 
 export type TransportEventType = keyof TransportEventMap;
@@ -140,6 +177,57 @@ export class TransportManager {
       this.connection.send(JSON.stringify({
         type: 'subscribe',
         stream: 'user'
+      }));
+    }
+  }
+
+  /**
+   * Subscribe to hashtag timeline
+   */
+  subscribeToHashtag(hashtags: string[]): void {
+    if (!this.isConnected) {
+      throw new Error('Transport not connected');
+    }
+
+    if (this.connection instanceof WebSocket && this.connection.readyState === WebSocket.OPEN) {
+      this.connection.send(JSON.stringify({
+        type: 'subscribe',
+        stream: 'hashtag',
+        hashtags
+      }));
+    }
+  }
+
+  /**
+   * Subscribe to list timeline
+   */
+  subscribeToList(listId: string): void {
+    if (!this.isConnected) {
+      throw new Error('Transport not connected');
+    }
+
+    if (this.connection instanceof WebSocket && this.connection.readyState === WebSocket.OPEN) {
+      this.connection.send(JSON.stringify({
+        type: 'subscribe',
+        stream: 'list',
+        listId
+      }));
+    }
+  }
+
+  /**
+   * Subscribe to admin events
+   */
+  subscribeToAdminEvents(eventTypes?: string[]): void {
+    if (!this.isConnected) {
+      throw new Error('Transport not connected');
+    }
+
+    if (this.connection instanceof WebSocket && this.connection.readyState === WebSocket.OPEN) {
+      this.connection.send(JSON.stringify({
+        type: 'subscribe',
+        stream: 'admin',
+        eventTypes
       }));
     }
   }

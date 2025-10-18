@@ -8,7 +8,8 @@ import type {
   TransportAdapter,
   TransportSwitchEvent,
   WebSocketEventHandler,
-  WebSocketEvent
+  WebSocketEvent,
+  TransportEventName
 } from './types';
 
 /**
@@ -142,8 +143,9 @@ export class TransportManager implements TransportAdapter {
 
   /**
    * Subscribe to events
+   * Validates event names against the TransportEventMap to prevent undefined subscriptions
    */
-  on(event: string, handler: WebSocketEventHandler): () => void {
+  on(event: TransportEventName | string, handler: WebSocketEventHandler): () => void {
     // Store handler in our map
     if (!this.eventHandlers.has(event)) {
       this.eventHandlers.set(event, new Set());

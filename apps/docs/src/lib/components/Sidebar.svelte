@@ -100,7 +100,7 @@
 
 <aside class="docs-sidebar" class:open={isMobileMenuOpen}>
 	<nav class="sidebar-nav">
-		{#each navigation as section}
+		{#each navigation as section (section.title)}
 			<div class="nav-section">
 				<button 
 					class="section-header"
@@ -116,7 +116,7 @@
 				
 				{#if expandedSections.has(section.title)}
 					<ul class="section-items">
-						{#each section.items as item}
+						{#each section.items as item (item.href)}
 							<li>
 								<a 
 									href={item.href}

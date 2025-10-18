@@ -21,16 +21,16 @@
 		}
 	}
 	
-	function highlightCode(code: string, lang: string): string {
+	function highlightCode(rawCode: string): string {
 		// This would be replaced with actual syntax highlighting
 		// For now, we'll just escape HTML
-		return code
+		return rawCode
 			.replace(/&/g, '&amp;')
 			.replace(/</g, '&lt;')
 			.replace(/>/g, '&gt;');
 	}
 	
-	$: highlightedCode = highlightCode(code, language);
+	$: highlightedCode = highlightCode(code);
 	$: lines = code.split('\n');
 </script>
 
@@ -56,7 +56,18 @@
 			{/if}
 		</button>
 		
-		<pre class="code-pre"><code class="language-{language}" class:line-numbers={showLineNumbers}>{#if showLineNumbers}<span class="line-numbers-rows">{#each lines as _, i}<span>{i + 1}</span>{/each}</span>{/if}{@html highlightedCode}</code></pre>
+		<pre class="code-pre">
+			<code class="language-{language}" class:line-numbers={showLineNumbers}>
+				{#if showLineNumbers}
+					<span class="line-numbers-rows">
+						{#each lines as line, lineIndex (`${lineIndex}-${line}`)}
+							<span>{lineIndex + 1}</span>
+						{/each}
+					</span>
+				{/if}
+				{highlightedCode}
+			</code>
+		</pre>
 	</div>
 </div>
 

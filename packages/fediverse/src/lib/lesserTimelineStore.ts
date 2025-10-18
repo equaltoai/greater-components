@@ -21,6 +21,25 @@ export interface LesserTimelineConfig {
   enableRealtime?: boolean;
   /** GraphQL adapter instance */
   adapter: LesserGraphQLAdapter;
+  
+  // Hashtag timeline configuration
+  /** Hashtag to follow (for HASHTAG timeline) */
+  hashtag?: string;
+  /** Multiple hashtags to follow */
+  hashtags?: string[];
+  /** Hashtag filtering mode: 'ANY' or 'ALL' */
+  hashtagMode?: 'ANY' | 'ALL';
+  
+  // List timeline configuration
+  /** List ID (for LIST timeline) */
+  listId?: string;
+  /** List filter settings */
+  listFilter?: {
+    /** Include replies to list members */
+    includeReplies?: boolean;
+    /** Include boosts from list members */
+    includeBoosts?: boolean;
+  };
 }
 
 export interface LesserTimelineState {
@@ -69,10 +88,23 @@ export class LesserTimelineStore {
     this.abortController = new AbortController();
 
     try {
-      const response = await this.config.adapter.fetchTimeline({
+      // Build timeline query variables based on configuration
+      const variables: any = {
         type: this.config.type,
         first: this.config.preloadCount
-      });
+      };
+
+      // Add hashtag parameter for HASHTAG timelines
+      if (this.config.type === 'HASHTAG' && this.config.hashtag) {
+        variables.hashtag = this.config.hashtag;
+      }
+
+      // Add listId parameter for LIST timelines
+      if (this.config.type === 'LIST' && this.config.listId) {
+        variables.listId = this.config.listId;
+      }
+
+      const response = await this.config.adapter.fetchTimeline(variables);
 
       // Convert unified statuses to timeline items with Lesser metadata
       const timelineItems: GenericTimelineItem[] = response.edges.map(edge => {
@@ -118,11 +150,24 @@ export class LesserTimelineStore {
     this.abortController = new AbortController();
 
     try {
-      const response = await this.config.adapter.fetchTimeline({
+      // Build timeline query variables
+      const variables: any = {
         type: this.config.type,
         first: this.config.preloadCount,
         after: this.cursor
-      });
+      };
+
+      // Add hashtag parameter for HASHTAG timelines
+      if (this.config.type === 'HASHTAG' && this.config.hashtag) {
+        variables.hashtag = this.config.hashtag;
+      }
+
+      // Add listId parameter for LIST timelines
+      if (this.config.type === 'LIST' && this.config.listId) {
+        variables.listId = this.config.listId;
+      }
+
+      const response = await this.config.adapter.fetchTimeline(variables);
 
       // Convert new unified statuses to timeline items
       const newTimelineItems: GenericTimelineItem[] = response.edges.map(edge => {

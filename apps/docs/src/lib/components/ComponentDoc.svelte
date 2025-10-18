@@ -5,16 +5,61 @@
 	import AccessibilityScorecard from './AccessibilityScorecard.svelte';
 	import CodeExample from './CodeExample.svelte';
 	import LiveDemo from './LiveDemo.svelte';
+	import type { ComponentType } from 'svelte';
+	
+	type ComponentStatus = 'alpha' | 'beta' | 'stable' | 'deprecated';
+	type WcagLevel = 'A' | 'AA' | 'AAA';
+	
+	type ComponentPropDoc = {
+		name: string;
+		type: string;
+		default?: string;
+		required?: boolean;
+		description: string;
+	};
+	
+	type ComponentEventDoc = {
+		name: string;
+		payload?: string;
+		description: string;
+	};
+	
+	type ComponentSlotDoc = {
+		name: string;
+		props?: string;
+		description: string;
+	};
+	
+	type ComponentExampleDoc = {
+		title: string;
+		description?: string;
+		component: ComponentType;
+		props?: Record<string, unknown>;
+		code: string;
+	};
+	
+	type AccessibilityScorecardConfig = {
+		wcagLevel?: WcagLevel;
+		keyboardNav?: boolean;
+		screenReader?: boolean;
+		colorContrast?: boolean;
+		focusManagement?: boolean;
+		ariaSupport?: boolean;
+		reducedMotion?: boolean;
+		notes?: string[];
+		knownIssues?: string[];
+		axeScore?: number | null;
+	};
 	
 	export let name: string;
 	export let description: string;
-	export let status: 'alpha' | 'beta' | 'stable' | 'deprecated' = 'stable';
+	export let status: ComponentStatus = 'stable';
 	export let version: string = '0.1.0';
-	export let props: any[] = [];
-	export let events: any[] = [];
-	export let slots: any[] = [];
-	export let examples: any[] = [];
-	export let accessibility: any = {};
+	export let props: ComponentPropDoc[] = [];
+	export let events: ComponentEventDoc[] = [];
+	export let slots: ComponentSlotDoc[] = [];
+	export let examples: ComponentExampleDoc[] = [];
+	export let accessibility: AccessibilityScorecardConfig = {};
 	export let importPath: string;
 </script>
 
@@ -38,7 +83,7 @@
 	{#if examples.length > 0}
 		<section class="examples-section">
 			<h2>Examples</h2>
-			{#each examples as example}
+			{#each examples as example, exampleIndex (`${exampleIndex}-${example.title}`)}
 				<div class="example">
 					<h3>{example.title}</h3>
 					{#if example.description}
@@ -206,12 +251,12 @@
 		border: 1px solid #fca5a5;
 	}
 	
-	.dark .do-section {
+	:global(.dark) .do-section {
 		background: #022c22;
 		border-color: #064e3b;
 	}
 	
-	.dark .dont-section {
+	:global(.dark) .dont-section {
 		background: #450a0a;
 		border-color: #7f1d1d;
 	}

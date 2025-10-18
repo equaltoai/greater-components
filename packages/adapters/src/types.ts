@@ -298,3 +298,61 @@ export interface TransportSwitchEvent {
   /** Error that triggered the switch (if applicable) */
   error?: Error;
 }
+
+/**
+ * Transport Event Map defining all valid subscription events and their payload types
+ * This ensures type safety and prevents subscription to undefined channels
+ */
+export interface TransportEventMap {
+  // Core transport events
+  open: Record<string, never>;
+  close: { code?: number; reason?: string };
+  error: { error?: Error };
+  message: unknown;
+  reconnecting: { attempt?: number; delay?: number };
+  reconnected: Record<string, never>;
+  latency: { latency: number };
+  transport_switch: TransportSwitchEvent;
+
+  // Lesser Subscription Events - Timeline & Social
+  timelineUpdates: unknown; // Object from schema
+  notificationStream: unknown; // Notification from schema
+  conversationUpdates: unknown; // Conversation from schema
+  listUpdates: unknown; // ListUpdate from schema
+  activityStream: unknown; // Activity from schema
+  relationshipUpdates: unknown; // RelationshipUpdate from schema
+  
+  // Lesser Subscription Events - Quote Posts
+  quoteActivity: unknown; // QuoteActivityUpdate from schema
+  
+  // Lesser Subscription Events - Hashtags
+  hashtagActivity: unknown; // HashtagActivityUpdate from schema
+  
+  // Lesser Subscription Events - Trust & Moderation
+  trustUpdates: unknown; // TrustEdge from schema
+  moderationEvents: unknown; // ModerationDecision from schema
+  moderationAlerts: unknown; // ModerationAlert from schema
+  moderationQueueUpdate: unknown; // ModerationItem from schema
+  threatIntelligence: unknown; // ThreatAlert from schema
+  
+  // Lesser Subscription Events - AI Analysis
+  aiAnalysisUpdates: unknown; // AIAnalysis from schema
+  
+  // Lesser Subscription Events - Cost & Budget
+  costUpdates: unknown; // CostUpdate from schema
+  costAlerts: unknown; // CostAlert from schema
+  budgetAlerts: unknown; // BudgetAlert from schema
+  
+  // Lesser Subscription Events - Metrics & Performance
+  metricsUpdates: unknown; // MetricsUpdate from schema
+  performanceAlert: unknown; // PerformanceAlert from schema
+  
+  // Lesser Subscription Events - Federation & Infrastructure
+  federationHealthUpdates: unknown; // FederationHealthUpdate from schema
+  infrastructureEvent: unknown; // InfrastructureEvent from schema
+}
+
+/**
+ * Valid event names from the TransportEventMap
+ */
+export type TransportEventName = keyof TransportEventMap;

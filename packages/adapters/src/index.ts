@@ -51,6 +51,26 @@ export {
   createPresenceStore
 } from './stores';
 
+// Admin Streaming Store
+export {
+  AdminStreamingStore,
+  createAdminStreamingStore
+} from './stores/adminStreamingStore';
+
+export type {
+  MetricsUpdate,
+  ModerationAlert,
+  CostAlert,
+  BudgetAlert,
+  FederationHealthUpdate,
+  ModerationQueueItem,
+  ThreatIntelligence,
+  PerformanceAlert,
+  InfrastructureEvent,
+  AdminStreamingStoreState,
+  AdminStreamingStoreConfig
+} from './stores/adminStreamingStore';
+
 // Unified Model Converters
 export {
   unifiedStatusToTimelineItem,
@@ -119,6 +139,8 @@ export type {
   TransportManagerConfig,
   TransportManagerState,
   TransportSwitchEvent,
+  TransportEventMap,
+  TransportEventName,
   
   // WebSocket types
   WebSocketClientConfig,

@@ -97,7 +97,7 @@ greater add timeline status notifications`;
 		<div class="container">
 			<h2>Why Greater Components?</h2>
 			<div class="features-grid">
-				{#each features as feature}
+				{#each features as feature, featureIndex (`${featureIndex}-${feature.title}`)}
 					<div class="feature-card">
 						<div class="feature-icon">{feature.icon}</div>
 						<h3>{feature.title}</h3>

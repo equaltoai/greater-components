@@ -108,6 +108,34 @@ import type {
 	QuoteActivitySubscriptionVariables,
 	HashtagActivitySubscription,
 	HashtagActivitySubscriptionVariables,
+	ActivityStreamSubscription,
+	ActivityStreamSubscriptionVariables,
+	RelationshipUpdatesSubscription,
+	RelationshipUpdatesSubscriptionVariables,
+	CostUpdatesSubscription,
+	CostUpdatesSubscriptionVariables,
+	ModerationEventsSubscription,
+	ModerationEventsSubscriptionVariables,
+	TrustUpdatesSubscription,
+	TrustUpdatesSubscriptionVariables,
+	AiAnalysisUpdatesSubscription,
+	AiAnalysisUpdatesSubscriptionVariables,
+	MetricsUpdatesSubscription,
+	MetricsUpdatesSubscriptionVariables,
+	ModerationAlertsSubscription,
+	ModerationAlertsSubscriptionVariables,
+	CostAlertsSubscription,
+	CostAlertsSubscriptionVariables,
+	BudgetAlertsSubscription,
+	BudgetAlertsSubscriptionVariables,
+	FederationHealthUpdatesSubscription,
+	FederationHealthUpdatesSubscriptionVariables,
+	ModerationQueueUpdateSubscription,
+	ModerationQueueUpdateSubscriptionVariables,
+	ThreatIntelligenceSubscription,
+	PerformanceAlertSubscription,
+	PerformanceAlertSubscriptionVariables,
+	InfrastructureEventSubscription,
 } from './generated/types.js';
 
 import {
@@ -157,6 +185,21 @@ import {
 	ListUpdatesDocument,
 	QuoteActivityDocument,
 	HashtagActivityDocument,
+	ActivityStreamDocument,
+	RelationshipUpdatesDocument,
+	CostUpdatesDocument,
+	ModerationEventsDocument,
+	TrustUpdatesDocument,
+	AiAnalysisUpdatesDocument,
+	MetricsUpdatesDocument,
+	ModerationAlertsDocument,
+	CostAlertsDocument,
+	BudgetAlertsDocument,
+	FederationHealthUpdatesDocument,
+	ModerationQueueUpdateDocument,
+	ThreatIntelligenceDocument,
+	PerformanceAlertDocument,
+	InfrastructureEventDocument,
 } from './generated/types.js';
 
 export interface LesserGraphQLAdapterConfig extends GraphQLClientConfig {}
@@ -518,6 +561,135 @@ export class LesserGraphQLAdapter {
 		return this.client.client.subscribe({
 			query: HashtagActivityDocument,
 			variables,
+		});
+	}
+
+	subscribeToActivityStream(
+		variables?: ActivityStreamSubscriptionVariables
+	): Observable<FetchResult<ActivityStreamSubscription>> {
+		return this.client.client.subscribe({
+			query: ActivityStreamDocument,
+			variables,
+		});
+	}
+
+	subscribeToRelationshipUpdates(
+		variables?: RelationshipUpdatesSubscriptionVariables
+	): Observable<FetchResult<RelationshipUpdatesSubscription>> {
+		return this.client.client.subscribe({
+			query: RelationshipUpdatesDocument,
+			variables,
+		});
+	}
+
+	subscribeToCostUpdates(
+		variables?: CostUpdatesSubscriptionVariables
+	): Observable<FetchResult<CostUpdatesSubscription>> {
+		return this.client.client.subscribe({
+			query: CostUpdatesDocument,
+			variables,
+		});
+	}
+
+	subscribeToModerationEvents(
+		variables?: ModerationEventsSubscriptionVariables
+	): Observable<FetchResult<ModerationEventsSubscription>> {
+		return this.client.client.subscribe({
+			query: ModerationEventsDocument,
+			variables,
+		});
+	}
+
+	subscribeToTrustUpdates(
+		variables: TrustUpdatesSubscriptionVariables
+	): Observable<FetchResult<TrustUpdatesSubscription>> {
+		return this.client.client.subscribe({
+			query: TrustUpdatesDocument,
+			variables,
+		});
+	}
+
+	subscribeToAiAnalysisUpdates(
+		variables?: AiAnalysisUpdatesSubscriptionVariables
+	): Observable<FetchResult<AiAnalysisUpdatesSubscription>> {
+		return this.client.client.subscribe({
+			query: AiAnalysisUpdatesDocument,
+			variables,
+		});
+	}
+
+	subscribeToMetricsUpdates(
+		variables?: MetricsUpdatesSubscriptionVariables
+	): Observable<FetchResult<MetricsUpdatesSubscription>> {
+		return this.client.client.subscribe({
+			query: MetricsUpdatesDocument,
+			variables,
+		});
+	}
+
+	subscribeToModerationAlerts(
+		variables?: ModerationAlertsSubscriptionVariables
+	): Observable<FetchResult<ModerationAlertsSubscription>> {
+		return this.client.client.subscribe({
+			query: ModerationAlertsDocument,
+			variables,
+		});
+	}
+
+	subscribeToCostAlerts(
+		variables: CostAlertsSubscriptionVariables
+	): Observable<FetchResult<CostAlertsSubscription>> {
+		return this.client.client.subscribe({
+			query: CostAlertsDocument,
+			variables,
+		});
+	}
+
+	subscribeToBudgetAlerts(
+		variables?: BudgetAlertsSubscriptionVariables
+	): Observable<FetchResult<BudgetAlertsSubscription>> {
+		return this.client.client.subscribe({
+			query: BudgetAlertsDocument,
+			variables,
+		});
+	}
+
+	subscribeToFederationHealthUpdates(
+		variables?: FederationHealthUpdatesSubscriptionVariables
+	): Observable<FetchResult<FederationHealthUpdatesSubscription>> {
+		return this.client.client.subscribe({
+			query: FederationHealthUpdatesDocument,
+			variables,
+		});
+	}
+
+	subscribeToModerationQueueUpdate(
+		variables?: ModerationQueueUpdateSubscriptionVariables
+	): Observable<FetchResult<ModerationQueueUpdateSubscription>> {
+		return this.client.client.subscribe({
+			query: ModerationQueueUpdateDocument,
+			variables,
+		});
+	}
+
+	subscribeToThreatIntelligence(): Observable<FetchResult<ThreatIntelligenceSubscription>> {
+		return this.client.client.subscribe({
+			query: ThreatIntelligenceDocument,
+		});
+	}
+
+	subscribeToPerformanceAlert(
+		variables: PerformanceAlertSubscriptionVariables
+	): Observable<FetchResult<PerformanceAlertSubscription>> {
+		return this.client.client.subscribe({
+			query: PerformanceAlertDocument,
+			variables,
+		});
+	}
+
+	subscribeToInfrastructureEvent(): Observable<FetchResult<InfrastructureEventSubscription>> {
+		return this.client.client.subscribe({
+			query: InfrastructureEventDocument,
 		});
 	}
 }
