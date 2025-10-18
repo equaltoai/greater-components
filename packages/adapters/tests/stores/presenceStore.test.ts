@@ -10,6 +10,13 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createPresenceStore } from '../../src/stores/presenceStore';
 import type { PresenceConfig, UserPresence, SessionInfo } from '../../src/stores/types';
+import type {
+  RelationshipUpdatesSubscription,
+  TrustUpdatesSubscription
+} from '../../src/graphql/generated/types';
+
+type RelationshipUpdatePayload = RelationshipUpdatesSubscription['relationshipUpdates'];
+type TrustUpdatePayload = TrustUpdatesSubscription['trustUpdates'];
 
 // Mock window object for browser APIs
 const mockWindow = {
@@ -67,6 +74,59 @@ class MockTransportManager {
   }
 }
 
+const isoNow = () => new Date().toISOString();
+
+function createLesserAccount(overrides: Record<string, unknown> = {}) {
+  const now = isoNow();
+  return {
+    id: 'actor-1',
+    handle: 'actor@example.com',
+    localHandle: 'actor',
+    displayName: 'Actor',
+    bio: '',
+    avatarUrl: 'https://avatars.example.com/actor',
+    bannerUrl: '',
+    joinedAt: now,
+    isVerified: false,
+    isBot: false,
+    isLocked: false,
+    followerCount: 0,
+    followingCount: 0,
+    postCount: 0,
+    profileFields: [],
+    customEmojis: [],
+    trustScore: 80,
+    ...overrides
+  };
+}
+
+function createRelationshipUpdatePayload(
+  overrides: Record<string, unknown> = {}
+): RelationshipUpdatePayload {
+  const base = {
+    type: 'followed',
+    timestamp: isoNow(),
+    relationship: { id: 'rel-1', following: true, followedBy: true },
+    actor: createLesserAccount()
+  };
+
+  return { ...base, ...overrides } as unknown as RelationshipUpdatePayload;
+}
+
+function createTrustUpdatePayload(
+  overrides: Record<string, unknown> = {}
+): TrustUpdatePayload {
+  const base = {
+    category: 'QUALITY',
+    score: 92,
+    updatedAt: isoNow(),
+    from: createLesserAccount({ id: 'trust-source' }),
+    to: createLesserAccount({ id: 'trust-target', handle: 'target@example.com', localHandle: 'target' })
+  };
+
+  return { ...base, ...overrides } as unknown as TrustUpdatePayload;
+}
+
 describe('Presence Store', () => {
   let mockTransport: MockTransportManager;
   let config: PresenceConfig;
@@ -111,6 +171,29 @@ describe('Presence Store', () => {
       expect(state.currentUser?.displayName).toBe('Current User');
       expect(state.currentUser?.isOnline).toBe(true);
       expect(state.currentUser?.status).toBe('active');
+    });
+
+    it('should update status message from trustUpdates', async () => {
+      const store = createPresenceStore(config);
+      store.startMonitoring();
+
+      const trustPayload = createTrustUpdatePayload({
+        score: 88,
+        to: createLesserAccount({
+          id: 'trust-user',
+          displayName: 'Trust User'
+        })
+      });
+
+      mockTransport.emit('trustUpdates', {
+        type: 'trustUpdates',
+        data: trustPayload
+      });
+
+      await vi.advanceTimersByTimeAsync(110);
+
+      const presence = store.get().users.get('trust-user');
+      expect(presence?.statusMessage).toBe('Trust score: 88');
     });
 
     it('should initialize with location tracking when enabled', async () => {
@@ -474,55 +557,57 @@ describe('Presence Store', () => {
   });
 
   describe('Streaming Updates', () => {
-    it('should handle user presence updates', async () => {
+    it('should handle relationshipUpdates events', async () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      const userPresence: UserPresence = {
-        userId: 'remote-user',
-        displayName: 'Remote User',
-        isOnline: true,
-        lastSeen: Date.now(),
-        status: 'active'
-      };
-      
-      mockTransport.emit('message', {
-        data: {
-          type: 'presence_update',
-          data: userPresence
-        }
+      const relationshipPayload = createRelationshipUpdatePayload({
+        type: 'followed',
+        actor: createLesserAccount({
+          id: 'remote-user',
+          displayName: 'Remote User',
+          avatarUrl: 'https://avatars.example.com/remote'
+        })
       });
       
+      mockTransport.emit('relationshipUpdates', {
+        type: 'relationshipUpdates',
+        data: relationshipPayload
+      });
+
       // Wait for debounce
       await vi.advanceTimersByTimeAsync(110);
       
       const state = store.get();
-      expect(state.users.get('remote-user')).toEqual(userPresence);
+      const presence = state.users.get('remote-user');
+      expect(presence?.displayName).toBe('Remote User');
+      expect(presence?.isOnline).toBe(true);
+      expect(presence?.status).toBe('active');
     });
 
-    it('should handle user joined events', async () => {
+    it('should handle user joined events via relationshipUpdates', async () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      const newUser: UserPresence = {
-        userId: 'new-user',
-        displayName: 'New User',
-        isOnline: true,
-        lastSeen: Date.now(),
-        status: 'active'
-      };
-      
-      mockTransport.emit('message', {
-        data: {
-          type: 'presence_user_joined',
-          data: newUser
-        }
+      const newUserPayload = createRelationshipUpdatePayload({
+        type: 'followed',
+        actor: createLesserAccount({
+          id: 'new-user',
+          displayName: 'New User'
+        })
       });
-      
+
+      mockTransport.emit('relationshipUpdates', {
+        type: 'relationshipUpdates',
+        data: newUserPayload
+      });
+
       await vi.advanceTimersByTimeAsync(110);
       
       const state = store.get();
-      expect(state.users.get('new-user')).toEqual(newUser);
+      const newUserPresence = state.users.get('new-user');
+      expect(newUserPresence?.displayName).toBe('New User');
+      expect(newUserPresence?.isOnline).toBe(true);
     });
 
     it('should handle user left events', async () => {
@@ -540,14 +625,20 @@ describe('Presence Store', () => {
       state.users.set('leaving-user', user);
       
       store.startMonitoring();
-      
-      mockTransport.emit('message', {
-        data: {
-          type: 'presence_user_left',
-          data: { userId: 'leaving-user' }
-        }
+
+      const leavePayload = createRelationshipUpdatePayload({
+        type: 'blocked',
+        actor: createLesserAccount({
+          id: 'leaving-user',
+          displayName: 'Leaving User'
+        })
       });
-      
+
+      mockTransport.emit('relationshipUpdates', {
+        type: 'relationshipUpdates',
+        data: leavePayload
+      });
+
       await vi.advanceTimersByTimeAsync(110);
       
       const updatedState = store.get();
@@ -568,11 +659,9 @@ describe('Presence Store', () => {
         connectionStatus: 'connected'
       };
       
-      mockTransport.emit('message', {
-        data: {
-          type: 'presence_session_update',
-          data: sessionInfo
-        }
+      mockTransport.emit('metricsUpdates', {
+        type: 'metricsUpdates',
+        data: sessionInfo
       });
       
       await vi.advanceTimersByTimeAsync(10);
@@ -602,11 +691,9 @@ describe('Presence Store', () => {
         }
       ];
       
-      mockTransport.emit('message', {
-        data: {
-          type: 'presence_bulk_update',
-          data: users
-        }
+      mockTransport.emit('metricsUpdates', {
+        type: 'metricsUpdates',
+        data: { users }
       });
       
       await vi.advanceTimersByTimeAsync(110);
@@ -628,16 +715,14 @@ describe('Presence Store', () => {
         status: 'active'
       };
       
-      // Send multiple rapid updates
-      for (let i = 0; i < 5; i++) {
-        mockTransport.emit('message', {
-          data: {
-            type: 'presence_update',
-            data: { ...user, status: i % 2 === 0 ? 'active' : 'idle' }
-          }
+      const statuses: Array<UserPresence['status']> = ['active', 'idle', 'busy', 'away', 'idle'];
+      statuses.forEach(status => {
+        mockTransport.emit('metricsUpdates', {
+          type: 'metricsUpdates',
+          data: { users: [{ ...user, status }] }
         });
-      }
-      
+      });
+
       await flushTimers(110);
 
       const state = store.get();
@@ -816,11 +901,9 @@ describe('Presence Store', () => {
       store.startMonitoring();
       
       // Send malformed message
-      mockTransport.emit('message', {
-        data: {
-          type: 'presence_update'
-          // Missing data property
-        }
+      mockTransport.emit('relationshipUpdates', {
+        type: 'relationshipUpdates',
+        data: null
       });
       
       await vi.advanceTimersByTimeAsync(110);
@@ -833,11 +916,9 @@ describe('Presence Store', () => {
       const store = createPresenceStore(config);
       store.startMonitoring();
       
-      mockTransport.emit('message', {
-        data: {
-          type: 'unknown_message_type',
-          data: { someData: 'test' }
-        }
+      mockTransport.emit('metricsUpdates', {
+        type: 'metricsUpdates',
+        data: { someData: 'test' }
       });
       
       await vi.advanceTimersByTimeAsync(110);

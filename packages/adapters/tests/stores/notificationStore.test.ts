@@ -5,6 +5,17 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createNotificationStore } from '../../src/stores/notificationStore';
 import type { Notification, NotificationConfig } from '../../src/stores/types';
+import type {
+  NotificationStreamSubscription,
+  TrustUpdatesSubscription,
+  CostAlertsSubscription,
+  ModerationEventsSubscription
+} from '../../src/graphql/generated/types';
+
+type NotificationStreamPayload = NotificationStreamSubscription['notificationStream'];
+type TrustUpdatePayload = TrustUpdatesSubscription['trustUpdates'];
+type CostAlertPayload = CostAlertsSubscription['costAlerts'];
+type ModerationEventPayload = ModerationEventsSubscription['moderationEvents'];
 
 // Mock TransportManager
 class MockTransportManager {
@@ -45,6 +56,91 @@ class MockTransportManager {
       lastEventId: null
     };
   }
+}
+
+const isoNow = () => new Date().toISOString();
+
+function createLesserAccount(overrides: Record<string, unknown> = {}) {
+  const now = isoNow();
+  return {
+    id: 'actor-1',
+    handle: 'actor@example.com',
+    localHandle: 'actor',
+    displayName: 'Actor',
+    bio: '',
+    avatarUrl: '',
+    bannerUrl: '',
+    joinedAt: now,
+    isVerified: false,
+    isBot: false,
+    isLocked: false,
+    followerCount: 0,
+    followingCount: 0,
+    postCount: 0,
+    profileFields: [],
+    customEmojis: [],
+    trustScore: 80,
+    ...overrides
+  };
+}
+
+function createNotificationStreamPayload(
+  overrides: Record<string, unknown> = {}
+): NotificationStreamPayload {
+  const base = {
+    id: 'stream-notif-1',
+    notificationType: 'MENTION',
+    createdAt: isoNow(),
+    isRead: false,
+    triggerAccount: createLesserAccount()
+  };
+
+  return { ...base, ...overrides } as unknown as NotificationStreamPayload;
+}
+
+function createTrustUpdatePayload(
+  overrides: Record<string, unknown> = {}
+): TrustUpdatePayload {
+  const base = {
+    category: 'QUALITY',
+    score: 82,
+    updatedAt: isoNow(),
+    from: createLesserAccount({ id: 'trust-source', handle: 'source@example.com', localHandle: 'source' }),
+    to: createLesserAccount({ id: 'trust-target', handle: 'target@example.com', localHandle: 'target' })
+  };
+
+  return { ...base, ...overrides } as unknown as TrustUpdatePayload;
+}
+
+function createCostAlertPayload(
+  overrides: Record<string, unknown> = {}
+): CostAlertPayload {
+  const base = {
+    id: 'cost-alert-1',
+    type: 'BUDGET',
+    amount: 15000,
+    threshold: 10000,
+    domain: 'example.com',
+    message: 'Budget threshold exceeded',
+    timestamp: isoNow()
+  };
+
+  return { ...base, ...overrides } as unknown as CostAlertPayload;
+}
+
+function createModerationEventPayload(
+  overrides: Record<string, unknown> = {}
+): ModerationEventPayload {
+  const base = {
+    id: 'mod-event-1',
+    decision: 'REMOVE',
+    confidence: 0.9,
+    evidence: ['automated classifier'],
+    timestamp: isoNow(),
+    object: { id: 'status-42' }
+  };
+
+  return { ...base, ...overrides } as unknown as ModerationEventPayload;
 }
 
 describe('Notification Store', () => {
@@ -402,25 +498,18 @@ describe('Notification Store', () => {
   });
 
   describe('Streaming Updates', () => {
-    it('should handle streaming notifications', async () => {
+    it('should handle notificationStream events', async () => {
       const store = createNotificationStore(config);
       store.startStreaming();
       
-      const streamingNotification: Notification = {
+      const streamingNotification = createNotificationStreamPayload({
         id: 'stream-notif-1',
-        type: 'info',
-        title: 'Streamed',
-        message: 'This came from stream',
-        timestamp: Date.now(),
-        isRead: false,
-        priority: 'normal'
-      };
-      
-      mockTransport.emit('message', {
-        data: {
-          type: 'notification_received',
-          data: streamingNotification
-        }
+        notificationType: 'MENTION'
+      });
+
+      mockTransport.emit('notificationStream', {
+        type: 'notificationStream',
+        data: streamingNotification
       });
       
       // Wait for debounce
@@ -430,79 +519,117 @@ describe('Notification Store', () => {
       expect(state.notifications.find(n => n.id === 'stream-notif-1')).toBeTruthy();
     });
 
-    it('should handle notification updates from stream', async () => {
+    it('should merge trustUpdates into existing notifications', async () => {
       const store = createNotificationStore(config);
       store.startStreaming();
       
-      const targetNotification = store.get().notifications[0];
-      
-      mockTransport.emit('message', {
-        data: {
-          type: 'notification_updated',
-          data: {
-            id: targetNotification.id,
-            updates: { isRead: true, title: 'Updated Title' }
-          }
-        }
+      // Seed a trust update notification via notificationStream
+      const trustNotification = createNotificationStreamPayload({
+        id: 'trust-notif',
+        notificationType: 'TRUST_UPDATE'
       });
-      
-      await vi.advanceTimersByTimeAsync(10);
-      
+
+      mockTransport.emit('notificationStream', {
+        type: 'notificationStream',
+        data: trustNotification
+      });
+
+      await flushTimers(60);
+
+      const trustUpdatePayload = createTrustUpdatePayload({
+        score: 95,
+        category: 'SAFETY'
+      });
+
+      mockTransport.emit('trustUpdates', {
+        type: 'trustUpdates',
+        data: trustUpdatePayload
+      });
+
+      await flushTimers(20);
+
       const state = store.get();
-      const updatedNotification = state.notifications.find(n => n.id === targetNotification.id);
-      expect(updatedNotification?.isRead).toBe(true);
-      expect(updatedNotification?.title).toBe('Updated Title');
+      const updatedNotification = state.notifications.find(n => n.id === 'trust-notif');
+      expect(updatedNotification).toBeTruthy();
+      expect(updatedNotification?.metadata?.lesser?.trustUpdate?.newScore).toBe(95);
+      expect(updatedNotification?.isRead).toBe(false);
     });
 
-    it('should handle notification removal from stream', async () => {
+    it('should upsert cost alert notifications', async () => {
       const store = createNotificationStore(config);
       store.startStreaming();
       
-      const targetNotification = store.get().notifications[0];
-      const initialCount = store.get().notifications.length;
-      
-      mockTransport.emit('message', {
-        data: {
-          type: 'notification_removed',
-          data: { id: targetNotification.id }
-        }
+      const costAlert = createCostAlertPayload({ id: 'cost-alert-1', amount: 12000 });
+
+      mockTransport.emit('costAlerts', {
+        type: 'costAlerts',
+        data: costAlert
       });
       
-      await vi.advanceTimersByTimeAsync(10);
-      
+      await flushTimers(60);
+
+      const updatedCostAlert = createCostAlertPayload({
+        id: 'cost-alert-1',
+        amount: 18000,
+        message: 'Escalated budget warning'
+      });
+
+      mockTransport.emit('costAlerts', {
+        type: 'costAlerts',
+        data: updatedCostAlert
+      });
+
+      await flushTimers(60);
+
       const state = store.get();
-      expect(state.notifications).toHaveLength(initialCount - 1);
-      expect(state.notifications.find(n => n.id === targetNotification.id)).toBeUndefined();
+      const alert = state.notifications.find(n => n.id === 'cost-alert-1');
+      expect(alert).toBeTruthy();
+      expect(alert?.metadata?.lesser?.costAlert?.amount).toBe(18000);
+      expect(alert?.message).toBe('Escalated budget warning');
     });
 
     it('should deduplicate streaming notifications', async () => {
       const store = createNotificationStore(config);
-      
-      const duplicateNotification: Notification = {
+      store.startStreaming();
+
+      const duplicateNotification = createNotificationStreamPayload({
         id: 'duplicate-notif',
-        type: 'info',
-        title: 'Duplicate',
-        message: 'This is a duplicate',
-        timestamp: Date.now(),
-        isRead: false,
-        priority: 'normal'
-      };
+        notificationType: 'MENTION'
+      });
       
       // Send same notification multiple times rapidly
       for (let i = 0; i < 5; i++) {
-        mockTransport.emit('message', {
-          data: {
-            type: 'notification_received',
-            data: duplicateNotification
-          }
+        mockTransport.emit('notificationStream', {
+          type: 'notificationStream',
+          data: duplicateNotification
         });
       }
       
-      await vi.advanceTimersByTimeAsync(60);
+      await flushTimers(60);
       
       const state = store.get();
       const duplicates = state.notifications.filter(n => n.id === 'duplicate-notif');
       expect(duplicates).toHaveLength(1); // Should only have one
+    });
+
+    it('should create moderation action notifications from moderationEvents', async () => {
+      const store = createNotificationStore(config);
+      store.startStreaming();
+
+      const moderationEvent = createModerationEventPayload({ id: 'mod-event-1', decision: 'FLAG' });
+
+      mockTransport.emit('moderationEvents', {
+        type: 'moderationEvents',
+        data: moderationEvent
+      });
+
+      await flushTimers(60);
+
+      const state = store.get();
+      const moderationNotification = state.notifications.find(n => n.id === 'mod-event-1');
+      expect(moderationNotification).toBeTruthy();
+      expect(moderationNotification?.type).toBe('moderation_action');
+      expect(moderationNotification?.metadata?.lesser?.moderationAction?.action).toBe('FLAG');
     });
   });
 
@@ -695,23 +822,16 @@ describe('Notification Store', () => {
 
     it('should handle notifications with missing properties', async () => {
       const store = createNotificationStore(config);
+      store.startStreaming();
       
-      const incompleteNotification = {
+      const incompleteNotification = createNotificationStreamPayload({
         id: 'incomplete',
-        type: 'info',
-        title: 'Incomplete',
-        message: 'Missing some properties',
-        timestamp: Date.now(),
-        isRead: false,
-        priority: 'normal'
-        // Missing optional properties
-      } as Notification;
-      
-      mockTransport.emit('message', {
-        data: {
-          type: 'notification_received',
-          data: incompleteNotification
-        }
+        notificationType: 'STATUS_UPDATE'
+      });
+
+      mockTransport.emit('notificationStream', {
+        type: 'notificationStream',
+        data: incompleteNotification
       });
       
       await flushTimers(60);

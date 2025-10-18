@@ -10,6 +10,17 @@ import type {
   SessionInfo,
   PresenceConfig
 } from './types';
+import { mapLesserAccount } from '../mappers/lesser/mappers.js';
+import type { LesserAccountFragment } from '../mappers/lesser/types.js';
+import type { UnifiedAccount } from '../models/unified.js';
+import type {
+  RelationshipUpdatesSubscription,
+  TrustUpdatesSubscription
+} from '../graphql/generated/types.js';
+import type { WebSocketEvent } from '../types.js';
+
+type RelationshipUpdatePayload = RelationshipUpdatesSubscription['relationshipUpdates'];
+type TrustUpdatePayload = TrustUpdatesSubscription['trustUpdates'];
 
 const STATUS_PRIORITY: Record<UserPresence['status'], number> = {
   active: 1,
@@ -314,6 +325,147 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
     }, config.updateDebounceMs || 250);
   }
 
+  function resolveTimestamp(value?: string | number): number {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      const parsed = Date.parse(value);
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+    }
+
+    return Date.now();
+  }
+
+  function mapAccountToPresence(
+    account: UnifiedAccount,
+    overrides: Partial<UserPresence> = {}
+  ): UserPresence {
+    const base: UserPresence = {
+      userId: account.id,
+      displayName: account.displayName || account.username,
+      avatar: account.avatar || undefined,
+      isOnline: true,
+      lastSeen: Date.now(),
+      status: 'active',
+      statusMessage: undefined,
+      location: undefined,
+      connection: overrides.connection
+    };
+
+    return {
+      ...base,
+      ...overrides,
+      status: overrides.status ?? base.status,
+      isOnline: overrides.isOnline ?? base.isOnline,
+      lastSeen: overrides.lastSeen ?? base.lastSeen
+    };
+  }
+
+  function mapActorToPresence(
+    actor: LesserAccountFragment,
+    overrides: Partial<UserPresence> = {}
+  ): UserPresence | null {
+    const result = mapLesserAccount(actor);
+    if (!result.success || !result.data) {
+      if (result.error) {
+        console.warn('[PresenceStore] Failed to map Lesser actor to presence', result.error);
+      }
+      return null;
+    }
+
+    return mapAccountToPresence(result.data, overrides);
+  }
+
+  function handleRelationshipUpdate(payload: RelationshipUpdatePayload | null): void {
+    if (!payload?.actor) return;
+
+    const statusMap: Partial<Record<string, UserPresence['status']>> = {
+      followed: 'active',
+      unblocked: 'active',
+      blocked: 'offline',
+      unfollowed: 'offline',
+      muted: 'away',
+      unmuted: 'active'
+    };
+
+    const messageMap: Record<string, string> = {
+      followed: 'Started following you',
+      unfollowed: 'Stopped following you',
+      blocked: 'Blocked you',
+      unblocked: 'Unblocked you',
+      muted: 'Muted you',
+      unmuted: 'Unmuted you'
+    };
+
+    const offlineStatuses = new Set(['blocked', 'unfollowed']);
+    const isOnline = !offlineStatuses.has(payload.type);
+    const presence = mapActorToPresence(payload.actor as unknown as LesserAccountFragment, {
+      isOnline,
+      status: statusMap[payload.type] ?? 'active',
+      statusMessage: messageMap[payload.type] ?? `Relationship ${payload.type}`,
+      lastSeen: resolveTimestamp(payload.timestamp),
+      connection: {
+        sessionId: payload.relationship.id,
+        transportType: 'relationship'
+      }
+    });
+
+    if (presence) {
+      schedulePresenceUpdate(presence);
+    }
+  }
+
+  function handleTrustUpdate(payload: TrustUpdatePayload | null): void {
+    if (!payload?.to) return;
+
+    const presence = mapActorToPresence(payload.to as unknown as LesserAccountFragment, {
+      status: 'active',
+      isOnline: true,
+      statusMessage: `Trust score: ${payload.score}`,
+      lastSeen: resolveTimestamp(payload.updatedAt)
+    });
+
+    if (presence) {
+      schedulePresenceUpdate(presence);
+    }
+  }
+
+  function handleMetricsUpdate(data: unknown): void {
+    if (!isRecord(data)) return;
+
+    if (typeof data.latency === 'number') {
+      state.update(current => ({
+        ...current,
+        connectionHealth: {
+          ...current.connectionHealth,
+          latency: data.latency,
+          status: data.latency > 250 ? 'poor' : current.connectionHealth.status
+        }
+      }));
+    }
+
+    if (Array.isArray(data.users)) {
+      data.users.forEach((entry) => {
+        if (isRecord(entry) && typeof entry.userId === 'string') {
+          schedulePresenceUpdate(entry as UserPresence);
+        }
+      });
+    }
+
+    if (typeof data.sessionId === 'string') {
+      const sessionInfo = data as unknown as SessionInfo;
+      state.update(current => {
+        const sessions = cloneSessionsMap(current.sessions);
+        sessions.set(sessionInfo.sessionId, sessionInfo);
+        return { ...current, sessions };
+      });
+    }
+  }
+
   function startHeartbeat(): void {
     if (heartbeatTimer || !config.transportManager) return;
 
@@ -524,9 +676,18 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
       error: null
     }));
 
-    // Subscribe to presence updates
-    const messageHandler = config.transportManager.on('message', (event) => {
-      handlePresenceMessage(event.data);
+    const relationshipHandler = config.transportManager.on('relationshipUpdates', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as RelationshipUpdatePayload | null;
+      handleRelationshipUpdate(payload);
+    });
+
+    const trustHandler = config.transportManager.on('trustUpdates', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as TrustUpdatePayload | null;
+      handleTrustUpdate(payload);
+    });
+
+    const metricsHandler = config.transportManager.on('metricsUpdates', (event: WebSocketEvent) => {
+      handleMetricsUpdate(event?.data);
     });
 
     // Subscribe to connection events
@@ -588,7 +749,9 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
     });
 
     streamingUnsubscribers.push(
-      messageHandler,
+      relationshipHandler,
+      trustHandler,
+      metricsHandler,
       openHandler,
       errorHandler,
       closeHandler,
@@ -639,60 +802,6 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
 
     // Clear pending updates
     pendingPresenceUpdates.clear();
-  }
-
-  function handlePresenceMessage(rawData: unknown): void {
-    if (!isRecord(rawData) || typeof rawData.type !== 'string') {
-      return;
-    }
-
-    const payload = isRecord(rawData) && 'data' in rawData ? rawData.data : undefined;
-
-    switch (rawData.type) {
-      case 'presence_update':
-        if (isRecord(payload) && typeof payload.userId === 'string') {
-          schedulePresenceUpdate(payload as UserPresence);
-        }
-        break;
-
-      case 'presence_user_joined':
-        if (isRecord(payload) && typeof payload.userId === 'string') {
-          schedulePresenceUpdate(payload as UserPresence);
-        }
-        break;
-
-      case 'presence_user_left':
-        if (isRecord(payload) && typeof payload.userId === 'string') {
-          const userId = payload.userId;
-          const existingUser = state.value.users.get(userId);
-          if (existingUser) {
-            const offlineUser = { ...existingUser, isOnline: false, status: 'offline' as const };
-            schedulePresenceUpdate(offlineUser);
-          }
-        }
-        break;
-
-      case 'presence_session_update':
-        if (isRecord(payload) && typeof payload.sessionId === 'string') {
-          const sessionInfo = payload as SessionInfo;
-          state.update(current => {
-            const sessions = cloneSessionsMap(current.sessions);
-            sessions.set(sessionInfo.sessionId, sessionInfo);
-            return { ...current, sessions };
-          });
-        }
-        break;
-
-      case 'presence_bulk_update':
-        if (Array.isArray(payload)) {
-          payload.forEach((presence) => {
-            if (isRecord(presence) && typeof presence.userId === 'string') {
-              schedulePresenceUpdate(presence as UserPresence);
-            }
-          });
-        }
-        break;
-    }
   }
 
   function subscribe(callback: (value: PresenceState) => void): () => void {

@@ -32,6 +32,8 @@ export interface LesserTimelineMetadata {
   isQuote?: boolean;
   /** Quote count */
   quoteCount?: number;
+  /** Hashtags associated with the timeline item */
+  hashtags?: string[];
   /** Is quoteable */
   quoteable?: boolean;
   /** Quote permission level */
@@ -42,6 +44,14 @@ export interface LesserTimelineMetadata {
   aiModerationAction?: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE' | 'SHADOW_BAN' | 'REVIEW';
   /** AI confidence score */
   aiConfidence?: number;
+  /** Identifiers of lists containing this item */
+  listMemberships?: string[];
+  /** Human-readable titles for lists containing this item */
+  listTitles?: Record<string, string>;
+  /** Latest relationship change affecting the author */
+  relationshipStatus?: 'followed' | 'unfollowed' | 'blocked' | 'unblocked' | 'muted' | 'unmuted';
+  /** Timestamp of the last relationship update */
+  relationshipUpdatedAt?: number;
 }
 
 export interface TimelineItem {

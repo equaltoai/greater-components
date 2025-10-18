@@ -9,8 +9,32 @@ import type {
   TimelineItem,
   TimelineConfig,
   StreamingEdit,
-  JsonPatch
+  JsonPatch,
+  LesserTimelineMetadata
 } from './types';
+import { unifiedStatusToTimelineItem } from './unifiedToTimeline.js';
+import { mapLesserObject } from '../mappers/lesser/mappers.js';
+import type { UnifiedStatus } from '../models/unified.js';
+import type { LesserObjectFragment } from '../mappers/lesser/types.js';
+import type { WebSocketEvent } from '../types.js';
+import type {
+  TimelineUpdatesSubscription,
+  QuoteActivitySubscription,
+  HashtagActivitySubscription,
+  ListUpdatesSubscription,
+  RelationshipUpdatesSubscription
+} from '../graphql/generated/types.js';
+
+type TimelineUpdatePayload = TimelineUpdatesSubscription['timelineUpdates'];
+type QuoteActivityPayload = QuoteActivitySubscription['quoteActivity'];
+type HashtagActivityPayload = HashtagActivitySubscription['hashtagActivity'];
+type ListUpdatePayload = ListUpdatesSubscription['listUpdates'];
+type RelationshipUpdatePayload = RelationshipUpdatesSubscription['relationshipUpdates'];
+type TimelineObjectLike =
+  | TimelineUpdatePayload
+  | NonNullable<QuoteActivityPayload['quote']>
+  | HashtagActivityPayload['post'];
+type MetadataEnhancer = (metadata: LesserTimelineMetadata) => LesserTimelineMetadata;
 
 // Simple reactive state implementation that works everywhere
 class ReactiveState<T> {
@@ -76,6 +100,185 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
   let streamingUnsubscribers: (() => void)[] = [];
   let updateDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   let pendingUpdates: StreamingEdit[] = [];
+
+  function mapTimelineObject(object: TimelineObjectLike | null | undefined): UnifiedStatus | null {
+    if (!object) return null;
+
+    const result = mapLesserObject(object as LesserObjectFragment);
+    if (!result.success || !result.data) {
+      if (result.error) {
+        console.warn('[TimelineStore] Failed to map Lesser timeline object', result.error);
+      }
+      return null;
+    }
+
+    return result.data;
+  }
+
+  function resolveTimestamp(value?: string | number | null): number {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      const parsed = Date.parse(value);
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+    }
+
+    return Date.now();
+  }
+
+  function runMetadataEnhancer(
+    existing: LesserTimelineMetadata | undefined,
+    enhancer?: MetadataEnhancer
+  ): LesserTimelineMetadata | undefined {
+    if (!enhancer) {
+      return existing;
+    }
+
+    const current: LesserTimelineMetadata = { ...(existing ?? {}) };
+    const enhanced = enhancer(current);
+
+    return Object.keys(enhanced).length > 0 ? enhanced : undefined;
+  }
+
+  function upsertUnifiedStatus(
+    unifiedStatus: UnifiedStatus,
+    metadataEnhancer?: MetadataEnhancer
+  ): void {
+    const baseItem = unifiedStatusToTimelineItem(unifiedStatus);
+    const existingItem = state.value.items.find(item => item.id === unifiedStatus.id);
+    const existingMetadata = existingItem?.metadata;
+    const baseMetadata = baseItem.metadata;
+
+    const mergedLesser =
+      existingMetadata?.lesser || baseMetadata?.lesser
+        ? {
+            ...(existingMetadata?.lesser ?? {}),
+            ...(baseMetadata?.lesser ?? {})
+          }
+        : undefined;
+
+    const finalLesser = runMetadataEnhancer(mergedLesser, metadataEnhancer);
+
+    const combinedMetadata = (() => {
+      if (!existingMetadata && !baseMetadata && !finalLesser) {
+        return undefined;
+      }
+
+      const merged: TimelineItem['metadata'] = {
+        ...(existingMetadata ?? {}),
+        ...(baseMetadata ?? {})
+      };
+
+      if (finalLesser) {
+        merged.lesser = finalLesser;
+      } else {
+        delete merged.lesser;
+      }
+
+      return Object.keys(merged).length > 0 ? merged : undefined;
+    })();
+
+    const edit: StreamingEdit = {
+      type: existingItem ? 'replace' : 'add',
+      itemId: unifiedStatus.id,
+      data: {
+        ...baseItem,
+        metadata: combinedMetadata
+      },
+      timestamp: resolveTimestamp(unifiedStatus.createdAt),
+      userId: unifiedStatus.account?.id
+    };
+
+    applyStreamingEdit(edit);
+  }
+
+  function removeItemsByPredicate(predicate: (item: TimelineItem) => boolean): void {
+    let mutated = false;
+
+    state.update(current => {
+      const filtered = current.items.filter(item => {
+        const shouldRemove = predicate(item);
+        if (shouldRemove) mutated = true;
+        return !shouldRemove;
+      });
+
+      return mutated
+        ? {
+            ...current,
+            items: filtered
+          }
+        : current;
+    });
+
+    if (mutated) {
+      updateDerivedValues();
+    }
+  }
+
+  function updateItemsMetadata(
+    predicate: (item: TimelineItem) => boolean,
+    updater: (metadata: LesserTimelineMetadata | undefined) => LesserTimelineMetadata | undefined
+  ): void {
+    let mutated = false;
+
+    state.update(current => {
+      const items = current.items.map(item => {
+        if (!predicate(item)) {
+          return item;
+        }
+
+        const currentMetadata = item.metadata ?? undefined;
+        const currentLesser = currentMetadata?.lesser;
+
+        const nextLesser = updater(currentLesser);
+        if (nextLesser === currentLesser) {
+          return item;
+        }
+
+        mutated = true;
+
+        const metadata: TimelineItem['metadata'] | undefined = (() => {
+          if (!currentMetadata && !nextLesser) return undefined;
+
+          const merged: TimelineItem['metadata'] = {
+            ...(currentMetadata ?? {})
+          };
+
+          if (nextLesser) {
+            merged.lesser = nextLesser;
+          } else {
+            delete merged.lesser;
+          }
+
+          return Object.keys(merged).length > 0 ? merged : undefined;
+        })();
+
+        return {
+          ...item,
+          metadata
+        };
+      });
+
+      return mutated ? { ...current, items } : current;
+    });
+
+    if (mutated) {
+      updateDerivedValues();
+    }
+  }
+
+  function getStatusFromItem(item: TimelineItem): UnifiedStatus | null {
+    if (!item?.content || typeof item.content !== 'object') {
+      return null;
+    }
+
+    const maybeStatus = item.content as Partial<UnifiedStatus>;
+    return typeof maybeStatus.id === 'string' ? (maybeStatus as UnifiedStatus) : null;
+  }
 
   function updateDerivedValues(): void {
     const currentState = state.value;
@@ -521,12 +724,6 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     }
   }
 
-  const isRecord = (value: unknown): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null;
-
-  const isTimelineEditPayload = (value: unknown): value is { type: 'timeline_edit'; data: StreamingEdit } =>
-    isRecord(value) && value.type === 'timeline_edit' && isRecord(value.data);
-
   function startStreaming(): void {
     if (state.value.isStreaming || !config.transportManager) return;
     
@@ -536,13 +733,162 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
       error: null
     }));
     
-    // Subscribe to streaming edits
-    const editHandler = config.transportManager?.on('message', (event) => {
-      if (isTimelineEditPayload(event.data)) {
-        applyStreamingEdit(event.data.data);
+    const timelineUpdatesHandler = config.transportManager?.on('timelineUpdates', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as TimelineUpdatePayload | null;
+      const status = mapTimelineObject(payload);
+      if (!status) return;
+      upsertUnifiedStatus(status);
+    });
+
+    const quoteActivityHandler = config.transportManager?.on('quoteActivity', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as QuoteActivityPayload | null;
+      if (!payload) return;
+
+      if (payload.type === 'withdrawn' && payload.quote?.id) {
+        removeItemsByPredicate(item => item.id === payload.quote?.id);
+        return;
+      }
+
+      if (!payload.quote) return;
+
+      const status = mapTimelineObject(payload.quote);
+      if (!status) return;
+
+      upsertUnifiedStatus(status, metadata => {
+        const next: LesserTimelineMetadata = {
+          ...(metadata ?? {}),
+          isQuote: true
+        };
+
+        if (typeof status.quoteCount === 'number') {
+          next.quoteCount = status.quoteCount;
+        }
+        if (typeof status.quoteable === 'boolean') {
+          next.quoteable = status.quoteable;
+        }
+        if (status.quotePermissions) {
+          next.quotePermission = status.quotePermissions;
+        }
+
+        return next;
+      });
+    });
+
+    const hashtagActivityHandler = config.transportManager?.on('hashtagActivity', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as HashtagActivityPayload | null;
+      if (!payload?.post) return;
+
+      const status = mapTimelineObject(payload.post);
+      if (!status) return;
+
+      upsertUnifiedStatus(status, metadata => {
+        const next: LesserTimelineMetadata = {
+          ...(metadata ?? {})
+        };
+
+        const hashtags = new Set(next.hashtags ?? []);
+        hashtags.add(payload.hashtag);
+        next.hashtags = Array.from(hashtags);
+
+        return next;
+      });
+    });
+
+    const listUpdatesHandler = config.transportManager?.on('listUpdates', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as ListUpdatePayload | null;
+      if (!payload?.list?.id) return;
+
+      const listId = payload.list.id;
+
+      switch (payload.type) {
+        case 'deleted':
+          removeItemsByPredicate(() => true);
+          break;
+
+        case 'account_removed':
+          if (payload.account?.id) {
+            removeItemsByPredicate(item => {
+              const status = getStatusFromItem(item);
+              return status?.account?.id === payload.account?.id;
+            });
+          }
+          break;
+
+        case 'updated':
+          updateItemsMetadata(
+            item => item.metadata?.lesser?.listMemberships?.includes(listId) ?? false,
+            metadata => {
+              const next: LesserTimelineMetadata = {
+                ...(metadata ?? {})
+              };
+
+              const titles = {
+                ...(next.listTitles ?? {}),
+                [listId]: payload.list.title
+              };
+
+              next.listTitles = titles;
+              return next;
+            }
+          );
+          break;
+
+        case 'account_added':
+          if (payload.account?.id) {
+            updateItemsMetadata(
+              item => {
+                const status = getStatusFromItem(item);
+                return status?.account?.id === payload.account?.id;
+              },
+              metadata => {
+                const next: LesserTimelineMetadata = {
+                  ...(metadata ?? {})
+                };
+
+                const memberships = new Set(next.listMemberships ?? []);
+                memberships.add(listId);
+                next.listMemberships = Array.from(memberships);
+
+                const titles = {
+                  ...(next.listTitles ?? {}),
+                  [listId]: payload.list.title
+                };
+                next.listTitles = titles;
+
+                return next;
+              }
+            );
+          }
+          break;
       }
     });
-    
+
+    const relationshipUpdatesHandler = config.transportManager?.on('relationshipUpdates', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as RelationshipUpdatePayload | null;
+      if (!payload?.actor?.id) return;
+
+      const actorId = payload.actor.id;
+
+      if (payload.type === 'blocked' || payload.type === 'muted' || payload.type === 'unfollowed') {
+        removeItemsByPredicate(item => {
+          const status = getStatusFromItem(item);
+          return status?.account?.id === actorId;
+        });
+        return;
+      }
+
+      updateItemsMetadata(
+        item => {
+          const status = getStatusFromItem(item);
+          return status?.account?.id === actorId;
+        },
+        metadata => ({
+          ...(metadata ?? {}),
+          relationshipStatus: payload.type as LesserTimelineMetadata['relationshipStatus'],
+          relationshipUpdatedAt: resolveTimestamp(payload.timestamp)
+        })
+      );
+    });
     
     // Subscribe to connection events
     const errorHandler = config.transportManager?.on('error', (event) => {
@@ -559,7 +905,11 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
       }));
     });
     
-    if (editHandler) streamingUnsubscribers.push(editHandler);
+    if (timelineUpdatesHandler) streamingUnsubscribers.push(timelineUpdatesHandler);
+    if (quoteActivityHandler) streamingUnsubscribers.push(quoteActivityHandler);
+    if (hashtagActivityHandler) streamingUnsubscribers.push(hashtagActivityHandler);
+    if (listUpdatesHandler) streamingUnsubscribers.push(listUpdatesHandler);
+    if (relationshipUpdatesHandler) streamingUnsubscribers.push(relationshipUpdatesHandler);
     if (errorHandler) streamingUnsubscribers.push(errorHandler);
     if (closeHandler) streamingUnsubscribers.push(closeHandler);
     

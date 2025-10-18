@@ -48,6 +48,64 @@ class MockTransportManager {
   }
 }
 
+const isoNow = () => new Date().toISOString();
+
+function createLesserActor(overrides: Record<string, unknown> = {}) {
+  const now = isoNow();
+  return {
+    id: 'actor-1',
+    handle: 'actor@example.com',
+    localHandle: 'actor',
+    displayName: 'Actor',
+    bio: '',
+    avatarUrl: '',
+    bannerUrl: '',
+    joinedAt: now,
+    isVerified: false,
+    isBot: false,
+    isLocked: false,
+    followerCount: 0,
+    followingCount: 0,
+    postCount: 0,
+    profileFields: [],
+    customEmojis: [],
+    trustScore: 80,
+    ...overrides
+  };
+}
+
+function createTimelineObject(overrides: Record<string, unknown> = {}) {
+  const now = isoNow();
+  return {
+    id: 'remote-item',
+    type: 'NOTE',
+    actor: createLesserActor(),
+    content: 'Remote message',
+    inReplyTo: undefined,
+    visibility: 'PUBLIC',
+    sensitive: false,
+    spoilerText: undefined,
+    attachments: [],
+    tags: [],
+    mentions: [],
+    createdAt: now,
+    updatedAt: now,
+    repliesCount: 0,
+    likesCount: 0,
+    sharesCount: 0,
+    estimatedCost: 0,
+    moderationScore: 0,
+    communityNotes: [],
+    quoteUrl: undefined,
+    quoteable: true,
+    quotePermissions: 'EVERYONE',
+    quoteContext: undefined,
+    quoteCount: 0,
+    aiAnalysis: undefined,
+    ...overrides
+  };
+}
+
 describe('Timeline Store', () => {
   let mockTransport: MockTransportManager;
   let config: TimelineConfig;
@@ -376,31 +434,21 @@ describe('Timeline Store', () => {
       expect(store.get().isStreaming).toBe(false);
     });
 
-    it('should handle streaming messages from transport', () => {
+    it('should handle timelineUpdates events from transport', async () => {
       const store = createTimelineStore(config);
       store.startStreaming();
       
-      const edit: StreamingEdit = {
-        type: 'add',
-        itemId: 'remote-item',
-        data: {
-          type: 'message',
-          content: { text: 'Remote message' }
-        },
-        timestamp: Date.now(),
-        userId: 'remote-user'
-      };
-      
-      // Simulate receiving a message
-      mockTransport.emit('message', {
-        data: {
-          type: 'timeline_edit',
-          data: edit
-        }
+      const timelinePayload = createTimelineObject();
+
+      mockTransport.emit('timelineUpdates', {
+        type: 'timelineUpdates',
+        data: timelinePayload
       });
-      
-      // The edit should be scheduled for processing
-      expect(mockTransport.lastSentMessage).toBeUndefined(); // No message sent back
+
+      await new Promise(resolve => setTimeout(resolve, 60));
+
+      const state = store.get();
+      expect(state.items.some(item => item.id === timelinePayload.id)).toBe(true);
     });
 
     it('should handle transport errors', () => {
