@@ -17,7 +17,7 @@
 	createAdminContext(handlers);
 </script>
 
-<div class="admin-root {className}">
+<div class={`admin-root ${className}`}>
 	{#if children}
 		{@render children()}
 	{/if}

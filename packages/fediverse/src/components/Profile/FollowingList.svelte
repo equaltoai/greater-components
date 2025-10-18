@@ -120,7 +120,7 @@ Supports unfollow action.
 	}
 </script>
 
-<div class="following-list {className}">
+<div class={`following-list ${className}`}>
 	<div class="following-list__header">
 		<h2 class="following-list__title">
 			Following
@@ -191,7 +191,7 @@ Supports unfollow action.
 								onclick={() => handleUnfollow(account.id, account.displayName)}
 								disabled={isUnfollowing}
 								type="button"
-								aria-label="Unfollow {account.displayName}"
+								aria-label={`Unfollow ${account.displayName}`}
 							>
 								{isUnfollowing ? 'Unfollowing...' : 'Following'}
 							</button>

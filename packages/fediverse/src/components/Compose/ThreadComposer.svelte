@@ -313,7 +313,7 @@ Create threads with multiple connected posts, each with its own character limit.
 	);
 </script>
 
-<div class="thread-composer {className}">
+<div class={`thread-composer ${className}`}>
 	<div class="thread-composer__header">
 		<h3 class="thread-composer__title">
 			Compose Thread

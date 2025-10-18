@@ -163,7 +163,7 @@
 </script>
 
 <div
-	class="cw-handler {className}"
+	class={`cw-handler ${className}`}
 	class:cw-handler--expanded={isExpanded}
 	class:cw-handler--collapsed={!isExpanded}
 >
@@ -242,7 +242,7 @@
 	<div
 		class="cw-handler__content"
 		class:cw-handler__content--blur={!isExpanded && blurContent}
-		style="--content-height: {contentHeight}px; --animation-duration: {animationDuration}ms;"
+		style={`--content-height: ${contentHeight}px; --animation-duration: ${animationDuration}ms;`}
 		bind:this={contentRef}
 		aria-hidden={!isExpanded}
 	>

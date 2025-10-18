@@ -70,13 +70,13 @@ Shows trust score, reputation details, and vouch count for accounts on Lesser in
 </script>
 
 {#if hasTrustData}
-	<div class="profile-trust-badge {className}">
+	<div class={`profile-trust-badge ${className}`}>
 		{#if content}
 			{@render content()}
 		{:else}
 			<!-- Trust Score Badge -->
 			{#if trustScore !== undefined}
-				<div class="trust-badge trust-badge--{trustLevel()?.color}">
+				<div class={`trust-badge trust-badge--${trustLevel()?.color}`}>
 					<svg class="trust-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
 						<path
 							fill="currentColor"

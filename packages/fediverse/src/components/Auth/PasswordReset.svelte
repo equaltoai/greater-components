@@ -52,7 +52,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, updateState, clearError } = getAuthContext();
+	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	let email = $state(initialEmail);
 	let newPassword = $state('');
@@ -125,7 +125,7 @@
 	 * Handle password reset request
 	 */
 	async function handleRequest() {
-		if (state.loading) return;
+		if (authState.loading) return;
 
 		clearError();
 
@@ -150,7 +150,7 @@
 	 * Handle password reset confirmation
 	 */
 	async function handleReset() {
-		if (state.loading || !token) return;
+		if (authState.loading || !token) return;
 
 		clearError();
 
@@ -180,7 +180,7 @@
 	 * Handle enter key
 	 */
 	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !state.loading) {
+		if (event.key === 'Enter' && !authState.loading) {
 			if (mode === 'request') {
 				handleRequest();
 			} else {
@@ -203,13 +203,14 @@
     <Auth.PasswordReset mode="request" />
   </Auth.Root>
   
-  <!-- Or with token for confirmation -->
-<Auth.Root {handlers}>
+  Or with token for confirmation:
+
+  <Auth.Root {handlers}>
 	<Auth.PasswordReset mode="confirm" token="abc123" />
-</Auth.Root>
+  </Auth.Root>
 ``` -->
 
-<div class="auth-reset {className}">
+<div class={`auth-reset ${className}`}>
 	{#if mode === 'request'}
 		{#if requestSent}
 			<div class="auth-reset__success">
@@ -246,14 +247,14 @@
 				Enter your email address and we'll send you instructions to reset your password.
 			</p>
 
-			{#if state.error}
+			{#if authState.error}
 				<div class="auth-reset__error" role="alert">
 					<svg class="auth-reset__error-icon" viewBox="0 0 24 24" fill="currentColor">
 						<path
 							d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 						/>
 					</svg>
-					{state.error}
+					{authState.error}
 				</div>
 			{/if}
 
@@ -270,14 +271,13 @@
 						id="reset-email"
 						type="email"
 						class="auth-reset__input"
-						class:auth-reset__input--error={emailError}
-						bind:value={email}
-						placeholder="you@example.com"
-						required
-						disabled={state.loading}
-						autocomplete="email"
-						autofocus
-						onkeydown={handleKeyDown}
+					class:auth-reset__input--error={emailError}
+					bind:value={email}
+					placeholder="you@example.com"
+					required
+					disabled={authState.loading}
+					autocomplete="email"
+					onkeydown={handleKeyDown}
 					/>
 					{#if emailError}
 						<span class="auth-reset__field-error">{emailError}</span>
@@ -287,9 +287,9 @@
 				<button
 					use:requestButton.actions.button
 					class="auth-reset__submit"
-					disabled={state.loading || !email}
+					disabled={authState.loading || !email}
 				>
-					{#if state.loading}
+					{#if authState.loading}
 						<span class="auth-reset__spinner"></span>
 						Sending...
 					{:else}
@@ -302,14 +302,14 @@
 		<h2 class="auth-reset__title">Create new password</h2>
 		<p class="auth-reset__description">Enter your new password below.</p>
 
-		{#if state.error}
+		{#if authState.error}
 			<div class="auth-reset__error" role="alert">
 				<svg class="auth-reset__error-icon" viewBox="0 0 24 24" fill="currentColor">
 					<path
 						d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 					/>
 				</svg>
-				{state.error}
+				{authState.error}
 			</div>
 		{/if}
 
@@ -320,8 +320,8 @@
 				handleReset();
 			}}
 		>
-			<div class="auth-reset__field">
-				<label for="reset-new-password" class="auth-reset__label">New Password</label>
+		<div class="auth-reset__field">
+			<label for="reset-new-password" class="auth-reset__label">New Password</label>
 				<input
 					id="reset-new-password"
 					type="password"
@@ -330,11 +330,10 @@
 					bind:value={newPassword}
 					placeholder="••••••••"
 					required
-					disabled={state.loading}
-					autocomplete="new-password"
-					autofocus
-					onkeydown={handleKeyDown}
-				/>
+					disabled={authState.loading}
+				autocomplete="new-password"
+				onkeydown={handleKeyDown}
+			/>
 				{#if passwordError}
 					<span class="auth-reset__field-error">{passwordError}</span>
 				{:else}
@@ -354,7 +353,7 @@
 					bind:value={confirmPassword}
 					placeholder="••••••••"
 					required
-					disabled={state.loading}
+					disabled={authState.loading}
 					autocomplete="new-password"
 					onkeydown={handleKeyDown}
 				/>
@@ -366,9 +365,9 @@
 			<button
 				use:resetButton.actions.button
 				class="auth-reset__submit"
-				disabled={state.loading || !newPassword || !confirmPassword}
+				disabled={authState.loading || !newPassword || !confirmPassword}
 			>
-				{#if state.loading}
+				{#if authState.loading}
 					<span class="auth-reset__spinner"></span>
 					Resetting password...
 				{:else}
@@ -384,7 +383,7 @@
 			<button
 				class="auth-reset__link"
 				onclick={() => handlers.onNavigateToLogin?.()}
-				disabled={state.loading}
+				disabled={authState.loading}
 			>
 				Sign in
 			</button>

@@ -24,23 +24,23 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, setActiveTab } = getProfileContext();
+	const { state: profileState, setActiveTab } = getProfileContext();
 
 	const tabs = createTabs({
-		defaultTab: state.activeTab,
+		defaultTab: profileState.activeTab,
 		onChange: (tabId) => setActiveTab(tabId),
 	});
 </script>
 
-<div class="profile-tabs {className}">
+<div class={`profile-tabs ${className}`}>
 	<div class="profile-tabs__list" use:tabs.actions.list role="tablist">
-		{#each state.tabs as tab}
+		{#each profileState.tabs as tab}
 			<button
 				class="profile-tabs__tab"
-				class:profile-tabs__tab--active={state.activeTab === tab.id}
+				class:profile-tabs__tab--active={profileState.activeTab === tab.id}
 				use:tabs.actions.tab={tab.id}
 				role="tab"
-				aria-selected={state.activeTab === tab.id}
+				aria-selected={profileState.activeTab === tab.id}
 			>
 				{#if tab.icon}
 					<svg class="profile-tabs__icon" viewBox="0 0 24 24" fill="currentColor">

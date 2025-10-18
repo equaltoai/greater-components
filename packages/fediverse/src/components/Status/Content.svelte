@@ -36,7 +36,7 @@ Uses ContentRenderer for safe HTML display.
 	const { actualStatus } = context;
 </script>
 
-<div class="status-content {className}">
+<div class={`status-content ${className}`}>
 	{#if content}
 		{@render content()}
 	{:else}

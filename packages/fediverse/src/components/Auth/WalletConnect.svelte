@@ -27,6 +27,58 @@
 	import { createButton } from '@greater/headless/button';
 	import type { AuthHandlers } from './context.js';
 
+	type ProviderRequest = {
+		method: string;
+		params?: readonly unknown[];
+	};
+
+	interface EthereumProvider {
+		request: (args: ProviderRequest) => Promise<unknown>;
+		isMetaMask?: boolean;
+		isCoinbaseWallet?: boolean;
+		isRainbow?: boolean;
+		isTrust?: boolean;
+	}
+
+	interface WindowWithProviders extends Window {
+		ethereum?: EthereumProvider;
+		phantom?: { ethereum?: EthereumProvider };
+	}
+
+	interface ProviderErrorInfo {
+		code?: number;
+		message?: string;
+	}
+
+	function getWindowProviders(): WindowWithProviders | null {
+		if (typeof window === 'undefined') {
+			return null;
+		}
+		return window as WindowWithProviders;
+	}
+
+	function hasRequest(provider: EthereumProvider | undefined | null): provider is EthereumProvider {
+		return !!provider && typeof provider.request === 'function';
+	}
+
+	function isStringArray(value: unknown): value is string[] {
+		return Array.isArray(value) && value.every((item) => typeof item === 'string');
+	}
+
+	function getProviderErrorInfo(error: unknown): ProviderErrorInfo {
+		if (typeof error === 'string') {
+			return { message: error };
+		}
+		if (typeof error === 'object' && error !== null) {
+			const candidate = error as { code?: unknown; message?: unknown };
+			return {
+				code: typeof candidate.code === 'number' ? candidate.code : undefined,
+				message: typeof candidate.message === 'string' ? candidate.message : undefined,
+			};
+		}
+		return {};
+	}
+
 	type WalletProvider = 'metamask' | 'walletconnect' | 'coinbase' | 'phantom' | 'rainbow' | 'trust';
 
 	interface WalletInfo {
@@ -88,44 +140,50 @@
 	/**
 	 * Available wallet providers
 	 */
-	const wallets = $derived<WalletInfo[]>([
-		{
-			provider: 'metamask',
-			name: 'MetaMask',
-			icon: '🦊',
-			available: typeof window !== 'undefined' && !!(window as any).ethereum?.isMetaMask,
-		},
-		{
-			provider: 'coinbase',
-			name: 'Coinbase Wallet',
-			icon: '🔵',
-			available: typeof window !== 'undefined' && !!(window as any).ethereum?.isCoinbaseWallet,
-		},
-		{
-			provider: 'phantom',
-			name: 'Phantom',
-			icon: '👻',
-			available: typeof window !== 'undefined' && !!(window as any).phantom?.ethereum,
-		},
-		{
-			provider: 'rainbow',
-			name: 'Rainbow',
-			icon: '🌈',
-			available: typeof window !== 'undefined' && !!(window as any).ethereum?.isRainbow,
-		},
-		{
-			provider: 'trust',
-			name: 'Trust Wallet',
-			icon: '🛡️',
-			available: typeof window !== 'undefined' && !!(window as any).ethereum?.isTrust,
-		},
-		{
-			provider: 'walletconnect',
-			name: 'WalletConnect',
-			icon: '🔗',
-			available: true, // WalletConnect is always available (uses QR code)
-		},
-	]);
+	const wallets = $derived<WalletInfo[]>(() => {
+		const providersWindow = getWindowProviders();
+		const ethereum = providersWindow?.ethereum;
+		const phantomEthereum = providersWindow?.phantom?.ethereum;
+
+		return [
+			{
+				provider: 'metamask',
+				name: 'MetaMask',
+				icon: '🦊',
+				available: hasRequest(ethereum) && !!ethereum.isMetaMask,
+			},
+			{
+				provider: 'coinbase',
+				name: 'Coinbase Wallet',
+				icon: '🔵',
+				available: hasRequest(ethereum) && !!ethereum.isCoinbaseWallet,
+			},
+			{
+				provider: 'phantom',
+				name: 'Phantom',
+				icon: '👻',
+				available: hasRequest(phantomEthereum),
+			},
+			{
+				provider: 'rainbow',
+				name: 'Rainbow',
+				icon: '🌈',
+				available: hasRequest(ethereum) && !!ethereum.isRainbow,
+			},
+			{
+				provider: 'trust',
+				name: 'Trust Wallet',
+				icon: '🛡️',
+				available: hasRequest(ethereum) && !!ethereum.isTrust,
+			},
+			{
+				provider: 'walletconnect',
+				name: 'WalletConnect',
+				icon: '🔗',
+				available: true, // WalletConnect is always available (uses QR code)
+			},
+		];
+	});
 
 	/**
 	 * Initialize wallet button instances
@@ -141,26 +199,29 @@
 	/**
 	 * Get Ethereum provider based on selected wallet
 	 */
-	function getProvider(provider: WalletProvider): any {
-		if (typeof window === 'undefined') return null;
+	function getProvider(provider: WalletProvider): EthereumProvider | null {
+		const providersWindow = getWindowProviders();
+		if (!providersWindow) {
+			return null;
+		}
 
-		const win = window as any;
+		const { ethereum, phantom } = providersWindow;
+		const ensureProvider = (candidate: EthereumProvider | undefined | null) =>
+			hasRequest(candidate) ? candidate : null;
 
 		switch (provider) {
 			case 'metamask':
-				return win.ethereum?.isMetaMask ? win.ethereum : null;
+				return ensureProvider(ethereum && ethereum.isMetaMask ? ethereum : null);
 			case 'coinbase':
-				return win.ethereum?.isCoinbaseWallet ? win.ethereum : null;
+				return ensureProvider(ethereum && ethereum.isCoinbaseWallet ? ethereum : null);
 			case 'phantom':
-				return win.phantom?.ethereum ?? null;
+				return ensureProvider(phantom?.ethereum);
 			case 'rainbow':
-				return win.ethereum?.isRainbow ? win.ethereum : null;
+				return ensureProvider(ethereum && ethereum.isRainbow ? ethereum : null);
 			case 'trust':
-				return win.ethereum?.isTrust ? win.ethereum : null;
+				return ensureProvider(ethereum && ethereum.isTrust ? ethereum : null);
 			case 'walletconnect':
-				// WalletConnect requires additional setup with provider instance
-				// For now, fall back to default ethereum provider
-				return win.ethereum ?? null;
+				return ensureProvider(ethereum);
 			default:
 				return null;
 		}
@@ -209,21 +270,27 @@
 			}
 
 			// Request accounts
-			const accounts = await ethereum.request({
+			const accountsResult = await ethereum.request({
 				method: 'eth_requestAccounts',
 			});
 
-			if (!accounts || accounts.length === 0) {
+			if (!isStringArray(accountsResult) || accountsResult.length === 0) {
 				throw new Error('No accounts found. Please unlock your wallet.');
 			}
 
-			const address = accounts[0];
+			const [address] = accountsResult;
 
 			// Get chain ID
-			const chainIdHex = await ethereum.request({
+			const chainIdResult = await ethereum.request({
 				method: 'eth_chainId',
 			});
-			const chainId = parseInt(chainIdHex, 16);
+			if (typeof chainIdResult !== 'string') {
+				throw new Error('Unable to determine network. Please try again.');
+			}
+			const chainId = Number.parseInt(chainIdResult, 16);
+			if (Number.isNaN(chainId)) {
+				throw new Error('Provider returned an invalid network identifier.');
+			}
 
 			// Check if chain is supported
 			if (!supportedChains.includes(chainId)) {
@@ -232,16 +299,17 @@
 			}
 
 			// Request signature for authentication
-			const signature = await ethereum.request({
+			const signatureResult = await ethereum.request({
 				method: 'personal_sign',
 				params: [signMessage, address],
 			});
 
-			if (!signature) {
+			if (typeof signatureResult !== 'string' || signatureResult.length === 0) {
 				throw new Error('Signature required for authentication.');
 			}
 
 			// Update state
+			const signature = signatureResult;
 			wallet = { address, chainId, provider };
 			connected = true;
 
@@ -252,14 +320,15 @@
 				provider,
 				signature,
 			});
-		} catch (err: any) {
+		} catch (caught) {
+			const { code, message } = getProviderErrorInfo(caught);
 			// Handle user rejection
-			if (err.code === 4001 || err.message?.includes('User rejected')) {
+			if (code === 4001 || (message ?? '').includes('User rejected')) {
 				error = 'Connection cancelled by user';
 			} else {
-				error = err.message ?? 'Failed to connect wallet';
+				error = message ?? 'Failed to connect wallet';
 			}
-			console.error('Wallet connection error:', err);
+			console.error('Wallet connection error:', caught);
 		} finally {
 			connecting = false;
 			selectedProvider = null;
@@ -277,8 +346,9 @@
 			wallet = null;
 			connected = false;
 			error = null;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to disconnect';
+		} catch (caught) {
+			const { message } = getProviderErrorInfo(caught);
+			error = message ?? 'Failed to disconnect';
 		}
 	}
 
@@ -301,12 +371,13 @@
 
 			// Update wallet state
 			wallet = { ...wallet, chainId };
-		} catch (err: any) {
+		} catch (caught) {
 			// Chain not added to wallet, attempt to add it
-			if (err.code === 4902) {
+			const { code, message } = getProviderErrorInfo(caught);
+			if (code === 4902) {
 				error = `Please add ${getChainName(chainId)} to your wallet first`;
 			} else {
-				error = err.message ?? 'Failed to switch network';
+				error = message ?? 'Failed to switch network';
 			}
 		}
 	}
@@ -319,8 +390,10 @@
 
 		try {
 			await navigator.clipboard.writeText(wallet.address);
-		} catch (err) {
-			console.error('Failed to copy address:', err);
+		} catch (caught) {
+			const { message } = getProviderErrorInfo(caught);
+			console.error('Failed to copy address:', caught);
+			error = message ?? 'Failed to copy address';
 		}
 	}
 </script>
@@ -340,7 +413,7 @@
 		{/if}
 
 		<div class="wallet-connect__wallets">
-			{#each wallets as walletInfo}
+			{#each wallets as walletInfo (walletInfo.provider)}
 				{@const buttonInstance = walletButtons.get(walletInfo.provider)}
 				{#if buttonInstance}
 					<button
@@ -417,7 +490,7 @@
 				<div class="wallet-connect__networks">
 					<p class="wallet-connect__networks-label">Switch Network:</p>
 					<div class="wallet-connect__networks-list">
-						{#each supportedChains as chainId}
+						{#each supportedChains as chainId (chainId)}
 							<button
 								class="wallet-connect__network-button"
 								class:wallet-connect__network-button--active={wallet.chainId === chainId}

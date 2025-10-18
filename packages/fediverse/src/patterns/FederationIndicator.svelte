@@ -147,7 +147,7 @@
 </script>
 
 <div
-	class="federation-indicator federation-indicator--{mode} federation-indicator--{position} {className}"
+	class={`federation-indicator federation-indicator--${mode} federation-indicator--${position} ${className}`}
 	class:federation-indicator--local={isLocal}
 	class:federation-indicator--remote={!isLocal}
 	role={onClick ? 'button' : undefined}

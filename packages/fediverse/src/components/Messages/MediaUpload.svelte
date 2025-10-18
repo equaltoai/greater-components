@@ -155,7 +155,7 @@
 	});
 </script>
 
-<div class="media-upload {className}">
+<div class={`media-upload ${className}`}>
 	<!-- Upload Button -->
 	{#if canAddMore}
 		<button

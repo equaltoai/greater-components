@@ -107,14 +107,27 @@ Displays multiple similar notifications grouped together.
 	function handleClick() {
 		context.handlers.onGroupClick?.(group);
 	}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleClick();
+		}
+	}
+
+	function sanitizeContent(html: string): string {
+		return html.replace(/<[^>]+>/g, '');
+	}
 </script>
 
-<article
-	class="notification-group notification-group--{group.type} {className}"
+<div
+	class={`notification-group notification-group--${group.type} ${className}`}
 	class:notification-group--unread={hasUnread}
 	onclick={handleClick}
-	role="article"
-	aria-label="{accountNames} {title}"
+	role="button"
+	tabindex="0"
+	onkeydown={handleKeyDown}
+	aria-label={`${accountNames} ${title}`}
 >
 	{#if children}
 		{@render children()}
@@ -124,13 +137,13 @@ Displays multiple similar notifications grouped together.
 		</div>
 
 		<div class="notification-group__content">
-			{#if context.config.showAvatars}
-				<div class="notification-group__avatars">
-					{#each group.notifications.slice(0, 3) as notification}
+		{#if context.config.showAvatars}
+			<div class="notification-group__avatars">
+				{#each group.notifications.slice(0, 3) as notification (notification.id)}
 						{#if notification.account?.avatar}
 							<img
 								src={notification.account.avatar}
-								alt="{notification.account.displayName || notification.account.username} avatar"
+								alt={`${notification.account.displayName || notification.account.username} avatar`}
 								class="notification-group__avatar"
 							/>
 						{/if}
@@ -150,15 +163,15 @@ Displays multiple similar notifications grouped together.
 					</time>
 				{/if}
 
-				{#if group.notifications[0]?.status}
-					<div class="notification-group__status">
-						{@html group.notifications[0].status.content}
-					</div>
-				{/if}
+			{#if group.notifications[0]?.status}
+				<div class="notification-group__status">
+					{sanitizeContent(group.notifications[0].status.content)}
+				</div>
+			{/if}
 			</div>
 		</div>
 	{/if}
-</article>
+</div>
 
 <style>
 	.notification-group {
@@ -169,10 +182,18 @@ Displays multiple similar notifications grouped together.
 		cursor: pointer;
 		transition: background-color 0.2s;
 		position: relative;
+		border: none;
+		width: 100%;
+		text-align: left;
 	}
 
 	.notification-group:hover {
 		background: var(--notifications-item-hover-bg, #f7f9fa);
+	}
+
+	.notification-group:focus-visible {
+		outline: 2px solid var(--notifications-primary, #1d9bf0);
+		outline-offset: 2px;
 	}
 
 	.notification-group--unread {

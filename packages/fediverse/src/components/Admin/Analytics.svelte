@@ -16,7 +16,7 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, fetchAnalytics } = getAdminContext();
+	const { state: adminState, fetchAnalytics } = getAdminContext();
 
 	let period = $state<'day' | 'week' | 'month'>('week');
 
@@ -42,7 +42,7 @@
 	}
 </script>
 
-<div class="admin-analytics {className}">
+<div class={`admin-analytics ${className}`}>
 	<div class="admin-analytics__header">
 		<h2 class="admin-analytics__title">Analytics</h2>
 		<div class="admin-analytics__period-selector">
@@ -70,25 +70,25 @@
 		</div>
 	</div>
 
-	{#if state.loading && !state.analytics}
+	{#if adminState.loading && !adminState.analytics}
 		<div class="admin-analytics__loading">
 			<div class="admin-analytics__spinner"></div>
 			<p>Loading analytics...</p>
 		</div>
-	{:else if state.analytics}
+	{:else if adminState.analytics}
 		<div class="admin-analytics__charts">
 			<!-- User Growth -->
 			<div class="admin-analytics__chart-card">
 				<h3 class="admin-analytics__chart-title">User Growth</h3>
 				<div class="admin-analytics__chart">
-					{#each state.analytics.userGrowth as dataPoint}
-						{@const max = getMaxValue(state.analytics.userGrowth)}
+					{#each adminState.analytics.userGrowth as dataPoint (dataPoint.date)}
+						{@const max = getMaxValue(adminState.analytics.userGrowth)}
 						{@const height = getChartHeight(dataPoint.count, max)}
 						<div class="admin-analytics__bar-container">
 							<div
 								class="admin-analytics__bar admin-analytics__bar--primary"
-								style="height: {height}%"
-								title="{dataPoint.count} users"
+								style={`height: ${height}%`}
+								title={`${dataPoint.count} users`}
 							></div>
 							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
 						</div>
@@ -98,15 +98,15 @@
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Total</span>
 						<span class="admin-analytics__summary-value">
-							{state.analytics.userGrowth.reduce((sum, d) => sum + d.count, 0)}
+							{adminState.analytics.userGrowth.reduce((sum, d) => sum + d.count, 0)}
 						</span>
 					</div>
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Average</span>
 						<span class="admin-analytics__summary-value">
 							{Math.round(
-								state.analytics.userGrowth.reduce((sum, d) => sum + d.count, 0) /
-									state.analytics.userGrowth.length
+								adminState.analytics.userGrowth.reduce((sum, d) => sum + d.count, 0) /
+									adminState.analytics.userGrowth.length
 							)}
 						</span>
 					</div>
@@ -117,14 +117,14 @@
 			<div class="admin-analytics__chart-card">
 				<h3 class="admin-analytics__chart-title">Post Activity</h3>
 				<div class="admin-analytics__chart">
-					{#each state.analytics.postActivity as dataPoint}
-						{@const max = getMaxValue(state.analytics.postActivity)}
+					{#each adminState.analytics.postActivity as dataPoint (dataPoint.date)}
+						{@const max = getMaxValue(adminState.analytics.postActivity)}
 						{@const height = getChartHeight(dataPoint.count, max)}
 						<div class="admin-analytics__bar-container">
 							<div
 								class="admin-analytics__bar admin-analytics__bar--success"
-								style="height: {height}%"
-								title="{dataPoint.count} posts"
+								style={`height: ${height}%`}
+								title={`${dataPoint.count} posts`}
 							></div>
 							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
 						</div>
@@ -134,15 +134,15 @@
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Total</span>
 						<span class="admin-analytics__summary-value">
-							{state.analytics.postActivity.reduce((sum, d) => sum + d.count, 0)}
+							{adminState.analytics.postActivity.reduce((sum, d) => sum + d.count, 0)}
 						</span>
 					</div>
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Average</span>
 						<span class="admin-analytics__summary-value">
 							{Math.round(
-								state.analytics.postActivity.reduce((sum, d) => sum + d.count, 0) /
-									state.analytics.postActivity.length
+								adminState.analytics.postActivity.reduce((sum, d) => sum + d.count, 0) /
+									adminState.analytics.postActivity.length
 							)}
 						</span>
 					</div>
@@ -153,14 +153,14 @@
 			<div class="admin-analytics__chart-card">
 				<h3 class="admin-analytics__chart-title">Federation Activity</h3>
 				<div class="admin-analytics__chart">
-					{#each state.analytics.federationActivity as dataPoint}
-						{@const max = getMaxValue(state.analytics.federationActivity)}
+					{#each adminState.analytics.federationActivity as dataPoint (dataPoint.date)}
+						{@const max = getMaxValue(adminState.analytics.federationActivity)}
 						{@const height = getChartHeight(dataPoint.count, max)}
 						<div class="admin-analytics__bar-container">
 							<div
 								class="admin-analytics__bar admin-analytics__bar--warning"
-								style="height: {height}%"
-								title="{dataPoint.count} activities"
+								style={`height: ${height}%`}
+								title={`${dataPoint.count} activities`}
 							></div>
 							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
 						</div>
@@ -170,15 +170,15 @@
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Total</span>
 						<span class="admin-analytics__summary-value">
-							{state.analytics.federationActivity.reduce((sum, d) => sum + d.count, 0)}
+							{adminState.analytics.federationActivity.reduce((sum, d) => sum + d.count, 0)}
 						</span>
 					</div>
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Average</span>
 						<span class="admin-analytics__summary-value">
 							{Math.round(
-								state.analytics.federationActivity.reduce((sum, d) => sum + d.count, 0) /
-									state.analytics.federationActivity.length
+								adminState.analytics.federationActivity.reduce((sum, d) => sum + d.count, 0) /
+									adminState.analytics.federationActivity.length
 							)}
 						</span>
 					</div>
@@ -354,4 +354,3 @@
 		color: var(--text-primary, #0f1419);
 	}
 </style>
-

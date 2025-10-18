@@ -49,7 +49,7 @@ Handles reblog indicators automatically from context.
 	const avatarSize = $derived(config.density === 'compact' ? 40 : 48);
 </script>
 
-<div class="status-header {className}">
+<div class={`status-header ${className}`}>
 	<!-- Reblog indicator -->
 	{#if isReblog}
 		<div class="status-header__reblog-indicator">
@@ -74,7 +74,7 @@ Handles reblog indicators automatically from context.
 				<a
 					href={account.url}
 					class="status-header__avatar-link"
-					aria-label="View {account.displayName || account.username}'s profile"
+					aria-label={`View ${account.displayName || account.username}'s profile`}
 				>
 					<img
 						src={account.avatar}

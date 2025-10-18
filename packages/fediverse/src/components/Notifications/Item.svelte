@@ -101,11 +101,11 @@ Displays a single notification with type-specific rendering.
 </script>
 
 <article
-	class="notification-item notification-item--{notification.type} {className}"
+	class={`notification-item notification-item--${notification.type} ${className}`}
 	class:notification-item--unread={!notification.read}
 	onclick={handleClick}
 	role="article"
-	aria-label="{notification.account?.displayName || notification.account?.username} {title}"
+	aria-label={`${notification.account?.displayName || notification.account?.username} ${title}`}
 >
 	{#if children}
 		{@render children()}
@@ -118,7 +118,7 @@ Displays a single notification with type-specific rendering.
 			{#if context.config.showAvatars && notification.account?.avatar}
 				<img
 					src={notification.account.avatar}
-					alt="{notification.account.displayName || notification.account.username} avatar"
+					alt={`${notification.account.displayName || notification.account.username} avatar`}
 					class="notification-item__avatar"
 				/>
 			{/if}

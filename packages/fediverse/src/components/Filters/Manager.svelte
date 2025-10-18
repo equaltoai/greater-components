@@ -14,12 +14,20 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, deleteFilter, openEditor } = getFiltersContext();
+	const { state: filtersState, deleteFilter, openEditor } = getFiltersContext();
 
 	let deleteConfirmFilter = $state<ContentFilter | null>(null);
 	let isDeleteModalOpen = $derived(deleteConfirmFilter !== null);
 
-	const deleteModal = createModal({ open: isDeleteModalOpen });
+	const deleteModal = createModal();
+
+	$effect(() => {
+		if (isDeleteModalOpen) {
+			deleteModal.helpers.open();
+		} else {
+			deleteModal.helpers.close();
+		}
+	});
 
 	const newFilterButton = createButton({
 		onClick: () => openEditor(),
@@ -35,10 +43,10 @@
 		try {
 			await deleteFilter(deleteConfirmFilter.id);
 			deleteConfirmFilter = null;
-		} catch (error) {
-			// Error handled by context
-		}
+	} catch (_error) {
+		// Error handled by context
 	}
+}
 
 	const cancelDeleteButton = createButton({
 		onClick: () => {
@@ -55,7 +63,7 @@
 	}
 </script>
 
-<div class="filters-manager {className}">
+<div class={`filters-manager ${className}`}>
 	<div class="filters-manager__header">
 		<div>
 			<h2 class="filters-manager__title">Content Filters</h2>
@@ -69,18 +77,18 @@
 		</button>
 	</div>
 
-	{#if state.error}
+	{#if filtersState.error}
 		<div class="filters-manager__error" role="alert">
-			{state.error}
+			{filtersState.error}
 		</div>
 	{/if}
 
-	{#if state.loading}
+	{#if filtersState.loading}
 		<div class="filters-manager__loading">
 			<div class="filters-manager__spinner"></div>
 			<p>Loading filters...</p>
 		</div>
-	{:else if state.filters.length === 0}
+	{:else if filtersState.filters.length === 0}
 		<div class="filters-manager__empty">
 			<svg class="filters-manager__empty-icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
@@ -92,7 +100,7 @@
 		</div>
 	{:else}
 		<div class="filters-manager__list">
-			{#each state.filters as filter (filter.id)}
+			{#each filtersState.filters as filter (filter.id)}
 				<div class="filters-manager__item">
 					<div class="filters-manager__item-content">
 						<div class="filters-manager__item-phrase">
@@ -136,11 +144,12 @@
 					</div>
 
 					<div class="filters-manager__item-actions">
-						<button
-							class="filters-manager__action-button"
-							onclick={() => openEditor(filter)}
-							title="Edit filter"
-						>
+					<button
+						class="filters-manager__action-button"
+						onclick={() => openEditor(filter)}
+						title="Edit filter"
+						aria-label={`Edit filter ${filter.phrase}`}
+					>
 							<svg viewBox="0 0 24 24" fill="currentColor">
 								<path
 									d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
@@ -148,11 +157,12 @@
 							</svg>
 						</button>
 
-						<button
-							class="filters-manager__action-button filters-manager__action-button--danger"
-							onclick={() => confirmDelete(filter)}
-							title="Delete filter"
-						>
+					<button
+						class="filters-manager__action-button filters-manager__action-button--danger"
+						onclick={() => confirmDelete(filter)}
+						title="Delete filter"
+						aria-label={`Delete filter ${filter.phrase}`}
+					>
 							<svg viewBox="0 0 24 24" fill="currentColor">
 								<path
 									d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
@@ -166,7 +176,7 @@
 
 		<div class="filters-manager__stats">
 			<p>
-				{state.stats.totalFilters} active filter{state.stats.totalFilters === 1 ? '' : 's'}
+				{filtersState.stats.totalFilters} active filter{filtersState.stats.totalFilters === 1 ? '' : 's'}
 			</p>
 		</div>
 	{/if}
@@ -201,9 +211,9 @@
 					<button
 						use:confirmDeleteButton.actions.button
 						class="filters-manager__modal-button filters-manager__modal-button--danger"
-						disabled={state.saving}
+						disabled={filtersState.saving}
 					>
-						{state.saving ? 'Deleting...' : 'Delete'}
+						{filtersState.saving ? 'Deleting...' : 'Delete'}
 					</button>
 				</div>
 			</div>

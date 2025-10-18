@@ -58,7 +58,7 @@ Uses handlers from context.
 </script>
 
 {#if shouldShowActions}
-	<div class="status-actions {className}">
+	<div class={`status-actions ${className}`}>
 		{#if actions}
 			{@render actions()}
 		{:else}
@@ -76,7 +76,7 @@ Uses handlers from context.
 				handlers={wrappedHandlers}
 				{readonly}
 				{size}
-				idPrefix="status-{actualStatus.id}"
+				idPrefix={`status-${actualStatus.id}`}
 			/>
 		{/if}
 	</div>

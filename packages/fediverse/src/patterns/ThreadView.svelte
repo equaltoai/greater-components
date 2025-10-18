@@ -236,7 +236,7 @@
 </script>
 
 <div
-	class="thread-view thread-view--{mode} {className}"
+	class={`thread-view thread-view--${mode} ${className}`}
 	class:thread-view--has-lines={showReplyLines}
 >
 	<!-- Root status -->
@@ -264,7 +264,7 @@
 					class:thread-view__reply--highlighted={isHighlighted}
 					class:thread-view__reply--deep={isTooDeep}
 					class:thread-view__reply--collapsed={isCollapsed}
-					style="--depth: {node.depth}"
+					style={`--depth: ${node.depth}`}
 				>
 					{#if isTooDeep}
 						<!-- Show "Continue thread" button for deep threads -->

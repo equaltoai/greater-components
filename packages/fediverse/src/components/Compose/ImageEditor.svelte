@@ -214,7 +214,7 @@ Edit image metadata, set focal points for proper cropping, and add alt text.
 	const isDescriptionOverLimit = $derived(description.length > maxAltTextLength);
 </script>
 
-<div class="image-editor {className}">
+<div class={`image-editor ${className}`}>
 	<div class="image-editor__preview">
 		<div
 			bind:this={containerEl}
@@ -235,7 +235,7 @@ Edit image metadata, set focal points for proper cropping, and add alt text.
 			{#if showFocalPoint}
 				<div
 					class="image-editor__focal-point"
-					style="left: {focalPositionPercent.x}%; top: {focalPositionPercent.y}%;"
+					style={`left: ${focalPositionPercent.x}%; top: ${focalPositionPercent.y}%;`}
 					role="presentation"
 				>
 					<div class="image-editor__focal-point-inner"></div>

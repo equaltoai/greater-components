@@ -199,7 +199,7 @@ Supports drag-and-drop reordering and management (for own profile).
 	}
 </script>
 
-<div class="featured-hashtags {className}">
+<div class={`featured-hashtags ${className}`}>
 	<div class="featured-hashtags__header">
 		<h3 class="featured-hashtags__title">Featured Hashtags</h3>
 		{#if hashtags.length > 0}
@@ -254,18 +254,18 @@ Supports drag-and-drop reordering and management (for own profile).
 					{/if}
 
 					<div class="featured-hashtags__content">
-						<a href="/tags/{hashtag.name}" class="featured-hashtags__tag">
+						<a href={`/tags/${hashtag.name}`} class="featured-hashtags__tag">
 							#{hashtag.name}
 						</a>
 
 						{#if showStats}
 							<div class="featured-hashtags__stats">
-								<span class="featured-hashtags__stat" title="{hashtag.usageCount} posts">
+								<span class="featured-hashtags__stat" title={`${hashtag.usageCount} posts`}>
 									{formatCount(hashtag.usageCount)} posts
 								</span>
 								{#if hashtag.lastUsed}
 									<span class="featured-hashtags__separator">•</span>
-									<span class="featured-hashtags__stat" title="Last used {hashtag.lastUsed}">
+									<span class="featured-hashtags__stat" title={`Last used ${hashtag.lastUsed}`}>
 										{formatLastUsed(hashtag.lastUsed)}
 									</span>
 								{/if}
@@ -279,7 +279,7 @@ Supports drag-and-drop reordering and management (for own profile).
 							onclick={() => handleRemoveHashtag(hashtag.name)}
 							disabled={isRemoving}
 							type="button"
-							aria-label="Remove #{hashtag.name} from featured hashtags"
+							aria-label={`Remove #${hashtag.name} from featured hashtags`}
 						>
 							<svg
 								width="16"

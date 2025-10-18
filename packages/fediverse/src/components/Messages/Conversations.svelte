@@ -12,7 +12,7 @@
 
 	let { currentUserId = 'me', class: className = '' }: Props = $props();
 
-	const { state, selectConversation, handlers } = getMessagesContext();
+	const { state: messagesState, selectConversation, handlers } = getMessagesContext();
 
 	function handleConversationClick(conversation: Conversation) {
 		selectConversation(conversation);
@@ -20,16 +20,16 @@
 	}
 </script>
 
-<div class="messages-conversations {className}">
+<div class={`messages-conversations ${className}`}>
 	<div class="messages-conversations__header">
 		<h2 class="messages-conversations__title">Messages</h2>
 	</div>
 
-	{#if state.loadingConversations}
+	{#if messagesState.loadingConversations}
 		<div class="messages-conversations__loading">
 			<div class="messages-conversations__spinner"></div>
 		</div>
-	{:else if state.conversations.length === 0}
+	{:else if messagesState.conversations.length === 0}
 		<div class="messages-conversations__empty">
 			<svg viewBox="0 0 24 24" fill="currentColor">
 				<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
@@ -38,10 +38,10 @@
 		</div>
 	{:else}
 		<div class="messages-conversations__list">
-			{#each state.conversations as conversation}
+			{#each messagesState.conversations as conversation}
 				<button
 					class="messages-conversations__item"
-					class:messages-conversations__item--selected={state.selectedConversation?.id ===
+					class:messages-conversations__item--selected={messagesState.selectedConversation?.id ===
 						conversation.id}
 					class:messages-conversations__item--unread={conversation.unreadCount > 0}
 					onclick={() => handleConversationClick(conversation)}

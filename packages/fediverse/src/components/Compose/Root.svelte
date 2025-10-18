@@ -85,7 +85,7 @@ Provides context for child components and handles form submission.
 </script>
 
 <form
-	class="compose-root {context.config.class}"
+	class={`compose-root ${context.config.class}`}
 	class:compose-root--submitting={context.state.submitting}
 	class:compose-root--over-limit={context.state.overLimit}
 	onsubmit={handleSubmit}

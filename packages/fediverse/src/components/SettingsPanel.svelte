@@ -11,10 +11,7 @@
     Bell,
     User,
     HelpCircle,
-    ChevronRight,
-    Moon,
-    Sun,
-    Monitor
+    ChevronRight
   } from '@greater/icons';
   
   interface Props {
@@ -140,7 +137,7 @@
   let soundEnabled = $state(false);
 </script>
 
-<div class="gr-settings-panel {className}" class:gr-settings-panel--mobile={isMobile}>
+<div class={`gr-settings-panel ${className}`} class:gr-settings-panel--mobile={isMobile}>
   {#if showHeader}
     <header class="gr-settings-panel__header">
       <h2 class="gr-settings-panel__title">
@@ -170,7 +167,8 @@
       aria-label="Settings navigation"
     >
       <ul class="gr-settings-panel__nav-list">
-        {#each sections as section}
+        {#each sections as section (section.id)}
+          {@const Icon = section.icon}
           <li>
             <button
               onclick={() => handleSectionChange(section.id)}
@@ -179,13 +177,17 @@
               aria-current={currentSection === section.id ? 'page' : undefined}
             >
               <span class="gr-settings-panel__nav-icon">
-                <svelte:component this={section.icon} size={20} />
+                <Icon size={20} />
               </span>
               <div class="gr-settings-panel__nav-content">
                 <span class="gr-settings-panel__nav-label">{section.label}</span>
                 <span class="gr-settings-panel__nav-description">{section.description}</span>
               </div>
-              <ChevronRight size={16} class="gr-settings-panel__nav-arrow" />
+              <ChevronRight
+                size={16}
+                class="gr-settings-panel__nav-arrow"
+                class:gr-settings-panel__nav-arrow--active={currentSection === section.id}
+              />
             </button>
           </li>
         {/each}
@@ -608,7 +610,7 @@
     opacity: 0.5;
   }
   
-  .gr-settings-panel__nav-item--active .gr-settings-panel__nav-arrow {
+  .gr-settings-panel__nav-arrow--active {
     opacity: 1;
   }
   

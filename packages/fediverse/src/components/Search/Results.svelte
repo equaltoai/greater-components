@@ -17,30 +17,30 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state } = getSearchContext();
+	const { state: searchState } = getSearchContext();
 
-	const hasResults = $derived(state.results.total > 0);
-	const showActors = $derived(state.type === 'all' || state.type === 'actors');
-	const showNotes = $derived(state.type === 'all' || state.type === 'notes');
-	const showTags = $derived(state.type === 'all' || state.type === 'tags');
+	const hasResults = $derived(searchState.results.total > 0);
+	const showActors = $derived(searchState.type === 'all' || searchState.type === 'actors');
+	const showNotes = $derived(searchState.type === 'all' || searchState.type === 'notes');
+	const showTags = $derived(searchState.type === 'all' || searchState.type === 'tags');
 </script>
 
-<div class="search-results {className}">
-	{#if state.loading}
+<div class={`search-results ${className}`}>
+	{#if searchState.loading}
 		<div class="search-results__loading">
 			<div class="search-results__spinner"></div>
-			<p>Searching{state.semantic ? ' with AI' : ''}...</p>
+			<p>Searching{searchState.semantic ? ' with AI' : ''}...</p>
 		</div>
-	{:else if state.error}
+	{:else if searchState.error}
 		<div class="search-results__error">
 			<svg viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			<p>{state.error}</p>
+			<p>{searchState.error}</p>
 		</div>
-	{:else if !hasResults && state.query}
+	{:else if !hasResults && searchState.query}
 		<div class="search-results__empty">
 			<svg viewBox="0 0 24 24" fill="currentColor">
 				<path
@@ -51,33 +51,33 @@
 			<p>Try different keywords or check your spelling</p>
 		</div>
 	{:else if hasResults}
-		{#if showActors && state.results.actors.length > 0}
+		{#if showActors && searchState.results.actors.length > 0}
 			<section class="search-results__section">
 				<h3 class="search-results__heading">People</h3>
 				<div class="search-results__list">
-					{#each state.results.actors as actor}
+					{#each searchState.results.actors as actor}
 						<ActorResult {actor} />
 					{/each}
 				</div>
 			</section>
 		{/if}
 
-		{#if showNotes && state.results.notes.length > 0}
+		{#if showNotes && searchState.results.notes.length > 0}
 			<section class="search-results__section">
 				<h3 class="search-results__heading">Posts</h3>
 				<div class="search-results__list">
-					{#each state.results.notes as note}
+					{#each searchState.results.notes as note}
 						<NoteResult {note} />
 					{/each}
 				</div>
 			</section>
 		{/if}
 
-		{#if showTags && state.results.tags.length > 0}
+		{#if showTags && searchState.results.tags.length > 0}
 			<section class="search-results__section">
 				<h3 class="search-results__heading">Tags</h3>
 				<div class="search-results__tags">
-					{#each state.results.tags as tag}
+					{#each searchState.results.tags as tag}
 						<TagResult {tag} />
 					{/each}
 				</div>

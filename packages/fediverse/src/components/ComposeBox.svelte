@@ -340,7 +340,7 @@
 
 <div 
   bind:this={containerElement}
-  class="gr-compose-box {className}"
+  class={`gr-compose-box ${className}`}
   class:gr-compose-box--focused={focused}
   class:gr-compose-box--disabled={disabled}
   {...restProps}
@@ -372,7 +372,7 @@
       <div 
         id={cwCharCountId}
         class="gr-compose-box__char-count"
-        style="color: {cwLength > maxCwLength ? 'var(--gr-semantic-action-error-default)' : 'var(--gr-semantic-foreground-secondary)'}"
+        style={`color: ${cwLength > maxCwLength ? 'var(--gr-semantic-action-error-default)' : 'var(--gr-semantic-foreground-secondary)'}`}
         aria-live="polite"
       >
         {cwLength}/{maxCwLength}
@@ -400,7 +400,7 @@
       <div 
         id={charCountId}
         class="gr-compose-box__char-count"
-        style="color: {characterCountColor()}"
+        style={`color: ${characterCountColor()}`}
         aria-live="polite"
         aria-atomic="true"
       >

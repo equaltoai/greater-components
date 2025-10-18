@@ -35,10 +35,10 @@
 		showZero = false,
 	}: Props = $props();
 
-	const { state } = getMessagesContext();
+	const { state: messagesState } = getMessagesContext();
 
 	const unreadCount = $derived(
-		state.conversations.reduce((sum, conv) => sum + conv.unreadCount, 0)
+		messagesState.conversations.reduce((sum, conv) => sum + conv.unreadCount, 0)
 	);
 
 	const shouldShow = $derived(unreadCount > 0 || showZero);
@@ -48,8 +48,8 @@
 
 {#if shouldShow}
 	<span
-		class="unread-indicator unread-indicator--{variant} unread-indicator--{size} {className}"
-		aria-label="{unreadCount} unread message{unreadCount === 1 ? '' : 's'}"
+		class={`unread-indicator unread-indicator--${variant} unread-indicator--${size} ${className}`}
+		aria-label={`${unreadCount} unread message${unreadCount === 1 ? '' : 's'}`}
 	>
 		{#if variant === 'badge'}
 			{displayCount}

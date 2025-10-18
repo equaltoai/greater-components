@@ -27,7 +27,7 @@
 
 	let { initialParticipants = [], class: className = '', onConversationCreated }: Props = $props();
 
-	const { state, handlers, selectConversation } = getMessagesContext();
+	const { state: messagesState, handlers, selectConversation } = getMessagesContext();
 
 	let isOpen = $state(false);
 	let searchQuery = $state('');
@@ -37,7 +37,15 @@
 	let creating = $state(false);
 	let error = $state<string | null>(null);
 
-	const modal = createModal({ open: isOpen });
+	const modal = createModal();
+
+	$effect(() => {
+		if (isOpen) {
+			modal.helpers.open();
+		} else {
+			modal.helpers.close();
+		}
+	});
 
 	const openButton = createButton({
 		onClick: () => {
@@ -139,7 +147,7 @@
 	});
 </script>
 
-<div class="new-conversation {className}">
+<div class={`new-conversation ${className}`}>
 	<button use:openButton.actions.button class="new-conversation__trigger">
 		<svg viewBox="0 0 24 24" fill="currentColor">
 			<path
@@ -187,7 +195,7 @@
 										<button
 											class="new-conversation__chip-remove"
 											onclick={() => removeParticipant(participant.id)}
-											aria-label="Remove {participant.displayName}"
+											aria-label={`Remove ${participant.displayName}`}
 										>
 											×
 										</button>

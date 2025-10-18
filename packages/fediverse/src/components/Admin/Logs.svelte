@@ -17,7 +17,7 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state, fetchLogs } = getAdminContext();
+	const { state: adminState, fetchLogs } = getAdminContext();
 
 	let filterLevel = $state<string | undefined>(undefined);
 	let filterCategory = $state<string | undefined>(undefined);
@@ -49,7 +49,7 @@
 	});
 
 	const filteredLogs = $derived(
-		state.logs.filter((log) => {
+		adminState.logs.filter((log) => {
 			if (filterLevel && log.level !== filterLevel) return false;
 			if (filterCategory && log.category !== filterCategory) return false;
 			if (
@@ -63,7 +63,7 @@
 	);
 
 	const categories = $derived(
-		Array.from(new Set(state.logs.map((log) => log.category)))
+		Array.from(new Set(adminState.logs.map((log) => log.category)))
 	);
 
 	async function handleRefresh() {
@@ -76,7 +76,7 @@
 	}
 </script>
 
-<div class="admin-logs {className}">
+<div class={`admin-logs ${className}`}>
 	<div class="admin-logs__header">
 		<h2 class="admin-logs__title">System Logs</h2>
 		<div class="admin-logs__controls">
@@ -93,8 +93,8 @@
 	<!-- Filters -->
 	<div class="admin-logs__filters">
 		<div class="admin-logs__filter-group">
-			<label class="admin-logs__filter-label">Level:</label>
-			<select class="admin-logs__select" bind:value={filterLevel}>
+			<label class="admin-logs__filter-label" for="logs-level">Level:</label>
+			<select id="logs-level" class="admin-logs__select" bind:value={filterLevel}>
 				<option value={undefined}>All</option>
 				<option value="info">Info</option>
 				<option value="warn">Warning</option>
@@ -103,18 +103,19 @@
 		</div>
 
 		<div class="admin-logs__filter-group">
-			<label class="admin-logs__filter-label">Category:</label>
-			<select class="admin-logs__select" bind:value={filterCategory}>
+			<label class="admin-logs__filter-label" for="logs-category">Category:</label>
+			<select id="logs-category" class="admin-logs__select" bind:value={filterCategory}>
 				<option value={undefined}>All</option>
-				{#each categories as category}
+				{#each categories as category (category)}
 					<option value={category}>{category}</option>
 				{/each}
 			</select>
 		</div>
 
 		<div class="admin-logs__filter-group admin-logs__filter-group--grow">
-			<label class="admin-logs__filter-label">Search:</label>
+			<label class="admin-logs__filter-label" for="logs-search">Search:</label>
 			<input
+				id="logs-search"
 				type="text"
 				class="admin-logs__input"
 				bind:value={searchQuery}
@@ -124,7 +125,7 @@
 	</div>
 
 	<!-- Logs -->
-	{#if state.loading}
+	{#if adminState.loading}
 		<div class="admin-logs__loading">Loading logs...</div>
 	{:else}
 		<div class="admin-logs__list">
@@ -133,10 +134,10 @@
 					<p>No logs found matching your filters</p>
 				</div>
 			{:else}
-				{#each filteredLogs as log}
-					<div class="admin-logs__entry admin-logs__entry--{log.level}">
+		{#each filteredLogs as log (log.id)}
+					<div class={`admin-logs__entry admin-logs__entry--${log.level}`}>
 						<div class="admin-logs__entry-header">
-							<span class="admin-logs__badge admin-logs__badge--{log.level}">
+							<span class={`admin-logs__badge admin-logs__badge--${log.level}`}>
 								{log.level}
 							</span>
 							<span class="admin-logs__category">{log.category}</span>
@@ -362,4 +363,3 @@
 		overflow-x: auto;
 	}
 </style>
-

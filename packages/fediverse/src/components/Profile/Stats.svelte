@@ -35,7 +35,7 @@
 
 	let { clickable = true, showPosts = true, class: className = '' }: Props = $props();
 
-	const { state } = getProfileContext();
+	const { state: profileState } = getProfileContext();
 
 	/**
 	 * Handle stat click
@@ -45,15 +45,15 @@
 
 		// Emit event or navigate
 		const event = new CustomEvent('statClick', {
-			detail: { type, profile: state.profile },
+			detail: { type, profile: profileState.profile },
 			bubbles: true,
 		});
 		dispatchEvent(event);
 	}
 </script>
 
-{#if state.profile}
-	<div class="profile-stats {className}">
+{#if profileState.profile}
+	<div class={`profile-stats ${className}`}>
 		{#if showPosts}
 			<button
 				class="profile-stats__item"
@@ -61,9 +61,9 @@
 				onclick={() => handleClick('posts')}
 				disabled={!clickable}
 			>
-				<span class="profile-stats__value">{formatCount(state.profile.statusesCount)}</span>
+				<span class="profile-stats__value">{formatCount(profileState.profile.statusesCount)}</span>
 				<span class="profile-stats__label">
-					{state.profile.statusesCount === 1 ? 'Post' : 'Posts'}
+					{profileState.profile.statusesCount === 1 ? 'Post' : 'Posts'}
 				</span>
 			</button>
 		{/if}
@@ -74,7 +74,7 @@
 			onclick={() => handleClick('following')}
 			disabled={!clickable}
 		>
-			<span class="profile-stats__value">{formatCount(state.profile.followingCount)}</span>
+			<span class="profile-stats__value">{formatCount(profileState.profile.followingCount)}</span>
 			<span class="profile-stats__label">Following</span>
 		</button>
 
@@ -84,9 +84,9 @@
 			onclick={() => handleClick('followers')}
 			disabled={!clickable}
 		>
-			<span class="profile-stats__value">{formatCount(state.profile.followersCount)}</span>
+			<span class="profile-stats__value">{formatCount(profileState.profile.followersCount)}</span>
 			<span class="profile-stats__label">
-				{state.profile.followersCount === 1 ? 'Follower' : 'Followers'}
+				{profileState.profile.followersCount === 1 ? 'Follower' : 'Followers'}
 			</span>
 		</button>
 	</div>

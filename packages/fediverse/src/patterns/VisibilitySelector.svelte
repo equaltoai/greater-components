@@ -149,7 +149,7 @@
 	});
 </script>
 
-<div class="visibility-selector visibility-selector--{mode} {className}">
+<div class={`visibility-selector visibility-selector--${mode} ${className}`}>
 	{#if mode === 'dropdown'}
 		<!-- Dropdown mode -->
 		<button

@@ -233,7 +233,7 @@
 </script>
 
 <div 
-  class="timeline-virtualized {className}"
+  class={`timeline-virtualized ${className}`}
   role="feed"
   aria-label="Timeline"
   aria-busy={loadingTop || loadingBottom}
@@ -261,7 +261,7 @@
             <button 
               class="unread-indicator"
               onclick={handleSyncClick}
-              aria-label="Load {unreadCount} new items"
+              aria-label={`Load ${unreadCount} new items`}
             >
               {unreadCount} new
             </button>
@@ -294,7 +294,7 @@
 
     <div 
       class="virtual-list"
-      style="height: {totalSize}px; position: relative;"
+      style={`height: ${totalSize}px; position: relative;`}
     >
       {#each virtualItems as virtualItem (items[virtualItem.index]?.id || virtualItem.index)}
         {@const item = items[virtualItem.index]}

@@ -28,7 +28,7 @@
 	}
 </script>
 
-<article class="actor-result {className}" onclick={handleClick}>
+<article class={`actor-result ${className}`} onclick={handleClick}>
 	<div class="actor-result__avatar">
 		{#if actor.avatar}
 			<img src={actor.avatar} alt={actor.displayName} />

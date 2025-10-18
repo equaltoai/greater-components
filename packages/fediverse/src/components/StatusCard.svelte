@@ -88,13 +88,13 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <article 
-  class="status-card {density} {className}"
+  class={`status-card ${density} ${className}`}
   class:clickable={onclick}
   role={onclick ? 'button' : undefined}
   tabindex={onclick ? 0 : undefined}
   onclick={onclick ? handleCardClick : undefined}
   onkeypress={onclick ? (e) => e.key === 'Enter' && handleCardClick(e) : undefined}
-  aria-label="Status by {account.displayName || account.username}"
+  aria-label={`Status by ${account.displayName || account.username}`}
 >
   {#if status.reblog}
     <div class="reblog-indicator">
@@ -112,7 +112,7 @@
   {/if}
 
   <div class="status-header">
-    <a href={account.url} class="avatar-link" aria-label="View {account.displayName || account.username}'s profile">
+    <a href={account.url} class="avatar-link" aria-label={`View ${account.displayName || account.username}'s profile`}>
       <img 
         src={account.avatar} 
         alt=""
@@ -201,7 +201,7 @@
       handlers={wrappedActionHandlers}
       readonly={!actionHandlers}
       size={density === 'compact' ? 'sm' : 'sm'}
-      idPrefix="status-{actualStatus.id}"
+      idPrefix={`status-${actualStatus.id}`}
     />
   {/if}
 

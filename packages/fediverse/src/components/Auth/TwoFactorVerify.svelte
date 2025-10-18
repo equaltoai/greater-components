@@ -41,7 +41,7 @@
 		class: className = '',
 	}: Props = $props();
 
-	const { state, handlers, updateState, clearError } = getAuthContext();
+	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	let method = $state<'totp' | 'backup'>('totp');
 	let code = $state('');
@@ -55,7 +55,7 @@
 	 * Handle verification
 	 */
 	async function handleVerify() {
-		if (state.loading || !code.trim()) return;
+		if (authState.loading || !code.trim()) return;
 
 		codeError = null;
 		clearError();
@@ -100,13 +100,13 @@
 	 * Handle enter key
 	 */
 	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' && !state.loading) {
+		if (event.key === 'Enter' && !authState.loading) {
 			handleVerify();
 		}
 	}
 </script>
 
-<div class="auth-verify {className}">
+<div class={`auth-verify ${className}`}>
 	<div class="auth-verify__icon">
 		<svg viewBox="0 0 24 24" fill="currentColor">
 			<path
@@ -117,30 +117,30 @@
 
 	<h2 class="auth-verify__title">{title}</h2>
 
-	{#if state.twoFactorSession}
+	{#if authState.twoFactorSession}
 		<p class="auth-verify__description">
-			Enter the verification code for <strong>{state.twoFactorSession.email}</strong>
+			Enter the verification code for <strong>{authState.twoFactorSession.email}</strong>
 		</p>
 	{/if}
 
-	{#if state.error}
+	{#if authState.error}
 		<div class="auth-verify__error" role="alert">
 			<svg class="auth-verify__error-icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			{state.error}
+			{authState.error}
 		</div>
 	{/if}
 
-	{#if showBackupOption && state.twoFactorSession?.methods.includes('backup')}
+	{#if showBackupOption && authState.twoFactorSession?.methods.includes('backup')}
 		<div class="auth-verify__tabs">
 			<button
 				class="auth-verify__tab"
 				class:auth-verify__tab--active={method === 'totp'}
 				onclick={() => switchMethod('totp')}
-				disabled={state.loading}
+				disabled={authState.loading}
 			>
 				<svg viewBox="0 0 24 24" fill="currentColor">
 					<path
@@ -154,7 +154,7 @@
 				class="auth-verify__tab"
 				class:auth-verify__tab--active={method === 'backup'}
 				onclick={() => switchMethod('backup')}
-				disabled={state.loading}
+				disabled={authState.loading}
 			>
 				<svg viewBox="0 0 24 24" fill="currentColor">
 					<path
@@ -180,8 +180,7 @@
 					maxlength="6"
 					pattern="[0-9]*"
 					inputmode="numeric"
-					disabled={state.loading}
-					autofocus
+					disabled={authState.loading}
 					onkeydown={handleKeyDown}
 				/>
 				{#if codeError}
@@ -200,8 +199,7 @@
 					class:auth-verify__input--error={codeError}
 					bind:value={code}
 					placeholder="XXXX-XXXX-XXXX"
-					disabled={state.loading}
-					autofocus
+					disabled={authState.loading}
 					onkeydown={handleKeyDown}
 				/>
 				{#if codeError}
@@ -224,9 +222,9 @@
 		<button
 			use:verifyButton.actions.button
 			class="auth-verify__submit"
-			disabled={state.loading || !code.trim() || (method === 'totp' && code.length !== 6)}
+			disabled={authState.loading || !code.trim() || (method === 'totp' && code.length !== 6)}
 		>
-			{#if state.loading}
+			{#if authState.loading}
 				<span class="auth-verify__spinner"></span>
 				Verifying...
 			{:else}

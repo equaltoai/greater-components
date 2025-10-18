@@ -53,7 +53,7 @@ Submit button with loading state and disabled when over limit.
 	});
 </script>
 
-<button use:submitButton.actions.button class="compose-submit {className}">
+<button use:submitButton.actions.button class={`compose-submit ${className}`}>
 	{#if context.state.submitting}
 		<span class="compose-submit__spinner">
 			<svg viewBox="0 0 24 24" aria-hidden="true">

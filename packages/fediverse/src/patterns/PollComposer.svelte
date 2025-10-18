@@ -357,7 +357,7 @@
 	const resultsHidden = $derived(poll?.hideResultsUntilVoted && !poll.voted && !poll.expired);
 </script>
 
-<div class="poll-composer poll-composer--{mode} {className}">
+<div class={`poll-composer poll-composer--${mode} ${className}`}>
 	{#if mode === 'create'}
 		<!-- Create mode -->
 		<div class="poll-composer__create">
@@ -367,11 +367,11 @@
 						<input
 							type="text"
 							class="poll-composer__option-input"
-							placeholder="Option {index + 1}"
+							placeholder={`Option ${index + 1}`}
 							value={option}
 							oninput={(e) => updateOption(index, e.currentTarget.value)}
 							maxlength={maxOptionLength}
-							aria-label="Poll option {index + 1}"
+							aria-label={`Poll option ${index + 1}`}
 						/>
 
 						{#if showCharacterCount}
@@ -387,7 +387,7 @@
 							<button
 								class="poll-composer__remove-btn"
 								onclick={() => removeOption(index)}
-								aria-label="Remove option {index + 1}"
+								aria-label={`Remove option ${index + 1}`}
 							>
 								<svg viewBox="0 0 24 24" fill="currentColor">
 									<path
@@ -486,7 +486,7 @@
 									<div
 										class="poll-composer__result-bar"
 										class:poll-composer__result-bar--animate={animateResults}
-										style="width: {getPercentage(option)}%"
+										style={`width: ${getPercentage(option)}%`}
 									></div>
 								{/if}
 							{/if}

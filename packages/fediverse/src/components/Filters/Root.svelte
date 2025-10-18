@@ -41,7 +41,7 @@
 	});
 </script>
 
-<div class="filters-root {className}">
+<div class={`filters-root ${className}`}>
 	{#if children}
 		{@render children()}
 	{/if}

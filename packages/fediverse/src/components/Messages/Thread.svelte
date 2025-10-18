@@ -11,22 +11,22 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state } = getMessagesContext();
+	const { state: messagesState } = getMessagesContext();
 </script>
 
-{#if state.selectedConversation}
-	<div class="messages-thread {className}">
-		{#if state.loadingMessages}
+{#if messagesState.selectedConversation}
+	<div class={`messages-thread ${className}`}>
+		{#if messagesState.loadingMessages}
 			<div class="messages-thread__loading">
 				<div class="messages-thread__spinner"></div>
 			</div>
-		{:else if state.messages.length === 0}
+		{:else if messagesState.messages.length === 0}
 			<div class="messages-thread__empty">
 				<p>No messages yet. Start the conversation!</p>
 			</div>
 		{:else}
 			<div class="messages-thread__list">
-				{#each state.messages as message}
+				{#each messagesState.messages as message}
 					<Message {message} />
 				{/each}
 			</div>

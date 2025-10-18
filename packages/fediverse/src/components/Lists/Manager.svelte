@@ -27,7 +27,7 @@
 
 	let { showCreate = true, class: className = '' }: Props = $props();
 
-	const { state, selectList, openEditor, deleteList, handlers } = getListsContext();
+	const { state: listsState, selectList, openEditor, deleteList, handlers } = getListsContext();
 
 	let deleteConfirmList = $state<ListData | null>(null);
 
@@ -38,8 +38,15 @@
 	const isModalOpen = $derived(deleteConfirmList !== null);
 
 	const deleteModal = createModal({
-		open: isModalOpen,
 		onClose: () => (deleteConfirmList = null),
+	});
+
+	$effect(() => {
+		if (isModalOpen) {
+			deleteModal.helpers.open();
+		} else {
+			deleteModal.helpers.close();
+		}
 	});
 
 	function handleListClick(list: ListData) {
@@ -57,19 +64,26 @@
 		deleteConfirmList = list;
 	}
 
+	function handleListKeydown(event: KeyboardEvent, list: ListData) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleListClick(list);
+		}
+	}
+
 	async function handleDelete() {
 		if (!deleteConfirmList) return;
 
 		try {
 			await deleteList(deleteConfirmList.id);
 			deleteConfirmList = null;
-		} catch (error) {
-			// Error handled by context
-		}
+	} catch (_error) {
+		// Error handled by context
 	}
+}
 </script>
 
-<div class="lists-manager {className}">
+<div class={`lists-manager ${className}`}>
 	<div class="lists-manager__header">
 		<h2 class="lists-manager__title">Lists</h2>
 		{#if showCreate}
@@ -82,23 +96,23 @@
 		{/if}
 	</div>
 
-	{#if state.error}
+	{#if listsState.error}
 		<div class="lists-manager__error" role="alert">
 			<svg viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
 				/>
 			</svg>
-			{state.error}
+			{listsState.error}
 		</div>
 	{/if}
 
-	{#if state.loading && state.lists.length === 0}
+	{#if listsState.loading && listsState.lists.length === 0}
 		<div class="lists-manager__loading">
 			<div class="lists-manager__spinner"></div>
 			<p>Loading lists...</p>
 		</div>
-	{:else if state.lists.length === 0}
+	{:else if listsState.lists.length === 0}
 		<div class="lists-manager__empty">
 			<svg viewBox="0 0 24 24" fill="currentColor">
 				<path
@@ -110,31 +124,36 @@
 		</div>
 	{:else}
 		<div class="lists-manager__grid">
-			{#each state.lists as list}
+			{#each listsState.lists as list (list.id)}
 				<article
 					class="lists-manager__card"
-					class:lists-manager__card--selected={state.selectedList?.id === list.id}
+					class:lists-manager__card--selected={listsState.selectedList?.id === list.id}
 					onclick={() => handleListClick(list)}
+					role="button"
+					tabindex="0"
+					onkeydown={(event) => handleListKeydown(event, list)}
 				>
 					<div class="lists-manager__card-header">
 						<h3 class="lists-manager__card-title">{list.title}</h3>
 						<div class="lists-manager__card-actions">
-							<button
-								class="lists-manager__action"
-								onclick={(e) => handleEdit(list, e)}
-								title="Edit list"
-							>
+						<button
+							class="lists-manager__action"
+							onclick={(e) => handleEdit(list, e)}
+							title="Edit list"
+							aria-label={`Edit ${list.title}`}
+						>
 								<svg viewBox="0 0 24 24" fill="currentColor">
 									<path
 										d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
 									/>
 								</svg>
 							</button>
-							<button
-								class="lists-manager__action lists-manager__action--danger"
-								onclick={(e) => handleDeleteConfirm(list, e)}
-								title="Delete list"
-							>
+						<button
+							class="lists-manager__action lists-manager__action--danger"
+							onclick={(e) => handleDeleteConfirm(list, e)}
+							title="Delete list"
+							aria-label={`Delete ${list.title}`}
+						>
 								<svg viewBox="0 0 24 24" fill="currentColor">
 									<path
 										d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
@@ -192,9 +211,9 @@
 					<button
 						class="lists-manager__modal-button lists-manager__modal-button--danger"
 						onclick={handleDelete}
-						disabled={state.loading}
+						disabled={listsState.loading}
 					>
-						{state.loading ? 'Deleting...' : 'Delete'}
+						{listsState.loading ? 'Deleting...' : 'Delete'}
 					</button>
 				</div>
 			</div>

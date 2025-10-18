@@ -16,8 +16,6 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createButton } from '@greater/headless/button';
-	import type { MediaAttachment } from '../types.js';
 
 	export interface MediaComposerAttachment {
 		/**
@@ -200,7 +198,7 @@
 		],
 		maxFileSize = 10 * 1024 * 1024, // 10MB
 		enableFocalPoint = true,
-		enableImageEdit = false,
+		enableImageEdit: _enableImageEdit = false,
 		requireAltText = false,
 		layout = 'grid',
 		class: className = '',
@@ -211,7 +209,7 @@
 	let editingFocalPointId = $state<string | null>(null);
 	let dragOverIndex = $state<number | null>(null);
 	let uploading = $state(false);
-	let fileInputRef: HTMLInputElement;
+	let fileInputRef = $state<HTMLInputElement | null>(null);
 
 	/**
 	 * Handle file selection
@@ -323,7 +321,7 @@
 		dragOverIndex = null;
 	}
 
-	function handleDrop(event: DragEvent, targetIndex: number) {
+	function handleDrop(event: DragEvent) {
 		event.preventDefault();
 		if (!enableDragDrop) return;
 
@@ -363,18 +361,20 @@
 	}
 </script>
 
-<div class="media-composer media-composer--{layout} {className}">
+<div class={`media-composer media-composer--${layout} ${className}`}>
 	{#if attachments.length > 0}
 		<div class="media-composer__attachments">
-			{#each attachments as attachment, index}
+			{#each attachments as attachment, index (attachment.id)}
 				<div
 					class="media-composer__attachment"
 					class:media-composer__attachment--uploading={!attachment.uploaded}
 					class:media-composer__attachment--error={attachment.error}
 					class:media-composer__attachment--drag-over={dragOverIndex === index}
+					role="group"
+					aria-label={`Attachment ${index + 1}`}
 					ondragover={(e) => handleDragOver(e, index)}
 					ondragleave={handleDragLeave}
-					ondrop={(e) => handleDrop(e, index)}
+					ondrop={handleDrop}
 				>
 					{#if renderAttachment}
 						{@render renderAttachment(attachment, index)}
@@ -414,7 +414,7 @@
 								<div class="media-composer__progress">
 									<div
 										class="media-composer__progress-bar"
-										style="width: {attachment.uploadProgress}%"
+										style={`width: ${attachment.uploadProgress}%`}
 									></div>
 								</div>
 							{/if}
@@ -439,7 +439,7 @@
 								>
 									<div
 										class="media-composer__focal-point"
-										style="left: {pos.x}; top: {pos.y}"
+										style={`left: ${pos.x}; top: ${pos.y}`}
 									></div>
 								</button>
 							{/if}

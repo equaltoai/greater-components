@@ -20,7 +20,7 @@
 </script>
 
 <button
-	class="tag-result {className}"
+	class={`tag-result ${className}`}
 	class:tag-result--trending={tag.trending}
 	onclick={handleClick}
 >

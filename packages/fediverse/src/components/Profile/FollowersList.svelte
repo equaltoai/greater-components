@@ -147,7 +147,7 @@ Supports removing followers (for own profile).
 	}
 </script>
 
-<div class="followers-list {className}">
+<div class={`followers-list ${className}`}>
 	<div class="followers-list__header">
 		<h2 class="followers-list__title">
 			Followers
@@ -220,7 +220,7 @@ Supports removing followers (for own profile).
 									onclick={() => handleRemoveFollower(follower.id)}
 									disabled={isRemoving}
 									type="button"
-									aria-label="Remove {follower.displayName} as follower"
+									aria-label={`Remove ${follower.displayName} as follower`}
 								>
 									{isRemoving ? 'Removing...' : 'Remove'}
 								</button>

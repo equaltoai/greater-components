@@ -304,7 +304,7 @@
 	}
 </script>
 
-<div class="moderation-tools moderation-tools--{mode} {className}">
+<div class={`moderation-tools moderation-tools--${mode} ${className}`}>
 	{#if mode === 'menu'}
 		<!-- Dropdown menu mode -->
 		<button
@@ -325,7 +325,7 @@
 				{#each availableActions as action}
 					<button
 						use:menu.actions.item(action.type)}
-						class="moderation-tools__action moderation-tools__action--{action.severity}"
+						class={`moderation-tools__action moderation-tools__action--${action.severity}`}
 					>
 						{#if renderAction}
 							{@render renderAction(action)}
@@ -347,7 +347,7 @@
 		<div class="moderation-tools__buttons">
 			{#each availableActions as action}
 				<button
-					class="moderation-tools__button moderation-tools__button--{action.severity}"
+					class={`moderation-tools__button moderation-tools__button--${action.severity}`}
 					onclick={() => initiateAction(action.type)}
 					{disabled}
 				>
@@ -430,7 +430,7 @@
 						Cancel
 					</button>
 					<button
-						class="moderation-tools__modal-button moderation-tools__modal-button--confirm moderation-tools__modal-button--{action.severity}"
+						class={`moderation-tools__modal-button moderation-tools__modal-button--confirm moderation-tools__modal-button--${action.severity}`}
 						onclick={() => executeAction(activeAction!)}
 						disabled={loading}
 					>

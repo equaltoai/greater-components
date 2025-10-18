@@ -251,7 +251,7 @@
 </script>
 
 <div 
-  class="notifications-feed {className} {density}"
+  class={`notifications-feed ${className} ${density}`}
   role="main"
   aria-label="Notifications feed"
 >
@@ -305,7 +305,7 @@
   {#if notifications.length > 0 && unreadCount > 0}
     <div class="feed-header">
       <div class="unread-indicator">
-        <span class="unread-count" aria-label="{unreadCount} unread notifications">
+        <span class="unread-count" aria-label={`${unreadCount} unread notifications`}>
           {unreadCount} unread
         </span>
       </div>
@@ -352,7 +352,7 @@
     >
       <div 
         class="virtual-list"
-        style="height: {totalSize}px; position: relative;"
+        style={`height: ${totalSize}px; position: relative;`}
       >
         {#each virtualItems as virtualItem (getItemId(processedItems[virtualItem.index]))}
           {@const item = processedItems[virtualItem.index]}

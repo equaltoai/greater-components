@@ -201,7 +201,7 @@
           class="gr-profile-header__banner-image"
           onload={handleBannerLoad}
           onerror={handleBannerError}
-          style="display: {bannerLoaded ? 'block' : 'none'}"
+          style={`display: ${bannerLoaded ? 'block' : 'none'}`}
         />
       {/if}
     </div>
@@ -317,7 +317,7 @@
                   fill="currentColor"
                   aria-label="Verified link"
                   role="img"
-                  title="Verified on {new Date(field.verifiedAt).toLocaleDateString()}"
+                  title={`Verified on ${new Date(field.verifiedAt).toLocaleDateString()}`}
                 >
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
@@ -353,7 +353,7 @@
             class:clickable={clickableCounts && onPostsClick}
             onclick={handlePostsClick}
             disabled={!clickableCounts || !onPostsClick}
-            aria-label="{formatCount(account.statusesCount)} posts"
+            aria-label={`${formatCount(account.statusesCount)} posts`}
           >
             <span class="gr-profile-header__count-number">{formatCount(account.statusesCount)}</span>
             <span class="gr-profile-header__count-label">Posts</span>
@@ -364,7 +364,7 @@
             class:clickable={clickableCounts && onFollowingClick}
             onclick={handleFollowingClick}
             disabled={!clickableCounts || !onFollowingClick}
-            aria-label="{formatCount(account.followingCount)} following"
+            aria-label={`${formatCount(account.followingCount)} following`}
           >
             <span class="gr-profile-header__count-number">{formatCount(account.followingCount)}</span>
             <span class="gr-profile-header__count-label">Following</span>
@@ -375,7 +375,7 @@
             class:clickable={clickableCounts && onFollowersClick}
             onclick={handleFollowersClick}
             disabled={!clickableCounts || !onFollowersClick}
-            aria-label="{formatCount(account.followersCount)} followers"
+            aria-label={`${formatCount(account.followersCount)} followers`}
           >
             <span class="gr-profile-header__count-number">{formatCount(account.followersCount)}</span>
             <span class="gr-profile-header__count-label">Followers</span>

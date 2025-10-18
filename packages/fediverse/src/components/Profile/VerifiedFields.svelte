@@ -126,7 +126,7 @@ Supports external link icons and verification tooltips.
 	}
 </script>
 
-<dl class="verified-fields {className}">
+<dl class={`verified-fields ${className}`}>
 	{#each displayFields as field (field.name)}
 		{@const parsedValue = parseValue(field.value)}
 		{@const verified = isVerified(field)}
@@ -168,7 +168,7 @@ Supports external link icons and verification tooltips.
 				{#if showVerificationBadge && verified && field.verifiedAt}
 					<span
 						class="verified-fields__badge"
-						title="Verified on {formatVerifiedDate(field.verifiedAt)}"
+						title={`Verified on ${formatVerifiedDate(field.verifiedAt)}`}
 						aria-label="Verified field"
 					>
 						<svg

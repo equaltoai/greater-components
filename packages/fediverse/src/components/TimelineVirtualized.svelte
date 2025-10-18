@@ -137,7 +137,7 @@
 </script>
 
 <div 
-  class="timeline-virtualized {className}"
+  class={`timeline-virtualized ${className}`}
   bind:this={scrollElement}
   onscroll={handleScroll}
   role="feed"
@@ -152,7 +152,7 @@
 
   <div 
     class="virtual-list"
-    style="height: {totalSize}px; position: relative;"
+    style={`height: ${totalSize}px; position: relative;`}
   >
     {#each virtualItems as virtualItem (items[virtualItem.index]?.id || virtualItem.index)}
       {@const item = items[virtualItem.index]}

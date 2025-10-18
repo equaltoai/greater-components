@@ -79,7 +79,7 @@
       mentions.forEach(mention => {
         const pattern = new RegExp(`@${mention.username}(@[\\w.-]+)?`, 'g');
         processed = processed.replace(pattern, (match) => {
-          return `<a href="${mention.url}" class="mention" rel="noopener noreferrer" target="_blank">${match}</a>`;
+          return `<a href={`$${mention.url}`} class="mention" rel="noopener noreferrer" target="_blank">${match}</a>`;
         });
       });
     }
@@ -89,7 +89,7 @@
       tags.forEach(tag => {
         const pattern = new RegExp(`#${tag.name}\\b`, 'gi');
         processed = processed.replace(pattern, () => {
-          return `<a href="${tag.url}" class="hashtag" rel="noopener noreferrer" target="_blank">#${tag.name}</a>`;
+          return `<a href={`$${tag.url}`} class="hashtag" rel="noopener noreferrer" target="_blank">#${tag.name}</a>`;
         });
       });
     }
@@ -110,7 +110,7 @@
   const processedContent = $derived(processContent(content));
 </script>
 
-<div class="content-renderer {className}">
+<div class={`content-renderer ${className}`}>
   {#if spoilerText}
     <div class="spoiler-warning">
       <span class="spoiler-text">{spoilerText}</span>
@@ -118,7 +118,7 @@
         class="spoiler-toggle"
         onclick={toggleExpanded}
         aria-expanded={expanded}
-        aria-controls="content-{Math.random().toString(36).substr(2, 9)}"
+        aria-controls={`content-${Math.random().toString(36).substr(2, 9)}`}
       >
         {expanded ? 'Hide' : 'Show more'}
       </button>
@@ -129,7 +129,7 @@
     <div 
       class="content"
       class:collapsed={spoilerText && !expanded}
-      id="content-{Math.random().toString(36).substr(2, 9)}"
+      id={`content-${Math.random().toString(36).substr(2, 9)}`}
       aria-hidden={spoilerText && !expanded}
     >
       {@html processedContent}
