@@ -521,6 +521,170 @@ Since Lesser is the primary validation environment for Greater Components:
 3. **Contribute fixes** - Changes benefit the entire Fediverse ecosystem
 4. **Share patterns** - Successful patterns become documented best practices
 
+## Phase 4: Lesser-Specific Features
+
+### Quote Posts
+
+**GraphQL Support**: `CreateQuoteNote` mutation, `ObjectWithQuotes` query  
+**UI Components**: ActionBar quote button, Compose quote mode  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose/GraphQLAdapter';
+  import * as Compose from '@greater/fediverse/Compose';
+  
+  const handlers = createGraphQLComposeHandlers(adapter);
+  
+  async function createQuote(originalStatusUrl: string) {
+    await handlers.handleSubmit({
+      content: "Great point! Adding context...",
+      quoteUrl: originalStatusUrl,
+      quoteType: 'COMMENTARY',
+      visibility: 'public'
+    });
+  }
+</script>
+```
+
+### Community Notes
+
+**GraphQL Support**: `addCommunityNote`, `voteCommunityNote` mutations  
+**UI Components**: `Status.CommunityNotes`, ModerationTools integration  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import * as Status from '@greater/fediverse/Status';
+  import { LesserGraphQLAdapter } from '@greater/adapters';
+  
+  const adapter = new LesserGraphQLAdapter(config);
+  
+  async function voteOnNote(noteId: string, helpful: boolean) {
+    await adapter.voteCommunityNote(noteId, helpful);
+  }
+</script>
+
+<Status.Root {status} {handlers}>
+  <Status.Content />
+  <Status.CommunityNotes onVote={voteOnNote} enableVoting={true} />
+</Status.Root>
+```
+
+### AI Insights & Moderation Analytics
+
+**GraphQL Support**: `requestAIAnalysis`, `aiAnalysis`, `aiStats` queries  
+**UI Components**: `Admin.Insights.AIAnalysis`, `Admin.Insights.ModerationAnalytics`  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import * as Insights from '@greater/fediverse/Admin/Insights';
+  import { adapter } from './config';
+</script>
+
+<Insights.Root {adapter}>
+  <Insights.AIAnalysis objectId={statusId} autoRequest={true} />
+  <Insights.ModerationAnalytics period="DAY" />
+</Insights.Root>
+```
+
+### Trust Graph
+
+**GraphQL Support**: `trustGraph` query  
+**UI Components**: `Admin.TrustGraph.Visualization`, `Admin.TrustGraph.RelationshipList`  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import * as TrustGraph from '@greater/fediverse/Admin/TrustGraph';
+  import { adapter } from './config';
+</script>
+
+<TrustGraph.Root {adapter} rootActorId={actorId}>
+  <TrustGraph.Visualization />
+  <TrustGraph.RelationshipList />
+</TrustGraph.Root>
+```
+
+### Cost Dashboards
+
+**GraphQL Support**: `costBreakdown`, `setInstanceBudget`, `optimizeFederationCosts`  
+**UI Components**: `Admin.Cost.Dashboard`, `Admin.Cost.BudgetControls`, `Admin.Cost.Alerts`  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import * as Cost from '@greater/fediverse/Admin/Cost';
+  import { adapter } from './config';
+</script>
+
+<Cost.Root {adapter}>
+  <Cost.Dashboard period="MONTH" />
+  <Cost.BudgetControls />
+  <Cost.Alerts />
+</Cost.Root>
+```
+
+### Thread Synchronization
+
+**GraphQL Support**: `syncThread`, `syncMissingReplies` mutations  
+**UI Components**: Enhanced `ThreadView` with sync button  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import { ThreadView } from '@greater/fediverse/patterns';
+  
+  async function syncThread(statusId: string) {
+    await adapter.syncThread(statusUrl, 3); // depth 3
+  }
+</script>
+
+<ThreadView 
+  {rootStatus} 
+  {replies}
+  handlers={{ 
+    ...otherHandlers,
+    onSyncThread: syncThread 
+  }}
+/>
+```
+
+### Severed Relationships
+
+**GraphQL Support**: `severedRelationships`, `acknowledgeSeverance`, `attemptReconnection`  
+**UI Components**: `Admin.SeveredRelationships.List`, `Admin.SeveredRelationships.RecoveryPanel`  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import * as SeveredRelationships from '@greater/fediverse/Admin/SeveredRelationships';
+</script>
+
+<SeveredRelationships.Root {adapter}>
+  <SeveredRelationships.List />
+  <SeveredRelationships.RecoveryPanel severanceId={id} />
+</SeveredRelationships.Root>
+```
+
+### Hashtag Management
+
+**GraphQL Support**: `followHashtag`, `unfollowHashtag`, `muteHashtag` mutations  
+**UI Components**: `Hashtags.Controls`, `Hashtags.FollowedList`  
+**Usage**:
+
+```svelte
+<script lang="ts">
+  import * as Hashtags from '@greater/fediverse/Hashtags';
+</script>
+
+<Hashtags.Root {adapter}>
+  <Hashtags.Controls hashtag="svelte" />
+  <Hashtags.FollowedList />
+</Hashtags.Root>
+```
+
 ## Next Steps
 
 - Explore compound component patterns (Timeline.Root, Timeline.Item, etc.)

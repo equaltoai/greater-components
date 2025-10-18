@@ -1,0 +1,75 @@
+# Hashtag following and muting operations
+
+#import "./fragments.graphql"
+
+# Follow Hashtag mutation
+mutation FollowHashtag($hashtag: String!, $notifyLevel: NotificationLevel) {
+  followHashtag(hashtag: $hashtag, notifyLevel: $notifyLevel) {
+    success
+    hashtag {
+      name
+      url
+      isFollowing
+      followedAt
+      notificationSettings {
+        level
+        muted
+        mutedUntil
+      }
+    }
+  }
+}
+
+# Unfollow Hashtag mutation
+mutation UnfollowHashtag($hashtag: String!) {
+  unfollowHashtag(hashtag: $hashtag) {
+    success
+    hashtag {
+      name
+      url
+    }
+  }
+}
+
+# Mute Hashtag mutation
+mutation MuteHashtag($hashtag: String!, $until: Time) {
+  muteHashtag(hashtag: $hashtag, until: $until) {
+    success
+    hashtag {
+      name
+      notificationSettings {
+        muted
+        mutedUntil
+      }
+    }
+    mutedUntil
+  }
+}
+
+# Followed Hashtags query
+query FollowedHashtags($first: Int = 20, $after: String) {
+  followedHashtags(first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        name
+        url
+        isFollowing
+        followedAt
+        notificationSettings {
+          level
+          muted
+          mutedUntil
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+    totalCount
+  }
+}
+

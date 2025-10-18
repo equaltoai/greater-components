@@ -78,6 +78,9 @@ import {
 	ActorByUsernameDocument,
 	CreateNoteDocument,
 	CreateQuoteNoteDocument,
+	WithdrawFromQuotesDocument,
+	UpdateQuotePermissionsDocument,
+	ObjectWithQuotesDocument,
 	DeleteObjectDocument,
 	LikeObjectDocument,
 	UnlikeObjectDocument,
@@ -114,6 +117,37 @@ import {
 	ListUpdatesDocument,
 	QuoteActivityDocument,
 	HashtagActivityDocument,
+	AddCommunityNoteDocument,
+	VoteCommunityNoteDocument,
+	CommunityNotesByObjectDocument,
+	FlagObjectDocument,
+	CreateModerationPatternDocument,
+	DeleteModerationPatternDocument,
+	RequestAiAnalysisDocument,
+	AiAnalysisDocument,
+	AiStatsDocument,
+	AiCapabilitiesDocument,
+	TrustGraphDocument,
+	CostBreakdownDocument,
+	InstanceBudgetsDocument,
+	SetInstanceBudgetDocument,
+	OptimizeFederationCostsDocument,
+	FederationLimitsDocument,
+	SetFederationLimitDocument,
+	SyncThreadDocument,
+	SyncMissingRepliesDocument,
+	ThreadContextDocument,
+	SeveredRelationshipsDocument,
+	AcknowledgeSeveranceDocument,
+	AttemptReconnectionDocument,
+	FederationHealthDocument,
+	FederationStatusDocument,
+	PauseFederationDocument,
+	ResumeFederationDocument,
+	FollowHashtagDocument,
+	UnfollowHashtagDocument,
+	MuteHashtagDocument,
+	FollowedHashtagsDocument,
 	ActivityStreamDocument,
 	RelationshipUpdatesDocument,
 	CostUpdatesDocument,
@@ -347,6 +381,21 @@ export class LesserGraphQLAdapter {
 		return data.createQuoteNote;
 	}
 
+	async getObjectWithQuotes(id: string, first?: number, after?: string) {
+		const data = await this.query(ObjectWithQuotesDocument, { id, first, after });
+		return data.object;
+	}
+
+	async withdrawFromQuotes(noteId: string) {
+		const data = await this.mutate(WithdrawFromQuotesDocument, { noteId });
+		return data.withdrawFromQuotes;
+	}
+
+	async updateQuotePermissions(noteId: string, quoteable: boolean, permission: 'EVERYONE' | 'FOLLOWERS' | 'NONE') {
+		const data = await this.mutate(UpdateQuotePermissionsDocument, { noteId, quoteable, permission });
+		return data.updateQuotePermissions;
+	}
+
 	async deleteObject(id: string) {
 		const data = await this.mutate(DeleteObjectDocument, { id });
 		return data.deleteObject;
@@ -439,6 +488,193 @@ export class LesserGraphQLAdapter {
 		const data = await this.mutate(UpdateRelationshipDocument, { id, input });
 		return data.updateRelationship;
 	}
+
+	// ============================================================================
+	// PHASE 4: Community Notes
+	// ============================================================================
+
+	async addCommunityNote(input: { objectId: string; content: string }) {
+		const data = await this.mutate(AddCommunityNoteDocument, { input });
+		return data.addCommunityNote;
+	}
+
+	async voteCommunityNote(id: string, helpful: boolean) {
+		const data = await this.mutate(VoteCommunityNoteDocument, { id, helpful });
+		return data.voteCommunityNote;
+	}
+
+	async getCommunityNotesByObject(objectId: string, first?: number, after?: string) {
+		const data = await this.query(CommunityNotesByObjectDocument, { objectId, first, after });
+		return data.object;
+	}
+
+	// ============================================================================
+	// PHASE 4: Moderation
+	// ============================================================================
+
+	async flagObject(input: { objectId: string; reason: string; evidence?: string[] }) {
+		const data = await this.mutate(FlagObjectDocument, { input });
+		return data.flagObject;
+	}
+
+	async createModerationPattern(input: { pattern: string; type: string; severity: string }) {
+		const data = await this.mutate(CreateModerationPatternDocument, { input });
+		return data.createModerationPattern;
+	}
+
+	async deleteModerationPattern(id: string) {
+		const data = await this.mutate(DeleteModerationPatternDocument, { id });
+		return data.deleteModerationPattern;
+	}
+
+	// ============================================================================
+	// PHASE 4: AI Analysis
+	// ============================================================================
+
+	async requestAIAnalysis(objectId: string, objectType?: string, force?: boolean) {
+		const data = await this.mutate(RequestAiAnalysisDocument, { objectId, objectType, force });
+		return data.requestAIAnalysis;
+	}
+
+	async getAIAnalysis(objectId: string) {
+		const data = await this.query(AiAnalysisDocument, { objectId });
+		return data.aiAnalysis;
+	}
+
+	async getAIStats(period: 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR') {
+		const data = await this.query(AiStatsDocument, { period });
+		return data.aiStats;
+	}
+
+	async getAICapabilities() {
+		const data = await this.query(AiCapabilitiesDocument);
+		return data.aiCapabilities;
+	}
+
+	// ============================================================================
+	// PHASE 4: Trust Graph
+	// ============================================================================
+
+	async getTrustGraph(actorId: string, category?: 'CONTENT' | 'BEHAVIOR' | 'TECHNICAL') {
+		const data = await this.query(TrustGraphDocument, { actorId, category });
+		return data.trustGraph;
+	}
+
+	// ============================================================================
+	// PHASE 4: Cost Management
+	// ============================================================================
+
+	async getCostBreakdown(period?: 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR') {
+		const data = await this.query(CostBreakdownDocument, { period });
+		return data.costBreakdown;
+	}
+
+	async getInstanceBudgets() {
+		const data = await this.query(InstanceBudgetsDocument);
+		return data.instanceBudgets;
+	}
+
+	async setInstanceBudget(domain: string, monthlyUSD: number, autoLimit?: boolean) {
+		const data = await this.mutate(SetInstanceBudgetDocument, { domain, monthlyUSD, autoLimit });
+		return data.setInstanceBudget;
+	}
+
+	async optimizeFederationCosts(threshold: number) {
+		const data = await this.mutate(OptimizeFederationCostsDocument, { threshold });
+		return data.optimizeFederationCosts;
+	}
+
+	async getFederationLimits() {
+		const data = await this.query(FederationLimitsDocument);
+		return data.federationLimits;
+	}
+
+	async setFederationLimit(domain: string, limit: Record<string, unknown>) {
+		const data = await this.mutate(SetFederationLimitDocument, { domain, limit });
+		return data.setFederationLimit;
+	}
+
+	// ============================================================================
+	// PHASE 4: Thread Sync & Federation
+	// ============================================================================
+
+	async syncThread(noteUrl: string, depth?: number) {
+		const data = await this.mutate(SyncThreadDocument, { noteUrl, depth });
+		return data.syncThread;
+	}
+
+	async syncMissingReplies(noteId: string) {
+		const data = await this.mutate(SyncMissingRepliesDocument, { noteId });
+		return data.syncMissingReplies;
+	}
+
+	async getThreadContext(noteId: string) {
+		const data = await this.query(ThreadContextDocument, { noteId });
+		return data.threadContext;
+	}
+
+	async getSeveredRelationships(instance?: string, first?: number, after?: string) {
+		const data = await this.query(SeveredRelationshipsDocument, { instance, first, after });
+		return data.severedRelationships;
+	}
+
+	async acknowledgeSeverance(id: string) {
+		const data = await this.mutate(AcknowledgeSeveranceDocument, { id });
+		return data.acknowledgeSeverance;
+	}
+
+	async attemptReconnection(id: string) {
+		const data = await this.mutate(AttemptReconnectionDocument, { id });
+		return data.attemptReconnection;
+	}
+
+	async getFederationHealth(threshold?: number) {
+		const data = await this.query(FederationHealthDocument, { threshold });
+		return data.federationHealth;
+	}
+
+	async getFederationStatus(domain: string) {
+		const data = await this.query(FederationStatusDocument, { domain });
+		return data.federationStatus;
+	}
+
+	async pauseFederation(domain: string, reason: string, until?: string) {
+		const data = await this.mutate(PauseFederationDocument, { domain, reason, until });
+		return data.pauseFederation;
+	}
+
+	async resumeFederation(domain: string) {
+		const data = await this.mutate(ResumeFederationDocument, { domain });
+		return data.resumeFederation;
+	}
+
+	// ============================================================================
+	// PHASE 4: Hashtag Management
+	// ============================================================================
+
+	async followHashtag(hashtag: string, notifyLevel?: 'ALL' | 'MUTUALS' | 'FOLLOWING' | 'NONE') {
+		const data = await this.mutate(FollowHashtagDocument, { hashtag, notifyLevel });
+		return data.followHashtag;
+	}
+
+	async unfollowHashtag(hashtag: string) {
+		const data = await this.mutate(UnfollowHashtagDocument, { hashtag });
+		return data.unfollowHashtag;
+	}
+
+	async muteHashtag(hashtag: string, until?: string) {
+		const data = await this.mutate(MuteHashtagDocument, { hashtag, until });
+		return data.muteHashtag;
+	}
+
+	async getFollowedHashtags(first?: number, after?: string) {
+		const data = await this.query(FollowedHashtagsDocument, { first, after });
+		return data.followedHashtags;
+	}
+
+	// ============================================================================
+	// SUBSCRIPTIONS
+	// ============================================================================
 
 	subscribeToTimelineUpdates(
 		variables: TimelineUpdatesSubscriptionVariables

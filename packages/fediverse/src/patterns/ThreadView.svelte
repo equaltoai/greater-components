@@ -112,6 +112,20 @@
 		return node.children.reduce((sum, child) => sum + 1 + countReplies(child), 0);
 	}
 
+	/**
+	 * Sync thread (Lesser-specific)
+	 */
+	let syncing = $state(false);
+	async function syncThread() {
+		if (!handlers.onSyncThread || syncing) return;
+
+		syncing = true;
+		try {
+			await handlers.onSyncThread(rootStatus.id);
+		} finally {
+			syncing = false;
+		}
+	}
 </script>
 
 <div
@@ -120,6 +134,20 @@
 >
 	<!-- Root status -->
 	<div class="thread-view__root">
+		{#if handlers.onSyncThread}
+			<div class="thread-view__sync-controls">
+				<button
+					class="thread-view__sync-button"
+					onclick={syncThread}
+					disabled={syncing}
+					type="button"
+					title="Sync missing replies from remote instances"
+				>
+					{syncing ? 'Syncing...' : 'Sync Thread'}
+				</button>
+			</div>
+		{/if}
+
 		{#if renderStatus}
 			{@render renderStatus(threadTree.status, 0)}
 		{:else}
@@ -141,13 +169,13 @@
 					{handlers}
 					{renderStatus}
 					{renderLoading}
-					loadMore={loadMore}
-					toggleCollapse={toggleCollapse}
-					loadingMore={loadingMore}
-					countReplies={countReplies}
+					{loadMore}
+					{toggleCollapse}
+					{loadingMore}
+					{countReplies}
 					{highlightedStatusId}
 					{maxDepth}
-					autoCollapseThreshold={autoCollapseThreshold}
+					{autoCollapseThreshold}
 				/>
 			{/each}
 		</div>
@@ -184,6 +212,32 @@
 
 	:global(.thread-view__root) {
 		margin-bottom: 0.5rem;
+	}
+
+	:global(.thread-view__sync-controls) {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 0.75rem;
+	}
+
+	:global(.thread-view__sync-button) {
+		padding: 0.5rem 1rem;
+		background: var(--primary-color, #1d9bf0);
+		color: white;
+		border: none;
+		border-radius: 0.375rem;
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: opacity 0.2s;
+	}
+
+	:global(.thread-view__sync-button:disabled) {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	:global(.thread-view__sync-button:hover:not(:disabled)) {
+		opacity: 0.9;
 	}
 
 	:global(.thread-view__replies) {

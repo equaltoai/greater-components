@@ -1,0 +1,18 @@
+# Trust Graph queries
+
+#import "./fragments.graphql"
+
+# Trust Graph query
+query TrustGraph($actorId: ID!, $category: TrustCategory) {
+  trustGraph(actorId: $actorId, category: $category) {
+    from {
+      ...ActorSummary
+    }
+    to {
+      ...ActorSummary
+    }
+    category
+    score
+    updatedAt
+  }
+}

@@ -1,0 +1,148 @@
+# AI Analysis queries and mutations
+
+#import "./fragments.graphql"
+
+# AI Analysis mutation
+mutation RequestAIAnalysis($objectId: ID!, $objectType: String, $force: Boolean) {
+  requestAIAnalysis(objectId: $objectId, objectType: $objectType, force: $force) {
+    message
+    objectId
+    estimatedTime
+  }
+}
+
+# AI Analysis query
+query AIAnalysis($objectId: ID!) {
+  aiAnalysis(objectId: $objectId) {
+    id
+    objectId
+    objectType
+    overallRisk
+    moderationAction
+    confidence
+    analyzedAt
+    textAnalysis {
+      sentiment
+      sentimentScores {
+        positive
+        negative
+        neutral
+        mixed
+      }
+      toxicityScore
+      toxicityLabels
+      containsPII
+      dominantLanguage
+      entities {
+        text
+        type
+        score
+      }
+      keyPhrases
+    }
+    imageAnalysis {
+      moderationLabels {
+        name
+        confidence
+        parentName
+      }
+      isNSFW
+      nsfwConfidence
+      violenceScore
+      weaponsDetected
+      detectedText
+      textToxicity
+      celebrityFaces {
+        name
+        confidence
+      }
+      deepfakeScore
+    }
+    aiDetection {
+      aiGeneratedProbability
+      generationModel
+      patternConsistency
+      styleDeviation
+      semanticCoherence
+      suspiciousPatterns
+    }
+    spamAnalysis {
+      spamScore
+      spamIndicators {
+        type
+        description
+        severity
+      }
+      postingVelocity
+      repetitionScore
+      linkDensity
+      followerRatio
+      interactionRate
+      accountAgeDays
+    }
+  }
+}
+
+# AI Stats query
+query AIStats($period: Period!) {
+  aiStats(period: $period) {
+    period
+    totalAnalyses
+    toxicContent
+    spamDetected
+    aiGenerated
+    nsfwContent
+    piiDetected
+    toxicityRate
+    spamRate
+    aiContentRate
+    nsfwRate
+    moderationActions {
+      flag
+      hide
+      remove
+      review
+      shadowBan
+    }
+  }
+}
+
+# AI Capabilities query
+query AICapabilities {
+  aiCapabilities {
+    textAnalysis {
+      sentimentAnalysis
+      toxicityDetection
+      spamDetection
+      piiDetection
+      entityExtraction
+      languageDetection
+    }
+    imageAnalysis {
+      nsfwDetection
+      violenceDetection
+      textExtraction
+      celebrityRecognition
+      deepfakeDetection
+    }
+    aiDetection {
+      aiGeneratedContent
+      patternAnalysis
+      styleConsistency
+    }
+    moderationActions
+    costPerAnalysis {
+      period
+      totalCost
+      dynamoDBCost
+      s3StorageCost
+      lambdaCost
+      dataTransferCost
+      breakdown {
+        operation
+        count
+        cost
+      }
+    }
+  }
+}

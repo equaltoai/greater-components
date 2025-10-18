@@ -1,0 +1,88 @@
+# Cost tracking and budget management queries/mutations
+
+# Cost Breakdown query
+query CostBreakdown($period: Period) {
+  costBreakdown(period: $period) {
+    period
+    totalCost
+    dynamoDBCost
+    s3StorageCost
+    lambdaCost
+    dataTransferCost
+    breakdown {
+      operation
+      count
+      cost
+    }
+  }
+}
+
+# Instance Budget query - Note: uses instanceBudgets (plural) per schema
+query InstanceBudgets {
+  instanceBudgets {
+    domain
+    monthlyBudgetUSD
+    currentSpendUSD
+    remainingBudgetUSD
+    projectedOverspend
+    alertThreshold
+    autoLimit
+    period
+  }
+}
+
+# Set Instance Budget mutation
+mutation SetInstanceBudget($domain: String!, $monthlyUSD: Float!, $autoLimit: Boolean) {
+  setInstanceBudget(domain: $domain, monthlyUSD: $monthlyUSD, autoLimit: $autoLimit) {
+    domain
+    monthlyBudgetUSD
+    currentSpendUSD
+    remainingBudgetUSD
+    projectedOverspend
+    alertThreshold
+    autoLimit
+    period
+  }
+}
+
+# Optimize Federation Costs mutation
+mutation OptimizeFederationCosts($threshold: Float!) {
+  optimizeFederationCosts(threshold: $threshold) {
+    optimized
+    savedMonthlyUSD
+    actions {
+      domain
+      action
+      savingsUSD
+      impact
+    }
+  }
+}
+
+# Federation Limits query
+query FederationLimits {
+  federationLimits {
+    domain
+    ingressLimitMB
+    egressLimitMB
+    requestsPerMinute
+    monthlyBudgetUSD
+    active
+    createdAt
+    updatedAt
+  }
+}
+
+# Set Federation Limit mutation
+mutation SetFederationLimit($domain: String!, $limit: FederationLimitInput!) {
+  setFederationLimit(domain: $domain, limit: $limit) {
+    domain
+    ingressLimitMB
+    egressLimitMB
+    requestsPerMinute
+    monthlyBudgetUSD
+    active
+    createdAt
+    updatedAt
+  }
+}

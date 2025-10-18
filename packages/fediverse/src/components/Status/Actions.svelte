@@ -54,7 +54,13 @@ Uses handlers from context.
 		onBoost: handlers.onBoost ? () => handlers.onBoost!(context.status) : undefined,
 		onFavorite: handlers.onFavorite ? () => handlers.onFavorite!(context.status) : undefined,
 		onShare: handlers.onShare ? () => handlers.onShare!(context.status) : undefined,
+		onQuote: handlers.onQuote ? () => handlers.onQuote!(context.status) : undefined,
 	});
+
+	// Get quote count from Lesser metadata
+	import type { Status as FediverseStatus } from '../../types.js';
+	const extendedStatus = actualStatus as unknown as FediverseStatus;
+	const quoteCount = $derived(extendedStatus.quoteCount);
 </script>
 
 {#if shouldShowActions}
@@ -67,6 +73,7 @@ Uses handlers from context.
 					replies: actualStatus.repliesCount,
 					boosts: actualStatus.reblogsCount,
 					favorites: actualStatus.favouritesCount,
+					quotes: quoteCount,
 				}}
 				states={{
 					boosted: actualStatus.reblogged,
