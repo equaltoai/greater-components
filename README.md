@@ -21,8 +21,11 @@
 
 Greater Components is a comprehensive, production-ready UI component library designed specifically for building modern Fediverse applications. Built with **Svelte 5**, **TypeScript**, and **accessibility-first principles**, it provides everything you need to create engaging social media experiences that work for everyone.
 
+**Architected for Lesser**: Greater Components is purpose-built for the [Lesser](https://github.com/lesserhq/lesser) ActivityPub server, with full support for advanced features like quote posts, community notes, AI-powered moderation, trust graphs, cost analytics, and real-time federation health monitoring. While compatible with other ActivityPub servers (Mastodon, Pleroma, etc.), Lesser integration unlocks the complete feature set.
+
 ### 🎯 Perfect for
 
+- **Lesser-powered applications** with advanced moderation and analytics
 - **Mastodon clients** and alternative interfaces
 - **ActivityPub applications** and services  
 - **Fediverse tools** and analytics platforms
@@ -138,25 +141,47 @@ npm install @greater/utils
 </style>
 ```
 
-### Fediverse Example
+### Fediverse Example (Lesser-native)
 
 ```svelte
 <script>
-  import { StatusCard, TimelineVirtualized } from '@greater/fediverse';
-  import { createTimelineStore } from '@greater/fediverse';
+  import { LesserGraphQLAdapter } from '@greater/adapters';
+  import { Status, Admin, Hashtags } from '@greater/fediverse';
+  import { createLesserTimelineStore } from '@greater/fediverse';
   
-  const timeline = createTimelineStore({
-    server: 'mastodon.social',
-    timeline: 'public:local'
+  // Initialize Lesser adapter with GraphQL endpoint
+  const adapter = new LesserGraphQLAdapter({
+    endpoint: 'https://your-instance.social/graphql',
+    token: 'your-auth-token'
   });
+  
+  // Create timeline with Lesser-specific features
+  const timeline = createLesserTimelineStore({
+    adapter,
+    type: 'HASHTAG',
+    hashtags: ['svelte', 'fediverse'],
+    hashtagMode: 'ANY'
+  });
+  
+  // Access Lesser-specific metadata
+  const postsWithCost = timeline.getItemsWithCost();
+  const postsWithTrust = timeline.getItemsWithTrustScore();
 </script>
 
-<TimelineVirtualized 
-  items={$timeline.items}
-  onLoadMore={timeline.loadMore}
-  onLike={timeline.like}
-  onBoost={timeline.boost}
-/>
+<!-- Display status with Lesser features -->
+<Status.Root {status}>
+  <Status.Header />
+  <Status.Content />
+  <Status.LesserMetadata showCost showTrust showModeration />
+  <Status.CommunityNotes enableVoting />
+  <Status.Actions onQuote={handleQuote} />
+</Status.Root>
+
+<!-- Admin dashboard with cost analytics -->
+<Admin.Cost.Root {adapter}>
+  <Admin.Cost.Dashboard period="WEEK" />
+  <Admin.Cost.BudgetControls />
+</Admin.Cost.Root>
 ```
 
 ## 📦 Package Overview
@@ -207,11 +232,24 @@ npm install @greater/utils
 - **Hot Reload**: Fast development with Vite
 - **Automated Testing**: 100% test coverage
 
-### 🌐 **Fediverse Ready**
-- **ActivityPub Types**: Complete TypeScript definitions
-- **Real-time Streaming**: WebSocket and SSE support
-- **Multi-server Support**: Works with Mastodon, Pleroma, and more
-- **Protocol Adapters**: Abstract away server differences
+### 🌐 **Lesser-First Architecture**
+- **ActivityPub Types**: Complete TypeScript definitions aligned with Lesser schema
+- **GraphQL Integration**: Fully typed queries, mutations, and subscriptions via codegen
+- **Real-time Streaming**: 21 subscription types (quotes, trust updates, cost alerts, moderation events, etc.)
+- **Advanced Features**: Quote posts, community notes, AI analysis, trust graphs, cost dashboards
+- **Multi-server Support**: Works with Lesser (primary), Mastodon, Pleroma, and other ActivityPub servers
+- **Protocol Adapters**: Abstract away server differences with unified models
+
+### 🚀 **Lesser-Exclusive Features**
+- **Quote Posts**: Full quote creation, display, and permission controls
+- **Community Notes**: Collaborative fact-checking with voting and moderation
+- **AI Insights**: Automated content analysis (toxicity, sentiment, spam, NSFW detection)
+- **Trust Graph**: Reputation scores, vouches, and relationship visualization
+- **Cost Analytics**: Real-time cost tracking, budgets, and federation optimization
+- **Thread Synchronization**: Fetch missing replies and resolve incomplete threads
+- **Severed Relationships**: Monitor and recover from federation breaks
+- **Hashtag Controls**: Follow hashtags with notification preferences and muting
+- **Advanced Moderation**: AI-powered moderation queue with pattern matching
 
 ## 🎨 Theming & Customization
 
@@ -265,8 +303,10 @@ test('button handles clicks', () => {
 ## 📚 Documentation & Resources
 
 ### 📖 **Documentation**
+- [**Lesser Integration Guide**](./docs/lesser-integration-guide.md) - Complete Lesser setup and feature guide
 - [**API Reference**](./API_DOCUMENTATION.md) - Complete API documentation
 - [**API Stability Guide**](./API_STABILITY.md) - Backwards compatibility guarantees
+- [**Component Documentation**](./docs/components/) - Individual component guides
 - [**Migration Guide**](./docs/migration/) - Upgrade instructions
 - [**Troubleshooting**](./docs/troubleshooting/) - Common issues and solutions
 

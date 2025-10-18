@@ -25,7 +25,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 const localStorageMock = (() => {
-  let store = new Map<string, string>();
+  const store = new Map<string, string>();
   return {
     getItem: vi.fn((key: string) => store.get(key) ?? null),
     setItem: vi.fn((key: string, value: string) => {
