@@ -37,14 +37,14 @@ function handleKeyDown(event: KeyboardEvent, toggleFn: () => void) {
 describe('ContentWarningHandler - Toggle Functionality', () => {
 	it('should start collapsed by default', () => {
 		const defaultExpanded = false;
-		let isExpanded = defaultExpanded;
+		const isExpanded = defaultExpanded;
 
 		expect(isExpanded).toBe(false);
 	});
 
 	it('should start expanded when configured', () => {
 		const defaultExpanded = true;
-		let isExpanded = defaultExpanded;
+		const isExpanded = defaultExpanded;
 
 		expect(isExpanded).toBe(true);
 	});

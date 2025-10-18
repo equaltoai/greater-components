@@ -4,7 +4,6 @@
   Interface for managing list membership by adding and removing accounts.
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
 	import { getListsContext, type ListMember } from './context.js';
 
 	interface Props {
@@ -74,15 +73,26 @@
 	// Debounced search
 	let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 	$effect(() => {
-		searchQuery;
-		if (searchTimeout) clearTimeout(searchTimeout);
-		if (searchQuery.trim().length > 0) {
-			searchTimeout = setTimeout(() => handleSearch(), 300);
+		const query = searchQuery.trim();
+
+		if (searchTimeout) {
+			clearTimeout(searchTimeout);
+			searchTimeout = null;
+		}
+
+		if (query.length > 0) {
+			searchTimeout = setTimeout(() => {
+				void handleSearch();
+			}, 300);
 		} else {
 			searchResults = [];
 		}
+
 		return () => {
-			if (searchTimeout) clearTimeout(searchTimeout);
+			if (searchTimeout) {
+				clearTimeout(searchTimeout);
+				searchTimeout = null;
+			}
 		};
 	});
 </script>
@@ -182,11 +192,12 @@
 							<div class="member-picker__username">@{member.username}</div>
 						</div>
 
-						<button
-							class="member-picker__remove-button"
-							onclick={() => handleRemoveMember(member.id)}
-							title="Remove from list"
-						>
+					<button
+						class="member-picker__remove-button"
+						onclick={() => handleRemoveMember(member.id)}
+						title="Remove from list"
+						aria-label={`Remove ${member.displayName} from list`}
+					>
 							<svg viewBox="0 0 24 24" fill="currentColor">
 								<path
 									d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"

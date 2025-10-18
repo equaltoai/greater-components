@@ -62,7 +62,7 @@ Shows hashtag, mention, and emoji suggestions while typing.
 		class: className = '',
 	}: Props = $props();
 
-	let menuEl: HTMLDivElement;
+	let menuEl: HTMLDivElement | null = null;
 
 	/**
 	 * Handle keyboard navigation
@@ -99,7 +99,7 @@ Shows hashtag, mention, and emoji suggestions while typing.
 	 */
 	$effect(() => {
 		if (menuEl && selectedIndex >= 0) {
-			const selectedEl = menuEl.querySelector(`[data-index={`$${selectedIndex}`}]`) as HTMLElement;
+			const selectedEl = menuEl.querySelector(`[data-index="${selectedIndex}"]`) as HTMLElement | null;
 			if (selectedEl) {
 				selectedEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 			}

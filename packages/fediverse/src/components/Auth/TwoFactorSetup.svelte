@@ -346,7 +346,7 @@
 			</div>
 
 			<div class="auth-2fa__codes">
-				{#each backupCodes as code}
+				{#each backupCodes as code (code)}
 					<code class="auth-2fa__code">{code}</code>
 				{/each}
 			</div>

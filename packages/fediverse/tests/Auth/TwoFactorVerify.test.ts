@@ -52,7 +52,7 @@ function getMethodErrorMessage(method: VerifyMethod): string {
 
 // Two-factor verify logic
 function createTwoFactorVerifyLogic(showBackupOption: boolean = true) {
-	let state: TwoFactorVerifyState = {
+	const state: TwoFactorVerifyState = {
 		method: 'totp',
 		code: '',
 		codeError: null,

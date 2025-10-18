@@ -38,21 +38,40 @@ export * as queries from './queries.js';
 import { GraphQLClient, createGraphQLClient } from './client.js';
 import * as queries from './queries.js';
 import type {
-	GraphQLConfig,
-	TimelineResult,
+	AccountUpdateEvent,
 	ActorResult,
-	NoteResult,
-	CreateNoteResult,
-	LikeResult,
 	AnnounceResult,
+	BookmarkNoteResult,
+	BookmarksResult,
+	BlockActorResult,
+	CreateNoteResult,
+	DeleteNoteResult,
 	FollowResult,
-	SearchResult,
 	FollowersResult,
 	FollowingResult,
-	NotificationsResult,
-	SubscriptionEvent,
-	TimelineUpdateEvent,
+	GraphQLConfig,
+	LikeResult,
+	MarkAllNotificationsReadResult,
+	MarkNotificationReadResult,
+	MuteActorResult,
 	NotificationEvent,
+	NotificationsResult,
+	NoteResult,
+	OutboxResult,
+	ReportResult,
+	SearchResult,
+	SubscriptionEvent,
+	ThreadResult,
+	TimelineResult,
+	TimelineUpdateEvent,
+	UnannounceResult,
+	UnbookmarkNoteResult,
+	UnfollowResult,
+	UnlikeResult,
+	UnmuteActorResult,
+	UnblockActorResult,
+	UpdateNoteResult,
+	UpdateProfileResult,
 } from './types.js';
 
 /**
@@ -97,8 +116,8 @@ export class LesserClient {
 	/**
 	 * Get thread (conversation)
 	 */
-	async getThread(id: string): Promise<any> {
-		return this.client.query(queries.GET_THREAD, { id });
+	async getThread(id: string): Promise<ThreadResult> {
+		return this.client.query<ThreadResult>(queries.GET_THREAD, { id });
 	}
 
 	/**
@@ -148,15 +167,15 @@ export class LesserClient {
 	/**
 	 * Get actor's outbox (posts)
 	 */
-	async getOutbox(options: { id: string; limit?: number; cursor?: string }): Promise<any> {
-		return this.client.query(queries.GET_OUTBOX, options);
+	async getOutbox(options: { id: string; limit?: number; cursor?: string }): Promise<OutboxResult> {
+		return this.client.query<OutboxResult>(queries.GET_OUTBOX, options);
 	}
 
 	/**
 	 * Get bookmarks
 	 */
-	async getBookmarks(options?: { limit?: number; cursor?: string }): Promise<any> {
-		return this.client.query(queries.GET_BOOKMARKS, options);
+	async getBookmarks(options?: { limit?: number; cursor?: string }): Promise<BookmarksResult> {
+		return this.client.query<BookmarksResult>(queries.GET_BOOKMARKS, options);
 	}
 
 	// ============================================================================
@@ -187,15 +206,15 @@ export class LesserClient {
 			summary?: string;
 			sensitive?: boolean;
 		}
-	): Promise<any> {
-		return this.client.mutate(queries.UPDATE_NOTE, { id, input });
+	): Promise<UpdateNoteResult> {
+		return this.client.mutate<UpdateNoteResult>(queries.UPDATE_NOTE, { id, input });
 	}
 
 	/**
 	 * Delete a note
 	 */
-	async deleteNote(id: string): Promise<any> {
-		return this.client.mutate(queries.DELETE_NOTE, { id });
+	async deleteNote(id: string): Promise<DeleteNoteResult> {
+		return this.client.mutate<DeleteNoteResult>(queries.DELETE_NOTE, { id });
 	}
 
 	/**
@@ -208,8 +227,8 @@ export class LesserClient {
 	/**
 	 * Unlike a note
 	 */
-	async unlikeNote(id: string): Promise<any> {
-		return this.client.mutate(queries.UNLIKE_NOTE, { id });
+	async unlikeNote(id: string): Promise<UnlikeResult> {
+		return this.client.mutate<UnlikeResult>(queries.UNLIKE_NOTE, { id });
 	}
 
 	/**
@@ -222,8 +241,8 @@ export class LesserClient {
 	/**
 	 * Unannounce a note
 	 */
-	async unannounceNote(id: string): Promise<any> {
-		return this.client.mutate(queries.UNANNOUNCE_NOTE, { id });
+	async unannounceNote(id: string): Promise<UnannounceResult> {
+		return this.client.mutate<UnannounceResult>(queries.UNANNOUNCE_NOTE, { id });
 	}
 
 	/**
@@ -236,64 +255,64 @@ export class LesserClient {
 	/**
 	 * Unfollow an actor
 	 */
-	async unfollowActor(id: string): Promise<any> {
-		return this.client.mutate(queries.UNFOLLOW_ACTOR, { id });
+	async unfollowActor(id: string): Promise<UnfollowResult> {
+		return this.client.mutate<UnfollowResult>(queries.UNFOLLOW_ACTOR, { id });
 	}
 
 	/**
 	 * Block an actor
 	 */
-	async blockActor(id: string): Promise<any> {
-		return this.client.mutate(queries.BLOCK_ACTOR, { id });
+	async blockActor(id: string): Promise<BlockActorResult> {
+		return this.client.mutate<BlockActorResult>(queries.BLOCK_ACTOR, { id });
 	}
 
 	/**
 	 * Unblock an actor
 	 */
-	async unblockActor(id: string): Promise<any> {
-		return this.client.mutate(queries.UNBLOCK_ACTOR, { id });
+	async unblockActor(id: string): Promise<UnblockActorResult> {
+		return this.client.mutate<UnblockActorResult>(queries.UNBLOCK_ACTOR, { id });
 	}
 
 	/**
 	 * Mute an actor
 	 */
-	async muteActor(id: string, notifications = true): Promise<any> {
-		return this.client.mutate(queries.MUTE_ACTOR, { id, notifications });
+	async muteActor(id: string, notifications = true): Promise<MuteActorResult> {
+		return this.client.mutate<MuteActorResult>(queries.MUTE_ACTOR, { id, notifications });
 	}
 
 	/**
 	 * Unmute an actor
 	 */
-	async unmuteActor(id: string): Promise<any> {
-		return this.client.mutate(queries.UNMUTE_ACTOR, { id });
+	async unmuteActor(id: string): Promise<UnmuteActorResult> {
+		return this.client.mutate<UnmuteActorResult>(queries.UNMUTE_ACTOR, { id });
 	}
 
 	/**
 	 * Bookmark a note
 	 */
-	async bookmarkNote(id: string): Promise<any> {
-		return this.client.mutate(queries.BOOKMARK_NOTE, { id });
+	async bookmarkNote(id: string): Promise<BookmarkNoteResult> {
+		return this.client.mutate<BookmarkNoteResult>(queries.BOOKMARK_NOTE, { id });
 	}
 
 	/**
 	 * Remove bookmark
 	 */
-	async unbookmarkNote(id: string): Promise<any> {
-		return this.client.mutate(queries.UNBOOKMARK_NOTE, { id });
+	async unbookmarkNote(id: string): Promise<UnbookmarkNoteResult> {
+		return this.client.mutate<UnbookmarkNoteResult>(queries.UNBOOKMARK_NOTE, { id });
 	}
 
 	/**
 	 * Mark notification as read
 	 */
-	async markNotificationRead(id: string): Promise<any> {
-		return this.client.mutate(queries.MARK_NOTIFICATION_READ, { id });
+	async markNotificationRead(id: string): Promise<MarkNotificationReadResult> {
+		return this.client.mutate<MarkNotificationReadResult>(queries.MARK_NOTIFICATION_READ, { id });
 	}
 
 	/**
 	 * Mark all notifications as read
 	 */
-	async markAllNotificationsRead(): Promise<any> {
-		return this.client.mutate(queries.MARK_ALL_NOTIFICATIONS_READ);
+	async markAllNotificationsRead(): Promise<MarkAllNotificationsReadResult> {
+		return this.client.mutate<MarkAllNotificationsReadResult>(queries.MARK_ALL_NOTIFICATIONS_READ);
 	}
 
 	/**
@@ -305,8 +324,8 @@ export class LesserClient {
 		category: string;
 		comment?: string;
 		forward?: boolean;
-	}): Promise<any> {
-		return this.client.mutate(queries.REPORT, { input });
+	}): Promise<ReportResult> {
+		return this.client.mutate<ReportResult>(queries.REPORT, { input });
 	}
 
 	/**
@@ -317,8 +336,8 @@ export class LesserClient {
 		summary?: string;
 		icon?: string;
 		image?: string;
-	}): Promise<any> {
-		return this.client.mutate(queries.UPDATE_PROFILE, { input });
+	}): Promise<UpdateProfileResult> {
+		return this.client.mutate<UpdateProfileResult>(queries.UPDATE_PROFILE, { input });
 	}
 
 	// ============================================================================
@@ -352,8 +371,10 @@ export class LesserClient {
 	/**
 	 * Subscribe to account updates
 	 */
-	subscribeToAccount(callback: (event: any) => void): () => void {
-		return this.client.subscribe(queries.SUBSCRIBE_ACCOUNT, callback as (event: SubscriptionEvent) => void);
+	subscribeToAccount(callback: (event: AccountUpdateEvent) => void): () => void {
+		return this.client.subscribe(queries.SUBSCRIBE_ACCOUNT, (event: SubscriptionEvent) => {
+			callback(event as AccountUpdateEvent);
+		});
 	}
 
 	// ============================================================================
@@ -402,4 +423,3 @@ export class LesserClient {
 export function createLesserClient(config: GraphQLConfig): LesserClient {
 	return new LesserClient(config);
 }
-

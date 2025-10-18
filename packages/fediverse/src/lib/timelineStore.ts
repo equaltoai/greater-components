@@ -69,7 +69,7 @@ export class TimelineStore {
       this.state.error = null;
       
       if (this.config.enableRealtime) {
-        this.transport!.subscribeToTimeline(this.config.type);
+        transport.subscribeToTimeline(this.config.type);
       }
     });
 

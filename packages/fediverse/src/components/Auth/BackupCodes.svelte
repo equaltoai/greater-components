@@ -275,7 +275,7 @@
 	</div>
 
 	<div class="backup-codes__list" role="list" aria-label="Backup recovery codes">
-		{#each codes as code, index}
+		{#each codes as code, index (code)}
 			<div class="backup-codes__item" role="listitem">
 				<span class="backup-codes__item-number">{index + 1}.</span>
 				<code class="backup-codes__item-code">{formatCode(code)}</code>

@@ -18,6 +18,7 @@ Displays a single notification with type-specific rendering.
 	import type { Snippet } from 'svelte';
 	import type { Notification } from '../../types.js';
 	import { getNotificationsContext } from './context.js';
+	import ContentRenderer from '../ContentRenderer.svelte';
 
 	interface Props {
 		/**
@@ -91,20 +92,25 @@ Displays a single notification with type-specific rendering.
 	/**
 	 * Handle dismiss
 	 */
-	async function handleDismiss(event: Event) {
-		event.stopPropagation();
+async function handleDismiss(event: Event) {
+	event.stopPropagation();
 
-		if (context.handlers.onDismiss) {
-			await context.handlers.onDismiss(notification.id);
-		}
+	if (context.handlers.onDismiss) {
+		await context.handlers.onDismiss(notification.id);
 	}
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+	if (event.key === 'Enter' || event.key === ' ') {
+		event.preventDefault();
+		handleClick();
+	}
+}
 </script>
 
 <article
 	class={`notification-item notification-item--${notification.type} ${className}`}
 	class:notification-item--unread={!notification.read}
-	onclick={handleClick}
-	role="article"
 	aria-label={`${notification.account?.displayName || notification.account?.username} ${title}`}
 >
 	{#if children}
@@ -114,7 +120,13 @@ Displays a single notification with type-specific rendering.
 			{icon}
 		</div>
 
-		<div class="notification-item__content">
+		<div
+			class="notification-item__content"
+			role="button"
+			tabindex={0}
+			onclick={handleClick}
+			onkeydown={handleKeyDown}
+		>
 			{#if context.config.showAvatars && notification.account?.avatar}
 				<img
 					src={notification.account.avatar}
@@ -139,7 +151,12 @@ Displays a single notification with type-specific rendering.
 
 				{#if notification.status}
 					<div class="notification-item__status">
-						{@html notification.status.content}
+						<ContentRenderer
+							content={notification.status.content}
+							mentions={notification.status.mentions ?? []}
+							tags={notification.status.tags ?? []}
+							class="notification-item__status-content"
+						/>
 					</div>
 				{/if}
 			</div>
@@ -188,7 +205,11 @@ Displays a single notification with type-specific rendering.
 		flex: 1;
 		gap: 0.75rem;
 		position: relative;
-	}
+		cursor: pointer;
+		border: none;
+		background: transparent;
+		text-align: left;
+}
 
 	.notification-item__avatar {
 		width: 40px;
@@ -201,6 +222,11 @@ Displays a single notification with type-specific rendering.
 	.notification-item__body {
 		flex: 1;
 		min-width: 0;
+}
+
+	.notification-item__content:focus-visible {
+		outline: 2px solid var(--notifications-primary, #1d9bf0);
+		outline-offset: 2px;
 	}
 
 	.notification-item__text {

@@ -59,7 +59,7 @@ Supports external link icons and verification tooltips.
 		class: className = '',
 	}: Props = $props();
 
-	const context = getProfileContext();
+	getProfileContext();
 
 	// Limit fields if maxFields is set
 	const displayFields = $derived(maxFields > 0 ? fields.slice(0, maxFields) : fields);

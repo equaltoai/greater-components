@@ -7,6 +7,8 @@
  * @module adapters/optimistic
  */
 
+import type { DebugLogEntry, DebugLogger } from './batcher.js';
+
 export type OptimisticUpdateId = string;
 
 export interface OptimisticUpdate<TState, TResult> {
@@ -69,6 +71,11 @@ export interface OptimisticManagerOptions {
 	 * @default 30000 (30 seconds)
 	 */
 	timeout?: number;
+
+	/**
+	 * Optional logger for debug traces
+	 */
+	logger?: DebugLogger;
 }
 
 /**
@@ -76,13 +83,14 @@ export interface OptimisticManagerOptions {
  * Manages queue of optimistic updates with rollback support
  */
 export class OptimisticManager<TState> {
-	private updates: Map<OptimisticUpdateId, OptimisticUpdate<TState, any>>;
+	private updates: Map<OptimisticUpdateId, OptimisticUpdate<TState, unknown>>;
 	private maxPending: number;
 	private debug: boolean;
 	private timeout: number;
 	private totalUpdates: number;
 	private totalConfirmed: number;
 	private totalReverted: number;
+	private logger?: DebugLogger;
 
 	constructor(options: OptimisticManagerOptions = {}) {
 		this.updates = new Map();
@@ -92,6 +100,7 @@ export class OptimisticManager<TState> {
 		this.totalUpdates = 0;
 		this.totalConfirmed = 0;
 		this.totalReverted = 0;
+		this.logger = options.logger;
 	}
 
 	/**
@@ -178,7 +187,7 @@ export class OptimisticManager<TState> {
 	/**
 	 * Get specific update
 	 */
-	get(id: OptimisticUpdateId): OptimisticUpdate<TState, any> | undefined {
+	get(id: OptimisticUpdateId): OptimisticUpdate<TState, unknown> | undefined {
 		return this.updates.get(id);
 	}
 
@@ -192,7 +201,7 @@ export class OptimisticManager<TState> {
 	/**
 	 * Get all pending updates
 	 */
-	getPending(): OptimisticUpdate<TState, any>[] {
+	getPending(): OptimisticUpdate<TState, unknown>[] {
 		return Array.from(this.updates.values()).filter((u) => u.status === 'pending');
 	}
 
@@ -233,9 +242,22 @@ export class OptimisticManager<TState> {
 	 * Debug logging
 	 */
 	private log(action: string, id: string, extra?: string): void {
-		if (this.debug) {
-			const stats = this.getStats();
-			console.log(
+		if (!this.debug) {
+			return;
+		}
+
+		const stats = this.getStats();
+		const entry: DebugLogEntry = {
+			scope: 'optimistic',
+			action,
+			message: `${id}${extra ? ` ${extra}` : ''}`.trim(),
+			stats,
+		};
+
+		if (this.logger) {
+			this.logger(entry);
+		} else if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+			console.warn(
 				`[Optimistic] ${action} id="${id}" ${extra || ''} (${stats.pending} pending, success rate: ${(stats.successRate * 100).toFixed(1)}%)`
 			);
 		}
@@ -358,4 +380,3 @@ export class OptimisticState<TState> {
 		this.notify();
 	}
 }
-

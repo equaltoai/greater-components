@@ -260,7 +260,7 @@ export function createAuthContext(
 	initialState: Partial<AuthState> = {},
 	handlers: AuthHandlers = {}
 ): AuthContext {
-	let state = $state<AuthState>({
+	const state = $state<AuthState>({
 		authenticated: initialState.authenticated ?? false,
 		user: initialState.user ?? null,
 		loading: initialState.loading ?? false,
@@ -346,4 +346,3 @@ export function isValidUsername(username: string): { valid: boolean; message?: s
 	}
 	return { valid: true };
 }
-

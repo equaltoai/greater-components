@@ -196,7 +196,7 @@ export interface MessagesContext {
  * @returns Messages context
  */
 export function createMessagesContext(handlers: MessagesHandlers = {}): MessagesContext {
-	let state = $state<MessagesState>({
+	const state = $state<MessagesState>({
 		conversations: [],
 		selectedConversation: null,
 		messages: [],
@@ -303,7 +303,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				state.conversations = state.conversations.map((c) =>
 					c.id === conversationId ? { ...c, unreadCount: 0 } : c,
 				);
-			} catch (error) {
+			} catch {
 				// Silently fail
 			}
 		},
@@ -365,4 +365,3 @@ export function getConversationName(conversation: Conversation, currentUserId: s
 	if (otherParticipants.length === 1 && otherParticipants[0]) return otherParticipants[0].displayName;
 	return otherParticipants.map((p) => p.displayName).join(', ');
 }
-

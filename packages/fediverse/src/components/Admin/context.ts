@@ -73,7 +73,7 @@ export interface LogEntry {
 	level: 'info' | 'warn' | 'error';
 	category: string;
 	message: string;
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
 }
 
 // Analytics Types
@@ -146,7 +146,7 @@ export interface AdminContext {
 }
 
 export function createAdminContext(handlers: AdminHandlers = {}): AdminContext {
-	let state = $state<AdminState>({
+	const state = $state<AdminState>({
 		stats: null,
 		users: [],
 		reports: [],
@@ -270,4 +270,3 @@ export function formatNumber(num: number): string {
 	if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
 	return num.toString();
 }
-

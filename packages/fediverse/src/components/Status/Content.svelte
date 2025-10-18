@@ -82,7 +82,7 @@ Uses ContentRenderer for safe HTML display.
 	}
 
 	/* Compact density adjustments */
-	.status-root--compact .status-content {
+	:global(.status-root--compact) .status-content {
 		font-size: var(--status-font-size-sm, 0.875rem);
 		margin: var(--status-spacing-xs, 0.25rem) 0;
 	}

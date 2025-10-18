@@ -89,7 +89,6 @@ Provides context for child components and handles form submission.
 	class:compose-root--submitting={context.state.submitting}
 	class:compose-root--over-limit={context.state.overLimit}
 	onsubmit={handleSubmit}
-	role="form"
 	aria-busy={context.state.submitting}
 >
 	{#if context.state.error}

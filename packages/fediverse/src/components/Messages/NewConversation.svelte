@@ -27,7 +27,7 @@
 
 	let { initialParticipants = [], class: className = '', onConversationCreated }: Props = $props();
 
-	const { state: messagesState, handlers, selectConversation } = getMessagesContext();
+const { handlers, selectConversation } = getMessagesContext();
 
 	let isOpen = $state(false);
 	let searchQuery = $state('');
@@ -134,15 +134,23 @@
 	// Debounced search
 	let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 	$effect(() => {
-		searchQuery;
-		if (searchTimeout) clearTimeout(searchTimeout);
-		if (searchQuery.trim().length > 0) {
-			searchTimeout = setTimeout(() => handleSearch(), 300);
+		const query = searchQuery.trim();
+		if (searchTimeout) {
+			clearTimeout(searchTimeout);
+			searchTimeout = null;
+		}
+		if (query.length > 0) {
+			searchTimeout = setTimeout(() => {
+				void handleSearch();
+			}, 300);
 		} else {
 			searchResults = [];
 		}
 		return () => {
-			if (searchTimeout) clearTimeout(searchTimeout);
+			if (searchTimeout) {
+				clearTimeout(searchTimeout);
+				searchTimeout = null;
+			}
 		};
 	});
 </script>
@@ -178,7 +186,7 @@
 					<!-- Selected Participants -->
 					{#if selectedParticipants.length > 0}
 						<div class="new-conversation__selected">
-							<label class="new-conversation__label">To:</label>
+					<span class="new-conversation__label">To:</span>
 							<div class="new-conversation__chips">
 								{#each selectedParticipants as participant (participant.id)}
 									<div class="new-conversation__chip">

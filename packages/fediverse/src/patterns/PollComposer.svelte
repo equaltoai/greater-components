@@ -201,7 +201,24 @@
 	} = config;
 
 	// Create mode state
-	let options = $state<string[]>(['', '']);
+	type DraftPollOption = {
+		id: string;
+		value: string;
+	};
+
+	const generateOptionId = () =>
+		typeof crypto !== 'undefined' && 'randomUUID' in crypto
+			? crypto.randomUUID()
+			: `poll-option-${Math.random().toString(36).slice(2, 11)}`;
+
+	function createOption(value = ''): DraftPollOption {
+		return {
+			id: generateOptionId(),
+			value,
+		};
+	}
+
+	let options = $state<DraftPollOption[]>([createOption(), createOption()]);
 	let expiresIn = $state(86400); // Default 1 day
 	let multiple = $state(false);
 	let hideTotals = $state(false);
@@ -225,26 +242,27 @@
 	 */
 	function addOption() {
 		if (options.length < maxOptions) {
-			options = [...options, ''];
+			options = [...options, createOption()];
 		}
 	}
 
 	/**
 	 * Remove option
 	 */
-	function removeOption(index: number) {
+	function removeOption(optionId: string) {
 		if (options.length > minOptions) {
-			options = options.filter((_, i) => i !== index);
+			options = options.filter((option) => option.id !== optionId);
 		}
 	}
 
 	/**
 	 * Update option text
 	 */
-	function updateOption(index: number, value: string) {
-		if (value.length <= maxOptionLength) {
-			options[index] = value;
-		}
+	function updateOption(optionId: string, value: string) {
+		if (value.length > maxOptionLength) return;
+		options = options.map((option) =>
+			option.id === optionId ? { ...option, value } : option
+		);
 	}
 
 	/**
@@ -273,7 +291,9 @@
 		if (submitting) return;
 
 		// Validate
-		const filledOptions = options.filter((opt) => opt.trim());
+		const filledOptions = options
+			.map((opt) => opt.value.trim())
+			.filter((opt) => opt.length > 0);
 		if (filledOptions.length < minOptions) {
 			error = `Please provide at least ${minOptions} options`;
 			return;
@@ -291,7 +311,7 @@
 			});
 
 			// Reset form
-			options = ['', ''];
+			options = [createOption(), createOption()];
 			multiple = false;
 			hideTotals = false;
 		} catch (err) {
@@ -362,14 +382,14 @@
 		<!-- Create mode -->
 		<div class="poll-composer__create">
 			<div class="poll-composer__options">
-				{#each options as option, index}
+				{#each options as option, index (option.id)}
 					<div class="poll-composer__option-row">
 						<input
 							type="text"
 							class="poll-composer__option-input"
 							placeholder={`Option ${index + 1}`}
-							value={option}
-							oninput={(e) => updateOption(index, e.currentTarget.value)}
+							value={option.value}
+							oninput={(e) => updateOption(option.id, e.currentTarget.value)}
 							maxlength={maxOptionLength}
 							aria-label={`Poll option ${index + 1}`}
 						/>
@@ -377,16 +397,16 @@
 						{#if showCharacterCount}
 							<span
 								class="poll-composer__char-count"
-								class:poll-composer__char-count--warn={option.length > maxOptionLength * 0.9}
+								class:poll-composer__char-count--warn={option.value.length > maxOptionLength * 0.9}
 							>
-								{option.length}/{maxOptionLength}
+								{option.value.length}/{maxOptionLength}
 							</span>
 						{/if}
 
 						{#if options.length > minOptions}
 							<button
 								class="poll-composer__remove-btn"
-								onclick={() => removeOption(index)}
+								onclick={() => removeOption(option.id)}
 								aria-label={`Remove option ${index + 1}`}
 							>
 								<svg viewBox="0 0 24 24" fill="currentColor">
@@ -413,8 +433,8 @@
 				<div class="poll-composer__setting">
 					<label for="poll-expiration">Poll length</label>
 					<select id="poll-expiration" bind:value={expiresIn} class="poll-composer__select">
-						{#each expirationOptions as { label, seconds }}
-							<option value={seconds}>{label}</option>
+						{#each expirationOptions as expiration (expiration.seconds)}
+							<option value={expiration.seconds}>{expiration.label}</option>
 						{/each}
 					</select>
 				</div>
@@ -437,7 +457,11 @@
 			<button
 				use:submitButton.actions.button
 				class="poll-composer__submit"
-				disabled={options.filter((opt) => opt.trim()).length < minOptions || submitting}
+				disabled={
+					options
+						.map((opt) => opt.value.trim())
+						.filter((value) => value.length > 0).length < minOptions || submitting
+				}
 			>
 				{#if submitting}
 					<svg class="poll-composer__spinner" viewBox="0 0 24 24">
@@ -454,7 +478,7 @@
 		<!-- Vote mode -->
 		<div class="poll-composer__vote">
 			<div class="poll-composer__vote-options">
-				{#each poll.options as option, index}
+				{#each poll.options as option, index (option.title + '-' + index)}
 					{#if poll.voted || poll.expired || resultsHidden}
 						<!-- Show results -->
 						<div class="poll-composer__result" class:poll-composer__result--voted={option.voted}>

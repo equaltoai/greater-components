@@ -200,6 +200,36 @@ export interface NoteResult {
 }
 
 /**
+ * Thread query result
+ */
+export interface ThreadResult {
+	thread: {
+		root: LesserNote;
+		replies: LesserActivity[];
+	};
+}
+
+/**
+ * Outbox query result
+ */
+export interface OutboxResult {
+	outbox: {
+		items: LesserActivity[];
+		nextCursor?: string;
+	};
+}
+
+/**
+ * Bookmarks query result
+ */
+export interface BookmarksResult {
+	bookmarks: {
+		items: LesserNote[];
+		nextCursor?: string;
+	};
+}
+
+/**
  * Create note mutation result
  */
 export interface CreateNoteResult {
@@ -210,10 +240,38 @@ export interface CreateNoteResult {
 }
 
 /**
+ * Update note mutation result
+ */
+export interface UpdateNoteResult {
+	updateNote: {
+		activity: LesserActivity;
+		note: LesserNote;
+	};
+}
+
+/**
+ * Delete note mutation result
+ */
+export interface DeleteNoteResult {
+	deleteNote: {
+		activity: LesserActivity;
+	};
+}
+
+/**
  * Like mutation result
  */
 export interface LikeResult {
 	like: {
+		activity: LesserActivity;
+	};
+}
+
+/**
+ * Unlike mutation result
+ */
+export interface UnlikeResult {
+	unlike: {
 		activity: LesserActivity;
 	};
 }
@@ -228,11 +286,120 @@ export interface AnnounceResult {
 }
 
 /**
+ * Unannounce mutation result
+ */
+export interface UnannounceResult {
+	unannounce: {
+		activity: LesserActivity;
+	};
+}
+
+/**
  * Follow mutation result
  */
 export interface FollowResult {
 	follow: {
 		activity: LesserActivity;
+	};
+}
+
+/**
+ * Unfollow mutation result
+ */
+export interface UnfollowResult {
+	unfollow: {
+		activity: LesserActivity;
+	};
+}
+
+/**
+ * Block actor mutation result
+ */
+export interface BlockActorResult {
+	block: {
+		success: boolean;
+	};
+}
+
+/**
+ * Unblock actor mutation result
+ */
+export interface UnblockActorResult {
+	unblock: {
+		success: boolean;
+	};
+}
+
+/**
+ * Mute actor mutation result
+ */
+export interface MuteActorResult {
+	mute: {
+		success: boolean;
+	};
+}
+
+/**
+ * Unmute actor mutation result
+ */
+export interface UnmuteActorResult {
+	unmute: {
+		success: boolean;
+	};
+}
+
+/**
+ * Bookmark mutation result
+ */
+export interface BookmarkNoteResult {
+	bookmark: {
+		success: boolean;
+	};
+}
+
+/**
+ * Unbookmark mutation result
+ */
+export interface UnbookmarkNoteResult {
+	unbookmark: {
+		success: boolean;
+	};
+}
+
+/**
+ * Mark notification read result
+ */
+export interface MarkNotificationReadResult {
+	markNotificationRead: {
+		success: boolean;
+	};
+}
+
+/**
+ * Mark all notifications read result
+ */
+export interface MarkAllNotificationsReadResult {
+	markAllNotificationsRead: {
+		success: boolean;
+	};
+}
+
+/**
+ * Report mutation result
+ */
+export interface ReportResult {
+	report: {
+		success: boolean;
+		reportId: string;
+	};
+}
+
+/**
+ * Update profile mutation result
+ */
+export interface UpdateProfileResult {
+	updateProfile: {
+		actor: LesserActor;
 	};
 }
 
@@ -262,6 +429,16 @@ export interface NotificationEvent {
 	data: {
 		activity: LesserActivity;
 		read: boolean;
+	};
+}
+
+/**
+ * Account update event
+ */
+export interface AccountUpdateEvent {
+	type: 'account.update';
+	data: {
+		actor: LesserActor;
 	};
 }
 
@@ -314,4 +491,3 @@ export interface NotificationsResult {
 		unreadCount: number;
 	};
 }
-

@@ -5,7 +5,7 @@
  * with proper Lesser metadata hydration
  */
 
-import type { UnifiedStatus } from '@greater/adapters';
+import type { TimelineVariables, UnifiedStatus } from '@greater/adapters';
 import type { GenericTimelineItem } from '../generics/index.js';
 import { unifiedStatusToTimelineItem } from '@greater/adapters';
 import { LesserGraphQLAdapter } from '../adapters/graphql/index.js';
@@ -67,15 +67,33 @@ export class LesserTimelineStore {
   private cursor: string | null = null;
   private abortController: AbortController | null = null;
 
-  constructor(config: LesserTimelineConfig) {
-    this.config = {
-      maxItems: 1000,
-      preloadCount: 20,
-      type: 'PUBLIC',
-      enableRealtime: true,
-      ...config
-    };
-  }
+	constructor(config: LesserTimelineConfig) {
+		this.config = {
+			maxItems: 1000,
+			preloadCount: 20,
+			type: 'PUBLIC',
+			enableRealtime: true,
+			...config
+		};
+	}
+
+	private buildTimelineVariables(after?: string | null): TimelineVariables {
+		const variables: TimelineVariables = {
+			type: this.config.type,
+			first: this.config.preloadCount,
+			after: after ?? undefined,
+		};
+
+		if (this.config.type === 'HASHTAG' && this.config.hashtag) {
+			variables.hashtag = this.config.hashtag;
+		}
+
+		if (this.config.type === 'LIST' && this.config.listId) {
+			variables.listId = this.config.listId;
+		}
+
+		return variables;
+	}
 
   /**
    * Load initial timeline data
@@ -87,24 +105,8 @@ export class LesserTimelineStore {
     this.state.error = null;
     this.abortController = new AbortController();
 
-    try {
-      // Build timeline query variables based on configuration
-      const variables: any = {
-        type: this.config.type,
-        first: this.config.preloadCount
-      };
-
-      // Add hashtag parameter for HASHTAG timelines
-      if (this.config.type === 'HASHTAG' && this.config.hashtag) {
-        variables.hashtag = this.config.hashtag;
-      }
-
-      // Add listId parameter for LIST timelines
-      if (this.config.type === 'LIST' && this.config.listId) {
-        variables.listId = this.config.listId;
-      }
-
-      const response = await this.config.adapter.fetchTimeline(variables);
+		try {
+			const response = await this.config.adapter.fetchTimeline(this.buildTimelineVariables());
 
       // Convert unified statuses to timeline items with Lesser metadata
       const timelineItems: GenericTimelineItem[] = response.edges.map(edge => {
@@ -149,25 +151,10 @@ export class LesserTimelineStore {
     this.state.loadingMore = true;
     this.abortController = new AbortController();
 
-    try {
-      // Build timeline query variables
-      const variables: any = {
-        type: this.config.type,
-        first: this.config.preloadCount,
-        after: this.cursor
-      };
-
-      // Add hashtag parameter for HASHTAG timelines
-      if (this.config.type === 'HASHTAG' && this.config.hashtag) {
-        variables.hashtag = this.config.hashtag;
-      }
-
-      // Add listId parameter for LIST timelines
-      if (this.config.type === 'LIST' && this.config.listId) {
-        variables.listId = this.config.listId;
-      }
-
-      const response = await this.config.adapter.fetchTimeline(variables);
+		try {
+			const response = await this.config.adapter.fetchTimeline(
+				this.buildTimelineVariables(this.cursor)
+			);
 
       // Convert new unified statuses to timeline items
       const newTimelineItems: GenericTimelineItem[] = response.edges.map(edge => {

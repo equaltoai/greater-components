@@ -38,7 +38,7 @@
 		</div>
 	{:else}
 		<div class="messages-conversations__list">
-			{#each messagesState.conversations as conversation}
+			{#each messagesState.conversations as conversation (conversation.id)}
 				<button
 					class="messages-conversations__item"
 					class:messages-conversations__item--selected={messagesState.selectedConversation?.id ===

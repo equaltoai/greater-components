@@ -310,6 +310,7 @@
 		<button
 			use:menu.actions.trigger
 			class="moderation-tools__trigger"
+			type="button"
 			{disabled}
 			aria-label="Moderation actions"
 		>
@@ -322,10 +323,11 @@
 
 		{#if menu.state.open}
 			<div use:menu.actions.menu class="moderation-tools__menu">
-				{#each availableActions as action}
+				{#each availableActions as action (action.type)}
 					<button
-						use:menu.actions.item(action.type)}
+						use:menu.actions.item={action.type}
 						class={`moderation-tools__action moderation-tools__action--${action.severity}`}
+						type="button"
 					>
 						{#if renderAction}
 							{@render renderAction(action)}
@@ -342,45 +344,48 @@
 				{/each}
 			</div>
 		{/if}
-	{:else if mode === 'buttons'}
-		<!-- Button group mode -->
-		<div class="moderation-tools__buttons">
-			{#each availableActions as action}
-				<button
-					class={`moderation-tools__button moderation-tools__button--${action.severity}`}
-					onclick={() => initiateAction(action.type)}
-					{disabled}
-				>
-					{#if renderAction}
-						{@render renderAction(action)}
-					{:else}
-						{#if showIcons}
-							<svg class="moderation-tools__button-icon" viewBox="0 0 24 24" fill="currentColor">
-								<path d={action.icon} />
-							</svg>
-						{/if}
-
-						<span class="moderation-tools__button-label">{action.label}</span>
+{:else if mode === 'buttons'}
+	<!-- Button group mode -->
+	<div class="moderation-tools__buttons">
+		{#each availableActions as action (action.type)}
+			<button
+				class={`moderation-tools__button moderation-tools__button--${action.severity}`}
+				type="button"
+				onclick={() => initiateAction(action.type)}
+				{disabled}
+			>
+				{#if renderAction}
+					{@render renderAction(action)}
+				{:else}
+					{#if showIcons}
+						<svg class="moderation-tools__button-icon" viewBox="0 0 24 24" fill="currentColor">
+							<path d={action.icon} />
+						</svg>
 					{/if}
-				</button>
-			{/each}
-		</div>
-	{:else}
-		<!-- Inline mode -->
-		<div class="moderation-tools__inline">
-			{#each availableActions as action}
-				<button
-					class="moderation-tools__inline-button"
-					onclick={() => initiateAction(action.type)}
-					title={action.description}
-					{disabled}
-				>
-					<svg class="moderation-tools__inline-icon" viewBox="0 0 24 24" fill="currentColor">
-						<path d={action.icon} />
-					</svg>
-				</button>
-			{/each}
-		</div>
+
+					<span class="moderation-tools__button-label">{action.label}</span>
+				{/if}
+			</button>
+		{/each}
+	</div>
+{:else}
+	<!-- Inline mode -->
+	<div class="moderation-tools__inline">
+		{#each availableActions as action (action.type)}
+			<button
+				class="moderation-tools__inline-button"
+				type="button"
+				onclick={() => initiateAction(action.type)}
+				title={action.description}
+				aria-label={action.label}
+				{disabled}
+			>
+				<svg class="moderation-tools__inline-icon" viewBox="0 0 24 24" fill="currentColor">
+					<path d={action.icon} />
+				</svg>
+			</button>
+		{/each}
+	</div>
 	{/if}
 
 	<!-- Confirmation Modal -->
@@ -396,6 +401,7 @@
 					<button
 						use:confirmModal.actions.close
 						class="moderation-tools__modal-close"
+						type="button"
 						aria-label="Close"
 					>
 						×
@@ -424,6 +430,7 @@
 				<div class="moderation-tools__modal-footer">
 					<button
 						class="moderation-tools__modal-button moderation-tools__modal-button--cancel"
+						type="button"
 						onclick={() => confirmModal.helpers.close()}
 						disabled={loading}
 					>
@@ -431,6 +438,7 @@
 					</button>
 					<button
 						class={`moderation-tools__modal-button moderation-tools__modal-button--confirm moderation-tools__modal-button--${action.severity}`}
+						type="button"
 						onclick={() => executeAction(activeAction!)}
 						disabled={loading}
 					>
@@ -452,6 +460,7 @@
 					<button
 						use:reportModal.actions.close
 						class="moderation-tools__modal-close"
+						type="button"
 						aria-label="Close"
 					>
 						×
@@ -473,6 +482,7 @@
 				<div class="moderation-tools__modal-footer">
 					<button
 						class="moderation-tools__modal-button moderation-tools__modal-button--cancel"
+						type="button"
 						onclick={() => reportModal.helpers.close()}
 						disabled={loading}
 					>
@@ -480,6 +490,7 @@
 					</button>
 					<button
 						class="moderation-tools__modal-button moderation-tools__modal-button--confirm moderation-tools__modal-button--medium"
+						type="button"
 						onclick={() => executeAction('report')}
 						disabled={loading || !reportReason.trim()}
 					>

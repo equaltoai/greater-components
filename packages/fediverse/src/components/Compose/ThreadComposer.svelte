@@ -92,10 +92,20 @@ Create threads with multiple connected posts, each with its own character limit.
 		},
 	]);
 
-	let visibility = $state<PostVisibility>(defaultVisibility);
-	let submitting = $state(false);
-	let error = $state<string | null>(null);
-	let draggedPostId = $state<string | null>(null);
+let visibility = $state<PostVisibility>(defaultVisibility);
+let submitting = $state(false);
+let error = $state<string | null>(null);
+let draggedPostId = $state<string | null>(null);
+
+function extractErrorMessage(value: unknown): string {
+	if (value instanceof Error) {
+		return value.message;
+	}
+	if (typeof value === 'string') {
+		return value;
+	}
+	return 'Failed to submit thread';
+}
 
 	// Buttons
 	const addPostButton = createButton();
@@ -122,16 +132,6 @@ Create threads with multiple connected posts, each with its own character limit.
 		if (post) {
 			post.content = content;
 			updateCharacterCount(post);
-		}
-	}
-
-	/**
-	 * Handle content warning change
-	 */
-	function handleContentWarningInput(postId: string, contentWarning: string) {
-		const post = posts.find((p) => p.id === postId);
-		if (post) {
-			post.contentWarning = contentWarning;
 		}
 	}
 
@@ -280,8 +280,8 @@ Create threads with multiple connected posts, each with its own character limit.
 				characterCount: 0,
 				overLimit: false,
 			}];
-		} catch (err: any) {
-			error = err.message || 'Failed to submit thread';
+		} catch (err) {
+			error = extractErrorMessage(err);
 		} finally {
 			submitting = false;
 		}
@@ -327,7 +327,7 @@ Create threads with multiple connected posts, each with its own character limit.
 		</div>
 	{/if}
 
-	<div class="thread-composer__posts">
+	<div class="thread-composer__posts" role="list" aria-label="Thread posts">
 		{#each posts as post, index (post.id)}
 			<div
 				class="thread-post"
@@ -336,6 +336,8 @@ Create threads with multiple connected posts, each with its own character limit.
 				ondragstart={() => handleDragStart(post.id)}
 				ondragover={(e) => handleDragOver(e, post.id)}
 				ondragend={handleDragEnd}
+				role="listitem"
+				aria-grabbed={draggedPostId === post.id}
 			>
 				<div class="thread-post__header">
 					<div class="thread-post__number">{index + 1}</div>
@@ -726,4 +728,3 @@ Create threads with multiple connected posts, each with its own character limit.
 		}
 	}
 </style>
-

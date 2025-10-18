@@ -26,7 +26,7 @@
 			</div>
 		{:else}
 			<div class="messages-thread__list">
-				{#each messagesState.messages as message}
+				{#each messagesState.messages as message (message.id)}
 					<Message {message} />
 				{/each}
 			</div>

@@ -10,8 +10,8 @@ describe('@greater/icons', () => {
   let builtIcons: string[] = [];
   let srcIconList: string[] = [];
   let hasDistBuilt = false;
-  let srcAliases: Record<string, string> = {};
-  let srcCategories: Record<string, string[]> = {};
+  const srcAliases: Record<string, string> = {};
+  const srcCategories: Record<string, string[]> = {};
 
   beforeAll(async () => {
     // Check that icons were built

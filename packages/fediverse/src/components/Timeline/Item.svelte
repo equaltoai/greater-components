@@ -55,28 +55,49 @@ Can be used with Status compound component or custom content.
 	/**
 	 * Handle item click
 	 */
-	function handleClick(event: MouseEvent) {
-		// Don't trigger if clicking on interactive elements
-		const target = event.target as HTMLElement;
-		if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a, button')) {
-			return;
-		}
+function handleClick(event: MouseEvent) {
+	// Don't trigger if clicking on interactive elements
+	const target = event.target as HTMLElement;
+	if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a, button')) {
+		return;
+	}
 
+	context.handlers.onItemClick?.(item, index);
+}
+
+function handleKeyDown(event: KeyboardEvent) {
+	if (event.key === 'Enter' || event.key === ' ') {
+		event.preventDefault();
 		context.handlers.onItemClick?.(item, index);
 	}
+}
 </script>
 
 <article
 	class={`timeline-item ${className}`}
 	data-index={index}
 	data-status-id={status.id}
-	onclick={context.handlers.onItemClick ? handleClick : undefined}
-	role="article"
 	aria-posinset={index + 1}
 	aria-setsize={context.state.itemCount}
 >
-	{#if children}
-		{@render children()}
+	{#if context.handlers.onItemClick}
+		<div
+			class="timeline-item__interactive"
+			role="button"
+			tabindex={0}
+			onclick={handleClick}
+			onkeydown={handleKeyDown}
+		>
+			{#if children}
+				{@render children()}
+			{/if}
+		</div>
+	{:else}
+		<div class="timeline-item__interactive">
+			{#if children}
+				{@render children()}
+			{/if}
+		</div>
 	{/if}
 </article>
 
@@ -100,5 +121,15 @@ Can be used with Status compound component or custom content.
 	/* Remove border from last item */
 	.timeline-item:last-child {
 		border-bottom: none;
+	}
+
+	.timeline-item__interactive {
+		display: block;
+		height: 100%;
+	}
+
+	.timeline-item__interactive:focus-visible {
+		outline: 2px solid var(--timeline-focus-ring, #3b82f6);
+		outline-offset: -2px;
 	}
 </style>

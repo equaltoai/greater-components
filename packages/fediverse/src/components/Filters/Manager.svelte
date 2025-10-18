@@ -37,13 +37,13 @@
 		deleteConfirmFilter = filter;
 	}
 
-	async function handleDelete() {
-		if (!deleteConfirmFilter) return;
+async function handleDelete() {
+	if (!deleteConfirmFilter) return;
 
-		try {
-			await deleteFilter(deleteConfirmFilter.id);
-			deleteConfirmFilter = null;
-	} catch (_error) {
+	try {
+		await deleteFilter(deleteConfirmFilter.id);
+		deleteConfirmFilter = null;
+	} catch {
 		// Error handled by context
 	}
 }

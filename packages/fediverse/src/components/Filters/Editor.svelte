@@ -80,7 +80,7 @@
 			} else {
 				await createFilter(formData);
 			}
-		} catch (_error) {
+		} catch {
 			// Error handled by context
 		}
 	}

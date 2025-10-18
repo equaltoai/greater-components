@@ -14,7 +14,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   Cursor: { input: string; output: string; }
-  Duration: { input: any; output: any; }
+  Duration: { input: string; output: string; }
   Time: { input: string; output: string; }
 };
 

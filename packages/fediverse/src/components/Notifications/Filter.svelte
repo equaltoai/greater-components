@@ -51,7 +51,7 @@ Allows users to filter notifications by type (all, mentions, follows, etc.).
 
 <nav class={`notification-filter ${className}`} aria-label="Filter notifications">
 	<div class="notification-filter__tabs">
-		{#each filters as filter}
+		{#each filters as filter (filter.value)}
 			<button
 				class="notification-filter__tab"
 				class:notification-filter__tab--active={context.state.activeFilter === filter.value}

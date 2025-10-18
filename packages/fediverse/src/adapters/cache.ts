@@ -1,11 +1,12 @@
 /**
  * Cache Layer for Adapters
- * 
+ *
  * Provides LRU caching with TTL for adapter responses.
  * Prevents redundant API calls and improves performance.
- * 
+ *
  * @module adapters/cache
  */
+import type { DebugLogEntry, DebugLogger } from './batcher.js';
 
 export interface CacheEntry<T> {
 	value: T;
@@ -32,6 +33,11 @@ export interface CacheOptions {
 	 * @default false
 	 */
 	debug?: boolean;
+
+	/**
+	 * Optional logger for debug messages
+	 */
+	logger?: DebugLogger;
 }
 
 /**
@@ -45,6 +51,7 @@ export class AdapterCache<T = unknown> {
 	private debug: boolean;
 	private hits: number;
 	private misses: number;
+	private logger?: DebugLogger;
 
 	constructor(options: CacheOptions = {}) {
 		this.cache = new Map();
@@ -54,6 +61,7 @@ export class AdapterCache<T = unknown> {
 		this.debug = options.debug ?? false;
 		this.hits = 0;
 		this.misses = 0;
+		this.logger = options.logger;
 	}
 
 	/**
@@ -215,9 +223,22 @@ export class AdapterCache<T = unknown> {
 	 * Debug logging
 	 */
 	private log(action: string, key: string, extra?: string): void {
-		if (this.debug) {
-			const stats = this.getStats();
-			console.log(
+		if (!this.debug) {
+			return;
+		}
+
+		const stats = this.getStats();
+		const entry: DebugLogEntry = {
+			scope: 'cache',
+			action,
+			message: `${key}${extra ? ` ${extra}` : ''}`.trim(),
+			stats,
+		};
+
+		if (this.logger) {
+			this.logger(entry);
+		} else if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+			console.warn(
 				`[Cache] ${action} key="${key}" ${extra || ''} (${stats.size}/${stats.maxSize}, hit rate: ${(stats.hitRate * 100).toFixed(1)}%)`
 			);
 		}
@@ -242,4 +263,3 @@ export const adapterCache = new AdapterCache({
 	defaultTTL: 300000, // 5 minutes
 	debug: false,
 });
-

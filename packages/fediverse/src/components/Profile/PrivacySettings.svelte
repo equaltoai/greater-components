@@ -258,7 +258,7 @@ Manages account privacy settings including:
 
 	<div class="privacy-settings__content">
 		{#if groupByCategory}
-			{#each categories as category}
+			{#each categories as category (category.id)}
 				{@const categorySettings = getSettingsByCategory(category.id)}
 				{#if categorySettings.length > 0}
 					<section class="privacy-settings__category">

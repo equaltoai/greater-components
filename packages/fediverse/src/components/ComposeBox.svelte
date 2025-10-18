@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { onMount, onDestroy } from 'svelte';
+  import type { HTMLAttributes } from 'svelte/elements';
   import { Button } from '@greater/primitives';
   import { TextField } from '@greater/primitives';
   import type { 
@@ -48,9 +49,10 @@
     onMediaRemove,
     mediaSlot,
     pollSlot,
-    class: className = '',
-    ...restProps
+    class: className = ''
   }: Props = $props();
+
+  const restProps = $restProps<Omit<HTMLAttributes<HTMLDivElement>, 'class'>>();
 
   // Component state
   let content = $state(initialContent);
@@ -74,7 +76,6 @@
   // Derived state
   const contentLength = $derived(content.length);
   const cwLength = $derived(contentWarning.length);
-  const totalLength = $derived(contentLength + (hasContentWarning ? cwLength : 0));
   
   const isAtSoftLimit = $derived(contentLength >= maxLength * 0.8);
   const isAtHardLimit = $derived(characterCountMode === 'hard' && contentLength >= maxLength);
@@ -155,12 +156,6 @@
         }
       }, 0);
     }
-    scheduleDraftSave();
-  }
-
-  // Handle visibility change
-  function handleVisibilityChange(newVisibility: typeof visibility) {
-    visibility = newVisibility;
     scheduleDraftSave();
   }
 

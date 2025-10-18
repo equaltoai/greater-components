@@ -14,6 +14,12 @@ import type {
 	GenericAdapter,
 	ActivityPubImage,
 	ActivityPubTag,
+	CommunityNote,
+	QuotePermission,
+	QuoteContext,
+	AIAnalysis,
+	Reputation,
+	Vouch,
 } from './index.js';
 import { parseTimestamp, getVisibility } from './index.js';
 
@@ -381,6 +387,24 @@ export interface LesserStatus {
 	};
 }
 
+interface LesserObjectExtensions extends Record<string, unknown> {
+	estimatedCost?: number;
+	moderationScore?: number;
+	communityNotes?: CommunityNote[];
+	quoteUrl?: string;
+	quoteable?: boolean;
+	quotePermissions?: QuotePermission;
+	quoteContext?: QuoteContext;
+	quoteCount?: number;
+	aiAnalysis?: AIAnalysis;
+}
+
+interface LesserActorExtensions extends Record<string, unknown> {
+	trustScore?: number;
+	reputation?: Reputation;
+	vouches?: Vouch[];
+}
+
 /**
  * Lesser Adapter
  * Works with native ActivityPub objects
@@ -398,8 +422,22 @@ export class LesserAdapter implements GenericAdapter<LesserStatus, GenericStatus
 			: obj.attributedTo;
 
 		// Extract Lesser extensions for direct field population
-		const lesserExt = obj.extensions as any;
-		const actorExt = actor.extensions as any;
+		const lesserExt = (obj.extensions ?? {}) as LesserObjectExtensions;
+		const actorExt = (actor.extensions ?? {}) as LesserActorExtensions;
+		const hasLesserExtensions =
+			lesserExt.estimatedCost !== undefined ||
+			lesserExt.moderationScore !== undefined ||
+			lesserExt.communityNotes !== undefined ||
+			lesserExt.quoteUrl !== undefined ||
+			lesserExt.quoteable !== undefined ||
+			lesserExt.quotePermissions !== undefined ||
+			lesserExt.quoteContext !== undefined ||
+			lesserExt.quoteCount !== undefined ||
+			lesserExt.aiAnalysis !== undefined;
+		const hasActorExtensions =
+			actorExt.trustScore !== undefined ||
+			actorExt.reputation !== undefined ||
+			actorExt.vouches !== undefined;
 
 		// Create generic status
 		const generic: GenericStatus = {
@@ -407,30 +445,30 @@ export class LesserAdapter implements GenericAdapter<LesserStatus, GenericStatus
 			activityPubObject: {
 				...obj,
 				// Only add extensions if there are Lesser fields
-				extensions: (lesserExt?.estimatedCost !== undefined || lesserExt?.moderationScore !== undefined || lesserExt?.communityNotes !== undefined || lesserExt?.quoteUrl !== undefined || lesserExt?.quoteable !== undefined || lesserExt?.quotePermissions !== undefined || lesserExt?.quoteContext !== undefined || lesserExt?.quoteCount !== undefined || lesserExt?.aiAnalysis !== undefined)
+				extensions: hasLesserExtensions
 					? {
-						...obj.extensions,
-						estimatedCost: lesserExt?.estimatedCost,
-						moderationScore: lesserExt?.moderationScore,
-						communityNotes: lesserExt?.communityNotes,
-						quoteUrl: lesserExt?.quoteUrl,
-						quoteable: lesserExt?.quoteable,
-						quotePermissions: lesserExt?.quotePermissions,
-						quoteContext: lesserExt?.quoteContext,
-						quoteCount: lesserExt?.quoteCount,
-						aiAnalysis: lesserExt?.aiAnalysis,
+						...(obj.extensions ?? {}),
+						estimatedCost: lesserExt.estimatedCost,
+						moderationScore: lesserExt.moderationScore,
+						communityNotes: lesserExt.communityNotes,
+						quoteUrl: lesserExt.quoteUrl,
+						quoteable: lesserExt.quoteable,
+						quotePermissions: lesserExt.quotePermissions,
+						quoteContext: lesserExt.quoteContext,
+						quoteCount: lesserExt.quoteCount,
+						aiAnalysis: lesserExt.aiAnalysis,
 					}
 					: obj.extensions,
 			},
 			account: {
 				...actor,
 				// Only add extensions if there are Lesser fields
-				extensions: (actorExt?.trustScore !== undefined || actorExt?.reputation !== undefined || actorExt?.vouches !== undefined)
+				extensions: hasActorExtensions
 					? {
-						...actor.extensions,
-						trustScore: actorExt?.trustScore,
-						reputation: actorExt?.reputation,
-						vouches: actorExt?.vouches,
+						...(actor.extensions ?? {}),
+						trustScore: actorExt.trustScore,
+						reputation: actorExt.reputation,
+						vouches: actorExt.vouches,
 					}
 					: actor.extensions,
 			},
@@ -512,4 +550,3 @@ export function autoDetectAdapter(raw: unknown): GenericAdapter | null {
 
 	return null;
 }
-

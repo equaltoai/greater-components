@@ -25,7 +25,7 @@
 		<div class="admin-reports__loading">Loading reports...</div>
 	{:else}
 		<div class="admin-reports__list">
-			{#each adminState.reports as report}
+			{#each adminState.reports as report (report.id)}
 				<div class="admin-reports__card">
 					<div class="admin-reports__header">
 						<strong>@{report.reporter.username}</strong> reported

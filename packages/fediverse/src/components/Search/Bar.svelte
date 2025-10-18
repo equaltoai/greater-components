@@ -62,9 +62,17 @@
 		onClick: () => handleSearch(),
 	});
 
-	const clearButton = createButton({
-		onClick: () => handleClear(),
-	});
+const clearButton = createButton({
+	onClick: () => handleClear(),
+});
+
+let inputElement = $state<HTMLInputElement | null>(null);
+
+$effect(() => {
+	if (autofocus && inputElement && document.activeElement !== inputElement) {
+		inputElement.focus();
+	}
+});
 
 	/**
 	 * Handle search submission
@@ -121,18 +129,18 @@
 			/>
 		</svg>
 
-		<input
-			type="text"
-			class="search-bar__input"
-			{placeholder}
-			value={searchState.query}
-			oninput={(e) => handleInput(e.currentTarget.value)}
-			onkeydown={handleKeyDown}
-			onfocus={() =>
-				(showRecentDropdown = showRecent && !searchState.query.trim() && searchState.recentSearches.length > 0)}
-			disabled={searchState.loading}
-			{autofocus}
-		/>
+	<input
+		type="text"
+		class="search-bar__input"
+		{placeholder}
+		value={searchState.query}
+		oninput={(e) => handleInput(e.currentTarget.value)}
+		onkeydown={handleKeyDown}
+		onfocus={() =>
+			(showRecentDropdown = showRecent && !searchState.query.trim() && searchState.recentSearches.length > 0)}
+		disabled={searchState.loading}
+		bind:this={inputElement}
+	/>
 
 		{#if searchState.query}
 			<button use:clearButton.actions.button class="search-bar__clear" aria-label="Clear search">
@@ -151,6 +159,8 @@
 				onclick={toggleSemantic}
 				disabled={searchState.loading}
 				title="AI Semantic Search"
+				aria-pressed={searchState.semantic}
+				aria-label={searchState.semantic ? 'Disable semantic search' : 'Enable semantic search'}
 			>
 				<svg viewBox="0 0 24 24" fill="currentColor">
 					<path
@@ -184,7 +194,7 @@
 					</button>
 				</div>
 				<div class="search-bar__recent-list">
-					{#each searchState.recentSearches as recent}
+					{#each searchState.recentSearches as recent (recent)}
 						<button class="search-bar__recent-item" onclick={() => handleRecentClick(recent)}>
 							<svg viewBox="0 0 24 24" fill="currentColor">
 								<path

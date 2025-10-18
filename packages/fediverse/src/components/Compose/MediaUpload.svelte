@@ -78,11 +78,21 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 	}: Props = $props();
 
 	let files = $state<MediaFile[]>([]);
-	let isDragging = $state(false);
-	let error = $state<string | null>(null);
-	let fileInput: HTMLInputElement;
+let isDragging = $state(false);
+let error = $state<string | null>(null);
+let fileInput: HTMLInputElement;
 
-	const uploadButton = createButton();
+const uploadButton = createButton();
+
+function extractErrorMessage(error: unknown): string {
+	if (error instanceof Error) {
+		return error.message;
+	}
+	if (typeof error === 'string') {
+		return error;
+	}
+	return 'Upload failed';
+}
 
 	/**
 	 * Handle file selection
@@ -130,21 +140,21 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 
 		mediaFile.status = 'uploading';
 
-		try {
-			const progressCallback = (progress: number) => {
-				mediaFile.progress = progress;
-			};
+	try {
+		const progressCallback = (progress: number) => {
+			mediaFile.progress = progress;
+		};
 
-			const result = await onUpload(mediaFile.file, progressCallback);
+		const result = await onUpload(mediaFile.file, progressCallback);
 
-			mediaFile.serverId = result.id;
-			mediaFile.status = 'complete';
-			mediaFile.progress = 100;
-		} catch (err: any) {
-			mediaFile.status = 'error';
-			mediaFile.error = err.message || 'Upload failed';
-		}
+		mediaFile.serverId = result.id;
+		mediaFile.status = 'complete';
+		mediaFile.progress = 100;
+	} catch (error) {
+		mediaFile.status = 'error';
+		mediaFile.error = extractErrorMessage(error);
 	}
+}
 
 	/**
 	 * Remove a file
@@ -587,4 +597,3 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 		font-weight: 600;
 	}
 </style>
-

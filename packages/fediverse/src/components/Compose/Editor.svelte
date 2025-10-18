@@ -13,6 +13,7 @@ Main content editing textarea with auto-resize and placeholder.
 -->
 
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { getComposeContext } from './context.js';
 
 	interface Props {
@@ -37,6 +38,12 @@ Main content editing textarea with auto-resize and placeholder.
 	const context = getComposeContext();
 
 	let textareaEl: HTMLTextAreaElement;
+
+	if (autofocus) {
+		onMount(() => {
+			queueMicrotask(() => textareaEl?.focus());
+		});
+	}
 
 	/**
 	 * Auto-resize textarea based on content
@@ -76,7 +83,6 @@ Main content editing textarea with auto-resize and placeholder.
 	bind:this={textareaEl}
 	class={`compose-editor ${className}`}
 	{rows}
-	{autofocus}
 	placeholder={context.config.placeholder}
 	value={context.state.content}
 	oninput={handleInput}
