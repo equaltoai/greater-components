@@ -65,6 +65,8 @@ import type {
 	PerformanceAlertSubscription,
 	PerformanceAlertSubscriptionVariables,
 	InfrastructureEventSubscription,
+	HashtagNotificationSettingsInput,
+	NotificationLevel,
 } from './generated/types.js';
 
 import {
@@ -164,6 +166,106 @@ import {
 	PerformanceAlertDocument,
 	InfrastructureEventDocument,
 } from './generated/types.js';
+
+type UpdateHashtagNotificationsMutation = {
+	updateHashtagNotifications: {
+		success: boolean;
+		hashtag?: {
+			name: string;
+			notificationSettings?: {
+				level: NotificationLevel;
+				muted?: boolean | null;
+				mutedUntil?: string | null;
+			} | null;
+		} | null;
+	};
+};
+
+type UpdateHashtagNotificationsMutationVariables = {
+	hashtag: string;
+	settings: HashtagNotificationSettingsInput;
+};
+
+const UpdateHashtagNotificationsDocument = {
+	kind: 'Document',
+	definitions: [
+		{
+			kind: 'OperationDefinition',
+			operation: 'mutation',
+			name: { kind: 'Name', value: 'UpdateHashtagNotifications' },
+			variableDefinitions: [
+				{
+					kind: 'VariableDefinition',
+					variable: { kind: 'Variable', name: { kind: 'Name', value: 'hashtag' } },
+					type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+				},
+				{
+					kind: 'VariableDefinition',
+					variable: { kind: 'Variable', name: { kind: 'Name', value: 'settings' } },
+					type: {
+						kind: 'NonNullType',
+						type: {
+							kind: 'NamedType',
+							name: { kind: 'Name', value: 'HashtagNotificationSettingsInput' },
+						},
+					},
+				},
+			],
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [
+					{
+						kind: 'Field',
+						name: { kind: 'Name', value: 'updateHashtagNotifications' },
+						arguments: [
+							{
+								kind: 'Argument',
+								name: { kind: 'Name', value: 'hashtag' },
+								value: { kind: 'Variable', name: { kind: 'Name', value: 'hashtag' } },
+							},
+							{
+								kind: 'Argument',
+								name: { kind: 'Name', value: 'settings' },
+								value: { kind: 'Variable', name: { kind: 'Name', value: 'settings' } },
+							},
+						],
+						selectionSet: {
+							kind: 'SelectionSet',
+							selections: [
+								{ kind: 'Field', name: { kind: 'Name', value: 'success' } },
+								{
+									kind: 'Field',
+									name: { kind: 'Name', value: 'hashtag' },
+									selectionSet: {
+										kind: 'SelectionSet',
+										selections: [
+											{ kind: 'Field', name: { kind: 'Name', value: 'name' } },
+											{
+												kind: 'Field',
+												name: { kind: 'Name', value: 'notificationSettings' },
+												selectionSet: {
+													kind: 'SelectionSet',
+													selections: [
+														{ kind: 'Field', name: { kind: 'Name', value: 'level' } },
+														{ kind: 'Field', name: { kind: 'Name', value: 'muted' } },
+														{ kind: 'Field', name: { kind: 'Name', value: 'mutedUntil' } },
+													],
+												},
+											},
+										],
+									},
+								},
+							],
+						},
+					},
+				],
+			},
+		},
+	],
+} as unknown as DocumentNode<
+	UpdateHashtagNotificationsMutation,
+	UpdateHashtagNotificationsMutationVariables
+>;
 
 export type LesserGraphQLAdapterConfig = GraphQLClientConfig;
 
@@ -670,6 +772,35 @@ export class LesserGraphQLAdapter {
 	async getFollowedHashtags(first?: number, after?: string) {
 		const data = await this.query(FollowedHashtagsDocument, { first, after });
 		return data.followedHashtags;
+	}
+
+	async updateHashtagNotifications(
+		hashtag: string,
+		settings: HashtagNotificationSettingsInput
+	) {
+		const data = await this.mutate(UpdateHashtagNotificationsDocument, {
+			hashtag,
+			settings,
+		});
+		return data.updateHashtagNotifications;
+	}
+
+	async unmuteHashtag(
+		hashtag: string,
+		options: {
+			level?: NotificationLevel;
+			mutedUntil?: string | null;
+			filters?: HashtagNotificationSettingsInput['filters'];
+		} = {}
+	) {
+		const settings: HashtagNotificationSettingsInput = {
+			level: options.level ?? 'ALL',
+			muted: false,
+			mutedUntil: options.mutedUntil ?? null,
+			filters: options.filters,
+		};
+
+		return this.updateHashtagNotifications(hashtag, settings);
 	}
 
 	// ============================================================================

@@ -5,7 +5,7 @@
 import { getContext, setContext } from 'svelte';
 import type { LesserGraphQLAdapter } from '@greater/adapters';
 
-const HASHTAGS_CONTEXT_KEY = Symbol('hashtags-context');
+const HASHTAGS_CONTEXT_KEY = Symbol.for('hashtags-context');
 
 export interface HashtagsConfig {
 	adapter: LesserGraphQLAdapter;
@@ -14,6 +14,7 @@ export interface HashtagsConfig {
 export interface HashtagsState {
 	loading: boolean;
 	error: Error | null;
+	refreshVersion: number;
 }
 
 export interface HashtagsContext {
@@ -23,15 +24,19 @@ export interface HashtagsContext {
 }
 
 export function createHashtagsContext(config: HashtagsConfig): HashtagsContext {
-	const state: HashtagsState = {
+	let state: HashtagsState = {
 		loading: false,
 		error: null,
+		refreshVersion: 0,
 	};
 
 	const context: HashtagsContext = {
 		config: { adapter: config.adapter },
 		state,
-		updateState: (partial) => Object.assign(state, partial),
+		updateState: (partial) => {
+			state = { ...state, ...partial };
+			context.state = state;
+		},
 	};
 
 	setContext(HASHTAGS_CONTEXT_KEY, context);
@@ -45,4 +50,3 @@ export function getHashtagsContext(): HashtagsContext {
 	}
 	return context;
 }
-

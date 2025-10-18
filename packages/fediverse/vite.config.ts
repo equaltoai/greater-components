@@ -10,6 +10,9 @@ export default defineConfig({
       }
     })
   ],
+  resolve: {
+    conditions: ['browser']
+  },
   build: {
     lib: {
       entry: {

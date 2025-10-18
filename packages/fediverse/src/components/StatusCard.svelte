@@ -10,6 +10,7 @@
     onBoost?: (status: Status) => Promise<void> | void;
     onFavorite?: (status: Status) => Promise<void> | void;
     onShare?: (status: Status) => Promise<void> | void;
+    onQuote?: (status: Status) => Promise<void> | void;
   }
 
   interface Props {
@@ -77,6 +78,7 @@
     onBoost: actionHandlers?.onBoost ? () => actionHandlers.onBoost!(status) : undefined,
     onFavorite: actionHandlers?.onFavorite ? () => actionHandlers.onFavorite!(status) : undefined,
     onShare: actionHandlers?.onShare ? () => actionHandlers.onShare!(status) : undefined,
+    onQuote: actionHandlers?.onQuote ? () => actionHandlers.onQuote!(status) : undefined,
   });
 </script>
 
@@ -185,7 +187,8 @@
       counts={{
         replies: actualStatus.repliesCount,
         boosts: actualStatus.reblogsCount,
-        favorites: actualStatus.favouritesCount
+        favorites: actualStatus.favouritesCount,
+        quotes: actualStatus.quoteCount
       }}
       states={{
         boosted: actualStatus.reblogged,

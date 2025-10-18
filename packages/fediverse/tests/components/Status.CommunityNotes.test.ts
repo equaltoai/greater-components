@@ -4,21 +4,94 @@
  * Tests for community notes data structures and logic
  */
 
-import { describe, it, expect } from 'vitest';
-import { hasCommunityNotes, type ActivityPubObject } from '../../src/generics/index.js';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/svelte';
+import {
+	hasCommunityNotes,
+	type ActivityPubObject,
+	type GenericStatus,
+	type ActivityPubActor,
+} from '../../src/generics/index.js';
+import StatusCommunityNotesHarness from './StatusCommunityNotesHarness.svelte';
 
-describe('Status.CommunityNotes Logic', () => {
-  const createMockObject = (extensions?: any): ActivityPubObject => ({
-    id: 'https://example.com/post/123',
-    type: 'Note',
-    attributedTo: 'user1',
-    content: 'Test post',
-    published: new Date('2024-01-01'),
-    to: [],
-    cc: [],
-    extensions: extensions || {},
+const createMockObject = (extensions?: any): ActivityPubObject => ({
+  id: 'https://example.com/post/123',
+  type: 'Note',
+  attributedTo: 'user1',
+  content: 'Test post',
+  published: new Date('2024-01-01'),
+  to: [],
+  cc: [],
+  extensions: extensions || {},
+});
+
+const createMockActor = (id: string): ActivityPubActor => ({
+  id: `https://example.com/users/${id}`,
+  type: 'Person',
+  name: `User ${id}`,
+  preferredUsername: `user${id}`,
+  url: `https://example.com/@user${id}`,
+});
+
+function createStatusWithNotes(noteCount = 1): GenericStatus & {
+  communityNotes: Array<{
+    id: string;
+    author: { username: string; displayName?: string };
+    content: string;
+    helpful: number;
+    notHelpful: number;
+    createdAt: string;
+  }>;
+} {
+  const actor = createMockActor('author');
+  const notes = Array.from({ length: noteCount }, (_, index) => ({
+    id: `note-${index + 1}`,
+    author: {
+      username: `fact_checker_${index + 1}`,
+      displayName: `Fact Checker ${index + 1}`,
+    },
+    content: `Context ${index + 1}`,
+    helpful: 5 + index,
+    notHelpful: index,
+    createdAt: new Date(2024, 0, index + 1).toISOString(),
+  }));
+
+  const activityPubObject = createMockObject({
+    communityNotes: notes.map((note) => ({
+      id: note.id,
+      content: note.content,
+      helpful: note.helpful,
+      notHelpful: note.notHelpful,
+      createdAt: note.createdAt,
+      author: {
+        id: `https://example.com/users/${note.author.username}`,
+        username: note.author.username,
+        displayName: note.author.displayName,
+      },
+    })),
   });
 
+  return {
+    id: 'status-1',
+    activityPubObject,
+    account: actor,
+    content: 'Status content',
+    sensitive: false,
+    mediaAttachments: [],
+    mentions: [],
+    hashtags: [],
+    emojis: [],
+    createdAt: new Date(),
+    repliesCount: 0,
+    reblogsCount: 0,
+    favouritesCount: 0,
+    visibility: 'public',
+    url: activityPubObject.id,
+    communityNotes: notes,
+  } as GenericStatus & { communityNotes: typeof notes };
+}
+
+describe('Status.CommunityNotes Logic', () => {
   describe('Community Note Structure', () => {
     it('should validate community note structure', () => {
       const note = {
@@ -147,5 +220,56 @@ describe('Status.CommunityNotes Logic', () => {
       expect(notes).toHaveLength(3);
       expect(hasCommunityNotes(obj)).toBe(true);
     });
+  });
+});
+
+describe('Status.CommunityNotes Component', () => {
+  it('calls onVote handler when buttons clicked', async () => {
+    const status = createStatusWithNotes(2);
+    const onVote = vi.fn().mockResolvedValue(undefined);
+
+    render(StatusCommunityNotesHarness, {
+      props: {
+        status,
+        onVote,
+        enableVoting: true,
+      },
+    });
+
+    await screen.findByText('Community Notes');
+
+    const helpfulButtons = screen.getAllByTitle('Helpful');
+    await fireEvent.click(helpfulButtons[0]);
+
+    expect(onVote).toHaveBeenCalledTimes(1);
+    expect(onVote).toHaveBeenCalledWith('note-1', true);
+
+    const notHelpfulButtons = screen.getAllByTitle('Not helpful');
+    await fireEvent.click(notHelpfulButtons[0]);
+
+    expect(onVote).toHaveBeenCalledTimes(2);
+    expect(onVote).toHaveBeenLastCalledWith('note-1', false);
+  });
+
+  it('supports expanding to show additional notes', async () => {
+    const status = createStatusWithNotes(2);
+
+    render(StatusCommunityNotesHarness, {
+      props: {
+        status,
+        maxInitialNotes: 1,
+      },
+    });
+
+    expect(await screen.findByText('Context 1')).toBeTruthy();
+    expect(screen.queryByText('Context 2')).toBeNull();
+
+    const toggle = await screen.findByRole('button', { name: 'Show 1 more notes' });
+    await fireEvent.click(toggle);
+
+    expect(screen.getByText('Context 2')).toBeTruthy();
+
+    await fireEvent.click(screen.getByRole('button', { name: 'Show fewer notes' }));
+    expect(screen.queryByText('Context 2')).toBeNull();
   });
 });

@@ -13,28 +13,44 @@ Hashtags.Controls - Hashtag Follow/Mute Controls
 	let { hashtag, class: className = '' }: Props = $props();
 
 	const context = getHashtagsContext();
-	let processing = $state(false);
+	let processing = $state<null | 'follow' | 'mute' | 'unmute'>(null);
 
-	async function follow() {
-		processing = true;
+	function notifyRefresh() {
+		context.updateState({ refreshVersion: context.state.refreshVersion + 1 });
+	}
+
+	async function runAction<T>(type: 'follow' | 'mute' | 'unmute', action: () => Promise<T>) {
+		if (processing) return;
+		processing = type;
 		try {
-			await context.config.adapter.followHashtag(hashtag);
+			await action();
+			notifyRefresh();
 		} finally {
-			processing = false;
+			processing = null;
 		}
 	}
 
+	async function follow() {
+		await runAction('follow', () => context.config.adapter.followHashtag(hashtag));
+	}
+
 	async function mute() {
-		processing = true;
-		try {
-			await context.config.adapter.muteHashtag(hashtag);
-		} finally {
-			processing = false;
-		}
+		await runAction('mute', () => context.config.adapter.muteHashtag(hashtag));
+	}
+
+	async function unmute() {
+		await runAction('unmute', () => context.config.adapter.unmuteHashtag(hashtag));
 	}
 </script>
 
 <div class={`hashtag-controls ${className}`}>
-	<button onclick={follow} disabled={processing}>Follow</button>
-	<button onclick={mute} disabled={processing}>Mute</button>
+	<button onclick={follow} disabled={processing !== null} type="button">
+		{processing === 'follow' ? 'Following…' : 'Follow'}
+	</button>
+	<button onclick={mute} disabled={processing !== null} type="button">
+		{processing === 'mute' ? 'Muting…' : 'Mute'}
+	</button>
+	<button onclick={unmute} disabled={processing !== null} type="button">
+		{processing === 'unmute' ? 'Unmuting…' : 'Unmute'}
+	</button>
 </div>

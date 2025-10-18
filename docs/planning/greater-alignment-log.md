@@ -467,7 +467,7 @@ Phase 4 successfully implemented complete feature parity for all Lesser-specific
 - Trust Graph: `getTrustGraph()`
 - Cost Management: `getCostBreakdown()`, `getInstanceBudgets()`, `setInstanceBudget()`, `optimizeFederationCosts()`, `getFederationLimits()`, `setFederationLimit()`
 - Thread Sync: `syncThread()`, `syncMissingReplies()`, `getThreadContext()`, `getSeveredRelationships()`, `acknowledgeSeverance()`, `attemptReconnection()`, `getFederationHealth()`, `getFederationStatus()`, `pauseFederation()`, `resumeFederation()`
-- Hashtags: `followHashtag()`, `unfollowHashtag()`, `muteHashtag()`, `getFollowedHashtags()`
+- Hashtags: `followHashtag()`, `unfollowHashtag()`, `muteHashtag()`, `unmuteHashtag()`, `updateHashtagNotifications()`, `getFollowedHashtags()`
 
 #### UI Components (22 new Svelte files)
 - **Quotes**: Enhanced ActionBar, Status/Actions, Compose context with quote support
@@ -490,9 +490,9 @@ Phase 4 successfully implemented complete feature parity for all Lesser-specific
 2. **Community Notes Voting**: Implemented directly in CommunityNotes.svelte with per-note loading states to prevent double-voting
 3. **Admin Component Structure**: Each admin area (Insights, TrustGraph, Cost, SeveredRelationships) follows compound pattern with Root context provider
 4. **Cost Display**: Microcents converted to USD with 4 decimal precision for clarity
-5. **Trust Visualization**: Simplified graph view due to complexity; full SVG implementation deferred (placeholder shows edge count)
+5. **Trust Visualization**: SVG-based force layout preview renders nodes/edges directly from adapter data; full styling refinements remain future work
 6. **Thread Sync**: Optional handler pattern allows backward compatibility; sync button only appears when `onSyncThread` handler provided
-7. **Hashtag Controls**: Follow/mute operations available; muted list placeholder since schema lacks `mutedHashtags` query
+7. **Hashtag Controls**: Follow/mute/unmute operations available; muted list derived from followed hashtag notification settings for parity
 8. **Type Safety**: Used `Record<string, unknown>` for dynamic payload types where specific interfaces unavailable
 
 ### Test Coverage
@@ -525,7 +525,7 @@ All existing tests continue passing:
 
 **Known Limitations**:
 1. Trust graph visualization simplified (full force-directed graph deferred)
-2. Muted hashtags list placeholder (schema lacks `mutedHashtags` query)
+2. Muted hashtags list consumes followed hashtag notification settings to surface muted entries
 3. Cost/alert real-time updates require adminStreamingStore integration (structure exists)
 
 **Recommended Follow-ups**:
