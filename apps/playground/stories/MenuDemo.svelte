@@ -1,56 +1,69 @@
 <script lang="ts">
   import { Menu } from '@greater/primitives';
+  import { action } from '@storybook/addon-actions';
   
+  type MenuItem = {
+    id: string;
+    label: string;
+    disabled?: boolean;
+    submenu?: MenuItem[];
+    action?: () => void;
+  };
+
   interface Props {
     orientation?: 'horizontal' | 'vertical';
-    items?: Array<{
-      id: string;
-      label: string;
-      disabled?: boolean;
-      submenu?: Array<{ id: string; label: string; disabled?: boolean; action?: () => void }>;
-      action?: () => void;
-    }>;
+    items?: MenuItem[];
     showAllVariants?: boolean;
   }
 
+  const createMenuAction = (label: string) => action(`menu-demo/${label}`);
+  const logSelection = action('menu-demo/select');
+
   let { orientation = 'vertical', items = [], showAllVariants = false }: Props = $props();
 
-  const basicItems = [
-    { id: '1', label: 'New File', action: () => console.log('New file') },
-    { id: '2', label: 'Open File', action: () => console.log('Open file') },
-    { id: '3', label: 'Save', action: () => console.log('Save') },
-    { id: '4', label: 'Save As...', action: () => console.log('Save as') },
-    { id: '5', label: 'Exit', action: () => console.log('Exit') }
+  const basicItems: MenuItem[] = [
+    { id: '1', label: 'New File', action: createMenuAction('new-file') },
+    { id: '2', label: 'Open File', action: createMenuAction('open-file') },
+    { id: '3', label: 'Save', action: createMenuAction('save') },
+    { id: '4', label: 'Save As...', action: createMenuAction('save-as') },
+    { id: '5', label: 'Exit', action: createMenuAction('exit') }
   ];
 
-  const horizontalItems = [
+  const horizontalItems: MenuItem[] = [
     { id: '1', label: 'File', submenu: [
-      { id: '1-1', label: 'New', action: () => console.log('New') },
-      { id: '1-2', label: 'Open', action: () => console.log('Open') },
-      { id: '1-3', label: 'Save', action: () => console.log('Save') }
+      { id: '1-1', label: 'New', action: createMenuAction('file/new') },
+      { id: '1-2', label: 'Open', action: createMenuAction('file/open') },
+      { id: '1-3', label: 'Save', action: createMenuAction('file/save') }
     ]},
     { id: '2', label: 'Edit', submenu: [
-      { id: '2-1', label: 'Cut', action: () => console.log('Cut') },
-      { id: '2-2', label: 'Copy', action: () => console.log('Copy') },
-      { id: '2-3', label: 'Paste', action: () => console.log('Paste') }
+      { id: '2-1', label: 'Cut', action: createMenuAction('edit/cut') },
+      { id: '2-2', label: 'Copy', action: createMenuAction('edit/copy') },
+      { id: '2-3', label: 'Paste', action: createMenuAction('edit/paste') }
     ]},
     { id: '3', label: 'View', submenu: [
-      { id: '3-1', label: 'Zoom In', action: () => console.log('Zoom In') },
-      { id: '3-2', label: 'Zoom Out', action: () => console.log('Zoom Out') },
-      { id: '3-3', label: 'Reset Zoom', action: () => console.log('Reset Zoom') }
+      { id: '3-1', label: 'Zoom In', action: createMenuAction('view/zoom-in') },
+      { id: '3-2', label: 'Zoom Out', action: createMenuAction('view/zoom-out') },
+      { id: '3-3', label: 'Reset Zoom', action: createMenuAction('view/reset-zoom') }
     ]},
-    { id: '4', label: 'Help', action: () => console.log('Help') }
+    { id: '4', label: 'Help', action: createMenuAction('help') }
   ];
 
-  const disabledItems = [
-    { id: '1', label: 'Available Action', action: () => console.log('Available') },
-    { id: '2', label: 'Disabled Action', disabled: true, action: () => console.log('Should not trigger') },
-    { id: '3', label: 'Another Available', action: () => console.log('Another available') },
-    { id: '4', label: 'Also Disabled', disabled: true, action: () => console.log('Should not trigger') }
+  const disabledItems: MenuItem[] = [
+    { id: '1', label: 'Available Action', action: createMenuAction('available') },
+    { id: '2', label: 'Disabled Action', disabled: true, action: createMenuAction('disabled') },
+    { id: '3', label: 'Another Available', action: createMenuAction('available-2') },
+    { id: '4', label: 'Also Disabled', disabled: true, action: createMenuAction('disabled-2') }
   ];
 
-  function handleItemSelect(item: any) {
-    console.log('Item selected:', item);
+  const contextMenuItems: MenuItem[] = [
+    { id: 'context-cut', label: 'Cut', action: createMenuAction('context/cut') },
+    { id: 'context-copy', label: 'Copy', action: createMenuAction('context/copy') },
+    { id: 'context-paste', label: 'Paste', action: createMenuAction('context/paste') },
+    { id: 'context-delete', label: 'Delete', action: createMenuAction('context/delete') }
+  ];
+
+  function handleItemSelect(item: MenuItem) {
+    logSelection(item);
   }
 </script>
 
@@ -105,16 +118,7 @@
       <h3>Context Menu Style</h3>
       <div class="context-area">
         Right-click here for context menu
-        <Menu
-          orientation="vertical"
-          items={[
-            { id: '1', label: 'Cut', action: () => console.log('Cut') },
-            { id: '2', label: 'Copy', action: () => console.log('Copy') },
-            { id: '3', label: 'Paste', action: () => console.log('Paste') },
-            { id: '4', label: 'Delete', action: () => console.log('Delete') }
-          ]}
-          onItemSelect={handleItemSelect}
-        >
+        <Menu orientation="vertical" items={contextMenuItems} onItemSelect={handleItemSelect}>
           {#snippet trigger({ open, toggle })}
             <button class="demo-button context-button" onclick={toggle}>
               Context Menu {open ? '↑' : '↓'}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Tabs } from '@greater/primitives';
+  import { action } from '@storybook/addon-actions';
 
   interface Props {
     tabs?: Array<{
@@ -24,8 +25,10 @@
     showAllVariants = false
   }: Props = $props();
 
+  const tabChangeAction = action('tabs/change');
+
   function handleTabChange(tabId: string) {
-    console.log('Tab changed to:', tabId);
+    tabChangeAction(tabId);
   }
 
   // Default tab data with content snippets
@@ -238,14 +241,6 @@
     { id: 'enabled2', label: 'Also Available', content: { render: () => '<div class="tab-content"><p>This tab is also available and accessible.</p></div>' }},
     { id: 'disabled2', label: 'Also Disabled', disabled: true, content: { render: () => '<div class="tab-content"><p>This content should also not be accessible.</p></div>' }}
   ];
-
-  // Convert content render functions to proper snippets
-  function renderTabContent(tab: any) {
-    if (tab.content && tab.content.render) {
-      return tab.content.render();
-    }
-    return `<div class="tab-content"><p>Content for ${tab.label}</p></div>`;
-  }
 </script>
 
 {#if showAllVariants}

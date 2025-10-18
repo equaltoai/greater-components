@@ -3,7 +3,6 @@
   import {
     ProfileHeader,
     TimelineVirtualized,
-    StatusCard,
     TransportManager,
     MockTransport,
     MastodonTransport,
@@ -384,7 +383,7 @@
         <div class="relationships-list">
           <h3>Followers</h3>
           <div class="accounts-grid">
-            {#each followers as follower}
+            {#each followers as follower (follower.id)}
               <div class="account-card">
                 <img src={follower.avatar} alt={follower.display_name} />
                 <div class="account-info">
@@ -401,7 +400,7 @@
         <div class="relationships-list">
           <h3>Following</h3>
           <div class="accounts-grid">
-            {#each following as account}
+            {#each following as account (account.id)}
               <div class="account-card">
                 <img src={account.avatar} alt={account.display_name} />
                 <div class="account-info">

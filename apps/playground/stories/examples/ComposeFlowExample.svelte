@@ -9,6 +9,37 @@
     type Status
   } from '@greater-components/fediverse';
 
+  type Draft = {
+    id: string;
+    content: string;
+    timestamp: string;
+  };
+
+  type MediaAsset = {
+    id: string;
+    url: string;
+    type: 'image' | 'video';
+  };
+
+  type PollOption = {
+    id: string;
+    value: string;
+  };
+
+  type PostVisibility = 'public' | 'unlisted' | 'private' | 'direct';
+
+  interface PostPayload {
+    status: string;
+    visibility: PostVisibility;
+    spoiler_text?: string;
+    media_ids?: string[];
+    poll?: {
+      options: string[];
+      expires_in: number;
+    };
+    scheduled_at?: string;
+  }
+
   interface Props {
     useMockData?: boolean;
     showMediaUpload?: boolean;
@@ -35,11 +66,22 @@
     showFormatting = true
   }: Props = $props();
 
+  const createId = () =>
+    globalThis.crypto?.randomUUID?.() ??
+    `compose-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+
+  const createPollOption = (value = ''): PollOption => ({
+    id: createId(),
+    value
+  });
+
+  const visibilityOptions: PostVisibility[] = ['public', 'unlisted', 'private', 'direct'];
+
   let transport = $state<Transport | null>(null);
   let composing = $state(true);
-  let drafts = $state<Array<{ id: string; content: string; timestamp: Date }>>([]);
+  let drafts = $state<Draft[]>([]);
   let selectedDraft = $state<string | null>(null);
-  let uploadedMedia = $state<Array<{ id: string; url: string; type: string }>>([]);
+  let uploadedMedia = $state<MediaAsset[]>([]);
   let postHistory = $state<Status[]>([]);
   let isPosting = $state(false);
   let showDraftsPanel = $state(false);
@@ -48,15 +90,15 @@
   let scheduledDate = $state<string>('');
   let scheduledTime = $state<string>('');
   let contentWarning = $state('');
-  let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>('public');
-  let pollOptions = $state<string[]>(['', '']);
+  let visibility = $state<PostVisibility>('public');
+  let pollOptions = $state<PollOption[]>([createPollOption(), createPollOption()]);
   let pollDuration = $state(86400); // 24 hours in seconds
   let showPoll = $state(false);
   let characterCount = $state(0);
   let content = $state('');
 
   // Mock media library
-  const mediaLibrary = [
+  const mediaLibrary: MediaAsset[] = [
     { id: '1', url: 'https://picsum.photos/400/300?random=1', type: 'image' },
     { id: '2', url: 'https://picsum.photos/400/300?random=2', type: 'image' },
     { id: '3', url: 'https://picsum.photos/400/300?random=3', type: 'image' },
@@ -102,17 +144,26 @@
     
     const savedDrafts = localStorage.getItem('compose_drafts');
     if (savedDrafts) {
-      drafts = JSON.parse(savedDrafts);
+      try {
+        const parsed = JSON.parse(savedDrafts) as Partial<Draft>[];
+        drafts = parsed.map((draft) => ({
+          id: draft.id ?? createId(),
+          content: draft.content ?? '',
+          timestamp: draft.timestamp ?? new Date().toISOString()
+        }));
+      } catch {
+        drafts = [];
+      }
     }
   }
 
   function saveDraft() {
     if (!enableDrafts || !content.trim()) return;
     
-    const draft = {
-      id: Date.now().toString(),
+    const draft: Draft = {
+      id: createId(),
       content,
-      timestamp: new Date()
+      timestamp: new Date().toISOString()
     };
     
     drafts = [...drafts, draft];
@@ -142,9 +193,10 @@
     isPosting = true;
     
     try {
-      const postData: any = {
+      const selectedVisibility = resolveVisibility(event.detail.visibility);
+      const postData: PostPayload = {
         status: event.detail.content,
-        visibility: event.detail.visibility
+        visibility: selectedVisibility
       };
       
       // Add content warning if enabled
@@ -158,9 +210,10 @@
       }
       
       // Add poll if created
-      if (showPoll && pollOptions.filter(o => o.trim()).length >= 2) {
+      const filledPollOptions = pollOptions.filter(option => option.value.trim());
+      if (showPoll && filledPollOptions.length >= 2) {
         postData.poll = {
-          options: pollOptions.filter(o => o.trim()),
+          options: filledPollOptions.map(option => option.value.trim()),
           expires_in: pollDuration
         };
       }
@@ -177,7 +230,7 @@
       content = '';
       contentWarning = '';
       uploadedMedia = [];
-      pollOptions = ['', ''];
+      pollOptions = [createPollOption(), createPollOption()];
       showPoll = false;
       scheduledDate = '';
       scheduledTime = '';
@@ -223,14 +276,24 @@
 
   function addPollOption() {
     if (pollOptions.length < 4) {
-      pollOptions = [...pollOptions, ''];
+      pollOptions = [...pollOptions, createPollOption()];
     }
   }
 
-  function removePollOption(index: number) {
+  function removePollOption(optionId: string) {
     if (pollOptions.length > 2) {
-      pollOptions = pollOptions.filter((_, i) => i !== index);
+      pollOptions = pollOptions.filter(option => option.id !== optionId);
     }
+  }
+
+  function updatePollOptionValue(optionId: string, value: string) {
+    pollOptions = pollOptions.map(option =>
+      option.id === optionId ? { ...option, value } : option
+    );
+  }
+
+  function resolveVisibility(value: string): PostVisibility {
+    return visibilityOptions.includes(value as PostVisibility) ? (value as PostVisibility) : 'public';
   }
 
   function insertEmoji(emoji: string) {
@@ -331,7 +394,7 @@
         {#if showEmojiPicker}
           <div class="emoji-picker">
             <div class="quick-emojis">
-              {#each quickEmojis as emoji}
+              {#each quickEmojis as emoji (emoji)}
                 <button 
                   class="emoji-button"
                   onclick={() => insertEmoji(emoji)}
@@ -368,7 +431,7 @@
             
             {#if showMediaLibrary}
               <div class="media-library">
-                {#each mediaLibrary as media}
+                {#each mediaLibrary as media (media.id)}
                   <button 
                     class="media-thumb"
                     onclick={() => {
@@ -384,7 +447,7 @@
             
             {#if uploadedMedia.length > 0}
               <div class="uploaded-media">
-                {#each uploadedMedia as media}
+                {#each uploadedMedia as media (media.id)}
                   <div class="media-preview">
                     <img src={media.url} alt="Uploaded" />
                     <button 
@@ -406,17 +469,18 @@
             <h3>Create Poll</h3>
             
             <div class="poll-options">
-              {#each pollOptions as option, index}
+              {#each pollOptions as option, index (option.id)}
                 <div class="poll-option">
                   <input
                     type="text"
                     placeholder={`Option ${index + 1}`}
-                    bind:value={pollOptions[index]}
+                    value={option.value}
+                    oninput={(event) => updatePollOptionValue(option.id, (event.currentTarget as HTMLInputElement).value)}
                     class="option-input"
                   />
                   {#if pollOptions.length > 2}
                     <button 
-                      onclick={() => removePollOption(index)}
+                      onclick={() => removePollOption(option.id)}
                       class="remove-option"
                     >
                       ✕
@@ -540,7 +604,7 @@
             <p class="no-drafts">No saved drafts</p>
           {:else}
             <div class="drafts-list">
-              {#each drafts as draft}
+              {#each drafts as draft (draft.id)}
                 <div class="draft-item">
                   <div class="draft-preview">
                     {draft.content.substring(0, 100)}...
@@ -570,7 +634,7 @@
         {#if postHistory.length > 0}
           <div class="recent-posts">
             <h3>Recent Posts</h3>
-            {#each postHistory as post}
+            {#each postHistory as post (post.id)}
               <div class="post-preview">
                 <div class="post-content">
                   {post.content.substring(0, 200)}

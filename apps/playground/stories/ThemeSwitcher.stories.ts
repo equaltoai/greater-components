@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
+import { action } from '@storybook/addon-actions';
 import ThemeSwitcherDemo from './ThemeSwitcherDemo.svelte';
 
 const meta = {
@@ -28,6 +29,8 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const themeChangeAction = action('theme-switcher/change');
 
 export const Default: Story = {
   args: {
@@ -166,10 +169,7 @@ export const WithCallback: Story = {
   args: {
     showPreview: true,
     showAdvanced: false,
-    onThemeChange: (theme: string) => {
-      console.log('Theme changed to:', theme);
-      // In a real app, this could trigger analytics, save to backend, etc.
-    },
+    onThemeChange: (theme: string) => themeChangeAction(theme),
   },
   parameters: {
     docs: {

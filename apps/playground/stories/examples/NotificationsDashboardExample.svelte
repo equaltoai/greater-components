@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { action } from '@storybook/addon-actions';
   import {
-    NotificationsFeed,
     NotificationsFeedReactive,
     NotificationItem,
     RealtimeWrapper,
@@ -49,6 +49,14 @@
     favourites: 0,
     reblogs: 0,
     polls: 0
+  });
+
+  const logNotificationInteraction = action('notification/interaction');
+
+  const statEntries = $derived<[string, number][]>(() => Object.entries(stats).slice(2) as [string, number][]);
+  const maxStatValue = $derived(() => {
+    const values = statEntries.map(([, value]) => value);
+    return values.length ? Math.max(...values) : 1;
   });
 
   const notificationTypes = [
@@ -283,7 +291,7 @@
   {#if showFilters}
     <div class="filters-bar">
       <div class="filter-chips">
-        {#each notificationTypes as type}
+        {#each notificationTypes as type (type.id)}
           <button
             class="filter-chip"
             class:active={activeFilters.has(type.id)}
@@ -325,11 +333,11 @@
             loading={$notificationStore.loading}
             error={$notificationStore.error}
             on:markAsRead={(e) => markAsRead(e.detail.id)}
-            on:interact={(e) => console.log('Interaction:', e.detail)}
+            on:interact={(e) => logNotificationInteraction(e.detail)}
           />
         {:else}
           <div class="grouped-notifications">
-            {#each groupedNotifications as group}
+            {#each groupedNotifications as group (group.id)}
               <div class="notification-group">
                 <div class="group-header">
                   {#if groupingMode === 'type'}
@@ -347,11 +355,11 @@
                 </div>
 
                 <div class="group-items">
-                  {#each group.notifications as notification}
+                  {#each group.notifications as notification (notification.id)}
                     <NotificationItem
                       {notification}
                       on:markAsRead={() => markAsRead(notification.id)}
-                      on:interact={(e) => console.log('Interaction:', e.detail)}
+                      on:interact={(e) => logNotificationInteraction(e.detail)}
                     />
                   {/each}
                 </div>
@@ -423,10 +431,10 @@
         <div class="chart-container">
           <!-- Simple bar chart visualization -->
           <div class="mini-chart">
-            {#each Object.entries(stats).slice(2) as [key, value]}
+            {#each statEntries as [key, value] (key)}
               <div 
                 class="chart-bar"
-                style="height: {(value / Math.max(...Object.values(stats).slice(2), 1)) * 100}%"
+                style="height: {(value / maxStatValue) * 100}%"
                 title="{key}: {value}"
               ></div>
             {/each}

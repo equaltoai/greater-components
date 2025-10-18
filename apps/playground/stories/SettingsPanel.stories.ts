@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
+import { action } from '@storybook/addon-actions';
 import SettingsPanelDemo from './SettingsPanelDemo.svelte';
 
 const meta = {
@@ -39,6 +40,8 @@ const meta = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const sectionChangeAction = action('settings-panel/section-change');
 
 export const Default: Story = {
   args: {
@@ -203,10 +206,7 @@ export const WithCallback: Story = {
   args: {
     activeSection: 'appearance',
     showHeader: true,
-    onSectionChange: (section: string) => {
-      console.log('Section changed to:', section);
-      // In a real app, this could update URL, analytics, etc.
-    },
+    onSectionChange: (section: string) => sectionChangeAction(section),
   },
   parameters: {
     docs: {
