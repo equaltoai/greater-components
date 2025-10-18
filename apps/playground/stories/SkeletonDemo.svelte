@@ -30,6 +30,8 @@
 
   const variants = ['text', 'circular', 'rectangular', 'rounded'] as const;
   const animations = ['pulse', 'wave', 'none'] as const;
+  const listPlaceholderIds = Array.from({ length: 5 }, (_, index) => `list-${index}`);
+  const tableRowIds = Array.from({ length: 4 }, (_, index) => `row-${index}`);
 </script>
 
 {#if showLoadingWrapper}
@@ -74,7 +76,7 @@
     <div class="demo-section">
       <h3>Shape Variants</h3>
       <div class="demo-grid">
-        {#each variants as currentVariant}
+        {#each variants as currentVariant (currentVariant)}
           <div class="demo-item">
             <Skeleton
               variant={currentVariant}
@@ -90,7 +92,7 @@
     <div class="demo-section">
       <h3>Animation Types</h3>
       <div class="demo-grid">
-        {#each animations as currentAnimation}
+        {#each animations as currentAnimation (currentAnimation)}
           <div class="demo-item">
             <Skeleton
               variant="rectangular"
@@ -160,7 +162,7 @@
     <div class="demo-section">
       <h3>List Layout Example</h3>
       <div class="demo-list">
-        {#each Array(5) as _, i}
+        {#each listPlaceholderIds as placeholderId (placeholderId)}
           <div class="demo-list-item">
             <Skeleton variant="circular" width="40px" />
             <div class="demo-list-content">
@@ -182,7 +184,7 @@
           <Skeleton variant="text" width="120px" height="16px" />
           <Skeleton variant="text" width="80px" height="16px" />
         </div>
-        {#each Array(4) as _, i}
+        {#each tableRowIds as rowId (rowId)}
           <div class="demo-table-row">
             <Skeleton variant="text" width="70px" height="14px" />
             <Skeleton variant="text" width="90px" height="14px" />

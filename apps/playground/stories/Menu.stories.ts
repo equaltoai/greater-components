@@ -1,6 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
+import { action } from '@storybook/addon-actions';
 import { Menu } from '@greater/primitives';
 import MenuDemo from './MenuDemo.svelte';
+
+type MenuItem = {
+  id: string;
+  label: string;
+  disabled?: boolean;
+  submenu?: MenuItem[];
+  action?: () => void;
+};
+
+const createMenuAction = (label: string) => action(`menu/${label}`);
 
 const meta: Meta<Menu> = {
   title: 'Primitives/Menu',
@@ -68,39 +79,39 @@ A accessible menu component with keyboard navigation and typeahead support.
 export default meta;
 type Story = StoryObj<Menu>;
 
-const basicItems = [
-  { id: '1', label: 'New File', action: () => console.log('New file') },
-  { id: '2', label: 'Open File', action: () => console.log('Open file') },
-  { id: '3', label: 'Save', action: () => console.log('Save') },
-  { id: '4', label: 'Save As...', action: () => console.log('Save as') },
+const basicItems: MenuItem[] = [
+  { id: '1', label: 'New File', action: createMenuAction('new-file') },
+  { id: '2', label: 'Open File', action: createMenuAction('open-file') },
+  { id: '3', label: 'Save', action: createMenuAction('save') },
+  { id: '4', label: 'Save As...', action: createMenuAction('save-as') },
   { id: 'divider', label: '---', disabled: true },
-  { id: '5', label: 'Exit', action: () => console.log('Exit') }
+  { id: '5', label: 'Exit', action: createMenuAction('exit') }
 ];
 
-const itemsWithSubmenus = [
+const itemsWithSubmenus: MenuItem[] = [
   { id: '1', label: 'File', submenu: [
-    { id: '1-1', label: 'New', action: () => console.log('New') },
-    { id: '1-2', label: 'Open', action: () => console.log('Open') },
-    { id: '1-3', label: 'Save', action: () => console.log('Save') }
+    { id: '1-1', label: 'New', action: createMenuAction('file/new') },
+    { id: '1-2', label: 'Open', action: createMenuAction('file/open') },
+    { id: '1-3', label: 'Save', action: createMenuAction('file/save') }
   ]},
   { id: '2', label: 'Edit', submenu: [
-    { id: '2-1', label: 'Cut', action: () => console.log('Cut') },
-    { id: '2-2', label: 'Copy', action: () => console.log('Copy') },
-    { id: '2-3', label: 'Paste', action: () => console.log('Paste') }
+    { id: '2-1', label: 'Cut', action: createMenuAction('edit/cut') },
+    { id: '2-2', label: 'Copy', action: createMenuAction('edit/copy') },
+    { id: '2-3', label: 'Paste', action: createMenuAction('edit/paste') }
   ]},
   { id: '3', label: 'View', submenu: [
-    { id: '3-1', label: 'Zoom In', action: () => console.log('Zoom In') },
-    { id: '3-2', label: 'Zoom Out', action: () => console.log('Zoom Out') },
-    { id: '3-3', label: 'Reset Zoom', action: () => console.log('Reset Zoom') }
+    { id: '3-1', label: 'Zoom In', action: createMenuAction('view/zoom-in') },
+    { id: '3-2', label: 'Zoom Out', action: createMenuAction('view/zoom-out') },
+    { id: '3-3', label: 'Reset Zoom', action: createMenuAction('view/reset-zoom') }
   ]},
-  { id: '4', label: 'Help', action: () => console.log('Help') }
+  { id: '4', label: 'Help', action: createMenuAction('help') }
 ];
 
-const itemsWithDisabled = [
-  { id: '1', label: 'Available Action', action: () => console.log('Available') },
-  { id: '2', label: 'Disabled Action', disabled: true, action: () => console.log('Should not trigger') },
-  { id: '3', label: 'Another Available', action: () => console.log('Another available') },
-  { id: '4', label: 'Also Disabled', disabled: true, action: () => console.log('Should not trigger') }
+const itemsWithDisabled: MenuItem[] = [
+  { id: '1', label: 'Available Action', action: createMenuAction('available') },
+  { id: '2', label: 'Disabled Action', disabled: true, action: createMenuAction('disabled') },
+  { id: '3', label: 'Another Available', action: createMenuAction('available-2') },
+  { id: '4', label: 'Also Disabled', disabled: true, action: createMenuAction('disabled-2') }
 ];
 
 export const Vertical: Story = {

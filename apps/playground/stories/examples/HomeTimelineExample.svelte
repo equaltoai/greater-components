@@ -3,16 +3,26 @@
   import { 
     ComposeBox, 
     TimelineVirtualized,
-    ProfileHeader,
     RealtimeWrapper,
     TransportManager,
     MockTransport,
     MastodonTransport,
     createTimelineStore,
+    StatusCard,
     type Status,
     type Transport
   } from '@greater-components/fediverse';
   
+  type PostVisibility = 'public' | 'unlisted' | 'private' | 'direct';
+
+  type DebugEvent = {
+    id: string;
+    time: string;
+    type: string;
+    message: string;
+    details?: unknown;
+  };
+
   interface Props {
     useMockData?: boolean;
     instanceUrl?: string;
@@ -34,10 +44,15 @@
   let transport = $state<Transport | null>(null);
   let timelineStore = $state(createTimelineStore());
   let connectionStatus = $state<'connecting' | 'connected' | 'disconnected'>('disconnected');
-  let debugEvents = $state<Array<{ time: string; type: string; data: any }>>([]);
+  let debugEvents = $state<DebugEvent[]>([]);
   let selectedProfile = $state<string>('default');
   let isComposing = $state(false);
   let streamingActive = $state(false);
+
+  const visibilityOptions: PostVisibility[] = ['public', 'unlisted', 'private', 'direct'];
+  const createEventId = () =>
+    globalThis.crypto?.randomUUID?.() ??
+    `event-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
   // Mock profiles for switcher
   const mockProfiles = [
@@ -118,12 +133,13 @@
   async function handlePost(event: CustomEvent<{ content: string; visibility: string; mediaIds?: string[] }>) {
     if (!transport) return;
     
-    const { content, visibility, mediaIds } = event.detail;
+    const { content, visibility: detailVisibility, mediaIds } = event.detail;
+    const resolvedVisibility = toVisibility(detailVisibility);
     
     try {
       const newStatus = await transport.postStatus({
         status: content,
-        visibility: visibility as any,
+        visibility: resolvedVisibility,
         media_ids: mediaIds
       });
       
@@ -179,17 +195,27 @@
     loadInitialTimeline();
   }
 
-  function logDebugEvent(type: string, message: string, data: any) {
+  function toVisibility(value: string): PostVisibility {
+    return visibilityOptions.includes(value as PostVisibility) ? (value as PostVisibility) : 'public';
+  }
+
+  function logDebugEvent(type: string, message: string, details?: unknown) {
     if (!debugMode) return;
     
-    debugEvents = [
-      {
-        time: new Date().toLocaleTimeString(),
-        type,
-        data: { message, ...data }
-      },
-      ...debugEvents
-    ].slice(0, 50); // Keep last 50 events
+    const normalizedDetails =
+      details instanceof Error
+        ? { name: details.name, message: details.message, stack: details.stack }
+        : details;
+
+    const event: DebugEvent = {
+      id: createEventId(),
+      time: new Date().toLocaleTimeString(),
+      type,
+      message,
+      details: normalizedDetails
+    };
+    
+    debugEvents = [event, ...debugEvents].slice(0, 50); // Keep last 50 events
   }
 
   function toggleStreaming() {
@@ -228,7 +254,7 @@
             onchange={(e) => handleProfileSwitch(e.currentTarget.value)}
             class="profile-select"
           >
-            {#each mockProfiles as profile}
+            {#each mockProfiles as profile (profile.id)}
               <option value={profile.id}>
                 {profile.name} ({profile.instance})
               </option>
@@ -304,7 +330,7 @@
       </RealtimeWrapper>
     {:else}
       <div class="timeline-simple">
-        {#each $timelineStore.statuses as status}
+        {#each $timelineStore.statuses as status (status.id)}
           <div class="status-item">
             <StatusCard
               {status}
@@ -348,11 +374,16 @@
       </div>
       
       <div class="debug-events">
-        {#each debugEvents as event}
+        {#each debugEvents as event (event.id)}
           <div class="event-item event-{event.type}">
-            <span class="event-time">{event.time}</span>
-            <span class="event-type">{event.type}</span>
-            <pre class="event-data">{JSON.stringify(event.data, null, 2)}</pre>
+            <div class="event-meta">
+              <span class="event-time">{event.time}</span>
+              <span class="event-type">{event.type}</span>
+              <span class="event-message">{event.message}</span>
+            </div>
+            {#if event.details !== undefined}
+              <pre class="event-data">{JSON.stringify(event.details, null, 2)}</pre>
+            {/if}
           </div>
         {/each}
       </div>
@@ -536,6 +567,13 @@
     font-size: var(--gc-font-size-xs);
   }
 
+  .event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gc-spacing-xs);
+    align-items: center;
+  }
+
   .event-time {
     color: var(--gc-color-text-secondary);
     margin-right: var(--gc-spacing-xs);
@@ -553,6 +591,11 @@
   .event-error .event-type {
     background: var(--gc-color-error-100);
     color: var(--gc-color-error-600);
+  }
+
+  .event-message {
+    font-weight: 600;
+    color: var(--gc-color-text-primary);
   }
 
   .event-data {

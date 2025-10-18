@@ -57,6 +57,7 @@
   const shapes = ['circle', 'square', 'rounded'] as const;
   const statuses = ['online', 'offline', 'busy', 'away'] as const;
   const statusPositions = ['top-right', 'top-left', 'bottom-right', 'bottom-left'] as const;
+  const loadingSizes = ['sm', 'md', 'lg', 'xl'] as const;
 </script>
 
 {#if showAllVariants}
@@ -64,10 +65,10 @@
     <div class="demo-section">
       <h3>Different Sizes</h3>
       <div class="demo-grid">
-        {#each sizes as currentSize}
+        {#each sizes as currentSize (currentSize)}
           <div class="demo-item">
             <Avatar 
-              name="Size {currentSize.toUpperCase()}"
+              name={`Size ${currentSize.toUpperCase()}`}
               size={currentSize}
               status="online"
             />
@@ -80,7 +81,7 @@
     <div class="demo-section">
       <h3>Different Shapes</h3>
       <div class="demo-grid">
-        {#each shapes as currentShape}
+        {#each shapes as currentShape (currentShape)}
           <div class="demo-item">
             <Avatar 
               name="Shape Test"
@@ -97,7 +98,7 @@
     <div class="demo-section">
       <h3>Status Indicators</h3>
       <div class="demo-grid">
-        {#each statuses as currentStatus}
+        {#each statuses as currentStatus (currentStatus)}
           <div class="demo-item">
             <Avatar 
               name="Status Test"
@@ -113,7 +114,7 @@
     <div class="demo-section">
       <h3>Status Positions</h3>
       <div class="demo-grid">
-        {#each statusPositions as position}
+        {#each statusPositions as position (position)}
           <div class="demo-item">
             <Avatar 
               name="Position Test"
@@ -130,14 +131,14 @@
     <div class="demo-section">
       <h3>With Images and Fallbacks</h3>
       <div class="demo-grid">
-        {#each sampleUsers as user}
+        {#each sampleUsers as user (user.name)}
           <div class="demo-item">
             <Avatar 
               name={user.name}
               src={user.src || undefined}
               size="lg"
               status={user.status}
-              alt="{user.name}'s avatar"
+              alt={`${user.name}'s avatar`}
             />
             <span class="demo-label">{user.name}</span>
           </div>
@@ -148,7 +149,7 @@
     <div class="demo-section">
       <h3>Loading States</h3>
       <div class="demo-grid">
-        {#each ['sm', 'md', 'lg', 'xl'] as currentSize}
+        {#each loadingSizes as currentSize (currentSize)}
           <div class="demo-item">
             <Avatar 
               name="Loading"

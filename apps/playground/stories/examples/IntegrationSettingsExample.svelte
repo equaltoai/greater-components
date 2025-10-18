@@ -6,6 +6,14 @@
     MastodonTransport,
     type Transport
   } from '@greater-components/fediverse';
+  
+  type IntegrationEvent = {
+    id: string;
+    timestamp: string;
+    type: string;
+    message: string;
+    details?: Record<string, unknown>;
+  };
 
   interface Props {
     showConnectionStatus?: boolean;
@@ -34,13 +42,7 @@
   let connectionError = $state<string | null>(null);
 
   // Debug state
-  let events = $state<Array<{
-    id: string;
-    timestamp: Date;
-    type: string;
-    message: string;
-    data?: any;
-  }>>([]);
+  let events = $state<IntegrationEvent[]>([]);
   let debugEnabled = $state(false);
   let eventFilter = $state<string>('all');
 
@@ -62,8 +64,12 @@
   });
 
   // Monitoring intervals
-  let metricsInterval: ReturnType<typeof setInterval>;
-  let connectionMonitor: ReturnType<typeof setInterval>;
+  let metricsInterval: ReturnType<typeof setInterval> | undefined;
+  let connectionMonitor: ReturnType<typeof setInterval> | undefined;
+
+  const createEventId = () =>
+    globalThis.crypto?.randomUUID?.() ??
+    `integration-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
   onMount(() => {
     initializeConnection();
@@ -127,7 +133,9 @@
         // In a real implementation, you'd extract rate limit headers
         updateRateLimits();
       }
-    } catch (error) {
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      logEvent('error', 'Connection test failed', { message: errorMessage });
       throw new Error('Connection test failed');
     }
   }
@@ -224,15 +232,39 @@
     };
   }
 
-  function logEvent(type: string, message: string, data?: any) {
+  function normalizeDetails(details: unknown): Record<string, unknown> | undefined {
+    if (details === undefined) {
+      return undefined;
+    }
+
+    if (details === null) {
+      return { value: null };
+    }
+
+    if (details instanceof Error) {
+      return { name: details.name, message: details.message, stack: details.stack };
+    }
+
+    if (Array.isArray(details)) {
+      return { items: details };
+    }
+
+    if (typeof details === 'object') {
+      return details as Record<string, unknown>;
+    }
+
+    return { value: details };
+  }
+
+  function logEvent(type: string, message: string, details?: unknown) {
     if (!showEventLog) return;
     
-    const event = {
-      id: Date.now().toString(),
-      timestamp: new Date(),
+    const event: IntegrationEvent = {
+      id: createEventId(),
+      timestamp: new Date().toISOString(),
       type,
       message,
-      data
+      details: normalizeDetails(details)
     };
     
     events = [event, ...events].slice(0, 100); // Keep last 100 events
@@ -504,11 +536,11 @@
       </div>
       
       <div class="events-list">
-        {#each events.filter(e => eventFilter === 'all' || e.type === eventFilter) as event}
+        {#each events.filter(e => eventFilter === 'all' || e.type === eventFilter) as event (event.id)}
           <div class="event-item event-{event.type}">
             <div class="event-header">
               <span class="event-time">
-                {event.timestamp.toLocaleTimeString()}
+                {new Date(event.timestamp).toLocaleTimeString()}
               </span>
               <span class="event-type">{event.type}</span>
             </div>
@@ -517,10 +549,10 @@
               {event.message}
             </div>
             
-            {#if event.data && debugEnabled}
+            {#if event.details && debugEnabled}
               <details class="event-data">
                 <summary>Data</summary>
-                <pre>{JSON.stringify(event.data, null, 2)}</pre>
+                <pre>{JSON.stringify(event.details, null, 2)}</pre>
               </details>
             {/if}
           </div>

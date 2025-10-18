@@ -120,7 +120,7 @@
         
         <div class="element-item">
           <Tooltip content="Tooltip on link">
-            <a href="#" class="demo-link">Link</a>
+            <a href="https://example.com" class="demo-link" rel="noreferrer" target="_blank">Link</a>
           </Tooltip>
         </div>
         
