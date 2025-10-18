@@ -1,3 +1,17 @@
+import type {
+  TimelineUpdatesSubscription,
+  NotificationStreamSubscription,
+  QuoteActivitySubscription,
+  HashtagActivitySubscription,
+  ListUpdatesSubscription,
+  RelationshipUpdatesSubscription,
+  TrustUpdatesSubscription,
+  ModerationEventsSubscription,
+  ModerationAlertsSubscription,
+  ModerationQueueUpdateSubscription,
+  CostAlertsSubscription
+} from './graphql/generated/types.js';
+
 /**
  * Transport types and interfaces for WebSocket, SSE, and HTTP Polling
  */
@@ -340,24 +354,24 @@ export interface TransportEventMap {
   transport_switch: TransportSwitchEvent;
 
   // Lesser Subscription Events - Timeline & Social
-  timelineUpdates: unknown; // Object from schema
-  notificationStream: unknown; // Notification from schema
+  timelineUpdates: TimelineUpdatesSubscription['timelineUpdates'];
+  notificationStream: NotificationStreamSubscription['notificationStream'];
   conversationUpdates: unknown; // Conversation from schema
-  listUpdates: unknown; // ListUpdate from schema
+  listUpdates: ListUpdatesSubscription['listUpdates'];
   activityStream: unknown; // Activity from schema
-  relationshipUpdates: unknown; // RelationshipUpdate from schema
+  relationshipUpdates: RelationshipUpdatesSubscription['relationshipUpdates'];
   
   // Lesser Subscription Events - Quote Posts
-  quoteActivity: unknown; // QuoteActivityUpdate from schema
+  quoteActivity: QuoteActivitySubscription['quoteActivity'];
   
   // Lesser Subscription Events - Hashtags
-  hashtagActivity: unknown; // HashtagActivityUpdate from schema
+  hashtagActivity: HashtagActivitySubscription['hashtagActivity'];
   
   // Lesser Subscription Events - Trust & Moderation
-  trustUpdates: unknown; // TrustEdge from schema
-  moderationEvents: unknown; // ModerationDecision from schema
-  moderationAlerts: unknown; // ModerationAlert from schema
-  moderationQueueUpdate: unknown; // ModerationItem from schema
+  trustUpdates: TrustUpdatesSubscription['trustUpdates'];
+  moderationEvents: ModerationEventsSubscription['moderationEvents'];
+  moderationAlerts: ModerationAlertsSubscription['moderationAlerts'];
+  moderationQueueUpdate: ModerationQueueUpdateSubscription['moderationQueueUpdate'];
   threatIntelligence: unknown; // ThreatAlert from schema
   
   // Lesser Subscription Events - AI Analysis
@@ -365,7 +379,7 @@ export interface TransportEventMap {
   
   // Lesser Subscription Events - Cost & Budget
   costUpdates: unknown; // CostUpdate from schema
-  costAlerts: unknown; // CostAlert from schema
+  costAlerts: CostAlertsSubscription['costAlerts'];
   budgetAlerts: unknown; // BudgetAlert from schema
   
   // Lesser Subscription Events - Metrics & Performance

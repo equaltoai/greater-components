@@ -10,6 +10,26 @@ import type {
   NotificationConfig,
   NotificationFilter
 } from './types';
+import { unifiedNotificationToStoreNotification } from './unifiedToNotification.js';
+import { mapLesserNotification } from '../mappers/lesser/mappers.js';
+import type { LesserNotificationFragment } from '../mappers/lesser/types.js';
+import type { UnifiedNotification } from '../models/unified.js';
+import type {
+  NotificationStreamSubscription,
+  TrustUpdatesSubscription,
+  CostAlertsSubscription,
+  ModerationEventsSubscription,
+  ModerationAlertsSubscription,
+  ModerationQueueUpdateSubscription
+} from '../graphql/generated/types.js';
+import type { WebSocketEvent } from '../types.js';
+
+type NotificationStreamPayload = NotificationStreamSubscription['notificationStream'];
+type TrustUpdatePayload = TrustUpdatesSubscription['trustUpdates'];
+type CostAlertPayload = CostAlertsSubscription['costAlerts'];
+type ModerationEventPayload = ModerationEventsSubscription['moderationEvents'];
+type ModerationAlertPayload = ModerationAlertsSubscription['moderationAlerts'];
+type ModerationQueuePayload = ModerationQueueUpdateSubscription['moderationQueueUpdate'];
 
 // Simple reactive state implementation that works everywhere
 class ReactiveState<T> {
@@ -76,7 +96,6 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
   const dismissalTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   // Transport event handlers
-  const persistentUnsubscribers: (() => void)[] = [];
   let streamingUnsubscribers: (() => void)[] = [];
   let updateDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   let pendingNotifications: Notification[] = [];
@@ -257,6 +276,224 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
       processPendingNotifications();
       updateDebounceTimer = null;
     }, config.updateDebounceMs || 100);
+  }
+
+  function resolveTimestamp(value?: string | number): number {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      const parsed = Date.parse(value);
+      if (!Number.isNaN(parsed)) {
+        return parsed;
+      }
+    }
+
+    return Date.now();
+  }
+
+  function convertUnifiedNotificationToStore(unified: UnifiedNotification): Notification {
+    const base = unifiedNotificationToStoreNotification(unified);
+    return {
+      ...base,
+      id: unified.id,
+      timestamp: resolveTimestamp(unified.createdAt),
+      isRead: base.isRead ?? false
+    };
+  }
+
+  function upsertNotification(notification: Notification): void {
+    const existing = state.value.notifications.find(item => item.id === notification.id);
+    if (existing) {
+      updateNotificationFromStream(notification.id, {
+        title: notification.title,
+        message: notification.message,
+        priority: notification.priority,
+        isRead: notification.isRead,
+        metadata: notification.metadata,
+        dismissAfter: notification.dismissAfter,
+        actions: notification.actions,
+        timestamp: notification.timestamp
+      });
+      return;
+    }
+
+    scheduleNotificationUpdate(notification);
+  }
+
+  function handleNotificationStreamEvent(payload: NotificationStreamPayload | null): void {
+    if (!payload) return;
+
+    const result = mapLesserNotification(payload as LesserNotificationFragment);
+    if (!result.success || !result.data) {
+      if (result.error) {
+        console.warn('[NotificationStore] Failed to map notification stream payload', result.error);
+      }
+      return;
+    }
+
+    const notification = convertUnifiedNotificationToStore(result.data);
+    scheduleNotificationUpdate(notification);
+  }
+
+  function handleTrustUpdateEvent(payload: TrustUpdatePayload | null): void {
+    if (!payload) return;
+
+    const trustNotifications = state.value.notifications.filter(notification => notification.type === 'trust_update');
+    const reason = `Category: ${payload.category}`;
+    const timestamp = resolveTimestamp(payload.updatedAt);
+
+    if (trustNotifications.length > 0) {
+      trustNotifications.forEach(notification => {
+        const existingLesser = notification.metadata?.lesser ?? {};
+        const previousScore =
+          existingLesser.trustUpdate?.newScore ??
+          existingLesser.trustUpdate?.previousScore;
+
+        const metadata = {
+          ...(notification.metadata ?? {}),
+          lesser: {
+            ...existingLesser,
+            trustUpdate: {
+              newScore: payload.score,
+              previousScore,
+              reason
+            }
+          }
+        };
+
+        updateNotificationFromStream(notification.id, {
+          message: `Trust score is now ${payload.score}`,
+          metadata,
+          isRead: false,
+          timestamp
+        });
+      });
+      return;
+    }
+
+    const notification: Notification = {
+      id: `trust_${payload.updatedAt}_${payload.from?.id ?? 'global'}`,
+      type: 'trust_update',
+      title: 'Trust Score Updated',
+      message: `Trust score is now ${payload.score}`,
+      timestamp,
+      isRead: false,
+      priority: 'high',
+      metadata: {
+        lesser: {
+          trustUpdate: {
+            newScore: payload.score,
+            previousScore: undefined,
+            reason
+          }
+        }
+      }
+    };
+
+    scheduleNotificationUpdate(notification);
+  }
+
+  function handleCostAlertEvent(payload: CostAlertPayload | null): void {
+    if (!payload) return;
+
+    const notification: Notification = {
+      id: payload.id,
+      type: 'cost_alert',
+      title: 'Cost Alert',
+      message: payload.message ?? `Cost threshold exceeded: ${payload.amount}/${payload.threshold}`,
+      timestamp: resolveTimestamp(payload.timestamp),
+      isRead: false,
+      priority: 'urgent',
+      metadata: {
+        lesser: {
+          costAlert: {
+            amount: payload.amount,
+            threshold: payload.threshold
+          }
+        }
+      }
+    };
+
+    upsertNotification(notification);
+  }
+
+  function handleModerationEvent(payload: ModerationEventPayload | null): void {
+    if (!payload) return;
+
+    const evidence = payload.evidence?.join(', ') || 'Automatic moderation decision';
+
+    const notification: Notification = {
+      id: payload.id,
+      type: 'moderation_action',
+      title: 'Moderation Decision',
+      message: `Decision: ${payload.decision}`,
+      timestamp: resolveTimestamp(payload.timestamp),
+      isRead: false,
+      priority: 'high',
+      metadata: {
+        lesser: {
+          moderationAction: {
+            action: payload.decision,
+            reason: evidence,
+            statusId: payload.object?.id
+          }
+        }
+      }
+    };
+
+    upsertNotification(notification);
+  }
+
+  function handleModerationAlertEvent(payload: ModerationAlertPayload | null): void {
+    if (!payload) return;
+
+    const notification: Notification = {
+      id: payload.id,
+      type: 'moderation_action',
+      title: 'Moderation Alert',
+      message: `${payload.severity.toLowerCase()} severity alert: ${payload.matchedText}`,
+      timestamp: resolveTimestamp(payload.timestamp),
+      isRead: false,
+      priority: 'high',
+      metadata: {
+        lesser: {
+          moderationAction: {
+            action: payload.suggestedAction,
+            reason: payload.matchedText,
+            statusId: payload.content?.id
+          }
+        }
+      }
+    };
+
+    upsertNotification(notification);
+  }
+
+  function handleModerationQueueEvent(payload: ModerationQueuePayload | null): void {
+    if (!payload) return;
+
+    const notification: Notification = {
+      id: payload.id,
+      type: 'moderation_action',
+      title: 'Moderation Queue Update',
+      message: `${payload.priority} priority item with ${payload.reportCount} reports`,
+      timestamp: resolveTimestamp(payload.deadline),
+      isRead: false,
+      priority: 'high',
+      metadata: {
+        lesser: {
+          moderationAction: {
+            action: `Queue severity ${payload.severity}`,
+            reason: `Reports: ${payload.reportCount}`,
+            statusId: payload.content?.id
+          }
+        }
+      }
+    };
+
+    upsertNotification(notification);
   }
 
   // Store methods
@@ -462,13 +699,41 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
   function startStreaming(): void {
     if (state.value.isStreaming || !config.transportManager) return;
 
-    ensureMessageSubscription();
-
     state.update(current => ({
       ...current,
       isStreaming: true,
       error: null
     }));
+
+    const notificationStreamHandler = config.transportManager.on('notificationStream', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as NotificationStreamPayload | null;
+      handleNotificationStreamEvent(payload);
+    });
+
+    const trustUpdatesHandler = config.transportManager.on('trustUpdates', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as TrustUpdatePayload | null;
+      handleTrustUpdateEvent(payload);
+    });
+
+    const costAlertsHandler = config.transportManager.on('costAlerts', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as CostAlertPayload | null;
+      handleCostAlertEvent(payload);
+    });
+
+    const moderationEventsHandler = config.transportManager.on('moderationEvents', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as ModerationEventPayload | null;
+      handleModerationEvent(payload);
+    });
+
+    const moderationAlertsHandler = config.transportManager.on('moderationAlerts', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as ModerationAlertPayload | null;
+      handleModerationAlertEvent(payload);
+    });
+
+    const moderationQueueHandler = config.transportManager.on('moderationQueueUpdate', (event: WebSocketEvent) => {
+      const payload = (event?.data ?? null) as ModerationQueuePayload | null;
+      handleModerationQueueEvent(payload);
+    });
 
     const errorHandler = config.transportManager.on('error', (event) => {
       state.update(current => ({
@@ -484,7 +749,16 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
       }));
     });
 
-    streamingUnsubscribers.push(errorHandler, closeHandler);
+    streamingUnsubscribers.push(
+      notificationStreamHandler,
+      trustUpdatesHandler,
+      costAlertsHandler,
+      moderationEventsHandler,
+      moderationAlertsHandler,
+      moderationQueueHandler,
+      errorHandler,
+      closeHandler
+    );
 
     try {
       config.transportManager.connect();
@@ -514,54 +788,6 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
     }
     pendingNotifications = [];
   }
-
-  function handleTransportMessage(event: { data?: unknown }): void {
-    if (!event?.data || typeof event.data !== 'object' || !('type' in event.data)) {
-      return;
-    }
-
-    const eventData = event.data as { type?: string; data?: unknown };
-    if (!eventData.type) {
-      return;
-    }
-
-    switch (eventData.type) {
-      case 'notification_received':
-        if (eventData.data) {
-          scheduleNotificationUpdate(eventData.data as Notification);
-        }
-        break;
-      case 'notification_updated': {
-        const payload = eventData.data as { id?: string; updates?: Partial<Notification> } | undefined;
-        if (payload?.id && payload.updates) {
-          updateNotificationFromStream(payload.id, payload.updates);
-        }
-        break;
-      }
-      case 'notification_removed': {
-        const payload = eventData.data as { id?: string } | undefined;
-        if (payload?.id) {
-          removeNotification(payload.id);
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-
-  function ensureMessageSubscription(): void {
-    if (!config.transportManager) {
-      return;
-    }
-
-    if (persistentUnsubscribers.length === 0) {
-      const unsubscribe = config.transportManager.on('message', handleTransportMessage);
-      persistentUnsubscribers.push(unsubscribe);
-    }
-  }
-
-  ensureMessageSubscription();
 
   function updateNotificationFromStream(id: string, updates: Partial<Notification>): void {
     const currentState = state.value;
@@ -618,9 +844,6 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
       updateDebounceTimer = null;
     }
 
-    persistentUnsubscribers.forEach(unsubscribe => unsubscribe());
-    persistentUnsubscribers.length = 0;
-    
     // Clear state
     state.update(() => ({
       notifications: [],
