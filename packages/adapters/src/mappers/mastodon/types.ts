@@ -353,18 +353,37 @@ export const MASTODON_NOTIFICATION_TYPES = [
 ] as const;
 
 // Type guards
-export function isMastodonAccount(obj: any): obj is MastodonAccount {
-  return obj && typeof obj.id === 'string' && typeof obj.username === 'string';
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+export function isMastodonAccount(obj: unknown): obj is MastodonAccount {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return typeof obj.id === 'string' && typeof obj.username === 'string';
 }
 
-export function isMastodonStatus(obj: any): obj is MastodonStatus {
-  return obj && typeof obj.id === 'string' && typeof obj.content === 'string' && obj.account;
+export function isMastodonStatus(obj: unknown): obj is MastodonStatus {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return typeof obj.id === 'string' && typeof obj.content === 'string' && isRecord(obj.account);
 }
 
-export function isMastodonNotification(obj: any): obj is MastodonNotification {
-  return obj && typeof obj.id === 'string' && typeof obj.type === 'string' && obj.account;
+export function isMastodonNotification(obj: unknown): obj is MastodonNotification {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return typeof obj.id === 'string' && typeof obj.type === 'string' && isRecord(obj.account);
 }
 
-export function isMastodonStreamingEvent(obj: any): obj is MastodonStreamingEvent {
-  return obj && Array.isArray(obj.stream) && typeof obj.event === 'string' && typeof obj.payload === 'string';
+export function isMastodonStreamingEvent(obj: unknown): obj is MastodonStreamingEvent {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return Array.isArray(obj.stream) && typeof obj.event === 'string' && typeof obj.payload === 'string';
 }

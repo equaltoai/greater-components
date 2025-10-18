@@ -443,14 +443,6 @@ describe('Admin.Overview - Edge Cases', () => {
 	});
 
 	it('handles negative pending reports gracefully', () => {
-		const stats: AdminStats = {
-			totalUsers: 100,
-			activeUsers: 50,
-			totalPosts: 500,
-			pendingReports: -1,
-			blockedDomains: 0,
-			storageUsed: '10 GB',
-		};
 		expect(shouldShowReportsWarning(-1, 5)).toBe(false);
 	});
 });
@@ -517,4 +509,3 @@ describe('Admin.Overview - Integration', () => {
 		expect(icon).toBe('↑');
 	});
 });
-

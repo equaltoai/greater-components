@@ -14,6 +14,11 @@ export interface FocusTestResult {
   error?: string;
 }
 
+export interface FocusTrapTestOutcome {
+  trap: FocusTrap | null;
+  result: FocusTestResult;
+}
+
 /**
  * Test focus trap implementation
  */
@@ -307,7 +312,7 @@ export function createAndTestFocusTrap(
     escapeDeactivates?: boolean;
     clickOutsideDeactivates?: boolean;
   }
-): { trap: FocusTrap; result: FocusTestResult } {
+): FocusTrapTestOutcome {
   try {
     const trap = createFocusTrap(container, {
       initialFocus: options?.initialFocus,
@@ -334,7 +339,7 @@ export function createAndTestFocusTrap(
     };
   } catch (error) {
     return {
-      trap: null as any,
+      trap: null,
       result: {
         passed: false,
         description: 'Focus trap creation and activation',

@@ -9,7 +9,7 @@
  * - Character limits
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 // Content validation
 function isValidContent(content: string): boolean {
@@ -464,4 +464,3 @@ describe('Messages.Composer - State Combinations', () => {
 		}
 	});
 });
-

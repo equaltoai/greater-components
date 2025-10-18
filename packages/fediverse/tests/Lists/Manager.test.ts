@@ -50,7 +50,7 @@ function shouldShowLoadingState(lists: ListData[], loading: boolean): boolean {
 }
 
 // Check if should show grid
-function shouldShowGrid(lists: ListData[], loading: boolean): boolean {
+function shouldShowGrid(lists: ListData[], _loading: boolean): boolean {
 	return lists.length > 0;
 }
 
@@ -547,4 +547,3 @@ describe('Lists.Manager - Integration', () => {
 		expect(filterListsByVisibility(lists, 'public')).toHaveLength(0);
 	});
 });
-

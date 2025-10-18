@@ -27,6 +27,9 @@ export interface BaseTransportConfig {
   
   /** Custom storage adapter for lastEventId persistence */
   storage?: Storage;
+
+  /** Optional logger implementation for transport diagnostics */
+  logger?: TransportLogger;
 }
 
 export interface WebSocketClientConfig extends BaseTransportConfig {
@@ -84,13 +87,20 @@ export type WebSocketEventType =
   | 'latency';
 
 export interface WebSocketEvent {
-  type: WebSocketEventType;
+  type: WebSocketEventType | TransportEventName | string;
   data?: unknown;
   error?: Error;
   latency?: number;
 }
 
 export type WebSocketEventHandler = (event: WebSocketEvent) => void;
+
+export interface TransportLogger {
+  debug?(message: string, context?: Record<string, unknown>): void;
+  info?(message: string, context?: Record<string, unknown>): void;
+  warn?(message: string, context?: Record<string, unknown>): void;
+  error?(message: string, context?: Record<string, unknown>): void;
+}
 
 export interface HeartbeatMessage {
   type: 'ping' | 'pong';
@@ -204,13 +214,13 @@ export interface HttpPollingMessage {
 }
 
 // Transport fallback types
-export interface TransportAdapter {
+export interface TransportAdapter<TState = Record<string, unknown>> {
   connect(): void;
   disconnect(): void;
   destroy(): void;
   send?(message: unknown): void;
-  on(event: string, handler: (event: any) => void): () => void;
-  getState(): any;
+  on(event: string, handler: WebSocketEventHandler): () => void;
+  getState(): Readonly<TState>;
 }
 
 export interface TransportFallbackConfig {
@@ -225,7 +235,19 @@ export interface TransportFallbackConfig {
   
   /** Force a specific transport ('sse' | 'polling' | 'auto') */
   forceTransport?: 'sse' | 'polling' | 'auto';
+
+  /** Optional logger shared across transports */
+  logger?: TransportLogger;
 }
+
+export type TransportFallbackState =
+  | (SseClientState & { transport: 'sse' })
+  | (HttpPollingClientState & { transport: 'polling' })
+  | {
+      status: 'disconnected';
+      transport: null;
+      error: Error | null;
+    };
 
 // Transport Manager types for unified multi-transport support
 export type TransportType = 'websocket' | 'sse' | 'polling';
@@ -254,6 +276,9 @@ export interface TransportManagerConfig {
   
   /** Interval in milliseconds for attempting transport upgrades (default: 300000 - 5 minutes) */
   upgradeAttemptInterval?: number;
+
+  /** Optional logger for manager level diagnostics */
+  logger?: TransportLogger;
 }
 
 export interface TransportManagerState {

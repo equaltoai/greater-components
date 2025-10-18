@@ -5,8 +5,32 @@
 
 import { Page, expect } from '@playwright/test';
 import { injectAxe, configureAxe } from 'axe-playwright';
-import type { AxeResults } from 'axe-core';
-import { defaultAxeConfig, strictAxeConfig, themeConfigs, densityConfigs, formatAxeResults } from '../a11y/axe-helpers';
+import type { AxeResults, RunOptions } from 'axe-core';
+import {
+  defaultAxeConfig,
+  strictAxeConfig,
+  themeConfigs,
+  densityConfigs,
+  formatAxeResults,
+  type AxeTestOptions,
+} from '../a11y/axe-helpers';
+
+interface WindowWithAxe extends Window {
+  axe: {
+    run: (options?: RunOptions) => Promise<AxeResults>;
+  };
+}
+
+type AxeEvalOptions = Pick<RunOptions, 'include' | 'exclude'>;
+
+function mergeAxeConfigs(base: RunOptions, overrides: AxeTestOptions | RunOptions): RunOptions {
+  return {
+    ...base,
+    ...overrides,
+    rules: { ...(base.rules ?? {}), ...(overrides.rules ?? {}) },
+    runOnly: overrides.runOnly ?? base.runOnly,
+  };
+}
 
 export interface PlaywrightAxeOptions {
   theme?: 'light' | 'dark' | 'highContrast';
@@ -25,24 +49,41 @@ export async function setupAxe(page: Page, options: PlaywrightAxeOptions = {}): 
   await injectAxe(page);
   
   // Get configuration based on options
-  let config = options.standard === 'AAA' ? strictAxeConfig : defaultAxeConfig;
+  const baseConfig = options.standard === 'AAA' ? strictAxeConfig : defaultAxeConfig;
+  let config: RunOptions = {
+    ...baseConfig,
+    rules: baseConfig.rules ? { ...baseConfig.rules } : undefined,
+    runOnly: baseConfig.runOnly ? { ...baseConfig.runOnly } : undefined,
+    resultTypes: baseConfig.resultTypes,
+    reporter: baseConfig.reporter,
+    selectors: baseConfig.selectors,
+    ancestry: baseConfig.ancestry,
+    xpath: baseConfig.xpath,
+    absolutePaths: baseConfig.absolutePaths,
+    iframes: baseConfig.iframes,
+    elementRef: baseConfig.elementRef,
+    frameWaitTime: baseConfig.frameWaitTime,
+    preload: baseConfig.preload,
+    performanceTimer: baseConfig.performanceTimer,
+  };
   
   // Apply theme-specific config
   if (options.theme && themeConfigs[options.theme]) {
-    config = { ...config, ...themeConfigs[options.theme] };
+    config = mergeAxeConfigs(config, themeConfigs[options.theme]);
   }
   
   // Apply density-specific config
   if (options.density && densityConfigs[options.density]) {
-    config = { ...config, ...densityConfigs[options.density] };
+    config = mergeAxeConfigs(config, densityConfigs[options.density]);
   }
   
   // Disable specific rules if requested
-  if (options.disableRules) {
-    config.rules = config.rules || {};
-    options.disableRules.forEach(rule => {
-      config.rules![rule] = { enabled: false };
+  if (options.disableRules?.length) {
+    const updatedRules = { ...(config.rules ?? {}) };
+    options.disableRules.forEach((rule) => {
+      updatedRules[rule] = { enabled: false };
     });
+    config.rules = updatedRules;
   }
   
   // Configure custom tags if provided
@@ -53,7 +94,7 @@ export async function setupAxe(page: Page, options: PlaywrightAxeOptions = {}): 
     };
   }
   
-  await configureAxe(page, config as any);
+  await configureAxe(page, config);
 }
 
 /**
@@ -65,8 +106,9 @@ export async function runAxeTest(
 ): Promise<AxeResults> {
   await setupAxe(page, options);
   
-  return await page.evaluate(async (evalOptions) => {
-    return await (window as any).axe.run({
+  return page.evaluate<AxeResults, AxeEvalOptions>(async (evalOptions) => {
+    const axeWindow = window as unknown as WindowWithAxe;
+    return axeWindow.axe.run({
       include: evalOptions.include,
       exclude: evalOptions.exclude,
     });
@@ -100,7 +142,7 @@ export async function checkAccessibility(
   
   if (detailedReport) {
     const formatted = formatAxeResults(results);
-    console.log('Accessibility Test Results:', JSON.stringify(formatted, null, 2));
+    console.warn('Accessibility Test Results:', JSON.stringify(formatted, null, 2));
   }
   
   if (failOnViolations && results.violations.length > maxViolations) {

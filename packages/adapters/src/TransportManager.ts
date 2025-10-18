@@ -1,6 +1,7 @@
 import { WebSocketClient } from './WebSocketClient';
 import { SseClient } from './SseClient';
 import { HttpPollingClient } from './HttpPollingClient';
+import { resolveLogger } from './logger.js';
 import type {
   TransportManagerConfig,
   TransportManagerState,
@@ -9,7 +10,8 @@ import type {
   TransportSwitchEvent,
   WebSocketEventHandler,
   WebSocketEvent,
-  TransportEventName
+  TransportEventName,
+  TransportLogger
 } from './types';
 
 /**
@@ -22,7 +24,7 @@ import type {
  * - Transport upgrading after successful connections
  * - Comprehensive connection state management
  */
-export class TransportManager implements TransportAdapter {
+export class TransportManager implements TransportAdapter<TransportManagerState> {
   private config: Required<TransportManagerConfig>;
   private state: TransportManagerState;
   private currentTransport: TransportAdapter | null = null;
@@ -32,18 +34,26 @@ export class TransportManager implements TransportAdapter {
   private isDestroyed = false;
   private isExplicitDisconnect = false;
   private consecutiveFailures = 0;
+  private readonly logger: Required<TransportLogger>;
 
   constructor(config: TransportManagerConfig) {
+    this.logger = resolveLogger(config.logger);
+
     this.config = {
-      websocket: config.websocket,
-      sse: config.sse,
-      polling: config.polling,
+      websocket: { ...config.websocket },
+      sse: { ...config.sse },
+      polling: { ...config.polling },
       autoFallback: config.autoFallback !== false,
-      forceTransport: config.forceTransport || 'auto',
-      maxFailuresBeforeSwitch: config.maxFailuresBeforeSwitch || 3,
-      enableUpgradeAttempts: config.enableUpgradeAttempts || false,
-      upgradeAttemptInterval: config.upgradeAttemptInterval || 300000 // 5 minutes
+      forceTransport: config.forceTransport ?? 'auto',
+      maxFailuresBeforeSwitch: config.maxFailuresBeforeSwitch ?? 3,
+      enableUpgradeAttempts: config.enableUpgradeAttempts ?? false,
+      upgradeAttemptInterval: config.upgradeAttemptInterval ?? 300000,
+      logger: this.logger,
     };
+
+    this.config.websocket.logger = this.config.websocket.logger ?? this.logger;
+    this.config.sse.logger = this.config.sse.logger ?? this.logger;
+    this.config.polling.logger = this.config.polling.logger ?? this.logger;
 
     const transportPriority = this.detectTransportPriority();
 
@@ -136,8 +146,9 @@ export class TransportManager implements TransportAdapter {
     try {
       this.currentTransport.send(message);
     } catch (error) {
-      this.handleTransportError(error as Error);
-      throw error;
+      const resolvedError = error instanceof Error ? error : new Error(String(error));
+      this.handleTransportError(resolvedError);
+      throw resolvedError;
     }
   }
 
@@ -147,10 +158,12 @@ export class TransportManager implements TransportAdapter {
    */
   on(event: TransportEventName | string, handler: WebSocketEventHandler): () => void {
     // Store handler in our map
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set<WebSocketEventHandler>();
+      this.eventHandlers.set(event, handlers);
     }
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
 
     // Subscribe to current transport if connected
     if (this.currentTransport) {
@@ -159,10 +172,10 @@ export class TransportManager implements TransportAdapter {
 
     // Return unsubscribe function
     return () => {
-      const handlers = this.eventHandlers.get(event);
-      if (handlers) {
-        handlers.delete(handler);
-        if (handlers.size === 0) {
+      const storedHandlers = this.eventHandlers.get(event);
+      if (storedHandlers) {
+        storedHandlers.delete(handler);
+        if (storedHandlers.size === 0) {
           this.eventHandlers.delete(event);
         }
       }
@@ -216,7 +229,11 @@ export class TransportManager implements TransportAdapter {
       return; // Already using requested transport
     }
 
-    console.log(`Switching transport from ${this.state.activeTransport} to ${transportType}: ${reason}`);
+    this.logger.info('Switching transport', {
+      from: this.state.activeTransport,
+      to: transportType,
+      reason,
+    });
     
     // Cleanup current transport
     if (this.currentTransport) {
@@ -314,15 +331,17 @@ export class TransportManager implements TransportAdapter {
       this.currentTransport.connect();
 
       // Emit transport switch event
-      this.emit('transport_switch', {
+      const switchEvent: TransportSwitchEvent = {
         from: previousTransport,
         to: transportType,
-        reason
-      } as TransportSwitchEvent);
+        reason,
+      };
+      this.emit('transport_switch', switchEvent);
 
     } catch (error) {
-      this.handleTransportError(error as Error);
-      this.attemptFallback(error as Error);
+      const resolvedError = error instanceof Error ? error : new Error(String(error));
+      this.handleTransportError(resolvedError);
+      this.attemptFallback(resolvedError);
     }
   }
 
@@ -346,7 +365,9 @@ export class TransportManager implements TransportAdapter {
 
     // Handle connection errors
     const errorUnsubscribe = this.currentTransport.on('error', (event) => {
-      this.handleTransportError(event.error);
+      if (event.error) {
+        this.handleTransportError(event.error);
+      }
     });
 
     // Handle reconnection events
@@ -369,10 +390,8 @@ export class TransportManager implements TransportAdapter {
     });
 
     // Store unsubscribers for cleanup
-    if (!this.unsubscribers.has('_transport_events')) {
-      this.unsubscribers.set('_transport_events', []);
-    }
-    this.unsubscribers.get('_transport_events')!.push(
+    this.addUnsubscribers(
+      '_transport_events',
       openUnsubscribe,
       errorUnsubscribe,
       reconnectingUnsubscribe,
@@ -395,11 +414,16 @@ export class TransportManager implements TransportAdapter {
     if (!this.currentTransport) return;
 
     const unsubscribe = this.currentTransport.on(event, handler);
-    
-    if (!this.unsubscribers.has(event)) {
-      this.unsubscribers.set(event, []);
+    this.addUnsubscribers(event, unsubscribe);
+  }
+
+  private addUnsubscribers(event: string, ...entries: Array<() => void>): void {
+    const existing = this.unsubscribers.get(event);
+    if (existing) {
+      existing.push(...entries);
+      return;
     }
-    this.unsubscribers.get(event)!.push(unsubscribe);
+    this.unsubscribers.set(event, [...entries]);
   }
 
   private cleanupHandlerUnsubscribers(event: string): void {
@@ -412,19 +436,22 @@ export class TransportManager implements TransportAdapter {
     }
   }
 
-  private handleTransportError(error?: Error): void {
-    if (!error) return;
-
+  private handleTransportError(error: Error): void {
     this.consecutiveFailures++;
     this.setState({ 
       error, 
       failureCount: this.consecutiveFailures 
     });
 
-    console.warn(`Transport ${this.state.activeTransport} error (${this.consecutiveFailures}/${this.config.maxFailuresBeforeSwitch}):`, error.message);
+    this.logger.warn('Transport error', {
+      transport: this.state.activeTransport,
+      failureCount: this.consecutiveFailures,
+      maxFailures: this.config.maxFailuresBeforeSwitch,
+      message: error.message,
+    });
 
     // Emit error to handlers
-    this.emit('error', {}, error);
+    this.emit('error', { error }, error);
 
     // Check if we should attempt fallback
     if (this.shouldAttemptFallback(error)) {
@@ -488,13 +515,17 @@ export class TransportManager implements TransportAdapter {
     const fallbackTransport = this.selectFallbackTransport();
     
     if (!fallbackTransport) {
-      console.error('No fallback transport available');
+      this.logger.error('No fallback transport available');
       this.setState({ status: 'disconnected' });
       this.emit('close', {});
       return;
     }
 
-    console.warn(`Falling back from ${this.state.activeTransport} to ${fallbackTransport} due to error:`, error.message);
+    this.logger.warn('Falling back to alternate transport', {
+      from: this.state.activeTransport,
+      to: fallbackTransport,
+      error: error.message,
+    });
 
     // Cleanup current transport
     if (this.currentTransport) {
@@ -537,7 +568,10 @@ export class TransportManager implements TransportAdapter {
     for (let i = 0; i < currentIndex; i++) {
       const transport = this.state.transportPriority[i];
       if (transport && this.isTransportSupported(transport)) {
-        console.log(`Attempting to upgrade from ${this.state.activeTransport} to ${transport}`);
+        this.logger.info('Attempting transport upgrade', {
+          from: this.state.activeTransport,
+          to: transport,
+        });
         
         // Store current transport as backup
         const backupTransport = this.currentTransport;
@@ -555,7 +589,11 @@ export class TransportManager implements TransportAdapter {
           
           return; // Upgrade successful
         } catch (error) {
-          console.warn(`Failed to upgrade to ${transport}, staying with ${backupType}:`, error);
+          this.logger.warn('Transport upgrade failed', {
+            attempted: transport,
+            fallback: backupType,
+            error,
+          });
           
           // Restore backup if upgrade failed
           if (this.state.activeTransport !== backupType && backupTransport) {
@@ -589,7 +627,7 @@ export class TransportManager implements TransportAdapter {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       const wsEvent: WebSocketEvent = {
-        type: event as any,
+        type: event,
         data,
         error
       };
@@ -598,7 +636,7 @@ export class TransportManager implements TransportAdapter {
         try {
           handler(wsEvent);
         } catch (err) {
-          console.error(`Error in event handler for ${event}:`, err);
+          this.logger.error(`Error in event handler for ${event}`, err);
         }
       });
     }

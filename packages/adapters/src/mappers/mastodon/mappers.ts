@@ -17,9 +17,10 @@ import type {
 } from './types.js';
 
 import type {
-  UnifiedAccount,
-  UnifiedStatus,
-  UnifiedNotification,
+	UnifiedAccount,
+	UnifiedStatus,
+	UnifiedNotification,
+	AdminReport,
   MediaAttachment,
   Mention,
   Tag,
@@ -34,6 +35,23 @@ import type {
   MappingError,
   SourceMetadata,
 } from '../../models/unified.js';
+
+const mapStreamingEventType = (
+  eventType: MastodonStreamingEvent['event']
+): StreamingUpdate['type'] => {
+  switch (eventType) {
+    case 'notification':
+      return 'notification';
+    case 'conversation':
+    case 'announcement':
+    case 'filters_changed':
+      return 'status';
+    case 'update':
+      return 'status';
+    default:
+      return 'status';
+  }
+};
 
 /**
  * Create source metadata for Mastodon payloads
@@ -182,32 +200,37 @@ export function mapMastodonStatus(status: MastodonStatus): MapperResult<UnifiedS
       };
     }
 
-    const accountResult = mapMastodonAccount(status.account);
-    if (!accountResult.success) {
-      return {
-        success: false,
-        error: createMappingError('transformation', 'Failed to map status account', status, 'account'),
-      };
-    }
+	const accountResult = mapMastodonAccount(status.account);
+	if (!accountResult.success || !accountResult.data) {
+		return {
+			success: false,
+			error:
+				accountResult.error ??
+				createMappingError('transformation', 'Failed to map status account', status, 'account'),
+		};
+	}
 
-    const unified: UnifiedStatus = {
-      id: status.id,
-      createdAt: safeString(status.created_at),
-      content: safeString(status.content),
-      spoilerText: safeString(status.spoiler_text) || undefined,
-      visibility: status.visibility || 'public',
-      sensitive: safeBoolean(status.sensitive),
-      language: status.language || undefined,
-      account: accountResult.data!,
-      mediaAttachments: (status.media_attachments || []).map(mapMastodonMediaAttachment),
-      mentions: (status.mentions || []).map(mapMastodonMention),
-      tags: (status.tags || []).map(mapMastodonTag),
-      emojis: (status.emojis || []).map(mapMastodonEmoji),
-      inReplyTo: status.in_reply_to_id ? {
-        id: status.in_reply_to_id,
-        accountId: safeString(status.in_reply_to_account_id),
-      } : undefined,
-      reblog: status.reblog ? mapMastodonStatus(status.reblog).data : undefined,
+	const reblogResult = status.reblog ? mapMastodonStatus(status.reblog) : undefined;
+	const reblogStatus = reblogResult && reblogResult.success ? reblogResult.data : undefined;
+
+	const unified: UnifiedStatus = {
+		id: status.id,
+		createdAt: safeString(status.created_at),
+		content: safeString(status.content),
+		spoilerText: safeString(status.spoiler_text) || undefined,
+		visibility: status.visibility || 'public',
+		sensitive: safeBoolean(status.sensitive),
+		language: status.language || undefined,
+		account: accountResult.data,
+		mediaAttachments: (status.media_attachments || []).map(mapMastodonMediaAttachment),
+		mentions: (status.mentions || []).map(mapMastodonMention),
+		tags: (status.tags || []).map(mapMastodonTag),
+		emojis: (status.emojis || []).map(mapMastodonEmoji),
+		inReplyTo: status.in_reply_to_id ? {
+			id: status.in_reply_to_id,
+			accountId: safeString(status.in_reply_to_account_id),
+		} : undefined,
+		reblog: reblogStatus,
       repliesCount: safeNumber(status.replies_count),
       reblogsCount: safeNumber(status.reblogs_count),
       favouritesCount: safeNumber(status.favourites_count),
@@ -351,38 +374,48 @@ export function mapMastodonNotification(notification: MastodonNotification): Map
       };
     }
 
-    const accountResult = mapMastodonAccount(notification.account);
-    if (!accountResult.success) {
-      return {
-        success: false,
-        error: createMappingError('transformation', 'Failed to map notification account', notification, 'account'),
-      };
-    }
+	const accountResult = mapMastodonAccount(notification.account);
+	if (!accountResult.success || !accountResult.data) {
+		return {
+			success: false,
+			error:
+				accountResult.error ??
+				createMappingError('transformation', 'Failed to map notification account', notification, 'account'),
+		};
+	}
 
-    let status: UnifiedStatus | undefined;
-    if (notification.status) {
-      const statusResult = mapMastodonStatus(notification.status);
-      if (statusResult.success) {
-        status = statusResult.data;
-      }
-    }
+	let status: UnifiedStatus | undefined;
+	if (notification.status) {
+		const statusResult = mapMastodonStatus(notification.status);
+		if (statusResult.success && statusResult.data) {
+			status = statusResult.data;
+		}
+	}
 
-    const unified: UnifiedNotification = {
-      id: notification.id,
-      type: notification.type,
-      createdAt: safeString(notification.created_at),
-      account: accountResult.data!,
-      status,
-      report: notification.report ? {
-        id: safeString(notification.report.id),
-        targetAccount: accountResult.data!, // Note: In real implementation, this should map the actual target account
-        account: accountResult.data!,
-        comment: safeString(notification.report.comment),
-        actionTaken: safeBoolean(notification.report.action_taken),
-        createdAt: safeString(notification.report.created_at),
-      } : undefined,
-      metadata: createMastodonMetadata(notification),
-    };
+	let report: AdminReport | undefined;
+	if (notification.report) {
+		const targetAccountResult = mapMastodonAccount(notification.report.target_account);
+		if (targetAccountResult.success && targetAccountResult.data) {
+			report = {
+				id: safeString(notification.report.id),
+				targetAccount: targetAccountResult.data,
+				account: accountResult.data,
+				comment: safeString(notification.report.comment),
+				actionTaken: safeBoolean(notification.report.action_taken),
+				createdAt: safeString(notification.report.created_at),
+			};
+		}
+	}
+
+	const unified: UnifiedNotification = {
+		id: notification.id,
+		type: notification.type,
+		createdAt: safeString(notification.created_at),
+		account: accountResult.data,
+		status,
+		report,
+		metadata: createMastodonMetadata(notification),
+	};
 
     const endTime = performance.now();
     return {
@@ -454,10 +487,10 @@ export function mapMastodonStreamingEvent(event: MastodonStreamingEvent): Mapper
     if (event.event === 'update') {
       if (typeof payload === 'object' && payload && 'id' in payload) {
         const statusResult = mapMastodonStatus(payload as MastodonStatus);
-        if (statusResult.success) {
+        if (statusResult.success && statusResult.data) {
           const editUpdate: StreamingEdit = {
-            id: statusResult.data!.id,
-            data: statusResult.data!,
+            id: statusResult.data.id,
+            data: statusResult.data,
             timestamp,
             editType: 'content',
           };
@@ -478,7 +511,7 @@ export function mapMastodonStreamingEvent(event: MastodonStreamingEvent): Mapper
 
     // Handle generic streaming update
     const streamingUpdate: StreamingUpdate = {
-      type: event.event as any,
+      type: mapStreamingEventType(event.event),
       payload,
       stream: event.stream.join(','),
       timestamp,

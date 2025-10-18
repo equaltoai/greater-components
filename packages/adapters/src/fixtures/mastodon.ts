@@ -13,6 +13,14 @@ import type {
   MastodonRelationship,
 } from '../mappers/mastodon/types.js';
 
+const requireFixture = <T>(items: readonly T[], index: number): T => {
+  const item = items[index];
+  if (!item) {
+    throw new Error(`Missing Mastodon fixture at index ${index}`);
+  }
+  return item;
+};
+
 // Sample Mastodon accounts
 export const mastodonAccountFixtures: MastodonAccount[] = [
   {
@@ -82,6 +90,9 @@ export const mastodonAccountFixtures: MastodonAccount[] = [
     emojis: []
   }
 ];
+
+const getAccount = (index: number): MastodonAccount =>
+  requireFixture(mastodonAccountFixtures, index);
 
 // Sample Mastodon media attachments
 export const mastodonMediaAttachments: MastodonMediaAttachment[] = [
@@ -206,7 +217,7 @@ export const mastodonStatusFixtures: MastodonStatus[] = [
     bookmarked: true,
     pinned: false,
     content: "<p>Just shipped a new feature! 🚀 The new timeline view is much more responsive now. <a href=\"https://mastodon.social/tags/webdev\" class=\"mention hashtag\" rel=\"tag\">#<span>webdev</span></a> <a href=\"https://mastodon.social/tags/svelte\" class=\"mention hashtag\" rel=\"tag\">#<span>svelte</span></a></p>",
-    account: mastodonAccountFixtures[0]!,
+    account: getAccount(0),
     media_attachments: mastodonMediaAttachments[0] ? [mastodonMediaAttachments[0]] : [],
     mentions: [],
     tags: [
@@ -262,7 +273,7 @@ export const mastodonStatusFixtures: MastodonStatus[] = [
     bookmarked: false,
     pinned: false,
     content: "<p><span class=\"h-card\"><a href=\"https://mastodon.social/@alice\" class=\"u-url mention\">@<span>alice</span></a></span> Congratulations on the new feature! The performance improvements are really noticeable. 🎉</p>",
-    account: mastodonAccountFixtures[1]!,
+    account: getAccount(1),
     media_attachments: [],
     mentions: [
       {
@@ -296,7 +307,7 @@ export const mastodonStatusFixtures: MastodonStatus[] = [
     bookmarked: false,
     pinned: false,
     content: "<p>Some thoughts on the recent policy changes and their impact on the tech industry...</p>",
-    account: mastodonAccountFixtures[0]!,
+    account: getAccount(0),
     media_attachments: [],
     mentions: [],
     tags: [],
@@ -310,37 +321,38 @@ export const mastodonNotificationFixtures: MastodonNotification[] = [
     id: "109321234567890123",
     type: "favourite",
     created_at: "2023-12-15T11:15:00.000Z",
-    account: mastodonAccountFixtures[1]!,
+    account: getAccount(1),
     status: mastodonStatusFixtures[0]
   },
   {
     id: "109321234567890124",
     type: "reblog",
     created_at: "2023-12-15T12:30:00.000Z",
-    account: mastodonAccountFixtures[1]!,
+    account: getAccount(1),
     status: mastodonStatusFixtures[0]
   },
   {
     id: "109321234567890125",
     type: "mention",
     created_at: "2023-12-15T14:45:00.000Z",
-    account: mastodonAccountFixtures[1]!,
+    account: getAccount(1),
     status: mastodonStatusFixtures[1]
   },
   {
     id: "109321234567890126",
     type: "follow",
     created_at: "2023-12-15T09:00:00.000Z",
-    account: mastodonAccountFixtures[1]!
+    account: getAccount(1)
   },
   {
     id: "109321234567890127",
     type: "poll",
     created_at: "2023-12-16T10:30:00.000Z",
-    account: mastodonAccountFixtures[0]!,
+    account: getAccount(0),
     status: mastodonStatusFixtures[0]
   }
 ];
+
 
 // Sample Mastodon relationships
 export const mastodonRelationshipFixtures: MastodonRelationship[] = [

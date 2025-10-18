@@ -222,7 +222,7 @@ export function createMenu(config: MenuConfig = {}) {
 		onOpen,
 		onClose,
 		onOpenChange,
-		onSelect,
+		onSelect: _onSelect,
 		onDestroy,
 	} = config;
 
@@ -763,4 +763,3 @@ export function createMenu(config: MenuConfig = {}) {
 		helpers,
 	};
 }
-

@@ -4,7 +4,47 @@
  */
 
 import { TransportManager } from '../TransportManager';
-import type { TransportManagerConfig, TransportSwitchEvent } from '../types';
+import type {
+  TransportManagerConfig,
+  TransportManagerState,
+  TransportSwitchEvent,
+  TransportType,
+  TransportLogger
+} from '../types';
+
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+interface LogEntry {
+  level: LogLevel;
+  message: string;
+  context?: unknown;
+  timestamp: number;
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const getNumberField = (value: unknown, field: string): number | undefined => {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  const candidate = value[field];
+  return typeof candidate === 'number' ? candidate : undefined;
+};
+
+const isTransportSwitchEvent = (value: unknown): value is TransportSwitchEvent =>
+  isRecord(value) &&
+  (value.from === null || typeof value.from === 'string') &&
+  typeof value.to === 'string' &&
+  typeof value.reason === 'string';
+
+interface ExampleStatus {
+  connected: boolean;
+  activeTransport: TransportType | null;
+  state: TransportManagerState;
+  featureSupport: Record<TransportType, boolean>;
+}
 
 // Example configuration for all three transport types
 const config: TransportManagerConfig = {
@@ -44,196 +84,203 @@ const config: TransportManagerConfig = {
 };
 
 export class ExampleApp {
-  private transportManager: TransportManager;
+  private readonly transportManager: TransportManager;
+  private readonly logs: LogEntry[] = [];
+  private readonly logger: TransportLogger;
   private isConnected = false;
 
-  constructor() {
-    this.transportManager = new TransportManager(config);
+  constructor(managerConfig: TransportManagerConfig = config) {
+    this.logger = {
+      debug: (message, context) => this.log('debug', message, context),
+      info: (message, context) => this.log('info', message, context),
+      warn: (message, context) => this.log('warn', message, context),
+      error: (message, error) => this.log('error', message, error),
+    };
+
+    this.transportManager = new TransportManager({
+      ...managerConfig,
+      logger: managerConfig.logger ?? this.logger,
+    });
+
     this.setupEventHandlers();
   }
 
   private setupEventHandlers(): void {
-    // Connection events
     this.transportManager.on('open', () => {
       this.isConnected = true;
-      console.log('✅ Connected via', this.transportManager.getActiveTransport());
-      console.log('📊 Connection state:', this.transportManager.getState());
+      this.log('info', 'Transport connected', {
+        transport: this.transportManager.getActiveTransport(),
+      });
     });
 
     this.transportManager.on('close', () => {
       this.isConnected = false;
-      console.log('❌ Disconnected');
+      this.log('warn', 'Transport disconnected');
     });
 
     this.transportManager.on('error', (event) => {
-      console.error('🚨 Transport error:', event.error?.message);
+      this.log('error', 'Transport error', event.error ?? event.data);
     });
 
-    // Transport switching events
     this.transportManager.on('transport_switch', (event) => {
-      const switchData = event.data as TransportSwitchEvent;
-      console.log(`🔄 Transport switched: ${switchData.from} → ${switchData.to} (${switchData.reason})`);
-      
-      if (switchData.error) {
-        console.log('   Reason:', switchData.error.message);
+      if (isTransportSwitchEvent(event.data)) {
+        this.log('info', 'Transport switched', event.data);
+      } else {
+        this.log('warn', 'Transport switch event missing payload');
       }
     });
 
-    // Reconnection events
     this.transportManager.on('reconnecting', (event) => {
-      const attempt = event.data && typeof event.data === 'object' && 'attempt' in event.data ? (event.data as any).attempt : 0;
-      console.log('🔄 Reconnecting... (attempt', attempt, ')');
+      const attempt = getNumberField(event.data, 'attempt');
+      const delay = getNumberField(event.data, 'delay');
+      this.log('info', 'Reconnecting transport', { attempt, delay });
     });
 
     this.transportManager.on('reconnected', () => {
-      console.log('✅ Reconnected successfully');
+      this.log('info', 'Transport reconnected');
     });
 
-    // Application-specific message handlers
     this.transportManager.on('message', (event) => {
-      console.log('📨 Received message:', event.data);
+      this.log('info', 'Received message', event.data);
     });
 
     this.transportManager.on('user_joined', (event) => {
-      console.log('👤 User joined:', event.data);
+      this.log('info', 'User joined', event.data);
     });
 
     this.transportManager.on('user_left', (event) => {
-      console.log('👤 User left:', event.data);
+      this.log('info', 'User left', event.data);
     });
 
     this.transportManager.on('chat_message', (event) => {
-      console.log('💬 Chat message:', event.data);
+      this.log('info', 'Chat message', event.data);
     });
 
-    // Latency monitoring
     this.transportManager.on('latency', (event) => {
-      const latency = event.data && typeof event.data === 'object' && 'latency' in event.data ? (event.data as any).latency : 0;
-      console.log(`📡 Latency: ${latency}ms (${this.transportManager.getActiveTransport()})`);
+      const latency = getNumberField(event.data, 'latency');
+      if (latency !== undefined) {
+        this.log('debug', 'Latency sample', {
+          latency,
+          transport: this.transportManager.getActiveTransport(),
+        });
+      }
     });
   }
 
-  /**
-   * Connect to the server using optimal transport
-   */
   async connect(): Promise<void> {
     try {
-      console.log('🚀 Starting connection...');
-      console.log('🔍 Feature support:', TransportManager.getFeatureSupport());
-      
+      this.log('info', 'Starting connection', {
+        featureSupport: TransportManager.getFeatureSupport(),
+      });
       this.transportManager.connect();
     } catch (error) {
-      console.error('❌ Failed to connect:', error);
+      this.log('error', 'Failed to connect', error);
       throw error;
     }
   }
 
-  /**
-   * Disconnect from the server
-   */
   disconnect(): void {
-    console.log('🔌 Disconnecting...');
+    this.log('info', 'Disconnecting transport');
     this.transportManager.disconnect();
   }
 
-  /**
-   * Send a message (works with WebSocket and HTTP Polling)
-   */
-  sendMessage(type: string, data: any): void {
+  sendMessage(type: string, data: Record<string, unknown>): void {
     if (!this.isConnected) {
       throw new Error('Not connected');
     }
 
+    const message = {
+      type,
+      data,
+      timestamp: Date.now(),
+    };
+
     try {
-      this.transportManager.send({
+      this.transportManager.send(message);
+      this.log('info', 'Sent message', {
         type,
-        data,
-        timestamp: Date.now()
+        transport: this.transportManager.getActiveTransport(),
       });
-      
-      console.log(`📤 Sent ${type} message via ${this.transportManager.getActiveTransport()}`);
     } catch (error) {
-      console.error('❌ Failed to send message:', error);
+      this.log('error', 'Failed to send message', error);
       throw error;
     }
   }
 
-  /**
-   * Manually switch to a specific transport
-   */
-  switchTransport(transportType: 'websocket' | 'sse' | 'polling'): void {
+  switchTransport(transportType: TransportType): void {
     try {
       this.transportManager.switchTransport(transportType, 'Manual switch by user');
-      console.log(`🔄 Manually switched to ${transportType}`);
+      this.log('info', 'Manually switched transport', { transportType });
     } catch (error) {
-      console.error('❌ Failed to switch transport:', error);
+      this.log('error', 'Failed to switch transport', error);
       throw error;
     }
   }
 
-  /**
-   * Get current connection status and transport info
-   */
-  getStatus(): any {
+  getStatus(): ExampleStatus {
     return {
       connected: this.isConnected,
       activeTransport: this.transportManager.getActiveTransport(),
       state: this.transportManager.getState(),
-      featureSupport: TransportManager.getFeatureSupport()
+      featureSupport: TransportManager.getFeatureSupport(),
     };
   }
 
-  /**
-   * Cleanup resources
-   */
+  captureStatus(label: string): void {
+    this.log('info', label, this.getStatus());
+  }
+
+  getLogs(): LogEntry[] {
+    return [...this.logs];
+  }
+
+  recordError(message: string, error: unknown): void {
+    this.log('error', message, error);
+  }
+
   destroy(): void {
-    console.log('🧹 Cleaning up...');
+    this.log('info', 'Cleaning up resources');
     this.transportManager.destroy();
+  }
+
+  private log(level: LogLevel, message: string, context?: unknown): void {
+    this.logs.push({
+      level,
+      message,
+      context,
+      timestamp: Date.now(),
+    });
   }
 }
 
-// Usage example
-export async function runExample(): Promise<void> {
+const delay = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+export async function runExample(): Promise<LogEntry[]> {
   const app = new ExampleApp();
 
   try {
-    // Connect using optimal transport
     await app.connect();
+    await delay(1000);
 
-    // Wait for connection
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Send some messages
     app.sendMessage('chat_message', { text: 'Hello World!', user: 'john' });
     app.sendMessage('user_status', { user: 'john', status: 'online' });
 
-    // Check status
-    console.log('📊 Current status:', app.getStatus());
+    app.captureStatus('Current status snapshot');
 
-    // Demonstrate manual transport switching
-    if (app.getStatus().featureSupport.polling) {
+    const status = app.getStatus();
+    if (status.featureSupport.polling) {
       app.switchTransport('polling');
-      
-      // Wait for switch
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Send message via new transport
+      await delay(1000);
       app.sendMessage('test_message', { test: 'polling transport' });
     }
 
-    // Let it run for a bit to see transport behavior
-    await new Promise(resolve => setTimeout(resolve, 5000));
-
+    await delay(5000);
   } catch (error) {
-    console.error('❌ Example error:', error);
+    app.recordError('Example error', error);
   } finally {
-    // Cleanup
     app.destroy();
   }
+
+  return app.getLogs();
 }
-
-
-// Uncomment to run the example directly
-// if (typeof window === 'undefined') {
-//   runExample().catch(console.error);
-// }

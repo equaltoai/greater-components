@@ -5,6 +5,8 @@
 
 import { Page } from '@playwright/test';
 
+export type StoryArgs = Record<string, unknown>;
+
 export interface StorybookConfig {
   baseUrl: string;
   waitForStoryLoad?: number;
@@ -14,13 +16,44 @@ export interface StorybookConfig {
 }
 
 export interface StoryTestOptions {
-  args?: Record<string, any>;
-  globals?: Record<string, any>;
+  args?: StoryArgs;
+  globals?: StoryArgs;
   viewport?: { width: number; height: number };
   theme?: string;
   density?: string;
   waitTime?: number;
 }
+
+export interface StoryMetadata {
+  title: string;
+  name: string;
+  parameters: StoryArgs;
+  args: StoryArgs;
+  argTypes: StoryArgs;
+}
+
+export interface StoryVariant {
+  name: string;
+  args: StoryArgs;
+}
+
+export interface StoryTestResult {
+  passed: boolean;
+  error?: string;
+  [key: string]: unknown;
+}
+
+type StorybookWindow = Window & {
+  __STORYBOOK_STORY_STORE__?: {
+    fromId?: (id: string) => {
+      title: string;
+      name: string;
+      parameters?: StoryArgs;
+      args?: StoryArgs;
+      argTypes?: StoryArgs;
+    };
+  };
+};
 
 export const DEFAULT_STORYBOOK_CONFIG: StorybookConfig = {
   baseUrl: 'http://localhost:6006',
@@ -105,17 +138,12 @@ export async function getStoryMetadata(
   page: Page,
   storyId: string,
   config: StorybookConfig = DEFAULT_STORYBOOK_CONFIG
-): Promise<{
-  title: string;
-  name: string;
-  parameters: Record<string, any>;
-  args: Record<string, any>;
-  argTypes: Record<string, any>;
-} | null> {
+): Promise<StoryMetadata | null> {
   await page.goto(`${config.baseUrl}/iframe.html?id=${storyId}`);
   
-  return await page.evaluate((id) => {
-    const storyStore = (window as any).__STORYBOOK_STORY_STORE__;
+  return page.evaluate<StoryMetadata | null, string>((id) => {
+    const storyWindow = window as StorybookWindow;
+    const storyStore = storyWindow.__STORYBOOK_STORY_STORE__;
     if (!storyStore) return null;
     
     const story = storyStore.fromId ? storyStore.fromId(id) : null;
@@ -124,11 +152,11 @@ export async function getStoryMetadata(
     return {
       title: story.title,
       name: story.name,
-      parameters: story.parameters || {},
-      args: story.args || {},
-      argTypes: story.argTypes || {},
+      parameters: story.parameters ?? {},
+      args: story.args ?? {},
+      argTypes: story.argTypes ?? {},
     };
-  });
+  }, storyId);
 }
 
 /**
@@ -139,8 +167,8 @@ export async function testStoryThemes(
   storyId: string,
   testFn: (page: Page, theme: string) => Promise<void>,
   config: StorybookConfig = DEFAULT_STORYBOOK_CONFIG
-): Promise<Record<string, any>> {
-  const results: Record<string, any> = {};
+): Promise<Record<string, StoryTestResult>> {
+  const results: Record<string, StoryTestResult> = {};
   
   for (const theme of config.themes || ['light']) {
     try {
@@ -166,8 +194,8 @@ export async function testStoryDensities(
   storyId: string,
   testFn: (page: Page, density: string) => Promise<void>,
   config: StorybookConfig = DEFAULT_STORYBOOK_CONFIG
-): Promise<Record<string, any>> {
-  const results: Record<string, any> = {};
+): Promise<Record<string, StoryTestResult>> {
+  const results: Record<string, StoryTestResult> = {};
   
   for (const density of config.densities || ['comfortable']) {
     try {
@@ -193,8 +221,8 @@ export async function testStoryViewports(
   storyId: string,
   testFn: (page: Page, viewport: { name: string; width: number; height: number }) => Promise<void>,
   config: StorybookConfig = DEFAULT_STORYBOOK_CONFIG
-): Promise<Record<string, any>> {
-  const results: Record<string, any> = {};
+): Promise<Record<string, StoryTestResult>> {
+  const results: Record<string, StoryTestResult> = {};
   
   for (const viewport of config.viewports || []) {
     try {
@@ -218,11 +246,11 @@ export async function testStoryViewports(
 export async function testStoryVariants(
   page: Page,
   storyId: string,
-  variants: Array<{ name: string; args: Record<string, any> }>,
-  testFn: (page: Page, variant: { name: string; args: Record<string, any> }) => Promise<void>,
+  variants: StoryVariant[],
+  testFn: (page: Page, variant: StoryVariant) => Promise<void>,
   config: StorybookConfig = DEFAULT_STORYBOOK_CONFIG
-): Promise<Record<string, any>> {
-  const results: Record<string, any> = {};
+): Promise<Record<string, StoryTestResult>> {
+  const results: Record<string, StoryTestResult> = {};
   
   for (const variant of variants) {
     try {
@@ -297,7 +325,7 @@ export async function runStoryA11yTests(
   config: StorybookConfig = DEFAULT_STORYBOOK_CONFIG
 ): Promise<{
   storyId: string;
-  results: Record<string, any>;
+  results: Record<string, StoryTestResult>;
   summary: {
     passed: boolean;
     totalTests: number;
@@ -313,7 +341,7 @@ export async function runStoryA11yTests(
   
   await gotoStory(page, storyId, {}, config);
   
-  const results: Record<string, any> = {};
+  const results: Record<string, StoryTestResult> = {};
   let totalTests = 0;
   let passedTests = 0;
   
@@ -419,13 +447,32 @@ export function createStorybookTestSuite(config: StorybookConfig = DEFAULT_STORY
     testDensities: (page: Page, storyId: string, testFn: (page: Page, density: string) => Promise<void>) =>
       testStoryDensities(page, storyId, testFn, config),
     
-    testViewports: (page: Page, storyId: string, testFn: (page: Page, viewport: any) => Promise<void>) =>
+    testViewports: (
+      page: Page,
+      storyId: string,
+      testFn: (page: Page, viewport: { name: string; width: number; height: number }) => Promise<void>
+    ) =>
       testStoryViewports(page, storyId, testFn, config),
     
-    testVariants: (page: Page, storyId: string, variants: any[], testFn: any) =>
+    testVariants: (
+      page: Page,
+      storyId: string,
+      variants: StoryVariant[],
+      testFn: (page: Page, variant: StoryVariant) => Promise<void>
+    ) =>
       testStoryVariants(page, storyId, variants, testFn, config),
     
-    runA11yTests: (page: Page, storyId: string, tests?: any) =>
+    runA11yTests: (
+      page: Page,
+      storyId: string,
+      tests?: {
+        axe?: boolean;
+        keyboard?: boolean;
+        focusManagement?: boolean;
+        colorContrast?: boolean;
+        screenReader?: boolean;
+      }
+    ) =>
       runStoryA11yTests(page, storyId, tests, config),
     
     getInteractiveElements: getStoryInteractiveElements,

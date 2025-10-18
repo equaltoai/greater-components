@@ -61,7 +61,7 @@ export function validateARIA(element: HTMLElement): ARIAValidationResult {
 
   // Check role validity
   const role = element.getAttribute('role');
-  if (role && !ARIARoleRequirements.hasOwnProperty(role)) {
+  if (role && !Object.prototype.hasOwnProperty.call(ARIARoleRequirements, role)) {
     errors.push(`Invalid ARIA role: ${role}`);
   }
 

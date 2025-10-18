@@ -908,7 +908,11 @@ describe('Admin.Users - Integration', () => {
 	});
 
 	it('handles suspend flow', () => {
-		const activeUser = users.find((u) => u.id === '4')!;
+		const activeUser = users.find((u) => u.id === '4');
+		expect(activeUser).toBeDefined();
+		if (!activeUser) {
+			return;
+		}
 
 		// Check can suspend
 		expect(canSuspendUser(activeUser, 'Spam violation')).toBe(true);
@@ -922,7 +926,11 @@ describe('Admin.Users - Integration', () => {
 	});
 
 	it('handles role change flow', () => {
-		const user = users.find((u) => u.id === '4')!;
+		const user = users.find((u) => u.id === '4');
+		expect(user).toBeDefined();
+		if (!user) {
+			return;
+		}
 
 		// Check can change role
 		expect(canChangeRole(user, 'moderator')).toBe(true);
@@ -951,4 +959,3 @@ describe('Admin.Users - Integration', () => {
 		expect(stats.admins).toBe(1);
 	});
 });
-

@@ -1,3 +1,4 @@
+import { resolveLogger } from './logger.js';
 import type {
   WebSocketClientConfig,
   WebSocketClientState,
@@ -5,13 +6,15 @@ import type {
   WebSocketEvent,
   WebSocketEventHandler,
   HeartbeatMessage,
-  LatencySample
+  LatencySample,
+  TransportAdapter,
+  TransportLogger
 } from './types';
 
 /**
  * WebSocketClient with automatic reconnection, heartbeat, and latency sampling
  */
-export class WebSocketClient {
+export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
   private config: Required<WebSocketClientConfig>;
   private socket: WebSocket | null = null;
   private state: WebSocketClientState;
@@ -24,8 +27,10 @@ export class WebSocketClient {
   private pendingPings: Map<number, number> = new Map();
   private isDestroyed = false;
   private isExplicitDisconnect = false;
+  private readonly logger: Required<TransportLogger>;
 
   constructor(config: WebSocketClientConfig) {
+    this.logger = resolveLogger(config.logger);
     this.config = {
       url: config.url,
       authToken: config.authToken || '',
@@ -38,7 +43,8 @@ export class WebSocketClient {
       enableLatencySampling: config.enableLatencySampling !== false,
       latencySamplingInterval: config.latencySamplingInterval || 10000,
       lastEventIdStorageKey: config.lastEventIdStorageKey || 'ws_last_event_id',
-      storage: config.storage || (typeof window !== 'undefined' ? window.localStorage : undefined) as Storage
+      storage: config.storage || (typeof window !== 'undefined' ? window.localStorage : undefined) as Storage,
+      logger: config.logger ?? this.logger
     };
 
     this.state = {
@@ -82,7 +88,8 @@ export class WebSocketClient {
       this.socket = new WebSocket(url.toString());
       this.setupEventListeners();
     } catch (error) {
-      this.handleError(error as Error);
+      const resolvedError = this.resolveError(error);
+      this.handleError(resolvedError);
       this.scheduleReconnect();
     }
   }
@@ -125,18 +132,19 @@ export class WebSocketClient {
    * Subscribe to WebSocket events
    */
   on(event: string, handler: WebSocketEventHandler): () => void {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set<WebSocketEventHandler>();
+      this.eventHandlers.set(event, handlers);
     }
-    
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
 
     // Return unsubscribe function
     return () => {
-      const handlers = this.eventHandlers.get(event);
-      if (handlers) {
-        handlers.delete(handler);
-        if (handlers.size === 0) {
+      const storedHandlers = this.eventHandlers.get(event);
+      if (storedHandlers) {
+        storedHandlers.delete(handler);
+        if (storedHandlers.size === 0) {
           this.eventHandlers.delete(event);
         }
       }
@@ -216,11 +224,12 @@ export class WebSocketClient {
     this.emit('close', { code: event.code, reason: event.reason });
   }
 
-  private handleError(error: Error | Event): void {
-    const errorObj = error instanceof Error ? error : new Error('WebSocket error');
-    
+  private handleError(error: unknown): void {
+    const errorObj = this.resolveError(error);
+
     this.setState({ error: errorObj });
-    this.emit('error', {}, errorObj);
+    this.logger.error('WebSocket transport error', errorObj);
+    this.emit('error', { error: errorObj }, errorObj);
   }
 
   private handleMessage(event: MessageEvent): void {
@@ -247,7 +256,8 @@ export class WebSocketClient {
         this.emit(message.type, (message as WebSocketMessage).data);
       }
     } catch (error) {
-      this.handleError(new Error(`Failed to parse message: ${error}`));
+      const resolvedError = this.resolveError(error);
+      this.handleError(new Error(`Failed to parse message: ${resolvedError.message}`));
     }
   }
 
@@ -271,7 +281,7 @@ export class WebSocketClient {
             this.socket?.close();
           }, this.config.heartbeatTimeout);
         } catch (error) {
-          this.handleError(error as Error);
+          this.handleError(error);
         }
       }
     }, this.config.heartbeatInterval);
@@ -329,7 +339,7 @@ export class WebSocketClient {
         try {
           this.socket.send(JSON.stringify(ping));
         } catch (error) {
-          // Ignore sampling errors
+          this.logger.debug('WebSocket latency sampling ping failed', { error });
         }
       }
     }, this.config.latencySamplingInterval);
@@ -414,11 +424,15 @@ export class WebSocketClient {
     this.state = { ...this.state, ...updates };
   }
 
+  private resolveError(error: unknown): Error {
+    return error instanceof Error ? error : new Error(String(error));
+  }
+
   private emit(event: string, data?: unknown, error?: Error): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       const wsEvent: WebSocketEvent = {
-        type: event as any,
+        type: event,
         data,
         error
       };
@@ -427,7 +441,7 @@ export class WebSocketClient {
         try {
           handler(wsEvent);
         } catch (err) {
-          console.error(`Error in event handler for ${event}:`, err);
+          this.logger.error(`Error in WebSocket event handler for ${event}`, err);
         }
       });
     }

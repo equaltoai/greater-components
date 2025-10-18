@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { TransportFallback } from '../src/TransportFallback';
 import { SseClient } from '../src/SseClient';
-import { HttpPollingClient } from '../src/HttpPollingClient';
 import type { TransportFallbackConfig } from '../src/types';
 
 // Mock SseClient
@@ -25,10 +24,12 @@ vi.mock('../src/SseClient', () => {
     });
     
     this.on = vi.fn((event: string, handler: any) => {
-      if (!this.handlers.has(event)) {
-        this.handlers.set(event, new Set());
+      let handlersForEvent = this.handlers.get(event);
+      if (!handlersForEvent) {
+        handlersForEvent = new Set();
+        this.handlers.set(event, handlersForEvent);
       }
-      this.handlers.get(event)!.add(handler);
+      handlersForEvent.add(handler);
       
       return () => {
         this.handlers.get(event)?.delete(handler);
@@ -81,15 +82,17 @@ vi.mock('../src/HttpPollingClient', () => {
       this.connected = false;
     });
     
-    this.send = vi.fn((message: any) => {
+    this.send = vi.fn((_message: any) => {
       // Mock send
     });
     
     this.on = vi.fn((event: string, handler: any) => {
-      if (!this.handlers.has(event)) {
-        this.handlers.set(event, new Set());
+      let handlersForEvent = this.handlers.get(event);
+      if (!handlersForEvent) {
+        handlersForEvent = new Set();
+        this.handlers.set(event, handlersForEvent);
       }
-      this.handlers.get(event)!.add(handler);
+      handlersForEvent.add(handler);
       
       return () => {
         this.handlers.get(event)?.delete(handler);

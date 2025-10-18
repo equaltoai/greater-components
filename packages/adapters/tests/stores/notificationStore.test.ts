@@ -4,8 +4,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createNotificationStore } from '../../src/stores/notificationStore';
-import { TransportManager } from '../../src/TransportManager';
-import type { Notification, NotificationConfig, NotificationFilter } from '../../src/stores/types';
+import type { Notification, NotificationConfig } from '../../src/stores/types';
 
 // Mock TransportManager
 class MockTransportManager {
@@ -20,10 +19,12 @@ class MockTransportManager {
   }
   
   on(event: string, handler: (event: any) => void) {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set();
+      this.eventHandlers.set(event, handlers);
     }
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
     
     return () => {
       this.eventHandlers.get(event)?.delete(handler);
@@ -203,14 +204,17 @@ describe('Notification Store', () => {
     it('should mark notifications as read', () => {
       const store = createNotificationStore(config);
       const unreadNotification = store.get().notifications.find(n => !n.isRead);
+      if (!unreadNotification) {
+        throw new Error('Expected at least one unread notification for markAsRead test');
+      }
       const initialUnreadCount = store.get().totalUnread;
       
-      const success = store.markAsRead(unreadNotification!.id);
+      const success = store.markAsRead(unreadNotification.id);
       
       expect(success).toBe(true);
       
       const state = store.get();
-      const updatedNotification = state.notifications.find(n => n.id === unreadNotification!.id);
+      const updatedNotification = state.notifications.find(n => n.id === unreadNotification.id);
       expect(updatedNotification?.isRead).toBe(true);
       expect(state.totalUnread).toBe(initialUnreadCount - 1);
     });
@@ -643,7 +647,10 @@ describe('Notification Store', () => {
   describe('Edge Cases', () => {
     it('should handle concurrent mark as read operations', () => {
       const store = createNotificationStore(config);
-      const targetNotification = store.get().notifications.find(n => !n.isRead)!;
+      const targetNotification = store.get().notifications.find(n => !n.isRead);
+      if (!targetNotification) {
+        throw new Error('Expected unread notification for concurrent markAsRead test');
+      }
       
       // Try to mark as read multiple times concurrently
       const result1 = store.markAsRead(targetNotification.id);

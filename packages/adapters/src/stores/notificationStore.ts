@@ -125,46 +125,45 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 
   function updateDerivedValues(notifications?: Notification[], filter?: NotificationFilter): void {
     const currentState = state.value;
-    const notificationsToProcess = notifications || currentState.notifications;
-    const filterToUse = filter || currentState.filter;
+	const notificationsToProcess = notifications || currentState.notifications;
+	const filterToUse = filter || currentState.filter;
+	const { types, readStatus, priority, dateRange, query } = filterToUse;
     
     // Filter notifications
     let filtered = [...notificationsToProcess];
 
     // Filter by types
-    if (filterToUse.types && filterToUse.types.length > 0) {
-      filtered = filtered.filter(n => filterToUse.types!.includes(n.type));
-    }
+	if (types && types.length > 0) {
+		filtered = filtered.filter((n) => types.includes(n.type));
+	}
 
-    // Filter by read status
-    if (filterToUse.readStatus === 'read') {
-      filtered = filtered.filter(n => n.isRead);
-    } else if (filterToUse.readStatus === 'unread') {
-      filtered = filtered.filter(n => !n.isRead);
-    }
+	// Filter by read status
+	if (readStatus === 'read') {
+		filtered = filtered.filter((n) => n.isRead);
+	} else if (readStatus === 'unread') {
+		filtered = filtered.filter((n) => !n.isRead);
+	}
 
-    // Filter by priority
-    if (filterToUse.priority && filterToUse.priority.length > 0) {
-      filtered = filtered.filter(n => filterToUse.priority!.includes(n.priority));
-    }
+	// Filter by priority
+	if (priority && priority.length > 0) {
+		filtered = filtered.filter((n) => priority.includes(n.priority));
+	}
 
-    // Filter by date range
-    if (filterToUse.dateRange) {
-      const start = filterToUse.dateRange.start.getTime();
-      const end = filterToUse.dateRange.end.getTime();
-      filtered = filtered.filter(n => 
-        n.timestamp >= start && n.timestamp <= end
-      );
-    }
+	// Filter by date range
+	if (dateRange) {
+		const start = dateRange.start.getTime();
+		const end = dateRange.end.getTime();
+		filtered = filtered.filter((n) => n.timestamp >= start && n.timestamp <= end);
+	}
 
-    // Filter by search query
-    if (filterToUse.query && filterToUse.query.trim()) {
-      const query = filterToUse.query.toLowerCase();
-      filtered = filtered.filter(n =>
-        n.title.toLowerCase().includes(query) ||
-        n.message.toLowerCase().includes(query)
-      );
-    }
+	// Filter by search query
+	const normalizedQuery = query?.trim().toLowerCase();
+	if (normalizedQuery) {
+		filtered = filtered.filter((n) =>
+			n.title.toLowerCase().includes(normalizedQuery) ||
+			n.message.toLowerCase().includes(normalizedQuery)
+		);
+	}
 
     // Sort by timestamp (newest first)
     filtered = filtered.sort((a, b) => b.timestamp - a.timestamp);

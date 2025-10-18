@@ -65,7 +65,7 @@ describe('PreferencesStore', () => {
       localStorageMock.getItem.mockReturnValue(JSON.stringify(storedPrefs));
       
       // Re-initialize store
-      const newStore = new (preferencesStore.constructor as any)();
+      new (preferencesStore.constructor as any)();
       
       expect(localStorageMock.getItem).toHaveBeenCalledWith('gr-preferences-v1');
     });
@@ -162,8 +162,7 @@ describe('PreferencesStore', () => {
         dispatchEvent: vi.fn(),
       }));
       
-      const state = preferencesStore.state;
-      // Note: In actual implementation, resolvedMotion would be 'reduced'
+      // Note: In actual implementation, preferencesStore.state.resolvedMotion would be 'reduced'
     });
   });
   

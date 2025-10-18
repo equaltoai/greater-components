@@ -4,7 +4,6 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createTimelineStore } from '../../src/stores/timelineStore';
-import { TransportManager } from '../../src/TransportManager';
 import type { TimelineItem, TimelineConfig, StreamingEdit } from '../../src/stores/types';
 
 // Mock TransportManager
@@ -21,10 +20,12 @@ class MockTransportManager {
   }
   
   on(event: string, handler: (event: any) => void) {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set();
+      this.eventHandlers.set(event, handlers);
     }
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
     
     return () => {
       this.eventHandlers.get(event)?.delete(handler);

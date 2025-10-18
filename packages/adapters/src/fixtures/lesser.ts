@@ -16,6 +16,14 @@ import type {
   LesserAIAnalysisFragment,
 } from '../mappers/lesser/types.js';
 
+const requireFixture = <T>(items: readonly T[], index: number): T => {
+  const item = items[index];
+  if (!item) {
+    throw new Error(`Fixture item not found at index ${index}`);
+  }
+  return item;
+};
+
 export const lesserAIAnalysisFixture: LesserAIAnalysisFragment = {
   id: 'ai-analysis-1',
   objectId: 'post-with-ai-analysis',
@@ -152,6 +160,9 @@ export const lesserAccountFixtures: LesserAccountFragment[] = [
   }
 ];
 
+const getAccount = (index: number): LesserAccountFragment =>
+  requireFixture(lesserAccountFixtures, index);
+
 // Sample Lesser media attachments
 export const lesserMediaFixtures: LesserMediaFragment[] = [
   {
@@ -209,6 +220,9 @@ export const lesserMediaFixtures: LesserMediaFragment[] = [
     }
   }
 ];
+
+const getMedia = (index: number): LesserMediaFragment =>
+  requireFixture(lesserMediaFixtures, index);
 
 // Sample Lesser polls
 export const lesserPollFixtures: LesserPollFragment[] = [
@@ -288,8 +302,8 @@ export const lesserPostFixtures: LesserPostFragment[] = [
     visibility: "PUBLIC",
     isSensitive: false,
     language: "en",
-    author: lesserAccountFixtures[0]!,
-    attachments: [lesserMediaFixtures[0]!, lesserMediaFixtures[1]!],
+    author: getAccount(0),
+    attachments: [getMedia(0), getMedia(1)],
     mentions: [],
     hashtags: [
       {
@@ -341,7 +355,7 @@ export const lesserPostFixtures: LesserPostFragment[] = [
     visibility: "PUBLIC",
     isSensitive: false,
     language: "en",
-    author: lesserAccountFixtures[1]!,
+    author: getAccount(1),
     attachments: [],
     mentions: [],
     hashtags: [
@@ -381,7 +395,7 @@ export const lesserPostFixtures: LesserPostFragment[] = [
     visibility: "PUBLIC",
     isSensitive: false,
     language: "en",
-    author: lesserAccountFixtures[0]!,
+    author: getAccount(0),
     attachments: [],
     mentions: [],
     hashtags: [],
@@ -411,7 +425,7 @@ export const lesserPostFixtures: LesserPostFragment[] = [
     visibility: "FOLLOWERS",
     isSensitive: true,
     language: "en",
-    author: lesserAccountFixtures[0]!,
+    author: getAccount(0),
     attachments: [],
     mentions: [
       {
@@ -452,7 +466,7 @@ export const lesserPostFixtures: LesserPostFragment[] = [
     visibility: "PUBLIC",
     isSensitive: true,
     language: "en",
-    author: lesserAccountFixtures[0]!,
+    author: getAccount(0),
     attachments: [],
     mentions: [],
     hashtags: [],
@@ -472,29 +486,32 @@ export const lesserPostFixtures: LesserPostFragment[] = [
   }
 ];
 
+const getPost = (index: number): LesserPostFragment =>
+  requireFixture(lesserPostFixtures, index);
+
 // Sample Lesser notifications
 export const lesserNotificationFixtures: LesserNotificationFragment[] = [
   {
     id: "notif_n1o2p3q4r5s6t7u8",
     notificationType: "FAVORITE",
     createdAt: "2023-12-15T15:30:00.000Z",
-    triggerAccount: lesserAccountFixtures[1]!,
-    targetPost: lesserPostFixtures[0]!,
+    triggerAccount: getAccount(1),
+    targetPost: getPost(0),
     isRead: false
   },
   {
     id: "notif_o2p3q4r5s6t7u8v9",
     notificationType: "SHARE",
     createdAt: "2023-12-15T16:15:00.000Z",
-    triggerAccount: lesserAccountFixtures[1]!,
-    targetPost: lesserPostFixtures[0]!,
+    triggerAccount: getAccount(1),
+    targetPost: getPost(0),
     isRead: false
   },
   {
     id: "notif_p3q4r5s6t7u8v9w0",
     notificationType: "MENTION",
     createdAt: "2023-12-15T17:45:00.000Z",
-    triggerAccount: lesserAccountFixtures[1]!,
+    triggerAccount: getAccount(1),
     targetPost: lesserPostFixtures[3],
     isRead: true
   },
@@ -502,18 +519,21 @@ export const lesserNotificationFixtures: LesserNotificationFragment[] = [
     id: "notif_q4r5s6t7u8v9w0x1",
     notificationType: "FOLLOW",
     createdAt: "2023-12-15T10:20:00.000Z",
-    triggerAccount: lesserAccountFixtures[1]!,
+    triggerAccount: getAccount(1),
     isRead: true
   },
   {
     id: "notif_r5s6t7u8v9w0x1y2",
     notificationType: "POLL_ENDED",
     createdAt: "2023-12-16T18:00:00.000Z",
-    triggerAccount: lesserAccountFixtures[0]!,
+    triggerAccount: getAccount(0),
     targetPost: lesserPostFixtures[0],
     isRead: false
   }
 ];
+
+const getNotification = (index: number): LesserNotificationFragment =>
+  requireFixture(lesserNotificationFixtures, index);
 
 // Sample Lesser relationships
 export const lesserRelationshipFixtures: LesserRelationshipFragment[] = [
@@ -552,7 +572,7 @@ export const lesserStreamingUpdateFixtures: LesserStreamingUpdate[] = [
     timestamp: "2023-12-15T14:30:00.000Z",
     data: {
       __typename: "PostStreamingData",
-      post: lesserPostFixtures[0]!,
+      post: getPost(0),
       timeline: "home"
     }
   },
@@ -562,7 +582,7 @@ export const lesserStreamingUpdateFixtures: LesserStreamingUpdate[] = [
     timestamp: "2023-12-15T15:30:00.000Z",
     data: {
       __typename: "NotificationStreamingData",
-      notification: lesserNotificationFixtures[0]!
+      notification: getNotification(0)
     }
   },
   {
@@ -572,7 +592,7 @@ export const lesserStreamingUpdateFixtures: LesserStreamingUpdate[] = [
     data: {
       __typename: "PostStreamingData",
       post: {
-        ...lesserPostFixtures[2]!,
+        ...getPost(2),
         lastEditedAt: "2023-12-15T17:25:00.000Z"
       }
     }
@@ -594,15 +614,17 @@ export const lesserStreamingUpdateFixtures: LesserStreamingUpdate[] = [
     data: {
       __typename: "AccountStreamingData",
       account: {
-        ...lesserAccountFixtures[0]!,
-        followerCount: lesserAccountFixtures[0]!.followerCount + 1
+        ...getAccount(0),
+        followerCount: getAccount(0).followerCount + 1
       }
     }
   }
 ];
 
+type TimelineResponse = LesserGraphQLResponse<{ timeline: LesserTimelineConnection | null } | null>;
+
 // Sample Lesser GraphQL responses
-export const lesserGraphQLResponseFixtures: LesserGraphQLResponse<any>[] = [
+export const lesserGraphQLResponseFixtures: TimelineResponse[] = [
   // Successful timeline query
   {
     data: {

@@ -91,7 +91,7 @@ function getNoListMessage(): string {
 }
 
 // Check if should show search results
-function shouldShowSearchResults(results: unknown[], query: string, searching: boolean): boolean {
+function shouldShowSearchResults(results: unknown[], _query: string, _searching: boolean): boolean {
 	return results.length > 0;
 }
 
@@ -660,4 +660,3 @@ describe('Lists.MemberPicker - Integration', () => {
 		expect(shouldShowSpinner(searching)).toBe(false);
 	});
 });
-

@@ -111,10 +111,12 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     
     for (const update of updates) {
       const key = `${update.type}-${update.itemId}`;
-      if (!groupedUpdates.has(key)) {
-        groupedUpdates.set(key, []);
+      let group = groupedUpdates.get(key);
+      if (!group) {
+        group = [];
+        groupedUpdates.set(key, group);
       }
-      groupedUpdates.get(key)!.push(update);
+      group.push(update);
     }
 
     // Apply grouped updates
@@ -199,7 +201,7 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
   }
 
   function applyPatches(item: TimelineItem, patches: JsonPatch[]): TimelineItem {
-    let result = { ...item };
+    let result = { ...item } as TimelineItemMutable;
     
     for (const patch of patches) {
       result = applyJsonPatch(result, patch);
@@ -208,7 +210,12 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     return result;
   }
 
-  function applyJsonPatch(obj: any, patch: JsonPatch): any {
+  const isJsonObject = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value);
+
+  type TimelineItemMutable = TimelineItem & Record<string, unknown>;
+
+  function applyJsonPatch(obj: TimelineItemMutable, patch: JsonPatch): TimelineItemMutable {
     const path = patch.path.split('/').filter(p => p !== '');
     
     switch (patch.op) {
@@ -225,23 +232,28 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     }
   }
 
-  function setNestedValue(obj: any, path: string[], value: any): any {
-    if (path.length === 0) return value;
+  function setNestedValue(obj: TimelineItemMutable, path: string[], value: unknown): TimelineItemMutable {
+    if (path.length === 0) return value as TimelineItemMutable;
     
-    const result = { ...obj };
-    let current = result;
+    const result = { ...obj } as TimelineItemMutable;
+    let current: Record<string, unknown> = result;
     
     for (let i = 0; i < path.length - 1; i++) {
       const key = path[i];
-      if (!key || !(key in current) || typeof current[key] !== 'object') {
+      if (!key) {
+        continue;
+      }
+
+      const existing = current[key];
+      if (!isJsonObject(existing)) {
         if (key) {
           current[key] = {};
         }
       } else {
-        current[key] = { ...current[key] };
+        current[key] = { ...existing };
       }
       if (key) {
-        current = current[key];
+        current = current[key] as Record<string, unknown>;
       }
     }
     
@@ -252,10 +264,10 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     return result;
   }
 
-  function removeNestedValue(obj: any, path: string[]): any {
-    if (path.length === 0) return undefined;
+  function removeNestedValue(obj: TimelineItemMutable, path: string[]): TimelineItemMutable {
+    if (path.length === 0) return obj;
     if (path.length === 1) {
-      const result = { ...obj };
+      const result = { ...obj } as TimelineItemMutable;
       const key = path[0];
       if (key) {
         delete result[key];
@@ -263,18 +275,27 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
       return result;
     }
     
-    const result = { ...obj };
-    const parent = path.slice(0, -1).reduce((acc, key) => {
-      if (!key || !(key in acc)) return acc;
-      acc[key] = { ...acc[key] };
-      return acc[key];
-    }, result);
-    
-    if (parent && typeof parent === 'object') {
-      const lastKey = path[path.length - 1];
-      if (lastKey) {
-        delete parent[lastKey];
+    const result = { ...obj } as TimelineItemMutable;
+    let current: Record<string, unknown> = result;
+
+    for (let i = 0; i < path.length - 1; i++) {
+      const key = path[i];
+      if (!key) {
+        continue;
       }
+
+      const existing = current[key];
+      if (!isJsonObject(existing)) {
+        return result;
+      }
+
+      current[key] = { ...existing };
+      current = current[key] as Record<string, unknown>;
+    }
+
+    const lastKey = path[path.length - 1];
+    if (lastKey) {
+      delete current[lastKey];
     }
     
     return result;
@@ -500,6 +521,12 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     }
   }
 
+  const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null;
+
+  const isTimelineEditPayload = (value: unknown): value is { type: 'timeline_edit'; data: StreamingEdit } =>
+    isRecord(value) && value.type === 'timeline_edit' && isRecord(value.data);
+
   function startStreaming(): void {
     if (state.value.isStreaming || !config.transportManager) return;
     
@@ -511,11 +538,8 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
     
     // Subscribe to streaming edits
     const editHandler = config.transportManager?.on('message', (event) => {
-      if (event.data && typeof event.data === 'object' && 'type' in event.data && event.data.type === 'timeline_edit') {
-        const editData = (event.data as any).data;
-        if (editData) {
-          applyStreamingEdit(editData as StreamingEdit);
-        }
+      if (isTimelineEditPayload(event.data)) {
+        applyStreamingEdit(event.data.data);
       }
     });
     

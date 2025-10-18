@@ -587,7 +587,7 @@ export interface BatchMapperResult<T> {
 }
 
 // Validation schema helpers
-export interface ValidationRule<T = any> {
+export interface ValidationRule<T = unknown> {
   /** Rule name for debugging */
   name: string;
   /** Validation function */
@@ -602,9 +602,9 @@ export interface FieldValidator {
   /** Field path in dot notation */
   path: string;
   /** Validation rules for this field */
-  rules: ValidationRule[];
+  rules: ValidationRule<unknown>[];
   /** Transformer function */
-  transform?: (value: any) => any;
+  transform?: (value: unknown) => unknown;
   /** Default value if field is missing */
-  defaultValue?: any;
+  defaultValue?: unknown;
 }

@@ -17,9 +17,9 @@
     animation = 'pulse',
     class: className = '',
     loading = true,
-    children,
-    ...restProps
+    children
   }: Props = $props();
+  const restProps = $restProps();
 
   // Compute skeleton classes
   const skeletonClass = $derived(() => {

@@ -26,9 +26,9 @@
     activation = 'automatic',
     variant = 'default',
     class: className = '',
-    onTabChange,
-    ...restProps
+    onTabChange
   }: Props = $props();
+  const restProps = $restProps();
 
   // State management
   let currentActiveTab = $state(activeTab);
@@ -44,11 +44,6 @@
         focusedTabIndex = tabIndex;
       }
     }
-  });
-
-  // Get focusable tabs (non-disabled tabs)
-  const focusableTabs = $derived(() => {
-    return tabs.filter(tab => !tab.disabled);
   });
 
   // Compute container classes
@@ -208,7 +203,7 @@
     role="tablist"
     aria-orientation={orientation}
   >
-    {#each tabs as tab, index}
+    {#each tabs as tab, index (tab.id)}
       {@const isActive = tab.id === currentActiveTab}
       {@const isFocused = index === focusedTabIndex}
       <button
@@ -232,7 +227,7 @@
   </div>
 
   <div class="gr-tabs__panels">
-    {#each tabs as tab}
+    {#each tabs as tab (tab.id)}
       {@const isActive = tab.id === currentActiveTab}
       <div
         class="gr-tabs__panel"

@@ -121,12 +121,6 @@ describe('EndorsedAccounts Logic', () => {
 });
 
 describe('FeaturedHashtags Logic', () => {
-	const mockHashtag: FeaturedHashtag = {
-		name: 'svelte',
-		usageCount: 42,
-		lastUsed: '2024-01-15T10:00:00Z',
-	};
-
 	describe('formatCount Helper', () => {
 		function formatCount(count: number): string {
 			if (count >= 1000) {
@@ -403,4 +397,3 @@ describe('Drag State Management', () => {
 		});
 	});
 });
-

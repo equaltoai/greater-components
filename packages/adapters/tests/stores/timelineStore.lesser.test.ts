@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createTimelineStore } from '../../src/stores/timelineStore.js';
-import type { TimelineConfig, TimelineItem, LesserTimelineMetadata } from '../../src/stores/types.js';
+import type { TimelineConfig, LesserTimelineMetadata } from '../../src/stores/types.js';
 
 describe('TimelineStore - Lesser Integration', () => {
   let mockTransportManager: any;
@@ -277,4 +277,3 @@ describe('TimelineStore - Lesser Integration', () => {
     });
   });
 });
-

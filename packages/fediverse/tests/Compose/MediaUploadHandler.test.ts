@@ -7,7 +7,6 @@ import {
 	cleanupMediaFile,
 	cleanupMediaFiles,
 	type MediaFile,
-	type ValidationResult,
 } from '../../src/components/Compose/MediaUploadHandler.js';
 
 // Mock URL.revokeObjectURL for Node environment

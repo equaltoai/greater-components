@@ -14,6 +14,7 @@ import {
 	type ComponentConfig,
 } from '../utils/config.js';
 import { isValidProject, detectProjectType, getSvelteVersion } from '../utils/files.js';
+import { logger } from '../utils/logger.js';
 
 export const initCommand = new Command()
 	.name('init')
@@ -23,7 +24,7 @@ export const initCommand = new Command()
 	.action(async (options) => {
 		const cwd = path.resolve(options.cwd || process.cwd());
 
-		console.log(chalk.bold('\n✨ Welcome to Greater Components\n'));
+		logger.info(chalk.bold('\n✨ Welcome to Greater Components\n'));
 
 		// Check if valid project
 		const spinner = ora('Checking project...').start();
@@ -46,14 +47,14 @@ export const initCommand = new Command()
 		spinner.succeed('Project detected');
 
 		// Show project info
-		console.log(chalk.dim('\nProject Information:'));
-		console.log(chalk.dim(`  Type: ${projectType}`));
-		console.log(chalk.dim(`  Svelte: v${svelteVersion || 'unknown'}\n`));
+		logger.note(chalk.dim('\nProject Information:'));
+		logger.note(chalk.dim(`  Type: ${projectType}`));
+		logger.note(chalk.dim(`  Svelte: v${svelteVersion || 'unknown'}\n`));
 
 		// Verify Svelte 5
 		if (svelteVersion && svelteVersion < 5) {
-			console.log(chalk.yellow('⚠️  Greater Components requires Svelte 5+'));
-			console.log(chalk.dim('  Please upgrade Svelte before continuing\n'));
+			logger.warn(chalk.yellow('⚠️  Greater Components requires Svelte 5+'));
+			logger.note(chalk.dim('  Please upgrade Svelte before continuing\n'));
 			process.exit(1);
 		}
 
@@ -89,7 +90,7 @@ export const initCommand = new Command()
 			]);
 
 			if (!response.style) {
-				console.log(chalk.red('\n✖ Setup cancelled'));
+				logger.error(chalk.red('\n✖ Setup cancelled'));
 				process.exit(0);
 			}
 
@@ -120,10 +121,9 @@ export const initCommand = new Command()
 		}
 
 		// Success
-		console.log(chalk.green('\n✓ Greater Components initialized successfully!\n'));
-		console.log(chalk.dim('Next steps:'));
-		console.log(chalk.dim('  1. Add your first component: ') + chalk.cyan('greater add button'));
-		console.log(chalk.dim('  2. Browse components: ') + chalk.cyan('greater list'));
-		console.log(chalk.dim('  3. View documentation: ') + chalk.cyan('https://greater.fediverse.dev\n'));
+		logger.success(chalk.green('\n✓ Greater Components initialized successfully!\n'));
+		logger.note(chalk.dim('Next steps:'));
+		logger.note(chalk.dim('  1. Add your first component: ') + chalk.cyan('greater add button'));
+		logger.note(chalk.dim('  2. Browse components: ') + chalk.cyan('greater list'));
+		logger.note(chalk.dim('  3. View documentation: ') + chalk.cyan('https://greater.fediverse.dev\n'));
 	});
-

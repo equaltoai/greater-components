@@ -9,7 +9,6 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createPresenceStore } from '../../src/stores/presenceStore';
-import { TransportManager } from '../../src/TransportManager';
 import type { PresenceConfig, UserPresence, SessionInfo } from '../../src/stores/types';
 
 // Mock window object for browser APIs
@@ -39,10 +38,12 @@ class MockTransportManager {
   }
   
   on(event: string, handler: (event: any) => void) {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, new Set());
+    let handlers = this.eventHandlers.get(event);
+    if (!handlers) {
+      handlers = new Set();
+      this.eventHandlers.set(event, handlers);
     }
-    this.eventHandlers.get(event)!.add(handler);
+    handlers.add(handler);
     
     return () => {
       this.eventHandlers.get(event)?.delete(handler);

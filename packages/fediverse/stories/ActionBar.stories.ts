@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
+import { action } from '@storybook/addon-actions';
 import ActionBar from '../src/components/ActionBar.svelte';
 
 const meta = {
@@ -47,6 +48,20 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const replyAction = action('actionbar: reply');
+const boostAction = action('actionbar: boost');
+const favoriteAction = action('actionbar: favorite');
+const shareAction = action('actionbar: share');
+const unboostAction = action('actionbar: unboost');
+const unfavoriteAction = action('actionbar: unfavorite');
+
+const defaultHandlers = {
+  onReply: replyAction,
+  onBoost: boostAction,
+  onFavorite: favoriteAction,
+  onShare: shareAction
+};
+
 // Default story
 export const Default: Story = {
   args: {
@@ -60,10 +75,7 @@ export const Default: Story = {
     size: 'sm',
     idPrefix: 'story-action',
     handlers: {
-      onReply: () => console.log('Reply clicked'),
-      onBoost: () => console.log('Boost clicked'),
-      onFavorite: () => console.log('Favorite clicked'),
-      onShare: () => console.log('Share clicked')
+      ...defaultHandlers
     }
   }
 };
@@ -77,10 +89,7 @@ export const NoCounts: Story = {
       favorites: 0
     },
     handlers: {
-      onReply: () => console.log('Reply clicked'),
-      onBoost: () => console.log('Boost clicked'),
-      onFavorite: () => console.log('Favorite clicked'),
-      onShare: () => console.log('Share clicked')
+      ...defaultHandlers
     }
   }
 };
@@ -98,10 +107,10 @@ export const ActiveStates: Story = {
       favorited: true
     },
     handlers: {
-      onReply: () => console.log('Reply clicked'),
-      onBoost: () => console.log('Unboost clicked'),
-      onFavorite: () => console.log('Unfavorite clicked'),
-      onShare: () => console.log('Share clicked')
+      onReply: replyAction,
+      onBoost: unboostAction,
+      onFavorite: unfavoriteAction,
+      onShare: shareAction
     }
   }
 };
@@ -115,10 +124,7 @@ export const HighCounts: Story = {
       favorites: 9999
     },
     handlers: {
-      onReply: () => console.log('Reply clicked'),
-      onBoost: () => console.log('Boost clicked'),
-      onFavorite: () => console.log('Favorite clicked'),
-      onShare: () => console.log('Share clicked')
+      ...defaultHandlers
     }
   }
 };
@@ -132,10 +138,7 @@ export const VeryHighCounts: Story = {
       favorites: 123000
     },
     handlers: {
-      onReply: () => console.log('Reply clicked'),
-      onBoost: () => console.log('Boost clicked'),
-      onFavorite: () => console.log('Favorite clicked'),
-      onShare: () => console.log('Share clicked')
+      ...defaultHandlers
     }
   }
 };
@@ -165,12 +168,7 @@ export const MediumSize: Story = {
       favorites: 23
     },
     size: 'md',
-    handlers: {
-      onReply: () => console.log('Reply clicked'),
-      onBoost: () => console.log('Boost clicked'),
-      onFavorite: () => console.log('Favorite clicked'),
-      onShare: () => console.log('Share clicked')
-    }
+    handlers: { ...defaultHandlers }
   }
 };
 
@@ -183,12 +181,7 @@ export const LargeSize: Story = {
       favorites: 23
     },
     size: 'lg',
-    handlers: {
-      onReply: () => console.log('Reply clicked'),
-      onBoost: () => console.log('Boost clicked'),
-      onFavorite: () => console.log('Favorite clicked'),
-      onShare: () => console.log('Share clicked')
-    }
+    handlers: { ...defaultHandlers }
   }
 };
 
@@ -233,31 +226,41 @@ export const Interactive: Story = {
       },
       handlers: {
         onReply: () => {
-          console.log('Reply action triggered');
+          replyAction();
           // In a real app, this would open a reply dialog
         },
         onBoost: () => {
-          console.log('Boost action triggered');
+          const nextBoosted = !args.states?.boosted;
+          if (nextBoosted) {
+            boostAction();
+          } else {
+            unboostAction();
+          }
           // Toggle boost state (in real app this would be handled by parent)
-          args.states = { ...args.states, boosted: !args.states?.boosted };
-          if (args.states.boosted) {
+          args.states = { ...args.states, boosted: nextBoosted };
+          if (nextBoosted) {
             args.counts = { ...args.counts, boosts: args.counts.boosts + 1 };
           } else {
             args.counts = { ...args.counts, boosts: args.counts.boosts - 1 };
           }
         },
         onFavorite: () => {
-          console.log('Favorite action triggered');
+          const nextFavorited = !args.states?.favorited;
+          if (nextFavorited) {
+            favoriteAction();
+          } else {
+            unfavoriteAction();
+          }
           // Toggle favorite state (in real app this would be handled by parent)
-          args.states = { ...args.states, favorited: !args.states?.favorited };
-          if (args.states.favorited) {
+          args.states = { ...args.states, favorited: nextFavorited };
+          if (nextFavorited) {
             args.counts = { ...args.counts, favorites: args.counts.favorites + 1 };
           } else {
             args.counts = { ...args.counts, favorites: args.counts.favorites - 1 };
           }
         },
         onShare: () => {
-          console.log('Share action triggered');
+          shareAction();
           // In a real app, this would open share options or copy link
           if (navigator.share) {
             navigator.share({
@@ -273,7 +276,7 @@ export const Interactive: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Interactive example where boost and favorite actions toggle their states. Check the console for action logs.'
+        story: 'Interactive example where boost and favorite actions toggle their states. Check the Storybook actions panel for event logs.'
       }
     }
   }
@@ -291,10 +294,7 @@ export const WithExtensions: Story = {
         favorites: 23
       },
       handlers: {
-        onReply: () => console.log('Reply clicked'),
-        onBoost: () => console.log('Boost clicked'),
-        onFavorite: () => console.log('Favorite clicked'),
-        onShare: () => console.log('Share clicked')
+        ...defaultHandlers
       }
     },
     slots: {

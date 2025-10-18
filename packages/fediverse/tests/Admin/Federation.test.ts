@@ -148,7 +148,7 @@ function getLargestInstances(
 
 // Check if domain is valid
 function isValidDomain(domain: string): boolean {
-	const domainRegex = /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}$/i;
+	const domainRegex = /^[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}$/i;
 	return domainRegex.test(domain);
 }
 
@@ -698,7 +698,11 @@ describe('Admin.Federation - Integration', () => {
 	});
 
 	it('handles unblock flow', () => {
-		const blockedInstance = instances.find((i) => i.status === 'blocked')!;
+		const blockedInstance = instances.find((i) => i.status === 'blocked');
+		expect(blockedInstance).toBeDefined();
+		if (!blockedInstance) {
+			return;
+		}
 
 		// Check can unblock
 		expect(shouldShowUnblockButton(blockedInstance)).toBe(true);
@@ -723,4 +727,3 @@ describe('Admin.Federation - Integration', () => {
 		expect(largest[0].domain).toBe('mastodon.social');
 	});
 });
-

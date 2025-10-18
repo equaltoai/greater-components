@@ -16,7 +16,6 @@ import {
 	HttpLink,
 	split,
 	from,
-	ApolloLink,
 	type NormalizedCacheObject,
 	type DefaultOptions,
 } from '@apollo/client/core';
@@ -98,6 +97,36 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 
 	let currentToken = token || null;
 
+	const logDebug = (message: string, context?: unknown): void => {
+		if (!debug) {
+			return;
+		}
+		const output = globalThis.console;
+		if (!output?.warn) {
+			return;
+		}
+		if (context !== undefined) {
+			output.warn(message, context);
+		} else {
+			output.warn(message);
+		}
+	};
+
+	const logDebugError = (message: string, context?: unknown): void => {
+		if (!debug) {
+			return;
+		}
+		const output = globalThis.console;
+		if (!output?.error) {
+			return;
+		}
+		if (context !== undefined) {
+			output.error(message, context);
+		} else {
+			output.error(message);
+		}
+	};
+
 	// HTTP Link for queries and mutations
 	const httpLink = new HttpLink({
 		uri: httpEndpoint,
@@ -119,13 +148,13 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		connectionAckWaitTimeout: connectionTimeout,
 		on: {
 			connected: () => {
-				if (debug) console.log('[GraphQL] WebSocket connected');
+				logDebug('[GraphQL] WebSocket connected');
 			},
 			closed: () => {
-				if (debug) console.log('[GraphQL] WebSocket closed');
+				logDebug('[GraphQL] WebSocket closed');
 			},
 			error: (error) => {
-				if (debug) console.error('[GraphQL] WebSocket error:', error);
+				logDebugError('[GraphQL] WebSocket error', error);
 			},
 		},
 	});
@@ -134,15 +163,15 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	const wsLink = new GraphQLWsLink(wsClient);
 
 	// Error handling link
-	const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+	const errorLink = onError(({ graphQLErrors, networkError }) => {
 		if (graphQLErrors) {
 			graphQLErrors.forEach(({ message, locations, path, extensions }) => {
 				const errorMsg = `[GraphQL Error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`;
-				if (debug) console.error(errorMsg);
+				logDebugError(errorMsg);
 
 				// Handle authentication errors
 				if (extensions?.code === 'UNAUTHENTICATED') {
-					if (debug) console.error('[GraphQL] Authentication error');
+					logDebugError('[GraphQL] Authentication error');
 					// Clear token on auth failure
 					currentToken = null;
 				}
@@ -150,7 +179,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		}
 
 		if (networkError) {
-			if (debug) console.error(`[GraphQL Network Error]: ${networkError.message}`);
+			logDebugError(`[GraphQL Network Error]: ${networkError.message}`);
 		}
 	});
 
@@ -223,17 +252,17 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			shouldRetry: () => enableRetry,
 		});
 
-		// Clear cache on token change
-		client.clearStore();
+	// Clear cache on token change
+	void client.clearStore();
 
-		if (debug) console.log('[GraphQL] Token updated, cache cleared');
+	logDebug('[GraphQL] Token updated, cache cleared');
 	};
 
 	// Cleanup function
 	const close = () => {
 		wsClient.dispose();
 		client.stop();
-		if (debug) console.log('[GraphQL] Client closed');
+		logDebug('[GraphQL] Client closed');
 	};
 
 	return {
@@ -261,7 +290,11 @@ export function getGraphQLClient(config?: GraphQLClientConfig): GraphQLClientIns
 		clientInstance = createGraphQLClient(config);
 	}
 
-	return clientInstance!;
+	if (!clientInstance) {
+		throw new Error('GraphQL client not initialized.');
+	}
+
+	return clientInstance;
 }
 
 /**
@@ -273,4 +306,3 @@ export function closeGraphQLClient(): void {
 		clientInstance = null;
 	}
 }
-

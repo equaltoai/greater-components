@@ -67,13 +67,21 @@ describe('Notification Grouping Utilities', () => {
       expect(groups.find(g => g.type === 'favourite')).toBeDefined();
       expect(groups.find(g => g.type === 'follow')).toBeDefined();
       
-      // Check that favourites are properly grouped
-      const favouriteGroup = groups.find(g => g.type === 'favourite')!;
-      expect(favouriteGroup.count).toBe(3);
-      
-      // Check that follows are properly grouped
-      const followGroup = groups.find(g => g.type === 'follow')!;
-      expect(followGroup.count).toBe(2);
+		// Check that favourites are properly grouped
+		const favouriteGroup = groups.find(g => g.type === 'favourite');
+		expect(favouriteGroup).toBeDefined();
+		if (!favouriteGroup) {
+			throw new Error('Expected favourite notification group to be present');
+		}
+		expect(favouriteGroup.count).toBe(3);
+		
+		// Check that follows are properly grouped
+		const followGroup = groups.find(g => g.type === 'follow');
+		expect(followGroup).toBeDefined();
+		if (!followGroup) {
+			throw new Error('Expected follow notification group to be present');
+		}
+		expect(followGroup.count).toBe(2);
     });
 
     it('should sort groups by latest activity', () => {

@@ -5,6 +5,8 @@
 
 import type { MappingError, SourceMetadata } from '../models/unified.js';
 
+type UnknownRecord = Record<string, unknown>;
+
 // Unified Models
 export type {
   // Core unified types
@@ -242,11 +244,17 @@ export const MapperUtils = {
   /**
    * Validate required fields in payload
    */
-  validateRequired(payload: any, requiredFields: string[]): { valid: boolean; missing: string[] } {
+  validateRequired(payload: UnknownRecord, requiredFields: string[]): { valid: boolean; missing: string[] } {
     const missing: string[] = [];
     
     for (const field of requiredFields) {
-      if (!(field in payload) || payload[field] === null || payload[field] === undefined) {
+      if (!Object.prototype.hasOwnProperty.call(payload, field)) {
+        missing.push(field);
+        continue;
+      }
+
+      const value = payload[field];
+      if (value === null || value === undefined) {
         missing.push(field);
       }
     }

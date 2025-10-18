@@ -6,6 +6,11 @@
 
 import type { ApolloCache, Reference } from '@apollo/client/core';
 
+type StatusPayload = { __typename?: string; id: string } & Record<string, unknown>;
+type TimelineEdge = { __typename?: string; node: Reference; cursor: string };
+type TimelineConnection = { edges: TimelineEdge[]; pageInfo: Record<string, unknown> };
+type PollOption = { votesCount: number } & Record<string, unknown>;
+
 /**
  * Optimistic response for favouriting a status
  */
@@ -82,7 +87,7 @@ export function optimisticMute(accountId: string, currentState: boolean, notific
  * Update cache after favouriting a status
  */
 export function updateCacheAfterFavourite(
-	cache: ApolloCache<any>,
+	cache: ApolloCache<unknown>,
 	statusId: string,
 	favourited: boolean
 ) {
@@ -101,7 +106,7 @@ export function updateCacheAfterFavourite(
  * Update cache after reblogging a status
  */
 export function updateCacheAfterReblog(
-	cache: ApolloCache<any>,
+	cache: ApolloCache<unknown>,
 	statusId: string,
 	reblogged: boolean
 ) {
@@ -120,7 +125,7 @@ export function updateCacheAfterReblog(
  * Update cache after bookmarking a status
  */
 export function updateCacheAfterBookmark(
-	cache: ApolloCache<any>,
+	cache: ApolloCache<unknown>,
 	statusId: string,
 	bookmarked: boolean
 ) {
@@ -136,7 +141,7 @@ export function updateCacheAfterBookmark(
  * Update cache after following an account
  */
 export function updateCacheAfterFollow(
-	cache: ApolloCache<any>,
+	cache: ApolloCache<unknown>,
 	accountId: string,
 	following: boolean,
 	locked: boolean
@@ -164,7 +169,7 @@ export function updateCacheAfterFollow(
  * Update cache after blocking an account
  */
 export function updateCacheAfterBlock(
-	cache: ApolloCache<any>,
+	cache: ApolloCache<unknown>,
 	accountId: string,
 	blocking: boolean
 ) {
@@ -183,7 +188,7 @@ export function updateCacheAfterBlock(
  * Update cache after muting an account
  */
 export function updateCacheAfterMute(
-	cache: ApolloCache<any>,
+	cache: ApolloCache<unknown>,
 	accountId: string,
 	muting: boolean,
 	notifications = true
@@ -200,7 +205,7 @@ export function updateCacheAfterMute(
 /**
  * Remove status from cache (after delete)
  */
-export function removeStatusFromCache(cache: ApolloCache<any>, statusId: string) {
+export function removeStatusFromCache(cache: ApolloCache<unknown>, statusId: string) {
 	const normalizedId = cache.identify({ __typename: 'Status', id: statusId });
 	cache.evict({ id: normalizedId });
 	cache.gc();
@@ -210,16 +215,25 @@ export function removeStatusFromCache(cache: ApolloCache<any>, statusId: string)
  * Add status to cache (after create)
  */
 export function addStatusToCache(
-	cache: ApolloCache<any>,
-	status: any,
+	cache: ApolloCache<unknown>,
+	status: StatusPayload,
 	timelineField = 'homeTimeline'
-) {
-	cache.modify({
+): void {
+	cache.modify<TimelineConnection>({
 		fields: {
-			[timelineField](existing = { edges: [], pageInfo: {} }, { toReference }) {
-				const newEdge = {
+			[timelineField](
+				existingConnection: TimelineConnection | undefined,
+				{ toReference }: { toReference: (value: StatusPayload) => Reference | undefined }
+			): TimelineConnection {
+				const existing = existingConnection ?? { edges: [], pageInfo: {} };
+				const reference = toReference(status);
+				if (!reference) {
+					return existing;
+				}
+
+				const newEdge: TimelineEdge = {
 					__typename: 'StatusEdge',
-					node: toReference(status),
+					node: reference,
 					cursor: status.id,
 				};
 
@@ -235,7 +249,7 @@ export function addStatusToCache(
 /**
  * Update status in cache (after edit)
  */
-export function updateStatusInCache(cache: ApolloCache<any>, status: any) {
+export function updateStatusInCache(cache: ApolloCache<unknown>, status: StatusPayload) {
 	cache.writeFragment({
 		id: cache.identify(status),
 		fragment: gql`
@@ -267,7 +281,7 @@ export function optimisticDeleteStatus(statusId: string) {
 /**
  * Optimistic response for voting in a poll
  */
-export function optimisticVotePoll(pollId: string, choices: number[], options: any[]) {
+export function optimisticVotePoll(pollId: string, choices: number[], options: PollOption[]): { votePoll: { __typename: 'Poll'; id: string; voted: boolean; ownVotes: number[]; votesCount: number; options: PollOption[] } } {
 	return {
 		votePoll: {
 			__typename: 'Poll',
@@ -285,4 +299,3 @@ export function optimisticVotePoll(pollId: string, choices: number[], options: a
 
 // Import gql for fragments
 import { gql } from '@apollo/client/core';
-

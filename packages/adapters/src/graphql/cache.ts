@@ -8,7 +8,11 @@
  * - Garbage collection
  */
 
-import type { InMemoryCacheConfig, TypePolicies } from '@apollo/client/core';
+import type { ApolloCache, InMemoryCacheConfig, TypePolicies } from '@apollo/client/core';
+
+type TimestampedNode = { createdAt?: string | null };
+type ConnectionEdges = { edges?: Array<{ node: TimestampedNode }> };
+type ReadFieldFn = <T>(fieldName: string, from: unknown) => T | undefined;
 
 /**
  * Type policies for Apollo Client cache
@@ -264,18 +268,22 @@ export const cacheEvictionPolicies = {
 /**
  * Helper to evict stale cache entries
  */
-export function evictStaleCache(cache: any, fieldName: string, maxAge: number): void {
+export function evictStaleCache(cache: ApolloCache<unknown>, fieldName: string, maxAge: number): void {
 	const now = Date.now();
 
 	try {
-		cache.modify({
+		cache.modify<ConnectionEdges>({
 			fields: {
-				[fieldName](existing: any, { readField }: any) {
-					if (!existing?.edges) return existing;
+				[fieldName](existing: ConnectionEdges | undefined, { readField }: { readField: ReadFieldFn }) {
+					if (!existing?.edges) {
+						return existing;
+					}
 
-					const filtered = existing.edges.filter((edge: any) => {
-						const createdAt = readField('createdAt', edge.node);
-						if (!createdAt) return true;
+					const filtered = existing.edges.filter((edge) => {
+						const createdAt = readField<string>('createdAt', edge.node);
+						if (!createdAt) {
+							return true;
+						}
 
 						const age = now - new Date(createdAt).getTime();
 						return age < maxAge;
@@ -296,12 +304,14 @@ export function evictStaleCache(cache: any, fieldName: string, maxAge: number): 
 /**
  * Helper to limit cache size
  */
-export function limitCacheSize(cache: any, fieldName: string, maxItems: number): void {
+export function limitCacheSize(cache: ApolloCache<unknown>, fieldName: string, maxItems: number): void {
 	try {
-		cache.modify({
+		cache.modify<ConnectionEdges>({
 			fields: {
-				[fieldName](existing: any) {
-					if (!existing?.edges) return existing;
+				[fieldName](existing: ConnectionEdges | undefined) {
+					if (!existing?.edges) {
+						return existing;
+					}
 
 					if (existing.edges.length <= maxItems) {
 						return existing;
@@ -318,4 +328,3 @@ export function limitCacheSize(cache: any, fieldName: string, maxItems: number):
 		console.error(`Error limiting cache size for ${fieldName}:`, error);
 	}
 }
-

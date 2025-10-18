@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { AuthHandlers, AuthState } from '../../src/components/Auth/context.js';
+import type { AuthHandlers } from '../../src/components/Auth/context.js';
 
 // WebAuthn availability check logic
 function checkWebAuthnAvailability(): boolean {
@@ -34,8 +34,6 @@ function createWebAuthnSetupLogic(
 		error: null,
 		loading: false,
 	};
-
-	const handlers: Partial<AuthHandlers> = {};
 
 	function setStep(step: RegistrationStep) {
 		state.step = step;
@@ -518,7 +516,7 @@ describe('Auth.WebAuthnSetup - Integration Scenarios', () => {
 		const mockRegister = vi.fn().mockImplementation(() => new Promise(() => {})); // Never resolves
 		const onSkip = vi.fn();
 
-		const promise = logic.handleSetup('user@example.com', mockRegister, undefined, true);
+		logic.handleSetup('user@example.com', mockRegister, undefined, true);
 
 		logic.handleSkip(onSkip);
 

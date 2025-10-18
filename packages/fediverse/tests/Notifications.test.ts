@@ -16,7 +16,6 @@ import {
 	createNotificationsContext,
 	getNotificationsContext,
 	hasNotificationsContext,
-	type NotificationsContext,
 	type NotificationsConfig,
 	type NotificationsHandlers,
 	type NotificationsState,
@@ -521,12 +520,16 @@ describe('Notifications Grouping', () => {
 		const context = createNotificationsContext(notifications, groups);
 
 		expect(context.groups).toHaveLength(3);
-		expect(context.groups![0].type).toBe('favourite');
-		expect(context.groups![0].count).toBe(3);
-		expect(context.groups![1].type).toBe('reblog');
-		expect(context.groups![1].count).toBe(2);
-		expect(context.groups![2].type).toBe('follow');
-		expect(context.groups![2].count).toBe(5);
+		expect(context.groups).toBeDefined();
+		if (!context.groups) {
+			throw new Error('Expected notification groups to be defined');
+		}
+		expect(context.groups[0].type).toBe('favourite');
+		expect(context.groups[0].count).toBe(3);
+		expect(context.groups[1].type).toBe('reblog');
+		expect(context.groups[1].count).toBe(2);
+		expect(context.groups[2].type).toBe('follow');
+		expect(context.groups[2].count).toBe(5);
 	});
 
 	it('should support disabled grouping', () => {
@@ -618,8 +621,13 @@ describe('Notifications Edge Cases', () => {
 		const group = createMockNotificationGroup('group1', 'follow', 1);
 		const context = createNotificationsContext([], [group]);
 
-		expect(context.groups![0].count).toBe(1);
-		expect(context.groups![0].notifications).toHaveLength(1);
+		const groups = context.groups;
+		expect(groups).toBeDefined();
+		if (!groups) {
+			throw new Error('Expected groups to exist for grouped notifications');
+		}
+		expect(groups[0].count).toBe(1);
+		expect(groups[0].notifications).toHaveLength(1);
 	});
 });
 
@@ -665,4 +673,3 @@ describe('Notifications Type Safety', () => {
 		expect(group).toHaveProperty('created_at');
 	});
 });
-

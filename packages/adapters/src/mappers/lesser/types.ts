@@ -4,17 +4,17 @@
  */
 
 // Base GraphQL response wrapper
-export interface LesserGraphQLResponse<T = any> {
+export interface LesserGraphQLResponse<T = unknown> {
   data?: T;
   errors?: LesserGraphQLError[];
-  extensions?: Record<string, any>;
+  extensions?: Record<string, unknown>;
 }
 
 export interface LesserGraphQLError {
   message: string;
   locations?: Array<{ line: number; column: number }>;
   path?: Array<string | number>;
-  extensions?: Record<string, any>;
+  extensions?: Record<string, unknown>;
 }
 
 // Fragment definitions for reusable GraphQL pieces
@@ -573,24 +573,51 @@ export interface LesserNotificationSubscription {
 }
 
 // Type guards and validation helpers
-export function isLesserGraphQLResponse<T>(obj: any): obj is LesserGraphQLResponse<T> {
-  return obj && (obj.data !== undefined || Array.isArray(obj.errors));
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+export function isLesserGraphQLResponse<T>(obj: unknown): obj is LesserGraphQLResponse<T> {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return 'data' in obj || ('errors' in obj && Array.isArray(obj.errors));
 }
 
-export function isLesserAccountFragment(obj: any): obj is LesserAccountFragment {
-  return obj && typeof obj.id === 'string' && typeof obj.handle === 'string';
+export function isLesserAccountFragment(obj: unknown): obj is LesserAccountFragment {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return typeof obj.id === 'string' && typeof obj.handle === 'string';
 }
 
-export function isLesserPostFragment(obj: any): obj is LesserPostFragment {
-  return obj && typeof obj.id === 'string' && typeof obj.content === 'string' && obj.author;
+export function isLesserPostFragment(obj: unknown): obj is LesserPostFragment {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return typeof obj.id === 'string' && typeof obj.content === 'string' && isRecord(obj.author);
 }
 
-export function isLesserNotificationFragment(obj: any): obj is LesserNotificationFragment {
-  return obj && typeof obj.id === 'string' && typeof obj.notificationType === 'string' && obj.triggerAccount;
+export function isLesserNotificationFragment(obj: unknown): obj is LesserNotificationFragment {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return (
+    typeof obj.id === 'string' &&
+    typeof obj.notificationType === 'string' &&
+    isRecord(obj.triggerAccount)
+  );
 }
 
-export function isLesserStreamingUpdate(obj: any): obj is LesserStreamingUpdate {
-  return obj && typeof obj.__typename === 'string' && typeof obj.eventType === 'string' && obj.data;
+export function isLesserStreamingUpdate(obj: unknown): obj is LesserStreamingUpdate {
+  if (!isRecord(obj)) {
+    return false;
+  }
+
+  return typeof obj.__typename === 'string' && typeof obj.eventType === 'string' && isRecord(obj.data);
 }
 
 // GraphQL fragment strings (for actual GraphQL usage)
