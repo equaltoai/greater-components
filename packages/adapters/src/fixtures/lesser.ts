@@ -13,7 +13,66 @@ import type {
   LesserRelationshipFragment,
   LesserGraphQLResponse,
   LesserTimelineConnection,
+  LesserAIAnalysisFragment,
 } from '../mappers/lesser/types.js';
+
+export const lesserAIAnalysisFixture: LesserAIAnalysisFragment = {
+  id: 'ai-analysis-1',
+  objectId: 'post-with-ai-analysis',
+  objectType: 'POST',
+  overallRisk: 0.75,
+  moderationAction: 'FLAG',
+  confidence: 0.9,
+  analyzedAt: '2023-10-26T10:00:00Z',
+  textAnalysis: {
+    sentiment: 'NEGATIVE',
+    sentimentScores: {
+      positive: 0.1,
+      negative: 0.8,
+      neutral: 0.1,
+      mixed: 0.0,
+    },
+    toxicityScore: 0.8,
+    toxicityLabels: ['hate_speech'],
+    containsPII: false,
+    dominantLanguage: 'en',
+    entities: [{ text: 'bad words', type: 'PROFANITY', confidence: 0.9 }],
+    keyPhrases: ['bad words'],
+  },
+  imageAnalysis: {
+    moderationLabels: [
+      { name: 'Graphic Violence', confidence: 0.9, parentName: 'Violence' },
+    ],
+    isNSFW: true,
+    nsfwConfidence: 0.9,
+    violenceScore: 0.8,
+    weaponsDetected: true,
+    detectedText: ['violence'],
+    textToxicity: 0.7,
+    celebrityFaces: [],
+    deepfakeScore: 0.1,
+  },
+  aiDetection: {
+    aiGeneratedProbability: 0.1,
+    generationModel: 'Lesser-Gen-1',
+    patternConsistency: 0.9,
+    styleDeviation: 0.2,
+    semanticCoherence: 0.8,
+    suspiciousPatterns: [],
+  },
+  spamAnalysis: {
+    spamScore: 0.9,
+    spamIndicators: [
+      { type: 'LINK_SPAM', description: 'Contains suspicious links', severity: 0.9 },
+    ],
+    postingVelocity: 10,
+    repetitionScore: 0.8,
+    linkDensity: 0.7,
+    followerRatio: 0.1,
+    interactionRate: 0.01,
+    accountAgeDays: 1,
+  },
+};
 
 // Sample Lesser accounts
 export const lesserAccountFixtures: LesserAccountFragment[] = [
@@ -356,12 +415,10 @@ export const lesserPostFixtures: LesserPostFragment[] = [
     attachments: [],
     mentions: [
       {
-        account: {
-          id: "acc_t5u6v7w8x9y0z1a2",
-          handle: "a11y_expert@accessibility.network",
-          displayName: "Accessibility Expert",
-          profileUrl: "https://accessibility.network/@a11y_expert"
-        }
+        id: "acc_t5u6v7w8x9y0z1a2",
+        username: "a11y_expert",
+        domain: "accessibility.network",
+        url: "https://accessibility.network/@a11y_expert"
       }
     ],
     hashtags: [
@@ -386,6 +443,32 @@ export const lesserPostFixtures: LesserPostFragment[] = [
       isBookmarked: true
     },
     isPinned: false
+  },
+  {
+    id: "post-with-ai-analysis",
+    publishedAt: "2023-12-15T19:15:00.000Z",
+    content: "This is a post with AI analysis.",
+    contentWarning: "AI analysis",
+    visibility: "PUBLIC",
+    isSensitive: true,
+    language: "en",
+    author: lesserAccountFixtures[0]!,
+    attachments: [],
+    mentions: [],
+    hashtags: [],
+    emojis: [],
+    interactionCounts: {
+      replies: 7,
+      shares: 3,
+      favorites: 12
+    },
+    userInteractions: {
+      isFavorited: false,
+      isShared: false,
+      isBookmarked: true
+    },
+    isPinned: false,
+    aiAnalysis: lesserAIAnalysisFixture,
   }
 ];
 

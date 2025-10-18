@@ -35,6 +35,46 @@ export interface LesserAccountFragment {
   postCount: number;
   profileFields: LesserProfileField[];
   customEmojis: LesserEmojiFragment[];
+  
+  // Lesser-specific fields
+  trustScore?: number;
+  reputation?: LesserReputationFragment;
+  vouches?: LesserVouchFragment[];
+}
+
+export interface LesserReputationFragment {
+  actorId: string;
+  instance: string;
+  totalScore: number;
+  trustScore: number;
+  activityScore: number;
+  moderationScore: number;
+  communityScore: number;
+  calculatedAt: string;
+  version: string;
+  evidence?: {
+    totalPosts: number;
+    totalFollowers: number;
+    accountAge: number;
+    vouchCount: number;
+    trustingActors: number;
+    averageTrustScore: number;
+  };
+  signature?: string;
+}
+
+export interface LesserVouchFragment {
+  id: string;
+  from?: { id: string };
+  to?: { id: string };
+  confidence: number;
+  context: string;
+  voucherReputation: number;
+  createdAt: string;
+  expiresAt: string;
+  active: boolean;
+  revoked: boolean;
+  revokedAt?: string;
 }
 
 export interface LesserProfileField {
@@ -75,6 +115,118 @@ export interface LesserPostFragment {
   isPinned: boolean;
   lastEditedAt?: string;
   poll?: LesserPollFragment;
+  
+  // Lesser-specific fields
+  estimatedCost?: number;
+  moderationScore?: number;
+  communityNotes?: LesserCommunityNoteFragment[];
+  quoteUrl?: string;
+  quoteable?: boolean;
+  quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+  quoteContext?: LesserQuoteContextFragment;
+  quoteCount?: number;
+  aiAnalysis?: LesserAIAnalysisFragment;
+}
+
+export interface LesserCommunityNoteFragment {
+  id: string;
+  author?: LesserAccountFragment;
+  content: string;
+  helpful: number;
+  notHelpful: number;
+  createdAt: string;
+}
+
+export interface LesserQuoteContextFragment {
+  originalAuthor?: LesserAccountFragment;
+  originalNote?: { id: string };
+  quoteAllowed: boolean;
+  quoteType: 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
+  withdrawn: boolean;
+}
+
+export interface LesserAIAnalysisFragment {
+  id: string;
+  objectId: string;
+  objectType: string;
+  textAnalysis?: LesserTextAnalysisFragment;
+  imageAnalysis?: LesserImageAnalysisFragment;
+  aiDetection?: LesserAIDetectionFragment;
+  spamAnalysis?: LesserSpamAnalysisFragment;
+  overallRisk: number;
+  moderationAction: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE' | 'SHADOW_BAN' | 'REVIEW';
+  confidence: number;
+  analyzedAt: string;
+}
+
+export interface LesserTextAnalysisFragment {
+  sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MIXED';
+  sentimentScores: {
+    positive: number;
+    negative: number;
+    neutral: number;
+    mixed: number;
+  };
+  toxicityScore: number;
+  toxicityLabels: string[];
+  containsPII: boolean;
+  dominantLanguage: string;
+  entities: Array<{
+    text: string;
+    type: string;
+    confidence: number;
+  }>;
+  keyPhrases: string[];
+}
+
+export interface LesserModerationLabelFragment {
+  name: string;
+  confidence: number;
+  parentName?: string;
+}
+
+export interface LesserCelebrityFragment {
+  name: string;
+  confidence: number;
+  urls: string[];
+}
+
+export interface LesserImageAnalysisFragment {
+  moderationLabels: LesserModerationLabelFragment[];
+  isNSFW: boolean;
+  nsfwConfidence: number;
+  violenceScore: number;
+  weaponsDetected: boolean;
+  detectedText: string[];
+  textToxicity: number;
+  celebrityFaces: LesserCelebrityFragment[];
+  deepfakeScore: number;
+}
+
+export interface LesserAIDetectionFragment {
+  aiGeneratedProbability: number;
+  generationModel?: string;
+  patternConsistency: number;
+  styleDeviation: number;
+  semanticCoherence: number;
+  suspiciousPatterns: string[];
+}
+
+export interface LesserSpamIndicatorFragment {
+  type: string;
+  description: string;
+  severity: number;
+}
+
+export interface LesserSpamAnalysisFragment {
+  spamScore: number;
+  spamIndicators: LesserSpamIndicatorFragment[];
+  postingVelocity: number;
+  repetitionScore: number;
+  linkDensity: number;
+  followerRatio: number;
+  interactionRate: number;
+  accountAgeDays: number;
 }
 
 export interface LesserInteractionCounts {
@@ -114,15 +266,7 @@ export interface LesserMediaMetadata {
   format?: string;
 }
 
-// Mention types
-export interface LesserMentionFragment {
-  account: {
-    id: string;
-    handle: string;
-    displayName: string;
-    profileUrl: string;
-  };
-}
+
 
 // Hashtag types
 export interface LesserHashtagFragment {
@@ -158,15 +302,84 @@ export interface LesserPollOption {
   voteCount?: number;
 }
 
+// Basic Object fragment (for notifications, etc.)
+export interface LesserObjectFragment {
+  id: string;
+  type: string;
+  actor: LesserAccountFragment;
+  content: string;
+  inReplyTo?: string;
+  visibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'DIRECT';
+  sensitive: boolean;
+  spoilerText?: string;
+  attachments: LesserAttachmentFragment[];
+  tags: LesserTagFragment[];
+  mentions: LesserMentionFragment[];
+  createdAt: string;
+  updatedAt: string;
+  
+  // Engagement metrics
+  repliesCount: number;
+  likesCount: number;
+  sharesCount: number;
+  
+  // Lesser enhancements
+  estimatedCost: number;
+  moderationScore?: number;
+  communityNotes: LesserCommunityNoteFragment[];
+  
+  // Quote Posts extensions
+  quoteUrl?: string;
+  quoteable: boolean;
+  quotePermissions: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+  quoteContext?: LesserQuoteContextFragment;
+  quoteCount?: number;
+  
+  // AI analysis
+  aiAnalysis?: LesserAIAnalysisFragment;
+}
+
+// Basic Attachment fragment (matches GraphQL Object.attachments)
+export interface LesserAttachmentFragment {
+  id: string;
+  type: string; // String, not enum
+  url: string;
+  preview?: string;
+  description?: string;
+  blurhash?: string;
+  width?: number;
+  height?: number;
+  duration?: number;
+}
+
+// Basic Tag fragment (matches GraphQL Object.tags)
+export interface LesserTagFragment {
+  name: string;
+  url: string;
+}
+
+export interface LesserMentionFragment {
+  id: string;
+  username: string;
+  domain?: string;
+  url: string;
+}
+
 // Notification types
 export interface LesserNotificationFragment {
   id: string;
-  notificationType: 'MENTION' | 'FOLLOW' | 'FOLLOW_REQUEST' | 'SHARE' | 'FAVORITE' | 'POST' | 'POLL_ENDED' | 'STATUS_UPDATE' | 'ADMIN_SIGNUP' | 'ADMIN_REPORT';
+  notificationType: 'MENTION' | 'FOLLOW' | 'FOLLOW_REQUEST' | 'SHARE' | 'FAVORITE' | 'POST' | 'POLL_ENDED' | 'STATUS_UPDATE' | 'ADMIN_SIGNUP' | 'ADMIN_REPORT' | 'QUOTE' | 'COMMUNITY_NOTE' | 'TRUST_UPDATE' | 'COST_ALERT' | 'MODERATION_ACTION';
   createdAt: string;
   triggerAccount: LesserAccountFragment;
-  targetPost?: LesserPostFragment;
+  status?: LesserObjectFragment; // Changed to LesserObjectFragment (basic Object, not full LesserPostFragment)
   adminReport?: LesserAdminReportFragment;
   isRead?: boolean;
+  
+  // Note: Lesser-specific notification payloads are derived from status/triggerAccount Lesser fields
+  // - quote: status.quoteContext indicates a quote notification
+  // - community_note: status.communityNotes contains the note
+  // - trust_update: derived from triggerAccount.trustScore changes
+  // - cost_alert/moderation_action: inferred from notification type
 }
 
 // Admin report types

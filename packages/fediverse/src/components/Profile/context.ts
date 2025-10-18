@@ -32,6 +32,42 @@ export interface ProfileData {
 	isBlocked?: boolean;
 	isMuted?: boolean;
 	relationship?: ProfileRelationship;
+	
+	// Lesser-specific fields
+	trustScore?: number;
+	reputation?: {
+		actorId: string;
+		instance: string;
+		totalScore: number;
+		trustScore: number;
+		activityScore: number;
+		moderationScore: number;
+		communityScore: number;
+		calculatedAt: string;
+		version: string;
+		evidence: {
+			totalPosts: number;
+			totalFollowers: number;
+			accountAge: number;
+			vouchCount: number;
+			trustingActors: number;
+			averageTrustScore: number;
+		};
+		signature?: string;
+	};
+	vouches?: Array<{
+		id: string;
+		fromId: string;
+		toId: string;
+		confidence: number;
+		context: string;
+		voucherReputation: number;
+		createdAt: string;
+		expiresAt: string;
+		active: boolean;
+		revoked: boolean;
+		revokedAt?: string;
+	}>;
 }
 
 /**

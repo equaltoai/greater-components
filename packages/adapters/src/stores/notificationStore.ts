@@ -645,6 +645,34 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
     return `notification_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  // Lesser-specific notification helpers
+  function getQuoteNotifications(): Notification[] {
+    return state.value.notifications.filter(n => n.type === 'quote');
+  }
+
+  function getCommunityNoteNotifications(): Notification[] {
+    return state.value.notifications.filter(n => n.type === 'community_note');
+  }
+
+  function getTrustUpdateNotifications(): Notification[] {
+    return state.value.notifications.filter(n => n.type === 'trust_update');
+  }
+
+  function getCostAlertNotifications(): Notification[] {
+    return state.value.notifications.filter(n => n.type === 'cost_alert');
+  }
+
+  function getModerationActionNotifications(): Notification[] {
+    return state.value.notifications.filter(n => n.type === 'moderation_action');
+  }
+
+  function getUnreadLesserNotifications(): Notification[] {
+    const lesserTypes = ['quote', 'community_note', 'trust_update', 'cost_alert', 'moderation_action'];
+    return state.value.notifications.filter(n => 
+      lesserTypes.includes(n.type) && !n.isRead
+    );
+  }
+
   return {
     subscribe,
     destroy,
@@ -656,6 +684,13 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
     clearAll,
     updateFilter,
     startStreaming,
-    stopStreaming
+    stopStreaming,
+    // Lesser-specific methods
+    getQuoteNotifications,
+    getCommunityNoteNotifications,
+    getTrustUpdateNotifications,
+    getCostAlertNotifications,
+    getModerationActionNotifications,
+    getUnreadLesserNotifications
   };
 }

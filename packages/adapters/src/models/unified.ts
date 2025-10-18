@@ -51,6 +51,45 @@ export interface UnifiedAccount {
   relationship?: AccountRelationship;
   /** Source metadata */
   metadata: SourceMetadata;
+  
+  // Lesser-specific fields
+  /** Trust score (0-100) - Lesser only */
+  trustScore?: number;
+  /** Detailed reputation information - Lesser only */
+  reputation?: {
+    actorId: string;
+    instance: string;
+    totalScore: number;
+    trustScore: number;
+    activityScore: number;
+    moderationScore: number;
+    communityScore: number;
+    calculatedAt: string;
+    version: string;
+    evidence: {
+      totalPosts: number;
+      totalFollowers: number;
+      accountAge: number;
+      vouchCount: number;
+      trustingActors: number;
+      averageTrustScore: number;
+    };
+    signature?: string;
+  };
+  /** Vouches received - Lesser only */
+  vouches?: Array<{
+    id: string;
+    fromId: string;
+    toId: string;
+    confidence: number;
+    context: string;
+    voucherReputation: number;
+    createdAt: string;
+    expiresAt: string;
+    active: boolean;
+    revoked: boolean;
+    revokedAt?: string;
+  }>;
 }
 
 export interface AccountField {
@@ -132,6 +171,120 @@ export interface UnifiedStatus {
   poll?: Poll;
   /** Source metadata */
   metadata: SourceMetadata;
+  
+  // Lesser-specific fields
+  /** Estimated cost in microcents - Lesser only */
+  estimatedCost?: number;
+  /** Moderation score (0-1, higher = more problematic) - Lesser only */
+  moderationScore?: number;
+  /** Community notes attached - Lesser only */
+  communityNotes?: Array<{
+    id: string;
+    authorId: string;
+    authorUsername: string;
+    authorDisplayName: string;
+    content: string;
+    helpful: number;
+    notHelpful: number;
+    createdAt: string;
+  }>;
+  /** Quote post URL - Lesser only */
+  quoteUrl?: string;
+  /** Whether this can be quoted - Lesser only */
+  quoteable?: boolean;
+  /** Quote permission level - Lesser only */
+  quotePermissions?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+  /** Quote context - Lesser only */
+  quoteContext?: {
+    originalAuthorId: string;
+    originalNoteId?: string;
+    quoteAllowed: boolean;
+    quoteType: 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
+    withdrawn: boolean;
+  };
+  /** Number of times quoted - Lesser only */
+  quoteCount?: number;
+  /** AI analysis results - Lesser only */
+  aiAnalysis?: AIAnalysis;
+}
+
+// AI Analysis model
+export interface AIAnalysis {
+  id: string;
+  objectId: string;
+  objectType: string;
+  overallRisk: number;
+  moderationAction: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE' | 'SHADOW_BAN' | 'REVIEW';
+  confidence: number;
+  analyzedAt: string;
+  textAnalysis?: TextAnalysis;
+  imageAnalysis?: ImageAnalysis;
+  aiDetection?: AIDetection;
+  spamAnalysis?: SpamAnalysis;
+}
+
+export interface TextAnalysis {
+  sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MIXED';
+  sentimentScores: {
+    positive: number;
+    negative: number;
+    neutral: number;
+    mixed: number;
+  };
+  toxicityScore: number;
+  toxicityLabels: string[];
+  containsPII: boolean;
+  dominantLanguage: string;
+  entities: Array<{
+    text: string;
+    type: string;
+    confidence: number;
+  }>;
+  keyPhrases: string[];
+}
+
+export interface ImageAnalysis {
+  moderationLabels: Array<{
+    name: string;
+    confidence: number;
+    parentName?: string;
+  }>;
+  isNSFW: boolean;
+  nsfwConfidence: number;
+  violenceScore: number;
+  weaponsDetected: boolean;
+  detectedText: string[];
+  textToxicity: number;
+  celebrityFaces: Array<{
+    name: string;
+    confidence: number;
+    urls: string[];
+  }>;
+  deepfakeScore: number;
+}
+
+export interface AIDetection {
+  aiGeneratedProbability: number;
+  generationModel?: string;
+  patternConsistency: number;
+  styleDeviation: number;
+  semanticCoherence: number;
+  suspiciousPatterns: string[];
+}
+
+export interface SpamAnalysis {
+  spamScore: number;
+  spamIndicators: Array<{
+    type: string;
+    description: string;
+    severity: number;
+  }>;
+  postingVelocity: number;
+  repetitionScore: number;
+  linkDensity: number;
+  followerRatio: number;
+  interactionRate: number;
+  accountAgeDays: number;
 }
 
 // Media attachment model
@@ -253,7 +406,7 @@ export interface UnifiedNotification {
   /** Unique identifier */
   id: string;
   /** Notification type */
-  type: 'mention' | 'status' | 'reblog' | 'follow' | 'follow_request' | 'favourite' | 'poll' | 'update' | 'admin.sign_up' | 'admin.report';
+  type: 'mention' | 'status' | 'reblog' | 'follow' | 'follow_request' | 'favourite' | 'poll' | 'update' | 'admin.sign_up' | 'admin.report' | 'quote' | 'community_note' | 'trust_update' | 'cost_alert' | 'moderation_action';
   /** Creation timestamp */
   createdAt: string;
   /** Account that triggered this notification */
@@ -266,6 +419,39 @@ export interface UnifiedNotification {
   read?: boolean;
   /** Source metadata */
   metadata: SourceMetadata;
+  
+  // Lesser-specific notification payloads
+  /** Quote status (for quote notifications) */
+  quoteStatus?: UnifiedStatus;
+  /** Community note details (for community_note notifications) */
+  communityNote?: {
+    id: string;
+    authorId: string;
+    authorUsername: string;
+    authorDisplayName: string;
+    content: string;
+    helpful: number;
+    notHelpful: number;
+    createdAt: string;
+  };
+  /** Trust update details (for trust_update notifications) */
+  trustUpdate?: {
+    newScore: number;
+    previousScore?: number;
+    reason?: string;
+  };
+  /** Cost alert details (for cost_alert notifications) */
+  costAlert?: {
+    amount: number;
+    threshold: number;
+    message: string;
+  };
+  /** Moderation action details (for moderation_action notifications) */
+  moderationAction?: {
+    action: string;
+    reason: string;
+    statusId?: string;
+  };
 }
 
 // Admin report model (for admin notifications)

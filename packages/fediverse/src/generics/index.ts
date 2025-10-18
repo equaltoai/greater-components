@@ -374,6 +374,34 @@ export interface GenericTimelineItem<T extends ActivityPubObject = ActivityPubOb
 		isReply?: boolean;
 		isBoost?: boolean;
 	};
+
+	/**
+	 * Platform-specific metadata
+	 */
+	metadata?: {
+		lesser?: {
+			/** Estimated cost in microcents */
+			estimatedCost?: number;
+			/** Moderation score (0-1) */
+			moderationScore?: number;
+			/** Has community notes attached */
+			hasCommunityNotes?: boolean;
+			/** Community notes count */
+			communityNotesCount?: number;
+			/** Is a quote post */
+			isQuote?: boolean;
+			/** Quote count */
+			quoteCount?: number;
+			/** Is quoteable */
+			quoteable?: boolean;
+			/** Quote permission level */
+			quotePermission?: 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+			/** Trust score of author */
+			authorTrustScore?: number;
+			/** AI analysis result */
+			aiAnalysis?: boolean;
+		};
+	};
 }
 
 /**
@@ -525,5 +553,266 @@ export function getVisibility(object: ActivityPubObject): 'public' | 'unlisted' 
 	}
 
 	return 'direct';
+}
+
+// ============================================================================
+// Lesser-specific Extensions
+// ============================================================================
+
+/**
+ * Trust category for trust graph relationships
+ */
+export type TrustCategory = 'CONTENT' | 'BEHAVIOR' | 'TECHNICAL';
+
+/**
+ * Quote permission levels
+ */
+export type QuotePermission = 'EVERYONE' | 'FOLLOWERS' | 'NONE';
+
+/**
+ * Quote types
+ */
+export type QuoteType = 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
+
+/**
+ * Reputation evidence for trust calculations
+ */
+export interface ReputationEvidence {
+	totalPosts: number;
+	totalFollowers: number;
+	accountAge: number;
+	vouchCount: number;
+	trustingActors: number;
+	averageTrustScore: number;
+}
+
+/**
+ * Reputation information for an actor
+ */
+export interface Reputation {
+	actorId: string;
+	instance: string;
+	totalScore: number;
+	trustScore: number;
+	activityScore: number;
+	moderationScore: number;
+	communityScore: number;
+	calculatedAt: string | Date;
+	version: string;
+	evidence: ReputationEvidence;
+	signature?: string;
+}
+
+/**
+ * Vouch from one actor to another
+ */
+export interface Vouch {
+	id: string;
+	from: string | ActivityPubActor;
+	to: string | ActivityPubActor;
+	confidence: number;
+	context: string;
+	voucherReputation: number;
+	createdAt: string | Date;
+	expiresAt: string | Date;
+	active: boolean;
+	revoked: boolean;
+	revokedAt?: string | Date;
+}
+
+/**
+ * Trust edge in trust graph
+ */
+export interface TrustEdge {
+	from: string | ActivityPubActor;
+	to: string | ActivityPubActor;
+	category: TrustCategory;
+	score: number;
+	updatedAt: string | Date;
+}
+
+/**
+ * Community note attached to content
+ */
+export interface CommunityNote {
+	id: string;
+	author: string | ActivityPubActor;
+	content: string;
+	helpful: number;
+	notHelpful: number;
+	createdAt: string | Date;
+}
+
+/**
+ * Quote context for quoted posts
+ */
+export interface QuoteContext {
+	originalAuthor: string | ActivityPubActor;
+	originalNote?: string | ActivityPubObject;
+	quoteAllowed: boolean;
+	quoteType: QuoteType;
+	withdrawn: boolean;
+}
+
+/**
+ * AI analysis results for content
+ */
+export interface AIAnalysis {
+	id: string;
+	objectId: string;
+	objectType: string;
+	overallRisk: number;
+	moderationAction: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE' | 'SHADOW_BAN' | 'REVIEW';
+	confidence: number;
+	analyzedAt: string | Date;
+	textAnalysis?: {
+		sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MIXED';
+		toxicityScore: number;
+		containsPII: boolean;
+		dominantLanguage: string;
+	};
+	imageAnalysis?: {
+		isNSFW: boolean;
+		nsfwConfidence: number;
+		violenceScore: number;
+		weaponsDetected: boolean;
+	};
+}
+
+/**
+ * Lesser-specific extensions for ActivityPub Actors
+ */
+export interface LesserActorExtensions {
+	/** Trust score (0-100) */
+	trustScore?: number;
+	/** Detailed reputation information */
+	reputation?: Reputation;
+	/** Vouches received from other actors */
+	vouches?: Vouch[];
+}
+
+/**
+ * Lesser-specific extensions for ActivityPub Objects
+ */
+export interface LesserObjectExtensions {
+	/** Estimated cost in microcents */
+	estimatedCost?: number;
+	/** Moderation score (0-1, higher = more problematic) */
+	moderationScore?: number;
+	/** Community notes attached to this object */
+	communityNotes?: CommunityNote[];
+	/** Quote post URL if this quotes another post */
+	quoteUrl?: string;
+	/** Whether this object can be quoted */
+	quoteable?: boolean;
+	/** Quote permission level */
+	quotePermissions?: QuotePermission;
+	/** Quote context information */
+	quoteContext?: QuoteContext;
+	/** Number of times this has been quoted */
+	quoteCount?: number;
+	/** AI analysis results */
+	aiAnalysis?: AIAnalysis;
+}
+
+/**
+ * Lesser-specific extensions for ActivityPub Activities
+ */
+export interface LesserActivityExtensions {
+	/** Cost of this activity in microcents */
+	cost?: number;
+}
+
+/**
+ * ActivityPub Actor with Lesser extensions
+ */
+export type LesserActor = ActivityPubActor<LesserActorExtensions>;
+
+/**
+ * ActivityPub Object with Lesser extensions
+ */
+export type LesserObject = ActivityPubObject<LesserObjectExtensions>;
+
+/**
+ * ActivityPub Activity with Lesser extensions
+ */
+export type LesserActivity = ActivityPubActivity<LesserObject, LesserActivityExtensions>;
+
+/**
+ * Generic Status with Lesser extensions
+ */
+export type LesserStatus = GenericStatus<LesserObject>;
+
+/**
+ * Type guard: Check if actor has Lesser extensions
+ */
+export function hasLesserActorExtensions(actor: ActivityPubActor): actor is LesserActor {
+	return actor.extensions !== undefined && 
+		('trustScore' in actor.extensions || 'reputation' in actor.extensions);
+}
+
+/**
+ * Type guard: Check if object has Lesser extensions
+ */
+export function hasLesserObjectExtensions(object: ActivityPubObject): object is LesserObject {
+	return object.extensions !== undefined &&
+		('estimatedCost' in object.extensions || 'communityNotes' in object.extensions || 'quoteUrl' in object.extensions);
+}
+
+/**
+ * Type guard: Check if activity has Lesser extensions
+ */
+export function hasLesserActivityExtensions(activity: ActivityPubActivity): activity is LesserActivity {
+	return activity.extensions !== undefined && 'cost' in activity.extensions;
+}
+
+/**
+ * Helper: Extract trust score from actor
+ */
+export function getTrustScore(actor: ActivityPubActor): number | null {
+	if (hasLesserActorExtensions(actor) && actor.extensions?.trustScore !== undefined) {
+		return actor.extensions.trustScore;
+	}
+	return null;
+}
+
+/**
+ * Helper: Extract estimated cost from object
+ */
+export function getEstimatedCost(object: ActivityPubObject): number | null {
+	if (hasLesserObjectExtensions(object) && object.extensions?.estimatedCost !== undefined) {
+		return object.extensions.estimatedCost;
+	}
+	return null;
+}
+
+/**
+ * Helper: Check if object has community notes
+ */
+export function hasCommunityNotes(object: ActivityPubObject): boolean {
+	if (hasLesserObjectExtensions(object) && object.extensions?.communityNotes) {
+		return object.extensions.communityNotes.length > 0;
+	}
+	return false;
+}
+
+/**
+ * Helper: Check if object is quoteable
+ */
+export function isQuoteable(object: ActivityPubObject): boolean {
+	if (object.extensions && 'quoteable' in object.extensions) {
+		return object.extensions.quoteable === true;
+	}
+	return true; // Default to true if not specified
+}
+
+/**
+ * Helper: Get quote permission level
+ */
+export function getQuotePermission(object: ActivityPubObject): QuotePermission {
+	if (object.extensions && 'quotePermissions' in object.extensions && object.extensions.quotePermissions) {
+		return object.extensions.quotePermissions as QuotePermission;
+	}
+	return 'EVERYONE'; // Default permission
 }
 

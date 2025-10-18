@@ -51,6 +51,17 @@ export {
   createPresenceStore
 } from './stores';
 
+// Unified Model Converters
+export {
+  unifiedStatusToTimelineItem,
+  unifiedStatusesToTimelineItems
+} from './stores/unifiedToTimeline';
+
+export {
+  unifiedNotificationToStoreNotification,
+  unifiedNotificationsToStoreNotifications
+} from './stores/unifiedToNotification';
+
 // Streaming Operations
 export {
   StreamingOperationsManager,
@@ -152,6 +163,10 @@ export type {
   NotificationConfig,
   NotificationFilter,
   NotificationAction,
+  
+  // Lesser metadata types
+  LesserTimelineMetadata,
+  LesserNotificationMetadata,
   
   // Presence types
   UserPresence,
@@ -265,6 +280,13 @@ export type {
   // Notification types
   LesserNotificationFragment,
   LesserAdminReportFragment,
+  
+  // Lesser-specific fragment types
+  LesserReputationFragment,
+  LesserVouchFragment,
+  LesserCommunityNoteFragment,
+  LesserQuoteContextFragment,
+  LesserAIAnalysisFragment,
   
   // Timeline types
   LesserTimelineConnection,

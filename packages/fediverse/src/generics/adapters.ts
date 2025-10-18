@@ -397,11 +397,43 @@ export class LesserAdapter implements GenericAdapter<LesserStatus, GenericStatus
 			? { id: obj.attributedTo, type: 'Person' }
 			: obj.attributedTo;
 
+		// Extract Lesser extensions for direct field population
+		const lesserExt = obj.extensions as any;
+		const actorExt = actor.extensions as any;
+
 		// Create generic status
 		const generic: GenericStatus = {
 			id: lesser.metadata?.localId || obj.id,
-			activityPubObject: obj,
-			account: actor,
+			activityPubObject: {
+				...obj,
+				// Only add extensions if there are Lesser fields
+				extensions: (lesserExt?.estimatedCost !== undefined || lesserExt?.moderationScore !== undefined || lesserExt?.communityNotes !== undefined || lesserExt?.quoteUrl !== undefined || lesserExt?.quoteable !== undefined || lesserExt?.quotePermissions !== undefined || lesserExt?.quoteContext !== undefined || lesserExt?.quoteCount !== undefined || lesserExt?.aiAnalysis !== undefined)
+					? {
+						...obj.extensions,
+						estimatedCost: lesserExt?.estimatedCost,
+						moderationScore: lesserExt?.moderationScore,
+						communityNotes: lesserExt?.communityNotes,
+						quoteUrl: lesserExt?.quoteUrl,
+						quoteable: lesserExt?.quoteable,
+						quotePermissions: lesserExt?.quotePermissions,
+						quoteContext: lesserExt?.quoteContext,
+						quoteCount: lesserExt?.quoteCount,
+						aiAnalysis: lesserExt?.aiAnalysis,
+					}
+					: obj.extensions,
+			},
+			account: {
+				...actor,
+				// Only add extensions if there are Lesser fields
+				extensions: (actorExt?.trustScore !== undefined || actorExt?.reputation !== undefined || actorExt?.vouches !== undefined)
+					? {
+						...actor.extensions,
+						trustScore: actorExt?.trustScore,
+						reputation: actorExt?.reputation,
+						vouches: actorExt?.vouches,
+					}
+					: actor.extensions,
+			},
 			content: obj.content || '',
 			contentWarning: obj.summary,
 			sensitive: obj.sensitive || false,

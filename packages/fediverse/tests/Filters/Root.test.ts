@@ -35,7 +35,7 @@ describe('Filters Context Logic', () => {
 		});
 
 		it('should use singular for 1 hour', () => {
-			const future = new Date(Date.now() + 3600000).toISOString();
+			const future = new Date(Date.now() + 3601000).toISOString(); // 1 hour + 1 second to ensure it's definitely > 1 hour
 			const result = formatExpiration(future);
 			expect(result).toBe('1 hour');
 		});

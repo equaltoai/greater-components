@@ -18,6 +18,7 @@ import type {
   LesserGraphQLResponse,
   LesserGraphQLError,
   LesserTimelineConnection,
+  LesserAIAnalysisFragment,
 } from './types.js';
 
 import type {
@@ -37,6 +38,7 @@ import type {
   BatchMapperResult,
   MappingError,
   SourceMetadata,
+  AIAnalysis,
 } from '../../models/unified.js';
 
 /**
@@ -140,6 +142,12 @@ function mapLesserNotificationType(type: string): UnifiedNotification['type'] {
     case 'STATUS_UPDATE': return 'update';
     case 'ADMIN_SIGNUP': return 'admin.sign_up';
     case 'ADMIN_REPORT': return 'admin.report';
+    // Lesser-specific notification types
+    case 'QUOTE': return 'quote';
+    case 'COMMUNITY_NOTE': return 'community_note';
+    case 'TRUST_UPDATE': return 'trust_update';
+    case 'COST_ALERT': return 'cost_alert';
+    case 'MODERATION_ACTION': return 'moderation_action';
     default: return 'mention';
   }
 }
@@ -180,6 +188,42 @@ export function mapLesserAccount(account: LesserAccountFragment, relationship?: 
       })),
       relationship: relationship ? mapLesserRelationship(relationship) : undefined,
       metadata: createLesserMetadata(account),
+      
+      // Map Lesser-specific fields
+      trustScore: account.trustScore !== undefined ? safeNumber(account.trustScore) : undefined,
+      reputation: account.reputation ? {
+        actorId: safeString(account.reputation.actorId),
+        instance: safeString(account.reputation.instance),
+        totalScore: safeNumber(account.reputation.totalScore),
+        trustScore: safeNumber(account.reputation.trustScore),
+        activityScore: safeNumber(account.reputation.activityScore),
+        moderationScore: safeNumber(account.reputation.moderationScore),
+        communityScore: safeNumber(account.reputation.communityScore),
+        calculatedAt: safeString(account.reputation.calculatedAt),
+        version: safeString(account.reputation.version),
+        evidence: {
+          totalPosts: safeNumber(account.reputation.evidence?.totalPosts),
+          totalFollowers: safeNumber(account.reputation.evidence?.totalFollowers),
+          accountAge: safeNumber(account.reputation.evidence?.accountAge),
+          vouchCount: safeNumber(account.reputation.evidence?.vouchCount),
+          trustingActors: safeNumber(account.reputation.evidence?.trustingActors),
+          averageTrustScore: safeNumber(account.reputation.evidence?.averageTrustScore),
+        },
+        signature: account.reputation.signature || undefined,
+      } : undefined,
+      vouches: account.vouches ? account.vouches.map(vouch => ({
+        id: safeString(vouch.id),
+        fromId: safeString(vouch.from?.id || ''),
+        toId: safeString(vouch.to?.id || ''),
+        confidence: safeNumber(vouch.confidence),
+        context: safeString(vouch.context),
+        voucherReputation: safeNumber(vouch.voucherReputation),
+        createdAt: safeString(vouch.createdAt),
+        expiresAt: safeString(vouch.expiresAt),
+        active: safeBoolean(vouch.active),
+        revoked: safeBoolean(vouch.revoked),
+        revokedAt: vouch.revokedAt || undefined,
+      })) : undefined,
     };
 
     const endTime = performance.now();
@@ -215,6 +259,208 @@ function mapLesserRelationship(relationship: LesserRelationshipFragment): Accoun
     endorsed: safeBoolean(relationship.isEndorsed),
     note: relationship.personalNote || undefined,
   };
+}
+
+function mapLesserAIAnalysis(aiAnalysis: LesserAIAnalysisFragment): AIAnalysis {
+  return {
+    id: safeString(aiAnalysis.id),
+    objectId: safeString(aiAnalysis.objectId),
+    objectType: safeString(aiAnalysis.objectType),
+    overallRisk: safeNumber(aiAnalysis.overallRisk),
+    moderationAction: aiAnalysis.moderationAction as any,
+    confidence: safeNumber(aiAnalysis.confidence),
+    analyzedAt: safeString(aiAnalysis.analyzedAt),
+    textAnalysis: aiAnalysis.textAnalysis ? {
+      sentiment: aiAnalysis.textAnalysis.sentiment as any,
+      sentimentScores: {
+        positive: safeNumber(aiAnalysis.textAnalysis.sentimentScores.positive),
+        negative: safeNumber(aiAnalysis.textAnalysis.sentimentScores.negative),
+        neutral: safeNumber(aiAnalysis.textAnalysis.sentimentScores.neutral),
+        mixed: safeNumber(aiAnalysis.textAnalysis.sentimentScores.mixed),
+      },
+      toxicityScore: safeNumber(aiAnalysis.textAnalysis.toxicityScore),
+      toxicityLabels: aiAnalysis.textAnalysis.toxicityLabels || [],
+      containsPII: safeBoolean(aiAnalysis.textAnalysis.containsPII),
+      dominantLanguage: safeString(aiAnalysis.textAnalysis.dominantLanguage),
+      entities: (aiAnalysis.textAnalysis.entities || []).map(entity => ({
+        text: safeString(entity.text),
+        type: safeString(entity.type),
+        confidence: safeNumber(entity.confidence),
+      })),
+      keyPhrases: aiAnalysis.textAnalysis.keyPhrases || [],
+    } : undefined,
+    imageAnalysis: aiAnalysis.imageAnalysis ? {
+      moderationLabels: (aiAnalysis.imageAnalysis.moderationLabels || []).map(label => ({
+        name: safeString(label.name),
+        confidence: safeNumber(label.confidence),
+        parentName: safeString(label.parentName),
+      })),
+      isNSFW: safeBoolean(aiAnalysis.imageAnalysis.isNSFW),
+      nsfwConfidence: safeNumber(aiAnalysis.imageAnalysis.nsfwConfidence),
+      violenceScore: safeNumber(aiAnalysis.imageAnalysis.violenceScore),
+      weaponsDetected: safeBoolean(aiAnalysis.imageAnalysis.weaponsDetected),
+      detectedText: aiAnalysis.imageAnalysis.detectedText || [],
+      textToxicity: safeNumber(aiAnalysis.imageAnalysis.textToxicity),
+      celebrityFaces: (aiAnalysis.imageAnalysis.celebrityFaces || []).map(celeb => ({
+        name: safeString(celeb.name),
+        confidence: safeNumber(celeb.confidence),
+        urls: celeb.urls || [],
+      })),
+      deepfakeScore: safeNumber(aiAnalysis.imageAnalysis.deepfakeScore),
+    } : undefined,
+    aiDetection: aiAnalysis.aiDetection ? {
+      aiGeneratedProbability: safeNumber(aiAnalysis.aiDetection.aiGeneratedProbability),
+      generationModel: safeString(aiAnalysis.aiDetection.generationModel),
+      patternConsistency: safeNumber(aiAnalysis.aiDetection.patternConsistency),
+      styleDeviation: safeNumber(aiAnalysis.aiDetection.styleDeviation),
+      semanticCoherence: safeNumber(aiAnalysis.aiDetection.semanticCoherence),
+      suspiciousPatterns: aiAnalysis.aiDetection.suspiciousPatterns || [],
+    } : undefined,
+    spamAnalysis: aiAnalysis.spamAnalysis ? {
+      spamScore: safeNumber(aiAnalysis.spamAnalysis.spamScore),
+      spamIndicators: (aiAnalysis.spamAnalysis.spamIndicators || []).map(indicator => ({
+        type: safeString(indicator.type),
+        description: safeString(indicator.description),
+        severity: safeNumber(indicator.severity),
+      })),
+      postingVelocity: safeNumber(aiAnalysis.spamAnalysis.postingVelocity),
+      repetitionScore: safeNumber(aiAnalysis.spamAnalysis.repetitionScore),
+      linkDensity: safeNumber(aiAnalysis.spamAnalysis.linkDensity),
+      followerRatio: safeNumber(aiAnalysis.spamAnalysis.followerRatio),
+      interactionRate: safeNumber(aiAnalysis.spamAnalysis.interactionRate),
+      accountAgeDays: safeNumber(aiAnalysis.spamAnalysis.accountAgeDays),
+    } : undefined,
+  };
+}
+
+/**
+ * Map a basic Lesser Object to UnifiedStatus
+ * Used for notifications and other contexts where we have a basic Object, not a full LesserPostFragment
+ */
+export function mapLesserObject(obj: LesserObjectFragment): MapperResult<UnifiedStatus> {
+  const startTime = performance.now();
+  
+  try {
+    if (!obj || typeof obj.id !== 'string') {
+      return {
+        success: false,
+        error: createMappingError('validation', 'Invalid object: missing or invalid id', obj),
+      };
+    }
+
+    if (!obj.actor) {
+      return {
+        success: false,
+        error: createMappingError('validation', 'Invalid object: missing actor', obj),
+      };
+    }
+
+    const accountResult = mapLesserAccount(obj.actor);
+    if (!accountResult.success) {
+      return {
+        success: false,
+        error: createMappingError('transformation', 'Failed to map object actor', obj, 'actor'),
+      };
+    }
+
+    const unified: UnifiedStatus = {
+      id: obj.id,
+      createdAt: safeString(obj.createdAt),
+      content: safeString(obj.content),
+      contentWarning: safeString(obj.spoilerText),
+      sensitive: safeBoolean(obj.sensitive),
+      visibility: mapLesserVisibility(obj.visibility),
+      url: undefined, // Basic Object doesn't have URL
+      inReplyToId: safeString(obj.inReplyTo),
+      reblog: undefined, // Basic Object doesn't have reblog info
+      poll: undefined, // Basic Object doesn't have poll info
+      card: undefined, // Basic Object doesn't have card info
+      language: undefined, // Basic Object doesn't have language
+      mentions: (obj.mentions || []).map(mapLesserMention),
+      tags: obj.tags?.map(tag => ({
+        name: safeString(tag.name),
+        url: safeString(tag.url),
+      })) || [],
+      emojis: [], // Basic Object doesn't have emojis
+      mediaAttachments: obj.attachments?.map(attachment => ({
+        id: safeString(attachment.id),
+        type: attachment.type as any, // Basic Object uses String, not enum
+        url: safeString(attachment.url),
+        previewUrl: safeString(attachment.preview),
+        remoteUrl: undefined, // Basic Object doesn't have remoteUrl
+        description: safeString(attachment.description),
+        blurhash: safeString(attachment.blurhash),
+        meta: attachment.width && attachment.height ? {
+          original: {
+            width: attachment.width,
+            height: attachment.height,
+            aspect: attachment.width / attachment.height,
+          },
+          small: {
+            width: attachment.width,
+            height: attachment.height,
+            aspect: attachment.width / attachment.height,
+          },
+        } : undefined,
+      })) || [],
+      account: accountResult.data!,
+      reblogsCount: safeNumber(obj.sharesCount),
+      favouritesCount: safeNumber(obj.likesCount),
+      repliesCount: safeNumber(obj.repliesCount),
+      reblogged: false, // Would need to check user's interactions
+      favourited: false, // Would need to check user's interactions
+      bookmarked: false, // Would need to check user's interactions
+      muted: false, // Would need to check user's interactions
+      pinned: false, // Would need to check user's interactions
+      
+      // Lesser-specific fields
+      estimatedCost: safeNumber(obj.estimatedCost),
+      moderationScore: safeNumber(obj.moderationScore),
+      communityNotes: obj.communityNotes?.map(note => ({
+        id: safeString(note.id),
+        authorId: safeString(note.author?.id || ''),
+        authorUsername: safeString(note.author?.handle || ''),
+        authorDisplayName: safeString(note.author?.displayName || ''),
+        content: safeString(note.content),
+        helpful: safeNumber(note.helpful),
+        notHelpful: safeNumber(note.notHelpful),
+        createdAt: safeString(note.createdAt),
+      })) || [],
+      quoteUrl: safeString(obj.quoteUrl),
+      quoteable: safeBoolean(obj.quoteable),
+      quotePermissions: obj.quotePermissions as any, // Type assertion needed
+      quoteContext: obj.quoteContext ? {
+        originalAuthor: accountResult.data!, // Would need to map the actual original author
+        originalNote: undefined, // Would need to fetch the original note
+        quoteAllowed: safeBoolean(obj.quoteContext.quoteAllowed),
+        quoteType: obj.quoteContext.quoteType as any,
+        withdrawn: safeBoolean(obj.quoteContext.withdrawn),
+      } : undefined,
+      quoteCount: safeNumber(obj.quoteCount),
+      aiAnalysis: obj.aiAnalysis ? mapLesserAIAnalysis(obj.aiAnalysis) : undefined,
+    };
+
+    const endTime = performance.now();
+    return {
+      success: true,
+      data: unified,
+      metadata: {
+        processingTime: endTime - startTime,
+        source: 'lesser-object',
+        mappedFields: Object.keys(unified).length,
+      },
+    };
+  } catch (error) {
+    const endTime = performance.now();
+    return {
+      success: false,
+      error: createMappingError('transformation', `Failed to map Lesser object: ${error instanceof Error ? error.message : 'Unknown error'}`, obj),
+      metadata: {
+        processingTime: endTime - startTime,
+        source: 'lesser-object',
+      },
+    };
+  }
 }
 
 /**
@@ -274,6 +520,32 @@ export function mapLesserPost(post: LesserPostFragment): MapperResult<UnifiedSta
       editedAt: post.lastEditedAt || undefined,
       poll: post.poll ? mapLesserPoll(post.poll) : undefined,
       metadata: createLesserMetadata(post),
+      
+      // Map Lesser-specific fields
+      estimatedCost: post.estimatedCost !== undefined ? safeNumber(post.estimatedCost) : undefined,
+      moderationScore: post.moderationScore !== undefined ? safeNumber(post.moderationScore) : undefined,
+      communityNotes: post.communityNotes ? post.communityNotes.map(note => ({
+        id: safeString(note.id),
+        authorId: safeString(note.author?.id || ''),
+        authorUsername: safeString(note.author?.handle || ''),
+        authorDisplayName: safeString(note.author?.displayName || ''),
+        content: safeString(note.content),
+        helpful: safeNumber(note.helpful),
+        notHelpful: safeNumber(note.notHelpful),
+        createdAt: safeString(note.createdAt),
+      })) : undefined,
+      quoteUrl: post.quoteUrl || undefined,
+      quoteable: post.quoteable !== undefined ? safeBoolean(post.quoteable) : undefined,
+      quotePermissions: post.quotePermissions || undefined,
+      quoteContext: post.quoteContext ? {
+        originalAuthorId: safeString(post.quoteContext.originalAuthor?.id || ''),
+        originalNoteId: post.quoteContext.originalNote?.id || undefined,
+        quoteAllowed: safeBoolean(post.quoteContext.quoteAllowed),
+        quoteType: post.quoteContext.quoteType || 'FULL',
+        withdrawn: safeBoolean(post.quoteContext.withdrawn),
+      } : undefined,
+      quoteCount: post.quoteCount !== undefined ? safeNumber(post.quoteCount) : undefined,
+      aiAnalysis: post.aiAnalysis ? mapLesserAIAnalysis(post.aiAnalysis) : undefined,
     };
 
     const endTime = performance.now();
@@ -324,10 +596,10 @@ function mapLesserMediaAttachment(attachment: LesserMediaFragment): MediaAttachm
  */
 function mapLesserMention(mention: LesserMentionFragment): Mention {
   return {
-    id: safeString(mention.account.id),
-    username: safeString(mention.account.handle.split('@')[0]),
-    acct: safeString(mention.account.handle),
-    url: safeString(mention.account.profileUrl),
+    id: safeString(mention.id),
+    username: safeString(mention.username),
+    acct: safeString(mention.domain ? `${mention.username}@${mention.domain}` : mention.username),
+    url: safeString(mention.url),
   };
 }
 
@@ -409,8 +681,10 @@ export function mapLesserNotification(notification: LesserNotificationFragment):
     }
 
     let status: UnifiedStatus | undefined;
-    if (notification.targetPost) {
-      const statusResult = mapLesserPost(notification.targetPost);
+    if (notification.status) {
+      // Map the basic Object to UnifiedStatus
+      // Note: notification.status is a basic Object, not a full LesserPostFragment
+      const statusResult = mapLesserObject(notification.status);
       if (statusResult.success) {
         status = statusResult.data;
       }
@@ -432,6 +706,45 @@ export function mapLesserNotification(notification: LesserNotificationFragment):
       } : undefined,
       read: notification.isRead,
       metadata: createLesserMetadata(notification),
+      
+      // Derive Lesser-specific notification payloads from status/account fields
+      // Since Lesser schema doesn't expose separate payload fields, we infer them
+      quoteStatus: (notification.notificationType === 'QUOTE' && notification.status) 
+        ? mapLesserObject(notification.status).data 
+        : undefined,
+      communityNote: (notification.notificationType === 'COMMUNITY_NOTE' && notification.status?.communityNotes?.[0]) 
+        ? {
+            id: safeString(notification.status.communityNotes[0].id),
+            authorId: safeString(notification.status.communityNotes[0].author?.id || ''),
+            authorUsername: safeString(notification.status.communityNotes[0].author?.handle || ''),
+            authorDisplayName: safeString(notification.status.communityNotes[0].author?.displayName || ''),
+            content: safeString(notification.status.communityNotes[0].content),
+            helpful: safeNumber(notification.status.communityNotes[0].helpful),
+            notHelpful: safeNumber(notification.status.communityNotes[0].notHelpful),
+            createdAt: safeString(notification.status.communityNotes[0].createdAt),
+          }
+        : undefined,
+      trustUpdate: (notification.notificationType === 'TRUST_UPDATE' && notification.triggerAccount.trustScore !== undefined)
+        ? {
+            newScore: safeNumber(notification.triggerAccount.trustScore),
+            previousScore: undefined, // Would need to track previous value
+            reason: undefined,
+          }
+        : undefined,
+      costAlert: notification.notificationType === 'COST_ALERT'
+        ? {
+            amount: notification.status?.estimatedCost || 0,
+            threshold: 1000000, // Default threshold, would come from user settings
+            message: 'Cost threshold exceeded',
+          }
+        : undefined,
+      moderationAction: (notification.notificationType === 'MODERATION_ACTION' && notification.status?.aiAnalysis)
+        ? {
+            action: safeString(notification.status.aiAnalysis.moderationAction),
+            reason: 'AI moderation action',
+            statusId: notification.status.id,
+          }
+        : undefined,
     };
 
     const endTime = performance.now();
