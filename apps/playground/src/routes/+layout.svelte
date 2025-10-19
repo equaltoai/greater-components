@@ -1,11 +1,16 @@
 <script lang="ts">
-  import '@greater/tokens/theme.css';
-  import '@greater/primitives/styles.css';
+  import type { Snippet } from 'svelte';
+  import '@equaltoai/greater-components-tokens/theme.css';
+  import '@equaltoai/greater-components-primitives/styles.css';
   import '../app.css';
+
+  let { children }: { children?: Snippet } = $props();
 </script>
 
 <main>
-  <slot />
+  {#if children}
+    {@render children()}
+  {/if}
 </main>
 
 <style>

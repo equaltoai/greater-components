@@ -1,5 +1,6 @@
 {
-  "name": "@greater/primitives",
+  "name": "@equaltoai/greater-components-primitives",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "description": "Primitive UI components for Greater Components",
@@ -77,6 +78,9 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build && pnpm build:css",
     "build:css": "node scripts/build-css.js",
@@ -87,11 +91,11 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@greater/tokens": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
     "svelte": "^5.0.0"
   },
   "devDependencies": {
-    "@greater/tokens": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@testing-library/svelte": "^5.0.0",
     "@types/node": "^20.11.5",

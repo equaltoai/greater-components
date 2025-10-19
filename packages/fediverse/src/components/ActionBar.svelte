@@ -1,6 +1,13 @@
 <script lang="ts">
-	import { Button } from '@greater/primitives';
-	import { Reply, Boost, Favorite, Share, Unboost, Unfavorite } from '@greater/icons';
+	import { Button } from '@equaltoai/greater-components-primitives';
+	import {
+	ReplyIcon as Reply,
+	BoostIcon as Boost,
+	FavoriteIcon as Favorite,
+	ShareIcon as Share,
+	UnboostIcon as Unboost,
+	UnfavoriteIcon as Unfavorite,
+	} from '@equaltoai/greater-components-icons';
 	import type { Snippet } from 'svelte';
 
 	interface ActionCounts {

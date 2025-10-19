@@ -1,7 +1,7 @@
 # Search.ActorResult
 
 **Component**: Account/User Search Result Item  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 14 passing tests
 
@@ -30,7 +30,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,7 +39,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -152,8 +152,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchActor } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchActor } from '@equaltoai/greater-components-fediverse/types';
 
   let followingUsers = $state<Set<string>>(new Set());
   let followCounts = $state<Record<string, number>>({});
@@ -281,8 +281,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchActor } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchActor } from '@equaltoai/greater-components-fediverse/types';
 
   interface ExtendedSearchActor extends SearchActor {
     verified?: boolean;
@@ -612,8 +612,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchActor } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchActor } from '@equaltoai/greater-components-fediverse/types';
 
   let hoveredActor = $state<SearchActor | null>(null);
   let hoverTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
@@ -894,8 +894,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchActor } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchActor } from '@equaltoai/greater-components-fediverse/types';
 
   interface ScoredActor extends SearchActor {
     relevanceScore?: number;
@@ -1347,8 +1347,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchActor } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchActor } from '@equaltoai/greater-components-fediverse/types';
 
   let selectedActors = $state<Set<string>>(new Set());
   let bulkActionInProgress = $state(false);
@@ -1823,7 +1823,7 @@ Test file: `packages/fediverse/tests/Search/ActorResult.test.ts`
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.ActorResult', () => {
   it('renders actor information', () => {

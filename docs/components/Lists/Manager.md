@@ -1,7 +1,7 @@
 # Lists.Manager
 
 **Component**: List Overview & Management  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 92 passing tests
 
@@ -42,7 +42,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -53,7 +53,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -76,7 +76,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -164,7 +164,7 @@ deleteList(id: string) => Promise<void>;
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -230,8 +230,8 @@ deleteList(id: string) => Promise<void>;
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListData } from '@equaltoai/greater-components-fediverse/Lists';
   
   let searchQuery = $state('');
   let visibilityFilter = $state<'all' | 'public' | 'private'>('all');
@@ -397,8 +397,8 @@ deleteList(id: string) => Promise<void>;
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListData } from '@equaltoai/greater-components-fediverse/Lists';
   import { flip } from 'svelte/animate';
   import { dndzone } from 'svelte-dnd-action';
   
@@ -568,8 +568,8 @@ deleteList(id: string) => Promise<void>;
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListData } from '@equaltoai/greater-components-fediverse/Lists';
   
   let selectedListIds = $state(new Set<string>());
   let allLists: ListData[] = $state([]);
@@ -846,8 +846,8 @@ deleteList(id: string) => Promise<void>;
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListData } from '@equaltoai/greater-components-fediverse/Lists';
   
   let lists: ListData[] = $state([]);
   let showInsights = $state(false);
@@ -1205,7 +1205,7 @@ app.delete('/api/lists/:id', async (req, res) => {
 ```svelte
 <script lang="ts">
   import { createVirtualizer } from '@tanstack/svelte-virtual';
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   let scrollElement: HTMLElement | null = null;
   let lists: ListData[] = $state([]);
@@ -1252,7 +1252,7 @@ app.delete('/api/lists/:id', async (req, res) => {
 
 ```typescript
 import { render, fireEvent, waitFor } from '@testing-library/svelte';
-import * as Lists from '@greater/fediverse/Lists';
+import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 
 describe('Lists.Manager', () => {
   test('displays lists', async () => {

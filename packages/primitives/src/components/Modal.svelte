@@ -275,9 +275,7 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
     onclick={handleBackdropClick}
     onclose={handleClose}
   >
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="gr-modal__content" onclick={(e) => e.stopPropagation()}>
+    <div class="gr-modal__content">
       {#if header || title}
         <header class="gr-modal__header">
           {#if header}

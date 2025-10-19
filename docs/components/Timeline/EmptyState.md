@@ -1,7 +1,7 @@
 # Timeline.EmptyState
 
 **Component**: Empty State Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 24 passing tests
 
@@ -24,7 +24,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -33,7 +33,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
 
   let items = $state([]);
 </script>
@@ -77,8 +77,8 @@ Empty state for a home timeline:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let isLoading = $state(true);
@@ -233,8 +233,8 @@ Empty state for search with no results:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let searchQuery = $state('');
   let searchResults: GenericTimelineItem[] = $state([]);
@@ -458,8 +458,8 @@ Empty state for notifications:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let notifications: GenericTimelineItem[] = $state([]);
 
@@ -561,8 +561,8 @@ Empty state for bookmarks:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let bookmarks: GenericTimelineItem[] = $state([]);
 
@@ -670,8 +670,8 @@ Fully custom empty state with animations and illustrations:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let showAnimation = $state(true);
@@ -1003,7 +1003,7 @@ Fully custom empty state with animations and illustrations:
 
 ```typescript
 import { render, screen } from '@testing-library/svelte';
-import { Timeline } from '@greater/fediverse';
+import { Timeline } from '@equaltoai/greater-components-fediverse';
 
 describe('Timeline.EmptyState', () => {
   it('renders default empty state', () => {

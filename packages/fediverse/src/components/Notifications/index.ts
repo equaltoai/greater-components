@@ -7,7 +7,7 @@
  * @example Basic usage
  * ```svelte
  * <script>
- *   import { Notifications } from '@greater/fediverse';
+ *   import { Notifications } from '@equaltoai/greater-components-fediverse';
  *   
  *   const notifications = [...]; // Notification[] from API
  * </script>
@@ -38,7 +38,7 @@
  * </Notifications.Root>
  * ```
  * 
- * @module @greater/fediverse/Notifications
+ * @module @equaltoai/greater-components-fediverse/Notifications
  */
 
 import NotificationsRoot from './Root.svelte';

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import { Skeleton } from '@greater/primitives';
+import { Skeleton } from '@equaltoai/greater-components-primitives';
 import SkeletonDemo from './SkeletonDemo.svelte';
 
 const meta: Meta<Skeleton> = {
@@ -24,7 +24,7 @@ An accessible skeleton loading component with animated shimmer effects and reduc
 
 \`\`\`svelte
 <script>
-  import { Skeleton } from '@greater/primitives';
+  import { Skeleton } from '@equaltoai/greater-components-primitives';
   let loading = true;
 </script>
 

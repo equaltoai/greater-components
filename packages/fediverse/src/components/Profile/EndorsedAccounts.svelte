@@ -8,7 +8,7 @@ Supports drag-and-drop reordering (for own profile).
 @example
 ```svelte
 <script>
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   const endorsed = [
     { id: '1', username: 'alice', displayName: 'Alice Wonder', avatar: '...' }

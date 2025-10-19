@@ -90,7 +90,7 @@ export {
  * 
  * @example
  * ```svelte
- * import * as Auth from '@greater/fediverse/Auth';
+ * import * as Auth from '@equaltoai/greater-components-fediverse/Auth';
  * 
  * <Auth.Root {handlers}>
  *   <Auth.LoginForm />
@@ -121,7 +121,7 @@ export type {
  * 
  * @example
  * ```typescript
- * import { createLesserClient } from '@greater/fediverse/adapters/graphql';
+ * import { createLesserClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
  * 
  * const client = createLesserClient({
  *   endpoint: 'https://api.lesser.example.com/graphql',
@@ -152,6 +152,7 @@ export type {
 	LesserActor,
 	LesserNote,
 	LesserActivity,
+	ActorListPage,
 	TimelineResult,
 	ActorResult,
 	NoteResult,
@@ -166,6 +167,38 @@ export type {
 	FollowersResult,
 	FollowingResult,
 	NotificationsResult,
+	ProfileFieldInput,
+	UpdateProfileInput,
+	Visibility,
+	ExpandMediaPreference,
+	TimelineOrder,
+	StreamQuality,
+	DigestFrequency,
+	UserPreferences,
+	PostingPreferences,
+	ReadingPreferences,
+	DiscoveryPreferences,
+	StreamingPreferences,
+	NotificationPreferences,
+	PrivacyPreferences,
+	ReblogFilter,
+	UpdateUserPreferencesInput,
+	StreamingPreferencesInput,
+	ReblogFilterInput,
+	UserPreferencesResult,
+	UpdateUserPreferencesResult,
+	UpdateStreamingPreferencesResult,
+	PushSubscription,
+	PushSubscriptionKeys,
+	PushSubscriptionAlerts,
+	PushSubscriptionResult,
+	RegisterPushSubscriptionInput,
+	RegisterPushSubscriptionResult,
+	UpdatePushSubscriptionInput,
+	UpdatePushSubscriptionResult,
+	DeletePushSubscriptionResult,
+	PushSubscriptionKeysInput,
+	PushSubscriptionAlertsInput,
 } from './adapters/graphql/index.js';
 
 /**
@@ -177,7 +210,7 @@ export type {
  * 
  * @example
  * ```svelte
- * import * as Profile from '@greater/fediverse/Profile';
+ * import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
  * 
  * <Profile.Root {profile} {handlers} isOwnProfile={true}>
  *   <Profile.Header />
@@ -208,7 +241,7 @@ export type {
  * 
  * @example
  * ```svelte
- * import * as Search from '@greater/fediverse/Search';
+ * import * as Search from '@equaltoai/greater-components-fediverse/Search';
  * 
  * <Search.Root {handlers}>
  *   <Search.Bar placeholder="Search..." />
@@ -240,7 +273,7 @@ export type {
  * 
  * @example
  * ```svelte
- * import * as Lists from '@greater/fediverse/Lists';
+ * import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
  * 
  * <Lists.Root {handlers}>
  *   <Lists.Manager />
@@ -269,7 +302,7 @@ export type {
  * 
  * @example
  * ```svelte
- * import * as Messages from '@greater/fediverse/Messages';
+ * import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
  * 
  * <Messages.Root {handlers}>
  *   <Messages.Conversations currentUserId="me" />
@@ -298,7 +331,7 @@ export type {
  * 
  * @example
  * ```svelte
- * import * as Filters from '@greater/fediverse/Filters';
+ * import * as Filters from '@equaltoai/greater-components-fediverse/Filters';
  * 
  * <Filters.Root {handlers}>
  *   <Filters.Manager />
@@ -332,7 +365,7 @@ export type {
  * 
  * @example
  * ```svelte
- * import * as Admin from '@greater/fediverse/Admin';
+ * import * as Admin from '@equaltoai/greater-components-fediverse/Admin';
  * 
  * <Admin.Root {handlers}>
  *   <Admin.Overview />

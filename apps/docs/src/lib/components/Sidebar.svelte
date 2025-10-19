@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import ChevronRightIcon from '@greater/icons/icons/chevron-right.svelte';
+	import ChevronRightIcon from '@equaltoai/greater-components-icons/icons/chevron-right.svelte';
 	
 	export let isMobileMenuOpen = false;
 	

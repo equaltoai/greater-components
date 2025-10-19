@@ -39,13 +39,13 @@ body:
       label: Affected Package(s)
       description: Which Greater Components package is affected?
       options:
-        - "@greater/primitives"
-        - "@greater/fediverse"
-        - "@greater/tokens"
-        - "@greater/icons"
-        - "@greater/utils"
-        - "@greater/adapters"
-        - "@greater/testing"
+        - "@equaltoai/greater-components-primitives"
+        - "@equaltoai/greater-components-fediverse"
+        - "@equaltoai/greater-components-tokens"
+        - "@equaltoai/greater-components-icons"
+        - "@equaltoai/greater-components-utils"
+        - "@equaltoai/greater-components-adapters"
+        - "@equaltoai/greater-components-testing"
         - "Multiple packages"
         - "Not sure"
     validations:
@@ -99,7 +99,7 @@ body:
       render: svelte
       placeholder: |
         <script>
-          import { Button } from '@greater/primitives';
+          import { Button } from '@equaltoai/greater-components-primitives';
           // Your code that reproduces the issue
         </script>
         

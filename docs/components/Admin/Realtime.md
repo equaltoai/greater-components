@@ -295,7 +295,7 @@ Event types:
 The `AdminStreamingStore` provides a unified interface for managing all admin subscription events:
 
 ```typescript
-import { createAdminStreamingStore } from '@greater/adapters';
+import { createAdminStreamingStore } from '@equaltoai/greater-components-adapters';
 
 const adminStore = createAdminStreamingStore({
   maxHistorySize: 100,
@@ -337,7 +337,7 @@ subscription.subscribe({
 ### Hashtag Timeline with Real-Time Updates
 
 ```typescript
-import { LesserTimelineStore } from '@greater/fediverse/lib/lesserTimelineStore';
+import { LesserTimelineStore } from '@equaltoai/greater-components-fediverse/lib/lesserTimelineStore';
 
 const hashtagTimeline = new LesserTimelineStore({
   adapter: lesserAdapter,
@@ -379,7 +379,7 @@ const hashtagSub = adapter.subscribeToHashtagActivity({
 The subscription layer integrates with the existing transport infrastructure:
 
 ```typescript
-import { TransportManager } from '@greater/fediverse/lib/transport';
+import { TransportManager } from '@equaltoai/greater-components-fediverse/lib/transport';
 
 const transport = new TransportManager({
   adapter: lesserAdapter,

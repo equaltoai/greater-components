@@ -1,7 +1,7 @@
 # Admin.Moderation
 
 **Component**: Quick Moderation Tools & Actions  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 58 passing tests
 
@@ -29,7 +29,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -38,7 +38,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onSearchUsers: async (query) => {
@@ -199,7 +199,7 @@ Simple moderation tools with user search:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onSearchUsers: async (query) => {
@@ -312,7 +312,7 @@ Add keyboard shortcuts for quick actions:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   import { onMount, onDestroy } from 'svelte';
   
   let searchInput: HTMLInputElement | null = null;
@@ -424,8 +424,8 @@ Support for bulk moderation operations:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
-  import type { AdminUser } from '@greater/fediverse/Admin';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
+  import type { AdminUser } from '@equaltoai/greater-components-fediverse/Admin';
   
   let selectedUsers = $state<Set<string>>(new Set());
   let bulkAction = $state<'suspend' | 'unsuspend' | null>(null);
@@ -729,8 +729,8 @@ Show recent user activity for context:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
-  import type { AdminUser } from '@greater/fediverse/Admin';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
+  import type { AdminUser } from '@equaltoai/greater-components-fediverse/Admin';
   
   interface UserActivity {
     id: string;
@@ -936,7 +936,7 @@ Pre-defined reason templates for common scenarios:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   interface ReasonTemplate {
     id: string;

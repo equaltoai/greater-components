@@ -1,7 +1,7 @@
 # Profile.AccountMigration
 
 **Component**: Account Migration Management  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 28 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const migration = {
     status: 'completed',
@@ -109,8 +109,8 @@ Complete flow for starting an account migration:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { AccountMigration } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { AccountMigration } from '@equaltoai/greater-components-fediverse/Profile';
 
   let migration = $state<AccountMigration | null>(null);
   let loading = $state(false);
@@ -336,8 +336,8 @@ Show different states of migration:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { AccountMigration } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { AccountMigration } from '@equaltoai/greater-components-fediverse/Profile';
 
   const migrations: AccountMigration[] = [
     {
@@ -609,7 +609,7 @@ Implement confirmation flow before migration:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   let showConfirmDialog = $state(false);
   let targetAccount = $state('');
@@ -1086,8 +1086,8 @@ Display historical migrations:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { AccountMigration } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { AccountMigration } from '@equaltoai/greater-components-fediverse/Profile';
 
   interface MigrationHistory {
     id: string;
@@ -1389,7 +1389,7 @@ await db.auditLogs.create({
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { AccountMigration } from '@greater/fediverse/Profile';
+import { AccountMigration } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('AccountMigration', () => {
   it('displays migration form for own profile', () => {

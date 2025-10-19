@@ -12,6 +12,7 @@ import type {
 } from './types';
 import { unifiedNotificationToStoreNotification } from './unifiedToNotification.js';
 import { mapLesserNotification } from '../mappers/lesser/mappers.js';
+import { convertGraphQLActorToLesserAccount, convertGraphQLObjectToLesser } from '../mappers/lesser/graphqlConverters.js';
 import type { LesserNotificationFragment } from '../mappers/lesser/types.js';
 import type { UnifiedNotification } from '../models/unified.js';
 import type {
@@ -30,6 +31,61 @@ type CostAlertPayload = CostAlertsSubscription['costAlerts'];
 type ModerationEventPayload = ModerationEventsSubscription['moderationEvents'];
 type ModerationAlertPayload = ModerationAlertsSubscription['moderationAlerts'];
 type ModerationQueuePayload = ModerationQueueUpdateSubscription['moderationQueueUpdate'];
+
+const notificationTypeMap: Record<string, LesserNotificationFragment['notificationType']> = {
+  MENTION: 'MENTION',
+  FOLLOW: 'FOLLOW',
+  FOLLOW_REQUEST: 'FOLLOW_REQUEST',
+  SHARE: 'SHARE',
+  FAVORITE: 'FAVORITE',
+  POST: 'POST',
+  POLL_ENDED: 'POLL_ENDED',
+  STATUS_UPDATE: 'STATUS_UPDATE',
+  ADMIN_SIGNUP: 'ADMIN_SIGNUP',
+  ADMIN_SIGN_UP: 'ADMIN_SIGNUP',
+  ADMIN_REPORT: 'ADMIN_REPORT',
+  QUOTE: 'QUOTE',
+  COMMUNITY_NOTE: 'COMMUNITY_NOTE',
+  TRUST_UPDATE: 'TRUST_UPDATE',
+  COST_ALERT: 'COST_ALERT',
+  MODERATION_ACTION: 'MODERATION_ACTION'
+};
+
+const normalizeNotificationType = (value: unknown): LesserNotificationFragment['notificationType'] => {
+  if (typeof value === 'string') {
+    const normalized = value.replace(/\./g, '_').toUpperCase();
+    const mapped = notificationTypeMap[normalized];
+    if (mapped) {
+      return mapped;
+    }
+  }
+  return 'MENTION';
+};
+
+function convertNotificationStreamPayload(
+  payload: NotificationStreamPayload | null
+): LesserNotificationFragment | null {
+  if (!payload || typeof payload.id !== 'string') {
+    return null;
+  }
+
+  const triggerAccount = convertGraphQLActorToLesserAccount(payload.account);
+  if (!triggerAccount) {
+    return null;
+  }
+
+  const statusFragment = payload.status ? convertGraphQLObjectToLesser(payload.status) : null;
+
+  return {
+    id: payload.id,
+    notificationType: normalizeNotificationType(payload.type),
+    createdAt: typeof payload.createdAt === 'string' ? payload.createdAt : new Date(0).toISOString(),
+    triggerAccount,
+    status: statusFragment ?? undefined,
+    adminReport: undefined,
+    isRead: typeof payload.read === 'boolean' ? payload.read : undefined
+  };
+}
 
 // Simple reactive state implementation that works everywhere
 class ReactiveState<T> {
@@ -325,7 +381,13 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
   function handleNotificationStreamEvent(payload: NotificationStreamPayload | null): void {
     if (!payload) return;
 
-    const result = mapLesserNotification(payload as LesserNotificationFragment);
+    const fragment = convertNotificationStreamPayload(payload);
+    if (!fragment) {
+      console.warn('[NotificationStore] Unable to convert notification stream payload');
+      return;
+    }
+
+    const result = mapLesserNotification(fragment);
     if (!result.success || !result.data) {
       if (result.error) {
         console.warn('[NotificationStore] Failed to map notification stream payload', result.error);

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Menu } from '@greater/primitives';
+  import { Menu } from '@equaltoai/greater-components-primitives';
   import { action } from '@storybook/addon-actions';
   
   type MenuItem = {

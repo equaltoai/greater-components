@@ -1,7 +1,7 @@
 # Profile.PrivacySettings
 
 **Component**: Profile Privacy Controls  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 32 passing tests
 
@@ -28,7 +28,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -37,7 +37,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const settings = {
     isPrivate: false,
@@ -124,8 +124,8 @@ Full-featured privacy settings with all options:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { PrivacySettings } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { PrivacySettings } from '@equaltoai/greater-components-fediverse/Profile';
 
   let settings = $state<PrivacySettings>({
     isPrivate: false,
@@ -343,8 +343,8 @@ Simplified view with just key privacy options:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { PrivacySettings } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { PrivacySettings } from '@equaltoai/greater-components-fediverse/Profile';
 
   let settings = $state<PrivacySettings>({
     isPrivate: false,
@@ -560,8 +560,8 @@ Show impact of privacy changes:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { PrivacySettings } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { PrivacySettings } from '@equaltoai/greater-components-fediverse/Profile';
 
   let settings = $state<PrivacySettings>({
     isPrivate: false,
@@ -1018,8 +1018,8 @@ Allow users to backup and restore settings:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { PrivacySettings } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { PrivacySettings } from '@equaltoai/greater-components-fediverse/Profile';
 
   let settings = $state<PrivacySettings>({
     isPrivate: false,
@@ -1295,7 +1295,7 @@ const settingsLimit = new RateLimiter({
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { PrivacySettings } from '@greater/fediverse/Profile';
+import { PrivacySettings } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('PrivacySettings', () => {
   it('displays all privacy settings', () => {

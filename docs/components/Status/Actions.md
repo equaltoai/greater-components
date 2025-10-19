@@ -1,7 +1,7 @@
 # Status.Actions
 
 **Component**: Action Buttons  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 52 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,8 +36,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status: GenericStatus = $state({
     id: '1',
@@ -120,8 +120,8 @@ Complete interaction bar with all actions:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status: GenericStatus = $state({
     id: '12345',
@@ -275,8 +275,8 @@ Display interaction counts without allowing interactions:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const archivedStatus: GenericStatus = {
     id: '1',
@@ -331,8 +331,8 @@ Add custom actions alongside standard ones:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status = $state(mockStatus());
   let isTranslating = $state(false);
@@ -515,8 +515,8 @@ Track which actions users take:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status = $state(mockStatus());
   let analytics = $state({
@@ -651,8 +651,8 @@ Show/hide actions based on user permissions:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status = $state(mockStatus());
   let currentUser = $state({ id: '123', isModerator: false });
@@ -805,7 +805,7 @@ Show/hide actions based on user permissions:
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Status } from '@greater/fediverse';
+import { Status } from '@equaltoai/greater-components-fediverse';
 
 describe('Status.Actions', () => {
   it('displays interaction counts', () => {

@@ -17,7 +17,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createMenu } from '@greater/headless/menu';
+	import { createMenu } from '@equaltoai/greater-components-headless/menu';
 	import type { ActivityPubActor } from '../generics/index.js';
 
 	export interface AccountInstance {

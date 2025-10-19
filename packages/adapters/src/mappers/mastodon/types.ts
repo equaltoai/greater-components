@@ -361,7 +361,9 @@ export function isMastodonAccount(obj: unknown): obj is MastodonAccount {
     return false;
   }
 
-  return typeof obj.id === 'string' && typeof obj.username === 'string';
+  const id = obj['id'];
+  const username = obj['username'];
+  return typeof id === 'string' && typeof username === 'string';
 }
 
 export function isMastodonStatus(obj: unknown): obj is MastodonStatus {
@@ -369,7 +371,10 @@ export function isMastodonStatus(obj: unknown): obj is MastodonStatus {
     return false;
   }
 
-  return typeof obj.id === 'string' && typeof obj.content === 'string' && isRecord(obj.account);
+  const id = obj['id'];
+  const content = obj['content'];
+  const account = obj['account'];
+  return typeof id === 'string' && typeof content === 'string' && isRecord(account);
 }
 
 export function isMastodonNotification(obj: unknown): obj is MastodonNotification {
@@ -377,7 +382,10 @@ export function isMastodonNotification(obj: unknown): obj is MastodonNotificatio
     return false;
   }
 
-  return typeof obj.id === 'string' && typeof obj.type === 'string' && isRecord(obj.account);
+  const id = obj['id'];
+  const type = obj['type'];
+  const account = obj['account'];
+  return typeof id === 'string' && typeof type === 'string' && isRecord(account);
 }
 
 export function isMastodonStreamingEvent(obj: unknown): obj is MastodonStreamingEvent {
@@ -385,5 +393,9 @@ export function isMastodonStreamingEvent(obj: unknown): obj is MastodonStreaming
     return false;
   }
 
-  return Array.isArray(obj.stream) && typeof obj.event === 'string' && typeof obj.payload === 'string';
+  const stream = obj['stream'];
+  const event = obj['event'];
+  const payload = obj['payload'];
+
+  return Array.isArray(stream) && typeof event === 'string' && typeof payload === 'string';
 }

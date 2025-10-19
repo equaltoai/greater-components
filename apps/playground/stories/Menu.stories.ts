@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import { action } from '@storybook/addon-actions';
-import { Menu } from '@greater/primitives';
+import { Menu } from '@equaltoai/greater-components-primitives';
 import MenuDemo from './MenuDemo.svelte';
 
 type MenuItem = {
@@ -35,7 +35,7 @@ A accessible menu component with keyboard navigation and typeahead support.
 
 \`\`\`svelte
 <script>
-  import { Menu } from '@greater/primitives';
+  import { Menu } from '@equaltoai/greater-components-primitives';
   
   const items = [
     { id: '1', label: 'New File', action: () => console.log('New file') },

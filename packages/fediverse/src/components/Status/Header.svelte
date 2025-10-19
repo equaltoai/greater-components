@@ -16,7 +16,7 @@ Handles reblog indicators automatically from context.
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { getStatusContext } from './context.js';
-	import { formatDateTime } from '@greater/utils';
+	import { formatDateTime } from '@equaltoai/greater-components-utils';
 
 	interface Props {
 		/**

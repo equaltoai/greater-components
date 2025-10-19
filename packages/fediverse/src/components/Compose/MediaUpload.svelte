@@ -7,7 +7,7 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 @example
 ```svelte
 <script>
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
   
   async function handleUpload(file) {
     const formData = new FormData();
@@ -28,24 +28,43 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 -->
 
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import {
-		processFiles,
-		validateFiles,
-		formatFileSize,
-		cleanupMediaFiles,
-		type MediaFile,
-		type MediaUploadConfig,
-	} from './MediaUploadHandler.js';
+	processFiles,
+	validateFiles,
+	formatFileSize,
+	cleanupMediaFiles,
+	type MediaFile,
+	type MediaUploadConfig,
+} from './MediaUploadHandler.js';
+import type { MediaCategory } from '../../types.js';
+
+const SPOILER_MAX_LENGTH = 200;
+const DESCRIPTION_MAX_LENGTH = 1500;
+
+const MEDIA_CATEGORY_OPTIONS: Array<{ value: MediaCategory; label: string }> = [
+	{ value: 'IMAGE', label: 'Image' },
+	{ value: 'VIDEO', label: 'Video' },
+	{ value: 'AUDIO', label: 'Audio' },
+	{ value: 'GIFV', label: 'Animated GIF' },
+	{ value: 'DOCUMENT', label: 'Document' },
+];
 
 	interface Props {
 		/**
 		 * Upload handler - receives File and returns media info
 		 */
-		onUpload?: (file: File, onProgress: (progress: number) => void) => Promise<{
+		onUpload?: (
+			file: File,
+			onProgress: (progress: number) => void,
+			meta: MediaFile
+		) => Promise<{
 			id: string;
 			url: string;
 			thumbnailUrl?: string;
+			sensitive?: boolean;
+			spoilerText?: string | null;
+			mediaCategory?: MediaCategory;
 		}>;
 
 		/**
@@ -77,10 +96,11 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 		class: className = '',
 	}: Props = $props();
 
-	let files = $state<MediaFile[]>([]);
+let files = $state<MediaFile[]>([]);
 let isDragging = $state(false);
 let error = $state<string | null>(null);
 let fileInput: HTMLInputElement;
+let sensitiveVisibility = $state<Record<string, boolean>>({});
 
 const uploadButton = createButton();
 
@@ -145,7 +165,19 @@ function extractErrorMessage(error: unknown): string {
 			mediaFile.progress = progress;
 		};
 
-		const result = await onUpload(mediaFile.file, progressCallback);
+		const result = await onUpload(mediaFile.file, progressCallback, mediaFile);
+
+		if (result.thumbnailUrl) {
+			mediaFile.thumbnailUrl = result.thumbnailUrl;
+		}
+
+		mediaFile.sensitive = result.sensitive ?? mediaFile.sensitive;
+		if (result.spoilerText !== undefined) {
+			mediaFile.spoilerText = result.spoilerText ?? '';
+		}
+		if (result.mediaCategory) {
+			mediaFile.mediaCategory = result.mediaCategory;
+		}
 
 		mediaFile.serverId = result.id;
 		mediaFile.status = 'complete';
@@ -173,8 +205,68 @@ function extractErrorMessage(error: unknown): string {
 			}
 		}
 
-		files = files.filter((f) => f.id !== id);
+	files = files.filter((f) => f.id !== id);
+}
+
+function updateFileMetadata(id: string, updater: (file: MediaFile) => MediaFile) {
+	files = files.map((file) => (file.id === id ? updater(file) : file));
+}
+
+function handleSensitiveToggle(id: string, sensitive: boolean) {
+	updateFileMetadata(id, (file) => ({
+		...file,
+		sensitive,
+	}));
+
+	if (sensitive) {
+		sensitiveVisibility = { ...sensitiveVisibility, [id]: false };
+	} else {
+		const { [id]: _removed, ...rest } = sensitiveVisibility;
+		sensitiveVisibility = rest;
 	}
+}
+
+function handleSpoilerChange(id: string, value: string) {
+	const normalized = value.slice(0, SPOILER_MAX_LENGTH);
+	updateFileMetadata(id, (file) => ({
+		...file,
+		spoilerText: normalized,
+	}));
+}
+
+function handleDescriptionChange(id: string, value: string) {
+	const normalized = value.slice(0, DESCRIPTION_MAX_LENGTH);
+	updateFileMetadata(id, (file) => ({
+		...file,
+		description: normalized,
+	}));
+}
+
+function handleMediaCategoryChange(id: string, category: MediaCategory) {
+	updateFileMetadata(id, (file) => ({
+		...file,
+		mediaCategory: category,
+	}));
+}
+
+function toggleSensitiveVisibility(id: string) {
+	const current = sensitiveVisibility[id] === true;
+	sensitiveVisibility = { ...sensitiveVisibility, [id]: !current };
+}
+
+function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
+	switch (file.mediaCategory) {
+		case 'IMAGE':
+			return 'image';
+		case 'VIDEO':
+		case 'GIFV':
+			return 'video';
+		case 'AUDIO':
+			return 'audio';
+		default:
+			return 'file';
+	}
+}
 
 	/**
 	 * Handle drag over
@@ -282,22 +374,26 @@ function extractErrorMessage(error: unknown): string {
 	{:else}
 		<div class="media-upload__grid">
 			{#each files as file (file.id)}
+				{@const previewType = getPreviewType(file)}
 				<div class="media-upload__item">
-					<div class="media-upload__preview">
-						{#if file.type === 'image' && file.previewUrl}
+					<div
+						class="media-upload__preview"
+						class:media-upload__preview--blurred={file.sensitive && sensitiveVisibility[file.id] !== true}
+					>
+						{#if previewType === 'image' && file.previewUrl}
 							<img
 								src={file.previewUrl}
 								alt={file.description || file.file.name}
 								class="media-upload__preview-image"
 							/>
-						{:else if file.type === 'video' && file.previewUrl}
+						{:else if previewType === 'video' && file.previewUrl}
 							<video
 								src={file.previewUrl}
 								class="media-upload__preview-video"
 								muted
 								loop
 							></video>
-						{:else if file.type === 'audio'}
+						{:else if previewType === 'audio'}
 							<div class="media-upload__preview-audio">
 								<svg viewBox="0 0 24 24" fill="currentColor">
 									<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
@@ -305,6 +401,26 @@ function extractErrorMessage(error: unknown): string {
 								<span>{file.file.name}</span>
 							</div>
 						{/if}
+
+					{#if file.sensitive && file.status !== 'uploading' && file.status !== 'error'}
+						{#if sensitiveVisibility[file.id] !== true}
+							<div class="media-upload__overlay media-upload__overlay--sensitive">
+								<span class="media-upload__overlay-label">Sensitive media</span>
+								{#if file.spoilerText}
+									<p class="media-upload__overlay-text">{file.spoilerText}</p>
+								{/if}
+								<button
+									type="button"
+									class="media-upload__reveal"
+									onclick={() => toggleSensitiveVisibility(file.id)}
+								>
+									Reveal media
+								</button>
+							</div>
+						{:else}
+							<div class="media-upload__badge">Sensitive</div>
+						{/if}
+					{/if}
 
 						{#if file.status === 'uploading'}
 							<div class="media-upload__overlay">
@@ -342,12 +458,76 @@ function extractErrorMessage(error: unknown): string {
 						</button>
 					</div>
 
-					<div class="media-upload__info">
-						<div class="media-upload__filename">{file.file.name}</div>
-						<div class="media-upload__filesize">{formatFileSize(file.metadata?.size || 0)}</div>
-					</div>
+				<div class="media-upload__info">
+					<div class="media-upload__filename">{file.file.name}</div>
+					<div class="media-upload__filesize">{formatFileSize(file.metadata?.size || 0)}</div>
 				</div>
-			{/each}
+
+				<div class="media-upload__meta">
+					<label class="media-upload__field media-upload__field--toggle">
+						<input
+							type="checkbox"
+							checked={file.sensitive}
+							onchange={(event) =>
+								handleSensitiveToggle(file.id, (event.target as HTMLInputElement).checked)
+							}
+						/>
+						<span>Sensitive content</span>
+					</label>
+
+					<label class="media-upload__field">
+						<span class="media-upload__field-label">
+							Spoiler text
+							<span class="media-upload__counter">{file.spoilerText.length}/{SPOILER_MAX_LENGTH}</span>
+						</span>
+						<input
+							type="text"
+							value={file.spoilerText}
+							maxlength={SPOILER_MAX_LENGTH}
+							oninput={(event) =>
+								handleSpoilerChange(file.id, (event.target as HTMLInputElement).value)
+							}
+							placeholder="Optional warning shown before media"
+						/>
+					</label>
+
+					<label class="media-upload__field">
+						<span class="media-upload__field-label">
+							Description
+							<span class="media-upload__counter">
+								{(file.description || '').length}/{DESCRIPTION_MAX_LENGTH}
+							</span>
+						</span>
+					<textarea
+						rows="3"
+						maxlength={DESCRIPTION_MAX_LENGTH}
+						oninput={(event) =>
+							handleDescriptionChange(file.id, (event.target as HTMLTextAreaElement).value)
+						}
+						placeholder="Describe the media for accessibility"
+					>{file.description ?? ''}</textarea>
+					</label>
+
+					<label class="media-upload__field">
+						<span class="media-upload__field-label">Media type</span>
+						<select
+							onchange={(event) =>
+								handleMediaCategoryChange(
+									file.id,
+									(event.target as HTMLSelectElement).value as MediaCategory
+								)
+							}
+						>
+							{#each MEDIA_CATEGORY_OPTIONS as option}
+								<option value={option.value} selected={option.value === file.mediaCategory}>
+									{option.label}
+								</option>
+							{/each}
+						</select>
+					</label>
+				</div>
+			</div>
+		{/each}
 
 			{#if canAddMore}
 				<button
@@ -496,6 +676,61 @@ function extractErrorMessage(error: unknown): string {
 		padding: 1rem;
 	}
 
+	.media-upload__overlay--sensitive {
+		background: rgba(15, 20, 25, 0.85);
+		flex-direction: column;
+		gap: 0.75rem;
+		text-align: center;
+		padding: 1rem;
+	}
+
+	.media-upload__overlay-label {
+		font-size: 0.875rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+
+	.media-upload__overlay-text {
+		font-size: 0.8125rem;
+		margin: 0;
+	}
+
+	.media-upload__reveal {
+		align-self: center;
+		padding: 0.35rem 0.75rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.8);
+		background: transparent;
+		color: white;
+		font-size: 0.75rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background-color 0.2s, color 0.2s;
+	}
+
+	.media-upload__reveal:hover {
+		background: rgba(255, 255, 255, 0.2);
+	}
+
+	.media-upload__preview--blurred .media-upload__preview-image,
+	.media-upload__preview--blurred .media-upload__preview-video {
+		filter: blur(18px);
+	}
+
+	.media-upload__badge {
+		position: absolute;
+		top: 0.5rem;
+		left: 0.5rem;
+		padding: 0.25rem 0.5rem;
+		border-radius: 9999px;
+		background: rgba(15, 20, 25, 0.8);
+		color: white;
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+
 	.media-upload__overlay--error svg {
 		width: 32px;
 		height: 32px;
@@ -565,6 +800,58 @@ function extractErrorMessage(error: unknown): string {
 	.media-upload__filesize {
 		font-size: 0.75rem;
 		color: var(--text-secondary, #536471);
+	}
+
+	.media-upload__meta {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 0.25rem 0 0.5rem;
+	}
+
+	.media-upload__field {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: 0.875rem;
+		color: var(--text-secondary, #536471);
+	}
+
+	.media-upload__field--toggle {
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--text-primary, #0f1419);
+	}
+
+	.media-upload__field input[type='text'],
+	.media-upload__field textarea,
+	.media-upload__field select {
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--border-color, #cfd9de);
+		border-radius: 0.5rem;
+		font-size: 0.875rem;
+		background: var(--bg-input, #fff);
+		color: var(--text-primary, #0f1419);
+	}
+
+	.media-upload__field textarea {
+		resize: vertical;
+		min-height: 3.5rem;
+	}
+
+	.media-upload__field-label {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		color: var(--text-secondary, #536471);
+		font-weight: 600;
+	}
+
+	.media-upload__counter {
+		font-size: 0.75rem;
+		color: var(--text-tertiary, #8899a6);
 	}
 
 	.media-upload__add-more {

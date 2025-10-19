@@ -4,8 +4,8 @@
   Form for creating new filters or editing existing ones.
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
-	import { createModal } from '@greater/headless/modal';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import { getFiltersContext, type FilterContext, type FilterFormData } from './context.js';
 
 	interface Props {

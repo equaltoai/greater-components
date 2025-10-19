@@ -1,7 +1,7 @@
 # Notifications.Root
 
 **Component**: Context Provider  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 18 passing tests
 
@@ -28,13 +28,13 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @greater/fediverse
+pnpm add @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -43,8 +43,8 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   const notifications: Notification[] = [
     {
@@ -233,8 +233,8 @@ interface NotificationsState {
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([
     {
@@ -384,10 +384,10 @@ interface NotificationsState {
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { createGraphQLClient } from '@greater/adapters';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { createGraphQLClient } from '@equaltoai/greater-components-adapters';
   import { onMount, onDestroy } from 'svelte';
-  import type { Notification } from '@greater/fediverse/types';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([]);
   let loading = $state(true);
@@ -668,9 +668,9 @@ interface NotificationsState {
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { groupNotifications } from '@greater/fediverse/utils';
-  import type { Notification, NotificationGroup } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { groupNotifications } from '@equaltoai/greater-components-fediverse/utils';
+  import type { Notification, NotificationGroup } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([
     // Sample notifications (multiple of same type to demonstrate grouping)
@@ -914,9 +914,9 @@ interface NotificationsState {
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
-  import type { Notification } from '@greater/fediverse/types';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([]);
   let loading = $state(false);
@@ -1189,10 +1189,10 @@ interface NotificationsState {
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { createNotificationsStore } from '@greater/adapters';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { createNotificationsStore } from '@equaltoai/greater-components-adapters';
   import { onMount } from 'svelte';
-  import type { Notification, NotificationGroup } from '@greater/fediverse/types';
+  import type { Notification, NotificationGroup } from '@equaltoai/greater-components-fediverse/types';
 
   // Create notifications store with full configuration
   const store = createNotificationsStore({
@@ -1581,7 +1581,7 @@ The `Notifications.Root` component provides context to all child components thro
 Child components automatically access context:
 
 ```typescript
-import { getNotificationsContext } from '@greater/fediverse/Notifications/context';
+import { getNotificationsContext } from '@equaltoai/greater-components-fediverse/Notifications/context';
 
 const context = getNotificationsContext();
 // Access: context.notifications, context.config, context.handlers, context.state
@@ -1745,7 +1745,7 @@ const handlers = {
 Implement rate limiting to prevent abuse:
 
 ```typescript
-import { RateLimiter } from '@greater/utils';
+import { RateLimiter } from '@equaltoai/greater-components-utils';
 
 const limiter = new RateLimiter({ maxRequests: 10, windowMs: 60000 });
 
@@ -1807,7 +1807,7 @@ const handlers = {
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { Notifications } from '@greater/fediverse';
+import { Notifications } from '@equaltoai/greater-components-fediverse';
 
 describe('Notifications.Root', () => {
   it('renders notifications correctly', () => {

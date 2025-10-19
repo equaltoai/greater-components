@@ -1,7 +1,7 @@
 # Admin.Analytics
 
 **Component**: Instance Analytics and Growth Metrics  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 44 passing tests
 
@@ -28,7 +28,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -37,7 +37,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onFetchAnalytics: async (period) => {

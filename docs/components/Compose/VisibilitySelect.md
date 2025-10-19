@@ -1,7 +1,7 @@
 # Compose.VisibilitySelect
 
 **Component**: Post Visibility Selector  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await fetch('/api/statuses', {
@@ -127,7 +127,7 @@ Simple visibility selector with all options:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     console.log('Posting with visibility:', data.visibility);
@@ -186,7 +186,7 @@ Set different default visibility for different composer contexts:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   type ComposerType = 'public' | 'reply' | 'dm';
   let composerType = $state<ComposerType>('public');
@@ -290,8 +290,8 @@ Show detailed explanations for each visibility level:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { getComposeContext } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { getComposeContext } from '@equaltoai/greater-components-fediverse/Compose';
 
   const context = getComposeContext();
 
@@ -408,8 +408,8 @@ Warn users when posting sensitive content publicly:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { getComposeContext } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { getComposeContext } from '@equaltoai/greater-components-fediverse/Compose';
 
   const context = getComposeContext();
 
@@ -534,7 +534,7 @@ Create a custom visibility selector with additional options:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   type ExtendedVisibility = 'public' | 'unlisted' | 'private' | 'direct' | 'local-only';
 
@@ -697,7 +697,7 @@ Remember user's last visibility choice:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
 
   type PostVisibility = 'public' | 'unlisted' | 'private' | 'direct';
@@ -959,7 +959,7 @@ function getActivityPubRecipients(post, user) {
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 describe('Compose.VisibilitySelect', () => {
   it('renders with all visibility options', () => {
@@ -1076,7 +1076,7 @@ Yes! You can create a custom select component using the Compose context:
 
 ```svelte
 <script lang="ts">
-  import { getComposeContext } from '@greater/fediverse/Compose';
+  import { getComposeContext } from '@equaltoai/greater-components-fediverse/Compose';
   const context = getComposeContext();
 
   const customVisibilities = ['public', 'unlisted', 'private', 'direct', 'local-only'];

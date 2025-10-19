@@ -9,7 +9,7 @@
 /packages/tokens/ @equaltoai/design-system
 /packages/icons/ @equaltoai/design-system
 /packages/primitives/ @equaltoai/ui-team
-/packages/fediverse/ @equaltoai/fediverse-team
+/packages/fediverse/ @equaltoai/greater-components-fediverse-team
 /packages/adapters/ @equaltoai/backend-team
 /packages/utils/ @equaltoai/core-team
 

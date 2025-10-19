@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { sanitizeHtml, linkifyMentions } from '@greater/utils';
+  import { sanitizeHtml, linkifyMentions } from '@equaltoai/greater-components-utils';
   import type { Mention, Tag } from '../types';
   
   interface Props {

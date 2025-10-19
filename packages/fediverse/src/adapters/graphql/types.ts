@@ -95,27 +95,234 @@ export interface GraphQLError {
  */
 export interface LesserActor {
 	id: string;
-	type: 'Person' | 'Organization' | 'Service' | 'Group' | 'Application';
-	name?: string;
-	preferredUsername: string;
+	username: string;
+	domain?: string | null;
+	displayName?: string | null;
 	summary?: string;
+	avatar?: string | null;
+	header?: string | null;
+	followers: number;
+	following: number;
+	statusesCount: number;
+	bot: boolean;
+	locked: boolean;
+	createdAt: string;
+	updatedAt: string;
+	trustScore?: number;
+	fields: Array<{
+		name: string;
+		value: string;
+		verifiedAt?: string | null;
+	}>;
+	/**
+	 * Legacy ActivityPub compatibility fields
+	 */
+	name?: string | null;
+	preferredUsername?: string | null;
 	icon?: {
 		url: string;
 		mediaType?: string;
-	};
+	} | null;
 	image?: {
 		url: string;
 		mediaType?: string;
-	};
-	inbox: string;
-	outbox: string;
-	following?: string;
-	followers?: string;
+	} | null;
 	url?: string;
 	published?: string;
 	followersCount?: number;
 	followingCount?: number;
-	statusesCount?: number;
+}
+
+/**
+ * Paginated list of actors
+ */
+export interface ActorListPage {
+	actors: LesserActor[];
+	totalCount: number;
+	nextCursor?: string | null;
+}
+
+/**
+ * Profile field input
+ */
+export interface ProfileFieldInput {
+	name: string;
+	value: string;
+	verifiedAt?: string | null;
+}
+
+/**
+ * Update profile input
+ */
+export interface UpdateProfileInput {
+	displayName?: string;
+	bio?: string;
+	avatar?: string;
+	header?: string;
+	locked?: boolean;
+	bot?: boolean;
+	discoverable?: boolean;
+	noIndex?: boolean;
+	sensitive?: boolean;
+	language?: string;
+	fields?: ProfileFieldInput[];
+}
+
+/**
+ * Enum helpers
+ */
+export type Visibility = 'PUBLIC' | 'UNLISTED' | 'FOLLOWERS' | 'DIRECT';
+export type ExpandMediaPreference = 'DEFAULT' | 'SHOW_ALL' | 'HIDE_ALL';
+export type TimelineOrder = 'NEWEST' | 'OLDEST';
+export type StreamQuality = 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ULTRA';
+export type DigestFrequency = 'NEVER' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
+
+/**
+ * User preference structures
+ */
+export interface PostingPreferences {
+	defaultVisibility: Visibility;
+	defaultSensitive: boolean;
+	defaultLanguage: string;
+}
+
+export interface ReadingPreferences {
+	expandSpoilers: boolean;
+	expandMedia: ExpandMediaPreference;
+	autoplayGifs: boolean;
+	timelineOrder: TimelineOrder;
+}
+
+export interface DiscoveryPreferences {
+	showFollowCounts: boolean;
+	searchSuggestionsEnabled: boolean;
+	personalizedSearchEnabled: boolean;
+}
+
+export interface StreamingPreferences {
+	defaultQuality: StreamQuality;
+	autoQuality: boolean;
+	preloadNext: boolean;
+	dataSaver: boolean;
+}
+
+export interface NotificationPreferences {
+	email: boolean;
+	push: boolean;
+	inApp: boolean;
+	digest: DigestFrequency;
+}
+
+export interface PrivacyPreferences {
+	defaultVisibility: Visibility;
+	indexable: boolean;
+	showOnlineStatus: boolean;
+}
+
+export interface ReblogFilter {
+	key: string;
+	enabled: boolean;
+}
+
+export interface UserPreferences {
+	actorId: string;
+	posting: PostingPreferences;
+	reading: ReadingPreferences;
+	discovery: DiscoveryPreferences;
+	streaming: StreamingPreferences;
+	notifications: NotificationPreferences;
+	privacy: PrivacyPreferences;
+	reblogFilters: ReblogFilter[];
+}
+
+/**
+ * Preference inputs
+ */
+export interface ReblogFilterInput {
+	key: string;
+	enabled: boolean;
+}
+
+export interface StreamingPreferencesInput {
+	defaultQuality?: StreamQuality;
+	autoQuality?: boolean;
+	preloadNext?: boolean;
+	dataSaver?: boolean;
+}
+
+export interface UpdateUserPreferencesInput {
+	language?: string;
+	defaultPostingVisibility?: Visibility;
+	defaultMediaSensitive?: boolean;
+	expandSpoilers?: boolean;
+	expandMedia?: ExpandMediaPreference;
+	autoplayGifs?: boolean;
+	showFollowCounts?: boolean;
+	preferredTimelineOrder?: TimelineOrder;
+	searchSuggestionsEnabled?: boolean;
+	personalizedSearchEnabled?: boolean;
+	reblogFilters?: ReblogFilterInput[];
+	streaming?: StreamingPreferencesInput;
+}
+
+/**
+ * Push subscription structures
+ */
+export interface PushSubscriptionKeys {
+	auth: string;
+	p256dh: string;
+}
+
+export interface PushSubscriptionAlerts {
+	follow: boolean;
+	favourite: boolean;
+	reblog: boolean;
+	mention: boolean;
+	poll: boolean;
+	followRequest: boolean;
+	status: boolean;
+	update: boolean;
+	adminSignUp: boolean;
+	adminReport: boolean;
+}
+
+export interface PushSubscription {
+	id: string;
+	endpoint: string;
+	keys: PushSubscriptionKeys;
+	alerts: PushSubscriptionAlerts;
+	policy: string;
+	serverKey?: string | null;
+	createdAt?: string | null;
+	updatedAt?: string | null;
+}
+
+export interface PushSubscriptionKeysInput {
+	auth: string;
+	p256dh: string;
+}
+
+export interface PushSubscriptionAlertsInput {
+	follow?: boolean;
+	favourite?: boolean;
+	reblog?: boolean;
+	mention?: boolean;
+	poll?: boolean;
+	followRequest?: boolean;
+	status?: boolean;
+	update?: boolean;
+	adminSignUp?: boolean;
+	adminReport?: boolean;
+}
+
+export interface RegisterPushSubscriptionInput {
+	endpoint: string;
+	keys: PushSubscriptionKeysInput;
+	alerts: PushSubscriptionAlertsInput;
+}
+
+export interface UpdatePushSubscriptionInput {
+	alerts: PushSubscriptionAlertsInput;
 }
 
 /**
@@ -398,9 +605,7 @@ export interface ReportResult {
  * Update profile mutation result
  */
 export interface UpdateProfileResult {
-	updateProfile: {
-		actor: LesserActor;
-	};
+	updateProfile: LesserActor;
 }
 
 /**
@@ -457,23 +662,69 @@ export interface SearchResult {
 }
 
 /**
+ * User preferences query result
+ */
+export interface UserPreferencesResult {
+	userPreferences: UserPreferences;
+}
+
+/**
+ * Update user preferences mutation result
+ */
+export interface UpdateUserPreferencesResult {
+	updateUserPreferences: UserPreferences;
+}
+
+/**
+ * Update streaming preferences mutation result
+ */
+export interface UpdateStreamingPreferencesResult {
+	updateStreamingPreferences: {
+		actorId: string;
+		streaming: StreamingPreferences;
+	};
+}
+
+/**
+ * Push subscription query result
+ */
+export interface PushSubscriptionResult {
+	pushSubscription: PushSubscription | null;
+}
+
+/**
+ * Register push subscription mutation result
+ */
+export interface RegisterPushSubscriptionResult {
+	registerPushSubscription: PushSubscription;
+}
+
+/**
+ * Update push subscription mutation result
+ */
+export interface UpdatePushSubscriptionResult {
+	updatePushSubscription: PushSubscription;
+}
+
+/**
+ * Delete push subscription mutation result
+ */
+export interface DeletePushSubscriptionResult {
+	deletePushSubscription: boolean;
+}
+
+/**
  * Followers result
  */
 export interface FollowersResult {
-	followers: {
-		items: LesserActor[];
-		nextCursor?: string;
-	};
+	followers: ActorListPage;
 }
 
 /**
  * Following result
  */
 export interface FollowingResult {
-	following: {
-		items: LesserActor[];
-		nextCursor?: string;
-	};
+	following: ActorListPage;
 }
 
 /**

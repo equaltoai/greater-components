@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Profile from '@greater/fediverse/Profile';
+ *   import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
  * 
  *   const profile = {
  *     id: '1',
@@ -57,6 +57,7 @@ export { default as EndorsedAccounts } from './EndorsedAccounts.svelte';
 export { default as FeaturedHashtags } from './FeaturedHashtags.svelte';
 export { default as AccountMigration } from './AccountMigration.svelte';
 export { default as TrustBadge } from './TrustBadge.svelte';
+export * as GraphQLAdapter from './GraphQLAdapter.js';
 
 // Export types and context utilities
 export type {
@@ -68,12 +69,15 @@ export type {
 	ProfileHandlers,
 	ProfileState,
 	ProfileContext,
-	PrivacySettings,
 	FollowRequest,
 	BlockedAccount,
 	MutedAccount,
 	FeaturedHashtag,
-	AccountMigration,
+} from './context.js';
+
+export type {
+	PrivacySettings as PrivacySettingsData,
+	AccountMigration as AccountMigrationData,
 } from './context.js';
 
 export {
@@ -83,4 +87,3 @@ export {
 	getRelationshipText,
 	DEFAULT_TABS,
 } from './context.js';
-

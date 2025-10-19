@@ -1,6 +1,6 @@
 <script lang="ts">
-	import CopyIcon from '@greater/icons/icons/copy.svelte';
-	import CheckIcon from '@greater/icons/icons/check.svelte';
+	import CopyIcon from '@equaltoai/greater-components-icons/icons/copy.svelte';
+	import CheckIcon from '@equaltoai/greater-components-icons/icons/check.svelte';
 	
 	export let code: string;
 	export let language: string = 'javascript';

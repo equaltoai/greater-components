@@ -1,7 +1,7 @@
 # Auth.PasswordReset
 
 **Component**: Password Reset/Recovery  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: Part of Auth test suite
 
@@ -28,7 +28,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,7 +39,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handlePasswordResetRequest(email) {
     const response = await fetch('/api/auth/password-reset/request', {
@@ -64,7 +64,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   // Get token from URL parameter
   const url = new URL(window.location.href);
@@ -146,7 +146,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let currentPage = $state<'request' | 'confirm' | 'login'>('request');
   let resetToken = $state<string | null>(null);
@@ -260,7 +260,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let email = $state('');
 
@@ -294,7 +294,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let showSuccessModal = $state(false);
   let userEmail = $state('');
@@ -346,7 +346,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let resetToken = $state<string | null>(null);
   let tokenExpired = $state(false);
@@ -453,7 +453,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let requestCount = $state(0);
   let lastRequestTime = $state(0);
@@ -728,7 +728,7 @@ Test the PasswordReset component with both modes:
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import { Auth } from '@greater/fediverse';
+import { Auth } from '@equaltoai/greater-components-fediverse';
 
 describe('Auth.PasswordReset', () => {
   describe('Request Mode', () => {

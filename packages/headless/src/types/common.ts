@@ -1,6 +1,6 @@
 /**
  * Common types for headless UI primitives
- * @module @greater/headless/types
+ * @module @equaltoai/greater-components-headless/types
  */
 
 /**

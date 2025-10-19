@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Auth from '@greater/fediverse/Auth';
+ *   import * as Auth from '@equaltoai/greater-components-fediverse/Auth';
  * 
  *   const handlers = {
  *     onLogin: async (credentials) => {

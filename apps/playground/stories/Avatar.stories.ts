@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import { Avatar } from '@greater/primitives';
+import { Avatar } from '@equaltoai/greater-components-primitives';
 import AvatarDemo from './AvatarDemo.svelte';
 
 const meta: Meta<Avatar> = {
@@ -25,7 +25,7 @@ An accessible avatar component with image loading, initials fallback, and status
 
 \`\`\`svelte
 <script>
-  import { Avatar } from '@greater/primitives';
+  import { Avatar } from '@equaltoai/greater-components-primitives';
 </script>
 
 <!-- With image -->

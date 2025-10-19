@@ -1,7 +1,7 @@
 # Search.Bar
 
 **Component**: Search Input  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 16 passing tests
 
@@ -30,7 +30,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,7 +39,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onSearch: async (options) => {
@@ -75,7 +75,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -114,7 +114,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   let searchMode = $state<'standard' | 'semantic'>('standard');
 
@@ -200,7 +200,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
 
   let recentSearches = $state<string[]>([]);
@@ -352,7 +352,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
 
   let searchInput: HTMLElement | null = null;
@@ -492,7 +492,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   let queryLength = $state(0);
   let validationMessage = $state('');
@@ -753,7 +753,7 @@ Test file: `packages/fediverse/tests/Search/Bar.test.ts`
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.Bar', () => {
   it('renders search input', () => {

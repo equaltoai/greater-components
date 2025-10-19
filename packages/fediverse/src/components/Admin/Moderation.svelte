@@ -7,7 +7,7 @@
   @component
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getAdminContext } from './context.js';
 	import type { AdminUser } from './context.js';
 

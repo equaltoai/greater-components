@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Tabs } from '@greater/primitives';
+  import { Tabs } from '@equaltoai/greater-components-primitives';
   import { action } from '@storybook/addon-actions';
 
   interface Props {

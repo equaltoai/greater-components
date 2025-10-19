@@ -298,7 +298,7 @@ export class WebSocketPool {
 		};
 
 		socket.onerror = (error) => {
-			this.logger.error(`WebSocket error on ${url}`, error);
+			this.logger.error(`WebSocket error on ${url}`, { error });
 			connection.state = 'disconnected';
 		};
 
@@ -312,7 +312,7 @@ export class WebSocketPool {
 						try {
 							handler(event);
 						} catch (error) {
-							this.logger.error('Error in WebSocket message handler', error);
+					this.logger.error('Error in WebSocket message handler', { error });
 						}
 					}
 				}
@@ -360,7 +360,7 @@ export class WebSocketPool {
 				try {
 					connection.socket.send(JSON.stringify({ type: 'ping' }));
 				} catch (error) {
-					this.logger.error('Heartbeat failed', error);
+			this.logger.error('Heartbeat failed', { error });
 					this.reconnect(connection);
 				}
 			}
@@ -384,7 +384,7 @@ export class WebSocketPool {
 		connection.reconnectAttempts++;
 
 		if (connection.reconnectAttempts > this.config.maxReconnectAttempts) {
-			this.logger.error(`Max reconnection attempts reached for ${connection.url}`);
+		this.logger.error(`Max reconnection attempts reached for ${connection.url}`);
 			this.connections.delete(connection.url);
 			return;
 		}
@@ -395,7 +395,7 @@ export class WebSocketPool {
 		try {
 			await this.createConnection(connection.url);
 		} catch (error) {
-			this.logger.error(`Reconnection failed for ${connection.url}`, error);
+		this.logger.error(`Reconnection failed for ${connection.url}`, { error });
 		}
 	}
 
@@ -413,7 +413,7 @@ export class WebSocketPool {
 				connection.socket.close();
 			}
 		} catch (error) {
-			this.logger.error('Error closing WebSocket', error);
+		this.logger.error('Error closing WebSocket', { error });
 		}
 
 		connection.state = 'disconnected';

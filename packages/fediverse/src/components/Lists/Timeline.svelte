@@ -7,6 +7,7 @@
   @component
 -->
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { getListsContext } from './context.js';
 
 	interface Props {
@@ -20,9 +21,13 @@
 		 * Custom CSS class
 		 */
 		class?: string;
+		/**
+		 * Optional content rendered inside the timeline body
+		 */
+		children?: Snippet;
 	}
 
-	let { showMembers = true, class: className = '' }: Props = $props();
+	let { showMembers = true, class: className = '', children }: Props = $props();
 
 	const { state: listsState, removeMember } = getListsContext();
 
@@ -100,7 +105,9 @@
 		{/if}
 
 		<div class="lists-timeline__content">
-			<slot>
+			{#if children}
+				{@render children()}
+			{:else}
 				<div class="lists-timeline__empty">
 					<svg viewBox="0 0 24 24" fill="currentColor">
 						<path
@@ -110,7 +117,7 @@
 					<h3>No posts yet</h3>
 					<p>Posts from list members will appear here</p>
 				</div>
-			</slot>
+			{/if}
 		</div>
 	</div>
 {:else}

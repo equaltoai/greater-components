@@ -9,7 +9,7 @@ import { testElementContrast, WCAG_CONTRAST } from '../a11y/contrast-helpers';
 import { isElementFocusable, isElementTabbable } from '../a11y/focus-helpers';
 
 declare module 'vitest' {
-  interface Assertion<T = unknown> {
+  interface Assertion<T = any> {
     toHaveAccessibleName(): T;
     toHaveAccessibleName(name: string): T;
     toHaveRole(role: string): T;

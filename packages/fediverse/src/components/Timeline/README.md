@@ -16,7 +16,7 @@ Built using the **compound component pattern**, Timeline provides maximum flexib
 
 ```svelte
 <script>
-  import { TimelineCompound as Timeline, StatusCompound as Status } from '@greater/fediverse';
+  import { TimelineCompound as Timeline, StatusCompound as Status } from '@equaltoai/greater-components-fediverse';
   
   const posts = [...]; // Status[] from API
   
@@ -214,7 +214,7 @@ import type {
   TimelineCompoundState,
   TimelineMode,
   TimelineDensity
-} from '@greater/fediverse';
+} from '@equaltoai/greater-components-fediverse';
 
 const config: TimelineCompoundConfig = {
   mode: 'feed',
@@ -242,7 +242,7 @@ Timeline components follow WCAG 2.1 AA guidelines:
 
 ```svelte
 <script>
-  import { TimelineCompound as Timeline, StatusCompound as Status } from '@greater/fediverse';
+  import { TimelineCompound as Timeline, StatusCompound as Status } from '@equaltoai/greater-components-fediverse';
   
   let posts = $state([]);
   let hasMore = $state(true);

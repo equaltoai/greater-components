@@ -1,7 +1,7 @@
 # Auth.OAuthConsent
 
 **Component**: OAuth 2.0 Authorization Consent Screen  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 51 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   const clientInfo = {
     name: 'Example App',
@@ -174,7 +174,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let loading = $state(true);
   let oauthRequest = $state(null);
@@ -341,7 +341,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let existingAuth = $state(null);
   let showConsent = $state(false);
@@ -430,7 +430,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let selectedScopes = $state([]);
   let allScopes = [
@@ -584,7 +584,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let showRevokeConfirmation = $state(false);
   let existingAuthorizations = $state([]);
@@ -714,7 +714,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   async function handleOAuthAuthorize(data) {
     const startTime = Date.now();

@@ -4,7 +4,7 @@
  * Provides shared state and configuration for compound Compose components.
  * Handles post composition, media attachments, and submission.
  * 
- * @module @greater/fediverse/Compose/context
+ * @module @equaltoai/greater-components-fediverse/Compose/context
  */
 
 import { getContext, setContext } from 'svelte';

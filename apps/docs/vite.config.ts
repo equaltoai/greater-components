@@ -31,12 +31,12 @@ export default defineConfig({
 	],
 	resolve: {
 		alias: {
-			'@greater/primitives': path.resolve('../../packages/primitives/src'),
-			'@greater/tokens': path.resolve('../../packages/tokens/src'),
-			'@greater/icons': path.resolve('../../packages/icons/src'),
-			'@greater/utils': path.resolve('../../packages/utils/src'),
-			'@greater/fediverse': path.resolve('../../packages/fediverse/src'),
-			'@greater/adapters': path.resolve('../../packages/adapters/src')
+			'@equaltoai/greater-components-primitives': path.resolve('../../packages/primitives/src'),
+			'@equaltoai/greater-components-tokens': path.resolve('../../packages/tokens/src'),
+			'@equaltoai/greater-components-icons': path.resolve('../../packages/icons/src'),
+			'@equaltoai/greater-components-utils': path.resolve('../../packages/utils/src'),
+			'@equaltoai/greater-components-fediverse': path.resolve('../../packages/fediverse/src'),
+			'@equaltoai/greater-components-adapters': path.resolve('../../packages/adapters/src')
 		}
 	},
 	server: {

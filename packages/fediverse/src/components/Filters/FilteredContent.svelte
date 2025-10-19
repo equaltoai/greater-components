@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getFiltersContext, type ContentFilter, type FilterContext } from './context.js';
 
 	interface Props {

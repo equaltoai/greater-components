@@ -12,11 +12,11 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 	})),
 }));
 
-vi.mock('@greater/primitives', async () => ({
+vi.mock('@equaltoai/greater-components-primitives', async () => ({
 	Button: (await import('./components/ButtonStub.svelte')).default,
 }));
 
-vi.mock('@greater/icons', async () => {
+vi.mock('@equaltoai/greater-components-icons', async () => {
 	const Icon = (await import('./components/IconStub.svelte')).default;
 	return {
 		Reply: Icon,

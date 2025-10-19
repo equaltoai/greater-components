@@ -1,6 +1,6 @@
 <script lang="ts">
-	import CodeIcon from '@greater/icons/icons/code.svelte';
-	import EyeIcon from '@greater/icons/icons/eye.svelte';
+	import CodeIcon from '@equaltoai/greater-components-icons/icons/code.svelte';
+	import EyeIcon from '@equaltoai/greater-components-icons/icons/eye.svelte';
 	import type { ComponentType } from 'svelte';
 	
 	export let component: ComponentType;

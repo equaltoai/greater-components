@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createCostContext } from '../../src/components/Admin/Cost/context.js';
   import CostDashboard from '../../src/components/Admin/Cost/Dashboard.svelte';
-  import type { LesserGraphQLAdapter } from '@greater/adapters';
+  import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
   let {
     adapter,

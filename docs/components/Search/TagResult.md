@@ -1,7 +1,7 @@
 # Search.TagResult
 
 **Component**: Hashtag Search Result Item  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 11 passing tests
 
@@ -29,7 +29,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -38,7 +38,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -129,8 +129,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let trendingCount = $state(0);
   let totalPosts = $state(0);
@@ -230,8 +230,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchTag } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchTag } from '@equaltoai/greater-components-fediverse/types';
 
   interface EnhancedSearchTag extends SearchTag {
     trendingRank?: number;
@@ -530,8 +530,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchTag } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchTag } from '@equaltoai/greater-components-fediverse/types';
 
   interface CategorizedTag extends SearchTag {
     category?: string;
@@ -744,8 +744,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchTag } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchTag } from '@equaltoai/greater-components-fediverse/types';
 
   interface ManagedTag extends SearchTag {
     isFollowing?: boolean;
@@ -1129,8 +1129,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchTag } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchTag } from '@equaltoai/greater-components-fediverse/types';
 
   interface TagWithRelated extends SearchTag {
     relatedTags?: string[];
@@ -1497,7 +1497,7 @@ Test file: `packages/fediverse/tests/Search/TagResult.test.ts`
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.TagResult', () => {
   it('renders tag name with # prefix', () => {

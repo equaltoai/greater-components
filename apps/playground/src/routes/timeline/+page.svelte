@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { TimelineVirtualized, type Status } from '@greater/fediverse';
-  import { generateMockStatuses } from '@greater/fediverse/src/mockData';
+  import { TimelineVirtualized, type Status } from '@equaltoai/greater-components-fediverse';
+  import { generateMockStatuses } from '@equaltoai/greater-components-fediverse/src/mockData';
   import { onMount } from 'svelte';
 
   let items = $state<Status[]>([]);

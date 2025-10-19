@@ -1,6 +1,6 @@
 # Compose Component Group
 
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Components**: 11 components + 5 utility modules
 
@@ -71,7 +71,7 @@ The Compose system follows a **compound component pattern** with:
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -82,7 +82,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit({ content, visibility }) {
     await fetch('/api/statuses', {
@@ -105,7 +105,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     // Upload media first
@@ -154,7 +154,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleThreadSubmit(posts) {
     let previousId = null;
@@ -181,7 +181,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await api.createStatus(data);
@@ -398,7 +398,7 @@ Drafts are stored in localStorage:
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 test('submits post with content', async () => {
   const handleSubmit = vi.fn();
@@ -425,7 +425,7 @@ test('submits post with content', async () => {
 ### **Utility Testing**
 
 ```typescript
-import { countWeightedCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 test('counts emojis correctly', () => {
   const result = countWeightedCharacters('Hello 👋 World 🌍');
@@ -450,8 +450,8 @@ test('weights URLs correctly', () => {
 ### **Setup with Lesser Adapter**
 
 ```typescript
-import { createLesserGraphQLAdapter } from '@greater/adapters';
-import { createComposeHandlers } from '@greater/fediverse/Compose';
+import { createLesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+import { createComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 
 const adapter = createLesserGraphQLAdapter({
   endpoint: 'https://your-instance.social/api/graphql',
@@ -484,7 +484,7 @@ const composeHandlers = createComposeHandlers({
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
   
   const {
     handleSubmit,
@@ -608,7 +608,7 @@ app.post('/api/media', upload.single('file'), async (req, res) => {
 ```svelte
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { cleanupOldDrafts } from '@greater/fediverse/Compose';
+  import { cleanupOldDrafts } from '@equaltoai/greater-components-fediverse/Compose';
 
   onMount(() => {
     // Clean up drafts older than 7 days
@@ -655,7 +655,7 @@ app.post('/api/media', upload.single('file'), async (req, res) => {
 **Solution**: Make sure you're using `countWeightedCharacters` with proper options:
 
 ```typescript
-import { countWeightedCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 const result = countWeightedCharacters(text, {
   useUrlWeighting: true,  // Weight URLs as ~23 chars
@@ -689,7 +689,7 @@ console.log(result.graphemeCount); // Actual grapheme count
 **Solution**: Check localStorage availability and permissions:
 
 ```typescript
-import { saveDraft, loadDraft } from '@greater/fediverse/Compose';
+import { saveDraft, loadDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Test localStorage
 try {
@@ -721,7 +721,7 @@ console.log('Loaded draft:', loaded);
 **Solution**: Check file validation and server configuration:
 
 ```typescript
-import { validateFile } from '@greater/fediverse/Compose';
+import { validateFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 const file = event.target.files[0];
 const validation = validateFile(file, {

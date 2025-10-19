@@ -1,7 +1,7 @@
 # Lists.Editor
 
 **Component**: List Create/Edit Form  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 78 passing tests
 
@@ -41,7 +41,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -52,7 +52,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onCreate: async (data) => {
@@ -89,7 +89,7 @@ The editor is controlled by the Lists context and opens when:
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onCreate: async (data) => {
@@ -168,7 +168,7 @@ handlers.onUpdate?: (id: string, data: Partial<ListFormData>) => Promise<ListDat
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { toast } from '$lib/toast';
   
   const handlers = {
@@ -249,8 +249,8 @@ handlers.onUpdate?: (id: string, data: Partial<ListFormData>) => Promise<ListDat
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListFormData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListFormData } from '@equaltoai/greater-components-fediverse/Lists';
   
   // Custom validation beyond the built-in checks
   function validateListData(data: ListFormData): string | null {
@@ -334,8 +334,8 @@ handlers.onUpdate?: (id: string, data: Partial<ListFormData>) => Promise<ListDat
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListFormData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListFormData } from '@equaltoai/greater-components-fediverse/Lists';
   
   // Predefined list templates
   const listTemplates: Array<{ name: string; data: ListFormData }> = [
@@ -561,7 +561,7 @@ handlers.onUpdate?: (id: string, data: Partial<ListFormData>) => Promise<ListDat
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { onMount } from 'svelte';
   
   const DRAFT_STORAGE_KEY = 'lists-editor-draft';
@@ -745,7 +745,7 @@ handlers.onUpdate?: (id: string, data: Partial<ListFormData>) => Promise<ListDat
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { analytics } from '$lib/analytics';
   import { logger } from '$lib/logger';
   
@@ -1153,7 +1153,7 @@ const handlers = {
 
 ```typescript
 import { render, fireEvent, waitFor } from '@testing-library/svelte';
-import * as Lists from '@greater/fediverse/Lists';
+import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 
 describe('Lists.Editor', () => {
   test('opens in create mode', async () => {
@@ -1237,7 +1237,7 @@ describe('Lists.Editor', () => {
 ### **validateListForm()**
 
 ```typescript
-import { validateListForm } from '@greater/fediverse/Lists';
+import { validateListForm } from '@equaltoai/greater-components-fediverse/Lists';
 
 const error = validateListForm({
   title: 'My List',

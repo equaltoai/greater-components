@@ -33,11 +33,21 @@ const getNumberField = (value: unknown, field: string): number | undefined => {
   return typeof candidate === 'number' ? candidate : undefined;
 };
 
-const isTransportSwitchEvent = (value: unknown): value is TransportSwitchEvent =>
-  isRecord(value) &&
-  (value.from === null || typeof value.from === 'string') &&
-  typeof value.to === 'string' &&
-  typeof value.reason === 'string';
+const isTransportSwitchEvent = (value: unknown): value is TransportSwitchEvent => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const from = value['from'];
+  const to = value['to'];
+  const reason = value['reason'];
+
+  return (
+    (from === null || typeof from === 'string') &&
+    typeof to === 'string' &&
+    typeof reason === 'string'
+  );
+};
 
 interface ExampleStatus {
   connected: boolean;

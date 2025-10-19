@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import SunIcon from '@greater/icons/icons/sun.svelte';
-	import MoonIcon from '@greater/icons/icons/moon.svelte';
+	import SunIcon from '@equaltoai/greater-components-icons/icons/sun.svelte';
+	import MoonIcon from '@equaltoai/greater-components-icons/icons/moon.svelte';
 	
 	let theme: 'light' | 'dark' = 'light';
 	

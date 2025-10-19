@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { ThemeSwitcher, ThemeProvider } from '@greater/primitives';
-  import type { ColorScheme } from '@greater/primitives';
+  import { ThemeSwitcher, ThemeProvider } from '@equaltoai/greater-components-primitives';
+  import type { ColorScheme } from '@equaltoai/greater-components-primitives';
   
   interface Props {
     showPreview?: boolean;

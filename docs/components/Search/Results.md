@@ -1,7 +1,7 @@
 # Search.Results
 
 **Component**: Search Results Container  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 12 passing tests
 
@@ -30,7 +30,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,7 +39,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -83,8 +83,8 @@ The component doesn't emit events directly but renders child components (`ActorR
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let totalSearches = $state(0);
   let lastQuery = $state('');
@@ -194,8 +194,8 @@ The component doesn't emit events directly but renders child components (`ActorR
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let currentPage = $state(1);
   let resultsPerPage = $state(10);
@@ -441,8 +441,8 @@ The component doesn't emit events directly but renders child components (`ActorR
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchResultType } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchResultType } from '@equaltoai/greater-components-fediverse/types';
 
   interface SearchAnalytics {
     query: string;
@@ -740,8 +740,8 @@ The component doesn't emit events directly but renders child components (`ActorR
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let lastResults = $state<SearchResults | null>(null);
   let lastQuery = $state('');
@@ -1035,9 +1035,9 @@ The component doesn't emit events directly but renders child components (`ActorR
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { onMount, onDestroy } from 'svelte';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let realtimeEnabled = $state(true);
   let wsConnection = $state<WebSocket | null>(null);
@@ -1526,7 +1526,7 @@ Test file: `packages/fediverse/tests/Search/Results.test.ts`
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.Results', () => {
   it('shows loading state during search', async () => {

@@ -7,8 +7,8 @@ This guide demonstrates integrating the new Timeline compound component into the
 ```svelte
 <!-- lesser-client/src/routes/home/+page.svelte -->
 <script lang="ts">
-  import { TimelineCompound as Timeline, StatusCompound as Status } from '@greater/fediverse';
-  import type { Status as StatusType } from '@greater/fediverse';
+  import { TimelineCompound as Timeline, StatusCompound as Status } from '@equaltoai/greater-components-fediverse';
+  import type { Status as StatusType } from '@equaltoai/greater-components-fediverse';
   
   // Lesser API client
   import { lesserApi } from '$lib/api';
@@ -262,7 +262,7 @@ This guide demonstrates integrating the new Timeline compound component into the
 ```svelte
 <!-- lesser-client/src/routes/profile/[username]/+page.svelte -->
 <script lang="ts">
-  import { TimelineCompound as Timeline, StatusCompound as Status } from '@greater/fediverse';
+  import { TimelineCompound as Timeline, StatusCompound as Status } from '@equaltoai/greater-components-fediverse';
   import { page } from '$app/stores';
   import { lesserApi } from '$lib/api';
   
@@ -338,7 +338,7 @@ This guide demonstrates integrating the new Timeline compound component into the
 ```svelte
 <!-- lesser-client/src/routes/status/[id]/+page.svelte -->
 <script lang="ts">
-  import { TimelineCompound as Timeline, StatusCompound as Status } from '@greater/fediverse';
+  import { TimelineCompound as Timeline, StatusCompound as Status } from '@equaltoai/greater-components-fediverse';
   import { page } from '$app/stores';
   import { lesserApi } from '$lib/api';
   
@@ -411,7 +411,7 @@ This guide demonstrates integrating the new Timeline compound component into the
 
 ```svelte
 <script lang="ts">
-  import { TimelineCompound as Timeline } from '@greater/fediverse';
+  import { TimelineCompound as Timeline } from '@equaltoai/greater-components-fediverse';
   import { lesserWebSocket } from '$lib/websocket';
   
   let posts = $state([]);
@@ -442,7 +442,7 @@ This guide demonstrates integrating the new Timeline compound component into the
 
 ```svelte
 <script lang="ts">
-  import { TimelineCompound as Timeline } from '@greater/fediverse';
+  import { TimelineCompound as Timeline } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
   
   let scrollMetrics = $state({ position: 0, velocity: 0 });

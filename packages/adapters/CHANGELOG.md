@@ -1,4 +1,49 @@
-# @greater/adapters
+# @equaltoai/greater-components-adapters
+
+## 2.1.0
+
+### Minor Changes
+
+#### GraphQL Adapter Enhancements for Profile, Preferences, and Push
+
+Expanded the LesserGraphQLAdapter with comprehensive support for user profile management, preferences, and push notifications:
+
+**New Adapter Methods:**
+- `getFollowers(username, limit, cursor)` - Fetch paginated followers with ActorListPage
+- `getFollowing(username, limit, cursor)` - Fetch paginated following with ActorListPage
+- `updateProfile(input)` - Update user profile with all fields
+- `getUserPreferences()` - Fetch structured user preferences
+- `updateUserPreferences(input)` - Update all preferences
+- `updateStreamingPreferences(input)` - Update streaming preferences only
+- `getPushSubscription()` - Get current push subscription
+- `registerPushSubscription(input)` - Register new push subscription
+- `updatePushSubscription(input)` - Update push alert preferences
+- `deletePushSubscription()` - Remove push subscription
+
+**Converter Functions:**
+- Added `convertGraphQLActorListPage()` - Converts ActorListPage to LesserAccountFragment array with pagination metadata
+- Added `convertGraphQLUserPreferences()` - Converts UserPreferences GraphQL type to structured preference data
+- Added `convertGraphQLPushSubscription()` - Converts PushSubscription GraphQL type with keys and alerts
+
+**Cache Policies:**
+- Updated followers/following policies to use username-based keys and handle ActorListPage structure
+- Added UserPreferences cache policy (keyed by actorId, always replace)
+- Added PushSubscription cache policy (keyed by id, always replace)
+- Added Actor type policy (keyed by id)
+- Improved merge strategies for paginated data
+
+**Type Exports:**
+- Exported ActorListPage, UserPreferences, and PushSubscription interfaces
+- All converter functions are now exported from the main package
+
+**Testing:**
+- Added comprehensive unit tests for all new converter functions
+- Tests cover valid data conversion, edge cases, and error handling
+
+**Schema Sync:**
+- Updated Lesser GraphQL schema to latest version (2418 lines)
+- Fixed AttachmentFields fragment to match actual schema structure
+- Successfully regenerated all TypeScript types via GraphQL Code Generator
 
 ## 2.0.0
 
@@ -19,7 +64,7 @@
 
   ### 📦 Core Packages
 
-  #### `@greater/tokens`
+  #### `@equaltoai/greater-components-tokens`
 
   Complete design token system with:
   - 112+ semantic design tokens
@@ -27,7 +72,7 @@
   - CSS custom properties for easy customization
   - TypeScript definitions for design consistency
 
-  #### `@greater/icons`
+  #### `@equaltoai/greater-components-icons`
 
   Comprehensive icon library featuring:
   - 287 Feather icons + 9 Fediverse-specific icons
@@ -35,7 +80,7 @@
   - 28 semantic aliases (boost, unboost, globe, etc.)
   - Consistent sizing and styling system
 
-  #### `@greater/primitives`
+  #### `@equaltoai/greater-components-primitives`
 
   Foundation UI components including:
   - Button, TextField, Modal (foundational set)
@@ -43,7 +88,7 @@
   - ThemeProvider, ThemeSwitcher (theming components)
   - All with comprehensive accessibility and keyboard support
 
-  #### `@greater/utils`
+  #### `@equaltoai/greater-components-utils`
 
   Essential utilities for Fediverse apps:
   - HTML sanitization with DOMPurify
@@ -51,7 +96,7 @@
   - Mention/hashtag linkification
   - Keyboard shortcuts helper
 
-  #### `@greater/adapters`
+  #### `@equaltoai/greater-components-adapters`
 
   Advanced real-time data layer featuring:
   - WebSocket, SSE, and HTTP polling clients
@@ -59,7 +104,7 @@
   - Reactive stores with Svelte 5 runes
   - Mastodon and Lesser GraphQL payload mappers
 
-  #### `@greater/fediverse`
+  #### `@equaltoai/greater-components-fediverse`
 
   Specialized Fediverse components:
   - StatusCard, TimelineVirtualized (display components)
@@ -67,7 +112,7 @@
   - NotificationsFeed, ProfileHeader (advanced components)
   - SettingsPanel (configuration component)
 
-  #### `@greater/testing`
+  #### `@equaltoai/greater-components-testing`
 
   Comprehensive testing infrastructure:
   - Accessibility testing utilities with axe integration
@@ -152,47 +197,47 @@
 
   ## 🚀 What's New
 
-  ### Core Package (@greater/primitives)
+  ### Core Package (@equaltoai/greater-components-primitives)
   - **10 Essential Components**: Button, TextField, Modal, Menu, Tooltip, Tabs, Avatar, Skeleton, ThemeSwitcher, ThemeProvider
   - **Full Accessibility**: WCAG 2.1 AA compliance with comprehensive keyboard navigation
   - **Svelte 5 Runes**: Built with the latest reactive primitives for optimal performance
   - **TypeScript Support**: Complete type definitions with prop inference
-  - **Theme System**: Integrated with @greater/tokens for consistent theming
+  - **Theme System**: Integrated with @equaltoai/greater-components-tokens for consistent theming
 
-  ### Fediverse Package (@greater/fediverse)
+  ### Fediverse Package (@equaltoai/greater-components-fediverse)
   - **Social Media Components**: StatusCard, TimelineVirtualized, NotificationsFeed, ComposeBox
   - **Real-time Streaming**: Live timeline updates and notification streams
   - **ActivityPub Compatible**: Works with Mastodon, Pleroma, and other Fediverse servers
   - **Performance Optimized**: Virtual scrolling for handling thousands of posts
   - **Complete Type System**: Full TypeScript definitions for Fediverse data structures
 
-  ### Design Tokens (@greater/tokens)
+  ### Design Tokens (@equaltoai/greater-components-tokens)
   - **Comprehensive Token System**: Colors, typography, spacing, shadows, and motion
   - **Multi-theme Support**: Light, dark, and high contrast themes included
   - **CSS Custom Properties**: Automatic CSS variable generation
   - **Semantic Tokens**: Context-aware design tokens for consistent theming
   - **TypeScript Helpers**: Utility functions for token access
 
-  ### Icon Library (@greater/icons)
+  ### Icon Library (@equaltoai/greater-components-icons)
   - **300+ SVG Icons**: Comprehensive set including specialized Fediverse icons
   - **Tree Shakeable**: Import only the icons you need
   - **Accessibility Focused**: Proper ARIA labels and semantic markup
   - **Customizable**: Easy styling via CSS custom properties
   - **Icon Aliases**: Convenient aliases for common use cases
 
-  ### Utilities (@greater/utils)
+  ### Utilities (@equaltoai/greater-components-utils)
   - **HTML Sanitization**: Safe rendering of user-generated content
   - **Time Formatting**: Relative and absolute timestamp formatting
   - **Link Processing**: Automatic mention and hashtag linking
   - **Keyboard Shortcuts**: Comprehensive shortcut management system
 
-  ### Protocol Adapters (@greater/adapters)
+  ### Protocol Adapters (@equaltoai/greater-components-adapters)
   - **Multi-server Support**: Mastodon, Pleroma, and generic ActivityPub
   - **Real-time Streaming**: WebSocket and Server-Sent Events transport
   - **Transport Fallbacks**: Automatic failover between connection types
   - **TypeScript Integration**: Fully typed API clients and responses
 
-  ### Testing Utilities (@greater/testing)
+  ### Testing Utilities (@equaltoai/greater-components-testing)
   - **Component Testing**: Specialized helpers for Svelte component testing
   - **Accessibility Testing**: Automated a11y checks with axe-core
   - **Visual Regression**: Playwright-based visual testing
@@ -232,19 +277,19 @@
 
   ```bash
   # Install core primitives
-  npm install @greater/primitives
+  npm install @equaltoai/greater-components-primitives
 
   # Add design tokens
-  npm install @greater/tokens
+  npm install @equaltoai/greater-components-tokens
 
   # Include icons
-  npm install @greater/icons
+  npm install @equaltoai/greater-components-icons
 
   # For Fediverse applications
-  npm install @greater/fediverse
+  npm install @equaltoai/greater-components-fediverse
 
   # Utilities and testing (optional)
-  npm install @greater/utils @greater/testing
+  npm install @equaltoai/greater-components-utils @equaltoai/greater-components-testing
   ```
 
   ## 🚦 Migration Guide

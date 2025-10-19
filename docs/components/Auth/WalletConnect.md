@@ -1,7 +1,7 @@
 # Auth.WalletConnect
 
 **Component**: Cryptocurrency Wallet Authentication  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 73 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleWalletConnect({ address, chainId, provider, signature }) {
     const response = await fetch('/api/auth/wallet/verify', {
@@ -135,7 +135,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let authenticated = $state(false);
 
@@ -177,7 +177,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   // Support multiple chains
   const supportedChains = [
@@ -225,7 +225,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let authMethod = $state<'wallet' | 'email'>('wallet');
   let walletAddress = $state<string | null>(null);
@@ -345,7 +345,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let connectedWallets = $state<string[]>([]);
   let showAddWallet = $state(false);

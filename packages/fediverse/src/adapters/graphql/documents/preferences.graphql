@@ -1,0 +1,102 @@
+# User preferences queries and mutations
+
+# Queries
+query UserPreferences {
+  userPreferences {
+    actorId
+    posting {
+      defaultVisibility
+      defaultSensitive
+      defaultLanguage
+    }
+    reading {
+      expandSpoilers
+      expandMedia
+      autoplayGifs
+      timelineOrder
+    }
+    discovery {
+      showFollowCounts
+      searchSuggestionsEnabled
+      personalizedSearchEnabled
+    }
+    streaming {
+      defaultQuality
+      autoQuality
+      preloadNext
+      dataSaver
+    }
+    notifications {
+      email
+      push
+      inApp
+      digest
+    }
+    privacy {
+      defaultVisibility
+      indexable
+      showOnlineStatus
+    }
+    reblogFilters {
+      key
+      enabled
+    }
+  }
+}
+
+# Mutations
+mutation UpdateUserPreferences($input: UpdateUserPreferencesInput!) {
+  updateUserPreferences(input: $input) {
+    actorId
+    posting {
+      defaultVisibility
+      defaultSensitive
+      defaultLanguage
+    }
+    reading {
+      expandSpoilers
+      expandMedia
+      autoplayGifs
+      timelineOrder
+    }
+    discovery {
+      showFollowCounts
+      searchSuggestionsEnabled
+      personalizedSearchEnabled
+    }
+    streaming {
+      defaultQuality
+      autoQuality
+      preloadNext
+      dataSaver
+    }
+    notifications {
+      email
+      push
+      inApp
+      digest
+    }
+    privacy {
+      defaultVisibility
+      indexable
+      showOnlineStatus
+    }
+    reblogFilters {
+      key
+      enabled
+    }
+  }
+}
+
+mutation UpdateStreamingPreferences($input: StreamingPreferencesInput!) {
+  updateStreamingPreferences(input: $input) {
+    actorId
+    streaming {
+      defaultQuality
+      autoQuality
+      preloadNext
+      dataSaver
+    }
+  }
+}
+

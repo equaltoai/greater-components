@@ -1,0 +1,89 @@
+# Push notifications queries and mutations
+
+# Queries
+query PushSubscription {
+  pushSubscription {
+    id
+    endpoint
+    keys {
+      auth
+      p256dh
+    }
+    alerts {
+      follow
+      favourite
+      reblog
+      mention
+      poll
+      followRequest
+      status
+      update
+      adminSignUp
+      adminReport
+    }
+    policy
+    serverKey
+    createdAt
+    updatedAt
+  }
+}
+
+# Mutations
+mutation RegisterPushSubscription($input: RegisterPushSubscriptionInput!) {
+  registerPushSubscription(input: $input) {
+    id
+    endpoint
+    keys {
+      auth
+      p256dh
+    }
+    alerts {
+      follow
+      favourite
+      reblog
+      mention
+      poll
+      followRequest
+      status
+      update
+      adminSignUp
+      adminReport
+    }
+    policy
+    serverKey
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdatePushSubscription($input: UpdatePushSubscriptionInput!) {
+  updatePushSubscription(input: $input) {
+    id
+    endpoint
+    keys {
+      auth
+      p256dh
+    }
+    alerts {
+      follow
+      favourite
+      reblog
+      mention
+      poll
+      followRequest
+      status
+      update
+      adminSignUp
+      adminReport
+    }
+    policy
+    serverKey
+    createdAt
+    updatedAt
+  }
+}
+
+mutation DeletePushSubscription {
+  deletePushSubscription
+}
+

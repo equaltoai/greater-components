@@ -1,7 +1,7 @@
 # Messages.Composer
 
 **Component**: Message Input / Composition  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 85 passing tests
 
@@ -44,7 +44,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -55,7 +55,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onSendMessage: async (conversationId: string, content: string) => {
@@ -80,7 +80,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -158,7 +158,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onSendMessage: async (conversationId: string, content: string) => {
@@ -257,7 +257,7 @@ When a message is sent:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let errorMessage = $state<string | null>(null);
@@ -427,7 +427,7 @@ When a message is sent:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let uploadedFiles = $state<Array<{ id: string; url: string; name: string }>>([]);
@@ -665,7 +665,7 @@ When a message is sent:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount, onDestroy } from 'svelte';
   import { authStore } from '$lib/stores/auth';
   
@@ -793,7 +793,7 @@ When a message is sent:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount, onDestroy } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   import { authStore } from '$lib/stores/auth';
@@ -1007,7 +1007,7 @@ When a message is sent:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showEmojiPicker = $state(false);
@@ -1361,7 +1361,7 @@ const saveDraft = debounce((content: string) => {
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import { Composer } from '@greater/fediverse/Messages';
+import { Composer } from '@equaltoai/greater-components-fediverse/Messages';
 
 test('sends message on submit', async () => {
   const onSendMessage = vi.fn().mockResolvedValue({});

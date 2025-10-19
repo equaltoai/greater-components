@@ -4,7 +4,7 @@
  * This module provides type-safe interfaces that work across
  * any ActivityPub implementation (Mastodon, Pleroma, Lesser, etc.)
  * 
- * @module @greater/fediverse/generics
+ * @module @equaltoai/greater-components-fediverse/generics
  */
 
 /**
@@ -95,9 +95,15 @@ export interface ActivityPubImage {
 	url: string;
 	mediaType?: string;
 	name?: string; // Alt text
+	previewUrl?: string;
 	width?: number;
 	height?: number;
 	blurhash?: string;
+	sensitive?: boolean;
+	spoilerText?: string | null;
+	mediaCategory?: string;
+	mimeType?: string;
+	size?: number;
 }
 
 /**
@@ -682,7 +688,7 @@ export interface AIAnalysis {
 /**
  * Lesser-specific extensions for ActivityPub Actors
  */
-export interface LesserActorExtensions {
+export interface LesserActorExtensions extends Record<string, unknown> {
 	/** Trust score (0-100) */
 	trustScore?: number;
 	/** Detailed reputation information */
@@ -694,7 +700,7 @@ export interface LesserActorExtensions {
 /**
  * Lesser-specific extensions for ActivityPub Objects
  */
-export interface LesserObjectExtensions {
+export interface LesserObjectExtensions extends Record<string, unknown> {
 	/** Estimated cost in microcents */
 	estimatedCost?: number;
 	/** Moderation score (0-1, higher = more problematic) */
@@ -718,7 +724,7 @@ export interface LesserObjectExtensions {
 /**
  * Lesser-specific extensions for ActivityPub Activities
  */
-export interface LesserActivityExtensions {
+export interface LesserActivityExtensions extends Record<string, unknown> {
 	/** Cost of this activity in microcents */
 	cost?: number;
 }
@@ -755,8 +761,17 @@ export function hasLesserActorExtensions(actor: ActivityPubActor): actor is Less
  * Type guard: Check if object has Lesser extensions
  */
 export function hasLesserObjectExtensions(object: ActivityPubObject): object is LesserObject {
-	return object.extensions !== undefined &&
-		('estimatedCost' in object.extensions || 'communityNotes' in object.extensions || 'quoteUrl' in object.extensions);
+	return object.extensions !== undefined && (
+		'estimatedCost' in object.extensions ||
+		'moderationScore' in object.extensions ||
+		'communityNotes' in object.extensions ||
+		'quoteUrl' in object.extensions ||
+		'quoteable' in object.extensions ||
+		'quotePermissions' in object.extensions ||
+		'quoteContext' in object.extensions ||
+		'quoteCount' in object.extensions ||
+		'aiAnalysis' in object.extensions
+	);
 }
 
 /**
@@ -770,8 +785,11 @@ export function hasLesserActivityExtensions(activity: ActivityPubActivity): acti
  * Helper: Extract trust score from actor
  */
 export function getTrustScore(actor: ActivityPubActor): number | null {
-	if (hasLesserActorExtensions(actor) && actor.extensions?.trustScore !== undefined) {
-		return actor.extensions.trustScore;
+	if (hasLesserActorExtensions(actor)) {
+		const trustScore = actor.extensions?.['trustScore'];
+		if (typeof trustScore === 'number') {
+			return trustScore;
+		}
 	}
 	return null;
 }
@@ -780,8 +798,11 @@ export function getTrustScore(actor: ActivityPubActor): number | null {
  * Helper: Extract estimated cost from object
  */
 export function getEstimatedCost(object: ActivityPubObject): number | null {
-	if (hasLesserObjectExtensions(object) && object.extensions?.estimatedCost !== undefined) {
-		return object.extensions.estimatedCost;
+	if (hasLesserObjectExtensions(object)) {
+		const estimatedCost = object.extensions?.['estimatedCost'];
+		if (typeof estimatedCost === 'number') {
+			return estimatedCost;
+		}
 	}
 	return null;
 }
@@ -790,8 +811,11 @@ export function getEstimatedCost(object: ActivityPubObject): number | null {
  * Helper: Check if object has community notes
  */
 export function hasCommunityNotes(object: ActivityPubObject): boolean {
-	if (hasLesserObjectExtensions(object) && object.extensions?.communityNotes) {
-		return object.extensions.communityNotes.length > 0;
+	if (hasLesserObjectExtensions(object)) {
+		const communityNotes = object.extensions?.['communityNotes'];
+		if (Array.isArray(communityNotes)) {
+			return communityNotes.length > 0;
+		}
 	}
 	return false;
 }
@@ -800,8 +824,11 @@ export function hasCommunityNotes(object: ActivityPubObject): boolean {
  * Helper: Check if object is quoteable
  */
 export function isQuoteable(object: ActivityPubObject): boolean {
-	if (object.extensions && 'quoteable' in object.extensions) {
-		return object.extensions.quoteable === true;
+	if (hasLesserObjectExtensions(object)) {
+		const quoteable = object.extensions?.['quoteable'];
+		if (typeof quoteable === 'boolean') {
+			return quoteable;
+		}
 	}
 	return true; // Default to true if not specified
 }
@@ -810,9 +837,15 @@ export function isQuoteable(object: ActivityPubObject): boolean {
  * Helper: Get quote permission level
  */
 export function getQuotePermission(object: ActivityPubObject): QuotePermission {
-	if (object.extensions && 'quotePermissions' in object.extensions && object.extensions.quotePermissions) {
-		return object.extensions.quotePermissions as QuotePermission;
+	if (hasLesserObjectExtensions(object)) {
+		const permission = object.extensions?.['quotePermissions'];
+		if (
+			permission === 'EVERYONE' ||
+			permission === 'FOLLOWERS' ||
+			permission === 'NONE'
+		) {
+			return permission;
+		}
 	}
 	return 'EVERYONE'; // Default permission
 }
-

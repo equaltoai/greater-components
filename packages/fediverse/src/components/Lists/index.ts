@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Lists from '@greater/fediverse/Lists';
+ *   import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
  * 
  *   const handlers = {
  *     onFetchLists: async () => {

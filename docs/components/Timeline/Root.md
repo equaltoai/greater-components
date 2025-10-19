@@ -1,7 +1,7 @@
 # Timeline.Root
 
 **Component**: Context Provider & Container  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 47 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,8 +36,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([
     {
@@ -223,8 +223,8 @@ A standard home timeline with manual load more:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let hasMore = $state(true);
@@ -357,8 +357,8 @@ Efficiently render 10,000+ items using virtual scrolling:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   // Large dataset - 10,000 items
   let items: GenericTimelineItem[] = $state([]);
@@ -496,10 +496,10 @@ Live timeline updates via GraphQL subscriptions:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import { createApolloClient } from '@greater/adapters';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import { createApolloClient } from '@equaltoai/greater-components-adapters';
   import { gql } from '@apollo/client/core';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   const client = createApolloClient({
     uri: 'https://api.lesser.social/graphql',
@@ -776,8 +776,8 @@ Automatically load more items as user scrolls:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let hasMore = $state(true);
@@ -1052,8 +1052,8 @@ Display a status with its context (ancestors and descendants):
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   interface ThreadContext {
     ancestors: GenericTimelineItem[];
@@ -1328,7 +1328,7 @@ Display a status with its context (ancestors and descendants):
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
   
   let ws: WebSocket;
   let items = $state([]);
@@ -1411,7 +1411,7 @@ Implement rate limiting for user actions:
 
 ```svelte
 <script lang="ts">
-  import { rateLimit } from '@greater/utils';
+  import { rateLimit } from '@equaltoai/greater-components-utils';
 
   const limitedLoadMore = rateLimit(async () => {
     await loadMore();
@@ -1552,7 +1552,7 @@ Content-Security-Policy:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
 
   let items = $state([]);
   const MAX_ITEMS = 1000;
@@ -1571,7 +1571,7 @@ Content-Security-Policy:
 
 ```typescript
 import { render, screen } from '@testing-library/svelte';
-import { Timeline } from '@greater/fediverse';
+import { Timeline } from '@equaltoai/greater-components-fediverse';
 
 describe('Timeline.Root', () => {
   it('renders timeline items', () => {

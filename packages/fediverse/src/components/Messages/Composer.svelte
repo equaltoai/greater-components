@@ -2,7 +2,7 @@
   Messages.Composer - Message Input
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getMessagesContext } from './context.js';
 
 	interface Props {

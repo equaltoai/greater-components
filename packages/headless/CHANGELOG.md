@@ -1,4 +1,4 @@
-# @greater/headless Changelog
+# @equaltoai/greater-components-headless Changelog
 
 All notable changes to the headless package will be documented in this file.
 
@@ -85,7 +85,7 @@ The headless approach allows developers to:
 - Dialog primitive (portal rendering, scroll locking)
 - Combobox primitive (autocomplete, keyboard selection)
 
-### Breaking Changes from @greater/primitives
+### Breaking Changes from @equaltoai/greater-components-primitives
 
 The headless package is designed to eventually replace the styled primitives. Migration path:
 

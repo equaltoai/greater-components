@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createSeveredRelationshipsContext } from '../../src/components/Admin/SeveredRelationships/context.js';
   import RecoveryPanel from '../../src/components/Admin/SeveredRelationships/RecoveryPanel.svelte';
-  import type { LesserGraphQLAdapter } from '@greater/adapters';
+  import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
   let {
     adapter,

@@ -36,12 +36,12 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'svelte',
-        '@greater/tokens',
-        '@greater/utils',
-        '@greater/primitives',
-        '@greater/icons',
-        '@greater/headless',
-        /@greater\/headless\/.*/,  // Match all @greater/headless subpaths
+        '@equaltoai/greater-components-tokens',
+        '@equaltoai/greater-components-utils',
+        '@equaltoai/greater-components-primitives',
+        '@equaltoai/greater-components-icons',
+        '@equaltoai/greater-components-headless',
+        /@equaltoai\/greater-components-headless\/.*/, // Match all headless subpaths
         '@tanstack/svelte-virtual'
       ],
       output: {

@@ -420,7 +420,7 @@ query FollowedHashtags($first: Int, $after: String)
   17:35  warning  Unexpected any
 ```
 
-### 3.2 Adapter Tests (`pnpm --filter @greater/adapters test`)
+### 3.2 Adapter Tests (`pnpm --filter @equaltoai/greater-components-adapters test`)
 
 **Status**: ✅ **PASSING**  
 **Test Files**: 15 passed  
@@ -434,7 +434,7 @@ query FollowedHashtags($first: Int, $after: String)
 - Streaming operations and transport management
 - Mapper functions for Lesser payloads
 
-### 3.3 Fediverse Tests (`pnpm --filter @greater/fediverse test`)
+### 3.3 Fediverse Tests (`pnpm --filter @equaltoai/greater-components-fediverse test`)
 
 **Status**: ✅ **PASSING**  
 **Test Files**: 81 passed  

@@ -172,7 +172,7 @@ body:
       render: svelte
       placeholder: |
         <script>
-          import { ComponentName } from '@greater/primitives';
+          import { ComponentName } from '@equaltoai/greater-components-primitives';
         </script>
         
         <ComponentName prop="value">

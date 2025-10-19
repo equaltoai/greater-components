@@ -123,6 +123,8 @@ export type {
   LesserProfileField,
   LesserEmojiFragment,
   LesserRelationshipFragment,
+  LesserReputationFragment,
+  LesserVouchFragment,
   
   // Post types
   LesserPostFragment,
@@ -139,6 +141,9 @@ export type {
   // Notification types
   LesserNotificationFragment,
   LesserAdminReportFragment,
+  LesserCommunityNoteFragment,
+  LesserQuoteContextFragment,
+  LesserAIAnalysisFragment,
   
   // Timeline types
   LesserTimelineConnection,

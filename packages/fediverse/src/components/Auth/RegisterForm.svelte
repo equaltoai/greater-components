@@ -16,7 +16,7 @@
   ```
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getAuthContext, isValidEmail, isValidPassword, isValidUsername } from './context.js';
 	import type { RegisterData } from './context.js';
 

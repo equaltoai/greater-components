@@ -2,6 +2,7 @@
 
 scalar Time
 scalar Cursor
+scalar Upload
 
 # Enums
 enum TimelineType {
@@ -190,6 +191,12 @@ type PageInfo {
   endCursor: Cursor
 }
 
+type ActorListPage {
+  actors: [Actor!]!
+  nextCursor: Cursor
+  totalCount: Int!
+}
+
 # Instance Metrics
 type InstanceMetrics {
   activeUsers: Int!
@@ -264,6 +271,35 @@ type NotificationConnection {
 type NotificationEdge {
   node: Notification!
   cursor: Cursor!
+}
+
+type PushSubscription {
+  id: ID!
+  endpoint: String!
+  keys: PushSubscriptionKeys!
+  alerts: PushSubscriptionAlerts!
+  policy: String!
+  serverKey: String
+  createdAt: Time
+  updatedAt: Time
+}
+
+type PushSubscriptionKeys {
+  auth: String!
+  p256dh: String!
+}
+
+type PushSubscriptionAlerts {
+  follow: Boolean!
+  favourite: Boolean!
+  reblog: Boolean!
+  mention: Boolean!
+  poll: Boolean!
+  followRequest: Boolean!
+  status: Boolean!
+  update: Boolean!
+  adminSignUp: Boolean!
+  adminReport: Boolean!
 }
 
 # Quote Posts types
@@ -347,6 +383,9 @@ type Media {
   url: String!
   previewUrl: String
   description: String
+  sensitive: Boolean!
+  spoilerText: String
+  mediaCategory: MediaCategory!
   blurhash: String
   width: Int
   height: Int
@@ -362,6 +401,35 @@ enum MediaType {
   VIDEO
   AUDIO
   UNKNOWN
+}
+
+enum MediaCategory {
+  IMAGE
+  VIDEO
+  AUDIO
+  GIFV
+  DOCUMENT
+  UNKNOWN
+}
+
+type MediaEdge {
+  node: Media!
+  cursor: Cursor!
+}
+
+type MediaConnection {
+  edges: [MediaEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input MediaFilterInput {
+  ownerId: ID
+  ownerUsername: String
+  mediaType: MediaType
+  mimeType: String
+  since: Time
+  until: Time
 }
 
 # Custom Emoji type
@@ -506,6 +574,16 @@ input UpdateListInput {
 }
 
 # Media inputs
+input UploadMediaInput {
+  file: Upload!
+  filename: String
+  description: String
+  focus: FocusInput
+  sensitive: Boolean
+  spoilerText: String
+  mediaType: MediaCategory
+}
+
 input UpdateMediaInput {
   description: String
   focus: FocusInput
@@ -546,6 +624,54 @@ input UpdateRelationshipInput {
   showReblogs: Boolean
   languages: [String!]
   note: String
+}
+
+input ProfileFieldInput {
+  name: String!
+  value: String!
+  verifiedAt: Time
+}
+
+input UpdateProfileInput {
+  displayName: String
+  bio: String
+  avatar: String
+  header: String
+  locked: Boolean
+  bot: Boolean
+  discoverable: Boolean
+  noIndex: Boolean
+  sensitive: Boolean
+  language: String
+  fields: [ProfileFieldInput!]
+}
+
+input PushSubscriptionKeysInput {
+  auth: String!
+  p256dh: String!
+}
+
+input PushSubscriptionAlertsInput {
+  follow: Boolean
+  favourite: Boolean
+  reblog: Boolean
+  mention: Boolean
+  poll: Boolean
+  followRequest: Boolean
+  status: Boolean
+  update: Boolean
+  adminSignUp: Boolean
+  adminReport: Boolean
+}
+
+input RegisterPushSubscriptionInput {
+  endpoint: String!
+  keys: PushSubscriptionKeysInput!
+  alerts: PushSubscriptionAlertsInput!
+}
+
+input UpdatePushSubscriptionInput {
+  alerts: PushSubscriptionAlertsInput!
 }
 
 # Emoji inputs
@@ -618,6 +744,7 @@ type Query {
   
   # Media
   media(id: ID!): Media
+  mediaLibrary(filter: MediaFilterInput, first: Int = 20, after: Cursor): MediaConnection!
   
   # Custom Emojis
   customEmojis: [CustomEmoji!]!
@@ -629,6 +756,10 @@ type Query {
   # Relationships
   relationship(id: ID!): Relationship
   relationships(ids: [ID!]!): [Relationship!]!
+  followers(username: String!, limit: Int = 40, cursor: Cursor): ActorListPage!
+  following(username: String!, limit: Int = 40, cursor: Cursor): ActorListPage!
+  userPreferences: UserPreferences!
+  pushSubscription: PushSubscription
   
   # Discovery
   profileDirectory(filters: DirectoryFiltersInput, first: Int = 40, after: Cursor): ProfileDirectory!
@@ -699,6 +830,7 @@ type Mutation {
   muteActor(id: ID!, notifications: Boolean): Relationship!
   unmuteActor(id: ID!): Boolean!
   updateRelationship(id: ID!, input: UpdateRelationshipInput!): Relationship!
+  updateProfile(input: UpdateProfileInput!): Actor!
   
   # List operations
   createList(input: CreateListInput!): List!
@@ -712,11 +844,17 @@ type Mutation {
   deleteConversation(id: ID!): Boolean!
   
   # Media operations
+  uploadMedia(input: UploadMediaInput!): UploadMediaPayload!
   updateMedia(id: ID!, input: UpdateMediaInput!): Media!
   
   # Notification operations
   dismissNotification(id: ID!): Boolean!
   clearNotifications: Boolean!
+  updateUserPreferences(input: UpdateUserPreferencesInput!): UserPreferences!
+  updateStreamingPreferences(input: StreamingPreferencesInput!): UserPreferences!
+  registerPushSubscription(input: RegisterPushSubscriptionInput!): PushSubscription!
+  updatePushSubscription(input: UpdatePushSubscriptionInput!): PushSubscription!
+  deletePushSubscription: Boolean!
   
   # Scheduled status operations
   scheduleStatus(input: ScheduleStatusInput!): ScheduledStatus!
@@ -762,6 +900,12 @@ type Mutation {
   # Severed Relationships mutations
   acknowledgeSeverance(id: ID!): AcknowledgePayload!
   attemptReconnection(id: ID!): ReconnectionPayload!
+}
+
+type UploadMediaPayload {
+  media: Media!
+  uploadId: ID!
+  warnings: [String!]
 }
 
 # Subscriptions (via WebSocket Lambda)
@@ -1337,7 +1481,8 @@ type ReconnectionPayload {
   reconnected: Int!
   failed: Int!
   errors: [String!]
-} # Lesser GraphQL Schema - Phase 2 Federation Enhancements
+} 
+# Lesser GraphQL Schema - Phase 2 Federation Enhancements
 
 # Cost Analytics Dashboard Types
 type FederationCost {
@@ -2118,10 +2263,30 @@ input StreamingQualityInput {
 }
 
 input StreamingPreferencesInput {
-  defaultQuality: StreamQuality!
-  autoQuality: Boolean!
-  preloadNext: Boolean!
-  dataSaver: Boolean!
+  defaultQuality: StreamQuality
+  autoQuality: Boolean
+  preloadNext: Boolean
+  dataSaver: Boolean
+}
+
+input ReblogFilterInput {
+  key: String!
+  enabled: Boolean!
+}
+
+input UpdateUserPreferencesInput {
+  language: String
+  defaultPostingVisibility: Visibility
+  defaultMediaSensitive: Boolean
+  expandSpoilers: Boolean
+  expandMedia: ExpandMediaPreference
+  autoplayGifs: Boolean
+  showFollowCounts: Boolean
+  preferredTimelineOrder: TimelineOrder
+  searchSuggestionsEnabled: Boolean
+  personalizedSearchEnabled: Boolean
+  reblogFilters: [ReblogFilterInput!]
+  streaming: StreamingPreferencesInput
 }
 
 input ModerationFilter {
@@ -2158,7 +2323,6 @@ extend type Query {
 extend type Mutation {
   # Streaming Quality
   reportStreamingQuality(input: StreamingQualityInput!): StreamingQualityReport!
-  updateStreamingPreferences(input: StreamingPreferencesInput!): UserPreferences!
 }
 
 # Phase 3 Subscription Extensions
@@ -2182,9 +2346,32 @@ type StreamingQualityReport {
 
 type UserPreferences {
   actorId: ID!
+  posting: PostingPreferences!
+  reading: ReadingPreferences!
+  discovery: DiscoveryPreferences!
   streaming: StreamingPreferences!
   notifications: NotificationPreferences!
   privacy: PrivacyPreferences!
+  reblogFilters: [ReblogFilter!]!
+}
+
+type PostingPreferences {
+  defaultVisibility: Visibility!
+  defaultSensitive: Boolean!
+  defaultLanguage: String!
+}
+
+type ReadingPreferences {
+  expandSpoilers: Boolean!
+  expandMedia: ExpandMediaPreference!
+  autoplayGifs: Boolean!
+  timelineOrder: TimelineOrder!
+}
+
+type DiscoveryPreferences {
+  showFollowCounts: Boolean!
+  searchSuggestionsEnabled: Boolean!
+  personalizedSearchEnabled: Boolean!
 }
 
 type StreamingPreferences {
@@ -2212,4 +2399,20 @@ type PrivacyPreferences {
   defaultVisibility: Visibility!
   indexable: Boolean!
   showOnlineStatus: Boolean!
-} 
+}
+
+type ReblogFilter {
+  key: String!
+  enabled: Boolean!
+}
+
+enum ExpandMediaPreference {
+  DEFAULT
+  SHOW_ALL
+  HIDE_ALL
+}
+
+enum TimelineOrder {
+  NEWEST
+  OLDEST
+}

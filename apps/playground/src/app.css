@@ -1,5 +1,5 @@
 /* App-wide styles */
-@import '@greater/tokens/theme.css';
+@import '@equaltoai/greater-components-tokens/theme.css';
 
 /* Global CSS reset */
 *,

@@ -1,7 +1,7 @@
 # Search.Filters
 
 **Component**: Result Type Filters  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 10 passing tests
 
@@ -29,7 +29,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -38,7 +38,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -97,8 +97,8 @@ The component automatically updates the search context when a filter is clicked,
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let currentFilter = $state<'all' | 'actors' | 'notes' | 'tags'>('all');
   let resultCounts = $state({ all: 0, actors: 0, notes: 0, tags: 0 });
@@ -218,9 +218,9 @@ The component automatically updates the search context when a filter is clicked,
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let savedFilter = $state<'all' | 'actors' | 'notes' | 'tags'>('all');
   let filterHistory = $state<Array<{ filter: string; timestamp: Date; resultCount: number }>>([]);
@@ -475,10 +475,10 @@ The component automatically updates the search context when a filter is clicked,
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   // Get current filter from URL
   const currentFilter = $derived(
@@ -719,8 +719,8 @@ The component automatically updates the search context when a filter is clicked,
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let filterStats = $state({
     all: { searches: 0, totalResults: 0, avgResults: 0 },
@@ -998,8 +998,8 @@ The component automatically updates the search context when a filter is clicked,
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let activeFilter = $state<'all' | 'actors' | 'notes' | 'tags'>('all');
   let resultCounts = $state({ all: 0, actors: 0, notes: 0, tags: 0 });
@@ -1366,7 +1366,7 @@ Test file: `packages/fediverse/tests/Search/Filters.test.ts`
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.Filters', () => {
   it('renders all filter tabs', () => {

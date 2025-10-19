@@ -4,7 +4,7 @@
  * These adapters convert platform-specific types (Mastodon, Pleroma, Lesser)
  * to generic ActivityPub types for use in components.
  * 
- * @module @greater/fediverse/generics/adapters
+ * @module @equaltoai/greater-components-fediverse/generics/adapters
  */
 
 import type {

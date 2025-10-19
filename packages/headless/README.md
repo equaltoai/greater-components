@@ -1,4 +1,4 @@
-# @greater/headless
+# @equaltoai/greater-components-headless
 
 **Headless UI primitives for Greater Components** - Behavior without styling.
 
@@ -25,10 +25,10 @@ This package provides 5 production-ready headless UI primitives that handle all 
 
 ```bash
 # JSR (recommended)
-npx jsr add @greater/headless
+npx jsr add @equaltoai/greater-components-headless
 
 # npm
-npm install @greater/headless
+npm install @equaltoai/greater-components-headless
 ```
 
 ## Primitives
@@ -39,7 +39,7 @@ Accessible button with loading states, keyboard navigation, and ARIA attributes.
 
 ```svelte
 <script>
-  import { createButton } from '@greater/headless/button';
+  import { createButton } from '@equaltoai/greater-components-headless/button';
   
   const button = createButton({
     onClick: () => console.log('Clicked!'),
@@ -75,7 +75,7 @@ Accessible modal dialog with focus trapping and ESC to close.
 
 ```svelte
 <script>
-  import { createModal } from '@greater/headless/modal';
+  import { createModal } from '@equaltoai/greater-components-headless/modal';
   
   const modal = createModal({
     closeOnEscape: true,
@@ -119,7 +119,7 @@ Accessible dropdown menu with keyboard navigation and typeahead search.
 
 ```svelte
 <script>
-  import { createMenu } from '@greater/headless/menu';
+  import { createMenu } from '@equaltoai/greater-components-headless/menu';
   
   const menu = createMenu({
     closeOnSelect: true,
@@ -163,7 +163,7 @@ Accessible tooltip with smart positioning that avoids viewport edges.
 
 ```svelte
 <script>
-  import { createTooltip } from '@greater/headless/tooltip';
+  import { createTooltip } from '@equaltoai/greater-components-headless/tooltip';
   
   const tooltip = createTooltip({
     placement: 'top',
@@ -208,7 +208,7 @@ Accessible tabs with arrow key navigation and automatic/manual activation.
 
 ```svelte
 <script>
-  import { createTabs } from '@greater/headless/tabs';
+  import { createTabs } from '@equaltoai/greater-components-headless/tabs';
   
   const tabs = createTabs({
     initialTab: 'tab1',
@@ -319,8 +319,8 @@ Every primitive is built with accessibility in mind:
 100% TypeScript with full type inference:
 
 ```typescript
-import type { ButtonState, ButtonConfig } from '@greater/headless/button';
-import type { ModalState, ModalConfig } from '@greater/headless/modal';
+import type { ButtonState, ButtonConfig } from '@equaltoai/greater-components-headless/button';
+import type { ModalState, ModalConfig } from '@equaltoai/greater-components-headless/modal';
 // ... etc
 ```
 
@@ -346,7 +346,7 @@ Traditional component libraries force you into their design decisions. Headless 
 
 ## Examples
 
-See the `@greater/fediverse` package for real-world usage of these primitives in:
+See the `@equaltoai/greater-components-fediverse` package for real-world usage of these primitives in:
 - Status compound component
 - Timeline compound component  
 - Compose compound component

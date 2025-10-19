@@ -9,6 +9,9 @@ query Media($id: ID!) {
     url
     previewUrl
     description
+    sensitive
+    spoilerText
+    mediaCategory
     blurhash
     width
     height
@@ -26,11 +29,41 @@ mutation UpdateMedia($id: ID!, $input: UpdateMediaInput!) {
   updateMedia(id: $id, input: $input) {
     id
     description
+    sensitive
+    spoilerText
+    mediaCategory
     blurhash
     width
     height
     duration
     url
     previewUrl
+  }
+}
+
+mutation UploadMedia($input: UploadMediaInput!) {
+  uploadMedia(input: $input) {
+    uploadId
+    warnings
+    media {
+      id
+      type
+      url
+      previewUrl
+      description
+      sensitive
+      spoilerText
+      mediaCategory
+      blurhash
+      width
+      height
+      duration
+      size
+      mimeType
+      uploadedBy {
+        ...ActorSummary
+      }
+      createdAt
+    }
   }
 }

@@ -5,6 +5,8 @@
  * Supports images, videos, audio with size/type validation.
  */
 
+import type { MediaCategory } from '../../types.js';
+
 export interface MediaUploadConfig {
 	/**
 	 * Maximum file size in bytes
@@ -85,6 +87,29 @@ export interface MediaFile {
 	description?: string;
 
 	/**
+	 * Spoiler / content warning text
+	 */
+	spoilerText: string;
+
+	/**
+	 * Whether the media is sensitive
+	 */
+	sensitive: boolean;
+
+	/**
+	 * Server-side media category
+	 */
+	mediaCategory: MediaCategory;
+
+	/**
+	 * Client-side validation errors for metadata fields
+	 */
+	metadataErrors?: {
+		spoiler?: string;
+		description?: string;
+	};
+
+	/**
 	 * Focal point for cropping
 	 */
 	focalPoint?: { x: number; y: number };
@@ -134,6 +159,30 @@ export function detectMediaType(mimeType: string): 'image' | 'video' | 'audio' |
 	if (mimeType.startsWith('video/')) return 'video';
 	if (mimeType.startsWith('audio/')) return 'audio';
 	return 'unknown';
+}
+
+/**
+ * Map MIME type to MediaCategory enum used by the GraphQL API
+ */
+export function mapMimeTypeToMediaCategory(mimeType: string): MediaCategory {
+	const lower = mimeType.toLowerCase();
+
+	if (lower.startsWith('image/')) {
+		if (lower === 'image/gif') {
+			return 'GIFV';
+		}
+		return 'IMAGE';
+	}
+
+	if (lower.startsWith('video/')) {
+		return 'VIDEO';
+	}
+
+	if (lower.startsWith('audio/')) {
+		return 'AUDIO';
+	}
+
+	return 'DOCUMENT';
 }
 
 /**
@@ -331,6 +380,7 @@ export async function processFile(
 ): Promise<MediaFile> {
 	const cfg = { ...DEFAULT_CONFIG, ...config };
 	const type = detectMediaType(file.type);
+	const mediaCategory = mapMimeTypeToMediaCategory(file.type);
 
 	// Validate
 	const validation = validateFile(file, config);
@@ -339,9 +389,12 @@ export async function processFile(
 			id: crypto.randomUUID(),
 			file,
 			type,
+			mediaCategory,
 			progress: 0,
 			status: 'error',
 			error: validation.errors.join(', '),
+			sensitive: false,
+			spoilerText: '',
 			metadata: { size: file.size },
 		};
 	}
@@ -374,10 +427,13 @@ export async function processFile(
 		id: crypto.randomUUID(),
 		file,
 		type,
+		mediaCategory,
 		previewUrl,
 		thumbnailUrl,
 		progress: 0,
 		status: 'pending',
+		sensitive: false,
+		spoilerText: '',
 		metadata,
 	};
 }
@@ -399,9 +455,12 @@ export async function processFiles(
 			id: crypto.randomUUID(),
 			file,
 			type: detectMediaType(file.type),
+			mediaCategory: mapMimeTypeToMediaCategory(file.type),
 			progress: 0,
 			status: 'error' as const,
 			error: validation.errors[0],
+			sensitive: false,
+			spoilerText: '',
 			metadata: { size: file.size },
 		}));
 	}
@@ -428,4 +487,3 @@ export function cleanupMediaFile(mediaFile: MediaFile): void {
 export function cleanupMediaFiles(mediaFiles: MediaFile[]): void {
 	mediaFiles.forEach(cleanupMediaFile);
 }
-

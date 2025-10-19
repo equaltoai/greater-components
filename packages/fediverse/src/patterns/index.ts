@@ -44,6 +44,6 @@ export { default as BookmarkManager } from './BookmarkManager.svelte';
  * 
  * @example
  * ```typescript
- * import type { ThreadViewConfig } from '@greater/fediverse/patterns/ThreadView.svelte';
+ * import type { ThreadViewConfig } from '@equaltoai/greater-components-fediverse/patterns/ThreadView.svelte';
  * ```
  */

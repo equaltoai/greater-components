@@ -8,7 +8,7 @@ Supports batch operations and request filtering.
 @example
 ```svelte
 <script>
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   const requests = [
     { id: '1', account: { id: 'user1', username: 'john', displayName: 'John Doe' }, createdAt: '2024-01-15' }

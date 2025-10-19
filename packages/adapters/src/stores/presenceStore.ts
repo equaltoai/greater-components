@@ -33,6 +33,184 @@ const STATUS_PRIORITY: Record<UserPresence['status'], number> = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
+const isPresenceStatus = (value: unknown): value is UserPresence['status'] =>
+  typeof value === 'string' && value in STATUS_PRIORITY;
+
+const isConnectionStatus = (value: unknown): value is SessionInfo['connectionStatus'] =>
+  value === 'connected' || value === 'reconnecting' || value === 'disconnected';
+
+function parseUserPresencePayload(payload: unknown): UserPresence | null {
+  if (!isRecord(payload)) return null;
+
+  const userId = payload['userId'];
+  const displayName = payload['displayName'];
+  const isOnline = payload['isOnline'];
+  const lastSeen = payload['lastSeen'];
+  const status = payload['status'];
+
+  if (
+    typeof userId !== 'string' ||
+    typeof displayName !== 'string' ||
+    typeof isOnline !== 'boolean' ||
+    typeof lastSeen !== 'number' ||
+    !isPresenceStatus(status)
+  ) {
+    return null;
+  }
+
+  const presence: UserPresence = {
+    userId,
+    displayName,
+    isOnline,
+    lastSeen,
+    status
+  };
+
+  const avatar = payload['avatar'];
+  if (typeof avatar === 'string') {
+    presence.avatar = avatar;
+  } else if (typeof avatar !== 'undefined') {
+    return null;
+  }
+
+  const statusMessage = payload['statusMessage'];
+  if (typeof statusMessage === 'string') {
+    presence.statusMessage = statusMessage;
+  } else if (typeof statusMessage !== 'undefined') {
+    return null;
+  }
+
+  const locationValue = payload['location'];
+  if (typeof locationValue !== 'undefined') {
+    if (!isRecord(locationValue)) {
+      return null;
+    }
+
+    const location: Exclude<UserPresence['location'], undefined> = {};
+    const page = locationValue['page'];
+    if (typeof page === 'string') {
+      location.page = page;
+    } else if (typeof page !== 'undefined') {
+      return null;
+    }
+
+    const section = locationValue['section'];
+    if (typeof section === 'string') {
+      location.section = section;
+    } else if (typeof section !== 'undefined') {
+      return null;
+    }
+
+    const coordinatesValue = locationValue['coordinates'];
+    if (typeof coordinatesValue !== 'undefined') {
+      if (!isRecord(coordinatesValue)) {
+        return null;
+      }
+
+      const x = coordinatesValue['x'];
+      const y = coordinatesValue['y'];
+      if (typeof x !== 'number' || typeof y !== 'number') {
+        return null;
+      }
+
+      location.coordinates = { x, y };
+    }
+
+    if (Object.keys(location).length > 0) {
+      presence.location = location;
+    }
+  }
+
+  const connectionValue = payload['connection'];
+  if (typeof connectionValue !== 'undefined') {
+    if (!isRecord(connectionValue)) {
+      return null;
+    }
+
+    const sessionId = connectionValue['sessionId'];
+    const transportType = connectionValue['transportType'];
+    if (typeof sessionId !== 'string' || typeof transportType !== 'string') {
+      return null;
+    }
+
+    const connection: UserPresence['connection'] = {
+      sessionId,
+      transportType
+    };
+
+    const latency = connectionValue['latency'];
+    if (typeof latency === 'number') {
+      connection.latency = latency;
+    } else if (typeof latency !== 'undefined') {
+      return null;
+    }
+
+    presence.connection = connection;
+  }
+
+  return presence;
+}
+
+function parseSessionInfoPayload(payload: Record<string, unknown>): SessionInfo | null {
+  const sessionId = payload['sessionId'];
+  const userId = payload['userId'];
+  const startTime = payload['startTime'];
+  const lastActivity = payload['lastActivity'];
+  const connectionStatus = payload['connectionStatus'];
+  const transportType = payload['transportType'];
+  const metricsValue = payload['metrics'];
+
+  if (
+    typeof sessionId !== 'string' ||
+    typeof userId !== 'string' ||
+    typeof startTime !== 'number' ||
+    typeof lastActivity !== 'number' ||
+    !isConnectionStatus(connectionStatus)
+  ) {
+    return null;
+  }
+
+  const session: SessionInfo = {
+    sessionId,
+    userId,
+    startTime,
+    lastActivity,
+    connectionStatus
+  };
+
+  if (typeof transportType === 'string') {
+    session.transportType = transportType;
+  } else if (typeof transportType !== 'undefined') {
+    return null;
+  }
+
+  if (typeof metricsValue !== 'undefined') {
+    if (!isRecord(metricsValue)) {
+      return null;
+    }
+
+    const latency = metricsValue['latency'];
+    const packetLoss = metricsValue['packetLoss'];
+    const connectionStability = metricsValue['connectionStability'];
+
+    if (
+      typeof latency !== 'number' ||
+      typeof packetLoss !== 'number' ||
+      typeof connectionStability !== 'number'
+    ) {
+      return null;
+    }
+
+    session.metrics = {
+      latency,
+      packetLoss,
+      connectionStability
+    };
+  }
+
+  return session;
+}
+
 // Simple reactive state implementation that works everywhere
 class ReactiveState<T> {
   private _value: T;
@@ -252,9 +430,20 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
       return undefined;
     }
 
+    if (!existing) {
+      return incoming;
+    }
+
+    if (!incoming) {
+      return existing;
+    }
+
     return {
-      ...(existing || {}),
-      ...(incoming || {})
+      sessionId: incoming.sessionId || existing.sessionId,
+      transportType: incoming.transportType || existing.transportType,
+      latency: typeof incoming.latency === 'number'
+        ? incoming.latency
+        : existing.latency
     };
   }
 
@@ -437,27 +626,30 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
   function handleMetricsUpdate(data: unknown): void {
     if (!isRecord(data)) return;
 
-    if (typeof data.latency === 'number') {
+    const latencyValue = data['latency'];
+    if (typeof latencyValue === 'number') {
       state.update(current => ({
         ...current,
         connectionHealth: {
           ...current.connectionHealth,
-          latency: data.latency,
-          status: data.latency > 250 ? 'poor' : current.connectionHealth.status
+          latency: latencyValue,
+          status: latencyValue > 250 ? 'poor' : current.connectionHealth.status
         }
       }));
     }
 
-    if (Array.isArray(data.users)) {
-      data.users.forEach((entry) => {
-        if (isRecord(entry) && typeof entry.userId === 'string') {
-          schedulePresenceUpdate(entry as UserPresence);
+    const usersValue = data['users'];
+    if (Array.isArray(usersValue)) {
+      usersValue.forEach(entry => {
+        const presence = parseUserPresencePayload(entry);
+        if (presence) {
+          schedulePresenceUpdate(presence);
         }
       });
     }
 
-    if (typeof data.sessionId === 'string') {
-      const sessionInfo = data as unknown as SessionInfo;
+    const sessionInfo = parseSessionInfoPayload(data);
+    if (sessionInfo) {
       state.update(current => {
         const sessions = cloneSessionsMap(current.sessions);
         sessions.set(sessionInfo.sessionId, sessionInfo);

@@ -5,21 +5,7 @@
 
 import type { AxeResults, RunOptions } from 'axe-core';
 
-export interface AxeTestOptions {
-  rules?: RunOptions['rules'];
-  runOnly?: RunOptions['runOnly'];
-  reporter?: 'v1' | 'v2' | 'no-passes';
-  resultTypes?: string[];
-  selectors?: boolean;
-  ancestry?: boolean;
-  xpath?: boolean;
-  absolutePaths?: boolean;
-  iframes?: boolean;
-  elementRef?: boolean;
-  frameWaitTime?: number;
-  preload?: boolean;
-  performanceTimer?: boolean;
-}
+export type AxeTestOptions = RunOptions;
 
 export interface AxeViolation {
   id: string;

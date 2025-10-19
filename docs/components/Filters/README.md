@@ -1,7 +1,7 @@
 # Filters Components
 
 **Component Group**: Content Filtering System  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 212 passing tests
 
@@ -59,7 +59,7 @@ The Filters component group provides a comprehensive content filtering system fo
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@greater/fediverse';
+  import { Filters } from '@equaltoai/greater-components-fediverse';
   
   const filtersHandlers = {
     onFetchFilters: async () => {
@@ -124,7 +124,7 @@ The Filters component group provides a comprehensive content filtering system fo
 
 ```svelte
 <script lang="ts">
-  import { Filters, Timeline } from '@greater/fediverse';
+  import { Filters, Timeline } from '@equaltoai/greater-components-fediverse';
   
   // ... filters handlers ...
 </script>
@@ -155,7 +155,7 @@ Complete filter management interface:
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@greater/fediverse';
+  import { Filters } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     // ... filter handlers ...
@@ -181,7 +181,7 @@ Apply filters to timeline content:
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@greater/fediverse';
+  import { Filters } from '@equaltoai/greater-components-fediverse';
   
   let posts = $state([]);
 </script>
@@ -209,7 +209,7 @@ Quick filter from context menu:
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@greater/fediverse';
+  import { Filters } from '@equaltoai/greater-components-fediverse';
   
   async function quickFilter(phrase: string) {
     await handlers.onCreateFilter?.({
@@ -379,7 +379,7 @@ npm test -- --coverage Filters
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Filters } from '@greater/fediverse';
+import { Filters } from '@equaltoai/greater-components-fediverse';
 
 describe('Filters', () => {
   it('creates and applies filter', async () => {

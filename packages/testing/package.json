@@ -1,5 +1,6 @@
 {
-  "name": "@greater/testing",
+  "name": "@equaltoai/greater-components-testing",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "description": "Shared testing utilities for accessibility, keyboard navigation, and visual regression testing",
@@ -30,6 +31,9 @@
       "types": "./dist/a11y/index.d.ts",
       "import": "./dist/a11y/index.js"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "vite build && tsc --build",

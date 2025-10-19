@@ -1,7 +1,7 @@
 # Profile.FollowingList
 
 **Component**: Following List Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 22 passing tests
 
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const following = [
     {
@@ -116,8 +116,8 @@ Full-featured following list with unfollow:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Following } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Following } from '@equaltoai/greater-components-fediverse/Profile';
 
   let following = $state<Following[]>([
     {
@@ -359,8 +359,8 @@ Organize following by categories:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Following } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Following } from '@equaltoai/greater-components-fediverse/Profile';
 
   interface CategorizedFollowing extends Following {
     category?: string;
@@ -519,8 +519,8 @@ Implement batch unfollow functionality:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Following } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Following } from '@equaltoai/greater-components-fediverse/Profile';
 
   let following = $state<Following[]>([
     {
@@ -1015,8 +1015,8 @@ Track following patterns:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Following } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Following } from '@equaltoai/greater-components-fediverse/Profile';
 
   const following: Following[] = [
     {
@@ -1209,7 +1209,7 @@ await db.auditLogs.create({
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { FollowingList } from '@greater/fediverse/Profile';
+import { FollowingList } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('FollowingList', () => {
   it('displays following accounts', () => {

@@ -1,7 +1,7 @@
 # Compose Utilities: Autocomplete
 
 **Module**: Autocomplete Logic Utility  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Export**: `Compose.Autocomplete` or direct imports
 
 ---
@@ -25,7 +25,7 @@ The `Autocomplete` utility provides comprehensive logic for implementing hashtag
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -72,7 +72,7 @@ function detectAutocompleteContext(
 
 **Example**:
 ```typescript
-import { detectAutocompleteContext } from '@greater/fediverse/Compose';
+import { detectAutocompleteContext } from '@equaltoai/greater-components-fediverse/Compose';
 
 const text = 'Hello @john';
 const match = detectAutocompleteContext(text, 11);
@@ -104,7 +104,7 @@ function filterSuggestions(
 
 **Example**:
 ```typescript
-import { filterSuggestions } from '@greater/fediverse/Compose';
+import { filterSuggestions } from '@equaltoai/greater-components-fediverse/Compose';
 
 const suggestions = [
   { type: 'mention', value: '@johnsmith', label: 'John Smith' },
@@ -139,7 +139,7 @@ function insertSuggestion(
 
 **Example**:
 ```typescript
-import { insertSuggestion } from '@greater/fediverse/Compose';
+import { insertSuggestion } from '@equaltoai/greater-components-fediverse/Compose';
 
 const text = 'Hello @joh';
 const match = { type: 'mention', query: 'joh', startPos: 6, endPos: 10 };
@@ -167,7 +167,7 @@ function getCursorPosition(element: HTMLInputElement | HTMLTextAreaElement): num
 
 **Example**:
 ```typescript
-import { getCursorPosition } from '@greater/fediverse/Compose';
+import { getCursorPosition } from '@equaltoai/greater-components-fediverse/Compose';
 
 const textarea = document.querySelector('textarea');
 const position = getCursorPosition(textarea);
@@ -193,7 +193,7 @@ function setCursorPosition(
 
 **Example**:
 ```typescript
-import { setCursorPosition } from '@greater/fediverse/Compose';
+import { setCursorPosition } from '@equaltoai/greater-components-fediverse/Compose';
 
 const textarea = document.querySelector('textarea');
 setCursorPosition(textarea, 10); // Move cursor to position 10
@@ -216,7 +216,7 @@ function extractHashtags(text: string): string[]
 
 **Example**:
 ```typescript
-import { extractHashtags } from '@greater/fediverse/Compose';
+import { extractHashtags } from '@equaltoai/greater-components-fediverse/Compose';
 
 const text = 'Check out #javascript and #typescript!';
 const tags = extractHashtags(text);
@@ -240,7 +240,7 @@ function extractMentions(text: string): string[]
 
 **Example**:
 ```typescript
-import { extractMentions } from '@greater/fediverse/Compose';
+import { extractMentions } from '@equaltoai/greater-components-fediverse/Compose';
 
 const text = 'Thanks @alice and @bob@example.com!';
 const mentions = extractMentions(text);
@@ -264,7 +264,7 @@ function formatHashtag(tag: string): string
 
 **Example**:
 ```typescript
-import { formatHashtag } from '@greater/fediverse/Compose';
+import { formatHashtag } from '@equaltoai/greater-components-fediverse/Compose';
 
 console.log(formatHashtag('javascript')); // "#javascript"
 console.log(formatHashtag('#typescript')); // "#typescript"
@@ -287,7 +287,7 @@ function formatMention(mention: string): string
 
 **Example**:
 ```typescript
-import { formatMention } from '@greater/fediverse/Compose';
+import { formatMention } from '@equaltoai/greater-components-fediverse/Compose';
 
 console.log(formatMention('alice')); // "@alice"
 console.log(formatMention('@bob')); // "@bob"
@@ -313,7 +313,7 @@ function parseMention(mention: string): {
 
 **Example**:
 ```typescript
-import { parseMention } from '@greater/fediverse/Compose';
+import { parseMention } from '@equaltoai/greater-components-fediverse/Compose';
 
 console.log(parseMention('@alice'));
 // { username: 'alice' }
@@ -339,7 +339,7 @@ function isValidHashtag(tag: string): boolean
 
 **Example**:
 ```typescript
-import { isValidHashtag } from '@greater/fediverse/Compose';
+import { isValidHashtag } from '@equaltoai/greater-components-fediverse/Compose';
 
 console.log(isValidHashtag('#javascript')); // true
 console.log(isValidHashtag('#java-script')); // true
@@ -364,7 +364,7 @@ function isValidMention(mention: string): boolean
 
 **Example**:
 ```typescript
-import { isValidMention } from '@greater/fediverse/Compose';
+import { isValidMention } from '@equaltoai/greater-components-fediverse/Compose';
 
 console.log(isValidMention('@alice')); // true
 console.log(isValidMention('@bob@example.com')); // true
@@ -385,7 +385,7 @@ import {
   detectAutocompleteContext,
   filterSuggestions,
   insertSuggestion
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 const textarea = document.querySelector('textarea');
 const suggestionBox = document.querySelector('.suggestions');
@@ -442,7 +442,7 @@ import {
   detectAutocompleteContext,
   filterSuggestions,
   insertSuggestion
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 let suggestions = [];
 let selectedIndex = 0;
@@ -487,7 +487,7 @@ Load suggestions dynamically:
 import {
   detectAutocompleteContext,
   filterSuggestions
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 let debounceTimer;
 
@@ -531,7 +531,7 @@ textarea.addEventListener('input', () => {
 Implement custom fuzzy matching:
 
 ```typescript
-import { filterSuggestions } from '@greater/fediverse/Compose';
+import { filterSuggestions } from '@equaltoai/greater-components-fediverse/Compose';
 
 function fuzzyScore(query: string, target: string): number {
   query = query.toLowerCase();
@@ -577,7 +577,7 @@ function customFilterSuggestions(query, suggestions, maxResults = 10) {
 Show extracted tags and mentions:
 
 ```typescript
-import { extractHashtags, extractMentions } from '@greater/fediverse/Compose';
+import { extractHashtags, extractMentions } from '@equaltoai/greater-components-fediverse/Compose';
 
 function updateMetadata(text) {
   const hashtags = extractHashtags(text);
@@ -611,7 +611,7 @@ import {
   extractMentions,
   isValidHashtag,
   isValidMention
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 function validateContent(text) {
   const errors = [];
@@ -649,7 +649,7 @@ form.addEventListener('submit', (e) => {
 Parse federated mentions:
 
 ```typescript
-import { extractMentions, parseMention } from '@greater/fediverse/Compose';
+import { extractMentions, parseMention } from '@equaltoai/greater-components-fediverse/Compose';
 
 async function resolveMentions(text) {
   const mentions = extractMentions(text);
@@ -694,7 +694,7 @@ import {
   detectAutocompleteContext,
   filterSuggestions,
   insertSuggestion
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 const customEmojis = [
   { type: 'emoji', value: ':partyparrot:', label: 'Party Parrot', url: '/emojis/partyparrot.gif' },
@@ -736,7 +736,7 @@ import {
   isValidHashtag,
   isValidMention,
   parseMention
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('Autocomplete', () => {
   describe('detectAutocompleteContext', () => {

@@ -1,7 +1,7 @@
 # Compose.ThreadComposer
 
 **Component**: Multi-Post Thread Composer  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleThreadSubmit(posts) {
     let previousId = null;
@@ -102,7 +102,7 @@ Simple thread composition with default settings:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleThreadSubmit(posts) {
     console.log(`Posting thread with ${posts.length} posts`);
@@ -146,7 +146,7 @@ Show progress during thread posting:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let posting = $state(false);
   let progress = $state({ current: 0, total: 0 });
@@ -246,8 +246,8 @@ Start with pre-filled content (e.g., from a long paste):
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { splitIntoChunks } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { splitIntoChunks } from '@equaltoai/greater-components-fediverse/Compose';
 
   let longText = $state('');
   let threadPosts = $state<string[]>([]);
@@ -356,7 +356,7 @@ Save thread drafts to resume later:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
 
   const THREAD_DRAFT_KEY = 'thread-composer-draft';
@@ -430,7 +430,7 @@ Add content warnings to sensitive threads:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let showContentWarning = $state(false);
   let contentWarning = $state('');
@@ -493,7 +493,7 @@ Provide thread templates for common use cases:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   const templates = {
     announcement: [
@@ -698,7 +698,7 @@ async function postThreadWithRateLimit(posts) {
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 describe('ThreadComposer', () => {
   it('starts with one empty post', () => {

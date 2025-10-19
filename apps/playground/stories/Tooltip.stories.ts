@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import { Tooltip } from '@greater/primitives';
+import { Tooltip } from '@equaltoai/greater-components-primitives';
 import TooltipDemo from './TooltipDemo.svelte';
 
 const meta: Meta<Tooltip> = {
@@ -25,7 +25,7 @@ An accessible tooltip component with smart positioning and multiple trigger mode
 
 \`\`\`svelte
 <script>
-  import { Tooltip } from '@greater/primitives';
+  import { Tooltip } from '@equaltoai/greater-components-primitives';
 </script>
 
 <Tooltip content="This is helpful information">

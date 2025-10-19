@@ -219,15 +219,25 @@ export function addStatusToCache(
 	status: StatusPayload,
 	timelineField = 'homeTimeline'
 ): void {
-	cache.modify<TimelineConnection>({
+	const normalizedId = cache.identify({ __typename: 'Status', id: status.id });
+
+	cache.modify({
 		fields: {
-			[timelineField](
-				existingConnection: TimelineConnection | undefined,
-				{ toReference }: { toReference: (value: StatusPayload) => Reference | undefined }
-			): TimelineConnection {
-				const existing = existingConnection ?? { edges: [], pageInfo: {} };
-				const reference = toReference(status);
-				if (!reference) {
+			[timelineField](existingValue: unknown): unknown {
+				const existing = (existingValue as TimelineConnection | undefined) ?? {
+					edges: [],
+					pageInfo: {},
+				};
+
+				if (!normalizedId) {
+					return existing;
+				}
+
+				const reference: Reference = { __ref: normalizedId };
+
+				// Avoid duplicates
+				const alreadyPresent = existing.edges.some((edge) => edge.node.__ref === normalizedId);
+				if (alreadyPresent) {
 					return existing;
 				}
 
@@ -250,8 +260,44 @@ export function addStatusToCache(
  * Update status in cache (after edit)
  */
 export function updateStatusInCache(cache: ApolloCache<unknown>, status: StatusPayload) {
+	const statusRecord = status as Record<string, unknown>;
+	const normalizedId = cache.identify({ __typename: 'Status', id: status.id });
+	if (!normalizedId) {
+		return;
+	}
+
+	const content = typeof statusRecord['content'] === 'string' ? statusRecord['content'] : undefined;
+	const editedAt = typeof statusRecord['editedAt'] === 'string' ? statusRecord['editedAt'] : undefined;
+	const mediaAttachmentsRaw = statusRecord['mediaAttachments'];
+
+	const mediaAttachments = Array.isArray(mediaAttachmentsRaw)
+		? mediaAttachmentsRaw
+				.map((entry) => {
+					if (typeof entry !== 'object' || entry === null) {
+						return null;
+					}
+					const attachment = entry as Record<string, unknown>;
+					const id = attachment['id'];
+					if (typeof id !== 'string') {
+						return null;
+					}
+					const typename =
+						typeof attachment['__typename'] === 'string'
+							? (attachment['__typename'] as string)
+							: 'MediaAttachment';
+					return {
+						__typename: typename,
+						id,
+					};
+				})
+				.filter(
+					(attachment): attachment is { __typename: string; id: string } =>
+						attachment !== null
+				)
+		: [];
+
 	cache.writeFragment({
-		id: cache.identify(status),
+		id: normalizedId,
 		fragment: gql`
 			fragment UpdatedStatus on Status {
 				id
@@ -262,7 +308,13 @@ export function updateStatusInCache(cache: ApolloCache<unknown>, status: StatusP
 				}
 			}
 		`,
-		data: status,
+		data: {
+			__typename: 'Status',
+			id: status.id,
+			content,
+			editedAt,
+			mediaAttachments,
+		},
 	});
 }
 

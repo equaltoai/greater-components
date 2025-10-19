@@ -1,7 +1,7 @@
 # Admin.Users
 
 **Component**: User Management Interface  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 78 passing tests
 
@@ -31,7 +31,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -40,7 +40,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onFetchUsers: async (filters) => {
@@ -256,7 +256,7 @@ Simple user management interface:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onFetchUsers: async (filters) => {
@@ -391,7 +391,7 @@ Track all user management actions:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   interface AuditLogEntry {
     action: string;
@@ -556,7 +556,7 @@ Show real-time notifications for user actions:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   interface Notification {
     id: string;
@@ -791,7 +791,7 @@ Using GraphQL for user operations:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const GRAPHQL_ENDPOINT = 'https://api.myinstance.social/graphql';
   
@@ -947,8 +947,8 @@ Advanced features including pagination and CSV export:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
-  import type { AdminUser } from '@greater/fediverse/Admin';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
+  import type { AdminUser } from '@equaltoai/greater-components-fediverse/Admin';
   
   let currentPage = $state(1);
   let perPage = $state(50);
@@ -1457,7 +1457,7 @@ npm test -- Admin/Users.test.ts
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Admin } from '@greater/fediverse';
+import { Admin } from '@equaltoai/greater-components-fediverse';
 import { vi } from 'vitest';
 
 describe('Admin.Users', () => {

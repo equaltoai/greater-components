@@ -1,7 +1,7 @@
 # Messages.Thread
 
 **Component**: Message Thread Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 91 passing tests
 
@@ -45,7 +45,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -56,7 +56,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -83,7 +83,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -142,7 +142,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -218,7 +218,7 @@ Accesses state from the Messages context:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount, tick } from 'svelte';
   import { authStore } from '$lib/stores/auth';
   
@@ -451,7 +451,7 @@ Accesses state from the Messages context:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let threadContainer: HTMLElement;
@@ -646,8 +646,8 @@ Accesses state from the Messages context:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount, onDestroy, tick } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   import { authStore } from '$lib/stores/auth';
@@ -855,8 +855,8 @@ Accesses state from the Messages context:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   // Group messages by date
@@ -1060,8 +1060,8 @@ Accesses state from the Messages context:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let hoveredMessageId = $state<string | null>(null);
@@ -1344,7 +1344,7 @@ For very long threads (1000+ messages):
 ```svelte
 <script lang="ts">
   import VirtualList from 'svelte-virtual-list';
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const context = Messages.getMessagesContext();
 </script>
@@ -1360,7 +1360,7 @@ For very long threads (1000+ messages):
 
 ```typescript
 import { render } from '@testing-library/svelte';
-import * as Messages from '@greater/fediverse/Messages';
+import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
 
 test('renders messages', () => {
   const { getByText } = render(Messages.Root, {

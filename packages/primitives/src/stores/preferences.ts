@@ -1,5 +1,3 @@
-import { $state } from 'svelte';
-
 // Type definitions for preferences
 export type ColorScheme = 'light' | 'dark' | 'high-contrast' | 'auto';
 export type Density = 'compact' | 'comfortable' | 'spacious';
@@ -47,13 +45,39 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   fontScale: 1
 };
 
+function clonePreferences(preferences: UserPreferences): UserPreferences {
+  return {
+    ...preferences,
+    customColors: {
+      ...preferences.customColors
+    }
+  };
+}
+
+function mergePreferences(
+  base: UserPreferences,
+  updates: Partial<UserPreferences>
+): UserPreferences {
+  const next = {
+    ...base,
+    ...updates
+  };
+
+  next.customColors = {
+    ...base.customColors,
+    ...(updates.customColors ?? {})
+  };
+
+  return clonePreferences(next);
+}
+
 // Create the preferences store class
 class PreferencesStore {
-  // Reactive state using Svelte 5 runes
-  private _preferences = $state<UserPreferences>(DEFAULT_PREFERENCES);
-  private _systemColorScheme = $state<'light' | 'dark'>('light');
-  private _systemMotion = $state<MotionPreference>('normal');
-  private _systemHighContrast = $state<boolean>(false);
+  // Internal state
+  private _preferences: UserPreferences = clonePreferences(DEFAULT_PREFERENCES);
+  private _systemColorScheme: 'light' | 'dark' = 'light';
+  private _systemMotion: MotionPreference = 'normal';
+  private _systemHighContrast = false;
   
   // Media query matchers
   private darkModeQuery?: MediaQueryList;
@@ -73,12 +97,16 @@ class PreferencesStore {
   
   // Getters using $derived for computed values
   get preferences(): UserPreferences {
-    return this._preferences;
+    return clonePreferences(this._preferences);
   }
   
   get state(): PreferencesState {
+    const { customColors, ...rest } = this._preferences;
     return {
-      ...this._preferences,
+      ...rest,
+      customColors: {
+        ...customColors
+      },
       systemColorScheme: this._systemColorScheme,
       systemMotion: this._systemMotion,
       systemHighContrast: this._systemHighContrast,
@@ -154,16 +182,13 @@ class PreferencesStore {
   }
   
   updatePreferences(updates: Partial<UserPreferences>) {
-    this._preferences = {
-      ...this._preferences,
-      ...updates
-    };
+    this._preferences = mergePreferences(this._preferences, updates);
     this.saveAndApply();
   }
   
   // Reset to defaults
   reset() {
-    this._preferences = { ...DEFAULT_PREFERENCES };
+    this._preferences = clonePreferences(DEFAULT_PREFERENCES);
     this.saveAndApply();
   }
   
@@ -179,10 +204,7 @@ class PreferencesStore {
       
       // Validate imported data
       if (this.validatePreferences(imported)) {
-        this._preferences = {
-          ...DEFAULT_PREFERENCES,
-          ...imported
-        };
+        this._preferences = mergePreferences(DEFAULT_PREFERENCES, imported);
         this.saveAndApply();
         return true;
       }
@@ -201,10 +223,7 @@ class PreferencesStore {
       if (stored) {
         const parsed = JSON.parse(stored) as Partial<UserPreferences>;
         if (this.validatePreferences(parsed)) {
-          this._preferences = {
-            ...DEFAULT_PREFERENCES,
-            ...parsed
-          };
+          this._preferences = mergePreferences(DEFAULT_PREFERENCES, parsed);
         }
       }
     } catch (error) {

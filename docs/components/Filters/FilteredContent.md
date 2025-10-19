@@ -1,7 +1,7 @@
 # Filters.FilteredContent
 
 **Component**: Filtered Content Display Wrapper  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 42 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Filters, Status } from '@greater/fediverse';
+  import { Filters, Status } from '@equaltoai/greater-components-fediverse';
   
   let posts = $state([]);
 </script>

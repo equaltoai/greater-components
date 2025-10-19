@@ -1,7 +1,7 @@
 # Auth.Root
 
 **Component**: Context Provider  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -23,7 +23,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -32,7 +32,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onLogin: async ({ email, password }) => {
@@ -135,7 +135,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let authenticated = $state(false);
 
@@ -168,7 +168,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let step = $state<'login' | 'webauthn' | '2fa'>('login');
   let userId = $state<string | null>(null);
@@ -237,7 +237,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   const initialState = {
     user: {
@@ -271,7 +271,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let authFlow = $state<'login' | 'register' | 'reset'>('login');
   
@@ -429,7 +429,7 @@ Test the Root component by verifying context is provided:
 
 ```typescript
 import { render } from '@testing-library/svelte';
-import { Auth } from '@greater/fediverse';
+import { Auth } from '@equaltoai/greater-components-fediverse';
 
 describe('Auth.Root', () => {
   it('provides context to children', () => {

@@ -16,7 +16,7 @@ if (!fs.existsSync(distDir)) {
 // Create a basic CSS reset and utility styles file
 const stylesCSS = `
 /* Greater Components Primitives - Base Styles */
-@import '@greater/tokens/theme.css';
+@import '@equaltoai/greater-components-tokens/theme.css';
 
 /* CSS Reset for components */
 .gr-button,

@@ -1,6 +1,6 @@
 # Timeline Components
 
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Components**: 5 components
 
@@ -25,7 +25,7 @@ The Timeline component group provides a complete solution for displaying chronol
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -57,8 +57,8 @@ Timeline.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   
@@ -92,7 +92,7 @@ Timeline.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
 
   let items = $state([/* 10,000+ items */]);
 </script>
@@ -119,8 +119,8 @@ Timeline.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import { createTimelineStore } from '@greater/adapters';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
 
   const timeline = createTimelineStore({
     endpoint: 'wss://api.lesser.social/graphql',
@@ -155,7 +155,7 @@ Timeline.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
 
   let items = $state([]);
   let error = $state<Error | null>(null);
@@ -210,8 +210,8 @@ Timeline components support real-time updates via WebSocket subscriptions:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import { createApolloClient } from '@greater/adapters';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import { createApolloClient } from '@equaltoai/greater-components-adapters';
   import { gql } from '@apollo/client/core';
 
   const client = createApolloClient({
@@ -253,7 +253,7 @@ Timeline components support real-time updates via WebSocket subscriptions:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
   
   let items = $state([]);
 
@@ -488,7 +488,7 @@ Implement rate limiting for actions:
 
 ```svelte
 <script lang="ts">
-  import { rateLimit } from '@greater/utils';
+  import { rateLimit } from '@equaltoai/greater-components-utils';
 
   const limitedLoadMore = rateLimit(loadMore, 1000); // Max once per second
 </script>
@@ -507,7 +507,7 @@ Timeline components have comprehensive test coverage:
 ```typescript
 // Example: Testing Timeline.Root
 import { render } from '@testing-library/svelte';
-import { Timeline } from '@greater/fediverse';
+import { Timeline } from '@equaltoai/greater-components-fediverse';
 
 test('renders timeline items', () => {
   const items = [
@@ -539,7 +539,7 @@ test('renders timeline items', () => {
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
   
   let items = $state([]);
 </script>
@@ -604,7 +604,7 @@ test('renders timeline items', () => {
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
   
   let thread = $state([]);
   
@@ -638,7 +638,7 @@ test('renders timeline items', () => {
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
   
   let posts = $state([]);
   let account = $state(null);

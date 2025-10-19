@@ -1,7 +1,7 @@
 # Messages.NewConversation
 
 **Component**: New Conversation Modal  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 72 passing tests
 
@@ -42,7 +42,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -53,7 +53,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onSearchParticipants: async (query: string) => {
@@ -83,7 +83,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showNewConversation = $state(false);
@@ -245,7 +245,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onSearchParticipants: async (query: string) => {
@@ -335,7 +335,7 @@ When a conversation is created:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showModal = $state(false);
@@ -452,8 +452,8 @@ When a conversation is created:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { MessageParticipant } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { MessageParticipant } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showModal = $state(false);
@@ -605,8 +605,8 @@ When a conversation is created:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { MessageParticipant } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { MessageParticipant } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showModal = $state(false);
@@ -806,7 +806,7 @@ When a conversation is created:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showModal = $state(false);
@@ -1008,8 +1008,8 @@ When a conversation is created:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { MessageParticipant } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { MessageParticipant } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showModal = $state(false);
@@ -1256,7 +1256,7 @@ const searchUsers = debounce(async (query: string) => {
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import { NewConversation } from '@greater/fediverse/Messages';
+import { NewConversation } from '@equaltoai/greater-components-fediverse/Messages';
 
 test('creates conversation on submit', async () => {
   const onCreateConversation = vi.fn().mockResolvedValue({});

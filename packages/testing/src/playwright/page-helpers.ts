@@ -103,7 +103,7 @@ export async function setupPageForA11yTesting(
   
   // Add accessibility helper functions to page
   await page.addInitScript(() => {
-    const helperWindow = window as WindowWithAccessibilityHelpers;
+    const helperWindow = window as unknown as WindowWithAccessibilityHelpers;
 
     const collectNodeInfo = (node: Element): AccessibilityTreeNode => {
       const element = node as HTMLElement;
@@ -345,7 +345,7 @@ export async function typeWithRealisticDelay(
  */
 export async function getAccessibilityTree(page: Page): Promise<AccessibilityTreeNode> {
   return page.evaluate<AccessibilityTreeNode>(() => {
-    const helperWindow = window as WindowWithAccessibilityHelpers;
+    const helperWindow = window as unknown as WindowWithAccessibilityHelpers;
     return helperWindow.getAccessibilityTree();
   });
 }

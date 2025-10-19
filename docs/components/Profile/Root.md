@@ -1,7 +1,7 @@
 # Profile.Root
 
 **Component**: Context Provider  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 18 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -249,7 +249,7 @@ interface ProfileState {
 
 ```svelte
 <script lang="ts">
-  import { getProfileContext } from '@greater/fediverse/Profile';
+  import { getProfileContext } from '@equaltoai/greater-components-fediverse/Profile';
   
   const { state, handlers, toggleEdit } = getProfileContext();
 </script>
@@ -271,8 +271,8 @@ Display a profile with standard components:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData, ProfileHandlers } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData, ProfileHandlers } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile: ProfileData = {
     id: '123',
@@ -366,8 +366,8 @@ Display own profile with edit functionality:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData, ProfileEditData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData, ProfileEditData } from '@equaltoai/greater-components-fediverse/Profile';
 
   let profile = $state<ProfileData>({
     id: '123',
@@ -514,8 +514,8 @@ Load profile data from server with loading and error states:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   interface Props {
     username: string;
@@ -666,7 +666,7 @@ Use GraphQL for data fetching and mutations:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { query, mutation } from '@urql/svelte';
   import { gql } from '@urql/core';
 
@@ -806,8 +806,8 @@ Implement real-time profile updates using WebSockets:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   interface Props {
     initialProfile: ProfileData;
@@ -1203,7 +1203,7 @@ The Profile.Root component ensures accessibility for all child components:
 ```typescript
 import { render, screen } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import * as Profile from '@greater/fediverse/Profile';
+import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Root', () => {
   it('provides context to child components', () => {

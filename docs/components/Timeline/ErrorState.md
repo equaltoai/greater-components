@@ -1,7 +1,7 @@
 # Timeline.ErrorState
 
 **Component**: Error Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 28 passing tests
 
@@ -16,7 +16,7 @@
 - ✅ **Retry Functionality** - Built-in retry button with loading state
 - ✅ **Customizable** - Custom icons, messages, and retry handlers
 - ✅ **Accessible** - ARIA alerts for screen readers
-- ✅ **Headless Button** - Uses `@greater/headless/button` for state management
+- ✅ **Headless Button** - Uses `@equaltoai/greater-components-headless/button` for state management
 - ✅ **Flexible** - Support for Error objects or string messages
 
 ---
@@ -24,7 +24,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -33,8 +33,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let error = $state<Error | null>(null);
@@ -91,8 +91,8 @@ Handle network errors with automatic retry:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let error = $state<Error | null>(null);
@@ -203,8 +203,8 @@ Customize error messages based on error type:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let error = $state<Error | null>(null);
@@ -347,8 +347,8 @@ Limit retry attempts to prevent infinite loops:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let error = $state<Error | null>(null);
@@ -554,8 +554,8 @@ Detect and handle offline state:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let error = $state<Error | null>(null);
@@ -777,8 +777,8 @@ Provide support options when errors persist:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let error = $state<Error | null>(null);
@@ -1129,7 +1129,7 @@ Browser: ${navigator.userAgent}
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Timeline } from '@greater/fediverse';
+import { Timeline } from '@equaltoai/greater-components-fediverse';
 
 describe('Timeline.ErrorState', () => {
   it('renders error message', () => {

@@ -1,7 +1,7 @@
 # Compose Utilities: UnicodeCounter
 
 **Module**: Unicode-Aware Character Counting  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Export**: `Compose.UnicodeCounter` or direct imports
 
 ---
@@ -25,7 +25,7 @@ The `UnicodeCounter` utility provides accurate Unicode-aware character counting 
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -65,7 +65,7 @@ function countGraphemes(text: string, locale: string = 'en'): number
 
 **Example**:
 ```typescript
-import { countGraphemes } from '@greater/fediverse/Compose';
+import { countGraphemes } from '@equaltoai/greater-components-fediverse/Compose';
 
 console.log(countGraphemes('Hello'));        // 5
 console.log(countGraphemes('Hello 👋'));     // 7 (not 8)
@@ -94,7 +94,7 @@ function countWeightedCharacters(
 
 **Example**:
 ```typescript
-import { countWeightedCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Simple text
 console.log(countWeightedCharacters('Hello world'));
@@ -138,7 +138,7 @@ function exceedsLimit(
 
 **Example**:
 ```typescript
-import { exceedsLimit } from '@greater/fediverse/Compose';
+import { exceedsLimit } from '@equaltoai/greater-components-fediverse/Compose';
 
 const text = 'This is a test post with a link https://example.com';
 
@@ -169,7 +169,7 @@ function remainingCharacters(
 
 **Example**:
 ```typescript
-import { remainingCharacters } from '@greater/fediverse/Compose';
+import { remainingCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 const limit = 500;
 const text = 'Hello world';
@@ -200,7 +200,7 @@ function truncateToLimit(
 
 **Example**:
 ```typescript
-import { truncateToLimit } from '@greater/fediverse/Compose';
+import { truncateToLimit } from '@equaltoai/greater-components-fediverse/Compose';
 
 const longText = 'This is a very long post that exceeds the character limit...';
 const truncated = truncateToLimit(longText, 50);
@@ -229,7 +229,7 @@ function formatCharacterCount(
 
 **Example**:
 ```typescript
-import { formatCharacterCount, countWeightedCharacters } from '@greater/fediverse/Compose';
+import { formatCharacterCount, countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 const text = 'Hello world';
 const count = countWeightedCharacters(text);
@@ -255,7 +255,7 @@ function estimateCharacterCount(text: string): number
 
 **Example**:
 ```typescript
-import { estimateCharacterCount } from '@greater/fediverse/Compose';
+import { estimateCharacterCount } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Use for real-time counting during typing (faster)
 const estimate = estimateCharacterCount(longText);
@@ -287,7 +287,7 @@ function splitIntoChunks(
 
 **Example**:
 ```typescript
-import { splitIntoChunks } from '@greater/fediverse/Compose';
+import { splitIntoChunks } from '@equaltoai/greater-components-fediverse/Compose';
 
 const longText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...';
 const chunks = splitIntoChunks(longText, 100);
@@ -305,7 +305,7 @@ console.log(chunks[0]);      // First chunk
 Display character count as user types:
 
 ```typescript
-import { countWeightedCharacters, remainingCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters, remainingCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 const textarea = document.querySelector('textarea');
 const counter = document.querySelector('.character-count');
@@ -327,7 +327,7 @@ textarea.addEventListener('input', () => {
 Show character usage as a progress bar:
 
 ```typescript
-import { countWeightedCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 const textarea = document.querySelector('textarea');
 const progressBar = document.querySelector('.progress-bar');
@@ -354,7 +354,7 @@ textarea.addEventListener('input', () => {
 Implement Twitter's URL counting:
 
 ```typescript
-import { countWeightedCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Twitter counts all URLs as 23 characters
 const twitterOptions = {
@@ -384,7 +384,7 @@ tweets.forEach(tweet => {
 Split long text into thread posts:
 
 ```typescript
-import { splitIntoChunks } from '@greater/fediverse/Compose';
+import { splitIntoChunks } from '@equaltoai/greater-components-fediverse/Compose';
 
 function createThread(longText: string, limit: number = 500) {
   const chunks = splitIntoChunks(longText, limit - 10); // Leave room for " (X/Y)"
@@ -409,7 +409,7 @@ console.log(`Split into ${thread.length} posts`);
 Handle different character systems:
 
 ```typescript
-import { countGraphemes } from '@greater/fediverse/Compose';
+import { countGraphemes } from '@equaltoai/greater-components-fediverse/Compose';
 
 const texts = {
   english: 'Hello world',
@@ -432,7 +432,7 @@ for (const [lang, text] of Object.entries(texts)) {
 Validate content length:
 
 ```typescript
-import { exceedsLimit, countWeightedCharacters } from '@greater/fediverse/Compose';
+import { exceedsLimit, countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 function validatePost(content: string, limit: number = 500): {
   valid: boolean;
@@ -472,7 +472,7 @@ form.addEventListener('submit', (e) => {
 Smartly truncate long text:
 
 ```typescript
-import { truncateToLimit, countWeightedCharacters } from '@greater/fediverse/Compose';
+import { truncateToLimit, countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 function smartTruncate(text: string, limit: number): string {
   if (countWeightedCharacters(text) <= limit) {
@@ -501,7 +501,7 @@ console.log(smartTruncate(longText, 30));
 Optimize counting for real-time typing:
 
 ```typescript
-import { estimateCharacterCount, countWeightedCharacters } from '@greater/fediverse/Compose';
+import { estimateCharacterCount, countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 let typingTimeout;
 let lastAccurateCount = 0;
@@ -541,7 +541,7 @@ import {
   remainingCharacters,
   truncateToLimit,
   splitIntoChunks
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('UnicodeCounter', () => {
   describe('countGraphemes', () => {
@@ -649,7 +649,7 @@ describe('UnicodeCounter', () => {
 Be cautious with extremely long text:
 
 ```typescript
-import { countWeightedCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 function safeCount(text: string, maxLength: number = 10000): number {
   if (text.length > maxLength) {

@@ -170,7 +170,11 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				logDebugError(errorMsg);
 
 				// Handle authentication errors
-				if (extensions?.code === 'UNAUTHENTICATED') {
+				const extensionCode =
+					extensions && typeof extensions === 'object'
+						? (extensions as Record<string, unknown>)['code']
+						: undefined;
+				if (extensionCode === 'UNAUTHENTICATED') {
 					logDebugError('[GraphQL] Authentication error');
 					// Clear token on auth failure
 					currentToken = null;

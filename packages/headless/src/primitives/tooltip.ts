@@ -10,7 +10,7 @@
  * - Configurable delays
  * - Portal rendering support
  * 
- * @module @greater/headless/tooltip
+ * @module @equaltoai/greater-components-headless/tooltip
  */
 
 import { generateId } from '../utils/id';

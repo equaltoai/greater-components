@@ -5,7 +5,7 @@ Hashtags.MutedList - List of Muted Hashtags
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getHashtagsContext } from './context.js';
-	import type { NotificationLevel } from '@greater/adapters';
+	import type { NotificationLevel } from '@equaltoai/greater-components-adapters';
 
 	interface Props {
 		class?: string;

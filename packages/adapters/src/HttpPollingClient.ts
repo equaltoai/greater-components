@@ -331,7 +331,7 @@ export class HttpPollingClient implements TransportAdapter<HttpPollingClientStat
 
   private handleError(error: Error): void {
     this.setState({ error });
-    this.logger.error('HTTP polling transport error', error);
+	this.logger.error('HTTP polling transport error', { error });
     this.emit('error', { error }, error);
   }
 
@@ -443,7 +443,7 @@ export class HttpPollingClient implements TransportAdapter<HttpPollingClientStat
         try {
           handler(wsEvent);
         } catch (err) {
-          this.logger.error(`Error in HTTP polling event handler for ${event}`, err);
+			this.logger.error(`Error in HTTP polling event handler for ${event}`, { error: err });
         }
       });
     }

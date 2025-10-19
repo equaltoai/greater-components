@@ -16,7 +16,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { sanitizeHtml } from '@greater/utils';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 
 	interface ContentWarningConfig {
 		/**

@@ -1,6 +1,6 @@
 # Profile Components
 
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Components**: 14  
 **Status**: Production Ready ✅  
 **Tests**: 234 passing tests
@@ -81,7 +81,7 @@ The `Profile.Root` component provides context that all child components consume,
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -122,7 +122,7 @@ The `Profile.Root` component provides context that all child components consume,
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   let profile = $state({
     id: '123',
@@ -192,7 +192,7 @@ The `Profile.Root` component provides context that all child components consume,
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   let requests = $state([
     {
@@ -253,7 +253,7 @@ Here's a complete, production-ready profile view with all features:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { createQuery } from '@tanstack/svelte-query';
   
   interface Props {
@@ -636,7 +636,7 @@ Profile components have comprehensive test coverage:
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import * as Profile from '@greater/fediverse/Profile';
+import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Header', () => {
   it('displays profile information', () => {

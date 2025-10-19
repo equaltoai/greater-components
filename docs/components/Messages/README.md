@@ -1,7 +1,7 @@
 # Messages Components
 
 **Component Group**: Direct Messaging System  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 422 passing tests
 
@@ -79,7 +79,7 @@ Messages provide secure, private communication similar to Twitter DMs, Mastodon 
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -90,7 +90,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -154,7 +154,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { createWebSocketClient } from '$lib/websocket';
   
   const ws = createWebSocketClient('wss://api.example.com/graphql');
@@ -275,7 +275,7 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -339,7 +339,7 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -429,7 +429,7 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   let mediaUpload: typeof Messages.MediaUpload;
   let attachedMediaIds = $state<string[]>([]);
@@ -511,8 +511,8 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import { createMessagesAdapter } from '@greater/adapters';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import { createMessagesAdapter } from '@equaltoai/greater-components-adapters';
   
   const adapter = createMessagesAdapter({
     endpoint: 'https://api.example.com/graphql',
@@ -550,7 +550,7 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
 </script>
 
 <Messages.Root {handlers} class="custom-messages">
@@ -826,7 +826,7 @@ const handlers = {
 
 ```typescript
 import { render, fireEvent, waitFor } from '@testing-library/svelte';
-import * as Messages from '@greater/fediverse/Messages';
+import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
 
 test('sends a message', async () => {
   const onSendMessage = vi.fn().mockResolvedValue({
@@ -899,7 +899,7 @@ const { state, sendMessage, markRead } = Messages.getMessagesContext();
 ### **Helper Functions**
 
 ```typescript
-import { formatMessageTime, getConversationName } from '@greater/fediverse/Messages';
+import { formatMessageTime, getConversationName } from '@equaltoai/greater-components-fediverse/Messages';
 
 // Format timestamp
 const timeAgo = formatMessageTime('2024-01-01T12:00:00Z');

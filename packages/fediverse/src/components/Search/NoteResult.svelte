@@ -2,7 +2,7 @@
   Search.NoteResult - Note/Post Search Result Item
 -->
 <script lang="ts">
-	import { sanitizeHtml } from '@greater/utils';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import { getSearchContext, formatCount, highlightQuery } from './context.js';
 	import type { SearchNote } from './context.js';
 

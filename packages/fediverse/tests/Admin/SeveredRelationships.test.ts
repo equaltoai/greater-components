@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import type { LesserGraphQLAdapter } from '@greater/adapters';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 import SeveredRelationshipsListHarness from './SeveredRelationshipsListHarness.svelte';
 import SeveredRelationshipsRecoveryHarness from './SeveredRelationshipsRecoveryHarness.svelte';
 

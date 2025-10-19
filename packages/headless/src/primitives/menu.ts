@@ -11,7 +11,7 @@
  * - ESC to close
  * - Focus management
  * 
- * @module @greater/headless/menu
+ * @module @equaltoai/greater-components-headless/menu
  */
 
 import { generateId } from '../utils/id';

@@ -1,7 +1,7 @@
 # Timeline.Item
 
 **Component**: Item Wrapper  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 38 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,8 +35,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([
     {
@@ -163,8 +163,8 @@ Standard timeline item with Status content:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([
     {
@@ -237,8 +237,8 @@ Custom styling for different item types:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([
     // Regular post
@@ -363,8 +363,8 @@ Using custom content instead of Status components:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   interface NotificationItem extends GenericTimelineItem {
     type: 'follow' | 'mention' | 'reblog' | 'favourite';
@@ -558,8 +558,8 @@ Track and visualize user interactions:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let viewedItems = $state(new Set<string>());
@@ -786,8 +786,8 @@ Group timeline items by date:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
 
@@ -943,7 +943,7 @@ Timeline.Item automatically handles clicks while avoiding conflicts with interac
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onItemClick: (item, index) => {
@@ -1123,7 +1123,7 @@ Timeline.Item works seamlessly with virtual scrolling:
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Timeline } from '@greater/fediverse';
+import { Timeline } from '@equaltoai/greater-components-fediverse';
 
 describe('Timeline.Item', () => {
   it('renders item content', () => {

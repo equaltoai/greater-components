@@ -5,7 +5,7 @@
  */
 
 import { getContext, setContext } from 'svelte';
-import type { LesserGraphQLAdapter } from '@greater/adapters';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 const SEVERED_CONTEXT_KEY = Symbol('severed-context');
 

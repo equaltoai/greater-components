@@ -209,7 +209,7 @@ export function setCursorPosition(
 export function extractHashtags(text: string): string[] {
 	const hashtagRegex = /#([a-zA-Z0-9_]+)/g;
 	const matches = text.matchAll(hashtagRegex);
-	const hashtags = Array.from(matches, (m) => m[1]);
+	const hashtags = Array.from(matches, (m) => m[1]).filter((tag): tag is string => typeof tag === 'string');
 	return [...new Set(hashtags)]; // Remove duplicates
 }
 
@@ -219,7 +219,7 @@ export function extractHashtags(text: string): string[] {
 export function extractMentions(text: string): string[] {
 	const mentionRegex = /@([a-zA-Z0-9_]+(?:@[a-zA-Z0-9.-]+)?)/g;
 	const matches = text.matchAll(mentionRegex);
-	const mentions = Array.from(matches, (m) => m[1]);
+	const mentions = Array.from(matches, (m) => m[1]).filter((mention): mention is string => typeof mention === 'string');
 	return [...new Set(mentions)]; // Remove duplicates
 }
 
@@ -245,10 +245,14 @@ export function formatMention(username: string, domain?: string): string {
  */
 export function parseMention(mention: string): { username: string; domain?: string } {
 	const parts = mention.replace('@', '').split('@');
-	return {
-		username: parts[0],
-		domain: parts[1],
-	};
+	const username = parts[0] ?? '';
+	const domain = parts[1];
+
+	if (domain) {
+		return { username, domain };
+	}
+
+	return { username };
 }
 
 /**
@@ -266,4 +270,3 @@ export function isValidMention(mention: string): boolean {
 	// Basic format: username or username@domain
 	return /^[a-zA-Z0-9_]+(@[a-zA-Z0-9.-]+)?$/.test(mention);
 }
-

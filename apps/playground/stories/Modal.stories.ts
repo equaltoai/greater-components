@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import { Modal } from '@greater/primitives';
+import { Modal } from '@equaltoai/greater-components-primitives';
 import ModalDemo from './ModalDemo.svelte';
 
 const meta: Meta<Modal> = {
@@ -24,7 +24,7 @@ A fully accessible modal dialog component with focus management and keyboard nav
 
 \`\`\`svelte
 <script>
-  import { Modal, Button } from '@greater/primitives';
+  import { Modal, Button } from '@equaltoai/greater-components-primitives';
   let open = false;
 </script>
 

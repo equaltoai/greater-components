@@ -7,6 +7,7 @@ import type {
   LesserAccountFragment,
   LesserPostFragment,
   LesserNotificationFragment,
+  LesserObjectFragment,
   LesserMediaFragment,
   LesserPollFragment,
   LesserStreamingUpdate,
@@ -489,6 +490,96 @@ export const lesserPostFixtures: LesserPostFragment[] = [
 const getPost = (index: number): LesserPostFragment =>
   requireFixture(lesserPostFixtures, index);
 
+const createNotificationStatus = (
+  id: string,
+  actor: LesserAccountFragment,
+  overrides: Partial<LesserObjectFragment> = {}
+): LesserObjectFragment => {
+  const base: LesserObjectFragment = {
+    id,
+    type: "POST",
+    actor,
+    content: "Lesser notification content",
+    inReplyTo: undefined,
+    visibility: "PUBLIC",
+    sensitive: false,
+    spoilerText: undefined,
+    attachments: [],
+    tags: [],
+    mentions: [],
+    createdAt: "2023-12-15T00:00:00.000Z",
+    updatedAt: "2023-12-15T00:00:00.000Z",
+    repliesCount: 0,
+    likesCount: 0,
+    sharesCount: 0,
+    estimatedCost: 0,
+    moderationScore: undefined,
+    communityNotes: [],
+    quoteUrl: undefined,
+    quoteable: true,
+    quotePermissions: "EVERYONE",
+    quoteContext: undefined,
+    quoteCount: 0,
+    aiAnalysis: undefined,
+  };
+
+  return {
+    ...base,
+    ...overrides,
+  };
+};
+
+const favoriteNotificationStatus = createNotificationStatus(
+  "status_favorite_post",
+  getAccount(0),
+  {
+    content: "Thanks for the support on the new moderation console!",
+    createdAt: "2023-12-15T14:45:00.000Z",
+    updatedAt: "2023-12-15T14:45:00.000Z",
+    likesCount: 24,
+    sharesCount: 6,
+    repliesCount: 3,
+    estimatedCost: 5,
+  }
+);
+
+const shareNotificationStatus = createNotificationStatus(
+  "status_share_post",
+  getAccount(0),
+  {
+    content: "Sharing our transport manager walkthrough.",
+    createdAt: "2023-12-15T15:05:00.000Z",
+    updatedAt: "2023-12-15T15:05:00.000Z",
+    likesCount: 18,
+    sharesCount: 9,
+    estimatedCost: 7,
+  }
+);
+
+const mentionNotificationStatus = createNotificationStatus(
+  "status_mention_post",
+  getAccount(0),
+  {
+    content: "@bob your fallback guide is trending!",
+    createdAt: "2023-12-15T17:10:00.000Z",
+    updatedAt: "2023-12-15T17:10:00.000Z",
+    repliesCount: 4,
+    estimatedCost: 4,
+  }
+);
+
+const pollEndedNotificationStatus = createNotificationStatus(
+  "status_poll_post",
+  getAccount(0),
+  {
+    content: "Poll results: SSE fallback wins by a landslide.",
+    createdAt: "2023-12-16T17:30:00.000Z",
+    updatedAt: "2023-12-16T17:30:00.000Z",
+    sharesCount: 5,
+    estimatedCost: 3,
+  }
+);
+
 // Sample Lesser notifications
 export const lesserNotificationFixtures: LesserNotificationFragment[] = [
   {
@@ -496,7 +587,7 @@ export const lesserNotificationFixtures: LesserNotificationFragment[] = [
     notificationType: "FAVORITE",
     createdAt: "2023-12-15T15:30:00.000Z",
     triggerAccount: getAccount(1),
-    targetPost: getPost(0),
+    status: favoriteNotificationStatus,
     isRead: false
   },
   {
@@ -504,7 +595,7 @@ export const lesserNotificationFixtures: LesserNotificationFragment[] = [
     notificationType: "SHARE",
     createdAt: "2023-12-15T16:15:00.000Z",
     triggerAccount: getAccount(1),
-    targetPost: getPost(0),
+    status: shareNotificationStatus,
     isRead: false
   },
   {
@@ -512,7 +603,7 @@ export const lesserNotificationFixtures: LesserNotificationFragment[] = [
     notificationType: "MENTION",
     createdAt: "2023-12-15T17:45:00.000Z",
     triggerAccount: getAccount(1),
-    targetPost: lesserPostFixtures[3],
+    status: mentionNotificationStatus,
     isRead: true
   },
   {
@@ -527,7 +618,7 @@ export const lesserNotificationFixtures: LesserNotificationFragment[] = [
     notificationType: "POLL_ENDED",
     createdAt: "2023-12-16T18:00:00.000Z",
     triggerAccount: getAccount(0),
-    targetPost: lesserPostFixtures[0],
+    status: pollEndedNotificationStatus,
     isRead: false
   }
 ];

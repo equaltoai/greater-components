@@ -1,18 +1,18 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { ThemeSwitcher } from '@greater/primitives';
-  import { 
-    Settings,
-    Palette,
-    Eye,
-    Zap,
-    Globe,
-    Shield,
-    Bell,
-    User,
-    HelpCircle,
-    ChevronRight
-  } from '@greater/icons';
+  import { ThemeSwitcher } from '@equaltoai/greater-components-primitives';
+  import {
+    SettingsIcon as Settings,
+    DropletIcon as Palette,
+    EyeIcon as Eye,
+    ZapIcon as Zap,
+    GlobeIcon as Globe,
+    ShieldIcon as Shield,
+    BellIcon as Bell,
+    UserIcon as User,
+    HelpCircleIcon as HelpCircle,
+    ChevronRightIcon as ChevronRight
+  } from '@equaltoai/greater-components-icons';
   
   interface Props {
     activeSection?: string;

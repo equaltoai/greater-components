@@ -13,23 +13,25 @@
 export const ACTOR_FRAGMENT = `
   fragment ActorFields on Actor {
     id
-    type
-    name
-    preferredUsername
+    username
+    domain
+    displayName
     summary
-    icon {
-      url
-      mediaType
-    }
-    image {
-      url
-      mediaType
-    }
-    url
-    published
-    followersCount
-    followingCount
+    avatar
+    header
+    followers
+    following
     statusesCount
+    bot
+    locked
+    createdAt
+    updatedAt
+    trustScore
+    fields {
+      name
+      value
+      verifiedAt
+    }
   }
 `;
 
@@ -89,6 +91,82 @@ export const ACTIVITY_FRAGMENT = `
     published
     to
     cc
+  }
+`;
+
+/**
+ * Fragment for user preferences
+ */
+export const USER_PREFERENCES_FRAGMENT = `
+  fragment UserPreferencesFields on UserPreferences {
+    actorId
+    posting {
+      defaultVisibility
+      defaultSensitive
+      defaultLanguage
+    }
+    reading {
+      expandSpoilers
+      expandMedia
+      autoplayGifs
+      timelineOrder
+    }
+    discovery {
+      showFollowCounts
+      searchSuggestionsEnabled
+      personalizedSearchEnabled
+    }
+    streaming {
+      defaultQuality
+      autoQuality
+      preloadNext
+      dataSaver
+    }
+    notifications {
+      email
+      push
+      inApp
+      digest
+    }
+    privacy {
+      defaultVisibility
+      indexable
+      showOnlineStatus
+    }
+    reblogFilters {
+      key
+      enabled
+    }
+  }
+`;
+
+/**
+ * Fragment for push subscription
+ */
+export const PUSH_SUBSCRIPTION_FRAGMENT = `
+  fragment PushSubscriptionFields on PushSubscription {
+    id
+    endpoint
+    keys {
+      auth
+      p256dh
+    }
+    alerts {
+      follow
+      favourite
+      reblog
+      mention
+      poll
+      followRequest
+      status
+      update
+      adminSignUp
+      adminReport
+    }
+    policy
+    serverKey
+    createdAt
+    updatedAt
   }
 `;
 
@@ -192,11 +270,12 @@ export const SEARCH = `
  */
 export const GET_FOLLOWERS = `
   ${ACTOR_FRAGMENT}
-  query GetFollowers($id: String!, $limit: Int, $cursor: String) {
-    followers(id: $id, limit: $limit, cursor: $cursor) {
-      items {
+  query GetFollowers($username: String!, $limit: Int, $cursor: Cursor) {
+    followers(username: $username, limit: $limit, cursor: $cursor) {
+      actors {
         ...ActorFields
       }
+      totalCount
       nextCursor
     }
   }
@@ -207,11 +286,12 @@ export const GET_FOLLOWERS = `
  */
 export const GET_FOLLOWING = `
   ${ACTOR_FRAGMENT}
-  query GetFollowing($id: String!, $limit: Int, $cursor: String) {
-    following(id: $id, limit: $limit, cursor: $cursor) {
-      items {
+  query GetFollowing($username: String!, $limit: Int, $cursor: Cursor) {
+    following(username: $username, limit: $limit, cursor: $cursor) {
+      actors {
         ...ActorFields
       }
+      totalCount
       nextCursor
     }
   }
@@ -311,6 +391,30 @@ export const GET_LIST_TIMELINE = `
         }
       }
       nextCursor
+    }
+  }
+`;
+
+/**
+ * Get user preferences
+ */
+export const GET_USER_PREFERENCES = `
+  ${USER_PREFERENCES_FRAGMENT}
+  query GetUserPreferences {
+    userPreferences {
+      ...UserPreferencesFields
+    }
+  }
+`;
+
+/**
+ * Get push subscription
+ */
+export const GET_PUSH_SUBSCRIPTION = `
+  ${PUSH_SUBSCRIPTION_FRAGMENT}
+  query GetPushSubscription {
+    pushSubscription {
+      ...PushSubscriptionFields
     }
   }
 `;
@@ -560,10 +664,70 @@ export const UPDATE_PROFILE = `
   ${ACTOR_FRAGMENT}
   mutation UpdateProfile($input: UpdateProfileInput!) {
     updateProfile(input: $input) {
-      actor {
-        ...ActorFields
+      ...ActorFields
+    }
+  }
+`;
+
+/**
+ * Update user preferences
+ */
+export const UPDATE_USER_PREFERENCES = `
+  ${USER_PREFERENCES_FRAGMENT}
+  mutation UpdateUserPreferences($input: UpdateUserPreferencesInput!) {
+    updateUserPreferences(input: $input) {
+      ...UserPreferencesFields
+    }
+  }
+`;
+
+/**
+ * Update streaming preferences
+ */
+export const UPDATE_STREAMING_PREFERENCES = `
+  mutation UpdateStreamingPreferences($input: StreamingPreferencesInput!) {
+    updateStreamingPreferences(input: $input) {
+      actorId
+      streaming {
+        defaultQuality
+        autoQuality
+        preloadNext
+        dataSaver
       }
     }
+  }
+`;
+
+/**
+ * Register push subscription
+ */
+export const REGISTER_PUSH_SUBSCRIPTION = `
+  ${PUSH_SUBSCRIPTION_FRAGMENT}
+  mutation RegisterPushSubscription($input: RegisterPushSubscriptionInput!) {
+    registerPushSubscription(input: $input) {
+      ...PushSubscriptionFields
+    }
+  }
+`;
+
+/**
+ * Update push subscription
+ */
+export const UPDATE_PUSH_SUBSCRIPTION = `
+  ${PUSH_SUBSCRIPTION_FRAGMENT}
+  mutation UpdatePushSubscription($input: UpdatePushSubscriptionInput!) {
+    updatePushSubscription(input: $input) {
+      ...PushSubscriptionFields
+    }
+  }
+`;
+
+/**
+ * Delete push subscription
+ */
+export const DELETE_PUSH_SUBSCRIPTION = `
+  mutation DeletePushSubscription {
+    deletePushSubscription
   }
 `;
 
@@ -625,4 +789,3 @@ export const SUBSCRIBE_ACCOUNT = `
     }
   }
 `;
-

@@ -29,7 +29,7 @@ export default defineConfig({
       formats: ['es']
     },
     rollupOptions: {
-      external: ['svelte', 'svelte/store', 'svelte/internal', '@greater/tokens'],
+      external: ['svelte', 'svelte/store', 'svelte/internal', '@equaltoai/greater-components-tokens'],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',
@@ -37,7 +37,7 @@ export default defineConfig({
         entryFileNames: '[name].js',
         globals: {
           svelte: 'Svelte',
-          '@greater/tokens': 'GreaterTokens'
+          '@equaltoai/greater-components-tokens': 'GreaterTokens'
         }
       }
     },

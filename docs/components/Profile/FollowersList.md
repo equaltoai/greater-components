@@ -1,7 +1,7 @@
 # Profile.FollowersList
 
 **Component**: Followers List Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 24 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const followers = [
     {
@@ -125,8 +125,8 @@ Manage your own followers with remove capability:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Follower } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Follower } from '@equaltoai/greater-components-fediverse/Profile';
 
   let followers = $state<Follower[]>([
     {
@@ -270,8 +270,8 @@ View another user's followers with follow actions:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Follower } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Follower } from '@equaltoai/greater-components-fediverse/Profile';
 
   let followers = $state<Follower[]>([
     {
@@ -398,8 +398,8 @@ Advanced search functionality:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Follower } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Follower } from '@equaltoai/greater-components-fediverse/Profile';
 
   let allFollowers = $state<Follower[]>([
     {
@@ -692,8 +692,8 @@ Implement infinite scroll pagination:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { Follower } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { Follower } from '@equaltoai/greater-components-fediverse/Profile';
   import { onMount } from 'svelte';
 
   let followers = $state<Follower[]>([]);
@@ -916,7 +916,7 @@ const followersLimit = new RateLimiter({
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { FollowersList } from '@greater/fediverse/Profile';
+import { FollowersList } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('FollowersList', () => {
   it('displays followers', () => {

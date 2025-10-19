@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Skeleton } from '@greater/primitives';
+  import { Skeleton } from '@equaltoai/greater-components-primitives';
 
   interface Props {
     variant?: 'text' | 'circular' | 'rectangular' | 'rounded';

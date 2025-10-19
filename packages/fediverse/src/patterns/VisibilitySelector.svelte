@@ -16,7 +16,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createMenu } from '@greater/headless/menu';
+	import { createMenu } from '@equaltoai/greater-components-headless/menu';
 
 	export type PostVisibility = 'public' | 'unlisted' | 'private' | 'direct';
 

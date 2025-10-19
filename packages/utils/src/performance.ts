@@ -190,17 +190,17 @@ export function debounceImmediate<T extends (...args: unknown[]) => unknown>(
  * expensiveCalc(5); // Calculates
  * expensiveCalc(5); // Returns cached result
  */
-export function memoize<T extends (...args: unknown[]) => unknown>(
-	fn: T,
-	keyResolver?: (...args: Parameters<T>) => string
-): T & { cache: Map<string, ReturnType<T>> } {
-	const cache = new Map<string, ReturnType<T>>();
+export function memoize<TArgs extends unknown[], TResult>(
+	fn: (...args: TArgs) => TResult,
+	keyResolver?: (...args: TArgs) => string
+): ((...args: TArgs) => TResult) & { cache: Map<string, TResult> } {
+	const cache = new Map<string, TResult>();
 
-	const memoized = function (...args: Parameters<T>): ReturnType<T> {
+	const memoized = function (...args: TArgs): TResult {
 		const key = keyResolver ? keyResolver(...args) : JSON.stringify(args);
 
 		if (cache.has(key)) {
-			return cache.get(key) as ReturnType<T>;
+			return cache.get(key)!;
 		}
 
 		const result = fn(...args);
@@ -208,7 +208,9 @@ export function memoize<T extends (...args: unknown[]) => unknown>(
 		return result;
 	};
 
-	return Object.assign(memoized, { cache }) as T & { cache: Map<string, ReturnType<T>> };
+	return Object.assign(memoized, { cache }) as ((...args: TArgs) => TResult) & {
+		cache: Map<string, TResult>;
+	};
 }
 
 /**
@@ -365,12 +367,12 @@ export function createLRUCache<K, V>(maxSize: number): {
  *   // expensive operation
  * }, 'Heavy Calculation');
  */
-export function measureTime<T extends (...args: unknown[]) => unknown>(
-	fn: T,
+export function measureTime<TArgs extends unknown[], TResult>(
+	fn: (...args: TArgs) => TResult,
 	label?: string,
 	logger: (message: string) => void = console.warn
-): T {
-	return function measured(...args: Parameters<T>): ReturnType<T> {
+): (...args: TArgs) => TResult {
+	return function measured(...args: TArgs): TResult {
 		const start = performance.now();
 		const result = fn(...args);
 		const end = performance.now();
@@ -383,7 +385,7 @@ export function measureTime<T extends (...args: unknown[]) => unknown>(
 		}
 
 		return result;
-	} as T;
+	};
 }
 
 /**

@@ -20,7 +20,7 @@ Context provider for hashtag management state and adapter connection.
 
 ```svelte
 <script lang="ts">
-  import * as Hashtags from '@greater/fediverse/Hashtags';
+  import * as Hashtags from '@equaltoai/greater-components-fediverse/Hashtags';
   import { adapter } from './config';
 </script>
 
@@ -328,7 +328,7 @@ Create timelines filtered by followed hashtags:
 
 ```svelte
 <script lang="ts">
-  import { createLesserTimelineStore, TimelineVirtualized } from '@greater/fediverse';
+  import { createLesserTimelineStore, TimelineVirtualized } from '@equaltoai/greater-components-fediverse';
   import { adapter } from './config';
   
   // Single hashtag timeline

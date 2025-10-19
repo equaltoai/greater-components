@@ -1,7 +1,7 @@
 # Profile.FeaturedHashtags
 
 **Component**: Featured Hashtags Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 18 passing tests
 
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const hashtags = [
     {
@@ -117,8 +117,8 @@ Full-featured hashtags with reordering and stats:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FeaturedHashtag } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FeaturedHashtag } from '@equaltoai/greater-components-fediverse/Profile';
 
   let hashtags = $state<FeaturedHashtag[]>([
     {
@@ -390,8 +390,8 @@ Complete drag-and-drop functionality:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FeaturedHashtag } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FeaturedHashtag } from '@equaltoai/greater-components-fediverse/Profile';
 
   let hashtags = $state<FeaturedHashtag[]>([
     { name: 'javascript', usageCount: 42 },
@@ -604,8 +604,8 @@ Implement adding new featured hashtags:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FeaturedHashtag } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FeaturedHashtag } from '@equaltoai/greater-components-fediverse/Profile';
 
   let hashtags = $state<FeaturedHashtag[]>([
     { name: 'javascript', usageCount: 42 },
@@ -1267,8 +1267,8 @@ Display featured hashtags on public profile:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FeaturedHashtag } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FeaturedHashtag } from '@equaltoai/greater-components-fediverse/Profile';
 
   const hashtags: FeaturedHashtag[] = [
     { name: 'javascript', usageCount: 142 },
@@ -1480,7 +1480,7 @@ await db.auditLogs.create({
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { FeaturedHashtags } from '@greater/fediverse/Profile';
+import { FeaturedHashtags } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('FeaturedHashtags', () => {
   it('displays featured hashtags', () => {

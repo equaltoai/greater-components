@@ -22,17 +22,17 @@ Flowbite Svelte users can migrate to Greater Components with these mappings:
 
 | Flowbite Component | Greater Components Equivalent | Notes |
 |-------------------|-------------------------------|-------|
-| `Button` | `@greater/primitives/Button` | Similar API, enhanced accessibility |
-| `Modal` | `@greater/primitives/Modal` | Improved focus management |
-| `Dropdown` | `@greater/primitives/Menu` | More keyboard navigation features |
-| `Avatar` | `@greater/primitives/Avatar` | Enhanced fallback handling |
-| `Skeleton` | `@greater/primitives/Skeleton` | Improved animation options |
+| `Button` | `@equaltoai/greater-components-primitives/Button` | Similar API, enhanced accessibility |
+| `Modal` | `@equaltoai/greater-components-primitives/Modal` | Improved focus management |
+| `Dropdown` | `@equaltoai/greater-components-primitives/Menu` | More keyboard navigation features |
+| `Avatar` | `@equaltoai/greater-components-primitives/Avatar` | Enhanced fallback handling |
+| `Skeleton` | `@equaltoai/greater-components-primitives/Skeleton` | Improved animation options |
 
 **Migration Steps:**
 
 1. **Install Greater Components**
    ```bash
-   npm install @greater/primitives @greater/tokens @greater/icons
+   npm install @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens @equaltoai/greater-components-icons
    npm uninstall flowbite-svelte
    ```
 
@@ -45,7 +45,7 @@ Flowbite Svelte users can migrate to Greater Components with these mappings:
    
    <!-- After (Greater Components) -->
    <script>
-     import { Button, Modal } from '@greater/primitives';
+     import { Button, Modal } from '@equaltoai/greater-components-primitives';
    </script>
    ```
 
@@ -64,16 +64,16 @@ SvelteUI users can migrate with these component mappings:
 
 | SvelteUI Component | Greater Components Equivalent | Notes |
 |-------------------|-------------------------------|-------|
-| `Button` | `@greater/primitives/Button` | Enhanced loading states |
-| `TextInput` | `@greater/primitives/TextField` | Improved validation handling |
-| `Modal` | `@greater/primitives/Modal` | Better backdrop management |
-| `Menu` | `@greater/primitives/Menu` | More comprehensive keyboard support |
+| `Button` | `@equaltoai/greater-components-primitives/Button` | Enhanced loading states |
+| `TextInput` | `@equaltoai/greater-components-primitives/TextField` | Improved validation handling |
+| `Modal` | `@equaltoai/greater-components-primitives/Modal` | Better backdrop management |
+| `Menu` | `@equaltoai/greater-components-primitives/Menu` | More comprehensive keyboard support |
 
 **Migration Steps:**
 
 1. **Install Greater Components**
    ```bash
-   npm install @greater/primitives @greater/tokens @greater/icons
+   npm install @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens @equaltoai/greater-components-icons
    npm uninstall @svelteuidev/core
    ```
 
@@ -96,16 +96,16 @@ Carbon users can migrate to Greater Components:
 
 | Carbon Component | Greater Components Equivalent | Notes |
 |------------------|-------------------------------|-------|
-| `Button` | `@greater/primitives/Button` | Different size names |
-| `Modal` | `@greater/primitives/Modal` | Enhanced accessibility |
-| `TextInput` | `@greater/primitives/TextField` | Simplified validation API |
-| `Tabs` | `@greater/primitives/Tabs` | Improved keyboard navigation |
+| `Button` | `@equaltoai/greater-components-primitives/Button` | Different size names |
+| `Modal` | `@equaltoai/greater-components-primitives/Modal` | Enhanced accessibility |
+| `TextInput` | `@equaltoai/greater-components-primitives/TextField` | Simplified validation API |
+| `Tabs` | `@equaltoai/greater-components-primitives/Tabs` | Improved keyboard navigation |
 
 **Migration Steps:**
 
 1. **Install Greater Components**
    ```bash
-   npm install @greater/primitives @greater/tokens @greater/icons
+   npm install @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens @equaltoai/greater-components-icons
    npm uninstall carbon-components-svelte
    ```
 
@@ -115,7 +115,7 @@ Carbon users can migrate to Greater Components:
    @import 'carbon-components-svelte/css/white.css';
    
    /* After (Greater Components) */
-   @import '@greater/tokens/theme.css';
+   @import '@equaltoai/greater-components-tokens/theme.css';
    ```
 
 ## Version Upgrades
@@ -160,14 +160,14 @@ Greater Components provides automated migration tools for common scenarios:
 
 ```bash
 # Install the migration tool
-npm install -g @greater/codemod
+npm install -g @equaltoai/codemod
 
 # Run migration for specific changes
-npx @greater/codemod migrate --from=flowbite-svelte --to=greater-components
-npx @greater/codemod migrate --from=svelteui --to=greater-components
+npx @equaltoai/codemod migrate --from=flowbite-svelte --to=greater-components
+npx @equaltoai/codemod migrate --from=svelteui --to=greater-components
 
 # Migrate specific files
-npx @greater/codemod migrate src/**/*.svelte --transform=button-props
+npx @equaltoai/codemod migrate src/**/*.svelte --transform=button-props
 ```
 
 **Available Transforms:**
@@ -183,10 +183,10 @@ Add ESLint rules to catch deprecated patterns:
 ```javascript
 // .eslintrc.js
 module.exports = {
-  extends: ['@greater/eslint-config'],
+  extends: ['@equaltoai/eslint-config'],
   rules: {
-    '@greater/no-deprecated-props': 'error',
-    '@greater/prefer-new-api': 'warn'
+    '@equaltoai/no-deprecated-props': 'error',
+    '@equaltoai/prefer-new-api': 'warn'
   }
 };
 ```
@@ -202,7 +202,7 @@ Most UI libraries have different theming approaches. Here's how to migrate to Gr
 /* Remove: @import 'old-library/theme.css'; */
 
 /* Step 2: Import Greater Components theme */
-@import '@greater/tokens/theme.css';
+@import '@equaltoai/greater-components-tokens/theme.css';
 
 /* Step 3: Customize with CSS custom properties */
 :root {
@@ -241,7 +241,7 @@ Common prop name changes:
 import { render, fireEvent } from '@testing-library/svelte';
 
 // After
-import { render, fireEvent } from '@greater/testing';
+import { render, fireEvent } from '@equaltoai/greater-components-testing';
 ```
 
 ### Accessibility Testing
@@ -249,7 +249,7 @@ import { render, fireEvent } from '@greater/testing';
 Greater Components includes enhanced accessibility testing:
 
 ```javascript
-import { checkA11y } from '@greater/testing';
+import { checkA11y } from '@equaltoai/greater-components-testing';
 
 test('component accessibility', async () => {
   const { container } = render(MyComponent);

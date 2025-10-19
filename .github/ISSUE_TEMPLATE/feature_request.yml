@@ -50,13 +50,13 @@ body:
       label: Target Package
       description: Which package would this feature belong to?
       options:
-        - "@greater/primitives"
-        - "@greater/fediverse"  
-        - "@greater/tokens"
-        - "@greater/icons"
-        - "@greater/utils"
-        - "@greater/adapters"
-        - "@greater/testing"
+        - "@equaltoai/greater-components-primitives"
+        - "@equaltoai/greater-components-fediverse"  
+        - "@equaltoai/greater-components-tokens"
+        - "@equaltoai/greater-components-icons"
+        - "@equaltoai/greater-components-utils"
+        - "@equaltoai/greater-components-adapters"
+        - "@equaltoai/greater-components-testing"
         - "New package"
         - "Multiple packages"
     validations:

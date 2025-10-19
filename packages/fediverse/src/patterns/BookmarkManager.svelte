@@ -16,7 +16,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createMenu } from '@greater/headless/menu';
+	import { createMenu } from '@equaltoai/greater-components-headless/menu';
 	import type { Status } from '../types.js';
 
 	export interface Bookmark {

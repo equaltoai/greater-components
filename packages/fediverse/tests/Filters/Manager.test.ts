@@ -13,11 +13,11 @@
 import { describe, it, expect, vi } from 'vitest';
 
 // Mock headless UI dependencies
-vi.mock('@greater/headless/button', () => ({
+vi.mock('@equaltoai/greater-components-headless/button', () => ({
 	createButton: () => ({ actions: { button: {}} }),
 }));
 
-vi.mock('@greater/headless/modal', () => ({
+vi.mock('@equaltoai/greater-components-headless/modal', () => ({
 	createModal: () => ({ actions: { backdrop: {}, content: {}, close: {} } }),
 }));
 

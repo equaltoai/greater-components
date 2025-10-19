@@ -16,20 +16,48 @@ import type {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
-const isUnifiedAccountRecord = (value: unknown): value is UnifiedAccount =>
-  isRecord(value) && typeof value.id === 'string' && typeof value.username === 'string';
+const isUnifiedAccountRecord = (value: unknown): value is UnifiedAccount => {
+  if (!isRecord(value)) {
+    return false;
+  }
 
-const isUnifiedStatusRecord = (value: unknown): value is UnifiedStatus =>
-  isRecord(value) &&
-  typeof value.id === 'string' &&
-  typeof value.content === 'string' &&
-  isUnifiedAccountRecord(value.account);
+  const id = value['id'];
+  const username = value['username'];
 
-const isUnifiedNotificationRecord = (value: unknown): value is UnifiedNotification =>
-  isRecord(value) &&
-  typeof value.id === 'string' &&
-  typeof value.type === 'string' &&
-  isUnifiedAccountRecord(value.account);
+  return typeof id === 'string' && typeof username === 'string';
+};
+
+const isUnifiedStatusRecord = (value: unknown): value is UnifiedStatus => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const id = value['id'];
+  const content = value['content'];
+  const account = value['account'];
+
+  return (
+    typeof id === 'string' &&
+    typeof content === 'string' &&
+    isUnifiedAccountRecord(account)
+  );
+};
+
+const isUnifiedNotificationRecord = (value: unknown): value is UnifiedNotification => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  const id = value['id'];
+  const type = value['type'];
+  const account = value['account'];
+
+  return (
+    typeof id === 'string' &&
+    typeof type === 'string' &&
+    isUnifiedAccountRecord(account)
+  );
+};
 
 // Streaming operation types
 export type StreamingOperation = 
@@ -203,12 +231,22 @@ export class StreamingOperationsManager {
       return `delete-${operation.itemType}-${operation.id}`;
     }
     if ('type' in operation && 'payload' in operation) {
-      if (isRecord(operation.payload) && 'id' in operation.payload && typeof operation.payload.id === 'string') {
-        return `${operation.type || 'unknown'}-${operation.payload.id}`;
+      const rawType = operation['type'];
+      const operationType = typeof rawType === 'string' && rawType.length > 0 ? rawType : 'unknown';
+      const payload = operation['payload'];
+
+      if (isRecord(payload)) {
+        const payloadId = payload['id'];
+        if (typeof payloadId === 'string') {
+          return `${operationType}-${payloadId}`;
+        }
       }
-      return `${operation.type || 'unknown'}-${operation.timestamp}`;
+
+      const timestamp = typeof operation['timestamp'] === 'number' ? operation['timestamp'] : Date.now();
+      return `${operationType}-${timestamp}`;
     }
-    return `unknown-${operation.timestamp}`;
+    const timestamp = typeof operation['timestamp'] === 'number' ? operation['timestamp'] : Date.now();
+    return `unknown-${timestamp}`;
   }
 
   /**
@@ -259,7 +297,8 @@ export class StreamingOperationsManager {
             try {
               await handler.handle(operation);
               if ('timestamp' in operation) {
-                this.state.lastEventTime = operation.timestamp;
+                const timestamp = typeof operation['timestamp'] === 'number' ? operation['timestamp'] : Date.now();
+                this.state.lastEventTime = timestamp;
               }
             } catch (error) {
               console.error(`Failed to handle streaming operation ${type}:`, error);
@@ -283,7 +322,8 @@ export class StreamingOperationsManager {
       return 'edit';
     }
     if ('type' in operation) {
-      return operation.type || 'update';
+      const rawType = operation['type'];
+      return typeof rawType === 'string' && rawType.length > 0 ? rawType : 'update';
     }
     return 'update';
   }

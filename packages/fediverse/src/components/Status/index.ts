@@ -7,7 +7,7 @@
  * @example Basic usage
  * ```svelte
  * <script>
- *   import { Status } from '@greater/fediverse';
+ *   import { Status } from '@equaltoai/greater-components-fediverse';
  *   
  *   const post = {
  *     id: '123',
@@ -51,7 +51,7 @@
  * </Status.Root>
  * ```
  * 
- * @module @greater/fediverse/Status
+ * @module @equaltoai/greater-components-fediverse/Status
  */
 
 import StatusRoot from './Root.svelte';

@@ -4,8 +4,8 @@
  */
 
 import { Page, expect } from '@playwright/test';
-import { injectAxe, configureAxe } from 'axe-playwright';
-import type { AxeResults, RunOptions } from 'axe-core';
+import { injectAxe } from 'axe-playwright';
+import type { AxeResults, ContextObject, RunOptions } from 'axe-core';
 import {
   defaultAxeConfig,
   strictAxeConfig,
@@ -15,20 +15,27 @@ import {
   type AxeTestOptions,
 } from '../a11y/axe-helpers';
 
-interface WindowWithAxe extends Window {
-  axe: {
-    run: (options?: RunOptions) => Promise<AxeResults>;
+function cloneRunOptions(source: RunOptions): RunOptions {
+  return {
+    ...source,
+    rules: source.rules ? { ...source.rules } : undefined,
+    resultTypes: source.resultTypes ? [...source.resultTypes] : undefined,
   };
 }
 
-type AxeEvalOptions = Pick<RunOptions, 'include' | 'exclude'>;
+function mergeAxeConfigs(base: RunOptions, overrides?: AxeTestOptions | RunOptions): RunOptions {
+  if (!overrides) return base;
 
-function mergeAxeConfigs(base: RunOptions, overrides: AxeTestOptions | RunOptions): RunOptions {
   return {
     ...base,
     ...overrides,
     rules: { ...(base.rules ?? {}), ...(overrides.rules ?? {}) },
     runOnly: overrides.runOnly ?? base.runOnly,
+    resultTypes: overrides.resultTypes
+      ? [...overrides.resultTypes]
+      : base.resultTypes
+        ? [...base.resultTypes]
+        : undefined,
   };
 }
 
@@ -42,59 +49,66 @@ export interface PlaywrightAxeOptions {
   disableRules?: string[];
 }
 
-/**
- * Setup axe for a Playwright page
- */
-export async function setupAxe(page: Page, options: PlaywrightAxeOptions = {}): Promise<void> {
-  await injectAxe(page);
-  
-  // Get configuration based on options
+function createAxeContext(include?: string[], exclude?: string[]): ContextObject | undefined {
+  if (!include && !exclude) return undefined;
+
+  if (include && exclude) {
+    return {
+      include,
+      exclude,
+    } as ContextObject;
+  }
+
+  if (include) {
+    return {
+      include,
+    } as ContextObject;
+  }
+
+  return {
+    exclude: exclude!,
+  } as ContextObject;
+}
+
+function createRunOptions(options: PlaywrightAxeOptions): RunOptions {
   const baseConfig = options.standard === 'AAA' ? strictAxeConfig : defaultAxeConfig;
-  let config: RunOptions = {
-    ...baseConfig,
-    rules: baseConfig.rules ? { ...baseConfig.rules } : undefined,
-    runOnly: baseConfig.runOnly ? { ...baseConfig.runOnly } : undefined,
-    resultTypes: baseConfig.resultTypes,
-    reporter: baseConfig.reporter,
-    selectors: baseConfig.selectors,
-    ancestry: baseConfig.ancestry,
-    xpath: baseConfig.xpath,
-    absolutePaths: baseConfig.absolutePaths,
-    iframes: baseConfig.iframes,
-    elementRef: baseConfig.elementRef,
-    frameWaitTime: baseConfig.frameWaitTime,
-    preload: baseConfig.preload,
-    performanceTimer: baseConfig.performanceTimer,
-  };
-  
-  // Apply theme-specific config
+  let runOptions = cloneRunOptions(baseConfig);
+
   if (options.theme && themeConfigs[options.theme]) {
-    config = mergeAxeConfigs(config, themeConfigs[options.theme]);
+    runOptions = mergeAxeConfigs(runOptions, themeConfigs[options.theme]);
   }
-  
-  // Apply density-specific config
+
   if (options.density && densityConfigs[options.density]) {
-    config = mergeAxeConfigs(config, densityConfigs[options.density]);
+    runOptions = mergeAxeConfigs(runOptions, densityConfigs[options.density]);
   }
-  
-  // Disable specific rules if requested
+
   if (options.disableRules?.length) {
-    const updatedRules = { ...(config.rules ?? {}) };
-    options.disableRules.forEach((rule) => {
+    const updatedRules = { ...(runOptions.rules ?? {}) };
+    for (const rule of options.disableRules) {
       updatedRules[rule] = { enabled: false };
-    });
-    config.rules = updatedRules;
+    }
+    runOptions.rules = updatedRules;
   }
-  
-  // Configure custom tags if provided
+
   if (options.tags) {
-    config.runOnly = {
+    runOptions.runOnly = {
       type: 'tag',
       values: options.tags,
     };
   }
-  
-  await configureAxe(page, config);
+
+  return runOptions;
+}
+
+/**
+ * Setup axe for a Playwright page
+ */
+export async function setupAxe(
+  page: Page,
+  options: PlaywrightAxeOptions = {}
+): Promise<RunOptions> {
+  await injectAxe(page);
+  return createRunOptions(options);
 }
 
 /**
@@ -102,20 +116,26 @@ export async function setupAxe(page: Page, options: PlaywrightAxeOptions = {}): 
  */
 export async function runAxeTest(
   page: Page, 
-  options: PlaywrightAxeOptions = {}
+  options: PlaywrightAxeOptions = {},
+  presetRunOptions?: RunOptions
 ): Promise<AxeResults> {
-  await setupAxe(page, options);
-  
-  return page.evaluate<AxeResults, AxeEvalOptions>(async (evalOptions) => {
-    const axeWindow = window as unknown as WindowWithAxe;
-    return axeWindow.axe.run({
-      include: evalOptions.include,
-      exclude: evalOptions.exclude,
-    });
-  }, {
-    include: options.include,
-    exclude: options.exclude,
-  });
+  const runOptions = presetRunOptions ?? (await setupAxe(page, options));
+  const context = createAxeContext(options.include, options.exclude);
+
+  const payload = {
+    context: context ?? null,
+    options: runOptions,
+  };
+
+  const results = await page.evaluate<any, any>(
+    async ({ context, options: evalOptions }: { context: unknown; options: unknown }) => {
+      const axeWindow = window as any;
+      return axeWindow.axe.run(context ?? undefined, evalOptions);
+    },
+    payload as any
+  );
+
+  return results as AxeResults;
 }
 
 /**
@@ -136,9 +156,8 @@ export async function checkAccessibility(
     ...axeOptions
   } = options;
   
-  await setupAxe(page, axeOptions);
-  
-  const results = await runAxeTest(page, axeOptions);
+  const runOptions = await setupAxe(page, axeOptions);
+  const results = await runAxeTest(page, axeOptions, runOptions);
   
   if (detailedReport) {
     const formatted = formatAxeResults(results);

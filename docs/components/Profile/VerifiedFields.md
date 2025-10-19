@@ -1,7 +1,7 @@
 # Profile.VerifiedFields
 
 **Component**: Verified Profile Fields Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 24 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const fields = [
     { 
@@ -94,8 +94,8 @@ Display fields with verification indicators:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -194,8 +194,8 @@ Show verification status and allow re-verification:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   let fields = $state<ProfileField[]>([
     { name: 'Website', value: 'https://alice.dev', verifiedAt: '2024-01-15' },
@@ -412,8 +412,8 @@ Show different icons for verification states:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   interface FieldWithStatus extends ProfileField {
     status: 'verified' | 'pending' | 'failed' | 'unverified';
@@ -819,8 +819,8 @@ Allow verifying multiple fields at once:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   let fields = $state<ProfileField[]>([
     { name: 'Website', value: 'https://alice.dev' },
@@ -1128,7 +1128,7 @@ const verificationLimit = new RateLimiter({
 ```typescript
 import { render, screen } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { VerifiedFields } from '@greater/fediverse/Profile';
+import { VerifiedFields } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('VerifiedFields', () => {
   it('displays verification badges for verified fields', () => {

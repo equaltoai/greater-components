@@ -1,5 +1,6 @@
 {
-  "name": "@greater/icons",
+  "name": "@equaltoai/greater-components-icons",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "description": "Icon components for Greater Components",
@@ -25,6 +26,9 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "node scripts/build.js && vite build",
     "dev": "node scripts/build.js --watch",

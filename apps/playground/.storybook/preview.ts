@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/svelte';
-import '@greater/tokens/theme.css';
-import '@greater/primitives/styles.css';
+import '@equaltoai/greater-components-tokens/theme.css';
+import '@equaltoai/greater-components-primitives/styles.css';
 
 const preview: Preview = {
   parameters: {

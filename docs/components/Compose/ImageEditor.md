@@ -1,7 +1,7 @@
 # Compose.ImageEditor
 
 **Component**: Image Metadata Editor  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let imageFile = $state(null);
   let showEditor = $state(false);
@@ -101,7 +101,7 @@ Simple image editor with focal point and alt text:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let images = $state([]);
   let editingImage = $state(null);
@@ -196,7 +196,7 @@ Validate alt text quality:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let editingImage = $state(null);
   let altTextQuality = $state({ score: 0, suggestions: [] });
@@ -325,7 +325,7 @@ Adjust focal point with arrow keys:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let editingImage = $state(null);
   let focalPoint = $state({ x: 0.5, y: 0.5 });
@@ -408,7 +408,7 @@ Edit multiple images in sequence:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let images = $state([]);
   let currentIndex = $state(0);
@@ -511,7 +511,7 @@ Generate alt text suggestions using AI:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let editingImage = $state(null);
   let aiSuggestions = $state([]);
@@ -670,7 +670,7 @@ Show how the image will look with the focal point:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let editingImage = $state(null);
   let focalPoint = $state({ x: 0.5, y: 0.5 });
@@ -862,7 +862,7 @@ Provide guidelines for good alt text:
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 describe('ImageEditor', () => {
   const mockFile = {

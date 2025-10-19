@@ -197,13 +197,30 @@ type KnownStreamingMessage =
 	| { event: 'delete'; payload: string; stream?: string }
 	| { event: 'notification'; payload: Notification; stream?: string };
 
-export type StreamingMessage =
-	| KnownStreamingMessage
-	| {
-			event: string;
-			payload?: unknown;
-			stream?: string;
-	  };
+type UnknownStreamingMessage = {
+	event: Exclude<string, KnownStreamingMessage['event']>;
+	payload?: unknown;
+	stream?: string;
+};
+
+export type StreamingMessage = KnownStreamingMessage | UnknownStreamingMessage;
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+	typeof value === 'object' && value !== null;
+
+const hasStringId = (value: unknown): value is { id: string } => {
+	if (!isRecord(value)) {
+		return false;
+	}
+	const id = value['id'];
+	return typeof id === 'string';
+};
+
+const isStatusPayload = (payload: unknown): payload is Status =>
+	hasStringId(payload) && 'account' in payload;
+
+const isNotificationPayload = (payload: unknown): payload is Notification =>
+	hasStringId(payload) && 'type' in payload;
 
 type TransportEventHandler<T extends TransportEventType> = (data: TransportEventMap[T]) => void;
 type HandlerEntry<T extends TransportEventType = TransportEventType> = Set<TransportEventHandler<T>>;
@@ -629,7 +646,7 @@ export class TransportManager {
 
 		const headers: Record<string, string> = {};
 		if (this.config.accessToken) {
-			headers.Authorization = `Bearer ${this.config.accessToken}`;
+			headers['Authorization'] = `Bearer ${this.config.accessToken}`;
 		}
 
 		const response = await fetch(url.toString(), { headers });
@@ -658,7 +675,7 @@ export class TransportManager {
 
 		const headers: Record<string, string> = {};
 		if (this.config.accessToken) {
-			headers.Authorization = `Bearer ${this.config.accessToken}`;
+			headers['Authorization'] = `Bearer ${this.config.accessToken}`;
 		}
 
 		const response = await fetch(url.toString(), { headers });
@@ -681,18 +698,24 @@ export class TransportManager {
 	private handleStreamingMessage(message: StreamingMessage): void {
 		switch (message.event) {
 			case 'update':
-				if (message.payload) {
+				if (isStatusPayload(message.payload)) {
 					this.emit('status.update', message.payload);
+				} else if (message.payload !== undefined) {
+					this.logger.debug('Discarding update message with unexpected payload', message.payload);
 				}
 				break;
 			case 'delete':
-				if (message.payload) {
+				if (typeof message.payload === 'string' && message.payload.length > 0) {
 					this.emit('status.delete', { id: message.payload });
+				} else if (message.payload !== undefined) {
+					this.logger.debug('Discarding delete message with unexpected payload', message.payload);
 				}
 				break;
 			case 'notification':
-				if (message.payload) {
+				if (isNotificationPayload(message.payload)) {
 					this.emit('notification.new', message.payload);
+				} else if (message.payload !== undefined) {
+					this.logger.debug('Discarding notification with unexpected payload', message.payload);
 				}
 				break;
 			default:

@@ -1,7 +1,7 @@
 # Lesser ⇄ Greater Components Alignment Report
 
 > **Authority:** Lesser backend specification  
-> **Objective:** Ensure `@greater/fediverse` and related packages deliver 100% feature parity and schema alignment with the current Lesser implementation.
+> **Objective:** Ensure `@equaltoai/greater-components-fediverse` and related packages deliver 100% feature parity and schema alignment with the current Lesser implementation.
 
 ---
 

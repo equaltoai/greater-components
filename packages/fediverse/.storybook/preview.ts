@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/svelte';
-import '@greater/tokens/dist/index.css'; // Import design tokens
+import '@equaltoai/greater-components-tokens/dist/index.css'; // Import design tokens
 
 const preview: Preview = {
   parameters: {

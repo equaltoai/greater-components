@@ -167,8 +167,8 @@ import {
   mapLesserPost,
   createTimelineStore,
   unifiedStatusToTimelineItem
-} from '@greater/adapters';
-import { Status } from '@greater/fediverse';
+} from '@equaltoai/greater-components-adapters';
+import { Status } from '@equaltoai/greater-components-fediverse';
 
 // 1. Fetch from Lesser GraphQL API
 const graphqlResponse = await lesserAPI.query(TimelineDocument);

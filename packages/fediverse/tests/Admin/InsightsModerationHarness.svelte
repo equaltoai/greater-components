@@ -1,7 +1,7 @@
 <script lang="ts">
   import InsightsModerationAnalytics from '../../src/components/Admin/Insights/ModerationAnalytics.svelte';
   import { createInsightsContext } from '../../src/components/Admin/Insights/context.js';
-  import type { LesserGraphQLAdapter } from '@greater/adapters';
+  import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
   let {
     adapter,

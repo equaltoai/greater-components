@@ -1,7 +1,7 @@
 # Profile.FollowRequests
 
 **Component**: Follow Request Management  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 26 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const requests = [
     {
@@ -122,8 +122,8 @@ Full-featured follow request management:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FollowRequest } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FollowRequest } from '@equaltoai/greater-components-fediverse/Profile';
 
   let requests = $state<FollowRequest[]>([
     {
@@ -309,8 +309,8 @@ Show detailed account information in requests:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FollowRequest } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FollowRequest } from '@equaltoai/greater-components-fediverse/Profile';
 
   const requests: FollowRequest[] = [
     {
@@ -625,8 +625,8 @@ Implement batch approval/rejection:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FollowRequest } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FollowRequest } from '@equaltoai/greater-components-fediverse/Profile';
 
   let requests = $state<FollowRequest[]>([
     {
@@ -1234,8 +1234,8 @@ Implement real-time request notifications:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { FollowRequest } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { FollowRequest } from '@equaltoai/greater-components-fediverse/Profile';
   import { onMount } from 'svelte';
 
   let requests = $state<FollowRequest[]>([]);
@@ -1420,7 +1420,7 @@ await db.auditLogs.create({
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { FollowRequests } from '@greater/fediverse/Profile';
+import { FollowRequests } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('FollowRequests', () => {
   it('displays follow requests', () => {

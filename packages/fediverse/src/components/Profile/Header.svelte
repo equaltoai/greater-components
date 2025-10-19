@@ -13,8 +13,8 @@
   ```
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
-	import { sanitizeHtml } from '@greater/utils';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import { getProfileContext, getRelationshipText } from './context.js';
 
 	interface Props {

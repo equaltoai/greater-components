@@ -8,7 +8,7 @@
  * 
  * @example
  * ```svelte
- * import * as Admin from '@greater/fediverse/Admin';
+ * import * as Admin from '@equaltoai/greater-components-fediverse/Admin';
  * 
  * <Admin.Root {handlers}>
  *   <Admin.Overview />
