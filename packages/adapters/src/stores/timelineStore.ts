@@ -14,8 +14,8 @@ import type {
 } from './types';
 import { unifiedStatusToTimelineItem } from './unifiedToTimeline.js';
 import { mapLesserObject } from '../mappers/lesser/mappers.js';
+import { convertGraphQLObjectToLesser } from '../mappers/lesser/graphqlConverters.js';
 import type { UnifiedStatus } from '../models/unified.js';
-import type { LesserObjectFragment } from '../mappers/lesser/types.js';
 import type { WebSocketEvent } from '../types.js';
 import type {
   TimelineUpdatesSubscription,
@@ -101,10 +101,20 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
   let updateDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   let pendingUpdates: StreamingEdit[] = [];
 
+  const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null;
+
+  const convertTimelineObject = (object: TimelineObjectLike) => convertGraphQLObjectToLesser(object);
+
   function mapTimelineObject(object: TimelineObjectLike | null | undefined): UnifiedStatus | null {
     if (!object) return null;
 
-    const result = mapLesserObject(object as LesserObjectFragment);
+    const lesserObject = convertTimelineObject(object);
+    if (!lesserObject) {
+      return null;
+    }
+
+    const result = mapLesserObject(lesserObject);
     if (!result.success || !result.data) {
       if (result.error) {
         console.warn('[TimelineStore] Failed to map Lesser timeline object', result.error);
@@ -351,33 +361,154 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
       const itemIndex = current.items.findIndex(item => item.id === edit.itemId);
       let newItems = [...current.items];
 
+      const buildTimelineItem = (
+        itemId: string,
+        timestamp: number,
+        itemType: string,
+        content: unknown,
+        metadata: TimelineItem['metadata'] | undefined,
+        version: number | undefined,
+        isOptimistic: boolean | undefined
+      ): TimelineItem => {
+        const item: TimelineItem = {
+          id: itemId,
+          type: itemType,
+          timestamp,
+          content
+        };
+
+        if (typeof metadata !== 'undefined') {
+          item.metadata = metadata;
+        }
+
+        if (typeof version !== 'undefined') {
+          item.version = version;
+        }
+
+        if (typeof isOptimistic === 'boolean') {
+          item.isOptimistic = isOptimistic;
+        }
+
+        return item;
+      };
+
       switch (edit.type) {
-        case 'add':
-          if (edit.data && itemIndex === -1) {
-            const newItem: TimelineItem = {
-              id: edit.itemId,
-              type: edit.data.type || 'default',
-              timestamp: edit.timestamp,
-              content: edit.data.content,
-              metadata: edit.data.metadata,
-              version: edit.data.version,
-              isOptimistic: false
-            };
+        case 'add': {
+          if (itemIndex === -1 && isRecord(edit.data)) {
+            if (!Object.prototype.hasOwnProperty.call(edit.data, 'content')) {
+              break;
+            }
+
+            const typeValue = edit.data['type'];
+            const contentValue = edit.data['content'];
+            const optimisticValue = edit.data['isOptimistic'];
+
+            const metadataProvided = Object.prototype.hasOwnProperty.call(edit.data, 'metadata');
+            let metadata: TimelineItem['metadata'] | undefined;
+            if (metadataProvided) {
+              const rawMetadata = edit.data['metadata'];
+              if (rawMetadata === null || rawMetadata === undefined) {
+                metadata = undefined;
+              } else if (isRecord(rawMetadata)) {
+                metadata = rawMetadata as TimelineItem['metadata'];
+              } else {
+                break;
+              }
+            }
+
+            const versionProvided = Object.prototype.hasOwnProperty.call(edit.data, 'version');
+            let version: number | undefined;
+            if (versionProvided) {
+              const rawVersion = edit.data['version'];
+              if (rawVersion === null || rawVersion === undefined) {
+                version = undefined;
+              } else if (typeof rawVersion === 'number') {
+                version = rawVersion;
+              } else {
+                break;
+              }
+            }
+
+            const typeString = typeof typeValue === 'string' ? typeValue : 'default';
+            const isOptimistic = typeof optimisticValue === 'boolean' ? optimisticValue : false;
+            const effectiveMetadata = metadataProvided ? metadata : undefined;
+            const effectiveVersion = versionProvided ? version : undefined;
+
+            const newItem = buildTimelineItem(
+              edit.itemId,
+              edit.timestamp,
+              typeString,
+              contentValue,
+              effectiveMetadata,
+              effectiveVersion,
+              isOptimistic
+            );
+
             newItems.push(newItem);
           }
           break;
+        }
 
-        case 'replace':
-          if (edit.data && itemIndex !== -1) {
-            const updatedItem: TimelineItem = {
-              ...newItems[itemIndex],
-              ...edit.data,
-              id: edit.itemId, // Preserve ID
-              timestamp: edit.timestamp // Update timestamp
-            };
+        case 'replace': {
+          if (itemIndex !== -1 && isRecord(edit.data)) {
+            const currentItem = newItems[itemIndex];
+            if (!currentItem) {
+              break;
+            }
+            const typeValue = edit.data['type'];
+            const contentProvided = Object.prototype.hasOwnProperty.call(edit.data, 'content');
+            const metadataProvided = Object.prototype.hasOwnProperty.call(edit.data, 'metadata');
+            const versionProvided = Object.prototype.hasOwnProperty.call(edit.data, 'version');
+            const optimisticProvided = Object.prototype.hasOwnProperty.call(edit.data, 'isOptimistic');
+
+            let metadata: TimelineItem['metadata'] | undefined;
+            if (metadataProvided) {
+              const rawMetadata = edit.data['metadata'];
+              if (rawMetadata === null || rawMetadata === undefined) {
+                metadata = undefined;
+              } else if (isRecord(rawMetadata)) {
+                metadata = rawMetadata as TimelineItem['metadata'];
+              } else {
+                break;
+              }
+            }
+
+            let version: number | undefined;
+            if (versionProvided) {
+              const rawVersion = edit.data['version'];
+              if (rawVersion === null || rawVersion === undefined) {
+                version = undefined;
+              } else if (typeof rawVersion === 'number') {
+                version = rawVersion;
+              } else {
+                break;
+              }
+            }
+
+            const nextType = typeof typeValue === 'string' ? typeValue : currentItem.type;
+            const nextContent = contentProvided ? edit.data['content'] : currentItem.content;
+            const nextMetadata = metadataProvided ? metadata : currentItem.metadata;
+            const nextVersion = versionProvided ? version : currentItem.version;
+            const rawOptimistic = optimisticProvided ? edit.data['isOptimistic'] : currentItem.isOptimistic;
+            const nextIsOptimistic =
+              optimisticProvided && typeof rawOptimistic !== 'boolean'
+                ? undefined
+                : (rawOptimistic as boolean | undefined);
+
+            const updatedItem = buildTimelineItem(
+              edit.itemId,
+              edit.timestamp,
+              nextType,
+              nextContent,
+              nextMetadata,
+              typeof nextVersion === 'number' ? nextVersion : undefined,
+              nextIsOptimistic ?? currentItem.isOptimistic
+            );
+
             newItems[itemIndex] = updatedItem;
           }
           break;
+        }
 
         case 'delete':
           if (itemIndex !== -1) {

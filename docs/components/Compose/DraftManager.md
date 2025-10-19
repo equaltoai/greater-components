@@ -1,7 +1,7 @@
 # Compose Utilities: DraftManager
 
 **Module**: Draft Management Utility  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Export**: `Compose.DraftManager` or direct imports
 
 ---
@@ -24,7 +24,7 @@ The `DraftManager` utility provides a comprehensive API for managing compose dra
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -72,7 +72,7 @@ function isLocalStorageAvailable(): boolean
 
 **Example**:
 ```typescript
-import { isLocalStorageAvailable } from '@greater/fediverse/Compose';
+import { isLocalStorageAvailable } from '@equaltoai/greater-components-fediverse/Compose';
 
 if (isLocalStorageAvailable()) {
   console.log('localStorage is available');
@@ -102,7 +102,7 @@ function saveDraft(
 
 **Example**:
 ```typescript
-import { saveDraft } from '@greater/fediverse/Compose';
+import { saveDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 const draft = {
   content: 'This is my draft post...',
@@ -132,7 +132,7 @@ function loadDraft(key: string = 'default'): Draft | null
 
 **Example**:
 ```typescript
-import { loadDraft } from '@greater/fediverse/Compose';
+import { loadDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 const draft = loadDraft('main-composer');
 if (draft) {
@@ -158,7 +158,7 @@ function deleteDraft(key: string = 'default'): boolean
 
 **Example**:
 ```typescript
-import { deleteDraft } from '@greater/fediverse/Compose';
+import { deleteDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 if (deleteDraft('main-composer')) {
   console.log('Draft deleted');
@@ -179,7 +179,7 @@ function listDrafts(): string[]
 
 **Example**:
 ```typescript
-import { listDrafts } from '@greater/fediverse/Compose';
+import { listDrafts } from '@equaltoai/greater-components-fediverse/Compose';
 
 const keys = listDrafts();
 console.log(`Found ${keys.length} draft(s):`, keys);
@@ -200,7 +200,7 @@ function cleanupOldDrafts(): number
 
 **Example**:
 ```typescript
-import { cleanupOldDrafts } from '@greater/fediverse/Compose';
+import { cleanupOldDrafts } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Run on app initialization
 const deleted = cleanupOldDrafts();
@@ -226,7 +226,7 @@ function hasDraft(key: string = 'default'): boolean
 
 **Example**:
 ```typescript
-import { hasDraft } from '@greater/fediverse/Compose';
+import { hasDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 if (hasDraft('main-composer')) {
   // Show "Load Draft" button
@@ -250,7 +250,7 @@ function getDraftAge(key: string = 'default'): number | null
 
 **Example**:
 ```typescript
-import { getDraftAge } from '@greater/fediverse/Compose';
+import { getDraftAge } from '@equaltoai/greater-components-fediverse/Compose';
 
 const age = getDraftAge('main-composer');
 if (age) {
@@ -276,7 +276,7 @@ function formatDraftAge(key: string = 'default'): string | null
 
 **Example**:
 ```typescript
-import { formatDraftAge } from '@greater/fediverse/Compose';
+import { formatDraftAge } from '@equaltoai/greater-components-fediverse/Compose';
 
 const formatted = formatDraftAge('main-composer');
 console.log(formatted); // "5 minutes ago"
@@ -291,7 +291,7 @@ console.log(formatted); // "5 minutes ago"
 Simple save/load/delete operations:
 
 ```typescript
-import { saveDraft, loadDraft, deleteDraft } from '@greater/fediverse/Compose';
+import { saveDraft, loadDraft, deleteDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Save a draft
 const draft = {
@@ -315,7 +315,7 @@ deleteDraft('my-post');
 Implement auto-save with debouncing to avoid excessive localStorage writes:
 
 ```typescript
-import { saveDraft } from '@greater/fediverse/Compose';
+import { saveDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 let autoSaveTimeout: ReturnType<typeof setTimeout>;
 
@@ -345,7 +345,7 @@ editor.addEventListener('input', (e) => {
 Show recovery prompt if unsaved draft exists:
 
 ```typescript
-import { hasDraft, loadDraft, getDraftAge, deleteDraft } from '@greater/fediverse/Compose';
+import { hasDraft, loadDraft, getDraftAge, deleteDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 function checkForDrafts() {
   if (!hasDraft('main')) return;
@@ -389,7 +389,7 @@ window.addEventListener('DOMContentLoaded', checkForDrafts);
 Manage drafts for multiple composers:
 
 ```typescript
-import { saveDraft, loadDraft, listDrafts, deleteDraft } from '@greater/fediverse/Compose';
+import { saveDraft, loadDraft, listDrafts, deleteDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 class DraftRegistry {
   private composers = new Map<string, any>();
@@ -443,7 +443,7 @@ registry.registerComposer('reply', replyComposer);
 Listen for draft changes from other tabs:
 
 ```typescript
-import { loadDraft, saveDraft } from '@greater/fediverse/Compose';
+import { loadDraft, saveDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Listen for storage events from other tabs
 window.addEventListener('storage', (event) => {
@@ -479,7 +479,7 @@ function clearComposer(key: string) {
 Export drafts for backup or transfer:
 
 ```typescript
-import { listDrafts, loadDraft, saveDraft } from '@greater/fediverse/Compose';
+import { listDrafts, loadDraft, saveDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 function exportDrafts(): string {
   const keys = listDrafts();
@@ -526,7 +526,7 @@ if (backup) {
 Analyze draft usage:
 
 ```typescript
-import { listDrafts, loadDraft, getDraftAge } from '@greater/fediverse/Compose';
+import { listDrafts, loadDraft, getDraftAge } from '@equaltoai/greater-components-fediverse/Compose';
 
 interface DraftStats {
   total: number;
@@ -584,7 +584,7 @@ console.log(`
 Migrate from an old draft format:
 
 ```typescript
-import { saveDraft, listDrafts } from '@greater/fediverse/Compose';
+import { saveDraft, listDrafts } from '@equaltoai/greater-components-fediverse/Compose';
 
 interface OldDraft {
   text: string;
@@ -708,7 +708,7 @@ import {
   hasDraft,
   getDraftAge,
   formatDraftAge
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('DraftManager', () => {
   beforeEach(() => {

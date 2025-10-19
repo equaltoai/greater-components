@@ -1,7 +1,7 @@
 # Status.Media
 
 **Component**: Media Attachments Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 48 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,8 +35,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const status: GenericStatus = {
     id: '1',
@@ -98,8 +98,8 @@ Display a single image with full width:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const statusWithImage: GenericStatus = {
     id: '1',
@@ -165,8 +165,8 @@ Display multiple images in an optimized grid:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const statusWithMultipleImages: GenericStatus = {
     id: '1',
@@ -254,8 +254,8 @@ Display video with play/pause controls:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const statusWithVideo: GenericStatus = {
     id: '1',
@@ -433,8 +433,8 @@ Display GIFs with autoplay:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const statusWithGif: GenericStatus = {
     id: '1',
@@ -500,8 +500,8 @@ Display audio with custom controls:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const statusWithAudio: GenericStatus = {
     id: '1',
@@ -724,8 +724,8 @@ Hide sensitive media behind warning:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const sensitiveStatus: GenericStatus = {
     id: '1',
@@ -932,7 +932,7 @@ Hide sensitive media behind warning:
 
 ```typescript
 import { render, screen } from '@testing-library/svelte';
-import { Status } from '@greater/fediverse';
+import { Status } from '@equaltoai/greater-components-fediverse';
 
 describe('Status.Media', () => {
   it('renders images', () => {

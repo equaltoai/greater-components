@@ -1,7 +1,7 @@
 # Compose.CharacterCount
 
 **Component**: Unicode-Aware Character Counter  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await fetch('/api/statuses', {
@@ -136,7 +136,7 @@ Simple character count with default settings:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await api.createPost(data);
@@ -184,7 +184,7 @@ Show only text count:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await api.createPost(data);
@@ -221,7 +221,7 @@ Different composers with different limits:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleTweet(data) {
     await api.createTweet(data);
@@ -316,8 +316,8 @@ Show detailed character information:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { countWeightedCharacters } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
   let detailedMetrics = $state({
     count: 0,
@@ -433,7 +433,7 @@ Show warnings at different percentages:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let percentage = $state(0);
   let warningLevel = $derived(
@@ -562,7 +562,7 @@ Demonstrate accurate Unicode counting:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   const examples = [
     { text: 'Hello World', expected: 11, note: 'Simple ASCII text' },
@@ -861,7 +861,7 @@ const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 describe('Compose.CharacterCount', () => {
   it('renders with character count', () => {
@@ -969,7 +969,7 @@ describe('Compose.CharacterCount', () => {
 ### **Unicode Counting Tests**
 
 ```typescript
-import { countWeightedCharacters } from '@greater/fediverse/Compose';
+import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('Unicode Character Counting', () => {
   it('counts ASCII correctly', () => {
@@ -1055,7 +1055,7 @@ The warning threshold is fixed at 80%. To customize, you'd need to use the chara
 
 ```svelte
 <script>
-  import { getComposeContext } from '@greater/fediverse/Compose';
+  import { getComposeContext } from '@equaltoai/greater-components-fediverse/Compose';
   const context = getComposeContext();
   
   const percentage = $derived(

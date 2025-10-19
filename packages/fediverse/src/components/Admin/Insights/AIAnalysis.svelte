@@ -16,7 +16,7 @@ deepfake detection, and moderation recommendations.
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getInsightsContext } from './context.js';
-	import type { AIAnalysis } from '@greater/adapters';
+	import type { AIAnalysis } from '@equaltoai/greater-components-adapters';
 
 	interface Props {
 		/**

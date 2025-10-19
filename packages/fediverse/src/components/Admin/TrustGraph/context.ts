@@ -3,11 +3,11 @@
  * 
  * Provides shared state for trust graph visualization.
  * 
- * @module @greater/fediverse/Admin/TrustGraph/context
+ * @module @equaltoai/greater-components-fediverse/Admin/TrustGraph/context
  */
 
 import { getContext, setContext } from 'svelte';
-import type { LesserGraphQLAdapter } from '@greater/adapters';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 const TRUST_GRAPH_CONTEXT_KEY = Symbol('trust-graph-context');
 
@@ -60,8 +60,12 @@ export interface TrustGraphState {
 	selectedNodeId: string | null;
 }
 
+type TrustGraphContextConfig = Omit<Required<TrustGraphConfig>, 'category'> & {
+	category?: TrustGraphConfig['category'];
+};
+
 export interface TrustGraphContext {
-	config: Required<TrustGraphConfig>;
+	config: TrustGraphContextConfig;
 	state: TrustGraphState;
 	updateState: (partial: Partial<TrustGraphState>) => void;
 	loadGraph: (actorId: string) => Promise<void>;
@@ -75,14 +79,19 @@ export function createTrustGraphContext(config: TrustGraphConfig): TrustGraphCon
 		selectedNodeId: null,
 	};
 
+	const baseConfig: TrustGraphContextConfig = {
+		adapter: config.adapter,
+		maxDepth: config.maxDepth ?? 2,
+		minScore: config.minScore ?? 0.1,
+		layout: config.layout ?? 'force',
+	};
+
+	if (config.category) {
+		baseConfig.category = config.category;
+	}
+
 	const context: TrustGraphContext = {
-		config: {
-			adapter: config.adapter,
-			maxDepth: config.maxDepth || 2,
-			minScore: config.minScore || 0.1,
-			category: config.category,
-			layout: config.layout || 'force',
-		},
+		config: baseConfig,
 		state,
 		updateState: (partial: Partial<TrustGraphState>) => {
 			Object.assign(state, partial);
@@ -114,4 +123,3 @@ export function getTrustGraphContext(): TrustGraphContext {
 	}
 	return context;
 }
-

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getAuthContext, isValidEmail, isValidPassword } from './context.js';
 	import type { PasswordResetData } from './context.js';
 

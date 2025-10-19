@@ -1,7 +1,7 @@
 # Compose.Submit
 
 **Component**: Submit Button with Loading State  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -14,7 +14,7 @@
 - ✅ Automatic disable states (empty content, over limit, submitting)
 - ✅ Loading indicator during submission
 - ✅ Customizable button text and loading text
-- ✅ Built on `@greater/headless/button` for accessibility
+- ✅ Built on `@equaltoai/greater-components-headless/button` for accessibility
 - ✅ Keyboard accessible (Enter, Space)
 - ✅ Screen reader support
 - ✅ Smooth animations and transitions
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await fetch('/api/statuses', {
@@ -110,7 +110,7 @@ Simple submit button with default text:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     console.log('Submitting:', data);
@@ -143,7 +143,7 @@ Customize button text for different contexts:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let context = $state<'post' | 'reply' | 'quote'>('post');
 
@@ -200,7 +200,7 @@ Add icons to the submit button:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
   import { SendIcon, LoadingIcon } from '$lib/icons';
 
   async function handleSubmit(data) {
@@ -248,7 +248,7 @@ Different submit buttons for different actions:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handlePublish(data) {
     await api.createPost({ ...data, status: 'published' });
@@ -341,7 +341,7 @@ Add a confirmation dialog for important posts:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let showConfirmation = $state(false);
   let pendingData = $state<any>(null);
@@ -486,7 +486,7 @@ Show success message after posting:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let showSuccess = $state(false);
   let successMessage = $state('');
@@ -663,7 +663,7 @@ Show success message after posting:
 
 ## ♿ Accessibility
 
-`Compose.Submit` is built on `@greater/headless/button` and follows WCAG 2.1 AA standards:
+`Compose.Submit` is built on `@equaltoai/greater-components-headless/button` and follows WCAG 2.1 AA standards:
 
 ### **Keyboard Support**
 - ✅ `Enter` or `Space` activates the button
@@ -782,7 +782,7 @@ Include CSRF tokens:
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 import { vi } from 'vitest';
 
 describe('Compose.Submit', () => {
@@ -983,7 +983,7 @@ The loading spinner is built-in. To customize it, you'd need to create a custom 
 
 ```svelte
 <script lang="ts">
-  import { getComposeContext } from '@greater/fediverse/Compose';
+  import { getComposeContext } from '@equaltoai/greater-components-fediverse/Compose';
   
   const context = getComposeContext();
   // Create custom button with context.state.submitting

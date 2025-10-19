@@ -1,7 +1,7 @@
 # Compose.DraftSaver
 
 **Component**: Auto-Save Draft Manager  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await fetch('/api/statuses', {
@@ -119,7 +119,7 @@ Simple auto-save with default settings:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await api.createPost(data);
@@ -178,7 +178,7 @@ Manage separate drafts for different contexts:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   type ComposerType = 'main' | 'reply' | 'quote';
   let activeComposer = $state<ComposerType>('main');
@@ -263,8 +263,8 @@ Add manual save and clear buttons:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { saveDraft, loadDraft, deleteDraft } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { saveDraft, loadDraft, deleteDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
   const draftKey = 'manual-draft';
   let lastSaved = $state<number | null>(null);
@@ -375,8 +375,8 @@ Show a modal to recover unsaved drafts on page load:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { hasDraft, loadDraft, deleteDraft, getDraftAge } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { hasDraft, loadDraft, deleteDraft, getDraftAge } from '@equaltoai/greater-components-fediverse/Compose';
   import { onMount } from 'svelte';
 
   const draftKey = 'recovery-draft';
@@ -512,8 +512,8 @@ Automatically clean up old drafts on app initialization:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { cleanupOldDrafts, listDrafts } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { cleanupOldDrafts, listDrafts } from '@equaltoai/greater-components-fediverse/Compose';
   import { onMount } from 'svelte';
 
   let cleanedCount = $state(0);
@@ -599,8 +599,8 @@ Sync drafts across tabs in real-time:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { saveDraft, loadDraft } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { saveDraft, loadDraft } from '@equaltoai/greater-components-fediverse/Compose';
   import { onMount } from 'svelte';
 
   const draftKey = 'synced-draft';
@@ -792,8 +792,8 @@ if (getStorageUsage() > 4.5 * 1024 * 1024) {
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
-import { saveDraft, loadDraft, deleteDraft } from '@greater/fediverse/Compose';
+import { Compose } from '@equaltoai/greater-components-fediverse';
+import { saveDraft, loadDraft, deleteDraft } from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('Compose.DraftSaver', () => {
   beforeEach(() => {
@@ -933,7 +933,7 @@ const draft = {
 The save will fail silently. Implement cleanup:
 
 ```typescript
-import { cleanupOldDrafts } from '@greater/fediverse/Compose';
+import { cleanupOldDrafts } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Periodically clean up
 setInterval(() => {

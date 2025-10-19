@@ -1,7 +1,7 @@
 # Notifications.Group
 
 **Component**: Grouped Notification Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 15 passing tests
 
@@ -30,7 +30,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,8 +39,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { groupNotifications } from '@greater/fediverse/utils';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { groupNotifications } from '@equaltoai/greater-components-fediverse/utils';
   
   const notifications = [
     // Multiple favorites on same post
@@ -151,8 +151,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification, NotificationGroup } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification, NotificationGroup } from '@equaltoai/greater-components-fediverse/types';
 
   // Simulate grouped notifications
   let notifications = $state<Notification[]>([
@@ -438,8 +438,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { NotificationGroup } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { NotificationGroup } from '@equaltoai/greater-components-fediverse/types';
 
   const group: NotificationGroup = {
     id: 'group-1',
@@ -924,8 +924,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { NotificationGroup } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { NotificationGroup } from '@equaltoai/greater-components-fediverse/types';
 
   // Group of follow requests
   const followRequestGroup: NotificationGroup = {
@@ -1305,8 +1305,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { NotificationGroup } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { NotificationGroup } from '@equaltoai/greater-components-fediverse/types';
 
   // Sample group with various timestamps
   const group: NotificationGroup = {
@@ -1483,8 +1483,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { NotificationGroup } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { NotificationGroup } from '@equaltoai/greater-components-fediverse/types';
 
   const group: NotificationGroup = {
     id: 'group-1',
@@ -1839,7 +1839,7 @@ Test file: `packages/fediverse/tests/notificationGrouping.test.ts`
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { Notifications } from '@greater/fediverse';
+import { Notifications } from '@equaltoai/greater-components-fediverse';
 
 describe('Notifications.Group', () => {
   it('renders grouped notifications', () => {

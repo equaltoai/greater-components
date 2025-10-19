@@ -1,7 +1,7 @@
 # Admin Components
 
 **Component Group**: Instance Administration & Moderation  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 454 passing tests
 
@@ -86,7 +86,7 @@ The Admin component group provides a comprehensive administration dashboard for 
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   // Define admin handlers
   const adminHandlers = {
@@ -277,7 +277,7 @@ export function requireModerator(handler) {
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   import { goto } from '$app/navigation';
   
   export let data; // From +page.server.ts
@@ -312,7 +312,7 @@ Display key metrics and alerts:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onFetchStats: async () => {
@@ -344,7 +344,7 @@ Filter and manage users:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   let searchQuery = $state('');
   let roleFilter = $state(undefined);
@@ -389,7 +389,7 @@ Control instance federation:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onFetchInstances: async () => {
@@ -444,7 +444,7 @@ Stream system logs with auto-refresh:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onFetchLogs: async (filters) => {
@@ -466,7 +466,7 @@ Manage instance settings:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onFetchSettings: async () => {
@@ -714,7 +714,7 @@ npm test -- --coverage Admin
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Admin } from '@greater/fediverse';
+import { Admin } from '@equaltoai/greater-components-fediverse';
 
 describe('Admin.Users', () => {
   it('suspends user with reason', async () => {
@@ -786,7 +786,7 @@ For detailed documentation on individual components, see:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   let showAnalytics = $state(false);
 </script>
@@ -853,7 +853,7 @@ const handlers = {
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   let error = $state<string | null>(null);
   

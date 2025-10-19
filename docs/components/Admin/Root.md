@@ -1,7 +1,7 @@
 # Admin.Root
 
 **Component**: Admin Context Provider  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 45 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     // Stats
@@ -338,9 +338,9 @@ Full-featured admin dashboard with all components:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   import { goto } from '$app/navigation';
-  import type { AdminHandlers } from '@greater/fediverse/Admin';
+  import type { AdminHandlers } from '@equaltoai/greater-components-fediverse/Admin';
   
   // Admin authentication check
   let currentUser = $state(null);
@@ -794,7 +794,7 @@ Using the adapter pattern for API integration:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   import { createAdminAdapter } from '$lib/adapters/adminAdapter';
   
   // Create adapter with GraphQL endpoint
@@ -833,7 +833,7 @@ Using the adapter pattern for API integration:
 
 ```typescript
 // $lib/adapters/adminAdapter.ts
-import type { AdminHandlers, AdminStats, AdminUser } from '@greater/fediverse/Admin';
+import type { AdminHandlers, AdminStats, AdminUser } from '@equaltoai/greater-components-fediverse/Admin';
 
 interface AdapterConfig {
   endpoint: string;
@@ -959,7 +959,7 @@ Robust error handling with automatic retries:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   let retryCount = $state(0);
   let maxRetries = 3;
@@ -1098,7 +1098,7 @@ Implement caching to reduce API calls:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   interface CacheEntry<T> {
     data: T;
@@ -1261,7 +1261,7 @@ Comprehensive audit logging for all admin actions:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   interface AuditLogEntry {
     id: string;
@@ -1625,7 +1625,7 @@ Example test:
 
 ```typescript
 import { render } from '@testing-library/svelte';
-import { Admin } from '@greater/fediverse';
+import { Admin } from '@equaltoai/greater-components-fediverse';
 
 describe('Admin.Root', () => {
   it('provides context to children', () => {

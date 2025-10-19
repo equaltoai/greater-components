@@ -1,5 +1,5 @@
 /**
- * @greater/headless
+ * @equaltoai/greater-components-headless
  * 
  * Headless UI primitives providing behavior without styling.
  * 

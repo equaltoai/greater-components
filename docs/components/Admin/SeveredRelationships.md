@@ -20,7 +20,7 @@ Context provider for severed relationship data and adapter connection.
 
 ```svelte
 <script lang="ts">
-  import * as SeveredRelationships from '@greater/fediverse/Admin/SeveredRelationships';
+  import * as SeveredRelationships from '@equaltoai/greater-components-fediverse/Admin/SeveredRelationships';
   import { adapter } from './config';
 </script>
 

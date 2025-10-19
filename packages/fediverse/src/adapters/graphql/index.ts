@@ -8,7 +8,7 @@
  * 
  * @example
  * ```typescript
- * import { createLesserClient } from '@greater/fediverse/adapters/graphql';
+ * import { createLesserClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
  * 
  * const client = createLesserClient({
  *   endpoint: 'https://api.lesser.example.com/graphql',
@@ -60,18 +60,30 @@ import type {
 	OutboxResult,
 	ReportResult,
 	SearchResult,
+	StreamingPreferencesInput,
 	SubscriptionEvent,
 	ThreadResult,
 	TimelineResult,
 	TimelineUpdateEvent,
+	UpdateStreamingPreferencesResult,
 	UnannounceResult,
 	UnbookmarkNoteResult,
 	UnfollowResult,
 	UnlikeResult,
 	UnmuteActorResult,
 	UnblockActorResult,
+	UpdatePushSubscriptionInput,
 	UpdateNoteResult,
+	UpdateProfileInput,
 	UpdateProfileResult,
+	UpdateUserPreferencesInput,
+	UpdateUserPreferencesResult,
+	UserPreferencesResult,
+	PushSubscriptionResult,
+	RegisterPushSubscriptionInput,
+	RegisterPushSubscriptionResult,
+	UpdatePushSubscriptionResult,
+	DeletePushSubscriptionResult,
 } from './types.js';
 
 /**
@@ -135,7 +147,7 @@ export class LesserClient {
 	 * Get followers
 	 */
 	async getFollowers(options: {
-		id: string;
+		username: string;
 		limit?: number;
 		cursor?: string;
 	}): Promise<FollowersResult> {
@@ -146,7 +158,7 @@ export class LesserClient {
 	 * Get following
 	 */
 	async getFollowing(options: {
-		id: string;
+		username: string;
 		limit?: number;
 		cursor?: string;
 	}): Promise<FollowingResult> {
@@ -176,6 +188,20 @@ export class LesserClient {
 	 */
 	async getBookmarks(options?: { limit?: number; cursor?: string }): Promise<BookmarksResult> {
 		return this.client.query<BookmarksResult>(queries.GET_BOOKMARKS, options);
+	}
+
+	/**
+	 * Get user preferences
+	 */
+	async getUserPreferences(): Promise<UserPreferencesResult> {
+		return this.client.query<UserPreferencesResult>(queries.GET_USER_PREFERENCES);
+	}
+
+	/**
+	 * Get current push subscription (if any)
+	 */
+	async getPushSubscription(): Promise<PushSubscriptionResult> {
+		return this.client.query<PushSubscriptionResult>(queries.GET_PUSH_SUBSCRIPTION);
 	}
 
 	// ============================================================================
@@ -329,14 +355,63 @@ export class LesserClient {
 	}
 
 	/**
+	 * Update overall user preferences
+	 */
+	async updateUserPreferences(
+		input: UpdateUserPreferencesInput
+	): Promise<UpdateUserPreferencesResult> {
+		return this.client.mutate<UpdateUserPreferencesResult>(queries.UPDATE_USER_PREFERENCES, {
+			input,
+		});
+	}
+
+	/**
+	 * Update streaming-specific preferences
+	 */
+	async updateStreamingPreferences(
+		input: StreamingPreferencesInput
+	): Promise<UpdateStreamingPreferencesResult> {
+		return this.client.mutate<UpdateStreamingPreferencesResult>(
+			queries.UPDATE_STREAMING_PREFERENCES,
+			{ input }
+		);
+	}
+
+	/**
+	 * Register a new push subscription
+	 */
+	async registerPushSubscription(
+		input: RegisterPushSubscriptionInput
+	): Promise<RegisterPushSubscriptionResult> {
+		return this.client.mutate<RegisterPushSubscriptionResult>(
+			queries.REGISTER_PUSH_SUBSCRIPTION,
+			{ input }
+		);
+	}
+
+	/**
+	 * Update the alerts for an existing push subscription
+	 */
+	async updatePushSubscription(
+		input: UpdatePushSubscriptionInput
+	): Promise<UpdatePushSubscriptionResult> {
+		return this.client.mutate<UpdatePushSubscriptionResult>(
+			queries.UPDATE_PUSH_SUBSCRIPTION,
+			{ input }
+		);
+	}
+
+	/**
+	 * Delete the current push subscription
+	 */
+	async deletePushSubscription(): Promise<DeletePushSubscriptionResult> {
+		return this.client.mutate<DeletePushSubscriptionResult>(queries.DELETE_PUSH_SUBSCRIPTION);
+	}
+
+	/**
 	 * Update actor profile
 	 */
-	async updateProfile(input: {
-		name?: string;
-		summary?: string;
-		icon?: string;
-		image?: string;
-	}): Promise<UpdateProfileResult> {
+	async updateProfile(input: UpdateProfileInput): Promise<UpdateProfileResult> {
 		return this.client.mutate<UpdateProfileResult>(queries.UPDATE_PROFILE, { input });
 	}
 

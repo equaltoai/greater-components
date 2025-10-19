@@ -1,5 +1,5 @@
 /**
- * @greater/adapters - Transport adapters and state management for Fediverse protocols
+ * @equaltoai/greater-components-adapters - Transport adapters and state management for Fediverse protocols
  */
 
 // Transport Clients
@@ -41,7 +41,18 @@ export type {
   LesserGraphQLAdapterConfig,
   TimelineVariables,
   CreateNoteVariables,
-  SearchVariables
+  CreateQuoteNoteMutationVariables,
+  SearchVariables,
+  Visibility,
+  ObjectFieldsFragment,
+  Actor,
+  QuoteType,
+  UploadMediaInput,
+  MediaCategory,
+  MediaType,
+  UploadMediaMutationVariables,
+  UploadMediaMutation,
+  UploadMediaPayload,
 } from './graphql';
 
 // Reactive Stores (Svelte 5 Runes)
@@ -303,13 +314,6 @@ export type {
   LesserNotificationFragment,
   LesserAdminReportFragment,
   
-  // Lesser-specific fragment types
-  LesserReputationFragment,
-  LesserVouchFragment,
-  LesserCommunityNoteFragment,
-  LesserQuoteContextFragment,
-  LesserAIAnalysisFragment,
-  
   // Timeline types
   LesserTimelineConnection,
   LesserTimelineEdge,
@@ -344,3 +348,12 @@ export type {
   LesserTimelineSubscription,
   LesserNotificationSubscription
 } from './mappers';
+
+// Lesser-specific fragment types
+export type {
+  LesserReputationFragment,
+  LesserVouchFragment,
+  LesserCommunityNoteFragment,
+  LesserQuoteContextFragment,
+  LesserAIAnalysisFragment,
+} from './mappers/lesser/types.js';

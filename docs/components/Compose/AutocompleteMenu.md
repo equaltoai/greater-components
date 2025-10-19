@@ -1,7 +1,7 @@
 # Compose.AutocompleteMenu
 
 **Component**: Autocomplete Dropdown Menu  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -29,7 +29,7 @@ s for hashtags, mentions, and emojis. It's automatically used by [`Compose.Edito
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -40,7 +40,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { AutocompleteMenu } from '@greater/fediverse/Compose';
+  import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
   
   let suggestions = [
     {
@@ -134,7 +134,7 @@ Display user mentions with profile pictures:
 
 ```svelte
 <script lang="ts">
-  import { AutocompleteMenu } from '@greater/fediverse/Compose';
+  import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
 
   let showMenu = $state(false);
   let mentions = $state([
@@ -196,7 +196,7 @@ Show trending hashtags:
 
 ```svelte
 <script lang="ts">
-  import { AutocompleteMenu } from '@greater/fediverse/Compose';
+  import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
 
   let hashtags = $state([
     { type: 'hashtag' as const, text: '#svelte', value: 'svelte' },
@@ -227,7 +227,7 @@ Show loading indicator while fetching suggestions:
 
 ```svelte
 <script lang="ts">
-  import { AutocompleteMenu } from '@greater/fediverse/Compose';
+  import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
 
   let suggestions = $state([]);
   let loading = $state(true);
@@ -262,7 +262,7 @@ Handle no results gracefully:
 
 ```svelte
 <script lang="ts">
-  import { AutocompleteMenu } from '@greater/fediverse/Compose';
+  import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
 
   let query = $state('');
   let suggestions = $state([]);
@@ -303,7 +303,7 @@ Position menu relative to cursor in textarea:
 
 ```svelte
 <script lang="ts">
-  import { AutocompleteMenu } from '@greater/fediverse/Compose';
+  import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
 
   let textareaEl: HTMLTextAreaElement;
   let showMenu = $state(false);
@@ -363,7 +363,7 @@ Interactive demo of keyboard navigation:
 
 ```svelte
 <script lang="ts">
-  import { AutocompleteMenu } from '@greater/fediverse/Compose';
+  import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
 
   let suggestions = [
     { type: 'mention', text: '@alice', value: 'alice' },
@@ -625,7 +625,7 @@ function handleClickOutside(event: MouseEvent) {
 
 ```typescript
 import { render, screen, fireEvent, within } from '@testing-library/svelte';
-import { AutocompleteMenu } from '@greater/fediverse/Compose';
+import { AutocompleteMenu } from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('AutocompleteMenu', () => {
   const mockSuggestions = [

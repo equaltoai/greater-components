@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Tooltip } from '@greater/primitives';
+  import { Tooltip } from '@equaltoai/greater-components-primitives';
 
   interface Props {
     content?: string;

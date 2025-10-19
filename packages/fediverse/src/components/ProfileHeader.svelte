@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Avatar } from '@greater/primitives';
-  import { sanitizeHtml } from '@greater/utils';
+  import { Avatar } from '@equaltoai/greater-components-primitives';
+  import { sanitizeHtml } from '@equaltoai/greater-components-utils';
   import ContentRenderer from './ContentRenderer.svelte';
   import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
-  import type { UnifiedAccount } from '@greater/adapters';
+  import type { UnifiedAccount } from '@equaltoai/greater-components-adapters';
 
   interface ProfileHeaderProps extends Omit<HTMLAttributes<HTMLElement>, 'role'> {
     /**

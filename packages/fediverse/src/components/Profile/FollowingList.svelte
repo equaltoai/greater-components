@@ -8,7 +8,7 @@ Supports unfollow action.
 @example
 ```svelte
 <script>
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   const following = [
     { id: '1', username: 'jane', displayName: 'Jane Smith', avatar: '...' }
@@ -21,7 +21,7 @@ Supports unfollow action.
 
 <script lang="ts">
 	import type { ProfileData } from './context.js';
-	import { getProfileContext } from './context.js';
+	import { formatCount, getProfileContext } from './context.js';
 
 	interface Props {
 		/**
@@ -33,6 +33,11 @@ Supports unfollow action.
 		 * Whether more accounts can be loaded
 		 */
 		hasMore?: boolean;
+
+		/**
+		 * Total following count (from server pagination metadata)
+		 */
+		totalCount?: number;
 
 		/**
 		 * Whether accounts are currently loading
@@ -51,9 +56,10 @@ Supports unfollow action.
 	}
 
 	let {
-		following = [],
-		hasMore = false,
-		loading = false,
+		following: providedFollowing,
+		hasMore: providedHasMore,
+		totalCount: providedTotalCount,
+		loading: providedLoading,
 		enableSearch = true,
 		class: className = '',
 	}: Props = $props();
@@ -62,6 +68,15 @@ Supports unfollow action.
 
 	let searchQuery = $state('');
 	let unfollowingIds = $state<Set<string>>(new Set());
+	const following = $derived(providedFollowing ?? context.state.following);
+	const hasMore = $derived(
+		providedHasMore ?? Boolean(context.state.followingCursor)
+	);
+	const totalCount = $derived(
+		providedTotalCount ?? context.state.followingTotal ?? following.length
+	);
+	const loading = $derived(providedLoading ?? context.state.followingLoading);
+	const displayCount = $derived(totalCount);
 
 	/**
 	 * Filter following based on search query
@@ -124,8 +139,8 @@ Supports unfollow action.
 	<div class="following-list__header">
 		<h2 class="following-list__title">
 			Following
-			{#if following.length > 0}
-				<span class="following-list__count">({following.length})</span>
+			{#if displayCount > 0}
+				<span class="following-list__count">({formatCount(displayCount)})</span>
 			{/if}
 		</h2>
 

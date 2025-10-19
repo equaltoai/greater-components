@@ -1,6 +1,6 @@
 /**
  * ID generation utilities for headless components
- * @module @greater/headless/utils/id
+ * @module @equaltoai/greater-components-headless/utils/id
  */
 
 let idCounter = 0;

@@ -1,7 +1,7 @@
 # Compose.Editor
 
 **Component**: Text Editor Textarea  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await fetch('/api/statuses', {
@@ -95,7 +95,7 @@ Basic editor with default settings:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let postContent = $state('');
 
@@ -154,7 +154,7 @@ Editor with specific height and automatic focus:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit(data) {
     await api.createPost(data);
@@ -214,7 +214,7 @@ Page with multiple independent compose forms:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handlePostSubmit(data) {
     console.log('Public post:', data);
@@ -298,7 +298,7 @@ Show character count and warning as user types:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   const characterLimit = 280;
 
@@ -390,7 +390,7 @@ Show visual feedback during submission:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let isSubmitting = $state(false);
 
@@ -507,7 +507,7 @@ Add custom validation before allowing submission:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let validationError = $state<string | null>(null);
 
@@ -821,7 +821,7 @@ app.use((req, res, next) => {
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 import { vi } from 'vitest';
 
 describe('Compose.Editor', () => {
@@ -928,7 +928,7 @@ describe('Compose.Editor', () => {
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 describe('Editor Integration', () => {
   it('integrates with CharacterCount', async () => {

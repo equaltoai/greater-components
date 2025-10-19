@@ -1,7 +1,7 @@
 # Status.Header
 
 **Component**: Header Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 36 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,8 +35,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const status: GenericStatus = {
     id: '1',
@@ -83,8 +83,8 @@ Basic status header with all default elements:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const status: GenericStatus = {
     id: '12345',
@@ -161,8 +161,8 @@ Display bot accounts with badge:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const botStatus: GenericStatus = {
     id: '1',
@@ -212,8 +212,8 @@ Display boost indicator automatically:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   // Status that represents a boost
   const boostedStatus: GenericStatus = {
@@ -284,8 +284,8 @@ Add online/offline status to avatar:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status = $state(mockStatus());
   let isUserOnline = $state(true);
@@ -393,8 +393,8 @@ Add verification badges and custom metadata:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   interface ExtendedAccount extends GenericStatus['account'] {
     verified?: boolean;
@@ -559,9 +559,9 @@ Show detailed timestamp with edit history:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
-  import { formatDateTime } from '@greater/utils';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
+  import { formatDateTime } from '@equaltoai/greater-components-utils';
 
   const status: GenericStatus = {
     id: '1',
@@ -746,8 +746,8 @@ Optimized header for compact display:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let statuses: GenericStatus[] = $state([]);
 
@@ -930,7 +930,7 @@ Optimized header for compact display:
 
 ```typescript
 import { render, screen } from '@testing-library/svelte';
-import { Status } from '@greater/fediverse';
+import { Status } from '@equaltoai/greater-components-fediverse';
 
 describe('Status.Header', () => {
   it('renders account information', () => {

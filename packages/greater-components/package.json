@@ -1,0 +1,104 @@
+{
+  "name": "@equaltoai/greater-components",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Aggregate Greater Components library for EqualToAI",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/greater-components"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.js"
+    },
+    "./adapters/*": {
+      "types": "./dist/adapters/*.d.ts",
+      "import": "./dist/adapters/*.js"
+    },
+    "./fediverse": {
+      "types": "./dist/fediverse/index.d.ts",
+      "import": "./dist/fediverse/index.js"
+    },
+    "./fediverse/*": {
+      "types": "./dist/fediverse/*.d.ts",
+      "import": "./dist/fediverse/*.js"
+    },
+    "./fediverse/style.css": "./dist/fediverse/style.css",
+    "./headless": {
+      "types": "./dist/headless/index.d.ts",
+      "import": "./dist/headless/index.js"
+    },
+    "./headless/*": {
+      "types": "./dist/headless/*.d.ts",
+      "import": "./dist/headless/*.js"
+    },
+    "./icons": {
+      "types": "./dist/icons/index.d.ts",
+      "import": "./dist/icons/index.js"
+    },
+    "./icons/*": "./dist/icons/*",
+    "./primitives": {
+      "types": "./dist/primitives/index.d.ts",
+      "import": "./dist/primitives/index.js"
+    },
+    "./primitives/*": {
+      "types": "./dist/primitives/*.d.ts",
+      "import": "./dist/primitives/*.js"
+    },
+    "./primitives/styles.css": "./dist/primitives/styles.css",
+    "./primitives/style.css": "./dist/primitives/style.css",
+    "./tokens": {
+      "types": "./dist/tokens/index.d.ts",
+      "import": "./dist/tokens/index.js"
+    },
+    "./tokens/*": "./dist/tokens/*",
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
+    },
+    "./utils/*": "./dist/utils/*",
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "import": "./dist/testing/index.js"
+    },
+    "./testing/*": "./dist/testing/*",
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "import": "./dist/cli/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "node scripts/build.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-fediverse": "workspace:*",
+    "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-testing": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "@equaltoai/greater-components-cli": "workspace:*"
+  }
+}

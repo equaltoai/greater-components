@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-describe('@greater/tokens', () => {
+describe('@equaltoai/greater-components-tokens', () => {
   let tokens: Record<string, Record<string, unknown>>;
   let themes: Record<string, Record<string, unknown>>;
   let themeCss: string;

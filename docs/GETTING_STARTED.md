@@ -21,26 +21,26 @@ Before you begin, ensure you have:
 
 ```bash
 # Using pnpm (recommended)
-pnpm add @greater/fediverse @greater/adapters @greater/utils
+pnpm add @equaltoai/greater-components-fediverse @equaltoai/greater-components-adapters @equaltoai/greater-components-utils
 
 # Using npm
-npm install @greater/fediverse @greater/adapters @greater/utils
+npm install @equaltoai/greater-components-fediverse @equaltoai/greater-components-adapters @equaltoai/greater-components-utils
 
 # Using yarn
-yarn add @greater/fediverse @greater/adapters @greater/utils
+yarn add @equaltoai/greater-components-fediverse @equaltoai/greater-components-adapters @equaltoai/greater-components-utils
 ```
 
 ### **Step 2: Install Optional Packages**
 
 ```bash
 # Icons (tree-shakeable)
-pnpm add @greater/icons
+pnpm add @equaltoai/greater-components-icons
 
 # Testing utilities
-pnpm add -D @greater/testing
+pnpm add -D @equaltoai/greater-components-testing
 
 # Primitives (if building custom components)
-pnpm add @greater/primitives @greater/headless
+pnpm add @equaltoai/greater-components-primitives @equaltoai/greater-components-headless
 ```
 
 ---
@@ -54,8 +54,8 @@ Create a simple timeline component:
 ```svelte
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import { createTimelineStore } from '@greater/adapters';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
 
   // Create a timeline store
   const timeline = createTimelineStore({
@@ -92,7 +92,7 @@ Add user authentication:
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let authenticated = false;
   let authToken = '';
@@ -124,7 +124,7 @@ Let users create posts:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit({ content, visibility }) {
     const response = await fetch('https://api.lesser.social/api/v1/statuses', {
@@ -158,8 +158,8 @@ Add search functionality:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import { debounce } from '@greater/utils';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import { debounce } from '@equaltoai/greater-components-utils';
 
   let results = [];
 
@@ -185,7 +185,7 @@ Display user profiles:
 
 ```svelte
 <script lang="ts">
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   export let userId: string;
   
@@ -215,8 +215,8 @@ Enable real-time timeline updates:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import { createGraphQLClient } from '@greater/adapters';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import { createGraphQLClient } from '@equaltoai/greater-components-adapters';
 
   // Create GraphQL client with WebSocket support
   const client = createGraphQLClient({
@@ -306,9 +306,9 @@ Here's a complete, minimal social media app:
 ```svelte
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-  import { Timeline, Auth, Compose, Search } from '@greater/fediverse';
-  import { createTimelineStore } from '@greater/adapters';
-  import { debounce } from '@greater/utils';
+  import { Timeline, Auth, Compose, Search } from '@equaltoai/greater-components-fediverse';
+  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
+  import { debounce } from '@equaltoai/greater-components-utils';
 
   let authenticated = $state(false);
   let authToken = $state('');
@@ -433,7 +433,7 @@ const config = {
   kit: {
     adapter: adapter(),
     alias: {
-      '@greater/*': './node_modules/@greater/*'
+      '@equaltoai/*': './node_modules/@equaltoai/*'
     }
   },
 
@@ -461,7 +461,7 @@ Add to `tsconfig.json`:
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "paths": {
-      "@greater/*": ["./node_modules/@greater/*"]
+      "@equaltoai/*": ["./node_modules/@equaltoai/*"]
     }
   }
 }

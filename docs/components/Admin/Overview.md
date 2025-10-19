@@ -1,7 +1,7 @@
 # Admin.Overview
 
 **Component**: Dashboard Overview with Instance Statistics  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 52 passing tests
 
@@ -36,7 +36,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -45,7 +45,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onFetchStats: async () => {
@@ -130,7 +130,7 @@ Simple statistics dashboard:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onFetchStats: async () => {
@@ -191,7 +191,7 @@ Statistics that automatically refresh every 30 seconds:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   import { onMount, onDestroy } from 'svelte';
   
   let refreshInterval: ReturnType<typeof setInterval> | null = null;
@@ -351,7 +351,7 @@ Dashboard that highlights critical metrics and shows alerts:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   let stats = $state<AdminStats | null>(null);
   let alerts = $derived.by(() => {
@@ -485,7 +485,7 @@ Using GraphQL for statistics:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   interface GraphQLResponse<T> {
     data?: T;
@@ -635,8 +635,8 @@ Compare current stats with previous period:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
-  import type { AdminStats } from '@greater/fediverse/Admin';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
+  import type { AdminStats } from '@equaltoai/greater-components-fediverse/Admin';
   
   let currentStats = $state<AdminStats | null>(null);
   let previousStats = $state<AdminStats | null>(null);
@@ -1061,7 +1061,7 @@ npm test -- Admin/Overview.test.ts
 
 ```typescript
 import { render, screen, waitFor } from '@testing-library/svelte';
-import { Admin } from '@greater/fediverse';
+import { Admin } from '@equaltoai/greater-components-fediverse';
 import { vi } from 'vitest';
 
 describe('Admin.Overview', () => {

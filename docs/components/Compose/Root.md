@@ -1,7 +1,7 @@
 # Compose.Root
 
 **Component**: Context Provider & Form Container  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleSubmit({ content, visibility }) {
     await fetch('/api/statuses', {
@@ -251,7 +251,7 @@ Simple post composition with default settings:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let submitted = $state(false);
   let submittedContent = $state('');
@@ -322,7 +322,7 @@ Twitter-like composer with 280 character limit:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   const config = {
     characterLimit: 280,
@@ -414,7 +414,7 @@ Composer for replying to existing posts:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   interface Props {
     replyToStatus: {
@@ -515,7 +515,7 @@ Full-featured composer with media support:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   const config = {
     characterLimit: 500,
@@ -637,7 +637,7 @@ Robust error handling and user feedback:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let errorMessage = $state<string | null>(null);
   let showSuccess = $state(false);
@@ -780,7 +780,7 @@ Composer with automatic draft saving and recovery:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
 
   let hasDraft = $state(false);
@@ -1054,7 +1054,7 @@ Include CSRF tokens in form submissions:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
@@ -1108,7 +1108,7 @@ app.post('/api/statuses', postLimiter, async (req, res) => {
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 import { vi } from 'vitest';
 
 describe('Compose.Root', () => {

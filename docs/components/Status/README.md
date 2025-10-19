@@ -1,6 +1,6 @@
 # Status Components
 
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Components**: 5 components
 
@@ -27,7 +27,7 @@ The Status component group provides a complete solution for displaying individua
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -59,8 +59,8 @@ Status.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const status: GenericStatus = {
     id: '1',
@@ -92,7 +92,7 @@ Status.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
 
   const status = {
     id: '1',
@@ -126,8 +126,8 @@ Status.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status: GenericStatus = $state({
     id: '1',
@@ -198,7 +198,7 @@ Status.Root (Context Provider)
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
 
   // Status with reblog
   const status = {
@@ -429,7 +429,7 @@ Sensitive content is hidden by default:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
 
   async function handleFavorite(status: GenericStatus) {
     // Update UI immediately
@@ -510,7 +510,7 @@ Status components have comprehensive test coverage:
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Status } from '@greater/fediverse';
+import { Status } from '@equaltoai/greater-components-fediverse';
 
 describe('Status Components', () => {
   it('renders status content', () => {
@@ -568,7 +568,7 @@ describe('Status Components', () => {
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
 
   let status = $state(mockStatus());
 </script>
@@ -632,7 +632,7 @@ describe('Status Components', () => {
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
 
   let statuses = $state([]);
 </script>
@@ -829,8 +829,8 @@ Full example using all Lesser features:
 
 ```svelte
 <script lang="ts">
-  import * as Status from '@greater/fediverse/Status';
-  import { LesserGraphQLAdapter } from '@greater/adapters';
+  import * as Status from '@equaltoai/greater-components-fediverse/Status';
+  import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
   
   const adapter = new LesserGraphQLAdapter(config);
   

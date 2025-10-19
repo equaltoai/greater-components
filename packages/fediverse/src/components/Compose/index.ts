@@ -7,7 +7,7 @@
  * @example Basic usage
  * ```svelte
  * <script>
- *   import { Compose } from '@greater/fediverse';
+ *   import { Compose } from '@equaltoai/greater-components-fediverse';
  *   
  *   async function handleSubmit(data) {
  *     await api.statuses.create(data);
@@ -33,7 +33,7 @@
  * </Compose.Root>
  * ```
  * 
- * @module @greater/fediverse/Compose
+ * @module @equaltoai/greater-components-fediverse/Compose
  */
 
 import ComposeRoot from './Root.svelte';

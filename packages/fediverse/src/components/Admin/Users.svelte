@@ -4,7 +4,7 @@
   Comprehensive user management with modals, search, filters, and bulk actions.
 -->
 <script lang="ts">
-import { createModal } from '@greater/headless/modal';
+import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import { getAdminContext } from './context.js';
 	import { onMount } from 'svelte';
 	import type { AdminUser } from './context.js';

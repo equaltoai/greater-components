@@ -20,7 +20,7 @@ Context provider for cost data and adapter connection.
 
 ```svelte
 <script lang="ts">
-  import * as Cost from '@greater/fediverse/Admin/Cost';
+  import * as Cost from '@equaltoai/greater-components-fediverse/Admin/Cost';
   import { adapter } from './config';
 </script>
 
@@ -395,7 +395,7 @@ Show estimated cost for individual posts:
 
 ```svelte
 <script lang="ts">
-  import * as Status from '@greater/fediverse/Status';
+  import * as Status from '@equaltoai/greater-components-fediverse/Status';
 </script>
 
 <Status.Root {status}>

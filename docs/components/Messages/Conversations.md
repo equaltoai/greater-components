@@ -1,7 +1,7 @@
 # Messages.Conversations
 
 **Component**: Conversations List  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 89 passing tests
 
@@ -41,7 +41,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -52,7 +52,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -71,7 +71,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -122,7 +122,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -200,7 +200,7 @@ When a conversation is clicked, the component:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   const handlers = {
@@ -291,8 +291,8 @@ When a conversation is clicked, the component:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { Conversation } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { Conversation } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let searchQuery = $state('');
@@ -455,8 +455,8 @@ When a conversation is clicked, the component:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount, onDestroy } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   import { authStore } from '$lib/stores/auth';
@@ -656,8 +656,8 @@ When a conversation is clicked, the component:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { Conversation } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { Conversation } from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth';
   
@@ -818,8 +818,8 @@ When a conversation is clicked, the component:
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { Conversation } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { Conversation } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let contextMenuConversation = $state<Conversation | null>(null);
@@ -1093,7 +1093,7 @@ For large conversation lists:
 ```svelte
 <script lang="ts">
   import VirtualList from 'svelte-virtual-list';
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const context = Messages.getMessagesContext();
   const { state } = context;
@@ -1110,7 +1110,7 @@ For large conversation lists:
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import * as Messages from '@greater/fediverse/Messages';
+import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
 
 test('selects conversation on click', async () => {
   const onConversationClick = vi.fn();

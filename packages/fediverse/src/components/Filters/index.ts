@@ -7,7 +7,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Filters from '@greater/fediverse/Filters';
+ *   import * as Filters from '@equaltoai/greater-components-fediverse/Filters';
  *   
  *   const handlers = {
  *     onFetchFilters: async () => api.fetchFilters(),

@@ -1,7 +1,7 @@
 # Auth.RegisterForm
 
 **Component**: Account Registration Form  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 50 passing tests
 
@@ -27,7 +27,7 @@
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleRegister(data) {
     const response = await fetch('/api/auth/register', {
@@ -87,7 +87,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleRegister({ email, username, password }) {
     const response = await fetch('/api/auth/register', {
@@ -117,7 +117,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleRegister(data) {
     if (!data.inviteCode) {
@@ -149,7 +149,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleRegister(data) {
     if (!data.agreeToTerms) {
@@ -187,7 +187,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let step = $state<'register' | 'verify' | 'complete'>('register');
   let userEmail = $state('');

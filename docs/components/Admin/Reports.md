@@ -1,7 +1,7 @@
 # Admin.Reports
 
 **Component**: Content Moderation Reports Management  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 65 passing tests
 
@@ -30,7 +30,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,7 +39,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onFetchReports: async (status) => {
@@ -210,7 +210,7 @@ Simple reports interface with resolve and dismiss actions:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const adminHandlers = {
     onFetchReports: async (status) => {
@@ -322,8 +322,8 @@ Extended actions with confirmation dialogs:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
-  import type { AdminReport } from '@greater/fediverse/Admin';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
+  import type { AdminReport } from '@equaltoai/greater-components-fediverse/Admin';
   
   let selectedReport = $state<AdminReport | null>(null);
   let actionModalOpen = $state(false);
@@ -550,8 +550,8 @@ Assign reports to specific moderators:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
-  import type { AdminReport } from '@greater/fediverse/Admin';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
+  import type { AdminReport } from '@equaltoai/greater-components-fediverse/Admin';
   
   interface Moderator {
     id: string;
@@ -802,7 +802,7 @@ Using GraphQL for report management:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   
   const GRAPHQL_ENDPOINT = 'https://api.myinstance.social/graphql';
   
@@ -934,7 +934,7 @@ Real-time notifications for new reports:
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@greater/fediverse';
+  import { Admin } from '@equaltoai/greater-components-fediverse';
   import { onMount, onDestroy } from 'svelte';
   
   let newReportsCount = $state(0);
@@ -1335,7 +1335,7 @@ npm test -- Admin/Reports.test.ts
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Admin } from '@greater/fediverse';
+import { Admin } from '@equaltoai/greater-components-fediverse';
 import { vi } from 'vitest';
 
 describe('Admin.Reports', () => {

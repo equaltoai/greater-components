@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import { Tabs } from '@greater/primitives';
+import { Tabs } from '@equaltoai/greater-components-primitives';
 import TabsDemo from './TabsDemo.svelte';
 
 const meta: Meta<Tabs> = {
@@ -24,7 +24,7 @@ An accessible tabs component with keyboard navigation and multiple visual styles
 
 \`\`\`svelte
 <script>
-  import { Tabs } from '@greater/primitives';
+  import { Tabs } from '@equaltoai/greater-components-primitives';
   
   const tabs = [
     { 

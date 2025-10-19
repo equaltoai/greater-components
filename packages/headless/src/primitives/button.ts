@@ -7,7 +7,7 @@
  * @example
  * ```svelte
  * <script>
- *   import { createButton } from '@greater/headless/button';
+ *   import { createButton } from '@equaltoai/greater-components-headless/button';
  *   
  *   const button = createButton({
  *     onClick: () => console.log('clicked'),
@@ -20,7 +20,7 @@
  * </button>
  * ```
  * 
- * @module @greater/headless/button
+ * @module @equaltoai/greater-components-headless/button
  */
 
 import type { ActionReturn, BaseBuilderConfig } from '../types/common.js';

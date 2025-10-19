@@ -1,5 +1,5 @@
 {
-  "name": "@greater/utils",
+  "name": "@equaltoai/greater-components-utils",
   "version": "1.0.0",
   "exports": {
     ".": "./src/index.ts"

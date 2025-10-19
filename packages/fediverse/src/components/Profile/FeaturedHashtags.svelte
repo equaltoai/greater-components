@@ -8,7 +8,7 @@ Supports drag-and-drop reordering and management (for own profile).
 @example
 ```svelte
 <script>
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   const hashtags = [
     { name: 'svelte', usageCount: 42, lastUsed: '2024-01-15' },

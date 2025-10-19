@@ -86,7 +86,7 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: [],
 		npm: {
-			package: '@greater/headless',
+			package: '@equaltoai/greater-components-headless',
 			version: '1.0.0',
 		},
 		github: {
@@ -98,7 +98,7 @@ export const components: Component[] = [
 				name: 'Basic Usage',
 				description: 'Simple button with click handler',
 				code: `<script>
-  import { createButton } from '@greater/headless/button';
+  import { createButton } from '@equaltoai/greater-components-headless/button';
 
   const button = createButton({
     onClick: () => console.log('clicked')
@@ -113,7 +113,7 @@ export const components: Component[] = [
 				name: 'Disabled State',
 				description: 'Button with disabled state',
 				code: `<script>
-  import { createButton } from '@greater/headless/button';
+  import { createButton } from '@equaltoai/greater-components-headless/button';
 
   let disabled = $state(false);
 
@@ -178,7 +178,7 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: [],
 		npm: {
-			package: '@greater/headless',
+			package: '@equaltoai/greater-components-headless',
 			version: '1.0.0',
 		},
 		github: {
@@ -189,7 +189,7 @@ export const components: Component[] = [
 				name: 'Basic Modal',
 				description: 'Simple modal with open/close',
 				code: `<script>
-  import { createModal } from '@greater/headless/modal';
+  import { createModal } from '@equaltoai/greater-components-headless/modal';
 
   let open = $state(false);
   const modal = createModal({ open });
@@ -274,7 +274,7 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: [],
 		npm: {
-			package: '@greater/fediverse',
+			package: '@equaltoai/greater-components-fediverse',
 			version: '1.0.0',
 		},
 		github: {
@@ -285,7 +285,7 @@ export const components: Component[] = [
 				name: 'Basic Timeline',
 				description: 'Simple timeline with items',
 				code: `<script>
-  import * as Timeline from '@greater/fediverse/Timeline';
+  import * as Timeline from '@equaltoai/greater-components-fediverse/Timeline';
   
   const items = [
     { id: '1', content: 'First post' },
@@ -344,7 +344,7 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: ['button'],
 		npm: {
-			package: '@greater/fediverse',
+			package: '@equaltoai/greater-components-fediverse',
 			version: '1.0.0',
 		},
 		github: {
@@ -355,7 +355,7 @@ export const components: Component[] = [
 				name: 'Login Form',
 				description: 'Complete login experience',
 				code: `<script>
-  import * as Auth from '@greater/fediverse/Auth';
+  import * as Auth from '@equaltoai/greater-components-fediverse/Auth';
   
   const handlers = {
     onLogin: async ({ email, password, remember }) => {
@@ -407,7 +407,7 @@ export const components: Component[] = [
 		dependencies: [],
 		registryDependencies: [],
 		npm: {
-			package: '@greater/fediverse',
+			package: '@equaltoai/greater-components-fediverse',
 			version: '1.0.0',
 		},
 		github: {
@@ -417,7 +417,7 @@ export const components: Component[] = [
 			{
 				name: 'Basic Usage',
 				description: 'Initialize client and fetch timeline',
-				code: `import { createGraphQLClient } from '@greater/fediverse/adapters/graphql';
+				code: `import { createGraphQLClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
 
 const client = createGraphQLClient({
   endpoint: 'https://api.lesser.example.com/graphql',

@@ -1,5 +1,5 @@
 {
-  "name": "@greater/headless",
+  "name": "@equaltoai/greater-components-headless",
   "version": "1.0.0",
   "exports": {
     ".": "./src/index.ts",

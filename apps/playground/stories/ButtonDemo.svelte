@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button } from '@greater/primitives';
+  import { Button } from '@equaltoai/greater-components-primitives';
   
   let loadingStates = $state({
     solid: false,

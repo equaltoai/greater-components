@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
-import type { LesserGraphQLAdapter } from '@greater/adapters';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 import InsightsAIAnalysisHarness from './InsightsAIAnalysisHarness.svelte';
 import InsightsModerationHarness from './InsightsModerationHarness.svelte';
 

@@ -1,7 +1,7 @@
 # Lists.MemberPicker
 
 **Component**: List Member Management Interface  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 68 passing tests
 
@@ -44,7 +44,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -55,7 +55,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -95,7 +95,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     // ... all handlers
@@ -194,7 +194,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { toast } from '$lib/toast';
   
   const handlers = {
@@ -320,8 +320,8 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListMember } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListMember } from '@equaltoai/greater-components-fediverse/Lists';
   
   let searchFilters = $state({
     includeFollowing: true,
@@ -465,8 +465,8 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListMember } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListMember } from '@equaltoai/greater-components-fediverse/Lists';
   
   let selectedMembers = $state(new Set<string>());
   let bulkMode = $state(false);
@@ -802,8 +802,8 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListMember } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListMember } from '@equaltoai/greater-components-fediverse/Lists';
   
   let importFile: File | null = $state(null);
   let importing = $state(false);
@@ -1140,7 +1140,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { onMount, onDestroy } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   
@@ -1594,7 +1594,7 @@ $effect(() => {
 
 ```typescript
 import { render, fireEvent, waitFor } from '@testing-library/svelte';
-import * as Lists from '@greater/fediverse/Lists';
+import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 
 describe('Lists.MemberPicker', () => {
   test('searches for accounts', async () => {

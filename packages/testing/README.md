@@ -1,4 +1,4 @@
-# @greater/testing
+# @equaltoai/greater-components-testing
 
 Comprehensive accessibility testing utilities for the Greater Components library. This package provides tools for automated accessibility testing, keyboard navigation validation, visual regression testing, and WCAG compliance checking.
 
@@ -35,7 +35,7 @@ Comprehensive accessibility testing utilities for the Greater Components library
 ## Installation
 
 ```bash
-pnpm add -D @greater/testing
+pnpm add -D @equaltoai/greater-components-testing
 ```
 
 ### Peer Dependencies
@@ -59,7 +59,7 @@ pnpm add -D axe-core @axe-core/playwright
 
 ```typescript
 import { test, expect } from '@playwright/test';
-import { checkAccessibility, setupAxe } from '@greater/testing/playwright';
+import { checkAccessibility, setupAxe } from '@equaltoai/greater-components-testing/playwright';
 
 test('component is accessible', async ({ page }) => {
   await page.goto('/your-component');
@@ -76,7 +76,7 @@ test('component is accessible', async ({ page }) => {
 ### Keyboard Navigation Testing
 
 ```typescript
-import { testTabOrder, testKeyboardShortcuts } from '@greater/testing/playwright';
+import { testTabOrder, testKeyboardShortcuts } from '@equaltoai/greater-components-testing/playwright';
 
 test('keyboard navigation works', async ({ page }) => {
   await page.goto('/your-component');
@@ -105,7 +105,7 @@ test('keyboard navigation works', async ({ page }) => {
 ### Visual Regression Testing
 
 ```typescript
-import { testFocusStateVisual, testAllInteractiveStatesVisual } from '@greater/testing/playwright';
+import { testFocusStateVisual, testAllInteractiveStatesVisual } from '@equaltoai/greater-components-testing/playwright';
 
 test('focus states are consistent', async ({ page }) => {
   await page.goto('/your-component');
@@ -123,7 +123,7 @@ test('focus states are consistent', async ({ page }) => {
 
 ```typescript
 import { render, screen } from '@testing-library/svelte';
-import { runA11yTests, getByTestId } from '@greater/testing/vitest';
+import { runA11yTests, getByTestId } from '@equaltoai/greater-components-testing/vitest';
 import YourComponent from './YourComponent.svelte';
 
 test('component passes accessibility checks', async () => {
@@ -169,7 +169,7 @@ export default defineConfig({
 Customize axe-core rules for your needs:
 
 ```typescript
-import { defaultAxeConfig, strictAxeConfig } from '@greater/testing/a11y';
+import { defaultAxeConfig, strictAxeConfig } from '@equaltoai/greater-components-testing/a11y';
 
 const customConfig = {
   ...defaultAxeConfig,
@@ -210,7 +210,7 @@ export const parameters = {
 ### Theme Testing
 
 ```typescript
-import { testThemeAccessibility } from '@greater/testing/playwright';
+import { testThemeAccessibility } from '@equaltoai/greater-components-testing/playwright';
 
 test('accessible across all themes', async ({ page }) => {
   const results = await testThemeAccessibility(page, ['light', 'dark', 'highContrast']);
@@ -225,7 +225,7 @@ test('accessible across all themes', async ({ page }) => {
 ### Density Testing
 
 ```typescript
-import { testDensityAccessibility } from '@greater/testing/playwright';
+import { testDensityAccessibility } from '@equaltoai/greater-components-testing/playwright';
 
 test('accessible across all densities', async ({ page }) => {
   const results = await testDensityAccessibility(page, ['compact', 'comfortable', 'spacious']);
@@ -289,7 +289,7 @@ node scripts/check-a11y-compliance.js --standard=AA --fail-on-violations=critica
 
 ## Available Test Utilities
 
-### Axe Helpers (`@greater/testing/a11y`)
+### Axe Helpers (`@equaltoai/greater-components-testing/a11y`)
 - `setupAxe()` - Configure axe with custom rules
 - `runAxeTest()` - Execute accessibility tests
 - `checkAccessibility()` - Validate and report violations

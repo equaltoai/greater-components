@@ -1,7 +1,7 @@
 # Notifications.Item
 
 **Component**: Notification Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 12 passing tests
 
@@ -30,7 +30,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,7 +39,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   
   const notification = {
     id: '1',
@@ -170,8 +170,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   const notifications: Notification[] = [
     // Follow notification
@@ -377,8 +377,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   const notification: Notification = {
     id: '1',
@@ -573,8 +573,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([
     {
@@ -811,8 +811,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   const notification: Notification = {
     id: '1',
@@ -1125,8 +1125,8 @@ The component automatically calls handlers from the parent `Notifications.Root` 
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   const notification: Notification = {
     id: '1',
@@ -1388,7 +1388,7 @@ Test file: `packages/fediverse/tests/NotificationItem.test.ts`
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Notifications } from '@greater/fediverse';
+import { Notifications } from '@equaltoai/greater-components-fediverse';
 
 describe('Notifications.Item', () => {
   it('renders notification correctly', () => {

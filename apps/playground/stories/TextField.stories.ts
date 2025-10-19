@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import { TextField } from '@greater/primitives';
+import { TextField } from '@equaltoai/greater-components-primitives';
 import TextFieldDemo from './TextFieldDemo.svelte';
 
 const meta: Meta<TextField> = {
@@ -23,7 +23,7 @@ A flexible text input component with built-in validation states and accessibilit
 
 \`\`\`svelte
 <script>
-  import { TextField } from '@greater/primitives';
+  import { TextField } from '@equaltoai/greater-components-primitives';
   let value = '';
 </script>
 

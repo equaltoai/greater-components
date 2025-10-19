@@ -1,5 +1,5 @@
 {
-  "name": "@greater/playground",
+  "name": "@equaltoai/playground",
   "version": "0.0.2",
   "type": "module",
   "private": true,
@@ -14,11 +14,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@greater/icons": "workspace:*",
-    "@greater/primitives": "workspace:*",
-    "@greater/tokens": "workspace:*",
-    "@greater/utils": "workspace:*",
-    "@greater/fediverse": "workspace:*"
+    "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "@equaltoai/greater-components-fediverse": "workspace:*"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^2.0.2",

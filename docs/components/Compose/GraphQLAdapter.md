@@ -1,7 +1,7 @@
 # Compose Utilities: GraphQLAdapter
 
 **Module**: GraphQL Integration Adapter  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Export**: `Compose.GraphQLAdapter` or direct imports
 
 ---
@@ -25,7 +25,7 @@ The `GraphQLAdapter` utility provides high-level handlers for integrating Compos
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 npm install @urql/svelte graphql  # or @apollo/client
 ```
 
@@ -54,7 +54,7 @@ function createGraphQLComposeHandlers(
 
 **Example**:
 ```typescript
-import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 import { getContextClient } from '@urql/svelte';
 
 const client = getContextClient();
@@ -88,7 +88,7 @@ function createOptimisticStatus(
 
 **Example**:
 ```typescript
-import { createOptimisticStatus } from '@greater/fediverse/Compose';
+import { createOptimisticStatus } from '@equaltoai/greater-components-fediverse/Compose';
 
 const optimisticStatus = createOptimisticStatus('Hello world!', {
   visibility: 'public',
@@ -125,7 +125,7 @@ function createOptimisticComposeHandlers(
 
 **Example**:
 ```typescript
-import { createOptimisticComposeHandlers } from '@greater/fediverse/Compose';
+import { createOptimisticComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 
 const handlers = createOptimisticComposeHandlers(client, {
   currentUser: {
@@ -159,7 +159,7 @@ function createComposeHandlers(
 
 **Example**:
 ```typescript
-import { createComposeHandlers } from '@greater/fediverse/Compose';
+import { createComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 
 const handlers = createComposeHandlers(client);
 ```
@@ -173,9 +173,9 @@ const handlers = createComposeHandlers(client);
 Simple integration with URQL:
 
 ```typescript
-import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 import { getContextClient } from '@urql/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 const client = getContextClient();
 const handlers = createGraphQLComposeHandlers(client);
@@ -192,7 +192,7 @@ const handlers = createGraphQLComposeHandlers(client);
 Enable optimistic UI updates:
 
 ```typescript
-import { createOptimisticComposeHandlers } from '@greater/fediverse/Compose';
+import { createOptimisticComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 import { getContextClient } from '@urql/svelte';
 
 const client = getContextClient();
@@ -230,7 +230,7 @@ const handlers = createOptimisticComposeHandlers(client, {
 Use custom mutations:
 
 ```typescript
-import { createComposeHandlers } from '@greater/fediverse/Compose';
+import { createComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 import { gql } from '@urql/svelte';
 
 const CREATE_STATUS_MUTATION = gql`
@@ -282,17 +282,22 @@ const handlers = {
 Handle media uploads with GraphQL:
 
 ```typescript
-import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 import { gql } from '@urql/svelte';
 
 const UPLOAD_MEDIA_MUTATION = gql`
-  mutation UploadMedia($file: Upload!, $description: String, $focus: String) {
-    uploadMedia(file: $file, description: $description, focus: $focus) {
-      id
-      url
-      previewUrl
-      type
-      description
+  mutation UploadMedia($input: UploadMediaInput!) {
+    uploadMedia(input: $input) {
+      uploadId
+      media {
+        id
+        url
+        previewUrl
+        description
+        sensitive
+        spoilerText
+        mediaCategory
+      }
     }
   }
 `;
@@ -303,16 +308,22 @@ const handlers = createGraphQLComposeHandlers(client, {
 
     for (const file of files) {
       const result = await client.mutation(UPLOAD_MEDIA_MUTATION, {
-        file: file.file,
-        description: file.description,
-        focus: file.focalPoint ? `${file.focalPoint.x},${file.focalPoint.y}` : null
+        input: {
+          file: file.file,
+          filename: file.file.name,
+          description: file.description,
+          sensitive: file.sensitive,
+          spoilerText: file.spoilerText,
+          mediaType: file.mediaCategory,
+          focus: file.focalPoint ? { x: file.focalPoint.x, y: file.focalPoint.y } : undefined
+        }
       });
 
       if (result.error) {
         throw new Error(`Failed to upload ${file.file.name}`);
       }
 
-      mediaIds.push(result.data.uploadMedia.id);
+      mediaIds.push(result.data.uploadMedia.media.id);
     }
 
     return mediaIds;
@@ -325,7 +336,7 @@ const handlers = createGraphQLComposeHandlers(client, {
 Post threads with GraphQL:
 
 ```typescript
-import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 
 const handlers = createGraphQLComposeHandlers(client, {
   async onSubmitThread(posts) {
@@ -364,7 +375,7 @@ const handlers = createGraphQLComposeHandlers(client, {
 Implement retry logic:
 
 ```typescript
-import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 
 async function retryMutation(mutationFn, maxRetries = 3) {
   let lastError;
@@ -408,7 +419,7 @@ const handlers = createGraphQLComposeHandlers(client, {
 Update Apollo/URQL cache after creating status:
 
 ```typescript
-import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 
 const handlers = createGraphQLComposeHandlers(client, {
   async onSubmit(data) {
@@ -448,7 +459,7 @@ const handlers = createGraphQLComposeHandlers(client, {
 Use with Apollo Client:
 
 ```typescript
-import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 import { useMutation } from '@apollo/client';
 
 const [createStatus] = useMutation(CREATE_STATUS_MUTATION);
@@ -596,7 +607,7 @@ enum MediaType {
 
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-import { createGraphQLComposeHandlers, createOptimisticStatus } from '@greater/fediverse/Compose';
+import { createGraphQLComposeHandlers, createOptimisticStatus } from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('GraphQLAdapter', () => {
   const mockClient = {
@@ -732,7 +743,7 @@ const handlers = createGraphQLComposeHandlers(client, {
 ## 🔗 Related
 
 - [Compose.Root](./Root.md) - Main compose component
-- [@greater/adapters](../../adapters/README.md) - Backend adapters
+- [@equaltoai/greater-components-adapters](../../adapters/README.md) - Backend adapters
 
 ---
 
@@ -806,4 +817,3 @@ try {
 ---
 
 **Need help?** Check the [Troubleshooting Guide](../../troubleshooting/README.md) or open an issue on [GitHub](https://github.com/lesserphp/greater-components).
-

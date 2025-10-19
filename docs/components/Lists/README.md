@@ -1,7 +1,7 @@
 # Lists Components
 
 **Component Group**: Lists Management  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 364 passing tests
 
@@ -65,7 +65,7 @@ Lists are a powerful way to curate content and reduce noise in the main timeline
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -76,7 +76,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -136,7 +136,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { createWebSocketClient } from '$lib/websocket';
   
   const ws = createWebSocketClient('wss://api.example.com/graphql');
@@ -233,7 +233,7 @@ Displays the timeline of posts from list members. Shows members list with abilit
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -282,7 +282,7 @@ Displays the timeline of posts from list members. Shows members list with abilit
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   let showMemberPicker = $state(false);
   
@@ -312,8 +312,8 @@ Displays the timeline of posts from list members. Shows members list with abilit
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import { createListsAdapter } from '@greater/adapters';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import { createListsAdapter } from '@equaltoai/greater-components-adapters';
   
   const adapter = createListsAdapter({
     endpoint: 'https://api.example.com/graphql',
@@ -345,7 +345,7 @@ Displays the timeline of posts from list members. Shows members list with abilit
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 </script>
 
 <Lists.Root {handlers} class="custom-lists">
@@ -376,7 +376,7 @@ Displays the timeline of posts from list members. Shows members list with abilit
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { toast } from '$lib/toast';
   
   const handlers = {
@@ -652,7 +652,7 @@ const handlers = {
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import * as Lists from '@greater/fediverse/Lists';
+import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 
 test('creates a list', async () => {
   const onCreate = vi.fn().mockResolvedValue({
@@ -738,7 +738,7 @@ const { state, fetchLists, createList } = Lists.getListsContext();
 ### **Validation**
 
 ```typescript
-import { validateListForm } from '@greater/fediverse/Lists';
+import { validateListForm } from '@equaltoai/greater-components-fediverse/Lists';
 
 const error = validateListForm({
   title: '',

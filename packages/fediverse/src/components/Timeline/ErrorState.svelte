@@ -19,7 +19,7 @@ Shows error message with retry action.
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 
 	interface Props {
 		/**

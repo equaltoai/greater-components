@@ -8,6 +8,7 @@
  */
 
 import { getContext, setContext } from 'svelte';
+import type { MediaCategory } from '../../types.js';
 
 const MESSAGES_CONTEXT_KEY = Symbol('messages-context');
 
@@ -35,6 +36,10 @@ export interface DirectMessage {
 		url: string;
 		type: string;
 		previewUrl?: string;
+		sensitive?: boolean;
+		spoilerText?: string | null;
+		mediaCategory?: MediaCategory;
+		description?: string;
 	}[];
 }
 
@@ -86,7 +91,17 @@ export interface MessagesHandlers {
 	/**
 	 * Upload media
 	 */
-	onUploadMedia?: (file: File) => Promise<{ id: string; url: string }>;
+	onUploadMedia?: (
+		file: File,
+		metadata: MessageMediaUploadMetadata
+	) => Promise<{
+		id: string;
+		url: string;
+		previewUrl?: string;
+		sensitive?: boolean;
+		spoilerText?: string | null;
+		mediaCategory?: MediaCategory;
+	}>;
 
 	/**
 	 * Handle conversation click
@@ -97,6 +112,13 @@ export interface MessagesHandlers {
 	 * Search for users to start new conversation
 	 */
 	onSearchParticipants?: (query: string) => Promise<MessageParticipant[]>;
+}
+
+export interface MessageMediaUploadMetadata {
+	mediaCategory: MediaCategory;
+	sensitive: boolean;
+	spoilerText?: string;
+	description?: string;
 }
 
 /**

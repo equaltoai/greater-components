@@ -380,13 +380,20 @@ export function withRealtime<TProps extends UnknownRecord>(
 			};
 		});
 
-		const handlerProps = props as Partial<RealtimeEnhancements>;
-		const integrationState = integration.state as UnknownRecord & { connected?: boolean };
-		const timelineIntegration = isTimelineIntegration(integration) ? integration : null;
-		const notificationIntegration = isNotificationIntegration(integration) ? integration : null;
+			const handlerProps = props as Partial<RealtimeEnhancements>;
+			const rawIntegrationState = integration.state;
+			const isConnected =
+				typeof rawIntegrationState === 'object' &&
+				rawIntegrationState !== null &&
+				'connected' in rawIntegrationState &&
+				typeof (rawIntegrationState as { connected?: unknown }).connected === 'boolean'
+					? (rawIntegrationState as { connected: boolean }).connected
+					: false;
+			const timelineIntegration = isTimelineIntegration(integration) ? integration : null;
+			const notificationIntegration = isNotificationIntegration(integration) ? integration : null;
 
-		const enhancedProps: RealtimeEnhancements = {
-			connected: typeof integrationState.connected === 'boolean' ? integrationState.connected : false,
+			const enhancedProps: RealtimeEnhancements = {
+				connected: isConnected,
 			onLoadMore:
 				handlerProps.onLoadMore ??
 				(notificationIntegration
@@ -428,11 +435,16 @@ export function withRealtime<TProps extends UnknownRecord>(
 					: undefined),
 		};
 
-		const combinedProps = {
-			...props,
-			...integrationState,
-			...enhancedProps,
-		} as TProps & UnknownRecord & RealtimeEnhancements;
+			const stateProps =
+				typeof rawIntegrationState === 'object' && rawIntegrationState !== null
+					? (rawIntegrationState as unknown as UnknownRecord)
+					: {};
+
+			const combinedProps = {
+				...props,
+				...stateProps,
+				...enhancedProps,
+			} as TProps & UnknownRecord & RealtimeEnhancements;
 
 		return Component(combinedProps);
 	};

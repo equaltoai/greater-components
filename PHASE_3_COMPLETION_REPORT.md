@@ -407,7 +407,7 @@ export type TransportEventName = keyof TransportEventMap;
 ### Admin Store Usage
 
 ```typescript
-import { createAdminStreamingStore } from '@greater/adapters';
+import { createAdminStreamingStore } from '@equaltoai/greater-components-adapters';
 
 const adminStore = createAdminStreamingStore({
   maxHistorySize: 100,
@@ -535,7 +535,7 @@ await hashtagTimeline.loadInitial();
 ### Subscribing to Admin Events
 
 ```typescript
-import { createAdminStreamingStore, LesserGraphQLAdapter } from '@greater/adapters';
+import { createAdminStreamingStore, LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 const adapter = new LesserGraphQLAdapter({ uri: 'https://api.example.com/graphql' });
 const adminStore = createAdminStreamingStore();

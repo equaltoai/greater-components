@@ -11,7 +11,7 @@
  * - Portal rendering (optional)
  * - Animation support
  * 
- * @module @greater/headless/modal
+ * @module @equaltoai/greater-components-headless/modal
  */
 
 import { generateId } from '../utils/id';

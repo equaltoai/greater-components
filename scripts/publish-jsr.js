@@ -117,7 +117,7 @@ function buildPackage(packageName) {
   console.log(`\n📦 Building ${packageName}...`);
   
   try {
-    exec(`pnpm --filter @greater/${packageName} build`);
+    exec(`pnpm --filter @equaltoai/${packageName} build`);
     console.log(`✓ ${packageName} built successfully`);
     return true;
   } catch (error) {
@@ -231,7 +231,7 @@ async function main() {
   } else {
     console.log('\n📚 Packages are now available on JSR:');
     packagesToPublish.forEach(pkg => {
-      console.log(`   https://jsr.io/@greater/${pkg}`);
+      console.log(`   https://jsr.io/@equaltoai/${pkg}`);
     });
   }
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createTrustGraphContext } from '../../src/components/Admin/TrustGraph/context.js';
   import TrustGraphVisualization from '../../src/components/Admin/TrustGraph/Visualization.svelte';
-  import type { LesserGraphQLAdapter } from '@greater/adapters';
+  import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
   let {
     adapter,

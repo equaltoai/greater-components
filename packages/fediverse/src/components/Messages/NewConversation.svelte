@@ -4,8 +4,8 @@
   Interface for creating a new direct message conversation with one or more recipients.
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
-	import { createModal } from '@greater/headless/modal';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import { getMessagesContext, type MessageParticipant } from './context.js';
 
 	interface Props {

@@ -1,7 +1,7 @@
 # Filters.Manager
 
 **Component**: Filter List and Management Interface  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 64 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@greater/fediverse';
+  import { Filters } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onFetchFilters: async () => {

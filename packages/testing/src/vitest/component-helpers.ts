@@ -5,7 +5,9 @@
 
 import { render, cleanup } from '@testing-library/svelte';
 import { afterEach } from 'vitest';
-import type { ComponentType } from 'svelte';
+
+type RenderableComponent = Parameters<typeof render>[0];
+type ComponentInput = Parameters<typeof render>[1];
 
 // Auto cleanup after each test
 afterEach(() => {
@@ -27,9 +29,9 @@ type DensityOption = NonNullable<A11yRenderOptions['density']>;
 /**
  * Render component with accessibility context
  */
-export function renderWithA11yContext<Props extends Record<string, unknown>>(
-  ComponentCtor: ComponentType<Props>,
-  props?: Props,
+export function renderWithA11yContext(
+  ComponentCtor: RenderableComponent,
+  props?: ComponentInput,
   options: A11yRenderOptions = {}
 ): ReturnType<typeof render> {
   const {
@@ -71,15 +73,17 @@ export function renderWithA11yContext<Props extends Record<string, unknown>>(
     });
   }
   
-  return render(ComponentCtor, props ? { props } : undefined);
+  return (props !== undefined ? render(ComponentCtor, props) : render(ComponentCtor)) as unknown as ReturnType<
+    typeof render
+  >;
 }
 
 /**
  * Test component across different themes
  */
-export async function testComponentThemes<Props extends Record<string, unknown>>(
-  ComponentCtor: ComponentType<Props>,
-  props: Props,
+export async function testComponentThemes(
+  ComponentCtor: RenderableComponent,
+  props: ComponentInput,
   testFn: (container: HTMLElement, theme: ThemeOption) => void | Promise<void>,
   themes: ThemeOption[] = ['light', 'dark']
 ): Promise<void> {
@@ -94,9 +98,9 @@ export async function testComponentThemes<Props extends Record<string, unknown>>
 /**
  * Test component across different densities
  */
-export async function testComponentDensities<Props extends Record<string, unknown>>(
-  ComponentCtor: ComponentType<Props>,
-  props: Props,
+export async function testComponentDensities(
+  ComponentCtor: RenderableComponent,
+  props: ComponentInput,
   testFn: (container: HTMLElement, density: DensityOption) => void | Promise<void>,
   densities: DensityOption[] = ['compact', 'comfortable', 'spacious']
 ): Promise<void> {
@@ -134,9 +138,7 @@ export function setupA11yTestEnvironment() {
     readonly root: Element | null = null;
     readonly rootMargin = '0px';
     readonly thresholds: ReadonlyArray<number> = [0];
-    constructor(private readonly callback: IntersectionObserverCallback) {
-      this.callback = callback;
-    }
+    constructor(_callback: IntersectionObserverCallback) {}
     observe(_target: Element): void {}
     unobserve(_target: Element): void {}
     disconnect(): void {}
@@ -148,9 +150,7 @@ export function setupA11yTestEnvironment() {
   
   // Mock ResizeObserver
   class MockResizeObserver implements ResizeObserver {
-    constructor(private readonly callback: ResizeObserverCallback) {
-      this.callback = callback;
-    }
+    constructor(_callback: ResizeObserverCallback) {}
     observe(_target: Element, _options?: ResizeObserverOptions): void {}
     unobserve(_target: Element): void {}
     disconnect(): void {}

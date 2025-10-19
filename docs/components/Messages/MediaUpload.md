@@ -1,7 +1,7 @@
 # Messages.MediaUpload
 
 **Component**: Media File Upload  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 68 passing tests
 
@@ -44,7 +44,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -55,7 +55,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   
   const handleUpload = async (file: File) => {
     const formData = new FormData();
@@ -77,7 +77,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let uploadedFiles = $state<Array<{ id: string; url: string; type: string }>>([]);
@@ -166,7 +166,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   
   const handleUpload = async (file: File) => {
     const formData = new FormData();
@@ -282,7 +282,7 @@ const handleRemove = (fileId: string) => {
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let uploadedImages = $state<Array<{ id: string; url: string }>>([]);
@@ -449,7 +449,7 @@ const handleRemove = (fileId: string) => {
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let isDragging = $state(false);
@@ -716,7 +716,7 @@ const handleRemove = (fileId: string) => {
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let originalSize = $state<number>(0);
@@ -909,7 +909,7 @@ const handleRemove = (fileId: string) => {
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let uploadedMedia = $state<Array<{
@@ -1149,7 +1149,7 @@ const handleRemove = (fileId: string) => {
 
 ```svelte
 <script lang="ts">
-  import { MediaUpload } from '@greater/fediverse/Messages';
+  import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth';
   
@@ -1423,7 +1423,7 @@ const compressImage = async (file: File) => {
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import { MediaUpload } from '@greater/fediverse/Messages';
+import { MediaUpload } from '@equaltoai/greater-components-fediverse/Messages';
 
 test('uploads file', async () => {
   const onUpload = vi.fn().mockResolvedValue({ id: '1', url: 'https://...' });

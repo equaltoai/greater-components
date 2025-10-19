@@ -1,7 +1,7 @@
 # Compose Utilities: MediaUploadHandler
 
 **Module**: Media File Processing Utility  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Export**: `Compose.MediaUploadHandler` or direct imports
 
 ---
@@ -26,7 +26,7 @@ The `MediaUploadHandler` utility provides comprehensive media file processing ca
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -84,7 +84,7 @@ function detectMediaType(file: File): 'image' | 'video' | 'audio' | 'unknown'
 
 **Example**:
 ```typescript
-import { detectMediaType } from '@greater/fediverse/Compose';
+import { detectMediaType } from '@equaltoai/greater-components-fediverse/Compose';
 
 const file = new File(['...'], 'photo.jpg', { type: 'image/jpeg' });
 console.log(detectMediaType(file)); // "image"
@@ -107,7 +107,7 @@ function formatFileSize(bytes: number): string
 
 **Example**:
 ```typescript
-import { formatFileSize } from '@greater/fediverse/Compose';
+import { formatFileSize } from '@equaltoai/greater-components-fediverse/Compose';
 
 console.log(formatFileSize(1024));           // "1 KB"
 console.log(formatFileSize(1048576));        // "1 MB"
@@ -136,7 +136,7 @@ function validateFile(
 
 **Example**:
 ```typescript
-import { validateFile } from '@greater/fediverse/Compose';
+import { validateFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 const file = new File(['...'], 'photo.jpg', { type: 'image/jpeg' });
 const result = validateFile(file, {
@@ -172,7 +172,7 @@ function validateFiles(
 
 **Example**:
 ```typescript
-import { validateFiles } from '@greater/fediverse/Compose';
+import { validateFiles } from '@equaltoai/greater-components-fediverse/Compose';
 
 const files = [file1, file2, file3];
 const result = validateFiles(files, {
@@ -201,7 +201,7 @@ function createPreviewUrl(file: File): string
 
 **Example**:
 ```typescript
-import { createPreviewUrl } from '@greater/fediverse/Compose';
+import { createPreviewUrl } from '@equaltoai/greater-components-fediverse/Compose';
 
 const file = new File(['...'], 'photo.jpg', { type: 'image/jpeg' });
 const previewUrl = createPreviewUrl(file);
@@ -235,7 +235,7 @@ function generateThumbnail(
 
 **Example**:
 ```typescript
-import { generateThumbnail } from '@greater/fediverse/Compose';
+import { generateThumbnail } from '@equaltoai/greater-components-fediverse/Compose';
 
 const videoFile = new File(['...'], 'video.mp4', { type: 'video/mp4' });
 const thumbnail = await generateThumbnail(videoFile, 2); // 2 seconds in
@@ -263,7 +263,7 @@ function getImageDimensions(file: File): Promise<{
 
 **Example**:
 ```typescript
-import { getImageDimensions } from '@greater/fediverse/Compose';
+import { getImageDimensions } from '@equaltoai/greater-components-fediverse/Compose';
 
 const imageFile = new File(['...'], 'photo.jpg', { type: 'image/jpeg' });
 const { width, height } = await getImageDimensions(imageFile);
@@ -288,7 +288,7 @@ function getVideoDuration(file: File): Promise<number>
 
 **Example**:
 ```typescript
-import { getVideoDuration } from '@greater/fediverse/Compose';
+import { getVideoDuration } from '@equaltoai/greater-components-fediverse/Compose';
 
 const videoFile = new File(['...'], 'video.mp4', { type: 'video/mp4' });
 const duration = await getVideoDuration(videoFile);
@@ -317,7 +317,7 @@ function processFile(
 
 **Example**:
 ```typescript
-import { processFile } from '@greater/fediverse/Compose';
+import { processFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 const file = new File(['...'], 'photo.jpg', { type: 'image/jpeg' });
 const mediaFile = await processFile(file);
@@ -353,7 +353,7 @@ function processFiles(
 
 **Example**:
 ```typescript
-import { processFiles } from '@greater/fediverse/Compose';
+import { processFiles } from '@equaltoai/greater-components-fediverse/Compose';
 
 const files = [file1, file2, file3];
 const mediaFiles = await processFiles(files);
@@ -382,7 +382,7 @@ function cleanupMediaFile(mediaFile: MediaFile): void
 
 **Example**:
 ```typescript
-import { cleanupMediaFile } from '@greater/fediverse/Compose';
+import { cleanupMediaFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 // After upload is complete
 cleanupMediaFile(mediaFile);
@@ -403,7 +403,7 @@ function cleanupMediaFiles(mediaFiles: MediaFile[]): void
 
 **Example**:
 ```typescript
-import { cleanupMediaFiles } from '@greater/fediverse/Compose';
+import { cleanupMediaFiles } from '@equaltoai/greater-components-fediverse/Compose';
 
 // Cleanup all files
 cleanupMediaFiles(allMediaFiles);
@@ -418,7 +418,7 @@ cleanupMediaFiles(allMediaFiles);
 Handle file input with validation:
 
 ```typescript
-import { processFiles, validateFiles } from '@greater/fediverse/Compose';
+import { processFiles, validateFiles } from '@equaltoai/greater-components-fediverse/Compose';
 
 const input = document.querySelector('input[type="file"]');
 const config = {
@@ -461,7 +461,7 @@ function displayPreviews(mediaFiles) {
 Generate and display video thumbnails:
 
 ```typescript
-import { generateThumbnail, getVideoDuration } from '@greater/fediverse/Compose';
+import { generateThumbnail, getVideoDuration } from '@equaltoai/greater-components-fediverse/Compose';
 
 async function handleVideoUpload(videoFile) {
   try {
@@ -490,7 +490,7 @@ async function handleVideoUpload(videoFile) {
 Validate image dimensions:
 
 ```typescript
-import { getImageDimensions, validateFile } from '@greater/fediverse/Compose';
+import { getImageDimensions, validateFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 async function validateImageDimensions(file) {
   // Basic validation
@@ -536,7 +536,7 @@ async function validateImageDimensions(file) {
 Handle drag & drop uploads:
 
 ```typescript
-import { processFiles } from '@greater/fediverse/Compose';
+import { processFiles } from '@equaltoai/greater-components-fediverse/Compose';
 
 const dropZone = document.querySelector('.drop-zone');
 
@@ -582,7 +582,7 @@ import {
   generateThumbnail,
   getImageDimensions,
   getVideoDuration
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 async function processMediaFile(file) {
   const type = detectMediaType(file);
@@ -618,7 +618,7 @@ async function processMediaFile(file) {
 Properly cleanup resources:
 
 ```typescript
-import { processFiles, cleanupMediaFiles } from '@greater/fediverse/Compose';
+import { processFiles, cleanupMediaFiles } from '@equaltoai/greater-components-fediverse/Compose';
 
 let currentMediaFiles = [];
 
@@ -644,7 +644,7 @@ window.addEventListener('beforeunload', () => {
 Show warnings for large files:
 
 ```typescript
-import { formatFileSize, validateFile } from '@greater/fediverse/Compose';
+import { formatFileSize, validateFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 function checkFileSize(file) {
   const size = file.size;
@@ -678,7 +678,7 @@ input.addEventListener('change', async (e) => {
 Process multiple files with individual error handling:
 
 ```typescript
-import { processFile } from '@greater/fediverse/Compose';
+import { processFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 async function batchProcessFiles(files) {
   const results = await Promise.allSettled(
@@ -722,7 +722,7 @@ import {
   validateFile,
   getImageDimensions,
   generateThumbnail
-} from '@greater/fediverse/Compose';
+} from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('MediaUploadHandler', () => {
   describe('detectMediaType', () => {

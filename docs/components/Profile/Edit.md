@@ -1,7 +1,7 @@
 # Profile.Edit
 
 **Component**: Profile Editing Form  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 38 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -121,8 +121,8 @@ Simple profile editing with validation:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData, ProfileEditData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData, ProfileEditData } from '@equaltoai/greater-components-fediverse/Profile';
 
   let profile = $state<ProfileData>({
     id: '123',
@@ -329,7 +329,7 @@ Compress images before upload to reduce bandwidth:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import imageCompression from 'browser-image-compression';
 
   const profile = {
@@ -431,9 +431,9 @@ Automatically save drafts to prevent data loss:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { debounce } from 'lodash-es';
-  import type { ProfileEditData } from '@greater/fediverse/Profile';
+  import type { ProfileEditData } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -605,7 +605,7 @@ Upload images to server for processing:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -801,8 +801,8 @@ Add validation and helpful hints for users:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileEditData, ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileEditData, ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -1270,7 +1270,7 @@ The Edit component is fully accessible:
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import * as Profile from '@greater/fediverse/Profile';
+import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Edit', () => {
   const mockProfile = {

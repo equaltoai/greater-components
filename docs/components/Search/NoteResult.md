@@ -1,7 +1,7 @@
 # Search.NoteResult
 
 **Component**: Post/Status Search Result Item  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 13 passing tests
 
@@ -30,7 +30,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -39,7 +39,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -152,8 +152,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let totalNotes = $state(0);
   let averageEngagement = $state(0);
@@ -260,8 +260,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchNote } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchNote } from '@equaltoai/greater-components-fediverse/types';
 
   let expandedWarnings = $state<Set<string>>(new Set());
 
@@ -560,8 +560,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchNote } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchNote } from '@equaltoai/greater-components-fediverse/types';
 
   let sortBy = $state<'relevance' | 'engagement' | 'recent'>('relevance');
   let viralThreshold = $state(1000); // Total engagement threshold
@@ -918,8 +918,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchNote } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchNote } from '@equaltoai/greater-components-fediverse/types';
 
   interface NoteWithContext extends SearchNote {
     inReplyTo?: {
@@ -1253,8 +1253,8 @@ The component handles events through the Search context:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults, SearchNote } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults, SearchNote } from '@equaltoai/greater-components-fediverse/types';
 
   let bookmarkedNotes = $state<Set<string>>(new Set());
   let readLater = $state<SearchNote[]>([]);
@@ -1710,7 +1710,7 @@ Test file: `packages/fediverse/tests/Search/NoteResult.test.ts`
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.NoteResult', () => {
   it('renders note content with highlighting', () => {

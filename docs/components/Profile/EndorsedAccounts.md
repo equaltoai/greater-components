@@ -1,7 +1,7 @@
 # Profile.EndorsedAccounts
 
 **Component**: Endorsed/Featured Accounts Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 20 passing tests
 
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const endorsed = [
     {
@@ -117,8 +117,8 @@ Full-featured endorsed accounts with reordering:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { EndorsedAccount } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { EndorsedAccount } from '@equaltoai/greater-components-fediverse/Profile';
 
   let endorsed = $state<EndorsedAccount[]>([
     {
@@ -340,8 +340,8 @@ Complete drag-and-drop functionality:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { EndorsedAccount } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { EndorsedAccount } from '@equaltoai/greater-components-fediverse/Profile';
 
   let endorsed = $state<EndorsedAccount[]>([
     {
@@ -589,8 +589,8 @@ Implement adding new endorsements:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { EndorsedAccount } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { EndorsedAccount } from '@equaltoai/greater-components-fediverse/Profile';
 
   let endorsed = $state<EndorsedAccount[]>([
     {
@@ -1221,8 +1221,8 @@ Display endorsed accounts on public profile:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { EndorsedAccount } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { EndorsedAccount } from '@equaltoai/greater-components-fediverse/Profile';
 
   const endorsed: EndorsedAccount[] = [
     {
@@ -1465,7 +1465,7 @@ await db.auditLogs.create({
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import { EndorsedAccounts } from '@greater/fediverse/Profile';
+import { EndorsedAccounts } from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('EndorsedAccounts', () => {
   it('displays endorsed accounts', () => {

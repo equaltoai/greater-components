@@ -4,8 +4,8 @@
   Displays all content filters with actions to create, edit, and delete.
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
-	import { createModal } from '@greater/headless/modal';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import { getFiltersContext, formatExpiration, type ContentFilter } from './context.js';
 
 	interface Props {

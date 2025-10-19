@@ -1,7 +1,7 @@
 # Auth.BackupCodes
 
 **Component**: Backup Recovery Codes Management  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 59 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   let backupCodes = [
     'A1B2C3D4E5F6',
@@ -111,7 +111,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let backupCodes = $state([]);
   let step = $state<'setup' | 'codes' | 'complete'>('setup');
@@ -227,7 +227,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let backupCodes = $state([]);
   let loading = $state(true);
@@ -321,7 +321,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let backupCodes = $state([
     { code: 'A1B2C3D4E5F6', used: false },
@@ -448,7 +448,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let backupCodes = $state([]);
   let encryptionPassword = $state('');
@@ -635,7 +635,7 @@ interface AuthHandlers {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   import QRCode from 'qrcode';
   
   let backupCodes = $state([]);

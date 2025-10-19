@@ -4,8 +4,8 @@
 
 **Modern UI components for building accessible Fediverse applications**
 
-[![JSR](https://jsr.io/badges/@greater/primitives)](https://jsr.io/@greater/primitives)
-[![npm version](https://img.shields.io/npm/v/@greater/primitives.svg)](https://www.npmjs.com/package/@greater/primitives)
+[![JSR](https://jsr.io/badges/@equaltoai/greater-components-primitives)](https://jsr.io/@equaltoai/greater-components-primitives)
+[![npm version](https://img.shields.io/npm/v/@equaltoai/greater-components-primitives.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-primitives)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![Svelte 5](https://img.shields.io/badge/Svelte-5-orange.svg)](https://svelte.dev/)
@@ -40,35 +40,35 @@ Greater Components is a comprehensive, production-ready UI component library des
 
 ```bash
 # Headless components (NEW - for maximum flexibility)
-npx jsr add @greater/headless
+npx jsr add @equaltoai/greater-components-headless
 
 # Core styled components
-npx jsr add @greater/primitives @greater/tokens
+npx jsr add @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens
 
 # Icons (recommended)
-npx jsr add @greater/icons
+npx jsr add @equaltoai/greater-components-icons
 
 # Fediverse-specific components (for social apps)
-npx jsr add @greater/fediverse
+npx jsr add @equaltoai/greater-components-fediverse
 
 # Utilities (optional)
-npx jsr add @greater/utils
+npx jsr add @equaltoai/greater-components-utils
 ```
 
 #### Via npm
 
 ```bash
 # Core components (required)
-npm install @greater/primitives @greater/tokens
+npm install @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens
 
 # Icons (recommended)
-npm install @greater/icons
+npm install @equaltoai/greater-components-icons
 
 # Fediverse-specific components (for social apps)
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 
 # Utilities (optional)
-npm install @greater/utils
+npm install @equaltoai/greater-components-utils
 ```
 
 ### Basic Usage
@@ -77,8 +77,8 @@ npm install @greater/utils
 
 ```svelte
 <script>
-  import { Button, Modal, ThemeProvider } from '@greater/primitives';
-  import { HomeIcon, SettingsIcon } from '@greater/icons';
+  import { Button, Modal, ThemeProvider } from '@equaltoai/greater-components-primitives';
+  import { HomeIcon, SettingsIcon } from '@equaltoai/greater-components-icons';
   
   let showModal = false;
 </script>
@@ -108,8 +108,8 @@ npm install @greater/utils
 
 ```svelte
 <script>
-  import { createButton } from '@greater/headless/button';
-  import { SettingsIcon } from '@greater/icons';
+  import { createButton } from '@equaltoai/greater-components-headless/button';
+  import { SettingsIcon } from '@equaltoai/greater-components-icons';
   
   const button = createButton({
     onClick: () => console.log('Clicked!'),
@@ -145,9 +145,9 @@ npm install @greater/utils
 
 ```svelte
 <script>
-  import { LesserGraphQLAdapter } from '@greater/adapters';
-  import { Status, Admin, Hashtags } from '@greater/fediverse';
-  import { createLesserTimelineStore } from '@greater/fediverse';
+  import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+  import { Status, Admin, Hashtags } from '@equaltoai/greater-components-fediverse';
+  import { createLesserTimelineStore } from '@equaltoai/greater-components-fediverse';
   
   // Initialize Lesser adapter with GraphQL endpoint
   const adapter = new LesserGraphQLAdapter({
@@ -190,19 +190,19 @@ npm install @greater/utils
 
 | Package | Description | Version |
 |---------|-------------|---------|
-| **[@greater/headless](./packages/headless)** | 🆕 Headless UI primitives - behavior without styling | [![npm](https://img.shields.io/npm/v/@greater/headless.svg)](https://www.npmjs.com/package/@greater/headless) |
-| **[@greater/primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) | [![npm](https://img.shields.io/npm/v/@greater/primitives.svg)](https://www.npmjs.com/package/@greater/primitives) |
-| **[@greater/tokens](./packages/tokens)** | Design system tokens and theming | [![npm](https://img.shields.io/npm/v/@greater/tokens.svg)](https://www.npmjs.com/package/@greater/tokens) |
-| **[@greater/icons](./packages/icons)** | 300+ SVG icons including Fediverse-specific ones | [![npm](https://img.shields.io/npm/v/@greater/icons.svg)](https://www.npmjs.com/package/@greater/icons) |
+| **[@equaltoai/greater-components-headless](./packages/headless)** | 🆕 Headless UI primitives - behavior without styling | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-headless.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-headless) |
+| **[@equaltoai/greater-components-primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-primitives.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-primitives) |
+| **[@equaltoai/greater-components-tokens](./packages/tokens)** | Design system tokens and theming | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-tokens.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-tokens) |
+| **[@equaltoai/greater-components-icons](./packages/icons)** | 300+ SVG icons including Fediverse-specific ones | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-icons.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-icons) |
 
 ### Specialized Packages
 
 | Package | Description | Version |
 |---------|-------------|---------|
-| **[@greater/fediverse](./packages/fediverse)** | Social media components (Timeline, StatusCard, etc.) | [![npm](https://img.shields.io/npm/v/@greater/fediverse.svg)](https://www.npmjs.com/package/@greater/fediverse) |
-| **[@greater/utils](./packages/utils)** | Utility functions for web applications | [![npm](https://img.shields.io/npm/v/@greater/utils.svg)](https://www.npmjs.com/package/@greater/utils) |
-| **[@greater/adapters](./packages/adapters)** | Protocol adapters for Fediverse servers | [![npm](https://img.shields.io/npm/v/@greater/adapters.svg)](https://www.npmjs.com/package/@greater/adapters) |
-| **[@greater/testing](./packages/testing)** | Testing utilities and accessibility helpers | [![npm](https://img.shields.io/npm/v/@greater/testing.svg)](https://www.npmjs.com/package/@greater/testing) |
+| **[@equaltoai/greater-components-fediverse](./packages/fediverse)** | Social media components (Timeline, StatusCard, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-fediverse.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-fediverse) |
+| **[@equaltoai/greater-components-utils](./packages/utils)** | Utility functions for web applications | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-utils.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-utils) |
+| **[@equaltoai/greater-components-adapters](./packages/adapters)** | Protocol adapters for Fediverse servers | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-adapters.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-adapters) |
+| **[@equaltoai/greater-components-testing](./packages/testing)** | Testing utilities and accessibility helpers | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-testing.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-testing) |
 
 ## 🌟 Key Features
 
@@ -286,8 +286,8 @@ Greater Components includes a powerful theming system based on design tokens:
 Greater Components includes comprehensive testing utilities:
 
 ```javascript
-import { render, fireEvent } from '@greater/testing';
-import { Button } from '@greater/primitives';
+import { render, fireEvent } from '@equaltoai/greater-components-testing';
+import { Button } from '@equaltoai/greater-components-primitives';
 
 test('button handles clicks', () => {
   const handleClick = vi.fn();

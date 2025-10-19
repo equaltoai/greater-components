@@ -117,18 +117,18 @@ jobs:
           echo '{"name": "test-install", "type": "module", "private": true}' > package.json
           
           # Test installing core packages
-          npm install @greater/primitives@latest --verbose
-          npm install @greater/tokens@latest --verbose
-          npm install @greater/icons@latest --verbose
+          npm install @equaltoai/greater-components-primitives@latest --verbose
+          npm install @equaltoai/greater-components-tokens@latest --verbose
+          npm install @equaltoai/greater-components-icons@latest --verbose
           
           # Verify TypeScript definitions exist
           packages=("primitives" "tokens" "icons")
           for pkg in "${packages[@]}"; do
-            if [ ! -f "node_modules/@greater/$pkg/dist/index.d.ts" ]; then
-              echo "❌ TypeScript definitions missing for @greater/$pkg"
+            if [ ! -f "node_modules/@equaltoai/$pkg/dist/index.d.ts" ]; then
+              echo "❌ TypeScript definitions missing for @equaltoai/$pkg"
               exit 1
             fi
-            echo "✅ TypeScript definitions found for @greater/$pkg"
+            echo "✅ TypeScript definitions found for @equaltoai/$pkg"
           done
           
           echo "✅ All packages installed successfully"
@@ -138,11 +138,11 @@ jobs:
           # Check provenance attestations
           packages=("primitives" "tokens" "icons" "fediverse" "utils")
           for pkg in "${packages[@]}"; do
-            echo "Checking provenance for @greater/$pkg..."
-            if ! npm view @greater/$pkg --json | jq -e '.dist.attestations' > /dev/null 2>&1; then
-              echo "⚠️  No provenance attestation found for @greater/$pkg (this is expected for first-time packages)"
+            echo "Checking provenance for @equaltoai/$pkg..."
+            if ! npm view @equaltoai/$pkg --json | jq -e '.dist.attestations' > /dev/null 2>&1; then
+              echo "⚠️  No provenance attestation found for @equaltoai/$pkg (this is expected for first-time packages)"
             else
-              echo "✅ Provenance verified for @greater/$pkg"
+              echo "✅ Provenance verified for @equaltoai/$pkg"
             fi
           done
 

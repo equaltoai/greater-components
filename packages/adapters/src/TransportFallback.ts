@@ -21,7 +21,10 @@ export class TransportFallback implements TransportAdapter<TransportFallbackStat
     forceTransport: 'sse' | 'polling' | 'auto';
     logger: TransportLogger;
   };
-  private currentTransport: TransportAdapter<SseClientState | HttpPollingClientState> | null = null;
+  private currentTransport:
+    | TransportAdapter<SseClientState>
+    | TransportAdapter<HttpPollingClientState>
+    | null = null;
   private transportType: 'sse' | 'polling' | null = null;
   private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();
   private unsubscribers: Map<string, (() => void)[]> = new Map();
@@ -196,8 +199,9 @@ export class TransportFallback implements TransportAdapter<TransportFallbackStat
   }
 
   private connectSse(): void {
-    const instantiateClient = () => new SseClient(this.config.primary);
-    let sseClient: TransportAdapter | null = null;
+    const instantiateClient = (): TransportAdapter<SseClientState> =>
+      new SseClient(this.config.primary);
+    let sseClient: TransportAdapter<SseClientState> | null = null;
 
     try {
       sseClient = instantiateClient();
@@ -236,6 +240,10 @@ export class TransportFallback implements TransportAdapter<TransportFallbackStat
       this.addUnsubscribers('_fallback_error', errorUnsubscribe);
     }
 
+    if (!this.currentTransport) {
+      return;
+    }
+
     this.currentTransport.connect();
   }
 
@@ -245,6 +253,10 @@ export class TransportFallback implements TransportAdapter<TransportFallbackStat
 
     // Subscribe existing handlers
     this.subscribeHandlers();
+
+    if (!this.currentTransport) {
+      return;
+    }
 
     this.currentTransport.connect();
   }
@@ -347,7 +359,7 @@ export class TransportFallback implements TransportAdapter<TransportFallbackStat
       try {
         handler(wsEvent);
       } catch (error) {
-        this.logger.error(`Error in fallback event handler for ${event}`, error);
+        this.logger.error(`Error in fallback event handler for ${event}`, { error });
       }
     });
   }

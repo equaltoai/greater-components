@@ -9,7 +9,7 @@
 - 2025-02-14: Hardened `packages/adapters/src/stores/notificationStore.ts` with persistent transport subscriptions, limit enforcement, and streaming dedupe so Lesser queues stay bounded while tests use the new debounce helpers.
 - 2025-02-14: Refactored `packages/adapters/src/stores/presenceStore.ts` around proxy-backed maps and priority-aware merging to keep stats reactive, preserve idle→active transitions, and satisfy the revised suite.
 - 2025-02-14: Updated `packages/adapters/src/TransportFallback.ts` to retry SSE initialization once when auto-fallback is disabled, preventing manual mode regressions under the new schema mocks.
-- 2025-02-14: Confirmed `pnpm --filter @greater/adapters test` passes after the store and transport fixes.
+- 2025-02-14: Confirmed `pnpm --filter @equaltoai/greater-components-adapters test` passes after the store and transport fixes.
 
 ## Phase 2 – Model & Store Extensions
 
@@ -157,7 +157,7 @@
 - 2025-10-17: `unifiedStatusesToTimelineItems()` - Batch converter
 - 2025-10-17: `unifiedNotificationToStoreNotification()` - Converts UnifiedNotification → Store Notification with Lesser payloads
 - 2025-10-17: `unifiedNotificationsToStoreNotifications()` - Batch converter
-- 2025-10-17: All utilities exported from `@greater/adapters` package index
+- 2025-10-17: All utilities exported from `@equaltoai/greater-components-adapters` package index
 
 ### Documentation
 - 2025-10-17: Created `packages/adapters/LESSER_INTEGRATION_USAGE.md` with complete usage guide
@@ -608,14 +608,14 @@ All documentation includes:
 - Warnings: 1 (pre-existing, unrelated to Phase 5)
 - Auto-fixed: 1 error in primitives/tests/setup.ts
 
-**Tests (`pnpm --filter @greater/fediverse test`)**:
+**Tests (`pnpm --filter @equaltoai/greater-components-fediverse test`)**:
 - Status: ✅ **PASSING**
 - Test Files: 88 passed
 - Tests: 3,874 passed
 - Duration: 5.56s
 - Regressions: 0
 
-**Storybook Build (`pnpm --filter @greater/fediverse build-storybook`)**:
+**Storybook Build (`pnpm --filter @equaltoai/greater-components-fediverse build-storybook`)**:
 - Status: ⚠️ **FAILED** (pre-existing configuration issue)
 - Issue: Rollup cannot resolve `@storybook/addon-essentials/backgrounds/preview`
 - Impact: Infrastructure issue, not related to Phase 5 changes

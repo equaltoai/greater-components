@@ -16,17 +16,20 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { onDestroy } from 'svelte';
+	import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 	import { createProfileContext } from './context.js';
 	import type { ProfileData, ProfileHandlers } from './context.js';
+	import { ProfileGraphQLController } from './GraphQLAdapter.js';
 
 	interface Props {
 		/**
-		 * Profile data to display
+		 * Profile data to display (optional when using GraphQL adapter)
 		 */
-		profile: ProfileData | null;
+		profile?: ProfileData | null;
 
 		/**
-		 * Profile event handlers
+		 * Profile event handlers (overridden when GraphQL adapter is provided)
 		 */
 		handlers?: ProfileHandlers;
 
@@ -45,24 +48,103 @@
 		 * Custom CSS class
 		 */
 		class?: string;
+
+		/**
+		 * Lesser GraphQL adapter instance for automatic wiring
+		 */
+		adapter?: LesserGraphQLAdapter;
+
+		/**
+		 * Username (handle) of the profile to load when using the adapter
+		 */
+		username?: string;
+
+		/**
+		 * Page size for followers/following pagination
+		 * @default 40
+		 */
+		pageSize?: number;
 	}
 
 	let {
-		profile,
-		handlers = {},
+		profile: profileProp = null,
+		handlers: handlersProp = {},
 		isOwnProfile = false,
 		children,
 		class: className = '',
+		adapter,
+		username,
+		pageSize = 40,
 	}: Props = $props();
 
-	// Create profile context
-	const context = createProfileContext(profile, handlers, isOwnProfile);
+	const context = createProfileContext(profileProp, handlersProp, isOwnProfile);
 
-	// Update profile when prop changes
-	$effect(() => {
-		if (profile) {
-			context.updateState({ profile });
+	let controller: ProfileGraphQLController | null = null;
+
+	async function ensureController() {
+		if (!adapter || !username) {
+			controller?.destroy();
+			controller = null;
+			context.setHandlers(handlersProp);
+
+			if (profileProp) {
+				context.updateState({
+					profile: profileProp,
+					followersTotal: profileProp.followersCount,
+					followingTotal: profileProp.followingCount,
+				});
+			}
+			return;
 		}
+
+		if (controller && controller.matches(adapter, username, pageSize)) {
+			controller.setIsOwnProfile(isOwnProfile);
+			return;
+		}
+
+		controller?.destroy();
+		controller = new ProfileGraphQLController({
+			context,
+			adapter,
+			username,
+			pageSize,
+			isOwnProfile,
+		});
+
+		try {
+			await controller.initialize();
+		} catch (error) {
+			console.error('Failed to initialize GraphQL profile adapter', error);
+		}
+	}
+
+	$effect(() => {
+		context.updateState({ isOwnProfile });
+	});
+
+	$effect(() => {
+		ensureController();
+	});
+
+	$effect(() => {
+		if (!adapter || !username) {
+			context.setHandlers(handlersProp);
+		}
+	});
+
+	$effect(() => {
+		if ((!adapter || !username) && profileProp) {
+			context.updateState({
+				profile: profileProp,
+				followersTotal: profileProp.followersCount,
+				followingTotal: profileProp.followingCount,
+			});
+		}
+	});
+
+	onDestroy(() => {
+		controller?.destroy();
+		controller = null;
 	});
 </script>
 

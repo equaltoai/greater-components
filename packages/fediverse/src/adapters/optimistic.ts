@@ -134,7 +134,8 @@ export class OptimisticManager<TState> {
 			status: 'pending',
 		};
 
-		this.updates.set(id, update);
+		// We store the update with an unknown result type so mixed TResult values can share the map.
+		this.updates.set(id, update as OptimisticUpdate<TState, unknown>);
 		this.totalUpdates++;
 		this.log('add', id);
 

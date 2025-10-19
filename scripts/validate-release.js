@@ -14,13 +14,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const PACKAGES = [
-  '@greater/primitives',
-  '@greater/fediverse', 
-  '@greater/tokens',
-  '@greater/icons',
-  '@greater/utils',
-  '@greater/adapters',
-  '@greater/testing'
+  '@equaltoai/greater-components-primitives',
+  '@equaltoai/greater-components-fediverse', 
+  '@equaltoai/greater-components-tokens',
+  '@equaltoai/greater-components-icons',
+  '@equaltoai/greater-components-utils',
+  '@equaltoai/greater-components-adapters',
+  '@equaltoai/greater-components-testing'
 ];
 
 const TEST_DIR = join(__dirname, '../.tmp-test-install');
@@ -98,7 +98,7 @@ function validateTypeScript() {
   console.log('🔍 Validating TypeScript definitions...');
   
   for (const packageName of PACKAGES) {
-    const packagePath = packageName.replace('@greater/', '');
+    const packagePath = packageName.replace('@equaltoai/', '');
     const typeDefPath = join(TEST_DIR, 'node_modules', packageName, 'dist', 'index.d.ts');
     
     try {
@@ -122,9 +122,9 @@ function testImports() {
   // Create test file with imports
   const testContent = `
 // Test imports
-import { Button } from '@greater/primitives';
-import { tokens } from '@greater/tokens';
-import { HomeIcon } from '@greater/icons';
+import { Button } from '@equaltoai/greater-components-primitives';
+import { tokens } from '@equaltoai/greater-components-tokens';
+import { HomeIcon } from '@equaltoai/greater-components-icons';
 
 console.log('Basic imports successful');
 console.log('Button:', typeof Button);
@@ -231,7 +231,7 @@ function validateWorkspaceDependencies() {
       };
       
       for (const [depName, depVersion] of Object.entries(allDeps)) {
-        if (depName.startsWith('@greater/')) {
+        if (depName.startsWith('@equaltoai/')) {
           // Should not have workspace: references in published packages
           if (depVersion.includes('workspace:')) {
             console.error(`  ❌ Workspace dependency not resolved in ${packageName}: ${depName}@${depVersion}`);

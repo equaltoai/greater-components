@@ -1,5 +1,5 @@
 {
-  "name": "@greater/fediverse",
+  "name": "@equaltoai/greater-components-fediverse",
   "version": "1.0.0",
   "exports": {
     ".": "./src/index.ts",

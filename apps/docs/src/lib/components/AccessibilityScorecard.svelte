@@ -1,7 +1,7 @@
 <script lang="ts">
-	import CheckIcon from '@greater/icons/icons/check.svelte';
-	import XIcon from '@greater/icons/icons/x.svelte';
-	import AlertCircleIcon from '@greater/icons/icons/alert-circle.svelte';
+	import CheckIcon from '@equaltoai/greater-components-icons/icons/check.svelte';
+	import XIcon from '@equaltoai/greater-components-icons/icons/x.svelte';
+	import AlertCircleIcon from '@equaltoai/greater-components-icons/icons/alert-circle.svelte';
 	
 	export let wcagLevel: 'A' | 'AA' | 'AAA' = 'AA';
 	export let keyboardNav: boolean = true;

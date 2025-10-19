@@ -1,7 +1,7 @@
 # Profile.Tabs
 
 **Component**: Profile Navigation Tabs  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 22 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,7 +35,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -91,8 +91,8 @@ Use default tabs with basic configuration:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData, ProfileHandlers } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData, ProfileHandlers } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile: ProfileData = {
     id: '123',
@@ -181,8 +181,8 @@ Configure custom tabs with icons and badge counts:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileTab } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileTab } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -282,7 +282,7 @@ Lazy load tab content when tabs are activated:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -431,7 +431,7 @@ Sync tabs with URL routing:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
 
@@ -542,7 +542,7 @@ Implement infinite scroll for each tab's content:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { createInfiniteQuery } from '@tanstack/svelte-query';
 
   const profile = {
@@ -774,7 +774,7 @@ export async function GET(request: Request) {
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import * as Profile from '@greater/fediverse/Profile';
+import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Tabs', () => {
   const mockProfile = {

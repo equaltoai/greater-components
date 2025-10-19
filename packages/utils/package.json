@@ -1,5 +1,6 @@
 {
-  "name": "@greater/utils",
+  "name": "@equaltoai/greater-components-utils",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "description": "Utility functions for Greater Components",
@@ -22,6 +23,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
     "clean": "rm -rf dist",

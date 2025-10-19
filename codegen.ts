@@ -20,6 +20,7 @@ const config: CodegenConfig = {
 				scalars: {
 					Time: 'string',
 					Cursor: 'string',
+					Upload: 'File | Blob',
 				},
 				namingConvention: {
 					typeNames: 'pascal-case#pascalCase',
@@ -49,6 +50,7 @@ const config: CodegenConfig = {
 				scalars: {
 					Time: 'string',
 					Cursor: 'string',
+					Upload: 'File | Blob',
 				},
 				namingConvention: {
 					typeNames: 'pascal-case#pascalCase',

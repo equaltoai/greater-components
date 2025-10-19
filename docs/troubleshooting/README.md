@@ -18,7 +18,7 @@ This guide helps you resolve common issues when using Greater Components. Find s
 
 ### Package Not Found
 
-**Problem**: `npm install @greater/primitives` fails with "package not found"
+**Problem**: `npm install @equaltoai/greater-components-primitives` fails with "package not found"
 
 **Solutions**:
 ```bash
@@ -30,11 +30,11 @@ npm config get registry
 npm config set registry https://registry.npmjs.org/
 
 # 3. Try with different package manager
-pnpm add @greater/primitives
-yarn add @greater/primitives
+pnpm add @equaltoai/greater-components-primitives
+yarn add @equaltoai/greater-components-primitives
 
 # 4. Check package exists
-npm view @greater/primitives
+npm view @equaltoai/greater-components-primitives
 ```
 
 ### Peer Dependencies Issues
@@ -44,13 +44,13 @@ npm view @greater/primitives
 **Solutions**:
 ```bash
 # Install all required peer dependencies
-npm install svelte @greater/tokens
+npm install svelte @equaltoai/greater-components-tokens
 
 # Check what's missing
 npm ls --depth=0
 
 # Auto-install peer dependencies
-npm install-peerdeps @greater/primitives
+npm install-peerdeps @equaltoai/greater-components-primitives
 ```
 
 ### Version Conflicts
@@ -60,13 +60,13 @@ npm install-peerdeps @greater/primitives
 **Solutions**:
 ```bash
 # Check for duplicate versions
-npm ls @greater/primitives
+npm ls @equaltoai/greater-components-primitives
 
 # Remove duplicates
 npm dedupe
 
 # Force single version
-npm install @greater/primitives@^1.0.0 --save-exact
+npm install @equaltoai/greater-components-primitives@^1.0.0 --save-exact
 ```
 
 ## Build & Bundle Problems
@@ -91,15 +91,15 @@ export default defineConfig({
   ],
   optimizeDeps: {
     include: [
-      '@greater/primitives',
-      '@greater/tokens',
-      '@greater/icons'
+      '@equaltoai/greater-components-primitives',
+      '@equaltoai/greater-components-tokens',
+      '@equaltoai/greater-components-icons'
     ]
   },
   ssr: {
     noExternal: [
-      '@greater/primitives',
-      '@greater/fediverse'
+      '@equaltoai/greater-components-primitives',
+      '@equaltoai/greater-components-fediverse'
     ]
   }
 });
@@ -124,7 +124,7 @@ const config = {
   kit: {
     adapter: adapter(),
     alias: {
-      '@greater/*': './node_modules/@greater/*'
+      '@equaltoai/*': './node_modules/@equaltoai/*'
     }
   }
 };
@@ -171,7 +171,7 @@ module.exports = {
 **Solutions**:
 ```javascript
 // 1. In your main app file
-import '@greater/tokens/theme.css';
+import '@equaltoai/greater-components-tokens/theme.css';
 
 // 2. In Vite config
 export default defineConfig({
@@ -185,7 +185,7 @@ export default defineConfig({
 });
 
 // 3. In SvelteKit app.html
-<link rel="stylesheet" href="%sveltekit.assets%/@greater/tokens/theme.css">
+<link rel="stylesheet" href="%sveltekit.assets%/@equaltoai/greater-components-tokens/theme.css">
 ```
 
 ## TypeScript Errors
@@ -197,14 +197,14 @@ export default defineConfig({
 **Solution**: Add to your `app.d.ts`:
 ```typescript
 /// <reference types="@sveltejs/kit" />
-/// <reference types="@greater/primitives" />
+/// <reference types="@equaltoai/greater-components-primitives" />
 
-declare module '@greater/primitives' {
-  export * from '@greater/primitives/dist/index';
+declare module '@equaltoai/greater-components-primitives' {
+  export * from '@equaltoai/greater-components-primitives/dist/index';
 }
 
-declare module '@greater/icons' {
-  export * from '@greater/icons/dist/index';
+declare module '@equaltoai/greater-components-icons' {
+  export * from '@equaltoai/greater-components-icons/dist/index';
 }
 ```
 
@@ -215,8 +215,8 @@ declare module '@greater/icons' {
 **Solution**: Use proper type imports:
 ```typescript
 // Import component types
-import type { ButtonProps, ModalProps } from '@greater/primitives';
-import { Button, Modal } from '@greater/primitives';
+import type { ButtonProps, ModalProps } from '@equaltoai/greater-components-primitives';
+import { Button, Modal } from '@equaltoai/greater-components-primitives';
 
 // Use in your component
 interface MyComponentProps {
@@ -264,7 +264,7 @@ let { title, count = 0 }: Props = $props();
 **Solutions**:
 ```css
 /* 1. Ensure CSS is imported */
-@import '@greater/tokens/theme.css';
+@import '@equaltoai/greater-components-tokens/theme.css';
 
 /* 2. Check custom property usage */
 .my-component {
@@ -289,8 +289,8 @@ let { title, count = 0 }: Props = $props();
 **Solution**: Proper theme provider setup:
 ```svelte
 <script>
-  import { ThemeProvider } from '@greater/primitives';
-  import { preferencesStore } from '@greater/primitives';
+  import { ThemeProvider } from '@equaltoai/greater-components-primitives';
+  import { preferencesStore } from '@equaltoai/greater-components-primitives';
 </script>
 
 <!-- Wrap your entire app -->
@@ -318,7 +318,7 @@ let { title, count = 0 }: Props = $props();
 @layer reset, components, utilities;
 
 @layer components {
-  @import '@greater/tokens/theme.css';
+  @import '@equaltoai/greater-components-tokens/theme.css';
 }
 
 /* 2. Increase specificity carefully */
@@ -341,7 +341,7 @@ let { title, count = 0 }: Props = $props();
 **Solutions**:
 ```svelte
 <script>
-  import { Modal } from '@greater/primitives';
+  import { Modal } from '@equaltoai/greater-components-primitives';
   
   // 1. Use bindable variable
   let showModal = $state(false);
@@ -395,7 +395,7 @@ let { title, count = 0 }: Props = $props();
 **Solution**:
 ```svelte
 <script>
-  import { TextField } from '@greater/primitives';
+  import { TextField } from '@equaltoai/greater-components-primitives';
   
   let email = $state('');
   let emailError = $state('');
@@ -512,7 +512,7 @@ let { title, count = 0 }: Props = $props();
 **Solutions**:
 ```svelte
 <script>
-  import { TimelineVirtualized } from '@greater/fediverse';
+  import { TimelineVirtualized } from '@equaltoai/greater-components-fediverse';
   
   // 1. Enable virtualization properly
   let items = $state([]);
@@ -569,21 +569,21 @@ let { title, count = 0 }: Props = $props();
 **Solutions**:
 ```javascript
 // 1. Import only what you need
-import { Button } from '@greater/primitives/Button';
-import { HomeIcon } from '@greater/icons/home';
+import { Button } from '@equaltoai/greater-components-primitives/Button';
+import { HomeIcon } from '@equaltoai/greater-components-icons/home';
 
 // 2. Configure tree shaking
 // vite.config.js
 export default defineConfig({
   build: {
     rollupOptions: {
-      external: ['@greater/fediverse'], // If not using
+      external: ['@equaltoai/greater-components-fediverse'], // If not using
     }
   }
 });
 
 // 3. Use dynamic imports for large components
-const TimelineVirtualized = await import('@greater/fediverse/TimelineVirtualized');
+const TimelineVirtualized = await import('@equaltoai/greater-components-fediverse/TimelineVirtualized');
 ```
 
 ## Fediverse Integration
@@ -594,7 +594,7 @@ const TimelineVirtualized = await import('@greater/fediverse/TimelineVirtualized
 
 **Solutions**:
 ```javascript
-import { TransportManager } from '@greater/adapters';
+import { TransportManager } from '@equaltoai/greater-components-adapters';
 
 const transport = new TransportManager({
   baseUrl: 'https://mastodon.social',
@@ -617,7 +617,7 @@ transport.on('error', (error) => {
 **Solutions**:
 ```svelte
 <script>
-  import { StatusCard } from '@greater/fediverse';
+  import { StatusCard } from '@equaltoai/greater-components-fediverse';
   
   // 1. Ensure proper status object structure
   let status = {
@@ -720,7 +720,7 @@ export default defineConfig({
 });
 
 // test-setup.js
-import '@greater/testing/setup';
+import '@equaltoai/greater-components-testing/setup';
 import '@testing-library/jest-dom';
 ```
 
@@ -813,7 +813,7 @@ process.env.GR_DEBUG = 'true';
 **A:** Check that you've imported the CSS, the component is properly imported, and all required props are provided.
 
 ### **Q: How do I debug accessibility issues?**
-**A:** Use the `@greater/testing` package's accessibility helpers, enable high contrast mode, and test with screen readers.
+**A:** Use the `@equaltoai/greater-components-testing` package's accessibility helpers, enable high contrast mode, and test with screen readers.
 
 ### **Q: Why are my styles not applying?**
 **A:** Ensure CSS custom properties are imported, check CSS specificity, and verify token names have the correct `--gr-` prefix.

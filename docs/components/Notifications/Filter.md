@@ -1,7 +1,7 @@
 # Notifications.Filter
 
 **Component**: Notification Type Filter  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 8 passing tests
 
@@ -29,13 +29,13 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @greater/fediverse
+pnpm add @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -44,8 +44,8 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications: Notification[] = [
     // ... notification data
@@ -128,8 +128,8 @@ The component automatically calls the `onFilterChange` handler from the parent `
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([
     {
@@ -367,8 +367,8 @@ The component automatically calls the `onFilterChange` handler from the parent `
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([
     // ... sample notifications covering all types
@@ -521,9 +521,9 @@ The component automatically calls the `onFilterChange` handler from the parent `
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
-  import type { Notification } from '@greater/fediverse/types';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([]);
   let activeFilter = $state<'all' | 'mentions' | 'follows' | 'boosts' | 'favorites' | 'polls'>('all');
@@ -754,10 +754,10 @@ The component automatically calls the `onFilterChange` handler from the parent `
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
-  import type { Notification } from '@greater/fediverse/types';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([]);
 
@@ -924,9 +924,9 @@ The component automatically calls the `onFilterChange` handler from the parent `
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   import { fly, fade } from 'svelte/transition';
-  import type { Notification } from '@greater/fediverse/types';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   let notifications = $state<Notification[]>([]);
   let activeFilter = $state<'all' | 'mentions' | 'follows' | 'boosts' | 'favorites' | 'polls'>('all');
@@ -1386,7 +1386,7 @@ Test file: `packages/fediverse/tests/NotificationFilter.test.ts`
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Notifications } from '@greater/fediverse';
+import { Notifications } from '@equaltoai/greater-components-fediverse';
 
 describe('Notifications.Filter', () => {
   it('renders all filter tabs', () => {

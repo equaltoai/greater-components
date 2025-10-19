@@ -1,7 +1,7 @@
 # Search.Root
 
 **Component**: Context Provider  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 14 passing tests
 
@@ -29,7 +29,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -38,7 +38,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onSearch: async (options) => {
@@ -195,8 +195,8 @@ interface SearchTag {
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   const handlers = {
     onSearch: async (options: SearchOptions): Promise<SearchResults> => {
@@ -288,7 +288,7 @@ interface SearchTag {
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { page } from '$app/stores';
   
   // Get initial query from URL parameter
@@ -326,8 +326,8 @@ interface SearchTag {
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let semanticEnabled = $state(false);
   let searchQuality = $state<'standard' | 'semantic'>('standard');
@@ -521,8 +521,8 @@ interface SearchTag {
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import { Search } from '@equaltoai/greater-components-fediverse';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   // Cache for search results
   const cache = new Map<string, { results: SearchResults; timestamp: number }>();
@@ -713,9 +713,9 @@ interface SearchTag {
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
-  import type { SearchOptions, SearchResults } from '@greater/fediverse/types';
+  import type { SearchOptions, SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let searchCount = $state(0);
   let totalResults = $state(0);
@@ -988,7 +988,7 @@ The `Search.Root` component provides context to all child components through Sve
 Child components automatically access context:
 
 ```typescript
-import { getSearchContext } from '@greater/fediverse/Search/context';
+import { getSearchContext } from '@equaltoai/greater-components-fediverse/Search/context';
 
 const context = getSearchContext();
 // Access: context.state, context.handlers, context.search(), context.clear()
@@ -1107,7 +1107,7 @@ function sanitizeQuery(query: string): string {
 ### **Rate Limiting**
 
 ```typescript
-import { RateLimiter } from '@greater/utils';
+import { RateLimiter } from '@equaltoai/greater-components-utils';
 
 const limiter = new RateLimiter({
   maxRequests: 20,
@@ -1143,7 +1143,7 @@ const handlers = {
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.Root', () => {
   it('provides context to children', () => {

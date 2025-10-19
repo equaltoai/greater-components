@@ -3,11 +3,11 @@
  * 
  * Provides shared state for AI analysis and moderation analytics.
  * 
- * @module @greater/fediverse/Admin/Insights/context
+ * @module @equaltoai/greater-components-fediverse/Admin/Insights/context
  */
 
 import { getContext, setContext } from 'svelte';
-import type { LesserGraphQLAdapter } from '@greater/adapters';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 const INSIGHTS_CONTEXT_KEY = Symbol('insights-context');
 

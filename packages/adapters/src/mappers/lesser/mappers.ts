@@ -126,11 +126,15 @@ function mapLesserVisibility(visibility: string): 'public' | 'unlisted' | 'priva
  */
 function mapLesserMediaType(mediaType: string): 'image' | 'video' | 'audio' | 'gifv' | 'unknown' {
   switch (mediaType) {
-    case 'IMAGE': return 'image';
-    case 'VIDEO': return 'video';
-    case 'AUDIO': return 'audio';
-    case 'GIF': return 'gifv';
-    default: return 'unknown';
+	case 'IMAGE': return 'image';
+	case 'VIDEO': return 'video';
+	case 'AUDIO': return 'audio';
+	case 'GIF':
+	case 'GIFV':
+		return 'gifv';
+	case 'DOCUMENT':
+		return 'unknown';
+	default: return 'unknown';
   }
 }
 
@@ -280,11 +284,15 @@ function mapLesserObjectAttachment(attachment: LesserAttachmentFragment): MediaA
 		previewUrl: attachment.preview || undefined,
 		remoteUrl: undefined,
 		description: attachment.description || undefined,
+		sensitive: attachment.sensitive,
+		spoilerText: attachment.spoilerText ?? undefined,
+		mediaCategory: attachment.mediaCategory,
+		mimeType: attachment.mimeType,
 		blurhash: attachment.blurhash || undefined,
 		meta:
 			attachment.width && attachment.height
 				? {
-						original: {
+					original: {
 							width: safeNumber(attachment.width),
 							height: safeNumber(attachment.height),
 							aspect: attachment.height ? attachment.width / attachment.height : 0,
@@ -440,40 +448,35 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
       spoilerText: obj.spoilerText || undefined,
       sensitive: safeBoolean(obj.sensitive),
       visibility: mapLesserVisibility(obj.visibility),
-      url: undefined, // Basic Object doesn't have URL
-      inReplyTo: undefined,
-      reblog: undefined, // Basic Object doesn't have reblog info
-      poll: undefined, // Basic Object doesn't have poll info
-      card: undefined, // Basic Object doesn't have card info
-      language: undefined, // Basic Object doesn't have language
+      account: accountResult.data,
+      mediaAttachments: obj.attachments?.map(mapLesserObjectAttachment) || [],
       mentions: (obj.mentions || []).map(mapLesserMention),
       tags: obj.tags?.map(tag => ({
         name: safeString(tag.name),
         url: safeString(tag.url),
       })) || [],
-      emojis: [], // Basic Object doesn't have emojis
-      mediaAttachments: obj.attachments?.map(mapLesserObjectAttachment) || [],
-      account: accountResult.data,
+      emojis: [],
+      repliesCount: safeNumber(obj.repliesCount),
       reblogsCount: safeNumber(obj.sharesCount),
       favouritesCount: safeNumber(obj.likesCount),
-      repliesCount: safeNumber(obj.repliesCount),
-      reblogged: false, // Would need to check user's interactions
-      favourited: false, // Would need to check user's interactions
-      bookmarked: false, // Would need to check user's interactions
-      pinned: false, // Would need to check user's interactions
+      favourited: false,
+      reblogged: false,
+      bookmarked: false,
+      pinned: false,
+      metadata: createLesserMetadata(obj),
 
       // Lesser-specific fields
       estimatedCost: obj.estimatedCost !== undefined ? safeNumber(obj.estimatedCost) : undefined,
       moderationScore: obj.moderationScore !== undefined ? safeNumber(obj.moderationScore) : undefined,
       communityNotes,
       quoteUrl: obj.quoteUrl || undefined,
-      quoteable: safeBoolean(obj.quoteable),
-      quotePermissions: obj.quotePermissions,
+      quoteable: obj.quoteable !== undefined ? safeBoolean(obj.quoteable) : undefined,
+      quotePermissions: obj.quotePermissions || undefined,
       quoteContext: obj.quoteContext ? {
         originalAuthorId: safeString(obj.quoteContext.originalAuthor?.id || ''),
         originalNoteId: obj.quoteContext.originalNote?.id || undefined,
         quoteAllowed: safeBoolean(obj.quoteContext.quoteAllowed),
-        quoteType: obj.quoteContext.quoteType,
+        quoteType: obj.quoteContext.quoteType || 'FULL',
         withdrawn: safeBoolean(obj.quoteContext.withdrawn),
       } : undefined,
       quoteCount: obj.quoteCount !== undefined ? safeNumber(obj.quoteCount) : undefined,
@@ -484,10 +487,10 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
     return {
       success: true,
       data: unified,
-      metadata: {
-        processingTime: endTime - startTime,
-        source: 'lesser-object',
-        mappedFields: Object.keys(unified).length,
+      metrics: {
+        mappingTimeMs: endTime - startTime,
+        fieldsProcessed: Object.keys(obj).length,
+        fallbacksUsed: 0,
       },
     };
   } catch (error) {
@@ -495,9 +498,10 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
     return {
       success: false,
       error: createMappingError('transformation', `Failed to map Lesser object: ${error instanceof Error ? error.message : 'Unknown error'}`, obj),
-      metadata: {
-        processingTime: endTime - startTime,
-        source: 'lesser-object',
+      metrics: {
+        mappingTimeMs: endTime - startTime,
+        fieldsProcessed: 0,
+        fallbacksUsed: 0,
       },
     };
   }
@@ -616,18 +620,22 @@ export function mapLesserPost(post: LesserPostFragment): MapperResult<UnifiedSta
  * Map Lesser media attachment to unified model
  */
 function mapLesserMediaAttachment(attachment: LesserMediaFragment): MediaAttachment {
-  return {
-    id: safeString(attachment.id),
-    type: mapLesserMediaType(attachment.mediaType || 'UNKNOWN'),
-    url: safeString(attachment.url),
-    previewUrl: attachment.thumbnailUrl || undefined,
-    remoteUrl: attachment.remoteUrl || undefined,
-    description: attachment.altText || undefined,
-    blurhash: attachment.blurhash || undefined,
-    meta: attachment.metadata ? {
-      original: attachment.metadata.dimensions ? {
-        width: safeNumber(attachment.metadata.dimensions.width),
-        height: safeNumber(attachment.metadata.dimensions.height),
+	return {
+		id: safeString(attachment.id),
+		type: mapLesserMediaType(attachment.mediaType || 'UNKNOWN'),
+		url: safeString(attachment.url),
+		previewUrl: attachment.thumbnailUrl || undefined,
+		remoteUrl: attachment.remoteUrl || undefined,
+		description: attachment.altText || undefined,
+		sensitive: attachment.sensitive,
+		spoilerText: attachment.spoilerText || undefined,
+		mediaCategory: attachment.mediaCategory,
+		mimeType: attachment.mimeType,
+		blurhash: attachment.blurhash || undefined,
+		meta: attachment.metadata ? {
+			original: attachment.metadata.dimensions ? {
+				width: safeNumber(attachment.metadata.dimensions.width),
+				height: safeNumber(attachment.metadata.dimensions.height),
         aspect: safeNumber(attachment.metadata.dimensions.aspectRatio),
         duration: attachment.metadata.duration || undefined,
         fps: attachment.metadata.frameRate || undefined,

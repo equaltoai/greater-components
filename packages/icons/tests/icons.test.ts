@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-describe('@greater/icons', () => {
+describe('@equaltoai/greater-components-icons', () => {
   let builtIcons: string[] = [];
   let srcIconList: string[] = [];
   let hasDistBuilt = false;
@@ -235,7 +235,7 @@ describe('@greater/icons', () => {
       if (fs.existsSync(packagePath)) {
         const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
         
-        expect(packageJson.name).toBe('@greater/icons');
+        expect(packageJson.name).toBe('@equaltoai/greater-components-icons');
         expect(packageJson.main).toBe('./dist/index.js');
         expect(packageJson.module).toBe('./dist/index.js');
         expect(packageJson.types).toBe('./dist/index.d.ts');

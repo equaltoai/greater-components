@@ -2,7 +2,7 @@
   Search.ActorResult - Actor Search Result Item
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getSearchContext, formatCount } from './context.js';
 import ContentRenderer from '../ContentRenderer.svelte';
 import type { SearchActor } from './context.js';

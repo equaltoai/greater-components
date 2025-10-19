@@ -9,9 +9,9 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/FeedItem.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
   import { boostPost, favoritePost, replyToPost } from '$lib/api';
-  import type { Status as StatusType } from '@greater/fediverse';
+  import type { Status as StatusType } from '@equaltoai/greater-components-fediverse';
   
   interface Props {
     post: StatusType;
@@ -58,7 +58,7 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/StatusWithPresence.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
   import { userPresence } from '$lib/stores/presence';
   
   let { post } = $props();
@@ -123,8 +123,8 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/CompactTimeline.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import { TimelineVirtualized } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import { TimelineVirtualized } from '@equaltoai/greater-components-fediverse';
   
   let { items, onLoadMore } = $props();
 </script>
@@ -158,7 +158,7 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/ThreadView.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
   
   let { thread, depth = 0 } = $props();
   
@@ -218,9 +218,9 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/StatusWithBookmark.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import { createButton } from '@greater/headless/button';
-  import { BookmarkIcon, BookmarkSolidIcon } from '@greater/icons';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import { createButton } from '@equaltoai/greater-components-headless/button';
+  import { BookmarkIcon, BookmarkSolidIcon } from '@equaltoai/greater-components-icons';
   import { bookmarkPost, unbookmarkPost } from '$lib/api';
   
   let { post } = $props();
@@ -304,8 +304,8 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/NotificationItem.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse';
   
   let { notification }: { notification: Notification } = $props();
   
@@ -380,7 +380,7 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/QuotePost.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
   
   let { post, quotedPost } = $props();
 </script>
@@ -432,7 +432,7 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```svelte
 <!-- lesser/src/components/OptimizedTimeline.svelte -->
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
+  import { Status } from '@equaltoai/greater-components-fediverse';
   import { createVirtualizer } from '@tanstack/svelte-virtual';
   
   let { posts, onLoadMore } = $props();
@@ -486,8 +486,8 @@ Comprehensive examples of using Greater Components' Status compound components i
 ```typescript
 // lesser/tests/components/StatusCompound.test.ts
 import { describe, it, expect, vi } from 'vitest';
-import { render, fireEvent } from '@greater/testing';
-import { Status } from '@greater/fediverse';
+import { render, fireEvent } from '@equaltoai/greater-components-testing';
+import { Status } from '@equaltoai/greater-components-fediverse';
 
 describe('Status Compound Component', () => {
   const mockStatus = {

@@ -1,6 +1,6 @@
 # Notifications Components
 
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Components**: 4 compound components
 
@@ -87,13 +87,13 @@ All child components access shared state through React Context, ensuring type sa
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @greater/fediverse
+pnpm add @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -104,8 +104,8 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import type { Notification } from '@greater/fediverse/types';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import type { Notification } from '@equaltoai/greater-components-fediverse/types';
 
   const notifications: Notification[] = [
     {
@@ -163,7 +163,7 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   
   let notifications = $state([...]);
   let activeFilter = $state('all');
@@ -200,8 +200,8 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { groupNotifications } from '@greater/fediverse/utils';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { groupNotifications } from '@equaltoai/greater-components-fediverse/utils';
   
   let notifications = $state([...]);
   
@@ -238,8 +238,8 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { createGraphQLClient } from '@greater/adapters';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { createGraphQLClient } from '@equaltoai/greater-components-adapters';
   import { onMount } from 'svelte';
   
   let notifications = $state([]);
@@ -328,7 +328,7 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
   
   let notifications = $state([]);
@@ -508,8 +508,8 @@ All components include proper ARIA attributes:
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { announce } from '@greater/utils/a11y';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { announce } from '@equaltoai/greater-components-utils/a11y';
   
   const handlers = {
     onNotificationClick: (notification) => {
@@ -533,8 +533,8 @@ For large notification lists, use virtualization:
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { VirtualList } from '@greater/primitives';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { VirtualList } from '@equaltoai/greater-components-primitives';
   
   let notifications = $state([...]);
 </script>
@@ -556,7 +556,7 @@ For large notification lists, use virtualization:
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
   
   let notifications = $state([]);
   let hasMore = $state(true);
@@ -593,7 +593,7 @@ For large notification lists, use virtualization:
 ### **Debounced Grouping**
 
 ```typescript
-import { debounce } from '@greater/utils';
+import { debounce } from '@equaltoai/greater-components-utils';
 
 const groupNotificationsDebounced = debounce((notifications) => {
   return groupNotifications(notifications);
@@ -622,7 +622,7 @@ const sanitizedContent = DOMPurify.sanitize(notification.status?.content || '', 
 Implement rate limiting for notification actions:
 
 ```typescript
-import { RateLimiter } from '@greater/utils';
+import { RateLimiter } from '@equaltoai/greater-components-utils';
 
 const markReadLimiter = new RateLimiter({
   maxRequests: 10,
@@ -655,7 +655,7 @@ async function markAsRead(id: string) {
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Notifications } from '@greater/fediverse';
+import { Notifications } from '@equaltoai/greater-components-fediverse';
 
 describe('Notifications.Item', () => {
   it('renders notification correctly', () => {
@@ -711,8 +711,8 @@ Test files available:
 
 ```svelte
 <script lang="ts">
-  import { Notifications } from '@greater/fediverse';
-  import { createNotificationsStore } from '@greater/adapters';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { createNotificationsStore } from '@equaltoai/greater-components-adapters';
   import { onMount } from 'svelte';
   
   const store = createNotificationsStore({

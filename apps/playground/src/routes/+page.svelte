@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Button, TextField, Modal } from '@greater/primitives';
+  import { Button, TextField, Modal } from '@equaltoai/greater-components-primitives';
   
   let showModal = $state(false);
   let name = $state('');

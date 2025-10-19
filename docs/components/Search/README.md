@@ -1,6 +1,6 @@
 # Search Components
 
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Components**: 7 compound components
 
@@ -92,13 +92,13 @@ All child components access shared state through Svelte Context, ensuring type s
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 Or with pnpm:
 
 ```bash
-pnpm add @greater/fediverse
+pnpm add @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -109,7 +109,7 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -138,7 +138,7 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -166,7 +166,7 @@ pnpm add @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
 
   const handlers = {
     onSearch: async (options) => {
@@ -442,7 +442,7 @@ All components include proper ARIA attributes:
 
 ```svelte
 <script lang="ts">
-  import { announce } from '@greater/utils/a11y';
+  import { announce } from '@equaltoai/greater-components-utils/a11y';
   
   const handlers = {
     onSearch: async (options) => {
@@ -462,7 +462,7 @@ All components include proper ARIA attributes:
 ### **Debounce Search Input**
 
 ```typescript
-import { debounce } from '@greater/utils';
+import { debounce } from '@equaltoai/greater-components-utils';
 
 const debouncedSearch = debounce(async (query: string) => {
   const results = await fetch(`/api/search?q=${query}`);
@@ -513,8 +513,8 @@ async function search(query: string) {
 
 ```svelte
 <script lang="ts">
-  import { VirtualList } from '@greater/primitives';
-  import { Search } from '@greater/fediverse';
+  import { VirtualList } from '@equaltoai/greater-components-primitives';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   
   const handlers = {
     onSearch: async (options) => {
@@ -569,7 +569,7 @@ const handlers = {
 Implement rate limiting to prevent abuse:
 
 ```typescript
-import { RateLimiter } from '@greater/utils';
+import { RateLimiter } from '@equaltoai/greater-components-utils';
 
 const searchLimiter = new RateLimiter({
   maxRequests: 20,
@@ -623,7 +623,7 @@ const sanitizedResults = {
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Search } from '@greater/fediverse';
+import { Search } from '@equaltoai/greater-components-fediverse';
 
 describe('Search.Bar', () => {
   it('calls onSearch when typing', async () => {
@@ -682,9 +682,9 @@ Test files available:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@greater/fediverse';
+  import { Search } from '@equaltoai/greater-components-fediverse';
   import { onMount } from 'svelte';
-  import type { SearchResults } from '@greater/fediverse/types';
+  import type { SearchResults } from '@equaltoai/greater-components-fediverse/types';
 
   let searching = $state(false);
   let error = $state<string | null>(null);

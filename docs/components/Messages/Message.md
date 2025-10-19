@@ -1,7 +1,7 @@
 # Messages.Message
 
 **Component**: Individual Message Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 78 passing tests
 
@@ -43,7 +43,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -54,8 +54,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   
   const message: DirectMessage = {
     id: 'msg-1',
@@ -81,8 +81,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   
   const message: DirectMessage = {
     id: 'msg-1',
@@ -140,8 +140,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   
   const message: DirectMessage = {
     id: 'msg-1',
@@ -328,8 +328,8 @@ const handleCopy = (content: string) => {
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   
   const messages: DirectMessage[] = [
     {
@@ -398,8 +398,8 @@ const handleCopy = (content: string) => {
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   
   const messages: DirectMessage[] = [
     {
@@ -486,8 +486,8 @@ const handleCopy = (content: string) => {
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   
   const messages: DirectMessage[] = [
     {
@@ -552,8 +552,8 @@ const handleCopy = (content: string) => {
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let messages = $state<DirectMessage[]>([
@@ -660,8 +660,8 @@ const handleCopy = (content: string) => {
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
-  import type { DirectMessage } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage } from '@equaltoai/greater-components-fediverse/Messages';
   
   const messages: DirectMessage[] = [
     {
@@ -927,7 +927,7 @@ For threads with hundreds of messages, use virtual scrolling:
 ```svelte
 <script lang="ts">
   import VirtualList from 'svelte-virtual-list';
-  import { Message } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
   
   const messages = [...]; // Large array of messages
 </script>
@@ -943,7 +943,7 @@ Memoize expensive operations:
 
 ```svelte
 <script lang="ts">
-  import { Message } from '@greater/fediverse/Messages';
+  import { Message } from '@equaltoai/greater-components-fediverse/Messages';
   
   const formattedContent = $derived(() => {
     // Expensive formatting operation
@@ -960,7 +960,7 @@ Memoize expensive operations:
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import { Message } from '@greater/fediverse/Messages';
+import { Message } from '@equaltoai/greater-components-fediverse/Messages';
 
 test('renders message content', () => {
   const message = {
@@ -1014,7 +1014,7 @@ test('calls onDelete when delete button clicked', async () => {
 ```typescript
 import { render } from '@testing-library/svelte';
 import { axe } from 'jest-axe';
-import { Message } from '@greater/fediverse/Messages';
+import { Message } from '@equaltoai/greater-components-fediverse/Messages';
 
 test('has no accessibility violations', async () => {
   const message = {

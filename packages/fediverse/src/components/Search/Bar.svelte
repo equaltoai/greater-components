@@ -12,7 +12,7 @@
   ```
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getSearchContext } from './context.js';
 
 	interface Props {

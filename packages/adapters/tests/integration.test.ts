@@ -1,5 +1,5 @@
 /**
- * Integration tests for the @greater/adapters package
+ * Integration tests for the @equaltoai/greater-components-adapters package
  * Verifies that all exports work correctly together
  */
 

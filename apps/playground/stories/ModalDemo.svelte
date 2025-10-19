@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Modal, Button, TextField } from '@greater/primitives';
+  import { Modal, Button, TextField } from '@equaltoai/greater-components-primitives';
   
   interface Props {
     variant?: 'basic' | 'form' | 'confirmation' | 'long' | 'sizes' | 'custom';

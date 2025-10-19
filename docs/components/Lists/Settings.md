@@ -1,7 +1,7 @@
 # Lists.Settings
 
 **Component**: List Privacy and Settings Configuration  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 45 passing tests
 
@@ -41,7 +41,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -52,7 +52,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -80,7 +80,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     // ... handlers
@@ -163,7 +163,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { toast } from '$lib/toast';
   
   const handlers = {
@@ -228,8 +228,8 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListData } from '@equaltoai/greater-components-fediverse/Lists';
   
   let userPermissions = $state({
     canMakePublic: true,
@@ -401,7 +401,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { debounce } from '$lib/utils';
   
   let autoSaveEnabled = $state(true);
@@ -605,8 +605,8 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListData } from '@equaltoai/greater-components-fediverse/Lists';
   
   interface ChangeRecord {
     timestamp: Date;
@@ -869,7 +869,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   let showDangerZone = $state(false);
   let confirmDelete = $state('');
@@ -1242,7 +1242,7 @@ The component is lightweight and only re-renders when the selected list changes 
 
 ```typescript
 import { render, fireEvent, waitFor } from '@testing-library/svelte';
-import * as Lists from '@greater/fediverse/Lists';
+import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 
 describe('Lists.Settings', () => {
   test('updates visibility', async () => {

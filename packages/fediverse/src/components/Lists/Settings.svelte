@@ -4,7 +4,7 @@
   Configuration options for list privacy, sharing, and advanced settings.
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getListsContext, type ListFormData } from './context.js';
 
 	interface Props {

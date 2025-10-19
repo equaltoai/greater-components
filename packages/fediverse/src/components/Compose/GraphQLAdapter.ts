@@ -13,9 +13,12 @@ import type {
 	ObjectFieldsFragment,
 	Actor,
 	QuoteType,
-} from '@greater/adapters';
+	UploadMediaInput,
+	MediaCategory,
+} from '@equaltoai/greater-components-adapters';
 import type { PostVisibility } from './context.js';
 import type { MediaFile } from './MediaUploadHandler.js';
+import type { AutocompleteSuggestion } from './Autocomplete.js';
 
 type OptimisticObject = ObjectFieldsFragment & { _optimistic: true };
 type OptimisticReplacement = ObjectFieldsFragment & { _replaces: string };
@@ -23,6 +26,47 @@ type OptimisticRemoval = { _remove: string };
 type OptimisticUpdateEvent = OptimisticObject | OptimisticReplacement | OptimisticRemoval;
 
 type ActorLike = Pick<Actor, 'id' | 'username' | 'displayName' | 'avatar' | 'domain'>;
+
+export interface ComposeSubmitInput {
+	content: string;
+	contentWarning?: string;
+	visibility: PostVisibility;
+	mediaAttachments?: MediaFile[];
+	inReplyTo?: string;
+	sensitive?: boolean;
+	quoteUrl?: string;
+	quoteType?: 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
+}
+
+export interface ComposeThreadPost {
+	content: string;
+	contentWarning?: string;
+	visibility: PostVisibility;
+}
+
+export interface MediaUploadResult {
+	id: string;
+	url: string;
+	thumbnailUrl?: string;
+	sensitive: boolean;
+	spoilerText?: string | null;
+	mediaCategory?: MediaCategory;
+}
+
+export interface GraphQLComposeHandlers {
+	handleSubmit(data: ComposeSubmitInput): Promise<ObjectFieldsFragment>;
+	handleMediaUpload(
+		file: File,
+		onProgress: (progress: number) => void,
+		media: MediaFile
+	): Promise<MediaUploadResult>;
+	handleMediaRemove(id: string): Promise<void>;
+	handleThreadSubmit(posts: ComposeThreadPost[]): Promise<ObjectFieldsFragment[]>;
+	handleAutocompleteSearch(
+		query: string,
+		type: 'hashtag' | 'mention' | 'emoji'
+	): Promise<AutocompleteSuggestion[]>;
+}
 
 function mapVisibility(visibility: PostVisibility): Visibility {
 	switch (visibility) {
@@ -115,7 +159,6 @@ function buildCreateNoteVariables(
 		mediaIds?: string[];
 		inReplyTo?: string;
 		sensitive?: boolean;
-		language?: string;
 	}
 ): CreateNoteVariables {
 	return {
@@ -126,7 +169,6 @@ function buildCreateNoteVariables(
 			spoilerText: data.contentWarning,
 			attachmentIds: data.mediaIds && data.mediaIds.length > 0 ? data.mediaIds : undefined,
 			inReplyToId: data.inReplyTo,
-			language: data.language,
 		},
 	};
 }
@@ -134,21 +176,11 @@ function buildCreateNoteVariables(
 /**
  * Create compose handlers that use GraphQL adapter
  */
-export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
+export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter): GraphQLComposeHandlers {
 	/**
 	 * Handle post submission
 	 */
-	async function handleSubmit(data: {
-		content: string;
-		contentWarning?: string;
-		visibility: PostVisibility;
-		mediaAttachments?: MediaFile[];
-		inReplyTo?: string;
-		sensitive?: boolean;
-		language?: string;
-		quoteUrl?: string;
-		quoteType?: 'FULL' | 'PARTIAL' | 'COMMENTARY' | 'REACTION';
-	}) {
+	async function handleSubmit(data: ComposeSubmitInput) {
 		// If quoteUrl is present, delegate to quote handler
 		if (data.quoteUrl) {
 			return handleQuoteSubmit(data as Parameters<typeof handleQuoteSubmit>[0]);
@@ -170,7 +202,6 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 			mediaIds,
 			inReplyTo: data.inReplyTo,
 			sensitive: data.sensitive,
-			language: data.language,
 		});
 
 		const payload = await adapter.createNote(variables);
@@ -219,27 +250,46 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 	 */
 	async function handleMediaUpload(
 		file: File,
-		onProgress: (progress: number) => void
-	): Promise<{ id: string; url: string; thumbnailUrl?: string }> {
+		onProgress: (progress: number) => void,
+		media: MediaFile
+	): Promise<MediaUploadResult> {
 		let progress = 0;
 		const progressInterval = setInterval(() => {
-			progress += 10;
-			if (progress >= 90) {
-				clearInterval(progressInterval);
-			}
+			progress = Math.min(progress + 8, 90);
 			onProgress(progress);
-		}, 100);
+		}, 120);
+
+		const uploadInput: UploadMediaInput = {
+			file,
+			filename: media.file.name,
+			description: media.description?.trim() ? media.description.trim() : undefined,
+			focus: media.focalPoint
+				? {
+					x: media.focalPoint.x,
+					y: media.focalPoint.y,
+				}
+				: undefined,
+			sensitive: media.sensitive,
+			spoilerText: media.spoilerText.trim() === '' ? null : media.spoilerText.trim(),
+			mediaType: media.mediaCategory,
+		};
 
 		try {
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
+			const payload = await adapter.uploadMedia(uploadInput);
 			clearInterval(progressInterval);
 			onProgress(100);
 
+			if (payload.warnings && payload.warnings.length > 0) {
+				console.warn('[Compose] Media upload warnings', payload.warnings);
+			}
+
 			return {
-				id: crypto.randomUUID(),
-				url: URL.createObjectURL(file),
-				thumbnailUrl: URL.createObjectURL(file),
+				id: payload.media.id,
+				url: payload.media.url,
+				thumbnailUrl: payload.media.previewUrl ?? undefined,
+				sensitive: payload.media.sensitive ?? media.sensitive ?? false,
+				spoilerText: payload.media.spoilerText ?? media.spoilerText ?? null,
+				mediaCategory: payload.media.mediaCategory ?? media.mediaCategory,
 			};
 		} catch (error) {
 			clearInterval(progressInterval);
@@ -257,13 +307,7 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 	/**
 	 * Handle thread submission
 	 */
-	async function handleThreadSubmit(
-		posts: Array<{
-			content: string;
-			contentWarning?: string;
-			visibility: PostVisibility;
-		}>
-	) {
+	async function handleThreadSubmit(posts: ComposeThreadPost[]) {
 		const createdPosts: ObjectFieldsFragment[] = [];
 		let previousStatusId: string | undefined;
 
@@ -297,19 +341,29 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 				first: 10,
 			});
 
-			return (
-				results.accounts?.map((account) => ({
-					type: 'mention' as const,
-					text: formatHandle(account.username, account.domain ?? null),
-					value: formatHandle(account.username, account.domain ?? null),
+			const suggestions: AutocompleteSuggestion[] = [];
+
+			for (const account of results.accounts ?? []) {
+				if (!account) {
+					continue;
+				}
+
+				const handle = formatHandle(account.username, account.domain ?? null);
+
+				suggestions.push({
+					type: 'mention',
+					text: handle,
+					value: handle,
 					metadata: {
 						username: account.username,
 						displayName: account.displayName ?? account.username,
 						avatar: account.avatar ?? '',
 						followers: account.followers,
 					},
-				})) || []
-			);
+				});
+			}
+
+			return suggestions;
 		}
 
 		if (type === 'hashtag') {
@@ -319,13 +373,21 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter) {
 				first: 10,
 			});
 
-			return (
-				results.hashtags?.map((tag) => ({
-					type: 'hashtag' as const,
+			const suggestions: AutocompleteSuggestion[] = [];
+
+			for (const tag of results.hashtags ?? []) {
+				if (!tag) {
+					continue;
+				}
+
+				suggestions.push({
+					type: 'hashtag',
 					text: `#${tag.name}`,
 					value: tag.name,
-				})) || []
-			);
+				});
+			}
+
+			return suggestions;
 		}
 
 		return [];
@@ -365,7 +427,7 @@ export function createOptimisticComposeHandlers(
 	adapter: LesserGraphQLAdapter,
 	currentAccount: ActorLike,
 	onOptimisticUpdate?: (status: OptimisticUpdateEvent) => void
-) {
+): GraphQLComposeHandlers {
 	const baseHandlers = createGraphQLComposeHandlers(adapter);
 
 	return {
@@ -374,7 +436,7 @@ export function createOptimisticComposeHandlers(
 		/**
 		 * Handle submit with optimistic update
 		 */
-		async handleSubmit(data: Parameters<typeof baseHandlers.handleSubmit>[0]) {
+		async handleSubmit(data: ComposeSubmitInput) {
 			const optimisticStatus = createOptimisticObject({
 				content: data.content,
 				contentWarning: data.contentWarning,
@@ -406,9 +468,7 @@ export function createOptimisticComposeHandlers(
 		/**
 		 * Handle thread submit with optimistic updates
 		 */
-		async handleThreadSubmit(
-			posts: Parameters<typeof baseHandlers.handleThreadSubmit>[0]
-		) {
+		async handleThreadSubmit(posts: ComposeThreadPost[]) {
 			const optimisticStatuses = posts.map((post, index) => ({
 				...createOptimisticObject({
 					content: post.content,
@@ -428,9 +488,13 @@ export function createOptimisticComposeHandlers(
 
 				if (onOptimisticUpdate) {
 					results.forEach((result, index) => {
+						const optimisticStatus = optimisticStatuses[index];
+						if (!optimisticStatus) {
+							return;
+						}
 						onOptimisticUpdate({
 							...result,
-							_replaces: optimisticStatuses[index].id,
+							_replaces: optimisticStatus.id,
 						});
 					});
 				}
@@ -460,7 +524,7 @@ export interface ComposeGraphQLConfig {
 	onOptimisticUpdate?: (status: OptimisticUpdateEvent) => void;
 }
 
-export function createComposeHandlers(config: ComposeGraphQLConfig) {
+export function createComposeHandlers(config: ComposeGraphQLConfig): GraphQLComposeHandlers {
 	const { adapter, currentAccount, enableOptimistic = true, onOptimisticUpdate } = config;
 
 	if (enableOptimistic && currentAccount) {

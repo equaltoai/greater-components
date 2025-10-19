@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Avatar } from '@greater/primitives';
+  import { Avatar } from '@equaltoai/greater-components-primitives';
 
   interface Props {
     src?: string;

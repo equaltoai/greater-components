@@ -1,7 +1,7 @@
 # Profile.Stats
 
 **Component**: Profile Statistics Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 12 passing tests
 
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -86,8 +86,8 @@ Display profile statistics with default formatting:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile: ProfileData = {
     id: '123',
@@ -123,7 +123,7 @@ Handle stat clicks for navigation:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { goto } from '$app/navigation';
 
   const profile = {
@@ -167,8 +167,8 @@ Open modals instead of navigating:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile: ProfileData = {
     id: '123',
@@ -318,8 +318,8 @@ Update stats in real-time via WebSocket:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   let profile = $state<ProfileData>({
     id: '123',
@@ -458,8 +458,8 @@ Show detailed stat information on hover:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile: ProfileData = {
     id: '123',
@@ -694,7 +694,7 @@ export async function GET(request: Request) {
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import * as Profile from '@greater/fediverse/Profile';
+import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Stats', () => {
   const mockProfile = {

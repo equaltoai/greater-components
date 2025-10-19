@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
-import { Button } from '@greater/primitives';
+import { Button } from '@equaltoai/greater-components-primitives';
 import ButtonDemo from './ButtonDemo.svelte';
 
 const meta: Meta<Button> = {
@@ -23,7 +23,7 @@ A versatile button component with multiple variants, sizes, and states.
 
 \`\`\`svelte
 <script>
-  import { Button } from '@greater/primitives';
+  import { Button } from '@equaltoai/greater-components-primitives';
 </script>
 
 <Button variant="solid" size="md">

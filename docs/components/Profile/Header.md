@@ -1,7 +1,7 @@
 # Profile.Header
 
 **Component**: Profile Header Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 42 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -101,8 +101,8 @@ Full-featured profile header with all elements:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData, ProfileHandlers } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData, ProfileHandlers } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile: ProfileData = {
     id: '123',
@@ -209,7 +209,7 @@ Display own profile with edit functionality:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { goto } from '$app/navigation';
 
   let profile = $state({
@@ -267,8 +267,8 @@ Implement follow, mute, and block actions:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   let profile = $state<ProfileData>({
     id: '456',
@@ -483,7 +483,7 @@ Optimize for mobile devices with responsive design:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   let isMobile = $state(false);
 
@@ -591,10 +591,10 @@ Implement with GraphQL and optimistic UI updates:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { mutation } from '@urql/svelte';
   import { gql } from '@urql/core';
-  import type { ProfileData } from '@greater/fediverse/Profile';
+  import type { ProfileData } from '@equaltoai/greater-components-fediverse/Profile';
 
   let profile = $state<ProfileData>({
     id: '123',
@@ -1017,7 +1017,7 @@ The Header component is fully accessible:
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
-import * as Profile from '@greater/fediverse/Profile';
+import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Header', () => {
   const mockProfile = {

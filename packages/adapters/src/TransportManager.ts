@@ -192,10 +192,25 @@ export class TransportManager implements TransportAdapter<TransportManagerState>
     // Merge with underlying transport state if available
     if (this.currentTransport) {
       const transportState = this.currentTransport.getState();
+      const isRecord = (value: unknown): value is Record<string, unknown> =>
+        typeof value === 'object' && value !== null;
+      const record = isRecord(transportState) ? transportState : null;
+      const latencyCandidate = record?.['latency'];
+      const lastEventIdCandidate = record?.['lastEventId'];
+
+      const latency =
+        typeof latencyCandidate === 'number' || latencyCandidate === null
+          ? latencyCandidate
+          : this.state.latency;
+      const lastEventId =
+        typeof lastEventIdCandidate === 'string' || lastEventIdCandidate === null
+          ? lastEventIdCandidate
+          : this.state.lastEventId;
+
       return {
         ...this.state,
-        latency: transportState.latency || this.state.latency,
-        lastEventId: transportState.lastEventId || this.state.lastEventId
+        latency,
+        lastEventId
       };
     }
 
@@ -636,7 +651,7 @@ export class TransportManager implements TransportAdapter<TransportManagerState>
         try {
           handler(wsEvent);
         } catch (err) {
-          this.logger.error(`Error in event handler for ${event}`, err);
+          this.logger.error(`Error in event handler for ${event}`, { error: err });
         }
       });
     }

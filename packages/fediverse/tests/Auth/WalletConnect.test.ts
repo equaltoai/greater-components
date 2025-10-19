@@ -14,7 +14,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock headless UI dependencies
-vi.mock('@greater/headless/button', () => ({
+vi.mock('@equaltoai/greater-components-headless/button', () => ({
 	createButton: () => ({ props: {} }),
 }));
 

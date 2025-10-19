@@ -15,7 +15,7 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 
-vi.mock('@greater/primitives', async () => ({
+vi.mock('@equaltoai/greater-components-primitives', async () => ({
 	Button: (await import('../components/ButtonStub.svelte')).default,
 }));
 

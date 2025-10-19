@@ -58,7 +58,7 @@ The primary JSR configuration file:
 
 ```json
 {
-  "name": "@greater/primitives",
+  "name": "@equaltoai/greater-components-primitives",
   "version": "1.0.0",
   "exports": {
     ".": "./src/index.ts",
@@ -92,7 +92,7 @@ Standard npm package configuration, also used by JSR:
 
 ```json
 {
-  "name": "@greater/primitives",
+  "name": "@equaltoai/greater-components-primitives",
   "version": "1.0.0",
   "type": "module",
   "description": "Primitive UI components for Greater Components",
@@ -177,7 +177,7 @@ pnpm publish:jsr:single --package=primitives
 
 After publishing, verify on JSR:
 
-1. Visit `https://jsr.io/@greater/<package-name>`
+1. Visit `https://jsr.io/@equaltoai/<package-name>`
 2. Check the documentation is rendered correctly
 3. Verify all exports are available
 4. Test importing in a sample project
@@ -370,18 +370,18 @@ Users can install from either registry:
 
 ```bash
 # From JSR
-npx jsr add @greater/primitives
+npx jsr add @equaltoai/greater-components-primitives
 
 # From npm
-npm install @greater/primitives
+npm install @equaltoai/greater-components-primitives
 ```
 
 ## Package URLs
 
 After publishing, packages are available at:
 
-- **JSR:** `https://jsr.io/@greater/<package-name>`
-- **npm:** `https://www.npmjs.com/package/@greater/<package-name>`
+- **JSR:** `https://jsr.io/@equaltoai/<package-name>`
+- **npm:** `https://www.npmjs.com/package/@equaltoai/<package-name>`
 
 ## Useful Commands
 
@@ -390,10 +390,10 @@ After publishing, packages are available at:
 npx jsr check
 
 # Show package info
-npx jsr info @greater/primitives
+npx jsr info @equaltoai/greater-components-primitives
 
 # List all versions
-npx jsr versions @greater/primitives
+npx jsr versions @equaltoai/greater-components-primitives
 
 # Dry run publish
 pnpm publish:jsr:dry

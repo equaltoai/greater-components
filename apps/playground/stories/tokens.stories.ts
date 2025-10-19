@@ -26,7 +26,7 @@ Tokens are organized by category (color, typography, spacing, etc.) and support 
 
 \`\`\`typescript
 // Import token helper functions
-import { getColor, getSpacing } from '@greater/tokens';
+import { getColor, getSpacing } from '@equaltoai/greater-components-tokens';
 
 const primaryColor = getColor('primary.500');
 const mediumSpacing = getSpacing('4');

@@ -7,8 +7,8 @@
   @component
 -->
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
-	import { createModal } from '@greater/headless/modal';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import { getListsContext, validateListForm } from './context.js';
 	import type { ListFormData } from './context.js';
 

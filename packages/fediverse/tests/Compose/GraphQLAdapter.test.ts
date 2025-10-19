@@ -5,7 +5,7 @@ import {
 	createGraphQLComposeHandlers,
 } from '../../src/components/Compose/GraphQLAdapter.js';
 
-import type { LesserGraphQLAdapter, Visibility } from '@greater/adapters';
+import type { LesserGraphQLAdapter, Visibility } from '@equaltoai/greater-components-adapters';
 import type { PostVisibility } from '../../src/components/Compose/context.js';
 const mockActor = {
 	id: 'user-123',
@@ -197,8 +197,102 @@ describe('GraphQLAdapter - Compose Integration', () => {
 				visibility: 'public',
 			});
 
-			expect(mockAdapter.createNote).toHaveBeenCalledTimes(1);
+		expect(mockAdapter.createNote).toHaveBeenCalledTimes(1);
 			expect(mockAdapter.createQuoteNote).not.toHaveBeenCalled();
+		});
+
+		it('passes media metadata through upload handler', async () => {
+			const mockUploadResponse = {
+				uploadId: 'upload-1',
+				warnings: [],
+				media: {
+					__typename: 'Media',
+					id: 'media-123',
+					type: 'IMAGE',
+					url: 'https://cdn.example.com/media-123.jpg',
+					previewUrl: 'https://cdn.example.com/media-123-preview.jpg',
+					description: 'Alt text',
+					sensitive: true,
+					spoilerText: 'Spoiler',
+					mediaCategory: 'IMAGE',
+					blurhash: null,
+					width: 800,
+					height: 600,
+					duration: null,
+					size: 1024,
+					mimeType: 'image/jpeg',
+					createdAt: new Date().toISOString(),
+					uploadedBy: {
+						__typename: 'Actor',
+						id: 'actor-1',
+						username: 'user',
+						domain: null,
+						displayName: 'Test User',
+						summary: null,
+						avatar: null,
+						header: null,
+						followers: 0,
+						following: 0,
+						statusesCount: 0,
+						bot: false,
+						locked: false,
+						createdAt: new Date().toISOString(),
+						updatedAt: new Date().toISOString(),
+						trustScore: 0,
+						fields: [],
+					},
+				},
+				__typename: 'UploadMediaPayload',
+			};
+
+			const mockAdapter = {
+				createNote: vi.fn(),
+				createQuoteNote: vi.fn(),
+				uploadMedia: vi.fn().mockResolvedValue(mockUploadResponse),
+			} as unknown as LesserGraphQLAdapter;
+
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+
+			const mockFile = { name: 'test.jpg', type: 'image/jpeg' } as unknown as File;
+			const mediaStub = {
+				id: 'local-1',
+				file: mockFile,
+				type: 'image',
+				previewUrl: 'blob:test',
+				thumbnailUrl: undefined,
+				progress: 0,
+				status: 'pending' as const,
+				sensitive: true,
+				spoilerText: 'Spoiler',
+				mediaCategory: 'IMAGE' as const,
+				description: 'Alt text',
+				metadata: { size: 1024 },
+			};
+
+			const progress = vi.fn();
+			const result = await handlers.handleMediaUpload(mockFile, progress, mediaStub);
+
+			expect(mockAdapter.uploadMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					file: mockFile,
+					filename: mockFile.name,
+					description: 'Alt text',
+					sensitive: true,
+					spoilerText: 'Spoiler',
+					mediaType: 'IMAGE',
+				})
+			);
+			expect(result).toEqual(
+				expect.objectContaining({
+					id: 'media-123',
+					url: 'https://cdn.example.com/media-123.jpg',
+					thumbnailUrl: 'https://cdn.example.com/media-123-preview.jpg',
+					sensitive: true,
+					spoilerText: 'Spoiler',
+					mediaCategory: 'IMAGE',
+				})
+			);
+			expect(progress).toHaveBeenCalled();
 		});
 	});
 });

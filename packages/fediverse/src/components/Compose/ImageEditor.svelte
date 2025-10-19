@@ -7,7 +7,7 @@ Edit image metadata, set focal points for proper cropping, and add alt text.
 @example
 ```svelte
 <script>
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
   
   let image = {
     url: '/path/to/image.jpg',
@@ -23,7 +23,7 @@ Edit image metadata, set focal points for proper cropping, and add alt text.
 -->
 
 <script lang="ts">
-	import { createButton } from '@greater/headless/button';
+	import { createButton } from '@equaltoai/greater-components-headless/button';
 
 	interface ImageData {
 		/**

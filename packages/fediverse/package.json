@@ -1,5 +1,6 @@
 {
-  "name": "@greater/fediverse",
+  "name": "@equaltoai/greater-components-fediverse",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "description": "Fediverse UI components built with Svelte 5",
@@ -13,10 +14,11 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "svelte": "./src/index.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js",
+      "svelte": "./src/index.ts",
       "import": "./dist/index.js"
     },
     "./src/mockData": {
@@ -27,6 +29,9 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build && tsc --emitDeclarationOnly",
     "clean": "rm -rf dist",
@@ -42,11 +47,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@greater/headless": "workspace:^",
-    "@greater/icons": "workspace:*",
-    "@greater/primitives": "workspace:*",
-    "@greater/tokens": "workspace:*",
-    "@greater/utils": "workspace:*",
+    "@equaltoai/greater-components-headless": "workspace:^",
+    "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@tanstack/svelte-virtual": "^3.10.8"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 # Lists.Timeline
 
 **Component**: List-Specific Timeline Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 58 passing tests
 
@@ -41,7 +41,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -52,8 +52,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import * as Timeline from '@greater/fediverse/Timeline';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import * as Timeline from '@equaltoai/greater-components-fediverse/Timeline';
   
   const handlers = {
     onFetchLists: async () => {
@@ -85,8 +85,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import * as Timeline from '@greater/fediverse/Timeline';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import * as Timeline from '@equaltoai/greater-components-fediverse/Timeline';
   
   let timelineComponent: typeof Timeline.Root;
   let listId = $state<string | null>(null);
@@ -187,8 +187,8 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import * as Timeline from '@greater/fediverse/Timeline';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import * as Timeline from '@equaltoai/greater-components-fediverse/Timeline';
   
   let timelinePosts = $state([]);
   let loading = $state(false);
@@ -392,7 +392,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { onMount } from 'svelte';
   
   let timelinePosts = $state<any[]>([]);
@@ -565,7 +565,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { onMount, onDestroy } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   
@@ -754,7 +754,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   let filterOptions = $state({
     mediaOnly: false,
@@ -906,7 +906,7 @@ const {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   let timelinePosts = $state<any[]>([]);
   let memberStats = $state<Map<string, { postCount: number; lastPostAt: string }>>(new Map());
@@ -1194,7 +1194,7 @@ For lists with many posts, consider using virtualization:
 
 ```typescript
 import { render, waitFor } from '@testing-library/svelte';
-import * as Lists from '@greater/fediverse/Lists';
+import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 
 describe('Lists.Timeline', () => {
   test('displays list info', async () => {

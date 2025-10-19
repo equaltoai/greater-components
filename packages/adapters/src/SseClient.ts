@@ -353,7 +353,7 @@ export class SseClient implements TransportAdapter<SseClientState> {
     const errorObj = error instanceof Error ? error : new Error('SSE error');
     
     this.setState({ error: errorObj });
-    this.logger.error('SSE transport error', errorObj);
+	this.logger.error('SSE transport error', { error: errorObj });
     this.emit('error', { error: errorObj }, errorObj);
 
     // EventSource will automatically reconnect on error
@@ -641,7 +641,7 @@ export class SseClient implements TransportAdapter<SseClientState> {
         try {
           handler(wsEvent);
         } catch (err) {
-          this.logger.error(`Error in SSE event handler for ${event}`, err);
+			this.logger.error(`Error in SSE event handler for ${event}`, { error: err });
         }
       });
     }

@@ -1,7 +1,7 @@
 # Compose.MediaUpload
 
 **Component**: Media Upload with Drag & Drop  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleUpload(files) {
     const formData = new FormData();
@@ -113,7 +113,7 @@ Simple image upload with previews:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleUpload(files) {
     console.log('Uploading files:', files);
@@ -189,7 +189,7 @@ Show progress bars for each uploading file:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function handleUploadWithProgress(files) {
     const uploads = files.map(async (file) => {
@@ -253,8 +253,8 @@ Upload videos and generate thumbnails:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { generateThumbnail, getVideoDuration } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { generateThumbnail, getVideoDuration } from '@equaltoai/greater-components-fediverse/Compose';
 
   async function handleVideoUpload(files) {
     const processedFiles = await Promise.all(
@@ -322,7 +322,7 @@ Custom styled drop zone:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let isDragging = $state(false);
 
@@ -407,7 +407,7 @@ Add alt text and focal points:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let selectedFile = $state(null);
 
@@ -453,8 +453,8 @@ Implement custom validation:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
-  import { validateFile } from '@greater/fediverse/Compose';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { validateFile } from '@equaltoai/greater-components-fediverse/Compose';
 
   async function handleUpload(files) {
     // Additional custom validation
@@ -670,7 +670,7 @@ app.post('/api/media', upload.single('file'), async (req, res) => {
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 
 describe('MediaUpload', () => {
   it('accepts file selection', async () => {

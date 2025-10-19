@@ -2,8 +2,8 @@
   import type { Snippet } from 'svelte';
   import { onMount, onDestroy } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
-  import { Button } from '@greater/primitives';
-  import { TextField } from '@greater/primitives';
+  import { Button } from '@equaltoai/greater-components-primitives';
+  import { TextField } from '@equaltoai/greater-components-primitives';
   import type { 
     ComposeBoxProps, 
     ComposeBoxDraft, 

@@ -8,7 +8,7 @@ Supports external link icons and verification tooltips.
 @example
 ```svelte
 <script>
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   const fields = [
     { name: 'Website', value: 'https://example.com', verifiedAt: '2024-01-15' },

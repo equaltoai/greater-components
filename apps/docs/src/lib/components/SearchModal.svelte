@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
-	import SearchIcon from '@greater/icons/icons/search.svelte';
-	import XIcon from '@greater/icons/icons/x.svelte';
-	import FileTextIcon from '@greater/icons/icons/file-text.svelte';
-	import HashIcon from '@greater/icons/icons/hash.svelte';
+	import SearchIcon from '@equaltoai/greater-components-icons/icons/search.svelte';
+	import XIcon from '@equaltoai/greater-components-icons/icons/x.svelte';
+	import FileTextIcon from '@equaltoai/greater-components-icons/icons/file-text.svelte';
+	import HashIcon from '@equaltoai/greater-components-icons/icons/hash.svelte';
 	import { searchIndex } from '$lib/utils/search';
 	import type { SearchDocument } from '$lib/utils/search';
 	

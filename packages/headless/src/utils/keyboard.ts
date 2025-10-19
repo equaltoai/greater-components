@@ -1,6 +1,6 @@
 /**
  * Keyboard utilities for headless components
- * @module @greater/headless/utils/keyboard
+ * @module @equaltoai/greater-components-headless/utils/keyboard
  */
 
 /**

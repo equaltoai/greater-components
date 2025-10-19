@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import MenuIcon from '@greater/icons/icons/menu.svelte';
-	import SearchIcon from '@greater/icons/icons/search.svelte';
-	import GitHubIcon from '@greater/icons/icons/github.svelte';
+	import MenuIcon from '@equaltoai/greater-components-icons/icons/menu.svelte';
+	import SearchIcon from '@equaltoai/greater-components-icons/icons/search.svelte';
+	import GitHubIcon from '@equaltoai/greater-components-icons/icons/github.svelte';
 	
 	export let isMobileMenuOpen = false;
 	

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ComponentDoc from '$lib/components/ComponentDoc.svelte';
-	import Button from '@greater/primitives/components/Button.svelte';
+	import Button from '@equaltoai/greater-components-primitives/components/Button.svelte';
 	
 	const props = [
 		{
@@ -134,7 +134,7 @@
 	description="A versatile button component with multiple variants, sizes, and states. Fully accessible and customizable."
 	status="stable"
 	version="0.1.0"
-	importPath="@greater/primitives"
+	importPath="@equaltoai/greater-components-primitives"
 	{props}
 	{events}
 	{slots}

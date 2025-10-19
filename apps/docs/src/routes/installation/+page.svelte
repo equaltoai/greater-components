@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CodeExample from '$lib/components/CodeExample.svelte';
-	import AlertCircleIcon from '@greater/icons/icons/alert-circle.svelte';
+	import AlertCircleIcon from '@equaltoai/greater-components-icons/icons/alert-circle.svelte';
 </script>
 
 <svelte:head>
@@ -27,19 +27,19 @@
 		<h3>Using npm</h3>
 		<CodeExample 
 			language="bash"
-			code={`npm install @greater/primitives @greater/tokens`}
+			code={`npm install @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens`}
 		/>
 		
 		<h3>Using pnpm</h3>
 		<CodeExample 
 			language="bash"
-			code={`pnpm add @greater/primitives @greater/tokens`}
+			code={`pnpm add @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens`}
 		/>
 		
 		<h3>Using yarn</h3>
 		<CodeExample 
 			language="bash"
-			code={`yarn add @greater/primitives @greater/tokens`}
+			code={`yarn add @equaltoai/greater-components-primitives @equaltoai/greater-components-tokens`}
 		/>
 	</section>
 	
@@ -52,7 +52,7 @@
 				<h4>Core Components</h4>
 				<CodeExample 
 					language="bash"
-					code={`npm install @greater/primitives`}
+					code={`npm install @equaltoai/greater-components-primitives`}
 				/>
 				<p>Essential UI components like Button, Modal, TextField, etc.</p>
 			</div>
@@ -61,7 +61,7 @@
 				<h4>Design Tokens</h4>
 				<CodeExample 
 					language="bash"
-					code={`npm install @greater/tokens`}
+					code={`npm install @equaltoai/greater-components-tokens`}
 				/>
 				<p>Design tokens for theming and consistent styling.</p>
 			</div>
@@ -70,7 +70,7 @@
 				<h4>Icons</h4>
 				<CodeExample 
 					language="bash"
-					code={`npm install @greater/icons`}
+					code={`npm install @equaltoai/greater-components-icons`}
 				/>
 				<p>Comprehensive icon library with 200+ SVG icons.</p>
 			</div>
@@ -79,7 +79,7 @@
 				<h4>Fediverse Components</h4>
 				<CodeExample 
 					language="bash"
-					code={`npm install @greater/fediverse`}
+					code={`npm install @equaltoai/greater-components-fediverse`}
 				/>
 				<p>Specialized components for social platforms.</p>
 			</div>
@@ -88,7 +88,7 @@
 				<h4>Utilities</h4>
 				<CodeExample 
 					language="bash"
-					code={`npm install @greater/utils`}
+					code={`npm install @equaltoai/greater-components-utils`}
 				/>
 				<p>Helper functions and utilities.</p>
 			</div>
@@ -104,10 +104,10 @@
 			language="css"
 			title="app.css"
 			code={`/* Import design tokens */
-@import '@greater/tokens/tokens.css';
+@import '@equaltoai/greater-components-tokens/tokens.css';
 
 /* Optional: High contrast mode support */
-@import '@greater/tokens/high-contrast.css' (prefers-contrast: high);`}
+@import '@equaltoai/greater-components-tokens/high-contrast.css' (prefers-contrast: high);`}
 		/>
 		
 		<h3>2. Set up the Theme Provider</h3>
@@ -116,7 +116,7 @@
 			language="svelte"
 			title="+layout.svelte"
 			code={`<script>
-  import { ThemeProvider } from '@greater/primitives';
+  import { ThemeProvider } from '@equaltoai/greater-components-primitives';
 <` + `/script>
 
 <ThemeProvider>
@@ -130,7 +130,7 @@
 			language="svelte"
 			title="MyComponent.svelte"
 			code={`<script>
-  import { Button, TextField, Modal } from '@greater/primitives';
+  import { Button, TextField, Modal } from '@equaltoai/greater-components-primitives';
   
   let showModal = false;
 <` + `/script>
@@ -169,8 +169,8 @@
 		<p>Import types alongside components:</p>
 		<CodeExample 
 			language="typescript"
-			code={`import { Button, type ButtonProps } from '@greater/primitives';
-import type { ThemeConfig } from '@greater/tokens';`}
+			code={`import { Button, type ButtonProps } from '@equaltoai/greater-components-primitives';
+import type { ThemeConfig } from '@equaltoai/greater-components-tokens';`}
 		/>
 	</section>
 	
@@ -198,9 +198,9 @@ import type { ThemeConfig } from '@greater/tokens';`}
 			code={`export default {
   optimizeDeps: {
     include: [
-      '@greater/primitives',
-      '@greater/tokens',
-      '@greater/icons'
+      '@equaltoai/greater-components-primitives',
+      '@equaltoai/greater-components-tokens',
+      '@equaltoai/greater-components-icons'
     ]
   }
 }`}

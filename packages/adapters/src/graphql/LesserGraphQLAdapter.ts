@@ -6,8 +6,9 @@
  * and object accessors rather than the legacy Mastodon-style wrappers.
  */
 
-import { Observable, type FetchResult } from '@apollo/client/core';
-import type { DocumentNode } from '@graphql-typed-document-node/core';
+import { Observable, type FetchResult, type OperationVariables } from '@apollo/client/core';
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
+import { print } from 'graphql';
 
 import {
 	createGraphQLClient,
@@ -65,8 +66,12 @@ import type {
 	PerformanceAlertSubscription,
 	PerformanceAlertSubscriptionVariables,
 	InfrastructureEventSubscription,
+	ModerationPatternInput,
 	HashtagNotificationSettingsInput,
 	NotificationLevel,
+	UploadMediaInput,
+	UploadMediaMutation,
+	UploadMediaMutationVariables,
 } from './generated/types.js';
 
 import {
@@ -100,6 +105,7 @@ import {
 	DeleteListDocument,
 	AddAccountsToListDocument,
 	RemoveAccountsFromListDocument,
+	UploadMediaDocument,
 	ConversationsDocument,
 	ConversationDocument,
 	MarkConversationReadDocument,
@@ -113,6 +119,16 @@ import {
 	MuteActorDocument,
 	UnmuteActorDocument,
 	UpdateRelationshipDocument,
+	FollowersDocument,
+	FollowingDocument,
+	UpdateProfileDocument,
+	UserPreferencesDocument,
+	UpdateUserPreferencesDocument,
+	UpdateStreamingPreferencesDocument,
+	PushSubscriptionDocument,
+	RegisterPushSubscriptionDocument,
+	UpdatePushSubscriptionDocument,
+	DeletePushSubscriptionDocument,
 	TimelineUpdatesDocument,
 	NotificationStreamDocument,
 	ConversationUpdatesDocument,
@@ -262,10 +278,33 @@ const UpdateHashtagNotificationsDocument = {
 			},
 		},
 	],
-} as unknown as DocumentNode<
+} as unknown as TypedDocumentNode<
 	UpdateHashtagNotificationsMutation,
 	UpdateHashtagNotificationsMutationVariables
 >;
+
+function stripUndefined<T extends Record<string, unknown>>(input: T): T {
+	const result: Record<string, unknown> = {};
+	for (const [key, value] of Object.entries(input)) {
+		if (value !== undefined) {
+			result[key] = value;
+		}
+	}
+	return result as T;
+}
+
+function isFileLike(value: unknown): value is Blob {
+	if (typeof Blob !== 'undefined' && value instanceof Blob) {
+		return true;
+	}
+
+	if (value && typeof value === 'object') {
+		const candidate = value as { arrayBuffer?: () => Promise<ArrayBuffer> };
+		return typeof candidate.arrayBuffer === 'function';
+	}
+
+	return false;
+}
 
 export type LesserGraphQLAdapterConfig = GraphQLClientConfig;
 
@@ -275,12 +314,19 @@ export type CreateNoteVariables = CreateNoteMutationVariables;
 
 export class LesserGraphQLAdapter {
 	private readonly client: GraphQLClientInstance;
+	private readonly httpEndpoint: string;
+	private readonly baseHeaders: Record<string, string>;
+	private authToken: string | null;
 
 	constructor(config: LesserGraphQLAdapterConfig) {
+		this.httpEndpoint = config.httpEndpoint;
+		this.baseHeaders = { ...(config.headers ?? {}) };
+		this.authToken = config.token ?? null;
 		this.client = createGraphQLClient(config);
 	}
 
 	updateToken(token: string | null): void {
+		this.authToken = token;
 		this.client.updateToken(token);
 	}
 
@@ -288,22 +334,33 @@ export class LesserGraphQLAdapter {
 		this.client.close();
 	}
 
-	private async query<TData, TVariables = Record<string, never>>(
-		document: DocumentNode<TData, TVariables>,
+	private async query<
+		TData extends Record<string, unknown>,
+		TVariables extends OperationVariables = OperationVariables
+	>(
+		document: TypedDocumentNode<TData, TVariables>,
 		variables?: TVariables,
 		fetchPolicy: 'cache-first' | 'network-only' = 'network-only'
 	): Promise<TData> {
-		const { data } = await this.client.client.query<TData, TVariables>({
+		const result = await this.client.client.query<TData, TVariables>({
 			query: document,
 			variables,
 			fetchPolicy,
 		});
 
+		const { data } = result;
+		if (data === undefined) {
+			throw new Error('Query completed without returning data.');
+		}
+
 		return data;
 	}
 
-	private async mutate<TData, TVariables = Record<string, never>>(
-		document: DocumentNode<TData, TVariables>,
+	private async mutate<
+		TData extends Record<string, unknown>,
+		TVariables extends OperationVariables = OperationVariables
+	>(
+		document: TypedDocumentNode<TData, TVariables>,
 		variables?: TVariables
 	): Promise<TData> {
 		const { data } = await this.client.client.mutate<TData, TVariables>({
@@ -311,11 +368,54 @@ export class LesserGraphQLAdapter {
 			variables,
 		});
 
-		if (!data) {
+		if (data == null) {
 			throw new Error('Mutation completed without returning data.');
 		}
 
 		return data;
+	}
+
+	private buildUploadMediaFormData(
+		variables: UploadMediaMutationVariables
+	): FormData {
+		const { input } = variables;
+		const { file, ...rest } = input;
+
+		if (!isFileLike(file)) {
+			throw new Error('UploadMedia input.file must be a File or Blob');
+		}
+
+		const inferredFilename =
+			(typeof rest.filename === 'string' && rest.filename.trim().length > 0
+				? rest.filename
+				: undefined) ??
+			(typeof File !== 'undefined' && file instanceof File ? file.name : undefined) ??
+			'upload.bin';
+
+		const normalizedInput = stripUndefined({
+			...rest,
+			filename:
+				rest.filename ??
+				(typeof File !== 'undefined' && file instanceof File ? file.name : undefined),
+			sensitive: rest.sensitive ?? false,
+			spoilerText: rest.spoilerText ?? null,
+			mediaType: rest.mediaType ?? null,
+			file: null,
+		});
+
+		const operations = {
+			query: print(UploadMediaDocument),
+			variables: {
+				input: normalizedInput,
+			},
+		};
+
+		const formData = new FormData();
+		formData.append('operations', JSON.stringify(operations));
+		formData.append('map', JSON.stringify({ 0: ['variables.input.file'] }));
+		formData.append('0', file as Blob, inferredFilename);
+
+		return formData;
 	}
 
 	async fetchTimeline(variables: TimelineQueryVariables) {
@@ -473,6 +573,62 @@ export class LesserGraphQLAdapter {
 		return data.removeAccountsFromList;
 	}
 
+	async uploadMedia(input: UploadMediaInput): Promise<UploadMediaMutation['uploadMedia']> {
+		const variables: UploadMediaMutationVariables = {
+			input: {
+				...input,
+				sensitive: input.sensitive ?? false,
+				spoilerText: input.spoilerText ?? null,
+				mediaType: input.mediaType ?? null,
+			},
+		};
+
+		const formData = this.buildUploadMediaFormData(variables);
+
+		const headers: Record<string, string> = { ...this.baseHeaders };
+		if (this.authToken) {
+			headers['authorization'] = `Bearer ${this.authToken}`;
+		}
+
+		for (const key of Object.keys(headers)) {
+			if (key.toLowerCase() === 'content-type') {
+				delete headers[key];
+			}
+		}
+
+		const response = await fetch(this.httpEndpoint, {
+			method: 'POST',
+			headers,
+			body: formData,
+		});
+
+		if (!response.ok) {
+			const errorBody = await response.text().catch(() => '');
+			throw new Error(
+				errorBody
+					? `Upload failed (${response.status}): ${errorBody}`
+					: `Upload failed with status ${response.status}`
+			);
+		}
+
+		const result = (await response.json()) as {
+			data?: UploadMediaMutation;
+			errors?: Array<{ message: string }>;
+		};
+
+		if (result.errors?.length) {
+			const message = result.errors.map((error) => error.message).join('; ');
+			throw new Error(message);
+		}
+
+		const payload = result.data?.uploadMedia;
+		if (!payload) {
+			throw new Error('Upload media mutation returned no payload.');
+		}
+
+		return payload;
+	}
+
 	async createNote(variables: CreateNoteMutationVariables) {
 		const data = await this.mutate(CreateNoteDocument, variables);
 		return data.createNote;
@@ -592,6 +748,138 @@ export class LesserGraphQLAdapter {
 	}
 
 	// ============================================================================
+	// Followers & Following
+	// ============================================================================
+
+	async getFollowers(username: string, limit = 40, cursor?: string) {
+		const data = await this.query(FollowersDocument, { username, limit, cursor });
+		return data.followers;
+	}
+
+	async getFollowing(username: string, limit = 40, cursor?: string) {
+		const data = await this.query(FollowingDocument, { username, limit, cursor });
+		return data.following;
+	}
+
+	// ============================================================================
+	// Profile Management
+	// ============================================================================
+
+	async updateProfile(input: {
+		displayName?: string;
+		bio?: string;
+		avatar?: string;
+		header?: string;
+		locked?: boolean;
+		bot?: boolean;
+		discoverable?: boolean;
+		noIndex?: boolean;
+		sensitive?: boolean;
+		language?: string;
+		fields?: Array<{ name: string; value: string; verifiedAt?: string }>;
+	}) {
+		const data = await this.mutate(UpdateProfileDocument, { input });
+		return data.updateProfile;
+	}
+
+	// ============================================================================
+	// User Preferences
+	// ============================================================================
+
+	async getUserPreferences() {
+		const data = await this.query(UserPreferencesDocument);
+		return data.userPreferences;
+	}
+
+	async updateUserPreferences(input: {
+		language?: string;
+		defaultPostingVisibility?: 'PUBLIC' | 'UNLISTED' | 'FOLLOWERS' | 'DIRECT';
+		defaultMediaSensitive?: boolean;
+		expandSpoilers?: boolean;
+		expandMedia?: 'DEFAULT' | 'SHOW_ALL' | 'HIDE_ALL';
+		autoplayGifs?: boolean;
+		showFollowCounts?: boolean;
+		preferredTimelineOrder?: 'NEWEST' | 'OLDEST';
+		searchSuggestionsEnabled?: boolean;
+		personalizedSearchEnabled?: boolean;
+		reblogFilters?: Array<{ key: string; enabled: boolean }>;
+		streaming?: {
+			defaultQuality?: 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ULTRA';
+			autoQuality?: boolean;
+			preloadNext?: boolean;
+			dataSaver?: boolean;
+		};
+	}) {
+		const data = await this.mutate(UpdateUserPreferencesDocument, { input });
+		return data.updateUserPreferences;
+	}
+
+	async updateStreamingPreferences(input: {
+		defaultQuality?: 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ULTRA';
+		autoQuality?: boolean;
+		preloadNext?: boolean;
+		dataSaver?: boolean;
+	}) {
+		const data = await this.mutate(UpdateStreamingPreferencesDocument, { input });
+		return data.updateStreamingPreferences;
+	}
+
+	// ============================================================================
+	// Push Notifications
+	// ============================================================================
+
+	async getPushSubscription() {
+		const data = await this.query(PushSubscriptionDocument);
+		return data.pushSubscription;
+	}
+
+	async registerPushSubscription(input: {
+		endpoint: string;
+		keys: {
+			auth: string;
+			p256dh: string;
+		};
+		alerts: {
+			follow?: boolean;
+			favourite?: boolean;
+			reblog?: boolean;
+			mention?: boolean;
+			poll?: boolean;
+			followRequest?: boolean;
+			status?: boolean;
+			update?: boolean;
+			adminSignUp?: boolean;
+			adminReport?: boolean;
+		};
+	}) {
+		const data = await this.mutate(RegisterPushSubscriptionDocument, { input });
+		return data.registerPushSubscription;
+	}
+
+	async updatePushSubscription(input: {
+		alerts: {
+			follow?: boolean;
+			favourite?: boolean;
+			reblog?: boolean;
+			mention?: boolean;
+			poll?: boolean;
+			followRequest?: boolean;
+			status?: boolean;
+			update?: boolean;
+			adminSignUp?: boolean;
+			adminReport?: boolean;
+		};
+	}) {
+		const data = await this.mutate(UpdatePushSubscriptionDocument, { input });
+		return data.updatePushSubscription;
+	}
+
+	async deletePushSubscription() {
+		const data = await this.mutate(DeletePushSubscriptionDocument);
+		return data.deletePushSubscription;
+	}
+
+	// ============================================================================
 	// PHASE 4: Community Notes
 	// ============================================================================
 
@@ -619,7 +907,7 @@ export class LesserGraphQLAdapter {
 		return data.flagObject;
 	}
 
-	async createModerationPattern(input: { pattern: string; type: string; severity: string }) {
+	async createModerationPattern(input: ModerationPatternInput) {
 		const data = await this.mutate(CreateModerationPatternDocument, { input });
 		return data.createModerationPattern;
 	}

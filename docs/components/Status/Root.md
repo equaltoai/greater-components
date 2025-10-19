@@ -1,7 +1,7 @@
 # Status.Root
 
 **Component**: Context Provider & Container  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 42 passing tests
 
@@ -26,7 +26,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -35,8 +35,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   const status: GenericStatus = {
     id: '1',
@@ -158,8 +158,8 @@ Navigate to status detail when clicked:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status: GenericStatus = $state({
     id: '12345',
@@ -224,8 +224,8 @@ Display reblogged content with boost indicator:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   // Status that represents a boost/reblog
   const boostedStatus: GenericStatus = {
@@ -306,8 +306,8 @@ Instant UI feedback with error rollback:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status: GenericStatus = $state({
     id: '1',
@@ -460,8 +460,8 @@ Show status in compact format:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let statuses: GenericStatus[] = $state([]);
 
@@ -538,8 +538,8 @@ Track status visibility and interactions:
 
 ```svelte
 <script lang="ts">
-  import { Status } from '@greater/fediverse';
-  import type { GenericStatus } from '@greater/fediverse/generics';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
 
   let status: GenericStatus = $state(mockStatus());
   let analytics = $state({
@@ -798,7 +798,7 @@ const context = createStatusContext(status, config, handlers);
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Status } from '@greater/fediverse';
+import { Status } from '@equaltoai/greater-components-fediverse';
 
 describe('Status.Root', () => {
   it('renders status content', () => {

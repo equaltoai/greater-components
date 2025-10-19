@@ -1,7 +1,7 @@
 # Auth.LoginForm
 
 **Component**: Email/Password Login Form  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 48 passing tests
 
@@ -28,7 +28,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -37,7 +37,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleLogin({ email, password, remember }) {
     const response = await fetch('/api/auth/login', {
@@ -98,7 +98,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleLogin({ email, password }) {
     const response = await fetch('/api/auth/login', {
@@ -131,7 +131,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let useWebAuthn = $state(false);
 
@@ -188,7 +188,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let errorMessage = $state('');
   let loading = $state(false);
@@ -289,7 +289,7 @@ handlers: {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   async function handleLogin({ email, password }) {
     // Standard email/password login
@@ -565,7 +565,7 @@ The LoginForm has 48 passing tests covering:
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import { Auth } from '@greater/fediverse';
+import { Auth } from '@equaltoai/greater-components-fediverse';
 
 describe('Auth.LoginForm', () => {
   it('validates email format', async () => {

@@ -12,7 +12,7 @@
   ```
 -->
 <script lang="ts">
-	import { createTabs } from '@greater/headless/tabs';
+	import { createTabs } from '@equaltoai/greater-components-headless/tabs';
 	import { getProfileContext } from './context.js';
 
 	interface Props {

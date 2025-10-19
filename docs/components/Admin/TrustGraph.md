@@ -21,7 +21,7 @@ Context provider for trust graph data and adapter connection.
 
 ```svelte
 <script lang="ts">
-  import * as TrustGraph from '@greater/fediverse/Admin/TrustGraph';
+  import * as TrustGraph from '@equaltoai/greater-components-fediverse/Admin/TrustGraph';
   import { adapter } from './config';
 </script>
 
@@ -302,7 +302,7 @@ Display trust scores inline on profiles:
 
 ```svelte
 <script lang="ts">
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
 </script>
 
 <Profile.Root {profileData}>

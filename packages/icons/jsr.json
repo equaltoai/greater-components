@@ -1,5 +1,5 @@
 {
-  "name": "@greater/icons",
+  "name": "@equaltoai/greater-components-icons",
   "version": "1.0.0",
   "exports": {
     ".": "./src/index.ts",

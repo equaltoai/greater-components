@@ -4,7 +4,7 @@
  * Provides shared state and configuration for compound Timeline components.
  * Handles virtualization, infinite scrolling, and real-time updates.
  * 
- * @module @greater/fediverse/Timeline/context
+ * @module @equaltoai/greater-components-fediverse/Timeline/context
  */
 
 import { getContext, setContext } from 'svelte';

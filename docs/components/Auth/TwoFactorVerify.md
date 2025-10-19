@@ -1,7 +1,7 @@
 # Auth.TwoFactorVerify
 
 **Component**: Two-Factor Authentication Verification (Login)  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 51 passing tests
 
@@ -28,7 +28,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -37,7 +37,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   // After successful username/password login, server returns 2FA required
   let twoFactorSession = $state({
@@ -124,7 +124,7 @@ interface AuthState {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let step = $state<'login' | '2fa' | 'complete'>('login');
   let twoFactorSession = $state(null);
@@ -235,7 +235,7 @@ interface AuthState {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let attemptsRemaining = $state(5);
   let lockoutUntil = $state<Date | null>(null);
@@ -325,7 +325,7 @@ interface AuthState {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let trustDevice = $state(false);
 
@@ -405,7 +405,7 @@ interface AuthState {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let timeRemaining = $state(300); // 5 minutes in seconds
   let expired = $state(false);
@@ -508,7 +508,7 @@ interface AuthState {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let backupCodesRemaining = $state(10);
 

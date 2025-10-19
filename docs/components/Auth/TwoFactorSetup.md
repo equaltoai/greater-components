@@ -1,7 +1,7 @@
 # Auth.TwoFactorSetup
 
 **Component**: Two-Factor Authentication Setup (TOTP)  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 51 passing tests
 
@@ -29,7 +29,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -38,7 +38,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleTwoFactorSetup(method) {
     // Generate TOTP secret
@@ -156,7 +156,7 @@ The component has four distinct steps:
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let userEmail = 'user@example.com';
   let twoFactorEnabled = $state(false);
@@ -320,7 +320,7 @@ The component has four distinct steps:
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   async function handleTwoFactorSetup(method) {
     // Server generates QR code as data URL
@@ -401,7 +401,7 @@ app.post('/api/auth/2fa/setup', async (req, res) => {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   async function handleTwoFactorSetup(method) {
     const response = await fetch('/api/auth/2fa/setup', {
@@ -471,7 +471,7 @@ app.post('/api/auth/2fa/notify', async (req, res) => {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let backupCodesStored = $state(false);
 
@@ -517,7 +517,7 @@ app.post('/api/auth/2fa/notify', async (req, res) => {
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let setupDevices = $state([]);
   let currentDevice = $state(null);

@@ -68,11 +68,11 @@ After publishing, check:
 
 ```bash
 # View package on JSR
-open https://jsr.io/@greater/primitives
+open https://jsr.io/@equaltoai/greater-components-primitives
 
 # Test installation
 mkdir test-install && cd test-install
-npx jsr add @greater/primitives
+npx jsr add @equaltoai/greater-components-primitives
 ```
 
 ## 🆘 Troubleshooting

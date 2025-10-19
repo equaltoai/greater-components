@@ -1,5 +1,6 @@
 {
-  "name": "@greater/headless",
+  "name": "@equaltoai/greater-components-headless",
+  "private": true,
   "version": "1.0.0",
   "type": "module",
   "description": "Headless UI primitives for Greater Components - behavior without styling",
@@ -44,6 +45,9 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch",
@@ -71,4 +75,3 @@
     "tabbable": "^6.2.0"
   }
 }
-

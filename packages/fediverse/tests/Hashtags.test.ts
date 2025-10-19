@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import type { LesserGraphQLAdapter } from '@greater/adapters';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 import HashtagsControlsHarness from './HashtagsControlsHarness.svelte';
 import HashtagsFollowedListHarness from './HashtagsFollowedListHarness.svelte';
 import HashtagsMutedListHarness from './HashtagsMutedListHarness.svelte';

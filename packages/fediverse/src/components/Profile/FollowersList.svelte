@@ -8,7 +8,7 @@ Supports removing followers (for own profile).
 @example
 ```svelte
 <script>
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   const followers = [
     { id: '1', username: 'john', displayName: 'John Doe', avatar: '...' }
@@ -21,7 +21,7 @@ Supports removing followers (for own profile).
 
 <script lang="ts">
 	import type { ProfileData } from './context.js';
-	import { getProfileContext } from './context.js';
+	import { formatCount, getProfileContext } from './context.js';
 
 	interface Props {
 		/**
@@ -40,6 +40,11 @@ Supports removing followers (for own profile).
 		hasMore?: boolean;
 
 		/**
+		 * Total follower count (from server pagination metadata)
+		 */
+		totalCount?: number;
+
+		/**
 		 * Whether followers are currently loading
 		 */
 		loading?: boolean;
@@ -56,10 +61,11 @@ Supports removing followers (for own profile).
 	}
 
 	let {
-		followers = [],
+		followers: providedFollowers,
 		isOwnProfile = false,
-		hasMore = false,
-		loading = false,
+		hasMore: providedHasMore,
+		totalCount: providedTotalCount,
+		loading: providedLoading,
 		enableSearch = true,
 		class: className = '',
 	}: Props = $props();
@@ -68,6 +74,15 @@ Supports removing followers (for own profile).
 
 	let searchQuery = $state('');
 	let removingIds = $state<Set<string>>(new Set());
+	const followers = $derived(providedFollowers ?? context.state.followers);
+	const hasMore = $derived(
+		providedHasMore ?? Boolean(context.state.followersCursor)
+	);
+	const totalCount = $derived(
+		providedTotalCount ?? context.state.followersTotal ?? followers.length
+	);
+	const loading = $derived(providedLoading ?? context.state.followersLoading);
+	const displayCount = $derived(totalCount);
 
 	/**
 	 * Filter followers based on search query
@@ -151,8 +166,8 @@ Supports removing followers (for own profile).
 	<div class="followers-list__header">
 		<h2 class="followers-list__title">
 			Followers
-			{#if followers.length > 0}
-				<span class="followers-list__count">({followers.length})</span>
+			{#if displayCount > 0}
+				<span class="followers-list__count">({formatCount(displayCount)})</span>
 			{/if}
 		</h2>
 

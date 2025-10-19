@@ -1,7 +1,7 @@
 # Messages.Root
 
 **Component**: Context Provider  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 112 passing tests
 
@@ -40,7 +40,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -51,7 +51,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -84,8 +84,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { MessagesHandlers } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { MessagesHandlers } from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers: MessagesHandlers = {
     // Fetch all conversations
@@ -441,7 +441,7 @@ interface MessagesState {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount } from 'svelte';
   
   let errorMessage = $state<string | null>(null);
@@ -630,7 +630,7 @@ interface MessagesState {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount, onDestroy } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   
@@ -848,8 +848,8 @@ interface MessagesState {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
-  import type { MessagesHandlers } from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { MessagesHandlers } from '@equaltoai/greater-components-fediverse/Messages';
   import { createGraphQLClient } from '$lib/graphql';
   import { authStore } from '$lib/stores/auth';
   
@@ -1067,8 +1067,8 @@ interface MessagesState {
 
 ```svelte
 <script lang="ts">
-  import * * Messages from '@greater/fediverse/Messages';
-  import type { DirectMessage, Conversation } from '@greater/fediverse/Messages';
+  import * * Messages from '@equaltoai/greater-components-fediverse/Messages';
+  import type { DirectMessage, Conversation } from '@equaltoai/greater-components-fediverse/Messages';
   import { lruCache } from '$lib/cache';
   
   // Cache for conversations (5 minutes TTL)
@@ -1216,7 +1216,7 @@ interface MessagesState {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { analytics } from '$lib/analytics';
   import { logger } from '$lib/logger';
   
@@ -1518,7 +1518,7 @@ Defer loading until needed:
 
 ```typescript
 import { render } from '@testing-library/svelte';
-import * as Messages from '@greater/fediverse/Messages';
+import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
 
 test('renders without crashing', () => {
   const { container } = render(Messages.Root, {

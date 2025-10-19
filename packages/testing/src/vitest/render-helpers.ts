@@ -5,7 +5,9 @@
 
 import { render, type RenderOptions } from '@testing-library/svelte';
 import { vi } from 'vitest';
-import type { ComponentType } from 'svelte';
+
+type RenderableComponent = Parameters<typeof render>[0];
+type ComponentInput = Parameters<typeof render>[1];
 
 export interface ThemeContextOptions {
   theme: 'light' | 'dark' | 'high-contrast';
@@ -71,22 +73,17 @@ export function createThemeContextWrapper(options: Partial<ThemeContextOptions> 
 /**
  * Render component with theme context
  */
-export function renderWithTheme<Props extends Record<string, unknown>>(
-  ComponentCtor: ComponentType<Props>,
-  props?: Props,
+export function renderWithTheme(
+  ComponentCtor: RenderableComponent,
+  props?: ComponentInput,
   themeOptions?: Partial<ThemeContextOptions>,
-  renderOptions?: Omit<RenderOptions<ComponentType<Props>>, 'wrapper'>
+  renderOptions?: RenderOptions
 ): ReturnType<typeof render> {
   // Create wrapper for theme context
   const applyThemeContext = createThemeContextWrapper(themeOptions);
   applyThemeContext({ children: null });
   
-  return render(ComponentCtor, {
-    ...renderOptions,
-    props,
-    // Note: Svelte testing library doesn't have wrapper in the same way as React
-    // This would need to be adapted based on the actual Svelte testing setup
-  });
+  return render(ComponentCtor, props, renderOptions) as unknown as ReturnType<typeof render>;
 }
 
 /**
@@ -244,12 +241,12 @@ export function setupTestEnvironment(options: {
  * Create custom render function with all context
  */
 export function createCustomRender(globalOptions: Partial<ThemeContextOptions> = {}) {
-  return function customRender<Props extends Record<string, unknown>>(
-    ComponentCtor: ComponentType<Props>,
-    props?: Props,
+  return function customRender(
+    ComponentCtor: RenderableComponent,
+    props?: ComponentInput,
     options?: {
       theme?: Partial<ThemeContextOptions>;
-      render?: Omit<RenderOptions<ComponentType<Props>>, 'wrapper'>;
+      render?: RenderOptions;
     }
   ): ReturnType<typeof render> {
     const mergedThemeOptions = { ...globalOptions, ...options?.theme };
@@ -259,7 +256,7 @@ export function createCustomRender(globalOptions: Partial<ThemeContextOptions> =
       props,
       mergedThemeOptions,
       options?.render
-    );
+    ) as unknown as ReturnType<typeof render>;
   };
 }
 
@@ -268,9 +265,9 @@ export function createCustomRender(globalOptions: Partial<ThemeContextOptions> =
  */
 export function createThemeSnapshots() {
   return {
-    async captureThemeSnapshots<Props extends Record<string, unknown>>(
-      ComponentCtor: ComponentType<Props>,
-      props?: Props,
+    async captureThemeSnapshots(
+      ComponentCtor: RenderableComponent,
+      props?: ComponentInput,
       themes: ThemeOption[] = ['light', 'dark']
     ): Promise<Record<string, string>> {
       const snapshots: Record<string, string> = {};
@@ -289,9 +286,9 @@ export function createThemeSnapshots() {
       return snapshots;
     },
     
-    async captureDensitySnapshots<Props extends Record<string, unknown>>(
-      ComponentCtor: ComponentType<Props>,
-      props?: Props,
+    async captureDensitySnapshots(
+      ComponentCtor: RenderableComponent,
+      props?: ComponentInput,
       densities: DensityOption[] = ['compact', 'comfortable', 'spacious']
     ): Promise<Record<string, string>> {
       const snapshots: Record<string, string> = {};

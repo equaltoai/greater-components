@@ -15,7 +15,7 @@
 	}
 
 	function installCommand(pkg: string) {
-		return `npx @greater/cli add ${pkg}`;
+		return `npx @equaltoai/greater-components-cli add ${pkg}`;
 	}
 </script>
 

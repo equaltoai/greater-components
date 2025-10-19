@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/svelte';
 import { action } from '@storybook/addon-actions';
 import ProfileHeader from '../src/components/ProfileHeader.svelte';
-import type { UnifiedAccount } from '@greater/adapters';
+import type { UnifiedAccount } from '@equaltoai/greater-components-adapters';
 
 // Mock data for different profile examples
 const baseMockAccount: UnifiedAccount = {
@@ -140,7 +140,7 @@ const meta: Meta<ProfileHeader> = {
 ProfileHeader is a comprehensive component for displaying user profile information in fediverse applications. 
 
 ## Features
-- **Banner and Avatar**: Displays profile banner with fallback color and avatar using @greater/primitives Avatar component
+- **Banner and Avatar**: Displays profile banner with fallback color and avatar using @equaltoai/greater-components-primitives Avatar component
 - **Identity Display**: Shows display name with custom emoji support, handle, verification badges, and privacy indicators
 - **Bio Rendering**: Renders sanitized HTML bio content with mention and hashtag linkification
 - **Metadata Fields**: Displays custom profile fields with verification status
@@ -150,7 +150,7 @@ ProfileHeader is a comprehensive component for displaying user profile informati
 - **Responsive Design**: Adapts to different screen sizes with mobile-friendly layout
 
 ## Usage
-The component works with UnifiedAccount data from @greater/adapters and provides extensive customization options for different use cases.
+The component works with UnifiedAccount data from @equaltoai/greater-components-adapters and provides extensive customization options for different use cases.
         `
       }
     }

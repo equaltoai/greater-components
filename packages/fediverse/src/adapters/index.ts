@@ -6,7 +6,7 @@
  * @module adapters
  * @example
  * ```typescript
- * import { AdapterCache, RequestBatcher, OptimisticManager } from '@greater/fediverse/adapters';
+ * import { AdapterCache, RequestBatcher, OptimisticManager } from '@equaltoai/greater-components-fediverse/adapters';
  * 
  * // Create cache
  * const cache = new AdapterCache({ maxSize: 1000, defaultTTL: 300000 });
@@ -65,6 +65,7 @@ export type {
 	LesserActor,
 	LesserNote,
 	LesserActivity,
+	ActorListPage,
 	TimelineResult,
 	ActorResult,
 	NoteResult,
@@ -79,5 +80,36 @@ export type {
 	FollowersResult,
 	FollowingResult,
 	NotificationsResult,
+	ProfileFieldInput,
+	UpdateProfileInput,
+	Visibility,
+	ExpandMediaPreference,
+	TimelineOrder,
+	StreamQuality,
+	DigestFrequency,
+	UserPreferences,
+	PostingPreferences,
+	ReadingPreferences,
+	DiscoveryPreferences,
+	StreamingPreferences,
+	NotificationPreferences,
+	PrivacyPreferences,
+	ReblogFilter,
+	UpdateUserPreferencesInput,
+	StreamingPreferencesInput,
+	ReblogFilterInput,
+	UserPreferencesResult,
+	UpdateUserPreferencesResult,
+	UpdateStreamingPreferencesResult,
+	PushSubscription,
+	PushSubscriptionKeys,
+	PushSubscriptionAlerts,
+	PushSubscriptionResult,
+	RegisterPushSubscriptionInput,
+	RegisterPushSubscriptionResult,
+	UpdatePushSubscriptionInput,
+	UpdatePushSubscriptionResult,
+	DeletePushSubscriptionResult,
+	PushSubscriptionKeysInput,
+	PushSubscriptionAlertsInput,
 } from './graphql/index.js';
-

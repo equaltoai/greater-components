@@ -301,6 +301,14 @@ export interface MediaAttachment {
   remoteUrl?: string;
   /** Alt text description */
   description?: string;
+  /** Whether the media is marked as sensitive */
+  sensitive?: boolean;
+  /** Spoiler/content warning text */
+  spoilerText?: string | null;
+  /** Server-reported media category */
+  mediaCategory?: 'IMAGE' | 'VIDEO' | 'AUDIO' | 'GIFV' | 'DOCUMENT' | 'UNKNOWN';
+  /** MIME type reported by the backend */
+  mimeType?: string;
   /** Blurhash for placeholder */
   blurhash?: string;
   /** Media dimensions and metadata */

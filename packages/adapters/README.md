@@ -1,11 +1,11 @@
-# @greater/adapters
+# @equaltoai/greater-components-adapters
 
 Transport adapters and state management for Greater Components.
 
 ## Installation
 
 ```bash
-pnpm add @greater/adapters
+pnpm add @equaltoai/greater-components-adapters
 ```
 
 ## WebSocketClient
@@ -23,7 +23,7 @@ A robust WebSocket client with automatic reconnection, heartbeat, and latency mo
 ### Basic Usage
 
 ```typescript
-import { WebSocketClient } from '@greater/adapters';
+import { WebSocketClient } from '@equaltoai/greater-components-adapters';
 
 // Create a client with configuration
 const client = new WebSocketClient({

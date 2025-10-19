@@ -10,7 +10,7 @@
  * - Keyboard focus management
  * - Orientation support (horizontal/vertical)
  * 
- * @module @greater/headless/tabs
+ * @module @equaltoai/greater-components-headless/tabs
  */
 
 import { generateId } from '../utils/id';

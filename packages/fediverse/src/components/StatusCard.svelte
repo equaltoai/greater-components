@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatDateTime } from '@greater/utils';
+  import { formatDateTime } from '@equaltoai/greater-components-utils';
   import ContentRenderer from './ContentRenderer.svelte';
   import ActionBar from './ActionBar.svelte';
   import type { Status } from '../types';
@@ -80,6 +80,47 @@
     onShare: actionHandlers?.onShare ? () => actionHandlers.onShare!(status) : undefined,
     onQuote: actionHandlers?.onQuote ? () => actionHandlers.onQuote!(status) : undefined,
   });
+
+  let sensitiveVisibility: Record<string, boolean> = {};
+
+  function getPreviewType(media: (typeof actualStatus.mediaAttachments)[number]): 'image' | 'video' | 'audio' | 'file' {
+    if (media.mediaCategory) {
+      switch (media.mediaCategory) {
+        case 'IMAGE':
+          return 'image';
+        case 'VIDEO':
+        case 'GIFV':
+          return 'video';
+        case 'AUDIO':
+          return 'audio';
+        default:
+          return 'file';
+      }
+    }
+
+    switch (media.type) {
+      case 'image':
+        return 'image';
+      case 'video':
+      case 'gifv':
+        return 'video';
+      case 'audio':
+        return 'audio';
+      default:
+        return 'file';
+    }
+  }
+
+  function isMediaHidden(media: (typeof actualStatus.mediaAttachments)[number]): boolean {
+    return media.sensitive === true && sensitiveVisibility[media.id] !== true;
+  }
+
+  function toggleMediaVisibility(id: string) {
+    sensitiveVisibility = {
+      ...sensitiveVisibility,
+      [id]: sensitiveVisibility[id] === true ? false : true,
+    };
+  }
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -150,32 +191,53 @@
   {#if actualStatus.mediaAttachments && actualStatus.mediaAttachments.length > 0}
     <div class="media-attachments" class:single={actualStatus.mediaAttachments.length === 1}>
       {#each actualStatus.mediaAttachments as media (media.id)}
-        <div class="media-item">
-          {#if media.type === 'image'}
+        {@const previewType = getPreviewType(media)}
+        <div class="media-item" class:blurred={isMediaHidden(media)}>
+          {#if previewType === 'image'}
             <img 
               src={media.previewUrl || media.url}
               alt={media.description || ''}
               loading="lazy"
               class="media-image"
             />
-          {:else if media.type === 'video' || media.type === 'gifv'}
+          {:else if previewType === 'video'}
             <video 
               src={media.url}
               poster={media.previewUrl}
-              controls={media.type === 'video'}
-              autoplay={media.type === 'gifv'}
-              loop={media.type === 'gifv'}
-              muted={media.type === 'gifv'}
+              controls
               class="media-video"
               aria-label={media.description || 'Video'}
             ></video>
-          {:else if media.type === 'audio'}
+          {:else if previewType === 'audio'}
             <audio 
               src={media.url}
               controls
               class="media-audio"
               aria-label={media.description || 'Audio'}
             ></audio>
+          {:else}
+            <div class="media-file">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+              </svg>
+              <span>{media.description || 'Attachment'}</span>
+            </div>
+          {/if}
+
+          {#if media.sensitive}
+            {#if isMediaHidden(media)}
+              <div class="media-overlay media-overlay--sensitive">
+                <span class="media-overlay__label">Sensitive content</span>
+                {#if media.spoilerText}
+                  <p class="media-overlay__text">{media.spoilerText}</p>
+                {/if}
+                <button type="button" class="media-reveal" onclick={() => toggleMediaVisibility(media.id)}>
+                  Show media
+                </button>
+              </div>
+            {:else}
+              <div class="media-badge">Sensitive</div>
+            {/if}
           {/if}
         </div>
       {/each}
@@ -334,6 +396,11 @@
     overflow: hidden;
   }
 
+	.media-item.blurred .media-image,
+	.media-item.blurred .media-video {
+		filter: blur(18px);
+	}
+
   .media-image,
   .media-video {
     width: 100%;
@@ -346,6 +413,93 @@
     margin-top: 50%;
     transform: translateY(-50%);
   }
+
+	.media-file {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 1rem;
+		height: 100%;
+		color: var(--color-text-secondary, #536471);
+	}
+
+	.media-file svg {
+		width: 2rem;
+		height: 2rem;
+	}
+
+	.media-file span {
+		font-size: 0.75rem;
+		text-align: center;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+
+	.media-overlay {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		z-index: 1;
+	}
+
+	.media-overlay--sensitive {
+		background: rgba(15, 20, 25, 0.85);
+		gap: 0.75rem;
+		text-align: center;
+		padding: 1rem;
+	}
+
+	.media-overlay__label {
+		font-size: 0.8rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: #fff;
+	}
+
+	.media-overlay__text {
+		font-size: 0.75rem;
+		color: #fff;
+		margin: 0;
+	}
+
+	.media-reveal {
+		padding: 0.3rem 0.75rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(255, 255, 255, 0.8);
+		background: transparent;
+		color: #fff;
+		font-size: 0.75rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background-color 0.2s, color 0.2s;
+	}
+
+	.media-reveal:hover {
+		background: rgba(255, 255, 255, 0.2);
+	}
+
+	.media-badge {
+		position: absolute;
+		top: 0.5rem;
+		left: 0.5rem;
+		padding: 0.25rem 0.5rem;
+		border-radius: 9999px;
+		background: rgba(15, 20, 25, 0.8);
+		color: #fff;
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		z-index: 1;
+	}
 
   /* Action bar styling is now handled by the ActionBar component */
 

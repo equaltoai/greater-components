@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { SettingsPanel } from '@greater/fediverse';
-  import { ThemeProvider } from '@greater/primitives';
+  import { SettingsPanel } from '@equaltoai/greater-components-fediverse';
+  import { ThemeProvider } from '@equaltoai/greater-components-primitives';
   
   interface Props {
     activeSection?: string;

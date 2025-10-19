@@ -1,7 +1,7 @@
 # Lists.Root
 
 **Component**: Context Provider  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 85 passing tests
 
@@ -36,7 +36,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -47,7 +47,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers = {
     onFetchLists: async () => {
@@ -66,8 +66,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListsHandlers } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListsHandlers } from '@equaltoai/greater-components-fediverse/Lists';
   
   const handlers: ListsHandlers = {
     // Fetch all user's lists
@@ -398,7 +398,7 @@ interface ListsState {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { onMount } from 'svelte';
   
   let errorMessage = $state<string | null>(null);
@@ -572,7 +572,7 @@ interface ListsState {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { onMount, onDestroy } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   
@@ -816,8 +816,8 @@ interface ListsState {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListsHandlers, ListData, ListMember } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListsHandlers, ListData, ListMember } from '@equaltoai/greater-components-fediverse/Lists';
   import { createGraphQLClient } from '$lib/graphql';
   import { authStore } from '$lib/stores/auth';
   
@@ -1061,8 +1061,8 @@ interface ListsState {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
-  import type { ListData, ListFormData } from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+  import type { ListData, ListFormData } from '@equaltoai/greater-components-fediverse/Lists';
   import { lruCache } from '$lib/cache';
   
   // Cache for lists (5 minutes TTL)
@@ -1288,7 +1288,7 @@ interface ListsState {
 
 ```svelte
 <script lang="ts">
-  import * as Lists from '@greater/fediverse/Lists';
+  import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
   import { analytics } from '$lib/analytics';
   import { logger } from '$lib/logger';
   
@@ -1534,7 +1534,7 @@ const handlers = {
 Validate all user inputs before sending to the server:
 
 ```typescript
-import { validateListForm } from '@greater/fediverse/Lists';
+import { validateListForm } from '@equaltoai/greater-components-fediverse/Lists';
 
 const handlers = {
   onCreate: async (data) => {
@@ -1700,7 +1700,7 @@ const handlers = {
 
 ```typescript
 import { render } from '@testing-library/svelte';
-import * as Lists from '@greater/fediverse/Lists';
+import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
 
 test('renders without crashing', () => {
   const { container } = render(Lists.Root, {

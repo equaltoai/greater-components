@@ -1,6 +1,6 @@
 # Auth Components
 
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Components**: 8  
 **Status**: Production Ready ✅
 
@@ -67,7 +67,7 @@ The `Auth.Root` component provides context that all child components consume, en
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleLogin({ email, password }) {
     const response = await fetch('/api/auth/login', {
@@ -92,7 +92,7 @@ The `Auth.Root` component provides context that all child components consume, en
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleRegister(data) {
     const response = await fetch('/api/auth/register', {
@@ -116,7 +116,7 @@ The `Auth.Root` component provides context that all child components consume, en
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   async function handleWebAuthnSetup({ credential }) {
     const response = await fetch('/api/auth/webauthn/register', {
@@ -190,7 +190,7 @@ Here's a complete, production-ready authentication flow:
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let authStep = $state<'login' | 'register' | 'webauthn' | '2fa' | 'success'>('login');
   let userId = $state<string | null>(null);

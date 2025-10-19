@@ -17,6 +17,12 @@ importers:
       '@graphql-codegen/cli':
         specifier: ^6.0.0
         version: 6.0.0(@types/node@20.19.10)(graphql@16.11.0)(typescript@5.9.2)
+      '@graphql-codegen/fragment-matcher':
+        specifier: ^6.0.0
+        version: 6.0.0(graphql@16.11.0)
+      '@graphql-codegen/introspection':
+        specifier: ^5.0.0
+        version: 5.0.0(graphql@16.11.0)
       '@graphql-codegen/typed-document-node':
         specifier: ^6.0.2
         version: 6.0.2(graphql@16.11.0)
@@ -80,22 +86,22 @@ importers:
 
   apps/docs:
     dependencies:
-      '@greater/adapters':
+      '@equaltoai/greater-components-adapters':
         specifier: workspace:*
         version: link:../../packages/adapters
-      '@greater/fediverse':
+      '@equaltoai/greater-components-fediverse':
         specifier: workspace:*
         version: link:../../packages/fediverse
-      '@greater/icons':
+      '@equaltoai/greater-components-icons':
         specifier: workspace:*
         version: link:../../packages/icons
-      '@greater/primitives':
+      '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../../packages/primitives
-      '@greater/tokens':
+      '@equaltoai/greater-components-tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
-      '@greater/utils':
+      '@equaltoai/greater-components-utils':
         specifier: workspace:*
         version: link:../../packages/utils
     devDependencies:
@@ -156,19 +162,19 @@ importers:
 
   apps/playground:
     dependencies:
-      '@greater/fediverse':
+      '@equaltoai/greater-components-fediverse':
         specifier: workspace:*
         version: link:../../packages/fediverse
-      '@greater/icons':
+      '@equaltoai/greater-components-icons':
         specifier: workspace:*
         version: link:../../packages/icons
-      '@greater/primitives':
+      '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../../packages/primitives
-      '@greater/tokens':
+      '@equaltoai/greater-components-tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
-      '@greater/utils':
+      '@equaltoai/greater-components-utils':
         specifier: workspace:*
         version: link:../../packages/utils
     devDependencies:
@@ -241,6 +247,9 @@ importers:
       '@apollo/client-react-streaming':
         specifier: ^0.11.0
         version: 0.11.11(@apollo/client@3.14.0(@types/react@19.1.9)(graphql-ws@5.16.2(graphql@16.11.0))(graphql@16.11.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(graphql@16.11.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@graphql-typed-document-node/core':
+        specifier: ^3.2.0
+        version: 3.2.0(graphql@16.11.0)
       graphql:
         specifier: ^16.9.0
         version: 16.11.0
@@ -318,21 +327,27 @@ importers:
 
   packages/fediverse:
     dependencies:
-      '@greater/headless':
+      '@equaltoai/greater-components-adapters':
+        specifier: workspace:*
+        version: link:../adapters
+      '@equaltoai/greater-components-headless':
         specifier: workspace:^
         version: link:../headless
-      '@greater/icons':
+      '@equaltoai/greater-components-icons':
         specifier: workspace:*
         version: link:../icons
-      '@greater/primitives':
+      '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../primitives
-      '@greater/tokens':
+      '@equaltoai/greater-components-tokens':
         specifier: workspace:*
         version: link:../tokens
-      '@greater/utils':
+      '@equaltoai/greater-components-utils':
         specifier: workspace:*
         version: link:../utils
+      '@graphql-typed-document-node/core':
+        specifier: ^3.2.0
+        version: 3.2.0(graphql@16.11.0)
       '@tanstack/svelte-virtual':
         specifier: ^3.10.8
         version: 3.13.12(svelte@5.38.0)
@@ -400,6 +415,36 @@ importers:
       vitest:
         specifier: ^2.0.5
         version: 2.1.9(@types/node@20.19.10)(@vitest/ui@2.1.9)(jsdom@24.1.3)(terser@5.43.1)
+
+  packages/greater-components:
+    devDependencies:
+      '@equaltoai/greater-components-adapters':
+        specifier: workspace:*
+        version: link:../adapters
+      '@equaltoai/greater-components-cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@equaltoai/greater-components-fediverse':
+        specifier: workspace:*
+        version: link:../fediverse
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../headless
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../primitives
+      '@equaltoai/greater-components-testing':
+        specifier: workspace:*
+        version: link:../testing
+      '@equaltoai/greater-components-tokens':
+        specifier: workspace:*
+        version: link:../tokens
+      '@equaltoai/greater-components-utils':
+        specifier: workspace:*
+        version: link:../utils
 
   packages/headless:
     dependencies:
@@ -479,7 +524,7 @@ importers:
 
   packages/primitives:
     devDependencies:
-      '@greater/tokens':
+      '@equaltoai/greater-components-tokens':
         specifier: workspace:*
         version: link:../tokens
       '@sveltejs/vite-plugin-svelte':
@@ -1746,8 +1791,20 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
 
+  '@graphql-codegen/fragment-matcher@6.0.0':
+    resolution: {integrity: sha512-lXdFWrUSEbOL2KhmYxdeNPLllcBGZnNunwgV72C12+21v9lyKaOqFnYueyt0pT110MGCwUhKTnXzUtV1D5i9Jw==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+
   '@graphql-codegen/gql-tag-operations@5.0.2':
     resolution: {integrity: sha512-iK+LFGv4ihHKeerADFPTL7Iq4iNr+J1jm2+GUMtwTSAL4nGk+BdfyruV7eR53R7Des8NFdI+9hBzKbbob7VwGQ==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+
+  '@graphql-codegen/introspection@5.0.0':
+    resolution: {integrity: sha512-7GaV4o8J3yllz7hdvQVAwB8L5oizeLCRKCU5vEq6XyFsoi4mSVMAPhvDPkNgt4wtXPyEh59NU7QwG84JChrqHQ==}
     engines: {node: '>=16'}
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -7829,12 +7886,27 @@ snapshots:
       graphql: 16.11.0
       tslib: 2.6.3
 
+  '@graphql-codegen/fragment-matcher@6.0.0(graphql@16.11.0)':
+    dependencies:
+      '@graphql-codegen/plugin-helpers': 6.0.0(graphql@16.11.0)
+      graphql: 16.11.0
+      tslib: 2.6.3
+
   '@graphql-codegen/gql-tag-operations@5.0.2(graphql@16.11.0)':
     dependencies:
       '@graphql-codegen/plugin-helpers': 6.0.0(graphql@16.11.0)
       '@graphql-codegen/visitor-plugin-common': 6.1.0(graphql@16.11.0)
       '@graphql-tools/utils': 10.9.1(graphql@16.11.0)
       auto-bind: 4.0.0
+      graphql: 16.11.0
+      tslib: 2.6.3
+    transitivePeerDependencies:
+      - encoding
+
+  '@graphql-codegen/introspection@5.0.0(graphql@16.11.0)':
+    dependencies:
+      '@graphql-codegen/plugin-helpers': 6.0.0(graphql@16.11.0)
+      '@graphql-codegen/visitor-plugin-common': 6.1.0(graphql@16.11.0)
       graphql: 16.11.0
       tslib: 2.6.3
     transitivePeerDependencies:

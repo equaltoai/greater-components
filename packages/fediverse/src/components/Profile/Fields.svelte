@@ -14,7 +14,7 @@
 -->
 <script lang="ts">
 	import { getProfileContext } from './context.js';
-	import { sanitizeHtml } from '@greater/utils';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 
 	interface Props {
 		/**

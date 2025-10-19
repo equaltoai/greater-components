@@ -136,29 +136,65 @@ export const typePolicies: TypePolicies = {
 				},
 			},
 
-			/**
-			 * Followers/Following
-			 */
-			followers: {
-				keyArgs: ['accountId'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
-					return {
-						...incoming,
-						edges: [...existing.edges, ...incoming.edges],
-						pageInfo: incoming.pageInfo,
-					};
-				},
+		/**
+		 * Followers/Following - use username as key and handle ActorListPage structure
+		 */
+		followers: {
+			keyArgs: ['username'],
+			merge(existing, incoming) {
+				if (!existing) {
+					return incoming;
+				}
+				
+				// ActorListPage structure (actors array, not edges)
+				const existingActors = existing.actors || [];
+				const incomingActors = incoming.actors || [];
+				
+				return {
+					...incoming,
+					actors: [...existingActors, ...incomingActors],
+					nextCursor: incoming.nextCursor,
+					totalCount: incoming.totalCount
+				};
 			},
-			following: {
-				keyArgs: ['accountId'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
-					return {
-						...incoming,
-						edges: [...existing.edges, ...incoming.edges],
-						pageInfo: incoming.pageInfo,
-					};
-				},
+		},
+		following: {
+			keyArgs: ['username'],
+			merge(existing, incoming) {
+				if (!existing) {
+					return incoming;
+				}
+				
+				// ActorListPage structure (actors array, not edges)
+				const existingActors = existing.actors || [];
+				const incomingActors = incoming.actors || [];
+				
+				return {
+					...incoming,
+					actors: [...existingActors, ...incomingActors],
+					nextCursor: incoming.nextCursor,
+					totalCount: incoming.totalCount
+				};
 			},
+		},
+		
+		/**
+		 * User preferences - always use latest
+		 */
+		userPreferences: {
+			merge(_, incoming) {
+				return incoming;
+			},
+		},
+		
+		/**
+		 * Push subscription - always use latest
+		 */
+		pushSubscription: {
+			merge(_, incoming) {
+				return incoming;
+			},
+		},
 		},
 	},
 
@@ -174,6 +210,20 @@ export const typePolicies: TypePolicies = {
 			},
 			context: {
 				merge(existing, incoming) {
+					return incoming || existing;
+				},
+			},
+		},
+	},
+
+	Actor: {
+		keyFields: ['id'],
+		fields: {
+			/**
+			 * Merge actor fields (Lesser uses Actor type)
+			 */
+			fields: {
+				merge(existing = [], incoming) {
 					return incoming || existing;
 				},
 			},
@@ -196,6 +246,20 @@ export const typePolicies: TypePolicies = {
 				},
 			},
 		},
+	},
+	
+	/**
+	 * User Preferences - cache by actorId
+	 */
+	UserPreferences: {
+		keyFields: ['actorId'],
+	},
+	
+	/**
+	 * Push Subscription - unique per user
+	 */
+	PushSubscription: {
+		keyFields: ['id'],
 	},
 
 	Notification: {

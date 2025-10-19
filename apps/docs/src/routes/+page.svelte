@@ -37,7 +37,7 @@
 	];
 
 	const quickStart = `# Install CLI
-npm install -g @greater/cli
+npm install -g @equaltoai/greater-components-cli
 
 # Initialize in your project
 cd my-sveltekit-app

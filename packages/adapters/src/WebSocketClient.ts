@@ -228,7 +228,7 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
     const errorObj = this.resolveError(error);
 
     this.setState({ error: errorObj });
-    this.logger.error('WebSocket transport error', errorObj);
+	this.logger.error('WebSocket transport error', { error: errorObj });
     this.emit('error', { error: errorObj }, errorObj);
   }
 
@@ -441,7 +441,7 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
         try {
           handler(wsEvent);
         } catch (err) {
-          this.logger.error(`Error in WebSocket event handler for ${event}`, err);
+			this.logger.error(`Error in WebSocket event handler for ${event}`, { error: err });
         }
       });
     }

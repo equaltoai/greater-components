@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TextField } from '@greater/primitives';
+  import { TextField } from '@equaltoai/greater-components-primitives';
   
   interface Props {
     showAll?: boolean;

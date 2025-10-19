@@ -31,11 +31,11 @@
 		"tailwind-merge": "^3.3.1"
 	},
 	"dependencies": {
-		"@greater/primitives": "workspace:*",
-		"@greater/tokens": "workspace:*",
-		"@greater/icons": "workspace:*",
-		"@greater/utils": "workspace:*",
-		"@greater/fediverse": "workspace:*",
-		"@greater/adapters": "workspace:*"
+		"@equaltoai/greater-components-primitives": "workspace:*",
+		"@equaltoai/greater-components-tokens": "workspace:*",
+		"@equaltoai/greater-components-icons": "workspace:*",
+		"@equaltoai/greater-components-utils": "workspace:*",
+		"@equaltoai/greater-components-fediverse": "workspace:*",
+		"@equaltoai/greater-components-adapters": "workspace:*"
 	}
 }

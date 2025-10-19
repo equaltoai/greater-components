@@ -1,7 +1,7 @@
 # Auth.WebAuthnSetup
 
 **Component**: Biometric/Security Key Setup  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 43 passing tests
 
@@ -27,7 +27,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -36,7 +36,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
 
   let userEmail = 'user@example.com';
 
@@ -163,7 +163,7 @@ Error state with retry and skip options.
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let userId = '12345';
   let userEmail = 'user@example.com';
@@ -249,7 +249,7 @@ Error state with retry and skip options.
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let onboardingStep = $state<'register' | 'webauthn' | '2fa' | 'complete'>('register');
   let userId = $state<string | null>(null);
@@ -382,7 +382,7 @@ Error state with retry and skip options.
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let showWebAuthnSetup = $state(false);
   let hasWebAuthn = $state(false);
@@ -555,7 +555,7 @@ Error state with retry and skip options.
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@greater/fediverse';
+  import { Auth } from '@equaltoai/greater-components-fediverse';
   
   let authMethod = $state<'webauthn' | 'password'>('webauthn');
   let userEmail = 'user@example.com';
@@ -839,7 +839,7 @@ The WebAuthnSetup component has 43 passing tests covering:
 
 ```typescript
 import { render, fireEvent } from '@testing-library/svelte';
-import { Auth } from '@greater/fediverse';
+import { Auth } from '@equaltoai/greater-components-fediverse';
 
 describe('Auth.WebAuthnSetup', () => {
   it('shows unavailable message when WebAuthn not supported', () => {

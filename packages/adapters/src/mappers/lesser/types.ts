@@ -249,6 +249,10 @@ export interface LesserMediaFragment {
   thumbnailUrl?: string;
   remoteUrl?: string;
   altText?: string;
+  sensitive?: boolean;
+  spoilerText?: string | null;
+  mediaCategory?: 'IMAGE' | 'VIDEO' | 'AUDIO' | 'GIFV' | 'DOCUMENT' | 'UNKNOWN';
+  mimeType?: string;
   blurhash?: string;
   metadata?: LesserMediaMetadata;
 }
@@ -346,6 +350,10 @@ export interface LesserAttachmentFragment {
   url: string;
   preview?: string;
   description?: string;
+  sensitive?: boolean;
+  spoilerText?: string | null;
+  mediaCategory?: 'IMAGE' | 'VIDEO' | 'AUDIO' | 'GIFV' | 'DOCUMENT' | 'UNKNOWN';
+  mimeType?: string;
   blurhash?: string;
   width?: number;
   height?: number;
@@ -581,7 +589,8 @@ export function isLesserGraphQLResponse<T>(obj: unknown): obj is LesserGraphQLRe
     return false;
   }
 
-  return 'data' in obj || ('errors' in obj && Array.isArray(obj.errors));
+  const errors = obj['errors'];
+  return 'data' in obj || ('errors' in obj && Array.isArray(errors));
 }
 
 export function isLesserAccountFragment(obj: unknown): obj is LesserAccountFragment {
@@ -589,7 +598,9 @@ export function isLesserAccountFragment(obj: unknown): obj is LesserAccountFragm
     return false;
   }
 
-  return typeof obj.id === 'string' && typeof obj.handle === 'string';
+  const id = obj['id'];
+  const handle = obj['handle'];
+  return typeof id === 'string' && typeof handle === 'string';
 }
 
 export function isLesserPostFragment(obj: unknown): obj is LesserPostFragment {
@@ -597,7 +608,10 @@ export function isLesserPostFragment(obj: unknown): obj is LesserPostFragment {
     return false;
   }
 
-  return typeof obj.id === 'string' && typeof obj.content === 'string' && isRecord(obj.author);
+  const id = obj['id'];
+  const content = obj['content'];
+  const author = obj['author'];
+  return typeof id === 'string' && typeof content === 'string' && isRecord(author);
 }
 
 export function isLesserNotificationFragment(obj: unknown): obj is LesserNotificationFragment {
@@ -605,10 +619,14 @@ export function isLesserNotificationFragment(obj: unknown): obj is LesserNotific
     return false;
   }
 
+  const id = obj['id'];
+  const notificationType = obj['notificationType'];
+  const triggerAccount = obj['triggerAccount'];
+
   return (
-    typeof obj.id === 'string' &&
-    typeof obj.notificationType === 'string' &&
-    isRecord(obj.triggerAccount)
+    typeof id === 'string' &&
+    typeof notificationType === 'string' &&
+    isRecord(triggerAccount)
   );
 }
 
@@ -617,7 +635,11 @@ export function isLesserStreamingUpdate(obj: unknown): obj is LesserStreamingUpd
     return false;
   }
 
-  return typeof obj.__typename === 'string' && typeof obj.eventType === 'string' && isRecord(obj.data);
+  const typename = obj['__typename'];
+  const eventType = obj['eventType'];
+  const data = obj['data'];
+
+  return typeof typename === 'string' && typeof eventType === 'string' && isRecord(data);
 }
 
 // GraphQL fragment strings (for actual GraphQL usage)

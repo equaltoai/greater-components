@@ -20,7 +20,7 @@ Context provider that manages adapter connection and shared state.
 
 ```svelte
 <script lang="ts">
-  import * as Insights from '@greater/fediverse/Admin/Insights';
+  import * as Insights from '@equaltoai/greater-components-fediverse/Admin/Insights';
   import { adapter } from './config';
 </script>
 

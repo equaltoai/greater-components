@@ -11,7 +11,7 @@ Handles account migration workflow:
 @example
 ```svelte
 <script>
-  import { Profile } from '@greater/fediverse';
+  import { Profile } from '@equaltoai/greater-components-fediverse';
   
   const migration = {
     targetAccount: {

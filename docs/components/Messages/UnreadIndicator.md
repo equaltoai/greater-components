@@ -1,7 +1,7 @@
 # Messages.UnreadIndicator
 
 **Component**: Unread Message Badge / Indicator  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 54 passing tests
 
@@ -40,7 +40,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -51,7 +51,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -70,7 +70,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -109,7 +109,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { goto } from '$app/navigation';
   
   const handlers = {
@@ -167,7 +167,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   
   const handlers = {
     onFetchConversations: async () => {
@@ -242,7 +242,7 @@ const handleClick = () => {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   const handlers = {
@@ -364,7 +364,7 @@ const handleClick = () => {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   const handlers = {
@@ -440,7 +440,7 @@ const handleClick = () => {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   const handlers = {
@@ -547,7 +547,7 @@ const handleClick = () => {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { onMount, onDestroy } from 'svelte';
   import { createWebSocketClient } from '$lib/websocket';
   import { authStore } from '$lib/stores/auth';
@@ -676,7 +676,7 @@ const handleClick = () => {
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@greater/fediverse/Messages';
+  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
   import { authStore } from '$lib/stores/auth';
   
   let showMessaging = $state(false);
@@ -951,7 +951,7 @@ Avoid unnecessary re-renders:
 
 ```typescript
 import { render } from '@testing-library/svelte';
-import { UnreadIndicator } from '@greater/fediverse/Messages';
+import { UnreadIndicator } from '@equaltoai/greater-components-fediverse/Messages';
 
 test('displays unread count', () => {
   const { getByText } = render(UnreadIndicator, {
@@ -991,7 +991,7 @@ test('shows 99+ for counts over 99', () => {
 ```typescript
 import { render } from '@testing-library/svelte';
 import { axe } from 'jest-axe';
-import { UnreadIndicator } from '@greater/fediverse/Messages';
+import { UnreadIndicator } from '@equaltoai/greater-components-fediverse/Messages';
 
 test('has no accessibility violations', async () => {
   const { container } = render(UnreadIndicator);

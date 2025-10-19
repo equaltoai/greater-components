@@ -1,7 +1,7 @@
 # Profile.Fields
 
 **Component**: Custom Profile Fields Display  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 16 passing tests
 
@@ -25,7 +25,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,7 +34,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -91,8 +91,8 @@ Display profile fields with default settings:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileData, ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileData, ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile: ProfileData = {
     id: '123',
@@ -174,8 +174,8 @@ Add custom icons for common field types:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -334,8 +334,8 @@ Group fields by category:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   interface FieldCategory {
     id: string;
@@ -498,8 +498,8 @@ Show link previews for URLs:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   interface LinkPreview {
     url: string;
@@ -728,8 +728,8 @@ Add copy buttons for field values:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@greater/fediverse/Profile';
-  import type { ProfileField } from '@greater/fediverse/Profile';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import type { ProfileField } from '@equaltoai/greater-components-fediverse/Profile';
 
   const profile = {
     id: '123',
@@ -950,7 +950,7 @@ function sanitizeFields(fields: ProfileField[]): ProfileField[] {
 ```typescript
 import { render, screen } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import * as Profile from '@greater/fediverse/Profile';
+import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Fields', () => {
   it('displays all fields', () => {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from 'svelte';
   import HashtagsFollowedList from '../src/components/Hashtags/FollowedList.svelte';
-  import type { LesserGraphQLAdapter } from '@greater/adapters';
+  import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
   const HASHTAGS_CONTEXT_KEY = Symbol.for('hashtags-context');
 

@@ -1,7 +1,7 @@
 # Compose.EditorWithAutocomplete
 
 **Component**: Enhanced Text Editor with Autocomplete  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅
 
 ---
@@ -28,7 +28,7 @@
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -37,7 +37,7 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   async function searchSuggestions(query, type) {
     if (type === 'mention') {
@@ -176,7 +176,7 @@ Complete implementation with real API calls:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   interface Account {
     username: string;
@@ -326,7 +326,7 @@ Improve performance by caching recent suggestions:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   // Cache for autocomplete results
   const suggestionCache = new Map<string, {
@@ -382,7 +382,7 @@ Add custom instance-specific emojis:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   interface CustomEmoji {
     shortcode: string;
@@ -462,7 +462,7 @@ Prioritize frequently mentioned users:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   // Track mention frequency
   const mentionFrequency = new Map<string, number>();
@@ -551,7 +551,7 @@ Show trending hashtags with usage statistics:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   interface TrendingTag {
     name: string;
@@ -670,7 +670,7 @@ Add visual debugging for autocomplete behavior:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@greater/fediverse';
+  import { Compose } from '@equaltoai/greater-components-fediverse';
 
   let debugInfo = $state({
     lastQuery: '',
@@ -884,7 +884,7 @@ function isValidHashtag(tag: string): boolean {
 
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { Compose } from '@greater/fediverse';
+import { Compose } from '@equaltoai/greater-components-fediverse';
 import { vi } from 'vitest';
 
 describe('Compose.EditorWithAutocomplete', () => {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `@greater/adapters` package now fully supports Lesser's enhanced schema with trust scores, cost metrics, community notes, and quote posts. This guide shows how to use the Lesser-integrated features.
+The `@equaltoai/greater-components-adapters` package now fully supports Lesser's enhanced schema with trust scores, cost metrics, community notes, and quote posts. This guide shows how to use the Lesser-integrated features.
 
 ## Data Flow
 
@@ -21,7 +21,7 @@ UI Components (Status.LesserMetadata, Profile.TrustBadge, etc.)
 ## Using UnifiedStatus with Lesser Fields
 
 ```typescript
-import { mapLesserPost, type UnifiedStatus } from '@greater/adapters';
+import { mapLesserPost, type UnifiedStatus } from '@equaltoai/greater-components-adapters';
 
 // GraphQL response includes Lesser fields
 const lesserPostFragment = {
@@ -68,7 +68,7 @@ import {
   unifiedStatusToTimelineItem,
   mapLesserPost,
   type UnifiedStatus
-} from '@greater/adapters';
+} from '@equaltoai/greater-components-adapters';
 
 // Create timeline store
 const timelineStore = createTimelineStore({
@@ -100,7 +100,7 @@ import {
   unifiedNotificationToStoreNotification,
   mapLesserNotification,
   type UnifiedNotification
-} from '@greater/adapters';
+} from '@equaltoai/greater-components-adapters';
 
 const notificationStore = createNotificationStore({
   transportManager,
@@ -129,8 +129,8 @@ const allLesserUnread = notificationStore.getUnreadLesserNotifications();
 
 ```svelte
 <script>
-  import { Status } from '@greater/fediverse';
-  import { mapLesserPost } from '@greater/adapters';
+  import { Status } from '@equaltoai/greater-components-fediverse';
+  import { mapLesserPost } from '@equaltoai/greater-components-adapters';
   
   let { lesserPost } = $props(); // From GraphQL
   
@@ -159,8 +159,8 @@ const allLesserUnread = notificationStore.getUnreadLesserNotifications();
 
 ```svelte
 <script>
-  import * as Profile from '@greater/fediverse/Profile';
-  import { mapLesserAccount } from '@greater/adapters';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+  import { mapLesserAccount } from '@equaltoai/greater-components-adapters';
   
   let { lesserAccount } = $props();
   
@@ -183,8 +183,8 @@ const allLesserUnread = notificationStore.getUnreadLesserNotifications();
 
 ```svelte
 <script>
-  import { Notifications } from '@greater/fediverse';
-  import { unifiedNotificationToStoreNotification } from '@greater/adapters';
+  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { unifiedNotificationToStoreNotification } from '@equaltoai/greater-components-adapters';
   
   let { lesserNotifications } = $props();
   
@@ -217,7 +217,7 @@ import type {
   LesserNotificationMetadata,
   TimelineStore,
   NotificationStore
-} from '@greater/adapters';
+} from '@equaltoai/greater-components-adapters';
 
 // UnifiedStatus includes all Lesser fields
 const status: UnifiedStatus = { /* ... */ };
@@ -263,7 +263,7 @@ Test utilities for Lesser features:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { unifiedStatusToTimelineItem } from '@greater/adapters';
+import { unifiedStatusToTimelineItem } from '@equaltoai/greater-components-adapters';
 
 it('should populate Lesser metadata from UnifiedStatus', () => {
   const status: UnifiedStatus = {

@@ -67,14 +67,14 @@ Greater Components is a comprehensive library of accessible, composable UI compo
 
 ### **Installation**:
 ```bash
-npm install @greater/fediverse @greater/adapters @greater/utils
+npm install @equaltoai/greater-components-fediverse @equaltoai/greater-components-adapters @equaltoai/greater-components-utils
 ```
 
 ### **Basic Usage**:
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@greater/fediverse';
-  import { createTimelineStore } from '@greater/adapters';
+  import { Timeline } from '@equaltoai/greater-components-fediverse';
+  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
 
   const timeline = createTimelineStore({
     endpoint: 'https://api.lesser.social/graphql',
@@ -100,21 +100,21 @@ npm install @greater/fediverse @greater/adapters @greater/utils
 ### **Core Packages**:
 | Package | Description | Size |
 |---------|-------------|------|
-| `@greater/fediverse` | Main component library | ~800 KB |
-| `@greater/adapters` | API adapters & transports | ~140 KB |
-| `@greater/primitives` | Low-level UI primitives | ~80 KB |
-| `@greater/headless` | Headless component logic | ~36 KB |
-| `@greater/icons` | Icon components | ~2 KB per icon* |
-| `@greater/utils` | Utility functions | ~12 KB |
-| `@greater/testing` | Testing utilities | ~135 KB |
+| `@equaltoai/greater-components-fediverse` | Main component library | ~800 KB |
+| `@equaltoai/greater-components-adapters` | API adapters & transports | ~140 KB |
+| `@equaltoai/greater-components-primitives` | Low-level UI primitives | ~80 KB |
+| `@equaltoai/greater-components-headless` | Headless component logic | ~36 KB |
+| `@equaltoai/greater-components-icons` | Icon components | ~2 KB per icon* |
+| `@equaltoai/greater-components-utils` | Utility functions | ~12 KB |
+| `@equaltoai/greater-components-testing` | Testing utilities | ~135 KB |
 
 *With tree-shaking, only used icons are included
 
 ### **Development Packages**:
 | Package | Description |
 |---------|-------------|
-| `@greater/tokens` | Design tokens |
-| `@greater/cli` | CLI tools |
+| `@equaltoai/greater-components-tokens` | Design tokens |
+| `@equaltoai/greater-components-cli` | CLI tools |
 
 ---
 

@@ -7,7 +7,7 @@
  * @example Basic usage
  * ```svelte
  * <script>
- *   import { Timeline } from '@greater/fediverse';
+ *   import { Timeline } from '@equaltoai/greater-components-fediverse';
  *   
  *   const posts = [...]; // Status[] from API
  * </script>
@@ -44,7 +44,7 @@
  * </Timeline.Root>
  * ```
  * 
- * @module @greater/fediverse/Timeline
+ * @module @equaltoai/greater-components-fediverse/Timeline
  */
 
 import TimelineRoot from './Root.svelte';

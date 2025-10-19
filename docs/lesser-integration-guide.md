@@ -15,12 +15,12 @@ Since Greater Components and Lesser are in the same monorepo workspace, componen
 ```json
 {
   "dependencies": {
-    "@greater/headless": "workspace:*",
-    "@greater/primitives": "workspace:*",
-    "@greater/fediverse": "workspace:*",
-    "@greater/adapters": "workspace:*",
-    "@greater/tokens": "workspace:*",
-    "@greater/icons": "workspace:*"
+    "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-fediverse": "workspace:*",
+    "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-icons": "workspace:*"
   }
 }
 ```
@@ -33,9 +33,9 @@ Using the headless button for a "Boost" action with Lesser's styling:
 
 ```svelte
 <script lang="ts">
-  import { createButton } from '@greater/headless/button';
-  import { BoostIcon } from '@greater/icons';
-  import type { Status } from '@greater/fediverse';
+  import { createButton } from '@equaltoai/greater-components-headless/button';
+  import { BoostIcon } from '@equaltoai/greater-components-icons';
+  import type { Status } from '@equaltoai/greater-components-fediverse';
   
   interface Props {
     status: Status;
@@ -139,8 +139,8 @@ Using the headless button for the post composer with validation:
 
 ```svelte
 <script lang="ts">
-  import { createButton } from '@greater/headless/button';
-  import type { ComposeBoxDraft } from '@greater/fediverse';
+  import { createButton } from '@equaltoai/greater-components-headless/button';
+  import type { ComposeBoxDraft } from '@equaltoai/greater-components-fediverse';
   
   interface Props {
     draft: ComposeBoxDraft;
@@ -221,9 +221,9 @@ Using Greater's virtualized timeline in Lesser:
 
 ```svelte
 <script lang="ts">
-  import { TimelineVirtualized } from '@greater/fediverse';
-  import { createTimelineStore } from '@greater/adapters';
-  import type { Status } from '@greater/fediverse';
+  import { TimelineVirtualized } from '@equaltoai/greater-components-fediverse';
+  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
+  import type { Status } from '@equaltoai/greater-components-fediverse';
   
   // Create timeline store with Lesser's API endpoint
   const timeline = createTimelineStore({
@@ -319,7 +319,7 @@ import {
   createTimelineStore,
   createNotificationStore,
   TransportManager 
-} from '@greater/adapters';
+} from '@equaltoai/greater-components-adapters';
 
 // Create transport manager for Lesser API
 export const transport = new TransportManager({
@@ -356,8 +356,8 @@ export const notifications = createNotificationStore({
 // lesser/tests/components/BoostButton.test.ts
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, fireEvent } from '@greater/testing';
-import { createButton } from '@greater/headless/button';
+import { render, fireEvent } from '@equaltoai/greater-components-testing';
+import { createButton } from '@equaltoai/greater-components-headless/button';
 import BoostButton from '$lib/components/BoostButton.svelte';
 
 describe('BoostButton in Lesser', () => {
@@ -464,7 +464,7 @@ Especially for icon-only buttons:
 ### 4. Use TypeScript Generics for ActivityPub
 
 ```typescript
-import type { Status, Account } from '@greater/fediverse';
+import type { Status, Account } from '@equaltoai/greater-components-fediverse';
 
 interface ActionButtonProps<T extends Status> {
   item: T;
@@ -491,10 +491,10 @@ Import only what you need:
 
 ```typescript
 // Good: Tree-shakeable
-import { createButton } from '@greater/headless/button';
+import { createButton } from '@equaltoai/greater-components-headless/button';
 
 // Less optimal: Imports everything
-import { createButton } from '@greater/headless';
+import { createButton } from '@equaltoai/greater-components-headless';
 ```
 
 ### Lazy Loading Heavy Components
@@ -503,7 +503,7 @@ import { createButton } from '@greater/headless';
 <script>
   // Lazy load timeline for route
   const TimelineVirtualized = lazy(() => 
-    import('@greater/fediverse/TimelineVirtualized')
+    import('@equaltoai/greater-components-fediverse/TimelineVirtualized')
   );
 </script>
 
@@ -530,7 +530,7 @@ Greater Components provides full support for all Lesser-exclusive features throu
 All Lesser features require the `LesserGraphQLAdapter` configured with your GraphQL endpoint:
 
 ```typescript
-import { LesserGraphQLAdapter } from '@greater/adapters';
+import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 const adapter = new LesserGraphQLAdapter({
   endpoint: 'https://your-instance.social/graphql',
@@ -572,10 +572,10 @@ const adapter = new LesserGraphQLAdapter({
 
 ```svelte
 <script lang="ts">
-  import { createGraphQLComposeHandlers } from '@greater/fediverse/Compose/GraphQLAdapter';
-  import * as Compose from '@greater/fediverse/Compose';
-  import * as Status from '@greater/fediverse/Status';
-  import { ActionBar } from '@greater/fediverse';
+  import { createGraphQLComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose/GraphQLAdapter';
+  import * as Compose from '@equaltoai/greater-components-fediverse/Compose';
+  import * as Status from '@equaltoai/greater-components-fediverse/Status';
+  import { ActionBar } from '@equaltoai/greater-components-fediverse';
   
   const handlers = createGraphQLComposeHandlers(adapter);
   
@@ -673,9 +673,9 @@ interface CommunityNote {
 
 ```svelte
 <script lang="ts">
-  import * as Status from '@greater/fediverse/Status';
-  import { ModerationTools } from '@greater/fediverse/patterns';
-  import { LesserGraphQLAdapter } from '@greater/adapters';
+  import * as Status from '@equaltoai/greater-components-fediverse/Status';
+  import { ModerationTools } from '@equaltoai/greater-components-fediverse/patterns';
+  import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
   
   const adapter = new LesserGraphQLAdapter(config);
   
@@ -769,8 +769,8 @@ interface CommunityNote {
 
 ```svelte
 <script lang="ts">
-  import * as Insights from '@greater/fediverse/Admin/Insights';
-  import * as Status from '@greater/fediverse/Status';
+  import * as Insights from '@equaltoai/greater-components-fediverse/Admin/Insights';
+  import * as Status from '@equaltoai/greater-components-fediverse/Status';
   import { adapter } from './config';
   
   let analysisResults = $state(null);
@@ -868,8 +868,8 @@ await adapter.createModerationPattern({
 
 ```svelte
 <script lang="ts">
-  import * as TrustGraph from '@greater/fediverse/Admin/TrustGraph';
-  import * as Profile from '@greater/fediverse/Profile';
+  import * as TrustGraph from '@equaltoai/greater-components-fediverse/Admin/TrustGraph';
+  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
   import { adapter } from './config';
   
   let selectedNode = $state(null);
@@ -979,8 +979,8 @@ interface Reputation {
 
 ```svelte
 <script lang="ts">
-  import * as Cost from '@greater/fediverse/Admin/Cost';
-  import * as Status from '@greater/fediverse/Status';
+  import * as Cost from '@equaltoai/greater-components-fediverse/Admin/Cost';
+  import * as Status from '@equaltoai/greater-components-fediverse/Status';
   import { adapter, adminStreamingStore } from './config';
   
   let selectedPeriod = $state('MONTH');
@@ -1102,7 +1102,7 @@ for (const suggestion of suggestions.rateLimitChanges) {
 
 ```svelte
 <script lang="ts">
-  import { ThreadView } from '@greater/fediverse/patterns';
+  import { ThreadView } from '@equaltoai/greater-components-fediverse/patterns';
   import { adapter } from './config';
   
   let syncing = $state(false);
@@ -1227,7 +1227,7 @@ function setupAutoSync(threshold: number = 0.8) {
 
 ```svelte
 <script lang="ts">
-  import * as SeveredRelationships from '@greater/fediverse/Admin/SeveredRelationships';
+  import * as SeveredRelationships from '@equaltoai/greater-components-fediverse/Admin/SeveredRelationships';
   import { adapter } from './config';
   
   let selectedSeverance = $state(null);
@@ -1366,8 +1366,8 @@ interface SeveredRelationship {
 
 ```svelte
 <script lang="ts">
-  import * as Hashtags from '@greater/fediverse/Hashtags';
-  import { createLesserTimelineStore } from '@greater/fediverse';
+  import * as Hashtags from '@equaltoai/greater-components-fediverse/Hashtags';
+  import { createLesserTimelineStore } from '@equaltoai/greater-components-fediverse';
   import { adapter } from './config';
   
   let selectedHashtag = $state('svelte');

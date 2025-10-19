@@ -1,7 +1,7 @@
 # Timeline.LoadMore
 
 **Component**: Pagination Control  
-**Package**: `@greater/fediverse`  
+**Package**: `@equaltoai/greater-components-fediverse`  
 **Status**: Production Ready ✅  
 **Tests**: 32 passing tests
 
@@ -18,14 +18,14 @@
 - ✅ **Customizable** - Custom button and loading content
 - ✅ **Error Handling** - Integration with error state
 - ✅ **Accessibility** - ARIA live regions for screen readers
-- ✅ **Headless Button** - Uses `@greater/headless/button` for state management
+- ✅ **Headless Button** - Uses `@equaltoai/greater-components-headless/button` for state management
 
 ---
 
 ## 📦 Installation
 
 ```bash
-npm install @greater/fediverse
+npm install @equaltoai/greater-components-fediverse
 ```
 
 ---
@@ -34,8 +34,8 @@ npm install @greater/fediverse
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let cursor: string | null = $state(null);
@@ -88,8 +88,8 @@ Simple load more button for manual pagination:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let page = $state(1);
@@ -245,8 +245,8 @@ Automatically load more items as user scrolls:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let cursor: string | null = $state(null);
@@ -449,8 +449,8 @@ Customize the loading state and button appearance:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let hasMore = $state(true);
@@ -635,8 +635,8 @@ Handle errors gracefully with retry functionality:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let cursor: string | null = $state(null);
@@ -811,8 +811,8 @@ Track load more interactions for analytics:
 
 ```svelte
 <script lang="ts">
-  import { Timeline, Status } from '@greater/fediverse';
-  import type { GenericTimelineItem } from '@greater/fediverse/generics';
+  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+  import type { GenericTimelineItem } from '@equaltoai/greater-components-fediverse/generics';
 
   let items: GenericTimelineItem[] = $state([]);
   let hasMore = $state(true);
@@ -1180,7 +1180,7 @@ if (scrollBottom < 400 && hasMore && !loadingMore) {
 
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/svelte';
-import { Timeline } from '@greater/fediverse';
+import { Timeline } from '@equaltoai/greater-components-fediverse';
 
 describe('Timeline.LoadMore', () => {
   it('renders load more button', () => {

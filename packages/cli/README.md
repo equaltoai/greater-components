@@ -1,4 +1,4 @@
-# @greater/cli
+# @equaltoai/greater-components-cli
 
 > CLI for adding Greater Components to your project
 
@@ -10,13 +10,13 @@ The Greater CLI allows you to add ActivityPub components to your project with fu
 
 ```bash
 # Using npm
-npm install -g @greater/cli
+npm install -g @equaltoai/greater-components-cli
 
 # Using pnpm
-pnpm add -g @greater/cli
+pnpm add -g @equaltoai/greater-components-cli
 
 # Using npx (no install required)
-npx @greater/cli init
+npx @equaltoai/greater-components-cli init
 ```
 
 ## Usage
@@ -247,20 +247,20 @@ greater list [options]
 
 ```bash
 # Make sure CLI is installed globally
-npm list -g @greater/cli
+npm list -g @equaltoai/greater-components-cli
 
 # Or use npx
-npx @greater/cli --version
+npx @equaltoai/greater-components-cli --version
 ```
 
 ### Permission Errors
 
 ```bash
 # Use npx to avoid permission issues
-npx @greater/cli init
+npx @equaltoai/greater-components-cli init
 
 # Or install locally
-npm install --save-dev @greater/cli
+npm install --save-dev @equaltoai/greater-components-cli
 npx greater init
 ```
 
@@ -279,7 +279,7 @@ npm install svelte@^5.0.0
 - **Documentation**: https://greater.fediverse.dev
 - **Repository**: https://github.com/equaltoai/greater-components
 - **Issues**: https://github.com/equaltoai/greater-components/issues
-- **NPM**: https://www.npmjs.com/package/@greater/cli
+- **NPM**: https://www.npmjs.com/package/@equaltoai/greater-components-cli
 
 ## License
 
