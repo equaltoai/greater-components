@@ -34,6 +34,36 @@ export { default as Button } from './components/Button.svelte';
 export { default as TextField } from './components/TextField.svelte';
 
 /** 
+ * Multi-line text area with auto-resize.
+ * @public
+ */
+export { default as TextArea } from './components/TextArea.svelte';
+
+/** 
+ * Dropdown select component with keyboard navigation.
+ * @public
+ */
+export { default as Select } from './components/Select.svelte';
+
+/** 
+ * Checkbox input with indeterminate state support.
+ * @public
+ */
+export { default as Checkbox } from './components/Checkbox.svelte';
+
+/** 
+ * Toggle switch component for boolean options.
+ * @public
+ */
+export { default as Switch } from './components/Switch.svelte';
+
+/** 
+ * File upload component with drag-and-drop support.
+ * @public
+ */
+export { default as FileUpload } from './components/FileUpload.svelte';
+
+/** 
  * Modal dialog with focus management and backdrop handling.
  * @public
  */
@@ -84,6 +114,11 @@ export { default as ThemeProvider } from './components/ThemeProvider.svelte';
 // Import component types for prop inference
 import type ButtonComponent from './components/Button.svelte';
 import type TextFieldComponent from './components/TextField.svelte';
+import type TextAreaComponent from './components/TextArea.svelte';
+import type SelectComponent from './components/Select.svelte';
+import type CheckboxComponent from './components/Checkbox.svelte';
+import type SwitchComponent from './components/Switch.svelte';
+import type FileUploadComponent from './components/FileUpload.svelte';
 import type ModalComponent from './components/Modal.svelte';
 import type MenuComponent from './components/Menu.svelte';
 import type TooltipComponent from './components/Tooltip.svelte';
@@ -96,6 +131,11 @@ import type ThemeProviderComponent from './components/ThemeProvider.svelte';
 // Component prop types
 export type ButtonProps = ComponentProps<ButtonComponent>;
 export type TextFieldProps = ComponentProps<TextFieldComponent>;
+export type TextAreaProps = ComponentProps<TextAreaComponent>;
+export type SelectProps = ComponentProps<SelectComponent>;
+export type CheckboxProps = ComponentProps<CheckboxComponent>;
+export type SwitchProps = ComponentProps<SwitchComponent>;
+export type FileUploadProps = ComponentProps<FileUploadComponent>;
 export type ModalProps = ComponentProps<ModalComponent>;
 export type MenuProps = ComponentProps<MenuComponent>;
 export type TooltipProps = ComponentProps<TooltipComponent>;
@@ -104,6 +144,13 @@ export type AvatarProps = ComponentProps<AvatarComponent>;
 export type SkeletonProps = ComponentProps<SkeletonComponent>;
 export type ThemeSwitcherProps = ComponentProps<ThemeSwitcherComponent>;
 export type ThemeProviderProps = ComponentProps<ThemeProviderComponent>;
+
+// Select option type
+export interface SelectOption {
+	value: string;
+	label: string;
+	disabled?: boolean;
+}
 
 // Store exports
 export { preferencesStore, getPreferences, getPreferenceState } from './stores/preferences';
