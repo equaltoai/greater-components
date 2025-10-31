@@ -1,5 +1,44 @@
 # @equaltoai/greater-components-adapters
 
+## 1.0.1
+
+### Patch Changes
+
+- GraphQL Integration for Followers, Preferences, and Push Notifications
+
+  This patch adds comprehensive GraphQL support for user relationships, preferences, and push notification management:
+
+  **New GraphQL Queries:**
+  - followers(username, limit, cursor) - Paginated followers list
+  - following(username, limit, cursor) - Paginated following list
+  - userPreferences - Fetch all user preferences
+  - pushSubscription - Get current push subscription
+
+  **New GraphQL Mutations:**
+  - updateProfile(input) - Update profile with all fields
+  - updateUserPreferences(input) - Update preferences
+  - updateStreamingPreferences(input) - Update streaming settings
+  - registerPushSubscription(input) - Register push notifications
+  - updatePushSubscription(input) - Update push alerts
+  - deletePushSubscription - Remove push subscription
+
+  **Adapter Enhancements:**
+  - 10 new methods in LesserGraphQLAdapter
+  - 3 type converter functions
+  - Apollo cache policies for efficient pagination
+  - Full TypeScript type safety
+
+  **Examples:**
+  - ProfilePageExample updated with GraphQL followers/following
+  - New PreferencesExample component
+  - New PushNotificationsExample component
+
+  **Live API:**
+  - Configured for https://dev.lesser.host/api/graphql
+  - WebSocket support at wss://dev.lesser.host/api/graphql
+
+  No breaking changes - fully backward compatible.
+
 ## 2.1.0
 
 ### Minor Changes
@@ -9,6 +48,7 @@
 Expanded the LesserGraphQLAdapter with comprehensive support for user profile management, preferences, and push notifications:
 
 **New Adapter Methods:**
+
 - `getFollowers(username, limit, cursor)` - Fetch paginated followers with ActorListPage
 - `getFollowing(username, limit, cursor)` - Fetch paginated following with ActorListPage
 - `updateProfile(input)` - Update user profile with all fields
@@ -21,11 +61,13 @@ Expanded the LesserGraphQLAdapter with comprehensive support for user profile ma
 - `deletePushSubscription()` - Remove push subscription
 
 **Converter Functions:**
+
 - Added `convertGraphQLActorListPage()` - Converts ActorListPage to LesserAccountFragment array with pagination metadata
 - Added `convertGraphQLUserPreferences()` - Converts UserPreferences GraphQL type to structured preference data
 - Added `convertGraphQLPushSubscription()` - Converts PushSubscription GraphQL type with keys and alerts
 
 **Cache Policies:**
+
 - Updated followers/following policies to use username-based keys and handle ActorListPage structure
 - Added UserPreferences cache policy (keyed by actorId, always replace)
 - Added PushSubscription cache policy (keyed by id, always replace)
@@ -33,14 +75,17 @@ Expanded the LesserGraphQLAdapter with comprehensive support for user profile ma
 - Improved merge strategies for paginated data
 
 **Type Exports:**
+
 - Exported ActorListPage, UserPreferences, and PushSubscription interfaces
 - All converter functions are now exported from the main package
 
 **Testing:**
+
 - Added comprehensive unit tests for all new converter functions
 - Tests cover valid data conversion, edge cases, and error handling
 
 **Schema Sync:**
+
 - Updated Lesser GraphQL schema to latest version (2418 lines)
 - Fixed AttachmentFields fragment to match actual schema structure
 - Successfully regenerated all TypeScript types via GraphQL Code Generator

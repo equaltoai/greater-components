@@ -57,7 +57,11 @@ export { default as EndorsedAccounts } from './EndorsedAccounts.svelte';
 export { default as FeaturedHashtags } from './FeaturedHashtags.svelte';
 export { default as AccountMigration } from './AccountMigration.svelte';
 export { default as TrustBadge } from './TrustBadge.svelte';
-export * as GraphQLAdapter from './GraphQLAdapter.js';
+
+// Export controllers
+export { ProfileGraphQLController } from './GraphQLAdapter.js';
+export { PreferencesGraphQLController } from './PreferencesController.js';
+export { PushNotificationsController } from './PushNotificationsController.js';
 
 // Export types and context utilities
 export type {
@@ -79,6 +83,19 @@ export type {
 	PrivacySettings as PrivacySettingsData,
 	AccountMigration as AccountMigrationData,
 } from './context.js';
+
+// Export controller types
+export type {
+	UserPreferences,
+	PreferencesState,
+	PreferencesChangeCallback,
+} from './PreferencesController.js';
+
+export type {
+	PushSubscription,
+	PushNotificationsState,
+	PushStateChangeCallback,
+} from './PushNotificationsController.js';
 
 export {
 	createProfileContext,

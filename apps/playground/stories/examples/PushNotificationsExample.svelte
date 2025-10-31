@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import {
 		createLesserGraphQLAdapter,
 		type LesserGraphQLAdapter,
 	} from '@equaltoai/greater-components-adapters';
+	import {
+		PushNotificationsController,
+		type PushNotificationsState,
+	} from '@equaltoai/greater-components-fediverse/Profile';
 
 	interface Props {
 		useMockData?: boolean;
@@ -11,17 +15,22 @@
 
 	let { useMockData = false }: Props = $props();
 
-	let graphqlAdapter = $state<LesserGraphQLAdapter | null>(null);
-	type PushSubType = Awaited<ReturnType<LesserGraphQLAdapter['getPushSubscription']>>;
-	let subscription = $state<PushSubType | null>(null);
-	let loading = $state(false);
-	let error = $state<string | null>(null);
-	let registrationStatus = $state<'idle' | 'registering' | 'registered' | 'error'>('idle');
-	let browserSubscription = $state<PushSubscription | null>(null);
-	let vapidPublicKey = $state<string | null>(null);
+let graphqlAdapter = $state<LesserGraphQLAdapter | null>(null);
+let pushController = $state<PushNotificationsController | null>(null);
+let pushState = $state<PushNotificationsState>({
+	subscription: null,
+	browserSubscription: null,
+	loading: false,
+	registering: false,
+	error: null,
+	supported: false,
+	permission: 'default',
+});
+let vapidPublicKey = $state<string | null>(null);
+let uiError = $state<string | null>(null);
 
-	// Alert toggles
-	let followAlerts = $state(true);
+// Alert toggles
+let followAlerts = $state(true);
 	let favouriteAlerts = $state(true);
 	let reblogAlerts = $state(true);
 	let mentionAlerts = $state(true);
@@ -34,8 +43,13 @@
 
 	onMount(async () => {
 		await initializeAdapter();
-		await checkPushSupport();
-		await loadSubscription();
+		if (graphqlAdapter && vapidPublicKey) {
+			await initializePushController();
+		}
+	});
+
+	onDestroy(() => {
+		pushController?.destroy();
 	});
 
 	async function initializeAdapter() {
@@ -43,14 +57,14 @@
 			const lesserToken = useMockData ? null : localStorage.getItem('lesser_token') || null;
 
 			if (!lesserToken && !useMockData) {
-				error = 'No authentication token found. Please set lesser_token in localStorage.';
+				uiError = 'No authentication token found. Please set lesser_token in localStorage.';
 				return;
 			}
 
 			if (!useMockData && lesserToken) {
 				graphqlAdapter = createLesserGraphQLAdapter({
-					httpEndpoint: 'https://api.lesser.social/graphql',
-					wsEndpoint: 'wss://api.lesser.social/graphql',
+					httpEndpoint: 'https://dev.lesser.host/api/graphql',
+					wsEndpoint: 'wss://dev.lesser.host/api/graphql',
 					token: lesserToken,
 					debug: true,
 				});
@@ -60,203 +74,121 @@
 			}
 		} catch (err) {
 			console.error('Failed to initialize GraphQL adapter:', err);
-			error = err instanceof Error ? err.message : 'Initialization failed';
+			uiError = err instanceof Error ? err.message : 'Initialization failed';
 		}
 	}
 
-	async function checkPushSupport() {
-		if (
-			typeof window === 'undefined' ||
-			!('serviceWorker' in navigator) ||
-			!('PushManager' in window)
-		) {
-			error = 'Push notifications are not supported in this browser';
-			return false;
-		}
-		return true;
-	}
-
-	async function loadSubscription() {
-		if (!graphqlAdapter) {
+	async function initializePushController() {
+		if (!graphqlAdapter || !vapidPublicKey) {
 			return;
 		}
 
-		loading = true;
-		error = null;
-
 		try {
-			const sub = await graphqlAdapter.getPushSubscription();
-			subscription = sub;
+			pushController = new PushNotificationsController({
+				adapter: graphqlAdapter,
+				vapidPublicKey,
+			});
 
-			if (sub) {
+			// Subscribe to state changes
+			pushController.subscribe((state) => {
+				pushState = state;
+
 				// Hydrate alert toggles from subscription
-				followAlerts = sub.alerts.follow;
-				favouriteAlerts = sub.alerts.favourite;
-				reblogAlerts = sub.alerts.reblog;
-				mentionAlerts = sub.alerts.mention;
-				pollAlerts = sub.alerts.poll;
-				followRequestAlerts = sub.alerts.followRequest;
-				statusAlerts = sub.alerts.status;
-				updateAlerts = sub.alerts.update;
-				adminSignUpAlerts = sub.alerts.adminSignUp;
-				adminReportAlerts = sub.alerts.adminReport;
-				registrationStatus = 'registered';
-			}
+				if (state.subscription) {
+					followAlerts = state.subscription.alerts.follow;
+					favouriteAlerts = state.subscription.alerts.favourite;
+					reblogAlerts = state.subscription.alerts.reblog;
+					mentionAlerts = state.subscription.alerts.mention;
+					pollAlerts = state.subscription.alerts.poll;
+					followRequestAlerts = state.subscription.alerts.followRequest;
+					statusAlerts = state.subscription.alerts.status;
+					updateAlerts = state.subscription.alerts.update;
+					adminSignUpAlerts = state.subscription.alerts.adminSignUp;
+					adminReportAlerts = state.subscription.alerts.adminReport;
+				}
+			});
+
+			await pushController.initialize();
 		} catch (err) {
-			console.error('Failed to load subscription:', err);
-			// Subscription might not exist yet, which is fine
-			subscription = null;
-		} finally {
-			loading = false;
+			console.error('Failed to initialize push controller:', err);
+			pushState = {
+				...pushState,
+				error: err instanceof Error ? err.message : 'Initialization failed',
+			};
 		}
 	}
 
 	async function registerPushNotifications() {
-		if (!graphqlAdapter || !vapidPublicKey) {
-			error = 'GraphQL adapter or VAPID key not available';
+		if (!pushController) {
 			return;
 		}
-
-		const supported = await checkPushSupport();
-		if (!supported) {
-			return;
-		}
-
-		registrationStatus = 'registering';
-		error = null;
 
 		try {
-			// Request notification permission
-			const permission = await Notification.requestPermission();
-			if (permission !== 'granted') {
-				throw new Error('Notification permission denied');
-			}
-
-			// Register service worker (in real app, this would be a proper SW file)
-			const registration = await navigator.serviceWorker.register('/sw.js').catch(() => {
-				// Fallback: use existing registration or create mock
-				return navigator.serviceWorker.ready;
+			await pushController.register({
+				follow: followAlerts,
+				favourite: favouriteAlerts,
+				reblog: reblogAlerts,
+				mention: mentionAlerts,
+				poll: pollAlerts,
+				followRequest: followRequestAlerts,
+				status: statusAlerts,
+				update: updateAlerts,
+				adminSignUp: adminSignUpAlerts,
+				adminReport: adminReportAlerts,
 			});
-
-			// Subscribe to push
-			const pushSubscription = await registration.pushManager.subscribe({
-				userVisibleOnly: true,
-				applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
-			});
-
-			browserSubscription = pushSubscription;
-
-			// Get subscription details
-			const subscriptionJson = pushSubscription.toJSON();
-			const keys = subscriptionJson.keys;
-
-			if (!keys || !keys.auth || !keys.p256dh || !subscriptionJson.endpoint) {
-				throw new Error('Invalid push subscription');
-			}
-
-			// Register with GraphQL API
-			const registered = await graphqlAdapter.registerPushSubscription({
-				endpoint: subscriptionJson.endpoint,
-				keys: {
-					auth: keys.auth,
-					p256dh: keys.p256dh,
-				},
-				alerts: {
-					follow: followAlerts,
-					favourite: favouriteAlerts,
-					reblog: reblogAlerts,
-					mention: mentionAlerts,
-					poll: pollAlerts,
-					followRequest: followRequestAlerts,
-					status: statusAlerts,
-					update: updateAlerts,
-					adminSignUp: adminSignUpAlerts,
-					adminReport: adminReportAlerts,
-				},
-			});
-
-			subscription = registered;
-			registrationStatus = 'registered';
 		} catch (err) {
 			console.error('Failed to register push notifications:', err);
-			error = err instanceof Error ? err.message : 'Registration failed';
-			registrationStatus = 'error';
 		}
 	}
 
 	async function updateAlertPreferences() {
-		if (!graphqlAdapter || !subscription) {
-			error = 'Not registered for push notifications';
+		if (!pushController) {
 			return;
 		}
 
-		loading = true;
-		error = null;
-
 		try {
-			const updated = await graphqlAdapter.updatePushSubscription({
-				alerts: {
-					follow: followAlerts,
-					favourite: favouriteAlerts,
-					reblog: reblogAlerts,
-					mention: mentionAlerts,
-					poll: pollAlerts,
-					followRequest: followRequestAlerts,
-					status: statusAlerts,
-					update: updateAlerts,
-					adminSignUp: adminSignUpAlerts,
-					adminReport: adminReportAlerts,
-				},
+			await pushController.updateAlerts({
+				follow: followAlerts,
+				favourite: favouriteAlerts,
+				reblog: reblogAlerts,
+				mention: mentionAlerts,
+				poll: pollAlerts,
+				followRequest: followRequestAlerts,
+				status: statusAlerts,
+				update: updateAlerts,
+				adminSignUp: adminSignUpAlerts,
+				adminReport: adminReportAlerts,
 			});
-
-			subscription = updated;
 		} catch (err) {
 			console.error('Failed to update alert preferences:', err);
-			error = err instanceof Error ? err.message : 'Update failed';
-		} finally {
-			loading = false;
 		}
 	}
 
 	async function unregisterPushNotifications() {
-		if (!graphqlAdapter) return;
-
-		loading = true;
-		error = null;
+		if (!pushController) {
+			return;
+		}
 
 		try {
-			// Unregister from server
-			await graphqlAdapter.deletePushSubscription();
-
-			// Unsubscribe browser subscription
-			if (browserSubscription) {
-				await browserSubscription.unsubscribe();
-				browserSubscription = null;
-			}
-
-			subscription = null;
-			registrationStatus = 'idle';
+			await pushController.unregister();
 		} catch (err) {
 			console.error('Failed to unregister push notifications:', err);
-			error = err instanceof Error ? err.message : 'Unregister failed';
-		} finally {
-			loading = false;
 		}
 	}
 
-	// Helper function to convert VAPID key
-	function urlBase64ToUint8Array(base64String: string): Uint8Array {
-		const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-		const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+	// Derived registration status from push state
+	const registrationStatus = $derived<'idle' | 'registering' | 'registered' | 'error'>(
+		pushState.registering
+			? 'registering'
+			: pushState.subscription
+				? 'registered'
+				: (pushState.error ?? uiError)
+					? 'error'
+					: 'idle'
+	);
 
-		const rawData = window.atob(base64);
-		const outputArray = new Uint8Array(rawData.length);
-
-		for (let i = 0; i < rawData.length; ++i) {
-			outputArray[i] = rawData.charCodeAt(i);
-		}
-		return outputArray;
-	}
+	const isBusy = $derived(() => pushState.loading || pushState.registering);
+	const displayedError = $derived(() => uiError ?? pushState.error);
 </script>
 
 <div class="push-notifications-page">
@@ -276,14 +208,14 @@
 			{/if}
 		</div>
 
-		{#if error}
+		{#if displayedError}
 			<div class="error-banner">
 				<strong>Error:</strong>
-				{error}
+				{displayedError}
 			</div>
 		{/if}
 
-		{#if loading}
+		{#if isBusy}
 			<div class="loading">Processing...</div>
 		{/if}
 
@@ -297,7 +229,7 @@
 				<button
 					class="register-btn primary"
 					onclick={registerPushNotifications}
-					disabled={loading || !graphqlAdapter}
+					disabled={isBusy || !graphqlAdapter}
 				>
 					Enable Push Notifications
 				</button>
@@ -451,17 +383,21 @@
 						This will completely disable push notifications and remove your subscription from the
 						server.
 					</p>
-					<button class="unregister-btn" onclick={unregisterPushNotifications} disabled={loading}>
+					<button
+						class="unregister-btn"
+						onclick={unregisterPushNotifications}
+						disabled={pushState.loading}
+					>
 						Disable Push Notifications
 					</button>
 				</div>
 			</div>
 		{/if}
 
-		{#if subscription}
+		{#if pushState.subscription}
 			<details class="subscription-details">
 				<summary>Subscription Details</summary>
-				<pre>{JSON.stringify(subscription, null, 2)}</pre>
+				<pre>{JSON.stringify(pushState.subscription, null, 2)}</pre>
 			</details>
 		{/if}
 	</div>

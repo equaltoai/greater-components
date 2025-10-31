@@ -67,18 +67,46 @@ Manages account privacy settings including:
 
 	const context = getProfileContext();
 
-	// Local state for settings
-	let localSettings = $state<PrivacySettings>({
-		isPrivate: settings.isPrivate ?? false,
-		requireFollowApproval: settings.requireFollowApproval ?? false,
-		hideFollowers: settings.hideFollowers ?? false,
-		hideFollowing: settings.hideFollowing ?? false,
-		hideRelationships: settings.hideRelationships ?? false,
-		searchableBySearchEngines: settings.searchableBySearchEngines ?? true,
-		discoverable: settings.discoverable ?? true,
-		showAdultContent: settings.showAdultContent ?? false,
-		autoplayGifs: settings.autoplayGifs ?? true,
-		autoplayVideos: settings.autoplayVideos ?? false,
+	function buildEffectiveSettings(): PrivacySettings {
+		const contextSettings = context.state.privacySettings;
+		if (contextSettings) {
+			return { ...contextSettings };
+		}
+
+		return {
+			isPrivate: settings.isPrivate ?? false,
+			requireFollowApproval: settings.requireFollowApproval ?? false,
+			hideFollowers: settings.hideFollowers ?? false,
+			hideFollowing: settings.hideFollowing ?? false,
+			hideRelationships: settings.hideRelationships ?? false,
+			searchableBySearchEngines: settings.searchableBySearchEngines ?? true,
+			discoverable: settings.discoverable ?? true,
+			showAdultContent: settings.showAdultContent ?? false,
+			autoplayGifs: settings.autoplayGifs ?? true,
+			autoplayVideos: settings.autoplayVideos ?? false,
+		};
+	}
+
+	// Load preferences from context if available (GraphQL-backed)
+	$effect(() => {
+		if (context.handlers.onLoadPreferences && context.state.isOwnProfile) {
+			context.handlers.onLoadPreferences().catch((error) => {
+				console.error('Failed to load preferences:', error);
+			});
+		}
+	});
+
+	// Use context privacy settings if available, otherwise use props
+	const effectiveSettings = $derived<PrivacySettings>(buildEffectiveSettings());
+
+	// Local state for settings (editable copy)
+	let localSettings = $state<PrivacySettings>(buildEffectiveSettings());
+
+	// Sync local settings when effective settings change
+	$effect(() => {
+		if (!hasChanges) {
+			localSettings = { ...effectiveSettings };
+		}
 	});
 
 	let saving = $state(false);
@@ -89,9 +117,10 @@ Manages account privacy settings including:
 	 * Check if settings have changed
 	 */
 	const hasChanges = $derived(
-		Object.keys(settings).some(
+		Object.keys(localSettings).some(
 			(key) =>
-				localSettings[key as keyof PrivacySettings] !== settings[key as keyof PrivacySettings]
+				localSettings[key as keyof PrivacySettings] !==
+				effectiveSettings[key as keyof PrivacySettings]
 		)
 	);
 
@@ -135,18 +164,7 @@ Manages account privacy settings including:
 	 * Reset to original settings
 	 */
 	function handleReset() {
-		localSettings = {
-			isPrivate: settings.isPrivate ?? false,
-			requireFollowApproval: settings.requireFollowApproval ?? false,
-			hideFollowers: settings.hideFollowers ?? false,
-			hideFollowing: settings.hideFollowing ?? false,
-			hideRelationships: settings.hideRelationships ?? false,
-			searchableBySearchEngines: settings.searchableBySearchEngines ?? true,
-			discoverable: settings.discoverable ?? true,
-			showAdultContent: settings.showAdultContent ?? false,
-			autoplayGifs: settings.autoplayGifs ?? true,
-			autoplayVideos: settings.autoplayVideos ?? false,
-		};
+		localSettings = { ...effectiveSettings };
 		error = null;
 		successMessage = null;
 	}

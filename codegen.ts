@@ -20,6 +20,7 @@ const config: CodegenConfig = {
 				scalars: {
 					Time: 'string',
 					Cursor: 'string',
+					Duration: 'string',
 					Upload: 'File | Blob',
 				},
 				namingConvention: {
@@ -50,6 +51,7 @@ const config: CodegenConfig = {
 				scalars: {
 					Time: 'string',
 					Cursor: 'string',
+					Duration: 'string',
 					Upload: 'File | Blob',
 				},
 				namingConvention: {

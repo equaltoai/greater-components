@@ -9,18 +9,18 @@ import { testElementContrast, WCAG_CONTRAST } from '../a11y/contrast-helpers';
 import { isElementFocusable, isElementTabbable } from '../a11y/focus-helpers';
 
 declare module 'vitest' {
-  interface Assertion<T = any> {
-    toHaveAccessibleName(): T;
-    toHaveAccessibleName(name: string): T;
-    toHaveRole(role: string): T;
-    toBeAccessible(): T;
-    toHaveContrastRatio(ratio: number): T;
-    toPassWCAGColorContrast(level?: 'AA' | 'AAA'): T;
-    toBeFocusable(): T;
-    toBeTabbable(): T;
-    toHaveValidAria(): T;
-    toHaveFocusIndicator(): T;
-    toBeSemanticHTML(): T;
+  interface Assertion {
+    toHaveAccessibleName(): void;
+    toHaveAccessibleName(name: string): void;
+    toHaveRole(role: string): void;
+    toBeAccessible(): void;
+    toHaveContrastRatio(ratio: number): void;
+    toPassWCAGColorContrast(level?: 'AA' | 'AAA'): void;
+    toBeFocusable(): void;
+    toBeTabbable(): void;
+    toHaveValidAria(): void;
+    toHaveFocusIndicator(): void;
+    toBeSemanticHTML(): void;
   }
 }
 

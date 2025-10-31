@@ -7,8 +7,14 @@ This guide explains how to use GraphQL queries and mutations for profile managem
 The Lesser GraphQL adapter provides type-safe methods for:
 - Fetching paginated followers and following lists
 - Updating user profiles
-- Managing user preferences
+- Managing user preferences and privacy settings
 - Configuring push notifications
+- Managing relationships (follow, block, mute)
+
+The Profile package includes specialized controllers that provide reactive state management and automatic synchronization:
+- **ProfileGraphQLController** - Main profile controller with followers/following management
+- **PreferencesGraphQLController** - User preferences and privacy settings
+- **PushNotificationsController** - Push notification subscriptions with browser integration
 
 All methods return strongly-typed data that can be easily converted to your application's models.
 
@@ -22,6 +28,9 @@ import {
   convertGraphQLPushSubscription 
 } from '@equaltoai/greater-components-adapters';
 ```
+
+> **Live API Available!** Lesser's GraphQL API is now live at `https://dev.lesser.host/api/graphql`  
+> You can test all queries and mutations against real data.
 
 ## Followers & Following
 

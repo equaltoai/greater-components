@@ -207,7 +207,9 @@
               controls
               class="media-video"
               aria-label={media.description || 'Video'}
-            ></video>
+            >
+              <track kind="captions" />
+            </video>
           {:else if previewType === 'audio'}
             <audio 
               src={media.url}

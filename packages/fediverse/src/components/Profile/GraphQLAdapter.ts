@@ -5,8 +5,10 @@ import type {
 	ProfileHandlers,
 	ProfileRelationship,
 	ProfileField,
+	PrivacySettings,
 } from './context.js';
 import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+import { PreferencesGraphQLController } from './PreferencesController.js';
 
 interface ProfileGraphQLAdapterOptions {
 	context: ProfileContext;
@@ -14,6 +16,7 @@ interface ProfileGraphQLAdapterOptions {
 	username: string;
 	pageSize?: number;
 	isOwnProfile?: boolean;
+	enablePreferences?: boolean;
 }
 
 interface RelationshipPayload {
@@ -56,6 +59,7 @@ export class ProfileGraphQLController {
 	private currentProfileId: string | null = null;
 	private followersLoading = false;
 	private followingLoading = false;
+	private preferencesController: PreferencesGraphQLController | null = null;
 
 	private readonly handlers: ProfileHandlers;
 
@@ -67,6 +71,12 @@ export class ProfileGraphQLController {
 
 		this.context.updateState({ isOwnProfile: options.isOwnProfile ?? false });
 
+		// Initialize preferences controller if enabled and viewing own profile
+		if (options.enablePreferences && (options.isOwnProfile ?? false)) {
+			this.preferencesController = new PreferencesGraphQLController(options.adapter);
+			this.setupPreferencesController();
+		}
+
 		this.handlers = {
 			onFollow: (id) => this.followActor(id),
 			onUnfollow: (id) => this.unfollowActor(id),
@@ -77,6 +87,15 @@ export class ProfileGraphQLController {
 			onSave: (data) => this.updateProfile(data),
 			onLoadMoreFollowers: () => this.loadFollowers(false),
 			onLoadMoreFollowing: () => this.loadFollowing(false),
+			onUpdatePrivacySettings: this.preferencesController
+				? (settings) => this.updatePrivacySettings(settings)
+				: undefined,
+			onLoadPreferences: this.preferencesController
+				? () => this.loadPreferences()
+				: undefined,
+			onGetPrivacySettings: this.preferencesController
+				? () => this.getPrivacySettings()
+				: undefined,
 		};
 
 		this.context.setHandlers(this.handlers);
@@ -170,6 +189,8 @@ export class ProfileGraphQLController {
 	 */
 	destroy(): void {
 		this.disposed = true;
+		this.preferencesController?.destroy();
+		this.preferencesController = null;
 	}
 
 	private ensureActive(): void {
@@ -661,5 +682,52 @@ export class ProfileGraphQLController {
 				? { followersTotal: value }
 				: { followingTotal: value }),
 		});
+	}
+
+	/**
+	 * Set up preferences controller subscriptions
+	 */
+	private setupPreferencesController(): void {
+		if (!this.preferencesController) {
+			return;
+		}
+
+		// Subscribe to preferences state changes
+		this.preferencesController.subscribe((state) => {
+			this.context.updateState({
+				privacySettings: this.preferencesController?.getPrivacySettings() ?? null,
+				preferencesLoading: state.loading,
+			});
+		});
+	}
+
+	/**
+	 * Load user preferences
+	 */
+	private async loadPreferences(): Promise<void> {
+		if (!this.preferencesController) {
+			throw new Error('Preferences controller not initialized');
+		}
+		await this.preferencesController.loadPreferences();
+	}
+
+	/**
+	 * Update privacy settings
+	 */
+	private async updatePrivacySettings(settings: Partial<PrivacySettings>): Promise<void> {
+		if (!this.preferencesController) {
+			throw new Error('Preferences controller not initialized');
+		}
+		await this.preferencesController.updatePrivacySettings(settings);
+	}
+
+	/**
+	 * Get current privacy settings
+	 */
+	private getPrivacySettings(): PrivacySettings | null {
+		if (!this.preferencesController) {
+			return null;
+		}
+		return this.preferencesController.getPrivacySettings();
 	}
 }

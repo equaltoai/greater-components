@@ -65,9 +65,13 @@ function createAxeContext(include?: string[], exclude?: string[]): ContextObject
     } as ContextObject;
   }
 
-  return {
-    exclude: exclude!,
-  } as ContextObject;
+  if (exclude) {
+    return {
+      exclude,
+    } as ContextObject;
+  }
+
+  return undefined;
 }
 
 function createRunOptions(options: PlaywrightAxeOptions): RunOptions {
@@ -122,18 +126,22 @@ export async function runAxeTest(
   const runOptions = presetRunOptions ?? (await setupAxe(page, options));
   const context = createAxeContext(options.include, options.exclude);
 
-  const payload = {
+  // Serialize to JSON strings to avoid TypeScript deep type instantiation
+  const argsJson = JSON.stringify({
     context: context ?? null,
-    options: runOptions,
-  };
-
-  const results = await page.evaluate<any, any>(
-    async ({ context, options: evalOptions }: { context: unknown; options: unknown }) => {
-      const axeWindow = window as any;
-      return axeWindow.axe.run(context ?? undefined, evalOptions);
-    },
-    payload as any
-  );
+    options: runOptions
+  });
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const results: any = await page.evaluate((json: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const axeWindow = window as any;
+    if (!axeWindow.axe?.run) {
+      throw new Error('axe-core has not been injected on the page');
+    }
+    const args = JSON.parse(json);
+    return axeWindow.axe.run(args.context ?? undefined, args.options);
+  }, argsJson);
 
   return results as AxeResults;
 }

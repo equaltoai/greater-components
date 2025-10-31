@@ -40,17 +40,112 @@ const toBoolean = (value: unknown, fallback = false): boolean =>
 const toString = (value: unknown, fallback = ''): string =>
   isString(value) ? value : fallback;
 
-const toISODate = (value: unknown): string =>
-  isString(value) ? value : new Date(0).toISOString();
+const toISODate = (value: unknown): string => {
+  if (isString(value)) {
+    return value;
+  }
+  if (isNumber(value) && Number.isFinite(value)) {
+    return new Date(value).toISOString();
+  }
+  if (value instanceof Date && Number.isFinite(value.getTime())) {
+    return value.toISOString();
+  }
+  return new Date(0).toISOString();
+};
+
+const convertProfileFields = (value: unknown): LesserAccountFragment['profileFields'] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((field): LesserAccountFragment['profileFields'][number] | null => {
+      if (!isRecord(field)) {
+        return null;
+      }
+      const label = toString(field['label'] ?? field['name']);
+      const content = toString(field['content'] ?? field['value']);
+      const verifiedAt = isString(field['verifiedAt']) ? field['verifiedAt'] : undefined;
+      if (!label && !content) {
+        return null;
+      }
+      return { label, content, verifiedAt };
+    })
+    .filter((field): field is LesserAccountFragment['profileFields'][number] => field !== null);
+};
+
+const convertCustomEmojis = (value: unknown): LesserAccountFragment['customEmojis'] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((emoji): LesserAccountFragment['customEmojis'][number] | null => {
+      if (!isRecord(emoji)) {
+        return null;
+      }
+      const code = toString(emoji['code'] ?? emoji['shortcode']);
+      const imageUrl = toString(emoji['imageUrl'] ?? emoji['url']);
+      const staticUrl = toString(emoji['staticUrl'] ?? emoji['static_url']);
+      if (!code || !imageUrl || !staticUrl) {
+        return null;
+      }
+      return {
+        code,
+        imageUrl,
+        staticUrl,
+        category: isString(emoji['category']) ? emoji['category'] : undefined,
+        isVisible: typeof emoji['isVisible'] === 'boolean' ? emoji['isVisible'] : true
+      };
+    })
+    .filter((emoji): emoji is LesserAccountFragment['customEmojis'][number] => emoji !== null);
+};
+
+const toMaybeNumber = (value: unknown): number | undefined => (isNumber(value) ? value : undefined);
 
 export function convertGraphQLActorToLesserAccount(actor: unknown): LesserAccountFragment | null {
   if (!isRecord(actor)) {
     return null;
   }
 
-  const id = actor['id'];
+  const idValue = actor['id'];
+  if (!isString(idValue)) {
+    return null;
+  }
+
+  // Support already-normalized Lesser account payloads to keep compatibility with existing tests/mocks.
+  const handle = actor['handle'];
+  const localHandle = actor['localHandle'];
+  if (isString(handle) && isString(localHandle)) {
+    return {
+      id: idValue,
+      handle,
+      localHandle,
+      displayName: toString(actor['displayName'], localHandle),
+      bio: toString(actor['bio'] ?? actor['summary']),
+      avatarUrl: toString(actor['avatarUrl'] ?? actor['avatar']),
+      bannerUrl: toString(actor['bannerUrl'] ?? actor['header']),
+      joinedAt: toISODate(actor['joinedAt'] ?? actor['createdAt']),
+      isVerified: toBoolean(actor['isVerified'] ?? actor['verified']),
+      isBot: toBoolean(actor['isBot'] ?? actor['bot']),
+      isLocked: toBoolean(actor['isLocked'] ?? actor['locked']),
+      followerCount: toNumber(actor['followerCount'] ?? actor['followers']),
+      followingCount: toNumber(actor['followingCount'] ?? actor['following']),
+      postCount: toNumber(actor['postCount'] ?? actor['statusesCount']),
+      profileFields: convertProfileFields(actor['profileFields'] ?? actor['fields']),
+      customEmojis: convertCustomEmojis(actor['customEmojis']),
+    trustScore: toMaybeNumber(actor['trustScore']),
+    reputation: isRecord(actor['reputation'])
+      ? (actor['reputation'] as unknown as LesserAccountFragment['reputation'])
+      : undefined,
+    vouches: Array.isArray(actor['vouches'])
+      ? (actor['vouches'] as unknown as LesserAccountFragment['vouches'])
+      : undefined
+    };
+  }
+
   const username = actor['username'];
-  if (!isString(id) || !isString(username)) {
+  if (!isString(username)) {
     return null;
   }
 
@@ -61,23 +156,10 @@ export function convertGraphQLActorToLesserAccount(actor: unknown): LesserAccoun
   const header = toString(actor['header']);
   const joinedAt = toISODate(actor['createdAt']);
 
-  const fieldsValue = actor['fields'];
-  const profileFields: LesserAccountFragment['profileFields'] = Array.isArray(fieldsValue)
-    ? fieldsValue
-        .map((field): LesserAccountFragment['profileFields'][number] | null => {
-          if (!isRecord(field)) {
-            return null;
-          }
-          const name = toString(field['name']);
-          const value = toString(field['value']);
-          const verifiedAt = isString(field['verifiedAt']) ? field['verifiedAt'] : undefined;
-          return { label: name, content: value, verifiedAt };
-        })
-        .filter((field): field is LesserAccountFragment['profileFields'][number] => field !== null)
-    : [];
+  const profileFields = convertProfileFields(actor['fields']);
 
   return {
-    id,
+    id: idValue,
     handle: buildHandle(username, domain),
     localHandle: username,
     displayName,
@@ -93,7 +175,7 @@ export function convertGraphQLActorToLesserAccount(actor: unknown): LesserAccoun
     postCount: toNumber(actor['statusesCount']),
     profileFields,
     customEmojis: [],
-    trustScore: isNumber(actor['trustScore']) ? actor['trustScore'] : undefined,
+    trustScore: toMaybeNumber(actor['trustScore']),
     reputation: undefined,
     vouches: undefined
   };
@@ -111,11 +193,13 @@ function convertGraphQLAttachment(attachment: unknown): LesserAttachmentFragment
     return null;
   }
 
+  const previewValue = attachment['preview'] ?? attachment['previewUrl'];
+
   return {
     id,
     type,
     url,
-    preview: isString(attachment['preview']) ? attachment['preview'] : undefined,
+    preview: isString(previewValue) ? previewValue : undefined,
     description: isString(attachment['description']) ? attachment['description'] : undefined,
     sensitive: typeof attachment['sensitive'] === 'boolean' ? attachment['sensitive'] : undefined,
     spoilerText: isString(attachment['spoilerText']) ? attachment['spoilerText'] : undefined,

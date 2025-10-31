@@ -64,6 +64,12 @@
 		 * @default 40
 		 */
 		pageSize?: number;
+
+		/**
+		 * Enable preferences and privacy settings integration (only for own profile)
+		 * @default true
+		 */
+		enablePreferences?: boolean;
 	}
 
 	let {
@@ -75,6 +81,7 @@
 		adapter,
 		username,
 		pageSize = 40,
+		enablePreferences = true,
 	}: Props = $props();
 
 	const context = createProfileContext(profileProp, handlersProp, isOwnProfile);
@@ -109,6 +116,7 @@
 			username,
 			pageSize,
 			isOwnProfile,
+			enablePreferences: enablePreferences && isOwnProfile,
 		});
 
 		try {

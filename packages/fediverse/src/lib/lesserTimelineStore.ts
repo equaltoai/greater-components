@@ -493,7 +493,10 @@ function convertUnifiedStatusToGeneric(
 	cache: Map<string, GenericStatus>
 ): GenericStatus {
 	if (cache.has(status.id)) {
-		return cache.get(status.id)!;
+		const cachedStatus = cache.get(status.id);
+		if (cachedStatus) {
+			return cachedStatus;
+		}
 	}
 
 	const actor = mapAccountToActor(status.account);

@@ -14,7 +14,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   Cursor: { input: string; output: string; }
-  Duration: { input: any; output: any; }
+  Duration: { input: string; output: string; }
   Time: { input: string; output: string; }
   Upload: { input: File | Blob; output: File | Blob; }
 };
@@ -398,6 +398,7 @@ export type CreateNoteInput = {
   readonly contentMap?: InputMaybe<ReadonlyArray<ContentMapInput>>;
   readonly inReplyToId?: InputMaybe<Scalars['ID']['input']>;
   readonly mentions?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly poll?: InputMaybe<PollParamsInput>;
   readonly sensitive?: InputMaybe<Scalars['Boolean']['input']>;
   readonly spoilerText?: InputMaybe<Scalars['String']['input']>;
   readonly tags?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
@@ -1710,6 +1711,7 @@ export type Object = {
   readonly likesCount: Scalars['Int']['output'];
   readonly mentions: ReadonlyArray<Mention>;
   readonly moderationScore?: Maybe<Scalars['Float']['output']>;
+  readonly poll?: Maybe<Poll>;
   readonly quoteContext?: Maybe<QuoteContext>;
   readonly quoteCount: Scalars['Int']['output'];
   readonly quotePermissions: QuotePermission;
@@ -1823,6 +1825,26 @@ export type Period =
   | 'MONTH'
   | 'WEEK'
   | 'YEAR';
+
+export type Poll = {
+  readonly __typename: 'Poll';
+  readonly expired: Scalars['Boolean']['output'];
+  readonly expiresAt?: Maybe<Scalars['Time']['output']>;
+  readonly hideTotals: Scalars['Boolean']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly multiple: Scalars['Boolean']['output'];
+  readonly options: ReadonlyArray<PollOption>;
+  readonly ownVotes?: Maybe<ReadonlyArray<Scalars['Int']['output']>>;
+  readonly voted: Scalars['Boolean']['output'];
+  readonly votersCount: Scalars['Int']['output'];
+  readonly votesCount: Scalars['Int']['output'];
+};
+
+export type PollOption = {
+  readonly __typename: 'PollOption';
+  readonly title: Scalars['String']['output'];
+  readonly votesCount: Scalars['Int']['output'];
+};
 
 export type PollParams = {
   readonly __typename: 'PollParams';
@@ -2145,6 +2167,7 @@ export type QueryHashtagTimelineArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   hashtag: Scalars['String']['input'];
+  mediaOnly?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
@@ -2341,6 +2364,7 @@ export type QueryTimelineArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   hashtag?: InputMaybe<Scalars['String']['input']>;
   listId?: InputMaybe<Scalars['ID']['input']>;
+  mediaOnly?: InputMaybe<Scalars['Boolean']['input']>;
   type: TimelineType;
 };
 
