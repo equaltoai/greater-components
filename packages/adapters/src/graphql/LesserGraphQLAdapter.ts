@@ -6,7 +6,7 @@
  * and object accessors rather than the legacy Mastodon-style wrappers.
  */
 
-import { Observable, type FetchResult, type OperationVariables } from '@apollo/client/core/index.js';
+import { Observable, type FetchResult, type OperationVariables } from '@apollo/client';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { print } from 'graphql';
 

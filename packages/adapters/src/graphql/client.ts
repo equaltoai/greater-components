@@ -18,11 +18,11 @@ import {
 	from,
 	type NormalizedCacheObject,
 	type DefaultOptions,
-} from '@apollo/client/core/index.js';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions/index.js';
-import { getMainDefinition } from '@apollo/client/utilities/index.js';
-import { onError } from '@apollo/client/link/error/index.js';
-import { RetryLink } from '@apollo/client/link/retry/index.js';
+} from '@apollo/client';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry';
 import { createClient, type Client } from 'graphql-ws';
 import { cacheConfig } from './cache.js';
 

@@ -8,7 +8,7 @@
  * - Garbage collection
  */
 
-import type { ApolloCache, InMemoryCacheConfig, TypePolicies } from '@apollo/client/core/index.js';
+import type { ApolloCache, InMemoryCacheConfig, TypePolicies } from '@apollo/client';
 
 type TimestampedNode = { createdAt?: string | null };
 type ConnectionEdges = { edges?: Array<{ node: TimestampedNode }> };
