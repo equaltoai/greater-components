@@ -146,8 +146,8 @@
 				if (lesserToken) {
 					// Use GraphQL adapter for Lesser
 					graphqlAdapter = createLesserGraphQLAdapter({
-						httpEndpoint: 'https://api.lesser.social/graphql',
-						wsEndpoint: 'wss://api.lesser.social/graphql',
+						httpEndpoint: 'https://dev.lesser.host/api/graphql',
+						wsEndpoint: 'wss://dev.lesser.host/api/graphql',
 						token: lesserToken,
 						debug: true,
 					});

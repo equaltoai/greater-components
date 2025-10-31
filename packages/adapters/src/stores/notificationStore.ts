@@ -69,21 +69,52 @@ function convertNotificationStreamPayload(
     return null;
   }
 
-  const triggerAccount = convertGraphQLActorToLesserAccount(payload.account);
+  const typeValue = (payload as Record<string, unknown>)['type'] ??
+    (payload as Record<string, unknown>)['notificationType'];
+
+  const createdAtValue =
+    (payload as Record<string, unknown>)['createdAt'] ??
+    (payload as Record<string, unknown>)['timestamp'];
+
+  const accountValue =
+    (payload as Record<string, unknown>)['account'] ??
+    (payload as Record<string, unknown>)['triggerAccount'] ??
+    (payload as Record<string, unknown>)['actor'];
+
+  const statusValue =
+    (payload as Record<string, unknown>)['status'] ??
+    (payload as Record<string, unknown>)['object'] ??
+    (payload as Record<string, unknown>)['post'];
+
+  const readValue =
+    (payload as Record<string, unknown>)['read'] ??
+    (payload as Record<string, unknown>)['isRead'];
+
+  const triggerAccount = convertGraphQLActorToLesserAccount(accountValue);
   if (!triggerAccount) {
     return null;
   }
 
-  const statusFragment = payload.status ? convertGraphQLObjectToLesser(payload.status) : null;
+  const statusFragment = statusValue ? convertGraphQLObjectToLesser(statusValue) : null;
+
+  const createdAt = (() => {
+    if (typeof createdAtValue === 'string') {
+      return createdAtValue;
+    }
+    if (typeof createdAtValue === 'number' && Number.isFinite(createdAtValue)) {
+      return new Date(createdAtValue).toISOString();
+    }
+    return new Date(0).toISOString();
+  })();
 
   return {
     id: payload.id,
-    notificationType: normalizeNotificationType(payload.type),
-    createdAt: typeof payload.createdAt === 'string' ? payload.createdAt : new Date(0).toISOString(),
+    notificationType: normalizeNotificationType(typeValue),
+    createdAt,
     triggerAccount,
     status: statusFragment ?? undefined,
     adminReport: undefined,
-    isRead: typeof payload.read === 'boolean' ? payload.read : undefined
+    isRead: typeof readValue === 'boolean' ? readValue : undefined
   };
 }
 

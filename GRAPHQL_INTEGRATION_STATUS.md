@@ -4,9 +4,11 @@
 
 ### 1. Schema Sync & Generation
 - ✅ Copied updated Lesser GraphQL schema from `/home/aron/ai-workspace/codebases/lesser/schema.graphql`
+- ✅ **October 31 Update:** Synced latest schema (2,446 lines) with Poll support
 - ✅ Fixed `AttachmentFields` fragment to match actual schema structure
 - ✅ Successfully ran GraphQL Code Generator
 - ✅ Generated TypeScript types in `packages/fediverse/src/adapters/graphql/generated/types.ts`
+- ✅ Fixed type casting in graphqlConverters.ts for reputation/vouches
 
 ### 2. GraphQL Documents  
 Created three new GraphQL document files with queries and mutations:

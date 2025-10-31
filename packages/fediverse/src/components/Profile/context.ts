@@ -344,6 +344,17 @@ export interface ProfileHandlers {
 	 */
 	onUpdatePrivacySettings?: (settings: Partial<PrivacySettings>) => Promise<void>;
 
+	// Preferences handlers
+	/**
+	 * Load user preferences
+	 */
+	onLoadPreferences?: () => Promise<void>;
+
+	/**
+	 * Get current privacy settings from preferences
+	 */
+	onGetPrivacySettings?: () => PrivacySettings | null;
+
 	// Migration handlers
 	/**
 	 * Initiate account migration
@@ -477,6 +488,16 @@ export interface ProfileState {
 	 * Cursor for fetching more following accounts
 	 */
 	followingCursor?: string | null;
+
+	/**
+	 * Privacy settings (loaded from preferences)
+	 */
+	privacySettings?: PrivacySettings | null;
+
+	/**
+	 * Preferences loading state
+	 */
+	preferencesLoading?: boolean;
 }
 
 /**

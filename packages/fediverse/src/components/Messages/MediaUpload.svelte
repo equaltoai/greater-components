@@ -174,8 +174,9 @@ function handleSensitiveToggle(id: string, sensitive: boolean) {
 	if (sensitive) {
 		sensitiveVisibility = { ...sensitiveVisibility, [id]: false };
 	} else {
-		const { [id]: _removed, ...rest } = sensitiveVisibility;
-		sensitiveVisibility = rest;
+		const nextVisibility = { ...sensitiveVisibility };
+		delete nextVisibility[id];
+		sensitiveVisibility = nextVisibility;
 	}
 }
 
@@ -416,7 +417,7 @@ function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio
 								)
 							}
 						>
-							{#each MEDIA_CATEGORY_OPTIONS as option}
+							{#each MEDIA_CATEGORY_OPTIONS as option (option.value)}
 								<option value={option.value} selected={option.value === attachment.mediaCategory}>
 									{option.label}
 								</option>

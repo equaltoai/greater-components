@@ -200,7 +200,8 @@ export function memoize<TArgs extends unknown[], TResult>(
 		const key = keyResolver ? keyResolver(...args) : JSON.stringify(args);
 
 		if (cache.has(key)) {
-			return cache.get(key)!;
+			const cached = cache.get(key);
+			return cached as TResult;
 		}
 
 		const result = fn(...args);

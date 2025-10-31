@@ -1,5 +1,47 @@
 # @equaltoai/greater-components-fediverse
 
+## 1.0.1
+
+### Patch Changes
+
+- GraphQL Integration for Followers, Preferences, and Push Notifications
+
+  This patch adds comprehensive GraphQL support for user relationships, preferences, and push notification management:
+
+  **New GraphQL Queries:**
+  - followers(username, limit, cursor) - Paginated followers list
+  - following(username, limit, cursor) - Paginated following list
+  - userPreferences - Fetch all user preferences
+  - pushSubscription - Get current push subscription
+
+  **New GraphQL Mutations:**
+  - updateProfile(input) - Update profile with all fields
+  - updateUserPreferences(input) - Update preferences
+  - updateStreamingPreferences(input) - Update streaming settings
+  - registerPushSubscription(input) - Register push notifications
+  - updatePushSubscription(input) - Update push alerts
+  - deletePushSubscription - Remove push subscription
+
+  **Adapter Enhancements:**
+  - 10 new methods in LesserGraphQLAdapter
+  - 3 type converter functions
+  - Apollo cache policies for efficient pagination
+  - Full TypeScript type safety
+
+  **Examples:**
+  - ProfilePageExample updated with GraphQL followers/following
+  - New PreferencesExample component
+  - New PushNotificationsExample component
+
+  **Live API:**
+  - Configured for https://dev.lesser.host/api/graphql
+  - WebSocket support at wss://dev.lesser.host/api/graphql
+
+  No breaking changes - fully backward compatible.
+
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.0.1
+
 ## 2.1.0
 
 ### Minor Changes
@@ -9,12 +51,14 @@
 This release adds comprehensive GraphQL support for user relationships, preferences, and push notification management:
 
 **New GraphQL Queries:**
+
 - `followers(username, limit, cursor)` - Paginated followers list with ActorListPage support
-- `following(username, limit, cursor)` - Paginated following list with ActorListPage support  
+- `following(username, limit, cursor)` - Paginated following list with ActorListPage support
 - `userPreferences` - Fetch all user preferences (posting, reading, discovery, streaming, notifications, privacy)
 - `pushSubscription` - Get current push notification subscription
 
 **New GraphQL Mutations:**
+
 - `updateProfile(input)` - Update profile with displayName, bio, avatar, header, locked, bot, discoverable, noIndex, sensitive, language, and custom fields
 - `updateUserPreferences(input)` - Update all user preferences at once
 - `updateStreamingPreferences(input)` - Update streaming-specific preferences
@@ -23,6 +67,7 @@ This release adds comprehensive GraphQL support for user relationships, preferen
 - `deletePushSubscription` - Remove push notification subscription
 
 **Adapter Enhancements:**
+
 - Added `LesserGraphQLAdapter.getFollowers()` and `LesserGraphQLAdapter.getFollowing()` methods
 - Added `LesserGraphQLAdapter.updateProfile()` for profile updates
 - Added `LesserGraphQLAdapter.getUserPreferences()` and `LesserGraphQLAdapter.updateUserPreferences()`
@@ -30,22 +75,26 @@ This release adds comprehensive GraphQL support for user relationships, preferen
 - Added complete push notification lifecycle methods: `getPushSubscription()`, `registerPushSubscription()`, `updatePushSubscription()`, `deletePushSubscription()`
 
 **Type Converters:**
+
 - Added `convertGraphQLActorListPage()` for follower/following pagination
 - Added `convertGraphQLUserPreferences()` for structured preference data
 - Added `convertGraphQLPushSubscription()` for push subscription data
 
 **Apollo Cache Configuration:**
+
 - Updated followers/following cache policies to use username-based keys and ActorListPage structure
 - Added UserPreferences cache policy with actorId as key
 - Added PushSubscription cache policy with id as key
 - Configured proper merge strategies for pagination and updates
 
 **Example Implementations:**
+
 - Updated ProfilePageExample with GraphQL followers/following pagination
 - Created PreferencesExample showing GraphQL-backed settings management
 - Created PushNotificationsExample demonstrating push registration and alert management
 
 **Migration Notes:**
+
 - Components using followers/following data can now leverage cursor-based pagination with `nextCursor` and `totalCount`
 - Profile editing now supports all Lesser-specific fields including trust and reputation data
 - Preferences are now structured by category (posting, reading, discovery, streaming, notifications, privacy)

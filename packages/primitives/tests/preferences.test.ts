@@ -219,7 +219,10 @@ describe('PreferencesStore', () => {
       
       const lastCall = localStorageMock.setItem.mock.calls.at(-1);
       expect(lastCall).toBeDefined();
-      const savedData = JSON.parse(lastCall![1]);
+      if (!lastCall) {
+        throw new Error('Expected localStorage.setItem to be called');
+      }
+      const savedData = JSON.parse(lastCall[1]);
       expect(savedData.colorScheme).toBe('dark');
     });
   });

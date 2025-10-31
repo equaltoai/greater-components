@@ -12,8 +12,6 @@
 	let { useMockData = false }: Props = $props();
 
 	let graphqlAdapter = $state<LesserGraphQLAdapter | null>(null);
-	type UserPrefsType = Awaited<ReturnType<LesserGraphQLAdapter['getUserPreferences']>>;
-	let _preferences = $state<UserPrefsType | null>(null);
 	let loading = $state(false);
 	let error = $state<string | null>(null);
 	let saveStatus = $state<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -54,8 +52,8 @@
 
 			if (!useMockData && lesserToken) {
 				graphqlAdapter = createLesserGraphQLAdapter({
-					httpEndpoint: 'https://api.lesser.social/graphql',
-					wsEndpoint: 'wss://api.lesser.social/graphql',
+					httpEndpoint: 'https://dev.lesser.host/api/graphql',
+					wsEndpoint: 'wss://dev.lesser.host/api/graphql',
 					token: lesserToken,
 					debug: true,
 				});
@@ -78,8 +76,6 @@
 
 		try {
 			const prefs = await graphqlAdapter.getUserPreferences();
-			_preferences = prefs;
-
 			// Hydrate form from loaded preferences
 			defaultVisibility = prefs.posting.defaultVisibility;
 			defaultSensitive = prefs.posting.defaultSensitive;
@@ -139,7 +135,7 @@
 		error = null;
 
 		try {
-			const updated = await graphqlAdapter.updateUserPreferences({
+			await graphqlAdapter.updateUserPreferences({
 				defaultPostingVisibility: defaultVisibility,
 				defaultMediaSensitive: defaultSensitive,
 				language: defaultLanguage,
@@ -158,7 +154,6 @@
 				},
 			});
 
-			_preferences = updated;
 			saveStatus = 'saved';
 
 			// Reset status after 3 seconds
@@ -435,8 +430,7 @@
 		font-weight: 500;
 	}
 
-	.form-field select,
-	.form-field input[type='text'] {
+	.form-field select {
 		width: 100%;
 		padding: var(--gc-spacing-sm);
 		border: 1px solid var(--gc-color-border-default);
