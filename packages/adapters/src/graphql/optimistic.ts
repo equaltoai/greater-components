@@ -4,7 +4,7 @@
  * Provides instant UI feedback before server response
  */
 
-import type { ApolloCache, Reference } from '@apollo/client/core/index.js';
+import type { ApolloCache, Reference } from '@apollo/client';
 
 type StatusPayload = { __typename?: string; id: string } & Record<string, unknown>;
 type TimelineEdge = { __typename?: string; node: Reference; cursor: string };
@@ -350,4 +350,4 @@ export function optimisticVotePoll(pollId: string, choices: number[], options: P
 }
 
 // Import gql for fragments
-import { gql } from '@apollo/client/core/index.js';
+import { gql } from '@apollo/client';

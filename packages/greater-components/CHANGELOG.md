@@ -1,5 +1,33 @@
 # @equaltoai/greater-components
 
+## 1.0.4
+
+### Patch Changes
+
+- Fix Apollo Client Imports - Use Main Package Export
+
+  Correctly fixes Apollo Client ESM import issues by using the main package export.
+
+  **Fixed:**
+  - Changed all `@apollo/client/core` imports to `@apollo/client`
+  - Changed all `@apollo/client/link/*` imports to main export
+  - Changed all `@apollo/client/utilities` imports to main export
+
+  **Previous attempts:**
+  - v1.0.2: Used `@apollo/client/core` (directory import error)
+  - v1.0.3: Used `@apollo/client/core/index.js` (Vite path doubling error)
+  - v1.0.4: Uses `@apollo/client` main export ✅
+
+  **Files Fixed:**
+  - packages/adapters/src/graphql/client.ts
+  - packages/adapters/src/graphql/cache.ts
+  - packages/adapters/src/graphql/LesserGraphQLAdapter.ts
+  - packages/adapters/src/graphql/optimistic.ts
+
+  This resolves ESM import errors in all environments (Vite, Node.js, bundlers).
+
+  No breaking changes.
+
 ## 1.0.3
 
 ### Patch Changes
