@@ -17,6 +17,11 @@ export default defineConfig({
         'components/Button': path.resolve(__dirname, 'src/components/Button.svelte'),
         'components/Modal': path.resolve(__dirname, 'src/components/Modal.svelte'),
         'components/TextField': path.resolve(__dirname, 'src/components/TextField.svelte'),
+        'components/TextArea': path.resolve(__dirname, 'src/components/TextArea.svelte'),
+        'components/Select': path.resolve(__dirname, 'src/components/Select.svelte'),
+        'components/Checkbox': path.resolve(__dirname, 'src/components/Checkbox.svelte'),
+        'components/Switch': path.resolve(__dirname, 'src/components/Switch.svelte'),
+        'components/FileUpload': path.resolve(__dirname, 'src/components/FileUpload.svelte'),
         'components/Menu': path.resolve(__dirname, 'src/components/Menu.svelte'),
         'components/Tooltip': path.resolve(__dirname, 'src/components/Tooltip.svelte'),
         'components/Tabs': path.resolve(__dirname, 'src/components/Tabs.svelte'),
@@ -29,7 +34,14 @@ export default defineConfig({
       formats: ['es']
     },
     rollupOptions: {
-      external: ['svelte', 'svelte/store', 'svelte/internal', '@equaltoai/greater-components-tokens'],
+      external: [
+        'svelte',
+        'svelte/store',
+        'svelte/internal',
+        '@equaltoai/greater-components-tokens',
+        '@equaltoai/greater-components-headless',
+        '@equaltoai/greater-components-headless/textfield'
+      ],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

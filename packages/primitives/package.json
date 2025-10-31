@@ -35,6 +35,31 @@
       "svelte": "./dist/components/TextField.svelte.js",
       "import": "./dist/components/TextField.js"
     },
+    "./TextArea": {
+      "types": "./dist/components/TextArea.d.ts",
+      "svelte": "./dist/components/TextArea.svelte.js",
+      "import": "./dist/components/TextArea.js"
+    },
+    "./Select": {
+      "types": "./dist/components/Select.d.ts",
+      "svelte": "./dist/components/Select.svelte.js",
+      "import": "./dist/components/Select.js"
+    },
+    "./Checkbox": {
+      "types": "./dist/components/Checkbox.d.ts",
+      "svelte": "./dist/components/Checkbox.svelte.js",
+      "import": "./dist/components/Checkbox.js"
+    },
+    "./Switch": {
+      "types": "./dist/components/Switch.d.ts",
+      "svelte": "./dist/components/Switch.svelte.js",
+      "import": "./dist/components/Switch.js"
+    },
+    "./FileUpload": {
+      "types": "./dist/components/FileUpload.d.ts",
+      "svelte": "./dist/components/FileUpload.svelte.js",
+      "import": "./dist/components/FileUpload.js"
+    },
     "./Menu": {
       "types": "./dist/components/Menu.d.ts",
       "svelte": "./dist/components/Menu.svelte.js",
@@ -82,7 +107,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && pnpm build:css",
+    "build": "vite build && tsc --emitDeclarationOnly && node scripts/generate-dts.js && pnpm build:css",
     "build:css": "node scripts/build-css.js",
     "dev": "vite build --watch",
     "test": "vitest run",
