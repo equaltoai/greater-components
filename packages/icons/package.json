@@ -38,10 +38,10 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.43.2"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/svelte": "^4.0.5",
     "@types/node": "^20.11.5",
@@ -49,7 +49,7 @@
     "chokidar": "^3.5.3",
     "feather-icons": "^4.29.1",
     "jsdom": "^23.0.1",
-    "svelte": "^5.0.0",
+    "svelte": "^5.43.2",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
     "vitest": "^1.2.1"
