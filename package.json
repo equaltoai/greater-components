@@ -69,6 +69,6 @@
     "pnpm": ">=9.0.0"
   },
   "dependencies": {
-    "undici": "6.18.0"
+    "undici": "6.21.2"
   }
 }
