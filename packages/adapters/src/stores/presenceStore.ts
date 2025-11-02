@@ -30,6 +30,8 @@ const STATUS_PRIORITY: Record<UserPresence['status'], number> = {
   offline: 5
 };
 
+let fallbackSessionCounter = 0;
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
@@ -1031,7 +1033,20 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
   }
 
   function generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const cryptoObj = typeof globalThis !== 'undefined' ? globalThis.crypto : undefined;
+    if (cryptoObj && typeof cryptoObj.randomUUID === 'function') {
+      return `session_${cryptoObj.randomUUID()}`;
+    }
+
+    if (cryptoObj && typeof cryptoObj.getRandomValues === 'function') {
+      const buffer = new Uint8Array(16);
+      cryptoObj.getRandomValues(buffer);
+      const hex = Array.from(buffer, (value) => value.toString(16).padStart(2, '0')).join('');
+      return `session_${hex}`;
+    }
+
+    fallbackSessionCounter = (fallbackSessionCounter + 1) % Number.MAX_SAFE_INTEGER;
+    return `session_${Date.now()}_${fallbackSessionCounter}`;
   }
 
   return {

@@ -42,6 +42,59 @@
     tabindex
   }: Props = $props();
 
+  const INTERACTIVE_ROLES = new Set([
+    'button',
+    'checkbox',
+    'combobox',
+    'link',
+    'menuitem',
+    'menuitemcheckbox',
+    'menuitemradio',
+    'option',
+    'radio',
+    'searchbox',
+    'slider',
+    'spinbutton',
+    'switch',
+    'tab',
+    'textbox',
+    'treeitem'
+  ]);
+
+  const parsedTabIndex = $derived<number | undefined>(() => {
+    if (tabindex === undefined || tabindex === null) {
+      return undefined;
+    }
+    if (typeof tabindex === 'number') {
+      return Number.isFinite(tabindex) ? tabindex : undefined;
+    }
+    const numericValue = Number(tabindex);
+    return Number.isFinite(numericValue) ? numericValue : undefined;
+  });
+
+  const hasInteractiveHandlers = $derived(() => Boolean(onclick || onkeydown || onkeyup));
+
+  const isInteractiveRole = (roleValue: string | undefined): boolean => {
+    if (!roleValue) {
+      return false;
+    }
+    return INTERACTIVE_ROLES.has(roleValue);
+  };
+
+  const isInteractive = $derived(() => {
+    if (isInteractiveRole(role)) {
+      return true;
+    }
+    if (hasInteractiveHandlers) {
+      return true;
+    }
+    if (parsedTabIndex !== undefined && parsedTabIndex >= 0) {
+      return true;
+    }
+    return false;
+  });
+
+
   // State management
   let imageLoaded = $state(false);
   let imageError = $state(false);
@@ -132,23 +185,7 @@
   const statusId = `avatar-status-${Math.random().toString(36).substr(2, 9)}`;
 </script>
 
-<div
-  class={avatarClass()}
-  role={role ?? "img"}
-  aria-label={ariaLabel ?? accessibleName()}
-  aria-labelledby={ariaLabelledby}
-  aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
-  {id}
-  {style}
-  {onclick}
-  {onmouseenter}
-  {onmouseleave}
-  {onfocus}
-  {onblur}
-  {onkeydown}
-  {onkeyup}
-  tabindex={tabindex !== undefined ? tabindex : null}
->
+{#snippet AvatarContent()}
   {#if loading}
     <div class="gr-avatar__loading" aria-hidden="true">
       <svg
@@ -234,7 +271,49 @@
       aria-label={`Status: ${status}`}
     ></div>
   {/if}
-</div>
+{/snippet}
+
+{#if isInteractive}
+  <button
+    class={avatarClass()}
+    aria-label={ariaLabel ?? accessibleName()}
+    aria-labelledby={ariaLabelledby}
+    aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
+    {id}
+    {style}
+    {onclick}
+    {onmouseenter}
+    {onmouseleave}
+    {onfocus}
+    {onblur}
+    {onkeydown}
+    {onkeyup}
+    role={role}
+    tabindex={parsedTabIndex}
+    type="button"
+  >
+    {@render AvatarContent()}
+  </button>
+{:else}
+  <div
+    class={avatarClass()}
+    role={role ?? 'img'}
+    aria-label={ariaLabel ?? accessibleName()}
+    aria-labelledby={ariaLabelledby}
+    aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
+    {id}
+    {style}
+    {onclick}
+    {onmouseenter}
+    {onmouseleave}
+    {onfocus}
+    {onblur}
+    {onkeydown}
+    {onkeyup}
+  >
+    {@render AvatarContent()}
+  </div>
+{/if}
 
 <style>
   :global {

@@ -11,6 +11,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
+import { extractPlainText } from './helpers/text';
 
 // Interfaces
 interface UnifiedAccount {
@@ -180,7 +181,7 @@ function hasHeader(account: UnifiedAccount): boolean {
 
 // Sanitize HTML content
 function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, '');
+  return extractPlainText(html);
 }
 
 // Truncate bio

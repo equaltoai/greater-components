@@ -22,6 +22,36 @@ import type {
 import { AdapterCache, createCacheKey } from '../cache.js';
 import { RequestDeduplicator } from '../batcher.js';
 
+const ANSI_ESCAPE_PATTERN = new RegExp(
+	String.raw`[\u001B\u009B][[\]()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]`,
+	'g'
+);
+
+function sanitizeLogValue(value: unknown): string {
+	if (value === null || value === undefined) {
+		return '';
+	}
+	const stripControl = (input: string) =>
+		input.replace(/[\r\n]+/g, ' ').replace(ANSI_ESCAPE_PATTERN, '');
+if (typeof value === 'string') {
+	return stripControl(value);
+}
+
+	try {
+		return stripControl(JSON.stringify(value));
+	} catch {
+		return '[unserializable]';
+	}
+}
+
+function logError(message: string, detail?: unknown): void {
+	if (detail === undefined) {
+		console.error(message);
+		return;
+	}
+	console.error(message, sanitizeLogValue(detail));
+}
+
 /**
  * GraphQL Client with built-in caching and deduplication
  */
@@ -342,15 +372,15 @@ export class GraphQLClient {
 							}
 						}
 					} else if (message.type === 'error') {
-						console.error('GraphQL subscription error:', message.error);
+						logError('GraphQL subscription error:', message.error);
 					}
 				} catch (error) {
-					console.error('Failed to parse WebSocket message:', error);
+					logError('Failed to parse WebSocket message:', error);
 				}
 			};
 
 			this.ws.onerror = (error) => {
-				console.error('WebSocket error:', error);
+				logError('WebSocket error:', error);
 			};
 
 			this.ws.onclose = () => {
@@ -364,9 +394,9 @@ export class GraphQLClient {
 					}, this.reconnectDelay * this.reconnectAttempts);
 				}
 			};
-		} catch (error) {
-			console.error('Failed to create WebSocket connection:', error);
-		}
+				} catch (error) {
+					logError('Failed to create WebSocket connection:', error);
+				}
 	}
 }
 

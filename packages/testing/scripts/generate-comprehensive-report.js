@@ -8,7 +8,6 @@
 const fs = require('fs');
 const path = require('path');
 const { program } = require('commander');
-const { A11yReportGenerator } = require('./generate-a11y-report');
 
 program
   .option('--input <path>', 'Input directory with test artifacts', 'test-artifacts')

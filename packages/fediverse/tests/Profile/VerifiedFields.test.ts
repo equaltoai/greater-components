@@ -219,6 +219,10 @@ describe('VerifiedFields Logic', () => {
 	});
 
 	describe('Verification Badge Display', () => {
+		function shouldDisplayBadge(field: ProfileField, showBadge: boolean): boolean {
+			return showBadge && !!field.verifiedAt;
+		}
+
 		it('should show badge for verified fields', () => {
 			const field: ProfileField = {
 				name: 'Website',
@@ -226,10 +230,7 @@ describe('VerifiedFields Logic', () => {
 				verifiedAt: '2024-01-15T10:00:00Z',
 			};
 
-			const showVerificationBadge = true;
-			const verified = !!field.verifiedAt;
-
-			expect(showVerificationBadge && verified && field.verifiedAt).toBeTruthy();
+			expect(shouldDisplayBadge(field, true)).toBe(true);
 		});
 
 		it('should not show badge when disabled', () => {
@@ -239,10 +240,7 @@ describe('VerifiedFields Logic', () => {
 				verifiedAt: '2024-01-15T10:00:00Z',
 			};
 
-			const showVerificationBadge = false;
-			const verified = !!field.verifiedAt;
-
-			expect(showVerificationBadge && verified && field.verifiedAt).toBeFalsy();
+			expect(shouldDisplayBadge(field, false)).toBe(false);
 		});
 
 		it('should not show badge for unverified fields', () => {
@@ -251,10 +249,7 @@ describe('VerifiedFields Logic', () => {
 				value: 'https://example.com',
 			};
 
-			const showVerificationBadge = true;
-			const verified = !!field.verifiedAt;
-
-			expect(showVerificationBadge && verified && field.verifiedAt).toBeFalsy();
+			expect(shouldDisplayBadge(field, true)).toBe(false);
 		});
 	});
 
@@ -391,4 +386,3 @@ describe('VerifiedFields Logic', () => {
 		});
 	});
 });
-

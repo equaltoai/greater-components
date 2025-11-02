@@ -67,7 +67,7 @@ export interface CharacterCountOptions {
  * URL regex pattern
  */
 const URL_REGEX =
-	/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_.+~#?&//=]*)/gi;
+	/https?:\/\/(?:www\.)?[-\w@:%+.~#=]{1,256}\.[\w()]{1,6}\b([-\w()@:%+.~#?&/=]*)/giu;
 
 /**
  * Count characters with platform-specific weighting

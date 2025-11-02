@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { extractPlainText } from './helpers/text';
 import type { Notification, NotificationGroup, NotificationType, Account } from '../src/types';
 import {
   getNotificationIcon,
@@ -113,7 +114,7 @@ function hasStatus(notification: Notification): boolean {
 
 // Strip HTML tags
 function stripHTMLTags(html: string): string {
-  return html.replace(/<[^>]*>/g, '');
+  return extractPlainText(html);
 }
 
 // Truncate content

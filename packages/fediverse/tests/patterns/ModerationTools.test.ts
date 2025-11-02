@@ -377,18 +377,17 @@ describe('ModerationTools - Action Execution', () => {
 	});
 
 	it('should reset state after execution', () => {
-		let activeAction: ModerationType | null = 'block';
-		let reportReason = 'Spam';
-		let muteDuration: number | undefined = 3600;
+		const resetState = (): { activeAction: ModerationType | null; reportReason: string; muteDuration?: number } => ({
+			activeAction: null,
+			reportReason: '',
+			muteDuration: undefined,
+		});
 
-		// Simulate reset
-		activeAction = null;
-		reportReason = '';
-		muteDuration = undefined;
+		const state = resetState();
 
-		expect(activeAction).toBe(null);
-		expect(reportReason).toBe('');
-		expect(muteDuration).toBe(undefined);
+		expect(state.activeAction).toBeNull();
+		expect(state.reportReason).toBe('');
+		expect(state.muteDuration).toBeUndefined();
 	});
 });
 
@@ -511,4 +510,3 @@ describe('ModerationTools - Type Safety', () => {
 		expect(action).toHaveProperty('severity');
 	});
 });
-

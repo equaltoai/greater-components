@@ -60,7 +60,7 @@
     "svelte-check": "^4.0.0",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.2.0",
-    "vite": "^5.4.0",
+    "vite": "^5.4.21",
     "vitest": "^2.0.5"
   },
   "packageManager": "pnpm@9.7.0",
@@ -69,6 +69,15 @@
     "pnpm": ">=9.0.0"
   },
   "dependencies": {
-    "undici": "6.18.0"
+    "undici": "^7.5.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "cookie": "^0.7.0",
+      "devalue": "^5.4.2",
+      "esbuild": "^0.25.8",
+      "tmp": "^0.2.4",
+      "undici": "^7.5.0"
+    }
   }
 }

@@ -7,7 +7,6 @@
 
 import fs from 'fs';
 import path from 'path';
-import { execSync } from 'child_process';
 
 const PACKAGES_DIR = path.join(process.cwd(), 'packages');
 const OUTPUT_DIR = path.join(process.cwd(), 'coverage');

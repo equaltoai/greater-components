@@ -36,6 +36,59 @@
     tabindex
   }: Props = $props();
 
+  const INTERACTIVE_ROLES = new Set([
+    'button',
+    'checkbox',
+    'combobox',
+    'link',
+    'menuitem',
+    'menuitemcheckbox',
+    'menuitemradio',
+    'option',
+    'radio',
+    'searchbox',
+    'slider',
+    'spinbutton',
+    'switch',
+    'tab',
+    'textbox',
+    'treeitem'
+  ]);
+
+  const parsedTabIndex = $derived<number | undefined>(() => {
+    if (tabindex === undefined || tabindex === null) {
+      return undefined;
+    }
+    if (typeof tabindex === 'number') {
+      return Number.isFinite(tabindex) ? tabindex : undefined;
+    }
+    const numericValue = Number(tabindex);
+    return Number.isFinite(numericValue) ? numericValue : undefined;
+  });
+
+  const hasInteractiveHandlers = $derived(() => Boolean(onclick || onkeydown || onkeyup));
+
+  const isInteractiveRole = (roleValue: string | undefined): boolean => {
+    if (!roleValue) {
+      return false;
+    }
+    return INTERACTIVE_ROLES.has(roleValue);
+  };
+
+  const isInteractive = $derived(() => {
+    if (isInteractiveRole(role)) {
+      return true;
+    }
+    if (hasInteractiveHandlers) {
+      return true;
+    }
+    if (parsedTabIndex !== undefined && parsedTabIndex >= 0) {
+      return true;
+    }
+    return false;
+  });
+
+
   // Compute skeleton classes
   const skeletonClass = $derived(() => {
     const classes = [
@@ -82,29 +135,55 @@
   });
 </script>
 
+{#snippet SkeletonContent()}
+  {#if animation === 'wave'}
+    <div class="gr-skeleton__wave"></div>
+  {/if}
+{/snippet}
+
 {#if loading}
-  <div
-    class={skeletonClass()}
-    style={skeletonStyle()}
-    aria-hidden="true"
-    role={role ?? "status"}
-    aria-label={ariaLabel ?? "Loading"}
-    aria-labelledby={ariaLabelledby}
-    aria-describedby={ariaDescribedby}
-    {id}
-    {onclick}
-    {onmouseenter}
-    {onmouseleave}
-    {onfocus}
-    {onblur}
-    {onkeydown}
-    {onkeyup}
-    tabindex={tabindex !== undefined ? tabindex : null}
-  >
-    {#if animation === 'wave'}
-      <div class="gr-skeleton__wave"></div>
-    {/if}
-  </div>
+  {#if isInteractive}
+    <button
+      class={skeletonClass()}
+      style={skeletonStyle()}
+      role={role}
+      aria-label={ariaLabel ?? "Loading"}
+      aria-labelledby={ariaLabelledby}
+      aria-describedby={ariaDescribedby}
+      {id}
+      {onclick}
+      {onmouseenter}
+      {onmouseleave}
+      {onfocus}
+      {onblur}
+      {onkeydown}
+      {onkeyup}
+      tabindex={parsedTabIndex}
+      type="button"
+    >
+      {@render SkeletonContent()}
+    </button>
+  {:else}
+    <div
+      class={skeletonClass()}
+      style={skeletonStyle()}
+      aria-hidden="true"
+      role={role ?? "status"}
+      aria-label={ariaLabel ?? "Loading"}
+      aria-labelledby={ariaLabelledby}
+      aria-describedby={ariaDescribedby}
+      {id}
+      {onclick}
+      {onmouseenter}
+      {onmouseleave}
+      {onfocus}
+      {onblur}
+      {onkeydown}
+      {onkeyup}
+    >
+      {@render SkeletonContent()}
+    </div>
+  {/if}
 {:else if children}
   {@render children()}
 {/if}

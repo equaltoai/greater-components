@@ -24,32 +24,32 @@ describe('AccountMigration Logic', () => {
 		followersCount: 150,
 	};
 
-	describe('Migration Status Detection', () => {
-		it('should detect pending migration', () => {
-			const migration: AccountMigration = { ...mockMigration, status: 'pending' };
-			expect(migration.status === 'pending').toBe(true);
-		});
+		describe('Migration Status Detection', () => {
+			it('should detect pending migration', () => {
+				const migration: AccountMigration = { ...mockMigration, status: 'pending' };
+				expect(migration.status).toBe('pending');
+			});
 
-		it('should detect completed migration', () => {
-			const migration: AccountMigration = { ...mockMigration, status: 'completed' };
-			expect(migration.status === 'completed').toBe(true);
-		});
+			it('should detect completed migration', () => {
+				const migration: AccountMigration = { ...mockMigration, status: 'completed' };
+				expect(migration.status).toBe('completed');
+			});
 
-		it('should detect failed migration', () => {
-			const migration: AccountMigration = { ...mockMigration, status: 'failed' };
-			expect(migration.status === 'failed').toBe(true);
-		});
+			it('should detect failed migration', () => {
+				const migration: AccountMigration = { ...mockMigration, status: 'failed' };
+				expect(migration.status).toBe('failed');
+			});
 
-		it('should detect active migration', () => {
-			const migration: AccountMigration | null = mockMigration;
-			expect(migration !== null).toBe(true);
-		});
+			it('should detect active migration', () => {
+				const migration: AccountMigration | null = mockMigration;
+				expect(migration).not.toBeNull();
+			});
 
-		it('should detect no migration', () => {
-			const migration: AccountMigration | null = null;
-			expect(migration === null).toBe(true);
+			it('should detect no migration', () => {
+				const migration: AccountMigration | null = null;
+				expect(migration).toBeNull();
+			});
 		});
-	});
 
 	describe('formatDate Helper', () => {
 		function formatDate(dateString: string): string {
@@ -172,38 +172,6 @@ describe('AccountMigration Logic', () => {
 		});
 	});
 
-	describe('Form State', () => {
-		it('should track form visibility', () => {
-			let showForm = false;
-			showForm = true;
-			expect(showForm).toBe(true);
-		});
-
-		it('should track input value', () => {
-			let input = '';
-			input = 'user@example.com';
-			expect(input).toBe('user@example.com');
-		});
-
-		it('should track loading state', () => {
-			let loading = false;
-			loading = true;
-			expect(loading).toBe(true);
-		});
-
-		it('should track error state', () => {
-			let error: string | null = null;
-			error = 'Migration failed';
-			expect(error).toBe('Migration failed');
-		});
-
-		it('should clear error on input change', () => {
-			let error: string | null = 'Previous error';
-			error = null;
-			expect(error).toBeNull();
-		});
-	});
-
 	describe('State Management', () => {
 		it('should initialize with no migration', () => {
 			const migration: AccountMigration | null = null;
@@ -211,20 +179,17 @@ describe('AccountMigration Logic', () => {
 		});
 
 		it('should update to pending migration', () => {
-			let migration: AccountMigration | null = null;
-			migration = { ...mockMigration, status: 'pending' };
-			expect(migration?.status).toBe('pending');
+			const migration: AccountMigration = { ...mockMigration, status: 'pending' };
+			expect(migration.status).toBe('pending');
 		});
 
 		it('should update to completed migration', () => {
-			let migration: AccountMigration | null = { ...mockMigration, status: 'pending' };
-			migration = { ...migration, status: 'completed' };
+			const migration: AccountMigration = { ...mockMigration, status: 'completed' };
 			expect(migration.status).toBe('completed');
 		});
 
 		it('should cancel migration', () => {
-			let migration: AccountMigration | null = mockMigration;
-			migration = null;
+			const migration: AccountMigration | null = null;
 			expect(migration).toBeNull();
 		});
 	});
@@ -390,4 +355,3 @@ describe('AccountMigration Logic', () => {
 		});
 	});
 });
-

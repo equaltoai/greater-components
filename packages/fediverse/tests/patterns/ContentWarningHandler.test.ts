@@ -11,13 +11,14 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
+import { extractPlainText } from '../helpers/text';
 
 // Extract logic functions for testing
 function getPreview(html: string | undefined, showPreview: boolean, previewLength: number): string {
 	if (!html || !showPreview) return '';
 
 	// Strip HTML tags
-	const text = html.replace(/<[^>]*>/g, '');
+	const text = extractPlainText(html);
 
 	// Truncate
 	if (text.length > previewLength) {
@@ -235,7 +236,7 @@ describe('ContentWarningHandler - Preview Generation', () => {
 		const html = '<p>Hello &amp; goodbye</p>';
 		const preview = getPreview(html, true, 100);
 
-		expect(preview).toBe('Hello &amp; goodbye');
+		expect(preview).toBe('Hello & goodbye');
 	});
 
 	it('should handle line breaks', () => {
@@ -530,4 +531,3 @@ describe('ContentWarningHandler - Type Safety', () => {
 		expect(typeof config.animationDuration).toBe('number');
 	});
 });
-

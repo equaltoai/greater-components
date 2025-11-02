@@ -98,7 +98,6 @@ function validateTypeScript() {
   console.log('🔍 Validating TypeScript definitions...');
   
   for (const packageName of PACKAGES) {
-    const packagePath = packageName.replace('@equaltoai/', '');
     const typeDefPath = join(TEST_DIR, 'node_modules', packageName, 'dist', 'index.d.ts');
     
     try {

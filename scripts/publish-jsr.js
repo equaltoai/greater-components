@@ -12,7 +12,7 @@
  *   pnpm publish:jsr:single --package=primitives  - Publish single package
  */
 
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { resolve, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -40,21 +40,36 @@ const packages = [
 ];
 
 /**
- * Execute a command and handle errors
+ * Execute a command and handle errors without invoking a shell
+ * @param {string} command
+ * @param {string[]} args
+ * @param {import('child_process').SpawnSyncOptions & { log?: boolean }} [options]
  */
-function exec(command, options = {}) {
-  try {
-    console.log(`\n→ ${command}`);
-    const result = execSync(command, {
-      cwd: rootDir,
-      stdio: 'inherit',
-      ...options
-    });
-    return result;
-  } catch (error) {
-    console.error(`✗ Command failed: ${command}`);
-    throw error;
+function run(command, args = [], options = {}) {
+  const { log = true, ...spawnOptions } = options;
+  const commandLabel = [command, ...args].join(' ').trim();
+
+  if (log) {
+    console.log(`\n→ ${commandLabel}`);
   }
+
+  const result = spawnSync(command, args, {
+    cwd: spawnOptions.cwd ?? rootDir,
+    stdio: spawnOptions.stdio ?? 'inherit',
+    ...spawnOptions
+  });
+
+  if (result.error) {
+    console.error(`✗ Command failed: ${commandLabel}`);
+    throw result.error;
+  }
+
+  if (result.status !== 0) {
+    console.error(`✗ Command failed: ${commandLabel}`);
+    throw new Error(`Command exited with status ${result.status}`);
+  }
+
+  return result;
 }
 
 /**
@@ -62,12 +77,12 @@ function exec(command, options = {}) {
  */
 function checkJsrCli() {
   try {
-    execSync('npx jsr --version', { stdio: 'ignore' });
+    run('npx', ['jsr', '--version'], { stdio: 'ignore', log: false });
     console.log('✓ JSR CLI is available');
     return true;
   } catch (error) {
     console.error('✗ JSR CLI not found. Installing...');
-    exec('npm install -g jsr');
+    run('npm', ['install', '-g', 'jsr']);
     return true;
   }
 }
@@ -113,11 +128,10 @@ function validatePackage(packageName) {
  * Build a package
  */
 function buildPackage(packageName) {
-  const packageDir = join(rootDir, 'packages', packageName);
   console.log(`\n📦 Building ${packageName}...`);
   
   try {
-    exec(`pnpm --filter @equaltoai/${packageName} build`);
+    run('pnpm', ['--filter', `@equaltoai/${packageName}`, 'build']);
     console.log(`✓ ${packageName} built successfully`);
     return true;
   } catch (error) {
@@ -133,10 +147,12 @@ function publishPackage(packageName, dryRun = false) {
   const packageDir = join(rootDir, 'packages', packageName);
   console.log(`\n📤 ${dryRun ? 'Dry run' : 'Publishing'} ${packageName} to JSR...`);
   
-  const dryRunFlag = dryRun ? '--dry-run' : '';
-  
   try {
-    exec(`cd ${packageDir} && npx jsr publish ${dryRunFlag}`);
+    const args = ['jsr', 'publish'];
+    if (dryRun) {
+      args.push('--dry-run');
+    }
+    run('npx', args, { cwd: packageDir });
     console.log(`✓ ${packageName} ${dryRun ? 'validated' : 'published'} successfully`);
     return true;
   } catch (error) {
@@ -241,5 +257,3 @@ main().catch(error => {
   console.error('\n✗ Publishing failed:', error);
   process.exit(1);
 });
-
-

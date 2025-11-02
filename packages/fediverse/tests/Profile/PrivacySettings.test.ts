@@ -283,71 +283,74 @@ describe('PrivacySettings Logic', () => {
 		});
 	});
 
-	describe('Setting Update Logic', () => {
-		it('should update single setting', () => {
-			const settings: PrivacySettings = {
-				isPrivate: false,
-				requireFollowApproval: false,
-				hideFollowers: false,
-				hideFollowing: false,
-				hideRelationships: false,
-				searchableBySearchEngines: true,
-				discoverable: true,
-				showAdultContent: false,
-				autoplayGifs: true,
-				autoplayVideos: false,
-			};
+		describe('Setting Update Logic', () => {
+			it('should update single setting', () => {
+				const settings: PrivacySettings = {
+					isPrivate: false,
+					requireFollowApproval: false,
+					hideFollowers: false,
+					hideFollowing: false,
+					hideRelationships: false,
+					searchableBySearchEngines: true,
+					discoverable: true,
+					showAdultContent: false,
+					autoplayGifs: true,
+					autoplayVideos: false,
+				};
 
-			settings.isPrivate = true;
+				const updated = { ...settings, isPrivate: true };
 
-			expect(settings.isPrivate).toBe(true);
-			expect(settings.requireFollowApproval).toBe(false); // Others unchanged
+				expect(updated.isPrivate).toBe(true);
+				expect(updated.requireFollowApproval).toBe(false); // Others unchanged
+			});
+
+			it('should update multiple settings', () => {
+				const settings: PrivacySettings = {
+					isPrivate: false,
+					requireFollowApproval: false,
+					hideFollowers: false,
+					hideFollowing: false,
+					hideRelationships: false,
+					searchableBySearchEngines: true,
+					discoverable: true,
+					showAdultContent: false,
+					autoplayGifs: true,
+					autoplayVideos: false,
+				};
+
+				const updated = {
+					...settings,
+					isPrivate: true,
+					hideFollowers: true,
+					hideFollowing: true,
+				};
+
+				expect(updated.isPrivate).toBe(true);
+				expect(updated.hideFollowers).toBe(true);
+				expect(updated.hideFollowing).toBe(true);
+			});
+
+			it('should toggle settings correctly', () => {
+				const settings: PrivacySettings = {
+					isPrivate: false,
+					requireFollowApproval: false,
+					hideFollowers: false,
+					hideFollowing: false,
+					hideRelationships: false,
+					searchableBySearchEngines: true,
+					discoverable: true,
+					showAdultContent: false,
+					autoplayGifs: true,
+					autoplayVideos: false,
+				};
+
+				const toggledOnce = { ...settings, autoplayGifs: !settings.autoplayGifs };
+				expect(toggledOnce.autoplayGifs).toBe(false);
+
+				const toggledTwice = { ...toggledOnce, autoplayGifs: !toggledOnce.autoplayGifs };
+				expect(toggledTwice.autoplayGifs).toBe(true);
+			});
 		});
-
-		it('should update multiple settings', () => {
-			const settings: PrivacySettings = {
-				isPrivate: false,
-				requireFollowApproval: false,
-				hideFollowers: false,
-				hideFollowing: false,
-				hideRelationships: false,
-				searchableBySearchEngines: true,
-				discoverable: true,
-				showAdultContent: false,
-				autoplayGifs: true,
-				autoplayVideos: false,
-			};
-
-			settings.isPrivate = true;
-			settings.hideFollowers = true;
-			settings.hideFollowing = true;
-
-			expect(settings.isPrivate).toBe(true);
-			expect(settings.hideFollowers).toBe(true);
-			expect(settings.hideFollowing).toBe(true);
-		});
-
-		it('should toggle settings correctly', () => {
-			const settings: PrivacySettings = {
-				isPrivate: false,
-				requireFollowApproval: false,
-				hideFollowers: false,
-				hideFollowing: false,
-				hideRelationships: false,
-				searchableBySearchEngines: true,
-				discoverable: true,
-				showAdultContent: false,
-				autoplayGifs: true,
-				autoplayVideos: false,
-			};
-
-			settings.autoplayGifs = !settings.autoplayGifs;
-			expect(settings.autoplayGifs).toBe(false);
-
-			settings.autoplayGifs = !settings.autoplayGifs;
-			expect(settings.autoplayGifs).toBe(true);
-		});
-	});
 
 	describe('Reset Functionality', () => {
 		it('should reset all settings to original values', () => {
@@ -538,4 +541,3 @@ describe('PrivacySettings Logic', () => {
 		});
 	});
 });
-

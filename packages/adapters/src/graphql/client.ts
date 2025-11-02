@@ -223,9 +223,15 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 					};
 					
 					// CRITICAL: Log the actual URL that will be used (for debugging)
-					console.log('[GraphQL] DEBUG: WebSocket URL being passed to createClient:', wsUrl.replace(currentToken || '', '***REDACTED***'));
-					console.log('[GraphQL] DEBUG: Has token?', !!currentToken);
-					console.log('[GraphQL] DEBUG: Token length:', currentToken?.length || 0);
+					logDebug(
+						'[GraphQL] DEBUG: WebSocket URL being passed to createClient',
+						wsUrl.replace(currentToken || '', '***REDACTED***'),
+					);
+					logDebug('[GraphQL] DEBUG: Has token?', !!currentToken);
+					logDebug(
+						'[GraphQL] DEBUG: Token length',
+						currentToken?.length ?? 0,
+					);
 					
 					wsClient = createClient({
 						url: wsUrl, // This is the ONLY URL that will be used - no fallbacks
@@ -246,7 +252,10 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 							connecting: () => {
 								logDebug(`[GraphQL] WebSocket connecting to URL: ${wsUrl?.replace(currentToken || '', '***REDACTED***')}`);
 								// Log the actual URL being used when connecting
-								console.log('[GraphQL] DEBUG: WebSocket connecting - URL:', wsUrl?.replace(currentToken || '', '***REDACTED***'));
+								logDebug(
+									'[GraphQL] DEBUG: WebSocket connecting - URL',
+									wsUrl?.replace(currentToken || '', '***REDACTED***'),
+								);
 							},
 							connected: () => {
 								logDebug(`[GraphQL] WebSocket connected to EXPLICIT URL: ${wsEndpoint}`);
