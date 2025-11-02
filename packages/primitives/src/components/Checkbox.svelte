@@ -39,27 +39,29 @@
 	{id}
 	{name}
 	{value}
-	class={`gc-checkbox ${className}`}
+	class={`gr-checkbox ${className}`}
 	onchange={handleChange}
 />
 
 <style>
-	.gc-checkbox {
-		width: 18px;
-		height: 18px;
-		border-radius: var(--gc-radius-xs);
-		cursor: pointer;
-		accent-color: var(--gc-color-primary-500);
-	}
+	:global {
+		.gr-checkbox {
+			width: 18px;
+			height: 18px;
+			border-radius: var(--gr-radii-sm);
+			cursor: pointer;
+			accent-color: var(--gr-semantic-action-primary-default);
+		}
 
-	.gc-checkbox:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
+		.gr-checkbox:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
 
-	.gc-checkbox:focus-visible {
-		outline: 2px solid var(--gc-color-primary-500);
-		outline-offset: 2px;
+		.gr-checkbox:focus-visible {
+			outline: 2px solid var(--gr-semantic-action-primary-default);
+			outline-offset: 2px;
+		}
 	}
 </style>
 

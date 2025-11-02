@@ -7,7 +7,8 @@ export default defineConfig({
     svelte({
       compilerOptions: {
         runes: true
-      }
+      },
+      emitCss: true  // Let Vite emit CSS
     })
   ],
   build: {
@@ -38,9 +39,11 @@ export default defineConfig({
         'svelte',
         'svelte/store',
         'svelte/internal',
+        /^svelte\//,  // Externalize all svelte/* imports
         '@equaltoai/greater-components-tokens',
         '@equaltoai/greater-components-headless',
-        '@equaltoai/greater-components-headless/textfield'
+        '@equaltoai/greater-components-headless/textfield',
+        'clsx'  // Also externalize clsx utility
       ],
       output: {
         preserveModules: true,

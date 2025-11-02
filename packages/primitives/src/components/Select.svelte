@@ -42,7 +42,7 @@
 	{required}
 	{id}
 	{name}
-	class={`gc-select ${className}`}
+	class={`gr-select ${className}`}
 	onchange={handleChange}
 >
 	{#if placeholder}
@@ -56,31 +56,33 @@
 </select>
 
 <style>
-	.gc-select {
-		width: 100%;
-		padding: var(--gc-spacing-sm);
-		border: 1px solid var(--gc-color-border-default);
-		border-radius: var(--gc-radius-sm);
-		background: var(--gc-color-surface-100);
-		color: var(--gc-color-text-primary);
-		font-family: inherit;
-		font-size: var(--gc-font-size-md);
-		cursor: pointer;
-		transition:
-			border-color 0.2s,
-			box-shadow 0.2s;
-	}
+	:global {
+		.gr-select {
+			width: 100%;
+			padding: var(--gr-spacing-scale-3);
+			border: 1px solid var(--gr-semantic-border-default);
+			border-radius: var(--gr-radii-md);
+			background: var(--gr-semantic-background-primary);
+			color: var(--gr-semantic-foreground-primary);
+			font-family: inherit;
+			font-size: var(--gr-typography-fontSize-base);
+			cursor: pointer;
+			transition:
+				border-color 0.2s,
+				box-shadow 0.2s;
+		}
 
-	.gc-select:focus {
-		outline: none;
-		border-color: var(--gc-color-primary-500);
-		box-shadow: 0 0 0 3px var(--gc-color-primary-100);
-	}
+		.gr-select:focus {
+			outline: none;
+			border-color: var(--gr-semantic-action-primary-default);
+			box-shadow: 0 0 0 3px var(--gr-semantic-focus-ring);
+		}
 
-	.gc-select:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-		background: var(--gc-color-surface-200);
+		.gr-select:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			background: var(--gr-semantic-background-secondary);
+		}
 	}
 </style>
 

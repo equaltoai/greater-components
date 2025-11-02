@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-primitives",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.11",
   "type": "module",
   "description": "Primitive UI components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -17,8 +17,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js",
-      "import": "./dist/index.js"
+      "svelte": "./src/index.ts",
+      "default": "./src/index.ts"
     },
     "./Button": {
       "types": "./dist/components/Button.d.ts",
@@ -97,11 +97,12 @@
     },
     "./components/*": "./dist/components/*",
     "./stores/*": "./dist/stores/*",
+    "./style.css": "./dist/style.css",
     "./styles.css": "./dist/styles.css"
   },
   "files": [
-    "dist",
-    "src"
+    "src",
+    "dist"
   ],
   "publishConfig": {
     "access": "public"

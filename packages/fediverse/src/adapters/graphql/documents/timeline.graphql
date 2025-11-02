@@ -8,8 +8,18 @@ query Timeline(
   $after: Cursor
   $hashtag: String
   $listId: ID
+  $actorId: ID
+  $mediaOnly: Boolean = false
 ) {
-  timeline(type: $type, first: $first, after: $after, hashtag: $hashtag, listId: $listId) {
+  timeline(
+    type: $type
+    first: $first
+    after: $after
+    hashtag: $hashtag
+    listId: $listId
+    actorId: $actorId
+    mediaOnly: $mediaOnly
+  ) {
     edges {
       cursor
       node {

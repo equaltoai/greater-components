@@ -1,5 +1,168 @@
 # @equaltoai/greater-components-primitives
 
+## 1.0.11
+
+### Patch Changes
+
+- Fix critical restProps errors and improve GraphQL WebSocket URL handling
+
+  **CRITICAL FIXES:**
+  1. **restProps Initialization Errors**
+     - Fixed `Avatar` and `Skeleton` components to use `...restProps` destructuring pattern instead of `$restProps()` call
+     - This matches the pattern used in working components like `Button`
+     - Resolves `ReferenceError: Cannot access 'restProps' before initialization` in SSR/SSG environments
+     - Components now hydrate correctly in Astro/Cloudflare Workers
+  2. **GraphQL WebSocket URL Handling**
+     - Added defensive checks to ensure `wsEndpoint` is not derived from `httpEndpoint`
+     - Added explicit URL validation and logging
+     - Store `wsEndpoint` in const to prevent mutation
+     - Added error logging if URL derivation is detected
+     - Improved debug logging to trace WebSocket URL usage
+
+  **Files Fixed:**
+  - `packages/primitives/src/components/Avatar.svelte` - restProps pattern
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps pattern
+  - `packages/adapters/src/graphql/client.ts` - WebSocket URL handling
+
+  **Note:** If WebSocket still connects to wrong URL, check browser console for debug logs showing which URL is being used. The issue may be in `graphql-ws` library or Apollo Client's `GraphQLWsLink` if URL derivation persists.
+
+## 1.0.10
+
+### Patch Changes
+
+- Fix critical restProps errors and improve GraphQL WebSocket URL handling
+
+  **CRITICAL FIXES:**
+  1. **restProps Initialization Errors**
+     - Fixed `Avatar` and `Skeleton` components to use `...restProps` destructuring pattern instead of `$restProps()` call
+     - This matches the pattern used in working components like `Button`
+     - Resolves `ReferenceError: Cannot access 'restProps' before initialization` in SSR/SSG environments
+     - Components now hydrate correctly in Astro/Cloudflare Workers
+  2. **GraphQL WebSocket URL Handling**
+     - Added defensive checks to ensure `wsEndpoint` is not derived from `httpEndpoint`
+     - Added explicit URL validation and logging
+     - Store `wsEndpoint` in const to prevent mutation
+     - Added error logging if URL derivation is detected
+     - Improved debug logging to trace WebSocket URL usage
+
+  **Files Fixed:**
+  - `packages/primitives/src/components/Avatar.svelte` - restProps pattern
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps pattern
+  - `packages/adapters/src/graphql/client.ts` - WebSocket URL handling
+
+  **Note:** If WebSocket still connects to wrong URL, check browser console for debug logs showing which URL is being used. The issue may be in `graphql-ws` library or Apollo Client's `GraphQLWsLink` if URL derivation persists.
+
+- Fix critical issues: GraphQL wsEndpoint, restProps errors, and ThemeSwitcher default
+
+  **CRITICAL FIXES:**
+  1. **GraphQL Adapter wsEndpoint Fix**
+     - Fixed adapter to explicitly use `wsEndpoint` config parameter instead of constructing URL
+     - Added validation and explicit capture of wsEndpoint to prevent closure issues
+     - Added debug logging to trace WebSocket URL usage
+     - Fixed WebSocket reconnection in `updateToken` to properly use wsEndpoint
+  2. **restProps Initialization Errors**
+     - Fixed `restProps` initialization errors in `Avatar` and `Skeleton` components
+     - Added missing `Snippet` import in `Skeleton` component
+     - Ensured `$restProps()` is called before any derived values to avoid hoisting issues
+     - Resolves hydration errors in Astro/SSR environments
+  3. **ThemeSwitcher Default Variant**
+     - Changed default variant from `"full"` to `"compact"` for header usage
+     - **BREAKING CHANGE**: Settings pages now need to explicitly use `variant="full"`
+     - Compact variant shows dropdown with Light/Dark/Auto options suitable for navigation headers
+     - Full variant remains available for comprehensive settings panels
+
+  **Migration:**
+  - ThemeSwitcher now defaults to compact variant (suitable for headers)
+  - For settings pages, use: `<GCThemeSwitcher variant="full" />`
+  - For headers, use: `<GCThemeSwitcher variant="compact" />` (or omit variant for default)
+
+  **Files Fixed:**
+  - `packages/adapters/src/graphql/client.ts` - wsEndpoint usage
+  - `packages/primitives/src/components/Avatar.svelte` - restProps initialization
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps initialization and missing import
+  - `packages/primitives/src/components/ThemeSwitcher.svelte` - default variant
+
+## 1.0.9
+
+### Patch Changes
+
+- Fix critical issues: GraphQL wsEndpoint, restProps errors, and ThemeSwitcher default
+
+  **CRITICAL FIXES:**
+  1. **GraphQL Adapter wsEndpoint Fix**
+     - Fixed adapter to explicitly use `wsEndpoint` config parameter instead of constructing URL
+     - Added validation and explicit capture of wsEndpoint to prevent closure issues
+     - Added debug logging to trace WebSocket URL usage
+     - Fixed WebSocket reconnection in `updateToken` to properly use wsEndpoint
+  2. **restProps Initialization Errors**
+     - Fixed `restProps` initialization errors in `Avatar` and `Skeleton` components
+     - Added missing `Snippet` import in `Skeleton` component
+     - Ensured `$restProps()` is called before any derived values to avoid hoisting issues
+     - Resolves hydration errors in Astro/SSR environments
+  3. **ThemeSwitcher Default Variant**
+     - Changed default variant from `"full"` to `"compact"` for header usage
+     - **BREAKING CHANGE**: Settings pages now need to explicitly use `variant="full"`
+     - Compact variant shows dropdown with Light/Dark/Auto options suitable for navigation headers
+     - Full variant remains available for comprehensive settings panels
+
+  **Migration:**
+  - ThemeSwitcher now defaults to compact variant (suitable for headers)
+  - For settings pages, use: `<GCThemeSwitcher variant="full" />`
+  - For headers, use: `<GCThemeSwitcher variant="compact" />` (or omit variant for default)
+
+  **Files Fixed:**
+  - `packages/adapters/src/graphql/client.ts` - wsEndpoint usage
+  - `packages/primitives/src/components/Avatar.svelte` - restProps initialization
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps initialization and missing import
+  - `packages/primitives/src/components/ThemeSwitcher.svelte` - default variant
+
+## 1.0.6
+
+### Patch Changes
+
+- Add missing `style.css` export to package.json
+
+  Users need to import both the tokens and full component styles:
+
+  ```javascript
+  import '@equaltoai/greater-components-tokens/theme.css';
+  import '@equaltoai/greater-components-primitives/style.css'; // Full component styles
+  ```
+
+  Note: `styles.css` contains only reset/base styles. Use `style.css` for complete styling.
+
+## 1.0.5
+
+### Patch Changes
+
+- Fix client-only rendering in Astro and other static site generators
+
+  **Problem:** The primitives package was bundling Svelte internals, causing hydration errors when used with Astro's `client:only` directive or other static/client-only contexts.
+
+  **Solution:**
+  - Updated Vite build config to properly externalize all Svelte modules using regex pattern `/^svelte\//`
+  - Added `clsx` to external dependencies
+  - Removed bundled Svelte internals from dist folder
+
+  **Impact:**
+  - ✅ Components now work perfectly with `client:only` in Astro
+  - ✅ Static deployments (S3/CloudFront) fully supported
+  - ✅ No SSR required - client-side hydration works correctly
+  - ✅ Smaller bundle size (Svelte internals no longer bundled)
+
+  **For Astro users:**
+  Add this to your `astro.config.mjs`:
+
+  ```javascript
+  vite: {
+  	optimizeDeps: {
+  		exclude: ['@equaltoai/greater-components-primitives'];
+  	}
+  }
+  ```
+
+  **Breaking Changes:** None - this is a bug fix that improves compatibility.
+
 ## 2.0.0
 
 ### Major Changes

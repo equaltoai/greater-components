@@ -1,5 +1,127 @@
 # @equaltoai/greater-components-fediverse
 
+## 1.1.0
+
+### Minor Changes
+
+- Add actor timeline support
+
+  **New Feature:**
+  - Add `ACTOR` timeline type support for fetching posts from specific actors
+  - Add `fetchActorTimeline()` convenience method to `LesserGraphQLAdapter`
+  - Update GraphQL query to support `actorId` and `mediaOnly` parameters
+  - Regenerate TypeScript types from updated Lesser schema
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/LesserGraphQLAdapter.ts` - Add `fetchActorTimeline()` method
+  - `packages/fediverse/src/adapters/graphql/documents/timeline.graphql` - Add `actorId` and `mediaOnly` parameters
+  - `schemas/lesser/schema.graphql` - Update to latest Lesser schema with ACTOR timeline type
+  - `packages/adapters/tests/graphql/LesserGraphQLAdapter.test.ts` - Add test for new method
+
+  **Usage:**
+
+  ```typescript
+  const timeline = await adapter.fetchActorTimeline('actor-id', {
+  	first: 20,
+  	mediaOnly: false,
+  });
+  ```
+
+### Patch Changes
+
+- Fix `createNote()` missing input variable wrapper
+
+  **CRITICAL FIX:**
+  - Fix `LesserGraphQLAdapter.createNote()` to wrap variables in `input` object before sending to GraphQL API
+  - Fix `createQuoteNote()` for consistency with the same pattern
+  - Update `buildCreateNoteVariables()` to return `CreateNoteInput` directly instead of wrapped object
+  - This resolves 422 validation errors where the server expected `{ input: { ... } }` but received unwrapped variables
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/LesserGraphQLAdapter.ts` - Wrap input in `{ input: ... }` for both `createNote()` and `createQuoteNote()`
+  - `packages/fediverse/src/components/Compose/GraphQLAdapter.ts` - Update callers to pass input directly
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.1.0
+
+## 1.0.9
+
+### Patch Changes
+
+- Fix `createNote()` missing input variable wrapper
+
+  **CRITICAL FIX:**
+  - Fix `LesserGraphQLAdapter.createNote()` to wrap variables in `input` object before sending to GraphQL API
+  - Fix `createQuoteNote()` for consistency with the same pattern
+  - Update `buildCreateNoteVariables()` to return `CreateNoteInput` directly instead of wrapped object
+  - This resolves 422 validation errors where the server expected `{ input: { ... } }` but received unwrapped variables
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/LesserGraphQLAdapter.ts` - Wrap input in `{ input: ... }` for both `createNote()` and `createQuoteNote()`
+  - `packages/fediverse/src/components/Compose/GraphQLAdapter.ts` - Update callers to pass input directly
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.0.8
+
+## 1.0.8
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.0.7
+
+## 1.0.7
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.0.6
+
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.0.5
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.0.4
+  - @equaltoai/greater-components-primitives@1.0.11
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.10
+  - @equaltoai/greater-components-adapters@1.0.3
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.9
+  - @equaltoai/greater-components-adapters@1.0.2
+
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.1
+
 ## 1.0.1
 
 ### Patch Changes

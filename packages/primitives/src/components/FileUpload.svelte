@@ -37,7 +37,7 @@
 	);
 </script>
 
-<div class={`gc-file-upload ${className}`}>
+<div class={`gr-file-upload ${className}`}>
 	<input
 		bind:this={fileInput}
 		type="file"
@@ -46,59 +46,61 @@
 		{disabled}
 		{id}
 		{name}
-		class="gc-file-upload__input"
+		class="gr-file-upload__input"
 		onchange={handleChange}
 	/>
 	<button
 		type="button"
-		class="gc-file-upload__button"
+		class="gr-file-upload__button"
 		onclick={triggerFileSelect}
 		{disabled}
 	>
 		Choose {multiple ? 'Files' : 'File'}
 	</button>
 	{#if fileNames}
-		<span class="gc-file-upload__files">{fileNames}</span>
+		<span class="gr-file-upload__files">{fileNames}</span>
 	{/if}
 </div>
 
 <style>
-	.gc-file-upload {
-		display: flex;
-		align-items: center;
-		gap: var(--gc-spacing-sm);
-	}
+	:global {
+		.gr-file-upload {
+			display: flex;
+			align-items: center;
+			gap: var(--gr-spacing-scale-3);
+		}
 
-	.gc-file-upload__input {
-		display: none;
-	}
+		.gr-file-upload__input {
+			display: none;
+		}
 
-	.gc-file-upload__button {
-		padding: var(--gc-spacing-sm) var(--gc-spacing-md);
-		border: 1px solid var(--gc-color-border-default);
-		border-radius: var(--gc-radius-sm);
-		background: var(--gc-color-surface-100);
-		color: var(--gc-color-text-primary);
-		font-size: var(--gc-font-size-sm);
-		cursor: pointer;
-		transition: background-color 0.2s;
-	}
+		.gr-file-upload__button {
+			padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4);
+			border: 1px solid var(--gr-semantic-border-default);
+			border-radius: var(--gr-radii-md);
+			background: var(--gr-semantic-background-primary);
+			color: var(--gr-semantic-foreground-primary);
+			font-size: var(--gr-typography-fontSize-sm);
+			cursor: pointer;
+			transition: background-color 0.2s;
+		}
 
-	.gc-file-upload__button:hover:not(:disabled) {
-		background: var(--gc-color-surface-200);
-	}
+		.gr-file-upload__button:hover:not(:disabled) {
+			background: var(--gr-semantic-background-secondary);
+		}
 
-	.gc-file-upload__button:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
+		.gr-file-upload__button:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
 
-	.gc-file-upload__files {
-		color: var(--gc-color-text-secondary);
-		font-size: var(--gc-font-size-sm);
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		.gr-file-upload__files {
+			color: var(--gr-semantic-foreground-secondary);
+			font-size: var(--gr-typography-fontSize-sm);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
 	}
 </style>
 

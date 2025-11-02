@@ -149,96 +149,98 @@
 </div>
 
 <style>
-  .gr-theme-provider {
-    /* Ensure the provider doesn't affect layout */
-    display: contents;
-  }
-  
-  /* Global theme-aware styles */
-  :global(:root) {
-    /* Default light theme (fallback) */
-    color-scheme: light;
-  }
-  
-  :global([data-theme="dark"]) {
-    color-scheme: dark;
-  }
-  
-  :global([data-theme="high-contrast"]) {
-    color-scheme: dark;
-  }
-  
-  /* Density-based spacing adjustments */
-  :global([data-density="compact"]) {
-    --gr-density-scale: 0.85;
-  }
-  
-  :global([data-density="comfortable"]) {
-    --gr-density-scale: 1;
-  }
-  
-  :global([data-density="spacious"]) {
-    --gr-density-scale: 1.2;
-  }
-  
-  /* Font size adjustments */
-  :global([data-font-size="small"]) {
-    --gr-font-scale: 0.875;
-  }
-  
-  :global([data-font-size="medium"]) {
-    --gr-font-scale: 1;
-  }
-  
-  :global([data-font-size="large"]) {
-    --gr-font-scale: 1.125;
-  }
-  
-  /* Apply density scale to spacing tokens */
-  :global([data-density]) {
-    --gr-spacing-scale-1: calc(0.25rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-2: calc(0.5rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-3: calc(0.75rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-4: calc(1rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-5: calc(1.25rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-6: calc(1.5rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-8: calc(2rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-10: calc(2.5rem * var(--gr-density-scale, 1));
-    --gr-spacing-scale-12: calc(3rem * var(--gr-density-scale, 1));
-  }
-  
-  /* Motion preferences */
-  :global([data-motion="reduced"] *) {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  
-  /* High contrast mode enhancements */
-  :global([data-theme="high-contrast"]) {
-    --gr-semantic-border-default: var(--gr-color-base-white);
-    --gr-semantic-border-strong: var(--gr-color-base-white);
-  }
-  
-  :global([data-theme="high-contrast"] *:focus-visible) {
-    outline: 3px solid var(--gr-semantic-focus-ring);
-    outline-offset: 2px;
-  }
-  
-  /* Custom color overrides */
-  :global(:root) {
-    --gr-theme-primary: var(--gr-custom-primary, var(--gr-semantic-action-primary-default));
-    --gr-theme-secondary: var(--gr-custom-secondary, var(--gr-semantic-action-primary-hover));
-    --gr-theme-accent: var(--gr-custom-accent, var(--gr-semantic-action-primary-active));
-  }
-  
-  /* Smooth theme transitions */
-  :global(body) {
-    transition: background-color var(--gr-motion-duration-base) var(--gr-motion-easing-out),
-                color var(--gr-motion-duration-base) var(--gr-motion-easing-out);
-  }
-  
-  :global([data-motion="reduced"] body) {
-    transition: none;
+  :global {
+    .gr-theme-provider {
+      /* Ensure the provider doesn't affect layout */
+      display: contents;
+    }
+    
+    /* Global theme-aware styles */
+    :root {
+      /* Default light theme (fallback) */
+      color-scheme: light;
+    }
+    
+    [data-theme="dark"] {
+      color-scheme: dark;
+    }
+    
+    [data-theme="high-contrast"] {
+      color-scheme: dark;
+    }
+    
+    /* Density-based spacing adjustments */
+    [data-density="compact"] {
+      --gr-density-scale: 0.85;
+    }
+    
+    [data-density="comfortable"] {
+      --gr-density-scale: 1;
+    }
+    
+    [data-density="spacious"] {
+      --gr-density-scale: 1.2;
+    }
+    
+    /* Font size adjustments */
+    [data-font-size="small"] {
+      --gr-font-scale: 0.875;
+    }
+    
+    [data-font-size="medium"] {
+      --gr-font-scale: 1;
+    }
+    
+    [data-font-size="large"] {
+      --gr-font-scale: 1.125;
+    }
+    
+    /* Apply density scale to spacing tokens */
+    [data-density] {
+      --gr-spacing-scale-1: calc(0.25rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-2: calc(0.5rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-3: calc(0.75rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-4: calc(1rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-5: calc(1.25rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-6: calc(1.5rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-8: calc(2rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-10: calc(2.5rem * var(--gr-density-scale, 1));
+      --gr-spacing-scale-12: calc(3rem * var(--gr-density-scale, 1));
+    }
+    
+    /* Motion preferences */
+    [data-motion="reduced"] * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    
+    /* High contrast mode enhancements */
+    [data-theme="high-contrast"] {
+      --gr-semantic-border-default: var(--gr-color-base-white);
+      --gr-semantic-border-strong: var(--gr-color-base-white);
+    }
+    
+    [data-theme="high-contrast"] *:focus-visible {
+      outline: 3px solid var(--gr-semantic-focus-ring);
+      outline-offset: 2px;
+    }
+    
+    /* Custom color overrides */
+    :root {
+      --gr-theme-primary: var(--gr-custom-primary, var(--gr-semantic-action-primary-default));
+      --gr-theme-secondary: var(--gr-custom-secondary, var(--gr-semantic-action-primary-hover));
+      --gr-theme-accent: var(--gr-custom-accent, var(--gr-semantic-action-primary-active));
+    }
+    
+    /* Smooth theme transitions */
+    body {
+      transition: background-color var(--gr-motion-duration-base) var(--gr-motion-easing-out),
+                  color var(--gr-motion-duration-base) var(--gr-motion-easing-out);
+    }
+    
+    [data-motion="reduced"] body {
+      transition: none;
+    }
   }
 </style>

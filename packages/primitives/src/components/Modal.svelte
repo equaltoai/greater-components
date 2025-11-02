@@ -323,146 +323,148 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 {/if}
 
 <style>
-  .gr-modal {
-    padding: 0;
-    border: none;
-    border-radius: var(--gr-radii-lg);
-    box-shadow: var(--gr-shadows-2xl);
-    background: transparent;
-    max-height: calc(100vh - 2rem);
-    max-width: calc(100vw - 2rem);
-    margin: auto;
-    font-family: var(--gr-typography-fontFamily-sans);
-  }
-
-  .gr-modal::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-  }
-
-  .gr-modal__content {
-    background-color: var(--gr-semantic-background-primary);
-    border-radius: var(--gr-radii-lg);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  /* Size variants */
-  .gr-modal--sm {
-    width: 20rem;
-  }
-
-  .gr-modal--md {
-    width: 28rem;
-  }
-
-  .gr-modal--lg {
-    width: 40rem;
-  }
-
-  .gr-modal--xl {
-    width: 56rem;
-  }
-
-  .gr-modal--full {
-    width: calc(100vw - 2rem);
-    height: calc(100vh - 2rem);
-  }
-
-  .gr-modal__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--gr-spacing-scale-6) var(--gr-spacing-scale-6) var(--gr-spacing-scale-4);
-    border-bottom: 1px solid var(--gr-semantic-border-default);
-    flex-shrink: 0;
-  }
-
-  .gr-modal__title {
-    margin: 0;
-    font-size: var(--gr-typography-fontSize-lg);
-    font-weight: var(--gr-typography-fontWeight-semibold);
-    color: var(--gr-semantic-foreground-primary);
-    line-height: var(--gr-typography-lineHeight-tight);
-  }
-
-  .gr-modal__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: none;
-    border-radius: var(--gr-radii-base);
-    background-color: transparent;
-    color: var(--gr-semantic-foreground-secondary);
-    cursor: pointer;
-    transition: background-color var(--gr-motion-duration-fast) var(--gr-motion-easing-out),
-                color var(--gr-motion-duration-fast) var(--gr-motion-easing-out);
-  }
-
-  .gr-modal__close:hover {
-    background-color: var(--gr-semantic-background-secondary);
-    color: var(--gr-semantic-foreground-primary);
-  }
-
-  .gr-modal__close:focus {
-    outline: none;
-  }
-
-  .gr-modal__close:focus-visible {
-    box-shadow: 0 0 0 2px var(--gr-semantic-focus-ring);
-  }
-
-  .gr-modal__body {
-    flex: 1;
-    padding: var(--gr-spacing-scale-6);
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .gr-modal__footer {
-    padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6) var(--gr-spacing-scale-6);
-    border-top: 1px solid var(--gr-semantic-border-default);
-    flex-shrink: 0;
-  }
-
-  /* Mobile responsiveness */
-  @media (max-width: 640px) {
-    .gr-modal--sm,
-    .gr-modal--md,
-    .gr-modal--lg,
-    .gr-modal--xl {
-      width: calc(100vw - 2rem);
+  :global {
+    .gr-modal {
+      padding: 0;
+      border: none;
+      border-radius: var(--gr-radii-lg);
+      box-shadow: var(--gr-shadows-2xl);
+      background: transparent;
       max-height: calc(100vh - 2rem);
+      max-width: calc(100vw - 2rem);
+      margin: auto;
+      font-family: var(--gr-typography-fontFamily-sans);
+    }
+
+    .gr-modal::backdrop {
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .gr-modal__content {
+      background-color: var(--gr-semantic-background-primary);
+      border-radius: var(--gr-radii-lg);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Size variants */
+    .gr-modal--sm {
+      width: 20rem;
+    }
+
+    .gr-modal--md {
+      width: 28rem;
+    }
+
+    .gr-modal--lg {
+      width: 40rem;
+    }
+
+    .gr-modal--xl {
+      width: 56rem;
+    }
+
+    .gr-modal--full {
+      width: calc(100vw - 2rem);
+      height: calc(100vh - 2rem);
     }
 
     .gr-modal__header {
-      padding: var(--gr-spacing-scale-4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--gr-spacing-scale-6) var(--gr-spacing-scale-6) var(--gr-spacing-scale-4);
+      border-bottom: 1px solid var(--gr-semantic-border-default);
+      flex-shrink: 0;
+    }
+
+    .gr-modal__title {
+      margin: 0;
+      font-size: var(--gr-typography-fontSize-lg);
+      font-weight: var(--gr-typography-fontWeight-semibold);
+      color: var(--gr-semantic-foreground-primary);
+      line-height: var(--gr-typography-lineHeight-tight);
+    }
+
+    .gr-modal__close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      border-radius: var(--gr-radii-base);
+      background-color: transparent;
+      color: var(--gr-semantic-foreground-secondary);
+      cursor: pointer;
+      transition: background-color var(--gr-motion-duration-fast) var(--gr-motion-easing-out),
+                  color var(--gr-motion-duration-fast) var(--gr-motion-easing-out);
+    }
+
+    .gr-modal__close:hover {
+      background-color: var(--gr-semantic-background-secondary);
+      color: var(--gr-semantic-foreground-primary);
+    }
+
+    .gr-modal__close:focus {
+      outline: none;
+    }
+
+    .gr-modal__close:focus-visible {
+      box-shadow: 0 0 0 2px var(--gr-semantic-focus-ring);
     }
 
     .gr-modal__body {
-      padding: var(--gr-spacing-scale-4);
+      flex: 1;
+      padding: var(--gr-spacing-scale-6);
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     .gr-modal__footer {
-      padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4) var(--gr-spacing-scale-4);
+      padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-6) var(--gr-spacing-scale-6);
+      border-top: 1px solid var(--gr-semantic-border-default);
+      flex-shrink: 0;
     }
-  }
 
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .gr-modal__close {
-      transition: none;
+    /* Mobile responsiveness */
+    @media (max-width: 640px) {
+      .gr-modal--sm,
+      .gr-modal--md,
+      .gr-modal--lg,
+      .gr-modal--xl {
+        width: calc(100vw - 2rem);
+        max-height: calc(100vh - 2rem);
+      }
+
+      .gr-modal__header {
+        padding: var(--gr-spacing-scale-4);
+      }
+
+      .gr-modal__body {
+        padding: var(--gr-spacing-scale-4);
+      }
+
+      .gr-modal__footer {
+        padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4) var(--gr-spacing-scale-4);
+      }
     }
-  }
 
-  /* High contrast mode */
-  @media (prefers-contrast: high) {
-    .gr-modal::backdrop {
-      background-color: rgba(0, 0, 0, 0.8);
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .gr-modal__close {
+        transition: none;
+      }
+    }
+
+    /* High contrast mode */
+    @media (prefers-contrast: high) {
+      .gr-modal::backdrop {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
     }
   }
 </style>

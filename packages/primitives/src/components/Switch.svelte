@@ -24,69 +24,71 @@
 	}
 </script>
 
-<label class={`gc-switch ${className}`} class:gc-switch--checked={checked} class:gc-switch--disabled={disabled}>
+<label class={`gr-switch ${className}`} class:gr-switch--checked={checked} class:gr-switch--disabled={disabled}>
 	<input
 		type="checkbox"
 		bind:checked
 		{disabled}
 		{id}
 		{name}
-		class="gc-switch__input"
+		class="gr-switch__input"
 		onchange={handleChange}
 	/>
-	<span class="gc-switch__slider"></span>
+	<span class="gr-switch__slider"></span>
 </label>
 
 <style>
-	.gc-switch {
-		position: relative;
-		display: inline-block;
-		width: 44px;
-		height: 24px;
-		cursor: pointer;
-	}
+	:global {
+		.gr-switch {
+			position: relative;
+			display: inline-block;
+			width: 44px;
+			height: 24px;
+			cursor: pointer;
+		}
 
-	.gc-switch--disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
+		.gr-switch--disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
 
-	.gc-switch__input {
-		opacity: 0;
-		width: 0;
-		height: 0;
-	}
+		.gr-switch__input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
 
-	.gc-switch__slider {
-		position: absolute;
-		inset: 0;
-		background-color: var(--gc-color-surface-400);
-		border-radius: 24px;
-		transition: background-color 0.2s;
-	}
+		.gr-switch__slider {
+			position: absolute;
+			inset: 0;
+			background-color: var(--gr-semantic-background-tertiary);
+			border-radius: 24px;
+			transition: background-color 0.2s;
+		}
 
-	.gc-switch__slider::before {
-		content: '';
-		position: absolute;
-		height: 18px;
-		width: 18px;
-		left: 3px;
-		bottom: 3px;
-		background-color: white;
-		border-radius: 50%;
-		transition: transform 0.2s;
-	}
+		.gr-switch__slider::before {
+			content: '';
+			position: absolute;
+			height: 18px;
+			width: 18px;
+			left: 3px;
+			bottom: 3px;
+			background-color: white;
+			border-radius: 50%;
+			transition: transform 0.2s;
+		}
 
-	.gc-switch--checked .gc-switch__slider {
-		background-color: var(--gc-color-primary-500);
-	}
+		.gr-switch--checked .gr-switch__slider {
+			background-color: var(--gr-semantic-action-primary-default);
+		}
 
-	.gc-switch--checked .gc-switch__slider::before {
-		transform: translateX(20px);
-	}
+		.gr-switch--checked .gr-switch__slider::before {
+			transform: translateX(20px);
+		}
 
-	.gc-switch__input:focus-visible + .gc-switch__slider {
-		box-shadow: 0 0 0 3px var(--gc-color-primary-100);
+		.gr-switch__input:focus-visible + .gr-switch__slider {
+			box-shadow: 0 0 0 3px var(--gr-semantic-focus-ring);
+		}
 	}
 </style>
 

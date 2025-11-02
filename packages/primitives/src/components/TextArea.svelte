@@ -56,42 +56,44 @@
 	{id}
 	{name}
 	{autocomplete}
-	class={`gc-textarea ${className}`}
+	class={`gr-textarea ${className}`}
 	oninput={handleInput}
 	onchange={handleChange}
 ></textarea>
 
 <style>
-	.gc-textarea {
-		width: 100%;
-		padding: var(--gc-spacing-sm);
-		border: 1px solid var(--gc-color-border-default);
-		border-radius: var(--gc-radius-sm);
-		background: var(--gc-color-surface-100);
-		color: var(--gc-color-text-primary);
-		font-family: inherit;
-		font-size: var(--gc-font-size-md);
-		line-height: 1.5;
-		resize: vertical;
-		transition:
-			border-color 0.2s,
-			box-shadow 0.2s;
-	}
+	:global {
+		.gr-textarea {
+			width: 100%;
+			padding: var(--gr-spacing-scale-3);
+			border: 1px solid var(--gr-semantic-border-default);
+			border-radius: var(--gr-radii-md);
+			background: var(--gr-semantic-background-primary);
+			color: var(--gr-semantic-foreground-primary);
+			font-family: inherit;
+			font-size: var(--gr-typography-fontSize-base);
+			line-height: 1.5;
+			resize: vertical;
+			transition:
+				border-color 0.2s,
+				box-shadow 0.2s;
+		}
 
-	.gc-textarea:focus {
-		outline: none;
-		border-color: var(--gc-color-primary-500);
-		box-shadow: 0 0 0 3px var(--gc-color-primary-100);
-	}
+		.gr-textarea:focus {
+			outline: none;
+			border-color: var(--gr-semantic-action-primary-default);
+			box-shadow: 0 0 0 3px var(--gr-semantic-focus-ring);
+		}
 
-	.gc-textarea:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-		background: var(--gc-color-surface-200);
-	}
+		.gr-textarea:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			background: var(--gr-semantic-background-secondary);
+		}
 
-	.gc-textarea::placeholder {
-		color: var(--gc-color-text-tertiary);
+		.gr-textarea::placeholder {
+			color: var(--gr-semantic-foreground-tertiary);
+		}
 	}
 </style>
 

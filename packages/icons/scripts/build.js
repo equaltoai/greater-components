@@ -54,6 +54,18 @@ const fediverseIcons = {
   hashtag: {
     name: 'hashtag',
     contents: '<line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/>'
+  },
+  'less-than': {
+    name: 'less-than',
+    contents: '<polyline points="14 6 8 12 14 18"/>'
+  },
+  'greater-than': {
+    name: 'greater-than',
+    contents: '<polyline points="10 6 16 12 10 18"/>'
+  },
+  equals: {
+    name: 'equals',
+    contents: '<line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/>'
   }
 };
 
@@ -86,7 +98,16 @@ const aliases = {
   'notifications': 'bell',
   'profile': 'user',
   'logout': 'log-out',
-  'login': 'log-in'
+  'login': 'log-in',
+  'less': 'less-than',
+  'lt': 'less-than',
+  '<': 'less-than',
+  'greater': 'greater-than',
+  'gt': 'greater-than',
+  '>': 'greater-than',
+  'equal': 'equals',
+  'eq': 'equals',
+  '=': 'equals'
 };
 
 // Generate Svelte component template

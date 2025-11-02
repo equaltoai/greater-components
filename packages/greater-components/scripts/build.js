@@ -37,6 +37,13 @@ function copyPackageOutput() {
     ensureBuilt(source);
     const destination = join(distDir, key);
     cpSync(source, destination, { recursive: true });
+    
+    // Also copy src for packages that export source files
+    const srcSource = join(workspaceRoot, dir, 'src');
+    if (existsSync(srcSource)) {
+      const srcDest = join(distDir, key, 'src');
+      cpSync(srcSource, srcDest, { recursive: true });
+    }
   }
 }
 

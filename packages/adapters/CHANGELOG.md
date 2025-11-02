@@ -1,5 +1,276 @@
 # @equaltoai/greater-components-adapters
 
+## 1.1.0
+
+### Minor Changes
+
+- Add actor timeline support
+
+  **New Feature:**
+  - Add `ACTOR` timeline type support for fetching posts from specific actors
+  - Add `fetchActorTimeline()` convenience method to `LesserGraphQLAdapter`
+  - Update GraphQL query to support `actorId` and `mediaOnly` parameters
+  - Regenerate TypeScript types from updated Lesser schema
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/LesserGraphQLAdapter.ts` - Add `fetchActorTimeline()` method
+  - `packages/fediverse/src/adapters/graphql/documents/timeline.graphql` - Add `actorId` and `mediaOnly` parameters
+  - `schemas/lesser/schema.graphql` - Update to latest Lesser schema with ACTOR timeline type
+  - `packages/adapters/tests/graphql/LesserGraphQLAdapter.test.ts` - Add test for new method
+
+  **Usage:**
+
+  ```typescript
+  const timeline = await adapter.fetchActorTimeline('actor-id', {
+  	first: 20,
+  	mediaOnly: false,
+  });
+  ```
+
+### Patch Changes
+
+- Fix `createNote()` missing input variable wrapper
+
+  **CRITICAL FIX:**
+  - Fix `LesserGraphQLAdapter.createNote()` to wrap variables in `input` object before sending to GraphQL API
+  - Fix `createQuoteNote()` for consistency with the same pattern
+  - Update `buildCreateNoteVariables()` to return `CreateNoteInput` directly instead of wrapped object
+  - This resolves 422 validation errors where the server expected `{ input: { ... } }` but received unwrapped variables
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/LesserGraphQLAdapter.ts` - Wrap input in `{ input: ... }` for both `createNote()` and `createQuoteNote()`
+  - `packages/fediverse/src/components/Compose/GraphQLAdapter.ts` - Update callers to pass input directly
+
+## 1.0.8
+
+### Patch Changes
+
+- Fix `createNote()` missing input variable wrapper
+
+  **CRITICAL FIX:**
+  - Fix `LesserGraphQLAdapter.createNote()` to wrap variables in `input` object before sending to GraphQL API
+  - Fix `createQuoteNote()` for consistency with the same pattern
+  - Update `buildCreateNoteVariables()` to return `CreateNoteInput` directly instead of wrapped object
+  - This resolves 422 validation errors where the server expected `{ input: { ... } }` but received unwrapped variables
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/LesserGraphQLAdapter.ts` - Wrap input in `{ input: ... }` for both `createNote()` and `createQuoteNote()`
+  - `packages/fediverse/src/components/Compose/GraphQLAdapter.ts` - Update callers to pass input directly
+
+- Fix GraphQL WebSocket authentication - use custom WebSocket implementation to preserve query parameters
+
+  **CRITICAL FIX:**
+  - Use `webSocketImpl` option in `graphql-ws` to ensure query parameters are preserved
+  - Custom WebSocket class extends native WebSocket to guarantee URL with query params is used
+  - This prevents graphql-ws from stripping authentication tokens from the URL
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Add webSocketImpl to preserve query parameters
+
+## 1.0.7
+
+### Patch Changes
+
+- Add enhanced debug logging for WebSocket URL debugging
+
+  **DEBUG IMPROVEMENT:**
+  - Added console.log statements (always visible) to trace WebSocket URL construction
+  - Logs show the exact URL being passed to createClient
+  - Logs token availability and length
+  - Logs URL when WebSocket connects
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Enhanced debug logging
+
+- Fix GraphQL WebSocket authentication - use custom WebSocket implementation to preserve query parameters
+
+  **CRITICAL FIX:**
+  - Use `webSocketImpl` option in `graphql-ws` to ensure query parameters are preserved
+  - Custom WebSocket class extends native WebSocket to guarantee URL with query params is used
+  - This prevents graphql-ws from stripping authentication tokens from the URL
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Add webSocketImpl to preserve query parameters
+
+## 1.0.6
+
+### Patch Changes
+
+- Add enhanced debug logging for WebSocket URL debugging
+
+  **DEBUG IMPROVEMENT:**
+  - Added console.log statements (always visible) to trace WebSocket URL construction
+  - Logs show the exact URL being passed to createClient
+  - Logs token availability and length
+  - Logs URL when WebSocket connects
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Enhanced debug logging
+
+- Fix GraphQL WebSocket authentication - add token to query string
+
+  **CRITICAL FIX:**
+  - GraphQL WebSocket now appends authentication token to URL query string as `?access_token=<JWT>`
+  - Server requires token in query string for WebSocket authentication
+  - Token is automatically added when creating WebSocket connection and updated when token changes
+  - Falls back to manual URL construction if URL parsing fails
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Add token to WebSocket URL query string
+
+## 1.0.5
+
+### Patch Changes
+
+- Fix GraphQL WebSocket URL handling - WebSocket code is now ONLY executed when wsEndpoint is explicitly provided
+
+  **CRITICAL FIX:**
+  - Made `wsEndpoint` optional in `GraphQLClientConfig` - WebSocket code is NEVER executed without an explicit URL
+  - If `wsEndpoint` is missing, invalid, or appears derived from `httpEndpoint`, WebSocket is skipped entirely
+  - All operations route through HTTP if WebSocket is not available
+  - Zero fallbacks - no WebSocket connection attempts without a valid, explicitly provided URL
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Conditional WebSocket creation, strict validation
+
+- Fix GraphQL WebSocket authentication - add token to query string
+
+  **CRITICAL FIX:**
+  - GraphQL WebSocket now appends authentication token to URL query string as `?access_token=<JWT>`
+  - Server requires token in query string for WebSocket authentication
+  - Token is automatically added when creating WebSocket connection and updated when token changes
+  - Falls back to manual URL construction if URL parsing fails
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Add token to WebSocket URL query string
+
+## 1.0.4
+
+### Patch Changes
+
+- Fix GraphQL WebSocket URL handling - WebSocket code is now ONLY executed when wsEndpoint is explicitly provided
+
+  **CRITICAL FIX:**
+  - Made `wsEndpoint` optional in `GraphQLClientConfig` - WebSocket code is NEVER executed without an explicit URL
+  - If `wsEndpoint` is missing, invalid, or appears derived from `httpEndpoint`, WebSocket is skipped entirely
+  - All operations route through HTTP if WebSocket is not available
+  - Zero fallbacks - no WebSocket connection attempts without a valid, explicitly provided URL
+
+  **Files Changed:**
+  - `packages/adapters/src/graphql/client.ts` - Conditional WebSocket creation, strict validation
+
+- Fix critical restProps errors and improve GraphQL WebSocket URL handling
+
+  **CRITICAL FIXES:**
+  1. **restProps Initialization Errors**
+     - Fixed `Avatar` and `Skeleton` components to use `...restProps` destructuring pattern instead of `$restProps()` call
+     - This matches the pattern used in working components like `Button`
+     - Resolves `ReferenceError: Cannot access 'restProps' before initialization` in SSR/SSG environments
+     - Components now hydrate correctly in Astro/Cloudflare Workers
+  2. **GraphQL WebSocket URL Handling**
+     - Added defensive checks to ensure `wsEndpoint` is not derived from `httpEndpoint`
+     - Added explicit URL validation and logging
+     - Store `wsEndpoint` in const to prevent mutation
+     - Added error logging if URL derivation is detected
+     - Improved debug logging to trace WebSocket URL usage
+
+  **Files Fixed:**
+  - `packages/primitives/src/components/Avatar.svelte` - restProps pattern
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps pattern
+  - `packages/adapters/src/graphql/client.ts` - WebSocket URL handling
+
+  **Note:** If WebSocket still connects to wrong URL, check browser console for debug logs showing which URL is being used. The issue may be in `graphql-ws` library or Apollo Client's `GraphQLWsLink` if URL derivation persists.
+
+## 1.0.3
+
+### Patch Changes
+
+- Fix critical restProps errors and improve GraphQL WebSocket URL handling
+
+  **CRITICAL FIXES:**
+  1. **restProps Initialization Errors**
+     - Fixed `Avatar` and `Skeleton` components to use `...restProps` destructuring pattern instead of `$restProps()` call
+     - This matches the pattern used in working components like `Button`
+     - Resolves `ReferenceError: Cannot access 'restProps' before initialization` in SSR/SSG environments
+     - Components now hydrate correctly in Astro/Cloudflare Workers
+  2. **GraphQL WebSocket URL Handling**
+     - Added defensive checks to ensure `wsEndpoint` is not derived from `httpEndpoint`
+     - Added explicit URL validation and logging
+     - Store `wsEndpoint` in const to prevent mutation
+     - Added error logging if URL derivation is detected
+     - Improved debug logging to trace WebSocket URL usage
+
+  **Files Fixed:**
+  - `packages/primitives/src/components/Avatar.svelte` - restProps pattern
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps pattern
+  - `packages/adapters/src/graphql/client.ts` - WebSocket URL handling
+
+  **Note:** If WebSocket still connects to wrong URL, check browser console for debug logs showing which URL is being used. The issue may be in `graphql-ws` library or Apollo Client's `GraphQLWsLink` if URL derivation persists.
+
+- Fix critical issues: GraphQL wsEndpoint, restProps errors, and ThemeSwitcher default
+
+  **CRITICAL FIXES:**
+  1. **GraphQL Adapter wsEndpoint Fix**
+     - Fixed adapter to explicitly use `wsEndpoint` config parameter instead of constructing URL
+     - Added validation and explicit capture of wsEndpoint to prevent closure issues
+     - Added debug logging to trace WebSocket URL usage
+     - Fixed WebSocket reconnection in `updateToken` to properly use wsEndpoint
+  2. **restProps Initialization Errors**
+     - Fixed `restProps` initialization errors in `Avatar` and `Skeleton` components
+     - Added missing `Snippet` import in `Skeleton` component
+     - Ensured `$restProps()` is called before any derived values to avoid hoisting issues
+     - Resolves hydration errors in Astro/SSR environments
+  3. **ThemeSwitcher Default Variant**
+     - Changed default variant from `"full"` to `"compact"` for header usage
+     - **BREAKING CHANGE**: Settings pages now need to explicitly use `variant="full"`
+     - Compact variant shows dropdown with Light/Dark/Auto options suitable for navigation headers
+     - Full variant remains available for comprehensive settings panels
+
+  **Migration:**
+  - ThemeSwitcher now defaults to compact variant (suitable for headers)
+  - For settings pages, use: `<GCThemeSwitcher variant="full" />`
+  - For headers, use: `<GCThemeSwitcher variant="compact" />` (or omit variant for default)
+
+  **Files Fixed:**
+  - `packages/adapters/src/graphql/client.ts` - wsEndpoint usage
+  - `packages/primitives/src/components/Avatar.svelte` - restProps initialization
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps initialization and missing import
+  - `packages/primitives/src/components/ThemeSwitcher.svelte` - default variant
+
+## 1.0.2
+
+### Patch Changes
+
+- Fix critical issues: GraphQL wsEndpoint, restProps errors, and ThemeSwitcher default
+
+  **CRITICAL FIXES:**
+  1. **GraphQL Adapter wsEndpoint Fix**
+     - Fixed adapter to explicitly use `wsEndpoint` config parameter instead of constructing URL
+     - Added validation and explicit capture of wsEndpoint to prevent closure issues
+     - Added debug logging to trace WebSocket URL usage
+     - Fixed WebSocket reconnection in `updateToken` to properly use wsEndpoint
+  2. **restProps Initialization Errors**
+     - Fixed `restProps` initialization errors in `Avatar` and `Skeleton` components
+     - Added missing `Snippet` import in `Skeleton` component
+     - Ensured `$restProps()` is called before any derived values to avoid hoisting issues
+     - Resolves hydration errors in Astro/SSR environments
+  3. **ThemeSwitcher Default Variant**
+     - Changed default variant from `"full"` to `"compact"` for header usage
+     - **BREAKING CHANGE**: Settings pages now need to explicitly use `variant="full"`
+     - Compact variant shows dropdown with Light/Dark/Auto options suitable for navigation headers
+     - Full variant remains available for comprehensive settings panels
+
+  **Migration:**
+  - ThemeSwitcher now defaults to compact variant (suitable for headers)
+  - For settings pages, use: `<GCThemeSwitcher variant="full" />`
+  - For headers, use: `<GCThemeSwitcher variant="compact" />` (or omit variant for default)
+
+  **Files Fixed:**
+  - `packages/adapters/src/graphql/client.ts` - wsEndpoint usage
+  - `packages/primitives/src/components/Avatar.svelte` - restProps initialization
+  - `packages/primitives/src/components/Skeleton.svelte` - restProps initialization and missing import
+  - `packages/primitives/src/components/ThemeSwitcher.svelte` - default variant
+
 ## 1.0.1
 
 ### Patch Changes

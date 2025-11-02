@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "1.0.4",
+  "version": "1.0.21",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -44,17 +44,21 @@
       "import": "./dist/headless/*.js"
     },
     "./icons": {
-      "types": "./dist/icons/index.d.ts",
-      "import": "./dist/icons/index.js"
+      "svelte": "./dist/icons/src/index.ts",
+      "default": "./dist/icons/src/index.ts"
     },
-    "./icons/*": "./dist/icons/*",
+    "./icons/*": {
+      "default": "./dist/icons/src/icons/*.svelte"
+    },
     "./primitives": {
       "types": "./dist/primitives/index.d.ts",
-      "import": "./dist/primitives/index.js"
+      "svelte": "./dist/primitives/src/index.ts",
+      "default": "./dist/primitives/src/index.ts"
     },
     "./primitives/*": {
-      "types": "./dist/primitives/*.d.ts",
-      "import": "./dist/primitives/*.js"
+      "types": "./dist/primitives/components/*.d.ts",
+      "svelte": "./dist/primitives/src/components/*.svelte",
+      "default": "./dist/primitives/src/components/*.svelte"
     },
     "./primitives/styles.css": "./dist/primitives/styles.css",
     "./primitives/style.css": "./dist/primitives/style.css",

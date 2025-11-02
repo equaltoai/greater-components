@@ -25,9 +25,22 @@
     status,
     statusPosition = 'bottom-right',
     class: className = '',
-    fallback
+    fallback,
+    id,
+    style,
+    onclick,
+    onmouseenter,
+    onmouseleave,
+    onfocus,
+    onblur,
+    onkeydown,
+    onkeyup,
+    role,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+    'aria-describedby': ariaDescribedby,
+    tabindex
   }: Props = $props();
-  const restProps = $restProps();
 
   // State management
   let imageLoaded = $state(false);
@@ -121,10 +134,20 @@
 
 <div
   class={avatarClass()}
-  role="img"
-  aria-label={accessibleName()}
-  aria-describedby={status ? statusId : undefined}
-  {...restProps}
+  role={role ?? "img"}
+  aria-label={ariaLabel ?? accessibleName()}
+  aria-labelledby={ariaLabelledby}
+  aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
+  {id}
+  {style}
+  {onclick}
+  {onmouseenter}
+  {onmouseleave}
+  {onfocus}
+  {onblur}
+  {onkeydown}
+  {onkeyup}
+  tabindex={tabindex !== undefined ? tabindex : null}
 >
   {#if loading}
     <div class="gr-avatar__loading" aria-hidden="true">
@@ -214,204 +237,206 @@
 </div>
 
 <style>
-  .gr-avatar {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--gr-semantic-background-secondary);
-    color: var(--gr-semantic-foreground-secondary);
-    font-family: var(--gr-typography-fontFamily-sans);
-    font-weight: var(--gr-typography-fontWeight-medium);
-    overflow: hidden;
-    flex-shrink: 0;
-    user-select: none;
-  }
-
-  /* Shapes */
-  .gr-avatar--circle {
-    border-radius: 50%;
-  }
-
-  .gr-avatar--square {
-    border-radius: 0;
-  }
-
-  .gr-avatar--rounded {
-    border-radius: var(--gr-radii-md);
-  }
-
-  /* Sizes */
-  .gr-avatar--xs {
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: var(--gr-typography-fontSize-xs);
-  }
-
-  .gr-avatar--sm {
-    width: 2rem;
-    height: 2rem;
-    font-size: var(--gr-typography-fontSize-sm);
-  }
-
-  .gr-avatar--md {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: var(--gr-typography-fontSize-sm);
-  }
-
-  .gr-avatar--lg {
-    width: 3rem;
-    height: 3rem;
-    font-size: var(--gr-typography-fontSize-base);
-  }
-
-  .gr-avatar--xl {
-    width: 4rem;
-    height: 4rem;
-    font-size: var(--gr-typography-fontSize-lg);
-  }
-
-  .gr-avatar--2xl {
-    width: 5rem;
-    height: 5rem;
-    font-size: var(--gr-typography-fontSize-xl);
-  }
-
-  .gr-avatar__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .gr-avatar__placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .gr-avatar__initials {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    font-weight: var(--gr-typography-fontWeight-semibold);
-    line-height: 1;
-  }
-
-  .gr-avatar__fallback-icon {
-    width: 70%;
-    height: 70%;
-    opacity: 0.6;
-  }
-
-  .gr-avatar__loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background-color: var(--gr-semantic-background-tertiary);
-  }
-
-  .gr-avatar__spinner {
-    animation: spin 1s linear infinite;
-    color: var(--gr-semantic-foreground-tertiary);
-  }
-
-  /* Status badge */
-  .gr-avatar__status {
-    position: absolute;
-    width: 25%;
-    height: 25%;
-    min-width: 8px;
-    min-height: 8px;
-    border-radius: 50%;
-    border: 2px solid var(--gr-semantic-background-primary);
-  }
-
-  /* Status positions */
-  .gr-avatar__status--top-right {
-    top: 0;
-    right: 0;
-    transform: translate(25%, -25%);
-  }
-
-  .gr-avatar__status--top-left {
-    top: 0;
-    left: 0;
-    transform: translate(-25%, -25%);
-  }
-
-  .gr-avatar__status--bottom-right {
-    bottom: 0;
-    right: 0;
-    transform: translate(25%, 25%);
-  }
-
-  .gr-avatar__status--bottom-left {
-    bottom: 0;
-    left: 0;
-    transform: translate(-25%, 25%);
-  }
-
-  /* Status colors */
-  .gr-avatar__status--online {
-    background-color: #10b981; /* green-500 */
-  }
-
-  .gr-avatar__status--offline {
-    background-color: #6b7280; /* gray-500 */
-  }
-
-  .gr-avatar__status--busy {
-    background-color: #ef4444; /* red-500 */
-  }
-
-  .gr-avatar__status--away {
-    background-color: #f59e0b; /* amber-500 */
-  }
-
-  /* Loading state */
-  .gr-avatar--loading {
-    pointer-events: none;
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .gr-avatar__spinner {
-      animation: none;
-    }
-  }
-
-  /* High contrast mode */
-  @media (prefers-contrast: high) {
+  :global {
     .gr-avatar {
-      border: 1px solid currentColor;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--gr-semantic-background-secondary);
+      color: var(--gr-semantic-foreground-secondary);
+      font-family: var(--gr-typography-fontFamily-sans);
+      font-weight: var(--gr-typography-fontWeight-medium);
+      overflow: hidden;
+      flex-shrink: 0;
+      user-select: none;
     }
 
-    .gr-avatar__status {
-      border-width: 1px;
-      border-color: currentColor;
+    /* Shapes */
+    .gr-avatar--circle {
+      border-radius: 50%;
     }
-  }
 
-  /* Dark mode adjustments */
-  @media (prefers-color-scheme: dark) {
+    .gr-avatar--square {
+      border-radius: 0;
+    }
+
+    .gr-avatar--rounded {
+      border-radius: var(--gr-radii-md);
+    }
+
+    /* Sizes */
+    .gr-avatar--xs {
+      width: 1.5rem;
+      height: 1.5rem;
+      font-size: var(--gr-typography-fontSize-xs);
+    }
+
+    .gr-avatar--sm {
+      width: 2rem;
+      height: 2rem;
+      font-size: var(--gr-typography-fontSize-sm);
+    }
+
+    .gr-avatar--md {
+      width: 2.5rem;
+      height: 2.5rem;
+      font-size: var(--gr-typography-fontSize-sm);
+    }
+
+    .gr-avatar--lg {
+      width: 3rem;
+      height: 3rem;
+      font-size: var(--gr-typography-fontSize-base);
+    }
+
+    .gr-avatar--xl {
+      width: 4rem;
+      height: 4rem;
+      font-size: var(--gr-typography-fontSize-lg);
+    }
+
+    .gr-avatar--2xl {
+      width: 5rem;
+      height: 5rem;
+      font-size: var(--gr-typography-fontSize-xl);
+    }
+
+    .gr-avatar__image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gr-avatar__placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gr-avatar__initials {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-weight: var(--gr-typography-fontWeight-semibold);
+      line-height: 1;
+    }
+
+    .gr-avatar__fallback-icon {
+      width: 70%;
+      height: 70%;
+      opacity: 0.6;
+    }
+
+    .gr-avatar__loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      background-color: var(--gr-semantic-background-tertiary);
+    }
+
+    .gr-avatar__spinner {
+      animation: spin 1s linear infinite;
+      color: var(--gr-semantic-foreground-tertiary);
+    }
+
+    /* Status badge */
     .gr-avatar__status {
-      border-color: var(--gr-semantic-background-primary);
+      position: absolute;
+      width: 25%;
+      height: 25%;
+      min-width: 8px;
+      min-height: 8px;
+      border-radius: 50%;
+      border: 2px solid var(--gr-semantic-background-primary);
+    }
+
+    /* Status positions */
+    .gr-avatar__status--top-right {
+      top: 0;
+      right: 0;
+      transform: translate(25%, -25%);
+    }
+
+    .gr-avatar__status--top-left {
+      top: 0;
+      left: 0;
+      transform: translate(-25%, -25%);
+    }
+
+    .gr-avatar__status--bottom-right {
+      bottom: 0;
+      right: 0;
+      transform: translate(25%, 25%);
+    }
+
+    .gr-avatar__status--bottom-left {
+      bottom: 0;
+      left: 0;
+      transform: translate(-25%, 25%);
+    }
+
+    /* Status colors */
+    .gr-avatar__status--online {
+      background-color: #10b981; /* green-500 */
+    }
+
+    .gr-avatar__status--offline {
+      background-color: #6b7280; /* gray-500 */
+    }
+
+    .gr-avatar__status--busy {
+      background-color: #ef4444; /* red-500 */
+    }
+
+    .gr-avatar__status--away {
+      background-color: #f59e0b; /* amber-500 */
+    }
+
+    /* Loading state */
+    .gr-avatar--loading {
+      pointer-events: none;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .gr-avatar__spinner {
+        animation: none;
+      }
+    }
+
+    /* High contrast mode */
+    @media (prefers-contrast: high) {
+      .gr-avatar {
+        border: 1px solid currentColor;
+      }
+
+      .gr-avatar__status {
+        border-width: 1px;
+        border-color: currentColor;
+      }
+    }
+
+    /* Dark mode adjustments */
+    @media (prefers-color-scheme: dark) {
+      .gr-avatar__status {
+        border-color: var(--gr-semantic-background-primary);
+      }
     }
   }
 </style>

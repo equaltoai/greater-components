@@ -160,16 +160,14 @@ function buildCreateNoteVariables(
 		inReplyTo?: string;
 		sensitive?: boolean;
 	}
-): CreateNoteVariables {
+): CreateNoteVariables['input'] {
 	return {
-		input: {
-			content: data.content,
-			visibility: mapVisibility(data.visibility),
-			sensitive: data.sensitive ?? false,
-			spoilerText: data.contentWarning,
-			attachmentIds: data.mediaIds && data.mediaIds.length > 0 ? data.mediaIds : undefined,
-			inReplyToId: data.inReplyTo,
-		},
+		content: data.content,
+		visibility: mapVisibility(data.visibility),
+		sensitive: data.sensitive ?? false,
+		spoilerText: data.contentWarning,
+		attachmentIds: data.mediaIds && data.mediaIds.length > 0 ? data.mediaIds : undefined,
+		inReplyToId: data.inReplyTo,
 	};
 }
 
@@ -229,19 +227,17 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter): Gra
 			}
 		}
 
-		const variables: CreateQuoteNoteMutationVariables = {
-			input: {
-				content: data.content,
-				quoteUrl: data.quoteUrl,
-				visibility: mapVisibility(data.visibility),
-				spoilerText: data.contentWarning || undefined,
-				sensitive: data.sensitive,
-				quoteType: data.quoteType as QuoteType | undefined,
-				mediaIds: mediaIds.length > 0 ? mediaIds : undefined,
-			},
+		const input: CreateQuoteNoteMutationVariables['input'] = {
+			content: data.content,
+			quoteUrl: data.quoteUrl,
+			visibility: mapVisibility(data.visibility),
+			spoilerText: data.contentWarning || undefined,
+			sensitive: data.sensitive,
+			quoteType: data.quoteType as QuoteType | undefined,
+			mediaIds: mediaIds.length > 0 ? mediaIds : undefined,
 		};
 
-		const payload = await adapter.createQuoteNote(variables);
+		const payload = await adapter.createQuoteNote(input);
 		return payload.object;
 	}
 

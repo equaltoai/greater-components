@@ -478,6 +478,19 @@ export class LesserGraphQLAdapter {
 		});
 	}
 
+	async fetchActorTimeline(
+		actorId: string,
+		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after' | 'mediaOnly'>>
+	) {
+		return this.fetchTimeline({
+			type: 'ACTOR',
+			actorId,
+			first: pagination?.first,
+			after: pagination?.after,
+			mediaOnly: pagination?.mediaOnly,
+		});
+	}
+
 	async getObject(id: string) {
 		const data = await this.query(ObjectByIdDocument, { id });
 		return data.object;
@@ -629,13 +642,13 @@ export class LesserGraphQLAdapter {
 		return payload;
 	}
 
-	async createNote(variables: CreateNoteMutationVariables) {
-		const data = await this.mutate(CreateNoteDocument, variables);
+	async createNote(input: CreateNoteMutationVariables['input']) {
+		const data = await this.mutate(CreateNoteDocument, { input });
 		return data.createNote;
 	}
 
-	async createQuoteNote(variables: CreateQuoteNoteMutationVariables) {
-		const data = await this.mutate(CreateQuoteNoteDocument, variables);
+	async createQuoteNote(input: CreateQuoteNoteMutationVariables['input']) {
+		const data = await this.mutate(CreateQuoteNoteDocument, { input });
 		return data.createQuoteNote;
 	}
 

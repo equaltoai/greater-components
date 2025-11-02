@@ -46,6 +46,7 @@ describe('LesserGraphQLAdapter', () => {
 			expect(typeof adapter.fetchHomeTimeline).toBe('function');
 			expect(typeof adapter.fetchHashtagTimeline).toBe('function');
 			expect(typeof adapter.fetchListTimeline).toBe('function');
+			expect(typeof adapter.fetchActorTimeline).toBe('function');
 		});
 
 		it('exposes object lookups', () => {

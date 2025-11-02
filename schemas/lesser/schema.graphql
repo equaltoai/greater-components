@@ -12,6 +12,7 @@ enum TimelineType {
   HASHTAG
   LIST
   DIRECT
+  ACTOR
 }
 
 enum ActorType {
@@ -753,6 +754,7 @@ type Query {
     type: TimelineType!
     hashtag: String
     listId: ID
+    actorId: ID
     first: Int = 20
     after: Cursor
     mediaOnly: Boolean = false

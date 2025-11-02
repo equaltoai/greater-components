@@ -1,0 +1,24 @@
+---
+import SimpleTest from '../components/SimpleTest.svelte';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Svelte 5 Test</title>
+  </head>
+  <body style="margin: 0; padding: 0; font-family: system-ui;">
+    <h1 style="padding: 1rem 2rem; background: #1f2937; color: white; margin: 0;">
+      Svelte 5 Runes - Client-Only Test
+    </h1>
+    
+    <SimpleTest client:only="svelte" />
+    
+    <script>
+      console.log('✅ Page JavaScript loaded - client-side rendering active');
+    </script>
+  </body>
+</html>
+

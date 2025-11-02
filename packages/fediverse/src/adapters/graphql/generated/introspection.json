@@ -20600,6 +20600,18 @@
             "description": null,
             "args": [
               {
+                "name": "actorId",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
                 "name": "after",
                 "description": null,
                 "type": {
@@ -26210,6 +26222,12 @@
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
+          {
+            "name": "ACTOR",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "DIRECT",
             "description": null,

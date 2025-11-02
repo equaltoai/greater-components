@@ -30,7 +30,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "node scripts/build.js && vite build",
+    "build": "node scripts/build.js && vite build && tsc --emitDeclarationOnly",
     "dev": "node scripts/build.js --watch",
     "test": "vitest run",
     "test:watch": "vitest",

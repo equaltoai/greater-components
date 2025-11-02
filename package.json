@@ -67,5 +67,8 @@
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
+  },
+  "dependencies": {
+    "undici": "6.18.0"
   }
 }

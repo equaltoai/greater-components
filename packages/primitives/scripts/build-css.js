@@ -4,76 +4,53 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const distDir = path.join(__dirname, '../dist');
-const srcDir = path.join(__dirname, '../src');
 
-// Ensure dist directory exists
-if (!fs.existsSync(distDir)) {
-  fs.mkdirSync(distDir, { recursive: true });
-}
+// Note: CSS is NOT used when consuming from source (Lesser/Greater compile from src/)
+// This file only exists for documentation/legacy purposes
 
-// Create a basic CSS reset and utility styles file
-const stylesCSS = `
-/* Greater Components Primitives - Base Styles */
-@import '@equaltoai/greater-components-tokens/theme.css';
+const readme = `# Greater Components Primitives - CSS Usage
 
-/* CSS Reset for components */
-.gr-button,
-.gr-textfield,
-.gr-modal {
-  box-sizing: border-box;
-}
+## For Lesser/Greater (Recommended)
 
-.gr-button *,
-.gr-textfield *,
-.gr-modal * {
-  box-sizing: border-box;
-}
+Import components from source - CSS is compiled with your app:
 
-/* Utility classes */
-.gr-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+\`\`\`javascript
+import { Button } from '@equaltoai/greater-components/primitives';
+// CSS automatically included, properly scoped
+\`\`\`
 
-.gr-visually-hidden {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
+## For Other Consumers
 
-/* Focus management utilities */
-.gr-focus-trap {
-  outline: none;
-}
+Not officially supported. Greater Components are designed for Lesser/Greater ecosystem.
+If you must use them elsewhere, import from source and compile with Svelte 5+.
 
-/* Animation utilities */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
+Your bundler must:
+- Support Svelte 5 
+- Have runes enabled
+- Compile .svelte files
+
+No separate CSS import needed - styles are in components.
 `;
 
-// Write the CSS file
-fs.writeFileSync(path.join(distDir, 'styles.css'), stylesCSS);
+fs.writeFileSync(path.join(distDir, 'CSS_USAGE.md'), readme);
+
+// Ensure backward compatibility: create styles.css symlink/copy if style.css exists
+const styleCssPath = path.join(distDir, 'style.css');
+const stylesCssPath = path.join(distDir, 'styles.css');
+
+if (fs.existsSync(styleCssPath) && !fs.existsSync(stylesCssPath)) {
+  try {
+    // Try symlink first (more efficient)
+    fs.symlinkSync('style.css', stylesCssPath, 'file');
+    console.log('✅ Created styles.css symlink for backward compatibility');
+  } catch {
+    // Fallback to copy if symlink fails (e.g., Windows)
+    fs.copyFileSync(styleCssPath, stylesCssPath);
+    console.log('✅ Created styles.css copy for backward compatibility');
+  }
+}
 
 console.log('✅ CSS build complete!');
-console.log('  - Generated styles.css with base styles and utilities');
+console.log('  - Components export source files with embedded styles');
+console.log('  - Consuming apps compile from source');
