@@ -68,6 +68,7 @@ lerna-debug.log*
 *~
 .npmrc.local
 .npmrc
+.npmrc.backup
 # Storybook
 storybook-static/
 *storybook.log
