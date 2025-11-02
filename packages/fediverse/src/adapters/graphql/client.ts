@@ -162,11 +162,12 @@ export class GraphQLClient {
 		const subscriptionId = `${subscription}-${JSON.stringify(variables || {})}`;
 
 		// Add callback to subscriptions
-		if (!this.subscriptions.has(subscriptionId)) {
-			this.subscriptions.set(subscriptionId, new Set());
+		let callbacks = this.subscriptions.get(subscriptionId);
+		if (!callbacks) {
+			callbacks = new Set();
+			this.subscriptions.set(subscriptionId, callbacks);
 		}
-		const callbacks = this.subscriptions.get(subscriptionId);
-		callbacks?.add(callback);
+		callbacks.add(callback);
 
 		// Connect WebSocket if not already connected
 		if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
