@@ -61,6 +61,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -76,16 +78,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build workspace
-        run: pnpm build
-        env:
-          SKIP_VISUAL_TESTS: 'true'
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
+          build-mode: manual
+
+      - name: Build workspace
+        run: pnpm build
+        env:
+          SKIP_VISUAL_TESTS: 'true'
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
