@@ -26,7 +26,6 @@
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledby,
     'aria-describedby': ariaDescribedby,
-    tabindex,
     ...restProps
   }: Props = $props();
 </script>
@@ -56,7 +55,6 @@
   aria-label={ariaLabel}
   aria-labelledby={ariaLabelledby}
   aria-describedby={ariaDescribedby}
-  tabindex={tabindex !== undefined ? tabindex : null}
   {...restProps}
 >
   <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline>

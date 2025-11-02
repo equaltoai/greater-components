@@ -26,7 +26,6 @@
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledby,
     'aria-describedby': ariaDescribedby,
-    tabindex,
     ...restProps
   }: Props = $props();
 </script>
@@ -56,7 +55,6 @@
   aria-label={ariaLabel}
   aria-labelledby={ariaLabelledby}
   aria-describedby={ariaDescribedby}
-  tabindex={tabindex !== undefined ? tabindex : null}
   {...restProps}
 >
   <polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>

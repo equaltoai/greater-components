@@ -26,7 +26,6 @@
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledby,
     'aria-describedby': ariaDescribedby,
-    tabindex,
     ...restProps
   }: Props = $props();
 </script>
@@ -56,7 +55,6 @@
   aria-label={ariaLabel}
   aria-labelledby={ariaLabelledby}
   aria-describedby={ariaDescribedby}
-  tabindex={tabindex !== undefined ? tabindex : null}
   {...restProps}
 >
   <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>

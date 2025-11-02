@@ -26,7 +26,6 @@
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledby,
     'aria-describedby': ariaDescribedby,
-    tabindex,
     ...restProps
   }: Props = $props();
 </script>
@@ -56,7 +55,6 @@
   aria-label={ariaLabel}
   aria-labelledby={ariaLabelledby}
   aria-describedby={ariaDescribedby}
-  tabindex={tabindex !== undefined ? tabindex : null}
   {...restProps}
 >
   <circle cx="5.5" cy="11.5" r="4.5"></circle><circle cx="18.5" cy="11.5" r="4.5"></circle><line x1="5.5" y1="16" x2="18.5" y2="16"></line>

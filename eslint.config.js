@@ -77,6 +77,7 @@ export default [
 			'**/build/**',
 			'**/.svelte-kit/**',
 			'**/package/**',
+			'test-apps/astro-client-only/.astro/**',
 			'**/.env',
 			'**/.env.*',
 			'!**/.env.example',
