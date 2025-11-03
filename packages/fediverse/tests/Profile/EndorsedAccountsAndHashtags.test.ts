@@ -2,27 +2,36 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import EndorsedAccounts from '../../src/components/Profile/EndorsedAccounts.svelte';
 import FeaturedHashtags from '../../src/components/Profile/FeaturedHashtags.svelte';
-import ProfileTestHarness from './ProfileTestHarness.svelte';
-import { createProfile, createMockHandlers } from './test-utils';
 import type { ProfileHandlers } from '../../src/components/Profile/context.js';
 
-function renderProfileComponent(
-	component: typeof EndorsedAccounts | typeof FeaturedHashtags,
-	componentProps: Record<string, unknown>,
-	handlerOverrides: Partial<ProfileHandlers> = {},
-	{ isOwnProfile = false }: { isOwnProfile?: boolean } = {}
-) {
-	const handlers = createMockHandlers(handlerOverrides);
+type MockProfileContext = {
+	state: {
+		isOwnProfile: boolean;
+		privacySettings: unknown;
+	};
+	handlers: ProfileHandlers;
+};
 
-	return render(ProfileTestHarness, {
-		props: {
-			component,
-			componentProps,
-			profile: createProfile(),
-			handlers,
-			isOwnProfile,
-		},
-	});
+const mockContext: MockProfileContext = {
+	state: {
+		isOwnProfile: false,
+		privacySettings: null,
+	},
+	handlers: {},
+};
+
+vi.mock('../../src/components/Profile/context.js', () => ({
+	getProfileContext: () => mockContext,
+}));
+
+function resetMockContext() {
+	mockContext.state.isOwnProfile = false;
+	mockContext.state.privacySettings = null;
+	mockContext.handlers = {};
+}
+
+function withHandlers(overrides: Partial<ProfileHandlers> = {}) {
+	mockContext.handlers = { ...overrides } as ProfileHandlers;
 }
 
 describe('Profile.EndorsedAccounts', () => {
@@ -34,13 +43,15 @@ describe('Profile.EndorsedAccounts', () => {
 		{ id: '5', username: 'user5', displayName: 'User Five' },
 	];
 
+	beforeEach(() => {
+		resetMockContext();
+	});
+
 	it('limits displayed accounts to the configured maximum', () => {
-		const { container } = renderProfileComponent(
-			EndorsedAccounts,
-			{ endorsed, maxAccounts: 3 },
-			{},
-			{ isOwnProfile: false }
-		);
+		const { container } = render(EndorsedAccounts, {
+			endorsed,
+			maxAccounts: 3,
+		});
 
 		const renderedItems = container.querySelectorAll('.endorsed-accounts__item');
 		expect(renderedItems).toHaveLength(3);
@@ -49,12 +60,10 @@ describe('Profile.EndorsedAccounts', () => {
 	});
 
 	it('renders all accounts when no maximum is provided', () => {
-		const { container } = renderProfileComponent(
-			EndorsedAccounts,
-			{ endorsed, maxAccounts: 0 },
-			{},
-			{ isOwnProfile: false }
-		);
+		const { container } = render(EndorsedAccounts, {
+			endorsed,
+			maxAccounts: 0,
+		});
 
 		const renderedItems = container.querySelectorAll('.endorsed-accounts__item');
 		expect(renderedItems).toHaveLength(endorsed.length);
@@ -62,12 +71,13 @@ describe('Profile.EndorsedAccounts', () => {
 
 	it('calls reorder handler when accounts are rearranged', async () => {
 		const onReorderEndorsements = vi.fn().mockResolvedValue(undefined);
-		const { container } = renderProfileComponent(
-			EndorsedAccounts,
-			{ endorsed, isOwnProfile: true, enableReordering: true },
-			{ onReorderEndorsements },
-			{ isOwnProfile: true }
-		);
+		withHandlers({ onReorderEndorsements });
+
+		const { container } = render(EndorsedAccounts, {
+			endorsed,
+			isOwnProfile: true,
+			enableReordering: true,
+		});
 
 		const items = container.querySelectorAll('.endorsed-accounts__item');
 		expect(items).toHaveLength(endorsed.length);
@@ -88,13 +98,7 @@ describe('Profile.EndorsedAccounts', () => {
 	});
 
 	it('shows the empty state when there are no endorsed accounts', () => {
-		renderProfileComponent(
-			EndorsedAccounts,
-			{ endorsed: [] },
-			{},
-			{ isOwnProfile: false }
-		);
-
+		render(EndorsedAccounts, { endorsed: [] });
 		expect(screen.getByText('No featured accounts')).toBeTruthy();
 	});
 });
@@ -108,6 +112,7 @@ describe('Profile.FeaturedHashtags', () => {
 	];
 
 	beforeEach(() => {
+		resetMockContext();
 		vi.spyOn(window, 'confirm').mockReturnValue(true);
 	});
 
@@ -116,12 +121,10 @@ describe('Profile.FeaturedHashtags', () => {
 	});
 
 	it('limits displayed hashtags to the configured maximum', () => {
-		const { container } = renderProfileComponent(
-			FeaturedHashtags,
-			{ hashtags, maxHashtags: 2 },
-			{},
-			{ isOwnProfile: false }
-		);
+		const { container } = render(FeaturedHashtags, {
+			hashtags,
+			maxHashtags: 2,
+		});
 
 		const renderedItems = container.querySelectorAll('.featured-hashtags__item');
 		expect(renderedItems).toHaveLength(2);
@@ -130,12 +133,10 @@ describe('Profile.FeaturedHashtags', () => {
 	});
 
 	it('formats usage counts and relative timestamps from component logic', () => {
-		renderProfileComponent(
-			FeaturedHashtags,
-			{ hashtags, showStats: true },
-			{},
-			{ isOwnProfile: false }
-		);
+		render(FeaturedHashtags, {
+			hashtags,
+			showStats: true,
+		});
 
 		expect(screen.getByText('1.5K posts')).toBeTruthy();
 		expect(screen.getByText('3d ago')).toBeTruthy();
@@ -143,12 +144,13 @@ describe('Profile.FeaturedHashtags', () => {
 
 	it('calls reorder handler when hashtags are reordered', async () => {
 		const onReorderHashtags = vi.fn().mockResolvedValue(undefined);
-		const { container } = renderProfileComponent(
-			FeaturedHashtags,
-			{ hashtags, isOwnProfile: true, enableReordering: true },
-			{ onReorderHashtags },
-			{ isOwnProfile: true }
-		);
+		withHandlers({ onReorderHashtags });
+
+		const { container } = render(FeaturedHashtags, {
+			hashtags,
+			isOwnProfile: true,
+			enableReordering: true,
+		});
 
 		const items = container.querySelectorAll('.featured-hashtags__item');
 		expect(items).toHaveLength(hashtags.length);
@@ -163,13 +165,7 @@ describe('Profile.FeaturedHashtags', () => {
 	});
 
 	it('shows the empty state when there are no hashtags', () => {
-		renderProfileComponent(
-			FeaturedHashtags,
-			{ hashtags: [] },
-			{},
-			{ isOwnProfile: false }
-		);
-
+		render(FeaturedHashtags, { hashtags: [] });
 		expect(screen.getByText('No featured hashtags')).toBeTruthy();
 	});
 });

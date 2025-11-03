@@ -1,30 +1,52 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import PrivacySettings from '../../src/components/Profile/PrivacySettings.svelte';
-import ProfileTestHarness from './ProfileTestHarness.svelte';
-import { createProfile, createMockHandlers } from './test-utils';
-import type { ProfileHandlers, PrivacySettings as PrivacySettingsShape } from '../../src/components/Profile/context.js';
+import type {
+	ProfileHandlers,
+	PrivacySettings as PrivacySettingsShape,
+} from '../../src/components/Profile/context.js';
 
-function renderPrivacySettings(
-	settings: Partial<PrivacySettingsShape> = {},
-	handlerOverrides: Partial<ProfileHandlers> = {}
-) {
-	const handlers = createMockHandlers(handlerOverrides);
+type MockProfileContext = {
+	state: {
+		isOwnProfile: boolean;
+		privacySettings: PrivacySettingsShape | null;
+	};
+	handlers: ProfileHandlers;
+};
 
-	return render(ProfileTestHarness, {
-		props: {
-			component: PrivacySettings,
-			componentProps: { settings },
-			profile: createProfile(),
-			handlers,
-			isOwnProfile: true,
-		},
-	});
+const mockContext: MockProfileContext = {
+	state: {
+		isOwnProfile: false,
+		privacySettings: null,
+	},
+	handlers: {},
+};
+
+vi.mock('../../src/components/Profile/context.js', () => ({
+	getProfileContext: () => mockContext,
+}));
+
+function resetMockContext() {
+	mockContext.state.isOwnProfile = false;
+	mockContext.state.privacySettings = null;
+	mockContext.handlers = {};
+}
+
+function withHandlers(overrides: Partial<ProfileHandlers>) {
+	mockContext.handlers = { ...overrides } as ProfileHandlers;
+}
+
+function withState(overrides: Partial<MockProfileContext['state']>) {
+	Object.assign(mockContext.state, overrides);
 }
 
 describe('Profile.PrivacySettings', () => {
+	beforeEach(() => {
+		resetMockContext();
+	});
+
 	it('renders default checkbox states when no settings are provided', () => {
-		renderPrivacySettings();
+		render(PrivacySettings, { settings: {} });
 
 		expect((screen.getByLabelText(/Private account/i) as HTMLInputElement).checked).toBe(false);
 		expect((screen.getByLabelText(/Allow search engine indexing/i) as HTMLInputElement).checked).toBe(true);
@@ -47,8 +69,10 @@ describe('Profile.PrivacySettings', () => {
 		};
 
 		const onUpdatePrivacySettings = vi.fn().mockResolvedValue(undefined);
+		withHandlers({ onUpdatePrivacySettings });
+		withState({ isOwnProfile: true });
 
-		renderPrivacySettings(initialSettings, { onUpdatePrivacySettings });
+		render(PrivacySettings, { settings: initialSettings });
 
 		const discoverable = screen.getByLabelText(/Suggest account to others/i) as HTMLInputElement;
 		const autoplayVideos = screen.getByLabelText(/Autoplay videos/i) as HTMLInputElement;
@@ -56,14 +80,14 @@ describe('Profile.PrivacySettings', () => {
 
 		expect(discoverable.checked).toBe(false);
 		expect(autoplayVideos.checked).toBe(true);
-		expect(saveButton).toBeDisabled();
+		expect(saveButton).to.have.property('disabled', true);
 
 		await fireEvent.click(discoverable);
 		await fireEvent.click(autoplayVideos);
 
 		expect(discoverable.checked).toBe(true);
 		expect(autoplayVideos.checked).toBe(false);
-		expect(saveButton).not.toBeDisabled();
+		expect(saveButton).to.have.property('disabled', false);
 
 		await fireEvent.click(saveButton);
 
@@ -79,26 +103,28 @@ describe('Profile.PrivacySettings', () => {
 
 	it('allows resetting changes back to the original values', async () => {
 		const onUpdatePrivacySettings = vi.fn().mockResolvedValue(undefined);
-		renderPrivacySettings(
-			{
+		withHandlers({ onUpdatePrivacySettings });
+		withState({ isOwnProfile: true });
+
+		render(PrivacySettings, {
+			settings: {
 				isPrivate: true,
 				discoverable: true,
 			},
-			{ onUpdatePrivacySettings }
-		);
+		});
 
 		const privateAccount = screen.getByLabelText(/Private account/i) as HTMLInputElement;
 		const resetButton = screen.getByRole('button', { name: /reset/i });
 
 		expect(privateAccount.checked).toBe(true);
-		expect(resetButton).toBeDisabled();
+		expect(resetButton).to.have.property('disabled', true);
 
 		await fireEvent.click(privateAccount);
 		expect(privateAccount.checked).toBe(false);
-		expect(resetButton).not.toBeDisabled();
+		expect(resetButton).to.have.property('disabled', false);
 
 		await fireEvent.click(resetButton);
 		expect(privateAccount.checked).toBe(true);
-		expect(resetButton).toBeDisabled();
+		expect(resetButton).to.have.property('disabled', true);
 	});
 });
