@@ -24,7 +24,7 @@
     "@chromatic-com/storybook": "^2.0.2",
     "@storybook/addon-a11y": "^8.4.7",
     "@storybook/addon-actions": "^8.4.7",
-    "@storybook/addon-controls": "^8.4.7",
+    "@storybook/addon-controls": "^9.0.8",
     "@storybook/addon-docs": "^8.4.7",
     "@storybook/addon-essentials": "^8.4.7",
     "@storybook/addon-interactions": "^8.4.7",
