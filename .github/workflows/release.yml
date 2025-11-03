@@ -180,7 +180,7 @@ jobs:
         
       # Future: Deploy to documentation hosting service
       - name: Archive Storybook build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: storybook-build
           path: apps/playground/storybook-static
