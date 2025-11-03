@@ -28,14 +28,14 @@ const ANSI_ESCAPE_PATTERN = new RegExp(
 );
 
 function sanitizeLogValue(value: unknown): string {
-	if (value === null || value === undefined) {
+	if (value === null) {
 		return '';
 	}
 	const stripControl = (input: string) =>
 		input.replace(/[\r\n]+/g, ' ').replace(ANSI_ESCAPE_PATTERN, '');
-if (typeof value === 'string') {
-	return stripControl(value);
-}
+	if (typeof value === 'string') {
+		return stripControl(value);
+	}
 
 	try {
 		return stripControl(JSON.stringify(value));

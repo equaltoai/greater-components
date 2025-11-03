@@ -179,6 +179,10 @@ describe('VerifiedFields Logic', () => {
 	});
 
 	describe('Field Display Logic', () => {
+		function getDisplayFields(fields: ProfileField[], maxFields: number): ProfileField[] {
+			return maxFields > 0 ? fields.slice(0, maxFields) : fields;
+		}
+
 		it('should limit fields to maxFields', () => {
 			const fields: ProfileField[] = [
 				{ name: 'Field 1', value: 'Value 1' },
@@ -189,7 +193,7 @@ describe('VerifiedFields Logic', () => {
 			];
 
 			const maxFields = 3;
-			const displayFields = maxFields > 0 ? fields.slice(0, maxFields) : fields;
+			const displayFields = getDisplayFields(fields, maxFields);
 
 			expect(displayFields).toHaveLength(3);
 			expect(displayFields[0].name).toBe('Field 1');
@@ -204,7 +208,7 @@ describe('VerifiedFields Logic', () => {
 			];
 
 			const maxFields = 0;
-			const displayFields = maxFields > 0 ? fields.slice(0, maxFields) : fields;
+			const displayFields = getDisplayFields(fields, maxFields);
 
 			expect(displayFields).toHaveLength(3);
 		});
@@ -212,7 +216,7 @@ describe('VerifiedFields Logic', () => {
 		it('should handle empty fields array', () => {
 			const fields: ProfileField[] = [];
 			const maxFields = 4;
-			const displayFields = maxFields > 0 ? fields.slice(0, maxFields) : fields;
+			const displayFields = getDisplayFields(fields, maxFields);
 
 			expect(displayFields).toHaveLength(0);
 		});
