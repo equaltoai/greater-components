@@ -71,7 +71,7 @@
     "vitest": "^1.2.1"
   },
   "dependencies": {
-    "focus-trap": "^7.5.4",
-    "tabbable": "^6.2.0"
+    "focus-trap": "^7.6.6",
+    "tabbable": "^6.3.0"
   }
 }
