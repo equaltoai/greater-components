@@ -362,7 +362,9 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		link,
 		cache: new InMemoryCache(cacheConfig),
 		defaultOptions,
-		connectToDevTools: debug,
+		devtools: {
+			enabled: debug,
+		},
 	});
 
 	// Function to update authentication token

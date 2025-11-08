@@ -301,7 +301,6 @@ export const cacheConfig: InMemoryCacheConfig = {
 	possibleTypes: {
 		// Add any union or interface types here
 	},
-	addTypename: true,
 };
 
 /**

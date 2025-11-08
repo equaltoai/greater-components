@@ -1,3 +1,6 @@
+# DO NOT EDIT: aggregated schema for client consumption
+# Generated 2025-11-08T22:01:41Z via scripts/generate_schema.sh
+
 # Lesser GraphQL Schema
 
 scalar Time
@@ -539,6 +542,7 @@ input CreateNoteInput {
   content: String!
   contentMap: [ContentMapInput!]
   inReplyToId: ID
+  quoteId: ID
   visibility: Visibility!
   sensitive: Boolean
   spoilerText: String
@@ -1510,7 +1514,8 @@ type ReconnectionPayload {
   reconnected: Int!
   failed: Int!
   errors: [String!]
-} 
+}
+
 # Lesser GraphQL Schema - Phase 2 Federation Enhancements
 
 # Cost Analytics Dashboard Types
@@ -1893,7 +1898,8 @@ enum ModerationPeriod {
   DAILY
   WEEKLY
   MONTHLY
-} # Lesser GraphQL Schema - Phase 3 Federation Visualization
+} 
+# Lesser GraphQL Schema - Phase 3 Federation Visualization
 
 # Federation Relationship Visualization Types
 type FederationGraph {

@@ -1,5 +1,11 @@
 # @equaltoai/greater-components-primitives
 
+## 1.0.12
+
+### Patch Changes
+
+- Align packages with the latest Lesser GraphQL schema (including `quoteId` support) and harden timeline data handling. Adapters now normalize missing timestamps/relationships, the fediverse docs and generated types stay in sync with the schema, and the TextField primitive correctly styles the `:read-only` state.
+
 ## 1.0.11
 
 ### Patch Changes

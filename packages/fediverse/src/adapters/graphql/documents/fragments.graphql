@@ -19,7 +19,6 @@ fragment ActorSummary on Actor {
   statusesCount
   bot
   locked
-  createdAt
   updatedAt
   trustScore
   fields {

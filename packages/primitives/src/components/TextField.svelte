@@ -247,7 +247,7 @@
       color: var(--gr-semantic-foreground-disabled);
     }
 
-    .gr-textfield__input:readonly {
+    .gr-textfield__input:read-only {
       cursor: default;
     }
 

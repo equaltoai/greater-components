@@ -7,6 +7,7 @@ import {
   convertGraphQLActorListPage,
   convertGraphQLUserPreferences,
   convertGraphQLPushSubscription,
+  convertGraphQLObjectToLesser,
 } from '../graphqlConverters.js';
 
 describe('convertGraphQLActorListPage', () => {
@@ -220,3 +221,81 @@ describe('convertGraphQLPushSubscription', () => {
   });
 });
 
+describe('convertGraphQLObjectToLesser', () => {
+  const actor = {
+    id: 'actor1',
+    username: 'alice',
+    domain: null,
+    displayName: 'Alice',
+    summary: 'Test actor',
+    avatar: 'https://example.com/avatar.png',
+    header: 'https://example.com/header.png',
+    followers: 10,
+    following: 5,
+    statusesCount: 20,
+    bot: false,
+    locked: false,
+    updatedAt: '2024-01-02T00:00:00Z',
+    trustScore: 0.5,
+    fields: [],
+  };
+
+  it('falls back to updatedAt when createdAt is missing', () => {
+    const object = {
+      id: 'note1',
+      type: 'NOTE',
+      content: 'Hello world',
+      visibility: 'PUBLIC',
+      sensitive: false,
+      attachments: [],
+      tags: [],
+      mentions: [],
+      repliesCount: 0,
+      likesCount: 0,
+      sharesCount: 0,
+      estimatedCost: 0,
+      quoteable: true,
+      quotePermissions: 'EVERYONE',
+      quoteCount: 0,
+      communityNotes: [],
+      actor,
+      createdAt: null,
+      updatedAt: '2024-01-03T00:00:00Z',
+    };
+
+    const result = convertGraphQLObjectToLesser(object);
+    expect(result).not.toBeNull();
+    expect(result?.createdAt).toBe('2024-01-03T00:00:00Z');
+    expect(result?.updatedAt).toBe('2024-01-03T00:00:00Z');
+  });
+
+  it('falls back to published timestamp when audit fields are missing', () => {
+    const object = {
+      id: 'note2',
+      type: 'NOTE',
+      content: 'Fallback test',
+      visibility: 'PUBLIC',
+      sensitive: false,
+      attachments: [],
+      tags: [],
+      mentions: [],
+      repliesCount: 0,
+      likesCount: 0,
+      sharesCount: 0,
+      estimatedCost: 0,
+      quoteable: true,
+      quotePermissions: 'EVERYONE',
+      quoteCount: 0,
+      communityNotes: [],
+      actor,
+      createdAt: undefined,
+      updatedAt: undefined,
+      published: '2024-02-01T12:34:00Z',
+    };
+
+    const result = convertGraphQLObjectToLesser(object);
+    expect(result).not.toBeNull();
+    expect(result?.createdAt).toBe('2024-02-01T12:34:00Z');
+    expect(result?.updatedAt).toBe('2024-02-01T12:34:00Z');
+  });
+});

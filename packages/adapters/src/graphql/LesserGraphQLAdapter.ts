@@ -66,6 +66,9 @@ import type {
 	PerformanceAlertSubscription,
 	PerformanceAlertSubscriptionVariables,
 	InfrastructureEventSubscription,
+	RelationshipQuery,
+	RelationshipsQuery,
+	RelationshipsQueryVariables,
 	ModerationPatternInput,
 	HashtagNotificationSettingsInput,
 	NotificationLevel,
@@ -373,6 +376,42 @@ export class LesserGraphQLAdapter {
 		}
 
 		return data;
+	}
+
+	private static hasMissingTargetIdError(error: unknown): boolean {
+		const containsTargetId = (message?: string | null) => {
+			if (!message) {
+				return false;
+			}
+			const normalized = message.toLowerCase();
+			return normalized.includes('target_id') || normalized.includes('target id');
+		};
+
+		if (error instanceof Error && containsTargetId(error.message)) {
+			return true;
+		}
+
+		if (error && typeof error === 'object') {
+			const { graphQLErrors, networkError } = error as {
+				graphQLErrors?: Array<{ message?: string }>;
+				networkError?: { message?: string; result?: { errors?: Array<{ message?: string }> } };
+			};
+
+			if (Array.isArray(graphQLErrors) && graphQLErrors.some((err) => containsTargetId(err?.message))) {
+				return true;
+			}
+
+			const networkErrors = networkError?.result?.errors;
+			if (Array.isArray(networkErrors) && networkErrors.some((err) => containsTargetId(err?.message))) {
+				return true;
+			}
+
+			if (containsTargetId(networkError?.message)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private buildUploadMediaFormData(
@@ -712,13 +751,24 @@ export class LesserGraphQLAdapter {
 		return data.unpinObject;
 	}
 
-	async getRelationship(id: string) {
-		const data = await this.query(RelationshipDocument, { id });
-		return data.relationship;
+	async getRelationship(id: string): Promise<RelationshipQuery['relationship']> {
+		try {
+			const data = await this.query(RelationshipDocument, { id });
+			return data.relationship ?? null;
+		} catch (error) {
+			if (LesserGraphQLAdapter.hasMissingTargetIdError(error)) {
+				const fallback = await this.query(RelationshipsDocument, { ids: [id] });
+				return fallback.relationships?.[0] ?? null;
+			}
+			throw error;
+		}
 	}
 
 	async getRelationships(ids: string[]) {
-		const data = await this.query(RelationshipsDocument, { ids });
+		const data = await this.query<RelationshipsQuery, RelationshipsQueryVariables>(
+			RelationshipsDocument,
+			{ ids }
+		);
 		return data.relationships;
 	}
 

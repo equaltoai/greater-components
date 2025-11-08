@@ -53,6 +53,24 @@ const toISODate = (value: unknown): string => {
   return new Date(0).toISOString();
 };
 
+const resolveTimestamp = (...candidates: unknown[]): string | undefined => {
+  for (const candidate of candidates) {
+    if (isString(candidate) && candidate.trim().length > 0) {
+      return candidate;
+    }
+
+    if (candidate instanceof Date && Number.isFinite(candidate.getTime())) {
+      return candidate.toISOString();
+    }
+
+    if (isNumber(candidate) && Number.isFinite(candidate)) {
+      return new Date(candidate).toISOString();
+    }
+  }
+
+  return undefined;
+};
+
 const convertProfileFields = (value: unknown): LesserAccountFragment['profileFields'] => {
   if (!Array.isArray(value)) {
     return [];
@@ -125,7 +143,9 @@ export function convertGraphQLActorToLesserAccount(actor: unknown): LesserAccoun
       bio: toString(actor['bio'] ?? actor['summary']),
       avatarUrl: toString(actor['avatarUrl'] ?? actor['avatar']),
       bannerUrl: toString(actor['bannerUrl'] ?? actor['header']),
-      joinedAt: toISODate(actor['joinedAt'] ?? actor['createdAt']),
+      joinedAt:
+        resolveTimestamp(actor['joinedAt'], actor['createdAt'], actor['updatedAt']) ??
+        toISODate(actor['createdAt']),
       isVerified: toBoolean(actor['isVerified'] ?? actor['verified']),
       isBot: toBoolean(actor['isBot'] ?? actor['bot']),
       isLocked: toBoolean(actor['isLocked'] ?? actor['locked']),
@@ -154,7 +174,8 @@ export function convertGraphQLActorToLesserAccount(actor: unknown): LesserAccoun
   const summary = toString(actor['summary']);
   const avatar = toString(actor['avatar']);
   const header = toString(actor['header']);
-  const joinedAt = toISODate(actor['createdAt']);
+  const joinedAt =
+    resolveTimestamp(actor['createdAt'], actor['updatedAt']) ?? toISODate(actor['createdAt']);
 
   const profileFields = convertProfileFields(actor['fields']);
 
@@ -331,16 +352,18 @@ export function convertGraphQLObjectToLesser(object: unknown): LesserObjectFragm
   const content = object['content'];
   const visibility = object['visibility'];
   const sensitive = object['sensitive'];
-  const createdAt = object['createdAt'];
-  const updatedAt = object['updatedAt'];
   const actorValue = object['actor'];
-  if (
-    !isString(id) ||
-    !isString(type) ||
-    !isString(content) ||
-    !isString(createdAt) ||
-    !isString(updatedAt)
-  ) {
+  if (!isString(id) || !isString(type) || !isString(content)) {
+    return null;
+  }
+
+  const createdAt =
+    resolveTimestamp(object['createdAt'], object['published'], object['updatedAt']) ??
+    resolveTimestamp(object['lastActivity']);
+  const updatedAt =
+    resolveTimestamp(object['updatedAt'], object['createdAt'], object['published']) ?? createdAt;
+
+  if (!createdAt || !updatedAt) {
     return null;
   }
 
