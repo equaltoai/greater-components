@@ -128,7 +128,7 @@
     "@vitest/coverage-v8": "^1.2.1",
     "jsdom": "^24.0.0",
     "svelte": "^5.0.0",
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.3",
     "vite": "^5.4.21",
     "vitest": "^1.2.1"
   }

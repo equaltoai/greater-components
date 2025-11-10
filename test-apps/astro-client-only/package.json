@@ -18,7 +18,7 @@
     "@equaltoai/greater-components-tokens": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.5.4",
+    "typescript": "^5.9.3",
     "@types/node": "^20.14.0"
   }
 }
