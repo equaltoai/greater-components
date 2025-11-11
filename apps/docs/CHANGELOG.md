@@ -1,5 +1,13 @@
 # @greater-components/docs
 
+## 0.1.14
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.13
+  - @equaltoai/greater-components-fediverse@1.2.1
+
 ## 0.1.13
 
 ### Patch Changes

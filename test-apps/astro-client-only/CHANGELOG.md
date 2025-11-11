@@ -1,5 +1,12 @@
 # greater-components-astro-test
 
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.13
+
 ## 1.0.5
 
 ### Patch Changes

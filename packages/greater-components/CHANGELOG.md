@@ -1,5 +1,11 @@
 # @equaltoai/greater-components
 
+## 1.0.25
+
+### Patch Changes
+
+- Fix the Tabs component’s `$restProps` handling so SSR/custom-element renders no longer crash.
+
 ## 1.0.24
 
 ### Patch Changes
