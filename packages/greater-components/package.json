@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "1.0.22",
+  "version": "1.0.24",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -10,6 +10,17 @@
     "url": "https://github.com/equaltoai/greater-components.git",
     "directory": "packages/greater-components"
   },
+  "homepage": "https://github.com/equaltoai/greater-components#readme",
+  "bugs": {
+    "url": "https://github.com/equaltoai/greater-components/issues"
+  },
+  "keywords": [
+    "svelte",
+    "components",
+    "ui",
+    "fediverse",
+    "equaltoai"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

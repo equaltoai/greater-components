@@ -1,5 +1,17 @@
 # @equaltoai/greater-components
 
+## 1.0.24
+
+### Patch Changes
+
+- Add npm metadata and document how to update `@equaltoai/greater-components` from npm.
+
+## 1.0.23
+
+### Patch Changes
+
+- Add npm metadata and document how to update `@equaltoai/greater-components` from npm.
+
 ## 1.0.22
 
 ### Patch Changes

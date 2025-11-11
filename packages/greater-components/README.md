@@ -12,6 +12,14 @@ npm install @equaltoai/greater-components
 pnpm add @equaltoai/greater-components
 ```
 
+## Updating
+
+```bash
+npm update @equaltoai/greater-components
+# or
+npm install @equaltoai/greater-components@latest
+```
+
 ## Usage
 
 ```ts

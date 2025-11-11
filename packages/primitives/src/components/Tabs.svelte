@@ -20,7 +20,6 @@
   }
 
   const restProps = $restProps();
-  const componentProps = $props<Props>();
   let {
     tabs = [],
     activeTab = tabs[0]?.id,
@@ -29,7 +28,7 @@
     variant = 'default',
     class: className = '',
     onTabChange,
-  } = componentProps;
+  } = $props<Props>();
 
   const forwardedProps = $derived<Record<string, unknown>>(() => restProps);
 
