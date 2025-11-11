@@ -848,7 +848,7 @@ type Mutation {
   deleteObject(id: ID!): Boolean!
   likeObject(id: ID!): Activity!
   unlikeObject(id: ID!): Boolean!
-  shareObject(id: ID!): Activity!
+  shareObject(id: ID!): Object!
   unshareObject(id: ID!): Boolean!
   bookmarkObject(id: ID!): Object!
   unbookmarkObject(id: ID!): Boolean!

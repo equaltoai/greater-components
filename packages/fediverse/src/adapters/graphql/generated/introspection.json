@@ -13758,7 +13758,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "Activity",
+                "name": "Object",
                 "ofType": null
               }
             },

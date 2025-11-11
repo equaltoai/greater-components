@@ -19,16 +19,19 @@
     onTabChange?: (tabId: string) => void;
   }
 
+  const restProps = $restProps();
+  const componentProps = $props<Props>();
   let {
-    tabs,
+    tabs = [],
     activeTab = tabs[0]?.id,
     orientation = 'horizontal',
     activation = 'automatic',
     variant = 'default',
     class: className = '',
-    onTabChange
-  }: Props = $props();
-  const restProps = $restProps();
+    onTabChange,
+  } = componentProps;
+
+  const forwardedProps = $derived<Record<string, unknown>>(() => restProps);
 
   // State management
   let currentActiveTab = $state(activeTab);
@@ -196,7 +199,7 @@
   const tabsId = `tabs-${Math.random().toString(36).substr(2, 9)}`;
 </script>
 
-<div class={containerClass()} {...restProps}>
+<div class={containerClass()} {...forwardedProps()}>
   <div
     bind:this={tablistElement}
     class="gr-tabs__tablist"

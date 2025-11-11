@@ -35,17 +35,23 @@ No separate CSS import needed - styles are in components.
 
 fs.writeFileSync(path.join(distDir, 'CSS_USAGE.md'), readme);
 
-// Ensure backward compatibility: create styles.css symlink/copy if style.css exists
+const sourceCssPath = path.join(distDir, 'greater-components-primitives.css');
 const styleCssPath = path.join(distDir, 'style.css');
 const stylesCssPath = path.join(distDir, 'styles.css');
 
+if (fs.existsSync(sourceCssPath)) {
+  fs.copyFileSync(sourceCssPath, styleCssPath);
+  console.log('✅ Created style.css from greater-components-primitives.css');
+} else {
+  console.warn('⚠️ Missing greater-components-primitives.css - style.css not created');
+}
+
+// Ensure backward compatibility: create styles.css symlink/copy if style.css exists
 if (fs.existsSync(styleCssPath) && !fs.existsSync(stylesCssPath)) {
   try {
-    // Try symlink first (more efficient)
     fs.symlinkSync('style.css', stylesCssPath, 'file');
     console.log('✅ Created styles.css symlink for backward compatibility');
   } catch {
-    // Fallback to copy if symlink fails (e.g., Windows)
     fs.copyFileSync(styleCssPath, stylesCssPath);
     console.log('✅ Created styles.css copy for backward compatibility');
   }
