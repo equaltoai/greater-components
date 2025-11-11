@@ -9,9 +9,9 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^5.14.0",
+    "astro": "^5.15.5",
     "svelte": "^5.36.0",
-    "@astrojs/svelte": "^7.1.0",
+    "@astrojs/svelte": "^7.2.2",
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",
