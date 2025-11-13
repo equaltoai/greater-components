@@ -1,5 +1,56 @@
 # @equaltoai/greater-components-primitives
 
+## 1.0.17
+
+### Patch Changes
+
+- Disable Vite/esbuild minification for every Svelte 5 bundle so our compiled output never uses `$` as a variable name. This keeps all published artifacts rune-safe and fixes the “`$` name is reserved” crash reported in v1.0.27.
+- Stop Vite/esbuild from mangling identifiers to `$` so the compiled Svelte output remains rune-safe under Svelte 5, and rebuild the affected packages. This fixes the `function $(...)` runtime error reported in v1.0.27.
+
+## 1.0.16
+
+### Patch Changes
+
+- Align every package with the shared Vitest 4 toolchain, clean up the rune-incompatible Timeline unit specs, and document that Timeline coverage now lives in the demo/E2E suite.
+
+## 1.0.15
+
+### Patch Changes
+
+- Fix Tabs component $restProps handling and add comprehensive demo
+
+  **Fixes:**
+  - Fixed `Tabs` component to use `...restProps` destructuring pattern instead of `$derived(() => $restProps())`
+  - Resolves `store_invalid_shape: restProps is not a store with a subscribe method` error during SSR
+  - Component now correctly forwards additional HTML attributes to the root element
+
+  **Demo:**
+  - Added comprehensive Tabs demo at `apps/playground/src/routes/tabs/+page.svelte`
+  - Demonstrates horizontal tabs with underline variant
+  - Demonstrates vertical tabs with pills variant and manual activation
+  - Shows keyboard navigation (arrow keys, Home/End, Enter/Space)
+  - Includes disabled tab states and snippet-based content rendering
+  - Fully functional under SSR using local workspace packages
+
+## 1.0.14
+
+### Patch Changes
+
+- Fix Tabs component $restProps handling and add comprehensive demo
+
+  **Fixes:**
+  - Fixed `Tabs` component to use `...restProps` destructuring pattern instead of `$derived(() => $restProps())`
+  - Resolves `store_invalid_shape: restProps is not a store with a subscribe method` error during SSR
+  - Component now correctly forwards additional HTML attributes to the root element
+
+  **Demo:**
+  - Added comprehensive Tabs demo at `apps/playground/src/routes/tabs/+page.svelte`
+  - Demonstrates horizontal tabs with underline variant
+  - Demonstrates vertical tabs with pills variant and manual activation
+  - Shows keyboard navigation (arrow keys, Home/End, Enter/Space)
+  - Includes disabled tab states and snippet-based content rendering
+  - Fully functional under SSR using local workspace packages
+
 ## 1.0.13
 
 ### Patch Changes

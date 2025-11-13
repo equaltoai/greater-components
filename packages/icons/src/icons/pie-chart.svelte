@@ -1,31 +1,18 @@
 <script lang="ts">
-  import type { HTMLAttributes } from 'svelte/elements';
+  import type { SVGAttributes } from 'svelte/elements';
   
-  interface Props extends HTMLAttributes<SVGElement> {
+  interface Props extends SVGAttributes<SVGSVGElement> {
     size?: number | string;
     color?: string;
     strokeWidth?: number | string;
     class?: string;
   }
   
-  let { 
-    size = 24, 
-    color = 'currentColor', 
+  let {
+    size = 24,
+    color = 'currentColor',
     strokeWidth = 2,
     class: className = '',
-    id,
-    style,
-    onclick,
-    onmouseenter,
-    onmouseleave,
-    onfocus,
-    onblur,
-    onkeydown,
-    onkeyup,
-    role,
-    'aria-label': ariaLabel,
-    'aria-labelledby': ariaLabelledby,
-    'aria-describedby': ariaDescribedby,
     ...restProps
   }: Props = $props();
 </script>
@@ -42,19 +29,6 @@
   stroke-linejoin="round"
   class="gr-icon gr-icon-pie-chart {className}"
   aria-hidden="true"
-  {id}
-  {style}
-  {onclick}
-  {onmouseenter}
-  {onmouseleave}
-  {onfocus}
-  {onblur}
-  {onkeydown}
-  {onkeyup}
-  {role}
-  aria-label={ariaLabel}
-  aria-labelledby={ariaLabelledby}
-  aria-describedby={ariaDescribedby}
   {...restProps}
 >
   <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path>

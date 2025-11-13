@@ -86,6 +86,11 @@ export interface TooltipConfig {
 	id?: string;
 
 	/**
+	 * Initial open state
+	 */
+	initialOpen?: boolean;
+
+	/**
 	 * Preferred placement
 	 */
 	placement?: TooltipPlacement;
@@ -341,6 +346,7 @@ function calculatePosition(
 export function createTooltip(config: TooltipConfig = {}) {
 	const {
 		id: customId,
+		initialOpen = false,
 		placement: preferredPlacement = 'top',
 		openDelay = 300,
 		closeDelay = 0,
@@ -357,7 +363,7 @@ export function createTooltip(config: TooltipConfig = {}) {
 
 	// Reactive state
 	const internalState: TooltipState = {
-		open: config.open || false,
+		open: initialOpen,
 		id: customId || generateId('tooltip'),
 		placement: preferredPlacement,
 		position: { x: 0, y: 0 },

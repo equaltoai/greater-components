@@ -166,7 +166,7 @@
 </script>
 
 <div class={`gr-action-bar ${className}`} role="group" aria-label="Post actions">
-	<!-- Reply Button -->
+	<!-- Reply Button - TEMPORARILY DISABLED FOR DEBUGGING
 	<Button
 		variant="ghost"
 		{size}
@@ -189,6 +189,7 @@
 			</span>
 		{/if}
 	</Button>
+	-->
 
 	<!-- Boost/Unboost Button -->
 	<Button

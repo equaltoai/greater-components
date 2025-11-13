@@ -1,31 +1,18 @@
 <script lang="ts">
-  import type { HTMLAttributes } from 'svelte/elements';
+  import type { SVGAttributes } from 'svelte/elements';
   
-  interface Props extends HTMLAttributes<SVGElement> {
+  interface Props extends SVGAttributes<SVGSVGElement> {
     size?: number | string;
     color?: string;
     strokeWidth?: number | string;
     class?: string;
   }
   
-  let { 
-    size = 24, 
-    color = 'currentColor', 
+  let {
+    size = 24,
+    color = 'currentColor',
     strokeWidth = 2,
     class: className = '',
-    id,
-    style,
-    onclick,
-    onmouseenter,
-    onmouseleave,
-    onfocus,
-    onblur,
-    onkeydown,
-    onkeyup,
-    role,
-    'aria-label': ariaLabel,
-    'aria-labelledby': ariaLabelledby,
-    'aria-describedby': ariaDescribedby,
     ...restProps
   }: Props = $props();
 </script>
@@ -42,19 +29,6 @@
   stroke-linejoin="round"
   class="gr-icon gr-icon-truck {className}"
   aria-hidden="true"
-  {id}
-  {style}
-  {onclick}
-  {onmouseenter}
-  {onmouseleave}
-  {onfocus}
-  {onblur}
-  {onkeydown}
-  {onkeyup}
-  {role}
-  aria-label={ariaLabel}
-  aria-labelledby={ariaLabelledby}
-  aria-describedby={ariaDescribedby}
   {...restProps}
 >
   <rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle>

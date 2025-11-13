@@ -38,10 +38,10 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^20.11.5",
-    "@vitest/coverage-v8": "^1.2.1",
+    "@types/node": "^24.10.0",
+    "@vitest/coverage-v8": "^4.0.8",
     "chokidar": "^3.5.3",
-    "typescript": "^5.3.3",
-    "vitest": "^1.2.1"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
   }
 }

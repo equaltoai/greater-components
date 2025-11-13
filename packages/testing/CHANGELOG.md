@@ -1,5 +1,11 @@
 # @equaltoai/greater-components-testing
 
+## 1.0.1
+
+### Patch Changes
+
+- Align every package with the shared Vitest 4 toolchain, clean up the rune-incompatible Timeline unit specs, and document that Timeline coverage now lives in the demo/E2E suite.
+
 ## 2.0.0
 
 ### Major Changes

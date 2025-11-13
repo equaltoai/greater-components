@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "1.0.25",
+  "version": "1.0.30",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -39,10 +39,12 @@
     },
     "./fediverse": {
       "types": "./dist/fediverse/index.d.ts",
+      "svelte": "./dist/fediverse/src/index.ts",
       "import": "./dist/fediverse/index.js"
     },
     "./fediverse/*": {
       "types": "./dist/fediverse/*.d.ts",
+      "svelte": "./dist/fediverse/src/*.svelte",
       "import": "./dist/fediverse/*.js"
     },
     "./fediverse/style.css": "./dist/fediverse/style.css",

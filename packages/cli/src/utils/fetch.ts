@@ -2,7 +2,6 @@
  * Fetch component source code from repository
  */
 
-import fetch from 'node-fetch';
 import type { ComponentFile, ComponentMetadata } from '../registry/index.js';
 
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/equaltoai/greater-components/main';
@@ -74,4 +73,3 @@ export async function fetchComponents(
 
 	return result;
 }
-

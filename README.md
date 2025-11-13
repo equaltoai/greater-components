@@ -11,7 +11,7 @@
 [![Svelte 5](https://img.shields.io/badge/Svelte-5-orange.svg)](https://svelte.dev/)
 [![Coverage](https://img.shields.io/codecov/c/github/equaltoai/greater-components)](https://codecov.io/gh/equaltoai/greater-components)
 
-[**Documentation**](./API_DOCUMENTATION.md) • [**Storybook**](https://greater-components.pages.dev) • [**Getting Started**](#quick-start) • [**Examples**](./examples) • [**Contributing**](./CONTRIBUTING.md)
+[**Documentation**](./API_DOCUMENTATION.md) • [**Playground**](apps/playground/src/routes) • [**Getting Started**](#quick-start) • [**Examples**](./examples) • [**Contributing**](./CONTRIBUTING.md)
 
 </div>
 
@@ -228,7 +228,7 @@ npm install @equaltoai/greater-components-utils
 ### 🔧 **Developer Experience**
 - **TypeScript First**: Complete type safety throughout
 - **Comprehensive Docs**: JSDoc comments on all public APIs
-- **Storybook Integration**: Interactive component playground
+- **Component Playground**: Interactive SvelteKit sandbox for rapid prototyping
 - **Hot Reload**: Fast development with Vite
 - **Automated Testing**: 100% test coverage
 
@@ -311,7 +311,7 @@ test('button handles clicks', () => {
 - [**Troubleshooting**](./docs/troubleshooting/) - Common issues and solutions
 
 ### 🎮 **Interactive Examples**
-- [**Storybook**](https://greater-components.pages.dev) - Live component playground
+- [**Playground**](apps/playground/src/routes) - Live component playground
 - [**Examples Repository**](./examples) - Real-world usage examples
 - [**CodeSandbox Templates**](https://codesandbox.io) - Ready-to-fork templates
 
@@ -376,7 +376,7 @@ This ensures that improvements to the library benefit the entire community and F
 - 📘 **[TypeScript](https://www.typescriptlang.org/)** - JavaScript with types  
 - ⚡ **[Vite](https://vitejs.dev/)** - Next generation frontend tooling
 - 🧪 **[Vitest](https://vitest.dev/)** - Blazing fast unit testing
-- 📚 **[Storybook](https://storybook.js.org/)** - Tool for UI development
+- 📚 **Component playgrounds** - Use the built-in SvelteKit demos under `apps/playground`
 - 🎭 **[Playwright](https://playwright.dev/)** - Reliable end-to-end testing
 
 ### Community

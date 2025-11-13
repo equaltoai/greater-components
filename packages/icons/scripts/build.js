@@ -66,6 +66,10 @@ const fediverseIcons = {
   equals: {
     name: 'equals',
     contents: '<line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/>'
+  },
+  building: {
+    name: 'building',
+    contents: '<rect x="3" y="7" width="7" height="15" rx="1"/><rect x="14" y="3" width="7" height="19" rx="1"/><line x1="6" y1="11" x2="6" y2="11.01"/><line x1="6" y1="15" x2="6" y2="15.01"/><line x1="17.5" y1="7" x2="17.5" y2="7.01"/><line x1="17.5" y1="11" x2="17.5" y2="11.01"/><line x1="17.5" y1="15" x2="17.5" y2="15.01"/><line x1="17.5" y1="19" x2="17.5" y2="19.01"/>'
   }
 };
 
@@ -107,40 +111,34 @@ const aliases = {
   '>': 'greater-than',
   'equal': 'equals',
   'eq': 'equals',
-  '=': 'equals'
+  '=': 'equals',
+  'building': 'building',
+  'building-2': 'building',
+  'city': 'building',
+  'buildings': 'building',
+  'local': 'building',
+  'list-check': 'list',
+  'list-ordered': 'list',
+  'clipboard-list': 'list'
 };
 
 // Generate Svelte component template
 function generateComponent(iconName, svgContent) {
-
   return `<script lang="ts">
-  import type { HTMLAttributes } from 'svelte/elements';
+  import type { SVGAttributes } from 'svelte/elements';
   
-  interface Props extends HTMLAttributes<SVGElement> {
+  interface Props extends SVGAttributes<SVGSVGElement> {
     size?: number | string;
     color?: string;
     strokeWidth?: number | string;
     class?: string;
   }
   
-  let { 
-    size = 24, 
-    color = 'currentColor', 
+  let {
+    size = 24,
+    color = 'currentColor',
     strokeWidth = 2,
     class: className = '',
-    id,
-    style,
-    onclick,
-    onmouseenter,
-    onmouseleave,
-    onfocus,
-    onblur,
-    onkeydown,
-    onkeyup,
-    role,
-    'aria-label': ariaLabel,
-    'aria-labelledby': ariaLabelledby,
-    'aria-describedby': ariaDescribedby,
     ...restProps
   }: Props = $props();
 </script>
@@ -157,19 +155,6 @@ function generateComponent(iconName, svgContent) {
   stroke-linejoin="round"
   class="gr-icon gr-icon-${iconName} {className}"
   aria-hidden="true"
-  {id}
-  {style}
-  {onclick}
-  {onmouseenter}
-  {onmouseleave}
-  {onfocus}
-  {onblur}
-  {onkeydown}
-  {onkeyup}
-  {role}
-  aria-label={ariaLabel}
-  aria-labelledby={ariaLabelledby}
-  aria-describedby={ariaDescribedby}
   {...restProps}
 >
   ${svgContent}
@@ -248,7 +233,7 @@ export const iconCategories = {
   fediverse: [
 ${fediverseIconNames.map(name => `    '${name}'`).join(',\n')}
   ],
-  navigation: ['home', 'arrow-left', 'arrow-right', 'arrow-up', 'arrow-down', 'chevron-left', 'chevron-right', 'chevron-up', 'chevron-down'],
+  navigation: ['home', 'building', 'list', 'arrow-left', 'arrow-right', 'arrow-up', 'arrow-down', 'chevron-left', 'chevron-right', 'chevron-up', 'chevron-down'],
   action: ['edit', 'edit-2', 'edit-3', 'trash', 'trash-2', 'save', 'download', 'upload', 'share', 'share-2'],
   media: ['play', 'pause', 'stop', 'skip-forward', 'skip-back', 'fast-forward', 'rewind', 'volume', 'volume-1', 'volume-2', 'volume-x'],
   communication: ['mail', 'message-circle', 'message-square', 'phone', 'phone-call', 'phone-incoming', 'phone-outgoing', 'video', 'mic', 'mic-off'],

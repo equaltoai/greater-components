@@ -1,31 +1,18 @@
 <script lang="ts">
-  import type { HTMLAttributes } from 'svelte/elements';
+  import type { SVGAttributes } from 'svelte/elements';
   
-  interface Props extends HTMLAttributes<SVGElement> {
+  interface Props extends SVGAttributes<SVGSVGElement> {
     size?: number | string;
     color?: string;
     strokeWidth?: number | string;
     class?: string;
   }
   
-  let { 
-    size = 24, 
-    color = 'currentColor', 
+  let {
+    size = 24,
+    color = 'currentColor',
     strokeWidth = 2,
     class: className = '',
-    id,
-    style,
-    onclick,
-    onmouseenter,
-    onmouseleave,
-    onfocus,
-    onblur,
-    onkeydown,
-    onkeyup,
-    role,
-    'aria-label': ariaLabel,
-    'aria-labelledby': ariaLabelledby,
-    'aria-describedby': ariaDescribedby,
     ...restProps
   }: Props = $props();
 </script>
@@ -42,19 +29,6 @@
   stroke-linejoin="round"
   class="gr-icon gr-icon-cloud-snow {className}"
   aria-hidden="true"
-  {id}
-  {style}
-  {onclick}
-  {onmouseenter}
-  {onmouseleave}
-  {onfocus}
-  {onblur}
-  {onkeydown}
-  {onkeyup}
-  {role}
-  aria-label={ariaLabel}
-  aria-labelledby={ariaLabelledby}
-  aria-describedby={ariaDescribedby}
   {...restProps}
 >
   <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="8" y1="20" x2="8.01" y2="20"></line><line x1="12" y1="18" x2="12.01" y2="18"></line><line x1="12" y1="22" x2="12.01" y2="22"></line><line x1="16" y1="16" x2="16.01" y2="16"></line><line x1="16" y1="20" x2="16.01" y2="20"></line>

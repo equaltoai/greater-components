@@ -21,8 +21,8 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "tsup --watch",
-    "build": "tsup",
+    "dev": "tsc --watch --preserveWatchOutput",
+    "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -42,14 +42,12 @@
     "ora": "^8.1.1",
     "execa": "^9.5.2",
     "fs-extra": "^11.2.0",
-    "node-fetch": "^3.3.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.2.1",
+    "@types/node": "^24.10.0",
     "@types/prompts": "^2.4.9",
-    "tsup": "^8.3.5",
     "typescript": "^5.8.1"
   }
 }

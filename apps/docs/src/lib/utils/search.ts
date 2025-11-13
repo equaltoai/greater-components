@@ -1,4 +1,4 @@
-import FlexSearch from 'flexsearch';
+import { Index } from 'flexsearch';
 
 export interface SearchDocument {
 	id: string;
@@ -11,18 +11,12 @@ export interface SearchDocument {
 	status?: 'alpha' | 'beta' | 'stable' | 'deprecated';
 }
 
-type FlexSearchIndex = {
-	add: (id: string, content: string) => void;
-	search: (query: string, options: { limit: number }) => string[];
-	clear: () => void;
-};
-
 class SearchIndex {
-	private index: FlexSearchIndex;
+	private index: Index<false, false, true>;
 	private documents: Map<string, SearchDocument>;
 	
 	constructor() {
-		this.index = new FlexSearch.Index({
+		this.index = new Index({
 			preset: 'match',
 			tokenize: 'forward',
 			cache: true
@@ -38,8 +32,8 @@ class SearchIndex {
 	search(query: string, limit = 10): SearchDocument[] {
 		const results = this.index.search(query, { limit });
 		return results
-			.map((id) => this.documents.get(id))
-			.filter((doc): doc is SearchDocument => Boolean(doc));
+			.map((id) => this.documents.get(String(id)))
+			.filter((doc: SearchDocument | undefined): doc is SearchDocument => Boolean(doc));
 	}
 	
 	clear() {

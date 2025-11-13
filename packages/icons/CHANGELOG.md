@@ -1,5 +1,24 @@
 # @equaltoai/greater-components-icons
 
+## 1.0.3
+
+### Patch Changes
+
+- Disable Vite/esbuild minification for every Svelte 5 bundle so our compiled output never uses `$` as a variable name. This keeps all published artifacts rune-safe and fixes the “`$` name is reserved” crash reported in v1.0.27.
+- Stop Vite/esbuild from mangling identifiers to `$` so the compiled Svelte output remains rune-safe under Svelte 5, and rebuild the affected packages. This fixes the `function $(...)` runtime error reported in v1.0.27.
+
+## 1.0.2
+
+### Patch Changes
+
+- Align every package with the shared Vitest 4 toolchain, clean up the rune-incompatible Timeline unit specs, and document that Timeline coverage now lives in the demo/E2E suite.
+
+## 1.0.1
+
+### Patch Changes
+
+- Switch every icon component to Svelte 5 runes-friendly `$props` destructuring so they work in runes-enabled apps and stop referencing `$props`.
+
 ## 2.0.0
 
 ### Major Changes

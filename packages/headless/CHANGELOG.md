@@ -1,5 +1,11 @@
 # @equaltoai/greater-components-headless Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- Align every package with the shared Vitest 4 toolchain, clean up the rune-incompatible Timeline unit specs, and document that Timeline coverage now lives in the demo/E2E suite.
+
 All notable changes to the headless package will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -17,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Button Primitive** - Fully accessible headless button with:
   - Keyboard navigation (Enter, Space activation)
   - Loading state support with aria-busy
-  - Disabled state handling with aria-disabled  
+  - Disabled state handling with aria-disabled
   - Toggle button support with aria-pressed
   - Focus management
   - Programmatic control methods (click, focus, setDisabled, setLoading)
@@ -71,6 +77,7 @@ This initial release establishes the foundation for Greater Components' headless
 5. **Production validated** - Used in Lesser ActivityPub client
 
 The headless approach allows developers to:
+
 - Use any styling solution (Tailwind, CSS Modules, Styled Components, etc.)
 - Customize appearance without fighting library defaults
 - Build custom design systems on solid behavioral foundations
@@ -90,22 +97,19 @@ The headless approach allows developers to:
 The headless package is designed to eventually replace the styled primitives. Migration path:
 
 **Old (styled):**
+
 ```svelte
-<Button variant="solid" size="md" onclick={handler}>
-  Click me
-</Button>
+<Button variant="solid" size="md" onclick={handler}>Click me</Button>
 ```
 
 **New (headless):**
+
 ```svelte
 <script>
-  const button = createButton({ onClick: handler });
+	const button = createButton({ onClick: handler });
 </script>
 
-<button use:button.actions.button class="your-styles">
-  Click me
-</button>
+<button use:button.actions.button class="your-styles"> Click me </button>
 ```
 
 Both will be supported during transition period (6 months), after which styled components will be deprecated in favor of headless + example styled implementations.
-

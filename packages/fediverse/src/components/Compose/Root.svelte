@@ -43,8 +43,50 @@ Provides context for child components and handles form submission.
 
 	let { config = {}, handlers = {}, initialState = {}, children }: Props = $props();
 
-	// Create context for child components
-	const context = createComposeContext(config, handlers, initialState);
+	// Create reactive state using Svelte 5 runes
+	const characterLimit = config.characterLimit || 500;
+	const defaultState: Partial<ComposeState> = {
+		content: '',
+		contentWarning: '',
+		visibility: config.defaultVisibility || 'public',
+		mediaAttachments: [],
+		submitting: false,
+		error: null,
+		characterCount: 0,
+		overLimit: false,
+		inReplyTo: undefined,
+		contentWarningEnabled: false
+	};
+
+	// Create reactive state
+	let state: ComposeState = $state({
+		...defaultState,
+		...initialState,
+	} as ComposeState);
+
+	// Update initial character count
+	state.characterCount = state.content.length + state.contentWarning.length;
+	state.overLimit = state.characterCount > characterLimit;
+
+	// Reactive effect to update character count when content changes
+	$effect(() => {
+		const count = state.content.length + state.contentWarning.length;
+		state.characterCount = count;
+		state.overLimit = count > characterLimit;
+	});
+
+	// Override reset to work with reactive state
+	function resetState() {
+		Object.assign(state, defaultState);
+		state.characterCount = state.content.length + state.contentWarning.length;
+		state.overLimit = state.characterCount > characterLimit;
+	}
+
+	// Create context with the reactive state
+	const context = createComposeContext(config, handlers, initialState, state);
+	
+	// Override reset function to use reactive state
+	context.reset = resetState;
 
 	/**
 	 * Handle form submission

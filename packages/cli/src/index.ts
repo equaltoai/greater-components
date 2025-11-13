@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * Greater Components CLI
  * Add ActivityPub components to your project
@@ -30,4 +31,3 @@ try {
 		process.exit(1);
 	}
 }
-

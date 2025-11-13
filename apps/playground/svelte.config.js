@@ -11,7 +11,6 @@ const config = {
   compilerOptions: {
     runes: true
   },
-  // Disable runes for storybook compatibility  
   vitePlugin: {
     inspector: {
       showToggleButton: 'never'

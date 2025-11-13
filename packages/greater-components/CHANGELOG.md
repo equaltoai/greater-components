@@ -1,10 +1,105 @@
 # @equaltoai/greater-components
 
+## 1.0.30
+
+### Patch Changes
+
+- Fix Svelte 5 compatibility: rename $ prefixed temporary variables in compiled output
+
+  **CRITICAL FIX:**
+  - Fix Svelte 5 compatibility issue where compiled code contained `$` prefixed temporary variables (`$0`, `$1`, `$2`) that conflicted with Svelte 5's reserved `$` prefix for runes
+  - Add comprehensive `vite-plugin-rename-dollar-vars` plugin that post-processes ALL compiled Svelte output (not just `.svelte.js` files)
+  - Plugin detects Svelte chunks by filename, module IDs, and Svelte runtime function patterns
+  - Apply plugin to all packages with Svelte components: `fediverse`, `primitives`, and `icons`
+  - Fixes the error: "The $ prefix is reserved, and cannot be used for variables and imports" when consuming packages in Svelte 5 applications
+
+  **Files Changed:**
+  - `packages/fediverse/vite-plugin-rename-dollar-vars.ts` - Enhanced plugin to detect all Svelte chunks (not just .svelte.js files)
+  - `packages/fediverse/vite.config.ts` - Added plugin to build pipeline
+  - `packages/primitives/vite-plugin-rename-dollar-vars.ts` - Copied enhanced plugin
+  - `packages/primitives/vite.config.ts` - Added plugin to build pipeline
+  - `packages/icons/vite-plugin-rename-dollar-vars.ts` - Copied enhanced plugin
+  - `packages/icons/vite.config.ts` - Added plugin to build pipeline
+  - `scripts/verify-no-dollar-vars.js` - Added verification script to ensure no $ variables remain
+
+  **Technical Details:**
+  - Plugin now processes chunks that:
+    1. Have `.svelte.js` in filename (explicit Svelte component output)
+    2. Originated from a `.svelte` file (via `facadeModuleId` or `moduleIds`)
+    3. Contain Svelte-specific compiled code patterns (`user_derived`, `prop`, `snippet`, etc.)
+  - This ensures all compiled Svelte output is processed, including when using `preserveModules` with `.svelte` entry points that output `.js` files
+
+  **Impact:**
+  - Resolves compatibility issues when using `@equaltoai/greater-components` in Svelte 5 applications
+  - Compiled output no longer contains `$` prefixed variables (`$0`, `$1`, `$2`) that conflict with Svelte 5 runes
+  - All packages now build successfully with Svelte 5 compatibility
+  - Verified: No `$0`, `$1`, `$2` patterns remain in compiled output across all packages
+
+## 1.0.29
+
+### Patch Changes
+
+- Fix Svelte 5 compatibility: rename $ prefixed temporary variables in compiled output
+
+  **CRITICAL FIX:**
+  - Fix Svelte 5 compatibility issue where compiled code contained `$` prefixed temporary variables (`$0`, `$1`, `$2`) that conflicted with Svelte 5's reserved `$` prefix for runes
+  - Add `vite-plugin-rename-dollar-vars` plugin that post-processes compiled Svelte output to rename temporary variables to `_tmp0`, `_tmp1`, `_tmp2`, etc.
+  - Apply plugin to all packages with Svelte components: `fediverse`, `primitives`, and `icons`
+  - Fixes the error: "The $ prefix is reserved, and cannot be used for variables and imports" when consuming packages in Svelte 5 applications
+
+  **Files Changed:**
+  - `packages/fediverse/vite-plugin-rename-dollar-vars.ts` - New plugin to rename $ prefixed variables
+  - `packages/fediverse/vite.config.ts` - Added plugin to build pipeline
+  - `packages/primitives/vite-plugin-rename-dollar-vars.ts` - Copied plugin
+  - `packages/primitives/vite.config.ts` - Added plugin to build pipeline
+  - `packages/icons/vite-plugin-rename-dollar-vars.ts` - Copied plugin
+  - `packages/icons/vite.config.ts` - Added plugin to build pipeline
+
+  **Impact:**
+  - Resolves compatibility issues when using `@equaltoai/greater-components` in Svelte 5 applications
+  - Compiled output no longer contains `$` prefixed variables that conflict with Svelte 5 runes
+  - All packages now build successfully with Svelte 5 compatibility
+
+## 1.0.28
+
+### Patch Changes
+
+- Disable Vite/esbuild minification for every Svelte 5 bundle so our compiled output never uses `$` as a variable name. This keeps all published artifacts rune-safe and fixes the “`$` name is reserved” crash reported in v1.0.27.
+- Stop Vite/esbuild from mangling identifiers to `$` so the compiled Svelte output remains rune-safe under Svelte 5, and rebuild the affected packages. This fixes the `function $(...)` runtime error reported in v1.0.27.
+
+## 1.0.27
+
+### Patch Changes
+
+- Switch every icon component to Svelte 5 runes-friendly `$props` destructuring so they work in runes-enabled apps and stop referencing `$props`.
+
+## 1.0.26
+
+### Patch Changes
+
+- Fix Tabs component $restProps handling and add comprehensive demo
+
+  **Fixes:**
+  - Fixed `Tabs` component to use `...restProps` destructuring pattern instead of `$derived(() => $restProps())`
+  - Resolves `store_invalid_shape: restProps is not a store with a subscribe method` error during SSR
+  - Component now correctly forwards additional HTML attributes to the root element
+
+  **Demo:**
+  - Added comprehensive Tabs demo at `apps/playground/src/routes/tabs/+page.svelte`
+  - Demonstrates horizontal tabs with underline variant
+  - Demonstrates vertical tabs with pills variant and manual activation
+  - Shows keyboard navigation (arrow keys, Home/End, Enter/Space)
+  - Includes disabled tab states and snippet-based content rendering
+  - Fully functional under SSR using local workspace packages
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.15
+
 ## 1.0.25
 
 ### Patch Changes
 
-- Fix the Tabs component’s `$restProps` handling so SSR/custom-element renders no longer crash.
+- Fix the Tabs component's `$restProps` handling so SSR/custom-element renders no longer crash.
 
 ## 1.0.24
 

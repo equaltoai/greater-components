@@ -18,8 +18,9 @@ Provides context for child components and handles root-level interactions.
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { GenericStatus } from '../../generics/index.js';
-	import { createStatusContext } from './context.js';
-	import type { StatusConfig, StatusActionHandlers } from './context.js';
+	import { setContext } from 'svelte';
+	import { STATUS_CONTEXT_KEY } from './context.js';
+	import type { StatusConfig, StatusActionHandlers, StatusContext } from './context.js';
 
 	interface Props {
 		/**
@@ -45,8 +46,29 @@ Provides context for child components and handles root-level interactions.
 
 	let { status, config = {}, handlers = {}, children }: Props = $props();
 
+	// Handle reblogs - display the reblogged status
+	const actualStatus = $derived(status.reblog || status);
+	const account = $derived((status.reblog?.account || status.account) as GenericStatus['account']);
+	const isReblog = $derived(!!status.reblog);
+
 	// Create context for child components
-	const context = $derived(createStatusContext(status, config, handlers));
+	const context: StatusContext = {
+		get status() { return status; },
+		get actualStatus() { return actualStatus; },
+		get account() { return account; },
+		get isReblog() { return isReblog; },
+		config: {
+			density: config.density || 'comfortable',
+			showActions: config.showActions ?? true,
+			clickable: config.clickable ?? false,
+			showThread: config.showThread ?? true,
+			class: config.class || ''
+		},
+		handlers
+	};
+
+	// Set context once during initialization
+	setContext(STATUS_CONTEXT_KEY, context);
 
 	/**
 	 * Handle root element click

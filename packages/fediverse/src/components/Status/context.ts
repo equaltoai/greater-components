@@ -13,7 +13,7 @@ import type { GenericStatus } from '../../generics/index.js';
 /**
  * Status context key
  */
-const STATUS_CONTEXT_KEY = Symbol('status-context');
+export const STATUS_CONTEXT_KEY = Symbol('status-context');
 
 /**
  * Configuration options for Status component

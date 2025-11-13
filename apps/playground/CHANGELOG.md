@@ -1,5 +1,79 @@
 # @equaltoai/playground
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-fediverse@1.2.6
+  - @equaltoai/greater-components-primitives@1.0.17
+  - @equaltoai/greater-components-icons@1.0.3
+
+## 0.0.18
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-fediverse@1.2.5
+  - @equaltoai/greater-components-icons@1.0.2
+  - @equaltoai/greater-components-primitives@1.0.16
+  - @equaltoai/greater-components-utils@1.0.1
+
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-icons@1.0.1
+  - @equaltoai/greater-components-fediverse@1.2.4
+
+## 0.0.16
+
+### Patch Changes
+
+- Fix Tabs component $restProps handling and add comprehensive demo
+
+  **Fixes:**
+  - Fixed `Tabs` component to use `...restProps` destructuring pattern instead of `$derived(() => $restProps())`
+  - Resolves `store_invalid_shape: restProps is not a store with a subscribe method` error during SSR
+  - Component now correctly forwards additional HTML attributes to the root element
+
+  **Demo:**
+  - Added comprehensive Tabs demo at `apps/playground/src/routes/tabs/+page.svelte`
+  - Demonstrates horizontal tabs with underline variant
+  - Demonstrates vertical tabs with pills variant and manual activation
+  - Shows keyboard navigation (arrow keys, Home/End, Enter/Space)
+  - Includes disabled tab states and snippet-based content rendering
+  - Fully functional under SSR using local workspace packages
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.15
+  - @equaltoai/greater-components-fediverse@1.2.3
+
+## 0.0.15
+
+### Patch Changes
+
+- Fix Tabs component $restProps handling and add comprehensive demo
+
+  **Fixes:**
+  - Fixed `Tabs` component to use `...restProps` destructuring pattern instead of `$derived(() => $restProps())`
+  - Resolves `store_invalid_shape: restProps is not a store with a subscribe method` error during SSR
+  - Component now correctly forwards additional HTML attributes to the root element
+
+  **Demo:**
+  - Added comprehensive Tabs demo at `apps/playground/src/routes/tabs/+page.svelte`
+  - Demonstrates horizontal tabs with underline variant
+  - Demonstrates vertical tabs with pills variant and manual activation
+  - Shows keyboard navigation (arrow keys, Home/End, Enter/Space)
+  - Includes disabled tab states and snippet-based content rendering
+  - Fully functional under SSR using local workspace packages
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.14
+  - @equaltoai/greater-components-fediverse@1.2.2
+
 ## 0.0.14
 
 ### Patch Changes

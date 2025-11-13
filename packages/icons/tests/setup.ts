@@ -1,8 +1,8 @@
-import '@testing-library/jest-dom';
 
 // Add vi to global scope for tests
 import { vi } from 'vitest';
-global.vi = vi;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(global as any).vi = vi;
 
 // Mock dynamic imports for icon testing
 vi.mock('../src/icons/*.svelte', () => {

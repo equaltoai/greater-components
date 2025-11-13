@@ -28,6 +28,7 @@ const mdsvexOptions = {
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: ['.svelte', '.md', '.mdx'],
+	// @ts-expect-error - mdsvex preprocessor type mismatch
 	preprocess: [vitePreprocess(), mdsvex(mdsvexOptions)],
 	kit: {
 		adapter: adapter({

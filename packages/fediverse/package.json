@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-fediverse",
   "private": true,
-  "version": "1.2.1",
+  "version": "1.2.6",
   "type": "module",
   "description": "Fediverse UI components built with Svelte 5",
   "license": "AGPL-3.0-only",
@@ -33,7 +33,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "build": "vite build && tsc --emitDeclarationOnly && node scripts/fix-dollar-vars.js",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",
@@ -42,13 +42,11 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@equaltoai/greater-components-headless": "workspace:^",
     "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-headless": "workspace:^",
     "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
@@ -57,27 +55,18 @@
     "@tanstack/svelte-virtual": "^3.10.8"
   },
   "devDependencies": {
+    "@babel/parser": "^7.28.5",
+    "@babel/traverse": "^7.28.5",
     "@playwright/test": "^1.55.1",
-    "@storybook/addon-a11y": "^8.6.14",
-    "@storybook/addon-actions": "^8.6.14",
-    "@storybook/addon-controls": "^8.6.14",
-    "@storybook/addon-docs": "^8.6.14",
-    "@storybook/addon-interactions": "^8.6.14",
-    "@storybook/addon-links": "^8.6.14",
-    "@storybook/svelte": "^8.6.14",
-    "@storybook/test": "^8.6.14",
-    "@sveltejs/vite-plugin-svelte": "^4.0.0",
-    "@testing-library/svelte": "^5.2.1",
-    "@testing-library/user-event": "14.5.2",
-    "@types/node": "^20.14.0",
-    "@vitest/ui": "^2.0.5",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@types/node": "^24.10.0",
+    "@vitest/ui": "^4.0.8",
     "axe-core": "^4.10.0",
     "jsdom": "^24.1.1",
-    "storybook": "^8.6.14",
     "svelte": "^5.0.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.21",
-    "vitest": "^2.0.5"
+    "vite": "^7.2.2",
+    "vitest": "^4.0.8"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"

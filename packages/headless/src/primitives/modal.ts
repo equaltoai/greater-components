@@ -257,17 +257,14 @@ export function createModal(config: ModalConfig = {}) {
 			if (prop === 'open' && oldValue !== value) {
 				onOpenChange?.(value as boolean);
 			}
-			return true;
-		},
+		return true;
+	},
 	});
 
-	 
-	let _backdropElement: HTMLElement | null = null;
 	let contentElement: HTMLElement | null = null;
 	let triggerElement: HTMLButtonElement | null = null;
 	let originalBodyOverflow: string = '';
 	let previouslyFocusedElement: HTMLElement | null = null;
-
 	// Initialize if opened
 	if (initialOpen) {
 		previouslyFocusedElement = document.activeElement as HTMLElement;
@@ -427,8 +424,6 @@ export function createModal(config: ModalConfig = {}) {
 	 * Backdrop action
 	 */
 	const backdrop: Action<HTMLElement> = (node: HTMLElement) => {
-		_backdropElement = node;
-
 		function handleClick(event: MouseEvent) {
 			if (state.closeOnBackdrop && event.target === node) {
 				close();
@@ -446,7 +441,6 @@ export function createModal(config: ModalConfig = {}) {
 			destroy() {
 				node.removeEventListener('click', handleClick);
 				document.removeEventListener('keydown', handleKeyDown);
-				_backdropElement = null;
 				onDestroy?.();
 			},
 		};

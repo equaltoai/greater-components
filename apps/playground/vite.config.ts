@@ -10,5 +10,11 @@ export default defineConfig({
   // Avoid bundling heavy jsdom stack; rollup fails parsing cssstyle when included in SSR bundle.
   ssr: {
     external: ['jsdom', 'cssstyle', 'symbol-tree']
+  },
+  resolve: {
+    dedupe: ['svelte']
+  },
+  optimizeDeps: {
+    exclude: ['@equaltoai/greater-components-icons']
   }
 });

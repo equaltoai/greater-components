@@ -5,10 +5,18 @@
  * Tests hover/focus behavior, positioning, delays, and accessibility.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createTooltip } from '../src/primitives/tooltip';
+import type { ActionReturn } from '../src/types/common';
 
-describe('Tooltip Primitive', () => {
+// Helper to safely destroy actions
+function destroyAction(action: ActionReturn | void): void {
+	if (action && typeof action === 'object' && 'destroy' in action && action.destroy) {
+		action.destroy();
+	}
+}
+
+describe('Tooltip', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
 	});
@@ -43,7 +51,7 @@ describe('Tooltip Primitive', () => {
 		});
 
 		it('should initialize as open', () => {
-			const tooltip = createTooltip({ open: true });
+			const tooltip = createTooltip({ initialOpen: true });
 
 			expect(tooltip.state.open).toBe(true);
 		});
@@ -59,7 +67,7 @@ describe('Tooltip Primitive', () => {
 		});
 
 		it('should close tooltip', () => {
-			const tooltip = createTooltip({ open: true });
+			const tooltip = createTooltip({ initialOpen: true });
 
 			tooltip.helpers.close();
 
@@ -77,7 +85,7 @@ describe('Tooltip Primitive', () => {
 
 		it('should call onOpenChange when closed', () => {
 			const onOpenChange = vi.fn();
-			const tooltip = createTooltip({ open: true, onOpenChange });
+			const tooltip = createTooltip({ initialOpen: true, onOpenChange });
 
 			tooltip.helpers.close();
 
@@ -113,18 +121,18 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should close on mouseleave', () => {
-			const tooltip = createTooltip({ open: true, closeDelay: 0 });
+			const tooltip = createTooltip({ initialOpen: true, closeDelay: 0 });
 			const action = tooltip.actions.trigger(triggerEl);
 
 			triggerEl.dispatchEvent(new MouseEvent('mouseleave'));
 
 			expect(tooltip.state.open).toBe(false);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should respect open delay', () => {
@@ -141,11 +149,11 @@ describe('Tooltip Primitive', () => {
 			vi.advanceTimersByTime(1);
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should respect close delay', () => {
-			const tooltip = createTooltip({ open: true, closeDelay: 300 });
+			const tooltip = createTooltip({ initialOpen: true, closeDelay: 300 });
 			const action = tooltip.actions.trigger(triggerEl);
 
 			triggerEl.dispatchEvent(new MouseEvent('mouseleave'));
@@ -158,7 +166,7 @@ describe('Tooltip Primitive', () => {
 			vi.advanceTimersByTime(1);
 			expect(tooltip.state.open).toBe(false);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should cancel open delay if mouse leaves before delay completes', () => {
@@ -176,7 +184,7 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(false);
 
-			action.destroy();
+			destroyAction(action);
 		});
 	});
 
@@ -200,18 +208,18 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should close on blur', () => {
-			const tooltip = createTooltip({ open: true, closeDelay: 0 });
+			const tooltip = createTooltip({ initialOpen: true, closeDelay: 0 });
 			const action = tooltip.actions.trigger(triggerEl);
 
 			triggerEl.dispatchEvent(new FocusEvent('blur'));
 
 			expect(tooltip.state.open).toBe(false);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should respect open delay on focus', () => {
@@ -226,7 +234,7 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 	});
 
@@ -248,7 +256,7 @@ describe('Tooltip Primitive', () => {
 
 			expect(contentEl.getAttribute('role')).toBe('tooltip');
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should set data-placement attribute', () => {
@@ -257,11 +265,11 @@ describe('Tooltip Primitive', () => {
 
 			expect(contentEl.getAttribute('data-placement')).toBe('bottom');
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should keep tooltip open on hover', () => {
-			const tooltip = createTooltip({ open: true, closeDelay: 100 });
+			const tooltip = createTooltip({ initialOpen: true, closeDelay: 100 });
 			const action = tooltip.actions.content(contentEl);
 
 			contentEl.dispatchEvent(new MouseEvent('mouseenter'));
@@ -270,18 +278,18 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should close when mouse leaves content', () => {
-			const tooltip = createTooltip({ open: true, closeDelay: 0 });
+			const tooltip = createTooltip({ initialOpen: true, closeDelay: 0 });
 			const action = tooltip.actions.content(contentEl);
 
 			contentEl.dispatchEvent(new MouseEvent('mouseleave'));
 
 			expect(tooltip.state.open).toBe(false);
 
-			action.destroy();
+			destroyAction(action);
 		});
 	});
 
@@ -312,7 +320,7 @@ describe('Tooltip Primitive', () => {
 			expect(tooltip.state.placement).toBe('bottom');
 			expect(contentEl.getAttribute('data-placement')).toBe('bottom');
 
-			action.destroy();
+			destroyAction(action);
 		});
 	});
 
@@ -327,11 +335,11 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(false);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should close when becoming disabled', () => {
-			const tooltip = createTooltip({ open: true });
+			const tooltip = createTooltip({ initialOpen: true });
 
 			tooltip.helpers.setDisabled(true);
 
@@ -351,7 +359,7 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 	});
 
@@ -379,8 +387,8 @@ describe('Tooltip Primitive', () => {
 			const contentId = contentEl.id;
 			expect(triggerEl.getAttribute('aria-describedby')).toBe(contentId);
 
-			triggerAction.destroy();
-			contentAction.destroy();
+			destroyAction(triggerAction);
+			destroyAction(contentAction);
 		});
 
 		it('should set role=tooltip on content', () => {
@@ -389,7 +397,7 @@ describe('Tooltip Primitive', () => {
 
 			expect(contentEl.getAttribute('role')).toBe('tooltip');
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should be keyboard accessible', () => {
@@ -404,7 +412,7 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(false);
 
-			triggerAction.destroy();
+			destroyAction(triggerAction);
 		});
 
 		it('should generate unique IDs', () => {
@@ -419,8 +427,8 @@ describe('Tooltip Primitive', () => {
 
 			expect(content1.id).not.toBe(content2.id);
 
-			action1.destroy();
-			action2.destroy();
+			destroyAction(action1);
+			destroyAction(action2);
 		});
 	});
 
@@ -431,7 +439,7 @@ describe('Tooltip Primitive', () => {
 			const triggerEl = document.createElement('button');
 
 			const action = tooltip.actions.trigger(triggerEl);
-			action.destroy();
+			destroyAction(action);
 
 			expect(onDestroy).toHaveBeenCalled();
 		});
@@ -442,7 +450,7 @@ describe('Tooltip Primitive', () => {
 			document.body.appendChild(triggerEl);
 
 			const action = tooltip.actions.trigger(triggerEl);
-			action.destroy();
+			destroyAction(action);
 
 			const stateBefore = tooltip.state.open;
 
@@ -462,7 +470,7 @@ describe('Tooltip Primitive', () => {
 
 			triggerEl.dispatchEvent(new MouseEvent('mouseenter'));
 
-			action.destroy();
+			destroyAction(action);
 
 			vi.advanceTimersByTime(500);
 
@@ -485,11 +493,11 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should handle open when already open', () => {
-			const tooltip = createTooltip({ open: true });
+			const tooltip = createTooltip({ initialOpen: true });
 
 			tooltip.helpers.open();
 
@@ -497,7 +505,7 @@ describe('Tooltip Primitive', () => {
 		});
 
 		it('should handle close when already closed', () => {
-			const tooltip = createTooltip({ open: false });
+			const tooltip = createTooltip({ initialOpen: false });
 
 			tooltip.helpers.close();
 
@@ -515,7 +523,7 @@ describe('Tooltip Primitive', () => {
 			triggerEl.dispatchEvent(new MouseEvent('mouseleave'));
 			expect(tooltip.state.open).toBe(false);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should handle very long delays', () => {
@@ -531,7 +539,7 @@ describe('Tooltip Primitive', () => {
 			vi.advanceTimersByTime(1);
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 
 		it('should handle multiple triggers', () => {
@@ -551,8 +559,8 @@ describe('Tooltip Primitive', () => {
 			trigger2.dispatchEvent(new MouseEvent('mouseenter'));
 			expect(tooltip.state.open).toBe(true);
 
-			action1.destroy();
-			action2.destroy();
+			destroyAction(action1);
+			destroyAction(action2);
 		});
 
 		it('should handle switching between trigger and content hover', () => {
@@ -573,8 +581,8 @@ describe('Tooltip Primitive', () => {
 
 			expect(tooltip.state.open).toBe(true);
 
-			triggerAction.destroy();
-			contentAction.destroy();
+			destroyAction(triggerAction);
+			destroyAction(contentAction);
 		});
 	});
 
@@ -610,7 +618,7 @@ describe('Tooltip Primitive', () => {
 			vi.advanceTimersByTime(100);
 			expect(tooltip.state.open).toBe(true);
 
-			action.destroy();
+			destroyAction(action);
 		});
 	});
 });

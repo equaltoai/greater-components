@@ -7,15 +7,15 @@ export default defineConfig({
     timeout: 5000,
   },
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  forbidOnly: !!process.env['CI'],
+  retries: process.env['CI'] ? 2 : 0,
+  workers: process.env['CI'] ? 1 : undefined,
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['junit', { outputFile: 'test-results/results.xml' }],
   ],
   use: {
-    baseURL: 'http://localhost:6006', // Storybook dev server
+    baseURL: 'http://localhost:5173', // Playground dev server
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -41,9 +41,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'pnpm storybook',
-    port: 6006,
-    reuseExistingServer: !process.env.CI,
+    command: 'pnpm --filter @equaltoai/playground dev -- --host --port 5173',
+    port: 5173,
+    reuseExistingServer: !process.env['CI'],
     timeout: 120 * 1000,
   },
 });

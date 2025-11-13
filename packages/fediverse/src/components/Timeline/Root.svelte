@@ -18,11 +18,13 @@ Provides context for child components and handles virtualization/infinite scroll
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { GenericTimelineItem } from '../../generics/index.js';
-	import { createTimelineContext } from './context.js';
+	import { setContext } from 'svelte';
+	import { TIMELINE_CONTEXT_KEY } from './context.js';
 	import type {
 		TimelineCompoundConfig,
 		TimelineHandlers,
 		TimelineCompoundState,
+		TimelineContext
 	} from './context.js';
 
 	interface Props {
@@ -54,8 +56,39 @@ Provides context for child components and handles virtualization/infinite scroll
 
 	let { items, config = {}, handlers = {}, initialState = {}, children }: Props = $props();
 
-	// Create context for child components
-	const context = $derived(createTimelineContext(items, config, handlers, initialState));
+	// Create reactive state
+	const internalState: TimelineCompoundState = $state({
+		loading: initialState.loading ?? false,
+		loadingMore: initialState.loadingMore ?? false,
+		hasMore: initialState.hasMore ?? true,
+		error: initialState.error ?? null,
+		itemCount: items.length,
+		scrollTop: initialState.scrollTop ?? 0
+	});
+
+	// Create context object
+	const context: TimelineContext = {
+		get items() { return items; },
+		config: {
+			mode: config.mode || 'feed',
+			density: config.density || 'comfortable',
+			virtualized: config.virtualized ?? true,
+			infiniteScroll: config.infiniteScroll ?? true,
+			realtime: config.realtime ?? false,
+			showLoading: config.showLoading ?? true,
+			estimatedItemHeight: config.estimatedItemHeight || 200,
+			overscan: config.overscan || 5,
+			class: config.class || ''
+		},
+		handlers,
+		state: internalState,
+		updateState: (partial: Partial<TimelineCompoundState>) => {
+			Object.assign(internalState, partial);
+		}
+	};
+
+	// Set context once during initialization
+	setContext(TIMELINE_CONTEXT_KEY, context);
 
 	/**
 	 * Handle scroll events

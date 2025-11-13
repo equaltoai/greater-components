@@ -404,9 +404,12 @@ export function createTextField(config: TextFieldConfig = {}): TextField {
 		if (required) node.required = true;
 		if (readonly) node.readOnly = true;
 		if (maxLength) node.maxLength = maxLength;
-		if (pattern) node.pattern = pattern;
+		if (pattern && node instanceof HTMLInputElement) node.pattern = pattern;
 		if (type && node instanceof HTMLInputElement) node.type = type;
-		if (autocomplete) node.autocomplete = autocomplete;
+		if (autocomplete && node instanceof HTMLInputElement) {
+			// Type assertion needed because autocomplete property type is overly restrictive
+			node.setAttribute('autocomplete', autocomplete);
+		}
 		if (label) node.setAttribute('aria-label', label);
 		if (describedBy) node.setAttribute('aria-describedby', describedBy);
 
@@ -414,18 +417,18 @@ export function createTextField(config: TextFieldConfig = {}): TextField {
 		node.value = state.value;
 
 		// Add event listeners
-		node.addEventListener('input', handleInput);
+		node.addEventListener('input', handleInput as EventListener);
 		node.addEventListener('focus', handleFocus);
 		node.addEventListener('blur', handleBlur);
-		node.addEventListener('keydown', handleKeyDown);
+		node.addEventListener('keydown', handleKeyDown as EventListener);
 
 		return {
 			destroy() {
 				if (fieldElement) {
-					node.removeEventListener('input', handleInput);
+					node.removeEventListener('input', handleInput as EventListener);
 					node.removeEventListener('focus', handleFocus);
 					node.removeEventListener('blur', handleBlur);
-					node.removeEventListener('keydown', handleKeyDown);
+					node.removeEventListener('keydown', handleKeyDown as EventListener);
 					fieldElement = null;
 				}
 				onDestroy?.();

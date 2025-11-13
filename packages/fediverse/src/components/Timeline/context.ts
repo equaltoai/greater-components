@@ -13,7 +13,7 @@ import type { GenericTimelineItem } from '../../generics/index.js';
 /**
  * Timeline context key
  */
-const TIMELINE_CONTEXT_KEY = Symbol('timeline-context');
+export const TIMELINE_CONTEXT_KEY = Symbol('timeline-context');
 
 /**
  * Timeline display modes

@@ -353,8 +353,9 @@ export function createTabs(config: TabsConfig = {}) {
 	 */
 	function focusFirst(activate = false) {
 		const enabledTabs = getEnabledTabs();
-		if (enabledTabs.length > 0) {
-			focusTab(enabledTabs[0].index, activate);
+		const firstTab = enabledTabs[0];
+		if (firstTab) {
+			focusTab(firstTab.index, activate);
 		}
 	}
 
@@ -363,8 +364,9 @@ export function createTabs(config: TabsConfig = {}) {
 	 */
 	function focusLast(activate = false) {
 		const enabledTabs = getEnabledTabs();
-		if (enabledTabs.length > 0) {
-			focusTab(enabledTabs[enabledTabs.length - 1].index, activate);
+		const lastTab = enabledTabs[enabledTabs.length - 1];
+		if (lastTab) {
+			focusTab(lastTab.index, activate);
 		}
 	}
 

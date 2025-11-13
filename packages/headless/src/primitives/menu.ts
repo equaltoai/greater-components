@@ -414,7 +414,8 @@ export function createMenu(config: MenuConfig = {}) {
 	function focusFirst() {
 		// Find first enabled item
 		for (let i = 0; i < menuItems.length; i++) {
-			if (!menuItems[i].disabled) {
+			const item = menuItems[i];
+			if (item && !item.disabled) {
 				focusItem(i);
 				return;
 			}
@@ -427,7 +428,8 @@ export function createMenu(config: MenuConfig = {}) {
 	function focusLast() {
 		// Find last enabled item
 		for (let i = menuItems.length - 1; i >= 0; i--) {
-			if (!menuItems[i].disabled) {
+			const item = menuItems[i];
+			if (item && !item.disabled) {
 				focusItem(i);
 				return;
 			}
@@ -608,8 +610,11 @@ export function createMenu(config: MenuConfig = {}) {
 		// Check if item already exists and update it
 		const existingIndex = menuItems.findIndex((item) => item.element === node);
 		if (existingIndex !== -1) {
-			menuItems[existingIndex].disabled = disabled;
-			menuItems[existingIndex].onClick = onClickHandler;
+			const existingItem = menuItems[existingIndex];
+			if (existingItem) {
+				existingItem.disabled = disabled;
+				existingItem.onClick = onClickHandler;
+			}
 			if (disabled) {
 				node.setAttribute('aria-disabled', 'true');
 			} else {

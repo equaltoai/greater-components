@@ -58,13 +58,23 @@
         Get Started
       </Button>
       <Button variant="outline" size="lg">
-        <a href="/storybook" style="text-decoration: none; color: inherit;">
-          View Storybook
+        <a href="/demos/primitives" style="text-decoration: none; color: inherit;">
+          Component Demos
         </a>
       </Button>
       <Button variant="outline" size="lg">
         <a href="/timeline" style="text-decoration: none; color: inherit;">
           View Timeline Demo
+        </a>
+      </Button>
+      <Button variant="outline" size="lg">
+        <a href="/tabs" style="text-decoration: none; color: inherit;">
+          Try Tabs Demo
+        </a>
+      </Button>
+      <Button variant="outline" size="lg">
+        <a href="/compose" style="text-decoration: none; color: inherit;">
+          Compose Demo
         </a>
       </Button>
     </div>

@@ -72,3 +72,6 @@ lerna-debug.log*
 # Storybook
 storybook-static/
 *storybook.log
+
+.playwright-mcp/
+.tmp-tabs-restprops/

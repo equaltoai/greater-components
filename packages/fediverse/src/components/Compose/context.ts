@@ -250,11 +250,13 @@ export interface ComposeContext {
  * @param config - Configuration options
  * @param handlers - Action handlers
  * @param initialState - Initial state
+ * @param state - Reactive state object (created with $state in Root component)
  */
 export function createComposeContext(
 	config: ComposeConfig = {},
 	handlers: ComposeHandlers = {},
-	initialState: Partial<ComposeState> = {}
+	initialState: Partial<ComposeState> = {},
+	state?: ComposeState
 ): ComposeContext {
 	const characterLimit = config.characterLimit || 500;
 	
@@ -271,38 +273,16 @@ export function createComposeContext(
 		contentWarningEnabled: false
 	};
 
-	// Create reactive state using Proxy for universal compatibility (Svelte + Node.js)
-	const internalState: ComposeState = {
+	// If state is provided (from Root component with $state), use it
+	// Otherwise create a fallback (for testing or non-Svelte environments)
+	const reactiveState = state || {
 		...defaultState,
 		...initialState,
-	};
-
-	// Update character count based on initial state
-	internalState.characterCount = internalState.content.length + internalState.contentWarning.length;
-	internalState.overLimit = internalState.characterCount > characterLimit;
-
-	// Helper to update character count
-	function updateCharacterCount(state: ComposeState) {
-		const count = state.content.length + state.contentWarning.length;
-		state.characterCount = count;
-		state.overLimit = count > characterLimit;
-	}
-
-	// Create proxy for reactivity
-	const state = new Proxy(internalState, {
-		set(target, prop: keyof ComposeState, value) {
-			target[prop] = value as never;
-			// Update character count when content or contentWarning changes
-			if (prop === 'content' || prop === 'contentWarning') {
-				updateCharacterCount(target);
-			}
-			return true;
-		},
-	});
+	} as ComposeState;
 
 	function reset() {
-		Object.assign(state, defaultState);
-		updateCharacterCount(state);
+		Object.assign(reactiveState, defaultState);
+		// Character count will be updated by $effect in Root component
 	}
 
 	const context: ComposeContext = {
@@ -318,13 +298,10 @@ export function createComposeContext(
 			class: config.class || ''
 		},
 		handlers,
-		state,
+		state: reactiveState,
 		updateState: (partial: Partial<ComposeState>) => {
-			Object.assign(state, partial);
-			// Update character count if content or contentWarning changed
-			if ('content' in partial || 'contentWarning' in partial) {
-				updateCharacterCount(state);
-			}
+			Object.assign(reactiveState, partial);
+			// Character count will be updated by $effect in Root component
 		},
 		reset
 	};

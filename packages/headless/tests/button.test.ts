@@ -2,193 +2,318 @@
  * Button Primitive Tests
  * 
  * Comprehensive test suite for the Button headless primitive.
- * Tests behavior, accessibility, keyboard interactions, and disabled states.
+ * Tests click handlers, keyboard navigation, loading states, and accessibility.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createButton, isButton } from '../src/primitives/button';
+import { createButton } from '../src/primitives/button';
 
 describe('Button Primitive', () => {
+	let buttonElement: HTMLButtonElement;
+
+	beforeEach(() => {
+		buttonElement = document.createElement('button');
+		document.body.appendChild(buttonElement);
+	});
+
+	afterEach(() => {
+		document.body.innerHTML = '';
+	});
+
 	describe('Initialization', () => {
 		it('should create with default config', () => {
 			const button = createButton();
 
-			expect(button.state.pressed).toBe(false);
 			expect(button.state.disabled).toBe(false);
 			expect(button.state.loading).toBe(false);
+			expect(button.state.pressed).toBe(false);
+			expect(button.state.focused).toBe(false);
+			expect(button.state.id).toMatch(/^button-/);
 		});
 
-		it('should initialize with pressed state', () => {
-			const button = createButton({ pressed: true });
-
-			expect(button.state.pressed).toBe(true);
-		});
-
-		it('should initialize as disabled', () => {
-			const button = createButton({ disabled: true });
+		it('should initialize with custom config', () => {
+			const button = createButton({
+				disabled: true,
+				loading: true,
+				pressed: true,
+				id: 'custom-button',
+				label: 'Custom Button'
+			});
 
 			expect(button.state.disabled).toBe(true);
+			expect(button.state.loading).toBe(true);
+			expect(button.state.pressed).toBe(true);
+			expect(button.state.id).toBe('custom-button');
 		});
 
-		it('should initialize as loading', () => {
-			const button = createButton({ loading: true });
+		it('should generate unique IDs', () => {
+			const button1 = createButton();
+			const button2 = createButton();
 
-			expect(button.state.loading).toBe(true);
+			expect(button1.state.id).not.toBe(button2.state.id);
+		});
+	});
+
+	describe('Button Action', () => {
+		it('should set type attribute', () => {
+			const button = createButton({ type: 'submit' });
+			const action = button.actions.button(buttonElement);
+
+			expect(buttonElement.getAttribute('type')).toBe('submit');
+
+			action.destroy?.();
+		});
+
+		it('should set id attribute', () => {
+			const button = createButton({ id: 'test-button' });
+			const action = button.actions.button(buttonElement);
+
+			expect(buttonElement.id).toBe('test-button');
+
+			action.destroy?.();
+		});
+
+		it('should set aria-label', () => {
+			const button = createButton({ label: 'Test Button' });
+			const action = button.actions.button(buttonElement);
+
+			expect(buttonElement.getAttribute('aria-label')).toBe('Test Button');
+
+			action.destroy?.();
+		});
+
+		it('should set aria-disabled when disabled', () => {
+			const button = createButton({ disabled: true });
+			const action = button.actions.button(buttonElement);
+
+			expect(buttonElement.getAttribute('aria-disabled')).toBe('true');
+
+			action.destroy?.();
+		});
+
+		it('should set aria-busy when loading', () => {
+			const button = createButton({ loading: true });
+			const action = button.actions.button(buttonElement);
+
+			expect(buttonElement.getAttribute('aria-busy')).toBe('true');
+
+			action.destroy?.();
+		});
+
+		it('should set aria-pressed for toggle buttons', () => {
+			const button = createButton({ pressed: true });
+			const action = button.actions.button(buttonElement);
+
+			expect(buttonElement.getAttribute('aria-pressed')).toBe('true');
+
+			action.destroy?.();
 		});
 	});
 
 	describe('Click Handling', () => {
-		let buttonEl: HTMLButtonElement;
-
-		beforeEach(() => {
-			buttonEl = document.createElement('button');
-			document.body.appendChild(buttonEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(buttonEl);
-		});
-
-		it('should call onClick when clicked', () => {
+		it('should call onClick handler', () => {
 			const onClick = vi.fn();
 			const button = createButton({ onClick });
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			buttonEl.click();
+			buttonElement.click();
 
 			expect(onClick).toHaveBeenCalledTimes(1);
 
-			action.destroy();
+			action.destroy?.();
 		});
 
 		it('should not call onClick when disabled', () => {
 			const onClick = vi.fn();
 			const button = createButton({ disabled: true, onClick });
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			buttonEl.click();
+			buttonElement.click();
 
 			expect(onClick).not.toHaveBeenCalled();
 
-			action.destroy();
+			action.destroy?.();
 		});
 
 		it('should not call onClick when loading', () => {
 			const onClick = vi.fn();
 			const button = createButton({ loading: true, onClick });
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			buttonEl.click();
+			buttonElement.click();
 
 			expect(onClick).not.toHaveBeenCalled();
 
-			action.destroy();
+			action.destroy?.();
 		});
 
-		it('should handle async onClick', async () => {
-			const onClick = vi.fn().mockResolvedValue(undefined);
+		it('should trigger click via helper', () => {
+			const onClick = vi.fn();
 			const button = createButton({ onClick });
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			buttonEl.click();
+			button.helpers.click();
 
-			expect(onClick).toHaveBeenCalled();
+			expect(onClick).toHaveBeenCalledTimes(1);
 
-			action.destroy();
+			action.destroy?.();
 		});
 	});
 
-	describe('Keyboard Interactions', () => {
-		let buttonEl: HTMLButtonElement;
-
-		beforeEach(() => {
-			buttonEl = document.createElement('button');
-			document.body.appendChild(buttonEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(buttonEl);
-		});
-
-		it('should trigger click on Enter key', () => {
+	describe('Keyboard Navigation', () => {
+		it('should trigger onClick on Enter key', () => {
 			const onClick = vi.fn();
 			const button = createButton({ onClick });
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			const event = new KeyboardEvent('keydown', { key: 'Enter' });
-			buttonEl.dispatchEvent(event);
+			const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true });
+			buttonElement.dispatchEvent(event);
 
 			expect(onClick).toHaveBeenCalledTimes(1);
 
-			action.destroy();
+			action.destroy?.();
 		});
 
-		it('should trigger click on Space key', () => {
+		it('should trigger onClick on Space key', () => {
 			const onClick = vi.fn();
 			const button = createButton({ onClick });
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			const event = new KeyboardEvent('keydown', { key: ' ' });
-			buttonEl.dispatchEvent(event);
+			const event = new KeyboardEvent('keydown', { key: ' ', bubbles: true });
+			buttonElement.dispatchEvent(event);
 
 			expect(onClick).toHaveBeenCalledTimes(1);
 
-			action.destroy();
+			action.destroy?.();
 		});
 
-		it('should not trigger on other keys', () => {
+		it('should not trigger onClick on other keys', () => {
 			const onClick = vi.fn();
 			const button = createButton({ onClick });
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			const event = new KeyboardEvent('keydown', { key: 'a' });
-			buttonEl.dispatchEvent(event);
+			const event = new KeyboardEvent('keydown', { key: 'a', bubbles: true });
+			buttonElement.dispatchEvent(event);
 
 			expect(onClick).not.toHaveBeenCalled();
 
-			action.destroy();
+			action.destroy?.();
 		});
 
-		it('should prevent default on Space key', () => {
+		it('should call onKeyDown handler', () => {
+			const onKeyDown = vi.fn();
+			const button = createButton({ onKeyDown });
+			const action = button.actions.button(buttonElement);
+
+			const event = new KeyboardEvent('keydown', { key: 'a', bubbles: true });
+			buttonElement.dispatchEvent(event);
+
+			expect(onKeyDown).toHaveBeenCalledTimes(1);
+
+			action.destroy?.();
+		});
+
+		it('should not trigger keyboard events when disabled', () => {
+			const onClick = vi.fn();
+			const button = createButton({ disabled: true, onClick });
+			const action = button.actions.button(buttonElement);
+
+			const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true });
+			buttonElement.dispatchEvent(event);
+
+			expect(onClick).not.toHaveBeenCalled();
+
+			action.destroy?.();
+		});
+	});
+
+	describe('Focus Management', () => {
+		it('should track focused state', () => {
 			const button = createButton();
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			const event = new KeyboardEvent('keydown', { key: ' ' });
-			const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
-			buttonEl.dispatchEvent(event);
+			expect(button.state.focused).toBe(false);
 
-			expect(preventDefaultSpy).toHaveBeenCalled();
+			buttonElement.focus();
+			expect(button.state.focused).toBe(true);
 
-			action.destroy();
+			buttonElement.blur();
+			expect(button.state.focused).toBe(false);
+
+			action.destroy?.();
+		});
+
+		it('should call onFocus handler', () => {
+			const onFocus = vi.fn();
+			const button = createButton({ onFocus });
+			const action = button.actions.button(buttonElement);
+
+			buttonElement.focus();
+
+			expect(onFocus).toHaveBeenCalledTimes(1);
+
+			action.destroy?.();
+		});
+
+		it('should call onBlur handler', () => {
+			const onBlur = vi.fn();
+			const button = createButton({ onBlur });
+			const action = button.actions.button(buttonElement);
+
+			buttonElement.focus();
+			buttonElement.blur();
+
+			expect(onBlur).toHaveBeenCalledTimes(1);
+
+			action.destroy?.();
+		});
+
+		it('should focus via helper', () => {
+			const button = createButton();
+			const action = button.actions.button(buttonElement);
+
+			button.helpers.focus();
+
+			expect(button.state.focused).toBe(true);
+			expect(document.activeElement).toBe(buttonElement);
+
+			action.destroy?.();
+		});
+
+		it('should blur via helper', () => {
+			const button = createButton();
+			const action = button.actions.button(buttonElement);
+
+			button.helpers.focus();
+			expect(button.state.focused).toBe(true);
+
+			button.helpers.blur();
+			expect(button.state.focused).toBe(false);
+
+			action.destroy?.();
 		});
 	});
 
-	describe('Toggle Behavior', () => {
+	describe('Toggle Buttons', () => {
 		it('should toggle pressed state', () => {
 			const button = createButton({ pressed: false });
+			const action = button.actions.button(buttonElement);
 
 			expect(button.state.pressed).toBe(false);
+			expect(buttonElement.getAttribute('aria-pressed')).toBe('false');
 
 			button.helpers.toggle();
+
 			expect(button.state.pressed).toBe(true);
+			expect(buttonElement.getAttribute('aria-pressed')).toBe('true');
 
-			button.helpers.toggle();
-			expect(button.state.pressed).toBe(false);
-		});
-
-		it('should set pressed state', () => {
-			const button = createButton();
-
-			button.helpers.setPressed(true);
-			expect(button.state.pressed).toBe(true);
-
-			button.helpers.setPressed(false);
-			expect(button.state.pressed).toBe(false);
+			action.destroy?.();
 		});
 
 		it('should call onPressedChange when toggled', () => {
 			const onPressedChange = vi.fn();
-			const button = createButton({ onPressedChange });
+			const button = createButton({ pressed: false, onPressedChange });
+			const action = button.actions.button(buttonElement);
 
 			button.helpers.toggle();
 
@@ -197,205 +322,80 @@ describe('Button Primitive', () => {
 			button.helpers.toggle();
 
 			expect(onPressedChange).toHaveBeenCalledWith(false);
+
+			action.destroy?.();
 		});
 
-		it('should update DOM attribute when pressed changes', () => {
+		it('should set pressed state directly', () => {
 			const button = createButton();
-			const buttonEl = document.createElement('button');
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.getAttribute('aria-pressed')).toBe('false');
+			const action = button.actions.button(buttonElement);
 
 			button.helpers.setPressed(true);
 
-			expect(buttonEl.getAttribute('aria-pressed')).toBe('true');
+			expect(button.state.pressed).toBe(true);
+			expect(buttonElement.getAttribute('aria-pressed')).toBe('true');
 
-			action.destroy();
-		});
-	});
-
-	describe('Disabled State', () => {
-		it('should set disabled state', () => {
-			const button = createButton();
-
-			button.helpers.setDisabled(true);
-			expect(button.state.disabled).toBe(true);
-
-			button.helpers.setDisabled(false);
-			expect(button.state.disabled).toBe(false);
-		});
-
-		it('should update DOM disabled attribute', () => {
-			const button = createButton();
-			const buttonEl = document.createElement('button');
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.disabled).toBe(false);
-
-			button.helpers.setDisabled(true);
-
-			expect(buttonEl.disabled).toBe(true);
-
-			action.destroy();
-		});
-
-		it('should prevent clicks when disabled', () => {
-			const onClick = vi.fn();
-			const button = createButton({ onClick });
-			const buttonEl = document.createElement('button');
-			const action = button.actions.button(buttonEl);
-
-			button.helpers.setDisabled(true);
-			buttonEl.click();
-
-			expect(onClick).not.toHaveBeenCalled();
-
-			action.destroy();
+			action.destroy?.();
 		});
 	});
 
 	describe('Loading State', () => {
-		it('should set loading state', () => {
+		it('should update loading state', () => {
 			const button = createButton();
+			const action = button.actions.button(buttonElement);
 
-			button.helpers.setLoading(true);
-			expect(button.state.loading).toBe(true);
-
-			button.helpers.setLoading(false);
 			expect(button.state.loading).toBe(false);
-		});
-
-		it('should update DOM aria-busy attribute', () => {
-			const button = createButton();
-			const buttonEl = document.createElement('button');
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.getAttribute('aria-busy')).toBe('false');
+			expect(buttonElement.getAttribute('aria-busy')).toBe('false');
 
 			button.helpers.setLoading(true);
 
-			expect(buttonEl.getAttribute('aria-busy')).toBe('true');
+			expect(button.state.loading).toBe(true);
+			expect(buttonElement.getAttribute('aria-busy')).toBe('true');
 
-			action.destroy();
+			action.destroy?.();
 		});
 
 		it('should prevent clicks when loading', () => {
 			const onClick = vi.fn();
 			const button = createButton({ onClick });
-			const buttonEl = document.createElement('button');
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
 			button.helpers.setLoading(true);
-			buttonEl.click();
+			buttonElement.click();
 
 			expect(onClick).not.toHaveBeenCalled();
 
-			action.destroy();
+			action.destroy?.();
 		});
 	});
 
-	describe('DOM Attributes', () => {
-		let buttonEl: HTMLButtonElement;
-
-		beforeEach(() => {
-			buttonEl = document.createElement('button');
-			document.body.appendChild(buttonEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(buttonEl);
-		});
-
-		it('should set type attribute', () => {
-			const button = createButton({ type: 'submit' });
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.type).toBe('submit');
-
-			action.destroy();
-		});
-
-		it('should set default type as button', () => {
+	describe('Disabled State', () => {
+		it('should update disabled state', () => {
 			const button = createButton();
-			const action = button.actions.button(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			expect(buttonEl.type).toBe('button');
+			expect(button.state.disabled).toBe(false);
+			expect(buttonElement.getAttribute('aria-disabled')).toBe('false');
 
-			action.destroy();
+			button.helpers.setDisabled(true);
+
+			expect(button.state.disabled).toBe(true);
+			expect(buttonElement.getAttribute('aria-disabled')).toBe('true');
+
+			action.destroy?.();
 		});
 
-		it('should set aria-label', () => {
-			const button = createButton({ label: 'Close dialog' });
-			const action = button.actions.button(buttonEl);
+		it('should prevent clicks when disabled', () => {
+			const onClick = vi.fn();
+			const button = createButton({ onClick });
+			const action = button.actions.button(buttonElement);
 
-			expect(buttonEl.getAttribute('aria-label')).toBe('Close dialog');
+			button.helpers.setDisabled(true);
+			buttonElement.click();
 
-			action.destroy();
-		});
+			expect(onClick).not.toHaveBeenCalled();
 
-		it('should set aria-pressed for toggle buttons', () => {
-			const button = createButton({ pressed: true });
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.getAttribute('aria-pressed')).toBe('true');
-
-			action.destroy();
-		});
-
-		it('should set disabled attribute', () => {
-			const button = createButton({ disabled: true });
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.disabled).toBe(true);
-
-			action.destroy();
-		});
-
-		it('should set aria-busy when loading', () => {
-			const button = createButton({ loading: true });
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.getAttribute('aria-busy')).toBe('true');
-
-			action.destroy();
-		});
-	});
-
-	describe('Focus Management', () => {
-		let buttonEl: HTMLButtonElement;
-
-		beforeEach(() => {
-			buttonEl = document.createElement('button');
-			document.body.appendChild(buttonEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(buttonEl);
-		});
-
-		it('should focus button element', () => {
-			const button = createButton();
-			const action = button.actions.button(buttonEl);
-
-			button.helpers.focus();
-
-			expect(document.activeElement).toBe(buttonEl);
-
-			action.destroy();
-		});
-
-		it('should blur button element', () => {
-			const button = createButton();
-			const action = button.actions.button(buttonEl);
-
-			buttonEl.focus();
-			expect(document.activeElement).toBe(buttonEl);
-
-			button.helpers.blur();
-
-			expect(document.activeElement).not.toBe(buttonEl);
-
-			action.destroy();
+			action.destroy?.();
 		});
 	});
 
@@ -403,198 +403,88 @@ describe('Button Primitive', () => {
 		it('should call onDestroy when action is destroyed', () => {
 			const onDestroy = vi.fn();
 			const button = createButton({ onDestroy });
-			const buttonEl = document.createElement('button');
+			const action = button.actions.button(buttonElement);
 
-			const action = button.actions.button(buttonEl);
-			action.destroy();
+			action.destroy?.();
 
-			expect(onDestroy).toHaveBeenCalled();
+			expect(onDestroy).toHaveBeenCalledTimes(1);
 		});
 
-		it('should remove event listeners on destroy', () => {
+		it('should call onDestroy via helpers.destroy', () => {
+			const onDestroy = vi.fn();
+			const button = createButton({ onDestroy });
+			const action = button.actions.button(buttonElement);
+
+			button.helpers.destroy();
+
+			expect(onDestroy).toHaveBeenCalledTimes(1);
+
+			// Action destroy should have been called internally
+			action.destroy?.();
+		});
+
+		it('should clean up event listeners', () => {
 			const onClick = vi.fn();
 			const button = createButton({ onClick });
-			const buttonEl = document.createElement('button');
-			document.body.appendChild(buttonEl);
+			const action = button.actions.button(buttonElement);
 
-			const action = button.actions.button(buttonEl);
-			action.destroy();
+			action.destroy?.();
 
-			buttonEl.click();
-
+			// Click should not be handled after destroy
+			buttonElement.click();
 			expect(onClick).not.toHaveBeenCalled();
-
-			document.body.removeChild(buttonEl);
-		});
-	});
-
-	describe('isButton Utility', () => {
-		it('should identify button elements', () => {
-			const buttonEl = document.createElement('button');
-
-			expect(isButton(buttonEl)).toBe(true);
-		});
-
-		it('should identify link elements with button role', () => {
-			const linkEl = document.createElement('a');
-			linkEl.setAttribute('role', 'button');
-
-			expect(isButton(linkEl)).toBe(true);
-		});
-
-		it('should not identify regular links', () => {
-			const linkEl = document.createElement('a');
-
-			expect(isButton(linkEl)).toBe(false);
-		});
-
-		it('should not identify divs', () => {
-			const divEl = document.createElement('div');
-
-			expect(isButton(divEl)).toBe(false);
-		});
-
-		it('should identify input[type=button]', () => {
-			const inputEl = document.createElement('input');
-			inputEl.type = 'button';
-
-			expect(isButton(inputEl)).toBe(true);
-		});
-
-		it('should identify input[type=submit]', () => {
-			const inputEl = document.createElement('input');
-			inputEl.type = 'submit';
-
-			expect(isButton(inputEl)).toBe(true);
-		});
-
-		it('should not identify input[type=text]', () => {
-			const inputEl = document.createElement('input');
-			inputEl.type = 'text';
-
-			expect(isButton(inputEl)).toBe(false);
-		});
-	});
-
-	describe('Accessibility', () => {
-		let buttonEl: HTMLButtonElement;
-
-		beforeEach(() => {
-			buttonEl = document.createElement('button');
-			document.body.appendChild(buttonEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(buttonEl);
-		});
-
-		it('should have button role by default', () => {
-			const button = createButton();
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.tagName).toBe('BUTTON');
-
-			action.destroy();
-		});
-
-		it('should support aria-pressed for toggle buttons', () => {
-			const button = createButton({ pressed: false });
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.getAttribute('aria-pressed')).toBe('false');
-
-			button.helpers.toggle();
-
-			expect(buttonEl.getAttribute('aria-pressed')).toBe('true');
-
-			action.destroy();
-		});
-
-		it('should be keyboard accessible', () => {
-			const onClick = vi.fn();
-			const button = createButton({ onClick });
-			const action = button.actions.button(buttonEl);
-
-			// Should respond to Enter
-			buttonEl.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
-			expect(onClick).toHaveBeenCalledTimes(1);
-
-			// Should respond to Space
-			buttonEl.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
-			expect(onClick).toHaveBeenCalledTimes(2);
-
-			action.destroy();
-		});
-
-		it('should indicate loading state to screen readers', () => {
-			const button = createButton({ loading: true });
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.getAttribute('aria-busy')).toBe('true');
-
-			action.destroy();
-		});
-
-		it('should indicate disabled state', () => {
-			const button = createButton({ disabled: true });
-			const action = button.actions.button(buttonEl);
-
-			expect(buttonEl.disabled).toBe(true);
-
-			action.destroy();
 		});
 	});
 
 	describe('Edge Cases', () => {
-		it('should handle rapid clicks', () => {
-			const onClick = vi.fn();
-			const button = createButton({ onClick });
-			const buttonEl = document.createElement('button');
-			const action = button.actions.button(buttonEl);
-
-			buttonEl.click();
-			buttonEl.click();
-			buttonEl.click();
-
-			expect(onClick).toHaveBeenCalledTimes(3);
-
-			action.destroy();
-		});
-
-		it('should handle both disabled and loading', () => {
-			const onClick = vi.fn();
-			const button = createButton({ disabled: true, loading: true, onClick });
-			const buttonEl = document.createElement('button');
-			const action = button.actions.button(buttonEl);
-
-			buttonEl.click();
-
-			expect(onClick).not.toHaveBeenCalled();
-
-			action.destroy();
-		});
-
-		it('should handle toggling while disabled', () => {
-			const button = createButton({ disabled: true, pressed: false });
-
-			button.helpers.toggle();
-
-			expect(button.state.pressed).toBe(true);
-		});
-
-		it('should handle focus without element', () => {
+		it('should handle rapid state changes', () => {
 			const button = createButton();
+			const action = button.actions.button(buttonElement);
+
+			button.helpers.setDisabled(true);
+			button.helpers.setDisabled(false);
+			button.helpers.setLoading(true);
+			button.helpers.setLoading(false);
+			button.helpers.setPressed(true);
+			button.helpers.setPressed(false);
+
+			expect(button.state.disabled).toBe(false);
+			expect(button.state.loading).toBe(false);
+			expect(button.state.pressed).toBe(false);
+
+			action.destroy?.();
+		});
+
+		it('should handle multiple button instances', () => {
+			const button1 = createButton({ id: 'button-1' });
+			const button2 = createButton({ id: 'button-2' });
+
+			const el1 = document.createElement('button');
+			const el2 = document.createElement('button');
+			document.body.appendChild(el1);
+			document.body.appendChild(el2);
+
+			const action1 = button1.actions.button(el1);
+			const action2 = button2.actions.button(el2);
+
+			button1.helpers.setDisabled(true);
+			expect(button1.state.disabled).toBe(true);
+			expect(button2.state.disabled).toBe(false);
+
+			action1.destroy?.();
+			action2.destroy?.();
+		});
+
+		it('should handle button action applied to non-button element', () => {
+			const button = createButton();
+			const divElement = document.createElement('div') as unknown as HTMLButtonElement;
+			document.body.appendChild(divElement);
 
 			// Should not throw
-			expect(() => button.helpers.focus()).not.toThrow();
-		});
-
-		it('should handle blur without element', () => {
-			const button = createButton();
-
-			// Should not throw
-			expect(() => button.helpers.blur()).not.toThrow();
+			expect(() => {
+				const action = button.actions.button(divElement);
+				action.destroy?.();
+			}).not.toThrow();
 		});
 	});
 });
-

@@ -1,5 +1,49 @@
 # @equaltoai/greater-components-fediverse
 
+## 1.2.6
+
+### Patch Changes
+
+- Disable Vite/esbuild minification for every Svelte 5 bundle so our compiled output never uses `$` as a variable name. This keeps all published artifacts rune-safe and fixes the “`$` name is reserved” crash reported in v1.0.27.
+- Stop Vite/esbuild from mangling identifiers to `$` so the compiled Svelte output remains rune-safe under Svelte 5, and rebuild the affected packages. This fixes the `function $(...)` runtime error reported in v1.0.27.
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.17
+  - @equaltoai/greater-components-icons@1.0.3
+
+## 1.2.5
+
+### Patch Changes
+
+- Align every package with the shared Vitest 4 toolchain, clean up the rune-incompatible Timeline unit specs, and document that Timeline coverage now lives in the demo/E2E suite.
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.2.1
+  - @equaltoai/greater-components-headless@1.0.1
+  - @equaltoai/greater-components-icons@1.0.2
+  - @equaltoai/greater-components-primitives@1.0.16
+  - @equaltoai/greater-components-utils@1.0.1
+
+## 1.2.4
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-icons@1.0.1
+
+## 1.2.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.15
+
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.14
+
 ## 1.2.1
 
 ### Patch Changes

@@ -28,11 +28,7 @@
     class: className = '',
     onTabChange
   }: Props = $props();
-  type ForwardedProps = Omit<
-    Props,
-    'tabs' | 'activeTab' | 'orientation' | 'activation' | 'variant' | 'class' | 'onTabChange'
-  >;
-  const restProps = $derived<ForwardedProps>(() => $restProps());
+  const restProps = $restProps();
 
   // State management
   let currentActiveTab = $state(activeTab);
@@ -200,7 +196,7 @@
   const tabsId = `tabs-${Math.random().toString(36).substr(2, 9)}`;
 </script>
 
-<div class={containerClass()} {...restProps()}>
+<div class={containerClass()} {...restProps}>
   <div
     bind:this={tablistElement}
     class="gr-tabs__tablist"

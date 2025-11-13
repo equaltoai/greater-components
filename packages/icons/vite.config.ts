@@ -8,9 +8,11 @@ export default defineConfig({
       compilerOptions: {
         runes: true
       }
-    })
+    }),
   ],
   build: {
+    // Avoid `$` identifier mangling that conflicts with Svelte 5 runes.
+    minify: false,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'GreaterIcons',

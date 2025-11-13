@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import '@equaltoai/greater-components-tokens/theme.css';
-  import '@equaltoai/greater-components-primitives/styles.css';
+  import '@equaltoai/greater-components-primitives/style.css';
   import '../app.css';
 
   let { children }: { children?: Snippet } = $props();

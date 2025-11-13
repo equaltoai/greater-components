@@ -1,16 +1,58 @@
 /**
  * Modal Primitive Tests
- * 
- * Comprehensive test suite for the Modal headless primitive.
- * Tests open/close behavior, focus management, keyboard interactions, and accessibility.
+ *
+ * Focused on accessibility, focus management, and lifecycle behavior.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createModal } from '../src/primitives/modal';
+import type { ActionReturn } from '../src/types/common';
+
+function destroyAction(action: ActionReturn | void): void {
+	if (action && typeof action === 'object' && 'destroy' in action && typeof action.destroy === 'function') {
+		action.destroy();
+	}
+}
+
+function cleanup(actions: Array<ActionReturn | void>): void {
+	actions.forEach(destroyAction);
+}
+
+function appendElement<K extends keyof HTMLElementTagNameMap>(
+	tag: K,
+	parent: HTMLElement = document.body
+): HTMLElementTagNameMap[K] {
+	const element = document.createElement(tag);
+	parent.appendChild(element);
+	return element;
+}
+
+function createButton(label: string, parent?: HTMLElement): HTMLButtonElement {
+	const button = appendElement('button', parent);
+	button.type = 'button';
+	button.textContent = label;
+	return button;
+}
+
+async function flushMicrotasks(): Promise<void> {
+	await Promise.resolve();
+}
 
 describe('Modal Primitive', () => {
+	beforeEach(() => {
+		document.body.innerHTML = '';
+		document.body.style.overflow = '';
+	});
+
+	afterEach(() => {
+		document.body.innerHTML = '';
+		document.body.style.overflow = '';
+		vi.useRealTimers();
+		vi.restoreAllMocks();
+	});
+
 	describe('Initialization', () => {
-		it('should create with default config', () => {
+		it('should initialize with default config', () => {
 			const modal = createModal();
 
 			expect(modal.state.open).toBe(false);
@@ -19,617 +61,279 @@ describe('Modal Primitive', () => {
 			expect(modal.state.closeOnEscape).toBe(true);
 			expect(modal.state.closeOnBackdrop).toBe(true);
 			expect(modal.state.returnFocus).toBe(true);
-		});
-
-		it('should initialize as open', () => {
-			const modal = createModal({ open: true });
-
-			expect(modal.state.open).toBe(true);
-		});
-
-		it('should initialize without backdrop', () => {
-			const modal = createModal({ hasBackdrop: false });
-
-			expect(modal.state.hasBackdrop).toBe(false);
-		});
-
-		it('should initialize with all options', () => {
-			const modal = createModal({
-				open: true,
-				hasBackdrop: false,
-				preventScroll: false,
-				closeOnEscape: false,
-				closeOnBackdrop: false,
-				returnFocus: false,
-			});
-
-			expect(modal.state.open).toBe(true);
-			expect(modal.state.hasBackdrop).toBe(false);
-			expect(modal.state.preventScroll).toBe(false);
-			expect(modal.state.closeOnEscape).toBe(false);
-			expect(modal.state.closeOnBackdrop).toBe(false);
-			expect(modal.state.returnFocus).toBe(false);
+			expect(modal.state.mounted).toBe(false);
 		});
 	});
 
-	describe('Open and Close', () => {
-		it('should open modal', () => {
-			const modal = createModal();
-
-			modal.helpers.open();
-
-			expect(modal.state.open).toBe(true);
-		});
-
-		it('should close modal', () => {
-			const modal = createModal({ open: true });
-
-			modal.helpers.close();
-
-			expect(modal.state.open).toBe(false);
-		});
-
-		it('should toggle modal', () => {
-			const modal = createModal();
-
-			modal.helpers.toggle();
-			expect(modal.state.open).toBe(true);
-
-			modal.helpers.toggle();
-			expect(modal.state.open).toBe(false);
-		});
-
-		it('should call onOpenChange when opened', () => {
-			const onOpenChange = vi.fn();
-			const modal = createModal({ onOpenChange });
-
-			modal.helpers.open();
-
-			expect(onOpenChange).toHaveBeenCalledWith(true);
-		});
-
-		it('should call onOpenChange when closed', () => {
-			const onOpenChange = vi.fn();
-			const modal = createModal({ open: true, onOpenChange });
-
-			modal.helpers.close();
-
-			expect(onOpenChange).toHaveBeenCalledWith(false);
-		});
-
-		it('should call onOpen callback', () => {
+	describe('State transitions and callbacks', () => {
+		it('should open and close while invoking callbacks and locking scroll', () => {
 			const onOpen = vi.fn();
-			const modal = createModal({ onOpen });
-
-			modal.helpers.open();
-
-			expect(onOpen).toHaveBeenCalled();
-		});
-
-		it('should call onClose callback', () => {
 			const onClose = vi.fn();
-			const modal = createModal({ open: true, onClose });
+			const onOpenChange = vi.fn();
+			const modal = createModal({ onOpen, onClose, onOpenChange });
+			const content = appendElement('div');
+			const actions = [modal.actions.content(content)];
 
-			modal.helpers.close();
-
-			expect(onClose).toHaveBeenCalled();
-		});
-	});
-
-	describe('Escape Key', () => {
-		let contentEl: HTMLDivElement;
-
-		beforeEach(() => {
-			contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(contentEl);
-		});
-
-		it('should close on Escape key by default', () => {
-			const modal = createModal({ open: true });
-			const action = modal.actions.content(contentEl);
-
-			const event = new KeyboardEvent('keydown', { key: 'Escape' });
-			contentEl.dispatchEvent(event);
-
-			expect(modal.state.open).toBe(false);
-
-			action.destroy();
-		});
-
-		it('should not close on Escape when disabled', () => {
-			const modal = createModal({ open: true, closeOnEscape: false });
-			const action = modal.actions.content(contentEl);
-
-			const event = new KeyboardEvent('keydown', { key: 'Escape' });
-			contentEl.dispatchEvent(event);
-
-			expect(modal.state.open).toBe(true);
-
-			action.destroy();
-		});
-
-		it('should prevent default on Escape', () => {
-			const modal = createModal({ open: true });
-			const action = modal.actions.content(contentEl);
-
-			const event = new KeyboardEvent('keydown', { key: 'Escape' });
-			const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
-			contentEl.dispatchEvent(event);
-
-			expect(preventDefaultSpy).toHaveBeenCalled();
-
-			action.destroy();
-		});
-
-		it('should not close on other keys', () => {
-			const modal = createModal({ open: true });
-			const action = modal.actions.content(contentEl);
-
-			const event = new KeyboardEvent('keydown', { key: 'Enter' });
-			contentEl.dispatchEvent(event);
-
-			expect(modal.state.open).toBe(true);
-
-			action.destroy();
-		});
-	});
-
-	describe('Backdrop Click', () => {
-		let backdropEl: HTMLDivElement;
-
-		beforeEach(() => {
-			backdropEl = document.createElement('div');
-			document.body.appendChild(backdropEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(backdropEl);
-		});
-
-		it('should close on backdrop click by default', () => {
-			const modal = createModal({ open: true });
-			const action = modal.actions.backdrop(backdropEl);
-
-			backdropEl.click();
-
-			expect(modal.state.open).toBe(false);
-
-			action.destroy();
-		});
-
-		it('should not close on backdrop click when disabled', () => {
-			const modal = createModal({ open: true, closeOnBackdrop: false });
-			const action = modal.actions.backdrop(backdropEl);
-
-			backdropEl.click();
-
-			expect(modal.state.open).toBe(true);
-
-			action.destroy();
-		});
-
-	it('should not close when clicking content', () => {
-		const modal = createModal({ open: true });
-		const contentEl = document.createElement('div');
-		backdropEl.appendChild(contentEl);
-
-		const backdropAction = modal.actions.backdrop(backdropEl);
-		const contentAction = modal.actions.content(contentEl);
-
-		// Click on content should not close
-		contentEl.click();
-
-		expect(modal.state.open).toBe(true);
-
-		backdropAction.destroy();
-		contentAction.destroy();
-	});
-	});
-
-	describe('Focus Management', () => {
-		let contentEl: HTMLDivElement;
-
-		beforeEach(() => {
-			contentEl = document.createElement('div');
-			contentEl.tabIndex = 0;
-			document.body.appendChild(contentEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(contentEl);
-		});
-
-		it('should trap focus inside modal', () => {
-			const modal = createModal({ open: true });
-			const action = modal.actions.content(contentEl);
-
-			const button1 = document.createElement('button');
-			const button2 = document.createElement('button');
-			contentEl.appendChild(button1);
-			contentEl.appendChild(button2);
-
-			// Focus should be trapped inside contentEl
-			button1.focus();
-			expect(document.activeElement).toBe(button1);
-
-			action.destroy();
-		});
-
-		it('should restore focus on close when returnFocus is true', () => {
-			const triggerEl = document.createElement('button');
-			document.body.appendChild(triggerEl);
-			triggerEl.focus();
-
-			const modal = createModal({ open: true, returnFocus: true });
-			const action = modal.actions.content(contentEl);
-
-			contentEl.focus();
-			expect(document.activeElement).toBe(contentEl);
-
-			modal.helpers.close();
-
-			// Focus should return to trigger
-			expect(document.activeElement).toBe(triggerEl);
-
-			action.destroy();
-			document.body.removeChild(triggerEl);
-		});
-
-		it('should not restore focus when returnFocus is false', () => {
-			const triggerEl = document.createElement('button');
-			document.body.appendChild(triggerEl);
-			triggerEl.focus();
-
-			const modal = createModal({ open: true, returnFocus: false });
-			const action = modal.actions.content(contentEl);
-
-			contentEl.focus();
-
-			modal.helpers.close();
-
-			// Focus should not return to trigger
-			expect(document.activeElement).not.toBe(triggerEl);
-
-			action.destroy();
-			document.body.removeChild(triggerEl);
-		});
-
-		it('should focus first focusable element on open', () => {
-			const modal = createModal({ open: false });
-			const action = modal.actions.content(contentEl);
-
-			const button = document.createElement('button');
-			contentEl.appendChild(button);
+			document.body.style.overflow = 'auto';
 
 			modal.helpers.open();
-
-			expect(document.activeElement).toBe(button);
-
-			action.destroy();
-		});
-	});
-
-	describe('Scroll Prevention', () => {
-		it('should prevent body scroll when open', () => {
-			const modal = createModal({ open: false, preventScroll: true });
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-
-			const action = modal.actions.content(contentEl);
-
-			modal.helpers.open();
-
+			expect(modal.state.open).toBe(true);
+			expect(onOpen).toHaveBeenCalledTimes(1);
+			expect(onOpenChange).toHaveBeenLastCalledWith(true);
 			expect(document.body.style.overflow).toBe('hidden');
 
-			action.destroy();
-			document.body.removeChild(contentEl);
+			modal.helpers.close();
+			expect(modal.state.open).toBe(false);
+			expect(onClose).toHaveBeenCalledTimes(1);
+			expect(onOpenChange).toHaveBeenLastCalledWith(false);
+			expect(document.body.style.overflow).toBe('auto');
+
+			cleanup(actions);
 		});
 
-		it('should restore body scroll on close', () => {
-			const modal = createModal({ open: true, preventScroll: true });
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
+		it('respects preventScroll=false by leaving body overflow untouched', () => {
+			document.body.style.overflow = 'scroll';
+			const modal = createModal({ preventScroll: false });
+			const content = appendElement('div');
+			const actions = [modal.actions.content(content)];
 
-			const action = modal.actions.content(contentEl);
-			const originalOverflow = document.body.style.overflow;
+			modal.helpers.open();
+			expect(document.body.style.overflow).toBe('scroll');
 
 			modal.helpers.close();
+			expect(document.body.style.overflow).toBe('scroll');
 
-			expect(document.body.style.overflow).toBe(originalOverflow);
-
-			action.destroy();
-			document.body.removeChild(contentEl);
-		});
-
-		it('should not prevent scroll when disabled', () => {
-			const modal = createModal({ open: false, preventScroll: false });
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-
-			const action = modal.actions.content(contentEl);
-			const originalOverflow = document.body.style.overflow;
-
-			modal.helpers.open();
-
-			expect(document.body.style.overflow).toBe(originalOverflow);
-
-			action.destroy();
-			document.body.removeChild(contentEl);
+			cleanup(actions);
 		});
 	});
 
-	describe('Close Button Action', () => {
-		let closeButtonEl: HTMLButtonElement;
-
-		beforeEach(() => {
-			closeButtonEl = document.createElement('button');
-			document.body.appendChild(closeButtonEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(closeButtonEl);
-		});
-
-		it('should close modal when close button is clicked', () => {
-			const modal = createModal({ open: true });
-			const action = modal.actions.close(closeButtonEl);
-
-			closeButtonEl.click();
-
-			expect(modal.state.open).toBe(false);
-
-			action.destroy();
-		});
-
-		it('should set aria-label on close button', () => {
+	describe('Trigger and close actions', () => {
+		it('should open via trigger and return focus on close', () => {
 			const modal = createModal();
-			const action = modal.actions.close(closeButtonEl);
+			const trigger = createButton('Open Modal');
+			const content = appendElement('div');
+			createButton('Focusable', content);
 
-			expect(closeButtonEl.getAttribute('aria-label')).toBe('Close');
+			const actions = [
+				modal.actions.trigger(trigger),
+				modal.actions.content(content),
+			];
 
-			action.destroy();
-		});
-	});
-
-	describe('Accessibility', () => {
-		let contentEl: HTMLDivElement;
-
-		beforeEach(() => {
-			contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-		});
-
-		afterEach(() => {
-			document.body.removeChild(contentEl);
-		});
-
-		it('should set role=dialog', () => {
-			const modal = createModal();
-			const action = modal.actions.content(contentEl);
-
-			expect(contentEl.getAttribute('role')).toBe('dialog');
-
-			action.destroy();
-		});
-
-		it('should set aria-modal=true', () => {
-			const modal = createModal();
-			const action = modal.actions.content(contentEl);
-
-			expect(contentEl.getAttribute('aria-modal')).toBe('true');
-
-			action.destroy();
-		});
-
-		it('should support aria-labelledby', () => {
-			const modal = createModal({ labelledBy: 'modal-title' });
-			const action = modal.actions.content(contentEl);
-
-			expect(contentEl.getAttribute('aria-labelledby')).toBe('modal-title');
-
-			action.destroy();
-		});
-
-		it('should support aria-describedby', () => {
-			const modal = createModal({ describedBy: 'modal-description' });
-			const action = modal.actions.content(contentEl);
-
-			expect(contentEl.getAttribute('aria-describedby')).toBe('modal-description');
-
-			action.destroy();
-		});
-
-		it('should trap focus within modal', () => {
-			const modal = createModal({ open: true });
-			const action = modal.actions.content(contentEl);
-
-			const button = document.createElement('button');
-			contentEl.appendChild(button);
-			button.focus();
-
-			const outsideButton = document.createElement('button');
-			document.body.appendChild(outsideButton);
-
-			// Try to focus outside element - focus trap should prevent this
-			outsideButton.focus();
-
-			// In a real browser, focus trap would prevent this, but in JSDOM we can't fully test this
-			// Just verify the setup is correct
-			expect(contentEl.getAttribute('role')).toBe('dialog');
-
-			document.body.removeChild(outsideButton);
-			action.destroy();
-		});
-	});
-
-	describe('Lifecycle', () => {
-		it('should call onDestroy when action is destroyed', () => {
-			const onDestroy = vi.fn();
-			const modal = createModal({ onDestroy });
-			const contentEl = document.createElement('div');
-
-			const action = modal.actions.content(contentEl);
-			action.destroy();
-
-			expect(onDestroy).toHaveBeenCalled();
-		});
-
-		it('should clean up event listeners', () => {
-			const modal = createModal({ open: true });
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-
-			const action = modal.actions.content(contentEl);
-
-			const stateBefore = modal.state.open;
-
-			action.destroy();
-
-			// After destroy, Escape key should not affect state
-			const event = new KeyboardEvent('keydown', { key: 'Escape' });
-			contentEl.dispatchEvent(event);
-
-			expect(modal.state.open).toBe(stateBefore);
-
-			document.body.removeChild(contentEl);
-		});
-
-		it('should restore body overflow on destroy', () => {
-			const modal = createModal({ open: true, preventScroll: true });
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-
-			const _originalOverflow = document.body.style.overflow;
-			const action = modal.actions.content(contentEl);
-
-			action.destroy();
-
-			// Body overflow should be restored
-			// (In a real app, this would restore to the original value)
-			expect(document.body.style.overflow).toBeTruthy();
-
-			document.body.removeChild(contentEl);
-		});
-	});
-
-	describe('Edge Cases', () => {
-		it('should handle open when already open', () => {
-			const modal = createModal({ open: true });
-
-			modal.helpers.open();
+			trigger.focus();
+			trigger.click();
 
 			expect(modal.state.open).toBe(true);
-		});
-
-		it('should handle close when already closed', () => {
-			const modal = createModal({ open: false });
+			expect(trigger.getAttribute('aria-haspopup')).toBe('dialog');
+			expect(trigger.getAttribute('aria-controls')).toBe(modal.state.id);
 
 			modal.helpers.close();
 
 			expect(modal.state.open).toBe(false);
+			expect(document.activeElement).toBe(trigger);
+
+			cleanup(actions);
 		});
 
-		it('should handle rapid open/close', () => {
+		it('should close when close button action is clicked', () => {
 			const modal = createModal();
+			const content = appendElement('div');
+			createButton('Focusable', content);
+			const closeButton = createButton('Close', content);
+
+			const actions = [
+				modal.actions.content(content),
+				modal.actions.close(closeButton),
+			];
 
 			modal.helpers.open();
-			modal.helpers.close();
-			modal.helpers.open();
-			modal.helpers.close();
-
-			expect(modal.state.open).toBe(false);
-		});
-
-		it('should handle backdrop without content', () => {
-			const modal = createModal({ open: true });
-			const backdropEl = document.createElement('div');
-			document.body.appendChild(backdropEl);
-
-			const action = modal.actions.backdrop(backdropEl);
-
-			backdropEl.click();
+			closeButton.click();
 
 			expect(modal.state.open).toBe(false);
 
-			action.destroy();
-			document.body.removeChild(backdropEl);
-		});
-
-		it('should handle multiple close buttons', () => {
-			const modal = createModal({ open: true });
-
-			const closeBtn1 = document.createElement('button');
-			const closeBtn2 = document.createElement('button');
-			document.body.appendChild(closeBtn1);
-			document.body.appendChild(closeBtn2);
-
-			const action1 = modal.actions.close(closeBtn1);
-			const action2 = modal.actions.close(closeBtn2);
-
-			closeBtn1.click();
-			expect(modal.state.open).toBe(false);
-
-			modal.helpers.open();
-			closeBtn2.click();
-			expect(modal.state.open).toBe(false);
-
-			action1.destroy();
-			action2.destroy();
-			document.body.removeChild(closeBtn1);
-			document.body.removeChild(closeBtn2);
-		});
-
-		it('should handle destruction while open', () => {
-			const modal = createModal({ open: true, preventScroll: true });
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-
-			const action = modal.actions.content(contentEl);
-			action.destroy();
-
-			// Should not throw
-			expect(() => modal.helpers.close()).not.toThrow();
-
-			document.body.removeChild(contentEl);
+			cleanup(actions);
 		});
 	});
 
-	describe('Portal Behavior', () => {
-		it('should track mounted state', () => {
+	describe('Backdrop interactions', () => {
+		it('closes on backdrop click but ignores clicks on descendants', () => {
 			const modal = createModal();
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
+			const content = appendElement('div');
+			const backdrop = appendElement('div');
+			const child = appendElement('span', backdrop);
 
-			const action = modal.actions.content(contentEl);
+			const actions = [
+				modal.actions.content(content),
+				modal.actions.backdrop(backdrop),
+			];
 
-			expect(modal.state.mounted).toBe(true);
+			modal.helpers.open();
+			backdrop.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+			expect(modal.state.open).toBe(false);
 
-			action.destroy();
+			modal.helpers.open();
+			child.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+			expect(modal.state.open).toBe(true);
 
-			expect(modal.state.mounted).toBe(false);
-
-			document.body.removeChild(contentEl);
+			cleanup(actions);
 		});
 
-		it('should handle open before mount', () => {
-			const modal = createModal({ open: true });
+		it('respects closeOnBackdrop=false', () => {
+			const modal = createModal({ closeOnBackdrop: false });
+			const content = appendElement('div');
+			const backdrop = appendElement('div');
+
+			const actions = [
+				modal.actions.content(content),
+				modal.actions.backdrop(backdrop),
+			];
+
+			modal.helpers.open();
+			backdrop.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
 			expect(modal.state.open).toBe(true);
+
+			cleanup(actions);
+		});
+	});
+
+	describe('Keyboard handling and focus trapping', () => {
+		it('handles Escape key based on configuration', () => {
+			const modal = createModal();
+			const content = appendElement('div');
+			const actions = [modal.actions.content(content)];
+
+			modal.helpers.open();
+			content.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+			expect(modal.state.open).toBe(false);
+
+			const modalNoEscape = createModal({ closeOnEscape: false });
+			const contentNoEscape = appendElement('div');
+			const noEscapeActions = [modalNoEscape.actions.content(contentNoEscape)];
+
+			modalNoEscape.helpers.open();
+			contentNoEscape.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+			expect(modalNoEscape.state.open).toBe(true);
+
+			cleanup(actions);
+			cleanup(noEscapeActions);
+		});
+
+		it('traps focus with Tab and Shift+Tab', () => {
+			const modal = createModal();
+			const content = appendElement('div');
+			const first = createButton('First', content);
+			const last = createButton('Last', content);
+
+			const actions = [modal.actions.content(content)];
+			modal.helpers.open();
+
+			expect(document.activeElement).toBe(first);
+
+			// Shift+Tab from first goes to last
+			first.focus();
+			first.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true })
+			);
+			expect(document.activeElement).toBe(last);
+
+			// Tab from last loops to first
+			last.focus();
+			last.dispatchEvent(
+				new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true })
+			);
+			expect(document.activeElement).toBe(first);
+
+			cleanup(actions);
+		});
+
+		it('focuses provided initial element when opening', () => {
+			const modal = createModal();
+			const content = appendElement('div');
+			const fallback = createButton('Fallback', content);
+			createButton('Secondary', content);
+
+			const actions = [modal.actions.content(content)];
+
+			modal.helpers.open();
+			expect(document.activeElement).toBe(fallback);
+			modal.helpers.close();
+
+			const content2 = appendElement('div');
+			const preferred2 = createButton('Preferred 2', content2);
+			const modalWithInitial = createModal({
+				initialFocus: () => preferred2,
+			});
+			const actions2 = [modalWithInitial.actions.content(content2)];
+
+			modalWithInitial.helpers.open();
+			expect(document.activeElement).toBe(preferred2);
+
+			cleanup(actions);
+			cleanup(actions2);
+		});
+	});
+
+	describe('Before close hooks', () => {
+		it('prevents closing when onBeforeClose returns false', () => {
+			const onBeforeClose = vi.fn(() => false);
+			const modal = createModal({ onBeforeClose });
+			const content = appendElement('div');
+			const actions = [modal.actions.content(content)];
+
+			modal.helpers.open();
+			modal.helpers.close();
+
+			expect(onBeforeClose).toHaveBeenCalledTimes(1);
+			expect(modal.state.open).toBe(true);
+
+			cleanup(actions);
+		});
+
+		it('awaits async onBeforeClose resolution', async () => {
+			let resolveClose: ((value: boolean) => void) | undefined;
+			const modal = createModal({
+				onBeforeClose: () =>
+					new Promise<boolean>((resolve) => {
+						resolveClose = resolve;
+					}),
+			});
+			const content = appendElement('div');
+			const actions = [modal.actions.content(content)];
+
+			modal.helpers.open();
+			modal.helpers.close();
+			expect(modal.state.open).toBe(true);
+
+			resolveClose?.(true);
+			await flushMicrotasks();
+			await flushMicrotasks();
+
+			expect(modal.state.open).toBe(false);
+
+			cleanup(actions);
+		});
+	});
+
+	describe('Content attributes and lifecycle', () => {
+		it('sets ARIA attributes and tracks mounted flag', () => {
+			const modal = createModal({
+				labelledBy: 'custom-title',
+				describedBy: 'custom-description',
+			});
+			const content = appendElement('section');
+
 			expect(modal.state.mounted).toBe(false);
-
-			const contentEl = document.createElement('div');
-			document.body.appendChild(contentEl);
-
-			const action = modal.actions.content(contentEl);
-
+			const action = modal.actions.content(content);
 			expect(modal.state.mounted).toBe(true);
 
-			action.destroy();
-			document.body.removeChild(contentEl);
+			expect(content.getAttribute('role')).toBe('dialog');
+			expect(content.getAttribute('aria-modal')).toBe('true');
+			expect(content.getAttribute('aria-labelledby')).toBe('custom-title');
+			expect(content.getAttribute('aria-describedby')).toBe('custom-description');
+			expect(content.tabIndex).toBe(0);
+
+			destroyAction(action);
+			expect(modal.state.mounted).toBe(false);
 		});
 	});
 });

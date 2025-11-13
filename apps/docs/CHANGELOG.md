@@ -1,5 +1,50 @@
 # @greater-components/docs
 
+## 0.1.19
+
+### Patch Changes
+
+- Updated dependencies
+- Updated dependencies
+  - @equaltoai/greater-components-fediverse@1.2.6
+  - @equaltoai/greater-components-primitives@1.0.17
+  - @equaltoai/greater-components-icons@1.0.3
+
+## 0.1.18
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-adapters@1.2.1
+  - @equaltoai/greater-components-fediverse@1.2.5
+  - @equaltoai/greater-components-icons@1.0.2
+  - @equaltoai/greater-components-primitives@1.0.16
+  - @equaltoai/greater-components-utils@1.0.1
+
+## 0.1.17
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-icons@1.0.1
+  - @equaltoai/greater-components-fediverse@1.2.4
+
+## 0.1.16
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.15
+  - @equaltoai/greater-components-fediverse@1.2.3
+
+## 0.1.15
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@1.0.14
+  - @equaltoai/greater-components-fediverse@1.2.2
+
 ## 0.1.14
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi, beforeAll } from 'vitest';
 
 // Global test setup for the testing package
 
@@ -16,6 +16,7 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock requestIdleCallback for testing environments
+// @ts-expect-error - Mock return type doesn't match exactly
 global.requestIdleCallback = vi.fn((cb) => setTimeout(cb, 0));
 global.cancelIdleCallback = vi.fn();
 
@@ -40,4 +41,7 @@ global.HTMLElement.prototype.focus = vi.fn();
 global.HTMLElement.prototype.blur = vi.fn();
 
 // Set up environment variables for testing
-process.env.NODE_ENV = 'test';
+beforeAll(() => {
+	// Set NODE_ENV to test
+	process.env['NODE_ENV'] = 'test';
+});

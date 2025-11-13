@@ -155,7 +155,7 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/a11y',
   use: {
-    baseURL: 'http://localhost:6006', // Storybook
+    baseURL: 'http://localhost:5173', // Component playground
   },
   projects: [
     { name: 'chromium-a11y', use: { ...devices['Desktop Chrome'] }},
@@ -179,28 +179,6 @@ const customConfig = {
     'focus-order-semantics': { enabled: true },
     // Disable specific rules if needed
     'duplicate-id': { enabled: false }
-  }
-};
-```
-
-### Storybook Integration
-
-Configure Storybook for accessibility testing:
-
-```typescript
-// .storybook/preview.ts
-export const parameters = {
-  a11y: {
-    config: {
-      rules: [
-        { id: 'color-contrast', enabled: true },
-        { id: 'keyboard-navigation', enabled: true }
-      ]
-    },
-    options: {
-      checks: { 'color-contrast': { options: { noScroll: true }}},
-      restoreScroll: true
-    }
   }
 };
 ```
