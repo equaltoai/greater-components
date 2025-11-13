@@ -59,7 +59,7 @@
     "@babel/traverse": "^7.28.5",
     "@playwright/test": "^1.55.1",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "@vitest/ui": "^4.0.8",
     "axe-core": "^4.10.0",
     "jsdom": "^24.1.1",
