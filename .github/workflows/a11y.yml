@@ -36,7 +36,6 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
-        version: 9.7.0
         run_install: false
         
     - name: Install dependencies
@@ -149,7 +148,6 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
-        version: 9.7.0
         run_install: false
         
     - name: Install dependencies
@@ -208,7 +206,6 @@ jobs:
     - name: Install pnpm
       uses: pnpm/action-setup@v2
       with:
-        version: 9.7.0
         run_install: false
         
     - name: Install dependencies
