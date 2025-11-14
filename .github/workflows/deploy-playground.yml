@@ -34,6 +34,8 @@ jobs:
           pnpm --filter @equaltoai/greater-components-primitives build
           pnpm --filter @equaltoai/greater-components-icons build
           pnpm --filter @equaltoai/greater-components-utils build
+          pnpm --filter @equaltoai/greater-components-headless build
+          pnpm --filter @equaltoai/greater-components-fediverse build
 
       - name: Build playground
         run: pnpm --filter @equaltoai/playground build
