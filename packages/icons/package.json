@@ -51,7 +51,7 @@
     "@vitest/coverage-v8": "^4.0.9",
     "chokidar": "^4.0.3",
     "feather-icons": "^4.29.1",
-    "jsdom": "^27.1.0",
+    "jsdom": "^27.2.0",
     "svelte": "^5.43.6",
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
