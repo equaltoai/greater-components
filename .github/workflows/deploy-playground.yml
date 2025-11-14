@@ -28,6 +28,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build shared packages
+        run: |
+          pnpm --filter @equaltoai/greater-components-tokens build
+          pnpm --filter @equaltoai/greater-components-primitives build
+          pnpm --filter @equaltoai/greater-components-icons build
+          pnpm --filter @equaltoai/greater-components-utils build
+
       - name: Build playground
         run: pnpm --filter @equaltoai/playground build
 
