@@ -1,5 +1,25 @@
 const isBrowser = typeof window !== 'undefined';
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+	typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const mergeObjects = <T extends Record<string, unknown>>(fallback: T, parsed: Record<string, unknown>): T => {
+	const result: Record<string, unknown> = { ...fallback };
+
+	for (const [key, value] of Object.entries(parsed)) {
+		const fallbackValue = result[key];
+
+		if (isPlainObject(fallbackValue) && isPlainObject(value)) {
+			result[key] = mergeObjects(fallbackValue, value);
+			continue;
+		}
+
+		result[key] = value;
+	}
+
+	return result as T;
+};
+
 export function loadPersistedState<T>(key: string, fallback: T): T {
 	if (!isBrowser) {
 		return fallback;
@@ -12,8 +32,8 @@ export function loadPersistedState<T>(key: string, fallback: T): T {
 		}
 
 		const parsed = JSON.parse(raw);
-		if (typeof fallback === 'object' && fallback !== null && typeof parsed === 'object') {
-			return { ...fallback, ...parsed };
+		if (isPlainObject(fallback) && isPlainObject(parsed)) {
+			return mergeObjects(fallback, parsed);
 		}
 
 		return parsed as T;

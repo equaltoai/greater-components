@@ -265,12 +265,18 @@ const threadReplies: Status[] = [
 	},
 ];
 
+const [cwSpoiler, cwPoll, cwThread] = contentWarningsDemo;
+
+if (!cwSpoiler || !cwPoll || !cwThread) {
+	throw new Error('Expected content warning demo statuses to be defined.');
+}
+
 const timelineSeeds: TimelineSeed = {
 	home: [
-		contentWarningsDemo[0]!,
-		contentWarningsDemo[1]!,
+		cwSpoiler,
+		cwPoll,
 		{
-			...contentWarningsDemo[2]!,
+			...cwThread,
 			id: 'status-home-pin',
 			createdAt: minutesAgo(12),
 			favouritesCount: 201,
@@ -349,7 +355,7 @@ const notificationSeed: Notification[] = [
 		account: demoAccounts.theo,
 		read: false,
 		status: {
-			...contentWarningsDemo[0]!,
+			...cwSpoiler,
 			id: 'mention-from-theo',
 			content:
 				'<p>@greaterdevrel is there an API for timeline cache hints? Asking for the demo suite.</p>',
@@ -363,7 +369,7 @@ const notificationSeed: Notification[] = [
 		createdAt: minutesAgo(18),
 		account: demoAccounts.lynn,
 		read: false,
-		status: contentWarningsDemo[2]!,
+		status: cwThread,
 	},
 	{
 		id: 'notif-like-1',
@@ -371,7 +377,7 @@ const notificationSeed: Notification[] = [
 		createdAt: minutesAgo(30),
 		account: demoAccounts.alicia,
 		read: true,
-		status: contentWarningsDemo[1]!,
+		status: cwPoll,
 	},
 	{
 		id: 'notif-follow-1',

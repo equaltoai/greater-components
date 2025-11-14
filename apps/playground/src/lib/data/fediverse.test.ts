@@ -8,8 +8,14 @@ describe('fediverse data helpers', () => {
 
     expect(first.home).not.toBe(second.home);
 
-    first.home[0]!.id = 'mutated-home';
-    expect(second.home[0]!.id).not.toBe('mutated-home');
+    const firstHome = first.home.at(0);
+    const secondHome = second.home.at(0);
+    if (!firstHome || !secondHome) {
+      throw new Error('Expected timeline seeds to include home statuses');
+    }
+
+    firstHome.id = 'mutated-home';
+    expect(secondHome.id).not.toBe('mutated-home');
   });
 
   it('generates unique media attachment ids for showcase statuses', () => {

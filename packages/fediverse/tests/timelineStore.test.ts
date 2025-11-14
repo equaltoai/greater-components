@@ -46,7 +46,8 @@ class MockTransport {
 		if (!this.handlers.has(event)) {
 			this.handlers.set(event, new Set());
 		}
-		this.handlers.get(event)!.add(handler);
+		const subscribers = this.handlers.get(event);
+		subscribers?.add(handler);
 	}
 
 	off(event: string, handler: (payload: unknown) => void) {

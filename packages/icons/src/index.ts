@@ -959,7 +959,7 @@ export const iconAliases: Record<string, IconName> = {
 };
 
 export function getIcon(name: string) {
-  const iconName = iconAliases[name] || name;
+  const iconName = iconAliases[name] || (name as IconName);
   return iconRegistry[iconName] ?? null;
 }
 
