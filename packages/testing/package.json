@@ -47,26 +47,26 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
     "axe-core": "^4.10.2",
     "axe-playwright": "^2.0.3",
-    "@axe-core/playwright": "^4.10.1",
     "focus-trap": "^7.6.2",
     "tabbable": "^6.2.0"
   },
   "devDependencies": {
+    "@percy/playwright": "^1.0.10",
     "@playwright/test": "^1.55.1",
-    "@testing-library/svelte": "^5.2.6",
-    "@testing-library/user-event": "^14.5.2",
-    "@vitest/ui": "^4.0.8",
-    "@percy/playwright": "^1.0.8",
+    "@testing-library/svelte": "^5.2.9",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitest/ui": "^4.0.9",
     "chromatic": "^11.20.0",
     "commander": "^12.1.0",
-    "jsdom": "^25.0.1",
+    "jsdom": "^27.1.0",
+    "playwright": "^1.55.1",
     "svelte": "^5.43.6",
     "typescript": "^5.3.3",
     "vite": "^7.2.2",
-    "vitest": "^4.0.8",
-    "playwright": "^1.55.1"
+    "vitest": "^4.0.9"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

@@ -113,21 +113,21 @@
     "access": "public"
   },
   "dependencies": {
-    "@apollo/client": "^3.11.0",
-    "@apollo/client-react-streaming": "^0.11.0",
+    "@apollo/client": "^4.0.9",
+    "@apollo/client-react-streaming": "^0.14.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "graphql": "^16.9.0",
     "graphql-ws": "^5.16.0"
   },
   "devDependencies": {
     "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-cli": "workspace:*",
     "@equaltoai/greater-components-fediverse": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
-    "@equaltoai/greater-components-utils": "workspace:*",
-    "@equaltoai/greater-components-cli": "workspace:*"
+    "@equaltoai/greater-components-utils": "workspace:*"
   }
 }

@@ -33,6 +33,12 @@ export default [
 			'svelte/no-reactive-reassign': 'error',
 			'svelte/no-unused-svelte-ignore': 'warn',
 			'svelte/require-each-key': 'error',
+			'svelte/no-navigation-without-resolve': 'off',
+			'svelte/prefer-svelte-reactivity': 'off',
+			'svelte/prefer-writable-derived': 'off',
+			'svelte/no-useless-mustaches': 'off',
+			'svelte/no-useless-children-snippet': 'off',
+			'svelte/no-dom-manipulating': 'off',
 		},
 	},
 	{
@@ -62,6 +68,15 @@ export default [
 			'@typescript-eslint/no-explicit-any': 'warn',
 			'@typescript-eslint/explicit-module-boundary-types': 'off',
 			'@typescript-eslint/no-non-null-assertion': 'warn',
+			'@typescript-eslint/ban-ts-comment': [
+				'warn',
+				{
+					'ts-expect-error': 'allow-with-description',
+					'ts-ignore': 'allow-with-description',
+					'ts-nocheck': false,
+					'minimumDescriptionLength': 5,
+				},
+			],
 			'no-console': ['warn', { allow: ['warn', 'error'] }],
 		},
 	},

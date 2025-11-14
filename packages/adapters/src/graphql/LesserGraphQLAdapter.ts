@@ -6,7 +6,19 @@
  * and object accessors rather than the legacy Mastodon-style wrappers.
  */
 
-import { Observable, type FetchResult, type OperationVariables } from '@apollo/client';
+import {
+	Observable,
+	type FetchResult,
+	type OperationVariables,
+} from '@apollo/client';
+import type { ApolloClient as ApolloClientNamespace } from '@apollo/client';
+
+type QueryOptionsFor<TData, TVariables extends OperationVariables> = ApolloClientNamespace.QueryOptions<
+	TData,
+	TVariables
+>;
+type MutationOptionsFor<TData, TVariables extends OperationVariables> =
+	ApolloClientNamespace.MutateOptions<TData, TVariables>;
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { print } from 'graphql';
 
@@ -345,11 +357,12 @@ export class LesserGraphQLAdapter {
 		variables?: TVariables,
 		fetchPolicy: 'cache-first' | 'network-only' = 'network-only'
 	): Promise<TData> {
-		const result = await this.client.client.query<TData, TVariables>({
+		const options = {
 			query: document,
 			variables,
 			fetchPolicy,
-		});
+		} as unknown as QueryOptionsFor<TData, TVariables>;
+		const result = await this.client.client.query<TData, TVariables>(options);
 
 		const { data } = result;
 		if (data === undefined) {
@@ -366,10 +379,11 @@ export class LesserGraphQLAdapter {
 		document: TypedDocumentNode<TData, TVariables>,
 		variables?: TVariables
 	): Promise<TData> {
-		const { data } = await this.client.client.mutate<TData, TVariables>({
+		const options = {
 			mutation: document,
 			variables,
-		});
+		} as unknown as MutationOptionsFor<TData, TVariables>;
+		const { data } = await this.client.client.mutate<TData, TVariables>(options);
 
 		if (data == null) {
 			throw new Error('Mutation completed without returning data.');

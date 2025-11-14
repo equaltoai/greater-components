@@ -16,7 +16,6 @@ import {
 	HttpLink,
 	split,
 	from,
-	type NormalizedCacheObject,
 	type DefaultOptions,
 } from '@apollo/client';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions/index.js';
@@ -24,6 +23,7 @@ import { getMainDefinition } from '@apollo/client/utilities/index.js';
 import { onError } from '@apollo/client/link/error/index.js';
 import { RetryLink } from '@apollo/client/link/retry/index.js';
 import { createClient, type Client } from 'graphql-ws';
+import { CombinedGraphQLErrors } from '@apollo/client/errors/index.js';
 import { cacheConfig } from './cache.js';
 
 export interface GraphQLClientConfig {
@@ -75,7 +75,7 @@ export interface GraphQLClientConfig {
 }
 
 export interface GraphQLClientInstance {
-	client: ApolloClient<NormalizedCacheObject>;
+	client: ApolloClient;
 	wsClient: Client | null; // null if wsEndpoint not provided
 	updateToken: (token: string | null) => void;
 	close: () => void;
@@ -284,9 +284,9 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	}
 
 	// Error handling link
-	const errorLink = onError(({ graphQLErrors, networkError }) => {
-		if (graphQLErrors) {
-			graphQLErrors.forEach(({ message, locations, path, extensions }) => {
+	const errorLink = onError(({ error }) => {
+		if (CombinedGraphQLErrors.is(error)) {
+			error.errors.forEach(({ message, locations, path, extensions }) => {
 				const errorMsg = `[GraphQL Error]: Message: ${message}, Location: ${JSON.stringify(locations)}, Path: ${path}`;
 				logDebugError(errorMsg);
 
@@ -301,11 +301,10 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 					currentToken = null;
 				}
 			});
+			return;
 		}
 
-		if (networkError) {
-			logDebugError(`[GraphQL Network Error]: ${networkError.message}`);
-		}
+		logDebugError(`[GraphQL Network Error]: ${error.message}`);
 	});
 
 	// Retry link for network errors
@@ -314,7 +313,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			max: enableRetry ? maxRetries : 0,
 			retryIf: (error) => {
 				// Retry on network errors but not on GraphQL errors
-				return !!error && !error.result;
+				return Boolean(error) && !CombinedGraphQLErrors.is(error);
 			},
 		},
 		delay: {

@@ -8,6 +8,10 @@ const outDir = path.resolve(playgroundDir, 'build');
 const clientDir = path.resolve(playgroundDir, '.svelte-kit/output/client');
 const pagesDir = path.resolve(playgroundDir, '.svelte-kit/output/prerendered/pages');
 
+/**
+ * @param {string} source
+ * @param {string} destination
+ */
 const copyRecursive = (source, destination) => {
 	if (!fs.existsSync(source)) {
 		return;

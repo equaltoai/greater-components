@@ -87,7 +87,7 @@ export function optimisticMute(accountId: string, currentState: boolean, notific
  * Update cache after favouriting a status
  */
 export function updateCacheAfterFavourite(
-	cache: ApolloCache<unknown>,
+	cache: ApolloCache,
 	statusId: string,
 	favourited: boolean
 ) {
@@ -106,7 +106,7 @@ export function updateCacheAfterFavourite(
  * Update cache after reblogging a status
  */
 export function updateCacheAfterReblog(
-	cache: ApolloCache<unknown>,
+	cache: ApolloCache,
 	statusId: string,
 	reblogged: boolean
 ) {
@@ -125,7 +125,7 @@ export function updateCacheAfterReblog(
  * Update cache after bookmarking a status
  */
 export function updateCacheAfterBookmark(
-	cache: ApolloCache<unknown>,
+	cache: ApolloCache,
 	statusId: string,
 	bookmarked: boolean
 ) {
@@ -141,7 +141,7 @@ export function updateCacheAfterBookmark(
  * Update cache after following an account
  */
 export function updateCacheAfterFollow(
-	cache: ApolloCache<unknown>,
+	cache: ApolloCache,
 	accountId: string,
 	following: boolean,
 	locked: boolean
@@ -169,7 +169,7 @@ export function updateCacheAfterFollow(
  * Update cache after blocking an account
  */
 export function updateCacheAfterBlock(
-	cache: ApolloCache<unknown>,
+	cache: ApolloCache,
 	accountId: string,
 	blocking: boolean
 ) {
@@ -188,7 +188,7 @@ export function updateCacheAfterBlock(
  * Update cache after muting an account
  */
 export function updateCacheAfterMute(
-	cache: ApolloCache<unknown>,
+	cache: ApolloCache,
 	accountId: string,
 	muting: boolean,
 	notifications = true
@@ -205,7 +205,7 @@ export function updateCacheAfterMute(
 /**
  * Remove status from cache (after delete)
  */
-export function removeStatusFromCache(cache: ApolloCache<unknown>, statusId: string) {
+export function removeStatusFromCache(cache: ApolloCache, statusId: string) {
 	const normalizedId = cache.identify({ __typename: 'Status', id: statusId });
 	cache.evict({ id: normalizedId });
 	cache.gc();
@@ -215,7 +215,7 @@ export function removeStatusFromCache(cache: ApolloCache<unknown>, statusId: str
  * Add status to cache (after create)
  */
 export function addStatusToCache(
-	cache: ApolloCache<unknown>,
+	cache: ApolloCache,
 	status: StatusPayload,
 	timelineField = 'homeTimeline'
 ): void {
@@ -259,7 +259,7 @@ export function addStatusToCache(
 /**
  * Update status in cache (after edit)
  */
-export function updateStatusInCache(cache: ApolloCache<unknown>, status: StatusPayload) {
+export function updateStatusInCache(cache: ApolloCache, status: StatusPayload) {
 	const statusRecord = status as Record<string, unknown>;
 	const normalizedId = cache.identify({ __typename: 'Status', id: status.id });
 	if (!normalizedId) {

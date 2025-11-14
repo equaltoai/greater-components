@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Get PR Commits
         id: get-pr-commits
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const commits = await github.rest.pulls.listCommits({

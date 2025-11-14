@@ -331,7 +331,7 @@ export const cacheEvictionPolicies = {
 /**
  * Helper to evict stale cache entries
  */
-export function evictStaleCache(cache: ApolloCache<unknown>, fieldName: string, maxAge: number): void {
+export function evictStaleCache(cache: ApolloCache, fieldName: string, maxAge: number): void {
 	const now = Date.now();
 
 	try {
@@ -367,7 +367,7 @@ export function evictStaleCache(cache: ApolloCache<unknown>, fieldName: string, 
 /**
  * Helper to limit cache size
  */
-export function limitCacheSize(cache: ApolloCache<unknown>, fieldName: string, maxItems: number): void {
+export function limitCacheSize(cache: ApolloCache, fieldName: string, maxItems: number): void {
 	try {
 		cache.modify<ConnectionEdges>({
 			fields: {
