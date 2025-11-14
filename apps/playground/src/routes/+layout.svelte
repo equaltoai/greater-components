@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { base } from '$app/paths';
 	import { page } from '$app/stores';
 	import '@equaltoai/greater-components-tokens/theme.css';
 	import '@equaltoai/greater-components-primitives/style.css';
@@ -40,6 +41,14 @@ import {
 		{ href: '/demos/interactive', label: 'Interactive Suite', icon: CpuIcon },
 		{ href: '/demos/icons', label: 'Icon Gallery', icon: ImageIcon },
 	] as const;
+
+	const resolveHref = (href: string) => {
+		if (href === '/') {
+			return base || '/';
+		}
+
+		return `${base}${href}`;
+	};
 </script>
 
 <ThemeProvider>
@@ -52,7 +61,8 @@ import {
 			</header>
 			<nav class="sidebar-nav">
 		{#each navLinks as { href, label, icon: Icon } (href)}
-			<a class:active={$page.url.pathname === href} {href}>
+			{@const resolved = resolveHref(href)}
+			<a class:active={$page.url.pathname === href} href={resolved}>
 				<Icon size={18} aria-hidden="true" />
 				<span>{label}</span>
 			</a>

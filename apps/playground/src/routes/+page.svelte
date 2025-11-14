@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button, TextField, Modal } from '@equaltoai/greater-components-primitives';
   import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
   import { browser } from '$app/environment';
   
   let showModal = $state(false);
@@ -38,7 +39,8 @@
   }
 
   function navigateTo(path: string) {
-    goto(path);
+    const target = path === '/' ? base || '/' : `${base}${path}`;
+    goto(target);
   }
 </script>
 
