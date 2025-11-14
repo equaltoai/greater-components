@@ -52,6 +52,9 @@
 		class: className = '',
 	}: Props = $props();
 
+	const clipboard = typeof navigator !== 'undefined' ? navigator.clipboard : undefined;
+	const hasDocument = typeof document !== 'undefined';
+
 	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
 	let setupStep = $state<'intro' | 'scan' | 'verify' | 'backup'>('intro');
@@ -155,8 +158,12 @@
 	 * Copy to clipboard
 	 */
 	async function copyToClipboard(text: string) {
+		if (!clipboard?.writeText) {
+			return;
+		}
+
 		try {
-			await navigator.clipboard.writeText(text);
+			await clipboard.writeText(text);
 		} catch (err) {
 			console.error('Failed to copy:', err);
 		}
@@ -166,6 +173,10 @@
 	 * Download backup codes as text file
 	 */
 	function downloadBackupCodes() {
+		if (!hasDocument) {
+			return;
+		}
+
 		const text = backupCodes.join('\n');
 		const blob = new Blob([text], { type: 'text/plain' });
 		const url = URL.createObjectURL(blob);

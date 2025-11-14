@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button, Modal, Menu } from '@equaltoai/greater-components-primitives';
+  import DemoPage from '$lib/components/DemoPage.svelte';
 
   type MenuItem = {
     id: string;
@@ -23,16 +24,11 @@
   }
 </script>
 
-<div class="demo-page">
-  <header>
-    <p class="eyebrow">Component Demos</p>
-    <h1>Validate Primitives Interactively</h1>
-    <p>
-      These demos power our automated Playwright suites. Feel free to explore them locally
-      before running the tests to understand the expected behavior.
-    </p>
-  </header>
-
+<DemoPage
+  eyebrow="Component Demos"
+  title="Validate Primitives Interactively"
+  description="These demos power our automated Playwright suites. Explore them locally before running the tests to understand the expected behavior."
+>
   <section data-testid="button-demo">
     <div class="section-header">
       <h2>Buttons</h2>
@@ -121,30 +117,9 @@
       Last selection: {lastSelection}
     </p>
   </section>
-</div>
+</DemoPage>
 
 <style>
-  .demo-page {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
-  }
-
-  header {
-    text-align: center;
-  }
-
-  .eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: var(--gr-typography-fontSize-xs);
-    color: var(--gr-semantic-foreground-tertiary);
-    margin-bottom: 0.5rem;
-  }
-
   section {
     border: 1px solid var(--gr-semantic-border-default);
     border-radius: var(--gr-radii-xl);

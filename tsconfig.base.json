@@ -7,6 +7,13 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": true,
+    "rootDirs": [
+      ".",
+      "./apps/playground/src",
+      "./apps/playground/.svelte-kit/types/src",
+      "./apps/docs/src",
+      "./apps/docs/.svelte-kit/types/src"
+    ],
     "jsx": "preserve",
     
     "strict": true,
@@ -30,6 +37,16 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "paths": {
+      "$lib": [
+        "./apps/playground/src/lib",
+        "./apps/docs/src/lib"
+      ],
+      "$lib/*": [
+        "./apps/playground/src/lib/*",
+        "./apps/docs/src/lib/*"
+      ]
+    },
     
     "declaration": true,
     "declarationMap": true,

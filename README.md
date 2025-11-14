@@ -184,6 +184,13 @@ npm install @equaltoai/greater-components-utils
 </Admin.Cost.Root>
 ```
 
+## ✅ Phase 5 – Documentation & Testing
+- **Demo suite docs**: `/demo-suite` plus `/demo-suite/{timeline,profile,settings,search}` now outline props, handlers, accessibility, and performance notes for every Phase 4 surface.
+- **New primitives coverage**: `/components/tabs` and `/components/switch` pages document the runes-based API with live demos.
+- **Testing upgrades**: Vitest specs for `apps/playground/src/lib/stores/storage.ts` and `packages/fediverse/src/lib/timelineStore.ts` + Playwright flows in `packages/testing/tests/demo/{timeline,profile,settings,search}.spec.ts`.
+- **Performance tracking**: Lighthouse (Playground build) scored 98/100/100/100 with notes logged in `docs/planning/greater-alignment-log.md`.
+- **Deployment runbook**: Follow `docs/deployment/demo-suite.md` for build/preview/publish commands, including the new Lighthouse + Playwright validation steps.
+
 ## 📦 Package Overview
 
 ### Core Packages

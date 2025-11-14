@@ -251,11 +251,8 @@ const EMPTY_RESULTS: SearchResults = {
  * @param initialQuery - Initial search query
  * @returns Search context
  */
-export function createSearchContext(
-	handlers: SearchHandlers = {},
-	initialQuery = ''
-): SearchContext {
-	const state = $state<SearchState>({
+export function createInitialSearchState(initialQuery = ''): SearchState {
+	return {
 		query: initialQuery,
 		type: 'all',
 		results: EMPTY_RESULTS,
@@ -264,7 +261,13 @@ export function createSearchContext(
 		semantic: false,
 		following: false,
 		recentSearches: loadRecentSearches(),
-	});
+	};
+}
+
+export function createSearchContext(
+	state: SearchState,
+	handlers: SearchHandlers = {}
+): SearchContext {
 
 	const context: SearchContext = {
 		state,

@@ -703,4 +703,11 @@ All documentation includes:
 - [x] All code examples tested and validated
 - [x] TypeScript types properly documented
 
+### Phase 5 Addendum (2025-02-18)
+
+- Added `/demo-suite` docs (timeline/profile/settings/search) plus new primitive pages for Tabs + Switch.
+- Captured Lighthouse score **98/100/100/100** for the playground build and recorded the workflow in `docs/deployment/demo-suite.md`.
+- Expanded regression coverage with Vitest specs for `apps/playground/src/lib/stores/storage.ts` and `packages/fediverse/src/lib/timelineStore.ts`.
+- Added Playwright specs in `packages/testing/tests/demo/{timeline,profile,settings,search}.spec.ts` to validate aria landmarks, keyboard flows, and live-region announcements.
+
 **Status**: ✅ **PHASE 5 COMPLETE** (with known Storybook infrastructure limitation)

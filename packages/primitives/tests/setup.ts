@@ -1,14 +1,5 @@
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/svelte';
-
-vi.mock('svelte', async () => {
-  const actual = await vi.importActual<typeof import('svelte')>('svelte');
-  return {
-    ...actual,
-    $state: <T>(value: T) => value
-  };
-});
-
 const matchMediaMock = vi.fn((query: string) => ({
   matches: false,
   media: query,
@@ -45,6 +36,20 @@ Object.defineProperty(window, 'localStorage', {
   configurable: true,
   value: localStorageMock
 });
+
+if (typeof HTMLDialogElement !== 'undefined') {
+	  if (!HTMLDialogElement.prototype.showModal) {
+	    HTMLDialogElement.prototype.showModal = function showModal() {
+	      this.open = true;
+	    };
+	  }
+
+	  if (!HTMLDialogElement.prototype.close) {
+	    HTMLDialogElement.prototype.close = function close() {
+	      this.open = false;
+	    };
+	  }
+}
 
 afterEach(() => {
   cleanup();

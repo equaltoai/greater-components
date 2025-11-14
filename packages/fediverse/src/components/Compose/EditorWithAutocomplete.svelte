@@ -106,9 +106,10 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		// Calculate menu position
 		const rect = textareaEl.getBoundingClientRect();
 		const coords = getCaretCoordinates(textareaEl, cursorPos);
+		const scrollY = typeof window !== 'undefined' ? window.scrollY : 0;
 		menuPosition = {
 			x: rect.left + coords.left,
-			y: rect.top + coords.top + coords.height + window.scrollY,
+			y: rect.top + coords.top + coords.height + scrollY,
 		};
 
 		// Fetch suggestions

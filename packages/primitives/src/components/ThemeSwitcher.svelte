@@ -76,6 +76,8 @@
     { value: 'reduced', label: 'Reduced', description: 'Minimal motion for accessibility' }
   ];
   
+  const hasDocument = typeof document !== 'undefined';
+
   // Handlers
   function handleColorSchemeChange(scheme: ColorScheme) {
     if (value === undefined) {
@@ -141,6 +143,10 @@
   }
   
   function exportSettings() {
+    if (!hasDocument) {
+      return;
+    }
+
     const json = preferencesStore.export();
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -179,7 +185,7 @@
   
   // Close compact menu when clicking outside
   $effect(() => {
-    if (!isCompactOpen || variant !== 'compact') return;
+    if (!hasDocument || !isCompactOpen || variant !== 'compact') return;
     
     function handleClickOutside(event: MouseEvent) {
       if (

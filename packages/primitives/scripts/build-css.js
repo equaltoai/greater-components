@@ -1,62 +1,77 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { readdirSync, readFileSync, writeFileSync, existsSync, symlinkSync, copyFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distDir = path.join(__dirname, '../dist');
 
-// Note: CSS is NOT used when consuming from source (Lesser/Greater compile from src/)
-// This file only exists for documentation/legacy purposes
+if (!existsSync(distDir)) {
+  throw new Error('Cannot bundle CSS before the package is built. Run "svelte-package" first.');
+}
 
-const readme = `# Greater Components Primitives - CSS Usage
+const usageDoc = `# Greater Components Primitives – CSS Distribution\n\n` +
+  `Components embed their styles when compiled with Svelte 5 runes. ` +
+  `For playgrounds, Storybook instances, or static HTML demos we also emit a ` +
+  `style.css bundle derived from every compiled component stylesheet.\n\n` +
+  `## Recommended\n\n` +
+  `import { Button } from '@equaltoai/greater-components-primitives';\n` +
+  `// No CSS import required when you compile the source\n\n` +
+  `## External / Legacy\n\n` +
+  `@import '@equaltoai/greater-components-primitives/style.css';\n` +
+  `/* Ships with the npm package for quick demos */\n`;
 
-## For Lesser/Greater (Recommended)
+writeFileSync(path.join(distDir, 'CSS_USAGE.md'), usageDoc, 'utf8');
 
-Import components from source - CSS is compiled with your app:
+function collectCssFiles(dir) {
+  const entries = readdirSync(dir, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...collectCssFiles(fullPath));
+    } else if (
+      entry.isFile() &&
+      entry.name.endsWith('.css') &&
+      entry.name !== 'style.css' &&
+      entry.name !== 'styles.css'
+    ) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
 
-\`\`\`javascript
-import { Button } from '@equaltoai/greater-components/primitives';
-// CSS automatically included, properly scoped
-\`\`\`
-
-## For Other Consumers
-
-Not officially supported. Greater Components are designed for Lesser/Greater ecosystem.
-If you must use them elsewhere, import from source and compile with Svelte 5+.
-
-Your bundler must:
-- Support Svelte 5 
-- Have runes enabled
-- Compile .svelte files
-
-No separate CSS import needed - styles are in components.
-`;
-
-fs.writeFileSync(path.join(distDir, 'CSS_USAGE.md'), readme);
-
-const sourceCssPath = path.join(distDir, 'greater-components-primitives.css');
+const cssFiles = collectCssFiles(distDir);
 const styleCssPath = path.join(distDir, 'style.css');
 const stylesCssPath = path.join(distDir, 'styles.css');
 
-if (fs.existsSync(sourceCssPath)) {
-  fs.copyFileSync(sourceCssPath, styleCssPath);
-  console.log('✅ Created style.css from greater-components-primitives.css');
+let emittedCss = false;
+
+if (cssFiles.length === 0) {
+  const placeholder = `/*\n  Greater Components primitives inline their styles inside each compiled component module.\n  This placeholder ensures the style import remains available for demo apps and tooling.\n*/\n`;
+  writeFileSync(styleCssPath, placeholder, 'utf8');
+  emittedCss = true;
+  console.log('ℹ️ No standalone component CSS detected; emitted placeholder style.css');
 } else {
-  console.warn('⚠️ Missing greater-components-primitives.css - style.css not created');
+  const bundle = cssFiles
+    .map((file) => {
+      const relative = path.relative(distDir, file).replace(/\\/g, '/');
+      return `/* ${relative} */\n${readFileSync(file, 'utf8')}`;
+    })
+    .join('\n\n');
+
+  writeFileSync(styleCssPath, bundle, 'utf8');
+  emittedCss = true;
+  console.log(`✅ Bundled ${cssFiles.length} component styles into style.css`);
 }
 
-// Ensure backward compatibility: create styles.css symlink/copy if style.css exists
-if (fs.existsSync(styleCssPath) && !fs.existsSync(stylesCssPath)) {
+if (emittedCss && !existsSync(stylesCssPath)) {
   try {
-    fs.symlinkSync('style.css', stylesCssPath, 'file');
-    console.log('✅ Created styles.css symlink for backward compatibility');
+    symlinkSync('style.css', stylesCssPath, 'file');
+    console.log('✅ Created styles.css symlink for compatibility');
   } catch {
-    fs.copyFileSync(styleCssPath, stylesCssPath);
-    console.log('✅ Created styles.css copy for backward compatibility');
+    copyFileSync(styleCssPath, stylesCssPath);
+    console.log('✅ Created styles.css copy for compatibility');
   }
 }
-
-console.log('✅ CSS build complete!');
-console.log('  - Components export source files with embedded styles');
-console.log('  - Consuming apps compile from source');

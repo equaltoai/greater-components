@@ -1,440 +1,455 @@
 <script lang="ts">
-  import type { HTMLAttributes } from 'svelte/elements';
-  import type { Snippet } from 'svelte';
-  
-  interface MenuItemData {
-    id: string;
-    label: string;
-    disabled?: boolean;
-    submenu?: MenuItemData[];
-    action?: () => void;
-  }
+	import type { HTMLAttributes } from 'svelte/elements';
+	import type { Snippet } from 'svelte';
 
-  interface Props extends Omit<HTMLAttributes<HTMLUListElement>, 'role'> {
-    items: MenuItemData[];
-    orientation?: 'horizontal' | 'vertical';
-    class?: string;
-    trigger?: Snippet<[{ open: boolean; toggle: () => void }]>;
-    onItemSelect?: (item: MenuItemData) => void;
-  }
+	export interface MenuItemData {
+		id: string;
+		label: string;
+		disabled?: boolean;
+		submenu?: MenuItemData[];
+		action?: () => void;
+	}
 
-  let {
-    items,
-    orientation = 'vertical',
-    class: className = '',
-    trigger,
-    onItemSelect
-  }: Props = $props();
-  const restProps = $restProps();
+	interface Props extends Omit<HTMLAttributes<HTMLUListElement>, 'role'> {
+		items: MenuItemData[];
+		orientation?: 'horizontal' | 'vertical';
+		class?: string;
+		trigger?: Snippet<[{ open: boolean; toggle: () => void }]>;
+		onItemSelect?: (item: MenuItemData) => void;
+	}
 
-  // State management
-  let isOpen = $state(false);
-  let activeIndex = $state(-1);
-  let typeaheadString = $state('');
-  let typeaheadTimeout: ReturnType<typeof setTimeout> | null = $state(null);
-  let menuElement: HTMLUListElement | null = $state(null);
-  let triggerElement: HTMLElement | null = $state(null);
-  let expandedSubmenu = $state<string | null>(null);
+	let {
+		items,
+		orientation = 'vertical',
+		class: className = '',
+		trigger,
+		onItemSelect,
+		...restProps
+	}: Props = $props<Props>();
 
-  // Compute menu classes
-  const menuClass = $derived(() => {
-    const classes = [
-      'gr-menu',
-      `gr-menu--${orientation}`,
-      className
-    ].filter(Boolean).join(' ');
-    
-    return classes;
-  });
+	// State management
+	let isOpen = $state(false);
+	let activeIndex = $state(-1);
+	let typeaheadString = $state('');
+	let typeaheadTimeout: ReturnType<typeof setTimeout> | null = $state(null);
+	let menuElement: HTMLUListElement | null = $state(null);
+	let triggerElement: HTMLElement | null = $state(null);
+	let expandedSubmenu = $state<string | null>(null);
 
-  // Get focusable items (non-disabled items)
-  const focusableItems = $derived(() => {
-    return items.filter(item => !item.disabled);
-  });
+	// Compute menu classes
+	const menuClass = $derived(() => {
+		const classes = ['gr-menu', `gr-menu--${orientation}`, className].filter(Boolean).join(' ');
 
-  function toggle() {
-    isOpen = !isOpen;
-    if (isOpen) {
-      activeIndex = -1;
-      // Focus first item when opened via keyboard
-      requestAnimationFrame(() => {
-        const firstItem = menuElement?.querySelector('[role="menuitem"]:not([aria-disabled="true"])') as HTMLElement;
-        if (firstItem) {
-          firstItem.focus();
-          activeIndex = 0;
-        }
-      });
-    }
-  }
+		return classes;
+	});
 
-  function close() {
-    isOpen = false;
-    activeIndex = -1;
-    expandedSubmenu = null;
-    triggerElement?.focus();
-  }
+	// Get focusable items (non-disabled items)
+	const focusableItems = $derived(() => {
+		return items.filter((item) => !item.disabled);
+	});
 
-  function selectItem(item: MenuItemData) {
-    if (item.disabled) return;
-    
-    if (item.submenu) {
-      expandedSubmenu = expandedSubmenu === item.id ? null : item.id;
-      return;
-    }
+	function toggle() {
+		isOpen = !isOpen;
+		if (isOpen) {
+			activeIndex = -1;
+			// Focus first item when opened via keyboard
+			requestAnimationFrame(() => {
+				const firstItem = menuElement?.querySelector(
+					'[role="menuitem"]:not([aria-disabled="true"])'
+				) as HTMLElement;
+				if (firstItem) {
+					firstItem.focus();
+					activeIndex = 0;
+				}
+			});
+		}
+	}
 
-    item.action?.();
-    onItemSelect?.(item);
-    close();
-  }
+	function close() {
+		isOpen = false;
+		activeIndex = -1;
+		expandedSubmenu = null;
+		triggerElement?.focus();
+	}
 
-  function handleKeydown(event: KeyboardEvent) {
-    if (!isOpen) return;
+	function selectItem(item: MenuItemData) {
+		if (item.disabled) return;
 
-    switch (event.key) {
-      case 'Escape':
-        event.preventDefault();
-        close();
-        break;
+		if (item.submenu) {
+			expandedSubmenu = expandedSubmenu === item.id ? null : item.id;
+			return;
+		}
 
-      case 'ArrowDown':
-        if (orientation === 'vertical') {
-          event.preventDefault();
-          moveToNext();
-        }
-        break;
+		item.action?.();
+		onItemSelect?.(item);
+		close();
+	}
 
-      case 'ArrowUp':
-        if (orientation === 'vertical') {
-          event.preventDefault();
-          moveToPrevious();
-        }
-        break;
+	function handleKeydown(event: KeyboardEvent) {
+		if (!isOpen) return;
 
-      case 'ArrowRight': {
-        if (orientation === 'horizontal') {
-          event.preventDefault();
-          moveToNext();
-        } else {
-          // Expand submenu in vertical orientation
-          const currentItem = focusableItems[activeIndex];
-          if (currentItem?.submenu) {
-            event.preventDefault();
-            expandedSubmenu = currentItem.id;
-          }
-        }
-        break;
-      }
+		switch (event.key) {
+			case 'Escape':
+				event.preventDefault();
+				close();
+				break;
 
-      case 'ArrowLeft': {
-        if (orientation === 'horizontal') {
-          event.preventDefault();
-          moveToPrevious();
-        } else {
-          // Collapse submenu in vertical orientation
-          event.preventDefault();
-          expandedSubmenu = null;
-        }
-        break;
-      }
+			case 'ArrowDown':
+				if (orientation === 'vertical') {
+					event.preventDefault();
+					moveToNext();
+				}
+				break;
 
-      case 'Home':
-        event.preventDefault();
-        moveToFirst();
-        break;
+			case 'ArrowUp':
+				if (orientation === 'vertical') {
+					event.preventDefault();
+					moveToPrevious();
+				}
+				break;
 
-      case 'End':
-        event.preventDefault();
-        moveToLast();
-        break;
+			case 'ArrowRight': {
+				if (orientation === 'horizontal') {
+					event.preventDefault();
+					moveToNext();
+				} else {
+					// Expand submenu in vertical orientation
+					const currentItem = focusableItems()[activeIndex];
+					if (currentItem?.submenu) {
+						event.preventDefault();
+						expandedSubmenu = currentItem.id;
+					}
+				}
+				break;
+			}
 
-      case 'Enter':
-      case ' ': {
-        event.preventDefault();
-        const currentItem = focusableItems[activeIndex];
-        if (currentItem) {
-          selectItem(currentItem);
-        }
-        break;
-      }
+			case 'ArrowLeft': {
+				if (orientation === 'horizontal') {
+					event.preventDefault();
+					moveToPrevious();
+				} else {
+					// Collapse submenu in vertical orientation
+					event.preventDefault();
+					expandedSubmenu = null;
+				}
+				break;
+			}
 
-      default:
-        // Typeahead functionality
-        if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-          handleTypeahead(event.key.toLowerCase());
-        }
-        break;
-    }
-  }
+			case 'Home':
+				event.preventDefault();
+				moveToFirst();
+				break;
 
-  function moveToNext() {
-    const nextIndex = (activeIndex + 1) % focusableItems.length;
-    setActiveIndex(nextIndex);
-  }
+			case 'End':
+				event.preventDefault();
+				moveToLast();
+				break;
 
-  function moveToPrevious() {
-    const prevIndex = activeIndex <= 0 ? focusableItems.length - 1 : activeIndex - 1;
-    setActiveIndex(prevIndex);
-  }
+			case 'Enter':
+			case ' ': {
+				event.preventDefault();
+				const currentItem = focusableItems()[activeIndex];
+				if (currentItem) {
+					selectItem(currentItem);
+				}
+				break;
+			}
 
-  function moveToFirst() {
-    setActiveIndex(0);
-  }
+			default:
+				// Typeahead functionality
+				if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+					handleTypeahead(event.key.toLowerCase());
+				}
+				break;
+		}
+	}
 
-  function moveToLast() {
-    setActiveIndex(focusableItems.length - 1);
-  }
+	function moveToNext() {
+		const nextIndex = (activeIndex + 1) % focusableItems().length;
+		setActiveIndex(nextIndex);
+	}
 
-  function setActiveIndex(index: number) {
-    activeIndex = index;
-    const menuItem = menuElement?.querySelector(`[data-menu-index="${index}"]`) as HTMLElement;
-    menuItem?.focus();
-  }
+	function moveToPrevious() {
+		const prevIndex = activeIndex <= 0 ? focusableItems().length - 1 : activeIndex - 1;
+		setActiveIndex(prevIndex);
+	}
 
-  function handleTypeahead(key: string) {
-    // Clear previous timeout
-    if (typeaheadTimeout) {
-      clearTimeout(typeaheadTimeout);
-    }
+	function moveToFirst() {
+		setActiveIndex(0);
+	}
 
-    typeaheadString += key;
+	function moveToLast() {
+		setActiveIndex(focusableItems().length - 1);
+	}
 
-    // Find matching item
-    const matchingIndex = focusableItems.findIndex(item =>
-      item.label.toLowerCase().startsWith(typeaheadString)
-    );
+	function setActiveIndex(index: number) {
+		activeIndex = index;
+		const menuItem = menuElement?.querySelector(`[data-menu-index="${index}"]`) as HTMLElement;
+		menuItem?.focus();
+	}
 
-    if (matchingIndex !== -1) {
-      setActiveIndex(matchingIndex);
-    }
+	function handleTypeahead(key: string) {
+		// Clear previous timeout
+		if (typeaheadTimeout) {
+			clearTimeout(typeaheadTimeout);
+		}
 
-    // Clear typeahead string after delay
-    typeaheadTimeout = setTimeout(() => {
-      typeaheadString = '';
-      typeaheadTimeout = null;
-    }, 1000);
-  }
+		typeaheadString += key;
 
-  function handleClickOutside(event: MouseEvent) {
-    if (isOpen && menuElement && !menuElement.contains(event.target as Node) && 
-        triggerElement && !triggerElement.contains(event.target as Node)) {
-      close();
-    }
-  }
+		// Find matching item
+		const matchingIndex = focusableItems().findIndex((item) =>
+			item.label.toLowerCase().startsWith(typeaheadString)
+		);
 
-  // Click outside handler
-  $effect(() => {
-    if (isOpen) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  });
+		if (matchingIndex !== -1) {
+			setActiveIndex(matchingIndex);
+		}
+
+		// Clear typeahead string after delay
+		typeaheadTimeout = setTimeout(() => {
+			typeaheadString = '';
+			typeaheadTimeout = null;
+		}, 1000);
+	}
+
+	function handleClickOutside(event: MouseEvent) {
+		if (
+			isOpen &&
+			menuElement &&
+			!menuElement.contains(event.target as Node) &&
+			triggerElement &&
+			!triggerElement.contains(event.target as Node)
+		) {
+			close();
+		}
+	}
+
+	// Click outside handler
+	$effect(() => {
+		if (isOpen) {
+			document.addEventListener('click', handleClickOutside);
+			return () => document.removeEventListener('click', handleClickOutside);
+		}
+	});
 </script>
 
+<svelte:options
+	customElement={{
+		props: {
+			items: {},
+			orientation: {},
+			class: {},
+			trigger: {},
+			onItemSelect: {}
+		}
+	}}
+/>
+
 <div class="gr-menu-container">
-  {#if trigger}
-    <div bind:this={triggerElement}>
-      {@render trigger({ open: isOpen, toggle })}
-    </div>
-  {/if}
+	{#if trigger}
+		<div bind:this={triggerElement}>
+			{@render trigger({ open: isOpen, toggle })}
+		</div>
+	{/if}
 
-  {#if isOpen}
-    <ul
-      bind:this={menuElement}
-      class={menuClass()}
-      role={orientation === 'horizontal' ? 'menubar' : 'menu'}
-      aria-orientation={orientation}
-      onkeydown={handleKeydown}
-      tabindex="-1"
-      {...restProps}
-    >
-      {#each items as item (item.id)}
-        {@const focusableIndex = focusableItems.findIndex(fi => fi.id === item.id)}
-        <li
-          role="none"
-          class="gr-menu__item-wrapper"
-        >
-          <div
-            role="menuitem"
-            class="gr-menu__item"
-            class:gr-menu__item--active={focusableIndex === activeIndex}
-            class:gr-menu__item--disabled={item.disabled}
-            class:gr-menu__item--has-submenu={!!item.submenu}
-            data-menu-index={focusableIndex}
-            tabindex={item.disabled ? -1 : (focusableIndex === activeIndex ? 0 : -1)}
-            aria-disabled={item.disabled}
-            aria-expanded={item.submenu ? (expandedSubmenu === item.id) : undefined}
-            aria-haspopup={item.submenu ? 'menu' : undefined}
-            onclick={() => selectItem(item)}
-            onfocus={() => {
-              if (!item.disabled) {
-                activeIndex = focusableIndex;
-              }
-            }}
-            onkeydown={(event) => {
-              if ((event.key === 'Enter' || event.key === ' ') && !item.disabled) {
-                event.preventDefault();
-                event.stopPropagation();
-                selectItem(item);
-              }
-            }}
-          >
-            <span class="gr-menu__item-label">{item.label}</span>
-            {#if item.submenu}
-              <span class="gr-menu__item-arrow" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </span>
-            {/if}
-          </div>
+	{#if isOpen}
+		<ul
+			bind:this={menuElement}
+			class={menuClass()}
+			role={orientation === 'horizontal' ? 'menubar' : 'menu'}
+			aria-orientation={orientation}
+			onkeydown={handleKeydown}
+			tabindex="-1"
+			{...restProps}
+		>
+			{#each items as item (item.id)}
+				{@const focusableIndex = focusableItems().findIndex((fi) => fi.id === item.id)}
+				<li role="none" class="gr-menu__item-wrapper">
+					<div
+						role="menuitem"
+						class="gr-menu__item"
+						class:gr-menu__item--active={focusableIndex === activeIndex}
+						class:gr-menu__item--disabled={item.disabled}
+						class:gr-menu__item--has-submenu={!!item.submenu}
+						data-menu-index={focusableIndex}
+						tabindex={item.disabled ? -1 : focusableIndex === activeIndex ? 0 : -1}
+						aria-disabled={item.disabled}
+						aria-expanded={item.submenu ? expandedSubmenu === item.id : undefined}
+						aria-haspopup={item.submenu ? 'menu' : undefined}
+						onclick={() => selectItem(item)}
+						onfocus={() => {
+							if (!item.disabled) {
+								activeIndex = focusableIndex;
+							}
+						}}
+						onkeydown={(event) => {
+							if ((event.key === 'Enter' || event.key === ' ') && !item.disabled) {
+								event.preventDefault();
+								event.stopPropagation();
+								selectItem(item);
+							}
+						}}
+					>
+						<span class="gr-menu__item-label">{item.label}</span>
+						{#if item.submenu}
+							<span class="gr-menu__item-arrow" aria-hidden="true">
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<polyline points="9 18 15 12 9 6"></polyline>
+								</svg>
+							</span>
+						{/if}
+					</div>
 
-          {#if item.submenu && expandedSubmenu === item.id}
-            <ul
-              class="gr-menu gr-menu--submenu"
-              role="menu"
-              aria-orientation="vertical"
-            >
-              {#each item.submenu as subItem (subItem.id)}
-                <li role="none" class="gr-menu__item-wrapper">
-                  <div
-                    role="menuitem"
-                    class="gr-menu__item"
-                    class:gr-menu__item--disabled={subItem.disabled}
-                    tabindex={subItem.disabled ? -1 : 0}
-                    aria-disabled={subItem.disabled}
-                    onclick={() => selectItem(subItem)}
-                    onkeydown={(event) => {
-                      if ((event.key === 'Enter' || event.key === ' ') && !subItem.disabled) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        selectItem(subItem);
-                      }
-                    }}
-                  >
-                    <span class="gr-menu__item-label">{subItem.label}</span>
-                  </div>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </li>
-      {/each}
-    </ul>
-  {/if}
+					{#if item.submenu && expandedSubmenu === item.id}
+						<ul class="gr-menu gr-menu--submenu" role="menu" aria-orientation="vertical">
+							{#each item.submenu as subItem (subItem.id)}
+								<li role="none" class="gr-menu__item-wrapper">
+									<div
+										role="menuitem"
+										class="gr-menu__item"
+										class:gr-menu__item--disabled={subItem.disabled}
+										tabindex={subItem.disabled ? -1 : 0}
+										aria-disabled={subItem.disabled}
+										onclick={() => selectItem(subItem)}
+										onkeydown={(event) => {
+											if ((event.key === 'Enter' || event.key === ' ') && !subItem.disabled) {
+												event.preventDefault();
+												event.stopPropagation();
+												selectItem(subItem);
+											}
+										}}
+									>
+										<span class="gr-menu__item-label">{subItem.label}</span>
+									</div>
+								</li>
+							{/each}
+						</ul>
+					{/if}
+				</li>
+			{/each}
+		</ul>
+	{/if}
 </div>
 
 <style>
-  :global {
-    .gr-menu-container {
-      position: relative;
-      display: inline-block;
-    }
+	:global {
+		.gr-menu-container {
+			position: relative;
+			display: inline-block;
+		}
 
-    .gr-menu {
-      display: flex;
-      list-style: none;
-      margin: 0;
-      padding: var(--gr-spacing-scale-2);
-      background-color: var(--gr-color-base-white);
-      border: 1px solid var(--gr-semantic-border-default);
-      border-radius: var(--gr-radii-md);
-      box-shadow: var(--gr-shadow-lg);
-      z-index: 1000;
-      min-width: 12rem;
-    }
+		.gr-menu {
+			display: flex;
+			list-style: none;
+			margin: 0;
+			padding: var(--gr-spacing-scale-2);
+			background-color: var(--gr-color-base-white);
+			border: 1px solid var(--gr-semantic-border-default);
+			border-radius: var(--gr-radii-md);
+			box-shadow: var(--gr-shadow-lg);
+			z-index: 1000;
+			min-width: 12rem;
+		}
 
-    .gr-menu--vertical {
-      flex-direction: column;
-      position: absolute;
-      top: 100%;
-      left: 0;
-    }
+		.gr-menu--vertical {
+			flex-direction: column;
+			position: absolute;
+			top: 100%;
+			left: 0;
+		}
 
-    .gr-menu--horizontal {
-      flex-direction: row;
-      gap: var(--gr-spacing-scale-1);
-    }
+		.gr-menu--horizontal {
+			flex-direction: row;
+			gap: var(--gr-spacing-scale-1);
+		}
 
-    .gr-menu--submenu {
-      position: absolute;
-      top: 0;
-      left: 100%;
-      margin-left: var(--gr-spacing-scale-1);
-    }
+		.gr-menu--submenu {
+			position: absolute;
+			top: 0;
+			left: 100%;
+			margin-left: var(--gr-spacing-scale-1);
+		}
 
-    .gr-menu__item-wrapper {
-      position: relative;
-    }
+		.gr-menu__item-wrapper {
+			position: relative;
+		}
 
-    .gr-menu__item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
-      font-family: var(--gr-typography-fontFamily-sans);
-      font-size: var(--gr-typography-fontSize-sm);
-      line-height: var(--gr-typography-lineHeight-normal);
-      color: var(--gr-semantic-foreground-primary);
-      background-color: transparent;
-      border: none;
-      border-radius: var(--gr-radii-sm);
-      cursor: pointer;
-      transition-property: background-color, color;
-      transition-duration: var(--gr-motion-duration-fast);
-      transition-timing-function: var(--gr-motion-easing-out);
-      text-align: left;
-      white-space: nowrap;
-    }
+		.gr-menu__item {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
+			padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+			font-family: var(--gr-typography-fontFamily-sans);
+			font-size: var(--gr-typography-fontSize-sm);
+			line-height: var(--gr-typography-lineHeight-normal);
+			color: var(--gr-semantic-foreground-primary);
+			background-color: transparent;
+			border: none;
+			border-radius: var(--gr-radii-sm);
+			cursor: pointer;
+			transition-property: background-color, color;
+			transition-duration: var(--gr-motion-duration-fast);
+			transition-timing-function: var(--gr-motion-easing-out);
+			text-align: left;
+			white-space: nowrap;
+		}
 
-    .gr-menu__item:focus {
-      outline: none;
-    }
+		.gr-menu__item:focus {
+			outline: none;
+		}
 
-    .gr-menu__item:focus-visible {
-      box-shadow: 0 0 0 2px var(--gr-semantic-focus-ring);
-    }
+		.gr-menu__item:focus-visible {
+			box-shadow: 0 0 0 2px var(--gr-semantic-focus-ring);
+		}
 
-    .gr-menu__item:hover:not(.gr-menu__item--disabled),
-    .gr-menu__item--active:not(.gr-menu__item--disabled) {
-      background-color: var(--gr-semantic-background-secondary);
-      color: var(--gr-semantic-foreground-primary);
-    }
+		.gr-menu__item:hover:not(.gr-menu__item--disabled),
+		.gr-menu__item--active:not(.gr-menu__item--disabled) {
+			background-color: var(--gr-semantic-background-secondary);
+			color: var(--gr-semantic-foreground-primary);
+		}
 
-    .gr-menu__item--disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
+		.gr-menu__item--disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			pointer-events: none;
+		}
 
-    .gr-menu__item-label {
-      flex: 1;
-    }
+		.gr-menu__item-label {
+			flex: 1;
+		}
 
-    .gr-menu__item-arrow {
-      display: flex;
-      align-items: center;
-      margin-left: var(--gr-spacing-scale-2);
-      opacity: 0.7;
-    }
+		.gr-menu__item-arrow {
+			display: flex;
+			align-items: center;
+			margin-left: var(--gr-spacing-scale-2);
+			opacity: 0.7;
+		}
 
-    .gr-menu--horizontal .gr-menu__item {
-      padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
-    }
+		.gr-menu--horizontal .gr-menu__item {
+			padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
+		}
 
-    /* Reduced motion */
-    @media (prefers-reduced-motion: reduce) {
-      .gr-menu__item {
-        transition-duration: 0ms;
-      }
-    }
+		/* Reduced motion */
+		@media (prefers-reduced-motion: reduce) {
+			.gr-menu__item {
+				transition-duration: 0ms;
+			}
+		}
 
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-      .gr-menu {
-        background-color: var(--gr-semantic-background-primary);
-        border-color: var(--gr-semantic-border-subtle);
-      }
-    }
-  }
+		/* Dark mode support */
+		@media (prefers-color-scheme: dark) {
+			.gr-menu {
+				background-color: var(--gr-semantic-background-primary);
+				border-color: var(--gr-semantic-border-subtle);
+			}
+		}
+	}
 </style>

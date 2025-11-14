@@ -457,6 +457,7 @@ export { default as StatusCard } from './components/StatusCard.svelte';
  * @public
  */
 export { 
+  default as Status,
   Status as StatusCompound,
   Root as StatusRoot, 
   Header as StatusHeader, 
@@ -560,7 +561,6 @@ export { default as RealtimeWrapper } from './components/RealtimeWrapper.svelte'
 export type {
   MediaAttachment,
   Account,
-  Status,
   Mention,
   Tag,
   Card,
@@ -585,6 +585,7 @@ export type {
   ComposePoll,
   ComposeBoxProps
 } from './types';
+export type Status = import('./types.js').Status;
 
 // Export utilities
 export {

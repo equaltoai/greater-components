@@ -52,10 +52,10 @@ export type {
 } from './context.js';
 
 export {
+	createInitialSearchState,
 	createSearchContext,
 	getSearchContext,
 	highlightQuery,
 	formatResultCount,
 	formatCount,
 } from './context.js';
-

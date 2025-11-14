@@ -30,6 +30,8 @@
     children
   }: Props = $props();
   
+  const hasWindow = typeof window !== 'undefined';
+
   // State
   let currentSection = $state(activeSection);
   let isMobile = $state(false);
@@ -37,16 +39,22 @@
   
   // Check if mobile
   $effect(() => {
+    if (!hasWindow) {
+      isMobile = false;
+      showMobileMenu = false;
+      return;
+    }
+
     const checkMobile = () => {
       isMobile = window.innerWidth < 768;
       if (!isMobile) {
         showMobileMenu = false;
       }
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => {
       window.removeEventListener('resize', checkMobile);
     };

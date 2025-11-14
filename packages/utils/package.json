@@ -48,6 +48,6 @@
     "vitest": "^4.0.8"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.43.6"
   }
 }

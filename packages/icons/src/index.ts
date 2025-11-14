@@ -1,311 +1,915 @@
 // Auto-generated icon exports
 // Do not edit manually
 
-export { default as ActivityIcon } from './icons/activity.svelte';
-export { default as AirplayIcon } from './icons/airplay.svelte';
-export { default as AlertCircleIcon } from './icons/alert-circle.svelte';
-export { default as AlertOctagonIcon } from './icons/alert-octagon.svelte';
-export { default as AlertTriangleIcon } from './icons/alert-triangle.svelte';
-export { default as AlignCenterIcon } from './icons/align-center.svelte';
-export { default as AlignJustifyIcon } from './icons/align-justify.svelte';
-export { default as AlignLeftIcon } from './icons/align-left.svelte';
-export { default as AlignRightIcon } from './icons/align-right.svelte';
-export { default as AnchorIcon } from './icons/anchor.svelte';
-export { default as ApertureIcon } from './icons/aperture.svelte';
-export { default as ArchiveIcon } from './icons/archive.svelte';
-export { default as ArrowDownIcon } from './icons/arrow-down.svelte';
-export { default as ArrowDownCircleIcon } from './icons/arrow-down-circle.svelte';
-export { default as ArrowDownLeftIcon } from './icons/arrow-down-left.svelte';
-export { default as ArrowDownRightIcon } from './icons/arrow-down-right.svelte';
-export { default as ArrowLeftIcon } from './icons/arrow-left.svelte';
-export { default as ArrowLeftCircleIcon } from './icons/arrow-left-circle.svelte';
-export { default as ArrowRightIcon } from './icons/arrow-right.svelte';
-export { default as ArrowRightCircleIcon } from './icons/arrow-right-circle.svelte';
-export { default as ArrowUpIcon } from './icons/arrow-up.svelte';
-export { default as ArrowUpCircleIcon } from './icons/arrow-up-circle.svelte';
-export { default as ArrowUpLeftIcon } from './icons/arrow-up-left.svelte';
-export { default as ArrowUpRightIcon } from './icons/arrow-up-right.svelte';
-export { default as AtSignIcon } from './icons/at-sign.svelte';
-export { default as AwardIcon } from './icons/award.svelte';
-export { default as BarChartIcon } from './icons/bar-chart.svelte';
-export { default as BarChart2Icon } from './icons/bar-chart-2.svelte';
-export { default as BatteryIcon } from './icons/battery.svelte';
-export { default as BatteryChargingIcon } from './icons/battery-charging.svelte';
-export { default as BellIcon } from './icons/bell.svelte';
-export { default as BellOffIcon } from './icons/bell-off.svelte';
-export { default as BluetoothIcon } from './icons/bluetooth.svelte';
-export { default as BoldIcon } from './icons/bold.svelte';
-export { default as BookIcon } from './icons/book.svelte';
-export { default as BookOpenIcon } from './icons/book-open.svelte';
-export { default as BookmarkIcon } from './icons/bookmark.svelte';
-export { default as BoostIcon } from './icons/boost.svelte';
-export { default as BoxIcon } from './icons/box.svelte';
-export { default as BriefcaseIcon } from './icons/briefcase.svelte';
-export { default as BuildingIcon } from './icons/building.svelte';
-export { default as CalendarIcon } from './icons/calendar.svelte';
-export { default as CameraIcon } from './icons/camera.svelte';
-export { default as CameraOffIcon } from './icons/camera-off.svelte';
-export { default as CastIcon } from './icons/cast.svelte';
-export { default as CheckIcon } from './icons/check.svelte';
-export { default as CheckCircleIcon } from './icons/check-circle.svelte';
-export { default as CheckSquareIcon } from './icons/check-square.svelte';
-export { default as ChevronDownIcon } from './icons/chevron-down.svelte';
-export { default as ChevronLeftIcon } from './icons/chevron-left.svelte';
-export { default as ChevronRightIcon } from './icons/chevron-right.svelte';
-export { default as ChevronUpIcon } from './icons/chevron-up.svelte';
-export { default as ChevronsDownIcon } from './icons/chevrons-down.svelte';
-export { default as ChevronsLeftIcon } from './icons/chevrons-left.svelte';
-export { default as ChevronsRightIcon } from './icons/chevrons-right.svelte';
-export { default as ChevronsUpIcon } from './icons/chevrons-up.svelte';
-export { default as ChromeIcon } from './icons/chrome.svelte';
-export { default as CircleIcon } from './icons/circle.svelte';
-export { default as ClipboardIcon } from './icons/clipboard.svelte';
-export { default as ClockIcon } from './icons/clock.svelte';
-export { default as CloudIcon } from './icons/cloud.svelte';
-export { default as CloudDrizzleIcon } from './icons/cloud-drizzle.svelte';
-export { default as CloudLightningIcon } from './icons/cloud-lightning.svelte';
-export { default as CloudOffIcon } from './icons/cloud-off.svelte';
-export { default as CloudRainIcon } from './icons/cloud-rain.svelte';
-export { default as CloudSnowIcon } from './icons/cloud-snow.svelte';
-export { default as CodeIcon } from './icons/code.svelte';
-export { default as CodepenIcon } from './icons/codepen.svelte';
-export { default as CodesandboxIcon } from './icons/codesandbox.svelte';
-export { default as CoffeeIcon } from './icons/coffee.svelte';
-export { default as ColumnsIcon } from './icons/columns.svelte';
-export { default as CommandIcon } from './icons/command.svelte';
-export { default as CompassIcon } from './icons/compass.svelte';
-export { default as CopyIcon } from './icons/copy.svelte';
-export { default as CornerDownLeftIcon } from './icons/corner-down-left.svelte';
-export { default as CornerDownRightIcon } from './icons/corner-down-right.svelte';
-export { default as CornerLeftDownIcon } from './icons/corner-left-down.svelte';
-export { default as CornerLeftUpIcon } from './icons/corner-left-up.svelte';
-export { default as CornerRightDownIcon } from './icons/corner-right-down.svelte';
-export { default as CornerRightUpIcon } from './icons/corner-right-up.svelte';
-export { default as CornerUpLeftIcon } from './icons/corner-up-left.svelte';
-export { default as CornerUpRightIcon } from './icons/corner-up-right.svelte';
-export { default as CpuIcon } from './icons/cpu.svelte';
-export { default as CreditCardIcon } from './icons/credit-card.svelte';
-export { default as CropIcon } from './icons/crop.svelte';
-export { default as CrosshairIcon } from './icons/crosshair.svelte';
-export { default as DatabaseIcon } from './icons/database.svelte';
-export { default as DeleteIcon } from './icons/delete.svelte';
-export { default as DiscIcon } from './icons/disc.svelte';
-export { default as DivideIcon } from './icons/divide.svelte';
-export { default as DivideCircleIcon } from './icons/divide-circle.svelte';
-export { default as DivideSquareIcon } from './icons/divide-square.svelte';
-export { default as DollarSignIcon } from './icons/dollar-sign.svelte';
-export { default as DownloadIcon } from './icons/download.svelte';
-export { default as DownloadCloudIcon } from './icons/download-cloud.svelte';
-export { default as DribbbleIcon } from './icons/dribbble.svelte';
-export { default as DropletIcon } from './icons/droplet.svelte';
-export { default as EditIcon } from './icons/edit.svelte';
-export { default as Edit2Icon } from './icons/edit-2.svelte';
-export { default as Edit3Icon } from './icons/edit-3.svelte';
-export { default as EqualsIcon } from './icons/equals.svelte';
-export { default as ExternalLinkIcon } from './icons/external-link.svelte';
-export { default as EyeIcon } from './icons/eye.svelte';
-export { default as EyeOffIcon } from './icons/eye-off.svelte';
-export { default as FacebookIcon } from './icons/facebook.svelte';
-export { default as FastForwardIcon } from './icons/fast-forward.svelte';
-export { default as FavoriteIcon } from './icons/favorite.svelte';
-export { default as FeatherIcon } from './icons/feather.svelte';
-export { default as FigmaIcon } from './icons/figma.svelte';
-export { default as FileIcon } from './icons/file.svelte';
-export { default as FileMinusIcon } from './icons/file-minus.svelte';
-export { default as FilePlusIcon } from './icons/file-plus.svelte';
-export { default as FileTextIcon } from './icons/file-text.svelte';
-export { default as FilmIcon } from './icons/film.svelte';
-export { default as FilterIcon } from './icons/filter.svelte';
-export { default as FlagIcon } from './icons/flag.svelte';
-export { default as FolderIcon } from './icons/folder.svelte';
-export { default as FolderMinusIcon } from './icons/folder-minus.svelte';
-export { default as FolderPlusIcon } from './icons/folder-plus.svelte';
-export { default as FollowIcon } from './icons/follow.svelte';
-export { default as FramerIcon } from './icons/framer.svelte';
-export { default as FrownIcon } from './icons/frown.svelte';
-export { default as GiftIcon } from './icons/gift.svelte';
-export { default as GitBranchIcon } from './icons/git-branch.svelte';
-export { default as GitCommitIcon } from './icons/git-commit.svelte';
-export { default as GitMergeIcon } from './icons/git-merge.svelte';
-export { default as GitPullRequestIcon } from './icons/git-pull-request.svelte';
-export { default as GithubIcon } from './icons/github.svelte';
-export { default as GitlabIcon } from './icons/gitlab.svelte';
-export { default as GlobeIcon } from './icons/globe.svelte';
-export { default as GreaterThanIcon } from './icons/greater-than.svelte';
-export { default as GridIcon } from './icons/grid.svelte';
-export { default as HardDriveIcon } from './icons/hard-drive.svelte';
-export { default as HashIcon } from './icons/hash.svelte';
-export { default as HashtagIcon } from './icons/hashtag.svelte';
-export { default as HeadphonesIcon } from './icons/headphones.svelte';
-export { default as HeartIcon } from './icons/heart.svelte';
-export { default as HelpCircleIcon } from './icons/help-circle.svelte';
-export { default as HexagonIcon } from './icons/hexagon.svelte';
-export { default as HomeIcon } from './icons/home.svelte';
-export { default as ImageIcon } from './icons/image.svelte';
-export { default as InboxIcon } from './icons/inbox.svelte';
-export { default as InfoIcon } from './icons/info.svelte';
-export { default as InstagramIcon } from './icons/instagram.svelte';
-export { default as ItalicIcon } from './icons/italic.svelte';
-export { default as KeyIcon } from './icons/key.svelte';
-export { default as LayersIcon } from './icons/layers.svelte';
-export { default as LayoutIcon } from './icons/layout.svelte';
-export { default as LessThanIcon } from './icons/less-than.svelte';
-export { default as LifeBuoyIcon } from './icons/life-buoy.svelte';
-export { default as LinkIcon } from './icons/link.svelte';
-export { default as Link2Icon } from './icons/link-2.svelte';
-export { default as LinkedinIcon } from './icons/linkedin.svelte';
-export { default as ListIcon } from './icons/list.svelte';
-export { default as LoaderIcon } from './icons/loader.svelte';
-export { default as LockIcon } from './icons/lock.svelte';
-export { default as LogInIcon } from './icons/log-in.svelte';
-export { default as LogOutIcon } from './icons/log-out.svelte';
-export { default as MailIcon } from './icons/mail.svelte';
-export { default as MapIcon } from './icons/map.svelte';
-export { default as MapPinIcon } from './icons/map-pin.svelte';
-export { default as MaximizeIcon } from './icons/maximize.svelte';
-export { default as Maximize2Icon } from './icons/maximize-2.svelte';
-export { default as MehIcon } from './icons/meh.svelte';
-export { default as MentionIcon } from './icons/mention.svelte';
-export { default as MenuIcon } from './icons/menu.svelte';
-export { default as MessageCircleIcon } from './icons/message-circle.svelte';
-export { default as MessageSquareIcon } from './icons/message-square.svelte';
-export { default as MicIcon } from './icons/mic.svelte';
-export { default as MicOffIcon } from './icons/mic-off.svelte';
-export { default as MinimizeIcon } from './icons/minimize.svelte';
-export { default as Minimize2Icon } from './icons/minimize-2.svelte';
-export { default as MinusIcon } from './icons/minus.svelte';
-export { default as MinusCircleIcon } from './icons/minus-circle.svelte';
-export { default as MinusSquareIcon } from './icons/minus-square.svelte';
-export { default as MonitorIcon } from './icons/monitor.svelte';
-export { default as MoonIcon } from './icons/moon.svelte';
-export { default as MoreHorizontalIcon } from './icons/more-horizontal.svelte';
-export { default as MoreVerticalIcon } from './icons/more-vertical.svelte';
-export { default as MousePointerIcon } from './icons/mouse-pointer.svelte';
-export { default as MoveIcon } from './icons/move.svelte';
-export { default as MusicIcon } from './icons/music.svelte';
-export { default as NavigationIcon } from './icons/navigation.svelte';
-export { default as Navigation2Icon } from './icons/navigation-2.svelte';
-export { default as OctagonIcon } from './icons/octagon.svelte';
-export { default as PackageIcon } from './icons/package.svelte';
-export { default as PaperclipIcon } from './icons/paperclip.svelte';
-export { default as PauseIcon } from './icons/pause.svelte';
-export { default as PauseCircleIcon } from './icons/pause-circle.svelte';
-export { default as PenToolIcon } from './icons/pen-tool.svelte';
-export { default as PercentIcon } from './icons/percent.svelte';
-export { default as PhoneIcon } from './icons/phone.svelte';
-export { default as PhoneCallIcon } from './icons/phone-call.svelte';
-export { default as PhoneForwardedIcon } from './icons/phone-forwarded.svelte';
-export { default as PhoneIncomingIcon } from './icons/phone-incoming.svelte';
-export { default as PhoneMissedIcon } from './icons/phone-missed.svelte';
-export { default as PhoneOffIcon } from './icons/phone-off.svelte';
-export { default as PhoneOutgoingIcon } from './icons/phone-outgoing.svelte';
-export { default as PieChartIcon } from './icons/pie-chart.svelte';
-export { default as PlayIcon } from './icons/play.svelte';
-export { default as PlayCircleIcon } from './icons/play-circle.svelte';
-export { default as PlusIcon } from './icons/plus.svelte';
-export { default as PlusCircleIcon } from './icons/plus-circle.svelte';
-export { default as PlusSquareIcon } from './icons/plus-square.svelte';
-export { default as PocketIcon } from './icons/pocket.svelte';
-export { default as PowerIcon } from './icons/power.svelte';
-export { default as PrinterIcon } from './icons/printer.svelte';
-export { default as RadioIcon } from './icons/radio.svelte';
-export { default as RefreshCcwIcon } from './icons/refresh-ccw.svelte';
-export { default as RefreshCwIcon } from './icons/refresh-cw.svelte';
-export { default as RepeatIcon } from './icons/repeat.svelte';
-export { default as ReplyIcon } from './icons/reply.svelte';
-export { default as RewindIcon } from './icons/rewind.svelte';
-export { default as RotateCcwIcon } from './icons/rotate-ccw.svelte';
-export { default as RotateCwIcon } from './icons/rotate-cw.svelte';
-export { default as RssIcon } from './icons/rss.svelte';
-export { default as SaveIcon } from './icons/save.svelte';
-export { default as ScissorsIcon } from './icons/scissors.svelte';
-export { default as SearchIcon } from './icons/search.svelte';
-export { default as SendIcon } from './icons/send.svelte';
-export { default as ServerIcon } from './icons/server.svelte';
-export { default as SettingsIcon } from './icons/settings.svelte';
-export { default as ShareIcon } from './icons/share.svelte';
-export { default as Share2Icon } from './icons/share-2.svelte';
-export { default as ShieldIcon } from './icons/shield.svelte';
-export { default as ShieldOffIcon } from './icons/shield-off.svelte';
-export { default as ShoppingBagIcon } from './icons/shopping-bag.svelte';
-export { default as ShoppingCartIcon } from './icons/shopping-cart.svelte';
-export { default as ShuffleIcon } from './icons/shuffle.svelte';
-export { default as SidebarIcon } from './icons/sidebar.svelte';
-export { default as SkipBackIcon } from './icons/skip-back.svelte';
-export { default as SkipForwardIcon } from './icons/skip-forward.svelte';
-export { default as SlackIcon } from './icons/slack.svelte';
-export { default as SlashIcon } from './icons/slash.svelte';
-export { default as SlidersIcon } from './icons/sliders.svelte';
-export { default as SmartphoneIcon } from './icons/smartphone.svelte';
-export { default as SmileIcon } from './icons/smile.svelte';
-export { default as SpeakerIcon } from './icons/speaker.svelte';
-export { default as SquareIcon } from './icons/square.svelte';
-export { default as StarIcon } from './icons/star.svelte';
-export { default as StopCircleIcon } from './icons/stop-circle.svelte';
-export { default as SunIcon } from './icons/sun.svelte';
-export { default as SunriseIcon } from './icons/sunrise.svelte';
-export { default as SunsetIcon } from './icons/sunset.svelte';
-export { default as TableIcon } from './icons/table.svelte';
-export { default as TabletIcon } from './icons/tablet.svelte';
-export { default as TagIcon } from './icons/tag.svelte';
-export { default as TargetIcon } from './icons/target.svelte';
-export { default as TerminalIcon } from './icons/terminal.svelte';
-export { default as ThermometerIcon } from './icons/thermometer.svelte';
-export { default as ThumbsDownIcon } from './icons/thumbs-down.svelte';
-export { default as ThumbsUpIcon } from './icons/thumbs-up.svelte';
-export { default as ToggleLeftIcon } from './icons/toggle-left.svelte';
-export { default as ToggleRightIcon } from './icons/toggle-right.svelte';
-export { default as ToolIcon } from './icons/tool.svelte';
-export { default as TrashIcon } from './icons/trash.svelte';
-export { default as Trash2Icon } from './icons/trash-2.svelte';
-export { default as TrelloIcon } from './icons/trello.svelte';
-export { default as TrendingDownIcon } from './icons/trending-down.svelte';
-export { default as TrendingUpIcon } from './icons/trending-up.svelte';
-export { default as TriangleIcon } from './icons/triangle.svelte';
-export { default as TruckIcon } from './icons/truck.svelte';
-export { default as TvIcon } from './icons/tv.svelte';
-export { default as TwitchIcon } from './icons/twitch.svelte';
-export { default as TwitterIcon } from './icons/twitter.svelte';
-export { default as TypeIcon } from './icons/type.svelte';
-export { default as UmbrellaIcon } from './icons/umbrella.svelte';
-export { default as UnboostIcon } from './icons/unboost.svelte';
-export { default as UnderlineIcon } from './icons/underline.svelte';
-export { default as UnfavoriteIcon } from './icons/unfavorite.svelte';
-export { default as UnfollowIcon } from './icons/unfollow.svelte';
-export { default as UnlockIcon } from './icons/unlock.svelte';
-export { default as UploadIcon } from './icons/upload.svelte';
-export { default as UploadCloudIcon } from './icons/upload-cloud.svelte';
-export { default as UserIcon } from './icons/user.svelte';
-export { default as UserCheckIcon } from './icons/user-check.svelte';
-export { default as UserMinusIcon } from './icons/user-minus.svelte';
-export { default as UserPlusIcon } from './icons/user-plus.svelte';
-export { default as UserXIcon } from './icons/user-x.svelte';
-export { default as UsersIcon } from './icons/users.svelte';
-export { default as VideoIcon } from './icons/video.svelte';
-export { default as VideoOffIcon } from './icons/video-off.svelte';
-export { default as VoicemailIcon } from './icons/voicemail.svelte';
-export { default as VolumeIcon } from './icons/volume.svelte';
-export { default as Volume1Icon } from './icons/volume-1.svelte';
-export { default as Volume2Icon } from './icons/volume-2.svelte';
-export { default as VolumeXIcon } from './icons/volume-x.svelte';
-export { default as WatchIcon } from './icons/watch.svelte';
-export { default as WifiIcon } from './icons/wifi.svelte';
-export { default as WifiOffIcon } from './icons/wifi-off.svelte';
-export { default as WindIcon } from './icons/wind.svelte';
-export { default as XIcon } from './icons/x.svelte';
-export { default as XCircleIcon } from './icons/x-circle.svelte';
-export { default as XOctagonIcon } from './icons/x-octagon.svelte';
-export { default as XSquareIcon } from './icons/x-square.svelte';
-export { default as YoutubeIcon } from './icons/youtube.svelte';
-export { default as ZapIcon } from './icons/zap.svelte';
-export { default as ZapOffIcon } from './icons/zap-off.svelte';
-export { default as ZoomInIcon } from './icons/zoom-in.svelte';
-export { default as ZoomOutIcon } from './icons/zoom-out.svelte';
+import ActivityIcon from './icons/activity.svelte';
+import AirplayIcon from './icons/airplay.svelte';
+import AlertCircleIcon from './icons/alert-circle.svelte';
+import AlertOctagonIcon from './icons/alert-octagon.svelte';
+import AlertTriangleIcon from './icons/alert-triangle.svelte';
+import AlignCenterIcon from './icons/align-center.svelte';
+import AlignJustifyIcon from './icons/align-justify.svelte';
+import AlignLeftIcon from './icons/align-left.svelte';
+import AlignRightIcon from './icons/align-right.svelte';
+import AnchorIcon from './icons/anchor.svelte';
+import ApertureIcon from './icons/aperture.svelte';
+import ArchiveIcon from './icons/archive.svelte';
+import ArrowDownIcon from './icons/arrow-down.svelte';
+import ArrowDownCircleIcon from './icons/arrow-down-circle.svelte';
+import ArrowDownLeftIcon from './icons/arrow-down-left.svelte';
+import ArrowDownRightIcon from './icons/arrow-down-right.svelte';
+import ArrowLeftIcon from './icons/arrow-left.svelte';
+import ArrowLeftCircleIcon from './icons/arrow-left-circle.svelte';
+import ArrowRightIcon from './icons/arrow-right.svelte';
+import ArrowRightCircleIcon from './icons/arrow-right-circle.svelte';
+import ArrowUpIcon from './icons/arrow-up.svelte';
+import ArrowUpCircleIcon from './icons/arrow-up-circle.svelte';
+import ArrowUpLeftIcon from './icons/arrow-up-left.svelte';
+import ArrowUpRightIcon from './icons/arrow-up-right.svelte';
+import AtSignIcon from './icons/at-sign.svelte';
+import AwardIcon from './icons/award.svelte';
+import BarChartIcon from './icons/bar-chart.svelte';
+import BarChart2Icon from './icons/bar-chart-2.svelte';
+import BatteryIcon from './icons/battery.svelte';
+import BatteryChargingIcon from './icons/battery-charging.svelte';
+import BellIcon from './icons/bell.svelte';
+import BellOffIcon from './icons/bell-off.svelte';
+import BluetoothIcon from './icons/bluetooth.svelte';
+import BoldIcon from './icons/bold.svelte';
+import BookIcon from './icons/book.svelte';
+import BookOpenIcon from './icons/book-open.svelte';
+import BookmarkIcon from './icons/bookmark.svelte';
+import BoostIcon from './icons/boost.svelte';
+import BoxIcon from './icons/box.svelte';
+import BriefcaseIcon from './icons/briefcase.svelte';
+import BuildingIcon from './icons/building.svelte';
+import CalendarIcon from './icons/calendar.svelte';
+import CameraIcon from './icons/camera.svelte';
+import CameraOffIcon from './icons/camera-off.svelte';
+import CastIcon from './icons/cast.svelte';
+import CheckIcon from './icons/check.svelte';
+import CheckCircleIcon from './icons/check-circle.svelte';
+import CheckSquareIcon from './icons/check-square.svelte';
+import ChevronDownIcon from './icons/chevron-down.svelte';
+import ChevronLeftIcon from './icons/chevron-left.svelte';
+import ChevronRightIcon from './icons/chevron-right.svelte';
+import ChevronUpIcon from './icons/chevron-up.svelte';
+import ChevronsDownIcon from './icons/chevrons-down.svelte';
+import ChevronsLeftIcon from './icons/chevrons-left.svelte';
+import ChevronsRightIcon from './icons/chevrons-right.svelte';
+import ChevronsUpIcon from './icons/chevrons-up.svelte';
+import ChromeIcon from './icons/chrome.svelte';
+import CircleIcon from './icons/circle.svelte';
+import ClipboardIcon from './icons/clipboard.svelte';
+import ClockIcon from './icons/clock.svelte';
+import CloudIcon from './icons/cloud.svelte';
+import CloudDrizzleIcon from './icons/cloud-drizzle.svelte';
+import CloudLightningIcon from './icons/cloud-lightning.svelte';
+import CloudOffIcon from './icons/cloud-off.svelte';
+import CloudRainIcon from './icons/cloud-rain.svelte';
+import CloudSnowIcon from './icons/cloud-snow.svelte';
+import CodeIcon from './icons/code.svelte';
+import CodepenIcon from './icons/codepen.svelte';
+import CodesandboxIcon from './icons/codesandbox.svelte';
+import CoffeeIcon from './icons/coffee.svelte';
+import ColumnsIcon from './icons/columns.svelte';
+import CommandIcon from './icons/command.svelte';
+import CompassIcon from './icons/compass.svelte';
+import CopyIcon from './icons/copy.svelte';
+import CornerDownLeftIcon from './icons/corner-down-left.svelte';
+import CornerDownRightIcon from './icons/corner-down-right.svelte';
+import CornerLeftDownIcon from './icons/corner-left-down.svelte';
+import CornerLeftUpIcon from './icons/corner-left-up.svelte';
+import CornerRightDownIcon from './icons/corner-right-down.svelte';
+import CornerRightUpIcon from './icons/corner-right-up.svelte';
+import CornerUpLeftIcon from './icons/corner-up-left.svelte';
+import CornerUpRightIcon from './icons/corner-up-right.svelte';
+import CpuIcon from './icons/cpu.svelte';
+import CreditCardIcon from './icons/credit-card.svelte';
+import CropIcon from './icons/crop.svelte';
+import CrosshairIcon from './icons/crosshair.svelte';
+import DatabaseIcon from './icons/database.svelte';
+import DeleteIcon from './icons/delete.svelte';
+import DiscIcon from './icons/disc.svelte';
+import DivideIcon from './icons/divide.svelte';
+import DivideCircleIcon from './icons/divide-circle.svelte';
+import DivideSquareIcon from './icons/divide-square.svelte';
+import DollarSignIcon from './icons/dollar-sign.svelte';
+import DownloadIcon from './icons/download.svelte';
+import DownloadCloudIcon from './icons/download-cloud.svelte';
+import DribbbleIcon from './icons/dribbble.svelte';
+import DropletIcon from './icons/droplet.svelte';
+import EditIcon from './icons/edit.svelte';
+import Edit2Icon from './icons/edit-2.svelte';
+import Edit3Icon from './icons/edit-3.svelte';
+import EqualsIcon from './icons/equals.svelte';
+import ExternalLinkIcon from './icons/external-link.svelte';
+import EyeIcon from './icons/eye.svelte';
+import EyeOffIcon from './icons/eye-off.svelte';
+import FacebookIcon from './icons/facebook.svelte';
+import FastForwardIcon from './icons/fast-forward.svelte';
+import FavoriteIcon from './icons/favorite.svelte';
+import FeatherIcon from './icons/feather.svelte';
+import FigmaIcon from './icons/figma.svelte';
+import FileIcon from './icons/file.svelte';
+import FileMinusIcon from './icons/file-minus.svelte';
+import FilePlusIcon from './icons/file-plus.svelte';
+import FileTextIcon from './icons/file-text.svelte';
+import FilmIcon from './icons/film.svelte';
+import FilterIcon from './icons/filter.svelte';
+import FlagIcon from './icons/flag.svelte';
+import FolderIcon from './icons/folder.svelte';
+import FolderMinusIcon from './icons/folder-minus.svelte';
+import FolderPlusIcon from './icons/folder-plus.svelte';
+import FollowIcon from './icons/follow.svelte';
+import FramerIcon from './icons/framer.svelte';
+import FrownIcon from './icons/frown.svelte';
+import GiftIcon from './icons/gift.svelte';
+import GitBranchIcon from './icons/git-branch.svelte';
+import GitCommitIcon from './icons/git-commit.svelte';
+import GitMergeIcon from './icons/git-merge.svelte';
+import GitPullRequestIcon from './icons/git-pull-request.svelte';
+import GithubIcon from './icons/github.svelte';
+import GitlabIcon from './icons/gitlab.svelte';
+import GlobeIcon from './icons/globe.svelte';
+import GreaterThanIcon from './icons/greater-than.svelte';
+import GridIcon from './icons/grid.svelte';
+import HardDriveIcon from './icons/hard-drive.svelte';
+import HashIcon from './icons/hash.svelte';
+import HashtagIcon from './icons/hashtag.svelte';
+import HeadphonesIcon from './icons/headphones.svelte';
+import HeartIcon from './icons/heart.svelte';
+import HelpCircleIcon from './icons/help-circle.svelte';
+import HexagonIcon from './icons/hexagon.svelte';
+import HomeIcon from './icons/home.svelte';
+import ImageIcon from './icons/image.svelte';
+import InboxIcon from './icons/inbox.svelte';
+import InfoIcon from './icons/info.svelte';
+import InstagramIcon from './icons/instagram.svelte';
+import ItalicIcon from './icons/italic.svelte';
+import KeyIcon from './icons/key.svelte';
+import LayersIcon from './icons/layers.svelte';
+import LayoutIcon from './icons/layout.svelte';
+import LessThanIcon from './icons/less-than.svelte';
+import LifeBuoyIcon from './icons/life-buoy.svelte';
+import LinkIcon from './icons/link.svelte';
+import Link2Icon from './icons/link-2.svelte';
+import LinkedinIcon from './icons/linkedin.svelte';
+import ListIcon from './icons/list.svelte';
+import LoaderIcon from './icons/loader.svelte';
+import LockIcon from './icons/lock.svelte';
+import LogInIcon from './icons/log-in.svelte';
+import LogOutIcon from './icons/log-out.svelte';
+import MailIcon from './icons/mail.svelte';
+import MapIcon from './icons/map.svelte';
+import MapPinIcon from './icons/map-pin.svelte';
+import MaximizeIcon from './icons/maximize.svelte';
+import Maximize2Icon from './icons/maximize-2.svelte';
+import MehIcon from './icons/meh.svelte';
+import MentionIcon from './icons/mention.svelte';
+import MenuIcon from './icons/menu.svelte';
+import MessageCircleIcon from './icons/message-circle.svelte';
+import MessageSquareIcon from './icons/message-square.svelte';
+import MicIcon from './icons/mic.svelte';
+import MicOffIcon from './icons/mic-off.svelte';
+import MinimizeIcon from './icons/minimize.svelte';
+import Minimize2Icon from './icons/minimize-2.svelte';
+import MinusIcon from './icons/minus.svelte';
+import MinusCircleIcon from './icons/minus-circle.svelte';
+import MinusSquareIcon from './icons/minus-square.svelte';
+import MonitorIcon from './icons/monitor.svelte';
+import MoonIcon from './icons/moon.svelte';
+import MoreHorizontalIcon from './icons/more-horizontal.svelte';
+import MoreVerticalIcon from './icons/more-vertical.svelte';
+import MousePointerIcon from './icons/mouse-pointer.svelte';
+import MoveIcon from './icons/move.svelte';
+import MusicIcon from './icons/music.svelte';
+import NavigationIcon from './icons/navigation.svelte';
+import Navigation2Icon from './icons/navigation-2.svelte';
+import OctagonIcon from './icons/octagon.svelte';
+import PackageIcon from './icons/package.svelte';
+import PaperclipIcon from './icons/paperclip.svelte';
+import PauseIcon from './icons/pause.svelte';
+import PauseCircleIcon from './icons/pause-circle.svelte';
+import PenToolIcon from './icons/pen-tool.svelte';
+import PercentIcon from './icons/percent.svelte';
+import PhoneIcon from './icons/phone.svelte';
+import PhoneCallIcon from './icons/phone-call.svelte';
+import PhoneForwardedIcon from './icons/phone-forwarded.svelte';
+import PhoneIncomingIcon from './icons/phone-incoming.svelte';
+import PhoneMissedIcon from './icons/phone-missed.svelte';
+import PhoneOffIcon from './icons/phone-off.svelte';
+import PhoneOutgoingIcon from './icons/phone-outgoing.svelte';
+import PieChartIcon from './icons/pie-chart.svelte';
+import PlayIcon from './icons/play.svelte';
+import PlayCircleIcon from './icons/play-circle.svelte';
+import PlusIcon from './icons/plus.svelte';
+import PlusCircleIcon from './icons/plus-circle.svelte';
+import PlusSquareIcon from './icons/plus-square.svelte';
+import PocketIcon from './icons/pocket.svelte';
+import PowerIcon from './icons/power.svelte';
+import PrinterIcon from './icons/printer.svelte';
+import RadioIcon from './icons/radio.svelte';
+import RefreshCcwIcon from './icons/refresh-ccw.svelte';
+import RefreshCwIcon from './icons/refresh-cw.svelte';
+import RepeatIcon from './icons/repeat.svelte';
+import ReplyIcon from './icons/reply.svelte';
+import RewindIcon from './icons/rewind.svelte';
+import RotateCcwIcon from './icons/rotate-ccw.svelte';
+import RotateCwIcon from './icons/rotate-cw.svelte';
+import RssIcon from './icons/rss.svelte';
+import SaveIcon from './icons/save.svelte';
+import ScissorsIcon from './icons/scissors.svelte';
+import SearchIcon from './icons/search.svelte';
+import SendIcon from './icons/send.svelte';
+import ServerIcon from './icons/server.svelte';
+import SettingsIcon from './icons/settings.svelte';
+import ShareIcon from './icons/share.svelte';
+import Share2Icon from './icons/share-2.svelte';
+import ShieldIcon from './icons/shield.svelte';
+import ShieldOffIcon from './icons/shield-off.svelte';
+import ShoppingBagIcon from './icons/shopping-bag.svelte';
+import ShoppingCartIcon from './icons/shopping-cart.svelte';
+import ShuffleIcon from './icons/shuffle.svelte';
+import SidebarIcon from './icons/sidebar.svelte';
+import SkipBackIcon from './icons/skip-back.svelte';
+import SkipForwardIcon from './icons/skip-forward.svelte';
+import SlackIcon from './icons/slack.svelte';
+import SlashIcon from './icons/slash.svelte';
+import SlidersIcon from './icons/sliders.svelte';
+import SmartphoneIcon from './icons/smartphone.svelte';
+import SmileIcon from './icons/smile.svelte';
+import SpeakerIcon from './icons/speaker.svelte';
+import SquareIcon from './icons/square.svelte';
+import StarIcon from './icons/star.svelte';
+import StopCircleIcon from './icons/stop-circle.svelte';
+import SunIcon from './icons/sun.svelte';
+import SunriseIcon from './icons/sunrise.svelte';
+import SunsetIcon from './icons/sunset.svelte';
+import TableIcon from './icons/table.svelte';
+import TabletIcon from './icons/tablet.svelte';
+import TagIcon from './icons/tag.svelte';
+import TargetIcon from './icons/target.svelte';
+import TerminalIcon from './icons/terminal.svelte';
+import ThermometerIcon from './icons/thermometer.svelte';
+import ThumbsDownIcon from './icons/thumbs-down.svelte';
+import ThumbsUpIcon from './icons/thumbs-up.svelte';
+import ToggleLeftIcon from './icons/toggle-left.svelte';
+import ToggleRightIcon from './icons/toggle-right.svelte';
+import ToolIcon from './icons/tool.svelte';
+import TrashIcon from './icons/trash.svelte';
+import Trash2Icon from './icons/trash-2.svelte';
+import TrelloIcon from './icons/trello.svelte';
+import TrendingDownIcon from './icons/trending-down.svelte';
+import TrendingUpIcon from './icons/trending-up.svelte';
+import TriangleIcon from './icons/triangle.svelte';
+import TruckIcon from './icons/truck.svelte';
+import TvIcon from './icons/tv.svelte';
+import TwitchIcon from './icons/twitch.svelte';
+import TwitterIcon from './icons/twitter.svelte';
+import TypeIcon from './icons/type.svelte';
+import UmbrellaIcon from './icons/umbrella.svelte';
+import UnboostIcon from './icons/unboost.svelte';
+import UnderlineIcon from './icons/underline.svelte';
+import UnfavoriteIcon from './icons/unfavorite.svelte';
+import UnfollowIcon from './icons/unfollow.svelte';
+import UnlockIcon from './icons/unlock.svelte';
+import UploadIcon from './icons/upload.svelte';
+import UploadCloudIcon from './icons/upload-cloud.svelte';
+import UserIcon from './icons/user.svelte';
+import UserCheckIcon from './icons/user-check.svelte';
+import UserMinusIcon from './icons/user-minus.svelte';
+import UserPlusIcon from './icons/user-plus.svelte';
+import UserXIcon from './icons/user-x.svelte';
+import UsersIcon from './icons/users.svelte';
+import VideoIcon from './icons/video.svelte';
+import VideoOffIcon from './icons/video-off.svelte';
+import VoicemailIcon from './icons/voicemail.svelte';
+import VolumeIcon from './icons/volume.svelte';
+import Volume1Icon from './icons/volume-1.svelte';
+import Volume2Icon from './icons/volume-2.svelte';
+import VolumeXIcon from './icons/volume-x.svelte';
+import WatchIcon from './icons/watch.svelte';
+import WifiIcon from './icons/wifi.svelte';
+import WifiOffIcon from './icons/wifi-off.svelte';
+import WindIcon from './icons/wind.svelte';
+import XIcon from './icons/x.svelte';
+import XCircleIcon from './icons/x-circle.svelte';
+import XOctagonIcon from './icons/x-octagon.svelte';
+import XSquareIcon from './icons/x-square.svelte';
+import YoutubeIcon from './icons/youtube.svelte';
+import ZapIcon from './icons/zap.svelte';
+import ZapOffIcon from './icons/zap-off.svelte';
+import ZoomInIcon from './icons/zoom-in.svelte';
+import ZoomOutIcon from './icons/zoom-out.svelte';
 
-// Icon name type
+export {
+  ActivityIcon,
+  AirplayIcon,
+  AlertCircleIcon,
+  AlertOctagonIcon,
+  AlertTriangleIcon,
+  AlignCenterIcon,
+  AlignJustifyIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
+  AnchorIcon,
+  ApertureIcon,
+  ArchiveIcon,
+  ArrowDownIcon,
+  ArrowDownCircleIcon,
+  ArrowDownLeftIcon,
+  ArrowDownRightIcon,
+  ArrowLeftIcon,
+  ArrowLeftCircleIcon,
+  ArrowRightIcon,
+  ArrowRightCircleIcon,
+  ArrowUpIcon,
+  ArrowUpCircleIcon,
+  ArrowUpLeftIcon,
+  ArrowUpRightIcon,
+  AtSignIcon,
+  AwardIcon,
+  BarChartIcon,
+  BarChart2Icon,
+  BatteryIcon,
+  BatteryChargingIcon,
+  BellIcon,
+  BellOffIcon,
+  BluetoothIcon,
+  BoldIcon,
+  BookIcon,
+  BookOpenIcon,
+  BookmarkIcon,
+  BoostIcon,
+  BoxIcon,
+  BriefcaseIcon,
+  BuildingIcon,
+  CalendarIcon,
+  CameraIcon,
+  CameraOffIcon,
+  CastIcon,
+  CheckIcon,
+  CheckCircleIcon,
+  CheckSquareIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+  ChevronsDownIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+  ChevronsUpIcon,
+  ChromeIcon,
+  CircleIcon,
+  ClipboardIcon,
+  ClockIcon,
+  CloudIcon,
+  CloudDrizzleIcon,
+  CloudLightningIcon,
+  CloudOffIcon,
+  CloudRainIcon,
+  CloudSnowIcon,
+  CodeIcon,
+  CodepenIcon,
+  CodesandboxIcon,
+  CoffeeIcon,
+  ColumnsIcon,
+  CommandIcon,
+  CompassIcon,
+  CopyIcon,
+  CornerDownLeftIcon,
+  CornerDownRightIcon,
+  CornerLeftDownIcon,
+  CornerLeftUpIcon,
+  CornerRightDownIcon,
+  CornerRightUpIcon,
+  CornerUpLeftIcon,
+  CornerUpRightIcon,
+  CpuIcon,
+  CreditCardIcon,
+  CropIcon,
+  CrosshairIcon,
+  DatabaseIcon,
+  DeleteIcon,
+  DiscIcon,
+  DivideIcon,
+  DivideCircleIcon,
+  DivideSquareIcon,
+  DollarSignIcon,
+  DownloadIcon,
+  DownloadCloudIcon,
+  DribbbleIcon,
+  DropletIcon,
+  EditIcon,
+  Edit2Icon,
+  Edit3Icon,
+  EqualsIcon,
+  ExternalLinkIcon,
+  EyeIcon,
+  EyeOffIcon,
+  FacebookIcon,
+  FastForwardIcon,
+  FavoriteIcon,
+  FeatherIcon,
+  FigmaIcon,
+  FileIcon,
+  FileMinusIcon,
+  FilePlusIcon,
+  FileTextIcon,
+  FilmIcon,
+  FilterIcon,
+  FlagIcon,
+  FolderIcon,
+  FolderMinusIcon,
+  FolderPlusIcon,
+  FollowIcon,
+  FramerIcon,
+  FrownIcon,
+  GiftIcon,
+  GitBranchIcon,
+  GitCommitIcon,
+  GitMergeIcon,
+  GitPullRequestIcon,
+  GithubIcon,
+  GitlabIcon,
+  GlobeIcon,
+  GreaterThanIcon,
+  GridIcon,
+  HardDriveIcon,
+  HashIcon,
+  HashtagIcon,
+  HeadphonesIcon,
+  HeartIcon,
+  HelpCircleIcon,
+  HexagonIcon,
+  HomeIcon,
+  ImageIcon,
+  InboxIcon,
+  InfoIcon,
+  InstagramIcon,
+  ItalicIcon,
+  KeyIcon,
+  LayersIcon,
+  LayoutIcon,
+  LessThanIcon,
+  LifeBuoyIcon,
+  LinkIcon,
+  Link2Icon,
+  LinkedinIcon,
+  ListIcon,
+  LoaderIcon,
+  LockIcon,
+  LogInIcon,
+  LogOutIcon,
+  MailIcon,
+  MapIcon,
+  MapPinIcon,
+  MaximizeIcon,
+  Maximize2Icon,
+  MehIcon,
+  MentionIcon,
+  MenuIcon,
+  MessageCircleIcon,
+  MessageSquareIcon,
+  MicIcon,
+  MicOffIcon,
+  MinimizeIcon,
+  Minimize2Icon,
+  MinusIcon,
+  MinusCircleIcon,
+  MinusSquareIcon,
+  MonitorIcon,
+  MoonIcon,
+  MoreHorizontalIcon,
+  MoreVerticalIcon,
+  MousePointerIcon,
+  MoveIcon,
+  MusicIcon,
+  NavigationIcon,
+  Navigation2Icon,
+  OctagonIcon,
+  PackageIcon,
+  PaperclipIcon,
+  PauseIcon,
+  PauseCircleIcon,
+  PenToolIcon,
+  PercentIcon,
+  PhoneIcon,
+  PhoneCallIcon,
+  PhoneForwardedIcon,
+  PhoneIncomingIcon,
+  PhoneMissedIcon,
+  PhoneOffIcon,
+  PhoneOutgoingIcon,
+  PieChartIcon,
+  PlayIcon,
+  PlayCircleIcon,
+  PlusIcon,
+  PlusCircleIcon,
+  PlusSquareIcon,
+  PocketIcon,
+  PowerIcon,
+  PrinterIcon,
+  RadioIcon,
+  RefreshCcwIcon,
+  RefreshCwIcon,
+  RepeatIcon,
+  ReplyIcon,
+  RewindIcon,
+  RotateCcwIcon,
+  RotateCwIcon,
+  RssIcon,
+  SaveIcon,
+  ScissorsIcon,
+  SearchIcon,
+  SendIcon,
+  ServerIcon,
+  SettingsIcon,
+  ShareIcon,
+  Share2Icon,
+  ShieldIcon,
+  ShieldOffIcon,
+  ShoppingBagIcon,
+  ShoppingCartIcon,
+  ShuffleIcon,
+  SidebarIcon,
+  SkipBackIcon,
+  SkipForwardIcon,
+  SlackIcon,
+  SlashIcon,
+  SlidersIcon,
+  SmartphoneIcon,
+  SmileIcon,
+  SpeakerIcon,
+  SquareIcon,
+  StarIcon,
+  StopCircleIcon,
+  SunIcon,
+  SunriseIcon,
+  SunsetIcon,
+  TableIcon,
+  TabletIcon,
+  TagIcon,
+  TargetIcon,
+  TerminalIcon,
+  ThermometerIcon,
+  ThumbsDownIcon,
+  ThumbsUpIcon,
+  ToggleLeftIcon,
+  ToggleRightIcon,
+  ToolIcon,
+  TrashIcon,
+  Trash2Icon,
+  TrelloIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
+  TriangleIcon,
+  TruckIcon,
+  TvIcon,
+  TwitchIcon,
+  TwitterIcon,
+  TypeIcon,
+  UmbrellaIcon,
+  UnboostIcon,
+  UnderlineIcon,
+  UnfavoriteIcon,
+  UnfollowIcon,
+  UnlockIcon,
+  UploadIcon,
+  UploadCloudIcon,
+  UserIcon,
+  UserCheckIcon,
+  UserMinusIcon,
+  UserPlusIcon,
+  UserXIcon,
+  UsersIcon,
+  VideoIcon,
+  VideoOffIcon,
+  VoicemailIcon,
+  VolumeIcon,
+  Volume1Icon,
+  Volume2Icon,
+  VolumeXIcon,
+  WatchIcon,
+  WifiIcon,
+  WifiOffIcon,
+  WindIcon,
+  XIcon,
+  XCircleIcon,
+  XOctagonIcon,
+  XSquareIcon,
+  YoutubeIcon,
+  ZapIcon,
+  ZapOffIcon,
+  ZoomInIcon,
+  ZoomOutIcon
+};
+
+const iconRegistry = {
+  'activity': ActivityIcon,
+  'airplay': AirplayIcon,
+  'alert-circle': AlertCircleIcon,
+  'alert-octagon': AlertOctagonIcon,
+  'alert-triangle': AlertTriangleIcon,
+  'align-center': AlignCenterIcon,
+  'align-justify': AlignJustifyIcon,
+  'align-left': AlignLeftIcon,
+  'align-right': AlignRightIcon,
+  'anchor': AnchorIcon,
+  'aperture': ApertureIcon,
+  'archive': ArchiveIcon,
+  'arrow-down': ArrowDownIcon,
+  'arrow-down-circle': ArrowDownCircleIcon,
+  'arrow-down-left': ArrowDownLeftIcon,
+  'arrow-down-right': ArrowDownRightIcon,
+  'arrow-left': ArrowLeftIcon,
+  'arrow-left-circle': ArrowLeftCircleIcon,
+  'arrow-right': ArrowRightIcon,
+  'arrow-right-circle': ArrowRightCircleIcon,
+  'arrow-up': ArrowUpIcon,
+  'arrow-up-circle': ArrowUpCircleIcon,
+  'arrow-up-left': ArrowUpLeftIcon,
+  'arrow-up-right': ArrowUpRightIcon,
+  'at-sign': AtSignIcon,
+  'award': AwardIcon,
+  'bar-chart': BarChartIcon,
+  'bar-chart-2': BarChart2Icon,
+  'battery': BatteryIcon,
+  'battery-charging': BatteryChargingIcon,
+  'bell': BellIcon,
+  'bell-off': BellOffIcon,
+  'bluetooth': BluetoothIcon,
+  'bold': BoldIcon,
+  'book': BookIcon,
+  'book-open': BookOpenIcon,
+  'bookmark': BookmarkIcon,
+  'boost': BoostIcon,
+  'box': BoxIcon,
+  'briefcase': BriefcaseIcon,
+  'building': BuildingIcon,
+  'calendar': CalendarIcon,
+  'camera': CameraIcon,
+  'camera-off': CameraOffIcon,
+  'cast': CastIcon,
+  'check': CheckIcon,
+  'check-circle': CheckCircleIcon,
+  'check-square': CheckSquareIcon,
+  'chevron-down': ChevronDownIcon,
+  'chevron-left': ChevronLeftIcon,
+  'chevron-right': ChevronRightIcon,
+  'chevron-up': ChevronUpIcon,
+  'chevrons-down': ChevronsDownIcon,
+  'chevrons-left': ChevronsLeftIcon,
+  'chevrons-right': ChevronsRightIcon,
+  'chevrons-up': ChevronsUpIcon,
+  'chrome': ChromeIcon,
+  'circle': CircleIcon,
+  'clipboard': ClipboardIcon,
+  'clock': ClockIcon,
+  'cloud': CloudIcon,
+  'cloud-drizzle': CloudDrizzleIcon,
+  'cloud-lightning': CloudLightningIcon,
+  'cloud-off': CloudOffIcon,
+  'cloud-rain': CloudRainIcon,
+  'cloud-snow': CloudSnowIcon,
+  'code': CodeIcon,
+  'codepen': CodepenIcon,
+  'codesandbox': CodesandboxIcon,
+  'coffee': CoffeeIcon,
+  'columns': ColumnsIcon,
+  'command': CommandIcon,
+  'compass': CompassIcon,
+  'copy': CopyIcon,
+  'corner-down-left': CornerDownLeftIcon,
+  'corner-down-right': CornerDownRightIcon,
+  'corner-left-down': CornerLeftDownIcon,
+  'corner-left-up': CornerLeftUpIcon,
+  'corner-right-down': CornerRightDownIcon,
+  'corner-right-up': CornerRightUpIcon,
+  'corner-up-left': CornerUpLeftIcon,
+  'corner-up-right': CornerUpRightIcon,
+  'cpu': CpuIcon,
+  'credit-card': CreditCardIcon,
+  'crop': CropIcon,
+  'crosshair': CrosshairIcon,
+  'database': DatabaseIcon,
+  'delete': DeleteIcon,
+  'disc': DiscIcon,
+  'divide': DivideIcon,
+  'divide-circle': DivideCircleIcon,
+  'divide-square': DivideSquareIcon,
+  'dollar-sign': DollarSignIcon,
+  'download': DownloadIcon,
+  'download-cloud': DownloadCloudIcon,
+  'dribbble': DribbbleIcon,
+  'droplet': DropletIcon,
+  'edit': EditIcon,
+  'edit-2': Edit2Icon,
+  'edit-3': Edit3Icon,
+  'equals': EqualsIcon,
+  'external-link': ExternalLinkIcon,
+  'eye': EyeIcon,
+  'eye-off': EyeOffIcon,
+  'facebook': FacebookIcon,
+  'fast-forward': FastForwardIcon,
+  'favorite': FavoriteIcon,
+  'feather': FeatherIcon,
+  'figma': FigmaIcon,
+  'file': FileIcon,
+  'file-minus': FileMinusIcon,
+  'file-plus': FilePlusIcon,
+  'file-text': FileTextIcon,
+  'film': FilmIcon,
+  'filter': FilterIcon,
+  'flag': FlagIcon,
+  'folder': FolderIcon,
+  'folder-minus': FolderMinusIcon,
+  'folder-plus': FolderPlusIcon,
+  'follow': FollowIcon,
+  'framer': FramerIcon,
+  'frown': FrownIcon,
+  'gift': GiftIcon,
+  'git-branch': GitBranchIcon,
+  'git-commit': GitCommitIcon,
+  'git-merge': GitMergeIcon,
+  'git-pull-request': GitPullRequestIcon,
+  'github': GithubIcon,
+  'gitlab': GitlabIcon,
+  'globe': GlobeIcon,
+  'greater-than': GreaterThanIcon,
+  'grid': GridIcon,
+  'hard-drive': HardDriveIcon,
+  'hash': HashIcon,
+  'hashtag': HashtagIcon,
+  'headphones': HeadphonesIcon,
+  'heart': HeartIcon,
+  'help-circle': HelpCircleIcon,
+  'hexagon': HexagonIcon,
+  'home': HomeIcon,
+  'image': ImageIcon,
+  'inbox': InboxIcon,
+  'info': InfoIcon,
+  'instagram': InstagramIcon,
+  'italic': ItalicIcon,
+  'key': KeyIcon,
+  'layers': LayersIcon,
+  'layout': LayoutIcon,
+  'less-than': LessThanIcon,
+  'life-buoy': LifeBuoyIcon,
+  'link': LinkIcon,
+  'link-2': Link2Icon,
+  'linkedin': LinkedinIcon,
+  'list': ListIcon,
+  'loader': LoaderIcon,
+  'lock': LockIcon,
+  'log-in': LogInIcon,
+  'log-out': LogOutIcon,
+  'mail': MailIcon,
+  'map': MapIcon,
+  'map-pin': MapPinIcon,
+  'maximize': MaximizeIcon,
+  'maximize-2': Maximize2Icon,
+  'meh': MehIcon,
+  'mention': MentionIcon,
+  'menu': MenuIcon,
+  'message-circle': MessageCircleIcon,
+  'message-square': MessageSquareIcon,
+  'mic': MicIcon,
+  'mic-off': MicOffIcon,
+  'minimize': MinimizeIcon,
+  'minimize-2': Minimize2Icon,
+  'minus': MinusIcon,
+  'minus-circle': MinusCircleIcon,
+  'minus-square': MinusSquareIcon,
+  'monitor': MonitorIcon,
+  'moon': MoonIcon,
+  'more-horizontal': MoreHorizontalIcon,
+  'more-vertical': MoreVerticalIcon,
+  'mouse-pointer': MousePointerIcon,
+  'move': MoveIcon,
+  'music': MusicIcon,
+  'navigation': NavigationIcon,
+  'navigation-2': Navigation2Icon,
+  'octagon': OctagonIcon,
+  'package': PackageIcon,
+  'paperclip': PaperclipIcon,
+  'pause': PauseIcon,
+  'pause-circle': PauseCircleIcon,
+  'pen-tool': PenToolIcon,
+  'percent': PercentIcon,
+  'phone': PhoneIcon,
+  'phone-call': PhoneCallIcon,
+  'phone-forwarded': PhoneForwardedIcon,
+  'phone-incoming': PhoneIncomingIcon,
+  'phone-missed': PhoneMissedIcon,
+  'phone-off': PhoneOffIcon,
+  'phone-outgoing': PhoneOutgoingIcon,
+  'pie-chart': PieChartIcon,
+  'play': PlayIcon,
+  'play-circle': PlayCircleIcon,
+  'plus': PlusIcon,
+  'plus-circle': PlusCircleIcon,
+  'plus-square': PlusSquareIcon,
+  'pocket': PocketIcon,
+  'power': PowerIcon,
+  'printer': PrinterIcon,
+  'radio': RadioIcon,
+  'refresh-ccw': RefreshCcwIcon,
+  'refresh-cw': RefreshCwIcon,
+  'repeat': RepeatIcon,
+  'reply': ReplyIcon,
+  'rewind': RewindIcon,
+  'rotate-ccw': RotateCcwIcon,
+  'rotate-cw': RotateCwIcon,
+  'rss': RssIcon,
+  'save': SaveIcon,
+  'scissors': ScissorsIcon,
+  'search': SearchIcon,
+  'send': SendIcon,
+  'server': ServerIcon,
+  'settings': SettingsIcon,
+  'share': ShareIcon,
+  'share-2': Share2Icon,
+  'shield': ShieldIcon,
+  'shield-off': ShieldOffIcon,
+  'shopping-bag': ShoppingBagIcon,
+  'shopping-cart': ShoppingCartIcon,
+  'shuffle': ShuffleIcon,
+  'sidebar': SidebarIcon,
+  'skip-back': SkipBackIcon,
+  'skip-forward': SkipForwardIcon,
+  'slack': SlackIcon,
+  'slash': SlashIcon,
+  'sliders': SlidersIcon,
+  'smartphone': SmartphoneIcon,
+  'smile': SmileIcon,
+  'speaker': SpeakerIcon,
+  'square': SquareIcon,
+  'star': StarIcon,
+  'stop-circle': StopCircleIcon,
+  'sun': SunIcon,
+  'sunrise': SunriseIcon,
+  'sunset': SunsetIcon,
+  'table': TableIcon,
+  'tablet': TabletIcon,
+  'tag': TagIcon,
+  'target': TargetIcon,
+  'terminal': TerminalIcon,
+  'thermometer': ThermometerIcon,
+  'thumbs-down': ThumbsDownIcon,
+  'thumbs-up': ThumbsUpIcon,
+  'toggle-left': ToggleLeftIcon,
+  'toggle-right': ToggleRightIcon,
+  'tool': ToolIcon,
+  'trash': TrashIcon,
+  'trash-2': Trash2Icon,
+  'trello': TrelloIcon,
+  'trending-down': TrendingDownIcon,
+  'trending-up': TrendingUpIcon,
+  'triangle': TriangleIcon,
+  'truck': TruckIcon,
+  'tv': TvIcon,
+  'twitch': TwitchIcon,
+  'twitter': TwitterIcon,
+  'type': TypeIcon,
+  'umbrella': UmbrellaIcon,
+  'unboost': UnboostIcon,
+  'underline': UnderlineIcon,
+  'unfavorite': UnfavoriteIcon,
+  'unfollow': UnfollowIcon,
+  'unlock': UnlockIcon,
+  'upload': UploadIcon,
+  'upload-cloud': UploadCloudIcon,
+  'user': UserIcon,
+  'user-check': UserCheckIcon,
+  'user-minus': UserMinusIcon,
+  'user-plus': UserPlusIcon,
+  'user-x': UserXIcon,
+  'users': UsersIcon,
+  'video': VideoIcon,
+  'video-off': VideoOffIcon,
+  'voicemail': VoicemailIcon,
+  'volume': VolumeIcon,
+  'volume-1': Volume1Icon,
+  'volume-2': Volume2Icon,
+  'volume-x': VolumeXIcon,
+  'watch': WatchIcon,
+  'wifi': WifiIcon,
+  'wifi-off': WifiOffIcon,
+  'wind': WindIcon,
+  'x': XIcon,
+  'x-circle': XCircleIcon,
+  'x-octagon': XOctagonIcon,
+  'x-square': XSquareIcon,
+  'youtube': YoutubeIcon,
+  'zap': ZapIcon,
+  'zap-off': ZapOffIcon,
+  'zoom-in': ZoomInIcon,
+  'zoom-out': ZoomOutIcon
+} as const;
+
 export type IconName = 'activity' | 'airplay' | 'alert-circle' | 'alert-octagon' | 'alert-triangle' | 'align-center' | 'align-justify' | 'align-left' | 'align-right' | 'anchor' | 'aperture' | 'archive' | 'arrow-down' | 'arrow-down-circle' | 'arrow-down-left' | 'arrow-down-right' | 'arrow-left' | 'arrow-left-circle' | 'arrow-right' | 'arrow-right-circle' | 'arrow-up' | 'arrow-up-circle' | 'arrow-up-left' | 'arrow-up-right' | 'at-sign' | 'award' | 'bar-chart' | 'bar-chart-2' | 'battery' | 'battery-charging' | 'bell' | 'bell-off' | 'bluetooth' | 'bold' | 'book' | 'book-open' | 'bookmark' | 'boost' | 'box' | 'briefcase' | 'building' | 'calendar' | 'camera' | 'camera-off' | 'cast' | 'check' | 'check-circle' | 'check-square' | 'chevron-down' | 'chevron-left' | 'chevron-right' | 'chevron-up' | 'chevrons-down' | 'chevrons-left' | 'chevrons-right' | 'chevrons-up' | 'chrome' | 'circle' | 'clipboard' | 'clock' | 'cloud' | 'cloud-drizzle' | 'cloud-lightning' | 'cloud-off' | 'cloud-rain' | 'cloud-snow' | 'code' | 'codepen' | 'codesandbox' | 'coffee' | 'columns' | 'command' | 'compass' | 'copy' | 'corner-down-left' | 'corner-down-right' | 'corner-left-down' | 'corner-left-up' | 'corner-right-down' | 'corner-right-up' | 'corner-up-left' | 'corner-up-right' | 'cpu' | 'credit-card' | 'crop' | 'crosshair' | 'database' | 'delete' | 'disc' | 'divide' | 'divide-circle' | 'divide-square' | 'dollar-sign' | 'download' | 'download-cloud' | 'dribbble' | 'droplet' | 'edit' | 'edit-2' | 'edit-3' | 'equals' | 'external-link' | 'eye' | 'eye-off' | 'facebook' | 'fast-forward' | 'favorite' | 'feather' | 'figma' | 'file' | 'file-minus' | 'file-plus' | 'file-text' | 'film' | 'filter' | 'flag' | 'folder' | 'folder-minus' | 'folder-plus' | 'follow' | 'framer' | 'frown' | 'gift' | 'git-branch' | 'git-commit' | 'git-merge' | 'git-pull-request' | 'github' | 'gitlab' | 'globe' | 'greater-than' | 'grid' | 'hard-drive' | 'hash' | 'hashtag' | 'headphones' | 'heart' | 'help-circle' | 'hexagon' | 'home' | 'image' | 'inbox' | 'info' | 'instagram' | 'italic' | 'key' | 'layers' | 'layout' | 'less-than' | 'life-buoy' | 'link' | 'link-2' | 'linkedin' | 'list' | 'loader' | 'lock' | 'log-in' | 'log-out' | 'mail' | 'map' | 'map-pin' | 'maximize' | 'maximize-2' | 'meh' | 'mention' | 'menu' | 'message-circle' | 'message-square' | 'mic' | 'mic-off' | 'minimize' | 'minimize-2' | 'minus' | 'minus-circle' | 'minus-square' | 'monitor' | 'moon' | 'more-horizontal' | 'more-vertical' | 'mouse-pointer' | 'move' | 'music' | 'navigation' | 'navigation-2' | 'octagon' | 'package' | 'paperclip' | 'pause' | 'pause-circle' | 'pen-tool' | 'percent' | 'phone' | 'phone-call' | 'phone-forwarded' | 'phone-incoming' | 'phone-missed' | 'phone-off' | 'phone-outgoing' | 'pie-chart' | 'play' | 'play-circle' | 'plus' | 'plus-circle' | 'plus-square' | 'pocket' | 'power' | 'printer' | 'radio' | 'refresh-ccw' | 'refresh-cw' | 'repeat' | 'reply' | 'rewind' | 'rotate-ccw' | 'rotate-cw' | 'rss' | 'save' | 'scissors' | 'search' | 'send' | 'server' | 'settings' | 'share' | 'share-2' | 'shield' | 'shield-off' | 'shopping-bag' | 'shopping-cart' | 'shuffle' | 'sidebar' | 'skip-back' | 'skip-forward' | 'slack' | 'slash' | 'sliders' | 'smartphone' | 'smile' | 'speaker' | 'square' | 'star' | 'stop-circle' | 'sun' | 'sunrise' | 'sunset' | 'table' | 'tablet' | 'tag' | 'target' | 'terminal' | 'thermometer' | 'thumbs-down' | 'thumbs-up' | 'toggle-left' | 'toggle-right' | 'tool' | 'trash' | 'trash-2' | 'trello' | 'trending-down' | 'trending-up' | 'triangle' | 'truck' | 'tv' | 'twitch' | 'twitter' | 'type' | 'umbrella' | 'unboost' | 'underline' | 'unfavorite' | 'unfollow' | 'unlock' | 'upload' | 'upload-cloud' | 'user' | 'user-check' | 'user-minus' | 'user-plus' | 'user-x' | 'users' | 'video' | 'video-off' | 'voicemail' | 'volume' | 'volume-1' | 'volume-2' | 'volume-x' | 'watch' | 'wifi' | 'wifi-off' | 'wind' | 'x' | 'x-circle' | 'x-octagon' | 'x-square' | 'youtube' | 'zap' | 'zap-off' | 'zoom-in' | 'zoom-out';
 
-// Alias map
 export const iconAliases: Record<string, IconName> = {
   "globe": "globe",
   "world": "globe",
@@ -354,20 +958,11 @@ export const iconAliases: Record<string, IconName> = {
   "clipboard-list": "list"
 };
 
-// Helper to get icon component by name
-export async function getIcon(name: string): Promise<unknown> {
+export function getIcon(name: string) {
   const iconName = iconAliases[name] || name;
-  
-  try {
-    const module = await import(`./icons/${iconName}.svelte`);
-    return module.default;
-  } catch {
-    console.error(`Icon "${name}" not found`);
-    return null;
-  }
+  return iconRegistry[iconName] ?? null;
 }
 
-// List of all available icons
 export const iconList = [
   'activity',
   'airplay',
@@ -671,7 +1266,6 @@ export const iconList = [
   'zoom-out'
 ];
 
-// Categorized icons for documentation
 export const iconCategories = {
   fediverse: [
     'boost',

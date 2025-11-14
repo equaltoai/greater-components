@@ -81,8 +81,6 @@
     emojiRenderer
   }: ProfileHeaderProps = $props();
 
-  const restProps = $restProps<Omit<HTMLAttributes<HTMLElement>, 'role'>>();
-
   // State for banner image loading
   let bannerLoaded = $state(false);
   let bannerError = $state(false);
@@ -211,7 +209,7 @@
   const fieldsId = `profile-fields-${Math.random().toString(36).substr(2, 9)}`;
 </script>
 
-<article class={profileHeaderClass()} {...restProps}>
+<article class={profileHeaderClass()}>
   <!-- Banner Section -->
   {#if showBanner}
     <div 

@@ -52,6 +52,6 @@
     "ws": "^8.16.0"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.43.6"
   }
 }

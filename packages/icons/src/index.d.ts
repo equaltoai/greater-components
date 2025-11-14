@@ -317,4 +317,4 @@ export type IconName = 'activity' | 'airplay' | 'alert-circle' | 'alert-octagon'
 export declare const iconAliases: Record<string, IconName>;
 export declare const iconList: IconName[];
 export declare const iconCategories: Record<string, string[]>;
-export declare function getIcon(name: string): Promise<IconComponent | null>;
+export declare function getIcon(name: string): IconComponent | null;

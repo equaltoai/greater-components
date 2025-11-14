@@ -57,6 +57,10 @@
 	let regenerating = $state(false);
 	let error = $state<string | null>(null);
 
+	const clipboard = typeof navigator !== 'undefined' ? navigator.clipboard : undefined;
+	const hasDocument = typeof document !== 'undefined';
+	const hasWindow = typeof window !== 'undefined';
+
 	// Headless button for actions
 	const copyButton = createButton();
 	const downloadButton = createButton();
@@ -70,9 +74,14 @@
 	 * Copy all backup codes to clipboard
 	 */
 	async function handleCopyAll() {
+		if (!clipboard?.writeText) {
+			error = 'Clipboard is unavailable in this environment';
+			return;
+		}
+
 		try {
 			const text = codes.join('\n');
-			await navigator.clipboard.writeText(text);
+			await clipboard.writeText(text);
 			copiedAll = true;
 
 			// Reset copied state after 3 seconds
@@ -89,6 +98,11 @@
 	 * Download codes as a text file
 	 */
 	function handleDownload() {
+		if (!hasDocument) {
+			error = 'Downloads require a browser environment';
+			return;
+		}
+
 		try {
 			const text = [
 				'BACKUP RECOVERY CODES',
@@ -121,6 +135,11 @@
 	 * Print backup codes
 	 */
 	function handlePrint() {
+		if (!hasWindow) {
+			error = 'Printing backup codes requires a browser window';
+			return;
+		}
+
 		try {
 			const printWindow = window.open('', '_blank');
 			if (!printWindow) {

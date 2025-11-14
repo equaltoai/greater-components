@@ -50,10 +50,16 @@ const PATTERNS = {
 /**
  * Escape HTML special characters
  */
+const htmlEscapeMap: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;'
+};
+
 function escapeHtml(text: string): string {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  return text.replace(/[&<>"']/g, (char) => htmlEscapeMap[char] ?? char);
 }
 
 /**
@@ -102,7 +108,8 @@ export function linkifyMentions(
 
   let result = escapeHtml(text);
   const targetAttr = openInNewTab ? ' target="_blank"' : '';
-  const relAttr = `rel="${openInNewTab ? 'noopener noreferrer' : ''}${nofollow ? ' nofollow' : ''}".trim()`;
+  const relValue = `${openInNewTab ? 'noopener noreferrer' : ''}${nofollow ? ' nofollow' : ''}`.trim();
+  const relAttr = relValue ? ` rel="${relValue}"` : '';
 
   // Process URLs first (to avoid linkifying URLs within other patterns)
   result = result.replace(PATTERNS.url, (match, url) => {
@@ -110,7 +117,7 @@ export function linkifyMentions(
     try {
       new URL(href); // Validate URL
       const displayText = truncateUrl(href, maxUrlLength);
-      return ` <a href="${href}" class="${urlClass}"${targetAttr} ${relAttr}>${displayText}</a>`;
+      return ` <a href="${href}" class="${urlClass}"${targetAttr}${relAttr}>${displayText}</a>`;
     } catch {
       return match; // Invalid URL, return as-is
     }
@@ -120,14 +127,14 @@ export function linkifyMentions(
   result = result.replace(PATTERNS.mention, (_match, mention) => {
     const username = mention.substring(1); // Remove @
     const href = mentionBaseUrl + username;
-    return ` <a href="${href}" class="${mentionClass}"${targetAttr} ${relAttr}>${mention}</a>`;
+    return ` <a href="${href}" class="${mentionClass}"${targetAttr}${relAttr}>${mention}</a>`;
   });
 
   // Process hashtags
   result = result.replace(PATTERNS.hashtag, (_match, hashtag) => {
     const tag = hashtag.substring(1); // Remove #
     const href = hashtagBaseUrl + encodeURIComponent(tag);
-    return ` <a href="${href}" class="${hashtagClass}"${targetAttr} ${relAttr}>${hashtag}</a>`;
+    return ` <a href="${href}" class="${hashtagClass}"${targetAttr}${relAttr}>${hashtag}</a>`;
   });
 
   return result.trim();

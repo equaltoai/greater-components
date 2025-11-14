@@ -214,13 +214,14 @@
     />
     
     {#if !imageLoaded}
+      {@const computedInitials = initials()}
       <div class="gr-avatar__placeholder" aria-hidden="true">
-        {#if initials}
+        {#if computedInitials}
           <span 
             class="gr-avatar__initials"
             style="background-color: {initialsBackgroundColor()}"
           >
-            {initials}
+            {computedInitials}
           </span>
         {:else if fallback}
           {@render fallback()}
@@ -239,13 +240,14 @@
     {/if}
   {:else}
     <!-- No image src or image failed to load -->
+    {@const computedInitials = initials()}
     <div class="gr-avatar__placeholder" aria-hidden="true">
-      {#if initials}
+      {#if computedInitials}
         <span 
           class="gr-avatar__initials"
           style="background-color: {initialsBackgroundColor()}; color: white;"
         >
-          {initials}
+          {computedInitials}
         </span>
       {:else if fallback}
         {@render fallback()}

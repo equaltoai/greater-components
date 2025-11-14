@@ -1,5 +1,7 @@
 <script lang="ts">
   import { Button, TextField, Modal } from '@equaltoai/greater-components-primitives';
+  import { goto } from '$app/navigation';
+  import { browser } from '$app/environment';
   
   let showModal = $state(false);
   let name = $state('');
@@ -30,7 +32,13 @@
     const themes = ['light', 'dark', 'highContrast'];
     const currentIndex = themes.indexOf(theme);
     theme = themes[(currentIndex + 1) % themes.length];
-    document.documentElement.setAttribute('data-theme', theme);
+    if (browser) {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }
+
+  function navigateTo(path: string) {
+    goto(path);
   }
 </script>
 
@@ -57,25 +65,17 @@
       <Button size="lg" onclick={() => showModal = true}>
         Get Started
       </Button>
-      <Button variant="outline" size="lg">
-        <a href="/demos/primitives" style="text-decoration: none; color: inherit;">
-          Component Demos
-        </a>
+      <Button variant="outline" size="lg" onclick={() => navigateTo('/demos/primitives')}>
+        Component Demos
       </Button>
-      <Button variant="outline" size="lg">
-        <a href="/timeline" style="text-decoration: none; color: inherit;">
-          View Timeline Demo
-        </a>
+      <Button variant="outline" size="lg" onclick={() => navigateTo('/demos/icons')}>
+        Icon Gallery
       </Button>
-      <Button variant="outline" size="lg">
-        <a href="/tabs" style="text-decoration: none; color: inherit;">
-          Try Tabs Demo
-        </a>
+      <Button variant="outline" size="lg" onclick={() => navigateTo('/demos/forms')}>
+        Form Patterns
       </Button>
-      <Button variant="outline" size="lg">
-        <a href="/compose" style="text-decoration: none; color: inherit;">
-          Compose Demo
-        </a>
+      <Button variant="outline" size="lg" onclick={() => navigateTo('/timeline')}>
+        Timeline Demo
       </Button>
     </div>
   </section>

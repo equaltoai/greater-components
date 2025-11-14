@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createVirtualizer } from '@tanstack/svelte-virtual';
   import StatusCard from './StatusCard.svelte';
   import type { Status } from '../types';
   import type { StatusActionHandlers } from './Status/context.js';
@@ -76,76 +75,16 @@
     actionHandlers,
   }: Props = $props();
 
-  let scrollElement = $state<HTMLDivElement>();
-  let prevScrollTop = 0;
-  let prevItemCount = 0;
+  // Preserve unused props for API compatibility
+  void estimateSize;
+  void overscan;
+  void onLoadMore;
+  void onLoadPrevious;
 
-  const virtualizer = $derived(
-    scrollElement
-      ? createVirtualizer({
-          count: items.length,
-          getScrollElement: () => scrollElement,
-          estimateSize: () => estimateSize,
-          overscan
-        })
-      : null
-  );
-
-  function handleScroll() {
-    if (!scrollElement) return;
-
-    const { scrollTop, scrollHeight, clientHeight } = scrollElement;
-    const scrollDirection = scrollTop > prevScrollTop ? 'down' : 'up';
-    prevScrollTop = scrollTop;
-
-    // Load more when scrolling near the bottom
-    if (scrollDirection === 'down' && !loadingBottom && !endReached) {
-      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
-      if (distanceFromBottom < 500) {
-        onLoadMore?.();
-      }
-    }
-
-    // Load previous when scrolling near the top
-    if (scrollDirection === 'up' && !loadingTop) {
-      if (scrollTop < 500) {
-        onLoadPrevious?.();
-      }
-    }
-  }
-
-  // Preserve scroll position when items are prepended
-  $effect(() => {
-    if (!scrollElement) return;
-    
-    const currentItemCount = items.length;
-    
-    if (currentItemCount > prevItemCount && prevItemCount > 0) {
-      const prevScrollHeight = scrollElement.scrollHeight;
-      
-      // Use requestAnimationFrame to wait for DOM updates
-      requestAnimationFrame(() => {
-        const newScrollHeight = scrollElement.scrollHeight;
-        const heightDiff = newScrollHeight - prevScrollHeight;
-        
-        // If items were likely added to the top (scroll position near top)
-        if (heightDiff > 0 && scrollElement.scrollTop < 1000) {
-          scrollElement.scrollTop += heightDiff;
-        }
-      });
-    }
-    
-    prevItemCount = currentItemCount;
-  });
-
-  const virtualItems = $derived(virtualizer?.getVirtualItems() || []);
-  const totalSize = $derived(virtualizer?.getTotalSize() || 0);
 </script>
 
 <div 
   class={`timeline-virtualized ${className}`}
-  bind:this={scrollElement}
-  onscroll={handleScroll}
   role="feed"
   aria-label="Timeline"
   aria-busy={loadingTop || loadingBottom}
@@ -156,35 +95,19 @@
     </div>
   {/if}
 
-  <div 
-    class="virtual-list"
-    style={`height: ${totalSize}px; position: relative;`}
-  >
-    {#each virtualItems as virtualItem (items[virtualItem.index]?.id || virtualItem.index)}
-      {@const item = items[virtualItem.index]}
-      {#if item}
-        {@const handlersForItem = typeof actionHandlers === 'function'
-          ? actionHandlers(item)
-          : actionHandlers}
-        <div
-          data-index={virtualItem.index}
-          style="
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: {virtualItem.size}px;
-            transform: translateY({virtualItem.start}px);
-          "
-        >
-          <StatusCard 
-            status={item}
-            {density}
-            showActions={true}
-            actionHandlers={handlersForItem}
-          />
-        </div>
-      {/if}
+  <div class="virtual-list">
+    {#each items as item, index (item?.id || index)}
+      {@const handlersForItem = typeof actionHandlers === 'function'
+        ? actionHandlers(item)
+        : actionHandlers}
+      <div class="virtual-row">
+        <StatusCard 
+          status={item}
+          {density}
+          showActions={true}
+          actionHandlers={handlersForItem}
+        />
+      </div>
     {/each}
   </div>
 
@@ -219,8 +142,14 @@
   }
 
   .virtual-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md, 1rem);
+    padding: 0 var(--spacing-md, 1rem) var(--spacing-xl, 2rem);
+  }
+
+  .virtual-row {
     position: relative;
-    width: 100%;
   }
 
   .loading-indicator {

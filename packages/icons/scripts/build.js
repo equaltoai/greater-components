@@ -184,51 +184,50 @@ for (const [name, icon] of Object.entries(fediverseIcons)) {
 }
 
 // Generate index file with exports
+const allIconNames = [...featherIconNames, ...fediverseIconNames].sort();
+
+const registryEntries = allIconNames.map(name => {
+  const pascalName = name
+    .split('-')
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join('');
+  return { name, pascalName };
+});
+
+const importsBlock = registryEntries
+  .map(({ name, pascalName }) => `import ${pascalName}Icon from './icons/${name}.svelte';`)
+  .join('\n');
+
+const exportsBlock = `export {\n${registryEntries
+  .map(({ pascalName }) => `  ${pascalName}Icon`)
+  .join(',\n')}\n};`;
+
+const registryBlock = `const iconRegistry = {\n${registryEntries
+  .map(({ name, pascalName }) => `  '${name}': ${pascalName}Icon`)
+  .join(',\n')}\n} as const;`;
+
 const indexContent = `// Auto-generated icon exports
 // Do not edit manually
 
-${[...featherIconNames, ...fediverseIconNames]
-  .sort()
-  .map(name => {
-    const pascalName = name
-      .split('-')
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('');
-    return `export { default as ${pascalName}Icon } from './icons/${name}.svelte';`;
-  })
-  .join('\n')}
+${importsBlock}
 
-// Icon name type
-export type IconName = ${[...featherIconNames, ...fediverseIconNames]
-  .sort()
-  .map(name => `'${name}'`)
-  .join(' | ')};
+${exportsBlock}
 
-// Alias map
+${registryBlock}
+
+export type IconName = ${allIconNames.map(name => `'${name}'`).join(' | ')};
+
 export const iconAliases: Record<string, IconName> = ${JSON.stringify(aliases, null, 2)};
 
-// Helper to get icon component by name
-export async function getIcon(name: string): Promise<unknown> {
+export function getIcon(name: string) {
   const iconName = iconAliases[name] || name;
-  
-  try {
-    const module = await import(\`./icons/\${iconName}.svelte\`);
-    return module.default;
-  } catch {
-    console.error(\`Icon "\${name}" not found\`);
-    return null;
-  }
+  return iconRegistry[iconName] ?? null;
 }
 
-// List of all available icons
 export const iconList = [
-${[...featherIconNames, ...fediverseIconNames]
-  .sort()
-  .map(name => `  '${name}'`)
-  .join(',\n')}
+${allIconNames.map(name => `  '${name}'`).join(',\n')}
 ];
 
-// Categorized icons for documentation
 export const iconCategories = {
   fediverse: [
 ${fediverseIconNames.map(name => `    '${name}'`).join(',\n')}
@@ -261,26 +260,16 @@ export interface IconProps extends HTMLAttributes<SVGElement> {
 
 export type IconComponent = typeof SvelteComponent<IconProps>;
 
-${[...featherIconNames, ...fediverseIconNames]
-  .sort()
-  .map(name => {
-    const pascalName = name
-      .split('-')
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-      .join('');
-    return `export declare const ${pascalName}Icon: IconComponent;`;
-  })
+${registryEntries
+  .map(({ name, pascalName }) => `export declare const ${pascalName}Icon: IconComponent;`)
   .join('\n')}
 
-export type IconName = ${[...featherIconNames, ...fediverseIconNames]
-  .sort()
-  .map(name => `'${name}'`)
-  .join(' | ')};
+export type IconName = ${allIconNames.map(name => `'${name}'`).join(' | ')};
 
 export declare const iconAliases: Record<string, IconName>;
 export declare const iconList: IconName[];
 export declare const iconCategories: Record<string, string[]>;
-export declare function getIcon(name: string): Promise<IconComponent | null>;
+export declare function getIcon(name: string): IconComponent | null;
 `;
 
 fs.writeFileSync(path.join(srcDir, 'index.d.ts'), dtsContent);

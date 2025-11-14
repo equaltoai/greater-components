@@ -57,21 +57,26 @@
       "import": "./dist/headless/*.js"
     },
     "./icons": {
-      "svelte": "./dist/icons/src/index.ts",
-      "default": "./dist/icons/src/index.ts"
+      "types": "./dist/icons/index.d.ts",
+      "svelte": "./dist/icons/index.js",
+      "import": "./dist/icons/index.js",
+      "default": "./dist/icons/index.js"
     },
     "./icons/*": {
-      "default": "./dist/icons/src/icons/*.svelte"
+      "types": "./dist/icons/*.svelte.d.ts",
+      "svelte": "./dist/icons/*.svelte.js",
+      "import": "./dist/icons/*.svelte.js"
     },
     "./primitives": {
       "types": "./dist/primitives/index.d.ts",
-      "svelte": "./dist/primitives/src/index.ts",
-      "default": "./dist/primitives/src/index.ts"
+      "svelte": "./dist/primitives/index.js",
+      "import": "./dist/primitives/index.js",
+      "default": "./dist/primitives/index.js"
     },
     "./primitives/*": {
-      "types": "./dist/primitives/components/*.d.ts",
-      "svelte": "./dist/primitives/src/components/*.svelte",
-      "default": "./dist/primitives/src/components/*.svelte"
+      "types": "./dist/primitives/components/*.svelte.d.ts",
+      "svelte": "./dist/primitives/components/*.svelte.js",
+      "import": "./dist/primitives/components/*.svelte.js"
     },
     "./primitives/styles.css": "./dist/primitives/styles.css",
     "./primitives/style.css": "./dist/primitives/style.css",

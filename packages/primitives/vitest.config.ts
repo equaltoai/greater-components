@@ -1,35 +1,43 @@
-import { defineConfig, mergeConfig } from 'vitest/config';
-import viteConfig from './vite.config';
+import { defineConfig } from 'vitest/config';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 
-export default mergeConfig(
-	viteConfig,
-	defineConfig({
-		test: {
-			environment: 'jsdom',
-			globals: true,
-			setupFiles: ['./tests/setup.ts'],
-			coverage: {
-				provider: 'v8',
-				reporter: ['text', 'json', 'html', 'lcov'],
-				reportsDirectory: './coverage',
-				thresholds: {
-					global: {
-						branches: 90,
-						functions: 90,
-						lines: 90,
-						statements: 90,
-					},
-				},
-				include: ['src/**/*.{ts,js,svelte}'],
-				exclude: [
-					'src/**/*.d.ts',
-					'src/**/*.test.{ts,js}',
-					'src/**/*.spec.{ts,js}',
-					'tests/**/*',
-					'dist/**/*',
-					'node_modules/**/*',
-				],
+export default defineConfig({
+	plugins: [
+		svelte({
+			compilerOptions: {
+				runes: true,
 			},
+			emitCss: false,
+		}),
+	],
+	resolve: {
+		conditions: ['browser'],
+	},
+	test: {
+		environment: 'jsdom',
+		globals: true,
+		setupFiles: ['./tests/setup.ts'],
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'json', 'html', 'lcov'],
+			reportsDirectory: './coverage',
+			thresholds: {
+				global: {
+					branches: 90,
+					functions: 90,
+					lines: 90,
+					statements: 90,
+				},
+			},
+			include: ['src/**/*.{ts,js,svelte}'],
+			exclude: [
+				'src/**/*.d.ts',
+				'src/**/*.test.{ts,js}',
+				'src/**/*.spec.{ts,js}',
+				'tests/**/*',
+				'dist/**/*',
+				'node_modules/**/*',
+			],
 		},
-	})
-);
+	},
+});

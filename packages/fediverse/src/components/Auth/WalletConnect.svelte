@@ -118,13 +118,15 @@
 		showAdvanced?: boolean;
 	}
 
-	let {
-		onConnect,
-		onDisconnect,
-		supportedChains = [1], // Ethereum mainnet by default
-		signMessage = 'Sign this message to authenticate with Lesser',
-		showAdvanced = false,
-	}: Props = $props();
+let {
+	onConnect,
+	onDisconnect,
+	supportedChains = [1], // Ethereum mainnet by default
+	signMessage = 'Sign this message to authenticate with Lesser',
+	showAdvanced = false,
+}: Props = $props();
+
+	const clipboard = typeof navigator !== 'undefined' ? navigator.clipboard : undefined;
 
 	// Local state
 	let connecting = $state(false);
@@ -388,8 +390,13 @@
 	async function handleCopyAddress() {
 		if (!wallet) return;
 
+		if (!clipboard?.writeText) {
+			error = 'Clipboard is unavailable in this environment';
+			return;
+		}
+
 		try {
-			await navigator.clipboard.writeText(wallet.address);
+			await clipboard.writeText(wallet.address);
 		} catch (caught) {
 			const { message } = getProviderErrorInfo(caught);
 			console.error('Failed to copy address:', caught);

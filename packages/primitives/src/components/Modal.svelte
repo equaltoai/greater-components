@@ -134,6 +134,10 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
     onOpen
   }: Props = $props();
 
+  const canUseDocument = typeof document !== 'undefined';
+  const canUseWindow = typeof window !== 'undefined';
+  const canUseDom = canUseDocument && canUseWindow;
+
   let dialog: HTMLDialogElement | undefined = $state();
   let firstFocusable: HTMLElement | undefined = $state();
   let lastFocusable: HTMLElement | undefined = $state();
@@ -166,16 +170,18 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 
   // Handle body scroll lock
   $effect(() => {
-    if (preventScroll && open && mounted) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-      
-      return () => {
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-      };
+    if (!(canUseDom && preventScroll && open && mounted)) {
+      return;
     }
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
   });
 
   // Mount effect
@@ -184,7 +190,7 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
   });
 
   function openModal() {
-    if (!dialog) return;
+    if (!dialog || !canUseDom) return;
 
     previousActiveElement = document.activeElement;
     dialog.showModal();
@@ -238,7 +244,7 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
       open = false;
     }
 
-    if (event.key === 'Tab') {
+    if (event.key === 'Tab' && canUseDocument) {
       // Trap focus within modal
       if (event.shiftKey) {
         if (document.activeElement === firstFocusable) {

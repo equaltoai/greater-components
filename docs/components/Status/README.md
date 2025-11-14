@@ -8,6 +8,8 @@
 
 ## 📋 Overview
 
+> Playground: Visit `/status` inside `apps/playground` to explore the StatusCard + thread demos powered by `createStatusShowcase()` and `createThreadReplies()`.
+
 The Status component group provides a complete solution for displaying individual posts/statuses in fediverse applications. These components are designed to handle rich content (text, media, polls), user interactions (boost, favorite, reply), and provide an accessible, mobile-responsive experience.
 
 ### **Key Features**:
@@ -560,6 +562,11 @@ describe('Status Components', () => {
 - ✅ Keyboard navigation
 - ✅ Screen reader compatibility
 
+### Demo Suite Regression Coverage (Phase 5)
+- **Playwright**: `packages/testing/tests/demo/{timeline,profile,settings,search}.spec.ts` validate aria landmarks, keyboard navigation, and live-region announcements across every Phase 4 surface.
+- **Timeline stores**: `apps/playground/src/lib/stores/timelineStore.test.ts` plus `packages/fediverse/tests/timelineStore.test.ts` cover prefetch queues, prepend/append flows, and error clearing.
+- **Persistence utilities**: `apps/playground/src/lib/stores/storage.test.ts` ensures load/persist helpers behave on the server and browser, keeping demo state deterministic for manual QA.
+
 ---
 
 ## 📚 Examples
@@ -920,4 +927,3 @@ Full example using all Lesser features:
 
 **Last Updated**: October 18, 2025  
 **Version**: 1.0.0 (Lesser-aligned)
-

@@ -45,6 +45,7 @@
 				{ title: 'Tooltip', href: '/components/tooltip', status: 'stable' },
 				{ title: 'Menu', href: '/components/menu', status: 'beta' },
 				{ title: 'Tabs', href: '/components/tabs', status: 'beta' },
+				{ title: 'Switch', href: '/components/switch', status: 'beta' },
 				{ title: 'Avatar', href: '/components/avatar', status: 'stable' },
 				{ title: 'Skeleton', href: '/components/skeleton', status: 'stable' },
 				{ title: 'ThemeSwitcher', href: '/components/theme-switcher', status: 'stable' }
@@ -59,6 +60,16 @@
 				{ title: 'NotificationsFeed', href: '/components/notifications-feed', status: 'beta' },
 				{ title: 'ProfileHeader', href: '/components/profile-header', status: 'beta' },
 				{ title: 'ActionBar', href: '/components/action-bar', status: 'beta' }
+			]
+		},
+		{
+			title: 'Demo Suite',
+			items: [
+				{ title: 'Overview', href: '/demo-suite' },
+				{ title: 'Timeline App', href: '/demo-suite/timeline' },
+				{ title: 'Profile App', href: '/demo-suite/profile' },
+				{ title: 'Settings App', href: '/demo-suite/settings' },
+				{ title: 'Search App', href: '/demo-suite/search' }
 			]
 		},
 		{

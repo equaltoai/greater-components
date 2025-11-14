@@ -79,10 +79,11 @@
     if (isInteractiveRole(role)) {
       return true;
     }
-    if (hasInteractiveHandlers) {
+    if (hasInteractiveHandlers()) {
       return true;
     }
-    if (parsedTabIndex !== undefined && parsedTabIndex >= 0) {
+    const parsedValue = parsedTabIndex();
+    if (parsedValue !== undefined && parsedValue >= 0) {
       return true;
     }
     return false;
@@ -142,7 +143,7 @@
 {/snippet}
 
 {#if loading}
-  {#if isInteractive}
+  {#if isInteractive()}
     <button
       class={skeletonClass()}
       style={skeletonStyle()}
@@ -158,7 +159,7 @@
       {onblur}
       {onkeydown}
       {onkeyup}
-      tabindex={parsedTabIndex}
+      tabindex={parsedTabIndex()}
       type="button"
     >
       {@render SkeletonContent()}

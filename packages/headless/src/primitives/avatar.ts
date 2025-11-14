@@ -384,12 +384,19 @@ export function createAvatar(config: AvatarConfig = {}): Avatar {
 	 * Reload helper
 	 */
 	function reload() {
-		if (state.currentSrc) {
-			// Force reload by adding cache-busting parameter
-			const url = new URL(state.currentSrc, window.location.href);
-			url.searchParams.set('_reload', Date.now().toString());
-			setSrc(url.toString());
+		if (!state.currentSrc) {
+			return;
 		}
+
+		if (typeof window === 'undefined') {
+			// No-op during SSR; the client hydration pass will manage reloads.
+			return;
+		}
+
+		// Force reload by adding cache-busting parameter
+		const url = new URL(state.currentSrc, window.location.href);
+		url.searchParams.set('_reload', Date.now().toString());
+		setSrc(url.toString());
 	}
 
 	return {
@@ -405,4 +412,3 @@ export function createAvatar(config: AvatarConfig = {}): Avatar {
 		},
 	};
 }
-

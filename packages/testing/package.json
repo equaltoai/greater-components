@@ -42,6 +42,8 @@
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
     "test:demo": "playwright test --config=playwright.demo.config.ts",
+    "test:demo:csr": "playwright test --config=playwright.demo.csr.config.ts",
+    "test:e2e": "pnpm run test:demo && pnpm run test:demo:csr",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -60,13 +62,13 @@
     "chromatic": "^11.20.0",
     "commander": "^12.1.0",
     "jsdom": "^25.0.1",
-    "svelte": "^5.0.0",
+    "svelte": "^5.43.6",
     "typescript": "^5.3.3",
     "vite": "^7.2.2",
     "vitest": "^4.0.8",
     "playwright": "^1.55.1"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.43.6"
   }
 }
