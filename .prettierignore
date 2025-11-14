@@ -33,3 +33,4 @@ LICENSE
 # Generated files
 *.generated.*
 **/generated/**
+packages/tokens/src/index.ts
