@@ -31,6 +31,9 @@ jobs:
       - name: Build playground
         run: pnpm --filter @equaltoai/playground build
 
+      - name: Disable Jekyll processing
+        run: touch apps/playground/build/.nojekyll
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
