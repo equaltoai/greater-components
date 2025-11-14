@@ -23,9 +23,9 @@
     "@equaltoai/greater-components-utils": "workspace:*"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/adapter-auto": "^7.0.0",
     "@sveltejs/adapter-static": "^3.0.0",
-    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/kit": "^2.48.5",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "svelte": "^5.43.6",
     "typescript": "^5.3.3",
