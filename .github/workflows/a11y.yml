@@ -48,12 +48,6 @@ jobs:
         run: pnpm exec playwright install --with-deps
         working-directory: packages/testing
 
-      - name: Start Storybook server
-        run: |
-          pnpm storybook &
-          pnpm exec wait-on http://localhost:6006 --timeout 120000
-        working-directory: apps/playground
-
       - name: Run Axe accessibility tests
         run: |
           pnpm exec playwright test --config=playwright.a11y.config.ts \
@@ -156,12 +150,6 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
         working-directory: packages/testing
-
-      - name: Start Storybook server
-        run: |
-          pnpm storybook &
-          pnpm exec wait-on http://localhost:6006 --timeout 120000
-        working-directory: apps/playground
 
       - name: Run focus state visual tests
         run: |

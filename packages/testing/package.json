@@ -58,6 +58,7 @@
     "@playwright/test": "^1.55.1",
     "@testing-library/svelte": "^5.2.9",
     "@testing-library/user-event": "^14.6.1",
+    "@vitest/coverage-v8": "^4.0.9",
     "@vitest/ui": "^4.0.9",
     "chromatic": "^11.20.0",
     "commander": "^12.1.0",

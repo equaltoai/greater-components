@@ -34,7 +34,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+        run: pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps ${{ matrix.browser }}
 
       - name: Build packages
         run: pnpm build

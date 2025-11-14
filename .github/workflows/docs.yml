@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build-docs:
@@ -36,13 +38,13 @@ jobs:
       - name: Build playground app
         run: |
           if [ -d "apps/playground" ] && [ -f "apps/playground/package.json" ]; then
-            pnpm --filter playground build
+            pnpm --filter @equaltoai/playground build
           fi
 
       - name: Build docs site
         run: |
           if [ -d "apps/docs" ] && [ -f "apps/docs/package.json" ]; then
-            pnpm --filter docs build
+            pnpm --filter @greater-components/docs build
           fi
 
       - name: Upload docs artifacts
@@ -51,8 +53,8 @@ jobs:
         with:
           name: docs-site
           path: |
-            apps/docs/dist
-            apps/playground/dist
+            apps/docs/build
+            apps/playground/build
           retention-days: 30
 
   deploy-docs:
