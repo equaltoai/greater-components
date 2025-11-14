@@ -1,16 +1,16 @@
 /**
  * Messages Components
- * 
+ *
  * Complete direct messaging system for private conversations in ActivityPub/Fediverse applications.
  * Supports threaded conversations, real-time messaging, and read receipts.
- * 
+ *
  * @module components/Messages
- * 
+ *
  * @example
  * ```svelte
  * <script>
  *   import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
- * 
+ *
  *   const handlers = {
  *     onFetchConversations: async () => {
  *       const response = await fetch('/api/messages/conversations');
@@ -29,7 +29,7 @@
  *     },
  *   };
  * </script>
- * 
+ *
  * <Messages.Root {handlers}>
  *   <Messages.Conversations currentUserId="me" />
  *   <div style="flex: 1; display: flex; flex-direction: column;">
@@ -59,5 +59,9 @@ export type {
 	MessagesContext,
 } from './context.js';
 
-export { createMessagesContext, getMessagesContext, formatMessageTime, getConversationName } from './context.js';
-
+export {
+	createMessagesContext,
+	getMessagesContext,
+	formatMessageTime,
+	getConversationName,
+} from './context.js';

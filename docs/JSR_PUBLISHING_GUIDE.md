@@ -58,23 +58,16 @@ The primary JSR configuration file:
 
 ```json
 {
-  "name": "@equaltoai/greater-components-primitives",
-  "version": "1.0.0",
-  "exports": {
-    ".": "./src/index.ts",
-    "./components/*": "./src/components/*.svelte"
-  },
-  "publish": {
-    "include": [
-      "src/**/*.ts",
-      "src/**/*.svelte",
-      "README.md"
-    ],
-    "exclude": [
-      "**/*.test.ts",
-      "**/tests/**"
-    ]
-  }
+	"name": "@equaltoai/greater-components-primitives",
+	"version": "1.0.0",
+	"exports": {
+		".": "./src/index.ts",
+		"./components/*": "./src/components/*.svelte"
+	},
+	"publish": {
+		"include": ["src/**/*.ts", "src/**/*.svelte", "README.md"],
+		"exclude": ["**/*.test.ts", "**/tests/**"]
+	}
 }
 ```
 
@@ -92,17 +85,17 @@ Standard npm package configuration, also used by JSR:
 
 ```json
 {
-  "name": "@equaltoai/greater-components-primitives",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "Primitive UI components for Greater Components",
-  "license": "AGPL-3.0-only",
-  "author": "Greater Contributors",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/equaltoai/greater-components.git",
-    "directory": "packages/primitives"
-  }
+	"name": "@equaltoai/greater-components-primitives",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "Primitive UI components for Greater Components",
+	"license": "AGPL-3.0-only",
+	"author": "Greater Contributors",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/equaltoai/greater-components.git",
+		"directory": "packages/primitives"
+	}
 }
 ```
 
@@ -156,6 +149,7 @@ pnpm publish:jsr:single --package=primitives --dry-run
 ```
 
 This will validate:
+
 - Package configuration
 - Build outputs
 - File inclusions/exclusions
@@ -205,6 +199,7 @@ The publish script handles this automatically.
 **Problem:** `Error: Not authenticated with JSR`
 
 **Solution:**
+
 ```bash
 npx jsr login
 ```
@@ -220,6 +215,7 @@ npx jsr login
 **Problem:** Package fails to build
 
 **Solution:**
+
 ```bash
 # Clean and rebuild
 pnpm clean
@@ -238,6 +234,7 @@ pnpm build
 **Problem:** TypeScript errors during publish
 
 **Solution:**
+
 ```bash
 # Run type checking
 pnpm typecheck
@@ -321,22 +318,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 9
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Build packages
         run: pnpm build
-      
+
       - name: Publish to JSR
         run: pnpm publish:jsr
         env:
@@ -423,5 +420,3 @@ For JSR-specific issues:
 
 - JSR Support: https://jsr.io/support
 - JSR Discord: https://discord.gg/jsr
-
-

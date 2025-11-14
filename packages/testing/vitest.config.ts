@@ -8,11 +8,7 @@ export default mergeConfig(
 			globals: true,
 			environment: 'jsdom',
 			setupFiles: ['./tests/setup.ts'],
-			exclude: [
-				'tests/**/*.a11y.test.ts',
-				'tests/**/*.visual.test.ts',
-				'tests/demo/**/*',
-			],
+			exclude: ['tests/**/*.a11y.test.ts', 'tests/**/*.visual.test.ts', 'tests/demo/**/*'],
 		},
 	})
 );

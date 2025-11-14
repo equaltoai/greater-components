@@ -145,19 +145,7 @@
 
 	function sanitizeProfileBio(bio: string): string {
 		return sanitizeHtml(bio, {
-			allowedTags: [
-				'p',
-				'br',
-				'span',
-				'a',
-				'strong',
-				'em',
-				'b',
-				'i',
-				'u',
-				'code',
-				'pre',
-			],
+			allowedTags: ['p', 'br', 'span', 'a', 'strong', 'em', 'b', 'i', 'u', 'code', 'pre'],
 			allowedAttributes: ['href', 'rel', 'target', 'class', 'title'],
 		});
 	}
@@ -183,7 +171,11 @@
 	<div class={`profile-header ${className}`}>
 		{#if showCover && profileState.profile.header}
 			<div class="profile-header__cover">
-				<img src={profileState.profile.header} alt="Profile cover" class="profile-header__cover-img" />
+				<img
+					src={profileState.profile.header}
+					alt="Profile cover"
+					class="profile-header__cover-img"
+				/>
 			</div>
 		{/if}
 

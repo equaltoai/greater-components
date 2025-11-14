@@ -130,5 +130,4 @@ describe('createTimelineController', () => {
 
 		unsubscribe();
 	});
-
 });

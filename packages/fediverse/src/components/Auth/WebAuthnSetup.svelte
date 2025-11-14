@@ -179,7 +179,11 @@
 				</div>
 			{/if}
 
-			<button use:setupButton.actions.button class="auth-webauthn__setup" disabled={authState.loading}>
+			<button
+				use:setupButton.actions.button
+				class="auth-webauthn__setup"
+				disabled={authState.loading}
+			>
 				{#if authState.loading}
 					<span class="auth-webauthn__spinner"></span>
 					Setting up...
@@ -189,7 +193,11 @@
 			</button>
 
 			{#if showSkip}
-				<button use:skipButton.actions.button class="auth-webauthn__skip" disabled={authState.loading}>
+				<button
+					use:skipButton.actions.button
+					class="auth-webauthn__skip"
+					disabled={authState.loading}
+				>
 					Skip for now
 				</button>
 			{/if}

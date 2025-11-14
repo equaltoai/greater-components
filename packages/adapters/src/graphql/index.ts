@@ -1,6 +1,6 @@
 /**
  * GraphQL Adapter Exports
- * 
+ *
  * Exports all GraphQL-related functionality for Lesser integration
  */
 
@@ -19,4 +19,3 @@ export * from './generated/types.js';
 export { typePolicies, cacheConfig, evictStaleCache, limitCacheSize } from './cache.js';
 
 export * as optimistic from './optimistic.js';
-

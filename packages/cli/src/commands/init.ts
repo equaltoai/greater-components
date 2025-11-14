@@ -30,7 +30,9 @@ export const initCommand = new Command()
 		const spinner = ora('Checking project...').start();
 
 		if (!(await isValidProject(cwd))) {
-			spinner.fail('Not a valid project. Please run this command in a project root with package.json');
+			spinner.fail(
+				'Not a valid project. Please run this command in a project root with package.json'
+			);
 			process.exit(1);
 		}
 
@@ -125,5 +127,7 @@ export const initCommand = new Command()
 		logger.note(chalk.dim('Next steps:'));
 		logger.note(chalk.dim('  1. Add your first component: ') + chalk.cyan('greater add button'));
 		logger.note(chalk.dim('  2. Browse components: ') + chalk.cyan('greater list'));
-		logger.note(chalk.dim('  3. View documentation: ') + chalk.cyan('https://greater.fediverse.dev\n'));
+		logger.note(
+			chalk.dim('  3. View documentation: ') + chalk.cyan('https://greater.fediverse.dev\n')
+		);
 	});

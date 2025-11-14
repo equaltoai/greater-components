@@ -2,365 +2,368 @@ import { SseClient } from './SseClient';
 import { HttpPollingClient } from './HttpPollingClient';
 import { resolveLogger } from './logger.js';
 import type {
-  TransportFallbackConfig,
-  TransportAdapter,
-  WebSocketEventHandler,
-  TransportFallbackState,
-  TransportLogger,
-  SseClientState,
-  HttpPollingClientState,
-  WebSocketEvent
+	TransportFallbackConfig,
+	TransportAdapter,
+	WebSocketEventHandler,
+	TransportFallbackState,
+	TransportLogger,
+	SseClientState,
+	HttpPollingClientState,
+	WebSocketEvent,
 } from './types';
 
 /**
  * Transport client with automatic fallback from SSE to HTTP Polling
  */
 export class TransportFallback implements TransportAdapter<TransportFallbackState> {
-  private readonly config: TransportFallbackConfig & {
-    autoFallback: boolean;
-    forceTransport: 'sse' | 'polling' | 'auto';
-    logger: TransportLogger;
-  };
-  private currentTransport:
-    | TransportAdapter<SseClientState>
-    | TransportAdapter<HttpPollingClientState>
-    | null = null;
-  private transportType: 'sse' | 'polling' | null = null;
-  private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();
-  private unsubscribers: Map<string, (() => void)[]> = new Map();
-  private isDestroyed = false;
-  private fallbackAttempted = false;
-  private readonly logger: Required<TransportLogger>;
+	private readonly config: TransportFallbackConfig & {
+		autoFallback: boolean;
+		forceTransport: 'sse' | 'polling' | 'auto';
+		logger: TransportLogger;
+	};
+	private currentTransport:
+		| TransportAdapter<SseClientState>
+		| TransportAdapter<HttpPollingClientState>
+		| null = null;
+	private transportType: 'sse' | 'polling' | null = null;
+	private eventHandlers: Map<string, Set<WebSocketEventHandler>> = new Map();
+	private unsubscribers: Map<string, (() => void)[]> = new Map();
+	private isDestroyed = false;
+	private fallbackAttempted = false;
+	private readonly logger: Required<TransportLogger>;
 
-  constructor(config: TransportFallbackConfig) {
-    this.logger = resolveLogger(config.logger);
-    this.config = {
-      ...config,
-      primary: { ...config.primary },
-      fallback: { ...config.fallback },
-      autoFallback: config.autoFallback !== false,
-      forceTransport: config.forceTransport ?? 'auto',
-      logger: config.logger ?? this.logger,
-    };
+	constructor(config: TransportFallbackConfig) {
+		this.logger = resolveLogger(config.logger);
+		this.config = {
+			...config,
+			primary: { ...config.primary },
+			fallback: { ...config.fallback },
+			autoFallback: config.autoFallback !== false,
+			forceTransport: config.forceTransport ?? 'auto',
+			logger: config.logger ?? this.logger,
+		};
 
-    this.config.primary.logger = this.config.primary.logger ?? this.logger;
-    this.config.fallback.logger = this.config.fallback.logger ?? this.logger;
-  }
+		this.config.primary.logger = this.config.primary.logger ?? this.logger;
+		this.config.fallback.logger = this.config.fallback.logger ?? this.logger;
+	}
 
-  /**
-   * Connect using the appropriate transport
-   */
-  connect(): void {
-    if (this.isDestroyed) {
-      throw new Error('TransportFallback has been destroyed');
-    }
+	/**
+	 * Connect using the appropriate transport
+	 */
+	connect(): void {
+		if (this.isDestroyed) {
+			throw new Error('TransportFallback has been destroyed');
+		}
 
-    if (this.currentTransport) {
-      return; // Already connected
-    }
+		if (this.currentTransport) {
+			return; // Already connected
+		}
 
-    // Determine which transport to use
-    const transport = this.selectTransport();
-    
-    if (transport === 'sse') {
-      this.connectSse();
-    } else {
-      this.connectPolling();
-    }
-  }
+		// Determine which transport to use
+		const transport = this.selectTransport();
 
-  /**
-   * Disconnect the current transport
-   */
-  disconnect(): void {
-    if (this.currentTransport) {
-      this.currentTransport.disconnect();
-      this.cleanupTransport();
-    }
-  }
+		if (transport === 'sse') {
+			this.connectSse();
+		} else {
+			this.connectPolling();
+		}
+	}
 
-  /**
-   * Destroy the client and cleanup all resources
-   */
-  destroy(): void {
-    this.isDestroyed = true;
-    if (this.currentTransport) {
-      this.currentTransport.destroy();
-      this.cleanupTransport();
-    }
-    this.eventHandlers.clear();
-  }
+	/**
+	 * Disconnect the current transport
+	 */
+	disconnect(): void {
+		if (this.currentTransport) {
+			this.currentTransport.disconnect();
+			this.cleanupTransport();
+		}
+	}
 
-  /**
-   * Send a message through the current transport
-   */
-  send(message: unknown): void {
-    if (!this.currentTransport) {
-      throw new Error('No transport connected');
-    }
+	/**
+	 * Destroy the client and cleanup all resources
+	 */
+	destroy(): void {
+		this.isDestroyed = true;
+		if (this.currentTransport) {
+			this.currentTransport.destroy();
+			this.cleanupTransport();
+		}
+		this.eventHandlers.clear();
+	}
 
-    if (this.currentTransport.send) {
-      this.currentTransport.send(message);
-    } else {
-      throw new Error('Current transport does not support sending messages');
-    }
-  }
+	/**
+	 * Send a message through the current transport
+	 */
+	send(message: unknown): void {
+		if (!this.currentTransport) {
+			throw new Error('No transport connected');
+		}
 
-  /**
-   * Subscribe to events
-   */
-  on(event: string, handler: WebSocketEventHandler): () => void {
-    // Store handler in our map
-    let handlers = this.eventHandlers.get(event);
-    if (!handlers) {
-      handlers = new Set<WebSocketEventHandler>();
-      this.eventHandlers.set(event, handlers);
-    }
-    handlers.add(handler);
+		if (this.currentTransport.send) {
+			this.currentTransport.send(message);
+		} else {
+			throw new Error('Current transport does not support sending messages');
+		}
+	}
 
-    // Subscribe to current transport if connected
-    if (this.currentTransport) {
-      const unsubscribe = this.currentTransport.on(event, handler);
-      this.addUnsubscribers(event, unsubscribe);
-    }
+	/**
+	 * Subscribe to events
+	 */
+	on(event: string, handler: WebSocketEventHandler): () => void {
+		// Store handler in our map
+		let handlers = this.eventHandlers.get(event);
+		if (!handlers) {
+			handlers = new Set<WebSocketEventHandler>();
+			this.eventHandlers.set(event, handlers);
+		}
+		handlers.add(handler);
 
-    // Return unsubscribe function
-    return () => {
-      const storedHandlers = this.eventHandlers.get(event);
-      if (storedHandlers) {
-        storedHandlers.delete(handler);
-        if (storedHandlers.size === 0) {
-          this.eventHandlers.delete(event);
-        }
-      }
+		// Subscribe to current transport if connected
+		if (this.currentTransport) {
+			const unsubscribe = this.currentTransport.on(event, handler);
+			this.addUnsubscribers(event, unsubscribe);
+		}
 
-      // Unsubscribe from transport
-      const unsubs = this.unsubscribers.get(event);
-      if (unsubs) {
-        unsubs.forEach(unsub => unsub());
-        this.unsubscribers.delete(event);
-      }
-    };
-  }
+		// Return unsubscribe function
+		return () => {
+			const storedHandlers = this.eventHandlers.get(event);
+			if (storedHandlers) {
+				storedHandlers.delete(handler);
+				if (storedHandlers.size === 0) {
+					this.eventHandlers.delete(event);
+				}
+			}
 
-  /**
-   * Get the current state
-   */
-  getState(): TransportFallbackState {
-    if (!this.currentTransport || !this.transportType) {
-      return {
-        status: 'disconnected',
-        transport: null,
-        error: null,
-      };
-    }
+			// Unsubscribe from transport
+			const unsubs = this.unsubscribers.get(event);
+			if (unsubs) {
+				unsubs.forEach((unsub) => unsub());
+				this.unsubscribers.delete(event);
+			}
+		};
+	}
 
-    if (this.transportType === 'sse') {
-      const state = this.currentTransport.getState() as Readonly<SseClientState>;
-      return {
-        ...state,
-        transport: 'sse',
-      };
-    }
+	/**
+	 * Get the current state
+	 */
+	getState(): TransportFallbackState {
+		if (!this.currentTransport || !this.transportType) {
+			return {
+				status: 'disconnected',
+				transport: null,
+				error: null,
+			};
+		}
 
-    const state = this.currentTransport.getState() as Readonly<HttpPollingClientState>;
-    return {
-      ...state,
-      transport: 'polling',
-    };
-  }
+		if (this.transportType === 'sse') {
+			const state = this.currentTransport.getState() as Readonly<SseClientState>;
+			return {
+				...state,
+				transport: 'sse',
+			};
+		}
 
-  /**
-   * Get the current transport type
-   */
-  getTransportType(): 'sse' | 'polling' | null {
-    return this.transportType;
-  }
+		const state = this.currentTransport.getState() as Readonly<HttpPollingClientState>;
+		return {
+			...state,
+			transport: 'polling',
+		};
+	}
 
-  /**
-   * Check if SSE is supported
-   */
-  static isSseSupported(): boolean {
-    return SseClient.isSupported();
-  }
+	/**
+	 * Get the current transport type
+	 */
+	getTransportType(): 'sse' | 'polling' | null {
+		return this.transportType;
+	}
 
-  private selectTransport(): 'sse' | 'polling' {
-    // Check if transport is forced
-    if (this.config.forceTransport && this.config.forceTransport !== 'auto') {
-      return this.config.forceTransport;
-    }
+	/**
+	 * Check if SSE is supported
+	 */
+	static isSseSupported(): boolean {
+		return SseClient.isSupported();
+	}
 
-    // Auto-detect: Use SSE if supported, otherwise polling
-    if (SseClient.isSupported() && !this.fallbackAttempted) {
-      return 'sse';
-    }
+	private selectTransport(): 'sse' | 'polling' {
+		// Check if transport is forced
+		if (this.config.forceTransport && this.config.forceTransport !== 'auto') {
+			return this.config.forceTransport;
+		}
 
-    return 'polling';
-  }
+		// Auto-detect: Use SSE if supported, otherwise polling
+		if (SseClient.isSupported() && !this.fallbackAttempted) {
+			return 'sse';
+		}
 
-  private connectSse(): void {
-    const instantiateClient = (): TransportAdapter<SseClientState> =>
-      new SseClient(this.config.primary);
-    let sseClient: TransportAdapter<SseClientState> | null = null;
+		return 'polling';
+	}
 
-    try {
-      sseClient = instantiateClient();
-    } catch (error) {
-      this.logger.warn('Failed to instantiate SSE client', {
-        error,
-      });
-      if (this.config.autoFallback) {
-        this.fallbackToPolling();
-        return;
-      }
+	private connectSse(): void {
+		const instantiateClient = (): TransportAdapter<SseClientState> =>
+			new SseClient(this.config.primary);
+		let sseClient: TransportAdapter<SseClientState> | null = null;
 
-      // Retry once for manual mode to recover from transient constructor errors
-      try {
-        sseClient = instantiateClient();
-      } catch (retryError) {
-        this.cleanupTransport();
-        throw retryError;
-      }
-    }
+		try {
+			sseClient = instantiateClient();
+		} catch (error) {
+			this.logger.warn('Failed to instantiate SSE client', {
+				error,
+			});
+			if (this.config.autoFallback) {
+				this.fallbackToPolling();
+				return;
+			}
 
-    this.transportType = 'sse';
-    this.currentTransport = sseClient;
+			// Retry once for manual mode to recover from transient constructor errors
+			try {
+				sseClient = instantiateClient();
+			} catch (retryError) {
+				this.cleanupTransport();
+				throw retryError;
+			}
+		}
 
-    // Subscribe existing handlers
-    this.subscribeHandlers();
+		this.transportType = 'sse';
+		this.currentTransport = sseClient;
 
-    if (this.config.autoFallback && this.currentTransport) {
-      const errorUnsubscribe = this.currentTransport.on('error', (event) => {
-        if (event.error && this.shouldFallback(event.error)) {
-          errorUnsubscribe();
-          this.fallbackToPolling();
-        }
-      });
+		// Subscribe existing handlers
+		this.subscribeHandlers();
 
-      this.addUnsubscribers('_fallback_error', errorUnsubscribe);
-    }
+		if (this.config.autoFallback && this.currentTransport) {
+			const errorUnsubscribe = this.currentTransport.on('error', (event) => {
+				if (event.error && this.shouldFallback(event.error)) {
+					errorUnsubscribe();
+					this.fallbackToPolling();
+				}
+			});
 
-    if (!this.currentTransport) {
-      return;
-    }
+			this.addUnsubscribers('_fallback_error', errorUnsubscribe);
+		}
 
-    this.currentTransport.connect();
-  }
+		if (!this.currentTransport) {
+			return;
+		}
 
-  private connectPolling(): void {
-    this.transportType = 'polling';
-    this.currentTransport = new HttpPollingClient(this.config.fallback);
+		this.currentTransport.connect();
+	}
 
-    // Subscribe existing handlers
-    this.subscribeHandlers();
+	private connectPolling(): void {
+		this.transportType = 'polling';
+		this.currentTransport = new HttpPollingClient(this.config.fallback);
 
-    if (!this.currentTransport) {
-      return;
-    }
+		// Subscribe existing handlers
+		this.subscribeHandlers();
 
-    this.currentTransport.connect();
-  }
+		if (!this.currentTransport) {
+			return;
+		}
 
-  private addUnsubscribers(event: string, ...entries: Array<() => void>): void {
-    const existing = this.unsubscribers.get(event);
-    if (existing) {
-      existing.push(...entries);
-      return;
-    }
-    this.unsubscribers.set(event, [...entries]);
-  }
+		this.currentTransport.connect();
+	}
 
-  private fallbackToPolling(): void {
-    if (this.fallbackAttempted || this.transportType === 'polling') {
-      return; // Already using polling or fallback already attempted
-    }
+	private addUnsubscribers(event: string, ...entries: Array<() => void>): void {
+		const existing = this.unsubscribers.get(event);
+		if (existing) {
+			existing.push(...entries);
+			return;
+		}
+		this.unsubscribers.set(event, [...entries]);
+	}
 
-    this.fallbackAttempted = true;
-    this.logger.warn('SSE connection failed, switching to HTTP polling');
+	private fallbackToPolling(): void {
+		if (this.fallbackAttempted || this.transportType === 'polling') {
+			return; // Already using polling or fallback already attempted
+		}
 
-    // Disconnect current transport
-    if (this.currentTransport) {
-      this.currentTransport.disconnect();
-      this.cleanupTransport();
-    }
+		this.fallbackAttempted = true;
+		this.logger.warn('SSE connection failed, switching to HTTP polling');
 
-    // Connect with polling
-    this.connectPolling();
+		// Disconnect current transport
+		if (this.currentTransport) {
+			this.currentTransport.disconnect();
+			this.cleanupTransport();
+		}
 
-    // Emit fallback event
-    this.emitToHandlers('fallback', { from: 'sse', to: 'polling' });
-  }
+		// Connect with polling
+		this.connectPolling();
 
-  private shouldFallback(error?: Error): boolean {
-    if (!error) return false;
+		// Emit fallback event
+		this.emitToHandlers('fallback', { from: 'sse', to: 'polling' });
+	}
 
-    // Fallback on specific error conditions
-    const errorMessage = error.message.toLowerCase();
-    
-    // Network errors
-    if (errorMessage.includes('network') || 
-        errorMessage.includes('failed to fetch') ||
-        errorMessage.includes('connection')) {
-      return true;
-    }
+	private shouldFallback(error?: Error): boolean {
+		if (!error) return false;
 
-    // SSE not supported errors
-    if (errorMessage.includes('eventsource') ||
-        errorMessage.includes('not supported')) {
-      return true;
-    }
+		// Fallback on specific error conditions
+		const errorMessage = error.message.toLowerCase();
 
-    // Server errors that indicate SSE endpoint issues
-    if (errorMessage.includes('404') ||
-        errorMessage.includes('405') ||
-        errorMessage.includes('501')) {
-      return true;
-    }
+		// Network errors
+		if (
+			errorMessage.includes('network') ||
+			errorMessage.includes('failed to fetch') ||
+			errorMessage.includes('connection')
+		) {
+			return true;
+		}
 
-    return false;
-  }
+		// SSE not supported errors
+		if (errorMessage.includes('eventsource') || errorMessage.includes('not supported')) {
+			return true;
+		}
 
-  private subscribeHandlers(): void {
-    const adapter = this.currentTransport;
-    if (!adapter) return;
+		// Server errors that indicate SSE endpoint issues
+		if (
+			errorMessage.includes('404') ||
+			errorMessage.includes('405') ||
+			errorMessage.includes('501')
+		) {
+			return true;
+		}
 
-    // Subscribe all existing handlers to the new transport
-    this.eventHandlers.forEach((handlers, event) => {
-      handlers.forEach(handler => {
-        const unsubscribe = adapter.on(event, handler);
-        this.addUnsubscribers(event, unsubscribe);
-      });
-    });
-  }
+		return false;
+	}
 
-  private cleanupTransport(): void {
-    // Unsubscribe all handlers
-    this.unsubscribers.forEach(unsubs => {
-      unsubs.forEach(unsub => unsub());
-    });
-    this.unsubscribers.clear();
+	private subscribeHandlers(): void {
+		const adapter = this.currentTransport;
+		if (!adapter) return;
 
-    this.currentTransport = null;
-    this.transportType = null;
-  }
+		// Subscribe all existing handlers to the new transport
+		this.eventHandlers.forEach((handlers, event) => {
+			handlers.forEach((handler) => {
+				const unsubscribe = adapter.on(event, handler);
+				this.addUnsubscribers(event, unsubscribe);
+			});
+		});
+	}
 
-  private emitToHandlers(event: string, data?: unknown): void {
-    const handlers = this.eventHandlers.get(event);
-    if (!handlers) {
-      return;
-    }
+	private cleanupTransport(): void {
+		// Unsubscribe all handlers
+		this.unsubscribers.forEach((unsubs) => {
+			unsubs.forEach((unsub) => unsub());
+		});
+		this.unsubscribers.clear();
 
-    const wsEvent: WebSocketEvent = {
-      type: event,
-      data,
-    };
+		this.currentTransport = null;
+		this.transportType = null;
+	}
 
-    handlers.forEach(handler => {
-      try {
-        handler(wsEvent);
-      } catch (error) {
-        this.logger.error(`Error in fallback event handler for ${event}`, { error });
-      }
-    });
-  }
+	private emitToHandlers(event: string, data?: unknown): void {
+		const handlers = this.eventHandlers.get(event);
+		if (!handlers) {
+			return;
+		}
+
+		const wsEvent: WebSocketEvent = {
+			type: event,
+			data,
+		};
+
+		handlers.forEach((handler) => {
+			try {
+				handler(wsEvent);
+			} catch (error) {
+				this.logger.error(`Error in fallback event handler for ${event}`, { error });
+			}
+		});
+	}
 }

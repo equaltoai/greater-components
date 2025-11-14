@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import {
-	ReplyIcon as Reply,
-	BoostIcon as Boost,
-	FavoriteIcon as Favorite,
-	ShareIcon as Share,
-	UnboostIcon as Unboost,
-	UnfavoriteIcon as Unfavorite,
+		ReplyIcon as Reply,
+		BoostIcon as Boost,
+		FavoriteIcon as Favorite,
+		ShareIcon as Share,
+		UnboostIcon as Unboost,
+		UnfavoriteIcon as Unfavorite,
 	} from '@equaltoai/greater-components-icons';
 	import type { Snippet } from 'svelte';
 
@@ -229,9 +229,7 @@
 			loading={quoteLoading}
 			onclick={handleQuote}
 			class="gr-action-bar__button gr-action-bar__button--quote"
-			aria-label={quotesCount > 0
-				? `Quote this post. ${quotesCount} quotes`
-				: 'Quote this post'}
+			aria-label={quotesCount > 0 ? `Quote this post. ${quotesCount} quotes` : 'Quote this post'}
 			id={`${idPrefix}-quote`}
 		>
 			{#snippet prefix()}

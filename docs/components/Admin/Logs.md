@@ -12,6 +12,7 @@
 `Admin.Logs` provides a comprehensive system and audit log viewer for administrators. View, filter, and search logs by level, category, and content. The component supports real-time log streaming, auto-refresh, and detailed metadata inspection for debugging and compliance.
 
 ### **Key Features**:
+
 - ✅ View system logs
 - ✅ Filter by log level (info, warn, error)
 - ✅ Filter by category
@@ -38,32 +39,32 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@equaltoai/greater-components-fediverse';
-  
-  const adminHandlers = {
-    onFetchLogs: async (filters) => {
-      const params = new URLSearchParams(filters as Record<string, string>);
-      const res = await fetch(`/api/admin/logs?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-      
-      if (!res.ok) {
-        throw new Error('Failed to fetch logs');
-      }
-      
-      return res.json();
-    }
-  };
-  
-  function getAuthToken(): string {
-    return localStorage.getItem('authToken') || '';
-  }
+	import { Admin } from '@equaltoai/greater-components-fediverse';
+
+	const adminHandlers = {
+		onFetchLogs: async (filters) => {
+			const params = new URLSearchParams(filters as Record<string, string>);
+			const res = await fetch(`/api/admin/logs?${params}`, {
+				headers: {
+					Authorization: `Bearer ${getAuthToken()}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error('Failed to fetch logs');
+			}
+
+			return res.json();
+		},
+	};
+
+	function getAuthToken(): string {
+		return localStorage.getItem('authToken') || '';
+	}
 </script>
 
 <Admin.Root handlers={adminHandlers}>
-  <Admin.Logs />
+	<Admin.Logs />
 </Admin.Root>
 ```
 
@@ -71,9 +72,9 @@ npm install @equaltoai/greater-components-fediverse
 
 ## 🎛️ Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `class` | `string` | `''` | No | Custom CSS class |
+| Prop    | Type     | Default | Required | Description      |
+| ------- | -------- | ------- | -------- | ---------------- |
+| `class` | `string` | `''`    | No       | Custom CSS class |
 
 ---
 
@@ -81,20 +82,20 @@ npm install @equaltoai/greater-components-fediverse
 
 ```typescript
 interface AdminHandlers {
-  onFetchLogs?: (filters?: {
-    level?: string;
-    category?: string;
-    limit?: number;
-  }) => Promise<LogEntry[]>;
+	onFetchLogs?: (filters?: {
+		level?: string;
+		category?: string;
+		limit?: number;
+	}) => Promise<LogEntry[]>;
 }
 
 interface LogEntry {
-  id: string;
-  timestamp: string;
-  level: 'info' | 'warn' | 'error';
-  category: string;
-  message: string;
-  metadata?: Record<string, any>;
+	id: string;
+	timestamp: string;
+	level: 'info' | 'warn' | 'error';
+	category: string;
+	message: string;
+	metadata?: Record<string, any>;
 }
 ```
 
@@ -103,6 +104,7 @@ interface LogEntry {
 ## 💡 Examples
 
 Examples include:
+
 - Basic log viewing
 - Logs with auto-refresh
 - Logs with export
@@ -135,4 +137,3 @@ npm test -- Admin/Logs.test.ts
 ---
 
 **For log viewing, see the [Admin Components Overview](./README.md).**
-

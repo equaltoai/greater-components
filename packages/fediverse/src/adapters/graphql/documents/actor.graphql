@@ -3,13 +3,13 @@
 #import "./fragments.graphql"
 
 query ActorById($id: ID) {
-  actor(id: $id) {
-    ...ActorSummary
-  }
+	actor(id: $id) {
+		...ActorSummary
+	}
 }
 
 query ActorByUsername($username: String) {
-  actor(username: $username) {
-    ...ActorSummary
-  }
+	actor(username: $username) {
+		...ActorSummary
+	}
 }

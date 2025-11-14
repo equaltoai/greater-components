@@ -2,13 +2,14 @@
 
 **Date:** October 31, 2025  
 **Problem:** Greater Components CSS doesn't apply when used with Astro `client:only`  
-**Root Cause:** Svelte scoping hash mismatch between build-time and runtime  
+**Root Cause:** Svelte scoping hash mismatch between build-time and runtime
 
 ---
 
 ## The Problem Explained
 
 ### What We Expected
+
 ```html
 <!-- Component renders with classes -->
 <button class="gr-button gr-button--solid gr-button--md">Submit</button>
@@ -16,22 +17,32 @@
 
 ```css
 /* CSS applies to those classes */
-.gr-button { display: inline-flex; }
-.gr-button--solid { background: blue; }
+.gr-button {
+	display: inline-flex;
+}
+.gr-button--solid {
+	background: blue;
+}
 ```
 
 ### What Actually Happens
 
 **In our pre-built dist/style.css:**
+
 ```css
-.gr-button.svelte-bjj3du { display: inline-flex; }
-.gr-button--solid.svelte-bjj3du { background: blue; }
+.gr-button.svelte-bjj3du {
+	display: inline-flex;
+}
+.gr-button--solid.svelte-bjj3du {
+	background: blue;
+}
 ```
 
 **In the browser (Astro compiles from source):**
+
 ```html
 <button class="gr-button gr-button--solid gr-button--md svelte-ABC123">
-  <!-- Different hash! svelte-ABC123 vs svelte-bjj3du -->
+	<!-- Different hash! svelte-ABC123 vs svelte-bjj3du -->
 </button>
 ```
 
@@ -69,9 +80,11 @@ We tried wrapping styles in `:global { }`:
 
 ```svelte
 <style>
-  :global {
-    .gr-button { ... }
-  }
+	:global {
+		.gr-button {
+			/* ... */
+		}
+	}
 </style>
 ```
 
@@ -87,22 +100,27 @@ We tried wrapping styles in `:global { }`:
 ## Attempted Solutions (All Failed)
 
 ### ❌ Attempt 1: `:global()` individual selectors
+
 - Too verbose, missed some selectors
 - Still got scoped in lib build
 
 ### ❌ Attempt 2: `:global { }` wrapper block
+
 - Svelte compiler ignored it in lib mode
 - CSS still scoped
 
 ### ❌ Attempt 3: `css: 'external'` in Vite config
+
 - Didn't prevent scoping
 - Just changed how CSS was emitted
 
 ### ❌ Attempt 4: `emitCss: false`
+
 - Prevented CSS emission entirely
 - Had to extract from JS (messy)
 
 ### ❌ Attempt 5: Post-process CSS to remove hashes
+
 - Fragile, breaks with Svelte updates
 - Not sustainable
 
@@ -119,16 +137,17 @@ Based on how successful Svelte libraries work:
 ```json
 // package.json
 {
-  "exports": {
-    ".": {
-      "svelte": "./src/index.ts",  // ← Source files!
-      "import": "./dist/index.js"   // ← Fallback
-    }
-  }
+	"exports": {
+		".": {
+			"svelte": "./src/index.ts", // ← Source files!
+			"import": "./dist/index.js" // ← Fallback
+		}
+	}
 }
 ```
 
 **How it works:**
+
 1. Astro sees `"svelte"` export condition
 2. Imports from `./src/index.ts` (source)
 3. Compiles it with ITS Svelte compiler
@@ -136,12 +155,14 @@ Based on how successful Svelte libraries work:
 5. ✅ Styles apply!
 
 **Benefits:**
+
 - Hash consistency guaranteed
-- Astro can apply its own optimizations  
+- Astro can apply its own optimizations
 - Tree-shaking at source level
 - Always fresh compilation
 
 **Drawbacks:**
+
 - Requires consuming app to have Svelte compiler
 - Slightly slower builds (compile on use)
 - Source files must be included in package
@@ -159,6 +180,7 @@ Current approach attempts this but the execution is wrong. The proper way:
 5. Document that users must import the CSS file separately
 
 **Implementation:**
+
 ```javascript
 // scripts/build-css.js
 const scopedCSS = fs.readFileSync('dist/style.css', 'utf8');
@@ -166,7 +188,7 @@ const scopedCSS = fs.readFileSync('dist/style.css', 'utf8');
 // Remove .svelte-XXXXX from all selectors
 let unscoped = scopedCSS.replace(/\.svelte-[a-z0-9]+/g, '');
 
-// Remove :where(.svelte-XXXXX) patterns  
+// Remove :where(.svelte-XXXXX) patterns
 unscoped = unscoped.replace(/:where\(\.svelte-[a-z0-9]+\)/g, '');
 
 // Fix keyframe names (they get scoped too)
@@ -177,11 +199,13 @@ fs.writeFileSync('dist/style.unscoped.css', unscoped);
 ```
 
 **Benefits:**
+
 - Works with any bundler
 - No recompilation needed
 - Smaller bundle (pre-compiled JS)
 
 **Drawbacks:**
+
 - CSS and JS separate (must import both)
 - No component-level isolation
 - Global namespace pollution risk
@@ -192,24 +216,28 @@ fs.writeFileSync('dist/style.unscoped.css', unscoped);
 ## What Other Libraries Do
 
 ### Melt UI (Headless)
+
 - Exports **source files only**
 - No pre-compiled dist
 - No CSS (headless)
 - Consumers compile everything
 
 ### Skeleton UI
+
 - **Separate CSS file** approach
 - User imports: `skeleton/theme.css`
 - Uses `:global` throughout
 - Accepts global namespace pollution
 
 ### shadcn-svelte
+
 - **Copy-paste approach**
 - Components go into user's src/
 - User's bundler compiles them
 - No distribution problem
 
 ### Flowbite Svelte
+
 - **Separate CSS bundle**
 - Tailwind-based (utility classes)
 - No scoping issues (Tailwind is global)
@@ -221,32 +249,36 @@ fs.writeFileSync('dist/style.unscoped.css', unscoped);
 ### Hybrid Approach (Best of Both Worlds)
 
 **1. Export source files as primary:**
+
 ```json
 {
-  "exports": {
-    "./primitives": {
-      "svelte": "./primitives/src/index.ts",  // Primary
-      "import": "./primitives/dist/index.js"   // Fallback
-    }
-  }
+	"exports": {
+		"./primitives": {
+			"svelte": "./primitives/src/index.ts", // Primary
+			"import": "./primitives/dist/index.js" // Fallback
+		}
+	}
 }
 ```
 
 **2. Also provide unscoped CSS:**
+
 ```json
 {
-  "exports": {
-    "./primitives/style.css": "./primitives/dist/style.unscoped.css"
-  }
+	"exports": {
+		"./primitives/style.css": "./primitives/dist/style.unscoped.css"
+	}
 }
 ```
 
 **3. Update build process:**
+
 - Vite builds components (scoped, for legacy consumers)
 - Post-process CSS to create unscoped version
 - Include src/ in published package
 
 **4. Documentation:**
+
 ```javascript
 // For Astro/Vite users (recommended)
 import { Button } from '@equaltoai/greater-components/primitives';
@@ -297,4 +329,3 @@ import '@equaltoai/greater-components/primitives/style.css';
 3. Consider switching from manual Vite config to svelte-package
 4. Or implement hybrid approach above
 5. Write comprehensive tests for both consumption modes
-

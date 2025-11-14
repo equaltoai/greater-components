@@ -13,6 +13,7 @@ The **Compose** component group provides a complete, production-ready solution f
 ### **Architecture**
 
 The Compose system follows a **compound component pattern** with:
+
 - 🎯 **Root Provider** - Manages shared state and context
 - 🧩 **Composable Components** - Each handles a specific UI concern
 - 🛠️ **Utility Modules** - Reusable logic for common operations
@@ -23,6 +24,7 @@ The Compose system follows a **compound component pattern** with:
 ## 🌟 Key Features
 
 ### **Content Creation**
+
 - 📝 Rich text editing with auto-resize
 - #️⃣ **Hashtag autocomplete** with trending tags
 - 👤 **Mention autocomplete** with user search
@@ -31,6 +33,7 @@ The Compose system follows a **compound component pattern** with:
 - 🔗 **URL weighting** (URLs count as ~23 chars like Twitter)
 
 ### **Media & Content**
+
 - 🖼️ **Drag & drop media upload** (images, video, audio)
 - 📸 **Image editing** with focal point picker and alt text
 - 📹 **Video upload** with progress tracking
@@ -39,6 +42,7 @@ The Compose system follows a **compound component pattern** with:
 - 👁️ **Visibility controls** (public, unlisted, private, direct)
 
 ### **Draft Management**
+
 - 💾 **Auto-save drafts** to localStorage
 - 🔄 **Draft recovery** on page reload
 - 🗑️ **Automatic cleanup** of old drafts (7 days)
@@ -46,6 +50,7 @@ The Compose system follows a **compound component pattern** with:
 - ⏰ **Timestamp tracking** for draft age
 
 ### **Threading**
+
 - 🧵 **Multi-post thread composition**
 - ↕️ **Drag & drop reordering** of thread posts
 - ➕ **Dynamic post addition/removal**
@@ -53,6 +58,7 @@ The Compose system follows a **compound component pattern** with:
 - 🔗 **Automatic threading** on submission
 
 ### **Integration**
+
 - 🔌 **GraphQL adapter** for Lesser integration
 - ⚡ **Optimistic updates** for instant feedback
 - 🔄 **Error handling** with rollback
@@ -60,6 +66,7 @@ The Compose system follows a **compound component pattern** with:
 - ♿ **WCAG 2.1 AA compliant** accessibility
 
 ### **Developer Experience**
+
 - 📘 **Full TypeScript support**
 - 🧪 **Comprehensive test coverage**
 - 📚 **Detailed documentation**
@@ -82,22 +89,22 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+	import { Compose } from '@equaltoai/greater-components-fediverse';
 
-  async function handleSubmit({ content, visibility }) {
-    await fetch('/api/statuses', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: content, visibility })
-    });
-  }
+	async function handleSubmit({ content, visibility }) {
+		await fetch('/api/statuses', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ status: content, visibility }),
+		});
+	}
 </script>
 
 <Compose.Root handlers={{ onSubmit: handleSubmit }}>
-  <Compose.Editor autofocus />
-  <Compose.CharacterCount />
-  <Compose.VisibilitySelect />
-  <Compose.Submit />
+	<Compose.Editor autofocus />
+	<Compose.CharacterCount />
+	<Compose.VisibilitySelect />
+	<Compose.Submit />
 </Compose.Root>
 ```
 
@@ -105,48 +112,48 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+	import { Compose } from '@equaltoai/greater-components-fediverse';
 
-  async function handleSubmit(data) {
-    // Upload media first
-    const mediaIds = await uploadMedia(data.mediaAttachments);
-    
-    // Create status with media
-    await api.createStatus({
-      status: data.content,
-      visibility: data.visibility,
-      mediaIds
-    });
-  }
+	async function handleSubmit(data) {
+		// Upload media first
+		const mediaIds = await uploadMedia(data.mediaAttachments);
 
-  async function handleMediaUpload(file, onProgress) {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    const response = await fetch('/api/media', {
-      method: 'POST',
-      body: formData
-    });
-    
-    return response.json();
-  }
+		// Create status with media
+		await api.createStatus({
+			status: data.content,
+			visibility: data.visibility,
+			mediaIds,
+		});
+	}
 
-  async function searchSuggestions(query, type) {
-    const response = await fetch(`/api/search?q=${query}&type=${type}`);
-    return response.json();
-  }
+	async function handleMediaUpload(file, onProgress) {
+		const formData = new FormData();
+		formData.append('file', file);
+
+		const response = await fetch('/api/media', {
+			method: 'POST',
+			body: formData,
+		});
+
+		return response.json();
+	}
+
+	async function searchSuggestions(query, type) {
+		const response = await fetch(`/api/search?q=${query}&type=${type}`);
+		return response.json();
+	}
 </script>
 
-<Compose.Root 
-  handlers={{ 
-    onSubmit: handleSubmit,
-    onMediaUpload: handleMediaUpload
-  }}
+<Compose.Root
+	handlers={{
+		onSubmit: handleSubmit,
+		onMediaUpload: handleMediaUpload,
+	}}
 >
-  <Compose.EditorWithAutocomplete searchHandler={searchSuggestions} />
-  <Compose.MediaUpload maxFiles={4} />
-  <Compose.CharacterCount />
-  <Compose.Submit />
+	<Compose.EditorWithAutocomplete searchHandler={searchSuggestions} />
+	<Compose.MediaUpload maxFiles={4} />
+	<Compose.CharacterCount />
+	<Compose.Submit />
 </Compose.Root>
 ```
 
@@ -154,49 +161,41 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+	import { Compose } from '@equaltoai/greater-components-fediverse';
 
-  async function handleThreadSubmit(posts) {
-    let previousId = null;
-    
-    for (const post of posts) {
-      const response = await api.createStatus({
-        status: post.content,
-        visibility: post.visibility,
-        inReplyToId: previousId
-      });
-      previousId = response.id;
-    }
-  }
+	async function handleThreadSubmit(posts) {
+		let previousId = null;
+
+		for (const post of posts) {
+			const response = await api.createStatus({
+				status: post.content,
+				visibility: post.visibility,
+				inReplyToId: previousId,
+			});
+			previousId = response.id;
+		}
+	}
 </script>
 
-<Compose.ThreadComposer
-  onSubmitThread={handleThreadSubmit}
-  maxPosts={10}
-  characterLimit={500}
-/>
+<Compose.ThreadComposer onSubmitThread={handleThreadSubmit} maxPosts={10} characterLimit={500} />
 ```
 
 ### **With Draft Management**
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+	import { Compose } from '@equaltoai/greater-components-fediverse';
 
-  async function handleSubmit(data) {
-    await api.createStatus(data);
-  }
+	async function handleSubmit(data) {
+		await api.createStatus(data);
+	}
 </script>
 
 <Compose.Root handlers={{ onSubmit: handleSubmit }}>
-  <Compose.DraftSaver 
-    draftKey="main-composer"
-    autoSave={true}
-    intervalSeconds={30}
-  />
-  <Compose.Editor />
-  <Compose.CharacterCount />
-  <Compose.Submit />
+	<Compose.DraftSaver draftKey="main-composer" autoSave={true} intervalSeconds={30} />
+	<Compose.Editor />
+	<Compose.CharacterCount />
+	<Compose.Submit />
 </Compose.Root>
 ```
 
@@ -206,34 +205,34 @@ npm install @equaltoai/greater-components-fediverse
 
 ### **Core Components**
 
-| Component | Purpose | Documentation |
-|-----------|---------|---------------|
-| `Compose.Root` | Context provider and form wrapper | [Root.md](./Root.md) |
-| `Compose.Editor` | Basic text editor textarea | [Editor.md](./Editor.md) |
+| Component                        | Purpose                                        | Documentation                                            |
+| -------------------------------- | ---------------------------------------------- | -------------------------------------------------------- |
+| `Compose.Root`                   | Context provider and form wrapper              | [Root.md](./Root.md)                                     |
+| `Compose.Editor`                 | Basic text editor textarea                     | [Editor.md](./Editor.md)                                 |
 | `Compose.EditorWithAutocomplete` | Editor with hashtag/mention/emoji autocomplete | [EditorWithAutocomplete.md](./EditorWithAutocomplete.md) |
-| `Compose.Submit` | Submit button with loading state | [Submit.md](./Submit.md) |
-| `Compose.CharacterCount` | Unicode-aware character counter | [CharacterCount.md](./CharacterCount.md) |
-| `Compose.VisibilitySelect` | Post visibility selector | [VisibilitySelect.md](./VisibilitySelect.md) |
+| `Compose.Submit`                 | Submit button with loading state               | [Submit.md](./Submit.md)                                 |
+| `Compose.CharacterCount`         | Unicode-aware character counter                | [CharacterCount.md](./CharacterCount.md)                 |
+| `Compose.VisibilitySelect`       | Post visibility selector                       | [VisibilitySelect.md](./VisibilitySelect.md)             |
 
 ### **Advanced Components**
 
-| Component | Purpose | Documentation |
-|-----------|---------|---------------|
+| Component                  | Purpose                           | Documentation                                |
+| -------------------------- | --------------------------------- | -------------------------------------------- |
 | `Compose.AutocompleteMenu` | Autocomplete suggestions dropdown | [AutocompleteMenu.md](./AutocompleteMenu.md) |
-| `Compose.DraftSaver` | Auto-save drafts to localStorage | [DraftSaver.md](./DraftSaver.md) |
-| `Compose.ThreadComposer` | Multi-post thread composition | [ThreadComposer.md](./ThreadComposer.md) |
-| `Compose.MediaUpload` | Drag & drop media upload | [MediaUpload.md](./MediaUpload.md) |
-| `Compose.ImageEditor` | Image editing with focal point | [ImageEditor.md](./ImageEditor.md) |
+| `Compose.DraftSaver`       | Auto-save drafts to localStorage  | [DraftSaver.md](./DraftSaver.md)             |
+| `Compose.ThreadComposer`   | Multi-post thread composition     | [ThreadComposer.md](./ThreadComposer.md)     |
+| `Compose.MediaUpload`      | Drag & drop media upload          | [MediaUpload.md](./MediaUpload.md)           |
+| `Compose.ImageEditor`      | Image editing with focal point    | [ImageEditor.md](./ImageEditor.md)           |
 
 ### **Utility Modules**
 
-| Module | Purpose | Documentation |
-|--------|---------|---------------|
-| `DraftManager` | Draft persistence in localStorage | [DraftManager.md](./DraftManager.md) |
-| `Autocomplete` | Autocomplete logic and utilities | [Autocomplete.md](./Autocomplete.md) |
-| `UnicodeCounter` | Unicode character counting | [UnicodeCounter.md](./UnicodeCounter.md) |
+| Module               | Purpose                              | Documentation                                    |
+| -------------------- | ------------------------------------ | ------------------------------------------------ |
+| `DraftManager`       | Draft persistence in localStorage    | [DraftManager.md](./DraftManager.md)             |
+| `Autocomplete`       | Autocomplete logic and utilities     | [Autocomplete.md](./Autocomplete.md)             |
+| `UnicodeCounter`     | Unicode character counting           | [UnicodeCounter.md](./UnicodeCounter.md)         |
 | `MediaUploadHandler` | Media file validation and processing | [MediaUploadHandler.md](./MediaUploadHandler.md) |
-| `GraphQLAdapter` | GraphQL integration for Lesser | [GraphQLAdapter.md](./GraphQLAdapter.md) |
+| `GraphQLAdapter`     | GraphQL integration for Lesser       | [GraphQLAdapter.md](./GraphQLAdapter.md)         |
 
 ---
 
@@ -243,64 +242,64 @@ All Compose components support theming via CSS custom properties:
 
 ```css
 :root {
-  /* Compose container */
-  --compose-bg: white;
-  --compose-border: #e1e8ed;
-  --compose-radius: 8px;
-  --compose-padding: 1rem;
-  --compose-spacing: 1rem;
+	/* Compose container */
+	--compose-bg: white;
+	--compose-border: #e1e8ed;
+	--compose-radius: 8px;
+	--compose-padding: 1rem;
+	--compose-spacing: 1rem;
 
-  /* Editor */
-  --compose-editor-bg: white;
-  --compose-font-family: -apple-system, system-ui, sans-serif;
-  --compose-font-size: 1rem;
-  --compose-font-size-sm: 0.875rem;
+	/* Editor */
+	--compose-editor-bg: white;
+	--compose-font-family: -apple-system, system-ui, sans-serif;
+	--compose-font-size: 1rem;
+	--compose-font-size-sm: 0.875rem;
 
-  /* Colors */
-  --compose-text-primary: #0f1419;
-  --compose-text-secondary: #536471;
-  --compose-focus-color: #1d9bf0;
-  --compose-error-color: #dc2626;
-  --compose-warning-color: #f59e0b;
+	/* Colors */
+	--compose-text-primary: #0f1419;
+	--compose-text-secondary: #536471;
+	--compose-focus-color: #1d9bf0;
+	--compose-error-color: #dc2626;
+	--compose-warning-color: #f59e0b;
 
-  /* Submit button */
-  --compose-submit-bg: #1d9bf0;
-  --compose-submit-text: white;
-  --compose-submit-hover-bg: #1a8cd8;
-  --compose-submit-disabled-bg: #cfd9de;
-  --compose-submit-disabled-text: #8899a6;
-  --compose-submit-radius: 9999px;
+	/* Submit button */
+	--compose-submit-bg: #1d9bf0;
+	--compose-submit-text: white;
+	--compose-submit-hover-bg: #1a8cd8;
+	--compose-submit-disabled-bg: #cfd9de;
+	--compose-submit-disabled-text: #8899a6;
+	--compose-submit-radius: 9999px;
 
-  /* Progress */
-  --compose-progress-bg: #e1e8ed;
+	/* Progress */
+	--compose-progress-bg: #e1e8ed;
 
-  /* Draft */
-  --draft-load-bg: #e8f5fd;
-  --draft-load-border: #1d9bf0;
-  --draft-load-color: #1d9bf0;
-  --draft-load-hover: #d5eef9;
+	/* Draft */
+	--draft-load-bg: #e8f5fd;
+	--draft-load-border: #1d9bf0;
+	--draft-load-color: #1d9bf0;
+	--draft-load-hover: #d5eef9;
 
-  /* Autocomplete */
-  --autocomplete-bg: white;
-  --autocomplete-border: #cfd9de;
-  --autocomplete-radius: 8px;
-  --autocomplete-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --autocomplete-hover-bg: #f7f9fa;
+	/* Autocomplete */
+	--autocomplete-bg: white;
+	--autocomplete-border: #cfd9de;
+	--autocomplete-radius: 8px;
+	--autocomplete-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	--autocomplete-hover-bg: #f7f9fa;
 
-  /* Media upload */
-  --drop-zone-bg: #f7f9fa;
-  --drop-zone-border: #cfd9de;
-  --drop-zone-hover: #eff3f4;
-  
-  /* Thread composer */
-  --thread-bg: white;
-  --thread-border: #cfd9de;
-  --thread-radius: 12px;
-  --thread-post-bg: #f7f9fa;
-  --thread-post-border: #e1e8ed;
-  --thread-connector: #cfd9de;
-  --primary-color: #1d9bf0;
-  --primary-hover: #1a8cd8;
+	/* Media upload */
+	--drop-zone-bg: #f7f9fa;
+	--drop-zone-border: #cfd9de;
+	--drop-zone-hover: #eff3f4;
+
+	/* Thread composer */
+	--thread-bg: white;
+	--thread-border: #cfd9de;
+	--thread-radius: 12px;
+	--thread-post-bg: #f7f9fa;
+	--thread-post-border: #e1e8ed;
+	--thread-connector: #cfd9de;
+	--primary-color: #1d9bf0;
+	--primary-hover: #1a8cd8;
 }
 ```
 
@@ -311,6 +310,7 @@ All Compose components support theming via CSS custom properties:
 All Compose components follow WCAG 2.1 AA standards:
 
 ### **Keyboard Navigation**
+
 - ✅ **Tab** - Navigate between fields
 - ✅ **Enter** - Select autocomplete suggestion
 - ✅ **Escape** - Close autocomplete menu
@@ -318,6 +318,7 @@ All Compose components follow WCAG 2.1 AA standards:
 - ✅ **Cmd/Ctrl + Enter** - Submit post
 
 ### **Screen Reader Support**
+
 - ✅ ARIA labels on all interactive elements
 - ✅ ARIA live regions for status updates
 - ✅ ARIA roles for custom components
@@ -325,6 +326,7 @@ All Compose components follow WCAG 2.1 AA standards:
 - ✅ Form validation announcements
 
 ### **Visual Accessibility**
+
 - ✅ High contrast text (4.5:1 ratio minimum)
 - ✅ Focus indicators on all interactive elements
 - ✅ Color is not the only indicator
@@ -348,6 +350,7 @@ element.textContent = userContent;
 ```
 
 All content is treated as plain text and properly escaped before rendering. For rich formatting:
+
 - Use markdown parsers with XSS protection (e.g., `marked` + `DOMPurify`)
 - Sanitize HTML with allowlists
 - Validate URLs before creating links
@@ -363,7 +366,7 @@ const MAX_CONTENT_WARNING_LENGTH = 100;
 // File validation
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm'];
-const MAX_IMAGE_SIZE = 8 * 1024 * 1024;  // 8MB
+const MAX_IMAGE_SIZE = 8 * 1024 * 1024; // 8MB
 const MAX_VIDEO_SIZE = 40 * 1024 * 1024; // 40MB
 ```
 
@@ -374,15 +377,16 @@ Implement rate limiting on the server side:
 ```typescript
 // Example rate limiting
 const RATE_LIMIT = {
-  posts: 300,        // per 3 hours
-  media: 30,         // per 30 minutes
-  drafts: 100        // per hour
+	posts: 300, // per 3 hours
+	media: 30, // per 30 minutes
+	drafts: 100, // per hour
 };
 ```
 
 ### **Draft Security**
 
 Drafts are stored in localStorage:
+
 - ✅ Data remains on client side
 - ✅ No sensitive data in drafts by default
 - ✅ Automatic cleanup after 7 days
@@ -401,24 +405,24 @@ import { render, screen, fireEvent } from '@testing-library/svelte';
 import { Compose } from '@equaltoai/greater-components-fediverse';
 
 test('submits post with content', async () => {
-  const handleSubmit = vi.fn();
-  
-  render(Compose.Root, {
-    props: {
-      handlers: { onSubmit: handleSubmit }
-    }
-  });
+	const handleSubmit = vi.fn();
 
-  const editor = screen.getByRole('textbox');
-  await fireEvent.input(editor, { target: { value: 'Hello world' } });
+	render(Compose.Root, {
+		props: {
+			handlers: { onSubmit: handleSubmit },
+		},
+	});
 
-  const submitBtn = screen.getByRole('button', { name: /post/i });
-  await fireEvent.click(submitBtn);
+	const editor = screen.getByRole('textbox');
+	await fireEvent.input(editor, { target: { value: 'Hello world' } });
 
-  expect(handleSubmit).toHaveBeenCalledWith({
-    content: 'Hello world',
-    visibility: 'public'
-  });
+	const submitBtn = screen.getByRole('button', { name: /post/i });
+	await fireEvent.click(submitBtn);
+
+	expect(handleSubmit).toHaveBeenCalledWith({
+		content: 'Hello world',
+		visibility: 'public',
+	});
 });
 ```
 
@@ -428,18 +432,18 @@ test('submits post with content', async () => {
 import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 test('counts emojis correctly', () => {
-  const result = countWeightedCharacters('Hello 👋 World 🌍');
-  expect(result.count).toBe(15); // Not 19
-  expect(result.graphemeCount).toBe(15);
+	const result = countWeightedCharacters('Hello 👋 World 🌍');
+	expect(result.count).toBe(15); // Not 19
+	expect(result.graphemeCount).toBe(15);
 });
 
 test('weights URLs correctly', () => {
-  const result = countWeightedCharacters(
-    'Check out https://example.com/very/long/url/path',
-    { useUrlWeighting: true, urlWeight: 23 }
-  );
-  // URL counted as 23 chars instead of actual 42
-  expect(result.count).toBeLessThan(50);
+	const result = countWeightedCharacters('Check out https://example.com/very/long/url/path', {
+		useUrlWeighting: true,
+		urlWeight: 23,
+	});
+	// URL counted as 23 chars instead of actual 42
+	expect(result.count).toBeLessThan(50);
 });
 ```
 
@@ -454,29 +458,29 @@ import { createLesserGraphQLAdapter } from '@equaltoai/greater-components-adapte
 import { createComposeHandlers } from '@equaltoai/greater-components-fediverse/Compose';
 
 const adapter = createLesserGraphQLAdapter({
-  endpoint: 'https://your-instance.social/api/graphql',
-  token: 'your-auth-token'
+	endpoint: 'https://your-instance.social/api/graphql',
+	token: 'your-auth-token',
 });
 
 const composeHandlers = createComposeHandlers({
-  adapter,
-  currentAccount: {
-    id: '123',
-    username: 'alice',
-    displayName: 'Alice',
-    avatar: 'https://example.com/avatar.jpg'
-  },
-  enableOptimistic: true,
-  onOptimisticUpdate: (status) => {
-    // Handle optimistic status updates
-    if (status._optimistic) {
-      // Show temporary status immediately
-    } else if (status._replaces) {
-      // Replace optimistic with real status
-    } else if (status._remove) {
-      // Remove failed optimistic status
-    }
-  }
+	adapter,
+	currentAccount: {
+		id: '123',
+		username: 'alice',
+		displayName: 'Alice',
+		avatar: 'https://example.com/avatar.jpg',
+	},
+	enableOptimistic: true,
+	onOptimisticUpdate: (status) => {
+		// Handle optimistic status updates
+		if (status._optimistic) {
+			// Show temporary status immediately
+		} else if (status._replaces) {
+			// Replace optimistic with real status
+		} else if (status._remove) {
+			// Remove failed optimistic status
+		}
+	},
 });
 ```
 
@@ -484,26 +488,22 @@ const composeHandlers = createComposeHandlers({
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@equaltoai/greater-components-fediverse';
-  
-  const {
-    handleSubmit,
-    handleMediaUpload,
-    handleAutocompleteSearch
-  } = composeHandlers;
+	import { Compose } from '@equaltoai/greater-components-fediverse';
+
+	const { handleSubmit, handleMediaUpload, handleAutocompleteSearch } = composeHandlers;
 </script>
 
 <Compose.Root
-  handlers={{
-    onSubmit: handleSubmit,
-    onMediaUpload: handleMediaUpload
-  }}
+	handlers={{
+		onSubmit: handleSubmit,
+		onMediaUpload: handleMediaUpload,
+	}}
 >
-  <Compose.EditorWithAutocomplete searchHandler={handleAutocompleteSearch} />
-  <Compose.MediaUpload />
-  <Compose.CharacterCount />
-  <Compose.VisibilitySelect />
-  <Compose.Submit />
+	<Compose.EditorWithAutocomplete searchHandler={handleAutocompleteSearch} />
+	<Compose.MediaUpload />
+	<Compose.CharacterCount />
+	<Compose.VisibilitySelect />
+	<Compose.Submit />
 </Compose.Root>
 ```
 
@@ -512,31 +512,37 @@ const composeHandlers = createComposeHandlers({
 ## 🎯 Use Cases
 
 ### **1. Basic Post Composer**
+
 Simple post creation with text and visibility controls.
 
 **Components**: `Root`, `Editor`, `CharacterCount`, `VisibilitySelect`, `Submit`
 
 ### **2. Advanced Post Composer**
+
 Full-featured composer with media upload, autocomplete, and content warnings.
 
 **Components**: `Root`, `EditorWithAutocomplete`, `MediaUpload`, `CharacterCount`, `VisibilitySelect`, `Submit`
 
 ### **3. Thread Composer**
+
 Create multi-post threads with drag & drop reordering.
 
 **Components**: `ThreadComposer`
 
 ### **4. Reply Composer**
+
 Quick reply interface for responding to posts.
 
 **Components**: `Root` (with `inReplyTo`), `Editor`, `Submit`
 
 ### **5. Draft-Enabled Composer**
+
 Composer with auto-save and draft recovery.
 
 **Components**: `Root`, `DraftSaver`, `Editor`, `CharacterCount`, `Submit`
 
 ### **6. Media-Heavy Composer**
+
 Focused on image/video posts with editing capabilities.
 
 **Components**: `Root`, `Editor`, `MediaUpload`, `ImageEditor`, `Submit`
@@ -550,8 +556,8 @@ Focused on image/video posts with editing capabilities.
 ```svelte
 <!-- ✅ CORRECT -->
 <Compose.Root handlers={{ onSubmit }}>
-  <Compose.Editor />
-  <Compose.Submit />
+	<Compose.Editor />
+	<Compose.Submit />
 </Compose.Root>
 
 <!-- ❌ INCORRECT (missing context) -->
@@ -563,21 +569,21 @@ Focused on image/video posts with editing capabilities.
 
 ```svelte
 <script lang="ts">
-  async function handleSubmit(data) {
-    try {
-      await api.createStatus(data);
-    } catch (error) {
-      // Show user-friendly error
-      if (error.code === 'RATE_LIMIT') {
-        alert('You\'re posting too quickly. Please wait a moment.');
-      } else if (error.code === 'CONTENT_TOO_LONG') {
-        alert('Your post is too long. Please shorten it.');
-      } else {
-        alert('Failed to post. Please try again.');
-      }
-      throw error; // Re-throw so Compose.Root can handle state
-    }
-  }
+	async function handleSubmit(data) {
+		try {
+			await api.createStatus(data);
+		} catch (error) {
+			// Show user-friendly error
+			if (error.code === 'RATE_LIMIT') {
+				alert("You're posting too quickly. Please wait a moment.");
+			} else if (error.code === 'CONTENT_TOO_LONG') {
+				alert('Your post is too long. Please shorten it.');
+			} else {
+				alert('Failed to post. Please try again.');
+			}
+			throw error; // Re-throw so Compose.Root can handle state
+		}
+	}
 </script>
 ```
 
@@ -587,19 +593,19 @@ Focused on image/video posts with editing capabilities.
 // Client-side validation is bypassed easily
 // Always validate on server:
 app.post('/api/media', upload.single('file'), async (req, res) => {
-  const file = req.file;
-  
-  // Validate type
-  if (!ALLOWED_TYPES.includes(file.mimetype)) {
-    return res.status(400).json({ error: 'Invalid file type' });
-  }
-  
-  // Validate size
-  if (file.size > MAX_SIZE) {
-    return res.status(400).json({ error: 'File too large' });
-  }
-  
-  // Process and store...
+	const file = req.file;
+
+	// Validate type
+	if (!ALLOWED_TYPES.includes(file.mimetype)) {
+		return res.status(400).json({ error: 'Invalid file type' });
+	}
+
+	// Validate size
+	if (file.size > MAX_SIZE) {
+		return res.status(400).json({ error: 'File too large' });
+	}
+
+	// Process and store...
 });
 ```
 
@@ -607,13 +613,13 @@ app.post('/api/media', upload.single('file'), async (req, res) => {
 
 ```svelte
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { cleanupOldDrafts } from '@equaltoai/greater-components-fediverse/Compose';
+	import { onMount } from 'svelte';
+	import { cleanupOldDrafts } from '@equaltoai/greater-components-fediverse/Compose';
 
-  onMount(() => {
-    // Clean up drafts older than 7 days
-    cleanupOldDrafts();
-  });
+	onMount(() => {
+		// Clean up drafts older than 7 days
+		cleanupOldDrafts();
+	});
 </script>
 ```
 
@@ -621,26 +627,24 @@ app.post('/api/media', upload.single('file'), async (req, res) => {
 
 ```svelte
 <script lang="ts">
-  import { writable } from 'svelte/store';
+	import { writable } from 'svelte/store';
 
-  const statuses = writable([]);
+	const statuses = writable([]);
 
-  const handlers = createComposeHandlers({
-    adapter,
-    currentAccount,
-    enableOptimistic: true,
-    onOptimisticUpdate: (status) => {
-      if (status._optimistic) {
-        // Add immediately
-        statuses.update(s => [status, ...s]);
-      } else if (status._replaces) {
-        // Replace with real
-        statuses.update(s => 
-          s.map(st => st.id === status._replaces ? status : st)
-        );
-      }
-    }
-  });
+	const handlers = createComposeHandlers({
+		adapter,
+		currentAccount,
+		enableOptimistic: true,
+		onOptimisticUpdate: (status) => {
+			if (status._optimistic) {
+				// Add immediately
+				statuses.update((s) => [status, ...s]);
+			} else if (status._replaces) {
+				// Replace with real
+				statuses.update((s) => s.map((st) => (st.id === status._replaces ? status : st)));
+			}
+		},
+	});
 </script>
 ```
 
@@ -658,8 +662,8 @@ app.post('/api/media', upload.single('file'), async (req, res) => {
 import { countWeightedCharacters } from '@equaltoai/greater-components-fediverse/Compose';
 
 const result = countWeightedCharacters(text, {
-  useUrlWeighting: true,  // Weight URLs as ~23 chars
-  maxCharacters: 500
+	useUrlWeighting: true, // Weight URLs as ~23 chars
+	maxCharacters: 500,
 });
 
 console.log(result.count); // Weighted count
@@ -674,11 +678,11 @@ console.log(result.graphemeCount); // Actual grapheme count
 
 ```svelte
 <Compose.EditorWithAutocomplete
-  searchHandler={async (query, type) => {
-    // Implement search for mentions, hashtags, emojis
-    const response = await fetch(`/api/search?q=${query}&type=${type}`);
-    return response.json();
-  }}
+	searchHandler={async (query, type) => {
+		// Implement search for mentions, hashtags, emojis
+		const response = await fetch(`/api/search?q=${query}&type=${type}`);
+		return response.json();
+	}}
 />
 ```
 
@@ -693,21 +697,21 @@ import { saveDraft, loadDraft } from '@equaltoai/greater-components-fediverse/Co
 
 // Test localStorage
 try {
-  localStorage.setItem('test', 'test');
-  localStorage.removeItem('test');
-  console.log('localStorage available');
+	localStorage.setItem('test', 'test');
+	localStorage.removeItem('test');
+	console.log('localStorage available');
 } catch (e) {
-  console.error('localStorage not available:', e);
+	console.error('localStorage not available:', e);
 }
 
 // Manual draft operations
 const draft = {
-  content: 'Hello world',
-  savedAt: Date.now()
+	content: 'Hello world',
+	savedAt: Date.now(),
 };
 
 if (saveDraft(draft, 'my-draft-key')) {
-  console.log('Draft saved successfully');
+	console.log('Draft saved successfully');
 }
 
 const loaded = loadDraft('my-draft-key');
@@ -725,12 +729,12 @@ import { validateFile } from '@equaltoai/greater-components-fediverse/Compose';
 
 const file = event.target.files[0];
 const validation = validateFile(file, {
-  maxFileSize: 8 * 1024 * 1024,  // 8MB
-  allowedTypes: ['image/jpeg', 'image/png', 'image/gif']
+	maxFileSize: 8 * 1024 * 1024, // 8MB
+	allowedTypes: ['image/jpeg', 'image/png', 'image/gif'],
 });
 
 if (!validation.valid) {
-  console.error('Validation errors:', validation.errors);
+	console.error('Validation errors:', validation.errors);
 }
 ```
 
@@ -743,8 +747,8 @@ if (!validation.valid) {
 ```svelte
 <!-- ✅ CORRECT -->
 <Compose.Root>
-  <Compose.Editor />
-  <Compose.Submit />
+	<Compose.Editor />
+	<Compose.Submit />
 </Compose.Root>
 
 <!-- ❌ INCORRECT -->
@@ -794,4 +798,3 @@ MIT License - see [LICENSE](../../../LICENSE) for details.
 ---
 
 **Need help?** Check the [Troubleshooting Guide](../../troubleshooting/README.md) or join our [Discord community](https://discord.gg/greater-components).
-

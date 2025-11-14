@@ -1,21 +1,21 @@
 /**
  * Adapter Enhancements
- * 
+ *
  * Production-ready caching, batching, and optimistic updates for adapters.
- * 
+ *
  * @module adapters
  * @example
  * ```typescript
  * import { AdapterCache, RequestBatcher, OptimisticManager } from '@equaltoai/greater-components-fediverse/adapters';
- * 
+ *
  * // Create cache
  * const cache = new AdapterCache({ maxSize: 1000, defaultTTL: 300000 });
- * 
+ *
  * // Create batcher
  * const batcher = new RequestBatcher(async (requests) => {
  *   return await fetchBatch(requests);
  * });
- * 
+ *
  * // Use optimistic updates
  * const manager = new OptimisticManager();
  * await manager.add('like-123', applyLike, revertLike, () => api.like('123'));

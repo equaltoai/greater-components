@@ -1,8 +1,8 @@
 /**
  * Admin TrustGraph Context
- * 
+ *
  * Provides shared state for trust graph visualization.
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Admin/TrustGraph/context
  */
 

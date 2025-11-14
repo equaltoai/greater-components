@@ -16,32 +16,32 @@ jobs:
     strategy:
       matrix:
         browser: [chromium, firefox]
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
-        
+
       - name: Build packages
         run: pnpm build
-        
+
       - name: Run Playwright tests
         run: pnpm test:e2e -- --project=${{ matrix.browser }}
-        
+
       - name: Upload Playwright report
         uses: actions/upload-artifact@v5
         if: failure()
@@ -49,7 +49,7 @@ jobs:
           name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 7
-          
+
       - name: Upload test results
         uses: actions/upload-artifact@v5
         if: failure()

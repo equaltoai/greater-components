@@ -13,6 +13,7 @@ The `Admin.Insights` module provides comprehensive AI analysis capabilities incl
 Context provider that manages adapter connection and shared state.
 
 **Props:**
+
 - `adapter: LesserGraphQLAdapter` - GraphQL adapter instance
 - `children?: Snippet` - Child components
 
@@ -20,13 +21,13 @@ Context provider that manages adapter connection and shared state.
 
 ```svelte
 <script lang="ts">
-  import * as Insights from '@equaltoai/greater-components-fediverse/Admin/Insights';
-  import { adapter } from './config';
+	import * as Insights from '@equaltoai/greater-components-fediverse/Admin/Insights';
+	import { adapter } from './config';
 </script>
 
 <Insights.Root {adapter}>
-  <Insights.AIAnalysis objectId={statusId} />
-  <Insights.ModerationAnalytics />
+	<Insights.AIAnalysis objectId={statusId} />
+	<Insights.ModerationAnalytics />
 </Insights.Root>
 ```
 
@@ -37,6 +38,7 @@ Context provider that manages adapter connection and shared state.
 Displays detailed AI analysis results for a specific object (status, account, etc.).
 
 **Props:**
+
 - `objectId: string` - ID of object to analyze
 - `autoRequest?: boolean` - Automatically request analysis on mount (default: `false`)
 - `showTextAnalysis?: boolean` - Show text analysis section (default: `true`)
@@ -48,14 +50,14 @@ Displays detailed AI analysis results for a specific object (status, account, et
 
 ```svelte
 <Insights.Root {adapter}>
-  <Insights.AIAnalysis 
-    objectId="status_abc123"
-    autoRequest={true}
-    showTextAnalysis={true}
-    showImageAnalysis={true}
-    showAIDetection={true}
-    showSpamAnalysis={true}
-  />
+	<Insights.AIAnalysis
+		objectId="status_abc123"
+		autoRequest={true}
+		showTextAnalysis={true}
+		showImageAnalysis={true}
+		showAIDetection={true}
+		showSpamAnalysis={true}
+	/>
 </Insights.Root>
 ```
 
@@ -79,6 +81,7 @@ The component displays:
 Dashboard showing moderation statistics over a selected time period.
 
 **Props:**
+
 - `period?: 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'` - Time period (default: `'DAY'`)
 - `showActionBreakdown?: boolean` - Show breakdown by action type (default: `true`)
 
@@ -86,22 +89,19 @@ Dashboard showing moderation statistics over a selected time period.
 
 ```svelte
 <script lang="ts">
-  let selectedPeriod = $state('WEEK');
+	let selectedPeriod = $state('WEEK');
 </script>
 
 <Insights.Root {adapter}>
-  <select bind:value={selectedPeriod}>
-    <option value="HOUR">Last Hour</option>
-    <option value="DAY">Last 24 Hours</option>
-    <option value="WEEK">Last 7 Days</option>
-    <option value="MONTH">This Month</option>
-    <option value="YEAR">This Year</option>
-  </select>
-  
-  <Insights.ModerationAnalytics 
-    period={selectedPeriod}
-    showActionBreakdown={true}
-  />
+	<select bind:value={selectedPeriod}>
+		<option value="HOUR">Last Hour</option>
+		<option value="DAY">Last 24 Hours</option>
+		<option value="WEEK">Last 7 Days</option>
+		<option value="MONTH">This Month</option>
+		<option value="YEAR">This Year</option>
+	</select>
+
+	<Insights.ModerationAnalytics period={selectedPeriod} showActionBreakdown={true} />
 </Insights.Root>
 ```
 
@@ -120,35 +120,57 @@ Dashboard showing moderation statistics over a selected time period.
 
 ```graphql
 query AIAnalysis($objectId: ID!) {
-  aiAnalysis(objectId: $objectId) {
-    textAnalysis { sentiment, toxicity, profanity, piiDetected }
-    imageAnalysis { nsfw, violence, deepfake }
-    aiDetection { aiGeneratedProbability, model }
-    spamAnalysis { isSpam, confidence }
-    overallRisk
-    moderationAction
-    confidence
-    analyzedAt
-  }
+	aiAnalysis(objectId: $objectId) {
+		textAnalysis {
+			sentiment
+			toxicity
+			profanity
+			piiDetected
+		}
+		imageAnalysis {
+			nsfw
+			violence
+			deepfake
+		}
+		aiDetection {
+			aiGeneratedProbability
+			model
+		}
+		spamAnalysis {
+			isSpam
+			confidence
+		}
+		overallRisk
+		moderationAction
+		confidence
+		analyzedAt
+	}
 }
 
 query AIStats($period: Period!) {
-  aiStats(period: $period) {
-    totalAnalyses
-    actionBreakdown { action, count }
-    averageConfidence
-    topModerators { actorId, displayName, actionCount }
-  }
+	aiStats(period: $period) {
+		totalAnalyses
+		actionBreakdown {
+			action
+			count
+		}
+		averageConfidence
+		topModerators {
+			actorId
+			displayName
+			actionCount
+		}
+	}
 }
 
 query AICapabilities {
-  aiCapabilities {
-    textAnalysis
-    imageAnalysis
-    aiDetection
-    spamDetection
-    supportedModels
-  }
+	aiCapabilities {
+		textAnalysis
+		imageAnalysis
+		aiDetection
+		spamDetection
+		supportedModels
+	}
 }
 ```
 
@@ -156,10 +178,10 @@ query AICapabilities {
 
 ```graphql
 mutation RequestAIAnalysis($objectId: ID!, $objectType: String, $force: Boolean) {
-  requestAIAnalysis(objectId: $objectId, objectType: $objectType, force: $force) {
-    id
-    status
-  }
+	requestAIAnalysis(objectId: $objectId, objectType: $objectType, force: $force) {
+		id
+		status
+	}
 }
 ```
 
@@ -189,19 +211,21 @@ const capabilities = await adapter.getAICapabilities();
 Subscribe to moderation events in real-time:
 
 ```typescript
-adapter.subscribeToModerationEvents().subscribe(event => {
-  console.log('Moderation action:', event.action);
-  console.log('Target:', event.targetId);
-  console.log('Reason:', event.reason);
-  console.log('Actor:', event.actorId);
+adapter.subscribeToModerationEvents().subscribe((event) => {
+	console.log('Moderation action:', event.action);
+	console.log('Target:', event.targetId);
+	console.log('Reason:', event.reason);
+	console.log('Actor:', event.actorId);
 });
 
-adapter.subscribeToAiAnalysisUpdates({
-  objectIds: [statusId]
-}).subscribe(update => {
-  console.log('Analysis updated:', update.objectId);
-  console.log('New risk level:', update.overallRisk);
-});
+adapter
+	.subscribeToAiAnalysisUpdates({
+		objectIds: [statusId],
+	})
+	.subscribe((update) => {
+		console.log('Analysis updated:', update.objectId);
+		console.log('New risk level:', update.overallRisk);
+	});
 ```
 
 ---
@@ -210,41 +234,41 @@ adapter.subscribeToAiAnalysisUpdates({
 
 ```typescript
 interface AIAnalysis {
-  textAnalysis?: {
-    sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MIXED';
-    toxicity: number;           // 0.0-1.0
-    profanity: boolean;
-    piiDetected: boolean;
-  };
-  imageAnalysis?: {
-    nsfw: number;               // 0.0-1.0
-    violence: number;           // 0.0-1.0
-    deepfake: number;           // 0.0-1.0
-  };
-  aiDetection?: {
-    aiGeneratedProbability: number;  // 0.0-1.0
-    model?: string;
-  };
-  spamAnalysis?: {
-    isSpam: boolean;
-    confidence: number;         // 0.0-1.0
-  };
-  overallRisk: number;          // 0.0-1.0
-  moderationAction: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE';
-  confidence: number;           // 0.0-1.0
-  analyzedAt: string;
+	textAnalysis?: {
+		sentiment: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MIXED';
+		toxicity: number; // 0.0-1.0
+		profanity: boolean;
+		piiDetected: boolean;
+	};
+	imageAnalysis?: {
+		nsfw: number; // 0.0-1.0
+		violence: number; // 0.0-1.0
+		deepfake: number; // 0.0-1.0
+	};
+	aiDetection?: {
+		aiGeneratedProbability: number; // 0.0-1.0
+		model?: string;
+	};
+	spamAnalysis?: {
+		isSpam: boolean;
+		confidence: number; // 0.0-1.0
+	};
+	overallRisk: number; // 0.0-1.0
+	moderationAction: 'NONE' | 'FLAG' | 'HIDE' | 'REMOVE';
+	confidence: number; // 0.0-1.0
+	analyzedAt: string;
 }
 
 interface AIStats {
-  period: Period;
-  totalAnalyses: number;
-  actionBreakdown: Array<{ action: string; count: number }>;
-  averageConfidence: number;
-  topModerators: Array<{
-    actorId: string;
-    displayName: string;
-    actionCount: number;
-  }>;
+	period: Period;
+	totalAnalyses: number;
+	actionBreakdown: Array<{ action: string; count: number }>;
+	averageConfidence: number;
+	topModerators: Array<{
+		actorId: string;
+		displayName: string;
+		actionCount: number;
+	}>;
 }
 ```
 
@@ -258,21 +282,21 @@ Configure automatic moderation based on analysis scores:
 
 ```typescript
 await adapter.createModerationPattern({
-  name: 'High Toxicity Auto-Flag',
-  conditions: {
-    toxicity: { min: 0.8 }
-  },
-  action: 'FLAG',
-  severity: 'HIGH'
+	name: 'High Toxicity Auto-Flag',
+	conditions: {
+		toxicity: { min: 0.8 },
+	},
+	action: 'FLAG',
+	severity: 'HIGH',
 });
 
 await adapter.createModerationPattern({
-  name: 'NSFW Content Auto-Hide',
-  conditions: {
-    nsfw: { min: 0.9 }
-  },
-  action: 'HIDE',
-  severity: 'MEDIUM'
+	name: 'NSFW Content Auto-Hide',
+	conditions: {
+		nsfw: { min: 0.9 },
+	},
+	action: 'HIDE',
+	severity: 'MEDIUM',
 });
 ```
 
@@ -282,14 +306,14 @@ Implement rate limiting to control AI analysis costs:
 
 ```typescript
 const rateLimiter = {
-  maxRequestsPerHour: 1000,
-  maxRequestsPerUser: 10,
-  cooldownMinutes: 5
+	maxRequestsPerHour: 1000,
+	maxRequestsPerUser: 10,
+	cooldownMinutes: 5,
 };
 
 // Check before requesting
 if (canRequestAnalysis(objectId, rateLimiter)) {
-  await adapter.requestAIAnalysis(objectId);
+	await adapter.requestAIAnalysis(objectId);
 }
 ```
 
@@ -335,4 +359,3 @@ if (canRequestAnalysis(objectId, rateLimiter)) {
 - [Lesser Integration Guide](../../lesser-integration-guide.md#ai-insights--moderation-analytics)
 - [Admin.Cost](./Cost.md) - Cost tracking for AI analysis requests
 - [GraphQL Schema Reference](../../../schemas/lesser/schema.graphql)
-

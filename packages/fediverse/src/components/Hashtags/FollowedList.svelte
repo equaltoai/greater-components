@@ -12,16 +12,16 @@ Hashtags.FollowedList - List of Followed Hashtags
 
 	let { class: className = '' }: Props = $props();
 
-const context = getHashtagsContext();
-let hashtags = $state<Array<Record<string, unknown>>>([]);
-let loading = $state(false);
+	const context = getHashtagsContext();
+	let hashtags = $state<Array<Record<string, unknown>>>([]);
+	let loading = $state(false);
 
-const refreshVersion = $derived(context.state.refreshVersion);
+	const refreshVersion = $derived(context.state.refreshVersion);
 
-async function load() {
-  loading = true;
-  try {
-    const result = await context.config.adapter.getFollowedHashtags();
+	async function load() {
+		loading = true;
+		try {
+			const result = await context.config.adapter.getFollowedHashtags();
 			hashtags =
 				result?.edges?.map((e: Record<string, unknown>) => e.node as Record<string, unknown>) || [];
 		} finally {
@@ -34,14 +34,14 @@ async function load() {
 		await load();
 	}
 
-onMount(load);
+	onMount(load);
 
-$effect(() => {
-  const version = refreshVersion;
-  if (version > 0) {
-    void load();
-  }
-});
+	$effect(() => {
+		const version = refreshVersion;
+		if (version > 0) {
+			void load();
+		}
+	});
 </script>
 
 <div class={`followed-hashtags ${className}`}>

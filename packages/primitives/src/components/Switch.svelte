@@ -24,7 +24,11 @@
 	}
 </script>
 
-<label class={`gr-switch ${className}`} class:gr-switch--checked={checked} class:gr-switch--disabled={disabled}>
+<label
+	class={`gr-switch ${className}`}
+	class:gr-switch--checked={checked}
+	class:gr-switch--disabled={disabled}
+>
 	<input
 		type="checkbox"
 		bind:checked
@@ -91,4 +95,3 @@
 		}
 	}
 </style>
-

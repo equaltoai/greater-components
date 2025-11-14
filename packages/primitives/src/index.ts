@@ -1,11 +1,11 @@
 /**
  * @fileoverview Greater Primitives - Core UI components for modern web applications
- * 
+ *
  * This package provides a comprehensive set of primitive UI components built with
  * Svelte 5, following accessibility best practices and design system principles.
  * All components feature full TypeScript support, keyboard navigation, and
  * WCAG 2.1 AA compliance.
- * 
+ *
  * @version 1.0.0
  * @author Greater Contributors
  * @license AGPL-3.0-only
@@ -21,91 +21,91 @@ export type { ComponentProps } from 'svelte';
  * @public
  */
 
-/** 
+/**
  * Accessible button component with loading states and multiple variants.
  * @public
  */
 export { default as Button } from './components/Button.svelte';
 
-/** 
+/**
  * Text input field with validation and accessibility features.
  * @public
  */
 export { default as TextField } from './components/TextField.svelte';
 
-/** 
+/**
  * Multi-line text area with auto-resize.
  * @public
  */
 export { default as TextArea } from './components/TextArea.svelte';
 
-/** 
+/**
  * Dropdown select component with keyboard navigation.
  * @public
  */
 export { default as Select } from './components/Select.svelte';
 
-/** 
+/**
  * Checkbox input with indeterminate state support.
  * @public
  */
 export { default as Checkbox } from './components/Checkbox.svelte';
 
-/** 
+/**
  * Toggle switch component for boolean options.
  * @public
  */
 export { default as Switch } from './components/Switch.svelte';
 
-/** 
+/**
  * File upload component with drag-and-drop support.
  * @public
  */
 export { default as FileUpload } from './components/FileUpload.svelte';
 
-/** 
+/**
  * Modal dialog with focus management and backdrop handling.
  * @public
  */
 export { default as Modal } from './components/Modal.svelte';
 
-/** 
+/**
  * Dropdown menu with keyboard navigation and accessibility.
  * @public
  */
 export { default as Menu } from './components/Menu.svelte';
 
-/** 
+/**
  * Tooltip with smart positioning and accessibility.
  * @public
  */
 export { default as Tooltip } from './components/Tooltip.svelte';
 
-/** 
+/**
  * Tab navigation with keyboard support and ARIA semantics.
  * @public
  */
 export { default as Tabs } from './components/Tabs.svelte';
 
-/** 
+/**
  * Avatar component with fallback initials and status indicators.
  * @public
  */
 export { default as Avatar } from './components/Avatar.svelte';
 
-/** 
+/**
  * Loading skeleton with animation and shape variants.
  * @public
  */
 export { default as Skeleton } from './components/Skeleton.svelte';
 
-/** 
+/**
  * Theme switcher for toggling between color schemes.
  * @public
  */
 export { default as ThemeSwitcher } from './components/ThemeSwitcher.svelte';
 
-/** 
+/**
  * Theme provider for managing application-wide theme state.
  * @public
  */
@@ -154,12 +154,12 @@ export interface SelectOption {
 
 // Store exports
 export { preferencesStore, getPreferences, getPreferenceState } from './stores/preferences';
-export type { 
-  ColorScheme, 
-  Density, 
-  FontSize, 
-  MotionPreference, 
-  ThemeColors, 
-  UserPreferences, 
-  PreferencesState 
+export type {
+	ColorScheme,
+	Density,
+	FontSize,
+	MotionPreference,
+	ThemeColors,
+	UserPreferences,
+	PreferencesState,
 } from './stores/preferences';

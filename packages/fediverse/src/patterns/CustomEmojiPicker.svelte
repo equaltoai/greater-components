@@ -435,16 +435,16 @@
 							{/if}
 
 							{#if showFavorites}
-						<span
-							class="emoji-picker__favorite-btn"
-							role="button"
-							tabindex="0"
-							onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-							onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-							aria-label={favoriteEmojis.includes(emoji.shortcode)
-								? 'Remove from favorites'
-								: 'Add to favorites'}
-						>
+								<span
+									class="emoji-picker__favorite-btn"
+									role="button"
+									tabindex="0"
+									onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+									onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+									aria-label={favoriteEmojis.includes(emoji.shortcode)
+										? 'Remove from favorites'
+										: 'Add to favorites'}
+								>
 									{#if favoriteEmojis.includes(emoji.shortcode)}
 										★
 									{:else}
@@ -488,14 +488,14 @@
 									loading="lazy"
 									style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
 								/>
-                                <span
-                                    class="emoji-picker__favorite-btn"
-                                    role="button"
-                                    tabindex="0"
-                                    onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-                                    onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-                                    aria-label="Remove from favorites"
-                                >
+								<span
+									class="emoji-picker__favorite-btn"
+									role="button"
+									tabindex="0"
+									onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+									onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+									aria-label="Remove from favorites"
+								>
 									★
 								</span>
 							</button>
@@ -527,14 +527,14 @@
 								/>
 								{#if showFavorites}
 									<span
-                                    class="emoji-picker__favorite-btn"
-                                    role="button"
-                                    tabindex="0"
-                                    onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-                                    onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-                                    aria-label={favoriteEmojis.includes(emoji.shortcode)
-                                        ? 'Remove from favorites'
-                                        : 'Add to favorites'}
+										class="emoji-picker__favorite-btn"
+										role="button"
+										tabindex="0"
+										onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+										onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+										aria-label={favoriteEmojis.includes(emoji.shortcode)
+											? 'Remove from favorites'
+											: 'Add to favorites'}
 									>
 										{#if favoriteEmojis.includes(emoji.shortcode)}
 											★
@@ -623,15 +623,15 @@
 									style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
 								/>
 								{#if showFavorites}
-                                <span
-                                    class="emoji-picker__favorite-btn"
-                                    role="button"
-                                    tabindex="0"
-                                    onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-                                    onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-                                    aria-label={favoriteEmojis.includes(emoji.shortcode)
-                                        ? 'Remove from favorites'
-                                        : 'Add to favorites'}
+									<span
+										class="emoji-picker__favorite-btn"
+										role="button"
+										tabindex="0"
+										onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+										onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+										aria-label={favoriteEmojis.includes(emoji.shortcode)
+											? 'Remove from favorites'
+											: 'Add to favorites'}
 									>
 										{#if favoriteEmojis.includes(emoji.shortcode)}
 											★
@@ -652,7 +652,11 @@
 		{@const emoji = emojis.find((e) => e.shortcode === hoveredEmoji)}
 		{#if emoji}
 			<div class="emoji-picker__preview">
-				<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} class="emoji-picker__preview-img" />
+				<img
+					src={getEmojiUrl(emoji)}
+					alt={`:${emoji.shortcode}:`}
+					class="emoji-picker__preview-img"
+				/>
 				<div class="emoji-picker__preview-info">
 					<strong>:{emoji.shortcode}:</strong>
 					{#if emoji.description}

@@ -1,7 +1,7 @@
 # Greater Components + Astro `client:only` - Complete Setup Guide
 
 **Version:** 1.0.6+  
-**Status:** ✅ Fully Supported  
+**Status:** ✅ Fully Supported
 
 ---
 
@@ -23,8 +23,9 @@ npm install @equaltoai/greater-components@^1.0.6
 ```
 
 **Minimum versions:**
+
 - `astro@^5.14.0`
-- `@astrojs/svelte@^7.1.0`  
+- `@astrojs/svelte@^7.1.0`
 - `svelte@^5.36.0`
 
 ---
@@ -38,21 +39,21 @@ import { defineConfig } from 'astro/config';
 import svelte from '@astrojs/svelte';
 
 export default defineConfig({
-  output: 'static',
-  
-  integrations: [
-    svelte({
-      compilerOptions: {
-        runes: true  // ⚠️ REQUIRED for Svelte 5
-      }
-    })
-  ],
-  
-  vite: {
-    optimizeDeps: {
-      exclude: ['@equaltoai/greater-components']  // Let Vite handle source compilation
-    }
-  }
+	output: 'static',
+
+	integrations: [
+		svelte({
+			compilerOptions: {
+				runes: true, // ⚠️ REQUIRED for Svelte 5
+			},
+		}),
+	],
+
+	vite: {
+		optimizeDeps: {
+			exclude: ['@equaltoai/greater-components'], // Let Vite handle source compilation
+		},
+	},
 });
 ```
 
@@ -79,42 +80,44 @@ import '@equaltoai/greater-components/primitives/style.css'; // Component styles
 ```svelte
 <!-- src/components/PasswordlessLogin.svelte -->
 <script lang="ts">
-  import { Button, TextField } from '@equaltoai/greater-components/primitives';
-  
-  let username = $state('');
-  let isLoading = $state(false);
-  
-  async function loginWithWebAuthn() {
-    isLoading = true;
-    try {
-      // Your WebAuthn logic here
-      await navigator.credentials.get({ /* ... */ });
-    } finally {
-      isLoading = false;
-    }
-  }
+	import { Button, TextField } from '@equaltoai/greater-components/primitives';
+
+	let username = $state('');
+	let isLoading = $state(false);
+
+	async function loginWithWebAuthn() {
+		isLoading = true;
+		try {
+			// Your WebAuthn logic here
+			await navigator.credentials.get({
+				/* ... */
+			});
+		} finally {
+			isLoading = false;
+		}
+	}
 </script>
 
-<form onsubmit={(e) => { e.preventDefault(); loginWithWebAuthn(); }}>
-  <TextField
-    id="username"
-    type="text"
-    label="Username"
-    bind:value={username}
-    placeholder="Enter your username"
-    disabled={isLoading}
-    autocomplete="username webauthn"
-    required
-  />
-  
-  <Button
-    type="submit"
-    variant="solid"
-    disabled={!username || isLoading}
-    loading={isLoading}
-  >
-    Sign in with Passkey
-  </Button>
+<form
+	onsubmit={(e) => {
+		e.preventDefault();
+		loginWithWebAuthn();
+	}}
+>
+	<TextField
+		id="username"
+		type="text"
+		label="Username"
+		bind:value={username}
+		placeholder="Enter your username"
+		disabled={isLoading}
+		autocomplete="username webauthn"
+		required
+	/>
+
+	<Button type="submit" variant="solid" disabled={!username || isLoading} loading={isLoading}>
+		Sign in with Passkey
+	</Button>
 </form>
 ```
 
@@ -138,7 +141,7 @@ const returnTo = Astro.url.searchParams.get('return_to');
     <title>Sign In</title>
   </head>
   <body>
-    <PasswordlessLogin 
+    <PasswordlessLogin
       client:only="svelte"
       authRequest={authRequest}
       returnTo={returnTo}
@@ -154,6 +157,7 @@ const returnTo = Astro.url.searchParams.get('return_to');
 After setup, verify everything works:
 
 1. **Start dev server:**
+
    ```bash
    npm run dev
    ```
@@ -183,6 +187,7 @@ After setup, verify everything works:
 **Problem:** Forgot to import CSS or using wrong file
 
 **Fix:**
+
 ```astro
 import '@equaltoai/greater-components/tokens/theme.css';
 import '@equaltoai/greater-components/primitives/style.css';  // ← singular, not styles.css
@@ -193,12 +198,13 @@ import '@equaltoai/greater-components/primitives/style.css';  // ← singular, n
 **Problem:** Missing `runes: true` in Svelte config
 
 **Fix:** Add to `astro.config.mjs`:
+
 ```javascript
 svelte({
-  compilerOptions: {
-    runes: true
-  }
-})
+	compilerOptions: {
+		runes: true,
+	},
+});
 ```
 
 ### "Module not found" errors
@@ -206,6 +212,7 @@ svelte({
 **Problem:** Using v1.0.4 or earlier (had build issues)
 
 **Fix:**
+
 ```bash
 npm install @equaltoai/greater-components@latest
 ```
@@ -215,9 +222,10 @@ npm install @equaltoai/greater-components@latest
 **Problem:** CSS custom properties not loading
 
 **Fix:** Make sure `theme.css` is imported BEFORE `style.css`:
+
 ```javascript
-import '@equaltoai/greater-components/tokens/theme.css';  // First!
-import '@equaltoai/greater-components/primitives/style.css';  // Second
+import '@equaltoai/greater-components/tokens/theme.css'; // First!
+import '@equaltoai/greater-components/primitives/style.css'; // Second
 ```
 
 ---
@@ -241,7 +249,7 @@ import '@equaltoai/greater-components/primitives/style.css';  // Second
 ✅ **Client-only rendering fix** - Externalized Svelte modules  
 ✅ **CSS export fix** - Added `./style.css` export  
 ✅ **Source exports** - Astro/Vite compiles from source for proper scoping  
-✅ **Tested** - Verified working in production-like setup  
+✅ **Tested** - Verified working in production-like setup
 
 ---
 
@@ -268,6 +276,7 @@ aws s3 sync dist/ s3://your-bucket/
 If problems persist after following this guide:
 
 1. **Clear all caches:**
+
    ```bash
    rm -rf .astro node_modules/.vite node_modules
    npm install
@@ -287,4 +296,3 @@ If problems persist after following this guide:
 ---
 
 **Bottom line:** v1.0.6 works perfectly with Astro `client:only`. Follow this guide and you'll have fully functional, styled components in your static deployment! 🎉
-

@@ -6,22 +6,22 @@
 	import '@equaltoai/greater-components-primitives/style.css';
 	import '../app.css';
 	import { ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components-primitives';
-import {
-	HomeIcon,
-	LayersIcon,
-	GridIcon,
-	PenToolIcon,
-	LayoutIcon,
-	CpuIcon,
-	ImageIcon,
-	ActivityIcon,
-	MessageSquareIcon,
-	Edit3Icon,
-	BellIcon,
-	UserIcon,
-	SettingsIcon,
-	SearchIcon,
-} from '@equaltoai/greater-components-icons';
+	import {
+		HomeIcon,
+		LayersIcon,
+		GridIcon,
+		PenToolIcon,
+		LayoutIcon,
+		CpuIcon,
+		ImageIcon,
+		ActivityIcon,
+		MessageSquareIcon,
+		Edit3Icon,
+		BellIcon,
+		UserIcon,
+		SettingsIcon,
+		SearchIcon,
+	} from '@equaltoai/greater-components-icons';
 
 	let { children }: { children?: Snippet } = $props();
 
@@ -29,10 +29,10 @@ import {
 		{ href: '/', label: 'Overview', icon: HomeIcon },
 		{ href: '/status', label: 'Status Card Demo', icon: MessageSquareIcon },
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },
-	{ href: '/timeline', label: 'Timeline Demo', icon: ActivityIcon },
-	{ href: '/profile', label: 'Profile App', icon: UserIcon },
-	{ href: '/settings', label: 'Settings App', icon: SettingsIcon },
-	{ href: '/search', label: 'Search App', icon: SearchIcon },
+		{ href: '/timeline', label: 'Timeline Demo', icon: ActivityIcon },
+		{ href: '/profile', label: 'Profile App', icon: UserIcon },
+		{ href: '/settings', label: 'Settings App', icon: SettingsIcon },
+		{ href: '/search', label: 'Search App', icon: SearchIcon },
 		{ href: '/notifications', label: 'Notifications Demo', icon: BellIcon },
 		{ href: '/demos/primitives', label: 'Primitive Suite', icon: LayersIcon },
 		{ href: '/demos/button', label: 'Button Patterns', icon: GridIcon },
@@ -60,13 +60,13 @@ import {
 				<p>Explore tokens, primitives, and ActivityPub-ready surfaces with production builds.</p>
 			</header>
 			<nav class="sidebar-nav">
-		{#each navLinks as { href, label, icon: Icon } (href)}
-			{@const resolved = resolveHref(href)}
-			<a class:active={$page.url.pathname === href} href={resolved}>
-				<Icon size={18} aria-hidden="true" />
-				<span>{label}</span>
-			</a>
-		{/each}
+				{#each navLinks as { href, label, icon: Icon } (href)}
+					{@const resolved = resolveHref(href)}
+					<a class:active={$page.url.pathname === href} href={resolved}>
+						<Icon size={18} aria-hidden="true" />
+						<span>{label}</span>
+					</a>
+				{/each}
 			</nav>
 			<div class="sidebar-footer">
 				<p>Adaptive themes</p>

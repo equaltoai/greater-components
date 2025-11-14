@@ -14,41 +14,41 @@ jobs:
     permissions:
       contents: write
       id-token: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build packages
         run: pnpm build
-        
+
       - name: Version packages as snapshot
         run: |
           pnpm changeset version --snapshot next
           echo "SNAPSHOT_VERSION=$(date +'%Y%m%d')-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-        
+
       - name: Publish snapshot
         run: |
           pnpm changeset publish --tag next
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
-          
+
       - name: Create snapshot tag
         run: |
           git config --local user.email "action@github.com"

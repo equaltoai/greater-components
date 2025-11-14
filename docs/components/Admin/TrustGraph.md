@@ -13,6 +13,7 @@ The `Admin.TrustGraph` module provides tools for understanding trust relationshi
 Context provider for trust graph data and adapter connection.
 
 **Props:**
+
 - `adapter: LesserGraphQLAdapter` - GraphQL adapter instance
 - `rootActorId: string` - Root actor ID for the graph
 - `children?: Snippet` - Child components
@@ -21,13 +22,13 @@ Context provider for trust graph data and adapter connection.
 
 ```svelte
 <script lang="ts">
-  import * as TrustGraph from '@equaltoai/greater-components-fediverse/Admin/TrustGraph';
-  import { adapter } from './config';
+	import * as TrustGraph from '@equaltoai/greater-components-fediverse/Admin/TrustGraph';
+	import { adapter } from './config';
 </script>
 
 <TrustGraph.Root {adapter} rootActorId={currentUser.id}>
-  <TrustGraph.Visualization />
-  <TrustGraph.RelationshipList />
+	<TrustGraph.Visualization />
+	<TrustGraph.RelationshipList />
 </TrustGraph.Root>
 ```
 
@@ -38,6 +39,7 @@ Context provider for trust graph data and adapter connection.
 Interactive graph visualization showing trust relationships.
 
 **Props:**
+
 - `category?: 'CONTENT' | 'BEHAVIOR' | 'TECHNICAL'` - Filter by trust category
 - `onNodeSelect?: (node: TrustNode) => void` - Callback when node is selected
 - `maxNodes?: number` - Maximum nodes to display (default: `50`)
@@ -47,23 +49,23 @@ Interactive graph visualization showing trust relationships.
 
 ```svelte
 <script lang="ts">
-  let selectedNode = $state(null);
-  let category = $state('CONTENT');
+	let selectedNode = $state(null);
+	let category = $state('CONTENT');
 </script>
 
 <TrustGraph.Root {adapter} rootActorId={userId}>
-  <select bind:value={category}>
-    <option value="CONTENT">Content Trust</option>
-    <option value="BEHAVIOR">Behavior Trust</option>
-    <option value="TECHNICAL">Technical Trust</option>
-  </select>
-  
-  <TrustGraph.Visualization 
-    {category}
-    onNodeSelect={(node) => selectedNode = node}
-    maxNodes={100}
-    minTrustScore={0.3}
-  />
+	<select bind:value={category}>
+		<option value="CONTENT">Content Trust</option>
+		<option value="BEHAVIOR">Behavior Trust</option>
+		<option value="TECHNICAL">Technical Trust</option>
+	</select>
+
+	<TrustGraph.Visualization
+		{category}
+		onNodeSelect={(node) => (selectedNode = node)}
+		maxNodes={100}
+		minTrustScore={0.3}
+	/>
 </TrustGraph.Root>
 ```
 
@@ -86,6 +88,7 @@ Interactive graph visualization showing trust relationships.
 Tabular view of trust relationships.
 
 **Props:**
+
 - `selectedNode?: string` - Highlight relationships for specific node
 - `sortBy?: 'trustScore' | 'activityScore' | 'displayName'` - Sort order (default: `'trustScore'`)
 - `sortDirection?: 'asc' | 'desc'` - Sort direction (default: `'desc'`)
@@ -94,11 +97,11 @@ Tabular view of trust relationships.
 
 ```svelte
 <TrustGraph.Root {adapter} rootActorId={userId}>
-  <TrustGraph.RelationshipList 
-    selectedNode={selectedNode?.id}
-    sortBy="trustScore"
-    sortDirection="desc"
-  />
+	<TrustGraph.RelationshipList
+		selectedNode={selectedNode?.id}
+		sortBy="trustScore"
+		sortDirection="desc"
+	/>
 </TrustGraph.Root>
 ```
 
@@ -181,10 +184,10 @@ const result = await adapter.getTrustGraph(actorId, 'CONTENT');
 const graph = result.data.trustGraph;
 
 // Subscribe to trust updates
-adapter.subscribeToTrustUpdates({ actorId }).subscribe(update => {
-  console.log('Trust score changed:', update.oldScore, '→', update.newScore);
-  console.log('Category:', update.category);
-  console.log('Reason:', update.reason);
+adapter.subscribeToTrustUpdates({ actorId }).subscribe((update) => {
+	console.log('Trust score changed:', update.oldScore, '→', update.newScore);
+	console.log('Category:', update.category);
+	console.log('Reason:', update.reason);
 });
 ```
 
@@ -194,46 +197,46 @@ adapter.subscribeToTrustUpdates({ actorId }).subscribe(update => {
 
 ```typescript
 interface TrustGraph {
-  nodes: TrustNode[];
-  edges: TrustEdge[];
+	nodes: TrustNode[];
+	edges: TrustEdge[];
 }
 
 interface TrustNode {
-  id: string;
-  displayName: string;
-  handle: string;
-  trustScore: number;
-  reputation: Reputation;
-  vouches: Vouch[];
+	id: string;
+	displayName: string;
+	handle: string;
+	trustScore: number;
+	reputation: Reputation;
+	vouches: Vouch[];
 }
 
 interface TrustEdge {
-  source: string;
-  target: string;
-  trustScore: number;
-  category: TrustCategory;
-  evidence: TrustEvidence;
+	source: string;
+	target: string;
+	trustScore: number;
+	category: TrustCategory;
+	evidence: TrustEvidence;
 }
 
 interface Reputation {
-  trustScore: number;          // Overall trust (0.0-1.0)
-  activityScore: number;       // Activity level
-  moderationScore: number;     // Moderation history
-  communityScore: number;      // Community standing
-  evidence: {
-    postCount: number;
-    followerCount: number;
-    accountAge: number;        // Days since creation
-    trustingActors: number;    // Number of actors trusting this one
-  };
-  signature?: string;          // Cryptographic verification
+	trustScore: number; // Overall trust (0.0-1.0)
+	activityScore: number; // Activity level
+	moderationScore: number; // Moderation history
+	communityScore: number; // Community standing
+	evidence: {
+		postCount: number;
+		followerCount: number;
+		accountAge: number; // Days since creation
+		trustingActors: number; // Number of actors trusting this one
+	};
+	signature?: string; // Cryptographic verification
 }
 
 interface Vouch {
-  id: string;
-  voucherId: string;           // Actor providing vouch
-  category: TrustCategory;
-  createdAt: string;
+	id: string;
+	voucherId: string; // Actor providing vouch
+	category: TrustCategory;
+	createdAt: string;
 }
 
 type TrustCategory = 'CONTENT' | 'BEHAVIOR' | 'TECHNICAL';
@@ -244,21 +247,27 @@ type TrustCategory = 'CONTENT' | 'BEHAVIOR' | 'TECHNICAL';
 ## Trust Categories
 
 ### CONTENT
+
 Trust in content quality and accuracy. Based on:
+
 - Fact-checking participation
 - Community note contributions
 - Content flagging accuracy
 - Information quality
 
 ### BEHAVIOR
+
 Trust in user behavior and conduct. Based on:
+
 - Moderation history
 - Community guideline adherence
 - Interaction patterns
 - Reported violations
 
 ### TECHNICAL
+
 Trust in technical competence. Based on:
+
 - Instance administration (if applicable)
 - Bot reliability (if applicable)
 - API usage patterns
@@ -268,30 +277,35 @@ Trust in technical competence. Based on:
 
 ## Trust Levels
 
-| Score Range | Level | Color | Description |
-|-------------|-------|-------|-------------|
-| 0.8-1.0 | High | Green | Highly trusted, established reputation |
-| 0.5-0.8 | Medium | Yellow | Moderately trusted, normal standing |
-| 0.3-0.5 | Low | Orange | Lower trust, requires attention |
-| 0.0-0.3 | Very Low | Red | Untrusted, potential bad actor |
+| Score Range | Level    | Color  | Description                            |
+| ----------- | -------- | ------ | -------------------------------------- |
+| 0.8-1.0     | High     | Green  | Highly trusted, established reputation |
+| 0.5-0.8     | Medium   | Yellow | Moderately trusted, normal standing    |
+| 0.3-0.5     | Low      | Orange | Lower trust, requires attention        |
+| 0.0-0.3     | Very Low | Red    | Untrusted, potential bad actor         |
 
 ---
 
 ## Evidence Metrics
 
 ### Post Count
+
 Number of posts created. Higher counts generally indicate established accounts.
 
 ### Follower Count
+
 Number of followers. Popular accounts may have higher trust by default.
 
 ### Account Age
+
 Days since account creation. Older accounts generally more trusted.
 
 ### Trusting Actors
+
 Number of other actors who trust this one. Web of trust indicator.
 
 ### Vouches
+
 Explicit trust endorsements from other actors. Strong signal.
 
 ---
@@ -302,17 +316,18 @@ Display trust scores inline on profiles:
 
 ```svelte
 <script lang="ts">
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+	import { Profile } from '@equaltoai/greater-components-fediverse';
 </script>
 
 <Profile.Root {profileData}>
-  <Profile.Header />
-  <Profile.TrustBadge expandable={true} />
-  <Profile.Stats />
+	<Profile.Header />
+	<Profile.TrustBadge expandable={true} />
+	<Profile.Stats />
 </Profile.Root>
 ```
 
 The `TrustBadge` component shows:
+
 - Overall trust score with color coding
 - Vouch count
 - Expandable reputation details panel
@@ -324,16 +339,18 @@ The `TrustBadge` component shows:
 Trust scores update in real-time via subscription:
 
 ```typescript
-adapter.subscribeToTrustUpdates({
-  actorId: currentUser.id
-}).subscribe(update => {
-  console.log('Trust score updated:', update.newScore);
-  console.log('Category:', update.category);
-  console.log('Evidence:', update.evidence);
-  
-  // Update UI
-  refreshTrustGraph();
-});
+adapter
+	.subscribeToTrustUpdates({
+		actorId: currentUser.id,
+	})
+	.subscribe((update) => {
+		console.log('Trust score updated:', update.newScore);
+		console.log('Category:', update.category);
+		console.log('Evidence:', update.evidence);
+
+		// Update UI
+		refreshTrustGraph();
+	});
 ```
 
 ---
@@ -390,4 +407,3 @@ adapter.subscribeToTrustUpdates({
 - [Lesser Integration Guide](../../lesser-integration-guide.md#trust-graph)
 - [Trust Graph Specification](../../../schemas/lesser/trust-spec.md)
 - [Reputation Protocol](https://github.com/lesserhq/lesser/blob/main/docs/reputation.md)
-

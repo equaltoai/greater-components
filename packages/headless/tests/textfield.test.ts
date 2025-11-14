@@ -1,6 +1,6 @@
 /**
  * TextField Primitive Tests
- * 
+ *
  * Comprehensive test suite for the TextField headless primitive.
  * Tests validation, state management, user interactions, and accessibility.
  */
@@ -437,4 +437,3 @@ describe('TextField Primitive', () => {
 		});
 	});
 });
-

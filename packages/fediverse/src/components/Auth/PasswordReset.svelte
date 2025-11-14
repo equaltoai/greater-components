@@ -271,13 +271,13 @@
 						id="reset-email"
 						type="email"
 						class="auth-reset__input"
-					class:auth-reset__input--error={emailError}
-					bind:value={email}
-					placeholder="you@example.com"
-					required
-					disabled={authState.loading}
-					autocomplete="email"
-					onkeydown={handleKeyDown}
+						class:auth-reset__input--error={emailError}
+						bind:value={email}
+						placeholder="you@example.com"
+						required
+						disabled={authState.loading}
+						autocomplete="email"
+						onkeydown={handleKeyDown}
 					/>
 					{#if emailError}
 						<span class="auth-reset__field-error">{emailError}</span>
@@ -320,8 +320,8 @@
 				handleReset();
 			}}
 		>
-		<div class="auth-reset__field">
-			<label for="reset-new-password" class="auth-reset__label">New Password</label>
+			<div class="auth-reset__field">
+				<label for="reset-new-password" class="auth-reset__label">New Password</label>
 				<input
 					id="reset-new-password"
 					type="password"
@@ -331,9 +331,9 @@
 					placeholder="••••••••"
 					required
 					disabled={authState.loading}
-				autocomplete="new-password"
-				onkeydown={handleKeyDown}
-			/>
+					autocomplete="new-password"
+					onkeydown={handleKeyDown}
+				/>
 				{#if passwordError}
 					<span class="auth-reset__field-error">{passwordError}</span>
 				{:else}

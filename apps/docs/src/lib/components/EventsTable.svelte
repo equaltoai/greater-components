@@ -40,13 +40,13 @@
 		overflow-x: auto;
 		margin: 1rem 0;
 	}
-	
+
 	.events-table {
 		width: 100%;
 		border-collapse: collapse;
 		font-size: 0.875rem;
 	}
-	
+
 	.events-table th {
 		text-align: left;
 		padding: 0.75rem;
@@ -55,41 +55,41 @@
 		font-weight: 600;
 		white-space: nowrap;
 	}
-	
+
 	.events-table td {
 		padding: 0.75rem;
 		border: 1px solid var(--doc-border);
 		vertical-align: top;
 	}
-	
+
 	.event-name {
 		white-space: nowrap;
 		font-weight: 500;
 	}
-	
+
 	.event-name code {
 		font-weight: 600;
 		color: var(--doc-link);
 	}
-	
+
 	.event-payload code {
 		color: var(--doc-text);
 		opacity: 0.8;
 	}
-	
+
 	.event-payload .undefined {
 		opacity: 0.4;
 	}
-	
+
 	.event-description {
 		line-height: 1.5;
 	}
-	
+
 	@media (max-width: 768px) {
 		.events-table {
 			font-size: 0.75rem;
 		}
-		
+
 		.events-table th,
 		.events-table td {
 			padding: 0.5rem;

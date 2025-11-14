@@ -1,6 +1,6 @@
 /**
  * Unicode Character Counter
- * 
+ *
  * Provides accurate character counting that handles:
  * - Multi-byte Unicode characters (emojis, CJK characters)
  * - Combining characters
@@ -28,9 +28,11 @@ export function countGraphemes(text: string): number {
 
 	// Use Intl.Segmenter if available (modern browsers)
 	if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
-		const SegmenterCtor = (Intl as typeof Intl & {
-			Segmenter?: GraphemeSegmenterConstructor;
-		}).Segmenter;
+		const SegmenterCtor = (
+			Intl as typeof Intl & {
+				Segmenter?: GraphemeSegmenterConstructor;
+			}
+		).Segmenter;
 		if (SegmenterCtor) {
 			const segmenter = new SegmenterCtor('en', { granularity: 'grapheme' });
 			return Array.from(segmenter.segment(text)).length;
@@ -128,7 +130,11 @@ export function countWeightedCharacters(
 /**
  * Check if text exceeds character limit
  */
-export function exceedsLimit(text: string, limit: number, options?: CharacterCountOptions): boolean {
+export function exceedsLimit(
+	text: string,
+	limit: number,
+	options?: CharacterCountOptions
+): boolean {
 	const { count } = countWeightedCharacters(text, options);
 	return count > limit;
 }
@@ -136,7 +142,11 @@ export function exceedsLimit(text: string, limit: number, options?: CharacterCou
 /**
  * Get remaining characters
  */
-export function remainingCharacters(text: string, limit: number, options?: CharacterCountOptions): number {
+export function remainingCharacters(
+	text: string,
+	limit: number,
+	options?: CharacterCountOptions
+): number {
 	const { count } = countWeightedCharacters(text, options);
 	return limit - count;
 }

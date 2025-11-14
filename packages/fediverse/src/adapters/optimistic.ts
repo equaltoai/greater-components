@@ -1,9 +1,9 @@
 /**
  * Optimistic Updates for Adapters
- * 
+ *
  * Provides optimistic UI updates with automatic rollback on failure.
  * Updates UI immediately while request is in progress.
- * 
+ *
  * @module adapters/optimistic
  */
 

@@ -292,7 +292,10 @@ export class WebSocketPool {
 			this.clearHeartbeat(connection);
 
 			// Attempt reconnection if needed
-			if (connection.refCount > 0 && connection.reconnectAttempts < this.config.maxReconnectAttempts) {
+			if (
+				connection.refCount > 0 &&
+				connection.reconnectAttempts < this.config.maxReconnectAttempts
+			) {
 				this.reconnect(connection);
 			}
 		};
@@ -302,21 +305,21 @@ export class WebSocketPool {
 			connection.state = 'disconnected';
 		};
 
-			socket.onmessage = (event) => {
-				connection.lastActivity = Date.now();
+		socket.onmessage = (event) => {
+			connection.lastActivity = Date.now();
 
-				// Notify all subscribers
-				const handlers = this.eventHandlers.get(url);
-				if (handlers) {
-					for (const handler of handlers) {
-						try {
-							handler(event);
-						} catch (error) {
-					this.logger.error('Error in WebSocket message handler', { error });
-						}
+			// Notify all subscribers
+			const handlers = this.eventHandlers.get(url);
+			if (handlers) {
+				for (const handler of handlers) {
+					try {
+						handler(event);
+					} catch (error) {
+						this.logger.error('Error in WebSocket message handler', { error });
 					}
 				}
-			};
+			}
+		};
 
 		// Wait for connection with timeout
 		await this.waitForConnection(socket, this.config.connectionTimeout);
@@ -337,7 +340,10 @@ export class WebSocketPool {
 				if (socket.readyState === WebSocket.OPEN) {
 					clearTimeout(timer);
 					resolve();
-				} else if (socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
+				} else if (
+					socket.readyState === WebSocket.CLOSED ||
+					socket.readyState === WebSocket.CLOSING
+				) {
 					clearTimeout(timer);
 					reject(new Error('WebSocket connection failed'));
 				} else {
@@ -360,7 +366,7 @@ export class WebSocketPool {
 				try {
 					connection.socket.send(JSON.stringify({ type: 'ping' }));
 				} catch (error) {
-			this.logger.error('Heartbeat failed', { error });
+					this.logger.error('Heartbeat failed', { error });
 					this.reconnect(connection);
 				}
 			}
@@ -384,18 +390,18 @@ export class WebSocketPool {
 		connection.reconnectAttempts++;
 
 		if (connection.reconnectAttempts > this.config.maxReconnectAttempts) {
-		this.logger.error(`Max reconnection attempts reached for ${connection.url}`);
+			this.logger.error(`Max reconnection attempts reached for ${connection.url}`);
 			this.connections.delete(connection.url);
 			return;
 		}
 
 		// Wait before reconnecting
-		await new Promise(resolve => setTimeout(resolve, this.config.reconnectDelay));
+		await new Promise((resolve) => setTimeout(resolve, this.config.reconnectDelay));
 
 		try {
 			await this.createConnection(connection.url);
 		} catch (error) {
-		this.logger.error(`Reconnection failed for ${connection.url}`, { error });
+			this.logger.error(`Reconnection failed for ${connection.url}`, { error });
 		}
 	}
 
@@ -408,12 +414,14 @@ export class WebSocketPool {
 		connection.state = 'disconnecting';
 
 		try {
-			if (connection.socket.readyState === WebSocket.OPEN ||
-				connection.socket.readyState === WebSocket.CONNECTING) {
+			if (
+				connection.socket.readyState === WebSocket.OPEN ||
+				connection.socket.readyState === WebSocket.CONNECTING
+			) {
 				connection.socket.close();
 			}
 		} catch (error) {
-		this.logger.error('Error closing WebSocket', { error });
+			this.logger.error('Error closing WebSocket', { error });
 		}
 
 		connection.state = 'disconnected';
@@ -427,8 +435,7 @@ export class WebSocketPool {
 
 		for (const [url, connection] of this.connections) {
 			// Close connections with no active subscriptions and idle for too long
-			if (connection.refCount === 0 &&
-				now - connection.lastActivity > this.config.idleTimeout) {
+			if (connection.refCount === 0 && now - connection.lastActivity > this.config.idleTimeout) {
 				this.logger.info('Closing idle connection', { url });
 				this.close(url);
 			}

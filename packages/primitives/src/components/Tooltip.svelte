@@ -1,3 +1,17 @@
+<svelte:options
+	customElement={{
+		props: {
+			content: {},
+			placement: {},
+			trigger: {},
+			delay: {},
+			disabled: {},
+			class: {},
+			children: {},
+		},
+	}}
+/>
+
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
@@ -279,20 +293,6 @@
 	// Generate unique ID for accessibility
 	const tooltipId = `tooltip-${Math.random().toString(36).substr(2, 9)}`;
 </script>
-
-<svelte:options
-	customElement={{
-		props: {
-			content: {},
-			placement: {},
-			trigger: {},
-			delay: {},
-			disabled: {},
-			class: {},
-			children: {}
-		}
-	}}
-/>
 
 <div class="gr-tooltip-container">
 	<svelte:element

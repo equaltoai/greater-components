@@ -3,7 +3,7 @@
 #import "./fragments.graphql"
 
 query ObjectById($id: ID!) {
-  object(id: $id) {
-    ...ObjectFields
-  }
+	object(id: $id) {
+		...ObjectFields
+	}
 }

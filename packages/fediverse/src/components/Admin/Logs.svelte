@@ -52,19 +52,14 @@
 		adminState.logs.filter((log) => {
 			if (filterLevel && log.level !== filterLevel) return false;
 			if (filterCategory && log.category !== filterCategory) return false;
-			if (
-				searchQuery &&
-				!log.message.toLowerCase().includes(searchQuery.toLowerCase())
-			) {
+			if (searchQuery && !log.message.toLowerCase().includes(searchQuery.toLowerCase())) {
 				return false;
 			}
 			return true;
 		})
 	);
 
-	const categories = $derived(
-		Array.from(new Set(adminState.logs.map((log) => log.category)))
-	);
+	const categories = $derived(Array.from(new Set(adminState.logs.map((log) => log.category))));
 
 	async function handleRefresh() {
 		await fetchLogs({ level: filterLevel, category: filterCategory, limit: 100 });
@@ -84,9 +79,7 @@
 				<input type="checkbox" bind:checked={autoRefresh} />
 				<span>Auto-refresh (5s)</span>
 			</label>
-			<button use:refreshButton.actions.button class="admin-logs__button">
-				Refresh
-			</button>
+			<button use:refreshButton.actions.button class="admin-logs__button"> Refresh </button>
 		</div>
 	</div>
 
@@ -134,7 +127,7 @@
 					<p>No logs found matching your filters</p>
 				</div>
 			{:else}
-		{#each filteredLogs as log (log.id)}
+				{#each filteredLogs as log (log.id)}
 					<div class={`admin-logs__entry admin-logs__entry--${log.level}`}>
 						<div class="admin-logs__entry-header">
 							<span class={`admin-logs__badge admin-logs__badge--${log.level}`}>

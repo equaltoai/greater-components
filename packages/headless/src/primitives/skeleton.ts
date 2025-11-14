@@ -1,9 +1,9 @@
 /**
  * Skeleton Primitive
- * 
+ *
  * Headless primitive for skeleton loading states with animation control.
  * Provides behavior for displaying loading placeholders with various shapes and animations.
- * 
+ *
  * @module primitives/skeleton
  */
 
@@ -174,7 +174,7 @@ export interface Skeleton {
 
 /**
  * Create a skeleton
- * 
+ *
  * @param config - Skeleton configuration
  * @returns Skeleton context
  */
@@ -255,8 +255,14 @@ export function createSkeleton(config: SkeletonConfig = {}): Skeleton {
 		node.setAttribute('data-visible', state.visible.toString());
 
 		// Set style properties
-		node.style.setProperty('--skeleton-width', typeof state.width === 'number' ? `${state.width}px` : state.width);
-		node.style.setProperty('--skeleton-height', typeof state.height === 'number' ? `${state.height}px` : state.height);
+		node.style.setProperty(
+			'--skeleton-width',
+			typeof state.width === 'number' ? `${state.width}px` : state.width
+		);
+		node.style.setProperty(
+			'--skeleton-height',
+			typeof state.height === 'number' ? `${state.height}px` : state.height
+		);
 		node.style.setProperty('--skeleton-duration', `${state.duration}ms`);
 
 		// Add animation end listener
@@ -351,4 +357,3 @@ export function createSkeleton(config: SkeletonConfig = {}): Skeleton {
 		},
 	};
 }
-

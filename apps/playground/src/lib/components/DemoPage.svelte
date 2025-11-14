@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		eyebrow?: string;
@@ -9,13 +9,7 @@
 		actions?: Snippet;
 	}
 
-	let {
-		eyebrow = 'Component Demo',
-		title,
-		description = '',
-		children,
-		actions
-	}: Props = $props();
+	let { eyebrow = 'Component Demo', title, description = '', children, actions }: Props = $props();
 </script>
 
 <section class="demo-page">

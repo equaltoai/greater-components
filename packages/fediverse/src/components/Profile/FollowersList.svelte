@@ -75,9 +75,7 @@ Supports removing followers (for own profile).
 	let searchQuery = $state('');
 	let removingIds = $state<Set<string>>(new Set());
 	const followers = $derived(providedFollowers ?? context.state.followers);
-	const hasMore = $derived(
-		providedHasMore ?? Boolean(context.state.followersCursor)
-	);
+	const hasMore = $derived(providedHasMore ?? Boolean(context.state.followersCursor));
 	const totalCount = $derived(
 		providedTotalCount ?? context.state.followersTotal ?? followers.length
 	);

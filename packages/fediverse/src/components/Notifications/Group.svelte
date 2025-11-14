@@ -137,9 +137,9 @@ Displays multiple similar notifications grouped together.
 		</div>
 
 		<div class="notification-group__content">
-		{#if context.config.showAvatars}
-			<div class="notification-group__avatars">
-				{#each group.notifications.slice(0, 3) as notification (notification.id)}
+			{#if context.config.showAvatars}
+				<div class="notification-group__avatars">
+					{#each group.notifications.slice(0, 3) as notification (notification.id)}
 						{#if notification.account?.avatar}
 							<img
 								src={notification.account.avatar}
@@ -163,11 +163,11 @@ Displays multiple similar notifications grouped together.
 					</time>
 				{/if}
 
-			{#if group.notifications[0]?.status}
-				<div class="notification-group__status">
-					{sanitizeContent(group.notifications[0].status.content)}
-				</div>
-			{/if}
+				{#if group.notifications[0]?.status}
+					<div class="notification-group__status">
+						{sanitizeContent(group.notifications[0].status.content)}
+					</div>
+				{/if}
 			</div>
 		</div>
 	{/if}

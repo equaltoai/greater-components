@@ -1,6 +1,6 @@
 /**
  * Tooltip Primitive Tests
- * 
+ *
  * Comprehensive test suite for the Tooltip headless primitive.
  * Tests hover/focus behavior, positioning, delays, and accessibility.
  */
@@ -622,4 +622,3 @@ describe('Tooltip', () => {
 		});
 	});
 });
-

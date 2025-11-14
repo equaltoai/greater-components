@@ -14,28 +14,28 @@ export interface SearchDocument {
 class SearchIndex {
 	private index: Index<false, false, true>;
 	private documents: Map<string, SearchDocument>;
-	
+
 	constructor() {
 		this.index = new Index({
 			preset: 'match',
 			tokenize: 'forward',
-			cache: true
+			cache: true,
 		});
 		this.documents = new Map();
 	}
-	
+
 	addDocument(doc: SearchDocument) {
 		this.documents.set(doc.id, doc);
 		this.index.add(doc.id, `${doc.title} ${doc.content}`);
 	}
-	
+
 	search(query: string, limit = 10): SearchDocument[] {
 		const results = this.index.search(query, { limit });
 		return results
 			.map((id) => this.documents.get(String(id)))
 			.filter((doc: SearchDocument | undefined): doc is SearchDocument => Boolean(doc));
 	}
-	
+
 	clear() {
 		this.index.clear();
 		this.documents.clear();
@@ -56,7 +56,7 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Core',
 		type: 'component',
-		status: 'stable'
+		status: 'stable',
 	},
 	{
 		id: 'textfield',
@@ -66,7 +66,7 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Core',
 		type: 'component',
-		status: 'stable'
+		status: 'stable',
 	},
 	{
 		id: 'modal',
@@ -76,7 +76,7 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Core',
 		type: 'component',
-		status: 'stable'
+		status: 'stable',
 	},
 	{
 		id: 'tooltip',
@@ -86,7 +86,7 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Core',
 		type: 'component',
-		status: 'stable'
+		status: 'stable',
 	},
 	{
 		id: 'menu',
@@ -96,7 +96,7 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Core',
 		type: 'component',
-		status: 'beta'
+		status: 'beta',
 	},
 	{
 		id: 'tabs',
@@ -106,7 +106,7 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Core',
 		type: 'component',
-		status: 'beta'
+		status: 'beta',
 	},
 	{
 		id: 'timeline',
@@ -116,7 +116,7 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Fediverse',
 		type: 'component',
-		status: 'beta'
+		status: 'beta',
 	},
 	{
 		id: 'compose-box',
@@ -126,9 +126,9 @@ const initialDocuments: SearchDocument[] = [
 		category: 'Components',
 		section: 'Fediverse',
 		type: 'component',
-		status: 'alpha'
+		status: 'alpha',
 	},
-	
+
 	// Guides
 	{
 		id: 'installation',
@@ -137,7 +137,7 @@ const initialDocuments: SearchDocument[] = [
 		href: '/installation',
 		category: 'Getting Started',
 		section: 'Setup',
-		type: 'guide'
+		type: 'guide',
 	},
 	{
 		id: 'theming',
@@ -146,7 +146,7 @@ const initialDocuments: SearchDocument[] = [
 		href: '/guides/theming',
 		category: 'Guides',
 		section: 'Customization',
-		type: 'guide'
+		type: 'guide',
 	},
 	{
 		id: 'accessibility',
@@ -155,7 +155,7 @@ const initialDocuments: SearchDocument[] = [
 		href: '/guides/accessibility',
 		category: 'Guides',
 		section: 'Best Practices',
-		type: 'guide'
+		type: 'guide',
 	},
 	{
 		id: 'typescript',
@@ -164,9 +164,9 @@ const initialDocuments: SearchDocument[] = [
 		href: '/guides/typescript',
 		category: 'Guides',
 		section: 'Development',
-		type: 'guide'
+		type: 'guide',
 	},
-	
+
 	// Tokens
 	{
 		id: 'colors',
@@ -175,7 +175,7 @@ const initialDocuments: SearchDocument[] = [
 		href: '/tokens/colors',
 		category: 'Design Tokens',
 		section: 'Visual',
-		type: 'token'
+		type: 'token',
 	},
 	{
 		id: 'typography',
@@ -184,7 +184,7 @@ const initialDocuments: SearchDocument[] = [
 		href: '/tokens/typography',
 		category: 'Design Tokens',
 		section: 'Visual',
-		type: 'token'
+		type: 'token',
 	},
 	{
 		id: 'spacing',
@@ -193,9 +193,9 @@ const initialDocuments: SearchDocument[] = [
 		href: '/tokens/spacing',
 		category: 'Design Tokens',
 		section: 'Layout',
-		type: 'token'
+		type: 'token',
 	},
-	
+
 	// API
 	{
 		id: 'stores',
@@ -204,7 +204,7 @@ const initialDocuments: SearchDocument[] = [
 		href: '/api/stores',
 		category: 'API Reference',
 		section: 'State',
-		type: 'api'
+		type: 'api',
 	},
 	{
 		id: 'utilities',
@@ -213,7 +213,7 @@ const initialDocuments: SearchDocument[] = [
 		href: '/api/utilities',
 		category: 'API Reference',
 		section: 'Helpers',
-		type: 'api'
+		type: 'api',
 	},
 	{
 		id: 'adapters',
@@ -222,9 +222,9 @@ const initialDocuments: SearchDocument[] = [
 		href: '/api/adapters',
 		category: 'API Reference',
 		section: 'Integration',
-		type: 'api'
-	}
+		type: 'api',
+	},
 ];
 
 // Populate the index
-initialDocuments.forEach(doc => searchIndex.addDocument(doc));
+initialDocuments.forEach((doc) => searchIndex.addDocument(doc));

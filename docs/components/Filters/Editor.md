@@ -12,6 +12,7 @@
 `Filters.Editor` provides a comprehensive form for creating new filters or editing existing ones. It includes phrase input, context selection, expiration options, display mode, and whole word matching. The component validates inputs and provides clear feedback.
 
 ### **Key Features**:
+
 - ✅ Phrase/keyword input
 - ✅ Context selection (multiple)
 - ✅ Whole word matching toggle
@@ -36,31 +37,31 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@equaltoai/greater-components-fediverse';
-  
-  const handlers = {
-    onCreateFilter: async (filter) => {
-      const res = await fetch('/api/filters', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filter)
-      });
-      return res.json();
-    },
-    onUpdateFilter: async (filterId, filter) => {
-      const res = await fetch(`/api/filters/${filterId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filter)
-      });
-      return res.json();
-    }
-  };
+	import { Filters } from '@equaltoai/greater-components-fediverse';
+
+	const handlers = {
+		onCreateFilter: async (filter) => {
+			const res = await fetch('/api/filters', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(filter),
+			});
+			return res.json();
+		},
+		onUpdateFilter: async (filterId, filter) => {
+			const res = await fetch(`/api/filters/${filterId}`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(filter),
+			});
+			return res.json();
+		},
+	};
 </script>
 
 <Filters.Root {handlers}>
-  <Filters.Manager />
-  <Filters.Editor />
+	<Filters.Manager />
+	<Filters.Editor />
 </Filters.Root>
 ```
 
@@ -68,15 +69,16 @@ npm install @equaltoai/greater-components-fediverse
 
 ## 🎛️ Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `class` | `string` | `''` | No | Custom CSS class |
+| Prop    | Type     | Default | Required | Description      |
+| ------- | -------- | ------- | -------- | ---------------- |
+| `class` | `string` | `''`    | No       | Custom CSS class |
 
 ---
 
 ## 💡 Examples
 
 Examples include:
+
 - Basic filter creation
 - Filter editing
 - Pre-filled filters
@@ -92,4 +94,3 @@ Examples include:
 ---
 
 **For filter editing, see the [Filters README](./README.md).**
-

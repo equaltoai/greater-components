@@ -67,7 +67,9 @@
 		colorContrast: true,
 		focusManagement: true,
 		ariaSupport: true,
-		notes: ['Renders a native checkbox under the hood, so it inherits keyboard + screen reader semantics.'],
+		notes: [
+			'Renders a native checkbox under the hood, so it inherits keyboard + screen reader semantics.',
+		],
 		axeScore: 100,
 	};
 </script>

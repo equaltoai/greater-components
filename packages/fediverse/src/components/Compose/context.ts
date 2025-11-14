@@ -1,9 +1,9 @@
 /**
  * Compose Component Context
- * 
+ *
  * Provides shared state and configuration for compound Compose components.
  * Handles post composition, media attachments, and submission.
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Compose/context
  */
 
@@ -246,7 +246,7 @@ export interface ComposeContext {
 
 /**
  * Create and set the compose context
- * 
+ *
  * @param config - Configuration options
  * @param handlers - Action handlers
  * @param initialState - Initial state
@@ -259,7 +259,7 @@ export function createComposeContext(
 	state?: ComposeState
 ): ComposeContext {
 	const characterLimit = config.characterLimit || 500;
-	
+
 	const defaultState: ComposeState = {
 		content: '',
 		contentWarning: '',
@@ -270,15 +270,17 @@ export function createComposeContext(
 		characterCount: 0,
 		overLimit: false,
 		inReplyTo: undefined,
-		contentWarningEnabled: false
+		contentWarningEnabled: false,
 	};
 
 	// If state is provided (from Root component with $state), use it
 	// Otherwise create a fallback (for testing or non-Svelte environments)
-	const reactiveState = state || {
-		...defaultState,
-		...initialState,
-	} as ComposeState;
+	const reactiveState =
+		state ||
+		({
+			...defaultState,
+			...initialState,
+		} as ComposeState);
 
 	function reset() {
 		Object.assign(reactiveState, defaultState);
@@ -295,7 +297,7 @@ export function createComposeContext(
 			defaultVisibility: config.defaultVisibility || 'public',
 			enableMarkdown: config.enableMarkdown ?? false,
 			placeholder: config.placeholder || "What's on your mind?",
-			class: config.class || ''
+			class: config.class || '',
 		},
 		handlers,
 		state: reactiveState,
@@ -303,7 +305,7 @@ export function createComposeContext(
 			Object.assign(reactiveState, partial);
 			// Character count will be updated by $effect in Root component
 		},
-		reset
+		reset,
 	};
 
 	setContext(COMPOSE_CONTEXT_KEY, context);
@@ -312,7 +314,7 @@ export function createComposeContext(
 
 /**
  * Get the compose context
- * 
+ *
  * @throws Error if called outside of Compose.Root
  */
 export function getComposeContext(): ComposeContext {
@@ -338,4 +340,3 @@ export function hasComposeContext(): boolean {
 		return false;
 	}
 }
-

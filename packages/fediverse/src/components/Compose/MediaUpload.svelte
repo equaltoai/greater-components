@@ -30,25 +30,25 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import {
-	processFiles,
-	validateFiles,
-	formatFileSize,
-	cleanupMediaFiles,
-	type MediaFile,
-	type MediaUploadConfig,
-} from './MediaUploadHandler.js';
-import type { MediaCategory } from '../../types.js';
+		processFiles,
+		validateFiles,
+		formatFileSize,
+		cleanupMediaFiles,
+		type MediaFile,
+		type MediaUploadConfig,
+	} from './MediaUploadHandler.js';
+	import type { MediaCategory } from '../../types.js';
 
-const SPOILER_MAX_LENGTH = 200;
-const DESCRIPTION_MAX_LENGTH = 1500;
+	const SPOILER_MAX_LENGTH = 200;
+	const DESCRIPTION_MAX_LENGTH = 1500;
 
-const MEDIA_CATEGORY_OPTIONS: Array<{ value: MediaCategory; label: string }> = [
-	{ value: 'IMAGE', label: 'Image' },
-	{ value: 'VIDEO', label: 'Video' },
-	{ value: 'AUDIO', label: 'Audio' },
-	{ value: 'GIFV', label: 'Animated GIF' },
-	{ value: 'DOCUMENT', label: 'Document' },
-];
+	const MEDIA_CATEGORY_OPTIONS: Array<{ value: MediaCategory; label: string }> = [
+		{ value: 'IMAGE', label: 'Image' },
+		{ value: 'VIDEO', label: 'Video' },
+		{ value: 'AUDIO', label: 'Audio' },
+		{ value: 'GIFV', label: 'Animated GIF' },
+		{ value: 'DOCUMENT', label: 'Document' },
+	];
 
 	interface Props {
 		/**
@@ -88,31 +88,25 @@ const MEDIA_CATEGORY_OPTIONS: Array<{ value: MediaCategory; label: string }> = [
 		class?: string;
 	}
 
-	let {
-		onUpload,
-		onRemove,
-		maxFiles = 4,
-		config = {},
-		class: className = '',
-	}: Props = $props();
+	let { onUpload, onRemove, maxFiles = 4, config = {}, class: className = '' }: Props = $props();
 
-let files = $state<MediaFile[]>([]);
-let isDragging = $state(false);
-let error = $state<string | null>(null);
-let fileInput: HTMLInputElement;
-let sensitiveVisibility = $state<Record<string, boolean>>({});
+	let files = $state<MediaFile[]>([]);
+	let isDragging = $state(false);
+	let error = $state<string | null>(null);
+	let fileInput: HTMLInputElement;
+	let sensitiveVisibility = $state<Record<string, boolean>>({});
 
-const uploadButton = createButton();
+	const uploadButton = createButton();
 
-function extractErrorMessage(error: unknown): string {
-	if (error instanceof Error) {
-		return error.message;
+	function extractErrorMessage(error: unknown): string {
+		if (error instanceof Error) {
+			return error.message;
+		}
+		if (typeof error === 'string') {
+			return error;
+		}
+		return 'Upload failed';
 	}
-	if (typeof error === 'string') {
-		return error;
-	}
-	return 'Upload failed';
-}
 
 	/**
 	 * Handle file selection
@@ -160,33 +154,33 @@ function extractErrorMessage(error: unknown): string {
 
 		mediaFile.status = 'uploading';
 
-	try {
-		const progressCallback = (progress: number) => {
-			mediaFile.progress = progress;
-		};
+		try {
+			const progressCallback = (progress: number) => {
+				mediaFile.progress = progress;
+			};
 
-		const result = await onUpload(mediaFile.file, progressCallback, mediaFile);
+			const result = await onUpload(mediaFile.file, progressCallback, mediaFile);
 
-		if (result.thumbnailUrl) {
-			mediaFile.thumbnailUrl = result.thumbnailUrl;
+			if (result.thumbnailUrl) {
+				mediaFile.thumbnailUrl = result.thumbnailUrl;
+			}
+
+			mediaFile.sensitive = result.sensitive ?? mediaFile.sensitive;
+			if (result.spoilerText !== undefined) {
+				mediaFile.spoilerText = result.spoilerText ?? '';
+			}
+			if (result.mediaCategory) {
+				mediaFile.mediaCategory = result.mediaCategory;
+			}
+
+			mediaFile.serverId = result.id;
+			mediaFile.status = 'complete';
+			mediaFile.progress = 100;
+		} catch (error) {
+			mediaFile.status = 'error';
+			mediaFile.error = extractErrorMessage(error);
 		}
-
-		mediaFile.sensitive = result.sensitive ?? mediaFile.sensitive;
-		if (result.spoilerText !== undefined) {
-			mediaFile.spoilerText = result.spoilerText ?? '';
-		}
-		if (result.mediaCategory) {
-			mediaFile.mediaCategory = result.mediaCategory;
-		}
-
-		mediaFile.serverId = result.id;
-		mediaFile.status = 'complete';
-		mediaFile.progress = 100;
-	} catch (error) {
-		mediaFile.status = 'error';
-		mediaFile.error = extractErrorMessage(error);
 	}
-}
 
 	/**
 	 * Remove a file
@@ -205,69 +199,69 @@ function extractErrorMessage(error: unknown): string {
 			}
 		}
 
-	files = files.filter((f) => f.id !== id);
-}
-
-function updateFileMetadata(id: string, updater: (file: MediaFile) => MediaFile) {
-	files = files.map((file) => (file.id === id ? updater(file) : file));
-}
-
-function handleSensitiveToggle(id: string, sensitive: boolean) {
-	updateFileMetadata(id, (file) => ({
-		...file,
-		sensitive,
-	}));
-
-	if (sensitive) {
-		sensitiveVisibility = { ...sensitiveVisibility, [id]: false };
-	} else {
-		const nextVisibility = { ...sensitiveVisibility };
-		delete nextVisibility[id];
-		sensitiveVisibility = nextVisibility;
+		files = files.filter((f) => f.id !== id);
 	}
-}
 
-function handleSpoilerChange(id: string, value: string) {
-	const normalized = value.slice(0, SPOILER_MAX_LENGTH);
-	updateFileMetadata(id, (file) => ({
-		...file,
-		spoilerText: normalized,
-	}));
-}
-
-function handleDescriptionChange(id: string, value: string) {
-	const normalized = value.slice(0, DESCRIPTION_MAX_LENGTH);
-	updateFileMetadata(id, (file) => ({
-		...file,
-		description: normalized,
-	}));
-}
-
-function handleMediaCategoryChange(id: string, category: MediaCategory) {
-	updateFileMetadata(id, (file) => ({
-		...file,
-		mediaCategory: category,
-	}));
-}
-
-function toggleSensitiveVisibility(id: string) {
-	const current = sensitiveVisibility[id] === true;
-	sensitiveVisibility = { ...sensitiveVisibility, [id]: !current };
-}
-
-function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
-	switch (file.mediaCategory) {
-		case 'IMAGE':
-			return 'image';
-		case 'VIDEO':
-		case 'GIFV':
-			return 'video';
-		case 'AUDIO':
-			return 'audio';
-		default:
-			return 'file';
+	function updateFileMetadata(id: string, updater: (file: MediaFile) => MediaFile) {
+		files = files.map((file) => (file.id === id ? updater(file) : file));
 	}
-}
+
+	function handleSensitiveToggle(id: string, sensitive: boolean) {
+		updateFileMetadata(id, (file) => ({
+			...file,
+			sensitive,
+		}));
+
+		if (sensitive) {
+			sensitiveVisibility = { ...sensitiveVisibility, [id]: false };
+		} else {
+			const nextVisibility = { ...sensitiveVisibility };
+			delete nextVisibility[id];
+			sensitiveVisibility = nextVisibility;
+		}
+	}
+
+	function handleSpoilerChange(id: string, value: string) {
+		const normalized = value.slice(0, SPOILER_MAX_LENGTH);
+		updateFileMetadata(id, (file) => ({
+			...file,
+			spoilerText: normalized,
+		}));
+	}
+
+	function handleDescriptionChange(id: string, value: string) {
+		const normalized = value.slice(0, DESCRIPTION_MAX_LENGTH);
+		updateFileMetadata(id, (file) => ({
+			...file,
+			description: normalized,
+		}));
+	}
+
+	function handleMediaCategoryChange(id: string, category: MediaCategory) {
+		updateFileMetadata(id, (file) => ({
+			...file,
+			mediaCategory: category,
+		}));
+	}
+
+	function toggleSensitiveVisibility(id: string) {
+		const current = sensitiveVisibility[id] === true;
+		sensitiveVisibility = { ...sensitiveVisibility, [id]: !current };
+	}
+
+	function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
+		switch (file.mediaCategory) {
+			case 'IMAGE':
+				return 'image';
+			case 'VIDEO':
+			case 'GIFV':
+				return 'video';
+			case 'AUDIO':
+				return 'audio';
+			default:
+				return 'file';
+		}
+	}
 
 	/**
 	 * Handle drag over
@@ -361,7 +355,9 @@ function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
 			onkeydown={(e) => e.key === 'Enter' && openFilePicker()}
 		>
 			<svg class="media-upload__icon" viewBox="0 0 24 24" fill="currentColor">
-				<path d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"/>
+				<path
+					d="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"
+				/>
 			</svg>
 			<div class="media-upload__text">
 				{#if isDragging}
@@ -379,7 +375,8 @@ function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
 				<div class="media-upload__item">
 					<div
 						class="media-upload__preview"
-						class:media-upload__preview--blurred={file.sensitive && sensitiveVisibility[file.id] !== true}
+						class:media-upload__preview--blurred={file.sensitive &&
+							sensitiveVisibility[file.id] !== true}
 					>
 						{#if previewType === 'image' && file.previewUrl}
 							<img
@@ -388,40 +385,37 @@ function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
 								class="media-upload__preview-image"
 							/>
 						{:else if previewType === 'video' && file.previewUrl}
-							<video
-								src={file.previewUrl}
-								class="media-upload__preview-video"
-								muted
-								loop
-							></video>
+							<video src={file.previewUrl} class="media-upload__preview-video" muted loop></video>
 						{:else if previewType === 'audio'}
 							<div class="media-upload__preview-audio">
 								<svg viewBox="0 0 24 24" fill="currentColor">
-									<path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+									<path
+										d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+									/>
 								</svg>
 								<span>{file.file.name}</span>
 							</div>
 						{/if}
 
-					{#if file.sensitive && file.status !== 'uploading' && file.status !== 'error'}
-						{#if sensitiveVisibility[file.id] !== true}
-							<div class="media-upload__overlay media-upload__overlay--sensitive">
-								<span class="media-upload__overlay-label">Sensitive media</span>
-								{#if file.spoilerText}
-									<p class="media-upload__overlay-text">{file.spoilerText}</p>
-								{/if}
-								<button
-									type="button"
-									class="media-upload__reveal"
-									onclick={() => toggleSensitiveVisibility(file.id)}
-								>
-									Reveal media
-								</button>
-							</div>
-						{:else}
-							<div class="media-upload__badge">Sensitive</div>
+						{#if file.sensitive && file.status !== 'uploading' && file.status !== 'error'}
+							{#if sensitiveVisibility[file.id] !== true}
+								<div class="media-upload__overlay media-upload__overlay--sensitive">
+									<span class="media-upload__overlay-label">Sensitive media</span>
+									{#if file.spoilerText}
+										<p class="media-upload__overlay-text">{file.spoilerText}</p>
+									{/if}
+									<button
+										type="button"
+										class="media-upload__reveal"
+										onclick={() => toggleSensitiveVisibility(file.id)}
+									>
+										Reveal media
+									</button>
+								</div>
+							{:else}
+								<div class="media-upload__badge">Sensitive</div>
+							{/if}
 						{/if}
-					{/if}
 
 						{#if file.status === 'uploading'}
 							<div class="media-upload__overlay">
@@ -443,7 +437,9 @@ function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
 						{#if file.status === 'error'}
 							<div class="media-upload__overlay media-upload__overlay--error">
 								<svg viewBox="0 0 24 24" fill="currentColor">
-									<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+									<path
+										d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+									/>
 								</svg>
 								<span>{file.error}</span>
 							</div>
@@ -459,76 +455,75 @@ function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
 						</button>
 					</div>
 
-				<div class="media-upload__info">
-					<div class="media-upload__filename">{file.file.name}</div>
-					<div class="media-upload__filesize">{formatFileSize(file.metadata?.size || 0)}</div>
-				</div>
+					<div class="media-upload__info">
+						<div class="media-upload__filename">{file.file.name}</div>
+						<div class="media-upload__filesize">{formatFileSize(file.metadata?.size || 0)}</div>
+					</div>
 
-				<div class="media-upload__meta">
-					<label class="media-upload__field media-upload__field--toggle">
-						<input
-							type="checkbox"
-							checked={file.sensitive}
-							onchange={(event) =>
-								handleSensitiveToggle(file.id, (event.target as HTMLInputElement).checked)
-							}
-						/>
-						<span>Sensitive content</span>
-					</label>
+					<div class="media-upload__meta">
+						<label class="media-upload__field media-upload__field--toggle">
+							<input
+								type="checkbox"
+								checked={file.sensitive}
+								onchange={(event) =>
+									handleSensitiveToggle(file.id, (event.target as HTMLInputElement).checked)}
+							/>
+							<span>Sensitive content</span>
+						</label>
 
-					<label class="media-upload__field">
-						<span class="media-upload__field-label">
-							Spoiler text
-							<span class="media-upload__counter">{file.spoilerText.length}/{SPOILER_MAX_LENGTH}</span>
-						</span>
-						<input
-							type="text"
-							value={file.spoilerText}
-							maxlength={SPOILER_MAX_LENGTH}
-							oninput={(event) =>
-								handleSpoilerChange(file.id, (event.target as HTMLInputElement).value)
-							}
-							placeholder="Optional warning shown before media"
-						/>
-					</label>
-
-					<label class="media-upload__field">
-						<span class="media-upload__field-label">
-							Description
-							<span class="media-upload__counter">
-								{(file.description || '').length}/{DESCRIPTION_MAX_LENGTH}
+						<label class="media-upload__field">
+							<span class="media-upload__field-label">
+								Spoiler text
+								<span class="media-upload__counter"
+									>{file.spoilerText.length}/{SPOILER_MAX_LENGTH}</span
+								>
 							</span>
-						</span>
-					<textarea
-						rows="3"
-						maxlength={DESCRIPTION_MAX_LENGTH}
-						oninput={(event) =>
-							handleDescriptionChange(file.id, (event.target as HTMLTextAreaElement).value)
-						}
-						placeholder="Describe the media for accessibility"
-					>{file.description ?? ''}</textarea>
-					</label>
+							<input
+								type="text"
+								value={file.spoilerText}
+								maxlength={SPOILER_MAX_LENGTH}
+								oninput={(event) =>
+									handleSpoilerChange(file.id, (event.target as HTMLInputElement).value)}
+								placeholder="Optional warning shown before media"
+							/>
+						</label>
 
-					<label class="media-upload__field">
-						<span class="media-upload__field-label">Media type</span>
-						<select
-							onchange={(event) =>
-								handleMediaCategoryChange(
-									file.id,
-									(event.target as HTMLSelectElement).value as MediaCategory
-								)
-							}
-						>
-							{#each MEDIA_CATEGORY_OPTIONS as option (option.value)}
-								<option value={option.value} selected={option.value === file.mediaCategory}>
-									{option.label}
-								</option>
-							{/each}
-						</select>
-					</label>
+						<label class="media-upload__field">
+							<span class="media-upload__field-label">
+								Description
+								<span class="media-upload__counter">
+									{(file.description || '').length}/{DESCRIPTION_MAX_LENGTH}
+								</span>
+							</span>
+							<textarea
+								rows="3"
+								maxlength={DESCRIPTION_MAX_LENGTH}
+								oninput={(event) =>
+									handleDescriptionChange(file.id, (event.target as HTMLTextAreaElement).value)}
+								placeholder="Describe the media for accessibility"
+								>{file.description ?? ''}</textarea
+							>
+						</label>
+
+						<label class="media-upload__field">
+							<span class="media-upload__field-label">Media type</span>
+							<select
+								onchange={(event) =>
+									handleMediaCategoryChange(
+										file.id,
+										(event.target as HTMLSelectElement).value as MediaCategory
+									)}
+							>
+								{#each MEDIA_CATEGORY_OPTIONS as option (option.value)}
+									<option value={option.value} selected={option.value === file.mediaCategory}>
+										{option.label}
+									</option>
+								{/each}
+							</select>
+						</label>
+					</div>
 				</div>
-			</div>
-		{/each}
+			{/each}
 
 			{#if canAddMore}
 				<button
@@ -538,7 +533,7 @@ function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
 					onclick={openFilePicker}
 				>
 					<svg viewBox="0 0 24 24" fill="currentColor">
-						<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+						<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
 					</svg>
 					<span>Add more</span>
 				</button>
@@ -707,7 +702,9 @@ function getPreviewType(file: MediaFile): 'image' | 'video' | 'audio' | 'file' {
 		font-size: 0.75rem;
 		font-weight: 600;
 		cursor: pointer;
-		transition: background-color 0.2s, color 0.2s;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
 	}
 
 	.media-upload__reveal:hover {

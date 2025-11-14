@@ -10,39 +10,35 @@
 
 ```svelte
 <script>
-  // ❌ Don't use this (deprecated)
-  // import { ComposeBox } from '@equaltoai/greater-components/fediverse';
-  
-  // ✅ Use this instead
-  import { Compose } from '@equaltoai/greater-components/fediverse';
-  
-  async function handleSubmit(data) {
-    await api.statuses.create(data);
-  }
+	// ❌ Don't use this (deprecated)
+	// import { ComposeBox } from '@equaltoai/greater-components/fediverse';
+
+	// ✅ Use this instead
+	import { Compose } from '@equaltoai/greater-components/fediverse';
+
+	async function handleSubmit(data) {
+		await api.statuses.create(data);
+	}
 </script>
 
 <Compose.Root handlers={{ onSubmit: handleSubmit }}>
-  <Compose.Editor autofocus />
-  <Compose.CharacterCount />
-  <Compose.VisibilitySelect />
-  <Compose.Submit />
+	<Compose.Editor autofocus />
+	<Compose.CharacterCount />
+	<Compose.VisibilitySelect />
+	<Compose.Submit />
 </Compose.Root>
 ```
 
 **Alternative named exports:**
+
 ```svelte
-import {
-  ComposeRoot,
-  ComposeEditor,
-  ComposeSubmit,
-  ComposeCharacterCount,
-  ComposeVisibilitySelect
-} from '@equaltoai/greater-components/fediverse';
+import {(ComposeRoot, ComposeEditor, ComposeSubmit, ComposeCharacterCount, ComposeVisibilitySelect)}
+from '@equaltoai/greater-components/fediverse';
 
 <ComposeRoot handlers={{ onSubmit: handleSubmit }}>
-  <ComposeEditor autofocus />
-  <ComposeCharacterCount />
-  <ComposeSubmit />
+	<ComposeEditor autofocus />
+	<ComposeCharacterCount />
+	<ComposeSubmit />
 </ComposeRoot>
 ```
 
@@ -53,23 +49,25 @@ import {
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
-  // 1. Design tokens (REQUIRED)
-  import '@equaltoai/greater-components/tokens/theme.css';
-  
-  // 2. Component styles (REQUIRED for CSR)
-  import '@equaltoai/greater-components/primitives/style.css';
-  
-  // 3. Optional: High contrast support
-  import '@equaltoai/greater-components/tokens/high-contrast.css';
+	// 1. Design tokens (REQUIRED)
+	import '@equaltoai/greater-components/tokens/theme.css';
+
+	// 2. Component styles (REQUIRED for CSR)
+	import '@equaltoai/greater-components/primitives/style.css';
+
+	// 3. Optional: High contrast support
+	import '@equaltoai/greater-components/tokens/high-contrast.css';
 </script>
 ```
 
 **Why both CSS files?**
+
 - `theme.css` - CSS custom properties (design tokens)
 - `style.css` - Component-specific styles (needed when compiling from source)
 
 **For SSR (Server-Side Rendering):**
 If you're using SSR, components compile from source and CSS is auto-injected. You may only need:
+
 ```svelte
 import '@equaltoai/greater-components/tokens/theme.css';
 ```
@@ -81,23 +79,24 @@ import '@equaltoai/greater-components/tokens/theme.css';
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
-  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
-  import '@equaltoai/greater-components/tokens/theme.css';
-  import '@equaltoai/greater-components/primitives/style.css';
+	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import '@equaltoai/greater-components/tokens/theme.css';
+	import '@equaltoai/greater-components/primitives/style.css';
 </script>
 
 <ThemeProvider>
-  <slot />
+	<slot />
 </ThemeProvider>
 
 <style>
-  :global(:root) {
-    color-scheme: light dark;
-  }
+	:global(:root) {
+		color-scheme: light dark;
+	}
 </style>
 ```
 
 **ThemeProvider automatically:**
+
 - Detects system theme preference
 - Persists theme choice to localStorage
 - Prevents flash of unstyled content (FOUC)
@@ -112,19 +111,19 @@ import type { Status, Account } from '@equaltoai/greater-components/fediverse';
 
 // GC Status includes all Mastodon fields PLUS:
 interface Status {
-  // Standard Mastodon fields
-  id: string;
-  account: Account;
-  content: string;
-  createdAt: string | Date;
-  // ... all standard fields
-  
-  // Lesser-specific extensions (optional)
-  trustScore?: number;
-  reputation?: Reputation;
-  communityNotes?: CommunityNote[];
-  quoteContext?: QuoteContext;
-  aiAnalysis?: AIAnalysis;
+	// Standard Mastodon fields
+	id: string;
+	account: Account;
+	content: string;
+	createdAt: string | Date;
+	// ... all standard fields
+
+	// Lesser-specific extensions (optional)
+	trustScore?: number;
+	reputation?: Reputation;
+	communityNotes?: CommunityNote[];
+	quoteContext?: QuoteContext;
+	aiAnalysis?: AIAnalysis;
 }
 ```
 
@@ -137,49 +136,49 @@ Your `src/lib/gc.ts` pattern is excellent! Here's an enhanced version:
 ```typescript
 // src/lib/gc.ts
 export {
-  // Primitives
-  Button,
-  TextField,
-  Modal,
-  Tabs,
-  ThemeProvider,
-  ThemeSwitcher
+	// Primitives
+	Button,
+	TextField,
+	Modal,
+	Tabs,
+	ThemeProvider,
+	ThemeSwitcher,
 } from '@equaltoai/greater-components/primitives';
 
 export {
-  // Fediverse components
-  TimelineVirtualizedReactive,
-  NotificationsFeedReactive,
-  StatusCard,
-  ActionBar,
-  Compose,
-  ComposeRoot,
-  ComposeEditor,
-  ComposeSubmit,
-  ComposeCharacterCount,
-  ComposeVisibilitySelect
+	// Fediverse components
+	TimelineVirtualizedReactive,
+	NotificationsFeedReactive,
+	StatusCard,
+	ActionBar,
+	Compose,
+	ComposeRoot,
+	ComposeEditor,
+	ComposeSubmit,
+	ComposeCharacterCount,
+	ComposeVisibilitySelect,
 } from '@equaltoai/greater-components/fediverse';
 
 export {
-  // Adapters
-  createLesserClient,
-  LesserAdapter
+	// Adapters
+	createLesserClient,
+	LesserAdapter,
 } from '@equaltoai/greater-components/adapters';
 
 export {
-  // Icons (replace lucide-svelte)
-  IconHome,
-  IconUser,
-  IconSettings
-  // ... etc
+	// Icons (replace lucide-svelte)
+	IconHome,
+	IconUser,
+	IconSettings,
+	// ... etc
 } from '@equaltoai/greater-components/icons';
 
 // Export types
 export type {
-  Status,
-  Account,
-  MediaAttachment,
-  Notification
+	Status,
+	Account,
+	MediaAttachment,
+	Notification,
 } from '@equaltoai/greater-components/fediverse';
 ```
 
@@ -190,33 +189,33 @@ Your bridge pattern is correct! Here's a refined example:
 ```svelte
 <!-- src/lib/components/TimelineGC.svelte -->
 <script lang="ts">
-  import { TimelineVirtualizedReactive } from '$lib/gc';
-  import { timelineStore } from '$lib/stores/timeline.svelte';
-  
-  interface Props {
-    type: 'home' | 'public' | 'local';
-  }
-  
-  let { type }: Props = $props();
-  
-  const items = $derived(timelineStore.timelines[type].statuses);
-  const loadingBottom = $derived(timelineStore.timelines[type].isLoadingMore);
-  
-  function handleLoadMore() {
-    timelineStore.loadMore(type);
-  }
-  
-  function handleStatusAction(action: string, statusId: string) {
-    // Your custom action handling
-    timelineStore.handleAction(action, statusId);
-  }
+	import { TimelineVirtualizedReactive } from '$lib/gc';
+	import { timelineStore } from '$lib/stores/timeline.svelte';
+
+	interface Props {
+		type: 'home' | 'public' | 'local';
+	}
+
+	let { type }: Props = $props();
+
+	const items = $derived(timelineStore.timelines[type].statuses);
+	const loadingBottom = $derived(timelineStore.timelines[type].isLoadingMore);
+
+	function handleLoadMore() {
+		timelineStore.loadMore(type);
+	}
+
+	function handleStatusAction(action: string, statusId: string) {
+		// Your custom action handling
+		timelineStore.handleAction(action, statusId);
+	}
 </script>
 
 <TimelineVirtualizedReactive
-  {items}
-  {loadingBottom}
-  onLoadMore={handleLoadMore}
-  onStatusAction={handleStatusAction}
+	{items}
+	{loadingBottom}
+	onLoadMore={handleLoadMore}
+	onStatusAction={handleStatusAction}
 />
 ```
 
@@ -225,43 +224,43 @@ Your bridge pattern is correct! Here's a refined example:
 ```svelte
 <!-- src/lib/components/ComposeBoxGC.svelte -->
 <script lang="ts">
-  import { Compose } from '$lib/gc';
-  import { api } from '$lib/api';
-  
-  interface Props {
-    replyToStatus?: Status;
-    onSuccess?: () => void;
-  }
-  
-  let { replyToStatus, onSuccess }: Props = $props();
-  
-  async function handleSubmit(data: ComposeState) {
-    try {
-      await api.statuses.create({
-        status: data.content,
-        inReplyToId: replyToStatus?.id,
-        visibility: data.visibility,
-        spoilerText: data.contentWarning,
-        mediaIds: data.attachments.map(a => a.id)
-      });
-      onSuccess?.();
-    } catch (error) {
-      console.error('Failed to post:', error);
-    }
-  }
+	import { Compose } from '$lib/gc';
+	import { api } from '$lib/api';
+
+	interface Props {
+		replyToStatus?: Status;
+		onSuccess?: () => void;
+	}
+
+	let { replyToStatus, onSuccess }: Props = $props();
+
+	async function handleSubmit(data: ComposeState) {
+		try {
+			await api.statuses.create({
+				status: data.content,
+				inReplyToId: replyToStatus?.id,
+				visibility: data.visibility,
+				spoilerText: data.contentWarning,
+				mediaIds: data.attachments.map((a) => a.id),
+			});
+			onSuccess?.();
+		} catch (error) {
+			console.error('Failed to post:', error);
+		}
+	}
 </script>
 
 <Compose.Root
-  initialState={{
-    inReplyTo: replyToStatus?.id,
-    content: replyToStatus ? `@${replyToStatus.account.acct} ` : ''
-  }}
-  handlers={{ onSubmit: handleSubmit }}
+	initialState={{
+		inReplyTo: replyToStatus?.id,
+		content: replyToStatus ? `@${replyToStatus.account.acct} ` : '',
+	}}
+	handlers={{ onSubmit: handleSubmit }}
 >
-  <Compose.Editor autofocus />
-  <Compose.CharacterCount />
-  <Compose.VisibilitySelect />
-  <Compose.Submit />
+	<Compose.Editor autofocus />
+	<Compose.CharacterCount />
+	<Compose.VisibilitySelect />
+	<Compose.Submit />
 </Compose.Root>
 ```
 
@@ -274,10 +273,10 @@ Your bridge pattern is correct! Here's a refined example:
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 export default {
-  preprocess: vitePreprocess(),
-  compilerOptions: {
-    runes: true  // ⚠️ REQUIRED for Svelte 5
-  }
+	preprocess: vitePreprocess(),
+	compilerOptions: {
+		runes: true, // ⚠️ REQUIRED for Svelte 5
+	},
 };
 ```
 
@@ -288,10 +287,10 @@ export default {
 import { sveltekit } from '@sveltejs/kit/vite';
 
 export default {
-  plugins: [sveltekit()],
-  optimizeDeps: {
-    exclude: ['@equaltoai/greater-components']  // Let Vite compile from source
-  }
+	plugins: [sveltekit()],
+	optimizeDeps: {
+		exclude: ['@equaltoai/greater-components'], // Let Vite compile from source
+	},
 };
 ```
 
@@ -300,12 +299,12 @@ export default {
 ```json
 // tsconfig.json
 {
-  "compilerOptions": {
-    "moduleResolution": "bundler",
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["svelte"]
-  }
+	"compilerOptions": {
+		"moduleResolution": "bundler",
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"types": ["svelte"]
+	}
 }
 ```
 
@@ -326,7 +325,7 @@ export default {
 ```svelte
 <!-- src/routes/test/+page.svelte -->
 <script>
-  import { Button, TextField } from '$lib/gc';
+	import { Button, TextField } from '$lib/gc';
 </script>
 
 <Button>Test Button</Button>
@@ -340,6 +339,7 @@ If this renders styled, you're good to go!
 ### Issue: Components render but look unstyled
 
 **Solution:**
+
 1. Check CSS imports in `+layout.svelte`
 2. Verify `style.css` (not `styles.css`) is imported
 3. Check browser console for CSS loading errors
@@ -352,6 +352,7 @@ If this renders styled, you're good to go!
 ### Issue: Type errors with Status types
 
 **Solution:** GC Status types are compatible - ensure you're importing from the correct package:
+
 ```typescript
 import type { Status } from '@equaltoai/greater-components/fediverse';
 ```
@@ -359,6 +360,7 @@ import type { Status } from '@equaltoai/greater-components/fediverse';
 ### Issue: ThemeProvider not applying theme
 
 **Solution:**
+
 1. Ensure ThemeProvider wraps your entire app
 2. Check that `theme.css` is imported
 3. Verify `data-theme` attribute appears on `<html>` element
@@ -384,4 +386,3 @@ import type { Status } from '@equaltoai/greater-components/fediverse';
 - Check `docs/FOR_LESSER_TEAM.md` for Lesser-specific guidance
 - See `docs/troubleshooting/README.md` for common issues
 - Review `apps/playground` for working examples
-

@@ -135,7 +135,7 @@ export class LesserTimelineStore {
 			variables.listId = this.config.listId;
 		}
 
-			return variables;
+		return variables;
 	}
 
 	private toTimelineItem(status: UnifiedStatus): GenericTimelineItem {
@@ -154,9 +154,7 @@ export class LesserTimelineStore {
 
 		try {
 			this.statusCache.clear();
-			const response = await this.config.adapter.fetchTimeline(
-				this.buildTimelineVariables()
-			);
+			const response = await this.config.adapter.fetchTimeline(this.buildTimelineVariables());
 			const { successful } = mapLesserTimelineConnection(
 				response as unknown as LesserTimelineConnection
 			);
@@ -299,16 +297,15 @@ export class LesserTimelineStore {
 			const lesser = item.metadata?.lesser;
 			return Boolean(
 				lesser &&
-					(
-						lesser.estimatedCost !== undefined ||
+					(lesser.estimatedCost !== undefined ||
 						lesser.moderationScore !== undefined ||
 						lesser.hasCommunityNotes ||
 						(lesser.communityNotesCount ?? 0) > 0 ||
 						lesser.isQuote ||
 						lesser.quoteable ||
 						lesser.authorTrustScore !== undefined ||
-						(lesser as { aiModerationAction?: string } | undefined)?.aiModerationAction !== undefined
-					)
+						(lesser as { aiModerationAction?: string } | undefined)?.aiModerationAction !==
+							undefined)
 			);
 		});
 	}
@@ -339,11 +336,7 @@ export class LesserTimelineStore {
 	getItemsWithCommunityNotes(): GenericTimelineItem[] {
 		return this.state.items.filter((item) => {
 			const lesser = item.metadata?.lesser;
-			return Boolean(
-				lesser &&
-					(lesser.hasCommunityNotes ||
-						(lesser.communityNotesCount ?? 0) > 0)
-			);
+			return Boolean(lesser && (lesser.hasCommunityNotes || (lesser.communityNotesCount ?? 0) > 0));
 		});
 	}
 
@@ -351,9 +344,7 @@ export class LesserTimelineStore {
 	 * Get quote posts
 	 */
 	getQuotePosts(): GenericTimelineItem[] {
-		return this.state.items.filter(
-			(item) => item.metadata?.lesser?.isQuote === true
-		);
+		return this.state.items.filter((item) => item.metadata?.lesser?.isQuote === true);
 	}
 
 	/**
@@ -383,7 +374,7 @@ function mapAccountToActor(account: UnifiedStatus['account']): ActivityPubActor 
 				type: 'Image',
 				url: account.avatar,
 				mediaType: 'image',
-		  } satisfies ActivityPubImage)
+			} satisfies ActivityPubImage)
 		: undefined;
 
 	const header = account.header
@@ -391,7 +382,7 @@ function mapAccountToActor(account: UnifiedStatus['account']): ActivityPubActor 
 				type: 'Image',
 				url: account.header,
 				mediaType: 'image',
-		  } satisfies ActivityPubImage)
+			} satisfies ActivityPubImage)
 		: undefined;
 
 	return {

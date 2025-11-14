@@ -1,6 +1,6 @@
 /**
  * Headless Menu Primitive
- * 
+ *
  * Provides accessible dropdown menu behavior without any styling.
  * Features:
  * - Keyboard navigation (Arrow keys, Home, End)
@@ -10,7 +10,7 @@
  * - Click outside to close
  * - ESC to close
  * - Focus management
- * 
+ *
  * @module @equaltoai/greater-components-headless/menu
  */
 
@@ -149,7 +149,10 @@ export interface MenuActions {
 	/**
 	 * Action for menu items
 	 */
-	item: (node: HTMLElement, options?: { disabled?: boolean; onClick?: () => void }) => { destroy: () => void };
+	item: (
+		node: HTMLElement,
+		options?: { disabled?: boolean; onClick?: () => void }
+	) => { destroy: () => void };
 
 	/**
 	 * Action for menu separator
@@ -226,7 +229,12 @@ export function createMenu(config: MenuConfig = {}) {
 		onDestroy,
 	} = config;
 
-	let menuItems: Array<{ element: HTMLElement; value: string; disabled: boolean; onClick?: () => void }> = [];
+	let menuItems: Array<{
+		element: HTMLElement;
+		value: string;
+		disabled: boolean;
+		onClick?: () => void;
+	}> = [];
 
 	// Reactive state using Proxy
 	const internalState: MenuState = {
@@ -259,7 +267,7 @@ export function createMenu(config: MenuConfig = {}) {
 		get(target, prop: keyof MenuState) {
 			// Ensure items reflects current menuItems
 			if (prop === 'items') {
-				return menuItems.map(item => item.element);
+				return menuItems.map((item) => item.element);
 			}
 			return target[prop];
 		},
@@ -521,7 +529,7 @@ export function createMenu(config: MenuConfig = {}) {
 		if (!state.open) return;
 
 		const target = event.target as Node;
-		
+
 		// Close if click is outside menu element
 		if (menuElement && !menuElement.contains(target)) {
 			// Also check trigger if it exists
@@ -606,7 +614,7 @@ export function createMenu(config: MenuConfig = {}) {
 	 */
 	function item(node: HTMLElement, options: { disabled?: boolean; onClick?: () => void } = {}) {
 		const { disabled = false, onClick: onClickHandler } = options;
-		
+
 		// Check if item already exists and update it
 		const existingIndex = menuItems.findIndex((item) => item.element === node);
 		if (existingIndex !== -1) {
@@ -630,7 +638,7 @@ export function createMenu(config: MenuConfig = {}) {
 				},
 			};
 		}
-		
+
 		const itemData = { element: node, value: '', disabled, onClick: onClickHandler };
 		menuItems.push(itemData);
 
@@ -695,9 +703,10 @@ export function createMenu(config: MenuConfig = {}) {
 		if (!state.open) return;
 
 		// Check if preventDefault exists (for test compatibility)
-		const preventDefault = 'preventDefault' in event && typeof event.preventDefault === 'function'
-			? () => event.preventDefault()
-			: () => {};
+		const preventDefault =
+			'preventDefault' in event && typeof event.preventDefault === 'function'
+				? () => event.preventDefault()
+				: () => {};
 
 		switch (event.key) {
 			case 'ArrowDown':

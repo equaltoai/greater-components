@@ -9,7 +9,8 @@
 			name: 'variant',
 			type: "'compact' | 'full'",
 			default: "'compact'",
-			description: 'Determines whether ThemeSwitcher renders the dropdown (compact) or full control grid.',
+			description:
+				'Determines whether ThemeSwitcher renders the dropdown (compact) or full control grid.',
 		},
 		{
 			name: 'showAdvanced',
@@ -20,19 +21,22 @@
 		{
 			name: 'value',
 			type: "'light' | 'dark' | 'high-contrast' | 'auto'",
-			description: 'Optional controlled color scheme. When omitted, component syncs with preferencesStore.',
+			description:
+				'Optional controlled color scheme. When omitted, component syncs with preferencesStore.',
 		},
 		{
 			name: 'onThemeChange',
 			type: '(theme: ColorScheme) => void',
-			description: 'Callback invoked when a new scheme is selected (used to persist to local settings).',
+			description:
+				'Callback invoked when a new scheme is selected (used to persist to local settings).',
 		},
 	];
 
 	const packages = [
 		{
 			name: '@equaltoai/greater-components-primitives',
-			detail: 'ThemeSwitcher, Button, Switch, Select, TextField, TextArea components driving the UI.',
+			detail:
+				'ThemeSwitcher, Button, Switch, Select, TextField, TextArea components driving the UI.',
 		},
 		{
 			name: '@equaltoai/greater-components-primitives/preferencesStore',
@@ -121,7 +125,8 @@
 		},
 		{
 			label: 'apps/playground/src/lib/stores/storage.test.ts',
-			detail: 'Unit tests validating serialization/SSR fallbacks for loadPersistedState and persistState.',
+			detail:
+				'Unit tests validating serialization/SSR fallbacks for loadPersistedState and persistState.',
 		},
 	];
 </script>

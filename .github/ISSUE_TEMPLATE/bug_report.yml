@@ -1,7 +1,7 @@
 name: 🐛 Bug Report
 description: File a bug report to help us improve Greater Components
-title: "[Bug]: "
-labels: ["bug", "needs-triage"]
+title: '[Bug]: '
+labels: ['bug', 'needs-triage']
 assignees: []
 body:
   - type: markdown
@@ -29,7 +29,7 @@ body:
     attributes:
       label: Greater Components Version
       description: What version of Greater Components are you using?
-      placeholder: "1.0.0"
+      placeholder: '1.0.0'
     validations:
       required: true
 
@@ -39,15 +39,15 @@ body:
       label: Affected Package(s)
       description: Which Greater Components package is affected?
       options:
-        - "@equaltoai/greater-components-primitives"
-        - "@equaltoai/greater-components-fediverse"
-        - "@equaltoai/greater-components-tokens"
-        - "@equaltoai/greater-components-icons"
-        - "@equaltoai/greater-components-utils"
-        - "@equaltoai/greater-components-adapters"
-        - "@equaltoai/greater-components-testing"
-        - "Multiple packages"
-        - "Not sure"
+        - '@equaltoai/greater-components-primitives'
+        - '@equaltoai/greater-components-fediverse'
+        - '@equaltoai/greater-components-tokens'
+        - '@equaltoai/greater-components-icons'
+        - '@equaltoai/greater-components-utils'
+        - '@equaltoai/greater-components-adapters'
+        - '@equaltoai/greater-components-testing'
+        - 'Multiple packages'
+        - 'Not sure'
     validations:
       required: true
 
@@ -102,7 +102,7 @@ body:
           import { Button } from '@equaltoai/greater-components-primitives';
           // Your code that reproduces the issue
         </script>
-        
+
         <Button onclick={handleClick}>Click me</Button>
 
   - type: textarea
@@ -141,10 +141,10 @@ body:
       label: Severity
       description: How severe is this bug?
       options:
-        - "Low - Minor inconvenience"
-        - "Medium - Affects functionality but has workaround"
-        - "High - Breaks functionality with no workaround"
-        - "Critical - Prevents usage of the component/library"
+        - 'Low - Minor inconvenience'
+        - 'Medium - Affects functionality but has workaround'
+        - 'High - Breaks functionality with no workaround'
+        - 'Critical - Prevents usage of the component/library'
     validations:
       required: true
 

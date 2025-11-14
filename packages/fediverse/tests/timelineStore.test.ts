@@ -66,9 +66,7 @@ afterEach(() => {
 
 describe('TimelineStore', () => {
 	it('loads initial statuses respecting preloadCount', async () => {
-		const fetchMock = vi
-			.fn()
-			.mockResolvedValue(responseFor([makeStatus('a'), makeStatus('b')]));
+		const fetchMock = vi.fn().mockResolvedValue(responseFor([makeStatus('a'), makeStatus('b')]));
 		vi.stubGlobal('fetch', fetchMock);
 
 		const store = new TimelineStore({ preloadCount: 2, enableRealtime: false });

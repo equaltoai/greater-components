@@ -1,58 +1,58 @@
 version: 2
 updates:
   # Enable version updates for npm dependencies
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "04:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
     open-pull-requests-limit: 10
     groups:
       dependencies:
         patterns:
-          - "*"
+          - '*'
         exclude-patterns:
-          - "svelte"
-          - "@sveltejs/*"
-          - "typescript"
+          - 'svelte'
+          - '@sveltejs/*'
+          - 'typescript'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
       svelte:
         patterns:
-          - "svelte"
-          - "@sveltejs/*"
+          - 'svelte'
+          - '@sveltejs/*'
       typescript:
         patterns:
-          - "typescript"
-          - "@typescript-eslint/*"
-          - "typescript-eslint"
+          - 'typescript'
+          - '@typescript-eslint/*'
+          - 'typescript-eslint'
     assignees:
-      - "equaltoai/devops"
+      - 'equaltoai/devops'
     reviewers:
-      - "equaltoai/core-team"
+      - 'equaltoai/core-team'
     labels:
-      - "dependencies"
-      - "security"
+      - 'dependencies'
+      - 'security'
     commit-message:
-      prefix: "chore"
-      include: "scope"
-    
+      prefix: 'chore'
+      include: 'scope'
+
   # Enable security updates for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "04:00"
+      interval: 'weekly'
+      day: 'monday'
+      time: '04:00'
     assignees:
-      - "equaltoai/devops"
+      - 'equaltoai/devops'
     reviewers:
-      - "equaltoai/devops"
+      - 'equaltoai/devops'
     labels:
-      - "github-actions"
-      - "dependencies"
+      - 'github-actions'
+      - 'dependencies'
     commit-message:
-      prefix: "ci"
-      include: "scope"
+      prefix: 'ci'
+      include: 'scope'

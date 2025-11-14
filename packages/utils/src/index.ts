@@ -1,10 +1,10 @@
 /**
  * @fileoverview Greater Utils - Utility functions for web applications
- * 
+ *
  * This package provides common utility functions for text processing,
  * time formatting, HTML sanitization, and keyboard interaction handling.
  * Designed for use in social media and content-rich applications.
- * 
+ *
  * @version 1.0.0
  * @author Greater Contributors
  * @license AGPL-3.0-only

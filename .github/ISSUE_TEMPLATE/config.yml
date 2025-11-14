@@ -3,23 +3,23 @@ contact_links:
   - name: 💬 Ask a Question
     url: https://github.com/equaltoai/greater-components/discussions/categories/q-a
     about: Ask questions about using Greater Components
-  
+
   - name: 💡 Feature Discussion
     url: https://github.com/equaltoai/greater-components/discussions/categories/ideas
     about: Discuss ideas and proposals before creating feature requests
-    
+
   - name: 📚 Documentation
     url: https://github.com/equaltoai/greater-components/blob/main/API_DOCUMENTATION.md
     about: Read the comprehensive API documentation
-    
+
   - name: 🛠️ Troubleshooting Guide
     url: https://github.com/equaltoai/greater-components/blob/main/docs/troubleshooting/README.md
     about: Find solutions to common problems
-    
+
   - name: 🔒 Security Issue
     url: mailto:security@equalto.ai
     about: Report security vulnerabilities privately via email
-    
+
   - name: 💼 Enterprise Support
     url: mailto:support@equalto.ai
     about: Get enterprise-level support and consulting

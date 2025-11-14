@@ -62,17 +62,17 @@
 		onClick: () => handleSearch(),
 	});
 
-const clearButton = createButton({
-	onClick: () => handleClear(),
-});
+	const clearButton = createButton({
+		onClick: () => handleClear(),
+	});
 
-let inputElement = $state<HTMLInputElement | null>(null);
+	let inputElement = $state<HTMLInputElement | null>(null);
 
-$effect(() => {
-	if (autofocus && inputElement && document.activeElement !== inputElement) {
-		inputElement.focus();
-	}
-});
+	$effect(() => {
+		if (autofocus && inputElement && document.activeElement !== inputElement) {
+			inputElement.focus();
+		}
+	});
 
 	/**
 	 * Handle search submission
@@ -129,18 +129,19 @@ $effect(() => {
 			/>
 		</svg>
 
-	<input
-		type="text"
-		class="search-bar__input"
-		{placeholder}
-		value={searchState.query}
-		oninput={(e) => handleInput(e.currentTarget.value)}
-		onkeydown={handleKeyDown}
-		onfocus={() =>
-			(showRecentDropdown = showRecent && !searchState.query.trim() && searchState.recentSearches.length > 0)}
-		disabled={searchState.loading}
-		bind:this={inputElement}
-	/>
+		<input
+			type="text"
+			class="search-bar__input"
+			{placeholder}
+			value={searchState.query}
+			oninput={(e) => handleInput(e.currentTarget.value)}
+			onkeydown={handleKeyDown}
+			onfocus={() =>
+				(showRecentDropdown =
+					showRecent && !searchState.query.trim() && searchState.recentSearches.length > 0)}
+			disabled={searchState.loading}
+			bind:this={inputElement}
+		/>
 
 		{#if searchState.query}
 			<button use:clearButton.actions.button class="search-bar__clear" aria-label="Clear search">

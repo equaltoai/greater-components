@@ -11,7 +11,7 @@ let idCounter = 0;
  * @returns Unique ID string
  */
 export function generateId(prefix = 'greater'): string {
-  return `${prefix}-${++idCounter}`;
+	return `${prefix}-${++idCounter}`;
 }
 
 /**
@@ -21,16 +21,15 @@ export function generateId(prefix = 'greater'): string {
  * @returns The element's ID
  */
 export function ensureId(element: HTMLElement, prefix = 'greater'): string {
-  if (!element.id) {
-    element.id = generateId(prefix);
-  }
-  return element.id;
+	if (!element.id) {
+		element.id = generateId(prefix);
+	}
+	return element.id;
 }
 
 /**
  * Reset the ID counter (useful for testing)
  */
 export function resetIdCounter(): void {
-  idCounter = 0;
+	idCounter = 0;
 }
-

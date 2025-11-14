@@ -12,11 +12,7 @@ type UnknownRecord = Record<string, unknown>;
 
 function normalizeError(error: unknown, message: string): Error {
 	const detail =
-		error instanceof Error
-			? error.message
-			: typeof error === 'string'
-				? error
-				: undefined;
+		error instanceof Error ? error.message : typeof error === 'string' ? error : undefined;
 	const normalized = new Error(detail ? `${message}: ${detail}` : message);
 	(normalized as { cause?: unknown }).cause = error;
 	return normalized;
@@ -60,273 +56,273 @@ function invokeAsync(action: () => Promise<void>, message: string): void {
 }
 
 export interface ConnectionConfig {
-  baseUrl: string;
-  accessToken?: string;
-  transport?: TransportConfig;
-  autoConnect?: boolean;
+	baseUrl: string;
+	accessToken?: string;
+	transport?: TransportConfig;
+	autoConnect?: boolean;
 }
 
 export interface TimelineIntegrationConfig extends ConnectionConfig {
-  timeline?: TimelineConfig;
+	timeline?: TimelineConfig;
 }
 
 export interface NotificationIntegrationConfig extends ConnectionConfig {
-  notification?: NotificationConfig;
+	notification?: NotificationConfig;
 }
 
 /**
  * Create an integrated timeline with transport connection
  */
 export function createTimelineIntegration(config: TimelineIntegrationConfig) {
-  const timeline = new TimelineStore(config.timeline);
-  let transport: TransportManager | null = null;
-  let connected = false;
-  
-  // Create transport if configured
-  if (config.transport) {
-    transport = new TransportManager({
-      ...config.transport,
-      baseUrl: config.baseUrl,
-      accessToken: config.accessToken
-    });
-    
-    timeline.connectTransport(transport);
-  }
+	const timeline = new TimelineStore(config.timeline);
+	let transport: TransportManager | null = null;
+	let connected = false;
 
-  return {
-    store: timeline,
-    transport,
-    
-    /**
-     * Connect to the server and load initial data
-     */
-    async connect(): Promise<void> {
-      if (connected) return;
-      
-      try {
-        // Connect transport if available
-        if (transport) {
-          await transport.connect();
-        }
-        
-        // Load initial timeline data
-        await timeline.loadInitial(config.baseUrl, config.accessToken);
-        connected = true;
-      } catch (error) {
-        const normalized = normalizeError(error, 'Failed to connect timeline');
-        realtimeErrorBoundary.handleError(normalized);
-        throw normalized;
-      }
-    },
+	// Create transport if configured
+	if (config.transport) {
+		transport = new TransportManager({
+			...config.transport,
+			baseUrl: config.baseUrl,
+			accessToken: config.accessToken,
+		});
 
-    /**
-     * Disconnect from the server
-     */
-    disconnect(): void {
-      if (transport) {
-        transport.disconnect();
-      }
-      timeline.disconnectTransport();
-      connected = false;
-    },
+		timeline.connectTransport(transport);
+	}
 
-    /**
-     * Load more recent items
-     */
-    async loadNewer(): Promise<void> {
-      await timeline.loadNewer(config.baseUrl, config.accessToken);
-      timeline.clearUnreadCount();
-    },
+	return {
+		store: timeline,
+		transport,
 
-    /**
-     * Load older items
-     */
-    async loadOlder(): Promise<void> {
-      await timeline.loadOlder(config.baseUrl, config.accessToken);
-    },
+		/**
+		 * Connect to the server and load initial data
+		 */
+		async connect(): Promise<void> {
+			if (connected) return;
 
-    /**
-     * Refresh the timeline
-     */
-    async refresh(): Promise<void> {
-      await timeline.refresh(config.baseUrl, config.accessToken);
-    },
+			try {
+				// Connect transport if available
+				if (transport) {
+					await transport.connect();
+				}
 
-    /**
-     * Update a status
-     */
-    updateStatus(status: Status): void {
-      timeline.updateStatus(status);
-    },
+				// Load initial timeline data
+				await timeline.loadInitial(config.baseUrl, config.accessToken);
+				connected = true;
+			} catch (error) {
+				const normalized = normalizeError(error, 'Failed to connect timeline');
+				realtimeErrorBoundary.handleError(normalized);
+				throw normalized;
+			}
+		},
 
-    /**
-     * Get reactive state
-     */
-    get state() {
-      return timeline.currentState;
-    },
+		/**
+		 * Disconnect from the server
+		 */
+		disconnect(): void {
+			if (transport) {
+				transport.disconnect();
+			}
+			timeline.disconnectTransport();
+			connected = false;
+		},
 
-    /**
-     * Get items
-     */
-    get items() {
-      return timeline.items;
-    },
+		/**
+		 * Load more recent items
+		 */
+		async loadNewer(): Promise<void> {
+			await timeline.loadNewer(config.baseUrl, config.accessToken);
+			timeline.clearUnreadCount();
+		},
 
-    /**
-     * Cleanup
-     */
-    destroy(): void {
-      this.disconnect();
-      timeline.destroy();
-    }
-  };
+		/**
+		 * Load older items
+		 */
+		async loadOlder(): Promise<void> {
+			await timeline.loadOlder(config.baseUrl, config.accessToken);
+		},
+
+		/**
+		 * Refresh the timeline
+		 */
+		async refresh(): Promise<void> {
+			await timeline.refresh(config.baseUrl, config.accessToken);
+		},
+
+		/**
+		 * Update a status
+		 */
+		updateStatus(status: Status): void {
+			timeline.updateStatus(status);
+		},
+
+		/**
+		 * Get reactive state
+		 */
+		get state() {
+			return timeline.currentState;
+		},
+
+		/**
+		 * Get items
+		 */
+		get items() {
+			return timeline.items;
+		},
+
+		/**
+		 * Cleanup
+		 */
+		destroy(): void {
+			this.disconnect();
+			timeline.destroy();
+		},
+	};
 }
 
 /**
  * Create an integrated notification feed with transport connection
  */
 export function createNotificationIntegration(config: NotificationIntegrationConfig) {
-  const notifications = new NotificationStore(config.notification);
-  let transport: TransportManager | null = null;
-  let connected = false;
-  
-  // Create transport if configured
-  if (config.transport) {
-    transport = new TransportManager({
-      ...config.transport,
-      baseUrl: config.baseUrl,
-      accessToken: config.accessToken
-    });
-    
-    notifications.connectTransport(transport);
-  }
+	const notifications = new NotificationStore(config.notification);
+	let transport: TransportManager | null = null;
+	let connected = false;
 
-  return {
-    store: notifications,
-    transport,
-    
-    /**
-     * Connect to the server and load initial data
-     */
-    async connect(): Promise<void> {
-      if (connected) return;
-      
-      try {
-        // Connect transport if available
-        if (transport) {
-          await transport.connect();
-        }
-        
-        // Load initial notification data
-        await notifications.loadInitial(config.baseUrl, config.accessToken);
-        connected = true;
-      } catch (error) {
-        const normalized = normalizeError(error, 'Failed to connect notifications');
-        realtimeErrorBoundary.handleError(normalized);
-        throw normalized;
-      }
-    },
+	// Create transport if configured
+	if (config.transport) {
+		transport = new TransportManager({
+			...config.transport,
+			baseUrl: config.baseUrl,
+			accessToken: config.accessToken,
+		});
 
-    /**
-     * Disconnect from the server
-     */
-    disconnect(): void {
-      if (transport) {
-        transport.disconnect();
-      }
-      notifications.disconnectTransport();
-      connected = false;
-    },
+		notifications.connectTransport(transport);
+	}
 
-    /**
-     * Load more notifications
-     */
-    async loadMore(): Promise<void> {
-      await notifications.loadMore(config.baseUrl, config.accessToken);
-    },
+	return {
+		store: notifications,
+		transport,
 
-    /**
-     * Mark notification as read
-     */
-    async markAsRead(notificationId: string): Promise<void> {
-      await notifications.markAsRead(notificationId, config.baseUrl, config.accessToken);
-    },
+		/**
+		 * Connect to the server and load initial data
+		 */
+		async connect(): Promise<void> {
+			if (connected) return;
 
-    /**
-     * Mark all notifications as read
-     */
-    async markAllAsRead(): Promise<void> {
-      await notifications.markAllAsRead(config.baseUrl, config.accessToken);
-    },
+			try {
+				// Connect transport if available
+				if (transport) {
+					await transport.connect();
+				}
 
-    /**
-     * Dismiss notification
-     */
-    async dismiss(notificationId: string): Promise<void> {
-      await notifications.dismissNotification(notificationId, config.baseUrl, config.accessToken);
-    },
+				// Load initial notification data
+				await notifications.loadInitial(config.baseUrl, config.accessToken);
+				connected = true;
+			} catch (error) {
+				const normalized = normalizeError(error, 'Failed to connect notifications');
+				realtimeErrorBoundary.handleError(normalized);
+				throw normalized;
+			}
+		},
 
-    /**
-     * Toggle grouping
-     */
-    toggleGrouping(): void {
-      notifications.toggleGrouping();
-    },
+		/**
+		 * Disconnect from the server
+		 */
+		disconnect(): void {
+			if (transport) {
+				transport.disconnect();
+			}
+			notifications.disconnectTransport();
+			connected = false;
+		},
 
-    /**
-     * Refresh notifications
-     */
-    async refresh(): Promise<void> {
-      await notifications.refresh(config.baseUrl, config.accessToken);
-    },
+		/**
+		 * Load more notifications
+		 */
+		async loadMore(): Promise<void> {
+			await notifications.loadMore(config.baseUrl, config.accessToken);
+		},
 
-    /**
-     * Get reactive state
-     */
-    get state() {
-      return notifications.currentState;
-    },
+		/**
+		 * Mark notification as read
+		 */
+		async markAsRead(notificationId: string): Promise<void> {
+			await notifications.markAsRead(notificationId, config.baseUrl, config.accessToken);
+		},
 
-    /**
-     * Get notifications
-     */
-    get items() {
-      return notifications.items;
-    },
+		/**
+		 * Mark all notifications as read
+		 */
+		async markAllAsRead(): Promise<void> {
+			await notifications.markAllAsRead(config.baseUrl, config.accessToken);
+		},
 
-    /**
-     * Get notification groups
-     */
-    get groups() {
-      return notifications.groups;
-    },
+		/**
+		 * Dismiss notification
+		 */
+		async dismiss(notificationId: string): Promise<void> {
+			await notifications.dismissNotification(notificationId, config.baseUrl, config.accessToken);
+		},
 
-    /**
-     * Cleanup
-     */
-    destroy(): void {
-      this.disconnect();
-      notifications.destroy();
-    }
-  };
+		/**
+		 * Toggle grouping
+		 */
+		toggleGrouping(): void {
+			notifications.toggleGrouping();
+		},
+
+		/**
+		 * Refresh notifications
+		 */
+		async refresh(): Promise<void> {
+			await notifications.refresh(config.baseUrl, config.accessToken);
+		},
+
+		/**
+		 * Get reactive state
+		 */
+		get state() {
+			return notifications.currentState;
+		},
+
+		/**
+		 * Get notifications
+		 */
+		get items() {
+			return notifications.items;
+		},
+
+		/**
+		 * Get notification groups
+		 */
+		get groups() {
+			return notifications.groups;
+		},
+
+		/**
+		 * Cleanup
+		 */
+		destroy(): void {
+			this.disconnect();
+			notifications.destroy();
+		},
+	};
 }
 
 /**
  * Utility to create a shared transport for multiple integrations
  */
 export function createSharedTransport(config: TransportConfig): TransportManager {
-  return new TransportManager(config);
+	return new TransportManager(config);
 }
 
 /**
  * Real-time status indicator component props
  */
 export interface RealtimeIndicatorProps {
-  connected: boolean;
-  error?: string | null;
-  reconnecting?: boolean;
-  className?: string;
+	connected: boolean;
+	error?: string | null;
+	reconnecting?: boolean;
+	className?: string;
 }
 
 type TimelineIntegrationInstance = ReturnType<typeof createTimelineIntegration>;
@@ -345,13 +341,13 @@ type RealtimeEnhancements = {
 type ComponentRenderer<P extends UnknownRecord> = (props: P) => unknown;
 
 function isTimelineIntegration(
-	integration: RealtimeIntegration,
+	integration: RealtimeIntegration
 ): integration is TimelineIntegrationInstance {
 	return 'loadOlder' in integration;
 }
 
 function isNotificationIntegration(
-	integration: RealtimeIntegration,
+	integration: RealtimeIntegration
 ): integration is NotificationIntegrationInstance {
 	return 'loadMore' in integration;
 }
@@ -361,7 +357,7 @@ function isNotificationIntegration(
  */
 export function withRealtime<TProps extends UnknownRecord>(
 	Component: ComponentRenderer<TProps & UnknownRecord & RealtimeEnhancements>,
-	integration: RealtimeIntegration,
+	integration: RealtimeIntegration
 ) {
 	return function RealtimeWrapper(props: TProps) {
 		let mounted = false;
@@ -380,31 +376,43 @@ export function withRealtime<TProps extends UnknownRecord>(
 			};
 		});
 
-			const handlerProps = props as Partial<RealtimeEnhancements>;
-			const rawIntegrationState = integration.state;
-			const isConnected =
-				typeof rawIntegrationState === 'object' &&
-				rawIntegrationState !== null &&
-				'connected' in rawIntegrationState &&
-				typeof (rawIntegrationState as { connected?: unknown }).connected === 'boolean'
-					? (rawIntegrationState as { connected: boolean }).connected
-					: false;
-			const timelineIntegration = isTimelineIntegration(integration) ? integration : null;
-			const notificationIntegration = isNotificationIntegration(integration) ? integration : null;
+		const handlerProps = props as Partial<RealtimeEnhancements>;
+		const rawIntegrationState = integration.state;
+		const isConnected =
+			typeof rawIntegrationState === 'object' &&
+			rawIntegrationState !== null &&
+			'connected' in rawIntegrationState &&
+			typeof (rawIntegrationState as { connected?: unknown }).connected === 'boolean'
+				? (rawIntegrationState as { connected: boolean }).connected
+				: false;
+		const timelineIntegration = isTimelineIntegration(integration) ? integration : null;
+		const notificationIntegration = isNotificationIntegration(integration) ? integration : null;
 
-			const enhancedProps: RealtimeEnhancements = {
-				connected: isConnected,
+		const enhancedProps: RealtimeEnhancements = {
+			connected: isConnected,
 			onLoadMore:
 				handlerProps.onLoadMore ??
 				(notificationIntegration
-					? () => invokeAsync(() => notificationIntegration.loadMore(), 'Failed to load more notifications')
+					? () =>
+							invokeAsync(
+								() => notificationIntegration.loadMore(),
+								'Failed to load more notifications'
+							)
 					: timelineIntegration
-						? () => invokeAsync(() => timelineIntegration.loadOlder(), 'Failed to load older timeline items')
+						? () =>
+								invokeAsync(
+									() => timelineIntegration.loadOlder(),
+									'Failed to load older timeline items'
+								)
 						: undefined),
 			onLoadPrevious:
 				handlerProps.onLoadPrevious ??
 				(timelineIntegration
-					? () => invokeAsync(() => timelineIntegration.loadNewer(), 'Failed to load newer timeline items')
+					? () =>
+							invokeAsync(
+								() => timelineIntegration.loadNewer(),
+								'Failed to load newer timeline items'
+							)
 					: undefined),
 			onMarkAsRead:
 				handlerProps.onMarkAsRead ??
@@ -412,7 +420,7 @@ export function withRealtime<TProps extends UnknownRecord>(
 					? (notificationId: string) =>
 							invokeAsync(
 								() => notificationIntegration.markAsRead(notificationId),
-								'Failed to mark notification as read',
+								'Failed to mark notification as read'
 							)
 					: undefined),
 			onMarkAllAsRead:
@@ -421,7 +429,7 @@ export function withRealtime<TProps extends UnknownRecord>(
 					? () =>
 							invokeAsync(
 								() => notificationIntegration.markAllAsRead(),
-								'Failed to mark all notifications as read',
+								'Failed to mark all notifications as read'
 							)
 					: undefined),
 			onDismiss:
@@ -430,21 +438,21 @@ export function withRealtime<TProps extends UnknownRecord>(
 					? (notificationId: string) =>
 							invokeAsync(
 								() => notificationIntegration.dismiss(notificationId),
-								'Failed to dismiss notification',
+								'Failed to dismiss notification'
 							)
 					: undefined),
 		};
 
-			const stateProps =
-				typeof rawIntegrationState === 'object' && rawIntegrationState !== null
-					? (rawIntegrationState as unknown as UnknownRecord)
-					: {};
+		const stateProps =
+			typeof rawIntegrationState === 'object' && rawIntegrationState !== null
+				? (rawIntegrationState as unknown as UnknownRecord)
+				: {};
 
-			const combinedProps = {
-				...props,
-				...stateProps,
-				...enhancedProps,
-			} as TProps & UnknownRecord & RealtimeEnhancements;
+		const combinedProps = {
+			...props,
+			...stateProps,
+			...enhancedProps,
+		} as TProps & UnknownRecord & RealtimeEnhancements;
 
 		return Component(combinedProps);
 	};

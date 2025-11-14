@@ -21,6 +21,7 @@ The Filters component group provides a comprehensive content filtering system fo
 ### **Key Features**:
 
 #### 🔇 **Content Filtering**
+
 - Keyword and phrase filtering
 - Regular expression support (advanced)
 - Case-insensitive matching
@@ -28,6 +29,7 @@ The Filters component group provides a comprehensive content filtering system fo
 - Whole word matching option
 
 #### 📍 **Context-Specific Filters**
+
 - Home timeline
 - Notifications
 - Public timelines
@@ -35,17 +37,20 @@ The Filters component group provides a comprehensive content filtering system fo
 - User profiles
 
 #### ⏰ **Expiration Management**
+
 - Time-limited filters
 - Permanent filters
 - Auto-cleanup of expired filters
 - Flexible duration options
 
 #### ⚠️ **Display Modes**
+
 - Warning mode (show with content warning)
 - Hide mode (completely remove from view)
 - User-configurable per filter
 
 #### 🔍 **Smart Matching**
+
 - Whole word boundaries
 - Partial text matching
 - Case-insensitive by default
@@ -59,64 +64,64 @@ The Filters component group provides a comprehensive content filtering system fo
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@equaltoai/greater-components-fediverse';
-  
-  const filtersHandlers = {
-    onFetchFilters: async () => {
-      const res = await fetch('/api/filters', {
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-      return res.json();
-    },
-    
-    onCreateFilter: async (filter) => {
-      const res = await fetch('/api/filters', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
-        },
-        body: JSON.stringify(filter)
-      });
-      return res.json();
-    },
-    
-    onUpdateFilter: async (filterId, filter) => {
-      const res = await fetch(`/api/filters/${filterId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
-        },
-        body: JSON.stringify(filter)
-      });
-      return res.json();
-    },
-    
-    onDeleteFilter: async (filterId) => {
-      await fetch(`/api/filters/${filterId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-    }
-  };
-  
-  function getAuthToken(): string {
-    return localStorage.getItem('authToken') || '';
-  }
+	import { Filters } from '@equaltoai/greater-components-fediverse';
+
+	const filtersHandlers = {
+		onFetchFilters: async () => {
+			const res = await fetch('/api/filters', {
+				headers: {
+					Authorization: `Bearer ${getAuthToken()}`,
+				},
+			});
+			return res.json();
+		},
+
+		onCreateFilter: async (filter) => {
+			const res = await fetch('/api/filters', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${getAuthToken()}`,
+				},
+				body: JSON.stringify(filter),
+			});
+			return res.json();
+		},
+
+		onUpdateFilter: async (filterId, filter) => {
+			const res = await fetch(`/api/filters/${filterId}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${getAuthToken()}`,
+				},
+				body: JSON.stringify(filter),
+			});
+			return res.json();
+		},
+
+		onDeleteFilter: async (filterId) => {
+			await fetch(`/api/filters/${filterId}`, {
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${getAuthToken()}`,
+				},
+			});
+		},
+	};
+
+	function getAuthToken(): string {
+		return localStorage.getItem('authToken') || '';
+	}
 </script>
 
 <Filters.Root handlers={filtersHandlers}>
-  <div class="filters-interface">
-    <h1>Content Filters</h1>
-    
-    <Filters.Manager />
-    <Filters.Editor />
-  </div>
+	<div class="filters-interface">
+		<h1>Content Filters</h1>
+
+		<Filters.Manager />
+		<Filters.Editor />
+	</div>
 </Filters.Root>
 ```
 
@@ -124,24 +129,21 @@ The Filters component group provides a comprehensive content filtering system fo
 
 ```svelte
 <script lang="ts">
-  import { Filters, Timeline } from '@equaltoai/greater-components-fediverse';
-  
-  // ... filters handlers ...
+	import { Filters, Timeline } from '@equaltoai/greater-components-fediverse';
+
+	// ... filters handlers ...
 </script>
 
 <Filters.Root handlers={filtersHandlers}>
-  <Timeline.Root>
-    <Timeline.Feed>
-      {#snippet item(status)}
-        <Filters.FilteredContent 
-          content={status.content}
-          context="home"
-        >
-          <Status.Card {status} />
-        </Filters.FilteredContent>
-      {/snippet}
-    </Timeline.Feed>
-  </Timeline.Root>
+	<Timeline.Root>
+		<Timeline.Feed>
+			{#snippet item(status)}
+				<Filters.FilteredContent content={status.content} context="home">
+					<Status.Card {status} />
+				</Filters.FilteredContent>
+			{/snippet}
+		</Timeline.Feed>
+	</Timeline.Root>
 </Filters.Root>
 ```
 
@@ -155,23 +157,23 @@ Complete filter management interface:
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@equaltoai/greater-components-fediverse';
-  
-  const handlers = {
-    // ... filter handlers ...
-  };
+	import { Filters } from '@equaltoai/greater-components-fediverse';
+
+	const handlers = {
+		// ... filter handlers ...
+	};
 </script>
 
 <Filters.Root {handlers}>
-  <div class="page">
-    <header>
-      <h1>Muted Words & Phrases</h1>
-      <p>Hide posts containing specific keywords</p>
-    </header>
-    
-    <Filters.Manager />
-    <Filters.Editor />
-  </div>
+	<div class="page">
+		<header>
+			<h1>Muted Words & Phrases</h1>
+			<p>Hide posts containing specific keywords</p>
+		</header>
+
+		<Filters.Manager />
+		<Filters.Editor />
+	</div>
 </Filters.Root>
 ```
 
@@ -181,25 +183,25 @@ Apply filters to timeline content:
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@equaltoai/greater-components-fediverse';
-  
-  let posts = $state([]);
+	import { Filters } from '@equaltoai/greater-components-fediverse';
+
+	let posts = $state([]);
 </script>
 
 <Filters.Root handlers={filtersHandlers}>
-  <div class="timeline">
-    {#each posts as post}
-      <Filters.FilteredContent 
-        content={post.content}
-        context="home"
-        onReveal={(filters) => {
-          console.log('User revealed filtered content:', filters);
-        }}
-      >
-        <PostCard {post} />
-      </Filters.FilteredContent>
-    {/each}
-  </div>
+	<div class="timeline">
+		{#each posts as post}
+			<Filters.FilteredContent
+				content={post.content}
+				context="home"
+				onReveal={(filters) => {
+					console.log('User revealed filtered content:', filters);
+				}}
+			>
+				<PostCard {post} />
+			</Filters.FilteredContent>
+		{/each}
+	</div>
 </Filters.Root>
 ```
 
@@ -209,26 +211,26 @@ Quick filter from context menu:
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@equaltoai/greater-components-fediverse';
-  
-  async function quickFilter(phrase: string) {
-    await handlers.onCreateFilter?.({
-      phrase,
-      context: ['home', 'public'],
-      expiresIn: null,
-      irreversible: false,
-      wholeWord: true
-    });
-  }
+	import { Filters } from '@equaltoai/greater-components-fediverse';
+
+	async function quickFilter(phrase: string) {
+		await handlers.onCreateFilter?.({
+			phrase,
+			context: ['home', 'public'],
+			expiresIn: null,
+			irreversible: false,
+			wholeWord: true,
+		});
+	}
 </script>
 
 <Filters.Root handlers={filtersHandlers}>
-  <div class="post">
-    <div class="post-content">{content}</div>
-    <button onclick={() => quickFilter(selectedWord)}>
-      Mute "{selectedWord}"
-    </button>
-  </div>
+	<div class="post">
+		<div class="post-content">{content}</div>
+		<button onclick={() => quickFilter(selectedWord)}>
+			Mute "{selectedWord}"
+		</button>
+	</div>
 </Filters.Root>
 ```
 
@@ -246,7 +248,7 @@ const matchedFilters = filtersContext.checkFilters(content, context);
 
 // Content is never sent to server for filtering
 if (matchedFilters.length > 0) {
-  // Hide or warn about content
+	// Hide or warn about content
 }
 ```
 
@@ -257,13 +259,13 @@ Filters are user-specific and private:
 ```typescript
 // Server-side: only return user's own filters
 export async function GET({ request }) {
-  const user = await authenticateUser(request);
-  
-  const filters = await db.filters.find({
-    userId: user.id
-  });
-  
-  return json(filters);
+	const user = await authenticateUser(request);
+
+	const filters = await db.filters.find({
+		userId: user.id,
+	});
+
+	return json(filters);
 }
 ```
 
@@ -275,17 +277,18 @@ Validate regex patterns to prevent ReDoS:
 import { z } from 'zod';
 
 const filterSchema = z.object({
-  phrase: z.string()
-    .max(200, 'Filter phrase too long')
-    .refine((phrase) => {
-      // Prevent catastrophic backtracking
-      try {
-        new RegExp(phrase);
-        return true;
-      } catch {
-        return false;
-      }
-    }, 'Invalid regex pattern')
+	phrase: z
+		.string()
+		.max(200, 'Filter phrase too long')
+		.refine((phrase) => {
+			// Prevent catastrophic backtracking
+			try {
+				new RegExp(phrase);
+				return true;
+			} catch {
+				return false;
+			}
+		}, 'Invalid regex pattern'),
 });
 ```
 
@@ -297,26 +300,26 @@ Filters components use CSS variables:
 
 ```css
 :root {
-  /* Primary Colors */
-  --primary-color: #1d9bf0;
-  --primary-color-dark: #1a8cd8;
-  
-  /* Text Colors */
-  --text-primary: #0f1419;
-  --text-secondary: #536471;
-  
-  /* Background Colors */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f7f9fa;
-  --bg-hover: #eff3f4;
-  
-  /* Border Colors */
-  --border-color: #e1e8ed;
-  
-  /* Filter-specific */
-  --filter-warning-bg: rgba(255, 152, 0, 0.1);
-  --filter-warning-border: rgba(255, 152, 0, 0.3);
-  --filter-warning-color: #ff9800;
+	/* Primary Colors */
+	--primary-color: #1d9bf0;
+	--primary-color-dark: #1a8cd8;
+
+	/* Text Colors */
+	--text-primary: #0f1419;
+	--text-secondary: #536471;
+
+	/* Background Colors */
+	--bg-primary: #ffffff;
+	--bg-secondary: #f7f9fa;
+	--bg-hover: #eff3f4;
+
+	/* Border Colors */
+	--border-color: #e1e8ed;
+
+	/* Filter-specific */
+	--filter-warning-bg: rgba(255, 152, 0, 0.1);
+	--filter-warning-border: rgba(255, 152, 0, 0.3);
+	--filter-warning-color: #ff9800;
 }
 ```
 
@@ -324,13 +327,16 @@ Filters components use CSS variables:
 
 ```svelte
 <Filters.Root handlers={filtersHandlers}>
-  <div class="custom-filters" style="
+	<div
+		class="custom-filters"
+		style="
     --primary-color: #7c3aed;
     --filter-warning-color: #f59e0b;
-  ">
-    <Filters.Manager />
-    <Filters.Editor />
-  </div>
+  "
+	>
+		<Filters.Manager />
+		<Filters.Editor />
+	</div>
 </Filters.Root>
 ```
 
@@ -349,12 +355,12 @@ All Filters components follow WCAG 2.1 Level AA:
 
 ### Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
+| Shortcut            | Action                    |
+| ------------------- | ------------------------- |
 | `Tab` / `Shift+Tab` | Navigate between elements |
-| `Enter` / `Space` | Activate buttons |
-| `Escape` | Close modals |
-| `Arrow Keys` | Navigate filter list |
+| `Enter` / `Space`   | Activate buttons          |
+| `Escape`            | Close modals              |
+| `Arrow Keys`        | Navigate filter list      |
 
 ---
 
@@ -382,33 +388,33 @@ import { render, screen, fireEvent } from '@testing-library/svelte';
 import { Filters } from '@equaltoai/greater-components-fediverse';
 
 describe('Filters', () => {
-  it('creates and applies filter', async () => {
-    const onCreateFilter = vi.fn();
-    
-    render(Filters.Root, {
-      props: {
-        handlers: { onCreateFilter }
-      }
-    });
-    
-    render(Filters.Editor);
-    
-    // Fill filter form
-    const phraseInput = screen.getByLabelText('Keyword or phrase');
-    await fireEvent.input(phraseInput, {
-      target: { value: 'spoilers' }
-    });
-    
-    // Submit
-    const submitButton = screen.getByText('Create Filter');
-    await fireEvent.click(submitButton);
-    
-    expect(onCreateFilter).toHaveBeenCalledWith(
-      expect.objectContaining({
-        phrase: 'spoilers'
-      })
-    );
-  });
+	it('creates and applies filter', async () => {
+		const onCreateFilter = vi.fn();
+
+		render(Filters.Root, {
+			props: {
+				handlers: { onCreateFilter },
+			},
+		});
+
+		render(Filters.Editor);
+
+		// Fill filter form
+		const phraseInput = screen.getByLabelText('Keyword or phrase');
+		await fireEvent.input(phraseInput, {
+			target: { value: 'spoilers' },
+		});
+
+		// Submit
+		const submitButton = screen.getByText('Create Filter');
+		await fireEvent.click(submitButton);
+
+		expect(onCreateFilter).toHaveBeenCalledWith(
+			expect.objectContaining({
+				phrase: 'spoilers',
+			})
+		);
+	});
 });
 ```
 
@@ -437,24 +443,28 @@ For detailed documentation on individual components:
 ## 💡 Tips & Best Practices
 
 ### Filter Creation
+
 - Use whole word matching for common words
 - Set appropriate expiration dates
 - Test filters before saving
 - Document filter purposes
 
 ### Performance
+
 - Limit number of active filters
 - Use simple patterns when possible
 - Clean up expired filters regularly
 - Cache filter checks client-side
 
 ### User Experience
+
 - Provide clear filter descriptions
 - Show what's being filtered
 - Allow easy filter management
 - Offer quick filter creation
 
 ### Privacy
+
 - Keep filters client-side
 - Don't share filter data
 - Allow export/import
@@ -467,9 +477,10 @@ For detailed documentation on individual components:
 ### Issue: Filters not applying
 
 **Solution**: Check context matching:
+
 ```typescript
 // Ensure correct context
-<Filters.FilteredContent 
+<Filters.FilteredContent
   content={post.content}
   context="home"  // Must match filter contexts
 >
@@ -478,33 +489,35 @@ For detailed documentation on individual components:
 ### Issue: Regex patterns not working
 
 **Solution**: Validate regex:
+
 ```typescript
 function validateRegex(pattern: string): boolean {
-  try {
-    new RegExp(pattern);
-    return true;
-  } catch {
-    return false;
-  }
+	try {
+		new RegExp(pattern);
+		return true;
+	} catch {
+		return false;
+	}
 }
 ```
 
 ### Issue: Filters not persisting
 
 **Solution**: Check save handler:
+
 ```typescript
 onCreateFilter: async (filter) => {
-  const res = await fetch('/api/filters', {
-    method: 'POST',
-    body: JSON.stringify(filter)
-  });
-  
-  if (!res.ok) {
-    throw new Error('Failed to save filter');
-  }
-  
-  return res.json();
-}
+	const res = await fetch('/api/filters', {
+		method: 'POST',
+		body: JSON.stringify(filter),
+	});
+
+	if (!res.ok) {
+		throw new Error('Failed to save filter');
+	}
+
+	return res.json();
+};
 ```
 
 ---
@@ -521,4 +534,3 @@ See the [examples directory](../../examples/) for complete implementations:
 ---
 
 **For detailed component documentation, see individual component pages linked above.**
-

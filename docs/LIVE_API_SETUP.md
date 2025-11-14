@@ -22,10 +22,10 @@ localStorage.setItem('lesser_token', 'your-auth-token-here');
 import { createLesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 const adapter = createLesserGraphQLAdapter({
-  httpEndpoint: 'https://dev.lesser.host/api/graphql',
-  wsEndpoint: 'wss://dev.lesser.host/api/graphql',
-  token: localStorage.getItem('lesser_token') || '',
-  debug: true
+	httpEndpoint: 'https://dev.lesser.host/api/graphql',
+	wsEndpoint: 'wss://dev.lesser.host/api/graphql',
+	token: localStorage.getItem('lesser_token') || '',
+	debug: true,
 });
 ```
 
@@ -52,11 +52,13 @@ console.log('Push enabled:', !!push);
 ### ProfilePageExample
 
 1. Set your Lesser token:
+
 ```javascript
 localStorage.setItem('lesser_token', 'your-token');
 ```
 
 2. Run the playground:
+
 ```bash
 pnpm --filter @equaltoai/playground dev
 ```
@@ -70,6 +72,7 @@ Same setup - just set `lesser_token` in localStorage and the example will connec
 ### PushNotificationsExample
 
 For push notifications, you'll also need:
+
 1. A registered service worker
 2. Browser notification permission
 3. VAPID public key from Lesser (ask the team)
@@ -88,8 +91,9 @@ curl -X POST https://dev.lesser.host/api/graphql \
 ```
 
 Expected response:
+
 ```json
-{"data":{"__typename":"Query"}}
+{ "data": { "__typename": "Query" } }
 ```
 
 ### Test with GraphQL Playground/Altair
@@ -106,62 +110,63 @@ Expected response:
 With the live API, you can now test all the GraphQL operations we implemented:
 
 ### ✅ Followers & Following
+
 ```graphql
 query {
-  followers(username: "alice", limit: 10) {
-    actors {
-      id
-      username
-      displayName
-    }
-    totalCount
-    nextCursor
-  }
+	followers(username: "alice", limit: 10) {
+		actors {
+			id
+			username
+			displayName
+		}
+		totalCount
+		nextCursor
+	}
 }
 ```
 
 ### ✅ User Preferences
+
 ```graphql
 query {
-  userPreferences {
-    posting {
-      defaultVisibility
-    }
-    reading {
-      expandMedia
-    }
-    streaming {
-      defaultQuality
-    }
-  }
+	userPreferences {
+		posting {
+			defaultVisibility
+		}
+		reading {
+			expandMedia
+		}
+		streaming {
+			defaultQuality
+		}
+	}
 }
 ```
 
 ### ✅ Push Subscriptions
+
 ```graphql
 query {
-  pushSubscription {
-    id
-    endpoint
-    alerts {
-      follow
-      mention
-    }
-  }
+	pushSubscription {
+		id
+		endpoint
+		alerts {
+			follow
+			mention
+		}
+	}
 }
 ```
 
 ### ✅ Profile Updates
+
 ```graphql
 mutation {
-  updateProfile(input: {
-    displayName: "New Name"
-    bio: "New bio"
-  }) {
-    id
-    displayName
-    summary
-  }
+	updateProfile(input: { displayName: "New Name", bio: "New bio" }) {
+		id
+		displayName
+		summary
+	}
 }
 ```
 
@@ -170,6 +175,7 @@ mutation {
 ## Rate Limits & Quotas
 
 Check with the Lesser team for:
+
 - Rate limits (queries per minute)
 - Concurrent connection limits
 - WebSocket subscription limits
@@ -183,14 +189,15 @@ Check with the Lesser team for:
 
 ```typescript
 const adapter = createLesserGraphQLAdapter({
-  httpEndpoint: 'https://dev.lesser.host/api/graphql',
-  wsEndpoint: 'wss://dev.lesser.host/api/graphql',
-  token: yourToken,
-  debug: true // <-- Enables console logging
+	httpEndpoint: 'https://dev.lesser.host/api/graphql',
+	wsEndpoint: 'wss://dev.lesser.host/api/graphql',
+	token: yourToken,
+	debug: true, // <-- Enables console logging
 });
 ```
 
 Debug mode will log:
+
 - All GraphQL requests and responses
 - WebSocket connection events
 - Cache hits and misses
@@ -199,6 +206,7 @@ Debug mode will log:
 ### Check Network Tab
 
 Open browser DevTools → Network tab to inspect:
+
 - GraphQL request payloads
 - Response data
 - Timing information
@@ -207,16 +215,19 @@ Open browser DevTools → Network tab to inspect:
 ### Common Issues
 
 **401 Unauthorized**
+
 - Token expired or invalid
 - Token not included in Authorization header
 - Check token format: `Bearer YOUR_TOKEN`
 
 **Network Error**
+
 - Check internet connection
 - Verify endpoint URL is correct
 - Check for CORS issues (should be handled server-side)
 
 **GraphQL Validation Error**
+
 - Query doesn't match schema
 - Run `pnpm graphql-codegen` to regenerate types
 - Check if you're using deprecated fields
@@ -229,10 +240,10 @@ Open browser DevTools → Network tab to inspect:
 
 ```typescript
 const adapter = createLesserGraphQLAdapter({
-  httpEndpoint: 'https://dev.lesser.host/api/graphql',
-  wsEndpoint: 'wss://dev.lesser.host/api/graphql',
-  token: import.meta.env.VITE_LESSER_TOKEN,
-  debug: true
+	httpEndpoint: 'https://dev.lesser.host/api/graphql',
+	wsEndpoint: 'wss://dev.lesser.host/api/graphql',
+	token: import.meta.env.VITE_LESSER_TOKEN,
+	debug: true,
 });
 ```
 
@@ -240,14 +251,15 @@ const adapter = createLesserGraphQLAdapter({
 
 ```typescript
 const adapter = createLesserGraphQLAdapter({
-  httpEndpoint: import.meta.env.VITE_LESSER_GRAPHQL_ENDPOINT,
-  wsEndpoint: import.meta.env.VITE_LESSER_GRAPHQL_WS_ENDPOINT,
-  token: getUserToken(), // From your auth system
-  debug: false
+	httpEndpoint: import.meta.env.VITE_LESSER_GRAPHQL_ENDPOINT,
+	wsEndpoint: import.meta.env.VITE_LESSER_GRAPHQL_WS_ENDPOINT,
+	token: getUserToken(), // From your auth system
+	debug: false,
 });
 ```
 
 Add to `.env`:
+
 ```bash
 VITE_LESSER_GRAPHQL_ENDPOINT=https://dev.lesser.host/api/graphql
 VITE_LESSER_GRAPHQL_WS_ENDPOINT=wss://dev.lesser.host/api/graphql
@@ -280,11 +292,13 @@ Now that the live API is available:
 ## Support
 
 For API issues or questions:
+
 - Check Lesser API documentation
 - Contact Lesser team for API keys/tokens
 - Report GraphQL schema issues upstream
 
 For Greater Components integration issues:
+
 - See [GraphQL Integration Guide](./components/Profile/GraphQL-Integration.md)
 - Check [examples](../apps/playground/stories/examples/)
 - File issue on Greater Components repo
@@ -294,4 +308,3 @@ For Greater Components integration issues:
 **API Status:** ✅ **LIVE AND READY**  
 **Updated:** October 31, 2025  
 **Endpoint:** `https://dev.lesser.host/api/graphql`
-

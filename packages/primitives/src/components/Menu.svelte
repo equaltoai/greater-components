@@ -1,3 +1,15 @@
+<svelte:options
+	customElement={{
+		props: {
+			items: {},
+			orientation: {},
+			class: {},
+			trigger: {},
+			onItemSelect: {},
+		},
+	}}
+/>
+
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
@@ -232,18 +244,6 @@
 		}
 	});
 </script>
-
-<svelte:options
-	customElement={{
-		props: {
-			items: {},
-			orientation: {},
-			class: {},
-			trigger: {},
-			onItemSelect: {}
-		}
-	}}
-/>
 
 <div class="gr-menu-container">
 	{#if trigger}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Bundle Size Analysis Script
- * 
+ *
  * Analyzes bundle sizes across all packages and provides
  * detailed reports on optimization opportunities.
  */
@@ -108,9 +108,7 @@ function printAnalysis(analysis) {
 		console.log(`   ├─ Files: ${pkg.fileCount}`);
 		console.log(`   ├─ Total: ${formatBytes(pkg.totalSize)}`);
 		console.log(`   ├─ Average: ${formatBytes(pkg.avgSize)}`);
-		console.log(
-			`   └─ Largest: ${formatBytes(pkg.largestFile.size)} (${pkg.largestFile.path})\n`
-		);
+		console.log(`   └─ Largest: ${formatBytes(pkg.largestFile.size)} (${pkg.largestFile.path})\n`);
 	}
 
 	// Largest files across all packages
@@ -120,7 +118,9 @@ function printAnalysis(analysis) {
 	const top20 = allFiles.sort((a, b) => b.size - a.size).slice(0, 20);
 
 	top20.forEach((file, index) => {
-		console.log(`   ${String(index + 1).padStart(2)}. ${formatBytes(file.size).padEnd(10)} ${file.path}`);
+		console.log(
+			`   ${String(index + 1).padStart(2)}. ${formatBytes(file.size).padEnd(10)} ${file.path}`
+		);
 	});
 
 	// Optimization recommendations
@@ -128,21 +128,19 @@ function printAnalysis(analysis) {
 
 	const largeFiles = allFiles.filter((f) => f.size > 50 * 1024); // > 50KB
 	if (largeFiles.length > 0) {
-		console.log(
-			`   ⚠️  ${largeFiles.length} files exceed 50KB - consider code splitting`
-		);
+		console.log(`   ⚠️  ${largeFiles.length} files exceed 50KB - consider code splitting`);
 	}
 
 	const iconsPkg = analysis.find((p) => p.packageName === 'icons');
 	if (iconsPkg && iconsPkg.totalSize > 100 * 1024) {
-		console.log(`   ⚠️  Icons package is ${formatBytes(iconsPkg.totalSize)} - ensure tree-shaking works`);
+		console.log(
+			`   ⚠️  Icons package is ${formatBytes(iconsPkg.totalSize)} - ensure tree-shaking works`
+		);
 	}
 
 	const avgLarge = analysis.filter((p) => p.avgSize > 10 * 1024);
 	if (avgLarge.length > 0) {
-		console.log(
-			`   ⚠️  ${avgLarge.length} packages have average file size > 10KB`
-		);
+		console.log(`   ⚠️  ${avgLarge.length} packages have average file size > 10KB`);
 	}
 
 	console.log('\n' + '='.repeat(80) + '\n');
@@ -191,4 +189,3 @@ main().catch((error) => {
 	console.error('Error analyzing bundles:', error);
 	process.exit(1);
 });
-

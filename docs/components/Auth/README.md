@@ -11,6 +11,7 @@
 The Auth component family provides comprehensive authentication and authorization functionality for Fediverse applications, with a focus on modern, passwordless authentication methods while maintaining compatibility with traditional email/password flows.
 
 ### **Key Features**:
+
 - ✅ **Passwordless Authentication**: WebAuthn (biometric/security keys) and crypto wallets (WalletConnect)
 - ✅ **Two-Factor Authentication**: TOTP and backup codes
 - ✅ **OAuth 2.0**: Third-party application consent
@@ -34,6 +35,7 @@ Auth components follow the **compound component pattern**:
 ```
 
 The `Auth.Root` component provides context that all child components consume, enabling:
+
 - Shared authentication state
 - Event handlers
 - Error management
@@ -44,17 +46,20 @@ The `Auth.Root` component provides context that all child components consume, en
 ## 📦 Components
 
 ### **Core Components**:
+
 1. [**Root**](./Root.md) - Context provider for all auth components
 2. [**LoginForm**](./LoginForm.md) - Email/password login
 3. [**RegisterForm**](./RegisterForm.md) - Account registration
 4. [**PasswordReset**](./PasswordReset.md) - Password recovery
 
 ### **Modern Authentication**:
+
 5. [**WebAuthnSetup**](./WebAuthnSetup.md) - Biometric/security key setup
 6. [**WalletConnect**](./WalletConnect.md) - Crypto wallet authentication
 7. [**OAuthConsent**](./OAuthConsent.md) - OAuth 2.0 consent flow
 
 ### **Two-Factor Authentication**:
+
 8. [**TwoFactorSetup**](./TwoFactorSetup.md) - Enable 2FA with TOTP
 9. [**TwoFactorVerify**](./TwoFactorVerify.md) - Verify 2FA codes
 10. [**BackupCodes**](./BackupCodes.md) - Manage 2FA backup codes
@@ -67,24 +72,24 @@ The `Auth.Root` component provides context that all child components consume, en
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@equaltoai/greater-components-fediverse';
+	import { Auth } from '@equaltoai/greater-components-fediverse';
 
-  async function handleLogin({ email, password }) {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    
-    if (response.ok) {
-      const { token } = await response.json();
-      // Store token and redirect
-    }
-  }
+	async function handleLogin({ email, password }) {
+		const response = await fetch('/api/auth/login', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ email, password }),
+		});
+
+		if (response.ok) {
+			const { token } = await response.json();
+			// Store token and redirect
+		}
+	}
 </script>
 
 <Auth.Root handlers={{ onLogin: handleLogin }}>
-  <Auth.LoginForm />
+	<Auth.LoginForm />
 </Auth.Root>
 ```
 
@@ -92,23 +97,23 @@ The `Auth.Root` component provides context that all child components consume, en
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@equaltoai/greater-components-fediverse';
+	import { Auth } from '@equaltoai/greater-components-fediverse';
 
-  async function handleRegister(data) {
-    const response = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    
-    if (response.ok) {
-      // Account created, proceed to verification
-    }
-  }
+	async function handleRegister(data) {
+		const response = await fetch('/api/auth/register', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+
+		if (response.ok) {
+			// Account created, proceed to verification
+		}
+	}
 </script>
 
 <Auth.Root handlers={{ onRegister: handleRegister }}>
-  <Auth.RegisterForm />
+	<Auth.RegisterForm />
 </Auth.Root>
 ```
 
@@ -116,23 +121,23 @@ The `Auth.Root` component provides context that all child components consume, en
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@equaltoai/greater-components-fediverse';
+	import { Auth } from '@equaltoai/greater-components-fediverse';
 
-  async function handleWebAuthnSetup({ credential }) {
-    const response = await fetch('/api/auth/webauthn/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ credential })
-    });
-    
-    if (response.ok) {
-      // WebAuthn credential registered
-    }
-  }
+	async function handleWebAuthnSetup({ credential }) {
+		const response = await fetch('/api/auth/webauthn/register', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ credential }),
+		});
+
+		if (response.ok) {
+			// WebAuthn credential registered
+		}
+	}
 </script>
 
 <Auth.Root handlers={{ onWebAuthnSetup: handleWebAuthnSetup }}>
-  <Auth.WebAuthnSetup />
+	<Auth.WebAuthnSetup />
 </Auth.Root>
 ```
 
@@ -145,17 +150,20 @@ The `Auth.Root` component provides context that all child components consume, en
 Lesser prioritizes passwordless authentication:
 
 **WebAuthn (Biometric/Security Keys)**:
+
 - Face ID / Touch ID
 - Windows Hello
 - Hardware security keys (YubiKey, etc.)
 - Most secure option
 
 **Crypto Wallets**:
+
 - MetaMask
 - WalletConnect
 - Decentralized identity
 
 **Benefits**:
+
 - ✅ No passwords to remember
 - ✅ Phishing-resistant
 - ✅ Hardware-backed security
@@ -174,11 +182,13 @@ Supported for compatibility but considered deprecated in Lesser:
 Additional security layer:
 
 **TOTP (Time-based One-Time Password)**:
+
 - Google Authenticator
 - Authy
 - 1Password
 
 **Backup Codes**:
+
 - Single-use recovery codes
 - For when TOTP device is unavailable
 
@@ -190,153 +200,145 @@ Here's a complete, production-ready authentication flow:
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@equaltoai/greater-components-fediverse';
-  
-  let authStep = $state<'login' | 'register' | 'webauthn' | '2fa' | 'success'>('login');
-  let userId = $state<string | null>(null);
-  let requiresWebAuthn = $state(false);
-  let requires2FA = $state(false);
+	import { Auth } from '@equaltoai/greater-components-fediverse';
 
-  const handlers = {
-    async onLogin({ email, password }) {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      
-      const data = await response.json();
-      
-      if (data.requiresWebAuthn) {
-        requiresWebAuthn = true;
-        authStep = 'webauthn';
-      } else if (data.requires2FA) {
-        requires2FA = true;
-        userId = data.userId;
-        authStep = '2fa';
-      } else if (data.token) {
-        // Successful login
-        authStep = 'success';
-        localStorage.setItem('auth_token', data.token);
-      }
-    },
+	let authStep = $state<'login' | 'register' | 'webauthn' | '2fa' | 'success'>('login');
+	let userId = $state<string | null>(null);
+	let requiresWebAuthn = $state(false);
+	let requires2FA = $state(false);
 
-    async onRegister(data) {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        userId = result.userId;
-        authStep = 'webauthn'; // Setup WebAuthn for new account
-      }
-    },
+	const handlers = {
+		async onLogin({ email, password }) {
+			const response = await fetch('/api/auth/login', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, password }),
+			});
 
-    async onWebAuthnSetup({ credential }) {
-      const response = await fetch('/api/auth/webauthn/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, credential })
-      });
-      
-      if (response.ok) {
-        authStep = 'success';
-      }
-    },
+			const data = await response.json();
 
-    async on2FAVerify({ code }) {
-      const response = await fetch('/api/auth/2fa/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, code })
-      });
-      
-      if (response.ok) {
-        const { token } = await response.json();
-        authStep = 'success';
-        localStorage.setItem('auth_token', token);
-      }
-    }
-  };
+			if (data.requiresWebAuthn) {
+				requiresWebAuthn = true;
+				authStep = 'webauthn';
+			} else if (data.requires2FA) {
+				requires2FA = true;
+				userId = data.userId;
+				authStep = '2fa';
+			} else if (data.token) {
+				// Successful login
+				authStep = 'success';
+				localStorage.setItem('auth_token', data.token);
+			}
+		},
+
+		async onRegister(data) {
+			const response = await fetch('/api/auth/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data),
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				userId = result.userId;
+				authStep = 'webauthn'; // Setup WebAuthn for new account
+			}
+		},
+
+		async onWebAuthnSetup({ credential }) {
+			const response = await fetch('/api/auth/webauthn/register', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ userId, credential }),
+			});
+
+			if (response.ok) {
+				authStep = 'success';
+			}
+		},
+
+		async on2FAVerify({ code }) {
+			const response = await fetch('/api/auth/2fa/verify', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ userId, code }),
+			});
+
+			if (response.ok) {
+				const { token } = await response.json();
+				authStep = 'success';
+				localStorage.setItem('auth_token', token);
+			}
+		},
+	};
 </script>
 
 <div class="auth-container">
-  <Auth.Root {handlers}>
-    {#if authStep === 'login'}
-      <div class="auth-card">
-        <h1>Welcome Back</h1>
-        <Auth.LoginForm />
-        <button onclick={() => authStep = 'register'}>
-          Create an account
-        </button>
-      </div>
-    
-    {:else if authStep === 'register'}
-      <div class="auth-card">
-        <h1>Create Account</h1>
-        <Auth.RegisterForm />
-        <button onclick={() => authStep = 'login'}>
-          Already have an account?
-        </button>
-      </div>
-    
-    {:else if authStep === 'webauthn'}
-      <div class="auth-card">
-        <h1>Setup Security</h1>
-        <p>Add biometric authentication for secure access</p>
-        <Auth.WebAuthnSetup />
-      </div>
-    
-    {:else if authStep === '2fa'}
-      <div class="auth-card">
-        <h1>Two-Factor Authentication</h1>
-        <Auth.TwoFactorVerify />
-      </div>
-    
-    {:else if authStep === 'success'}
-      <div class="auth-card">
-        <h1>Success!</h1>
-        <p>You're logged in.</p>
-      </div>
-    {/if}
-  </Auth.Root>
+	<Auth.Root {handlers}>
+		{#if authStep === 'login'}
+			<div class="auth-card">
+				<h1>Welcome Back</h1>
+				<Auth.LoginForm />
+				<button onclick={() => (authStep = 'register')}> Create an account </button>
+			</div>
+		{:else if authStep === 'register'}
+			<div class="auth-card">
+				<h1>Create Account</h1>
+				<Auth.RegisterForm />
+				<button onclick={() => (authStep = 'login')}> Already have an account? </button>
+			</div>
+		{:else if authStep === 'webauthn'}
+			<div class="auth-card">
+				<h1>Setup Security</h1>
+				<p>Add biometric authentication for secure access</p>
+				<Auth.WebAuthnSetup />
+			</div>
+		{:else if authStep === '2fa'}
+			<div class="auth-card">
+				<h1>Two-Factor Authentication</h1>
+				<Auth.TwoFactorVerify />
+			</div>
+		{:else if authStep === 'success'}
+			<div class="auth-card">
+				<h1>Success!</h1>
+				<p>You're logged in.</p>
+			</div>
+		{/if}
+	</Auth.Root>
 </div>
 
 <style>
-  .auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 1rem;
-  }
+	.auth-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 100vh;
+		padding: 1rem;
+	}
 
-  .auth-card {
-    max-width: 400px;
-    width: 100%;
-    padding: 2rem;
-    background: var(--color-surface);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+	.auth-card {
+		max-width: 400px;
+		width: 100%;
+		padding: 2rem;
+		background: var(--color-surface);
+		border-radius: var(--radius-lg);
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
 
-  h1 {
-    margin-bottom: 1.5rem;
-    font-size: 1.875rem;
-    font-weight: 700;
-  }
+	h1 {
+		margin-bottom: 1.5rem;
+		font-size: 1.875rem;
+		font-weight: 700;
+	}
 
-  button {
-    margin-top: 1rem;
-    color: var(--color-primary);
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-decoration: underline;
-  }
+	button {
+		margin-top: 1rem;
+		color: var(--color-primary);
+		background: none;
+		border: none;
+		cursor: pointer;
+		text-decoration: underline;
+	}
 </style>
 ```
 
@@ -348,22 +350,22 @@ Auth components use CSS custom properties for theming:
 
 ```css
 :root {
-  /* Form Colors */
-  --auth-input-bg: var(--color-surface);
-  --auth-input-border: var(--color-border);
-  --auth-input-focus: var(--color-primary);
-  --auth-input-error: #ef4444;
-  
-  /* Button Colors */
-  --auth-button-bg: var(--color-primary);
-  --auth-button-hover: var(--color-primary-hover);
-  --auth-button-text: white;
-  
-  /* Spacing */
-  --auth-spacing: var(--spacing-md);
-  
-  /* Border Radius */
-  --auth-radius: var(--radius-md);
+	/* Form Colors */
+	--auth-input-bg: var(--color-surface);
+	--auth-input-border: var(--color-border);
+	--auth-input-focus: var(--color-primary);
+	--auth-input-error: #ef4444;
+
+	/* Button Colors */
+	--auth-button-bg: var(--color-primary);
+	--auth-button-hover: var(--color-primary-hover);
+	--auth-button-text: white;
+
+	/* Spacing */
+	--auth-spacing: var(--spacing-md);
+
+	/* Border Radius */
+	--auth-radius: var(--radius-md);
 }
 ```
 
@@ -401,6 +403,7 @@ Auth components have comprehensive test coverage:
 ## 🔒 Security Best Practices
 
 ### **Do's**:
+
 - ✅ Use HTTPS in production
 - ✅ Implement rate limiting
 - ✅ Store tokens securely (httpOnly cookies preferred)
@@ -411,6 +414,7 @@ Auth components have comprehensive test coverage:
 - ✅ Implement CSRF protection
 
 ### **Don'ts**:
+
 - ❌ Store passwords in plain text
 - ❌ Send credentials over HTTP
 - ❌ Implement custom crypto
@@ -432,6 +436,7 @@ Auth components have comprehensive test coverage:
 ## 🔗 API Reference
 
 See individual component documentation:
+
 - [Root](./Root.md)
 - [LoginForm](./LoginForm.md)
 - [RegisterForm](./RegisterForm.md)
@@ -442,4 +447,3 @@ See individual component documentation:
 - [TwoFactorVerify](./TwoFactorVerify.md)
 - [BackupCodes](./BackupCodes.md)
 - [PasswordReset](./PasswordReset.md)
-

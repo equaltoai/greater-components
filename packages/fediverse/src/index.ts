@@ -1,10 +1,10 @@
 /**
  * @fileoverview Greater Fediverse - Specialized UI components for Fediverse applications
- * 
+ *
  * This package provides components specifically designed for building Mastodon,
  * Pleroma, and other ActivityPub-compatible social media interfaces. All components
  * feature real-time capabilities, accessibility support, and TypeScript integration.
- * 
+ *
  * @version 1.0.0
  * @author Greater Contributors
  * @license AGPL-3.0-only
@@ -65,7 +65,7 @@ export type {
  * Advanced ActivityPub Patterns (Phase 2.2)
  * Production-ready components for common ActivityPub use cases.
  * These components use the generic ActivityPub types and work across any platform.
- * 
+ *
  * @public
  */
 export {
@@ -85,13 +85,13 @@ export {
  * Authentication Components (Phase 2.3)
  * Complete authentication flow for ActivityPub/Fediverse applications.
  * Supports email/password, WebAuthn, OAuth, 2FA, and password reset.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```svelte
  * import * as Auth from '@equaltoai/greater-components-fediverse/Auth';
- * 
+ *
  * <Auth.Root {handlers}>
  *   <Auth.LoginForm />
  * </Auth.Root>
@@ -116,21 +116,21 @@ export type {
  * GraphQL Adapter for Lesser (Phase 2.3)
  * Type-safe GraphQL client with pre-built queries, mutations, and subscriptions
  * for Lesser's ActivityPub API.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```typescript
  * import { createLesserClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
- * 
+ *
  * const client = createLesserClient({
  *   endpoint: 'https://api.lesser.example.com/graphql',
  *   token: 'your-auth-token',
  * });
- * 
+ *
  * // Fetch timeline
  * const timeline = await client.getTimeline({ limit: 20 });
- * 
+ *
  * // Subscribe to updates
  * const unsubscribe = client.subscribeToTimeline((event) => {
  *   console.log('New activity:', event.data.activity);
@@ -205,13 +205,13 @@ export type {
  * Profile Components (Phase 2.4)
  * Complete profile viewing and editing system.
  * Supports viewing profiles, editing own profile, following, blocking, and custom fields.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```svelte
  * import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
- * 
+ *
  * <Profile.Root {profile} {handlers} isOwnProfile={true}>
  *   <Profile.Header />
  *   <Profile.Stats />
@@ -236,13 +236,13 @@ export type {
  * Search Components (Phase 2.4)
  * Complete search system with AI semantic search.
  * Supports full-text search, filtering by type, and real-time results.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```svelte
  * import * as Search from '@equaltoai/greater-components-fediverse/Search';
- * 
+ *
  * <Search.Root {handlers}>
  *   <Search.Bar placeholder="Search..." />
  *   <Search.Filters />
@@ -268,13 +268,13 @@ export type {
  * Lists Components (Phase 2.5)
  * Complete lists management system for organizing and viewing curated actor feeds.
  * Supports creating, editing, and deleting lists with public/private visibility.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```svelte
  * import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
- * 
+ *
  * <Lists.Root {handlers}>
  *   <Lists.Manager />
  *   <Lists.Editor />
@@ -297,13 +297,13 @@ export type {
  * Messages Components (Phase 2.5)
  * Complete direct messaging system for private conversations.
  * Supports threaded conversations, real-time messaging, and read receipts.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```svelte
  * import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
- * 
+ *
  * <Messages.Root {handlers}>
  *   <Messages.Conversations currentUserId="me" />
  *   <Messages.Thread />
@@ -326,17 +326,17 @@ export type {
  * Filters Components (Phase 2.7)
  * Complete content filtering system for keyword/phrase filtering.
  * Supports context-specific filters (home, notifications, public, thread, account) with expiration.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```svelte
  * import * as Filters from '@equaltoai/greater-components-fediverse/Filters';
- * 
+ *
  * <Filters.Root {handlers}>
  *   <Filters.Manager />
  *   <Filters.Editor />
- *   
+ *
  *   <!-- Wrap content to check for filters -->
  *   <Filters.FilteredContent content={post.content} context="home">
  *     <StatusCard {post} />
@@ -360,13 +360,13 @@ export type {
  * Admin Components (Phase 2.6)
  * Complete admin dashboard for instance management.
  * Includes user management, reports, moderation, federation, settings, logs, and analytics.
- * 
+ *
  * @public
- * 
+ *
  * @example
  * ```svelte
  * import * as Admin from '@equaltoai/greater-components-fediverse/Admin';
- * 
+ *
  * <Admin.Root {handlers}>
  *   <Admin.Overview />
  *   <Admin.Users />
@@ -399,13 +399,13 @@ export type {
  * @public
  */
 
-/** 
+/**
  * Action bar with like, boost, reply, and share buttons for status interactions.
  * @public
  */
 export { default as ActionBar } from './components/ActionBar.svelte';
 
-/** 
+/**
  * Compose box for creating new posts with media attachments and polls.
  * @public
  * @deprecated Use Compose compound component instead
@@ -422,7 +422,7 @@ export {
 	Editor as ComposeEditor,
 	Submit as ComposeSubmit,
 	CharacterCount as ComposeCharacterCount,
-	VisibilitySelect as ComposeVisibilitySelect
+	VisibilitySelect as ComposeVisibilitySelect,
 } from './components/Compose/index.js';
 export type {
 	ComposeContext,
@@ -430,22 +430,22 @@ export type {
 	ComposeHandlers,
 	ComposeState,
 	PostVisibility,
-	ComposeAttachment
+	ComposeAttachment,
 } from './components/Compose/context.js';
 
-/** 
+/**
  * Content renderer for sanitized HTML with mention and hashtag support.
  * @public
  */
 export { default as ContentRenderer } from './components/ContentRenderer.svelte';
 
-/** 
+/**
  * Profile header displaying user information, stats, and follow button.
  * @public
  */
 export { default as ProfileHeader } from './components/ProfileHeader.svelte';
 
-/** 
+/**
  * Status card displaying a single social media post with full anatomy.
  * @public
  * @deprecated Use Status compound component instead
@@ -456,18 +456,22 @@ export { default as StatusCard } from './components/StatusCard.svelte';
  * Status compound component - flexible, composable status cards
  * @public
  */
-export { 
-  default as Status,
-  Status as StatusCompound,
-  Root as StatusRoot, 
-  Header as StatusHeader, 
-  Content as StatusContent, 
-  Media as StatusMedia, 
-  Actions as StatusActions 
+export {
+	default as Status,
+	Status as StatusCompound,
+	Root as StatusRoot,
+	Header as StatusHeader,
+	Content as StatusContent,
+	Media as StatusMedia,
+	Actions as StatusActions,
 } from './components/Status/index.js';
-export type { StatusContext, StatusConfig, StatusActionHandlers } from './components/Status/context.js';
+export type {
+	StatusContext,
+	StatusConfig,
+	StatusActionHandlers,
+} from './components/Status/context.js';
 
-/** 
+/**
  * High-performance virtualized timeline for rendering thousands of items.
  * @public
  * @deprecated Use Timeline compound component instead
@@ -484,7 +488,7 @@ export {
 	Item as TimelineItem,
 	LoadMore as TimelineLoadMore,
 	EmptyState as TimelineEmptyState,
-	ErrorState as TimelineErrorState
+	ErrorState as TimelineErrorState,
 } from './components/Timeline/index.js';
 export type {
 	TimelineContext,
@@ -492,10 +496,10 @@ export type {
 	TimelineHandlers,
 	TimelineCompoundState,
 	TimelineMode,
-	TimelineDensity
+	TimelineDensity,
 } from './components/Timeline/context.js';
 
-/** 
+/**
  * Notifications feed displaying grouped social interactions.
  * @public
  * @deprecated Use Notifications compound component instead
@@ -522,13 +526,13 @@ export type {
 	NotificationFilter,
 } from './components/Notifications/context.js';
 
-/** 
+/**
  * Individual notification item with type-specific rendering.
  * @public
  */
 export { default as NotificationItem } from './components/NotificationItem.svelte';
 
-/** 
+/**
  * Settings panel for configuring timeline and notification preferences.
  * @public
  */
@@ -539,19 +543,19 @@ export { default as SettingsPanel } from './components/SettingsPanel.svelte';
  * @public
  */
 
-/** 
+/**
  * Reactive timeline with real-time updates and streaming support.
  * @public
  */
 export { default as TimelineVirtualizedReactive } from './components/TimelineVirtualizedReactive.svelte';
 
-/** 
+/**
  * Reactive notifications feed with live updates and streaming.
  * @public
  */
 export { default as NotificationsFeedReactive } from './components/NotificationsFeedReactive.svelte';
 
-/** 
+/**
  * Wrapper component for adding real-time capabilities to any component.
  * @public
  */
@@ -559,42 +563,42 @@ export { default as RealtimeWrapper } from './components/RealtimeWrapper.svelte'
 
 // Export types
 export type {
-  MediaAttachment,
-  Account,
-  Mention,
-  Tag,
-  Card,
-  Poll,
-  NotificationType,
-  BaseNotification,
-  MentionNotification,
-  ReblogNotification,
-  FavouriteNotification,
-  FollowNotification,
-  FollowRequestNotification,
-  PollNotification,
-  StatusNotification,
-  UpdateNotification,
-  AdminSignUpNotification,
-  AdminReportNotification,
-  Notification,
-  NotificationGroup,
-  NotificationsFeedProps,
-  ComposeBoxDraft,
-  ComposeMediaAttachment,
-  ComposePoll,
-  ComposeBoxProps
+	MediaAttachment,
+	Account,
+	Mention,
+	Tag,
+	Card,
+	Poll,
+	NotificationType,
+	BaseNotification,
+	MentionNotification,
+	ReblogNotification,
+	FavouriteNotification,
+	FollowNotification,
+	FollowRequestNotification,
+	PollNotification,
+	StatusNotification,
+	UpdateNotification,
+	AdminSignUpNotification,
+	AdminReportNotification,
+	Notification,
+	NotificationGroup,
+	NotificationsFeedProps,
+	ComposeBoxDraft,
+	ComposeMediaAttachment,
+	ComposePoll,
+	ComposeBoxProps,
 } from './types';
 export type Status = import('./types.js').Status;
 
 // Export utilities
 export {
-  groupNotifications,
-  getGroupTitle,
-  getNotificationIcon,
-  getNotificationColor,
-  formatNotificationTime,
-  shouldHighlightNotification
+	groupNotifications,
+	getGroupTitle,
+	getNotificationIcon,
+	getNotificationColor,
+	formatNotificationTime,
+	shouldHighlightNotification,
 } from './utils/notificationGrouping';
 
 // Export stores and transport
@@ -604,34 +608,28 @@ export { NotificationStore } from './lib/notificationStore';
 
 // Export integration utilities
 export {
-  createTimelineIntegration,
-  createNotificationIntegration,
-  createSharedTransport,
-  withRealtime,
-  realtimeErrorBoundary
+	createTimelineIntegration,
+	createNotificationIntegration,
+	createSharedTransport,
+	withRealtime,
+	realtimeErrorBoundary,
 } from './lib/integration';
 
 // Export store and transport types
 export type {
-  ConnectionConfig,
-  TimelineIntegrationConfig,
-  NotificationIntegrationConfig,
-  RealtimeIndicatorProps
+	ConnectionConfig,
+	TimelineIntegrationConfig,
+	NotificationIntegrationConfig,
+	RealtimeIndicatorProps,
 } from './lib/integration';
 
 export type {
-  TransportConfig,
-  StreamingMessage,
-  TransportEventMap,
-  TransportEventType
+	TransportConfig,
+	StreamingMessage,
+	TransportEventMap,
+	TransportEventType,
 } from './lib/transport';
 
-export type {
-  TimelineState,
-  TimelineConfig
-} from './lib/timelineStore';
+export type { TimelineState, TimelineConfig } from './lib/timelineStore';
 
-export type {
-  NotificationState,
-  NotificationConfig
-} from './lib/notificationStore';
+export type { NotificationState, NotificationConfig } from './lib/notificationStore';

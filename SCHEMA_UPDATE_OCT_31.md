@@ -13,51 +13,56 @@ Lesser shared a refactored schema with minor additions. Successfully synced and 
 ### New Types Added
 
 **Poll Type:**
+
 ```graphql
 type Poll {
-  id: ID!
-  expiresAt: Time
-  expired: Boolean!
-  multiple: Boolean!
-  hideTotals: Boolean!
-  votesCount: Int!
-  votersCount: Int!
-  voted: Boolean!
-  ownVotes: [Int!]
-  options: [PollOption!]!
+	id: ID!
+	expiresAt: Time
+	expired: Boolean!
+	multiple: Boolean!
+	hideTotals: Boolean!
+	votesCount: Int!
+	votersCount: Int!
+	voted: Boolean!
+	ownVotes: [Int!]
+	options: [PollOption!]!
 }
 
 type PollOption {
-  title: String!
-  votesCount: Int!
+	title: String!
+	votesCount: Int!
 }
 ```
 
 ### Modified Types
 
 **Object Type:**
+
 - Added `poll: Poll` field (line 114)
 
 **CreateNoteInput:**
+
 - Added `poll: PollParamsInput` field (line 547)
 
 ### New Query Parameters
 
 **timeline query:**
+
 - Added `mediaOnly: Boolean = false` parameter for filtering media-only posts
 
 **hashtagTimeline query:**
+
 - Added `mediaOnly: Boolean = false` parameter
 
 ---
 
 ## Schema Statistics
 
-| Metric | Previous | New | Change |
-|--------|----------|-----|--------|
-| **Total Lines** | 2,418 | 2,446 | +28 lines |
-| **Types** | ~160 | ~162 | +2 types |
-| **Breaking Changes** | 0 | 0 | ✅ None |
+| Metric               | Previous | New   | Change    |
+| -------------------- | -------- | ----- | --------- |
+| **Total Lines**      | 2,418    | 2,446 | +28 lines |
+| **Types**            | ~160     | ~162  | +2 types  |
+| **Breaking Changes** | 0        | 0     | ✅ None   |
 
 ---
 
@@ -87,6 +92,7 @@ type PollOption {
 ### No Breaking Changes ✅
 
 All existing queries and mutations continue to work:
+
 - Followers/Following queries unchanged
 - UserPreferences unchanged
 - PushSubscription unchanged
@@ -96,6 +102,7 @@ All existing queries and mutations continue to work:
 ### New Capabilities Available
 
 Consumers can now:
+
 - Create posts with polls using `CreateNoteInput.poll`
 - Query posts with polls via `Object.poll` field
 - Filter timelines to show only media posts using `mediaOnly: true`
@@ -109,6 +116,7 @@ Consumers can now:
 ## Code Changes
 
 **Files Modified:**
+
 1. `schemas/lesser/schema.graphql` - Updated to latest (2,446 lines)
 2. `packages/adapters/src/mappers/lesser/graphqlConverters.ts` - Fixed type casting
 3. Generated types refreshed in both packages
@@ -120,6 +128,7 @@ Consumers can now:
 ## Testing
 
 Existing tests continue to pass:
+
 - ✅ 457/462 tests passing
 - ✅ All GraphQL converter tests pass
 - ✅ Build succeeds for all GraphQL packages
@@ -131,34 +140,36 @@ Existing tests continue to pass:
 If you want to use the new Poll features:
 
 1. **Add Poll queries** to GraphQL documents:
+
 ```graphql
 # In notes.graphql or create polls.graphql
 fragment PollFields on Poll {
-  id
-  expiresAt
-  expired
-  multiple
-  hideTotals
-  votesCount
-  votersCount
-  voted
-  ownVotes
-  options {
-    title
-    votesCount
-  }
+	id
+	expiresAt
+	expired
+	multiple
+	hideTotals
+	votesCount
+	votersCount
+	voted
+	ownVotes
+	options {
+		title
+		votesCount
+	}
 }
 
 # Update ObjectFields fragment
 fragment ObjectFields on Object {
-  # ... existing fields ...
-  poll {
-    ...PollFields
-  }
+	# ... existing fields ...
+	poll {
+		...PollFields
+	}
 }
 ```
 
 2. **Add Poll support to LesserGraphQLAdapter:**
+
 ```typescript
 async createNoteWithPoll(input: {
   content: string;
@@ -194,4 +205,3 @@ The schema refactoring by Lesser was smooth and didn't impact our existing Graph
 **Schema Version:** Latest (2,446 lines)  
 **Generated Types:** 401KB  
 **Status:** ✅ Production Ready
-

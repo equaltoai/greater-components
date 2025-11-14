@@ -9,7 +9,12 @@ import { createModal } from '../src/primitives/modal';
 import type { ActionReturn } from '../src/types/common';
 
 function destroyAction(action: ActionReturn | void): void {
-	if (action && typeof action === 'object' && 'destroy' in action && typeof action.destroy === 'function') {
+	if (
+		action &&
+		typeof action === 'object' &&
+		'destroy' in action &&
+		typeof action.destroy === 'function'
+	) {
 		action.destroy();
 	}
 }
@@ -114,10 +119,7 @@ describe('Modal Primitive', () => {
 			const content = appendElement('div');
 			createButton('Focusable', content);
 
-			const actions = [
-				modal.actions.trigger(trigger),
-				modal.actions.content(content),
-			];
+			const actions = [modal.actions.trigger(trigger), modal.actions.content(content)];
 
 			trigger.focus();
 			trigger.click();
@@ -140,10 +142,7 @@ describe('Modal Primitive', () => {
 			createButton('Focusable', content);
 			const closeButton = createButton('Close', content);
 
-			const actions = [
-				modal.actions.content(content),
-				modal.actions.close(closeButton),
-			];
+			const actions = [modal.actions.content(content), modal.actions.close(closeButton)];
 
 			modal.helpers.open();
 			closeButton.click();
@@ -161,10 +160,7 @@ describe('Modal Primitive', () => {
 			const backdrop = appendElement('div');
 			const child = appendElement('span', backdrop);
 
-			const actions = [
-				modal.actions.content(content),
-				modal.actions.backdrop(backdrop),
-			];
+			const actions = [modal.actions.content(content), modal.actions.backdrop(backdrop)];
 
 			modal.helpers.open();
 			backdrop.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -182,10 +178,7 @@ describe('Modal Primitive', () => {
 			const content = appendElement('div');
 			const backdrop = appendElement('div');
 
-			const actions = [
-				modal.actions.content(content),
-				modal.actions.backdrop(backdrop),
-			];
+			const actions = [modal.actions.content(content), modal.actions.backdrop(backdrop)];
 
 			modal.helpers.open();
 			backdrop.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -232,7 +225,12 @@ describe('Modal Primitive', () => {
 			// Shift+Tab from first goes to last
 			first.focus();
 			first.dispatchEvent(
-				new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true })
+				new KeyboardEvent('keydown', {
+					key: 'Tab',
+					shiftKey: true,
+					bubbles: true,
+					cancelable: true,
+				})
 			);
 			expect(document.activeElement).toBe(last);
 

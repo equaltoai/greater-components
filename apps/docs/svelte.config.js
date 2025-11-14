@@ -6,7 +6,7 @@ import { createHighlighter } from 'shiki';
 // Initialize highlighter (shiki v3+)
 const highlighter = await createHighlighter({
 	themes: ['github-dark'],
-	langs: ['javascript', 'typescript', 'svelte', 'html', 'css', 'bash', 'json']
+	langs: ['javascript', 'typescript', 'svelte', 'html', 'css', 'bash', 'json'],
 });
 
 /** @type {import('mdsvex').MdsvexOptions} */
@@ -14,15 +14,15 @@ const mdsvexOptions = {
 	extensions: ['.md', '.mdx'],
 	highlight: {
 		highlighter: (code, lang) => {
-			const html = highlighter.codeToHtml(code, { 
+			const html = highlighter.codeToHtml(code, {
 				lang: lang || 'text',
-				theme: 'github-dark'
+				theme: 'github-dark',
 			});
 			return `{@html \`${html}\`}`;
-		}
+		},
 	},
 	remarkPlugins: [],
-	rehypePlugins: []
+	rehypePlugins: [],
 };
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -36,15 +36,15 @@ const config = {
 			assets: 'build',
 			fallback: '404.html',
 			precompress: false,
-			strict: true
+			strict: true,
 		}),
 		alias: {
 			$lib: './src/lib',
 			$components: './src/lib/components',
 			$content: './src/content',
-			$utils: './src/lib/utils'
-		}
-	}
+			$utils: './src/lib/utils',
+		},
+	},
 };
 
 export default config;

@@ -218,17 +218,17 @@
 		{/if}
 	{:else if mode === 'buttons'}
 		<!-- Button group mode -->
-	<div class="visibility-selector__buttons" role="radiogroup" aria-label="Post visibility">
-		{#each availableOptions as option (option.value)}
-			<button
-				class="visibility-selector__button"
-				class:visibility-selector__button--selected={option.value === value}
-				type="button"
-				onclick={() => select(option.value)}
-				role="radio"
-				aria-checked={option.value === value}
-				{disabled}
-			>
+		<div class="visibility-selector__buttons" role="radiogroup" aria-label="Post visibility">
+			{#each availableOptions as option (option.value)}
+				<button
+					class="visibility-selector__button"
+					class:visibility-selector__button--selected={option.value === value}
+					type="button"
+					onclick={() => select(option.value)}
+					role="radio"
+					aria-checked={option.value === value}
+					{disabled}
+				>
 					{#if renderOption}
 						{@render renderOption(option, option.value === value)}
 					{:else}
@@ -254,8 +254,8 @@
 		</div>
 	{:else}
 		<!-- Inline mode -->
-	<div class="visibility-selector__inline" role="radiogroup" aria-label="Post visibility">
-		{#each availableOptions as option (option.value)}
+		<div class="visibility-selector__inline" role="radiogroup" aria-label="Post visibility">
+			{#each availableOptions as option (option.value)}
 				<label class="visibility-selector__inline-option">
 					<input
 						type="radio"

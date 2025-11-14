@@ -1,4 +1,4 @@
-  /**
+/**
  * Transport layer for real-time communication with fediverse servers
  * Supports WebSocket streaming, Server-Sent Events, and polling fallbacks
  */
@@ -223,7 +223,9 @@ const isNotificationPayload = (payload: unknown): payload is Notification =>
 	hasStringId(payload) && 'type' in payload;
 
 type TransportEventHandler<T extends TransportEventType> = (data: TransportEventMap[T]) => void;
-type HandlerEntry<T extends TransportEventType = TransportEventType> = Set<TransportEventHandler<T>>;
+type HandlerEntry<T extends TransportEventType = TransportEventType> = Set<
+	TransportEventHandler<T>
+>;
 
 export interface TransportEventMap {
 	// Core events
@@ -379,7 +381,7 @@ export class TransportManager {
 				JSON.stringify({
 					type: 'subscribe',
 					stream: type,
-				}),
+				})
 			);
 		}
 	}
@@ -397,7 +399,7 @@ export class TransportManager {
 				JSON.stringify({
 					type: 'subscribe',
 					stream: 'user',
-				}),
+				})
 			);
 		}
 	}
@@ -416,7 +418,7 @@ export class TransportManager {
 					type: 'subscribe',
 					stream: 'hashtag',
 					hashtags,
-				}),
+				})
 			);
 		}
 	}
@@ -435,7 +437,7 @@ export class TransportManager {
 					type: 'subscribe',
 					stream: 'list',
 					listId,
-				}),
+				})
 			);
 		}
 	}
@@ -454,7 +456,7 @@ export class TransportManager {
 					type: 'subscribe',
 					stream: 'admin',
 					eventTypes,
-				}),
+				})
 			);
 		}
 	}
@@ -463,7 +465,9 @@ export class TransportManager {
 	 * Add event listener
 	 */
 	on<T extends TransportEventType>(event: T, handler: TransportEventHandler<T>): void {
-		const handlers = (this.eventHandlers.get(event) as HandlerEntry<T> | undefined) ?? new Set<TransportEventHandler<T>>();
+		const handlers =
+			(this.eventHandlers.get(event) as HandlerEntry<T> | undefined) ??
+			new Set<TransportEventHandler<T>>();
 		handlers.add(handler);
 		this.eventHandlers.set(event, handlers as HandlerEntry);
 	}

@@ -1,16 +1,16 @@
 /**
  * Search Components
- * 
+ *
  * Complete search system with AI semantic search for ActivityPub/Fediverse applications.
  * Supports full-text search, filtering by type, and real-time results.
- * 
+ *
  * @module components/Search
- * 
+ *
  * @example
  * ```svelte
  * <script>
  *   import * as Search from '@equaltoai/greater-components-fediverse/Search';
- * 
+ *
  *   const handlers = {
  *     onSearch: async (options) => {
  *       const response = await fetch(`/api/search?q=${options.query}`);
@@ -21,7 +21,7 @@
  *     },
  *   };
  * </script>
- * 
+ *
  * <Search.Root {handlers}>
  *   <Search.Bar placeholder="Search posts, people, and tags..." />
  *   <Search.Filters />

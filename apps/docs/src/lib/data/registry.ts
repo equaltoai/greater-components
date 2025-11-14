@@ -240,12 +240,7 @@ export const components: Component[] = [
 		},
 		accessibility: {
 			wcag: 'AAA',
-			features: [
-				'Focus trap',
-				'ARIA dialog role',
-				'ESC key support',
-				'Return focus on close',
-			],
+			features: ['Focus trap', 'ARIA dialog role', 'ESC key support', 'Return focus on close'],
 		},
 		status: 'stable',
 		version: '1.0.0',
@@ -394,7 +389,7 @@ export const components: Component[] = [
 		category: 'adapters',
 		description: 'GraphQL adapter for Lesser with caching and subscriptions',
 		longDescription:
-			'Production-ready GraphQL client for Lesser\'s API. Features built-in caching with LRU eviction, request deduplication, WebSocket subscriptions, and pre-built queries/mutations.',
+			"Production-ready GraphQL client for Lesser's API. Features built-in caching with LRU eviction, request deduplication, WebSocket subscriptions, and pre-built queries/mutations.",
 		features: [
 			'LRU cache with TTL',
 			'Request deduplication',
@@ -515,4 +510,3 @@ export function getComponentStats() {
 		},
 	};
 }
-

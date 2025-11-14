@@ -1,6 +1,6 @@
 /**
  * Media Upload Handler
- * 
+ *
  * Handles file validation, upload progress tracking, and media processing.
  * Supports images, videos, audio with size/type validation.
  */
@@ -205,7 +205,9 @@ export function validateFile(file: File, config: MediaUploadConfig = {}): Valida
 	// Check file size
 	const maxSize = detectMediaType(file.type) === 'video' ? 40 * 1024 * 1024 : cfg.maxFileSize;
 	if (file.size > maxSize) {
-		errors.push(`File size ${formatFileSize(file.size)} exceeds limit of ${formatFileSize(maxSize)}`);
+		errors.push(
+			`File size ${formatFileSize(file.size)} exceeds limit of ${formatFileSize(maxSize)}`
+		);
 	}
 
 	// Check file type
@@ -267,10 +269,7 @@ export async function createPreviewUrl(file: File): Promise<string> {
 /**
  * Generate thumbnail for image
  */
-export async function generateThumbnail(
-	file: File,
-	maxSize: number = 200
-): Promise<string | null> {
+export async function generateThumbnail(file: File, maxSize: number = 200): Promise<string | null> {
 	if (!file.type.startsWith('image/')) {
 		return null;
 	}
@@ -322,7 +321,9 @@ export async function generateThumbnail(
 /**
  * Get image dimensions
  */
-export async function getImageDimensions(file: File): Promise<{ width: number; height: number } | null> {
+export async function getImageDimensions(
+	file: File
+): Promise<{ width: number; height: number } | null> {
 	if (!file.type.startsWith('image/')) {
 		return null;
 	}
@@ -374,10 +375,7 @@ export async function getVideoDuration(file: File): Promise<number | null> {
 /**
  * Process file and create MediaFile object
  */
-export async function processFile(
-	file: File,
-	config: MediaUploadConfig = {}
-): Promise<MediaFile> {
+export async function processFile(file: File, config: MediaUploadConfig = {}): Promise<MediaFile> {
 	const cfg = { ...DEFAULT_CONFIG, ...config };
 	const type = detectMediaType(file.type);
 	const mediaCategory = mapMimeTypeToMediaCategory(file.type);

@@ -1,32 +1,32 @@
 {
-  "useTabs": true,
-  "singleQuote": true,
-  "trailingComma": "es5",
-  "printWidth": 100,
-  "semi": true,
-  "arrowParens": "always",
-  "endOfLine": "lf",
-  "bracketSpacing": true,
-  "bracketSameLine": false,
-  "proseWrap": "preserve",
-  "htmlWhitespaceSensitivity": "css",
-  "svelteStrictMode": false,
-  "svelteAllowShorthand": true,
-  "svelteIndentScriptAndStyle": true,
-  "plugins": ["prettier-plugin-svelte"],
-  "overrides": [
-    {
-      "files": "*.svelte",
-      "options": {
-        "parser": "svelte"
-      }
-    },
-    {
-      "files": ["*.json", "*.yml", "*.yaml"],
-      "options": {
-        "useTabs": false,
-        "tabWidth": 2
-      }
-    }
-  ]
+	"useTabs": true,
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"printWidth": 100,
+	"semi": true,
+	"arrowParens": "always",
+	"endOfLine": "lf",
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"proseWrap": "preserve",
+	"htmlWhitespaceSensitivity": "css",
+	"svelteStrictMode": false,
+	"svelteAllowShorthand": true,
+	"svelteIndentScriptAndStyle": true,
+	"plugins": ["prettier-plugin-svelte"],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		},
+		{
+			"files": ["*.json", "*.yml", "*.yaml"],
+			"options": {
+				"useTabs": false,
+				"tabWidth": 2
+			}
+		}
+	]
 }

@@ -85,10 +85,10 @@
 			} else {
 				await createList(formData);
 			}
-	} catch {
-		// Error handled by context
+		} catch {
+			// Error handled by context
+		}
 	}
-}
 </script>
 
 {#if listsState.editorOpen}
@@ -140,15 +140,15 @@
 					<label for="list-title" class="lists-editor__label">
 						Title <span class="lists-editor__required">*</span>
 					</label>
-				<input
-					id="list-title"
-					type="text"
-					class="lists-editor__input"
-					bind:value={title}
-					placeholder="e.g. Tech News, Friends, etc."
-					disabled={listsState.loading}
-					maxlength="100"
-				/>
+					<input
+						id="list-title"
+						type="text"
+						class="lists-editor__input"
+						bind:value={title}
+						placeholder="e.g. Tech News, Friends, etc."
+						disabled={listsState.loading}
+						maxlength="100"
+					/>
 					<p class="lists-editor__hint">{title.length}/100</p>
 				</div>
 
@@ -166,9 +166,9 @@
 					<p class="lists-editor__hint">{description.length}/500</p>
 				</div>
 
-			<fieldset class="lists-editor__field lists-editor__field--radio">
-				<legend class="lists-editor__label">Visibility</legend>
-				<div class="lists-editor__radio-group">
+				<fieldset class="lists-editor__field lists-editor__field--radio">
+					<legend class="lists-editor__label">Visibility</legend>
+					<div class="lists-editor__radio-group">
 						<label class="lists-editor__radio">
 							<input
 								type="radio"
@@ -210,8 +210,8 @@
 								<p class="lists-editor__radio-description">Only you can see this list</p>
 							</div>
 						</label>
-				</div>
-			</fieldset>
+					</div>
+				</fieldset>
 			</form>
 
 			<div class="lists-editor__actions">

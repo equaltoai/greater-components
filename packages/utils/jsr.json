@@ -5,19 +5,7 @@
     ".": "./src/index.ts"
   },
   "publish": {
-    "include": [
-      "src/**/*.ts",
-      "README.md",
-      "CHANGELOG.md",
-      "LICENSE"
-    ],
-    "exclude": [
-      "**/*.test.ts",
-      "**/*.spec.ts",
-      "**/tests/**",
-      "**/__tests__/**"
-    ]
+    "include": ["src/**/*.ts", "README.md", "CHANGELOG.md", "LICENSE"],
+    "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/tests/**", "**/__tests__/**"]
   }
 }
-
-

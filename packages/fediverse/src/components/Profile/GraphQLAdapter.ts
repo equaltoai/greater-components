@@ -90,9 +90,7 @@ export class ProfileGraphQLController {
 			onUpdatePrivacySettings: this.preferencesController
 				? (settings) => this.updatePrivacySettings(settings)
 				: undefined,
-			onLoadPreferences: this.preferencesController
-				? () => this.loadPreferences()
-				: undefined,
+			onLoadPreferences: this.preferencesController ? () => this.loadPreferences() : undefined,
 			onGetPrivacySettings: this.preferencesController
 				? () => this.getPrivacySettings()
 				: undefined,
@@ -257,7 +255,7 @@ export class ProfileGraphQLController {
 		this.context.updateState({ followersLoading: true });
 
 		try {
-			const cursor = reset ? undefined : this.context.state.followersCursor ?? undefined;
+			const cursor = reset ? undefined : (this.context.state.followersCursor ?? undefined);
 			const response = await this.adapter.getFollowers(this.username, this.pageSize, cursor);
 			const page = this.normalizeActorPage(response);
 
@@ -293,7 +291,7 @@ export class ProfileGraphQLController {
 		this.context.updateState({ followingLoading: true });
 
 		try {
-			const cursor = reset ? undefined : this.context.state.followingCursor ?? undefined;
+			const cursor = reset ? undefined : (this.context.state.followingCursor ?? undefined);
 			const response = await this.adapter.getFollowing(this.username, this.pageSize, cursor);
 			const page = this.normalizeActorPage(response);
 
@@ -449,8 +447,7 @@ export class ProfileGraphQLController {
 		const actorsValue = record['actors'];
 		const actors = Array.isArray(actorsValue) ? actorsValue : [];
 		const totalCountValue = record['totalCount'];
-		const totalCount =
-			typeof totalCountValue === 'number' ? totalCountValue : actors.length;
+		const totalCount = typeof totalCountValue === 'number' ? totalCountValue : actors.length;
 		const nextCursorValue = record['nextCursor'];
 		const nextCursor =
 			typeof nextCursorValue === 'string' && nextCursorValue.length > 0 ? nextCursorValue : null;
@@ -501,8 +498,7 @@ export class ProfileGraphQLController {
 				}
 
 				const verifiedAtValue = fieldRecord['verifiedAt'];
-				const verifiedAt =
-					typeof verifiedAtValue === 'string' ? verifiedAtValue : undefined;
+				const verifiedAt = typeof verifiedAtValue === 'string' ? verifiedAtValue : undefined;
 				return {
 					name,
 					value,
@@ -511,9 +507,7 @@ export class ProfileGraphQLController {
 			})
 			.filter((field): field is ProfileField => field !== null);
 
-		const effectiveRelationship = relationship
-			? this.cloneRelationship(relationship)
-			: undefined;
+		const effectiveRelationship = relationship ? this.cloneRelationship(relationship) : undefined;
 
 		const profile: ProfileData = {
 			id: idValue,
@@ -522,12 +516,9 @@ export class ProfileGraphQLController {
 				typeof displayNameValue === 'string' && displayNameValue.length > 0
 					? displayNameValue
 					: usernameValue,
-			bio:
-				typeof summaryValue === 'string' && summaryValue.length > 0 ? summaryValue : undefined,
-			avatar:
-				typeof avatarValue === 'string' && avatarValue.length > 0 ? avatarValue : undefined,
-			header:
-				typeof headerValue === 'string' && headerValue.length > 0 ? headerValue : undefined,
+			bio: typeof summaryValue === 'string' && summaryValue.length > 0 ? summaryValue : undefined,
+			avatar: typeof avatarValue === 'string' && avatarValue.length > 0 ? avatarValue : undefined,
+			header: typeof headerValue === 'string' && headerValue.length > 0 ? headerValue : undefined,
 			url: typeof urlValue === 'string' && urlValue.length > 0 ? urlValue : undefined,
 			followersCount: typeof followersValue === 'number' ? followersValue : 0,
 			followingCount: typeof followingValue === 'number' ? followingValue : 0,
@@ -584,7 +575,8 @@ export class ProfileGraphQLController {
 		accountId: string,
 		updates: Partial<ProfileRelationship>
 	): void {
-		const list = listKey === 'followers' ? this.context.state.followers : this.context.state.following;
+		const list =
+			listKey === 'followers' ? this.context.state.followers : this.context.state.following;
 		const index = list.findIndex((account) => account.id === accountId);
 		if (index === -1) {
 			return;
@@ -643,10 +635,7 @@ export class ProfileGraphQLController {
 		});
 	}
 
-	private incrementProfileCount(
-		key: 'followersCount' | 'followingCount',
-		delta: number
-	): void {
+	private incrementProfileCount(key: 'followersCount' | 'followingCount', delta: number): void {
 		const profile = this.context.state.profile;
 		if (!profile) return;
 
@@ -656,9 +645,7 @@ export class ProfileGraphQLController {
 				...profile,
 				[key]: nextValue,
 			},
-			...(key === 'followersCount'
-				? { followersTotal: nextValue }
-				: { followingTotal: nextValue }),
+			...(key === 'followersCount' ? { followersTotal: nextValue } : { followingTotal: nextValue }),
 		});
 	}
 
@@ -678,9 +665,7 @@ export class ProfileGraphQLController {
 				...profile,
 				[key]: value,
 			},
-			...(key === 'followersCount'
-				? { followersTotal: value }
-				: { followingTotal: value }),
+			...(key === 'followersCount' ? { followersTotal: value } : { followingTotal: value }),
 		});
 	}
 

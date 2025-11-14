@@ -13,6 +13,7 @@ The `Hashtags` module provides comprehensive hashtag management for Lesser insta
 Context provider for hashtag management state and adapter connection.
 
 **Props:**
+
 - `adapter: LesserGraphQLAdapter` - GraphQL adapter instance
 - `children?: Snippet` - Child components
 
@@ -20,14 +21,14 @@ Context provider for hashtag management state and adapter connection.
 
 ```svelte
 <script lang="ts">
-  import * as Hashtags from '@equaltoai/greater-components-fediverse/Hashtags';
-  import { adapter } from './config';
+	import * as Hashtags from '@equaltoai/greater-components-fediverse/Hashtags';
+	import { adapter } from './config';
 </script>
 
 <Hashtags.Root {adapter}>
-  <Hashtags.Controls hashtag="svelte" />
-  <Hashtags.FollowedList />
-  <Hashtags.MutedList />
+	<Hashtags.Controls hashtag="svelte" />
+	<Hashtags.FollowedList />
+	<Hashtags.MutedList />
 </Hashtags.Root>
 ```
 
@@ -38,6 +39,7 @@ Context provider for hashtag management state and adapter connection.
 Follow/mute toggle controls for a specific hashtag.
 
 **Props:**
+
 - `hashtag: string` - Hashtag name (without #)
 - `onFollow?: (hashtag: string) => Promise<void>` - Follow callback
 - `onUnfollow?: (hashtag: string) => Promise<void>` - Unfollow callback
@@ -49,29 +51,29 @@ Follow/mute toggle controls for a specific hashtag.
 
 ```svelte
 <script lang="ts">
-  async function followHashtag(tag: string) {
-    await adapter.followHashtag(tag, 'ALL');
-  }
-  
-  async function unfollowHashtag(tag: string) {
-    await adapter.unfollowHashtag(tag);
-  }
-  
-  async function muteHashtag(tag: string) {
-    // Mute for 24 hours
-    const until = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-    await adapter.muteHashtag(tag, until);
-  }
+	async function followHashtag(tag: string) {
+		await adapter.followHashtag(tag, 'ALL');
+	}
+
+	async function unfollowHashtag(tag: string) {
+		await adapter.unfollowHashtag(tag);
+	}
+
+	async function muteHashtag(tag: string) {
+		// Mute for 24 hours
+		const until = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+		await adapter.muteHashtag(tag, until);
+	}
 </script>
 
 <Hashtags.Root {adapter}>
-  <Hashtags.Controls 
-    hashtag="webdev"
-    onFollow={followHashtag}
-    onUnfollow={unfollowHashtag}
-    onMute={muteHashtag}
-    initialState={{ following: false, muted: false }}
-  />
+	<Hashtags.Controls
+		hashtag="webdev"
+		onFollow={followHashtag}
+		onUnfollow={unfollowHashtag}
+		onMute={muteHashtag}
+		initialState={{ following: false, muted: false }}
+	/>
 </Hashtags.Root>
 ```
 
@@ -89,6 +91,7 @@ Follow/mute toggle controls for a specific hashtag.
 List of followed hashtags with notification settings and unfollow actions.
 
 **Props:**
+
 - `onUnfollow?: (hashtag: string) => Promise<void>` - Unfollow callback
 - `onUpdateNotifications?: (hashtag: string, settings: NotificationSettings) => Promise<void>` - Settings update callback
 - `sortBy?: 'hashtag' | 'followedAt' | 'postCount'` - Sort order (default: `'followedAt'`)
@@ -98,21 +101,21 @@ List of followed hashtags with notification settings and unfollow actions.
 
 ```svelte
 <script lang="ts">
-  async function updateNotifications(tag: string, settings) {
-    await adapter.updateHashtagNotifications(tag, {
-      notifyLevel: settings.level,
-      muted: settings.muted
-    });
-  }
+	async function updateNotifications(tag: string, settings) {
+		await adapter.updateHashtagNotifications(tag, {
+			notifyLevel: settings.level,
+			muted: settings.muted,
+		});
+	}
 </script>
 
 <Hashtags.Root {adapter}>
-  <Hashtags.FollowedList 
-    onUnfollow={unfollowHashtag}
-    onUpdateNotifications={updateNotifications}
-    sortBy="followedAt"
-    sortDirection="desc"
-  />
+	<Hashtags.FollowedList
+		onUnfollow={unfollowHashtag}
+		onUpdateNotifications={updateNotifications}
+		sortBy="followedAt"
+		sortDirection="desc"
+	/>
 </Hashtags.Root>
 ```
 
@@ -131,6 +134,7 @@ List of followed hashtags with notification settings and unfollow actions.
 List of muted hashtags with unmute actions.
 
 **Props:**
+
 - `onUnmute?: (hashtag: string) => Promise<void>` - Unmute callback
 - `showExpired?: boolean` - Show expired mutes (default: `false`)
 
@@ -138,16 +142,13 @@ List of muted hashtags with unmute actions.
 
 ```svelte
 <script lang="ts">
-  async function unmuteHashtag(tag: string) {
-    await adapter.unmuteHashtag(tag, { preserveFollow: true });
-  }
+	async function unmuteHashtag(tag: string) {
+		await adapter.unmuteHashtag(tag, { preserveFollow: true });
+	}
 </script>
 
 <Hashtags.Root {adapter}>
-  <Hashtags.MutedList 
-    onUnmute={unmuteHashtag}
-    showExpired={false}
-  />
+	<Hashtags.MutedList onUnmute={unmuteHashtag} showExpired={false} />
 </Hashtags.Root>
 ```
 
@@ -167,23 +168,23 @@ List of muted hashtags with unmute actions.
 
 ```graphql
 query FollowedHashtags($first: Int, $after: String) {
-  followedHashtags(first: $first, after: $after) {
-    edges {
-      node {
-        hashtag
-        notifyLevel
-        muted
-        muteUntil
-        followedAt
-        postCount
-        lastActivity
-      }
-    }
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-  }
+	followedHashtags(first: $first, after: $after) {
+		edges {
+			node {
+				hashtag
+				notifyLevel
+				muted
+				muteUntil
+				followedAt
+				postCount
+				lastActivity
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+	}
 }
 ```
 
@@ -191,40 +192,43 @@ query FollowedHashtags($first: Int, $after: String) {
 
 ```graphql
 mutation FollowHashtag($hashtag: String!, $notifyLevel: NotificationLevel) {
-  followHashtag(hashtag: $hashtag, notifyLevel: $notifyLevel) {
-    hashtag
-    notifyLevel
-    followedAt
-  }
+	followHashtag(hashtag: $hashtag, notifyLevel: $notifyLevel) {
+		hashtag
+		notifyLevel
+		followedAt
+	}
 }
 
 mutation UnfollowHashtag($hashtag: String!) {
-  unfollowHashtag(hashtag: $hashtag) {
-    success
-  }
+	unfollowHashtag(hashtag: $hashtag) {
+		success
+	}
 }
 
 mutation MuteHashtag($hashtag: String!, $until: Time) {
-  muteHashtag(hashtag: $hashtag, until: $until) {
-    hashtag
-    muted
-    muteUntil
-  }
+	muteHashtag(hashtag: $hashtag, until: $until) {
+		hashtag
+		muted
+		muteUntil
+	}
 }
 
 mutation UnmuteHashtag($hashtag: String!) {
-  unmuteHashtag(hashtag: $hashtag) {
-    hashtag
-    muted
-  }
+	unmuteHashtag(hashtag: $hashtag) {
+		hashtag
+		muted
+	}
 }
 
-mutation UpdateHashtagNotifications($hashtag: String!, $settings: HashtagNotificationSettingsInput!) {
-  updateHashtagNotifications(hashtag: $hashtag, settings: $settings) {
-    hashtag
-    notifyLevel
-    muted
-  }
+mutation UpdateHashtagNotifications(
+	$hashtag: String!
+	$settings: HashtagNotificationSettingsInput!
+) {
+	updateHashtagNotifications(hashtag: $hashtag, settings: $settings) {
+		hashtag
+		notifyLevel
+		muted
+	}
 }
 ```
 
@@ -251,13 +255,13 @@ await adapter.unmuteHashtag('politics', { preserveFollow: true });
 
 // Update notification settings
 await adapter.updateHashtagNotifications('webdev', {
-  notifyLevel: 'MUTUALS',
-  muted: false
+	notifyLevel: 'MUTUALS',
+	muted: false,
 });
 
 // Get followed hashtags
 const result = await adapter.getFollowedHashtags(50, null);
-const followed = result.data.followedHashtags.edges.map(e => e.node);
+const followed = result.data.followedHashtags.edges.map((e) => e.node);
 ```
 
 ---
@@ -266,25 +270,25 @@ const followed = result.data.followedHashtags.edges.map(e => e.node);
 
 ```typescript
 interface FollowedHashtag {
-  hashtag: string;
-  notifyLevel: NotificationLevel;
-  muted: boolean;
-  muteUntil?: string;
-  followedAt: string;
-  postCount?: number;
-  lastActivity?: string;
+	hashtag: string;
+	notifyLevel: NotificationLevel;
+	muted: boolean;
+	muteUntil?: string;
+	followedAt: string;
+	postCount?: number;
+	lastActivity?: string;
 }
 
-type NotificationLevel = 
-  | 'ALL'         // All posts
-  | 'MUTUALS'     // Only mutuals
-  | 'FOLLOWING'   // Only following
-  | 'NONE';       // No notifications (effectively muted)
+type NotificationLevel =
+	| 'ALL' // All posts
+	| 'MUTUALS' // Only mutuals
+	| 'FOLLOWING' // Only following
+	| 'NONE'; // No notifications (effectively muted)
 
 interface HashtagNotificationSettings {
-  notifyLevel: NotificationLevel;
-  muted: boolean;
-  muteUntil?: string;
+	notifyLevel: NotificationLevel;
+	muted: boolean;
+	muteUntil?: string;
 }
 ```
 
@@ -293,6 +297,7 @@ interface HashtagNotificationSettings {
 ## Notification Levels
 
 ### ALL (Default)
+
 Notify for all posts with this hashtag.
 
 **Use Case**: Topics you want to stay fully updated on.
@@ -300,6 +305,7 @@ Notify for all posts with this hashtag.
 **Example**: `#svelte` for a Svelte developer
 
 ### MUTUALS
+
 Only notify for posts from mutual follows.
 
 **Use Case**: Popular hashtags where you only care about friends' posts.
@@ -307,6 +313,7 @@ Only notify for posts from mutual follows.
 **Example**: `#photography` - only see photos from people you mutually follow
 
 ### FOLLOWING
+
 Only notify for posts from accounts you follow.
 
 **Use Case**: Hashtags used by community members you follow.
@@ -314,6 +321,7 @@ Only notify for posts from accounts you follow.
 **Example**: `#announcements` - only from followed accounts
 
 ### NONE
+
 Follow without notifications (effectively muted).
 
 **Use Case**: Hashtags you want in dedicated timeline but not in notifications.
@@ -328,38 +336,38 @@ Create timelines filtered by followed hashtags:
 
 ```svelte
 <script lang="ts">
-  import { createLesserTimelineStore, TimelineVirtualized } from '@equaltoai/greater-components-fediverse';
-  import { adapter } from './config';
-  
-  // Single hashtag timeline
-  const timeline = createLesserTimelineStore({
-    adapter,
-    type: 'HASHTAG',
-    hashtag: 'svelte'
-  });
-  
-  // Multiple hashtags (ANY mode - union)
-  const multiTimeline = createLesserTimelineStore({
-    adapter,
-    type: 'HASHTAG',
-    hashtags: ['svelte', 'webdev', 'javascript'],
-    hashtagMode: 'ANY'  // Posts with any of these hashtags
-  });
-  
-  // Multiple hashtags (ALL mode - intersection)
-  const intersectionTimeline = createLesserTimelineStore({
-    adapter,
-    type: 'HASHTAG',
-    hashtags: ['svelte', 'tutorial'],
-    hashtagMode: 'ALL'  // Posts with all these hashtags
-  });
+	import {
+		createLesserTimelineStore,
+		TimelineVirtualized,
+	} from '@equaltoai/greater-components-fediverse';
+	import { adapter } from './config';
+
+	// Single hashtag timeline
+	const timeline = createLesserTimelineStore({
+		adapter,
+		type: 'HASHTAG',
+		hashtag: 'svelte',
+	});
+
+	// Multiple hashtags (ANY mode - union)
+	const multiTimeline = createLesserTimelineStore({
+		adapter,
+		type: 'HASHTAG',
+		hashtags: ['svelte', 'webdev', 'javascript'],
+		hashtagMode: 'ANY', // Posts with any of these hashtags
+	});
+
+	// Multiple hashtags (ALL mode - intersection)
+	const intersectionTimeline = createLesserTimelineStore({
+		adapter,
+		type: 'HASHTAG',
+		hashtags: ['svelte', 'tutorial'],
+		hashtagMode: 'ALL', // Posts with all these hashtags
+	});
 </script>
 
 <h2>#{$timeline.hashtag} Timeline</h2>
-<TimelineVirtualized
-  items={$timeline.items}
-  onLoadMore={timeline.loadMore}
-/>
+<TimelineVirtualized items={$timeline.items} onLoadMore={timeline.loadMore} />
 ```
 
 ---
@@ -369,23 +377,25 @@ Create timelines filtered by followed hashtags:
 Subscribe to hashtag activity:
 
 ```typescript
-adapter.subscribeToHashtagActivity({
-  hashtags: ['svelte', 'fediverse']
-}).subscribe(activity => {
-  console.log('New post in hashtag:', activity.hashtag);
-  console.log('Author:', activity.author);
-  console.log('Content:', activity.object);
-  
-  // Update timeline
-  if (isHashtagTimelineVisible(activity.hashtag)) {
-    prependToTimeline(activity.object);
-  }
-  
-  // Show notification if configured
-  if (shouldNotify(activity.hashtag, activity.author)) {
-    showNotification(`New post in #${activity.hashtag}`);
-  }
-});
+adapter
+	.subscribeToHashtagActivity({
+		hashtags: ['svelte', 'fediverse'],
+	})
+	.subscribe((activity) => {
+		console.log('New post in hashtag:', activity.hashtag);
+		console.log('Author:', activity.author);
+		console.log('Content:', activity.object);
+
+		// Update timeline
+		if (isHashtagTimelineVisible(activity.hashtag)) {
+			prependToTimeline(activity.object);
+		}
+
+		// Show notification if configured
+		if (shouldNotify(activity.hashtag, activity.author)) {
+			showNotification(`New post in #${activity.hashtag}`);
+		}
+	});
 ```
 
 ---
@@ -396,11 +406,11 @@ Common mute duration patterns:
 
 ```typescript
 const MUTE_DURATIONS = {
-  oneHour: () => new Date(Date.now() + 60 * 60 * 1000),
-  oneDay: () => new Date(Date.now() + 24 * 60 * 60 * 1000),
-  oneWeek: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  oneMonth: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-  permanent: () => null  // No expiration
+	oneHour: () => new Date(Date.now() + 60 * 60 * 1000),
+	oneDay: () => new Date(Date.now() + 24 * 60 * 60 * 1000),
+	oneWeek: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+	oneMonth: () => new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+	permanent: () => null, // No expiration
 };
 
 // Mute for one week
@@ -437,16 +447,16 @@ If upgrading from Mastodon/Pleroma:
 ```typescript
 // Migrate muted hashtags to Lesser system
 async function migrateMutedHashtags(legacyMutes: string[]) {
-  for (const hashtag of legacyMutes) {
-    await adapter.muteHashtag(hashtag); // Permanent mute
-  }
+	for (const hashtag of legacyMutes) {
+		await adapter.muteHashtag(hashtag); // Permanent mute
+	}
 }
 
 // Migrate followed hashtags (if previously manual)
 async function migrateFollowedHashtags(hashtags: string[]) {
-  for (const hashtag of hashtags) {
-    await adapter.followHashtag(hashtag, 'MUTUALS'); // Conservative default
-  }
+	for (const hashtag of hashtags) {
+		await adapter.followHashtag(hashtag, 'MUTUALS'); // Conservative default
+	}
 }
 ```
 
@@ -484,4 +494,3 @@ async function migrateFollowedHashtags(hashtags: string[]) {
 - [Lesser Integration Guide](../../lesser-integration-guide.md#hashtag-management)
 - [Timeline Configuration](../../timeline-configuration.md)
 - [Notification Preferences](../../notification-preferences.md)
-

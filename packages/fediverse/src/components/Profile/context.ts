@@ -1,9 +1,9 @@
 /**
  * Profile Context
- * 
+ *
  * Provides profile state and handlers for all profile components.
  * Supports viewing and editing user profiles with custom fields.
- * 
+ *
  * @module Profile/context
  */
 
@@ -32,7 +32,7 @@ export interface ProfileData {
 	isBlocked?: boolean;
 	isMuted?: boolean;
 	relationship?: ProfileRelationship;
-	
+
 	// Lesser-specific fields
 	trustScore?: number;
 	reputation?: {
@@ -552,7 +552,7 @@ export const DEFAULT_TABS: ProfileTab[] = [
 
 /**
  * Create profile context
- * 
+ *
  * @param profile - Initial profile data
  * @param handlers - Profile event handlers
  * @param isOwnProfile - Whether this is the current user's profile
@@ -608,9 +608,9 @@ export function createProfileContext(
 
 /**
  * Get profile context
- * 
+ *
  * Must be called within a Profile component tree.
- * 
+ *
  * @throws Error if called outside Profile component tree
  * @returns Profile context
  */

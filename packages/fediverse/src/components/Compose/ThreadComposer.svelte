@@ -56,11 +56,13 @@ Create threads with multiple connected posts, each with its own character limit.
 		/**
 		 * Callback when thread is submitted
 		 */
-		onSubmitThread?: (posts: Array<{
-			content: string;
-			contentWarning?: string;
-			visibility: PostVisibility;
-		}>) => Promise<void>;
+		onSubmitThread?: (
+			posts: Array<{
+				content: string;
+				contentWarning?: string;
+				visibility: PostVisibility;
+			}>
+		) => Promise<void>;
 
 		/**
 		 * Callback when cancelled
@@ -92,20 +94,20 @@ Create threads with multiple connected posts, each with its own character limit.
 		},
 	]);
 
-let visibility = $state<PostVisibility>(defaultVisibility);
-let submitting = $state(false);
-let error = $state<string | null>(null);
-let draggedPostId = $state<string | null>(null);
+	let visibility = $state<PostVisibility>(defaultVisibility);
+	let submitting = $state(false);
+	let error = $state<string | null>(null);
+	let draggedPostId = $state<string | null>(null);
 
-function extractErrorMessage(value: unknown): string {
-	if (value instanceof Error) {
-		return value.message;
+	function extractErrorMessage(value: unknown): string {
+		if (value instanceof Error) {
+			return value.message;
+		}
+		if (typeof value === 'string') {
+			return value;
+		}
+		return 'Failed to submit thread';
 	}
-	if (typeof value === 'string') {
-		return value;
-	}
-	return 'Failed to submit thread';
-}
 
 	// Buttons
 	const addPostButton = createButton();
@@ -274,12 +276,14 @@ function extractErrorMessage(value: unknown): string {
 			await onSubmitThread(postsToSubmit);
 
 			// Reset on success
-			posts = [{
-				id: crypto.randomUUID(),
-				content: '',
-				characterCount: 0,
-				overLimit: false,
-			}];
+			posts = [
+				{
+					id: crypto.randomUUID(),
+					content: '',
+					characterCount: 0,
+					overLimit: false,
+				},
+			];
 		} catch (err) {
 			error = extractErrorMessage(err);
 		} finally {
@@ -295,21 +299,21 @@ function extractErrorMessage(value: unknown): string {
 			onCancel();
 		} else {
 			// Reset to single empty post
-			posts = [{
-				id: crypto.randomUUID(),
-				content: '',
-				characterCount: 0,
-				overLimit: false,
-			}];
+			posts = [
+				{
+					id: crypto.randomUUID(),
+					content: '',
+					characterCount: 0,
+					overLimit: false,
+				},
+			];
 			error = null;
 		}
 	}
 
 	// Check if submit is disabled
 	const canSubmit = $derived(
-		posts.some((p) => p.content.trim().length > 0) &&
-		!posts.some((p) => p.overLimit) &&
-		!submitting
+		posts.some((p) => p.content.trim().length > 0) && !posts.some((p) => p.overLimit) && !submitting
 	);
 </script>
 
@@ -341,7 +345,7 @@ function extractErrorMessage(value: unknown): string {
 			>
 				<div class="thread-post__header">
 					<div class="thread-post__number">{index + 1}</div>
-					
+
 					<div class="thread-post__controls">
 						<button
 							type="button"
@@ -387,7 +391,8 @@ function extractErrorMessage(value: unknown): string {
 				></textarea>
 
 				<div class="thread-post__footer">
-					<div class="thread-post__char-count"
+					<div
+						class="thread-post__char-count"
 						class:thread-post__char-count--near-limit={post.characterCount / characterLimit >= 0.8}
 						class:thread-post__char-count--over-limit={post.overLimit}
 					>
@@ -407,7 +412,7 @@ function extractErrorMessage(value: unknown): string {
 			disabled={posts.length >= maxPosts || submitting}
 		>
 			<svg viewBox="0 0 24 24" fill="currentColor">
-				<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+				<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
 			</svg>
 			Add post to thread
 		</button>
@@ -434,7 +439,7 @@ function extractErrorMessage(value: unknown): string {
 					<span class="thread-composer__spinner"></span>
 					Posting thread...
 				{:else}
-					Post thread ({posts.filter(p => p.content.trim()).length})
+					Post thread ({posts.filter((p) => p.content.trim()).length})
 				{/if}
 			</button>
 		</div>
@@ -719,7 +724,9 @@ function extractErrorMessage(value: unknown): string {
 	}
 
 	@keyframes spin {
-		to { transform: rotate(360deg); }
+		to {
+			transform: rotate(360deg);
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

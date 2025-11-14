@@ -2,22 +2,17 @@
 
 #import "./fragments.graphql"
 
-query Search(
-  $query: String!
-  $type: String
-  $first: Int = 20
-  $after: Cursor
-) {
-  search(query: $query, type: $type, first: $first, after: $after) {
-    accounts {
-      ...ActorSummary
-    }
-    statuses {
-      ...ObjectFields
-    }
-    hashtags {
-      name
-      url
-    }
-  }
+query Search($query: String!, $type: String, $first: Int = 20, $after: Cursor) {
+	search(query: $query, type: $type, first: $first, after: $after) {
+		accounts {
+			...ActorSummary
+		}
+		statuses {
+			...ObjectFields
+		}
+		hashtags {
+			name
+			url
+		}
+	}
 }

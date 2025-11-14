@@ -16,11 +16,11 @@
   ```
 -->
 <script lang="ts">
-import type { GenericStatus } from '../generics/index.js';
-import * as Status from '../components/Status/index.js';
-import type { StatusActionHandlers } from '../components/Status/context.js';
-import ThreadNodeView from './ThreadNodeView.svelte';
-import type { ThreadNode, ThreadViewProps } from './ThreadView.types.js';
+	import type { GenericStatus } from '../generics/index.js';
+	import * as Status from '../components/Status/index.js';
+	import type { StatusActionHandlers } from '../components/Status/context.js';
+	import ThreadNodeView from './ThreadNodeView.svelte';
+	import type { ThreadNode, ThreadViewProps } from './ThreadView.types.js';
 
 	let {
 		rootStatus,
@@ -78,16 +78,16 @@ import type { ThreadNode, ThreadViewProps } from './ThreadView.types.js';
 		return buildNode(root, 0);
 	}
 
-const threadTree = $derived(buildThreadTree(rootStatus, replies));
+	const threadTree = $derived(buildThreadTree(rootStatus, replies));
 
-const statusActionHandlers = $derived({
-	onReply: handlers.onReply,
-	onBoost: handlers.onBoost,
-	onFavorite: handlers.onLike,
-	onBookmark: handlers.onBookmark,
-	onShare: handlers.onShare,
-	onQuote: handlers.onQuote,
-} as StatusActionHandlers);
+	const statusActionHandlers = $derived({
+		onReply: handlers.onReply,
+		onBoost: handlers.onBoost,
+		onFavorite: handlers.onLike,
+		onBookmark: handlers.onBookmark,
+		onShare: handlers.onShare,
+		onQuote: handlers.onQuote,
+	} as StatusActionHandlers);
 
 	/**
 	 * Toggle thread collapse

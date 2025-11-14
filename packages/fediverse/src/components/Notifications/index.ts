@@ -1,24 +1,24 @@
 /**
  * Notifications Compound Component
- * 
+ *
  * A flexible, composable notifications component for displaying ActivityPub/Fediverse notifications.
  * Built using compound component pattern with grouping, filtering, and real-time updates.
- * 
+ *
  * @example Basic usage
  * ```svelte
  * <script>
  *   import { Notifications } from '@equaltoai/greater-components-fediverse';
- *   
+ *
  *   const notifications = [...]; // Notification[] from API
  * </script>
- * 
+ *
  * <Notifications.Root {notifications}>
  *   {#each notifications as notification}
  *     <Notifications.Item {notification} />
  *   {/each}
  * </Notifications.Root>
  * ```
- * 
+ *
  * @example With grouping
  * ```svelte
  * <Notifications.Root {notifications} {groups} config={{ mode: 'grouped' }}>
@@ -27,7 +27,7 @@
  *   {/each}
  * </Notifications.Root>
  * ```
- * 
+ *
  * @example With filtering
  * ```svelte
  * <Notifications.Root {notifications}>
@@ -37,7 +37,7 @@
  *   {/each}
  * </Notifications.Root>
  * ```
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Notifications
  */
 
@@ -67,7 +67,7 @@ export type {
 
 /**
  * Notifications compound component
- * 
+ *
  * Provides a flexible, composable API for building notification feeds with:
  * - Grouped notifications for similar actions
  * - Filtering by notification type
@@ -104,4 +104,3 @@ export const Notifications = {
 };
 
 export default Notifications;
-

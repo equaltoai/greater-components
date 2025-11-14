@@ -1,9 +1,9 @@
 /**
  * GraphQL Queries and Mutations for Lesser
- * 
+ *
  * Pre-built GraphQL queries, mutations, and subscriptions for common
  * ActivityPub operations.
- * 
+ *
  * @module adapters/graphql/queries
  */
 

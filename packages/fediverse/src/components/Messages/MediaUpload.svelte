@@ -69,11 +69,11 @@
 
 	const { handlers } = getMessagesContext();
 
-let attachments = $state<MediaAttachment[]>([]);
-let uploading = $state(false);
-let error = $state<string | null>(null);
-let fileInput: HTMLInputElement | null = $state(null);
-let sensitiveVisibility = $state<Record<string, boolean>>({});
+	let attachments = $state<MediaAttachment[]>([]);
+	let uploading = $state(false);
+	let error = $state<string | null>(null);
+	let fileInput: HTMLInputElement | null = $state(null);
+	let sensitiveVisibility = $state<Record<string, boolean>>({});
 
 	const canAddMore = $derived(attachments.length < maxAttachments);
 
@@ -157,70 +157,72 @@ let sensitiveVisibility = $state<Record<string, boolean>>({});
 			URL.revokeObjectURL(attachment.previewUrl);
 		}
 
-	attachments = attachments.filter((a) => a.id !== id);
-	onAttachmentsChange?.(attachments.map((a) => a.id));
-}
-
-function updateAttachment(id: string, updater: (attachment: MediaAttachment) => MediaAttachment) {
-	attachments = attachments.map((attachment) => (attachment.id === id ? updater(attachment) : attachment));
-}
-
-function handleSensitiveToggle(id: string, sensitive: boolean) {
-	updateAttachment(id, (attachment) => ({
-		...attachment,
-		sensitive,
-	}));
-
-	if (sensitive) {
-		sensitiveVisibility = { ...sensitiveVisibility, [id]: false };
-	} else {
-		const nextVisibility = { ...sensitiveVisibility };
-		delete nextVisibility[id];
-		sensitiveVisibility = nextVisibility;
+		attachments = attachments.filter((a) => a.id !== id);
+		onAttachmentsChange?.(attachments.map((a) => a.id));
 	}
-}
 
-function handleSpoilerChange(id: string, value: string) {
-	const normalized = value.slice(0, SPOILER_MAX_LENGTH);
-	updateAttachment(id, (attachment) => ({
-		...attachment,
-		spoilerText: normalized,
-	}));
-}
-
-function handleDescriptionChange(id: string, value: string) {
-	const normalized = value.slice(0, DESCRIPTION_MAX_LENGTH);
-	updateAttachment(id, (attachment) => ({
-		...attachment,
-		description: normalized,
-	}));
-}
-
-function handleMediaCategoryChange(id: string, category: MediaCategory) {
-	updateAttachment(id, (attachment) => ({
-		...attachment,
-		mediaCategory: category,
-	}));
-}
-
-function toggleSensitiveVisibility(id: string) {
-	const current = sensitiveVisibility[id] === true;
-	sensitiveVisibility = { ...sensitiveVisibility, [id]: !current };
-}
-
-function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio' | 'file' {
-	switch (attachment.mediaCategory) {
-		case 'IMAGE':
-			return 'image';
-		case 'VIDEO':
-		case 'GIFV':
-			return 'video';
-		case 'AUDIO':
-			return 'audio';
-		default:
-			return 'file';
+	function updateAttachment(id: string, updater: (attachment: MediaAttachment) => MediaAttachment) {
+		attachments = attachments.map((attachment) =>
+			attachment.id === id ? updater(attachment) : attachment
+		);
 	}
-}
+
+	function handleSensitiveToggle(id: string, sensitive: boolean) {
+		updateAttachment(id, (attachment) => ({
+			...attachment,
+			sensitive,
+		}));
+
+		if (sensitive) {
+			sensitiveVisibility = { ...sensitiveVisibility, [id]: false };
+		} else {
+			const nextVisibility = { ...sensitiveVisibility };
+			delete nextVisibility[id];
+			sensitiveVisibility = nextVisibility;
+		}
+	}
+
+	function handleSpoilerChange(id: string, value: string) {
+		const normalized = value.slice(0, SPOILER_MAX_LENGTH);
+		updateAttachment(id, (attachment) => ({
+			...attachment,
+			spoilerText: normalized,
+		}));
+	}
+
+	function handleDescriptionChange(id: string, value: string) {
+		const normalized = value.slice(0, DESCRIPTION_MAX_LENGTH);
+		updateAttachment(id, (attachment) => ({
+			...attachment,
+			description: normalized,
+		}));
+	}
+
+	function handleMediaCategoryChange(id: string, category: MediaCategory) {
+		updateAttachment(id, (attachment) => ({
+			...attachment,
+			mediaCategory: category,
+		}));
+	}
+
+	function toggleSensitiveVisibility(id: string) {
+		const current = sensitiveVisibility[id] === true;
+		sensitiveVisibility = { ...sensitiveVisibility, [id]: !current };
+	}
+
+	function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio' | 'file' {
+		switch (attachment.mediaCategory) {
+			case 'IMAGE':
+				return 'image';
+			case 'VIDEO':
+			case 'GIFV':
+				return 'video';
+			case 'AUDIO':
+				return 'audio';
+			default:
+				return 'file';
+		}
+	}
 
 	function formatFileSize(bytes: number): string {
 		if (bytes < 1024) return `${bytes} B`;
@@ -284,7 +286,8 @@ function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio
 				{@const mediaType = getPreviewType(attachment)}
 				<div
 					class="media-upload__preview"
-					class:media-upload__preview--blurred={attachment.sensitive && sensitiveVisibility[attachment.id] !== true}
+					class:media-upload__preview--blurred={attachment.sensitive &&
+						sensitiveVisibility[attachment.id] !== true}
 				>
 					{#if mediaType === 'image'}
 						<img
@@ -368,8 +371,7 @@ function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio
 							type="checkbox"
 							checked={attachment.sensitive}
 							onchange={(event) =>
-								handleSensitiveToggle(attachment.id, (event.target as HTMLInputElement).checked)
-							}
+								handleSensitiveToggle(attachment.id, (event.target as HTMLInputElement).checked)}
 						/>
 						<span>Sensitive content</span>
 					</label>
@@ -377,15 +379,16 @@ function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio
 					<label class="media-upload__field">
 						<span class="media-upload__field-label">
 							Spoiler text
-							<span class="media-upload__counter">{attachment.spoilerText.length}/{SPOILER_MAX_LENGTH}</span>
+							<span class="media-upload__counter"
+								>{attachment.spoilerText.length}/{SPOILER_MAX_LENGTH}</span
+							>
 						</span>
 						<input
 							type="text"
 							value={attachment.spoilerText}
 							maxlength={SPOILER_MAX_LENGTH}
 							oninput={(event) =>
-								handleSpoilerChange(attachment.id, (event.target as HTMLInputElement).value)
-							}
+								handleSpoilerChange(attachment.id, (event.target as HTMLInputElement).value)}
 							placeholder="Optional warning before media"
 						/>
 					</label>
@@ -401,10 +404,10 @@ function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio
 							rows="3"
 							maxlength={DESCRIPTION_MAX_LENGTH}
 							oninput={(event) =>
-								handleDescriptionChange(attachment.id, (event.target as HTMLTextAreaElement).value)
-							}
+								handleDescriptionChange(attachment.id, (event.target as HTMLTextAreaElement).value)}
 							placeholder="Describe the media for accessibility"
-					>{attachment.description ?? ''}</textarea>
+							>{attachment.description ?? ''}</textarea
+						>
 					</label>
 
 					<label class="media-upload__field">
@@ -414,8 +417,7 @@ function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio
 								handleMediaCategoryChange(
 									attachment.id,
 									(event.target as HTMLSelectElement).value as MediaCategory
-								)
-							}
+								)}
 						>
 							{#each MEDIA_CATEGORY_OPTIONS as option (option.value)}
 								<option value={option.value} selected={option.value === attachment.mediaCategory}>
@@ -608,7 +610,9 @@ function getPreviewType(attachment: MediaAttachment): 'image' | 'video' | 'audio
 		font-size: 0.75rem;
 		font-weight: 600;
 		cursor: pointer;
-		transition: background-color 0.2s, color 0.2s;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
 	}
 
 	.media-upload__reveal:hover {

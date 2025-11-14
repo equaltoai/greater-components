@@ -1,8 +1,8 @@
 /**
  * Admin Cost Dashboard Context
- * 
+ *
  * Provides shared state for cost tracking and budget management.
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Admin/Cost/context
  */
 

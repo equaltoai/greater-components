@@ -1,9 +1,9 @@
 /**
  * Messages Context
- * 
+ *
  * Provides direct messages state and handlers for all messages components.
  * Supports conversations list, threaded messages, and message composition.
- * 
+ *
  * @module Messages/context
  */
 
@@ -66,12 +66,19 @@ export interface MessagesHandlers {
 	/**
 	 * Fetch messages for a conversation
 	 */
-	onFetchMessages?: (conversationId: string, options?: { limit?: number; cursor?: string }) => Promise<DirectMessage[]>;
+	onFetchMessages?: (
+		conversationId: string,
+		options?: { limit?: number; cursor?: string }
+	) => Promise<DirectMessage[]>;
 
 	/**
 	 * Send a message
 	 */
-	onSendMessage?: (conversationId: string, content: string, mediaIds?: string[]) => Promise<DirectMessage>;
+	onSendMessage?: (
+		conversationId: string,
+		content: string,
+		mediaIds?: string[]
+	) => Promise<DirectMessage>;
 
 	/**
 	 * Mark conversation as read
@@ -213,7 +220,7 @@ export interface MessagesContext {
 
 /**
  * Create messages context
- * 
+ *
  * @param handlers - Messages event handlers
  * @returns Messages context
  */
@@ -271,7 +278,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 
 					// Update unread count in conversations list
 					state.conversations = state.conversations.map((c) =>
-						c.id === conversation.id ? { ...c, unreadCount: 0 } : c,
+						c.id === conversation.id ? { ...c, unreadCount: 0 } : c
 					);
 				} catch (error) {
 					state.error = error instanceof Error ? error.message : 'Failed to fetch messages';
@@ -287,7 +294,11 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 			state.error = null;
 
 			try {
-				const message = await handlers.onSendMessage?.(state.selectedConversation.id, content, mediaIds);
+				const message = await handlers.onSendMessage?.(
+					state.selectedConversation.id,
+					content,
+					mediaIds
+				);
 				if (message) {
 					state.messages = [...state.messages, message];
 
@@ -295,7 +306,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 					state.conversations = state.conversations.map((c) =>
 						c.id === state.selectedConversation?.id
 							? { ...c, lastMessage: message, updatedAt: message.createdAt }
-							: c,
+							: c
 					);
 				}
 			} catch (error) {
@@ -323,7 +334,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 			try {
 				await handlers.onMarkRead?.(conversationId);
 				state.conversations = state.conversations.map((c) =>
-					c.id === conversationId ? { ...c, unreadCount: 0 } : c,
+					c.id === conversationId ? { ...c, unreadCount: 0 } : c
 				);
 			} catch {
 				// Silently fail
@@ -337,9 +348,9 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 
 /**
  * Get messages context
- * 
+ *
  * Must be called within a Messages component tree.
- * 
+ *
  * @throws Error if called outside Messages component tree
  * @returns Messages context
  */
@@ -384,6 +395,7 @@ export function formatMessageTime(timestamp: string): string {
 export function getConversationName(conversation: Conversation, currentUserId: string): string {
 	const otherParticipants = conversation.participants.filter((p) => p.id !== currentUserId);
 	if (otherParticipants.length === 0) return 'Me';
-	if (otherParticipants.length === 1 && otherParticipants[0]) return otherParticipants[0].displayName;
+	if (otherParticipants.length === 1 && otherParticipants[0])
+		return otherParticipants[0].displayName;
 	return otherParticipants.map((p) => p.displayName).join(', ');
 }

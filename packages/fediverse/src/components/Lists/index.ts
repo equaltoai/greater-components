@@ -1,16 +1,16 @@
 /**
  * Lists Components
- * 
+ *
  * Complete lists management system for organizing and viewing curated actor feeds.
  * Supports creating, editing, and deleting lists with public/private visibility.
- * 
+ *
  * @module components/Lists
- * 
+ *
  * @example
  * ```svelte
  * <script>
  *   import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
- * 
+ *
  *   const handlers = {
  *     onFetchLists: async () => {
  *       const response = await fetch('/api/lists');
@@ -25,7 +25,7 @@
  *     },
  *   };
  * </script>
- * 
+ *
  * <Lists.Root {handlers}>
  *   <Lists.Manager />
  *   <Lists.Editor />
@@ -52,4 +52,3 @@ export type {
 } from './context.js';
 
 export { createListsContext, getListsContext, validateListForm } from './context.js';
-

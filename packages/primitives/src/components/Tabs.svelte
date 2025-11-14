@@ -1,3 +1,17 @@
+<svelte:options
+	customElement={{
+		props: {
+			tabs: {},
+			activeTab: {},
+			orientation: {},
+			activation: {},
+			variant: {},
+			class: {},
+			onTabChange: {},
+		},
+	}}
+/>
+
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
@@ -195,20 +209,6 @@
 		return `tabs-${key}`;
 	});
 </script>
-
-<svelte:options
-	customElement={{
-		props: {
-			tabs: {},
-			activeTab: {},
-			orientation: {},
-			activation: {},
-			variant: {},
-			class: {},
-			onTabChange: {}
-		}
-	}}
-/>
 
 <div class={containerClass()} {...restProps}>
 	<div

@@ -118,13 +118,13 @@
 		showAdvanced?: boolean;
 	}
 
-let {
-	onConnect,
-	onDisconnect,
-	supportedChains = [1], // Ethereum mainnet by default
-	signMessage = 'Sign this message to authenticate with Lesser',
-	showAdvanced = false,
-}: Props = $props();
+	let {
+		onConnect,
+		onDisconnect,
+		supportedChains = [1], // Ethereum mainnet by default
+		signMessage = 'Sign this message to authenticate with Lesser',
+		showAdvanced = false,
+	}: Props = $props();
 
 	const clipboard = typeof navigator !== 'undefined' ? navigator.clipboard : undefined;
 

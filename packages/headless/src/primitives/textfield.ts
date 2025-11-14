@@ -1,9 +1,9 @@
 /**
  * TextField Primitive
- * 
+ *
  * Headless primitive for text input fields with validation, formatting, and accessibility.
  * Provides behavior for single-line and multi-line text inputs with error handling.
- * 
+ *
  * @module primitives/textfield
  */
 
@@ -229,7 +229,7 @@ export interface TextField {
 
 /**
  * Create a textfield
- * 
+ *
  * @param config - TextField configuration
  * @returns TextField context
  */

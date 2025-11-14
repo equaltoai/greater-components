@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Search, type SearchContext } from '@equaltoai/greater-components-fediverse';
+	import { Search, type SearchContext } from '@equaltoai/greater-components-fediverse';
 
-  let { context = $bindable<SearchContext | null>(null) } = $props();
+	let { context = $bindable<SearchContext | null>(null) } = $props();
 
-  $effect(() => {
-    context = Search.getSearchContext();
-  });
+	$effect(() => {
+		context = Search.getSearchContext();
+	});
 </script>

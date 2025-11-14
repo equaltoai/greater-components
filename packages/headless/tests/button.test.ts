@@ -1,6 +1,6 @@
 /**
  * Button Primitive Tests
- * 
+ *
  * Comprehensive test suite for the Button headless primitive.
  * Tests click handlers, keyboard navigation, loading states, and accessibility.
  */
@@ -37,7 +37,7 @@ describe('Button Primitive', () => {
 				loading: true,
 				pressed: true,
 				id: 'custom-button',
-				label: 'Custom Button'
+				label: 'Custom Button',
 			});
 
 			expect(button.state.disabled).toBe(true);

@@ -152,8 +152,8 @@
 	}: Props = $props();
 
 	const {
-	mode = 'dropdown',
-	showNotifications = true,
+		mode = 'dropdown',
+		showNotifications = true,
 		maxVisibleAccounts = 5,
 		class: className = '',
 		showAddAccount = true,
@@ -333,30 +333,30 @@
 									</span>
 								{/if}
 
-					{#if account.id === currentAccount.id}
-						<svg class="instance-picker__check" viewBox="0 0 24 24" fill="currentColor">
-							<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-						</svg>
-					{:else}
-						<span
-							class="instance-picker__remove"
-							role="button"
-							tabindex="0"
-							onclick={(e) => removeAccount(account.id, e)}
-							onkeydown={(event) => handleRemoveKey(event, account.id)}
-							aria-label="Remove account"
-							aria-disabled={removingId === account.id}
-						>
-							{#if removingId === account.id}
-								<svg class="instance-picker__spinner" viewBox="0 0 24 24">
-									<circle class="instance-picker__spinner-track" cx="12" cy="12" r="10" />
-									<circle class="instance-picker__spinner-path" cx="12" cy="12" r="10" />
-								</svg>
-							{:else}
-								×
-							{/if}
-						</span>
-					{/if}
+								{#if account.id === currentAccount.id}
+									<svg class="instance-picker__check" viewBox="0 0 24 24" fill="currentColor">
+										<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+									</svg>
+								{:else}
+									<span
+										class="instance-picker__remove"
+										role="button"
+										tabindex="0"
+										onclick={(e) => removeAccount(account.id, e)}
+										onkeydown={(event) => handleRemoveKey(event, account.id)}
+										aria-label="Remove account"
+										aria-disabled={removingId === account.id}
+									>
+										{#if removingId === account.id}
+											<svg class="instance-picker__spinner" viewBox="0 0 24 24">
+												<circle class="instance-picker__spinner-track" cx="12" cy="12" r="10" />
+												<circle class="instance-picker__spinner-path" cx="12" cy="12" r="10" />
+											</svg>
+										{:else}
+											×
+										{/if}
+									</span>
+								{/if}
 							{/if}
 						</button>
 					{/each}
@@ -407,12 +407,12 @@
 					</button>
 				{/each}
 
-			{#if showAddAccount}
-				<button
-					class="instance-picker__sidebar-add"
-					onclick={() => handlers.onAddAccount?.()}
-					aria-label="Add account"
-				>
+				{#if showAddAccount}
+					<button
+						class="instance-picker__sidebar-add"
+						onclick={() => handlers.onAddAccount?.()}
+						aria-label="Add account"
+					>
 						<svg viewBox="0 0 24 24" fill="currentColor">
 							<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
 						</svg>

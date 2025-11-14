@@ -16,10 +16,12 @@ const ensureTrailingNewline = (message: string): string => {
 	return message.endsWith('\n') ? message : `${message}\n`;
 };
 
-const writeTo = (stream: NodeJS.WriteStream) => (message?: LogPayload): void => {
-	const output = ensureTrailingNewline(stringify(message));
-	stream.write(output);
-};
+const writeTo =
+	(stream: NodeJS.WriteStream) =>
+	(message?: LogPayload): void => {
+		const output = ensureTrailingNewline(stringify(message));
+		stream.write(output);
+	};
 
 const writeStdout = writeTo(process.stdout);
 const writeStderr = writeTo(process.stderr);

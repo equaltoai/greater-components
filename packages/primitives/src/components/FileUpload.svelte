@@ -33,7 +33,11 @@
 	}
 
 	const fileNames = $derived(
-		selectedFiles ? Array.from(selectedFiles).map((f) => f.name).join(', ') : ''
+		selectedFiles
+			? Array.from(selectedFiles)
+					.map((f) => f.name)
+					.join(', ')
+			: ''
 	);
 </script>
 
@@ -49,12 +53,7 @@
 		class="gr-file-upload__input"
 		onchange={handleChange}
 	/>
-	<button
-		type="button"
-		class="gr-file-upload__button"
-		onclick={triggerFileSelect}
-		{disabled}
-	>
+	<button type="button" class="gr-file-upload__button" onclick={triggerFileSelect} {disabled}>
 		Choose {multiple ? 'Files' : 'File'}
 	</button>
 	{#if fileNames}
@@ -103,4 +102,3 @@
 		}
 	}
 </style>
-

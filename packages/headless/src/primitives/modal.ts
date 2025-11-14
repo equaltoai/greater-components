@@ -1,6 +1,6 @@
 /**
  * Headless Modal Primitive
- * 
+ *
  * Provides accessible modal/dialog behavior without any styling.
  * Features:
  * - Focus trapping
@@ -10,7 +10,7 @@
  * - ARIA attributes
  * - Portal rendering (optional)
  * - Animation support
- * 
+ *
  * @module @equaltoai/greater-components-headless/modal
  */
 
@@ -257,8 +257,8 @@ export function createModal(config: ModalConfig = {}) {
 			if (prop === 'open' && oldValue !== value) {
 				onOpenChange?.(value as boolean);
 			}
-		return true;
-	},
+			return true;
+		},
 	});
 
 	let contentElement: HTMLElement | null = null;
@@ -484,12 +484,12 @@ export function createModal(config: ModalConfig = {}) {
 				node.removeEventListener('keydown', handleKeyDown);
 				state.mounted = false;
 				contentElement = null;
-				
+
 				// Restore body overflow if modal was open
 				if (state.open && state.preventScroll) {
 					document.body.style.overflow = originalBodyOverflow;
 				}
-				
+
 				onDestroy?.();
 			},
 		};
@@ -558,4 +558,3 @@ export function createModal(config: ModalConfig = {}) {
 		helpers,
 	};
 }
-

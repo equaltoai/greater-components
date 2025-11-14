@@ -1,19 +1,19 @@
 /**
  * Compose Compound Component
- * 
+ *
  * A flexible, composable compose/post creation component for ActivityPub/Fediverse apps.
  * Built using compound component pattern with support for media, content warnings, and visibility settings.
- * 
+ *
  * @example Basic usage
  * ```svelte
  * <script>
  *   import { Compose } from '@equaltoai/greater-components-fediverse';
- *   
+ *
  *   async function handleSubmit(data) {
  *     await api.statuses.create(data);
  *   }
  * </script>
- * 
+ *
  * <Compose.Root handlers={{ onSubmit: handleSubmit }}>
  *   <Compose.Editor autofocus />
  *   <Compose.CharacterCount />
@@ -21,7 +21,7 @@
  *   <Compose.Submit />
  * </Compose.Root>
  * ```
- * 
+ *
  * @example With reply
  * ```svelte
  * <Compose.Root
@@ -32,7 +32,7 @@
  *   <Compose.Submit text="Reply" />
  * </Compose.Root>
  * ```
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Compose
  */
 
@@ -59,7 +59,7 @@ export {
 	ComposeDraftSaver as DraftSaver,
 	ComposeThreadComposer as ThreadComposer,
 	ComposeMediaUpload as MediaUpload,
-	ComposeImageEditor as ImageEditor
+	ComposeImageEditor as ImageEditor,
 };
 
 // Export types
@@ -69,7 +69,7 @@ export type {
 	ComposeHandlers,
 	ComposeState,
 	PostVisibility,
-	ComposeAttachment
+	ComposeAttachment,
 } from './context.js';
 
 // Export utility modules
@@ -81,7 +81,7 @@ export * as GraphQLAdapter from './GraphQLAdapter.js';
 
 /**
  * Compose compound component
- * 
+ *
  * Provides a flexible, composable API for building post composition UIs with:
  * - Character counting and limits (Unicode-aware)
  * - Visibility controls
@@ -146,8 +146,7 @@ export const Compose = {
 	/**
 	 * Image editor with focal point picker and alt text
 	 */
-	ImageEditor: ComposeImageEditor
+	ImageEditor: ComposeImageEditor,
 };
 
 export default Compose;
-

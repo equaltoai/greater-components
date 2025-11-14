@@ -124,8 +124,8 @@
 						<th>Actions</th>
 					</tr>
 				</thead>
-			<tbody>
-				{#each filteredInstances as instance (instance.domain)}
+				<tbody>
+					{#each filteredInstances as instance (instance.domain)}
 						<tr>
 							<td class="admin-federation__domain">{instance.domain}</td>
 							<td>

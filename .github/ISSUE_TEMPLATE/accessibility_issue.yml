@@ -1,7 +1,7 @@
 name: ♿ Accessibility Issue
 description: Report accessibility issues or violations in Greater Components
-title: "[A11y]: "
-labels: ["accessibility", "bug", "needs-triage"]
+title: '[A11y]: '
+labels: ['accessibility', 'bug', 'needs-triage']
 assignees: []
 body:
   - type: markdown
@@ -29,7 +29,7 @@ body:
     attributes:
       label: Greater Components Version
       description: What version are you using?
-      placeholder: "1.0.0"
+      placeholder: '1.0.0'
     validations:
       required: true
 
@@ -39,22 +39,22 @@ body:
       label: Affected Component(s)
       description: Which component has the accessibility issue?
       options:
-        - "Button"
-        - "Modal"
-        - "TextField" 
-        - "Menu"
-        - "Tooltip"
-        - "Tabs"
-        - "Avatar"
-        - "Skeleton"
-        - "ThemeSwitcher"
-        - "ThemeProvider"
-        - "StatusCard"
-        - "TimelineVirtualized"
-        - "NotificationsFeed"
-        - "ComposeBox"
-        - "Multiple components"
-        - "Other/Custom component"
+        - 'Button'
+        - 'Modal'
+        - 'TextField'
+        - 'Menu'
+        - 'Tooltip'
+        - 'Tabs'
+        - 'Avatar'
+        - 'Skeleton'
+        - 'ThemeSwitcher'
+        - 'ThemeProvider'
+        - 'StatusCard'
+        - 'TimelineVirtualized'
+        - 'NotificationsFeed'
+        - 'ComposeBox'
+        - 'Multiple components'
+        - 'Other/Custom component'
     validations:
       required: true
 
@@ -64,10 +64,10 @@ body:
       label: WCAG Conformance Level
       description: What WCAG level does this issue violate?
       options:
-        - "Level A (minimum)"
-        - "Level AA (standard)"  
-        - "Level AAA (enhanced)"
-        - "Not sure/Multiple levels"
+        - 'Level A (minimum)'
+        - 'Level AA (standard)'
+        - 'Level AAA (enhanced)'
+        - 'Not sure/Multiple levels'
     validations:
       required: true
 
@@ -77,19 +77,19 @@ body:
       label: WCAG Guidelines Affected
       description: Which WCAG success criteria are violated? (Check all that apply)
       options:
-        - label: "1.1 Text Alternatives"
-        - label: "1.2 Time-based Media"
-        - label: "1.3 Adaptable (Structure, relationships, sequence)"
-        - label: "1.4 Distinguishable (Color, contrast, resize text)"
-        - label: "2.1 Keyboard Accessible"
-        - label: "2.2 Enough Time"
-        - label: "2.3 Seizures and Physical Reactions"
-        - label: "2.4 Navigable (Focus, titles, headings)"
-        - label: "2.5 Input Modalities"
-        - label: "3.1 Readable"
-        - label: "3.2 Predictable"
-        - label: "3.3 Input Assistance"
-        - label: "4.1 Compatible (Parsing, name/role/value)"
+        - label: '1.1 Text Alternatives'
+        - label: '1.2 Time-based Media'
+        - label: '1.3 Adaptable (Structure, relationships, sequence)'
+        - label: '1.4 Distinguishable (Color, contrast, resize text)'
+        - label: '2.1 Keyboard Accessible'
+        - label: '2.2 Enough Time'
+        - label: '2.3 Seizures and Physical Reactions'
+        - label: '2.4 Navigable (Focus, titles, headings)'
+        - label: '2.5 Input Modalities'
+        - label: '3.1 Readable'
+        - label: '3.2 Predictable'
+        - label: '3.3 Input Assistance'
+        - label: '4.1 Compatible (Parsing, name/role/value)'
 
   - type: dropdown
     id: assistive-tech
@@ -97,18 +97,18 @@ body:
       label: Assistive Technology
       description: What assistive technology did you test with?
       options:
-        - "NVDA (Windows)"
-        - "JAWS (Windows)"
-        - "VoiceOver (macOS/iOS)"
-        - "Orca (Linux)"
-        - "TalkBack (Android)"
-        - "Dragon NaturallySpeaking"
-        - "Switch navigation"
-        - "Keyboard-only navigation"
-        - "High contrast mode"
-        - "Zoom/magnification software"
-        - "Multiple tools"
-        - "Other"
+        - 'NVDA (Windows)'
+        - 'JAWS (Windows)'
+        - 'VoiceOver (macOS/iOS)'
+        - 'Orca (Linux)'
+        - 'TalkBack (Android)'
+        - 'Dragon NaturallySpeaking'
+        - 'Switch navigation'
+        - 'Keyboard-only navigation'
+        - 'High contrast mode'
+        - 'Zoom/magnification software'
+        - 'Multiple tools'
+        - 'Other'
     validations:
       required: true
 
@@ -174,7 +174,7 @@ body:
         <script>
           import { ComponentName } from '@equaltoai/greater-components-primitives';
         </script>
-        
+
         <ComponentName prop="value">
           Content that has accessibility issues
         </ComponentName>
@@ -201,10 +201,10 @@ body:
       label: Severity Level
       description: How severe is this accessibility issue?
       options:
-        - "Low - Minor usability issue"
-        - "Medium - Makes feature difficult to use"
-        - "High - Makes feature unusable for some users"
-        - "Critical - Complete barrier to access"
+        - 'Low - Minor usability issue'
+        - 'Medium - Makes feature difficult to use'
+        - 'High - Makes feature unusable for some users'
+        - 'Critical - Complete barrier to access'
     validations:
       required: true
 
@@ -217,10 +217,10 @@ body:
         axe-core results:
         - Violation 1: [description]
         - Violation 2: [description]
-        
+
         WAVE results:
         - Error 1: [description]
-        
+
         Lighthouse accessibility score: [score/100]
 
   - type: textarea
@@ -243,7 +243,7 @@ body:
         1. Add proper ARIA labels
         2. Implement keyboard event handlers
         3. Improve focus management
-        
+
         Reference implementations:
         - Link to examples in other libraries
 

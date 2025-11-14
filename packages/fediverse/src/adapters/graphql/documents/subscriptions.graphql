@@ -3,384 +3,384 @@
 #import "./fragments.graphql"
 
 subscription TimelineUpdates($type: TimelineType!, $listId: ID) {
-  timelineUpdates(type: $type, listId: $listId) {
-    ...ObjectFields
-  }
+	timelineUpdates(type: $type, listId: $listId) {
+		...ObjectFields
+	}
 }
 
 subscription NotificationStream($types: [String!]) {
-  notificationStream(types: $types) {
-    id
-    type
-    read
-    createdAt
-    account {
-      ...ActorSummary
-    }
-    status {
-      ...ObjectFields
-    }
-  }
+	notificationStream(types: $types) {
+		id
+		type
+		read
+		createdAt
+		account {
+			...ActorSummary
+		}
+		status {
+			...ObjectFields
+		}
+	}
 }
 
 subscription ConversationUpdates {
-  conversationUpdates {
-    id
-    unread
-    createdAt
-    updatedAt
-    accounts {
-      ...ActorSummary
-    }
-    lastStatus {
-      ...ObjectFields
-    }
-  }
+	conversationUpdates {
+		id
+		unread
+		createdAt
+		updatedAt
+		accounts {
+			...ActorSummary
+		}
+		lastStatus {
+			...ObjectFields
+		}
+	}
 }
 
 subscription ListUpdates($listId: ID!) {
-  listUpdates(listId: $listId) {
-    type
-    timestamp
-    list {
-      id
-      title
-      repliesPolicy
-      exclusive
-      accountCount
-    }
-    account {
-      ...ActorSummary
-    }
-  }
+	listUpdates(listId: $listId) {
+		type
+		timestamp
+		list {
+			id
+			title
+			repliesPolicy
+			exclusive
+			accountCount
+		}
+		account {
+			...ActorSummary
+		}
+	}
 }
 
 subscription QuoteActivity($noteId: ID!) {
-  quoteActivity(noteId: $noteId) {
-    type
-    timestamp
-    quote {
-      ...ObjectFields
-    }
-    quoter {
-      ...ActorSummary
-    }
-  }
+	quoteActivity(noteId: $noteId) {
+		type
+		timestamp
+		quote {
+			...ObjectFields
+		}
+		quoter {
+			...ActorSummary
+		}
+	}
 }
 
 subscription HashtagActivity($hashtags: [String!]!) {
-  hashtagActivity(hashtags: $hashtags) {
-    hashtag
-    timestamp
-    post {
-      ...ObjectFields
-    }
-    author {
-      ...ActorSummary
-    }
-  }
+	hashtagActivity(hashtags: $hashtags) {
+		hashtag
+		timestamp
+		post {
+			...ObjectFields
+		}
+		author {
+			...ActorSummary
+		}
+	}
 }
 
 subscription ActivityStream($types: [ActivityType!]) {
-  activityStream(types: $types) {
-    id
-    type
-    published
-    cost
-    actor {
-      ...ActorSummary
-    }
-    object {
-      ...ObjectFields
-    }
-    target {
-      ...ObjectFields
-    }
-  }
+	activityStream(types: $types) {
+		id
+		type
+		published
+		cost
+		actor {
+			...ActorSummary
+		}
+		object {
+			...ObjectFields
+		}
+		target {
+			...ObjectFields
+		}
+	}
 }
 
 subscription RelationshipUpdates($actorId: ID) {
-  relationshipUpdates(actorId: $actorId) {
-    type
-    timestamp
-    relationship {
-      id
-      following
-      followedBy
-      blocking
-      blockedBy
-      muting
-      mutingNotifications
-      requested
-      domainBlocking
-      showingReblogs
-      notifying
-      languages
-      note
-    }
-    actor {
-      ...ActorSummary
-    }
-  }
+	relationshipUpdates(actorId: $actorId) {
+		type
+		timestamp
+		relationship {
+			id
+			following
+			followedBy
+			blocking
+			blockedBy
+			muting
+			mutingNotifications
+			requested
+			domainBlocking
+			showingReblogs
+			notifying
+			languages
+			note
+		}
+		actor {
+			...ActorSummary
+		}
+	}
 }
 
 subscription CostUpdates($threshold: Int) {
-  costUpdates(threshold: $threshold) {
-    operationCost
-    dailyTotal
-    monthlyProjection
-  }
+	costUpdates(threshold: $threshold) {
+		operationCost
+		dailyTotal
+		monthlyProjection
+	}
 }
 
 subscription ModerationEvents($actorId: ID) {
-  moderationEvents(actorId: $actorId) {
-    id
-    decision
-    confidence
-    evidence
-    timestamp
-    object {
-      ...ObjectFields
-    }
-    reviewers {
-      ...ActorSummary
-    }
-  }
+	moderationEvents(actorId: $actorId) {
+		id
+		decision
+		confidence
+		evidence
+		timestamp
+		object {
+			...ObjectFields
+		}
+		reviewers {
+			...ActorSummary
+		}
+	}
 }
 
 subscription TrustUpdates($actorId: ID!) {
-  trustUpdates(actorId: $actorId) {
-    category
-    score
-    updatedAt
-    from {
-      ...ActorSummary
-    }
-    to {
-      ...ActorSummary
-    }
-  }
+	trustUpdates(actorId: $actorId) {
+		category
+		score
+		updatedAt
+		from {
+			...ActorSummary
+		}
+		to {
+			...ActorSummary
+		}
+	}
 }
 
 subscription AiAnalysisUpdates($objectId: ID) {
-  aiAnalysisUpdates(objectId: $objectId) {
-    id
-    objectId
-    objectType
-    overallRisk
-    moderationAction
-    confidence
-    analyzedAt
-    textAnalysis {
-      sentiment
-      toxicityScore
-      toxicityLabels
-      containsPII
-      dominantLanguage
-      keyPhrases
-      sentimentScores {
-        positive
-        negative
-        neutral
-        mixed
-      }
-      entities {
-        type
-        text
-        score
-      }
-    }
-    imageAnalysis {
-      isNSFW
-      nsfwConfidence
-      violenceScore
-      weaponsDetected
-      detectedText
-      textToxicity
-      deepfakeScore
-      moderationLabels {
-        name
-        confidence
-        parentName
-      }
-      celebrityFaces {
-        name
-        confidence
-        urls
-      }
-    }
-    aiDetection {
-      aiGeneratedProbability
-      generationModel
-      patternConsistency
-      styleDeviation
-      semanticCoherence
-      suspiciousPatterns
-    }
-    spamAnalysis {
-      spamScore
-      postingVelocity
-      repetitionScore
-      linkDensity
-      followerRatio
-      interactionRate
-      accountAgeDays
-      spamIndicators {
-        type
-        description
-        severity
-      }
-    }
-  }
+	aiAnalysisUpdates(objectId: $objectId) {
+		id
+		objectId
+		objectType
+		overallRisk
+		moderationAction
+		confidence
+		analyzedAt
+		textAnalysis {
+			sentiment
+			toxicityScore
+			toxicityLabels
+			containsPII
+			dominantLanguage
+			keyPhrases
+			sentimentScores {
+				positive
+				negative
+				neutral
+				mixed
+			}
+			entities {
+				type
+				text
+				score
+			}
+		}
+		imageAnalysis {
+			isNSFW
+			nsfwConfidence
+			violenceScore
+			weaponsDetected
+			detectedText
+			textToxicity
+			deepfakeScore
+			moderationLabels {
+				name
+				confidence
+				parentName
+			}
+			celebrityFaces {
+				name
+				confidence
+				urls
+			}
+		}
+		aiDetection {
+			aiGeneratedProbability
+			generationModel
+			patternConsistency
+			styleDeviation
+			semanticCoherence
+			suspiciousPatterns
+		}
+		spamAnalysis {
+			spamScore
+			postingVelocity
+			repetitionScore
+			linkDensity
+			followerRatio
+			interactionRate
+			accountAgeDays
+			spamIndicators {
+				type
+				description
+				severity
+			}
+		}
+	}
 }
 
 subscription MetricsUpdates($categories: [String!], $services: [String!], $threshold: Float) {
-  metricsUpdates(categories: $categories, services: $services, threshold: $threshold) {
-    metricId
-    serviceName
-    metricType
-    subscriptionCategory
-    aggregationLevel
-    timestamp
-    count
-    sum
-    min
-    max
-    average
-    p50
-    p95
-    p99
-    unit
-    userCostMicrocents
-    totalCostMicrocents
-    userId
-    tenantId
-    instanceDomain
-    dimensions {
-      key
-      value
-    }
-  }
+	metricsUpdates(categories: $categories, services: $services, threshold: $threshold) {
+		metricId
+		serviceName
+		metricType
+		subscriptionCategory
+		aggregationLevel
+		timestamp
+		count
+		sum
+		min
+		max
+		average
+		p50
+		p95
+		p99
+		unit
+		userCostMicrocents
+		totalCostMicrocents
+		userId
+		tenantId
+		instanceDomain
+		dimensions {
+			key
+			value
+		}
+	}
 }
 
 subscription ModerationAlerts($severity: ModerationSeverity) {
-  moderationAlerts(severity: $severity) {
-    id
-    severity
-    matchedText
-    confidence
-    suggestedAction
-    timestamp
-    handled
-    pattern {
-      id
-      pattern
-      type
-      severity
-      matchCount
-      falsePositiveRate
-      createdAt
-      updatedAt
-      active
-      createdBy {
-        ...ActorSummary
-      }
-    }
-    content {
-      ...ObjectFields
-    }
-  }
+	moderationAlerts(severity: $severity) {
+		id
+		severity
+		matchedText
+		confidence
+		suggestedAction
+		timestamp
+		handled
+		pattern {
+			id
+			pattern
+			type
+			severity
+			matchCount
+			falsePositiveRate
+			createdAt
+			updatedAt
+			active
+			createdBy {
+				...ActorSummary
+			}
+		}
+		content {
+			...ObjectFields
+		}
+	}
 }
 
 subscription CostAlerts($thresholdUSD: Float!) {
-  costAlerts(thresholdUSD: $thresholdUSD) {
-    id
-    type
-    amount
-    threshold
-    domain
-    message
-    timestamp
-  }
+	costAlerts(thresholdUSD: $thresholdUSD) {
+		id
+		type
+		amount
+		threshold
+		domain
+		message
+		timestamp
+	}
 }
 
 subscription BudgetAlerts($domain: String) {
-  budgetAlerts(domain: $domain) {
-    id
-    domain
-    budgetUSD
-    spentUSD
-    percentUsed
-    projectedOverspend
-    alertLevel
-    timestamp
-  }
+	budgetAlerts(domain: $domain) {
+		id
+		domain
+		budgetUSD
+		spentUSD
+		percentUsed
+		projectedOverspend
+		alertLevel
+		timestamp
+	}
 }
 
 subscription FederationHealthUpdates($domain: String) {
-  federationHealthUpdates(domain: $domain) {
-    domain
-    previousStatus
-    currentStatus
-    timestamp
-    issues {
-      type
-      severity
-      description
-      detectedAt
-      impact
-    }
-  }
+	federationHealthUpdates(domain: $domain) {
+		domain
+		previousStatus
+		currentStatus
+		timestamp
+		issues {
+			type
+			severity
+			description
+			detectedAt
+			impact
+		}
+	}
 }
 
 subscription ModerationQueueUpdate($priority: Priority) {
-  moderationQueueUpdate(priority: $priority) {
-    id
-    reportCount
-    severity
-    priority
-    deadline
-    content {
-      ...ObjectFields
-    }
-    assignedTo {
-      ...ActorSummary
-    }
-  }
+	moderationQueueUpdate(priority: $priority) {
+		id
+		reportCount
+		severity
+		priority
+		deadline
+		content {
+			...ObjectFields
+		}
+		assignedTo {
+			...ActorSummary
+		}
+	}
 }
 
 subscription ThreatIntelligence {
-  threatIntelligence {
-    id
-    type
-    severity
-    source
-    description
-    affectedInstances
-    mitigationSteps
-    timestamp
-  }
+	threatIntelligence {
+		id
+		type
+		severity
+		source
+		description
+		affectedInstances
+		mitigationSteps
+		timestamp
+	}
 }
 
 subscription PerformanceAlert($severity: AlertSeverity!) {
-  performanceAlert(severity: $severity) {
-    id
-    service
-    metric
-    threshold
-    actualValue
-    severity
-    timestamp
-  }
+	performanceAlert(severity: $severity) {
+		id
+		service
+		metric
+		threshold
+		actualValue
+		severity
+		timestamp
+	}
 }
 
 subscription InfrastructureEvent {
-  infrastructureEvent {
-    id
-    type
-    service
-    description
-    impact
-    timestamp
-  }
+	infrastructureEvent {
+		id
+		type
+		service
+		description
+		impact
+		timestamp
+	}
 }

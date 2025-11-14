@@ -53,18 +53,26 @@ Provides context for child components and handles root-level interactions.
 
 	// Create context for child components
 	const context: StatusContext = {
-		get status() { return status; },
-		get actualStatus() { return actualStatus; },
-		get account() { return account; },
-		get isReblog() { return isReblog; },
+		get status() {
+			return status;
+		},
+		get actualStatus() {
+			return actualStatus;
+		},
+		get account() {
+			return account;
+		},
+		get isReblog() {
+			return isReblog;
+		},
 		config: {
 			density: config.density || 'comfortable',
 			showActions: config.showActions ?? true,
 			clickable: config.clickable ?? false,
 			showThread: config.showThread ?? true,
-			class: config.class || ''
+			class: config.class || '',
 		},
-		handlers
+		handlers,
 	};
 
 	// Set context once during initialization

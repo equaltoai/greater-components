@@ -27,7 +27,7 @@ Greater Components is a comprehensive, production-ready UI component library des
 
 - **Lesser-powered applications** with advanced moderation and analytics
 - **Mastodon clients** and alternative interfaces
-- **ActivityPub applications** and services  
+- **ActivityPub applications** and services
 - **Fediverse tools** and analytics platforms
 - **Social media dashboards** and moderation tools
 - **Any modern web application** needing high-quality UI components
@@ -77,30 +77,28 @@ npm install @equaltoai/greater-components-utils
 
 ```svelte
 <script>
-  import { Button, Modal, ThemeProvider } from '@equaltoai/greater-components-primitives';
-  import { HomeIcon, SettingsIcon } from '@equaltoai/greater-components-icons';
-  
-  let showModal = false;
+	import { Button, Modal, ThemeProvider } from '@equaltoai/greater-components-primitives';
+	import { HomeIcon, SettingsIcon } from '@equaltoai/greater-components-icons';
+
+	let showModal = false;
 </script>
 
 <ThemeProvider>
-  <main>
-    <Button variant="solid" onclick={() => showModal = true}>
-      {#snippet prefix()}<SettingsIcon />{/snippet}
-      Open Settings
-    </Button>
-    
-    <Modal bind:open={showModal} title="Settings" size="md">
-      <p>Your settings panel content goes here.</p>
-      
-      {#snippet footer()}
-        <Button variant="ghost" onclick={() => showModal = false}>
-          Cancel
-        </Button>
-        <Button variant="solid">Save Changes</Button>
-      {/snippet}
-    </Modal>
-  </main>
+	<main>
+		<Button variant="solid" onclick={() => (showModal = true)}>
+			{#snippet prefix()}<SettingsIcon />{/snippet}
+			Open Settings
+		</Button>
+
+		<Modal bind:open={showModal} title="Settings" size="md">
+			<p>Your settings panel content goes here.</p>
+
+			{#snippet footer()}
+				<Button variant="ghost" onclick={() => (showModal = false)}>Cancel</Button>
+				<Button variant="solid">Save Changes</Button>
+			{/snippet}
+		</Modal>
+	</main>
 </ThemeProvider>
 ```
 
@@ -108,36 +106,36 @@ npm install @equaltoai/greater-components-utils
 
 ```svelte
 <script>
-  import { createButton } from '@equaltoai/greater-components-headless/button';
-  import { SettingsIcon } from '@equaltoai/greater-components-icons';
-  
-  const button = createButton({
-    onClick: () => console.log('Clicked!'),
-    loading: false
-  });
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { SettingsIcon } from '@equaltoai/greater-components-icons';
+
+	const button = createButton({
+		onClick: () => console.log('Clicked!'),
+		loading: false,
+	});
 </script>
 
 <!-- Style however you want -->
 <button use:button.actions.button class="your-custom-styles">
-  <SettingsIcon />
-  {#if button.state.loading}
-    Loading...
-  {:else}
-    Open Settings
-  {/if}
+	<SettingsIcon />
+	{#if button.state.loading}
+		Loading...
+	{:else}
+		Open Settings
+	{/if}
 </button>
 
 <style>
-  .your-custom-styles {
-    /* Complete styling freedom */
-    padding: 1rem 2rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
+	.your-custom-styles {
+		/* Complete styling freedom */
+		padding: 1rem 2rem;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		border: none;
+		border-radius: 0.5rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
 </style>
 ```
 
@@ -145,46 +143,47 @@ npm install @equaltoai/greater-components-utils
 
 ```svelte
 <script>
-  import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
-  import { Status, Admin, Hashtags } from '@equaltoai/greater-components-fediverse';
-  import { createLesserTimelineStore } from '@equaltoai/greater-components-fediverse';
-  
-  // Initialize Lesser adapter with GraphQL endpoint
-  const adapter = new LesserGraphQLAdapter({
-    endpoint: 'https://your-instance.social/graphql',
-    token: 'your-auth-token'
-  });
-  
-  // Create timeline with Lesser-specific features
-  const timeline = createLesserTimelineStore({
-    adapter,
-    type: 'HASHTAG',
-    hashtags: ['svelte', 'fediverse'],
-    hashtagMode: 'ANY'
-  });
-  
-  // Access Lesser-specific metadata
-  const postsWithCost = timeline.getItemsWithCost();
-  const postsWithTrust = timeline.getItemsWithTrustScore();
+	import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+	import { Status, Admin, Hashtags } from '@equaltoai/greater-components-fediverse';
+	import { createLesserTimelineStore } from '@equaltoai/greater-components-fediverse';
+
+	// Initialize Lesser adapter with GraphQL endpoint
+	const adapter = new LesserGraphQLAdapter({
+		endpoint: 'https://your-instance.social/graphql',
+		token: 'your-auth-token',
+	});
+
+	// Create timeline with Lesser-specific features
+	const timeline = createLesserTimelineStore({
+		adapter,
+		type: 'HASHTAG',
+		hashtags: ['svelte', 'fediverse'],
+		hashtagMode: 'ANY',
+	});
+
+	// Access Lesser-specific metadata
+	const postsWithCost = timeline.getItemsWithCost();
+	const postsWithTrust = timeline.getItemsWithTrustScore();
 </script>
 
 <!-- Display status with Lesser features -->
 <Status.Root {status}>
-  <Status.Header />
-  <Status.Content />
-  <Status.LesserMetadata showCost showTrust showModeration />
-  <Status.CommunityNotes enableVoting />
-  <Status.Actions onQuote={handleQuote} />
+	<Status.Header />
+	<Status.Content />
+	<Status.LesserMetadata showCost showTrust showModeration />
+	<Status.CommunityNotes enableVoting />
+	<Status.Actions onQuote={handleQuote} />
 </Status.Root>
 
 <!-- Admin dashboard with cost analytics -->
 <Admin.Cost.Root {adapter}>
-  <Admin.Cost.Dashboard period="WEEK" />
-  <Admin.Cost.BudgetControls />
+	<Admin.Cost.Dashboard period="WEEK" />
+	<Admin.Cost.BudgetControls />
 </Admin.Cost.Root>
 ```
 
 ## ✅ Phase 5 – Documentation & Testing
+
 - **Demo suite docs**: `/demo-suite` plus `/demo-suite/{timeline,profile,settings,search}` now outline props, handlers, accessibility, and performance notes for every Phase 4 surface.
 - **New primitives coverage**: `/components/tabs` and `/components/switch` pages document the runes-based API with live demos.
 - **Testing upgrades**: Vitest specs for `apps/playground/src/lib/stores/storage.ts` and `packages/fediverse/src/lib/timelineStore.ts` + Playwright flows in `packages/testing/tests/demo/{timeline,profile,settings,search}.spec.ts`.
@@ -195,31 +194,33 @@ npm install @equaltoai/greater-components-utils
 
 ### Core Packages
 
-| Package | Description | Version |
-|---------|-------------|---------|
-| **[@equaltoai/greater-components-headless](./packages/headless)** | 🆕 Headless UI primitives - behavior without styling | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-headless.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-headless) |
+| Package                                                               | Description                                              | Version                                                                                                                                                     |
+| --------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[@equaltoai/greater-components-headless](./packages/headless)**     | 🆕 Headless UI primitives - behavior without styling     | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-headless.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-headless)     |
 | **[@equaltoai/greater-components-primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-primitives.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-primitives) |
-| **[@equaltoai/greater-components-tokens](./packages/tokens)** | Design system tokens and theming | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-tokens.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-tokens) |
-| **[@equaltoai/greater-components-icons](./packages/icons)** | 300+ SVG icons including Fediverse-specific ones | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-icons.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-icons) |
+| **[@equaltoai/greater-components-tokens](./packages/tokens)**         | Design system tokens and theming                         | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-tokens.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-tokens)         |
+| **[@equaltoai/greater-components-icons](./packages/icons)**           | 300+ SVG icons including Fediverse-specific ones         | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-icons.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-icons)           |
 
 ### Specialized Packages
 
-| Package | Description | Version |
-|---------|-------------|---------|
+| Package                                                             | Description                                          | Version                                                                                                                                                   |
+| ------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **[@equaltoai/greater-components-fediverse](./packages/fediverse)** | Social media components (Timeline, StatusCard, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-fediverse.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-fediverse) |
-| **[@equaltoai/greater-components-utils](./packages/utils)** | Utility functions for web applications | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-utils.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-utils) |
-| **[@equaltoai/greater-components-adapters](./packages/adapters)** | Protocol adapters for Fediverse servers | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-adapters.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-adapters) |
-| **[@equaltoai/greater-components-testing](./packages/testing)** | Testing utilities and accessibility helpers | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-testing.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-testing) |
+| **[@equaltoai/greater-components-utils](./packages/utils)**         | Utility functions for web applications               | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-utils.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-utils)         |
+| **[@equaltoai/greater-components-adapters](./packages/adapters)**   | Protocol adapters for Fediverse servers              | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-adapters.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-adapters)   |
+| **[@equaltoai/greater-components-testing](./packages/testing)**     | Testing utilities and accessibility helpers          | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components-testing.svg)](https://www.npmjs.com/package/@equaltoai/greater-components-testing)     |
 
 ## 🌟 Key Features
 
 ### 🎨 **Modern Design System**
+
 - **Design Tokens**: Systematic approach to colors, typography, spacing
 - **Multiple Themes**: Light, dark, and high-contrast modes included
 - **CSS Custom Properties**: Easy theming without rebuilds
 - **Responsive**: Mobile-first design with tablet and desktop breakpoints
 
 ### ♿ **Accessibility First**
+
 - **WCAG 2.1 AA Compliant**: Meets international accessibility standards
 - **Keyboard Navigation**: Full keyboard support for all interactive elements
 - **Screen Reader Optimized**: Proper ARIA labels and semantic markup
@@ -227,12 +228,14 @@ npm install @equaltoai/greater-components-utils
 - **Reduced Motion**: Respects user motion preferences
 
 ### ⚡ **Performance Optimized**
+
 - **Zero Runtime**: Svelte 5 compiles to minimal JavaScript
 - **Tree Shakeable**: Import only the components you use
 - **Virtual Scrolling**: Handle thousands of items efficiently
 - **Bundle Analysis**: Optimized for minimal application impact
 
 ### 🔧 **Developer Experience**
+
 - **TypeScript First**: Complete type safety throughout
 - **Comprehensive Docs**: JSDoc comments on all public APIs
 - **Component Playground**: Interactive SvelteKit sandbox for rapid prototyping
@@ -240,6 +243,7 @@ npm install @equaltoai/greater-components-utils
 - **Automated Testing**: 100% test coverage
 
 ### 🌐 **Lesser-First Architecture**
+
 - **ActivityPub Types**: Complete TypeScript definitions aligned with Lesser schema
 - **GraphQL Integration**: Fully typed queries, mutations, and subscriptions via codegen
 - **Real-time Streaming**: 21 subscription types (quotes, trust updates, cost alerts, moderation events, etc.)
@@ -248,6 +252,7 @@ npm install @equaltoai/greater-components-utils
 - **Protocol Adapters**: Abstract away server differences with unified models
 
 ### 🚀 **Lesser-Exclusive Features**
+
 - **Quote Posts**: Full quote creation, display, and permission controls
 - **Community Notes**: Collaborative fact-checking with voting and moderation
 - **AI Insights**: Automated content analysis (toxicity, sentiment, spam, NSFW detection)
@@ -265,18 +270,19 @@ Greater Components includes a powerful theming system based on design tokens:
 ```css
 /* Override design tokens */
 :root {
-  --gr-color-primary-600: #your-brand-color;
-  --gr-typography-fontFamily-sans: "Your Font", system-ui;
-  --gr-radii-lg: 12px;
+	--gr-color-primary-600: #your-brand-color;
+	--gr-typography-fontFamily-sans: 'Your Font', system-ui;
+	--gr-radii-lg: 12px;
 }
 
 /* Component customization */
 .gr-button--solid {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 ```
 
 **Built-in Themes:**
+
 - 🌞 **Light Theme** - Clean, modern light interface
 - 🌙 **Dark Theme** - Easy-on-the-eyes dark mode
 - ⚡ **High Contrast** - WCAG AAA compliant high contrast
@@ -297,19 +303,20 @@ import { render, fireEvent } from '@equaltoai/greater-components-testing';
 import { Button } from '@equaltoai/greater-components-primitives';
 
 test('button handles clicks', () => {
-  const handleClick = vi.fn();
-  const { getByRole } = render(Button, {
-    props: { onclick: handleClick }
-  });
-  
-  fireEvent.click(getByRole('button'));
-  expect(handleClick).toHaveBeenCalled();
+	const handleClick = vi.fn();
+	const { getByRole } = render(Button, {
+		props: { onclick: handleClick },
+	});
+
+	fireEvent.click(getByRole('button'));
+	expect(handleClick).toHaveBeenCalled();
 });
 ```
 
 ## 📚 Documentation & Resources
 
 ### 📖 **Documentation**
+
 - [**Lesser Integration Guide**](./docs/lesser-integration-guide.md) - Complete Lesser setup and feature guide
 - [**API Reference**](./API_DOCUMENTATION.md) - Complete API documentation
 - [**API Stability Guide**](./API_STABILITY.md) - Backwards compatibility guarantees
@@ -318,11 +325,13 @@ test('button handles clicks', () => {
 - [**Troubleshooting**](./docs/troubleshooting/) - Common issues and solutions
 
 ### 🎮 **Interactive Examples**
+
 - [**Playground**](apps/playground/src/routes) - Live component playground
 - [**Examples Repository**](./examples) - Real-world usage examples
 - [**CodeSandbox Templates**](https://codesandbox.io) - Ready-to-fork templates
 
 ### 🤝 **Community**
+
 - [**GitHub Discussions**](https://github.com/equaltoai/greater-components/discussions) - Questions and community support
 - [**Issue Tracker**](https://github.com/equaltoai/greater-components/issues) - Bug reports and feature requests
 - [**Contributing Guide**](./CONTRIBUTING.md) - How to contribute to the project
@@ -342,7 +351,7 @@ For security issues, email `security@equalto.ai` instead of using the public iss
 We welcome contributions! Whether you're:
 
 - 🐛 **Reporting bugs** or suggesting features
-- 📝 **Improving documentation** or examples  
+- 📝 **Improving documentation** or examples
 - 🔧 **Contributing code** or tests
 - 🌍 **Translating** or internationalizing
 - 🎨 **Designing** components or interfaces
@@ -380,7 +389,7 @@ This ensures that improvements to the library benefit the entire community and F
 ### Built With
 
 - 🔥 **[Svelte 5](https://svelte.dev)** - The magical disappearing framework
-- 📘 **[TypeScript](https://www.typescriptlang.org/)** - JavaScript with types  
+- 📘 **[TypeScript](https://www.typescriptlang.org/)** - JavaScript with types
 - ⚡ **[Vite](https://vitejs.dev/)** - Next generation frontend tooling
 - 🧪 **[Vitest](https://vitest.dev/)** - Blazing fast unit testing
 - 📚 **Component playgrounds** - Use the built-in SvelteKit demos under `apps/playground`

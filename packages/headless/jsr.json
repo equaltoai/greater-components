@@ -6,17 +6,7 @@
     "./button": "./src/primitives/button.ts"
   },
   "publish": {
-    "include": [
-      "src/**/*.ts",
-      "README.md",
-      "LICENSE"
-    ],
-    "exclude": [
-      "**/*.test.ts",
-      "**/*.spec.ts",
-      "node_modules",
-      "dist"
-    ]
+    "include": ["src/**/*.ts", "README.md", "LICENSE"],
+    "exclude": ["**/*.test.ts", "**/*.spec.ts", "node_modules", "dist"]
   }
 }
-

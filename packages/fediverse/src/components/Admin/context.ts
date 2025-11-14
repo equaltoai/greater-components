@@ -1,9 +1,9 @@
 /**
  * Admin Context
- * 
+ *
  * Provides admin dashboard state and handlers.
  * For instance administrators and moderators.
- * 
+ *
  * @module Admin/context
  */
 
@@ -88,31 +88,39 @@ export interface AnalyticsData {
 export interface AdminHandlers {
 	// Overview
 	onFetchStats?: () => Promise<AdminStats>;
-	
+
 	// Users
-	onFetchUsers?: (filters?: { role?: string; status?: string; search?: string }) => Promise<AdminUser[]>;
+	onFetchUsers?: (filters?: {
+		role?: string;
+		status?: string;
+		search?: string;
+	}) => Promise<AdminUser[]>;
 	onSuspendUser?: (userId: string, reason: string) => Promise<void>;
 	onUnsuspendUser?: (userId: string) => Promise<void>;
 	onChangeUserRole?: (userId: string, role: 'admin' | 'moderator' | 'user') => Promise<void>;
 	onSearchUsers?: (query: string) => Promise<AdminUser[]>;
-	
+
 	// Reports
 	onFetchReports?: (status?: 'pending' | 'resolved' | 'dismissed') => Promise<AdminReport[]>;
 	onResolveReport?: (reportId: string, action: string) => Promise<void>;
 	onDismissReport?: (reportId: string) => Promise<void>;
-	
+
 	// Federation
 	onFetchInstances?: () => Promise<FederatedInstance[]>;
 	onBlockInstance?: (domain: string, reason: string) => Promise<void>;
 	onUnblockInstance?: (domain: string) => Promise<void>;
-	
+
 	// Settings
 	onFetchSettings?: () => Promise<InstanceSettings>;
 	onUpdateSettings?: (settings: Partial<InstanceSettings>) => Promise<void>;
-	
+
 	// Logs
-	onFetchLogs?: (filters?: { level?: string; category?: string; limit?: number }) => Promise<LogEntry[]>;
-	
+	onFetchLogs?: (filters?: {
+		level?: string;
+		category?: string;
+		limit?: number;
+	}) => Promise<LogEntry[]>;
+
 	// Analytics
 	onFetchAnalytics?: (period: 'day' | 'week' | 'month') => Promise<AnalyticsData>;
 }
@@ -179,18 +187,18 @@ export function createAdminContext(handlers: AdminHandlers = {}): AdminContext {
 				state.loading = false;
 			}
 		},
-	fetchUsers: async (filters?: { role?: string; status?: string; search?: string }) => {
-		state.loading = true;
-		state.error = null;
-		try {
-			const users = await handlers.onFetchUsers?.(filters);
-			if (users) state.users = users;
-		} catch (error) {
-			state.error = error instanceof Error ? error.message : 'Failed to fetch users';
-		} finally {
-			state.loading = false;
-		}
-	},
+		fetchUsers: async (filters?: { role?: string; status?: string; search?: string }) => {
+			state.loading = true;
+			state.error = null;
+			try {
+				const users = await handlers.onFetchUsers?.(filters);
+				if (users) state.users = users;
+			} catch (error) {
+				state.error = error instanceof Error ? error.message : 'Failed to fetch users';
+			} finally {
+				state.loading = false;
+			}
+		},
 		fetchReports: async (status?) => {
 			state.loading = true;
 			state.error = null;

@@ -14,7 +14,9 @@
 ## Phase 2 – Model & Store Extensions
 
 - 2025-10-17: Updated Phase 2 plan to route Lesser metadata through unified adapter models so downstream stores/UI can rely on typed fields rather than raw ActivityPub extensions.
+
 ### Type System Extensions
+
 - 2025-10-17: Extended `packages/fediverse/src/generics/index.ts` with Lesser-specific type definitions:
   - Added `LesserActorExtensions`, `LesserObjectExtensions`, `LesserActivityExtensions` interfaces
   - Defined core Lesser types: `CommunityNote`, `QuoteContext`, `QuotePermission`, `Reputation`, `Vouch`, `TrustEdge`, `AIAnalysis`
@@ -35,6 +37,7 @@
   - Extended `TimelineItem.metadata` and `Notification.metadata` to include optional `lesser` typed sub-object
 
 ### Store Layer Updates
+
 - 2025-10-17: Enhanced `packages/adapters/src/stores/timelineStore.ts`:
   - Added Lesser-specific selectors: `getItemsWithCost()`, `getItemsWithTrustScore()`, `getItemsWithCommunityNotes()`, `getQuotePosts()`, `getModeratedItems()`
   - Selectors handle missing metadata gracefully, return empty arrays when no Lesser data present
@@ -47,6 +50,7 @@
   - Metadata preserved through notification limit enforcement and dedupe logic
 
 ### UI Component Additions
+
 - 2025-10-17: Created `packages/fediverse/src/components/Status/LesserMetadata.svelte`:
   - Displays cost badges (formatted in USD from microcents)
   - Shows trust score with color coding (green ≥80, yellow ≥50, red <50)
@@ -82,6 +86,7 @@
 - 2025-10-17: Updated component exports in `index.ts` files to include new Lesser components
 
 ### Testing
+
 - 2025-10-17: Created `packages/adapters/tests/stores/timelineStore.lesser.test.ts` (91 tests via suites):
   - Tests Lesser metadata acceptance and preservation
   - Validates all Lesser-specific selectors with edge cases
@@ -112,6 +117,7 @@
 - 2025-10-17: **Full adapter test suite: 441/441 tests passing** (15 test files, no regressions)
 
 ### Decisions & Trade-offs
+
 1. **Extension pattern**: Used `extensions` property on ActivityPub types rather than direct fields to maintain backward compatibility with non-Lesser instances
 2. **Opt-in rendering**: All Lesser UI components check for data presence before rendering, ensuring graceful degradation for Mastodon/Pleroma instances
 3. **Typed metadata**: Created strongly-typed `lesser` sub-objects in metadata rather than untyped Record<string, any> for better IDE support and type safety
@@ -121,6 +127,7 @@
 ### Critical Integration Fixes (post-refinement review)
 
 **Issue #1 - Fragment Types Missing Lesser Fields**
+
 - 2025-10-17: Extended `UnifiedAccount` in `packages/adapters/src/models/unified.ts` with Lesser fields: `trustScore`, `reputation` (full structure), `vouches` array
 - 2025-10-17: Extended `UnifiedStatus` in `packages/adapters/src/models/unified.ts` with Lesser fields: `estimatedCost`, `moderationScore`, `communityNotes`, `quoteUrl`, `quoteable`, `quotePermissions`, `quoteContext`, `quoteCount`, `aiAnalysis`
 - 2025-10-17: Updated `UnifiedNotification` type union to include Lesser notification types: `quote`, `community_note`, `trust_update`, `cost_alert`, `moderation_action`
@@ -134,25 +141,30 @@
 - 2025-10-17: Fixed `isQuoteable()` and `getQuotePermission()` helpers to properly check extensions keys
 
 **Issue #2 - Timeline Metadata Never Reaches Selectors**
+
 - 2025-10-17: Created `packages/adapters/src/stores/unifiedToTimeline.ts` with `unifiedStatusToTimelineItem()` helper
 - 2025-10-17: Helper extracts all Lesser fields from UnifiedStatus and populates `TimelineItem.metadata.lesser` structure
 - 2025-10-17: Exported converter from package index for consumer use
 
 **Issue #3 - Unified Notifications Don't Expose Payloads**
+
 - 2025-10-17: Added payload fields to `UnifiedNotification`: `quoteStatus`, `communityNote`, `trustUpdate`, `costAlert`, `moderationAction`
 - 2025-10-17: Updated `mapLesserNotification()` to populate all Lesser notification payload fields
 - 2025-10-17: Created `packages/adapters/src/stores/unifiedToNotification.ts` with `unifiedNotificationToStoreNotification()` helper
 
 **Issue #4 - Notifications Query Missing Lesser Fields**
+
 - 2025-10-17: Updated `packages/fediverse/src/adapters/graphql/documents/notifications.graphql` to fetch Lesser notification payloads
 - 2025-10-17: Added fields: `quoteStatus`, `communityNote` (with nested CommunityNoteFields), `trustUpdate`, `costAlert`, `moderationAction`
 - 2025-10-17: Confirmed base fragments (ActorSummary, ObjectFields) already include Lesser fields from Phase 1
 
 **Issue #5 - UI Components Reach Into Raw Extensions**
+
 - 2025-10-17: Updated `Status.LesserMetadata.svelte` to read from `actualStatus.estimatedCost`, `account.trustScore`, etc. instead of extensions
 - 2025-10-17: Updated `Status.CommunityNotes.svelte` to read from `actualStatus.communityNotes` directly
 
 ### Helper Utilities Created
+
 - 2025-10-17: `unifiedStatusToTimelineItem()` - Converts UnifiedStatus → TimelineItem with Lesser metadata
 - 2025-10-17: `unifiedStatusesToTimelineItems()` - Batch converter
 - 2025-10-17: `unifiedNotificationToStoreNotification()` - Converts UnifiedNotification → Store Notification with Lesser payloads
@@ -160,6 +172,7 @@
 - 2025-10-17: All utilities exported from `@equaltoai/greater-components-adapters` package index
 
 ### Documentation
+
 - 2025-10-17: Created `packages/adapters/LESSER_INTEGRATION_USAGE.md` with complete usage guide
 - 2025-10-17: Documented data flow, type safety, migration patterns, and integration examples
 
@@ -168,31 +181,37 @@
 - 2025-10-17: Updated mention handling to the schema-aligned shape (legacy path removed).
 
 **Issue #1 - GraphQL Notifications Missing Payloads**
+
 - 2025-10-17: Reverted `notifications.graphql` to query only schema-compliant fields (no separate quoteStatus/communityNote fields)
 - 2025-10-17: Updated `mapLesserNotification()` to derive Lesser payloads from `targetPost.communityNotes`, `targetPost.quoteContext`, `triggerAccount.trustScore`, etc.
 - 2025-10-17: Added derivation logic: QUOTE → targetPost as quoteStatus, COMMUNITY_NOTE → targetPost.communityNotes[0], TRUST_UPDATE → triggerAccount.trustScore
 
 **Issue #2 - Notification Types Missing Metadata**
+
 - 2025-10-17: Added `metadata?: { lesser?: {...} }` to `BaseNotification` in `packages/fediverse/src/types.ts`
 - 2025-10-17: All notification type interfaces (QuoteNotification, CommunityNoteNotification, etc.) now inherit metadata capability
 
 **Issue #3 - Generic Adapter Drops Lesser Fields**
+
 - 2025-10-17: Updated `LesserAdapter.toGeneric()` in `packages/fediverse/src/generics/adapters.ts` to extract and populate Lesser fields from ActivityPub object extensions
 - 2025-10-17: Now hydrates: estimatedCost, moderationScore, communityNotes, quoteUrl, quoteable, quotePermissions, quoteContext, quoteCount, aiAnalysis
 
 ### Test Results (Final)
+
 - **Adapter tests**: 441/441 passing ✅
 - **Fediverse tests**: 3846/3846 passing ✅
 - **Zero regressions**: All existing tests maintained
 - **New coverage**: 73 new tests for Lesser integration (27 logic tests + 46 store tests)
 
 ### Data Flow Verification
+
 1. **GraphQL → Mapper**: Lesser fragments contain trust/cost/quote/communityNote fields
 2. **Mapper → Unified**: `mapLesserAccount()` and `mapLesserPost()` populate all Lesser fields on `UnifiedAccount`/`UnifiedStatus`
 3. **Unified → UI**: Components read from unified model fields (e.g., `account.trustScore`, `status.communityNotes`) instead of parsing raw extensions
 4. **Store selectors**: Timeline/notification stores expose typed Lesser-specific queries (`getItemsWithCost()`, `getQuoteNotifications()`, etc.)
 
 ### Known Limitations & TODOs
+
 - **Lists/Messages components**: Not touched in Phase 2 (Lesser schema doesn't add significant list/message-specific fields beyond what's already in UnifiedStatus)
 - **Storybook stories**: Not updated (deferred to Phase 5 per plan)
 - **AI analysis details**: UI only shows `moderationAction` (could expand to sentiment, toxicity in Phase 4)
@@ -201,6 +220,7 @@
 ### Phase 2 Completion Fixes (Actual Implementation)
 
 **Issue #1 - Timeline Data Flow Not Using Unified Models**
+
 - 2025-01-17: Discovered that existing timeline implementation (`packages/fediverse/src/lib/timelineStore.ts`) uses raw REST API calls and `Status[]` objects, not GraphQL or unified models
 - 2025-01-17: Created `packages/fediverse/src/lib/lesserTimelineStore.ts` with proper GraphQL integration:
   - Uses `LesserGraphQLAdapter` for data fetching
@@ -209,6 +229,7 @@
   - Proper cursor-based pagination and real-time updates
 
 **Issue #2 - GenericStatus Interface Missing Lesser Fields**
+
 - 2025-01-17: Extended `GenericStatus` interface in `packages/fediverse/src/generics/index.ts` with Lesser fields:
   - Added: `estimatedCost`, `moderationScore`, `communityNotes`, `quoteUrl`, `quoteable`, `quotePermissions`, `quoteContext`, `quoteCount`, `aiAnalysis`
 - 2025-01-17: Extended `ActivityPubActor` interface with Lesser fields:
@@ -216,11 +237,13 @@
 - 2025-01-17: Updated `LesserAdapter.toGeneric()` to properly populate both actor and status Lesser fields without `as any` casting
 
 **Issue #3 - Data Flow Verification**
+
 - 2025-01-17: Verified complete data flow: GraphQL → Mapper → Unified → Generic → Timeline → UI
 - 2025-01-17: All tests passing: 441/441 adapter tests, 3846/3846 fediverse tests
 - 2025-01-17: Lesser-specific tests: 11 timeline tests, 15 notification tests, 17 component tests all passing
 
 ### Actual Implementation Status
+
 - **GraphQL Notifications**: ✅ Correctly derives Lesser payloads from related objects
 - **Timeline Metadata**: ✅ New `LesserTimelineStore` uses `unifiedStatusToTimelineItem()` converter
 - **ActivityPub → Generic**: ✅ `LesserAdapter.toGeneric()` populates all Lesser fields with proper typing
@@ -228,6 +251,7 @@
 - **Type Safety**: ✅ No more `as any` casting, proper TypeScript interfaces
 
 ### Risk Assessment
+
 - **Low risk**: All changes additive, backward compatible, comprehensive test coverage
 - **Documentation debt**: Component docs/examples need updates (Phase 5)
 - **Migration needed**: Existing timeline implementations should migrate to `LesserTimelineStore` for full Lesser support
@@ -237,6 +261,7 @@
 **2025-01-17: Comprehensive Phase 2 Fixes**
 
 **Task 1 - Fixed mapLesserObject Field Mappings**
+
 - **Issue**: `mapLesserObject` was accessing non-existent fields from GraphQL Object fragment
 - **Fix**: Updated attachment mapping to use actual schema fields (`preview`, `description`, `width`, `height`) instead of non-existent fields (`mediaType`, `thumbnailUrl`, `metadata`)
 - **Fix**: Updated mention mapping to use actual schema fields (`id`, `username`, `domain`, `url`) instead of non-existent `mention.account`
@@ -244,6 +269,7 @@
 - **Tests**: Added comprehensive unit tests for `mapLesserObject` with attachments, mentions, and AI analysis
 
 **Task 2 - Aligned AI Analysis Mapping**
+
 - **Issue**: `LesserAIAnalysisFragment` didn't match actual GraphQL schema structure
 - **Fix**: Aligned AI analysis mapping with Lesser schema; unified metadata now carries moderation labels, AI detection, spam metrics.
 - **Fix**: Updated to match schema with `textAnalysis`, `imageAnalysis`, `aiDetection`, `spamAnalysis`, `overallRisk`, `moderationAction`, `confidence`, `analyzedAt`
@@ -252,6 +278,7 @@
 - **Tests**: Added test case for AI analysis mapping with text analysis data
 
 **Task 3 - Extended GenericTimelineItem with Metadata**
+
 - **Issue**: `GenericTimelineItem` couldn't legally carry Lesser metadata from `unifiedStatusToTimelineItem`
 - **Fix**: Added optional `metadata?: { lesser?: ... }` field to `GenericTimelineItem` interface
 - **Types**: Defined Lesser metadata structure with all required fields (`estimatedCost`, `moderationScore`, `hasCommunityNotes`, etc.)
@@ -259,12 +286,14 @@
 - **Tests**: Added test case verifying timeline items can carry Lesser metadata
 
 **Task 4 - Verified ActivityPub Extensions Population**
+
 - **Issue**: User was concerned about Lesser fields not being in `extensions`
 - **Analysis**: Current implementation was already correct - Lesser fields are properly placed in `activityPubObject.extensions` and `account.extensions`
 - **Verification**: Type guards `hasLesserActorExtensions` and `hasLesserObjectExtensions` work correctly
 - **Tests**: Created adapter tests demonstrating type guards return true when extensions are populated
 
 **Task 5 - Re-validated Notification Mapping**
+
 - **Issue**: Needed to verify notification mapper works with corrected `LesserObjectFragment`
 - **Fix**: Added comprehensive tests for all Lesser notification types:
   - `QUOTE`: Tests quote status payload derivation
@@ -275,12 +304,14 @@
 - **Coverage**: All notification types handle missing data gracefully without throwing
 
 **Schema Limitations Discovered**:
+
 - GraphQL `Object` type has basic fields only (`id`, `type`, `url`, `preview`, `description`, `blurhash`, `width`, `height`, `duration`)
 - GraphQL `Attachment` type doesn't have `mediaType`, `thumbnailUrl`, `remoteUrl`, `metadata` fields
 - GraphQL `Mention` type doesn't have `account` field, only `id`, `username`, `domain`, `url`
 - AI analysis schema is more complex than initially assumed, requiring nested interfaces
 
 **Data Flow Verification**:
+
 - GraphQL Object → `mapLesserObject` → UnifiedStatus → GenericStatus (with extensions) → TimelineItem (with metadata) → UI
 - All Lesser metadata properly flows through the system
 - Type guards work correctly to identify Lesser-enhanced objects
@@ -291,6 +322,7 @@
 **2025-01-17: Fixed Mention Interface Structural Mismatch**
 
 **Issue Identified**:
+
 - `packages/adapters/src/mappers/lesser/types.ts` had conflicting `LesserMentionFragment` interfaces
 - Legacy interface: `{ account: { id, handle, displayName, profileUrl } }`
 - Schema-aligned interface: `{ id, username, domain, url }`
@@ -298,48 +330,56 @@
 - `packages/adapters/src/mappers/lesser/mappers.ts:603-610` was dereferencing `mention.account.*` causing runtime undefined fields
 
 **Root Cause**:
+
 - Interface declaration merging in TypeScript combined both structures
 - Mapper was written for legacy structure but schema only provides flat fields
 - Tests and fixtures were using legacy structure
 
 **Resolution**:
+
 1. **Fixed Interface**: Replaced `LesserMentionFragment` with single schema-aligned version:
+
    ```typescript
    export interface LesserMentionFragment {
-     id: string;
-     username: string;
-     domain?: string;
-     url: string;
+   	id: string;
+   	username: string;
+   	domain?: string;
+   	url: string;
    }
    ```
 
 2. **Updated Mapper**: Fixed `mapLesserMention()` to use correct fields:
+
    ```typescript
    function mapLesserMention(mention: LesserMentionFragment): Mention {
-     return {
-       id: safeString(mention.id),
-       username: safeString(mention.username),
-       acct: safeString(mention.domain ? `${mention.username}@${mention.domain}` : mention.username),
-       url: safeString(mention.url),
-     };
+   	return {
+   		id: safeString(mention.id),
+   		username: safeString(mention.username),
+   		acct: safeString(
+   			mention.domain ? `${mention.username}@${mention.domain}` : mention.username
+   		),
+   		url: safeString(mention.url),
+   	};
    }
    ```
 
 3. **Updated Fixtures**: Fixed `packages/adapters/src/fixtures/lesser.ts` to use schema-aligned structure:
+
    ```typescript
    mentions: [
-     {
-       id: "acc_t5u6v7w8x9y0z1a2",
-       username: "a11y_expert",
-       domain: "accessibility.network",
-       url: "https://accessibility.network/@a11y_expert"
-     }
-   ]
+   	{
+   		id: 'acc_t5u6v7w8x9y0z1a2',
+   		username: 'a11y_expert',
+   		domain: 'accessibility.network',
+   		url: 'https://accessibility.network/@a11y_expert',
+   	},
+   ];
    ```
 
 4. **Updated Tests**: Fixed test expectations to use new structure
 
 **Validation Results**:
+
 - **Adapters tests**: ✅ **451/451 passing** (0 failures)
 - **Fediverse tests**: ✅ **3849/3849 passing** (0 failures)
 - **Total**: ✅ **4300/4300 tests passing** (0 failures)
@@ -351,6 +391,7 @@
 ### 2025-01-18: Phase 3 Implementation - Complete Subscription Coverage
 
 **Task 2.1 - Schema Subscription Coverage**
+
 - Extended `packages/fediverse/src/adapters/graphql/documents/subscriptions.graphql` with 15 missing subscription documents
 - Added subscriptions: `activityStream`, `relationshipUpdates`, `costUpdates`, `moderationEvents`, `trustUpdates`, `aiAnalysisUpdates`, `metricsUpdates`, `moderationAlerts`, `costAlerts`, `budgetAlerts`, `federationHealthUpdates`, `moderationQueueUpdate`, `threatIntelligence`, `performanceAlert`, `infrastructureEvent`
 - All subscriptions mirror exact Lesser schema field names and include comprehensive payload fields
@@ -358,12 +399,14 @@
 - Total subscriptions: 21 (6 existing + 15 new)
 
 **Task 2.2 - Adapter Subscription Surface**
+
 - Added 15 strongly-typed `subscribeTo...` methods to `packages/adapters/src/graphql/LesserGraphQLAdapter.ts`
 - All methods return `Observable<FetchResult<...>>` with properly typed variables
 - Methods added: `subscribeToActivityStream`, `subscribeToRelationshipUpdates`, `subscribeToCostUpdates`, `subscribeToModerationEvents`, `subscribeToTrustUpdates`, `subscribeToAiAnalysisUpdates`, `subscribeToMetricsUpdates`, `subscribeToModerationAlerts`, `subscribeToCostAlerts`, `subscribeToBudgetAlerts`, `subscribeToFederationHealthUpdates`, `subscribeToModerationQueueUpdate`, `subscribeToThreatIntelligence`, `subscribeToPerformanceAlert`, `subscribeToInfrastructureEvent`
 - Maintained alphabetical ordering for consistency
 
 **Task 2.3 - Transport Event Map Expansion**
+
 - Created `TransportEventMap` interface in `packages/adapters/src/types.ts` with 33 event types
 - Event map includes all core transport events + all 21 Lesser subscription events
 - Added `TransportEventName` type alias for event name validation
@@ -371,6 +414,7 @@
 - Event categories: Timeline & Social (6), Quote Posts (1), Hashtags (1), Trust & Moderation (5), AI Analysis (1), Cost & Budget (3), Metrics & Performance (2), Federation & Infrastructure (2)
 
 **Task 2.4 - Streaming Operations & Stores**
+
 - Extended `StreamingUpdate` type union in `packages/adapters/src/models/unified.ts` to include all 21 Lesser subscription event types
 - Organized event types by category with inline comments for clarity
 - Created `packages/adapters/src/stores/adminStreamingStore.ts` (new 582-line file)
@@ -381,6 +425,7 @@
 - Exported admin store from `packages/adapters/src/index.ts`
 
 **Task 2.5 - Fediverse Integration Layer**
+
 - Updated `packages/fediverse/src/lib/transport.ts` TransportEventMap with all 21 Lesser events
 - Added subscription methods: `subscribeToHashtag(hashtags)`, `subscribeToList(listId)`, `subscribeToAdminEvents(eventTypes)`
 - Extended `packages/fediverse/src/lib/lesserTimelineStore.ts` with hashtag and list configuration:
@@ -390,6 +435,7 @@
   - Configuration supports single/multiple hashtags and list filtering options (replies, boosts)
 
 **Task 2.6 - Documentation**
+
 - Created `docs/components/Admin/Realtime.md` (427 lines) documenting all 21 subscription events
 - Documentation includes:
   - Overview of real-time subscription architecture
@@ -427,8 +473,9 @@
 ### Phase 3 Completion Status
 
 ✅ **All 8 tasks completed successfully**
+
 - Schema subscription coverage: 21/21 subscriptions documented
-- Adapter surface: 21/21 `subscribeTo` methods implemented  
+- Adapter surface: 21/21 `subscribeTo` methods implemented
 - Transport event map: 33 events defined with type safety
 - Streaming operations: All event types added to StreamingUpdate union
 - Admin store: Complete implementation with 9 event categories
@@ -453,6 +500,7 @@ Phase 4 successfully implemented complete feature parity for all Lesser-specific
 ### Deliverables
 
 #### GraphQL Documents (6 new files)
+
 - `packages/fediverse/src/adapters/graphql/documents/ai.graphql` - AI analysis requests and queries
 - `packages/fediverse/src/adapters/graphql/documents/cost.graphql` - Cost tracking and budget management
 - `packages/fediverse/src/adapters/graphql/documents/federation.graphql` - Thread sync and severed relationships
@@ -461,6 +509,7 @@ Phase 4 successfully implemented complete feature parity for all Lesser-specific
 - `packages/fediverse/src/adapters/graphql/documents/trust.graphql` - Trust graph queries
 
 #### Adapter Methods (31 new methods in LesserGraphQLAdapter)
+
 - Community Notes: `addCommunityNote()`, `voteCommunityNote()`, `getCommunityNotesByObject()`
 - Moderation: `flagObject()`, `createModerationPattern()`, `deleteModerationPattern()`
 - AI Analysis: `requestAIAnalysis()`, `getAIAnalysis()`, `getAIStats()`, `getAICapabilities()`
@@ -470,6 +519,7 @@ Phase 4 successfully implemented complete feature parity for all Lesser-specific
 - Hashtags: `followHashtag()`, `unfollowHashtag()`, `muteHashtag()`, `unmuteHashtag()`, `updateHashtagNotifications()`, `getFollowedHashtags()`
 
 #### UI Components (22 new Svelte files)
+
 - **Quotes**: Enhanced ActionBar, Status/Actions, Compose context with quote support
 - **Community Notes**: Voting UI in CommunityNotes.svelte, creation modal in ModerationTools
 - **Admin/Insights**: Root, AIAnalysis, ModerationAnalytics, context (4 files)
@@ -480,6 +530,7 @@ Phase 4 successfully implemented complete feature parity for all Lesser-specific
 - **Thread Sync**: Enhanced ThreadView with sync button
 
 #### Code Generation
+
 - 578 new TypeScript types generated across two files (289 lines each)
 - Full type safety for all Phase 4 operations
 - Zero codegen errors
@@ -498,6 +549,7 @@ Phase 4 successfully implemented complete feature parity for all Lesser-specific
 ### Test Coverage
 
 All existing tests continue passing:
+
 - **Adapter tests**: 453 passing (includes GraphQL client, stores, mappers, streaming)
 - **Fediverse tests**: 3,849 passing (includes all UI components, patterns, integrations)
 - **Total**: 4,302 tests with **zero regressions**
@@ -510,25 +562,27 @@ All existing tests continue passing:
 
 ### Feature Parity Status
 
-| Feature | GraphQL | Adapter | UI | Tests | Status |
-|---------|---------|---------|----|----|--------|
-| Quote Posts | ✅ | ✅ | ✅ | ✅ | **Complete** |
-| Community Notes | ✅ | ✅ | ✅ | ✅ | **Complete** |
-| AI Insights | ✅ | ✅ | ✅ | ✅ | **Complete** |
-| Trust Graph | ✅ | ✅ | ✅ | ✅ | **Complete** |
-| Cost Dashboards | ✅ | ✅ | ✅ | ✅ | **Complete** |
-| Thread Sync | ✅ | ✅ | ✅ | ✅ | **Complete** |
-| Severed Relationships | ✅ | ✅ | ✅ | ✅ | **Complete** |
-| Hashtag Controls | ✅ | ✅ | ✅ | ✅ | **Complete** |
+| Feature               | GraphQL | Adapter | UI  | Tests | Status       |
+| --------------------- | ------- | ------- | --- | ----- | ------------ |
+| Quote Posts           | ✅      | ✅      | ✅  | ✅    | **Complete** |
+| Community Notes       | ✅      | ✅      | ✅  | ✅    | **Complete** |
+| AI Insights           | ✅      | ✅      | ✅  | ✅    | **Complete** |
+| Trust Graph           | ✅      | ✅      | ✅  | ✅    | **Complete** |
+| Cost Dashboards       | ✅      | ✅      | ✅  | ✅    | **Complete** |
+| Thread Sync           | ✅      | ✅      | ✅  | ✅    | **Complete** |
+| Severed Relationships | ✅      | ✅      | ✅  | ✅    | **Complete** |
+| Hashtag Controls      | ✅      | ✅      | ✅  | ✅    | **Complete** |
 
 ### Outstanding Items
 
 **Known Limitations**:
+
 1. Trust graph visualization simplified (full force-directed graph deferred)
 2. Muted hashtags list consumes followed hashtag notification settings to surface muted entries
 3. Cost/alert real-time updates require adminStreamingStore integration (structure exists)
 
 **Recommended Follow-ups**:
+
 1. Add Storybook stories for all Phase 4 components
 2. Enhance trust graph with D3.js or similar for production-quality visualization
 3. Add cost chart visualizations (time series, pie charts)
@@ -565,6 +619,7 @@ Phase 5 successfully refreshed all user- and developer-facing documentation to a
 ### Documentation Deliverables
 
 #### Root & Integration Guides (2 files, ~850 lines added)
+
 - **README.md**: Updated with Lesser-first architecture overview, Phase 4 feature list, comprehensive usage examples
 - **docs/lesser-integration-guide.md**: Massively expanded from 700 to 1,515 lines with:
   - Complete adapter setup instructions
@@ -575,6 +630,7 @@ Phase 5 successfully refreshed all user- and developer-facing documentation to a
   - Best practices and configuration patterns
 
 #### New Component Documentation (5 files, ~2,200 lines)
+
 - **docs/components/Admin/Insights.md** (380 lines): AI analysis, moderation analytics, configuration, real-time updates
 - **docs/components/Admin/TrustGraph.md** (340 lines): Trust visualization, reputation scores, relationship management
 - **docs/components/Admin/Cost.md** (410 lines): Cost tracking, budget management, optimization strategies
@@ -582,6 +638,7 @@ Phase 5 successfully refreshed all user- and developer-facing documentation to a
 - **docs/components/Hashtags/README.md** (635 lines): Follow/mute controls, notification levels, timeline integration
 
 #### Updated Component Documentation (1 file, ~230 lines added)
+
 - **docs/components/Status/README.md**: Added comprehensive Lesser-Specific Features section covering:
   - Status.LesserMetadata component (cost, trust, moderation, quotes)
   - Status.CommunityNotes component (voting, display, pagination)
@@ -589,11 +646,13 @@ Phase 5 successfully refreshed all user- and developer-facing documentation to a
   - Complete integration example
 
 #### Storybook Updates (1 file modified)
+
 - **packages/fediverse/stories/ActionBar.stories.ts**: Added `WithQuoteButton` story demonstrating Lesser quote functionality
 
 ### GraphQL & Type Coverage
 
 All documentation includes:
+
 - ✅ GraphQL query/mutation signatures
 - ✅ Adapter method examples
 - ✅ TypeScript interface definitions
@@ -603,12 +662,14 @@ All documentation includes:
 ### Quality Gates Results
 
 **Lint (`pnpm lint`)**:
+
 - Status: ✅ **PASSING**
 - Errors: 0
 - Warnings: 1 (pre-existing, unrelated to Phase 5)
 - Auto-fixed: 1 error in primitives/tests/setup.ts
 
 **Tests (`pnpm --filter @equaltoai/greater-components-fediverse test`)**:
+
 - Status: ✅ **PASSING**
 - Test Files: 88 passed
 - Tests: 3,874 passed
@@ -616,6 +677,7 @@ All documentation includes:
 - Regressions: 0
 
 **Storybook Build (`pnpm --filter @equaltoai/greater-components-fediverse build-storybook`)**:
+
 - Status: ⚠️ **FAILED** (pre-existing configuration issue)
 - Issue: Rollup cannot resolve `@storybook/addon-essentials/backgrounds/preview`
 - Impact: Infrastructure issue, not related to Phase 5 changes
@@ -637,27 +699,27 @@ All documentation includes:
 
 ### Files Changed Summary
 
-| Category | Files Modified | Files Created | Lines Added | Lines Removed |
-|----------|---------------|---------------|-------------|---------------|
-| Root Docs | 2 | 0 | ~850 | ~50 |
-| Component Docs (new) | 0 | 5 | ~2,200 | 0 |
-| Component Docs (updated) | 1 | 0 | ~230 | ~10 |
-| Storybook Stories | 1 | 0 | ~30 | 0 |
-| **Totals** | **4** | **5** | **~3,310** | **~60** |
+| Category                 | Files Modified | Files Created | Lines Added | Lines Removed |
+| ------------------------ | -------------- | ------------- | ----------- | ------------- |
+| Root Docs                | 2              | 0             | ~850        | ~50           |
+| Component Docs (new)     | 0              | 5             | ~2,200      | 0             |
+| Component Docs (updated) | 1              | 0             | ~230        | ~10           |
+| Storybook Stories        | 1              | 0             | ~30         | 0             |
+| **Totals**               | **4**          | **5**         | **~3,310**  | **~60**       |
 
 ### Traceability
 
-| Documentation Area | Status | Coverage |
-|-------------------|--------|----------|
-| Root README | ✅ Complete | Lesser-first architecture, Phase 4 features, examples |
-| Integration Guide | ✅ Complete | All 8 Phase 4 features with full API coverage |
-| Admin.Insights | ✅ Complete | AI analysis, moderation analytics |
-| Admin.TrustGraph | ✅ Complete | Trust visualization, reputation |
-| Admin.Cost | ✅ Complete | Cost tracking, budgets, optimization |
-| Admin.SeveredRelationships | ✅ Complete | Federation health, recovery |
-| Hashtags | ✅ Complete | Follow/mute controls, timelines |
-| Status (updated) | ✅ Complete | LesserMetadata, CommunityNotes, quote support |
-| ActionBar Stories | ✅ Complete | Quote button story added |
+| Documentation Area         | Status      | Coverage                                              |
+| -------------------------- | ----------- | ----------------------------------------------------- |
+| Root README                | ✅ Complete | Lesser-first architecture, Phase 4 features, examples |
+| Integration Guide          | ✅ Complete | All 8 Phase 4 features with full API coverage         |
+| Admin.Insights             | ✅ Complete | AI analysis, moderation analytics                     |
+| Admin.TrustGraph           | ✅ Complete | Trust visualization, reputation                       |
+| Admin.Cost                 | ✅ Complete | Cost tracking, budgets, optimization                  |
+| Admin.SeveredRelationships | ✅ Complete | Federation health, recovery                           |
+| Hashtags                   | ✅ Complete | Follow/mute controls, timelines                       |
+| Status (updated)           | ✅ Complete | LesserMetadata, CommunityNotes, quote support         |
+| ActionBar Stories          | ✅ Complete | Quote button story added                              |
 
 ### Known Limitations & Gaps
 

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Advanced ActivityPub Patterns
- * 
+ *
  * Production-ready components for common ActivityPub use cases.
  * These components use the generic ActivityPub types and work across any platform.
- * 
+ *
  * @module patterns
  * @public
  */
@@ -41,7 +41,7 @@ export { default as BookmarkManager } from './BookmarkManager.svelte';
 /**
  * Note: Types are exported directly from their respective .svelte files.
  * Import them directly from the component:
- * 
+ *
  * @example
  * ```typescript
  * import type { ThreadViewConfig } from '@equaltoai/greater-components-fediverse/patterns/ThreadView.svelte';

@@ -1,6 +1,6 @@
 /**
  * Headless Tooltip Primitive
- * 
+ *
  * Provides accessible tooltip behavior without any styling.
  * Features:
  * - Smart positioning (avoids viewport edges)
@@ -9,7 +9,7 @@
  * - ARIA attributes
  * - Configurable delays
  * - Portal rendering support
- * 
+ *
  * @module @equaltoai/greater-components-headless/tooltip
  */
 
@@ -591,7 +591,7 @@ export function createTooltip(config: TooltipConfig = {}) {
 	 */
 	function open() {
 		if (state.disabled) return;
-		
+
 		// Clear any pending timeouts
 		if (showTimeoutId !== undefined) {
 			window.clearTimeout(showTimeoutId);
@@ -601,9 +601,9 @@ export function createTooltip(config: TooltipConfig = {}) {
 			window.clearTimeout(hideTimeoutId);
 			hideTimeoutId = undefined;
 		}
-		
+
 		state.open = true;
-		
+
 		// Update position after showing
 		setTimeout(updatePosition, 0);
 	}
@@ -621,7 +621,7 @@ export function createTooltip(config: TooltipConfig = {}) {
 			window.clearTimeout(hideTimeoutId);
 			hideTimeoutId = undefined;
 		}
-		
+
 		state.open = false;
 	}
 
@@ -677,4 +677,3 @@ export function createTooltip(config: TooltipConfig = {}) {
 		helpers,
 	};
 }
-

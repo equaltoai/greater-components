@@ -26,13 +26,13 @@ Greater Components are **compiled from source** by your bundler.
 import svelte from '@astrojs/svelte';
 
 export default defineConfig({
-  integrations: [
-    svelte({
-      compilerOptions: {
-        runes: true  // Required for Svelte 5
-      }
-    })
-  ]
+	integrations: [
+		svelte({
+			compilerOptions: {
+				runes: true, // Required for Svelte 5
+			},
+		}),
+	],
 });
 ```
 
@@ -41,14 +41,16 @@ That's it.
 ## Why No Separate CSS Import?
 
 **Old (broken) way:**
+
 ```javascript
-import '@equaltoai/greater-components/primitives/style.css';  // ❌ Don't do this
+import '@equaltoai/greater-components/primitives/style.css'; // ❌ Don't do this
 import { Button } from '@equaltoai/greater-components/primitives';
 ```
 
 **New (correct) way:**
+
 ```javascript
-import { Button } from '@equaltoai/greater-components/primitives';  // ✅ CSS included
+import { Button } from '@equaltoai/greater-components/primitives'; // ✅ CSS included
 ```
 
 The CSS is **in the .svelte files**. When you compile from source, it's extracted and scoped automatically.
@@ -76,12 +78,14 @@ Injects into your app
 Greater Components use CSS custom properties from the tokens package.
 
 **Option 1: Automatic (if using workspace)**
+
 ```javascript
 // Tokens are a peer dependency, automatically available
 import { Button } from '@equaltoai/greater-components/primitives';
 ```
 
 **Option 2: Explicit (if needed)**
+
 ```javascript
 import '@equaltoai/greater-components/tokens/theme.css';
 import { Button } from '@equaltoai/greater-components/primitives';
@@ -96,28 +100,32 @@ npm install @equaltoai/greater-components@^1.0.8
 ```
 
 Or in workspace:
+
 ```json
 {
-  "dependencies": {
-    "@equaltoai/greater-components": "workspace:*"
-  }
+	"dependencies": {
+		"@equaltoai/greater-components": "workspace:*"
+	}
 }
 ```
 
 ## What If Styles Don't Apply?
 
 **Check 1: Runes enabled**
+
 ```javascript
 // astro.config.mjs
-svelte({ compilerOptions: { runes: true } })
+svelte({ compilerOptions: { runes: true } });
 ```
 
 **Check 2: Svelte version**
+
 ```bash
 pnpm ls svelte  # Must be 5.36+
 ```
 
 **Check 3: Clear cache**
+
 ```bash
 rm -rf .astro node_modules/.vite
 pnpm dev
@@ -128,11 +136,13 @@ pnpm dev
 If someone outside Lesser/Greater tries to use these components:
 
 **They must:**
+
 - Have Svelte 5.36+ with runes
 - Compile from source
 - Accept our conventions
 
 **We provide NO:**
+
 - Pre-compiled bundles
 - Unscoped global CSS
 - Support for non-Svelte tools
@@ -147,4 +157,3 @@ import { Button, TextField, Modal } from '@equaltoai/greater-components/primitiv
 ```
 
 No CSS imports. No extra config. Just works.
-

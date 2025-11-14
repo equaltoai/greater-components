@@ -259,7 +259,10 @@ export class AdminStreamingStore {
 	/**
 	 * Subscribe to specific admin event types
 	 */
-	on<TEvent extends AdminEventName>(event: TEvent, callback: (data: AdminEventMap[TEvent]) => void): () => void {
+	on<TEvent extends AdminEventName>(
+		event: TEvent,
+		callback: (data: AdminEventMap[TEvent]) => void
+	): () => void {
 		let callbacks = this.listeners.get(event);
 		if (!callbacks) {
 			callbacks = new Set();
@@ -632,8 +635,6 @@ export class AdminStreamingStore {
 /**
  * Create an admin streaming store instance
  */
-export function createAdminStreamingStore(
-	config?: AdminStreamingStoreConfig
-): AdminStreamingStore {
+export function createAdminStreamingStore(config?: AdminStreamingStoreConfig): AdminStreamingStore {
 	return new AdminStreamingStore(config);
 }

@@ -3,67 +3,67 @@
 #import "./fragments.graphql"
 
 query Media($id: ID!) {
-  media(id: $id) {
-    id
-    type
-    url
-    previewUrl
-    description
-    sensitive
-    spoilerText
-    mediaCategory
-    blurhash
-    width
-    height
-    duration
-    size
-    mimeType
-    uploadedBy {
-      ...ActorSummary
-    }
-    createdAt
-  }
+	media(id: $id) {
+		id
+		type
+		url
+		previewUrl
+		description
+		sensitive
+		spoilerText
+		mediaCategory
+		blurhash
+		width
+		height
+		duration
+		size
+		mimeType
+		uploadedBy {
+			...ActorSummary
+		}
+		createdAt
+	}
 }
 
 mutation UpdateMedia($id: ID!, $input: UpdateMediaInput!) {
-  updateMedia(id: $id, input: $input) {
-    id
-    description
-    sensitive
-    spoilerText
-    mediaCategory
-    blurhash
-    width
-    height
-    duration
-    url
-    previewUrl
-  }
+	updateMedia(id: $id, input: $input) {
+		id
+		description
+		sensitive
+		spoilerText
+		mediaCategory
+		blurhash
+		width
+		height
+		duration
+		url
+		previewUrl
+	}
 }
 
 mutation UploadMedia($input: UploadMediaInput!) {
-  uploadMedia(input: $input) {
-    uploadId
-    warnings
-    media {
-      id
-      type
-      url
-      previewUrl
-      description
-      sensitive
-      spoilerText
-      mediaCategory
-      blurhash
-      width
-      height
-      duration
-      size
-      mimeType
-      uploadedBy {
-        ...ActorSummary
-      }
-      createdAt
-    }
-  }
+	uploadMedia(input: $input) {
+		uploadId
+		warnings
+		media {
+			id
+			type
+			url
+			previewUrl
+			description
+			sensitive
+			spoilerText
+			mediaCategory
+			blurhash
+			width
+			height
+			duration
+			size
+			mimeType
+			uploadedBy {
+				...ActorSummary
+			}
+			createdAt
+		}
+	}
 }

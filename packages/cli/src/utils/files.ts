@@ -98,8 +98,7 @@ export async function getSvelteVersion(cwd: string): Promise<number | null> {
 	try {
 		const content = await readFile(packageJsonPath);
 		const pkg = JSON.parse(content);
-		const svelteVersion =
-			pkg.dependencies?.['svelte'] || pkg.devDependencies?.['svelte'];
+		const svelteVersion = pkg.dependencies?.['svelte'] || pkg.devDependencies?.['svelte'];
 
 		if (!svelteVersion) {
 			return null;
@@ -112,4 +111,3 @@ export async function getSvelteVersion(cwd: string): Promise<number | null> {
 		return null;
 	}
 }
-

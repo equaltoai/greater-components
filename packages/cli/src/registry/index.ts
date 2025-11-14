@@ -33,7 +33,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 	// ====================
 	// HEADLESS PRIMITIVES
 	// ====================
-	'button': {
+	button: {
 		name: 'button',
 		type: 'primitive',
 		description: 'Headless button primitive with keyboard navigation and ARIA support',
@@ -51,7 +51,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		version: '1.0.0',
 	},
 
-	'modal': {
+	modal: {
 		name: 'modal',
 		type: 'primitive',
 		description: 'Headless modal primitive with focus trap, ESC handling, and portal support',
@@ -69,7 +69,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		version: '1.0.0',
 	},
 
-	'menu': {
+	menu: {
 		name: 'menu',
 		type: 'primitive',
 		description: 'Headless menu primitive with keyboard navigation and typeahead search',
@@ -87,7 +87,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		version: '1.0.0',
 	},
 
-	'tooltip': {
+	tooltip: {
 		name: 'tooltip',
 		type: 'primitive',
 		description: 'Headless tooltip primitive with smart positioning and hover/focus handling',
@@ -105,7 +105,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		version: '1.0.0',
 	},
 
-	'tabs': {
+	tabs: {
 		name: 'tabs',
 		type: 'primitive',
 		description: 'Headless tabs primitive with arrow navigation and ARIA support',
@@ -126,7 +126,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 	// ====================
 	// COMPOUND COMPONENTS
 	// ====================
-	'timeline': {
+	timeline: {
 		name: 'timeline',
 		type: 'compound',
 		description: 'ActivityPub timeline with virtual scrolling and real-time updates',
@@ -162,16 +162,14 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: [],
 		tags: ['activitypub', 'timeline', 'feed', 'compound', 'virtual-scroll'],
 		version: '1.0.0',
 	},
 
-	'status': {
+	status: {
 		name: 'status',
 		type: 'compound',
 		description: 'ActivityPub status/post with media, actions, and content rendering',
@@ -207,16 +205,14 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: [],
 		tags: ['activitypub', 'status', 'post', 'compound'],
 		version: '1.0.0',
 	},
 
-	'notifications': {
+	notifications: {
 		name: 'notifications',
 		type: 'compound',
 		description: 'ActivityPub notifications with grouping and filtering',
@@ -247,9 +243,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: [],
 		tags: ['activitypub', 'notifications', 'compound'],
@@ -270,9 +264,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['status'],
 		tags: ['activitypub', 'thread', 'conversation', 'pattern'],
@@ -290,9 +282,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['modal', 'menu'],
 		tags: ['activitypub', 'moderation', 'pattern'],
@@ -310,9 +300,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button'],
 		tags: ['activitypub', 'content-warning', 'pattern'],
@@ -330,9 +318,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['tooltip'],
 		tags: ['activitypub', 'federation', 'pattern'],
@@ -350,9 +336,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['menu'],
 		tags: ['activitypub', 'visibility', 'pattern'],
@@ -370,9 +354,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['menu', 'modal'],
 		tags: ['activitypub', 'multi-account', 'pattern'],
@@ -390,9 +372,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['modal'],
 		tags: ['activitypub', 'emoji', 'pattern'],
@@ -410,9 +390,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button'],
 		tags: ['activitypub', 'poll', 'pattern'],
@@ -430,9 +408,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'modal'],
 		tags: ['activitypub', 'media', 'accessibility', 'pattern'],
@@ -450,9 +426,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button'],
 		tags: ['activitypub', 'bookmarks', 'pattern'],
@@ -462,7 +436,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 	// ====================
 	// LESSER INTEGRATION
 	// ====================
-	'auth': {
+	auth: {
 		name: 'auth',
 		type: 'compound',
 		description: 'Complete authentication system with WebAuthn, 2FA, and wallet support',
@@ -523,16 +497,14 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'modal'],
 		tags: ['auth', 'authentication', 'webauthn', '2fa', 'wallet', 'lesser', 'compound'],
 		version: '1.0.0',
 	},
 
-	'profile': {
+	profile: {
 		name: 'profile',
 		type: 'compound',
 		description: 'User profile with header, stats, tabs, fields, and edit functionality',
@@ -573,16 +545,14 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'menu', 'tabs'],
 		tags: ['profile', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
 	},
 
-	'search': {
+	search: {
 		name: 'search',
 		type: 'compound',
 		description: 'Search with filters and AI semantic search',
@@ -628,19 +598,18 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button'],
 		tags: ['search', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
 	},
 
-	'compose': {
+	compose: {
 		name: 'compose',
 		type: 'compound',
-		description: 'Post composition UI with character counting, visibility controls, and media attachments',
+		description:
+			'Post composition UI with character counting, visibility controls, and media attachments',
 		files: [
 			{
 				path: 'lib/components/Compose/Root.svelte',
@@ -673,16 +642,14 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button'],
 		tags: ['compose', 'post', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
 	},
 
-	'lists': {
+	lists: {
 		name: 'lists',
 		type: 'compound',
 		description: 'List management system for organizing and viewing curated actor feeds',
@@ -723,16 +690,14 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'modal'],
 		tags: ['lists', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
 	},
 
-	'messages': {
+	messages: {
 		name: 'messages',
 		type: 'compound',
 		description: 'Direct messaging system with threaded conversations and real-time updates',
@@ -783,19 +748,18 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button'],
 		tags: ['messages', 'dm', 'chat', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
 	},
 
-	'filters': {
+	filters: {
 		name: 'filters',
 		type: 'compound',
-		description: 'Content filtering system with keyword/phrase filtering and context-specific rules',
+		description:
+			'Content filtering system with keyword/phrase filtering and context-specific rules',
 		files: [
 			{
 				path: 'lib/components/Filters/Root.svelte',
@@ -823,19 +787,18 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'modal'],
 		tags: ['filters', 'moderation', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
 	},
 
-	'admin': {
+	admin: {
 		name: 'admin',
 		type: 'compound',
-		description: 'Complete admin dashboard with user management, reports, moderation, and analytics',
+		description:
+			'Complete admin dashboard with user management, reports, moderation, and analytics',
 		files: [
 			{
 				path: 'lib/components/Admin/Root.svelte',
@@ -888,9 +851,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'types',
 			},
 		],
-		dependencies: [
-			{ name: 'svelte', version: '^5.0.0' },
-		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'modal', 'tabs'],
 		tags: ['admin', 'dashboard', 'moderation', 'lesser', 'compound'],
@@ -991,4 +952,3 @@ export function resolveComponentDependencies(name: string): string[] {
 
 	return Array.from(deps);
 }
-

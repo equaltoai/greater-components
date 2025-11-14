@@ -14,6 +14,7 @@ The Messages component group provides a complete direct messaging system for pri
 ### **What are Messages?**
 
 Messages allow users to:
+
 - 💬 **Private Conversations**: Direct, private communication between users
 - 🔴 **Unread Tracking**: Badge indicators and read receipts
 - 🔍 **Search**: Find conversations and messages quickly
@@ -30,6 +31,7 @@ Messages provide secure, private communication similar to Twitter DMs, Mastodon 
 ## 🎯 Key Features
 
 ### **Conversation Management**
+
 - ✅ Create new conversations (one-on-one or group)
 - ✅ List all conversations sorted by recent activity
 - ✅ Search conversations by participant or content
@@ -38,6 +40,7 @@ Messages provide secure, private communication similar to Twitter DMs, Mastodon 
 - ✅ Conversation metadata (participant count, last message, unread count)
 
 ### **Messaging Features**
+
 - ✅ Send text messages
 - ✅ Media attachments (images, videos, audio, files)
 - ✅ Message editing (platform-dependent)
@@ -47,6 +50,7 @@ Messages provide secure, private communication similar to Twitter DMs, Mastodon 
 - ✅ Delivery confirmations
 
 ### **Real-time Communication**
+
 - ✅ WebSocket support for instant delivery
 - ✅ Live message updates
 - ✅ Presence indicators (online/offline)
@@ -54,6 +58,7 @@ Messages provide secure, private communication similar to Twitter DMs, Mastodon 
 - ✅ Connection status indicators
 
 ### **Unread Tracking**
+
 - ✅ Per-conversation unread counts
 - ✅ Total unread badge
 - ✅ Mark as read on view
@@ -61,6 +66,7 @@ Messages provide secure, private communication similar to Twitter DMs, Mastodon 
 - ✅ Persistent unread state across sessions
 
 ### **Security & Privacy**
+
 - ✅ Private conversations (not public)
 - ✅ End-to-end encryption support (platform-dependent)
 - ✅ Message retention policies
@@ -68,6 +74,7 @@ Messages provide secure, private communication similar to Twitter DMs, Mastodon 
 - ✅ Permission controls
 
 ### **Accessibility**
+
 - ✅ Full keyboard navigation
 - ✅ Screen reader support
 - ✅ ARIA labels and roles
@@ -90,63 +97,63 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
-  
-  const handlers = {
-    onFetchConversations: async () => {
-      const response = await fetch('/api/messages/conversations');
-      return await response.json();
-    },
-    onFetchMessages: async (conversationId) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}`);
-      return await response.json();
-    },
-    onSendMessage: async (conversationId, content, mediaIds) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, mediaIds }),
-      });
-      return await response.json();
-    },
-    onMarkRead: async (conversationId) => {
-      await fetch(`/api/messages/conversations/${conversationId}/read`, {
-        method: 'POST',
-      });
-    },
-  };
+	import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+
+	const handlers = {
+		onFetchConversations: async () => {
+			const response = await fetch('/api/messages/conversations');
+			return await response.json();
+		},
+		onFetchMessages: async (conversationId) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}`);
+			return await response.json();
+		},
+		onSendMessage: async (conversationId, content, mediaIds) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ content, mediaIds }),
+			});
+			return await response.json();
+		},
+		onMarkRead: async (conversationId) => {
+			await fetch(`/api/messages/conversations/${conversationId}/read`, {
+				method: 'POST',
+			});
+		},
+	};
 </script>
 
 <Messages.Root {handlers}>
-  <div class="messages-layout">
-    <aside class="conversations-sidebar">
-      <Messages.UnreadIndicator variant="badge" />
-      <Messages.Conversations currentUserId="me" />
-    </aside>
-    
-    <main class="messages-main">
-      <Messages.Thread />
-      <Messages.Composer />
-    </main>
-  </div>
+	<div class="messages-layout">
+		<aside class="conversations-sidebar">
+			<Messages.UnreadIndicator variant="badge" />
+			<Messages.Conversations currentUserId="me" />
+		</aside>
+
+		<main class="messages-main">
+			<Messages.Thread />
+			<Messages.Composer />
+		</main>
+	</div>
 </Messages.Root>
 
 <style>
-  .messages-layout {
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    height: 100vh;
-  }
-  
-  .conversations-sidebar {
-    border-right: 1px solid var(--border-color);
-    overflow-y: auto;
-  }
-  
-  .messages-main {
-    display: flex;
-    flex-direction: column;
-  }
+	.messages-layout {
+		display: grid;
+		grid-template-columns: 350px 1fr;
+		height: 100vh;
+	}
+
+	.conversations-sidebar {
+		border-right: 1px solid var(--border-color);
+		overflow-y: auto;
+	}
+
+	.messages-main {
+		display: flex;
+		flex-direction: column;
+	}
 </style>
 ```
 
@@ -154,20 +161,20 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
-  import { createWebSocketClient } from '$lib/websocket';
-  
-  const ws = createWebSocketClient('wss://api.example.com/graphql');
-  
-  const handlers = {
-    // ... standard handlers ...
-    
-    onFetchConversations: async () => {
-      const conversations = await fetchConversations();
-      
-      // Subscribe to new messages
-      ws.subscribe({
-        query: `
+	import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+	import { createWebSocketClient } from '$lib/websocket';
+
+	const ws = createWebSocketClient('wss://api.example.com/graphql');
+
+	const handlers = {
+		// ... standard handlers ...
+
+		onFetchConversations: async () => {
+			const conversations = await fetchConversations();
+
+			// Subscribe to new messages
+			ws.subscribe({
+				query: `
           subscription OnNewMessage {
             messageReceived {
               id
@@ -183,25 +190,25 @@ npm install @equaltoai/greater-components-fediverse
             }
           }
         `,
-        onData: ({ messageReceived }) => {
-          // Update conversation with new message
-          updateConversationWithNewMessage(messageReceived);
-        },
-      });
-      
-      return conversations;
-    },
-  };
+				onData: ({ messageReceived }) => {
+					// Update conversation with new message
+					updateConversationWithNewMessage(messageReceived);
+				},
+			});
+
+			return conversations;
+		},
+	};
 </script>
 
 <Messages.Root {handlers}>
-  <div class="realtime-messages">
-    <Messages.Conversations />
-    <div class="thread-area">
-      <Messages.Thread />
-      <Messages.Composer />
-    </div>
-  </div>
+	<div class="realtime-messages">
+		<Messages.Conversations />
+		<div class="thread-area">
+			<Messages.Thread />
+			<Messages.Composer />
+		</div>
+	</div>
 </Messages.Root>
 ```
 
@@ -210,15 +217,17 @@ npm install @equaltoai/greater-components-fediverse
 ## 🧩 Components
 
 ### **[Messages.Root](/docs/components/Messages/Root.md)**
+
 Context provider for all message components. Manages shared state and handlers.
 
 ```svelte
 <Messages.Root {handlers}>
-  <!-- Child components -->
+	<!-- Child components -->
 </Messages.Root>
 ```
 
 ### **[Messages.Conversations](/docs/components/Messages/Conversations.md)**
+
 List of all conversations sorted by recent activity. Shows participant info, last message preview, and unread counts.
 
 ```svelte
@@ -226,6 +235,7 @@ List of all conversations sorted by recent activity. Shows participant info, las
 ```
 
 ### **[Messages.Thread](/docs/components/Messages/Thread.md)**
+
 Display messages in the selected conversation as a chronological thread.
 
 ```svelte
@@ -233,6 +243,7 @@ Display messages in the selected conversation as a chronological thread.
 ```
 
 ### **[Messages.Message](/docs/components/Messages/Message.md)**
+
 Individual message display component with sender info, content, and timestamp.
 
 ```svelte
@@ -240,6 +251,7 @@ Individual message display component with sender info, content, and timestamp.
 ```
 
 ### **[Messages.Composer](/docs/components/Messages/Composer.md)**
+
 Message input interface for composing and sending new messages.
 
 ```svelte
@@ -247,6 +259,7 @@ Message input interface for composing and sending new messages.
 ```
 
 ### **[Messages.NewConversation](/docs/components/Messages/NewConversation.md)**
+
 Modal interface for starting new conversations with search and participant selection.
 
 ```svelte
@@ -254,6 +267,7 @@ Modal interface for starting new conversations with search and participant selec
 ```
 
 ### **[Messages.MediaUpload](/docs/components/Messages/MediaUpload.md)**
+
 Media attachment interface for uploading images, videos, audio, and files.
 
 ```svelte
@@ -261,6 +275,7 @@ Media attachment interface for uploading images, videos, audio, and files.
 ```
 
 ### **[Messages.UnreadIndicator](/docs/components/Messages/UnreadIndicator.md)**
+
 Badge or indicator showing total unread message count.
 
 ```svelte
@@ -275,63 +290,63 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
-  
-  const handlers = {
-    onFetchConversations: async () => {
-      const response = await fetch('/api/messages/conversations');
-      return await response.json();
-    },
-    onFetchMessages: async (conversationId) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}`);
-      return await response.json();
-    },
-    onSendMessage: async (conversationId, content) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
-      });
-      return await response.json();
-    },
-    onMarkRead: async (conversationId) => {
-      await fetch(`/api/messages/conversations/${conversationId}/read`, {
-        method: 'POST',
-      });
-    },
-  };
+	import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+
+	const handlers = {
+		onFetchConversations: async () => {
+			const response = await fetch('/api/messages/conversations');
+			return await response.json();
+		},
+		onFetchMessages: async (conversationId) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}`);
+			return await response.json();
+		},
+		onSendMessage: async (conversationId, content) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ content }),
+			});
+			return await response.json();
+		},
+		onMarkRead: async (conversationId) => {
+			await fetch(`/api/messages/conversations/${conversationId}/read`, {
+				method: 'POST',
+			});
+		},
+	};
 </script>
 
 <div class="messaging-app">
-  <Messages.Root {handlers}>
-    <div class="messages-container">
-      <Messages.Conversations currentUserId="me" class="conversations-list" />
-      
-      <div class="message-view">
-        <Messages.Thread class="thread-display" />
-        <Messages.Composer class="message-composer" />
-      </div>
-    </div>
-  </Messages.Root>
+	<Messages.Root {handlers}>
+		<div class="messages-container">
+			<Messages.Conversations currentUserId="me" class="conversations-list" />
+
+			<div class="message-view">
+				<Messages.Thread class="thread-display" />
+				<Messages.Composer class="message-composer" />
+			</div>
+		</div>
+	</Messages.Root>
 </div>
 
 <style>
-  .messaging-app {
-    height: 100vh;
-    background: var(--bg-primary, #ffffff);
-  }
-  
-  .messages-container {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    height: 100%;
-  }
-  
-  .message-view {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
+	.messaging-app {
+		height: 100vh;
+		background: var(--bg-primary, #ffffff);
+	}
+
+	.messages-container {
+		display: grid;
+		grid-template-columns: 320px 1fr;
+		height: 100%;
+	}
+
+	.message-view {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
 </style>
 ```
 
@@ -339,89 +354,89 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
-  
-  const handlers = {
-    onFetchConversations: async () => {
-      const response = await fetch('/api/messages/conversations');
-      return await response.json();
-    },
-    onFetchMessages: async (conversationId) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}`);
-      return await response.json();
-    },
-    onSendMessage: async (conversationId, content) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
-      });
-      return await response.json();
-    },
-    onCreateConversation: async (participantIds) => {
-      const response = await fetch('/api/messages/conversations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ participantIds }),
-      });
-      return await response.json();
-    },
-    onSearchParticipants: async (query) => {
-      const response = await fetch(`/api/search/users?q=${encodeURIComponent(query)}`);
-      return await response.json();
-    },
-  };
+	import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+
+	const handlers = {
+		onFetchConversations: async () => {
+			const response = await fetch('/api/messages/conversations');
+			return await response.json();
+		},
+		onFetchMessages: async (conversationId) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}`);
+			return await response.json();
+		},
+		onSendMessage: async (conversationId, content) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ content }),
+			});
+			return await response.json();
+		},
+		onCreateConversation: async (participantIds) => {
+			const response = await fetch('/api/messages/conversations', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ participantIds }),
+			});
+			return await response.json();
+		},
+		onSearchParticipants: async (query) => {
+			const response = await fetch(`/api/search/users?q=${encodeURIComponent(query)}`);
+			return await response.json();
+		},
+	};
 </script>
 
 <Messages.Root {handlers}>
-  <div class="messages-with-creation">
-    <header class="messages-header">
-      <h1>Messages</h1>
-      <Messages.UnreadIndicator variant="badge" />
-      <Messages.NewConversation />
-    </header>
-    
-    <div class="messages-body">
-      <Messages.Conversations currentUserId="me" />
-      <div class="thread-area">
-        <Messages.Thread />
-        <Messages.Composer />
-      </div>
-    </div>
-  </div>
+	<div class="messages-with-creation">
+		<header class="messages-header">
+			<h1>Messages</h1>
+			<Messages.UnreadIndicator variant="badge" />
+			<Messages.NewConversation />
+		</header>
+
+		<div class="messages-body">
+			<Messages.Conversations currentUserId="me" />
+			<div class="thread-area">
+				<Messages.Thread />
+				<Messages.Composer />
+			</div>
+		</div>
+	</div>
 </Messages.Root>
 
 <style>
-  .messages-with-creation {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  .messages-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-  }
-  
-  .messages-header h1 {
-    flex: 1;
-    margin: 0;
-  }
-  
-  .messages-body {
-    flex: 1;
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    overflow: hidden;
-  }
-  
-  .thread-area {
-    display: flex;
-    flex-direction: column;
-  }
+	.messages-with-creation {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+	}
+
+	.messages-header {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem 1.5rem;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.messages-header h1 {
+		flex: 1;
+		margin: 0;
+	}
+
+	.messages-body {
+		flex: 1;
+		display: grid;
+		grid-template-columns: 320px 1fr;
+		overflow: hidden;
+	}
+
+	.thread-area {
+		display: flex;
+		flex-direction: column;
+	}
 </style>
 ```
 
@@ -429,81 +444,81 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
-  
-  let mediaUpload: typeof Messages.MediaUpload;
-  let attachedMediaIds = $state<string[]>([]);
-  
-  const handlers = {
-    onFetchConversations: async () => {
-      const response = await fetch('/api/messages/conversations');
-      return await response.json();
-    },
-    onFetchMessages: async (conversationId) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}`);
-      return await response.json();
-    },
-    onSendMessage: async (conversationId, content, mediaIds) => {
-      const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content, mediaIds }),
-      });
-      return await response.json();
-    },
-    onUploadMedia: async (file) => {
-      const formData = new FormData();
-      formData.append('file', file);
-      
-      const response = await fetch('/api/media/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      return await response.json();
-    },
-  };
-  
-  function handleAttachmentsChange(mediaIds: string[]) {
-    attachedMediaIds = mediaIds;
-  }
+	import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+
+	let mediaUpload: typeof Messages.MediaUpload;
+	let attachedMediaIds = $state<string[]>([]);
+
+	const handlers = {
+		onFetchConversations: async () => {
+			const response = await fetch('/api/messages/conversations');
+			return await response.json();
+		},
+		onFetchMessages: async (conversationId) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}`);
+			return await response.json();
+		},
+		onSendMessage: async (conversationId, content, mediaIds) => {
+			const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ content, mediaIds }),
+			});
+			return await response.json();
+		},
+		onUploadMedia: async (file) => {
+			const formData = new FormData();
+			formData.append('file', file);
+
+			const response = await fetch('/api/media/upload', {
+				method: 'POST',
+				body: formData,
+			});
+
+			return await response.json();
+		},
+	};
+
+	function handleAttachmentsChange(mediaIds: string[]) {
+		attachedMediaIds = mediaIds;
+	}
 </script>
 
 <Messages.Root {handlers}>
-  <div class="messages-with-media">
-    <Messages.Conversations currentUserId="me" />
-    
-    <div class="thread-area">
-      <Messages.Thread />
-      
-      <div class="composer-area">
-        <Messages.MediaUpload
-          bind:this={mediaUpload}
-          maxAttachments={4}
-          onAttachmentsChange={handleAttachmentsChange}
-        />
-        <Messages.Composer />
-      </div>
-    </div>
-  </div>
+	<div class="messages-with-media">
+		<Messages.Conversations currentUserId="me" />
+
+		<div class="thread-area">
+			<Messages.Thread />
+
+			<div class="composer-area">
+				<Messages.MediaUpload
+					bind:this={mediaUpload}
+					maxAttachments={4}
+					onAttachmentsChange={handleAttachmentsChange}
+				/>
+				<Messages.Composer />
+			</div>
+		</div>
+	</div>
 </Messages.Root>
 
 <style>
-  .messages-with-media {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    height: 100vh;
-  }
-  
-  .thread-area {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .composer-area {
-    border-top: 1px solid var(--border-color);
-    padding: 1rem;
-  }
+	.messages-with-media {
+		display: grid;
+		grid-template-columns: 320px 1fr;
+		height: 100vh;
+	}
+
+	.thread-area {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.composer-area {
+		border-top: 1px solid var(--border-color);
+		padding: 1rem;
+	}
 </style>
 ```
 
@@ -511,38 +526,38 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
-  import { createMessagesAdapter } from '@equaltoai/greater-components-adapters';
-  
-  const adapter = createMessagesAdapter({
-    endpoint: 'https://api.example.com/graphql',
-    authentication: {
-      token: 'your-auth-token',
-    },
-    realtime: true, // Enable WebSocket
-  });
-  
-  const handlers = {
-    onFetchConversations: adapter.fetchConversations,
-    onFetchMessages: adapter.fetchMessages,
-    onSendMessage: adapter.sendMessage,
-    onMarkRead: adapter.markRead,
-    onDeleteMessage: adapter.deleteMessage,
-    onCreateConversation: adapter.createConversation,
-    onSearchParticipants: adapter.searchUsers,
-    onUploadMedia: adapter.uploadMedia,
-  };
+	import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+	import { createMessagesAdapter } from '@equaltoai/greater-components-adapters';
+
+	const adapter = createMessagesAdapter({
+		endpoint: 'https://api.example.com/graphql',
+		authentication: {
+			token: 'your-auth-token',
+		},
+		realtime: true, // Enable WebSocket
+	});
+
+	const handlers = {
+		onFetchConversations: adapter.fetchConversations,
+		onFetchMessages: adapter.fetchMessages,
+		onSendMessage: adapter.sendMessage,
+		onMarkRead: adapter.markRead,
+		onDeleteMessage: adapter.deleteMessage,
+		onCreateConversation: adapter.createConversation,
+		onSearchParticipants: adapter.searchUsers,
+		onUploadMedia: adapter.uploadMedia,
+	};
 </script>
 
 <Messages.Root {handlers}>
-  <div class="adapter-messages">
-    <Messages.UnreadIndicator variant="badge" />
-    <Messages.NewConversation />
-    <Messages.Conversations currentUserId="me" />
-    <Messages.Thread />
-    <Messages.Composer />
-    <Messages.MediaUpload />
-  </div>
+	<div class="adapter-messages">
+		<Messages.UnreadIndicator variant="badge" />
+		<Messages.NewConversation />
+		<Messages.Conversations currentUserId="me" />
+		<Messages.Thread />
+		<Messages.Composer />
+		<Messages.MediaUpload />
+	</div>
 </Messages.Root>
 ```
 
@@ -550,34 +565,34 @@ Badge or indicator showing total unread message count.
 
 ```svelte
 <script lang="ts">
-  import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+	import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
 </script>
 
 <Messages.Root {handlers} class="custom-messages">
-  <Messages.Conversations class="custom-conversations" />
-  <Messages.Thread class="custom-thread" />
-  <Messages.Composer class="custom-composer" />
+	<Messages.Conversations class="custom-conversations" />
+	<Messages.Thread class="custom-thread" />
+	<Messages.Composer class="custom-composer" />
 </Messages.Root>
 
 <style>
-  :global(.custom-messages) {
-    --primary-color: #7c3aed;
-    --bg-primary: #faf9fb;
-    --border-color: #e9d5ff;
-  }
-  
-  :global(.custom-conversations) {
-    background: linear-gradient(to bottom, #f3e8ff, #ffffff);
-  }
-  
-  :global(.custom-thread) {
-    background: url('/patterns/subtle-grid.png');
-  }
-  
-  :global(.custom-composer) {
-    border-radius: 1rem;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-  }
+	:global(.custom-messages) {
+		--primary-color: #7c3aed;
+		--bg-primary: #faf9fb;
+		--border-color: #e9d5ff;
+	}
+
+	:global(.custom-conversations) {
+		background: linear-gradient(to bottom, #f3e8ff, #ffffff);
+	}
+
+	:global(.custom-thread) {
+		background: url('/patterns/subtle-grid.png');
+	}
+
+	:global(.custom-composer) {
+		border-radius: 1rem;
+		box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+	}
 </style>
 ```
 
@@ -592,18 +607,18 @@ Always ensure messages are private and access-controlled:
 ```typescript
 // Server-side middleware
 const checkConversationAccess = async (req, res, next) => {
-  const conversation = await Conversation.findById(req.params.id);
-  
-  if (!conversation.participantIds.includes(req.user.id)) {
-    return res.status(403).json({ error: 'Access denied' });
-  }
-  
-  next();
+	const conversation = await Conversation.findById(req.params.id);
+
+	if (!conversation.participantIds.includes(req.user.id)) {
+		return res.status(403).json({ error: 'Access denied' });
+	}
+
+	next();
 };
 
 app.get('/api/messages/conversations/:id', checkConversationAccess, async (req, res) => {
-  const messages = await Message.find({ conversationId: req.params.id });
-  res.json(messages);
+	const messages = await Message.find({ conversationId: req.params.id });
+	res.json(messages);
 });
 ```
 
@@ -615,18 +630,18 @@ Sanitize all user-generated content:
 import { sanitizeHTML } from '$lib/security';
 
 const handlers = {
-  onSendMessage: async (conversationId, content) => {
-    // Sanitize message content
-    const sanitizedContent = sanitizeHTML(content);
-    
-    const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: sanitizedContent }),
-    });
-    
-    return await response.json();
-  },
+	onSendMessage: async (conversationId, content) => {
+		// Sanitize message content
+		const sanitizedContent = sanitizeHTML(content);
+
+		const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ content: sanitizedContent }),
+		});
+
+		return await response.json();
+	},
 };
 ```
 
@@ -638,26 +653,26 @@ Prevent spam and abuse:
 import { RateLimiter } from '$lib/rate-limiter';
 
 const messageLimiter = new RateLimiter({
-  maxRequests: 60, // 60 messages
-  windowMs: 60 * 1000, // per minute
+	maxRequests: 60, // 60 messages
+	windowMs: 60 * 1000, // per minute
 });
 
 const handlers = {
-  onSendMessage: async (conversationId, content) => {
-    const userId = getCurrentUserId();
-    
-    if (!await messageLimiter.checkLimit(userId)) {
-      throw new Error('Rate limit exceeded. Please wait before sending more messages.');
-    }
-    
-    const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content }),
-    });
-    
-    return await response.json();
-  },
+	onSendMessage: async (conversationId, content) => {
+		const userId = getCurrentUserId();
+
+		if (!(await messageLimiter.checkLimit(userId))) {
+			throw new Error('Rate limit exceeded. Please wait before sending more messages.');
+		}
+
+		const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ content }),
+		});
+
+		return await response.json();
+	},
 };
 ```
 
@@ -669,31 +684,31 @@ For platforms that support E2EE:
 import { encryptMessage, decryptMessage } from '$lib/crypto';
 
 const handlers = {
-  onSendMessage: async (conversationId, content) => {
-    // Encrypt message before sending
-    const encryptedContent = await encryptMessage(content, conversationId);
-    
-    const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: encryptedContent, encrypted: true }),
-    });
-    
-    return await response.json();
-  },
-  
-  onFetchMessages: async (conversationId) => {
-    const response = await fetch(`/api/messages/conversations/${conversationId}`);
-    const messages = await response.json();
-    
-    // Decrypt messages
-    return Promise.all(
-      messages.map(async (msg) => ({
-        ...msg,
-        content: msg.encrypted ? await decryptMessage(msg.content, conversationId) : msg.content,
-      }))
-    );
-  },
+	onSendMessage: async (conversationId, content) => {
+		// Encrypt message before sending
+		const encryptedContent = await encryptMessage(content, conversationId);
+
+		const response = await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ content: encryptedContent, encrypted: true }),
+		});
+
+		return await response.json();
+	},
+
+	onFetchMessages: async (conversationId) => {
+		const response = await fetch(`/api/messages/conversations/${conversationId}`);
+		const messages = await response.json();
+
+		// Decrypt messages
+		return Promise.all(
+			messages.map(async (msg) => ({
+				...msg,
+				content: msg.encrypted ? await decryptMessage(msg.content, conversationId) : msg.content,
+			}))
+		);
+	},
 };
 ```
 
@@ -714,6 +729,7 @@ The Messages components are built with accessibility as a core principle:
 ### **Screen Reader Support**
 
 All components include:
+
 - Semantic HTML elements
 - ARIA labels and roles
 - Status announcements for new messages
@@ -732,16 +748,16 @@ All components include:
 
 ```svelte
 <Messages.Root {handlers}>
-  <div role="application" aria-label="Direct messages">
-    <section aria-label="Conversations list">
-      <Messages.Conversations currentUserId="me" />
-    </section>
-    
-    <main aria-label="Selected conversation">
-      <Messages.Thread />
-      <Messages.Composer />
-    </main>
-  </div>
+	<div role="application" aria-label="Direct messages">
+		<section aria-label="Conversations list">
+			<Messages.Conversations currentUserId="me" />
+		</section>
+
+		<main aria-label="Selected conversation">
+			<Messages.Thread />
+			<Messages.Composer />
+		</main>
+	</div>
 </Messages.Root>
 ```
 
@@ -753,24 +769,24 @@ All components include:
 
 ```svelte
 <script lang="ts">
-  import { onMount } from 'svelte';
-  
-  let conversationsLoaded = $state(false);
-  
-  onMount(() => {
-    // Defer conversation loading
-    requestIdleCallback(() => {
-      conversationsLoaded = true;
-    });
-  });
+	import { onMount } from 'svelte';
+
+	let conversationsLoaded = $state(false);
+
+	onMount(() => {
+		// Defer conversation loading
+		requestIdleCallback(() => {
+			conversationsLoaded = true;
+		});
+	});
 </script>
 
 {#if conversationsLoaded}
-  <Messages.Root {handlers}>
-    <Messages.Conversations />
-  </Messages.Root>
+	<Messages.Root {handlers}>
+		<Messages.Conversations />
+	</Messages.Root>
 {:else}
-  <div>Loading messages...</div>
+	<div>Loading messages...</div>
 {/if}
 ```
 
@@ -780,20 +796,20 @@ For long conversation threads:
 
 ```svelte
 <script lang="ts">
-  import { createVirtualizer } from '@tanstack/svelte-virtual';
-  
-  let scrollElement: HTMLElement | null = null;
-  
-  const messageVirtualizer = $derived(() =>
-    scrollElement
-      ? createVirtualizer({
-          count: messages.length,
-          getScrollElement: () => scrollElement,
-          estimateSize: () => 100,
-          overscan: 5,
-        })
-      : null
-  );
+	import { createVirtualizer } from '@tanstack/svelte-virtual';
+
+	let scrollElement: HTMLElement | null = null;
+
+	const messageVirtualizer = $derived(() =>
+		scrollElement
+			? createVirtualizer({
+					count: messages.length,
+					getScrollElement: () => scrollElement,
+					estimateSize: () => 100,
+					overscan: 5,
+				})
+			: null
+	);
 </script>
 ```
 
@@ -805,16 +821,16 @@ import { lruCache } from '$lib/cache';
 const conversationCache = lruCache({ max: 50, ttl: 5 * 60 * 1000 }); // 5 minutes
 
 const handlers = {
-  onFetchConversations: async () => {
-    const cached = conversationCache.get('conversations');
-    if (cached) return cached;
-    
-    const response = await fetch('/api/messages/conversations');
-    const conversations = await response.json();
-    
-    conversationCache.set('conversations', conversations);
-    return conversations;
-  },
+	onFetchConversations: async () => {
+		const cached = conversationCache.get('conversations');
+		if (cached) return cached;
+
+		const response = await fetch('/api/messages/conversations');
+		const conversations = await response.json();
+
+		conversationCache.set('conversations', conversations);
+		return conversations;
+	},
 };
 ```
 
@@ -829,25 +845,25 @@ import { render, fireEvent, waitFor } from '@testing-library/svelte';
 import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
 
 test('sends a message', async () => {
-  const onSendMessage = vi.fn().mockResolvedValue({
-    id: '1',
-    content: 'Hello',
-    sender: { id: 'me', name: 'Me' },
-    createdAt: new Date().toISOString(),
-  });
-  
-  const { getByPlaceholderText, getByText } = render(Messages.Root, {
-    handlers: { onSendMessage },
-  });
-  
-  // Type message
-  const input = getByPlaceholderText('Write a message...');
-  await fireEvent.input(input, { target: { value: 'Hello' } });
-  
-  // Send
-  await fireEvent.click(getByText('Send'));
-  
-  expect(onSendMessage).toHaveBeenCalledWith(expect.any(String), 'Hello', undefined);
+	const onSendMessage = vi.fn().mockResolvedValue({
+		id: '1',
+		content: 'Hello',
+		sender: { id: 'me', name: 'Me' },
+		createdAt: new Date().toISOString(),
+	});
+
+	const { getByPlaceholderText, getByText } = render(Messages.Root, {
+		handlers: { onSendMessage },
+	});
+
+	// Type message
+	const input = getByPlaceholderText('Write a message...');
+	await fireEvent.input(input, { target: { value: 'Hello' } });
+
+	// Send
+	await fireEvent.click(getByText('Send'));
+
+	expect(onSendMessage).toHaveBeenCalledWith(expect.any(String), 'Hello', undefined);
 });
 ```
 
@@ -857,20 +873,20 @@ test('sends a message', async () => {
 import { test, expect } from '@playwright/test';
 
 test('messaging flow', async ({ page }) => {
-  await page.goto('/messages');
-  
-  // Create new conversation
-  await page.click('text=New Message');
-  await page.fill('[placeholder="Search people..."]', 'johndoe');
-  await page.click('text=@johndoe');
-  await page.click('text=Start Conversation');
-  
-  // Send message
-  await page.fill('[placeholder="Write a message..."]', 'Hello John!');
-  await page.click('text=Send');
-  
-  // Verify message sent
-  await expect(page.locator('text=Hello John!')).toBeVisible();
+	await page.goto('/messages');
+
+	// Create new conversation
+	await page.click('text=New Message');
+	await page.fill('[placeholder="Search people..."]', 'johndoe');
+	await page.click('text=@johndoe');
+	await page.click('text=Start Conversation');
+
+	// Send message
+	await page.fill('[placeholder="Write a message..."]', 'Hello John!');
+	await page.click('text=Send');
+
+	// Verify message sent
+	await expect(page.locator('text=Hello John!')).toBeVisible();
 });
 ```
 
@@ -899,7 +915,10 @@ const { state, sendMessage, markRead } = Messages.getMessagesContext();
 ### **Helper Functions**
 
 ```typescript
-import { formatMessageTime, getConversationName } from '@equaltoai/greater-components-fediverse/Messages';
+import {
+	formatMessageTime,
+	getConversationName,
+} from '@equaltoai/greater-components-fediverse/Messages';
 
 // Format timestamp
 const timeAgo = formatMessageTime('2024-01-01T12:00:00Z');
@@ -916,16 +935,16 @@ Messages components support CSS custom properties for theming:
 
 ```css
 :root {
-  --primary-color: #1d9bf0;
-  --primary-color-dark: #1a8cd8;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f7f9fa;
-  --bg-hover: #eff3f4;
-  --text-primary: #0f1419;
-  --text-secondary: #536471;
-  --border-color: #e1e8ed;
-  --error-color: #f4211e;
-  --success-color: #00ba7c;
+	--primary-color: #1d9bf0;
+	--primary-color-dark: #1a8cd8;
+	--bg-primary: #ffffff;
+	--bg-secondary: #f7f9fa;
+	--bg-hover: #eff3f4;
+	--text-primary: #0f1419;
+	--text-secondary: #536471;
+	--border-color: #e1e8ed;
+	--error-color: #f4211e;
+	--success-color: #00ba7c;
 }
 ```
 
@@ -944,6 +963,7 @@ Messages components support CSS custom properties for theming:
 ## 💬 Support
 
 For questions, issues, or feature requests:
+
 - GitHub Issues: [github.com/your-org/greater-components/issues](https://github.com/your-org/greater-components/issues)
 - Discord: [discord.gg/your-server](https://discord.gg/your-server)
 - Documentation: [docs.greater-components.dev](https://docs.greater-components.dev)
@@ -952,4 +972,3 @@ For questions, issues, or feature requests:
 
 **Last Updated**: 2025-10-12  
 **Version**: 1.0.0
-

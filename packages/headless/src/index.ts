@@ -1,8 +1,8 @@
 /**
  * @equaltoai/greater-components-headless
- * 
+ *
  * Headless UI primitives providing behavior without styling.
- * 
+ *
  * All primitives follow the same pattern:
  * - Pure behavior, zero styling
  * - Svelte actions for DOM integration

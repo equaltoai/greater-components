@@ -1,9 +1,9 @@
 /**
  * Lists Context
- * 
+ *
  * Provides lists state and handlers for all lists components.
  * Supports creating, editing, and viewing user-curated lists of actors.
- * 
+ *
  * @module Lists/context
  */
 
@@ -91,7 +91,10 @@ export interface ListsHandlers {
 	/**
 	 * Fetch timeline for a list
 	 */
-	onFetchTimeline?: (listId: string, options?: { limit?: number; cursor?: string }) => Promise<GenericTimelineItem[]>;
+	onFetchTimeline?: (
+		listId: string,
+		options?: { limit?: number; cursor?: string }
+	) => Promise<GenericTimelineItem[]>;
 
 	/**
 	 * Handle list click
@@ -231,7 +234,7 @@ export interface ListsContext {
 
 /**
  * Create lists context
- * 
+ *
  * @param handlers - Lists event handlers
  * @returns Lists context
  */
@@ -399,9 +402,9 @@ export function createListsContext(handlers: ListsHandlers = {}): ListsContext {
 
 /**
  * Get lists context
- * 
+ *
  * Must be called within a Lists component tree.
- * 
+ *
  * @throws Error if called outside Lists component tree
  * @returns Lists context
  */

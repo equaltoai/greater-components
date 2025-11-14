@@ -7,6 +7,7 @@
 This package provides 5 production-ready headless UI primitives that handle all the complex behavior, accessibility, and keyboard interactions - while leaving the styling completely up to you.
 
 **Perfect for:**
+
 - Building custom component libraries
 - Implementing your own design system
 - Maximum flexibility in styling
@@ -39,30 +40,31 @@ Accessible button with loading states, keyboard navigation, and ARIA attributes.
 
 ```svelte
 <script>
-  import { createButton } from '@equaltoai/greater-components-headless/button';
-  
-  const button = createButton({
-    onClick: () => console.log('Clicked!'),
-    loading: false
-  });
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+
+	const button = createButton({
+		onClick: () => console.log('Clicked!'),
+		loading: false,
+	});
 </script>
 
 <button use:button.actions.button class="your-styles">
-  {#if button.state.loading}
-    Loading...
-  {:else}
-    Click me
-  {/if}
+	{#if button.state.loading}
+		Loading...
+	{:else}
+		Click me
+	{/if}
 </button>
 
 <style>
-  .your-styles {
-    /* Complete styling freedom */
-  }
+	.your-styles {
+		/* Complete styling freedom */
+	}
 </style>
 ```
 
 **Features:**
+
 - Loading states with `aria-busy`
 - Pressed state for toggle buttons
 - Full keyboard support
@@ -75,37 +77,40 @@ Accessible modal dialog with focus trapping and ESC to close.
 
 ```svelte
 <script>
-  import { createModal } from '@equaltoai/greater-components-headless/modal';
-  
-  const modal = createModal({
-    closeOnEscape: true,
-    closeOnBackdrop: true,
-    trapFocus: true,
-    lockScroll: true
-  });
+	import { createModal } from '@equaltoai/greater-components-headless/modal';
+
+	const modal = createModal({
+		closeOnEscape: true,
+		closeOnBackdrop: true,
+		trapFocus: true,
+		lockScroll: true,
+	});
 </script>
 
-<button use:modal.actions.trigger>
-  Open Modal
-</button>
+<button use:modal.actions.trigger> Open Modal </button>
 
 {#if modal.state.open}
-  <div use:modal.actions.backdrop class="backdrop">
-    <div use:modal.actions.content class="modal">
-      <h2 id="{modal.state.id}-title">Modal Title</h2>
-      <p id="{modal.state.id}-description">Modal content here</p>
-      <button use:modal.actions.close>Close</button>
-    </div>
-  </div>
+	<div use:modal.actions.backdrop class="backdrop">
+		<div use:modal.actions.content class="modal">
+			<h2 id="{modal.state.id}-title">Modal Title</h2>
+			<p id="{modal.state.id}-description">Modal content here</p>
+			<button use:modal.actions.close>Close</button>
+		</div>
+	</div>
 {/if}
 
 <style>
-  .backdrop { /* Your backdrop styles */ }
-  .modal { /* Your modal styles */ }
+	.backdrop {
+		/* Your backdrop styles */
+	}
+	.modal {
+		/* Your modal styles */
+	}
 </style>
 ```
 
 **Features:**
+
 - Focus trapping (tab cycles within modal)
 - ESC to close
 - Click backdrop to close
@@ -120,7 +125,7 @@ Accessible dropdown menu with keyboard navigation and typeahead search.
 ```svelte
 <script>
   import { createMenu } from '@equaltoai/greater-components-headless/menu';
-  
+
   const menu = createMenu({
     closeOnSelect: true,
     enableTypeahead: true,
@@ -149,6 +154,7 @@ Accessible dropdown menu with keyboard navigation and typeahead search.
 ```
 
 **Features:**
+
 - Arrow key navigation
 - Home/End keys
 - Typeahead search (type to find)
@@ -163,38 +169,33 @@ Accessible tooltip with smart positioning that avoids viewport edges.
 
 ```svelte
 <script>
-  import { createTooltip } from '@equaltoai/greater-components-headless/tooltip';
-  
-  const tooltip = createTooltip({
-    placement: 'top',
-    showDelay: 500,
-    smartPositioning: true
-  });
+	import { createTooltip } from '@equaltoai/greater-components-headless/tooltip';
+
+	const tooltip = createTooltip({
+		placement: 'top',
+		showDelay: 500,
+		smartPositioning: true,
+	});
 </script>
 
-<button use:tooltip.actions.trigger>
-  Hover me
-</button>
+<button use:tooltip.actions.trigger> Hover me </button>
 
 {#if tooltip.state.open}
-  <div 
-    use:tooltip.actions.content 
-    class="tooltip"
-    data-placement={tooltip.state.placement}
-  >
-    Tooltip content
-  </div>
+	<div use:tooltip.actions.content class="tooltip" data-placement={tooltip.state.placement}>
+		Tooltip content
+	</div>
 {/if}
 
 <style>
-  .tooltip {
-    /* Smart positioning applied automatically */
-    /* Just style the appearance */
-  }
+	.tooltip {
+		/* Smart positioning applied automatically */
+		/* Just style the appearance */
+	}
 </style>
 ```
 
 **Features:**
+
 - Smart positioning (avoids viewport edges)
 - 12 placement options
 - Show on hover and/or focus
@@ -209,7 +210,7 @@ Accessible tabs with arrow key navigation and automatic/manual activation.
 ```svelte
 <script>
   import { createTabs } from '@equaltoai/greater-components-headless/tabs';
-  
+
   const tabs = createTabs({
     initialTab: 'tab1',
     orientation: 'horizontal',
@@ -243,6 +244,7 @@ Accessible tabs with arrow key navigation and automatic/manual activation.
 ```
 
 **Features:**
+
 - Arrow key navigation (left/right or up/down)
 - Home/End keys
 - Automatic or manual activation
@@ -255,8 +257,8 @@ Accessible tabs with arrow key navigation and automatic/manual activation.
 
 All primitives are optimized for size:
 
-| Primitive | Gzipped | Raw |
-|-----------|---------|-----|
+| Primitive | Gzipped | Raw     |
+| --------- | ------- | ------- |
 | Button    | 0.94 KB | 2.77 KB |
 | Modal     | 1.19 KB | 3.43 KB |
 | Tabs      | 1.22 KB | 3.59 KB |
@@ -274,33 +276,39 @@ const primitive = createPrimitive(config);
 
 // Returns:
 {
-  state,     // Reactive state (Svelte runes)
-  actions,   // Svelte actions for DOM elements
-  helpers    // Programmatic control functions
+	(state, // Reactive state (Svelte runes)
+		actions, // Svelte actions for DOM elements
+		helpers); // Programmatic control functions
 }
 ```
 
 ### State
+
 Reactive state you can bind to or read:
+
 ```svelte
 {#if button.state.loading}
-  Loading...
+	Loading...
 {/if}
 ```
 
 ### Actions
+
 Svelte actions applied with `use:` directive:
+
 ```svelte
 <button use:button.actions.button>
 ```
 
 ### Helpers
+
 Programmatic control:
+
 ```svelte
 <script>
-  button.helpers.setLoading(true);
-  modal.helpers.open();
-  menu.helpers.close();
+	button.helpers.setLoading(true);
+	modal.helpers.open();
+	menu.helpers.close();
 </script>
 ```
 
@@ -347,8 +355,9 @@ Traditional component libraries force you into their design decisions. Headless 
 ## Examples
 
 See the `@equaltoai/greater-components-fediverse` package for real-world usage of these primitives in:
+
 - Status compound component
-- Timeline compound component  
+- Timeline compound component
 - Compose compound component
 - Notifications compound component
 

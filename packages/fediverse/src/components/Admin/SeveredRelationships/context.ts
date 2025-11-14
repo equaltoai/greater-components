@@ -1,6 +1,6 @@
 /**
  * Severed Relationships Context
- * 
+ *
  * Provides shared state for severed relationship management.
  */
 
@@ -57,4 +57,3 @@ export function getSeveredRelationshipsContext(): SeveredRelationshipsContext {
 	}
 	return context;
 }
-

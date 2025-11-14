@@ -12,6 +12,7 @@
 `Admin.Analytics` visualizes instance activity and growth over time with interactive charts. Administrators can view user growth, post activity, and federation metrics across different time periods (day, week, month). The component provides statistical summaries and visual representations for data-driven decision making.
 
 ### **Key Features**:
+
 - ✅ User growth charts
 - ✅ Post activity metrics
 - ✅ Federation activity tracking
@@ -37,31 +38,31 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Admin } from '@equaltoai/greater-components-fediverse';
-  
-  const adminHandlers = {
-    onFetchAnalytics: async (period) => {
-      const res = await fetch(`/api/admin/analytics?period=${period}`, {
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        }
-      });
-      
-      if (!res.ok) {
-        throw new Error('Failed to fetch analytics');
-      }
-      
-      return res.json();
-    }
-  };
-  
-  function getAuthToken(): string {
-    return localStorage.getItem('authToken') || '';
-  }
+	import { Admin } from '@equaltoai/greater-components-fediverse';
+
+	const adminHandlers = {
+		onFetchAnalytics: async (period) => {
+			const res = await fetch(`/api/admin/analytics?period=${period}`, {
+				headers: {
+					Authorization: `Bearer ${getAuthToken()}`,
+				},
+			});
+
+			if (!res.ok) {
+				throw new Error('Failed to fetch analytics');
+			}
+
+			return res.json();
+		},
+	};
+
+	function getAuthToken(): string {
+		return localStorage.getItem('authToken') || '';
+	}
 </script>
 
 <Admin.Root handlers={adminHandlers}>
-  <Admin.Analytics />
+	<Admin.Analytics />
 </Admin.Root>
 ```
 
@@ -69,9 +70,9 @@ npm install @equaltoai/greater-components-fediverse
 
 ## 🎛️ Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `class` | `string` | `''` | No | Custom CSS class |
+| Prop    | Type     | Default | Required | Description      |
+| ------- | -------- | ------- | -------- | ---------------- |
+| `class` | `string` | `''`    | No       | Custom CSS class |
 
 ---
 
@@ -79,16 +80,14 @@ npm install @equaltoai/greater-components-fediverse
 
 ```typescript
 interface AdminHandlers {
-  onFetchAnalytics?: (
-    period: 'day' | 'week' | 'month'
-  ) => Promise<AnalyticsData>;
+	onFetchAnalytics?: (period: 'day' | 'week' | 'month') => Promise<AnalyticsData>;
 }
 
 interface AnalyticsData {
-  period: 'day' | 'week' | 'month';
-  userGrowth: { date: string; count: number }[];
-  postActivity: { date: string; count: number }[];
-  federationActivity: { date: string; count: number }[];
+	period: 'day' | 'week' | 'month';
+	userGrowth: { date: string; count: number }[];
+	postActivity: { date: string; count: number }[];
+	federationActivity: { date: string; count: number }[];
 }
 ```
 
@@ -97,6 +96,7 @@ interface AnalyticsData {
 ## 💡 Examples
 
 Examples include:
+
 - Basic analytics dashboard
 - Analytics with export
 - Analytics with comparisons
@@ -126,4 +126,3 @@ npm test -- Admin/Analytics.test.ts
 ---
 
 **For analytics, see the [Admin Components Overview](./README.md).**
-

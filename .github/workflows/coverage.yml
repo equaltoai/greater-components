@@ -2,9 +2,9 @@ name: Test Coverage
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 permissions:
   contents: read
@@ -15,185 +15,185 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '20'
-        cache: 'pnpm'
-        
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        run_install: false
-        
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      
-    - name: Build packages
-      run: pnpm build
-      
-    - name: Run tests with coverage
-      run: pnpm test:coverage
-      continue-on-error: true
-      
-    - name: Generate coverage report
-      run: pnpm test:coverage:report
-      continue-on-error: true
-      
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        directory: ./packages/
-        files: ./packages/*/coverage/lcov.info
-        flags: unittests
-        name: greater-components-coverage
-        fail_ci_if_error: false
-        verbose: true
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        
-    - name: Upload coverage report artifacts
-      uses: actions/upload-artifact@v5
-      if: always()
-      with:
-        name: coverage-reports
-        path: |
-          ./coverage/
-          ./packages/*/coverage/
-        retention-days: 30
-        
-    - name: Comment PR with coverage results
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v8
-      with:
-        script: |
-          const fs = require('fs');
-          const path = require('path');
-          
-          const coverageFile = './coverage/combined-coverage.json';
-          
-          if (!fs.existsSync(coverageFile)) {
-            console.log('No combined coverage report found');
-            return;
-          }
-          
-          const coverage = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
-          const overall = coverage.overall;
-          const packages = coverage.packages;
-          
-          // Filter to packages with actual code coverage
-          const meaningfulPackages = packages.filter(pkg => 
-            pkg.statements.total > 0 && pkg.statements.pct > 5
-          );
-          
-          const formatCoverage = (cov) => {
-            const pct = cov.pct.toFixed(1);
-            const emoji = pct >= 90 ? '✅' : pct >= 80 ? '⚠️' : '❌';
-            return `${emoji} ${pct}% (${cov.covered}/${cov.total})`;
-          };
-          
-          const overallScore = meaningfulPackages.length > 0 
-            ? meaningfulPackages.reduce((sum, pkg) => sum + pkg.statements.pct, 0) / meaningfulPackages.length
-            : 0;
-          
-          const statusEmoji = overallScore >= 90 ? '✅' : overallScore >= 80 ? '⚠️' : '❌';
-          
-          const comment = `
-          ## ${statusEmoji} Test Coverage Report
-          
-          **Overall Score (Code Packages):** ${overallScore.toFixed(1)}%
-          **Timestamp:** ${new Date(coverage.timestamp).toLocaleString()}
-          
-          ### Package Coverage (Code Only)
-          ${meaningfulPackages.map(pkg => `
-          **${pkg.package}**
-          - Lines: ${formatCoverage(pkg.lines)}
-          - Functions: ${formatCoverage(pkg.functions)}
-          - Statements: ${formatCoverage(pkg.statements)}
-          - Branches: ${formatCoverage(pkg.branches)}
-          `).join('\n')}
-          
-          ### Template/Data Packages
-          ${packages.filter(pkg => pkg.statements.pct <= 5).map(pkg => `
-          - **${pkg.package}**: Template/Data package (coverage not applicable)
-          `).join('\n')}
-          
-          <details>
-          <summary>View detailed coverage breakdown</summary>
-          
-          **All Packages Combined:**
-          - Lines: ${formatCoverage(overall.lines)}
-          - Functions: ${formatCoverage(overall.functions)}
-          - Statements: ${formatCoverage(overall.statements)}
-          - Branches: ${formatCoverage(overall.branches)}
-          
-          **Coverage Threshold:** ${coverage.threshold}%
-          
-          </details>
-          
-          > 📊 View the full coverage report in the [CI artifacts](${context.payload.pull_request.html_url}/checks).
-          `;
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: comment
-          });
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run tests with coverage
+        run: pnpm test:coverage
+        continue-on-error: true
+
+      - name: Generate coverage report
+        run: pnpm test:coverage:report
+        continue-on-error: true
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          directory: ./packages/
+          files: ./packages/*/coverage/lcov.info
+          flags: unittests
+          name: greater-components-coverage
+          fail_ci_if_error: false
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage report artifacts
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: coverage-reports
+          path: |
+            ./coverage/
+            ./packages/*/coverage/
+          retention-days: 30
+
+      - name: Comment PR with coverage results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const coverageFile = './coverage/combined-coverage.json';
+
+            if (!fs.existsSync(coverageFile)) {
+              console.log('No combined coverage report found');
+              return;
+            }
+
+            const coverage = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
+            const overall = coverage.overall;
+            const packages = coverage.packages;
+
+            // Filter to packages with actual code coverage
+            const meaningfulPackages = packages.filter(pkg => 
+              pkg.statements.total > 0 && pkg.statements.pct > 5
+            );
+
+            const formatCoverage = (cov) => {
+              const pct = cov.pct.toFixed(1);
+              const emoji = pct >= 90 ? '✅' : pct >= 80 ? '⚠️' : '❌';
+              return `${emoji} ${pct}% (${cov.covered}/${cov.total})`;
+            };
+
+            const overallScore = meaningfulPackages.length > 0 
+              ? meaningfulPackages.reduce((sum, pkg) => sum + pkg.statements.pct, 0) / meaningfulPackages.length
+              : 0;
+
+            const statusEmoji = overallScore >= 90 ? '✅' : overallScore >= 80 ? '⚠️' : '❌';
+
+            const comment = `
+            ## ${statusEmoji} Test Coverage Report
+
+            **Overall Score (Code Packages):** ${overallScore.toFixed(1)}%
+            **Timestamp:** ${new Date(coverage.timestamp).toLocaleString()}
+
+            ### Package Coverage (Code Only)
+            ${meaningfulPackages.map(pkg => `
+            **${pkg.package}**
+            - Lines: ${formatCoverage(pkg.lines)}
+            - Functions: ${formatCoverage(pkg.functions)}
+            - Statements: ${formatCoverage(pkg.statements)}
+            - Branches: ${formatCoverage(pkg.branches)}
+            `).join('\n')}
+
+            ### Template/Data Packages
+            ${packages.filter(pkg => pkg.statements.pct <= 5).map(pkg => `
+            - **${pkg.package}**: Template/Data package (coverage not applicable)
+            `).join('\n')}
+
+            <details>
+            <summary>View detailed coverage breakdown</summary>
+
+            **All Packages Combined:**
+            - Lines: ${formatCoverage(overall.lines)}
+            - Functions: ${formatCoverage(overall.functions)}
+            - Statements: ${formatCoverage(overall.statements)}
+            - Branches: ${formatCoverage(overall.branches)}
+
+            **Coverage Threshold:** ${coverage.threshold}%
+
+            </details>
+
+            > 📊 View the full coverage report in the [CI artifacts](${context.payload.pull_request.html_url}/checks).
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
 
   publish-coverage:
     runs-on: ubuntu-latest
     needs: coverage
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      
-    - name: Download coverage artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: coverage-reports
-        path: coverage-reports/
-        
-    - name: Deploy coverage report to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./coverage-reports/coverage
-        destination_dir: coverage
-        
-    - name: Update README badge
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const fs = require('fs');
-          
-          if (!fs.existsSync('./coverage-reports/coverage/combined-coverage.json')) {
-            console.log('No coverage data found');
-            return;
-          }
-          
-          const coverage = JSON.parse(fs.readFileSync('./coverage-reports/coverage/combined-coverage.json', 'utf8'));
-          
-          // Calculate meaningful coverage score
-          const meaningfulPackages = coverage.packages.filter(pkg => 
-            pkg.statements.total > 0 && pkg.statements.pct > 5
-          );
-          
-          const averageScore = meaningfulPackages.length > 0 
-            ? meaningfulPackages.reduce((sum, pkg) => sum + pkg.statements.pct, 0) / meaningfulPackages.length
-            : 0;
-          
-          const color = averageScore >= 90 ? 'brightgreen' 
-                      : averageScore >= 80 ? 'yellow'
-                      : averageScore >= 70 ? 'orange' : 'red';
-          
-          // This would update a coverage badge URL - implementation depends on badge service used
-          console.log(`Coverage: ${averageScore.toFixed(1)}% (${color})`);
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-reports
+          path: coverage-reports/
+
+      - name: Deploy coverage report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./coverage-reports/coverage
+          destination_dir: coverage
+
+      - name: Update README badge
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            if (!fs.existsSync('./coverage-reports/coverage/combined-coverage.json')) {
+              console.log('No coverage data found');
+              return;
+            }
+
+            const coverage = JSON.parse(fs.readFileSync('./coverage-reports/coverage/combined-coverage.json', 'utf8'));
+
+            // Calculate meaningful coverage score
+            const meaningfulPackages = coverage.packages.filter(pkg => 
+              pkg.statements.total > 0 && pkg.statements.pct > 5
+            );
+
+            const averageScore = meaningfulPackages.length > 0 
+              ? meaningfulPackages.reduce((sum, pkg) => sum + pkg.statements.pct, 0) / meaningfulPackages.length
+              : 0;
+
+            const color = averageScore >= 90 ? 'brightgreen' 
+                        : averageScore >= 80 ? 'yellow'
+                        : averageScore >= 70 ? 'orange' : 'red';
+
+            // This would update a coverage badge URL - implementation depends on badge service used
+            console.log(`Coverage: ${averageScore.toFixed(1)}% (${color})`);

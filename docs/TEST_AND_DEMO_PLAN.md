@@ -1,16 +1,19 @@
 # Test and Demo Plan
 
 ## Overview
+
 This document outlines all components requiring comprehensive test coverage and demo implementations. Each component must have passing tests with zero TypeScript errors and zero lint warnings before moving to the next.
 
 ## Critical Rules
 
 ### Quality Gates
+
 1. **After first test is written**: Check TypeScript errors and lint warnings. Fix ALL issues before writing more tests.
 2. **After last test is written**: Run full test suite for that component. Verify 100% pass rate and zero TypeScript/lint errors.
 3. **No moving on**: Do not proceed to next component until current component is completely green (tests passing, no TS errors, no lint warnings).
 
 ### Common Mistakes to AVOID
+
 1. ❌ **Using `action.destroy?.()` directly on `void | ActionReturn` types**
    - ✅ Instead: Use `destroyAction(action)` helper function with proper type guards
    - ✅ Copy the working pattern from `tooltip.test.ts` lines 12-16
@@ -42,6 +45,7 @@ This document outlines all components requiring comprehensive test coverage and 
 ## Headless Primitives (packages/headless)
 
 ### ✅ Completed
+
 - [x] **Avatar** (30 tests passing)
   - File: `tests/avatar.test.ts`
   - Status: Complete, all passing
@@ -75,9 +79,11 @@ This document outlines all components requiring comprehensive test coverage and 
   - Status: Complete, all passing
 
 ### 🔴 Failed Attempts (needs retry)
+
 - _None — all current attempts succeeded._
 
 ### ⏳ Pending Unit Tests
+
 - [ ] **Combobox**
   - File: `tests/combobox.test.ts` (if exists in src/primitives/)
   - Test areas:
@@ -135,6 +141,7 @@ This document outlines all components requiring comprehensive test coverage and 
 ## Fediverse Components (packages/fediverse)
 
 ### High Priority (Core User Flows)
+
 - [ ] **Timeline** _(unit coverage deferred — exercise via demos/E2E until rune-friendly harness exists)_
   - Reason: Timeline compound relies on rune context + hydrated components and cannot be mounted in Vitest without hacks. Follow user direction to keep coverage in the Playwright demos instead of unit tests.
 
@@ -171,6 +178,7 @@ This document outlines all components requiring comprehensive test coverage and 
     - Avatar and header images
 
 ### Medium Priority (User Interaction)
+
 - [ ] **Notifications**
   - File: `tests/Notifications.test.ts`
   - Test areas:
@@ -196,6 +204,7 @@ This document outlines all components requiring comprehensive test coverage and 
     - Click through to detail
 
 ### Lower Priority (Configuration)
+
 - [ ] **Filters**
   - File: `tests/Filters.test.ts`
   - Test areas:
@@ -221,6 +230,7 @@ This document outlines all components requiring comprehensive test coverage and 
 ## Playwright E2E Tests (packages/testing/tests/demo)
 
 ### Critical User Journeys
+
 - [ ] **Compose and Post Flow**
   - File: `compose-flow.spec.ts`
   - Journey: Login → Open compose → Write post → Add media → Select visibility → Submit → Verify in timeline
@@ -244,6 +254,7 @@ This document outlines all components requiring comprehensive test coverage and 
 ## Other Packages
 
 ### Icons Package
+
 - [x] **Fix Test Setup**
   - Added `tests/icons.test.ts` covering default/custom props plus export coverage. Updated `vitest.config.ts` to resolve `svelte` with the browser/runtime conditions so `mount` works under Vitest 4 without SSR helpers. Package now runs clean through tests, `typecheck`, and repo-wide `lint`.
 
@@ -261,6 +272,7 @@ Before marking any component as complete:
 ## Testing Best Practices
 
 ### Setup Pattern (from tooltip.test.ts)
+
 ```typescript
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createPrimitive } from '../src/primitives/primitive';
@@ -297,6 +309,7 @@ describe('Primitive Name', () => {
 ```
 
 ### Action Lifecycle Pattern
+
 ```typescript
 // ✅ CORRECT: Store action, use it, then destroy
 const action = menu.actions.item(item1);
@@ -308,6 +321,7 @@ menu.actions.item(item1).destroy?.(); // Item is destroyed right away!
 ```
 
 ### Type Import Pattern
+
 ```typescript
 // ✅ CORRECT: Import from local types
 import type { ActionReturn } from '../src/types/common';

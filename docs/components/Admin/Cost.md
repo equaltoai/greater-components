@@ -13,6 +13,7 @@ The `Admin.Cost` module provides comprehensive AWS cost analytics for Lesser ins
 Context provider for cost data and adapter connection.
 
 **Props:**
+
 - `adapter: LesserGraphQLAdapter` - GraphQL adapter instance
 - `children?: Snippet` - Child components
 
@@ -20,14 +21,14 @@ Context provider for cost data and adapter connection.
 
 ```svelte
 <script lang="ts">
-  import * as Cost from '@equaltoai/greater-components-fediverse/Admin/Cost';
-  import { adapter } from './config';
+	import * as Cost from '@equaltoai/greater-components-fediverse/Admin/Cost';
+	import { adapter } from './config';
 </script>
 
 <Cost.Root {adapter}>
-  <Cost.Dashboard />
-  <Cost.BudgetControls />
-  <Cost.Alerts />
+	<Cost.Dashboard />
+	<Cost.BudgetControls />
+	<Cost.Alerts />
 </Cost.Root>
 ```
 
@@ -38,6 +39,7 @@ Context provider for cost data and adapter connection.
 Main cost visualization showing breakdowns by service, time period, and operation.
 
 **Props:**
+
 - `period?: 'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR'` - Time period (default: `'DAY'`)
 - `showServiceBreakdown?: boolean` - Show costs by service (default: `true`)
 - `showOperationBreakdown?: boolean` - Show costs by operation (default: `true`)
@@ -47,24 +49,24 @@ Main cost visualization showing breakdowns by service, time period, and operatio
 
 ```svelte
 <script lang="ts">
-  let period = $state('MONTH');
+	let period = $state('MONTH');
 </script>
 
 <Cost.Root {adapter}>
-  <select bind:value={period}>
-    <option value="HOUR">Last Hour</option>
-    <option value="DAY">Last 24 Hours</option>
-    <option value="WEEK">Last 7 Days</option>
-    <option value="MONTH">This Month</option>
-    <option value="YEAR">This Year</option>
-  </select>
-  
-  <Cost.Dashboard 
-    {period}
-    showServiceBreakdown={true}
-    showOperationBreakdown={true}
-    showTrends={true}
-  />
+	<select bind:value={period}>
+		<option value="HOUR">Last Hour</option>
+		<option value="DAY">Last 24 Hours</option>
+		<option value="WEEK">Last 7 Days</option>
+		<option value="MONTH">This Month</option>
+		<option value="YEAR">This Year</option>
+	</select>
+
+	<Cost.Dashboard
+		{period}
+		showServiceBreakdown={true}
+		showOperationBreakdown={true}
+		showTrends={true}
+	/>
 </Cost.Root>
 ```
 
@@ -90,6 +92,7 @@ Main cost visualization showing breakdowns by service, time period, and operatio
 Budget management interface for setting limits and configuring automatic actions.
 
 **Props:**
+
 - `onSetBudget?: (domain: string, monthlyUSD: number) => Promise<void>` - Budget set callback
 - `onOptimize?: () => Promise<void>` - Optimization trigger callback
 
@@ -97,23 +100,20 @@ Budget management interface for setting limits and configuring automatic actions
 
 ```svelte
 <script lang="ts">
-  async function setBudget(domain: string, monthlyUSD: number) {
-    await adapter.setInstanceBudget(domain, monthlyUSD, true);
-    console.log(`Budget set for ${domain}: $${monthlyUSD}/month`);
-  }
-  
-  async function triggerOptimization() {
-    const result = await adapter.optimizeFederationCosts(0.75);
-    const suggestions = result.data.optimizeFederationCosts;
-    console.log('Optimization suggestions:', suggestions);
-  }
+	async function setBudget(domain: string, monthlyUSD: number) {
+		await adapter.setInstanceBudget(domain, monthlyUSD, true);
+		console.log(`Budget set for ${domain}: $${monthlyUSD}/month`);
+	}
+
+	async function triggerOptimization() {
+		const result = await adapter.optimizeFederationCosts(0.75);
+		const suggestions = result.data.optimizeFederationCosts;
+		console.log('Optimization suggestions:', suggestions);
+	}
 </script>
 
 <Cost.Root {adapter}>
-  <Cost.BudgetControls 
-    onSetBudget={setBudget}
-    onOptimize={triggerOptimization}
-  />
+	<Cost.BudgetControls onSetBudget={setBudget} onOptimize={triggerOptimization} />
 </Cost.Root>
 ```
 
@@ -132,6 +132,7 @@ Budget management interface for setting limits and configuring automatic actions
 Real-time cost alert display and management.
 
 **Props:**
+
 - `threshold?: number` - Alert severity threshold 0.0-1.0 (default: `0.9`)
 - `showAcknowledged?: boolean` - Show acknowledged alerts (default: `false`)
 
@@ -139,17 +140,14 @@ Real-time cost alert display and management.
 
 ```svelte
 <script lang="ts">
-  import { adminStreamingStore } from './config';
-  
-  // Get unhandled alerts from streaming store
-  const costAlerts = $derived(adminStreamingStore.getUnhandledCostAlerts());
+	import { adminStreamingStore } from './config';
+
+	// Get unhandled alerts from streaming store
+	const costAlerts = $derived(adminStreamingStore.getUnhandledCostAlerts());
 </script>
 
 <Cost.Root {adapter}>
-  <Cost.Alerts 
-    threshold={0.9}
-    showAcknowledged={false}
-  />
+	<Cost.Alerts threshold={0.9} showAcknowledged={false} />
 </Cost.Root>
 ```
 
@@ -168,42 +166,42 @@ Real-time cost alert display and management.
 
 ```graphql
 query CostBreakdown($period: Period) {
-  costBreakdown(period: $period) {
-    period
-    totalCost
-    services {
-      service
-      cost
-      operations {
-        operation
-        cost
-        count
-      }
-    }
-    trends {
-      timestamp
-      cost
-    }
-  }
+	costBreakdown(period: $period) {
+		period
+		totalCost
+		services {
+			service
+			cost
+			operations {
+				operation
+				cost
+				count
+			}
+		}
+		trends {
+			timestamp
+			cost
+		}
+	}
 }
 
 query InstanceBudgets {
-  instanceBudgets {
-    domain
-    monthlyLimit
-    currentSpend
-    autoLimit
-    lastReset
-  }
+	instanceBudgets {
+		domain
+		monthlyLimit
+		currentSpend
+		autoLimit
+		lastReset
+	}
 }
 
 query FederationLimits {
-  federationLimits {
-    domain
-    maxRequestsPerHour
-    currentRequests
-    priority
-  }
+	federationLimits {
+		domain
+		maxRequestsPerHour
+		currentRequests
+		priority
+	}
 }
 ```
 
@@ -211,35 +209,35 @@ query FederationLimits {
 
 ```graphql
 mutation SetInstanceBudget($domain: String!, $monthlyUSD: Float!, $autoLimit: Boolean) {
-  setInstanceBudget(domain: $domain, monthlyUSD: $monthlyUSD, autoLimit: $autoLimit) {
-    domain
-    monthlyLimit
-    autoLimit
-  }
+	setInstanceBudget(domain: $domain, monthlyUSD: $monthlyUSD, autoLimit: $autoLimit) {
+		domain
+		monthlyLimit
+		autoLimit
+	}
 }
 
 mutation OptimizeFederationCosts($threshold: Float!) {
-  optimizeFederationCosts(threshold: $threshold) {
-    estimatedSavings
-    rateLimitChanges {
-      domain
-      currentLimit
-      newLimit
-      estimatedImpact
-    }
-    storageOptimizations {
-      suggestion
-      estimatedSavings
-    }
-  }
+	optimizeFederationCosts(threshold: $threshold) {
+		estimatedSavings
+		rateLimitChanges {
+			domain
+			currentLimit
+			newLimit
+			estimatedImpact
+		}
+		storageOptimizations {
+			suggestion
+			estimatedSavings
+		}
+	}
 }
 
 mutation SetFederationLimit($domain: String!, $limit: FederationLimitInput!) {
-  setFederationLimit(domain: $domain, limit: $limit) {
-    domain
-    maxRequestsPerHour
-    priority
-  }
+	setFederationLimit(domain: $domain, limit: $limit) {
+		domain
+		maxRequestsPerHour
+		priority
+	}
 }
 ```
 
@@ -256,7 +254,7 @@ const breakdown = result.data.costBreakdown;
 const budgets = await adapter.getInstanceBudgets();
 
 // Set budget for instance
-await adapter.setInstanceBudget('example.social', 50.00, true);
+await adapter.setInstanceBudget('example.social', 50.0, true);
 
 // Optimize costs
 const optimization = await adapter.optimizeFederationCosts(0.75);
@@ -266,8 +264,8 @@ const limits = await adapter.getFederationLimits();
 
 // Set rate limit
 await adapter.setFederationLimit('example.social', {
-  maxRequestsPerHour: 1000,
-  priority: 'NORMAL'
+	maxRequestsPerHour: 1000,
+	priority: 'NORMAL',
 });
 ```
 
@@ -277,42 +275,42 @@ await adapter.setFederationLimit('example.social', {
 
 ```typescript
 interface CostBreakdown {
-  period: Period;
-  totalCost: number;              // USD
-  services: ServiceCost[];
-  trends: CostTrend[];
+	period: Period;
+	totalCost: number; // USD
+	services: ServiceCost[];
+	trends: CostTrend[];
 }
 
 interface ServiceCost {
-  service: 'DynamoDB' | 'S3' | 'Lambda' | 'DataTransfer';
-  cost: number;                   // USD
-  operations: OperationCost[];
+	service: 'DynamoDB' | 'S3' | 'Lambda' | 'DataTransfer';
+	cost: number; // USD
+	operations: OperationCost[];
 }
 
 interface OperationCost {
-  operation: string;
-  cost: number;                   // USD
-  count: number;
+	operation: string;
+	cost: number; // USD
+	count: number;
 }
 
 interface CostTrend {
-  timestamp: string;
-  cost: number;                   // USD
+	timestamp: string;
+	cost: number; // USD
 }
 
 interface InstanceBudget {
-  domain: string;
-  monthlyLimit: number;           // USD
-  currentSpend: number;           // USD
-  autoLimit: boolean;             // Auto rate-limit at threshold
-  lastReset: string;
+	domain: string;
+	monthlyLimit: number; // USD
+	currentSpend: number; // USD
+	autoLimit: boolean; // Auto rate-limit at threshold
+	lastReset: string;
 }
 
 interface FederationLimit {
-  domain: string;
-  maxRequestsPerHour: number;
-  currentRequests: number;
-  priority: 'LOW' | 'NORMAL' | 'HIGH';
+	domain: string;
+	maxRequestsPerHour: number;
+	currentRequests: number;
+	priority: 'LOW' | 'NORMAL' | 'HIGH';
 }
 ```
 
@@ -324,24 +322,26 @@ Subscribe to cost updates and alerts:
 
 ```typescript
 // Cost updates subscription
-adapter.subscribeToCostUpdates().subscribe(update => {
-  console.log('Service:', update.service);
-  console.log('Amount (microcents):', update.amount);
-  console.log('Period:', update.period);
+adapter.subscribeToCostUpdates().subscribe((update) => {
+	console.log('Service:', update.service);
+	console.log('Amount (microcents):', update.amount);
+	console.log('Period:', update.period);
 });
 
 // Budget alerts subscription
-adapter.subscribeToBudgetAlerts({
-  threshold: 0.9  // Alert at 90% budget
-}).subscribe(alert => {
-  console.log('Budget alert for:', alert.domain);
-  console.log('Current spend:', alert.currentSpend);
-  console.log('Limit:', alert.limit);
-  console.log('Percentage:', alert.percentage);
-  
-  // Show notification
-  showNotification(`Budget alert: ${alert.domain} at ${alert.percentage}%`);
-});
+adapter
+	.subscribeToBudgetAlerts({
+		threshold: 0.9, // Alert at 90% budget
+	})
+	.subscribe((alert) => {
+		console.log('Budget alert for:', alert.domain);
+		console.log('Current spend:', alert.currentSpend);
+		console.log('Limit:', alert.limit);
+		console.log('Percentage:', alert.percentage);
+
+		// Show notification
+		showNotification(`Budget alert: ${alert.domain} at ${alert.percentage}%`);
+	});
 ```
 
 ---
@@ -360,22 +360,22 @@ console.log('Estimated monthly savings:', suggestions.estimatedSavings);
 
 // Apply rate limit suggestions
 for (const change of suggestions.rateLimitChanges) {
-  console.log(`${change.domain}: ${change.currentLimit} → ${change.newLimit} req/hr`);
-  console.log(`Impact: $${change.estimatedImpact}/month saved`);
-  
-  // Apply if acceptable
-  if (change.estimatedImpact > 10) {
-    await adapter.setFederationLimit(change.domain, {
-      maxRequestsPerHour: change.newLimit,
-      priority: 'NORMAL'
-    });
-  }
+	console.log(`${change.domain}: ${change.currentLimit} → ${change.newLimit} req/hr`);
+	console.log(`Impact: $${change.estimatedImpact}/month saved`);
+
+	// Apply if acceptable
+	if (change.estimatedImpact > 10) {
+		await adapter.setFederationLimit(change.domain, {
+			maxRequestsPerHour: change.newLimit,
+			priority: 'NORMAL',
+		});
+	}
 }
 
 // Review storage suggestions
 for (const optimization of suggestions.storageOptimizations) {
-  console.log(optimization.suggestion);
-  console.log(`Potential savings: $${optimization.estimatedSavings}/month`);
+	console.log(optimization.suggestion);
+	console.log(`Potential savings: $${optimization.estimatedSavings}/month`);
 }
 ```
 
@@ -395,21 +395,18 @@ Show estimated cost for individual posts:
 
 ```svelte
 <script lang="ts">
-  import * as Status from '@equaltoai/greater-components-fediverse/Status';
+	import * as Status from '@equaltoai/greater-components-fediverse/Status';
 </script>
 
 <Status.Root {status}>
-  <Status.Header />
-  <Status.Content />
-  <Status.LesserMetadata 
-    showCost={true}
-    costFormat="USD"
-    costDecimals={4}
-  />
+	<Status.Header />
+	<Status.Content />
+	<Status.LesserMetadata showCost={true} costFormat="USD" costDecimals={4} />
 </Status.Root>
 ```
 
 The `LesserMetadata` component displays post costs in microcents (μ¢), formatted as USD:
+
 - Storage: Media attachment costs
 - Processing: AI analysis, moderation
 - Federation: Delivery to remote instances
@@ -461,4 +458,3 @@ The `LesserMetadata` component displays post costs in microcents (μ¢), formatt
 - [Lesser Integration Guide](../../lesser-integration-guide.md#cost-dashboards)
 - [AWS Cost Optimization](https://aws.amazon.com/aws-cost-management/)
 - [Federation Rate Limiting](../../federation-rate-limiting.md)
-

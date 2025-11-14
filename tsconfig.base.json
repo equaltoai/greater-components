@@ -15,7 +15,7 @@
       "./apps/docs/.svelte-kit/types/src"
     ],
     "jsx": "preserve",
-    
+
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -32,27 +32,41 @@
     "noPropertyAccessFromIndexSignature": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    
+
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "paths": {
-      "$lib": [
-        "./apps/playground/src/lib",
-        "./apps/docs/src/lib"
-      ],
-      "$lib/*": [
-        "./apps/playground/src/lib/*",
-        "./apps/docs/src/lib/*"
-      ]
+      "$lib": ["./apps/playground/src/lib", "./apps/docs/src/lib"],
+      "$lib/*": ["./apps/playground/src/lib/*", "./apps/docs/src/lib/*"],
+      "@equaltoai/greater-components-adapters": ["./packages/adapters/src/index.ts"],
+      "@equaltoai/greater-components-adapters/*": ["./packages/adapters/src/*"],
+      "@equaltoai/greater-components-fediverse": ["./packages/fediverse/src/index.ts"],
+      "@equaltoai/greater-components-fediverse/*": ["./packages/fediverse/src/*"],
+      "@equaltoai/greater-components-headless": ["./packages/headless/src/index.ts"],
+      "@equaltoai/greater-components-headless/*": ["./packages/headless/src/*"],
+      "@equaltoai/greater-components-icons": ["./packages/icons/src/index.ts"],
+      "@equaltoai/greater-components-icons/*": ["./packages/icons/src/*"],
+      "@equaltoai/greater-components-primitives": ["./packages/primitives/src/index.ts"],
+      "@equaltoai/greater-components-primitives/*": ["./packages/primitives/src/*"],
+      "@equaltoai/greater-components-tokens": ["./packages/tokens/src/index.ts"],
+      "@equaltoai/greater-components-tokens/*": ["./packages/tokens/src/*"],
+      "@equaltoai/greater-components-utils": ["./packages/utils/src/index.ts"],
+      "@equaltoai/greater-components-utils/*": ["./packages/utils/src/*"],
+      "@equaltoai/greater-components-testing": ["./packages/testing/src/index.ts"],
+      "@equaltoai/greater-components-testing/*": ["./packages/testing/src/*"],
+      "@equaltoai/greater-components": ["./packages/greater-components/src/index.ts"],
+      "@equaltoai/greater-components/*": ["./packages/greater-components/src/*"],
+      "@equaltoai/greater-components-cli": ["./packages/cli/src/index.ts"],
+      "@equaltoai/greater-components-cli/*": ["./packages/cli/src/*"]
     },
-    
+
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "inlineSources": false,
-    
+
     "incremental": true,
     "composite": true
   },

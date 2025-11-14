@@ -1,8 +1,8 @@
 /**
  * Admin Insights Context
- * 
+ *
  * Provides shared state for AI analysis and moderation analytics.
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Admin/Insights/context
  */
 
@@ -108,4 +108,3 @@ export function getInsightsContext(): InsightsContext {
 	}
 	return context;
 }
-

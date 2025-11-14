@@ -231,10 +231,7 @@ export function memoize<TArgs extends unknown[], TResult>(
  * batchedUpdate('item3');
  * // Executes once with ['item1', 'item2', 'item3']
  */
-export function batch<T>(
-	fn: (items: T[]) => void,
-	wait: number
-): (item: T) => void {
+export function batch<T>(fn: (items: T[]) => void, wait: number): (item: T) => void {
 	let items: T[] = [];
 	let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
@@ -296,7 +293,9 @@ export function lazy<T>(loader: () => Promise<T>): () => Promise<T> {
  * cache.set('key1', 123);
  * cache.get('key1'); // 123
  */
-export function createLRUCache<K, V>(maxSize: number): {
+export function createLRUCache<K, V>(
+	maxSize: number
+): {
 	get: (key: K) => V | undefined;
 	set: (key: K, value: V) => void;
 	has: (key: K) => boolean;
@@ -354,7 +353,6 @@ export function createLRUCache<K, V>(maxSize: number): {
 		},
 	};
 }
-
 
 /**
  * Measure execution time of a function

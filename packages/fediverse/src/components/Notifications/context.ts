@@ -1,9 +1,9 @@
 /**
  * Notifications Component Context
- * 
+ *
  * Provides shared state and configuration for compound Notifications components.
  * Handles notification grouping, filtering, and read/unread state.
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Notifications/context
  */
 
@@ -182,7 +182,7 @@ export interface NotificationsContext {
 
 /**
  * Create and set the notifications context
- * 
+ *
  * @param notifications - Notification items
  * @param groups - Grouped notifications (optional)
  * @param config - Configuration options
@@ -240,7 +240,7 @@ export function createNotificationsContext(
 
 /**
  * Get the notifications context
- * 
+ *
  * @throws Error if called outside of Notifications.Root
  */
 export function getNotificationsContext(): NotificationsContext {
@@ -266,4 +266,3 @@ export function hasNotificationsContext(): boolean {
 		return false;
 	}
 }
-

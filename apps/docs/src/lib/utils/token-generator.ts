@@ -46,11 +46,11 @@ export function generateTypographyPreview(value: string): string {
 // Parse tokens from JSON
 export function parseTokensFromJSON(tokensJSON: TokenJSON): TokenCategory[] {
 	const categories: TokenCategory[] = [];
-	
+
 	// Colors
 	if (tokensJSON.colors) {
 		const colorTokens: Token[] = [];
-		
+
 		Object.entries(tokensJSON.colors).forEach(([key, values]) => {
 			if (isTokenValueRecord(values)) {
 				Object.entries(values).forEach(([shade, value]) => {
@@ -58,7 +58,7 @@ export function parseTokensFromJSON(tokensJSON: TokenJSON): TokenCategory[] {
 						name: `${key}-${shade}`,
 						value: String(value),
 						cssVar: `--color-${key}-${shade}`,
-						preview: 'color'
+						preview: 'color',
 					});
 				});
 			} else {
@@ -66,113 +66,113 @@ export function parseTokensFromJSON(tokensJSON: TokenJSON): TokenCategory[] {
 					name: key,
 					value: values as string,
 					cssVar: `--color-${key}`,
-					preview: 'color'
+					preview: 'color',
 				});
 			}
 		});
-		
+
 		categories.push({
 			name: 'Colors',
 			description: 'Color palette and semantic color tokens',
-			tokens: colorTokens
+			tokens: colorTokens,
 		});
 	}
-	
+
 	// Spacing
 	if (tokensJSON.spacing) {
 		const spacingTokens: Token[] = Object.entries(tokensJSON.spacing).map(([key, value]) => ({
 			name: key,
 			value: String(value),
 			cssVar: `--spacing-${key}`,
-			preview: 'spacing'
+			preview: 'spacing',
 		}));
-		
+
 		categories.push({
 			name: 'Spacing',
 			description: 'Spacing scale for consistent layouts',
-			tokens: spacingTokens
+			tokens: spacingTokens,
 		});
 	}
-	
+
 	// Typography
 	if (tokensJSON.typography) {
 		const typographyTokens: Token[] = [];
-		
+
 		if (tokensJSON.typography.fontSize) {
 			Object.entries(tokensJSON.typography.fontSize).forEach(([key, value]) => {
 				typographyTokens.push({
 					name: `font-size-${key}`,
 					value: String(value),
 					cssVar: `--font-size-${key}`,
-					preview: 'typography'
+					preview: 'typography',
 				});
 			});
 		}
-		
+
 		if (tokensJSON.typography.fontWeight) {
 			Object.entries(tokensJSON.typography.fontWeight).forEach(([key, value]) => {
 				typographyTokens.push({
 					name: `font-weight-${key}`,
 					value: String(value),
-					cssVar: `--font-weight-${key}`
+					cssVar: `--font-weight-${key}`,
 				});
 			});
 		}
-		
+
 		categories.push({
 			name: 'Typography',
 			description: 'Typography tokens for text styling',
-			tokens: typographyTokens
+			tokens: typographyTokens,
 		});
 	}
-	
+
 	// Shadows
 	if (tokensJSON.shadows) {
 		const shadowTokens: Token[] = Object.entries(tokensJSON.shadows).map(([key, value]) => ({
 			name: key,
 			value: String(value),
 			cssVar: `--shadow-${key}`,
-			preview: 'shadow'
+			preview: 'shadow',
 		}));
-		
+
 		categories.push({
 			name: 'Shadows',
 			description: 'Box shadow tokens for depth and elevation',
-			tokens: shadowTokens
+			tokens: shadowTokens,
 		});
 	}
-	
+
 	// Border Radius
 	if (tokensJSON.radius) {
 		const radiusTokens: Token[] = Object.entries(tokensJSON.radius).map(([key, value]) => ({
 			name: key,
 			value: String(value),
 			cssVar: `--radius-${key}`,
-			preview: 'radius'
+			preview: 'radius',
 		}));
-		
+
 		categories.push({
 			name: 'Border Radius',
 			description: 'Border radius tokens for rounded corners',
-			tokens: radiusTokens
+			tokens: radiusTokens,
 		});
 	}
-	
+
 	return categories;
 }
 
 // Generate CSS custom properties
 export function generateCSSVariables(categories: TokenCategory[]): string {
 	const lines: string[] = [':root {'];
-	
-	categories.forEach(category => {
+
+	categories.forEach((category) => {
 		lines.push(`\t/* ${category.name} */`);
-		category.tokens.forEach(token => {
+		category.tokens.forEach((token) => {
 			lines.push(`\t${token.cssVar}: ${token.value};`);
 		});
 		lines.push('');
 	});
-	
+
 	lines.push('}');
 	return lines.join('\n');
 }
@@ -180,16 +180,16 @@ export function generateCSSVariables(categories: TokenCategory[]): string {
 // Generate SCSS variables
 export function generateSCSSVariables(categories: TokenCategory[]): string {
 	const lines: string[] = [];
-	
-	categories.forEach(category => {
+
+	categories.forEach((category) => {
 		lines.push(`// ${category.name}`);
-		category.tokens.forEach(token => {
+		category.tokens.forEach((token) => {
 			const scssVar = `$${token.name}`;
 			lines.push(`${scssVar}: ${token.value};`);
 		});
 		lines.push('');
 	});
-	
+
 	return lines.join('\n');
 }
 
@@ -206,7 +206,7 @@ export const sampleTokens: TokenJSON = {
 			'600': '#2563eb',
 			'700': '#1d4ed8',
 			'800': '#1e40af',
-			'900': '#1e3a8a'
+			'900': '#1e3a8a',
 		},
 		gray: {
 			'50': '#f9fafb',
@@ -218,57 +218,57 @@ export const sampleTokens: TokenJSON = {
 			'600': '#4b5563',
 			'700': '#374151',
 			'800': '#1f2937',
-			'900': '#111827'
+			'900': '#111827',
 		},
 		success: '#10b981',
 		warning: '#f59e0b',
 		error: '#ef4444',
-		info: '#3b82f6'
+		info: '#3b82f6',
 	},
 	spacing: {
-		'xs': '0.25rem',
-		'sm': '0.5rem',
-		'md': '1rem',
-		'lg': '1.5rem',
-		'xl': '2rem',
+		xs: '0.25rem',
+		sm: '0.5rem',
+		md: '1rem',
+		lg: '1.5rem',
+		xl: '2rem',
 		'2xl': '3rem',
-		'3xl': '4rem'
+		'3xl': '4rem',
 	},
 	typography: {
 		fontSize: {
-			'xs': '0.75rem',
-			'sm': '0.875rem',
-			'base': '1rem',
-			'lg': '1.125rem',
-			'xl': '1.25rem',
+			xs: '0.75rem',
+			sm: '0.875rem',
+			base: '1rem',
+			lg: '1.125rem',
+			xl: '1.25rem',
 			'2xl': '1.5rem',
 			'3xl': '1.875rem',
 			'4xl': '2.25rem',
-			'5xl': '3rem'
+			'5xl': '3rem',
 		},
 		fontWeight: {
-			'light': '300',
-			'normal': '400',
-			'medium': '500',
-			'semibold': '600',
-			'bold': '700'
-		}
+			light: '300',
+			normal: '400',
+			medium: '500',
+			semibold: '600',
+			bold: '700',
+		},
 	},
 	shadows: {
-		'sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-		'md': '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-		'lg': '0 10px 15px -3px rgb(0 0 0 / 0.1)',
-		'xl': '0 20px 25px -5px rgb(0 0 0 / 0.1)',
-		'2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)'
+		sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+		md: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+		lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+		xl: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
+		'2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
 	},
 	radius: {
-		'none': '0',
-		'sm': '0.125rem',
-		'base': '0.25rem',
-		'md': '0.375rem',
-		'lg': '0.5rem',
-		'xl': '0.75rem',
+		none: '0',
+		sm: '0.125rem',
+		base: '0.25rem',
+		md: '0.375rem',
+		lg: '0.5rem',
+		xl: '0.75rem',
 		'2xl': '1rem',
-		'full': '9999px'
-	}
+		full: '9999px',
+	},
 };

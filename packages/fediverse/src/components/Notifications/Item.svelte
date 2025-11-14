@@ -92,20 +92,20 @@ Displays a single notification with type-specific rendering.
 	/**
 	 * Handle dismiss
 	 */
-async function handleDismiss(event: Event) {
-	event.stopPropagation();
+	async function handleDismiss(event: Event) {
+		event.stopPropagation();
 
-	if (context.handlers.onDismiss) {
-		await context.handlers.onDismiss(notification.id);
+		if (context.handlers.onDismiss) {
+			await context.handlers.onDismiss(notification.id);
+		}
 	}
-}
 
-function handleKeyDown(event: KeyboardEvent) {
-	if (event.key === 'Enter' || event.key === ' ') {
-		event.preventDefault();
-		handleClick();
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleClick();
+		}
 	}
-}
 </script>
 
 <article
@@ -209,7 +209,7 @@ function handleKeyDown(event: KeyboardEvent) {
 		border: none;
 		background: transparent;
 		text-align: left;
-}
+	}
 
 	.notification-item__avatar {
 		width: 40px;
@@ -222,7 +222,7 @@ function handleKeyDown(event: KeyboardEvent) {
 	.notification-item__body {
 		flex: 1;
 		min-width: 0;
-}
+	}
 
 	.notification-item__content:focus-visible {
 		outline: 2px solid var(--notifications-primary, #1d9bf0);

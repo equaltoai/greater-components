@@ -2,9 +2,9 @@ name: Accessibility Testing
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   schedule:
     # Run accessibility tests daily at 2 AM UTC
     - cron: '0 2 * * *'
@@ -16,342 +16,342 @@ jobs:
   accessibility-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    
+
     strategy:
       fail-fast: false
       matrix:
         theme: [light, dark, high-contrast]
         density: [compact, comfortable, spacious]
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '20'
-        cache: 'pnpm'
-        
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        run_install: false
-        
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      
-    - name: Build packages
-      run: pnpm build
-      
-    - name: Install Playwright browsers
-      run: pnpm exec playwright install --with-deps
-      working-directory: packages/testing
-      
-    - name: Start Storybook server
-      run: |
-        pnpm storybook &
-        pnpm exec wait-on http://localhost:6006 --timeout 120000
-      working-directory: apps/playground
-      
-    - name: Run Axe accessibility tests
-      run: |
-        pnpm exec playwright test --config=playwright.a11y.config.ts \
-          --project=chromium-desktop \
-          --reporter=json \
-          --output-dir=test-results/a11y-${{ matrix.theme }}-${{ matrix.density }}
-      working-directory: packages/testing
-      env:
-        TEST_THEME: ${{ matrix.theme }}
-        TEST_DENSITY: ${{ matrix.density }}
-        
-    - name: Run keyboard navigation tests
-      run: |
-        pnpm exec playwright test --config=playwright.a11y.config.ts \
-          --grep="keyboard" \
-          --project=chromium-desktop \
-          --reporter=json \
-          --output-dir=test-results/keyboard-${{ matrix.theme }}-${{ matrix.density }}
-      working-directory: packages/testing
-      env:
-        TEST_THEME: ${{ matrix.theme }}
-        TEST_DENSITY: ${{ matrix.density }}
-        
-    - name: Run focus management tests
-      run: |
-        pnpm exec playwright test --config=playwright.a11y.config.ts \
-          --grep="focus" \
-          --project=chromium-desktop \
-          --reporter=json \
-          --output-dir=test-results/focus-${{ matrix.theme }}-${{ matrix.density }}
-      working-directory: packages/testing
-      env:
-        TEST_THEME: ${{ matrix.theme }}
-        TEST_DENSITY: ${{ matrix.density }}
-        
-    - name: Run contrast tests
-      run: |
-        pnpm exec playwright test --config=playwright.a11y.config.ts \
-          --grep="contrast" \
-          --project=chromium-desktop \
-          --reporter=json \
-          --output-dir=test-results/contrast-${{ matrix.theme }}-${{ matrix.density }}
-      working-directory: packages/testing
-      env:
-        TEST_THEME: ${{ matrix.theme }}
-        TEST_DENSITY: ${{ matrix.density }}
-        
-    - name: Generate accessibility report
-      run: |
-        node scripts/generate-a11y-report.js \
-          --theme=${{ matrix.theme }} \
-          --density=${{ matrix.density }} \
-          --input=test-results \
-          --output=reports/a11y-report-${{ matrix.theme }}-${{ matrix.density }}.html
-      working-directory: packages/testing
-      
-    - name: Upload accessibility test results
-      uses: actions/upload-artifact@v5
-      if: always()
-      with:
-        name: accessibility-results-${{ matrix.theme }}-${{ matrix.density }}
-        path: |
-          packages/testing/test-results/
-          packages/testing/playwright-report-a11y/
-          packages/testing/reports/
-        retention-days: 30
-        
-    - name: Check accessibility compliance
-      run: |
-        node scripts/check-a11y-compliance.js \
-          --results=test-results \
-          --standard=AA \
-          --fail-on-violations=critical,serious
-      working-directory: packages/testing
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+        working-directory: packages/testing
+
+      - name: Start Storybook server
+        run: |
+          pnpm storybook &
+          pnpm exec wait-on http://localhost:6006 --timeout 120000
+        working-directory: apps/playground
+
+      - name: Run Axe accessibility tests
+        run: |
+          pnpm exec playwright test --config=playwright.a11y.config.ts \
+            --project=chromium-desktop \
+            --reporter=json \
+            --output-dir=test-results/a11y-${{ matrix.theme }}-${{ matrix.density }}
+        working-directory: packages/testing
+        env:
+          TEST_THEME: ${{ matrix.theme }}
+          TEST_DENSITY: ${{ matrix.density }}
+
+      - name: Run keyboard navigation tests
+        run: |
+          pnpm exec playwright test --config=playwright.a11y.config.ts \
+            --grep="keyboard" \
+            --project=chromium-desktop \
+            --reporter=json \
+            --output-dir=test-results/keyboard-${{ matrix.theme }}-${{ matrix.density }}
+        working-directory: packages/testing
+        env:
+          TEST_THEME: ${{ matrix.theme }}
+          TEST_DENSITY: ${{ matrix.density }}
+
+      - name: Run focus management tests
+        run: |
+          pnpm exec playwright test --config=playwright.a11y.config.ts \
+            --grep="focus" \
+            --project=chromium-desktop \
+            --reporter=json \
+            --output-dir=test-results/focus-${{ matrix.theme }}-${{ matrix.density }}
+        working-directory: packages/testing
+        env:
+          TEST_THEME: ${{ matrix.theme }}
+          TEST_DENSITY: ${{ matrix.density }}
+
+      - name: Run contrast tests
+        run: |
+          pnpm exec playwright test --config=playwright.a11y.config.ts \
+            --grep="contrast" \
+            --project=chromium-desktop \
+            --reporter=json \
+            --output-dir=test-results/contrast-${{ matrix.theme }}-${{ matrix.density }}
+        working-directory: packages/testing
+        env:
+          TEST_THEME: ${{ matrix.theme }}
+          TEST_DENSITY: ${{ matrix.density }}
+
+      - name: Generate accessibility report
+        run: |
+          node scripts/generate-a11y-report.js \
+            --theme=${{ matrix.theme }} \
+            --density=${{ matrix.density }} \
+            --input=test-results \
+            --output=reports/a11y-report-${{ matrix.theme }}-${{ matrix.density }}.html
+        working-directory: packages/testing
+
+      - name: Upload accessibility test results
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: accessibility-results-${{ matrix.theme }}-${{ matrix.density }}
+          path: |
+            packages/testing/test-results/
+            packages/testing/playwright-report-a11y/
+            packages/testing/reports/
+          retention-days: 30
+
+      - name: Check accessibility compliance
+        run: |
+          node scripts/check-a11y-compliance.js \
+            --results=test-results \
+            --standard=AA \
+            --fail-on-violations=critical,serious
+        working-directory: packages/testing
 
   visual-regression-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     needs: accessibility-tests
     if: github.event_name == 'pull_request'
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '20'
-        cache: 'pnpm'
-        
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        run_install: false
-        
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      
-    - name: Install Playwright browsers
-      run: pnpm exec playwright install --with-deps
-      working-directory: packages/testing
-      
-    - name: Start Storybook server
-      run: |
-        pnpm storybook &
-        pnpm exec wait-on http://localhost:6006 --timeout 120000
-      working-directory: apps/playground
-      
-    - name: Run focus state visual tests
-      run: |
-        pnpm exec playwright test --config=playwright.visual.config.ts \
-          --project=focus-states \
-          --reporter=json
-      working-directory: packages/testing
-      
-    - name: Run theme visual tests
-      run: |
-        pnpm exec playwright test --config=playwright.visual.config.ts \
-          --project=high-contrast-visual \
-          --reporter=json
-      working-directory: packages/testing
-      
-    - name: Upload visual test results
-      uses: actions/upload-artifact@v5
-      if: always()
-      with:
-        name: visual-regression-results
-        path: |
-          packages/testing/test-results/
-          packages/testing/playwright-report-visual/
-        retention-days: 30
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+        working-directory: packages/testing
+
+      - name: Start Storybook server
+        run: |
+          pnpm storybook &
+          pnpm exec wait-on http://localhost:6006 --timeout 120000
+        working-directory: apps/playground
+
+      - name: Run focus state visual tests
+        run: |
+          pnpm exec playwright test --config=playwright.visual.config.ts \
+            --project=focus-states \
+            --reporter=json
+        working-directory: packages/testing
+
+      - name: Run theme visual tests
+        run: |
+          pnpm exec playwright test --config=playwright.visual.config.ts \
+            --project=high-contrast-visual \
+            --reporter=json
+        working-directory: packages/testing
+
+      - name: Upload visual test results
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: visual-regression-results
+          path: |
+            packages/testing/test-results/
+            packages/testing/playwright-report-visual/
+          retention-days: 30
 
   compliance-report:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [accessibility-tests, visual-regression-tests]
     if: always()
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v6
-      with:
-        node-version: '20'
-        cache: 'pnpm'
-        
-    - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        run_install: false
-        
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      
-    - name: Download all test results
-      uses: actions/download-artifact@v4
-      with:
-        path: test-artifacts/
-        
-    - name: Generate comprehensive accessibility report
-      run: |
-        node scripts/generate-comprehensive-report.js \
-          --input=test-artifacts \
-          --output=compliance-report.html \
-          --format=html \
-          --include-recommendations
-      working-directory: packages/testing
-      
-    - name: Generate JSON report for PR comments
-      run: |
-        node scripts/generate-comprehensive-report.js \
-          --input=test-artifacts \
-          --output=compliance-report.json \
-          --format=json
-      working-directory: packages/testing
-      
-    - name: Upload compliance report
-      uses: actions/upload-artifact@v5
-      with:
-        name: accessibility-compliance-report
-        path: |
-          packages/testing/compliance-report.html
-          packages/testing/compliance-report.json
-        retention-days: 90
-        
-    - name: Comment PR with accessibility results
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v8
-      with:
-        script: |
-          const fs = require('fs');
-          const path = './packages/testing/compliance-report.json';
-          
-          if (!fs.existsSync(path)) {
-            console.log('No compliance report found');
-            return;
-          }
-          
-          const report = JSON.parse(fs.readFileSync(path, 'utf8'));
-          
-          const totalViolations = report.summary.criticalIssues;
-          const averageScore = report.summary.averageScore;
-          const wcagCompliant = report.summary.wcagCompliant;
-          
-          const statusEmoji = totalViolations === 0 ? '✅' : totalViolations <= 5 ? '⚠️' : '❌';
-          const complianceStatus = wcagCompliant === report.summary.totalComponents ? '✅ Fully Compliant' : `❌ ${wcagCompliant}/${report.summary.totalComponents} Components Compliant`;
-          
-          const comment = `
-          ## ${statusEmoji} Accessibility Test Results
-          
-          **Overall Status:** ${averageScore >= 85 ? 'PASS' : 'NEEDS IMPROVEMENT'} (Score: ${averageScore}%)
-          **WCAG 2.1 AA Compliance:** ${complianceStatus}
-          **Critical Issues:** ${totalViolations}
-          
-          ### Component Scores
-          ${report.componentScores.slice(0, 10).map(c => 
-            `- **${c.component}**: ${c.overall}% ${c.issues.critical > 0 ? '❌' : c.overall >= 85 ? '✅' : '⚠️'}`
-          ).join('\n')}
-          
-          ### Recommendations
-          ${report.recommendations.slice(0, 5).map(r => `- ${r}`).join('\n')}
-          
-          <details>
-          <summary>View detailed results</summary>
-          
-          **Test Coverage:**
-          - Axe Tests: ${report.axeResults.length} components
-          - Contrast Tests: ${report.contrastResults.length} elements
-          - Keyboard Tests: ${report.keyboardResults?.length || 0} interactions
-          - Focus Tests: ${report.focusResults?.length || 0} elements
-          
-          </details>
-          
-          > 📊 [View full accessibility report](${context.payload.pull_request.html_url}/checks) in the CI artifacts.
-          `;
-          
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: comment
-          });
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          path: test-artifacts/
+
+      - name: Generate comprehensive accessibility report
+        run: |
+          node scripts/generate-comprehensive-report.js \
+            --input=test-artifacts \
+            --output=compliance-report.html \
+            --format=html \
+            --include-recommendations
+        working-directory: packages/testing
+
+      - name: Generate JSON report for PR comments
+        run: |
+          node scripts/generate-comprehensive-report.js \
+            --input=test-artifacts \
+            --output=compliance-report.json \
+            --format=json
+        working-directory: packages/testing
+
+      - name: Upload compliance report
+        uses: actions/upload-artifact@v5
+        with:
+          name: accessibility-compliance-report
+          path: |
+            packages/testing/compliance-report.html
+            packages/testing/compliance-report.json
+          retention-days: 90
+
+      - name: Comment PR with accessibility results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = './packages/testing/compliance-report.json';
+
+            if (!fs.existsSync(path)) {
+              console.log('No compliance report found');
+              return;
+            }
+
+            const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+
+            const totalViolations = report.summary.criticalIssues;
+            const averageScore = report.summary.averageScore;
+            const wcagCompliant = report.summary.wcagCompliant;
+
+            const statusEmoji = totalViolations === 0 ? '✅' : totalViolations <= 5 ? '⚠️' : '❌';
+            const complianceStatus = wcagCompliant === report.summary.totalComponents ? '✅ Fully Compliant' : `❌ ${wcagCompliant}/${report.summary.totalComponents} Components Compliant`;
+
+            const comment = `
+            ## ${statusEmoji} Accessibility Test Results
+
+            **Overall Status:** ${averageScore >= 85 ? 'PASS' : 'NEEDS IMPROVEMENT'} (Score: ${averageScore}%)
+            **WCAG 2.1 AA Compliance:** ${complianceStatus}
+            **Critical Issues:** ${totalViolations}
+
+            ### Component Scores
+            ${report.componentScores.slice(0, 10).map(c => 
+              `- **${c.component}**: ${c.overall}% ${c.issues.critical > 0 ? '❌' : c.overall >= 85 ? '✅' : '⚠️'}`
+            ).join('\n')}
+
+            ### Recommendations
+            ${report.recommendations.slice(0, 5).map(r => `- ${r}`).join('\n')}
+
+            <details>
+            <summary>View detailed results</summary>
+
+            **Test Coverage:**
+            - Axe Tests: ${report.axeResults.length} components
+            - Contrast Tests: ${report.contrastResults.length} elements
+            - Keyboard Tests: ${report.keyboardResults?.length || 0} interactions
+            - Focus Tests: ${report.focusResults?.length || 0} elements
+
+            </details>
+
+            > 📊 [View full accessibility report](${context.payload.pull_request.html_url}/checks) in the CI artifacts.
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
 
   publish-results:
     runs-on: ubuntu-latest
     needs: compliance-report
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      
-    - name: Download compliance report
-      uses: actions/download-artifact@v4
-      with:
-        name: accessibility-compliance-report
-        path: accessibility-report/
-        
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./accessibility-report
-        destination_dir: accessibility
-        
-    - name: Create GitHub Issue for failures
-      if: failure()
-      uses: actions/github-script@v8
-      with:
-        script: |
-          github.rest.issues.create({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            title: '🚨 Accessibility Test Failures Detected',
-            body: `
-            ## Accessibility Test Failures
-            
-            The automated accessibility tests have detected violations that need immediate attention.
-            
-            **Failed Run:** [${context.runId}](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-            **Commit:** ${context.sha}
-            **Branch:** ${context.ref}
-            
-            ### Next Steps
-            1. Review the test results in the CI artifacts
-            2. Fix the accessibility violations
-            3. Run tests locally with \`pnpm test:a11y\`
-            4. Commit fixes and close this issue
-            
-            ### Resources
-            - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-            - [Greater Components A11y Testing Guide](./ACCESSIBILITY_TESTING.md)
-            
-            **Priority:** High
-            **Labels:** accessibility, bug, needs-fix
-            `,
-            labels: ['accessibility', 'bug', 'needs-fix', 'high-priority']
-          });
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download compliance report
+        uses: actions/download-artifact@v4
+        with:
+          name: accessibility-compliance-report
+          path: accessibility-report/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./accessibility-report
+          destination_dir: accessibility
+
+      - name: Create GitHub Issue for failures
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Accessibility Test Failures Detected',
+              body: `
+              ## Accessibility Test Failures
+              
+              The automated accessibility tests have detected violations that need immediate attention.
+              
+              **Failed Run:** [${context.runId}](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+              **Commit:** ${context.sha}
+              **Branch:** ${context.ref}
+              
+              ### Next Steps
+              1. Review the test results in the CI artifacts
+              2. Fix the accessibility violations
+              3. Run tests locally with \`pnpm test:a11y\`
+              4. Commit fixes and close this issue
+              
+              ### Resources
+              - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+              - [Greater Components A11y Testing Guide](./ACCESSIBILITY_TESTING.md)
+              
+              **Priority:** High
+              **Labels:** accessibility, bug, needs-fix
+              `,
+              labels: ['accessibility', 'bug', 'needs-fix', 'high-priority']
+            });

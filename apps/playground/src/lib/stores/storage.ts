@@ -3,7 +3,10 @@ const isBrowser = typeof window !== 'undefined';
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
 	typeof value === 'object' && value !== null && !Array.isArray(value);
 
-const mergeObjects = <T extends Record<string, unknown>>(fallback: T, parsed: Record<string, unknown>): T => {
+const mergeObjects = <T extends Record<string, unknown>>(
+	fallback: T,
+	parsed: Record<string, unknown>
+): T => {
 	const result: Record<string, unknown> = { ...fallback };
 
 	for (const [key, value] of Object.entries(parsed)) {

@@ -30,9 +30,9 @@ import { PreferencesGraphQLController } from '@equaltoai/greater-components-fedi
 
 // Create adapter
 const adapter = createLesserGraphQLAdapter({
-  httpEndpoint: 'https://api.lesser.social/graphql',
-  wsEndpoint: 'wss://api.lesser.social/graphql',
-  token: 'your-auth-token',
+	httpEndpoint: 'https://api.lesser.social/graphql',
+	wsEndpoint: 'wss://api.lesser.social/graphql',
+	token: 'your-auth-token',
 });
 
 // Create controller
@@ -40,10 +40,10 @@ const prefsController = new PreferencesGraphQLController(adapter);
 
 // Subscribe to state changes
 const unsubscribe = prefsController.subscribe((state) => {
-  console.log('Preferences state:', state);
-  console.log('Loading:', state.loading);
-  console.log('Preferences:', state.preferences);
-  console.log('Error:', state.error);
+	console.log('Preferences state:', state);
+	console.log('Loading:', state.loading);
+	console.log('Preferences:', state.preferences);
+	console.log('Error:', state.error);
 });
 
 // Load preferences
@@ -51,12 +51,12 @@ await prefsController.loadPreferences();
 
 // Update preferences
 await prefsController.updatePreferences({
-  reading: {
-    expandSpoilers: true,
-    expandMedia: 'SHOW_ALL',
-    autoplayGifs: false,
-    timelineOrder: 'OLDEST',
-  },
+	reading: {
+		expandSpoilers: true,
+		expandMedia: 'SHOW_ALL',
+		autoplayGifs: false,
+		timelineOrder: 'OLDEST',
+	},
 });
 
 // Clean up
@@ -68,41 +68,41 @@ prefsController.destroy();
 
 ```typescript
 interface UserPreferences {
-  actorId: string;
-  posting: {
-    defaultVisibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'DIRECT';
-    defaultSensitive: boolean;
-    defaultLanguage: string;
-  };
-  reading: {
-    expandSpoilers: boolean;
-    expandMedia: 'DEFAULT' | 'SHOW_ALL' | 'HIDE_ALL';
-    autoplayGifs: boolean;
-    timelineOrder: 'NEWEST' | 'OLDEST';
-  };
-  discovery: {
-    showFollowCounts: boolean;
-    searchSuggestionsEnabled: boolean;
-    personalizedSearchEnabled: boolean;
-  };
-  streaming: {
-    defaultQuality: 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ULTRA';
-    autoQuality: boolean;
-    preloadNext: boolean;
-    dataSaver: boolean;
-  };
-  notifications: {
-    email: boolean;
-    push: boolean;
-    inApp: boolean;
-    digest: 'NEVER' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
-  };
-  privacy: {
-    defaultVisibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'DIRECT';
-    indexable: boolean;
-    showOnlineStatus: boolean;
-  };
-  reblogFilters: Array<{ key: string; enabled: boolean }>;
+	actorId: string;
+	posting: {
+		defaultVisibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'DIRECT';
+		defaultSensitive: boolean;
+		defaultLanguage: string;
+	};
+	reading: {
+		expandSpoilers: boolean;
+		expandMedia: 'DEFAULT' | 'SHOW_ALL' | 'HIDE_ALL';
+		autoplayGifs: boolean;
+		timelineOrder: 'NEWEST' | 'OLDEST';
+	};
+	discovery: {
+		showFollowCounts: boolean;
+		searchSuggestionsEnabled: boolean;
+		personalizedSearchEnabled: boolean;
+	};
+	streaming: {
+		defaultQuality: 'AUTO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ULTRA';
+		autoQuality: boolean;
+		preloadNext: boolean;
+		dataSaver: boolean;
+	};
+	notifications: {
+		email: boolean;
+		push: boolean;
+		inApp: boolean;
+		digest: 'NEVER' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
+	};
+	privacy: {
+		defaultVisibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'DIRECT';
+		indexable: boolean;
+		showOnlineStatus: boolean;
+	};
+	reblogFilters: Array<{ key: string; enabled: boolean }>;
 }
 ```
 
@@ -113,9 +113,9 @@ The controller can map between UI-friendly `PrivacySettings` and the GraphQL `Us
 ```typescript
 // Update privacy settings (automatically maps to GraphQL preferences)
 await prefsController.updatePrivacySettings({
-  searchableBySearchEngines: false,
-  autoplayGifs: false,
-  discoverable: true,
+	searchableBySearchEngines: false,
+	autoplayGifs: false,
+	discoverable: true,
 });
 
 // Get current privacy settings
@@ -139,9 +139,9 @@ Update streaming-specific preferences separately:
 
 ```typescript
 await prefsController.updateStreamingPreferences({
-  defaultQuality: 'HIGH',
-  dataSaver: true,
-  preloadNext: false,
+	defaultQuality: 'HIGH',
+	dataSaver: true,
+	preloadNext: false,
 });
 ```
 
@@ -165,24 +165,24 @@ import { PushNotificationsController } from '@equaltoai/greater-components-fediv
 
 // Create adapter
 const adapter = createLesserGraphQLAdapter({
-  httpEndpoint: 'https://api.lesser.social/graphql',
-  wsEndpoint: 'wss://api.lesser.social/graphql',
-  token: 'your-auth-token',
+	httpEndpoint: 'https://api.lesser.social/graphql',
+	wsEndpoint: 'wss://api.lesser.social/graphql',
+	token: 'your-auth-token',
 });
 
 // Create controller
 const pushController = new PushNotificationsController({
-  adapter,
-  vapidPublicKey: 'YOUR_VAPID_PUBLIC_KEY',
-  serviceWorkerPath: '/sw.js', // Optional, defaults to '/sw.js'
+	adapter,
+	vapidPublicKey: 'YOUR_VAPID_PUBLIC_KEY',
+	serviceWorkerPath: '/sw.js', // Optional, defaults to '/sw.js'
 });
 
 // Subscribe to state changes
 const unsubscribe = pushController.subscribe((state) => {
-  console.log('Push state:', state);
-  console.log('Supported:', state.supported);
-  console.log('Permission:', state.permission);
-  console.log('Subscription:', state.subscription);
+	console.log('Push state:', state);
+	console.log('Supported:', state.supported);
+	console.log('Permission:', state.permission);
+	console.log('Subscription:', state.subscription);
 });
 
 // Initialize (loads existing subscription if any)
@@ -190,22 +190,22 @@ await pushController.initialize();
 
 // Register for push notifications
 await pushController.register({
-  follow: true,
-  favourite: true,
-  reblog: true,
-  mention: true,
-  poll: true,
-  followRequest: true,
-  status: false,
-  update: false,
-  adminSignUp: false,
-  adminReport: false,
+	follow: true,
+	favourite: true,
+	reblog: true,
+	mention: true,
+	poll: true,
+	followRequest: true,
+	status: false,
+	update: false,
+	adminSignUp: false,
+	adminReport: false,
 });
 
 // Update alert preferences
 await pushController.updateAlerts({
-  follow: false,
-  mention: false,
+	follow: false,
+	mention: false,
 });
 
 // Unregister push notifications
@@ -220,13 +220,13 @@ pushController.destroy();
 
 ```typescript
 interface PushNotificationsState {
-  subscription: PushSubscription | null;
-  browserSubscription: globalThis.PushSubscription | null;
-  loading: boolean;
-  registering: boolean;
-  error: string | null;
-  supported: boolean;
-  permission: NotificationPermission; // 'default' | 'granted' | 'denied'
+	subscription: PushSubscription | null;
+	browserSubscription: globalThis.PushSubscription | null;
+	loading: boolean;
+	registering: boolean;
+	error: string | null;
+	supported: boolean;
+	permission: NotificationPermission; // 'default' | 'granted' | 'denied'
 }
 ```
 
@@ -234,28 +234,28 @@ interface PushNotificationsState {
 
 ```typescript
 interface PushSubscription {
-  id: string;
-  endpoint: string;
-  keys: {
-    auth: string;
-    p256dh: string;
-  };
-  alerts: {
-    follow: boolean;
-    favourite: boolean;
-    reblog: boolean;
-    mention: boolean;
-    poll: boolean;
-    followRequest: boolean;
-    status: boolean;
-    update: boolean;
-    adminSignUp: boolean;
-    adminReport: boolean;
-  };
-  policy: string;
-  serverKey?: string;
-  createdAt?: string;
-  updatedAt?: string;
+	id: string;
+	endpoint: string;
+	keys: {
+		auth: string;
+		p256dh: string;
+	};
+	alerts: {
+		follow: boolean;
+		favourite: boolean;
+		reblog: boolean;
+		mention: boolean;
+		poll: boolean;
+		followRequest: boolean;
+		status: boolean;
+		update: boolean;
+		adminSignUp: boolean;
+		adminReport: boolean;
+	};
+	policy: string;
+	serverKey?: string;
+	createdAt?: string;
+	updatedAt?: string;
 }
 ```
 
@@ -267,29 +267,23 @@ The `ProfileGraphQLController` can optionally integrate preferences management:
 
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
-  import { createLesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+	import { Profile } from '@equaltoai/greater-components-fediverse';
+	import { createLesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
-  const adapter = createLesserGraphQLAdapter({
-    httpEndpoint: 'https://api.lesser.social/graphql',
-    wsEndpoint: 'wss://api.lesser.social/graphql',
-    token: 'your-auth-token',
-  });
+	const adapter = createLesserGraphQLAdapter({
+		httpEndpoint: 'https://api.lesser.social/graphql',
+		wsEndpoint: 'wss://api.lesser.social/graphql',
+		token: 'your-auth-token',
+	});
 </script>
 
 <!-- With preferences enabled (default for own profile) -->
-<Profile.Root
-  {adapter}
-  username="alice"
-  isOwnProfile={true}
-  enablePreferences={true}
-  pageSize={40}
->
-  <Profile.Header />
-  <Profile.Stats />
-  
-  <!-- Privacy settings will automatically use preferences controller -->
-  <Profile.PrivacySettings />
+<Profile.Root {adapter} username="alice" isOwnProfile={true} enablePreferences={true} pageSize={40}>
+	<Profile.Header />
+	<Profile.Stats />
+
+	<!-- Privacy settings will automatically use preferences controller -->
+	<Profile.PrivacySettings />
 </Profile.Root>
 ```
 
@@ -299,25 +293,25 @@ The `Profile.PrivacySettings` component automatically integrates with the prefer
 
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+	import { Profile } from '@equaltoai/greater-components-fediverse';
 </script>
 
 <Profile.Root {adapter} username="alice" isOwnProfile={true}>
-  <!-- Component automatically loads and saves via GraphQL when controller is available -->
-  <Profile.PrivacySettings 
-    showDescriptions={true}
-    groupByCategory={true}
-  />
+	<!-- Component automatically loads and saves via GraphQL when controller is available -->
+	<Profile.PrivacySettings showDescriptions={true} groupByCategory={true} />
 </Profile.Root>
 
 <!-- Or use it standalone with manual handlers -->
-<Profile.Root profile={profileData} handlers={{
-  onUpdatePrivacySettings: async (settings) => {
-    // Manual implementation
-    await updateSettings(settings);
-  }
-}}>
-  <Profile.PrivacySettings settings={privacySettings} />
+<Profile.Root
+	profile={profileData}
+	handlers={{
+		onUpdatePrivacySettings: async (settings) => {
+			// Manual implementation
+			await updateSettings(settings);
+		},
+	}}
+>
+	<Profile.PrivacySettings settings={privacySettings} />
 </Profile.Root>
 ```
 
@@ -327,12 +321,12 @@ When using the GraphQL adapter with preferences enabled, these handlers are auto
 
 ```typescript
 interface ProfileHandlers {
-  // ... existing handlers ...
-  
-  // Preferences handlers (available when enablePreferences=true)
-  onUpdatePrivacySettings?: (settings: Partial<PrivacySettings>) => Promise<void>;
-  onLoadPreferences?: () => Promise<void>;
-  onGetPrivacySettings?: () => PrivacySettings | null;
+	// ... existing handlers ...
+
+	// Preferences handlers (available when enablePreferences=true)
+	onUpdatePrivacySettings?: (settings: Partial<PrivacySettings>) => Promise<void>;
+	onLoadPreferences?: () => Promise<void>;
+	onGetPrivacySettings?: () => PrivacySettings | null;
 }
 ```
 
@@ -342,11 +336,11 @@ The profile context automatically tracks preferences state:
 
 ```typescript
 interface ProfileState {
-  // ... existing state ...
-  
-  // Preferences state (populated when preferences controller is active)
-  privacySettings?: PrivacySettings | null;
-  preferencesLoading?: boolean;
+	// ... existing state ...
+
+	// Preferences state (populated when preferences controller is active)
+	privacySettings?: PrivacySettings | null;
+	preferencesLoading?: boolean;
 }
 ```
 
@@ -358,50 +352,54 @@ All controllers include built-in error handling:
 const controller = new PreferencesGraphQLController(adapter);
 
 controller.subscribe((state) => {
-  if (state.error) {
-    console.error('Preferences error:', state.error);
-    // Display error to user
-  }
+	if (state.error) {
+		console.error('Preferences error:', state.error);
+		// Display error to user
+	}
 });
 
 try {
-  await controller.loadPreferences();
+	await controller.loadPreferences();
 } catch (error) {
-  // Handle error
-  console.error('Failed to load preferences:', error);
+	// Handle error
+	console.error('Failed to load preferences:', error);
 }
 ```
 
 ## Best Practices
 
 1. **Always destroy controllers** when components unmount:
+
    ```typescript
    onDestroy(() => {
-     prefsController?.destroy();
-     pushController?.destroy();
+   	prefsController?.destroy();
+   	pushController?.destroy();
    });
    ```
 
 2. **Subscribe to state changes** for reactive UI updates:
+
    ```typescript
    let uiState = $state(controller.getState());
    const unsubscribe = controller.subscribe((state) => {
-     uiState = state;
+   	uiState = state;
    });
    ```
 
 3. **Check support** before using Push Notifications:
+
    ```typescript
    if (!pushState.supported) {
-     console.warn('Push notifications not supported');
-     return;
+   	console.warn('Push notifications not supported');
+   	return;
    }
    ```
 
 4. **Handle permissions** gracefully:
+
    ```typescript
    if (pushState.permission === 'denied') {
-     // Show UI guidance for enabling permissions
+   	// Show UI guidance for enabling permissions
    }
    ```
 
@@ -409,9 +407,9 @@ try {
    ```typescript
    const context = getProfileContext();
    if (context.handlers.onUpdatePrivacySettings) {
-     await context.handlers.onUpdatePrivacySettings(settings);
+   	await context.handlers.onUpdatePrivacySettings(settings);
    } else {
-     // Fallback to manual handling
+   	// Fallback to manual handling
    }
    ```
 
@@ -457,10 +455,6 @@ pnpm --filter @equaltoai/greater-components-fediverse test:unit
 ```
 
 Test files:
+
 - `packages/fediverse/tests/Profile/PreferencesController.test.ts`
 - `packages/fediverse/tests/Profile/PushNotificationsController.test.ts`
-
-
-
-
-

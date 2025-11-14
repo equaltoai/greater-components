@@ -1,9 +1,9 @@
 /**
  * Request Batching for Adapters
- * 
+ *
  * Combines multiple requests into batched operations to reduce API calls.
  * Supports automatic flushing based on time and size thresholds.
- * 
+ *
  * @module adapters/batcher
  */
 

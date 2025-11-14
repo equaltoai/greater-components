@@ -3,18 +3,18 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	compilerOptions: {
-		runes: true
+		runes: true,
 	},
 	preprocess: vitePreprocess(),
 	kit: {
 		files: {
-			lib: 'src'
+			lib: 'src',
 		},
 		alias: {
-			$lib: 'src'
+			$lib: 'src',
 		},
-		outDir: '.svelte-kit'
-	}
+		outDir: '.svelte-kit',
+	},
 };
 
 export default config;

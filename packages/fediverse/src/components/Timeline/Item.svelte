@@ -55,22 +55,22 @@ Can be used with Status compound component or custom content.
 	/**
 	 * Handle item click
 	 */
-function handleClick(event: MouseEvent) {
-	// Don't trigger if clicking on interactive elements
-	const target = event.target as HTMLElement;
-	if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a, button')) {
-		return;
-	}
+	function handleClick(event: MouseEvent) {
+		// Don't trigger if clicking on interactive elements
+		const target = event.target as HTMLElement;
+		if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a, button')) {
+			return;
+		}
 
-	context.handlers.onItemClick?.(item, index);
-}
-
-function handleKeyDown(event: KeyboardEvent) {
-	if (event.key === 'Enter' || event.key === ' ') {
-		event.preventDefault();
 		context.handlers.onItemClick?.(item, index);
 	}
-}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			context.handlers.onItemClick?.(item, index);
+		}
+	}
 </script>
 
 <article

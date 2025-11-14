@@ -125,6 +125,7 @@ We follow the Conventional Commits specification:
 - `chore:` Build process or auxiliary tool changes
 
 Examples:
+
 ```bash
 git commit -s -m "feat: add Button component with variants"
 git commit -s -m "fix: correct focus trap in Modal component"

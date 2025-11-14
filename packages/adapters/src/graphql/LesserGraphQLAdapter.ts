@@ -6,19 +6,17 @@
  * and object accessors rather than the legacy Mastodon-style wrappers.
  */
 
-import {
-	Observable,
-	type FetchResult,
-	type OperationVariables,
-} from '@apollo/client';
+import { Observable, type FetchResult, type OperationVariables } from '@apollo/client';
 import type { ApolloClient as ApolloClientNamespace } from '@apollo/client';
 
-type QueryOptionsFor<TData, TVariables extends OperationVariables> = ApolloClientNamespace.QueryOptions<
+type QueryOptionsFor<
 	TData,
-	TVariables
->;
-type MutationOptionsFor<TData, TVariables extends OperationVariables> =
-	ApolloClientNamespace.MutateOptions<TData, TVariables>;
+	TVariables extends OperationVariables,
+> = ApolloClientNamespace.QueryOptions<TData, TVariables>;
+type MutationOptionsFor<
+	TData,
+	TVariables extends OperationVariables,
+> = ApolloClientNamespace.MutateOptions<TData, TVariables>;
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { print } from 'graphql';
 
@@ -228,7 +226,10 @@ const UpdateHashtagNotificationsDocument = {
 				{
 					kind: 'VariableDefinition',
 					variable: { kind: 'Variable', name: { kind: 'Name', value: 'hashtag' } },
-					type: { kind: 'NonNullType', type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } } },
+					type: {
+						kind: 'NonNullType',
+						type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+					},
 				},
 				{
 					kind: 'VariableDefinition',
@@ -351,7 +352,7 @@ export class LesserGraphQLAdapter {
 
 	private async query<
 		TData extends Record<string, unknown>,
-		TVariables extends OperationVariables = OperationVariables
+		TVariables extends OperationVariables = OperationVariables,
 	>(
 		document: TypedDocumentNode<TData, TVariables>,
 		variables?: TVariables,
@@ -374,11 +375,8 @@ export class LesserGraphQLAdapter {
 
 	private async mutate<
 		TData extends Record<string, unknown>,
-		TVariables extends OperationVariables = OperationVariables
-	>(
-		document: TypedDocumentNode<TData, TVariables>,
-		variables?: TVariables
-	): Promise<TData> {
+		TVariables extends OperationVariables = OperationVariables,
+	>(document: TypedDocumentNode<TData, TVariables>, variables?: TVariables): Promise<TData> {
 		const options = {
 			mutation: document,
 			variables,
@@ -411,12 +409,18 @@ export class LesserGraphQLAdapter {
 				networkError?: { message?: string; result?: { errors?: Array<{ message?: string }> } };
 			};
 
-			if (Array.isArray(graphQLErrors) && graphQLErrors.some((err) => containsTargetId(err?.message))) {
+			if (
+				Array.isArray(graphQLErrors) &&
+				graphQLErrors.some((err) => containsTargetId(err?.message))
+			) {
 				return true;
 			}
 
 			const networkErrors = networkError?.result?.errors;
-			if (Array.isArray(networkErrors) && networkErrors.some((err) => containsTargetId(err?.message))) {
+			if (
+				Array.isArray(networkErrors) &&
+				networkErrors.some((err) => containsTargetId(err?.message))
+			) {
 				return true;
 			}
 
@@ -428,9 +432,7 @@ export class LesserGraphQLAdapter {
 		return false;
 	}
 
-	private buildUploadMediaFormData(
-		variables: UploadMediaMutationVariables
-	): FormData {
+	private buildUploadMediaFormData(variables: UploadMediaMutationVariables): FormData {
 		const { input } = variables;
 		const { file, ...rest } = input;
 
@@ -476,9 +478,7 @@ export class LesserGraphQLAdapter {
 		return data.timeline;
 	}
 
-	async fetchHomeTimeline(
-		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>
-	) {
+	async fetchHomeTimeline(pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>) {
 		return this.fetchTimeline({
 			type: 'HOME',
 			first: pagination?.first,
@@ -497,9 +497,7 @@ export class LesserGraphQLAdapter {
 		});
 	}
 
-	async fetchDirectTimeline(
-		pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>
-	) {
+	async fetchDirectTimeline(pagination?: Partial<Pick<TimelineQueryVariables, 'first' | 'after'>>) {
 		return this.fetchTimeline({
 			type: 'DIRECT',
 			first: pagination?.first,
@@ -715,8 +713,16 @@ export class LesserGraphQLAdapter {
 		return data.withdrawFromQuotes;
 	}
 
-	async updateQuotePermissions(noteId: string, quoteable: boolean, permission: 'EVERYONE' | 'FOLLOWERS' | 'NONE') {
-		const data = await this.mutate(UpdateQuotePermissionsDocument, { noteId, quoteable, permission });
+	async updateQuotePermissions(
+		noteId: string,
+		quoteable: boolean,
+		permission: 'EVERYONE' | 'FOLLOWERS' | 'NONE'
+	) {
+		const data = await this.mutate(UpdateQuotePermissionsDocument, {
+			noteId,
+			quoteable,
+			permission,
+		});
 		return data.updateQuotePermissions;
 	}
 
@@ -816,10 +822,7 @@ export class LesserGraphQLAdapter {
 		return data.unmuteActor;
 	}
 
-	async updateRelationship(
-		id: string,
-		input: UpdateRelationshipMutationVariables['input']
-	) {
+	async updateRelationship(id: string, input: UpdateRelationshipMutationVariables['input']) {
 		const data = await this.mutate(UpdateRelationshipDocument, { id, input });
 		return data.updateRelationship;
 	}
@@ -1139,10 +1142,7 @@ export class LesserGraphQLAdapter {
 		return data.followedHashtags;
 	}
 
-	async updateHashtagNotifications(
-		hashtag: string,
-		settings: HashtagNotificationSettingsInput
-	) {
+	async updateHashtagNotifications(hashtag: string, settings: HashtagNotificationSettingsInput) {
 		const data = await this.mutate(UpdateHashtagNotificationsDocument, {
 			hashtag,
 			settings,
@@ -1190,9 +1190,7 @@ export class LesserGraphQLAdapter {
 		});
 	}
 
-	subscribeToConversationUpdates(): Observable<
-		FetchResult<ConversationUpdatesSubscription>
-	> {
+	subscribeToConversationUpdates(): Observable<FetchResult<ConversationUpdatesSubscription>> {
 		return this.client.client.subscribe({
 			query: ConversationUpdatesDocument,
 		});

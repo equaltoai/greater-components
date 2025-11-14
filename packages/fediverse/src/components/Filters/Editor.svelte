@@ -166,14 +166,14 @@
 				<!-- Phrase Input -->
 				<div class="filter-editor__field">
 					<label for="filter-phrase" class="filter-editor__label"> Keyword or phrase </label>
-				<input
-					id="filter-phrase"
-					type="text"
-					class="filter-editor__input"
-					bind:value={phrase}
-					placeholder="e.g., spoilers, politics, crypto"
-					required
-				/>
+					<input
+						id="filter-phrase"
+						type="text"
+						class="filter-editor__input"
+						bind:value={phrase}
+						placeholder="e.g., spoilers, politics, crypto"
+						required
+					/>
 					<p class="filter-editor__hint">Posts containing this text will be filtered</p>
 				</div>
 
@@ -192,11 +192,11 @@
 					</p>
 				</div>
 
-			<!-- Contexts -->
-			<div class="filter-editor__field">
-				<p class="filter-editor__label">Filter in</p>
-				<div class="filter-editor__contexts">
-					{#each allContexts as context (context.value)}
+				<!-- Contexts -->
+				<div class="filter-editor__field">
+					<p class="filter-editor__label">Filter in</p>
+					<div class="filter-editor__contexts">
+						{#each allContexts as context (context.value)}
 							<button
 								type="button"
 								class="filter-editor__context-button"
@@ -226,9 +226,9 @@
 
 				<!-- Expiration -->
 				<div class="filter-editor__field">
-				<label for="filter-expires" class="filter-editor__label"> Expire after </label>
-				<select id="filter-expires" class="filter-editor__select" bind:value={expiresIn}>
-					{#each expirationOptions as option (option.value ?? 'never')}
+					<label for="filter-expires" class="filter-editor__label"> Expire after </label>
+					<select id="filter-expires" class="filter-editor__select" bind:value={expiresIn}>
+						{#each expirationOptions as option (option.value ?? 'never')}
 							<option value={option.value}>
 								{option.label}
 							</option>
@@ -243,9 +243,9 @@
 					</p>
 				</div>
 
-			<!-- Filter Action -->
-			<div class="filter-editor__field">
-				<p class="filter-editor__label">Filter action</p>
+				<!-- Filter Action -->
+				<div class="filter-editor__field">
+					<p class="filter-editor__label">Filter action</p>
 					<div class="filter-editor__radio-group">
 						<label class="filter-editor__radio">
 							<input

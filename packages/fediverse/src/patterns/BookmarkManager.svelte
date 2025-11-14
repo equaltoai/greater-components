@@ -642,11 +642,11 @@
 							</button>
 
 							<div class="bookmark-manager__item-actions">
-				{#if bookmark.folder}
-					<span
-						class="bookmark-manager__folder-badge"
-						style={`background-color: ${getFolderColor(bookmark.folder)}20; color: ${getFolderColor(bookmark.folder)}`}
-					>
+								{#if bookmark.folder}
+									<span
+										class="bookmark-manager__folder-badge"
+										style={`background-color: ${getFolderColor(bookmark.folder)}20; color: ${getFolderColor(bookmark.folder)}`}
+									>
 										{bookmark.folder}
 									</span>
 								{/if}

@@ -16,7 +16,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 ```
 -->
 
-
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getComposeContext } from './context.js';
@@ -229,7 +228,7 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		// Create a mirror div
 		const div = document.createElement('div');
 		const style = getComputedStyle(element);
-	const properties: Array<keyof CSSStyleDeclaration> = [
+		const properties: Array<keyof CSSStyleDeclaration> = [
 			'boxSizing',
 			'width',
 			'height',
@@ -259,12 +258,12 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 			'wordSpacing',
 		];
 
-	properties.forEach((prop) => {
-		const value = style[prop];
-		if (typeof value === 'string') {
-			div.style[prop] = value;
-		}
-	});
+		properties.forEach((prop) => {
+			const value = style[prop];
+			if (typeof value === 'string') {
+				div.style[prop] = value;
+			}
+		});
 
 		div.style.position = 'absolute';
 		div.style.visibility = 'hidden';

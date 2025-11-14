@@ -69,9 +69,7 @@ Supports unfollow action.
 	let searchQuery = $state('');
 	let unfollowingIds = $state<Set<string>>(new Set());
 	const following = $derived(providedFollowing ?? context.state.following);
-	const hasMore = $derived(
-		providedHasMore ?? Boolean(context.state.followingCursor)
-	);
+	const hasMore = $derived(providedHasMore ?? Boolean(context.state.followingCursor));
 	const totalCount = $derived(
 		providedTotalCount ?? context.state.followingTotal ?? following.length
 	);

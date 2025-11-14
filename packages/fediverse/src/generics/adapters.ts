@@ -1,9 +1,9 @@
 /**
  * Platform-specific adapters for ActivityPub implementations
- * 
+ *
  * These adapters convert platform-specific types (Mastodon, Pleroma, Lesser)
  * to generic ActivityPub types for use in components.
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/generics/adapters
  */
 
@@ -175,9 +175,9 @@ export class MastodonAdapter implements GenericAdapter<MastodonStatus, GenericSt
 				statuses_count: mastodon.account.statuses_count,
 				followers_count: mastodon.account.followers_count,
 				following_count: mastodon.account.following_count,
-				emojis: mastodon.account.emojis?.map(e => ({
+				emojis: mastodon.account.emojis?.map((e) => ({
 					...e,
-					visible_in_picker: true
+					visible_in_picker: true,
 				})),
 			},
 		};
@@ -417,9 +417,10 @@ export class LesserAdapter implements GenericAdapter<LesserStatus, GenericStatus
 		const obj = lesser.object;
 
 		// Extract actor
-		const actor: ActivityPubActor = typeof obj.attributedTo === 'string'
-			? { id: obj.attributedTo, type: 'Person' }
-			: obj.attributedTo;
+		const actor: ActivityPubActor =
+			typeof obj.attributedTo === 'string'
+				? { id: obj.attributedTo, type: 'Person' }
+				: obj.attributedTo;
 
 		// Extract Lesser extensions for direct field population
 		const lesserExt = (obj.extensions ?? {}) as LesserObjectExtensions;
@@ -447,17 +448,17 @@ export class LesserAdapter implements GenericAdapter<LesserStatus, GenericStatus
 				// Only add extensions if there are Lesser fields
 				extensions: hasLesserExtensions
 					? {
-						...(obj.extensions ?? {}),
-						estimatedCost: lesserExt.estimatedCost,
-						moderationScore: lesserExt.moderationScore,
-						communityNotes: lesserExt.communityNotes,
-						quoteUrl: lesserExt.quoteUrl,
-						quoteable: lesserExt.quoteable,
-						quotePermissions: lesserExt.quotePermissions,
-						quoteContext: lesserExt.quoteContext,
-						quoteCount: lesserExt.quoteCount,
-						aiAnalysis: lesserExt.aiAnalysis,
-					}
+							...(obj.extensions ?? {}),
+							estimatedCost: lesserExt.estimatedCost,
+							moderationScore: lesserExt.moderationScore,
+							communityNotes: lesserExt.communityNotes,
+							quoteUrl: lesserExt.quoteUrl,
+							quoteable: lesserExt.quoteable,
+							quotePermissions: lesserExt.quotePermissions,
+							quoteContext: lesserExt.quoteContext,
+							quoteCount: lesserExt.quoteCount,
+							aiAnalysis: lesserExt.aiAnalysis,
+						}
 					: obj.extensions,
 			},
 			account: {
@@ -465,11 +466,11 @@ export class LesserAdapter implements GenericAdapter<LesserStatus, GenericStatus
 				// Only add extensions if there are Lesser fields
 				extensions: hasActorExtensions
 					? {
-						...(actor.extensions ?? {}),
-						trustScore: actorExt.trustScore,
-						reputation: actorExt.reputation,
-						vouches: actorExt.vouches,
-					}
+							...(actor.extensions ?? {}),
+							trustScore: actorExt.trustScore,
+							reputation: actorExt.reputation,
+							vouches: actorExt.vouches,
+						}
 					: actor.extensions,
 			},
 			content: obj.content || '',

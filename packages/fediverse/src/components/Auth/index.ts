@@ -1,16 +1,16 @@
 /**
  * Authentication Components
- * 
+ *
  * Complete authentication flow for ActivityPub/Fediverse applications.
  * Supports email/password, WebAuthn, OAuth, 2FA, and password reset.
- * 
+ *
  * @module components/Auth
- * 
+ *
  * @example
  * ```svelte
  * <script>
  *   import * as Auth from '@equaltoai/greater-components-fediverse/Auth';
- * 
+ *
  *   const handlers = {
  *     onLogin: async (credentials) => {
  *       // Handle login
@@ -20,7 +20,7 @@
  *     },
  *   };
  * </script>
- * 
+ *
  * <Auth.Root {handlers}>
  *   <Auth.LoginForm />
  * </Auth.Root>
@@ -60,4 +60,3 @@ export {
 	isValidPassword,
 	isValidUsername,
 } from './context.js';
-

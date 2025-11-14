@@ -1,9 +1,9 @@
 /**
  * Authentication Context
- * 
+ *
  * Provides authentication state and handlers for all auth components.
  * Supports multiple authentication methods: email/password, WebAuthn, OAuth, 2FA.
- * 
+ *
  * @module Auth/context
  */
 
@@ -251,7 +251,7 @@ export interface AuthContext {
 
 /**
  * Create authentication context
- * 
+ *
  * @param initialState - Initial authentication state
  * @param handlers - Authentication event handlers
  * @returns Authentication context
@@ -286,9 +286,9 @@ export function createAuthContext(
 
 /**
  * Get authentication context
- * 
+ *
  * Must be called within an Auth component tree.
- * 
+ *
  * @throws Error if called outside Auth component tree
  * @returns Authentication context
  */

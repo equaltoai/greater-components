@@ -7,12 +7,10 @@
 
 <div class="button-test">
 	<h1>Button Test</h1>
-	
+
 	<section>
 		<h2>Basic Buttons</h2>
-		<Button onclick={() => clickCount++}>
-			Click me
-		</Button>
+		<Button onclick={() => clickCount++}>Click me</Button>
 		<p>Clicked {clickCount} times</p>
 	</section>
 
@@ -55,4 +53,3 @@
 		margin-bottom: 1rem;
 	}
 </style>
-

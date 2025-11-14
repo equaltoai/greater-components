@@ -27,7 +27,7 @@
 
 	let { initialParticipants = [], class: className = '', onConversationCreated }: Props = $props();
 
-const { handlers, selectConversation } = getMessagesContext();
+	const { handlers, selectConversation } = getMessagesContext();
 
 	let isOpen = $state(false);
 	let searchQuery = $state('');
@@ -186,7 +186,7 @@ const { handlers, selectConversation } = getMessagesContext();
 					<!-- Selected Participants -->
 					{#if selectedParticipants.length > 0}
 						<div class="new-conversation__selected">
-					<span class="new-conversation__label">To:</span>
+							<span class="new-conversation__label">To:</span>
 							<div class="new-conversation__chips">
 								{#each selectedParticipants as participant (participant.id)}
 									<div class="new-conversation__chip">

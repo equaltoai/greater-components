@@ -1,5 +1,4 @@
 <script lang="ts">
-
 	interface Props {
 		value?: string;
 		placeholder?: string;
@@ -96,4 +95,3 @@
 		}
 	}
 </style>
-

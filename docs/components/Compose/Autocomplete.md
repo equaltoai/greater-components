@@ -11,6 +11,7 @@
 The `Autocomplete` utility provides comprehensive logic for implementing hashtag, mention, and emoji autocomplete in text editors. It handles context detection, suggestion filtering with fuzzy matching, text insertion, and cursor positioning.
 
 ### **Key Features**:
+
 - ✅ **Context detection** for hashtags (#), mentions (@), and emojis (:)
 - ✅ **Fuzzy matching** with scoring
 - ✅ **Cursor position management**
@@ -36,18 +37,18 @@ npm install @equaltoai/greater-components-fediverse
 
 ```typescript
 interface AutocompleteSuggestion {
-  type: 'hashtag' | 'mention' | 'emoji';
-  value: string;
-  label: string;
-  avatar?: string;
-  metadata?: Record<string, unknown>;
+	type: 'hashtag' | 'mention' | 'emoji';
+	value: string;
+	label: string;
+	avatar?: string;
+	metadata?: Record<string, unknown>;
 }
 
 interface AutocompleteMatch {
-  type: 'hashtag' | 'mention' | 'emoji';
-  query: string;
-  startPos: number;
-  endPos: number;
+	type: 'hashtag' | 'mention' | 'emoji';
+	query: string;
+	startPos: number;
+	endPos: number;
 }
 ```
 
@@ -58,19 +59,18 @@ interface AutocompleteMatch {
 Detect if the cursor is in an autocomplete context (hashtag, mention, emoji).
 
 ```typescript
-function detectAutocompleteContext(
-  text: string,
-  cursorPosition: number
-): AutocompleteMatch | null
+function detectAutocompleteContext(text: string, cursorPosition: number): AutocompleteMatch | null;
 ```
 
 **Parameters**:
+
 - `text`: Full text content
 - `cursorPosition`: Current cursor position
 
 **Returns**: Match object if in autocomplete context, `null` otherwise.
 
 **Example**:
+
 ```typescript
 import { detectAutocompleteContext } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -89,13 +89,14 @@ Filter and score suggestions based on the query using fuzzy matching.
 
 ```typescript
 function filterSuggestions(
-  query: string,
-  suggestions: AutocompleteSuggestion[],
-  maxResults: number = 10
-): AutocompleteSuggestion[]
+	query: string,
+	suggestions: AutocompleteSuggestion[],
+	maxResults: number = 10
+): AutocompleteSuggestion[];
 ```
 
 **Parameters**:
+
 - `query`: Search query
 - `suggestions`: Array of available suggestions
 - `maxResults`: Maximum number of results (default: 10)
@@ -103,13 +104,14 @@ function filterSuggestions(
 **Returns**: Filtered and sorted array of suggestions.
 
 **Example**:
+
 ```typescript
 import { filterSuggestions } from '@equaltoai/greater-components-fediverse/Compose';
 
 const suggestions = [
-  { type: 'mention', value: '@johnsmith', label: 'John Smith' },
-  { type: 'mention', value: '@johndoe', label: 'John Doe' },
-  { type: 'mention', value: '@jane', label: 'Jane Wilson' }
+	{ type: 'mention', value: '@johnsmith', label: 'John Smith' },
+	{ type: 'mention', value: '@johndoe', label: 'John Doe' },
+	{ type: 'mention', value: '@jane', label: 'Jane Wilson' },
 ];
 
 const filtered = filterSuggestions('joh', suggestions, 5);
@@ -124,13 +126,14 @@ Insert a selected suggestion into the text at the match position.
 
 ```typescript
 function insertSuggestion(
-  text: string,
-  match: AutocompleteMatch,
-  suggestion: AutocompleteSuggestion
-): { text: string; cursorPosition: number }
+	text: string,
+	match: AutocompleteMatch,
+	suggestion: AutocompleteSuggestion
+): { text: string; cursorPosition: number };
 ```
 
 **Parameters**:
+
 - `text`: Original text
 - `match`: Autocomplete match
 - `suggestion`: Selected suggestion
@@ -138,6 +141,7 @@ function insertSuggestion(
 **Returns**: Object with new text and cursor position.
 
 **Example**:
+
 ```typescript
 import { insertSuggestion } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -157,15 +161,17 @@ console.log(result.cursorPosition); // 18
 Get the current cursor position in a text input/textarea element.
 
 ```typescript
-function getCursorPosition(element: HTMLInputElement | HTMLTextAreaElement): number
+function getCursorPosition(element: HTMLInputElement | HTMLTextAreaElement): number;
 ```
 
 **Parameters**:
+
 - `element`: Input or textarea element
 
 **Returns**: Cursor position (selection start).
 
 **Example**:
+
 ```typescript
 import { getCursorPosition } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -181,17 +187,16 @@ console.log(`Cursor at position: ${position}`);
 Set the cursor position in a text input/textarea element.
 
 ```typescript
-function setCursorPosition(
-  element: HTMLInputElement | HTMLTextAreaElement,
-  position: number
-): void
+function setCursorPosition(element: HTMLInputElement | HTMLTextAreaElement, position: number): void;
 ```
 
 **Parameters**:
+
 - `element`: Input or textarea element
 - `position`: Target cursor position
 
 **Example**:
+
 ```typescript
 import { setCursorPosition } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -206,15 +211,17 @@ setCursorPosition(textarea, 10); // Move cursor to position 10
 Extract all hashtags from text.
 
 ```typescript
-function extractHashtags(text: string): string[]
+function extractHashtags(text: string): string[];
 ```
 
 **Parameters**:
+
 - `text`: Text to extract hashtags from
 
 **Returns**: Array of hashtag strings (without #).
 
 **Example**:
+
 ```typescript
 import { extractHashtags } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -230,15 +237,17 @@ console.log(tags); // ['javascript', 'typescript']
 Extract all mentions from text.
 
 ```typescript
-function extractMentions(text: string): string[]
+function extractMentions(text: string): string[];
 ```
 
 **Parameters**:
+
 - `text`: Text to extract mentions from
 
 **Returns**: Array of mention strings (with @).
 
 **Example**:
+
 ```typescript
 import { extractMentions } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -254,15 +263,17 @@ console.log(mentions); // ['@alice', '@bob@example.com']
 Format a hashtag string (add # if missing, validate format).
 
 ```typescript
-function formatHashtag(tag: string): string
+function formatHashtag(tag: string): string;
 ```
 
 **Parameters**:
+
 - `tag`: Hashtag string (with or without #)
 
 **Returns**: Formatted hashtag with #.
 
 **Example**:
+
 ```typescript
 import { formatHashtag } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -277,15 +288,17 @@ console.log(formatHashtag('#typescript')); // "#typescript"
 Format a mention string (add @ if missing, validate format).
 
 ```typescript
-function formatMention(mention: string): string
+function formatMention(mention: string): string;
 ```
 
 **Parameters**:
+
 - `mention`: Mention string (with or without @)
 
 **Returns**: Formatted mention with @.
 
 **Example**:
+
 ```typescript
 import { formatMention } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -301,17 +314,19 @@ Parse a mention into username and domain parts.
 
 ```typescript
 function parseMention(mention: string): {
-  username: string;
-  domain?: string;
-}
+	username: string;
+	domain?: string;
+};
 ```
 
 **Parameters**:
+
 - `mention`: Mention string (@user or @user@domain)
 
 **Returns**: Object with username and optional domain.
 
 **Example**:
+
 ```typescript
 import { parseMention } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -329,15 +344,17 @@ console.log(parseMention('@bob@example.com'));
 Validate if a string is a valid hashtag.
 
 ```typescript
-function isValidHashtag(tag: string): boolean
+function isValidHashtag(tag: string): boolean;
 ```
 
 **Parameters**:
+
 - `tag`: Hashtag string to validate
 
 **Returns**: `true` if valid, `false` otherwise.
 
 **Example**:
+
 ```typescript
 import { isValidHashtag } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -354,15 +371,17 @@ console.log(isValidHashtag('#')); // false (empty)
 Validate if a string is a valid mention.
 
 ```typescript
-function isValidMention(mention: string): boolean
+function isValidMention(mention: string): boolean;
 ```
 
 **Parameters**:
+
 - `mention`: Mention string to validate
 
 **Returns**: `true` if valid, `false` otherwise.
 
 **Example**:
+
 ```typescript
 import { isValidMention } from '@equaltoai/greater-components-fediverse/Compose';
 
@@ -382,54 +401,50 @@ Implement simple autocomplete:
 
 ```typescript
 import {
-  detectAutocompleteContext,
-  filterSuggestions,
-  insertSuggestion
+	detectAutocompleteContext,
+	filterSuggestions,
+	insertSuggestion,
 } from '@equaltoai/greater-components-fediverse/Compose';
 
 const textarea = document.querySelector('textarea');
 const suggestionBox = document.querySelector('.suggestions');
 
 const allSuggestions = [
-  { type: 'mention', value: '@alice', label: 'Alice Smith' },
-  { type: 'mention', value: '@bob', label: 'Bob Jones' },
-  { type: 'hashtag', value: '#javascript', label: '#javascript' },
-  { type: 'hashtag', value: '#typescript', label: '#typescript' }
+	{ type: 'mention', value: '@alice', label: 'Alice Smith' },
+	{ type: 'mention', value: '@bob', label: 'Bob Jones' },
+	{ type: 'hashtag', value: '#javascript', label: '#javascript' },
+	{ type: 'hashtag', value: '#typescript', label: '#typescript' },
 ];
 
 let currentMatch = null;
 
 textarea.addEventListener('input', () => {
-  const text = textarea.value;
-  const cursorPos = textarea.selectionStart;
-  
-  currentMatch = detectAutocompleteContext(text, cursorPos);
-  
-  if (currentMatch) {
-    const filtered = filterSuggestions(
-      currentMatch.query,
-      allSuggestions.filter(s => s.type === currentMatch.type)
-    );
-    
-    showSuggestions(filtered);
-  } else {
-    hideSuggestions();
-  }
+	const text = textarea.value;
+	const cursorPos = textarea.selectionStart;
+
+	currentMatch = detectAutocompleteContext(text, cursorPos);
+
+	if (currentMatch) {
+		const filtered = filterSuggestions(
+			currentMatch.query,
+			allSuggestions.filter((s) => s.type === currentMatch.type)
+		);
+
+		showSuggestions(filtered);
+	} else {
+		hideSuggestions();
+	}
 });
 
 function selectSuggestion(suggestion) {
-  if (!currentMatch) return;
-  
-  const result = insertSuggestion(
-    textarea.value,
-    currentMatch,
-    suggestion
-  );
-  
-  textarea.value = result.text;
-  textarea.selectionStart = textarea.selectionEnd = result.cursorPosition;
-  
-  hideSuggestions();
+	if (!currentMatch) return;
+
+	const result = insertSuggestion(textarea.value, currentMatch, suggestion);
+
+	textarea.value = result.text;
+	textarea.selectionStart = textarea.selectionEnd = result.cursorPosition;
+
+	hideSuggestions();
 }
 ```
 
@@ -439,43 +454,43 @@ Add keyboard navigation to autocomplete:
 
 ```typescript
 import {
-  detectAutocompleteContext,
-  filterSuggestions,
-  insertSuggestion
+	detectAutocompleteContext,
+	filterSuggestions,
+	insertSuggestion,
 } from '@equaltoai/greater-components-fediverse/Compose';
 
 let suggestions = [];
 let selectedIndex = 0;
 
 textarea.addEventListener('keydown', (e) => {
-  if (suggestions.length === 0) return;
-  
-  switch (e.key) {
-    case 'ArrowDown':
-      e.preventDefault();
-      selectedIndex = (selectedIndex + 1) % suggestions.length;
-      highlightSuggestion(selectedIndex);
-      break;
-      
-    case 'ArrowUp':
-      e.preventDefault();
-      selectedIndex = (selectedIndex - 1 + suggestions.length) % suggestions.length;
-      highlightSuggestion(selectedIndex);
-      break;
-      
-    case 'Enter':
-    case 'Tab':
-      if (suggestions[selectedIndex]) {
-        e.preventDefault();
-        selectSuggestion(suggestions[selectedIndex]);
-      }
-      break;
-      
-    case 'Escape':
-      e.preventDefault();
-      hideSuggestions();
-      break;
-  }
+	if (suggestions.length === 0) return;
+
+	switch (e.key) {
+		case 'ArrowDown':
+			e.preventDefault();
+			selectedIndex = (selectedIndex + 1) % suggestions.length;
+			highlightSuggestion(selectedIndex);
+			break;
+
+		case 'ArrowUp':
+			e.preventDefault();
+			selectedIndex = (selectedIndex - 1 + suggestions.length) % suggestions.length;
+			highlightSuggestion(selectedIndex);
+			break;
+
+		case 'Enter':
+		case 'Tab':
+			if (suggestions[selectedIndex]) {
+				e.preventDefault();
+				selectSuggestion(suggestions[selectedIndex]);
+			}
+			break;
+
+		case 'Escape':
+			e.preventDefault();
+			hideSuggestions();
+			break;
+	}
 });
 ```
 
@@ -485,44 +500,44 @@ Load suggestions dynamically:
 
 ```typescript
 import {
-  detectAutocompleteContext,
-  filterSuggestions
+	detectAutocompleteContext,
+	filterSuggestions,
 } from '@equaltoai/greater-components-fediverse/Compose';
 
 let debounceTimer;
 
 async function fetchSuggestions(type, query) {
-  const endpoints = {
-    mention: `/api/accounts/search?q=${query}`,
-    hashtag: `/api/tags/search?q=${query}`,
-    emoji: `/api/emojis/search?q=${query}`
-  };
-  
-  const response = await fetch(endpoints[type]);
-  const data = await response.json();
-  
-  return data.map(item => ({
-    type,
-    value: type === 'mention' ? `@${item.username}` : `#${item.name}`,
-    label: item.display_name || item.name,
-    avatar: item.avatar
-  }));
+	const endpoints = {
+		mention: `/api/accounts/search?q=${query}`,
+		hashtag: `/api/tags/search?q=${query}`,
+		emoji: `/api/emojis/search?q=${query}`,
+	};
+
+	const response = await fetch(endpoints[type]);
+	const data = await response.json();
+
+	return data.map((item) => ({
+		type,
+		value: type === 'mention' ? `@${item.username}` : `#${item.name}`,
+		label: item.display_name || item.name,
+		avatar: item.avatar,
+	}));
 }
 
 textarea.addEventListener('input', () => {
-  const text = textarea.value;
-  const cursorPos = textarea.selectionStart;
-  const match = detectAutocompleteContext(text, cursorPos);
-  
-  if (match && match.query.length >= 2) {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
-      const suggestions = await fetchSuggestions(match.type, match.query);
-      showSuggestions(suggestions);
-    }, 300);
-  } else {
-    hideSuggestions();
-  }
+	const text = textarea.value;
+	const cursorPos = textarea.selectionStart;
+	const match = detectAutocompleteContext(text, cursorPos);
+
+	if (match && match.query.length >= 2) {
+		clearTimeout(debounceTimer);
+		debounceTimer = setTimeout(async () => {
+			const suggestions = await fetchSuggestions(match.type, match.query);
+			showSuggestions(suggestions);
+		}, 300);
+	} else {
+		hideSuggestions();
+	}
 });
 ```
 
@@ -534,41 +549,41 @@ Implement custom fuzzy matching:
 import { filterSuggestions } from '@equaltoai/greater-components-fediverse/Compose';
 
 function fuzzyScore(query: string, target: string): number {
-  query = query.toLowerCase();
-  target = target.toLowerCase();
-  
-  // Exact match
-  if (target === query) return 100;
-  
-  // Starts with query
-  if (target.startsWith(query)) return 90;
-  
-  // Contains query
-  if (target.includes(query)) return 70;
-  
-  // Fuzzy character matching
-  let score = 0;
-  let queryIndex = 0;
-  
-  for (let i = 0; i < target.length && queryIndex < query.length; i++) {
-    if (target[i] === query[queryIndex]) {
-      score += 10;
-      queryIndex++;
-    }
-  }
-  
-  return queryIndex === query.length ? score : 0;
+	query = query.toLowerCase();
+	target = target.toLowerCase();
+
+	// Exact match
+	if (target === query) return 100;
+
+	// Starts with query
+	if (target.startsWith(query)) return 90;
+
+	// Contains query
+	if (target.includes(query)) return 70;
+
+	// Fuzzy character matching
+	let score = 0;
+	let queryIndex = 0;
+
+	for (let i = 0; i < target.length && queryIndex < query.length; i++) {
+		if (target[i] === query[queryIndex]) {
+			score += 10;
+			queryIndex++;
+		}
+	}
+
+	return queryIndex === query.length ? score : 0;
 }
 
 function customFilterSuggestions(query, suggestions, maxResults = 10) {
-  return suggestions
-    .map(s => ({
-      ...s,
-      score: fuzzyScore(query, s.label)
-    }))
-    .filter(s => s.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, maxResults);
+	return suggestions
+		.map((s) => ({
+			...s,
+			score: fuzzyScore(query, s.label),
+		}))
+		.filter((s) => s.score > 0)
+		.sort((a, b) => b.score - a.score)
+		.slice(0, maxResults);
 }
 ```
 
@@ -580,24 +595,22 @@ Show extracted tags and mentions:
 import { extractHashtags, extractMentions } from '@equaltoai/greater-components-fediverse/Compose';
 
 function updateMetadata(text) {
-  const hashtags = extractHashtags(text);
-  const mentions = extractMentions(text);
-  
-  // Display hashtags
-  const hashtagList = document.querySelector('.hashtags');
-  hashtagList.innerHTML = hashtags
-    .map(tag => `<span class="tag">#${tag}</span>`)
-    .join(' ');
-  
-  // Display mentions
-  const mentionList = document.querySelector('.mentions');
-  mentionList.innerHTML = mentions
-    .map(mention => `<span class="mention">${mention}</span>`)
-    .join(' ');
+	const hashtags = extractHashtags(text);
+	const mentions = extractMentions(text);
+
+	// Display hashtags
+	const hashtagList = document.querySelector('.hashtags');
+	hashtagList.innerHTML = hashtags.map((tag) => `<span class="tag">#${tag}</span>`).join(' ');
+
+	// Display mentions
+	const mentionList = document.querySelector('.mentions');
+	mentionList.innerHTML = mentions
+		.map((mention) => `<span class="mention">${mention}</span>`)
+		.join(' ');
 }
 
 textarea.addEventListener('input', (e) => {
-  updateMetadata(e.target.value);
+	updateMetadata(e.target.value);
 });
 ```
 
@@ -607,40 +620,40 @@ Validate mentions and hashtags:
 
 ```typescript
 import {
-  extractHashtags,
-  extractMentions,
-  isValidHashtag,
-  isValidMention
+	extractHashtags,
+	extractMentions,
+	isValidHashtag,
+	isValidMention,
 } from '@equaltoai/greater-components-fediverse/Compose';
 
 function validateContent(text) {
-  const errors = [];
-  
-  const hashtags = extractHashtags(text);
-  for (const tag of hashtags) {
-    if (!isValidHashtag(`#${tag}`)) {
-      errors.push(`Invalid hashtag: #${tag}`);
-    }
-  }
-  
-  const mentions = extractMentions(text);
-  for (const mention of mentions) {
-    if (!isValidMention(mention)) {
-      errors.push(`Invalid mention: ${mention}`);
-    }
-  }
-  
-  return errors;
+	const errors = [];
+
+	const hashtags = extractHashtags(text);
+	for (const tag of hashtags) {
+		if (!isValidHashtag(`#${tag}`)) {
+			errors.push(`Invalid hashtag: #${tag}`);
+		}
+	}
+
+	const mentions = extractMentions(text);
+	for (const mention of mentions) {
+		if (!isValidMention(mention)) {
+			errors.push(`Invalid mention: ${mention}`);
+		}
+	}
+
+	return errors;
 }
 
 form.addEventListener('submit', (e) => {
-  const text = textarea.value;
-  const errors = validateContent(text);
-  
-  if (errors.length > 0) {
-    e.preventDefault();
-    alert('Validation errors:\n' + errors.join('\n'));
-  }
+	const text = textarea.value;
+	const errors = validateContent(text);
+
+	if (errors.length > 0) {
+		e.preventDefault();
+		alert('Validation errors:\n' + errors.join('\n'));
+	}
 });
 ```
 
@@ -652,36 +665,36 @@ Parse federated mentions:
 import { extractMentions, parseMention } from '@equaltoai/greater-components-fediverse/Compose';
 
 async function resolveMentions(text) {
-  const mentions = extractMentions(text);
-  const resolved = [];
-  
-  for (const mention of mentions) {
-    const parsed = parseMention(mention);
-    
-    if (parsed.domain) {
-      // Federated mention - resolve from remote server
-      const account = await fetchRemoteAccount(parsed.username, parsed.domain);
-      resolved.push(account);
-    } else {
-      // Local mention - resolve from local database
-      const account = await fetchLocalAccount(parsed.username);
-      resolved.push(account);
-    }
-  }
-  
-  return resolved;
+	const mentions = extractMentions(text);
+	const resolved = [];
+
+	for (const mention of mentions) {
+		const parsed = parseMention(mention);
+
+		if (parsed.domain) {
+			// Federated mention - resolve from remote server
+			const account = await fetchRemoteAccount(parsed.username, parsed.domain);
+			resolved.push(account);
+		} else {
+			// Local mention - resolve from local database
+			const account = await fetchLocalAccount(parsed.username);
+			resolved.push(account);
+		}
+	}
+
+	return resolved;
 }
 
 async function fetchRemoteAccount(username, domain) {
-  const response = await fetch(
-    `https://${domain}/.well-known/webfinger?resource=acct:${username}@${domain}`
-  );
-  return response.json();
+	const response = await fetch(
+		`https://${domain}/.well-known/webfinger?resource=acct:${username}@${domain}`
+	);
+	return response.json();
 }
 
 async function fetchLocalAccount(username) {
-  const response = await fetch(`/api/accounts/${username}`);
-  return response.json();
+	const response = await fetch(`/api/accounts/${username}`);
+	return response.json();
 }
 ```
 
@@ -691,33 +704,37 @@ Add custom emoji autocomplete:
 
 ```typescript
 import {
-  detectAutocompleteContext,
-  filterSuggestions,
-  insertSuggestion
+	detectAutocompleteContext,
+	filterSuggestions,
+	insertSuggestion,
 } from '@equaltoai/greater-components-fediverse/Compose';
 
 const customEmojis = [
-  { type: 'emoji', value: ':partyparrot:', label: 'Party Parrot', url: '/emojis/partyparrot.gif' },
-  { type: 'emoji', value: ':thinkingface:', label: 'Thinking Face', url: '/emojis/thinking.png' },
-  { type: 'emoji', value: ':heartfire:', label: 'Heart on Fire', url: '/emojis/heartfire.gif' }
+	{ type: 'emoji', value: ':partyparrot:', label: 'Party Parrot', url: '/emojis/partyparrot.gif' },
+	{ type: 'emoji', value: ':thinkingface:', label: 'Thinking Face', url: '/emojis/thinking.png' },
+	{ type: 'emoji', value: ':heartfire:', label: 'Heart on Fire', url: '/emojis/heartfire.gif' },
 ];
 
 function showEmojiSuggestions(suggestions) {
-  suggestionBox.innerHTML = suggestions.map(emoji => `
+	suggestionBox.innerHTML = suggestions
+		.map(
+			(emoji) => `
     <div class="emoji-suggestion" onclick="selectEmoji('${emoji.value}')">
       <img src="${emoji.url}" alt="${emoji.label}" />
       <span>${emoji.value}</span>
     </div>
-  `).join('');
+  `
+		)
+		.join('');
 }
 
 textarea.addEventListener('input', () => {
-  const match = detectAutocompleteContext(textarea.value, textarea.selectionStart);
-  
-  if (match && match.type === 'emoji') {
-    const filtered = filterSuggestions(match.query, customEmojis);
-    showEmojiSuggestions(filtered);
-  }
+	const match = detectAutocompleteContext(textarea.value, textarea.selectionStart);
+
+	if (match && match.type === 'emoji') {
+		const filtered = filterSuggestions(match.query, customEmojis);
+		showEmojiSuggestions(filtered);
+	}
 });
 ```
 
@@ -728,123 +745,123 @@ textarea.addEventListener('input', () => {
 ```typescript
 import { describe, it, expect } from 'vitest';
 import {
-  detectAutocompleteContext,
-  filterSuggestions,
-  insertSuggestion,
-  extractHashtags,
-  extractMentions,
-  isValidHashtag,
-  isValidMention,
-  parseMention
+	detectAutocompleteContext,
+	filterSuggestions,
+	insertSuggestion,
+	extractHashtags,
+	extractMentions,
+	isValidHashtag,
+	isValidMention,
+	parseMention,
 } from '@equaltoai/greater-components-fediverse/Compose';
 
 describe('Autocomplete', () => {
-  describe('detectAutocompleteContext', () => {
-    it('detects hashtag context', () => {
-      const match = detectAutocompleteContext('Hello #java', 11);
-      expect(match).toEqual({
-        type: 'hashtag',
-        query: 'java',
-        startPos: 6,
-        endPos: 11
-      });
-    });
+	describe('detectAutocompleteContext', () => {
+		it('detects hashtag context', () => {
+			const match = detectAutocompleteContext('Hello #java', 11);
+			expect(match).toEqual({
+				type: 'hashtag',
+				query: 'java',
+				startPos: 6,
+				endPos: 11,
+			});
+		});
 
-    it('detects mention context', () => {
-      const match = detectAutocompleteContext('Hey @alice', 10);
-      expect(match).toEqual({
-        type: 'mention',
-        query: 'alice',
-        startPos: 4,
-        endPos: 10
-      });
-    });
+		it('detects mention context', () => {
+			const match = detectAutocompleteContext('Hey @alice', 10);
+			expect(match).toEqual({
+				type: 'mention',
+				query: 'alice',
+				startPos: 4,
+				endPos: 10,
+			});
+		});
 
-    it('detects emoji context', () => {
-      const match = detectAutocompleteContext('Hello :smil', 11);
-      expect(match).toEqual({
-        type: 'emoji',
-        query: 'smil',
-        startPos: 6,
-        endPos: 11
-      });
-    });
+		it('detects emoji context', () => {
+			const match = detectAutocompleteContext('Hello :smil', 11);
+			expect(match).toEqual({
+				type: 'emoji',
+				query: 'smil',
+				startPos: 6,
+				endPos: 11,
+			});
+		});
 
-    it('returns null when not in context', () => {
-      const match = detectAutocompleteContext('Hello world', 5);
-      expect(match).toBeNull();
-    });
-  });
+		it('returns null when not in context', () => {
+			const match = detectAutocompleteContext('Hello world', 5);
+			expect(match).toBeNull();
+		});
+	});
 
-  describe('filterSuggestions', () => {
-    const suggestions = [
-      { type: 'mention', value: '@alice', label: 'Alice' },
-      { type: 'mention', value: '@bob', label: 'Bob' },
-      { type: 'mention', value: '@charlie', label: 'Charlie' }
-    ];
+	describe('filterSuggestions', () => {
+		const suggestions = [
+			{ type: 'mention', value: '@alice', label: 'Alice' },
+			{ type: 'mention', value: '@bob', label: 'Bob' },
+			{ type: 'mention', value: '@charlie', label: 'Charlie' },
+		];
 
-    it('filters by query', () => {
-      const filtered = filterSuggestions('ali', suggestions);
-      expect(filtered).toHaveLength(1);
-      expect(filtered[0].value).toBe('@alice');
-    });
+		it('filters by query', () => {
+			const filtered = filterSuggestions('ali', suggestions);
+			expect(filtered).toHaveLength(1);
+			expect(filtered[0].value).toBe('@alice');
+		});
 
-    it('respects maxResults', () => {
-      const filtered = filterSuggestions('', suggestions, 2);
-      expect(filtered).toHaveLength(2);
-    });
-  });
+		it('respects maxResults', () => {
+			const filtered = filterSuggestions('', suggestions, 2);
+			expect(filtered).toHaveLength(2);
+		});
+	});
 
-  describe('extractHashtags', () => {
-    it('extracts hashtags', () => {
-      const tags = extractHashtags('Hello #javascript and #typescript!');
-      expect(tags).toEqual(['javascript', 'typescript']);
-    });
+	describe('extractHashtags', () => {
+		it('extracts hashtags', () => {
+			const tags = extractHashtags('Hello #javascript and #typescript!');
+			expect(tags).toEqual(['javascript', 'typescript']);
+		});
 
-    it('handles no hashtags', () => {
-      const tags = extractHashtags('Hello world');
-      expect(tags).toEqual([]);
-    });
-  });
+		it('handles no hashtags', () => {
+			const tags = extractHashtags('Hello world');
+			expect(tags).toEqual([]);
+		});
+	});
 
-  describe('extractMentions', () => {
-    it('extracts mentions', () => {
-      const mentions = extractMentions('Thanks @alice and @bob!');
-      expect(mentions).toEqual(['@alice', '@bob']);
-    });
+	describe('extractMentions', () => {
+		it('extracts mentions', () => {
+			const mentions = extractMentions('Thanks @alice and @bob!');
+			expect(mentions).toEqual(['@alice', '@bob']);
+		});
 
-    it('extracts federated mentions', () => {
-      const mentions = extractMentions('Hey @user@example.com');
-      expect(mentions).toEqual(['@user@example.com']);
-    });
-  });
+		it('extracts federated mentions', () => {
+			const mentions = extractMentions('Hey @user@example.com');
+			expect(mentions).toEqual(['@user@example.com']);
+		});
+	});
 
-  describe('validation', () => {
-    it('validates hashtags', () => {
-      expect(isValidHashtag('#javascript')).toBe(true);
-      expect(isValidHashtag('#')).toBe(false);
-      expect(isValidHashtag('#123')).toBe(false);
-    });
+	describe('validation', () => {
+		it('validates hashtags', () => {
+			expect(isValidHashtag('#javascript')).toBe(true);
+			expect(isValidHashtag('#')).toBe(false);
+			expect(isValidHashtag('#123')).toBe(false);
+		});
 
-    it('validates mentions', () => {
-      expect(isValidMention('@alice')).toBe(true);
-      expect(isValidMention('@bob@example.com')).toBe(true);
-      expect(isValidMention('@')).toBe(false);
-    });
-  });
+		it('validates mentions', () => {
+			expect(isValidMention('@alice')).toBe(true);
+			expect(isValidMention('@bob@example.com')).toBe(true);
+			expect(isValidMention('@')).toBe(false);
+		});
+	});
 
-  describe('parseMention', () => {
-    it('parses local mention', () => {
-      expect(parseMention('@alice')).toEqual({ username: 'alice' });
-    });
+	describe('parseMention', () => {
+		it('parses local mention', () => {
+			expect(parseMention('@alice')).toEqual({ username: 'alice' });
+		});
 
-    it('parses federated mention', () => {
-      expect(parseMention('@bob@example.com')).toEqual({
-        username: 'bob',
-        domain: 'example.com'
-      });
-    });
-  });
+		it('parses federated mention', () => {
+			expect(parseMention('@bob@example.com')).toEqual({
+				username: 'bob',
+				domain: 'example.com',
+			});
+		});
+	});
 });
 ```
 
@@ -885,4 +902,3 @@ Implement debouncing, limit `maxResults`, and consider virtualized rendering for
 ---
 
 **Need help?** Check the [Troubleshooting Guide](../../troubleshooting/README.md) or open an issue on [GitHub](https://github.com/lesserphp/greater-components).
-

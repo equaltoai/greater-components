@@ -1,15 +1,15 @@
 /**
  * Admin Components
- * 
+ *
  * Complete admin dashboard for ActivityPub instance management.
  * Includes user management, reports, moderation, federation, settings, logs, and analytics.
- * 
+ *
  * @module Admin
- * 
+ *
  * @example
  * ```svelte
  * import * as Admin from '@equaltoai/greater-components-fediverse/Admin';
- * 
+ *
  * <Admin.Root {handlers}>
  *   <Admin.Overview />
  *   <Admin.Users />

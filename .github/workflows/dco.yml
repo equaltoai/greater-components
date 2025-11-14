@@ -12,7 +12,7 @@ jobs:
   dco:
     name: DCO Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Get PR Commits
         id: get-pr-commits
@@ -29,7 +29,7 @@ jobs:
               message: commit.commit.message,
               author: commit.commit.author
             }));
-            
+
       - name: DCO Check
         uses: dco-org/dco@v1
         with:

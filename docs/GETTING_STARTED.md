@@ -54,31 +54,31 @@ Create a simple timeline component:
 ```svelte
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-  import { Timeline } from '@equaltoai/greater-components-fediverse';
-  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
+	import { Timeline } from '@equaltoai/greater-components-fediverse';
+	import { createTimelineStore } from '@equaltoai/greater-components-adapters';
 
-  // Create a timeline store
-  const timeline = createTimelineStore({
-    endpoint: 'https://api.lesser.social/graphql',
-    timeline: 'home',
-    token: 'your-auth-token' // Optional
-  });
+	// Create a timeline store
+	const timeline = createTimelineStore({
+		endpoint: 'https://api.lesser.social/graphql',
+		timeline: 'home',
+		token: 'your-auth-token', // Optional
+	});
 </script>
 
 <main>
-  <h1>My Timeline</h1>
-  
-  <Timeline.Root store={timeline}>
-    <Timeline.Feed />
-  </Timeline.Root>
+	<h1>My Timeline</h1>
+
+	<Timeline.Root store={timeline}>
+		<Timeline.Feed />
+	</Timeline.Root>
 </main>
 
 <style>
-  main {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 1rem;
-  }
+	main {
+		max-width: 600px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
 </style>
 ```
 
@@ -92,27 +92,24 @@ Add user authentication:
 
 ```svelte
 <script lang="ts">
-  import { Auth } from '@equaltoai/greater-components-fediverse';
-  
-  let authenticated = false;
-  let authToken = '';
+	import { Auth } from '@equaltoai/greater-components-fediverse';
 
-  function handleLogin({ token }) {
-    authToken = token;
-    authenticated = true;
-  }
+	let authenticated = false;
+	let authToken = '';
+
+	function handleLogin({ token }) {
+		authToken = token;
+		authenticated = true;
+	}
 </script>
 
 {#if !authenticated}
-  <Auth.Root>
-    <Auth.LoginForm 
-      onSuccess={handleLogin}
-      endpoint="https://api.lesser.social/auth" 
-    />
-  </Auth.Root>
+	<Auth.Root>
+		<Auth.LoginForm onSuccess={handleLogin} endpoint="https://api.lesser.social/auth" />
+	</Auth.Root>
 {:else}
-  <p>Welcome! You're logged in.</p>
-  <!-- Show authenticated content -->
+	<p>Welcome! You're logged in.</p>
+	<!-- Show authenticated content -->
 {/if}
 ```
 
@@ -124,29 +121,29 @@ Let users create posts:
 
 ```svelte
 <script lang="ts">
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+	import { Compose } from '@equaltoai/greater-components-fediverse';
 
-  async function handleSubmit({ content, visibility }) {
-    const response = await fetch('https://api.lesser.social/api/v1/statuses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-      body: JSON.stringify({ status: content, visibility })
-    });
+	async function handleSubmit({ content, visibility }) {
+		const response = await fetch('https://api.lesser.social/api/v1/statuses', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authToken}`,
+			},
+			body: JSON.stringify({ status: content, visibility }),
+		});
 
-    if (response.ok) {
-      console.log('Post created!');
-    }
-  }
+		if (response.ok) {
+			console.log('Post created!');
+		}
+	}
 </script>
 
 <Compose.Root onSubmit={handleSubmit}>
-  <Compose.Editor placeholder="What's on your mind?" />
-  <Compose.CharacterCount max={500} />
-  <Compose.VisibilitySelect />
-  <Compose.Submit>Post</Compose.Submit>
+	<Compose.Editor placeholder="What's on your mind?" />
+	<Compose.CharacterCount max={500} />
+	<Compose.VisibilitySelect />
+	<Compose.Submit>Post</Compose.Submit>
 </Compose.Root>
 ```
 
@@ -158,22 +155,22 @@ Add search functionality:
 
 ```svelte
 <script lang="ts">
-  import { Search } from '@equaltoai/greater-components-fediverse';
-  import { debounce } from '@equaltoai/greater-components-utils';
+	import { Search } from '@equaltoai/greater-components-fediverse';
+	import { debounce } from '@equaltoai/greater-components-utils';
 
-  let results = [];
+	let results = [];
 
-  const performSearch = debounce(async (query) => {
-    const response = await fetch(
-      `https://api.lesser.social/api/v2/search?q=${encodeURIComponent(query)}`
-    );
-    results = await response.json();
-  }, 300);
+	const performSearch = debounce(async (query) => {
+		const response = await fetch(
+			`https://api.lesser.social/api/v2/search?q=${encodeURIComponent(query)}`
+		);
+		results = await response.json();
+	}, 300);
 </script>
 
 <Search.Root>
-  <Search.Bar onSearch={performSearch} />
-  <Search.Results {results} />
+	<Search.Bar onSearch={performSearch} />
+	<Search.Results {results} />
 </Search.Root>
 ```
 
@@ -185,25 +182,25 @@ Display user profiles:
 
 ```svelte
 <script lang="ts">
-  import { Profile } from '@equaltoai/greater-components-fediverse';
-  
-  export let userId: string;
-  
-  let profile = $state(null);
-  
-  $effect(() => {
-    fetch(`https://api.lesser.social/api/v1/accounts/${userId}`)
-      .then(r => r.json())
-      .then(data => profile = data);
-  });
+	import { Profile } from '@equaltoai/greater-components-fediverse';
+
+	export let userId: string;
+
+	let profile = $state(null);
+
+	$effect(() => {
+		fetch(`https://api.lesser.social/api/v1/accounts/${userId}`)
+			.then((r) => r.json())
+			.then((data) => (profile = data));
+	});
 </script>
 
 {#if profile}
-  <Profile.Root data={profile}>
-    <Profile.Header />
-    <Profile.Stats />
-    <Profile.Tabs />
-  </Profile.Root>
+	<Profile.Root data={profile}>
+		<Profile.Header />
+		<Profile.Stats />
+		<Profile.Tabs />
+	</Profile.Root>
 {/if}
 ```
 
@@ -215,19 +212,19 @@ Enable real-time timeline updates:
 
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@equaltoai/greater-components-fediverse';
-  import { createGraphQLClient } from '@equaltoai/greater-components-adapters';
+	import { Timeline } from '@equaltoai/greater-components-fediverse';
+	import { createGraphQLClient } from '@equaltoai/greater-components-adapters';
 
-  // Create GraphQL client with WebSocket support
-  const client = createGraphQLClient({
-    httpEndpoint: 'https://api.lesser.social/graphql',
-    wsEndpoint: 'wss://api.lesser.social/graphql',
-    token: authToken
-  });
+	// Create GraphQL client with WebSocket support
+	const client = createGraphQLClient({
+		httpEndpoint: 'https://api.lesser.social/graphql',
+		wsEndpoint: 'wss://api.lesser.social/graphql',
+		token: authToken,
+	});
 
-  // Subscribe to timeline updates
-  const unsubscribe = client.subscribe({
-    query: `
+	// Subscribe to timeline updates
+	const unsubscribe = client.subscribe({
+		query: `
       subscription {
         timelineUpdated {
           id
@@ -236,16 +233,16 @@ Enable real-time timeline updates:
         }
       }
     `,
-    onData: (data) => {
-      console.log('New post:', data);
-      // Update timeline
-    }
-  });
+		onData: (data) => {
+			console.log('New post:', data);
+			// Update timeline
+		},
+	});
 
-  // Cleanup on unmount
-  $effect(() => {
-    return () => unsubscribe();
-  });
+	// Cleanup on unmount
+	$effect(() => {
+		return () => unsubscribe();
+	});
 </script>
 ```
 
@@ -258,42 +255,42 @@ Customize the appearance:
 ```css
 /* src/app.css */
 :root {
-  /* Colors */
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
-  --color-background: #ffffff;
-  --color-surface: #f9fafb;
-  --color-text: #1f2937;
-  --color-text-secondary: #6b7280;
-  --color-border: #e5e7eb;
-  
-  /* Typography */
-  --font-family: system-ui, -apple-system, sans-serif;
-  --font-size-base: 16px;
-  --line-height-base: 1.5;
-  
-  /* Spacing */
-  --spacing-unit: 8px;
-  --spacing-xs: calc(var(--spacing-unit) * 0.5);
-  --spacing-sm: var(--spacing-unit);
-  --spacing-md: calc(var(--spacing-unit) * 2);
-  --spacing-lg: calc(var(--spacing-unit) * 3);
-  
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+	/* Colors */
+	--color-primary: #6366f1;
+	--color-primary-hover: #4f46e5;
+	--color-background: #ffffff;
+	--color-surface: #f9fafb;
+	--color-text: #1f2937;
+	--color-text-secondary: #6b7280;
+	--color-border: #e5e7eb;
+
+	/* Typography */
+	--font-family: system-ui, -apple-system, sans-serif;
+	--font-size-base: 16px;
+	--line-height-base: 1.5;
+
+	/* Spacing */
+	--spacing-unit: 8px;
+	--spacing-xs: calc(var(--spacing-unit) * 0.5);
+	--spacing-sm: var(--spacing-unit);
+	--spacing-md: calc(var(--spacing-unit) * 2);
+	--spacing-lg: calc(var(--spacing-unit) * 3);
+
+	/* Border Radius */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
 }
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #111827;
-    --color-surface: #1f2937;
-    --color-text: #f9fafb;
-    --color-text-secondary: #d1d5db;
-    --color-border: #374151;
-  }
+	:root {
+		--color-background: #111827;
+		--color-surface: #1f2937;
+		--color-text: #f9fafb;
+		--color-text-secondary: #d1d5db;
+		--color-border: #374151;
+	}
 }
 ```
 
@@ -306,111 +303,113 @@ Here's a complete, minimal social media app:
 ```svelte
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-  import { Timeline, Auth, Compose, Search } from '@equaltoai/greater-components-fediverse';
-  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
-  import { debounce } from '@equaltoai/greater-components-utils';
+	import { Timeline, Auth, Compose, Search } from '@equaltoai/greater-components-fediverse';
+	import { createTimelineStore } from '@equaltoai/greater-components-adapters';
+	import { debounce } from '@equaltoai/greater-components-utils';
 
-  let authenticated = $state(false);
-  let authToken = $state('');
-  let activeView = $state('timeline');
+	let authenticated = $state(false);
+	let authToken = $state('');
+	let activeView = $state('timeline');
 
-  const timeline = createTimelineStore({
-    endpoint: 'https://api.lesser.social/graphql',
-    timeline: 'home',
-    get token() { return authToken; }
-  });
+	const timeline = createTimelineStore({
+		endpoint: 'https://api.lesser.social/graphql',
+		timeline: 'home',
+		get token() {
+			return authToken;
+		},
+	});
 
-  function handleLogin({ token }) {
-    authToken = token;
-    authenticated = true;
-  }
+	function handleLogin({ token }) {
+		authToken = token;
+		authenticated = true;
+	}
 
-  async function handlePost({ content, visibility }) {
-    await fetch('https://api.lesser.social/api/v1/statuses', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
-      body: JSON.stringify({ status: content, visibility })
-    });
-    timeline.refresh();
-  }
+	async function handlePost({ content, visibility }) {
+		await fetch('https://api.lesser.social/api/v1/statuses', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${authToken}`,
+			},
+			body: JSON.stringify({ status: content, visibility }),
+		});
+		timeline.refresh();
+	}
 </script>
 
 <div class="app">
-  {#if !authenticated}
-    <div class="auth-page">
-      <h1>Welcome to Fediverse</h1>
-      <Auth.Root>
-        <Auth.LoginForm onSuccess={handleLogin} />
-      </Auth.Root>
-    </div>
-  {:else}
-    <nav class="nav">
-      <button onclick={() => activeView = 'timeline'}>Timeline</button>
-      <button onclick={() => activeView = 'compose'}>Compose</button>
-      <button onclick={() => activeView = 'search'}>Search</button>
-    </nav>
+	{#if !authenticated}
+		<div class="auth-page">
+			<h1>Welcome to Fediverse</h1>
+			<Auth.Root>
+				<Auth.LoginForm onSuccess={handleLogin} />
+			</Auth.Root>
+		</div>
+	{:else}
+		<nav class="nav">
+			<button onclick={() => (activeView = 'timeline')}>Timeline</button>
+			<button onclick={() => (activeView = 'compose')}>Compose</button>
+			<button onclick={() => (activeView = 'search')}>Search</button>
+		</nav>
 
-    <main class="main">
-      {#if activeView === 'timeline'}
-        <Timeline.Root store={timeline}>
-          <Timeline.Feed />
-        </Timeline.Root>
-      {:else if activeView === 'compose'}
-        <Compose.Root onSubmit={handlePost}>
-          <Compose.Editor />
-          <Compose.CharacterCount max={500} />
-          <Compose.Submit>Post</Compose.Submit>
-        </Compose.Root>
-      {:else if activeView === 'search'}
-        <Search.Root>
-          <Search.Bar />
-          <Search.Results />
-        </Search.Root>
-      {/if}
-    </main>
-  {/if}
+		<main class="main">
+			{#if activeView === 'timeline'}
+				<Timeline.Root store={timeline}>
+					<Timeline.Feed />
+				</Timeline.Root>
+			{:else if activeView === 'compose'}
+				<Compose.Root onSubmit={handlePost}>
+					<Compose.Editor />
+					<Compose.CharacterCount max={500} />
+					<Compose.Submit>Post</Compose.Submit>
+				</Compose.Root>
+			{:else if activeView === 'search'}
+				<Search.Root>
+					<Search.Bar />
+					<Search.Results />
+				</Search.Root>
+			{/if}
+		</main>
+	{/if}
 </div>
 
 <style>
-  .app {
-    min-height: 100vh;
-    background: var(--color-background);
-  }
+	.app {
+		min-height: 100vh;
+		background: var(--color-background);
+	}
 
-  .auth-page {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
+	.auth-page {
+		max-width: 400px;
+		margin: 0 auto;
+		padding: 2rem;
+	}
 
-  .nav {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    border-bottom: 1px solid var(--color-border);
-  }
+	.nav {
+		display: flex;
+		gap: 1rem;
+		padding: 1rem;
+		border-bottom: 1px solid var(--color-border);
+	}
 
-  .main {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 1rem;
-  }
+	.main {
+		max-width: 600px;
+		margin: 0 auto;
+		padding: 1rem;
+	}
 
-  button {
-    padding: 0.5rem 1rem;
-    background: var(--color-primary);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-  }
+	button {
+		padding: 0.5rem 1rem;
+		background: var(--color-primary);
+		color: white;
+		border: none;
+		border-radius: var(--radius-md);
+		cursor: pointer;
+	}
 
-  button:hover {
-    background: var(--color-primary-hover);
-  }
+	button:hover {
+		background: var(--color-primary-hover);
+	}
 </style>
 ```
 
@@ -428,18 +427,18 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-  preprocess: vitePreprocess(),
-  
-  kit: {
-    adapter: adapter(),
-    alias: {
-      '@equaltoai/*': './node_modules/@equaltoai/*'
-    }
-  },
+	preprocess: vitePreprocess(),
 
-  compilerOptions: {
-    runes: true // Enable Svelte 5 runes
-  }
+	kit: {
+		adapter: adapter(),
+		alias: {
+			'@equaltoai/*': './node_modules/@equaltoai/*',
+		},
+	},
+
+	compilerOptions: {
+		runes: true, // Enable Svelte 5 runes
+	},
 };
 
 export default config;
@@ -451,19 +450,19 @@ Add to `tsconfig.json`:
 
 ```json
 {
-  "extends": "./.svelte-kit/tsconfig.json",
-  "compilerOptions": {
-    "moduleResolution": "bundler",
-    "module": "esnext",
-    "target": "esnext",
-    "lib": ["esnext", "dom"],
-    "strict": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "paths": {
-      "@equaltoai/*": ["./node_modules/@equaltoai/*"]
-    }
-  }
+	"extends": "./.svelte-kit/tsconfig.json",
+	"compilerOptions": {
+		"moduleResolution": "bundler",
+		"module": "esnext",
+		"target": "esnext",
+		"lib": ["esnext", "dom"],
+		"strict": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"paths": {
+			"@equaltoai/*": ["./node_modules/@equaltoai/*"]
+		}
+	}
 }
 ```
 
@@ -480,10 +479,10 @@ import { render } from '@testing-library/svelte';
 import Timeline from './Timeline.svelte';
 
 describe('Timeline', () => {
-  it('renders timeline', () => {
-    const { getByText } = render(Timeline);
-    expect(getByText('My Timeline')).toBeInTheDocument();
-  });
+	it('renders timeline', () => {
+		const { getByText } = render(Timeline);
+		expect(getByText('My Timeline')).toBeInTheDocument();
+	});
 });
 ```
 
@@ -506,21 +505,27 @@ Now that you have the basics, explore more:
 ### **Common Issues**:
 
 #### **"Module not found"**
+
 Make sure all packages are installed:
+
 ```bash
 pnpm install
 ```
 
 #### **"Component not rendering"**
+
 Check that you're using Svelte 5 with runes enabled.
 
 #### **"TypeScript errors"**
+
 Ensure TypeScript 5.5+ is installed and configured.
 
 #### **"Styles not applying"**
+
 Import CSS custom properties in your `app.css`.
 
 ### **Get Help**:
+
 - [GitHub Issues](https://github.com/equaltoai/greater-components/issues)
 - [Discord Community](https://discord.gg/greater)
 - [Documentation](./README.md)
@@ -532,4 +537,3 @@ Import CSS custom properties in your `app.css`.
 You're now ready to build amazing Fediverse applications with Greater Components!
 
 **Happy coding!** 🚀
-

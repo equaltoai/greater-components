@@ -27,7 +27,10 @@ export const listCommand = new Command()
 			logger.note(chalk.dim('─'.repeat(60)));
 
 			for (const comp of components) {
-				const tags = comp.tags.slice(0, 3).map((t) => chalk.dim(`#${t}`)).join(' ');
+				const tags = comp.tags
+					.slice(0, 3)
+					.map((t) => chalk.dim(`#${t}`))
+					.join(' ');
 				logger.info(`\n${chalk.green('●')} ${chalk.bold(comp.name)} ${tags}`);
 				logger.note(`  ${chalk.dim(comp.description)}`);
 

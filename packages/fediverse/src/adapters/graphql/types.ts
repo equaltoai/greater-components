@@ -1,8 +1,8 @@
 /**
  * GraphQL Types for Lesser
- * 
+ *
  * Type definitions for Lesser's GraphQL API based on the ActivityPub schema.
- * 
+ *
  * @module adapters/graphql/types
  */
 
@@ -373,7 +373,16 @@ export interface LesserNote {
  */
 export interface LesserActivity {
 	id: string;
-	type: 'Create' | 'Update' | 'Delete' | 'Follow' | 'Accept' | 'Reject' | 'Like' | 'Announce' | 'Undo';
+	type:
+		| 'Create'
+		| 'Update'
+		| 'Delete'
+		| 'Follow'
+		| 'Accept'
+		| 'Reject'
+		| 'Like'
+		| 'Announce'
+		| 'Undo';
 	actor: string;
 	object: string | LesserNote | LesserActor;
 	published: string;

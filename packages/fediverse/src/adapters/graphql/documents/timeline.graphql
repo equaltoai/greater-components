@@ -3,35 +3,35 @@
 #import "./fragments.graphql"
 
 query Timeline(
-  $type: TimelineType!
-  $first: Int = 20
-  $after: Cursor
-  $hashtag: String
-  $listId: ID
-  $actorId: ID
-  $mediaOnly: Boolean = false
+	$type: TimelineType!
+	$first: Int = 20
+	$after: Cursor
+	$hashtag: String
+	$listId: ID
+	$actorId: ID
+	$mediaOnly: Boolean = false
 ) {
-  timeline(
-    type: $type
-    first: $first
-    after: $after
-    hashtag: $hashtag
-    listId: $listId
-    actorId: $actorId
-    mediaOnly: $mediaOnly
-  ) {
-    edges {
-      cursor
-      node {
-        ...ObjectFields
-      }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-    }
-    totalCount
-  }
+	timeline(
+		type: $type
+		first: $first
+		after: $after
+		hashtag: $hashtag
+		listId: $listId
+		actorId: $actorId
+		mediaOnly: $mediaOnly
+	) {
+		edges {
+			cursor
+			node {
+				...ObjectFields
+			}
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		}
+		totalCount
+	}
 }

@@ -1,16 +1,16 @@
 /**
  * Profile Components
- * 
+ *
  * Complete profile viewing and editing system for ActivityPub/Fediverse applications.
  * Supports viewing profiles, editing own profile, following, blocking, and custom fields.
- * 
+ *
  * @module components/Profile
- * 
+ *
  * @example
  * ```svelte
  * <script>
  *   import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
- * 
+ *
  *   const profile = {
  *     id: '1',
  *     username: 'alice',
@@ -20,7 +20,7 @@
  *     followingCount: 567,
  *     statusesCount: 8910,
  *   };
- * 
+ *
  *   const handlers = {
  *     onFollow: async (userId) => {
  *       // Handle follow
@@ -30,7 +30,7 @@
  *     },
  *   };
  * </script>
- * 
+ *
  * <Profile.Root {profile} {handlers} isOwnProfile={true}>
  *   <Profile.Header />
  *   <Profile.Stats />

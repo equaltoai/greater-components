@@ -1,6 +1,6 @@
 /**
  * Draft Manager
- * 
+ *
  * Handles saving and loading draft posts from localStorage.
  * Supports multiple drafts with keys and automatic cleanup.
  */
@@ -233,4 +233,3 @@ export function formatDraftAge(age: number): string {
 	}
 	return 'just now';
 }
-

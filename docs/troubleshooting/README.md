@@ -21,6 +21,7 @@ This guide helps you resolve common issues when using Greater Components. Find s
 **Problem**: `npm install @equaltoai/greater-components-primitives` fails with "package not found"
 
 **Solutions**:
+
 ```bash
 # 1. Clear npm cache
 npm cache clean --force
@@ -42,6 +43,7 @@ npm view @equaltoai/greater-components-primitives
 **Problem**: Warnings about missing peer dependencies
 
 **Solutions**:
+
 ```bash
 # Install all required peer dependencies
 npm install svelte @equaltoai/greater-components-tokens
@@ -58,6 +60,7 @@ npm install-peerdeps @equaltoai/greater-components-primitives
 **Problem**: Multiple versions of Greater Components installed
 
 **Solutions**:
+
 ```bash
 # Check for duplicate versions
 npm ls @equaltoai/greater-components-primitives
@@ -76,32 +79,33 @@ npm install @equaltoai/greater-components-primitives@^1.0.0 --save-exact
 **Problem**: Vite fails to build with Greater Components
 
 **Solution**: Update your `vite.config.js`:
+
 ```javascript
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
-  plugins: [
-    svelte({
-      // Enable Svelte 5 mode
-      compilerOptions: {
-        runes: true
-      }
-    })
-  ],
-  optimizeDeps: {
-    include: [
-      '@equaltoai/greater-components-primitives',
-      '@equaltoai/greater-components-tokens',
-      '@equaltoai/greater-components-icons'
-    ]
-  },
-  ssr: {
-    noExternal: [
-      '@equaltoai/greater-components-primitives',
-      '@equaltoai/greater-components-fediverse'
-    ]
-  }
+	plugins: [
+		svelte({
+			// Enable Svelte 5 mode
+			compilerOptions: {
+				runes: true,
+			},
+		}),
+	],
+	optimizeDeps: {
+		include: [
+			'@equaltoai/greater-components-primitives',
+			'@equaltoai/greater-components-tokens',
+			'@equaltoai/greater-components-icons',
+		],
+	},
+	ssr: {
+		noExternal: [
+			'@equaltoai/greater-components-primitives',
+			'@equaltoai/greater-components-fediverse',
+		],
+	},
 });
 ```
 
@@ -110,23 +114,24 @@ export default defineConfig({
 **Problem**: Components not working in SvelteKit
 
 **Solution**: Update `svelte.config.js`:
+
 ```javascript
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 const config = {
-  preprocess: vitePreprocess(),
-  
-  compilerOptions: {
-    runes: true // Enable Svelte 5 runes
-  },
-  
-  kit: {
-    adapter: adapter(),
-    alias: {
-      '@equaltoai/*': './node_modules/@equaltoai/*'
-    }
-  }
+	preprocess: vitePreprocess(),
+
+	compilerOptions: {
+		runes: true, // Enable Svelte 5 runes
+	},
+
+	kit: {
+		adapter: adapter(),
+		alias: {
+			'@equaltoai/*': './node_modules/@equaltoai/*',
+		},
+	},
 };
 
 export default config;
@@ -137,30 +142,31 @@ export default config;
 **Problem**: Using Greater Components with Webpack
 
 **Solution**: Update webpack config:
+
 ```javascript
 module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.svelte$/,
-        use: {
-          loader: 'svelte-loader',
-          options: {
-            compilerOptions: {
-              runes: true
-            }
-          }
-        }
-      }
-    ]
-  },
-  resolve: {
-    alias: {
-      svelte: path.resolve('node_modules', 'svelte/src/runtime')
-    },
-    extensions: ['.mjs', '.js', '.svelte'],
-    mainFields: ['svelte', 'browser', 'module', 'main']
-  }
+	module: {
+		rules: [
+			{
+				test: /\.svelte$/,
+				use: {
+					loader: 'svelte-loader',
+					options: {
+						compilerOptions: {
+							runes: true,
+						},
+					},
+				},
+			},
+		],
+	},
+	resolve: {
+		alias: {
+			svelte: path.resolve('node_modules', 'svelte/src/runtime'),
+		},
+		extensions: ['.mjs', '.js', '.svelte'],
+		mainFields: ['svelte', 'browser', 'module', 'main'],
+	},
 };
 ```
 
@@ -169,6 +175,7 @@ module.exports = {
 **Problem**: CSS imports not working
 
 **Solutions**:
+
 ```javascript
 // 1. In your main app file
 import '@equaltoai/greater-components-tokens/theme.css';
@@ -195,16 +202,17 @@ export default defineConfig({
 **Problem**: TypeScript can't find Greater Components modules
 
 **Solution**: Add to your `app.d.ts`:
+
 ```typescript
 /// <reference types="@sveltejs/kit" />
 /// <reference types="@equaltoai/greater-components-primitives" />
 
 declare module '@equaltoai/greater-components-primitives' {
-  export * from '@equaltoai/greater-components-primitives/dist/index';
+	export * from '@equaltoai/greater-components-primitives/dist/index';
 }
 
 declare module '@equaltoai/greater-components-icons' {
-  export * from '@equaltoai/greater-components-icons/dist/index';
+	export * from '@equaltoai/greater-components-icons/dist/index';
 }
 ```
 
@@ -213,6 +221,7 @@ declare module '@equaltoai/greater-components-icons' {
 **Problem**: TypeScript errors with component props
 
 **Solution**: Use proper type imports:
+
 ```typescript
 // Import component types
 import type { ButtonProps, ModalProps } from '@equaltoai/greater-components-primitives';
@@ -220,8 +229,8 @@ import { Button, Modal } from '@equaltoai/greater-components-primitives';
 
 // Use in your component
 interface MyComponentProps {
-  buttonConfig: ButtonProps;
-  showModal: boolean;
+	buttonConfig: ButtonProps;
+	showModal: boolean;
 }
 ```
 
@@ -230,14 +239,15 @@ interface MyComponentProps {
 **Problem**: TypeScript errors with runes
 
 **Solution**: Ensure correct Svelte version and types:
+
 ```json
 // package.json
 {
-  "devDependencies": {
-    "svelte": "^5.0.0",
-    "@sveltejs/vite-plugin-svelte": "^4.0.0",
-    "typescript": "^5.0.0"
-  }
+	"devDependencies": {
+		"svelte": "^5.0.0",
+		"@sveltejs/vite-plugin-svelte": "^4.0.0",
+		"typescript": "^5.0.0"
+	}
 }
 ```
 
@@ -248,8 +258,8 @@ let doubled = $derived(count * 2);
 
 // Component props with proper typing
 interface Props {
-  title: string;
-  count?: number;
+	title: string;
+	count?: number;
 }
 
 let { title, count = 0 }: Props = $props();
@@ -262,23 +272,24 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Design tokens not applying
 
 **Solutions**:
+
 ```css
 /* 1. Ensure CSS is imported */
 @import '@equaltoai/greater-components-tokens/theme.css';
 
 /* 2. Check custom property usage */
 .my-component {
-  /* Wrong */
-  color: --gr-color-primary-600;
-  
-  /* Correct */
-  color: var(--gr-color-primary-600);
+	/* Wrong */
+	color: --gr-color-primary-600;
+
+	/* Correct */
+	color: var(--gr-color-primary-600);
 }
 
 /* 3. Verify token names */
 .my-component {
-  /* Use gr- prefix */
-  background: var(--gr-semantic-background-primary);
+	/* Use gr- prefix */
+	background: var(--gr-semantic-background-primary);
 }
 ```
 
@@ -287,24 +298,25 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Theme changes not applying
 
 **Solution**: Proper theme provider setup:
+
 ```svelte
 <script>
-  import { ThemeProvider } from '@equaltoai/greater-components-primitives';
-  import { preferencesStore } from '@equaltoai/greater-components-primitives';
+	import { ThemeProvider } from '@equaltoai/greater-components-primitives';
+	import { preferencesStore } from '@equaltoai/greater-components-primitives';
 </script>
 
 <!-- Wrap your entire app -->
 <ThemeProvider>
-  <main>
-    <!-- Your app content -->
-  </main>
+	<main>
+		<!-- Your app content -->
+	</main>
 </ThemeProvider>
 
 <style>
-  /* Ensure CSS custom properties cascade */
-  :global(:root) {
-    color-scheme: light dark;
-  }
+	/* Ensure CSS custom properties cascade */
+	:global(:root) {
+		color-scheme: light dark;
+	}
 </style>
 ```
 
@@ -313,22 +325,23 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Component styles overridden by global styles
 
 **Solutions**:
+
 ```css
 /* 1. Use CSS layers for better control */
 @layer reset, components, utilities;
 
 @layer components {
-  @import '@equaltoai/greater-components-tokens/theme.css';
+	@import '@equaltoai/greater-components-tokens/theme.css';
 }
 
 /* 2. Increase specificity carefully */
 .my-app .gr-button {
-  /* Your overrides */
+	/* Your overrides */
 }
 
 /* 3. Use CSS custom properties for theming */
 .gr-button {
-  --gr-button-background: var(--my-custom-color);
+	--gr-button-background: var(--my-custom-color);
 }
 ```
 
@@ -339,23 +352,24 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Modal component not showing
 
 **Solutions**:
+
 ```svelte
 <script>
-  import { Modal } from '@equaltoai/greater-components-primitives';
-  
-  // 1. Use bindable variable
-  let showModal = $state(false);
-  
-  // 2. Check boolean value
-  function openModal() {
-    showModal = true; // Ensure it's actually true
-    console.log('Modal state:', showModal);
-  }
+	import { Modal } from '@equaltoai/greater-components-primitives';
+
+	// 1. Use bindable variable
+	let showModal = $state(false);
+
+	// 2. Check boolean value
+	function openModal() {
+		showModal = true; // Ensure it's actually true
+		console.log('Modal state:', showModal);
+	}
 </script>
 
 <!-- 3. Use bind:open for two-way binding -->
 <Modal bind:open={showModal} title="My Modal">
-  <p>Modal content</p>
+	<p>Modal content</p>
 </Modal>
 
 <button onclick={openModal}>Open Modal</button>
@@ -366,26 +380,21 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Button onclick handler not firing
 
 **Solutions**:
+
 ```svelte
 <script>
-  // 1. Use proper event handler syntax
-  function handleClick(event) {
-    console.log('Button clicked:', event);
-  }
-  
-  // 2. Check for disabled/loading states
-  let disabled = false;
-  let loading = false;
+	// 1. Use proper event handler syntax
+	function handleClick(event) {
+		console.log('Button clicked:', event);
+	}
+
+	// 2. Check for disabled/loading states
+	let disabled = false;
+	let loading = false;
 </script>
 
 <!-- 3. Ensure onclick is properly bound -->
-<Button 
-  onclick={handleClick}
-  {disabled}
-  {loading}
->
-  Click Me
-</Button>
+<Button onclick={handleClick} {disabled} {loading}>Click Me</Button>
 ```
 
 ### Form Components Not Validating
@@ -393,29 +402,30 @@ let { title, count = 0 }: Props = $props();
 **Problem**: TextField validation not working
 
 **Solution**:
+
 ```svelte
 <script>
-  import { TextField } from '@equaltoai/greater-components-primitives';
-  
-  let email = $state('');
-  let emailError = $state('');
-  
-  function validateEmail() {
-    if (!email.includes('@')) {
-      emailError = 'Please enter a valid email';
-    } else {
-      emailError = '';
-    }
-  }
+	import { TextField } from '@equaltoai/greater-components-primitives';
+
+	let email = $state('');
+	let emailError = $state('');
+
+	function validateEmail() {
+		if (!email.includes('@')) {
+			emailError = 'Please enter a valid email';
+		} else {
+			emailError = '';
+		}
+	}
 </script>
 
 <TextField
-  bind:value={email}
-  type="email"
-  label="Email"
-  error={emailError}
-  oninput={validateEmail}
-  required
+	bind:value={email}
+	type="email"
+	label="Email"
+	error={emailError}
+	oninput={validateEmail}
+	required
 />
 ```
 
@@ -426,30 +436,31 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Screen reader not reading component content
 
 **Solutions**:
+
 ```svelte
+<!-- 3. Manage focus properly -->
+<script>
+	import { tick } from 'svelte';
+
+	let modalOpen = $state(false);
+	let firstInput;
+
+	$effect(() => {
+		if (modalOpen && firstInput) {
+			tick().then(() => firstInput.focus());
+		}
+	});
+</script>
+
 <!-- 1. Ensure proper ARIA labels -->
 <Button aria-label="Close dialog">
-  <CloseIcon aria-hidden="true" />
+	<CloseIcon aria-hidden="true" />
 </Button>
 
 <!-- 2. Use semantic HTML -->
 <Modal title="Settings" aria-describedby="modal-description">
-  <p id="modal-description">Configure your application settings</p>
+	<p id="modal-description">Configure your application settings</p>
 </Modal>
-
-<!-- 3. Manage focus properly -->
-<script>
-  import { tick } from 'svelte';
-  
-  let modalOpen = $state(false);
-  let firstInput;
-  
-  $effect(() => {
-    if (modalOpen && firstInput) {
-      tick().then(() => firstInput.focus());
-    }
-  });
-</script>
 ```
 
 ### Keyboard Navigation Broken
@@ -457,29 +468,28 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Can't navigate components with keyboard
 
 **Solutions**:
-```svelte
-<!-- 1. Ensure proper tabindex -->
-<Menu>
-  <MenuButton tabindex="0">Options</MenuButton>
-  <MenuItems>
-    <MenuItem tabindex="-1">Edit</MenuItem>
-    <MenuItem tabindex="-1">Delete</MenuItem>
-  </MenuItems>
-</Menu>
 
+```svelte
 <!-- 2. Handle keyboard events -->
 <script>
-  function handleKeydown(event) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleAction();
-    }
-  }
+	function handleKeydown(event) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleAction();
+		}
+	}
 </script>
 
-<div role="button" tabindex="0" onkeydown={handleKeydown}>
-  Custom Button
-</div>
+<!-- 1. Ensure proper tabindex -->
+<Menu>
+	<MenuButton tabindex="0">Options</MenuButton>
+	<MenuItems>
+		<MenuItem tabindex="-1">Edit</MenuItem>
+		<MenuItem tabindex="-1">Delete</MenuItem>
+	</MenuItems>
+</Menu>
+
+<div role="button" tabindex="0" onkeydown={handleKeydown}>Custom Button</div>
 ```
 
 ### Color Contrast Issues
@@ -487,19 +497,20 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Failing WCAG color contrast requirements
 
 **Solution**:
+
 ```css
 /* Use high contrast theme */
-:root[data-theme="high-contrast"] {
-  --gr-color-primary-600: #0000ff; /* High contrast blue */
-  --gr-color-background: #ffffff;
-  --gr-color-foreground: #000000;
+:root[data-theme='high-contrast'] {
+	--gr-color-primary-600: #0000ff; /* High contrast blue */
+	--gr-color-background: #ffffff;
+	--gr-color-foreground: #000000;
 }
 
 /* Test contrast ratios */
 .custom-button {
-  background: var(--gr-semantic-action-primary-default);
-  color: var(--gr-semantic-action-primary-foreground);
-  /* Ensure 4.5:1 contrast ratio minimum */
+	background: var(--gr-semantic-action-primary-default);
+	color: var(--gr-semantic-action-primary-foreground);
+	/* Ensure 4.5:1 contrast ratio minimum */
 }
 ```
 
@@ -510,26 +521,22 @@ let { title, count = 0 }: Props = $props();
 **Problem**: TimelineVirtualized performance issues
 
 **Solutions**:
+
 ```svelte
 <script>
-  import { TimelineVirtualized } from '@equaltoai/greater-components-fediverse';
-  
-  // 1. Enable virtualization properly
-  let items = $state([]);
-  
-  // 2. Use consistent item heights
-  const itemHeight = 200; // Fixed height for better performance
-  
-  // 3. Limit initial items
-  let visibleItems = $derived(items.slice(0, 100));
+	import { TimelineVirtualized } from '@equaltoai/greater-components-fediverse';
+
+	// 1. Enable virtualization properly
+	let items = $state([]);
+
+	// 2. Use consistent item heights
+	const itemHeight = 200; // Fixed height for better performance
+
+	// 3. Limit initial items
+	let visibleItems = $derived(items.slice(0, 100));
 </script>
 
-<TimelineVirtualized 
-  items={visibleItems}
-  {itemHeight}
-  overscan={5}
-  onLoadMore={loadMoreItems}
-/>
+<TimelineVirtualized items={visibleItems} {itemHeight} overscan={5} onLoadMore={loadMoreItems} />
 ```
 
 ### Memory Leaks
@@ -537,28 +544,29 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Application consuming too much memory
 
 **Solutions**:
+
 ```svelte
 <script>
-  // 1. Clean up effects properly
-  let subscription = $state();
-  
-  $effect(() => {
-    subscription = createSubscription();
-    
-    // Cleanup function
-    return () => {
-      subscription?.unsubscribe();
-    };
-  });
-  
-  // 2. Limit reactive computations
-  let expensiveComputation = $derived.by(() => {
-    // Only recalculate when necessary
-    if (items.length > 1000) {
-      return computeExpensiveValue(items);
-    }
-    return null;
-  });
+	// 1. Clean up effects properly
+	let subscription = $state();
+
+	$effect(() => {
+		subscription = createSubscription();
+
+		// Cleanup function
+		return () => {
+			subscription?.unsubscribe();
+		};
+	});
+
+	// 2. Limit reactive computations
+	let expensiveComputation = $derived.by(() => {
+		// Only recalculate when necessary
+		if (items.length > 1000) {
+			return computeExpensiveValue(items);
+		}
+		return null;
+	});
 </script>
 ```
 
@@ -567,6 +575,7 @@ let { title, count = 0 }: Props = $props();
 **Problem**: Large bundle size with Greater Components
 
 **Solutions**:
+
 ```javascript
 // 1. Import only what you need
 import { Button } from '@equaltoai/greater-components-primitives/Button';
@@ -575,15 +584,17 @@ import { HomeIcon } from '@equaltoai/greater-components-icons/home';
 // 2. Configure tree shaking
 // vite.config.js
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      external: ['@equaltoai/greater-components-fediverse'], // If not using
-    }
-  }
+	build: {
+		rollupOptions: {
+			external: ['@equaltoai/greater-components-fediverse'], // If not using
+		},
+	},
 });
 
 // 3. Use dynamic imports for large components
-const TimelineVirtualized = await import('@equaltoai/greater-components-fediverse/TimelineVirtualized');
+const TimelineVirtualized = await import(
+	'@equaltoai/greater-components-fediverse/TimelineVirtualized'
+);
 ```
 
 ## Fediverse Integration
@@ -593,20 +604,21 @@ const TimelineVirtualized = await import('@equaltoai/greater-components-fedivers
 **Problem**: Fediverse server connections timing out
 
 **Solutions**:
+
 ```javascript
 import { TransportManager } from '@equaltoai/greater-components-adapters';
 
 const transport = new TransportManager({
-  baseUrl: 'https://mastodon.social',
-  timeout: 10000, // 10 second timeout
-  retries: 3,
-  retryDelay: 1000
+	baseUrl: 'https://mastodon.social',
+	timeout: 10000, // 10 second timeout
+	retries: 3,
+	retryDelay: 1000,
 });
 
 // Handle connection errors
 transport.on('error', (error) => {
-  console.error('Connection error:', error);
-  // Implement fallback logic
+	console.error('Connection error:', error);
+	// Implement fallback logic
 });
 ```
 
@@ -615,33 +627,34 @@ transport.on('error', (error) => {
 **Problem**: StatusCard showing blank content
 
 **Solutions**:
+
 ```svelte
 <script>
-  import { StatusCard } from '@equaltoai/greater-components-fediverse';
-  
-  // 1. Ensure proper status object structure
-  let status = {
-    id: '123',
-    account: {
-      display_name: 'User',
-      username: 'user',
-      avatar: 'https://example.com/avatar.jpg'
-    },
-    content: '<p>Status content</p>',
-    created_at: '2025-01-01T00:00:00Z',
-    // ... other required fields
-  };
-  
-  // 2. Handle loading states
-  let loading = $state(false);
+	import { StatusCard } from '@equaltoai/greater-components-fediverse';
+
+	// 1. Ensure proper status object structure
+	let status = {
+		id: '123',
+		account: {
+			display_name: 'User',
+			username: 'user',
+			avatar: 'https://example.com/avatar.jpg',
+		},
+		content: '<p>Status content</p>',
+		created_at: '2025-01-01T00:00:00Z',
+		// ... other required fields
+	};
+
+	// 2. Handle loading states
+	let loading = $state(false);
 </script>
 
 {#if loading}
-  <StatusCardSkeleton />
+	<StatusCardSkeleton />
 {:else if status}
-  <StatusCard {status} />
+	<StatusCard {status} />
 {:else}
-  <p>No status to display</p>
+	<p>No status to display</p>
 {/if}
 ```
 
@@ -650,21 +663,22 @@ transport.on('error', (error) => {
 **Problem**: Live timeline updates not appearing
 
 **Solutions**:
+
 ```javascript
 // 1. Check WebSocket connection
 const timeline = createTimelineStore({
-  server: 'mastodon.social',
-  realtime: true,
-  onConnectionError: (error) => {
-    console.error('WebSocket error:', error);
-    // Fallback to polling
-  }
+	server: 'mastodon.social',
+	realtime: true,
+	onConnectionError: (error) => {
+		console.error('WebSocket error:', error);
+		// Fallback to polling
+	},
 });
 
 // 2. Verify server supports streaming
 if (!timeline.supportsStreaming) {
-  console.warn('Server does not support real-time streaming');
-  // Use polling fallback
+	console.warn('Server does not support real-time streaming');
+	// Use polling fallback
 }
 
 // 3. Check authentication
@@ -678,20 +692,18 @@ timeline.authenticate(accessToken);
 **Problem**: Components not appearing in Storybook
 
 **Solution**: Update `.storybook/main.js`:
+
 ```javascript
 module.exports = {
-  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|svelte)'],
-  addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-a11y'
-  ],
-  framework: {
-    name: '@storybook/svelte-vite',
-    options: {}
-  },
-  svelteOptions: {
-    preprocess: import('@sveltejs/vite-plugin-svelte').then(plugin => plugin.vitePreprocess())
-  }
+	stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|svelte)'],
+	addons: ['@storybook/addon-essentials', '@storybook/addon-a11y'],
+	framework: {
+		name: '@storybook/svelte-vite',
+		options: {},
+	},
+	svelteOptions: {
+		preprocess: import('@sveltejs/vite-plugin-svelte').then((plugin) => plugin.vitePreprocess()),
+	},
 };
 ```
 
@@ -700,23 +712,24 @@ module.exports = {
 **Problem**: Component tests failing with Greater Components
 
 **Solution**: Update test setup:
+
 ```javascript
 // vitest.config.js
 import { defineConfig } from 'vitest/config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
-  plugins: [
-    svelte({
-      compilerOptions: {
-        runes: true
-      }
-    })
-  ],
-  test: {
-    environment: 'jsdom',
-    setupFiles: ['./src/test-setup.js']
-  }
+	plugins: [
+		svelte({
+			compilerOptions: {
+				runes: true,
+			},
+		}),
+	],
+	test: {
+		environment: 'jsdom',
+		setupFiles: ['./src/test-setup.js'],
+	},
 });
 
 // test-setup.js
@@ -729,6 +742,7 @@ import '@testing-library/jest-dom';
 **Problem**: ESLint not recognizing Svelte 5 syntax
 
 **Solution**: Update ESLint config:
+
 ```javascript
 // eslint.config.js
 import js from '@eslint/js';
@@ -736,24 +750,24 @@ import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 
 export default [
-  js.configs.recommended,
-  ...svelte.configs['flat/recommended'],
-  {
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node
-      }
-    }
-  },
-  {
-    files: ['**/*.svelte'],
-    languageOptions: {
-      parserOptions: {
-        parser: '@typescript-eslint/parser'
-      }
-    }
-  }
+	js.configs.recommended,
+	...svelte.configs['flat/recommended'],
+	{
+		languageOptions: {
+			globals: {
+				...globals.browser,
+				...globals.node,
+			},
+		},
+	},
+	{
+		files: ['**/*.svelte'],
+		languageOptions: {
+			parserOptions: {
+				parser: '@typescript-eslint/parser',
+			},
+		},
+	},
 ];
 ```
 
@@ -810,25 +824,30 @@ process.env.GR_DEBUG = 'true';
 ## FAQ
 
 ### **Q: Why is my component not rendering?**
+
 **A:** Check that you've imported the CSS, the component is properly imported, and all required props are provided.
 
 ### **Q: How do I debug accessibility issues?**
+
 **A:** Use the `@equaltoai/greater-components-testing` package's accessibility helpers, enable high contrast mode, and test with screen readers.
 
 ### **Q: Why are my styles not applying?**
+
 **A:** Ensure CSS custom properties are imported, check CSS specificity, and verify token names have the correct `--gr-` prefix.
 
 ### **Q: How do I optimize performance?**
+
 **A:** Use virtual scrolling for large lists, implement proper cleanup in effects, and import only needed components.
 
 ### **Q: Why can't TypeScript find my components?**
+
 **A:** Make sure TypeScript definitions are included in your build, update your `tsconfig.json`, and check import paths.
 
 ---
 
-*Still need help? Join our community discussions or file an issue with detailed information about your problem.*
+_Still need help? Join our community discussions or file an issue with detailed information about your problem._
 
 ---
 
-*Last updated: August 11, 2025*  
-*For the latest troubleshooting information, visit: [https://github.com/equaltoai/greater-components/docs/troubleshooting](https://github.com/equaltoai/greater-components/docs/troubleshooting)*
+_Last updated: August 11, 2025_  
+_For the latest troubleshooting information, visit: [https://github.com/equaltoai/greater-components/docs/troubleshooting](https://github.com/equaltoai/greater-components/docs/troubleshooting)_

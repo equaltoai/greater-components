@@ -99,7 +99,9 @@ Shows hashtag, mention, and emoji suggestions while typing.
 	 */
 	$effect(() => {
 		if (menuEl && selectedIndex >= 0) {
-			const selectedEl = menuEl.querySelector(`[data-index="${selectedIndex}"]`) as HTMLElement | null;
+			const selectedEl = menuEl.querySelector(
+				`[data-index="${selectedIndex}"]`
+			) as HTMLElement | null;
 			if (selectedEl) {
 				selectedEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 			}

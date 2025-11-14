@@ -20,31 +20,31 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Type check
         run: pnpm typecheck
-        
+
       - name: Lint
         run: pnpm lint
-        
+
       - name: Build packages
         run: pnpm build
-        
+
       - name: Test
         run: pnpm test
-        
+
       - name: Test coverage
         run: pnpm test:coverage
 
@@ -59,29 +59,29 @@ jobs:
     outputs:
       published: ${{ steps.changesets.outputs.published }}
       publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build packages
         run: pnpm build
-        
+
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
@@ -111,15 +111,15 @@ jobs:
           # Create temporary test directory
           mkdir -p /tmp/test-install
           cd /tmp/test-install
-          
+
           # Initialize package.json
           echo '{"name": "test-install", "type": "module", "private": true}' > package.json
-          
+
           # Test installing core packages
           npm install @equaltoai/greater-components-primitives@latest --verbose
           npm install @equaltoai/greater-components-tokens@latest --verbose
           npm install @equaltoai/greater-components-icons@latest --verbose
-          
+
           # Verify TypeScript definitions exist
           packages=("primitives" "tokens" "icons")
           for pkg in "${packages[@]}"; do
@@ -129,7 +129,7 @@ jobs:
             fi
             echo "✅ TypeScript definitions found for @equaltoai/$pkg"
           done
-          
+
           echo "✅ All packages installed successfully"
 
       - name: Verify npm provenance
@@ -154,24 +154,24 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-          
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build Storybook
         run: |
           cd apps/playground
           pnpm build-storybook
-        
+
       # Future: Deploy to documentation hosting service
       - name: Archive Storybook build
         uses: actions/upload-artifact@v5

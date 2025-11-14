@@ -25,10 +25,10 @@
 		try {
 			await sendMessage(content.trim());
 			content = '';
-	} catch {
-		// Error handled by context
+		} catch {
+			// Error handled by context
+		}
 	}
-}
 
 	function handleKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Enter' && !event.shiftKey) {

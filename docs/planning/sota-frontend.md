@@ -50,23 +50,21 @@ This pattern excels for ActivityPub components where **federation state needs to
 
 ```typescript
 interface ActivityPubItem {
-  id: string;
-  type: string;
-  actor: string;
-  published: string;
+	id: string;
+	type: string;
+	actor: string;
+	published: string;
 }
 
 interface GenericListProps<T extends ActivityPubItem> {
-  items: T[];
-  renderItem: (item: T) => ReactNode;
-  onItemSelect?: (item: T) => void;
-  virtualScroll?: boolean;
+	items: T[];
+	renderItem: (item: T) => ReactNode;
+	onItemSelect?: (item: T) => void;
+	virtualScroll?: boolean;
 }
 
-function ActivityList<T extends ActivityPubItem>(
-  props: GenericListProps<T>
-) {
-  // Implementation with full type inference
+function ActivityList<T extends ActivityPubItem>(props: GenericListProps<T>) {
+	// Implementation with full type inference
 }
 ```
 
@@ -86,7 +84,7 @@ This approach ensures **components remain flexible while maintaining complete ty
 
 /* Dark mode automatic switching */
 @media (prefers-color-scheme: dark) {
-  --color-primary: var(--color-blue-400);
+	--color-primary: var(--color-blue-400);
 }
 ```
 
@@ -137,20 +135,21 @@ Leading teams report **3x faster onboarding** when comprehensive Storybook docum
 
 ## Building Your Superior Component Library### Recommended Architecture for ActivityPub SystemsBased on current best practices and your specific requirements, here's the optimal architecture:
 
-
-
 **1. Foundation Layer**
+
 - **TypeScript with strict mode** and comprehensive generics
 - **Svelte 5 with runes** for modern reactivity
 - **Vite for development** with Rollup for production builds
 
 **2. Component Architecture**
+
 - **Headless base components** using Melt UI builders
 - **Compound component patterns** for complex ActivityPub UI
 - **CSS Modules** with design tokens for theming
 - **Web Components wrapper** for framework-agnostic distribution
 
 **3. ActivityPub-Specific Components**
+
 ```typescript
 // Specialized components for federation
 <ActorCard actor={remoteActor} />
@@ -161,12 +160,14 @@ Leading teams report **3x faster onboarding** when comprehensive Storybook docum
 ```
 
 **4. Performance Optimizations**
+
 - **Module federation** for micro-frontend compatibility
 - **Virtual scrolling** for infinite timelines
 - **Optimistic UI updates** for federation actions
 - **WebSocket integration** for real-time updates
 
 **5. Testing and Quality**
+
 - **Playwright for E2E** testing across instances
 - **Vitest for unit tests** with Svelte testing library
 - **Chromatic for visual regression** across themes
@@ -185,24 +186,28 @@ Leading teams report **3x faster onboarding** when comprehensive Storybook docum
 **From Module Federation**: Enable **runtime component sharing** so different ActivityPub clients can share UI components without rebuilding.[43][44]
 
 ### Implementation Roadmap**Phase 1: Foundation (Weeks 1-2)**
+
 - Set up monorepo with Turborepo or Nx
 - Configure TypeScript with strict settings
 - Implement design token system
 - Create first headless primitive components
 
 **Phase 2: Core Components (Weeks 3-6)**
+
 - Build ActivityPub-specific components
 - Implement compound component patterns
 - Add comprehensive TypeScript types
 - Create Storybook documentation
 
 **Phase 3: Testing & Optimization (Weeks 7-8)**
+
 - Set up visual regression testing
 - Implement E2E test suite
 - Optimize bundle sizes with tree shaking
 - Add performance monitoring
 
 **Phase 4: Distribution (Weeks 9-10)**
+
 - Configure NPM publishing workflow
 - Create migration guides from other libraries
 - Build interactive documentation site

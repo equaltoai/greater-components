@@ -30,9 +30,7 @@ async function fetchFileContent(filePath: string): Promise<string> {
 /**
  * Fetch all files for a component
  */
-export async function fetchComponentFiles(
-	component: ComponentMetadata
-): Promise<ComponentFile[]> {
+export async function fetchComponentFiles(component: ComponentMetadata): Promise<ComponentFile[]> {
 	const files: ComponentFile[] = [];
 
 	for (const file of component.files) {

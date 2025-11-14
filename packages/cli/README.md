@@ -30,6 +30,7 @@ greater init
 ```
 
 This will:
+
 - Create a `components.json` configuration file
 - Detect your project type (SvelteKit, Vite, etc.)
 - Configure component paths and aliases
@@ -50,6 +51,7 @@ greater add timeline
 ```
 
 The CLI will:
+
 1. Fetch component source code
 2. Resolve and install dependencies
 3. Copy files to your project
@@ -75,16 +77,16 @@ The `components.json` file controls how components are added:
 
 ```json
 {
-  "style": "default",
-  "rsc": false,
-  "tsx": true,
-  "aliases": {
-    "components": "$lib/components",
-    "utils": "$lib/utils",
-    "ui": "$lib/components/ui",
-    "lib": "$lib",
-    "hooks": "$lib/hooks"
-  }
+	"style": "default",
+	"rsc": false,
+	"tsx": true,
+	"aliases": {
+		"components": "$lib/components",
+		"utils": "$lib/utils",
+		"ui": "$lib/components/ui",
+		"lib": "$lib",
+		"hooks": "$lib/hooks"
+	}
 }
 ```
 
@@ -93,6 +95,7 @@ The `components.json` file controls how components are added:
 ### Headless Primitives
 
 Behavior-only components with no styling:
+
 - `button` - Accessible button with keyboard navigation
 - `modal` - Modal with focus trap and ESC handling
 - `menu` - Dropdown menu with keyboard navigation
@@ -102,6 +105,7 @@ Behavior-only components with no styling:
 ### Compound Components
 
 Complete UI components for ActivityPub:
+
 - `timeline` - Feed with virtual scrolling
 - `status` - Post/status display
 - `notifications` - Notification feed
@@ -110,6 +114,7 @@ Complete UI components for ActivityPub:
 ### Patterns
 
 Advanced ActivityPub patterns:
+
 - `thread-view` - Conversation threading
 - `moderation-tools` - Block, mute, report
 - `visibility-selector` - Post visibility
@@ -118,6 +123,7 @@ Advanced ActivityPub patterns:
 ### Lesser Integration
 
 Components for Lesser GraphQL API:
+
 - `auth` - Authentication system
 - `profile` - User profiles
 - `search` - Search with filters
@@ -128,6 +134,7 @@ Components for Lesser GraphQL API:
 ### Adapters
 
 API integration layers:
+
 - `graphql-adapter` - Lesser GraphQL client
 
 ## Project Structure
@@ -164,13 +171,13 @@ src/
 
 ### Comparison with npm
 
-| Aspect | CLI (Copy) | npm (Install) |
-|--------|-----------|---------------|
-| Control | Full | Limited |
-| Customization | Easy | Fork required |
-| Updates | Manual | Automatic |
-| Bundle Size | Optimal | All included |
-| Lock-in | None | Dependency |
+| Aspect        | CLI (Copy) | npm (Install) |
+| ------------- | ---------- | ------------- |
+| Control       | Full       | Limited       |
+| Customization | Easy       | Fork required |
+| Updates       | Manual     | Automatic     |
+| Bundle Size   | Optimal    | All included  |
+| Lock-in       | None       | Dependency    |
 
 ## Examples
 
@@ -284,4 +291,3 @@ npm install svelte@^5.0.0
 ## License
 
 MIT © Greater Components Team
-

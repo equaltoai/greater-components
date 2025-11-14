@@ -1,9 +1,9 @@
 /**
  * Timeline Component Context
- * 
+ *
  * Provides shared state and configuration for compound Timeline components.
  * Handles virtualization, infinite scrolling, and real-time updates.
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Timeline/context
  */
 
@@ -167,7 +167,7 @@ export interface TimelineContext {
 
 /**
  * Create and set the timeline context
- * 
+ *
  * @param items - Timeline items
  * @param config - Configuration options
  * @param handlers - Action handlers
@@ -186,7 +186,7 @@ export function createTimelineContext(
 		hasMore: initialState.hasMore ?? true,
 		error: initialState.error ?? null,
 		itemCount: items.length,
-		scrollTop: initialState.scrollTop ?? 0
+		scrollTop: initialState.scrollTop ?? 0,
 	};
 
 	// Create proxy for reactivity
@@ -208,13 +208,13 @@ export function createTimelineContext(
 			showLoading: config.showLoading ?? true,
 			estimatedItemHeight: config.estimatedItemHeight || 200,
 			overscan: config.overscan || 5,
-			class: config.class || ''
+			class: config.class || '',
 		},
 		handlers,
 		state,
 		updateState: (partial: Partial<TimelineCompoundState>) => {
 			Object.assign(state, partial);
-		}
+		},
 	};
 
 	setContext(TIMELINE_CONTEXT_KEY, context);
@@ -223,7 +223,7 @@ export function createTimelineContext(
 
 /**
  * Get the timeline context
- * 
+ *
  * @throws Error if called outside of Timeline.Root
  */
 export function getTimelineContext(): TimelineContext {
@@ -249,4 +249,3 @@ export function hasTimelineContext(): boolean {
 		return false;
 	}
 }
-

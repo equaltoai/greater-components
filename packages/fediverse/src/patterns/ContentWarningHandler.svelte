@@ -174,7 +174,7 @@
 						'img',
 					],
 					allowedAttributes: ['href', 'rel', 'target', 'class', 'title', 'src', 'alt'],
-			})
+				})
 			: ''
 	);
 

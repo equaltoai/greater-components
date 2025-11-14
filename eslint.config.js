@@ -48,11 +48,17 @@ export default [
 		},
 	},
 	{
-		files: ['packages/primitives/src/components/Button.svelte', 'packages/primitives/src/components/TextField.svelte'],
+		files: [
+			'packages/primitives/src/components/Button.svelte',
+			'packages/primitives/src/components/TextField.svelte',
+		],
 		rules: {
-			'svelte/valid-compile': ['error', {
-				ignoreWarnings: true
-			}],
+			'svelte/valid-compile': [
+				'error',
+				{
+					ignoreWarnings: true,
+				},
+			],
 		},
 	},
 	{
@@ -74,7 +80,7 @@ export default [
 					'ts-expect-error': 'allow-with-description',
 					'ts-ignore': 'allow-with-description',
 					'ts-nocheck': false,
-					'minimumDescriptionLength': 5,
+					minimumDescriptionLength: 5,
 				},
 			],
 			'no-console': ['warn', { allow: ['warn', 'error'] }],

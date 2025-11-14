@@ -1,6 +1,6 @@
 /**
  * Avatar Primitive Tests
- * 
+ *
  * Comprehensive test suite for the Avatar headless primitive.
  * Tests image loading, fallbacks, status indicators, and accessibility.
  */
@@ -464,4 +464,3 @@ describe('Avatar Primitive', () => {
 		});
 	});
 });
-

@@ -13,22 +13,22 @@ const distDir = join(__dirname, '..', 'dist');
 
 function renameDollarVarsInCode(code) {
 	const seenVars = new Map();
-	
+
 	// Use replace with a function for more reliable matching
 	// Parameters: (match, offset, string) when no capture groups
 	const result = code.replace(/\$+[a-zA-Z0-9_]+/g, (match, offset, string) => {
-		
 		// Skip if part of another identifier
 		if (offset > 0 && /\w/.test(string[offset - 1])) return match;
-		if (offset + match.length < string.length && /\w/.test(string[offset + match.length])) return match;
-		
+		if (offset + match.length < string.length && /\w/.test(string[offset + match.length]))
+			return match;
+
 		// Skip if in a string literal - use a more accurate detection
 		// Check if we're inside quotes by finding the last unescaped quote before this position
 		let inString = false;
 		let inSingleQuote = false;
 		let inDoubleQuote = false;
 		let inBacktick = false;
-		
+
 		// Track escape state properly - count consecutive backslashes
 		for (let i = 0; i < offset; i++) {
 			const char = string[i];
@@ -39,7 +39,7 @@ function renameDollarVarsInCode(code) {
 			}
 			// If odd number of backslashes, the quote is escaped
 			const isEscaped = backslashCount % 2 === 1;
-			
+
 			if (!isEscaped) {
 				if (char === "'" && !inDoubleQuote && !inBacktick) {
 					inSingleQuote = !inSingleQuote;
@@ -50,9 +50,9 @@ function renameDollarVarsInCode(code) {
 				}
 			}
 		}
-		
+
 		if (inSingleQuote || inDoubleQuote || inBacktick) return match;
-		
+
 		// Generate replacement
 		let replacement;
 		if (!seenVars.has(match)) {
@@ -62,10 +62,10 @@ function renameDollarVarsInCode(code) {
 		} else {
 			replacement = seenVars.get(match);
 		}
-		
+
 		return replacement;
 	});
-	
+
 	return result;
 }
 
@@ -75,7 +75,7 @@ function processDirectory(dir) {
 		for (const entry of entries) {
 			const fullPath = join(dir, entry);
 			const stat = statSync(fullPath);
-			
+
 			if (stat.isDirectory()) {
 				processDirectory(fullPath);
 			} else if (entry.endsWith('.svelte.js') && !entry.endsWith('.map')) {
@@ -98,4 +98,3 @@ function processDirectory(dir) {
 
 processDirectory(distDir);
 console.log('✅ Dollar variable renaming complete');
-

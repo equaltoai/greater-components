@@ -1,6 +1,6 @@
 /**
  * Apollo Client Cache Configuration for Lesser
- * 
+ *
  * Configures normalized caching with:
  * - Type policies for pagination
  * - Field policies for merging
@@ -136,65 +136,65 @@ export const typePolicies: TypePolicies = {
 				},
 			},
 
-		/**
-		 * Followers/Following - use username as key and handle ActorListPage structure
-		 */
-		followers: {
-			keyArgs: ['username'],
-			merge(existing, incoming) {
-				if (!existing) {
+			/**
+			 * Followers/Following - use username as key and handle ActorListPage structure
+			 */
+			followers: {
+				keyArgs: ['username'],
+				merge(existing, incoming) {
+					if (!existing) {
+						return incoming;
+					}
+
+					// ActorListPage structure (actors array, not edges)
+					const existingActors = existing.actors || [];
+					const incomingActors = incoming.actors || [];
+
+					return {
+						...incoming,
+						actors: [...existingActors, ...incomingActors],
+						nextCursor: incoming.nextCursor,
+						totalCount: incoming.totalCount,
+					};
+				},
+			},
+			following: {
+				keyArgs: ['username'],
+				merge(existing, incoming) {
+					if (!existing) {
+						return incoming;
+					}
+
+					// ActorListPage structure (actors array, not edges)
+					const existingActors = existing.actors || [];
+					const incomingActors = incoming.actors || [];
+
+					return {
+						...incoming,
+						actors: [...existingActors, ...incomingActors],
+						nextCursor: incoming.nextCursor,
+						totalCount: incoming.totalCount,
+					};
+				},
+			},
+
+			/**
+			 * User preferences - always use latest
+			 */
+			userPreferences: {
+				merge(_, incoming) {
 					return incoming;
-				}
-				
-				// ActorListPage structure (actors array, not edges)
-				const existingActors = existing.actors || [];
-				const incomingActors = incoming.actors || [];
-				
-				return {
-					...incoming,
-					actors: [...existingActors, ...incomingActors],
-					nextCursor: incoming.nextCursor,
-					totalCount: incoming.totalCount
-				};
+				},
 			},
-		},
-		following: {
-			keyArgs: ['username'],
-			merge(existing, incoming) {
-				if (!existing) {
+
+			/**
+			 * Push subscription - always use latest
+			 */
+			pushSubscription: {
+				merge(_, incoming) {
 					return incoming;
-				}
-				
-				// ActorListPage structure (actors array, not edges)
-				const existingActors = existing.actors || [];
-				const incomingActors = incoming.actors || [];
-				
-				return {
-					...incoming,
-					actors: [...existingActors, ...incomingActors],
-					nextCursor: incoming.nextCursor,
-					totalCount: incoming.totalCount
-				};
+				},
 			},
-		},
-		
-		/**
-		 * User preferences - always use latest
-		 */
-		userPreferences: {
-			merge(_, incoming) {
-				return incoming;
-			},
-		},
-		
-		/**
-		 * Push subscription - always use latest
-		 */
-		pushSubscription: {
-			merge(_, incoming) {
-				return incoming;
-			},
-		},
 		},
 	},
 
@@ -247,14 +247,14 @@ export const typePolicies: TypePolicies = {
 			},
 		},
 	},
-	
+
 	/**
 	 * User Preferences - cache by actorId
 	 */
 	UserPreferences: {
 		keyFields: ['actorId'],
 	},
-	
+
 	/**
 	 * Push Subscription - unique per user
 	 */
@@ -337,7 +337,10 @@ export function evictStaleCache(cache: ApolloCache, fieldName: string, maxAge: n
 	try {
 		cache.modify<ConnectionEdges>({
 			fields: {
-				[fieldName](existing: ConnectionEdges | undefined, { readField }: { readField: ReadFieldFn }) {
+				[fieldName](
+					existing: ConnectionEdges | undefined,
+					{ readField }: { readField: ReadFieldFn }
+				) {
 					if (!existing?.edges) {
 						return existing;
 					}

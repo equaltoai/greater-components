@@ -40,13 +40,13 @@
 		overflow-x: auto;
 		margin: 1rem 0;
 	}
-	
+
 	.slots-table {
 		width: 100%;
 		border-collapse: collapse;
 		font-size: 0.875rem;
 	}
-	
+
 	.slots-table th {
 		text-align: left;
 		padding: 0.75rem;
@@ -55,41 +55,41 @@
 		font-weight: 600;
 		white-space: nowrap;
 	}
-	
+
 	.slots-table td {
 		padding: 0.75rem;
 		border: 1px solid var(--doc-border);
 		vertical-align: top;
 	}
-	
+
 	.slot-name {
 		white-space: nowrap;
 		font-weight: 500;
 	}
-	
+
 	.slot-name code {
 		font-weight: 600;
 		color: var(--doc-link);
 	}
-	
+
 	.slot-props code {
 		color: var(--doc-text);
 		opacity: 0.8;
 	}
-	
+
 	.slot-props .undefined {
 		opacity: 0.4;
 	}
-	
+
 	.slot-description {
 		line-height: 1.5;
 	}
-	
+
 	@media (max-width: 768px) {
 		.slots-table {
 			font-size: 0.75rem;
 		}
-		
+
 		.slots-table th,
 		.slots-table td {
 			padding: 0.5rem;

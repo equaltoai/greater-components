@@ -15,16 +15,16 @@
 
 	const { state: searchState, handlers } = getSearchContext();
 
-function handleClick() {
-	handlers.onNoteClick?.(note);
-}
-
-function handleKeyDown(event: KeyboardEvent) {
-	if (event.key === 'Enter' || event.key === ' ') {
-		event.preventDefault();
-		handleClick();
+	function handleClick() {
+		handlers.onNoteClick?.(note);
 	}
-}
+
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleClick();
+		}
+	}
 
 	function formatDate(date: string): string {
 		const d = new Date(date);
@@ -108,7 +108,9 @@ function handleKeyDown(event: KeyboardEvent) {
 		background: var(--bg-primary, #ffffff);
 		border: 1px solid var(--border-color, #e1e8ed);
 		border-radius: 0.75rem;
-		transition: background-color 0.2s, border-color 0.2s;
+		transition:
+			background-color 0.2s,
+			border-color 0.2s;
 	}
 
 	.note-result:hover {

@@ -4,12 +4,12 @@
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getSearchContext, formatCount } from './context.js';
-import ContentRenderer from '../ContentRenderer.svelte';
-import type { SearchActor } from './context.js';
+	import ContentRenderer from '../ContentRenderer.svelte';
+	import type { SearchActor } from './context.js';
 
-interface Props {
-	actor: SearchActor;
-	class?: string;
+	interface Props {
+		actor: SearchActor;
+		class?: string;
 	}
 
 	let { actor, class: className = '' }: Props = $props();
@@ -61,7 +61,11 @@ interface Props {
 			</div>
 			{#if actor.bio}
 				<div class="actor-result__bio">
-					<ContentRenderer content={actor.bio} collapsed={false} class="actor-result__bio-content" />
+					<ContentRenderer
+						content={actor.bio}
+						collapsed={false}
+						class="actor-result__bio-content"
+					/>
 				</div>
 			{/if}
 			{#if actor.followersCount !== undefined}
@@ -94,7 +98,9 @@ interface Props {
 		background: var(--bg-primary, #ffffff);
 		border: 1px solid var(--border-color, #e1e8ed);
 		border-radius: 0.75rem;
-		transition: background-color 0.2s, border-color 0.2s;
+		transition:
+			background-color 0.2s,
+			border-color 0.2s;
 	}
 
 	.actor-result:hover {

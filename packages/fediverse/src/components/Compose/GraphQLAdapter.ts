@@ -151,16 +151,14 @@ function createOptimisticObject(data: {
 	};
 }
 
-function buildCreateNoteVariables(
-	data: {
-		content: string;
-		contentWarning?: string;
-		visibility: PostVisibility;
-		mediaIds?: string[];
-		inReplyTo?: string;
-		sensitive?: boolean;
-	}
-): CreateNoteVariables['input'] {
+function buildCreateNoteVariables(data: {
+	content: string;
+	contentWarning?: string;
+	visibility: PostVisibility;
+	mediaIds?: string[];
+	inReplyTo?: string;
+	sensitive?: boolean;
+}): CreateNoteVariables['input'] {
 	return {
 		content: data.content,
 		visibility: mapVisibility(data.visibility),
@@ -174,7 +172,9 @@ function buildCreateNoteVariables(
 /**
  * Create compose handlers that use GraphQL adapter
  */
-export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter): GraphQLComposeHandlers {
+export function createGraphQLComposeHandlers(
+	adapter: LesserGraphQLAdapter
+): GraphQLComposeHandlers {
 	/**
 	 * Handle post submission
 	 */
@@ -261,9 +261,9 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter): Gra
 			description: media.description?.trim() ? media.description.trim() : undefined,
 			focus: media.focalPoint
 				? {
-					x: media.focalPoint.x,
-					y: media.focalPoint.y,
-				}
+						x: media.focalPoint.x,
+						y: media.focalPoint.y,
+					}
 				: undefined,
 			sensitive: media.sensitive,
 			spoilerText: media.spoilerText.trim() === '' ? null : media.spoilerText.trim(),
@@ -326,10 +326,7 @@ export function createGraphQLComposeHandlers(adapter: LesserGraphQLAdapter): Gra
 	/**
 	 * Search for autocomplete suggestions
 	 */
-	async function handleAutocompleteSearch(
-		query: string,
-		type: 'hashtag' | 'mention' | 'emoji'
-	) {
+	async function handleAutocompleteSearch(query: string, type: 'hashtag' | 'mention' | 'emoji') {
 		if (type === 'mention') {
 			const results = await adapter.search({
 				query,

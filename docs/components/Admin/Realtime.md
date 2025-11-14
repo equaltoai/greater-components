@@ -11,52 +11,62 @@ Lesser provides comprehensive real-time subscription support for monitoring and 
 ### Timeline & Social Events
 
 #### `timelineUpdates`
+
 Receives real-time updates for timeline content.
 
 **Variables:**
+
 - `type`: Timeline type (`HOME`, `PUBLIC`, `LOCAL`, `HASHTAG`, `LIST`, `DIRECT`)
 - `listId` (optional): List ID for `LIST` timelines
 
 **Payload:** `Object` (Post/Status)
 
 **Example:**
+
 ```typescript
 const subscription = adapter.subscribeToTimelineUpdates({
-  type: 'HOME'
+	type: 'HOME',
 });
 
 subscription.subscribe({
-  next: (result) => {
-    console.log('New timeline update:', result.data?.timelineUpdates);
-  }
+	next: (result) => {
+		console.log('New timeline update:', result.data?.timelineUpdates);
+	},
 });
 ```
 
 #### `notificationStream`
+
 Receives user notifications in real-time.
 
 **Variables:**
+
 - `types` (optional): Filter by notification types
 
 **Payload:** `Notification`
 
 #### `conversationUpdates`
+
 Real-time updates for direct message conversations.
 
 **Payload:** `Conversation`
 
 #### `listUpdates`
+
 Updates for list changes (members added/removed, list edited).
 
 **Variables:**
+
 - `listId`: ID of the list to monitor
 
 **Payload:** `ListUpdate`
 
 #### `relationshipUpdates`
+
 Monitors follower/following relationship changes.
 
 **Variables:**
+
 - `actorId` (optional): Filter by specific actor
 
 **Payload:** `RelationshipUpdate`
@@ -64,87 +74,103 @@ Monitors follower/following relationship changes.
 ### Quote Posts & Hashtags
 
 #### `quoteActivity`
+
 Monitors quote posts activity for a specific note.
 
 **Variables:**
+
 - `noteId`: ID of the note to monitor
 
 **Payload:** `QuoteActivityUpdate`
 
 **Example:**
+
 ```typescript
 const subscription = adapter.subscribeToQuoteActivity({
-  noteId: 'note_abc123'
+	noteId: 'note_abc123',
 });
 ```
 
 #### `hashtagActivity`
+
 Receives posts with specific hashtags in real-time.
 
 **Variables:**
+
 - `hashtags`: Array of hashtag names (without `#`)
 
 **Payload:** `HashtagActivityUpdate`
 
 **Example:**
+
 ```typescript
 const subscription = adapter.subscribeToHashtagActivity({
-  hashtags: ['svelte', 'typescript', 'webdev']
+	hashtags: ['svelte', 'typescript', 'webdev'],
 });
 ```
 
 ### Trust & Moderation
 
 #### `trustUpdates`
+
 Real-time trust score changes for actors.
 
 **Variables:**
+
 - `actorId`: Actor to monitor (required)
 
 **Payload:** `TrustEdge`
 
 #### `moderationEvents`
+
 Moderation decisions and actions.
 
 **Variables:**
+
 - `actorId` (optional): Filter by affected actor
 
 **Payload:** `ModerationDecision`
 
 #### `moderationAlerts`
+
 High-priority moderation alerts requiring admin attention.
 
 **Variables:**
+
 - `severity` (optional): Minimum severity level (`INFO`, `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`)
 
 **Payload:** `ModerationAlert`
 
 **Example:**
+
 ```typescript
 const subscription = adapter.subscribeToModerationAlerts({
-  severity: 'HIGH'
+	severity: 'HIGH',
 });
 
 subscription.subscribe({
-  next: (result) => {
-    const alert = result.data?.moderationAlerts;
-    if (alert && !alert.handled) {
-      // Display alert to moderator
-      notifyModerator(alert);
-    }
-  }
+	next: (result) => {
+		const alert = result.data?.moderationAlerts;
+		if (alert && !alert.handled) {
+			// Display alert to moderator
+			notifyModerator(alert);
+		}
+	},
 });
 ```
 
 #### `moderationQueueUpdate`
+
 Updates to the moderation queue.
 
 **Variables:**
+
 - `priority` (optional): Filter by priority level
 
 **Payload:** `ModerationItem`
 
 #### `threatIntelligence`
+
 Security threat alerts across the federation.
 
 **Payload:** `ThreatAlert`
@@ -152,14 +178,17 @@ Security threat alerts across the federation.
 ### AI Analysis
 
 #### `aiAnalysisUpdates`
+
 AI content analysis results.
 
 **Variables:**
+
 - `objectId` (optional): Filter by specific object
 
 **Payload:** `AIAnalysis`
 
 Includes:
+
 - Text analysis (sentiment, toxicity, PII detection)
 - Image analysis (NSFW, violence, deepfake detection)
 - AI-generated content detection
@@ -168,37 +197,45 @@ Includes:
 ### Cost & Budget Management
 
 #### `costUpdates`
+
 Real-time operational cost tracking.
 
 **Variables:**
+
 - `threshold` (optional): Only notify when cost exceeds threshold (in microcents)
 
 **Payload:** `CostUpdate`
 
 Fields:
+
 - `operationCost`: Cost of current operation
 - `dailyTotal`: Total cost for current day
 - `monthlyProjection`: Projected monthly cost
 
 #### `costAlerts`
+
 Cost threshold alerts.
 
 **Variables:**
+
 - `thresholdUSD`: Alert threshold in USD (required)
 
 **Payload:** `CostAlert`
 
 **Example:**
+
 ```typescript
 const subscription = adapter.subscribeToCostAlerts({
-  thresholdUSD: 100.0
+	thresholdUSD: 100.0,
 });
 ```
 
 #### `budgetAlerts`
+
 Budget overspending alerts by domain/instance.
 
 **Variables:**
+
 - `domain` (optional): Filter by specific domain
 
 **Payload:** `BudgetAlert`
@@ -206,9 +243,11 @@ Budget overspending alerts by domain/instance.
 ### Metrics & Performance
 
 #### `metricsUpdates`
+
 Real-time infrastructure metrics.
 
 **Variables:**
+
 - `categories` (optional): Filter by metric categories
 - `services` (optional): Filter by service names
 - `threshold` (optional): Minimum value threshold
@@ -216,28 +255,33 @@ Real-time infrastructure metrics.
 **Payload:** `MetricsUpdate`
 
 Includes:
+
 - Service performance metrics (latency, throughput)
 - Resource utilization (CPU, memory, storage)
 - Cost metrics per service
 - Custom dimensions/tags
 
 **Example:**
+
 ```typescript
 const subscription = adapter.subscribeToMetricsUpdates({
-  categories: ['performance', 'cost'],
-  services: ['GRAPHQL_API', 'FEDERATION_DELIVERY']
+	categories: ['performance', 'cost'],
+	services: ['GRAPHQL_API', 'FEDERATION_DELIVERY'],
 });
 ```
 
 #### `performanceAlert`
+
 Performance degradation alerts.
 
 **Variables:**
+
 - `severity`: Minimum severity level (required)
 
 **Payload:** `PerformanceAlert`
 
 Services:
+
 - `GRAPHQL_API`
 - `FEDERATION_DELIVERY`
 - `MEDIA_PROCESSOR`
@@ -248,14 +292,17 @@ Services:
 ### Federation & Infrastructure
 
 #### `federationHealthUpdates`
+
 Federation health status changes.
 
 **Variables:**
+
 - `domain` (optional): Monitor specific remote instance
 
 **Payload:** `FederationHealthUpdate`
 
 Statuses:
+
 - `HEALTHY`: Operating normally
 - `WARNING`: Minor issues detected
 - `CRITICAL`: Major issues affecting federation
@@ -263,27 +310,30 @@ Statuses:
 - `UNKNOWN`: Status cannot be determined
 
 **Example:**
+
 ```typescript
 const subscription = adapter.subscribeToFederationHealthUpdates({
-  domain: 'mastodon.social'
+	domain: 'mastodon.social',
 });
 
 subscription.subscribe({
-  next: (result) => {
-    const update = result.data?.federationHealthUpdates;
-    if (update?.currentStatus === 'CRITICAL') {
-      alertAdmins(`${update.domain} is experiencing critical issues`);
-    }
-  }
+	next: (result) => {
+		const update = result.data?.federationHealthUpdates;
+		if (update?.currentStatus === 'CRITICAL') {
+			alertAdmins(`${update.domain} is experiencing critical issues`);
+		}
+	},
 });
 ```
 
 #### `infrastructureEvent`
+
 Infrastructure events (deployments, failures, scaling).
 
 **Payload:** `InfrastructureEvent`
 
 Event types:
+
 - `DEPLOYMENT`
 - `SCALING`
 - `FAILURE`
@@ -298,37 +348,37 @@ The `AdminStreamingStore` provides a unified interface for managing all admin su
 import { createAdminStreamingStore } from '@equaltoai/greater-components-adapters';
 
 const adminStore = createAdminStreamingStore({
-  maxHistorySize: 100,
-  alertSeverityThreshold: 'MEDIUM',
-  enableDeduplication: true
+	maxHistorySize: 100,
+	alertSeverityThreshold: 'MEDIUM',
+	enableDeduplication: true,
 });
 
 // Subscribe to events
 adminStore.on('metricsUpdate', (metric) => {
-  updateDashboard(metric);
+	updateDashboard(metric);
 });
 
 adminStore.on('moderationAlert', (alert) => {
-  if (!alert.handled) {
-    notifyModerator(alert);
-  }
+	if (!alert.handled) {
+		notifyModerator(alert);
+	}
 });
 
 adminStore.on('costAlert', (alert) => {
-  sendEmailAlert(alert);
+	sendEmailAlert(alert);
 });
 
 // Process incoming subscription updates
 subscription.subscribe({
-  next: (result) => {
-    adminStore.processStreamingUpdate({
-      type: 'metricsUpdates',
-      payload: result.data?.metricsUpdates,
-      stream: 'admin',
-      timestamp: Date.now(),
-      metadata: { source: 'lesser', apiVersion: '1.0', lastUpdated: Date.now() }
-    });
-  }
+	next: (result) => {
+		adminStore.processStreamingUpdate({
+			type: 'metricsUpdates',
+			payload: result.data?.metricsUpdates,
+			stream: 'admin',
+			timestamp: Date.now(),
+			metadata: { source: 'lesser', apiVersion: '1.0', lastUpdated: Date.now() },
+		});
+	},
 });
 ```
 
@@ -340,12 +390,12 @@ subscription.subscribe({
 import { LesserTimelineStore } from '@equaltoai/greater-components-fediverse/lib/lesserTimelineStore';
 
 const hashtagTimeline = new LesserTimelineStore({
-  adapter: lesserAdapter,
-  type: 'HASHTAG',
-  hashtag: 'svelte',
-  enableRealtime: true,
-  maxItems: 500,
-  preloadCount: 20
+	adapter: lesserAdapter,
+	type: 'HASHTAG',
+	hashtag: 'svelte',
+	enableRealtime: true,
+	maxItems: 500,
+	preloadCount: 20,
 });
 
 await hashtagTimeline.loadInitial();
@@ -355,14 +405,14 @@ await hashtagTimeline.loadInitial();
 
 ```typescript
 const listTimeline = new LesserTimelineStore({
-  adapter: lesserAdapter,
-  type: 'LIST',
-  listId: 'list_xyz789',
-  enableRealtime: true,
-  listFilter: {
-    includeReplies: true,
-    includeBoosts: false
-  }
+	adapter: lesserAdapter,
+	type: 'LIST',
+	listId: 'list_xyz789',
+	enableRealtime: true,
+	listFilter: {
+		includeReplies: true,
+		includeBoosts: false,
+	},
 });
 ```
 
@@ -370,7 +420,7 @@ const listTimeline = new LesserTimelineStore({
 
 ```typescript
 const hashtagSub = adapter.subscribeToHashtagActivity({
-  hashtags: ['fediverse', 'activitypub', 'mastodon']
+	hashtags: ['fediverse', 'activitypub', 'mastodon'],
 });
 ```
 
@@ -382,8 +432,8 @@ The subscription layer integrates with the existing transport infrastructure:
 import { TransportManager } from '@equaltoai/greater-components-fediverse/lib/transport';
 
 const transport = new TransportManager({
-  adapter: lesserAdapter,
-  enableRealtime: true
+	adapter: lesserAdapter,
+	enableRealtime: true,
 });
 
 // Subscribe to hashtag stream
@@ -393,19 +443,15 @@ transport.subscribeToHashtag(['javascript', 'typescript']);
 transport.subscribeToList('list_abc123');
 
 // Subscribe to admin events
-transport.subscribeToAdminEvents([
-  'moderationAlerts',
-  'costAlerts',
-  'performanceAlert'
-]);
+transport.subscribeToAdminEvents(['moderationAlerts', 'costAlerts', 'performanceAlert']);
 
 // Listen for events
 transport.on('moderation.alert', (alert) => {
-  console.log('Moderation alert:', alert);
+	console.log('Moderation alert:', alert);
 });
 
 transport.on('cost.alert', (alert) => {
-  console.log('Cost alert:', alert);
+	console.log('Cost alert:', alert);
 });
 ```
 
@@ -415,27 +461,27 @@ All subscriptions should implement proper error handling:
 
 ```typescript
 const subscription = adapter.subscribeToModerationAlerts({
-  severity: 'HIGH'
+	severity: 'HIGH',
 });
 
 subscription.subscribe({
-  next: (result) => {
-    if (result.errors) {
-      console.error('Subscription errors:', result.errors);
-      return;
-    }
-    handleModerationAlert(result.data?.moderationAlerts);
-  },
-  error: (error) => {
-    console.error('Subscription error:', error);
-    // Implement reconnection logic
-    setTimeout(() => {
-      // Resubscribe
-    }, 5000);
-  },
-  complete: () => {
-    console.log('Subscription completed');
-  }
+	next: (result) => {
+		if (result.errors) {
+			console.error('Subscription errors:', result.errors);
+			return;
+		}
+		handleModerationAlert(result.data?.moderationAlerts);
+	},
+	error: (error) => {
+		console.error('Subscription error:', error);
+		// Implement reconnection logic
+		setTimeout(() => {
+			// Resubscribe
+		}, 5000);
+	},
+	complete: () => {
+		console.log('Subscription completed');
+	},
 });
 ```
 
@@ -454,4 +500,3 @@ subscription.subscribe({
 - [Cost Management](./CostManagement.md)
 - [Federation Health Monitoring](./FederationHealth.md)
 - [Metrics Dashboard](./Metrics.md)
-

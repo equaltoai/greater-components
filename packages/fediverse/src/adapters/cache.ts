@@ -202,7 +202,7 @@ export class AdapterCache<T = unknown> {
 
 		const lruKey = this.accessOrder[0];
 		if (lruKey === undefined) return; // Should never happen due to length check
-		
+
 		this.cache.delete(lruKey);
 		this.accessOrder.shift();
 		this.log('evict', lruKey);

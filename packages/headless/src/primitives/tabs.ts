@@ -1,6 +1,6 @@
 /**
  * Headless Tabs Primitive
- * 
+ *
  * Provides accessible tabs behavior without any styling.
  * Features:
  * - Arrow key navigation
@@ -9,7 +9,7 @@
  * - ARIA attributes
  * - Keyboard focus management
  * - Orientation support (horizontal/vertical)
- * 
+ *
  * @module @equaltoai/greater-components-headless/tabs
  */
 
@@ -240,11 +240,11 @@ export function createTabs(config: TabsConfig = {}) {
 		get(target, prop: keyof TabsState) {
 			if (prop === 'tabs') {
 				// Return just the elements for easier testing/usage
-				return tabs.map(t => t.element);
+				return tabs.map((t) => t.element);
 			}
 			if (prop === 'panels') {
 				// Return just the elements for easier testing/usage
-				return panels.map(p => p.element);
+				return panels.map((p) => p.element);
 			}
 			return target[prop];
 		},
@@ -298,7 +298,7 @@ export function createTabs(config: TabsConfig = {}) {
 
 		state.focusedIndex = index;
 		tab.element.focus();
-		
+
 		// Manually trigger focus event for JSDOM compatibility
 		tab.element.dispatchEvent(new FocusEvent('focus', { bubbles: false }));
 
@@ -558,4 +558,3 @@ export function createTabs(config: TabsConfig = {}) {
 		helpers,
 	};
 }
-

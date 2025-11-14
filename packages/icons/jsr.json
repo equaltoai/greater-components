@@ -6,21 +6,7 @@
     "./icons/*": "./src/icons/*.svelte"
   },
   "publish": {
-    "include": [
-      "src/**/*.ts",
-      "src/**/*.svelte",
-      "README.md",
-      "CHANGELOG.md",
-      "LICENSE"
-    ],
-    "exclude": [
-      "**/*.test.ts",
-      "**/*.spec.ts",
-      "**/tests/**",
-      "**/__tests__/**",
-      "scripts/**"
-    ]
+    "include": ["src/**/*.ts", "src/**/*.svelte", "README.md", "CHANGELOG.md", "LICENSE"],
+    "exclude": ["**/*.test.ts", "**/*.spec.ts", "**/tests/**", "**/__tests__/**", "scripts/**"]
   }
 }
-
-

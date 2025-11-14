@@ -24,7 +24,7 @@ Provides context for child components and handles virtualization/infinite scroll
 		TimelineCompoundConfig,
 		TimelineHandlers,
 		TimelineCompoundState,
-		TimelineContext
+		TimelineContext,
 	} from './context.js';
 
 	interface Props {
@@ -63,12 +63,14 @@ Provides context for child components and handles virtualization/infinite scroll
 		hasMore: initialState.hasMore ?? true,
 		error: initialState.error ?? null,
 		itemCount: items.length,
-		scrollTop: initialState.scrollTop ?? 0
+		scrollTop: initialState.scrollTop ?? 0,
 	});
 
 	// Create context object
 	const context: TimelineContext = {
-		get items() { return items; },
+		get items() {
+			return items;
+		},
 		config: {
 			mode: config.mode || 'feed',
 			density: config.density || 'comfortable',
@@ -78,13 +80,13 @@ Provides context for child components and handles virtualization/infinite scroll
 			showLoading: config.showLoading ?? true,
 			estimatedItemHeight: config.estimatedItemHeight || 200,
 			overscan: config.overscan || 5,
-			class: config.class || ''
+			class: config.class || '',
 		},
 		handlers,
 		state: internalState,
 		updateState: (partial: Partial<TimelineCompoundState>) => {
 			Object.assign(internalState, partial);
-		}
+		},
 	};
 
 	// Set context once during initialization
@@ -128,7 +130,6 @@ Provides context for child components and handles virtualization/infinite scroll
 			context.updateState({ loadingMore: false });
 		}
 	}
-
 </script>
 
 <div

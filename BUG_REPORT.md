@@ -10,9 +10,9 @@ The Svelte 5 compiler generates internal variables with `$` prefix (`$$anchor`, 
 2. The compiler generates code like:
    ```javascript
    function Component($$anchor, $$props) {
-     if_block(node, ($$render) => {
-       append($$anchor, element);
-     });
+   	if_block(node, ($$render) => {
+   		append($$anchor, element);
+   	});
    }
    ```
 3. When this compiled code is used in a Svelte 5 application, it fails with:
@@ -48,5 +48,3 @@ The compiler generates `$$anchor`, `$$render`, `$$props`, `$$exports`, etc. as i
 ## Conclusion
 
 This is a fundamental incompatibility that cannot be worked around. The compiler must be fixed to not generate `$` prefixed variables.
-
-

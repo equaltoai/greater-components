@@ -1,6 +1,6 @@
 /**
  * Skeleton Primitive Tests
- * 
+ *
  * Comprehensive test suite for the Skeleton headless primitive.
  * Tests loading states, animations, delays, and visibility control.
  */
@@ -538,4 +538,3 @@ describe('Skeleton Primitive', () => {
 		});
 	});
 });
-

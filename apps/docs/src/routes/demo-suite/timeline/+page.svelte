@@ -10,7 +10,8 @@
 			name: 'items',
 			type: 'Status[]',
 			required: true,
-			description: 'Ordered list of timeline items; supports composed drafts merged with hydrated results.',
+			description:
+				'Ordered list of timeline items; supports composed drafts merged with hydrated results.',
 		},
 		{
 			name: 'density',
@@ -42,7 +43,8 @@
 			name: 'generator',
 			type: '(filter: TimelineFilter, page: number, size: number) => Status[]',
 			required: true,
-			description: 'Mock ActivityPub batch generator used for prefetch + infinite scroll simulations.',
+			description:
+				'Mock ActivityPub batch generator used for prefetch + infinite scroll simulations.',
 		},
 		{
 			name: 'pageSize',
@@ -161,7 +163,8 @@
 	const testingLinks = [
 		{
 			label: 'packages/testing/tests/demo/timeline.spec.ts',
-			detail: 'Playwright assertions for filter aria-pressed state, density controls, and streaming toggles.',
+			detail:
+				'Playwright assertions for filter aria-pressed state, density controls, and streaming toggles.',
 		},
 		{
 			label: 'apps/playground/src/lib/stores/timelineStore.test.ts',
@@ -198,8 +201,9 @@
 			{/each}
 		</ul>
 		<p>
-			The implementation lives in <code>apps/playground/src/routes/timeline/+page.svelte</code> and wires the
-			shared timeline store (<code>$lib/stores/timelineStore.ts</code>) into `TimelineVirtualized`.
+			The implementation lives in <code>apps/playground/src/routes/timeline/+page.svelte</code> and
+			wires the shared timeline store (<code>$lib/stores/timelineStore.ts</code>) into
+			`TimelineVirtualized`.
 		</p>
 	</section>
 

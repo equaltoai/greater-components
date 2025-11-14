@@ -33,7 +33,8 @@
 			name: 'showCounts',
 			type: 'boolean',
 			default: 'true',
-			description: 'Followers/following/posts summary (wire to `clickableCounts` for interactive stats).',
+			description:
+				'Followers/following/posts summary (wire to `clickableCounts` for interactive stats).',
 		},
 		{
 			name: 'clickableCounts',
@@ -169,8 +170,9 @@
 		<h2>ProfileHeader props</h2>
 		<PropsTable props={headerProps} />
 		<p>
-			Follow/edit interactions flow through <code>Profile.Root</code> context handlers. In the demo we trigger a
-			local modal (<code>#snippet ProfileActionSnippet</code>) rather than remote requests.
+			Follow/edit interactions flow through <code>Profile.Root</code> context handlers. In the demo
+			we trigger a local modal (<code>#snippet ProfileActionSnippet</code>) rather than remote
+			requests.
 		</p>
 	</section>
 

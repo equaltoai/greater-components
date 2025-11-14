@@ -110,7 +110,7 @@ import { RealtimeWrapper } from '@greater-components/fediverse';
 You can continue using the original components while selectively adding real-time features:
 
 ```typescript
-import { 
+import {
   TimelineVirtualized,
   TimelineVirtualizedReactive,
   createTimelineIntegration
@@ -138,7 +138,7 @@ import {
 For more control, you can manage stores directly:
 
 ```typescript
-import { 
+import {
   createTimelineIntegration,
   createNotificationIntegration,
   createSharedTransport
@@ -220,7 +220,7 @@ You can provide custom real-time indicator content:
       {:else}
         <span class="status-badge connecting">🟡 Connecting...</span>
       {/if}
-      
+
       {#if unreadCount > 0}
         <button class="unread-btn" onclick={onSync}>
           {unreadCount} new items
@@ -240,32 +240,32 @@ import { realtimeErrorBoundary } from '@greater-components/fediverse';
 
 // Global error handling
 realtimeErrorBoundary.onError((error) => {
-  console.error('Real-time error:', error);
-  // Show user notification, retry logic, etc.
+	console.error('Real-time error:', error);
+	// Show user notification, retry logic, etc.
 });
 
 // Component-level error handling
 const timelineIntegration = createTimelineIntegration({
-  baseUrl: 'https://mastodon.social',
-  accessToken: 'your-access-token',
-  transport: {
-    baseUrl: 'https://mastodon.social',
-    protocol: 'websocket'
-  }
+	baseUrl: 'https://mastodon.social',
+	accessToken: 'your-access-token',
+	transport: {
+		baseUrl: 'https://mastodon.social',
+		protocol: 'websocket',
+	},
 });
 
 // Monitor connection state
 $effect(() => {
-  const state = timelineIntegration.state;
-  if (state.error) {
-    console.error('Timeline error:', state.error);
-    // Handle error state
-  }
-  
-  if (state.connected) {
-    console.log('Timeline connected');
-    // Handle connected state
-  }
+	const state = timelineIntegration.state;
+	if (state.error) {
+		console.error('Timeline error:', state.error);
+		// Handle error state
+	}
+
+	if (state.connected) {
+		console.log('Timeline connected');
+		// Handle connected state
+	}
 });
 ```
 
@@ -307,12 +307,12 @@ const optimizedConfig: TimelineIntegrationConfig = {
 
 ```typescript
 interface TransportConfig {
-  baseUrl: string;
-  accessToken?: string;
-  protocol: 'websocket' | 'sse' | 'polling';
-  reconnectInterval?: number; // Default: 5000ms
-  maxReconnectAttempts?: number; // Default: 10
-  pollInterval?: number; // Default: 30000ms (for polling)
+	baseUrl: string;
+	accessToken?: string;
+	protocol: 'websocket' | 'sse' | 'polling';
+	reconnectInterval?: number; // Default: 5000ms
+	maxReconnectAttempts?: number; // Default: 10
+	pollInterval?: number; // Default: 30000ms (for polling)
 }
 ```
 
@@ -320,10 +320,10 @@ interface TransportConfig {
 
 ```typescript
 interface TimelineConfig {
-  maxItems?: number; // Default: 1000
-  preloadCount?: number; // Default: 20
-  type?: 'public' | 'home' | 'local'; // Default: 'public'
-  enableRealtime?: boolean; // Default: true
+	maxItems?: number; // Default: 1000
+	preloadCount?: number; // Default: 20
+	type?: 'public' | 'home' | 'local'; // Default: 'public'
+	enableRealtime?: boolean; // Default: true
 }
 ```
 
@@ -331,11 +331,11 @@ interface TimelineConfig {
 
 ```typescript
 interface NotificationConfig {
-  maxItems?: number; // Default: 500
-  preloadCount?: number; // Default: 20
-  enableRealtime?: boolean; // Default: true
-  autoMarkAsRead?: boolean; // Default: false
-  groupSimilar?: boolean; // Default: true
+	maxItems?: number; // Default: 500
+	preloadCount?: number; // Default: 20
+	enableRealtime?: boolean; // Default: true
+	autoMarkAsRead?: boolean; // Default: false
+	groupSimilar?: boolean; // Default: true
 }
 ```
 
@@ -346,6 +346,7 @@ interface NotificationConfig {
 1. **Keep existing components**: All existing components remain unchanged and fully compatible.
 
 2. **Add real-time features selectively**:
+
    ```typescript
    // Before (v1)
    <TimelineVirtualized

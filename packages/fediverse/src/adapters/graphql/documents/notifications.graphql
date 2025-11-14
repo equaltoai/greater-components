@@ -2,36 +2,31 @@
 
 #import "./fragments.graphql"
 
-query Notifications(
-  $types: [String!]
-  $excludeTypes: [String!]
-  $first: Int = 20
-  $after: Cursor
-) {
-  notifications(types: $types, excludeTypes: $excludeTypes, first: $first, after: $after) {
-    edges {
-      cursor
-      node {
-        id
-        type
-        read
-        createdAt
-        account {
-          ...ActorSummary
-        }
-        status {
-          ...ObjectFields
-        }
-      }
-    }
-    pageInfo {
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-    }
-    totalCount
-  }
+query Notifications($types: [String!], $excludeTypes: [String!], $first: Int = 20, $after: Cursor) {
+	notifications(types: $types, excludeTypes: $excludeTypes, first: $first, after: $after) {
+		edges {
+			cursor
+			node {
+				id
+				type
+				read
+				createdAt
+				account {
+					...ActorSummary
+				}
+				status {
+					...ObjectFields
+				}
+			}
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		}
+		totalCount
+	}
 }
 
 # Note: Lesser schema Notification type only has basic fields.
@@ -40,9 +35,9 @@ query Notifications(
 # account.trustScore changes, etc. when those notifications arrive.
 
 mutation DismissNotification($id: ID!) {
-  dismissNotification(id: $id)
+	dismissNotification(id: $id)
 }
 
 mutation ClearNotifications {
-  clearNotifications
+	clearNotifications
 }

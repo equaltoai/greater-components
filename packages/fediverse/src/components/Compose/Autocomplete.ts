@@ -1,6 +1,6 @@
 /**
  * Autocomplete Helper
- * 
+ *
  * Handles hashtag and mention autocomplete in the compose editor.
  * Provides cursor position detection, suggestions, and insertion logic.
  */
@@ -209,7 +209,9 @@ export function setCursorPosition(
 export function extractHashtags(text: string): string[] {
 	const hashtagRegex = /#([a-zA-Z0-9_]+)/g;
 	const matches = text.matchAll(hashtagRegex);
-	const hashtags = Array.from(matches, (m) => m[1]).filter((tag): tag is string => typeof tag === 'string');
+	const hashtags = Array.from(matches, (m) => m[1]).filter(
+		(tag): tag is string => typeof tag === 'string'
+	);
 	return [...new Set(hashtags)]; // Remove duplicates
 }
 
@@ -219,7 +221,9 @@ export function extractHashtags(text: string): string[] {
 export function extractMentions(text: string): string[] {
 	const mentionRegex = /@([a-zA-Z0-9_]+(?:@[a-zA-Z0-9.-]+)?)/g;
 	const matches = text.matchAll(mentionRegex);
-	const mentions = Array.from(matches, (m) => m[1]).filter((mention): mention is string => typeof mention === 'string');
+	const mentions = Array.from(matches, (m) => m[1]).filter(
+		(mention): mention is string => typeof mention === 'string'
+	);
 	return [...new Set(mentions)]; // Remove duplicates
 }
 

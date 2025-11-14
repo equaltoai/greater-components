@@ -213,18 +213,21 @@ This plan outlines a systematic approach to build a comprehensive demo suite tha
 ## Technical Standards & Requirements
 
 ### Svelte 5 Modern Practices
+
 - **Runes Syntax**: All components must use `$state`, `$derived`, `$props`, `$effect`
 - **No Legacy Syntax**: No `export let`, `$:`, `createEventDispatcher`, or class components
 - **Snippet-Based Composition**: Use `{#snippet}` instead of slots for component composition
 - **Modern Event Handling**: Use `onclick` instead of `on:click` directives
 
 ### TypeScript Standards
+
 - **Strict Mode**: All packages use TypeScript strict mode
 - **Comprehensive Types**: Full type coverage for all props, events, and public APIs
 - **Generic Components**: Where applicable, components should support generic types
 - **Type Safety**: No `any` or `unknown` without proper validation
 
 ### Accessibility Requirements
+
 - **WCAG 2.1 AA Compliance**: All components must meet accessibility standards
 - **Keyboard Navigation**: Full keyboard support for all interactive elements
 - **ARIA Attributes**: Proper ARIA roles, states, and properties
@@ -232,6 +235,7 @@ This plan outlines a systematic approach to build a comprehensive demo suite tha
 - **Reduced Motion**: Support for `prefers-reduced-motion` media query
 
 ### Performance Requirements
+
 - **Bundle Size**: Individual components < 5KB gzipped
 - **Tree Shaking**: Full support for tree shaking unused components
 - **Lazy Loading**: Support for dynamic imports where appropriate
@@ -239,6 +243,7 @@ This plan outlines a systematic approach to build a comprehensive demo suite tha
 - **Lighthouse Score**: 95+ performance score for all demo pages
 
 ### Design System Consistency
+
 - **Design Tokens**: All styling must use design tokens from `@equaltoai/greater-components-tokens`
 - **Consistent Spacing**: Use token-based spacing system
 - **Typography System**: Consistent font families, sizes, and line heights
@@ -248,6 +253,7 @@ This plan outlines a systematic approach to build a comprehensive demo suite tha
 ## Implementation Guidelines
 
 ### Package Architecture
+
 ```
 packages/
 ├── tokens/           # Design tokens and CSS variables
@@ -264,69 +270,77 @@ apps/
 ```
 
 ### Component Structure
+
 Each component should follow this structure:
+
 ```svelte
 <!-- Component.svelte -->
 <script lang="ts">
-  // TypeScript interface for props
-  interface Props { /* ... */ }
-  
-  // Svelte 5 runes syntax
-  let { prop1, prop2, ...rest } = $props();
-  
-  // Derived state and effects
-  const derivedValue = $derived(/* ... */);
-  $effect(() => { /* ... */ });
+	// TypeScript interface for props
+	interface Props {
+		/* ... */
+	}
+
+	// Svelte 5 runes syntax
+	let { prop1, prop2, ...rest } = $props();
+
+	// Derived state and effects
+	const derivedValue = $derived(/* ... */);
+	$effect(() => {
+		/* ... */
+	});
 </script>
 
 <!-- Component markup with proper accessibility -->
 <div role="..." aria-...="..." {...rest}>
-  <!-- Content with snippet composition -->
-  {#if children}
-    {@render children()}
-  {/if}
+	<!-- Content with snippet composition -->
+	{#if children}
+		{@render children()}
+	{/if}
 </div>
 
 <style>
-  /* Scoped styles using design tokens */
-  :global(.gr-component) {
-    --color: var(--gr-semantic-color-primary);
-  }
+	/* Scoped styles using design tokens */
+	:global(.gr-component) {
+		--color: var(--gr-semantic-color-primary);
+	}
 </style>
 ```
 
 ### Demo Page Structure
+
 ```svelte
 <!-- +page.svelte -->
 <script lang="ts">
-  // Import from built packages, not source
-  import { Component } from '@equaltoai/greater-components-primitives';
-  import { Icon } from '@equaltoai/greater-components-icons';
+	// Import from built packages, not source
+	import { Component } from '@equaltoai/greater-components-primitives';
+	import { Icon } from '@equaltoai/greater-components-icons';
 </script>
 
 <div class="demo-page">
-  <header>
-    <h1>Component Name</h1>
-    <p>Description of component and use cases</p>
-  </header>
-  
-  <section>
-    <h2>Basic Usage</h2>
-    <Component />
-  </section>
-  
-  <section>
-    <h2>Variants</h2>
-    <!-- Show all variants -->
-  </section>
-  
-  <!-- Additional sections as needed -->
+	<header>
+		<h1>Component Name</h1>
+		<p>Description of component and use cases</p>
+	</header>
+
+	<section>
+		<h2>Basic Usage</h2>
+		<Component />
+	</section>
+
+	<section>
+		<h2>Variants</h2>
+		<!-- Show all variants -->
+	</section>
+
+	<!-- Additional sections as needed -->
 </div>
 ```
 
 ## Success Metrics
 
 ### Technical Metrics
+
 - ✅ All packages build successfully with `pnpm build`
 - ✅ Playground app runs without errors at `http://localhost:5173`
 - ✅ All demos accessible via navigation
@@ -334,6 +348,7 @@ Each component should follow this structure:
 - ✅ Bundle size within performance requirements
 
 ### Quality Metrics
+
 - ✅ 90%+ test coverage for all packages
 - ✅ WCAG 2.1 AA compliance for all components
 - ✅ Lighthouse performance score 95+
@@ -341,6 +356,7 @@ Each component should follow this structure:
 - ✅ Consistent design across all components
 
 ### User Experience Metrics
+
 - ✅ Intuitive navigation between demos
 - ✅ Clear documentation and examples
 - ✅ Interactive examples with editable props
@@ -350,21 +366,25 @@ Each component should follow this structure:
 ## Timeline & Milestones
 
 ### Week 1: Foundation
+
 - Complete Phase 1 (Foundation & Core Primitives)
 - Ensure all packages build and import correctly
 - Create basic icon and button demos
 
 ### Week 2: Core Components
+
 - Complete Phase 2 (Basic Component Demos)
 - Implement all form and layout components
 - Create comprehensive demo pages
 
 ### Week 3: Fediverse Components
+
 - Complete Phase 3 (Fediverse-Specific Components)
 - Implement StatusCard, Compose, and Timeline
 - Ensure proper ActivityPub data handling
 
 ### Week 4: Applications & Documentation
+
 - Complete Phase 4 (Complex Application Demos)
 - Complete Phase 5 (Documentation & Testing)
 - Final performance optimization and testing

@@ -4,58 +4,57 @@
 
 # Community Notes mutations
 mutation AddCommunityNote($input: CommunityNoteInput!) {
-  addCommunityNote(input: $input) {
-    note {
-      ...CommunityNoteFields
-    }
-    object {
-      id
-      type
-    }
-  }
+	addCommunityNote(input: $input) {
+		note {
+			...CommunityNoteFields
+		}
+		object {
+			id
+			type
+		}
+	}
 }
 
 mutation VoteCommunityNote($id: ID!, $helpful: Boolean!) {
-  voteCommunityNote(id: $id, helpful: $helpful) {
-    ...CommunityNoteFields
-  }
+	voteCommunityNote(id: $id, helpful: $helpful) {
+		...CommunityNoteFields
+	}
 }
 
 query CommunityNotesByObject($objectId: ID!, $first: Int = 20, $after: Cursor) {
-  object(id: $objectId) {
-    ...ObjectFields
-    communityNotes {
-      ...CommunityNoteFields
-    }
-  }
+	object(id: $objectId) {
+		...ObjectFields
+		communityNotes {
+			...CommunityNoteFields
+		}
+	}
 }
 
 # Moderation Pattern mutations
 mutation FlagObject($input: FlagInput!) {
-  flagObject(input: $input) {
-    moderationId
-    queued
-  }
+	flagObject(input: $input) {
+		moderationId
+		queued
+	}
 }
 
 mutation CreateModerationPattern($input: ModerationPatternInput!) {
-  createModerationPattern(input: $input) {
-    id
-    pattern
-    type
-    severity
-    matchCount
-    falsePositiveRate
-    createdAt
-    updatedAt
-    createdBy {
-      ...ActorSummary
-    }
-    active
-  }
+	createModerationPattern(input: $input) {
+		id
+		pattern
+		type
+		severity
+		matchCount
+		falsePositiveRate
+		createdAt
+		updatedAt
+		createdBy {
+			...ActorSummary
+		}
+		active
+	}
 }
 
 mutation DeleteModerationPattern($id: ID!) {
-  deleteModerationPattern(id: $id)
+	deleteModerationPattern(id: $id)
 }
-

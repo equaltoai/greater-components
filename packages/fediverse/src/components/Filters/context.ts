@@ -1,9 +1,9 @@
 /**
  * Filters Context
- * 
+ *
  * Provides content filtering state and handlers for keyword/phrase filtering.
  * Supports filtering by context (home, notifications, public, thread) with expiration.
- * 
+ *
  * @module Filters/context
  */
 
@@ -182,7 +182,7 @@ export interface FiltersContext {
 
 /**
  * Create filters context
- * 
+ *
  * @param handlers - Filters event handlers
  * @returns Filters context
  */
@@ -323,9 +323,9 @@ export function createFiltersContext(handlers: FiltersHandlers = {}): FiltersCon
 
 /**
  * Get filters context
- * 
+ *
  * Must be called within a Filters component tree.
- * 
+ *
  * @throws Error if called outside Filters component tree
  * @returns Filters context
  */

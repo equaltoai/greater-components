@@ -176,9 +176,7 @@
 				<h3 class="admin-settings__subtitle">Content Limits</h3>
 				<div class="admin-settings__fields">
 					<div class="admin-settings__field">
-						<label for="max-post-length" class="admin-settings__label">
-							Max Post Length
-						</label>
+						<label for="max-post-length" class="admin-settings__label"> Max Post Length </label>
 						<input
 							id="max-post-length"
 							type="number"
@@ -191,9 +189,7 @@
 					</div>
 
 					<div class="admin-settings__field">
-						<label for="max-media" class="admin-settings__label">
-							Max Media Attachments
-						</label>
+						<label for="max-media" class="admin-settings__label"> Max Media Attachments </label>
 						<input
 							id="max-media"
 							type="number"
@@ -405,4 +401,3 @@
 		color: var(--text-secondary, #536471);
 	}
 </style>
-

@@ -1,9 +1,9 @@
 /**
  * Avatar Primitive
- * 
+ *
  * Headless primitive for avatar images with fallback, loading states, and status indicators.
  * Provides behavior for displaying user avatars with graceful error handling.
- * 
+ *
  * @module primitives/avatar
  */
 
@@ -184,7 +184,7 @@ export interface Avatar {
 
 /**
  * Create an avatar
- * 
+ *
  * @param config - Avatar configuration
  * @returns Avatar context
  */

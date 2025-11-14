@@ -17,7 +17,9 @@ test.describe('Search demo', () => {
 		await expect(page.getByText('timeline QA')).toBeVisible();
 	});
 
-	test('error state surfaces an alert and clears after retrying with valid query', async ({ page }) => {
+	test('error state surfaces an alert and clears after retrying with valid query', async ({
+		page,
+	}) => {
 		const input = page.getByPlaceholder('Search posts, people, tags…');
 		await input.waitFor();
 		await input.fill('error case');

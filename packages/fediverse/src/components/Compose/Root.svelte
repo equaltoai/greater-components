@@ -55,7 +55,7 @@ Provides context for child components and handles form submission.
 		characterCount: 0,
 		overLimit: false,
 		inReplyTo: undefined,
-		contentWarningEnabled: false
+		contentWarningEnabled: false,
 	};
 
 	// Create reactive state
@@ -84,7 +84,7 @@ Provides context for child components and handles form submission.
 
 	// Create context with the reactive state
 	const context = createComposeContext(config, handlers, initialState, state);
-	
+
 	// Override reset function to use reactive state
 	context.reset = resetState;
 

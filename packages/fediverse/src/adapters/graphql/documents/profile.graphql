@@ -4,29 +4,28 @@
 
 # Queries
 query Followers($username: String!, $limit: Int = 40, $cursor: Cursor) {
-  followers(username: $username, limit: $limit, cursor: $cursor) {
-    actors {
-      ...ActorSummary
-    }
-    nextCursor
-    totalCount
-  }
+	followers(username: $username, limit: $limit, cursor: $cursor) {
+		actors {
+			...ActorSummary
+		}
+		nextCursor
+		totalCount
+	}
 }
 
 query Following($username: String!, $limit: Int = 40, $cursor: Cursor) {
-  following(username: $username, limit: $limit, cursor: $cursor) {
-    actors {
-      ...ActorSummary
-    }
-    nextCursor
-    totalCount
-  }
+	following(username: $username, limit: $limit, cursor: $cursor) {
+		actors {
+			...ActorSummary
+		}
+		nextCursor
+		totalCount
+	}
 }
 
 # Mutations
 mutation UpdateProfile($input: UpdateProfileInput!) {
-  updateProfile(input: $input) {
-    ...ActorSummary
-  }
+	updateProfile(input: $input) {
+		...ActorSummary
+	}
 }
-

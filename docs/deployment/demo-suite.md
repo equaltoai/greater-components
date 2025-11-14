@@ -26,6 +26,7 @@ pnpm --filter @equaltoai/playground preview --host 127.0.0.1 --port 4173
 ```
 
 Visit:
+
 - http://127.0.0.1:4172/demo-suite to verify the new documentation routes.
 - http://127.0.0.1:4173/timeline (plus `/profile`, `/settings`, `/search`) to ensure demo interactions still function.
 

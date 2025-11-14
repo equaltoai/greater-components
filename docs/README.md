@@ -10,6 +10,7 @@
 Greater Components is a comprehensive library of accessible, composable UI components for building Fediverse applications. Built with Svelte 5, TypeScript, and modern web standards.
 
 ### **Key Features**:
+
 - ✅ **45+ Production-Ready Components**
 - ✅ **Compound Component Architecture**
 - ✅ **Full TypeScript Support**
@@ -24,12 +25,14 @@ Greater Components is a comprehensive library of accessible, composable UI compo
 ## 📚 Documentation
 
 ### **Getting Started**
+
 - [Quick Start Guide](./GETTING_STARTED.md) - Get up and running in 5 minutes
 - [Installation](./GETTING_STARTED.md#installation) - Package installation
 - [Basic Usage](./GETTING_STARTED.md#basic-usage) - Your first component
 - [Migration Guide](./MIGRATION_GUIDE.md) - Upgrading from previous versions
 
 ### **Components** (45 components)
+
 - [Auth Components](./components/Auth/) - Authentication & authorization (8 components)
 - [Profile Components](./components/Profile/) - User profiles & settings (10 components)
 - [Search Components](./components/Search/) - Search & discovery (6 components)
@@ -40,23 +43,27 @@ Greater Components is a comprehensive library of accessible, composable UI compo
 - [Compose Components](./components/Compose/) - Post composition (12+ components)
 
 ### **Integration Guides**
+
 - [Lesser Integration](./integration/LESSER_INTEGRATION_GUIDE.md) - Connect to Lesser instances
 - [Mastodon Integration](./integration/MASTODON_INTEGRATION_GUIDE.md) - Connect to Mastodon
 - [Custom Adapter](./integration/CUSTOM_ADAPTER_GUIDE.md) - Build custom adapters
 
 ### **API Reference**
+
 - [GraphQL API](./api/GRAPHQL_API.md) - GraphQL queries, mutations, subscriptions
 - [Adapters API](./api/ADAPTERS_API.md) - Transport adapters & clients
 - [Components API](./api/COMPONENTS_API.md) - Component props, events, slots
 - [Utilities API](./api/UTILITIES_API.md) - Helper functions & utilities
 
 ### **Patterns & Examples**
+
 - [Component Composition](./patterns/COMPOSITION_PATTERNS.md) - Best practices
 - [Advanced Use Cases](./patterns/ADVANCED_USE_CASES.md) - Complex scenarios
 - [Full App Example](./examples/full-app/) - Complete application
 - [Quick Start Examples](./examples/quick-start/) - Simple examples
 
 ### **Testing**
+
 - [Testing Guide](./testing/TESTING_GUIDE.md) - Test your components
 - [Accessibility Testing](./testing/ACCESSIBILITY_TESTING.md) - A11y testing
 - [E2E Testing](./testing/E2E_TESTING.md) - End-to-end tests
@@ -66,28 +73,31 @@ Greater Components is a comprehensive library of accessible, composable UI compo
 ## 🚀 Quick Start
 
 ### **Installation**:
+
 ```bash
 npm install @equaltoai/greater-components-fediverse @equaltoai/greater-components-adapters @equaltoai/greater-components-utils
 ```
 
 ### **Basic Usage**:
+
 ```svelte
 <script lang="ts">
-  import { Timeline } from '@equaltoai/greater-components-fediverse';
-  import { createTimelineStore } from '@equaltoai/greater-components-adapters';
+	import { Timeline } from '@equaltoai/greater-components-fediverse';
+	import { createTimelineStore } from '@equaltoai/greater-components-adapters';
 
-  const timeline = createTimelineStore({
-    endpoint: 'https://api.lesser.social/graphql',
-    timeline: 'home'
-  });
+	const timeline = createTimelineStore({
+		endpoint: 'https://api.lesser.social/graphql',
+		timeline: 'home',
+	});
 </script>
 
 <Timeline.Root store={timeline}>
-  <Timeline.Feed />
+	<Timeline.Feed />
 </Timeline.Root>
 ```
 
 ### **Next Steps**:
+
 1. Read the [Getting Started Guide](./GETTING_STARTED.md)
 2. Explore [Component Documentation](./components/)
 3. Try the [Examples](./examples/)
@@ -98,23 +108,25 @@ npm install @equaltoai/greater-components-fediverse @equaltoai/greater-component
 ## 📦 Packages
 
 ### **Core Packages**:
-| Package | Description | Size |
-|---------|-------------|------|
-| `@equaltoai/greater-components-fediverse` | Main component library | ~800 KB |
-| `@equaltoai/greater-components-adapters` | API adapters & transports | ~140 KB |
-| `@equaltoai/greater-components-primitives` | Low-level UI primitives | ~80 KB |
-| `@equaltoai/greater-components-headless` | Headless component logic | ~36 KB |
-| `@equaltoai/greater-components-icons` | Icon components | ~2 KB per icon* |
-| `@equaltoai/greater-components-utils` | Utility functions | ~12 KB |
-| `@equaltoai/greater-components-testing` | Testing utilities | ~135 KB |
 
-*With tree-shaking, only used icons are included
+| Package                                    | Description               | Size             |
+| ------------------------------------------ | ------------------------- | ---------------- |
+| `@equaltoai/greater-components-fediverse`  | Main component library    | ~800 KB          |
+| `@equaltoai/greater-components-adapters`   | API adapters & transports | ~140 KB          |
+| `@equaltoai/greater-components-primitives` | Low-level UI primitives   | ~80 KB           |
+| `@equaltoai/greater-components-headless`   | Headless component logic  | ~36 KB           |
+| `@equaltoai/greater-components-icons`      | Icon components           | ~2 KB per icon\* |
+| `@equaltoai/greater-components-utils`      | Utility functions         | ~12 KB           |
+| `@equaltoai/greater-components-testing`    | Testing utilities         | ~135 KB          |
+
+\*With tree-shaking, only used icons are included
 
 ### **Development Packages**:
-| Package | Description |
-|---------|-------------|
+
+| Package                                | Description   |
+| -------------------------------------- | ------------- |
 | `@equaltoai/greater-components-tokens` | Design tokens |
-| `@equaltoai/greater-components-cli` | CLI tools |
+| `@equaltoai/greater-components-cli`    | CLI tools     |
 
 ---
 
@@ -130,14 +142,16 @@ Component.Root        → Context provider & container
 ```
 
 ### **Example**:
+
 ```svelte
 <Auth.Root>
-  <Auth.LoginForm onSuccess={handleLogin} />
-  <Auth.RegisterForm onSuccess={handleRegister} />
+	<Auth.LoginForm onSuccess={handleLogin} />
+	<Auth.RegisterForm onSuccess={handleRegister} />
 </Auth.Root>
 ```
 
 **Benefits**:
+
 - ✅ Flexible composition
 - ✅ Shared context
 - ✅ Type-safe props
@@ -151,10 +165,10 @@ Greater Components supports comprehensive theming through CSS custom properties:
 
 ```css
 :root {
-  --color-primary: #6366f1;
-  --color-background: #ffffff;
-  --color-text: #1f2937;
-  --font-family: system-ui, sans-serif;
+	--color-primary: #6366f1;
+	--color-background: #ffffff;
+	--color-text: #1f2937;
+	--font-family: system-ui, sans-serif;
 }
 ```
 
@@ -224,6 +238,7 @@ See [Real-time Guide](./patterns/REALTIME.md) for details.
 ## 🤝 Contributing
 
 We welcome contributions! See:
+
 - [Contributing Guide](../CONTRIBUTING.md)
 - [Architecture Overview](../ARCHITECTURE.md)
 - [Development Setup](../DEVELOPMENT.md)
@@ -255,4 +270,3 @@ AGPL-3.0-only - See [LICENSE](../LICENSE)
 ---
 
 **Made with ❤️ by the Greater Components team**
-

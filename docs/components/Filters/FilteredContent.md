@@ -12,6 +12,7 @@
 `Filters.FilteredContent` wraps content to check against active filters and displays appropriate warnings or hides content based on filter settings. It provides a reveal option for warned content and completely hides irreversible filters.
 
 ### **Key Features**:
+
 - ✅ Automatic filter checking
 - ✅ Warning display for reversible filters
 - ✅ Complete hiding for irreversible filters
@@ -35,22 +36,19 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Filters, Status } from '@equaltoai/greater-components-fediverse';
-  
-  let posts = $state([]);
+	import { Filters, Status } from '@equaltoai/greater-components-fediverse';
+
+	let posts = $state([]);
 </script>
 
 <Filters.Root handlers={filtersHandlers}>
-  <div class="timeline">
-    {#each posts as post}
-      <Filters.FilteredContent 
-        content={post.content}
-        context="home"
-      >
-        <Status.Card {post} />
-      </Filters.FilteredContent>
-    {/each}
-  </div>
+	<div class="timeline">
+		{#each posts as post}
+			<Filters.FilteredContent content={post.content} context="home">
+				<Status.Card {post} />
+			</Filters.FilteredContent>
+		{/each}
+	</div>
 </Filters.Root>
 ```
 
@@ -58,19 +56,20 @@ npm install @equaltoai/greater-components-fediverse
 
 ## 🎛️ Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `content` | `string` | - | **Yes** | Content to check for filters |
-| `context` | `FilterContext` | - | **Yes** | Context where content is shown |
-| `children` | `Snippet` | - | No | Child content to show if not filtered |
-| `onReveal` | `(filters: ContentFilter[]) => void` | - | No | Callback when content revealed |
-| `class` | `string` | `''` | No | Custom CSS class |
+| Prop       | Type                                 | Default | Required | Description                           |
+| ---------- | ------------------------------------ | ------- | -------- | ------------------------------------- |
+| `content`  | `string`                             | -       | **Yes**  | Content to check for filters          |
+| `context`  | `FilterContext`                      | -       | **Yes**  | Context where content is shown        |
+| `children` | `Snippet`                            | -       | No       | Child content to show if not filtered |
+| `onReveal` | `(filters: ContentFilter[]) => void` | -       | No       | Callback when content revealed        |
+| `class`    | `string`                             | `''`    | No       | Custom CSS class                      |
 
 ---
 
 ## 💡 Examples
 
 Examples include:
+
 - Timeline filtering
 - Notification filtering
 - Thread filtering
@@ -87,4 +86,3 @@ Examples include:
 ---
 
 **For content filtering, see the [Filters README](./README.md).**
-

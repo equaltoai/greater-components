@@ -150,7 +150,9 @@ export class PreferencesGraphQLController {
 	/**
 	 * Update streaming preferences specifically
 	 */
-	async updateStreamingPreferences(streaming: Partial<UserPreferences['streaming']>): Promise<void> {
+	async updateStreamingPreferences(
+		streaming: Partial<UserPreferences['streaming']>
+	): Promise<void> {
 		if (this.disposed) {
 			throw new Error('PreferencesController has been destroyed');
 		}
@@ -211,9 +213,10 @@ export class PreferencesGraphQLController {
 
 			const discovery = this.state.preferences?.discovery;
 			updates.discovery = {
-				showFollowCounts: settings.hideFollowers !== undefined 
-					? !settings.hideFollowers 
-					: discovery?.showFollowCounts ?? true,
+				showFollowCounts:
+					settings.hideFollowers !== undefined
+						? !settings.hideFollowers
+						: (discovery?.showFollowCounts ?? true),
 				searchSuggestionsEnabled: discovery?.searchSuggestionsEnabled ?? true,
 				personalizedSearchEnabled: discovery?.personalizedSearchEnabled ?? true,
 			};
@@ -223,7 +226,9 @@ export class PreferencesGraphQLController {
 			const privacy = this.state.preferences?.privacy;
 			updates.privacy = {
 				...(updates.privacy ?? privacy ?? {}),
-				defaultVisibility: settings.isPrivate ? 'PRIVATE' : (privacy?.defaultVisibility ?? 'PUBLIC'),
+				defaultVisibility: settings.isPrivate
+					? 'PRIVATE'
+					: (privacy?.defaultVisibility ?? 'PUBLIC'),
 				indexable: privacy?.indexable ?? true,
 				showOnlineStatus: privacy?.showOnlineStatus ?? false,
 			};
@@ -296,25 +301,43 @@ export class PreferencesGraphQLController {
 		const record = data as Record<string, unknown>;
 
 		// Extract nested objects
-		const posting = typeof record['posting'] === 'object' ? record['posting'] as Record<string, unknown> : {};
-		const reading = typeof record['reading'] === 'object' ? record['reading'] as Record<string, unknown> : {};
-		const discovery = typeof record['discovery'] === 'object' ? record['discovery'] as Record<string, unknown> : {};
-		const streaming = typeof record['streaming'] === 'object' ? record['streaming'] as Record<string, unknown> : {};
-		const notifications = typeof record['notifications'] === 'object' ? record['notifications'] as Record<string, unknown> : {};
-		const privacy = typeof record['privacy'] === 'object' ? record['privacy'] as Record<string, unknown> : {};
+		const posting =
+			typeof record['posting'] === 'object' ? (record['posting'] as Record<string, unknown>) : {};
+		const reading =
+			typeof record['reading'] === 'object' ? (record['reading'] as Record<string, unknown>) : {};
+		const discovery =
+			typeof record['discovery'] === 'object'
+				? (record['discovery'] as Record<string, unknown>)
+				: {};
+		const streaming =
+			typeof record['streaming'] === 'object'
+				? (record['streaming'] as Record<string, unknown>)
+				: {};
+		const notifications =
+			typeof record['notifications'] === 'object'
+				? (record['notifications'] as Record<string, unknown>)
+				: {};
+		const privacy =
+			typeof record['privacy'] === 'object' ? (record['privacy'] as Record<string, unknown>) : {};
 
 		return {
 			actorId: String(record['actorId'] ?? ''),
 			posting: {
-				defaultVisibility: String(posting['defaultVisibility'] ?? 'PUBLIC') as UserPreferences['posting']['defaultVisibility'],
+				defaultVisibility: String(
+					posting['defaultVisibility'] ?? 'PUBLIC'
+				) as UserPreferences['posting']['defaultVisibility'],
 				defaultSensitive: Boolean(posting['defaultSensitive']),
 				defaultLanguage: String(posting['defaultLanguage'] ?? 'en'),
 			},
 			reading: {
 				expandSpoilers: Boolean(reading['expandSpoilers']),
-				expandMedia: String(reading['expandMedia'] ?? 'DEFAULT') as UserPreferences['reading']['expandMedia'],
+				expandMedia: String(
+					reading['expandMedia'] ?? 'DEFAULT'
+				) as UserPreferences['reading']['expandMedia'],
 				autoplayGifs: Boolean(reading['autoplayGifs']),
-				timelineOrder: String(reading['timelineOrder'] ?? 'NEWEST') as UserPreferences['reading']['timelineOrder'],
+				timelineOrder: String(
+					reading['timelineOrder'] ?? 'NEWEST'
+				) as UserPreferences['reading']['timelineOrder'],
 			},
 			discovery: {
 				showFollowCounts: Boolean(discovery['showFollowCounts'] ?? true),
@@ -326,14 +349,20 @@ export class PreferencesGraphQLController {
 				email: Boolean(notifications['email']),
 				push: Boolean(notifications['push'] ?? true),
 				inApp: Boolean(notifications['inApp'] ?? true),
-				digest: String(notifications['digest'] ?? 'NEVER') as UserPreferences['notifications']['digest'],
+				digest: String(
+					notifications['digest'] ?? 'NEVER'
+				) as UserPreferences['notifications']['digest'],
 			},
 			privacy: {
-				defaultVisibility: String(privacy['defaultVisibility'] ?? 'PUBLIC') as UserPreferences['privacy']['defaultVisibility'],
+				defaultVisibility: String(
+					privacy['defaultVisibility'] ?? 'PUBLIC'
+				) as UserPreferences['privacy']['defaultVisibility'],
 				indexable: Boolean(privacy['indexable'] ?? true),
 				showOnlineStatus: Boolean(privacy['showOnlineStatus']),
 			},
-			reblogFilters: Array.isArray(record['reblogFilters']) ? record['reblogFilters'] as Array<{ key: string; enabled: boolean }> : [],
+			reblogFilters: Array.isArray(record['reblogFilters'])
+				? (record['reblogFilters'] as Array<{ key: string; enabled: boolean }>)
+				: [],
 		};
 	}
 
@@ -341,9 +370,12 @@ export class PreferencesGraphQLController {
 	 * Normalize streaming preferences
 	 */
 	private normalizeStreamingPreferences(data: unknown): UserPreferences['streaming'] {
-		const streaming = typeof data === 'object' && data !== null ? data as Record<string, unknown> : {};
+		const streaming =
+			typeof data === 'object' && data !== null ? (data as Record<string, unknown>) : {};
 		return {
-			defaultQuality: String(streaming['defaultQuality'] ?? 'AUTO') as UserPreferences['streaming']['defaultQuality'],
+			defaultQuality: String(
+				streaming['defaultQuality'] ?? 'AUTO'
+			) as UserPreferences['streaming']['defaultQuality'],
 			autoQuality: Boolean(streaming['autoQuality'] ?? true),
 			preloadNext: Boolean(streaming['preloadNext']),
 			dataSaver: Boolean(streaming['dataSaver']),
@@ -391,4 +423,3 @@ export class PreferencesGraphQLController {
 		return input;
 	}
 }
-

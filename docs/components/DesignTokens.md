@@ -4,12 +4,12 @@ The `@equaltoai/greater-components-tokens` package centralizes every color, spac
 
 ## Package Outputs
 
-| Artifact | Description |
-| --- | --- |
-| `theme.css` | Bundled CSS variables that include `:root` assignments plus `[data-theme="light|dark|highContrast"]` overrides. |
-| `themes/*` | Individual theme files for targeted imports or debugging. |
-| `high-contrast.css` | Additional WCAG-friendly overrides shipped alongside the bundle. |
-| `dist/index.{js,d.ts}` | Tree-shakeable helpers such as `getSemanticColor('action.primary.default')`. |
+| Artifact               | Description                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------- | ---- | -------------------------- |
+| `theme.css`            | Bundled CSS variables that include `:root` assignments plus `[data-theme="light | dark | highContrast"]` overrides. |
+| `themes/*`             | Individual theme files for targeted imports or debugging.                       |
+| `high-contrast.css`    | Additional WCAG-friendly overrides shipped alongside the bundle.                |
+| `dist/index.{js,d.ts}` | Tree-shakeable helpers such as `getSemanticColor('action.primary.default')`.    |
 
 Running `pnpm --filter @equaltoai/greater-components-tokens build` executes `scripts/build.js`, which:
 
@@ -24,7 +24,7 @@ Import the CSS bundle once in your app layout:
 
 ```svelte
 <script>
-  import '@equaltoai/greater-components-tokens/theme.css';
+	import '@equaltoai/greater-components-tokens/theme.css';
 </script>
 ```
 
@@ -32,9 +32,9 @@ Then reference semantic values in components:
 
 ```css
 .card {
-  background: var(--gr-semantic-background-primary);
-  border-radius: var(--gr-radii-xl);
-  box-shadow: var(--gr-shadows-md);
+	background: var(--gr-semantic-background-primary);
+	border-radius: var(--gr-radii-xl);
+	box-shadow: var(--gr-shadows-md);
 }
 ```
 

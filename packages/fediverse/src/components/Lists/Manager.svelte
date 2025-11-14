@@ -202,20 +202,20 @@
 				<p class="lists-manager__modal-text">
 					This action cannot be undone. All members will be removed from this list.
 				</p>
-			<div class="lists-manager__modal-actions">
-				<button
-					class="lists-manager__modal-button"
-					type="button"
-					onclick={() => (deleteConfirmList = null)}
-				>
+				<div class="lists-manager__modal-actions">
+					<button
+						class="lists-manager__modal-button"
+						type="button"
+						onclick={() => (deleteConfirmList = null)}
+					>
 						Cancel
 					</button>
-				<button
-					class="lists-manager__modal-button lists-manager__modal-button--danger"
-					type="button"
-					onclick={handleDelete}
-					disabled={listsState.loading}
-				>
+					<button
+						class="lists-manager__modal-button lists-manager__modal-button--danger"
+						type="button"
+						onclick={handleDelete}
+						disabled={listsState.loading}
+					>
 						{listsState.loading ? 'Deleting...' : 'Delete'}
 					</button>
 				</div>

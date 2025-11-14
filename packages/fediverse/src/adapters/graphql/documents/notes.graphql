@@ -3,115 +3,115 @@
 #import "./fragments.graphql"
 
 mutation CreateNote($input: CreateNoteInput!) {
-  createNote(input: $input) {
-    object {
-      ...ObjectFields
-    }
-    activity {
-      ...ActivityFields
-    }
-    cost {
-      ...CostUpdateFields
-    }
-  }
+	createNote(input: $input) {
+		object {
+			...ObjectFields
+		}
+		activity {
+			...ActivityFields
+		}
+		cost {
+			...CostUpdateFields
+		}
+	}
 }
 
 mutation CreateQuoteNote($input: CreateQuoteNoteInput!) {
-  createQuoteNote(input: $input) {
-    object {
-      ...ObjectFields
-    }
-    activity {
-      ...ActivityFields
-    }
-    cost {
-      ...CostUpdateFields
-    }
-  }
+	createQuoteNote(input: $input) {
+		object {
+			...ObjectFields
+		}
+		activity {
+			...ActivityFields
+		}
+		cost {
+			...CostUpdateFields
+		}
+	}
 }
 
 mutation WithdrawFromQuotes($noteId: ID!) {
-  withdrawFromQuotes(noteId: $noteId) {
-    success
-    note {
-      ...ObjectFields
-    }
-    withdrawnCount
-  }
+	withdrawFromQuotes(noteId: $noteId) {
+		success
+		note {
+			...ObjectFields
+		}
+		withdrawnCount
+	}
 }
 
 mutation UpdateQuotePermissions($noteId: ID!, $quoteable: Boolean!, $permission: QuotePermission!) {
-  updateQuotePermissions(noteId: $noteId, quoteable: $quoteable, permission: $permission) {
-    success
-    note {
-      ...ObjectFields
-    }
-    affectedQuotes
-  }
+	updateQuotePermissions(noteId: $noteId, quoteable: $quoteable, permission: $permission) {
+		success
+		note {
+			...ObjectFields
+		}
+		affectedQuotes
+	}
 }
 
 mutation DeleteObject($id: ID!) {
-  deleteObject(id: $id)
+	deleteObject(id: $id)
 }
 
 mutation LikeObject($id: ID!) {
-  likeObject(id: $id) {
-    ...ActivityFields
-  }
+	likeObject(id: $id) {
+		...ActivityFields
+	}
 }
 
 mutation UnlikeObject($id: ID!) {
-  unlikeObject(id: $id)
+	unlikeObject(id: $id)
 }
 
 mutation ShareObject($id: ID!) {
-  shareObject(id: $id) {
-    ...ObjectFields
-  }
+	shareObject(id: $id) {
+		...ObjectFields
+	}
 }
 
 mutation UnshareObject($id: ID!) {
-  unshareObject(id: $id)
+	unshareObject(id: $id)
 }
 
 mutation BookmarkObject($id: ID!) {
-  bookmarkObject(id: $id) {
-    ...ObjectFields
-  }
+	bookmarkObject(id: $id) {
+		...ObjectFields
+	}
 }
 
 mutation UnbookmarkObject($id: ID!) {
-  unbookmarkObject(id: $id)
+	unbookmarkObject(id: $id)
 }
 
 mutation PinObject($id: ID!) {
-  pinObject(id: $id) {
-    ...ObjectFields
-  }
+	pinObject(id: $id) {
+		...ObjectFields
+	}
 }
 
 mutation UnpinObject($id: ID!) {
-  unpinObject(id: $id)
+	unpinObject(id: $id)
 }
 
 # Quote queries - quotes are accessed via the Object.quotes field
 query ObjectWithQuotes($id: ID!, $first: Int = 20, $after: String) {
-  object(id: $id) {
-    ...ObjectFields
-    quotes(first: $first, after: $after) {
-      edges {
-        cursor
-        node {
-          ...ObjectFields
-        }
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-      }
-      totalCount
-    }
-  }
+	object(id: $id) {
+		...ObjectFields
+		quotes(first: $first, after: $after) {
+			edges {
+				cursor
+				node {
+					...ObjectFields
+				}
+			}
+			pageInfo {
+				hasNextPage
+				hasPreviousPage
+				startCursor
+				endCursor
+			}
+			totalCount
+		}
+	}
 }

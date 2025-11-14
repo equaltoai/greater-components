@@ -1,4 +1,3 @@
-
 // Add vi to global scope for tests
 import { vi } from 'vitest';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -6,7 +5,7 @@ import { vi } from 'vitest';
 
 // Mock dynamic imports for icon testing
 vi.mock('../src/icons/*.svelte', () => {
-  return {
-    default: () => '<svg></svg>'
-  };
+	return {
+		default: () => '<svg></svg>',
+	};
 });

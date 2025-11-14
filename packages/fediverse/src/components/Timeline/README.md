@@ -16,26 +16,31 @@ Built using the **compound component pattern**, Timeline provides maximum flexib
 
 ```svelte
 <script>
-  import { TimelineCompound as Timeline, StatusCompound as Status } from '@equaltoai/greater-components-fediverse';
-  
-  const posts = [...]; // Status[] from API
-  
-  async function handleLoadMore() {
-    // Fetch more posts
-  }
+	import {
+		TimelineCompound as Timeline,
+		StatusCompound as Status,
+	} from '@equaltoai/greater-components-fediverse';
+
+	const posts = [
+		/* ... */
+	]; // Status[] from API
+
+	async function handleLoadMore() {
+		// Fetch more posts
+	}
 </script>
 
 <Timeline.Root items={posts} handlers={{ onLoadMore: handleLoadMore }}>
-  {#each posts as status, index}
-    <Timeline.Item {status} {index}>
-      <Status.Root {status}>
-        <Status.Header />
-        <Status.Content />
-        <Status.Actions />
-      </Status.Root>
-    </Timeline.Item>
-  {/each}
-  <Timeline.LoadMore />
+	{#each posts as status, index}
+		<Timeline.Item {status} {index}>
+			<Status.Root {status}>
+				<Status.Header />
+				<Status.Content />
+				<Status.Actions />
+			</Status.Root>
+		</Timeline.Item>
+	{/each}
+	<Timeline.LoadMore />
 </Timeline.Root>
 ```
 
@@ -82,35 +87,32 @@ Built using the **compound component pattern**, Timeline provides maximum flexib
 
 ```svelte
 <script>
-  let error = $state(null);
-  let loading = $state(false);
-  
-  async function handleRetry() {
-    error = null;
-    await loadPosts();
-  }
+	let error = $state(null);
+	let loading = $state(false);
+
+	async function handleRetry() {
+		error = null;
+		await loadPosts();
+	}
 </script>
 
 <Timeline.Root {items} initialState={{ error, loading }}>
-  {#if error}
-    <Timeline.ErrorState {error} onRetry={handleRetry} />
-  {:else if loading}
-    <div class="loading">Loading timeline...</div>
-  {:else if items.length === 0}
-    <Timeline.EmptyState
-      title="No posts yet"
-      description="Follow some accounts to see posts here"
-    >
-      <button onclick={handleDiscover}>Discover accounts</button>
-    </Timeline.EmptyState>
-  {:else}
-    {#each items as status, index}
-      <Timeline.Item {status} {index}>
-        <!-- Status content -->
-      </Timeline.Item>
-    {/each}
-    <Timeline.LoadMore />
-  {/if}
+	{#if error}
+		<Timeline.ErrorState {error} onRetry={handleRetry} />
+	{:else if loading}
+		<div class="loading">Loading timeline...</div>
+	{:else if items.length === 0}
+		<Timeline.EmptyState title="No posts yet" description="Follow some accounts to see posts here">
+			<button onclick={handleDiscover}>Discover accounts</button>
+		</Timeline.EmptyState>
+	{:else}
+		{#each items as status, index}
+			<Timeline.Item {status} {index}>
+				<!-- Status content -->
+			</Timeline.Item>
+		{/each}
+		<Timeline.LoadMore />
+	{/if}
 </Timeline.Root>
 ```
 
@@ -129,13 +131,13 @@ All components support custom styling through CSS custom properties and classes:
 
 ```css
 .my-custom-timeline {
-  --timeline-bg: #f8f9fa;
-  --timeline-border: #dee2e6;
-  --timeline-text-primary: #212529;
-  --timeline-text-secondary: #6c757d;
-  --timeline-button-bg: #0d6efd;
-  --timeline-button-hover-bg: #0b5ed7;
-  --timeline-item-spacing: 1rem;
+	--timeline-bg: #f8f9fa;
+	--timeline-border: #dee2e6;
+	--timeline-text-primary: #212529;
+	--timeline-text-secondary: #6c757d;
+	--timeline-button-bg: #0d6efd;
+	--timeline-button-hover-bg: #0b5ed7;
+	--timeline-item-spacing: 1rem;
 }
 ```
 
@@ -145,11 +147,9 @@ All components support custom styling through CSS custom properties and classes:
 
 ```svelte
 <Timeline.LoadMore>
-  {#snippet button()}
-    <button class="my-load-more-btn">
-      Show me more posts!
-    </button>
-  {/snippet}
+	{#snippet button()}
+		<button class="my-load-more-btn"> Show me more posts! </button>
+	{/snippet}
 </Timeline.LoadMore>
 ```
 
@@ -157,14 +157,14 @@ All components support custom styling through CSS custom properties and classes:
 
 ```svelte
 <Timeline.EmptyState>
-  {#snippet children()}
-    <div class="custom-empty">
-      <img src="/empty-state.svg" alt="" />
-      <h2>Nothing here yet</h2>
-      <p>Be the first to post something!</p>
-      <button>Create a post</button>
-    </div>
-  {/snippet}
+	{#snippet children()}
+		<div class="custom-empty">
+			<img src="/empty-state.svg" alt="" />
+			<h2>Nothing here yet</h2>
+			<p>Be the first to post something!</p>
+			<button>Create a post</button>
+		</div>
+	{/snippet}
 </Timeline.EmptyState>
 ```
 
@@ -208,22 +208,24 @@ Full type safety with exported interfaces:
 
 ```typescript
 import type {
-  TimelineContext,
-  TimelineCompoundConfig,
-  TimelineHandlers,
-  TimelineCompoundState,
-  TimelineMode,
-  TimelineDensity
+	TimelineContext,
+	TimelineCompoundConfig,
+	TimelineHandlers,
+	TimelineCompoundState,
+	TimelineMode,
+	TimelineDensity,
 } from '@equaltoai/greater-components-fediverse';
 
 const config: TimelineCompoundConfig = {
-  mode: 'feed',
-  density: 'comfortable',
-  virtualized: true
+	mode: 'feed',
+	density: 'comfortable',
+	virtualized: true,
 };
 
 const handlers: TimelineHandlers = {
-  onLoadMore: async () => { /* ... */ }
+	onLoadMore: async () => {
+		/* ... */
+	},
 };
 ```
 
@@ -242,62 +244,65 @@ Timeline components follow WCAG 2.1 AA guidelines:
 
 ```svelte
 <script>
-  import { TimelineCompound as Timeline, StatusCompound as Status } from '@equaltoai/greater-components-fediverse';
-  
-  let posts = $state([]);
-  let hasMore = $state(true);
-  let error = $state(null);
-  
-  async function loadMore() {
-    try {
-      const response = await fetch('/api/timeline?offset=' + posts.length);
-      const newPosts = await response.json();
-      
-      posts = [...posts, ...newPosts];
-      hasMore = newPosts.length > 0;
-    } catch (err) {
-      error = err;
-    }
-  }
-  
-  function handleStatusClick(status, index) {
-    window.location.href = `/status/${status.id}`;
-  }
+	import {
+		TimelineCompound as Timeline,
+		StatusCompound as Status,
+	} from '@equaltoai/greater-components-fediverse';
+
+	let posts = $state([]);
+	let hasMore = $state(true);
+	let error = $state(null);
+
+	async function loadMore() {
+		try {
+			const response = await fetch('/api/timeline?offset=' + posts.length);
+			const newPosts = await response.json();
+
+			posts = [...posts, ...newPosts];
+			hasMore = newPosts.length > 0;
+		} catch (err) {
+			error = err;
+		}
+	}
+
+	function handleStatusClick(status, index) {
+		window.location.href = `/status/${status.id}`;
+	}
 </script>
 
 <Timeline.Root
-  items={posts}
-  config={{
-    mode: 'feed',
-    density: 'comfortable',
-    virtualized: true,
-    infiniteScroll: true
-  }}
-  handlers={{
-    onLoadMore: loadMore,
-    onItemClick: handleStatusClick
-  }}
-  initialState={{ hasMore, error }}
+	items={posts}
+	config={{
+		mode: 'feed',
+		density: 'comfortable',
+		virtualized: true,
+		infiniteScroll: true,
+	}}
+	handlers={{
+		onLoadMore: loadMore,
+		onItemClick: handleStatusClick,
+	}}
+	initialState={{ hasMore, error }}
 >
-  {#if error}
-    <Timeline.ErrorState {error} onRetry={loadMore} />
-  {:else if posts.length === 0}
-    <Timeline.EmptyState />
-  {:else}
-    {#each posts as status, index}
-      <Timeline.Item {status} {index}>
-        <Status.Root {status}>
-          <Status.Header />
-          <Status.Content />
-          <Status.Media />
-          <Status.Actions />
-        </Status.Root>
-      </Timeline.Item>
-    {/each}
-    {#if hasMore}
-      <Timeline.LoadMore />
-    {/if}
-  {/if}
+	{#if error}
+		<Timeline.ErrorState {error} onRetry={loadMore} />
+	{:else if posts.length === 0}
+		<Timeline.EmptyState />
+	{:else}
+		{#each posts as status, index}
+			<Timeline.Item {status} {index}>
+				<Status.Root {status}>
+					<Status.Header />
+					<Status.Content />
+					<Status.Media />
+					<Status.Actions />
+				</Status.Root>
+			</Timeline.Item>
+		{/each}
+		{#if hasMore}
+			<Timeline.LoadMore />
+		{/if}
+	{/if}
 </Timeline.Root>
 ```
 
@@ -320,20 +325,20 @@ If you're migrating from the old `TimelineVirtualized` component:
 
 ```svelte
 <Timeline.Root
-  items={posts}
-  config={{ estimatedItemHeight: itemHeight }}
-  handlers={{ onLoadMore: handleLoadMore }}
+	items={posts}
+	config={{ estimatedItemHeight: itemHeight }}
+	handlers={{ onLoadMore: handleLoadMore }}
 >
-  {#each posts as status, index}
-    <Timeline.Item {status} {index}>
-      <Status.Root {status}>
-        <Status.Header />
-        <Status.Content />
-        <Status.Actions />
-      </Status.Root>
-    </Timeline.Item>
-  {/each}
-  <Timeline.LoadMore />
+	{#each posts as status, index}
+		<Timeline.Item {status} {index}>
+			<Status.Root {status}>
+				<Status.Header />
+				<Status.Content />
+				<Status.Actions />
+			</Status.Root>
+		</Timeline.Item>
+	{/each}
+	<Timeline.LoadMore />
 </Timeline.Root>
 ```
 
@@ -345,4 +350,3 @@ If you're migrating from the old `TimelineVirtualized` component:
 4. **Accessible** - Built-in ARIA attributes
 5. **Customizable** - Easy to style and extend
 6. **Modern** - Uses Svelte 5 runes and patterns
-

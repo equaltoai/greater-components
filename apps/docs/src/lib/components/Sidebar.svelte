@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import ChevronRightIcon from '@equaltoai/greater-components-icons/icons/chevron-right.svelte';
-	
+
 	export let isMobileMenuOpen = false;
-	
+
 	interface NavSection {
 		title: string;
 		items: NavItem[];
 	}
-	
+
 	interface NavItem {
 		title: string;
 		href: string;
 		status?: 'alpha' | 'beta' | 'stable' | 'deprecated';
 		children?: NavItem[];
 	}
-	
+
 	const navigation: NavSection[] = [
 		{
 			title: 'Getting Started',
@@ -23,8 +23,8 @@
 				{ title: 'Introduction', href: '/' },
 				{ title: 'Installation', href: '/installation' },
 				{ title: 'Quick Start', href: '/quick-start' },
-				{ title: 'Migration Guide', href: '/migration' }
-			]
+				{ title: 'Migration Guide', href: '/migration' },
+			],
 		},
 		{
 			title: 'Guides',
@@ -33,8 +33,8 @@
 				{ title: 'Accessibility', href: '/guides/accessibility' },
 				{ title: 'TypeScript', href: '/guides/typescript' },
 				{ title: 'Testing', href: '/guides/testing' },
-				{ title: 'Contributing', href: '/guides/contributing' }
-			]
+				{ title: 'Contributing', href: '/guides/contributing' },
+			],
 		},
 		{
 			title: 'Core Components',
@@ -48,8 +48,8 @@
 				{ title: 'Switch', href: '/components/switch', status: 'beta' },
 				{ title: 'Avatar', href: '/components/avatar', status: 'stable' },
 				{ title: 'Skeleton', href: '/components/skeleton', status: 'stable' },
-				{ title: 'ThemeSwitcher', href: '/components/theme-switcher', status: 'stable' }
-			]
+				{ title: 'ThemeSwitcher', href: '/components/theme-switcher', status: 'stable' },
+			],
 		},
 		{
 			title: 'Fediverse Components',
@@ -59,8 +59,8 @@
 				{ title: 'ComposeBox', href: '/components/compose-box', status: 'alpha' },
 				{ title: 'NotificationsFeed', href: '/components/notifications-feed', status: 'beta' },
 				{ title: 'ProfileHeader', href: '/components/profile-header', status: 'beta' },
-				{ title: 'ActionBar', href: '/components/action-bar', status: 'beta' }
-			]
+				{ title: 'ActionBar', href: '/components/action-bar', status: 'beta' },
+			],
 		},
 		{
 			title: 'Demo Suite',
@@ -69,8 +69,8 @@
 				{ title: 'Timeline App', href: '/demo-suite/timeline' },
 				{ title: 'Profile App', href: '/demo-suite/profile' },
 				{ title: 'Settings App', href: '/demo-suite/settings' },
-				{ title: 'Search App', href: '/demo-suite/search' }
-			]
+				{ title: 'Search App', href: '/demo-suite/search' },
+			],
 		},
 		{
 			title: 'Design Tokens',
@@ -79,8 +79,8 @@
 				{ title: 'Typography', href: '/tokens/typography' },
 				{ title: 'Spacing', href: '/tokens/spacing' },
 				{ title: 'Shadows', href: '/tokens/shadows' },
-				{ title: 'Animations', href: '/tokens/animations' }
-			]
+				{ title: 'Animations', href: '/tokens/animations' },
+			],
 		},
 		{
 			title: 'API Reference',
@@ -88,13 +88,13 @@
 				{ title: 'Component API', href: '/api/components' },
 				{ title: 'Stores', href: '/api/stores' },
 				{ title: 'Utilities', href: '/api/utilities' },
-				{ title: 'Adapters', href: '/api/adapters' }
-			]
-		}
+				{ title: 'Adapters', href: '/api/adapters' },
+			],
+		},
 	];
-	
+
 	let expandedSections = new Set(['Getting Started', 'Core Components']);
-	
+
 	function toggleSection(title: string) {
 		if (expandedSections.has(title)) {
 			expandedSections.delete(title);
@@ -103,7 +103,7 @@
 		}
 		expandedSections = expandedSections;
 	}
-	
+
 	function isActive(href: string): boolean {
 		return $page.url.pathname === href;
 	}
@@ -113,27 +113,23 @@
 	<nav class="sidebar-nav">
 		{#each navigation as section (section.title)}
 			<div class="nav-section">
-				<button 
+				<button
 					class="section-header"
 					on:click={() => toggleSection(section.title)}
 					aria-expanded={expandedSections.has(section.title)}
 				>
-					<ChevronRightIcon 
-						size={16} 
+					<ChevronRightIcon
+						size={16}
 						class="chevron {expandedSections.has(section.title) ? 'expanded' : ''}"
 					/>
 					<span>{section.title}</span>
 				</button>
-				
+
 				{#if expandedSections.has(section.title)}
 					<ul class="section-items">
 						{#each section.items as item (item.href)}
 							<li>
-								<a 
-									href={item.href}
-									class="nav-link"
-									class:active={isActive(item.href)}
-								>
+								<a href={item.href} class="nav-link" class:active={isActive(item.href)}>
 									<span>{item.title}</span>
 									{#if item.status}
 										<span class="status-badge {item.status}">{item.status}</span>
@@ -160,15 +156,15 @@
 		overflow-y: auto;
 		transition: transform 0.3s ease;
 	}
-	
+
 	.sidebar-nav {
 		padding: 1rem;
 	}
-	
+
 	.nav-section {
 		margin-bottom: 1rem;
 	}
-	
+
 	.section-header {
 		width: 100%;
 		display: flex;
@@ -185,25 +181,25 @@
 		cursor: pointer;
 		transition: color 0.2s;
 	}
-	
+
 	.section-header:hover {
 		color: var(--doc-link);
 	}
-	
+
 	.section-header :global(.chevron) {
 		transition: transform 0.2s;
 	}
-	
+
 	.section-header :global(.chevron.expanded) {
 		transform: rotate(90deg);
 	}
-	
+
 	.section-items {
 		list-style: none;
 		padding: 0;
 		margin: 0.5rem 0 0 1.5rem;
 	}
-	
+
 	.nav-link {
 		display: flex;
 		align-items: center;
@@ -215,26 +211,26 @@
 		opacity: 0.8;
 		transition: all 0.2s;
 	}
-	
+
 	.nav-link:hover {
 		opacity: 1;
 		background: var(--doc-surface-secondary);
 	}
-	
+
 	.nav-link.active {
 		opacity: 1;
 		background: var(--doc-surface-secondary);
 		color: var(--doc-link);
 		font-weight: 500;
 	}
-	
+
 	@media (max-width: 768px) {
 		.docs-sidebar {
 			transform: translateX(-100%);
 			z-index: 99;
 			box-shadow: var(--doc-shadow-lg);
 		}
-		
+
 		.docs-sidebar.open {
 			transform: translateX(0);
 		}

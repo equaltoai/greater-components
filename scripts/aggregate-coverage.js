@@ -14,233 +14,238 @@ const COVERAGE_THRESHOLD = 90;
 
 // Ensure output directory exists
 if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+	fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
 // Colors for terminal output
 const colors = {
-  green: '\x1b[32m',
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  reset: '\x1b[0m',
-  bold: '\x1b[1m'
+	green: '\x1b[32m',
+	red: '\x1b[31m',
+	yellow: '\x1b[33m',
+	blue: '\x1b[34m',
+	reset: '\x1b[0m',
+	bold: '\x1b[1m',
 };
 
 function log(message, color = colors.reset) {
-  console.log(`${color}${message}${colors.reset}`);
+	console.log(`${color}${message}${colors.reset}`);
 }
 
 function getPackages() {
-  if (!fs.existsSync(PACKAGES_DIR)) {
-    log('❌ Packages directory not found!', colors.red);
-    process.exit(1);
-  }
+	if (!fs.existsSync(PACKAGES_DIR)) {
+		log('❌ Packages directory not found!', colors.red);
+		process.exit(1);
+	}
 
-  return fs.readdirSync(PACKAGES_DIR)
-    .filter(name => fs.statSync(path.join(PACKAGES_DIR, name)).isDirectory())
-    .filter(name => {
-      const packageJsonPath = path.join(PACKAGES_DIR, name, 'package.json');
-      return fs.existsSync(packageJsonPath);
-    });
+	return fs
+		.readdirSync(PACKAGES_DIR)
+		.filter((name) => fs.statSync(path.join(PACKAGES_DIR, name)).isDirectory())
+		.filter((name) => {
+			const packageJsonPath = path.join(PACKAGES_DIR, name, 'package.json');
+			return fs.existsSync(packageJsonPath);
+		});
 }
 
 function getCoverageForPackage(packageName) {
-  // Try multiple possible coverage file locations
-  const possibleFiles = [
-    path.join(PACKAGES_DIR, packageName, 'coverage', 'coverage-summary.json'),
-    path.join(PACKAGES_DIR, packageName, 'coverage', 'coverage-final.json')
-  ];
-  
-  let coverageFile = null;
-  for (const file of possibleFiles) {
-    if (fs.existsSync(file)) {
-      coverageFile = file;
-      break;
-    }
-  }
-  
-  if (!coverageFile) {
-    log(`⚠️  No coverage report found for ${packageName}`, colors.yellow);
-    return null;
-  }
+	// Try multiple possible coverage file locations
+	const possibleFiles = [
+		path.join(PACKAGES_DIR, packageName, 'coverage', 'coverage-summary.json'),
+		path.join(PACKAGES_DIR, packageName, 'coverage', 'coverage-final.json'),
+	];
 
-  try {
-    const coverage = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
-    
-    // Handle different coverage file formats
-    let totalCoverage;
-    if (coverage.total) {
-      // coverage-summary.json format
-      totalCoverage = coverage.total;
-    } else {
-      // coverage-final.json format - aggregate all files
-      const totals = {
-        lines: { total: 0, covered: 0 },
-        functions: { total: 0, covered: 0 },
-        statements: { total: 0, covered: 0 },
-        branches: { total: 0, covered: 0 }
-      };
+	let coverageFile = null;
+	for (const file of possibleFiles) {
+		if (fs.existsSync(file)) {
+			coverageFile = file;
+			break;
+		}
+	}
 
-      Object.values(coverage).forEach(fileCoverage => {
-        if (fileCoverage.s && fileCoverage.f && fileCoverage.b) {
-          // Aggregate statements
-          Object.values(fileCoverage.s).forEach(count => {
-            totals.statements.total++;
-            if (count > 0) totals.statements.covered++;
-          });
-          
-          // Aggregate functions
-          Object.values(fileCoverage.f).forEach(count => {
-            totals.functions.total++;
-            if (count > 0) totals.functions.covered++;
-          });
-          
-          // Aggregate branches
-          Object.values(fileCoverage.b).forEach(branchData => {
-            if (Array.isArray(branchData)) {
-              branchData.forEach(count => {
-                totals.branches.total++;
-                if (count > 0) totals.branches.covered++;
-              });
-            }
-          });
-          
-          // Lines are similar to statements for simplicity
-          totals.lines = { ...totals.statements };
-        }
-      });
+	if (!coverageFile) {
+		log(`⚠️  No coverage report found for ${packageName}`, colors.yellow);
+		return null;
+	}
 
-      // Convert to percentages
-      totalCoverage = {};
-      Object.keys(totals).forEach(type => {
-        const pct = totals[type].total > 0 ? (totals[type].covered / totals[type].total) * 100 : 0;
-        totalCoverage[type] = {
-          total: totals[type].total,
-          covered: totals[type].covered,
-          pct: Math.round(pct * 100) / 100
-        };
-      });
-    }
-    
-    return {
-      package: packageName,
-      ...totalCoverage
-    };
-  } catch (error) {
-    log(`❌ Error reading coverage for ${packageName}: ${error.message}`, colors.red);
-    return null;
-  }
+	try {
+		const coverage = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
+
+		// Handle different coverage file formats
+		let totalCoverage;
+		if (coverage.total) {
+			// coverage-summary.json format
+			totalCoverage = coverage.total;
+		} else {
+			// coverage-final.json format - aggregate all files
+			const totals = {
+				lines: { total: 0, covered: 0 },
+				functions: { total: 0, covered: 0 },
+				statements: { total: 0, covered: 0 },
+				branches: { total: 0, covered: 0 },
+			};
+
+			Object.values(coverage).forEach((fileCoverage) => {
+				if (fileCoverage.s && fileCoverage.f && fileCoverage.b) {
+					// Aggregate statements
+					Object.values(fileCoverage.s).forEach((count) => {
+						totals.statements.total++;
+						if (count > 0) totals.statements.covered++;
+					});
+
+					// Aggregate functions
+					Object.values(fileCoverage.f).forEach((count) => {
+						totals.functions.total++;
+						if (count > 0) totals.functions.covered++;
+					});
+
+					// Aggregate branches
+					Object.values(fileCoverage.b).forEach((branchData) => {
+						if (Array.isArray(branchData)) {
+							branchData.forEach((count) => {
+								totals.branches.total++;
+								if (count > 0) totals.branches.covered++;
+							});
+						}
+					});
+
+					// Lines are similar to statements for simplicity
+					totals.lines = { ...totals.statements };
+				}
+			});
+
+			// Convert to percentages
+			totalCoverage = {};
+			Object.keys(totals).forEach((type) => {
+				const pct = totals[type].total > 0 ? (totals[type].covered / totals[type].total) * 100 : 0;
+				totalCoverage[type] = {
+					total: totals[type].total,
+					covered: totals[type].covered,
+					pct: Math.round(pct * 100) / 100,
+				};
+			});
+		}
+
+		return {
+			package: packageName,
+			...totalCoverage,
+		};
+	} catch (error) {
+		log(`❌ Error reading coverage for ${packageName}: ${error.message}`, colors.red);
+		return null;
+	}
 }
 
 function calculateOverallCoverage(packageCoverages) {
-  const totals = {
-    lines: { total: 0, covered: 0 },
-    functions: { total: 0, covered: 0 },
-    statements: { total: 0, covered: 0 },
-    branches: { total: 0, covered: 0 }
-  };
+	const totals = {
+		lines: { total: 0, covered: 0 },
+		functions: { total: 0, covered: 0 },
+		statements: { total: 0, covered: 0 },
+		branches: { total: 0, covered: 0 },
+	};
 
-  packageCoverages.forEach(pkg => {
-    if (pkg) {
-      Object.keys(totals).forEach(type => {
-        totals[type].total += pkg[type].total;
-        totals[type].covered += pkg[type].covered;
-      });
-    }
-  });
+	packageCoverages.forEach((pkg) => {
+		if (pkg) {
+			Object.keys(totals).forEach((type) => {
+				totals[type].total += pkg[type].total;
+				totals[type].covered += pkg[type].covered;
+			});
+		}
+	});
 
-  const overall = {};
-  Object.keys(totals).forEach(type => {
-    const pct = totals[type].total > 0 ? (totals[type].covered / totals[type].total) * 100 : 0;
-    overall[type] = {
-      total: totals[type].total,
-      covered: totals[type].covered,
-      pct: Math.round(pct * 100) / 100
-    };
-  });
+	const overall = {};
+	Object.keys(totals).forEach((type) => {
+		const pct = totals[type].total > 0 ? (totals[type].covered / totals[type].total) * 100 : 0;
+		overall[type] = {
+			total: totals[type].total,
+			covered: totals[type].covered,
+			pct: Math.round(pct * 100) / 100,
+		};
+	});
 
-  return overall;
+	return overall;
 }
 
 function formatCoverage(coverage, type) {
-  const pct = coverage[type].pct;
-  const color = pct >= COVERAGE_THRESHOLD ? colors.green : 
-                pct >= COVERAGE_THRESHOLD - 10 ? colors.yellow : colors.red;
-  
-  return `${color}${pct.toFixed(1)}%${colors.reset} (${coverage[type].covered}/${coverage[type].total})`;
+	const pct = coverage[type].pct;
+	const color =
+		pct >= COVERAGE_THRESHOLD
+			? colors.green
+			: pct >= COVERAGE_THRESHOLD - 10
+				? colors.yellow
+				: colors.red;
+
+	return `${color}${pct.toFixed(1)}%${colors.reset} (${coverage[type].covered}/${coverage[type].total})`;
 }
 
 function generateReport() {
-  log(`${colors.bold}📊 Coverage Report Aggregation${colors.reset}\n`);
-  
-  const packages = getPackages();
-  log(`Found ${packages.length} packages: ${packages.join(', ')}\n`);
+	log(`${colors.bold}📊 Coverage Report Aggregation${colors.reset}\n`);
 
-  const packageCoverages = packages.map(getCoverageForPackage).filter(Boolean);
-  
-  if (packageCoverages.length === 0) {
-    log('❌ No coverage reports found! Run "pnpm test:coverage" first.', colors.red);
-    process.exit(1);
-  }
+	const packages = getPackages();
+	log(`Found ${packages.length} packages: ${packages.join(', ')}\n`);
 
-  log(`${colors.bold}📋 Individual Package Coverage:${colors.reset}`);
-  packageCoverages.forEach(pkg => {
-    log(`\n${colors.blue}${pkg.package}:${colors.reset}`);
-    log(`  Lines:      ${formatCoverage(pkg, 'lines')}`);
-    log(`  Functions:  ${formatCoverage(pkg, 'functions')}`);
-    log(`  Statements: ${formatCoverage(pkg, 'statements')}`);
-    log(`  Branches:   ${formatCoverage(pkg, 'branches')}`);
-  });
+	const packageCoverages = packages.map(getCoverageForPackage).filter(Boolean);
 
-  const overall = calculateOverallCoverage(packageCoverages);
-  
-  log(`\n${colors.bold}🎯 Overall Project Coverage:${colors.reset}`);
-  log(`  Lines:      ${formatCoverage(overall, 'lines')}`);
-  log(`  Functions:  ${formatCoverage(overall, 'functions')}`);
-  log(`  Statements: ${formatCoverage(overall, 'statements')}`);
-  log(`  Branches:   ${formatCoverage(overall, 'branches')}`);
+	if (packageCoverages.length === 0) {
+		log('❌ No coverage reports found! Run "pnpm test:coverage" first.', colors.red);
+		process.exit(1);
+	}
 
-  // Write combined report
-  const combinedReport = {
-    packages: packageCoverages,
-    overall,
-    timestamp: new Date().toISOString(),
-    threshold: COVERAGE_THRESHOLD
-  };
+	log(`${colors.bold}📋 Individual Package Coverage:${colors.reset}`);
+	packageCoverages.forEach((pkg) => {
+		log(`\n${colors.blue}${pkg.package}:${colors.reset}`);
+		log(`  Lines:      ${formatCoverage(pkg, 'lines')}`);
+		log(`  Functions:  ${formatCoverage(pkg, 'functions')}`);
+		log(`  Statements: ${formatCoverage(pkg, 'statements')}`);
+		log(`  Branches:   ${formatCoverage(pkg, 'branches')}`);
+	});
 
-  const reportPath = path.join(OUTPUT_DIR, 'combined-coverage.json');
-  fs.writeFileSync(reportPath, JSON.stringify(combinedReport, null, 2));
-  log(`\n📝 Combined report written to: ${reportPath}`);
+	const overall = calculateOverallCoverage(packageCoverages);
 
-  // Check thresholds
-  let failed = false;
-  const types = ['lines', 'functions', 'statements', 'branches'];
-  
-  log(`\n${colors.bold}🎯 Threshold Verification (${COVERAGE_THRESHOLD}%):${colors.reset}`);
-  types.forEach(type => {
-    const pct = overall[type].pct;
-    const passed = pct >= COVERAGE_THRESHOLD;
-    const status = passed ? '✅' : '❌';
-    const color = passed ? colors.green : colors.red;
-    
-    log(`  ${status} ${type}: ${color}${pct.toFixed(1)}%${colors.reset}`);
-    if (!passed) failed = true;
-  });
+	log(`\n${colors.bold}🎯 Overall Project Coverage:${colors.reset}`);
+	log(`  Lines:      ${formatCoverage(overall, 'lines')}`);
+	log(`  Functions:  ${formatCoverage(overall, 'functions')}`);
+	log(`  Statements: ${formatCoverage(overall, 'statements')}`);
+	log(`  Branches:   ${formatCoverage(overall, 'branches')}`);
 
-  // Generate HTML report index
-  generateHtmlIndex(packageCoverages, overall);
+	// Write combined report
+	const combinedReport = {
+		packages: packageCoverages,
+		overall,
+		timestamp: new Date().toISOString(),
+		threshold: COVERAGE_THRESHOLD,
+	};
 
-  if (failed) {
-    log(`\n❌ Coverage thresholds not met!`, colors.red);
-    process.exit(1);
-  } else {
-    log(`\n✅ All coverage thresholds met!`, colors.green);
-  }
+	const reportPath = path.join(OUTPUT_DIR, 'combined-coverage.json');
+	fs.writeFileSync(reportPath, JSON.stringify(combinedReport, null, 2));
+	log(`\n📝 Combined report written to: ${reportPath}`);
+
+	// Check thresholds
+	let failed = false;
+	const types = ['lines', 'functions', 'statements', 'branches'];
+
+	log(`\n${colors.bold}🎯 Threshold Verification (${COVERAGE_THRESHOLD}%):${colors.reset}`);
+	types.forEach((type) => {
+		const pct = overall[type].pct;
+		const passed = pct >= COVERAGE_THRESHOLD;
+		const status = passed ? '✅' : '❌';
+		const color = passed ? colors.green : colors.red;
+
+		log(`  ${status} ${type}: ${color}${pct.toFixed(1)}%${colors.reset}`);
+		if (!passed) failed = true;
+	});
+
+	// Generate HTML report index
+	generateHtmlIndex(packageCoverages, overall);
+
+	if (failed) {
+		log(`\n❌ Coverage thresholds not met!`, colors.red);
+		process.exit(1);
+	} else {
+		log(`\n✅ All coverage thresholds met!`, colors.green);
+	}
 }
 
 function generateHtmlIndex(packageCoverages, overall) {
-  const html = `<!DOCTYPE html>
+	const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -280,28 +285,33 @@ function generateHtmlIndex(packageCoverages, overall) {
 
   <h2>Package Coverage</h2>
   <div class="packages">
-    ${packageCoverages.map(pkg => `
+    ${packageCoverages
+			.map(
+				(pkg) => `
       <div class="package">
         <h3>${pkg.package}</h3>
         ${generateMetricsHtml(pkg)}
         <p><a href="./${pkg.package}/index.html" target="_blank">View detailed report →</a></p>
       </div>
-    `).join('')}
+    `
+			)
+			.join('')}
   </div>
 </body>
 </html>`;
 
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), html);
-  log(`📊 HTML index written to: ${path.join(OUTPUT_DIR, 'index.html')}`);
+	fs.writeFileSync(path.join(OUTPUT_DIR, 'index.html'), html);
+	log(`📊 HTML index written to: ${path.join(OUTPUT_DIR, 'index.html')}`);
 }
 
 function generateMetricsHtml(coverage) {
-  const types = ['lines', 'functions', 'statements', 'branches'];
-  return types.map(type => {
-    const pct = coverage[type].pct;
-    const level = pct >= 90 ? 'high' : pct >= 80 ? 'medium' : 'low';
-    
-    return `
+	const types = ['lines', 'functions', 'statements', 'branches'];
+	return types
+		.map((type) => {
+			const pct = coverage[type].pct;
+			const level = pct >= 90 ? 'high' : pct >= 80 ? 'medium' : 'low';
+
+			return `
       <div class="metric">
         <span>${type.charAt(0).toUpperCase() + type.slice(1)}</span>
         <span class="value ${level}">${pct.toFixed(1)}%</span>
@@ -310,7 +320,8 @@ function generateMetricsHtml(coverage) {
         <div class="fill ${level}" style="width: ${pct}%"></div>
       </div>
     `;
-  }).join('');
+		})
+		.join('');
 }
 
 // Run the report

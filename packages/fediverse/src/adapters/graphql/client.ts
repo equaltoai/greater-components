@@ -1,24 +1,19 @@
 /**
  * GraphQL Client for Lesser
- * 
+ *
  * Production-ready GraphQL client with caching, deduplication, and WebSocket subscriptions.
  * Handles GraphQL queries, mutations, and subscriptions for Lesser's ActivityPub GraphQL API.
- * 
+ *
  * Features:
  * - LRU caching with TTL for query results
  * - Request deduplication to prevent redundant API calls
  * - WebSocket subscriptions with auto-reconnect
  * - Configurable timeout and retry behavior
- * 
+ *
  * @module adapters/graphql/client
  */
 
-import type {
-	GraphQLConfig,
-	GraphQLResponse,
-	Variables,
-	SubscriptionEvent,
-} from './types.js';
+import type { GraphQLConfig, GraphQLResponse, Variables, SubscriptionEvent } from './types.js';
 import { AdapterCache, createCacheKey } from '../cache.js';
 import { RequestDeduplicator } from '../batcher.js';
 
@@ -62,7 +57,7 @@ export class GraphQLClient {
 	private reconnectAttempts = 0;
 	private maxReconnectAttempts = 5;
 	private reconnectDelay = 1000;
-	
+
 	// Caching and optimization
 	private cache: AdapterCache;
 	private deduplicator: RequestDeduplicator<string, unknown>;
@@ -75,7 +70,7 @@ export class GraphQLClient {
 		this.enableCache = config.enableCache ?? true;
 		this.enableDeduplication = config.enableDeduplication ?? true;
 		this.cacheTTL = config.cacheTTL ?? 300000; // 5 minutes default
-		
+
 		this.config = {
 			endpoint: config.endpoint,
 			wsEndpoint: config.wsEndpoint || config.endpoint.replace(/^http/, 'ws'),
@@ -88,13 +83,13 @@ export class GraphQLClient {
 			enableDeduplication: this.enableDeduplication,
 			debug: config.debug ?? false,
 		};
-		
+
 		this.cache = new AdapterCache({
 			maxSize: this.config.cacheSize,
 			defaultTTL: this.cacheTTL,
 			debug: this.config.debug,
 		});
-		
+
 		this.deduplicator = new RequestDeduplicator({
 			debug: this.config.debug,
 		});
@@ -395,31 +390,31 @@ export class GraphQLClient {
 					}, this.reconnectDelay * this.reconnectAttempts);
 				}
 			};
-				} catch (error) {
-					logError('Failed to create WebSocket connection:', error);
-				}
+		} catch (error) {
+			logError('Failed to create WebSocket connection:', error);
+		}
 	}
 }
 
 /**
  * Create a GraphQL client instance
- * 
+ *
  * @param config - GraphQL configuration
  * @returns GraphQL client instance
- * 
+ *
  * @example
  * ```typescript
  * const client = createGraphQLClient({
  *   endpoint: 'https://api.example.com/graphql',
  *   token: 'your-auth-token',
  * });
- * 
+ *
  * // Query
  * const data = await client.query(TIMELINE_QUERY, { limit: 20 });
- * 
+ *
  * // Mutation
  * const result = await client.mutate(CREATE_NOTE_MUTATION, { content: 'Hello!' });
- * 
+ *
  * // Subscription
  * const unsubscribe = client.subscribe(
  *   TIMELINE_SUBSCRIPTION,

@@ -12,6 +12,7 @@
 `Profile.Tabs` provides tab navigation for different profile sections such as posts, replies, media, and likes. It integrates with the headless tabs primitive for accessibility and keyboard navigation, with support for custom tabs, icons, and count badges.
 
 ### **Key Features**:
+
 - ✅ Tab navigation for profile sections
 - ✅ Active tab indicator
 - ✅ Optional count badges
@@ -35,28 +36,28 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+	import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
-  const profile = {
-    id: '123',
-    username: 'alice',
-    displayName: 'Alice Wonder',
-    bio: 'Developer',
-    followersCount: 1234,
-    followingCount: 567,
-    statusesCount: 8910
-  };
+	const profile = {
+		id: '123',
+		username: 'alice',
+		displayName: 'Alice Wonder',
+		bio: 'Developer',
+		followersCount: 1234,
+		followingCount: 567,
+		statusesCount: 8910,
+	};
 
-  const handlers = {
-    onTabChange: (tabId: string) => {
-      console.log('Tab changed to:', tabId);
-    }
-  };
+	const handlers = {
+		onTabChange: (tabId: string) => {
+			console.log('Tab changed to:', tabId);
+		},
+	};
 </script>
 
 <Profile.Root {profile} {handlers}>
-  <Profile.Header />
-  <Profile.Tabs />
+	<Profile.Header />
+	<Profile.Tabs />
 </Profile.Root>
 ```
 
@@ -64,9 +65,9 @@ npm install @equaltoai/greater-components-fediverse
 
 ## 🎛️ Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `class` | `string` | `''` | No | Custom CSS class |
+| Prop    | Type     | Default | Required | Description      |
+| ------- | -------- | ------- | -------- | ---------------- |
+| `class` | `string` | `''`    | No       | Custom CSS class |
 
 The tabs are configured through the Profile context's `tabs` property.
 
@@ -74,10 +75,10 @@ The tabs are configured through the Profile context's `tabs` property.
 
 ```typescript
 interface ProfileTab {
-  id: string;
-  label: string;
-  count?: number;
-  icon?: string; // SVG path data
+	id: string;
+	label: string;
+	count?: number;
+	icon?: string; // SVG path data
 }
 ```
 
@@ -91,87 +92,90 @@ Use default tabs with basic configuration:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
-  import type { ProfileData, ProfileHandlers } from '@equaltoai/greater-components-fediverse/Profile';
+	import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+	import type {
+		ProfileData,
+		ProfileHandlers,
+	} from '@equaltoai/greater-components-fediverse/Profile';
 
-  const profile: ProfileData = {
-    id: '123',
-    username: 'alice',
-    displayName: 'Alice Wonder',
-    bio: 'Software developer',
-    avatar: 'https://cdn.example.com/avatars/alice.jpg',
-    followersCount: 1234,
-    followingCount: 567,
-    statusesCount: 8910
-  };
+	const profile: ProfileData = {
+		id: '123',
+		username: 'alice',
+		displayName: 'Alice Wonder',
+		bio: 'Software developer',
+		avatar: 'https://cdn.example.com/avatars/alice.jpg',
+		followersCount: 1234,
+		followingCount: 567,
+		statusesCount: 8910,
+	};
 
-  let activeTab = $state('posts');
-  let content = $state<any[]>([]);
+	let activeTab = $state('posts');
+	let content = $state<any[]>([]);
 
-  const handlers: ProfileHandlers = {
-    onTabChange: async (tabId: string) => {
-      activeTab = tabId;
-      await loadTabContent(tabId);
-    }
-  };
+	const handlers: ProfileHandlers = {
+		onTabChange: async (tabId: string) => {
+			activeTab = tabId;
+			await loadTabContent(tabId);
+		},
+	};
 
-  async function loadTabContent(tabId: string) {
-    const response = await fetch(`/api/profiles/${profile.id}/${tabId}`);
-    content = await response.json();
-  }
+	async function loadTabContent(tabId: string) {
+		const response = await fetch(`/api/profiles/${profile.id}/${tabId}`);
+		content = await response.json();
+	}
 
-  // Load initial content
-  $effect(() => {
-    loadTabContent('posts');
-  });
+	// Load initial content
+	$effect(() => {
+		loadTabContent('posts');
+	});
 </script>
 
 <div class="profile-with-tabs">
-  <Profile.Root {profile} {handlers}>
-    <Profile.Header />
-    <Profile.Stats />
-    <Profile.Tabs />
-    
-    <div class="tab-content">
-      {#if content.length === 0}
-        <div class="empty-state">
-          <p>No {activeTab} to display</p>
-        </div>
-      {:else}
-        {#each content as item}
-          <div class="content-item">
-            <!-- Render item based on tab type -->
-            {item.content}
-          </div>
-        {/each}
-      {/if}
-    </div>
-  </Profile.Root>
+	<Profile.Root {profile} {handlers}>
+		<Profile.Header />
+		<Profile.Stats />
+		<Profile.Tabs />
+
+		<div class="tab-content">
+			{#if content.length === 0}
+				<div class="empty-state">
+					<p>No {activeTab} to display</p>
+				</div>
+			{:else}
+				{#each content as item}
+					<div class="content-item">
+						<!-- Render item based on tab type -->
+						{item.content}
+					</div>
+				{/each}
+			{/if}
+		</div>
+	</Profile.Root>
 </div>
 
 <style>
-  .profile-with-tabs {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+	.profile-with-tabs {
+		max-width: 600px;
+		margin: 0 auto;
+	}
 
-  .tab-content {
-    padding: 1rem;
-    min-height: 400px;
-  }
+	.tab-content {
+		padding: 1rem;
+		min-height: 400px;
+	}
 
-  .empty-state {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    color: var(--text-secondary, #536471);
-  }
+	.empty-state {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 200px;
+		color: var(--text-secondary, #536471);
+	}
 
-  .content-item {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color, #eff3f4);
-  }
+	.content-item {
+		padding: 1rem;
+		border-bottom: 1px solid var(--border-color, #eff3f4);
+	}
 </style>
 ```
 
@@ -181,98 +185,94 @@ Configure custom tabs with icons and badge counts:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
-  import type { ProfileTab } from '@equaltoai/greater-components-fediverse/Profile';
+	import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+	import type { ProfileTab } from '@equaltoai/greater-components-fediverse/Profile';
 
-  const profile = {
-    id: '123',
-    username: 'alice',
-    displayName: 'Alice',
-    bio: 'Developer',
-    followersCount: 1234,
-    followingCount: 567,
-    statusesCount: 8910
-  };
+	const profile = {
+		id: '123',
+		username: 'alice',
+		displayName: 'Alice',
+		bio: 'Developer',
+		followersCount: 1234,
+		followingCount: 567,
+		statusesCount: 8910,
+	};
 
-  // Custom tabs with icons and counts
-  const customTabs: ProfileTab[] = [
-    {
-      id: 'posts',
-      label: 'Posts',
-      count: 245,
-      icon: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z'
-    },
-    {
-      id: 'media',
-      label: 'Media',
-      count: 89,
-      icon: 'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'
-    },
-    {
-      id: 'likes',
-      label: 'Likes',
-      count: 423,
-      icon: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
-    },
-    {
-      id: 'replies',
-      label: 'Replies',
-      count: 156,
-      icon: 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z'
-    }
-  ];
+	// Custom tabs with icons and counts
+	const customTabs: ProfileTab[] = [
+		{
+			id: 'posts',
+			label: 'Posts',
+			count: 245,
+			icon: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z',
+		},
+		{
+			id: 'media',
+			label: 'Media',
+			count: 89,
+			icon: 'M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z',
+		},
+		{
+			id: 'likes',
+			label: 'Likes',
+			count: 423,
+			icon: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z',
+		},
+		{
+			id: 'replies',
+			label: 'Replies',
+			count: 156,
+			icon: 'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z',
+		},
+	];
 
-  let activeTab = $state('posts');
+	let activeTab = $state('posts');
 
-  // Update context with custom tabs
-  $effect(() => {
-    // This would be set via initialState in Profile.Root
-    // For demonstration, showing the concept
-  });
+	// Update context with custom tabs
+	$effect(() => {
+		// This would be set via initialState in Profile.Root
+		// For demonstration, showing the concept
+	});
 
-  const handlers = {
-    onTabChange: (tabId: string) => {
-      activeTab = tabId;
-      console.log('Switched to tab:', tabId);
-    }
-  };
+	const handlers = {
+		onTabChange: (tabId: string) => {
+			activeTab = tabId;
+			console.log('Switched to tab:', tabId);
+		},
+	};
 </script>
 
 <div class="custom-tabs-profile">
-  <Profile.Root 
-    {profile} 
-    {handlers}
-    initialState={{ tabs: customTabs, activeTab: 'posts' }}
-  >
-    <Profile.Tabs />
-    
-    <div class="tab-panels">
-      {#if activeTab === 'posts'}
-        <div class="panel">Posts content</div>
-      {:else if activeTab === 'media'}
-        <div class="panel">Media gallery</div>
-      {:else if activeTab === 'likes'}
-        <div class="panel">Liked posts</div>
-      {:else if activeTab === 'replies'}
-        <div class="panel">Replies</div>
-      {/if}
-    </div>
-  </Profile.Root>
+	<Profile.Root {profile} {handlers} initialState={{ tabs: customTabs, activeTab: 'posts' }}>
+		<Profile.Tabs />
+
+		<div class="tab-panels">
+			{#if activeTab === 'posts'}
+				<div class="panel">Posts content</div>
+			{:else if activeTab === 'media'}
+				<div class="panel">Media gallery</div>
+			{:else if activeTab === 'likes'}
+				<div class="panel">Liked posts</div>
+			{:else if activeTab === 'replies'}
+				<div class="panel">Replies</div>
+			{/if}
+		</div>
+	</Profile.Root>
 </div>
 
 <style>
-  .custom-tabs-profile {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+	.custom-tabs-profile {
+		max-width: 600px;
+		margin: 0 auto;
+	}
 
-  .tab-panels {
-    padding: 1.5rem;
-  }
+	.tab-panels {
+		padding: 1.5rem;
+	}
 
-  .panel {
-    min-height: 300px;
-  }
+	.panel {
+		min-height: 300px;
+	}
 </style>
 ```
 
@@ -282,146 +282,146 @@ Lazy load tab content when tabs are activated:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+	import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
-  const profile = {
-    id: '123',
-    username: 'alice',
-    displayName: 'Alice',
-    bio: 'Developer',
-    followersCount: 1234,
-    followingCount: 567,
-    statusesCount: 8910
-  };
+	const profile = {
+		id: '123',
+		username: 'alice',
+		displayName: 'Alice',
+		bio: 'Developer',
+		followersCount: 1234,
+		followingCount: 567,
+		statusesCount: 8910,
+	};
 
-  let activeTab = $state('posts');
-  let tabData = $state<{ [key: string]: { loading: boolean; data: any[] } }>({
-    posts: { loading: false, data: [] },
-    replies: { loading: false, data: [] },
-    media: { loading: false, data: [] },
-    likes: { loading: false, data: [] }
-  });
+	let activeTab = $state('posts');
+	let tabData = $state<{ [key: string]: { loading: boolean; data: any[] } }>({
+		posts: { loading: false, data: [] },
+		replies: { loading: false, data: [] },
+		media: { loading: false, data: [] },
+		likes: { loading: false, data: [] },
+	});
 
-  const handlers = {
-    onTabChange: async (tabId: string) => {
-      activeTab = tabId;
-      
-      // Load data if not already loaded
-      if (tabData[tabId].data.length === 0 && !tabData[tabId].loading) {
-        await loadTabData(tabId);
-      }
-    }
-  };
+	const handlers = {
+		onTabChange: async (tabId: string) => {
+			activeTab = tabId;
 
-  async function loadTabData(tabId: string) {
-    tabData[tabId].loading = true;
+			// Load data if not already loaded
+			if (tabData[tabId].data.length === 0 && !tabData[tabId].loading) {
+				await loadTabData(tabId);
+			}
+		},
+	};
 
-    try {
-      const response = await fetch(
-        `/api/profiles/${profile.id}/${tabId}?limit=20`
-      );
-      
-      if (!response.ok) {
-        throw new Error('Failed to load data');
-      }
+	async function loadTabData(tabId: string) {
+		tabData[tabId].loading = true;
 
-      const data = await response.json();
-      tabData[tabId] = {
-        loading: false,
-        data
-      };
-    } catch (error) {
-      console.error('Error loading tab data:', error);
-      tabData[tabId].loading = false;
-    }
-  }
+		try {
+			const response = await fetch(`/api/profiles/${profile.id}/${tabId}?limit=20`);
 
-  // Load initial tab data
-  $effect(() => {
-    loadTabData('posts');
-  });
+			if (!response.ok) {
+				throw new Error('Failed to load data');
+			}
+
+			const data = await response.json();
+			tabData[tabId] = {
+				loading: false,
+				data,
+			};
+		} catch (error) {
+			console.error('Error loading tab data:', error);
+			tabData[tabId].loading = false;
+		}
+	}
+
+	// Load initial tab data
+	$effect(() => {
+		loadTabData('posts');
+	});
 </script>
 
 <div class="lazy-tabs-profile">
-  <Profile.Root {profile} {handlers}>
-    <Profile.Tabs />
-    
-    <div class="tab-content">
-      {#if tabData[activeTab].loading}
-        <div class="loading-state">
-          <div class="spinner"></div>
-          <p>Loading {activeTab}...</p>
-        </div>
-      {:else if tabData[activeTab].data.length === 0}
-        <div class="empty-state">
-          <p>No {activeTab} to display</p>
-        </div>
-      {:else}
-        <div class="data-list">
-          {#each tabData[activeTab].data as item}
-            <div class="data-item">
-              {JSON.stringify(item)}
-            </div>
-          {/each}
-        </div>
-      {/if}
-    </div>
-  </Profile.Root>
+	<Profile.Root {profile} {handlers}>
+		<Profile.Tabs />
+
+		<div class="tab-content">
+			{#if tabData[activeTab].loading}
+				<div class="loading-state">
+					<div class="spinner"></div>
+					<p>Loading {activeTab}...</p>
+				</div>
+			{:else if tabData[activeTab].data.length === 0}
+				<div class="empty-state">
+					<p>No {activeTab} to display</p>
+				</div>
+			{:else}
+				<div class="data-list">
+					{#each tabData[activeTab].data as item}
+						<div class="data-item">
+							{JSON.stringify(item)}
+						</div>
+					{/each}
+				</div>
+			{/if}
+		</div>
+	</Profile.Root>
 </div>
 
 <style>
-  .lazy-tabs-profile {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+	.lazy-tabs-profile {
+		max-width: 600px;
+		margin: 0 auto;
+	}
 
-  .tab-content {
-    padding: 1.5rem;
-    min-height: 400px;
-  }
+	.tab-content {
+		padding: 1.5rem;
+		min-height: 400px;
+	}
 
-  .loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    gap: 1rem;
-  }
+	.loading-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 200px;
+		gap: 1rem;
+	}
 
-  .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid #eff3f4;
-    border-top-color: #1d9bf0;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+	.spinner {
+		width: 48px;
+		height: 48px;
+		border: 4px solid #eff3f4;
+		border-top-color: #1d9bf0;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
 
-  .empty-state {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    color: #536471;
-  }
+	.empty-state {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 200px;
+		color: #536471;
+	}
 
-  .data-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+	.data-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
 
-  .data-item {
-    padding: 1rem;
-    background: #f7f9fa;
-    border: 1px solid #eff3f4;
-    border-radius: 0.5rem;
-  }
+	.data-item {
+		padding: 1rem;
+		background: #f7f9fa;
+		border: 1px solid #eff3f4;
+		border-radius: 0.5rem;
+	}
 </style>
 ```
 
@@ -431,108 +431,106 @@ Sync tabs with URL routing:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
-  import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
+	import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 
-  const profile = {
-    id: '123',
-    username: 'alice',
-    displayName: 'Alice',
-    bio: 'Developer',
-    followersCount: 1234,
-    followingCount: 567,
-    statusesCount: 8910
-  };
+	const profile = {
+		id: '123',
+		username: 'alice',
+		displayName: 'Alice',
+		bio: 'Developer',
+		followersCount: 1234,
+		followingCount: 567,
+		statusesCount: 8910,
+	};
 
-  // Get active tab from URL
-  const activeTab = $derived($page.url.searchParams.get('tab') || 'posts');
+	// Get active tab from URL
+	const activeTab = $derived($page.url.searchParams.get('tab') || 'posts');
 
-  const handlers = {
-    onTabChange: (tabId: string) => {
-      // Update URL without page reload
-      const url = new URL(window.location.href);
-      url.searchParams.set('tab', tabId);
-      goto(url.toString(), { replaceState: true, noScroll: true });
-    }
-  };
+	const handlers = {
+		onTabChange: (tabId: string) => {
+			// Update URL without page reload
+			const url = new URL(window.location.href);
+			url.searchParams.set('tab', tabId);
+			goto(url.toString(), { replaceState: true, noScroll: true });
+		},
+	};
 
-  // Load content based on active tab
-  let content = $state<any[]>([]);
-  let loading = $state(false);
+	// Load content based on active tab
+	let content = $state<any[]>([]);
+	let loading = $state(false);
 
-  async function loadContent() {
-    loading = true;
-    try {
-      const response = await fetch(
-        `/api/profiles/${profile.id}/${activeTab}`
-      );
-      content = await response.json();
-    } catch (error) {
-      console.error('Failed to load content:', error);
-      content = [];
-    } finally {
-      loading = false;
-    }
-  }
+	async function loadContent() {
+		loading = true;
+		try {
+			const response = await fetch(`/api/profiles/${profile.id}/${activeTab}`);
+			content = await response.json();
+		} catch (error) {
+			console.error('Failed to load content:', error);
+			content = [];
+		} finally {
+			loading = false;
+		}
+	}
 
-  // Reload content when tab changes
-  $effect(() => {
-    loadContent();
-  });
+	// Reload content when tab changes
+	$effect(() => {
+		loadContent();
+	});
 </script>
 
 <svelte:head>
-  <title>{profile.displayName} - {activeTab} | My App</title>
+	<title>{profile.displayName} - {activeTab} | My App</title>
 </svelte:head>
 
 <div class="routed-tabs-profile">
-  <Profile.Root {profile} {handlers} initialState={{ activeTab }}>
-    <Profile.Header />
-    <Profile.Tabs />
-    
-    <div class="tab-content">
-      {#if loading}
-        <div class="loading">Loading...</div>
-      {:else}
-        <div class="content-grid">
-          {#each content as item}
-            <div class="content-card">{item.title}</div>
-          {/each}
-        </div>
-      {/if}
-    </div>
-  </Profile.Root>
+	<Profile.Root {profile} {handlers} initialState={{ activeTab }}>
+		<Profile.Header />
+		<Profile.Tabs />
+
+		<div class="tab-content">
+			{#if loading}
+				<div class="loading">Loading...</div>
+			{:else}
+				<div class="content-grid">
+					{#each content as item}
+						<div class="content-card">{item.title}</div>
+					{/each}
+				</div>
+			{/if}
+		</div>
+	</Profile.Root>
 </div>
 
 <style>
-  .routed-tabs-profile {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+	.routed-tabs-profile {
+		max-width: 600px;
+		margin: 0 auto;
+	}
 
-  .tab-content {
-    padding: 1.5rem;
-  }
+	.tab-content {
+		padding: 1.5rem;
+	}
 
-  .loading {
-    text-align: center;
-    padding: 2rem;
-    color: #536471;
-  }
+	.loading {
+		text-align: center;
+		padding: 2rem;
+		color: #536471;
+	}
 
-  .content-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-  }
+	.content-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1rem;
+	}
 
-  .content-card {
-    padding: 1rem;
-    background: #f7f9fa;
-    border: 1px solid #eff3f4;
-    border-radius: 0.5rem;
-  }
+	.content-card {
+		padding: 1rem;
+		background: #f7f9fa;
+		border: 1px solid #eff3f4;
+		border-radius: 0.5rem;
+	}
 </style>
 ```
 
@@ -542,165 +540,163 @@ Implement infinite scroll for each tab's content:
 
 ```svelte
 <script lang="ts">
-  import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
-  import { createInfiniteQuery } from '@tanstack/svelte-query';
+	import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+	import { createInfiniteQuery } from '@tanstack/svelte-query';
 
-  const profile = {
-    id: '123',
-    username: 'alice',
-    displayName: 'Alice',
-    bio: 'Developer',
-    followersCount: 1234,
-    followingCount: 567,
-    statusesCount: 8910
-  };
+	const profile = {
+		id: '123',
+		username: 'alice',
+		displayName: 'Alice',
+		bio: 'Developer',
+		followersCount: 1234,
+		followingCount: 567,
+		statusesCount: 8910,
+	};
 
-  let activeTab = $state('posts');
+	let activeTab = $state('posts');
 
-  // Create infinite queries for each tab
-  const queries = {
-    posts: createInfiniteQuery({
-      queryKey: ['profile', profile.id, 'posts'],
-      queryFn: async ({ pageParam = 0 }) => {
-        const response = await fetch(
-          `/api/profiles/${profile.id}/posts?offset=${pageParam}&limit=20`
-        );
-        return response.json();
-      },
-      getNextPageParam: (lastPage, pages) => {
-        return lastPage.hasMore ? pages.length * 20 : undefined;
-      },
-      enabled: activeTab === 'posts'
-    }),
-    media: createInfiniteQuery({
-      queryKey: ['profile', profile.id, 'media'],
-      queryFn: async ({ pageParam = 0 }) => {
-        const response = await fetch(
-          `/api/profiles/${profile.id}/media?offset=${pageParam}&limit=20`
-        );
-        return response.json();
-      },
-      getNextPageParam: (lastPage, pages) => {
-        return lastPage.hasMore ? pages.length * 20 : undefined;
-      },
-      enabled: activeTab === 'media'
-    }),
-    likes: createInfiniteQuery({
-      queryKey: ['profile', profile.id, 'likes'],
-      queryFn: async ({ pageParam = 0 }) => {
-        const response = await fetch(
-          `/api/profiles/${profile.id}/likes?offset=${pageParam}&limit=20`
-        );
-        return response.json();
-      },
-      getNextPageParam: (lastPage, pages) => {
-        return lastPage.hasMore ? pages.length * 20 : undefined;
-      },
-      enabled: activeTab === 'likes'
-    })
-  };
+	// Create infinite queries for each tab
+	const queries = {
+		posts: createInfiniteQuery({
+			queryKey: ['profile', profile.id, 'posts'],
+			queryFn: async ({ pageParam = 0 }) => {
+				const response = await fetch(
+					`/api/profiles/${profile.id}/posts?offset=${pageParam}&limit=20`
+				);
+				return response.json();
+			},
+			getNextPageParam: (lastPage, pages) => {
+				return lastPage.hasMore ? pages.length * 20 : undefined;
+			},
+			enabled: activeTab === 'posts',
+		}),
+		media: createInfiniteQuery({
+			queryKey: ['profile', profile.id, 'media'],
+			queryFn: async ({ pageParam = 0 }) => {
+				const response = await fetch(
+					`/api/profiles/${profile.id}/media?offset=${pageParam}&limit=20`
+				);
+				return response.json();
+			},
+			getNextPageParam: (lastPage, pages) => {
+				return lastPage.hasMore ? pages.length * 20 : undefined;
+			},
+			enabled: activeTab === 'media',
+		}),
+		likes: createInfiniteQuery({
+			queryKey: ['profile', profile.id, 'likes'],
+			queryFn: async ({ pageParam = 0 }) => {
+				const response = await fetch(
+					`/api/profiles/${profile.id}/likes?offset=${pageParam}&limit=20`
+				);
+				return response.json();
+			},
+			getNextPageParam: (lastPage, pages) => {
+				return lastPage.hasMore ? pages.length * 20 : undefined;
+			},
+			enabled: activeTab === 'likes',
+		}),
+	};
 
-  const currentQuery = $derived(queries[activeTab as keyof typeof queries]);
-  const items = $derived(
-    $currentQuery.data?.pages.flatMap(page => page.items) ?? []
-  );
+	const currentQuery = $derived(queries[activeTab as keyof typeof queries]);
+	const items = $derived($currentQuery.data?.pages.flatMap((page) => page.items) ?? []);
 
-  const handlers = {
-    onTabChange: (tabId: string) => {
-      activeTab = tabId;
-    }
-  };
+	const handlers = {
+		onTabChange: (tabId: string) => {
+			activeTab = tabId;
+		},
+	};
 
-  // Intersection observer for infinite scroll
-  let sentinelElement: HTMLElement;
+	// Intersection observer for infinite scroll
+	let sentinelElement: HTMLElement;
 
-  $effect(() => {
-    if (!sentinelElement) return;
+	$effect(() => {
+		if (!sentinelElement) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && $currentQuery.hasNextPage) {
-          $currentQuery.fetchNextPage();
-        }
-      },
-      { threshold: 0.5 }
-    );
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting && $currentQuery.hasNextPage) {
+					$currentQuery.fetchNextPage();
+				}
+			},
+			{ threshold: 0.5 }
+		);
 
-    observer.observe(sentinelElement);
+		observer.observe(sentinelElement);
 
-    return () => observer.disconnect();
-  });
+		return () => observer.disconnect();
+	});
 </script>
 
 <div class="infinite-scroll-profile">
-  <Profile.Root {profile} {handlers}>
-    <Profile.Tabs />
-    
-    <div class="tab-content">
-      {#if $currentQuery.isPending}
-        <div class="loading">Loading...</div>
-      {:else if items.length === 0}
-        <div class="empty">No {activeTab} to display</div>
-      {:else}
-        <div class="items-list">
-          {#each items as item}
-            <div class="item-card">{item.content}</div>
-          {/each}
-        </div>
+	<Profile.Root {profile} {handlers}>
+		<Profile.Tabs />
 
-        {#if $currentQuery.hasNextPage}
-          <div bind:this={sentinelElement} class="sentinel">
-            {#if $currentQuery.isFetchingNextPage}
-              <div class="loading-more">Loading more...</div>
-            {/if}
-          </div>
-        {/if}
-      {/if}
-    </div>
-  </Profile.Root>
+		<div class="tab-content">
+			{#if $currentQuery.isPending}
+				<div class="loading">Loading...</div>
+			{:else if items.length === 0}
+				<div class="empty">No {activeTab} to display</div>
+			{:else}
+				<div class="items-list">
+					{#each items as item}
+						<div class="item-card">{item.content}</div>
+					{/each}
+				</div>
+
+				{#if $currentQuery.hasNextPage}
+					<div bind:this={sentinelElement} class="sentinel">
+						{#if $currentQuery.isFetchingNextPage}
+							<div class="loading-more">Loading more...</div>
+						{/if}
+					</div>
+				{/if}
+			{/if}
+		</div>
+	</Profile.Root>
 </div>
 
 <style>
-  .infinite-scroll-profile {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+	.infinite-scroll-profile {
+		max-width: 600px;
+		margin: 0 auto;
+	}
 
-  .tab-content {
-    padding: 1.5rem;
-  }
+	.tab-content {
+		padding: 1.5rem;
+	}
 
-  .loading,
-  .empty {
-    text-align: center;
-    padding: 2rem;
-    color: #536471;
-  }
+	.loading,
+	.empty {
+		text-align: center;
+		padding: 2rem;
+		color: #536471;
+	}
 
-  .items-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+	.items-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
 
-  .item-card {
-    padding: 1rem;
-    background: #f7f9fa;
-    border: 1px solid #eff3f4;
-    border-radius: 0.5rem;
-  }
+	.item-card {
+		padding: 1rem;
+		background: #f7f9fa;
+		border: 1px solid #eff3f4;
+		border-radius: 0.5rem;
+	}
 
-  .sentinel {
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+	.sentinel {
+		height: 100px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-  .loading-more {
-    color: #536471;
-    font-size: 0.875rem;
-  }
+	.loading-more {
+		color: #536471;
+		font-size: 0.875rem;
+	}
 </style>
 ```
 
@@ -715,23 +711,23 @@ Filter sensitive content based on user preferences:
 ```typescript
 // server/api/profile-content.ts
 export async function GET(request: Request) {
-  const userId = await getAuthenticatedUserId(request);
-  const { searchParams } = new URL(request.url);
-  const profileId = searchParams.get('profileId');
-  const tab = searchParams.get('tab');
+	const userId = await getAuthenticatedUserId(request);
+	const { searchParams } = new URL(request.url);
+	const profileId = searchParams.get('profileId');
+	const tab = searchParams.get('tab');
 
-  // Check if user can view this content
-  const canView = await checkViewPermission(userId, profileId, tab);
-  if (!canView) {
-    return new Response('Forbidden', { status: 403 });
-  }
+	// Check if user can view this content
+	const canView = await checkViewPermission(userId, profileId, tab);
+	if (!canView) {
+		return new Response('Forbidden', { status: 403 });
+	}
 
-  // Filter based on privacy settings
-  const content = await getFilteredContent(profileId, tab, userId);
+	// Filter based on privacy settings
+	const content = await getFilteredContent(profileId, tab, userId);
 
-  return new Response(JSON.stringify(content), {
-    headers: { 'Content-Type': 'application/json' }
-  });
+	return new Response(JSON.stringify(content), {
+		headers: { 'Content-Type': 'application/json' },
+	});
 }
 ```
 
@@ -741,19 +737,19 @@ export async function GET(request: Request) {
 
 ```css
 .profile-tabs {
-  --tabs-border-color: var(--border-color, #e1e8ed);
-  --tabs-active-color: var(--primary-color, #1d9bf0);
-  --tabs-text-color: var(--text-secondary, #536471);
-  --tabs-active-text: var(--text-primary, #0f1419);
+	--tabs-border-color: var(--border-color, #e1e8ed);
+	--tabs-active-color: var(--primary-color, #1d9bf0);
+	--tabs-text-color: var(--text-secondary, #536471);
+	--tabs-active-text: var(--text-primary, #0f1419);
 }
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-  .profile-tabs {
-    --tabs-border-color: #38444d;
-    --tabs-text-color: #8899a6;
-    --tabs-active-text: #f7f9fa;
-  }
+	.profile-tabs {
+		--tabs-border-color: #38444d;
+		--tabs-text-color: #8899a6;
+		--tabs-active-text: #f7f9fa;
+	}
 }
 ```
 
@@ -777,54 +773,54 @@ import { describe, it, expect, vi } from 'vitest';
 import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
 
 describe('Profile.Tabs', () => {
-  const mockProfile = {
-    id: '1',
-    username: 'alice',
-    displayName: 'Alice',
-    followersCount: 100,
-    followingCount: 50,
-    statusesCount: 200
-  };
+	const mockProfile = {
+		id: '1',
+		username: 'alice',
+		displayName: 'Alice',
+		followersCount: 100,
+		followingCount: 50,
+		statusesCount: 200,
+	};
 
-  it('renders all tabs', () => {
-    render(Profile.Root, {
-      props: { profile: mockProfile, handlers: {} }
-    });
+	it('renders all tabs', () => {
+		render(Profile.Root, {
+			props: { profile: mockProfile, handlers: {} },
+		});
 
-    expect(screen.getByText('Posts')).toBeInTheDocument();
-    expect(screen.getByText('Replies')).toBeInTheDocument();
-    expect(screen.getByText('Media')).toBeInTheDocument();
-    expect(screen.getByText('Likes')).toBeInTheDocument();
-  });
+		expect(screen.getByText('Posts')).toBeInTheDocument();
+		expect(screen.getByText('Replies')).toBeInTheDocument();
+		expect(screen.getByText('Media')).toBeInTheDocument();
+		expect(screen.getByText('Likes')).toBeInTheDocument();
+	});
 
-  it('calls onTabChange when tab clicked', async () => {
-    const onTabChange = vi.fn();
+	it('calls onTabChange when tab clicked', async () => {
+		const onTabChange = vi.fn();
 
-    render(Profile.Root, {
-      props: {
-        profile: mockProfile,
-        handlers: { onTabChange }
-      }
-    });
+		render(Profile.Root, {
+			props: {
+				profile: mockProfile,
+				handlers: { onTabChange },
+			},
+		});
 
-    const mediaTab = screen.getByText('Media');
-    await fireEvent.click(mediaTab);
+		const mediaTab = screen.getByText('Media');
+		await fireEvent.click(mediaTab);
 
-    expect(onTabChange).toHaveBeenCalledWith('media');
-  });
+		expect(onTabChange).toHaveBeenCalledWith('media');
+	});
 
-  it('shows active tab indicator', () => {
-    const { container } = render(Profile.Root, {
-      props: {
-        profile: mockProfile,
-        handlers: {},
-        initialState: { activeTab: 'media' }
-      }
-    });
+	it('shows active tab indicator', () => {
+		const { container } = render(Profile.Root, {
+			props: {
+				profile: mockProfile,
+				handlers: {},
+				initialState: { activeTab: 'media' },
+			},
+		});
 
-    const mediaTab = screen.getByText('Media').closest('button');
-    expect(mediaTab).toHaveClass('profile-tabs__tab--active');
-  });
+		const mediaTab = screen.getByText('Media').closest('button');
+		expect(mediaTab).toHaveClass('profile-tabs__tab--active');
+	});
 });
 ```
 
@@ -844,4 +840,3 @@ describe('Profile.Tabs', () => {
 - [Headless Tabs Primitive](../../primitives/TABS.md)
 - [Accessibility Guidelines](../../patterns/ACCESSIBILITY.md)
 - [Infinite Scroll Pattern](../../patterns/INFINITE_SCROLL.md)
-

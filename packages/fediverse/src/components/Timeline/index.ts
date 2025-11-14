@@ -1,17 +1,17 @@
 /**
  * Timeline Compound Component
- * 
+ *
  * A flexible, composable timeline component for displaying ActivityPub/Fediverse posts.
  * Built using compound component pattern with virtualization, infinite scroll, and real-time updates.
- * 
+ *
  * @example Basic usage
  * ```svelte
  * <script>
  *   import { Timeline } from '@equaltoai/greater-components-fediverse';
- *   
- *   const posts = [...]; // Status[] from API
+ *
+ *   const posts = []; // Status[] from API
  * </script>
- * 
+ *
  * <Timeline.Root items={posts} handlers={{ onLoadMore }}>
  *   {#each posts as status, index}
  *     <Timeline.Item {status} {index}>
@@ -25,7 +25,7 @@
  *   <Timeline.LoadMore />
  * </Timeline.Root>
  * ```
- * 
+ *
  * @example With empty and error states
  * ```svelte
  * <Timeline.Root {items} {initialState} {handlers}>
@@ -43,7 +43,7 @@
  *   {/if}
  * </Timeline.Root>
  * ```
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/Timeline
  */
 
@@ -58,7 +58,7 @@ export {
 	TimelineItem as Item,
 	TimelineLoadMore as LoadMore,
 	TimelineEmptyState as EmptyState,
-	TimelineErrorState as ErrorState
+	TimelineErrorState as ErrorState,
 };
 
 // Export types
@@ -68,12 +68,12 @@ export type {
 	TimelineHandlers,
 	TimelineCompoundState,
 	TimelineMode,
-	TimelineDensity
+	TimelineDensity,
 } from './context.js';
 
 /**
  * Timeline compound component
- * 
+ *
  * Provides a flexible, composable API for building timelines with:
  * - Virtual scrolling for performance
  * - Infinite scroll support
@@ -105,8 +105,7 @@ export const Timeline = {
 	/**
 	 * Error state with retry
 	 */
-	ErrorState: TimelineErrorState
+	ErrorState: TimelineErrorState,
 };
 
 export default Timeline;
-

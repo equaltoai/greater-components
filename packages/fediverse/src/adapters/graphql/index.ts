@@ -1,29 +1,29 @@
 /**
  * GraphQL Adapter for Lesser
- * 
+ *
  * Complete GraphQL integration for Lesser's ActivityPub API.
  * Provides a type-safe client with pre-built queries, mutations, and subscriptions.
- * 
+ *
  * @module adapters/graphql
- * 
+ *
  * @example
  * ```typescript
  * import { createLesserClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
- * 
+ *
  * const client = createLesserClient({
  *   endpoint: 'https://api.lesser.example.com/graphql',
  *   token: 'your-auth-token',
  * });
- * 
+ *
  * // Fetch timeline
  * const timeline = await client.getTimeline({ limit: 20 });
- * 
+ *
  * // Create a post
  * const post = await client.createNote({
  *   content: 'Hello, Fediverse!',
  *   visibility: 'public',
  * });
- * 
+ *
  * // Subscribe to updates
  * const unsubscribe = client.subscribeToTimeline((event) => {
  *   console.log('New activity:', event.data.activity);
@@ -383,10 +383,9 @@ export class LesserClient {
 	async registerPushSubscription(
 		input: RegisterPushSubscriptionInput
 	): Promise<RegisterPushSubscriptionResult> {
-		return this.client.mutate<RegisterPushSubscriptionResult>(
-			queries.REGISTER_PUSH_SUBSCRIPTION,
-			{ input }
-		);
+		return this.client.mutate<RegisterPushSubscriptionResult>(queries.REGISTER_PUSH_SUBSCRIPTION, {
+			input,
+		});
 	}
 
 	/**
@@ -395,10 +394,9 @@ export class LesserClient {
 	async updatePushSubscription(
 		input: UpdatePushSubscriptionInput
 	): Promise<UpdatePushSubscriptionResult> {
-		return this.client.mutate<UpdatePushSubscriptionResult>(
-			queries.UPDATE_PUSH_SUBSCRIPTION,
-			{ input }
-		);
+		return this.client.mutate<UpdatePushSubscriptionResult>(queries.UPDATE_PUSH_SUBSCRIPTION, {
+			input,
+		});
 	}
 
 	/**
@@ -480,17 +478,17 @@ export class LesserClient {
 
 /**
  * Create a Lesser client instance
- * 
+ *
  * @param config - GraphQL configuration
  * @returns Lesser client instance
- * 
+ *
  * @example
  * ```typescript
  * const client = createLesserClient({
  *   endpoint: 'https://api.lesser.example.com/graphql',
  *   token: 'your-auth-token',
  * });
- * 
+ *
  * // Use the client
  * const timeline = await client.getTimeline({ limit: 20 });
  * ```

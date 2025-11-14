@@ -1,9 +1,9 @@
 /**
  * Search Context
- * 
+ *
  * Provides search state and handlers for all search components.
  * Supports full-text search, semantic search, and filtering by type.
- * 
+ *
  * @module Search/context
  */
 
@@ -246,7 +246,7 @@ const EMPTY_RESULTS: SearchResults = {
 
 /**
  * Create search context
- * 
+ *
  * @param handlers - Search event handlers
  * @param initialQuery - Initial search query
  * @returns Search context
@@ -268,7 +268,6 @@ export function createSearchContext(
 	state: SearchState,
 	handlers: SearchHandlers = {}
 ): SearchContext {
-
 	const context: SearchContext = {
 		state,
 		handlers,
@@ -334,10 +333,10 @@ export function createSearchContext(
 			if (!trimmed) return;
 
 			// Remove duplicates and add to front
-			state.recentSearches = [
-				trimmed,
-				...state.recentSearches.filter((q) => q !== trimmed),
-			].slice(0, 10); // Keep max 10
+			state.recentSearches = [trimmed, ...state.recentSearches.filter((q) => q !== trimmed)].slice(
+				0,
+				10
+			); // Keep max 10
 
 			saveRecentSearches(state.recentSearches);
 		},
@@ -349,9 +348,9 @@ export function createSearchContext(
 
 /**
  * Get search context
- * 
+ *
  * Must be called within a Search component tree.
- * 
+ *
  * @throws Error if called outside Search component tree
  * @returns Search context
  */

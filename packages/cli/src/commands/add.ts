@@ -83,7 +83,9 @@ export const addCommand = new Command()
 		if (invalidComponents.length > 0) {
 			logger.error(chalk.red(`\n✖ Unknown components: ${invalidComponents.join(', ')}`));
 			logger.note(
-				chalk.dim('  Run ') + chalk.cyan('greater list') + chalk.dim(' to see available components\n')
+				chalk.dim('  Run ') +
+					chalk.cyan('greater list') +
+					chalk.dim(' to see available components\n')
 			);
 			process.exit(1);
 		}

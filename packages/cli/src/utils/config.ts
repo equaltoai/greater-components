@@ -93,7 +93,11 @@ export async function writeConfig(
 /**
  * Resolve path alias
  */
-export function resolveAlias(alias: string, config: ComponentConfig, cwd: string = process.cwd()): string {
+export function resolveAlias(
+	alias: string,
+	config: ComponentConfig,
+	cwd: string = process.cwd()
+): string {
 	const aliases = config.aliases;
 
 	// Map common aliases
@@ -105,7 +109,7 @@ export function resolveAlias(alias: string, config: ComponentConfig, cwd: string
 		'@/hooks': aliases.hooks,
 		'$lib/components': aliases.components,
 		'$lib/utils': aliases.utils,
-		'$lib': aliases.lib,
+		$lib: aliases.lib,
 	};
 
 	const resolved = aliasMap[alias] || alias;
@@ -143,4 +147,3 @@ export function createDefaultConfig(): ComponentConfig {
 		},
 	};
 }
-

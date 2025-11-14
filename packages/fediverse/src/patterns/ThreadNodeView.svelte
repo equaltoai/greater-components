@@ -1,10 +1,10 @@
 <script lang="ts">
-import ThreadNodeViewRecursive from './ThreadNodeView.svelte';
-import type { Snippet } from 'svelte';
-import type { GenericStatus } from '../generics/index.js';
-import * as Status from '../components/Status/index.js';
-import type { StatusActionHandlers } from '../components/Status/context.js';
-import type { ThreadNode, ThreadViewHandlers } from './ThreadView.types.js';
+	import ThreadNodeViewRecursive from './ThreadNodeView.svelte';
+	import type { Snippet } from 'svelte';
+	import type { GenericStatus } from '../generics/index.js';
+	import * as Status from '../components/Status/index.js';
+	import type { StatusActionHandlers } from '../components/Status/context.js';
+	import type { ThreadNode, ThreadViewHandlers } from './ThreadView.types.js';
 
 	interface Props<T extends GenericStatus = GenericStatus> {
 		node: ThreadNode<T>;
@@ -37,20 +37,18 @@ import type { ThreadNode, ThreadViewHandlers } from './ThreadView.types.js';
 	const replyCount = $derived(countReplies(node));
 	const isHighlighted = $derived(node.status.id === highlightedStatusId);
 	const isTooDeep = $derived(node.depth > maxDepth);
-	const isAutoCollapsed = $derived(
-		autoCollapseThreshold > 0 && replyCount > autoCollapseThreshold
-	);
-const isCollapsed = $derived(node.isCollapsed || isAutoCollapsed);
-const isLoadingMore = $derived(loadingMore.has(node.status.id));
+	const isAutoCollapsed = $derived(autoCollapseThreshold > 0 && replyCount > autoCollapseThreshold);
+	const isCollapsed = $derived(node.isCollapsed || isAutoCollapsed);
+	const isLoadingMore = $derived(loadingMore.has(node.status.id));
 
-const statusActionHandlers = $derived({
-	onReply: handlers.onReply,
-	onBoost: handlers.onBoost,
-	onFavorite: handlers.onLike,
-	onBookmark: handlers.onBookmark,
-	onShare: handlers.onShare,
-	onQuote: handlers.onQuote,
-} as StatusActionHandlers);
+	const statusActionHandlers = $derived({
+		onReply: handlers.onReply,
+		onBoost: handlers.onBoost,
+		onFavorite: handlers.onLike,
+		onBookmark: handlers.onBookmark,
+		onShare: handlers.onShare,
+		onQuote: handlers.onQuote,
+	} as StatusActionHandlers);
 </script>
 
 <div
@@ -61,11 +59,9 @@ const statusActionHandlers = $derived({
 	style={`--depth: ${node.depth}`}
 >
 	{#if isTooDeep}
-		<button
-			class="thread-view__continue"
-			onclick={() => handlers.onNavigate?.(node.status.id)}
-		>
-			Continue thread ({replyCount} {replyCount === 1 ? 'reply' : 'replies'})
+		<button class="thread-view__continue" onclick={() => handlers.onNavigate?.(node.status.id)}>
+			Continue thread ({replyCount}
+			{replyCount === 1 ? 'reply' : 'replies'})
 		</button>
 	{:else if isCollapsed}
 		<button class="thread-view__expand" onclick={() => toggleCollapse(node.status.id)}>
@@ -77,17 +73,17 @@ const statusActionHandlers = $derived({
 				</span>
 			{/if}
 		</button>
-		{:else}
-			<div class="thread-view__status">
-				{#if renderStatus}
-					{@render renderStatus(node.status, node.depth)}
-				{:else}
-					<Status.Root status={node.status} handlers={statusActionHandlers}>
-						<Status.Header />
-						<Status.Content />
-						<Status.Media />
-						<Status.Actions />
-					</Status.Root>
+	{:else}
+		<div class="thread-view__status">
+			{#if renderStatus}
+				{@render renderStatus(node.status, node.depth)}
+			{:else}
+				<Status.Root status={node.status} handlers={statusActionHandlers}>
+					<Status.Header />
+					<Status.Content />
+					<Status.Media />
+					<Status.Actions />
+				</Status.Root>
 			{/if}
 
 			{#if node.hasMore}

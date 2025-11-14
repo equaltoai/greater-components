@@ -104,16 +104,13 @@ export class PushNotificationsController {
 			? (navigator as Navigator & { serviceWorker?: ServiceWorkerContainer }).serviceWorker
 			: undefined;
 		const hasServiceWorker = Boolean(serviceWorkerContainer);
-		const hasRegistrationAPI =
-			typeof serviceWorkerContainer?.register === 'function';
+		const hasRegistrationAPI = typeof serviceWorkerContainer?.register === 'function';
 		const hasWindow = typeof window !== 'undefined';
 		const hasPushManagerInterface = hasWindow && 'PushManager' in window;
 		const hasNotificationAPI = typeof Notification !== 'undefined';
 
 		const supported =
-			hasServiceWorker &&
-			hasNotificationAPI &&
-			(hasPushManagerInterface || hasRegistrationAPI);
+			hasServiceWorker && hasNotificationAPI && (hasPushManagerInterface || hasRegistrationAPI);
 
 		this.updateState({
 			supported,
@@ -322,7 +319,10 @@ export class PushNotificationsController {
 		try {
 			return await navigator.serviceWorker.register(this.serviceWorkerPath);
 		} catch (error) {
-			console.warn('Failed to register push service worker, attempting to reuse existing one.', error);
+			console.warn(
+				'Failed to register push service worker, attempting to reuse existing one.',
+				error
+			);
 			// Fallback: use existing registration
 			return await navigator.serviceWorker.ready;
 		}
@@ -333,9 +333,7 @@ export class PushNotificationsController {
 	 */
 	private urlBase64ToUint8Array(base64String: string): Uint8Array {
 		const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-		const base64 = (base64String + padding)
-			.replace(/-/g, '+')
-			.replace(/_/g, '/');
+		const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
 		const rawData = atob(base64);
 		const outputArray = new Uint8Array(rawData.length);
@@ -356,8 +354,14 @@ export class PushNotificationsController {
 		}
 
 		const record = data as Record<string, unknown>;
-		const keys = typeof record['keys'] === 'object' && record['keys'] !== null ? record['keys'] as Record<string, unknown> : {};
-		const alerts = typeof record['alerts'] === 'object' && record['alerts'] !== null ? record['alerts'] as Record<string, unknown> : {};
+		const keys =
+			typeof record['keys'] === 'object' && record['keys'] !== null
+				? (record['keys'] as Record<string, unknown>)
+				: {};
+		const alerts =
+			typeof record['alerts'] === 'object' && record['alerts'] !== null
+				? (record['alerts'] as Record<string, unknown>)
+				: {};
 
 		return {
 			id: String(record['id'] ?? ''),

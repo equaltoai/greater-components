@@ -2,12 +2,12 @@
 	import CodeIcon from '@equaltoai/greater-components-icons/icons/code.svelte';
 	import EyeIcon from '@equaltoai/greater-components-icons/icons/eye.svelte';
 	import type { ComponentType } from 'svelte';
-	
+
 	export let component: ComponentType;
 	export let props: Record<string, unknown> = {};
 	export let showCode: boolean = false;
 	export let height: string = 'auto';
-	
+
 	let showCodeView = showCode;
 	let demoContainer: HTMLElement;
 </script>
@@ -15,25 +15,21 @@
 <div class="live-demo">
 	<div class="demo-header">
 		<div class="demo-tabs">
-			<button 
+			<button
 				class="tab-button"
 				class:active={!showCodeView}
-				on:click={() => showCodeView = false}
+				on:click={() => (showCodeView = false)}
 			>
 				<EyeIcon size={16} />
 				Preview
 			</button>
-			<button 
-				class="tab-button"
-				class:active={showCodeView}
-				on:click={() => showCodeView = true}
-			>
+			<button class="tab-button" class:active={showCodeView} on:click={() => (showCodeView = true)}>
 				<CodeIcon size={16} />
 				Code
 			</button>
 		</div>
 	</div>
-	
+
 	<div class="demo-content" style="height: {height}">
 		{#if !showCodeView}
 			<div class="demo-preview" bind:this={demoContainer}>
@@ -54,7 +50,7 @@
 		overflow: hidden;
 		margin: 1rem 0;
 	}
-	
+
 	.demo-header {
 		display: flex;
 		align-items: center;
@@ -63,12 +59,12 @@
 		border-bottom: 1px solid var(--doc-border);
 		padding: 0.5rem 1rem;
 	}
-	
+
 	.demo-tabs {
 		display: flex;
 		gap: 0.25rem;
 	}
-	
+
 	.tab-button {
 		display: flex;
 		align-items: center;
@@ -84,24 +80,24 @@
 		transition: all 0.2s;
 		border-radius: 0.375rem;
 	}
-	
+
 	.tab-button:hover {
 		opacity: 1;
 		background: var(--doc-bg);
 	}
-	
+
 	.tab-button.active {
 		opacity: 1;
 		background: var(--doc-bg);
 		color: var(--doc-link);
 	}
-	
+
 	.demo-content {
 		background: var(--doc-bg);
 		min-height: 200px;
 		position: relative;
 	}
-	
+
 	.demo-preview {
 		padding: 2rem;
 		display: flex;
@@ -109,7 +105,7 @@
 		justify-content: center;
 		min-height: inherit;
 	}
-	
+
 	.demo-code {
 		height: 100%;
 		overflow: auto;

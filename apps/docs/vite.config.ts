@@ -18,16 +18,16 @@ export default defineConfig({
 					{
 						src: '/icon-192.png',
 						sizes: '192x192',
-						type: 'image/png'
+						type: 'image/png',
 					},
 					{
 						src: '/icon-512.png',
 						sizes: '512x512',
-						type: 'image/png'
-					}
-				]
-			}
-		})
+						type: 'image/png',
+					},
+				],
+			},
+		}),
 	],
 	resolve: {
 		alias: {
@@ -36,12 +36,12 @@ export default defineConfig({
 			'@equaltoai/greater-components-icons': path.resolve('../../packages/icons/src'),
 			'@equaltoai/greater-components-utils': path.resolve('../../packages/utils/src'),
 			'@equaltoai/greater-components-fediverse': path.resolve('../../packages/fediverse/src'),
-			'@equaltoai/greater-components-adapters': path.resolve('../../packages/adapters/src')
-		}
+			'@equaltoai/greater-components-adapters': path.resolve('../../packages/adapters/src'),
+		},
 	},
 	server: {
 		fs: {
-			allow: ['../../']
-		}
-	}
+			allow: ['../../'],
+		},
+	},
 });

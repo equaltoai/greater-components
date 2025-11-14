@@ -9,7 +9,12 @@ import { createMenu } from '../src/primitives/menu';
 import type { ActionReturn } from '../src/types/common';
 
 function destroyAction(action: ActionReturn | void): void {
-	if (action && typeof action === 'object' && 'destroy' in action && typeof action.destroy === 'function') {
+	if (
+		action &&
+		typeof action === 'object' &&
+		'destroy' in action &&
+		typeof action.destroy === 'function'
+	) {
 		action.destroy();
 	}
 }

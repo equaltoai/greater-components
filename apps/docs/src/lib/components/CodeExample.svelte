@@ -1,14 +1,14 @@
 <script lang="ts">
 	import CopyIcon from '@equaltoai/greater-components-icons/icons/copy.svelte';
 	import CheckIcon from '@equaltoai/greater-components-icons/icons/check.svelte';
-	
+
 	export let code: string;
 	export let language: string = 'javascript';
 	export let title: string = '';
 	export let showLineNumbers: boolean = false;
-	
+
 	let copied = false;
-	
+
 	async function copyToClipboard() {
 		try {
 			await navigator.clipboard.writeText(code);
@@ -20,16 +20,13 @@
 			console.error('Failed to copy:', err);
 		}
 	}
-	
+
 	function highlightCode(rawCode: string): string {
 		// This would be replaced with actual syntax highlighting
 		// For now, we'll just escape HTML
-		return rawCode
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;');
+		return rawCode.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
-	
+
 	$: highlightedCode = highlightCode(code);
 	$: lines = code.split('\n');
 </script>
@@ -41,9 +38,9 @@
 			<span class="code-language">{language}</span>
 		</div>
 	{/if}
-	
+
 	<div class="code-container">
-		<button 
+		<button
 			class="copy-button"
 			on:click={copyToClipboard}
 			aria-label="Copy code"
@@ -55,7 +52,7 @@
 				<CopyIcon size={16} />
 			{/if}
 		</button>
-		
+
 		<pre class="code-pre">
 			<code class="language-{language}" class:line-numbers={showLineNumbers}>
 				{#if showLineNumbers}
@@ -78,7 +75,7 @@
 		border-radius: 0.5rem;
 		overflow: hidden;
 	}
-	
+
 	.code-header {
 		display: flex;
 		align-items: center;
@@ -87,12 +84,12 @@
 		background: var(--doc-surface-tertiary);
 		border-bottom: 1px solid var(--doc-border);
 	}
-	
+
 	.code-title {
 		font-weight: 500;
 		font-size: 0.875rem;
 	}
-	
+
 	.code-language {
 		padding: 0.125rem 0.5rem;
 		background: var(--doc-bg);
@@ -101,12 +98,12 @@
 		text-transform: uppercase;
 		opacity: 0.6;
 	}
-	
+
 	.code-container {
 		position: relative;
 		background: var(--doc-surface-secondary);
 	}
-	
+
 	.copy-button {
 		position: absolute;
 		top: 0.75rem;
@@ -121,12 +118,12 @@
 		transition: all 0.2s;
 		z-index: 1;
 	}
-	
+
 	.copy-button:hover {
 		opacity: 1;
 		background: var(--doc-surface-tertiary);
 	}
-	
+
 	.code-pre {
 		margin: 0;
 		padding: 1rem;
@@ -134,7 +131,7 @@
 		overflow-x: auto;
 		background: transparent;
 	}
-	
+
 	.code-pre code {
 		display: block;
 		font-family: var(--font-mono);
@@ -143,12 +140,12 @@
 		background: transparent;
 		padding: 0;
 	}
-	
+
 	.code-pre code.line-numbers {
 		padding-left: 3rem;
 		position: relative;
 	}
-	
+
 	.line-numbers-rows {
 		position: absolute;
 		left: 0;
@@ -160,7 +157,7 @@
 		opacity: 0.4;
 		user-select: none;
 	}
-	
+
 	.line-numbers-rows span {
 		padding-right: 0.75rem;
 		line-height: 1.6;

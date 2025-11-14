@@ -260,9 +260,7 @@
 	 */
 	function updateOption(optionId: string, value: string) {
 		if (value.length > maxOptionLength) return;
-		options = options.map((option) =>
-			option.id === optionId ? { ...option, value } : option
-		);
+		options = options.map((option) => (option.id === optionId ? { ...option, value } : option));
 	}
 
 	/**
@@ -291,9 +289,7 @@
 		if (submitting) return;
 
 		// Validate
-		const filledOptions = options
-			.map((opt) => opt.value.trim())
-			.filter((opt) => opt.length > 0);
+		const filledOptions = options.map((opt) => opt.value.trim()).filter((opt) => opt.length > 0);
 		if (filledOptions.length < minOptions) {
 			error = `Please provide at least ${minOptions} options`;
 			return;
@@ -457,11 +453,8 @@
 			<button
 				use:submitButton.actions.button
 				class="poll-composer__submit"
-				disabled={
-					options
-						.map((opt) => opt.value.trim())
-						.filter((value) => value.length > 0).length < minOptions || submitting
-				}
+				disabled={options.map((opt) => opt.value.trim()).filter((value) => value.length > 0)
+					.length < minOptions || submitting}
 			>
 				{#if submitting}
 					<svg class="poll-composer__spinner" viewBox="0 0 24 24">

@@ -12,6 +12,7 @@
 `Filters.Manager` displays a list of all content filters with actions to create, edit, and delete filters. It shows filter details including phrases, contexts, expiration dates, and display modes. The component provides a clean interface for managing all user filters.
 
 ### **Key Features**:
+
 - ✅ Display all filters
 - ✅ Filter details (phrase, contexts, expiration)
 - ✅ Edit filter action
@@ -36,24 +37,24 @@ npm install @equaltoai/greater-components-fediverse
 
 ```svelte
 <script lang="ts">
-  import { Filters } from '@equaltoai/greater-components-fediverse';
-  
-  const handlers = {
-    onFetchFilters: async () => {
-      const res = await fetch('/api/filters');
-      return res.json();
-    },
-    onDeleteFilter: async (filterId) => {
-      await fetch(`/api/filters/${filterId}`, {
-        method: 'DELETE'
-      });
-    }
-  };
+	import { Filters } from '@equaltoai/greater-components-fediverse';
+
+	const handlers = {
+		onFetchFilters: async () => {
+			const res = await fetch('/api/filters');
+			return res.json();
+		},
+		onDeleteFilter: async (filterId) => {
+			await fetch(`/api/filters/${filterId}`, {
+				method: 'DELETE',
+			});
+		},
+	};
 </script>
 
 <Filters.Root {handlers}>
-  <Filters.Manager />
-  <Filters.Editor />
+	<Filters.Manager />
+	<Filters.Editor />
 </Filters.Root>
 ```
 
@@ -61,15 +62,16 @@ npm install @equaltoai/greater-components-fediverse
 
 ## 🎛️ Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `class` | `string` | `''` | No | Custom CSS class |
+| Prop    | Type     | Default | Required | Description      |
+| ------- | -------- | ------- | -------- | ---------------- |
+| `class` | `string` | `''`    | No       | Custom CSS class |
 
 ---
 
 ## 💡 Examples
 
 Examples include:
+
 - Basic filter list
 - Filters with groups
 - Filters with search
@@ -85,4 +87,3 @@ Examples include:
 ---
 
 **For filter management, see the [Filters README](./README.md).**
-

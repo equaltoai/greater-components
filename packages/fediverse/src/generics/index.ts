@@ -1,9 +1,9 @@
 /**
  * Generic TypeScript patterns for ActivityPub
- * 
+ *
  * This module provides type-safe interfaces that work across
  * any ActivityPub implementation (Mastodon, Pleroma, Lesser, etc.)
- * 
+ *
  * @module @equaltoai/greater-components-fediverse/generics
  */
 
@@ -208,7 +208,10 @@ export interface ActivityPubTag {
  * ActivityPub Activity interface
  * Represents actions (Like, Announce, Follow, etc.)
  */
-export interface ActivityPubActivity<TObject = ActivityPubObject, TExtensions = Record<string, unknown>> {
+export interface ActivityPubActivity<
+	TObject = ActivityPubObject,
+	TExtensions = Record<string, unknown>,
+> {
 	/**
 	 * Unique identifier (URI)
 	 */
@@ -423,7 +426,15 @@ export interface GenericNotification<T extends ActivityPubActivity = ActivityPub
 	/**
 	 * Notification type
 	 */
-	type: 'mention' | 'reblog' | 'favourite' | 'follow' | 'follow_request' | 'poll' | 'status' | string;
+	type:
+		| 'mention'
+		| 'reblog'
+		| 'favourite'
+		| 'follow'
+		| 'follow_request'
+		| 'poll'
+		| 'status'
+		| string;
 
 	/**
 	 * Account that triggered the notification
@@ -538,12 +549,15 @@ export function parseTimestamp(timestamp: string | Date): Date {
 /**
  * Helper: Get visibility from ActivityPub audience fields
  */
-export function getVisibility(object: ActivityPubObject): 'public' | 'unlisted' | 'private' | 'direct' {
+export function getVisibility(
+	object: ActivityPubObject
+): 'public' | 'unlisted' | 'private' | 'direct' {
 	const to = object.to || [];
 	const cc = object.cc || [];
 
 	// Check for public visibility
-	const isPublic = to.includes('https://www.w3.org/ns/activitystreams#Public') ||
+	const isPublic =
+		to.includes('https://www.w3.org/ns/activitystreams#Public') ||
 		cc.includes('https://www.w3.org/ns/activitystreams#Public');
 
 	if (isPublic && cc.some((uri) => uri.includes('/followers'))) {
@@ -554,7 +568,10 @@ export function getVisibility(object: ActivityPubObject): 'public' | 'unlisted' 
 		return 'unlisted';
 	}
 
-	if (to.some((uri) => uri.includes('/followers')) || cc.some((uri) => uri.includes('/followers'))) {
+	if (
+		to.some((uri) => uri.includes('/followers')) ||
+		cc.some((uri) => uri.includes('/followers'))
+	) {
 		return 'private';
 	}
 
@@ -753,31 +770,36 @@ export type LesserStatus = GenericStatus<LesserObject>;
  * Type guard: Check if actor has Lesser extensions
  */
 export function hasLesserActorExtensions(actor: ActivityPubActor): actor is LesserActor {
-	return actor.extensions !== undefined && 
-		('trustScore' in actor.extensions || 'reputation' in actor.extensions);
+	return (
+		actor.extensions !== undefined &&
+		('trustScore' in actor.extensions || 'reputation' in actor.extensions)
+	);
 }
 
 /**
  * Type guard: Check if object has Lesser extensions
  */
 export function hasLesserObjectExtensions(object: ActivityPubObject): object is LesserObject {
-	return object.extensions !== undefined && (
-		'estimatedCost' in object.extensions ||
-		'moderationScore' in object.extensions ||
-		'communityNotes' in object.extensions ||
-		'quoteUrl' in object.extensions ||
-		'quoteable' in object.extensions ||
-		'quotePermissions' in object.extensions ||
-		'quoteContext' in object.extensions ||
-		'quoteCount' in object.extensions ||
-		'aiAnalysis' in object.extensions
+	return (
+		object.extensions !== undefined &&
+		('estimatedCost' in object.extensions ||
+			'moderationScore' in object.extensions ||
+			'communityNotes' in object.extensions ||
+			'quoteUrl' in object.extensions ||
+			'quoteable' in object.extensions ||
+			'quotePermissions' in object.extensions ||
+			'quoteContext' in object.extensions ||
+			'quoteCount' in object.extensions ||
+			'aiAnalysis' in object.extensions)
 	);
 }
 
 /**
  * Type guard: Check if activity has Lesser extensions
  */
-export function hasLesserActivityExtensions(activity: ActivityPubActivity): activity is LesserActivity {
+export function hasLesserActivityExtensions(
+	activity: ActivityPubActivity
+): activity is LesserActivity {
 	return activity.extensions !== undefined && 'cost' in activity.extensions;
 }
 
@@ -839,11 +861,7 @@ export function isQuoteable(object: ActivityPubObject): boolean {
 export function getQuotePermission(object: ActivityPubObject): QuotePermission {
 	if (hasLesserObjectExtensions(object)) {
 		const permission = object.extensions?.['quotePermissions'];
-		if (
-			permission === 'EVERYONE' ||
-			permission === 'FOLLOWERS' ||
-			permission === 'NONE'
-		) {
+		if (permission === 'EVERYONE' || permission === 'FOLLOWERS' || permission === 'NONE') {
 			return permission;
 		}
 	}

@@ -66,10 +66,7 @@ export async function installDependencies(
 /**
  * Check if dependency is installed
  */
-export async function isDependencyInstalled(
-	packageName: string,
-	cwd: string
-): Promise<boolean> {
+export async function isDependencyInstalled(packageName: string, cwd: string): Promise<boolean> {
 	const packageJsonPath = path.join(cwd, 'package.json');
 
 	if (!(await fs.pathExists(packageJsonPath))) {
@@ -107,4 +104,3 @@ export async function getMissingDependencies(
 
 	return missing;
 }
-
