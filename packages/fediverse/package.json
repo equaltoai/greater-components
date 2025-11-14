@@ -60,6 +60,7 @@
     "@playwright/test": "^1.55.1",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.9",
     "@vitest/ui": "^4.0.9",
     "axe-core": "^4.10.0",
     "jsdom": "^27.2.0",

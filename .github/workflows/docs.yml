@@ -47,15 +47,23 @@ jobs:
             pnpm --filter @greater-components/docs build
           fi
 
-      - name: Upload docs artifacts
-        uses: actions/upload-artifact@v5
+      - name: Prepare docs bundle
         if: github.ref == 'refs/heads/main'
+        run: |
+          rm -rf docs-dist
+          mkdir -p docs-dist
+          if [ -d "apps/docs/build" ]; then
+            cp -R apps/docs/build docs-dist/docs
+          fi
+          if [ -d "apps/playground/build" ]; then
+            cp -R apps/playground/build docs-dist/playground
+          fi
+
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v4
         with:
-          name: docs-site
-          path: |
-            apps/docs/build
-            apps/playground/build
-          retention-days: 30
+          path: docs-dist
 
   deploy-docs:
     name: Deploy Documentation
@@ -71,19 +79,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Download docs artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: docs-site
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload to Pages
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: '.'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
