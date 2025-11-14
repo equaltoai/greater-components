@@ -47,14 +47,14 @@
   "devDependencies": {
     "@sveltejs/package": "^2.5.4",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@types/node": "^24.10.0",
-    "@vitest/coverage-v8": "^4.0.8",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.9",
     "chokidar": "^3.5.3",
     "feather-icons": "^4.29.1",
     "jsdom": "^27.1.0",
     "svelte": "^5.43.6",
     "typescript": "^5.9.3",
     "vite": "^7.2.2",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.9"
   }
 }
