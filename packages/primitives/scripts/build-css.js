@@ -54,12 +54,9 @@ const cssFiles = collectCssFiles(distDir);
 const styleCssPath = path.join(distDir, 'style.css');
 const stylesCssPath = path.join(distDir, 'styles.css');
 
-let emittedCss = false;
-
 if (cssFiles.length === 0) {
 	const placeholder = `/*\n  Greater Components primitives inline their styles inside each compiled component module.\n  This placeholder ensures the style import remains available for demo apps and tooling.\n*/\n`;
 	writeFileSync(styleCssPath, placeholder, 'utf8');
-	emittedCss = true;
 	console.log('ℹ️ No standalone component CSS detected; emitted placeholder style.css');
 } else {
 	const bundle = cssFiles
@@ -70,11 +67,10 @@ if (cssFiles.length === 0) {
 		.join('\n\n');
 
 	writeFileSync(styleCssPath, bundle, 'utf8');
-	emittedCss = true;
 	console.log(`✅ Bundled ${cssFiles.length} component styles into style.css`);
 }
 
-if (emittedCss && !existsSync(stylesCssPath)) {
+if (existsSync(styleCssPath) && !existsSync(stylesCssPath)) {
 	try {
 		symlinkSync('style.css', stylesCssPath, 'file');
 		console.log('✅ Created styles.css symlink for compatibility');

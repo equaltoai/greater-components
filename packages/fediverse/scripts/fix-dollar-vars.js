@@ -24,7 +24,6 @@ function renameDollarVarsInCode(code) {
 
 		// Skip if in a string literal - use a more accurate detection
 		// Check if we're inside quotes by finding the last unescaped quote before this position
-		let inString = false;
 		let inSingleQuote = false;
 		let inDoubleQuote = false;
 		let inBacktick = false;

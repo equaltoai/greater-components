@@ -62,7 +62,7 @@
     "@types/node": "^24.10.1",
     "@vitest/ui": "^4.0.9",
     "axe-core": "^4.10.0",
-    "jsdom": "^27.1.0",
+    "jsdom": "^27.2.0",
     "svelte": "^5.43.6",
     "typescript": "^5.5.4",
     "vite": "^7.2.2",
