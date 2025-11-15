@@ -13,6 +13,7 @@
 	} from '@equaltoai/greater-components-primitives';
 	import type { DemoPageData } from '$lib/types/demo';
 	import { loadPersistedState, persistState } from '$lib/stores/storage';
+	import { onMount } from 'svelte';
 
 	type DigestFrequency = 'daily' | 'weekly' | 'off';
 	type ThemeOption = 'light' | 'dark' | 'high-contrast' | 'auto';
@@ -69,7 +70,7 @@
 	const toastDurationMs = 4000;
 
 	let settings = $state<SettingsState>(defaultSettings);
-	let settingsHydrated = false;
+let settingsHydrated = $state(false);
 	let savedToast = $state('');
 	let previewState = $state<PreferencesState>(preferencesStore.state);
 
@@ -120,12 +121,9 @@
 		section: K,
 		partial: Partial<SettingsState[K]>
 	) {
-		settings = {
-			...settings,
-			[section]: {
-				...settings[section],
-				...partial,
-			},
+		settings[section] = {
+			...settings[section],
+			...partial,
 		};
 	}
 
@@ -160,10 +158,7 @@
 	function resetAppearance() {
 		preferencesStore.reset();
 		syncPreview();
-		settings = {
-			...settings,
-			appearance: { ...defaultSettings.appearance },
-		};
+		settings.appearance = { ...defaultSettings.appearance };
 	}
 
 	function handleDigestChange(value: string) {
@@ -174,10 +169,13 @@
 		updateSettings('account', { [field]: value } as Partial<SettingsState['account']>);
 	}
 
+	onMount(() => {
+		Object.assign(settings, loadPersistedState(settingsStorageKey, defaultSettings));
+		settingsHydrated = true;
+	});
+
 	$effect(() => {
 		if (!settingsHydrated) {
-			settings = loadPersistedState(settingsStorageKey, defaultSettings);
-			settingsHydrated = true;
 			return;
 		}
 
@@ -220,6 +218,7 @@
 					id="density-select"
 					options={densityOptions}
 					value={settings.appearance.density}
+					disabled={!settingsHydrated}
 					onchange={(value) => handleDensityChange(value as DensityOption)}
 				/>
 				<div class="appearance-actions">
@@ -278,6 +277,7 @@
 					id="digest-select"
 					options={digestOptions}
 					value={settings.notifications.digest}
+					disabled={!settingsHydrated}
 					onchange={handleDigestChange}
 				/>
 			</section>

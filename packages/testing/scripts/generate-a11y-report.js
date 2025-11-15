@@ -5,9 +5,10 @@
  * Creates comprehensive accessibility reports from test results
  */
 
-const fs = require('fs');
-const path = require('path');
-const { program } = require('commander');
+import fs from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { program } from 'commander';
 
 program
 	.option('--theme <theme>', 'Theme to generate report for', 'light')
@@ -22,7 +23,7 @@ program.parse();
 
 const options = program.opts();
 
-class A11yReportGenerator {
+export class A11yReportGenerator {
 	constructor(options) {
 		this.options = options;
 		this.results = {
@@ -627,8 +628,14 @@ async function main() {
 	}
 }
 
-if (require.main === module) {
+const invokedFromCli = (() => {
+	try {
+		return import.meta.url === pathToFileURL(process.argv[1]).href;
+	} catch {
+		return false;
+	}
+})();
+
+if (invokedFromCli) {
 	main();
 }
-
-module.exports = { A11yReportGenerator };

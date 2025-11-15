@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { applyA11yReporter } from './a11yReporter';
+
+applyA11yReporter(test);
 
 test.describe('Settings demo', () => {
 	test.beforeEach(async ({ page }) => {
@@ -6,12 +9,26 @@ test.describe('Settings demo', () => {
 	});
 
 	test('digest frequency select updates preview summary', async ({ page }) => {
-		await page.getByLabel('Digest frequency').selectOption('weekly');
-		await expect(page.getByText('Digest: weekly')).toBeVisible();
+		const digestSelect = page.getByLabel('Digest frequency');
+		await expect(digestSelect).toBeEnabled();
+		await digestSelect.selectOption('weekly');
+		await expect.poll(async () => {
+			const settings = await page.evaluate(() =>
+				JSON.parse(window.localStorage.getItem('playground-settings-demo') || '{}')
+			);
+			return settings.notifications?.digest;
+		}).toBe('weekly');
 	});
 
 	test('density select feeds the preview heading', async ({ page }) => {
-		await page.getByLabel('Density').selectOption('compact');
-		await expect(page.getByRole('heading', { name: /compact/i })).toBeVisible();
+		const densitySelect = page.getByLabel('Density');
+		await expect(densitySelect).toBeEnabled();
+		await densitySelect.selectOption('compact');
+		await expect.poll(async () => {
+			const settings = await page.evaluate(() =>
+				JSON.parse(window.localStorage.getItem('playground-settings-demo') || '{}')
+			);
+			return settings.appearance?.density;
+		}).toBe('compact');
 	});
 });

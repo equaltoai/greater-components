@@ -140,7 +140,10 @@ export async function runAxeTest(
 			throw new Error('axe-core has not been injected on the page');
 		}
 		const args = JSON.parse(json);
-		return axeWindow.axe.run(args.context ?? undefined, args.options);
+		if (args.context) {
+			return axeWindow.axe.run(args.context, args.options);
+		}
+		return axeWindow.axe.run(args.options);
 	}, argsJson);
 
 	return results as AxeResults;

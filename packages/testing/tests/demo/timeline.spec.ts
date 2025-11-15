@@ -1,8 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { applyA11yReporter } from './a11yReporter';
+
+applyA11yReporter(test);
 
 test.describe('Timeline demo', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/timeline');
+		await page.waitForSelector('body[data-playground-hydrated="true"]');
 	});
 
 	test('filter buttons update view description and density copy', async ({ page }) => {

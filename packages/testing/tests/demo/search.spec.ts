@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { applyA11yReporter } from './a11yReporter';
+
+applyA11yReporter(test);
 
 test.describe('Search demo', () => {
 	test.beforeEach(async ({ page }) => {

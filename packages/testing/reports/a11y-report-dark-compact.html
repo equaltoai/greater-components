@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Report - dark/compact</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6; 
+            color: #333; 
+            background: #f5f5f5;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .header { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 8px; 
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status-pass { color: #059669; }
+        .status-fail { color: #dc2626; }
+        .summary-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 1rem; 
+            margin: 2rem 0;
+        }
+        .summary-card { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .summary-number { font-size: 2rem; font-weight: bold; }
+        .summary-label { color: #666; margin-top: 0.5rem; }
+        .section { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 8px; 
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .violation { 
+            border-left: 4px solid #ccc; 
+            padding: 1rem; 
+            margin: 1rem 0; 
+            background: #f9f9f9;
+        }
+        .violation.critical { border-color: #dc2626; }
+        .violation.serious { border-color: #f59e0b; }
+        .violation.moderate { border-color: #3b82f6; }
+        .violation.minor { border-color: #10b981; }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            transition: width 0.3s ease;
+        }
+        .recommendations ul { margin-left: 1.5rem; }
+        .recommendations li { margin: 0.5rem 0; }
+        h1, h2, h3 { margin-bottom: 1rem; }
+        h1 { color: #1f2937; }
+        h2 { color: #374151; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
+        .timestamp { color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Accessibility Report</h1>
+            <p class="timestamp">Generated: 2025-11-15T03:51:48.312Z</p>
+            <p><strong>Theme:</strong> dark | <strong>Density:</strong> compact</p>
+            <p><strong>Overall Status:</strong> <span class="status-fail">FAIL</span> (0.0% pass rate)</p>
+        </div>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-number">14</div>
+                <div class="summary-label">Total Tests</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number" style="color: #059669;">0</div>
+                <div class="summary-label">Passed</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number" style="color: #dc2626;">14</div>
+                <div class="summary-label">Failed</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-number" style="color: #f59e0b;">31</div>
+                <div class="summary-label">Total Violations</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>WCAG 2.1 Compliance</h2>
+            <div>
+                <h3>Level A</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p>0/7 criteria passed</p>
+            </div>
+            <div>
+                <h3>Level AA</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p>0/6 criteria passed</p>
+            </div>
+            <div>
+                <h3>Level AAA</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <p>0/0 criteria passed</p>
+            </div>
+        </div>
+
+        
+        <div class="section recommendations">
+            <h2>Recommendations</h2>
+            <ul>
+                <li>🚨 Fix 6 critical accessibility violations immediately</li><li>⚠️  Address 7 serious accessibility issues</li><li>🔧 Focus on unknown component: 31 issues found</li><li>📚 Review WCAG 2.1 guidelines for comprehensive accessibility compliance</li><li>🧪 Use automated accessibility testing in your development workflow</li><li>👥 Conduct user testing with assistive technology users</li>
+            </ul>
+        </div>
+        
+
+        
+        <div class="section">
+            <h2>Violations (Top 20)</h2>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation serious">
+                    <h3>SERIOUS: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds</h3>
+                    
+                    <p><strong>Help:</strong> Elements must meet minimum color contrast ratio thresholds</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation critical">
+                    <h3>CRITICAL: Ensure buttons have discernible text</h3>
+                    
+                    <p><strong>Help:</strong> Buttons must have discernible text</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/button-name?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/button-name?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation serious">
+                    <h3>SERIOUS: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds</h3>
+                    
+                    <p><strong>Help:</strong> Elements must meet minimum color contrast ratio thresholds</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the complementary landmark or aside is at top level</h3>
+                    
+                    <p><strong>Help:</strong> Aside should not be contained in another landmark</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/landmark-complementary-is-top-level?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/landmark-complementary-is-top-level?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation serious">
+                    <h3>SERIOUS: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds</h3>
+                    
+                    <p><strong>Help:</strong> Elements must meet minimum color contrast ratio thresholds</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the complementary landmark or aside is at top level</h3>
+                    
+                    <p><strong>Help:</strong> Aside should not be contained in another landmark</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/landmark-complementary-is-top-level?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/landmark-complementary-is-top-level?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation critical">
+                    <h3>CRITICAL: Ensure every form element has a label</h3>
+                    
+                    <p><strong>Help:</strong> Form elements must have labels</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/label?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/label?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation critical">
+                    <h3>CRITICAL: Ensure every form element has a label</h3>
+                    
+                    <p><strong>Help:</strong> Form elements must have labels</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/label?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/label?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation serious">
+                    <h3>SERIOUS: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds</h3>
+                    
+                    <p><strong>Help:</strong> Elements must meet minimum color contrast ratio thresholds</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/color-contrast?application=axeAPI</a></p>
+                    
+                </div>
+            
+                <div class="violation moderate">
+                    <h3>MODERATE: Ensure the order of headings is semantically correct</h3>
+                    
+                    <p><strong>Help:</strong> Heading levels should only increase by one</p>
+                    <p><strong>Reference:</strong> <a href="https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI" target="_blank">https://dequeuniversity.com/rules/axe/4.11/heading-order?application=axeAPI</a></p>
+                    
+                </div>
+            
+        </div>
+        
+        
+        <div class="section">
+            <h2>Violation Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-number" style="color: #dc2626;">6</div>
+                    <div class="summary-label">Critical</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" style="color: #f59e0b;">7</div>
+                    <div class="summary-label">Serious</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" style="color: #3b82f6;">18</div>
+                    <div class="summary-label">Moderate</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" style="color: #10b981;">0</div>
+                    <div class="summary-label">Minor</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

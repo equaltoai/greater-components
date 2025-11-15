@@ -1,8 +1,12 @@
 import { test, expect } from '@playwright/test';
+import { applyA11yReporter } from './a11yReporter';
+
+applyA11yReporter(test);
 
 test.describe('Tabs demo', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/tabs');
+		await page.waitForSelector('body[data-playground-hydrated="true"]');
 	});
 
 	test('horizontal tabs respond to arrow keys', async ({ page }) => {

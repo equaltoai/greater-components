@@ -1,11 +1,17 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { LayoutData } from './$types';
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	import '@equaltoai/greater-components-tokens/theme.css';
 	import '@equaltoai/greater-components-primitives/style.css';
 	import '../app.css';
-	import { ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components-primitives';
+	import {
+		ThemeProvider,
+		ThemeSwitcher,
+		preferencesStore,
+	} from '@equaltoai/greater-components-primitives';
 	import {
 		HomeIcon,
 		LayersIcon,
@@ -23,7 +29,52 @@
 		SearchIcon,
 	} from '@equaltoai/greater-components-icons';
 
-	let { children }: { children?: Snippet } = $props();
+	let { children, data }: { children?: Snippet; data?: LayoutData } = $props();
+
+	const testTheme = $derived(() => data?.testTheme ?? null);
+	const testDensity = $derived(() => data?.testDensity ?? null);
+
+	const preferenceSeedScript = $derived(() => {
+		if (!testTheme && !testDensity) {
+			return '';
+		}
+
+		const serializedTheme = JSON.stringify(testTheme);
+		const serializedDensity = JSON.stringify(testDensity);
+
+		return `
+(function() {
+	const themeValue = ${serializedTheme};
+	const densityValue = ${serializedDensity};
+
+	try {
+		const raw = localStorage.getItem('gr-preferences-v1');
+		const prefs = raw ? JSON.parse(raw) : {};
+
+		if (themeValue) {
+			prefs.colorScheme = themeValue;
+			prefs.highContrastMode = themeValue === 'high-contrast';
+		}
+
+		if (densityValue) {
+			prefs.density = densityValue;
+		}
+
+		localStorage.setItem('gr-preferences-v1', JSON.stringify(prefs));
+	} catch (error) {
+		console.warn('Failed to sync test preferences', error);
+	}
+
+	if (themeValue) {
+		document.documentElement.setAttribute('data-theme', themeValue);
+	}
+
+	if (densityValue) {
+		document.documentElement.setAttribute('data-density', densityValue);
+	}
+})();
+		`.trim();
+	});
 
 	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
@@ -49,7 +100,38 @@
 
 		return `${base}${href}`;
 	};
+
+	onMount(() => {
+		document.body.dataset.playgroundHydrated = 'true';
+
+		return () => {
+			delete document.body.dataset.playgroundHydrated;
+		};
+	});
+
+	onMount(() => {
+		if (!testTheme && !testDensity) {
+			return;
+		}
+
+		if (testTheme) {
+			preferencesStore.setHighContrastMode(testTheme === 'high-contrast');
+			preferencesStore.setColorScheme(testTheme);
+		}
+
+		if (testDensity) {
+			preferencesStore.setDensity(testDensity);
+		}
+	});
 </script>
+
+<svelte:head>
+	{#if preferenceSeedScript && typeof window === 'undefined'}
+		<script>
+			{preferenceSeedScript}
+		</script>
+	{/if}
+</svelte:head>
 
 <ThemeProvider>
 	<div class="app-shell">
