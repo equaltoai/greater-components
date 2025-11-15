@@ -266,13 +266,13 @@
 	title={data.metadata.title}
 	description={data.metadata.description}
 >
-	<section class="timeline-app" aria-label="Timeline application demo">
-		<aside class="timeline-app__sidebar" aria-label="Timeline navigation">
-			<div class="sidebar-header">
-				<p class="section-eyebrow">Compose dock</p>
-				<h2>Filters + quick settings</h2>
-				<p>Switch feeds, tweak density, and open preferences without leaving the dock.</p>
-			</div>
+		<section class="timeline-app" aria-label="Timeline application demo">
+			<section class="timeline-app__sidebar" aria-label="Timeline navigation">
+				<div class="sidebar-header">
+					<p class="section-eyebrow">Compose dock</p>
+					<h2>Filters + quick settings</h2>
+					<p>Switch feeds, tweak density, and open preferences without leaving the dock.</p>
+				</div>
 
 			<nav class="sidebar-nav" aria-label="Timeline filters">
 				{#each navLinks as link (link.id)}
@@ -320,9 +320,9 @@
 						<p class="muted">Dim or hide reposts</p>
 					</div>
 				</div>
-				<p class="muted" aria-live="polite">{streamingAnnouncement()}</p>
-			</div>
-		</aside>
+					<p class="muted" aria-live="polite">{streamingAnnouncement()}</p>
+				</div>
+			</section>
 
 		<div class="timeline-app__main">
 			<section class="compose-dock" aria-labelledby="compose-heading">
@@ -400,12 +400,12 @@
 			</section>
 		</div>
 
-		<aside class="timeline-app__meta">
-			<section class="profile-card" aria-label="Profile summary">
-				<div class="profile-card__header">
-					<Avatar src={profile.avatar} alt={profile.displayName} size="lg" />
-					<div>
-						<h3>{profile.displayName}</h3>
+			<section class="timeline-app__meta" aria-label="Timeline meta">
+				<section class="profile-card" aria-label="Profile summary">
+					<div class="profile-card__header">
+						<Avatar src={profile.avatar} alt={profile.displayName} size="lg" />
+						<div>
+							<h3>{profile.displayName}</h3>
 						<p class="muted">@{profile.acct}</p>
 					</div>
 				</div>
@@ -448,11 +448,11 @@
 					</div>
 					<Button size="sm" variant="ghost" onclick={clearNotifications}>Clear</Button>
 				</header>
-				<ul>
-					{#each notifications as notification (notification.id)}
-						<li>
-							<div class="notification-row">
-								<img src={notification.account.avatar} alt={notification.account.displayName} />
+					<ul>
+						{#each notifications as notification (notification.id)}
+							<li>
+								<div class="notification-row">
+									<img src={notification.account.avatar} alt={notification.account.displayName} />
 								<div>
 									<p>
 										<strong>{notification.account.displayName}</strong>
@@ -483,9 +483,9 @@
 					{/each}
 				</ul>
 			</section>
-		</aside>
-	</section>
-</DemoPage>
+			</section>
+		</section>
+	</DemoPage>
 
 <Modal bind:open={showPreferences} title="Timeline preferences" size="lg">
 	<form class="preferences-form" onsubmit={handlePreferencesSubmit}>

@@ -282,9 +282,13 @@
 
 		<!-- Name and Handle -->
 		<div class="gr-profile-header__identity">
-			<h1 class="gr-profile-header__display-name">
-				<span class="gr-profile-header__display-name-text" use:setHtml={sanitizedDisplayName}
-				></span>
+			<h1
+				class="gr-profile-header__display-name"
+				aria-label={processedDisplayName() || account.username || 'Profile'}
+			>
+				<span class="gr-profile-header__display-name-text">
+					{@html sanitizedDisplayName() || account.username || 'Profile'}
+				</span>
 				{#if account.locked}
 					<svg
 						class="gr-profile-header__lock-icon"

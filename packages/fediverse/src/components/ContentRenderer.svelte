@@ -189,8 +189,11 @@
 
 	.spoiler-toggle {
 		padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
-		background: var(--color-primary, #1d9bf0);
-		color: white;
+		background: var(
+			--color-primary,
+			var(--gr-semantic-action-primary-default, #2563eb)
+		);
+		color: var(--color-on-primary, var(--gr-semantic-background-primary, #ffffff));
 		border: none;
 		border-radius: var(--radius-sm, 4px);
 		font-size: var(--font-size-sm, 0.875rem);
@@ -199,11 +202,14 @@
 	}
 
 	.spoiler-toggle:hover {
-		background: var(--color-primary-hover, #1a8cd8);
+		background: var(
+			--color-primary-hover,
+			var(--gr-semantic-action-primary-hover, #1d4ed8)
+		);
 	}
 
 	.spoiler-toggle:focus-visible {
-		outline: 2px solid var(--color-focus, #1d9bf0);
+		outline: 2px solid var(--color-focus, var(--gr-semantic-focus-ring, #3b82f6));
 		outline-offset: 2px;
 	}
 

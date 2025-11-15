@@ -174,6 +174,7 @@
 		<button
 			use:searchButton.actions.button
 			class="search-bar__submit"
+			aria-label={searchState.loading ? 'Searching' : 'Search'}
 			disabled={searchState.loading || !searchState.query.trim()}
 		>
 			{#if searchState.loading}
@@ -295,9 +296,15 @@
 	}
 
 	.search-bar__semantic--active {
-		background: var(--primary-color, #1d9bf0);
-		border-color: var(--primary-color, #1d9bf0);
-		color: white;
+		background: var(
+			--primary-color,
+			var(--gr-semantic-action-primary-default, #2563eb)
+		);
+		border-color: var(
+			--primary-color,
+			var(--gr-semantic-action-primary-default, #2563eb)
+		);
+		color: var(--gr-semantic-background-primary, #ffffff);
 	}
 
 	.search-bar__semantic svg {
@@ -307,19 +314,25 @@
 
 	.search-bar__submit {
 		padding: 0.5rem 1.5rem;
-		background: var(--primary-color, #1d9bf0);
+		background: var(
+			--primary-color,
+			var(--gr-semantic-action-primary-default, #2563eb)
+		);
 		border: none;
 		border-radius: 9999px;
 		font-size: 0.9375rem;
 		font-weight: 700;
-		color: white;
+		color: var(--gr-semantic-background-primary, #ffffff);
 		cursor: pointer;
 		transition: background-color 0.2s;
 		white-space: nowrap;
 	}
 
 	.search-bar__submit:hover:not(:disabled) {
-		background: var(--primary-color-dark, #1a8cd8);
+		background: var(
+			--primary-color-dark,
+			var(--gr-semantic-action-primary-hover, #1d4ed8)
+		);
 	}
 
 	.search-bar__submit:disabled {
@@ -372,7 +385,10 @@
 		padding: 0.25rem 0.5rem;
 		border: none;
 		background: transparent;
-		color: var(--primary-color, #1d9bf0);
+		color: var(
+			--primary-color,
+			var(--gr-semantic-action-primary-default, #2563eb)
+		);
 		font-size: 0.875rem;
 		font-weight: 600;
 		cursor: pointer;

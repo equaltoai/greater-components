@@ -117,21 +117,21 @@
 		.gr-textarea__label {
 			font-weight: var(--gr-typography-fontWeight-medium);
 			font-size: var(--gr-typography-fontSize-sm);
-			color: var(--gr-semantic-foreground-secondary);
+			color: var(--gr-semantic-foreground-secondary, #374151);
 		}
 
 		.gr-textarea__label--required .gr-textarea__required {
-			color: var(--gr-semantic-danger-default);
+			color: var(--gr-semantic-action-error-default, #dc2626);
 			margin-left: 0.25rem;
 		}
 
 		.gr-textarea {
 			width: 100%;
 			padding: var(--gr-spacing-scale-3);
-			border: 1px solid var(--gr-semantic-border-default);
+			border: 1px solid var(--gr-semantic-border-default, #e5e7eb);
 			border-radius: var(--gr-radii-md);
-			background: var(--gr-semantic-background-primary);
-			color: var(--gr-semantic-foreground-primary);
+			background: var(--gr-semantic-background-primary, #ffffff);
+			color: var(--gr-semantic-foreground-primary, #111827);
 			font-family: inherit;
 			font-size: var(--gr-typography-fontSize-base);
 			line-height: 1.5;
@@ -143,27 +143,27 @@
 
 		.gr-textarea:focus {
 			outline: none;
-			border-color: var(--gr-semantic-action-primary-default);
-			box-shadow: 0 0 0 3px var(--gr-semantic-focus-ring);
+			border-color: var(--gr-semantic-action-primary-default, #2563eb);
+			box-shadow: 0 0 0 3px var(--gr-semantic-focus-ring, #3b82f6);
 		}
 
 		.gr-textarea:disabled {
 			opacity: 0.6;
 			cursor: not-allowed;
-			background: var(--gr-semantic-background-secondary);
+			background: var(--gr-semantic-background-secondary, #f9fafb);
 		}
 
 		.gr-textarea::placeholder {
-			color: var(--gr-semantic-foreground-tertiary);
+			color: var(--gr-semantic-foreground-tertiary, #6b7280);
 		}
 
 		.gr-textarea__help {
-			color: var(--gr-semantic-foreground-tertiary);
+			color: var(--gr-semantic-foreground-tertiary, #6b7280);
 			font-size: var(--gr-typography-fontSize-sm);
 		}
 
 		.gr-textarea__error {
-			color: var(--gr-semantic-danger-default);
+			color: var(--gr-semantic-action-error-default, #dc2626);
 			font-size: var(--gr-typography-fontSize-sm);
 		}
 	}

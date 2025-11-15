@@ -145,95 +145,95 @@
 			{/if}
 		</section>
 
-		<section class="search-section search-layout">
-			<div class="results-column" aria-live="polite">
-				<header class="results-header">
-					<h3>Posts</h3>
-					<p class="muted">StatusCard renders note results with optimistic counts.</p>
-				</header>
-				{#if searchLoading && statusResults.length === 0}
-					<div class="status-skeletons">
-						{#each statusSkeletons as placeholder (placeholder)}
-							<Skeleton width="100%" height="120px" data-index={placeholder} />
-						{/each}
-					</div>
-				{:else if !searchLoading && statusResults.length === 0}
-					<div class="state-card">
-						<p>No posts match this query yet.</p>
-					</div>
-				{:else}
-					<div class="status-stack">
-						{#each statusResults as status (status.id)}
-							<StatusCard {status} density="comfortable" />
-						{/each}
-					</div>
-				{/if}
-			</div>
-			<aside class="side-column">
-				<section class="side-card">
-					<header>
-						<h3>Recent searches</h3>
-						<Button
-							size="sm"
-							variant="ghost"
-							onclick={clearRecents}
-							disabled={recentSearches.length === 0}
-						>
-							Clear recents
-						</Button>
+			<section class="search-section search-layout">
+				<div class="results-column" aria-live="polite">
+					<header class="results-header">
+						<h3>Posts</h3>
+						<p class="muted">StatusCard renders note results with optimistic counts.</p>
 					</header>
-					{#if recentSearches.length === 0}
-						<p class="muted">Search to build this list. It stores locally only.</p>
-					{:else}
-						<ul>
-							{#each recentSearches as query (query)}
-								<li>
-									<button onclick={() => restoreRecent(query)}>{query}</button>
-								</li>
-							{/each}
-						</ul>
-					{/if}
-				</section>
-
-				<section class="side-card">
-					<h3>People</h3>
-					{#if searchLoading && !lastResults}
-						<Skeleton width="100%" height="64px" />
-					{:else if lastResults?.actors.length}
-						<ul class="actor-list">
-							{#each lastResults.actors as actor (actor.id)}
-								<li>
-									<div>
-										<strong>{actor.displayName}</strong>
-										<p class="muted">@{actor.username}</p>
-									</div>
-									<Button size="sm" variant={actor.isFollowing ? 'outline' : 'solid'}>
-										{actor.isFollowing ? 'Following' : 'Follow'}
-									</Button>
-								</li>
-							{/each}
-						</ul>
-					{:else}
-						<p class="muted">Run a search to populate accounts.</p>
-					{/if}
-				</section>
-
-				<section class="side-card">
-					<h3>Hashtags</h3>
-					{#if searchLoading && !lastResults}
-						<Skeleton width="100%" height="40px" />
-					{:else if lastResults?.tags.length}
-						<div class="tag-grid">
-							{#each lastResults.tags as tag (tag.name)}
-								<span class:trending={tag.trending}>#{tag.name}</span>
+					{#if searchLoading && statusResults.length === 0}
+						<div class="status-skeletons">
+							{#each statusSkeletons as placeholder (placeholder)}
+								<Skeleton width="100%" height="120px" data-index={placeholder} />
 							{/each}
 						</div>
+					{:else if !searchLoading && statusResults.length === 0}
+						<div class="state-card">
+							<p>No posts match this query yet.</p>
+						</div>
 					{:else}
-						<p class="muted">No tags yet.</p>
+						<div class="status-stack">
+							{#each statusResults as status (status.id)}
+								<StatusCard {status} density="comfortable" />
+							{/each}
+						</div>
 					{/if}
+				</div>
+				<section class="side-column" aria-label="Search sidebar">
+					<section class="side-card">
+						<header>
+							<h3>Recent searches</h3>
+							<Button
+								size="sm"
+								variant="ghost"
+								onclick={clearRecents}
+								disabled={recentSearches.length === 0}
+							>
+								Clear recents
+							</Button>
+						</header>
+						{#if recentSearches.length === 0}
+							<p class="muted">Search to build this list. It stores locally only.</p>
+						{:else}
+							<ul>
+								{#each recentSearches as query (query)}
+									<li>
+										<button onclick={() => restoreRecent(query)}>{query}</button>
+									</li>
+								{/each}
+							</ul>
+						{/if}
+					</section>
+
+					<section class="side-card">
+						<h3>People</h3>
+						{#if searchLoading && !lastResults}
+							<Skeleton width="100%" height="64px" />
+						{:else if lastResults?.actors.length}
+							<ul class="actor-list">
+								{#each lastResults.actors as actor (actor.id)}
+									<li>
+										<div>
+											<strong>{actor.displayName}</strong>
+											<p class="muted">@{actor.username}</p>
+										</div>
+										<Button size="sm" variant={actor.isFollowing ? 'outline' : 'solid'}>
+											{actor.isFollowing ? 'Following' : 'Follow'}
+										</Button>
+									</li>
+								{/each}
+							</ul>
+						{:else}
+							<p class="muted">Run a search to populate accounts.</p>
+						{/if}
+					</section>
+
+					<section class="side-card">
+						<h3>Hashtags</h3>
+						{#if searchLoading && !lastResults}
+							<Skeleton width="100%" height="40px" />
+						{:else if lastResults?.tags.length}
+							<div class="tag-grid">
+								{#each lastResults.tags as tag (tag.name)}
+									<span class:trending={tag.trending}>#{tag.name}</span>
+								{/each}
+							</div>
+						{:else}
+							<p class="muted">No tags yet.</p>
+						{/if}
+					</section>
 				</section>
-			</aside>
-		</section>
+			</section>
 	</DemoPage>
 </Search.Root>
 

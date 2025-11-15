@@ -82,23 +82,23 @@
 	void onLoadPrevious;
 </script>
 
-<div
-	class={`timeline-virtualized ${className}`}
-	role="feed"
-	aria-label="Timeline"
-	aria-busy={loadingTop || loadingBottom}
->
+<div class={`timeline-virtualized ${className}`}>
 	{#if loadingTop}
 		<div class="loading-indicator top">
-			<div class="spinner" aria-label="Loading new items"></div>
+			<div class="spinner" role="status" aria-label="Loading new items"></div>
 		</div>
 	{/if}
 
-	<div class="virtual-list">
+	<div
+		class="virtual-list"
+		role="feed"
+		aria-label="Timeline"
+		aria-busy={loadingTop || loadingBottom}
+	>
 		{#each items as item, index (item?.id || index)}
 			{@const handlersForItem =
 				typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-			<div class="virtual-row">
+			<div class="virtual-row" role="article">
 				<StatusCard status={item} {density} showActions={true} actionHandlers={handlersForItem} />
 			</div>
 		{/each}
@@ -109,7 +109,7 @@
 			{#if gapLoader}
 				{@render gapLoader()}
 			{:else}
-				<div class="spinner" aria-label="Loading more items"></div>
+				<div class="spinner" role="status" aria-label="Loading more items"></div>
 			{/if}
 		</div>
 	{/if}

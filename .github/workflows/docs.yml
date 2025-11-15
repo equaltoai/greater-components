@@ -7,13 +7,11 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
-  build-docs:
-    name: Build Documentation
+  build-and-deploy:
+    name: Build and Deploy Documentation
     runs-on: ubuntu-latest
 
     steps:
@@ -32,8 +30,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages
-        run: pnpm build
+      - name: Build shared packages
+        run: |
+          pnpm --filter @equaltoai/greater-components-tokens build
+          pnpm --filter @equaltoai/greater-components-primitives build
+          pnpm --filter @equaltoai/greater-components-icons build
+          pnpm --filter @equaltoai/greater-components-utils build
+          pnpm --filter @equaltoai/greater-components-adapters build
+          pnpm --filter @equaltoai/greater-components-headless build
+          pnpm --filter @equaltoai/greater-components-fediverse build
 
       - name: Build playground app
         run: |
@@ -47,48 +52,31 @@ jobs:
             pnpm --filter @greater-components/docs build
           fi
 
-      - name: Configure GitHub Pages
-        if: github.ref == 'refs/heads/main'
-        uses: actions/configure-pages@v4
-
-      - name: Prepare docs bundle
-        if: github.ref == 'refs/heads/main'
+      - name: Prepare deployment bundle
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-          rm -rf docs-dist
-          mkdir -p docs-dist
-          if [ -d "apps/docs/build" ]; then
-            cp -R apps/docs/build docs-dist/docs
-          fi
+          rm -rf deploy-dist
+          mkdir -p deploy-dist
+          
+          # Copy playground to root
           if [ -d "apps/playground/build" ]; then
-            cp -R apps/playground/build docs-dist/playground
+            cp -R apps/playground/build/* deploy-dist/
           fi
-
-      - name: Upload Pages artifact
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          name: github-pages
-          path: docs-dist
-
-  deploy-docs:
-    name: Deploy Documentation
-    needs: build-docs
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Echo deploy start
-        run: echo "Starting deploy job"
+          
+          # Copy docs to /docs subdirectory
+          if [ -d "apps/docs/build" ]; then
+            mkdir -p deploy-dist/docs
+            cp -R apps/docs/build/* deploy-dist/docs/
+          fi
+          
+          # Disable Jekyll processing
+          touch deploy-dist/.nojekyll
 
       - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          artifact_name: github-pages
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: deploy-dist
+          force_orphan: true

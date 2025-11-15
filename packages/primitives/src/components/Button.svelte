@@ -253,20 +253,20 @@ Button component - Accessible interactive element with loading states, variants,
 			min-height: 3rem;
 		}
 
-		/* Variant styles */
-		.gr-button--solid {
-			background-color: var(--gr-semantic-action-primary-default);
-			color: var(--gr-color-base-white);
-		}
+			/* Variant styles */
+			.gr-button--solid {
+				background-color: var(--gr-semantic-action-primary-default, #2563eb);
+				color: var(--gr-color-base-white, #ffffff);
+			}
 
-		.gr-button--solid:hover:not(:disabled):not(.gr-button--loading) {
-			background-color: var(--gr-semantic-action-primary-hover);
-		}
+			.gr-button--solid:hover:not(:disabled):not(.gr-button--loading) {
+				background-color: var(--gr-semantic-action-primary-hover, #1d4ed8);
+			}
 
-		.gr-button--solid:active:not(:disabled):not(.gr-button--loading) {
-			background-color: var(--gr-semantic-action-primary-active);
-			transform: translateY(1px);
-		}
+			.gr-button--solid:active:not(:disabled):not(.gr-button--loading) {
+				background-color: var(--gr-semantic-action-primary-active, #1e40af);
+				transform: translateY(1px);
+			}
 
 		.gr-button--outline {
 			background-color: transparent;
@@ -305,9 +305,9 @@ Button component - Accessible interactive element with loading states, variants,
 			pointer-events: none;
 		}
 
-		.gr-button--solid.gr-button--disabled {
-			background-color: var(--gr-semantic-action-primary-disabled);
-		}
+			.gr-button--solid.gr-button--disabled {
+				background-color: var(--gr-semantic-action-primary-disabled, #1e40af);
+			}
 
 		/* Loading state */
 		.gr-button--loading {

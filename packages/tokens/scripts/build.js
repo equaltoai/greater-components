@@ -74,6 +74,8 @@ function getThemeSelectors(themeName) {
 
 // Generate base tokens CSS
 const flatTokens = flattenTokens(tokens);
+const lightThemeDefaults = resolveReferences(flattenTokens(themes.light), flatTokens);
+
 let baseCSS = ':root {\n';
 
 for (const [key, value] of Object.entries(flatTokens)) {
@@ -89,6 +91,12 @@ if (!fs.existsSync(themesDir)) {
 }
 
 let combinedThemeCSS = baseCSS + '\n';
+
+combinedThemeCSS += `:root:not([data-theme]) {
+${Object.entries(lightThemeDefaults)
+	.map(([key, value]) => `  --gr-${key}: ${value};`)
+	.join('\n')}
+}\n\n`;
 
 for (const [themeName, themeTokens] of Object.entries(themes)) {
 	const flatThemeTokens = flattenTokens(themeTokens);

@@ -514,13 +514,13 @@ export const themes = {
       "action": {
         "primary": {
           "default": {
-            "value": "{color.primary.500}"
+            "value": "{color.primary.600}"
           },
           "hover": {
-            "value": "{color.primary.400}"
+            "value": "{color.primary.700}"
           },
           "active": {
-            "value": "{color.primary.300}"
+            "value": "{color.primary.800}"
           },
           "disabled": {
             "value": "{color.primary.800}"
@@ -608,13 +608,13 @@ export const themes = {
       "action": {
         "primary": {
           "default": {
-            "value": "{color.primary.300}"
+            "value": "{color.primary.700}"
           },
           "hover": {
-            "value": "{color.primary.200}"
+            "value": "{color.primary.800}"
           },
           "active": {
-            "value": "{color.primary.100}"
+            "value": "{color.primary.600}"
           },
           "disabled": {
             "value": "{color.gray.700}"

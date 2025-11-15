@@ -27,6 +27,7 @@
 		UserIcon,
 		SettingsIcon,
 		SearchIcon,
+		BookOpenIcon,
 	} from '@equaltoai/greater-components-icons';
 
 	let { children, data }: { children?: Snippet; data?: LayoutData } = $props();
@@ -78,6 +79,7 @@
 
 	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
+		{ href: '/docs', label: 'Documentation', icon: BookOpenIcon },
 		{ href: '/status', label: 'Status Card Demo', icon: MessageSquareIcon },
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },
 		{ href: '/timeline', label: 'Timeline Demo', icon: ActivityIcon },
@@ -234,8 +236,8 @@
 	}
 
 	.sidebar-nav a.active {
-		background: var(--gr-semantic-action-primary-default);
-		color: var(--gr-semantic-background-primary, #ffffff);
+		background: var(--gr-semantic-action-primary-default, #2563eb);
+		color: var(--gr-color-base-white, #ffffff);
 	}
 
 	.sidebar-footer {

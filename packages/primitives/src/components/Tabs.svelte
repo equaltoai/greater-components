@@ -228,15 +228,24 @@
 				data-tab-index={index}
 				tabindex={tab.disabled ? -1 : isFocused ? 0 : -1}
 				aria-selected={isActive}
-				aria-disabled={tab.disabled}
-				aria-controls={`${tabsId()}-panel-${tab.id}`}
-				id={`${tabsId()}-tab-${tab.id}`}
-				onclick={() => selectTab(tab.id)}
-				onkeydown={(e) => handleTabKeydown(e, index)}
-				onfocus={() => (focusedTabIndex = index)}
-			>
-				{tab.label}
-			</button>
+					aria-disabled={tab.disabled}
+					aria-controls={`${tabsId()}-panel-${tab.id}`}
+					id={`${tabsId()}-tab-${tab.id}`}
+					onclick={() => selectTab(tab.id)}
+					onkeydown={(e) => handleTabKeydown(e, index)}
+					onfocus={() => (focusedTabIndex = index)}
+					style={`background-color: ${
+						isActive
+							? 'var(--gr-semantic-action-primary-active, #1e40af)'
+							: 'var(--gr-semantic-background-primary, #030712)'
+					}; color: ${
+						isActive
+							? 'var(--gr-color-base-white, #ffffff)'
+							: 'var(--gr-semantic-foreground-secondary, #e5e7eb)'
+					};`}
+				>
+					{tab.label}
+				</button>
 		{/each}
 	</div>
 
@@ -299,8 +308,8 @@
 			font-size: var(--gr-typography-fontSize-sm);
 			font-weight: var(--gr-typography-fontWeight-medium);
 			line-height: var(--gr-typography-lineHeight-normal);
-			color: var(--gr-semantic-foreground-secondary);
-			background-color: transparent;
+			color: var(--gr-semantic-foreground-secondary, #374151);
+			background-color: var(--gr-semantic-background-primary, #ffffff);
 			border: none;
 			cursor: pointer;
 			transition-property: color, background-color, border-color;
@@ -326,7 +335,7 @@
 		}
 
 		.gr-tabs__tab--active {
-			color: var(--gr-semantic-action-primary-default);
+			color: var(--gr-semantic-foreground-primary, #111827);
 		}
 
 		.gr-tabs__tab--disabled {
@@ -357,35 +366,39 @@
 		}
 
 		/* Default variant - simple border */
-		.gr-tabs--default.gr-tabs--horizontal .gr-tabs__tab--active::after {
-			content: '';
-			position: absolute;
-			bottom: -1px;
-			left: 0;
-			right: 0;
-			height: 2px;
-			background-color: var(--gr-semantic-action-primary-default);
-		}
+			.gr-tabs--default.gr-tabs--horizontal .gr-tabs__tab--active::after {
+				content: '';
+				position: absolute;
+				bottom: -1px;
+				left: 0;
+				right: 0;
+				height: 2px;
+				background-color: var(--gr-semantic-action-primary-default, #2563eb);
+			}
 
-		.gr-tabs--default.gr-tabs--vertical .gr-tabs__tab--active::after {
-			content: '';
-			position: absolute;
-			right: -1px;
-			top: 0;
-			bottom: 0;
-			width: 2px;
-			background-color: var(--gr-semantic-action-primary-default);
-		}
+			.gr-tabs--default.gr-tabs--vertical .gr-tabs__tab--active::after {
+				content: '';
+				position: absolute;
+				right: -1px;
+				top: 0;
+				bottom: 0;
+				width: 2px;
+				background-color: var(--gr-semantic-action-primary-default, #2563eb);
+			}
 
 		/* Pills variant - rounded background */
 		.gr-tabs--pills .gr-tabs__tab {
 			border-radius: var(--gr-radii-full);
 			margin: var(--gr-spacing-scale-1);
+			background-color: var(--gr-semantic-background-secondary, #f9fafb);
+			color: var(--gr-semantic-foreground-primary, #111827);
+			border: 1px solid var(--gr-semantic-border-default, #e5e7eb);
 		}
 
 		.gr-tabs--pills .gr-tabs__tab--active {
-			background-color: var(--gr-semantic-action-primary-default);
-			color: var(--gr-color-base-white);
+			background-color: var(--gr-semantic-action-primary-default, #2563eb);
+			color: var(--gr-color-base-white, #ffffff);
+			border-color: var(--gr-semantic-action-primary-default, #2563eb);
 		}
 
 		.gr-tabs--pills .gr-tabs__tablist {
@@ -405,9 +418,9 @@
 			margin-bottom: -2px;
 		}
 
-		.gr-tabs--underline .gr-tabs__tab--active {
-			border-bottom-color: var(--gr-semantic-action-primary-default);
-		}
+			.gr-tabs--underline .gr-tabs__tab--active {
+				border-bottom-color: var(--gr-semantic-action-primary-default, #2563eb);
+			}
 
 		/* Reduced motion */
 		@media (prefers-reduced-motion: reduce) {
