@@ -166,7 +166,7 @@
 	}
 
 	header p {
-		color: var(--gr-semantic-foreground-secondary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 	}
 
 	section {
@@ -183,7 +183,7 @@
 
 	.note {
 		margin: 0 0 1rem;
-		color: var(--gr-semantic-foreground-secondary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 	}
 
 	.tab-panel {

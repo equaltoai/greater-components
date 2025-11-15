@@ -196,7 +196,7 @@
 
 	.header p {
 		font-size: var(--gr-typography-fontSize-xl);
-		color: var(--gr-semantic-foreground-secondary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 		margin-bottom: 2rem;
 	}
 
@@ -221,7 +221,7 @@
 
 	.hero p {
 		font-size: var(--gr-typography-fontSize-lg);
-		color: var(--gr-semantic-foreground-secondary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 		margin-bottom: 2rem;
 		max-width: 600px;
 		margin-left: auto;
@@ -260,7 +260,7 @@
 	}
 
 	.feature p {
-		color: var(--gr-semantic-foreground-secondary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 		line-height: var(--gr-typography-lineHeight-relaxed);
 	}
 

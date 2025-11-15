@@ -46,6 +46,41 @@
 	let accentColor = $state('#ec4899');
 	let fontScale = $state(1);
 
+	function hexToRgb(hex: string) {
+		const normalized = hex.replace('#', '').trim();
+		if (normalized.length !== 6) {
+			return null;
+		}
+
+		const r = Number.parseInt(normalized.slice(0, 2), 16) / 255;
+		const g = Number.parseInt(normalized.slice(2, 4), 16) / 255;
+		const b = Number.parseInt(normalized.slice(4, 6), 16) / 255;
+		return { r, g, b };
+	}
+
+	function relativeLuminance(rgb: { r: number; g: number; b: number }) {
+		const transform = (value: number) =>
+			value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+		const r = transform(rgb.r);
+		const g = transform(rgb.g);
+		const b = transform(rgb.b);
+		return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+	}
+
+	function getContrastRatio(hexA: string, hexB: string) {
+		const a = hexToRgb(hexA);
+		const b = hexToRgb(hexB);
+		if (!a || !b) {
+			return 1;
+		}
+
+		const lumA = relativeLuminance(a);
+		const lumB = relativeLuminance(b);
+		const lighter = Math.max(lumA, lumB);
+		const darker = Math.min(lumA, lumB);
+		return (lighter + 0.05) / (darker + 0.05);
+	}
+
 	function syncPreferences() {
 		preferences = preferencesStore.preferences;
 		state = preferencesStore.state;
@@ -92,12 +127,13 @@
 	function handleColorSchemeChange(scheme: ColorScheme) {
 		if (value === undefined) {
 			preferencesStore.setColorScheme(scheme);
-			syncPreferences();
 		}
 		onThemeChange?.(scheme);
 		if (variant === 'compact') {
 			isCompactOpen = false;
 		}
+
+		syncPreferences();
 	}
 
 	function handleDensityChange(density: Density) {
@@ -233,6 +269,12 @@
 	// Filter color schemes for compact (only show Light, Dark, Auto)
 	const compactSchemes = $derived(() => {
 		return colorSchemes.filter((s) => ['light', 'dark', 'auto'].includes(s.value));
+	});
+
+	const previewButtonTextColor = $derived(() => {
+		const contrastWithBlack = getContrastRatio(primaryColor, '#000000');
+		const contrastWithWhite = getContrastRatio(primaryColor, '#ffffff');
+		return contrastWithBlack >= contrastWithWhite ? '#000000' : '#ffffff';
 	});
 </script>
 
@@ -438,6 +480,7 @@
 								value={primaryColor}
 								oninput={(e) => handleColorChange('primary', e.currentTarget.value)}
 								pattern="^#[0-9A-Fa-f]{6}$"
+								aria-label="Primary color hex value"
 								class="gr-theme-switcher__color-text"
 							/>
 						</div>
@@ -458,6 +501,7 @@
 								value={secondaryColor}
 								oninput={(e) => handleColorChange('secondary', e.currentTarget.value)}
 								pattern="^#[0-9A-Fa-f]{6}$"
+								aria-label="Secondary color hex value"
 								class="gr-theme-switcher__color-text"
 							/>
 						</div>
@@ -478,6 +522,7 @@
 								value={accentColor}
 								oninput={(e) => handleColorChange('accent', e.currentTarget.value)}
 								pattern="^#[0-9A-Fa-f]{6}$"
+								aria-label="Accent color hex value"
 								class="gr-theme-switcher__color-text"
 							/>
 						</div>
@@ -496,6 +541,7 @@
 						<div class="gr-theme-switcher__preview-buttons">
 							<button
 								class="gr-theme-switcher__preview-button gr-theme-switcher__preview-button--primary"
+								style={`background-color: ${primaryColor}; color: ${previewButtonTextColor()}`}
 							>
 								Primary
 							</button>
@@ -669,7 +715,7 @@
 		.gr-theme-switcher__heading {
 			font-size: calc(var(--gr-typography-fontSize-lg) * var(--gr-font-scale, 1));
 			font-weight: var(--gr-typography-fontWeight-semibold);
-			color: var(--gr-semantic-foreground-primary);
+			color: var(--gr-semantic-foreground-primary, #111827);
 			margin: 0;
 		}
 
@@ -715,12 +761,12 @@
 		.gr-theme-switcher__option-label {
 			font-size: calc(var(--gr-typography-fontSize-base) * var(--gr-font-scale, 1));
 			font-weight: var(--gr-typography-fontWeight-medium);
-			color: var(--gr-semantic-foreground-primary);
+			color: var(--gr-semantic-foreground-primary, #111827);
 		}
 
 		.gr-theme-switcher__option-description {
 			font-size: calc(var(--gr-typography-fontSize-sm) * var(--gr-font-scale, 1));
-			color: var(--gr-semantic-foreground-secondary);
+			color: var(--gr-semantic-foreground-primary, #0f172a);
 		}
 
 		.gr-theme-switcher__option-badge {
@@ -728,7 +774,7 @@
 			padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
 			font-size: calc(var(--gr-typography-fontSize-xs) * var(--gr-font-scale, 1));
 			background-color: var(--gr-semantic-background-tertiary);
-			color: var(--gr-semantic-foreground-secondary);
+			color: var(--gr-semantic-foreground-primary, #0f172a);
 			border-radius: var(--gr-radii-sm);
 		}
 
@@ -737,7 +783,7 @@
 			align-items: center;
 			gap: var(--gr-spacing-scale-2);
 			font-size: calc(var(--gr-typography-fontSize-base) * var(--gr-font-scale, 1));
-			color: var(--gr-semantic-foreground-primary);
+			color: var(--gr-semantic-foreground-primary, #111827);
 			cursor: pointer;
 		}
 
@@ -749,7 +795,7 @@
 
 		.gr-theme-switcher__slider label {
 			font-size: calc(var(--gr-typography-fontSize-sm) * var(--gr-font-scale, 1));
-			color: var(--gr-semantic-foreground-secondary);
+			color: var(--gr-semantic-foreground-primary, #0f172a);
 		}
 
 		.gr-theme-switcher__range {
@@ -770,7 +816,7 @@
 
 		.gr-theme-switcher__color-input label {
 			font-size: calc(var(--gr-typography-fontSize-sm) * var(--gr-font-scale, 1));
-			color: var(--gr-semantic-foreground-secondary);
+			color: var(--gr-semantic-foreground-primary, #0f172a);
 		}
 
 		.gr-theme-switcher__color-wrapper {
@@ -820,7 +866,7 @@
 		.gr-theme-switcher__preview-card p {
 			margin: 0 0 var(--gr-spacing-scale-4) 0;
 			font-size: calc(var(--gr-typography-fontSize-base) * var(--gr-font-scale, 1));
-			color: var(--gr-semantic-foreground-secondary);
+			color: var(--gr-semantic-foreground-primary, #0f172a);
 		}
 
 		.gr-theme-switcher__preview-buttons {
@@ -840,7 +886,12 @@
 
 		.gr-theme-switcher__preview-button--primary {
 			background-color: var(--gr-semantic-action-primary-default);
-			color: var(--gr-color-base-white);
+			color: var(--gr-semantic-background-primary, #ffffff);
+		}
+
+		:global([data-theme='dark'] .gr-theme-switcher__preview-button--primary),
+		:global([data-theme='high-contrast'] .gr-theme-switcher__preview-button--primary) {
+			color: #000000;
 		}
 
 		.gr-theme-switcher__preview-button--primary:hover {

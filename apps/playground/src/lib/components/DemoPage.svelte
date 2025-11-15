@@ -47,7 +47,7 @@
 
 	header p {
 		margin-top: 0.5rem;
-		color: var(--gr-semantic-foreground-secondary);
+		color: var(--gr-semantic-foreground-primary, #111827);
 	}
 
 	.header-row {
@@ -69,11 +69,15 @@
 		gap: 2rem;
 	}
 
+	.header-row h1 {
+		color: var(--gr-semantic-foreground-primary, #111827);
+	}
+
 	.eyebrow {
 		text-transform: uppercase;
 		letter-spacing: 0.16em;
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-semantic-foreground-tertiary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 		margin: 0;
 	}
 </style>

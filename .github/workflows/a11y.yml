@@ -77,7 +77,7 @@ jobs:
             --project=chromium \
             --reporter=json \
             --output=test-results/focus-${{ matrix.theme }}-${{ matrix.density }} \
-            tests/a11y/focus.spec.ts
+            tests/a11y/focus.a11y.test.ts
         working-directory: packages/testing
         env:
           TEST_THEME: ${{ matrix.theme }}
@@ -89,7 +89,7 @@ jobs:
             --project=chromium \
             --reporter=json \
             --output=test-results/contrast-${{ matrix.theme }}-${{ matrix.density }} \
-            tests/a11y/contrast.spec.ts
+            tests/a11y/contrast.a11y.test.ts
         working-directory: packages/testing
         env:
           TEST_THEME: ${{ matrix.theme }}

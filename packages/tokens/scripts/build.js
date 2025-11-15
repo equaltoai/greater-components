@@ -54,6 +54,24 @@ function resolveReferences(tokens, flatTokens) {
 	return resolved;
 }
 
+function toKebabCase(value) {
+	return value
+		.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+		.replace(/[_\s]+/g, '-')
+		.toLowerCase();
+}
+
+function getThemeSelectors(themeName) {
+	const selectors = new Set([themeName]);
+	const kebab = toKebabCase(themeName);
+
+	if (kebab && kebab !== themeName) {
+		selectors.add(kebab);
+	}
+
+	return Array.from(selectors);
+}
+
 // Generate base tokens CSS
 const flatTokens = flattenTokens(tokens);
 let baseCSS = ':root {\n';
@@ -76,7 +94,11 @@ for (const [themeName, themeTokens] of Object.entries(themes)) {
 	const flatThemeTokens = flattenTokens(themeTokens);
 	const resolvedThemeTokens = resolveReferences(flatThemeTokens, flatTokens);
 
-	let themeCSS = `[data-theme="${themeName}"] {\n`;
+	const selectorList = getThemeSelectors(themeName)
+		.map((selector) => `[data-theme="${selector}"]`)
+		.join(',\n');
+
+	let themeCSS = `${selectorList} {\n`;
 
 	for (const [key, value] of Object.entries(resolvedThemeTokens)) {
 		themeCSS += `  --gr-${key}: ${value};\n`;

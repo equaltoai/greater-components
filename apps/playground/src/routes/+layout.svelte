@@ -184,6 +184,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 2rem;
+		color: var(--gr-semantic-foreground-primary);
+		--gr-semantic-foreground-secondary: var(--gr-semantic-foreground-primary);
+		--gr-semantic-foreground-tertiary: var(--gr-semantic-foreground-primary);
+		--sidebar-foreground: var(--gr-semantic-foreground-primary);
 	}
 
 	.sidebar-header h1 {
@@ -195,8 +199,12 @@
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-semantic-foreground-tertiary);
+		color: var(--sidebar-foreground);
 		margin: 0;
+	}
+
+	.sidebar-header p {
+		color: var(--sidebar-foreground);
 	}
 
 	.sidebar-nav {
@@ -212,9 +220,13 @@
 		padding: 0.75rem 1rem;
 		border-radius: var(--gr-radii-lg);
 		text-decoration: none;
-		color: inherit;
+		color: var(--sidebar-foreground);
 		font-weight: var(--gr-typography-fontWeight-medium);
 		transition: background 120ms ease;
+	}
+
+	.sidebar-nav a span {
+		color: inherit;
 	}
 
 	.sidebar-nav a:hover {
@@ -223,7 +235,7 @@
 
 	.sidebar-nav a.active {
 		background: var(--gr-semantic-action-primary-default);
-		color: var(--gr-color-base-white);
+		color: var(--gr-semantic-background-primary, #ffffff);
 	}
 
 	.sidebar-footer {
@@ -236,7 +248,7 @@
 	.sidebar-footer__heading {
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-sm);
-		color: var(--gr-semantic-foreground-secondary);
+		color: var(--sidebar-foreground);
 	}
 
 	.app-shell__content {

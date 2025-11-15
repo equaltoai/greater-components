@@ -29,15 +29,15 @@ test.describe('contrast', () => {
 			.getByRole('heading', { level: 3 })
 			.allTextContents();
 
-		expect(previewSamples).toEqual(expect.arrayContaining(['Timeline sample', 'Notification sample']));
+		expect(previewSamples).toEqual(
+			expect.arrayContaining(['Timeline sample', 'Notification sample'])
+		);
 	});
 
 	test('color scheme radios and density select update the preview state', async ({ page }) => {
-		const appearanceCard = page
-			.locator('section.settings-card')
-			.filter({
-				has: page.getByRole('heading', { level: 2, name: 'Theme & density' }),
-			});
+		const appearanceCard = page.locator('section.settings-card').filter({
+			has: page.getByRole('heading', { level: 2, name: 'Theme & density' }),
+		});
 		const previewStatus = page.locator('.preview-card h2');
 		const highContrastRadio = appearanceCard.getByRole('radio', { name: /^High Contrast/ });
 		const densitySelect = page.locator('#density-select');
@@ -53,11 +53,9 @@ test.describe('contrast', () => {
 	});
 
 	test('force high contrast toggle overrides the current theme', async ({ page }) => {
-		const appearanceCard = page
-			.locator('section.settings-card')
-			.filter({
-				has: page.getByRole('heading', { level: 2, name: 'Theme & density' }),
-			});
+		const appearanceCard = page.locator('section.settings-card').filter({
+			has: page.getByRole('heading', { level: 2, name: 'Theme & density' }),
+		});
 		const previewStatus = page.locator('.preview-card h2');
 		const lightRadio = appearanceCard.getByRole('radio', { name: /^Light/ });
 		const forceHighContrast = appearanceCard.getByRole('checkbox', {

@@ -243,6 +243,7 @@
 							</div>
 							<Switch
 								checked={settings.privacy[toggle.id]}
+								aria-label={toggle.label}
 								onclick={() => togglePrivacy(toggle.id)}
 							/>
 						</div>
@@ -267,6 +268,7 @@
 							</div>
 							<Switch
 								checked={settings.notifications[toggle.id]}
+								aria-label={toggle.label}
 								onclick={() => toggleNotification(toggle.id)}
 							/>
 						</div>
@@ -396,7 +398,7 @@
 	}
 
 	.muted {
-		color: var(--gr-semantic-foreground-tertiary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 		font-size: var(--gr-typography-fontSize-sm);
 		margin: 0;
 	}
@@ -405,7 +407,7 @@
 		text-transform: uppercase;
 		letter-spacing: 0.18em;
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-semantic-foreground-tertiary);
+		color: var(--gr-semantic-foreground-primary, #0f172a);
 		margin: 0;
 	}
 

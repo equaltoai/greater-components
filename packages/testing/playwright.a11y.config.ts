@@ -11,6 +11,6 @@ const runtime =
 const config = createDemoPlaywrightConfig(runtime);
 
 config.testDir = './tests';
-config.testMatch = /.*\/(demo|a11y)\/.*\.spec\.ts$/;
+config.testMatch = /.*\/(demo|a11y)\/.*\.(spec|a11y\.test)\.ts$/;
 
 export default config;

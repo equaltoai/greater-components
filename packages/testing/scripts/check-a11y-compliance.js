@@ -5,9 +5,10 @@
  * Validates test results against WCAG standards and fails CI if violations found
  */
 
-const fs = require('fs');
-const path = require('path');
-const { program } = require('commander');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { program } from 'commander';
 
 program
 	.option('--results <path>', 'Path to test results directory', 'test-results')
@@ -437,8 +438,11 @@ async function main() {
 	}
 }
 
-if (require.main === module) {
+const isMainModule =
+	process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+
+if (isMainModule) {
 	main();
 }
 
-module.exports = { ComplianceChecker };
+export { ComplianceChecker };

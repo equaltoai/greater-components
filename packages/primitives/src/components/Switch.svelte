@@ -1,10 +1,11 @@
 <script lang="ts">
-	interface Props {
+	import type { HTMLInputAttributes } from 'svelte/elements';
+
+	interface Props extends Omit<HTMLInputAttributes, 'type' | 'checked'> {
 		checked?: boolean;
 		disabled?: boolean;
 		class?: string;
-		id?: string;
-		name?: string;
+		label?: string;
 		onchange?: (checked: boolean) => void;
 	}
 
@@ -14,7 +15,9 @@
 		class: className = '',
 		id,
 		name,
+		label,
 		onchange,
+		...restProps
 	}: Props = $props();
 
 	function handleChange(event: Event) {
@@ -37,16 +40,22 @@
 		{name}
 		class="gr-switch__input"
 		onchange={handleChange}
+		{...restProps}
 	/>
 	<span class="gr-switch__slider"></span>
+	{#if label}
+		<span class="gr-switch__label">{label}</span>
+	{/if}
 </label>
 
 <style>
 	:global {
 		.gr-switch {
 			position: relative;
-			display: inline-block;
-			width: 44px;
+			display: inline-flex;
+			align-items: center;
+			gap: var(--gr-spacing-scale-2);
+			width: max-content;
 			height: 24px;
 			cursor: pointer;
 		}
@@ -92,6 +101,11 @@
 
 		.gr-switch__input:focus-visible + .gr-switch__slider {
 			box-shadow: 0 0 0 3px var(--gr-semantic-focus-ring);
+		}
+
+		.gr-switch__label {
+			font-size: var(--gr-typography-fontSize-sm);
+			color: var(--gr-semantic-foreground-primary);
 		}
 	}
 </style>
