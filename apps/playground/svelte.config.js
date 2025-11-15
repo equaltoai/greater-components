@@ -24,6 +24,13 @@ const config = {
 		},
 		prerender: {
 			entries: ['*'],
+			handleHttpError: ({ path, message }) => {
+				// Skip 404 errors for external links like /docs
+				if (path === '/greater-components/docs' || path === '/docs') {
+					return;
+				}
+				throw new Error(message);
+			},
 		},
 		alias: {
 			$lib: './src/lib',

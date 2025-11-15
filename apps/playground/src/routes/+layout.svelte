@@ -79,7 +79,7 @@
 
 	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
-		{ href: '/docs', label: 'Documentation', icon: BookOpenIcon },
+		{ href: '/docs', label: 'Documentation', icon: BookOpenIcon, external: true },
 		{ href: '/status', label: 'Status Card Demo', icon: MessageSquareIcon },
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },
 		{ href: '/timeline', label: 'Timeline Demo', icon: ActivityIcon },
@@ -93,7 +93,12 @@
 		{ href: '/demos/layout', label: 'Layout Surfaces', icon: LayoutIcon },
 		{ href: '/demos/interactive', label: 'Interactive Suite', icon: CpuIcon },
 		{ href: '/demos/icons', label: 'Icon Gallery', icon: ImageIcon },
-	] as const;
+	] as const satisfies ReadonlyArray<{
+		href: string;
+		label: string;
+		icon: any;
+		external?: boolean;
+	}>;
 
 	const resolveHref = (href: string) => {
 		if (href === '/') {
@@ -146,9 +151,14 @@
 				<p>Explore tokens, primitives, and ActivityPub-ready surfaces with production builds.</p>
 			</header>
 			<nav class="sidebar-nav">
-				{#each navLinks as { href, label, icon: Icon } (href)}
+				{#each navLinks as { href, label, icon: Icon, external } (href)}
 					{@const resolved = resolveHref(href)}
-					<a class:active={$page.url.pathname === href} href={resolved}>
+					<a
+						class:active={$page.url.pathname === href}
+						href={resolved}
+						rel={external ? 'external' : undefined}
+						data-sveltekit-reload={external || undefined}
+					>
 						<Icon size={18} aria-hidden="true" />
 						<span>{label}</span>
 					</a>
