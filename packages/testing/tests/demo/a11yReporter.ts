@@ -1,9 +1,8 @@
-import type { TestType } from '@playwright/test';
 import { test } from '@playwright/test';
 import { runAxeTest } from '@equaltoai/greater-components-testing/playwright';
 import { writeFile } from 'node:fs/promises';
 
-const isA11yRun = process.env.PLAYWRIGHT_A11Y === 'true';
+const isA11yRun = process.env['PLAYWRIGHT_A11Y'] === 'true';
 
 const normalizeTheme = (value?: string | null): 'light' | 'dark' | 'high-contrast' => {
 	if (!value) return 'light';
@@ -25,14 +24,14 @@ const normalizeDensity = (value?: string | null): 'compact' | 'comfortable' | 's
 	return 'comfortable';
 };
 
-export function applyA11yReporter(currentTest: TestType = test) {
+export function applyA11yReporter(currentTest: typeof test = test) {
 	if (!isA11yRun) {
 		return;
 	}
 
 	currentTest.afterEach(async ({ page }, testInfo) => {
-		const theme = normalizeTheme(process.env.TEST_THEME);
-		const density = normalizeDensity(process.env.TEST_DENSITY);
+		const theme = normalizeTheme(process.env['TEST_THEME']);
+		const density = normalizeDensity(process.env['TEST_DENSITY']);
 
 		const results = await runAxeTest(page);
 
