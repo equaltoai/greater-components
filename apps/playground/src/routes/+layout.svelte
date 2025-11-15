@@ -150,10 +150,10 @@
 					</a>
 				{/each}
 			</nav>
-			<div class="sidebar-footer">
-				<p>Adaptive themes</p>
+			<section class="sidebar-footer" aria-labelledby="theme-controls-heading">
+				<h2 id="theme-controls-heading" class="sidebar-footer__heading">Adaptive themes</h2>
 				<ThemeSwitcher size="sm" variant="outline" />
-			</div>
+			</section>
 		</aside>
 		<main class="app-shell__content">
 			{#if children}
@@ -231,7 +231,7 @@
 		gap: 0.5rem;
 	}
 
-	.sidebar-footer p {
+	.sidebar-footer__heading {
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-semantic-foreground-secondary);
