@@ -29,6 +29,7 @@
 		SearchIcon,
 		BookOpenIcon,
 	} from '@equaltoai/greater-components-icons';
+	import type { IconComponent } from '@equaltoai/greater-components-icons';
 
 	let { children, data }: { children?: Snippet; data?: LayoutData } = $props();
 
@@ -96,7 +97,7 @@
 	] as const satisfies ReadonlyArray<{
 		href: string;
 		label: string;
-		icon: any;
+		icon: IconComponent;
 		external?: boolean;
 	}>;
 

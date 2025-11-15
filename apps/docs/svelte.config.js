@@ -25,6 +25,9 @@ const mdsvexOptions = {
 	rehypePlugins: [],
 };
 
+const dev = process.argv.includes('dev');
+const basePath = dev ? '' : '/greater-components/docs';
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	extensions: ['.svelte', '.md', '.mdx'],
@@ -38,6 +41,9 @@ const config = {
 			precompress: false,
 			strict: true,
 		}),
+		paths: {
+			base: basePath,
+		},
 		alias: {
 			$lib: './src/lib',
 			$components: './src/lib/components',
