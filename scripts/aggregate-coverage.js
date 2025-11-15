@@ -10,7 +10,10 @@ import path from 'path';
 
 const PACKAGES_DIR = path.join(process.cwd(), 'packages');
 const OUTPUT_DIR = path.join(process.cwd(), 'coverage');
-const COVERAGE_THRESHOLD = 90;
+const COVERAGE_THRESHOLD = (() => {
+	const value = Number(process.env.COVERAGE_THRESHOLD ?? '90');
+	return Number.isFinite(value) ? value : 90;
+})();
 
 // Ensure output directory exists
 if (!fs.existsSync(OUTPUT_DIR)) {

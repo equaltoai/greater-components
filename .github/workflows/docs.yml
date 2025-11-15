@@ -47,6 +47,10 @@ jobs:
             pnpm --filter @greater-components/docs build
           fi
 
+      - name: Configure GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v4
+
       - name: Prepare docs bundle
         if: github.ref == 'refs/heads/main'
         run: |

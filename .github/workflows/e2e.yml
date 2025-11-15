@@ -40,10 +40,12 @@ jobs:
         run: pnpm build
 
       - name: Run SSR Playwright tests
-        run: pnpm --filter @equaltoai/greater-components-testing run test:demo -- --project=${{ matrix.browser }}
+        working-directory: packages/testing
+        run: pnpm exec playwright test --config=playwright.demo.config.ts --project=${{ matrix.browser }}
 
       - name: Run CSR Playwright tests
-        run: pnpm --filter @equaltoai/greater-components-testing run test:demo:csr -- --project=${{ matrix.browser }}
+        working-directory: packages/testing
+        run: pnpm exec playwright test --config=playwright.demo.csr.config.ts --project=${{ matrix.browser }}
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v5
