@@ -3,6 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Primitives demo', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/demos/primitives');
+		await page.waitForLoadState('networkidle');
+		await page.waitForFunction(() => Boolean(document.documentElement.dataset.sveltekitHydrated));
 	});
 
 	test('button interactions update click counter', async ({ page }) => {
