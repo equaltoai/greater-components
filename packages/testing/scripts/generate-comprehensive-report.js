@@ -5,9 +5,12 @@
  * Combines all test results into a single comprehensive report
  */
 
-const fs = require('fs');
-const path = require('path');
-const { program } = require('commander');
+import fs from 'fs';
+import path from 'path';
+import { program } from 'commander';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
 
 program
 	.option('--input <path>', 'Input directory with test artifacts', 'test-artifacts')
@@ -947,8 +950,10 @@ async function main() {
 	}
 }
 
-if (require.main === module) {
+const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : '';
+
+if (invokedPath === __filename) {
 	main();
 }
 
-module.exports = { ComprehensiveReportGenerator };
+export { ComprehensiveReportGenerator };

@@ -16,6 +16,7 @@ coverage/
 .nyc_output
 playwright-report/
 test-results/
+packages/testing/test-results-matrix/
 blob-report/
 
 # Environment variables

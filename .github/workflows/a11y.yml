@@ -207,7 +207,7 @@ jobs:
       - name: Generate comprehensive accessibility report
         run: |
           node scripts/generate-comprehensive-report.js \
-            --input=test-artifacts \
+            --input=../test-artifacts \
             --output=compliance-report.html \
             --format=html \
             --include-recommendations
@@ -216,7 +216,7 @@ jobs:
       - name: Generate JSON report for PR comments
         run: |
           node scripts/generate-comprehensive-report.js \
-            --input=test-artifacts \
+            --input=../test-artifacts \
             --output=compliance-report.json \
             --format=json
         working-directory: packages/testing
