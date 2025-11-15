@@ -67,7 +67,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v4
         with:
-          name: docs-dist
           path: docs-dist
 
   deploy-docs:
@@ -86,11 +85,6 @@ jobs:
     steps:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
-
-      - name: Download Pages artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: docs-dist
 
       - name: Deploy to GitHub Pages
         id: deployment
