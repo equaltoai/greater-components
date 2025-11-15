@@ -74,10 +74,10 @@ jobs:
       - name: Run focus management tests
         run: |
           pnpm exec playwright test --config=playwright.a11y.config.ts \
-            --grep="focus" \
             --project=chromium \
             --reporter=json \
-            --output=test-results/focus-${{ matrix.theme }}-${{ matrix.density }}
+            --output=test-results/focus-${{ matrix.theme }}-${{ matrix.density }} \
+            tests/a11y/focus.spec.ts
         working-directory: packages/testing
         env:
           TEST_THEME: ${{ matrix.theme }}
@@ -86,10 +86,10 @@ jobs:
       - name: Run contrast tests
         run: |
           pnpm exec playwright test --config=playwright.a11y.config.ts \
-            --grep="contrast" \
             --project=chromium \
             --reporter=json \
-            --output=test-results/contrast-${{ matrix.theme }}-${{ matrix.density }}
+            --output=test-results/contrast-${{ matrix.theme }}-${{ matrix.density }} \
+            tests/a11y/contrast.spec.ts
         working-directory: packages/testing
         env:
           TEST_THEME: ${{ matrix.theme }}

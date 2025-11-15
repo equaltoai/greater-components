@@ -28,6 +28,13 @@ None – demo and a11y suites now hydrate cleanly after the timeline fix documen
   `pnpm --filter @equaltoai/greater-components-testing exec node scripts/generate-a11y-report.js --theme=dark --density=compact --input=test-results/a11y-dark-compact --output=reports/a11y-report-dark-compact.html`  
   `pnpm --filter @equaltoai/greater-components-testing exec node scripts/generate-a11y-report.js --theme=high-contrast --density=comfortable --input=test-results/a11y-high-contrast-comfortable --output=reports/a11y-report-high-contrast-comfortable.html`
 
+### A11y workflow coverage map
+
+- Axe sweep: `pnpm exec playwright test --config=playwright.a11y.config.ts --project=chromium` now traverses both `packages/testing/tests/demo/**/*.spec.ts` and the new `tests/a11y/*.spec.ts`, so every interaction (tabs, timeline, ThemeSwitcher drills) produces axe JSON via `tests/demo/a11yReporter.ts`.
+- Keyboard step: `.github/workflows/a11y.yml` leaves `--grep="keyboard"` intact; it targets `packages/testing/tests/demo/profile.spec.ts:12` (`tabs support keyboard navigation`) so CI keeps exercising arrow-key nav without duplicating specs.
+- Focus step: routed directly to `packages/testing/tests/a11y/focus.spec.ts`, which reuses `/tabs` to assert roving tabindex, manual activation, and disabled-tab skips under `test.describe('focus', ...)` (still calls `applyA11yReporter` for axe metadata).
+- Contrast step: routed directly to `packages/testing/tests/a11y/contrast.spec.ts`, which hits `/settings` to check ThemeSwitcher headings, forced high-contrast mode, and density propagation to the preview grid with `test.describe('contrast', ...)` and the shared reporter.
+
 ## Passing reference
 
 - `CI=1 pnpm --filter @equaltoai/greater-components-testing run test:demo:csr` – 28/28 tests green in Chromium + Firefox, confirming the regressions are isolated to SSR-powered runs.

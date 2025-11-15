@@ -8,4 +8,9 @@ const runtime =
 		? 'csr'
 		: 'ssr';
 
-export default createDemoPlaywrightConfig(runtime);
+const config = createDemoPlaywrightConfig(runtime);
+
+config.testDir = './tests';
+config.testMatch = /.*\/(demo|a11y)\/.*\.spec\.ts$/;
+
+export default config;
