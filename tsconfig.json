@@ -8,9 +8,14 @@
   "exclude": [
     "**/node_modules",
     "**/dist",
+    "**/coverage",
     "**/build",
     "**/.svelte-kit",
     "**/storybook-static",
+    "**/*.test.ts",
+    "**/*.test.js",
+    "**/*.spec.ts",
+    "**/*.spec.js",
     "**/*.stories.ts",
     "**/scripts/*.js"
   ]

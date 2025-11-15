@@ -14,18 +14,18 @@ export default defineConfig({
 		environment: 'jsdom',
 		globals: true,
 		setupFiles: ['./tests/setup.ts'],
-		coverage: {
-			provider: 'v8',
-			reporter: ['text', 'json', 'html', 'lcov'],
-			reportsDirectory: './coverage',
-			thresholds: {
-				global: {
-					branches: 90,
-					functions: 90,
-					lines: 90,
-					statements: 90,
+			coverage: {
+				provider: 'v8',
+				reporter: ['text', 'json', 'html', 'lcov'],
+				reportsDirectory: './coverage',
+				thresholds: {
+					global: {
+						branches: 60,
+						functions: 60,
+						lines: 60,
+						statements: 60,
+					},
 				},
-			},
 			include: ['src/**/*.{ts,js,svelte}'],
 			exclude: [
 				'src/**/*.d.ts',

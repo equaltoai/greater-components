@@ -5,6 +5,7 @@
 import { describe, it, expect } from 'vitest';
 import {
 	convertGraphQLActorListPage,
+	convertGraphQLActorToLesserAccount,
 	convertGraphQLUserPreferences,
 	convertGraphQLPushSubscription,
 	convertGraphQLObjectToLesser,
@@ -68,6 +69,49 @@ describe('convertGraphQLActorListPage', () => {
 		expect(convertGraphQLActorListPage(null)).toBeNull();
 		expect(convertGraphQLActorListPage(undefined)).toBeNull();
 		expect(convertGraphQLActorListPage('invalid')).toBeNull();
+	});
+});
+
+describe('convertGraphQLActorToLesserAccount edge cases', () => {
+	it('handles malformed actors and timestamp fallbacks', () => {
+		expect(convertGraphQLActorToLesserAccount('noop')).toBeNull();
+		expect(convertGraphQLActorToLesserAccount({ id: 'x' })).toBeNull();
+
+		const actor = convertGraphQLActorToLesserAccount({
+			id: '1',
+			username: 'bob',
+			createdAt: 0,
+			updatedAt: new Date('2024-01-01T00:00:00Z'),
+			avatar: null,
+			header: undefined,
+			fields: [],
+		});
+
+		expect(actor?.joinedAt).toContain('1970');
+		expect(actor?.avatarUrl).toBe('');
+	});
+
+	it('accepts already-normalized payloads and filters malformed emojis/fields', () => {
+		const normalized = convertGraphQLActorToLesserAccount({
+			id: 'acct-1',
+			handle: 'alice@example.com',
+			localHandle: 'alice',
+			displayName: 'Alice',
+			customEmojis: [
+				{ code: 'happy', imageUrl: 'img.png', staticUrl: 'static.png', category: 'fun' },
+				{ code: 'bad' },
+			],
+			profileFields: [
+				{ label: 'Site', content: 'example.com' },
+				{ label: '', content: '' },
+			],
+			joinedAt: new Date('2024-02-02T10:00:00Z'),
+		});
+
+		expect(normalized).not.toBeNull();
+		expect(normalized?.customEmojis).toHaveLength(1);
+		expect(normalized?.profileFields).toHaveLength(1);
+		expect(normalized?.joinedAt).toBe('2024-02-02T10:00:00.000Z');
 	});
 });
 
@@ -140,6 +184,53 @@ describe('convertGraphQLUserPreferences', () => {
 	it('should return null for invalid data', () => {
 		expect(convertGraphQLUserPreferences(null)).toBeNull();
 		expect(convertGraphQLUserPreferences({ noActorId: 'invalid' })).toBeNull();
+	});
+});
+
+describe('convertGraphQLObjectToLesser edge cases', () => {
+	const baseActor = {
+		id: 'actor1',
+		username: 'actor',
+		createdAt: '2024-01-01T00:00:00Z',
+		displayName: 'Actor',
+		summary: '',
+		avatar: '',
+		header: '',
+		followers: 0,
+		following: 0,
+		statusesCount: 0,
+		fields: [],
+	};
+
+	it('returns null for invalid objects or actors', () => {
+		expect(convertGraphQLObjectToLesser(null)).toBeNull();
+		expect(
+			convertGraphQLObjectToLesser({ id: '1', type: 'Note', content: 'hi', actor: {} })
+		).toBeNull();
+	});
+
+	it('normalizes permissions, visibility, and quote context defaults', () => {
+		const result = convertGraphQLObjectToLesser({
+			id: 'obj1',
+			type: 'Note',
+			content: 'hello',
+			createdAt: 1700000000000,
+			updatedAt: undefined,
+			actor: baseActor,
+			visibility: 'FOLLOWERS',
+			quotePermissions: 'unknown',
+			quoteContext: {
+				quoteAllowed: false,
+				quoteType: 'invalid',
+				originalNote: { id: 'note1' },
+			},
+		});
+
+		expect(result).not.toBeNull();
+		expect(result?.visibility).toBe('PRIVATE');
+		expect(result?.quotePermissions).toBe('EVERYONE');
+		expect(result?.quoteContext?.quoteType).toBe('FULL');
+		expect(result?.quoteContext?.quoteAllowed).toBe(false);
 	});
 });
 
@@ -216,6 +307,29 @@ describe('convertGraphQLPushSubscription', () => {
 		expect(result?.serverKey).toBeUndefined();
 		expect(result?.createdAt).toBeUndefined();
 		expect(result?.updatedAt).toBeUndefined();
+	});
+
+	it('guards against malformed push subscription shapes', () => {
+		expect(
+			convertGraphQLPushSubscription({
+				id: 'oops',
+				endpoint: 'https://push.example.com/subscription',
+				keys: {},
+				alerts: 'not-an-object',
+			})
+		).toBeNull();
+
+		const defaults = convertGraphQLPushSubscription({
+			id: 'sub456',
+			endpoint: 'https://push.example.com/with-defaults',
+			keys: { auth: 'a', p256dh: 'b' },
+			alerts: {},
+			policy: 'mentions-only',
+		});
+
+		expect(defaults?.alerts.follow).toBe(true);
+		expect(defaults?.alerts.adminReport).toBe(false);
+		expect(defaults?.policy).toBe('mentions-only');
 	});
 });
 
@@ -295,5 +409,65 @@ describe('convertGraphQLObjectToLesser', () => {
 		expect(result).not.toBeNull();
 		expect(result?.createdAt).toBe('2024-02-01T12:34:00Z');
 		expect(result?.updatedAt).toBe('2024-02-01T12:34:00Z');
+	});
+
+	it('normalizes quote permissions, timeouts, and filters malformed collections', () => {
+		const normalizedActor = {
+			id: 'actor-normalized',
+			handle: 'norm@example.com',
+			localHandle: 'norm',
+			displayName: 'Norm',
+			bio: '',
+			avatarUrl: '',
+			bannerUrl: '',
+			joinedAt: 1700000000000,
+			isVerified: false,
+			isBot: false,
+			isLocked: false,
+			followerCount: 0,
+			followingCount: 0,
+			postCount: 0,
+			profileFields: [],
+			customEmojis: [],
+		};
+
+		const object = {
+			id: 'note3',
+			type: 'NOTE',
+			content: 'Edge case object',
+			visibility: 'PRIVATE',
+			quotePermissions: 'followers',
+			actor: normalizedActor,
+			lastActivity: 1_700_000_000_000,
+			attachments: [
+				{ id: 'att-1', type: 'image', url: 'https://example.com/1.png', previewUrl: 123 },
+				{ type: 'invalid' },
+			],
+			tags: [{ name: 'tag', url: '/tag' }, { name: null }],
+			mentions: [
+				{ id: 'm-1', username: 'bob', url: '/bob' },
+				{ id: null },
+			],
+			communityNotes: [
+				{
+					id: 'note-1',
+					content: 'Context',
+					helpful: 1,
+					notHelpful: 0,
+					createdAt: '2024-01-01T00:00:00Z',
+					author: { whatever: true },
+				},
+			],
+		};
+
+		const result = convertGraphQLObjectToLesser(object);
+
+		expect(result).not.toBeNull();
+		expect(result?.quotePermissions).toBe('FOLLOWERS');
+		expect(result?.createdAt).toBe('2023-11-14T22:13:20.000Z');
+		expect(result?.attachments).toHaveLength(1);
+		expect(result?.mentions).toHaveLength(1);
+		expect(result?.tags).toHaveLength(1);
+		expect(result?.communityNotes?.[0]?.author).toBeUndefined();
 	});
 });

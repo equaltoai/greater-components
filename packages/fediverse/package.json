@@ -33,7 +33,8 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly && node scripts/fix-dollar-vars.js",
+    "prebuild": "pnpm --filter @equaltoai/greater-components-adapters build",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",

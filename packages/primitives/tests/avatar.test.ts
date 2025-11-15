@@ -22,4 +22,25 @@ describe('Avatar.svelte', () => {
 		await fireEvent.click(button);
 		expect(handleClick).toHaveBeenCalled();
 	});
+
+		it('falls back to placeholder content when image fails to load', async () => {
+			const { container } = render(Avatar, {
+				props: { src: '/broken.png', name: 'Fran' },
+			});
+
+		const image = container.querySelector('img') as HTMLImageElement;
+		await fireEvent.error(image);
+
+		const initials = container.querySelector('.gr-avatar__initials');
+		expect(initials?.textContent?.trim()).toBe('FR');
+		expect(container.querySelector('.gr-avatar__fallback-icon')).toBeNull();
+	});
+
+	it('renders the default fallback icon when no name or src is available', () => {
+		const { container } = render(Avatar);
+		const icon = container.querySelector('.gr-avatar__fallback-icon');
+
+		expect(icon).not.toBeNull();
+		expect(container.querySelector('.gr-avatar__initials')).toBeNull();
+	});
 });

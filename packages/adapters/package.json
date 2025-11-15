@@ -27,7 +27,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",

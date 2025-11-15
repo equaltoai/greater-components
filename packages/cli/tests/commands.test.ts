@@ -1,0 +1,219 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+function srcPath(rel: string) {
+	return new URL(`../src/${rel}`, import.meta.url).pathname;
+}
+
+const mockConfig = {
+	style: 'default',
+	rsc: false,
+	tsx: true,
+	aliases: {
+		components: '$lib/components',
+		utils: '$lib/utils',
+		ui: '$lib/ui',
+		lib: '$lib',
+		hooks: '$lib/hooks',
+	},
+};
+
+const mockLogger = {
+	info: vi.fn(),
+	success: vi.fn(),
+	note: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn(),
+	newline: vi.fn(),
+};
+
+const spinner = {
+	start: vi.fn().mockReturnThis(),
+	succeed: vi.fn(),
+	fail: vi.fn(),
+	warn: vi.fn(),
+};
+
+const mockOra = vi.fn(() => spinner);
+
+const mockConfigExists = vi.fn();
+const mockReadConfig = vi.fn();
+const mockWriteConfig = vi.fn();
+const mockCreateDefaultConfig = vi.fn(() => mockConfig);
+const mockResolveAlias = vi.fn((_alias, _config, _cwd) => '$lib/ui');
+
+const mockIsValidProject = vi.fn();
+const mockDetectProjectType = vi.fn();
+const mockGetSvelteVersion = vi.fn();
+const mockWriteComponentFiles = vi.fn();
+
+const mockFetchComponents = vi.fn();
+const mockGetMissingDependencies = vi.fn();
+const mockInstallDependencies = vi.fn();
+const mockDetectPackageManager = vi.fn();
+
+const mockGetComponent = vi.fn();
+const mockResolveComponentDependencies = vi.fn();
+const mockGetAllComponentNames = vi.fn();
+const mockGetComponentsByType = vi.fn();
+
+vi.mock('ora', () => ({
+	default: mockOra,
+}));
+
+vi.mock('prompts', () => ({
+	default: vi.fn().mockResolvedValue({
+		style: 'default',
+		componentsPath: '$lib/components/ui',
+		utilsPath: '$lib/utils',
+	}),
+}));
+
+vi.mock(srcPath('utils/logger.js'), () => ({
+	logger: mockLogger,
+}));
+
+vi.mock('commander', () => {
+	class MockCommand {
+		handler?: (...args: any[]) => any;
+		name() {
+			return this;
+		}
+		description() {
+			return this;
+		}
+		argument() {
+			return this;
+		}
+		option() {
+			return this;
+		}
+		action(fn: (...args: any[]) => any) {
+			this.handler = fn;
+			return this;
+		}
+		async run(...args: any[]) {
+			return this.handler?.(...args);
+		}
+	}
+
+	return { Command: MockCommand };
+});
+
+vi.mock(srcPath('utils/config.js'), () => ({
+	createDefaultConfig: mockCreateDefaultConfig,
+	writeConfig: mockWriteConfig,
+	configExists: mockConfigExists,
+	readConfig: mockReadConfig,
+	resolveAlias: mockResolveAlias,
+}));
+
+vi.mock(srcPath('utils/files.js'), () => ({
+	isValidProject: mockIsValidProject,
+	detectProjectType: mockDetectProjectType,
+	getSvelteVersion: mockGetSvelteVersion,
+	writeComponentFiles: mockWriteComponentFiles,
+}));
+
+vi.mock(srcPath('utils/fetch.js'), () => ({
+	fetchComponents: mockFetchComponents,
+}));
+
+vi.mock(srcPath('utils/packages.js'), () => ({
+	installDependencies: mockInstallDependencies,
+	getMissingDependencies: mockGetMissingDependencies,
+	detectPackageManager: mockDetectPackageManager,
+}));
+
+vi.mock(srcPath('registry/index.js'), () => ({
+	componentRegistry: {},
+	getComponent: mockGetComponent,
+	resolveComponentDependencies: mockResolveComponentDependencies,
+	getAllComponentNames: mockGetAllComponentNames,
+	getComponentsByType: mockGetComponentsByType,
+}));
+
+const loadCommand = async <T>(path: string): Promise<T> => {
+	return (await import(path)) as T;
+};
+
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
+describe('cli commands', () => {
+	it('initializes a project with defaults when using --yes', async () => {
+		vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+		mockIsValidProject.mockResolvedValue(true);
+		mockConfigExists.mockResolvedValue(false);
+		mockDetectProjectType.mockResolvedValue('sveltekit');
+		mockGetSvelteVersion.mockResolvedValue(5);
+		mockWriteConfig.mockResolvedValue(undefined);
+
+		const { initCommand } = await loadCommand<{ initCommand: any }>('../src/commands/init.js');
+
+		await initCommand.run({ yes: true, cwd: '/tmp/app' });
+
+		expect(mockCreateDefaultConfig).toHaveBeenCalled();
+		expect(mockWriteConfig).toHaveBeenCalledWith(mockConfig, '/tmp/app');
+	});
+
+	it('adds components non-interactively and writes files', async () => {
+		vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+		mockConfigExists.mockResolvedValue(true);
+		mockReadConfig.mockResolvedValue(mockConfig);
+		mockGetComponent.mockReturnValue({
+			name: 'button',
+			type: 'primitive',
+			description: 'Button',
+			dependencies: [],
+			devDependencies: [],
+			registryDependencies: [],
+			tags: [],
+		});
+		mockResolveComponentDependencies.mockReturnValue(['button']);
+		mockFetchComponents.mockResolvedValue(
+			new Map([
+				[
+					'button',
+					[
+						{
+							path: 'Button.svelte',
+							content: '<button>Button</button>',
+						},
+					],
+				],
+			])
+		);
+		mockGetMissingDependencies.mockResolvedValue([]);
+		mockDetectPackageManager.mockResolvedValue('pnpm');
+		mockWriteComponentFiles.mockResolvedValue(undefined);
+
+		const { addCommand } = await loadCommand<{ addCommand: any }>('../src/commands/add.js');
+
+		await addCommand.run(['button'], { yes: true, cwd: '/tmp/app' });
+
+		expect(mockResolveComponentDependencies).toHaveBeenCalledWith('button');
+		expect(mockFetchComponents).toHaveBeenCalled();
+		expect(mockWriteComponentFiles).toHaveBeenCalled();
+		expect(mockInstallDependencies).not.toHaveBeenCalled();
+	});
+
+	it('lists components by type', async () => {
+		mockGetComponentsByType.mockReturnValue([
+			{
+				name: 'Button',
+				description: 'Button component',
+				tags: ['ui'],
+				registryDependencies: [],
+			},
+		]);
+
+		const { listCommand } = await loadCommand<{ listCommand: any }>('../src/commands/list.js');
+
+		await listCommand.run({ type: undefined });
+
+		expect(mockGetComponentsByType).toHaveBeenCalled();
+		expect(mockLogger.info).toHaveBeenCalled();
+	});
+});

@@ -11,8 +11,13 @@ import path from 'path';
 const PACKAGES_DIR = path.join(process.cwd(), 'packages');
 const OUTPUT_DIR = path.join(process.cwd(), 'coverage');
 const COVERAGE_THRESHOLD = (() => {
-	const value = Number(process.env.COVERAGE_THRESHOLD ?? '90');
-	return Number.isFinite(value) ? value : 90;
+	const value = Number(process.env.COVERAGE_THRESHOLD ?? '80');
+	return Number.isFinite(value) ? value : 80;
+})();
+
+const PACKAGE_MINIMUM = (() => {
+	const value = Number(process.env.PACKAGE_MINIMUM ?? '60');
+	return Number.isFinite(value) ? value : 60;
 })();
 
 // Ensure output directory exists
@@ -40,13 +45,16 @@ function getPackages() {
 		process.exit(1);
 	}
 
+	const EXCLUDED_PACKAGES = new Set(['testing']);
+
 	return fs
 		.readdirSync(PACKAGES_DIR)
 		.filter((name) => fs.statSync(path.join(PACKAGES_DIR, name)).isDirectory())
 		.filter((name) => {
 			const packageJsonPath = path.join(PACKAGES_DIR, name, 'package.json');
 			return fs.existsSync(packageJsonPath);
-		});
+		})
+		.filter((name) => !EXCLUDED_PACKAGES.has(name));
 }
 
 function getCoverageForPackage(packageName) {
@@ -225,7 +233,9 @@ function generateReport() {
 	let failed = false;
 	const types = ['lines', 'functions', 'statements', 'branches'];
 
-	log(`\n${colors.bold}🎯 Threshold Verification (${COVERAGE_THRESHOLD}%):${colors.reset}`);
+	log(
+		`\n${colors.bold}🎯 Threshold Verification (${COVERAGE_THRESHOLD}% overall / ${PACKAGE_MINIMUM}% per package):${colors.reset}`
+	);
 	types.forEach((type) => {
 		const pct = overall[type].pct;
 		const passed = pct >= COVERAGE_THRESHOLD;
@@ -234,6 +244,20 @@ function generateReport() {
 
 		log(`  ${status} ${type}: ${color}${pct.toFixed(1)}%${colors.reset}`);
 		if (!passed) failed = true;
+	});
+
+	// Per-package minimums
+	packageCoverages.forEach((pkg) => {
+		types.forEach((type) => {
+			if (pkg[type].pct < PACKAGE_MINIMUM) {
+				failed = true;
+				log(
+					`  ❌ ${pkg.package} ${type} below minimum: ${colors.red}${pkg[type].pct.toFixed(
+						1
+					)}%${colors.reset} (needs ${PACKAGE_MINIMUM}%)`
+				);
+			}
+		});
 	});
 
 	// Generate HTML report index

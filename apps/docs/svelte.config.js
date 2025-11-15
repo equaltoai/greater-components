@@ -44,6 +44,10 @@ const config = {
 		paths: {
 			base: basePath,
 		},
+		prerender: {
+			entries: ['*'],
+			handleHttpError: 'warn',
+		},
 		alias: {
 			$lib: './src/lib',
 			$components: './src/lib/components',

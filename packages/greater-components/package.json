@@ -107,7 +107,9 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "publishConfig": {
     "access": "public"
@@ -128,6 +130,8 @@
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
-    "@equaltoai/greater-components-utils": "workspace:*"
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "@vitest/coverage-v8": "^4.0.9",
+    "vitest": "^4.0.9"
   }
 }
