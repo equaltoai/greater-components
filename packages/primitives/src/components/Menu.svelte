@@ -11,6 +11,7 @@
 />
 
 <script lang="ts">
+	import { tick } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 
@@ -45,7 +46,8 @@
 	let typeaheadString = $state('');
 	let typeaheadTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let menuElement: HTMLUListElement | null = $state(null);
-	let triggerElement: HTMLElement | null = $state(null);
+	let triggerContainer: HTMLElement | null = $state(null);
+	let triggerFocusTarget: HTMLElement | null = $state(null);
 	let expandedSubmenu = $state<string | null>(null);
 
 	// Compute menu classes
@@ -60,7 +62,40 @@
 		return items.filter((item) => !item.disabled);
 	});
 
-	function toggle() {
+	const focusableSelector =
+		'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+	function getTriggerFocusTarget() {
+		if (!triggerContainer) return null;
+		const focusable = triggerContainer.querySelector(focusableSelector) as HTMLElement | null;
+		return focusable ?? triggerContainer;
+	}
+
+	function rememberTriggerFocus(event: FocusEvent) {
+		const target = event.target as HTMLElement | null;
+		if (target && triggerContainer?.contains(target)) {
+			triggerFocusTarget = target;
+		}
+	}
+
+	$effect(() => {
+		if (!triggerContainer) return;
+
+		triggerFocusTarget = getTriggerFocusTarget();
+
+		const observer = new MutationObserver(() => {
+			triggerFocusTarget = getTriggerFocusTarget();
+		});
+
+		observer.observe(triggerContainer, { childList: true, subtree: true });
+
+		return () => observer.disconnect();
+	});
+
+	function toggle(event?: Event) {
+		if (event?.currentTarget instanceof HTMLElement) {
+			triggerFocusTarget = event.currentTarget;
+		}
 		isOpen = !isOpen;
 		if (isOpen) {
 			activeIndex = -1;
@@ -77,11 +112,13 @@
 		}
 	}
 
-	function close() {
+	async function close() {
 		isOpen = false;
 		activeIndex = -1;
 		expandedSubmenu = null;
-		triggerElement?.focus();
+		await tick();
+		const focusTarget = triggerFocusTarget ?? getTriggerFocusTarget();
+		focusTarget?.focus();
 	}
 
 	function selectItem(item: MenuItemData) {
@@ -229,8 +266,8 @@
 			isOpen &&
 			menuElement &&
 			!menuElement.contains(event.target as Node) &&
-			triggerElement &&
-			!triggerElement.contains(event.target as Node)
+			triggerContainer &&
+			!triggerContainer.contains(event.target as Node)
 		) {
 			close();
 		}
@@ -247,7 +284,7 @@
 
 <div class="gr-menu-container">
 	{#if trigger}
-		<div bind:this={triggerElement}>
+		<div bind:this={triggerContainer} onfocusin={rememberTriggerFocus}>
 			{@render trigger({ open: isOpen, toggle })}
 		</div>
 	{/if}

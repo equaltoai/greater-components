@@ -70,7 +70,7 @@
 	const toastDurationMs = 4000;
 
 	let settings = $state<SettingsState>(defaultSettings);
-let settingsHydrated = $state(false);
+	let settingsHydrated = $state(false);
 	let savedToast = $state('');
 	let previewState = $state<PreferencesState>(preferencesStore.state);
 

@@ -45,14 +45,14 @@ jobs:
 
       - name: Run CSR Playwright tests
         working-directory: packages/testing
-        run: pnpm exec playwright test --config=playwright.demo.csr.config.ts --project=${{ matrix.browser }}
+        run: pnpm exec playwright test --config=playwright.demo.csr.config.ts --project=csr-${{ matrix.browser }}
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: playwright-report-${{ matrix.browser }}
-          path: playwright-report/
+          path: packages/testing/playwright-report/
           retention-days: 7
 
       - name: Upload test results
@@ -60,5 +60,5 @@ jobs:
         if: failure()
         with:
           name: test-results-${{ matrix.browser }}
-          path: test-results/
+          path: packages/testing/test-results/
           retention-days: 7

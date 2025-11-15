@@ -128,7 +128,9 @@
 <svelte:head>
 	{#if preferenceSeedScript && typeof window === 'undefined'}
 		<script>
-			{preferenceSeedScript}
+			{
+				preferenceSeedScript;
+			}
 		</script>
 	{/if}
 </svelte:head>

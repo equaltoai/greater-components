@@ -47,3 +47,17 @@ None – demo and a11y suites now hydrate cleanly after the timeline fix documen
 - **Root cause:** Playwright was interacting with the SSR-rendered demo before Svelte had a chance to finish hydrating. Specifically, the dev server needs a few hundred milliseconds after the HTML response to compile and ship the page modules, so early arrow/Enter key presses never reached the component’s handlers.
 - **Fix:** Added a hydration sentinel in `apps/playground/src/routes/+layout.svelte` that flips `data-playground-hydrated="true"` on `<body>` once the layout mounts, then updated `packages/testing/tests/demo/tabs.spec.ts` to wait for that signal before dispatching keyboard events. This mirrors the real-world behavior (users only reach the tabs after hydration) and keeps SSR + CSR behavior aligned.
 - **Verification:** `CI=1 pnpm --filter @equaltoai/greater-components-testing run test:demo` now clears the tabs specs (the run still fails later on the known timeline issue) and `CI=1 pnpm --filter @equaltoai/greater-components-testing run test:demo:csr` remains fully green.
+
+### E2E workflow – CSR project rename fallout
+
+- **Spec:** `.github/workflows/e2e.yml` CSR job (`playwright.demo.csr.config.ts`)
+- **Root cause:** The CSR-focused config now defines `csr-chromium` / `csr-firefox` projects, but the workflow still invoked `--project=chromium` / `--project=firefox`, so the CSR step failed before uploading artifacts.
+- **Fix:** Updated the CSR command to use `--project=csr-${{ matrix.browser }}` and pointed the artifact uploads at `packages/testing/playwright-report/` and `packages/testing/test-results/`, which contain both SSR (`demo/`) and CSR (`demo-csr/`) assets.
+- **Verification:** `CI=1 pnpm --filter @equaltoai/greater-components-testing exec playwright test --config=playwright.demo.csr.config.ts --project=csr-chromium` and the analogous `csr-firefox` run both pass locally; CI will now find the correct projects and publish the reports again.
+
+### A11y workflow – focus coverage via primitives demo
+
+- **Spec:** `.github/workflows/a11y.yml` focus job + `packages/testing/tests/demo/focus.spec.ts`
+- **Root cause:** The workflow filtered on `"focus"` without any tagged specs, so the job failed with “No tests found.”
+- **Fix:** Added `focus.spec.ts`, which exercises the primitives menu (roving tabindex, Escape returning focus) and the modal (initial focus, Tab/Shift+Tab trap, Escape restoring the trigger). With those tests in place, the workflow runs the `--grep="focus"` step unconditionally again.
+- **Verification:** `TEST_THEME=light TEST_DENSITY=comfortable CI=1 pnpm --filter @equaltoai/greater-components-testing exec playwright test --config=playwright.a11y.config.ts --project=chromium --grep="focus"` passes locally and produces the expected axe payloads.

@@ -12,23 +12,27 @@ test.describe('Settings demo', () => {
 		const digestSelect = page.getByLabel('Digest frequency');
 		await expect(digestSelect).toBeEnabled();
 		await digestSelect.selectOption('weekly');
-		await expect.poll(async () => {
-			const settings = await page.evaluate(() =>
-				JSON.parse(window.localStorage.getItem('playground-settings-demo') || '{}')
-			);
-			return settings.notifications?.digest;
-		}).toBe('weekly');
+		await expect
+			.poll(async () => {
+				const settings = await page.evaluate(() =>
+					JSON.parse(window.localStorage.getItem('playground-settings-demo') || '{}')
+				);
+				return settings.notifications?.digest;
+			})
+			.toBe('weekly');
 	});
 
 	test('density select feeds the preview heading', async ({ page }) => {
 		const densitySelect = page.getByLabel('Density');
 		await expect(densitySelect).toBeEnabled();
 		await densitySelect.selectOption('compact');
-		await expect.poll(async () => {
-			const settings = await page.evaluate(() =>
-				JSON.parse(window.localStorage.getItem('playground-settings-demo') || '{}')
-			);
-			return settings.appearance?.density;
-		}).toBe('compact');
+		await expect
+			.poll(async () => {
+				const settings = await page.evaluate(() =>
+					JSON.parse(window.localStorage.getItem('playground-settings-demo') || '{}')
+				);
+				return settings.appearance?.density;
+			})
+			.toBe('compact');
 	});
 });

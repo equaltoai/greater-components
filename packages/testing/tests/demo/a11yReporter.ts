@@ -45,6 +45,10 @@ export function applyA11yReporter(currentTest: typeof test = test) {
 			timestamp: new Date().toISOString(),
 		};
 
-		await writeFile(testInfo.outputPath('axe-results.json'), JSON.stringify(payload, null, 2), 'utf8');
+		await writeFile(
+			testInfo.outputPath('axe-results.json'),
+			JSON.stringify(payload, null, 2),
+			'utf8'
+		);
 	});
 }

@@ -14,6 +14,7 @@ storybook-static/
 # Test outputs
 playwright-report/
 test-results/
+packages/testing/reports/*.html
 
 # Cache
 .turbo/
