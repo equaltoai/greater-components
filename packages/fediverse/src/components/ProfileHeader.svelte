@@ -284,17 +284,15 @@
 		<div class="gr-profile-header__identity">
 			<h1
 				class="gr-profile-header__display-name"
-			aria-label={processedDisplayName() || account.username || 'Profile'}
-		>
-			<span
-				class="gr-profile-header__display-name-text"
-				use:setHtml={sanitizedDisplayName()}
-			></span>
-			{#if account.locked}
-				<svg
-					class="gr-profile-header__lock-icon"
-					width="16"
-					height="16"
+				aria-label={processedDisplayName() || account.username || 'Profile'}
+			>
+				<span class="gr-profile-header__display-name-text" use:setHtml={sanitizedDisplayName()}
+				></span>
+				{#if account.locked}
+					<svg
+						class="gr-profile-header__lock-icon"
+						width="16"
+						height="16"
 						viewBox="0 0 24 24"
 						fill="currentColor"
 						aria-label="Private account"

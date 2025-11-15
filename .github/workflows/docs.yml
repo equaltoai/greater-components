@@ -57,18 +57,18 @@ jobs:
         run: |
           rm -rf deploy-dist
           mkdir -p deploy-dist
-          
+
           # Copy playground to root
           if [ -d "apps/playground/build" ]; then
             cp -R apps/playground/build/* deploy-dist/
           fi
-          
+
           # Copy docs to /docs subdirectory
           if [ -d "apps/docs/build" ]; then
             mkdir -p deploy-dist/docs
             cp -R apps/docs/build/* deploy-dist/docs/
           fi
-          
+
           # Disable Jekyll processing
           touch deploy-dist/.nojekyll
 

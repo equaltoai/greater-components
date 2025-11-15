@@ -71,14 +71,8 @@
 	}
 
 	.search-filters__tab--active {
-		background: var(
-			--primary-color,
-			var(--gr-semantic-action-primary-default, #2563eb)
-		);
-		border-color: var(
-			--primary-color,
-			var(--gr-semantic-action-primary-default, #2563eb)
-		);
+		background: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
+		border-color: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 		color: var(--gr-semantic-background-primary, #ffffff);
 	}
 

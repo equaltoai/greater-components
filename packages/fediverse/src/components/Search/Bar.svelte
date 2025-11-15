@@ -296,14 +296,8 @@
 	}
 
 	.search-bar__semantic--active {
-		background: var(
-			--primary-color,
-			var(--gr-semantic-action-primary-default, #2563eb)
-		);
-		border-color: var(
-			--primary-color,
-			var(--gr-semantic-action-primary-default, #2563eb)
-		);
+		background: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
+		border-color: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 		color: var(--gr-semantic-background-primary, #ffffff);
 	}
 
@@ -314,10 +308,7 @@
 
 	.search-bar__submit {
 		padding: 0.5rem 1.5rem;
-		background: var(
-			--primary-color,
-			var(--gr-semantic-action-primary-default, #2563eb)
-		);
+		background: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 		border: none;
 		border-radius: 9999px;
 		font-size: 0.9375rem;
@@ -329,10 +320,7 @@
 	}
 
 	.search-bar__submit:hover:not(:disabled) {
-		background: var(
-			--primary-color-dark,
-			var(--gr-semantic-action-primary-hover, #1d4ed8)
-		);
+		background: var(--primary-color-dark, var(--gr-semantic-action-primary-hover, #1d4ed8));
 	}
 
 	.search-bar__submit:disabled {
@@ -385,10 +373,7 @@
 		padding: 0.25rem 0.5rem;
 		border: none;
 		background: transparent;
-		color: var(
-			--primary-color,
-			var(--gr-semantic-action-primary-default, #2563eb)
-		);
+		color: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 		font-size: 0.875rem;
 		font-weight: 600;
 		cursor: pointer;

@@ -189,10 +189,7 @@
 
 	.spoiler-toggle {
 		padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
-		background: var(
-			--color-primary,
-			var(--gr-semantic-action-primary-default, #2563eb)
-		);
+		background: var(--color-primary, var(--gr-semantic-action-primary-default, #2563eb));
 		color: var(--color-on-primary, var(--gr-semantic-background-primary, #ffffff));
 		border: none;
 		border-radius: var(--radius-sm, 4px);
@@ -202,10 +199,7 @@
 	}
 
 	.spoiler-toggle:hover {
-		background: var(
-			--color-primary-hover,
-			var(--gr-semantic-action-primary-hover, #1d4ed8)
-		);
+		background: var(--color-primary-hover, var(--gr-semantic-action-primary-hover, #1d4ed8));
 	}
 
 	.spoiler-toggle:focus-visible {
