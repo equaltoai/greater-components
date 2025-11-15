@@ -4,7 +4,9 @@ test.describe('Primitives demo', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/demos/primitives');
 		await page.waitForLoadState('networkidle');
-		await page.waitForFunction(() => Boolean(document.documentElement.dataset.sveltekitHydrated));
+		await page.waitForFunction(() =>
+			document.documentElement.hasAttribute('data-sveltekit-hydrated')
+		);
 	});
 
 	test('button interactions update click counter', async ({ page }) => {
