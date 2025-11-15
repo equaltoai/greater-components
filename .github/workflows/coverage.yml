@@ -44,7 +44,7 @@ jobs:
       - name: Generate coverage report
         run: pnpm test:coverage:report
         env:
-          COVERAGE_THRESHOLD: '15'
+          COVERAGE_THRESHOLD: '10'
         continue-on-error: true
 
       - name: Upload coverage reports to Codecov

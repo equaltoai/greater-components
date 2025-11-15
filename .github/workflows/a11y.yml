@@ -51,7 +51,7 @@ jobs:
       - name: Run Axe accessibility tests
         run: |
           pnpm exec playwright test --config=playwright.a11y.config.ts \
-            --project=chromium-desktop \
+            --project=chromium \
             --reporter=json \
             --output=test-results/a11y-${{ matrix.theme }}-${{ matrix.density }}
         working-directory: packages/testing
@@ -63,7 +63,7 @@ jobs:
         run: |
           pnpm exec playwright test --config=playwright.a11y.config.ts \
             --grep="keyboard" \
-            --project=chromium-desktop \
+            --project=chromium \
             --reporter=json \
             --output=test-results/keyboard-${{ matrix.theme }}-${{ matrix.density }}
         working-directory: packages/testing
@@ -75,7 +75,7 @@ jobs:
         run: |
           pnpm exec playwright test --config=playwright.a11y.config.ts \
             --grep="focus" \
-            --project=chromium-desktop \
+            --project=chromium \
             --reporter=json \
             --output=test-results/focus-${{ matrix.theme }}-${{ matrix.density }}
         working-directory: packages/testing
@@ -87,7 +87,7 @@ jobs:
         run: |
           pnpm exec playwright test --config=playwright.a11y.config.ts \
             --grep="contrast" \
-            --project=chromium-desktop \
+            --project=chromium \
             --reporter=json \
             --output=test-results/contrast-${{ matrix.theme }}-${{ matrix.density }}
         working-directory: packages/testing

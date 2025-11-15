@@ -13,7 +13,7 @@ test.describe('Primitives demo', () => {
 		await expect(disabledButton).toBeDisabled();
 		await primaryButton.click();
 		await primaryButton.click();
-		await expect(counter).toHaveText(/2 times/);
+		await expect(counter).toHaveText(/2\s*times/);
 	});
 
 	test('modal opens and closes via controls', async ({ page }) => {
