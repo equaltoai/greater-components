@@ -960,7 +960,7 @@ export const iconAliases: Record<string, IconName> = {
 
 export function getIcon(name: string) {
   const iconName = iconAliases[name] || name;
-  return iconRegistry[iconName] ?? null;
+  return iconRegistry[iconName as keyof typeof iconRegistry] ?? null;
 }
 
 export const iconList = [

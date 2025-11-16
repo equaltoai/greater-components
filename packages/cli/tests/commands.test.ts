@@ -216,4 +216,259 @@ describe('cli commands', () => {
 		expect(mockGetComponentsByType).toHaveBeenCalled();
 		expect(mockLogger.info).toHaveBeenCalled();
 	});
+
+	it('handles init command when project is invalid', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockIsValidProject.mockResolvedValue(false);
+
+		const { initCommand } = await loadCommand<{ initCommand: any }>('../src/commands/init.js');
+
+		await expect(initCommand.run({ yes: false, cwd: '/tmp/invalid' })).rejects.toThrow();
+
+		expect(spinner.fail).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('handles init command when already initialized', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockIsValidProject.mockResolvedValue(true);
+		mockConfigExists.mockResolvedValue(true);
+
+		const { initCommand } = await loadCommand<{ initCommand: any }>('../src/commands/init.js');
+
+		await expect(initCommand.run({ yes: false, cwd: '/tmp/app' })).rejects.toThrow();
+
+		expect(spinner.warn).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(0);
+	});
+
+	it('handles init command with old Svelte version', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockIsValidProject.mockResolvedValue(true);
+		mockConfigExists.mockResolvedValue(false);
+		mockDetectProjectType.mockResolvedValue('svelte');
+		mockGetSvelteVersion.mockResolvedValue(4);
+
+		const { initCommand } = await loadCommand<{ initCommand: any }>('../src/commands/init.js');
+
+		await expect(initCommand.run({ yes: false, cwd: '/tmp/app' })).rejects.toThrow();
+
+		expect(mockLogger.warn).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('handles add command when not initialized', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockConfigExists.mockResolvedValue(false);
+
+		const { addCommand } = await loadCommand<{ addCommand: any }>('../src/commands/add.js');
+
+		await expect(addCommand.run(['button'], { yes: true, cwd: '/tmp/app' })).rejects.toThrow();
+
+		expect(mockLogger.error).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('handles add command with missing config', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockConfigExists.mockResolvedValue(true);
+		mockReadConfig.mockResolvedValue(null);
+
+		const { addCommand } = await loadCommand<{ addCommand: any }>('../src/commands/add.js');
+
+		await expect(addCommand.run(['button'], { yes: true, cwd: '/tmp/app' })).rejects.toThrow();
+
+		expect(mockLogger.error).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('handles add command with invalid components', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockConfigExists.mockResolvedValue(true);
+		mockReadConfig.mockResolvedValue(mockConfig);
+		mockGetComponent.mockReturnValue(null);
+
+		const { addCommand } = await loadCommand<{ addCommand: any }>('../src/commands/add.js');
+
+		await expect(
+			addCommand.run(['invalid-component'], { yes: true, cwd: '/tmp/app' })
+		).rejects.toThrow();
+
+		expect(mockLogger.error).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('handles add command with dependencies and installs them', async () => {
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+		mockConfigExists.mockResolvedValue(true);
+		mockReadConfig.mockResolvedValue(mockConfig);
+		mockGetComponent.mockReturnValue({
+			name: 'button',
+			type: 'primitive',
+			description: 'Button',
+			dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+			devDependencies: [],
+			registryDependencies: [],
+			tags: [],
+		});
+		mockResolveComponentDependencies.mockReturnValue(['button']);
+		mockFetchComponents.mockResolvedValue(
+			new Map([
+				[
+					'button',
+					[
+						{
+							path: 'Button.svelte',
+							content: '<button>Button</button>',
+							type: 'component',
+						},
+					],
+				],
+			])
+		);
+		mockGetMissingDependencies.mockResolvedValue([{ name: 'svelte', version: '^5.0.0' }]);
+		mockDetectPackageManager.mockResolvedValue('npm');
+		mockWriteComponentFiles.mockResolvedValue(undefined);
+		mockInstallDependencies.mockResolvedValue(undefined);
+
+		const { addCommand } = await loadCommand<{ addCommand: any }>('../src/commands/add.js');
+
+		await addCommand.run(['button'], { yes: true, all: true, cwd: '/tmp/app' });
+
+		expect(mockInstallDependencies).toHaveBeenCalled();
+		expect(exitSpy).not.toHaveBeenCalledWith(1);
+	});
+
+	it('handles add command with fetch error', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockConfigExists.mockResolvedValue(true);
+		mockReadConfig.mockResolvedValue(mockConfig);
+		mockGetComponent.mockReturnValue({
+			name: 'button',
+			type: 'primitive',
+			description: 'Button',
+			dependencies: [],
+			devDependencies: [],
+			registryDependencies: [],
+			tags: [],
+		});
+		mockResolveComponentDependencies.mockReturnValue(['button']);
+		mockFetchComponents.mockRejectedValue(new Error('Network error'));
+
+		const { addCommand } = await loadCommand<{ addCommand: any }>('../src/commands/add.js');
+
+		await expect(addCommand.run(['button'], { yes: true, cwd: '/tmp/app' })).rejects.toThrow();
+
+		expect(spinner.fail).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('handles add command with write error', async () => {
+		const exitSpy = vi
+			.spyOn(process, 'exit')
+			.mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
+
+		mockConfigExists.mockResolvedValue(true);
+		mockReadConfig.mockResolvedValue(mockConfig);
+		mockGetComponent.mockReturnValue({
+			name: 'button',
+			type: 'primitive',
+			description: 'Button',
+			dependencies: [],
+			devDependencies: [],
+			registryDependencies: [],
+			tags: [],
+		});
+		mockResolveComponentDependencies.mockReturnValue(['button']);
+		mockFetchComponents.mockResolvedValue(
+			new Map([
+				[
+					'button',
+					[
+						{
+							path: 'Button.svelte',
+							content: '<button>Button</button>',
+							type: 'component',
+						},
+					],
+				],
+			])
+		);
+		mockGetMissingDependencies.mockResolvedValue([]);
+		mockDetectPackageManager.mockResolvedValue('pnpm');
+		mockWriteComponentFiles.mockRejectedValue(new Error('Write failed'));
+
+		const { addCommand } = await loadCommand<{ addCommand: any }>('../src/commands/add.js');
+
+		await expect(addCommand.run(['button'], { yes: true, cwd: '/tmp/app' })).rejects.toThrow();
+
+		expect(spinner.fail).toHaveBeenCalled();
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('handles list command with specific type filter', async () => {
+		mockGetComponentsByType.mockReturnValue([
+			{
+				name: 'Modal',
+				description: 'Modal component',
+				tags: ['overlay', 'dialog'],
+				registryDependencies: ['button'],
+			},
+		]);
+
+		const { listCommand } = await loadCommand<{ listCommand: any }>('../src/commands/list.js');
+
+		await listCommand.run({ type: 'compound' });
+
+		expect(mockGetComponentsByType).toHaveBeenCalledWith('compound');
+		expect(mockLogger.note).toHaveBeenCalled();
+	});
+
+	it('handles list command with empty results', async () => {
+		mockGetComponentsByType.mockReturnValue([]);
+
+		const { listCommand } = await loadCommand<{ listCommand: any }>('../src/commands/list.js');
+
+		await listCommand.run({ type: 'adapter' });
+
+		expect(mockGetComponentsByType).toHaveBeenCalledWith('adapter');
+	});
 });

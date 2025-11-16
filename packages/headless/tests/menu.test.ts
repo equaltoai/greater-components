@@ -322,4 +322,202 @@ describe('Menu Primitive', () => {
 
 		destroyAction(action);
 	});
+
+	describe('Advanced keyboard navigation', () => {
+		it('should handle Home/End keys', () => {
+			const menu = createMenu();
+			const content = appendMenuElement();
+			const first = appendMenuItem('First', content);
+			const middle = appendMenuItem('Middle', content);
+			const last = appendMenuItem('Last', content);
+
+			const actions: Array<ActionReturn | void> = [];
+			actions.push(menu.actions.menu(content));
+			actions.push(menu.actions.item(first));
+			actions.push(menu.actions.item(middle));
+			actions.push(menu.actions.item(last));
+
+			menu.helpers.open();
+			menu.helpers.focusNext(); // Start at first
+			menu.helpers.focusNext(); // Move to middle
+
+			content.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home' }));
+			expect(menu.state.focusedIndex).toBe(0);
+
+			content.dispatchEvent(new KeyboardEvent('keydown', { key: 'End' }));
+			expect(menu.state.focusedIndex).toBe(2);
+
+			actions.forEach(destroyAction);
+		});
+
+
+		it('should handle Tab key to close menu', () => {
+			const menu = createMenu();
+			const content = appendMenuElement();
+
+			const action = menu.actions.menu(content);
+
+			menu.helpers.open();
+			content.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }));
+			expect(menu.state.open).toBe(false);
+
+			destroyAction(action);
+		});
+
+		it('should support multi-character typeahead', () => {
+			vi.useFakeTimers();
+
+			const menu = createMenu();
+			const content = appendMenuElement();
+			const apple = appendMenuItem('Apple', content);
+			const apricot = appendMenuItem('Apricot', content);
+			const banana = appendMenuItem('Banana', content);
+
+			const actions: Array<ActionReturn | void> = [];
+			actions.push(menu.actions.menu(content));
+			actions.push(menu.actions.item(apple));
+			actions.push(menu.actions.item(apricot));
+			actions.push(menu.actions.item(banana));
+
+			menu.helpers.open();
+
+			// Type 'ap' quickly
+			menu.helpers.handleKeyDown({ key: 'a', preventDefault: vi.fn() } as any);
+			menu.helpers.handleKeyDown({ key: 'p', preventDefault: vi.fn() } as any);
+			expect(menu.state.focusedIndex).toBe(0); // Apple
+
+			// Type 'apr' to get to apricot
+			menu.helpers.handleKeyDown({ key: 'r', preventDefault: vi.fn() } as any);
+			expect(menu.state.focusedIndex).toBe(1); // Apricot
+
+			// Wait for buffer to clear
+			vi.advanceTimersByTime(600);
+
+			// Type 'b' to get banana
+			menu.helpers.handleKeyDown({ key: 'b', preventDefault: vi.fn() } as any);
+			expect(menu.state.focusedIndex).toBe(2);
+
+			actions.forEach(destroyAction);
+		});
+	});
+
+	describe('Focus management', () => {
+		it('should maintain focus index correctly', () => {
+			const menu = createMenu();
+			const content = appendMenuElement();
+			const first = appendMenuItem('First', content);
+			const second = appendMenuItem('Second', content);
+			const third = appendMenuItem('Third', content);
+
+			const actions: Array<ActionReturn | void> = [];
+			actions.push(menu.actions.menu(content));
+			actions.push(menu.actions.item(first));
+			actions.push(menu.actions.item(second));
+			actions.push(menu.actions.item(third));
+
+			menu.helpers.open();
+
+			menu.helpers.focusFirst();
+			expect(menu.state.focusedIndex).toBe(0);
+
+			menu.helpers.focusNext();
+			expect(menu.state.focusedIndex).toBe(1);
+
+			menu.helpers.focusNext();
+			expect(menu.state.focusedIndex).toBe(2);
+
+			menu.helpers.focusLast();
+			expect(menu.state.focusedIndex).toBe(2);
+
+			menu.helpers.focusPrevious();
+			expect(menu.state.focusedIndex).toBe(1);
+
+			actions.forEach(destroyAction);
+		});
+	});
+
+	describe('ARIA attributes', () => {
+		it('should set correct ARIA attributes on menu', () => {
+			const menu = createMenu();
+			const content = appendMenuElement();
+
+			const action = menu.actions.menu(content);
+
+			expect(content.getAttribute('role')).toBe('menu');
+
+			destroyAction(action);
+		});
+	});
+
+	describe('Edge cases and cleanup', () => {
+
+		it('should cleanup event listeners on destroy', () => {
+			const menu = createMenu();
+			const trigger = appendTriggerElement();
+			const content = appendMenuElement();
+			const item = appendMenuItem('Item', content);
+
+			const triggerAction = menu.actions.trigger(trigger);
+			const menuAction = menu.actions.menu(content);
+			const itemAction = menu.actions.item(item);
+
+			menu.helpers.open();
+
+			destroyAction(triggerAction);
+			destroyAction(menuAction);
+			destroyAction(itemAction);
+
+			// After destroy, interactions shouldn't work
+			trigger.click();
+			expect(menu.state.open).toBe(true); // State unchanged
+
+			content.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+			expect(menu.state.open).toBe(true); // Still unchanged
+		});
+
+		it('should support setting activeIndex', () => {
+			const menu = createMenu();
+			const content = appendMenuElement();
+			const item = appendMenuItem('Item', content);
+
+			const actions: Array<ActionReturn | void> = [];
+			actions.push(menu.actions.menu(content));
+			actions.push(menu.actions.item(item));
+
+			menu.helpers.open();
+			menu.helpers.setActiveIndex(0);
+
+			expect(menu.state.activeIndex).toBe(0);
+			expect(menu.state.focusedIndex).toBe(0);
+			expect(document.activeElement).toBe(item);
+
+			actions.forEach(destroyAction);
+		});
+
+		it('should loop focus in both directions when loop=true', () => {
+			const menu = createMenu({ loop: true });
+			const content = appendMenuElement();
+			const first = appendMenuItem('First', content);
+			const second = appendMenuItem('Second', content);
+
+			const actions: Array<ActionReturn | void> = [];
+			actions.push(menu.actions.menu(content));
+			actions.push(menu.actions.item(first));
+			actions.push(menu.actions.item(second));
+
+			menu.helpers.open();
+			menu.helpers.focusFirst();
+			expect(menu.state.focusedIndex).toBe(0);
+
+			// Go previous from first - should loop to last
+			menu.helpers.focusPrevious();
+			expect(menu.state.focusedIndex).toBe(1);
+
+			// Go next from last - should loop to first
+			menu.helpers.focusNext();
+			expect(menu.state.focusedIndex).toBe(0);
+
+			actions.forEach(destroyAction);
+		});
+	});
 });

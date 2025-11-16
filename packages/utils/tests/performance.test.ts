@@ -8,6 +8,8 @@ import {
 	batch,
 	lazy,
 	createLRUCache,
+	measureTime,
+	createResourcePool,
 } from '../src/performance';
 
 afterEach(() => {
@@ -223,5 +225,114 @@ describe('performance utilities', () => {
 
 		cache.clear();
 		expect(cache.size()).toBe(0);
+	});
+
+	it('createLRUCache updates existing keys without eviction', () => {
+		const cache = createLRUCache<string, number>(2);
+
+		cache.set('a', 1);
+		cache.set('b', 2);
+
+		// Update existing key 'a'
+		cache.set('a', 10);
+
+		expect(cache.get('a')).toBe(10);
+		expect(cache.size()).toBe(2);
+		expect(cache.has('b')).toBe(true);
+	});
+
+	it('measureTime logs execution time with and without labels', () => {
+		const logger = vi.fn();
+		const fn = vi.fn((x: number) => x * 2);
+
+		const measured = measureTime(fn, 'Double', logger);
+		const result = measured(5);
+
+		expect(result).toBe(10);
+		expect(fn).toHaveBeenCalledWith(5);
+		expect(logger).toHaveBeenCalledWith(expect.stringContaining('Double:'));
+		expect(logger).toHaveBeenCalledWith(expect.stringContaining('ms'));
+
+		logger.mockClear();
+		const noLabel = measureTime(fn, undefined, logger);
+		noLabel(3);
+
+		expect(logger).toHaveBeenCalledWith(expect.stringContaining('Execution time:'));
+	});
+
+	it('measureTime uses console.warn by default', () => {
+		const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const fn = vi.fn(() => 42);
+
+		const measured = measureTime(fn);
+		measured();
+
+		expect(warnSpy).toHaveBeenCalled();
+		warnSpy.mockRestore();
+	});
+
+	it('createResourcePool acquires from available pool when resources exist', () => {
+		let instanceCount = 0;
+		const pool = createResourcePool(() => ({ id: ++instanceCount }), 2);
+
+		const resource1 = pool.acquire();
+		expect(resource1.id).toBe(1);
+
+		const resource2 = pool.acquire();
+		expect(resource2.id).toBe(2);
+
+		// Release resource1
+		pool.release(resource1);
+		expect(pool.size()).toBe(1);
+
+		// Acquire should reuse resource1
+		const reused = pool.acquire();
+		expect(reused.id).toBe(1);
+	});
+
+	it('createResourcePool throws when exhausted', () => {
+		const pool = createResourcePool(() => ({ id: 1 }), 1);
+
+		pool.acquire();
+		expect(() => pool.acquire()).toThrow('Resource pool exhausted');
+	});
+
+	it('createResourcePool does not add beyond maxSize on release', () => {
+		const pool = createResourcePool(() => ({ id: Math.random() }), 2);
+
+		const r1 = pool.acquire();
+		const r2 = pool.acquire();
+
+		pool.release(r1);
+		pool.release(r2);
+
+		// Pool is at max size
+		expect(pool.size()).toBe(2);
+
+		// Try to release a third resource (should be ignored)
+		const r3 = { id: 999 };
+		pool.release(r3);
+
+		expect(pool.size()).toBe(2); // Still 2, didn't add the third
+	});
+
+	it('createResourcePool drain clears all resources', () => {
+		const pool = createResourcePool(() => ({ id: Math.random() }), 3);
+
+		const r1 = pool.acquire();
+		const r2 = pool.acquire();
+
+		pool.release(r1);
+		pool.release(r2);
+
+		expect(pool.size()).toBe(2);
+
+		pool.drain();
+
+		expect(pool.size()).toBe(0);
+
+		// After drain, should be able to acquire new resources again
+		const r3 = pool.acquire();
+		expect(r3).toBeDefined();
 	});
 });
