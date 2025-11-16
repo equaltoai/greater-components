@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" class="%sveltekit.theme%">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta
+			name="description"
+			content="Greater Components - A comprehensive design system and component library for modern web applications"
+		/>
+		<meta name="theme-color" content="#000000" />
+		<link rel="icon" href="/greater-components/docs/favicon.svg" />
+		<link rel="manifest" href="/greater-components/docs/manifest.json" />
+
+		<!-- Open Graph -->
+		<meta property="og:title" content="Greater Components Documentation" />
+		<meta
+			property="og:description"
+			content="A comprehensive design system and component library for modern web applications"
+		/>
+		<meta property="og:type" content="website" />
+
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+			rel="stylesheet"
+		/>
+
+		
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/entry/start.B7cvJS4z.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/CzGawsGA.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/yKL9Pmsd.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/yv-pgkba.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/BCOr9bo5.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/entry/app.DKzPYPjk.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/PPVm8Dsz.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/DsnmJJEf.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/Dg2wMbZM.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/CK1RtvbT.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/BdkwY6tt.js">
+		<link rel="modulepreload" href="/greater-components/docs/_app/immutable/chunks/8Zm5bpgL.js">
+
+		<script>
+			// Theme detection
+			if (
+				localStorage.theme === 'dark' ||
+				(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+			) {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		</script>
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">
+			<script>
+				{
+					__sveltekit_1m5715h = {
+						base: "/greater-components/docs",
+						assets: "/greater-components/docs"
+					};
+
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/greater-components/docs/_app/immutable/entry/start.B7cvJS4z.js"),
+						import("/greater-components/docs/_app/immutable/entry/app.DKzPYPjk.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
+	</body>
+</html>
