@@ -1,5 +1,11 @@
 # @equaltoai/greater-components
 
+## 1.0.31
+
+### Patch Changes
+
+- c055122: Improve demos, documentation, and code cleanup.
+
 ## 1.0.30
 
 ### Patch Changes
