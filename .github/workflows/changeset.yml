@@ -13,6 +13,8 @@ jobs:
   changeset:
     name: Changeset Check
     runs-on: ubuntu-latest
+    # Skip this check for release PRs created by changesets action
+    if: github.head_ref != 'changeset-release/main'
 
     steps:
       - name: Checkout repository
