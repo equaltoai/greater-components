@@ -14,12 +14,13 @@ describe('Icons SSR', () => {
 			const props = { size: 20, 'data-name': name };
 
 			const html =
-				typeof (Icon as { render?: (props: Record<string, unknown>) => { html: string } }).render ===
-				'function'
-					? (Icon as { render: (props: Record<string, unknown>) => { html: string } }).render(props).html
+				typeof (Icon as { render?: (props: Record<string, unknown>) => { html: string } })
+					.render === 'function'
+					? (Icon as { render: (props: Record<string, unknown>) => { html: string } }).render(props)
+							.html
 					: (() => {
 							const target = document.createElement('div');
-							 
+
 							const instance = mount(Icon as any, { target, props });
 							const markup = target.innerHTML;
 							unmount(instance);
@@ -53,7 +54,7 @@ describe('Icons SSR', () => {
 					}).html
 				: (() => {
 						const target = document.createElement('div');
-						 
+
 						const instance = mount(Icon as any, {
 							target,
 							props: { size: 16, 'aria-label': 'Alert', title: 'Icon title' },

@@ -64,9 +64,7 @@
 		}
 
 		if (invalid) {
-			errorMessage = !isAccepted(invalid)
-				? 'File type not accepted'
-				: 'File exceeds maximum size';
+			errorMessage = !isAccepted(invalid) ? 'File type not accepted' : 'File exceeds maximum size';
 			selectedFiles = null;
 			onchange?.(null);
 			return;
