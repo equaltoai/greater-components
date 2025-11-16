@@ -82,13 +82,8 @@ describe('file utilities', () => {
 	});
 
 	it('writes component files and detects project type and svelte version', async () => {
-		const {
-			writeComponentFiles,
-			fileExists,
-			detectProjectType,
-			getSvelteVersion,
-			readFile,
-		} = await import('../src/utils/files.js');
+		const { writeComponentFiles, fileExists, detectProjectType, getSvelteVersion, readFile } =
+			await import('../src/utils/files.js');
 
 		const pkgPath = '/proj/package.json';
 		fsStore.set(
@@ -225,8 +220,14 @@ describe('fetch utilities', () => {
 
 describe('registry utilities', () => {
 	it('looks up components and resolves dependencies recursively', async () => {
-		const { componentRegistry, getComponent, getComponentsByType, getComponentsByTag, searchComponents, resolveComponentDependencies } =
-			await import('../src/registry/index.js');
+		const {
+			componentRegistry,
+			getComponent,
+			getComponentsByType,
+			getComponentsByTag,
+			searchComponents,
+			resolveComponentDependencies,
+		} = await import('../src/registry/index.js');
 
 		componentRegistry['custom'] = {
 			name: 'custom',
@@ -245,6 +246,8 @@ describe('registry utilities', () => {
 		expect(getComponentsByType('pattern').some((c) => c.name === 'custom')).toBe(true);
 		expect(getComponentsByTag('custom')[0]?.name).toBe('custom');
 		expect(searchComponents('button')[0]?.name).toBe('button');
-		expect(resolveComponentDependencies('custom')).toEqual(expect.arrayContaining(['custom', 'button']));
+		expect(resolveComponentDependencies('custom')).toEqual(
+			expect.arrayContaining(['custom', 'button'])
+		);
 	});
 });

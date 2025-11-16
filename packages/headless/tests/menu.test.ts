@@ -350,7 +350,6 @@ describe('Menu Primitive', () => {
 			actions.forEach(destroyAction);
 		});
 
-
 		it('should handle Tab key to close menu', () => {
 			const menu = createMenu();
 			const content = appendMenuElement();
@@ -450,7 +449,6 @@ describe('Menu Primitive', () => {
 	});
 
 	describe('Edge cases and cleanup', () => {
-
 		it('should cleanup event listeners on destroy', () => {
 			const menu = createMenu();
 			const trigger = appendTriggerElement();

@@ -35,14 +35,29 @@ describe('OptimisticManager', () => {
 		const manager = new OptimisticManager({ maxPending: 1 });
 		const okOperation = () => Promise.resolve('ok');
 
-		await manager.add('only', (s) => s, (s) => s, okOperation);
+		await manager.add(
+			'only',
+			(s) => s,
+			(s) => s,
+			okOperation
+		);
 
 		await expect(
-			manager.add('only', (s) => s, (s) => s, okOperation)
+			manager.add(
+				'only',
+				(s) => s,
+				(s) => s,
+				okOperation
+			)
 		).rejects.toThrowError(/already exists/);
 
 		await expect(
-			manager.add('second', (s) => s, (s) => s, okOperation)
+			manager.add(
+				'second',
+				(s) => s,
+				(s) => s,
+				okOperation
+			)
 		).rejects.toThrowError(/Maximum pending updates/);
 
 		await vi.runAllTimersAsync();
@@ -55,9 +70,10 @@ describe('OptimisticManager', () => {
 			'timeout',
 			(state) => ({ count: state.count + 1 }),
 			(state) => ({ count: state.count - 1 }),
-			() => new Promise(() => {
-				/* never resolve */
-			})
+			() =>
+				new Promise(() => {
+					/* never resolve */
+				})
 		);
 		const handledPromise = promise.catch((error) => error);
 
@@ -75,11 +91,32 @@ describe('OptimisticManager', () => {
 		const manager = new OptimisticManager({ timeout: 50 });
 		const ok = () => Promise.resolve('ok');
 
-		await expect(manager.add('dup', (s) => s, (s) => s, ok)).resolves.toBe('ok');
-		await expect(manager.add('dup', (s) => s, (s) => s, ok)).rejects.toThrow(/already exists/);
+		await expect(
+			manager.add(
+				'dup',
+				(s) => s,
+				(s) => s,
+				ok
+			)
+		).resolves.toBe('ok');
+		await expect(
+			manager.add(
+				'dup',
+				(s) => s,
+				(s) => s,
+				ok
+			)
+		).rejects.toThrow(/already exists/);
 
 		await vi.advanceTimersByTimeAsync(1000);
-		await expect(manager.add('dup', (s) => s, (s) => s, ok)).resolves.toBe('ok');
+		await expect(
+			manager.add(
+				'dup',
+				(s) => s,
+				(s) => s,
+				ok
+			)
+		).resolves.toBe('ok');
 	});
 
 	it('applies multiple pending updates and enforces maxPending', async () => {
@@ -104,7 +141,12 @@ describe('OptimisticManager', () => {
 		);
 
 		await expect(
-			manager.add('third', (s) => s, (s) => s, slow)
+			manager.add(
+				'third',
+				(s) => s,
+				(s) => s,
+				slow
+			)
 		).rejects.toThrow(/Maximum pending updates/);
 
 		expect(manager.applyAll({ value: 0 }).value).toBe(6);

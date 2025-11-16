@@ -444,10 +444,7 @@ describe('convertGraphQLObjectToLesser', () => {
 				{ type: 'invalid' },
 			],
 			tags: [{ name: 'tag', url: '/tag' }, { name: null }],
-			mentions: [
-				{ id: 'm-1', username: 'bob', url: '/bob' },
-				{ id: null },
-			],
+			mentions: [{ id: 'm-1', username: 'bob', url: '/bob' }, { id: null }],
 			communityNotes: [
 				{
 					id: 'note-1',

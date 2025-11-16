@@ -218,11 +218,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles init command when project is invalid', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockIsValidProject.mockResolvedValue(false);
 
@@ -235,11 +233,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles init command when already initialized', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockIsValidProject.mockResolvedValue(true);
 		mockConfigExists.mockResolvedValue(true);
@@ -253,11 +249,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles init command with old Svelte version', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockIsValidProject.mockResolvedValue(true);
 		mockConfigExists.mockResolvedValue(false);
@@ -273,11 +267,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles add command when not initialized', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockConfigExists.mockResolvedValue(false);
 
@@ -290,11 +282,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles add command with missing config', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockConfigExists.mockResolvedValue(true);
 		mockReadConfig.mockResolvedValue(null);
@@ -308,11 +298,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles add command with invalid components', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockConfigExists.mockResolvedValue(true);
 		mockReadConfig.mockResolvedValue(mockConfig);
@@ -371,11 +359,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles add command with fetch error', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockConfigExists.mockResolvedValue(true);
 		mockReadConfig.mockResolvedValue(mockConfig);
@@ -400,11 +386,9 @@ describe('cli commands', () => {
 	});
 
 	it('handles add command with write error', async () => {
-		const exitSpy = vi
-			.spyOn(process, 'exit')
-			.mockImplementation((() => {
-				throw new Error('process.exit called');
-			}) as any);
+		const exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+			throw new Error('process.exit called');
+		}) as any);
 
 		mockConfigExists.mockResolvedValue(true);
 		mockReadConfig.mockResolvedValue(mockConfig);

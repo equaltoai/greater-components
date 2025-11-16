@@ -115,7 +115,13 @@ describe('@equaltoai/greater-components export surface', () => {
 		const { adapterCache } = await import('../dist/fediverse/adapters/cache.js');
 		const { generateId } = await import('../dist/headless/utils/id.js');
 
-		const expectedKeys = ['tokens', 'themes', 'debounce', 'KeyboardShortcutManager', 'ActivityIcon'];
+		const expectedKeys = [
+			'tokens',
+			'themes',
+			'debounce',
+			'KeyboardShortcutManager',
+			'ActivityIcon',
+		];
 		expectedKeys.forEach((key) => expect(pkg).toHaveProperty(key));
 
 		expect(typeof pkg.debounce).toBe('function');
@@ -125,20 +131,20 @@ describe('@equaltoai/greater-components export surface', () => {
 		expect(pkg.getPlatformShortcut('ctrl+s', 'cmd+s')).toBeTruthy();
 		const enterEvent = { key: 'Enter' } as unknown as KeyboardEvent;
 		expect(pkg.isActivationKey(enterEvent)).toBe(true);
-		expect(pkg.getNavigationDirection({ key: 'ArrowLeft' } as unknown as KeyboardEvent, 'horizontal')).toBe(
-			'previous'
-		);
+		expect(
+			pkg.getNavigationDirection({ key: 'ArrowLeft' } as unknown as KeyboardEvent, 'horizontal')
+		).toBe('previous');
 		expect(pkg.formatShortcut('ctrl+s')).toContain('Ctrl');
 
-			adapterCache?.set?.('smoke', 'ok');
+		adapterCache?.set?.('smoke', 'ok');
 
 		// Utils/performance branches
-			const lru = pkg.createLRUCache(2);
-			lru.set('one', 1);
-			lru.set('two', 2);
-			lru.get('one');
-			lru.set('three', 3);
-			expect(lru.size()).toBeLessThanOrEqual(2);
+		const lru = pkg.createLRUCache(2);
+		lru.set('one', 1);
+		lru.set('two', 2);
+		lru.get('one');
+		lru.set('three', 3);
+		expect(lru.size()).toBeLessThanOrEqual(2);
 
 		const pool = pkg.createResourcePool(() => ({ id: Math.random() }), 1);
 		const pooled = pool.acquire();
@@ -147,14 +153,14 @@ describe('@equaltoai/greater-components export surface', () => {
 		expect(pool.size()).toBe(1);
 		pool.drain();
 
-			vi.useFakeTimers();
-			const immediateSpy = vi.fn();
-			const immediate = pkg.debounceImmediate(immediateSpy, 5);
-			immediate('first');
-			immediate('second');
-			vi.runAllTimers();
-			expect(immediateSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
-			vi.useRealTimers();
+		vi.useFakeTimers();
+		const immediateSpy = vi.fn();
+		const immediate = pkg.debounceImmediate(immediateSpy, 5);
+		immediate('first');
+		immediate('second');
+		vi.runAllTimers();
+		expect(immediateSpy.mock.calls.length).toBeGreaterThanOrEqual(1);
+		vi.useRealTimers();
 
 		const memoized = pkg.memoize((a: number, b: number) => a + b);
 		expect(memoized(1, 2)).toBe(3);
@@ -162,7 +168,9 @@ describe('@equaltoai/greater-components export surface', () => {
 
 		const sanitized = pkg.sanitizeHtml('<script>bad()</script><strong>ok</strong>');
 		expect(sanitized).toContain('<strong>ok</strong>');
-		expect(pkg.sanitizeForPreview('Long preview content that should truncate', 5).endsWith('...')).toBe(true);
+		expect(
+			pkg.sanitizeForPreview('Long preview content that should truncate', 5).endsWith('...')
+		).toBe(true);
 
 		// Adapter cache helpers
 		const limitSpy = vi.fn(({ fields }) =>
@@ -243,9 +251,9 @@ describe('@equaltoai/greater-components export surface', () => {
 
 		expect(score).toBeGreaterThan(0);
 		expect(testing.meetsA11yThreshold(score)).toBe(true);
-		expect(testing.generateTestRecommendations([{ type: 'contrast' }, { type: 'keyboard' }]).length).toBeGreaterThan(
-			0
-		);
+		expect(
+			testing.generateTestRecommendations([{ type: 'contrast' }, { type: 'keyboard' }]).length
+		).toBeGreaterThan(0);
 		expect(testing.createComponentTestSuite({ name: 'Widget' }).tests.axe).toContain('axe');
 
 		expect(adapters).toBeDefined();
