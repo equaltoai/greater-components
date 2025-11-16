@@ -50,7 +50,9 @@ describe('FileUpload.svelte', () => {
 
 	it('handles disabled state and empty change events', async () => {
 		const handleChange = vi.fn();
-		const { container, getByText } = render(FileUpload, { props: { disabled: true, onchange: handleChange } });
+		const { container, getByText } = render(FileUpload, {
+			props: { disabled: true, onchange: handleChange },
+		});
 
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 		await fireEvent.change(input, { target: { files: null } });
@@ -66,7 +68,9 @@ describe('FileUpload.svelte', () => {
 		});
 
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		const invalidFiles = createFileList([new File(['bad'], 'resume.pdf', { type: 'application/pdf' })]);
+		const invalidFiles = createFileList([
+			new File(['bad'], 'resume.pdf', { type: 'application/pdf' }),
+		]);
 
 		await fireEvent.change(input, { target: { files: invalidFiles } });
 
@@ -74,11 +78,15 @@ describe('FileUpload.svelte', () => {
 		expect(container.querySelector('.gr-file-upload__error')?.textContent).toContain('type');
 		expect(queryByText('resume.pdf')).toBeNull();
 
-		const oversizeFile = createFileList([new File(['1234567890'], 'large.png', { type: 'image/png' })]);
+		const oversizeFile = createFileList([
+			new File(['1234567890'], 'large.png', { type: 'image/png' }),
+		]);
 		await fireEvent.change(input, { target: { files: oversizeFile } });
 
 		expect(handleChange).toHaveBeenCalledWith(null);
-		expect(container.querySelector('.gr-file-upload__error')?.textContent).toContain('maximum size');
+		expect(container.querySelector('.gr-file-upload__error')?.textContent).toContain(
+			'maximum size'
+		);
 	});
 
 	it('shows single file selections distinctly from multiple uploads', async () => {

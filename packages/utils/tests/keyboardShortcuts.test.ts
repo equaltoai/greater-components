@@ -141,7 +141,7 @@ describe('KeyboardShortcutManager', () => {
 
 		const debugManager = new KeyboardShortcutManager({ debug: true, target });
 		debugManager.register('test', { keys: 'ctrl+t', callback });
-		
+
 		// Trigger the shortcut to see debug logging
 		dispatchKey(target, { key: 't', ctrlKey: true });
 

@@ -48,7 +48,11 @@ describe('Tabs.svelte', () => {
 
 	it('uses vertical arrow keys with manual activation and wraps focus', async () => {
 		const onTabChange = vi.fn();
-		const { getByRole } = renderTabs({ orientation: 'vertical', activation: 'manual', onTabChange });
+		const { getByRole } = renderTabs({
+			orientation: 'vertical',
+			activation: 'manual',
+			onTabChange,
+		});
 
 		const overviewTab = getByRole('tab', { name: 'Overview' });
 		overviewTab.focus();

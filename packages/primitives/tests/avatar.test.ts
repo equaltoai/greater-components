@@ -23,10 +23,10 @@ describe('Avatar.svelte', () => {
 		expect(handleClick).toHaveBeenCalled();
 	});
 
-		it('falls back to placeholder content when image fails to load', async () => {
-			const { container } = render(Avatar, {
-				props: { src: '/broken.png', name: 'Fran' },
-			});
+	it('falls back to placeholder content when image fails to load', async () => {
+		const { container } = render(Avatar, {
+			props: { src: '/broken.png', name: 'Fran' },
+		});
 
 		const image = container.querySelector('img') as HTMLImageElement;
 		await fireEvent.error(image);
