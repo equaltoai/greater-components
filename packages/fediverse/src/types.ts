@@ -168,6 +168,11 @@ export interface Status {
 	poll?: Poll;
 	inReplyToId?: string;
 	inReplyToAccountId?: string;
+	inReplyToAccount?: Account;
+	inReplyToStatus?: Status;
+	isDeleted?: boolean;
+	deletedAt?: string | Date;
+	formerType?: string;
 
 	// Lesser-specific fields
 	estimatedCost?: number;

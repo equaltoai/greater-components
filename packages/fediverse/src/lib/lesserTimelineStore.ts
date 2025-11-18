@@ -9,6 +9,8 @@
 import {
 	mapLesserTimelineConnection,
 	unifiedStatusToTimelineItem,
+	convertGraphQLObjectToLesser,
+	mapLesserObject,
 } from '@equaltoai/greater-components-adapters';
 import type {
 	LesserGraphQLAdapter,
@@ -142,6 +144,70 @@ export class LesserTimelineStore {
 		return convertUnifiedStatusToTimelineItem(status, this.statusCache);
 	}
 
+	private async hydrateParents(items: GenericTimelineItem[]): Promise<void> {
+		const adapter = this.config.adapter;
+		const missingParentIds = new Set<string>();
+
+		for (const item of items) {
+			const status = item.status;
+			if (
+				item.type === 'status' &&
+				status &&
+				status.inReplyToId &&
+				!status.inReplyToStatus
+			) {
+				missingParentIds.add(status.inReplyToId);
+			}
+		}
+
+		if (missingParentIds.size === 0) {
+			return;
+		}
+
+		const parentStatuses = new Map<string, GenericStatus>();
+
+		await Promise.all(
+			Array.from(missingParentIds).map(async (parentId) => {
+				try {
+					const parentObject = await adapter.getObject(parentId);
+					const lesser = convertGraphQLObjectToLesser(parentObject);
+					if (!lesser) return;
+					const mapped = mapLesserObject(lesser);
+					if (!mapped.success || !mapped.data) return;
+					const generic = convertUnifiedStatusToGeneric(mapped.data, this.statusCache);
+					parentStatuses.set(parentId, generic);
+				} catch (error) {
+					console.warn('[lesserTimelineStore] Failed to hydrate parent', parentId, error);
+				}
+			})
+		);
+
+		if (parentStatuses.size === 0) {
+			return;
+		}
+
+		this.state.items = this.state.items.map((item) => {
+			if (item.type !== 'status' || !item.status || !item.status.inReplyToId) {
+				return item;
+			}
+
+			const parent = parentStatuses.get(item.status.inReplyToId);
+			if (!parent) {
+				return item;
+			}
+
+			return {
+				...item,
+				status: {
+					...item.status,
+					inReplyToStatus: parent,
+					inReplyToAccount: parent.account,
+					inReplyToAccountId: parent.account?.id ?? item.status.inReplyToAccountId,
+				},
+			};
+		});
+	}
+
 	/**
 	 * Load initial timeline data
 	 */
@@ -167,6 +233,7 @@ export class LesserTimelineStore {
 			this.cursor = response.pageInfo?.endCursor ?? null;
 			this.state.lastUpdated = new Date();
 			this.state.connected = true;
+			await this.hydrateParents(this.state.items);
 		} catch (error) {
 			if (error instanceof Error && error.name !== 'AbortError') {
 				this.state.error = error.message;
@@ -204,6 +271,7 @@ export class LesserTimelineStore {
 				);
 				const merged = [...this.state.items, ...filteredNewItems];
 				this.state.items = merged.slice(-this.config.maxItems);
+				await this.hydrateParents(this.state.items);
 			}
 
 			this.state.hasMore = response.pageInfo?.hasNextPage ?? false;
@@ -237,8 +305,9 @@ export class LesserTimelineStore {
 		const newItem = this.toTimelineItem(unifiedStatus);
 		const deduped = [newItem, ...this.state.items.filter((item) => item.id !== newItem.id)];
 
-		this.state.items = deduped.slice(0, this.config.maxItems);
-		this.state.lastUpdated = new Date();
+			this.state.items = deduped.slice(0, this.config.maxItems);
+			this.state.lastUpdated = new Date();
+		void this.hydrateParents([newItem]);
 	}
 
 	/**
@@ -495,6 +564,9 @@ function convertUnifiedStatusToGeneric(
 	const mentions = status.mentions.map(mapMentionToTag);
 	const hashtags = status.tags.map(mapHashtagToTag);
 	const emojis = status.emojis.map(mapEmojiToTag);
+	const inReplyToActor = status.inReplyTo?.account
+		? mapAccountToActor(status.inReplyTo.account)
+		: undefined;
 
 	const activityPubObject: ActivityPubObject = {
 		id: status.id,
@@ -545,6 +617,8 @@ function convertUnifiedStatusToGeneric(
 		bookmarked: status.bookmarked,
 		inReplyToId: status.inReplyTo?.id,
 		inReplyToAccountId: status.inReplyTo?.accountId,
+		inReplyToAccount: inReplyToActor,
+		inReplyToStatus: undefined,
 		reblog: undefined,
 		visibility: status.visibility,
 		url: undefined,

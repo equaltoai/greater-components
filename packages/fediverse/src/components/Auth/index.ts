@@ -32,6 +32,7 @@ export { default as LoginForm } from './LoginForm.svelte';
 export { default as RegisterForm } from './RegisterForm.svelte';
 export { default as WebAuthnSetup } from './WebAuthnSetup.svelte';
 export { default as OAuthConsent } from './OAuthConsent.svelte';
+export { default as InstanceSelector } from './InstanceSelector.svelte';
 export { default as TwoFactorSetup } from './TwoFactorSetup.svelte';
 export { default as TwoFactorVerify } from './TwoFactorVerify.svelte';
 export { default as PasswordReset } from './PasswordReset.svelte';
@@ -58,5 +59,6 @@ export {
 	getAuthContext,
 	isValidEmail,
 	isValidPassword,
+	isValidInstanceUrl,
 	isValidUsername,
 } from './context.js';

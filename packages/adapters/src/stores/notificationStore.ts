@@ -9,6 +9,7 @@ import type {
 	Notification,
 	NotificationConfig,
 	NotificationFilter,
+	NotificationPageInfo,
 } from './types';
 import { unifiedNotificationToStoreNotification } from './unifiedToNotification.js';
 import { mapLesserNotification } from '../mappers/lesser/mappers.js';
@@ -27,6 +28,7 @@ import type {
 	ModerationQueueUpdateSubscription,
 } from '../graphql/generated/types.js';
 import type { WebSocketEvent } from '../types.js';
+import { fetchNotificationPage, normalizeNotificationType } from './fetchHelpers.js';
 
 type NotificationStreamPayload = NotificationStreamSubscription['notificationStream'];
 type TrustUpdatePayload = TrustUpdatesSubscription['trustUpdates'];
@@ -34,38 +36,6 @@ type CostAlertPayload = CostAlertsSubscription['costAlerts'];
 type ModerationEventPayload = ModerationEventsSubscription['moderationEvents'];
 type ModerationAlertPayload = ModerationAlertsSubscription['moderationAlerts'];
 type ModerationQueuePayload = ModerationQueueUpdateSubscription['moderationQueueUpdate'];
-
-const notificationTypeMap: Record<string, LesserNotificationFragment['notificationType']> = {
-	MENTION: 'MENTION',
-	FOLLOW: 'FOLLOW',
-	FOLLOW_REQUEST: 'FOLLOW_REQUEST',
-	SHARE: 'SHARE',
-	FAVORITE: 'FAVORITE',
-	POST: 'POST',
-	POLL_ENDED: 'POLL_ENDED',
-	STATUS_UPDATE: 'STATUS_UPDATE',
-	ADMIN_SIGNUP: 'ADMIN_SIGNUP',
-	ADMIN_SIGN_UP: 'ADMIN_SIGNUP',
-	ADMIN_REPORT: 'ADMIN_REPORT',
-	QUOTE: 'QUOTE',
-	COMMUNITY_NOTE: 'COMMUNITY_NOTE',
-	TRUST_UPDATE: 'TRUST_UPDATE',
-	COST_ALERT: 'COST_ALERT',
-	MODERATION_ACTION: 'MODERATION_ACTION',
-};
-
-const normalizeNotificationType = (
-	value: unknown
-): LesserNotificationFragment['notificationType'] => {
-	if (typeof value === 'string') {
-		const normalized = value.replace(/\./g, '_').toUpperCase();
-		const mapped = notificationTypeMap[normalized];
-		if (mapped) {
-			return mapped;
-		}
-	}
-	return 'MENTION';
-};
 
 function convertNotificationStreamPayload(
 	payload: NotificationStreamPayload | null
@@ -179,6 +149,11 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 		isLoading: false,
 		error: null,
 		isStreaming: false,
+		pageInfo: {
+			endCursor: config.initialPageInfo?.endCursor ?? null,
+			hasNextPage: config.initialPageInfo?.hasNextPage ?? true,
+		},
+		lastSync: null,
 	});
 
 	// Initialize computed values
@@ -191,6 +166,7 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 	let streamingUnsubscribers: (() => void)[] = [];
 	let updateDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let pendingNotifications: Notification[] = [];
+	const pageSize = config.pageSize ?? 20;
 
 	function enforceNotificationLimit(notifications: Notification[]): {
 		trimmed: Notification[];
@@ -303,6 +279,15 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 				totalUnread: unreadCounts['all'] || 0,
 			}));
 		}
+	}
+
+	function normalizePageInfo(
+		info?: Partial<NotificationPageInfo> | null
+	): NotificationPageInfo {
+		return {
+			endCursor: info?.endCursor ?? null,
+			hasNextPage: info?.hasNextPage ?? false,
+		};
 	}
 
 	function scheduleAutoDismiss(notification: Notification): void {
@@ -799,6 +784,97 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 		updateDerivedValues(currentState.notifications, updatedFilter);
 	}
 
+	async function fetchPage(after: string | null, replaceExisting = false): Promise<void> {
+		if (!config.adapter) {
+			const error = new Error('Notification adapter is required to fetch pages');
+			state.update((current) => ({
+				...current,
+				isLoading: false,
+				error,
+			}));
+			throw error;
+		}
+
+		const result = await fetchNotificationPage({
+			adapter: config.adapter,
+			pageSize,
+			after,
+		});
+
+		if (replaceExisting) {
+			state.update((current) => ({
+				...current,
+				notifications: [],
+				filteredNotifications: [],
+				unreadCounts: {},
+				totalUnread: 0,
+			}));
+		}
+
+		result.items.map(convertUnifiedNotificationToStore).forEach(scheduleNotificationUpdate);
+
+		processPendingNotifications();
+
+		state.update((current) => ({
+			...current,
+			isLoading: false,
+			error: null,
+			lastSync: Date.now(),
+			pageInfo: normalizePageInfo(result.pageInfo),
+		}));
+	}
+
+	async function loadMore(): Promise<void> {
+		if (state.value.isLoading) return;
+		const { pageInfo } = state.value;
+		if (!pageInfo.hasNextPage && pageInfo.endCursor) {
+			return;
+		}
+
+		state.update((current) => ({
+			...current,
+			isLoading: true,
+			error: null,
+		}));
+
+		try {
+			await fetchPage(state.value.pageInfo.endCursor ?? null, false);
+		} catch (error) {
+			state.update((current) => ({
+				...current,
+				error: error as Error,
+				isLoading: false,
+			}));
+			throw error;
+		}
+	}
+
+	async function refresh(): Promise<void> {
+		if (state.value.isLoading) return;
+
+		state.update((current) => ({
+			...current,
+			isLoading: true,
+			error: null,
+			pageInfo: {
+				...normalizePageInfo(state.value.pageInfo),
+				endCursor: null,
+			},
+			notifications: [],
+		}));
+
+		try {
+			await fetchPage(null, true);
+		} catch (error) {
+			state.update((current) => ({
+				...current,
+				error: error as Error,
+				isLoading: false,
+			}));
+			throw error;
+		}
+	}
+
 	function startStreaming(): void {
 		if (state.value.isStreaming || !config.transportManager) return;
 
@@ -978,6 +1054,11 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 			isLoading: false,
 			error: null,
 			isStreaming: false,
+			pageInfo: {
+				endCursor: null,
+				hasNextPage: true,
+			},
+			lastSync: null,
 		}));
 	}
 
@@ -1027,6 +1108,8 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 		removeNotification,
 		clearAll,
 		updateFilter,
+		loadMore,
+		refresh,
 		startStreaming,
 		stopStreaming,
 		// Lesser-specific methods

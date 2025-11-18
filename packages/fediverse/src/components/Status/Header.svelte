@@ -17,6 +17,8 @@ Handles reblog indicators automatically from context.
 	import type { Snippet } from 'svelte';
 	import { getStatusContext } from './context.js';
 	import { formatDateTime } from '@equaltoai/greater-components-utils';
+	import { Avatar } from '@equaltoai/greater-components-primitives';
+	import { RepeatIcon } from '@equaltoai/greater-components-icons';
 
 	interface Props {
 		/**
@@ -46,19 +48,14 @@ Handles reblog indicators automatically from context.
 	const { status, actualStatus, account, isReblog, config } = context;
 
 	const dateTime = $derived(formatDateTime(actualStatus.createdAt));
-	const avatarSize = $derived(config.density === 'compact' ? 40 : 48);
+	const avatarSize = $derived(config.density === 'compact' ? 'sm' : 'md');
 </script>
 
 <div class={`status-header ${className}`}>
 	<!-- Reblog indicator -->
 	{#if isReblog}
 		<div class="status-header__reblog-indicator">
-			<svg class="status-header__reblog-icon" viewBox="0 0 24 24" aria-hidden="true">
-				<path
-					fill="currentColor"
-					d="M23.77 15.67a.749.749 0 0 0-1.06 0l-2.22 2.22V7.65a3.755 3.755 0 0 0-3.75-3.75h-5.85a.75.75 0 0 0 0 1.5h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22a.749.749 0 1 0-1.06 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5a.747.747 0 0 0 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22a.752.752 0 0 0 1.062 0 .749.749 0 0 0 0-1.06l-3.5-3.5a.747.747 0 0 0-1.06 0l-3.5 3.5a.749.749 0 1 0 1.06 1.06l2.22-2.22V16.7a3.755 3.755 0 0 0 3.75 3.75h5.85a.75.75 0 0 0 0-1.5z"
-				/>
-			</svg>
+			<RepeatIcon class="status-header__reblog-icon" size={16} />
 			<span class="status-header__reblog-text">
 				{status.account.displayName || status.account.username} boosted
 			</span>
@@ -76,13 +73,11 @@ Handles reblog indicators automatically from context.
 					class="status-header__avatar-link"
 					aria-label={`View ${account.displayName || account.username}'s profile`}
 				>
-					<img
+					<Avatar
 						src={account.avatar}
-						alt=""
-						class="status-header__avatar-img"
-						loading="lazy"
-						width={avatarSize}
-						height={avatarSize}
+						name={account.displayName || account.username}
+						size={avatarSize}
+						alt={`${account.displayName || account.username} avatar`}
 					/>
 				</a>
 			{/if}
@@ -131,7 +126,7 @@ Handles reblog indicators automatically from context.
 		display: flex;
 		align-items: center;
 		gap: var(--status-spacing-xs, 0.25rem);
-		margin-left: calc(48px + var(--status-spacing-sm, 0.5rem));
+		margin-left: 0;
 		color: var(--status-text-secondary, #536471);
 		font-size: var(--status-font-size-sm, 0.875rem);
 	}
@@ -164,19 +159,6 @@ Handles reblog indicators automatically from context.
 	.status-header__avatar-link:focus {
 		outline: 2px solid var(--status-focus-ring, #3b82f6);
 		outline-offset: 2px;
-	}
-
-	.status-header__avatar-img {
-		display: block;
-		width: 48px;
-		height: 48px;
-		border-radius: 50%;
-		object-fit: cover;
-	}
-
-	.status-root--compact .status-header__avatar-img {
-		width: 40px;
-		height: 40px;
 	}
 
 	.status-header__account {

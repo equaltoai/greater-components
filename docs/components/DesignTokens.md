@@ -20,11 +20,14 @@ Running `pnpm --filter @equaltoai/greater-components-tokens build` executes `scr
 
 ## Consuming Tokens
 
-Import the CSS bundle once in your app layout:
+GC clients should import `theme.css` plus `high-contrast.css` from `@equaltoai/greater-components-tokens` for full theme + accessibility coverage.
+
+Import the CSS bundles once in your app layout:
 
 ```svelte
 <script>
 	import '@equaltoai/greater-components-tokens/theme.css';
+	import '@equaltoai/greater-components-tokens/high-contrast.css';
 </script>
 ```
 

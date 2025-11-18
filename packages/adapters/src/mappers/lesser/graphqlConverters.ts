@@ -119,13 +119,33 @@ const convertCustomEmojis = (value: unknown): LesserAccountFragment['customEmoji
 
 const toMaybeNumber = (value: unknown): number | undefined => (isNumber(value) ? value : undefined);
 
+function deriveActorId(actor: Record<string, unknown>): string | null {
+	const idValue = actor['id'];
+	if (isString(idValue)) {
+		return idValue;
+	}
+
+	const handle = actor['handle'];
+	if (isString(handle)) {
+		return handle;
+	}
+
+	const username = actor['username'];
+	if (isString(username)) {
+		const domain = isString(actor['domain']) ? actor['domain'] : undefined;
+		return buildHandle(username, domain);
+	}
+
+	return null;
+}
+
 export function convertGraphQLActorToLesserAccount(actor: unknown): LesserAccountFragment | null {
 	if (!isRecord(actor)) {
 		return null;
 	}
 
-	const idValue = actor['id'];
-	if (!isString(idValue)) {
+	const idValue = deriveActorId(actor);
+	if (!idValue) {
 		return null;
 	}
 
@@ -351,7 +371,24 @@ function normalizeQuotePermissions(value: unknown): LesserObjectFragment['quoteP
 	return 'EVERYONE';
 }
 
-export function convertGraphQLObjectToLesser(object: unknown): LesserObjectFragment | null {
+function convertGraphQLReplyRef(value: unknown): LesserObjectFragment['inReplyTo'] {
+	if (isRecord(value) && isString(value['id'])) {
+		const actor = convertGraphQLActorToLesserAccount(value['actor']) ?? undefined;
+		const authorId = isString(value['authorId']) ? value['authorId'] : undefined;
+		return { id: value['id'], actor, authorId };
+	}
+
+	if (isString(value)) {
+		return { id: value };
+	}
+
+	return undefined;
+}
+
+export function convertGraphQLObjectToLesser(
+	object: unknown,
+	depth = 0
+): LesserObjectFragment | null {
 	if (!isRecord(object)) {
 		return null;
 	}
@@ -407,15 +444,21 @@ export function convertGraphQLObjectToLesser(object: unknown): LesserObjectFragm
 				.filter((note): note is LesserCommunityNoteFragment => note !== null)
 		: [];
 
-	const inReplyTo = object['inReplyTo'];
+	const inReplyTo = convertGraphQLReplyRef(object['inReplyTo']);
 	const quoteContext = convertGraphQLQuoteContext(object['quoteContext']);
+	const boostedValue = object['boostedObject'] ?? object['shareOf'];
+	const boosted =
+		// Limit recursion depth to avoid runaway object trees
+		depth < 1 && isRecord(boostedValue)
+			? convertGraphQLObjectToLesser(boostedValue, depth + 1)
+			: null;
 
 	return {
 		id,
 		type,
 		actor,
 		content,
-		inReplyTo: isRecord(inReplyTo) && isString(inReplyTo['id']) ? inReplyTo['id'] : undefined,
+		inReplyTo: inReplyTo ?? undefined,
 		visibility: normalizeVisibility(visibility),
 		sensitive: toBoolean(sensitive),
 		spoilerText: isString(object['spoilerText']) ? object['spoilerText'] : undefined,
@@ -424,6 +467,8 @@ export function convertGraphQLObjectToLesser(object: unknown): LesserObjectFragm
 		mentions,
 		createdAt,
 		updatedAt,
+		shareOf: boosted ?? undefined,
+		boostedObject: boosted ?? undefined,
 		repliesCount: toNumber(object['repliesCount']),
 		likesCount: toNumber(object['likesCount']),
 		sharesCount: toNumber(object['sharesCount']),

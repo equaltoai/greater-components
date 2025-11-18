@@ -191,7 +191,10 @@ export {
 	batchMapLesserAccounts,
 	batchMapLesserPosts,
 	batchMapLesserNotifications,
+	mapLesserObject,
 } from './lesser/mappers.js';
+
+export { convertGraphQLObjectToLesser } from './lesser/graphqlConverters.js';
 
 // Lesser type guards and constants
 export {

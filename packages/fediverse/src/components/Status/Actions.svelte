@@ -25,6 +25,16 @@ Uses handlers from context.
 		actions?: Snippet;
 
 		/**
+		 * Whether to show a delete action (hidden by default)
+		 */
+		showDelete?: boolean;
+
+		/**
+		 * Label for delete action
+		 */
+		deleteLabel?: string;
+
+		/**
 		 * Size of action buttons
 		 */
 		size?: 'sm' | 'md' | 'lg';
@@ -40,13 +50,26 @@ Uses handlers from context.
 		class?: string;
 	}
 
-	let { actions, size = 'sm', readonly = false, class: className = '' }: Props = $props();
+	let {
+		actions,
+		size = 'sm',
+		readonly = false,
+		class: className = '',
+		showDelete = false,
+		deleteLabel = 'Delete',
+	}: Props = $props();
 
 	const context = getStatusContext();
-	const { actualStatus, handlers, config } = context;
+const { actualStatus, handlers, config, isReblog } = context;
 
 	// Only show if configured to show actions
-	const shouldShowActions = $derived(config.showActions);
+	const isTombstone = $derived(
+		(context.status as unknown as { type?: string }).type === 'tombstone' ||
+			(context.status as unknown as { isDeleted?: boolean }).isDeleted === true ||
+			(context.status as unknown as { metadata?: { lesser?: { isDeleted?: boolean } } })?.metadata
+				?.lesser?.isDeleted === true
+	);
+	const shouldShowActions = $derived(config.showActions && !isTombstone);
 
 	// Wrap handlers to pass the status
 	const wrappedHandlers = $derived({
@@ -61,6 +84,21 @@ Uses handlers from context.
 	import type { Status as FediverseStatus } from '../../types.js';
 	const extendedStatus = actualStatus as unknown as FediverseStatus;
 	const quoteCount = $derived(extendedStatus.quoteCount);
+	let deleteLoading = $state(false);
+	const shouldShowDelete = $derived(showDelete && !!handlers.onDelete);
+
+	async function handleDelete() {
+		if (readonly || deleteLoading || !handlers.onDelete) return;
+
+		deleteLoading = true;
+		try {
+			await handlers.onDelete(context.status);
+		} catch (error) {
+			console.error('Delete action failed:', error);
+		} finally {
+			deleteLoading = false;
+		}
+	}
 </script>
 
 {#if shouldShowActions}
@@ -68,22 +106,35 @@ Uses handlers from context.
 		{#if actions}
 			{@render actions()}
 		{:else}
+			{#snippet deleteExtension()}
+				<button
+					class="status-actions__delete"
+					onclick={handleDelete}
+					disabled={readonly || deleteLoading}
+					aria-label={deleteLabel}
+				>
+					{deleteLoading ? 'Deleting…' : deleteLabel}
+				</button>
+			{/snippet}
+
 			<ActionBar
 				counts={{
 					replies: actualStatus.repliesCount,
-					boosts: actualStatus.reblogsCount,
-					favorites: actualStatus.favouritesCount,
-					quotes: quoteCount,
-				}}
-				states={{
-					boosted: actualStatus.reblogged,
-					favorited: actualStatus.favourited,
-					bookmarked: actualStatus.bookmarked,
-				}}
-				handlers={wrappedHandlers}
-				{readonly}
+				boosts: actualStatus.reblogsCount,
+				favorites: actualStatus.favouritesCount,
+				quotes: quoteCount,
+			}}
+			states={{
+				// Only show active styling when the current user has boosted
+				boosted: actualStatus.reblogged,
+				favorited: actualStatus.favourited,
+				bookmarked: actualStatus.bookmarked,
+			}}
+			handlers={wrappedHandlers}
+			{readonly}
 				{size}
 				idPrefix={`status-${actualStatus.id}`}
+				extensions={shouldShowDelete ? deleteExtension : undefined}
 			/>
 		{/if}
 	</div>
@@ -99,5 +150,26 @@ Uses handlers from context.
 	:global(.status-root--compact) .status-actions {
 		margin-top: var(--status-spacing-xs, 0.25rem);
 		padding-top: var(--status-spacing-xs, 0.25rem);
+	}
+
+	.status-actions__delete {
+		margin-left: auto;
+		border: none;
+		background: transparent;
+		color: var(--status-danger, #dc2626);
+		font-weight: 600;
+		cursor: pointer;
+		padding: 0.35rem 0.5rem;
+		border-radius: 6px;
+		transition: background-color 0.15s ease;
+	}
+
+	.status-actions__delete:hover {
+		background: rgba(220, 38, 38, 0.08);
+	}
+
+	.status-actions__delete:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
 	}
 </style>

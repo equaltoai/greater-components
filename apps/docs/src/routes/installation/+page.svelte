@@ -90,15 +90,13 @@
 		<h2>Basic Setup</h2>
 
 		<h3>1. Import the CSS tokens</h3>
-		<p>Add the token imports to your global CSS file or app layout:</p>
+		<p>Add the token imports (theme + high contrast) to your global CSS file or app layout:</p>
 		<CodeExample
 			language="css"
 			title="app.css"
 			code={`/* Import design tokens */
-@import '@equaltoai/greater-components-tokens/tokens.css';
-
-/* Optional: High contrast mode support */
-@import '@equaltoai/greater-components-tokens/high-contrast.css' (prefers-contrast: high);`}
+@import '@equaltoai/greater-components-tokens/theme.css';
+@import '@equaltoai/greater-components-tokens/high-contrast.css';`}
 		/>
 
 		<h3>2. Set up the Theme Provider</h3>

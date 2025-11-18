@@ -152,6 +152,7 @@ export interface UnifiedStatus {
 	inReplyTo?: {
 		id: string;
 		accountId: string;
+		account?: UnifiedAccount;
 	};
 	/** Boost/reblog information */
 	reblog?: UnifiedStatus;
@@ -171,6 +172,13 @@ export interface UnifiedStatus {
 	poll?: Poll;
 	/** Source metadata */
 	metadata: SourceMetadata;
+
+	/** Whether this status has been deleted (tombstoned) */
+	isDeleted?: boolean;
+	/** Timestamp when the status was deleted */
+	deletedAt?: string;
+	/** Original object type before deletion (if provided by backend) */
+	formerType?: string;
 
 	// Lesser-specific fields
 	/** Estimated cost in microcents - Lesser only */

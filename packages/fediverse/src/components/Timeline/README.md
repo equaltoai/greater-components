@@ -229,6 +229,11 @@ const handlers: TimelineHandlers = {
 };
 ```
 
+## Deletion & Tombstones
+
+- Timeline items marked as deleted (`type: 'tombstone'`, `metadata.lesser.isDeleted`, or statuses with `isDeleted`) render a muted tombstone row instead of the full status. Replies and thread structure remain intact.
+- Pair with `Status.Actions`’ opt-in `showDelete` + `onDelete` to surface a delete affordance; Lesser-backed timelines default to tombstone rendering when deletions flow through the adapters/stores.
+
 ## Accessibility
 
 Timeline components follow WCAG 2.1 AA guidelines:

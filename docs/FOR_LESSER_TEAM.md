@@ -87,7 +87,8 @@ import { Button } from '@equaltoai/greater-components/primitives';
 **Option 2: Explicit (if needed)**
 
 ```javascript
-import '@equaltoai/greater-components/tokens/theme.css';
+import '@equaltoai/greater-components-tokens/theme.css';
+import '@equaltoai/greater-components-tokens/high-contrast.css';
 import { Button } from '@equaltoai/greater-components/primitives';
 ```
 

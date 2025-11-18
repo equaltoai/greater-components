@@ -2,6 +2,7 @@
 	import { formatDateTime } from '@equaltoai/greater-components-utils';
 	import ContentRenderer from './ContentRenderer.svelte';
 	import ActionBar from './ActionBar.svelte';
+	import { ReplyIcon, RepeatIcon } from '@equaltoai/greater-components-icons';
 	import type { Status } from '../types';
 	import type { Snippet } from 'svelte';
 
@@ -62,6 +63,12 @@
 	const account = $derived(status.reblog?.account || status.account);
 	const actualStatus = $derived(status.reblog || status);
 	const dateTime = $derived(formatDateTime(actualStatus.createdAt));
+	const replyAccount = $derived(actualStatus.inReplyToAccount);
+	const replyStatus = $derived(actualStatus.inReplyToStatus);
+	const replyTargetUrl = $derived(
+		actualStatus.inReplyToStatus?.url ||
+			(actualStatus.inReplyToId ? `#/status/${actualStatus.inReplyToId}` : undefined)
+	);
 
 	function handleCardClick(event: MouseEvent) {
 		// Don't trigger if clicking on links or buttons
@@ -137,12 +144,7 @@
 >
 	{#if status.reblog}
 		<div class="reblog-indicator">
-			<svg class="reblog-icon" viewBox="0 0 24 24" aria-hidden="true">
-				<path
-					fill="currentColor"
-					d="M23.77 15.67a.749.749 0 0 0-1.06 0l-2.22 2.22V7.65a3.755 3.755 0 0 0-3.75-3.75h-5.85a.75.75 0 0 0 0 1.5h5.85c1.24 0 2.25 1.01 2.25 2.25v10.24l-2.22-2.22a.749.749 0 1 0-1.06 1.06l3.5 3.5c.145.147.337.22.53.22s.383-.072.53-.22l3.5-3.5a.747.747 0 0 0 0-1.06zm-10.66 3.28H7.26c-1.24 0-2.25-1.01-2.25-2.25V6.46l2.22 2.22a.752.752 0 0 0 1.062 0 .749.749 0 0 0 0-1.06l-3.5-3.5a.747.747 0 0 0-1.06 0l-3.5 3.5a.749.749 0 1 0 1.06 1.06l2.22-2.22V16.7a3.755 3.755 0 0 0 3.75 3.75h5.85a.75.75 0 0 0 0-1.5z"
-				/>
-			</svg>
+			<RepeatIcon class="reblog-icon" size={16} />
 			<span>{status.account.displayName || status.account.username} boosted</span>
 		</div>
 	{/if}
@@ -150,6 +152,22 @@
 	{#if header}
 		<div class="custom-header">
 			{@render header()}
+		</div>
+	{/if}
+
+	{#if replyAccount || replyTargetUrl}
+		<div class="reply-indicator">
+			<ReplyIcon class="reply-icon" size={16} />
+			<span>Replying to </span>
+			{#if replyTargetUrl}
+				<a href={replyTargetUrl} class="reply-indicator__link">
+					post from {replyAccount?.displayName || replyAccount?.username || 'original author'}
+				</a>
+			{:else if replyAccount}
+				<span class="reply-indicator__link">
+					post from {replyAccount.displayName || replyAccount.username}
+				</span>
+			{/if}
 		</div>
 	{/if}
 
@@ -302,7 +320,7 @@
 		align-items: center;
 		gap: var(--spacing-xs, 0.25rem);
 		margin-bottom: var(--spacing-xs, 0.25rem);
-		margin-left: calc(48px + var(--spacing-sm, 0.5rem));
+		margin-left: 0;
 		color: var(--color-text-secondary, #536471);
 		font-size: var(--font-size-sm, 0.875rem);
 	}
@@ -514,5 +532,23 @@
 	.custom-header,
 	.custom-footer {
 		margin: var(--spacing-sm, 0.5rem) 0;
+	}
+
+	.reply-indicator {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-2xs, 0.2rem);
+		color: var(--color-text-secondary, #536471);
+		font-size: var(--font-size-sm, 0.875rem);
+		margin-left: 0;
+	}
+
+	.reply-indicator__link {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.reply-indicator__link:hover {
+		text-decoration: underline;
 	}
 </style>

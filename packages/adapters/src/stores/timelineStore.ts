@@ -11,10 +11,14 @@ import type {
 	StreamingEdit,
 	JsonPatch,
 	LesserTimelineMetadata,
+	TimelineSource,
+	TimelinePageInfo,
 } from './types';
 import { unifiedStatusToTimelineItem } from './unifiedToTimeline.js';
 import { mapLesserObject } from '../mappers/lesser/mappers.js';
 import { convertGraphQLObjectToLesser } from '../mappers/lesser/graphqlConverters.js';
+import { mapLesserStreamingUpdate } from '../mappers/lesser/mappers.js';
+import type { LesserStreamingUpdate } from '../mappers/lesser/types.js';
 import type { UnifiedStatus } from '../models/unified.js';
 import type { WebSocketEvent } from '../types.js';
 import type {
@@ -24,6 +28,7 @@ import type {
 	ListUpdatesSubscription,
 	RelationshipUpdatesSubscription,
 } from '../graphql/generated/types.js';
+import { fetchTimelinePage } from './fetchHelpers.js';
 
 type TimelineUpdatePayload = TimelineUpdatesSubscription['timelineUpdates'];
 type QuoteActivityPayload = QuoteActivitySubscription['quoteActivity'];
@@ -85,6 +90,10 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		error: null,
 		isStreaming: false,
 		lastSync: null,
+		pageInfo: {
+			endCursor: config.initialPageInfo?.endCursor ?? null,
+			hasNextPage: config.initialPageInfo?.hasNextPage ?? true,
+		},
 		virtualWindow: {
 			startIndex: 0,
 			endIndex: 0,
@@ -100,6 +109,11 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 	let streamingUnsubscribers: (() => void)[] = [];
 	let updateDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 	let pendingUpdates: StreamingEdit[] = [];
+	const timelineSource: TimelineSource | undefined = config.timeline;
+	const pageSize = config.pageSize ?? 20;
+	const deletionMode: NonNullable<TimelineConfig['deletionMode']> =
+		config.deletionMode ?? (config.adapter ? 'tombstone' : 'remove');
+	const sourceMetadataEnhancer = createSourceMetadataEnhancer(timelineSource);
 
 	const isRecord = (value: unknown): value is Record<string, unknown> =>
 		typeof value === 'object' && value !== null;
@@ -139,6 +153,41 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		}
 
 		return Date.now();
+	}
+
+	function createSourceMetadataEnhancer(
+		source?: TimelineSource
+	): MetadataEnhancer | undefined {
+		if (!source) return undefined;
+
+		return (metadata: LesserTimelineMetadata) => {
+			const next: LesserTimelineMetadata = { ...(metadata ?? {}) };
+			let changed = false;
+
+			if (source.type === 'list' && source.id) {
+				const lists = new Set([...(next.listMemberships ?? []), source.id]);
+				next.listMemberships = Array.from(lists);
+				changed = true;
+			}
+
+			if (source.type === 'hashtag') {
+				const tag = source.hashtag ?? source.id;
+				if (tag) {
+					const tags = new Set([...(next.hashtags ?? []), tag]);
+					next.hashtags = Array.from(tags);
+					changed = true;
+				}
+			}
+
+			return changed ? next : metadata;
+		};
+	}
+
+	function normalizePageInfo(info?: Partial<TimelinePageInfo> | null): TimelinePageInfo {
+		return {
+			endCursor: info?.endCursor ?? null,
+			hasNextPage: info?.hasNextPage ?? false,
+		};
 	}
 
 	function runMetadataEnhancer(
@@ -280,6 +329,62 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		if (mutated) {
 			updateDerivedValues();
 		}
+	}
+
+	function isTombstone(item?: TimelineItem | null): boolean {
+		if (!item) return false;
+		return item.type === 'tombstone' || item.metadata?.lesser?.isDeleted === true;
+	}
+
+	function buildTombstoneEdit(
+		itemId: string,
+		options?: { deletedAt?: string; formerType?: string }
+	): StreamingEdit {
+		const existingItem = state.value.items.find((candidate) => candidate.id === itemId);
+		if (isTombstone(existingItem) && existingItem) {
+			return {
+				type: 'replace',
+				itemId,
+				data: existingItem,
+				timestamp: existingItem.timestamp,
+			};
+		}
+
+		const deletedAt = options?.deletedAt ?? new Date().toISOString();
+		const formerType = options?.formerType ?? existingItem?.type ?? 'status';
+		const baseMetadata: TimelineItem['metadata'] = { ...(existingItem?.metadata ?? {}) };
+		const metadata: TimelineItem['metadata'] = {
+			...baseMetadata,
+			lesser: {
+				...(baseMetadata?.lesser ?? {}),
+				isDeleted: true,
+				deletedAt,
+				formerType,
+			},
+		};
+
+		const content =
+			existingItem?.content && typeof existingItem.content === 'object'
+				? {
+						...(existingItem.content as Record<string, unknown>),
+						id: itemId,
+						deletedAt,
+						formerType,
+					}
+				: { id: itemId, deletedAt, formerType };
+
+		return {
+			type: 'replace',
+			itemId,
+			data: {
+				id: itemId,
+				type: 'tombstone',
+				content,
+				metadata,
+				timestamp: existingItem?.timestamp ?? Date.now(),
+			},
+			timestamp: existingItem?.timestamp ?? Date.now(),
+		};
 	}
 
 	function getStatusFromItem(item: TimelineItem): UnifiedStatus | null {
@@ -451,67 +556,70 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 				}
 
 				case 'replace': {
-					if (itemIndex !== -1 && isRecord(edit.data)) {
-						const currentItem = newItems[itemIndex];
-						if (!currentItem) {
+					if (!isRecord(edit.data)) break;
+
+					const typeValue = edit.data['type'];
+					const contentProvided = Object.prototype.hasOwnProperty.call(edit.data, 'content');
+					const metadataProvided = Object.prototype.hasOwnProperty.call(edit.data, 'metadata');
+					const versionProvided = Object.prototype.hasOwnProperty.call(edit.data, 'version');
+					const optimisticProvided = Object.prototype.hasOwnProperty.call(
+						edit.data,
+						'isOptimistic'
+					);
+
+					let metadata: TimelineItem['metadata'] | undefined;
+					if (metadataProvided) {
+						const rawMetadata = edit.data['metadata'];
+						if (rawMetadata === null || rawMetadata === undefined) {
+							metadata = undefined;
+						} else if (isRecord(rawMetadata)) {
+							metadata = rawMetadata as TimelineItem['metadata'];
+						} else {
 							break;
 						}
-						const typeValue = edit.data['type'];
-						const contentProvided = Object.prototype.hasOwnProperty.call(edit.data, 'content');
-						const metadataProvided = Object.prototype.hasOwnProperty.call(edit.data, 'metadata');
-						const versionProvided = Object.prototype.hasOwnProperty.call(edit.data, 'version');
-						const optimisticProvided = Object.prototype.hasOwnProperty.call(
-							edit.data,
-							'isOptimistic'
-						);
+					}
 
-						let metadata: TimelineItem['metadata'] | undefined;
-						if (metadataProvided) {
-							const rawMetadata = edit.data['metadata'];
-							if (rawMetadata === null || rawMetadata === undefined) {
-								metadata = undefined;
-							} else if (isRecord(rawMetadata)) {
-								metadata = rawMetadata as TimelineItem['metadata'];
-							} else {
-								break;
-							}
+					let version: number | undefined;
+					if (versionProvided) {
+						const rawVersion = edit.data['version'];
+						if (rawVersion === null || rawVersion === undefined) {
+							version = undefined;
+						} else if (typeof rawVersion === 'number') {
+							version = rawVersion;
+						} else {
+							break;
 						}
+					}
 
-						let version: number | undefined;
-						if (versionProvided) {
-							const rawVersion = edit.data['version'];
-							if (rawVersion === null || rawVersion === undefined) {
-								version = undefined;
-							} else if (typeof rawVersion === 'number') {
-								version = rawVersion;
-							} else {
-								break;
-							}
-						}
+					const currentItem = itemIndex !== -1 ? newItems[itemIndex] : undefined;
+					const nextType = typeof typeValue === 'string' ? typeValue : currentItem?.type ?? 'default';
+					const nextContent = contentProvided
+						? edit.data['content']
+						: currentItem?.content ?? edit.data['content'];
+					const nextMetadata = metadataProvided ? metadata : currentItem?.metadata;
+					const nextVersion = versionProvided ? version : currentItem?.version;
+					const rawOptimistic = optimisticProvided
+						? edit.data['isOptimistic']
+						: currentItem?.isOptimistic;
+					const nextIsOptimistic =
+						optimisticProvided && typeof rawOptimistic !== 'boolean'
+							? undefined
+							: (rawOptimistic as boolean | undefined);
 
-						const nextType = typeof typeValue === 'string' ? typeValue : currentItem.type;
-						const nextContent = contentProvided ? edit.data['content'] : currentItem.content;
-						const nextMetadata = metadataProvided ? metadata : currentItem.metadata;
-						const nextVersion = versionProvided ? version : currentItem.version;
-						const rawOptimistic = optimisticProvided
-							? edit.data['isOptimistic']
-							: currentItem.isOptimistic;
-						const nextIsOptimistic =
-							optimisticProvided && typeof rawOptimistic !== 'boolean'
-								? undefined
-								: (rawOptimistic as boolean | undefined);
+					const updatedItem = buildTimelineItem(
+						edit.itemId,
+						edit.timestamp,
+						nextType,
+						nextContent,
+						nextMetadata,
+						typeof nextVersion === 'number' ? nextVersion : undefined,
+						nextIsOptimistic ?? currentItem?.isOptimistic
+					);
 
-						const updatedItem = buildTimelineItem(
-							edit.itemId,
-							edit.timestamp,
-							nextType,
-							nextContent,
-							nextMetadata,
-							typeof nextVersion === 'number' ? nextVersion : undefined,
-							nextIsOptimistic ?? currentItem.isOptimistic
-						);
-
+					if (itemIndex !== -1) {
 						newItems[itemIndex] = updatedItem;
+					} else {
+						newItems.push(updatedItem);
 					}
 					break;
 				}
@@ -787,8 +895,47 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		return true;
 	}
 
+	async function deleteStatus(id: string): Promise<void> {
+		if (!config.adapter) {
+			throw new Error('Timeline adapter is required to delete a status');
+		}
+
+		try {
+			await config.adapter.deleteObject(id);
+		} catch (error) {
+			state.update((current) => ({
+				...current,
+				error: error as Error,
+			}));
+			throw error;
+		}
+
+		if (deletionMode === 'tombstone') {
+			const tombstoneEdit = buildTombstoneEdit(id, { deletedAt: new Date().toISOString() });
+			applyStreamingEdit(tombstoneEdit);
+		} else {
+			deleteItem(id);
+		}
+	}
+
+	function normalizeEdit(edit: StreamingEdit): StreamingEdit | null {
+		if (edit.type === 'delete') {
+			if (deletionMode === 'remove') {
+				return edit;
+			}
+			return buildTombstoneEdit(edit.itemId, {
+				deletedAt: new Date(edit.timestamp).toISOString(),
+				formerType: 'status',
+			});
+		}
+
+		return edit;
+	}
+
 	function applyStreamingEdit(edit: StreamingEdit): void {
-		scheduleUpdate(edit);
+		const normalized = normalizeEdit(edit);
+		if (!normalized) return;
+		scheduleUpdate(normalized);
 	}
 
 	function updateVirtualWindow(startIndex: number, endIndex: number): void {
@@ -804,8 +951,58 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		updateDerivedValues();
 	}
 
+	async function fetchPage(after: string | null, replaceExisting = false): Promise<void> {
+		console.log('[timelineStore fetchPage] Called with:', { after, replaceExisting, hasAdapter: !!config.adapter, timelineSource });
+		
+		if (!config.adapter || !timelineSource) {
+			const error = new Error('Timeline adapter and source are required to fetch pages');
+			console.error('[timelineStore fetchPage] Missing adapter or source!', { hasAdapter: !!config.adapter, timelineSource });
+			state.update((current) => ({
+				...current,
+				isLoading: false,
+				error,
+			}));
+			throw error;
+		}
+
+		console.log('[timelineStore fetchPage] Calling fetchTimelinePage...');
+		const metadataEnhancer = sourceMetadataEnhancer;
+		const result = await fetchTimelinePage({
+			adapter: config.adapter,
+			source: timelineSource,
+			pageSize,
+			after,
+		});
+		console.log('[timelineStore fetchPage] fetchTimelinePage result:', result);
+
+		if (replaceExisting) {
+			state.update((current) => ({
+				...current,
+				items: [],
+			}));
+		}
+
+		for (const status of result.items) {
+			upsertUnifiedStatus(status, metadataEnhancer);
+		}
+
+		state.update((current) => ({
+			...current,
+			isLoading: false,
+			error: null,
+			lastSync: Date.now(),
+			pageInfo: normalizePageInfo(result.pageInfo),
+		}));
+
+		updateDerivedValues();
+	}
+
 	async function loadMore(): Promise<void> {
 		if (state.value.isLoading) return;
+		const { pageInfo } = state.value;
+		if (!pageInfo.hasNextPage && pageInfo.endCursor) {
+			return;
+		}
 
 		state.update((current) => ({
 			...current,
@@ -814,54 +1011,49 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		}));
 
 		try {
-			// This would typically make an API call
-			// For now, we'll just simulate it
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
-			// In a real implementation, this would fetch more items
-			// state.items = [...state.items, ...newItems];
+			await fetchPage(state.value.pageInfo.endCursor ?? null, false);
 		} catch (error) {
 			state.update((current) => ({
 				...current,
 				error: error as Error,
-			}));
-			throw error;
-		} finally {
-			state.update((current) => ({
-				...current,
 				isLoading: false,
 			}));
+			throw error;
 		}
 	}
 
 	async function refresh(): Promise<void> {
-		if (state.value.isLoading) return;
+		console.log('[timelineStore refresh] Called. Current isLoading:', state.value.isLoading);
+		
+		if (state.value.isLoading) {
+			console.log('[timelineStore refresh] Already loading, skipping');
+			return;
+		}
 
+		console.log('[timelineStore refresh] Setting isLoading to true and clearing items');
 		state.update((current) => ({
 			...current,
 			isLoading: true,
 			error: null,
+			pageInfo: {
+				...normalizePageInfo(state.value.pageInfo),
+				endCursor: null,
+			},
+			items: [],
 		}));
 
 		try {
-			// This would typically make an API call to refresh data
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
-			state.update((current) => ({
-				...current,
-				lastSync: Date.now(),
-			}));
+			console.log('[timelineStore refresh] About to call fetchPage...');
+			await fetchPage(null, true);
+			console.log('[timelineStore refresh] fetchPage completed successfully');
 		} catch (error) {
+			console.error('[timelineStore refresh] fetchPage error:', error);
 			state.update((current) => ({
 				...current,
 				error: error as Error,
-			}));
-			throw error;
-		} finally {
-			state.update((current) => ({
-				...current,
 				isLoading: false,
 			}));
+			throw error;
 		}
 	}
 
@@ -880,7 +1072,7 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 				const payload = (event?.data ?? null) as TimelineUpdatePayload | null;
 				const status = mapTimelineObject(payload);
 				if (!status) return;
-				upsertUnifiedStatus(status);
+				upsertUnifiedStatus(status, sourceMetadataEnhancer);
 			}
 		);
 
@@ -901,8 +1093,9 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 				if (!status) return;
 
 				upsertUnifiedStatus(status, (metadata) => {
+					const base = runMetadataEnhancer(metadata, sourceMetadataEnhancer) ?? metadata;
 					const next: LesserTimelineMetadata = {
-						...(metadata ?? {}),
+						...(base ?? {}),
 						isQuote: true,
 					};
 
@@ -931,8 +1124,9 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 				if (!status) return;
 
 				upsertUnifiedStatus(status, (metadata) => {
+					const base = runMetadataEnhancer(metadata, sourceMetadataEnhancer) ?? metadata;
 					const next: LesserTimelineMetadata = {
-						...(metadata ?? {}),
+						...(base ?? {}),
 					};
 
 					const hashtags = new Set(next.hashtags ?? []);
@@ -1050,6 +1244,46 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 			}
 		);
 
+		const activityStreamHandler = config.transportManager?.on(
+			'activityStream',
+			(event: WebSocketEvent) => {
+				const payload = (event?.data ?? null) as LesserStreamingUpdate | null;
+				if (!payload) return;
+
+				const mapped = mapLesserStreamingUpdate(payload);
+				if (!mapped.success || !mapped.data) return;
+
+				const operation = mapped.data;
+
+				if ('itemType' in operation && operation.itemType === 'status') {
+					if (deletionMode === 'tombstone') {
+						const tombstoneEdit = buildTombstoneEdit(operation.id, {
+							deletedAt: new Date(operation.timestamp).toISOString(),
+							formerType: 'status',
+						});
+						applyStreamingEdit(tombstoneEdit);
+					} else {
+						deleteItem(operation.id);
+					}
+					return;
+				}
+
+				if ('editType' in operation && 'data' in operation) {
+					applyStreamingEdit({
+						type: 'replace',
+						itemId: operation.id,
+						data: operation.data,
+						timestamp: operation.timestamp,
+					});
+					return;
+				}
+
+				if ('payload' in operation && operation.payload) {
+					upsertUnifiedStatus(operation.payload as UnifiedStatus, sourceMetadataEnhancer);
+				}
+			}
+		);
+
 		// Subscribe to connection events
 		const errorHandler = config.transportManager?.on('error', (event) => {
 			state.update((current) => ({
@@ -1070,6 +1304,7 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		if (hashtagActivityHandler) streamingUnsubscribers.push(hashtagActivityHandler);
 		if (listUpdatesHandler) streamingUnsubscribers.push(listUpdatesHandler);
 		if (relationshipUpdatesHandler) streamingUnsubscribers.push(relationshipUpdatesHandler);
+		if (activityStreamHandler) streamingUnsubscribers.push(activityStreamHandler);
 		if (errorHandler) streamingUnsubscribers.push(errorHandler);
 		if (closeHandler) streamingUnsubscribers.push(closeHandler);
 
@@ -1128,6 +1363,10 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 			error: null,
 			isStreaming: false,
 			lastSync: null,
+			pageInfo: {
+				endCursor: null,
+				hasNextPage: true,
+			},
 			virtualWindow: {
 				startIndex: 0,
 				endIndex: 0,
@@ -1180,6 +1419,7 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		addItem,
 		replaceItem,
 		deleteItem,
+		deleteStatus,
 		applyStreamingEdit,
 		updateVirtualWindow,
 		loadMore,

@@ -15373,6 +15373,18 @@
             "deprecationReason": null
           },
           {
+            "name": "boostedObject",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "Object",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "communityNotes",
             "description": null,
             "args": [],

@@ -72,6 +72,7 @@ Container component that provides context to child components.
   - `onBoost?: (status) => void` - Boost handler
   - `onFavorite?: (status) => void` - Favorite handler
   - `onShare?: (status) => void` - Share handler
+  - `onDelete?: (status) => void` - Delete handler (renders a tombstone when paired with store tombstone support)
 
 ### Status.Header
 
@@ -109,9 +110,13 @@ Action buttons for interactions (reply, boost, favorite, share).
 **Props:**
 
 - `actions?: Snippet` - Custom actions rendering
+- `showDelete?: boolean` - Show a delete affordance (default: `false`)
+- `deleteLabel?: string` - Delete button label (default: `'Delete'`)
 - `size?: 'sm' | 'md' | 'lg'` - Button size (default: `'sm'`)
 - `readonly?: boolean` - Disable interactions (default: `false`)
 - `class?: string` - Custom CSS class
+
+> Deleted/tombstoned statuses render a non-interactive tombstone row automatically when `status.isDeleted` or Lesser metadata flags are present.
 
 ## Advanced Examples
 

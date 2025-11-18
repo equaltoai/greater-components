@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Button } from '@equaltoai/greater-components-primitives';
-	import {
-		ReplyIcon as Reply,
-		BoostIcon as Boost,
-		FavoriteIcon as Favorite,
-		ShareIcon as Share,
-		UnboostIcon as Unboost,
-		UnfavoriteIcon as Unfavorite,
-	} from '@equaltoai/greater-components-icons';
+import {
+	ReplyIcon as Reply,
+	RepeatIcon as Boost,
+	FavoriteIcon as Favorite,
+	ShareIcon as Share,
+	RepeatIcon as Unboost,
+	UnfavoriteIcon as Unfavorite,
+} from '@equaltoai/greater-components-icons';
 	import type { Snippet } from 'svelte';
 
 	interface ActionCounts {
@@ -328,7 +328,9 @@
 		min-width: auto;
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		color: var(--gr-semantic-foreground-secondary);
-		transition: color var(--gr-motion-duration-fast) var(--gr-motion-easing-out);
+		transition:
+			color var(--gr-motion-duration-fast) var(--gr-motion-easing-out),
+			fill var(--gr-motion-duration-fast) var(--gr-motion-easing-out);
 	}
 
 	.gr-action-bar :global(.gr-action-bar__button:hover:not(:disabled):not(.gr-button--loading)) {
@@ -349,6 +351,7 @@
 
 	.gr-action-bar :global(.gr-action-bar__button--boost.gr-action-bar__button--active) {
 		color: var(--gr-semantic-success-foreground);
+		background-color: var(--gr-semantic-success-background);
 	}
 
 	/* Favorite button specific styles */
@@ -359,6 +362,7 @@
 
 	.gr-action-bar :global(.gr-action-bar__button--favorite.gr-action-bar__button--active) {
 		color: var(--gr-semantic-danger-foreground);
+		background-color: var(--gr-semantic-danger-background);
 	}
 
 	/* Share button specific styles */

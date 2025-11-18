@@ -82,6 +82,11 @@ export interface WalletConnectionData {
  */
 export interface AuthHandlers {
 	/**
+	 * Handle OAuth instance selection/start
+	 */
+	onOAuthStart?: (instanceUrl: string) => Promise<void>;
+
+	/**
 	 * Handle email/password login
 	 */
 	onLogin?: (credentials: LoginCredentials) => Promise<void>;
@@ -257,18 +262,9 @@ export interface AuthContext {
  * @returns Authentication context
  */
 export function createAuthContext(
-	initialState: Partial<AuthState> = {},
+	state: AuthState,
 	handlers: AuthHandlers = {}
 ): AuthContext {
-	const state = $state<AuthState>({
-		authenticated: initialState.authenticated ?? false,
-		user: initialState.user ?? null,
-		loading: initialState.loading ?? false,
-		error: initialState.error ?? null,
-		requiresTwoFactor: initialState.requiresTwoFactor ?? false,
-		twoFactorSession: initialState.twoFactorSession,
-	});
-
 	const context: AuthContext = {
 		state,
 		handlers,
@@ -330,6 +326,30 @@ export function isValidPassword(password: string): { valid: boolean; message?: s
 	}
 	return { valid: true };
 }
+
+/**
+ * Validate instance URL (fediverse host)
+ */
+export function isValidInstanceUrl(value: string): boolean {
+	const trimmed = value.trim();
+	if (!trimmed) return false;
+
+	const candidate =
+		trimmed.startsWith('http://') || trimmed.startsWith('https://')
+			? trimmed
+			: `https://${trimmed}`;
+
+	try {
+		const url = new URL(candidate);
+		return url.hostname.length > 0 && (url.protocol === 'https:' || url.protocol === 'http:');
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Validate instance URL (fediverse host)
+ */
 
 /**
  * Validate username format

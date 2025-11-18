@@ -179,6 +179,7 @@ module.exports = {
 ```javascript
 // 1. In your main app file
 import '@equaltoai/greater-components-tokens/theme.css';
+import '@equaltoai/greater-components-tokens/high-contrast.css';
 
 // 2. In Vite config
 export default defineConfig({
@@ -193,6 +194,7 @@ export default defineConfig({
 
 // 3. In SvelteKit app.html
 <link rel="stylesheet" href="%sveltekit.assets%/@equaltoai/greater-components-tokens/theme.css">
+<link rel="stylesheet" href="%sveltekit.assets%/@equaltoai/greater-components-tokens/high-contrast.css">
 ```
 
 ## TypeScript Errors

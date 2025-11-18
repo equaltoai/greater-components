@@ -1,0 +1,149 @@
+<!--
+  Auth.InstanceSelector - Fediverse OAuth entry point
+
+  Collects an instance URL/host and triggers the OAuth start handler.
+
+  @component
+  @example
+  ```svelte
+  <Auth.Root {handlers}>
+    <Auth.InstanceSelector />
+  </Auth.Root>
+  ```
+-->
+<script lang="ts">
+	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { getAuthContext, isValidInstanceUrl } from './context.js';
+
+	interface Props {
+		/**
+		 * Default instance value (e.g., dev.lesser.host)
+		 */
+		defaultInstance?: string;
+		/**
+		 * Button label
+		 */
+		submitLabel?: string;
+		/**
+		 * Custom CSS class
+		 */
+		class?: string;
+	}
+
+	let { defaultInstance = '', submitLabel = 'Continue', class: className = '' }: Props = $props();
+
+	const { handlers, state: authState, updateState, clearError } = getAuthContext();
+
+	let instanceInput = $state(defaultInstance);
+	let instanceError = $state<string | null>(null);
+
+	const submitButton = createButton({
+		onClick: () => handleSubmit(),
+	});
+
+	function normalizeInstance(value: string): string {
+		const trimmed = value.trim();
+		if (!trimmed) return '';
+		return trimmed.startsWith('http://') || trimmed.startsWith('https://')
+			? trimmed
+			: `https://${trimmed}`;
+	}
+
+	async function handleSubmit() {
+		if (authState.loading) return;
+		instanceError = null;
+		clearError();
+
+		if (!isValidInstanceUrl(instanceInput)) {
+			instanceError = 'Enter a valid instance URL (e.g., dev.lesser.host)';
+			return;
+		}
+
+		const normalized = normalizeInstance(instanceInput);
+
+		updateState({ loading: true });
+		try {
+			await handlers.onOAuthStart?.(normalized);
+		} catch (error) {
+			instanceError =
+				error instanceof Error ? error.message : 'Unable to start OAuth flow for this instance';
+		} finally {
+			updateState({ loading: false });
+		}
+	}
+</script>
+
+<div class={`auth-instance ${className}`}>
+	<label class="auth-instance__label" for="instance">Instance</label>
+	<input
+		id="instance"
+		name="instance"
+		type="text"
+		class="auth-instance__input"
+		placeholder="https://dev.lesser.host"
+		bind:value={instanceInput}
+		autocomplete="url"
+		inputmode="url"
+		aria-invalid={instanceError ? 'true' : 'false'}
+	/>
+
+	{#if instanceError}
+		<p class="auth-instance__error" role="alert">{instanceError}</p>
+	{/if}
+
+<button
+	class="auth-instance__submit"
+	disabled={authState.loading}
+	aria-busy={authState.loading}
+	onclick={handleSubmit}
+>
+	{authState.loading ? 'Connecting…' : submitLabel}
+</button>
+</div>
+
+<style>
+	.auth-instance {
+		display: grid;
+		gap: var(--gr-spacing-scale-2, 0.5rem);
+		width: 100%;
+		max-width: 480px;
+	}
+
+	.auth-instance__label {
+		font-weight: 600;
+	}
+
+	.auth-instance__input {
+		width: 100%;
+		padding: var(--gr-spacing-scale-3, 0.75rem);
+		border: 1px solid var(--gr-semantic-border-default, #d1d5db);
+		border-radius: var(--gr-radii-md, 0.5rem);
+		font-size: 1rem;
+	}
+
+	.auth-instance__input:focus-visible {
+		outline: 2px solid var(--gr-semantic-focus-ring, #2563eb);
+		outline-offset: 2px;
+	}
+
+	.auth-instance__error {
+		color: var(--gr-semantic-status-error, #dc2626);
+		font-size: 0.9rem;
+	}
+
+	.auth-instance__submit {
+		justify-self: start;
+		padding: var(--gr-spacing-scale-3, 0.75rem) var(--gr-spacing-scale-4, 1rem);
+		background: var(--gr-semantic-action-primary-default, #2563eb);
+		color: white;
+		border: none;
+		border-radius: var(--gr-radii-md, 0.5rem);
+		cursor: pointer;
+		font-weight: 600;
+	}
+
+	.auth-instance__submit:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+</style>

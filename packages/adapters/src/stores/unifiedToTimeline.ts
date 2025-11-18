@@ -15,6 +15,18 @@ export function unifiedStatusToTimelineItem(
 ): Omit<TimelineItem, 'id' | 'timestamp'> {
 	const lesserMetadata: LesserTimelineMetadata = {};
 
+	if (status.isDeleted) {
+		lesserMetadata.isDeleted = true;
+	}
+
+	if (status.deletedAt) {
+		lesserMetadata.deletedAt = status.deletedAt;
+	}
+
+	if (status.formerType) {
+		lesserMetadata.formerType = status.formerType;
+	}
+
 	// Populate Lesser metadata from UnifiedStatus fields
 	if (status.estimatedCost !== undefined) {
 		lesserMetadata.estimatedCost = status.estimatedCost;
@@ -55,7 +67,7 @@ export function unifiedStatusToTimelineItem(
 	}
 
 	return {
-		type: 'status',
+		type: status.isDeleted ? 'tombstone' : 'status',
 		content: status,
 		metadata:
 			Object.keys(lesserMetadata).length > 0

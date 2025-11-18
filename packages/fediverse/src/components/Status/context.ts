@@ -83,6 +83,11 @@ export interface StatusActionHandlers {
 	 * Bookmark action handler
 	 */
 	onBookmark?: (status: GenericStatus) => Promise<void> | void;
+
+	/**
+	 * Delete action handler
+	 */
+	onDelete?: (status: GenericStatus) => Promise<void> | void;
 }
 
 /**

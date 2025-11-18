@@ -50,26 +50,28 @@ from '@equaltoai/greater-components/fediverse';
 <!-- src/routes/+layout.svelte -->
 <script>
 	// 1. Design tokens (REQUIRED)
-	import '@equaltoai/greater-components/tokens/theme.css';
+	import '@equaltoai/greater-components-tokens/theme.css';
 
-	// 2. Component styles (REQUIRED for CSR)
+	// 2. High contrast overlays (RECOMMENDED for a11y)
+	import '@equaltoai/greater-components-tokens/high-contrast.css';
+
+	// 3. Component styles (REQUIRED for CSR)
 	import '@equaltoai/greater-components/primitives/style.css';
-
-	// 3. Optional: High contrast support
-	import '@equaltoai/greater-components/tokens/high-contrast.css';
 </script>
 ```
 
 **Why both CSS files?**
 
 - `theme.css` - CSS custom properties (design tokens)
+- `high-contrast.css` - Accessibility overlays for high contrast and forced-colors modes
 - `style.css` - Component-specific styles (needed when compiling from source)
 
 **For SSR (Server-Side Rendering):**
 If you're using SSR, components compile from source and CSS is auto-injected. You may only need:
 
 ```svelte
-import '@equaltoai/greater-components/tokens/theme.css';
+import '@equaltoai/greater-components-tokens/theme.css';
+import '@equaltoai/greater-components-tokens/high-contrast.css';
 ```
 
 ### 3. ThemeProvider Setup ✅
@@ -80,7 +82,8 @@ import '@equaltoai/greater-components/tokens/theme.css';
 <!-- src/routes/+layout.svelte -->
 <script>
 	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
-	import '@equaltoai/greater-components/tokens/theme.css';
+	import '@equaltoai/greater-components-tokens/theme.css';
+	import '@equaltoai/greater-components-tokens/high-contrast.css';
 	import '@equaltoai/greater-components/primitives/style.css';
 </script>
 

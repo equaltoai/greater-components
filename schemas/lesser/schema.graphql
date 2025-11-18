@@ -107,6 +107,8 @@ type Object {
 	content: String!
 	contentMap: [ContentMap!]!
 	inReplyTo: Object
+	# Reference to the boosted/reblogged object (if this is a boost)
+	boostedObject: Object
 	visibility: Visibility!
 	sensitive: Boolean!
 	spoilerText: String

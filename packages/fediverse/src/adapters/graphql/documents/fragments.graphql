@@ -74,7 +74,7 @@ fragment QuoteContextFields on QuoteContext {
 	}
 }
 
-fragment ObjectFields on Object {
+fragment ObjectContentFields on Object {
 	id
 	type
 	content
@@ -120,6 +120,14 @@ fragment ObjectFields on Object {
 		actor {
 			...ActorSummary
 		}
+	}
+}
+
+fragment ObjectFields on Object {
+	...ObjectContentFields
+	# Boost/reblog payload (Lesser returns boostedObject for shares)
+	boostedObject {
+		...ObjectContentFields
 	}
 }
 

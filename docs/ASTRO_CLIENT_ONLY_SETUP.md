@@ -62,7 +62,8 @@ export default defineConfig({
 ```astro
 ---
 // Import BOTH CSS files for full styling
-import '@equaltoai/greater-components/tokens/theme.css';    // Design tokens
+import '@equaltoai/greater-components-tokens/theme.css';     // Design tokens
+import '@equaltoai/greater-components-tokens/high-contrast.css'; // High contrast overlays
 import '@equaltoai/greater-components/primitives/style.css'; // Component styles
 ---
 
@@ -124,9 +125,10 @@ import '@equaltoai/greater-components/primitives/style.css'; // Component styles
 ### Astro Page
 
 ```astro
----
+--- 
 // src/pages/login.astro
-import '@equaltoai/greater-components/tokens/theme.css';
+import '@equaltoai/greater-components-tokens/theme.css';
+import '@equaltoai/greater-components-tokens/high-contrast.css';
 import '@equaltoai/greater-components/primitives/style.css';
 import PasswordlessLogin from '../components/PasswordlessLogin.svelte';
 
@@ -189,7 +191,8 @@ After setup, verify everything works:
 **Fix:**
 
 ```astro
-import '@equaltoai/greater-components/tokens/theme.css';
+import '@equaltoai/greater-components-tokens/theme.css';
+import '@equaltoai/greater-components-tokens/high-contrast.css';
 import '@equaltoai/greater-components/primitives/style.css';  // ← singular, not styles.css
 ```
 
@@ -221,10 +224,11 @@ npm install @equaltoai/greater-components@latest
 
 **Problem:** CSS custom properties not loading
 
-**Fix:** Make sure `theme.css` is imported BEFORE `style.css`:
+**Fix:** Make sure token CSS lands before component styles:
 
 ```javascript
-import '@equaltoai/greater-components/tokens/theme.css'; // First!
+import '@equaltoai/greater-components-tokens/theme.css'; // First!
+import '@equaltoai/greater-components-tokens/high-contrast.css';
 import '@equaltoai/greater-components/primitives/style.css'; // Second
 ```
 
@@ -236,7 +240,7 @@ import '@equaltoai/greater-components/primitives/style.css'; // Second
 - [ ] Svelte 5.36+ installed
 - [ ] @astrojs/svelte 7.1+ installed
 - [ ] `runes: true` in astro.config.mjs
-- [ ] Both CSS files imported
+- [ ] Token CSS (theme + high-contrast) and component styles imported
 - [ ] Using `client:only="svelte"`
 - [ ] Components render with styling
 - [ ] No console errors

@@ -41,8 +41,17 @@
 
 	let { initialState = {}, handlers = {}, children, class: className = '' }: Props = $props();
 
-	// Create auth context
-	createAuthContext(initialState, handlers);
+	// Initialize auth state inside a Svelte component so rune tracking works
+	const state = $state<AuthState>({
+		authenticated: initialState.authenticated ?? false,
+		user: initialState.user ?? null,
+		loading: initialState.loading ?? false,
+		error: initialState.error ?? null,
+		requiresTwoFactor: initialState.requiresTwoFactor ?? false,
+		twoFactorSession: initialState.twoFactorSession,
+	});
+
+	createAuthContext(state, handlers);
 </script>
 
 <div class={`auth-root ${className}`}>

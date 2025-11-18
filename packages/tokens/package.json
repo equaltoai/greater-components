@@ -20,6 +20,7 @@
       "import": "./dist/index.js"
     },
     "./theme.css": "./dist/theme.css",
+    "./high-contrast.css": "./dist/high-contrast.css",
     "./themes/*": "./dist/themes/*"
   },
   "files": [

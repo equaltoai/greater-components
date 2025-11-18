@@ -25,6 +25,7 @@ Can be used with Status compound component or custom content.
 	import type { Snippet } from 'svelte';
 	import type { GenericTimelineItem } from '../../generics/index.js';
 	import { getTimelineContext } from './context.js';
+	import { formatDateTime } from '@equaltoai/greater-components-utils';
 
 	interface Props {
 		/**
@@ -43,14 +44,34 @@ Can be used with Status compound component or custom content.
 		children?: Snippet;
 
 		/**
+		 * Custom tombstone rendering
+		 */
+		tombstone?: Snippet;
+
+		/**
 		 * Additional CSS class
 		 */
 		class?: string;
 	}
 
-	let { item, index, children, class: className = '' }: Props = $props();
+	let { item, index, children, tombstone, class: className = '' }: Props = $props();
 
 	const context = getTimelineContext();
+	const deletedAt = $derived(
+		(item?.metadata as { lesser?: { deletedAt?: string } } | undefined)?.lesser?.deletedAt ||
+			(item as { status?: { deletedAt?: string } } | undefined)?.status?.deletedAt
+	);
+	const deletedLabel = $derived(() => {
+		if (!deletedAt) return null;
+		const parsed = formatDateTime(deletedAt);
+		return parsed.relative;
+	});
+	const isTombstone = $derived(
+		item?.type === 'tombstone' ||
+			(item?.metadata as { lesser?: { isDeleted?: boolean } } | undefined)?.lesser?.isDeleted ===
+				true ||
+			(item as { status?: { isDeleted?: boolean } } | undefined)?.status?.isDeleted === true
+	);
 
 	/**
 	 * Handle item click
@@ -73,37 +94,58 @@ Can be used with Status compound component or custom content.
 	}
 </script>
 
-<article
-	class={`timeline-item ${className}`}
-	data-index={index}
-	data-status-id={status.id}
-	aria-posinset={index + 1}
-	aria-setsize={context.state.itemCount}
->
-	{#if context.handlers.onItemClick}
-		<div
-			class="timeline-item__interactive"
-			role="button"
-			tabindex={0}
-			onclick={handleClick}
-			onkeydown={handleKeyDown}
-		>
-			{#if children}
-				{@render children()}
-			{/if}
-		</div>
-	{:else}
-		<div class="timeline-item__interactive">
-			{#if children}
-				{@render children()}
-			{/if}
-		</div>
-	{/if}
-</article>
+	<article
+		class={`timeline-item ${className}`}
+		data-index={index}
+		data-status-id={item.id}
+		aria-posinset={index + 1}
+		aria-setsize={context.state.itemCount}
+	>
+		{#if isTombstone}
+			<div class="timeline-item__tombstone">
+				{#if tombstone}
+					{@render tombstone()}
+				{:else}
+					<div class="timeline-item__tombstone-icon" aria-hidden="true">
+						<svg viewBox="0 0 24 24">
+							<path
+								fill="currentColor"
+								d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 16h-2v-2h2zm0-4h-2V7h2z"
+							/>
+						</svg>
+					</div>
+					<div>
+						<p class="timeline-item__tombstone-title">This post has been deleted.</p>
+						{#if deletedLabel}
+							<p class="timeline-item__tombstone-meta">Deleted {deletedLabel}</p>
+						{/if}
+					</div>
+				{/if}
+			</div>
+		{:else if context.handlers.onItemClick}
+			<div
+				class="timeline-item__interactive"
+				role="button"
+				tabindex={0}
+				onclick={handleClick}
+				onkeydown={handleKeyDown}
+			>
+				{#if children}
+					{@render children()}
+				{/if}
+			</div>
+		{:else}
+			<div class="timeline-item__interactive">
+				{#if children}
+					{@render children()}
+				{/if}
+			</div>
+		{/if}
+	</article>
 
-<style>
-	.timeline-item {
-		width: 100%;
+	<style>
+		.timeline-item {
+			width: 100%;
 		border-bottom: 1px solid var(--timeline-border, #e1e8ed);
 		background: var(--timeline-item-bg, white);
 		transition: background-color 0.2s;
@@ -132,4 +174,35 @@ Can be used with Status compound component or custom content.
 		outline: 2px solid var(--timeline-focus-ring, #3b82f6);
 		outline-offset: -2px;
 	}
-</style>
+
+	.timeline-item__tombstone {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem;
+		color: var(--timeline-text-secondary, #536471);
+		font-size: var(--timeline-font-size-sm, 0.95rem);
+	}
+
+	.timeline-item__tombstone-title {
+		margin: 0;
+		font-weight: 600;
+		color: var(--timeline-text-primary, #0f1419);
+	}
+
+	.timeline-item__tombstone-meta {
+		margin: 0;
+		color: var(--timeline-text-secondary, #536471);
+	}
+
+	.timeline-item__tombstone-icon {
+		width: 32px;
+		height: 32px;
+		opacity: 0.65;
+	}
+
+	.timeline-item__tombstone-icon svg {
+		width: 100%;
+		height: 100%;
+	}
+	</style>

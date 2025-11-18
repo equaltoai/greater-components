@@ -3,6 +3,8 @@
  */
 
 import type { TransportManager } from '../TransportManager';
+import type { LesserGraphQLAdapter } from '../graphql';
+import type { WebSocketPool } from '../WebSocketPool';
 
 // Base store types
 export interface BaseStore<T = unknown> {
@@ -24,6 +26,12 @@ export interface LesserTimelineMetadata {
 	estimatedCost?: number;
 	/** Moderation score (0-1) */
 	moderationScore?: number;
+	/** Tombstone flag (Lesser soft delete) */
+	isDeleted?: boolean;
+	/** When the item was deleted */
+	deletedAt?: string;
+	/** Original type before tombstone */
+	formerType?: string;
 	/** Has community notes attached */
 	hasCommunityNotes?: boolean;
 	/** Community notes count */
@@ -58,7 +66,7 @@ export interface TimelineItem {
 	/** Unique identifier */
 	id: string;
 	/** Item type/category */
-	type: string;
+	type: 'status' | 'tombstone' | string;
 	/** Creation timestamp */
 	timestamp: number;
 	/** Item content/data */
@@ -89,6 +97,8 @@ export interface TimelineState {
 	isStreaming: boolean;
 	/** Last sync timestamp */
 	lastSync: number | null;
+	/** Pagination info from GraphQL */
+	pageInfo: TimelinePageInfo;
 	/** Virtualization window */
 	virtualWindow: {
 		startIndex: number;
@@ -98,11 +108,44 @@ export interface TimelineState {
 	};
 }
 
+export type TimelineSourceType =
+	| 'home'
+	| 'local'
+	| 'federated'
+	| 'direct'
+	| 'list'
+	| 'hashtag'
+	| 'actor';
+
+export interface TimelineSource {
+	type: TimelineSourceType;
+	id?: string;
+	hashtag?: string;
+	mediaOnly?: boolean;
+}
+
+export interface TimelinePageInfo {
+	endCursor: string | null;
+	hasNextPage: boolean;
+}
+
 export interface TimelineConfig {
 	/** Transport manager for streaming updates */
 	transportManager: TransportManager;
+	/** Optional WebSocket pool for streaming */
+	webSocketPool?: WebSocketPool;
+	/** Lesser GraphQL adapter for fetching timelines */
+	adapter?: LesserGraphQLAdapter;
+	/** Timeline source descriptor */
+	timeline?: TimelineSource;
+	/** Page size for GraphQL queries */
+	pageSize?: number;
+	/** Auth context (refreshed before operations that may require it) */
+	authContext?: () => Promise<unknown>;
 	/** Initial items to load */
 	initialItems?: TimelineItem[];
+	/** Initial page info to seed pagination */
+	initialPageInfo?: Partial<TimelinePageInfo>;
 	/** Item height for virtualization */
 	itemHeight?: number;
 	/** Container height for virtualization */
@@ -111,6 +154,8 @@ export interface TimelineConfig {
 	overscan?: number;
 	/** Debounce time for batch updates */
 	updateDebounceMs?: number;
+	/** How deletions should be reflected in the timeline */
+	deletionMode?: 'remove' | 'tombstone';
 }
 
 export interface StreamingEdit {
@@ -237,6 +282,10 @@ export interface NotificationState {
 	error: Error | null;
 	/** Streaming connection status */
 	isStreaming: boolean;
+	/** Pagination info from GraphQL */
+	pageInfo: NotificationPageInfo;
+	/** Last sync timestamp */
+	lastSync: number | null;
 }
 
 export interface NotificationFilter {
@@ -258,14 +307,27 @@ export interface NotificationFilter {
 export interface NotificationConfig {
 	/** Transport manager for streaming updates */
 	transportManager: TransportManager;
+	/** Lesser GraphQL adapter for fetching notifications */
+	adapter?: LesserGraphQLAdapter;
+	/** Page size for GraphQL queries */
+	pageSize?: number;
+	/** Auth context (refreshed before operations that may require it) */
+	authContext?: () => Promise<unknown>;
 	/** Initial notifications to load */
 	initialNotifications?: Notification[];
+	/** Initial page info to seed pagination */
+	initialPageInfo?: Partial<NotificationPageInfo>;
 	/** Auto-dismiss timeout for notifications */
 	defaultDismissAfter?: number;
 	/** Maximum number of notifications to keep */
 	maxNotifications?: number;
 	/** Debounce time for batch updates */
 	updateDebounceMs?: number;
+}
+
+export interface NotificationPageInfo {
+	endCursor: string | null;
+	hasNextPage: boolean;
 }
 
 // Presence store types
@@ -385,6 +447,8 @@ export interface TimelineStore extends BaseStore<TimelineState> {
 	replaceItem(id: string, item: Partial<TimelineItem>): boolean;
 	/** Delete item */
 	deleteItem(id: string): boolean;
+	/** Delete a status via adapter + apply deletion semantics */
+	deleteStatus(id: string): Promise<void>;
 	/** Apply streaming edit */
 	applyStreamingEdit(edit: StreamingEdit): void;
 	/** Update virtualization window */
@@ -424,6 +488,10 @@ export interface NotificationStore extends BaseStore<NotificationState> {
 	clearAll(): void;
 	/** Update notification filter */
 	updateFilter(filter: Partial<NotificationFilter>): void;
+	/** Load next page of notifications */
+	loadMore(): Promise<void>;
+	/** Refresh notifications from the beginning */
+	refresh(): Promise<void>;
 	/** Start streaming updates */
 	startStreaming(): void;
 	/** Stop streaming updates */

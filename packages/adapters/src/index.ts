@@ -118,6 +118,8 @@ export {
 	batchMapLesserAccounts,
 	batchMapLesserPosts,
 	batchMapLesserNotifications,
+	mapLesserObject,
+	convertGraphQLObjectToLesser,
 
 	// Mapper utilities
 	MapperUtils,

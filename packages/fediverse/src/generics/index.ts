@@ -328,6 +328,11 @@ export interface GenericStatus<T extends ActivityPubObject = ActivityPubObject> 
 	 */
 	inReplyToId?: string;
 	inReplyToAccountId?: string;
+	inReplyToAccount?: ActivityPubActor;
+	/**
+	 * Hydrated parent status (when available)
+	 */
+	inReplyToStatus?: GenericStatus<T>;
 
 	/**
 	 * Reblog information
@@ -358,7 +363,7 @@ export interface GenericTimelineItem<T extends ActivityPubObject = ActivityPubOb
 	/**
 	 * Type of timeline item
 	 */
-	type: 'status' | 'reblog' | 'notification' | 'activity';
+	type: 'status' | 'reblog' | 'notification' | 'activity' | 'tombstone' | string;
 
 	/**
 	 * The actual status or object
@@ -389,6 +394,12 @@ export interface GenericTimelineItem<T extends ActivityPubObject = ActivityPubOb
 	 */
 	metadata?: {
 		lesser?: {
+			/** Soft-deleted indicator */
+			isDeleted?: boolean;
+			/** Deletion timestamp */
+			deletedAt?: string;
+			/** Original type before deletion */
+			formerType?: string;
 			/** Estimated cost in microcents */
 			estimatedCost?: number;
 			/** Moderation score (0-1) */

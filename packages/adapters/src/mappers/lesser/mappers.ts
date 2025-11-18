@@ -487,8 +487,21 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
 					helpful: safeNumber(note.helpful),
 					notHelpful: safeNumber(note.notHelpful),
 					createdAt: safeString(note.createdAt),
-				}))
+					}))
 			: undefined;
+
+		const replyTo = obj.inReplyTo;
+		const replyAccountResult =
+			replyTo?.actor !== undefined ? mapLesserAccount(replyTo.actor) : undefined;
+		const replyAccount =
+			replyAccountResult && replyAccountResult.success ? replyAccountResult.data : undefined;
+
+		const reblogResult = obj.shareOf
+			? mapLesserObject(obj.shareOf)
+			: obj.boostedObject
+				? mapLesserObject(obj.boostedObject)
+				: undefined;
+		const reblogStatus = reblogResult && reblogResult.success ? reblogResult.data : undefined;
 
 		const unified: UnifiedStatus = {
 			id: obj.id,
@@ -506,6 +519,14 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
 					url: safeString(tag.url),
 				})) || [],
 			emojis: [],
+			inReplyTo: replyTo
+				? {
+						id: safeString(replyTo.id),
+						accountId: safeString(replyTo.authorId ?? replyAccount?.id ?? ''),
+						account: replyAccount,
+					}
+				: undefined,
+			reblog: reblogStatus,
 			repliesCount: safeNumber(obj.repliesCount),
 			reblogsCount: safeNumber(obj.sharesCount),
 			favouritesCount: safeNumber(obj.likesCount),
@@ -596,7 +617,13 @@ export function mapLesserPost(post: LesserPostFragment): MapperResult<UnifiedSta
 		}
 
 		const account = accountResult.data;
-		const reblogResult = post.shareOf ? mapLesserPost(post.shareOf) : undefined;
+		const replyTo = post.inReplyTo ?? post.replyTo;
+		const replyAccountResult =
+			replyTo?.actor !== undefined ? mapLesserAccount(replyTo.actor) : undefined;
+		const replyAccount =
+			replyAccountResult && replyAccountResult.success ? replyAccountResult.data : undefined;
+		const reblogSource = post.shareOf ?? post.boostedObject;
+		const reblogResult = reblogSource ? mapLesserPost(reblogSource) : undefined;
 		const reblogStatus = reblogResult && reblogResult.success ? reblogResult.data : undefined;
 
 		const unified: UnifiedStatus = {
@@ -612,10 +639,11 @@ export function mapLesserPost(post: LesserPostFragment): MapperResult<UnifiedSta
 			mentions: (post.mentions || []).map(mapLesserMention),
 			tags: (post.hashtags || []).map(mapLesserHashtag),
 			emojis: (post.emojis || []).map(mapLesserEmoji),
-			inReplyTo: post.replyTo
+			inReplyTo: replyTo
 				? {
-						id: post.replyTo.id,
-						accountId: safeString(post.replyTo.authorId),
+						id: replyTo.id,
+						accountId: safeString(replyTo.authorId ?? replyAccount?.id ?? ''),
+						account: replyAccount,
 					}
 				: undefined,
 			reblog: reblogStatus,

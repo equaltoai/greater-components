@@ -91,6 +91,12 @@ export interface LesserEmojiFragment {
 	isVisible: boolean;
 }
 
+export interface LesserReplyRef {
+	id: string;
+	actor?: LesserAccountFragment;
+	authorId?: string;
+}
+
 // Post/Status types
 export interface LesserPostFragment {
 	id: string;
@@ -105,11 +111,10 @@ export interface LesserPostFragment {
 	mentions: LesserMentionFragment[];
 	hashtags: LesserHashtagFragment[];
 	emojis: LesserEmojiFragment[];
-	replyTo?: {
-		id: string;
-		authorId: string;
-	};
+	replyTo?: LesserReplyRef;
+	inReplyTo?: LesserReplyRef;
 	shareOf?: LesserPostFragment;
+	boostedObject?: LesserPostFragment;
 	interactionCounts: LesserInteractionCounts;
 	userInteractions: LesserUserInteractions;
 	isPinned: boolean;
@@ -310,7 +315,7 @@ export interface LesserObjectFragment {
 	type: string;
 	actor: LesserAccountFragment;
 	content: string;
-	inReplyTo?: string;
+	inReplyTo?: LesserReplyRef;
 	visibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'DIRECT';
 	sensitive: boolean;
 	spoilerText?: string;
@@ -319,6 +324,8 @@ export interface LesserObjectFragment {
 	mentions: LesserMentionFragment[];
 	createdAt: string;
 	updatedAt: string;
+	shareOf?: LesserObjectFragment;
+	boostedObject?: LesserObjectFragment;
 
 	// Engagement metrics
 	repliesCount: number;

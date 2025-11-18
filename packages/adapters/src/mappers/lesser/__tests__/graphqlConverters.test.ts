@@ -411,6 +411,69 @@ describe('convertGraphQLObjectToLesser', () => {
 		expect(result?.updatedAt).toBe('2024-02-01T12:34:00Z');
 	});
 
+	it('preserves boostedObject and reply actor details', () => {
+		const boosted = {
+			id: 'boosted-1',
+			type: 'NOTE',
+			content: 'Boosted payload',
+			visibility: 'PUBLIC',
+			sensitive: false,
+			attachments: [],
+			tags: [],
+			mentions: [],
+			repliesCount: 0,
+			likesCount: 0,
+			sharesCount: 0,
+			estimatedCost: 0,
+			quoteable: true,
+			quotePermissions: 'EVERYONE',
+			quoteCount: 0,
+			communityNotes: [],
+			actor,
+			createdAt: '2024-01-01T00:00:00Z',
+			updatedAt: '2024-01-02T00:00:00Z',
+		};
+
+		const replyActor = {
+			...actor,
+			id: 'reply-actor',
+			username: 'replier',
+			localHandle: 'replier',
+			displayName: 'Replier',
+		};
+
+		const object = {
+			id: 'note-reply',
+			type: 'NOTE',
+			content: 'Reply payload',
+			visibility: 'PUBLIC',
+			sensitive: false,
+			attachments: [],
+			tags: [],
+			mentions: [],
+			repliesCount: 0,
+			likesCount: 0,
+			sharesCount: 0,
+			estimatedCost: 0,
+			quoteable: true,
+			quotePermissions: 'EVERYONE',
+			quoteCount: 0,
+			communityNotes: [],
+			actor,
+			inReplyTo: { id: 'parent', actor: replyActor },
+			boostedObject: boosted,
+			createdAt: '2024-01-03T00:00:00Z',
+			updatedAt: '2024-01-04T00:00:00Z',
+		};
+
+		const result = convertGraphQLObjectToLesser(object);
+
+		expect(result?.shareOf?.id).toBe('boosted-1');
+		expect(result?.boostedObject?.id).toBe('boosted-1');
+		expect(result?.inReplyTo?.id).toBe('parent');
+		expect(result?.inReplyTo?.actor?.id).toBe('reply-actor');
+	});
+
 	it('normalizes quote permissions, timeouts, and filters malformed collections', () => {
 		const normalizedActor = {
 			id: 'actor-normalized',
