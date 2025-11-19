@@ -69,19 +69,14 @@ export async function fetchTimelinePage(options: {
 	const { adapter, source, pageSize = 20, after } = options;
 	const pagination = { first: pageSize, after: after ?? undefined };
 	
-	console.log('[fetchTimelinePage] Starting fetch:', { source, pageSize, after });
-
 	let connection: TimelineQuery['timeline'] | undefined;
 
 	switch (source.type) {
 		case 'home':
-			console.log('[fetchTimelinePage] Fetching home timeline');
 			connection = await adapter.fetchHomeTimeline(pagination);
 			break;
 		case 'local':
-			console.log('[fetchTimelinePage] Fetching local timeline');
 			connection = await adapter.fetchPublicTimeline(pagination, 'LOCAL');
-			console.log('[fetchTimelinePage] Local timeline result:', connection);
 			break;
 		case 'federated':
 			connection = await adapter.fetchPublicTimeline(pagination, 'PUBLIC');

@@ -358,21 +358,13 @@ export class LesserGraphQLAdapter {
 		variables?: TVariables,
 		fetchPolicy: 'cache-first' | 'network-only' = 'network-only'
 	): Promise<TData> {
-		console.log('[LesserGraphQLAdapter] Executing query:', {
-			variables,
-			fetchPolicy,
-			documentName: (document as any)?.definitions?.[0]?.name?.value || 'unknown'
-		});
-		
 		const options = {
 			query: document,
 			variables,
 			fetchPolicy,
 		} as unknown as QueryOptionsFor<TData, TVariables>;
 		
-		console.log('[LesserGraphQLAdapter] Calling Apollo client.query...');
 		const result = await this.client.client.query<TData, TVariables>(options);
-		console.log('[LesserGraphQLAdapter] Query result:', result);
 
 		const { data } = result;
 		if (data === undefined) {

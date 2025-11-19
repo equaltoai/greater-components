@@ -1,0 +1,884 @@
+# _patterns.yaml - Machine-readable patterns for Greater Components
+# Documents correct and incorrect usage patterns for AI training
+
+patterns:
+  styled_components:
+    name: "Using Styled Primitives"
+    problem: "Need ready-to-use UI components with consistent styling"
+    solution: "Import and use styled components from primitives package"
+    correct_example: |
+      <script>
+        // CORRECT: Import styled components for quick development
+        // Provides consistent styling, accessibility, and theming support
+        import { Button, Modal } from '@equaltoai/greater-components-primitives';
+        import { SettingsIcon } from '@equaltoai/greater-components-icons';
+        
+        let showSettings = $state(false);
+      </script>
+      
+      <Button 
+        variant="solid" 
+        size="md"
+        onclick={() => showSettings = true}
+      >
+        {#snippet prefix()}<SettingsIcon />{/snippet}
+        Open Settings
+      </Button>
+      
+      <Modal 
+        bind:open={showSettings} 
+        title="Settings" 
+        size="lg"
+      >
+        <p>Your settings content here</p>
+        
+        {#snippet footer()}
+          <Button variant="ghost" onclick={() => showSettings = false}>
+            Cancel
+          </Button>
+          <Button variant="solid">Save</Button>
+        {/snippet}
+      </Modal>
+    anti_patterns:
+      - name: "Manual DOM Manipulation"
+        why: "Bypasses Svelte reactivity and breaks accessibility features"
+        incorrect_example: |
+          // INCORRECT: Don't manipulate DOM directly
+          // Breaks Svelte reactivity and accessibility features
+          function openSettings() {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('overlay').classList.add('visible');
+          }
+        consequences:
+          - breaks_svelte_reactivity
+          - loses_accessibility_features
+          - no_focus_management
+          - difficult_to_maintain
+      - name: "Mixing UI Libraries"
+        why: "Creates inconsistent UX and increases bundle size"
+        incorrect_example: |
+          // INCORRECT: Don't mix different UI libraries
+          // Creates style conflicts and inconsistent UX
+          import { Button } from '@equaltoai/greater-components-primitives';
+          import { Modal } from 'some-other-ui-library';
+          
+          // Style conflicts and inconsistent theming
+        consequences:
+          - style_conflicts
+          - inconsistent_theming
+          - larger_bundle_size
+          - maintenance_complexity
+
+  headless_components:
+    name: "Using Headless Primitives"
+    problem: "Need complete control over styling with existing design system"
+    solution: "Use headless components that provide behavior without styling"
+    correct_example: |
+      <script>
+        // CORRECT: Use headless components for styling flexibility
+        // Provides behavior, accessibility, and keyboard navigation without styling opinions
+        import { createButton } from '@equaltoai/greater-components-headless/button';
+        
+        const button = createButton({
+          type: 'button',
+          loading: false,
+          onClick: () => console.log('Clicked!')
+        });
+      </script>
+      
+      <!-- Apply your own styling completely -->
+      <button 
+        use:button.actions.button
+        class="my-custom-button"
+      >
+        {#if button.state.loading}
+          <span class="spinner"></span>
+        {:else}
+          Click Me
+        {/if}
+      </button>
+      
+      <style>
+        .my-custom-button {
+          /* Your design system styles */
+          padding: 1rem 2rem;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+        }
+      </style>
+    anti_patterns:
+      - name: "Fighting Styled Component Styles"
+        why: "If you need to override everything, use headless instead"
+        incorrect_example: |
+          // INCORRECT: Don't fight against styled component CSS
+          // If overriding everything, use headless components instead
+          <script>
+            import { Button } from '@equaltoai/greater-components-primitives';
+          </script>
+          
+          <Button class="my-override" variant="solid">Click</Button>
+          
+          <style>
+            /* Overriding everything defeats the purpose */
+            :global(.my-override) {
+              all: unset !important;
+              /* Custom styles... */
+            }
+          </style>
+        consequences:
+          - specificity_wars
+          - fragile_overrides
+          - breaks_on_updates
+          - unnecessary_bundle_weight
+
+  theming_customization:
+    name: "Customizing Theme with Design Tokens"
+    problem: "Need to apply custom branding to components"
+    solution: "Override CSS custom properties for design tokens"
+    correct_example: |
+      <script>
+        // CORRECT: Override design tokens for custom branding
+        // Changes apply globally without component modifications
+        import { ThemeProvider } from '@equaltoai/greater-components-primitives';
+      </script>
+      
+      <ThemeProvider>
+        <slot />
+      </ThemeProvider>
+      
+      <style>
+        :global(:root) {
+          /* Brand colors */
+          --gr-color-primary-600: #8b5cf6;
+          --gr-color-primary-700: #7c3aed;
+          
+          /* Typography */
+          --gr-typography-fontFamily-sans: 'Inter', system-ui, sans-serif;
+          
+          /* Spacing adjustments */
+          --gr-spacing-md: 1rem;
+          
+          /* Border radius */
+          --gr-radii-lg: 12px;
+        }
+      </style>
+    anti_patterns:
+      - name: "Modifying Source Component Styles"
+        why: "Changes lost on updates and breaks other instances"
+        incorrect_example: |
+          // INCORRECT: Don't modify component library source files
+          // Changes are lost when updating packages
+          
+          // In node_modules/@equaltoai/greater-components-primitives/Button.svelte
+          <style>
+            .button {
+              background: #my-custom-color; /* Don't do this! */
+            }
+          </style>
+        consequences:
+          - changes_lost_on_update
+          - affects_all_button_instances
+          - breaks_version_control
+          - maintenance_nightmare
+
+  lesser_graphql_integration:
+    name: "Integrating with Lesser via GraphQL"
+    problem: "Need type-safe Lesser integration with advanced features"
+    solution: "Use LesserGraphQLAdapter with generated types"
+    correct_example: |
+      <script>
+        // CORRECT: Use LesserGraphQLAdapter for type-safe integration
+        // Provides full TypeScript support and advanced Lesser features
+        import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+        import { Status, createLesserTimelineStore } from '@equaltoai/greater-components-fediverse';
+        
+        const adapter = new LesserGraphQLAdapter({
+          endpoint: 'https://my-instance.social/graphql',
+          token: import.meta.env.VITE_LESSER_TOKEN,
+          enableSubscriptions: true
+        });
+        
+        // Create timeline with Lesser-specific features
+        const timeline = createLesserTimelineStore({
+          adapter,
+          type: 'HOME',
+          enableRealtime: true
+        });
+      </script>
+      
+      {#each timeline.items as status}
+        <Status.Root {status}>
+          <Status.Header />
+          <Status.Content />
+          <!-- Lesser-exclusive features -->
+          <Status.LesserMetadata showCost showTrust showModeration />
+          <Status.CommunityNotes enableVoting />
+          <Status.Actions onQuote={handleQuote} />
+        </Status.Root>
+      {/each}
+    anti_patterns:
+      - name: "Hardcoding API Tokens"
+        why: "Security risk and prevents environment-based configuration"
+        incorrect_example: |
+          // INCORRECT: Never hardcode authentication tokens
+          // Tokens exposed in source code and version control
+          const adapter = new LesserGraphQLAdapter({
+            endpoint: 'https://my-instance.social/graphql',
+            token: 'sk_live_abc123xyz789' // SECURITY RISK!
+          });
+        consequences:
+          - security_breach_risk
+          - tokens_in_version_control
+          - cannot_rotate_credentials
+          - exposed_in_client_bundles
+
+  mastodon_rest_integration:
+    name: "Integrating with Mastodon via REST API"
+    problem: "Need to connect to standard Mastodon instances"
+    solution: "Use MastodonRESTAdapter for standard ActivityPub servers"
+    correct_example: |
+      <script>
+        // CORRECT: Use MastodonRESTAdapter for Mastodon/Pleroma/etc
+        // Provides standard Mastodon API compatibility
+        import { MastodonRESTAdapter } from '@equaltoai/greater-components-adapters';
+        import { Status, createTimelineStore } from '@equaltoai/greater-components-fediverse';
+        
+        const adapter = new MastodonRESTAdapter({
+          instanceUrl: 'https://mastodon.social',
+          accessToken: import.meta.env.VITE_MASTODON_TOKEN
+        });
+        
+        const timeline = createTimelineStore({
+          adapter,
+          type: 'PUBLIC',
+          local: true
+        });
+      </script>
+      
+      {#each timeline.items as status}
+        <Status.Root {status}>
+          <Status.Header />
+          <Status.Content />
+          <Status.Actions />
+        </Status.Root>
+      {/each}
+    anti_patterns:
+      - name: "Using Wrong Adapter"
+        why: "Lesser features require LesserGraphQLAdapter, not REST adapter"
+        incorrect_example: |
+          // INCORRECT: Can't use Lesser features with REST adapter
+          // Lesser-specific features require GraphQL adapter
+          import { MastodonRESTAdapter } from '@equaltoai/greater-components-adapters';
+          
+          const adapter = new MastodonRESTAdapter({
+            instanceUrl: 'https://lesser-instance.social' // Lesser doesn't use REST API
+          });
+          
+          // These won't work with REST adapter:
+          // - Quote posts
+          // - Community notes
+          // - Trust scores
+          // - Cost analytics
+        consequences:
+          - missing_advanced_features
+          - api_errors
+          - incomplete_data
+          - poor_user_experience
+
+  virtual_scrolling_timelines:
+    name: "Implementing Virtual Scrolling for Large Timelines"
+    problem: "Timeline with thousands of posts causes performance issues"
+    solution: "Use virtual scrolling with timeline stores"
+    correct_example: |
+      <script>
+        // CORRECT: Use virtual scrolling for large lists
+        // Only renders visible items for better performance
+        import { createTimelineStore } from '@equaltoai/greater-components-fediverse';
+        import { Status } from '@equaltoai/greater-components-fediverse';
+        
+        const timeline = createTimelineStore({
+          adapter,
+          type: 'HOME',
+          virtualScrolling: true, // Enable virtual scrolling
+          estimateSize: 400 // Estimated height per status
+        });
+      </script>
+      
+      <div class="timeline-container" style="height: 100vh;">
+        {#each timeline.virtualItems as virtualRow}
+          {@const status = timeline.items[virtualRow.index]}
+          <div 
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              transform: translateY({virtualRow.start}px);
+            "
+          >
+            <Status.Root {status}>
+              <Status.Header />
+              <Status.Content />
+              <Status.Actions />
+            </Status.Root>
+          </div>
+        {/each}
+      </div>
+    anti_patterns:
+      - name: "Rendering All Items"
+        why: "Rendering thousands of DOM nodes causes browser freeze"
+        incorrect_example: |
+          // INCORRECT: Don't render all timeline items at once
+          // Causes severe performance issues with large timelines
+          <script>
+            const timeline = createTimelineStore({ adapter, type: 'HOME' });
+            // No virtual scrolling - will render all items
+          </script>
+          
+          {#each timeline.items as status}
+            <!-- Renders 1000+ status cards = browser freeze -->
+            <Status.Root {status}>...</Status.Root>
+          {/each}
+        consequences:
+          - browser_freeze_with_large_lists
+          - high_memory_usage
+          - slow_initial_render
+          - poor_scroll_performance
+
+  accessibility_keyboard_navigation:
+    name: "Ensuring Keyboard Navigation"
+    problem: "Components must be fully keyboard accessible"
+    solution: "Components include built-in keyboard support, test thoroughly"
+    correct_example: |
+      <script>
+        // CORRECT: Components handle keyboard navigation automatically
+        // Test with keyboard-only usage
+        import { Menu } from '@equaltoai/greater-components-primitives';
+        
+        let menuItems = [
+          { label: 'Edit', action: () => console.log('edit') },
+          { label: 'Delete', action: () => console.log('delete') }
+        ];
+      </script>
+      
+      <!-- Keyboard support built-in:
+           - Tab to focus trigger
+           - Enter/Space to open
+           - Arrow keys to navigate
+           - Enter to select
+           - Escape to close
+      -->
+      <Menu.Root>
+        <Menu.Trigger>Actions</Menu.Trigger>
+        <Menu.Items>
+          {#each menuItems as item}
+            <Menu.Item onclick={item.action}>
+              {item.label}
+            </Menu.Item>
+          {/each}
+        </Menu.Items>
+      </Menu.Root>
+    anti_patterns:
+      - name: "Using Non-Interactive Elements for Actions"
+        why: "Divs and spans aren't keyboard accessible or screen reader friendly"
+        incorrect_example: |
+          // INCORRECT: Don't use non-interactive elements for actions
+          // Not keyboard accessible or screen reader friendly
+          <div 
+            onclick={handleClick}
+            class="fake-button"
+          >
+            Click Me
+          </div>
+          
+          <!-- Missing:
+               - Keyboard support (no Enter/Space)
+               - Focus indicator
+               - Screen reader semantics
+               - Disabled state handling
+          -->
+        consequences:
+          - not_keyboard_accessible
+          - screen_readers_confused
+          - violates_wcag_guidelines
+          - poor_accessibility_score
+
+  component_composition:
+    name: "Composing Components with Snippets"
+    problem: "Need to customize component parts without breaking structure"
+    solution: "Use Svelte 5 snippets for flexible composition"
+    correct_example: |
+      <script>
+        // CORRECT: Use snippets for flexible component composition
+        // Svelte 5 pattern for customizable component parts
+        import { Button, Modal } from '@equaltoai/greater-components-primitives';
+        import { SaveIcon, TrashIcon } from '@equaltoai/greater-components-icons';
+      </script>
+      
+      <Modal open={true} title="Confirm Action">
+        <!-- Custom modal content -->
+        <p>Are you sure you want to delete this item?</p>
+        
+        {#snippet footer()}
+          <!-- Custom footer with icons -->
+          <Button variant="ghost">
+            Cancel
+          </Button>
+          <Button variant="danger">
+            {#snippet prefix()}<TrashIcon />{/snippet}
+            Delete
+          </Button>
+        {/snippet}
+      </Modal>
+    anti_patterns:
+      - name: "Trying to Use Slots"
+        why: "Svelte 5 uses snippets, not legacy slots pattern"
+        incorrect_example: |
+          // INCORRECT: Don't use old Svelte 4 slot syntax
+          // Greater Components uses Svelte 5 snippets, not slots
+          <Modal open={true} title="Confirm">
+            <p slot="body">Content here</p>
+            <div slot="footer">
+              <Button>OK</Button>
+            </div>
+          </Modal>
+        consequences:
+          - does_not_work_in_svelte_5
+          - snippets_are_the_new_pattern
+          - compilation_errors
+
+  error_handling:
+    name: "Handling Adapter Errors Gracefully"
+    problem: "Network errors and API failures must be handled properly"
+    solution: "Use try-catch with user-friendly error messages"
+    correct_example: |
+      <script>
+        // CORRECT: Handle errors gracefully with user feedback
+        // Provides loading states and error messages
+        import { createTimelineStore } from '@equaltoai/greater-components-fediverse';
+        
+        let errorMessage = $state('');
+        let isLoading = $state(false);
+        
+        const timeline = createTimelineStore({
+          adapter,
+          type: 'HOME',
+          onError: (error) => {
+            console.error('Timeline error:', error);
+            
+            if (error.message.includes('401')) {
+              errorMessage = 'Authentication failed. Please log in again.';
+            } else if (error.message.includes('rate limit')) {
+              errorMessage = 'Too many requests. Please try again later.';
+            } else {
+              errorMessage = 'Failed to load timeline. Please try again.';
+            }
+          }
+        });
+      </script>
+      
+      {#if errorMessage}
+        <div class="error-banner">
+          {errorMessage}
+          <button onclick={() => timeline.refresh()}>Retry</button>
+        </div>
+      {/if}
+    anti_patterns:
+      - name: "Ignoring Errors"
+        why: "Users see broken UI with no explanation or recovery path"
+        incorrect_example: |
+          // INCORRECT: Don't ignore errors silently
+          // Users have no idea what went wrong or how to fix it
+          const timeline = createTimelineStore({
+            adapter,
+            type: 'HOME'
+            // No error handling - errors disappear silently
+          });
+          
+          // Timeline fails but user sees loading spinner forever
+        consequences:
+          - poor_user_experience
+          - no_error_feedback
+          - no_recovery_path
+          - difficult_debugging
+
+  responsive_design:
+    name: "Implementing Responsive Layouts"
+    problem: "Components must work on mobile, tablet, and desktop"
+    solution: "Use responsive design tokens and media queries"
+    correct_example: |
+      <script>
+        // CORRECT: Components adapt to screen size
+        // Use responsive props and CSS media queries
+        import { Modal, Button } from '@equaltoai/greater-components-primitives';
+        
+        let isMobile = $state(false);
+        
+        $effect(() => {
+          const checkMobile = () => {
+            isMobile = window.innerWidth < 768;
+          };
+          checkMobile();
+          window.addEventListener('resize', checkMobile);
+          return () => window.removeEventListener('resize', checkMobile);
+        });
+      </script>
+      
+      <Modal 
+        open={true}
+        size={isMobile ? 'full' : 'lg'}
+        title="Settings"
+      >
+        <p>Content adapts to screen size</p>
+      </Modal>
+      
+      <style>
+        /* Mobile-first responsive design */
+        .container {
+          padding: var(--gr-spacing-sm);
+        }
+        
+        @media (min-width: 768px) {
+          .container {
+            padding: var(--gr-spacing-lg);
+          }
+        }
+      </style>
+    anti_patterns:
+      - name: "Fixed Pixel Dimensions"
+        why: "Breaks on different screen sizes and zoom levels"
+        incorrect_example: |
+          // INCORRECT: Don't use fixed pixel dimensions
+          // Breaks responsive design and accessibility (zoom)
+          <style>
+            .modal {
+              width: 800px; /* Fixed width breaks on mobile */
+              height: 600px;
+            }
+            
+            .button {
+              font-size: 14px; /* Ignores user font size preferences */
+            }
+          </style>
+        consequences:
+          - breaks_on_mobile
+          - horizontal_scrolling
+          - ignores_user_zoom
+          - poor_accessibility
+
+  state_management:
+    name: "Managing Component State with Runes"
+    problem: "Need reactive state management in Svelte 5"
+    solution: "Use $state, $derived, and $effect runes"
+    correct_example: |
+      <script>
+        // CORRECT: Use Svelte 5 runes for state management
+        // Provides fine-grained reactivity
+        import { Button } from '@equaltoai/greater-components-primitives';
+        
+        // Reactive state
+        let count = $state(0);
+        
+        // Derived value
+        let doubled = $derived(count * 2);
+        
+        // Side effect
+        $effect(() => {
+          console.log(`Count changed to ${count}`);
+          document.title = `Count: ${count}`;
+        });
+      </script>
+      
+      <Button onclick={() => count++}>
+        Clicked {count} times (doubled: {doubled})
+      </Button>
+    anti_patterns:
+      - name: "Using Legacy Reactive Statements"
+        why: "Svelte 5 uses runes, not $: reactive statements"
+        incorrect_example: |
+          // INCORRECT: Don't use legacy Svelte 3/4 patterns
+          // Svelte 5 uses runes instead of $: syntax
+          <script>
+            let count = 0; // Not reactive in Svelte 5
+            
+            // Old pattern - doesn't work in Svelte 5
+            $: doubled = count * 2;
+            
+            $: {
+              console.log(count); // Old side effect pattern
+            }
+          </script>
+        consequences:
+          - not_reactive_in_svelte_5
+          - compilation_warnings
+          - unexpected_behavior
+          - must_use_runes
+
+  landing_page_layout:
+    name: "Building Landing Pages with Layout Components"
+    problem: "Need to build marketing landing page with Greater Components"
+    solution: "Use Container + Section for structure, Card for features, Heading + Text for typography, Button for CTAs"
+    correct_example: |
+      <script>
+        import { 
+          Container, 
+          Section, 
+          Heading, 
+          Text, 
+          Button, 
+          Card 
+        } from '@equaltoai/greater-components-primitives';
+        import { ArrowRightIcon, CheckCircleIcon } from '@equaltoai/greater-components-icons';
+      </script>
+
+      <main>
+        <!-- Hero Section -->
+        <Section spacing="xl">
+          <Container maxWidth="lg" padding="md">
+            <Heading level={1} size="5xl" align="center">
+              Build Amazing Products
+            </Heading>
+            
+            <Text size="xl" color="secondary" align="center">
+              Transform your ideas into reality with our platform
+            </Text>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+              <Button variant="solid" size="lg">
+                Get Started
+                {#snippet suffix()}<ArrowRightIcon />{/snippet}
+              </Button>
+              <Button variant="outline" size="lg">
+                Learn More
+              </Button>
+            </div>
+          </Container>
+        </Section>
+        
+        <!-- Features Section -->
+        <Section spacing="lg">
+          <Container maxWidth="xl">
+            <Heading level={2} align="center">
+              Features
+            </Heading>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 3rem;">
+              <Card variant="outlined" hoverable>
+                {#snippet header()}
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <CheckCircleIcon />
+                    <Heading level={3} size="xl">Feature One</Heading>
+                  </div>
+                {/snippet}
+                
+                <Text color="secondary">
+                  Description of your amazing feature goes here.
+                </Text>
+              </Card>
+              
+              <Card variant="outlined" hoverable>
+                {#snippet header()}
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <CheckCircleIcon />
+                    <Heading level={3} size="xl">Feature Two</Heading>
+                  </div>
+                {/snippet}
+                
+                <Text color="secondary">
+                  Another feature description.
+                </Text>
+              </Card>
+            </div>
+          </Container>
+        </Section>
+      </main>
+
+    why_this_works:
+      - container_constrains_width_for_readability
+      - section_provides_vertical_rhythm
+      - heading_maintains_semantic_structure
+      - text_provides_consistent_typography
+      - card_groups_related_content
+      - css_grid_handles_responsive_layout
+
+    anti_patterns:
+      - name: "Looking for Grid component"
+        why: "Grid component doesn't exist, use CSS Grid"
+        incorrect_example: |
+          // WRONG: Grid component does not exist
+          import { Grid } from '@equaltoai/greater-components-primitives';
+          
+          <Grid columns={3}>
+            <Card>...</Card>
+          </Grid>
+        correct_example: |
+          // CORRECT: Use CSS Grid directly
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+            <Card>...</Card>
+            <Card>...</Card>
+            <Card>...</Card>
+          </div>
+        consequences:
+          - import_error_grid_not_found
+          - should_use_css_grid_instead
+          
+      - name: "Looking for Nav/Navbar component"
+        why: "Navigation components don't exist, build with HTML + primitives"
+        incorrect_example: |
+          // WRONG: Nav component does not exist
+          import { Navbar } from '@equaltoai/greater-components-primitives';
+        correct_example: |
+          // CORRECT: Build nav with HTML + Container + Button
+          <nav>
+            <Container maxWidth="xl" padding="md">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <Heading level={1} size="lg">Logo</Heading>
+                <div style="display: flex; gap: 1rem;">
+                  <Button variant="ghost">About</Button>
+                  <Button variant="ghost">Pricing</Button>
+                  <Button variant="solid">Sign Up</Button>
+                </div>
+              </div>
+            </Container>
+          </nav>
+        consequences:
+          - import_error_navbar_not_found
+          - should_use_html_nav_with_primitives
+
+  typography_composition:
+    name: "Typography with Heading and Text Components"
+    problem: "Need consistent typography across pages with semantic structure"
+    solution: "Use Heading for all headings (h1-h6), Text for body content with variants"
+    correct_example: |
+      <script>
+        import { Heading, Text } from '@equaltoai/greater-components-primitives';
+      </script>
+
+      <article>
+        <!-- Main title -->
+        <Heading level={1} size="4xl">
+          Article Title
+        </Heading>
+        
+        <!-- Meta info -->
+        <Text size="sm" color="secondary">
+          Published on Nov 19, 2025 · 5 min read
+        </Text>
+        
+        <!-- Section -->
+        <Heading level={2} size="2xl">
+          Introduction
+        </Heading>
+        
+        <!-- Body paragraphs -->
+        <Text size="base">
+          First paragraph of content goes here with consistent typography.
+        </Text>
+        
+        <Text size="base" color="secondary">
+          Secondary information or quotes can use different color variants.
+        </Text>
+        
+        <!-- Subsection -->
+        <Heading level={3} size="xl">
+          Subsection Title
+        </Heading>
+        
+        <Text>
+          More content here.
+        </Text>
+      </article>
+
+    why_this_works:
+      - proper_heading_hierarchy_for_seo
+      - screen_reader_friendly_structure
+      - consistent_typography_via_design_tokens
+      - visual_size_independent_of_semantic_level
+      - color_variants_for_visual_hierarchy
+
+    anti_patterns:
+      - name: "Using Heading for non-heading content"
+        why: "Heading component is semantic (h1-h6), not just for large text"
+        incorrect_example: |
+          // WRONG: Using h6 just to get small bold text
+          <Heading level={6}>Call us at: 555-1234</Heading>
+        correct_example: |
+          // CORRECT: Use Text with styling for non-heading content
+          <Text size="sm" weight="bold">Call us at: 555-1234</Text>
+        consequences:
+          - breaks_heading_hierarchy
+          - confuses_screen_readers
+          - poor_seo_structure
+          
+      - name: "Skipping heading levels"
+        why: "Must maintain heading hierarchy (h1 → h2 → h3, not h1 → h3)"
+        incorrect_example: |
+          <Heading level={1}>Page Title</Heading>
+          <Heading level={3}>Skipped h2!</Heading>  // WRONG
+        correct_example: |
+          <Heading level={1}>Page Title</Heading>
+          <Heading level={2}>Section Title</Heading>
+          <Heading level={3}>Subsection Title</Heading>
+        consequences:
+          - accessibility_violation
+          - screen_reader_confusion
+          - seo_penalty
+
+  card_composition:
+    name: "Using Card Component for Content Blocks"
+    problem: "Need to display grouped content with visual separation"
+    solution: "Use Card component with header/footer snippets for structured content"
+    correct_example: |
+      <script>
+        import { Card, Button } from '@equaltoai/greater-components-primitives';
+      </script>
+
+      <!-- Static card -->
+      <Card variant="elevated" padding="lg">
+        {#snippet header()}
+          <h3>Pricing Plan</h3>
+        {/snippet}
+        
+        <p>$29/month</p>
+        <ul>
+          <li>Feature 1</li>
+          <li>Feature 2</li>
+        </ul>
+        
+        {#snippet footer()}
+          <Button variant="solid">Choose Plan</Button>
+        {/snippet}
+      </Card>
+
+      <!-- Interactive card -->
+      <Card 
+        variant="outlined" 
+        clickable 
+        hoverable
+        onclick={() => navigateTo('/product/123')}
+      >
+        <h3>Product Name</h3>
+        <p>Product description...</p>
+      </Card>
+
+    why_this_works:
+      - visual_separation_with_borders_shadows
+      - header_footer_provide_structure
+      - clickable_makes_entire_card_interactive
+      - hoverable_provides_visual_feedback
+      
+    anti_patterns:
+      - name: "Nesting cards too deeply"
+        why: "Cards within cards can look cluttered"
+        incorrect_example: |
+          <Card>
+            <Card>
+              <Card>Content</Card>
+            </Card>
+          </Card>
+        consequences:
+          - visual_confusion
+          - excessive_borders
+          - poor_visual_hierarchy

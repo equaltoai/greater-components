@@ -38,7 +38,7 @@ describe('Avatar.svelte', () => {
 
 	it('renders the default fallback icon when no name or src is available', () => {
 		const { container } = render(Avatar);
-		const icon = container.querySelector('.gr-avatar__fallback-icon');
+		const icon = container.querySelector('.gr-avatar__fallback-image');
 
 		expect(icon).not.toBeNull();
 		expect(container.querySelector('.gr-avatar__initials')).toBeNull();

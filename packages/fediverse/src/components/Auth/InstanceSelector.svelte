@@ -12,7 +12,6 @@
   ```
 -->
 <script lang="ts">
-	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getAuthContext, isValidInstanceUrl } from './context.js';
 
 	interface Props {
@@ -36,10 +35,6 @@
 
 	let instanceInput = $state(defaultInstance);
 	let instanceError = $state<string | null>(null);
-
-	const submitButton = createButton({
-		onClick: () => handleSubmit(),
-	});
 
 	function normalizeInstance(value: string): string {
 		const trimmed = value.trim();

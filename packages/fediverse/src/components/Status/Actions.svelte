@@ -60,7 +60,7 @@ Uses handlers from context.
 	}: Props = $props();
 
 	const context = getStatusContext();
-const { actualStatus, handlers, config, isReblog } = context;
+const { actualStatus, handlers, config } = context;
 
 	// Only show if configured to show actions
 	const isTombstone = $derived(

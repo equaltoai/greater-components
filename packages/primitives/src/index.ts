@@ -100,6 +100,36 @@ export { default as Avatar } from './components/Avatar.svelte';
 export { default as Skeleton } from './components/Skeleton.svelte';
 
 /**
+ * Content container with elevation, borders, and semantic sections.
+ * @public
+ */
+export { default as Card } from './components/Card.svelte';
+
+/**
+ * Max-width wrapper for content centering.
+ * @public
+ */
+export { default as Container } from './components/Container.svelte';
+
+/**
+ * Semantic heading with consistent typography.
+ * @public
+ */
+export { default as Heading } from './components/Heading.svelte';
+
+/**
+ * Paragraph and inline text component with size, weight, and color variants.
+ * @public
+ */
+export { default as Text } from './components/Text.svelte';
+
+/**
+ * Semantic section wrapper with consistent vertical spacing.
+ * @public
+ */
+export { default as Section } from './components/Section.svelte';
+
+/**
  * Theme switcher for toggling between color schemes.
  * @public
  */
@@ -125,6 +155,11 @@ import type TooltipComponent from './components/Tooltip.svelte';
 import type TabsComponent from './components/Tabs.svelte';
 import type AvatarComponent from './components/Avatar.svelte';
 import type SkeletonComponent from './components/Skeleton.svelte';
+import type CardComponent from './components/Card.svelte';
+import type ContainerComponent from './components/Container.svelte';
+import type SectionComponent from './components/Section.svelte';
+import type HeadingComponent from './components/Heading.svelte';
+import type TextComponent from './components/Text.svelte';
 import type ThemeSwitcherComponent from './components/ThemeSwitcher.svelte';
 import type ThemeProviderComponent from './components/ThemeProvider.svelte';
 
@@ -142,6 +177,11 @@ export type TooltipProps = ComponentProps<TooltipComponent>;
 export type TabsProps = ComponentProps<TabsComponent>;
 export type AvatarProps = ComponentProps<AvatarComponent>;
 export type SkeletonProps = ComponentProps<SkeletonComponent>;
+export type CardProps = ComponentProps<CardComponent>;
+export type ContainerProps = ComponentProps<ContainerComponent>;
+export type SectionProps = ComponentProps<SectionComponent>;
+export type HeadingProps = ComponentProps<HeadingComponent>;
+export type TextProps = ComponentProps<TextComponent>;
 export type ThemeSwitcherProps = ComponentProps<ThemeSwitcherComponent>;
 export type ThemeProviderProps = ComponentProps<ThemeProviderComponent>;
 

@@ -952,8 +952,6 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 	}
 
 	async function fetchPage(after: string | null, replaceExisting = false): Promise<void> {
-		console.log('[timelineStore fetchPage] Called with:', { after, replaceExisting, hasAdapter: !!config.adapter, timelineSource });
-		
 		if (!config.adapter || !timelineSource) {
 			const error = new Error('Timeline adapter and source are required to fetch pages');
 			console.error('[timelineStore fetchPage] Missing adapter or source!', { hasAdapter: !!config.adapter, timelineSource });
@@ -965,7 +963,6 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 			throw error;
 		}
 
-		console.log('[timelineStore fetchPage] Calling fetchTimelinePage...');
 		const metadataEnhancer = sourceMetadataEnhancer;
 		const result = await fetchTimelinePage({
 			adapter: config.adapter,
@@ -973,7 +970,6 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 			pageSize,
 			after,
 		});
-		console.log('[timelineStore fetchPage] fetchTimelinePage result:', result);
 
 		if (replaceExisting) {
 			state.update((current) => ({
@@ -1023,14 +1019,10 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 	}
 
 	async function refresh(): Promise<void> {
-		console.log('[timelineStore refresh] Called. Current isLoading:', state.value.isLoading);
-		
 		if (state.value.isLoading) {
-			console.log('[timelineStore refresh] Already loading, skipping');
 			return;
 		}
 
-		console.log('[timelineStore refresh] Setting isLoading to true and clearing items');
 		state.update((current) => ({
 			...current,
 			isLoading: true,
@@ -1043,9 +1035,7 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		}));
 
 		try {
-			console.log('[timelineStore refresh] About to call fetchPage...');
 			await fetchPage(null, true);
-			console.log('[timelineStore refresh] fetchPage completed successfully');
 		} catch (error) {
 			console.error('[timelineStore refresh] fetchPage error:', error);
 			state.update((current) => ({

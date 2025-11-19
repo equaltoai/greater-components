@@ -30,10 +30,18 @@
 		mentions?: unknown[];
 	};
 
+	interface TimelineResponse {
+		data?: {
+			timeline?: {
+				edges?: Array<{ node: RawNode }>;
+			};
+		};
+	}
+
+	const timelineData = raw as unknown as TimelineResponse;
+
 	const edges: RawNode[] =
-		(Array.isArray((raw as any)?.data?.timeline?.edges)
-			? (raw as any).data.timeline.edges.map((edge: any) => edge.node)
-			: []) ?? [];
+		timelineData?.data?.timeline?.edges?.map((edge) => edge.node) ?? [];
 
 	const statusMap = new Map<string, Status>();
 
@@ -180,11 +188,11 @@
 		background: white;
 	}
 
-	.demo-status {
+	:global(.demo-status) {
 		border-bottom: 1px solid var(--color-border, #e5e7eb);
 	}
 
-	.demo-status:last-child {
+	:global(.demo-status:last-child) {
 		border-bottom: none;
 	}
 </style>

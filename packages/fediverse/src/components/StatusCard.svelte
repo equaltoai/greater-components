@@ -64,7 +64,6 @@
 	const actualStatus = $derived(status.reblog || status);
 	const dateTime = $derived(formatDateTime(actualStatus.createdAt));
 	const replyAccount = $derived(actualStatus.inReplyToAccount);
-	const replyStatus = $derived(actualStatus.inReplyToStatus);
 	const replyTargetUrl = $derived(
 		actualStatus.inReplyToStatus?.url ||
 			(actualStatus.inReplyToId ? `#/status/${actualStatus.inReplyToId}` : undefined)

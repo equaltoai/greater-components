@@ -86,6 +86,31 @@
       "svelte": "./dist/components/Skeleton.svelte.js",
       "import": "./dist/components/Skeleton.svelte.js"
     },
+    "./Card": {
+      "types": "./dist/components/Card.svelte.d.ts",
+      "svelte": "./dist/components/Card.svelte.js",
+      "import": "./dist/components/Card.svelte.js"
+    },
+    "./Container": {
+      "types": "./dist/components/Container.svelte.d.ts",
+      "svelte": "./dist/components/Container.svelte.js",
+      "import": "./dist/components/Container.svelte.js"
+    },
+    "./Section": {
+      "types": "./dist/components/Section.svelte.d.ts",
+      "svelte": "./dist/components/Section.svelte.js",
+      "import": "./dist/components/Section.svelte.js"
+    },
+    "./Heading": {
+      "types": "./dist/components/Heading.svelte.d.ts",
+      "svelte": "./dist/components/Heading.svelte.js",
+      "import": "./dist/components/Heading.svelte.js"
+    },
+    "./Text": {
+      "types": "./dist/components/Text.svelte.d.ts",
+      "svelte": "./dist/components/Text.svelte.js",
+      "import": "./dist/components/Text.svelte.js"
+    },
     "./ThemeSwitcher": {
       "types": "./dist/components/ThemeSwitcher.svelte.d.ts",
       "svelte": "./dist/components/ThemeSwitcher.svelte.js",
