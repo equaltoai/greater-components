@@ -1,5 +1,56 @@
 # @equaltoai/greater-components-primitives
 
+## 2.0.1
+
+### Patch Changes
+
+- Fix GradientText component rendering issue where background-clip: text was not applied correctly due to inline style shorthand override.
+
+## 2.0.0
+
+### Major Changes
+
+- Add Phases 1-3: Copy utilities, Core components, and Advanced interactions
+
+  ## Phase 1: Copy and Export Utilities
+
+  ### Utils Package
+  - Added `copyToClipboard` utility with browser fallbacks
+  - Added `copyElementText` and `copyCodeBlock` helpers
+  - Added `exportToMarkdown`, `exportChatToMarkdown`, and `downloadMarkdown` utilities
+  - Added `htmlToMarkdown` converter with Turndown and GitHub Flavored Markdown
+  - Added dependencies: turndown, turndown-plugin-gfm, dompurify, isomorphic-dompurify
+
+  ### Primitives Package
+  - Added `CopyButton` component with visual feedback (copy icon → checkmark)
+  - Supports icon, text, and icon-text variants
+  - Accessible with aria-label updates
+
+  ## Phase 2: Core Components
+  - Added `Badge` component (pill, dot, outlined, filled variants)
+  - Added `List` and `ListItem` components with icon support
+  - Added `GradientText` component with preset and custom gradients
+  - Added `StepIndicator` component for workflows (4 states, auto-icons)
+  - Added `IconBadge` component (4 sizes, 3 shapes, 3 variants)
+
+  ## Phase 3: Advanced Interactions
+  - Added `CodeBlock` with Shiki syntax highlighting (lazy loaded)
+  - Added `DropZone` for drag-and-drop file/text/URL uploads
+  - Added `MarkdownRenderer` with safe HTML rendering (DOMPurify + marked)
+  - Added `StreamingText` for real-time text animations
+  - Added dependencies: shiki, marked
+
+  ## Impact
+
+  Enables complete ChatGPT-style chat interfaces, documentation sites with live code, and eliminates ~800 lines of custom CSS from typical sites.
+
+  Total: 13 new components, 7 new utilities, 83 tests, full documentation.
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-utils@1.1.0
+
 ## 2.0.0
 
 ### Major Changes

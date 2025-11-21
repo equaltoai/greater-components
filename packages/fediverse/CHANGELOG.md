@@ -1,5 +1,20 @@
 # @equaltoai/greater-components-fediverse
 
+## 1.2.10
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@2.0.1
+
+## 1.2.9
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-primitives@2.0.0
+  - @equaltoai/greater-components-utils@1.1.0
+
 ## 1.2.8
 
 ### Patch Changes

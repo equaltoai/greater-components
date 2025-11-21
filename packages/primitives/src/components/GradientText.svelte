@@ -92,7 +92,7 @@ GradientText component - Eye-catching gradient text effect.
 <svelte:element
 	this={Tag}
 	class="gr-gradient-text {className}"
-	style:background={gradientStyle}
+	style:background-image={gradientStyle}
 	{...restProps}
 >
 	{@render children()}
