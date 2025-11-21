@@ -1,5 +1,11 @@
 # @equaltoai/greater-components-primitives
 
+## 2.0.5
+
+### Patch Changes
+
+- Fix the code block copy button so it inherits the correct color in dark mode.
+
 ## 2.0.4
 
 ### Patch Changes
