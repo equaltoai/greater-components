@@ -147,6 +147,42 @@ export { default as ThemeSwitcher } from './components/ThemeSwitcher.svelte';
  */
 export { default as ThemeProvider } from './components/ThemeProvider.svelte';
 
+/**
+ * Badge component for status indicators and labels.
+ * @public
+ */
+export { default as Badge } from './components/Badge.svelte';
+
+/**
+ * List component for styled lists with optional icons.
+ * @public
+ */
+export { default as List } from './components/List.svelte';
+
+/**
+ * ListItem component for items within a List.
+ * @public
+ */
+export { default as ListItem } from './components/ListItem.svelte';
+
+/**
+ * GradientText component for eye-catching text effects.
+ * @public
+ */
+export { default as GradientText } from './components/GradientText.svelte';
+
+/**
+ * StepIndicator component for multi-step workflows.
+ * @public
+ */
+export { default as StepIndicator } from './components/StepIndicator.svelte';
+
+/**
+ * IconBadge component for icons in shaped containers.
+ * @public
+ */
+export { default as IconBadge } from './components/IconBadge.svelte';
+
 // Import component types for prop inference
 import type ButtonComponent from './components/Button.svelte';
 import type CopyButtonComponent from './components/CopyButton.svelte';
@@ -169,6 +205,12 @@ import type HeadingComponent from './components/Heading.svelte';
 import type TextComponent from './components/Text.svelte';
 import type ThemeSwitcherComponent from './components/ThemeSwitcher.svelte';
 import type ThemeProviderComponent from './components/ThemeProvider.svelte';
+import type BadgeComponent from './components/Badge.svelte';
+import type ListComponent from './components/List.svelte';
+import type ListItemComponent from './components/ListItem.svelte';
+import type GradientTextComponent from './components/GradientText.svelte';
+import type StepIndicatorComponent from './components/StepIndicator.svelte';
+import type IconBadgeComponent from './components/IconBadge.svelte';
 
 // Component prop types
 export type ButtonProps = ComponentProps<ButtonComponent>;
@@ -192,6 +234,12 @@ export type HeadingProps = ComponentProps<HeadingComponent>;
 export type TextProps = ComponentProps<TextComponent>;
 export type ThemeSwitcherProps = ComponentProps<ThemeSwitcherComponent>;
 export type ThemeProviderProps = ComponentProps<ThemeProviderComponent>;
+export type BadgeProps = ComponentProps<BadgeComponent>;
+export type ListProps = ComponentProps<ListComponent>;
+export type ListItemProps = ComponentProps<ListItemComponent>;
+export type GradientTextProps = ComponentProps<GradientTextComponent>;
+export type StepIndicatorProps = ComponentProps<StepIndicatorComponent>;
+export type IconBadgeProps = ComponentProps<IconBadgeComponent>;
 
 // Select option type
 export interface SelectOption {

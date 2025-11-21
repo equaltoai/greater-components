@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const Briefcase: import("svelte").Component<Props, {}, "">;
+declare const Briefcase: import('svelte').Component<Props, {}, ''>;
 type Briefcase = ReturnType<typeof Briefcase>;
 export default Briefcase;
 //# sourceMappingURL=briefcase.svelte.d.ts.map

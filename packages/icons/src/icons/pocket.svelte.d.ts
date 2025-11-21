@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const Pocket: import("svelte").Component<Props, {}, "">;
+declare const Pocket: import('svelte').Component<Props, {}, ''>;
 type Pocket = ReturnType<typeof Pocket>;
 export default Pocket;
 //# sourceMappingURL=pocket.svelte.d.ts.map

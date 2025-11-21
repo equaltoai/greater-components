@@ -9,7 +9,7 @@ vi.mock('@equaltoai/greater-components-utils', async () => {
 	return {
 		...actual,
 		copyToClipboard: vi.fn(),
-		copyElementText: vi.fn()
+		copyElementText: vi.fn(),
 	};
 });
 

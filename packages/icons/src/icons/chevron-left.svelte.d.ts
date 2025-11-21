@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const ChevronLeft: import("svelte").Component<Props, {}, "">;
+declare const ChevronLeft: import('svelte').Component<Props, {}, ''>;
 type ChevronLeft = ReturnType<typeof ChevronLeft>;
 export default ChevronLeft;
 //# sourceMappingURL=chevron-left.svelte.d.ts.map

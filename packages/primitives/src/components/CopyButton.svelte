@@ -16,7 +16,11 @@ CopyButton component - A button that copies text to the clipboard with visual fe
 <script lang="ts">
 	import Button from './Button.svelte';
 	import { CopyIcon, CheckIcon } from '@equaltoai/greater-components-icons';
-	import { copyToClipboard, copyElementText, type CopyResult } from '@equaltoai/greater-components-utils';
+	import {
+		copyToClipboard,
+		copyElementText,
+		type CopyResult,
+	} from '@equaltoai/greater-components-utils';
 
 	interface Props {
 		/**

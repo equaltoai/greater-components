@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const Airplay: import("svelte").Component<Props, {}, "">;
+declare const Airplay: import('svelte').Component<Props, {}, ''>;
 type Airplay = ReturnType<typeof Airplay>;
 export default Airplay;
 //# sourceMappingURL=airplay.svelte.d.ts.map

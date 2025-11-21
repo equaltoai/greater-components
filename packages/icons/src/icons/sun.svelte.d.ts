@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const Sun: import("svelte").Component<Props, {}, "">;
+declare const Sun: import('svelte').Component<Props, {}, ''>;
 type Sun = ReturnType<typeof Sun>;
 export default Sun;
 //# sourceMappingURL=sun.svelte.d.ts.map

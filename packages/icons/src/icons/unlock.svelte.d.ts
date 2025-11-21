@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const Unlock: import("svelte").Component<Props, {}, "">;
+declare const Unlock: import('svelte').Component<Props, {}, ''>;
 type Unlock = ReturnType<typeof Unlock>;
 export default Unlock;
 //# sourceMappingURL=unlock.svelte.d.ts.map

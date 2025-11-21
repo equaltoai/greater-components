@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const Crosshair: import("svelte").Component<Props, {}, "">;
+declare const Crosshair: import('svelte').Component<Props, {}, ''>;
 type Crosshair = ReturnType<typeof Crosshair>;
 export default Crosshair;
 //# sourceMappingURL=crosshair.svelte.d.ts.map

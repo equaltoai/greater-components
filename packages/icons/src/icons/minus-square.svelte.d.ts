@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const MinusSquare: import("svelte").Component<Props, {}, "">;
+declare const MinusSquare: import('svelte').Component<Props, {}, ''>;
 type MinusSquare = ReturnType<typeof MinusSquare>;
 export default MinusSquare;
 //# sourceMappingURL=minus-square.svelte.d.ts.map

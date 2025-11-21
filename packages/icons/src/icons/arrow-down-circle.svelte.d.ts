@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const ArrowDownCircle: import("svelte").Component<Props, {}, "">;
+declare const ArrowDownCircle: import('svelte').Component<Props, {}, ''>;
 type ArrowDownCircle = ReturnType<typeof ArrowDownCircle>;
 export default ArrowDownCircle;
 //# sourceMappingURL=arrow-down-circle.svelte.d.ts.map

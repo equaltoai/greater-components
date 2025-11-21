@@ -9,47 +9,78 @@ If a component is not listed here, it DOES NOT EXIST.
 
 ### Package Scope
 
-This package provides **21 interactive and layout components** for building any type of website.
+This package provides **26 interactive and layout components** for building any type of website.
 
 **What Primitives Provides:**
 
 - Interactive widgets (buttons, forms, modals, menus)
-- Layout primitives (containers, sections, cards)
-- Typography components (headings, text)
+
+- Layout primitives (containers, sections, cards, lists)
+
+- Typography components (headings, text, badges)
+
 - Theme system (provider, switcher)
 
-### All 21 Components (Complete List)
+### All 26 Components (Complete List)
 
 **Form Controls (8):**
 
 - Button - Interactive button with variants
+
 - CopyButton - Button for clipboard operations
+
 - TextField - Single-line text input
+
 - TextArea - Multi-line text input
+
 - Select - Dropdown select
+
 - Checkbox - Checkbox input
+
 - Switch - Toggle switch
+
 - FileUpload - File upload with drag-drop
 
 **Overlays & Menus (4):**
 
 - Modal - Dialog overlay
+
 - Menu - Dropdown menu
+
 - Tooltip - Hover tooltip
+
 - Tabs - Tab navigation
 
-**Display & Status (3):**
+**Display & Status (8):**
 
 - Avatar - User avatar with fallback
+
+- Badge - Status indicators and labels
+
+- GradientText - Gradient text effect
+
+- IconBadge - Icon container
+
+- List - Styled list wrapper
+
+- ListItem - List item with icon support
+
 - Skeleton - Loading placeholder
+
+- StepIndicator - Numbered workflow badge
+
 - ThemeSwitcher - Theme toggle
 
 **Layout & Typography (5):**
 
 - Card - Content container with borders/shadows
+
 - Container - Max-width centering wrapper
+
 - Section - Semantic section with spacing
+
 - Heading - Semantic h1-h6 with typography control
+
 - Text - Paragraph/span/div with typography control
 
 **Theme System (1):**
@@ -135,6 +166,92 @@ This package provides **21 interactive and layout components** for building any 
 ```
 
 **Reference:** See [api-reference.md#copybutton](./api-reference.md#copybutton) for complete API
+
+#### Badge
+
+**Purpose:** Status indicators, labels, or counts.
+
+**When to Use:**
+
+- Marking items as "New" or "Beta"
+- Showing status (online/offline)
+- Displaying counts
+
+**Key Props:**
+
+- `variant`: 'pill' | 'dot' | 'outlined' | 'filled'
+- `color`: 'primary' | 'success' | 'warning' | 'error' | 'info' | 'gray'
+- `label`: string - Main text
+
+**Reference:** See [api-reference.md#badge](./api-reference.md#badge) for complete API
+
+#### List
+
+**Purpose:** Styled lists with consistent spacing and optional icon integration.
+
+**When to Use:**
+
+- Feature lists
+- Checklists
+- Ordered steps
+
+**Key Props:**
+
+- `icon`: Component - Icon to use for all items
+- `spacing`: 'sm' | 'md' | 'lg'
+- `ordered`: boolean - Use numbers instead of bullets/icons
+
+**Reference:** See [api-reference.md#list](./api-reference.md#list) for complete API
+
+#### GradientText
+
+**Purpose:** Applies a gradient background to text.
+
+**When to Use:**
+
+- Hero headings
+- Brand emphasis
+
+**Key Props:**
+
+- `gradient`: 'primary' | 'success' | ... | 'custom'
+- `direction`: string
+
+**Reference:** See [api-reference.md#gradienttext](./api-reference.md#gradienttext) for complete API
+
+#### StepIndicator
+
+**Purpose:** Numbered or icon-based badge for multi-step workflows.
+
+**When to Use:**
+
+- Tutorials
+- Wizards
+- Progress trackers
+
+**Key Props:**
+
+- `number`: number - Step number
+- `state`: 'pending' | 'active' | 'completed' | 'error'
+
+**Reference:** See [api-reference.md#stepindicator](./api-reference.md#stepindicator) for complete API
+
+#### IconBadge
+
+**Purpose:** Container for icons with consistent shapes and sizes.
+
+**When to Use:**
+
+- Feature grid icons
+- Decorative icon placeholders
+
+**Key Props:**
+
+- `icon`: Component
+- `shape`: 'circle' | 'rounded' | 'square'
+- `variant`: 'filled' | 'outlined' | 'ghost'
+
+**Reference:** See [api-reference.md#iconbadge](./api-reference.md#iconbadge) for complete API
 
 #### TextField
 

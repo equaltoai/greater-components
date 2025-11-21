@@ -157,6 +157,190 @@ interface CopyButtonProps {
 <CopyButton targetSelector="#install-cmd" />
 ```
 
+#### Badge
+
+**Purpose:** Status indicators, labels, or counts with consistent styling.
+
+**When to use:**
+
+- Feature flags ("New", "Beta")
+- Status indicators ("Active", "Offline")
+- Notification counts
+- Categories or tags
+
+**Props:**
+
+```typescript
+interface BadgeProps {
+	variant?: 'pill' | 'dot' | 'outlined' | 'filled';
+	color?: 'primary' | 'success' | 'warning' | 'error' | 'info' | 'gray';
+	size?: 'sm' | 'md' | 'lg';
+	label?: string;
+	description?: string; // Secondary text (pill variant only)
+	class?: string;
+	children?: Snippet;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { Badge } from '@equaltoai/greater-components/primitives';
+</script>
+
+<Badge variant="pill" label="New" color="primary" description="Feature available" />
+<Badge variant="dot" label="Online" color="success" />
+```
+
+#### List
+
+**Purpose:** Styled lists with optional icons and layout controls.
+
+**When to use:**
+
+- Feature lists on marketing pages
+- Step-by-step instructions (ordered)
+- Checklist of items
+
+**Props:**
+
+```typescript
+interface ListProps {
+	icon?: Component; // Icon for all items
+	iconColor?: 'primary' | 'success' | 'warning' | 'error' | 'gray';
+	iconSize?: number;
+	spacing?: 'sm' | 'md' | 'lg';
+	maxWidth?: string | number;
+	ordered?: boolean;
+	class?: string;
+	children: Snippet;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { List, ListItem } from '@equaltoai/greater-components/primitives';
+	import { CheckIcon } from '@equaltoai/greater-components/icons';
+</script>
+
+<List icon={CheckIcon} iconColor="success" spacing="md">
+	<ListItem>Feature 1</ListItem>
+	<ListItem>Feature 2</ListItem>
+</List>
+```
+
+#### GradientText
+
+**Purpose:** Eye-catching text effect with gradient background.
+
+**When to use:**
+
+- Hero section headings
+- Key value propositions
+- Emphasized brand text
+
+**Props:**
+
+```typescript
+interface GradientTextProps {
+	gradient?: 'primary' | 'success' | 'warning' | 'error' | 'custom';
+	direction?: string; // e.g. "to right", "45deg"
+	from?: string; // Start color (custom)
+	to?: string; // End color (custom)
+	via?: string; // Middle color (custom)
+	as?: string; // Element tag (default: 'span')
+	class?: string;
+	children: Snippet;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { GradientText } from '@equaltoai/greater-components/primitives';
+</script>
+
+<h1>
+	<GradientText gradient="primary">Greater Components</GradientText>
+</h1>
+```
+
+#### StepIndicator
+
+**Purpose:** Numbered or icon badge for multi-step workflows.
+
+**When to use:**
+
+- Tutorial steps
+- Checkout processes
+- Setup wizards
+
+**Props:**
+
+```typescript
+interface StepIndicatorProps {
+	number: number | string;
+	label?: string;
+	state?: 'pending' | 'active' | 'completed' | 'error';
+	variant?: 'filled' | 'outlined' | 'ghost';
+	size?: 'sm' | 'md' | 'lg';
+	color?: 'primary' | 'success' | 'warning' | 'error';
+	icon?: Component; // Custom icon override
+	class?: string;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { StepIndicator } from '@equaltoai/greater-components/primitives';
+</script>
+
+<StepIndicator number={1} state="completed" label="Sign Up" />
+<StepIndicator number={2} state="active" label="Profile" />
+<StepIndicator number={3} state="pending" label="Finish" />
+```
+
+#### IconBadge
+
+**Purpose:** Container for icons with consistent shapes, sizes, and colors.
+
+**When to use:**
+
+- Feature grid icons
+- Empty states
+- Profile placeholders
+
+**Props:**
+
+```typescript
+interface IconBadgeProps {
+	icon?: Component;
+	size?: 'sm' | 'md' | 'lg' | 'xl';
+	color?: 'primary' | 'success' | 'warning' | 'error' | 'gray';
+	variant?: 'filled' | 'outlined' | 'ghost';
+	shape?: 'circle' | 'rounded' | 'square';
+	iconSize?: number;
+	class?: string;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { IconBadge } from '@equaltoai/greater-components/primitives';
+	import { TargetIcon } from '@equaltoai/greater-components/icons';
+</script>
+
+<IconBadge icon={TargetIcon} size="lg" color="primary" />
+```
+
 #### Modal
 
 **Purpose:** Dialog overlay for focused interactions

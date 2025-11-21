@@ -1,11 +1,11 @@
 import type { SVGAttributes } from 'svelte/elements';
 interface Props extends SVGAttributes<SVGSVGElement> {
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number | string;
-    class?: string;
+	size?: number | string;
+	color?: string;
+	strokeWidth?: number | string;
+	class?: string;
 }
-declare const CornerRightUp: import("svelte").Component<Props, {}, "">;
+declare const CornerRightUp: import('svelte').Component<Props, {}, ''>;
 type CornerRightUp = ReturnType<typeof CornerRightUp>;
 export default CornerRightUp;
 //# sourceMappingURL=corner-right-up.svelte.d.ts.map

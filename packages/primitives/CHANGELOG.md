@@ -1,5 +1,16 @@
 # @equaltoai/greater-components-primitives
 
+## 1.3.0
+
+### Minor Changes
+
+- feat(primitives): Added 5 new Core Components for marketing and documentation sites:
+  - `Badge` - Pill, dot, outlined, and filled variants for status and labels.
+  - `List` & `ListItem` - Styled lists with automatic or custom icon injection.
+  - `GradientText` - Eye-catching gradient text wrapper with presets.
+  - `StepIndicator` - Numbered/icon badges for multi-step workflows (tutorials, wizards).
+  - `IconBadge` - Consistent icon containers with shape and size variants.
+
 ## 1.2.0
 
 ### Minor Changes
@@ -11,7 +22,7 @@
   - Fully accessible with aria-label updates.
   - Handles both direct text input and target element selectors.
 
-## 1.0.17
+## 1.1.0
 
 ### Patch Changes
 

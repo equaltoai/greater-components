@@ -890,16 +890,58 @@ Complex HTML structures that Turndown handles poorly or missing GFM plugin.
 **Symptoms:**
 
 - `downloadMarkdown` called but no file prompt
+
 - Console warning about popup blocked
 
 **Cause:**
+
 Browser popup blocker or user interaction requirement.
 
 **Solution:**
 
 - Ensure `downloadMarkdown` (or the function calling it) is triggered **directly** by a user user event (click)
+
 - Do not call it inside an async operation that takes too long (> 5s), as browsers may lose the user gesture context
+
 - Check browser settings for download restrictions
+
+### Issue: GradientText appears solid black/white
+
+**Symptoms:**
+
+- Gradient doesn't show up on text
+
+- Text is invisible or solid color
+
+**Cause:**
+
+Browser doesn't support `background-clip: text` or vendor prefixes missing.
+
+**Solution:**
+
+- Ensure `-webkit-background-clip: text` is present (component includes it)
+
+- Check if `color: transparent` is being overridden by another style
+
+- Ensure background is actually applied (inspect element)
+
+### Issue: List icons not aligning
+
+**Symptoms:**
+
+- Icons in `List` or `ListItem` are vertically misaligned with text
+
+**Cause:**
+
+Flex alignment issues or line-height mismatches.
+
+**Solution:**
+
+- The `ListItem` component uses `align-items: flex-start` and a top margin for optical alignment.
+
+- If using custom icons, ensure they have consistent `viewBox` and are sized correctly.
+
+- Use the `iconSize` prop to adjust if needed.
 
 ---
 
