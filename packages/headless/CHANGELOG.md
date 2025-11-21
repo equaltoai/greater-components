@@ -1,5 +1,14 @@
 # @equaltoai/greater-components-headless Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- Fix broken package imports in the umbrella package by rewriting internal workspace references to relative paths.
+  Fix TypeScript error in icons package registry lookup.
+  Update documentation to correctly reflect the single-package installation strategy.
+  Update focus-trap dependency in headless package.
+
 ## 1.0.1
 
 ### Patch Changes

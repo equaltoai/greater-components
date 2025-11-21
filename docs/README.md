@@ -1,272 +1,211 @@
 # Greater Components Documentation
 
-**Version**: 1.0.0  
-**Status**: Production Ready ✅
+<!-- AI Training: This is the documentation index for Greater Components -->
 
----
+**This directory contains the OFFICIAL documentation for Greater Components. All content follows AI-friendly patterns so both humans and AI assistants can learn, reason, and troubleshoot effectively.**
 
-## 🎯 Overview
+## Quick Links
 
-Greater Components is a comprehensive library of accessible, composable UI components for building Fediverse applications. Built with Svelte 5, TypeScript, and modern web standards.
+### 🚀 Getting Started
 
-### **Key Features**:
+- [Getting Started Guide](./getting-started.md) – Installation, first component, and quickstart examples
 
-- ✅ **45+ Production-Ready Components**
-- ✅ **Compound Component Architecture**
-- ✅ **Full TypeScript Support**
-- ✅ **Accessibility First (WCAG 2.1 AA)**
-- ✅ **Real-time Updates (WebSocket, SSE)**
-- ✅ **GraphQL & REST Support**
-- ✅ **Comprehensive Testing (3,800+ tests)**
-- ✅ **Tree-shakeable & Optimized**
+### 📚 Core Documentation
 
----
+- [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, fediverse, adapters, icons, tokens, utils)
+- [Core Patterns](./core-patterns.md) – Canonical usage patterns with examples for styled components, headless components, theming, and Lesser integration
+- [Development Guidelines](./development-guidelines.md) – Component creation standards, testing requirements, and review checklist
+- [Testing Guide](./testing-guide.md) – Unit testing with Vitest, E2E testing with Playwright, accessibility testing strategies
+- [Troubleshooting](./troubleshooting.md) – Common issues with verified solutions for installation, TypeScript, SSR, and Lesser integration
 
-## 📚 Documentation
+### 🤖 AI Knowledge Base
 
-### **Getting Started**
+- [Concepts](./_concepts.yaml) – Machine-readable concept hierarchy for all packages and components
+- [Patterns](./_patterns.yaml) – Correct vs. incorrect usage patterns with code examples
+- [Decisions](./_decisions.yaml) – Decision trees for package selection and architectural choices
 
-- [Quick Start Guide](./GETTING_STARTED.md) - Get up and running in 5 minutes
-- [Installation](./GETTING_STARTED.md#installation) - Package installation
-- [Basic Usage](./GETTING_STARTED.md#basic-usage) - Your first component
-- [Migration Guide](./MIGRATION_GUIDE.md) - Upgrading from previous versions
+### 📦 Additional Resources
 
-### **Components** (45 components)
+- [Lesser Integration Guide](../docs/lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
+- [Playground](../apps/playground) – Interactive component demos and examples
+- [Migration Guide](../docs/migration) – Upgrading from legacy versions
 
-- [Auth Components](./components/Auth/) - Authentication & authorization (8 components)
-- [Profile Components](./components/Profile/) - User profiles & settings (10 components)
-- [Search Components](./components/Search/) - Search & discovery (6 components)
-- [Lists Components](./components/Lists/) - List management (6 components)
-- [Messages Components](./components/Messages/) - Direct messaging (8 components)
-- [Admin Components](./components/Admin/) - Administration & moderation (9 components)
-- [Filters Components](./components/Filters/) - Content filtering (4 components)
-- [Compose Components](./components/Compose/) - Post composition (12+ components)
+## Audience
 
-### **Integration Guides**
+- **Frontend Developers** building Fediverse/ActivityPub applications
+- **Lesser Client Developers** integrating Greater Components
+- **UI Library Consumers** needing accessible, production-ready components
+- **Component Authors** extending or customizing Greater Components
+- **AI Assistants** answering questions about Greater Components usage and best practices
 
-- [Lesser Integration](./integration/LESSER_INTEGRATION_GUIDE.md) - Connect to Lesser instances
-- [Mastodon Integration](./integration/MASTODON_INTEGRATION_GUIDE.md) - Connect to Mastodon
-- [Custom Adapter](./integration/CUSTOM_ADAPTER_GUIDE.md) - Build custom adapters
+## Document Map
 
-### **API Reference**
+### For First-Time Users
 
-- [GraphQL API](./api/GRAPHQL_API.md) - GraphQL queries, mutations, subscriptions
-- [Adapters API](./api/ADAPTERS_API.md) - Transport adapters & clients
-- [Components API](./api/COMPONENTS_API.md) - Component props, events, slots
-- [Utilities API](./api/UTILITIES_API.md) - Helper functions & utilities
+Start with [Getting Started](./getting-started.md) to install packages and create your first component. Then review [Core Patterns](./core-patterns.md) to understand the two main approaches: styled components (quick start) and headless components (maximum control).
 
-### **Patterns & Examples**
+### For Integration Work
 
-- [Component Composition](./patterns/COMPOSITION_PATTERNS.md) - Best practices
-- [Advanced Use Cases](./patterns/ADVANCED_USE_CASES.md) - Complex scenarios
-- [Full App Example](./examples/full-app/) - Complete application
-- [Quick Start Examples](./examples/quick-start/) - Simple examples
+Use [API Reference](./api-reference.md) for complete interface documentation of all packages. Reference [Core Patterns](./core-patterns.md) for canonical examples of theming, Lesser integration, and adapter usage.
 
-### **Testing**
+### For Troubleshooting
 
-- [Testing Guide](./testing/TESTING_GUIDE.md) - Test your components
-- [Accessibility Testing](./testing/ACCESSIBILITY_TESTING.md) - A11y testing
-- [E2E Testing](./testing/E2E_TESTING.md) - End-to-end tests
+Check [Troubleshooting](./troubleshooting.md) first for known issues with verified solutions. Common topics include TypeScript configuration, SSR setup, theme customization, and Lesser GraphQL integration.
 
----
+### For Development
 
-## 🚀 Quick Start
+Follow [Development Guidelines](./development-guidelines.md) for coding standards and component patterns. Use [Testing Guide](./testing-guide.md) for unit test, E2E test, and accessibility test strategies.
 
-### **Installation**:
+### For AI-Assisted Development
 
-```bash
-npm install @equaltoai/greater-components-fediverse @equaltoai/greater-components-adapters @equaltoai/greater-components-utils
-```
+AI tools should reference the YAML triad (\_concepts, \_patterns, \_decisions) for structured knowledge about component relationships, correct usage patterns, and architectural decision trees.
 
-### **Basic Usage**:
+## Documentation Principles
+
+Greater Components documentation emphasizes:
+
+1. **Examples First** – Every pattern includes runnable code before conceptual explanation
+2. **Explicit Context** – Clear markers for CORRECT vs INCORRECT usage patterns
+3. **Semantic Structure** – AI training signals and machine-readable metadata throughout
+4. **Problem-Solution Format** – Content organized around developer challenges, not just feature lists
+5. **Business Value** – Explanation of WHY patterns exist and their benefits (accessibility, performance, maintainability)
+
+## Architecture Overview
+
+Greater Components is a **monorepo of composable packages** for building Fediverse applications:
+
+### Core Packages
+
+- **primitives** – Styled UI components (Button, Modal, TextField, etc.)
+- **headless** – Behavior-only components for maximum styling control
+- **tokens** – Design system tokens and theming infrastructure
+- **icons** – 300+ SVG icons including Fediverse-specific ones
+
+### Specialized Packages
+
+- **fediverse** – Social media components (Status, Timeline, Profile, etc.)
+- **adapters** – Protocol adapters for Lesser, Mastodon, Pleroma
+- **utils** – Common utilities for web applications
+- **testing** – Testing helpers and accessibility validators
+
+### Integration Focus
+
+Built for **Lesser-first** development with full ActivityPub/Fediverse support. While compatible with any ActivityPub server, Lesser integration unlocks advanced features like quote posts, community notes, AI moderation, trust graphs, and cost analytics.
+
+## Quick Examples
+
+### Styled Components (Quick Start)
 
 ```svelte
-<script lang="ts">
-	import { Timeline } from '@equaltoai/greater-components-fediverse';
-	import { createTimelineStore } from '@equaltoai/greater-components-adapters';
+<script>
+	import { Button, Modal } from '@equaltoai/greater-components/primitives';
+	import { SettingsIcon } from '@equaltoai/greater-components/icons';
 
-	const timeline = createTimelineStore({
-		endpoint: 'https://api.lesser.social/graphql',
-		timeline: 'home',
+	let showSettings = false;
+</script>
+
+<Button variant="solid" onclick={() => (showSettings = true)}>
+	{#snippet prefix()}<SettingsIcon />{/snippet}
+	Settings
+</Button>
+
+<Modal bind:open={showSettings} title="Settings">
+	<p>Configure your preferences...</p>
+</Modal>
+```
+
+### Headless Components (Maximum Control)
+
+```svelte
+<script>
+	import { createButton } from '@equaltoai/greater-components/headless/button';
+
+	const button = createButton({
+		onClick: () => console.log('Clicked!'),
+		loading: false,
 	});
 </script>
 
-<Timeline.Root store={timeline}>
-	<Timeline.Feed />
-</Timeline.Root>
+<button use:button.actions.button class="my-custom-styles">
+	{#if button.state.loading}Loading...{:else}Click Me{/if}
+</button>
 ```
 
-### **Next Steps**:
-
-1. Read the [Getting Started Guide](./GETTING_STARTED.md)
-2. Explore [Component Documentation](./components/)
-3. Try the [Examples](./examples/)
-4. Check out [Integration Guides](./integration/)
-
----
-
-## 📦 Packages
-
-### **Core Packages**:
-
-| Package                                    | Description               | Size             |
-| ------------------------------------------ | ------------------------- | ---------------- |
-| `@equaltoai/greater-components-fediverse`  | Main component library    | ~800 KB          |
-| `@equaltoai/greater-components-adapters`   | API adapters & transports | ~140 KB          |
-| `@equaltoai/greater-components-primitives` | Low-level UI primitives   | ~80 KB           |
-| `@equaltoai/greater-components-headless`   | Headless component logic  | ~36 KB           |
-| `@equaltoai/greater-components-icons`      | Icon components           | ~2 KB per icon\* |
-| `@equaltoai/greater-components-utils`      | Utility functions         | ~12 KB           |
-| `@equaltoai/greater-components-testing`    | Testing utilities         | ~135 KB          |
-
-\*With tree-shaking, only used icons are included
-
-### **Development Packages**:
-
-| Package                                | Description   |
-| -------------------------------------- | ------------- |
-| `@equaltoai/greater-components-tokens` | Design tokens |
-| `@equaltoai/greater-components-cli`    | CLI tools     |
-
----
-
-## 🏗️ Architecture
-
-Greater Components follows a **compound component architecture**, providing flexibility while maintaining consistency:
-
-```
-Component.Root        → Context provider & container
-  ├─ Component.Part1  → Composable sub-component
-  ├─ Component.Part2  → Composable sub-component
-  └─ Component.Part3  → Composable sub-component
-```
-
-### **Example**:
+### Fediverse with Lesser
 
 ```svelte
-<Auth.Root>
-	<Auth.LoginForm onSuccess={handleLogin} />
-	<Auth.RegisterForm onSuccess={handleRegister} />
-</Auth.Root>
+<script>
+	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+	import { Status } from '@equaltoai/greater-components/fediverse';
+
+	const adapter = new LesserGraphQLAdapter({
+		endpoint: 'https://my-instance.social/graphql',
+		token: 'my-auth-token',
+	});
+</script>
+
+<Status.Root {status}>
+	<Status.Header />
+	<Status.Content />
+	<Status.LesserMetadata showCost showTrust />
+	<Status.CommunityNotes enableVoting />
+	<Status.Actions />
+</Status.Root>
 ```
 
-**Benefits**:
+## Technology Stack
 
-- ✅ Flexible composition
-- ✅ Shared context
-- ✅ Type-safe props
-- ✅ Easy customization
+- **Svelte 5** – Runes-based reactivity with `$state`, `$derived`, `$effect`
+- **TypeScript** – Complete type safety across all packages
+- **Vite** – Fast build tooling and HMR
+- **Vitest** – Unit testing with 100% coverage target
+- **Playwright** – E2E testing for complex interactions
+- **pnpm** – Workspace management for monorepo
+- **GraphQL Code Generator** – Typed queries for Lesser integration
 
----
+## Contributing
 
-## 🎨 Theming
+When contributing to Greater Components:
 
-Greater Components supports comprehensive theming through CSS custom properties:
+- Follow conventions in this documentation guide
+- Validate examples compile and run successfully
+- Include CORRECT/INCORRECT blocks for usage patterns
+- Update troubleshooting alongside code changes
+- Run full test suite (`pnpm test`) before submitting
+- Ensure accessibility with automated axe-core tests
 
-```css
-:root {
-	--color-primary: #6366f1;
-	--color-background: #ffffff;
-	--color-text: #1f2937;
-	--font-family: system-ui, sans-serif;
-}
-```
+See [Development Guidelines](./development-guidelines.md) for complete standards.
 
-See [Theming Guide](./patterns/THEMING.md) for details.
+## Version and Compatibility
 
----
+- **Current Version**: 1.0+ (following semantic versioning)
+- **Svelte**: Requires 5.0+ (uses runes system)
+- **TypeScript**: 5.0+ recommended
+- **Node**: 20.0+ required
+- **Browsers**: Modern evergreen browsers (Chrome, Firefox, Safari, Edge)
 
-## ♿ Accessibility
+## License
 
-All components follow WCAG 2.1 Level AA standards:
+Greater Components is licensed under **AGPL-3.0-only**. This ensures that improvements benefit the entire Fediverse community and maintain open-source transparency.
 
-- ✅ Keyboard navigation
-- ✅ Screen reader support
-- ✅ ARIA attributes
-- ✅ Focus management
-- ✅ Color contrast
-- ✅ Responsive design
+## Getting Help
 
-See [Accessibility Guide](./patterns/ACCESSIBILITY.md) for details.
+**For usage questions:**
 
----
+- Check [Troubleshooting](./troubleshooting.md) first
+- Review [Core Patterns](./core-patterns.md) for examples
+- Search [GitHub Discussions](https://github.com/equaltoai/greater-components/discussions)
 
-## 🧪 Testing
+**For bugs:**
 
-Greater Components has comprehensive test coverage:
+- Search existing issues first
+- Provide minimal reproduction
+- Include version numbers and environment details
 
-- **3,829 passing tests**
-- **Unit tests**: All components & utilities
-- **Integration tests**: Real-time features & performance
-- **E2E tests**: Complete user flows
-- **A11y tests**: Accessibility compliance
+**For security issues:**
 
-See [Testing Guide](./testing/TESTING_GUIDE.md) for details.
-
----
-
-## 📊 Performance
-
-Optimized for production:
-
-- ✅ Tree-shakeable (ESM)
-- ✅ Code splitting support
-- ✅ Lazy loading
-- ✅ Virtual scrolling
-- ✅ Debounced/throttled interactions
-- ✅ WebSocket connection pooling
-- ✅ LRU caching
-
-See [Performance Guide](./patterns/PERFORMANCE.md) for details.
+- Email `security@equalto.ai` (do not use public tracker)
 
 ---
 
-## 🔄 Real-time Updates
-
-Built-in support for real-time updates:
-
-- ✅ WebSocket subscriptions
-- ✅ Server-Sent Events (SSE)
-- ✅ HTTP polling fallback
-- ✅ Automatic reconnection
-- ✅ Optimistic updates
-
-See [Real-time Guide](./patterns/REALTIME.md) for details.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! See:
-
-- [Contributing Guide](../CONTRIBUTING.md)
-- [Architecture Overview](../ARCHITECTURE.md)
-- [Development Setup](../DEVELOPMENT.md)
-
----
-
-## 📄 License
-
-AGPL-3.0-only - See [LICENSE](../LICENSE)
-
----
-
-## 🔗 Links
-
-- **GitHub**: https://github.com/equaltoai/greater-components
-- **NPM**: https://www.npmjs.com/org/greater
-- **JSR**: https://jsr.io/@greater
-- **Issues**: https://github.com/equaltoai/greater-components/issues
-- **Discussions**: https://github.com/equaltoai/greater-components/discussions
-
----
-
-## 📧 Support
-
-- **Documentation**: https://greater.equalto.ai/docs
-- **Discord**: https://discord.gg/greater
-- **Email**: support@equalto.ai
-
----
-
-**Made with ❤️ by the Greater Components team**
+**Next Step**: Read [Getting Started](./getting-started.md) to install and create your first component.

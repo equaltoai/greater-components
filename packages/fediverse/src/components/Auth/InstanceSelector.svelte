@@ -86,14 +86,14 @@
 		<p class="auth-instance__error" role="alert">{instanceError}</p>
 	{/if}
 
-<button
-	class="auth-instance__submit"
-	disabled={authState.loading}
-	aria-busy={authState.loading}
-	onclick={handleSubmit}
->
-	{authState.loading ? 'Connecting…' : submitLabel}
-</button>
+	<button
+		class="auth-instance__submit"
+		disabled={authState.loading}
+		aria-busy={authState.loading}
+		onclick={handleSubmit}
+	>
+		{authState.loading ? 'Connecting…' : submitLabel}
+	</button>
 </div>
 
 <style>

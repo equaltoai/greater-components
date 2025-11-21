@@ -150,12 +150,7 @@ export class LesserTimelineStore {
 
 		for (const item of items) {
 			const status = item.status;
-			if (
-				item.type === 'status' &&
-				status &&
-				status.inReplyToId &&
-				!status.inReplyToStatus
-			) {
+			if (item.type === 'status' && status && status.inReplyToId && !status.inReplyToStatus) {
 				missingParentIds.add(status.inReplyToId);
 			}
 		}
@@ -305,8 +300,8 @@ export class LesserTimelineStore {
 		const newItem = this.toTimelineItem(unifiedStatus);
 		const deduped = [newItem, ...this.state.items.filter((item) => item.id !== newItem.id)];
 
-			this.state.items = deduped.slice(0, this.config.maxItems);
-			this.state.lastUpdated = new Date();
+		this.state.items = deduped.slice(0, this.config.maxItems);
+		this.state.lastUpdated = new Date();
 		void this.hydrateParents([newItem]);
 	}
 

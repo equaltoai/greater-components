@@ -28,6 +28,12 @@ export type { ComponentProps } from 'svelte';
 export { default as Button } from './components/Button.svelte';
 
 /**
+ * Button for copying text to clipboard with visual feedback.
+ * @public
+ */
+export { default as CopyButton } from './components/CopyButton.svelte';
+
+/**
  * Text input field with validation and accessibility features.
  * @public
  */
@@ -143,6 +149,7 @@ export { default as ThemeProvider } from './components/ThemeProvider.svelte';
 
 // Import component types for prop inference
 import type ButtonComponent from './components/Button.svelte';
+import type CopyButtonComponent from './components/CopyButton.svelte';
 import type TextFieldComponent from './components/TextField.svelte';
 import type TextAreaComponent from './components/TextArea.svelte';
 import type SelectComponent from './components/Select.svelte';
@@ -165,6 +172,7 @@ import type ThemeProviderComponent from './components/ThemeProvider.svelte';
 
 // Component prop types
 export type ButtonProps = ComponentProps<ButtonComponent>;
+export type CopyButtonProps = ComponentProps<CopyButtonComponent>;
 export type TextFieldProps = ComponentProps<TextFieldComponent>;
 export type TextAreaProps = ComponentProps<TextAreaComponent>;
 export type SelectProps = ComponentProps<SelectComponent>;

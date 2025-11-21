@@ -18,17 +18,7 @@
 	} = $props();
 </script>
 
-<Text
-	{as}
-	{size}
-	{weight}
-	{color}
-	{align}
-	{truncate}
-	{lines}
-	class={className}
-	{...restProps}
->
+<Text {as} {size} {weight} {color} {align} {truncate} {lines} class={className} {...restProps}>
 	{#if textContent}
 		{textContent}
 	{/if}

@@ -281,9 +281,7 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 		}
 	}
 
-	function normalizePageInfo(
-		info?: Partial<NotificationPageInfo> | null
-	): NotificationPageInfo {
+	function normalizePageInfo(info?: Partial<NotificationPageInfo> | null): NotificationPageInfo {
 		return {
 			endCursor: info?.endCursor ?? null,
 			hasNextPage: info?.hasNextPage ?? false,

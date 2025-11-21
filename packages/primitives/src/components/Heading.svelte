@@ -93,13 +93,20 @@ Heading component - Semantic heading with consistent typography.
 	const actualSize = $derived.by(() => {
 		if (size) return size;
 		switch (level) {
-			case 1: return '5xl';
-			case 2: return '4xl';
-			case 3: return '3xl';
-			case 4: return '2xl';
-			case 5: return 'xl';
-			case 6: return 'lg';
-			default: return 'base';
+			case 1:
+				return '5xl';
+			case 2:
+				return '4xl';
+			case 3:
+				return '3xl';
+			case 4:
+				return '2xl';
+			case 5:
+				return 'xl';
+			case 6:
+				return 'lg';
+			default:
+				return 'base';
 		}
 	});
 
@@ -134,25 +141,57 @@ Heading component - Semantic heading with consistent typography.
 		}
 
 		/* Sizes */
-		.gr-heading--size-xs { font-size: var(--gr-typography-fontSize-xs); }
-		.gr-heading--size-sm { font-size: var(--gr-typography-fontSize-sm); }
-		.gr-heading--size-base { font-size: var(--gr-typography-fontSize-base); }
-		.gr-heading--size-lg { font-size: var(--gr-typography-fontSize-lg); }
-		.gr-heading--size-xl { font-size: var(--gr-typography-fontSize-xl); }
-		.gr-heading--size-2xl { font-size: var(--gr-typography-fontSize-2xl); }
-		.gr-heading--size-3xl { font-size: var(--gr-typography-fontSize-3xl); }
-		.gr-heading--size-4xl { font-size: var(--gr-typography-fontSize-4xl); }
-		.gr-heading--size-5xl { font-size: var(--gr-typography-fontSize-5xl); }
+		.gr-heading--size-xs {
+			font-size: var(--gr-typography-fontSize-xs);
+		}
+		.gr-heading--size-sm {
+			font-size: var(--gr-typography-fontSize-sm);
+		}
+		.gr-heading--size-base {
+			font-size: var(--gr-typography-fontSize-base);
+		}
+		.gr-heading--size-lg {
+			font-size: var(--gr-typography-fontSize-lg);
+		}
+		.gr-heading--size-xl {
+			font-size: var(--gr-typography-fontSize-xl);
+		}
+		.gr-heading--size-2xl {
+			font-size: var(--gr-typography-fontSize-2xl);
+		}
+		.gr-heading--size-3xl {
+			font-size: var(--gr-typography-fontSize-3xl);
+		}
+		.gr-heading--size-4xl {
+			font-size: var(--gr-typography-fontSize-4xl);
+		}
+		.gr-heading--size-5xl {
+			font-size: var(--gr-typography-fontSize-5xl);
+		}
 
 		/* Weights */
-		.gr-heading--weight-normal { font-weight: var(--gr-typography-fontWeight-normal); }
-		.gr-heading--weight-medium { font-weight: var(--gr-typography-fontWeight-medium); }
-		.gr-heading--weight-semibold { font-weight: var(--gr-typography-fontWeight-semibold); }
-		.gr-heading--weight-bold { font-weight: var(--gr-typography-fontWeight-bold); }
+		.gr-heading--weight-normal {
+			font-weight: var(--gr-typography-fontWeight-normal);
+		}
+		.gr-heading--weight-medium {
+			font-weight: var(--gr-typography-fontWeight-medium);
+		}
+		.gr-heading--weight-semibold {
+			font-weight: var(--gr-typography-fontWeight-semibold);
+		}
+		.gr-heading--weight-bold {
+			font-weight: var(--gr-typography-fontWeight-bold);
+		}
 
 		/* Alignment */
-		.gr-heading--align-left { text-align: left; }
-		.gr-heading--align-center { text-align: center; }
-		.gr-heading--align-right { text-align: right; }
+		.gr-heading--align-left {
+			text-align: left;
+		}
+		.gr-heading--align-center {
+			text-align: center;
+		}
+		.gr-heading--align-right {
+			text-align: right;
+		}
 	}
 </style>

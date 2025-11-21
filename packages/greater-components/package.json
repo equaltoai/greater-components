@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "1.0.31",
+  "version": "1.1.1",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -110,6 +110,9 @@
     "build": "node scripts/build.js",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
   },
   "publishConfig": {
     "access": "public"

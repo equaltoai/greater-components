@@ -128,41 +128,41 @@ Provides context for child components and handles root-level interactions.
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-	<article
-		class={`status-root ${context.config.class}`}
-		class:status-root--compact={context.config.density === 'compact'}
-		class:status-root--comfortable={context.config.density === 'comfortable'}
-		class:status-root--tombstone={isTombstone}
-		class:status-root--clickable={context.config.clickable}
-		role={context.config.clickable ? 'button' : undefined}
-		tabindex={context.config.clickable ? 0 : undefined}
-		onclick={context.config.clickable ? handleClick : undefined}
-		onkeypress={context.config.clickable ? handleKeyPress : undefined}
-		aria-label={context.config.clickable ? `Status by ${accountLabel}` : undefined}
-	>
-		{#if isTombstone}
-			<div class="status-tombstone" role="note">
-				<div class="status-tombstone__icon" aria-hidden="true">
-					<svg viewBox="0 0 24 24">
-						<path
-							fill="currentColor"
-							d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"
-						/>
-					</svg>
-				</div>
-				<div>
-					<p class="status-tombstone__title">This post has been deleted.</p>
-					{#if tombstoneTimestamp}
-						<p class="status-tombstone__meta">Deleted {tombstoneTimestamp.relative}</p>
-					{/if}
-				</div>
+<article
+	class={`status-root ${context.config.class}`}
+	class:status-root--compact={context.config.density === 'compact'}
+	class:status-root--comfortable={context.config.density === 'comfortable'}
+	class:status-root--tombstone={isTombstone}
+	class:status-root--clickable={context.config.clickable}
+	role={context.config.clickable ? 'button' : undefined}
+	tabindex={context.config.clickable ? 0 : undefined}
+	onclick={context.config.clickable ? handleClick : undefined}
+	onkeypress={context.config.clickable ? handleKeyPress : undefined}
+	aria-label={context.config.clickable ? `Status by ${accountLabel}` : undefined}
+>
+	{#if isTombstone}
+		<div class="status-tombstone" role="note">
+			<div class="status-tombstone__icon" aria-hidden="true">
+				<svg viewBox="0 0 24 24">
+					<path
+						fill="currentColor"
+						d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-4h-2V7h2z"
+					/>
+				</svg>
 			</div>
-		{:else if children}
-			{@render children()}
-		{/if}
-	</article>
+			<div>
+				<p class="status-tombstone__title">This post has been deleted.</p>
+				{#if tombstoneTimestamp}
+					<p class="status-tombstone__meta">Deleted {tombstoneTimestamp.relative}</p>
+				{/if}
+			</div>
+		</div>
+	{:else if children}
+		{@render children()}
+	{/if}
+</article>
 
-	<style>
+<style>
 	.status-root {
 		padding: var(--status-padding, 1rem);
 		border-bottom: 1px solid var(--status-border-color, #e1e8ed);

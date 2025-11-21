@@ -6,7 +6,7 @@
 		Text,
 		Button,
 		Card,
-		ThemeSwitcher
+		ThemeSwitcher,
 	} from '@equaltoai/greater-components-primitives';
 	import {
 		ArrowRightIcon,
@@ -17,7 +17,7 @@
 		MenuIcon,
 		XIcon,
 		GithubIcon,
-		TwitterIcon
+		TwitterIcon,
 	} from '@equaltoai/greater-components-icons';
 
 	let mobileMenuOpen = $state(false);
@@ -26,18 +26,18 @@
 		{
 			title: 'Fast Development',
 			desc: 'Build quickly with pre-made components that work out of the box.',
-			icon: CodeIcon
+			icon: CodeIcon,
 		},
 		{
 			title: 'High Performance',
 			desc: 'Optimized for speed with zero runtime overhead for styles.',
-			icon: ZapIcon
+			icon: ZapIcon,
 		},
 		{
 			title: 'Secure by Default',
 			desc: 'Built with security best practices from the ground up.',
-			icon: ShieldIcon
-		}
+			icon: ShieldIcon,
+		},
 	];
 
 	const plans = [
@@ -47,7 +47,7 @@
 			desc: 'For individuals and hobbyists.',
 			features: ['5 Projects', 'Community Support', '1GB Storage'],
 			cta: 'Start Free',
-			variant: 'outlined' as const
+			variant: 'outlined' as const,
 		},
 		{
 			name: 'Pro',
@@ -56,7 +56,7 @@
 			features: ['Unlimited Projects', 'Priority Support', '100GB Storage', 'Advanced Analytics'],
 			cta: 'Get Pro',
 			variant: 'elevated' as const,
-			popular: true
+			popular: true,
 		},
 		{
 			name: 'Enterprise',
@@ -64,8 +64,8 @@
 			desc: 'For large organizations.',
 			features: ['SSO & Audit Logs', 'Dedicated Manager', 'Unlimited Storage', 'SLA Agreement'],
 			cta: 'Contact Sales',
-			variant: 'outlined' as const
-		}
+			variant: 'outlined' as const,
+		},
 	];
 </script>
 
@@ -92,9 +92,9 @@
 				</nav>
 
 				<!-- Mobile Menu Toggle -->
-				<button 
-					class="mobile-toggle" 
-					onclick={() => mobileMenuOpen = !mobileMenuOpen}
+				<button
+					class="mobile-toggle"
+					onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
 					aria-label="Toggle menu"
 				>
 					{#if mobileMenuOpen}
@@ -111,9 +111,9 @@
 			<div class="mobile-nav">
 				<Container>
 					<div class="mobile-links">
-						<a href="#features" onclick={() => mobileMenuOpen = false}>Features</a>
-						<a href="#pricing" onclick={() => mobileMenuOpen = false}>Pricing</a>
-						<a href="#about" onclick={() => mobileMenuOpen = false}>About</a>
+						<a href="#features" onclick={() => (mobileMenuOpen = false)}>Features</a>
+						<a href="#pricing" onclick={() => (mobileMenuOpen = false)}>Pricing</a>
+						<a href="#about" onclick={() => (mobileMenuOpen = false)}>About</a>
 						<hr />
 						<Button variant="ghost" class="w-full">Log In</Button>
 						<Button variant="solid" class="w-full">Sign Up</Button>
@@ -131,24 +131,22 @@
 					<span class="badge-pill">New</span>
 					<Text size="sm" weight="medium">Version 2.0 is now available</Text>
 				</div>
-				
+
 				<Heading level={1} size="5xl" align="center" class="hero-title">
 					Build faster with <span class="text-gradient">Greater Components</span>
 				</Heading>
-				
+
 				<Text size="xl" color="secondary" align="center" class="hero-subtitle">
-					The ultimate UI kit for building modern web applications. 
-					Accessible, themable, and production-ready primitives.
+					The ultimate UI kit for building modern web applications. Accessible, themable, and
+					production-ready primitives.
 				</Text>
-				
+
 				<div class="hero-actions">
 					<Button variant="solid" size="lg">
 						Get Started
 						{#snippet suffix()}<ArrowRightIcon />{/snippet}
 					</Button>
-					<Button variant="outline" size="lg">
-						View Documentation
-					</Button>
+					<Button variant="outline" size="lg">View Documentation</Button>
 				</div>
 			</Container>
 		</Section>
@@ -162,7 +160,7 @@
 						Powerful features to help you build your next big idea.
 					</Text>
 				</div>
-				
+
 				<div class="features-grid">
 					{#each features as feature (feature.title)}
 						<Card variant="elevated" padding="lg" hoverable>
@@ -172,7 +170,7 @@
 								</div>
 								<Heading level={3} size="xl">{feature.title}</Heading>
 							{/snippet}
-							
+
 							<Text color="secondary">
 								{feature.desc}
 							</Text>
@@ -194,11 +192,7 @@
 
 				<div class="pricing-grid">
 					{#each plans as plan (plan.name)}
-						<Card 
-							variant={plan.variant} 
-							padding="lg" 
-							class={plan.popular ? 'popular-plan' : ''}
-						>
+						<Card variant={plan.variant} padding="lg" class={plan.popular ? 'popular-plan' : ''}>
 							{#snippet header()}
 								<div class="plan-header">
 									<Heading level={3} size="lg">{plan.name}</Heading>
@@ -214,7 +208,7 @@
 								</div>
 								<Text size="sm" color="secondary">{plan.desc}</Text>
 							{/snippet}
-							
+
 							<ul class="plan-features">
 								{#each plan.features as feature (feature)}
 									<li>
@@ -225,10 +219,7 @@
 							</ul>
 
 							{#snippet footer()}
-								<Button 
-									variant={plan.popular ? 'solid' : 'outline'} 
-									class="w-full"
-								>
+								<Button variant={plan.popular ? 'solid' : 'outline'} class="w-full">
 									{plan.cta}
 								</Button>
 							{/snippet}
@@ -242,15 +233,11 @@
 		<Section spacing="xl" class="cta-section">
 			<Container maxWidth="lg" centered>
 				<div class="cta-box">
-					<Heading level={2} align="center" class="text-white">
-						Ready to get started?
-					</Heading>
+					<Heading level={2} align="center" class="text-white">Ready to get started?</Heading>
 					<Text size="lg" align="center" class="text-white-dim">
 						Join thousands of developers building with Greater Components today.
 					</Text>
-					<Button size="lg" class="bg-white text-primary">
-						Start Building Free
-					</Button>
+					<Button size="lg" class="bg-white text-primary">Start Building Free</Button>
 				</div>
 			</Container>
 		</Section>
@@ -277,25 +264,23 @@
 						<ZapIcon size={20} />
 						<Heading level={4} size="base">Acme Corp</Heading>
 					</div>
-					<Text size="sm" color="secondary">
-						© 2025 Acme Corp. All rights reserved.
-					</Text>
+					<Text size="sm" color="secondary">© 2025 Acme Corp. All rights reserved.</Text>
 				</div>
-				
+
 				<div class="footer-links">
 					<Heading level={5} size="sm" class="footer-title">Product</Heading>
 					<a href="#features" class="footer-link">Features</a>
 					<a href="#pricing" class="footer-link">Pricing</a>
-					<a href="javascript:void(0)" class="footer-link">Changelog</a>
+					<a href="https://example.com/changelog" class="footer-link">Changelog</a>
 				</div>
-				
+
 				<div class="footer-links">
 					<Heading level={5} size="sm" class="footer-title">Company</Heading>
 					<a href="#about" class="footer-link">About</a>
-					<a href="javascript:void(0)" class="footer-link">Careers</a>
-					<a href="javascript:void(0)" class="footer-link">Blog</a>
+					<a href="https://example.com/careers" class="footer-link">Careers</a>
+					<a href="https://example.com/blog" class="footer-link">Blog</a>
 				</div>
-				
+
 				<div class="footer-social">
 					<Button variant="ghost" size="sm" aria-label="GitHub">
 						{#snippet prefix()}<GithubIcon />{/snippet}
@@ -317,7 +302,9 @@
 		color: var(--gr-semantic-foreground-primary);
 	}
 
-	:global(.w-full) { width: 100%; }
+	:global(.w-full) {
+		width: 100%;
+	}
 
 	/* Header */
 	.header {
@@ -347,9 +334,11 @@
 		border-radius: var(--gr-radii-md);
 		display: flex;
 	}
-	
+
 	/* Use global for Heading override if needed, but class works too */
-	:global(.logo-text) { margin: 0 !important; }
+	:global(.logo-text) {
+		margin: 0 !important;
+	}
 
 	.desktop-nav {
 		display: none;
@@ -358,8 +347,12 @@
 	}
 
 	@media (min-width: 768px) {
-		.desktop-nav { display: flex; }
-		.mobile-toggle { display: none; }
+		.desktop-nav {
+			display: flex;
+		}
+		.mobile-toggle {
+			display: none;
+		}
 	}
 
 	.nav-link {
@@ -520,7 +513,7 @@
 		align-items: center;
 		gap: 0.75rem;
 	}
-	
+
 	:global(.check-icon) {
 		color: var(--gr-color-success-600);
 		flex-shrink: 0;
@@ -538,10 +531,18 @@
 		gap: 2rem;
 	}
 
-	:global(.text-white) { color: white !important; }
-	:global(.text-white-dim) { color: rgba(255, 255, 255, 0.8) !important; }
-	:global(.bg-white) { background-color: white !important; }
-	:global(.text-primary) { color: var(--gr-color-primary-900) !important; }
+	:global(.text-white) {
+		color: white !important;
+	}
+	:global(.text-white-dim) {
+		color: rgba(255, 255, 255, 0.8) !important;
+	}
+	:global(.bg-white) {
+		background-color: white !important;
+	}
+	:global(.text-primary) {
+		color: var(--gr-color-primary-900) !important;
+	}
 
 	/* Footer */
 	.footer {
@@ -556,7 +557,10 @@
 	}
 
 	@media (max-width: 768px) {
-		.footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+		.footer-grid {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
 	}
 
 	.footer-brand {
@@ -588,7 +592,7 @@
 	.footer-link:hover {
 		color: var(--gr-semantic-foreground-primary);
 	}
-	
+
 	:global(.footer-title) {
 		margin-bottom: 0.5rem !important;
 		color: var(--gr-semantic-foreground-primary);

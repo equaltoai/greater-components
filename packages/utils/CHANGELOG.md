@@ -1,5 +1,18 @@
 # @equaltoai/greater-components-utils
 
+## 1.1.0
+
+### Minor Changes
+
+- feat(utils): Added new utilities for clipboard operations and markdown export:
+  - `copyToClipboard` - Robust copy-to-clipboard function with fallback to `execCommand` for legacy support.
+  - `copyElementText` - Helper to copy text content from any DOM element.
+  - `copyCodeBlock` - Specialized helper for copying code blocks that strips line numbers.
+  - `htmlToMarkdown` - Convert HTML to Markdown using Turndown with GFM support and security sanitization.
+  - `exportToMarkdown` - Export DOM elements to a downloadable Markdown file with optional frontmatter.
+  - `exportChatToMarkdown` - Specialized formatter for exporting chat histories to Markdown.
+  - `downloadMarkdown` - Utility to trigger browser downloads for generated markdown files.
+
 ## 1.0.1
 
 ### Patch Changes

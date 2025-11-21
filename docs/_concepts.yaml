@@ -1,0 +1,432 @@
+# _concepts.yaml - Machine-readable concept map for Greater Components
+# Helps AI assistants understand components and relationships
+
+concepts:
+  greater_components:
+    type: component_library
+    language: typescript
+    framework: svelte5
+    purpose: 'Production-ready UI component library for building accessible Fediverse applications'
+    tagline: 'Modern UI components built with Svelte 5 for the Fediverse'
+    provides:
+      - accessible_ui_components
+      - headless_primitives
+      - fediverse_social_components
+      - activitypub_adapters
+      - design_system_tokens
+      - icon_library
+      - testing_utilities
+    requires:
+      - svelte: '>=5.0.0'
+      - typescript: '>=5.0.0'
+      - node: '>=20.0.0'
+    replaces:
+      - custom_ui_components
+      - handwritten_fediverse_components
+      - basic_mastodon_client_ui
+    use_when:
+      - building_fediverse_applications
+      - creating_activitypub_clients
+      - building_lesser_native_client
+      - needing_accessible_ui_components
+      - requiring_flexible_theming
+      - wanting_headless_component_control
+    dont_use_when:
+      - not_using_svelte_framework
+      - svelte_version_less_than_5
+      - need_react_or_vue_components
+      - building_non_web_applications
+
+  packages:
+    type: monorepo_structure
+    purpose: 'Composable packages for different use cases and integration levels'
+    architecture: pnpm_workspace
+
+  primitives_package:
+    type: component_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/primitives'
+    purpose: 'Styled UI components for any website type - Fediverse, landing pages, marketing sites, documentation'
+
+    use_cases:
+      - landing_pages
+      - marketing_websites
+      - documentation_sites
+      - admin_dashboards
+      - fediverse_applications
+      - general_web_applications
+
+    provides:
+      - Button
+      - Modal
+      - TextField
+      - TextArea
+      - Select
+      - Checkbox
+      - Switch
+      - FileUpload
+      - Menu
+      - Tooltip
+      - Tabs
+      - Avatar
+      - Skeleton
+      - Card
+      - Container
+      - Section
+      - Heading
+      - Text
+      - ThemeProvider
+      - ThemeSwitcher
+
+    does_not_provide:
+      - navigation_components
+      - data_table_components
+      - grid_layout_systems
+      - chart_components
+      - map_components
+      - video_player_components
+
+    use_html_for:
+      - complex_page_layouts
+      - navigation_menus
+      - data_tables
+      - custom_grids
+      - embedded_media
+
+    depends_on:
+      - tokens_package
+      - icons_package
+    configuration:
+      - theme_tokens_via_css_variables
+      - variant_props_for_styling
+      - size_props_for_scaling
+    styling_approach: css_modules_with_design_tokens
+
+  headless_package:
+    type: component_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/headless'
+    purpose: 'Behavior-only components for maximum styling control'
+    provides:
+      - createButton
+      - createModal
+      - createMenu
+      - createTooltip
+      - createTabs
+    depends_on:
+      - focus_trap_library
+      - tabbable_library
+    use_when:
+      - need_complete_styling_freedom
+      - have_existing_design_system
+      - want_minimal_bundle_size
+      - integrating_with_custom_css_framework
+    dont_use_when:
+      - prefer_ready_styled_components
+      - want_quick_prototyping
+      - starting_from_scratch_ui
+    key_features:
+      - svelte_actions_for_behavior
+      - runes_based_state_management
+      - accessibility_built_in
+      - no_styling_opinions
+    failure_modes:
+      - missing_accessibility_styling
+      - incomplete_keyboard_navigation_styling
+      - focus_states_not_visible
+
+  fediverse_package:
+    type: component_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/fediverse'
+    purpose: 'Social media components for ActivityPub applications'
+    provides:
+      - Status_component
+      - Timeline_component
+      - Profile_component
+      - Account_component
+      - Hashtag_component
+      - Admin_components
+      - createTimelineStore
+      - createLesserTimelineStore
+    depends_on:
+      - primitives_package
+      - adapters_package
+      - icons_package
+      - utils_package
+    use_when:
+      - building_fediverse_client
+      - creating_mastodon_interface
+      - building_lesser_native_app
+      - displaying_activitypub_content
+    dont_use_when:
+      - not_building_social_media
+      - not_using_activitypub
+    key_features:
+      - activitypub_type_definitions
+      - lesser_advanced_features
+      - quote_posts
+      - community_notes
+      - trust_graphs
+      - cost_analytics
+      - real_time_streaming
+      - virtual_scrolling_timelines
+    lesser_exclusive_features:
+      - quote_post_creation_and_display
+      - community_notes_with_voting
+      - ai_powered_moderation
+      - trust_score_visualization
+      - federation_cost_tracking
+      - budget_controls
+
+  adapters_package:
+    type: integration_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/adapters'
+    purpose: 'Protocol adapters for different ActivityPub servers'
+    provides:
+      - LesserGraphQLAdapter
+      - MastodonRESTAdapter
+      - PleromaRESTAdapter
+      - BaseAdapter
+    use_when:
+      - integrating_with_activitypub_server
+      - need_multi_server_support
+      - abstracting_server_differences
+    dont_use_when:
+      - building_non_fediverse_app
+      - not_using_activitypub
+    key_methods:
+      - getTimeline
+      - getStatus
+      - createStatus
+      - favoriteStatus
+      - boostStatus
+      - followAccount
+    configuration:
+      - endpoint_url
+      - authentication_token
+      - graphql_or_rest_mode
+    failure_modes:
+      - authentication_token_expired
+      - server_unreachable
+      - rate_limit_exceeded
+      - unsupported_feature_on_server
+
+  tokens_package:
+    type: design_system_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/tokens'
+    purpose: 'Design system tokens and theming infrastructure'
+    provides:
+      - color_tokens
+      - typography_tokens
+      - spacing_tokens
+      - radii_tokens
+      - shadow_tokens
+      - theme_switching_logic
+    use_when:
+      - customizing_component_appearance
+      - implementing_custom_themes
+      - maintaining_design_consistency
+    dont_use_when:
+      - using_headless_only
+      - completely_custom_styling
+    key_features:
+      - css_custom_properties
+      - light_dark_high_contrast_themes
+      - runtime_theme_switching
+      - no_rebuild_for_theming
+    configuration:
+      - override_css_variables
+      - theme_provider_component
+      - prefers_color_scheme_support
+
+  icons_package:
+    type: asset_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/icons'
+    purpose: '300+ SVG icons including Fediverse-specific ones'
+    provides:
+      - ui_icons
+      - social_media_icons
+      - fediverse_specific_icons
+      - action_icons
+      - status_icons
+    use_when:
+      - need_consistent_iconography
+      - building_fediverse_ui
+      - want_accessible_icons
+    dont_use_when:
+      - have_existing_icon_library
+      - need_different_icon_style
+    key_features:
+      - svelte_components
+      - accessible_svg_markup
+      - size_and_color_props
+      - tree_shakeable
+
+  utils_package:
+    type: utility_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/utils'
+    purpose: 'Common utilities for web applications'
+    provides:
+      - date_formatting
+      - string_manipulation
+      - validation_helpers
+      - async_utilities
+    use_when:
+      - need_common_utilities
+      - avoiding_duplicate_code
+    dont_use_when:
+      - have_existing_utility_library
+      - utils_conflict_with_project_standards
+
+  testing_package:
+    type: testing_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/testing'
+    purpose: 'Testing utilities and accessibility helpers'
+    provides:
+      - render_helper
+      - fireEvent_helper
+      - accessibility_validators
+      - screen_reader_testing
+    depends_on:
+      - vitest
+      - playwright
+      - testing_library_svelte
+      - axe_core
+    use_when:
+      - testing_greater_components
+      - ensuring_accessibility_compliance
+      - writing_component_tests
+    dont_use_when:
+      - not_using_vitest_or_playwright
+      - have_different_testing_framework
+
+  svelte5_runes:
+    type: framework_feature
+    purpose: 'Svelte 5 reactivity system used throughout Greater Components'
+    provides:
+      - state_management
+      - derived_values
+      - side_effects
+      - props_system
+    key_primitives:
+      - $state: 'Reactive state'
+      - $derived: 'Computed values'
+      - $effect: 'Side effects'
+      - $props: 'Component props'
+    use_when:
+      - creating_custom_components
+      - extending_greater_components
+      - building_stores
+    required_for:
+      - headless_components
+      - fediverse_stores
+      - timeline_management
+
+  lesser_integration:
+    type: integration_pattern
+    purpose: 'Native integration with Lesser ActivityPub server'
+    provides:
+      - graphql_typed_operations
+      - real_time_subscriptions
+      - advanced_activitypub_features
+    key_features:
+      - graphql_code_generator_integration
+      - 21_subscription_types
+      - quote_posts
+      - community_notes
+      - trust_graphs
+      - cost_analytics
+      - ai_moderation
+    use_when:
+      - building_lesser_client
+      - need_advanced_fediverse_features
+      - want_type_safe_graphql
+    dont_use_when:
+      - using_mastodon_only
+      - dont_need_advanced_features
+    configuration:
+      - graphql_endpoint
+      - authentication_token
+      - subscription_websocket_url
+    failure_modes:
+      - graphql_schema_mismatch
+      - subscription_connection_dropped
+      - token_expired
+
+  accessibility:
+    type: cross_cutting_concern
+    purpose: 'WCAG 2.1 AA compliance across all components'
+    provides:
+      - keyboard_navigation
+      - screen_reader_support
+      - focus_management
+      - aria_labels
+      - reduced_motion_support
+    standards:
+      - WCAG_2_1_AA
+    use_when:
+      - always_required
+    key_features:
+      - semantic_html
+      - proper_aria_attributes
+      - keyboard_shortcuts
+      - focus_trap_in_modals
+      - skip_links
+      - color_contrast_compliance
+    testing:
+      - automated_axe_core_tests
+      - manual_keyboard_testing
+      - screen_reader_validation
+
+  theming:
+    type: customization_pattern
+    purpose: 'Customize component appearance without rebuilds'
+    provides:
+      - css_custom_properties
+      - theme_switching
+      - design_token_overrides
+    key_features:
+      - runtime_theme_changes
+      - no_rebuild_required
+      - prefers_color_scheme_support
+      - smooth_transitions
+    use_when:
+      - need_custom_branding
+      - want_dark_mode
+      - building_white_label_app
+    dont_use_when:
+      - using_headless_only
+      - completely_replacing_styles
+    configuration:
+      - override_design_tokens
+      - use_theme_provider
+      - set_data_theme_attribute
+
+  performance:
+    type: optimization_pattern
+    purpose: 'Ensure fast loading and smooth interactions'
+    provides:
+      - tree_shaking
+      - virtual_scrolling
+      - lazy_loading
+      - code_splitting
+    key_features:
+      - zero_runtime_with_svelte
+      - individual_component_imports
+      - virtual_scrolling_for_timelines
+      - intersection_observer_lazy_load
+    best_practices:
+      - import_specific_components
+      - use_virtual_scrolling_for_long_lists
+      - lazy_load_images_and_media
+      - debounce_expensive_operations
+    metrics:
+      - lighthouse_score_98_plus
+      - first_contentful_paint_under_1s
+      - time_to_interactive_under_2s

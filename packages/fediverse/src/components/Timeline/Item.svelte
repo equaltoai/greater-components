@@ -94,58 +94,58 @@ Can be used with Status compound component or custom content.
 	}
 </script>
 
-	<article
-		class={`timeline-item ${className}`}
-		data-index={index}
-		data-status-id={item.id}
-		aria-posinset={index + 1}
-		aria-setsize={context.state.itemCount}
-	>
-		{#if isTombstone}
-			<div class="timeline-item__tombstone">
-				{#if tombstone}
-					{@render tombstone()}
-				{:else}
-					<div class="timeline-item__tombstone-icon" aria-hidden="true">
-						<svg viewBox="0 0 24 24">
-							<path
-								fill="currentColor"
-								d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 16h-2v-2h2zm0-4h-2V7h2z"
-							/>
-						</svg>
-					</div>
-					<div>
-						<p class="timeline-item__tombstone-title">This post has been deleted.</p>
-						{#if deletedLabel}
-							<p class="timeline-item__tombstone-meta">Deleted {deletedLabel}</p>
-						{/if}
-					</div>
-				{/if}
-			</div>
-		{:else if context.handlers.onItemClick}
-			<div
-				class="timeline-item__interactive"
-				role="button"
-				tabindex={0}
-				onclick={handleClick}
-				onkeydown={handleKeyDown}
-			>
-				{#if children}
-					{@render children()}
-				{/if}
-			</div>
-		{:else}
-			<div class="timeline-item__interactive">
-				{#if children}
-					{@render children()}
-				{/if}
-			</div>
-		{/if}
-	</article>
+<article
+	class={`timeline-item ${className}`}
+	data-index={index}
+	data-status-id={item.id}
+	aria-posinset={index + 1}
+	aria-setsize={context.state.itemCount}
+>
+	{#if isTombstone}
+		<div class="timeline-item__tombstone">
+			{#if tombstone}
+				{@render tombstone()}
+			{:else}
+				<div class="timeline-item__tombstone-icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24">
+						<path
+							fill="currentColor"
+							d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 16h-2v-2h2zm0-4h-2V7h2z"
+						/>
+					</svg>
+				</div>
+				<div>
+					<p class="timeline-item__tombstone-title">This post has been deleted.</p>
+					{#if deletedLabel}
+						<p class="timeline-item__tombstone-meta">Deleted {deletedLabel}</p>
+					{/if}
+				</div>
+			{/if}
+		</div>
+	{:else if context.handlers.onItemClick}
+		<div
+			class="timeline-item__interactive"
+			role="button"
+			tabindex={0}
+			onclick={handleClick}
+			onkeydown={handleKeyDown}
+		>
+			{#if children}
+				{@render children()}
+			{/if}
+		</div>
+	{:else}
+		<div class="timeline-item__interactive">
+			{#if children}
+				{@render children()}
+			{/if}
+		</div>
+	{/if}
+</article>
 
-	<style>
-		.timeline-item {
-			width: 100%;
+<style>
+	.timeline-item {
+		width: 100%;
 		border-bottom: 1px solid var(--timeline-border, #e1e8ed);
 		background: var(--timeline-item-bg, white);
 		transition: background-color 0.2s;
@@ -205,4 +205,4 @@ Can be used with Status compound component or custom content.
 		width: 100%;
 		height: 100%;
 	}
-	</style>
+</style>

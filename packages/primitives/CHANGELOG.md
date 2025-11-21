@@ -1,5 +1,16 @@
 # @equaltoai/greater-components-primitives
 
+## 1.2.0
+
+### Minor Changes
+
+- feat(primitives): Added `CopyButton` component.
+  - A specialized button for copying text to the clipboard.
+  - Provides automatic visual feedback (transitions from copy icon to checkmark).
+  - Supports `icon`, `text`, and `icon-text` variants.
+  - Fully accessible with aria-label updates.
+  - Handles both direct text input and target element selectors.
+
 ## 1.0.17
 
 ### Patch Changes

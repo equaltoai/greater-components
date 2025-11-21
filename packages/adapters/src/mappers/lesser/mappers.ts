@@ -487,7 +487,7 @@ export function mapLesserObject(obj: LesserObjectFragment): MapperResult<Unified
 					helpful: safeNumber(note.helpful),
 					notHelpful: safeNumber(note.notHelpful),
 					createdAt: safeString(note.createdAt),
-					}))
+				}))
 			: undefined;
 
 		const replyTo = obj.inReplyTo;

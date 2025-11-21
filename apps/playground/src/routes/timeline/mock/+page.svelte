@@ -40,8 +40,7 @@
 
 	const timelineData = raw as unknown as TimelineResponse;
 
-	const edges: RawNode[] =
-		timelineData?.data?.timeline?.edges?.map((edge) => edge.node) ?? [];
+	const edges: RawNode[] = timelineData?.data?.timeline?.edges?.map((edge) => edge.node) ?? [];
 
 	const statusMap = new Map<string, Status>();
 
@@ -68,9 +67,7 @@
 
 	function baseStatusFromNode(node: RawNode): Status {
 		const account = makeAccount(node.actor);
-		const url = node.id?.startsWith('http')
-			? node.id
-			: `https://dev.lesser.host/status/${node.id}`;
+		const url = node.id?.startsWith('http') ? node.id : `https://dev.lesser.host/status/${node.id}`;
 		return {
 			id: node.id,
 			uri: node.id,
@@ -79,7 +76,8 @@
 			content: node.content ?? '',
 			createdAt: node.createdAt ?? new Date().toISOString(),
 			visibility:
-				(node.visibility?.toLowerCase() as Status['visibility']) ?? ('public' as Status['visibility']),
+				(node.visibility?.toLowerCase() as Status['visibility']) ??
+				('public' as Status['visibility']),
 			repliesCount: node.repliesCount ?? 0,
 			reblogsCount: node.sharesCount ?? 0,
 			favouritesCount: node.likesCount ?? 0,
@@ -157,13 +155,13 @@
 	<div class="demo">
 		<p class="lead">
 			This page renders replies and boosts using the checked-in <code>sample-timeline.json</code>
-			(no live network). Use it to verify that reply banners, reply hydration, and boost indicators
-			render as expected.
+			(no live network). Use it to verify that reply banners, reply hydration, and boost indicators render
+			as expected.
 		</p>
 
 		<div class="timeline">
 			{#each statuses as status (status.id)}
-				<StatusCard status={status} showActions={false} class="demo-status" />
+				<StatusCard {status} showActions={false} class="demo-status" />
 			{/each}
 		</div>
 	</div>

@@ -14,34 +14,38 @@
 
 **Format for EACH of 20 components:**
 
-```markdown
+````markdown
 #### Component Name
 
 **Purpose:** [2-3 sentence description of what it does and why it exists]
 
 **When to Use:**
+
 - [Use case 1]
 - [Use case 2]
 - [Use case 3]
 
 **When NOT to Use:**
+
 - [Anti-pattern 1 with alternative]
 - [Anti-pattern 2 with alternative]
 
 **Key Props:**
+
 - `propName`: [description]
 - `propName`: [description]
 - `propName`: [description]
 
 **Quick Example:**
+
 ```svelte
-<Component prop="value">
-  Content
-</Component>
+<Component prop="value">Content</Component>
 ```
+````
 
 **Reference:** See [api-reference.md#component](./api-reference.md#component) for complete API
-```
+
+````
 
 **Calculate Lines:**
 - 20 components × ~40 lines each = **800 lines**
@@ -87,10 +91,11 @@
   {#snippet prefix()}<SaveIcon />{/snippet}
   Save Changes
 </Button>
-```
+````
 
 **Reference:** See [api-reference.md#button](./api-reference.md#button) for complete API
-```
+
+````
 
 ### Example 2: Card (Detailed)
 
@@ -130,17 +135,18 @@
   {#snippet header()}
     <h3>Feature Name</h3>
   {/snippet}
-  
+
   <p>Description of the feature goes here.</p>
-  
+
   {#snippet footer()}
     <Button variant="ghost">Learn More</Button>
   {/snippet}
 </Card>
-```
+````
 
 **Reference:** See [api-reference.md#card](./api-reference.md#card) for complete API
-```
+
+````
 
 ### Example 3: Container (Detailed)
 
@@ -176,10 +182,11 @@
   <h1>Page Title</h1>
   <p>Content constrained to 1024px width, centered on page.</p>
 </Container>
-```
+````
 
 **Reference:** See [api-reference.md#container](./api-reference.md#container) for complete API
-```
+
+````
 
 ### Example 4: Heading (Detailed)
 
@@ -221,12 +228,13 @@
 <Heading level={3}>
   Section Title
 </Heading>
-```
+````
 
 **Reference:** See [api-reference.md#heading](./api-reference.md#heading) for complete API
-```
 
-**REQUIRED ACTION:**  
+````
+
+**REQUIRED ACTION:**
 Add detailed descriptions following this format for ALL 20 components:
 1. Button (example above)
 2. TextField
@@ -379,9 +387,10 @@ Add detailed descriptions following this format for ALL 20 components:
 - ✅ EXISTS: FileIcon, FileTextIcon, BookIcon, BookOpenIcon
 - ❌ DOES NOT EXIST: DocumentIcon, PageIcon
 - **Recommendation:** Use FileTextIcon or BookIcon
-```
+````
 
 **Calculate Lines:**
+
 - 12 categories × ~15 lines each = **180 lines**
 - Icon search tips: **60 lines**
 - **Total:** +240 lines
@@ -394,7 +403,7 @@ Add detailed descriptions following this format for ALL 20 components:
 
 **New Content:**
 
-```markdown
+````markdown
 ## Fediverse Package (@equaltoai/greater-components-fediverse)
 
 This package provides components specifically for building ActivityPub/Fediverse social media applications.
@@ -402,93 +411,108 @@ This package provides components specifically for building ActivityPub/Fediverse
 ### Status Components (Compound Component Pattern)
 
 **Status.Root** - Container providing status context
+
 - **Purpose:** Wraps a status/post and provides context to child components
 - **Props:** `status` (GenericStatus), `handlers` (interaction callbacks), `config`
 
 **Status.Header** - Avatar, author name, timestamp
+
 - **Purpose:** Displays who posted and when
 - **Auto-detects:** Boosts/reblogs and shows boost indicator
 - **Accessibility:** Proper time element with datetime attribute
 
 **Status.Content** - HTML content with content warnings
+
 - **Purpose:** Renders post HTML with sanitization
 - **Features:** Content warning support, mention/hashtag highlighting, custom emoji rendering
 - **Security:** Automatic HTML sanitization to prevent XSS
 
 **Status.Media** - Image/video/audio attachments
+
 - **Purpose:** Displays media with responsive layouts
 - **Layouts:** 1 image (full), 2 images (side-by-side), 3 images (2 top, 1 bottom), 4 images (grid)
 - **Features:** Lazy loading, blurhash placeholders, alt text display
 
 **Status.Actions** - Reply, boost, favorite, share buttons
+
 - **Purpose:** Interactive action buttons with counts
 - **Features:** Optimistic updates, hover states, keyboard accessible
 - **Handlers:** onReply, onBoost, onFavorite, onShare, onQuote (Lesser)
 
 **Status.LesserMetadata** (Lesser-specific) - Cost, trust, moderation badges
+
 - **Purpose:** Display Lesser-specific metadata
 - **Props:** `showCost`, `showTrust`, `showModeration`, `showQuotes`
 - **Use When:** Connected to Lesser instance only
 
 **Status.CommunityNotes** (Lesser-specific) - Collaborative fact-checking
+
 - **Purpose:** Display and vote on community notes
 - **Props:** `enableVoting`, `maxVisible`, `onVote`
 - **Use When:** Lesser instance with community notes enabled
 
 **Usage Pattern:**
+
 ```svelte
 <script>
-  import { Status } from '@equaltoai/greater-components-fediverse';
+	import { Status } from '@equaltoai/greater-components-fediverse';
 </script>
 
 <Status.Root {status} {handlers}>
-  <Status.Header />
-  <Status.Content />
-  <Status.Media />
-  <Status.Actions />
+	<Status.Header />
+	<Status.Content />
+	<Status.Media />
+	<Status.Actions />
 </Status.Root>
 ```
+````
 
 ### Timeline Components (Compound Component Pattern)
 
 **Timeline.Root** - Timeline container with virtualization support
+
 - **Purpose:** Container for chronological feed of items
 - **Features:** Virtual scrolling, infinite scroll, real-time updates
 - **Props:** `items`, `config` (virtualization, density), `handlers`
 
 **Timeline.Item** - Individual timeline item wrapper
+
 - **Purpose:** Wraps each item in timeline
 - **Features:** ARIA attributes, position in set announcements
 
 **Timeline.LoadMore** - Pagination control
+
 - **Purpose:** Trigger to load more items
 - **Features:** Loading state, infinite scroll detection
 
 **Timeline.EmptyState** - Empty placeholder
+
 - **Purpose:** Display when timeline has no items
 - **Props:** `title`, `description`
 
 **Timeline.ErrorState** - Error display
+
 - **Purpose:** Display when timeline fails to load
 - **Props:** `error`, `onRetry`
 
 **Usage Pattern:**
+
 ```svelte
 <script>
-  import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
+	import { Timeline, Status } from '@equaltoai/greater-components-fediverse';
 </script>
 
 <Timeline.Root {items}>
-  {#each items as item}
-    <Timeline.Item {item}>
-      <Status.Root status={item}>
-        <Status.Header />
-        <Status.Content />
-      </Status.Root>
-    </Timeline.Item>
-  {/each}
-  
-  <Timeline.LoadMore />
+	{#each items as item}
+		<Timeline.Item {item}>
+			<Status.Root status={item}>
+				<Status.Header />
+				<Status.Content />
+			</Status.Root>
+		</Timeline.Item>
+	{/each}
+
+	<Timeline.LoadMore />
 </Timeline.Root>
 ```
 
@@ -563,10 +587,12 @@ This package provides components specifically for building ActivityPub/Fediverse
 ### Stores & Helpers
 
 **createTimelineStore** - Standard ActivityPub timeline management
+
 - **Purpose:** Manages timeline state, pagination, updates
 - **Returns:** Store with items, loading, error states, refresh/loadMore methods
 
 **createLesserTimelineStore** - Lesser-enhanced timeline management
+
 - **Purpose:** Timeline with Lesser-specific features (cost, trust, moderation)
 - **Additional Features:** Trust filtering, cost tracking, AI insights
 
@@ -578,7 +604,8 @@ This package provides components specifically for building ActivityPub/Fediverse
 ❌ NO Routing (use SvelteKit or your router)
 ❌ NO State persistence (you handle localStorage/sessionStorage)
 ❌ NO Push notifications (you implement notification service)
-```
+
+````
 
 **Calculate Lines:**
 - Status breakdown: ~80 lines
@@ -639,7 +666,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 ```svelte
 <script>
   import { createButton } from '@equaltoai/greater-components-headless/button';
-  
+
   const button = createButton({
     onClick: () => console.log('clicked'),
     loading: false
@@ -658,7 +685,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
     /* ... */
   }
 </style>
-```
+````
 
 **Reference:** See [api-reference.md#createbutton](./api-reference.md#createbutton)
 
@@ -667,6 +694,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 **Purpose:** Provides modal behavior without styling
 
 **What It Provides:**
+
 - Focus trapping
 - Escape key handling
 - Outside click detection
@@ -675,32 +703,34 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 - Body scroll locking
 
 **What It Does NOT Provide:**
+
 - No modal styling
 - No backdrop styling
 - No animations/transitions
 
 **Usage:**
+
 ```svelte
 <script>
-  import { createModal } from '@equaltoai/greater-components-headless/modal';
-  
-  let isOpen = $state(false);
-  
-  const modal = createModal({
-    open: isOpen,
-    onClose: () => isOpen = false,
-    closeOnEscape: true,
-    closeOnOutsideClick: true
-  });
+	import { createModal } from '@equaltoai/greater-components-headless/modal';
+
+	let isOpen = $state(false);
+
+	const modal = createModal({
+		open: isOpen,
+		onClose: () => (isOpen = false),
+		closeOnEscape: true,
+		closeOnOutsideClick: true,
+	});
 </script>
 
 {#if modal.state.open}
-  <div use:modal.actions.overlay class="your-backdrop">
-    <div use:modal.actions.content class="your-modal">
-      <h2>Modal Title</h2>
-      <button use:modal.actions.close>Close</button>
-    </div>
-  </div>
+	<div use:modal.actions.overlay class="your-backdrop">
+		<div use:modal.actions.content class="your-modal">
+			<h2>Modal Title</h2>
+			<button use:modal.actions.close>Close</button>
+		</div>
+	</div>
 {/if}
 ```
 
@@ -711,6 +741,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 **Purpose:** Provides dropdown menu behavior
 
 **What It Provides:**
+
 - Keyboard navigation (Arrow keys, Home, End)
 - Focus management
 - Open/close state
@@ -718,6 +749,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 - ARIA attributes
 
 **What It Does NOT Provide:**
+
 - No menu styling
 - No positioning logic (use Floating UI separately)
 - No animations
@@ -727,6 +759,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 **Purpose:** Provides tooltip behavior
 
 **What It Provides:**
+
 - Hover delay handling
 - Focus handling
 - Show/hide state
@@ -734,6 +767,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 - ARIA describedby
 
 **What It Does NOT Provide:**
+
 - No tooltip styling
 - No positioning (use Floating UI)
 - No arrow/pointer
@@ -743,6 +777,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 **Purpose:** Provides tab navigation behavior
 
 **What It Provides:**
+
 - Arrow key navigation
 - Home/End key support
 - Active tab state
@@ -750,10 +785,12 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 - Keyboard roving tabindex
 
 **What It Does NOT Provide:**
+
 - No tab styling
 - No indicator/underline animations
 - No panel transitions
-```
+
+````
 
 **Calculate Lines:** +280 lines
 
@@ -805,7 +842,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 **Need custom data fetching?**
 → Adapters (extend BaseAdapter)
 → Fediverse stores as examples
-```
+````
 
 **Calculate Lines:** +60 lines
 
@@ -823,16 +860,19 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 ### How to Check if a Component Exists
 
 #### Method 1: Check This Document
+
 1. Search this page for the component name
 2. If not listed in the "Complete List" sections, it DOES NOT EXIST
 
 #### Method 2: Check Source Code
+
 1. Primitives: `packages/primitives/src/index.ts`
 2. Fediverse: `packages/fediverse/src/index.ts`
 3. Icons: `packages/icons/src/index.ts`
 4. If component is not exported, it DOES NOT EXIST
 
 #### Method 3: Check TypeScript Definitions
+
 1. Primitives types: `packages/primitives/dist/index.d.ts`
 2. Look for `export { default as ComponentName }`
 3. If not present, DOES NOT EXIST
@@ -873,23 +913,23 @@ A: ❌ NO. Use ServerIcon/CodeIcon for API, GitBranchIcon/LayersIcon for workflo
 
 When a component doesn't exist, here's what to use instead:
 
-| Requested | Exists? | Alternative |
-|-----------|---------|-------------|
-| Grid | ❌ | CSS Grid: `<div style="display: grid">` |
-| Flex | ❌ | CSS Flexbox: `<div style="display: flex">` |
-| Nav | ❌ | `<nav>` with Button components |
-| Navbar | ❌ | `<nav>` with Container + Button |
-| Table | ❌ | HTML `<table>` elements |
-| Image | ❌ | HTML `<img>` or `<picture>` |
-| Link | ❌ | HTML `<a>` element |
-| Paragraph | ✅ | Text component (as="p") |
-| Div | ⚠️ | HTML `<div>` (or Container for max-width) |
-| Span | ✅ | Text component (as="span") |
-| Label | ✅ | Text component (as="label") |
-| ApiIcon | ❌ | ServerIcon, CodeIcon, DatabaseIcon |
-| WorkflowIcon | ❌ | GitBranchIcon, LayersIcon, ToolIcon |
-| DashboardIcon | ❌ | BarChartIcon, ActivityIcon, GridIcon |
-| NetworkIcon | ❌ | WifiIcon, LinkIcon, ShareIcon |
+| Requested     | Exists? | Alternative                                |
+| ------------- | ------- | ------------------------------------------ |
+| Grid          | ❌      | CSS Grid: `<div style="display: grid">`    |
+| Flex          | ❌      | CSS Flexbox: `<div style="display: flex">` |
+| Nav           | ❌      | `<nav>` with Button components             |
+| Navbar        | ❌      | `<nav>` with Container + Button            |
+| Table         | ❌      | HTML `<table>` elements                    |
+| Image         | ❌      | HTML `<img>` or `<picture>`                |
+| Link          | ❌      | HTML `<a>` element                         |
+| Paragraph     | ✅      | Text component (as="p")                    |
+| Div           | ⚠️      | HTML `<div>` (or Container for max-width)  |
+| Span          | ✅      | Text component (as="span")                 |
+| Label         | ✅      | Text component (as="label")                |
+| ApiIcon       | ❌      | ServerIcon, CodeIcon, DatabaseIcon         |
+| WorkflowIcon  | ❌      | GitBranchIcon, LayersIcon, ToolIcon        |
+| DashboardIcon | ❌      | BarChartIcon, ActivityIcon, GridIcon       |
+| NetworkIcon   | ❌      | WifiIcon, LinkIcon, ShareIcon              |
 
 ## Summary
 
@@ -908,6 +948,7 @@ When a component doesn't exist, here's what to use instead:
 **If it's not listed in this document, it DOES NOT EXIST in Greater Components.**
 
 When you need something not listed:
+
 1. Check if HTML element suffices (`<div>`, `<a>`, `<table>`, etc.)
 2. Check if CSS can achieve it (Grid, Flexbox)
 3. Build custom component using primitives as foundation
@@ -920,14 +961,14 @@ When you need something not listed:
 
 ## Summary of Required Expansions
 
-| Expansion | Section | Lines to Add | Priority |
-|-----------|---------|--------------|----------|
-| 1 | Detailed Primitive Descriptions | +800 | CRITICAL |
-| 2 | Categorized Icon Reference | +240 | HIGH |
-| 3 | Fediverse Sub-Components | +510 | HIGH |
-| 4 | Headless Package Detail | +280 | MEDIUM |
-| 5 | Package Comparison Matrix | +60 | HIGH |
-| 6 | Verification Methods | +150 | CRITICAL |
+| Expansion | Section                         | Lines to Add | Priority |
+| --------- | ------------------------------- | ------------ | -------- |
+| 1         | Detailed Primitive Descriptions | +800         | CRITICAL |
+| 2         | Categorized Icon Reference      | +240         | HIGH     |
+| 3         | Fediverse Sub-Components        | +510         | HIGH     |
+| 4         | Headless Package Detail         | +280         | MEDIUM   |
+| 5         | Package Comparison Matrix       | +60          | HIGH     |
+| 6         | Verification Methods            | +150         | CRITICAL |
 
 **Total Lines to Add:** +2,040 lines  
 **Current:** 191 lines  
@@ -938,9 +979,11 @@ When you need something not listed:
 ## Implementation Instructions for Agent
 
 ### Step 1: Add Detailed Primitive Descriptions
+
 **After line 40, before "### What This Package Does NOT Provide":**
 
 Add heading:
+
 ```markdown
 ### Detailed Component Reference
 ```
@@ -948,25 +991,10 @@ Add heading:
 Then add detailed description for each of 20 components following the 4 examples provided above (Button, Card, Container, Heading).
 
 **Components to document:**
-1-4. ✅ Done (examples above)
-5. TextField - Follow Button pattern
-6. TextArea - Similar to TextField
-7. Select - Similar to form controls
-8. Checkbox - Similar to Switch
-9. Switch - Similar to Checkbox
-10. FileUpload - More complex, follow Modal pattern
-11. Modal - Follow Button pattern, note snippets
-12. Menu - Similar to Modal
-13. Tooltip - Simple, follow Skeleton pattern
-14. Tabs - Complex, follow Modal pattern
-15. Avatar - Follow Button pattern
-16. Skeleton - Simple display component
-17. ThemeProvider - Simple wrapper, note context provision
-18. ThemeSwitcher - Interactive, follow Button pattern
-19. Section - Follow Container pattern (already done)
-20. Text - Follow Heading pattern
+1-4. ✅ Done (examples above) 5. TextField - Follow Button pattern 6. TextArea - Similar to TextField 7. Select - Similar to form controls 8. Checkbox - Similar to Switch 9. Switch - Similar to Checkbox 10. FileUpload - More complex, follow Modal pattern 11. Modal - Follow Button pattern, note snippets 12. Menu - Similar to Modal 13. Tooltip - Simple, follow Skeleton pattern 14. Tabs - Complex, follow Modal pattern 15. Avatar - Follow Button pattern 16. Skeleton - Simple display component 17. ThemeProvider - Simple wrapper, note context provision 18. ThemeSwitcher - Interactive, follow Button pattern 19. Section - Follow Container pattern (already done) 20. Text - Follow Heading pattern
 
 **Each component needs:**
+
 - Purpose (2-3 sentences)
 - When to Use (3-5 bullet points)
 - When NOT to Use (2-3 anti-patterns)
@@ -975,26 +1003,31 @@ Then add detailed description for each of 20 components following the 4 examples
 - Reference link
 
 ### Step 2: Replace Icon Section
+
 **Replace lines 72-112 with categorized icon reference**
 
 Use the 12-category structure provided in Expansion 2 above.
 
 ### Step 3: Replace Fediverse Section
+
 **Replace lines 129-155 with detailed sub-component breakdown**
 
 Use the comprehensive breakdown provided in Expansion 3 above.
 
 ### Step 4: Expand Headless Section
+
 **Replace lines 157-167 with detailed headless descriptions**
 
 Use the 5 detailed headless component descriptions from Expansion 4 above.
 
 ### Step 5: Add Package Selection Guide
+
 **Insert before Fediverse section (before line 129 in current file)**
 
 Add the Package Comparison Matrix and Use Case Mapping from Expansion 5.
 
 ### Step 6: Add Discovery Section
+
 **Add at end of file (after line 191)**
 
 Add the complete verification and alternative suggestions section from Expansion 6.
@@ -1004,6 +1037,7 @@ Add the complete verification and alternative suggestions section from Expansion
 ## Validation Checklist
 
 After expansion, verify:
+
 - [ ] All 20 primitives have detailed descriptions
 - [ ] Icons organized into 12 categories
 - [ ] All Fediverse sub-components listed
@@ -1026,9 +1060,8 @@ After expansion, verify:
 ❌ **Icon categories** - Need +240 lines for organized icon list  
 ❌ **Fediverse depth** - Need +510 lines for sub-components  
 ❌ **Headless detail** - Need +280 lines for headless explanations  
-❌ **Discovery tools** - Need +210 lines for verification and alternatives  
+❌ **Discovery tools** - Need +210 lines for verification and alternatives
 
 **Current Progress:** 191/2200 lines = **8.7% of target depth**  
 **Core Structure:** ✅ Complete  
 **Detail Level:** ❌ Needs significant expansion
-

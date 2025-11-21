@@ -261,10 +261,7 @@ export interface AuthContext {
  * @param handlers - Authentication event handlers
  * @returns Authentication context
  */
-export function createAuthContext(
-	state: AuthState,
-	handlers: AuthHandlers = {}
-): AuthContext {
+export function createAuthContext(state: AuthState, handlers: AuthHandlers = {}): AuthContext {
 	const context: AuthContext = {
 		state,
 		handlers,

@@ -11,13 +11,13 @@
 
 ## Components Overview
 
-| Component | Priority | Complexity | Reference Component |
-|-----------|----------|------------|---------------------|
-| Card | HIGH | Medium | Modal (structure), Avatar (variants) |
-| Container | HIGH | Low | Skeleton (simple layout) |
-| Section | MEDIUM | Low | Skeleton (simple layout) |
-| Heading | MEDIUM | Medium | Button (variants/sizes) |
-| Text | MEDIUM | Medium | Button (variants/sizes) |
+| Component | Priority | Complexity | Reference Component                  |
+| --------- | -------- | ---------- | ------------------------------------ |
+| Card      | HIGH     | Medium     | Modal (structure), Avatar (variants) |
+| Container | HIGH     | Low        | Skeleton (simple layout)             |
+| Section   | MEDIUM   | Low        | Skeleton (simple layout)             |
+| Heading   | MEDIUM   | Medium     | Button (variants/sizes)              |
+| Text      | MEDIUM   | Medium     | Button (variants/sizes)              |
 
 ---
 
@@ -30,67 +30,69 @@
 **Purpose:** Content container with elevation, borders, and semantic sections for feature displays, pricing cards, content blocks, and information panels.
 
 **Props Interface:**
+
 ```typescript
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  /**
-   * Visual variant of the card.
-   * - `elevated`: Card with shadow (default)
-   * - `outlined`: Card with border
-   * - `filled`: Card with background fill
-   * 
-   * @defaultValue 'elevated'
-   */
-  variant?: 'elevated' | 'outlined' | 'filled';
-  
-  /**
-   * Internal padding amount.
-   * - `none`: No padding
-   * - `sm`: 0.75rem padding
-   * - `md`: 1rem padding (default)
-   * - `lg`: 1.5rem padding
-   * 
-   * @defaultValue 'md'
-   */
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-  
-  /**
-   * Whether the card is clickable/interactive.
-   * When true, renders as button with hover states.
-   * 
-   * @defaultValue false
-   */
-  clickable?: boolean;
-  
-  /**
-   * Whether to show hover effects.
-   * 
-   * @defaultValue false
-   */
-  hoverable?: boolean;
-  
-  /**
-   * Additional CSS classes.
-   */
-  class?: string;
-  
-  /**
-   * Header content snippet.
-   */
-  header?: Snippet;
-  
-  /**
-   * Footer content snippet.
-   */
-  footer?: Snippet;
-  
-  /**
-   * Main content snippet.
-   */
-  children?: Snippet;
+	/**
+	 * Visual variant of the card.
+	 * - `elevated`: Card with shadow (default)
+	 * - `outlined`: Card with border
+	 * - `filled`: Card with background fill
+	 *
+	 * @defaultValue 'elevated'
+	 */
+	variant?: 'elevated' | 'outlined' | 'filled';
+
+	/**
+	 * Internal padding amount.
+	 * - `none`: No padding
+	 * - `sm`: 0.75rem padding
+	 * - `md`: 1rem padding (default)
+	 * - `lg`: 1.5rem padding
+	 *
+	 * @defaultValue 'md'
+	 */
+	padding?: 'none' | 'sm' | 'md' | 'lg';
+
+	/**
+	 * Whether the card is clickable/interactive.
+	 * When true, renders as button with hover states.
+	 *
+	 * @defaultValue false
+	 */
+	clickable?: boolean;
+
+	/**
+	 * Whether to show hover effects.
+	 *
+	 * @defaultValue false
+	 */
+	hoverable?: boolean;
+
+	/**
+	 * Additional CSS classes.
+	 */
+	class?: string;
+
+	/**
+	 * Header content snippet.
+	 */
+	header?: Snippet;
+
+	/**
+	 * Footer content snippet.
+	 */
+	footer?: Snippet;
+
+	/**
+	 * Main content snippet.
+	 */
+	children?: Snippet;
 }
 ```
 
 **Design Tokens to Use:**
+
 ```css
 /* Background */
 --gr-semantic-background-primary
@@ -118,6 +120,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 ```
 
 **Accessibility Requirements:**
+
 - Default element: `<div>` or `<article>` (semantic based on usage)
 - If `clickable=true`: render as `<button>` or add `role="button"` + `tabindex="0"`
 - Focus-visible outline with 2px offset
@@ -126,12 +129,14 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 - Support for `aria-label`, `aria-labelledby`, `aria-describedby`
 
 **Reference Components:**
+
 - **Header/Footer Pattern:** `Modal.svelte` (lines 1-200) - snippet composition
 - **Variant System:** `Button.svelte` (lines 200-300) - variant classes
 - **Interactive Handling:** `Avatar.svelte` (lines 46-90) - optional onclick, role detection
 - **Accessibility Pattern:** `Skeleton.svelte` (lines 39-90) - INTERACTIVE_ROLES, tabindex parsing
 
 **CSS Class Pattern:**
+
 ```css
 .gr-card
 .gr-card--elevated
@@ -147,43 +152,46 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 **Test File:** `packages/primitives/tests/card.test.ts`
 
 **Test Coverage Requirements:**
+
 ```typescript
 describe('Card.svelte', () => {
-  // Rendering tests
-  it('renders with elevated variant by default')
-  it('renders with outlined variant')
-  it('renders with filled variant')
-  it('applies padding variants correctly')
-  
-  // Snippet tests
-  it('renders header snippet when provided')
-  it('renders footer snippet when provided')
-  it('renders children content')
-  
-  // Interactive tests
-  it('calls onclick when clickable and clicked')
-  it('renders as button element when clickable')
-  it('adds hover styles when hoverable')
-  it('prevents interaction when not clickable')
-  
-  // Accessibility tests
-  it('has proper role when clickable')
-  it('is keyboard accessible when clickable')
-  it('has focus-visible styles')
-  it('respects aria-label prop')
-  
-  // Style tests
-  it('applies custom className')
-  it('merges custom styles correctly')
+	// Rendering tests
+	it('renders with elevated variant by default');
+	it('renders with outlined variant');
+	it('renders with filled variant');
+	it('applies padding variants correctly');
+
+	// Snippet tests
+	it('renders header snippet when provided');
+	it('renders footer snippet when provided');
+	it('renders children content');
+
+	// Interactive tests
+	it('calls onclick when clickable and clicked');
+	it('renders as button element when clickable');
+	it('adds hover styles when hoverable');
+	it('prevents interaction when not clickable');
+
+	// Accessibility tests
+	it('has proper role when clickable');
+	it('is keyboard accessible when clickable');
+	it('has focus-visible styles');
+	it('respects aria-label prop');
+
+	// Style tests
+	it('applies custom className');
+	it('merges custom styles correctly');
 });
 ```
 
 **Test Harness:** `packages/primitives/tests/harness/CardHarness.svelte`
+
 - Should follow pattern of `ButtonHarness.svelte`
 - Accept props and content slots
 - Enable testing of snippets
 
 **Documentation Required:**
+
 - Add to `packages/primitives/src/index.ts` exports
 - Add section to `knowledgebase/api-reference.md`
 - Add examples to `knowledgebase/core-patterns.md`
@@ -201,53 +209,55 @@ describe('Card.svelte', () => {
 **Purpose:** Max-width wrapper for content centering on landing pages, marketing sites, and documentation.
 
 **Props Interface:**
+
 ```typescript
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
-  /**
-   * Maximum width constraint.
-   * - `sm`: 640px
-   * - `md`: 768px
-   * - `lg`: 1024px (default)
-   * - `xl`: 1280px
-   * - `2xl`: 1536px
-   * - `full`: 100% (no constraint)
-   * 
-   * @defaultValue 'lg'
-   */
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
-  
-  /**
-   * Horizontal padding.
-   * - `false`: No padding
-   * - `true`: Default padding (1rem)
-   * - `sm`: 0.75rem
-   * - `md`: 1rem
-   * - `lg`: 1.5rem
-   * 
-   * @defaultValue true
-   */
-  padding?: boolean | 'sm' | 'md' | 'lg';
-  
-  /**
-   * Center content horizontally.
-   * 
-   * @defaultValue true
-   */
-  centered?: boolean;
-  
-  /**
-   * Additional CSS classes.
-   */
-  class?: string;
-  
-  /**
-   * Content snippet.
-   */
-  children?: Snippet;
+	/**
+	 * Maximum width constraint.
+	 * - `sm`: 640px
+	 * - `md`: 768px
+	 * - `lg`: 1024px (default)
+	 * - `xl`: 1280px
+	 * - `2xl`: 1536px
+	 * - `full`: 100% (no constraint)
+	 *
+	 * @defaultValue 'lg'
+	 */
+	maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+
+	/**
+	 * Horizontal padding.
+	 * - `false`: No padding
+	 * - `true`: Default padding (1rem)
+	 * - `sm`: 0.75rem
+	 * - `md`: 1rem
+	 * - `lg`: 1.5rem
+	 *
+	 * @defaultValue true
+	 */
+	padding?: boolean | 'sm' | 'md' | 'lg';
+
+	/**
+	 * Center content horizontally.
+	 *
+	 * @defaultValue true
+	 */
+	centered?: boolean;
+
+	/**
+	 * Additional CSS classes.
+	 */
+	class?: string;
+
+	/**
+	 * Content snippet.
+	 */
+	children?: Snippet;
 }
 ```
 
 **Max-Width Values:**
+
 ```css
 sm: 640px   (40rem)
 md: 768px   (48rem)
@@ -258,6 +268,7 @@ full: 100%
 ```
 
 **Design Tokens to Use:**
+
 ```css
 /* Padding */
 --gr-spacing-scale-3  /* sm */
@@ -266,17 +277,20 @@ full: 100%
 ```
 
 **Accessibility Requirements:**
+
 - Passive container (no interactivity)
 - Semantic `<div>` element
 - No special ARIA requirements
 - Should not trap focus or interfere with navigation
 
 **Reference Components:**
+
 - **Simple Structure:** `Skeleton.svelte` - minimal wrapper with conditional styles
 - **Class Computation:** `Avatar.svelte` (lines 93-110) - derived class names
 - **Style Merging:** `Skeleton.svelte` (lines 107-137) - style prop handling
 
 **CSS Class Pattern:**
+
 ```css
 .gr-container
 .gr-container--sm
@@ -290,6 +304,7 @@ full: 100%
 ```
 
 **Implementation Notes:**
+
 - Very simple component (< 100 lines total)
 - No complex state management needed
 - Straightforward responsive behavior
@@ -297,37 +312,39 @@ full: 100%
 **Test File:** `packages/primitives/tests/container.test.ts`
 
 **Test Coverage Requirements:**
+
 ```typescript
 describe('Container.svelte', () => {
-  // Max-width tests
-  it('applies sm max-width (640px)')
-  it('applies md max-width (768px)')
-  it('applies lg max-width by default (1024px)')
-  it('applies xl max-width (1280px)')
-  it('applies 2xl max-width (1536px)')
-  it('applies full width (100%)')
-  
-  // Padding tests
-  it('applies default padding when padding=true')
-  it('applies no padding when padding=false')
-  it('applies sm padding')
-  it('applies md padding')
-  it('applies lg padding')
-  
-  // Centering tests
-  it('centers content by default')
-  it('does not center when centered=false')
-  
-  // Content tests
-  it('renders children content')
-  it('applies custom className')
-  it('merges custom styles')
+	// Max-width tests
+	it('applies sm max-width (640px)');
+	it('applies md max-width (768px)');
+	it('applies lg max-width by default (1024px)');
+	it('applies xl max-width (1280px)');
+	it('applies 2xl max-width (1536px)');
+	it('applies full width (100%)');
+
+	// Padding tests
+	it('applies default padding when padding=true');
+	it('applies no padding when padding=false');
+	it('applies sm padding');
+	it('applies md padding');
+	it('applies lg padding');
+
+	// Centering tests
+	it('centers content by default');
+	it('does not center when centered=false');
+
+	// Content tests
+	it('renders children content');
+	it('applies custom className');
+	it('merges custom styles');
 });
 ```
 
 **Test Harness:** Not required (simple enough to test directly)
 
 **Documentation Required:**
+
 - Export in `packages/primitives/src/index.ts`
 - Section in `knowledgebase/api-reference.md`
 - Example in `knowledgebase/core-patterns.md` (landing page pattern)
@@ -344,47 +361,49 @@ describe('Container.svelte', () => {
 **Purpose:** Semantic section wrapper with consistent vertical spacing for page sections.
 
 **Props Interface:**
+
 ```typescript
 interface SectionProps extends HTMLAttributes<HTMLElement> {
-  /**
-   * Vertical spacing (margin-top and margin-bottom).
-   * - `none`: No spacing
-   * - `sm`: 2rem
-   * - `md`: 4rem (default)
-   * - `lg`: 6rem
-   * - `xl`: 8rem
-   * 
-   * @defaultValue 'md'
-   */
-  spacing?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  
-  /**
-   * Horizontal padding.
-   * 
-   * @defaultValue false
-   */
-  padding?: boolean | 'sm' | 'md' | 'lg';
-  
-  /**
-   * Center content horizontally.
-   * 
-   * @defaultValue false
-   */
-  centered?: boolean;
-  
-  /**
-   * Additional CSS classes.
-   */
-  class?: string;
-  
-  /**
-   * Content snippet.
-   */
-  children?: Snippet;
+	/**
+	 * Vertical spacing (margin-top and margin-bottom).
+	 * - `none`: No spacing
+	 * - `sm`: 2rem
+	 * - `md`: 4rem (default)
+	 * - `lg`: 6rem
+	 * - `xl`: 8rem
+	 *
+	 * @defaultValue 'md'
+	 */
+	spacing?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+
+	/**
+	 * Horizontal padding.
+	 *
+	 * @defaultValue false
+	 */
+	padding?: boolean | 'sm' | 'md' | 'lg';
+
+	/**
+	 * Center content horizontally.
+	 *
+	 * @defaultValue false
+	 */
+	centered?: boolean;
+
+	/**
+	 * Additional CSS classes.
+	 */
+	class?: string;
+
+	/**
+	 * Content snippet.
+	 */
+	children?: Snippet;
 }
 ```
 
 **Design Tokens to Use:**
+
 ```css
 /* Spacing */
 --gr-spacing-scale-8   /* 2rem - sm */
@@ -399,15 +418,18 @@ interface SectionProps extends HTMLAttributes<HTMLElement> {
 ```
 
 **Accessibility Requirements:**
+
 - Semantic `<section>` element
 - Optional `aria-labelledby` for heading association
 - No interactive requirements (passive container)
 
 **Reference Components:**
+
 - **Simple Wrapper:** `Skeleton.svelte` - basic structure
 - **Spacing System:** `Button.svelte` - size-based spacing variants
 
 **CSS Class Pattern:**
+
 ```css
 .gr-section
 .gr-section--spacing-none
@@ -421,30 +443,32 @@ interface SectionProps extends HTMLAttributes<HTMLElement> {
 **Test File:** `packages/primitives/tests/section.test.ts`
 
 **Test Coverage Requirements:**
+
 ```typescript
 describe('Section.svelte', () => {
-  // Spacing tests
-  it('applies md spacing by default')
-  it('applies no spacing when spacing=none')
-  it('applies sm spacing')
-  it('applies lg spacing')
-  it('applies xl spacing')
-  
-  // Layout tests
-  it('renders as semantic section element')
-  it('centers content when centered=true')
-  it('applies padding when enabled')
-  
-  // Content tests
-  it('renders children content')
-  it('applies custom className')
-  
-  // Accessibility tests
-  it('accepts aria-labelledby attribute')
+	// Spacing tests
+	it('applies md spacing by default');
+	it('applies no spacing when spacing=none');
+	it('applies sm spacing');
+	it('applies lg spacing');
+	it('applies xl spacing');
+
+	// Layout tests
+	it('renders as semantic section element');
+	it('centers content when centered=true');
+	it('applies padding when enabled');
+
+	// Content tests
+	it('renders children content');
+	it('applies custom className');
+
+	// Accessibility tests
+	it('accepts aria-labelledby attribute');
 });
 ```
 
 **Documentation Required:**
+
 - Export in `packages/primitives/src/index.ts`
 - Section in `knowledgebase/api-reference.md`
 - Example in landing page pattern
@@ -461,63 +485,65 @@ describe('Section.svelte', () => {
 **Purpose:** Semantic heading component with level enforcement and consistent typography.
 
 **Props Interface:**
+
 ```typescript
 interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
-  /**
-   * Semantic heading level (required for accessibility).
-   * Maps to <h1> through <h6> elements.
-   * 
-   * @required
-   */
-  level: 1 | 2 | 3 | 4 | 5 | 6;
-  
-  /**
-   * Visual size (can differ from semantic level).
-   * - `xs`: 0.75rem
-   * - `sm`: 0.875rem
-   * - `base`: 1rem
-   * - `lg`: 1.125rem
-   * - `xl`: 1.25rem
-   * - `2xl`: 1.5rem
-   * - `3xl`: 1.875rem
-   * - `4xl`: 2.25rem
-   * - `5xl`: 3rem
-   * 
-   * @defaultValue Maps to level (h1=5xl, h2=4xl, h3=3xl, h4=2xl, h5=xl, h6=lg)
-   */
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
-  
-  /**
-   * Font weight.
-   * - `normal`: 400
-   * - `medium`: 500
-   * - `semibold`: 600
-   * - `bold`: 700 (default for headings)
-   * 
-   * @defaultValue 'bold'
-   */
-  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
-  
-  /**
-   * Text alignment.
-   * 
-   * @defaultValue 'left'
-   */
-  align?: 'left' | 'center' | 'right';
-  
-  /**
-   * Additional CSS classes.
-   */
-  class?: string;
-  
-  /**
-   * Content snippet.
-   */
-  children?: Snippet;
+	/**
+	 * Semantic heading level (required for accessibility).
+	 * Maps to <h1> through <h6> elements.
+	 *
+	 * @required
+	 */
+	level: 1 | 2 | 3 | 4 | 5 | 6;
+
+	/**
+	 * Visual size (can differ from semantic level).
+	 * - `xs`: 0.75rem
+	 * - `sm`: 0.875rem
+	 * - `base`: 1rem
+	 * - `lg`: 1.125rem
+	 * - `xl`: 1.25rem
+	 * - `2xl`: 1.5rem
+	 * - `3xl`: 1.875rem
+	 * - `4xl`: 2.25rem
+	 * - `5xl`: 3rem
+	 *
+	 * @defaultValue Maps to level (h1=5xl, h2=4xl, h3=3xl, h4=2xl, h5=xl, h6=lg)
+	 */
+	size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+
+	/**
+	 * Font weight.
+	 * - `normal`: 400
+	 * - `medium`: 500
+	 * - `semibold`: 600
+	 * - `bold`: 700 (default for headings)
+	 *
+	 * @defaultValue 'bold'
+	 */
+	weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+
+	/**
+	 * Text alignment.
+	 *
+	 * @defaultValue 'left'
+	 */
+	align?: 'left' | 'center' | 'right';
+
+	/**
+	 * Additional CSS classes.
+	 */
+	class?: string;
+
+	/**
+	 * Content snippet.
+	 */
+	children?: Snippet;
 }
 ```
 
 **Design Tokens to Use:**
+
 ```css
 /* Font sizes */
 --gr-typography-fontSize-xs
@@ -549,6 +575,7 @@ interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
 ```
 
 **Accessibility Requirements:**
+
 - Renders correct semantic element (`<h1>` through `<h6>`)
 - **Critical:** `level` prop must map to actual heading level (not just visual)
 - Proper heading hierarchy for screen readers
@@ -557,11 +584,13 @@ interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
 - Support for `aria-label` override
 
 **Reference Components:**
+
 - **Variant System:** `Button.svelte` (lines 200-260) - variant and size classes
 - **Props Mapping:** `Avatar.svelte` (lines 6-44) - extensive prop interface
 - **Type Safety:** `Button.svelte` (lines 20-100) - comprehensive TypeScript
 
 **CSS Class Pattern:**
+
 ```css
 .gr-heading
 .gr-heading--h1
@@ -577,6 +606,7 @@ interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
 ```
 
 **Implementation Notes:**
+
 - Component needs to render different elements based on `level` prop
 - Use Svelte's `<svelte:element>` for dynamic element rendering
 - Default size should map sensibly to level (h1=5xl, h2=4xl, etc.)
@@ -584,44 +614,46 @@ interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
 **Test File:** `packages/primitives/tests/heading.test.ts`
 
 **Test Coverage Requirements:**
+
 ```typescript
 describe('Heading.svelte', () => {
-  // Semantic level tests
-  it('renders as h1 when level=1')
-  it('renders as h2 when level=2')
-  it('renders as h3 when level=3')
-  it('renders as h4 when level=4')
-  it('renders as h5 when level=5')
-  it('renders as h6 when level=6')
-  
-  // Size tests
-  it('applies default size based on level')
-  it('overrides size when explicitly set')
-  it('applies all size variants correctly')
-  
-  // Weight tests
-  it('applies bold weight by default')
-  it('applies all weight variants correctly')
-  
-  // Alignment tests
-  it('aligns left by default')
-  it('centers text when align=center')
-  it('aligns right when align=right')
-  
-  // Content tests
-  it('renders children content')
-  it('applies custom className')
-  
-  // Accessibility tests
-  it('accepts id for anchor links')
-  it('accepts aria-label override')
-  it('renders semantic heading element')
+	// Semantic level tests
+	it('renders as h1 when level=1');
+	it('renders as h2 when level=2');
+	it('renders as h3 when level=3');
+	it('renders as h4 when level=4');
+	it('renders as h5 when level=5');
+	it('renders as h6 when level=6');
+
+	// Size tests
+	it('applies default size based on level');
+	it('overrides size when explicitly set');
+	it('applies all size variants correctly');
+
+	// Weight tests
+	it('applies bold weight by default');
+	it('applies all weight variants correctly');
+
+	// Alignment tests
+	it('aligns left by default');
+	it('centers text when align=center');
+	it('aligns right when align=right');
+
+	// Content tests
+	it('renders children content');
+	it('applies custom className');
+
+	// Accessibility tests
+	it('accepts id for anchor links');
+	it('accepts aria-label override');
+	it('renders semantic heading element');
 });
 ```
 
 **Test Harness:** `packages/primitives/tests/harness/HeadingHarness.svelte`
 
 **Documentation Required:**
+
 - Export in `packages/primitives/src/index.ts`
 - Section in `knowledgebase/api-reference.md`
 - Examples showing semantic level vs visual size
@@ -638,88 +670,90 @@ describe('Heading.svelte', () => {
 **Purpose:** Paragraph and inline text component with size, weight, and color variants.
 
 **Props Interface:**
+
 ```typescript
 interface TextProps extends HTMLAttributes<HTMLParagraphElement | HTMLSpanElement> {
-  /**
-   * HTML element to render.
-   * - `p`: Paragraph (default)
-   * - `span`: Inline span
-   * - `div`: Block div
-   * - `label`: Label element
-   * 
-   * @defaultValue 'p'
-   */
-  as?: 'p' | 'span' | 'div' | 'label';
-  
-  /**
-   * Text size.
-   * - `xs`: 0.75rem
-   * - `sm`: 0.875rem
-   * - `base`: 1rem (default)
-   * - `lg`: 1.125rem
-   * - `xl`: 1.25rem
-   * - `2xl`: 1.5rem
-   * 
-   * @defaultValue 'base'
-   */
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl';
-  
-  /**
-   * Font weight.
-   * - `normal`: 400 (default)
-   * - `medium`: 500
-   * - `semibold`: 600
-   * - `bold`: 700
-   * 
-   * @defaultValue 'normal'
-   */
-  weight?: 'normal' | 'medium' | 'semibold' | 'bold';
-  
-  /**
-   * Text color variant.
-   * - `primary`: Primary text color (default)
-   * - `secondary`: Muted text color
-   * - `tertiary`: Most muted text color
-   * - `success`: Success/positive color
-   * - `warning`: Warning color
-   * - `error`: Error/danger color
-   * 
-   * @defaultValue 'primary'
-   */
-  color?: 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error';
-  
-  /**
-   * Text alignment.
-   * 
-   * @defaultValue 'left'
-   */
-  align?: 'left' | 'center' | 'right' | 'justify';
-  
-  /**
-   * Whether text should truncate with ellipsis.
-   * 
-   * @defaultValue false
-   */
-  truncate?: boolean;
-  
-  /**
-   * Number of lines before truncating (requires truncate=true).
-   */
-  lines?: number;
-  
-  /**
-   * Additional CSS classes.
-   */
-  class?: string;
-  
-  /**
-   * Content snippet.
-   */
-  children?: Snippet;
+	/**
+	 * HTML element to render.
+	 * - `p`: Paragraph (default)
+	 * - `span`: Inline span
+	 * - `div`: Block div
+	 * - `label`: Label element
+	 *
+	 * @defaultValue 'p'
+	 */
+	as?: 'p' | 'span' | 'div' | 'label';
+
+	/**
+	 * Text size.
+	 * - `xs`: 0.75rem
+	 * - `sm`: 0.875rem
+	 * - `base`: 1rem (default)
+	 * - `lg`: 1.125rem
+	 * - `xl`: 1.25rem
+	 * - `2xl`: 1.5rem
+	 *
+	 * @defaultValue 'base'
+	 */
+	size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl';
+
+	/**
+	 * Font weight.
+	 * - `normal`: 400 (default)
+	 * - `medium`: 500
+	 * - `semibold`: 600
+	 * - `bold`: 700
+	 *
+	 * @defaultValue 'normal'
+	 */
+	weight?: 'normal' | 'medium' | 'semibold' | 'bold';
+
+	/**
+	 * Text color variant.
+	 * - `primary`: Primary text color (default)
+	 * - `secondary`: Muted text color
+	 * - `tertiary`: Most muted text color
+	 * - `success`: Success/positive color
+	 * - `warning`: Warning color
+	 * - `error`: Error/danger color
+	 *
+	 * @defaultValue 'primary'
+	 */
+	color?: 'primary' | 'secondary' | 'tertiary' | 'success' | 'warning' | 'error';
+
+	/**
+	 * Text alignment.
+	 *
+	 * @defaultValue 'left'
+	 */
+	align?: 'left' | 'center' | 'right' | 'justify';
+
+	/**
+	 * Whether text should truncate with ellipsis.
+	 *
+	 * @defaultValue false
+	 */
+	truncate?: boolean;
+
+	/**
+	 * Number of lines before truncating (requires truncate=true).
+	 */
+	lines?: number;
+
+	/**
+	 * Additional CSS classes.
+	 */
+	class?: string;
+
+	/**
+	 * Content snippet.
+	 */
+	children?: Snippet;
 }
 ```
 
 **Design Tokens to Use:**
+
 ```css
 /* Font sizes */
 --gr-typography-fontSize-xs
@@ -751,17 +785,20 @@ interface TextProps extends HTMLAttributes<HTMLParagraphElement | HTMLSpanElemen
 ```
 
 **Accessibility Requirements:**
+
 - Semantic element based on `as` prop
 - For `label`: support for `for` attribute
 - Proper color contrast (handled by semantic tokens)
 - Respects reduced motion for any transitions
 
 **Reference Components:**
+
 - **Element Rendering:** Similar to Heading (use `<svelte:element>`)
 - **Variant System:** `Button.svelte` - multiple variant dimensions
 - **Simple Structure:** `Skeleton.svelte` - straightforward component
 
 **CSS Class Pattern:**
+
 ```css
 .gr-text
 .gr-text--xs
@@ -776,53 +813,56 @@ interface TextProps extends HTMLAttributes<HTMLParagraphElement | HTMLSpanElemen
 ```
 
 **Implementation Notes:**
+
 - Truncation CSS: `text-overflow: ellipsis; overflow: hidden; white-space: nowrap;`
 - Multi-line truncation: `-webkit-line-clamp` with `-webkit-box-orient: vertical;`
 
 **Test File:** `packages/primitives/tests/text.test.ts`
 
 **Test Coverage Requirements:**
+
 ```typescript
 describe('Text.svelte', () => {
-  // Element rendering tests
-  it('renders as p by default')
-  it('renders as span when as=span')
-  it('renders as div when as=div')
-  it('renders as label when as=label')
-  
-  // Size tests
-  it('applies base size by default')
-  it('applies all size variants correctly')
-  
-  // Weight tests
-  it('applies normal weight by default')
-  it('applies all weight variants correctly')
-  
-  // Color tests
-  it('applies primary color by default')
-  it('applies all color variants correctly')
-  
-  // Alignment tests
-  it('aligns left by default')
-  it('applies all alignment values correctly')
-  
-  // Truncation tests
-  it('truncates text when truncate=true')
-  it('truncates to specific lines when lines prop set')
-  it('does not truncate by default')
-  
-  // Content tests
-  it('renders children content')
-  it('applies custom className')
-  
-  // Accessibility tests
-  it('supports for attribute when as=label')
+	// Element rendering tests
+	it('renders as p by default');
+	it('renders as span when as=span');
+	it('renders as div when as=div');
+	it('renders as label when as=label');
+
+	// Size tests
+	it('applies base size by default');
+	it('applies all size variants correctly');
+
+	// Weight tests
+	it('applies normal weight by default');
+	it('applies all weight variants correctly');
+
+	// Color tests
+	it('applies primary color by default');
+	it('applies all color variants correctly');
+
+	// Alignment tests
+	it('aligns left by default');
+	it('applies all alignment values correctly');
+
+	// Truncation tests
+	it('truncates text when truncate=true');
+	it('truncates to specific lines when lines prop set');
+	it('does not truncate by default');
+
+	// Content tests
+	it('renders children content');
+	it('applies custom className');
+
+	// Accessibility tests
+	it('supports for attribute when as=label');
 });
 ```
 
 **Test Harness:** `packages/primitives/tests/harness/TextHarness.svelte`
 
 **Documentation Required:**
+
 - Export in `packages/primitives/src/index.ts`
 - Section in `knowledgebase/api-reference.md`
 - Examples in `knowledgebase/core-patterns.md`
@@ -850,10 +890,12 @@ Phase 6 transforms the knowledge base from Fediverse-focused documentation to co
 **New File:** `knowledgebase/component-inventory.md`
 
 **Content Structure:**
+
 ```markdown
 # Complete Component Inventory
 
 ## Purpose
+
 This document lists EVERY component available in Greater Components.
 If a component is not listed here, it DOES NOT EXIST.
 
@@ -862,6 +904,7 @@ If a component is not listed here, it DOES NOT EXIST.
 ### All 20 Components (Complete List)
 
 **Form Controls (7):**
+
 - Button - Interactive button with variants
 - TextField - Single-line text input
 - TextArea - Multi-line text input
@@ -871,17 +914,20 @@ If a component is not listed here, it DOES NOT EXIST.
 - FileUpload - File upload with drag-drop
 
 **Overlays & Menus (4):**
+
 - Modal - Dialog overlay
 - Menu - Dropdown menu
 - Tooltip - Hover tooltip
 - Tabs - Tab navigation
 
 **Display & Status (3):**
+
 - Avatar - User avatar with fallback
 - Skeleton - Loading placeholder
 - ThemeSwitcher - Theme toggle
 
 **Layout & Typography (5) - NEW:**
+
 - Card - Content container with borders/shadows
 - Container - Max-width centering wrapper
 - Section - Semantic section with spacing
@@ -889,6 +935,7 @@ If a component is not listed here, it DOES NOT EXIST.
 - Text - Paragraph/span/div with typography control
 
 **Theme System (1):**
+
 - ThemeProvider - Theme context provider
 
 ### What This Package Does NOT Provide
@@ -903,12 +950,14 @@ If a component is not listed here, it DOES NOT EXIST.
 
 **If you need layout beyond Container/Section:**
 Use standard HTML + CSS Grid/Flexbox:
+
 - Grid layouts: <div style="display: grid; ...">
 - Flex layouts: <div style="display: flex; ...">
 - Responsive: CSS media queries
 
 **If you need navigation:**
 Combine HTML + Button component:
+
 - <nav> with <Button> components
 - <ul><li> with styling
 - SvelteKit links with <a> elements
@@ -918,8 +967,9 @@ Combine HTML + Button component:
 ### Naming Convention
 
 Filename (kebab-case) → Export (PascalCase + Icon):
+
 - code.svelte → CodeIcon
-- alert-circle.svelte → AlertCircleIcon  
+- alert-circle.svelte → AlertCircleIcon
 - arrow-right.svelte → ArrowRightIcon
 
 ### All 300+ Icons (Complete List)
@@ -977,6 +1027,7 @@ Use: GitBranchIcon, GitMergeIcon, LayersIcon, or ToolIcon
 ### Verifying Icon Exists
 
 Before importing an icon:
+
 1. Check if filename exists in packages/icons/src/icons/{name}.svelte
 2. Convert kebab-case to PascalCase + Icon
 3. If missing, use closest semantic alternative from list above
@@ -995,6 +1046,7 @@ Before importing an icon:
 **Lines:** ~800-1000 lines (comprehensive)
 
 **Success Criteria:**
+
 - ✅ Every component listed with brief description
 - ✅ Explicit "DOES NOT EXIST" sections
 - ✅ Alternatives documented for common hallucinations
@@ -1011,10 +1063,12 @@ Before importing an icon:
 **New File:** `knowledgebase/design-tokens-schema.md`
 
 **Content Structure:**
-```markdown
+
+````markdown
 # Design Token Schema - Complete Reference
 
 ## Purpose
+
 Exact schema for all design tokens to prevent common errors.
 
 ## Color Token Scale
@@ -1022,28 +1076,28 @@ Exact schema for all design tokens to prevent common errors.
 ### Scale Values (CRITICAL)
 
 Color tokens use these EXACT values (NOT 10, 20, 30...):
+
 - 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950
 
 ✅ CORRECT Examples:
+
 ```css
---gr-color-primary-50: #eff6ff
---gr-color-primary-100: #dbeafe
---gr-color-primary-200: #bfdbfe
---gr-color-primary-600: #2563eb
---gr-color-primary-900: #1e3a8a
---gr-color-primary-950: #172554
+--gr-color-primary-50: #eff6ff --gr-color-primary-100: #dbeafe --gr-color-primary-200: #bfdbfe
+	--gr-color-primary-600: #2563eb --gr-color-primary-900: #1e3a8a --gr-color-primary-950: #172554;
 ```
+````
 
 ❌ INCORRECT Examples (Common Errors):
+
 ```css
---gr-color-primary-10: ...   /* WRONG: Should be 50 or 100 */
---gr-color-primary-20: ...   /* WRONG: Should be 200 */
---gr-color-primary-60: ...   /* WRONG: Should be 600 */
+--gr-color-primary-10: ... /* WRONG: Should be 50 or 100 */ --gr-color-primary-20: ...
+	/* WRONG: Should be 200 */ --gr-color-primary-60: ... /* WRONG: Should be 600 */;
 ```
 
 ### Available Color Families
 
 From packages/tokens/src/tokens.json:
+
 - base: white, black
 - gray: 50-950
 - primary: 50-950
@@ -1058,34 +1112,31 @@ From packages/tokens/src/tokens.json:
 Font weights are standard CSS numeric values (400, 500, 600, 700):
 
 ✅ CORRECT:
+
 ```css
---gr-typography-fontWeight-normal: 400
---gr-typography-fontWeight-medium: 500
---gr-typography-fontWeight-semibold: 600
---gr-typography-fontWeight-bold: 700
+--gr-typography-fontWeight-normal: 400 --gr-typography-fontWeight-medium: 500
+	--gr-typography-fontWeight-semibold: 600 --gr-typography-fontWeight-bold: 700;
 ```
 
 ❌ INCORRECT (Common Error - Missing Zero):
+
 ```css
---gr-typography-fontWeight-normal: 40    /* WRONG: Missing zero */
---gr-typography-fontWeight-medium: 50    /* WRONG: Missing zero */
---gr-typography-fontWeight-semibold: 60  /* WRONG: Missing zero */
---gr-typography-fontWeight-bold: 70      /* WRONG: Missing zero */
+--gr-typography-fontWeight-normal: 40 /* WRONG: Missing zero */
+	--gr-typography-fontWeight-medium: 50 /* WRONG: Missing zero */
+	--gr-typography-fontWeight-semibold: 60 /* WRONG: Missing zero */
+	--gr-typography-fontWeight-bold: 70 /* WRONG: Missing zero */;
 ```
 
 ### Font Size Scale
 
 Available sizes with exact rem values:
+
 ```css
---gr-typography-fontSize-xs: 0.75rem     /* 12px */
---gr-typography-fontSize-sm: 0.875rem    /* 14px */
---gr-typography-fontSize-base: 1rem      /* 16px */
---gr-typography-fontSize-lg: 1.125rem    /* 18px */
---gr-typography-fontSize-xl: 1.25rem     /* 20px */
---gr-typography-fontSize-2xl: 1.5rem     /* 24px */
---gr-typography-fontSize-3xl: 1.875rem   /* 30px */
---gr-typography-fontSize-4xl: 2.25rem    /* 36px */
---gr-typography-fontSize-5xl: 3rem       /* 48px */
+--gr-typography-fontSize-xs: 0.75rem /* 12px */ --gr-typography-fontSize-sm: 0.875rem /* 14px */
+	--gr-typography-fontSize-base: 1rem /* 16px */ --gr-typography-fontSize-lg: 1.125rem /* 18px */
+	--gr-typography-fontSize-xl: 1.25rem /* 20px */ --gr-typography-fontSize-2xl: 1.5rem /* 24px */
+	--gr-typography-fontSize-3xl: 1.875rem /* 30px */ --gr-typography-fontSize-4xl: 2.25rem /* 36px */
+	--gr-typography-fontSize-5xl: 3rem /* 48px */;
 ```
 
 ## Spacing Tokens
@@ -1093,21 +1144,15 @@ Available sizes with exact rem values:
 ### Spacing Scale
 
 Available spacing values:
+
 ```css
---gr-spacing-scale-0: 0
---gr-spacing-scale-1: 0.25rem   /* 4px */
---gr-spacing-scale-2: 0.5rem    /* 8px */
---gr-spacing-scale-3: 0.75rem   /* 12px */
---gr-spacing-scale-4: 1rem      /* 16px */
---gr-spacing-scale-5: 1.25rem   /* 20px */
---gr-spacing-scale-6: 1.5rem    /* 24px */
---gr-spacing-scale-8: 2rem      /* 32px */
---gr-spacing-scale-10: 2.5rem   /* 40px */
---gr-spacing-scale-12: 3rem     /* 48px */
---gr-spacing-scale-16: 4rem     /* 64px */
---gr-spacing-scale-20: 5rem     /* 80px */
---gr-spacing-scale-24: 6rem     /* 96px */
---gr-spacing-scale-32: 8rem     /* 128px */
+--gr-spacing-scale-0: 0 --gr-spacing-scale-1: 0.25rem /* 4px */ --gr-spacing-scale-2: 0.5rem
+	/* 8px */ --gr-spacing-scale-3: 0.75rem /* 12px */ --gr-spacing-scale-4: 1rem /* 16px */
+	--gr-spacing-scale-5: 1.25rem /* 20px */ --gr-spacing-scale-6: 1.5rem /* 24px */
+	--gr-spacing-scale-8: 2rem /* 32px */ --gr-spacing-scale-10: 2.5rem /* 40px */
+	--gr-spacing-scale-12: 3rem /* 48px */ --gr-spacing-scale-16: 4rem /* 64px */
+	--gr-spacing-scale-20: 5rem /* 80px */ --gr-spacing-scale-24: 6rem /* 96px */
+	--gr-spacing-scale-32: 8rem /* 128px */;
 ```
 
 Note: Spacing uses `--gr-spacing-scale-{number}` NOT `--gr-spacing-{number}`
@@ -1117,26 +1162,23 @@ Note: Spacing uses `--gr-spacing-scale-{number}` NOT `--gr-spacing-{number}`
 ### Critical: Double 'i' in 'radii'
 
 ✅ CORRECT:
+
 ```css
---gr-radii-none: 0
---gr-radii-sm: 0.125rem
---gr-radii-base: 0.25rem
---gr-radii-md: 0.375rem
---gr-radii-lg: 0.5rem
---gr-radii-xl: 0.75rem
---gr-radii-2xl: 1rem
---gr-radii-full: 9999px
+--gr-radii-none: 0 --gr-radii-sm: 0.125rem --gr-radii-base: 0.25rem --gr-radii-md: 0.375rem
+	--gr-radii-lg: 0.5rem --gr-radii-xl: 0.75rem --gr-radii-2xl: 1rem --gr-radii-full: 9999px;
 ```
 
 ❌ INCORRECT (Common Typo):
+
 ```css
---gr-radi-sm: ...   /* WRONG: Missing 'i' - should be 'radii' */
---gr-radi-md: ...   /* WRONG: Missing 'i' - should be 'radii' */
+--gr-radi-sm: ... /* WRONG: Missing 'i' - should be 'radii' */ --gr-radi-md: ...
+	/* WRONG: Missing 'i' - should be 'radii' */;
 ```
 
 ## Shadow Tokens
 
 Available shadow values:
+
 ```css
 --gr-shadows-sm
 --gr-shadows-base
@@ -1151,27 +1193,33 @@ Available shadow values:
 ## Common Errors & Fixes
 
 ### Error 1: Wrong Color Scale
+
 - ❌ Using 10, 20, 30... instead of 50, 100, 200...
 - ✅ Always use: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950
 
 ### Error 2: Missing Digit in Font Weights
+
 - ❌ Using 40, 50, 60, 70 instead of 400, 500, 600, 700
 - ✅ Font weights are always 3 digits
 
 ### Error 3: Typo in 'radii'
-- ❌ Using --gr-radi-* (missing 'i')
-- ✅ Always: --gr-radii-* (double 'i')
+
+- ❌ Using --gr-radi-\* (missing 'i')
+- ✅ Always: --gr-radii-\* (double 'i')
 
 ### Error 4: Wrong Spacing Format
+
 - ❌ Using --gr-spacing-4 (missing 'scale')
 - ✅ Always: --gr-spacing-scale-4
 
 ### Error 5: Incomplete Hex Colors
+
 - ❌ Truncated hex like #47569 or #3415
 - ✅ Always 6 digits: #475569, #334155
-```
 
-**Lines:** ~400-500 lines  
+````
+
+**Lines:** ~400-500 lines
 **Impact:** Eliminates token value hallucinations
 
 ---
@@ -1200,7 +1248,7 @@ Use HTML for layout + Primitives for interaction:
 <script>
   import { Container, Section, Heading, Text, Button } from '@equaltoai/greater-components-primitives';
   import { ArrowRightIcon, PlayIcon } from '@equaltoai/greater-components-icons';
-  
+
   let showDemo = $state(false);
 </script>
 
@@ -1210,17 +1258,17 @@ Use HTML for layout + Primitives for interaction:
       <Heading level={1} size="5xl" align="center">
         Your Product Name
       </Heading>
-      
+
       <Text size="xl" color="secondary" align="center">
         Build amazing things with our platform
       </Text>
-      
+
       <div class="cta-buttons">
         <Button variant="solid" size="lg">
           Get Started
           {#snippet suffix()}<ArrowRightIcon />{/snippet}
         </Button>
-        
+
         <Button variant="outline" size="lg" onclick={() => showDemo = true}>
           {#snippet prefix()}<PlayIcon />{/snippet}
           Watch Demo
@@ -1238,46 +1286,44 @@ Use HTML for layout + Primitives for interaction:
     gap: 2rem;
     padding: 4rem 0;
   }
-  
+
   .cta-buttons {
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
   }
 </style>
-```
+````
 
 ## Pattern 2: Feature Grid
 
 ```svelte
 <Section spacing="lg">
-  <Container maxWidth="lg">
-    <Heading level={2} align="center">Features</Heading>
-    
-    <div class="feature-grid">
-      <Card variant="outlined" hoverable>
-        {#snippet header()}
-          <CodeIcon size={32} />
-          <Heading level={3} size="xl">Fast Development</Heading>
-        {/snippet}
-        
-        <Text color="secondary">
-          Build quickly with pre-made components
-        </Text>
-      </Card>
-      
-      <!-- More feature cards... -->
-    </div>
-  </Container>
+	<Container maxWidth="lg">
+		<Heading level={2} align="center">Features</Heading>
+
+		<div class="feature-grid">
+			<Card variant="outlined" hoverable>
+				{#snippet header()}
+					<CodeIcon size={32} />
+					<Heading level={3} size="xl">Fast Development</Heading>
+				{/snippet}
+
+				<Text color="secondary">Build quickly with pre-made components</Text>
+			</Card>
+
+			<!-- More feature cards... -->
+		</div>
+	</Container>
 </Section>
 
 <style>
-  .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-  }
+	.feature-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+		margin-top: 3rem;
+	}
 </style>
 ```
 
@@ -1298,32 +1344,32 @@ Use HTML for layout + Primitives for interaction:
 ### ❌ INCORRECT: Looking for components that don't exist
 
 ```svelte
-// THESE DO NOT EXIST:
-import { Grid, Flex, Nav, Table, Image } from '@equaltoai/greater-components-primitives';
+// THESE DO NOT EXIST: import {(Grid, Flex, Nav, Table, Image)} from '@equaltoai/greater-components-primitives';
 ```
 
 ### ✅ CORRECT: Use HTML + Primitives
 
 ```svelte
-import { Container, Section, Heading, Text, Card, Button } from '@equaltoai/greater-components-primitives';
+import {(Container, Section, Heading, Text, Card, Button)} from '@equaltoai/greater-components-primitives';
 
 <!-- Use HTML for structure -->
 <div style="display: grid; ...">
-  <Container>
-    <Heading>Title</Heading>
-  </Container>
+	<Container>
+		<Heading>Title</Heading>
+	</Container>
 </div>
 ```
-```
 
-**Lines:** ~600-800 lines  
+````
+
+**Lines:** ~600-800 lines
 **Impact:** Provides complete non-Fediverse usage guidance
 
 ---
 
 ### 6.2.2: Update core-patterns.md
 
-**Add Section:** "Non-Fediverse Application Patterns"  
+**Add Section:** "Non-Fediverse Application Patterns"
 **Content:**
 - Marketing websites
 - Documentation sites
@@ -1406,7 +1452,7 @@ Use HTML for structure, primitives for interactive elements and consistent typog
 ### Complete Component List (20 Total)
 
 [Existing component documentation follows...]
-```
+````
 
 **Added Content:** ~50 lines
 
@@ -1416,15 +1462,16 @@ Use HTML for structure, primitives for interactive elements and consistent typog
 
 **Objective:** Update structured data files for AI consumption.
 
-### 6.4.1: Update _concepts.yaml
+### 6.4.1: Update \_concepts.yaml
 
 **Changes:**
+
 ```yaml
 primitives_package:
   type: component_package
-  package_name: "@equaltoai/greater-components-primitives"
-  purpose: "Styled UI components for any website type - Fediverse, landing pages, marketing sites, documentation"
-  
+  package_name: '@equaltoai/greater-components-primitives'
+  purpose: 'Styled UI components for any website type - Fediverse, landing pages, marketing sites, documentation'
+
   use_cases:
     - landing_pages
     - marketing_websites
@@ -1432,10 +1479,10 @@ primitives_package:
     - admin_dashboards
     - fediverse_applications
     - general_web_applications
-  
+
   provides:
     # ... existing 15 + new 5 = 20 total
-  
+
   does_not_provide:
     - navigation_components
     - data_table_components
@@ -1443,7 +1490,7 @@ primitives_package:
     - chart_components
     - map_components
     - video_player_components
-  
+
   use_html_for:
     - complex_page_layouts
     - navigation_menus
@@ -1456,18 +1503,19 @@ primitives_package:
 
 ---
 
-### 6.4.2: Update _patterns.yaml
+### 6.4.2: Update \_patterns.yaml
 
 **Add Patterns:**
+
 ```yaml
 landing_page_layout:
-  name: "Building Landing Pages"
-  problem: "Need to build marketing landing page with Greater Components"
-  solution: "Use Container + Section for structure, Card for features, Button for CTAs"
+  name: 'Building Landing Pages'
+  problem: 'Need to build marketing landing page with Greater Components'
+  solution: 'Use Container + Section for structure, Card for features, Button for CTAs'
   correct_example: |
     [Full landing page example]
   anti_patterns:
-    - name: "Looking for Grid component"
+    - name: 'Looking for Grid component'
       why: "Grid component doesn't exist, use CSS Grid"
       incorrect_example: |
         import { Grid } from '@equaltoai/greater-components-primitives'; // DOES NOT EXIST
@@ -1477,9 +1525,9 @@ landing_page_layout:
         </div>
 
 typography_composition:
-  name: "Typography with Heading and Text"
-  problem: "Need consistent typography across pages"
-  solution: "Use Heading for titles, Text for body content"
+  name: 'Typography with Heading and Text'
+  problem: 'Need consistent typography across pages'
+  solution: 'Use Heading for titles, Text for body content'
   correct_example: |
     [Examples with Heading + Text]
 ```
@@ -1488,65 +1536,66 @@ typography_composition:
 
 ---
 
-### 6.4.3: Update _decisions.yaml
+### 6.4.3: Update \_decisions.yaml
 
 **Add Decision Trees:**
+
 ```yaml
 layout_component_selection:
-  question: "Which component should I use for page layout?"
+  question: 'Which component should I use for page layout?'
   decision_tree:
-    - condition: "Need to center content with max-width"
-      choice: "Use Container component"
+    - condition: 'Need to center content with max-width'
+      choice: 'Use Container component'
       example: |
         <Container maxWidth="lg" padding="md">
           <!-- Content -->
         </Container>
-    
-    - condition: "Need vertical spacing between page sections"
-      choice: "Use Section component"
+
+    - condition: 'Need vertical spacing between page sections'
+      choice: 'Use Section component'
       example: |
         <Section spacing="lg">
           <!-- Section content -->
         </Section>
-    
-    - condition: "Need content card with border/shadow"
-      choice: "Use Card component"
-      
-    - condition: "Need complex grid layout"
-      choice: "Use HTML + CSS Grid (no component exists)"
+
+    - condition: 'Need content card with border/shadow'
+      choice: 'Use Card component'
+
+    - condition: 'Need complex grid layout'
+      choice: 'Use HTML + CSS Grid (no component exists)'
       example: |
         <div style="display: grid; grid-template-columns: ...">
 
 text_component_selection:
-  question: "Should I use Heading, Text, or HTML elements?"
+  question: 'Should I use Heading, Text, or HTML elements?'
   decision_tree:
-    - condition: "Is this a page/section title?"
-      choice: "Use Heading component with appropriate level"
-      reason: "Ensures semantic HTML and consistent typography"
-      
-    - condition: "Is this body text needing color/size variants?"
-      choice: "Use Text component"
-      reason: "Provides typography variants and semantic colors"
-      
-    - condition: "Is this simple paragraph with no special styling?"
-      choice: "Use HTML <p> element directly"
-      reason: "Text component adds convenience, but HTML is fine for basic use"
+    - condition: 'Is this a page/section title?'
+      choice: 'Use Heading component with appropriate level'
+      reason: 'Ensures semantic HTML and consistent typography'
+
+    - condition: 'Is this body text needing color/size variants?'
+      choice: 'Use Text component'
+      reason: 'Provides typography variants and semantic colors'
+
+    - condition: 'Is this simple paragraph with no special styling?'
+      choice: 'Use HTML <p> element directly'
+      reason: 'Text component adds convenience, but HTML is fine for basic use'
 
 icon_discovery:
-  question: "How do I find if an icon exists?"
+  question: 'How do I find if an icon exists?'
   decision_tree:
-    - condition: "I need a specific icon"
+    - condition: 'I need a specific icon'
       steps:
-        - "Check knowledgebase/component-inventory.md icon list"
-        - "Verify kebab-case filename exists in packages/icons/src/icons/"
-        - "Convert to PascalCase + Icon suffix"
-        - "If not found, use closest semantic alternative"
-      
+        - 'Check knowledgebase/component-inventory.md icon list'
+        - 'Verify kebab-case filename exists in packages/icons/src/icons/'
+        - 'Convert to PascalCase + Icon suffix'
+        - 'If not found, use closest semantic alternative'
+
     - condition: "Icon doesn't exist"
-      choice: "Use semantic alternative from documented list"
+      choice: 'Use semantic alternative from documented list'
       examples:
-        api: "Use ServerIcon, DatabaseIcon, or CloudIcon"
-        workflow: "Use GitBranchIcon, LayersIcon, or ToolIcon"
+        api: 'Use ServerIcon, DatabaseIcon, or CloudIcon'
+        workflow: 'Use GitBranchIcon, LayersIcon, or ToolIcon'
 ```
 
 **Added Content:** ~300 lines
@@ -1562,6 +1611,7 @@ icon_discovery:
 **New File:** `knowledgebase/example-landing-page.md`
 
 **Content:**
+
 - Full working landing page using all 5 new components
 - Hero, features, pricing, testimonials, CTA, footer
 - All code runnable and tested
@@ -1574,13 +1624,15 @@ icon_discovery:
 ### 6.5.2: Add Playground Demos
 
 **New Files in apps/playground:**
+
 ```
 src/routes/demos/layout-components/+page.svelte
-src/routes/demos/typography-components/+page.svelte  
+src/routes/demos/typography-components/+page.svelte
 src/routes/demos/landing-page-example/+page.svelte
 ```
 
 **Each Demo Shows:**
+
 - Component in isolation
 - All variants/props
 - Common use cases
@@ -1593,13 +1645,16 @@ src/routes/demos/landing-page-example/+page.svelte
 **Create:** `knowledgebase/PAI-VALIDATION-TESTS.md`
 
 **Test Scenarios:**
+
 ```markdown
 # PAI Validation Test Scenarios
 
 ## Test 1: Landing Page Generation
+
 **Prompt:** "Build a landing page for a SaaS product using greater-components primitives"
 
 **Expected Behavior:**
+
 - ✅ Imports Card, Container, Section, Heading, Text, Button
 - ✅ Uses HTML for <main>, <nav>, <footer>
 - ✅ Does NOT import non-existent components
@@ -1607,29 +1662,35 @@ src/routes/demos/landing-page-example/+page.svelte
 - ✅ Uses existing icons or documents alternatives
 
 ## Test 2: Component Discovery
+
 **Prompt:** "What layout components are available in greater-components-primitives?"
 
 **Expected Response:**
+
 - Lists: Card, Container, Section
 - Mentions: Heading, Text for typography
 - States: No Grid, Flex, Nav components
 - Provides: Alternatives (CSS Grid, HTML)
 
 ## Test 3: Icon Discovery
+
 **Prompt:** "I need ApiIcon and WorkflowIcon from greater-components-icons"
 
 **Expected Response:**
+
 - States: ApiIcon and WorkflowIcon DO NOT EXIST
 - Suggests: ServerIcon, CodeIcon, DatabaseIcon for API
 - Suggests: GitBranchIcon, LayersIcon, ToolIcon for Workflow
 
 ## Test 4: Design Token Usage
+
 **Prompt:** "Create custom theme with design tokens for greater-components"
 
 **Expected Behavior:**
+
 - ✅ Uses correct scale: 50, 100, 200... (not 10, 20, 30)
 - ✅ Font weights: 400, 500, 600, 700 (not 40, 50, 60, 70)
-- ✅ Uses --gr-radii-* (not --gr-radi-*)
+- ✅ Uses --gr-radii-_ (not --gr-radi-_)
 - ✅ Complete hex colors (6 digits)
 ```
 
@@ -1644,6 +1705,7 @@ src/routes/demos/landing-page-example/+page.svelte
 ### 6.6.1: Audit Existing Files
 
 **Process:**
+
 1. Read each KB file completely
 2. Verify every component reference exists
 3. Check every code example compiles
@@ -1651,6 +1713,7 @@ src/routes/demos/landing-page-example/+page.svelte
 5. Fix or remove incorrect content
 
 **Files to Audit:**
+
 - ✅ api-reference.md (already updated with 5 new components)
 - ✅ core-patterns.md (has Container example, needs expansion)
 - ⚠️ getting-started.md (check for outdated patterns)
@@ -1665,12 +1728,14 @@ src/routes/demos/landing-page-example/+page.svelte
 **New File:** `knowledgebase/COMPLETENESS-CHECKLIST.md`
 
 **Content:**
+
 ```markdown
 # Knowledge Base Completeness Checklist
 
 ## Component Coverage
 
 ### Primitives (20/20)
+
 - [ ] Button - API docs, patterns, examples ✓
 - [ ] Modal - API docs, patterns, examples ✓
 - [ ] TextField - API docs, patterns, examples ✓
@@ -1720,6 +1785,7 @@ src/routes/demos/landing-page-example/+page.svelte
 ### 6.7.1: Full Build Validation
 
 **Commands:**
+
 ```bash
 # From monorepo root
 pnpm install
@@ -1730,6 +1796,7 @@ pnpm lint
 ```
 
 **Success Criteria:**
+
 - ✅ All packages build
 - ✅ All tests pass (150+ in primitives)
 - ✅ No TypeScript errors
@@ -1740,12 +1807,14 @@ pnpm lint
 ### 6.7.2: Bundle Size Analysis
 
 **Check:**
+
 ```bash
 cd packages/primitives/dist
 ls -lh components/ | grep -E "Card|Container|Section|Heading|Text"
 ```
 
 **Document:**
+
 - Individual component sizes
 - Total added size
 - Tree-shaking verification
@@ -1756,6 +1825,7 @@ ls -lh components/ | grep -E "Card|Container|Section|Heading|Text"
 ### 6.7.3: Accessibility Validation
 
 **Manual Tests:**
+
 - [ ] Keyboard navigation works for all 5 components
 - [ ] Screen reader announces correctly (NVDA/VoiceOver)
 - [ ] Focus indicators visible
@@ -1763,6 +1833,7 @@ ls -lh components/ | grep -E "Card|Container|Section|Heading|Text"
 - [ ] Reduced motion preferences respected
 
 **Automated:**
+
 ```bash
 cd packages/primitives
 pnpm test  # Includes a11y assertions in tests
@@ -1777,12 +1848,14 @@ pnpm test  # Includes a11y assertions in tests
 ### 6.8.1: Test Scenario 1 - Landing Page
 
 **Command:**
+
 ```bash
 cd /path/to/test-project
 pai project "create a landing page using greater-components primitives with hero, features grid, and CTA section"
 ```
 
 **Validation:**
+
 - ✅ Imports: Card, Container, Section, Heading, Text, Button
 - ✅ Does NOT import non-existent components
 - ✅ Uses correct design tokens
@@ -1794,11 +1867,13 @@ pai project "create a landing page using greater-components primitives with hero
 ### 6.8.2: Test Scenario 2 - Documentation Site
 
 **Command:**
+
 ```bash
 pai project "build documentation site homepage with greater-components"
 ```
 
 **Validation:**
+
 - ✅ Uses appropriate components
 - ✅ No hallucinations
 - ✅ Correct token usage
@@ -1808,11 +1883,13 @@ pai project "build documentation site homepage with greater-components"
 ### 6.8.3: Test Scenario 3 - Icon Discovery
 
 **Query PAI KB:**
+
 ```
 What icons are available for API and workflow concepts in greater-components-icons?
 ```
 
 **Expected Response:**
+
 - States ApiIcon and WorkflowIcon DON'T exist
 - Suggests: ServerIcon, CodeIcon for API
 - Suggests: GitBranchIcon, LayersIcon for workflow
@@ -1828,10 +1905,12 @@ What icons are available for API and workflow concepts in greater-components-ico
 **File:** `knowledgebase/README.md`
 
 **Add Sections:**
+
 ```markdown
 ## What's New
 
 ### Recently Added (Nov 2025)
+
 - 5 new layout & typography components: Card, Container, Section, Heading, Text
 - Complete component inventory with "does not exist" guidance
 - Complete icon reference (all 300 icons)
@@ -1842,6 +1921,7 @@ What icons are available for API and workflow concepts in greater-components-ico
 ### For AI Assistants
 
 The knowledge base now includes:
+
 - Complete component inventories (what exists and what doesn't)
 - Explicit "does not provide" lists for each package
 - Icon alternatives for common requests
@@ -1849,6 +1929,7 @@ The knowledge base now includes:
 - Usage patterns for Fediverse AND general websites
 
 This prevents hallucinations by providing:
+
 1. Explicit lists of what exists
 2. Explicit statements of what doesn't exist
 3. Alternatives when requested item doesn't exist
@@ -1862,18 +1943,21 @@ This prevents hallucinations by providing:
 **New File:** `knowledgebase/DOCUMENTATION-INDEX.md`
 
 **Content:**
+
 ```markdown
 # Greater Components Knowledge Base - Complete Index
 
 ## Quick Navigation
 
 ### I want to build...
+
 - **Fediverse/Social App** → [getting-started.md](./getting-started.md)
 - **Landing Page** → [patterns-landing-pages.md](./patterns-landing-pages.md) NEW
 - **Documentation Site** → [patterns-landing-pages.md](./patterns-landing-pages.md) NEW
 - **Admin Dashboard** → [core-patterns.md](./core-patterns.md)
 
 ### I need to know...
+
 - **What components exist** → [component-inventory.md](./component-inventory.md) NEW
 - **What icons are available** → [component-inventory.md#icons](./component-inventory.md#icons) NEW
 - **How to use design tokens** → [design-tokens-schema.md](./design-tokens-schema.md) NEW
@@ -1881,11 +1965,13 @@ This prevents hallucinations by providing:
 - **Usage patterns** → [core-patterns.md](./core-patterns.md)
 
 ### I'm having problems...
+
 - **Check here first** → [troubleshooting.md](./troubleshooting.md)
 - **Common errors** → [design-tokens-schema.md#common-errors](./design-tokens-schema.md#common-errors) NEW
 
 ### I'm using AI assistance...
-- **Structured data** → [_concepts.yaml](./_concepts.yaml), [_patterns.yaml](./_patterns.yaml), [_decisions.yaml](./_decisions.yaml)
+
+- **Structured data** → [\_concepts.yaml](./_concepts.yaml), [\_patterns.yaml](./_patterns.yaml), [\_decisions.yaml](./_decisions.yaml)
 - **Validation tests** → [PAI-VALIDATION-TESTS.md](./PAI-VALIDATION-TESTS.md) NEW
 - **Component inventory** → [component-inventory.md](./component-inventory.md) NEW
 ```
@@ -1899,6 +1985,7 @@ This prevents hallucinations by providing:
 ### 6.10.1: PAI Re-Test on Original Scenario
 
 **Reproduce Original Issue:**
+
 ```bash
 cd paicodes
 rm -rf src/
@@ -1906,6 +1993,7 @@ pai project "use the greater-components library to implement PAGE: HOME / LANDIN
 ```
 
 **Expected Outcome:**
+
 - ✅ NO hallucinated components (Container, Section, Heading, Text, Card all exist now)
 - ✅ Correct imports from @equaltoai/greater-components-primitives
 - ✅ Correct design token usage
@@ -1913,6 +2001,7 @@ pai project "use the greater-components library to implement PAGE: HOME / LANDIN
 - ✅ Proper layout with HTML + primitives
 
 **Compare to Original:**
+
 - Original had: 5 hallucinated components
 - New should have: 0 hallucinations
 
@@ -1921,6 +2010,7 @@ pai project "use the greater-components library to implement PAGE: HOME / LANDIN
 ### 6.10.2: Knowledge Base Metrics
 
 **Measure:**
+
 ```bash
 cd knowledgebase
 wc -l *.md *.yaml
@@ -1930,6 +2020,7 @@ wc -l *.md *.yaml
 **Target:** ~10,000-12,000 lines (comprehensive)
 
 **New Files Added:** 5
+
 - component-inventory.md (~1000 lines)
 - design-tokens-schema.md (~500 lines)
 - patterns-landing-pages.md (~700 lines)
@@ -1947,6 +2038,7 @@ wc -l *.md *.yaml
 **Generate Final Report:**
 
 **Component Implementation:**
+
 - 5/5 components complete ✅
 - 150 tests passing ✅
 - 100% coverage on new components ✅
@@ -1954,13 +2046,15 @@ wc -l *.md *.yaml
 - 0 lint errors on new code ✅
 
 **Documentation Coverage:**
+
 - API Reference: 20/20 primitives documented ✅
 - Patterns: Fediverse ✅, Landing Pages ✅, General Sites ✅
-- Structured Data: _concepts, _patterns, _decisions all updated ✅
+- Structured Data: \_concepts, \_patterns, \_decisions all updated ✅
 - Icon Reference: Complete 300 icon list ✅
 - Token Schema: Complete with error examples ✅
 
 **Anti-Hallucination Measures:**
+
 - Explicit inventory lists ✅
 - "Does not exist" statements ✅
 - Alternative suggestions ✅
@@ -1971,18 +2065,18 @@ wc -l *.md *.yaml
 
 ## Phase 6 Sub-Phase Summary
 
-| Sub-Phase | Focus | New Files | Lines Added | Status |
-|-----------|-------|-----------|-------------|--------|
-| 6.1 | Component Inventory | 1 | ~1000 | Planned |
-| 6.2 | Usage Patterns | 1 | ~700 | Planned |
-| 6.3 | Reference Expansion | 0 | ~400 | Planned |
-| 6.4 | Structure Updates | 0 | ~800 | Planned |
-| 6.5 | Examples & Validation | 2 | ~800 | Planned |
-| 6.6 | Quality Assurance | 1 | ~300 | Planned |
-| 6.7 | Technical Validation | 0 | ~0 | Planned |
-| 6.8 | PAI Integration Test | 0 | ~0 | Planned |
-| 6.9 | Publication Prep | 2 | ~500 | Planned |
-| 6.10 | Final Sign-Off | 0 | ~0 | Planned |
+| Sub-Phase | Focus                 | New Files | Lines Added | Status  |
+| --------- | --------------------- | --------- | ----------- | ------- |
+| 6.1       | Component Inventory   | 1         | ~1000       | Planned |
+| 6.2       | Usage Patterns        | 1         | ~700        | Planned |
+| 6.3       | Reference Expansion   | 0         | ~400        | Planned |
+| 6.4       | Structure Updates     | 0         | ~800        | Planned |
+| 6.5       | Examples & Validation | 2         | ~800        | Planned |
+| 6.6       | Quality Assurance     | 1         | ~300        | Planned |
+| 6.7       | Technical Validation  | 0         | ~0          | Planned |
+| 6.8       | PAI Integration Test  | 0         | ~0          | Planned |
+| 6.9       | Publication Prep      | 2         | ~500        | Planned |
+| 6.10      | Final Sign-Off        | 0         | ~0          | Planned |
 
 **Total:** 7 new files, ~4,500 lines, 10 sub-phases
 
@@ -1991,9 +2085,10 @@ wc -l *.md *.yaml
 ## Success Criteria for Phase 6
 
 ### Documentation Completeness
+
 - ✅ Every component has complete API documentation
 - ✅ Every component has usage examples
-- ✅ Every component listed in structured data (_concepts, _patterns, _decisions)
+- ✅ Every component listed in structured data (\_concepts, \_patterns, \_decisions)
 - ✅ Complete icon inventory (all 300)
 - ✅ Complete token schema with examples
 - ✅ Landing page patterns documented
@@ -2001,6 +2096,7 @@ wc -l *.md *.yaml
 - ✅ "Does not exist" guidance for common requests
 
 ### Anti-Hallucination Measures
+
 - ✅ Explicit inventories prevent assuming components exist
 - ✅ "Does not provide" lists prevent wrong package usage
 - ✅ Icon alternatives prevent icon hallucinations
@@ -2008,12 +2104,14 @@ wc -l *.md *.yaml
 - ✅ Pattern examples show correct usage
 
 ### PAI Validation
+
 - ✅ PAI can build landing page without hallucinations
 - ✅ PAI suggests correct alternatives when component missing
 - ✅ PAI uses correct token values
 - ✅ PAI references existing icons or documents alternatives
 
 ### Technical Quality
+
 - ✅ All tests passing
 - ✅ No TypeScript errors
 - ✅ Lint clean on new code
@@ -2021,6 +2119,7 @@ wc -l *.md *.yaml
 - ✅ Documentation renders correctly
 
 ### Discoverability
+
 - ✅ Clear navigation in README
 - ✅ Documentation index created
 - ✅ Use-case-based organization
@@ -2033,6 +2132,7 @@ wc -l *.md *.yaml
 ### For Each New Component, Follow These Patterns:
 
 **File Structure:**
+
 ```
 packages/primitives/src/components/{ComponentName}.svelte
 packages/primitives/tests/{componentname}.test.ts
@@ -2040,23 +2140,24 @@ packages/primitives/tests/harness/{ComponentName}Harness.svelte (if complex)
 ```
 
 **Component Structure Pattern (from Button.svelte):**
+
 ```svelte
 <!-- JSDoc comments with @component and @example -->
 <script lang="ts">
   import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
-  
+
   // Props interface with full JSDoc
   interface Props extends HTMLAttributes<HTMLElement> {
     // ... props with @defaultValue and @public tags
   }
-  
+
   // Destructure props with defaults
   let { prop1, prop2, ... }: Props = $props();
-  
+
   // Derived computations with $derived
   const computedClass = $derived(() => { /* ... */ });
-  
+
   // Helper functions if needed
 </script>
 
@@ -2079,6 +2180,7 @@ packages/primitives/tests/harness/{ComponentName}Harness.svelte (if complex)
 ```
 
 **Test Structure Pattern (from button.test.ts, avatar.test.ts):**
+
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
@@ -2086,15 +2188,16 @@ import Component from '../src/components/Component.svelte';
 import ComponentHarness from './harness/ComponentHarness.svelte'; // if needed
 
 describe('Component.svelte', () => {
-  // Group tests by feature
-  // Use descriptive test names
-  // Cover all props and variants
-  // Test accessibility requirements
-  // Test error conditions
+	// Group tests by feature
+	// Use descriptive test names
+	// Cover all props and variants
+	// Test accessibility requirements
+	// Test error conditions
 });
 ```
 
 **Accessibility Pattern (from Skeleton.svelte, Avatar.svelte):**
+
 ```typescript
 // Interactive role detection
 const INTERACTIVE_ROLES = new Set([...]);
@@ -2105,7 +2208,7 @@ const parsedTabIndex = $derived<number | undefined>(() => {
 });
 
 // Interactive state detection
-const hasInteractiveHandlers = $derived(() => 
+const hasInteractiveHandlers = $derived(() =>
   Boolean(onclick || onkeydown || onkeyup)
 );
 
@@ -2119,6 +2222,7 @@ const isInteractive = $derived(() => {
 ## Success Criteria
 
 ### Component Implementation
+
 - ✅ All 5 components created in `packages/primitives/src/components/`
 - ✅ All components exported in `packages/primitives/src/index.ts`
 - ✅ All components have comprehensive props with JSDoc
@@ -2126,18 +2230,21 @@ const isInteractive = $derived(() => {
 - ✅ All components follow existing naming conventions
 
 ### Testing
+
 - ✅ All components have unit tests with ≥90% coverage
 - ✅ All tests pass: `pnpm test`
 - ✅ Test harnesses created for complex components
 - ✅ Accessibility requirements tested
 
 ### Quality
+
 - ✅ TypeScript compiles: `pnpm typecheck`
 - ✅ Linting passes: `pnpm lint`
 - ✅ Formatting correct: `pnpm format`
 - ✅ No console errors or warnings
 
 ### Documentation
+
 - ✅ All components documented in `knowledgebase/api-reference.md`
 - ✅ Usage examples in `knowledgebase/core-patterns.md`
 - ✅ Landing page pattern added to KB
@@ -2146,6 +2253,7 @@ const isInteractive = $derived(() => {
 - ✅ Playground demos created
 
 ### Validation
+
 - ✅ Test PAI can use new components without hallucinations
 - ✅ Build succeeds: `pnpm build`
 - ✅ Bundle size acceptable (check dist/)
@@ -2158,18 +2266,22 @@ const isInteractive = $derived(() => {
 ### Recommended Sequence:
 
 **Week 1:**
+
 - Phase 1: Card (most complex, highest value)
 - Phase 2: Container (simple, foundational)
 
 **Week 2:**
+
 - Phase 3: Section (simple, builds on Container)
 - Phase 4: Heading (medium complexity)
 
 **Week 3:**
+
 - Phase 5: Text (medium complexity)
 - Phase 6: Integration & validation
 
 ### Dependencies:
+
 - Card, Container, Section are independent (can be parallelized)
 - Heading and Text are similar (implement in sequence to reuse patterns)
 - Phase 6 requires all previous phases complete
@@ -2183,10 +2295,12 @@ const isInteractive = $derived(() => {
 If adding icons to eliminate hallucinations:
 
 **ApiIcon:**
+
 - Could use existing `ServerIcon`, `DatabaseIcon`, or `CloudIcon` as semantic alternatives
 - Alternatively: add custom SVG to `packages/icons/src/icons/api.svelte`
 
 **WorkflowIcon:**
+
 - Could use existing `GitBranchIcon`, `GitMergeIcon`, or `LayersIcon` as alternatives
 - Alternatively: add custom SVG to `packages/icons/src/icons/workflow.svelte`
 
@@ -2196,6 +2310,7 @@ If adding icons to eliminate hallucinations:
 
 **New Documentation File:**
 `knowledgebase/patterns-general-websites.md`
+
 - Landing pages
 - Marketing sites
 - Documentation sites
@@ -2203,6 +2318,7 @@ If adding icons to eliminate hallucinations:
 - Complete examples using new components
 
 **Update Existing Files:**
+
 - Remove Card bug from `core-patterns.md`
 - Add "Complete Component Inventory" section to `api-reference.md`
 - Add icon reference appendix with all 300 icons listed
@@ -2216,11 +2332,13 @@ If adding icons to eliminate hallucinations:
 **Timeline:** 2-3 days with AI assistance
 
 **Breakdown:**
+
 - Sub-phases 6.1-6.4 (Documentation): 1 day
 - Sub-phases 6.5-6.6 (Examples & QA): 0.5 days
 - Sub-phases 6.7-6.10 (Validation): 0.5 days
 
 **Parallelization Opportunities:**
+
 - 6.1 (Inventory) and 6.2 (Patterns) can run in parallel
 - 6.3 (Reference) and 6.4 (Structure) can run in parallel
 - 6.5 (Examples) requires 6.1-6.4 complete
@@ -2230,6 +2348,7 @@ If adding icons to eliminate hallucinations:
 ## Expected Outcomes
 
 ### Before Phase 6 (Current State)
+
 - ✅ 5 new components implemented and tested
 - ⚠️ KB has 6,662 lines, primarily Fediverse-focused
 - ❌ PAI hallucinates components for landing pages
@@ -2238,6 +2357,7 @@ If adding icons to eliminate hallucinations:
 - ❌ Token schemas vague
 
 ### After Phase 6 (Target State)
+
 - ✅ 5 components fully documented
 - ✅ KB has ~11,000 lines, comprehensive coverage
 - ✅ PAI builds landing pages without hallucinations
@@ -2250,6 +2370,7 @@ If adding icons to eliminate hallucinations:
 ### Hallucination Elimination
 
 **Original Hallucinations:**
+
 1. Container component → NOW EXISTS ✅
 2. Section component → NOW EXISTS ✅
 3. Heading component → NOW EXISTS ✅
@@ -2274,4 +2395,3 @@ If adding icons to eliminate hallucinations:
 - All CSS should use `:global` scope and `gr-` prefix per existing convention
 - Design tokens from `packages/tokens/src/tokens.json` are the source of truth
 - Knowledge base expansion should follow existing documentation principles (examples-first, explicit context, semantic structure)
-

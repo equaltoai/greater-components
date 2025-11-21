@@ -34,21 +34,21 @@ describe('Card.svelte', () => {
 
 	it('renders header snippet when provided', () => {
 		const { getByText } = render(CardHarness, {
-			headerContent: '<div>Header Content</div>'
+			headerContent: '<div>Header Content</div>',
 		});
 		expect(getByText('Header Content')).toBeTruthy();
 	});
 
 	it('renders footer snippet when provided', () => {
 		const { getByText } = render(CardHarness, {
-			footerContent: '<div>Footer Content</div>'
+			footerContent: '<div>Footer Content</div>',
 		});
 		expect(getByText('Footer Content')).toBeTruthy();
 	});
 
 	it('renders children content', () => {
 		const { getByText } = render(CardHarness, {
-			childrenContent: '<div>Main Content</div>'
+			childrenContent: '<div>Main Content</div>',
 		});
 		expect(getByText('Main Content')).toBeTruthy();
 	});
@@ -83,7 +83,7 @@ describe('Card.svelte', () => {
 		expect(card).toBeTruthy();
 		if (!card) throw new Error('Card not found');
 		expect(card.tagName.toLowerCase()).toBe('div');
-		
+
 		// Since clickable is false, and we destructured onclick, it should NOT be applied to the div
 		await fireEvent.click(card);
 		expect(handleClick).not.toHaveBeenCalled();
@@ -105,12 +105,12 @@ describe('Card.svelte', () => {
 		const button = container.querySelector('button');
 		expect(button).toBeTruthy();
 		if (!button) throw new Error('Button not found');
-		
+
 		button.focus();
 		await fireEvent.keyDown(button, { key: 'Enter' });
 		expect(handleClick).toHaveBeenCalled();
 	});
-	
+
 	it('respects aria-label prop', () => {
 		const { getByLabelText } = render(Card, { 'aria-label': 'Test Card', clickable: true });
 		expect(getByLabelText('Test Card')).toBeTruthy();

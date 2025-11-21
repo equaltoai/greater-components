@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-headless",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "Headless UI primitives for Greater Components - behavior without styling",
   "license": "AGPL-3.0-only",
@@ -71,7 +71,7 @@
     "vitest": "^4.0.9"
   },
   "dependencies": {
-    "focus-trap": "^7.5.4",
+    "focus-trap": "^7.6.2",
     "tabbable": "^6.2.0"
   }
 }

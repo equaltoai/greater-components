@@ -17,7 +17,10 @@ Text component - Paragraph and inline text component with size, weight, and colo
 	 *
 	 * @public
 	 */
-	interface Props extends HTMLAttributes<HTMLParagraphElement | HTMLSpanElement | HTMLDivElement | HTMLLabelElement> {
+	interface Props
+		extends HTMLAttributes<
+			HTMLParagraphElement | HTMLSpanElement | HTMLDivElement | HTMLLabelElement
+		> {
 		/**
 		 * HTML element to render.
 		 * - `p`: Paragraph (default)
@@ -149,12 +152,7 @@ Text component - Paragraph and inline text component with size, weight, and colo
 	});
 </script>
 
-<svelte:element 
-	this={as} 
-	class={textClass()} 
-	style={textStyle() || undefined}
-	{...restProps}
->
+<svelte:element this={as} class={textClass()} style={textStyle() || undefined} {...restProps}>
 	{#if children}
 		{@render children()}
 	{/if}
@@ -169,32 +167,72 @@ Text component - Paragraph and inline text component with size, weight, and colo
 		}
 
 		/* Sizes */
-		.gr-text--size-xs { font-size: var(--gr-typography-fontSize-xs); }
-		.gr-text--size-sm { font-size: var(--gr-typography-fontSize-sm); }
-		.gr-text--size-base { font-size: var(--gr-typography-fontSize-base); }
-		.gr-text--size-lg { font-size: var(--gr-typography-fontSize-lg); }
-		.gr-text--size-xl { font-size: var(--gr-typography-fontSize-xl); }
-		.gr-text--size-2xl { font-size: var(--gr-typography-fontSize-2xl); }
+		.gr-text--size-xs {
+			font-size: var(--gr-typography-fontSize-xs);
+		}
+		.gr-text--size-sm {
+			font-size: var(--gr-typography-fontSize-sm);
+		}
+		.gr-text--size-base {
+			font-size: var(--gr-typography-fontSize-base);
+		}
+		.gr-text--size-lg {
+			font-size: var(--gr-typography-fontSize-lg);
+		}
+		.gr-text--size-xl {
+			font-size: var(--gr-typography-fontSize-xl);
+		}
+		.gr-text--size-2xl {
+			font-size: var(--gr-typography-fontSize-2xl);
+		}
 
 		/* Weights */
-		.gr-text--weight-normal { font-weight: var(--gr-typography-fontWeight-normal); }
-		.gr-text--weight-medium { font-weight: var(--gr-typography-fontWeight-medium); }
-		.gr-text--weight-semibold { font-weight: var(--gr-typography-fontWeight-semibold); }
-		.gr-text--weight-bold { font-weight: var(--gr-typography-fontWeight-bold); }
+		.gr-text--weight-normal {
+			font-weight: var(--gr-typography-fontWeight-normal);
+		}
+		.gr-text--weight-medium {
+			font-weight: var(--gr-typography-fontWeight-medium);
+		}
+		.gr-text--weight-semibold {
+			font-weight: var(--gr-typography-fontWeight-semibold);
+		}
+		.gr-text--weight-bold {
+			font-weight: var(--gr-typography-fontWeight-bold);
+		}
 
 		/* Colors */
-		.gr-text--color-primary { color: var(--gr-semantic-foreground-primary); }
-		.gr-text--color-secondary { color: var(--gr-semantic-foreground-secondary); }
-		.gr-text--color-tertiary { color: var(--gr-semantic-foreground-tertiary); }
-		.gr-text--color-success { color: var(--gr-semantic-action-success-default); }
-		.gr-text--color-warning { color: var(--gr-semantic-action-warning-default); }
-		.gr-text--color-error { color: var(--gr-semantic-action-error-default); }
+		.gr-text--color-primary {
+			color: var(--gr-semantic-foreground-primary);
+		}
+		.gr-text--color-secondary {
+			color: var(--gr-semantic-foreground-secondary);
+		}
+		.gr-text--color-tertiary {
+			color: var(--gr-semantic-foreground-tertiary);
+		}
+		.gr-text--color-success {
+			color: var(--gr-semantic-action-success-default);
+		}
+		.gr-text--color-warning {
+			color: var(--gr-semantic-action-warning-default);
+		}
+		.gr-text--color-error {
+			color: var(--gr-semantic-action-error-default);
+		}
 
 		/* Alignment */
-		.gr-text--align-left { text-align: left; }
-		.gr-text--align-center { text-align: center; }
-		.gr-text--align-right { text-align: right; }
-		.gr-text--align-justify { text-align: justify; }
+		.gr-text--align-left {
+			text-align: left;
+		}
+		.gr-text--align-center {
+			text-align: center;
+		}
+		.gr-text--align-right {
+			text-align: right;
+		}
+		.gr-text--align-justify {
+			text-align: justify;
+		}
 
 		/* Truncation */
 		.gr-text--truncate:not(.gr-text--clamp) {

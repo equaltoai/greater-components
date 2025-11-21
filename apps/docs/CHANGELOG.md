@@ -1,5 +1,21 @@
 # @greater-components/docs
 
+## 0.1.21
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-icons@1.0.4
+  - @equaltoai/greater-components-fediverse@1.2.8
+
+## 0.1.20
+
+### Patch Changes
+
+- Updated dependencies [7f0f47a]
+  - @equaltoai/greater-components-primitives@1.1.0
+  - @equaltoai/greater-components-fediverse@1.2.7
+
 ## 0.1.19
 
 ### Patch Changes

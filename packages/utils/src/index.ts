@@ -40,3 +40,18 @@ export * from './keyboardShortcuts.js';
  * @public
  */
 export * from './performance.js';
+
+/**
+ * Clipboard utilities for copying text and elements.
+ * @public
+ */
+export * from './clipboard.js';
+
+/**
+ * Markdown conversion and export utilities.
+ * @public
+ */
+export { htmlToMarkdown } from './html-to-markdown.js';
+export { exportToMarkdown, exportChatToMarkdown, downloadMarkdown } from './export-markdown.js';
+
+export type { ExportMarkdownOptions, ChatExportOptions, ChatMessage } from './export-markdown.js';

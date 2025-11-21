@@ -155,9 +155,7 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 		return Date.now();
 	}
 
-	function createSourceMetadataEnhancer(
-		source?: TimelineSource
-	): MetadataEnhancer | undefined {
+	function createSourceMetadataEnhancer(source?: TimelineSource): MetadataEnhancer | undefined {
 		if (!source) return undefined;
 
 		return (metadata: LesserTimelineMetadata) => {
@@ -592,10 +590,11 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 					}
 
 					const currentItem = itemIndex !== -1 ? newItems[itemIndex] : undefined;
-					const nextType = typeof typeValue === 'string' ? typeValue : currentItem?.type ?? 'default';
+					const nextType =
+						typeof typeValue === 'string' ? typeValue : (currentItem?.type ?? 'default');
 					const nextContent = contentProvided
 						? edit.data['content']
-						: currentItem?.content ?? edit.data['content'];
+						: (currentItem?.content ?? edit.data['content']);
 					const nextMetadata = metadataProvided ? metadata : currentItem?.metadata;
 					const nextVersion = versionProvided ? version : currentItem?.version;
 					const rawOptimistic = optimisticProvided
@@ -954,7 +953,10 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 	async function fetchPage(after: string | null, replaceExisting = false): Promise<void> {
 		if (!config.adapter || !timelineSource) {
 			const error = new Error('Timeline adapter and source are required to fetch pages');
-			console.error('[timelineStore fetchPage] Missing adapter or source!', { hasAdapter: !!config.adapter, timelineSource });
+			console.error('[timelineStore fetchPage] Missing adapter or source!', {
+				hasAdapter: !!config.adapter,
+				timelineSource,
+			});
 			state.update((current) => ({
 				...current,
 				isLoading: false,

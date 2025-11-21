@@ -1,10 +1,16 @@
 <script lang="ts">
-	import { Container, Section, Card, Heading, Text, Button } from '@equaltoai/greater-components-primitives';
+	import {
+		Container,
+		Section,
+		Card,
+		Heading,
+		Text,
+		Button,
+	} from '@equaltoai/greater-components-primitives';
 	import DemoPage from '$lib/components/DemoPage.svelte';
 </script>
 
 <DemoPage title="Layout Components" description="Container, Section, and Card primitives">
-	
 	<!-- Container Demo -->
 	<section class="demo-section">
 		<div class="section-header">
@@ -17,11 +23,11 @@
 				<Container maxWidth="sm" padding="md" class="visual-container">
 					<Text align="center">maxWidth="sm"</Text>
 				</Container>
-				
+
 				<Container maxWidth="md" padding="md" class="visual-container">
 					<Text align="center">maxWidth="md"</Text>
 				</Container>
-				
+
 				<Container maxWidth="lg" padding="md" class="visual-container">
 					<Text align="center">maxWidth="lg" (Default)</Text>
 				</Container>
@@ -40,11 +46,11 @@
 			<Section spacing="sm" class="visual-section">
 				<Text align="center">Section spacing="sm"</Text>
 			</Section>
-			
+
 			<Section spacing="md" class="visual-section">
 				<Text align="center">Section spacing="md" (Default)</Text>
 			</Section>
-			
+
 			<Section spacing="lg" class="visual-section">
 				<Text align="center">Section spacing="lg"</Text>
 			</Section>
@@ -95,7 +101,6 @@
 			</div>
 		</div>
 	</section>
-
 </DemoPage>
 
 <style>

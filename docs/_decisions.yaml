@@ -1,0 +1,841 @@
+# _decisions.yaml - Decision trees for Greater Components
+# Helps AI make correct architectural and implementation choices
+
+decisions:
+  package_selection:
+    question: 'Which Greater Components package should I use?'
+    decision_tree:
+      - condition: 'Building UI from scratch'
+        check: 'Do you need styled components or complete styling control?'
+        if_yes:
+          choice: 'Use @equaltoai/greater-components/primitives'
+          reason: 'Ready-to-use components with consistent styling, theming, and accessibility built-in'
+          example: |
+            import { Button, Modal, TextField } from '@equaltoai/greater-components/primitives';
+            // Components work immediately with default styling
+        if_no:
+          choice: 'Use @equaltoai/greater-components/headless'
+          reason: 'Behavior-only components let you apply your own styling completely'
+          example: |
+            import { createButton } from '@equaltoai/greater-components/headless/button';
+            // Provides behavior, you provide all styling
+      - condition: 'Building Fediverse/ActivityPub application'
+        check: 'Are you building social media features?'
+        if_yes:
+          choice: 'Use @equaltoai/greater-components/fediverse'
+          reason: 'Pre-built Status, Timeline, Profile components for social apps'
+          example: |
+            import { Status, Timeline } from '@equaltoai/greater-components/fediverse';
+            // Social media components ready to use
+        if_no:
+          check: 'Do you just need ActivityPub data access?'
+          if_yes:
+            choice: 'Use @equaltoai/greater-components/adapters'
+            reason: 'Protocol adapters for data fetching without UI components'
+          if_no:
+            choice: 'Use primitives package for general UI'
+            reason: 'Standard UI components for non-social features'
+
+  adapter_selection:
+    question: 'Which adapter should I use for my Fediverse server?'
+    decision_tree:
+      - condition: 'Connecting to a server'
+        check: 'Is it a Lesser instance?'
+        if_yes:
+          choice: 'Use LesserGraphQLAdapter'
+          reason: 'Provides GraphQL access to advanced Lesser features like quote posts, community notes, trust graphs, and cost analytics'
+          example: |
+            import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+
+            const adapter = new LesserGraphQLAdapter({
+              endpoint: 'https://lesser-instance.social/graphql',
+              token: import.meta.env.VITE_LESSER_TOKEN,
+              enableSubscriptions: true
+            });
+        if_no:
+          check: 'Is it Mastodon, Pleroma, or standard ActivityPub?'
+          if_yes:
+            choice: 'Use MastodonRESTAdapter'
+            reason: 'Compatible with Mastodon REST API used by most ActivityPub servers'
+            example: |
+              import { MastodonRESTAdapter } from '@equaltoai/greater-components/adapters';
+
+              const adapter = new MastodonRESTAdapter({
+                instanceUrl: 'https://mastodon.social',
+                accessToken: import.meta.env.VITE_MASTODON_TOKEN
+              });
+          if_no:
+            choice: 'Extend BaseAdapter'
+            reason: 'Create custom adapter for non-standard servers'
+
+  styling_approach:
+    question: 'How should I style my components?'
+    decision_tree:
+      - condition: 'Choosing styling strategy'
+        check: 'Do you have an existing design system?'
+        if_yes:
+          check: 'Can you work with design token overrides?'
+          if_yes:
+            choice: 'Use primitives + override design tokens'
+            reason: 'Quick integration while matching your brand'
+            example: |
+              <style>
+                :root {
+                  --gr-color-primary-600: #your-brand-color;
+                  --gr-typography-fontFamily-sans: 'Your Font';
+                }
+              </style>
+          if_no:
+            choice: 'Use headless components'
+            reason: 'Complete styling control to match existing system exactly'
+        if_no:
+          check: 'Do you want to customize appearance?'
+          if_yes:
+            choice: 'Use primitives + design token overrides'
+            reason: 'Customize colors, fonts, spacing while keeping component structure'
+          if_no:
+            choice: 'Use primitives with default theme'
+            reason: 'Production-ready components work immediately'
+
+  theming_implementation:
+    question: 'How should I implement theming?'
+    decision_tree:
+      - condition: 'Adding theme support'
+        check: 'Do you need multiple themes (light/dark)?'
+        if_yes:
+          choice: 'Use ThemeProvider with theme switching'
+          reason: 'Built-in theme system with smooth transitions'
+          example: |
+            import { ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components/primitives';
+
+            <ThemeProvider>
+              <ThemeSwitcher />
+              <YourApp />
+            </ThemeProvider>
+        if_no:
+          check: 'Do you need custom branding only?'
+          if_yes:
+            choice: 'Override design tokens without ThemeProvider'
+            reason: 'Simpler for single-theme customization'
+            example: |
+              <style>
+                :root {
+                  --gr-color-primary-600: #brand-color;
+                }
+              </style>
+          if_no:
+            choice: 'Use default theme'
+            reason: 'No theme setup needed'
+
+  timeline_implementation:
+    question: 'How should I implement a timeline?'
+    decision_tree:
+      - condition: 'Building a timeline feature'
+        check: 'Will the timeline have more than 100 items?'
+        if_yes:
+          choice: 'Enable virtual scrolling'
+          reason: 'Prevents performance issues with large lists'
+          example: |
+            const timeline = createTimelineStore({
+              adapter,
+              type: 'HOME',
+              virtualScrolling: true,
+              estimateSize: 400
+            });
+        if_no:
+          choice: 'Use standard timeline without virtual scrolling'
+          reason: 'Simpler implementation for smaller lists'
+      - condition: 'Choosing timeline type'
+        check: 'Using Lesser instance?'
+        if_yes:
+          choice: 'Use createLesserTimelineStore'
+          reason: 'Access to Lesser-specific features and real-time updates'
+          example: |
+            import { createLesserTimelineStore } from '@equaltoai/greater-components/fediverse';
+
+            const timeline = createLesserTimelineStore({
+              adapter: lesserAdapter,
+              type: 'HOME',
+              enableRealtime: true
+            });
+        if_no:
+          choice: 'Use createTimelineStore'
+          reason: 'Standard ActivityPub timeline without Lesser features'
+
+  component_composition:
+    question: 'How should I customize component parts?'
+    decision_tree:
+      - condition: 'Need to customize component internals'
+        check: 'Are you using Svelte 5?'
+        if_yes:
+          choice: 'Use snippets for composition'
+          reason: 'Svelte 5 snippet pattern for flexible customization'
+          example: |
+            <Modal title="Confirm">
+              <p>Main content</p>
+              
+              {#snippet footer()}
+                <Button>OK</Button>
+                <Button>Cancel</Button>
+              {/snippet}
+            </Modal>
+        if_no:
+          choice: 'Upgrade to Svelte 5'
+          reason: 'Greater Components requires Svelte 5'
+          note: "Slots pattern from Svelte 4 won't work"
+
+  state_management:
+    question: 'How should I manage component state?'
+    decision_tree:
+      - condition: 'Creating reactive state'
+        check: 'Are you familiar with Svelte 5 runes?'
+        if_yes:
+          choice: 'Use $state, $derived, $effect'
+          reason: 'Svelte 5 runes provide fine-grained reactivity'
+          example: |
+            let count = $state(0);
+            let doubled = $derived(count * 2);
+
+            $effect(() => {
+              console.log(`Count: ${count}`);
+            });
+        if_no:
+          check: 'Are you using old $: syntax?'
+          if_yes:
+            choice: 'Learn Svelte 5 runes system'
+            reason: 'Greater Components requires Svelte 5 runes, not legacy $: syntax'
+            note: "Legacy reactive statements don't work in Svelte 5"
+          if_no:
+            choice: 'Review Svelte 5 documentation'
+            reason: 'Understand runes before using Greater Components'
+
+  accessibility_implementation:
+    question: 'How do I ensure my components are accessible?'
+    decision_tree:
+      - condition: 'Implementing accessibility'
+        check: 'Are you using primitives or headless?'
+        if_yes:
+          choice: 'Accessibility built-in, test thoroughly'
+          reason: 'Components include ARIA, keyboard navigation, focus management'
+          testing: |
+            - Test with keyboard only (Tab, Enter, Escape, Arrows)
+            - Test with screen reader (NVDA, JAWS, VoiceOver)
+            - Run automated axe-core tests
+            - Verify focus indicators visible
+            - Test with zoom/increased font sizes
+        if_no:
+          check: 'Building custom components?'
+          if_yes:
+            choice: 'Follow WCAG 2.1 AA guidelines'
+            reason: 'Must implement accessibility manually'
+            requirements:
+              - semantic_html
+              - aria_labels
+              - keyboard_navigation
+              - focus_management
+              - color_contrast
+          if_no:
+            choice: 'Use primitives for accessible base'
+            reason: 'Start with accessible foundation'
+
+  error_handling:
+    question: 'How should I handle errors from adapters?'
+    decision_tree:
+      - condition: 'Implementing error handling'
+        check: 'Are errors user-facing?'
+        if_yes:
+          choice: 'Provide onError callback with user-friendly messages'
+          reason: 'Users need to understand what went wrong and how to recover'
+          example: |
+            const timeline = createTimelineStore({
+              adapter,
+              type: 'HOME',
+              onError: (error) => {
+                if (error.message.includes('401')) {
+                  showError('Please log in again');
+                } else if (error.message.includes('rate limit')) {
+                  showError('Too many requests. Try again later');
+                } else {
+                  showError('Something went wrong. Please try again');
+                }
+              }
+            });
+        if_no:
+          check: 'Are errors for logging/monitoring?'
+          if_yes:
+            choice: 'Log to error tracking service'
+            reason: 'Track errors for debugging without user disruption'
+          if_no:
+            choice: 'Handle gracefully with fallbacks'
+            reason: 'Degrade gracefully when possible'
+
+  performance_optimization:
+    question: 'How do I optimize performance?'
+    decision_tree:
+      - condition: 'Experiencing performance issues'
+        check: 'Is the problem with long lists?'
+        if_yes:
+          choice: 'Enable virtual scrolling'
+          reason: 'Only renders visible items'
+        if_no:
+          check: 'Is the problem with bundle size?'
+          if_yes:
+            choice: 'Import specific components, not barrel imports'
+            reason: 'Better tree-shaking with direct imports'
+            example: |
+              // GOOD: Specific imports
+              import { Button } from '@equaltoai/greater-components/primitives/Button';
+
+              // AVOID: Barrel imports (imports everything)
+              import { Button } from '@equaltoai/greater-components/primitives';
+          if_no:
+            check: 'Is the problem with initial load?'
+            if_yes:
+              choice: 'Use code splitting and lazy loading'
+              reason: 'Load components on demand'
+            if_no:
+              check: 'Is the problem with re-renders?'
+              if_yes:
+                choice: 'Use $derived for computed values'
+                reason: 'Svelte 5 runes optimize reactivity'
+
+  testing_strategy:
+    question: 'How should I test my components?'
+    decision_tree:
+      - condition: 'Setting up tests'
+        check: 'What type of testing do you need?'
+        if_yes:
+          choice: 'Unit tests with Vitest'
+          reason: 'Fast tests for component logic'
+          example: |
+            import { render, fireEvent } from '@equaltoai/greater-components/testing';
+            import { Button } from '@equaltoai/greater-components/primitives';
+
+            test('button handles clicks', () => {
+              const handleClick = vi.fn();
+              const { getByRole } = render(Button, {
+                props: { onclick: handleClick }
+              });
+              
+              fireEvent.click(getByRole('button'));
+              expect(handleClick).toHaveBeenCalled();
+            });
+        if_no:
+          check: 'Need E2E tests?'
+          if_yes:
+            choice: 'E2E tests with Playwright'
+            reason: 'Test full user workflows'
+          if_no:
+            check: 'Need accessibility tests?'
+            if_yes:
+              choice: 'Automated tests with axe-core'
+              reason: 'Catch accessibility issues automatically'
+
+  migration_path:
+    question: 'How do I migrate to Greater Components?'
+    decision_tree:
+      - condition: 'Migrating from existing UI'
+        check: 'Using Svelte 4 or earlier?'
+        if_yes:
+          choice: 'Upgrade to Svelte 5 first'
+          reason: 'Greater Components requires Svelte 5 runes'
+          steps:
+            - upgrade_svelte_to_5
+            - convert_reactive_statements_to_runes
+            - update_slot_usage_to_snippets
+            - install_greater_components
+        if_no:
+          check: 'Using another UI library?'
+          if_yes:
+            choice: 'Gradual migration component by component'
+            reason: 'Can mix libraries temporarily during migration'
+            approach:
+              - start_with_new_features
+              - replace_components_incrementally
+              - remove_old_library_when_complete
+          if_no:
+            check: 'Building from scratch?'
+            if_yes:
+              choice: 'Start with primitives package'
+              reason: 'Fastest way to build production-ready UI'
+
+  lesser_feature_usage:
+    question: 'Which Lesser-specific features should I use?'
+    decision_tree:
+      - condition: 'Building Lesser client'
+        check: 'Need quote posts?'
+        if_yes:
+          choice: 'Enable quote post features'
+          reason: "Lesser's Twitter-style quote post functionality"
+          example: |
+            <Status.Root {status}>
+              <Status.Actions onQuote={handleQuote} />
+            </Status.Root>
+        if_no:
+          check: 'Need community moderation?'
+          if_yes:
+            choice: 'Enable community notes'
+            reason: 'Collaborative fact-checking system'
+            example: |
+              <Status.CommunityNotes enableVoting />
+          if_no:
+            check: 'Need trust/reputation system?'
+            if_yes:
+              choice: 'Enable trust graph features'
+              reason: 'Display trust scores and vouches'
+              example: |
+                <Status.LesserMetadata showTrust />
+            if_no:
+              check: 'Need cost analytics?'
+              if_yes:
+                choice: 'Enable cost tracking'
+                reason: 'Monitor federation costs and budgets'
+
+  deployment_strategy:
+    question: 'How should I deploy my Greater Components app?'
+    decision_tree:
+      - condition: 'Deploying to production'
+        check: 'Using SvelteKit?'
+        if_yes:
+          choice: 'Use SvelteKit adapters'
+          reason: 'Built-in deployment to various platforms'
+          options:
+            - adapter_auto
+            - adapter_vercel
+            - adapter_netlify
+            - adapter_cloudflare
+            - adapter_node
+        if_no:
+          check: 'Using Vite?'
+          if_yes:
+            choice: 'Build with vite build'
+            reason: 'Static site generation for any host'
+          if_no:
+            check: 'Need SSR?'
+            if_yes:
+              choice: 'Use SvelteKit for SSR support'
+              reason: 'Greater Components work with SSR'
+            if_no:
+              choice: 'Static hosting (Netlify, Vercel, etc.)'
+              reason: 'Simple deployment for client-only apps'
+
+  icon_usage:
+    question: 'How should I use icons in my application?'
+    decision_tree:
+      - condition: 'Adding icons to components'
+        check: 'Need Fediverse-specific icons?'
+        if_yes:
+          choice: 'Use @equaltoai/greater-components/icons'
+          reason: 'Includes Boost, Favorite, Quote, and other Fediverse icons'
+          example: |
+            import { BoostIcon, FavoriteIcon } from '@equaltoai/greater-components/icons';
+        if_no:
+          check: 'Need custom icons?'
+          if_yes:
+            choice: 'Create SVG components or use existing library'
+            reason: 'Can mix with Greater Components icons'
+          if_no:
+            choice: 'Use primitives without icons'
+            reason: 'Text-only components work fine'
+
+  real_time_updates:
+    question: 'How do I implement real-time updates?'
+    decision_tree:
+      - condition: 'Need live updates'
+        check: 'Using Lesser?'
+        if_yes:
+          choice: 'Enable GraphQL subscriptions'
+          reason: 'Lesser provides 21 real-time subscription types'
+          example: |
+            const adapter = new LesserGraphQLAdapter({
+              endpoint: 'https://lesser.social/graphql',
+              token: token,
+              enableSubscriptions: true
+            });
+
+            const timeline = createLesserTimelineStore({
+              adapter,
+              type: 'HOME',
+              enableRealtime: true
+            });
+        if_no:
+          check: 'Using Mastodon?'
+          if_yes:
+            choice: 'Use Mastodon streaming API'
+            reason: 'Mastodon has WebSocket streaming endpoints'
+          if_no:
+            choice: 'Implement polling'
+            reason: 'Fallback for servers without real-time support'
+
+  layout_component_selection:
+    question: 'Which component should I use for page layout?'
+    decision_tree:
+      - condition: 'Need to center content with max-width constraint'
+        check: 'Is this page-level content centering?'
+        if_yes:
+          choice: 'Use Container component'
+          reason: 'Container provides max-width constraints and horizontal centering'
+          example: |
+            <Container maxWidth="lg" padding="md" centered>
+              <h1>Content constrained to 1024px, centered on page</h1>
+            </Container>
+        if_no:
+          check: 'Need vertical spacing between sections?'
+          if_yes:
+            choice: 'Use Section component'
+            reason: 'Section provides consistent vertical margins'
+            example: |
+              <Section spacing="lg">
+                <h2>Section with 6rem top/bottom margin</h2>
+              </Section>
+          if_no:
+            check: 'Need grouped content with borders/shadows?'
+            if_yes:
+              choice: 'Use Card component'
+              reason: 'Card provides visual container with elevation'
+            if_no:
+              check: 'Need complex grid layout?'
+              if_yes:
+                choice: 'Use CSS Grid (no component exists)'
+                reason: "Greater Components doesn't provide Grid/Flex components, use CSS directly"
+                example: |
+                  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                    <Card>Item 1</Card>
+                    <Card>Item 2</Card>
+                    <Card>Item 3</Card>
+                  </div>
+              if_no:
+                choice: 'Use standard HTML elements'
+                reason: 'Not all layout needs a component'
+
+  typography_component_selection:
+    question: 'Should I use Heading, Text, or HTML elements?'
+    decision_tree:
+      - condition: 'What type of text content is this?'
+        check: 'Is this a page or section title?'
+        if_yes:
+          choice: 'Use Heading component with appropriate level'
+          reason: 'Ensures semantic HTML (h1-h6) with consistent typography'
+          example: |
+            <Heading level={1} size="5xl">Page Title</Heading>
+            <Heading level={2} size="3xl">Section Title</Heading>
+            <Heading level={3}>Subsection</Heading>
+          requirements:
+            - must_use_correct_level_for_hierarchy
+            - can_override_size_for_visual_design
+            - maintain_heading_order_h1_h2_h3
+        if_no:
+          check: 'Does text need color, size, or weight variants?'
+          if_yes:
+            choice: 'Use Text component'
+            reason: 'Provides typography variants and semantic colors'
+            example: |
+              <Text size="lg" weight="medium">Intro text</Text>
+              <Text color="secondary">Muted text</Text>
+              <Text size="sm" color="error">Error message</Text>
+          if_no:
+            check: 'Is this simple paragraph with default styling?'
+            if_yes:
+              choice: 'Use HTML <p> directly or Text component'
+              reason: 'Both work fine; Text adds convenience, HTML is simpler'
+              example: |
+                <!-- Option 1: HTML -->
+                <p>Simple paragraph text.</p>
+
+                <!-- Option 2: Text component -->
+                <Text>Simple paragraph text.</Text>
+            if_no:
+              check: 'Do you need inline text (span) or label?'
+              if_yes:
+                choice: 'Use Text component with as prop'
+                reason: 'Text can render as p, span, div, or label'
+                example: |
+                  <Text as="span">Inline text</Text>
+                  <Text as="label" for="input-id">Form label</Text>
+
+  icon_discovery_decision:
+    question: 'How do I find and use the right icon?'
+    decision_tree:
+      - condition: 'Looking for a specific icon'
+        check: 'Do you know the exact icon name?'
+        if_yes:
+          choice: 'Verify icon exists in component-inventory.md'
+          reason: 'Check complete icon list to confirm availability'
+          steps:
+            - open_component_inventory_md
+            - search_for_icon_name_kebab_case
+            - convert_to_PascalCase_plus_Icon
+            - verify_in_imports
+          example: |
+            # If you need "code" icon:
+            # 1. Check inventory: "code" is listed
+            # 2. Convert: code → CodeIcon
+            # 3. Import: import { CodeIcon } from '@equaltoai/greater-components/icons';
+        if_no:
+          check: 'Do you have a semantic concept (API, workflow, etc.)?'
+          if_yes:
+            choice: 'Use semantic alternatives from component-inventory.md'
+            reason: "Document provides alternatives for common concepts that don't have specific icons"
+            examples:
+              api_concept:
+                requested: 'ApiIcon'
+                exists: false
+                alternatives:
+                  - ServerIcon
+                  - DatabaseIcon
+                  - CloudIcon
+                  - CodeIcon
+                recommendation: 'Use ServerIcon for backend APIs, CodeIcon for code/SDKs'
+
+              workflow_concept:
+                requested: 'WorkflowIcon'
+                exists: false
+                alternatives:
+                  - GitBranchIcon
+                  - GitMergeIcon
+                  - LayersIcon
+                  - ToolIcon
+                recommendation: 'Use GitBranchIcon for branching workflows, LayersIcon for stacked processes'
+
+              dashboard_concept:
+                requested: 'DashboardIcon'
+                exists: false
+                alternatives:
+                  - BarChartIcon
+                  - PieChartIcon
+                  - ActivityIcon
+                  - GridIcon
+                recommendation: 'Use BarChartIcon for analytics dashboards, GridIcon for layout-focused dashboards'
+
+              network_concept:
+                requested: 'NetworkIcon'
+                exists: false
+                alternatives:
+                  - WifiIcon
+                  - ShareIcon
+                  - LinkIcon
+                  - GlobeIcon
+                recommendation: 'Use WifiIcon for network status, ShareIcon for sharing/connections'
+          if_no:
+            choice: 'Browse icon categories in component-inventory.md'
+            reason: '12 categories help discover icons by purpose'
+
+  container_vs_section_usage:
+    question: 'Should I use Container, Section, or both?'
+    decision_tree:
+      - condition: 'Understanding the difference'
+        check: 'What are you trying to achieve?'
+        options:
+          max_width_centering:
+            choice: 'Container component'
+            reason: 'Container constrains width and centers horizontally'
+            use_for:
+              - preventing_text_lines_too_long
+              - centering_content_on_large_screens
+              - responsive_max_width_constraints
+            example: |
+              <Container maxWidth="lg">
+                <!-- Content constrained to 1024px -->
+              </Container>
+
+          vertical_spacing:
+            choice: 'Section component'
+            reason: 'Section provides vertical margins between page sections'
+            use_for:
+              - spacing_between_hero_and_features
+              - visual_separation_of_content_blocks
+              - consistent_vertical_rhythm
+            example: |
+              <Section spacing="lg">
+                <!-- 6rem top and bottom margin -->
+              </Section>
+
+          both_together:
+            choice: 'Nest Container inside Section'
+            reason: 'Section for vertical spacing, Container for width constraint'
+            pattern: 'Section wraps full-width backgrounds, Container constrains inner content'
+            example: |
+              <!-- Full-width background section -->
+              <Section spacing="xl" style="background: #f5f5f5;">
+                <!-- Constrained content within -->
+                <Container maxWidth="lg" padding="md">
+                  <Heading level={2}>Section Title</Heading>
+                  <Text>Content here...</Text>
+                </Container>
+              </Section>
+            when_to_use:
+              - full_width_background_colors
+              - alternating_section_backgrounds
+              - max_width_content_with_section_spacing
+
+  card_variant_selection:
+    question: 'Which Card variant should I use?'
+    decision_tree:
+      - condition: 'Choosing card visual style'
+        check: "What's the visual context?"
+        options:
+          elevated:
+            choice: "variant='elevated'"
+            reason: 'Best for cards on plain backgrounds, provides depth'
+            use_when:
+              - default_choice
+              - white_or_solid_color_background
+              - need_visual_depth
+            example: |
+              <Card variant="elevated">
+                <!-- Card with shadow -->
+              </Card>
+
+          outlined:
+            choice: "variant='outlined'"
+            reason: 'Best for cards on textured/gradient backgrounds, cleaner look'
+            use_when:
+              - background_has_texture_or_pattern
+              - prefer_minimal_design
+              - cards_within_elevated_containers
+            example: |
+              <Card variant="outlined">
+                <!-- Card with border, no shadow -->
+              </Card>
+
+          filled:
+            choice: "variant='filled'"
+            reason: 'Best for subtle differentiation without borders'
+            use_when:
+              - need_subtle_background_differentiation
+              - cards_in_dense_layouts
+              - secondary_content_blocks
+            example: |
+              <Card variant="filled">
+                <!-- Card with filled background -->
+              </Card>
+
+  new_component_discovery:
+    question: 'How do I know if a component exists in Greater Components?'
+    decision_tree:
+      - condition: 'Verifying component availability'
+        check: 'Which package would it be in?'
+        if_primitives:
+          steps:
+            - 'Check component-inventory.md primitives section (20 components listed)'
+            - 'If not in the list of 20, it DOES NOT EXIST'
+            - 'Check does_not_provide section for common requests'
+            - 'Use alternatives suggested in inventory'
+          examples:
+            exists:
+              - Container
+              - Section
+              - Card
+              - Heading
+              - Text
+              - Button
+              - Modal
+              - TextField
+            does_not_exist:
+              - Grid (use CSS Grid)
+              - Flex (use CSS Flexbox)
+              - Nav (use HTML nav + Button)
+              - Table (use HTML table)
+              - Image (use HTML img)
+        if_icons:
+          steps:
+            - 'Check component-inventory.md icons section (300+ icons listed)'
+            - 'Icons listed alphabetically in 12 categories'
+            - 'If not listed, check icon_search_tips for alternatives'
+            - 'Convert kebab-case filename to PascalCase + Icon'
+          examples:
+            exists:
+              - CodeIcon (from code.svelte)
+              - ServerIcon (from server.svelte)
+              - LayersIcon (from layers.svelte)
+            does_not_exist:
+              - ApiIcon (use ServerIcon or CodeIcon)
+              - WorkflowIcon (use GitBranchIcon or LayersIcon)
+              - DashboardIcon (use BarChartIcon or GridIcon)
+
+  landing_page_component_choice:
+    question: 'What components do I need for a landing page?'
+    decision_tree:
+      - condition: 'Building landing page sections'
+        sections:
+          hero:
+            components:
+              - Container (for width constraint)
+              - Heading (for title)
+              - Text (for subtitle/description)
+              - Button (for CTAs)
+            structure: |
+              <Container maxWidth="lg">
+                <Heading level={1} size="5xl">Hero Title</Heading>
+                <Text size="xl" color="secondary">Subtitle</Text>
+                <Button variant="solid" size="lg">Get Started</Button>
+              </Container>
+
+          features:
+            components:
+              - Section (for vertical spacing)
+              - Container (for width constraint)
+              - Card (for each feature)
+              - Heading (for feature titles)
+              - Text (for descriptions)
+            structure: |
+              <Section spacing="lg">
+                <Container maxWidth="xl">
+                  <div style="display: grid; ...">
+                    <Card>
+                      <Heading level={3}>Feature</Heading>
+                      <Text>Description</Text>
+                    </Card>
+                  </div>
+                </Container>
+              </Section>
+
+          cta:
+            components:
+              - Section (for spacing)
+              - Container (for centering)
+              - Heading (for CTA title)
+              - Button (for action)
+            structure: |
+              <Section spacing="xl">
+                <Container maxWidth="md" centered>
+                  <Heading level={2} align="center">Ready to start?</Heading>
+                  <Button variant="solid" size="lg">Sign Up Now</Button>
+                </Container>
+              </Section>
+
+          footer:
+            components:
+              - Container (for width constraint)
+              - Text (for footer text)
+              - Button (for footer links, variant="ghost")
+            note: 'Use HTML <footer> element, Container inside for width control'
+
+  responsive_layout_strategy:
+    question: 'How do I make my layout responsive?'
+    decision_tree:
+      - condition: 'Implementing responsive design'
+        check: 'What needs to be responsive?'
+        options:
+          container_width:
+            choice: 'Use Container maxWidth prop'
+            reason: 'Container automatically adapts to smaller screens'
+            behavior: 'Max-width is constraint, content fluid below that'
+
+          grid_columns:
+            choice: 'Use CSS Grid with auto-fit'
+            reason: 'No Grid component, use CSS'
+            example: |
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <Card>...</Card>
+              </div>
+
+          section_spacing:
+            choice: 'Section spacing automatically scales'
+            reason: 'Design tokens use rem units which scale'
+            note: 'Can override with media queries in custom styles if needed'
+
+          typography:
+            choice: 'Heading and Text components use responsive tokens'
+            reason: 'Font sizes in rem units scale with root font size'
+            can_override: 'Use size prop for explicit control per breakpoint'

@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { HTMLAttributes } from 'svelte/elements';
-import type { Snippet } from 'svelte';
-import defaultAvatar from '../assets/greater-default-profile.png';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import type { Snippet } from 'svelte';
+	import defaultAvatar from '../assets/greater-default-profile.png';
 
 	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
 		src?: string;

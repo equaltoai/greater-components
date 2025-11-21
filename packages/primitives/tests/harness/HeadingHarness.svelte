@@ -15,14 +15,7 @@
 	} = $props();
 </script>
 
-<Heading
-	{level}
-	{size}
-	{weight}
-	{align}
-	class={className}
-	{...restProps}
->
+<Heading {level} {size} {weight} {align} class={className} {...restProps}>
 	{#if textContent}
 		{textContent}
 	{/if}

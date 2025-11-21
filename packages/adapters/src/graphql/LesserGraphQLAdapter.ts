@@ -363,7 +363,7 @@ export class LesserGraphQLAdapter {
 			variables,
 			fetchPolicy,
 		} as unknown as QueryOptionsFor<TData, TVariables>;
-		
+
 		const result = await this.client.client.query<TData, TVariables>(options);
 
 		const { data } = result;

@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-primitives",
   "private": true,
-  "version": "1.0.17",
+  "version": "1.1.0",
   "type": "module",
   "description": "Primitive UI components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -151,6 +151,10 @@
   "peerDependencies": {
     "@equaltoai/greater-components-tokens": "workspace:*",
     "svelte": "^5.43.6"
+  },
+  "dependencies": {
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "@equaltoai/greater-components-icons": "workspace:*"
   },
   "devDependencies": {
     "@equaltoai/greater-components-tokens": "workspace:*",

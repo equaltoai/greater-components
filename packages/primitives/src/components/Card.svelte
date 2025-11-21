@@ -172,12 +172,7 @@ Card component - Content container with elevation, borders, and semantic section
 	</button>
 {:else}
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-	<div
-		class={cardClass()}
-		role={role}
-		tabindex={tabindex}
-		{...restProps}
-	>
+	<div class={cardClass()} {role} {tabindex} {...restProps}>
 		{#if header}
 			<div class="gr-card__header">
 				{@render header()}
@@ -283,7 +278,7 @@ Card component - Content container with elevation, borders, and semantic section
 		.gr-card--hoverable:hover {
 			transform: translateY(-2px);
 		}
-		
+
 		.gr-card--elevated.gr-card--hoverable:hover {
 			box-shadow: var(--gr-shadows-lg);
 		}
@@ -302,7 +297,7 @@ Card component - Content container with elevation, borders, and semantic section
 			.gr-card {
 				transition-duration: 0ms;
 			}
-			
+
 			.gr-card--hoverable:hover {
 				transform: none;
 			}

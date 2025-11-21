@@ -1,5 +1,20 @@
 # @equaltoai/greater-components-fediverse
 
+## 1.2.8
+
+### Patch Changes
+
+- Updated dependencies
+  - @equaltoai/greater-components-icons@1.0.4
+  - @equaltoai/greater-components-headless@1.0.2
+
+## 1.2.7
+
+### Patch Changes
+
+- Updated dependencies [7f0f47a]
+  - @equaltoai/greater-components-primitives@1.1.0
+
 ## 1.2.6
 
 ### Patch Changes

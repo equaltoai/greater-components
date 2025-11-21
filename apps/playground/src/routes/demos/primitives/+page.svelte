@@ -1,5 +1,14 @@
 <script lang="ts">
-	import { Button, Modal, Menu, Card, Container, Section, Heading, Text } from '@equaltoai/greater-components-primitives';
+	import {
+		Button,
+		Modal,
+		Menu,
+		Card,
+		Container,
+		Section,
+		Heading,
+		Text,
+	} from '@equaltoai/greater-components-primitives';
 	import DemoPage from '$lib/components/DemoPage.svelte';
 
 	type MenuItem = {
@@ -177,13 +186,17 @@
 			<Text size="lg" weight="medium">Large medium text for emphasis.</Text>
 			<Text color="success" weight="bold">Success Text</Text>
 			<Text color="error" align="right">Error Text (Right Aligned)</Text>
-			
+
 			<div class="truncation-demo">
 				<Text truncate>
-					Truncated text: This is a very long line of text that should be truncated with an ellipsis because it exceeds the width of its container.
+					Truncated text: This is a very long line of text that should be truncated with an ellipsis
+					because it exceeds the width of its container.
 				</Text>
 				<Text truncate lines={2}>
-					Multi-line truncation (2 lines): This is a long paragraph that is intended to demonstrate multi-line truncation. It should clamp after two lines of text, showing an ellipsis at the end of the second line. This is very useful for card descriptions or preview text where space is limited.
+					Multi-line truncation (2 lines): This is a long paragraph that is intended to demonstrate
+					multi-line truncation. It should clamp after two lines of text, showing an ellipsis at the
+					end of the second line. This is very useful for card descriptions or preview text where
+					space is limited.
 				</Text>
 			</div>
 		</div>

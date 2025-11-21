@@ -1,5 +1,20 @@
 # @equaltoai/greater-components
 
+## 1.1.1
+
+### Patch Changes
+
+- Fix broken package imports in the umbrella package by rewriting internal workspace references to relative paths.
+  Fix TypeScript error in icons package registry lookup.
+  Update documentation to correctly reflect the single-package installation strategy.
+  Update focus-trap dependency in headless package.
+
+## 1.1.0
+
+### Minor Changes
+
+- 7f0f47a: feat(primitives): Added new layout and typography components: Card, Container, Section, Heading, Text.
+
 ## 1.0.31
 
 ### Patch Changes

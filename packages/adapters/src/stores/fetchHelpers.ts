@@ -7,11 +7,7 @@ import { mapLesserNotification, mapLesserObject } from '../mappers/lesser/mapper
 import type { LesserNotificationFragment } from '../mappers/lesser/types.js';
 import type { UnifiedNotification, UnifiedStatus } from '../models/unified.js';
 import type { NotificationsQuery, TimelineQuery } from '../graphql/generated/types.js';
-import type {
-	NotificationPageInfo,
-	TimelinePageInfo,
-	TimelineSource,
-} from './types.js';
+import type { NotificationPageInfo, TimelinePageInfo, TimelineSource } from './types.js';
 
 const DEFAULT_PAGE_INFO: TimelinePageInfo = {
 	endCursor: null,
@@ -68,7 +64,7 @@ export async function fetchTimelinePage(options: {
 }): Promise<TimelinePageResult> {
 	const { adapter, source, pageSize = 20, after } = options;
 	const pagination = { first: pageSize, after: after ?? undefined };
-	
+
 	let connection: TimelineQuery['timeline'] | undefined;
 
 	switch (source.type) {
@@ -144,8 +140,7 @@ export async function fetchNotificationPage(options: {
 		if (!node || typeof node !== 'object') continue;
 
 		const triggerAccount = convertGraphQLActorToLesserAccount(
-			(node as Record<string, unknown>)['account'] ??
-				(node as Record<string, unknown>)['actor']
+			(node as Record<string, unknown>)['account'] ?? (node as Record<string, unknown>)['actor']
 		);
 		if (!triggerAccount) continue;
 
@@ -162,10 +157,7 @@ export async function fetchNotificationPage(options: {
 				(node as Record<string, unknown>)['type'] ??
 					(node as Record<string, unknown>)['notificationType']
 			),
-			createdAt:
-				typeof createdAtValue === 'string'
-					? createdAtValue
-					: new Date().toISOString(),
+			createdAt: typeof createdAtValue === 'string' ? createdAtValue : new Date().toISOString(),
 			triggerAccount,
 			status: status ?? undefined,
 			isRead: Boolean((node as Record<string, unknown>)['read']),
@@ -179,8 +171,7 @@ export async function fetchNotificationPage(options: {
 
 	const pageInfo: NotificationPageInfo = {
 		endCursor: connection?.pageInfo?.endCursor ?? DEFAULT_NOTIFICATION_PAGE_INFO.endCursor,
-		hasNextPage:
-			connection?.pageInfo?.hasNextPage ?? DEFAULT_NOTIFICATION_PAGE_INFO.hasNextPage,
+		hasNextPage: connection?.pageInfo?.hasNextPage ?? DEFAULT_NOTIFICATION_PAGE_INFO.hasNextPage,
 	};
 
 	return { items, pageInfo };

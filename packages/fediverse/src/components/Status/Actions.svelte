@@ -60,7 +60,7 @@ Uses handlers from context.
 	}: Props = $props();
 
 	const context = getStatusContext();
-const { actualStatus, handlers, config } = context;
+	const { actualStatus, handlers, config } = context;
 
 	// Only show if configured to show actions
 	const isTombstone = $derived(
@@ -120,18 +120,18 @@ const { actualStatus, handlers, config } = context;
 			<ActionBar
 				counts={{
 					replies: actualStatus.repliesCount,
-				boosts: actualStatus.reblogsCount,
-				favorites: actualStatus.favouritesCount,
-				quotes: quoteCount,
-			}}
-			states={{
-				// Only show active styling when the current user has boosted
-				boosted: actualStatus.reblogged,
-				favorited: actualStatus.favourited,
-				bookmarked: actualStatus.bookmarked,
-			}}
-			handlers={wrappedHandlers}
-			{readonly}
+					boosts: actualStatus.reblogsCount,
+					favorites: actualStatus.favouritesCount,
+					quotes: quoteCount,
+				}}
+				states={{
+					// Only show active styling when the current user has boosted
+					boosted: actualStatus.reblogged,
+					favorited: actualStatus.favourited,
+					bookmarked: actualStatus.bookmarked,
+				}}
+				handlers={wrappedHandlers}
+				{readonly}
 				{size}
 				idPrefix={`status-${actualStatus.id}`}
 				extensions={shouldShowDelete ? deleteExtension : undefined}

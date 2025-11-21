@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import path from 'path';
 
 export default defineConfig({
 	plugins: [
@@ -12,6 +13,10 @@ export default defineConfig({
 	],
 	resolve: {
 		conditions: ['browser'],
+		alias: {
+			'@equaltoai/greater-components-utils': path.resolve(__dirname, '../utils/src/index.ts'),
+			'@equaltoai/greater-components-icons': path.resolve(__dirname, '../icons/src/index.ts'),
+		},
 	},
 	test: {
 		environment: 'jsdom',

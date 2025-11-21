@@ -40,11 +40,11 @@ describe('Heading.svelte', () => {
 		// h1 -> 5xl
 		const { container: c1 } = render(Heading, { level: 1 });
 		expect(c1.querySelector('.gr-heading')?.classList.contains('gr-heading--size-5xl')).toBe(true);
-		
+
 		// h2 -> 4xl
 		const { container: c2 } = render(Heading, { level: 2 });
 		expect(c2.querySelector('.gr-heading')?.classList.contains('gr-heading--size-4xl')).toBe(true);
-		
+
 		// h3 -> 3xl
 		const { container: c3 } = render(Heading, { level: 3 });
 		expect(c3.querySelector('.gr-heading')?.classList.contains('gr-heading--size-3xl')).toBe(true);
@@ -99,7 +99,7 @@ describe('Heading.svelte', () => {
 		const el = container.querySelector('h1');
 		expect(el?.getAttribute('id')).toBe('my-heading');
 	});
-	
+
 	it('accepts aria-label override', () => {
 		const { getByRole } = render(Heading, { level: 1, 'aria-label': 'Accessible Title' });
 		expect(getByRole('heading', { name: 'Accessible Title' })).toBeTruthy();
