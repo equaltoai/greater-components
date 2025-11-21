@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Edit: import('svelte').Component<Props, {}, ''>;
+declare const Edit: import('svelte').Component<Props, object, ''>;
 type Edit = ReturnType<typeof Edit>;
 export default Edit;
 //# sourceMappingURL=edit.svelte.d.ts.map

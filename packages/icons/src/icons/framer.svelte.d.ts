@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Framer: import('svelte').Component<Props, {}, ''>;
+declare const Framer: import('svelte').Component<Props, object, ''>;
 type Framer = ReturnType<typeof Framer>;
 export default Framer;
 //# sourceMappingURL=framer.svelte.d.ts.map

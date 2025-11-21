@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Delete: import('svelte').Component<Props, {}, ''>;
+declare const Delete: import('svelte').Component<Props, object, ''>;
 type Delete = ReturnType<typeof Delete>;
 export default Delete;
 //# sourceMappingURL=delete.svelte.d.ts.map

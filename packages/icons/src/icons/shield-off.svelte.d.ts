@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const ShieldOff: import('svelte').Component<Props, {}, ''>;
+declare const ShieldOff: import('svelte').Component<Props, object, ''>;
 type ShieldOff = ReturnType<typeof ShieldOff>;
 export default ShieldOff;
 //# sourceMappingURL=shield-off.svelte.d.ts.map

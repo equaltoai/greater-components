@@ -54,24 +54,24 @@
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@tanstack/svelte-virtual": "^3.10.8"
+    "@tanstack/svelte-virtual": "^3.13.12"
   },
   "devDependencies": {
     "@babel/parser": "^7.28.5",
     "@babel/traverse": "^7.28.5",
-    "@playwright/test": "^1.55.1",
+    "@playwright/test": "^1.56.1",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/jest-dom": "6.4.2",
     "@testing-library/svelte": "5.2.4",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.9",
-    "@vitest/ui": "^4.0.9",
-    "axe-core": "^4.10.0",
+    "@vitest/coverage-v8": "^4.0.12",
+    "@vitest/ui": "^4.0.12",
+    "axe-core": "^4.11.0",
     "jsdom": "^27.2.0",
-    "svelte": "^5.43.6",
+    "svelte": "^5.43.14",
     "typescript": "^5.9.3",
-    "vite": "^7.2.2",
-    "vitest": "^4.0.9"
+    "vite": "^7.2.4",
+    "vitest": "^4.0.12"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

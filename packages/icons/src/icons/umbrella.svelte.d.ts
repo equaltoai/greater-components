@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Umbrella: import('svelte').Component<Props, {}, ''>;
+declare const Umbrella: import('svelte').Component<Props, object, ''>;
 type Umbrella = ReturnType<typeof Umbrella>;
 export default Umbrella;
 //# sourceMappingURL=umbrella.svelte.d.ts.map

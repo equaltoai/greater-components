@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Chrome: import('svelte').Component<Props, {}, ''>;
+declare const Chrome: import('svelte').Component<Props, object, ''>;
 type Chrome = ReturnType<typeof Chrome>;
 export default Chrome;
 //# sourceMappingURL=chrome.svelte.d.ts.map

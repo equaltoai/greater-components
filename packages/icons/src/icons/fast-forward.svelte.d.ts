@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const FastForward: import('svelte').Component<Props, {}, ''>;
+declare const FastForward: import('svelte').Component<Props, object, ''>;
 type FastForward = ReturnType<typeof FastForward>;
 export default FastForward;
 //# sourceMappingURL=fast-forward.svelte.d.ts.map

@@ -37,18 +37,18 @@
   },
   "dependencies": {
     "@types/turndown": "^5.0.6",
-    "dompurify": "^3.1.6",
+    "dompurify": "^3.3.0",
     "isomorphic-dompurify": "^2.32.0",
     "turndown": "^7.2.2",
     "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^4.0.9",
-    "@vitest/ui": "^4.0.9",
+    "@vitest/coverage-v8": "^4.0.12",
+    "@vitest/ui": "^4.0.12",
     "jsdom": "^27.2.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.2",
-    "vitest": "^4.0.9"
+    "vite": "^7.2.4",
+    "vitest": "^4.0.12"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

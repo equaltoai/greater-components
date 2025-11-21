@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const CloudRain: import('svelte').Component<Props, {}, ''>;
+declare const CloudRain: import('svelte').Component<Props, object, ''>;
 type CloudRain = ReturnType<typeof CloudRain>;
 export default CloudRain;
 //# sourceMappingURL=cloud-rain.svelte.d.ts.map

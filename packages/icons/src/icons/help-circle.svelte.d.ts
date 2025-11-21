@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const HelpCircle: import('svelte').Component<Props, {}, ''>;
+declare const HelpCircle: import('svelte').Component<Props, object, ''>;
 type HelpCircle = ReturnType<typeof HelpCircle>;
 export default HelpCircle;
 //# sourceMappingURL=help-circle.svelte.d.ts.map

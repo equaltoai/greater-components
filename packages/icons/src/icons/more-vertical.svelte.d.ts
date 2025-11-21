@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const MoreVertical: import('svelte').Component<Props, {}, ''>;
+declare const MoreVertical: import('svelte').Component<Props, object, ''>;
 type MoreVertical = ReturnType<typeof MoreVertical>;
 export default MoreVertical;
 //# sourceMappingURL=more-vertical.svelte.d.ts.map

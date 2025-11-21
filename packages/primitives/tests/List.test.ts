@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
-import List from '../src/components/List.svelte';
-import ListItem from '../src/components/ListItem.svelte';
 import ListHarness from './harness/ListHarness.svelte';
 
 describe('List.svelte', () => {

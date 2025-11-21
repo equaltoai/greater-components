@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Bookmark: import('svelte').Component<Props, {}, ''>;
+declare const Bookmark: import('svelte').Component<Props, object, ''>;
 type Bookmark = ReturnType<typeof Bookmark>;
 export default Bookmark;
 //# sourceMappingURL=bookmark.svelte.d.ts.map

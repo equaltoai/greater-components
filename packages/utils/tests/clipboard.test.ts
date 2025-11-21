@@ -139,7 +139,7 @@ describe('copyElementText', () => {
 	});
 
 	it('handles missing element', async () => {
-		// @ts-ignore
+		// @ts-ignore - Testing null argument
 		const result = await copyElementText(null);
 		expect(result.success).toBe(false);
 		expect(result.error).toBe('Element not found');

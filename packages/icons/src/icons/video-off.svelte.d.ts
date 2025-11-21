@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const VideoOff: import('svelte').Component<Props, {}, ''>;
+declare const VideoOff: import('svelte').Component<Props, object, ''>;
 type VideoOff = ReturnType<typeof VideoOff>;
 export default VideoOff;
 //# sourceMappingURL=video-off.svelte.d.ts.map

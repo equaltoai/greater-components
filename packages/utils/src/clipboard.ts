@@ -59,7 +59,7 @@ export async function copyToClipboard(text: string): Promise<CopyResult> {
 			} else {
 				return { success: false, error: 'execCommand failed' };
 			}
-		} catch (fallbackErr) {
+		} catch {
 			return {
 				success: false,
 				error: err instanceof Error ? err.message : 'Failed to copy to clipboard',

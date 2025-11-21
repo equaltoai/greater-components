@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const EyeOff: import('svelte').Component<Props, {}, ''>;
+declare const EyeOff: import('svelte').Component<Props, object, ''>;
 type EyeOff = ReturnType<typeof EyeOff>;
 export default EyeOff;
 //# sourceMappingURL=eye-off.svelte.d.ts.map

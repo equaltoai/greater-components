@@ -121,8 +121,8 @@
     "@apollo/client": "^4.0.9",
     "@apollo/client-react-streaming": "^0.14.0",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "graphql": "^16.9.0",
-    "graphql-ws": "^5.16.0"
+    "graphql": "^16.12.0",
+    "graphql-ws": "^5.16.2"
   },
   "devDependencies": {
     "@equaltoai/greater-components-adapters": "workspace:*",
@@ -134,7 +134,7 @@
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
-    "@vitest/coverage-v8": "^4.0.9",
-    "vitest": "^4.0.9"
+    "@vitest/coverage-v8": "^4.0.12",
+    "vitest": "^4.0.12"
   }
 }

@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Printer: import('svelte').Component<Props, {}, ''>;
+declare const Printer: import('svelte').Component<Props, object, ''>;
 type Printer = ReturnType<typeof Printer>;
 export default Printer;
 //# sourceMappingURL=printer.svelte.d.ts.map

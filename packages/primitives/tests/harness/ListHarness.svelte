@@ -15,7 +15,7 @@
 </script>
 
 <ListComponent {...listProps}>
-	{#each items as item}
+	{#each items as item (item)}
 		<ListItem {...itemProps}>{item}</ListItem>
 	{/each}
 </ListComponent>

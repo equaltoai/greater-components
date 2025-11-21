@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const ChevronUp: import('svelte').Component<Props, {}, ''>;
+declare const ChevronUp: import('svelte').Component<Props, object, ''>;
 type ChevronUp = ReturnType<typeof ChevronUp>;
 export default ChevronUp;
 //# sourceMappingURL=chevron-up.svelte.d.ts.map

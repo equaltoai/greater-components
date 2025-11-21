@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Github: import('svelte').Component<Props, {}, ''>;
+declare const Github: import('svelte').Component<Props, object, ''>;
 type Github = ReturnType<typeof Github>;
 export default Github;
 //# sourceMappingURL=github.svelte.d.ts.map

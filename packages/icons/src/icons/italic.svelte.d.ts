@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Italic: import('svelte').Component<Props, {}, ''>;
+declare const Italic: import('svelte').Component<Props, object, ''>;
 type Italic = ReturnType<typeof Italic>;
 export default Italic;
 //# sourceMappingURL=italic.svelte.d.ts.map

@@ -1,5 +1,15 @@
 # @equaltoai/greater-components-primitives
 
+## 2.0.0
+
+### Major Changes
+
+- feat(primitives): Added Advanced Interaction Components (Phase 3):
+  - `CodeBlock` - Syntax highlighting with Shiki, copy button, line numbers.
+  - `DropZone` - Drag and drop file uploads with validation and visual feedback.
+  - `MarkdownRenderer` - Safe markdown rendering with DOMPurify and marked.
+  - `StreamingText` - Typewriter/streaming text effect for AI responses.
+
 ## 1.3.0
 
 ### Minor Changes

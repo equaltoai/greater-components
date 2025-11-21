@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Hexagon: import('svelte').Component<Props, {}, ''>;
+declare const Hexagon: import('svelte').Component<Props, object, ''>;
 type Hexagon = ReturnType<typeof Hexagon>;
 export default Hexagon;
 //# sourceMappingURL=hexagon.svelte.d.ts.map

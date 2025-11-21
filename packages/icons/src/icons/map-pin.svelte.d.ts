@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const MapPin: import('svelte').Component<Props, {}, ''>;
+declare const MapPin: import('svelte').Component<Props, object, ''>;
 type MapPin = ReturnType<typeof MapPin>;
 export default MapPin;
 //# sourceMappingURL=map-pin.svelte.d.ts.map

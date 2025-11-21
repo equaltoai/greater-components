@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Paperclip: import('svelte').Component<Props, {}, ''>;
+declare const Paperclip: import('svelte').Component<Props, object, ''>;
 type Paperclip = ReturnType<typeof Paperclip>;
 export default Paperclip;
 //# sourceMappingURL=paperclip.svelte.d.ts.map

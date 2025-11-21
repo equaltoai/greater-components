@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const CornerRightUp: import('svelte').Component<Props, {}, ''>;
+declare const CornerRightUp: import('svelte').Component<Props, object, ''>;
 type CornerRightUp = ReturnType<typeof CornerRightUp>;
 export default CornerRightUp;
 //# sourceMappingURL=corner-right-up.svelte.d.ts.map

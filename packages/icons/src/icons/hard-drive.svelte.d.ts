@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const HardDrive: import('svelte').Component<Props, {}, ''>;
+declare const HardDrive: import('svelte').Component<Props, object, ''>;
 type HardDrive = ReturnType<typeof HardDrive>;
 export default HardDrive;
 //# sourceMappingURL=hard-drive.svelte.d.ts.map

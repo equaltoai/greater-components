@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const RotateCw: import('svelte').Component<Props, {}, ''>;
+declare const RotateCw: import('svelte').Component<Props, object, ''>;
 type RotateCw = ReturnType<typeof RotateCw>;
 export default RotateCw;
 //# sourceMappingURL=rotate-cw.svelte.d.ts.map

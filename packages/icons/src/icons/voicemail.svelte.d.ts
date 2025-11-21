@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Voicemail: import('svelte').Component<Props, {}, ''>;
+declare const Voicemail: import('svelte').Component<Props, object, ''>;
 type Voicemail = ReturnType<typeof Voicemail>;
 export default Voicemail;
 //# sourceMappingURL=voicemail.svelte.d.ts.map

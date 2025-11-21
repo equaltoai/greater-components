@@ -183,6 +183,30 @@ export { default as StepIndicator } from './components/StepIndicator.svelte';
  */
 export { default as IconBadge } from './components/IconBadge.svelte';
 
+/**
+ * CodeBlock component for syntax highlighting.
+ * @public
+ */
+export { default as CodeBlock } from './components/CodeBlock.svelte';
+
+/**
+ * DropZone component for drag and drop file uploads.
+ * @public
+ */
+export { default as DropZone } from './components/DropZone.svelte';
+
+/**
+ * MarkdownRenderer component for safe markdown rendering.
+ * @public
+ */
+export { default as MarkdownRenderer } from './components/MarkdownRenderer.svelte';
+
+/**
+ * StreamingText component for text animation.
+ * @public
+ */
+export { default as StreamingText } from './components/StreamingText.svelte';
+
 // Import component types for prop inference
 import type ButtonComponent from './components/Button.svelte';
 import type CopyButtonComponent from './components/CopyButton.svelte';
@@ -211,6 +235,10 @@ import type ListItemComponent from './components/ListItem.svelte';
 import type GradientTextComponent from './components/GradientText.svelte';
 import type StepIndicatorComponent from './components/StepIndicator.svelte';
 import type IconBadgeComponent from './components/IconBadge.svelte';
+import type CodeBlockComponent from './components/CodeBlock.svelte';
+import type DropZoneComponent from './components/DropZone.svelte';
+import type MarkdownRendererComponent from './components/MarkdownRenderer.svelte';
+import type StreamingTextComponent from './components/StreamingText.svelte';
 
 // Component prop types
 export type ButtonProps = ComponentProps<ButtonComponent>;
@@ -240,6 +268,10 @@ export type ListItemProps = ComponentProps<ListItemComponent>;
 export type GradientTextProps = ComponentProps<GradientTextComponent>;
 export type StepIndicatorProps = ComponentProps<StepIndicatorComponent>;
 export type IconBadgeProps = ComponentProps<IconBadgeComponent>;
+export type CodeBlockProps = ComponentProps<CodeBlockComponent>;
+export type DropZoneProps = ComponentProps<DropZoneComponent>;
+export type MarkdownRendererProps = ComponentProps<MarkdownRendererComponent>;
+export type StreamingTextProps = ComponentProps<StreamingTextComponent>;
 
 // Select option type
 export interface SelectOption {

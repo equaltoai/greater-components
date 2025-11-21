@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const LessThan: import('svelte').Component<Props, {}, ''>;
+declare const LessThan: import('svelte').Component<Props, object, ''>;
 type LessThan = ReturnType<typeof LessThan>;
 export default LessThan;
 //# sourceMappingURL=less-than.svelte.d.ts.map

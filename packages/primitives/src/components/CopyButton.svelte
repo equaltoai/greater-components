@@ -106,7 +106,7 @@ CopyButton component - A button that copies text to the clipboard with visual fe
 
 	const currentLabels = $derived({ ...defaultLabels, ...labels });
 
-	async function handleCopy(event: MouseEvent) {
+	async function handleCopy() {
 		// Prevent default button behavior if needed, though Button handles it.
 		// event.preventDefault(); // Optional, Button probably handles it.
 
@@ -159,6 +159,7 @@ CopyButton component - A button that copies text to the clipboard with visual fe
 	{...restProps}
 >
 	{#if variant === 'icon' || variant === 'icon-text'}
+		<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 		{#snippet prefix()}
 			{#if copied}
 				<CheckIcon size={iconSize} />

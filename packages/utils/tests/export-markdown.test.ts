@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
 	exportChatToMarkdown,
 	exportToMarkdown,
-	htmlToMarkdown,
 	downloadMarkdown,
 } from '../src/export-markdown';
 // Note: htmlToMarkdown is exported from index, but for unit testing internal functions we can import from index or direct file.

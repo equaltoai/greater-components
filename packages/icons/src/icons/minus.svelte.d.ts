@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Minus: import('svelte').Component<Props, {}, ''>;
+declare const Minus: import('svelte').Component<Props, object, ''>;
 type Minus = ReturnType<typeof Minus>;
 export default Minus;
 //# sourceMappingURL=minus.svelte.d.ts.map

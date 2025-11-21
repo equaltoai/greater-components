@@ -8,7 +8,6 @@
 		Section,
 		Container,
 		TextField,
-		TextArea,
 	} from '@equaltoai/greater-components-primitives';
 	import { exportToMarkdown, exportChatToMarkdown } from '@equaltoai/greater-components-utils';
 
@@ -61,7 +60,9 @@
 </script>
 
 <Container maxWidth="lg" padding="md">
-	<Heading level={1} class="mb-8">Copy & Export Utilities</Heading>
+	<div class="mb-8">
+		<Heading level={1}>Copy & Export Utilities</Heading>
+	</div>
 
 	<Section spacing="md">
 		<Heading level={2}>Copy Button Variants</Heading>
@@ -138,7 +139,7 @@ console.log(greeting);</code
 				<TextField label="Chat Title" bind:value={chatTitle} class="mb-4" />
 
 				<div class="bg-gray-50 p-4 rounded mb-4 border border-gray-200 max-h-60 overflow-y-auto">
-					{#each sampleChat as msg}
+					{#each sampleChat as msg (msg.id)}
 						<div class="mb-2">
 							<span class="font-bold">{msg.role}:</span>
 							{msg.content}

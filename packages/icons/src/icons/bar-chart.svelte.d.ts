@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const BarChart: import('svelte').Component<Props, {}, ''>;
+declare const BarChart: import('svelte').Component<Props, object, ''>;
 type BarChart = ReturnType<typeof BarChart>;
 export default BarChart;
 //# sourceMappingURL=bar-chart.svelte.d.ts.map

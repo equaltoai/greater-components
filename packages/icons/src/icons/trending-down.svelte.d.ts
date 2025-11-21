@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const TrendingDown: import('svelte').Component<Props, {}, ''>;
+declare const TrendingDown: import('svelte').Component<Props, object, ''>;
 type TrendingDown = ReturnType<typeof TrendingDown>;
 export default TrendingDown;
 //# sourceMappingURL=trending-down.svelte.d.ts.map

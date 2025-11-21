@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const GitPullRequest: import('svelte').Component<Props, {}, ''>;
+declare const GitPullRequest: import('svelte').Component<Props, object, ''>;
 type GitPullRequest = ReturnType<typeof GitPullRequest>;
 export default GitPullRequest;
 //# sourceMappingURL=git-pull-request.svelte.d.ts.map

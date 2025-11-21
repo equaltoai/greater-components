@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, fireEvent, waitFor } from '@testing-library/svelte';
 import CopyButton from '../src/components/CopyButton.svelte';
 import * as Utils from '@equaltoai/greater-components-utils';
@@ -26,16 +26,16 @@ describe('CopyButton.svelte', () => {
 	});
 
 	it('calls copyToClipboard with text when clicked', async () => {
-		const mockCopy = vi.mocked(Utils.copyToClipboard).mockResolvedValue({ success: true });
+		vi.mocked(Utils.copyToClipboard).mockResolvedValue({ success: true });
 		const { getByRole } = render(CopyButton, { props: { text: 'copy me' } });
 
 		await fireEvent.click(getByRole('button'));
 
-		expect(mockCopy).toHaveBeenCalledWith('copy me');
+		expect(Utils.copyToClipboard).toHaveBeenCalledWith('copy me');
 	});
 
 	it('shows success feedback on successful copy', async () => {
-		const mockCopy = vi.mocked(Utils.copyToClipboard).mockResolvedValue({ success: true });
+		vi.mocked(Utils.copyToClipboard).mockResolvedValue({ success: true });
 		const { getByRole } = render(CopyButton, { props: { text: 'test', variant: 'text' } }); // Use text variant to see label
 
 		const button = getByRole('button');
@@ -53,7 +53,7 @@ describe('CopyButton.svelte', () => {
 
 	it('reverts to default state after feedbackDuration', async () => {
 		vi.useFakeTimers();
-		const mockCopy = vi.mocked(Utils.copyToClipboard).mockResolvedValue({ success: true });
+		vi.mocked(Utils.copyToClipboard).mockResolvedValue({ success: true });
 		const { getByRole } = render(CopyButton, {
 			props: {
 				text: 'test',
@@ -112,7 +112,7 @@ describe('CopyButton.svelte', () => {
 	});
 
 	it('shows error label on failure', async () => {
-		const mockCopy = vi
+		vi
 			.mocked(Utils.copyToClipboard)
 			.mockResolvedValue({ success: false, error: 'Failed' });
 		const { getByRole } = render(CopyButton, { props: { text: 'test', variant: 'text' } });

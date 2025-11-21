@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const FileText: import('svelte').Component<Props, {}, ''>;
+declare const FileText: import('svelte').Component<Props, object, ''>;
 type FileText = ReturnType<typeof FileText>;
 export default FileText;
 //# sourceMappingURL=file-text.svelte.d.ts.map

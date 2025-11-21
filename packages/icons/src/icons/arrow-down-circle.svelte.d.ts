@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const ArrowDownCircle: import('svelte').Component<Props, {}, ''>;
+declare const ArrowDownCircle: import('svelte').Component<Props, object, ''>;
 type ArrowDownCircle = ReturnType<typeof ArrowDownCircle>;
 export default ArrowDownCircle;
 //# sourceMappingURL=arrow-down-circle.svelte.d.ts.map

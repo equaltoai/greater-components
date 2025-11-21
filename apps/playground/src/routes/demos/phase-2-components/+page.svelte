@@ -17,7 +17,6 @@
 		CheckIcon,
 		XIcon,
 		ArrowRightIcon,
-		SettingsIcon,
 		TargetIcon,
 	} from '@equaltoai/greater-components-icons';
 
@@ -45,10 +44,14 @@
 
 	<!-- Badge Demo -->
 	<Section spacing="lg">
-		<Heading level={2} class="mb-4">Badge Component</Heading>
+		<div class="mb-4">
+			<Heading level={2}>Badge Component</Heading>
+		</div>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<Card padding="md">
-				<Heading level={3} size="sm" class="mb-4">Variants</Heading>
+				<div class="mb-4">
+					<Heading level={3} size="sm">Variants</Heading>
+				</div>
 				<div class="flex flex-wrap gap-4 items-center">
 					<Badge variant="pill" label="Pill (Default)" description="With description" />
 					<Badge variant="dot" label="Dot" />
@@ -57,7 +60,9 @@
 				</div>
 			</Card>
 			<Card padding="md">
-				<Heading level={3} size="sm" class="mb-4">Colors</Heading>
+				<div class="mb-4">
+					<Heading level={3} size="sm">Colors</Heading>
+				</div>
 				<div class="flex flex-wrap gap-4">
 					<Badge color="primary" label="Primary" />
 					<Badge color="success" label="Success" />
@@ -68,7 +73,9 @@
 				</div>
 			</Card>
 			<Card padding="md">
-				<Heading level={3} size="sm" class="mb-4">Sizes</Heading>
+				<div class="mb-4">
+					<Heading level={3} size="sm">Sizes</Heading>
+				</div>
 				<div class="flex flex-wrap gap-4 items-end">
 					<Badge size="sm" label="Small" />
 					<Badge size="md" label="Medium" />
@@ -80,7 +87,9 @@
 
 	<!-- GradientText Demo -->
 	<Section spacing="lg">
-		<Heading level={2} class="mb-4">GradientText Component</Heading>
+		<div class="mb-4">
+			<Heading level={2}>GradientText Component</Heading>
+		</div>
 		<Card padding="lg">
 			<div class="flex flex-col gap-4">
 				<Heading level={3} size="3xl">
@@ -103,10 +112,14 @@
 
 	<!-- List Demo -->
 	<Section spacing="lg">
-		<Heading level={2} class="mb-4">List Component</Heading>
+		<div class="mb-4">
+			<Heading level={2}>List Component</Heading>
+		</div>
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<Card padding="md">
-				<Heading level={3} size="sm" class="mb-4">With ListItem (Auto Icons)</Heading>
+				<div class="mb-4">
+					<Heading level={3} size="sm">With ListItem (Auto Icons)</Heading>
+				</div>
 				<List icon={CheckIcon} iconColor="success" spacing="md">
 					<ListItem>Define precise scopes for enterprise software</ListItem>
 					<ListItem>Capture domain knowledge efficiently</ListItem>
@@ -115,7 +128,9 @@
 			</Card>
 
 			<Card padding="md">
-				<Heading level={3} size="sm" class="mb-4">Override Icons</Heading>
+				<div class="mb-4">
+					<Heading level={3} size="sm">Override Icons</Heading>
+				</div>
 				<List spacing="md">
 					<ListItem icon={CheckIcon} iconColor="success">Completed Task</ListItem>
 					<ListItem icon={XIcon} iconColor="error">Failed Task</ListItem>
@@ -127,7 +142,9 @@
 
 	<!-- IconBadge Demo -->
 	<Section spacing="lg">
-		<Heading level={2} class="mb-4">IconBadge Component</Heading>
+		<div class="mb-4">
+			<Heading level={2}>IconBadge Component</Heading>
+		</div>
 		<Card padding="md">
 			<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
 				<div class="flex flex-col gap-2 items-center">
@@ -152,7 +169,9 @@
 
 	<!-- StepIndicator Demo -->
 	<Section spacing="lg">
-		<Heading level={2} class="mb-4">StepIndicator Component</Heading>
+		<div class="mb-4">
+			<Heading level={2}>StepIndicator Component</Heading>
+		</div>
 		<Card padding="md">
 			<div class="flex justify-between items-center mb-8 max-w-2xl mx-auto">
 				<StepIndicator number={1} state={getStepState(1)} label="Start" />

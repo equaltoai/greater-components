@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Codepen: import('svelte').Component<Props, {}, ''>;
+declare const Codepen: import('svelte').Component<Props, object, ''>;
 type Codepen = ReturnType<typeof Codepen>;
 export default Codepen;
 //# sourceMappingURL=codepen.svelte.d.ts.map

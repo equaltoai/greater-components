@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Circle: import('svelte').Component<Props, {}, ''>;
+declare const Circle: import('svelte').Component<Props, object, ''>;
 type Circle = ReturnType<typeof Circle>;
 export default Circle;
 //# sourceMappingURL=circle.svelte.d.ts.map

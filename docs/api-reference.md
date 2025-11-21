@@ -341,6 +341,169 @@ interface IconBadgeProps {
 <IconBadge icon={TargetIcon} size="lg" color="primary" />
 ```
 
+#### CodeBlock
+
+**Purpose:** Syntax highlighting code block with copy button and line numbers.
+
+**When to use:**
+
+- Documentation sites
+- Chat interfaces displaying code
+- Tutorial steps
+
+**Props:**
+
+```typescript
+interface CodeBlockProps {
+	code: string;
+	language?: string; // e.g. 'javascript', 'python'
+	showCopy?: boolean; // default: true
+	showLineNumbers?: boolean; // default: false
+	highlightLines?: number[]; // 1-based line numbers
+	maxHeight?: string | number;
+	wrap?: boolean;
+	filename?: string;
+	theme?: string; // default: 'github-dark'
+	onCopy?: (code: string) => void;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { CodeBlock } from '@equaltoai/greater-components/primitives';
+</script>
+
+<CodeBlock
+	code="console.log('Hello World');"
+	language="javascript"
+	showLineNumbers
+	filename="hello.js"
+/>
+```
+
+#### DropZone
+
+**Purpose:** Drag and drop file upload area with validation and mobile fallback.
+
+**When to use:**
+
+- File uploads
+- Chat attachments
+- Data import
+
+**Props:**
+
+```typescript
+interface DropZoneProps {
+	accept?: {
+		files?: string[]; // e.g. ['.png', 'image/*']
+		text?: boolean;
+		urls?: boolean;
+	};
+	maxFiles?: number;
+	maxSize?: number; // bytes
+	multiple?: boolean;
+	disabled?: boolean;
+	variant?: 'outlined' | 'filled' | 'minimal';
+	onDrop?: (items: DroppedItem[]) => void;
+	onError?: (error: DropError) => void;
+}
+
+interface DroppedItem {
+	id: string;
+	type: 'file' | 'text' | 'url';
+	content: string; // Text content or Data URL
+	file?: File;
+	name?: string;
+	size?: number;
+	mimeType?: string;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { DropZone } from '@equaltoai/greater-components/primitives';
+
+	function handleDrop(items) {
+		console.log('Dropped:', items);
+	}
+</script>
+
+<DropZone accept={{ files: ['.png', '.jpg'] }} onDrop={handleDrop}>
+	<p>Drop images here</p>
+</DropZone>
+```
+
+#### MarkdownRenderer
+
+**Purpose:** Renders markdown content safely with syntax highlighting support.
+
+**When to use:**
+
+- Displaying AI responses
+- Rendering user comments
+- Blog content
+
+**Props:**
+
+```typescript
+interface MarkdownRendererProps {
+	content: string;
+	sanitize?: boolean; // default: true
+	allowedTags?: string[];
+	enableCodeHighlight?: boolean; // default: true
+	enableLinks?: boolean; // default: true
+	openLinksInNewTab?: boolean; // default: true
+	onRenderComplete?: () => void;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { MarkdownRenderer } from '@equaltoai/greater-components/primitives';
+</script>
+
+<MarkdownRenderer content="# Hello\n\nThis is **markdown**." />
+```
+
+#### StreamingText
+
+**Purpose:** Displays text with a typewriter/streaming cursor effect.
+
+**When to use:**
+
+- Streaming AI responses
+- Typing animations
+
+**Props:**
+
+```typescript
+interface StreamingTextProps {
+	content: string;
+	streaming?: boolean; // default: true
+	showCursor?: boolean; // default: true
+	cursorChar?: string; // default: '▊'
+	speed?: 'slow' | 'natural' | 'fast' | number;
+	onComplete?: () => void;
+}
+```
+
+**Example:**
+
+```svelte
+<script>
+	import { StreamingText } from '@equaltoai/greater-components/primitives';
+</script>
+
+<StreamingText content={streamedContent} streaming={isStreaming} />
+```
+
 #### Modal
 
 **Purpose:** Dialog overlay for focused interactions

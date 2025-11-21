@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Youtube: import('svelte').Component<Props, {}, ''>;
+declare const Youtube: import('svelte').Component<Props, object, ''>;
 type Youtube = ReturnType<typeof Youtube>;
 export default Youtube;
 //# sourceMappingURL=youtube.svelte.d.ts.map

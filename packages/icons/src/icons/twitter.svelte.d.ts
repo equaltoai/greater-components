@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Twitter: import('svelte').Component<Props, {}, ''>;
+declare const Twitter: import('svelte').Component<Props, object, ''>;
 type Twitter = ReturnType<typeof Twitter>;
 export default Twitter;
 //# sourceMappingURL=twitter.svelte.d.ts.map

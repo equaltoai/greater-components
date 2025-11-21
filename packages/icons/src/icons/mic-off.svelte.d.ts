@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const MicOff: import('svelte').Component<Props, {}, ''>;
+declare const MicOff: import('svelte').Component<Props, object, ''>;
 type MicOff = ReturnType<typeof MicOff>;
 export default MicOff;
 //# sourceMappingURL=mic-off.svelte.d.ts.map

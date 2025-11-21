@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const ArrowUpRight: import('svelte').Component<Props, {}, ''>;
+declare const ArrowUpRight: import('svelte').Component<Props, object, ''>;
 type ArrowUpRight = ReturnType<typeof ArrowUpRight>;
 export default ArrowUpRight;
 //# sourceMappingURL=arrow-up-right.svelte.d.ts.map

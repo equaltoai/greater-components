@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Zap: import('svelte').Component<Props, {}, ''>;
+declare const Zap: import('svelte').Component<Props, object, ''>;
 type Zap = ReturnType<typeof Zap>;
 export default Zap;
 //# sourceMappingURL=zap.svelte.d.ts.map

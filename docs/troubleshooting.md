@@ -927,13 +927,19 @@ Browser doesn't support `background-clip: text` or vendor prefixes missing.
 
 ### Issue: List icons not aligning
 
+
+
 **Symptoms:**
 
 - Icons in `List` or `ListItem` are vertically misaligned with text
 
+
+
 **Cause:**
 
 Flex alignment issues or line-height mismatches.
+
+
 
 **Solution:**
 
@@ -943,9 +949,99 @@ Flex alignment issues or line-height mismatches.
 
 - Use the `iconSize` prop to adjust if needed.
 
+
+
+### Issue: CodeBlock not highlighting code
+
+
+
+**Symptoms:**
+
+- Code renders as plain text
+
+- No colors appear
+
+
+
+**Cause:**
+
+Shiki lazy loading failed, or language is not supported/loaded.
+
+
+
+**Solution:**
+
+- Ensure `shiki` is installed.
+
+- Check console for errors.
+
+- If using a custom language, ensure it is in the loaded list (see `CodeBlock.svelte`).
+
+- Fallback to plain text is automatic on error.
+
+
+
+### Issue: Drag-drop not working
+
+
+
+**Symptoms:**
+
+- Drop events not firing
+
+- Browser opens file instead of handling drop
+
+
+
+**Cause:**
+
+Default browser behavior not prevented, or `ondragover` handler missing.
+
+
+
+**Solution:**
+
+- `DropZone` handles `preventDefault` on `dragover` and `drop`.
+
+- Ensure nothing is blocking pointer events on the DropZone.
+
+- On mobile, drag-drop is often not supported; `DropZone` provides a click-to-upload fallback.
+
+
+
+### Issue: Markdown renders raw HTML
+
+
+
+**Symptoms:**
+
+- HTML tags appear in output instead of rendered elements
+
+
+
+**Cause:**
+
+`sanitize` prop is true (default) and tags are stripped, or input is escaped.
+
+
+
+**Solution:**
+
+- `MarkdownRenderer` sanitizes aggressively by default using DOMPurify.
+
+- If you trust the content source, you can set `sanitize={false}` (NOT RECOMMENDED for user content).
+
+- Check `allowedTags` prop to enable specific tags.
+
+
+
 ---
 
+
+
 ## Build Issues
+
+
 
 ### Issue: Build fails with memory error
 

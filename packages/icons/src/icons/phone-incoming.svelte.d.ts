@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const PhoneIncoming: import('svelte').Component<Props, {}, ''>;
+declare const PhoneIncoming: import('svelte').Component<Props, object, ''>;
 type PhoneIncoming = ReturnType<typeof PhoneIncoming>;
 export default PhoneIncoming;
 //# sourceMappingURL=phone-incoming.svelte.d.ts.map

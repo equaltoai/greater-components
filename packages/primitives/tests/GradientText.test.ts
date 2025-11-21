@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
-import GradientText from '../src/components/GradientText.svelte';
 import GradientTextHarness from './harness/GradientTextHarness.svelte';
 
 // We need a harness because render() cannot easily pass snippet content

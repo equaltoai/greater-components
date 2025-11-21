@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Music: import('svelte').Component<Props, {}, ''>;
+declare const Music: import('svelte').Component<Props, object, ''>;
 type Music = ReturnType<typeof Music>;
 export default Music;
 //# sourceMappingURL=music.svelte.d.ts.map

@@ -11,7 +11,7 @@ StepIndicator component - Numbered badge for tutorials and multi-step workflows.
 -->
 <script lang="ts">
 	import { CheckIcon, XIcon } from '@equaltoai/greater-components-icons';
-	import type { Component, Snippet } from 'svelte';
+	import type { Component } from 'svelte';
 
 	interface Props {
 		/**

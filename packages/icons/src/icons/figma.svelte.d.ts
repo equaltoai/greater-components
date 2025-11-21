@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Figma: import('svelte').Component<Props, {}, ''>;
+declare const Figma: import('svelte').Component<Props, object, ''>;
 type Figma = ReturnType<typeof Figma>;
 export default Figma;
 //# sourceMappingURL=figma.svelte.d.ts.map

@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Hash: import('svelte').Component<Props, {}, ''>;
+declare const Hash: import('svelte').Component<Props, object, ''>;
 type Hash = ReturnType<typeof Hash>;
 export default Hash;
 //# sourceMappingURL=hash.svelte.d.ts.map

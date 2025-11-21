@@ -5,7 +5,7 @@ interface Props extends SVGAttributes<SVGSVGElement> {
 	strokeWidth?: number | string;
 	class?: string;
 }
-declare const Search: import('svelte').Component<Props, {}, ''>;
+declare const Search: import('svelte').Component<Props, object, ''>;
 type Search = ReturnType<typeof Search>;
 export default Search;
 //# sourceMappingURL=search.svelte.d.ts.map

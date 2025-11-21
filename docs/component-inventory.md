@@ -7,9 +7,15 @@ If a component is not listed here, it DOES NOT EXIST.
 
 ## Primitives Package (@equaltoai/greater-components/primitives)
 
+
+
 ### Package Scope
 
-This package provides **26 interactive and layout components** for building any type of website.
+
+
+This package provides **30 interactive and layout components** for building any type of website.
+
+
 
 **What Primitives Provides:**
 
@@ -21,13 +27,21 @@ This package provides **26 interactive and layout components** for building any 
 
 - Theme system (provider, switcher)
 
-### All 26 Components (Complete List)
+- Advanced interactions (code blocks, drag-drop, markdown, streaming text)
 
-**Form Controls (8):**
+
+
+### All 30 Components (Complete List)
+
+
+
+**Form Controls (9):**
 
 - Button - Interactive button with variants
 
 - CopyButton - Button for clipboard operations
+
+- DropZone - Drag and drop file upload
 
 - TextField - Single-line text input
 
@@ -41,6 +55,8 @@ This package provides **26 interactive and layout components** for building any 
 
 - FileUpload - File upload with drag-drop
 
+
+
 **Overlays & Menus (4):**
 
 - Modal - Dialog overlay
@@ -51,11 +67,15 @@ This package provides **26 interactive and layout components** for building any 
 
 - Tabs - Tab navigation
 
-**Display & Status (8):**
+
+
+**Display & Status (11):**
 
 - Avatar - User avatar with fallback
 
 - Badge - Status indicators and labels
+
+- CodeBlock - Syntax highlighting
 
 - GradientText - Gradient text effect
 
@@ -65,11 +85,17 @@ This package provides **26 interactive and layout components** for building any 
 
 - ListItem - List item with icon support
 
+- MarkdownRenderer - Safe markdown rendering
+
 - Skeleton - Loading placeholder
 
 - StepIndicator - Numbered workflow badge
 
+- StreamingText - Text animation
+
 - ThemeSwitcher - Theme toggle
+
+
 
 **Layout & Typography (5):**
 
@@ -83,9 +109,13 @@ This package provides **26 interactive and layout components** for building any 
 
 - Text - Paragraph/span/div with typography control
 
+
+
 **Theme System (1):**
 
 - ThemeProvider - Theme context provider
+
+
 
 ### Detailed Component Reference
 
@@ -252,6 +282,65 @@ This package provides **26 interactive and layout components** for building any 
 - `variant`: 'filled' | 'outlined' | 'ghost'
 
 **Reference:** See [api-reference.md#iconbadge](./api-reference.md#iconbadge) for complete API
+
+#### CodeBlock
+
+**Purpose:** Syntax highlighting code block with copy button.
+
+**When to Use:**
+- Documentation code snippets
+- Chat code responses
+
+**Key Props:**
+- `code`: string
+- `language`: string
+- `showCopy`: boolean
+- `showLineNumbers`: boolean
+
+**Reference:** See [api-reference.md#codeblock](./api-reference.md#codeblock) for complete API
+
+#### DropZone
+
+**Purpose:** Drag and drop file upload area.
+
+**When to Use:**
+- File uploads
+- Chat attachments
+
+**Key Props:**
+- `accept`: object - File types
+- `multiple`: boolean
+- `onDrop`: callback
+
+**Reference:** See [api-reference.md#dropzone](./api-reference.md#dropzone) for complete API
+
+#### MarkdownRenderer
+
+**Purpose:** Renders markdown safely.
+
+**When to Use:**
+- AI responses
+- User content
+
+**Key Props:**
+- `content`: string
+- `sanitize`: boolean
+
+**Reference:** See [api-reference.md#markdownrenderer](./api-reference.md#markdownrenderer) for complete API
+
+#### StreamingText
+
+**Purpose:** Streaming text effect.
+
+**When to Use:**
+- AI streaming responses
+
+**Key Props:**
+- `content`: string
+- `streaming`: boolean
+- `showCursor`: boolean
+
+**Reference:** See [api-reference.md#streamingtext](./api-reference.md#streamingtext) for complete API
 
 #### TextField
 
