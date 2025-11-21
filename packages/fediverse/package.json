@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-fediverse",
   "private": true,
-  "version": "1.2.10",
+  "version": "1.2.11",
   "type": "module",
   "description": "Fediverse UI components built with Svelte 5",
   "license": "AGPL-3.0-only",

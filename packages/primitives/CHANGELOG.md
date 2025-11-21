@@ -1,5 +1,17 @@
 # @equaltoai/greater-components-primitives
 
+## 2.0.2
+
+### Patch Changes
+
+- Fix GradientText component CSS compilation issue with :global syntax
+
+  **Problem:** The GradientText component's `:global { .gr-gradient-text { ... } }` syntax was causing Svelte's compiler to incorrectly process the `background-clip: text` property during production builds, resulting in the gradient rendering as a full background box instead of being clipped to text.
+
+  **Solution:** Changed from `:global { .gr-gradient-text { ... } }` to `:global(.gr-gradient-text) { ... }` which is the correct Svelte syntax for global class selectors. Also reordered vendor prefixes to place `-webkit-background-clip` before `background-clip` for better browser compatibility.
+
+  **Impact:** The gradient text effect now correctly clips to text in production builds, eliminating the blue bar artifact above text.
+
 ## 2.0.1
 
 ### Patch Changes
