@@ -72,20 +72,3 @@ Root component for trust graph visualization and relationship management.
 		</div>
 	{/if}
 </div>
-
-<style>
-	.trust-graph-root {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		padding: 1.5rem;
-	}
-
-	.trust-graph-root__empty {
-		padding: 3rem;
-		text-align: center;
-		color: var(--text-secondary, #536471);
-		background: var(--bg-secondary, #f7f9fa);
-		border-radius: 0.5rem;
-	}
-</style>

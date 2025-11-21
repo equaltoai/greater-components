@@ -30,12 +30,3 @@
 		{@render children()}
 	{/if}
 </div>
-
-<style>
-	.messages-root {
-		width: 100%;
-		max-width: 100%;
-		display: flex;
-		height: 100%;
-	}
-</style>

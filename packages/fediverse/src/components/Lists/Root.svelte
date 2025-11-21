@@ -60,10 +60,3 @@
 		{@render children()}
 	{/if}
 </div>
-
-<style>
-	.lists-root {
-		width: 100%;
-		max-width: 100%;
-	}
-</style>

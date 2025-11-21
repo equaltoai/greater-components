@@ -101,9 +101,3 @@ Hashtags.MutedList - List of Muted Hashtags
 		</ul>
 	{/if}
 </div>
-
-<style>
-	.muted-hashtags__unmute {
-		margin-left: 0.75rem;
-	}
-</style>

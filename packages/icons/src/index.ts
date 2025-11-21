@@ -1,6 +1,7 @@
 // Auto-generated icon exports
 // Do not edit manually
 
+import type { Component } from 'svelte';
 import ActivityIcon from './icons/activity.svelte';
 import AirplayIcon from './icons/airplay.svelte';
 import AlertCircleIcon from './icons/alert-circle.svelte';
@@ -605,7 +606,7 @@ export {
   ZoomOutIcon
 };
 
-const iconRegistry = {
+const iconRegistry: Record<string, Component> = {
   'activity': ActivityIcon,
   'airplay': AirplayIcon,
   'alert-circle': AlertCircleIcon,
@@ -958,7 +959,7 @@ export const iconAliases: Record<string, IconName> = {
   "clipboard-list": "list"
 };
 
-export function getIcon(name: string) {
+export function getIcon(name: string): Component | null {
   const iconName = iconAliases[name] || name;
   return iconRegistry[iconName] ?? null;
 }

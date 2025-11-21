@@ -139,37 +139,3 @@ Uses handlers from context.
 		{/if}
 	</div>
 {/if}
-
-<style>
-	.status-actions {
-		margin-top: var(--status-spacing-sm, 0.5rem);
-		padding-top: var(--status-spacing-sm, 0.5rem);
-	}
-
-	/* Compact density adjustments */
-	:global(.status-root--compact) .status-actions {
-		margin-top: var(--status-spacing-xs, 0.25rem);
-		padding-top: var(--status-spacing-xs, 0.25rem);
-	}
-
-	.status-actions__delete {
-		margin-left: auto;
-		border: none;
-		background: transparent;
-		color: var(--status-danger, #dc2626);
-		font-weight: 600;
-		cursor: pointer;
-		padding: 0.35rem 0.5rem;
-		border-radius: 6px;
-		transition: background-color 0.15s ease;
-	}
-
-	.status-actions__delete:hover {
-		background: rgba(220, 38, 38, 0.08);
-	}
-
-	.status-actions__delete:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-</style>

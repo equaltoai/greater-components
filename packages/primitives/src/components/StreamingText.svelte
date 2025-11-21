@@ -109,20 +109,3 @@ Designed to work with externally streaming content (e.g. AI responses).
 		<span class="gr-cursor" style:opacity={cursorVisible ? 1 : 0}>{cursorChar}</span>
 	{/if}
 </svelte:element>
-
-<style>
-	:global {
-		.gr-streaming-text {
-			white-space: pre-wrap;
-			word-break: break-word;
-		}
-
-		.gr-cursor {
-			display: inline-block;
-			color: var(--gr-color-primary-600);
-			margin-left: 1px;
-			font-weight: bold;
-			transition: opacity 0.1s;
-		}
-	}
-</style>

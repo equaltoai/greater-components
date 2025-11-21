@@ -209,15 +209,18 @@ const importsBlock = registryEntries
 
 const exportsBlock = `export {\n${registryEntries
 	.map(({ pascalName }) => `  ${pascalName}Icon`)
-	.join(',\n')}\n};`;
+	.join(',\n')}
+};`;
 
-const registryBlock = `const iconRegistry = {\n${registryEntries
+const registryBlock = `const iconRegistry: Record<string, Component> = {\n${registryEntries
 	.map(({ name, pascalName }) => `  '${name}': ${pascalName}Icon`)
-	.join(',\n')}\n} as const;`;
+	.join(',\n')}
+} as const;`;
 
 const indexContent = `// Auto-generated icon exports
 // Do not edit manually
 
+import type { Component } from 'svelte';
 ${importsBlock}
 
 ${exportsBlock}
@@ -228,7 +231,7 @@ export type IconName = ${allIconNames.map((name) => `'${name}'`).join(' | ')};
 
 export const iconAliases: Record<string, IconName> = ${JSON.stringify(aliases, null, 2)};
 
-export function getIcon(name: string) {
+export function getIcon(name: string): Component | null {
   const iconName = iconAliases[name] || name;
   return iconRegistry[iconName] ?? null;
 }
@@ -257,7 +260,7 @@ fs.writeFileSync(path.join(srcDir, 'index.ts'), indexContent);
 
 // Generate TypeScript declaration file
 const dtsContent = `// Auto-generated type definitions
-import type { SvelteComponent } from 'svelte';
+import type { Component } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
 
 export interface IconProps extends HTMLAttributes<SVGElement> {
@@ -267,7 +270,7 @@ export interface IconProps extends HTMLAttributes<SVGElement> {
   class?: string;
 }
 
-export type IconComponent = typeof SvelteComponent<IconProps>;
+export type IconComponent = Component<IconProps>;
 
 ${registryEntries
 	.map(({ name, pascalName }) => `export declare const ${pascalName}Icon: IconComponent;`)

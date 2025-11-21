@@ -59,10 +59,3 @@
 		{@render children()}
 	{/if}
 </div>
-
-<style>
-	.auth-root {
-		width: 100%;
-		max-width: 100%;
-	}
-</style>

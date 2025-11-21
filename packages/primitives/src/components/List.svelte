@@ -48,33 +48,3 @@
 		{@render children()}
 	</ul>
 {/if}
-
-<style>
-	:global {
-		.gr-list {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-			display: flex;
-			flex-direction: column;
-		}
-
-		.gr-list--spacing-sm {
-			gap: 0.5rem;
-		}
-
-		.gr-list--spacing-md {
-			gap: 1rem;
-		}
-
-		.gr-list--spacing-lg {
-			gap: 1.5rem;
-		}
-
-		.gr-list > :global(li) {
-			display: flex;
-			align-items: flex-start;
-			gap: 0.75rem;
-		}
-	}
-</style>

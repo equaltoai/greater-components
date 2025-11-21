@@ -46,9 +46,3 @@
 		{@render children()}
 	{/if}
 </div>
-
-<style>
-	.filters-root {
-		display: contents;
-	}
-</style>

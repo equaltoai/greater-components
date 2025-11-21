@@ -161,10 +161,3 @@
 		{@render children()}
 	{/if}
 </div>
-
-<style>
-	.profile-root {
-		width: 100%;
-		max-width: 100%;
-	}
-</style>

@@ -129,6 +129,7 @@
       "types": "./dist/stores/*.d.ts",
       "import": "./dist/stores/*.js"
     },
+    "./theme.css": "./dist/theme.css",
     "./style.css": "./dist/style.css",
     "./styles.css": "./dist/styles.css"
   },

@@ -54,34 +54,3 @@
 		</option>
 	{/each}
 </select>
-
-<style>
-	:global {
-		.gr-select {
-			width: 100%;
-			padding: var(--gr-spacing-scale-3);
-			border: 1px solid var(--gr-semantic-border-default);
-			border-radius: var(--gr-radii-md);
-			background: var(--gr-semantic-background-primary);
-			color: var(--gr-semantic-foreground-primary);
-			font-family: inherit;
-			font-size: var(--gr-typography-fontSize-base);
-			cursor: pointer;
-			transition:
-				border-color 0.2s,
-				box-shadow 0.2s;
-		}
-
-		.gr-select:focus {
-			outline: none;
-			border-color: var(--gr-semantic-action-primary-default);
-			box-shadow: 0 0 0 3px var(--gr-semantic-focus-ring);
-		}
-
-		.gr-select:disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-			background: var(--gr-semantic-background-secondary);
-		}
-	}
-</style>

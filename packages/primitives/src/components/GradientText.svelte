@@ -97,15 +97,3 @@ GradientText component - Eye-catching gradient text effect.
 >
 	{@render children()}
 </svelte:element>
-
-<style>
-	:global(.gr-gradient-text) {
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		color: transparent;
-		background-size: 100%;
-		background-repeat: no-repeat;
-		display: inline-block; /* Ensures clip works well on inline elements */
-	}
-</style>

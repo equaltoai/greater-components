@@ -60,10 +60,3 @@
 		{@render children()}
 	{/if}
 </div>
-
-<style>
-	.search-root {
-		width: 100%;
-		max-width: 100%;
-	}
-</style>

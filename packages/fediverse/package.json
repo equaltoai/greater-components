@@ -21,7 +21,8 @@
       "svelte": "./src/index.ts",
       "import": "./dist/index.js"
     },
-    "./greater-components-fediverse.css": "./dist/greater-components-fediverse.css",
+    "./theme.css": "./dist/theme.css",
+    "./greater-components-fediverse.css": "./dist/theme.css",
     "./src/mockData": {
       "import": "./src/mockData.ts"
     }
@@ -35,7 +36,7 @@
   },
   "scripts": {
     "prebuild": "pnpm --filter @equaltoai/greater-components-adapters build",
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js && cp src/theme.css dist/theme.css",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",

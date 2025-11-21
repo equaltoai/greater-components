@@ -152,41 +152,7 @@
 				<html>
 				<head>
 					<title>Backup Recovery Codes</title>
-					<style>
-						body {
-							font-family: monospace;
-							padding: 40px;
-							max-width: 600px;
-							margin: 0 auto;
-						}
-						h1 {
-							font-size: 24px;
-							margin-bottom: 20px;
-						}
-						.warning {
-							background: #fff3cd;
-							border: 1px solid #ffc107;
-							padding: 15px;
-							margin: 20px 0;
-							border-radius: 4px;
-						}
-						.codes {
-							background: #f5f5f5;
-							padding: 20px;
-							margin: 20px 0;
-							border-radius: 4px;
-						}
-						.code {
-							font-size: 16px;
-							padding: 8px;
-							margin: 4px 0;
-						}
-						.footer {
-							margin-top: 40px;
-							font-size: 12px;
-							color: #666;
-						}
-					</style>
+					
 				</head>
 				<body>
 					<h1>🔐 Backup Recovery Codes</h1>

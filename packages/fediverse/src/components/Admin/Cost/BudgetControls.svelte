@@ -62,12 +62,3 @@ Set and manage instance budgets and cost limits.
 		</ul>
 	{/if}
 </div>
-
-<style>
-	.budget-controls__form {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		margin-bottom: 1rem;
-	}
-</style>
