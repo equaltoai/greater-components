@@ -123,4 +123,11 @@ describe('CopyButton.svelte', () => {
 			expect(getByRole('button').textContent?.trim()).toBe('Error');
 		});
 	});
+
+	it('renders icon in icon variant', () => {
+		const { getByRole } = render(CopyButton, { props: { text: 'test', variant: 'icon' } });
+		const button = getByRole('button');
+		const svg = button.querySelector('svg');
+		expect(svg).toBeTruthy();
+	});
 });

@@ -158,16 +158,16 @@ CopyButton component - A button that copies text to the clipboard with visual fe
 	aria-label={copied ? currentLabels.success : currentLabels.default}
 	{...restProps}
 >
-	{#if variant === 'icon' || variant === 'icon-text'}
-		<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-		{#snippet prefix()}
+	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+	{#snippet prefix()}
+		{#if variant === 'icon' || variant === 'icon-text'}
 			{#if copied}
 				<CheckIcon size={iconSize} />
 			{:else}
 				<CopyIcon size={iconSize} />
 			{/if}
-		{/snippet}
-	{/if}
+		{/if}
+	{/snippet}
 
 	{#if variant === 'text' || variant === 'icon-text'}
 		<span>
