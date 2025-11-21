@@ -1,5 +1,14 @@
 # @equaltoai/greater-components-icons
 
+## 1.0.5
+
+### Patch Changes
+
+- 389df98: Implement Unified CSS Architecture:
+  - Extracted all styles to `theme.css` in primitives and fediverse.
+  - Fixed CopyButton visibility and CodeBlock scrollbars.
+  - Enforced strict typing for iconRegistry in icons package.
+
 ## 1.0.4
 
 ### Patch Changes

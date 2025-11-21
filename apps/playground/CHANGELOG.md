@@ -1,5 +1,14 @@
 # @equaltoai/playground
 
+## 0.0.25
+
+### Patch Changes
+
+- Updated dependencies [389df98]
+  - @equaltoai/greater-components-primitives@2.1.0
+  - @equaltoai/greater-components-fediverse@1.3.0
+  - @equaltoai/greater-components-icons@1.0.5
+
 ## 0.0.24
 
 ### Patch Changes
