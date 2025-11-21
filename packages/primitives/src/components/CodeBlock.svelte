@@ -246,6 +246,7 @@ CodeBlock component - Syntax highlighting code block with copy button.
 				variant="icon"
 				buttonVariant="ghost"
 				onCopy={handleCopy}
+				class="gr-code-block__copy-btn"
 			/>
 		</div>
 	{/if}

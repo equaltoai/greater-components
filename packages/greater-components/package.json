@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "2.0.1",
+  "version": "2.1.3",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -78,6 +78,7 @@
       "svelte": "./dist/primitives/components/*.svelte.js",
       "import": "./dist/primitives/components/*.svelte.js"
     },
+    "./primitives/theme.css": "./dist/primitives/theme.css",
     "./primitives/styles.css": "./dist/primitives/styles.css",
     "./primitives/style.css": "./dist/primitives/style.css",
     "./tokens": {
