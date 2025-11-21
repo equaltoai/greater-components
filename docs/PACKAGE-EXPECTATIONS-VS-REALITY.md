@@ -228,3 +228,4 @@ import '@equaltoai/greater-components/tokens/theme.css';
 3. How should CSS be distributed - bundled, separate files, or inlined only?
 4. Should we prioritize npm or JSR for distribution?
 5. What's the minimal set of exports needed for 90% of use cases?
+

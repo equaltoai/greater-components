@@ -452,7 +452,7 @@
 }
 
 /* Fix: CopyButton Visibility in dark mode */
-.gr-code-block__copy-btn {
+.gr-code-block .gr-code-block__copy-btn {
 	color: inherit;
 }
 
