@@ -7,6 +7,8 @@ import type { Status } from '../types';
 import { TimelineStore, type TimelineConfig } from './timelineStore';
 import { NotificationStore, type NotificationConfig } from './notificationStore';
 import { TransportManager, type TransportConfig } from './transport';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+import { GraphQLTimelineStore, type GraphQLTimelineView } from './graphqlTimelineStore';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -174,6 +176,57 @@ export function createTimelineIntegration(config: TimelineIntegrationConfig) {
 		 */
 		destroy(): void {
 			this.disconnect();
+			timeline.destroy();
+		},
+	};
+}
+
+/**
+ * Create a GraphQL integrated timeline
+ */
+export function createGraphQLTimelineIntegration(
+	adapter: LesserGraphQLAdapter,
+	view: GraphQLTimelineView
+) {
+	const timeline = new GraphQLTimelineStore(adapter, view);
+
+	return {
+		store: timeline,
+		transport: null,
+
+		async connect(): Promise<void> {
+			await timeline.connect();
+		},
+
+		disconnect(): void {
+			timeline.disconnect();
+		},
+
+		async loadNewer(): Promise<void> {
+			await timeline.loadNewer();
+		},
+
+		async loadOlder(): Promise<void> {
+			await timeline.loadOlder();
+		},
+
+		async refresh(): Promise<void> {
+			await timeline.refresh();
+		},
+
+		updateStatus(status: Status): void {
+			timeline.updateStatus(status);
+		},
+
+		get state() {
+			return timeline.currentState;
+		},
+
+		get items() {
+			return timeline.items;
+		},
+
+		destroy(): void {
 			timeline.destroy();
 		},
 	};

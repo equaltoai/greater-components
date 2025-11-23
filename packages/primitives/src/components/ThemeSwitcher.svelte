@@ -7,11 +7,15 @@
 		type FontSize,
 		type MotionPreference,
 	} from '../stores/preferences';
+	import ThemeWorkbench from './Theme/ThemeWorkbench.svelte';
 
 	interface Props {
 		variant?: 'compact' | 'full';
 		showPreview?: boolean;
 		showAdvanced?: boolean;
+		showWorkbench?: boolean;
+		enableCustomThemes?: boolean;
+		customThemesKey?: string;
 		class?: string;
 		value?: ColorScheme;
 		onThemeChange?: (theme: ColorScheme) => void;
@@ -22,6 +26,9 @@
 		variant = 'compact', // Default to compact for header usage
 		showPreview = true,
 		showAdvanced = false,
+		showWorkbench = false,
+		enableCustomThemes = false,
+		customThemesKey,
 		class: className = '',
 		value,
 		onThemeChange,
@@ -583,6 +590,21 @@
 				</label>
 			{/if}
 		</div>
+
+		{#if showWorkbench}
+			<div class="gr-theme-switcher__section">
+				<h3 class="gr-theme-switcher__heading">Theme Workbench</h3>
+				<ThemeWorkbench 
+					initialColor={primaryColor} 
+					onSave={(theme) => {
+						// This would typically save to a custom theme store
+						handleColorChange('primary', theme.colors.primary[500]);
+						handleColorChange('secondary', theme.colors.secondary[500]);
+						// Example: just applying primary/secondary for now
+					}}
+				/>
+			</div>
+		{/if}
 
 		{#if children}
 			<div class="gr-theme-switcher__custom">

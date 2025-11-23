@@ -8,6 +8,8 @@
  */
 
 import { getContext, setContext } from 'svelte';
+import type { Snippet } from 'svelte';
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
 const PROFILE_CONTEXT_KEY = Symbol('profile-context');
 
@@ -68,6 +70,84 @@ export interface ProfileData {
 		revoked: boolean;
 		revokedAt?: string;
 	}>;
+}
+
+/**
+ * Profile timeline view configuration
+ */
+export interface ProfileTimelineView {
+	type: 'profile';
+	username: string;
+	showReplies: boolean;
+	showBoosts: boolean;
+	onlyMedia: boolean;
+	showPinned: boolean;
+}
+
+/**
+ * Profile timeline properties
+ */
+export interface ProfileTimelineProps {
+	/**
+	 * Username to display timeline for
+	 * Required if not within Profile.Root context
+	 */
+	username?: string;
+
+	/**
+	 * GraphQL adapter instance
+	 * Required if not within Profile.Root context
+	 */
+	adapter?: LesserGraphQLAdapter;
+
+	/**
+	 * Show replies to other users
+	 * @default false
+	 */
+	showReplies?: boolean;
+
+	/**
+	 * Show boosted posts
+	 * @default true
+	 */
+	showBoosts?: boolean;
+
+	/**
+	 * Show only media posts
+	 * @default false
+	 */
+	onlyMedia?: boolean;
+
+	/**
+	 * Show pinned posts at top
+	 * @default true
+	 */
+	showPinned?: boolean;
+
+	/**
+	 * Virtual scrolling configuration
+	 */
+	virtualScrolling?: boolean;
+
+	/**
+	 * Estimated item height for virtual scrolling
+	 */
+	estimateSize?: number;
+
+	/**
+	 * Custom CSS class
+	 */
+	class?: string;
+
+	/**
+	 * Custom header content
+	 */
+	header?: Snippet;
+
+	/**
+	 * Custom empty state
+	 */
+	emptyState?: Snippet;
 }
 
 /**
@@ -515,6 +595,11 @@ export interface ProfileContext {
 	handlers: ProfileHandlers;
 
 	/**
+	 * GraphQL adapter instance
+	 */
+	adapter?: LesserGraphQLAdapter;
+
+	/**
 	 * Update profile state
 	 */
 	updateState: (partial: Partial<ProfileState>) => void;
@@ -556,12 +641,14 @@ export const DEFAULT_TABS: ProfileTab[] = [
  * @param profile - Initial profile data
  * @param handlers - Profile event handlers
  * @param isOwnProfile - Whether this is the current user's profile
+ * @param adapter - GraphQL adapter instance
  * @returns Profile context
  */
 export function createProfileContext(
 	profile: ProfileData | null = null,
 	handlers: ProfileHandlers = {},
-	isOwnProfile = false
+	isOwnProfile = false,
+	adapter?: LesserGraphQLAdapter
 ): ProfileContext {
 	const state = $state<ProfileState>({
 		profile,
@@ -584,6 +671,7 @@ export function createProfileContext(
 	const context: ProfileContext = {
 		state,
 		handlers,
+		adapter,
 		updateState: (partial: Partial<ProfileState>) => {
 			Object.assign(state, partial);
 		},
@@ -620,6 +708,17 @@ export function getProfileContext(): ProfileContext {
 		throw new Error('Profile components must be used within a Profile.Root component');
 	}
 	return context;
+}
+
+/**
+ * Try to get profile context
+ *
+ * Returns undefined if called outside Profile component tree.
+ *
+ * @returns Profile context or undefined
+ */
+export function tryGetProfileContext(): ProfileContext | undefined {
+	return getContext<ProfileContext>(PROFILE_CONTEXT_KEY);
 }
 
 /**

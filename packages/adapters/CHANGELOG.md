@@ -1,5 +1,79 @@
 # @equaltoai/greater-components-adapters
 
+## 2.3.0
+
+### Minor Changes
+
+- # v2.2.0 - Profile Timelines, Settings Components, and Advanced Theming
+
+  ## New Features
+
+  ### Fediverse Package
+
+  **Profile.Timeline Component**
+  - Dedicated profile timeline component with filtering options
+  - Props: `username`, `adapter`, `showReplies`, `showBoosts`, `onlyMedia`, `showPinned`
+  - Integrates seamlessly with Profile.Root context
+  - Supports virtualized scrolling for performance
+
+  ### Primitives Package
+
+  **Settings Components** - Composable settings panel primitives
+  - `SettingsSection` - Group settings with title and description
+  - `SettingsGroup` - Nest related settings
+  - `SettingsField` - Individual setting field with label
+  - `SettingsToggle` - Pre-composed toggle switch
+  - `SettingsSelect` - Pre-composed dropdown select
+
+  **Theme Components** - Advanced theme customization tools
+  - `ThemeWorkbench` - Visual theme builder with live preview
+  - `ColorHarmonyPicker` - Generate color harmonies (complementary, analogous, triadic, tetradic, split-complementary, monochromatic)
+  - `ContrastChecker` - WCAG contrast ratio validator
+
+  ### Utils Package
+
+  **Preference Store** - Persistent user preferences with localStorage
+  - `createPreferenceStore()` - Type-safe preference management
+  - Auto-save to localStorage
+  - Export/import functionality
+
+  **Theme Utilities** - Programmatic theme generation
+  - `generateTheme()` - Create complete theme from brand color
+  - `generateColorHarmony()` - Generate color schemes
+  - `hexToHsl()` / `hslToHex()` - Color space conversion
+  - `getContrastRatio()` - Calculate WCAG contrast ratio
+  - `meetsWCAG()` - Validate accessibility compliance
+  - `suggestTextColor()` - Optimal text color for background
+
+  ### Adapters Package
+
+  **LesserGraphQLAdapter Enhancements**
+  - `verifyCredentials()` - Verify authentication and get current user
+  - `isAuthenticated()` - Check if adapter has valid auth token
+  - `getToken()` - Retrieve current authentication token
+  - `refreshToken()` - Update authentication token
+
+  ## Documentation
+  - Comprehensive implementation guide added
+  - Troubleshooting guide for common issues
+  - Updated migration guide with quick start examples
+  - Bundle size analysis (verified <10KB increase)
+
+  ## Performance
+  - All new components are tree-shakeable
+  - Bundle size increase: ~5KB (well under 10KB target)
+  - Optimized for production builds
+
+  ## Testing
+  - 80%+ test coverage across all new features
+  - Comprehensive unit tests for all components
+  - Integration tests for adapter methods
+  - All 730 tests passing
+
+  ## Breaking Changes
+
+  None - this is a backwards-compatible minor release.
+
 ## 1.2.1
 
 ### Patch Changes

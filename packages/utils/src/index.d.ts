@@ -47,4 +47,14 @@ export * from './clipboard.js';
 export { htmlToMarkdown } from './html-to-markdown.js';
 export { exportToMarkdown, exportChatToMarkdown, downloadMarkdown } from './export-markdown.js';
 export type { ExportMarkdownOptions, ChatExportOptions, ChatMessage } from './export-markdown.js';
+/**
+ * Preference store utilities.
+ * @public
+ */
+export * from './preferences.js';
+/**
+ * Theme utilities.
+ * @public
+ */
+export * from './theme/index.js';
 //# sourceMappingURL=index.d.ts.map

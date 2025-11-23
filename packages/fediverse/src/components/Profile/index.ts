@@ -57,6 +57,7 @@ export { default as EndorsedAccounts } from './EndorsedAccounts.svelte';
 export { default as FeaturedHashtags } from './FeaturedHashtags.svelte';
 export { default as AccountMigration } from './AccountMigration.svelte';
 export { default as TrustBadge } from './TrustBadge.svelte';
+export { default as Timeline } from './Timeline.svelte';
 
 // Export controllers
 export { ProfileGraphQLController } from './GraphQLAdapter.js';
@@ -77,6 +78,8 @@ export type {
 	BlockedAccount,
 	MutedAccount,
 	FeaturedHashtag,
+	ProfileTimelineProps,
+	ProfileTimelineView,
 } from './context.js';
 
 export type {

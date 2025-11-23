@@ -13,3 +13,19 @@ if (typeof runtime.$state !== 'function') {
 if (typeof runtime.$derived !== 'function') {
 	runtime.$derived = <T>(fn: () => T) => fn;
 }
+
+if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
+	Object.defineProperty(window, 'matchMedia', {
+		writable: true,
+		value: (query: string) => ({
+			matches: false,
+			media: query,
+			onchange: null,
+			addListener: () => {}, // deprecated
+			removeListener: () => {}, // deprecated
+			addEventListener: () => {},
+			removeEventListener: () => {},
+			dispatchEvent: () => false,
+		}),
+	});
+}

@@ -5,7 +5,9 @@
 	import type { StatusActionHandlers } from './Status/context.js';
 	import type { Snippet } from 'svelte';
 	import type { TimelineIntegrationConfig } from '../lib/integration';
-	import { createTimelineIntegration } from '../lib/integration';
+	import { createTimelineIntegration, createGraphQLTimelineIntegration } from '../lib/integration';
+	import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+	import type { GraphQLTimelineView } from '../lib/graphqlTimelineStore';
 
 	interface Props {
 		/**
@@ -16,6 +18,14 @@
 		 * Store integration configuration (enables real-time updates)
 		 */
 		integration?: TimelineIntegrationConfig;
+		/**
+		 * GraphQL adapter for data fetching (alternative to integration)
+		 */
+		adapter?: LesserGraphQLAdapter;
+		/**
+		 * View configuration for GraphQL adapter
+		 */
+		view?: GraphQLTimelineView;
 		/**
 		 * Estimated height of each item (for virtualization)
 		 */
@@ -115,10 +125,16 @@
 		autoConnect = true,
 		showRealtimeIndicator = true,
 		actionHandlers,
+		adapter,
+		view,
 	}: Props = $props();
 
 	// Create integration instance if config is provided
-	let timelineIntegration = integration ? createTimelineIntegration(integration) : null;
+	let timelineIntegration = integration
+		? createTimelineIntegration(integration)
+		: adapter && view
+			? createGraphQLTimelineIntegration(adapter, view)
+			: null;
 	let mounted = false;
 
 	// Use store data when integration is available, otherwise fall back to props

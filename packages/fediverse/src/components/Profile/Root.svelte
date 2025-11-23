@@ -84,7 +84,7 @@
 		enablePreferences = true,
 	}: Props = $props();
 
-	const context = createProfileContext(profileProp, handlersProp, isOwnProfile);
+	const context = createProfileContext(profileProp, handlersProp, isOwnProfile, adapter);
 
 	let controller: ProfileGraphQLController | null = null;
 

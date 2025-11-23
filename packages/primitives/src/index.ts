@@ -207,6 +207,24 @@ export { default as MarkdownRenderer } from './components/MarkdownRenderer.svelt
  */
 export { default as StreamingText } from './components/StreamingText.svelte';
 
+/**
+ * Settings components for building configuration panels.
+ * @public
+ */
+export { default as SettingsSection } from './components/Settings/SettingsSection.svelte';
+export { default as SettingsGroup } from './components/Settings/SettingsGroup.svelte';
+export { default as SettingsField } from './components/Settings/SettingsField.svelte';
+export { default as SettingsToggle } from './components/Settings/SettingsToggle.svelte';
+export { default as SettingsSelect } from './components/Settings/SettingsSelect.svelte';
+
+/**
+ * Advanced theme components.
+ * @public
+ */
+export { default as ColorHarmonyPicker } from './components/Theme/ColorHarmonyPicker.svelte';
+export { default as ContrastChecker } from './components/Theme/ContrastChecker.svelte';
+export { default as ThemeWorkbench } from './components/Theme/ThemeWorkbench.svelte';
+
 // Import component types for prop inference
 import type ButtonComponent from './components/Button.svelte';
 import type CopyButtonComponent from './components/CopyButton.svelte';

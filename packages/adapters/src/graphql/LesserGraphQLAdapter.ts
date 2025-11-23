@@ -85,6 +85,7 @@ import type {
 	UploadMediaInput,
 	UploadMediaMutation,
 	UploadMediaMutationVariables,
+	Actor,
 } from './generated/types.js';
 
 import {
@@ -195,6 +196,42 @@ import {
 	PerformanceAlertDocument,
 	InfrastructureEventDocument,
 } from './generated/types.js';
+
+export type ViewerQuery = { viewer: Actor };
+
+const ViewerDocument = {
+	kind: 'Document',
+	definitions: [
+		{
+			kind: 'OperationDefinition',
+			operation: 'query',
+			name: { kind: 'Name', value: 'Viewer' },
+			selectionSet: {
+				kind: 'SelectionSet',
+				selections: [
+					{
+						kind: 'Field',
+						name: { kind: 'Name', value: 'viewer' },
+						selectionSet: {
+							kind: 'SelectionSet',
+							selections: [
+								{ kind: 'Field', name: { kind: 'Name', value: 'id' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'username' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'avatar' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'header' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'url' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'followersCount' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'followingCount' } },
+								{ kind: 'Field', name: { kind: 'Name', value: 'statusesCount' } },
+							],
+						},
+					},
+				],
+			},
+		},
+	],
+} as unknown as TypedDocumentNode<{ viewer: Actor }, OperationVariables>;
 
 type UpdateHashtagNotificationsMutation = {
 	updateHashtagNotifications: {
@@ -344,6 +381,58 @@ export class LesserGraphQLAdapter {
 	updateToken(token: string | null): void {
 		this.authToken = token;
 		this.client.updateToken(token);
+	}
+
+	/**
+	 * Verify credentials and fetch current authenticated user
+	 *
+	 * @returns The authenticated actor/user account
+	 * @throws Error if not authenticated or credentials invalid
+	 */
+	async verifyCredentials(): Promise<Actor> {
+		if (!this.authToken) {
+			throw new Error('No authentication token provided. Cannot verify credentials.');
+		}
+
+		try {
+			const data = await this.query(ViewerDocument);
+
+			if (!data.viewer) {
+				throw new Error('Invalid authentication token');
+			}
+
+			return data.viewer;
+		} catch (error) {
+			if (error instanceof Error) {
+				if (error.message.includes('401') || error.message.includes('403')) {
+					throw new Error('Authentication failed: Invalid or expired token');
+				}
+				throw new Error(`Failed to verify credentials: ${error.message}`);
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * Check if currently authenticated
+	 */
+	isAuthenticated(): boolean {
+		return this.authToken !== null;
+	}
+
+	/**
+	 * Get current auth token
+	 */
+	getToken(): string | null {
+		return this.authToken;
+	}
+
+	/**
+	 * Refresh authentication token
+	 * @param newToken - New token to use
+	 */
+	refreshToken(newToken: string): void {
+		this.updateToken(newToken);
 	}
 
 	close(): void {

@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-primitives",
-  "version": "2.0.5",
+  "version": "2.3.0",
   "type": "module",
   "description": "Primitive UI components for Greater Components",
   "license": "AGPL-3.0-only",

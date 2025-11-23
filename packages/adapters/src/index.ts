@@ -39,6 +39,7 @@ export type {
 	Visibility,
 	ObjectFieldsFragment,
 	Actor,
+	ViewerQuery,
 	QuoteType,
 	UploadMediaInput,
 	MediaCategory,

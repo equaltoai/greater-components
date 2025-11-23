@@ -417,6 +417,17 @@ export function getListsContext(): ListsContext {
 }
 
 /**
+ * Try to get lists context
+ *
+ * Returns undefined if called outside Lists component tree.
+ *
+ * @returns Lists context or undefined
+ */
+export function tryGetListsContext(): ListsContext | undefined {
+	return getContext<ListsContext>(LISTS_CONTEXT_KEY);
+}
+
+/**
  * Validate list form data
  */
 export function validateListForm(data: ListFormData): string | null {
