@@ -9,10 +9,9 @@
     description?: string;
     icon?: Snippet;
     children: Snippet;
-    collapsible?: boolean;
   }
 
-  let { title, description, icon, children, collapsible = false }: Props = $props();
+  let { title, description, icon, children }: Props = $props();
 </script>
 
 <div class="settings-section">

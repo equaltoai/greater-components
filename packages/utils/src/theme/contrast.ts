@@ -4,21 +4,35 @@
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 	const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result
-		? {
-				r: parseInt(result[1]!, 16),
-				g: parseInt(result[2]!, 16),
-				b: parseInt(result[3]!, 16),
-			}
-		: null;
+	if (!result) {
+		return null;
+	}
+
+	const [, rHex, gHex, bHex] = result;
+	if (!rHex || !gHex || !bHex) {
+		return null;
+	}
+
+	return {
+		r: parseInt(rHex, 16),
+		g: parseInt(gHex, 16),
+		b: parseInt(bHex, 16),
+	};
 }
 
 function getLuminance(r: number, g: number, b: number): number {
-	const a = [r, g, b].map((v) => {
-		v /= 255;
-		return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-	});
-	return a[0]! * 0.2126 + a[1]! * 0.7152 + a[2]! * 0.0722;
+	const transform = (value: number) => {
+		const normalized = value / 255;
+		return normalized <= 0.03928
+			? normalized / 12.92
+			: Math.pow((normalized + 0.055) / 1.055, 2.4);
+	};
+
+	const rLuminance = transform(r);
+	const gLuminance = transform(g);
+	const bLuminance = transform(b);
+
+	return rLuminance * 0.2126 + gLuminance * 0.7152 + bLuminance * 0.0722;
 }
 
 /**

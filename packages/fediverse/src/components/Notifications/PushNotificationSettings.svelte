@@ -34,6 +34,10 @@
               throw new Error('Permission denied');
           }
           
+          if (!adapter) {
+              throw new Error('Adapter is required for push notifications');
+          }
+
           // Mock success for UI demo
           // subscription = ...
       } catch (e) {

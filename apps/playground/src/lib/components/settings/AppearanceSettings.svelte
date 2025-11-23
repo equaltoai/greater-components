@@ -1,7 +1,6 @@
 <script>
   import { SettingsSection, SettingsToggle, SettingsSelect, ThemeSwitcher } from '@equaltoai/greater-components-primitives';
   
-  let theme = $state('auto');
   let density = $state('comfortable');
   let reducedMotion = $state(false);
 </script>

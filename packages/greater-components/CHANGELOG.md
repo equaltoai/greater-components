@@ -1,5 +1,11 @@
 # @equaltoai/greater-components
 
+## 2.2.2
+
+### Patch Changes
+
+- Ensure the packaged CSS assets ship with the release so consumers get the intended styles.
+
 ## 2.2.1
 
 ### Patch Changes

@@ -4,7 +4,7 @@
  * Provides a standardized way to manage user preferences with persistence.
  */
 
-export interface PreferenceStore<T extends Record<string, any>> {
+export interface PreferenceStore<T extends Record<string, unknown>> {
   /**
    * Get current preferences
    */
@@ -44,7 +44,7 @@ export interface PreferenceStore<T extends Record<string, any>> {
 /**
  * Create a preference store with localStorage persistence
  */
-export function createPreferenceStore<T extends Record<string, any>>(
+export function createPreferenceStore<T extends Record<string, unknown>>(
   key: string,
   defaults: T
 ): PreferenceStore<T> {

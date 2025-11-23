@@ -20,11 +20,11 @@
   let selectedColors = $derived(harmony[harmonyType] || []);
 
   function handleColorClick(color: string) {
-     if (onSelect) {
-         onSelect([seedColor, ...selectedColors]);
-     }
-     // Optionally update seed color to clicked color?
-     // seedColor = color; 
+    if (onSelect) {
+      onSelect([seedColor, color, ...selectedColors.filter((c) => c !== color)]);
+    }
+    // Optionally update seed color to clicked color?
+    // seedColor = color; 
   }
 </script>
 
@@ -43,7 +43,7 @@
              <span class="color-label">Base</span>
         </div>
         
-        {#each selectedColors as color}
+        {#each selectedColors as color (color)}
              <div 
                 class="color-swatch harmony" 
                 style="background-color: {color}"

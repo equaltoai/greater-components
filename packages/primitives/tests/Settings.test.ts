@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/svelte';
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/svelte';
 import SettingsSection from '../src/components/Settings/SettingsSection.svelte';
 import SettingsGroup from '../src/components/Settings/SettingsGroup.svelte';
 import SettingsField from '../src/components/Settings/SettingsField.svelte';
@@ -55,8 +55,8 @@ describe('Settings Components', () => {
 
 	describe('SettingsToggle', () => {
 		it('renders label and toggles value', async () => {
-			let value = false;
-			const { component } = render(SettingsToggle, {
+			const value = false;
+			render(SettingsToggle, {
 				label: 'Toggle Me',
 				value,
 			});

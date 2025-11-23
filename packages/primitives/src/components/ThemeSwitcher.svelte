@@ -14,8 +14,6 @@
 		showPreview?: boolean;
 		showAdvanced?: boolean;
 		showWorkbench?: boolean;
-		enableCustomThemes?: boolean;
-		customThemesKey?: string;
 		class?: string;
 		value?: ColorScheme;
 		onThemeChange?: (theme: ColorScheme) => void;
@@ -27,8 +25,6 @@
 		showPreview = true,
 		showAdvanced = false,
 		showWorkbench = false,
-		enableCustomThemes = false,
-		customThemesKey,
 		class: className = '',
 		value,
 		onThemeChange,

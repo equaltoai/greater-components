@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render } from '@testing-library/svelte';
 import Timeline from '../../../src/components/Profile/Timeline.svelte';
 import * as contextModule from '../../../src/components/Profile/context';
 

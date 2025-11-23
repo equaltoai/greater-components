@@ -3,7 +3,7 @@
  *
  * Provides a standardized way to manage user preferences with persistence.
  */
-export interface PreferenceStore<T extends Record<string, any>> {
+export interface PreferenceStore<T extends Record<string, unknown>> {
     /**
      * Get current preferences
      */
@@ -36,5 +36,5 @@ export interface PreferenceStore<T extends Record<string, any>> {
 /**
  * Create a preference store with localStorage persistence
  */
-export declare function createPreferenceStore<T extends Record<string, any>>(key: string, defaults: T): PreferenceStore<T>;
+export declare function createPreferenceStore<T extends Record<string, unknown>>(key: string, defaults: T): PreferenceStore<T>;
 //# sourceMappingURL=preferences.d.ts.map

@@ -5,8 +5,12 @@
  * for use with TimelineVirtualizedReactive.
  */
 
-import type { Status, Account } from '../types';
+import type { Status, Account, MediaAttachment, Card } from '../types';
 import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+type UnknownRecord = Record<string, unknown>;
+
+const isRecord = (value: unknown): value is UnknownRecord =>
+	typeof value === 'object' && value !== null;
 
 export interface TimelineState {
 	items: Status[];
@@ -161,7 +165,7 @@ export class GraphQLTimelineStore {
     }
 
     private async fetchStatuses(pagination?: { first?: number; after?: string }): Promise<Status[]> {
-        let items: any[] = [];
+        let items: unknown[] = [];
         const limit = pagination?.first ?? 20;
         
         try {
@@ -169,9 +173,7 @@ export class GraphQLTimelineStore {
                 let actorId = this.view.actorId;
                 if (!actorId) {
                     const actor = await this.adapter.getActorByUsername(this.view.username);
-                    // @ts-ignore - Adapter types might be slightly different in generated code
-                    if (actor && actor.id) {
-                        // @ts-ignore
+                    if (isRecord(actor) && typeof actor.id === 'string') {
                         actorId = actor.id;
                         this.view.actorId = actorId;
                     }
@@ -220,96 +222,146 @@ export class GraphQLTimelineStore {
             throw e;
         }
         
-        return items.map(item => this.mapToStatus(item)).filter(s => !!s) as Status[];
+        const mapped = items
+            .map((item) => this.mapToStatus(item))
+            .filter((status): status is Status => Boolean(status));
+
+        return mapped;
     }
 
-    private extractItems(timelineData: any): any[] {
+    private extractItems(timelineData: unknown): unknown[] {
         if (!timelineData) return [];
         if (Array.isArray(timelineData)) return timelineData;
-        // Handle Connection objects (edges/nodes)
-        if (timelineData.edges && Array.isArray(timelineData.edges)) {
-            return timelineData.edges.map((edge: any) => edge.node);
+        if (!isRecord(timelineData)) return [];
+
+        const edges = timelineData['edges'];
+        if (Array.isArray(edges)) {
+            return edges
+                .map((edge) => (isRecord(edge) ? edge['node'] : null))
+                .filter((edgeNode): edgeNode is unknown => edgeNode !== null);
         }
-        // Handle other list wrappers
-        if (timelineData.nodes && Array.isArray(timelineData.nodes)) {
-            return timelineData.nodes;
+
+        const nodes = timelineData['nodes'];
+        if (Array.isArray(nodes)) {
+            return nodes;
         }
-        if (timelineData.items && Array.isArray(timelineData.items)) {
-            return timelineData.items;
+
+        const items = timelineData['items'];
+        if (Array.isArray(items)) {
+            return items;
         }
+
         return [];
     }
     
-    private updateCursors(timelineData: any) {
-        if (timelineData?.pageInfo) {
-            this.cursors.end = timelineData.pageInfo.endCursor;
-            this.cursors.start = timelineData.pageInfo.startCursor;
+    private updateCursors(timelineData: unknown) {
+        if (!isRecord(timelineData)) return;
+        const pageInfo = timelineData['pageInfo'];
+        if (isRecord(pageInfo)) {
+            this.cursors.end =
+                typeof pageInfo['endCursor'] === 'string' ? pageInfo['endCursor'] : this.cursors.end;
+            this.cursors.start =
+                typeof pageInfo['startCursor'] === 'string' ? pageInfo['startCursor'] : this.cursors.start;
         }
     }
 
-    private mapToStatus(item: any): Status | null {
-        if (!item || typeof item !== 'object') return null;
+    private mapToStatus(item: unknown): Status | null {
+        if (!isRecord(item)) return null;
+        if (typeof item['id'] !== 'string' || item['content'] === undefined) return null;
         
-        // Basic verification
-        if (!item.id || !item.content) return null;
-        
-        const account = this.mapAccount(item.account || item.author);
+        const account = this.mapAccount(item['account'] ?? item['author']);
         if (!account) return null;
 
+        const buildMedia = (media: unknown): MediaAttachment | null => {
+            if (
+                !isRecord(media) ||
+                typeof media['id'] !== 'string' ||
+                typeof media['type'] !== 'string' ||
+                typeof media['url'] !== 'string'
+            ) {
+                return null;
+            }
+
+            return {
+                id: media['id'],
+                type: media['type'] as MediaAttachment['type'],
+                url: media['url'],
+                previewUrl: typeof media['previewUrl'] === 'string' ? media['previewUrl'] : undefined,
+                description: typeof media['description'] === 'string' ? media['description'] : undefined,
+                meta: isRecord(media['meta']) ? (media['meta'] as Record<string, unknown>) : undefined,
+            };
+        };
+
+        const createdAt =
+            typeof item['createdAt'] === 'string' || item['createdAt'] instanceof Date
+                ? item['createdAt']
+                : new Date().toISOString();
+
+        const mediaAttachmentsRaw = item['mediaAttachments'];
+        const mediaAttachments = Array.isArray(mediaAttachmentsRaw)
+            ? mediaAttachmentsRaw
+                  .map(buildMedia)
+                  .filter((media): media is NonNullable<typeof media> => Boolean(media))
+            : [];
+
         return {
-            id: item.id,
-            uri: item.uri || item.url || '',
-            url: item.url || '',
+            id: item['id'],
+            uri:
+                typeof item['uri'] === 'string'
+                    ? item['uri']
+                    : typeof item['url'] === 'string'
+                        ? item['url']
+                        : '',
+            url: typeof item['url'] === 'string' ? item['url'] : '',
             account,
-            content: item.content,
-            createdAt: item.createdAt,
-            sensitive: item.sensitive,
-            spoilerText: item.spoilerText,
-            visibility: item.visibility || 'public',
-            language: item.language,
-            repliesCount: item.repliesCount || 0,
-            reblogsCount: item.reblogsCount || 0,
-            favouritesCount: item.favouritesCount || 0,
-            favourited: item.favourited,
-            reblogged: item.reblogged,
-            bookmarked: item.bookmarked,
-            muted: item.muted,
-            pinned: item.pinned,
-            mediaAttachments: item.mediaAttachments?.map((m: any) => ({
-                id: m.id,
-                type: m.type,
-                url: m.url,
-                previewUrl: m.previewUrl,
-                description: m.description,
-                meta: m.meta
-            })) || [],
-            mentions: item.mentions || [],
-            tags: item.tags || [],
-            card: item.card,
+            content: String(item['content']),
+            createdAt,
+            sensitive: Boolean(item['sensitive']),
+            spoilerText: typeof item['spoilerText'] === 'string' ? item['spoilerText'] : undefined,
+            visibility: (typeof item['visibility'] === 'string' ? item['visibility'] : 'public') as Status['visibility'],
+            language: typeof item['language'] === 'string' ? item['language'] : undefined,
+            repliesCount: typeof item['repliesCount'] === 'number' ? item['repliesCount'] : 0,
+            reblogsCount: typeof item['reblogsCount'] === 'number' ? item['reblogsCount'] : 0,
+            favouritesCount: typeof item['favouritesCount'] === 'number' ? item['favouritesCount'] : 0,
+            favourited: typeof item['favourited'] === 'boolean' ? item['favourited'] : undefined,
+            reblogged: typeof item['reblogged'] === 'boolean' ? item['reblogged'] : undefined,
+            bookmarked: typeof item['bookmarked'] === 'boolean' ? item['bookmarked'] : undefined,
+            muted: typeof item['muted'] === 'boolean' ? item['muted'] : undefined,
+            pinned: typeof item['pinned'] === 'boolean' ? item['pinned'] : undefined,
+            mediaAttachments,
+            mentions: Array.isArray(item['mentions']) ? (item['mentions'] as Status['mentions']) : [],
+            tags: Array.isArray(item['tags']) ? (item['tags'] as Status['tags']) : [],
+            card: isRecord(item['card']) ? (item['card'] as unknown as Card) : undefined,
             // Recursive reblog mapping could cause stack overflow if not careful, 
             // but usually GraphQL returns restricted depth.
-            reblog: item.reblog ? this.mapToStatus(item.reblog) : undefined
-        } as Status;
+            reblog: item['reblog'] ? this.mapToStatus(item['reblog']) ?? undefined : undefined
+        };
     }
 
-    private mapAccount(item: any): Account | null {
-        if (!item) return null;
+    private mapAccount(item: unknown): Account | null {
+        if (!isRecord(item) || typeof item['id'] !== 'string' || typeof item['username'] !== 'string') return null;
+        const displayName = typeof item['displayName'] === 'string' ? item['displayName'] : item['username'];
+        const acct = typeof item['acct'] === 'string' ? item['acct'] : item['username'];
+
         return {
-            id: item.id,
-            username: item.username,
-            acct: item.acct || item.username,
-            displayName: item.displayName || item.username,
-            avatar: item.avatar || '',
-            header: item.header || '',
-            url: item.url || '',
-            statusesCount: item.statusesCount || 0,
-            followersCount: item.followersCount || 0,
-            followingCount: item.followingCount || 0,
-            createdAt: item.createdAt || new Date().toISOString(),
-            bot: item.bot || false,
-            locked: item.locked || false,
-            verified: item.verified || false,
-            note: item.note || item.bio || '',
+            id: item['id'],
+            username: item['username'],
+            acct,
+            displayName,
+            avatar: typeof item['avatar'] === 'string' ? item['avatar'] : '',
+            header: typeof item['header'] === 'string' ? item['header'] : '',
+            url: typeof item['url'] === 'string' ? item['url'] : '',
+            statusesCount: typeof item['statusesCount'] === 'number' ? item['statusesCount'] : 0,
+            followersCount: typeof item['followersCount'] === 'number' ? item['followersCount'] : 0,
+            followingCount: typeof item['followingCount'] === 'number' ? item['followingCount'] : 0,
+            createdAt:
+                typeof item['createdAt'] === 'string' || item['createdAt'] instanceof Date
+                    ? item['createdAt']
+                    : new Date().toISOString(),
+            bot: typeof item['bot'] === 'boolean' ? item['bot'] : false,
+            locked: typeof item['locked'] === 'boolean' ? item['locked'] : false,
+            verified: typeof item['verified'] === 'boolean' ? item['verified'] : false,
+            note: typeof item['note'] === 'string' ? item['note'] : typeof item['bio'] === 'string' ? item['bio'] : '',
         };
     }
 

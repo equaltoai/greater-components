@@ -16,7 +16,7 @@
 
 <div class={`settings-field ${className}`}>
     <div class="settings-field__info">
-        <label class="settings-field__label">{label}</label>
+        <p class="settings-field__label">{label}</p>
         {#if description}
             <p class="settings-field__description">{description}</p>
         {/if}

@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { ThemeWorkbench, ColorHarmonyPicker, ContrastChecker } from '@equaltoai/greater-components-primitives';
-  import { generateTheme } from '@equaltoai/greater-components-utils';
+  import { ThemeWorkbench } from '@equaltoai/greater-components-primitives';
+  import type { ThemeTokens } from '@equaltoai/greater-components-utils';
   
-  let savedThemes = $state<any[]>([]);
+  type SavedTheme = ThemeTokens & { id: number };
+
+  let savedThemes = $state<SavedTheme[]>([]);
   
-  function handleSave(theme: any) {
+  function handleSave(theme: ThemeTokens) {
     savedThemes = [...savedThemes, { ...theme, id: Date.now() }];
   }
 </script>
@@ -21,7 +23,7 @@
   {#if savedThemes.length > 0}
     <div class="saved-themes">
       <h2>Saved Themes</h2>
-      {#each savedThemes as theme}
+      {#each savedThemes as theme (theme.id)}
         <div class="theme-card">
           <div class="color-swatch" style="background: {theme.colors.primary[500]}"></div>
           <pre>{JSON.stringify(theme, null, 2)}</pre>

@@ -1,6 +1,6 @@
 <script>
   import { SettingsSection, SettingsToggle } from '@equaltoai/greater-components-primitives';
-  import { NotificationFilters, PushNotificationSettings } from '@equaltoai/greater-components-fediverse';
+  import { NotificationFilters } from '@equaltoai/greater-components-fediverse';
   
   let pushEnabled = $state(false);
   let emailNotifications = $state(true);

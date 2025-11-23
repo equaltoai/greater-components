@@ -1,7 +1,6 @@
 <script lang="ts">
   import { 
     SettingsSection, 
-    SettingsGroup,
     SettingsToggle,
     SettingsSelect 
   } from '@equaltoai/greater-components-primitives';
@@ -19,10 +18,6 @@
   prefs.subscribe((newSettings) => {
     settings = newSettings;
   });
-  
-  function updatePref(key: string, value: any) {
-    prefs.set(key, value);
-  }
 </script>
 
 <div class="example-container">

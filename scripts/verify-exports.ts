@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { 
   SettingsSection,
   SettingsGroup,
@@ -24,4 +25,4 @@ import {
 
 import { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 
-console.log('✅ All exports verified');
+console.warn('✅ All exports verified');

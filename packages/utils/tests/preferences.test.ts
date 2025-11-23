@@ -28,7 +28,9 @@ describe('createPreferenceStore', () => {
 		store.set('theme', 'dark');
 		
 		expect(store.get().theme).toBe('dark');
-		expect(JSON.parse(localStorage.getItem(key)!)).toEqual({
+		const storedValue = localStorage.getItem(key);
+		expect(storedValue).not.toBeNull();
+		expect(JSON.parse(storedValue as string)).toEqual({
 			...defaults,
 			theme: 'dark',
 		});

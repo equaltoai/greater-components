@@ -85,7 +85,7 @@
             </div>
             
             <div class="swatch-grid">
-                {#each Object.entries(theme.colors.primary) as [key, color]}
+                {#each Object.entries(theme.colors.primary) as [key, color] (key)}
                     <div class="swatch" style="background-color: {color}" title="Primary {key}"></div>
                 {/each}
             </div>

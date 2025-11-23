@@ -5,7 +5,7 @@
   import Select from '../Select.svelte';
   import SettingsField from './SettingsField.svelte';
 
-  interface Props<T> {
+  interface Props<T = string> {
     label: string;
     description?: string;
     value: T;
@@ -13,7 +13,7 @@
     disabled?: boolean;
   }
 
-  let { label, description, value = $bindable(), options, disabled = false }: Props<any> = $props();
+  let { label, description, value = $bindable(), options, disabled = false }: Props = $props();
 </script>
 
 <SettingsField {label} {description}>
