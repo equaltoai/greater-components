@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -29,6 +29,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./style.css": "./dist/style.css",
     "./adapters": {
       "types": "./dist/adapters/index.d.ts",
       "import": "./dist/adapters/index.js"
@@ -47,7 +48,8 @@
       "svelte": "./dist/fediverse/src/*.svelte",
       "import": "./dist/fediverse/*.js"
     },
-    "./fediverse/style.css": "./dist/fediverse/style.css",
+    "./fediverse/style.css": "./dist/fediverse/greater-components-fediverse.css",
+    "./fediverse/theme.css": "./dist/fediverse/greater-components-fediverse.css",
     "./headless": {
       "types": "./dist/headless/index.d.ts",
       "import": "./dist/headless/index.js"
@@ -85,6 +87,8 @@
       "types": "./dist/tokens/index.d.ts",
       "import": "./dist/tokens/index.js"
     },
+    "./tokens/theme.css": "./dist/tokens/theme.css",
+    "./tokens/high-contrast.css": "./dist/tokens/high-contrast.css",
     "./tokens/*": "./dist/tokens/*",
     "./utils": {
       "types": "./dist/utils/index.d.ts",

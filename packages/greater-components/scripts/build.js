@@ -152,9 +152,45 @@ function generateRootBarrels() {
 	writeFileSync(join(distDir, 'index.d.ts'), `${entryTypes}\n`, 'utf8');
 }
 
+function aggregateStyles() {
+	console.log('Aggregating styles...');
+	let combinedStyles = '';
+	
+	// Add a header
+	combinedStyles += '/* Greater Components - Unified Styles */\n\n';
+
+	for (const { key, dir } of packages) {
+		const packageDist = join(workspaceRoot, dir, 'dist');
+		
+		// Check for common style filenames
+		const styleFiles = ['style.css', 'styles.css', 'theme.css', 'greater-components-fediverse.css'];
+		let foundStyle = false;
+
+		for (const file of styleFiles) {
+			const stylePath = join(packageDist, file);
+			if (existsSync(stylePath)) {
+				console.log(`Including styles from ${key} (${file})`);
+				const content = readFileSync(stylePath, 'utf8');
+				combinedStyles += `/* Package: ${key} */\n`;
+				combinedStyles += content + '\n\n';
+				foundStyle = true;
+				break; // Only include one style file per package to avoid duplication if aliases exist
+			}
+		}
+		
+		if (!foundStyle) {
+			// console.log(`No styles found for ${key}`);
+		}
+	}
+
+	writeFileSync(join(distDir, 'style.css'), combinedStyles, 'utf8');
+	console.log('Styles aggregated into dist/style.css');
+}
+
 copyPackageOutput();
 rewriteImports();
 generateRootBarrels();
+aggregateStyles();
 
 const licenseSource = join(repoRoot, 'LICENSE');
 if (existsSync(licenseSource)) {

@@ -1,5 +1,11 @@
 # @equaltoai/greater-components
 
+## 2.2.1
+
+### Patch Changes
+
+- Restore CSS entry points by aggregating package styles into the root build and re-exposing the exported theme files.
+
 ## 2.2.0
 
 ### Minor Changes
