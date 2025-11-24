@@ -65,14 +65,14 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.2.9",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "@vitest/ui": "^4.0.12",
+    "@vitest/coverage-v8": "^4.0.13",
+    "@vitest/ui": "^4.0.13",
     "axe-core": "^4.11.0",
     "jsdom": "^27.2.0",
     "svelte": "^5.43.14",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vitest": "^4.0.13"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

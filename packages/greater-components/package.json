@@ -142,7 +142,7 @@
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
-    "@vitest/coverage-v8": "^4.0.12",
-    "vitest": "^4.0.12"
+    "@vitest/coverage-v8": "^4.0.13",
+    "vitest": "^4.0.13"
   }
 }
