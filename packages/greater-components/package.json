@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -154,7 +154,13 @@
     "test:coverage": "vitest run --coverage"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.0.0",
+    "isomorphic-dompurify": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "isomorphic-dompurify": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public"

@@ -1,5 +1,11 @@
 # @equaltoai/greater-components
 
+## 4.0.1
+
+### Patch Changes
+
+- Add isomorphic-dompurify as optional peer dependency to fix build errors when using utils/sanitizeHtml
+
 ## 4.0.0
 
 ### Major Changes
