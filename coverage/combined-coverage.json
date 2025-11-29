@@ -47,52 +47,6 @@
       }
     },
     {
-      "package": "fediverse",
-      "lines": {
-        "total": 406,
-        "covered": 265,
-        "pct": 65.27
-      },
-      "functions": {
-        "total": 98,
-        "covered": 58,
-        "pct": 59.18
-      },
-      "statements": {
-        "total": 406,
-        "covered": 265,
-        "pct": 65.27
-      },
-      "branches": {
-        "total": 191,
-        "covered": 94,
-        "pct": 49.21
-      }
-    },
-    {
-      "package": "greater-components",
-      "lines": {
-        "total": 130,
-        "covered": 52,
-        "pct": 40
-      },
-      "functions": {
-        "total": 32,
-        "covered": 8,
-        "pct": 25
-      },
-      "statements": {
-        "total": 130,
-        "covered": 52,
-        "pct": 40
-      },
-      "branches": {
-        "total": 66,
-        "covered": 15,
-        "pct": 22.73
-      }
-    },
-    {
       "package": "headless",
       "lines": {
         "total": 1101,
@@ -136,29 +90,6 @@
         "total": 604,
         "covered": 300,
         "pct": 49.67
-      }
-    },
-    {
-      "package": "primitives",
-      "lines": {
-        "total": 1699,
-        "covered": 1425,
-        "pct": 83.87
-      },
-      "functions": {
-        "total": 432,
-        "covered": 358,
-        "pct": 82.87
-      },
-      "statements": {
-        "total": 1699,
-        "covered": 1425,
-        "pct": 83.87
-      },
-      "branches": {
-        "total": 1049,
-        "covered": 687,
-        "pct": 65.49
       }
     },
     {
@@ -210,26 +141,26 @@
   ],
   "overall": {
     "lines": {
-      "total": 7089,
-      "covered": 5191,
-      "pct": 73.23
+      "total": 4854,
+      "covered": 3449,
+      "pct": 71.05
     },
     "functions": {
-      "total": 1271,
-      "covered": 830,
-      "pct": 65.3
+      "total": 709,
+      "covered": 406,
+      "pct": 57.26
     },
     "statements": {
-      "total": 7089,
-      "covered": 5191,
-      "pct": 73.23
+      "total": 4854,
+      "covered": 3449,
+      "pct": 71.05
     },
     "branches": {
-      "total": 4604,
-      "covered": 2368,
-      "pct": 51.43
+      "total": 3298,
+      "covered": 1572,
+      "pct": 47.67
     }
   },
-  "timestamp": "2025-11-23T19:43:21.834Z",
+  "timestamp": "2025-11-29T22:57:19.990Z",
   "threshold": 10
 }
