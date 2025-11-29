@@ -75,7 +75,7 @@ This package provides **30 interactive and layout components** for building any 
 
 - Badge - Status indicators and labels
 
-- CodeBlock - Syntax highlighting
+- CodeBlock - Syntax highlighting ⚠️ *Requires peer dep: `shiki`*
 
 - GradientText - Gradient text effect
 
@@ -85,7 +85,7 @@ This package provides **30 interactive and layout components** for building any 
 
 - ListItem - List item with icon support
 
-- MarkdownRenderer - Safe markdown rendering
+- MarkdownRenderer - Safe markdown rendering ⚠️ *Requires peer deps: `isomorphic-dompurify`, `marked`*
 
 - Skeleton - Loading placeholder
 
@@ -287,6 +287,11 @@ This package provides **30 interactive and layout components** for building any 
 
 **Purpose:** Syntax highlighting code block with copy button.
 
+**⚠️ Peer Dependency Required:** This component requires `shiki` to be installed:
+```bash
+pnpm add shiki
+```
+
 **When to Use:**
 - Documentation code snippets
 - Chat code responses
@@ -317,6 +322,11 @@ This package provides **30 interactive and layout components** for building any 
 #### MarkdownRenderer
 
 **Purpose:** Renders markdown safely.
+
+**⚠️ Peer Dependencies Required:** This component requires `isomorphic-dompurify` and `marked`:
+```bash
+pnpm add isomorphic-dompurify marked
+```
 
 **When to Use:**
 - AI responses

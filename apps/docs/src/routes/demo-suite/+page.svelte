@@ -26,7 +26,7 @@
 	];
 
 	const checklist = [
-		'Usage guidance for @equaltoai/greater-components-fediverse, -primitives, and shared stores.',
+		'Usage guidance for @equaltoai/greater-components-social, -primitives, and shared stores.',
 		'Props/events tables for primary surface APIs plus snippets sourced from apps/playground.',
 		'Accessibility scorecards covering aria landmarks, keyboard flows, and live regions.',
 		'Performance callouts (virtualization, caching, Lighthouse targets) for each view.',

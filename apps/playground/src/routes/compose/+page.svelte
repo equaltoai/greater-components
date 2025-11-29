@@ -9,7 +9,7 @@
 		type ComposeHandlers,
 		type ComposeAttachment,
 		type PostVisibility,
-	} from '@equaltoai/greater-components-fediverse';
+	} from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import { composeShortcuts } from '$lib/data/fediverse';
 

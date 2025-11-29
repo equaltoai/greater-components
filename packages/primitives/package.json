@@ -154,10 +154,7 @@
   },
   "dependencies": {
     "@equaltoai/greater-components-icons": "workspace:*",
-    "@equaltoai/greater-components-utils": "workspace:*",
-    "isomorphic-dompurify": "^2.32.0",
-    "marked": "^17.0.1",
-    "shiki": "^3.15.0"
+    "@equaltoai/greater-components-utils": "workspace:*"
   },
   "devDependencies": {
     "@equaltoai/greater-components-tokens": "workspace:*",

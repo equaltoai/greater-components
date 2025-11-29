@@ -2,7 +2,7 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import SearchContextBridge from '$lib/components/SearchContextBridge.svelte';
 	import { Button, Skeleton } from '@equaltoai/greater-components-primitives';
-	import { Search, StatusCard } from '@equaltoai/greater-components-fediverse';
+	import { Search, StatusCard } from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import type { Status } from '$lib/types/fediverse';
 	import { runDemoSearch } from '$lib/data/fediverse';

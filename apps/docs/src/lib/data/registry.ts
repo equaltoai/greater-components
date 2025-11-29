@@ -269,7 +269,7 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: [],
 		npm: {
-			package: '@equaltoai/greater-components-fediverse',
+			package: '@equaltoai/greater-components-social',
 			version: '1.0.0',
 		},
 		github: {
@@ -280,7 +280,7 @@ export const components: Component[] = [
 				name: 'Basic Timeline',
 				description: 'Simple timeline with items',
 				code: `<script>
-  import * as Timeline from '@equaltoai/greater-components-fediverse/Timeline';
+  import * as Timeline from '@equaltoai/greater-components-social/Timeline';
   
   const items = [
     { id: '1', content: 'First post' },
@@ -339,7 +339,7 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: ['button'],
 		npm: {
-			package: '@equaltoai/greater-components-fediverse',
+			package: '@equaltoai/greater-components-social',
 			version: '1.0.0',
 		},
 		github: {
@@ -350,7 +350,7 @@ export const components: Component[] = [
 				name: 'Login Form',
 				description: 'Complete login experience',
 				code: `<script>
-  import * as Auth from '@equaltoai/greater-components-fediverse/Auth';
+  import * as Auth from '@equaltoai/greater-components-social/Auth';
   
   const handlers = {
     onLogin: async ({ email, password, remember }) => {
@@ -402,7 +402,7 @@ export const components: Component[] = [
 		dependencies: [],
 		registryDependencies: [],
 		npm: {
-			package: '@equaltoai/greater-components-fediverse',
+			package: '@equaltoai/greater-components-social',
 			version: '1.0.0',
 		},
 		github: {
@@ -412,7 +412,7 @@ export const components: Component[] = [
 			{
 				name: 'Basic Usage',
 				description: 'Initialize client and fetch timeline',
-				code: `import { createGraphQLClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
+				code: `import { createGraphQLClient } from '@equaltoai/greater-components-social/adapters/graphql';
 
 const client = createGraphQLClient({
   endpoint: 'https://api.lesser.example.com/graphql',

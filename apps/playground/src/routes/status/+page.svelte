@@ -5,7 +5,7 @@
 		StatusCard,
 		Status,
 		type StatusActionHandlers,
-	} from '@equaltoai/greater-components-fediverse';
+	} from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import { createStatusShowcase, createThreadReplies } from '$lib/data/fediverse';
 

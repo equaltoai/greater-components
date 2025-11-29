@@ -1,0 +1,56 @@
+{
+  "name": "@equaltoai/greater-components-compose",
+  "version": "3.0.0",
+  "type": "module",
+  "description": "Post/content composer components for Greater Components",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/shared/compose"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "svelte": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@types/node": "^24.10.1",
+    "svelte": "^5.43.14",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vitest": "^4.0.12"
+  },
+  "peerDependencies": {
+    "svelte": "^5.43.6"
+  },
+  "private": true
+}
+

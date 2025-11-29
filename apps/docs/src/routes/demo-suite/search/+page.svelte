@@ -44,7 +44,7 @@
 
 	const packages = [
 		{
-			name: '@equaltoai/greater-components-fediverse/Search',
+			name: '@equaltoai/greater-components-social/Search',
 			detail: 'Compound components (Root, Bar, Filters, Results) plus context helpers.',
 		},
 		{
@@ -58,7 +58,7 @@
 	];
 
 	const snippet = `<script lang="ts">
-  import { Search } from '@equaltoai/greater-components-fediverse';
+  import { Search } from '@equaltoai/greater-components-social';
   import { loadPersistedState, persistState } from '$lib/stores/storage';
   import { runDemoSearch } from '$lib/data/fediverse';
 
@@ -128,7 +128,7 @@
 <DemoPage
 	eyebrow="Demo Suite"
 	title="Search application"
-	description="Unified post/account/tag search built on @equaltoai/greater-components-fediverse/Search with semantic toggle support."
+	description="Unified post/account/tag search built on @equaltoai/greater-components-social/Search with semantic toggle support."
 >
 	<section>
 		<h2>Packages</h2>

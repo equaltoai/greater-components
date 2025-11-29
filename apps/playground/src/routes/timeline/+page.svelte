@@ -9,7 +9,7 @@
 		type ComposeAttachment,
 		type ComposeHandlers,
 		type StatusActionHandlers,
-	} from '@equaltoai/greater-components-fediverse';
+	} from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import type { Notification, Status, TimelineFilter } from '$lib/types/fediverse';
 	import {

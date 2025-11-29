@@ -1,8 +1,7 @@
 <script lang="ts">
+  import { CodeBlock, MarkdownRenderer } from '@equaltoai/greater-components-content';
   import {
-    CodeBlock,
     DropZone,
-    MarkdownRenderer,
     StreamingText,
     Container,
     Section,

@@ -2,7 +2,7 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { Button } from '@equaltoai/greater-components-primitives';
-	import { ProfileHeader, NotificationsFeed } from '@equaltoai/greater-components-fediverse';
+	import { ProfileHeader, NotificationsFeed } from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import { createNotificationSeed, getDemoProfile } from '$lib/data/fediverse';
 

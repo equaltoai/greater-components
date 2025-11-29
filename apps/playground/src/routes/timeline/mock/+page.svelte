@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DemoPage from '$lib/components/DemoPage.svelte';
-	import { StatusCard } from '@equaltoai/greater-components-fediverse';
+	import { StatusCard } from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import type { Account, Status } from '@equaltoai/greater-components/fediverse/types';
 	import raw from '../../../../../../sample-timeline.json' assert { type: 'json' };

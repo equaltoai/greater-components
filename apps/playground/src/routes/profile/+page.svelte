@@ -9,7 +9,7 @@
 		Avatar,
 		Skeleton,
 	} from '@equaltoai/greater-components-primitives';
-	import { ProfileHeader, StatusCard } from '@equaltoai/greater-components-fediverse';
+	import { ProfileHeader, StatusCard } from '@equaltoai/greater-components-social';
 	import type { DemoPageData } from '$lib/types/demo';
 	import type { ProfileConnection } from '$lib/types/fediverse';
 	import {

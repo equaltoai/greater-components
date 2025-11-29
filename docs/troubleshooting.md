@@ -7,7 +7,11 @@ Common issues with verified fixes from production experience.
 | Symptom                               | Likely Cause                       | Section                                     |
 | ------------------------------------- | ---------------------------------- | ------------------------------------------- |
 | "Cannot find module '@equaltoai/...'" | Package not installed              | [Installation Issues](#installation-issues) |
-| Components not styled                 | Missing tokens or ThemeProvider    | [Styling Issues](#styling-issues)           |
+| "Could not resolve 'isomorphic-dompurify'" | Missing peer dependency       | [Peer Dependency Issues](#peer-dependency-issues) |
+| "Could not resolve 'marked'" / "shiki" | Missing peer dependency           | [Peer Dependency Issues](#peer-dependency-issues) |
+| Components render but appear unstyled | Missing `primitives/style.css`     | [Styling Issues](#styling-issues)           |
+| CSS variables show as invalid         | Missing `tokens/theme.css`         | [Styling Issues](#styling-issues)           |
+| `preventFlashScript is not defined`   | Missing theme flash prevention     | [Theming Issues](#theming-issues)           |
 | "Snippets not working"                | Using Svelte 4 slot syntax         | [Svelte 5 Migration](#svelte-5-migration)   |
 | "$state is not defined"               | Not using Svelte 5                 | [Svelte 5 Migration](#svelte-5-migration)   |
 | Type errors                           | TypeScript misconfiguration        | [TypeScript Issues](#typescript-issues)     |
@@ -98,43 +102,162 @@ yarn add @equaltoai/greater-components
 
 ---
 
-## Styling Issues
+## Peer Dependency Issues
 
-### Issue: Components appear unstyled or have no CSS
+### Issue: Could not resolve "isomorphic-dompurify" / "marked" / "shiki"
 
 **Symptoms:**
 
-- Components render but have no styling
-- Missing colors and spacing
-- Layout broken
+- Build fails with "Could not resolve" errors
+- Dev server crashes immediately after starting
+- Error points to MarkdownRenderer.svelte or CodeBlock.svelte
+- Rollup/Vite error during bundling
+
+**Full Error Example:**
+
+```
+[vite]: Rollup failed to resolve import "isomorphic-dompurify" from "node_modules/@equaltoai/greater-components/dist/primitives/components/MarkdownRenderer.svelte"
+```
 
 **Cause:**
-Missing tokens package or ThemeProvider not wrapped around app
+
+You're using components that have peer dependencies which aren't bundled with Greater Components. These must be installed separately.
 
 **Solution:**
 
 ```bash
-# Install tokens package
-pnpm add @equaltoai/greater-components
+# Install all optional peer dependencies
+pnpm add isomorphic-dompurify marked shiki
+
+# Or install only what you need:
+pnpm add isomorphic-dompurify marked  # For MarkdownRenderer
+pnpm add shiki                         # For CodeBlock
 ```
 
-```svelte
-<!-- Wrap app in ThemeProvider -->
-<script>
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
-</script>
+**Which components need peer dependencies?**
 
-<ThemeProvider>
-	<YourApp />
-</ThemeProvider>
-```
+| Component | Peer Dependencies | Purpose |
+|-----------|-------------------|---------|
+| MarkdownRenderer | `isomorphic-dompurify`, `marked` | Safe markdown rendering |
+| CodeBlock | `shiki` | Syntax highlighting |
+| sanitizeHtml (util) | `isomorphic-dompurify` | HTML sanitization |
+
+**Prevention:**
+
+- Check component documentation before use
+- Install peer deps when adding new components
+- If only using basic components (Button, Card, etc.), peer deps aren't needed
 
 **Verification:**
 
 ```bash
-# Check browser DevTools
-# Look for CSS custom properties in :root
-# Should see --gr-color-*, --gr-spacing-*, etc.
+pnpm dev    # Should start without errors
+pnpm build  # Should complete successfully
+```
+
+---
+
+## Styling Issues
+
+### Issue: Components appear unstyled or have browser default styling
+
+**Symptoms:**
+
+- Components render but appear as browser defaults
+- Buttons look like plain HTML buttons (no colors, wrong font)
+- Cards have no shadow or border
+- Missing colors, spacing, and typography
+
+**Cause:**
+
+Greater Components uses a **two-layer CSS architecture**. Both layers must be imported:
+
+1. `tokens/theme.css` - Design tokens (CSS variables)
+2. `primitives/style.css` - Component class definitions
+
+**Most common cause:** Only importing `tokens/theme.css` but missing `primitives/style.css`.
+
+**Solution:**
+
+Import BOTH CSS layers in your root layout:
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script lang="ts">
+  // ✅ Layer 1: Design tokens (colors, spacing, typography variables)
+  import '@equaltoai/greater-components/tokens/theme.css';
+  // ✅ Layer 2: Component styles (button, card, container classes)
+  import '@equaltoai/greater-components/primitives/style.css';
+
+  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+
+  let { children } = $props();
+</script>
+
+<ThemeProvider>
+  {@render children()}
+</ThemeProvider>
+```
+
+**For apps using fediverse components:**
+
+```svelte
+<script lang="ts">
+  import '@equaltoai/greater-components/tokens/theme.css';
+  import '@equaltoai/greater-components/style.css';  // Combined bundle (primitives + fediverse)
+</script>
+```
+
+**Verification:**
+
+```javascript
+// In browser console - check tokens loaded:
+getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-600')
+// Should return: "#2563eb" (or similar color)
+
+// Check a button has proper styling in DevTools:
+// - Blue background (solid variant)
+// - Proper padding and border-radius
+// - Correct font family
+```
+
+**Quick Diagnosis Table:**
+
+| Symptom | Missing Import | Solution |
+|---------|----------------|----------|
+| Components render but unstyled | `primitives/style.css` | Add component styles import |
+| CSS variables show as invalid | `tokens/theme.css` | Add tokens import FIRST |
+| Both unstyled AND invalid variables | Both files | Add both imports in correct order |
+| Fediverse components unstyled | `style.css` bundle | Use combined bundle instead of primitives-only |
+
+See [CSS Architecture Guide](./css-architecture.md) for complete documentation.
+
+---
+
+### Issue: CSS variables show as invalid or undefined
+
+**Symptoms:**
+
+- Browser DevTools shows `var(--gr-color-primary-600)` as invalid
+- Components have partial styling but wrong colors
+- Console may show warnings about invalid CSS values
+
+**Cause:**
+
+Token CSS file not loaded, or loaded AFTER component styles.
+
+**Solution:**
+
+Ensure `tokens/theme.css` is imported FIRST:
+
+```svelte
+// ✅ CORRECT ORDER
+import '@equaltoai/greater-components/tokens/theme.css';      // 1. Tokens first
+import '@equaltoai/greater-components/primitives/style.css';  // 2. Components second
+
+// ❌ WRONG ORDER
+import '@equaltoai/greater-components/primitives/style.css';  // Uses undefined variables!
+import '@equaltoai/greater-components/tokens/theme.css';      // Too late
 ```
 
 ---
@@ -477,6 +600,56 @@ document.documentElement.getAttribute('data-theme');
 	/* Other dark theme tokens */
 }
 ```
+
+---
+
+### Issue: preventFlashScript is not defined
+
+**Symptoms:**
+
+- Console error: `ReferenceError: preventFlashScript is not defined`
+- Brief flash of wrong theme on page load
+- Theme flickers before settling
+
+**Cause:**
+
+The theme flash prevention script is referenced but not defined in your `app.html`.
+
+**Solution:**
+
+Add the theme flash prevention script to your `app.html`:
+
+```html
+<!-- src/app.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Prevent theme flash on page load -->
+    <script>
+      (function() {
+        const theme = localStorage.getItem('gr-theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>
+```
+
+**Why this is needed:**
+
+Without this script, the page renders with the default theme first, then switches to the user's saved preference after JavaScript loads. This causes a visible flash. The inline script runs immediately before render, applying the correct theme.
+
+**Alternative - ignore the error:**
+
+If you don't need theme persistence, the error is harmless and can be ignored. Components will still render correctly.
 
 ---
 

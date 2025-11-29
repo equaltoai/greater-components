@@ -18,13 +18,25 @@ const repoRoot = join(workspaceRoot, '..');
 const distDir = join(packageRoot, 'dist');
 
 const packages = [
-	{ key: 'adapters', dir: 'adapters' },
-	{ key: 'fediverse', dir: 'fediverse' },
-	{ key: 'headless', dir: 'headless' },
-	{ key: 'icons', dir: 'icons' },
+	// Core
 	{ key: 'primitives', dir: 'primitives' },
 	{ key: 'tokens', dir: 'tokens' },
+	{ key: 'icons', dir: 'icons' },
+	{ key: 'headless', dir: 'headless' },
 	{ key: 'utils', dir: 'utils' },
+	// Content (heavy deps)
+	{ key: 'content', dir: 'content' },
+	// Shared
+	{ key: 'shared/auth', dir: 'shared/auth' },
+	{ key: 'shared/admin', dir: 'shared/admin' },
+	{ key: 'shared/compose', dir: 'shared/compose' },
+	{ key: 'shared/messaging', dir: 'shared/messaging' },
+	{ key: 'shared/search', dir: 'shared/search' },
+	{ key: 'shared/notifications', dir: 'shared/notifications' },
+	// Faces
+	{ key: 'faces/social', dir: 'faces/social' },
+	// Tools
+	{ key: 'adapters', dir: 'adapters' },
 	{ key: 'testing', dir: 'testing' },
 	{ key: 'cli', dir: 'cli' },
 ];
@@ -45,6 +57,7 @@ function copyPackageOutput() {
 		const source = join(workspaceRoot, dir, 'dist');
 		ensureBuilt(source);
 		const destination = join(distDir, key);
+		mkdirSync(dirname(destination), { recursive: true });
 		cpSync(source, destination, { recursive: true });
 
 		// Also copy src for packages that export source files
@@ -144,9 +157,10 @@ function rewriteImports() {
 }
 
 function generateRootBarrels() {
-	const entryTargets = packages.map(({ key }) => `export * from './${key}/index.js';`).join('\n');
-
-	const entryTypes = packages.map(({ key }) => `export * from './${key}/index.js';`).join('\n');
+	// Only export core packages from root barrel
+	const corePackages = ['primitives', 'tokens', 'icons', 'headless', 'utils'];
+	const entryTargets = corePackages.map((key) => `export * from './${key}/index.js';`).join('\n');
+	const entryTypes = corePackages.map((key) => `export * from './${key}/index.js';`).join('\n');
 
 	writeFileSync(join(distDir, 'index.js'), `${entryTargets}\n`, 'utf8');
 	writeFileSync(join(distDir, 'index.d.ts'), `${entryTypes}\n`, 'utf8');

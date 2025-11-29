@@ -108,15 +108,15 @@ importers:
       '@equaltoai/greater-components-adapters':
         specifier: workspace:*
         version: link:../../packages/adapters
-      '@equaltoai/greater-components-fediverse':
-        specifier: workspace:*
-        version: link:../../packages/fediverse
       '@equaltoai/greater-components-icons':
         specifier: workspace:*
         version: link:../../packages/icons
       '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../../packages/primitives
+      '@equaltoai/greater-components-social':
+        specifier: workspace:*
+        version: link:../../packages/faces/social
       '@equaltoai/greater-components-tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
@@ -181,9 +181,9 @@ importers:
 
   apps/playground:
     dependencies:
-      '@equaltoai/greater-components-fediverse':
+      '@equaltoai/greater-components-content':
         specifier: workspace:*
-        version: link:../../packages/fediverse
+        version: link:../../packages/content
       '@equaltoai/greater-components-headless':
         specifier: workspace:*
         version: link:../../packages/headless
@@ -193,6 +193,9 @@ importers:
       '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../../packages/primitives
+      '@equaltoai/greater-components-social':
+        specifier: workspace:*
+        version: link:../../packages/faces/social
       '@equaltoai/greater-components-tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
@@ -317,26 +320,93 @@ importers:
         specifier: ^4.0.12
         version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
 
-  packages/fediverse:
+  packages/content:
     dependencies:
-      '@equaltoai/greater-components-adapters':
-        specifier: workspace:*
-        version: link:../adapters
-      '@equaltoai/greater-components-headless':
-        specifier: workspace:^
-        version: link:../headless
-      '@equaltoai/greater-components-icons':
-        specifier: workspace:*
-        version: link:../icons
+      isomorphic-dompurify:
+        specifier: ^2.32.0
+        version: 2.32.0
+      marked:
+        specifier: ^17.0.1
+        version: 17.0.1
+      shiki:
+        specifier: ^3.15.0
+        version: 3.15.0
+    devDependencies:
       '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../primitives
       '@equaltoai/greater-components-tokens':
         specifier: workspace:*
         version: link:../tokens
+      '@sveltejs/package':
+        specifier: ^2.5.6
+        version: 2.5.6(svelte@5.43.14)(typescript@5.9.3)
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))
+      '@testing-library/svelte':
+        specifier: ^5.2.9
+        version: 5.2.9(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))(vitest@4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      '@vitest/coverage-v8':
+        specifier: ^4.0.12
+        version: 4.0.12(vitest@4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1))
+      jsdom:
+        specifier: ^27.2.0
+        version: 27.2.0
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1)
+
+  packages/faces/social:
+    dependencies:
+      '@equaltoai/greater-components-adapters':
+        specifier: workspace:*
+        version: link:../../adapters
+      '@equaltoai/greater-components-admin':
+        specifier: workspace:*
+        version: link:../../shared/admin
+      '@equaltoai/greater-components-auth':
+        specifier: workspace:*
+        version: link:../../shared/auth
+      '@equaltoai/greater-components-compose':
+        specifier: workspace:*
+        version: link:../../shared/compose
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:^
+        version: link:../../headless
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../../icons
+      '@equaltoai/greater-components-messaging':
+        specifier: workspace:*
+        version: link:../../shared/messaging
+      '@equaltoai/greater-components-notifications':
+        specifier: workspace:*
+        version: link:../../shared/notifications
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+      '@equaltoai/greater-components-search':
+        specifier: workspace:*
+        version: link:../../shared/search
+      '@equaltoai/greater-components-tokens':
+        specifier: workspace:*
+        version: link:../../tokens
       '@equaltoai/greater-components-utils':
         specifier: workspace:*
-        version: link:../utils
+        version: link:../../utils
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.12.0)
@@ -414,21 +484,42 @@ importers:
       '@equaltoai/greater-components-adapters':
         specifier: workspace:*
         version: link:../adapters
+      '@equaltoai/greater-components-admin':
+        specifier: workspace:*
+        version: link:../shared/admin
+      '@equaltoai/greater-components-auth':
+        specifier: workspace:*
+        version: link:../shared/auth
       '@equaltoai/greater-components-cli':
         specifier: workspace:*
         version: link:../cli
-      '@equaltoai/greater-components-fediverse':
+      '@equaltoai/greater-components-compose':
         specifier: workspace:*
-        version: link:../fediverse
+        version: link:../shared/compose
+      '@equaltoai/greater-components-content':
+        specifier: workspace:*
+        version: link:../content
       '@equaltoai/greater-components-headless':
         specifier: workspace:*
         version: link:../headless
       '@equaltoai/greater-components-icons':
         specifier: workspace:*
         version: link:../icons
+      '@equaltoai/greater-components-messaging':
+        specifier: workspace:*
+        version: link:../shared/messaging
+      '@equaltoai/greater-components-notifications':
+        specifier: workspace:*
+        version: link:../shared/notifications
       '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../primitives
+      '@equaltoai/greater-components-search':
+        specifier: workspace:*
+        version: link:../shared/search
+      '@equaltoai/greater-components-social':
+        specifier: workspace:*
+        version: link:../faces/social
       '@equaltoai/greater-components-testing':
         specifier: workspace:*
         version: link:../testing
@@ -526,15 +617,6 @@ importers:
       '@equaltoai/greater-components-utils':
         specifier: workspace:*
         version: link:../utils
-      isomorphic-dompurify:
-        specifier: ^2.32.0
-        version: 2.32.0
-      marked:
-        specifier: ^17.0.1
-        version: 17.0.1
-      shiki:
-        specifier: ^3.15.0
-        version: 3.15.0
     devDependencies:
       '@equaltoai/greater-components-tokens':
         specifier: workspace:*
@@ -569,6 +651,192 @@ importers:
       vitest:
         specifier: ^4.0.12
         version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+
+  packages/shared/admin:
+    dependencies:
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../../headless
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../../icons
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1)
+
+  packages/shared/auth:
+    dependencies:
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../../headless
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1)
+
+  packages/shared/compose:
+    dependencies:
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../../headless
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../../icons
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+      '@equaltoai/greater-components-utils':
+        specifier: workspace:*
+        version: link:../../utils
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1)
+
+  packages/shared/messaging:
+    dependencies:
+      '@equaltoai/greater-components-compose':
+        specifier: workspace:*
+        version: link:../compose
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../../headless
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../../icons
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1)
+
+  packages/shared/notifications:
+    dependencies:
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../../icons
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1)
+
+  packages/shared/search:
+    dependencies:
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../../headless
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../../icons
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(yaml@2.8.1)
 
   packages/testing:
     dependencies:

@@ -882,3 +882,154 @@ patterns:
           - visual_confusion
           - excessive_borders
           - poor_visual_hierarchy
+
+  css_setup_minimal:
+    name: 'Minimal CSS Setup'
+    problem: 'Need to set up CSS imports for a basic Greater Components app'
+    solution: 'Import both design tokens and component styles in your root layout'
+    use_when:
+      - starting_new_greater_components_project
+      - using_only_primitive_components
+      - want_smallest_css_bundle
+    correct_example: |
+      <!-- src/routes/+layout.svelte -->
+      <script lang="ts">
+        // CORRECT: Import BOTH CSS layers in root layout
+        // Layer 1: Design tokens (colors, spacing, typography variables)
+        import '@equaltoai/greater-components/tokens/theme.css';
+        // Layer 2: Component styles (button, card, container classes)
+        import '@equaltoai/greater-components/primitives/style.css';
+
+        import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+
+        let { children } = $props();
+      </script>
+
+      <ThemeProvider>
+        {@render children()}
+      </ThemeProvider>
+    anti_patterns:
+      - name: 'Missing component styles'
+        why: 'Components render but appear as browser defaults'
+        incorrect_example: |
+          // INCORRECT: Only importing tokens without component styles
+          import '@equaltoai/greater-components/tokens/theme.css';
+          import { Button } from '@equaltoai/greater-components/primitives';
+          // Button will render but look unstyled!
+        consequences:
+          - components_render_unstyled
+          - buttons_look_like_browser_defaults
+          - cards_have_no_shadow
+      - name: 'Wrong import order'
+        why: 'Component styles reference token variables that must exist first'
+        incorrect_example: |
+          // INCORRECT: Component styles before tokens
+          import '@equaltoai/greater-components/primitives/style.css';
+          import '@equaltoai/greater-components/tokens/theme.css';
+        consequences:
+          - css_variables_undefined
+          - partial_styling_issues
+      - name: 'CSS in page component instead of layout'
+        why: 'CSS imports should be in root layout to ensure they load first'
+        incorrect_example: |
+          // INCORRECT: Importing CSS in +page.svelte instead of +layout.svelte
+          // src/routes/+page.svelte
+          import '@equaltoai/greater-components/tokens/theme.css';
+          // Too late! Other components may have already loaded
+        consequences:
+          - flash_of_unstyled_content
+          - inconsistent_styling
+
+  css_setup_full:
+    name: 'Full CSS Setup (All Components)'
+    problem: 'Need CSS imports for apps using fediverse components'
+    solution: 'Use the combined CSS bundle instead of primitives-only'
+    use_when:
+      - using_fediverse_components
+      - building_social_media_features
+      - need_timeline_status_profile_components
+    correct_example: |
+      <!-- src/routes/+layout.svelte -->
+      <script lang="ts">
+        // CORRECT: Use combined bundle for apps with fediverse components
+        import '@equaltoai/greater-components/tokens/theme.css';
+        import '@equaltoai/greater-components/style.css';  // Combined: primitives + fediverse
+
+        import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+
+        let { children } = $props();
+      </script>
+
+      <ThemeProvider>
+        {@render children()}
+      </ThemeProvider>
+    why_this_works:
+      - combined_bundle_includes_all_component_styles
+      - fediverse_components_properly_styled
+      - single_import_for_all_styles
+
+  css_setup_dark_theme:
+    name: 'Dark Theme CSS Setup'
+    problem: 'Want dark mode as the default theme'
+    solution: 'Import dark theme override after base tokens'
+    use_when:
+      - building_dark_mode_ui
+      - want_dark_theme_as_default
+    correct_example: |
+      <!-- src/routes/+layout.svelte -->
+      <script lang="ts">
+        // CORRECT: Dark theme setup
+        // 1. Base tokens first
+        import '@equaltoai/greater-components/tokens/theme.css';
+        // 2. Dark theme overrides
+        import '@equaltoai/greater-components/tokens/themes/dark.css';
+        // 3. Component styles last
+        import '@equaltoai/greater-components/primitives/style.css';
+
+        import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+
+        let { children } = $props();
+      </script>
+
+      <ThemeProvider defaultTheme="dark">
+        {@render children()}
+      </ThemeProvider>
+    why_this_works:
+      - theme_override_comes_after_base_tokens
+      - theme_override_comes_before_component_styles
+      - css_cascade_applies_dark_values
+
+  theme_flash_prevention:
+    name: 'Prevent Theme Flash on Page Load'
+    problem: 'Brief flash of wrong theme colors when page loads'
+    solution: 'Add inline script to app.html that applies theme before render'
+    use_when:
+      - supporting_theme_switching
+      - storing_theme_preference_in_localstorage
+      - want_seamless_theme_persistence
+    correct_example: |
+      <!-- src/app.html -->
+      <!doctype html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          
+          <!-- CORRECT: Inline script runs before page renders -->
+          <script>
+            (function() {
+              const theme = localStorage.getItem('gr-theme') || 'light';
+              document.documentElement.setAttribute('data-theme', theme);
+            })();
+          </script>
+          
+          %sveltekit.head%
+        </head>
+        <body data-sveltekit-preload-data="hover">
+          <div style="display: contents">%sveltekit.body%</div>
+        </body>
+      </html>
+    why_this_works:
+      - inline_script_runs_immediately
+      - theme_applied_before_first_render
+      - no_visible_flash

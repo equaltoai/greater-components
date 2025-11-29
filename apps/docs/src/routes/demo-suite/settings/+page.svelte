@@ -43,7 +43,7 @@
 			detail: 'Shared store powering ThemeProvider + preview cards.',
 		},
 		{
-			name: '@equaltoai/greater-components-fediverse',
+			name: '@equaltoai/greater-components-social',
 			detail: 'StatusCard + notification snippets used in the preview column.',
 		},
 		{

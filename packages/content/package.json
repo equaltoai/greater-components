@@ -1,0 +1,75 @@
+{
+  "name": "@equaltoai/greater-components-content",
+  "version": "3.0.0",
+  "type": "module",
+  "description": "Content rendering components (CodeBlock, MarkdownRenderer) for Greater Components",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/content"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./CodeBlock": {
+      "types": "./dist/components/CodeBlock.svelte.d.ts",
+      "svelte": "./dist/components/CodeBlock.svelte.js",
+      "import": "./dist/components/CodeBlock.svelte.js"
+    },
+    "./MarkdownRenderer": {
+      "types": "./dist/components/MarkdownRenderer.svelte.d.ts",
+      "svelte": "./dist/components/MarkdownRenderer.svelte.js",
+      "import": "./dist/components/MarkdownRenderer.svelte.js"
+    }
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "svelte-package --output dist",
+    "dev": "svelte-package --output dist --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "svelte": "^5.43.6"
+  },
+  "dependencies": {
+    "isomorphic-dompurify": "^2.32.0",
+    "marked": "^17.0.1",
+    "shiki": "^3.15.0"
+  },
+  "devDependencies": {
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@sveltejs/package": "^2.5.6",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@testing-library/svelte": "^5.2.9",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.12",
+    "jsdom": "^27.2.0",
+    "svelte": "^5.43.14",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
+    "vitest": "^4.0.12"
+  },
+  "private": true
+}
+

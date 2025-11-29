@@ -56,7 +56,7 @@
 
 	const packages = [
 		{
-			name: '@equaltoai/greater-components-fediverse',
+			name: '@equaltoai/greater-components-social',
 			detail: 'ProfileHeader, StatusCard, Tabs snippets, and Followers/Following utilities.',
 		},
 		{
@@ -70,7 +70,7 @@
 	];
 
 	const snippet = `<script lang="ts">
-  import { ProfileHeader, StatusCard } from '@equaltoai/greater-components-fediverse';
+  import { ProfileHeader, StatusCard } from '@equaltoai/greater-components-social';
   import { Tabs, Button, Modal, TextField, TextArea } from '@equaltoai/greater-components-primitives';
   import { getDemoProfile, getPinnedStatuses } from '$lib/data/fediverse';
 

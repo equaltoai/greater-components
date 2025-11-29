@@ -839,3 +839,95 @@ decisions:
             choice: 'Heading and Text components use responsive tokens'
             reason: 'Font sizes in rem units scale with root font size'
             can_override: 'Use size prop for explicit control per breakpoint'
+
+  css_import_strategy:
+    question: 'Which CSS files should I import?'
+    context: >
+      Greater Components uses a two-layer CSS architecture. You must import both
+      design tokens AND component styles for components to render correctly.
+    decision_tree:
+      - condition: 'Setting up CSS imports'
+        check: 'Are you using fediverse components (Status, Timeline, Profile)?'
+        if_yes:
+          choice: 'Import tokens/theme.css + style.css (combined bundle)'
+          reason: 'Combined bundle includes both primitive and fediverse component styles'
+          example: |
+            // In root layout (+layout.svelte)
+            import '@equaltoai/greater-components/tokens/theme.css';
+            import '@equaltoai/greater-components/style.css';  // Combined bundle
+        if_no:
+          choice: 'Import tokens/theme.css + primitives/style.css'
+          reason: 'Smaller bundle when only using primitive components'
+          example: |
+            // In root layout (+layout.svelte)
+            import '@equaltoai/greater-components/tokens/theme.css';
+            import '@equaltoai/greater-components/primitives/style.css';
+      - condition: 'Adding theme support'
+        check: 'Do you want dark mode or other theme variants?'
+        if_yes:
+          choice: 'Add theme variant CSS after base tokens'
+          reason: 'Theme variants override specific token values'
+          example: |
+            import '@equaltoai/greater-components/tokens/theme.css';      // Base tokens
+            import '@equaltoai/greater-components/tokens/themes/dark.css'; // Dark overrides
+            import '@equaltoai/greater-components/primitives/style.css';  // Component styles
+        if_no:
+          choice: 'Use base tokens only'
+          reason: 'Default light theme is included in base tokens'
+    important_rules:
+      - rule: 'Always import tokens/theme.css FIRST'
+        reason: 'Component styles reference token variables that must exist'
+      - rule: 'Always import component styles (primitives/style.css or style.css)'
+        reason: 'Without component styles, components render as browser defaults'
+      - rule: 'Import CSS in root layout, not in page components'
+        reason: 'Ensures CSS loads before any component renders'
+    troubleshooting:
+      components_unstyled:
+        cause: 'Missing primitives/style.css import'
+        solution: 'Add import for primitives/style.css after tokens/theme.css'
+      css_variables_invalid:
+        cause: 'tokens/theme.css missing or imported after component styles'
+        solution: 'Ensure tokens/theme.css is imported FIRST'
+      fediverse_unstyled:
+        cause: 'Using primitives/style.css instead of combined bundle'
+        solution: 'Switch to style.css for apps using fediverse components'
+    documentation_link: './css-architecture.md'
+
+  peer_dependency_strategy:
+    question: 'Do I need to install peer dependencies?'
+    context: >
+      Some Greater Components require external dependencies that are not bundled.
+      These must be installed when using specific components.
+    decision_tree:
+      - condition: 'Using MarkdownRenderer component'
+        check: 'Are you rendering user-generated markdown?'
+        if_yes:
+          choice: 'Install isomorphic-dompurify and marked'
+          reason: 'Required for safe markdown parsing and HTML sanitization'
+          command: 'pnpm add isomorphic-dompurify marked'
+        if_no:
+          choice: 'No peer dependencies needed for this component'
+      - condition: 'Using CodeBlock component'
+        check: 'Are you displaying syntax-highlighted code?'
+        if_yes:
+          choice: 'Install shiki'
+          reason: 'Required for syntax highlighting'
+          command: 'pnpm add shiki'
+        if_no:
+          choice: 'No peer dependencies needed for this component'
+      - condition: 'Using only basic components'
+        check: 'Are you using Button, Card, Container, Heading, Text, etc.?'
+        if_yes:
+          choice: 'No peer dependencies needed'
+          reason: 'Basic primitive components have no external dependencies'
+    quick_reference:
+      MarkdownRenderer:
+        dependencies: ['isomorphic-dompurify', 'marked']
+        install: 'pnpm add isomorphic-dompurify marked'
+      CodeBlock:
+        dependencies: ['shiki']
+        install: 'pnpm add shiki'
+      sanitizeHtml_util:
+        dependencies: ['isomorphic-dompurify']
+        install: 'pnpm add isomorphic-dompurify'
+    install_all: 'pnpm add isomorphic-dompurify marked shiki'

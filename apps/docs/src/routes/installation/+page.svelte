@@ -74,7 +74,7 @@
 
 			<div class="package-item">
 				<h4>Fediverse Components</h4>
-				<CodeExample language="bash" code={`npm install @equaltoai/greater-components-fediverse`} />
+				<CodeExample language="bash" code={`npm install @equaltoai/greater-components-social`} />
 				<p>Specialized components for social platforms.</p>
 			</div>
 

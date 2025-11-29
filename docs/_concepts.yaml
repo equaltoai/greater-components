@@ -408,6 +408,87 @@ concepts:
       - use_theme_provider
       - set_data_theme_attribute
 
+  css_architecture:
+    type: architecture_pattern
+    purpose: 'Two-layer CSS system separating design tokens from component styles'
+    description: >
+      Greater Components uses a layered CSS architecture. Layer 1 provides CSS custom
+      properties (design tokens). Layer 2 provides component class definitions that
+      reference those tokens. Both layers must be imported for components to render correctly.
+    layers:
+      - name: Design Tokens
+        path: 'tokens/theme.css'
+        purpose: 'CSS custom properties for colors, spacing, typography, effects'
+        required: true
+        example_variables:
+          - '--gr-color-primary-600'
+          - '--gr-spacing-scale-4'
+          - '--gr-typography-fontSize-base'
+      - name: Theme Variants
+        paths:
+          - 'tokens/themes/dark.css'
+          - 'tokens/themes/light.css'
+          - 'tokens/themes/highContrast.css'
+        purpose: 'Override token values for different themes'
+        required: false
+      - name: Component Styles
+        paths:
+          - 'primitives/style.css'
+          - 'style.css'
+        purpose: 'CSS class definitions for components (.gr-button, .gr-card, etc.)'
+        required: true
+        note: 'Use primitives/style.css for basic apps, style.css for apps using fediverse components'
+    import_order:
+      - 'tokens/theme.css (always first)'
+      - 'tokens/themes/*.css (optional theme variants)'
+      - 'primitives/style.css OR style.css (always last)'
+    common_errors:
+      unstyled_components:
+        symptom: 'Components render but appear as browser defaults'
+        cause: 'Missing primitives/style.css import'
+        solution: 'Add primitives/style.css import after tokens/theme.css'
+      undefined_variables:
+        symptom: 'CSS shows var(--gr-*) as invalid'
+        cause: 'tokens/theme.css missing or imported after component styles'
+        solution: 'Import tokens/theme.css FIRST before any component CSS'
+      fediverse_unstyled:
+        symptom: 'Fediverse components (Status, Timeline) are unstyled'
+        cause: 'Using primitives/style.css instead of combined bundle'
+        solution: 'Use style.css (combined bundle) instead of primitives/style.css'
+    related:
+      - theming
+      - tokens_package
+      - primitives_package
+    documentation: './css-architecture.md'
+
+  peer_dependencies:
+    type: dependency_pattern
+    purpose: 'Optional dependencies required by specific components'
+    description: >
+      Some Greater Components require peer dependencies that are not bundled.
+      These must be installed separately when using components that need them.
+    components_requiring_peers:
+      MarkdownRenderer:
+        peer_dependencies:
+          - isomorphic-dompurify
+          - marked
+        purpose: 'Safe markdown rendering with HTML sanitization'
+      CodeBlock:
+        peer_dependencies:
+          - shiki
+        purpose: 'Syntax highlighting for code blocks'
+      sanitizeHtml_util:
+        peer_dependencies:
+          - isomorphic-dompurify
+        purpose: 'HTML sanitization utility'
+    install_command: 'pnpm add isomorphic-dompurify marked shiki'
+    common_errors:
+      could_not_resolve:
+        symptom: 'Build fails with "Could not resolve isomorphic-dompurify"'
+        cause: 'Using component that requires peer dependency not installed'
+        solution: 'Install the missing peer dependency'
+    note: 'Basic components (Button, Card, Container, etc.) do not require peer dependencies'
+
   performance:
     type: optimization_pattern
     purpose: 'Ensure fast loading and smooth interactions'

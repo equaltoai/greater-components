@@ -1,6 +1,6 @@
 # Importing Greater Components
 
-This guide explains the correct ways to import components from the `@equaltoai/greater-components` package.
+This guide explains the correct ways to import components from the `@equaltoai/greater-components` package (v3.0.0+).
 
 ## Installation
 
@@ -10,125 +10,150 @@ Install the single umbrella package:
 pnpm add @equaltoai/greater-components
 ```
 
-## Correct Import Patterns
+## Package Structure (v3.0.0)
 
-Greater Components is organized into subpaths. You should import from these specific paths to ensure optimal tree-shaking and organization.
+Greater Components is organized into these subpaths:
 
-### 1. Primitives
+| Path | Purpose |
+|------|---------|
+| `/primitives` | Core UI components (Button, Card, Modal, etc.) |
+| `/tokens` | Design system tokens and CSS variables |
+| `/icons` | Feather icons and custom icons |
+| `/headless` | Behavior-only components (no styling) |
+| `/utils` | Shared helper functions |
+| `/content` | Rich content rendering (CodeBlock, MarkdownRenderer) |
+| `/shared/auth` | Authentication components |
+| `/shared/admin` | Admin dashboard components |
+| `/shared/compose` | Post/content composer |
+| `/shared/messaging` | Direct messaging |
+| `/shared/search` | Search components |
+| `/shared/notifications` | Notification feed |
+| `/faces/social` | Twitter/Mastodon-style UI (Timeline, Status) |
+| `/adapters` | Protocol adapters (Lesser GraphQL) |
 
-Styled UI components:
+## Import Patterns
+
+### 1. Primitives (Core UI)
 
 ```typescript
-import { Button, Container, Modal } from '@equaltoai/greater-components/primitives';
+import { Button, Container, Modal, Card, Heading, Text } from '@equaltoai/greater-components/primitives';
 ```
 
 ### 2. Icons
 
-Feather icons and custom Fediverse icons:
-
 ```typescript
-import { MenuIcon, HomeIcon } from '@equaltoai/greater-components/icons';
+import { MenuIcon, HomeIcon, SearchIcon } from '@equaltoai/greater-components/icons';
 ```
 
-### 3. Tokens
+### 3. Content (Heavy Dependencies)
 
-Design system tokens (often used for theming):
-
-```typescript
-import { tokens } from '@equaltoai/greater-components/tokens';
-```
-
-### 4. Fediverse Components
-
-Components for ActivityPub/social applications:
+For syntax highlighting and markdown rendering:
 
 ```typescript
-import { Status, Timeline } from '@equaltoai/greater-components/fediverse';
+import { CodeBlock, MarkdownRenderer } from '@equaltoai/greater-components/content';
 ```
 
-### 5. Adapters
+**Note:** This package has heavy dependencies (shiki, marked). Only import if you need these components.
 
-Protocol adapters:
+### 4. Social Face (Twitter-style)
+
+```typescript
+import { Timeline, Status, ActionBar } from '@equaltoai/greater-components/faces/social';
+```
+
+### 5. Shared Components
+
+```typescript
+// Authentication
+import * as Auth from '@equaltoai/greater-components/shared/auth';
+
+// Compose/posting
+import * as Compose from '@equaltoai/greater-components/shared/compose';
+
+// Messaging
+import * as Messaging from '@equaltoai/greater-components/shared/messaging';
+
+// Search
+import * as Search from '@equaltoai/greater-components/shared/search';
+
+// Notifications
+import * as Notifications from '@equaltoai/greater-components/shared/notifications';
+```
+
+### 6. Adapters
 
 ```typescript
 import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
 ```
 
-### 6. Utilities
-
-Shared helper functions:
-
-```typescript
-import { formatRelativeTime } from '@equaltoai/greater-components/utils';
-```
-
 ## Styles
 
-**REQUIRED:** Import theme CSS in your root layout file (import once at application root):
+**REQUIRED:** Greater Components uses a two-layer CSS architecture. Import **BOTH** CSS files in your root layout:
 
 ```typescript
-// src/routes/+layout.svelte (SvelteKit) or src/App.svelte (Vite/Svelte)
+// src/routes/+layout.svelte (SvelteKit)
+
+// Layer 1: Design tokens (colors, spacing, typography variables)
 import '@equaltoai/greater-components/tokens/theme.css';
+// Layer 2: Component styles (button, card, container classes)
+import '@equaltoai/greater-components/primitives/style.css';
 ```
 
-**Where to Import:**
-
-- **SvelteKit:** `src/routes/+layout.svelte` (root layout)
-- **Vite/Svelte:** `src/App.svelte` (root component)
-- **Any project:** The topmost component that wraps your entire application
-
-**Import Order:**
+**For apps using social face components:**
 
 ```typescript
-// ✅ CORRECT - Theme first, then components
 import '@equaltoai/greater-components/tokens/theme.css';
+import '@equaltoai/greater-components/primitives/style.css';
+import '@equaltoai/greater-components/faces/social/style.css';
+```
+
+**Import Order (Critical!):**
+
+```typescript
+// ✅ CORRECT - Tokens first, then component styles
+import '@equaltoai/greater-components/tokens/theme.css';
+import '@equaltoai/greater-components/primitives/style.css';
 import { ThemeProvider, Button } from '@equaltoai/greater-components/primitives';
 
-// ❌ WRONG - Components before theme
+// ❌ WRONG - Missing component styles
+import '@equaltoai/greater-components/tokens/theme.css';
 import { Button } from '@equaltoai/greater-components/primitives';
+
+// ❌ WRONG - Component styles before tokens
+import '@equaltoai/greater-components/primitives/style.css';
 import '@equaltoai/greater-components/tokens/theme.css';
 ```
 
-**Why This is Required:**
-
-- Provides all CSS custom properties (design tokens) that components use
-- Must load before any components render
-- Import once at root (don't import in multiple files)
-- Without it, components have no styling (no colors, fonts, spacing)
-
-**Troubleshooting:**
-
-If components appear unstyled after importing:
-
-1. Verify exact import path: `'@equaltoai/greater-components/tokens/theme.css'`
-2. Check import is in your root layout/app file (not a child component)
-3. Verify import comes before any component imports
-4. Clear build cache: `rm -rf .svelte-kit` or `rm -rf node_modules/.vite`
-5. Restart dev server
+See the [CSS Architecture Guide](./css-architecture.md) for full documentation.
 
 ## Incorrect Import Patterns
 
-### ❌ Non-Existent Packages
-
-Do not try to install or import from workspace package names:
+### ❌ Old Fediverse Path (Removed in v3.0.0)
 
 ```typescript
-// ❌ WRONG - Package does not exist
-import { Button } from '@equaltoai/greater-components-primitives';
+// ❌ WRONG - This path no longer exists
+import { Timeline } from '@equaltoai/greater-components/fediverse';
+
+// ✅ CORRECT - Use faces/social
+import { Timeline } from '@equaltoai/greater-components/faces/social';
+```
+
+### ❌ CodeBlock/MarkdownRenderer from Primitives
+
+```typescript
+// ❌ WRONG - These moved to content package
+import { CodeBlock } from '@equaltoai/greater-components/primitives';
+
+// ✅ CORRECT - Import from content
+import { CodeBlock } from '@equaltoai/greater-components/content';
 ```
 
 ### ❌ Direct Component Paths
 
-Do not import individual component files unless you know exactly what you are doing (internal structure may change):
-
 ```typescript
 // ❌ AVOID - Internal path
 import { Button } from '@equaltoai/greater-components/dist/primitives/components/Button.svelte';
-```
 
-Instead, use the subpath exports:
-
-```typescript
-// ✅ CORRECT
+// ✅ CORRECT - Use subpath exports
 import { Button } from '@equaltoai/greater-components/primitives';
 ```

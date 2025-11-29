@@ -86,7 +86,7 @@
 
 	const packages = [
 		{
-			name: '@equaltoai/greater-components-fediverse',
+			name: '@equaltoai/greater-components-social',
 			detail: 'TimelineVirtualized, StatusCard, Compose compound, notification mocks.',
 		},
 		{
@@ -104,7 +104,7 @@
 	];
 
 	const snippet = `<script lang="ts">
-  import { TimelineVirtualized, StatusCard } from '@equaltoai/greater-components-fediverse';
+  import { TimelineVirtualized, StatusCard } from '@equaltoai/greater-components-social';
   import { createTimelineController } from '$lib/stores/timelineStore';
   import { createTimelineSeeds, generateTimelineBatch } from '$lib/data/fediverse';
 
@@ -188,7 +188,7 @@
 <DemoPage
 	eyebrow="Demo Suite"
 	title="Timeline application"
-	description="Nav rail + Compose dock powering the Phase 4 timeline demo at /timeline. Combines @equaltoai/greater-components-fediverse with playground-only stores for draft hydration."
+	description="Nav rail + Compose dock powering the Phase 4 timeline demo at /timeline. Combines @equaltoai/greater-components-social with playground-only stores for draft hydration."
 >
 	<section>
 		<h2>Packages</h2>
