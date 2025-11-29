@@ -1,0 +1,1 @@
+{"version":3,"file":"SettingsToggle.svelte.d.ts","sourceRoot":"","sources":["SettingsToggle.svelte.ts"],"names":[],"mappings":"AAOE,UAAU,KAAK;IACb,KAAK,EAAE,MAAM,CAAC;IACd,WAAW,CAAC,EAAE,MAAM,CAAC;IACrB,KAAK,EAAE,OAAO,CAAC;IACf,QAAQ,CAAC,EAAE,OAAO,CAAC;CACpB;AAgBH,QAAA,MAAM,cAAc,gDAAwC,CAAC;AAC7D,KAAK,cAAc,GAAG,UAAU,CAAC,OAAO,cAAc,CAAC,CAAC;AACxD,eAAe,cAAc,CAAC"}

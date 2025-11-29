@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-content",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "type": "module",
   "description": "Content rendering components (CodeBlock, MarkdownRenderer) for Greater Components",
   "license": "AGPL-3.0-only",
@@ -72,4 +72,3 @@
   },
   "private": true
 }
-
