@@ -189,7 +189,7 @@
     "@equaltoai/greater-components-messaging": "workspace:*",
     "@equaltoai/greater-components-search": "workspace:*",
     "@equaltoai/greater-components-notifications": "workspace:*",
-    "@vitest/coverage-v8": "^4.0.12",
-    "vitest": "^4.0.12"
+    "@vitest/coverage-v8": "^4.0.14",
+    "vitest": "^4.0.14"
   }
 }
