@@ -1042,6 +1042,216 @@ Combine HTML + Button component:
 - `<ul><li>` with styling
 - SvelteKit links with `<a>` elements
 
+## Chat Package (@equaltoai/greater-components/chat)
+
+### Package Scope
+
+This package provides **8 components** for building AI chat interfaces with streaming responses, tool calls, and configurable settings.
+
+**What Chat Package Provides:**
+- Complete chat interface components
+- Streaming response support
+- Tool/function call visualization
+- Context-based state management
+- Settings and configuration UI
+
+### All 8 Components (Complete List)
+
+**Core Components (4):**
+- Container - Main wrapper providing context and layout
+- Messages - Scrollable message list with auto-scroll
+- Message - Individual message bubble with role-based styling
+- Input - Smart message composer with auto-resize
+
+**Feature Components (4):**
+- Header - Title bar with connection status and actions
+- ToolCall - Tool/function call display with collapsible details
+- Suggestions - Quick prompt suggestion pills or cards
+- Settings - Configuration modal for chat settings
+
+### Detailed Component Reference
+
+#### Container
+
+**Purpose:** Root component providing chat context and flex layout wrapper.
+
+**When to Use:**
+- As the outermost wrapper for all chat components
+- When you need shared state across chat components
+
+**Key Props:**
+- `class`: string - Custom CSS class
+- `children`: Snippet - Child components
+
+**Quick Example:**
+
+```svelte
+<script>
+  import * as Chat from '@equaltoai/greater-components/chat';
+</script>
+
+<Chat.Container>
+  <Chat.Header title="AI Assistant" />
+  <Chat.Messages {messages} />
+  <Chat.Input onSend={handleSend} />
+</Chat.Container>
+```
+
+#### Messages
+
+**Purpose:** Scrollable container for message list with auto-scroll and empty state.
+
+**When to Use:**
+- Displaying conversation history
+- When you need auto-scroll behavior
+
+**Key Props:**
+- `messages`: ChatMessage[] - Array of messages to display
+- `autoScroll`: boolean - Auto-scroll to new messages (default: true)
+- `showAvatars`: boolean - Show message avatars (default: true)
+- `renderMarkdown`: boolean - Render markdown content (default: true)
+- `loading`: boolean - Show loading skeleton
+- `emptyState`: Snippet - Custom empty state
+
+#### Message
+
+**Purpose:** Individual message bubble with role-based styling and markdown rendering.
+
+**When to Use:**
+- Displaying individual messages (typically handled by Messages component)
+- Custom message layouts
+
+**Key Props:**
+- `message`: ChatMessage - Message to display (required)
+- `showAvatar`: boolean - Show avatar (default: true)
+- `renderMarkdown`: boolean - Render markdown (default: true)
+
+**Role Styling:**
+- `user`: Right-aligned, primary color background
+- `assistant`: Left-aligned, card with markdown
+- `system`: Centered, muted, full-width
+
+#### Input
+
+**Purpose:** Smart message composer with auto-resize, keyboard shortcuts, and file upload.
+
+**When to Use:**
+- Chat message composition
+- File attachment interfaces
+
+**Key Props:**
+- `value`: string - Input value (bindable)
+- `placeholder`: string - Placeholder text
+- `disabled`: boolean - Disable input
+- `showFileUpload`: boolean - Show file upload button
+- `maxLength`: number - Character limit
+- `onSend`: (content, files?) => void - Send callback
+
+**Keyboard Shortcuts:**
+- Enter → Send message
+- Shift+Enter → Insert newline
+- Escape → Clear input
+
+#### Header
+
+**Purpose:** Title bar with connection status indicator and action buttons.
+
+**When to Use:**
+- Top of chat interface
+- When you need clear/settings buttons
+
+**Key Props:**
+- `title`: string - Header title
+- `subtitle`: string - Optional subtitle
+- `connectionStatus`: 'connected' | 'connecting' | 'disconnected'
+- `showClearButton`: boolean - Show clear button (default: true)
+- `showSettingsButton`: boolean - Show settings button
+- `onClear`: () => void - Clear callback
+- `onSettings`: () => void - Settings callback
+
+#### ToolCall
+
+**Purpose:** Display AI tool/function invocations with status and results.
+
+**When to Use:**
+- Showing tool calls within assistant messages
+- Debugging AI tool usage
+
+**Key Props:**
+- `toolCall`: ToolCall - Tool call data (required)
+- `showResult`: boolean - Show result section (default: true)
+- `collapsible`: boolean - Allow collapse/expand (default: true)
+- `defaultCollapsed`: boolean - Initially collapsed (default: true)
+
+**Status Indicators:**
+- `pending` → Gray clock
+- `running` → Spinner
+- `complete` → Green check
+- `error` → Red X
+
+#### Suggestions
+
+**Purpose:** Quick prompt suggestions for empty state or follow-up prompts.
+
+**When to Use:**
+- Empty chat state
+- After assistant responses
+- Guiding user input
+
+**Key Props:**
+- `suggestions`: string[] | ChatSuggestionItem[] - Suggestions (required)
+- `onSelect`: (suggestion) => void - Selection callback (required)
+- `variant`: 'pills' | 'cards' - Visual variant (default: 'pills')
+
+**Variants:**
+- `pills`: Compact horizontal buttons, wrap on mobile
+- `cards`: Larger cards with optional descriptions
+
+#### Settings
+
+**Purpose:** Modal for configuring chat settings (model, temperature, etc.).
+
+**When to Use:**
+- User-configurable AI settings
+- Model selection interfaces
+
+**Key Props:**
+- `open`: boolean - Modal visibility (bindable)
+- `settings`: ChatSettingsState - Current settings (required)
+- `availableModels`: {id, name}[] - Model options
+- `availableKnowledgeBases`: KnowledgeBaseConfig[] - KB options
+- `onSettingsChange`: (settings) => void - Change callback
+
+### Context API
+
+**createChatContext** - Creates shared state for chat components
+**getChatContext** - Retrieves context from parent Container
+**hasChatContext** - Checks if context exists
+
+### Exported Constants
+
+- `defaultPAISuggestions`: string[] - Default PAI prompt suggestions
+- `defaultModelOptions`: {id, name}[] - Default model options
+
+### What Chat Package Does NOT Provide
+
+❌ NO WebSocket client (you provide the connection)
+❌ NO AI backend (you implement the API)
+❌ NO Message persistence (you handle storage)
+❌ NO Authentication (you implement auth)
+
+### For Missing Functionality
+
+**If you need WebSocket connections:**
+Use pai-socket or your own WebSocket client to stream messages.
+
+**If you need message persistence:**
+Store messages in localStorage, IndexedDB, or your backend.
+
+**Reference:** See [chat-suite.md](./chat-suite.md) for complete documentation.
+
+---
+
 ## Package Selection Guide
 
 ### Quick Decision Matrix
@@ -1051,6 +1261,7 @@ Combine HTML + Button component:
 | Button, form inputs    | Primitives       | `@equaltoai/greater-components/primitives` |
 | Layout containers      | Primitives       | `@equaltoai/greater-components/primitives` |
 | Typography             | Primitives       | `@equaltoai/greater-components/primitives` |
+| **AI chat interface**  | **Chat**         | `@equaltoai/greater-components/chat`       |
 | Icons                  | Icons            | `@equaltoai/greater-components/icons`      |
 | Social media feed      | Fediverse        | `@equaltoai/greater-components/fediverse`  |
 | User profiles          | Fediverse        | `@equaltoai/greater-components/fediverse`  |
@@ -1705,6 +1916,7 @@ When a component doesn't exist, here's what to use instead:
 ### Total Components Across All Packages
 
 - **Primitives:** 21 components
+- **Chat:** 8 components + context utilities
 - **Headless:** 5 primitives
 - **Fediverse:** 50+ components (including all sub-components and compounds)
 - **Icons:** 300+ icons

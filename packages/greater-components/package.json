@@ -113,6 +113,16 @@
       "svelte": "./dist/shared/notifications/src/index.ts",
       "import": "./dist/shared/notifications/index.js"
     },
+    "./shared/chat": {
+      "types": "./dist/shared/chat/index.d.ts",
+      "svelte": "./dist/shared/chat/src/index.ts",
+      "import": "./dist/shared/chat/index.js"
+    },
+    "./chat": {
+      "types": "./dist/shared/chat/index.d.ts",
+      "svelte": "./dist/shared/chat/src/index.ts",
+      "import": "./dist/shared/chat/index.js"
+    },
     "./faces/social": {
       "types": "./dist/faces/social/index.d.ts",
       "svelte": "./dist/faces/social/src/index.ts",
@@ -189,6 +199,7 @@
     "@equaltoai/greater-components-messaging": "workspace:*",
     "@equaltoai/greater-components-search": "workspace:*",
     "@equaltoai/greater-components-notifications": "workspace:*",
+    "@equaltoai/greater-components-chat": "workspace:*",
     "@vitest/coverage-v8": "^4.0.12",
     "vitest": "^4.0.12"
   }

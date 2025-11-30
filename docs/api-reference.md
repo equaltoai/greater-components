@@ -10,6 +10,9 @@ Complete API documentation for all Greater Components packages.
 - [Headless Package](#headless-package)
 - [Fediverse Package](#fediverse-package)
   - [Profile Components](#profile-components)
+- [Chat Package](#chat-package)
+  - [Chat Components](#chat-components)
+  - [Context API](#context-api)
 - [Adapters Package](#adapters-package)
 - [Tokens Package](#tokens-package)
 - [Icons Package](#icons-package)
@@ -18,7 +21,7 @@ Complete API documentation for all Greater Components packages.
   - [Theme Utilities](#theme-utilities)
 - [Testing Package](#testing-package)
 
----
+
 
 ## Primitives Package
 

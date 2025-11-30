@@ -12,7 +12,7 @@
 		ThemeSwitcher,
 		preferencesStore,
 	} from '@equaltoai/greater-components-primitives';
-	import {
+import {
 		HomeIcon,
 		LayersIcon,
 		GridIcon,
@@ -22,6 +22,7 @@
 		ImageIcon,
 		ActivityIcon,
 		MessageSquareIcon,
+		MessageCircleIcon,
 		Edit3Icon,
 		BellIcon,
 		UserIcon,
@@ -78,9 +79,10 @@
 		`.trim();
 	});
 
-	const navLinks = [
+const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
 		{ href: '/docs', label: 'Documentation', icon: BookOpenIcon, external: true },
+		{ href: '/chat', label: 'Chat Demo', icon: MessageCircleIcon },
 		{ href: '/status', label: 'Status Card Demo', icon: MessageSquareIcon },
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },
 		{ href: '/timeline', label: 'Timeline Demo', icon: ActivityIcon },

@@ -14,7 +14,8 @@
     "test": "vitest run",
     "check": "svelte-kit sync && tsc --noEmit"
   },
-  "dependencies": {
+"dependencies": {
+    "@equaltoai/greater-components-chat": "workspace:*",
     "@equaltoai/greater-components-content": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",

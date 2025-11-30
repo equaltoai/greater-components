@@ -33,6 +33,7 @@ const packages = [
 	{ key: 'shared/messaging', dir: 'shared/messaging' },
 	{ key: 'shared/search', dir: 'shared/search' },
 	{ key: 'shared/notifications', dir: 'shared/notifications' },
+	{ key: 'shared/chat', dir: 'shared/chat' },
 	// Faces
 	{ key: 'faces/social', dir: 'faces/social' },
 	// Tools

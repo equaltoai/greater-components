@@ -12,6 +12,7 @@ concepts:
       - accessible_ui_components
       - headless_primitives
       - fediverse_social_components
+      - chat_interface_components
       - activitypub_adapters
       - design_system_tokens
       - icon_library
@@ -178,6 +179,91 @@ concepts:
       - trust_score_visualization
       - federation_cost_tracking
       - budget_controls
+
+  chat_package:
+    type: component_package
+    package_name: '@equaltoai/greater-components'
+    import_path: '@equaltoai/greater-components/chat'
+    purpose: 'AI chat interface components with streaming responses, tool calls, and settings'
+    provides:
+      - Container_component
+      - Messages_component
+      - Message_component
+      - Input_component
+      - Header_component
+      - ToolCall_component
+      - Suggestions_component
+      - Settings_component
+      - createChatContext
+      - getChatContext
+      - hasChatContext
+      - formatMessageTime
+      - formatStreamDuration
+      - getConnectionStatusText
+      - defaultPAISuggestions
+      - defaultModelOptions
+    depends_on:
+      - primitives_package
+      - content_package
+      - icons_package
+    use_when:
+      - building_ai_chat_interface
+      - creating_conversational_ui
+      - displaying_streaming_responses
+      - showing_tool_function_calls
+      - building_pai_client
+      - integrating_with_pai_socket
+    dont_use_when:
+      - building_non_chat_application
+      - need_custom_chat_components
+      - not_using_svelte
+    key_features:
+      - streaming_response_support
+      - tool_call_visualization
+      - markdown_rendering
+      - auto_scroll_behavior
+      - file_upload_support
+      - keyboard_shortcuts
+      - connection_status_indicator
+      - settings_modal
+      - context_state_management
+      - role_based_message_styling
+      - collapsible_tool_results
+      - suggestion_pills_and_cards
+    types:
+      - ChatMessage
+      - ToolCall
+      - ChatSettingsState
+      - ChatContainerProps
+      - ChatMessageProps
+      - ChatMessagesProps
+      - ChatInputProps
+      - ChatToolCallProps
+      - ChatSuggestionsProps
+      - ChatHeaderProps
+      - ChatSettingsProps
+      - KnowledgeBaseConfig
+      - MessageRole
+      - MessageStatus
+      - ToolCallStatus
+      - ConnectionStatus
+    message_roles:
+      - user: 'Right-aligned, primary color, sent by user'
+      - assistant: 'Left-aligned, card with markdown, AI response'
+      - system: 'Centered, muted, full-width, system messages'
+    tool_call_statuses:
+      - pending: 'Gray clock icon, waiting to execute'
+      - running: 'Animated spinner, currently executing'
+      - complete: 'Green checkmark, finished successfully'
+      - error: 'Red X, execution failed'
+    context_api:
+      createChatContext: 'Creates shared state with handlers and settings'
+      getChatContext: 'Retrieves context from parent Container'
+      hasChatContext: 'Checks if context exists in tree'
+    integration_patterns:
+      - pai_socket_websocket
+      - rest_api_fetch
+      - server_sent_events
 
   adapters_package:
     type: integration_package

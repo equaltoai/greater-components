@@ -181,6 +181,9 @@ importers:
 
   apps/playground:
     dependencies:
+      '@equaltoai/greater-components-chat':
+        specifier: workspace:*
+        version: link:../../packages/shared/chat
       '@equaltoai/greater-components-content':
         specifier: workspace:*
         version: link:../../packages/content
@@ -493,6 +496,9 @@ importers:
       '@equaltoai/greater-components-auth':
         specifier: workspace:*
         version: link:../shared/auth
+      '@equaltoai/greater-components-chat':
+        specifier: workspace:*
+        version: link:../shared/chat
       '@equaltoai/greater-components-cli':
         specifier: workspace:*
         version: link:../cli
@@ -691,6 +697,40 @@ importers:
       '@equaltoai/greater-components-headless':
         specifier: workspace:*
         version: link:../../headless
+      '@equaltoai/greater-components-primitives':
+        specifier: workspace:*
+        version: link:../../primitives
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.2.1
+        version: 6.2.1(svelte@5.43.14)(vite@7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1))
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
+      svelte:
+        specifier: ^5.43.14
+        version: 5.43.14
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.2.4
+        version: 7.2.4(@types/node@24.10.1)(jiti@2.6.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+      vitest:
+        specifier: ^4.0.12
+        version: 4.0.12(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.12)(jiti@2.6.1)(jsdom@27.2.0)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.1)
+
+  packages/shared/chat:
+    dependencies:
+      '@equaltoai/greater-components-content':
+        specifier: workspace:*
+        version: link:../../content
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../../headless
+      '@equaltoai/greater-components-icons':
+        specifier: workspace:*
+        version: link:../../icons
       '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../../primitives

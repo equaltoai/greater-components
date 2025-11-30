@@ -1033,3 +1033,531 @@ patterns:
       - inline_script_runs_immediately
       - theme_applied_before_first_render
       - no_visible_flash
+
+  # ============================================================================
+  # Chat Component Patterns
+  # ============================================================================
+
+  chat_basic_interface:
+    name: 'Basic Chat Interface Setup'
+    problem: 'Need a complete AI chat interface with messages and input'
+    solution: 'Use Chat namespace components with Container, Messages, Input'
+    use_when:
+      - building_ai_chat_interface
+      - creating_conversational_ui
+      - integrating_with_ai_api
+    correct_example: |
+      <script lang="ts">
+        // CORRECT: Import Chat components as namespace
+        // Provides clear API and component relationships
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        let messages = $state<Chat.ChatMessage[]>([]);
+        
+        async function handleSend(content: string) {
+          // Add user message
+          const userMessage: Chat.ChatMessage = {
+            id: crypto.randomUUID(),
+            role: 'user',
+            content,
+            timestamp: new Date(),
+            status: 'complete',
+          };
+          messages = [...messages, userMessage];
+          
+          // Call your AI API
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            body: JSON.stringify({ message: content }),
+          });
+          const data = await response.json();
+          
+          // Add assistant response
+          const assistantMessage: Chat.ChatMessage = {
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: data.content,
+            timestamp: new Date(),
+            status: 'complete',
+          };
+          messages = [...messages, assistantMessage];
+        }
+      </script>
+
+      <Chat.Container>
+        <Chat.Header title="AI Assistant" connectionStatus="connected" />
+        <Chat.Messages {messages} />
+        <Chat.Input placeholder="Ask me anything..." onSend={handleSend} />
+      </Chat.Container>
+    anti_patterns:
+      - name: 'Using individual imports without namespace'
+        why: 'Makes it unclear which package components come from'
+        incorrect_example: |
+          // INCORRECT: Loses namespace context
+          import { Container, Messages, Input } from '@equaltoai/greater-components/chat';
+          // Unclear these are Chat components vs other Container/Input
+        consequences:
+          - naming_confusion
+          - unclear_component_relationships
+      - name: 'Mutating messages array directly'
+        why: 'Svelte 5 runes require reassignment for reactivity'
+        incorrect_example: |
+          // INCORRECT: Array mutation doesn't trigger reactivity
+          messages.push(newMessage);  // Won't update UI!
+          
+          // CORRECT: Reassign with spread
+          messages = [...messages, newMessage];
+        consequences:
+          - messages_not_appearing
+          - broken_reactivity
+          - ui_not_updating
+
+  chat_streaming_responses:
+    name: 'Handling Streaming Responses'
+    problem: 'Need to show real-time streaming AI responses'
+    solution: 'Use streaming status and update message content progressively'
+    use_when:
+      - integrating_with_streaming_api
+      - showing_real_time_responses
+      - improving_perceived_performance
+    correct_example: |
+      <script lang="ts">
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        let messages = $state<Chat.ChatMessage[]>([]);
+        
+        async function handleSend(content: string) {
+          // Add user message
+          messages = [...messages, {
+            id: crypto.randomUUID(),
+            role: 'user',
+            content,
+            timestamp: new Date(),
+            status: 'complete',
+          }];
+          
+          // Create streaming placeholder
+          const assistantId = crypto.randomUUID();
+          messages = [...messages, {
+            id: assistantId,
+            role: 'assistant',
+            content: '',
+            timestamp: new Date(),
+            status: 'streaming',  // Key: streaming status shows cursor
+          }];
+          
+          // Stream response
+          const response = await fetch('/api/chat/stream', {
+            method: 'POST',
+            body: JSON.stringify({ message: content }),
+          });
+          
+          const reader = response.body!.getReader();
+          const decoder = new TextDecoder();
+          let fullContent = '';
+          
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            fullContent += decoder.decode(value);
+            
+            // Update message content progressively
+            messages = messages.map(m => 
+              m.id === assistantId 
+                ? { ...m, content: fullContent }
+                : m
+            );
+          }
+          
+          // Mark complete when done
+          messages = messages.map(m => 
+            m.id === assistantId 
+              ? { ...m, status: 'complete' }
+              : m
+          );
+        }
+      </script>
+    why_this_works:
+      - streaming_status_shows_blinking_cursor
+      - progressive_updates_show_real_time_output
+      - complete_status_removes_cursor
+
+  chat_with_tool_calls:
+    name: 'Displaying Tool/Function Calls'
+    problem: 'Need to show AI tool invocations and their results'
+    solution: 'Include toolCalls in message and use ToolCall component'
+    use_when:
+      - ai_uses_tools_or_functions
+      - showing_tool_execution_status
+      - debugging_ai_tool_usage
+    correct_example: |
+      <script lang="ts">
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        let messages = $state<Chat.ChatMessage[]>([]);
+        
+        async function handleToolCall(toolCall: Chat.ToolCall) {
+          // Execute tool
+          const result = await executeToolOnBackend(toolCall.tool, toolCall.args);
+          
+          // Update tool call with result
+          messages = messages.map(m => ({
+            ...m,
+            toolCalls: m.toolCalls?.map(tc =>
+              tc.id === toolCall.id
+                ? { ...tc, result, status: 'complete' as const }
+                : tc
+            )
+          }));
+          
+          return result;
+        }
+        
+        // Example message with tool calls
+        const messageWithTools: Chat.ChatMessage = {
+          id: '1',
+          role: 'assistant',
+          content: 'Let me search the knowledge base for you...',
+          timestamp: new Date(),
+          status: 'complete',
+          toolCalls: [
+            {
+              id: 'tc1',
+              tool: 'query_knowledge',
+              args: { query: 'Svelte 5 runes' },
+              result: 'Found 3 documents...',
+              status: 'complete',
+            }
+          ]
+        };
+      </script>
+
+      <!-- Messages component automatically renders tool calls -->
+      <Chat.Messages {messages} />
+      
+      <!-- Or render tool calls manually in custom layout -->
+      {#each message.toolCalls as toolCall}
+        <Chat.ToolCall {toolCall} collapsible={true} />
+      {/each}
+    why_this_works:
+      - tool_calls_embedded_in_message
+      - status_indicators_show_progress
+      - collapsible_details_reduce_clutter
+
+  chat_with_suggestions:
+    name: 'Empty State with Suggestions'
+    problem: 'Need helpful prompts when chat is empty'
+    solution: 'Use Suggestions component with custom prompts'
+    use_when:
+      - guiding_new_users
+      - providing_quick_start_prompts
+      - showing_capabilities
+    correct_example: |
+      <script lang="ts">
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        let messages = $state<Chat.ChatMessage[]>([]);
+        
+        async function handleSend(content: string) {
+          // ... send logic
+        }
+        
+        // Custom suggestions for your use case
+        const suggestions = [
+          'What can you help me with?',
+          'Generate a React component',
+          'Explain this error message',
+          'Review my code for bugs',
+        ];
+      </script>
+
+      <Chat.Container>
+        <Chat.Header title="Code Assistant" />
+        
+        {#if messages.length === 0}
+          <!-- Show suggestions in empty state -->
+          <div class="empty-state">
+            <h3>How can I help you today?</h3>
+            <Chat.Suggestions 
+              {suggestions}
+              variant="cards"
+              onSelect={(s) => handleSend(s)}
+            />
+          </div>
+        {:else}
+          <Chat.Messages {messages} />
+        {/if}
+        
+        <Chat.Input onSend={handleSend} />
+      </Chat.Container>
+    alternative_with_default_suggestions: |
+      // Use built-in PAI suggestions
+      import { defaultPAISuggestions } from '@equaltoai/greater-components/chat';
+      
+      <Chat.Suggestions 
+        suggestions={defaultPAISuggestions}
+        onSelect={handleSend}
+      />
+
+  chat_with_settings:
+    name: 'Configurable Chat Settings'
+    problem: 'Need user-configurable AI settings (model, temperature)'
+    solution: 'Use Settings component with ChatSettingsState'
+    use_when:
+      - allowing_model_selection
+      - configuring_ai_parameters
+      - advanced_user_controls
+    correct_example: |
+      <script lang="ts">
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        let messages = $state<Chat.ChatMessage[]>([]);
+        let settingsOpen = $state(false);
+        
+        let settings = $state<Chat.ChatSettingsState>({
+          model: 'gpt-4',
+          temperature: 0.7,
+          maxTokens: 4096,
+          streaming: true,
+        });
+        
+        const availableModels = [
+          { id: 'gpt-4', name: 'GPT-4' },
+          { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' },
+          { id: 'claude-3', name: 'Claude 3' },
+        ];
+        
+        async function handleSend(content: string) {
+          // Use settings.model, settings.temperature in API call
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            body: JSON.stringify({
+              message: content,
+              model: settings.model,
+              temperature: settings.temperature,
+            }),
+          });
+          // ... handle response
+        }
+      </script>
+
+      <Chat.Container>
+        <Chat.Header 
+          title="AI Assistant"
+          showSettingsButton={true}
+          onSettings={() => settingsOpen = true}
+        />
+        <Chat.Messages {messages} />
+        <Chat.Input onSend={handleSend} />
+      </Chat.Container>
+
+      <Chat.Settings 
+        bind:open={settingsOpen}
+        {settings}
+        {availableModels}
+        onSettingsChange={(s) => settings = s}
+      />
+
+  chat_context_api:
+    name: 'Using Chat Context for Shared State'
+    problem: 'Need to share chat state across multiple components'
+    solution: 'Use createChatContext and getChatContext'
+    use_when:
+      - building_complex_chat_layouts
+      - sharing_state_across_components
+      - custom_chat_component_composition
+    correct_example: |
+      <!-- ChatWrapper.svelte - Parent component -->
+      <script lang="ts">
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        // Create context with handlers
+        const context = Chat.createChatContext({
+          onSubmit: async (content) => {
+            // Handle sending message
+            await sendToAPI(content);
+          },
+          onClear: () => {
+            // Handle clearing conversation
+          },
+        }, {
+          model: 'gpt-4',
+          temperature: 0.7,
+        });
+      </script>
+
+      <Chat.Container>
+        <slot />
+      </Chat.Container>
+
+      <!-- CustomMessageList.svelte - Child component -->
+      <script lang="ts">
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        // Access context from parent Container
+        const context = Chat.getChatContext();
+        
+        // Use context methods
+        function addSystemMessage() {
+          context.addMessage({
+            role: 'system',
+            content: 'System notification',
+            status: 'complete',
+          });
+        }
+      </script>
+
+      <div>
+        {#each context.state.messages as message}
+          <Chat.Message {message} />
+        {/each}
+        
+        <button onclick={addSystemMessage}>
+          Add System Message
+        </button>
+      </div>
+    anti_patterns:
+      - name: 'Using getChatContext outside Container'
+        why: 'Context must be provided by parent Container'
+        incorrect_example: |
+          // INCORRECT: No Container parent
+          <script>
+            import { getChatContext } from '@equaltoai/greater-components/chat';
+            
+            // This will throw an error!
+            const context = getChatContext();
+          </script>
+        consequences:
+          - runtime_error
+          - context_not_found
+
+  chat_websocket_integration:
+    name: 'WebSocket Integration with pai-socket'
+    problem: 'Need real-time streaming via WebSocket'
+    solution: 'Connect to WebSocket and update messages from events'
+    use_when:
+      - using_pai_socket
+      - real_time_bidirectional_communication
+      - server_push_updates
+    correct_example: |
+      <script lang="ts">
+        import * as Chat from '@equaltoai/greater-components/chat';
+        
+        let messages = $state<Chat.ChatMessage[]>([]);
+        let connectionStatus = $state<'connected' | 'connecting' | 'disconnected'>('disconnected');
+        let ws: WebSocket | null = null;
+        let currentStreamId: string | null = null;
+        
+        function connect() {
+          connectionStatus = 'connecting';
+          ws = new WebSocket('wss://api.example.com/ws');
+          
+          ws.onopen = () => {
+            connectionStatus = 'connected';
+          };
+          
+          ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            handleServerMessage(data);
+          };
+          
+          ws.onclose = () => {
+            connectionStatus = 'disconnected';
+          };
+        }
+        
+        function handleServerMessage(data: any) {
+          switch (data.type) {
+            case 'content.delta':
+              // Update streaming message content
+              messages = messages.map(m =>
+                m.id === currentStreamId
+                  ? { ...m, content: m.content + data.content }
+                  : m
+              );
+              break;
+              
+            case 'tool.start':
+              // Add tool call to message
+              messages = messages.map(m =>
+                m.id === currentStreamId
+                  ? {
+                      ...m,
+                      toolCalls: [...(m.toolCalls || []), {
+                        id: data.toolCallId,
+                        tool: data.toolName,
+                        args: data.args,
+                        status: 'running',
+                      }]
+                    }
+                  : m
+              );
+              break;
+              
+            case 'tool.complete':
+              // Update tool call result
+              messages = messages.map(m => ({
+                ...m,
+                toolCalls: m.toolCalls?.map(tc =>
+                  tc.id === data.toolCallId
+                    ? { ...tc, result: data.result, status: 'complete' }
+                    : tc
+                )
+              }));
+              break;
+              
+            case 'complete':
+              // Mark message complete
+              messages = messages.map(m =>
+                m.id === currentStreamId
+                  ? { ...m, status: 'complete' }
+                  : m
+              );
+              currentStreamId = null;
+              break;
+          }
+        }
+        
+        function handleSend(content: string) {
+          // Add user message
+          messages = [...messages, {
+            id: crypto.randomUUID(),
+            role: 'user',
+            content,
+            timestamp: new Date(),
+            status: 'complete',
+          }];
+          
+          // Create streaming placeholder
+          currentStreamId = crypto.randomUUID();
+          messages = [...messages, {
+            id: currentStreamId,
+            role: 'assistant',
+            content: '',
+            timestamp: new Date(),
+            status: 'streaming',
+          }];
+          
+          // Send to WebSocket
+          ws?.send(JSON.stringify({
+            action: 'ai.chat',
+            content,
+          }));
+        }
+      </script>
+
+      <Chat.Container>
+        <Chat.Header 
+          title="PAI Assistant" 
+          {connectionStatus}
+          showClearButton={true}
+          onClear={() => messages = []}
+        />
+        <Chat.Messages {messages} />
+        <Chat.Input onSend={handleSend} disabled={connectionStatus !== 'connected'} />
+      </Chat.Container>
+    why_this_works:
+      - websocket_provides_real_time_updates
+      - message_events_update_ui_progressively
+      - connection_status_shown_in_header
