@@ -42,11 +42,6 @@
 	});
 
 	// Generate inline script for preventing flash of unstyled content
-	const preventFlashScript = $derived(() => buildPreventFlashScript());
-	$effect(() => {
-		preventFlashScript();
-	});
-
 	function buildPreventFlashScript(): string {
 		if (!preventFlash) {
 			return '';
@@ -138,15 +133,12 @@
 	}
 </script>
 
-<svelte:head>
-	{#if preventFlash && typeof window === 'undefined'}
-		<script>
-			{
-				preventFlashScript();
-			}
-		</script>
-	{/if}
-</svelte:head>
+<!-- 
+	Theme flash prevention should be handled in app.html for SvelteKit projects.
+	The preventFlash prop is kept for API compatibility but the script injection
+	via svelte:head doesn't work reliably. See Greater Components docs for 
+	the recommended app.html approach.
+-->
 
 <div class="gr-theme-provider" data-theme-provider>
 	{@render children()}
