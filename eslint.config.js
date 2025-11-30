@@ -42,6 +42,16 @@ export default [
 		},
 	},
 	{
+		// Svelte 5 runes modules (.svelte.ts/.svelte.js) need svelte parser
+		files: ['**/*.svelte.ts', '**/*.svelte.js'],
+		languageOptions: {
+			parser: svelte.parser,
+			parserOptions: {
+				parser: ts.parser,
+			},
+		},
+	},
+	{
 		files: ['packages/icons/src/icons/*.svelte'],
 		rules: {
 			'svelte/valid-compile': 'off',
@@ -98,6 +108,8 @@ export default [
 			'**/build/**',
 			'**/.svelte-kit/**',
 			'**/package/**',
+			'**/.pai/**',
+			'**/*.svelte.d.ts',
 			'test-apps/astro-client-only/.astro/**',
 			'**/.env',
 			'**/.env.*',

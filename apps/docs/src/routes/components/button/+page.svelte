@@ -5,14 +5,14 @@
 	const props = [
 		{
 			name: 'variant',
-			type: "'primary' | 'secondary' | 'ghost' | 'danger'",
-			default: "'primary'",
+			type: "'solid' | 'outline' | 'ghost'",
+			default: "'solid'",
 			description: 'The visual style variant of the button',
 		},
 		{
 			name: 'size',
-			type: "'small' | 'medium' | 'large'",
-			default: "'medium'",
+			type: "'sm' | 'md' | 'lg'",
+			default: "'md'",
 			description: 'The size of the button',
 		},
 		{
@@ -76,38 +76,31 @@
 		},
 	];
 
-	const examples = [
+	const examplesMeta = [
 		{
 			title: 'Basic Usage',
 			description: 'Different button variants for various use cases',
-			component: Button,
-			props: { variant: 'primary' },
-			code: `<Button variant="primary">Primary Button</Button>
-<Button variant="secondary">Secondary Button</Button>
-<Button variant="ghost">Ghost Button</Button>
-<Button variant="danger">Danger Button</Button>`,
+			code: `<Button variant="solid">Solid Button</Button>
+<Button variant="outline">Outline Button</Button>
+<Button variant="ghost">Ghost Button</Button>`,
 		},
 		{
 			title: 'Sizes',
 			description: 'Buttons come in three sizes',
-			component: Button,
-			props: { size: 'medium' },
-			code: `<Button size="small">Small</Button>
-<Button size="medium">Medium</Button>
-<Button size="large">Large</Button>`,
+			code: `<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>`,
 		},
 		{
 			title: 'States',
 			description: 'Different button states',
-			component: Button,
-			props: { disabled: true },
 			code: `<Button disabled>Disabled</Button>
 <Button loading>Loading</Button>`,
 		},
 	];
 
 	const accessibility = {
-		wcagLevel: 'AA',
+		wcagLevel: 'AA' as const,
 		keyboardNav: true,
 		screenReader: true,
 		colorContrast: true,
@@ -141,26 +134,47 @@
 	{props}
 	{events}
 	{slots}
-	{examples}
+	{examplesMeta}
 	{accessibility}
 >
-	<svelte:fragment slot="do">
+	{#snippet examples(index)}
+		{#if index === 0}
+			<div class="button-row">
+				<Button variant="solid">Solid Button</Button>
+				<Button variant="outline">Outline Button</Button>
+				<Button variant="ghost">Ghost Button</Button>
+			</div>
+		{:else if index === 1}
+			<div class="button-row">
+				<Button size="sm">Small</Button>
+				<Button size="md">Medium</Button>
+				<Button size="lg">Large</Button>
+			</div>
+		{:else if index === 2}
+			<div class="button-row">
+				<Button disabled>Disabled</Button>
+				<Button loading>Loading</Button>
+			</div>
+		{/if}
+	{/snippet}
+
+	{#snippet doGuidelines()}
 		<li>Use primary buttons for the main action on a page</li>
 		<li>Use descriptive labels that clearly indicate the action</li>
 		<li>Provide visual feedback for interactive states</li>
 		<li>Use the loading state when performing async operations</li>
 		<li>Maintain consistent button sizing throughout your app</li>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="dont">
+	{#snippet dontGuidelines()}
 		<li>Don't use more than one primary button in a section</li>
 		<li>Don't disable buttons without clear indication why</li>
 		<li>Don't use buttons for navigation (use links instead)</li>
 		<li>Don't make buttons too small on mobile devices</li>
 		<li>Don't remove focus indicators</li>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="additional">
+	{#snippet additional()}
 		<section class="related-section">
 			<h2>Related Components</h2>
 			<ul>
@@ -171,10 +185,17 @@
 				<li><a href="/components/link">Link</a> - For navigation purposes</li>
 			</ul>
 		</section>
-	</svelte:fragment>
+	{/snippet}
 </ComponentDoc>
 
 <style>
+	.button-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		align-items: center;
+	}
+
 	.related-section {
 		margin-top: 3rem;
 		padding-top: 2rem;

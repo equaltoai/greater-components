@@ -5,14 +5,14 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import '@equaltoai/greater-components-tokens/theme.css';
-	import '@equaltoai/greater-components-primitives/style.css';
+	import '@equaltoai/greater-components-primitives/theme.css';
 	import '../app.css';
 	import {
 		ThemeProvider,
 		ThemeSwitcher,
 		preferencesStore,
 	} from '@equaltoai/greater-components-primitives';
-import {
+	import {
 		HomeIcon,
 		LayersIcon,
 		GridIcon,
@@ -37,49 +37,9 @@ import {
 	const testTheme = $derived(() => data?.testTheme ?? null);
 	const testDensity = $derived(() => data?.testDensity ?? null);
 
-	const preferenceSeedScript = $derived(() => {
-		if (!testTheme && !testDensity) {
-			return '';
-		}
+	const shouldPreseedPreferences = $derived(() => Boolean(testTheme || testDensity));
 
-		const serializedTheme = JSON.stringify(testTheme);
-		const serializedDensity = JSON.stringify(testDensity);
-
-		return `
-(function() {
-	const themeValue = ${serializedTheme};
-	const densityValue = ${serializedDensity};
-
-	try {
-		const raw = localStorage.getItem('gr-preferences-v1');
-		const prefs = raw ? JSON.parse(raw) : {};
-
-		if (themeValue) {
-			prefs.colorScheme = themeValue;
-			prefs.highContrastMode = themeValue === 'high-contrast';
-		}
-
-		if (densityValue) {
-			prefs.density = densityValue;
-		}
-
-		localStorage.setItem('gr-preferences-v1', JSON.stringify(prefs));
-	} catch (error) {
-		console.warn('Failed to sync test preferences', error);
-	}
-
-	if (themeValue) {
-		document.documentElement.setAttribute('data-theme', themeValue);
-	}
-
-	if (densityValue) {
-		document.documentElement.setAttribute('data-density', densityValue);
-	}
-})();
-		`.trim();
-	});
-
-const navLinks = [
+	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
 		{ href: '/docs', label: 'Documentation', icon: BookOpenIcon, external: true },
 		{ href: '/chat', label: 'Chat Demo', icon: MessageCircleIcon },
@@ -136,11 +96,38 @@ const navLinks = [
 </script>
 
 <svelte:head>
-	{#if preferenceSeedScript && typeof window === 'undefined'}
+	{#if shouldPreseedPreferences && typeof window === 'undefined'}
 		<script>
-			{
-				preferenceSeedScript;
-			}
+			(function () {
+				const themeValue = {JSON.stringify(testTheme ?? null)};
+				const densityValue = {JSON.stringify(testDensity ?? null)};
+
+				try {
+					const raw = localStorage.getItem('gr-preferences-v1');
+					const prefs = raw ? JSON.parse(raw) : {};
+
+					if (themeValue) {
+						prefs.colorScheme = themeValue;
+						prefs.highContrastMode = themeValue === 'high-contrast';
+					}
+
+					if (densityValue) {
+						prefs.density = densityValue;
+					}
+
+					localStorage.setItem('gr-preferences-v1', JSON.stringify(prefs));
+				} catch (error) {
+					console.warn('Failed to sync test preferences', error);
+				}
+
+				if (themeValue) {
+					document.documentElement.setAttribute('data-theme', themeValue);
+				}
+
+				if (densityValue) {
+					document.documentElement.setAttribute('data-density', densityValue);
+				}
+			})();
 		</script>
 	{/if}
 </svelte:head>

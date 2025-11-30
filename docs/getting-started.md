@@ -101,9 +101,9 @@ export default config;
 
 **CRITICAL:** Greater Components uses a two-layer CSS architecture. You must import **both** layers in your root layout for components to render correctly.
 
-| Layer | Import | Purpose |
-|-------|--------|---------|
-| 1. Design Tokens | `tokens/theme.css` | CSS variables (colors, spacing, typography) |
+| Layer               | Import                 | Purpose                                                  |
+| ------------------- | ---------------------- | -------------------------------------------------------- |
+| 1. Design Tokens    | `tokens/theme.css`     | CSS variables (colors, spacing, typography)              |
 | 2. Component Styles | `primitives/style.css` | Component class definitions (.gr-button, .gr-card, etc.) |
 
 > **Important:** Both imports are required. Without `primitives/style.css`, components render but appear completely unstyled (browser defaults). For advanced CSS configuration, see the [CSS Architecture Guide](./css-architecture.md).
@@ -113,24 +113,24 @@ export default config;
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-  // ✅ Layer 1: Import design tokens FIRST (colors, spacing, typography variables)
-  import '@equaltoai/greater-components/tokens/theme.css';
-  // ✅ Layer 2: Import component styles (button, card, container classes)
-  import '@equaltoai/greater-components/primitives/style.css';
+	// ✅ Layer 1: Import design tokens FIRST (colors, spacing, typography variables)
+	import '@equaltoai/greater-components/tokens/theme.css';
+	// ✅ Layer 2: Import component styles (button, card, container classes)
+	import '@equaltoai/greater-components/primitives/style.css';
 
-  // ✅ Import components after CSS
-  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	// ✅ Import components after CSS
+	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 
-  let { children } = $props();
+	let { children } = $props();
 </script>
 
 <svelte:head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
 <!-- ✅ Wrap app in ThemeProvider -->
 <ThemeProvider>
-  {@render children()}
+	{@render children()}
 </ThemeProvider>
 ```
 
@@ -139,18 +139,18 @@ export default config;
 ```svelte
 <!-- src/App.svelte -->
 <script lang="ts">
-  // ✅ Layer 1: Design tokens
-  import '@equaltoai/greater-components/tokens/theme.css';
-  // ✅ Layer 2: Component styles
-  import '@equaltoai/greater-components/primitives/style.css';
+	// ✅ Layer 1: Design tokens
+	import '@equaltoai/greater-components/tokens/theme.css';
+	// ✅ Layer 2: Component styles
+	import '@equaltoai/greater-components/primitives/style.css';
 
-  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 
-  // Your app imports here
+	// Your app imports here
 </script>
 
 <ThemeProvider>
-  <!-- Your app content -->
+	<!-- Your app content -->
 </ThemeProvider>
 ```
 
@@ -160,14 +160,14 @@ If you're using social face components (Timeline, Status, Profile, etc.), also i
 
 ```svelte
 <script lang="ts">
-  // Layer 1: Design tokens
-  import '@equaltoai/greater-components/tokens/theme.css';
-  // Layer 2: Primitive component styles
-  import '@equaltoai/greater-components/primitives/style.css';
-  // Layer 3: Social face styles
-  import '@equaltoai/greater-components/faces/social/style.css';
+	// Layer 1: Design tokens
+	import '@equaltoai/greater-components/tokens/theme.css';
+	// Layer 2: Primitive component styles
+	import '@equaltoai/greater-components/primitives/style.css';
+	// Layer 3: Social face styles
+	import '@equaltoai/greater-components/faces/social/style.css';
 
-  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 </script>
 ```
 
@@ -183,12 +183,12 @@ Without the component styles layer, components render with browser defaults.
 
 ```typescript
 // ✅ CORRECT ORDER
-import '@equaltoai/greater-components/tokens/theme.css';      // 1. Tokens first
-import '@equaltoai/greater-components/primitives/style.css';  // 2. Component styles second
+import '@equaltoai/greater-components/tokens/theme.css'; // 1. Tokens first
+import '@equaltoai/greater-components/primitives/style.css'; // 2. Component styles second
 import { Button } from '@equaltoai/greater-components/primitives'; // 3. Components last
 
 // ❌ WRONG ORDER - Component styles before tokens
-import '@equaltoai/greater-components/primitives/style.css';  // Uses undefined variables!
+import '@equaltoai/greater-components/primitives/style.css'; // Uses undefined variables!
 import '@equaltoai/greater-components/tokens/theme.css';
 ```
 
@@ -244,23 +244,23 @@ To prevent a flash of incorrect theme colors on page load (FOUC), add this scrip
 <!-- src/app.html -->
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    
-    <!-- Prevent theme flash -->
-    <script>
-      (function() {
-        const theme = localStorage.getItem('gr-theme') || 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script>
-    
-    %sveltekit.head%
-  </head>
-  <body data-sveltekit-preload-data="hover">
-    <div style="display: contents">%sveltekit.body%</div>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- Prevent theme flash -->
+		<script>
+			(function () {
+				const theme = localStorage.getItem('gr-theme') || 'light';
+				document.documentElement.setAttribute('data-theme', theme);
+			})();
+		</script>
+
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
 </html>
 ```
 
@@ -695,19 +695,20 @@ Ensure your root layout imports both CSS layers:
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-  // ✅ BOTH imports required
-  import '@equaltoai/greater-components/tokens/theme.css';      // Design tokens
-  import '@equaltoai/greater-components/primitives/style.css';  // Component styles
+	// ✅ BOTH imports required
+	import '@equaltoai/greater-components/tokens/theme.css'; // Design tokens
+	import '@equaltoai/greater-components/primitives/style.css'; // Component styles
 
-  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 </script>
 
 <ThemeProvider>
-  <!-- Your app -->
+	<!-- Your app -->
 </ThemeProvider>
 ```
 
 **Common causes:**
+
 - Only importing `tokens/theme.css` (missing component styles)
 - Importing CSS in a page component instead of root layout
 - Wrong import order (component styles before tokens)

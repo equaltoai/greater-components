@@ -109,11 +109,8 @@
 									{/if}
 								</div>
 								<div class="lists-timeline__member-info">
-									<span class="lists-timeline__member-name">{member.actor.displayName}</span
-									>
-									<span class="lists-timeline__member-username"
-										>@{member.actor.username}</span
-									>
+									<span class="lists-timeline__member-name">{member.actor.displayName}</span>
+									<span class="lists-timeline__member-username">@{member.actor.username}</span>
 								</div>
 								<button
 									class="lists-timeline__member-remove"

@@ -91,6 +91,8 @@ export interface BaseNotification {
 	type: NotificationType;
 	createdAt: string | Date;
 	account: Account;
+	read?: boolean;
+	dismissed?: boolean;
 }
 
 export interface MentionNotification extends BaseNotification {
@@ -160,10 +162,9 @@ export interface NotificationGroup {
 	id: string;
 	type: NotificationType;
 	notifications: Notification[];
+	accounts: Account[];
+	sampleNotification: Notification;
 	count: number;
-	latestAccount: Account;
-	status?: Status;
-	createdAt: string | Date;
-	unread?: boolean;
+	latestCreatedAt: string | Date;
+	allRead: boolean;
 }
-

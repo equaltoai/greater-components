@@ -17,23 +17,18 @@ pnpm add @equaltoai/greater-components
 
 ```svelte
 <script>
-  import { CodeBlock, MarkdownRenderer } from '@equaltoai/greater-components/content';
+	import { CodeBlock, MarkdownRenderer } from '@equaltoai/greater-components/content';
 </script>
 
-<CodeBlock 
-  code="console.log('Hello, World!')" 
-  language="javascript" 
-  showLineNumbers 
-/>
+<CodeBlock code="console.log('Hello, World!')" language="javascript" showLineNumbers />
 
-<MarkdownRenderer 
-  content="# Hello\n\nThis is **markdown**." 
-/>
+<MarkdownRenderer content="# Hello\n\nThis is **markdown**." />
 ```
 
 ## Why Separate Package?
 
 These components have heavy dependencies:
+
 - `shiki` (~2MB) - Syntax highlighting
 - `marked` - Markdown parsing
 - `isomorphic-dompurify` - HTML sanitization
@@ -43,4 +38,3 @@ By isolating them in a separate package, apps that only need basic primitives (B
 ## License
 
 AGPL-3.0-only
-

@@ -299,21 +299,622 @@ import ZapIcon from './icons/zap.svelte';
 import ZapOffIcon from './icons/zap-off.svelte';
 import ZoomInIcon from './icons/zoom-in.svelte';
 import ZoomOutIcon from './icons/zoom-out.svelte';
-export { ActivityIcon, AirplayIcon, AlertCircleIcon, AlertOctagonIcon, AlertTriangleIcon, AlignCenterIcon, AlignJustifyIcon, AlignLeftIcon, AlignRightIcon, AnchorIcon, ApertureIcon, ArchiveIcon, ArrowDownIcon, ArrowDownCircleIcon, ArrowDownLeftIcon, ArrowDownRightIcon, ArrowLeftIcon, ArrowLeftCircleIcon, ArrowRightIcon, ArrowRightCircleIcon, ArrowUpIcon, ArrowUpCircleIcon, ArrowUpLeftIcon, ArrowUpRightIcon, AtSignIcon, AwardIcon, BarChartIcon, BarChart2Icon, BatteryIcon, BatteryChargingIcon, BellIcon, BellOffIcon, BluetoothIcon, BoldIcon, BookIcon, BookOpenIcon, BookmarkIcon, BoostIcon, BoxIcon, BriefcaseIcon, BuildingIcon, CalendarIcon, CameraIcon, CameraOffIcon, CastIcon, CheckIcon, CheckCircleIcon, CheckSquareIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon, ChevronsDownIcon, ChevronsLeftIcon, ChevronsRightIcon, ChevronsUpIcon, ChromeIcon, CircleIcon, ClipboardIcon, ClockIcon, CloudIcon, CloudDrizzleIcon, CloudLightningIcon, CloudOffIcon, CloudRainIcon, CloudSnowIcon, CodeIcon, CodepenIcon, CodesandboxIcon, CoffeeIcon, ColumnsIcon, CommandIcon, CompassIcon, CopyIcon, CornerDownLeftIcon, CornerDownRightIcon, CornerLeftDownIcon, CornerLeftUpIcon, CornerRightDownIcon, CornerRightUpIcon, CornerUpLeftIcon, CornerUpRightIcon, CpuIcon, CreditCardIcon, CropIcon, CrosshairIcon, DatabaseIcon, DeleteIcon, DiscIcon, DivideIcon, DivideCircleIcon, DivideSquareIcon, DollarSignIcon, DownloadIcon, DownloadCloudIcon, DribbbleIcon, DropletIcon, EditIcon, Edit2Icon, Edit3Icon, EqualsIcon, ExternalLinkIcon, EyeIcon, EyeOffIcon, FacebookIcon, FastForwardIcon, FavoriteIcon, FeatherIcon, FigmaIcon, FileIcon, FileMinusIcon, FilePlusIcon, FileTextIcon, FilmIcon, FilterIcon, FlagIcon, FolderIcon, FolderMinusIcon, FolderPlusIcon, FollowIcon, FramerIcon, FrownIcon, GiftIcon, GitBranchIcon, GitCommitIcon, GitMergeIcon, GitPullRequestIcon, GithubIcon, GitlabIcon, GlobeIcon, GreaterThanIcon, GridIcon, HardDriveIcon, HashIcon, HashtagIcon, HeadphonesIcon, HeartIcon, HelpCircleIcon, HexagonIcon, HomeIcon, ImageIcon, InboxIcon, InfoIcon, InstagramIcon, ItalicIcon, KeyIcon, LayersIcon, LayoutIcon, LessThanIcon, LifeBuoyIcon, LinkIcon, Link2Icon, LinkedinIcon, ListIcon, LoaderIcon, LockIcon, LogInIcon, LogOutIcon, MailIcon, MapIcon, MapPinIcon, MaximizeIcon, Maximize2Icon, MehIcon, MentionIcon, MenuIcon, MessageCircleIcon, MessageSquareIcon, MicIcon, MicOffIcon, MinimizeIcon, Minimize2Icon, MinusIcon, MinusCircleIcon, MinusSquareIcon, MonitorIcon, MoonIcon, MoreHorizontalIcon, MoreVerticalIcon, MousePointerIcon, MoveIcon, MusicIcon, NavigationIcon, Navigation2Icon, OctagonIcon, PackageIcon, PaperclipIcon, PauseIcon, PauseCircleIcon, PenToolIcon, PercentIcon, PhoneIcon, PhoneCallIcon, PhoneForwardedIcon, PhoneIncomingIcon, PhoneMissedIcon, PhoneOffIcon, PhoneOutgoingIcon, PieChartIcon, PlayIcon, PlayCircleIcon, PlusIcon, PlusCircleIcon, PlusSquareIcon, PocketIcon, PowerIcon, PrinterIcon, RadioIcon, RefreshCcwIcon, RefreshCwIcon, RepeatIcon, ReplyIcon, RewindIcon, RotateCcwIcon, RotateCwIcon, RssIcon, SaveIcon, ScissorsIcon, SearchIcon, SendIcon, ServerIcon, SettingsIcon, ShareIcon, Share2Icon, ShieldIcon, ShieldOffIcon, ShoppingBagIcon, ShoppingCartIcon, ShuffleIcon, SidebarIcon, SkipBackIcon, SkipForwardIcon, SlackIcon, SlashIcon, SlidersIcon, SmartphoneIcon, SmileIcon, SpeakerIcon, SquareIcon, StarIcon, StopCircleIcon, SunIcon, SunriseIcon, SunsetIcon, TableIcon, TabletIcon, TagIcon, TargetIcon, TerminalIcon, ThermometerIcon, ThumbsDownIcon, ThumbsUpIcon, ToggleLeftIcon, ToggleRightIcon, ToolIcon, TrashIcon, Trash2Icon, TrelloIcon, TrendingDownIcon, TrendingUpIcon, TriangleIcon, TruckIcon, TvIcon, TwitchIcon, TwitterIcon, TypeIcon, UmbrellaIcon, UnboostIcon, UnderlineIcon, UnfavoriteIcon, UnfollowIcon, UnlockIcon, UploadIcon, UploadCloudIcon, UserIcon, UserCheckIcon, UserMinusIcon, UserPlusIcon, UserXIcon, UsersIcon, VideoIcon, VideoOffIcon, VoicemailIcon, VolumeIcon, Volume1Icon, Volume2Icon, VolumeXIcon, WatchIcon, WifiIcon, WifiOffIcon, WindIcon, XIcon, XCircleIcon, XOctagonIcon, XSquareIcon, YoutubeIcon, ZapIcon, ZapOffIcon, ZoomInIcon, ZoomOutIcon };
-export type IconName = 'activity' | 'airplay' | 'alert-circle' | 'alert-octagon' | 'alert-triangle' | 'align-center' | 'align-justify' | 'align-left' | 'align-right' | 'anchor' | 'aperture' | 'archive' | 'arrow-down' | 'arrow-down-circle' | 'arrow-down-left' | 'arrow-down-right' | 'arrow-left' | 'arrow-left-circle' | 'arrow-right' | 'arrow-right-circle' | 'arrow-up' | 'arrow-up-circle' | 'arrow-up-left' | 'arrow-up-right' | 'at-sign' | 'award' | 'bar-chart' | 'bar-chart-2' | 'battery' | 'battery-charging' | 'bell' | 'bell-off' | 'bluetooth' | 'bold' | 'book' | 'book-open' | 'bookmark' | 'boost' | 'box' | 'briefcase' | 'building' | 'calendar' | 'camera' | 'camera-off' | 'cast' | 'check' | 'check-circle' | 'check-square' | 'chevron-down' | 'chevron-left' | 'chevron-right' | 'chevron-up' | 'chevrons-down' | 'chevrons-left' | 'chevrons-right' | 'chevrons-up' | 'chrome' | 'circle' | 'clipboard' | 'clock' | 'cloud' | 'cloud-drizzle' | 'cloud-lightning' | 'cloud-off' | 'cloud-rain' | 'cloud-snow' | 'code' | 'codepen' | 'codesandbox' | 'coffee' | 'columns' | 'command' | 'compass' | 'copy' | 'corner-down-left' | 'corner-down-right' | 'corner-left-down' | 'corner-left-up' | 'corner-right-down' | 'corner-right-up' | 'corner-up-left' | 'corner-up-right' | 'cpu' | 'credit-card' | 'crop' | 'crosshair' | 'database' | 'delete' | 'disc' | 'divide' | 'divide-circle' | 'divide-square' | 'dollar-sign' | 'download' | 'download-cloud' | 'dribbble' | 'droplet' | 'edit' | 'edit-2' | 'edit-3' | 'equals' | 'external-link' | 'eye' | 'eye-off' | 'facebook' | 'fast-forward' | 'favorite' | 'feather' | 'figma' | 'file' | 'file-minus' | 'file-plus' | 'file-text' | 'film' | 'filter' | 'flag' | 'folder' | 'folder-minus' | 'folder-plus' | 'follow' | 'framer' | 'frown' | 'gift' | 'git-branch' | 'git-commit' | 'git-merge' | 'git-pull-request' | 'github' | 'gitlab' | 'globe' | 'greater-than' | 'grid' | 'hard-drive' | 'hash' | 'hashtag' | 'headphones' | 'heart' | 'help-circle' | 'hexagon' | 'home' | 'image' | 'inbox' | 'info' | 'instagram' | 'italic' | 'key' | 'layers' | 'layout' | 'less-than' | 'life-buoy' | 'link' | 'link-2' | 'linkedin' | 'list' | 'loader' | 'lock' | 'log-in' | 'log-out' | 'mail' | 'map' | 'map-pin' | 'maximize' | 'maximize-2' | 'meh' | 'mention' | 'menu' | 'message-circle' | 'message-square' | 'mic' | 'mic-off' | 'minimize' | 'minimize-2' | 'minus' | 'minus-circle' | 'minus-square' | 'monitor' | 'moon' | 'more-horizontal' | 'more-vertical' | 'mouse-pointer' | 'move' | 'music' | 'navigation' | 'navigation-2' | 'octagon' | 'package' | 'paperclip' | 'pause' | 'pause-circle' | 'pen-tool' | 'percent' | 'phone' | 'phone-call' | 'phone-forwarded' | 'phone-incoming' | 'phone-missed' | 'phone-off' | 'phone-outgoing' | 'pie-chart' | 'play' | 'play-circle' | 'plus' | 'plus-circle' | 'plus-square' | 'pocket' | 'power' | 'printer' | 'radio' | 'refresh-ccw' | 'refresh-cw' | 'repeat' | 'reply' | 'rewind' | 'rotate-ccw' | 'rotate-cw' | 'rss' | 'save' | 'scissors' | 'search' | 'send' | 'server' | 'settings' | 'share' | 'share-2' | 'shield' | 'shield-off' | 'shopping-bag' | 'shopping-cart' | 'shuffle' | 'sidebar' | 'skip-back' | 'skip-forward' | 'slack' | 'slash' | 'sliders' | 'smartphone' | 'smile' | 'speaker' | 'square' | 'star' | 'stop-circle' | 'sun' | 'sunrise' | 'sunset' | 'table' | 'tablet' | 'tag' | 'target' | 'terminal' | 'thermometer' | 'thumbs-down' | 'thumbs-up' | 'toggle-left' | 'toggle-right' | 'tool' | 'trash' | 'trash-2' | 'trello' | 'trending-down' | 'trending-up' | 'triangle' | 'truck' | 'tv' | 'twitch' | 'twitter' | 'type' | 'umbrella' | 'unboost' | 'underline' | 'unfavorite' | 'unfollow' | 'unlock' | 'upload' | 'upload-cloud' | 'user' | 'user-check' | 'user-minus' | 'user-plus' | 'user-x' | 'users' | 'video' | 'video-off' | 'voicemail' | 'volume' | 'volume-1' | 'volume-2' | 'volume-x' | 'watch' | 'wifi' | 'wifi-off' | 'wind' | 'x' | 'x-circle' | 'x-octagon' | 'x-square' | 'youtube' | 'zap' | 'zap-off' | 'zoom-in' | 'zoom-out';
+export {
+	ActivityIcon,
+	AirplayIcon,
+	AlertCircleIcon,
+	AlertOctagonIcon,
+	AlertTriangleIcon,
+	AlignCenterIcon,
+	AlignJustifyIcon,
+	AlignLeftIcon,
+	AlignRightIcon,
+	AnchorIcon,
+	ApertureIcon,
+	ArchiveIcon,
+	ArrowDownIcon,
+	ArrowDownCircleIcon,
+	ArrowDownLeftIcon,
+	ArrowDownRightIcon,
+	ArrowLeftIcon,
+	ArrowLeftCircleIcon,
+	ArrowRightIcon,
+	ArrowRightCircleIcon,
+	ArrowUpIcon,
+	ArrowUpCircleIcon,
+	ArrowUpLeftIcon,
+	ArrowUpRightIcon,
+	AtSignIcon,
+	AwardIcon,
+	BarChartIcon,
+	BarChart2Icon,
+	BatteryIcon,
+	BatteryChargingIcon,
+	BellIcon,
+	BellOffIcon,
+	BluetoothIcon,
+	BoldIcon,
+	BookIcon,
+	BookOpenIcon,
+	BookmarkIcon,
+	BoostIcon,
+	BoxIcon,
+	BriefcaseIcon,
+	BuildingIcon,
+	CalendarIcon,
+	CameraIcon,
+	CameraOffIcon,
+	CastIcon,
+	CheckIcon,
+	CheckCircleIcon,
+	CheckSquareIcon,
+	ChevronDownIcon,
+	ChevronLeftIcon,
+	ChevronRightIcon,
+	ChevronUpIcon,
+	ChevronsDownIcon,
+	ChevronsLeftIcon,
+	ChevronsRightIcon,
+	ChevronsUpIcon,
+	ChromeIcon,
+	CircleIcon,
+	ClipboardIcon,
+	ClockIcon,
+	CloudIcon,
+	CloudDrizzleIcon,
+	CloudLightningIcon,
+	CloudOffIcon,
+	CloudRainIcon,
+	CloudSnowIcon,
+	CodeIcon,
+	CodepenIcon,
+	CodesandboxIcon,
+	CoffeeIcon,
+	ColumnsIcon,
+	CommandIcon,
+	CompassIcon,
+	CopyIcon,
+	CornerDownLeftIcon,
+	CornerDownRightIcon,
+	CornerLeftDownIcon,
+	CornerLeftUpIcon,
+	CornerRightDownIcon,
+	CornerRightUpIcon,
+	CornerUpLeftIcon,
+	CornerUpRightIcon,
+	CpuIcon,
+	CreditCardIcon,
+	CropIcon,
+	CrosshairIcon,
+	DatabaseIcon,
+	DeleteIcon,
+	DiscIcon,
+	DivideIcon,
+	DivideCircleIcon,
+	DivideSquareIcon,
+	DollarSignIcon,
+	DownloadIcon,
+	DownloadCloudIcon,
+	DribbbleIcon,
+	DropletIcon,
+	EditIcon,
+	Edit2Icon,
+	Edit3Icon,
+	EqualsIcon,
+	ExternalLinkIcon,
+	EyeIcon,
+	EyeOffIcon,
+	FacebookIcon,
+	FastForwardIcon,
+	FavoriteIcon,
+	FeatherIcon,
+	FigmaIcon,
+	FileIcon,
+	FileMinusIcon,
+	FilePlusIcon,
+	FileTextIcon,
+	FilmIcon,
+	FilterIcon,
+	FlagIcon,
+	FolderIcon,
+	FolderMinusIcon,
+	FolderPlusIcon,
+	FollowIcon,
+	FramerIcon,
+	FrownIcon,
+	GiftIcon,
+	GitBranchIcon,
+	GitCommitIcon,
+	GitMergeIcon,
+	GitPullRequestIcon,
+	GithubIcon,
+	GitlabIcon,
+	GlobeIcon,
+	GreaterThanIcon,
+	GridIcon,
+	HardDriveIcon,
+	HashIcon,
+	HashtagIcon,
+	HeadphonesIcon,
+	HeartIcon,
+	HelpCircleIcon,
+	HexagonIcon,
+	HomeIcon,
+	ImageIcon,
+	InboxIcon,
+	InfoIcon,
+	InstagramIcon,
+	ItalicIcon,
+	KeyIcon,
+	LayersIcon,
+	LayoutIcon,
+	LessThanIcon,
+	LifeBuoyIcon,
+	LinkIcon,
+	Link2Icon,
+	LinkedinIcon,
+	ListIcon,
+	LoaderIcon,
+	LockIcon,
+	LogInIcon,
+	LogOutIcon,
+	MailIcon,
+	MapIcon,
+	MapPinIcon,
+	MaximizeIcon,
+	Maximize2Icon,
+	MehIcon,
+	MentionIcon,
+	MenuIcon,
+	MessageCircleIcon,
+	MessageSquareIcon,
+	MicIcon,
+	MicOffIcon,
+	MinimizeIcon,
+	Minimize2Icon,
+	MinusIcon,
+	MinusCircleIcon,
+	MinusSquareIcon,
+	MonitorIcon,
+	MoonIcon,
+	MoreHorizontalIcon,
+	MoreVerticalIcon,
+	MousePointerIcon,
+	MoveIcon,
+	MusicIcon,
+	NavigationIcon,
+	Navigation2Icon,
+	OctagonIcon,
+	PackageIcon,
+	PaperclipIcon,
+	PauseIcon,
+	PauseCircleIcon,
+	PenToolIcon,
+	PercentIcon,
+	PhoneIcon,
+	PhoneCallIcon,
+	PhoneForwardedIcon,
+	PhoneIncomingIcon,
+	PhoneMissedIcon,
+	PhoneOffIcon,
+	PhoneOutgoingIcon,
+	PieChartIcon,
+	PlayIcon,
+	PlayCircleIcon,
+	PlusIcon,
+	PlusCircleIcon,
+	PlusSquareIcon,
+	PocketIcon,
+	PowerIcon,
+	PrinterIcon,
+	RadioIcon,
+	RefreshCcwIcon,
+	RefreshCwIcon,
+	RepeatIcon,
+	ReplyIcon,
+	RewindIcon,
+	RotateCcwIcon,
+	RotateCwIcon,
+	RssIcon,
+	SaveIcon,
+	ScissorsIcon,
+	SearchIcon,
+	SendIcon,
+	ServerIcon,
+	SettingsIcon,
+	ShareIcon,
+	Share2Icon,
+	ShieldIcon,
+	ShieldOffIcon,
+	ShoppingBagIcon,
+	ShoppingCartIcon,
+	ShuffleIcon,
+	SidebarIcon,
+	SkipBackIcon,
+	SkipForwardIcon,
+	SlackIcon,
+	SlashIcon,
+	SlidersIcon,
+	SmartphoneIcon,
+	SmileIcon,
+	SpeakerIcon,
+	SquareIcon,
+	StarIcon,
+	StopCircleIcon,
+	SunIcon,
+	SunriseIcon,
+	SunsetIcon,
+	TableIcon,
+	TabletIcon,
+	TagIcon,
+	TargetIcon,
+	TerminalIcon,
+	ThermometerIcon,
+	ThumbsDownIcon,
+	ThumbsUpIcon,
+	ToggleLeftIcon,
+	ToggleRightIcon,
+	ToolIcon,
+	TrashIcon,
+	Trash2Icon,
+	TrelloIcon,
+	TrendingDownIcon,
+	TrendingUpIcon,
+	TriangleIcon,
+	TruckIcon,
+	TvIcon,
+	TwitchIcon,
+	TwitterIcon,
+	TypeIcon,
+	UmbrellaIcon,
+	UnboostIcon,
+	UnderlineIcon,
+	UnfavoriteIcon,
+	UnfollowIcon,
+	UnlockIcon,
+	UploadIcon,
+	UploadCloudIcon,
+	UserIcon,
+	UserCheckIcon,
+	UserMinusIcon,
+	UserPlusIcon,
+	UserXIcon,
+	UsersIcon,
+	VideoIcon,
+	VideoOffIcon,
+	VoicemailIcon,
+	VolumeIcon,
+	Volume1Icon,
+	Volume2Icon,
+	VolumeXIcon,
+	WatchIcon,
+	WifiIcon,
+	WifiOffIcon,
+	WindIcon,
+	XIcon,
+	XCircleIcon,
+	XOctagonIcon,
+	XSquareIcon,
+	YoutubeIcon,
+	ZapIcon,
+	ZapOffIcon,
+	ZoomInIcon,
+	ZoomOutIcon,
+};
+export type IconName =
+	| 'activity'
+	| 'airplay'
+	| 'alert-circle'
+	| 'alert-octagon'
+	| 'alert-triangle'
+	| 'align-center'
+	| 'align-justify'
+	| 'align-left'
+	| 'align-right'
+	| 'anchor'
+	| 'aperture'
+	| 'archive'
+	| 'arrow-down'
+	| 'arrow-down-circle'
+	| 'arrow-down-left'
+	| 'arrow-down-right'
+	| 'arrow-left'
+	| 'arrow-left-circle'
+	| 'arrow-right'
+	| 'arrow-right-circle'
+	| 'arrow-up'
+	| 'arrow-up-circle'
+	| 'arrow-up-left'
+	| 'arrow-up-right'
+	| 'at-sign'
+	| 'award'
+	| 'bar-chart'
+	| 'bar-chart-2'
+	| 'battery'
+	| 'battery-charging'
+	| 'bell'
+	| 'bell-off'
+	| 'bluetooth'
+	| 'bold'
+	| 'book'
+	| 'book-open'
+	| 'bookmark'
+	| 'boost'
+	| 'box'
+	| 'briefcase'
+	| 'building'
+	| 'calendar'
+	| 'camera'
+	| 'camera-off'
+	| 'cast'
+	| 'check'
+	| 'check-circle'
+	| 'check-square'
+	| 'chevron-down'
+	| 'chevron-left'
+	| 'chevron-right'
+	| 'chevron-up'
+	| 'chevrons-down'
+	| 'chevrons-left'
+	| 'chevrons-right'
+	| 'chevrons-up'
+	| 'chrome'
+	| 'circle'
+	| 'clipboard'
+	| 'clock'
+	| 'cloud'
+	| 'cloud-drizzle'
+	| 'cloud-lightning'
+	| 'cloud-off'
+	| 'cloud-rain'
+	| 'cloud-snow'
+	| 'code'
+	| 'codepen'
+	| 'codesandbox'
+	| 'coffee'
+	| 'columns'
+	| 'command'
+	| 'compass'
+	| 'copy'
+	| 'corner-down-left'
+	| 'corner-down-right'
+	| 'corner-left-down'
+	| 'corner-left-up'
+	| 'corner-right-down'
+	| 'corner-right-up'
+	| 'corner-up-left'
+	| 'corner-up-right'
+	| 'cpu'
+	| 'credit-card'
+	| 'crop'
+	| 'crosshair'
+	| 'database'
+	| 'delete'
+	| 'disc'
+	| 'divide'
+	| 'divide-circle'
+	| 'divide-square'
+	| 'dollar-sign'
+	| 'download'
+	| 'download-cloud'
+	| 'dribbble'
+	| 'droplet'
+	| 'edit'
+	| 'edit-2'
+	| 'edit-3'
+	| 'equals'
+	| 'external-link'
+	| 'eye'
+	| 'eye-off'
+	| 'facebook'
+	| 'fast-forward'
+	| 'favorite'
+	| 'feather'
+	| 'figma'
+	| 'file'
+	| 'file-minus'
+	| 'file-plus'
+	| 'file-text'
+	| 'film'
+	| 'filter'
+	| 'flag'
+	| 'folder'
+	| 'folder-minus'
+	| 'folder-plus'
+	| 'follow'
+	| 'framer'
+	| 'frown'
+	| 'gift'
+	| 'git-branch'
+	| 'git-commit'
+	| 'git-merge'
+	| 'git-pull-request'
+	| 'github'
+	| 'gitlab'
+	| 'globe'
+	| 'greater-than'
+	| 'grid'
+	| 'hard-drive'
+	| 'hash'
+	| 'hashtag'
+	| 'headphones'
+	| 'heart'
+	| 'help-circle'
+	| 'hexagon'
+	| 'home'
+	| 'image'
+	| 'inbox'
+	| 'info'
+	| 'instagram'
+	| 'italic'
+	| 'key'
+	| 'layers'
+	| 'layout'
+	| 'less-than'
+	| 'life-buoy'
+	| 'link'
+	| 'link-2'
+	| 'linkedin'
+	| 'list'
+	| 'loader'
+	| 'lock'
+	| 'log-in'
+	| 'log-out'
+	| 'mail'
+	| 'map'
+	| 'map-pin'
+	| 'maximize'
+	| 'maximize-2'
+	| 'meh'
+	| 'mention'
+	| 'menu'
+	| 'message-circle'
+	| 'message-square'
+	| 'mic'
+	| 'mic-off'
+	| 'minimize'
+	| 'minimize-2'
+	| 'minus'
+	| 'minus-circle'
+	| 'minus-square'
+	| 'monitor'
+	| 'moon'
+	| 'more-horizontal'
+	| 'more-vertical'
+	| 'mouse-pointer'
+	| 'move'
+	| 'music'
+	| 'navigation'
+	| 'navigation-2'
+	| 'octagon'
+	| 'package'
+	| 'paperclip'
+	| 'pause'
+	| 'pause-circle'
+	| 'pen-tool'
+	| 'percent'
+	| 'phone'
+	| 'phone-call'
+	| 'phone-forwarded'
+	| 'phone-incoming'
+	| 'phone-missed'
+	| 'phone-off'
+	| 'phone-outgoing'
+	| 'pie-chart'
+	| 'play'
+	| 'play-circle'
+	| 'plus'
+	| 'plus-circle'
+	| 'plus-square'
+	| 'pocket'
+	| 'power'
+	| 'printer'
+	| 'radio'
+	| 'refresh-ccw'
+	| 'refresh-cw'
+	| 'repeat'
+	| 'reply'
+	| 'rewind'
+	| 'rotate-ccw'
+	| 'rotate-cw'
+	| 'rss'
+	| 'save'
+	| 'scissors'
+	| 'search'
+	| 'send'
+	| 'server'
+	| 'settings'
+	| 'share'
+	| 'share-2'
+	| 'shield'
+	| 'shield-off'
+	| 'shopping-bag'
+	| 'shopping-cart'
+	| 'shuffle'
+	| 'sidebar'
+	| 'skip-back'
+	| 'skip-forward'
+	| 'slack'
+	| 'slash'
+	| 'sliders'
+	| 'smartphone'
+	| 'smile'
+	| 'speaker'
+	| 'square'
+	| 'star'
+	| 'stop-circle'
+	| 'sun'
+	| 'sunrise'
+	| 'sunset'
+	| 'table'
+	| 'tablet'
+	| 'tag'
+	| 'target'
+	| 'terminal'
+	| 'thermometer'
+	| 'thumbs-down'
+	| 'thumbs-up'
+	| 'toggle-left'
+	| 'toggle-right'
+	| 'tool'
+	| 'trash'
+	| 'trash-2'
+	| 'trello'
+	| 'trending-down'
+	| 'trending-up'
+	| 'triangle'
+	| 'truck'
+	| 'tv'
+	| 'twitch'
+	| 'twitter'
+	| 'type'
+	| 'umbrella'
+	| 'unboost'
+	| 'underline'
+	| 'unfavorite'
+	| 'unfollow'
+	| 'unlock'
+	| 'upload'
+	| 'upload-cloud'
+	| 'user'
+	| 'user-check'
+	| 'user-minus'
+	| 'user-plus'
+	| 'user-x'
+	| 'users'
+	| 'video'
+	| 'video-off'
+	| 'voicemail'
+	| 'volume'
+	| 'volume-1'
+	| 'volume-2'
+	| 'volume-x'
+	| 'watch'
+	| 'wifi'
+	| 'wifi-off'
+	| 'wind'
+	| 'x'
+	| 'x-circle'
+	| 'x-octagon'
+	| 'x-square'
+	| 'youtube'
+	| 'zap'
+	| 'zap-off'
+	| 'zoom-in'
+	| 'zoom-out';
 export declare const iconAliases: Record<string, IconName>;
 export declare function getIcon(name: string): Component | null;
 export declare const iconList: string[];
 export declare const iconCategories: {
-    fediverse: string[];
-    navigation: string[];
-    action: string[];
-    media: string[];
-    communication: string[];
-    user: string[];
-    ui: string[];
-    status: string[];
-    files: string[];
-    common: string[];
+	fediverse: string[];
+	navigation: string[];
+	action: string[];
+	media: string[];
+	communication: string[];
+	user: string[];
+	ui: string[];
+	status: string[];
+	files: string[];
+	common: string[];
 };
 //# sourceMappingURL=index.d.ts.map

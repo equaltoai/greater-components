@@ -590,8 +590,8 @@
 		{#if showWorkbench}
 			<div class="gr-theme-switcher__section">
 				<h3 class="gr-theme-switcher__heading">Theme Workbench</h3>
-				<ThemeWorkbench 
-					initialColor={primaryColor} 
+				<ThemeWorkbench
+					initialColor={primaryColor}
 					onSave={(theme) => {
 						// This would typically save to a custom theme store
 						handleColorChange('primary', theme.colors.primary[500]);

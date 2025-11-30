@@ -12,50 +12,50 @@
 import { ApolloClient } from '@apollo/client';
 import { type Client } from 'graphql-ws';
 export interface GraphQLClientConfig {
-    /**
-     * HTTP endpoint for queries and mutations
-     * @example 'https://api.lesser.social/graphql'
-     */
-    httpEndpoint: string;
-    /**
-     * WebSocket endpoint for subscriptions
-     * If not provided, WebSocket will NOT be used - subscriptions will not work
-     * @example 'wss://api.lesser.social/graphql'
-     */
-    wsEndpoint?: string;
-    /**
-     * Authentication token
-     */
-    token?: string;
-    /**
-     * Enable debug logging
-     */
-    debug?: boolean;
-    /**
-     * Custom headers for HTTP requests
-     */
-    headers?: Record<string, string>;
-    /**
-     * Connection timeout in milliseconds
-     * @default 10000
-     */
-    connectionTimeout?: number;
-    /**
-     * Enable automatic retry on network errors
-     * @default true
-     */
-    enableRetry?: boolean;
-    /**
-     * Maximum retry attempts
-     * @default 3
-     */
-    maxRetries?: number;
+	/**
+	 * HTTP endpoint for queries and mutations
+	 * @example 'https://api.lesser.social/graphql'
+	 */
+	httpEndpoint: string;
+	/**
+	 * WebSocket endpoint for subscriptions
+	 * If not provided, WebSocket will NOT be used - subscriptions will not work
+	 * @example 'wss://api.lesser.social/graphql'
+	 */
+	wsEndpoint?: string;
+	/**
+	 * Authentication token
+	 */
+	token?: string;
+	/**
+	 * Enable debug logging
+	 */
+	debug?: boolean;
+	/**
+	 * Custom headers for HTTP requests
+	 */
+	headers?: Record<string, string>;
+	/**
+	 * Connection timeout in milliseconds
+	 * @default 10000
+	 */
+	connectionTimeout?: number;
+	/**
+	 * Enable automatic retry on network errors
+	 * @default true
+	 */
+	enableRetry?: boolean;
+	/**
+	 * Maximum retry attempts
+	 * @default 3
+	 */
+	maxRetries?: number;
 }
 export interface GraphQLClientInstance {
-    client: ApolloClient;
-    wsClient: Client | null;
-    updateToken: (token: string | null) => void;
-    close: () => void;
+	client: ApolloClient;
+	wsClient: Client | null;
+	updateToken: (token: string | null) => void;
+	close: () => void;
 }
 /**
  * Create Apollo Client with Lesser-specific configuration

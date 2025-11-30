@@ -73,7 +73,9 @@
       "@equaltoai/greater-components-messaging/*": ["./packages/shared/messaging/src/*"],
       "@equaltoai/greater-components-search": ["./packages/shared/search/src/index.ts"],
       "@equaltoai/greater-components-search/*": ["./packages/shared/search/src/*"],
-      "@equaltoai/greater-components-notifications": ["./packages/shared/notifications/src/index.ts"],
+      "@equaltoai/greater-components-notifications": [
+        "./packages/shared/notifications/src/index.ts"
+      ],
       "@equaltoai/greater-components-notifications/*": ["./packages/shared/notifications/src/*"],
       "@equaltoai/greater-components-chat": ["./packages/shared/chat/src/index.ts"],
       "@equaltoai/greater-components-chat/*": ["./packages/shared/chat/src/*"]

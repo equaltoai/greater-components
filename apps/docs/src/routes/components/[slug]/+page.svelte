@@ -3,7 +3,7 @@
 	import { getComponentBySlug } from '$lib/data/registry.js';
 	import type { Component } from '$lib/data/registry.js';
 
-	const component = $derived<Component | undefined>(getComponentBySlug($page.params.slug));
+	const component = $derived<Component | undefined>(getComponentBySlug($page.params.slug ?? ''));
 
 	let selectedExample = $state(0);
 	let copiedCode = $state(false);

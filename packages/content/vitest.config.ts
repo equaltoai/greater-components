@@ -14,7 +14,10 @@ export default defineConfig({
 	resolve: {
 		conditions: ['browser'],
 		alias: {
-			'@equaltoai/greater-components-primitives': path.resolve(__dirname, '../primitives/src/index.ts'),
+			'@equaltoai/greater-components-primitives': path.resolve(
+				__dirname,
+				'../primitives/src/index.ts'
+			),
 			'@equaltoai/greater-components-utils': path.resolve(__dirname, '../utils/src/index.ts'),
 			'@equaltoai/greater-components-icons': path.resolve(__dirname, '../icons/src/index.ts'),
 		},
@@ -22,6 +25,7 @@ export default defineConfig({
 	test: {
 		environment: 'jsdom',
 		globals: true,
+		setupFiles: ['./tests/setup.ts'],
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html', 'lcov'],
@@ -38,4 +42,3 @@ export default defineConfig({
 		},
 	},
 });
-

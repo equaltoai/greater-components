@@ -1,5 +1,7 @@
-```typescript
 import type { PageServerLoad } from './$types';
+
+// Disable SSR for this page as it uses browser-only APIs
+export const ssr = false;
 
 export const load: PageServerLoad = async () => {
 	return {
@@ -11,4 +13,3 @@ export const load: PageServerLoad = async () => {
 		},
 	};
 };
-```

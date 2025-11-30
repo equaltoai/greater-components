@@ -144,16 +144,16 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 			// If we leave the dropzone, visual feedback should stop.
 			onDragLeave?.();
 		}
-        // Simple implementation: toggle state
-        isOver = false; 
+		// Simple implementation: toggle state
+		isOver = false;
 	}
-    
-    // Better drag leave handling to avoid flicker when dragging over children
-    // We can use a counter or check relatedTarget, but for Svelte simpler logic usually works if pointer-events: none on children during drag?
-    // Or just rely on the fact that 'dragleave' fires on the parent when entering a child. 
-    // A common robust pattern is checking `e.relatedTarget`.
-    // However, `e.currentTarget === e.target` check in handleDragLeave handles the "leaving to outside" case mostly.
-    
+
+	// Better drag leave handling to avoid flicker when dragging over children
+	// We can use a counter or check relatedTarget, but for Svelte simpler logic usually works if pointer-events: none on children during drag?
+	// Or just rely on the fact that 'dragleave' fires on the parent when entering a child.
+	// A common robust pattern is checking `e.relatedTarget`.
+	// However, `e.currentTarget === e.target` check in handleDragLeave handles the "leaving to outside" case mostly.
+
 	async function handleDrop(e: DragEvent) {
 		if (disabled) return;
 		e.preventDefault();
@@ -167,179 +167,188 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 
 		// Handle Files
 		if (dataTransfer.files && dataTransfer.files.length > 0) {
-            // Validate maxFiles
-            if (maxFiles && dataTransfer.files.length > maxFiles) {
-                onError?.({
-                    code: 'TOO_MANY_FILES',
-                    message: `Too many files dropped. Maximum is ${maxFiles}.`
-                });
-                return;
-            }
-            
-            if (!multiple && dataTransfer.files.length > 1) {
-                 onError?.({
-                    code: 'TOO_MANY_FILES',
-                    message: `Multiple files not allowed.`
-                });
-                return;
-            }
+			// Validate maxFiles
+			if (maxFiles && dataTransfer.files.length > maxFiles) {
+				onError?.({
+					code: 'TOO_MANY_FILES',
+					message: `Too many files dropped. Maximum is ${maxFiles}.`,
+				});
+				return;
+			}
+
+			if (!multiple && dataTransfer.files.length > 1) {
+				onError?.({
+					code: 'TOO_MANY_FILES',
+					message: `Multiple files not allowed.`,
+				});
+				return;
+			}
 
 			const files = Array.from(dataTransfer.files);
 			for (const file of files) {
 				const error = validateFile(file);
 				if (error) {
 					onError?.(error);
-					// Continue or stop? Usually stop entire batch or skip invalid. 
-                    // Let's skip invalid but report error.
-                    continue;
+					// Continue or stop? Usually stop entire batch or skip invalid.
+					// Let's skip invalid but report error.
+					continue;
 				}
 
-                // Read file content?
-                // The spec implies we return DroppedItem with content.
-                // For large files, reading automatically might be bad.
-                // But "DropZone - Drag-and-drop files/text (needed for chat context)" usually implies reading text content.
-                // Let's try to read as text if text/plain or similar, or dataURL for images?
-                // Or maybe just return the File object and let consumer read it, but DroppedItem has 'content' string.
-                // The spec says: "content: string; // Text content or data URL"
-                
-                try {
-                    let content = '';
-                    if (file.type.startsWith('text/') || file.name.endsWith('.json') || file.name.endsWith('.md') || file.name.endsWith('.ts') || file.name.endsWith('.js')) {
-                        content = await readFileAsText(file);
-                    } else {
-                        // For binary/images, read as DataURL
-                        content = await readFileAsDataURL(file);
-                    }
-                    
-                    droppedItems.push({
-                        id: crypto.randomUUID(),
-                        type: 'file',
-                        content,
-                        file,
-                        name: file.name,
-                        size: file.size,
-                        mimeType: file.type
-                    });
-                } catch {
-                    onError?.({
-                        code: 'READ_ERROR',
-                        message: `Failed to read file ${file.name}`,
-                        file
-                    });
-                }
+				// Read file content?
+				// The spec implies we return DroppedItem with content.
+				// For large files, reading automatically might be bad.
+				// But "DropZone - Drag-and-drop files/text (needed for chat context)" usually implies reading text content.
+				// Let's try to read as text if text/plain or similar, or dataURL for images?
+				// Or maybe just return the File object and let consumer read it, but DroppedItem has 'content' string.
+				// The spec says: "content: string; // Text content or data URL"
+
+				try {
+					let content = '';
+					if (
+						file.type.startsWith('text/') ||
+						file.name.endsWith('.json') ||
+						file.name.endsWith('.md') ||
+						file.name.endsWith('.ts') ||
+						file.name.endsWith('.js')
+					) {
+						content = await readFileAsText(file);
+					} else {
+						// For binary/images, read as DataURL
+						content = await readFileAsDataURL(file);
+					}
+
+					droppedItems.push({
+						id: crypto.randomUUID(),
+						type: 'file',
+						content,
+						file,
+						name: file.name,
+						size: file.size,
+						mimeType: file.type,
+					});
+				} catch {
+					onError?.({
+						code: 'READ_ERROR',
+						message: `Failed to read file ${file.name}`,
+						file,
+					});
+				}
 			}
 		}
-        
-        // Handle Text/URL if enabled and no files dropped (or mixed?)
-        // Usually drag operation is either files or text.
-        if (droppedItems.length === 0) {
-            const text = dataTransfer.getData('text/plain');
-            const uriList = dataTransfer.getData('text/uri-list');
-            
-            if (accept.urls && (uriList || (text && isValidUrl(text)))) {
-                 const url = uriList || text;
-                 droppedItems.push({
-                     id: crypto.randomUUID(),
-                     type: 'url',
-                     content: url,
-                     name: url
-                 });
-            } else if (accept.text && text) {
-                 droppedItems.push({
-                     id: crypto.randomUUID(),
-                     type: 'text',
-                     content: text,
-                     name: text.slice(0, 20) + (text.length > 20 ? '...' : '')
-                 });
-            }
-        }
+
+		// Handle Text/URL if enabled and no files dropped (or mixed?)
+		// Usually drag operation is either files or text.
+		if (droppedItems.length === 0) {
+			const text = dataTransfer.getData('text/plain');
+			const uriList = dataTransfer.getData('text/uri-list');
+
+			if (accept.urls && (uriList || (text && isValidUrl(text)))) {
+				const url = uriList || text;
+				droppedItems.push({
+					id: crypto.randomUUID(),
+					type: 'url',
+					content: url,
+					name: url,
+				});
+			} else if (accept.text && text) {
+				droppedItems.push({
+					id: crypto.randomUUID(),
+					type: 'text',
+					content: text,
+					name: text.slice(0, 20) + (text.length > 20 ? '...' : ''),
+				});
+			}
+		}
 
 		if (droppedItems.length > 0) {
 			onDrop?.(droppedItems);
 		}
 	}
-    
-    function validateFile(file: File): DropError | null {
-        if (maxSize && file.size > maxSize) {
-            return {
-                code: 'FILE_TOO_LARGE',
-                message: `File ${file.name} is too large. Max size is ${formatBytes(maxSize)}.`,
-                file
-            };
-        }
-        
-        if (accept.files && accept.files.length > 0) {
-            const allowed = accept.files.some(type => {
-                if (type.startsWith('.')) {
-                    return file.name.toLowerCase().endsWith(type.toLowerCase());
-                }
-                // wildcard mime type
-                if (type.endsWith('/*')) {
-                    const baseType = type.slice(0, -2);
-                    return file.type.startsWith(baseType);
-                }
-                return file.type === type;
-            });
-            
-            if (!allowed) {
-                return {
-                    code: 'INVALID_TYPE',
-                    message: `File type ${file.type} not supported.`,
-                    file
-                };
-            }
-        }
-        
-        return null;
-    }
+
+	function validateFile(file: File): DropError | null {
+		if (maxSize && file.size > maxSize) {
+			return {
+				code: 'FILE_TOO_LARGE',
+				message: `File ${file.name} is too large. Max size is ${formatBytes(maxSize)}.`,
+				file,
+			};
+		}
+
+		if (accept.files && accept.files.length > 0) {
+			const allowed = accept.files.some((type) => {
+				if (type.startsWith('.')) {
+					return file.name.toLowerCase().endsWith(type.toLowerCase());
+				}
+				// wildcard mime type
+				if (type.endsWith('/*')) {
+					const baseType = type.slice(0, -2);
+					return file.type.startsWith(baseType);
+				}
+				return file.type === type;
+			});
+
+			if (!allowed) {
+				return {
+					code: 'INVALID_TYPE',
+					message: `File type ${file.type} not supported.`,
+					file,
+				};
+			}
+		}
+
+		return null;
+	}
 
 	async function handleFileInputChange(e: Event) {
 		const target = e.target as HTMLInputElement;
 		if (target.files && target.files.length > 0) {
-            // Reuse drop logic or extract
-            const files = Array.from(target.files);
-            const droppedItems: DroppedItem[] = [];
-            
-            for (const file of files) {
-                const error = validateFile(file);
+			// Reuse drop logic or extract
+			const files = Array.from(target.files);
+			const droppedItems: DroppedItem[] = [];
+
+			for (const file of files) {
+				const error = validateFile(file);
 				if (error) {
 					onError?.(error);
-                    continue;
+					continue;
 				}
-                
-                try {
-                    let content = '';
-                    // Simple heuristics for reading
-                    if (file.type.startsWith('text/') || file.name.match(/\.(json|md|txt|csv|xml|svg|html|css|js|ts|svelte)$/i)) {
-                        content = await readFileAsText(file);
-                    } else {
-                        content = await readFileAsDataURL(file);
-                    }
-                    
-                    droppedItems.push({
-                        id: crypto.randomUUID(),
-                        type: 'file',
-                        content,
-                        file,
-                        name: file.name,
-                        size: file.size,
-                        mimeType: file.type
-                    });
-                } catch {
-                     onError?.({
-                        code: 'READ_ERROR',
-                        message: `Failed to read file ${file.name}`,
-                        file
-                    });
-                }
-            }
-            
-            if (droppedItems.length > 0) {
-			    onDrop?.(droppedItems);
-		    }
-            
-            // Reset input value to allow selecting same file again
-            target.value = '';
+
+				try {
+					let content = '';
+					// Simple heuristics for reading
+					if (
+						file.type.startsWith('text/') ||
+						file.name.match(/\.(json|md|txt|csv|xml|svg|html|css|js|ts|svelte)$/i)
+					) {
+						content = await readFileAsText(file);
+					} else {
+						content = await readFileAsDataURL(file);
+					}
+
+					droppedItems.push({
+						id: crypto.randomUUID(),
+						type: 'file',
+						content,
+						file,
+						name: file.name,
+						size: file.size,
+						mimeType: file.type,
+					});
+				} catch {
+					onError?.({
+						code: 'READ_ERROR',
+						message: `Failed to read file ${file.name}`,
+						file,
+					});
+				}
+			}
+
+			if (droppedItems.length > 0) {
+				onDrop?.(droppedItems);
+			}
+
+			// Reset input value to allow selecting same file again
+			target.value = '';
 		}
 	}
 
@@ -348,46 +357,46 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 			fileInput.click();
 		}
 	}
-    
-    // Helpers
-    function readFileAsText(file: File): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = () => reject(reader.error);
-            reader.readAsText(file);
-        });
-    }
 
-    function readFileAsDataURL(file: File): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
-        });
-    }
-    
-    function isValidUrl(string: string) {
-        try {
-            new URL(string);
-            return true;
-        } catch {
-            return false;
-        }
-    }
-    
-    function formatBytes(bytes: number, decimals = 2) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = decimals < 0 ? 0 : decimals;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
-    
-    // Construct accept string for input
-    const acceptString = accept.files?.join(',') || '';
+	// Helpers
+	function readFileAsText(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = () => reject(reader.error);
+			reader.readAsText(file);
+		});
+	}
+
+	function readFileAsDataURL(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = () => reject(reader.error);
+			reader.readAsDataURL(file);
+		});
+	}
+
+	function isValidUrl(string: string) {
+		try {
+			new URL(string);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	function formatBytes(bytes: number, decimals = 2) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const dm = decimals < 0 ? 0 : decimals;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+	}
+
+	// Construct accept string for input
+	const acceptString = accept.files?.join(',') || '';
 </script>
 
 <div
@@ -398,17 +407,17 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 	ondragover={handleDragOver}
 	ondragleave={handleDragLeave}
 	ondrop={handleDrop}
-    onclick={triggerFileInput}
-    onkeydown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            triggerFileInput();
-        }
-    }}
+	onclick={triggerFileInput}
+	onkeydown={(e) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			triggerFileInput();
+		}
+	}}
 	role="button"
 	tabindex={disabled ? -1 : 0}
 	aria-disabled={disabled}
-    {...restProps}
+	{...restProps}
 >
 	<input
 		bind:this={fileInput}
@@ -416,10 +425,10 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 		accept={acceptString}
 		{multiple}
 		onchange={handleFileInputChange}
-        onclick={(e) => e.stopPropagation()} 
+		onclick={(e) => e.stopPropagation()}
 		class="gr-file-input"
 		tabindex="-1"
-        aria-hidden="true"
+		aria-hidden="true"
 	/>
 	{@render children?.()}
 </div>

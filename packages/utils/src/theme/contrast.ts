@@ -23,9 +23,7 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 function getLuminance(r: number, g: number, b: number): number {
 	const transform = (value: number) => {
 		const normalized = value / 255;
-		return normalized <= 0.03928
-			? normalized / 12.92
-			: Math.pow((normalized + 0.055) / 1.055, 2.4);
+		return normalized <= 0.03928 ? normalized / 12.92 : Math.pow((normalized + 0.055) / 1.055, 2.4);
 	};
 
 	const rLuminance = transform(r);

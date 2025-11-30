@@ -151,7 +151,7 @@ CodeBlock component - Syntax highlighting code block with copy button.
 		try {
 			loading = true;
 			const highlighter = await getHighlighterInstance();
-			
+
 			// Check if lang is loaded
 			if (!highlighter.getLoadedLanguages().includes(language)) {
 				highlightedCode = escapeHtml(code);
@@ -171,9 +171,9 @@ CodeBlock component - Syntax highlighting code block with copy button.
 							if (highlightLines.includes(line)) {
 								node.properties.class += ' highlighted-line';
 							}
-						}
-					}
-				]
+						},
+					},
+				],
 			});
 			loading = false;
 		} catch (e) {
@@ -213,8 +213,8 @@ CodeBlock component - Syntax highlighting code block with copy button.
 		</div>
 	{/if}
 
-	<div 
-		class="gr-code-block__content" 
+	<div
+		class="gr-code-block__content"
 		style:max-height={typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight}
 		class:gr-code-block--wrap={wrap}
 		class:gr-code-block--line-numbers={showLineNumbers}
@@ -241,4 +241,3 @@ CodeBlock component - Syntax highlighting code block with copy button.
 		</div>
 	{/if}
 </div>
-

@@ -1,10 +1,13 @@
-```svelte
 <script lang="ts">
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import * as Chat from '@equaltoai/greater-components-chat';
-	import type { ChatMessage, ToolCall, ChatSettingsState } from '@equaltoai/greater-components-chat';
+	import type {
+		ChatMessage,
+		ToolCall,
+		ChatSettingsState,
+	} from '@equaltoai/greater-components-chat';
 	import type { ChatHandlers, ConnectionStatus } from '@equaltoai/greater-components-chat';
 
 	// ============================================
@@ -15,7 +18,10 @@
 			id: 'tc_1',
 			tool: 'query_knowledge',
 			args: { query: 'PAI documentation', knowledgeBase: 'paytheory' },
-			result: { found: 3, snippets: ['PAI is an AI-powered assistant...', 'Scopes define context...'] },
+			result: {
+				found: 3,
+				snippets: ['PAI is an AI-powered assistant...', 'Scopes define context...'],
+			},
 			status: 'complete',
 		},
 		{
@@ -169,20 +175,16 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 		for (let i = 0; i < chars.length; i++) {
 			await new Promise((resolve) => setTimeout(resolve, 15 + Math.random() * 25));
 			streamContent += chars[i];
-			
+
 			// Update the message content
 			messages = messages.map((msg) =>
-				msg.id === assistantMessage.id
-					? { ...msg, content: streamContent }
-					: msg
+				msg.id === assistantMessage.id ? { ...msg, content: streamContent } : msg
 			);
 		}
 
 		// Mark message as complete
 		messages = messages.map((msg) =>
-			msg.id === assistantMessage.id
-				? { ...msg, status: 'complete' as const }
-				: msg
+			msg.id === assistantMessage.id ? { ...msg, status: 'complete' as const } : msg
 		);
 
 		isStreaming = false;
@@ -273,8 +275,10 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 	// ============================================
 	// Code Examples
 	// ============================================
-	const basicUsageSnippet = `
-<script>
+	const basicUsageSnippet =
+		`
+<` +
+		`script>
   import * as Chat from '@equaltoai/greater-components-chat';
 
   const handlers = {
@@ -287,7 +291,8 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
       return response.json();
     },
   };
-</script>
+</` +
+		`script>
 
 <Chat.Container {handlers}>
   <Chat.Header title="AI Assistant" connectionStatus="connected" />
@@ -312,8 +317,10 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
   <Chat.Input onSend={(content) => handlers.onSubmit(content)} />
 </Chat.Container>`;
 
-	const withSettingsSnippet = `
-<script>
+	const withSettingsSnippet =
+		`
+<` +
+		`script>
   import * as Chat from '@equaltoai/greater-components-chat';
   
   let showSettings = $state(false);
@@ -322,7 +329,8 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
     temperature: 0.7,
     streaming: true,
   });
-</script>
+</` +
+		`script>
 
 <Chat.Container {handlers}>
   <Chat.Header
@@ -371,8 +379,8 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
   }}
 />
 
-<!-- Or use Chat.ToolCall directly -->
-<Chat.ToolCall
+<!-- Or use Chat.ToolCallDisplay directly -->
+<Chat.ToolCallDisplay
   toolCall={{
     id: 'tc_1',
     tool: 'search_files',
@@ -402,9 +410,7 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 		<Button variant="outline" size="sm" onclick={toggleEmptyState}>
 			{showEmptyState ? 'Show Messages' : 'Show Empty State'}
 		</Button>
-		<Button variant="outline" size="sm" onclick={addToolCallDemo}>
-			Add Tool Call Demo
-		</Button>
+		<Button variant="outline" size="sm" onclick={addToolCallDemo}>Add Tool Call Demo</Button>
 	{/snippet}
 
 	<!-- Section 1: Full Chat Interface -->
@@ -422,7 +428,7 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 		<div class="chat-demo-container">
 			<Chat.Container
 				{handlers}
-				messages={messages}
+				{messages}
 				streaming={isStreaming}
 				{streamContent}
 				{connectionStatus}
@@ -438,16 +444,10 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 					onSettings={() => (showSettings = true)}
 				/>
 
-				<Chat.Messages
-					showAvatars={true}
-				/>
+				<Chat.Messages showAvatars={true} />
 
 				{#if messages.length === 0}
-					<Chat.Suggestions
-						{suggestions}
-						onSelect={handleSuggestionSelect}
-						variant="cards"
-					/>
+					<Chat.Suggestions {suggestions} onSelect={handleSuggestionSelect} variant="cards" />
 				{/if}
 
 				<Chat.Input
@@ -472,8 +472,8 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 			<p class="section-eyebrow">02 · Quick Suggestions</p>
 			<h2>Prompt suggestions for empty state</h2>
 			<p>
-				<code>Chat.Suggestions</code> displays clickable prompts to help users get started.
-				Supports both <code>pills</code> (horizontal) and <code>cards</code> (grid) variants.
+				<code>Chat.Suggestions</code> displays clickable prompts to help users get started. Supports
+				both <code>pills</code> (horizontal) and <code>cards</code> (grid) variants.
 			</p>
 		</header>
 
@@ -481,7 +481,7 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 			<div class="suggestions-variant">
 				<h3>Pills Variant (default)</h3>
 				<Chat.Suggestions
-					suggestions={suggestions}
+					{suggestions}
 					onSelect={(s) => console.log('Selected:', s)}
 					variant="pills"
 				/>
@@ -515,15 +515,15 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 			<p class="section-eyebrow">03 · Tool Call Display</p>
 			<h2>AI tool invocations with status indicators</h2>
 			<p>
-				<code>Chat.ToolCall</code> displays tool/function calls during AI responses with
-				collapsible results, status indicators, and syntax-highlighted arguments.
+				<code>Chat.ToolCallDisplay</code> displays tool/function calls during AI responses with collapsible
+				results, status indicators, and syntax-highlighted arguments.
 			</p>
 		</header>
 
 		<div class="tool-calls-demo">
 			<div class="tool-call-item">
 				<h3>Pending</h3>
-				<Chat.ToolCall
+				<Chat.ToolCallDisplay
 					toolCall={{
 						id: 'demo_pending',
 						tool: 'query_knowledge',
@@ -535,7 +535,7 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 
 			<div class="tool-call-item">
 				<h3>Running</h3>
-				<Chat.ToolCall
+				<Chat.ToolCallDisplay
 					toolCall={{
 						id: 'demo_running',
 						tool: 'search_files',
@@ -547,13 +547,13 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 
 			<div class="tool-call-item">
 				<h3>Complete</h3>
-				<Chat.ToolCall
+				<Chat.ToolCallDisplay
 					toolCall={{
 						id: 'demo_complete',
 						tool: 'read_file',
 						args: { path: 'src/lib/Button.svelte', limit: 50 },
 						result: {
-							content: '<script lang="ts">\n  export let variant = "solid";\n</script>',
+							content: '// Svelte component content\nexport let variant = "solid";',
 							lines: 50,
 						},
 						status: 'complete',
@@ -565,7 +565,7 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 
 			<div class="tool-call-item">
 				<h3>Error</h3>
-				<Chat.ToolCall
+				<Chat.ToolCallDisplay
 					toolCall={{
 						id: 'demo_error',
 						tool: 'execute_command',
@@ -590,8 +590,8 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 			<p class="section-eyebrow">04 · Settings Configuration</p>
 			<h2>Chat settings modal with model selection</h2>
 			<p>
-				<code>Chat.Settings</code> provides a configuration modal for model selection,
-				temperature, max tokens, system prompt, and knowledge base toggles.
+				<code>Chat.Settings</code> provides a configuration modal for model selection, temperature, max
+				tokens, system prompt, and knowledge base toggles.
 			</p>
 		</header>
 
@@ -640,7 +640,7 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 	bind:open={showSettings}
 	{settings}
 	{availableModels}
-	availableKnowledgeBases={availableKnowledgeBases}
+	{availableKnowledgeBases}
 	onSettingsChange={(s) => (settings = s)}
 	onSave={(s) => {
 		settings = s;
@@ -777,4 +777,3 @@ This will analyze your TypeScript files and generate improvement suggestions.`,
 		}
 	}
 </style>
-```

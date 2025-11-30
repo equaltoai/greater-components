@@ -20,4 +20,3 @@ export interface MediaAttachment {
 		duration?: number;
 	};
 }
-

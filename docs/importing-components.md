@@ -14,29 +14,36 @@ pnpm add @equaltoai/greater-components
 
 Greater Components is organized into these subpaths:
 
-| Path | Purpose |
-|------|---------|
-| `/primitives` | Core UI components (Button, Card, Modal, etc.) |
-| `/tokens` | Design system tokens and CSS variables |
-| `/icons` | Feather icons and custom icons |
-| `/headless` | Behavior-only components (no styling) |
-| `/utils` | Shared helper functions |
-| `/content` | Rich content rendering (CodeBlock, MarkdownRenderer) |
-| `/shared/auth` | Authentication components |
-| `/shared/admin` | Admin dashboard components |
-| `/shared/compose` | Post/content composer |
-| `/shared/messaging` | Direct messaging |
-| `/shared/search` | Search components |
-| `/shared/notifications` | Notification feed |
-| `/faces/social` | Twitter/Mastodon-style UI (Timeline, Status) |
-| `/adapters` | Protocol adapters (Lesser GraphQL) |
+| Path                    | Purpose                                              |
+| ----------------------- | ---------------------------------------------------- |
+| `/primitives`           | Core UI components (Button, Card, Modal, etc.)       |
+| `/tokens`               | Design system tokens and CSS variables               |
+| `/icons`                | Feather icons and custom icons                       |
+| `/headless`             | Behavior-only components (no styling)                |
+| `/utils`                | Shared helper functions                              |
+| `/content`              | Rich content rendering (CodeBlock, MarkdownRenderer) |
+| `/shared/auth`          | Authentication components                            |
+| `/shared/admin`         | Admin dashboard components                           |
+| `/shared/compose`       | Post/content composer                                |
+| `/shared/messaging`     | Direct messaging                                     |
+| `/shared/search`        | Search components                                    |
+| `/shared/notifications` | Notification feed                                    |
+| `/faces/social`         | Twitter/Mastodon-style UI (Timeline, Status)         |
+| `/adapters`             | Protocol adapters (Lesser GraphQL)                   |
 
 ## Import Patterns
 
 ### 1. Primitives (Core UI)
 
 ```typescript
-import { Button, Container, Modal, Card, Heading, Text } from '@equaltoai/greater-components/primitives';
+import {
+	Button,
+	Container,
+	Modal,
+	Card,
+	Heading,
+	Text,
+} from '@equaltoai/greater-components/primitives';
 ```
 
 ### 2. Icons

@@ -16,184 +16,101 @@
 import type { ComponentProps } from 'svelte';
 export type { ComponentProps } from 'svelte';
 
+// Import all components (for both export and prop type inference)
+import Button from './components/Button.svelte';
+import CopyButton from './components/CopyButton.svelte';
+import TextField from './components/TextField.svelte';
+import TextArea from './components/TextArea.svelte';
+import Select from './components/Select.svelte';
+import Checkbox from './components/Checkbox.svelte';
+import Switch from './components/Switch.svelte';
+import FileUpload from './components/FileUpload.svelte';
+import Modal from './components/Modal.svelte';
+import Menu from './components/Menu.svelte';
+import Tooltip from './components/Tooltip.svelte';
+import Tabs from './components/Tabs.svelte';
+import Avatar from './components/Avatar.svelte';
+import Skeleton from './components/Skeleton.svelte';
+import Card from './components/Card.svelte';
+import Container from './components/Container.svelte';
+import Heading from './components/Heading.svelte';
+import Text from './components/Text.svelte';
+import Section from './components/Section.svelte';
+import ThemeSwitcher from './components/ThemeSwitcher.svelte';
+import ThemeProvider from './components/ThemeProvider.svelte';
+import Badge from './components/Badge.svelte';
+import List from './components/List.svelte';
+import ListItem from './components/ListItem.svelte';
+import GradientText from './components/GradientText.svelte';
+import StepIndicator from './components/StepIndicator.svelte';
+import IconBadge from './components/IconBadge.svelte';
+import DropZone from './components/DropZone.svelte';
+import StreamingText from './components/StreamingText.svelte';
+
 /**
  * Core interactive components
  * @public
  */
-
-/**
- * Accessible button component with loading states and multiple variants.
- * @public
- */
-export { default as Button } from './components/Button.svelte';
-
-/**
- * Button for copying text to clipboard with visual feedback.
- * @public
- */
-export { default as CopyButton } from './components/CopyButton.svelte';
-
-/**
- * Text input field with validation and accessibility features.
- * @public
- */
-export { default as TextField } from './components/TextField.svelte';
-
-/**
- * Multi-line text area with auto-resize.
- * @public
- */
-export { default as TextArea } from './components/TextArea.svelte';
-
-/**
- * Dropdown select component with keyboard navigation.
- * @public
- */
-export { default as Select } from './components/Select.svelte';
-
-/**
- * Checkbox input with indeterminate state support.
- * @public
- */
-export { default as Checkbox } from './components/Checkbox.svelte';
-
-/**
- * Toggle switch component for boolean options.
- * @public
- */
-export { default as Switch } from './components/Switch.svelte';
-
-/**
- * File upload component with drag-and-drop support.
- * @public
- */
-export { default as FileUpload } from './components/FileUpload.svelte';
-
-/**
- * Modal dialog with focus management and backdrop handling.
- * @public
- */
-export { default as Modal } from './components/Modal.svelte';
-
-/**
- * Dropdown menu with keyboard navigation and accessibility.
- * @public
- */
-export { default as Menu } from './components/Menu.svelte';
-
-/**
- * Tooltip with smart positioning and accessibility.
- * @public
- */
-export { default as Tooltip } from './components/Tooltip.svelte';
-
-/**
- * Tab navigation with keyboard support and ARIA semantics.
- * @public
- */
-export { default as Tabs } from './components/Tabs.svelte';
-
-/**
- * Avatar component with fallback initials and status indicators.
- * @public
- */
-export { default as Avatar } from './components/Avatar.svelte';
-
-/**
- * Loading skeleton with animation and shape variants.
- * @public
- */
-export { default as Skeleton } from './components/Skeleton.svelte';
-
-/**
- * Content container with elevation, borders, and semantic sections.
- * @public
- */
-export { default as Card } from './components/Card.svelte';
-
-/**
- * Max-width wrapper for content centering.
- * @public
- */
-export { default as Container } from './components/Container.svelte';
-
-/**
- * Semantic heading with consistent typography.
- * @public
- */
-export { default as Heading } from './components/Heading.svelte';
-
-/**
- * Paragraph and inline text component with size, weight, and color variants.
- * @public
- */
-export { default as Text } from './components/Text.svelte';
-
-/**
- * Semantic section wrapper with consistent vertical spacing.
- * @public
- */
-export { default as Section } from './components/Section.svelte';
-
-/**
- * Theme switcher for toggling between color schemes.
- * @public
- */
-export { default as ThemeSwitcher } from './components/ThemeSwitcher.svelte';
-
-/**
- * Theme provider for managing application-wide theme state.
- * @public
- */
-export { default as ThemeProvider } from './components/ThemeProvider.svelte';
-
-/**
- * Badge component for status indicators and labels.
- * @public
- */
-export { default as Badge } from './components/Badge.svelte';
-
-/**
- * List component for styled lists with optional icons.
- * @public
- */
-export { default as List } from './components/List.svelte';
-
-/**
- * ListItem component for items within a List.
- * @public
- */
-export { default as ListItem } from './components/ListItem.svelte';
-
-/**
- * GradientText component for eye-catching text effects.
- * @public
- */
-export { default as GradientText } from './components/GradientText.svelte';
-
-/**
- * StepIndicator component for multi-step workflows.
- * @public
- */
-export { default as StepIndicator } from './components/StepIndicator.svelte';
-
-/**
- * IconBadge component for icons in shaped containers.
- * @public
- */
-export { default as IconBadge } from './components/IconBadge.svelte';
-
-/**
- * DropZone component for drag and drop file uploads.
- * @public
- */
-export { default as DropZone } from './components/DropZone.svelte';
-
-/**
- * StreamingText component for text animation.
- * @public
- */
-export { default as StreamingText } from './components/StreamingText.svelte';
+export {
+	/** Accessible button component with loading states and multiple variants. */
+	Button,
+	/** Button for copying text to clipboard with visual feedback. */
+	CopyButton,
+	/** Text input field with validation and accessibility features. */
+	TextField,
+	/** Multi-line text area with auto-resize. */
+	TextArea,
+	/** Dropdown select component with keyboard navigation. */
+	Select,
+	/** Checkbox input with indeterminate state support. */
+	Checkbox,
+	/** Toggle switch component for boolean options. */
+	Switch,
+	/** File upload component with drag-and-drop support. */
+	FileUpload,
+	/** Modal dialog with focus management and backdrop handling. */
+	Modal,
+	/** Dropdown menu with keyboard navigation and accessibility. */
+	Menu,
+	/** Tooltip with smart positioning and accessibility. */
+	Tooltip,
+	/** Tab navigation with keyboard support and ARIA semantics. */
+	Tabs,
+	/** Avatar component with fallback initials and status indicators. */
+	Avatar,
+	/** Loading skeleton with animation and shape variants. */
+	Skeleton,
+	/** Content container with elevation, borders, and semantic sections. */
+	Card,
+	/** Max-width wrapper for content centering. */
+	Container,
+	/** Semantic heading with consistent typography. */
+	Heading,
+	/** Paragraph and inline text component with size, weight, and color variants. */
+	Text,
+	/** Semantic section wrapper with consistent vertical spacing. */
+	Section,
+	/** Theme switcher for toggling between color schemes. */
+	ThemeSwitcher,
+	/** Theme provider for managing application-wide theme state. */
+	ThemeProvider,
+	/** Badge component for status indicators and labels. */
+	Badge,
+	/** List component for styled lists with optional icons. */
+	List,
+	/** ListItem component for items within a List. */
+	ListItem,
+	/** GradientText component for eye-catching text effects. */
+	GradientText,
+	/** StepIndicator component for multi-step workflows. */
+	StepIndicator,
+	/** IconBadge component for icons in shaped containers. */
+	IconBadge,
+	/** DropZone component for drag and drop file uploads. */
+	DropZone,
+	/** StreamingText component for text animation. */
+	StreamingText,
+};
 
 /**
  * Settings components for building configuration panels.
@@ -213,67 +130,36 @@ export { default as ColorHarmonyPicker } from './components/Theme/ColorHarmonyPi
 export { default as ContrastChecker } from './components/Theme/ContrastChecker.svelte';
 export { default as ThemeWorkbench } from './components/Theme/ThemeWorkbench.svelte';
 
-// Import component types for prop inference
-import type ButtonComponent from './components/Button.svelte';
-import type CopyButtonComponent from './components/CopyButton.svelte';
-import type TextFieldComponent from './components/TextField.svelte';
-import type TextAreaComponent from './components/TextArea.svelte';
-import type SelectComponent from './components/Select.svelte';
-import type CheckboxComponent from './components/Checkbox.svelte';
-import type SwitchComponent from './components/Switch.svelte';
-import type FileUploadComponent from './components/FileUpload.svelte';
-import type ModalComponent from './components/Modal.svelte';
-import type MenuComponent from './components/Menu.svelte';
-import type TooltipComponent from './components/Tooltip.svelte';
-import type TabsComponent from './components/Tabs.svelte';
-import type AvatarComponent from './components/Avatar.svelte';
-import type SkeletonComponent from './components/Skeleton.svelte';
-import type CardComponent from './components/Card.svelte';
-import type ContainerComponent from './components/Container.svelte';
-import type SectionComponent from './components/Section.svelte';
-import type HeadingComponent from './components/Heading.svelte';
-import type TextComponent from './components/Text.svelte';
-import type ThemeSwitcherComponent from './components/ThemeSwitcher.svelte';
-import type ThemeProviderComponent from './components/ThemeProvider.svelte';
-import type BadgeComponent from './components/Badge.svelte';
-import type ListComponent from './components/List.svelte';
-import type ListItemComponent from './components/ListItem.svelte';
-import type GradientTextComponent from './components/GradientText.svelte';
-import type StepIndicatorComponent from './components/StepIndicator.svelte';
-import type IconBadgeComponent from './components/IconBadge.svelte';
-import type DropZoneComponent from './components/DropZone.svelte';
-import type StreamingTextComponent from './components/StreamingText.svelte';
-
-// Component prop types
-export type ButtonProps = ComponentProps<ButtonComponent>;
-export type CopyButtonProps = ComponentProps<CopyButtonComponent>;
-export type TextFieldProps = ComponentProps<TextFieldComponent>;
-export type TextAreaProps = ComponentProps<TextAreaComponent>;
-export type SelectProps = ComponentProps<SelectComponent>;
-export type CheckboxProps = ComponentProps<CheckboxComponent>;
-export type SwitchProps = ComponentProps<SwitchComponent>;
-export type FileUploadProps = ComponentProps<FileUploadComponent>;
-export type ModalProps = ComponentProps<ModalComponent>;
-export type MenuProps = ComponentProps<MenuComponent>;
-export type TooltipProps = ComponentProps<TooltipComponent>;
-export type TabsProps = ComponentProps<TabsComponent>;
-export type AvatarProps = ComponentProps<AvatarComponent>;
-export type SkeletonProps = ComponentProps<SkeletonComponent>;
-export type CardProps = ComponentProps<CardComponent>;
-export type ContainerProps = ComponentProps<ContainerComponent>;
-export type SectionProps = ComponentProps<SectionComponent>;
-export type HeadingProps = ComponentProps<HeadingComponent>;
-export type TextProps = ComponentProps<TextComponent>;
-export type ThemeSwitcherProps = ComponentProps<ThemeSwitcherComponent>;
-export type ThemeProviderProps = ComponentProps<ThemeProviderComponent>;
-export type BadgeProps = ComponentProps<BadgeComponent>;
-export type ListProps = ComponentProps<ListComponent>;
-export type ListItemProps = ComponentProps<ListItemComponent>;
-export type GradientTextProps = ComponentProps<GradientTextComponent>;
-export type StepIndicatorProps = ComponentProps<StepIndicatorComponent>;
-export type IconBadgeProps = ComponentProps<IconBadgeComponent>;
-export type DropZoneProps = ComponentProps<DropZoneComponent>;
-export type StreamingTextProps = ComponentProps<StreamingTextComponent>;
+// Component prop types (using typeof to get the proper component type for ComponentProps in Svelte 5)
+export type ButtonProps = ComponentProps<typeof Button>;
+export type CopyButtonProps = ComponentProps<typeof CopyButton>;
+export type TextFieldProps = ComponentProps<typeof TextField>;
+export type TextAreaProps = ComponentProps<typeof TextArea>;
+export type SelectProps = ComponentProps<typeof Select>;
+export type CheckboxProps = ComponentProps<typeof Checkbox>;
+export type SwitchProps = ComponentProps<typeof Switch>;
+export type FileUploadProps = ComponentProps<typeof FileUpload>;
+export type ModalProps = ComponentProps<typeof Modal>;
+export type MenuProps = ComponentProps<typeof Menu>;
+export type TooltipProps = ComponentProps<typeof Tooltip>;
+export type TabsProps = ComponentProps<typeof Tabs>;
+export type AvatarProps = ComponentProps<typeof Avatar>;
+export type SkeletonProps = ComponentProps<typeof Skeleton>;
+export type CardProps = ComponentProps<typeof Card>;
+export type ContainerProps = ComponentProps<typeof Container>;
+export type SectionProps = ComponentProps<typeof Section>;
+export type HeadingProps = ComponentProps<typeof Heading>;
+export type TextProps = ComponentProps<typeof Text>;
+export type ThemeSwitcherProps = ComponentProps<typeof ThemeSwitcher>;
+export type ThemeProviderProps = ComponentProps<typeof ThemeProvider>;
+export type BadgeProps = ComponentProps<typeof Badge>;
+export type ListProps = ComponentProps<typeof List>;
+export type ListItemProps = ComponentProps<typeof ListItem>;
+export type GradientTextProps = ComponentProps<typeof GradientText>;
+export type StepIndicatorProps = ComponentProps<typeof StepIndicator>;
+export type IconBadgeProps = ComponentProps<typeof IconBadge>;
+export type DropZoneProps = ComponentProps<typeof DropZone>;
+export type StreamingTextProps = ComponentProps<typeof StreamingText>;
 
 // Select option type
 export interface SelectOption {

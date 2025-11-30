@@ -43,20 +43,18 @@
 		{ id: 'overview', label: 'Overview', content: OverviewTab },
 		{ id: 'details', label: 'Details', content: DetailsTab },
 		{ id: 'accessibility', label: 'Accessibility', content: AccessibilityTab },
-	] as const;
+	];
 
 	const verticalTabs = [
 		{ id: 'posts', label: 'Posts', content: PostsTab },
 		{ id: 'replies', label: 'Replies', content: RepliesTab },
 		{ id: 'likes', label: 'Likes', disabled: true, content: LikesTab },
-	] as const;
+	];
 
-	const examples = [
+	const examplesMeta = [
 		{
 			title: 'Horizontal tabs',
 			description: 'Automatic activation + underline variant (used on profile and docs pages).',
-			component: Tabs,
-			props: { tabs: horizontalTabs, variant: 'underline' },
 			code: `<Tabs
   tabs={[
     { id: 'overview', label: 'Overview', content: OverviewTab },
@@ -68,8 +66,6 @@
 		{
 			title: 'Manual vertical tabs',
 			description: 'Manual activation keeps content static until Enter/Space is pressed.',
-			component: Tabs,
-			props: { tabs: verticalTabs, orientation: 'vertical', activation: 'manual' },
 			code: `<Tabs
   tabs={[
     { id: 'posts', label: 'Posts', content: PostsTab },
@@ -83,7 +79,7 @@
 	];
 
 	const accessibility = {
-		wcagLevel: 'AA',
+		wcagLevel: 'AA' as const,
 		keyboardNav: true,
 		screenReader: true,
 		colorContrast: true,
@@ -91,9 +87,9 @@
 		ariaSupport: true,
 		reducedMotion: true,
 		notes: [
-			'Renders role="tablist" + role="tab" with aria-controls/aria-selected attributes.',
-			'Roving tabindex ensures a single focusable tab at a time for predictable keyboard flows.',
-			'Disabled tabs are removed from the tab stop order and include aria-disabled="true".',
+			'Tab navigation follows WAI-ARIA Tabs pattern.',
+			'Arrow keys move focus between tabs.',
+			'Home/End jump to first/last tab.',
 		],
 		axeScore: 100,
 	};
@@ -103,7 +99,7 @@
 	<title>Tabs Component - Greater Components</title>
 	<meta
 		name="description"
-		content="ARIA-compliant tabs with automatic or manual activation, orientation support, and slot-based panel content."
+		content="Fully accessible tabs primitive built on Svelte 5 runes. Supports horizontal/vertical orientation and automatic/manual activation."
 	/>
 </svelte:head>
 
@@ -114,20 +110,28 @@
 	version="0.4.0"
 	importPath="@equaltoai/greater-components-primitives"
 	{props}
-	{examples}
+	{examplesMeta}
 	{accessibility}
 >
-	<svelte:fragment slot="do">
+	{#snippet examples(index)}
+		{#if index === 0}
+			<Tabs tabs={horizontalTabs} variant="underline" />
+		{:else if index === 1}
+			<Tabs tabs={verticalTabs} orientation="vertical" activation="manual" />
+		{/if}
+	{/snippet}
+
+	{#snippet doGuidelines()}
 		<li>Keep tab labels concise (two words or fewer).</li>
 		<li>Use manual activation when panels contain heavy renders.</li>
 		<li>Provide snippet content so panels mount lazily.</li>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="dont">
+	{#snippet dontGuidelines()}
 		<li>Don&apos;t mix vertical orientation with underline variant (pills work better).</li>
 		<li>Avoid disabling a tab without providing alternative navigation.</li>
 		<li>Don&apos;t render multiple tablists on the page without unique headings.</li>
-	</svelte:fragment>
+	{/snippet}
 </ComponentDoc>
 
 {#snippet OverviewTab()}

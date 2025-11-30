@@ -8,10 +8,7 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "bumpVersionsWithWorkspaceProtocolOnly": true,
-  "ignore": [
-    "@greater-components/docs",
-    "@equaltoai/playground"
-  ],
+  "ignore": ["@greater-components/docs", "@equaltoai/playground"],
   "privatePackages": {
     "version": true,
     "tag": false

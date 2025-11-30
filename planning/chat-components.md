@@ -19,17 +19,19 @@ The main wrapper component that orchestrates the chat experience.
 **File:** `src/ChatContainer.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatContainerProps {
-  messages: ChatMessage[];
-  streaming?: boolean;
-  streamContent?: string;
-  class?: string;
-  children?: Snippet;
+	messages: ChatMessage[];
+	streaming?: boolean;
+	streamContent?: string;
+	class?: string;
+	children?: Snippet;
 }
 ```
 
 **Features:**
+
 - Provides chat context to child components
 - Auto-scrolls to bottom on new messages
 - Handles keyboard shortcuts globally
@@ -37,11 +39,12 @@ interface ChatContainerProps {
 - Manages connection status state
 
 **Usage:**
+
 ```svelte
 <ChatContainer {messages} {streaming} {streamContent}>
-  <ChatHeader title="PAI Demo" />
-  <ChatMessages />
-  <ChatInput onSend={handleSend} />
+	<ChatHeader title="PAI Demo" />
+	<ChatMessages />
+	<ChatInput onSend={handleSend} />
 </ChatContainer>
 ```
 
@@ -54,18 +57,20 @@ Individual message bubble with role-based styling.
 **File:** `src/ChatMessage.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatMessageProps {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-  timestamp?: Date;
-  avatar?: string;
-  streaming?: boolean;
-  class?: string;
+	role: 'user' | 'assistant' | 'system';
+	content: string;
+	timestamp?: Date;
+	avatar?: string;
+	streaming?: boolean;
+	class?: string;
 }
 ```
 
 **Features:**
+
 - Role-based alignment (user right, assistant left, system centered)
 - Integrates `MarkdownRenderer` for assistant messages
 - Shows `StreamingText` when `streaming=true`
@@ -75,6 +80,7 @@ interface ChatMessageProps {
 - Smooth entrance animation
 
 **Styling:**
+
 - User messages: Warm primary background, white text, right-aligned
 - Assistant messages: Card with outline, left-aligned
 - System messages: Muted background, centered, smaller text
@@ -88,13 +94,15 @@ Scrollable message list container.
 **File:** `src/ChatMessages.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatMessagesProps {
-  class?: string;
+	class?: string;
 }
 ```
 
 **Features:**
+
 - Consumes messages from ChatContainer context
 - Auto-scroll to bottom behavior
 - Scroll-to-bottom button when scrolled up
@@ -110,19 +118,21 @@ Smart message composer with auto-resize.
 **File:** `src/ChatInput.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatInputProps {
-  value?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  maxLength?: number;
-  showFileUpload?: boolean;
-  onSend: (content: string, files?: File[]) => void;
-  class?: string;
+	value?: string;
+	placeholder?: string;
+	disabled?: boolean;
+	maxLength?: number;
+	showFileUpload?: boolean;
+	onSend: (content: string, files?: File[]) => void;
+	class?: string;
 }
 ```
 
 **Features:**
+
 - Auto-resizing textarea (grows with content, max 6 lines)
 - Enter to send, Shift+Enter for newline
 - File upload button with `DropZone` integration
@@ -131,6 +141,7 @@ interface ChatInputProps {
 - Disabled state during streaming
 
 **Keyboard Shortcuts:**
+
 - `Enter` - Send message
 - `Shift+Enter` - New line
 - `Escape` - Clear input
@@ -145,18 +156,20 @@ Display for tool/function invocations during AI response.
 **File:** `src/ChatToolCall.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatToolCallProps {
-  tool: string;
-  args?: Record<string, unknown>;
-  result?: string;
-  status: 'pending' | 'running' | 'complete' | 'error';
-  collapsible?: boolean;
-  class?: string;
+	tool: string;
+	args?: Record<string, unknown>;
+	result?: string;
+	status: 'pending' | 'running' | 'complete' | 'error';
+	collapsible?: boolean;
+	class?: string;
 }
 ```
 
 **Features:**
+
 - Collapsible card showing tool execution
 - Tool name with icon badge
 - Formatted arguments display
@@ -165,6 +178,7 @@ interface ChatToolCallProps {
 - Syntax highlighting for code results
 
 **Tool Icons:**
+
 - `query_knowledge` - Book/search icon
 - `read_file` - File icon
 - `list_files` - Folder icon
@@ -179,16 +193,18 @@ Quick prompt suggestions shown in empty state or after responses.
 **File:** `src/ChatSuggestions.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatSuggestionsProps {
-  suggestions: string[];
-  onSelect: (suggestion: string) => void;
-  variant?: 'pills' | 'cards';
-  class?: string;
+	suggestions: string[];
+	onSelect: (suggestion: string) => void;
+	variant?: 'pills' | 'cards';
+	class?: string;
 }
 ```
 
 **Features:**
+
 - Pill-shaped clickable suggestions (default)
 - Card variant for longer suggestions with descriptions
 - Horizontal scroll on mobile
@@ -196,12 +212,13 @@ interface ChatSuggestionsProps {
 - Keyboard navigable
 
 **Default Suggestions for PAI:**
+
 ```typescript
 const defaultSuggestions = [
-  "What is PAI?",
-  "How do I create a scope?",
-  "Show me an example workflow",
-  "What knowledgebases are available?"
+	'What is PAI?',
+	'How do I create a scope?',
+	'Show me an example workflow',
+	'What knowledgebases are available?',
 ];
 ```
 
@@ -214,20 +231,22 @@ Top bar with title, controls, and status.
 **File:** `src/ChatHeader.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatHeaderProps {
-  title?: string;
-  subtitle?: string;
-  showClearButton?: boolean;
-  showSettingsButton?: boolean;
-  connectionStatus?: 'connected' | 'connecting' | 'disconnected';
-  onClear?: () => void;
-  onSettings?: () => void;
-  class?: string;
+	title?: string;
+	subtitle?: string;
+	showClearButton?: boolean;
+	showSettingsButton?: boolean;
+	connectionStatus?: 'connected' | 'connecting' | 'disconnected';
+	onClear?: () => void;
+	onSettings?: () => void;
+	class?: string;
 }
 ```
 
 **Features:**
+
 - Title and optional subtitle
 - Connection status indicator (green/yellow/red dot)
 - Clear conversation button
@@ -243,23 +262,25 @@ Settings panel for chat configuration.
 **File:** `src/ChatSettings.svelte`
 
 **Props:**
+
 ```typescript
 interface ChatSettingsProps {
-  open?: boolean;
-  onClose?: () => void;
-  settings: ChatSettingsState;
-  onSettingsChange: (settings: ChatSettingsState) => void;
+	open?: boolean;
+	onClose?: () => void;
+	settings: ChatSettingsState;
+	onSettingsChange: (settings: ChatSettingsState) => void;
 }
 
 interface ChatSettingsState {
-  model?: string;
-  temperature?: number;
-  maxTokens?: number;
-  knowledgeBases?: string[];
+	model?: string;
+	temperature?: number;
+	maxTokens?: number;
+	knowledgeBases?: string[];
 }
 ```
 
 **Features:**
+
 - Model selection dropdown
 - Temperature slider
 - Max tokens input
@@ -276,35 +297,35 @@ interface ChatSettingsState {
 
 ```typescript
 interface ChatContextValue {
-  // State
-  messages: ChatMessage[];
-  streaming: boolean;
-  streamContent: string;
-  connectionStatus: 'connected' | 'connecting' | 'disconnected';
-  error: string | null;
-  
-  // Actions
-  sendMessage: (content: string, files?: File[]) => Promise<void>;
-  clearMessages: () => void;
-  retryLastMessage: () => void;
-  cancelStream: () => void;
+	// State
+	messages: ChatMessage[];
+	streaming: boolean;
+	streamContent: string;
+	connectionStatus: 'connected' | 'connecting' | 'disconnected';
+	error: string | null;
+
+	// Actions
+	sendMessage: (content: string, files?: File[]) => Promise<void>;
+	clearMessages: () => void;
+	retryLastMessage: () => void;
+	cancelStream: () => void;
 }
 
 interface ChatMessage {
-  id: string;
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-  timestamp: Date;
-  toolCalls?: ToolCall[];
-  status?: 'sending' | 'sent' | 'error';
+	id: string;
+	role: 'user' | 'assistant' | 'system';
+	content: string;
+	timestamp: Date;
+	toolCalls?: ToolCall[];
+	status?: 'sending' | 'sent' | 'error';
 }
 
 interface ToolCall {
-  id: string;
-  tool: string;
-  args: Record<string, unknown>;
-  result?: string;
-  status: 'pending' | 'running' | 'complete' | 'error';
+	id: string;
+	tool: string;
+	args: Record<string, unknown>;
+	result?: string;
+	status: 'pending' | 'running' | 'complete' | 'error';
 }
 ```
 
@@ -323,6 +344,7 @@ Export all TypeScript interfaces for external use.
 ### Design Tokens
 
 Use existing Greater Components design tokens:
+
 - `--gr-color-primary-*` for accents
 - `--gr-color-gray-*` for backgrounds
 - `--gr-radii-*` for border radius
@@ -344,12 +366,14 @@ Full dark mode support using `[data-theme='dark']` selectors.
 ## Dependencies
 
 ### Internal (Greater Components):
+
 - `@equaltoai/greater-components-primitives` - Button, Card, Container, TextArea, Avatar, Modal, Select, Switch, Skeleton, CopyButton, DropZone
 - `@equaltoai/greater-components-content` - MarkdownRenderer, CodeBlock
 - `@equaltoai/greater-components-icons` - Various icons
 - `@equaltoai/greater-components-headless` - Headless primitives
 
 ### External (Peer Dependencies):
+
 - None required (MarkdownRenderer deps are already peer deps of content package)
 
 ---
@@ -407,62 +431,46 @@ export type * from './types.js';
 
 ```svelte
 <script>
-  import * as Chat from '@equaltoai/greater-components/chat';
-  
-  let messages = $state([]);
-  let streaming = $state(false);
-  let streamContent = $state('');
-  
-  async function handleSend(content: string) {
-    // Add user message
-    messages = [...messages, {
-      id: crypto.randomUUID(),
-      role: 'user',
-      content,
-      timestamp: new Date()
-    }];
-    
-    // Connect to pai-socket and stream response
-    streaming = true;
-    // ... WebSocket logic ...
-  }
+	import * as Chat from '@equaltoai/greater-components/chat';
+
+	let messages = $state([]);
+	let streaming = $state(false);
+	let streamContent = $state('');
+
+	async function handleSend(content: string) {
+		// Add user message
+		messages = [
+			...messages,
+			{
+				id: crypto.randomUUID(),
+				role: 'user',
+				content,
+				timestamp: new Date(),
+			},
+		];
+
+		// Connect to pai-socket and stream response
+		streaming = true;
+		// ... WebSocket logic ...
+	}
 </script>
 
 <Chat.Container {messages} {streaming} {streamContent}>
-  <Chat.Header 
-    title="PAI Demo" 
-    subtitle="Powered by pai-socket"
-    connectionStatus="connected"
-  />
-  
-  <Chat.Messages>
-    {#each messages as message}
-      <Chat.Message 
-        role={message.role}
-        content={message.content}
-        timestamp={message.timestamp}
-      />
-    {/each}
-    
-    {#if streaming}
-      <Chat.Message 
-        role="assistant"
-        content={streamContent}
-        streaming={true}
-      />
-    {/if}
-  </Chat.Messages>
-  
-  <Chat.Suggestions 
-    suggestions={["What is PAI?", "How do scopes work?"]}
-    onSelect={handleSend}
-  />
-  
-  <Chat.Input 
-    onSend={handleSend}
-    disabled={streaming}
-    placeholder="Ask PAI anything..."
-  />
+	<Chat.Header title="PAI Demo" subtitle="Powered by pai-socket" connectionStatus="connected" />
+
+	<Chat.Messages>
+		{#each messages as message}
+			<Chat.Message role={message.role} content={message.content} timestamp={message.timestamp} />
+		{/each}
+
+		{#if streaming}
+			<Chat.Message role="assistant" content={streamContent} streaming={true} />
+		{/if}
+	</Chat.Messages>
+
+	<Chat.Suggestions suggestions={['What is PAI?', 'How do scopes work?']} onSelect={handleSend} />
+
+	<Chat.Input onSend={handleSend} disabled={streaming} placeholder="Ask PAI anything..." />
 </Chat.Container>
 ```
 
@@ -503,4 +511,3 @@ Update `scripts/build.js` to include the chat package.
 6. Documented with examples
 7. Integrated into umbrella package
 8. Working demo in playground app
-

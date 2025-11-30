@@ -12,6 +12,9 @@ export default defineConfig({
 	],
 	resolve: {
 		conditions: ['browser'],
+		alias: {
+			'@equaltoai/greater-components-fediverse': resolve(__dirname, 'src'),
+		},
 	},
 	build: {
 		// Prevent esbuild from mangling identifiers to `$`, which conflicts with Svelte 5 runes.

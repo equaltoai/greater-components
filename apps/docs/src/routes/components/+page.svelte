@@ -8,7 +8,7 @@
 
 	const stats = getComponentStats();
 
-	const filteredComponents = $derived(() => {
+	const filteredComponents = $derived.by(() => {
 		let filtered = components;
 
 		// Filter by search query

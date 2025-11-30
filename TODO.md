@@ -9,6 +9,7 @@
 ## 🔴 Phase 1: Critical Fixes (Weeks 1-3) - v2.2.0-alpha
 
 ### Profile.Timeline Component
+
 - [ ] Create `packages/fediverse/src/components/Profile/Timeline.svelte`
 - [ ] Add TypeScript interfaces
 - [ ] Support standalone + context usage
@@ -21,6 +22,7 @@
 - [ ] Create playground example
 
 ### Lists.Timeline Enhancement
+
 - [ ] Add optional `adapter` prop
 - [ ] Support context-free usage
 - [ ] Add virtual scrolling support
@@ -30,6 +32,7 @@
 - [ ] Update documentation
 
 ### verifyCredentials Implementation
+
 - [ ] Create `ViewerDocument` GraphQL query (if missing)
 - [ ] Add `verifyCredentials()` method to LesserGraphQLAdapter
 - [ ] Add proper TypeScript return type
@@ -42,6 +45,7 @@
 - [ ] Create auth flow example
 
 ### Documentation & Examples
+
 - [ ] Create migration guide for Profile.Timeline
 - [ ] Create migration guide for verifyCredentials
 - [ ] Add playground example: `examples/profile-timeline/+page.svelte`
@@ -50,6 +54,7 @@
 - [ ] Create video walkthrough (optional)
 
 ### Testing & Release
+
 - [ ] Run full test suite
 - [ ] Check bundle size impact
 - [ ] Update CHANGELOG.md
@@ -63,6 +68,7 @@
 ## 🟡 Phase 2: Extensibility (Weeks 4-6) - v2.2.0-beta
 
 ### Settings Composition Components
+
 - [ ] Create `packages/primitives/src/components/Settings/` directory
 - [ ] Implement `SettingsSection.svelte`
 - [ ] Implement `SettingsGroup.svelte`
@@ -76,6 +82,7 @@
 - [ ] Update API reference
 
 ### Preference Store Pattern
+
 - [ ] Create `packages/utils/src/preferences.ts`
 - [ ] Implement `PreferenceStore` interface
 - [ ] Implement `createPreferenceStore()` factory
@@ -87,6 +94,7 @@
 - [ ] Document pattern in guide
 
 ### Notification Settings Components
+
 - [ ] Create `packages/fediverse/src/components/Notifications/NotificationFilters.svelte`
 - [ ] Create `PushNotificationSettings.svelte`
 - [ ] Integrate with LesserGraphQLAdapter
@@ -95,6 +103,7 @@
 - [ ] Create example implementation
 
 ### Reference Implementations
+
 - [ ] Create `apps/playground/src/lib/components/settings/AppearanceSettings.svelte`
 - [ ] Create `BehaviorSettings.svelte`
 - [ ] Create `NotificationPreferences.svelte`
@@ -103,12 +112,14 @@
 - [ ] Document as copy-paste templates
 
 ### Documentation
+
 - [ ] Write `docs/patterns/settings-panels.md`
 - [ ] Update core patterns guide
 - [ ] Add settings composition to API reference
 - [ ] Create migration guide from custom settings
 
 ### Testing & Release
+
 - [ ] Full test suite
 - [ ] Accessibility audit
 - [ ] Bundle size check
@@ -122,6 +133,7 @@
 ## 🟢 Phase 3: Advanced Features (Weeks 7-8) - v2.2.0
 
 ### Theme Utilities
+
 - [ ] Create `packages/utils/src/theme/` directory
 - [ ] Implement `color-harmony.ts`
   - [ ] `generateColorHarmony()`
@@ -138,6 +150,7 @@
 - [ ] Export from utils package
 
 ### Advanced Theme Components
+
 - [ ] Create `packages/primitives/src/components/Theme/` directory
 - [ ] Implement `ColorHarmonyPicker.svelte`
 - [ ] Implement `ContrastChecker.svelte`
@@ -147,6 +160,7 @@
 - [ ] Export from primitives
 
 ### Enhance ThemeSwitcher
+
 - [ ] Add `showWorkbench` prop
 - [ ] Add `enableCustomThemes` prop
 - [ ] Add `customThemesKey` prop
@@ -156,12 +170,14 @@
 - [ ] Update documentation
 
 ### Documentation & Examples
+
 - [ ] Create `docs/patterns/advanced-theming.md`
 - [ ] Add theme utilities to API reference
 - [ ] Create playground example: `examples/theme-workbench/+page.svelte`
 - [ ] Add visual examples and screenshots
 
 ### Testing & Release
+
 - [ ] Full test suite
 - [ ] Visual regression tests
 - [ ] Performance benchmarks
@@ -180,6 +196,7 @@
 ## 📚 Documentation Tasks (Ongoing)
 
 ### API Reference Updates
+
 - [ ] Profile.Timeline API
 - [ ] Lists.Timeline enhancements
 - [ ] LesserGraphQLAdapter.verifyCredentials
@@ -189,6 +206,7 @@
 - [ ] Advanced theme components
 
 ### Migration Guides
+
 - [ ] v2.1.6 → v2.2.0 migration guide
 - [ ] Profile timeline migration
 - [ ] Auth flow migration
@@ -196,12 +214,14 @@
 - [ ] Theme customization migration
 
 ### Pattern Guides
+
 - [ ] Settings panels pattern
 - [ ] Advanced theming pattern
 - [ ] Profile timeline integration
 - [ ] Custom preference stores
 
 ### Examples
+
 - [ ] Profile timeline examples
 - [ ] Auth flow examples
 - [ ] Settings panel examples
@@ -212,6 +232,7 @@
 ## 🧪 Testing Tasks
 
 ### Unit Tests (Target: ≥90% Coverage)
+
 - [ ] Profile.Timeline component
 - [ ] Lists.Timeline enhancements
 - [ ] verifyCredentials method
@@ -221,23 +242,27 @@
 - [ ] Advanced theme components
 
 ### Integration Tests
+
 - [ ] Profile timeline with GraphQL adapter
 - [ ] Auth flow end-to-end
 - [ ] Settings persistence
 - [ ] Theme switching and persistence
 
 ### E2E Tests
+
 - [ ] Complete user flows
 - [ ] Multi-page settings
 - [ ] Theme customization workflow
 
 ### Accessibility Tests
+
 - [ ] All new components meet WCAG AA
 - [ ] Keyboard navigation works
 - [ ] Screen reader compatibility
 - [ ] Focus management
 
 ### Performance Tests
+
 - [ ] Bundle size impact < 10KB
 - [ ] Timeline renders 1000+ items at 60fps
 - [ ] No memory leaks
@@ -248,6 +273,7 @@
 ## 📊 Success Metrics
 
 ### Quantitative
+
 - [ ] ≥90% test coverage on all new code
 - [ ] Bundle size increase <10KB gzipped
 - [ ] Timeline performance: 1000+ items at 60fps
@@ -256,6 +282,7 @@
 - [ ] Zero linting errors
 
 ### Qualitative
+
 - [ ] Positive user feedback on alpha/beta
 - [ ] ≥80% of workarounds replaceable
 - [ ] Improved developer experience
@@ -267,6 +294,7 @@
 ## 🎯 Release Checklist
 
 ### Pre-Release
+
 - [ ] All features implemented
 - [ ] All tests passing
 - [ ] Documentation complete
@@ -276,6 +304,7 @@
 - [ ] Examples added to playground
 
 ### Release Process
+
 - [ ] Create release branch
 - [ ] Run full test suite
 - [ ] Generate changeset
@@ -287,6 +316,7 @@
 - [ ] Update documentation site
 
 ### Post-Release
+
 - [ ] Monitor for issues
 - [ ] Update Greater client app
 - [ ] Write blog post
@@ -299,6 +329,7 @@
 ## 💡 Ideas for Future (Post v2.2.0)
 
 ### Potential v2.3.0 Features
+
 - [ ] Profile.Media component (media grid)
 - [ ] Profile.Replies component (replies view)
 - [ ] Advanced search components
@@ -309,6 +340,7 @@
 - [ ] Thread view enhancements
 
 ### Developer Experience
+
 - [ ] CLI for component generation
 - [ ] Storybook integration
 - [ ] Visual regression testing
@@ -316,6 +348,7 @@
 - [ ] Better TypeScript inference
 
 ### Performance
+
 - [ ] Further bundle size optimization
 - [ ] Image lazy loading
 - [ ] Route-based code splitting
@@ -327,4 +360,3 @@
 **Track Progress:** Create GitHub Project Board with these tasks  
 **Questions:** Open GitHub Discussion or comment on issues  
 **Updates:** Check project board for real-time status
-

@@ -112,9 +112,7 @@ describe('CopyButton.svelte', () => {
 	});
 
 	it('shows error label on failure', async () => {
-		vi
-			.mocked(Utils.copyToClipboard)
-			.mockResolvedValue({ success: false, error: 'Failed' });
+		vi.mocked(Utils.copyToClipboard).mockResolvedValue({ success: false, error: 'Failed' });
 		const { getByRole } = render(CopyButton, { props: { text: 'test', variant: 'text' } });
 
 		await fireEvent.click(getByRole('button'));

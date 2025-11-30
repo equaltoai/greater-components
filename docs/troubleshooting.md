@@ -4,22 +4,22 @@ Common issues with verified fixes from production experience.
 
 ## Quick Diagnosis
 
-| Symptom                               | Likely Cause                       | Section                                     |
-| ------------------------------------- | ---------------------------------- | ------------------------------------------- |
-| "Cannot find module '@equaltoai/...'" | Package not installed              | [Installation Issues](#installation-issues) |
-| "Could not resolve 'isomorphic-dompurify'" | Missing peer dependency       | [Peer Dependency Issues](#peer-dependency-issues) |
-| "Could not resolve 'marked'" / "shiki" | Missing peer dependency           | [Peer Dependency Issues](#peer-dependency-issues) |
-| Components render but appear unstyled | Missing `primitives/style.css`     | [Styling Issues](#styling-issues)           |
-| CSS variables show as invalid         | Missing `tokens/theme.css`         | [Styling Issues](#styling-issues)           |
-| `preventFlashScript is not defined`   | Missing theme flash prevention     | [Theming Issues](#theming-issues)           |
-| "Snippets not working"                | Using Svelte 4 slot syntax         | [Svelte 5 Migration](#svelte-5-migration)   |
-| "$state is not defined"               | Not using Svelte 5                 | [Svelte 5 Migration](#svelte-5-migration)   |
-| Type errors                           | TypeScript misconfiguration        | [TypeScript Issues](#typescript-issues)     |
-| Modal not closing                     | Missing onClose handler            | [Component Issues](#component-issues)       |
-| Theme not applying                    | CSS variables not loading          | [Theming Issues](#theming-issues)           |
-| Timeline performance slow             | Virtual scrolling not enabled      | [Performance Issues](#performance-issues)   |
-| SSR hydration errors                  | Client-only code running on server | [SSR Issues](#ssr-issues)                   |
-| Lesser adapter 401 error              | Invalid or expired token           | [Lesser Integration](#lesser-integration)   |
+| Symptom                                    | Likely Cause                       | Section                                           |
+| ------------------------------------------ | ---------------------------------- | ------------------------------------------------- |
+| "Cannot find module '@equaltoai/...'"      | Package not installed              | [Installation Issues](#installation-issues)       |
+| "Could not resolve 'isomorphic-dompurify'" | Missing peer dependency            | [Peer Dependency Issues](#peer-dependency-issues) |
+| "Could not resolve 'marked'" / "shiki"     | Missing peer dependency            | [Peer Dependency Issues](#peer-dependency-issues) |
+| Components render but appear unstyled      | Missing `primitives/style.css`     | [Styling Issues](#styling-issues)                 |
+| CSS variables show as invalid              | Missing `tokens/theme.css`         | [Styling Issues](#styling-issues)                 |
+| `preventFlashScript is not defined`        | Missing theme flash prevention     | [Theming Issues](#theming-issues)                 |
+| "Snippets not working"                     | Using Svelte 4 slot syntax         | [Svelte 5 Migration](#svelte-5-migration)         |
+| "$state is not defined"                    | Not using Svelte 5                 | [Svelte 5 Migration](#svelte-5-migration)         |
+| Type errors                                | TypeScript misconfiguration        | [TypeScript Issues](#typescript-issues)           |
+| Modal not closing                          | Missing onClose handler            | [Component Issues](#component-issues)             |
+| Theme not applying                         | CSS variables not loading          | [Theming Issues](#theming-issues)                 |
+| Timeline performance slow                  | Virtual scrolling not enabled      | [Performance Issues](#performance-issues)         |
+| SSR hydration errors                       | Client-only code running on server | [SSR Issues](#ssr-issues)                         |
+| Lesser adapter 401 error                   | Invalid or expired token           | [Lesser Integration](#lesser-integration)         |
 
 ---
 
@@ -136,11 +136,11 @@ pnpm add shiki                         # For CodeBlock
 
 **Which components need peer dependencies?**
 
-| Component | Peer Dependencies | Purpose |
-|-----------|-------------------|---------|
-| MarkdownRenderer | `isomorphic-dompurify`, `marked` | Safe markdown rendering |
-| CodeBlock | `shiki` | Syntax highlighting |
-| sanitizeHtml (util) | `isomorphic-dompurify` | HTML sanitization |
+| Component           | Peer Dependencies                | Purpose                 |
+| ------------------- | -------------------------------- | ----------------------- |
+| MarkdownRenderer    | `isomorphic-dompurify`, `marked` | Safe markdown rendering |
+| CodeBlock           | `shiki`                          | Syntax highlighting     |
+| sanitizeHtml (util) | `isomorphic-dompurify`           | HTML sanitization       |
 
 **Prevention:**
 
@@ -184,18 +184,18 @@ Import BOTH CSS layers in your root layout:
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-  // ✅ Layer 1: Design tokens (colors, spacing, typography variables)
-  import '@equaltoai/greater-components/tokens/theme.css';
-  // ✅ Layer 2: Component styles (button, card, container classes)
-  import '@equaltoai/greater-components/primitives/style.css';
+	// ✅ Layer 1: Design tokens (colors, spacing, typography variables)
+	import '@equaltoai/greater-components/tokens/theme.css';
+	// ✅ Layer 2: Component styles (button, card, container classes)
+	import '@equaltoai/greater-components/primitives/style.css';
 
-  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 
-  let { children } = $props();
+	let { children } = $props();
 </script>
 
 <ThemeProvider>
-  {@render children()}
+	{@render children()}
 </ThemeProvider>
 ```
 
@@ -203,8 +203,8 @@ Import BOTH CSS layers in your root layout:
 
 ```svelte
 <script lang="ts">
-  import '@equaltoai/greater-components/tokens/theme.css';
-  import '@equaltoai/greater-components/style.css';  // Combined bundle (primitives + fediverse)
+	import '@equaltoai/greater-components/tokens/theme.css';
+	import '@equaltoai/greater-components/style.css'; // Combined bundle (primitives + fediverse)
 </script>
 ```
 
@@ -212,7 +212,7 @@ Import BOTH CSS layers in your root layout:
 
 ```javascript
 // In browser console - check tokens loaded:
-getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-600')
+getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-600');
 // Should return: "#2563eb" (or similar color)
 
 // Check a button has proper styling in DevTools:
@@ -223,12 +223,12 @@ getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-
 
 **Quick Diagnosis Table:**
 
-| Symptom | Missing Import | Solution |
-|---------|----------------|----------|
-| Components render but unstyled | `primitives/style.css` | Add component styles import |
-| CSS variables show as invalid | `tokens/theme.css` | Add tokens import FIRST |
-| Both unstyled AND invalid variables | Both files | Add both imports in correct order |
-| Fediverse components unstyled | `style.css` bundle | Use combined bundle instead of primitives-only |
+| Symptom                             | Missing Import         | Solution                                       |
+| ----------------------------------- | ---------------------- | ---------------------------------------------- |
+| Components render but unstyled      | `primitives/style.css` | Add component styles import                    |
+| CSS variables show as invalid       | `tokens/theme.css`     | Add tokens import FIRST                        |
+| Both unstyled AND invalid variables | Both files             | Add both imports in correct order              |
+| Fediverse components unstyled       | `style.css` bundle     | Use combined bundle instead of primitives-only |
 
 See [CSS Architecture Guide](./css-architecture.md) for complete documentation.
 
@@ -251,13 +251,10 @@ Token CSS file not loaded, or loaded AFTER component styles.
 Ensure `tokens/theme.css` is imported FIRST:
 
 ```svelte
-// ✅ CORRECT ORDER
-import '@equaltoai/greater-components/tokens/theme.css';      // 1. Tokens first
-import '@equaltoai/greater-components/primitives/style.css';  // 2. Components second
-
-// ❌ WRONG ORDER
-import '@equaltoai/greater-components/primitives/style.css';  // Uses undefined variables!
-import '@equaltoai/greater-components/tokens/theme.css';      // Too late
+// ✅ CORRECT ORDER import '@equaltoai/greater-components/tokens/theme.css'; // 1. Tokens first
+import '@equaltoai/greater-components/primitives/style.css'; // 2. Components second // ❌ WRONG
+ORDER import '@equaltoai/greater-components/primitives/style.css'; // Uses undefined variables!
+import '@equaltoai/greater-components/tokens/theme.css'; // Too late
 ```
 
 ---
@@ -623,23 +620,23 @@ Add the theme flash prevention script to your `app.html`:
 <!-- src/app.html -->
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    
-    <!-- Prevent theme flash on page load -->
-    <script>
-      (function() {
-        const theme = localStorage.getItem('gr-theme') || 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script>
-    
-    %sveltekit.head%
-  </head>
-  <body data-sveltekit-preload-data="hover">
-    <div style="display: contents">%sveltekit.body%</div>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- Prevent theme flash on page load -->
+		<script>
+			(function () {
+				const theme = localStorage.getItem('gr-theme') || 'light';
+				document.documentElement.setAttribute('data-theme', theme);
+			})();
+		</script>
+
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
 </html>
 ```
 
@@ -1100,19 +1097,13 @@ Browser doesn't support `background-clip: text` or vendor prefixes missing.
 
 ### Issue: List icons not aligning
 
-
-
 **Symptoms:**
 
 - Icons in `List` or `ListItem` are vertically misaligned with text
 
-
-
 **Cause:**
 
 Flex alignment issues or line-height mismatches.
-
-
 
 **Solution:**
 
@@ -1122,11 +1113,7 @@ Flex alignment issues or line-height mismatches.
 
 - Use the `iconSize` prop to adjust if needed.
 
-
-
 ### Issue: CodeBlock not highlighting code
-
-
 
 **Symptoms:**
 
@@ -1134,13 +1121,9 @@ Flex alignment issues or line-height mismatches.
 
 - No colors appear
 
-
-
 **Cause:**
 
 Shiki lazy loading failed, or language is not supported/loaded.
-
-
 
 **Solution:**
 
@@ -1152,11 +1135,7 @@ Shiki lazy loading failed, or language is not supported/loaded.
 
 - Fallback to plain text is automatic on error.
 
-
-
 ### Issue: Drag-drop not working
-
-
 
 **Symptoms:**
 
@@ -1164,13 +1143,9 @@ Shiki lazy loading failed, or language is not supported/loaded.
 
 - Browser opens file instead of handling drop
 
-
-
 **Cause:**
 
 Default browser behavior not prevented, or `ondragover` handler missing.
-
-
 
 **Solution:**
 
@@ -1180,23 +1155,15 @@ Default browser behavior not prevented, or `ondragover` handler missing.
 
 - On mobile, drag-drop is often not supported; `DropZone` provides a click-to-upload fallback.
 
-
-
 ### Issue: Markdown renders raw HTML
-
-
 
 **Symptoms:**
 
 - HTML tags appear in output instead of rendered elements
 
-
-
 **Cause:**
 
 `sanitize` prop is true (default) and tags are stripped, or input is escaped.
-
-
 
 **Solution:**
 
@@ -1206,15 +1173,9 @@ Default browser behavior not prevented, or `ondragover` handler missing.
 
 - Check `allowedTags` prop to enable specific tags.
 
-
-
 ---
 
-
-
 ## Build Issues
-
-
 
 ### Issue: Build fails with memory error
 

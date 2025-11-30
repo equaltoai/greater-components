@@ -36,6 +36,7 @@ const packages = [
 	{ key: 'shared/chat', dir: 'shared/chat' },
 	// Faces
 	{ key: 'faces/social', dir: 'faces/social' },
+	{ key: 'fediverse', dir: 'faces/social' },
 	// Tools
 	{ key: 'adapters', dir: 'adapters' },
 	{ key: 'testing', dir: 'testing' },
@@ -147,7 +148,7 @@ function rewriteImports() {
 
 				return `${relPath}/${subpath}`;
 			}
-			return relPath;
+			return `${relPath}/index.js`;
 		});
 
 		if (content !== originalContent) {
@@ -158,10 +159,22 @@ function rewriteImports() {
 }
 
 function generateRootBarrels() {
-	// Only export core packages from root barrel
-	const corePackages = ['primitives', 'tokens', 'icons', 'headless', 'utils'];
-	const entryTargets = corePackages.map((key) => `export * from './${key}/index.js';`).join('\n');
-	const entryTypes = corePackages.map((key) => `export * from './${key}/index.js';`).join('\n');
+	// Export commonly used packages from the root barrel for convenience
+	const exposedPackages = [
+		'primitives',
+		'tokens',
+		'icons',
+		'headless',
+		'utils',
+		'adapters',
+		'testing',
+		'cli',
+		'fediverse',
+	];
+	const entryTargets = exposedPackages
+		.map((key) => `export * from './${key}/index.js';`)
+		.join('\n');
+	const entryTypes = exposedPackages.map((key) => `export * from './${key}/index.js';`).join('\n');
 
 	writeFileSync(join(distDir, 'index.js'), `${entryTargets}\n`, 'utf8');
 	writeFileSync(join(distDir, 'index.d.ts'), `${entryTypes}\n`, 'utf8');
@@ -170,13 +183,13 @@ function generateRootBarrels() {
 function aggregateStyles() {
 	console.log('Aggregating styles...');
 	let combinedStyles = '';
-	
+
 	// Add a header
 	combinedStyles += '/* Greater Components - Unified Styles */\n\n';
 
 	for (const { key, dir } of packages) {
 		const packageDist = join(workspaceRoot, dir, 'dist');
-		
+
 		// Check for common style filenames
 		const styleFiles = ['style.css', 'styles.css', 'theme.css', 'greater-components-fediverse.css'];
 		let foundStyle = false;
@@ -192,7 +205,7 @@ function aggregateStyles() {
 				break; // Only include one style file per package to avoid duplication if aliases exist
 			}
 		}
-		
+
 		if (!foundStyle) {
 			// console.log(`No styles found for ${key}`);
 		}

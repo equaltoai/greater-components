@@ -60,40 +60,40 @@
  * @public
  */
 export type {
-  /** Role of a message sender: 'user', 'assistant', or 'system' */
-  MessageRole,
-  /** Status of a message: 'pending', 'streaming', 'complete', or 'error' */
-  MessageStatus,
-  /** Status of a tool call: 'pending', 'running', 'complete', or 'error' */
-  ToolCallStatus,
-  /** Tool/function call definition with args and result */
-  ToolCall,
-  /** Chat message with role, content, timestamp, and status */
-  ChatMessage,
-  /** Props for Chat.Container component */
-  ChatContainerProps,
-  /** Props for Chat.Message component */
-  ChatMessageProps,
-  /** Props for Chat.Messages component */
-  ChatMessagesProps,
-  /** Props for Chat.Input component */
-  ChatInputProps,
-  /** Props for Chat.ToolCall component */
-  ChatToolCallProps,
-  /** Suggestion item with id and text */
-  ChatSuggestion,
-  /** Simple suggestion item for string-based API */
-  ChatSuggestionItem,
-  /** Props for Chat.Suggestions component */
-  ChatSuggestionsProps,
-  /** Props for Chat.Header component */
-  ChatHeaderProps,
-  /** Chat settings state (model, temperature, etc.) */
-  ChatSettingsState,
-  /** Props for Chat.Settings component */
-  ChatSettingsProps,
-  /** Knowledge base configuration for settings */
-  KnowledgeBaseConfig,
+	/** Role of a message sender: 'user', 'assistant', or 'system' */
+	MessageRole,
+	/** Status of a message: 'pending', 'streaming', 'complete', or 'error' */
+	MessageStatus,
+	/** Status of a tool call: 'pending', 'running', 'complete', or 'error' */
+	ToolCallStatus,
+	/** Tool/function call definition with args and result */
+	ToolCall,
+	/** Chat message with role, content, timestamp, and status */
+	ChatMessage,
+	/** Props for Chat.Container component */
+	ChatContainerProps,
+	/** Props for Chat.Message component */
+	ChatMessageProps,
+	/** Props for Chat.Messages component */
+	ChatMessagesProps,
+	/** Props for Chat.Input component */
+	ChatInputProps,
+	/** Props for Chat.ToolCall component */
+	ChatToolCallProps,
+	/** Suggestion item with id and text */
+	ChatSuggestion,
+	/** Simple suggestion item for string-based API */
+	ChatSuggestionItem,
+	/** Props for Chat.Suggestions component */
+	ChatSuggestionsProps,
+	/** Props for Chat.Header component */
+	ChatHeaderProps,
+	/** Chat settings state (model, temperature, etc.) */
+	ChatSettingsState,
+	/** Props for Chat.Settings component */
+	ChatSettingsProps,
+	/** Knowledge base configuration for settings */
+	KnowledgeBaseConfig,
 } from './types.js';
 
 /**
@@ -101,14 +101,14 @@ export type {
  * @public
  */
 export type {
-  /** Event handlers for chat operations */
-  ChatHandlers,
-  /** Chat state including messages, streaming, and settings */
-  ChatState,
-  /** Complete chat context value with state and methods */
-  ChatContextValue,
-  /** Connection status: 'disconnected', 'connecting', 'connected', or 'error' */
-  ConnectionStatus,
+	/** Event handlers for chat operations */
+	ChatHandlers,
+	/** Chat state including messages, streaming, and settings */
+	ChatState,
+	/** Complete chat context value with state and methods */
+	ChatContextValue,
+	/** Connection status: 'disconnected', 'connecting', 'connected', or 'error' */
+	ConnectionStatus,
 } from './context.svelte.js';
 
 // ============================================================================
@@ -282,7 +282,7 @@ export { default as Input } from './ChatInput.svelte';
  *
  * @example
  * ```svelte
- * <Chat.ToolCall
+ * <Chat.ToolCallDisplay
  *   toolCall={{
  *     id: '1',
  *     tool: 'search',
@@ -294,7 +294,7 @@ export { default as Input } from './ChatInput.svelte';
  * ```
  * @public
  */
-export { default as ToolCall } from './ChatToolCall.svelte';
+export { default as ToolCallDisplay } from './ChatToolCall.svelte';
 
 /**
  * Chat interface header component.
@@ -373,10 +373,10 @@ export { default as Settings } from './ChatSettings.svelte';
  * @public
  */
 export const defaultPAISuggestions: string[] = [
-  "What is PAI?",
-  "How do I create a scope?",
-  "Show me an example workflow",
-  "What knowledgebases are available?"
+	'What is PAI?',
+	'How do I create a scope?',
+	'Show me an example workflow',
+	'What knowledgebases are available?',
 ];
 
 /**
@@ -395,7 +395,7 @@ export const defaultPAISuggestions: string[] = [
  * @public
  */
 export const defaultModelOptions = [
-  { id: 'gpt-4', name: 'GPT-4' },
-  { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' },
-  { id: 'claude-3', name: 'Claude 3' },
+	{ id: 'gpt-4', name: 'GPT-4' },
+	{ id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' },
+	{ id: 'claude-3', name: 'Claude 3' },
 ];

@@ -1,10 +1,4 @@
-import {
-	copyFileSync,
-	existsSync,
-	mkdirSync,
-	readFileSync,
-	writeFileSync,
-} from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -42,10 +36,9 @@ if (existsSync(themeCssSrc)) {
 	// 2. Create legacy aliases (copies)
 	copyFileSync(themeCssSrc, styleCssDist);
 	console.log('✅ Created style.css alias');
-	
+
 	copyFileSync(themeCssSrc, stylesCssDist);
 	console.log('✅ Created styles.css alias');
-
 } else {
 	console.error('❌ src/theme.css not found!');
 	process.exit(1);

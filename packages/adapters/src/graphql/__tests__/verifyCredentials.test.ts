@@ -46,9 +46,7 @@ describe('LesserGraphQLAdapter.verifyCredentials', () => {
 			httpEndpoint: 'https://example.com/graphql',
 		});
 
-		await expect(adapter.verifyCredentials()).rejects.toThrow(
-			'No authentication token provided'
-		);
+		await expect(adapter.verifyCredentials()).rejects.toThrow('No authentication token provided');
 	});
 
 	it('throws error when viewer is null (invalid token)', async () => {
@@ -69,12 +67,12 @@ describe('LesserGraphQLAdapter.verifyCredentials', () => {
 		);
 	});
 
-    it('helper methods work correctly', () => {
-        expect(adapter.isAuthenticated()).toBe(true);
-        expect(adapter.getToken()).toBe('valid-token');
-        
-        adapter.refreshToken('new-token');
-        expect(adapter.getToken()).toBe('new-token');
-        expect(mockUpdateToken).toHaveBeenCalledWith('new-token');
-    });
+	it('helper methods work correctly', () => {
+		expect(adapter.isAuthenticated()).toBe(true);
+		expect(adapter.getToken()).toBe('valid-token');
+
+		adapter.refreshToken('new-token');
+		expect(adapter.getToken()).toBe('new-token');
+		expect(mockUpdateToken).toHaveBeenCalledWith('new-token');
+	});
 });

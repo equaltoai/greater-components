@@ -21,8 +21,6 @@ Complete API documentation for all Greater Components packages.
   - [Theme Utilities](#theme-utilities)
 - [Testing Package](#testing-package)
 
-
-
 ## Primitives Package
 
 `@equaltoai/greater-components/primitives`
@@ -41,11 +39,11 @@ Composable building blocks for creating configuration panels.
 
 ```typescript
 interface SettingsSectionProps {
-    title: string;
-    description?: string;
-    icon?: Snippet;
-    children: Snippet;
-    collapsible?: boolean;
+	title: string;
+	description?: string;
+	icon?: Snippet;
+	children: Snippet;
+	collapsible?: boolean;
 }
 ```
 
@@ -53,7 +51,7 @@ interface SettingsSectionProps {
 
 ```svelte
 <SettingsSection title="Account" description="Manage your account">
-    <!-- Settings fields go here -->
+	<!-- Settings fields go here -->
 </SettingsSection>
 ```
 
@@ -65,9 +63,9 @@ interface SettingsSectionProps {
 
 ```typescript
 interface SettingsGroupProps {
-    label?: string;
-    children: Snippet;
-    orientation?: 'vertical' | 'horizontal';
+	label?: string;
+	children: Snippet;
+	orientation?: 'vertical' | 'horizontal';
 }
 ```
 
@@ -79,10 +77,10 @@ interface SettingsGroupProps {
 
 ```typescript
 interface SettingsFieldProps {
-    label: string;
-    description?: string;
-    children: Snippet; // The control (Switch, Select, etc.)
-    class?: string;
+	label: string;
+	description?: string;
+	children: Snippet; // The control (Switch, Select, etc.)
+	class?: string;
 }
 ```
 
@@ -94,10 +92,10 @@ interface SettingsFieldProps {
 
 ```typescript
 interface SettingsToggleProps {
-    label: string;
-    description?: string;
-    value: boolean; // bindable
-    disabled?: boolean;
+	label: string;
+	description?: string;
+	value: boolean; // bindable
+	disabled?: boolean;
 }
 ```
 
@@ -109,11 +107,11 @@ interface SettingsToggleProps {
 
 ```typescript
 interface SettingsSelectProps<T> {
-    label: string;
-    description?: string;
-    value: T; // bindable
-    options: Array<{ value: T; label: string }>;
-    disabled?: boolean;
+	label: string;
+	description?: string;
+	value: T; // bindable
+	options: Array<{ value: T; label: string }>;
+	disabled?: boolean;
 }
 ```
 
@@ -129,9 +127,15 @@ Advanced components for theme creation and analysis.
 
 ```typescript
 interface ColorHarmonyPickerProps {
-    seedColor: string; // bindable
-    harmonyType?: 'complementary' | 'analogous' | 'triadic' | 'tetradic' | 'splitComplementary' | 'monochromatic';
-    onSelect?: (colors: string[]) => void;
+	seedColor: string; // bindable
+	harmonyType?:
+		| 'complementary'
+		| 'analogous'
+		| 'triadic'
+		| 'tetradic'
+		| 'splitComplementary'
+		| 'monochromatic';
+	onSelect?: (colors: string[]) => void;
 }
 ```
 
@@ -143,8 +147,8 @@ interface ColorHarmonyPickerProps {
 
 ```typescript
 interface ContrastCheckerProps {
-    foreground: string;
-    background: string;
+	foreground: string;
+	background: string;
 }
 ```
 
@@ -156,8 +160,8 @@ interface ContrastCheckerProps {
 
 ```typescript
 interface ThemeWorkbenchProps {
-    initialColor?: string;
-    onSave?: (theme: ThemeTokens) => void;
+	initialColor?: string;
+	onSave?: (theme: ThemeTokens) => void;
 }
 ```
 
@@ -179,17 +183,17 @@ interface ThemeWorkbenchProps {
 
 ```typescript
 interface ProfileTimelineProps {
-    username?: string; // Required if not in context
-    adapter?: LesserGraphQLAdapter; // Required if not in context
-    showReplies?: boolean; // default false
-    showBoosts?: boolean; // default true
-    onlyMedia?: boolean; // default false
-    showPinned?: boolean; // default true
-    virtualScrolling?: boolean; // default true
-    estimateSize?: number;
-    class?: string;
-    header?: Snippet;
-    emptyState?: Snippet;
+	username?: string; // Required if not in context
+	adapter?: LesserGraphQLAdapter; // Required if not in context
+	showReplies?: boolean; // default false
+	showBoosts?: boolean; // default true
+	onlyMedia?: boolean; // default false
+	showPinned?: boolean; // default true
+	virtualScrolling?: boolean; // default true
+	estimateSize?: number;
+	class?: string;
+	header?: Snippet;
+	emptyState?: Snippet;
 }
 ```
 
@@ -197,14 +201,10 @@ interface ProfileTimelineProps {
 
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components/fediverse';
+	import { Profile } from '@equaltoai/greater-components/fediverse';
 </script>
 
-<Profile.Timeline 
-  username="alice" 
-  {adapter} 
-  showReplies={true} 
-/>
+<Profile.Timeline username="alice" {adapter} showReplies={true} />
 ```
 
 ---
@@ -253,13 +253,13 @@ refreshToken(newToken: string): void;
 function createPreferenceStore<T>(key: string, defaults: T): PreferenceStore<T>;
 
 interface PreferenceStore<T> {
-    get(): T;
-    set<K extends keyof T>(key: K, value: T[K]): void;
-    update(partial: Partial<T>): void;
-    reset(): void;
-    subscribe(callback: (prefs: T) => void): () => void;
-    export(): string;
-    import(json: string): boolean;
+	get(): T;
+	set<K extends keyof T>(key: K, value: T[K]): void;
+	update(partial: Partial<T>): void;
+	reset(): void;
+	subscribe(callback: (prefs: T) => void): () => void;
+	export(): string;
+	import(json: string): boolean;
 }
 ```
 
@@ -281,7 +281,12 @@ function hslToHex(hsl: HSL): string;
 function getContrastRatio(color1: string, color2: string): number;
 
 // Check WCAG compliance
-function meetsWCAG(color1: string, color2: string, level: 'AA' | 'AAA', fontSize?: 'small' | 'large'): boolean;
+function meetsWCAG(
+	color1: string,
+	color2: string,
+	level: 'AA' | 'AAA',
+	fontSize?: 'small' | 'large'
+): boolean;
 
 // Generate full theme tokens
 function generateTheme(primaryColor: string): ThemeTokens;

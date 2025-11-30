@@ -7,15 +7,9 @@ If a component is not listed here, it DOES NOT EXIST.
 
 ## Primitives Package (@equaltoai/greater-components/primitives)
 
-
-
 ### Package Scope
 
-
-
 This package provides **30 interactive and layout components** for building any type of website.
-
-
 
 **What Primitives Provides:**
 
@@ -29,11 +23,7 @@ This package provides **30 interactive and layout components** for building any 
 
 - Advanced interactions (code blocks, drag-drop, markdown, streaming text)
 
-
-
 ### All 30 Components (Complete List)
-
-
 
 **Form Controls (9):**
 
@@ -55,8 +45,6 @@ This package provides **30 interactive and layout components** for building any 
 
 - FileUpload - File upload with drag-drop
 
-
-
 **Overlays & Menus (4):**
 
 - Modal - Dialog overlay
@@ -67,15 +55,13 @@ This package provides **30 interactive and layout components** for building any 
 
 - Tabs - Tab navigation
 
-
-
 **Display & Status (11):**
 
 - Avatar - User avatar with fallback
 
 - Badge - Status indicators and labels
 
-- CodeBlock - Syntax highlighting ⚠️ *Requires peer dep: `shiki`*
+- CodeBlock - Syntax highlighting ⚠️ _Requires peer dep: `shiki`_
 
 - GradientText - Gradient text effect
 
@@ -85,7 +71,7 @@ This package provides **30 interactive and layout components** for building any 
 
 - ListItem - List item with icon support
 
-- MarkdownRenderer - Safe markdown rendering ⚠️ *Requires peer deps: `isomorphic-dompurify`, `marked`*
+- MarkdownRenderer - Safe markdown rendering ⚠️ _Requires peer deps: `isomorphic-dompurify`, `marked`_
 
 - Skeleton - Loading placeholder
 
@@ -94,8 +80,6 @@ This package provides **30 interactive and layout components** for building any 
 - StreamingText - Text animation
 
 - ThemeSwitcher - Theme toggle
-
-
 
 **Layout & Typography (5):**
 
@@ -109,13 +93,9 @@ This package provides **30 interactive and layout components** for building any 
 
 - Text - Paragraph/span/div with typography control
 
-
-
 **Theme System (1):**
 
 - ThemeProvider - Theme context provider
-
-
 
 ### Detailed Component Reference
 
@@ -288,15 +268,18 @@ This package provides **30 interactive and layout components** for building any 
 **Purpose:** Syntax highlighting code block with copy button.
 
 **⚠️ Peer Dependency Required:** This component requires `shiki` to be installed:
+
 ```bash
 pnpm add shiki
 ```
 
 **When to Use:**
+
 - Documentation code snippets
 - Chat code responses
 
 **Key Props:**
+
 - `code`: string
 - `language`: string
 - `showCopy`: boolean
@@ -309,10 +292,12 @@ pnpm add shiki
 **Purpose:** Drag and drop file upload area.
 
 **When to Use:**
+
 - File uploads
 - Chat attachments
 
 **Key Props:**
+
 - `accept`: object - File types
 - `multiple`: boolean
 - `onDrop`: callback
@@ -324,15 +309,18 @@ pnpm add shiki
 **Purpose:** Renders markdown safely.
 
 **⚠️ Peer Dependencies Required:** This component requires `isomorphic-dompurify` and `marked`:
+
 ```bash
 pnpm add isomorphic-dompurify marked
 ```
 
 **When to Use:**
+
 - AI responses
 - User content
 
 **Key Props:**
+
 - `content`: string
 - `sanitize`: boolean
 
@@ -343,9 +331,11 @@ pnpm add isomorphic-dompurify marked
 **Purpose:** Streaming text effect.
 
 **When to Use:**
+
 - AI streaming responses
 
 **Key Props:**
+
 - `content`: string
 - `streaming`: boolean
 - `showCursor`: boolean
@@ -1049,6 +1039,7 @@ Combine HTML + Button component:
 This package provides **8 components** for building AI chat interfaces with streaming responses, tool calls, and configurable settings.
 
 **What Chat Package Provides:**
+
 - Complete chat interface components
 - Streaming response support
 - Tool/function call visualization
@@ -1058,12 +1049,14 @@ This package provides **8 components** for building AI chat interfaces with stre
 ### All 8 Components (Complete List)
 
 **Core Components (4):**
+
 - Container - Main wrapper providing context and layout
 - Messages - Scrollable message list with auto-scroll
 - Message - Individual message bubble with role-based styling
 - Input - Smart message composer with auto-resize
 
 **Feature Components (4):**
+
 - Header - Title bar with connection status and actions
 - ToolCall - Tool/function call display with collapsible details
 - Suggestions - Quick prompt suggestion pills or cards
@@ -1076,10 +1069,12 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Root component providing chat context and flex layout wrapper.
 
 **When to Use:**
+
 - As the outermost wrapper for all chat components
 - When you need shared state across chat components
 
 **Key Props:**
+
 - `class`: string - Custom CSS class
 - `children`: Snippet - Child components
 
@@ -1087,13 +1082,13 @@ This package provides **8 components** for building AI chat interfaces with stre
 
 ```svelte
 <script>
-  import * as Chat from '@equaltoai/greater-components/chat';
+	import * as Chat from '@equaltoai/greater-components/chat';
 </script>
 
 <Chat.Container>
-  <Chat.Header title="AI Assistant" />
-  <Chat.Messages {messages} />
-  <Chat.Input onSend={handleSend} />
+	<Chat.Header title="AI Assistant" />
+	<Chat.Messages {messages} />
+	<Chat.Input onSend={handleSend} />
 </Chat.Container>
 ```
 
@@ -1102,10 +1097,12 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Scrollable container for message list with auto-scroll and empty state.
 
 **When to Use:**
+
 - Displaying conversation history
 - When you need auto-scroll behavior
 
 **Key Props:**
+
 - `messages`: ChatMessage[] - Array of messages to display
 - `autoScroll`: boolean - Auto-scroll to new messages (default: true)
 - `showAvatars`: boolean - Show message avatars (default: true)
@@ -1118,15 +1115,18 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Individual message bubble with role-based styling and markdown rendering.
 
 **When to Use:**
+
 - Displaying individual messages (typically handled by Messages component)
 - Custom message layouts
 
 **Key Props:**
+
 - `message`: ChatMessage - Message to display (required)
 - `showAvatar`: boolean - Show avatar (default: true)
 - `renderMarkdown`: boolean - Render markdown (default: true)
 
 **Role Styling:**
+
 - `user`: Right-aligned, primary color background
 - `assistant`: Left-aligned, card with markdown
 - `system`: Centered, muted, full-width
@@ -1136,10 +1136,12 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Smart message composer with auto-resize, keyboard shortcuts, and file upload.
 
 **When to Use:**
+
 - Chat message composition
 - File attachment interfaces
 
 **Key Props:**
+
 - `value`: string - Input value (bindable)
 - `placeholder`: string - Placeholder text
 - `disabled`: boolean - Disable input
@@ -1148,6 +1150,7 @@ This package provides **8 components** for building AI chat interfaces with stre
 - `onSend`: (content, files?) => void - Send callback
 
 **Keyboard Shortcuts:**
+
 - Enter → Send message
 - Shift+Enter → Insert newline
 - Escape → Clear input
@@ -1157,10 +1160,12 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Title bar with connection status indicator and action buttons.
 
 **When to Use:**
+
 - Top of chat interface
 - When you need clear/settings buttons
 
 **Key Props:**
+
 - `title`: string - Header title
 - `subtitle`: string - Optional subtitle
 - `connectionStatus`: 'connected' | 'connecting' | 'disconnected'
@@ -1174,16 +1179,19 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Display AI tool/function invocations with status and results.
 
 **When to Use:**
+
 - Showing tool calls within assistant messages
 - Debugging AI tool usage
 
 **Key Props:**
+
 - `toolCall`: ToolCall - Tool call data (required)
 - `showResult`: boolean - Show result section (default: true)
 - `collapsible`: boolean - Allow collapse/expand (default: true)
 - `defaultCollapsed`: boolean - Initially collapsed (default: true)
 
 **Status Indicators:**
+
 - `pending` → Gray clock
 - `running` → Spinner
 - `complete` → Green check
@@ -1194,16 +1202,19 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Quick prompt suggestions for empty state or follow-up prompts.
 
 **When to Use:**
+
 - Empty chat state
 - After assistant responses
 - Guiding user input
 
 **Key Props:**
+
 - `suggestions`: string[] | ChatSuggestionItem[] - Suggestions (required)
 - `onSelect`: (suggestion) => void - Selection callback (required)
 - `variant`: 'pills' | 'cards' - Visual variant (default: 'pills')
 
 **Variants:**
+
 - `pills`: Compact horizontal buttons, wrap on mobile
 - `cards`: Larger cards with optional descriptions
 
@@ -1212,10 +1223,12 @@ This package provides **8 components** for building AI chat interfaces with stre
 **Purpose:** Modal for configuring chat settings (model, temperature, etc.).
 
 **When to Use:**
+
 - User-configurable AI settings
 - Model selection interfaces
 
 **Key Props:**
+
 - `open`: boolean - Modal visibility (bindable)
 - `settings`: ChatSettingsState - Current settings (required)
 - `availableModels`: {id, name}[] - Model options

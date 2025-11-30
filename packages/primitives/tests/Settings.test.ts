@@ -8,9 +8,10 @@ import SettingsSelect from '../src/components/Settings/SettingsSelect.svelte';
 import { createRawSnippet } from 'svelte';
 
 // Helper to create a simple text snippet for children
-const createTextSnippet = (text: string) => createRawSnippet(() => ({
-	render: () => `<span>${text}</span>`
-}));
+const createTextSnippet = (text: string) =>
+	createRawSnippet(() => ({
+		render: () => `<span>${text}</span>`,
+	}));
 
 describe('Settings Components', () => {
 	describe('SettingsSection', () => {
@@ -63,27 +64,27 @@ describe('Settings Components', () => {
 
 			const button = screen.getByRole('checkbox');
 			expect(button).toBeTruthy();
-			
+
 			// Svelte 5 component updates via props can be tricky in tests if not binding
 			// But fireEvent should trigger internal state update or event
-            // For now, just check rendering
-            expect(screen.getByText('Toggle Me')).toBeTruthy();
+			// For now, just check rendering
+			expect(screen.getByText('Toggle Me')).toBeTruthy();
 		});
 	});
 
-    describe('SettingsSelect', () => {
+	describe('SettingsSelect', () => {
 		it('renders label and select options', () => {
 			render(SettingsSelect, {
 				label: 'Select Me',
 				value: 'a',
-                options: [
-                    { value: 'a', label: 'Option A' },
-                    { value: 'b', label: 'Option B' }
-                ]
+				options: [
+					{ value: 'a', label: 'Option A' },
+					{ value: 'b', label: 'Option B' },
+				],
 			});
 
 			expect(screen.getByText('Select Me')).toBeTruthy();
-            // Check if options are present (depends on Select implementation, likely role="combobox" or "button")
+			// Check if options are present (depends on Select implementation, likely role="combobox" or "button")
 		});
 	});
 });

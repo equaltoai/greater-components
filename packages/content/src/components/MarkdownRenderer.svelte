@@ -11,7 +11,6 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 	import DOMPurify from 'isomorphic-dompurify';
 	import { marked } from 'marked';
 
-
 	interface Props {
 		/**
 		 * Markdown content to render.
@@ -55,15 +54,15 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 		/**
 		 * Callback when rendering is complete.
 		 */
-	onRenderComplete?: () => void;
+		onRenderComplete?: () => void;
 
 		/**
 		 * Callback on error.
 		 */
-	onError?: (error: Error) => void;
+		onError?: (error: Error) => void;
 	}
 
-	let { 
+	let {
 		content,
 		sanitize = true,
 		allowedTags,
@@ -99,10 +98,10 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 		try {
 			if (!content) return '';
 
-			const html = marked.parse(content, { 
+			const html = marked.parse(content, {
 				renderer,
-				breaks: true, 
-				gfm: true 
+				breaks: true,
+				gfm: true,
 			});
 
 			// marked.parse can return Promise if async is enabled, but by default it is sync.
@@ -139,7 +138,7 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 					'td',
 					'del',
 					'img',
-					'hr'
+					'hr',
 				],
 				ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel'],
 			});
@@ -168,4 +167,3 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html renderedHtml}
 </div>
-

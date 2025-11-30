@@ -3,4 +3,3 @@
  */
 
 export type MediaCategory = 'IMAGE' | 'VIDEO' | 'AUDIO' | 'GIFV' | 'DOCUMENT';
-

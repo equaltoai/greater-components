@@ -17,20 +17,16 @@ When the AI is generating a response, use `StreamingText` to show the cursor eff
 
 ```svelte
 <script>
-  import { StreamingText } from '@equaltoai/greater-components/primitives';
-  
-  let content = "Thinking...";
-  let isGenerating = true;
-  
-  // In a real app, update 'content' as tokens arrive
+	import { StreamingText } from '@equaltoai/greater-components/primitives';
+
+	let content = 'Thinking...';
+	let isGenerating = true;
+
+	// In a real app, update 'content' as tokens arrive
 </script>
 
 <div class="message ai-message">
-  <StreamingText 
-    {content} 
-    streaming={isGenerating} 
-    onComplete={() => console.log('Done')}
-  />
+	<StreamingText {content} streaming={isGenerating} onComplete={() => console.log('Done')} />
 </div>
 ```
 
@@ -38,23 +34,24 @@ When the AI is generating a response, use `StreamingText` to show the cursor eff
 
 Once generation is complete, switch to `MarkdownRenderer` to render headings, bold text, links, and code blocks.
 
-```svelte
+````svelte
 <script>
   import { MarkdownRenderer } from '@equaltoai/greater-components/primitives';
-  
+
   const finalResponse = `
   # Solution
-  
-  You can use the 
+
+  You can use the
 filter
  method.
-  
-  
+
+
 ```javascript
 const numbers = [1, 2, 3, 4];
 const evens = numbers.filter(n => n % 2 === 0);
-```
-  `;
+````
+
+`;
 </script>
 
 <div class="message ai-message">
@@ -68,27 +65,27 @@ Use `DropZone` to allow users to upload files for context.
 
 ```svelte
 <script>
-  import { DropZone, IconBadge } from '@equaltoai/greater-components/primitives';
-  import { FileIcon } from '@equaltoai/greater-components/icons';
-  
-  function handleDrop(items) {
-    items.forEach(item => {
-      console.log('Uploaded:', item.name, item.type);
-      // If text, item.content has the text
-      // If binary, item.content has DataURL
-    });
-  }
+	import { DropZone, IconBadge } from '@equaltoai/greater-components/primitives';
+	import { FileIcon } from '@equaltoai/greater-components/icons';
+
+	function handleDrop(items) {
+		items.forEach((item) => {
+			console.log('Uploaded:', item.name, item.type);
+			// If text, item.content has the text
+			// If binary, item.content has DataURL
+		});
+	}
 </script>
 
-<DropZone 
-  accept={{ files: ['.txt', '.pdf', '.png'], text: true }}
-  onDrop={handleDrop}
-  variant="outlined"
+<DropZone
+	accept={{ files: ['.txt', '.pdf', '.png'], text: true }}
+	onDrop={handleDrop}
+	variant="outlined"
 >
-  <div class="flex flex-col items-center gap-2">
-    <IconBadge icon={FileIcon} />
-    <p>Drop files to add context</p>
-  </div>
+	<div class="flex flex-col items-center gap-2">
+		<IconBadge icon={FileIcon} />
+		<p>Drop files to add context</p>
+	</div>
 </DropZone>
 ```
 
@@ -98,15 +95,15 @@ If you want to display code outside of markdown (e.g. a file viewer), use `CodeB
 
 ```svelte
 <script>
-  import { CodeBlock } from '@equaltoai/greater-components/primitives';
+	import { CodeBlock } from '@equaltoai/greater-components/primitives';
 </script>
 
 <CodeBlock
-  code="console.log('Hello')"
-  language="javascript"
-  filename="script.js"
-  showLineNumbers
-  showCopy
+	code="console.log('Hello')"
+	language="javascript"
+	filename="script.js"
+	showLineNumbers
+	showCopy
 />
 ```
 
@@ -114,40 +111,40 @@ If you want to display code outside of markdown (e.g. a file viewer), use `CodeB
 
 Here is how you can combine them into a simple chat view.
 
-```svelte
+````svelte
 <script>
-  import { 
-    MarkdownRenderer, 
-    StreamingText, 
+  import {
+    MarkdownRenderer,
+    StreamingText,
     DropZone,
     TextField,
     Button,
     Container,
     Card
   } from '@equaltoai/greater-components/primitives';
-  
+
   let messages = $state([
     { role: 'user', content: 'How do I use array map?' }
   ]);
-  
+
   let input = $state('');
   let isStreaming = $state(false);
   let currentStream = $state('');
-  
+
   function sendMessage() {
     if (!input) return;
-    
+
     // Add user message
     messages = [...messages, { role: 'user', content: input }];
     input = '';
-    
+
     // Simulate AI response
     isStreaming = true;
     currentStream = '';
-    
+
     let i = 0;
     const response = "You can use `Array.prototype.map()` to transform elements.\n\n```js\n[1, 2].map(x => x * 2);\n```";
-    
+
     const interval = setInterval(() => {
       currentStream += response[i];
       i++;
@@ -172,7 +169,7 @@ Here is how you can combine them into a simple chat view.
         <MarkdownRenderer content={msg.content} />
       </Card>
     {/each}
-    
+
     {#if isStreaming}
       <Card padding="sm" variant="outlined">
         <p class="text-xs font-bold mb-1 text-gray-500">AI</p>
@@ -180,17 +177,17 @@ Here is how you can combine them into a simple chat view.
       </Card>
     {/if}
   </div>
-  
+
   <!-- Input Area -->
   <div class="mt-auto">
     <DropZone onDrop={/* handle files */} class="mb-2 h-24">
       <p class="text-sm text-gray-400">Drop context files</p>
     </DropZone>
-    
+
     <div class="flex gap-2">
       <TextField bind:value={input} placeholder="Type a message..." class="flex-1" />
       <Button onclick={sendMessage} disabled={isStreaming}>Send</Button>
     </div>
   </div>
 </Container>
-```
+````

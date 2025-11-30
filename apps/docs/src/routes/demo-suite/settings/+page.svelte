@@ -95,7 +95,7 @@
 </ThemeProvider>`;
 
 	const accessibility = {
-		wcagLevel: 'AA',
+		wcagLevel: 'AA' as const,
 		keyboardNav: true,
 		screenReader: true,
 		colorContrast: true,

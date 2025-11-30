@@ -34,4 +34,3 @@ import type MarkdownRendererComponent from './components/MarkdownRenderer.svelte
 // Component prop types
 export type CodeBlockProps = ComponentProps<CodeBlockComponent>;
 export type MarkdownRendererProps = ComponentProps<MarkdownRendererComponent>;
-

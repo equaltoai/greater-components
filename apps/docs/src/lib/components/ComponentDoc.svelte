@@ -4,8 +4,7 @@
 	import SlotsTable from './SlotsTable.svelte';
 	import AccessibilityScorecard from './AccessibilityScorecard.svelte';
 	import CodeExample from './CodeExample.svelte';
-	import LiveDemo from './LiveDemo.svelte';
-	import type { ComponentType } from 'svelte';
+	import type { Snippet } from 'svelte';
 
 	type ComponentStatus = 'alpha' | 'beta' | 'stable' | 'deprecated';
 	type WcagLevel = 'A' | 'AA' | 'AAA';
@@ -30,11 +29,10 @@
 		description: string;
 	};
 
-	type ComponentExampleDoc = {
+	// Example metadata - the actual component rendering is done via snippet
+	type ExampleMeta = {
 		title: string;
 		description?: string;
-		component: ComponentType;
-		props?: Record<string, unknown>;
 		code: string;
 	};
 
@@ -51,16 +49,39 @@
 		axeScore?: number | null;
 	};
 
-	export let name: string;
-	export let description: string;
-	export let status: ComponentStatus = 'stable';
-	export let version: string = '0.1.0';
-	export let props: ComponentPropDoc[] = [];
-	export let events: ComponentEventDoc[] = [];
-	export let slots: ComponentSlotDoc[] = [];
-	export let examples: ComponentExampleDoc[] = [];
-	export let accessibility: AccessibilityScorecardConfig = {};
-	export let importPath: string;
+	interface Props {
+		name: string;
+		description: string;
+		status?: ComponentStatus;
+		version?: string;
+		props?: ComponentPropDoc[];
+		events?: ComponentEventDoc[];
+		slots?: ComponentSlotDoc[];
+		examplesMeta?: ExampleMeta[];
+		examples?: Snippet<[number]>; // Snippet receives example index
+		accessibility?: AccessibilityScorecardConfig;
+		importPath: string;
+		doGuidelines?: Snippet;
+		dontGuidelines?: Snippet;
+		additional?: Snippet;
+	}
+
+	let {
+		name,
+		description,
+		status = 'stable',
+		version = '0.1.0',
+		props = [],
+		events = [],
+		slots = [],
+		examplesMeta = [],
+		examples,
+		accessibility = {},
+		importPath,
+		doGuidelines,
+		dontGuidelines,
+		additional,
+	}: Props = $props();
 </script>
 
 <article class="component-doc">
@@ -80,17 +101,19 @@
 		<CodeExample language="javascript" code={`import ${name} from '${importPath}';`} />
 	</section>
 
-	{#if examples.length > 0}
+	{#if examplesMeta.length > 0 && examples}
 		<section class="examples-section">
 			<h2>Examples</h2>
-			{#each examples as example, exampleIndex (`${exampleIndex}-${example.title}`)}
+			{#each examplesMeta as meta, index (`${index}-${meta.title}`)}
 				<div class="example">
-					<h3>{example.title}</h3>
-					{#if example.description}
-						<p>{example.description}</p>
+					<h3>{meta.title}</h3>
+					{#if meta.description}
+						<p>{meta.description}</p>
 					{/if}
-					<LiveDemo component={example.component} props={example.props} />
-					<CodeExample language="svelte" code={example.code} />
+					<div class="example-preview">
+						{@render examples(index)}
+					</div>
+					<CodeExample language="svelte" code={meta.code} />
 				</div>
 			{/each}
 		</section>
@@ -132,19 +155,25 @@
 			<div class="do-section">
 				<h3>Do</h3>
 				<ul>
-					<slot name="do" />
+					{#if doGuidelines}
+						{@render doGuidelines()}
+					{/if}
 				</ul>
 			</div>
 			<div class="dont-section">
 				<h3>Don't</h3>
 				<ul>
-					<slot name="dont" />
+					{#if dontGuidelines}
+						{@render dontGuidelines()}
+					{/if}
 				</ul>
 			</div>
 		</div>
 	</section>
 
-	<slot name="additional" />
+	{#if additional}
+		{@render additional()}
+	{/if}
 </article>
 
 <style>
@@ -219,6 +248,17 @@
 	.example p {
 		margin-bottom: 1rem;
 		opacity: 0.8;
+	}
+
+	.example-preview {
+		padding: 1.5rem;
+		margin-bottom: 1rem;
+		background: var(--doc-bg);
+		border: 1px solid var(--doc-border);
+		border-radius: 0.375rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.api-subsection {

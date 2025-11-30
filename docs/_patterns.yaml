@@ -1104,7 +1104,7 @@ patterns:
         incorrect_example: |
           // INCORRECT: Array mutation doesn't trigger reactivity
           messages.push(newMessage);  // Won't update UI!
-          
+
           // CORRECT: Reassign with spread
           messages = [...messages, newMessage];
         consequences:
@@ -1235,7 +1235,7 @@ patterns:
 
       <!-- Messages component automatically renders tool calls -->
       <Chat.Messages {messages} />
-      
+
       <!-- Or render tool calls manually in custom layout -->
       {#each message.toolCalls as toolCall}
         <Chat.ToolCall {toolCall} collapsible={true} />
@@ -1294,7 +1294,7 @@ patterns:
     alternative_with_default_suggestions: |
       // Use built-in PAI suggestions
       import { defaultPAISuggestions } from '@equaltoai/greater-components/chat';
-      
+
       <Chat.Suggestions 
         suggestions={defaultPAISuggestions}
         onSelect={handleSend}
