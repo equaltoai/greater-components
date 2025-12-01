@@ -30,7 +30,7 @@
     "@sveltejs/kit": "^2.49.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "svelte": "^5.45.3",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.12"
