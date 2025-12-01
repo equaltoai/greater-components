@@ -1,5 +1,17 @@
 # @equaltoai/greater-components-chat
 
+## 4.2.4
+
+### Patch Changes
+
+- Fix ChatInput vertical alignment - change container from align-items: flex-end to align-items: center so paperclip icon, text input, and send button are all vertically centered.
+
+## 4.2.3
+
+### Patch Changes
+
+- 2264f0b: Fix ChatInput placeholder vertical alignment - ensure textarea height resets to LINE_HEIGHT (24px) when empty, keeping placeholder text vertically centered with adjacent icons like the attachment button.
+
 ## 4.2.2
 
 ### Patch Changes

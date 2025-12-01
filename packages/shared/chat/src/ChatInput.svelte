@@ -718,7 +718,7 @@
 	/* Input container - unified visual container for all input elements */
 	.chat-input__container {
 		display: flex;
-		align-items: flex-end;
+		align-items: center;
 		gap: var(--gr-spacing-scale-2, 0.5rem);
 		padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-3, 0.75rem);
 		background: var(--gr-color-gray-50, #f9fafb);
@@ -778,7 +778,6 @@
 
 	:global(.chat-input__upload-button) {
 		flex-shrink: 0;
-		align-self: center;
 	}
 
 	/* Textarea wrapper */
@@ -829,12 +828,10 @@
 	/* Send button */
 	:global(.chat-input__send-button) {
 		flex-shrink: 0;
-		align-self: flex-end;
 	}
 
 	/* Character count */
 	.chat-input__char-count {
-		align-self: flex-end;
 		font-size: var(--gr-typography-fontSize-xs, 0.75rem);
 		color: var(--gr-color-text-secondary, #6b7280);
 		transition: color 150ms ease;
