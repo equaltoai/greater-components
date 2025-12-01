@@ -133,6 +133,13 @@
 	function autoResize() {
 		if (!textareaEl) return;
 
+		// If empty, reset to minimum height for proper vertical centering
+		if (!textareaEl.value.trim()) {
+			textareaEl.style.height = `${LINE_HEIGHT}px`;
+			textareaEl.style.overflowY = 'hidden';
+			return;
+		}
+
 		// Reset height to auto to get the correct scrollHeight
 		textareaEl.style.height = 'auto';
 
@@ -149,7 +156,7 @@
 	 */
 	function resetHeight() {
 		if (!textareaEl) return;
-		textareaEl.style.height = 'auto';
+		textareaEl.style.height = `${LINE_HEIGHT}px`;
 		textareaEl.style.overflowY = 'hidden';
 	}
 
@@ -713,14 +720,16 @@
 		display: flex;
 		align-items: flex-end;
 		gap: var(--gr-spacing-scale-2, 0.5rem);
-		padding: var(--gr-spacing-scale-2, 0.5rem);
-		padding-left: var(--gr-spacing-scale-3, 0.75rem);
+		padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-3, 0.75rem);
 		background: var(--gr-color-gray-50, #f9fafb);
 		border: 1px solid var(--gr-color-border, #e5e7eb);
 		border-radius: var(--gr-radii-lg, 0.5rem);
 		transition:
 			border-color 150ms ease,
 			box-shadow 150ms ease;
+		box-sizing: border-box;
+		width: 100%;
+		min-width: 0;
 	}
 
 	/* Focus state on container when textarea is focused */

@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "4.1.0",
+  "version": "4.2.2",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
