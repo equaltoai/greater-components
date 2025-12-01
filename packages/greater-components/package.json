@@ -200,7 +200,7 @@
     "@equaltoai/greater-components-search": "workspace:*",
     "@equaltoai/greater-components-notifications": "workspace:*",
     "@equaltoai/greater-components-chat": "workspace:*",
-    "@vitest/coverage-v8": "^4.0.12",
-    "vitest": "^4.0.12"
+    "@vitest/coverage-v8": "^4.0.14",
+    "vitest": "^4.0.14"
   }
 }
