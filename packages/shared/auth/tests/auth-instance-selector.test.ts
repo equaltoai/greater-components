@@ -10,3 +10,4 @@ describe('Auth.InstanceSelector', () => {
 		expect(getByText(/continue/i)).toBeTruthy();
 	});
 });
+

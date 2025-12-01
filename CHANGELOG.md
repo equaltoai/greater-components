@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.1.0] - 2025-02-14
+
+### Added
+
+- Rolled out the new AI chat component suite (Container, Messages, Message, Input, Header, ToolCall, Suggestions, Settings) with streaming response support, tool-call visualization, markdown rendering, and WCAG-compliant accessibility. See `@equaltoai/greater-components` and `@equaltoai/greater-components-chat` packages for full details.
+
 ## [2.2.0] - 2025-11-23
 
 ### Added

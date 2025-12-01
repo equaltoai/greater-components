@@ -1,21 +1,21 @@
 import type { Config } from 'dompurify';
 export interface SanitizeOptions {
-	/**
-	 * Allow specific HTML tags
-	 */
-	allowedTags?: string[];
-	/**
-	 * Allow specific attributes
-	 */
-	allowedAttributes?: string[];
-	/**
-	 * Allow data URIs in src attributes
-	 */
-	allowDataUri?: boolean;
-	/**
-	 * Custom DOMPurify configuration
-	 */
-	customConfig?: Config;
+    /**
+     * Allow specific HTML tags
+     */
+    allowedTags?: string[];
+    /**
+     * Allow specific attributes
+     */
+    allowedAttributes?: string[];
+    /**
+     * Allow data URIs in src attributes
+     */
+    allowDataUri?: boolean;
+    /**
+     * Custom DOMPurify configuration
+     */
+    customConfig?: Config;
 }
 /**
  * Sanitize HTML content using DOMPurify with an allow-list approach

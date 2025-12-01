@@ -10,3 +10,4 @@
 <Auth.Root {handlers}>
 	<Auth.LoginForm />
 </Auth.Root>
+

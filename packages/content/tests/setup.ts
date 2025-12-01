@@ -41,3 +41,4 @@ Object.defineProperty(window, 'localStorage', {
 afterEach(() => {
 	cleanup();
 });
+
