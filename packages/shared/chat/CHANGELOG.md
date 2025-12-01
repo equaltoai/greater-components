@@ -1,5 +1,11 @@
 # @equaltoai/greater-components-chat
 
+## 4.2.5
+
+### Patch Changes
+
+- Fix ChatInput text vertical alignment - remove textarea vertical padding and ensure all elements (paperclip, text, send button) are vertically centered.
+
 ## 4.2.4
 
 ### Patch Changes

@@ -133,13 +133,6 @@
 	function autoResize() {
 		if (!textareaEl) return;
 
-		// If empty, reset to minimum height for proper vertical centering
-		if (!textareaEl.value.trim()) {
-			textareaEl.style.height = `${LINE_HEIGHT}px`;
-			textareaEl.style.overflowY = 'hidden';
-			return;
-		}
-
 		// Reset height to auto to get the correct scrollHeight
 		textareaEl.style.height = 'auto';
 
@@ -156,7 +149,7 @@
 	 */
 	function resetHeight() {
 		if (!textareaEl) return;
-		textareaEl.style.height = `${LINE_HEIGHT}px`;
+		textareaEl.style.height = 'auto';
 		textareaEl.style.overflowY = 'hidden';
 	}
 
@@ -792,7 +785,7 @@
 		width: 100%;
 		min-height: 24px;
 		max-height: 144px; /* 6 lines * 24px */
-		padding: var(--gr-spacing-scale-1, 0.25rem) 0;
+		padding: 0;
 		font-family: var(--gr-typography-fontFamily-sans, system-ui, sans-serif);
 		font-size: var(--gr-typography-fontSize-base, 1rem);
 		line-height: 1.5;
