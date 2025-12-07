@@ -1,3 +1,16 @@
+<!--
+	@deprecated This component is deprecated. Use the compound component pattern instead:
+	
+	<Menu.Root>
+		<Menu.Trigger><Button>Options</Button></Menu.Trigger>
+		<Menu.Content>
+			<Menu.Item label="Edit" />
+			<Menu.Item label="Delete" destructive />
+		</Menu.Content>
+	</Menu.Root>
+	
+	See packages/primitives/src/components/Menu/index.ts for the new API.
+-->
 <svelte:options
 	customElement={{
 		props: {
@@ -11,7 +24,15 @@
 />
 
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { tick, onMount } from 'svelte';
+	
+	onMount(() => {
+		console.warn(
+			'[Greater Components] Menu.svelte is deprecated. ' +
+			'Please migrate to the compound component pattern: Menu.Root, Menu.Trigger, Menu.Content, Menu.Item. ' +
+			'See documentation for migration guide.'
+		);
+	});
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 

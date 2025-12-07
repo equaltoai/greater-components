@@ -15,8 +15,10 @@
   ```
 -->
 <script lang="ts">
-	import { Avatar, CopyButton } from '@equaltoai/greater-components-primitives';
+	import type { Snippet } from 'svelte';
+	import { Avatar, CopyButton, Button } from '@equaltoai/greater-components-primitives';
 	import { MarkdownRenderer } from '@equaltoai/greater-components-content';
+	import { RefreshCwIcon } from '@equaltoai/greater-components-icons';
 	import { formatMessageTime } from './context.svelte.js';
 	import type { MessageRole } from './types.js';
 
@@ -57,6 +59,54 @@
 		streaming?: boolean;
 
 		/**
+		 * Message status for error handling
+		 */
+		status?: 'pending' | 'streaming' | 'complete' | 'error';
+
+		/**
+		 * Error message if status is 'error'
+		 */
+		error?: string;
+
+		/**
+		 * Whether to show the copy button for assistant messages
+		 * @default true (for assistant messages)
+		 */
+		showCopyButton?: boolean;
+
+		/**
+		 * Whether to show the retry button for error states
+		 * @default true (when status is 'error')
+		 */
+		showRetryButton?: boolean;
+
+		/**
+		 * Callback when retry button is clicked
+		 */
+		onRetry?: () => void;
+
+		/**
+		 * Custom actions snippet for additional message actions
+		 */
+		actions?: Snippet;
+
+		/**
+		 * Custom user avatar snippet
+		 */
+		userAvatar?: Snippet;
+
+		/**
+		 * Custom assistant avatar snippet
+		 */
+		assistantAvatar?: Snippet;
+
+		/**
+		 * Custom content renderer snippet
+		 * Receives { content, streaming } as parameters
+		 */
+		renderContent?: Snippet<[{ content: string; streaming: boolean }]>;
+
+		/**
 		 * Custom CSS class
 		 */
 		class?: string;
@@ -69,11 +119,29 @@
 		avatar,
 		showAvatar = true,
 		streaming = false,
+		status = 'complete',
+		error,
+		showCopyButton,
+		showRetryButton,
+		onRetry,
+		actions,
+		userAvatar,
+		assistantAvatar,
+		renderContent,
 		class: className = '',
 	}: Props = $props();
 
 	// Track hover state for copy button visibility
 	let isHovered = $state(false);
+
+	// Compute effective showCopyButton (default true for assistant)
+	const effectiveShowCopyButton = $derived(showCopyButton ?? (role === 'assistant'));
+	
+	// Compute effective showRetryButton (default true for error state)
+	const effectiveShowRetryButton = $derived(showRetryButton ?? (status === 'error'));
+
+	// Check if message has error
+	const hasError = $derived(status === 'error');
 
 	// Compute message classes
 	const messageClass = $derived.by(() => {
@@ -89,7 +157,7 @@
 		return classes;
 	});
 
-	// Avatar name for accessibility and initials generation
+	// Avatar name for accessibility
 	const avatarName = $derived.by(() => {
 		switch (role) {
 			case 'user':
@@ -100,6 +168,20 @@
 				return 'System';
 			default:
 				return 'Unknown';
+		}
+	});
+
+	// Avatar label for display (short text for chat bubbles)
+	const avatarLabel = $derived.by(() => {
+		switch (role) {
+			case 'user':
+				return 'You';
+			case 'assistant':
+				return 'AI';
+			case 'system':
+				return 'Sys';
+			default:
+				return '?';
 		}
 	});
 </script>
@@ -113,13 +195,29 @@
 >
 	{#if role !== 'system' && showAvatar}
 		<div class="chat-message__avatar">
-			<Avatar src={avatar} name={avatarName} size="sm" shape="circle" />
+			{#if role === 'user' && userAvatar}
+				{@render userAvatar()}
+			{:else if role === 'assistant' && assistantAvatar}
+				{@render assistantAvatar()}
+			{:else}
+				<Avatar 
+					src={avatar} 
+					name={avatarName} 
+					label={avatarLabel}
+					fallbackMode="label"
+					size="sm" 
+					shape="circle" 
+				/>
+			{/if}
 		</div>
 	{/if}
 
 	<div class="chat-message__content-wrapper">
-		<div class="chat-message__bubble">
-			{#if role === 'assistant'}
+		<div class="chat-message__bubble" class:chat-message__bubble--error={hasError}>
+			{#if renderContent}
+				<!-- Custom content renderer -->
+				{@render renderContent({ content, streaming })}
+			{:else if role === 'assistant'}
 				<!-- Assistant messages use MarkdownRenderer -->
 				<div class="chat-message__content">
 					<MarkdownRenderer {content} sanitize={true} enableLinks={true} openLinksInNewTab={true} />
@@ -127,13 +225,6 @@
 						<span class="chat-message__cursor" aria-hidden="true"></span>
 					{/if}
 				</div>
-
-				<!-- Copy button for assistant messages (visible on hover) -->
-				{#if isHovered && !streaming && content}
-					<div class="chat-message__actions">
-						<CopyButton text={content} variant="icon" buttonVariant="ghost" size="sm" />
-					</div>
-				{/if}
 			{:else if role === 'user'}
 				<!-- User messages display plain text -->
 				<div class="chat-message__content">
@@ -144,6 +235,31 @@
 				<div class="chat-message__content">
 					{content}
 				</div>
+			{/if}
+
+			{#if hasError && error}
+				<div class="chat-message__error">
+					<span class="chat-message__error-text">{error}</span>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Message actions (visible on hover) -->
+		<div class="chat-message__actions" class:chat-message__actions--visible={isHovered && !streaming}>
+			{#if actions}
+				{@render actions()}
+			{/if}
+			
+			{#if effectiveShowCopyButton && content && !hasError}
+				<CopyButton text={content} variant="icon" buttonVariant="ghost" size="sm" />
+			{/if}
+			
+			{#if effectiveShowRetryButton && hasError && onRetry}
+				<Button variant="ghost" size="sm" onclick={onRetry} aria-label="Retry message">
+					{#snippet prefix()}
+						<RefreshCwIcon size={14} />
+					{/snippet}
+				</Button>
 			{/if}
 		</div>
 
@@ -159,8 +275,8 @@
 	/* Base message styles */
 	.chat-message {
 		display: flex;
-		gap: var(--gr-spacing-scale-3, 0.75rem);
-		padding: var(--gr-spacing-scale-3, 0.75rem) var(--gr-spacing-scale-4, 1rem);
+		gap: var(--gr-spacing-scale-3);
+		padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4);
 		animation: message-enter 0.3s ease-out;
 	}
 
@@ -182,15 +298,15 @@
 	.chat-message__content-wrapper {
 		display: flex;
 		flex-direction: column;
-		gap: var(--gr-spacing-scale-1, 0.25rem);
+		gap: var(--gr-spacing-scale-1);
 		min-width: 0;
 		max-width: 80%;
 	}
 
 	.chat-message__bubble {
 		position: relative;
-		padding: var(--gr-spacing-scale-3, 0.75rem) var(--gr-spacing-scale-4, 1rem);
-		border-radius: var(--gr-radii-lg, 0.5rem);
+		padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4);
+		border-radius: var(--gr-radii-lg);
 		word-wrap: break-word;
 		overflow-wrap: break-word;
 	}
@@ -200,21 +316,28 @@
 	}
 
 	.chat-message__timestamp {
-		font-size: var(--gr-typography-fontSize-xs, 0.75rem);
-		color: var(--gr-color-gray-500, #6b7280);
-		padding-left: var(--gr-spacing-scale-1, 0.25rem);
+		font-size: var(--gr-typography-fontSize-xs);
+		color: var(--gr-semantic-foreground-tertiary);
+		padding-left: var(--gr-spacing-scale-1);
 	}
 
 	.chat-message__actions {
-		position: absolute;
-		top: var(--gr-spacing-scale-2, 0.5rem);
-		right: var(--gr-spacing-scale-2, 0.5rem);
+		display: flex;
+		align-items: center;
+		gap: var(--gr-spacing-scale-1);
+		margin-top: var(--gr-spacing-scale-1);
 		opacity: 0;
 		transition: opacity 0.15s ease-in-out;
 	}
 
+	.chat-message__actions--visible,
 	.chat-message:hover .chat-message__actions {
 		opacity: 1;
+	}
+
+	/* Position actions differently for user messages */
+	.chat-message--user .chat-message__actions {
+		justify-content: flex-end;
 	}
 
 	/* User message styles - Right aligned, primary background */
@@ -227,14 +350,14 @@
 	}
 
 	.chat-message--user .chat-message__bubble {
-		background-color: var(--gr-color-primary-600, #2563eb);
-		color: var(--gr-color-base-white, #ffffff);
-		border-bottom-right-radius: var(--gr-radii-sm, 0.125rem);
+		background-color: var(--gr-color-primary-600);
+		color: var(--gr-color-base-white);
+		border-bottom-right-radius: var(--gr-radii-sm);
 	}
 
 	.chat-message--user .chat-message__timestamp {
 		text-align: right;
-		padding-right: var(--gr-spacing-scale-1, 0.25rem);
+		padding-right: var(--gr-spacing-scale-1);
 		padding-left: 0;
 	}
 
@@ -248,17 +371,17 @@
 	}
 
 	.chat-message--assistant .chat-message__bubble {
-		background-color: var(--gr-semantic-background-primary, #ffffff);
-		border: 1px solid var(--gr-color-gray-200, #e5e7eb);
-		color: var(--gr-semantic-foreground-primary, #111827);
-		border-bottom-left-radius: var(--gr-radii-sm, 0.125rem);
-		box-shadow: var(--gr-shadows-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+		background-color: var(--gr-semantic-background-primary);
+		border: 1px solid var(--gr-semantic-border-default);
+		color: var(--gr-semantic-foreground-primary);
+		border-bottom-left-radius: var(--gr-radii-sm);
+		box-shadow: var(--gr-shadows-sm);
 	}
 
 	/* System message styles - Centered, muted background */
 	.chat-message--system {
 		justify-content: center;
-		padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-4, 1rem);
+		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 	}
 
 	.chat-message--system .chat-message__content-wrapper {
@@ -267,12 +390,28 @@
 	}
 
 	.chat-message--system .chat-message__bubble {
-		background-color: var(--gr-color-gray-100, #f3f4f6);
-		color: var(--gr-color-gray-600, #4b5563);
-		font-size: var(--gr-typography-fontSize-sm, 0.875rem);
+		background-color: var(--gr-semantic-background-tertiary);
+		color: var(--gr-semantic-foreground-secondary);
+		font-size: var(--gr-typography-fontSize-sm);
 		text-align: center;
-		border-radius: var(--gr-radii-full, 9999px);
-		padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-4, 1rem);
+		border-radius: var(--gr-radii-full);
+		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
+	}
+
+	/* Error state styles */
+	.chat-message__bubble--error {
+		border-color: var(--gr-color-error-500);
+	}
+
+	.chat-message__error {
+		margin-top: var(--gr-spacing-scale-2);
+		padding-top: var(--gr-spacing-scale-2);
+		border-top: 1px solid var(--gr-semantic-border-subtle);
+	}
+
+	.chat-message__error-text {
+		font-size: var(--gr-typography-fontSize-sm);
+		color: var(--gr-color-error-600);
 	}
 
 	/* Streaming cursor animation */
@@ -301,31 +440,14 @@
 		/* Subtle visual indicator for streaming */
 	}
 
-	/* Dark mode styles */
-	:global([data-theme='dark']) .chat-message--user .chat-message__bubble {
-		background-color: var(--gr-color-primary-500, #3b82f6);
-	}
-
-	:global([data-theme='dark']) .chat-message--assistant .chat-message__bubble {
-		background-color: var(--gr-semantic-background-secondary, #374151);
-		border-color: var(--gr-color-gray-700, #374151);
-		color: var(--gr-semantic-foreground-primary, #f9fafb);
-	}
-
-	:global([data-theme='dark']) .chat-message--system .chat-message__bubble {
-		background-color: var(--gr-color-gray-800, #1f2937);
-		color: var(--gr-color-gray-400, #9ca3af);
-	}
-
-	:global([data-theme='dark']) .chat-message__timestamp {
-		color: var(--gr-color-gray-400, #9ca3af);
-	}
+	/* Dark mode is handled automatically via semantic tokens */
+	/* No explicit dark mode overrides needed - semantic tokens adapt to theme */
 
 	/* Responsive styles */
 	@media (max-width: 640px) {
 		.chat-message {
-			padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-3, 0.75rem);
-			gap: var(--gr-spacing-scale-2, 0.5rem);
+			padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+			gap: var(--gr-spacing-scale-2);
 		}
 
 		.chat-message__content-wrapper {
@@ -333,7 +455,7 @@
 		}
 
 		.chat-message__bubble {
-			padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-3, 0.75rem);
+			padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		}
 	}
 
@@ -344,7 +466,7 @@
 	}
 
 	.chat-message--assistant :global(.gr-markdown p) {
-		margin: 0 0 var(--gr-spacing-scale-2, 0.5rem) 0;
+		margin: 0 0 var(--gr-spacing-scale-2) 0;
 	}
 
 	.chat-message--assistant :global(.gr-markdown p:last-child) {
@@ -352,31 +474,23 @@
 	}
 
 	.chat-message--assistant :global(.gr-markdown code) {
-		background-color: var(--gr-color-gray-100, #f3f4f6);
+		background-color: var(--gr-semantic-background-tertiary);
 		padding: 0.125rem 0.25rem;
-		border-radius: var(--gr-radii-sm, 0.125rem);
+		border-radius: var(--gr-radii-sm);
 		font-size: 0.875em;
 	}
 
 	.chat-message--assistant :global(.gr-markdown pre) {
-		background-color: var(--gr-color-gray-900, #111827);
-		color: var(--gr-color-gray-100, #f3f4f6);
-		padding: var(--gr-spacing-scale-3, 0.75rem);
-		border-radius: var(--gr-radii-md, 0.375rem);
+		background-color: var(--gr-color-gray-900);
+		color: var(--gr-color-gray-100);
+		padding: var(--gr-spacing-scale-3);
+		border-radius: var(--gr-radii-md);
 		overflow-x: auto;
-		margin: var(--gr-spacing-scale-2, 0.5rem) 0;
+		margin: var(--gr-spacing-scale-2) 0;
 	}
 
 	.chat-message--assistant :global(.gr-markdown pre code) {
 		background-color: transparent;
 		padding: 0;
-	}
-
-	:global([data-theme='dark']) .chat-message--assistant :global(.gr-markdown code) {
-		background-color: var(--gr-color-gray-700, #374151);
-	}
-
-	:global([data-theme='dark']) .chat-message--assistant :global(.gr-markdown pre) {
-		background-color: var(--gr-color-gray-950, #030712);
 	}
 </style>

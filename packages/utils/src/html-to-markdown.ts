@@ -1,50 +1,79 @@
-import TurndownService from 'turndown';
-import { gfm } from 'turndown-plugin-gfm';
+import { unified } from 'unified';
+import rehypeParse from 'rehype-parse';
+import { toMdast } from 'hast-util-to-mdast';
+import { toMarkdown } from 'mdast-util-to-markdown';
+import { gfmToMarkdown } from 'mdast-util-gfm';
+import type { Root as HastRoot } from 'hast';
+import type { Root as MdastRoot } from 'mdast';
 
 /**
  * Converts HTML string to Markdown.
  * Uses GitHub Flavored Markdown (GFM) and secure defaults.
+ * Fully ESM-compatible implementation using the unified ecosystem.
  *
  * @param html - The HTML string to convert
  * @returns The generated Markdown string
  */
 export function htmlToMarkdown(html: string): string {
-	// Sanitize or pre-process HTML if needed.
-	// Turndown generally handles conversion, but we might want to remove specific tags before conversion.
-	// However, standard practice is to rely on Turndown rules or a sanitizer before passing to it.
-	// The prompt says "Strip dangerous elements (script, style, iframe)".
-	// Turndown ignores script and style tags by default (or keeps text?).
-	// Turndown's default behavior:
-	// - script: keeps content? No, default rules usually skip script/style content?
-	// Actually Turndown keeps the text content of unknown tags.
-	// We should remove script/style/iframe elements completely from the input HTML string or DOM.
+	if (!html || html.trim() === '') {
+		return '';
+	}
 
-	const parser = new DOMParser();
-	const doc = parser.parseFromString(html, 'text/html');
+	// Parse HTML to HAST (HTML Abstract Syntax Tree)
+	const processor = unified().use(rehypeParse, { fragment: true });
 
-	const dangerousTags = ['script', 'style', 'iframe', 'object', 'embed', 'link'];
-	dangerousTags.forEach((tag) => {
-		const elements = doc.querySelectorAll(tag);
-		elements.forEach((el) => el.remove());
+	const hastTree = processor.parse(html) as HastRoot;
+
+	// Remove dangerous elements from the HAST tree
+	removeDangerousElements(hastTree);
+
+	// Convert HAST to MDAST (Markdown Abstract Syntax Tree)
+	const mdastTree = toMdast(hastTree) as MdastRoot;
+
+	// Serialize MDAST to Markdown string with GFM support
+	const markdown = toMarkdown(mdastTree, {
+		extensions: [gfmToMarkdown()],
+		bullet: '-',
+		emphasis: '*',
+		fences: true,
+		listItemIndent: 'one',
 	});
 
-	// Also remove comments? Turndown removes them by default.
+	return markdown.trim();
+}
 
-	const cleanHtml = doc.body.innerHTML;
+/**
+ * Recursively removes dangerous elements (script, style, iframe, etc.) from a HAST tree.
+ */
+function removeDangerousElements(node: HastRoot | HastRoot['children'][number]): void {
+	if (!('children' in node) || !Array.isArray(node.children)) {
+		return;
+	}
 
-	const turndownService = new TurndownService({
-		headingStyle: 'atx',
-		codeBlockStyle: 'fenced',
-		fence: '```',
-		emDelimiter: '*',
-		bulletListMarker: '-',
+	const dangerousTags = new Set([
+		'script',
+		'style',
+		'iframe',
+		'object',
+		'embed',
+		'link',
+		'noscript',
+		'form',
+	]);
+
+	// Filter out dangerous elements - cast to maintain proper typing
+	const parentNode = node as { children: HastRoot['children'] };
+	parentNode.children = parentNode.children.filter((child) => {
+		if ('tagName' in child && dangerousTags.has(child.tagName)) {
+			return false;
+		}
+		return true;
 	});
 
-	// Use GFM plugin
-	turndownService.use(gfm);
-
-	// Add specific rules if needed
-	// e.g. keeping line breaks?
-
-	return turndownService.turndown(cleanHtml);
+	// Recursively process remaining children
+	for (const child of parentNode.children) {
+		if ('children' in child) {
+			removeDangerousElements(child);
+		}
+	}
 }

@@ -80,6 +80,33 @@
 		userAvatar?: string;
 
 		/**
+		 * Custom label for user avatar fallback
+		 * @default "You"
+		 */
+		userAvatarLabel?: string;
+
+		/**
+		 * Custom label for assistant avatar fallback
+		 * @default "AI"
+		 */
+		assistantAvatarLabel?: string;
+
+		/**
+		 * Custom user avatar snippet
+		 */
+		userAvatarSnippet?: Snippet;
+
+		/**
+		 * Custom assistant avatar snippet
+		 */
+		assistantAvatarSnippet?: Snippet;
+
+		/**
+		 * Custom content renderer snippet for messages
+		 */
+		renderMessageContent?: Snippet<[{ content: string; streaming: boolean }]>;
+
+		/**
 		 * Scroll threshold in pixels to consider "at bottom"
 		 * @default 100
 		 */
@@ -97,6 +124,11 @@
 		showAvatars = true,
 		assistantAvatar,
 		userAvatar,
+		userAvatarLabel,
+		assistantAvatarLabel,
+		userAvatarSnippet,
+		assistantAvatarSnippet,
+		renderMessageContent,
 		scrollThreshold = 100,
 	}: Props = $props();
 
@@ -286,8 +318,13 @@
 						content={message.content}
 						timestamp={message.timestamp}
 						streaming={message.status === 'streaming'}
+						status={message.status}
+						error={message.error}
 						avatar={message.role === 'assistant' ? assistantAvatar : userAvatar}
 						showAvatar={showAvatars}
+						userAvatar={userAvatarSnippet}
+						assistantAvatar={assistantAvatarSnippet}
+						renderContent={renderMessageContent}
 					/>
 				{/each}
 			{/if}
@@ -451,45 +488,45 @@
 	}
 
 	.chat-messages__empty-title {
-		margin: 0 0 var(--gr-spacing-scale-2, 0.5rem);
-		font-size: var(--gr-typography-fontSize-xl, 1.25rem);
-		font-weight: var(--gr-typography-fontWeight-semibold, 600);
-		color: var(--gr-semantic-foreground-primary, #111827);
+		margin: 0 0 var(--gr-spacing-scale-2);
+		font-size: var(--gr-typography-fontSize-xl);
+		font-weight: var(--gr-typography-fontWeight-semibold);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.chat-messages__empty-message {
-		margin: 0 0 var(--gr-spacing-scale-6, 1.5rem);
-		font-size: var(--gr-typography-fontSize-base, 1rem);
-		color: var(--gr-semantic-foreground-secondary, #6b7280);
+		margin: 0 0 var(--gr-spacing-scale-6);
+		font-size: var(--gr-typography-fontSize-base);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 
 	/* Suggestions */
 	.chat-messages__suggestions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--gr-spacing-scale-2, 0.5rem);
+		gap: var(--gr-spacing-scale-2);
 		justify-content: center;
 		max-width: 32rem;
 	}
 
 	.chat-messages__suggestion {
-		padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-4, 1rem);
-		font-size: var(--gr-typography-fontSize-sm, 0.875rem);
-		color: var(--gr-color-primary-600, #2563eb);
-		background: var(--gr-color-primary-50, #eff6ff);
-		border: 1px solid var(--gr-color-primary-200, #bfdbfe);
-		border-radius: var(--gr-radii-full, 9999px);
+		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
+		font-size: var(--gr-typography-fontSize-sm);
+		color: var(--gr-color-primary-600);
+		background: var(--gr-color-primary-50);
+		border: 1px solid var(--gr-color-primary-200);
+		border-radius: var(--gr-radii-full);
 		cursor: pointer;
 		transition: all 0.15s ease;
 	}
 
 	.chat-messages__suggestion:hover {
-		background: var(--gr-color-primary-100, #dbeafe);
-		border-color: var(--gr-color-primary-300, #93c5fd);
+		background: var(--gr-color-primary-100);
+		border-color: var(--gr-color-primary-300);
 	}
 
 	.chat-messages__suggestion:focus-visible {
-		outline: 2px solid var(--gr-color-primary-500, #3b82f6);
+		outline: 2px solid var(--gr-color-primary-500);
 		outline-offset: 2px;
 	}
 
@@ -525,49 +562,5 @@
 		}
 	}
 
-	/* Dark mode support */
-	:global(.dark) .chat-messages::-webkit-scrollbar-track {
-		background: var(--gr-semantic-background-secondary, #1f2937);
-	}
-
-	:global(.dark) .chat-messages::-webkit-scrollbar-thumb {
-		background: var(--gr-color-neutral-600, #4b5563);
-	}
-
-	:global(.dark) .chat-messages::-webkit-scrollbar-thumb:hover {
-		background: var(--gr-color-neutral-500, #6b7280);
-	}
-
-	:global(.dark) .chat-messages {
-		scrollbar-color: var(--gr-color-neutral-600, #4b5563)
-			var(--gr-semantic-background-secondary, #1f2937);
-	}
-
-	:global(.dark) .chat-messages__skeleton-avatar,
-	:global(.dark) .chat-messages__skeleton-line {
-		background: var(--gr-color-neutral-700, #374151);
-	}
-
-	:global(.dark) .chat-messages__empty-icon {
-		color: var(--gr-color-neutral-500, #6b7280);
-	}
-
-	:global(.dark) .chat-messages__empty-title {
-		color: var(--gr-semantic-foreground-primary, #f9fafb);
-	}
-
-	:global(.dark) .chat-messages__empty-message {
-		color: var(--gr-semantic-foreground-secondary, #9ca3af);
-	}
-
-	:global(.dark) .chat-messages__suggestion {
-		color: var(--gr-color-primary-400, #60a5fa);
-		background: var(--gr-color-primary-900, #1e3a5f);
-		border-color: var(--gr-color-primary-700, #1d4ed8);
-	}
-
-	:global(.dark) .chat-messages__suggestion:hover {
-		background: var(--gr-color-primary-800, #1e40af);
-		border-color: var(--gr-color-primary-600, #2563eb);
-	}
+	/* Dark mode handled via semantic tokens - no explicit override needed */
 </style>

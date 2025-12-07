@@ -2,7 +2,7 @@
 	import {
 		Button,
 		Modal,
-		Menu,
+		SimpleMenu,
 		Card,
 		Container,
 		Section,
@@ -89,13 +89,13 @@
 			<p>Verifies typeahead, keyboard navigation, and selection callbacks.</p>
 		</div>
 
-		<Menu items={menuItems} onItemSelect={handleMenuSelect}>
+		<SimpleMenu items={menuItems} onItemSelect={handleMenuSelect}>
 			{#snippet trigger({ open, toggle })}
 				<Button variant="outline" data-testid="menu-trigger" aria-expanded={open} onclick={toggle}>
 					{open ? 'Close menu' : 'Open menu'}
 				</Button>
 			{/snippet}
-		</Menu>
+		</SimpleMenu>
 
 		<p data-testid="menu-selection" class="status">
 			Last selection: {lastSelection}

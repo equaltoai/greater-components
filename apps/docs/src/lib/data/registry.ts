@@ -65,6 +65,159 @@ export interface Component {
 
 export const components: Component[] = [
 	// ===================
+	// FEEDBACK COMPONENTS
+	// ===================
+	{
+		name: 'Alert',
+		slug: 'alert',
+		type: 'primitive',
+		category: 'headless',
+		description: 'Versatile alert/banner component for error, warning, success, and info messages',
+		longDescription:
+			'A fully accessible alert component for displaying contextual feedback messages. Supports four semantic variants, dismissible alerts, action buttons, and custom icons.',
+		features: [
+			'Four semantic variants (error, warning, success, info)',
+			'Dismissible with close button',
+			'Optional action button',
+			'Custom icon support',
+			'Animated enter/exit transitions',
+			'Proper ARIA roles based on variant',
+		],
+		dependencies: ['svelte@^5.0.0'],
+		registryDependencies: [],
+		npm: {
+			package: '@equaltoai/greater-components-primitives',
+			version: '1.0.0',
+		},
+		github: {
+			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/primitives/src/components/Alert.svelte',
+		},
+		examples: [
+			{
+				name: 'Basic Usage',
+				description: 'Alert variants for different message types',
+				code: `<Alert variant="error" title="Connection Lost">
+  Your session has expired. Please sign in again.
+</Alert>
+
+<Alert variant="success" title="Saved">
+  Your changes have been saved successfully.
+</Alert>`,
+			},
+		],
+		api: {
+			props: [
+				{ name: 'variant', type: "'error' | 'warning' | 'success' | 'info'", default: "'info'", description: 'Visual variant determining color scheme and icon' },
+				{ name: 'title', type: 'string', description: 'Optional title text' },
+				{ name: 'dismissible', type: 'boolean', default: 'false', description: 'Whether alert can be dismissed' },
+				{ name: 'onDismiss', type: '() => void', description: 'Callback when dismissed' },
+				{ name: 'actionLabel', type: 'string', description: 'Optional action button label' },
+				{ name: 'onAction', type: '() => void', description: 'Callback when action clicked' },
+			],
+		},
+		tags: ['alert', 'feedback', 'notification', 'banner', 'accessibility'],
+		bundleSize: { minified: '1.2 KB', gzipped: '0.6 KB' },
+		accessibility: { wcag: 'AA', features: ['role="alert" for error/warning', 'role="status" for success/info', 'Keyboard accessible dismiss'] },
+		status: 'stable',
+		version: '1.0.0',
+		lastUpdated: '2025-02-14',
+	},
+	{
+		name: 'Spinner',
+		slug: 'spinner',
+		type: 'primitive',
+		category: 'headless',
+		description: 'Accessible loading indicator with configurable size and color',
+		longDescription:
+			'A lightweight, accessible spinner component for indicating loading states. Supports multiple sizes and colors with proper ARIA attributes for screen readers.',
+		features: [
+			'Five size options (xs, sm, md, lg, xl)',
+			'Four color options (primary, current, white, gray)',
+			'Accessible with role="status"',
+			'Respects prefers-reduced-motion',
+			'CSS-only animation',
+		],
+		dependencies: ['svelte@^5.0.0'],
+		registryDependencies: [],
+		npm: {
+			package: '@equaltoai/greater-components-primitives',
+			version: '1.0.0',
+		},
+		github: {
+			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/primitives/src/components/Spinner.svelte',
+		},
+		examples: [
+			{
+				name: 'Basic Usage',
+				description: 'Spinner with different sizes',
+				code: `<Spinner size="sm" />
+<Spinner size="md" />
+<Spinner size="lg" />`,
+			},
+		],
+		api: {
+			props: [
+				{ name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'md'", description: 'Size of the spinner' },
+				{ name: 'color', type: "'primary' | 'current' | 'white' | 'gray'", default: "'primary'", description: 'Color of the spinner' },
+				{ name: 'label', type: 'string', default: "'Loading'", description: 'Accessible label for screen readers' },
+			],
+		},
+		tags: ['spinner', 'loading', 'indicator', 'accessibility'],
+		bundleSize: { minified: '0.5 KB', gzipped: '0.3 KB' },
+		accessibility: { wcag: 'AAA', features: ['role="status"', 'aria-label', 'Reduced motion support'] },
+		status: 'stable',
+		version: '1.0.0',
+		lastUpdated: '2025-02-14',
+	},
+	{
+		name: 'LoadingState',
+		slug: 'loading-state',
+		type: 'primitive',
+		category: 'headless',
+		description: 'Wrapper component combining Spinner with message and fullscreen overlay support',
+		longDescription:
+			'A higher-level loading component that wraps Spinner with optional message text and fullscreen overlay capability. Ideal for page-level loading states and async operations.',
+		features: [
+			'Wraps Spinner component',
+			'Optional loading message',
+			'Fullscreen overlay mode',
+			'Custom content slot',
+			'Accessible live region',
+		],
+		dependencies: ['svelte@^5.0.0'],
+		registryDependencies: ['spinner'],
+		npm: {
+			package: '@equaltoai/greater-components-primitives',
+			version: '1.0.0',
+		},
+		github: {
+			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/primitives/src/components/LoadingState.svelte',
+		},
+		examples: [
+			{
+				name: 'Basic Usage',
+				description: 'Loading state with message',
+				code: `<LoadingState message="Loading your data..." />
+
+<LoadingState fullscreen size="lg" message="Please wait..." />`,
+			},
+		],
+		api: {
+			props: [
+				{ name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'md'", description: 'Size of the spinner' },
+				{ name: 'message', type: 'string', description: 'Optional message below spinner' },
+				{ name: 'fullscreen', type: 'boolean', default: 'false', description: 'Display as fullscreen overlay' },
+				{ name: 'label', type: 'string', default: "'Loading'", description: 'Accessible label' },
+			],
+		},
+		tags: ['loading', 'spinner', 'overlay', 'fullscreen', 'accessibility'],
+		bundleSize: { minified: '0.8 KB', gzipped: '0.4 KB' },
+		accessibility: { wcag: 'AA', features: ['aria-live="polite"', 'aria-busy="true"', 'Focus trap in fullscreen'] },
+		status: 'stable',
+		version: '1.0.0',
+		lastUpdated: '2025-02-14',
+	},
+	// ===================
 	// HEADLESS PRIMITIVES
 	// ===================
 	{
@@ -250,6 +403,64 @@ export const components: Component[] = [
 	// ===================
 	// COMPOUND COMPONENTS
 	// ===================
+	{
+		name: 'Menu',
+		slug: 'menu',
+		type: 'compound',
+		category: 'headless',
+		description: 'Compound dropdown menu with keyboard navigation and flexible placement',
+		longDescription:
+			'A fully-featured dropdown menu built with the compound component pattern. Includes Root, Trigger, Content, Item, Header, and Separator sub-components for maximum flexibility.',
+		features: [
+			'Compound component pattern',
+			'Full keyboard navigation',
+			'8 placement options',
+			'Item icons and danger variant',
+			'Section headers and separators',
+			'Focus management',
+			'Click outside to close',
+		],
+		dependencies: ['svelte@^5.0.0'],
+		registryDependencies: [],
+		npm: {
+			package: '@equaltoai/greater-components-primitives',
+			version: '1.0.0',
+		},
+		github: {
+			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/primitives/src/components/Menu',
+		},
+		examples: [
+			{
+				name: 'Basic Usage',
+				description: 'Simple dropdown menu',
+				code: `<Menu.Root>
+  <Menu.Trigger>
+    <Button>Open Menu</Button>
+  </Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item onclick={handleEdit}>Edit</Menu.Item>
+    <Menu.Separator />
+    <Menu.Item onclick={handleDelete} variant="danger">Delete</Menu.Item>
+  </Menu.Content>
+</Menu.Root>`,
+			},
+		],
+		api: {
+			props: [
+				{ name: 'open', type: 'boolean', default: 'false', description: 'Whether menu is open (bindable)' },
+				{ name: 'placement', type: 'MenuPlacement', default: "'bottom-start'", description: 'Preferred placement' },
+				{ name: 'offset', type: 'number', default: '4', description: 'Offset from trigger in pixels' },
+				{ name: 'closeOnSelect', type: 'boolean', default: 'true', description: 'Close when item selected' },
+				{ name: 'loop', type: 'boolean', default: 'true', description: 'Enable keyboard navigation loop' },
+			],
+		},
+		tags: ['menu', 'dropdown', 'compound', 'navigation', 'accessibility'],
+		bundleSize: { minified: '2.8 KB', gzipped: '1.2 KB' },
+		accessibility: { wcag: 'AAA', features: ['Full keyboard navigation', 'ARIA menu role', 'Focus management', 'ESC to close'] },
+		status: 'stable',
+		version: '1.0.0',
+		lastUpdated: '2025-02-14',
+	},
 	{
 		name: 'Timeline',
 		slug: 'timeline',

@@ -297,6 +297,26 @@ export { default as Input } from './ChatInput.svelte';
 export { default as ToolCallDisplay } from './ChatToolCall.svelte';
 
 /**
+ * Individual message action button component.
+ *
+ * Provides a reusable action button for chat message actions.
+ *
+ * @example
+ * ```svelte
+ * <Chat.MessageAction
+ *   label="Copy"
+ *   onclick={() => copyToClipboard(content)}
+ * >
+ *   {#snippet icon()}
+ *     <CopyIcon size={14} />
+ *   {/snippet}
+ * </Chat.MessageAction>
+ * ```
+ * @public
+ */
+export { default as MessageAction } from './ChatMessageAction.svelte';
+
+/**
  * Chat interface header component.
  *
  * Provides the top bar for the chat interface with title, connection status,

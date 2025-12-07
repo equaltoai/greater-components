@@ -183,6 +183,9 @@ export const tokens = {
       "sans": {
         "value": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
       },
+      "heading": {
+        "value": "var(--gr-typography-fontFamily-sans)"
+      },
       "serif": {
         "value": "Georgia, Cambria, 'Times New Roman', Times, serif"
       },
@@ -344,6 +347,18 @@ export const tokens = {
     },
     "none": {
       "value": "none"
+    },
+    "glow-sm": {
+      "value": "0 0 4px 0 rgb(255 255 255 / 0.05), 0 0 1px 0 rgb(255 255 255 / 0.1)"
+    },
+    "glow-md": {
+      "value": "0 0 8px 0 rgb(255 255 255 / 0.07), 0 0 2px 0 rgb(255 255 255 / 0.1)"
+    },
+    "glow-lg": {
+      "value": "0 0 16px 0 rgb(255 255 255 / 0.1), 0 0 4px 0 rgb(255 255 255 / 0.15)"
+    },
+    "glow-primary": {
+      "value": "0 0 12px 0 var(--gr-color-primary-500)"
     }
   },
   "motion": {
@@ -373,6 +388,15 @@ export const tokens = {
       },
       "inOut": {
         "value": "cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      "decelerate": {
+        "value": "cubic-bezier(0, 0, 0.2, 1)"
+      },
+      "accelerate": {
+        "value": "cubic-bezier(0.4, 0, 1, 1)"
+      },
+      "standard": {
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)"
       }
     }
   }
@@ -390,6 +414,21 @@ export const themes = {
         },
         "tertiary": {
           "value": "{color.gray.100}"
+        },
+        "base": {
+          "value": "{color.gray.50}"
+        },
+        "surface": {
+          "value": "{color.base.white}"
+        },
+        "raised": {
+          "value": "{color.base.white}"
+        },
+        "input": {
+          "value": "{color.base.white}"
+        },
+        "overlay": {
+          "value": "rgba(0, 0, 0, 0.5)"
         }
       },
       "foreground": {
@@ -469,6 +508,17 @@ export const themes = {
       "focus": {
         "ring": {
           "value": "{color.primary.500}"
+        },
+        "ring-offset": {
+          "value": "2px"
+        },
+        "ring-width": {
+          "value": "2px"
+        }
+      },
+      "transition": {
+        "theme": {
+          "value": "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease"
         }
       }
     }
@@ -484,6 +534,21 @@ export const themes = {
         },
         "tertiary": {
           "value": "{color.gray.800}"
+        },
+        "base": {
+          "value": "{color.gray.950}"
+        },
+        "surface": {
+          "value": "{color.gray.900}"
+        },
+        "raised": {
+          "value": "{color.gray.800}"
+        },
+        "input": {
+          "value": "{color.gray.800}"
+        },
+        "overlay": {
+          "value": "rgba(0, 0, 0, 0.75)"
         }
       },
       "foreground": {
@@ -563,6 +628,17 @@ export const themes = {
       "focus": {
         "ring": {
           "value": "{color.primary.400}"
+        },
+        "ring-offset": {
+          "value": "2px"
+        },
+        "ring-width": {
+          "value": "2px"
+        }
+      },
+      "transition": {
+        "theme": {
+          "value": "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease"
         }
       }
     }
@@ -578,6 +654,21 @@ export const themes = {
         },
         "tertiary": {
           "value": "{color.gray.900}"
+        },
+        "base": {
+          "value": "{color.base.black}"
+        },
+        "surface": {
+          "value": "{color.gray.950}"
+        },
+        "raised": {
+          "value": "{color.gray.900}"
+        },
+        "input": {
+          "value": "{color.gray.900}"
+        },
+        "overlay": {
+          "value": "rgba(0, 0, 0, 0.85)"
         }
       },
       "foreground": {
@@ -657,6 +748,17 @@ export const themes = {
       "focus": {
         "ring": {
           "value": "{color.primary.200}"
+        },
+        "ring-offset": {
+          "value": "3px"
+        },
+        "ring-width": {
+          "value": "3px"
+        }
+      },
+      "transition": {
+        "theme": {
+          "value": "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease"
         }
       }
     }
@@ -688,3 +790,6 @@ export const getMotion = (path: string) => getCSSVar(`motion-${path}`);
 
 // Semantic token getters
 export const getSemanticColor = (path: string) => getCSSVar(`semantic-${path}`);
+
+// Export palette utilities
+export * from './palette-utils';

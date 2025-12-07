@@ -20,10 +20,30 @@
       "svelte": "./dist/index.js",
       "import": "./dist/index.js"
     },
+    "./icons/*.svelte": {
+      "types": "./dist/icons/*.svelte.d.ts",
+      "svelte": "./dist/icons/*.svelte",
+      "import": "./dist/icons/*.svelte"
+    },
     "./icons/*": {
       "types": "./dist/icons/*.svelte.d.ts",
-      "svelte": "./dist/icons/*.svelte.js",
-      "import": "./dist/icons/*.svelte.js"
+      "svelte": "./dist/icons/*.svelte",
+      "import": "./dist/icons/*.svelte"
+    },
+    "./icons/brands": {
+      "types": "./dist/icons/brands/index.d.ts",
+      "svelte": "./dist/icons/brands/index.js",
+      "import": "./dist/icons/brands/index.js"
+    },
+    "./icons/brands/*.svelte": {
+      "types": "./dist/icons/brands/*.svelte.d.ts",
+      "svelte": "./dist/icons/brands/*.svelte",
+      "import": "./dist/icons/brands/*.svelte"
+    },
+    "./icons/brands/*": {
+      "types": "./dist/icons/brands/*.svelte.d.ts",
+      "svelte": "./dist/icons/brands/*.svelte",
+      "import": "./dist/icons/brands/*.svelte"
     }
   },
   "files": [

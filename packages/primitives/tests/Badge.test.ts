@@ -64,4 +64,113 @@ describe('Badge.svelte', () => {
 		expect(dot).toBeTruthy();
 		expect(container.textContent).toContain('Online');
 	});
+
+	// Pulse animation tests
+	describe('pulse animation', () => {
+		it('applies pulse class when pulse prop is true', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', label: 'Connecting', pulse: true } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.classList.contains('gr-badge--pulse')).toBe(true);
+		});
+
+		it('applies pulse class to dot element when pulse is true', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', label: 'Connecting', pulse: true } 
+			});
+			const dot = container.querySelector('.gr-badge__dot');
+			expect(dot?.classList.contains('gr-badge__dot--pulse')).toBe(true);
+		});
+
+		it('does not apply pulse class when pulse prop is false', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', label: 'Connected', pulse: false } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			const dot = container.querySelector('.gr-badge__dot');
+			expect(badge?.classList.contains('gr-badge--pulse')).toBe(false);
+			expect(dot?.classList.contains('gr-badge__dot--pulse')).toBe(false);
+		});
+
+		it('does not apply pulse class by default', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', label: 'Status' } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.classList.contains('gr-badge--pulse')).toBe(false);
+		});
+	});
+
+	// Accessibility tests
+	describe('accessibility', () => {
+		it('applies aria-live attribute when ariaLive prop is set', () => {
+			const { container } = render(Badge, { 
+				props: { label: 'Status', ariaLive: 'polite' } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.getAttribute('aria-live')).toBe('polite');
+		});
+
+		it('applies aria-live="assertive" when specified', () => {
+			const { container } = render(Badge, { 
+				props: { label: 'Error', ariaLive: 'assertive', color: 'error' } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.getAttribute('aria-live')).toBe('assertive');
+		});
+
+		it('does not apply aria-live when not specified', () => {
+			const { container } = render(Badge, { 
+				props: { label: 'Status' } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.hasAttribute('aria-live')).toBe(false);
+		});
+
+		it('dot element has aria-hidden="true"', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', label: 'Online' } 
+			});
+			const dot = container.querySelector('.gr-badge__dot');
+			expect(dot?.getAttribute('aria-hidden')).toBe('true');
+		});
+	});
+
+	// Connection status pattern tests
+	describe('connection status patterns', () => {
+		it('renders connected state (success, no pulse)', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', color: 'success', label: 'Connected' } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.classList.contains('gr-badge--success')).toBe(true);
+			expect(badge?.classList.contains('gr-badge--pulse')).toBe(false);
+		});
+
+		it('renders connecting state (warning, pulse)', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', color: 'warning', label: 'Connecting', pulse: true } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.classList.contains('gr-badge--warning')).toBe(true);
+			expect(badge?.classList.contains('gr-badge--pulse')).toBe(true);
+		});
+
+		it('renders disconnected state (error)', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', color: 'error', label: 'Disconnected' } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.classList.contains('gr-badge--error')).toBe(true);
+		});
+
+		it('renders unknown/offline state (gray)', () => {
+			const { container } = render(Badge, { 
+				props: { variant: 'dot', color: 'gray', label: 'Offline' } 
+			});
+			const badge = container.querySelector('.gr-badge');
+			expect(badge?.classList.contains('gr-badge--gray')).toBe(true);
+		});
+	});
 });

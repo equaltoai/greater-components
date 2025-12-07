@@ -77,6 +77,27 @@ export type {
 	Skeleton,
 } from './primitives/skeleton';
 
+// Spinner primitive
+export { createSpinner } from './primitives/spinner';
+export type {
+	SpinnerState,
+	SpinnerConfig,
+	SpinnerActions,
+	SpinnerHelpers,
+	Spinner,
+	SpinnerSize,
+	SpinnerColor,
+} from './primitives/spinner';
+
+// Alert primitive
+export { createAlert, isAlertVariant } from './primitives/alert';
+export type {
+	AlertVariant,
+	AlertState,
+	AlertConfig,
+	AlertBuilder,
+} from './primitives/alert';
+
 // Common types
 export type { Action, ActionReturn } from './types/common';
 
