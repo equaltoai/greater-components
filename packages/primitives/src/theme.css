@@ -123,9 +123,11 @@
 }
 
 .gr-button__prefix,
-.gr-button__suffix {
+.gr-button__suffix,
+.gr-button__content {
 	display: flex;
 	align-items: center;
+	line-height: 0;
 }
 
 @keyframes spin {
