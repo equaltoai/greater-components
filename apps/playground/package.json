@@ -22,7 +22,8 @@
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-social": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
-    "@equaltoai/greater-components-utils": "workspace:*"
+    "@equaltoai/greater-components-utils": "workspace:*",
+    "@equaltoai/greater-components-auth": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.0",

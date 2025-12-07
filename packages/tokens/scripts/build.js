@@ -8,6 +8,8 @@ const __dirname = path.dirname(__filename);
 // Read token definitions
 const tokensPath = path.join(__dirname, '../src/tokens.json');
 const themesPath = path.join(__dirname, '../src/themes.json');
+const palettesPath = path.join(__dirname, '../src/palettes.json');
+const animationsPath = path.join(__dirname, '../src/animations.css');
 const distPath = path.join(__dirname, '../dist');
 
 // Ensure dist directory exists
@@ -17,6 +19,9 @@ if (!fs.existsSync(distPath)) {
 
 const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
 const themes = JSON.parse(fs.readFileSync(themesPath, 'utf8'));
+const palettes = fs.existsSync(palettesPath) 
+	? JSON.parse(fs.readFileSync(palettesPath, 'utf8')) 
+	: {};
 
 // Helper to convert nested object to flat CSS variable format
 function flattenTokens(obj, prefix = '') {
@@ -140,8 +145,95 @@ combinedThemeCSS += `
 }
 `;
 
+// Add theme-aware elevation shadows
+combinedThemeCSS += `
+/* Theme-aware elevation shadows */
+:root, [data-theme="light"] {
+  --gr-shadows-elevation-sm: var(--gr-shadows-sm);
+  --gr-shadows-elevation-md: var(--gr-shadows-md);
+  --gr-shadows-elevation-lg: var(--gr-shadows-lg);
+  --gr-shadows-elevation-hover: var(--gr-shadows-lg);
+}
+
+[data-theme="dark"] {
+  --gr-shadows-elevation-sm: var(--gr-shadows-glow-sm);
+  --gr-shadows-elevation-md: var(--gr-shadows-glow-md);
+  --gr-shadows-elevation-lg: var(--gr-shadows-glow-lg);
+  --gr-shadows-elevation-hover: 0 0 0 1px var(--gr-semantic-border-strong);
+}
+
+[data-theme="highContrast"],
+[data-theme="high-contrast"] {
+  --gr-shadows-elevation-sm: none;
+  --gr-shadows-elevation-md: 0 0 0 1px var(--gr-semantic-border-default);
+  --gr-shadows-elevation-lg: 0 0 0 2px var(--gr-semantic-border-strong);
+  --gr-shadows-elevation-hover: 0 0 0 2px var(--gr-semantic-border-strong);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --gr-shadows-elevation-sm: var(--gr-shadows-glow-sm);
+    --gr-shadows-elevation-md: var(--gr-shadows-glow-md);
+    --gr-shadows-elevation-lg: var(--gr-shadows-glow-lg);
+    --gr-shadows-elevation-hover: 0 0 0 1px var(--gr-semantic-border-strong);
+  }
+}
+
+/* Theme transition utility class */
+.gr-theme-transition {
+  transition: var(--gr-semantic-transition-theme, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease);
+}
+
+.gr-theme-transition * {
+  transition: inherit;
+}
+`;
+
+// Append animations CSS if it exists
+if (fs.existsSync(animationsPath)) {
+	const animationsCSS = fs.readFileSync(animationsPath, 'utf8');
+	combinedThemeCSS += '\n' + animationsCSS;
+	console.log('  - Animations CSS included');
+}
+
 // Write combined theme CSS
 fs.writeFileSync(path.join(distPath, 'theme.css'), combinedThemeCSS);
+
+// Also write standalone animations CSS to dist
+if (fs.existsSync(animationsPath)) {
+	fs.copyFileSync(animationsPath, path.join(distPath, 'animations.css'));
+}
+
+// Generate palette CSS files
+const palettesDir = path.join(distPath, 'palettes');
+if (!fs.existsSync(palettesDir)) {
+	fs.mkdirSync(palettesDir, { recursive: true });
+}
+
+for (const [paletteName, paletteData] of Object.entries(palettes)) {
+	let paletteCSS = `/* ${paletteData.description || paletteName + ' palette'} */\n`;
+	paletteCSS += ':root {\n';
+	
+	// Generate gray scale variables
+	if (paletteData.gray) {
+		for (const [shade, colorData] of Object.entries(paletteData.gray)) {
+			paletteCSS += `  --gr-color-gray-${shade}: ${colorData.value};\n`;
+		}
+	}
+	
+	// Generate primary scale variables if defined
+	if (paletteData.primary) {
+		for (const [shade, colorData] of Object.entries(paletteData.primary)) {
+			paletteCSS += `  --gr-color-primary-${shade}: ${colorData.value};\n`;
+		}
+	}
+	
+	paletteCSS += '}\n';
+	
+	fs.writeFileSync(path.join(palettesDir, `${paletteName}.css`), paletteCSS);
+}
+
+console.log(`  - Palettes: ${Object.keys(palettes).length}`);
 
 // Copy high-contrast CSS if it exists
 const highContrastPath = path.join(__dirname, '../src/high-contrast.css');
@@ -149,6 +241,11 @@ if (fs.existsSync(highContrastPath)) {
 	const highContrastCSS = fs.readFileSync(highContrastPath, 'utf8');
 	fs.writeFileSync(path.join(distPath, 'high-contrast.css'), highContrastCSS);
 	console.log('  - High contrast CSS copied');
+}
+
+// Copy source JSON files to dist for runtime usage
+if (fs.existsSync(palettesPath)) {
+	fs.copyFileSync(palettesPath, path.join(distPath, 'palettes.json'));
 }
 
 // Generate TypeScript definitions
@@ -184,6 +281,9 @@ export const getMotion = (path: string) => getCSSVar(\`motion-\${path}\`);
 
 // Semantic token getters
 export const getSemanticColor = (path: string) => getCSSVar(\`semantic-\${path}\`);
+
+// Export palette utilities
+export * from './palette-utils';
 `;
 
 // Write TypeScript source file (will be compiled to dist)

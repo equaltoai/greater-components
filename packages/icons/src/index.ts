@@ -1283,6 +1283,21 @@ export const iconCategories = {
     'equals',
     'building'
   ],
+  brands: [
+    'google',
+    'apple',
+    'microsoft',
+    'discord',
+    'github',
+    'gitlab',
+    'slack',
+    'linkedin',
+    'twitter',
+    'facebook',
+    'instagram',
+    'youtube',
+    'twitch'
+  ],
   navigation: ['home', 'building', 'list', 'arrow-left', 'arrow-right', 'arrow-up', 'arrow-down', 'chevron-left', 'chevron-right', 'chevron-up', 'chevron-down'],
   action: ['edit', 'edit-2', 'edit-3', 'trash', 'trash-2', 'save', 'download', 'upload', 'share', 'share-2'],
   media: ['play', 'pause', 'stop', 'skip-forward', 'skip-back', 'fast-forward', 'rewind', 'volume', 'volume-1', 'volume-2', 'volume-x'],

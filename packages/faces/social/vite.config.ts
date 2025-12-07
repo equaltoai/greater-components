@@ -54,9 +54,13 @@ export default defineConfig({
 			external: [
 				'svelte',
 				'@equaltoai/greater-components-tokens',
+				/^@equaltoai\/greater-components-tokens\//,
 				'@equaltoai/greater-components-utils',
+				/^@equaltoai\/greater-components-utils\//,
 				'@equaltoai/greater-components-primitives',
+				/^@equaltoai\/greater-components-primitives\//,
 				'@equaltoai/greater-components-icons',
+				/^@equaltoai\/greater-components-icons\//,
 				'@equaltoai/greater-components-headless',
 				/@equaltoai\/greater-components-headless\/.*/, // Match all headless subpaths
 				'@tanstack/svelte-virtual',

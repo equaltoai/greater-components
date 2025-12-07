@@ -2,11 +2,40 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 	import defaultAvatar from '../assets/greater-default-profile.png';
+	import Spinner from './Spinner.svelte';
+
+	// Map avatar size to spinner size
+	const avatarSpinnerSizeMap: Record<string, 'xs' | 'sm' | 'md' | 'lg'> = {
+		xs: 'xs',
+		sm: 'xs',
+		md: 'sm',
+		lg: 'sm',
+		xl: 'md',
+		'2xl': 'lg',
+	};
 
 	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
 		src?: string;
 		alt?: string;
 		name?: string;
+		/**
+		 * Text label fallback for chat interfaces (e.g., "You", "PAI", "AI")
+		 * Used when fallbackMode is 'label'
+		 */
+		label?: string;
+		/**
+		 * Icon snippet fallback for avatar
+		 * Used when fallbackMode is 'icon'
+		 */
+		labelIcon?: Snippet;
+		/**
+		 * Controls which fallback to use when image is not available
+		 * - 'initials': Show initials from name prop (default)
+		 * - 'label': Show label text
+		 * - 'icon': Show labelIcon or default user icon
+		 * @default 'initials'
+		 */
+		fallbackMode?: 'initials' | 'label' | 'icon';
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 		shape?: 'circle' | 'square' | 'rounded';
 		loading?: boolean;
@@ -20,6 +49,9 @@
 		src,
 		alt,
 		name = '',
+		label,
+		labelIcon,
+		fallbackMode = 'initials',
 		size = 'md',
 		shape = 'circle',
 		loading = false,
@@ -149,14 +181,15 @@
 		}
 	});
 
-	// Generate background color from name
+	// Generate background color from name or label
 	const initialsBackgroundColor = $derived(() => {
-		if (!name) return 'var(--gr-semantic-background-secondary)';
+		const colorSource = name || label;
+		if (!colorSource) return 'var(--gr-semantic-background-secondary)';
 
 		// Simple hash function to generate consistent color
 		let hash = 0;
-		for (let i = 0; i < name.length; i++) {
-			hash = name.charCodeAt(i) + ((hash << 5) - hash);
+		for (let i = 0; i < colorSource.length; i++) {
+			hash = colorSource.charCodeAt(i) + ((hash << 5) - hash);
 		}
 
 		// Convert to HSL for better color distribution
@@ -186,6 +219,7 @@
 	const accessibleName = $derived(() => {
 		if (alt) return alt;
 		if (name) return name;
+		if (label) return label;
 		return 'Avatar';
 	});
 
@@ -195,27 +229,19 @@
 
 {#snippet AvatarContent()}
 	{#if loading}
-		<div class="gr-avatar__loading" aria-hidden="true">
-			<svg
-				class="gr-avatar__spinner"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<path d="M21 12a9 9 0 11-6.219-8.56" />
-			</svg>
+		<div class="gr-avatar__loading" aria-busy="true">
+			<Spinner 
+				size={avatarSpinnerSizeMap[size] || 'sm'} 
+				color="current" 
+				label="Loading avatar"
+			/>
 		</div>
 	{:else if src && !imageError}
 		<img
 			bind:this={imageElement}
 			class="gr-avatar__image"
 			{src}
-			alt={alt || name || 'Avatar'}
+			alt={alt || name || label || 'Avatar'}
 			onload={handleImageLoad}
 			onerror={handleImageError}
 			style="display: {imageLoaded ? 'block' : 'none'}"
@@ -224,12 +250,38 @@
 		{#if !imageLoaded}
 			{@const computedInitials = initials()}
 			<div class="gr-avatar__placeholder" aria-hidden="true">
-				{#if computedInitials}
+				{#if fallback}
+					{@render fallback()}
+				{:else if fallbackMode === 'label' && label}
+					<span
+						class="gr-avatar__label"
+						style="background-color: {initialsBackgroundColor()}; color: white;"
+					>
+						{label}
+					</span>
+				{:else if fallbackMode === 'icon'}
+					<span class="gr-avatar__icon" style="background-color: {initialsBackgroundColor()};">
+						{#if labelIcon}
+							{@render labelIcon()}
+						{:else}
+							<svg
+								class="gr-avatar__default-icon"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+								<circle cx="12" cy="7" r="4" />
+							</svg>
+						{/if}
+					</span>
+				{:else if fallbackMode === 'initials' && computedInitials}
 					<span class="gr-avatar__initials" style="background-color: {initialsBackgroundColor()}">
 						{computedInitials}
 					</span>
-				{:else if fallback}
-					{@render fallback()}
 				{:else}
 					<img
 						class="gr-avatar__fallback-image"
@@ -244,16 +296,48 @@
 		<!-- No image src or image failed to load -->
 		{@const computedInitials = initials()}
 		<div class="gr-avatar__placeholder" aria-hidden="true">
-			{#if computedInitials}
+			{#if fallback}
+				<!-- Custom fallback snippet takes highest priority -->
+				{@render fallback()}
+			{:else if fallbackMode === 'label' && label}
+				<!-- Label fallback mode -->
+				<span
+					class="gr-avatar__label"
+					style="background-color: {initialsBackgroundColor()}; color: white;"
+				>
+					{label}
+				</span>
+			{:else if fallbackMode === 'icon'}
+				<!-- Icon fallback mode -->
+				<span class="gr-avatar__icon" style="background-color: {initialsBackgroundColor()};">
+					{#if labelIcon}
+						{@render labelIcon()}
+					{:else}
+						<!-- Default user icon -->
+						<svg
+							class="gr-avatar__default-icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+							<circle cx="12" cy="7" r="4" />
+						</svg>
+					{/if}
+				</span>
+			{:else if fallbackMode === 'initials' && computedInitials}
+				<!-- Initials fallback mode (default) -->
 				<span
 					class="gr-avatar__initials"
 					style="background-color: {initialsBackgroundColor()}; color: white;"
 				>
 					{computedInitials}
 				</span>
-			{:else if fallback}
-				{@render fallback()}
 			{:else}
+				<!-- Ultimate fallback: default avatar image -->
 				<img
 					class="gr-avatar__fallback-image"
 					src={defaultAvatar}

@@ -9,7 +9,7 @@ export default defineConfig({
 			formats: ['es'],
 		},
 		rollupOptions: {
-			external: ['svelte', 'dompurify', 'isomorphic-dompurify'],
+		external: ['svelte'],
 			output: {
 				preserveModules: true,
 				preserveModulesRoot: 'src',

@@ -52,9 +52,14 @@
     "svelte": "^5.43.6"
   },
   "dependencies": {
-    "isomorphic-dompurify": "^2.32.0",
-    "marked": "^17.0.1",
-    "shiki": "^3.15.0"
+    "hast-util-sanitize": "^5.0.2",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "shiki": "^3.15.0",
+    "unified": "^11.0.5"
   },
   "devDependencies": {
     "@equaltoai/greater-components-primitives": "workspace:*",
@@ -62,6 +67,7 @@
     "@sveltejs/package": "^2.5.6",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/svelte": "^5.2.9",
+    "@types/hast": "^3.0.4",
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.12",
     "jsdom": "^27.2.0",

@@ -2,22 +2,73 @@
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { preferencesStore, type ColorScheme } from '../stores/preferences';
+	import { 
+		palettes,
+		generatePaletteCSS,
+		getPresetGrayScale,
+		type PalettePreset,
+		type CustomPalette
+	} from '@equaltoai/greater-components-tokens';
 
 	interface Props {
+		/** Color scheme: 'light', 'dark', 'high-contrast', or 'auto' */
 		theme?: ColorScheme;
+		/** Preset palette name: 'slate', 'stone', 'neutral', 'zinc', 'gray' */
+		palette?: PalettePreset;
+		/** Custom palette configuration with gray and/or primary color scales */
+		customPalette?: CustomPalette;
+		/** Custom heading font family (e.g., "'Crimson Pro', serif") */
+		headingFont?: string;
+		/** Custom body font family (e.g., "'Inter', sans-serif") */
+		bodyFont?: string;
+		/** @deprecated Use app.html for flash prevention */
 		enableSystemDetection?: boolean;
+		/** @deprecated Use app.html for flash prevention */
 		enablePersistence?: boolean;
+		/** @deprecated Use app.html for flash prevention */
 		preventFlash?: boolean;
 		children: Snippet;
 	}
 
 	let {
 		theme,
+		palette,
+		customPalette,
+		headingFont,
+		bodyFont,
 		enableSystemDetection = true,
 		enablePersistence = true,
 		preventFlash = true,
 		children,
 	}: Props = $props();
+
+	// Generate custom CSS for palette and typography overrides
+	let customCSS = $derived.by(() => {
+		const cssRules: string[] = [];
+		
+		// Handle palette preset
+		if (palette && palette in palettes) {
+			const presetGrayScale = getPresetGrayScale(palette);
+			if (presetGrayScale) {
+				cssRules.push(generatePaletteCSS({ gray: presetGrayScale }));
+			}
+		}
+		
+		// Handle custom palette (takes precedence over preset)
+		if (customPalette) {
+			cssRules.push(generatePaletteCSS(customPalette));
+		}
+		
+		// Handle typography customization
+		if (headingFont) {
+			cssRules.push(`--gr-typography-fontFamily-heading: ${headingFont};`);
+		}
+		if (bodyFont) {
+			cssRules.push(`--gr-typography-fontFamily-sans: ${bodyFont};`);
+		}
+		
+		return cssRules.length > 0 ? cssRules.join('\n') : '';
+	});
 
 	// Apply theme override if provided
 	$effect(() => {
@@ -55,6 +106,16 @@
 	via svelte:head doesn't work reliably. See Greater Components docs for 
 	the recommended app.html approach.
 -->
+
+<svelte:head>
+	{#if customCSS}
+	<style id="gr-theme-customization">
+		:root {
+			{@html customCSS}
+		}
+	</style>
+	{/if}
+</svelte:head>
 
 <div class="gr-theme-provider" data-theme-provider>
 	{@render children()}

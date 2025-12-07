@@ -8,7 +8,7 @@ Button component - Accessible interactive element with loading states, variants,
   Click me
 </Button>
 
-<Button variant="outline" loading disabled>
+<Button variant="outline" loading loadingBehavior="replace-prefix">
   {#snippet prefix()}
     <Icon name="plus" />
   {/snippet}
@@ -20,6 +20,7 @@ Button component - Accessible interactive element with loading states, variants,
 <script lang="ts">
 	import type { HTMLButtonAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import Spinner from './Spinner.svelte';
 
 	/**
 	 * Button component props interface.
@@ -76,6 +77,17 @@ Button component - Accessible interactive element with loading states, variants,
 		loading?: boolean;
 
 		/**
+		 * Controls how the loading spinner is displayed relative to button content.
+		 * - `replace-prefix`: Spinner replaces the prefix icon (default)
+		 * - `append`: Spinner appears after the button text (in suffix position)
+		 * - `prepend`: Spinner appears before everything (including prefix)
+		 *
+		 * @defaultValue 'replace-prefix'
+		 * @public
+		 */
+		loadingBehavior?: 'replace-prefix' | 'append' | 'prepend';
+
+		/**
 		 * Additional CSS classes to apply to the button.
 		 *
 		 * @public
@@ -110,6 +122,7 @@ Button component - Accessible interactive element with loading states, variants,
 		type = 'button',
 		disabled = false,
 		loading = false,
+		loadingBehavior = 'replace-prefix',
 		class: className = '',
 		children,
 		prefix,
@@ -119,6 +132,15 @@ Button component - Accessible interactive element with loading states, variants,
 		...restProps
 	}: Props = $props();
 
+	// Map button size to spinner size
+	const spinnerSizeMap: Record<string, 'xs' | 'sm' | 'md'> = {
+		sm: 'xs',
+		md: 'sm',
+		lg: 'sm',
+	};
+
+	const spinnerSize = $derived(spinnerSizeMap[size] || 'sm');
+
 	// Compute button classes
 	const buttonClass = $derived(() => {
 		const classes = [
@@ -126,6 +148,7 @@ Button component - Accessible interactive element with loading states, variants,
 			`gr-button--${variant}`,
 			`gr-button--${size}`,
 			loading && 'gr-button--loading',
+			loading && `gr-button--loading-${loadingBehavior}`,
 			disabled && 'gr-button--disabled',
 			className,
 		]
@@ -135,12 +158,25 @@ Button component - Accessible interactive element with loading states, variants,
 		return classes;
 	});
 
+	// Determine visibility of prefix based on loading state and behavior
+	const showPrefix = $derived(() => {
+		if (!prefix) return false;
+		if (!loading) return true;
+		// When loading, only hide prefix if behavior is 'replace-prefix'
+		return loadingBehavior !== 'replace-prefix';
+	});
+
+	// Determine where to show spinner
+	const showSpinnerInPrefix = $derived(() => loading && loadingBehavior === 'replace-prefix');
+	const showSpinnerPrepend = $derived(() => loading && loadingBehavior === 'prepend');
+	const showSpinnerAppend = $derived(() => loading && loadingBehavior === 'append');
+
 	// Handle keyboard activation
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
 			if (!disabled && !loading && onclick) {
-				onclick(event as MouseEvent);
+				onclick(event as unknown as MouseEvent);
 			}
 		}
 		onkeydown?.(event);
@@ -167,38 +203,49 @@ Button component - Accessible interactive element with loading states, variants,
 	onkeydown={handleKeydown}
 	{...restProps}
 >
-	{#if prefix}
+	<!-- Prepend spinner (before everything) -->
+	{#if showSpinnerPrepend()}
+		<span class="gr-button__spinner gr-button__spinner--prepend" aria-hidden="true">
+			<Spinner size={spinnerSize} color="current" label="Loading" />
+		</span>
+	{/if}
+
+	<!-- Prefix slot or replace-prefix spinner -->
+	{#if showSpinnerInPrefix()}
+		<span class="gr-button__spinner gr-button__spinner--prefix" aria-hidden="true">
+			<Spinner size={spinnerSize} color="current" label="Loading" />
+		</span>
+	{:else if showPrefix()}
 		<span class="gr-button__prefix">
 			{@render prefix()}
 		</span>
 	{/if}
 
-	{#if loading}
-		<span class="gr-button__spinner" aria-hidden="true">
-			<svg
-				width="16"
-				height="16"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<path d="M21 12a9 9 0 11-6.219-8.56" />
-			</svg>
-		</span>
-	{/if}
-
+	<!-- Button content -->
 	<span class="gr-button__content" class:gr-button__content--loading={loading}>
 		{#if children}
 			{@render children()}
 		{/if}
 	</span>
 
-	{#if suffix}
+	<!-- Suffix slot -->
+	{#if suffix && !showSpinnerAppend()}
 		<span class="gr-button__suffix">
 			{@render suffix()}
+		</span>
+	{/if}
+
+	<!-- Append spinner (after text, in suffix position) -->
+	{#if showSpinnerAppend()}
+		<span class="gr-button__spinner gr-button__spinner--append" aria-hidden="true">
+			<Spinner size={spinnerSize} color="current" label="Loading" />
+		</span>
+	{/if}
+
+	<!-- Screen reader loading announcement -->
+	{#if loading}
+		<span class="gr-button__sr-loading" role="status" aria-live="polite">
+			Loading
 		</span>
 	{/if}
 </button>

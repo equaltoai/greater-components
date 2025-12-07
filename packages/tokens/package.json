@@ -20,8 +20,10 @@
       "import": "./dist/index.js"
     },
     "./theme.css": "./dist/theme.css",
+    "./animations.css": "./dist/animations.css",
     "./high-contrast.css": "./dist/high-contrast.css",
-    "./themes/*": "./dist/themes/*"
+    "./themes/*": "./dist/themes/*",
+    "./palettes/*": "./dist/palettes/*"
   },
   "files": [
     "dist",
