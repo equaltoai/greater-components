@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+ *   import * as Profile from '@equaltoai/greater-components/faces/social/Profile';
  *
  *   const profile = {
  *     id: '1',

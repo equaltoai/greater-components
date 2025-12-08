@@ -113,7 +113,7 @@ export type {
  *
  * @example
  * ```typescript
- * import { createLesserClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
+ * import { createLesserClient } from '@equaltoai/greater-components/faces/social/adapters/graphql';
  *
  * const client = createLesserClient({
  *   endpoint: 'https://api.lesser.example.com/graphql',
@@ -202,7 +202,7 @@ export type {
  *
  * @example
  * ```svelte
- * import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+ * import * as Profile from '@equaltoai/greater-components/faces/social/Profile';
  *
  * <Profile.Root {profile} {handlers} isOwnProfile={true}>
  *   <Profile.Header />
@@ -255,7 +255,7 @@ export type {
  *
  * @example
  * ```svelte
- * import * as Lists from '@equaltoai/greater-components-fediverse/Lists';
+ * import * as Lists from '@equaltoai/greater-components/faces/social/Lists';
  *
  * <Lists.Root {handlers}>
  *   <Lists.Manager />
@@ -303,7 +303,7 @@ export type {
  *
  * @example
  * ```svelte
- * import * as Filters from '@equaltoai/greater-components-fediverse/Filters';
+ * import * as Filters from '@equaltoai/greater-components/faces/social/Filters';
  *
  * <Filters.Root {handlers}>
  *   <Filters.Manager />

@@ -3,7 +3,7 @@
  *
  * Provides shared state for AI analysis and moderation analytics.
  *
- * @module @equaltoai/greater-components-fediverse/Admin/Insights/context
+ * @module @equaltoai/greater-components/faces/social/Admin/Insights/context
  */
 
 import { getContext, setContext } from 'svelte';

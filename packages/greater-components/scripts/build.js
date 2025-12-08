@@ -36,7 +36,6 @@ const packages = [
 	{ key: 'shared/chat', dir: 'shared/chat' },
 	// Faces
 	{ key: 'faces/social', dir: 'faces/social' },
-	{ key: 'fediverse', dir: 'faces/social' },
 	// Tools
 	{ key: 'adapters', dir: 'adapters' },
 	{ key: 'testing', dir: 'testing' },
@@ -169,7 +168,8 @@ function generateRootBarrels() {
 		'adapters',
 		'testing',
 		'cli',
-		'fediverse',
+		'cli',
+		'faces/social',
 	];
 	const entryTargets = exposedPackages
 		.map((key) => `export * from './${key}/index.js';`)
@@ -191,7 +191,7 @@ function aggregateStyles() {
 		const packageDist = join(workspaceRoot, dir, 'dist');
 
 		// Check for common style filenames
-		const styleFiles = ['style.css', 'styles.css', 'theme.css', 'greater-components-fediverse.css'];
+		const styleFiles = ['style.css', 'styles.css', 'theme.css', 'greater-components-social.css'];
 		let foundStyle = false;
 
 		for (const file of styleFiles) {

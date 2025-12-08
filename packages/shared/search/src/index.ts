@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Search from '@equaltoai/greater-components-fediverse/Search';
+ *   import * as Search from '@equaltoai/greater-components/faces/social/Search';
  *
  *   const handlers = {
  *     onSearch: async (options) => {
