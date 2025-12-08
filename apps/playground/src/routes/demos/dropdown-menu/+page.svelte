@@ -3,14 +3,14 @@
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import * as Menu from '@equaltoai/greater-components-primitives/components/Menu/index';
-	import { 
-		UserIcon, 
-		SettingsIcon, 
-		LogOutIcon, 
-		EditIcon, 
+	import {
+		UserIcon,
+		SettingsIcon,
+		LogOutIcon,
+		EditIcon,
 		TrashIcon,
 		ChevronDownIcon,
-		MoreHorizontalIcon
+		MoreHorizontalIcon,
 	} from '@equaltoai/greater-components-icons';
 
 	function handleAction(action: string) {
@@ -20,7 +20,7 @@
 	const basicCode = `<script>
   import * as Menu from '@equaltoai/greater-components-primitives/components/Menu/index';
   import { Button } from '@equaltoai/greater-components-primitives';
-<\/script>
+<${'/'}script>
 
 <Menu.Root>
   <Menu.Trigger>
@@ -97,7 +97,7 @@
 	<section class="demo-section">
 		<h2>Basic Menu</h2>
 		<p>Simple dropdown menu with items and separator.</p>
-		
+
 		<div class="demo-area">
 			<Menu.Root>
 				<Menu.Trigger>
@@ -118,7 +118,7 @@
 	<section class="demo-section">
 		<h2>With Icons and Headers</h2>
 		<p>Menu items can include icons and be organized with headers.</p>
-		
+
 		<div class="demo-area">
 			<Menu.Root>
 				<Menu.Trigger>
@@ -152,7 +152,7 @@
 	<section class="demo-section">
 		<h2>Placement Options</h2>
 		<p>Control where the menu appears relative to the trigger.</p>
-		
+
 		<div class="placement-grid">
 			<div class="placement-item">
 				<Menu.Root placement="bottom-start">
@@ -206,7 +206,7 @@
 	<section class="demo-section">
 		<h2>Icon Button Trigger</h2>
 		<p>Common pattern for action menus on cards or list items.</p>
-		
+
 		<div class="demo-area">
 			<div class="card-example">
 				<span>Post Title</span>
@@ -238,7 +238,9 @@
 	<section class="demo-section">
 		<h2>Keyboard Navigation</h2>
 		<ul class="a11y-list">
-			<li><strong>Enter/Space:</strong> Open menu when trigger is focused, select item when menu is open</li>
+			<li>
+				<strong>Enter/Space:</strong> Open menu when trigger is focused, select item when menu is open
+			</li>
 			<li><strong>Arrow Down:</strong> Move focus to next item (loops if enabled)</li>
 			<li><strong>Arrow Up:</strong> Move focus to previous item</li>
 			<li><strong>Escape:</strong> Close menu and return focus to trigger</li>
@@ -348,7 +350,9 @@
 		border-radius: var(--gr-radii-md);
 		cursor: pointer;
 		color: var(--gr-semantic-foreground-secondary);
-		transition: background-color 0.2s, color 0.2s;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
 	}
 
 	.icon-button:hover {

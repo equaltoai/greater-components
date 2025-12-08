@@ -135,10 +135,10 @@
 	let isHovered = $state(false);
 
 	// Compute effective showCopyButton (default true for assistant)
-	const effectiveShowCopyButton = $derived(showCopyButton ?? (role === 'assistant'));
-	
+	const effectiveShowCopyButton = $derived(showCopyButton ?? role === 'assistant');
+
 	// Compute effective showRetryButton (default true for error state)
-	const effectiveShowRetryButton = $derived(showRetryButton ?? (status === 'error'));
+	const effectiveShowRetryButton = $derived(showRetryButton ?? status === 'error');
 
 	// Check if message has error
 	const hasError = $derived(status === 'error');
@@ -200,13 +200,13 @@
 			{:else if role === 'assistant' && assistantAvatar}
 				{@render assistantAvatar()}
 			{:else}
-				<Avatar 
-					src={avatar} 
-					name={avatarName} 
+				<Avatar
+					src={avatar}
+					name={avatarName}
 					label={avatarLabel}
 					fallbackMode="label"
-					size="sm" 
-					shape="circle" 
+					size="sm"
+					shape="circle"
 				/>
 			{/if}
 		</div>
@@ -245,15 +245,18 @@
 		</div>
 
 		<!-- Message actions (visible on hover) -->
-		<div class="chat-message__actions" class:chat-message__actions--visible={isHovered && !streaming}>
+		<div
+			class="chat-message__actions"
+			class:chat-message__actions--visible={isHovered && !streaming}
+		>
 			{#if actions}
 				{@render actions()}
 			{/if}
-			
+
 			{#if effectiveShowCopyButton && content && !hasError}
 				<CopyButton text={content} variant="icon" buttonVariant="ghost" size="sm" />
 			{/if}
-			
+
 			{#if effectiveShowRetryButton && hasError && onRetry}
 				<Button variant="ghost" size="sm" onclick={onRetry} aria-label="Retry message">
 					{#snippet prefix()}
@@ -436,9 +439,6 @@
 	}
 
 	/* Streaming state */
-	.chat-message--streaming .chat-message__bubble {
-		/* Subtle visual indicator for streaming */
-	}
 
 	/* Dark mode is handled automatically via semantic tokens */
 	/* No explicit dark mode overrides needed - semantic tokens adapt to theme */

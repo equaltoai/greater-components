@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { createMenuContext, generateMenuId, type MenuPlacement, type MenuItemConfig, type MenuPosition } from './context';
+	import {
+		createMenuContext,
+		generateMenuId,
+		type MenuPlacement,
+		type MenuItemConfig,
+		type MenuPosition,
+	} from './context';
 	import { calculatePosition, createPositionObserver } from './positioning';
 
 	interface Props {
@@ -66,7 +72,7 @@
 			positionCleanup = createPositionObserver(triggerElement, updatePosition);
 			updatePosition();
 		}
-		
+
 		return () => {
 			positionCleanup?.();
 			positionCleanup = null;
@@ -75,10 +81,10 @@
 
 	function updatePosition() {
 		if (!triggerElement || !contentElement) return;
-		
+
 		const triggerRect = triggerElement.getBoundingClientRect();
 		const contentRect = contentElement.getBoundingClientRect();
-		
+
 		position = calculatePosition({
 			triggerRect,
 			contentRect,
@@ -95,7 +101,7 @@
 			updatePosition();
 			// Focus first item
 			if (items.length > 0) {
-				const firstEnabled = items.findIndex(item => !item.disabled);
+				const firstEnabled = items.findIndex((item) => !item.disabled);
 				if (firstEnabled !== -1) {
 					activeIndex = firstEnabled;
 				}
@@ -131,11 +137,11 @@
 	}
 
 	function unregisterItem(id: string) {
-		items = items.filter(item => item.id !== id);
+		items = items.filter((item) => item.id !== id);
 	}
 
 	function selectItem(id: string) {
-		const item = items.find(i => i.id === id);
+		const item = items.find((i) => i.id === id);
 		if (item && !item.disabled) {
 			item.onClick?.();
 			if (closeOnSelect) {
@@ -157,14 +163,25 @@
 
 	// Create and provide context
 	createMenuContext({
-		get isOpen() { return isOpen; },
-		get activeIndex() { return activeIndex; },
+		get isOpen() {
+			return isOpen;
+		},
+		get activeIndex() {
+			return activeIndex;
+		},
 		menuId,
 		triggerId,
-		get placement() { return placement; },
+		get placement() {
+			return placement;
+		},
 		offset,
-		get position() { return position; },
-		get items() { return items; },
+		loop,
+		get position() {
+			return position;
+		},
+		get items() {
+			return items;
+		},
 		open: openMenu,
 		close: closeMenu,
 		toggle: toggleMenu,
@@ -172,8 +189,12 @@
 		registerItem,
 		unregisterItem,
 		selectItem,
-		get triggerElement() { return triggerElement; },
-		get contentElement() { return contentElement; },
+		get triggerElement() {
+			return triggerElement;
+		},
+		get contentElement() {
+			return contentElement;
+		},
 		setTriggerElement,
 		setContentElement,
 		updatePosition,

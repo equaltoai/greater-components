@@ -188,7 +188,6 @@ export function createAlert(config: AlertConfig = {}): AlertBuilder {
 		variant: initialVariant = 'info',
 		dismissible: initialDismissible = false,
 		visible: initialVisible = true,
-		disabled: initialDisabled = false,
 		id: customId,
 		onDismiss,
 		onAction,

@@ -2,8 +2,12 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { UserButton } from '@equaltoai/greater-components-auth';
-	import { Button } from '@equaltoai/greater-components-primitives';
-	import { UserIcon, SettingsIcon, HelpCircleIcon, CreditCardIcon } from '@equaltoai/greater-components-icons';
+	import {
+		UserIcon,
+		SettingsIcon,
+		HelpCircleIcon,
+		CreditCardIcon,
+	} from '@equaltoai/greater-components-icons';
 	import type { UserMenuItem } from '@equaltoai/greater-components-auth';
 
 	const mockUser = {
@@ -19,16 +23,31 @@
 
 	const menuItems: UserMenuItem[] = [
 		{ id: 'profile', label: 'Profile', icon: UserIcon, onClick: () => alert('Profile clicked') },
-		{ id: 'settings', label: 'Settings', icon: SettingsIcon, onClick: () => alert('Settings clicked') },
-		{ id: 'billing', label: 'Billing', icon: CreditCardIcon, onClick: () => alert('Billing clicked') },
-		{ id: 'help', label: 'Help & Support', icon: HelpCircleIcon, onClick: () => alert('Help clicked') },
+		{
+			id: 'settings',
+			label: 'Settings',
+			icon: SettingsIcon,
+			onClick: () => alert('Settings clicked'),
+		},
+		{
+			id: 'billing',
+			label: 'Billing',
+			icon: CreditCardIcon,
+			onClick: () => alert('Billing clicked'),
+		},
+		{
+			id: 'help',
+			label: 'Help & Support',
+			icon: HelpCircleIcon,
+			onClick: () => alert('Help clicked'),
+		},
 	];
 
 	let signingOut = $state(false);
 
 	async function handleSignOut() {
 		signingOut = true;
-		await new Promise(resolve => setTimeout(resolve, 1500));
+		await new Promise((resolve) => setTimeout(resolve, 1500));
 		alert('Signed out successfully!');
 		signingOut = false;
 	}
@@ -51,7 +70,7 @@
   async function handleSignOut() {
     await signOut();
   }
-<\/script>
+<${'/'}script>
 
 <UserButton 
   {user}
@@ -78,14 +97,9 @@
 	<section class="demo-section">
 		<h2>Dropdown Variant (Default)</h2>
 		<p>Click the avatar to open a dropdown menu with user info and actions.</p>
-		
+
 		<div class="demo-area">
-			<UserButton 
-				user={mockUser}
-				onSignOut={handleSignOut}
-				{menuItems}
-				loading={signingOut}
-			/>
+			<UserButton user={mockUser} onSignOut={handleSignOut} {menuItems} loading={signingOut} />
 		</div>
 
 		<CodeExample code={dropdownCode} language="svelte" />
@@ -94,14 +108,9 @@
 	<section class="demo-section">
 		<h2>Inline Variant</h2>
 		<p>Displays user info inline with a sign-out button, useful for sidebars or headers.</p>
-		
+
 		<div class="demo-area inline-demo">
-			<UserButton 
-				user={mockUser}
-				onSignOut={handleSignOut}
-				variant="inline"
-				loading={signingOut}
-			/>
+			<UserButton user={mockUser} onSignOut={handleSignOut} variant="inline" loading={signingOut} />
 		</div>
 
 		<CodeExample code={inlineCode} language="svelte" />
@@ -110,20 +119,16 @@
 	<section class="demo-section">
 		<h2>Avatar Fallback</h2>
 		<p>When no image is provided, displays initials from the user's name.</p>
-		
+
 		<div class="demo-area">
-			<UserButton 
-				user={mockUserNoImage}
-				onSignOut={handleSignOut}
-				{menuItems}
-			/>
+			<UserButton user={mockUserNoImage} onSignOut={handleSignOut} {menuItems} />
 		</div>
 	</section>
 
 	<section class="demo-section">
 		<h2>Size Variants</h2>
 		<p>Three size options for different contexts.</p>
-		
+
 		<div class="demo-area sizes-row">
 			<div class="size-item">
 				<UserButton user={mockUser} onSignOut={handleSignOut} size="sm" />
@@ -196,14 +201,17 @@
 
 	<section class="demo-section">
 		<h2>UserMenuItem Interface</h2>
-		<CodeExample code={`interface UserMenuItem {
+		<CodeExample
+			code={`interface UserMenuItem {
   id: string;           // Unique identifier
   label: string;        // Display text
   icon?: Component;     // Optional icon component
   onClick?: () => void; // Click handler
   disabled?: boolean;   // Whether item is disabled
   href?: string;        // Optional link URL
-}`} language="typescript" />
+}`}
+			language="typescript"
+		/>
 	</section>
 
 	<section class="demo-section">

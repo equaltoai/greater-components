@@ -46,10 +46,9 @@
 <script lang="ts">
 	import type { UserButtonProps, UserMenuItem } from './types.js';
 	import Avatar from '@equaltoai/greater-components-primitives/components/Avatar.svelte';
-	import Button from '@equaltoai/greater-components-primitives/components/Button.svelte';
 	import Text from '@equaltoai/greater-components-primitives/components/Text.svelte';
 	import Spinner from '@equaltoai/greater-components-primitives/components/Spinner.svelte';
-	import * as Menu from '@equaltoai/greater-components-primitives/components/Menu/index';
+	import { Menu } from '@equaltoai/greater-components-primitives';
 	import { LogOutIcon } from '@equaltoai/greater-components-icons';
 
 	let {
@@ -149,7 +148,7 @@
 				/>
 			</button>
 		</Menu.Trigger>
-		
+
 		<Menu.Content matchTriggerWidth={false} class="auth-user-button__menu">
 			<!-- User info header -->
 			<Menu.Header>
@@ -172,7 +171,7 @@
 					</div>
 				</div>
 			</Menu.Header>
-			
+
 			<!-- Custom menu items -->
 			{#if menuItems.length > 0}
 				<Menu.Separator />
@@ -186,13 +185,14 @@
 					>
 						{#snippet icon()}
 							{#if item.icon}
-								<svelte:component this={item.icon} size={16} aria-hidden="true" />
+								{@const Icon = item.icon}
+								<Icon size={16} aria-hidden="true" />
 							{/if}
 						{/snippet}
 					</Menu.Item>
 				{/each}
 			{/if}
-			
+
 			<!-- Sign out -->
 			<Menu.Separator />
 			<Menu.Item

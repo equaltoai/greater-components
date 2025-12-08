@@ -2,10 +2,8 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { Alert, Button } from '@equaltoai/greater-components-primitives';
-	import { InfoIcon, AlertTriangleIcon, CheckCircleIcon, XCircleIcon } from '@equaltoai/greater-components-icons';
 
 	let showDismissible = $state(true);
-	let showWithAction = $state(true);
 
 	function handleDismiss() {
 		showDismissible = false;
@@ -17,7 +15,6 @@
 
 	function resetDemos() {
 		showDismissible = true;
-		showWithAction = true;
 	}
 
 	const basicUsageCode = `<Alert variant="info" title="Information">
@@ -53,15 +50,9 @@
 >
   Your session will expire soon.
 </Alert>`;
-
-	const customIconCode = `<Alert variant="info" title="Custom Icon">
-  {#snippet icon()}
-    <StarIcon size={20} />
-  {/snippet}
-  This alert uses a custom icon.
-</Alert>`;
 </script>
 
+```svelte
 <DemoPage
 	eyebrow="Primitives"
 	title="Alert Component"
@@ -74,23 +65,17 @@
 	<section class="demo-section">
 		<h2>Variants</h2>
 		<p>Alert supports four semantic variants for different message types.</p>
-		
+
 		<div class="alert-stack">
 			<Alert variant="info" title="Information">
 				This is an informational message for general notices.
 			</Alert>
-			
-			<Alert variant="success" title="Success">
-				Your changes have been saved successfully.
-			</Alert>
-			
-			<Alert variant="warning" title="Warning">
-				Please review your input before continuing.
-			</Alert>
-			
-			<Alert variant="error" title="Error">
-				Something went wrong. Please try again.
-			</Alert>
+
+			<Alert variant="success" title="Success">Your changes have been saved successfully.</Alert>
+
+			<Alert variant="warning" title="Warning">Please review your input before continuing.</Alert>
+
+			<Alert variant="error" title="Error">Something went wrong. Please try again.</Alert>
 		</div>
 
 		<CodeExample code={basicUsageCode} language="svelte" />
@@ -99,18 +84,15 @@
 	<section class="demo-section">
 		<h2>Dismissible Alerts</h2>
 		<p>Add a close button to allow users to dismiss the alert.</p>
-		
+
 		{#if showDismissible}
-			<Alert 
-				variant="info" 
-				title="Dismissible Alert" 
-				dismissible 
-				onDismiss={handleDismiss}
-			>
+			<Alert variant="info" title="Dismissible Alert" dismissible onDismiss={handleDismiss}>
 				Click the X button to dismiss this alert.
 			</Alert>
 		{:else}
-			<p class="dismissed-message">Alert dismissed! <button onclick={() => showDismissible = true}>Show again</button></p>
+			<p class="dismissed-message">
+				Alert dismissed! <button onclick={() => (showDismissible = true)}>Show again</button>
+			</p>
 		{/if}
 
 		<CodeExample code={dismissibleCode} language="svelte" />
@@ -119,9 +101,9 @@
 	<section class="demo-section">
 		<h2>Action Buttons</h2>
 		<p>Include an action button for user interaction.</p>
-		
-		<Alert 
-			variant="warning" 
+
+		<Alert
+			variant="warning"
 			title="Session Expiring"
 			actionLabel="Extend Session"
 			onAction={handleAction}
@@ -135,7 +117,7 @@
 	<section class="demo-section">
 		<h2>Without Title</h2>
 		<p>Alerts can be used without a title for simpler messages.</p>
-		
+
 		<div class="alert-stack">
 			<Alert variant="success">File uploaded successfully.</Alert>
 			<Alert variant="error">Network connection lost.</Alert>
@@ -145,9 +127,14 @@
 	<section class="demo-section">
 		<h2>Accessibility</h2>
 		<ul class="a11y-list">
-			<li><strong>Role:</strong> Error and warning variants use <code>role="alert"</code>, success and info use <code>role="status"</code></li>
+			<li>
+				<strong>Role:</strong> Error and warning variants use <code>role="alert"</code>, success and
+				info use <code>role="status"</code>
+			</li>
 			<li><strong>Keyboard:</strong> Dismiss and action buttons are fully keyboard accessible</li>
-			<li><strong>Screen readers:</strong> Alert content is announced appropriately based on variant</li>
+			<li>
+				<strong>Screen readers:</strong> Alert content is announced appropriately based on variant
+			</li>
 			<li><strong>Focus:</strong> Focus is managed when alerts are dismissed</li>
 		</ul>
 	</section>

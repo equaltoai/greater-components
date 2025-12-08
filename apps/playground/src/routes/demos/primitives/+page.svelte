@@ -109,7 +109,7 @@
 		</div>
 
 		<div class="demo-row">
-			<Card variant="elevated" style="width: 300px;" hoverable clickable>
+			<Card variant="elevated" style="width: 300px;" hoverable>
 				{#snippet header()}
 					<h3 style="margin: 0;">Elevated Card</h3>
 				{/snippet}

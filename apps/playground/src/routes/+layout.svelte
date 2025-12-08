@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import '@equaltoai/greater-components-tokens/theme.css';
 	import '@equaltoai/greater-components-primitives/theme.css';
+	import '@equaltoai/greater-components-social/theme.css';
 	import '../app.css';
 	import {
 		ThemeProvider,
@@ -28,7 +29,6 @@
 		UserIcon,
 		SettingsIcon,
 		SearchIcon,
-		BookOpenIcon,
 	} from '@equaltoai/greater-components-icons';
 	import type { IconComponent } from '@equaltoai/greater-components-icons';
 
@@ -41,7 +41,6 @@
 
 	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
-		{ href: '/docs', label: 'Documentation', icon: BookOpenIcon, external: true },
 		{ href: '/chat', label: 'Chat Demo', icon: MessageCircleIcon },
 		{ href: '/status', label: 'Status Card Demo', icon: MessageSquareIcon },
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },

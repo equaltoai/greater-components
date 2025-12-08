@@ -47,8 +47,10 @@
 
 		<CodeExample
 			code={`<script>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import { fade, fly, slide, scale } from 'svelte/transition';
   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let visible = $state(false);
 </script>
 
@@ -124,7 +126,8 @@
 		<p>Create custom transitions using Svelte's transition API:</p>
 
 		<CodeExample
-			code={`<script>
+			code={`<` +
+				`script>
   import { cubicOut } from 'svelte/easing';
 
   function slideAndFade(node, { delay = 0, duration = 300 }) {
@@ -133,14 +136,13 @@
       duration,
       css: (t) => {
         const eased = cubicOut(t);
-        return \`
-          opacity: \${eased};
-          transform: translateY(\${(1 - eased) * 20}px);
-        \`;
+        // Return interpolated CSS string
+        return 'opacity: ' + eased + '; transform: translateY(' + ((1 - eased) * 20) + 'px);';
       }
     };
   }
-</script>
+<` +
+				`/script>
 
 {#if visible}
   <div transition:slideAndFade={{ duration: 300 }}>
@@ -225,6 +227,7 @@
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Use shorter durations or skip animations
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const duration = prefersReducedMotion ? 0 : 300;
 </script>
 
@@ -294,6 +297,7 @@
 			code={`<script>
   import { fly } from 'svelte/transition';
   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
 </script>
 

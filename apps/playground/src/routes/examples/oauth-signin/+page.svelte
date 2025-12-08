@@ -6,9 +6,12 @@
 	import type { OAuthProvider } from '@equaltoai/greater-components-auth';
 
 	// Mock provider icons (in real app, import from icons package)
-	const GithubIcon = () => null;
-	const GoogleIcon = () => null;
-	const MastodonIcon = () => null;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const GithubIcon: any = () => null;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const GoogleIcon: any = () => null;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const MastodonIcon: any = () => null;
 
 	const providers: OAuthProvider[] = [
 		{ id: 'github', name: 'GitHub', icon: GithubIcon },
@@ -26,7 +29,7 @@
 		error = null;
 
 		// Simulate OAuth flow
-		await new Promise(resolve => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 2000));
 
 		// Simulate random error for demo
 		if (Math.random() > 0.7) {
@@ -74,7 +77,7 @@
       loadingProvider = null;
     }
   }
-<\/script>
+<${'/'}script>
 
 <SignInCard 
   title="Welcome back"
@@ -112,10 +115,12 @@
 
 	<section class="demo-section">
 		<h2>Interactive Demo</h2>
-		<p>Click a provider button to simulate the OAuth flow. ~30% chance of error for demo purposes.</p>
-		
+		<p>
+			Click a provider button to simulate the OAuth flow. ~30% chance of error for demo purposes.
+		</p>
+
 		<div class="signin-demo">
-			<SignInCard 
+			<SignInCard
 				title="Welcome back"
 				description="Sign in to your account to continue"
 				{providers}
@@ -133,20 +138,16 @@
 	<section class="demo-section">
 		<h2>With Custom Footer</h2>
 		<p>Add registration links or terms of service in the footer slot.</p>
-		
+
 		<div class="signin-demo">
-			<SignInCard 
-				title="Sign in to continue"
-				{providers}
-				onSignIn={handleSignIn}
-			>
+			<SignInCard title="Sign in to continue" {providers} onSignIn={handleSignIn}>
 				{#snippet footer()}
 					<p class="footer-text">
-						Don't have an account? 
+						Don't have an account?
 						<a href="#register">Create one</a>
 					</p>
 					<p class="footer-terms">
-						By signing in, you agree to our 
+						By signing in, you agree to our
 						<a href="#terms">Terms of Service</a>
 					</p>
 				{/snippet}
@@ -228,20 +229,29 @@
 
 	<section class="demo-section">
 		<h2>OAuthProvider Interface</h2>
-		<CodeExample code={`interface OAuthProvider {
+		<CodeExample
+			code={`interface OAuthProvider {
   id: string;        // Unique identifier (e.g., 'github')
   name: string;      // Display name (e.g., 'GitHub')
   icon?: Component;  // Svelte icon component
   color?: string;    // Optional brand color
-}`} language="typescript" />
+}`}
+			language="typescript"
+		/>
 	</section>
 
 	<section class="demo-section">
 		<h2>Accessibility</h2>
 		<ul class="a11y-list">
-			<li><strong>Keyboard:</strong> All buttons are keyboard accessible with Enter/Space activation</li>
-			<li><strong>Focus:</strong> Focus is managed appropriately during loading and error states</li>
-			<li><strong>Screen readers:</strong> Loading states and errors are announced via live regions</li>
+			<li>
+				<strong>Keyboard:</strong> All buttons are keyboard accessible with Enter/Space activation
+			</li>
+			<li>
+				<strong>Focus:</strong> Focus is managed appropriately during loading and error states
+			</li>
+			<li>
+				<strong>Screen readers:</strong> Loading states and errors are announced via live regions
+			</li>
 			<li><strong>Disabled state:</strong> Buttons are properly disabled during loading</li>
 		</ul>
 	</section>
