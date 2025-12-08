@@ -158,13 +158,13 @@
   },
   "devDependencies": {
     "@equaltoai/greater-components-tokens": "workspace:*",
-    "@sveltejs/package": "^2.5.6",
+    "@sveltejs/package": "^2.5.7",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/svelte": "^5.2.9",
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.12",
     "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "svelte": "^5.45.6",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
     "vitest": "^4.0.12"
