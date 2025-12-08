@@ -47,14 +47,12 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
 	import type { SignInCardProps, OAuthProvider } from './types.js';
 	import Card from '@equaltoai/greater-components-primitives/components/Card.svelte';
 	import Button from '@equaltoai/greater-components-primitives/components/Button.svelte';
 	import Alert from '@equaltoai/greater-components-primitives/components/Alert.svelte';
 	import Heading from '@equaltoai/greater-components-primitives/components/Heading.svelte';
 	import Text from '@equaltoai/greater-components-primitives/components/Text.svelte';
-	import Spinner from '@equaltoai/greater-components-primitives/components/Spinner.svelte';
 
 	let {
 		title = 'Sign in to continue',
@@ -66,7 +64,7 @@
 		error = null,
 		onRetry,
 		class: className = '',
-		footer,
+		footer: footerSnippet,
 	}: SignInCardProps = $props();
 
 	/**
@@ -75,16 +73,6 @@
 	async function handleProviderClick(provider: OAuthProvider) {
 		if (loading) return;
 		await onSignIn(provider.id);
-	}
-
-	/**
-	 * Handle keyboard activation for provider buttons
-	 */
-	function handleKeyDown(event: KeyboardEvent, provider: OAuthProvider) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			handleProviderClick(provider);
-		}
 	}
 
 	/**
@@ -102,9 +90,7 @@
 	}
 
 	// Compute card classes
-	const cardClass = $derived(
-		['auth-sign-in-card', className].filter(Boolean).join(' ')
-	);
+	const cardClass = $derived(['auth-sign-in-card', className].filter(Boolean).join(' '));
 </script>
 
 <Card variant="elevated" padding="lg" class={cardClass}>
@@ -123,8 +109,8 @@
 
 	<div class="auth-sign-in-card__content">
 		{#if error}
-			<Alert 
-				variant="error" 
+			<Alert
+				variant="error"
 				dismissible={!!onRetry}
 				onDismiss={onRetry}
 				actionLabel={onRetry ? 'Try again' : undefined}
@@ -135,15 +121,11 @@
 			</Alert>
 		{/if}
 
-		<div 
-			class="auth-sign-in-card__providers" 
-			role="group" 
-			aria-label="Sign in options"
-		>
+		<div class="auth-sign-in-card__providers" role="group" aria-label="Sign in options">
 			{#each providers as provider (provider.id)}
 				{@const providerLoading = isProviderLoading(provider.id)}
 				{@const providerDisabled = isProviderDisabled(provider.id)}
-				
+
 				<Button
 					variant="outline"
 					size="lg"
@@ -157,7 +139,8 @@
 				>
 					{#snippet prefix()}
 						{#if provider.icon && !providerLoading}
-							<svelte:component this={provider.icon} size={20} aria-hidden="true" />
+							{@const Icon = provider.icon}
+							<Icon size={20} aria-hidden="true" />
 						{/if}
 					{/snippet}
 					Continue with {provider.name}
@@ -166,17 +149,18 @@
 		</div>
 	</div>
 
-	{#if footer}
+	{#if footerSnippet}
+		<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 		{#snippet footer()}
 			<div class="auth-sign-in-card__footer">
-				{@render footer()}
+				{@render footerSnippet()}
 			</div>
 		{/snippet}
 	{/if}
 </Card>
 
 <style>
-	.auth-sign-in-card {
+	:global(.auth-sign-in-card) {
 		max-width: 400px;
 		width: 100%;
 	}

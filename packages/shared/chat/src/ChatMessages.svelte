@@ -322,6 +322,7 @@
 						error={message.error}
 						avatar={message.role === 'assistant' ? assistantAvatar : userAvatar}
 						showAvatar={showAvatars}
+						avatarLabel={message.role === 'assistant' ? assistantAvatarLabel : userAvatarLabel}
 						userAvatar={userAvatarSnippet}
 						assistantAvatar={assistantAvatarSnippet}
 						renderContent={renderMessageContent}

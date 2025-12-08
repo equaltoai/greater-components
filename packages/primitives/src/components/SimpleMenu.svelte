@@ -69,10 +69,10 @@ and want to render them automatically.
 		{@render trigger({ open: isOpen, toggle: handleToggle })}
 	</Menu.Trigger>
 	<Menu.Content>
-		{#each items as item}
+		{#each items as item (item.id)}
 			{#if item.submenu && item.submenu.length > 0}
 				<Menu.Header>{item.label}</Menu.Header>
-				{#each item.submenu as subItem}
+				{#each item.submenu as subItem (subItem.id)}
 					<Menu.Item
 						label={subItem.label}
 						disabled={subItem.disabled}

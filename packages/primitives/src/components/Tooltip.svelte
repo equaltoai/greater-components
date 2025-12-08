@@ -295,9 +295,8 @@
 </script>
 
 <div class="gr-tooltip-container">
-	<svelte:element
-		this={trigger === 'click' ? 'button' : 'div'}
-		type={trigger === 'click' ? 'button' : undefined}
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<div
 		bind:this={triggerElement}
 		class="gr-tooltip-trigger"
 		aria-describedby={isVisible ? tooltipId : undefined}
@@ -310,9 +309,10 @@
 		ontouchend={handleTouchEnd}
 		onkeydown={handleKeydown}
 		role={trigger === 'click' ? 'button' : 'presentation'}
+		tabindex={trigger === 'click' ? 0 : undefined}
 	>
 		{@render children()}
-	</svelte:element>
+	</div>
 
 	{#if isVisible}
 		<div

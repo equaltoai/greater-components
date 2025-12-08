@@ -109,6 +109,7 @@ export default [
 			'**/.svelte-kit/**',
 			'**/package/**',
 			'**/.pai/**',
+			'**/.pai-old/**',
 			'**/*.svelte.d.ts',
 			'test-apps/astro-client-only/.astro/**',
 			'**/.env',

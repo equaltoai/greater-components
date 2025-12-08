@@ -2,14 +2,8 @@
  * UserButton Component Tests
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
+import { render, screen, fireEvent } from '@testing-library/svelte';
 import UserButton from '../src/UserButton.svelte';
-
-// Mock icon component
-const MockIcon = {
-	$$typeof: Symbol.for('svelte.component'),
-	render: () => ({ html: '<svg data-testid="mock-icon"></svg>' }),
-};
 
 describe('UserButton', () => {
 	const defaultUser = {

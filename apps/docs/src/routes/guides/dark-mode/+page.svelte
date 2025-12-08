@@ -29,6 +29,7 @@
 
 		<CodeExample
 			code={`<script>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import { ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components-primitives';
 </script>
 
@@ -86,10 +87,10 @@
 		<h3>Listening for System Changes</h3>
 		<p>React to system preference changes in real-time:</p>
 
-		<CodeExample
-			code={`<script>
+		code={`<script>
   import { onMount } from 'svelte';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let theme = $state('light');
 
   onMount(() => {
@@ -99,16 +100,15 @@
     theme = mediaQuery.matches ? 'dark' : 'light';
     
     // Listen for changes
-    const handler = (e) => {
+    mediaQuery.addEventListener('change', (e) => {
       theme = e.matches ? 'dark' : 'light';
-    };
-    
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+    });
   });
-</script>`}
-			language="svelte"
-		/>
+</script>
+
+<p>Current theme: {theme}</p>`}
+
+		language="svelte" />
 	</section>
 
 	<section>

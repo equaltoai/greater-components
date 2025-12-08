@@ -58,26 +58,66 @@ concepts:
       - general_web_applications
 
     provides:
+      # Form Controls
       - Button
-      - Modal
+      - CopyButton
       - TextField
       - TextArea
       - Select
       - Checkbox
       - Switch
       - FileUpload
+      - DropZone
+      # Overlays & Menus
+      - Modal
       - Menu
+      - SimpleMenu
       - Tooltip
       - Tabs
+      # Display & Status
+      - Alert
       - Avatar
+      - Badge
+      - GradientText
+      - IconBadge
+      - List
+      - ListItem
+      - LoadingState
       - Skeleton
+      - Spinner
+      - StepIndicator
+      - StreamingText
+      # Layout & Typography
       - Card
       - Container
       - Section
       - Heading
       - Text
+      # Theme System
       - ThemeProvider
       - ThemeSwitcher
+      - ColorHarmonyPicker
+      - ContrastChecker
+      - ThemeWorkbench
+      # Settings Components
+      - SettingsSection
+      - SettingsGroup
+      - SettingsField
+      - SettingsToggle
+      - SettingsSelect
+    
+    transitions:
+      - fadeUp
+      - fadeDown
+      - slideIn
+      - scaleIn
+    
+    utilities:
+      - smoothThemeTransition
+      - createSmoothThemeToggle
+      - preferencesStore
+      - getPreferences
+      - getPreferenceState
 
     does_not_provide:
       - navigation_components
@@ -189,13 +229,15 @@ concepts:
       - Container_component
       - Messages_component
       - Message_component
+      - MessageAction_component
       - Input_component
       - Header_component
-      - ToolCall_component
+      - ToolCallDisplay_component
       - Suggestions_component
       - Settings_component
       - createChatContext
       - getChatContext
+      - setChatContext
       - hasChatContext
       - formatMessageTime
       - formatStreamDuration

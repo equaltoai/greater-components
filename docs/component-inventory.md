@@ -9,7 +9,7 @@ If a component is not listed here, it DOES NOT EXIST.
 
 ### Package Scope
 
-This package provides **30 interactive and layout components** for building any type of website.
+This package provides **43 interactive and layout components** for building any type of website.
 
 **What Primitives Provides:**
 
@@ -23,7 +23,7 @@ This package provides **30 interactive and layout components** for building any 
 
 - Advanced interactions (code blocks, drag-drop, markdown, streaming text)
 
-### All 30 Components (Complete List)
+### All 43 Components (Complete List)
 
 **Form Controls (9):**
 
@@ -45,17 +45,23 @@ This package provides **30 interactive and layout components** for building any 
 
 - FileUpload - File upload with drag-drop
 
-**Overlays & Menus (4):**
+
+
+**Overlays & Menus (5):**
 
 - Modal - Dialog overlay
 
-- Menu - Dropdown menu
+- Menu - Dropdown menu (compound component)
+
+- SimpleMenu - Simple array-based menu wrapper
 
 - Tooltip - Hover tooltip
 
 - Tabs - Tab navigation
 
-**Display & Status (11):**
+**Display & Status (14):**
+
+- Alert - Error, warning, success, info banners with actions
 
 - Avatar - User avatar with fallback
 
@@ -71,9 +77,13 @@ This package provides **30 interactive and layout components** for building any 
 
 - ListItem - List item with icon support
 
+- LoadingState - Loading overlay with message
+
 - MarkdownRenderer - Safe markdown rendering ⚠️ _Requires peer deps: `isomorphic-dompurify`, `marked`_
 
 - Skeleton - Loading placeholder
+
+- Spinner - Animated loading indicator
 
 - StepIndicator - Numbered workflow badge
 
@@ -93,9 +103,27 @@ This package provides **30 interactive and layout components** for building any 
 
 - Text - Paragraph/span/div with typography control
 
-**Theme System (1):**
+**Theme System (4):**
 
 - ThemeProvider - Theme context provider
+
+- ColorHarmonyPicker - Color palette generator
+
+- ContrastChecker - WCAG contrast validation
+
+- ThemeWorkbench - Interactive theme builder
+
+**Settings Components (5):**
+
+- SettingsSection - Grouped settings container
+
+- SettingsGroup - Settings group with title
+
+- SettingsField - Individual setting field
+
+- SettingsToggle - Toggle setting with label
+
+- SettingsSelect - Dropdown setting with label
 
 ### Detailed Component Reference
 
@@ -341,6 +369,172 @@ pnpm add isomorphic-dompurify marked
 - `showCursor`: boolean
 
 **Reference:** See [api-reference.md#streamingtext](./api-reference.md#streamingtext) for complete API
+
+#### Alert
+
+**Purpose:** A versatile alert/banner component for displaying error, warning, success, and info messages. Provides consistent styling for contextual feedback with optional actions and dismissibility.
+
+**When to Use:**
+
+- Error messages and validation feedback
+- Success confirmations
+- Warning notices
+- Information banners
+- Session expired / reconnection prompts
+
+**When NOT to Use:**
+
+- Toast-style transient notifications (use a toast library)
+- Inline form validation (use TextField error prop)
+- Modal confirmations (use Modal component)
+
+**Key Props:**
+
+- `variant`: 'error' | 'warning' | 'success' | 'info' - Visual style and default icon
+- `title`: string - Optional prominent title
+- `dismissible`: boolean - Show close button
+- `onDismiss`: () => void - Dismiss callback
+- `actionLabel`: string - Optional action button text
+- `onAction`: () => void - Action button callback
+- `icon`: Snippet - Custom icon override
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { Alert } from '@equaltoai/greater-components/primitives';
+</script>
+
+<Alert variant="error" title="Connection Lost" dismissible onDismiss={handleDismiss}>
+	Your session has expired. Please sign in again.
+</Alert>
+
+<Alert variant="success" actionLabel="View Details" onAction={handleView}>
+	Your changes have been saved successfully.
+</Alert>
+```
+
+**Reference:** See [api-reference.md#alert](./api-reference.md#alert) for complete API
+
+#### Spinner
+
+**Purpose:** Accessible loading indicator with configurable size and color. Provides visual feedback during async operations.
+
+**When to Use:**
+
+- Button loading states
+- Inline loading indicators
+- Form submission feedback
+- Component-level loading
+
+**When NOT to Use:**
+
+- Full-page loading (use LoadingState with fullscreen)
+- Skeleton placeholders (use Skeleton)
+- Progress indicators (use progress bar)
+
+**Key Props:**
+
+- `size`: 'xs' | 'sm' | 'md' | 'lg' | 'xl' - Spinner size (12-48px)
+- `color`: 'primary' | 'current' | 'white' | 'gray' - Spinner color
+- `label`: string - Accessible screen reader label (default: 'Loading')
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { Spinner } from '@equaltoai/greater-components/primitives';
+</script>
+
+<Spinner size="md" color="primary" />
+<Spinner size="sm" color="white" label="Saving..." />
+```
+
+**Reference:** See [api-reference.md#spinner](./api-reference.md#spinner) for complete API
+
+#### LoadingState
+
+**Purpose:** Wrapper for Spinner with message and fullscreen overlay support. Provides a complete loading state UI for pages or sections.
+
+**When to Use:**
+
+- Page-level loading states
+- Modal content loading
+- Section loading with context message
+- Fullscreen loading overlays
+
+**When NOT to Use:**
+
+- Inline loading (use Spinner)
+- Button loading (use Button loading prop)
+- Skeleton loading (use Skeleton)
+
+**Key Props:**
+
+- `size`: 'xs' | 'sm' | 'md' | 'lg' | 'xl' - Spinner size
+- `message`: string - Loading message displayed below spinner
+- `fullscreen`: boolean - Display as fullscreen overlay
+- `label`: string - Accessible label (default: 'Loading')
+- `children`: Snippet - Custom content instead of spinner
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { LoadingState } from '@equaltoai/greater-components/primitives';
+</script>
+
+<LoadingState message="Loading your data..." />
+
+<LoadingState fullscreen size="lg" message="Connecting to server..." />
+```
+
+**Reference:** See [api-reference.md#loadingstate](./api-reference.md#loadingstate) for complete API
+
+#### SimpleMenu
+
+**Purpose:** Simple array-based menu wrapper for common dropdown patterns. Provides a simplified API compared to the compound Menu component.
+
+**When to Use:**
+
+- Quick dropdown menus from an array
+- Action menus with simple items
+- Settings dropdowns
+- Context menus
+
+**When NOT to Use:**
+
+- Complex nested menus (use Menu compound)
+- Menus requiring custom item rendering (use Menu compound)
+- Navigation dropdowns with icons (use Menu compound)
+
+**Key Props:**
+
+- `items`: MenuItem[] - Array of menu items { label, value, disabled?, separator? }
+- `onSelect`: (value: string) => void - Selection callback
+- `trigger`: Snippet - Trigger element content
+- `placement`: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' - Menu position
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { SimpleMenu } from '@equaltoai/greater-components/primitives';
+
+	const options = [
+		{ label: 'Edit', value: 'edit' },
+		{ label: 'Delete', value: 'delete', disabled: false },
+	];
+</script>
+
+<SimpleMenu items={options} onSelect={(value) => handleAction(value)}>
+	{#snippet trigger()}
+		<button>Options</button>
+	{/snippet}
+</SimpleMenu>
+```
+
+**Reference:** See [api-reference.md#simplemenu](./api-reference.md#simplemenu) for complete API
 
 #### TextField
 
@@ -1454,7 +1648,7 @@ Filename (kebab-case) → Export (PascalCase + Icon):
 - ❌ DOES NOT EXIST: DocumentIcon, PageIcon
 - **Recommendation:** Use FileTextIcon or BookIcon
 
-## Fediverse Package (@equaltoai/greater-components/fediverse)
+## Faces Package (Social) (@equaltoai/greater-components/faces/social)
 
 This package provides components specifically for building ActivityPub/Fediverse social media applications.
 
@@ -1505,7 +1699,7 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ```svelte
 <script>
-	import { Status } from '@equaltoai/greater-components/fediverse';
+	import { Status } from '@equaltoai/greater-components/faces/social';
 </script>
 
 <Status.Root {status} {handlers}>
@@ -1548,7 +1742,7 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ```svelte
 <script>
-	import { Timeline, Status } from '@equaltoai/greater-components/fediverse';
+	import { Timeline, Status } from '@equaltoai/greater-components/faces/social';
 </script>
 
 <Timeline.Root {items}>
@@ -1645,7 +1839,7 @@ This package provides components specifically for building ActivityPub/Fediverse
 - **Purpose:** Timeline with Lesser-specific features (cost, trust, moderation)
 - **Additional Features:** Trust filtering, cost tracking, AI insights
 
-### What Fediverse Package Does NOT Provide
+### What Faces Package Does NOT Provide
 
 ❌ NO Authentication backend (provides UI only, you implement auth logic)
 ❌ NO API client (you provide the adapter/fetch logic)
@@ -1928,13 +2122,14 @@ When a component doesn't exist, here's what to use instead:
 
 ### Total Components Across All Packages
 
-- **Primitives:** 21 components
-- **Chat:** 8 components + context utilities
+- **Primitives:** 43 components (including settings and theme tools)
+- **Chat:** 9 components + context utilities
 - **Headless:** 5 primitives
 - **Fediverse:** 50+ components (including all sub-components and compounds)
 - **Icons:** 300+ icons
 - **Adapters:** 3 adapters
 - **Utils:** ~15 utility functions
+- **Transitions:** 4 animation utilities (fadeUp, fadeDown, slideIn, scaleIn)
 - **Testing:** 3 test helpers
 
 ### Key Principle

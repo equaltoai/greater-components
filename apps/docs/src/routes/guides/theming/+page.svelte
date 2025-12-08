@@ -30,6 +30,7 @@
 
 		<CodeExample
 			code={`<script>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import { ThemeProvider } from '@equaltoai/greater-components-primitives';
 </script>
 
@@ -178,8 +179,10 @@ const customPalette = createPalette({
 
 		<CodeExample
 			code={`<script>
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import { ThemeWorkbench } from '@equaltoai/greater-components-primitives';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleSave(theme) {
     console.log('Generated theme:', theme);
     // Save to your theme configuration

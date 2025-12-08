@@ -24,6 +24,7 @@ export interface MenuContextValue {
     triggerId: string;
     placement: MenuPlacement;
     offset: number;
+    loop: boolean;
     position: MenuPosition;
     items: MenuItemConfig[];
     open: () => void;

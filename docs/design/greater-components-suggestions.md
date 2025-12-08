@@ -754,22 +754,22 @@ Or provide a `clamp()`-based fluid typography option:
 ### High Priority (Blocking for Clean Integration)
 1. **Theme Palette Presets** - Allow swapping color palettes without CSS overrides
 2. **Dark Mode Token Completeness** - Chat components and primitives should fully respect dark mode tokens
-3. **Badge/Status Component** - Very common pattern, currently requires 200+ lines custom code
-4. **Alert/Banner Component** - Error, warning, success states are universal
+3. ✅ **Badge/Status Component** - IMPLEMENTED in `primitives/Badge.svelte`
+4. ✅ **Alert/Banner Component** - IMPLEMENTED in `primitives/Alert.svelte`
 
 ### Medium Priority (Significant Code Reduction)
-5. **Spinner/Loading Component** - Small but repeated in many places
-6. **Dropdown Menu Component** - Complex to build correctly
-7. **Card Component** - Ubiquitous pattern needs elevation, hover, link support
-8. **Chat Message Actions** - Copy, retry, edit actions on messages (observed in live testing)
-9. **Chat Suggestions Placement** - Mid-conversation suggestions, not just empty state
+5. ✅ **Spinner/Loading Component** - IMPLEMENTED in `primitives/Spinner.svelte` and `primitives/LoadingState.svelte`
+6. ✅ **Dropdown Menu Component** - IMPLEMENTED in `primitives/SimpleMenu.svelte` (array-based API)
+7. ✅ **Card Component** - Already exists in `primitives/Card.svelte` with elevation, hover, and link support
+8. ✅ **Chat Message Actions** - IMPLEMENTED in `chat/ChatMessageAction.svelte`
+9. **Chat Suggestions Placement** - Mid-conversation suggestions, not just empty state (PENDING)
 
 ### Lower Priority (Nice to Have)
-10. **OAuth Provider Icons** - Could be a separate icon pack
-11. **SignInCard Component** - Very useful but domain-specific
-12. **Animation Utilities** - Reduces repetitive keyframe definitions
-13. **Responsive Heading Sizes** - Fluid typography or responsive size props
-14. **Smooth Theme Transitions** - Opt-in transition mixin for theme changes
+10. **OAuth Provider Icons** - Could be a separate icon pack (PENDING)
+11. **SignInCard Component** - Very useful but domain-specific (PENDING)
+12. ✅ **Animation Utilities** - IMPLEMENTED: `fadeUp`, `fadeDown`, `slideIn`, `scaleIn` transitions
+13. **Responsive Heading Sizes** - Fluid typography or responsive size props (PENDING)
+14. ✅ **Smooth Theme Transitions** - IMPLEMENTED: `smoothThemeTransition`, `createSmoothThemeToggle` utilities
 
 ---
 
