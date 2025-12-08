@@ -3,7 +3,7 @@
  *
  * Provides shared state for trust graph visualization.
  *
- * @module @equaltoai/greater-components-fediverse/Admin/TrustGraph/context
+ * @module @equaltoai/greater-components/faces/social/Admin/TrustGraph/context
  */
 
 import { getContext, setContext } from 'svelte';

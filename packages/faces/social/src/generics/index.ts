@@ -4,7 +4,7 @@
  * This module provides type-safe interfaces that work across
  * any ActivityPub implementation (Mastodon, Pleroma, Lesser, etc.)
  *
- * @module @equaltoai/greater-components-fediverse/generics
+ * @module @equaltoai/greater-components/faces/social/generics
  */
 
 /**

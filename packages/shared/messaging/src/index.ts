@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+ *   import * as Messages from '@equaltoai/greater-components/faces/social/Messages';
  *
  *   const handlers = {
  *     onFetchConversations: async () => {
