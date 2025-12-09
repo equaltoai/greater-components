@@ -96,6 +96,7 @@
 
 <svelte:head>
 	{#if shouldPreseedPreferences && typeof window === 'undefined'}
+		<!-- eslint-disable svelte/no-at-html-tags -->
 		{@html `<script>
 			(function () {
 				const themeValue = ${JSON.stringify(testTheme ?? null)};
@@ -127,7 +128,7 @@
 					document.documentElement.setAttribute('data-density', densityValue);
 				}
 			})();
-		<\/script>`}
+		<` + `/script>`}
 	{/if}
 </svelte:head>
 
