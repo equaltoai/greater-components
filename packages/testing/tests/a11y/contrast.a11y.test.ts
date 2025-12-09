@@ -62,6 +62,8 @@ test.describe('contrast', () => {
 			name: 'Force high contrast mode',
 		});
 
+		await forceHighContrast.uncheck();
+
 		await lightRadio.check();
 		await expect(previewStatus).toContainText('light');
 

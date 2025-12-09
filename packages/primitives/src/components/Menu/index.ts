@@ -30,4 +30,4 @@ export { default as Item } from './Item.svelte';
 export { default as Separator } from './Separator.svelte';
 
 // Re-export types
-export type { MenuPlacement, MenuItemConfig, MenuContextValue } from './context';
+export type { MenuPlacement, MenuItemConfig, MenuContextValue } from './context.svelte';

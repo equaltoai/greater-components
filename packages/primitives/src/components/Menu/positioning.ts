@@ -4,7 +4,7 @@
  * @module @equaltoai/greater-components/primitives/Menu/positioning
  */
 
-import type { MenuPlacement, MenuPosition } from './context';
+import type { MenuPlacement, MenuPosition } from './context.svelte';
 
 export interface PositionConfig {
 	triggerRect: DOMRect;

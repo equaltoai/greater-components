@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tick } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { getMenuContext } from './context';
+	import { getMenuContext } from './context.svelte';
 
 	interface Props {
 		/** Custom CSS class */
@@ -70,46 +70,83 @@
 		}
 	});
 
+	// Document-level Escape key handler - ensures Escape works from any focused element
+	$effect(() => {
+		if (!ctx.isOpen) return;
+
+		function handleEscapeKey(event: KeyboardEvent) {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				event.stopPropagation();
+				ctx.close();
+			}
+		}
+
+		document.addEventListener('keydown', handleEscapeKey, true); // Capture phase
+
+		return () => {
+			document.removeEventListener('keydown', handleEscapeKey, true);
+		};
+	});
+
 	function handleKeyDown(event: KeyboardEvent) {
 		const enabledItems = ctx.items.filter((item) => !item.disabled);
 		const currentEnabledIndex = enabledItems.findIndex((_, i) => {
-			const actualIndex = ctx.items.indexOf(enabledItems[i]);
+			const actualIndex = ctx.items.indexOf(enabledItems[i]!);
 			return actualIndex === ctx.activeIndex;
 		});
+
+		if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key) && enabledItems.length === 0) {
+			return;
+		}
 
 		switch (event.key) {
 			case 'ArrowDown': {
 				event.preventDefault();
-				const nextIndex =
+				const nextItem =
 					currentEnabledIndex < enabledItems.length - 1
-						? ctx.items.indexOf(enabledItems[currentEnabledIndex + 1])
-						: ctx.items.indexOf(enabledItems[0]);
-				ctx.setActiveIndex(nextIndex);
-				focusItemAtIndex(nextIndex);
+						? enabledItems[currentEnabledIndex + 1]
+						: enabledItems[0];
+
+				if (nextItem) {
+					const nextIndex = ctx.items.indexOf(nextItem);
+					ctx.setActiveIndex(nextIndex);
+					focusItemAtIndex(nextIndex);
+				}
 				break;
 			}
 			case 'ArrowUp': {
 				event.preventDefault();
-				const prevIndex =
+				const prevItem =
 					currentEnabledIndex > 0
-						? ctx.items.indexOf(enabledItems[currentEnabledIndex - 1])
-						: ctx.items.indexOf(enabledItems[enabledItems.length - 1]);
-				ctx.setActiveIndex(prevIndex);
-				focusItemAtIndex(prevIndex);
+						? enabledItems[currentEnabledIndex - 1]
+						: enabledItems[enabledItems.length - 1];
+
+				if (prevItem) {
+					const prevIndex = ctx.items.indexOf(prevItem);
+					ctx.setActiveIndex(prevIndex);
+					focusItemAtIndex(prevIndex);
+				}
 				break;
 			}
 			case 'Home': {
 				event.preventDefault();
-				const firstIndex = ctx.items.indexOf(enabledItems[0]);
-				ctx.setActiveIndex(firstIndex);
-				focusItemAtIndex(firstIndex);
+				const firstItem = enabledItems[0];
+				if (firstItem) {
+					const firstIndex = ctx.items.indexOf(firstItem);
+					ctx.setActiveIndex(firstIndex);
+					focusItemAtIndex(firstIndex);
+				}
 				break;
 			}
 			case 'End': {
 				event.preventDefault();
-				const lastIndex = ctx.items.indexOf(enabledItems[enabledItems.length - 1]);
-				ctx.setActiveIndex(lastIndex);
-				focusItemAtIndex(lastIndex);
+				const lastItem = enabledItems[enabledItems.length - 1];
+				if (lastItem) {
+					const lastIndex = ctx.items.indexOf(lastItem);
+					ctx.setActiveIndex(lastIndex);
+					focusItemAtIndex(lastIndex);
+				}
 				break;
 			}
 			case 'Escape':

@@ -11,14 +11,14 @@
  */
 import type { TransitionConfig } from 'svelte/transition';
 export interface FadeUpParams {
-	/** Animation duration in milliseconds */
-	duration?: number;
-	/** Animation delay in milliseconds */
-	delay?: number;
-	/** CSS easing function */
-	easing?: (t: number) => number;
-	/** Distance to translate in pixels or CSS units */
-	y?: number | string;
+    /** Animation duration in milliseconds */
+    duration?: number;
+    /** Animation delay in milliseconds */
+    delay?: number;
+    /** CSS easing function */
+    easing?: (t: number) => number;
+    /** Distance to translate in pixels or CSS units */
+    y?: number | string;
 }
 /**
  * Fade up transition - element fades in while moving upward

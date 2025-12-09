@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { getMenuContext } from './context';
+	import { getMenuContext } from './context.svelte';
 
 	interface Props {
 		/** Custom CSS class */
@@ -67,6 +67,7 @@
 			event.preventDefault();
 			ctx.selectItem(itemId);
 		}
+		// Let other keys (ArrowDown, ArrowUp, Escape, etc.) bubble to Content's keydown handler
 	}
 
 	function handleMouseEnter() {

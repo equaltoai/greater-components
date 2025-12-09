@@ -41,6 +41,7 @@
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
+    "test:a11y": "node scripts/run-a11y-matrix.js",
     "test:demo": "playwright test --config=playwright.demo.config.ts",
     "test:demo:csr": "playwright test --config=playwright.demo.csr.config.ts",
     "test:e2e": "pnpm run test:demo && pnpm run test:demo:csr",

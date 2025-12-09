@@ -473,13 +473,13 @@ export const themes = {
         },
         "success": {
           "default": {
-            "value": "{color.success.600}"
-          },
-          "hover": {
             "value": "{color.success.700}"
           },
-          "active": {
+          "hover": {
             "value": "{color.success.800}"
+          },
+          "active": {
+            "value": "{color.success.900}"
           }
         },
         "warning": {

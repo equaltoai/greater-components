@@ -276,7 +276,10 @@
 						{/if}
 					</span>
 				{:else if fallbackMode === 'initials' && computedInitials}
-					<span class="gr-avatar__initials" style="background-color: {initialsBackgroundColor}">
+					<span
+						class="gr-avatar__initials"
+						style="background-color: {initialsBackgroundColor}; color: white;"
+					>
 						{computedInitials}
 					</span>
 				{:else}
