@@ -16,14 +16,14 @@
  * ```
  */
 export interface SmoothThemeTransitionOptions {
-	/** Duration of the transition in milliseconds */
-	duration?: number;
-	/** CSS easing function */
-	easing?: string;
-	/** Properties to transition (defaults to color-related properties) */
-	properties?: string[];
-	/** Target element to apply transition class (defaults to document.documentElement) */
-	target?: HTMLElement;
+    /** Duration of the transition in milliseconds */
+    duration?: number;
+    /** CSS easing function */
+    easing?: string;
+    /** Properties to transition (defaults to color-related properties) */
+    properties?: string[];
+    /** Target element to apply transition class (defaults to document.documentElement) */
+    target?: HTMLElement;
 }
 /**
  * Executes a callback (typically a theme change) with smooth CSS transitions
@@ -33,10 +33,7 @@ export interface SmoothThemeTransitionOptions {
  * @param options - Configuration options for the transition
  * @returns Promise that resolves when the transition completes
  */
-export declare function smoothThemeTransition(
-	callback: () => void | Promise<void>,
-	options?: SmoothThemeTransitionOptions
-): Promise<void>;
+export declare function smoothThemeTransition(callback: () => void | Promise<void>, options?: SmoothThemeTransitionOptions): Promise<void>;
 /**
  * Creates a theme toggle function with smooth transitions built-in
  *
@@ -45,11 +42,6 @@ export declare function smoothThemeTransition(
  * @param options - Transition options
  * @returns A function that toggles between themes smoothly
  */
-export declare function createSmoothThemeToggle(
-	getTheme: () => string,
-	setTheme: (theme: string) => void,
-	themes?: string[],
-	options?: SmoothThemeTransitionOptions
-): () => Promise<void>;
+export declare function createSmoothThemeToggle(getTheme: () => string, setTheme: (theme: string) => void, themes?: string[], options?: SmoothThemeTransitionOptions): () => Promise<void>;
 export default smoothThemeTransition;
 //# sourceMappingURL=smoothThemeTransition.d.ts.map
