@@ -74,6 +74,6 @@
 	.cw-hint {
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-sm);
-		color: var(--gr-semantic-foreground-tertiary);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 </style>

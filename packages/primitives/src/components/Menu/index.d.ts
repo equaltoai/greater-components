@@ -27,5 +27,5 @@ export { default as Content } from './Content.svelte';
 export { default as Header } from './Header.svelte';
 export { default as Item } from './Item.svelte';
 export { default as Separator } from './Separator.svelte';
-export type { MenuPlacement, MenuItemConfig, MenuContextValue } from './context';
+export type { MenuPlacement, MenuItemConfig, MenuContextValue } from './context.svelte';
 //# sourceMappingURL=index.d.ts.map

@@ -62,6 +62,12 @@
 	line-height: 1;
 	min-width: 1.5em;
 	text-align: left;
+	color: var(--gr-semantic-foreground-primary);
+	font-weight: var(--gr-typography-fontWeight-medium);
+}
+
+.gr-action-bar :global(.gr-action-bar__button--active) .gr-action-bar__count {
+	color: currentColor;
 }
 
 /* Extensions slot */
@@ -5961,7 +5967,7 @@ h1 {
 .spoiler-toggle {
 	padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
 	background: var(--color-primary, var(--gr-semantic-action-primary-default, #2563eb));
-	color: var(--color-on-primary, var(--gr-semantic-background-primary, #ffffff));
+	color: var(--color-on-primary, var(--gr-color-base-white, #ffffff));
 	border: none;
 	border-radius: var(--radius-sm, 4px);
 	font-size: var(--font-size-sm, 0.875rem);
@@ -13182,12 +13188,19 @@ h1 {
 }
 
 .gr-profile-header__field-value :global(a) {
-	color: var(--gr-color-primary-600);
+	color: var(--gr-color-primary-600, #2563eb);
 	text-decoration: none;
+	font-weight: var(--gr-typography-fontWeight-medium);
 }
 
 .gr-profile-header__field-value :global(a:hover) {
 	text-decoration: underline;
+}
+
+:global([data-theme='dark']) .gr-profile-header__field-value :global(a),
+:global([data-theme='highContrast']) .gr-profile-header__field-value :global(a),
+:global([data-theme='high-contrast']) .gr-profile-header__field-value :global(a) {
+	color: var(--gr-color-primary-300, #93c5fd);
 }
 
 .gr-profile-header__field-verified {
@@ -13782,7 +13795,7 @@ h1 {
 	background: transparent;
 	font-size: 0.9375rem;
 	font-weight: 600;
-	color: var(--text-secondary, #536471);
+	color: var(--gr-semantic-foreground-secondary, #536471);
 	white-space: nowrap;
 	cursor: pointer;
 	transition: all 0.2s;
@@ -13790,13 +13803,13 @@ h1 {
 
 .search-filters__tab:hover {
 	background: var(--bg-hover, #eff3f4);
-	color: var(--text-primary, #0f1419);
+	color: var(--gr-semantic-foreground-primary, #0f1419);
 }
 
 .search-filters__tab--active {
 	background: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 	border-color: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
-	color: var(--gr-semantic-background-primary, #ffffff);
+	color: var(--gr-color-base-white, #ffffff);
 }
 
 .search-filters__count {

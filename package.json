@@ -31,7 +31,7 @@
     "test:coverage:report": "node scripts/aggregate-coverage.js",
     "test:e2e": "pnpm -r test:e2e",
     "test:unit": "pnpm -r test:unit",
-    "test:a11y": "pnpm -r test:a11y",
+    "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
     "test:visual": "pnpm -r test:visual",
     "typecheck": "pnpm run sveltekit:sync && tsc --noEmit",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
