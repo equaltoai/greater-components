@@ -1,24 +1,24 @@
 export interface SanitizeOptions {
-    /**
-     * Allow specific HTML tags
-     */
-    allowedTags?: string[];
-    /**
-     * Allow specific attributes
-     */
-    allowedAttributes?: string[];
-    /**
-     * Allow data URIs in src attributes
-     */
-    allowDataUri?: boolean;
-    /**
-     * Add rel="noopener noreferrer" to external links
-     */
-    addRelToExternalLinks?: boolean;
-    /**
-     * Open external links in new tab
-     */
-    externalLinksInNewTab?: boolean;
+	/**
+	 * Allow specific HTML tags
+	 */
+	allowedTags?: string[];
+	/**
+	 * Allow specific attributes
+	 */
+	allowedAttributes?: string[];
+	/**
+	 * Allow data URIs in src attributes
+	 */
+	allowDataUri?: boolean;
+	/**
+	 * Add rel="noopener noreferrer" to external links
+	 */
+	addRelToExternalLinks?: boolean;
+	/**
+	 * Open external links in new tab
+	 */
+	externalLinksInNewTab?: boolean;
 }
 /**
  * Sanitize HTML content using rehype-sanitize with an allow-list approach.

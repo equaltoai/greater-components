@@ -1,10 +1,10 @@
 /**
  * Brand Icons - OAuth Providers and Social Media
- * 
+ *
  * IMPORTANT: These are brand icons and should be used according to each
  * company's brand guidelines. See individual icon files for specific
  * licensing and usage information.
- * 
+ *
  * Brand Guidelines:
  * - Google: https://developers.google.com/identity/branding-guidelines
  * - Apple: https://developer.apple.com/design/human-interface-guidelines/sign-in-with-apple
@@ -34,19 +34,19 @@ export { default as YoutubeIcon } from '../youtube.svelte';
 export { default as TwitchIcon } from '../twitch.svelte';
 
 export const brandIconList = [
-  "google",
-  "apple",
-  "microsoft",
-  "discord",
-  "github",
-  "gitlab",
-  "slack",
-  "linkedin",
-  "twitter",
-  "facebook",
-  "instagram",
-  "youtube",
-  "twitch"
+	'google',
+	'apple',
+	'microsoft',
+	'discord',
+	'github',
+	'gitlab',
+	'slack',
+	'linkedin',
+	'twitter',
+	'facebook',
+	'instagram',
+	'youtube',
+	'twitch',
 ] as const;
 
-export type BrandIconName = typeof brandIconList[number];
+export type BrandIconName = (typeof brandIconList)[number];
