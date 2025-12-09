@@ -19,8 +19,8 @@ if (!fs.existsSync(distPath)) {
 
 const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
 const themes = JSON.parse(fs.readFileSync(themesPath, 'utf8'));
-const palettes = fs.existsSync(palettesPath) 
-	? JSON.parse(fs.readFileSync(palettesPath, 'utf8')) 
+const palettes = fs.existsSync(palettesPath)
+	? JSON.parse(fs.readFileSync(palettesPath, 'utf8'))
 	: {};
 
 // Helper to convert nested object to flat CSS variable format
@@ -213,23 +213,23 @@ if (!fs.existsSync(palettesDir)) {
 for (const [paletteName, paletteData] of Object.entries(palettes)) {
 	let paletteCSS = `/* ${paletteData.description || paletteName + ' palette'} */\n`;
 	paletteCSS += ':root {\n';
-	
+
 	// Generate gray scale variables
 	if (paletteData.gray) {
 		for (const [shade, colorData] of Object.entries(paletteData.gray)) {
 			paletteCSS += `  --gr-color-gray-${shade}: ${colorData.value};\n`;
 		}
 	}
-	
+
 	// Generate primary scale variables if defined
 	if (paletteData.primary) {
 		for (const [shade, colorData] of Object.entries(paletteData.primary)) {
 			paletteCSS += `  --gr-color-primary-${shade}: ${colorData.value};\n`;
 		}
 	}
-	
+
 	paletteCSS += '}\n';
-	
+
 	fs.writeFileSync(path.join(palettesDir, `${paletteName}.css`), paletteCSS);
 }
 

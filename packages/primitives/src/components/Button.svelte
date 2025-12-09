@@ -244,8 +244,6 @@ Button component - Accessible interactive element with loading states, variants,
 
 	<!-- Screen reader loading announcement -->
 	{#if loading}
-		<span class="gr-button__sr-loading" role="status" aria-live="polite">
-			Loading
-		</span>
+		<span class="gr-button__sr-loading" role="status" aria-live="polite"> Loading </span>
 	{/if}
 </button>

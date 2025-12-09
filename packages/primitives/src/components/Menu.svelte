@@ -25,12 +25,12 @@
 
 <script lang="ts">
 	import { tick, onMount } from 'svelte';
-	
+
 	onMount(() => {
 		console.warn(
 			'[Greater Components] Menu.svelte is deprecated. ' +
-			'Please migrate to the compound component pattern: Menu.Root, Menu.Trigger, Menu.Content, Menu.Item. ' +
-			'See documentation for migration guide.'
+				'Please migrate to the compound component pattern: Menu.Root, Menu.Trigger, Menu.Content, Menu.Item. ' +
+				'See documentation for migration guide.'
 		);
 	});
 	import type { HTMLAttributes } from 'svelte/elements';

@@ -182,17 +182,11 @@ Heading component - Semantic heading with consistent typography.
 	});
 
 	// Check if responsive sizing is enabled
-	const hasResponsiveSize = $derived(
-		responsiveSize && Object.keys(responsiveSize).length > 0
-	);
+	const hasResponsiveSize = $derived(responsiveSize && Object.keys(responsiveSize).length > 0);
 
 	// Compute heading classes
 	const headingClass = $derived(() => {
-		const classes = [
-			'gr-heading',
-			`gr-heading--weight-${weight}`,
-			`gr-heading--align-${align}`,
-		];
+		const classes = ['gr-heading', `gr-heading--weight-${weight}`, `gr-heading--align-${align}`];
 
 		// Add fluid class if enabled
 		if (fluid) {

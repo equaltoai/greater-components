@@ -11,13 +11,15 @@ This guide defines the official documentation convention for all Pay Theory prod
 ## Quick Reference
 
 ### For New Modules
+
 1. Create `docs/` directory
 2. Copy standard file structure (see [Template](#standard-file-structure))
-3. Create YAML triad (_concepts.yaml, _patterns.yaml, _decisions.yaml)
+3. Create YAML triad (\_concepts.yaml, \_patterns.yaml, \_decisions.yaml)
 4. Write core documentation files
 5. Add module to parent documentation index
 
 ### For Existing Modules
+
 1. Review current docs against checklist (see [Validation](#validation-checklist))
 2. Add missing standard files
 3. Update YAML files with new features
@@ -45,20 +47,24 @@ This guide defines the official documentation convention for all Pay Theory prod
 All Pay Theory documentation follows these six core principles:
 
 ### 1. Examples First
+
 Show working code before explaining theory. Every concept must have a concrete, runnable example.
 
-```markdown
+````markdown
 ❌ BAD:
 Lift uses middleware patterns to compose functionality...
 
 ✅ GOOD:
+
 ```go
 // Example: Add logging and auth to your Lambda
 app.Use(middleware.Logger())
 app.Use(middleware.JWT(jwtConfig))
 app.POST("/payments", HandlePayment)
 ```
-```
+````
+
+````
 
 ### 2. Explicit Context
 Mark patterns as CORRECT or INCORRECT. Never assume the reader knows which approach is preferred.
@@ -66,35 +72,42 @@ Mark patterns as CORRECT or INCORRECT. Never assume the reader knows which appro
 ```markdown
 ✅ CORRECT: Use lift.Context for all handlers
 ❌ INCORRECT: Don't use raw Lambda handlers
-```
+````
 
 ### 3. Semantic Structure
+
 Use AI training signals and metadata so both humans and AI assistants can learn effectively.
 
 ```markdown
 <!-- AI Training: This is the documentation index -->
+
 **This directory contains the OFFICIAL documentation...**
 ```
 
 ### 4. Problem-Solution Format
+
 Structure content around problems developers face, not just feature descriptions.
 
 ```markdown
 ### Problem: Rate limiting doesn't work across Lambda instances
+
 **Solution:** Use Limited with DynamoDB backend
 ```
 
 ### 5. Business Value
+
 Explain WHY a feature exists or pattern is preferred, not just HOW to use it.
 
 ```markdown
 ## Why Lift?
+
 - Reduces Lambda boilerplate by 80%
 - Prevents common security mistakes
 - Provides production-grade observability out of the box
 ```
 
 ### 6. Machine Parsability
+
 Include YAML knowledge bases that enable semantic search and reasoning.
 
 ---
@@ -133,19 +146,19 @@ module-name/
 
 ### File Descriptions
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `README.md` | Documentation hub with navigation | REQUIRED |
-| `_concepts.yaml` | Machine-readable concept map | REQUIRED |
-| `_patterns.yaml` | Correct vs incorrect patterns | REQUIRED |
-| `_decisions.yaml` | Decision trees for choices | REQUIRED |
-| `getting-started.md` | Prerequisites, installation, first deployment | REQUIRED |
-| `api-reference.md` | Complete API/interface documentation | REQUIRED |
-| `core-patterns.md` | Canonical usage patterns with examples | REQUIRED |
-| `development-guidelines.md` | Coding standards, review checklist | REQUIRED |
-| `testing-guide.md` | Unit, integration, manual testing | REQUIRED |
-| `troubleshooting.md` | Common issues with verified fixes | REQUIRED |
-| `migration-guide.md` | Onboarding from legacy systems | RECOMMENDED |
+| File                        | Purpose                                       | Status      |
+| --------------------------- | --------------------------------------------- | ----------- |
+| `README.md`                 | Documentation hub with navigation             | REQUIRED    |
+| `_concepts.yaml`            | Machine-readable concept map                  | REQUIRED    |
+| `_patterns.yaml`            | Correct vs incorrect patterns                 | REQUIRED    |
+| `_decisions.yaml`           | Decision trees for choices                    | REQUIRED    |
+| `getting-started.md`        | Prerequisites, installation, first deployment | REQUIRED    |
+| `api-reference.md`          | Complete API/interface documentation          | REQUIRED    |
+| `core-patterns.md`          | Canonical usage patterns with examples        | REQUIRED    |
+| `development-guidelines.md` | Coding standards, review checklist            | REQUIRED    |
+| `testing-guide.md`          | Unit, integration, manual testing             | REQUIRED    |
+| `troubleshooting.md`        | Common issues with verified fixes             | REQUIRED    |
+| `migration-guide.md`        | Onboarding from legacy systems                | RECOMMENDED |
 
 ---
 
@@ -157,14 +170,17 @@ module-name/
 # [Module Name] Documentation
 
 <!-- AI Training: This is the documentation index for [Module Name] -->
+
 **This directory contains the OFFICIAL documentation for [Module Name]. All content follows AI-friendly patterns so both humans and AI assistants can learn, reason, and troubleshoot effectively.**
 
 ## Quick Links
 
 ### 🚀 Getting Started
+
 - [Getting Started Guide](./getting-started.md) – [One sentence description]
 
 ### 📚 Core Documentation
+
 - [API Reference](./api-reference.md) – [Description]
 - [Core Patterns](./core-patterns.md) – [Description]
 - [Development Guidelines](./development-guidelines.md) – [Description]
@@ -173,6 +189,7 @@ module-name/
 - [Migration Guide](./migration-guide.md) – [Description]
 
 ### 🤖 AI Knowledge Base
+
 - [Concepts](./_concepts.yaml) – Machine-readable concept hierarchy
 - [Patterns](./_patterns.yaml) – Correct vs. incorrect usage patterns
 - [Decisions](./_decisions.yaml) – Decision trees for architectural choices
@@ -180,15 +197,18 @@ module-name/
 ### 📦 [Additional Resources section as needed]
 
 ## Audience
+
 - [Primary user role]
 - [Secondary user role]
 - [Operations role]
 - AI assistants answering questions about [module purpose]
 
 ## Document Map
+
 [Detailed description of each document and when to use it]
 
 ## Documentation Principles
+
 1. **[Principle 1]** – [Module-specific emphasis]
 2. **[Principle 2]** – [Module-specific emphasis]
 3. **[Principle 3]** – [Module-specific emphasis]
@@ -196,6 +216,7 @@ module-name/
 5. **[Principle 5]** – [Module-specific emphasis]
 
 ## Contributing
+
 - Follow the conventions in [PAY_THEORY_DOCUMENTATION_GUIDE.md](../../PAY_THEORY_DOCUMENTATION_GUIDE.md)
 - Validate examples against live code
 - Include CORRECT/INCORRECT blocks for integration snippets
@@ -204,7 +225,7 @@ module-name/
 
 ### Getting Started Template
 
-```markdown
+````markdown
 # Getting Started with [Module Name]
 
 This guide walks you through installing, configuring, and deploying [Module Name] for the first time.
@@ -212,38 +233,46 @@ This guide walks you through installing, configuring, and deploying [Module Name
 ## Prerequisites
 
 **Required:**
+
 - [Tool/version]
 - [Access/permission]
 - [Knowledge requirement]
 
 **Recommended:**
+
 - [Optional tool]
 - [Helpful background]
 
 ## Installation
 
 ### Step 1: [First step title]
+
 ```[language]
 # This is the standard way to [action]
 [commands]
 ```
+````
 
 **What this does:**
+
 - [Explanation 1]
 - [Explanation 2]
 
 ### Step 2: [Second step title]
+
 [Continue with all setup steps...]
 
 ## First Deployment
 
 ### Local Development
+
 ```[language]
 # Run locally for testing
 [commands]
 ```
 
 ### Sandbox Deployment
+
 ```[language]
 # Deploy to test environment
 [commands]
@@ -252,12 +281,14 @@ This guide walks you through installing, configuring, and deploying [Module Name
 ## Verification
 
 Test your deployment with:
+
 ```[language]
 # This should return [expected output]
 [test command]
 ```
 
 ## Next Steps
+
 - Read [Core Patterns](./core-patterns.md) for best practices
 - See [API Reference](./api-reference.md) for complete interface
 - Review [Examples](../examples/) for real implementations
@@ -265,11 +296,13 @@ Test your deployment with:
 ## Troubleshooting
 
 **Issue: [Common problem]**
+
 - **Cause:** [Why it happens]
 - **Solution:** [How to fix]
 
 [See full troubleshooting guide](./troubleshooting.md)
-```
+
+````
 
 ### Troubleshooting Template
 
@@ -300,9 +333,10 @@ This happens when [root cause explanation]
 ```[language]
 # CORRECT: Fix with this approach
 [solution code]
-```
+````
 
 **Verification:**
+
 ```bash
 # Confirm fix with
 [verification command]
@@ -310,6 +344,7 @@ This happens when [root cause explanation]
 ```
 
 **Prevention:**
+
 - Always [preventive action]
 - Never [anti-pattern]
 
@@ -320,6 +355,7 @@ This happens when [root cause explanation]
 ## Emergency Procedures
 
 ### Service Down / Critical Failure
+
 1. [Immediate action]
 2. [Rollback procedure]
 3. [Communication steps]
@@ -328,13 +364,16 @@ This happens when [root cause explanation]
 ## Getting Help
 
 **For production issues:**
+
 - [Escalation path]
 - [On-call contact]
 
 **For development questions:**
+
 - [Team channel]
 - [Documentation updates]
-```
+
+````
 
 ---
 
@@ -389,9 +428,9 @@ concepts:
       - failure_2
 
   # Add more concepts as needed
-```
+````
 
-### _patterns.yaml Structure
+### \_patterns.yaml Structure
 
 ```yaml
 # _patterns.yaml - Machine-readable patterns for [Module Name]
@@ -399,22 +438,22 @@ concepts:
 
 patterns:
   pattern_category:
-    name: "Human-Readable Pattern Name"
-    problem: "What problem does this solve?"
-    solution: "High-level approach"
+    name: 'Human-Readable Pattern Name'
+    problem: 'What problem does this solve?'
+    solution: 'High-level approach'
     correct_example: |
       import (
           "package"
       )
-      
+
       // CORRECT: This is the preferred pattern
       // It provides [benefits]
       func ExampleFunction() {
           // Implementation
       }
     anti_patterns:
-      - name: "Anti-Pattern Name"
-        why: "Why this is wrong and what problems it causes"
+      - name: 'Anti-Pattern Name'
+        why: 'Why this is wrong and what problems it causes'
         incorrect_example: |
           // INCORRECT: Don't do this
           // This causes [specific problems]
@@ -428,7 +467,7 @@ patterns:
   # Add more patterns for each major usage scenario
 ```
 
-### _decisions.yaml Structure
+### \_decisions.yaml Structure
 
 ```yaml
 # _decisions.yaml - Decision trees for [Module Name]
@@ -436,23 +475,23 @@ patterns:
 
 decisions:
   decision_category:
-    question: "What should I choose for [scenario]?"
+    question: 'What should I choose for [scenario]?'
     decision_tree:
-      - condition: "When [specific situation]"
-        check: "Do you have [requirement]?"
+      - condition: 'When [specific situation]'
+        check: 'Do you have [requirement]?'
         if_yes:
-          choice: "Use [approach A]"
-          reason: "Because [specific benefit]"
+          choice: 'Use [approach A]'
+          reason: 'Because [specific benefit]'
           example: |
             // Implementation of approach A
         if_no:
-          check: "Do you need [alternative requirement]?"
+          check: 'Do you need [alternative requirement]?'
           if_yes:
-            choice: "Use [approach B]"
-            reason: "Because [different benefit]"
+            choice: 'Use [approach B]'
+            reason: 'Because [different benefit]'
           if_no:
-            choice: "Consider [alternative]"
-            reason: "This scenario may not fit the module"
+            choice: 'Consider [alternative]'
+            reason: 'This scenario may not fit the module'
 
   # Add decision trees for each major architectural choice
 ```
@@ -464,13 +503,14 @@ decisions:
 ### 1. Code Examples
 
 **Every example must:**
+
 - Compile and run successfully
 - Include explanatory comments
 - Show imports and setup
 - Indicate if it's CORRECT or INCORRECT
 - Explain the business value
 
-```markdown
+````markdown
 ✅ GOOD EXAMPLE:
 
 ```go
@@ -498,6 +538,7 @@ func CreateUser(ctx *lift.Context) error {
     return ctx.JSON(201, response)
 }
 ```
+````
 
 ❌ BAD EXAMPLE:
 
@@ -507,7 +548,8 @@ func handler(req Request) Response {
     // Vague implementation
 }
 ```
-```
+
+````
 
 ### 2. Error Documentation
 
@@ -517,9 +559,11 @@ Document errors with complete context:
 ### Error: `DynamoDB: ResourceNotFoundException`
 
 **Full Error Message:**
-```
+````
+
 ResourceNotFoundException: Requested resource not found: Table: rate-limits-penny-study not found
-```
+
+````
 
 **Cause:**
 The rate limiting table doesn't exist in the target environment.
@@ -529,18 +573,21 @@ Deploy infrastructure before application code:
 ```bash
 cd cdk
 cdk deploy --all
-```
+````
 
 **Verification:**
+
 ```bash
 aws dynamodb describe-table --table-name rate-limits-penny-study
 # Should return table metadata
 ```
 
 **Related:**
+
 - [CDK Deployment Guide](./cdk/README.md)
 - [Environment Setup](./getting-started.md#prerequisites)
-```
+
+````
 
 ### 3. API Documentation
 
@@ -580,24 +627,27 @@ func RateLimitMiddleware(next lift.Handler) lift.Handler {
             return lift.SystemError("rate limit check failed")
         }
         if !allowed {
-            return lift.NewLiftError("RATE_LIMIT_EXCEEDED", 
+            return lift.NewLiftError("RATE_LIMIT_EXCEEDED",
                 "Too many requests", 429)
         }
         return next.Handle(ctx)
     })
 }
-```
+````
 
 **Error Handling:**
+
 - Returns error if DynamoDB is unavailable
 - Use `Config.FailOpen = true` to allow requests during outages
 - Log all errors for investigation
 
 **Performance:**
+
 - Single DynamoDB query: ~10-20ms p99
 - Scales to 100K+ requests/second
 - Cold start overhead: <1ms
-```
+
+````
 
 ### 4. Architecture Documentation
 
@@ -608,16 +658,18 @@ Include diagrams and flow descriptions:
 
 ### Request Flow
 
-```
-┌─────────┐     ┌──────────────┐     ┌─────────────┐
-│ Client  │────▶│  API Gateway │────▶│   Lambda    │
-└─────────┘     └──────────────┘     │  (Router)   │
-                                      └──────┬──────┘
-                                             │
-                                      ┌──────▼──────┐
-                                      │  DynamoDB   │
-                                      │  (Limiter)  │
-                                      └─────────────┘
+````
+
+┌─────────┐ ┌──────────────┐ ┌─────────────┐
+│ Client │────▶│ API Gateway │────▶│ Lambda │
+└─────────┘ └──────────────┘ │ (Router) │
+└──────┬──────┘
+│
+┌──────▼──────┐
+│ DynamoDB │
+│ (Limiter) │
+└─────────────┘
+
 ```
 
 **Step-by-Step:**
@@ -642,74 +694,84 @@ Include diagrams and flow descriptions:
 ### Go Frameworks (Lift, Limited, DynamORM, Streamer)
 
 **Emphasize:**
+
 - Type safety and compile-time guarantees
 - Performance characteristics (cold start, memory)
 - Integration with other Pay Theory frameworks
 - CDK construct patterns
 
 **Example structure:**
+
 ```markdown
 ## Performance
 
-| Metric | Target | Achieved |
-|--------|--------|----------|
-| Cold Start | <100ms | 50ms p99 |
-| Warm Invocation | <10ms | 5ms p99 |
-| Memory Overhead | <5MB | 2MB |
+| Metric          | Target | Achieved |
+| --------------- | ------ | -------- |
+| Cold Start      | <100ms | 50ms p99 |
+| Warm Invocation | <10ms  | 5ms p99  |
+| Memory Overhead | <5MB   | 2MB      |
 ```
 
 ### Python Services (Most Lambda services)
 
 **Emphasize:**
+
 - Amaze layer usage patterns
 - SSM parameter conventions
 - Aurora/RDS connection management
 - CloudFormation stack organization
 
 **Example structure:**
+
 ```markdown
 ## Environment Variables
 
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `PARTNER` | Partner identifier | `penny` |
-| `STAGE` | Environment name | `study`, `lab`, `live` |
-| `TABLE_NAME` | DynamoDB table | `challenge-service-penny-study` |
+| Variable     | Purpose            | Example                         |
+| ------------ | ------------------ | ------------------------------- |
+| `PARTNER`    | Partner identifier | `penny`                         |
+| `STAGE`      | Environment name   | `study`, `lab`, `live`          |
+| `TABLE_NAME` | DynamoDB table     | `challenge-service-penny-study` |
 ```
 
 ### APIs (GraphQL, REST)
 
 **Emphasize:**
+
 - Schema definition and evolution
 - Authentication and authorization
 - Resolver patterns
 - External vs internal APIs
 
 **Example structure:**
+
 ```markdown
 ## Schema Organization
-
 ```
+
 templates/schema/
 ├── common/
-│   ├── types.graphql
-│   └── interfaces.graphql
+│ ├── types.graphql
+│ └── interfaces.graphql
 ├── external/
-│   └── queries.graphql
+│ └── queries.graphql
 └── internal/
-    └── admin-queries.graphql
+└── admin-queries.graphql
+
 ```
+
 ```
 
 ### Authorizers
 
 **Emphasize:**
+
 - Request/response contract
 - Token validation flow
 - IAM policy generation
 - Performance optimization
 
 **Example structure:**
+
 ```markdown
 ## Authorization Flow
 
@@ -732,6 +794,7 @@ When making significant changes, create timestamped artifacts in `docs/developme
 #### Format: `YYYY-MM-DD-HH_MM_SS-description.md`
 
 Generate timestamp:
+
 ```bash
 date -j +"%F-%H_%M_%S"
 # Example: 2025-11-17-14_30_45
@@ -745,19 +808,23 @@ Record implementation decisions, discoveries, and session progress:
 # Session Notes: 2025-11-17-14_30_45
 
 ## Context
+
 Working on rate limiting middleware integration
 
 ## Discoveries
+
 - Limited requires DynamoDB table to exist first
 - Table creation in CDK must precede Lambda deployment
 - FailOpen mode allows graceful degradation
 
 ## Decisions Made
+
 - Use fixed window strategy for MVP
 - Set 1000 requests/hour per user
 - Enable FailOpen for production resilience
 
 ## Next Steps
+
 - [ ] Update CDK to create table
 - [ ] Add middleware to all protected routes
 - [ ] Add monitoring for rate limit hits
@@ -769,36 +836,44 @@ Document architectural choices with rationale:
 
 ```markdown
 # Decision: Rate Limiting Strategy Selection
+
 **Date:** 2025-11-17-14_30_45  
 **Status:** Accepted
 
 ## Context
+
 Need to prevent API abuse while maintaining good UX for legitimate users.
 
 ## Options Considered
 
 ### Option 1: Fixed Window
+
 - **Pros:** Simple, predictable, low overhead
 - **Cons:** Burst vulnerability at window edges
 
 ### Option 2: Sliding Window
+
 - **Pros:** Smoother enforcement
 - **Cons:** More complex, higher DynamoDB costs
 
 ### Option 3: Token Bucket
+
 - **Pros:** Handles bursts gracefully
 - **Cons:** Not directly supported by Limited
 
 ## Decision
+
 Use **Fixed Window** strategy with 1-hour windows.
 
 ## Rationale
+
 - Simplicity reduces operational risk
 - 1-hour window limits burst impact
 - Can upgrade to sliding window if needed
 - DynamoDB costs stay predictable
 
 ## Consequences
+
 - Users can potentially send 2x limit at window boundary
 - Monitoring needs to track window edge behavior
 - Document limitation in API docs
@@ -810,28 +885,35 @@ When uncertain, document questions before proceeding:
 
 ```markdown
 # Clarification Request: 2025-11-17-14_30_45
+
 **Topic:** Rate Limit Scope
 
 ## Question
+
 Should rate limits apply per:
+
 1. User ID (authenticated users only)
 2. IP address (all requests)
 3. API key (service accounts)
 4. Combination of above
 
 ## Context
+
 Currently implementing Limited middleware for backoffice API.
 
 ## Impacts
+
 - User experience for legitimate heavy users
 - Protection against distributed attacks
 - Complexity of limit management
 - DynamoDB table design
 
 ## Recommendation
+
 Start with per-user limits, add IP fallback for unauthenticated endpoints.
 
 ## Resolution Needed By
+
 Sprint planning (2025-11-20)
 ```
 
@@ -907,14 +989,16 @@ Use this checklist when updating documentation for API changes or new features:
 Study these modules for exemplary documentation:
 
 #### **Lift** (`products/frameworks/lift/docs/`)
+
 - **Why:** Pioneer implementation, most comprehensive
-- **Highlights:** 
+- **Highlights:**
   - Complete YAML triad with extensive examples
   - 9-file LLM FAQ series
   - Detailed API reference with 1525 lines
   - Migration guide from raw Lambda handlers
 
 #### **Limited** (`products/frameworks/limited/docs/`)
+
 - **Why:** Focused framework with clear patterns
 - **Highlights:**
   - Concise concept map for rate limiting domain
@@ -922,6 +1006,7 @@ Study these modules for exemplary documentation:
   - Clear CORRECT/INCORRECT pattern examples
 
 #### **Challenge Service** (`products/services/challenge-service/docs/`)
+
 - **Why:** Reference Go service implementation
 - **Highlights:**
   - Service-specific CDK documentation
@@ -930,6 +1015,7 @@ Study these modules for exemplary documentation:
   - Operational runbooks in troubleshooting
 
 #### **PAI** (`products/advanced/pai/docs/`)
+
 - **Why:** Complex system with constraint-based execution
 - **Highlights:**
   - Emphasis on workflow phases
@@ -942,19 +1028,24 @@ Study these modules for exemplary documentation:
 Learn what NOT to do from these common mistakes:
 
 #### ❌ Vague Purpose Statements
+
 ```markdown
 BAD: "This service handles payments."
 GOOD: "Payment Processing Service validates, authorizes, and captures credit card transactions through Finix, providing a unified interface for all Pay Theory payment flows."
 ```
 
 #### ❌ Missing Context in Examples
-```markdown
+
+````markdown
 BAD:
+
 ```go
 app.Use(middleware.JWT(config))
 ```
+````
 
 GOOD:
+
 ```go
 // CORRECT: JWT middleware for authenticated API routes
 // Validates token, extracts user/tenant context, and enforces expiry
@@ -966,7 +1057,8 @@ jwtConfig := middleware.JWTConfig{
 }
 app.Use(middleware.JWT(jwtConfig))
 ```
-```
+
+````
 
 #### ❌ Incomplete Error Documentation
 ```markdown
@@ -985,28 +1077,31 @@ GOOD:
     "amount": "must be at least 100"
   }
 }
-```
+````
 
 **Cause:** Request body failed struct tag validation.
 
 **Solution:** Check request structure against API reference.
-```
+
+````
 
 #### ❌ Unexplained Configuration
 ```markdown
 BAD:
 ```yaml
 timeout: 30
-```
+````
 
 GOOD:
+
 ```yaml
 # Lambda timeout in seconds
 # Must be less than API Gateway timeout (29s)
 # Set to 25s to allow cleanup before Gateway timeout
 timeout: 25
 ```
-```
+
+````
 
 ---
 
@@ -1059,7 +1154,7 @@ git commit -m "feat: add rate limiting middleware
 - Add middleware to Lift
 - Document usage patterns
 - Add troubleshooting guide"
-```
+````
 
 ---
 
@@ -1068,12 +1163,14 @@ git commit -m "feat: add rate limiting middleware
 ### Documentation Questions
 
 **For guidance on documentation:**
+
 - Reference this guide first
 - Review exemplar modules (Lift, Limited, Challenge Service)
 - Check `AI_FRIENDLY_DOCUMENTATION_GUIDE.md` in Lift for AI-specific patterns
 - Ask in team documentation channel
 
 **For technical content:**
+
 - Consult module maintainers
 - Review existing modules in same category
 - Test examples before documenting
@@ -1094,43 +1191,43 @@ This guide evolves based on experience. Submit improvements via:
 
 ### Documentation File Decision Matrix
 
-| Question | Answer | Create |
-|----------|--------|--------|
-| New module? | Yes | Full structure |
-| API change? | Breaking | Update api-reference + migration-guide |
-| API change? | Non-breaking | Update api-reference |
-| New feature? | Major | Update all core files + YAML |
-| New feature? | Minor | Update api-reference + core-patterns |
-| Bug fix? | Reveals doc gap | Update troubleshooting |
-| Bug fix? | No doc gap | No doc change |
-| Pattern change? | Yes | Update _patterns.yaml + examples |
+| Question        | Answer          | Create                                 |
+| --------------- | --------------- | -------------------------------------- |
+| New module?     | Yes             | Full structure                         |
+| API change?     | Breaking        | Update api-reference + migration-guide |
+| API change?     | Non-breaking    | Update api-reference                   |
+| New feature?    | Major           | Update all core files + YAML           |
+| New feature?    | Minor           | Update api-reference + core-patterns   |
+| Bug fix?        | Reveals doc gap | Update troubleshooting                 |
+| Bug fix?        | No doc gap      | No doc change                          |
+| Pattern change? | Yes             | Update \_patterns.yaml + examples      |
 
 ### Module Type → Documentation Focus
 
-| Module Type | Emphasize | Example |
-|-------------|-----------|---------|
-| Framework (Go) | Performance, type safety, CDK | Lift, Limited |
-| Framework (general) | Patterns, extensibility | Streamer |
-| Service (Go) | Lift integration, DynamORM | Challenge Service |
-| Service (Python) | Amaze layer, SSM params | Payment Service |
-| API | Schema, resolvers, auth | Backoffice API |
-| Authorizer | Contract, IAM policy | Backoffice Authorizer |
-| Tool | CLI usage, workflows | PAI |
+| Module Type         | Emphasize                     | Example               |
+| ------------------- | ----------------------------- | --------------------- |
+| Framework (Go)      | Performance, type safety, CDK | Lift, Limited         |
+| Framework (general) | Patterns, extensibility       | Streamer              |
+| Service (Go)        | Lift integration, DynamORM    | Challenge Service     |
+| Service (Python)    | Amaze layer, SSM params       | Payment Service       |
+| API                 | Schema, resolvers, auth       | Backoffice API        |
+| Authorizer          | Contract, IAM policy          | Backoffice Authorizer |
+| Tool                | CLI usage, workflows          | PAI                   |
 
 ### File Size Guidelines
 
-| File | Typical Size | Max Recommended |
-|------|-------------|-----------------|
-| README.md | 50-100 lines | 200 lines |
-| getting-started.md | 200-400 lines | 600 lines |
-| api-reference.md | 500-1500 lines | No limit (comprehensive) |
-| core-patterns.md | 200-400 lines | 800 lines |
-| troubleshooting.md | 300-800 lines | No limit (grows over time) |
-| _concepts.yaml | 100-300 lines | 500 lines |
-| _patterns.yaml | 300-600 lines | 1000 lines |
-| _decisions.yaml | 200-500 lines | 800 lines |
+| File               | Typical Size   | Max Recommended            |
+| ------------------ | -------------- | -------------------------- |
+| README.md          | 50-100 lines   | 200 lines                  |
+| getting-started.md | 200-400 lines  | 600 lines                  |
+| api-reference.md   | 500-1500 lines | No limit (comprehensive)   |
+| core-patterns.md   | 200-400 lines  | 800 lines                  |
+| troubleshooting.md | 300-800 lines  | No limit (grows over time) |
+| \_concepts.yaml    | 100-300 lines  | 500 lines                  |
+| \_patterns.yaml    | 300-600 lines  | 1000 lines                 |
+| \_decisions.yaml   | 200-500 lines  | 800 lines                  |
 
-*If files exceed recommendations, consider splitting into subdirectories.*
+_If files exceed recommendations, consider splitting into subdirectories._
 
 ---
 
@@ -1139,6 +1236,7 @@ This guide evolves based on experience. Submit improvements via:
 ### Writing for AI Understanding
 
 **Use explicit markers:**
+
 ```markdown
 ✅ CORRECT: Always validate input
 ❌ INCORRECT: Trust client data
@@ -1148,6 +1246,7 @@ This guide evolves based on experience. Submit improvements via:
 ```
 
 **Provide semantic hints:**
+
 ```markdown
 <!-- AI Training: This is the canonical pattern -->
 <!-- AI Decision Point: Choose based on... -->
@@ -1155,14 +1254,17 @@ This guide evolves based on experience. Submit improvements via:
 ```
 
 **Structure for semantic parsing:**
+
 ```yaml
 # YAML is parsed by AI assistants for reasoning
 # Use consistent keys and structures across modules
 ```
 
 **Include business context:**
+
 ```markdown
 # Not just: "This function returns an error"
+
 # Instead: "This function returns an error when rate limit is exceeded, preventing API abuse and protecting system resources"
 ```
 
@@ -1199,4 +1301,3 @@ This guide defines the Pay Theory documentation standard. Key takeaways:
 **Last Updated:** November 2025  
 **Maintained By:** Pay Theory Engineering  
 **Feedback:** Submit issues or PRs to improve this guide
-

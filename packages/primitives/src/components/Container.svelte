@@ -86,14 +86,14 @@ Container component - Max-width wrapper for content centering.
 		/**
 		 * Horizontal padding (gutter) control.
 		 * Can be a preset value or custom CSS value.
-		 * 
+		 *
 		 * Preset values:
 		 * - `none`: No padding
 		 * - `sm`: 0.75rem
 		 * - `md`: 1rem (default)
 		 * - `lg`: 1.5rem
 		 * - `xl`: 2rem
-		 * 
+		 *
 		 * Can also accept custom CSS values like '2rem' or '24px'.
 		 * Takes precedence over `padding` prop.
 		 *
@@ -157,10 +157,7 @@ Container component - Max-width wrapper for content centering.
 
 	// Compute container classes
 	const containerClass = $derived(() => {
-		const classes = [
-			'gr-container',
-			`gr-container--max-${resolvedSize}`,
-		];
+		const classes = ['gr-container', `gr-container--max-${resolvedSize}`];
 
 		// Handle gutter/padding
 		if (gutter !== undefined) {

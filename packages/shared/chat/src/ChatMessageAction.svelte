@@ -66,11 +66,7 @@
 	}: Props = $props();
 
 	const buttonClass = $derived.by(() => {
-		const classes = [
-			'chat-message-action',
-			disabled && 'chat-message-action--disabled',
-			className,
-		]
+		const classes = ['chat-message-action', disabled && 'chat-message-action--disabled', className]
 			.filter(Boolean)
 			.join(' ');
 
@@ -78,14 +74,7 @@
 	});
 </script>
 
-<button
-	type="button"
-	class={buttonClass}
-	{disabled}
-	onclick={onclick}
-	aria-label={label}
-	title={label}
->
+<button type="button" class={buttonClass} {disabled} {onclick} aria-label={label} title={label}>
 	{#if icon}
 		<span class="chat-message-action__icon">
 			{@render icon()}

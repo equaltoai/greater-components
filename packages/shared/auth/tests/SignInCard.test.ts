@@ -55,18 +55,20 @@ describe('SignInCard', () => {
 		it('calls onSignIn with provider id when button is clicked', async () => {
 			const onSignIn = vi.fn();
 			render(SignInCard, { props: { ...defaultProps, onSignIn } });
-			
+
 			await fireEvent.click(screen.getByRole('button', { name: /sign in with github/i }));
-			
+
 			expect(onSignIn).toHaveBeenCalledWith('github');
 		});
 
 		it('does not call onSignIn when loading', async () => {
 			const onSignIn = vi.fn();
-			render(SignInCard, { props: { ...defaultProps, onSignIn, loading: true, loadingProvider: 'github' } });
-			
+			render(SignInCard, {
+				props: { ...defaultProps, onSignIn, loading: true, loadingProvider: 'github' },
+			});
+
 			await fireEvent.click(screen.getByRole('button', { name: /sign in with google/i }));
-			
+
 			expect(onSignIn).not.toHaveBeenCalled();
 		});
 	});
@@ -74,14 +76,14 @@ describe('SignInCard', () => {
 	describe('Loading States', () => {
 		it('shows loading state on active provider button', () => {
 			render(SignInCard, { props: { ...defaultProps, loading: true, loadingProvider: 'github' } });
-			
+
 			const githubButton = screen.getByRole('button', { name: /sign in with github/i });
 			expect(githubButton.getAttribute('aria-busy')).toBe('true');
 		});
 
 		it('disables other provider buttons when one is loading', () => {
 			render(SignInCard, { props: { ...defaultProps, loading: true, loadingProvider: 'github' } });
-			
+
 			const googleButton = screen.getByRole('button', { name: /sign in with google/i });
 			expect(googleButton.hasAttribute('disabled')).toBe(true);
 		});
@@ -90,7 +92,7 @@ describe('SignInCard', () => {
 	describe('Error Handling', () => {
 		it('displays error message when error prop is set', () => {
 			render(SignInCard, { props: { ...defaultProps, error: 'Authentication failed' } });
-			
+
 			expect(screen.getByRole('alert')).toBeTruthy();
 			expect(screen.getByText('Authentication failed')).toBeTruthy();
 		});
@@ -98,16 +100,16 @@ describe('SignInCard', () => {
 		it('calls onRetry when retry action is clicked', async () => {
 			const onRetry = vi.fn();
 			render(SignInCard, { props: { ...defaultProps, error: 'Failed', onRetry } });
-			
+
 			const retryButton = screen.getByRole('button', { name: /try again/i });
 			await fireEvent.click(retryButton);
-			
+
 			expect(onRetry).toHaveBeenCalled();
 		});
 
 		it('does not show retry button when onRetry is not provided', () => {
 			render(SignInCard, { props: { ...defaultProps, error: 'Failed' } });
-			
+
 			expect(screen.queryByRole('button', { name: /try again/i })).toBeNull();
 		});
 	});
@@ -115,20 +117,20 @@ describe('SignInCard', () => {
 	describe('Accessibility', () => {
 		it('has accessible provider button group', () => {
 			render(SignInCard, { props: defaultProps });
-			
+
 			expect(screen.getByRole('group', { name: /sign in options/i })).toBeTruthy();
 		});
 
 		it('provider buttons have accessible labels', () => {
 			render(SignInCard, { props: defaultProps });
-			
+
 			expect(screen.getByRole('button', { name: /sign in with github/i })).toBeTruthy();
 			expect(screen.getByRole('button', { name: /sign in with google/i })).toBeTruthy();
 		});
 
 		it('error alert has correct role', () => {
 			render(SignInCard, { props: { ...defaultProps, error: 'Error message' } });
-			
+
 			expect(screen.getByRole('alert')).toBeTruthy();
 		});
 	});

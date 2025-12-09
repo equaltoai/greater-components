@@ -105,13 +105,13 @@ concepts:
       - SettingsField
       - SettingsToggle
       - SettingsSelect
-    
+
     transitions:
       - fadeUp
       - fadeDown
       - slideIn
       - scaleIn
-    
+
     utilities:
       - smoothThemeTransition
       - createSmoothThemeToggle

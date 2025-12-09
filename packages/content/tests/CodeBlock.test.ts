@@ -147,6 +147,3 @@ describe('CodeBlock.svelte', () => {
 		expect(onCopy).toHaveBeenCalledWith('copy me');
 	});
 });
-
-
-

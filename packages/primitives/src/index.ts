@@ -17,11 +17,11 @@ import type { ComponentProps } from 'svelte';
 export type { ComponentProps } from 'svelte';
 
 // Re-export palette types for ThemeProvider consumers
-export type { 
-	PalettePreset, 
-	CustomPalette, 
+export type {
+	PalettePreset,
+	CustomPalette,
 	ColorScale,
-	ColorShade 
+	ColorShade,
 } from '@equaltoai/greater-components-tokens';
 
 // Import all components (for both export and prop type inference)

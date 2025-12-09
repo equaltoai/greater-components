@@ -21,3 +21,5 @@ jobs:
 
       - name: DCO Check
         uses: tim-actions/dco@v1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -2,12 +2,12 @@
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { preferencesStore, type ColorScheme } from '../stores/preferences';
-	import { 
+	import {
 		palettes,
 		generatePaletteCSS,
 		getPresetGrayScale,
 		type PalettePreset,
-		type CustomPalette
+		type CustomPalette,
 	} from '@equaltoai/greater-components-tokens';
 
 	interface Props {
@@ -45,7 +45,7 @@
 	// Generate custom CSS for palette and typography overrides
 	let customCSS = $derived.by(() => {
 		const cssRules: string[] = [];
-		
+
 		// Handle palette preset
 		if (palette && palette in palettes) {
 			const presetGrayScale = getPresetGrayScale(palette);
@@ -53,12 +53,12 @@
 				cssRules.push(generatePaletteCSS({ gray: presetGrayScale }));
 			}
 		}
-		
+
 		// Handle custom palette (takes precedence over preset)
 		if (customPalette) {
 			cssRules.push(generatePaletteCSS(customPalette));
 		}
-		
+
 		// Handle typography customization
 		if (headingFont) {
 			cssRules.push(`--gr-typography-fontFamily-heading: ${headingFont};`);
@@ -66,7 +66,7 @@
 		if (bodyFont) {
 			cssRules.push(`--gr-typography-fontFamily-sans: ${bodyFont};`);
 		}
-		
+
 		return cssRules.length > 0 ? cssRules.join('\n') : '';
 	});
 
@@ -109,11 +109,11 @@
 
 <svelte:head>
 	{#if customCSS}
-	<style id="gr-theme-customization">
+		<style id="gr-theme-customization">
 		:root {
 			{@html customCSS}
 		}
-	</style>
+		</style>
 	{/if}
 </svelte:head>
 

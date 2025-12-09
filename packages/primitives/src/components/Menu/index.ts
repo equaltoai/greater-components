@@ -1,8 +1,8 @@
 /**
  * Menu Compound Component
- * 
+ *
  * A dropdown menu component with compound component pattern for flexible composition.
- * 
+ *
  * @example
  * ```svelte
  * <Menu.Root>
@@ -18,7 +18,7 @@
  *   </Menu.Content>
  * </Menu.Root>
  * ```
- * 
+ *
  * @module @equaltoai/greater-components/primitives/Menu
  */
 

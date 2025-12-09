@@ -4,16 +4,10 @@
 		class?: string;
 	}
 
-	let {
-		class: className = '',
-	}: Props = $props();
+	let { class: className = '' }: Props = $props();
 </script>
 
-<div 
-	class="gr-menu-separator {className}" 
-	role="separator" 
-	aria-orientation="horizontal"
-></div>
+<div class="gr-menu-separator {className}" role="separator" aria-orientation="horizontal"></div>
 
 <style>
 	.gr-menu-separator {

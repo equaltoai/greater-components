@@ -81,14 +81,14 @@ Always use `workspace:*` for internal dependencies:
 
 ```json
 {
-  "dependencies": {
-    "@equaltoai/greater-components-primitives": "workspace:*",
-    "@equaltoai/greater-components-icons": "workspace:*"
-  },
-  "peerDependencies": {
-    "@equaltoai/greater-components-tokens": "workspace:*",
-    "svelte": "^5.43.6"
-  }
+	"dependencies": {
+		"@equaltoai/greater-components-primitives": "workspace:*",
+		"@equaltoai/greater-components-icons": "workspace:*"
+	},
+	"peerDependencies": {
+		"@equaltoai/greater-components-tokens": "workspace:*",
+		"svelte": "^5.43.6"
+	}
 }
 ```
 
@@ -98,26 +98,26 @@ Always use `workspace:*` for internal dependencies:
 
 ### Core Runes Overview
 
-| Rune | Purpose | Returns Value | Has Side Effects |
-|------|---------|---------------|------------------|
-| `$state` | Declare reactive state | No | No |
-| `$derived` | Compute derived values | Yes | No |
-| `$effect` | Run side effects | No | Yes |
-| `$props` | Receive component props | No | No |
-| `$bindable` | Two-way binding props | No | No |
+| Rune        | Purpose                 | Returns Value | Has Side Effects |
+| ----------- | ----------------------- | ------------- | ---------------- |
+| `$state`    | Declare reactive state  | No            | No               |
+| `$derived`  | Compute derived values  | Yes           | No               |
+| `$effect`   | Run side effects        | No            | Yes              |
+| `$props`    | Receive component props | No            | No               |
+| `$bindable` | Two-way binding props   | No            | No               |
 
 ### `$state` - Reactive State
 
 ```svelte
 <script>
-  // Simple state
-  let count = $state(0);
+	// Simple state
+	let count = $state(0);
 
-  // Object state (deeply reactive)
-  let user = $state({ name: 'Alice', age: 30 });
+	// Object state (deeply reactive)
+	let user = $state({ name: 'Alice', age: 30 });
 
-  // Array state (deeply reactive)
-  let items = $state([]);
+	// Array state (deeply reactive)
+	let items = $state([]);
 </script>
 ```
 
@@ -125,11 +125,11 @@ Always use `workspace:*` for internal dependencies:
 
 ```svelte
 <script>
-  let items = $state([]);
+	let items = $state([]);
 
-  function addItem(item) {
-    items.push(item); // This triggers reactivity
-  }
+	function addItem(item) {
+		items.push(item); // This triggers reactivity
+	}
 </script>
 ```
 
@@ -139,9 +139,9 @@ Use `$derived` for values that depend on other reactive state:
 
 ```svelte
 <script>
-  let count = $state(0);
-  let doubled = $derived(count * 2);
-  let isEven = $derived(count % 2 === 0);
+	let count = $state(0);
+	let doubled = $derived(count * 2);
+	let isEven = $derived(count % 2 === 0);
 </script>
 ```
 
@@ -149,17 +149,18 @@ For complex derivations, use `$derived.by`:
 
 ```svelte
 <script>
-  let items = $state([]);
+	let items = $state([]);
 
-  let summary = $derived.by(() => {
-    const total = items.reduce((sum, item) => sum + item.price, 0);
-    const count = items.length;
-    return { total, count, average: count > 0 ? total / count : 0 };
-  });
+	let summary = $derived.by(() => {
+		const total = items.reduce((sum, item) => sum + item.price, 0);
+		const count = items.length;
+		return { total, count, average: count > 0 ? total / count : 0 };
+	});
 </script>
 ```
 
 **Key characteristics:**
+
 - Lazy evaluation (only computed when accessed)
 - Memoized (won't recompute if dependencies haven't changed)
 - Should be pure (no side effects)
@@ -170,30 +171,30 @@ Use `$effect` sparingly and only for true side effects:
 
 ```svelte
 <script>
-  let searchQuery = $state('');
+	let searchQuery = $state('');
 
-  // Good: External API call
-  $effect(() => {
-    if (searchQuery.length > 2) {
-      fetch(`/api/search?q=${searchQuery}`)
-        .then(res => res.json())
-        .then(data => results = data);
-    }
-  });
+	// Good: External API call
+	$effect(() => {
+		if (searchQuery.length > 2) {
+			fetch(`/api/search?q=${searchQuery}`)
+				.then((res) => res.json())
+				.then((data) => (results = data));
+		}
+	});
 
-  // Good: Canvas rendering
-  $effect(() => {
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = color;
-    ctx.fillRect(0, 0, width, height);
-  });
+	// Good: Canvas rendering
+	$effect(() => {
+		const ctx = canvas.getContext('2d');
+		ctx.clearRect(0, 0, width, height);
+		ctx.fillStyle = color;
+		ctx.fillRect(0, 0, width, height);
+	});
 
-  // Good: Third-party library integration
-  $effect(() => {
-    const chart = new Chart(element, { data: chartData });
-    return () => chart.destroy(); // Cleanup
-  });
+	// Good: Third-party library integration
+	$effect(() => {
+		const chart = new Chart(element, { data: chartData });
+		return () => chart.destroy(); // Cleanup
+	});
 </script>
 ```
 
@@ -201,16 +202,16 @@ Use `$effect` sparingly and only for true side effects:
 
 ```svelte
 <script>
-  let count = $state(0);
-  let doubled = $state(0);
+	let count = $state(0);
+	let doubled = $state(0);
 
-  // BAD: Synchronizing derived state
-  $effect(() => {
-    doubled = count * 2;
-  });
+	// BAD: Synchronizing derived state
+	$effect(() => {
+		doubled = count * 2;
+	});
 
-  // GOOD: Use $derived instead
-  let doubled = $derived(count * 2);
+	// GOOD: Use $derived instead
+	let doubled = $derived(count * 2);
 </script>
 ```
 
@@ -218,15 +219,15 @@ Use `$effect` sparingly and only for true side effects:
 
 ```svelte
 <script>
-  $effect(() => {
-    const handler = (e) => console.log(e);
-    window.addEventListener('resize', handler);
+	$effect(() => {
+		const handler = (e) => console.log(e);
+		window.addEventListener('resize', handler);
 
-    // Return cleanup function
-    return () => {
-      window.removeEventListener('resize', handler);
-    };
-  });
+		// Return cleanup function
+		return () => {
+			window.removeEventListener('resize', handler);
+		};
+	});
 </script>
 ```
 
@@ -234,21 +235,21 @@ Use `$effect` sparingly and only for true side effects:
 
 ```svelte
 <script>
-  let query = $state('');
+	let query = $state('');
 
-  // BAD: query accessed after await won't be tracked
-  $effect(async () => {
-    await delay(100);
-    console.log(query); // Not tracked!
-  });
+	// BAD: query accessed after await won't be tracked
+	$effect(async () => {
+		await delay(100);
+		console.log(query); // Not tracked!
+	});
 
-  // GOOD: Access state synchronously first
-  $effect(() => {
-    const currentQuery = query; // Tracked
-    delay(100).then(() => {
-      console.log(currentQuery);
-    });
-  });
+	// GOOD: Access state synchronously first
+	$effect(() => {
+		const currentQuery = query; // Tracked
+		delay(100).then(() => {
+			console.log(currentQuery);
+		});
+	});
 </script>
 ```
 
@@ -256,18 +257,18 @@ Use `$effect` sparingly and only for true side effects:
 
 ```svelte
 <script>
-  // Destructure with defaults
-  let {
-    variant = 'primary',
-    size = 'md',
-    disabled = false,
-    children,      // Slot content
-    ...restProps   // Remaining props
-  } = $props();
+	// Destructure with defaults
+	let {
+		variant = 'primary',
+		size = 'md',
+		disabled = false,
+		children, // Slot content
+		...restProps // Remaining props
+	} = $props();
 </script>
 
 <button class="{variant} {size}" {disabled} {...restProps}>
-  {@render children?.()}
+	{@render children?.()}
 </button>
 ```
 
@@ -275,21 +276,15 @@ Use `$effect` sparingly and only for true side effects:
 
 ```svelte
 <script lang="ts">
-  interface Props {
-    variant?: 'primary' | 'secondary' | 'ghost';
-    size?: 'sm' | 'md' | 'lg';
-    disabled?: boolean;
-    onclick?: (e: MouseEvent) => void;
-    children?: Snippet;
-  }
+	interface Props {
+		variant?: 'primary' | 'secondary' | 'ghost';
+		size?: 'sm' | 'md' | 'lg';
+		disabled?: boolean;
+		onclick?: (e: MouseEvent) => void;
+		children?: Snippet;
+	}
 
-  let {
-    variant = 'primary',
-    size = 'md',
-    disabled = false,
-    onclick,
-    children
-  }: Props = $props();
+	let { variant = 'primary', size = 'md', disabled = false, onclick, children }: Props = $props();
 </script>
 ```
 
@@ -297,17 +292,17 @@ Use `$effect` sparingly and only for true side effects:
 
 ```svelte
 <script>
-  let { value, onchange } = $props();
+	let { value, onchange } = $props();
 
-  // BAD: Direct mutation
-  function handleInput(e) {
-    value = e.target.value;
-  }
+	// BAD: Direct mutation
+	function handleInput(e) {
+		value = e.target.value;
+	}
 
-  // GOOD: Use callback
-  function handleInput(e) {
-    onchange?.(e.target.value);
-  }
+	// GOOD: Use callback
+	function handleInput(e) {
+		onchange?.(e.target.value);
+	}
 </script>
 ```
 
@@ -357,57 +352,57 @@ src/
 ```svelte
 <!-- Button.svelte -->
 <script lang="ts" module>
-  // Module-level exports (types, constants)
-  export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-  export type ButtonSize = 'sm' | 'md' | 'lg';
+	// Module-level exports (types, constants)
+	export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+	export type ButtonSize = 'sm' | 'md' | 'lg';
 </script>
 
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-  import type { HTMLButtonAttributes } from 'svelte/elements';
+	import type { Snippet } from 'svelte';
+	import type { HTMLButtonAttributes } from 'svelte/elements';
 
-  // Props interface
-  interface Props extends HTMLButtonAttributes {
-    variant?: ButtonVariant;
-    size?: ButtonSize;
-    loading?: boolean;
-    children?: Snippet;
-  }
+	// Props interface
+	interface Props extends HTMLButtonAttributes {
+		variant?: ButtonVariant;
+		size?: ButtonSize;
+		loading?: boolean;
+		children?: Snippet;
+	}
 
-  // Destructure props with defaults
-  let {
-    variant = 'primary',
-    size = 'md',
-    loading = false,
-    disabled = false,
-    children,
-    class: className = '',
-    ...restProps
-  }: Props = $props();
+	// Destructure props with defaults
+	let {
+		variant = 'primary',
+		size = 'md',
+		loading = false,
+		disabled = false,
+		children,
+		class: className = '',
+		...restProps
+	}: Props = $props();
 
-  // Derived state
-  let isDisabled = $derived(disabled || loading);
+	// Derived state
+	let isDisabled = $derived(disabled || loading);
 
-  // Local state (if needed)
-  let pressed = $state(false);
+	// Local state (if needed)
+	let pressed = $state(false);
 </script>
 
 <button
-  class="btn btn-{variant} btn-{size} {className}"
-  disabled={isDisabled}
-  aria-busy={loading}
-  {...restProps}
+	class="btn btn-{variant} btn-{size} {className}"
+	disabled={isDisabled}
+	aria-busy={loading}
+	{...restProps}
 >
-  {#if loading}
-    <span class="spinner" aria-hidden="true"></span>
-  {/if}
-  {@render children?.()}
+	{#if loading}
+		<span class="spinner" aria-hidden="true"></span>
+	{/if}
+	{@render children?.()}
 </button>
 
 <style>
-  .btn {
-    /* Component styles */
-  }
+	.btn {
+		/* Component styles */
+	}
 </style>
 ```
 
@@ -418,33 +413,33 @@ Svelte 5 uses snippets instead of slots:
 ```svelte
 <!-- Card.svelte -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 
-  interface Props {
-    header?: Snippet;
-    footer?: Snippet;
-    children?: Snippet;
-  }
+	interface Props {
+		header?: Snippet;
+		footer?: Snippet;
+		children?: Snippet;
+	}
 
-  let { header, footer, children }: Props = $props();
+	let { header, footer, children }: Props = $props();
 </script>
 
 <article class="card">
-  {#if header}
-    <header class="card-header">
-      {@render header()}
-    </header>
-  {/if}
+	{#if header}
+		<header class="card-header">
+			{@render header()}
+		</header>
+	{/if}
 
-  <div class="card-body">
-    {@render children?.()}
-  </div>
+	<div class="card-body">
+		{@render children?.()}
+	</div>
 
-  {#if footer}
-    <footer class="card-footer">
-      {@render footer()}
-    </footer>
-  {/if}
+	{#if footer}
+		<footer class="card-footer">
+			{@render footer()}
+		</footer>
+	{/if}
 </article>
 ```
 
@@ -453,27 +448,27 @@ Svelte 5 uses snippets instead of slots:
 ```svelte
 <!-- List.svelte -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 
-  interface Props<T> {
-    items: T[];
-    renderItem: Snippet<[T, number]>;
-  }
+	interface Props<T> {
+		items: T[];
+		renderItem: Snippet<[T, number]>;
+	}
 
-  let { items, renderItem }: Props<T> = $props();
+	let { items, renderItem }: Props<T> = $props();
 </script>
 
 <ul>
-  {#each items as item, index}
-    <li>{@render renderItem(item, index)}</li>
-  {/each}
+	{#each items as item, index}
+		<li>{@render renderItem(item, index)}</li>
+	{/each}
 </ul>
 
 <!-- Usage -->
 <List {items}>
-  {#snippet renderItem(item, index)}
-    <span>{index + 1}. {item.name}</span>
-  {/snippet}
+	{#snippet renderItem(item, index)}
+		<span>{index + 1}. {item.name}</span>
+	{/snippet}
 </List>
 ```
 
@@ -513,20 +508,26 @@ import { getContext, setContext } from 'svelte';
 const THEME_KEY = Symbol('theme');
 
 export function createThemeContext() {
-  let theme = $state<'light' | 'dark'>('light');
+	let theme = $state<'light' | 'dark'>('light');
 
-  const context = {
-    get theme() { return theme; },
-    toggle() { theme = theme === 'light' ? 'dark' : 'light'; },
-    set(value: 'light' | 'dark') { theme = value; }
-  };
+	const context = {
+		get theme() {
+			return theme;
+		},
+		toggle() {
+			theme = theme === 'light' ? 'dark' : 'light';
+		},
+		set(value: 'light' | 'dark') {
+			theme = value;
+		},
+	};
 
-  setContext(THEME_KEY, context);
-  return context;
+	setContext(THEME_KEY, context);
+	return context;
 }
 
 export function getThemeContext() {
-  return getContext<ReturnType<typeof createThemeContext>>(THEME_KEY);
+	return getContext<ReturnType<typeof createThemeContext>>(THEME_KEY);
 }
 ```
 
@@ -538,47 +539,42 @@ export function getThemeContext() {
 
 ```json
 {
-  "name": "@equaltoai/greater-components-primitives",
-  "version": "3.0.0",
-  "type": "module",
-  "svelte": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js",
-      "import": "./dist/index.js"
-    },
-    "./Button.svelte": {
-      "types": "./dist/components/Button.svelte.d.ts",
-      "svelte": "./dist/components/Button.svelte",
-      "import": "./dist/components/Button.svelte"
-    }
-  },
-  "files": [
-    "dist",
-    "!dist/**/*.test.*"
-  ],
-  "sideEffects": [
-    "**/*.css"
-  ],
-  "peerDependencies": {
-    "svelte": "^5.43.6",
-    "@equaltoai/greater-components-tokens": "workspace:*"
-  },
-  "devDependencies": {
-    "@sveltejs/package": "^2.3.0",
-    "@sveltejs/vite-plugin-svelte": "^5.0.0",
-    "svelte": "^5.43.6",
-    "typescript": "^5.7.0",
-    "vite": "^6.0.0"
-  },
-  "scripts": {
-    "build": "svelte-package --output dist",
-    "dev": "svelte-package --output dist --watch",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
-  }
+	"name": "@equaltoai/greater-components-primitives",
+	"version": "3.0.0",
+	"type": "module",
+	"svelte": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js",
+			"import": "./dist/index.js"
+		},
+		"./Button.svelte": {
+			"types": "./dist/components/Button.svelte.d.ts",
+			"svelte": "./dist/components/Button.svelte",
+			"import": "./dist/components/Button.svelte"
+		}
+	},
+	"files": ["dist", "!dist/**/*.test.*"],
+	"sideEffects": ["**/*.css"],
+	"peerDependencies": {
+		"svelte": "^5.43.6",
+		"@equaltoai/greater-components-tokens": "workspace:*"
+	},
+	"devDependencies": {
+		"@sveltejs/package": "^2.3.0",
+		"@sveltejs/vite-plugin-svelte": "^5.0.0",
+		"svelte": "^5.43.6",
+		"typescript": "^5.7.0",
+		"vite": "^6.0.0"
+	},
+	"scripts": {
+		"build": "svelte-package --output dist",
+		"dev": "svelte-package --output dist --watch",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit"
+	}
 }
 ```
 
@@ -588,13 +584,13 @@ export function getThemeContext() {
 
 ```json
 {
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",   // Always first
-      "svelte": "./dist/index.js",     // Svelte-aware bundlers
-      "import": "./dist/index.js"      // Standard ESM
-    }
-  }
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts", // Always first
+			"svelte": "./dist/index.js", // Svelte-aware bundlers
+			"import": "./dist/index.js" // Standard ESM
+		}
+	}
 }
 ```
 
@@ -602,12 +598,12 @@ export function getThemeContext() {
 
 ```json
 {
-  "exports": {
-    ".": "./dist/index.js",
-    "./Button.svelte": "./dist/components/Button.svelte",
-    "./Modal.svelte": "./dist/components/Modal.svelte",
-    "./utils": "./dist/utils/index.js"
-  }
+	"exports": {
+		".": "./dist/index.js",
+		"./Button.svelte": "./dist/components/Button.svelte",
+		"./Modal.svelte": "./dist/components/Modal.svelte",
+		"./utils": "./dist/utils/index.js"
+	}
 }
 ```
 
@@ -617,10 +613,7 @@ Mark CSS as having side effects for proper bundling:
 
 ```json
 {
-  "sideEffects": [
-    "**/*.css",
-    "**/*.scss"
-  ]
+	"sideEffects": ["**/*.css", "**/*.scss"]
 }
 ```
 
@@ -628,7 +621,7 @@ For pure JavaScript libraries:
 
 ```json
 {
-  "sideEffects": false
+	"sideEffects": false
 }
 ```
 
@@ -644,26 +637,26 @@ import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
-  plugins: [svelte()],
-  build: {
-    lib: {
-      entry: './src/index.ts',
-      formats: ['es']
-    },
-    rollupOptions: {
-      external: [
-        'svelte',
-        'svelte/internal',
-        '@equaltoai/greater-components-tokens',
-        '@equaltoai/greater-components-icons'
-      ],
-      output: {
-        preserveModules: true,
-        preserveModulesRoot: 'src',
-        entryFileNames: '[name].js'
-      }
-    }
-  }
+	plugins: [svelte()],
+	build: {
+		lib: {
+			entry: './src/index.ts',
+			formats: ['es'],
+		},
+		rollupOptions: {
+			external: [
+				'svelte',
+				'svelte/internal',
+				'@equaltoai/greater-components-tokens',
+				'@equaltoai/greater-components-icons',
+			],
+			output: {
+				preserveModules: true,
+				preserveModulesRoot: 'src',
+				entryFileNames: '[name].js',
+			},
+		},
+	},
 });
 ```
 
@@ -673,10 +666,10 @@ For Svelte component libraries, use `svelte-package`:
 
 ```json
 {
-  "scripts": {
-    "build": "svelte-package --output dist",
-    "dev": "svelte-package --output dist --watch"
-  }
+	"scripts": {
+		"build": "svelte-package --output dist",
+		"dev": "svelte-package --output dist --watch"
+	}
 }
 ```
 
@@ -686,23 +679,23 @@ In `turbo.json`:
 
 ```json
 {
-  "$schema": "https://turbo.build/schema.json",
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".svelte-kit/**"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "test": {
-      "dependsOn": ["build"]
-    },
-    "typecheck": {
-      "dependsOn": ["^build"]
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", ".svelte-kit/**"]
+		},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"test": {
+			"dependsOn": ["build"]
+		},
+		"typecheck": {
+			"dependsOn": ["^build"]
+		}
+	}
 }
 ```
 
@@ -713,17 +706,14 @@ For Vite to properly hot-reload workspace packages:
 ```typescript
 // vite.config.ts (in apps)
 export default defineConfig({
-  optimizeDeps: {
-    exclude: [
-      '@equaltoai/greater-components-primitives',
-      '@equaltoai/greater-components-icons'
-    ]
-  },
-  server: {
-    fs: {
-      allow: ['..'] // Allow serving files from parent directories
-    }
-  }
+	optimizeDeps: {
+		exclude: ['@equaltoai/greater-components-primitives', '@equaltoai/greater-components-icons'],
+	},
+	server: {
+		fs: {
+			allow: ['..'], // Allow serving files from parent directories
+		},
+	},
 });
 ```
 
@@ -735,21 +725,21 @@ export default defineConfig({
 
 ```json
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
-    "isolatedModules": true,
-    "verbatimModuleSyntax": true
-  }
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"composite": true,
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true
+	}
 }
 ```
 
@@ -757,13 +747,13 @@ export default defineConfig({
 
 ```json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"rootDir": "./src",
+		"outDir": "./dist"
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
 ```
 
@@ -773,13 +763,13 @@ Define in the root `tsconfig.base.json` for IDE support:
 
 ```json
 {
-  "compilerOptions": {
-    "paths": {
-      "@equaltoai/greater-components-primitives": ["./packages/primitives/src/index.ts"],
-      "@equaltoai/greater-components-icons": ["./packages/icons/src/index.ts"],
-      "@equaltoai/greater-components-tokens": ["./packages/tokens/src/index.ts"]
-    }
-  }
+	"compilerOptions": {
+		"paths": {
+			"@equaltoai/greater-components-primitives": ["./packages/primitives/src/index.ts"],
+			"@equaltoai/greater-components-icons": ["./packages/icons/src/index.ts"],
+			"@equaltoai/greater-components-tokens": ["./packages/tokens/src/index.ts"]
+		}
+	}
 }
 ```
 
@@ -806,31 +796,31 @@ import { render, fireEvent } from '@testing-library/svelte';
 import Button from './Button.svelte';
 
 describe('Button', () => {
-  it('renders with default props', () => {
-    const { getByRole } = render(Button, {
-      props: { children: createRawSnippet(() => 'Click me') }
-    });
+	it('renders with default props', () => {
+		const { getByRole } = render(Button, {
+			props: { children: createRawSnippet(() => 'Click me') },
+		});
 
-    expect(getByRole('button')).toHaveTextContent('Click me');
-  });
+		expect(getByRole('button')).toHaveTextContent('Click me');
+	});
 
-  it('applies variant class', () => {
-    const { getByRole } = render(Button, {
-      props: { variant: 'secondary' }
-    });
+	it('applies variant class', () => {
+		const { getByRole } = render(Button, {
+			props: { variant: 'secondary' },
+		});
 
-    expect(getByRole('button')).toHaveClass('btn-secondary');
-  });
+		expect(getByRole('button')).toHaveClass('btn-secondary');
+	});
 
-  it('handles click events', async () => {
-    let clicked = false;
-    const { getByRole } = render(Button, {
-      props: { onclick: () => clicked = true }
-    });
+	it('handles click events', async () => {
+		let clicked = false;
+		const { getByRole } = render(Button, {
+			props: { onclick: () => (clicked = true) },
+		});
 
-    await fireEvent.click(getByRole('button'));
-    expect(clicked).toBe(true);
-  });
+		await fireEvent.click(getByRole('button'));
+		expect(clicked).toBe(true);
+	});
 });
 ```
 
@@ -844,11 +834,11 @@ import { axe } from 'vitest-axe';
 import Button from './Button.svelte';
 
 describe('Button accessibility', () => {
-  it('has no accessibility violations', async () => {
-    const { container } = render(Button);
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
-  });
+	it('has no accessibility violations', async () => {
+		const { container } = render(Button);
+		const results = await axe(container);
+		expect(results).toHaveNoViolations();
+	});
 });
 ```
 
@@ -861,15 +851,15 @@ import { createCounter } from './counter.svelte.ts';
 import { flushSync } from 'svelte';
 
 describe('createCounter', () => {
-  it('increments count', () => {
-    const counter = createCounter(0);
+	it('increments count', () => {
+		const counter = createCounter(0);
 
-    flushSync(() => {
-      counter.increment();
-    });
+		flushSync(() => {
+			counter.increment();
+		});
 
-    expect(counter.count).toBe(1);
-  });
+		expect(counter.count).toBe(1);
+	});
 });
 ```
 
@@ -949,15 +939,19 @@ describe('createCounter', () => {
 // BAD: Won't work in regular .ts file
 // utils/state.ts
 export function createToggle() {
-  let active = $state(false); // Error!
-  return { /* ... */ };
+	let active = $state(false); // Error!
+	return {
+		/* ... */
+	};
 }
 
 // GOOD: Use .svelte.ts extension
 // utils/state.svelte.ts
 export function createToggle() {
-  let active = $state(false); // Works!
-  return { /* ... */ };
+	let active = $state(false); // Works!
+	return {
+		/* ... */
+	};
 }
 ```
 
@@ -1007,30 +1001,30 @@ import { Button } from './components/Button.js';
 
 ```svelte
 <script>
-  // State
-  let count = $state(0);
-  let user = $state({ name: '' });
+	// State
+	let count = $state(0);
+	let user = $state({ name: '' });
 
-  // Derived (computed)
-  let doubled = $derived(count * 2);
-  let fullName = $derived.by(() => `${user.first} ${user.last}`);
+	// Derived (computed)
+	let doubled = $derived(count * 2);
+	let fullName = $derived.by(() => `${user.first} ${user.last}`);
 
-  // Props
-  let { prop1, prop2 = 'default' } = $props();
+	// Props
+	let { prop1, prop2 = 'default' } = $props();
 
-  // Bindable props
-  let { value = $bindable('') } = $props();
+	// Bindable props
+	let { value = $bindable('') } = $props();
 
-  // Effects (use sparingly!)
-  $effect(() => {
-    console.log(count);
-    return () => cleanup();
-  });
+	// Effects (use sparingly!)
+	$effect(() => {
+		console.log(count);
+		return () => cleanup();
+	});
 
-  // Pre-effect (before DOM update)
-  $effect.pre(() => {
-    // Runs before DOM updates
-  });
+	// Pre-effect (before DOM update)
+	$effect.pre(() => {
+		// Runs before DOM updates
+	});
 </script>
 ```
 
@@ -1068,4 +1062,4 @@ pnpm lint
 
 ---
 
-*Last updated: December 2025*
+_Last updated: December 2025_

@@ -28,14 +28,8 @@ export default defineConfig({
 				__dirname,
 				'../../headless/src/primitives/modal.ts'
 			),
-			'@equaltoai/greater-components-headless': resolve(
-				__dirname,
-				'../../headless/src/index.ts'
-			),
-			'@equaltoai/greater-components-auth': resolve(
-				__dirname,
-				'../../shared/auth/src/index.ts'
-			),
+			'@equaltoai/greater-components-headless': resolve(__dirname, '../../headless/src/index.ts'),
+			'@equaltoai/greater-components-auth': resolve(__dirname, '../../shared/auth/src/index.ts'),
 		},
 	},
 	build: {

@@ -19,14 +19,14 @@ export interface PositionConfig {
  */
 export function calculatePosition(config: PositionConfig): MenuPosition {
 	const { triggerRect, contentRect, placement, offset, viewportMargin = 8 } = config;
-	
+
 	const viewportWidth = window.innerWidth;
 	const viewportHeight = window.innerHeight;
-	
+
 	let x = 0;
 	let y = 0;
 	let finalPlacement = placement;
-	
+
 	// Calculate initial position based on placement
 	switch (placement) {
 		case 'bottom-start':
@@ -46,13 +46,13 @@ export function calculatePosition(config: PositionConfig): MenuPosition {
 			y = triggerRect.top - contentRect.height - offset;
 			break;
 	}
-	
+
 	// Viewport boundary detection and auto-flip
 	const wouldOverflowBottom = y + contentRect.height > viewportHeight - viewportMargin;
 	const wouldOverflowTop = y < viewportMargin;
 	const wouldOverflowRight = x + contentRect.width > viewportWidth - viewportMargin;
 	const wouldOverflowLeft = x < viewportMargin;
-	
+
 	// Vertical flip
 	if (placement.startsWith('bottom') && wouldOverflowBottom) {
 		const topY = triggerRect.top - contentRect.height - offset;
@@ -67,7 +67,7 @@ export function calculatePosition(config: PositionConfig): MenuPosition {
 			finalPlacement = placement.replace('top', 'bottom') as MenuPlacement;
 		}
 	}
-	
+
 	// Horizontal adjustment
 	if (wouldOverflowRight) {
 		x = Math.max(viewportMargin, viewportWidth - contentRect.width - viewportMargin);
@@ -80,11 +80,11 @@ export function calculatePosition(config: PositionConfig): MenuPosition {
 			finalPlacement = finalPlacement.replace('-end', '-start') as MenuPlacement;
 		}
 	}
-	
+
 	// Ensure within viewport bounds
 	x = Math.max(viewportMargin, Math.min(x, viewportWidth - contentRect.width - viewportMargin));
 	y = Math.max(viewportMargin, Math.min(y, viewportHeight - contentRect.height - viewportMargin));
-	
+
 	return { x, y, placement: finalPlacement };
 }
 
@@ -93,18 +93,18 @@ export function calculatePosition(config: PositionConfig): MenuPosition {
  */
 export function getScrollParent(element: HTMLElement): HTMLElement | null {
 	let parent = element.parentElement;
-	
+
 	while (parent) {
 		const style = getComputedStyle(parent);
 		const overflow = style.overflow + style.overflowY + style.overflowX;
-		
+
 		if (/(auto|scroll|overlay)/.test(overflow)) {
 			return parent;
 		}
-		
+
 		parent = parent.parentElement;
 	}
-	
+
 	return null;
 }
 
@@ -116,17 +116,17 @@ export function createPositionObserver(
 	onUpdate: () => void
 ): () => void {
 	const scrollParent = getScrollParent(triggerElement);
-	
+
 	// Observe resize
 	const resizeObserver = new ResizeObserver(onUpdate);
 	resizeObserver.observe(document.body);
-	
+
 	// Listen for scroll events
 	const scrollHandler = () => requestAnimationFrame(onUpdate);
 	window.addEventListener('scroll', scrollHandler, { passive: true });
 	scrollParent?.addEventListener('scroll', scrollHandler, { passive: true });
 	window.addEventListener('resize', scrollHandler, { passive: true });
-	
+
 	// Cleanup function
 	return () => {
 		resizeObserver.disconnect();

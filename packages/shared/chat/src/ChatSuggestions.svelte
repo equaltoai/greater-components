@@ -72,18 +72,18 @@
 		class?: string;
 	}
 
-	let { 
-		suggestions, 
-		onSelect, 
-		variant = 'pills', 
+	let {
+		suggestions,
+		onSelect,
+		variant = 'pills',
 		placement = 'empty-only',
-		class: className = '' 
+		class: className = '',
 	}: Props = $props();
 
 	// Get chat context if available for message count
 	const hasContext = hasChatContext();
 	const context = hasContext ? getChatContext() : null;
-	
+
 	// Determine if suggestions should be visible based on placement
 	const messageCount = $derived(context?.state.messages.length ?? 0);
 	const shouldShow = $derived.by(() => {
@@ -128,10 +128,10 @@
 	// Compute container classes
 	const containerClass = $derived.by(() => {
 		const classes = [
-			'chat-suggestions', 
+			'chat-suggestions',
 			`chat-suggestions--${variant}`,
 			`chat-suggestions--${placement}`,
-			className
+			className,
 		]
 			.filter(Boolean)
 			.join(' ');
@@ -141,24 +141,24 @@
 </script>
 
 {#if shouldShow}
-<div class={containerClass} role="group" aria-label="Suggested prompts">
-	{#each suggestions as suggestion (typeof suggestion === 'string' ? suggestion : suggestion.text)}
-		{@const item = normalizeSuggestion(suggestion)}
-		<button
-			type="button"
-			class="chat-suggestions__item"
-			onclick={() => handleClick(item)}
-			onkeydown={(e) => handleKeyDown(e, item)}
-			tabindex={0}
-			aria-label={`Suggestion: ${item.text}`}
-		>
-			<span class="chat-suggestions__text">{item.text}</span>
-			{#if variant === 'cards' && item.description}
-				<span class="chat-suggestions__description">{item.description}</span>
-			{/if}
-		</button>
-	{/each}
-</div>
+	<div class={containerClass} role="group" aria-label="Suggested prompts">
+		{#each suggestions as suggestion (typeof suggestion === 'string' ? suggestion : suggestion.text)}
+			{@const item = normalizeSuggestion(suggestion)}
+			<button
+				type="button"
+				class="chat-suggestions__item"
+				onclick={() => handleClick(item)}
+				onkeydown={(e) => handleKeyDown(e, item)}
+				tabindex={0}
+				aria-label={`Suggestion: ${item.text}`}
+			>
+				<span class="chat-suggestions__text">{item.text}</span>
+				{#if variant === 'cards' && item.description}
+					<span class="chat-suggestions__description">{item.description}</span>
+				{/if}
+			</button>
+		{/each}
+	</div>
 {/if}
 
 <style>

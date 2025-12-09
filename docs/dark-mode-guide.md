@@ -6,19 +6,20 @@ This guide covers the dark mode token system, theme-aware shadows, and smooth th
 
 Greater Components provides a layered background token system for proper elevation hierarchy:
 
-| Token | Light Mode | Dark Mode | Usage |
-|-------|------------|-----------|-------|
-| `--gr-semantic-background-base` | gray.50 | gray.950 | Page/app background |
-| `--gr-semantic-background-surface` | white | gray.900 | Cards, modals |
-| `--gr-semantic-background-raised` | white | gray.800 | Nested cards, dropdowns |
-| `--gr-semantic-background-input` | white | gray.800 | Form inputs |
-| `--gr-semantic-background-overlay` | rgba(0,0,0,0.5) | rgba(0,0,0,0.75) | Modal overlays |
+| Token                              | Light Mode      | Dark Mode        | Usage                   |
+| ---------------------------------- | --------------- | ---------------- | ----------------------- |
+| `--gr-semantic-background-base`    | gray.50         | gray.950         | Page/app background     |
+| `--gr-semantic-background-surface` | white           | gray.900         | Cards, modals           |
+| `--gr-semantic-background-raised`  | white           | gray.800         | Nested cards, dropdowns |
+| `--gr-semantic-background-input`   | white           | gray.800         | Form inputs             |
+| `--gr-semantic-background-overlay` | rgba(0,0,0,0.5) | rgba(0,0,0,0.75) | Modal overlays          |
 
 ## Theme-Aware Shadows
 
 In dark mode, traditional drop shadows don't provide good elevation cues. Greater Components automatically switches between shadow types:
 
 ### Light Mode (Drop Shadows)
+
 ```css
 --gr-shadows-elevation-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 --gr-shadows-elevation-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
@@ -26,6 +27,7 @@ In dark mode, traditional drop shadows don't provide good elevation cues. Greate
 ```
 
 ### Dark Mode (Glow Shadows)
+
 ```css
 --gr-shadows-elevation-sm: 0 0 4px 0 rgb(255 255 255 / 0.05);
 --gr-shadows-elevation-md: 0 0 8px 0 rgb(255 255 255 / 0.07);
@@ -33,9 +35,10 @@ In dark mode, traditional drop shadows don't provide good elevation cues. Greate
 ```
 
 **Usage:**
+
 ```css
 .my-card {
-  box-shadow: var(--gr-shadows-elevation-md);
+	box-shadow: var(--gr-shadows-elevation-md);
 }
 ```
 
@@ -45,8 +48,8 @@ Focus rings use `outline` instead of `box-shadow` to prevent conflicts with hove
 
 ```css
 .my-element:focus-visible {
-  outline: var(--gr-semantic-focus-ring-width, 2px) solid var(--gr-semantic-focus-ring);
-  outline-offset: var(--gr-semantic-focus-ring-offset, 2px);
+	outline: var(--gr-semantic-focus-ring-width, 2px) solid var(--gr-semantic-focus-ring);
+	outline-offset: var(--gr-semantic-focus-ring-offset, 2px);
 }
 ```
 
@@ -58,7 +61,7 @@ Apply the `.gr-theme-transition` class to enable smooth color transitions:
 
 ```html
 <body class="gr-theme-transition">
-  <!-- Content will smoothly transition between themes -->
+	<!-- Content will smoothly transition between themes -->
 </body>
 ```
 
@@ -66,7 +69,7 @@ Apply the `.gr-theme-transition` class to enable smooth color transitions:
 
 ```css
 .my-component {
-  transition: var(--gr-semantic-transition-theme);
+	transition: var(--gr-semantic-transition-theme);
 }
 ```
 
@@ -94,19 +97,19 @@ When creating components, ensure:
 
 ```css
 .card {
-  background-color: var(--gr-semantic-background-surface);
-  border: 1px solid var(--gr-semantic-border-default);
-  box-shadow: var(--gr-shadows-elevation-md);
+	background-color: var(--gr-semantic-background-surface);
+	border: 1px solid var(--gr-semantic-border-default);
+	box-shadow: var(--gr-shadows-elevation-md);
 }
 
 .card:hover {
-  box-shadow: var(--gr-shadows-elevation-lg);
+	box-shadow: var(--gr-shadows-elevation-lg);
 }
 
 /* Dark mode uses border glow instead of shadow */
-[data-theme="dark"] .card:hover {
-  box-shadow: none;
-  border-color: var(--gr-semantic-border-strong);
+[data-theme='dark'] .card:hover {
+	box-shadow: none;
+	border-color: var(--gr-semantic-border-strong);
 }
 ```
 
@@ -114,13 +117,13 @@ When creating components, ensure:
 
 ```css
 .input {
-  background-color: var(--gr-semantic-background-input);
-  border: 1px solid var(--gr-semantic-border-default);
+	background-color: var(--gr-semantic-background-input);
+	border: 1px solid var(--gr-semantic-border-default);
 }
 
 .input:focus {
-  outline: var(--gr-semantic-focus-ring-width) solid var(--gr-semantic-focus-ring);
-  outline-offset: 1px;
-  border-color: var(--gr-semantic-action-primary-default);
+	outline: var(--gr-semantic-focus-ring-width) solid var(--gr-semantic-focus-ring);
+	outline-offset: 1px;
+	border-color: var(--gr-semantic-action-primary-default);
 }
 ```

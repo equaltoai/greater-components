@@ -213,13 +213,7 @@ Card component - Content container with elevation, borders, and semantic section
 {/snippet}
 
 {#if isLink}
-	<a
-		class={cardClass()}
-		{href}
-		{target}
-		rel={computedRel}
-		{...restProps}
-	>
+	<a class={cardClass()} {href} {target} rel={computedRel} {...restProps}>
 		{@render cardContent()}
 	</a>
 {:else if clickable}

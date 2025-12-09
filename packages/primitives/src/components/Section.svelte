@@ -56,10 +56,10 @@ Section component - Semantic section wrapper with consistent vertical spacing.
 	 * Gradient direction options.
 	 * @public
 	 */
-	type GradientDirection = 
-		| 'to-top' 
-		| 'to-bottom' 
-		| 'to-left' 
+	type GradientDirection =
+		| 'to-top'
+		| 'to-bottom'
+		| 'to-left'
 		| 'to-right'
 		| 'to-top-left'
 		| 'to-top-right'
@@ -75,7 +75,7 @@ Section component - Semantic section wrapper with consistent vertical spacing.
 		/**
 		 * Vertical spacing (margin-top and margin-bottom).
 		 * Can be a preset value or a custom CSS value (e.g., '8rem', '128px').
-		 * 
+		 *
 		 * Preset values:
 		 * - `none`: No spacing
 		 * - `sm`: 2rem
@@ -114,13 +114,13 @@ Section component - Semantic section wrapper with consistent vertical spacing.
 
 		/**
 		 * Background variant or custom CSS background value.
-		 * 
+		 *
 		 * Preset variants:
 		 * - `default`: Transparent/inherit
 		 * - `muted`: Subtle secondary background
 		 * - `accent`: Primary color tinted background
 		 * - `gradient`: Gradient background (use with gradientDirection)
-		 * 
+		 *
 		 * Can also accept custom CSS values like 'linear-gradient(...)' or '#f5f5f5'.
 		 *
 		 * @defaultValue 'default'
@@ -207,9 +207,7 @@ Section component - Semantic section wrapper with consistent vertical spacing.
 			paddingClass = 'gr-section--padded-md';
 		}
 
-		const classes = [
-			'gr-section',
-		];
+		const classes = ['gr-section'];
 
 		// Spacing classes
 		if (isSpacingPreset) {
