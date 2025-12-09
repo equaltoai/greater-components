@@ -85,7 +85,8 @@
       "tmp": "^0.2.4",
       "undici": "^7.5.0",
       "workbox-build": "^7.4.0",
-      "node-domexception": "^2.0.2"
+      "node-domexception": "^2.0.2",
+      "mdast-util-to-hast": "^13.2.1"
     }
   }
 }

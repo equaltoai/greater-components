@@ -48,11 +48,7 @@
 -->
 <script lang="ts">
 	import type { SignInCardProps, OAuthProvider } from './types.js';
-	import Card from '@equaltoai/greater-components-primitives/components/Card.svelte';
-	import Button from '@equaltoai/greater-components-primitives/components/Button.svelte';
-	import Alert from '@equaltoai/greater-components-primitives/components/Alert.svelte';
-	import Heading from '@equaltoai/greater-components-primitives/components/Heading.svelte';
-	import Text from '@equaltoai/greater-components-primitives/components/Text.svelte';
+	import { Card, Button, Alert, Heading, Text } from '@equaltoai/greater-components-primitives';
 
 	let {
 		title = 'Sign in to continue',

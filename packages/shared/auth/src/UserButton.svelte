@@ -45,10 +45,7 @@
 -->
 <script lang="ts">
 	import type { UserButtonProps, UserMenuItem } from './types.js';
-	import Avatar from '@equaltoai/greater-components-primitives/components/Avatar.svelte';
-	import Text from '@equaltoai/greater-components-primitives/components/Text.svelte';
-	import Spinner from '@equaltoai/greater-components-primitives/components/Spinner.svelte';
-	import { Menu } from '@equaltoai/greater-components-primitives';
+	import { Avatar, Text, Spinner, Menu } from '@equaltoai/greater-components-primitives';
 	import { LogOutIcon } from '@equaltoai/greater-components-icons';
 
 	let {
@@ -133,20 +130,17 @@
 {:else}
 	<!-- Dropdown variant: Avatar trigger with menu -->
 	<Menu.Root class={containerClass}>
-		<Menu.Trigger>
-			<button
-				type="button"
-				class="auth-user-button__trigger"
-				aria-label={`User menu for ${user.name}`}
-				aria-haspopup="menu"
-			>
-				<Avatar
-					src={user.imageUrl}
-					name={user.name}
-					size={avatarSizeMap[size]}
-					class="auth-user-button__avatar"
-				/>
-			</button>
+		<Menu.Trigger
+			class="auth-user-button__trigger"
+			aria-label={`User menu for ${user.name}`}
+			aria-haspopup="menu"
+		>
+			<Avatar
+				src={user.imageUrl}
+				name={user.name}
+				size={avatarSizeMap[size]}
+				class="auth-user-button__avatar"
+			/>
 		</Menu.Trigger>
 
 		<Menu.Content matchTriggerWidth={false} class="auth-user-button__menu">
