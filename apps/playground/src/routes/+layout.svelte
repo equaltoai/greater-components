@@ -34,10 +34,10 @@
 
 	let { children, data }: { children?: Snippet; data?: LayoutData } = $props();
 
-	const testTheme = $derived(() => data?.testTheme ?? null);
-	const testDensity = $derived(() => data?.testDensity ?? null);
+	const testTheme = $derived(data?.testTheme ?? null);
+	const testDensity = $derived(data?.testDensity ?? null);
 
-	const shouldPreseedPreferences = $derived(() => Boolean(testTheme || testDensity));
+	const shouldPreseedPreferences = $derived(Boolean(testTheme || testDensity));
 
 	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
@@ -96,10 +96,10 @@
 
 <svelte:head>
 	{#if shouldPreseedPreferences && typeof window === 'undefined'}
-		<script>
+		{@html `<script>
 			(function () {
-				const themeValue = {JSON.stringify(testTheme ?? null)};
-				const densityValue = {JSON.stringify(testDensity ?? null)};
+				const themeValue = ${JSON.stringify(testTheme ?? null)};
+				const densityValue = ${JSON.stringify(testDensity ?? null)};
 
 				try {
 					const raw = localStorage.getItem('gr-preferences-v1');
@@ -127,7 +127,7 @@
 					document.documentElement.setAttribute('data-density', densityValue);
 				}
 			})();
-		</script>
+		<\/script>`}
 	{/if}
 </svelte:head>
 
