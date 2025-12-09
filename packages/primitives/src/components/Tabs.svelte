@@ -234,15 +234,6 @@
 				onclick={() => selectTab(tab.id)}
 				onkeydown={(e) => handleTabKeydown(e, index)}
 				onfocus={() => (focusedTabIndex = index)}
-				style={`background-color: ${
-					isActive
-						? 'var(--gr-semantic-action-primary-active, #1e40af)'
-						: 'var(--gr-semantic-background-primary, #030712)'
-				}; color: ${
-					isActive
-						? 'var(--gr-color-base-white, #ffffff)'
-						: 'var(--gr-semantic-foreground-secondary, #e5e7eb)'
-				};`}
 			>
 				{tab.label}
 			</button>

@@ -13,16 +13,16 @@
  */
 import type { TransitionConfig } from 'svelte/transition';
 export interface SlideInParams {
-	/** Animation duration in milliseconds */
-	duration?: number;
-	/** Animation delay in milliseconds */
-	delay?: number;
-	/** CSS easing function */
-	easing?: (t: number) => number;
-	/** Horizontal distance to slide (positive = from right, negative = from left) */
-	x?: number | string;
-	/** Whether to also fade opacity */
-	opacity?: boolean;
+    /** Animation duration in milliseconds */
+    duration?: number;
+    /** Animation delay in milliseconds */
+    delay?: number;
+    /** CSS easing function */
+    easing?: (t: number) => number;
+    /** Horizontal distance to slide (positive = from right, negative = from left) */
+    x?: number | string;
+    /** Whether to also fade opacity */
+    opacity?: boolean;
 }
 /**
  * Slide in transition - element slides horizontally into view

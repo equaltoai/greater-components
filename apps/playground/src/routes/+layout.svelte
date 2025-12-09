@@ -240,6 +240,11 @@
 		color: var(--gr-color-base-white, #ffffff);
 	}
 
+	/* High-contrast mode: use black text on lighter primary background for better contrast */
+	:global([data-theme='high-contrast']) .sidebar-nav a.active {
+		color: var(--gr-color-base-black, #000000);
+	}
+
 	.sidebar-footer {
 		margin-top: auto;
 		display: flex;

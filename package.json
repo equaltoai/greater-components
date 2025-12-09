@@ -32,6 +32,7 @@
     "test:e2e": "pnpm -r test:e2e",
     "test:unit": "pnpm -r test:unit",
     "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
+    "test:a11y:ci": "pnpm test:a11y && pnpm --filter @equaltoai/greater-components-testing exec node scripts/check-a11y-compliance.js --results=test-results --standard=AA --fail-on-violations=critical,serious",
     "test:visual": "pnpm -r test:visual",
     "typecheck": "pnpm run sveltekit:sync && tsc --noEmit",
     "version": "changeset version && pnpm install --no-frozen-lockfile",

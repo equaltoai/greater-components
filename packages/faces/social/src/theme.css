@@ -5984,6 +5984,11 @@ h1 {
 	outline-offset: 2px;
 }
 
+/* High-contrast mode: use black text on lighter primary background for better contrast */
+[data-theme='high-contrast'] .spoiler-toggle {
+	color: var(--gr-color-base-black, #000000);
+}
+
 .content {
 	line-height: 1.5;
 	word-wrap: break-word;
@@ -13810,6 +13815,11 @@ h1 {
 	background: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 	border-color: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 	color: var(--gr-color-base-white, #ffffff);
+}
+
+/* High-contrast mode: use black text on lighter primary background for better contrast */
+[data-theme='high-contrast'] .search-filters__tab--active {
+	color: var(--gr-color-base-black, #000000);
 }
 
 .search-filters__count {
