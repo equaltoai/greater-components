@@ -15,6 +15,7 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 
 	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
 		content: string;
@@ -52,7 +53,11 @@
 	let showTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let hideTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let longPressTimeout: ReturnType<typeof setTimeout> | null = $state(null);
-	let actualPlacement = $state(placement);
+	let actualPlacement = $state(untrack(() => placement));
+
+	$effect(() => {
+		actualPlacement = placement;
+	});
 
 	// Computed tooltip position
 	let tooltipPosition = $state({ top: 0, left: 0 });

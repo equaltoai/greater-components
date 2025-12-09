@@ -6,6 +6,7 @@
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { createModal } from '@equaltoai/greater-components-headless/modal';
+	import { untrack } from 'svelte';
 	import { getMessagesContext, type MessageParticipant } from './context.js';
 
 	interface Props {
@@ -31,7 +32,7 @@
 
 	let isOpen = $state(false);
 	let searchQuery = $state('');
-	let selectedParticipants = $state<MessageParticipant[]>([...initialParticipants]);
+	let selectedParticipants = $state<MessageParticipant[]>(untrack(() => [...initialParticipants]));
 	let searchResults = $state<MessageParticipant[]>([]);
 	let searching = $state(false);
 	let creating = $state(false);

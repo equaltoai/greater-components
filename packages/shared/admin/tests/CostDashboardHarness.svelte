@@ -13,9 +13,10 @@
 		class?: string;
 	} = $props();
 
-	const context = createCostContext({ adapter });
-	if (period) {
-		context.updateState({ period });
+	import { untrack } from 'svelte';
+	const context = createCostContext(untrack(() => ({ adapter })));
+	if (untrack(() => period)) {
+		context.updateState({ period: untrack(() => period) });
 	}
 </script>
 

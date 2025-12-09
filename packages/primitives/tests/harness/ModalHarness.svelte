@@ -3,12 +3,13 @@
 	import Button from '../../src/components/Button.svelte';
 	import type ModalComponent from '../../src/components/Modal.svelte';
 	import type { ComponentProps } from 'svelte';
+	import { untrack } from 'svelte';
 
 	const { props = {} as ComponentProps<typeof ModalComponent> } = $props<{
 		props?: ComponentProps<typeof ModalComponent>;
 	}>();
 
-	let open = $state(props.open ?? false);
+	let open = $state(untrack(() => props.open ?? false));
 </script>
 
 <Modal bind:open {...props}>

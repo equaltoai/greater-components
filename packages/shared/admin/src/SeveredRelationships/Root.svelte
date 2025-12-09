@@ -4,6 +4,7 @@ Admin.SeveredRelationships.Root - Severed Relationships Container
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 	import { createSeveredRelationshipsContext, type SeveredRelationshipsConfig } from './context.js';
 
 	interface Props {
@@ -15,7 +16,13 @@ Admin.SeveredRelationships.Root - Severed Relationships Container
 
 	let { adapter, config = {}, children, class: className = '' }: Props = $props();
 
-	createSeveredRelationshipsContext({ adapter, ...config });
+	// Create context
+	createSeveredRelationshipsContext(
+		untrack(() => ({
+			adapter,
+			...config,
+		}))
+	);
 </script>
 
 <div class={`severed-relationships-root ${className}`}>

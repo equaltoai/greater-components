@@ -16,9 +16,8 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { createMenu } from '@equaltoai/greater-components-headless/menu';
-	import { createModal } from '@equaltoai/greater-components-headless/modal';
+	import { type Snippet } from 'svelte';
+	import { createMenu, createModal } from '@equaltoai/greater-components-headless';
 	import type { ActivityPubActor, GenericStatus } from '../generics/index.js';
 
 	export type ModerationType = 'block' | 'mute' | 'report' | 'hide' | 'addNote';
@@ -145,19 +144,21 @@
 		targetAccount,
 		targetStatus,
 		config = {},
-		handlers = {},
+		handlers: _handlers = {},
 		renderAction,
 		disabled = false,
 	}: Props = $props();
 
+	const handlers = $derived(_handlers);
+
 	const {
-		actions = ['mute', 'block', 'report'],
 		mode = 'menu',
 		showIcons = true,
 		showDescriptions = true,
-		class: className = '',
+		actions = ['report', 'block', 'mute'] as ModerationType[],
 		alwaysConfirm = false,
-	} = config;
+		class: className = '',
+	} = $derived(config);
 
 	/**
 	 * Moderation action definitions
@@ -239,7 +240,7 @@
 	 */
 	const menu = createMenu({
 		closeOnSelect: true,
-		onSelect: (value) => initiateAction(value as ModerationType),
+		onSelect: (value: unknown) => initiateAction(value as ModerationType),
 	});
 
 	/**

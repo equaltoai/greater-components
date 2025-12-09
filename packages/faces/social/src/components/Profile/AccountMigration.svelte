@@ -261,8 +261,7 @@ Handles account migration workflow:
 
 					{#if migration.followersCount !== undefined}
 						<p class="account-migration__followers">
-							{migration.followersCount} follower{migration.followersCount !== 1 ? 's' : ''} will be
-							notified
+							{migration.followersCount} follower{migration.followersCount !== 1 ? 's' : ''} will be notified
 						</p>
 					{/if}
 

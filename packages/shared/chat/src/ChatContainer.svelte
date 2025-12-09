@@ -16,7 +16,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, untrack } from 'svelte';
 	import { createChatContext } from './context.svelte.js';
 	import type { ChatHandlers, ConnectionStatus } from './context.svelte.js';
 	import type { ChatMessage, ChatSettingsState } from './types.js';
@@ -115,7 +115,14 @@
 	const effectiveFillHeight = $derived(fillHeight || flex);
 
 	// Create chat context
-	const context = createChatContext(handlers, initialSettings);
+	const context = createChatContext(
+		untrack(() => handlers),
+		untrack(() => initialSettings)
+	);
+
+	$effect(() => {
+		Object.assign(context.handlers, handlers);
+	});
 
 	// Container element reference for scrolling
 	let containerRef: HTMLDivElement | undefined = $state();
@@ -325,9 +332,9 @@
 	}
 
 	/* Streaming state */
-	.chat-container--streaming {
-		/* Visual indicator that streaming is active */
-	}
+	/* .chat-container--streaming {
+		Visual indicator that streaming is active
+	} */
 
 	/* Error state */
 	.chat-container--error {

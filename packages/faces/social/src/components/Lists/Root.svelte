@@ -42,9 +42,18 @@
 		class?: string;
 	}
 
-	let { handlers = {}, autoFetch = true, children, class: className = '' }: Props = $props();
+	let {
+		handlers: handlersProp = {},
+		autoFetch = true,
+		children,
+		class: className = '',
+	}: Props = $props();
 
-	// Create lists context
+	// Reactive handlers
+	const handlers = $derived(handlersProp);
+
+	// Create lists context - pass handlers reactively
+	// eslint-disable-next-line svelte/valid-compile
 	const context = createListsContext(handlers);
 
 	// Auto-fetch on mount

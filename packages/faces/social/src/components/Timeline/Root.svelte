@@ -58,11 +58,18 @@ Provides context for child components and handles virtualization/infinite scroll
 
 	// Create reactive state
 	const internalState: TimelineCompoundState = $state({
+		// eslint-disable-next-line svelte/valid-compile
 		loading: initialState.loading ?? false,
+		// eslint-disable-next-line svelte/valid-compile
 		loadingMore: initialState.loadingMore ?? false,
+		// eslint-disable-next-line svelte/valid-compile
 		hasMore: initialState.hasMore ?? true,
+		// eslint-disable-next-line svelte/valid-compile
 		error: initialState.error ?? null,
-		itemCount: items.length,
+		get itemCount() {
+			return items.length;
+		},
+		// eslint-disable-next-line svelte/valid-compile
 		scrollTop: initialState.scrollTop ?? 0,
 	});
 
@@ -71,18 +78,22 @@ Provides context for child components and handles virtualization/infinite scroll
 		get items() {
 			return items;
 		},
-		config: {
-			mode: config.mode || 'feed',
-			density: config.density || 'comfortable',
-			virtualized: config.virtualized ?? true,
-			infiniteScroll: config.infiniteScroll ?? true,
-			realtime: config.realtime ?? false,
-			showLoading: config.showLoading ?? true,
-			estimatedItemHeight: config.estimatedItemHeight || 200,
-			overscan: config.overscan || 5,
-			class: config.class || '',
+		get config() {
+			return {
+				mode: config.mode || 'feed',
+				density: config.density || 'comfortable',
+				virtualized: config.virtualized ?? true,
+				infiniteScroll: config.infiniteScroll ?? true,
+				realtime: config.realtime ?? false,
+				showLoading: config.showLoading ?? true,
+				estimatedItemHeight: config.estimatedItemHeight || 200,
+				overscan: config.overscan || 5,
+				class: config.class || '',
+			};
 		},
-		handlers,
+		get handlers() {
+			return handlers;
+		},
 		state: internalState,
 		updateState: (partial: Partial<TimelineCompoundState>) => {
 			Object.assign(internalState, partial);

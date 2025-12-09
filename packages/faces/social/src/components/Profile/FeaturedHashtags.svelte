@@ -71,8 +71,8 @@ Supports drag-and-drop reordering and management (for own profile).
 	let dragOverIndex = $state<number | null>(null);
 	let removingHashtags = $state<Set<string>>(new Set());
 
-	// Local copy for reordering
-	let localHashtags = $state<FeaturedHashtag[]>([...hashtags]);
+	// Local copy for reordering - initialized empty, synced via $effect
+	let localHashtags = $state<FeaturedHashtag[]>([]);
 
 	// Update local copy when prop changes
 	$effect(() => {

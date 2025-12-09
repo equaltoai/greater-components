@@ -3,6 +3,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 	import { createAdminContext } from './context.js';
 	import type { AdminHandlers } from './context.js';
 
@@ -14,7 +15,13 @@
 
 	let { handlers = {}, children, class: className = '' }: Props = $props();
 
-	createAdminContext(handlers);
+	// Create context with untracked handlers to avoid reactivity capture
+	const context = createAdminContext(untrack(() => handlers));
+
+	// Keep handlers in sync if they change
+	$effect(() => {
+		Object.assign(context.handlers, handlers);
+	});
 </script>
 
 <div class={`admin-root ${className}`}>

@@ -96,15 +96,17 @@
 		showConnectionStatus = true,
 	}: Props = $props();
 
-	// Create appropriate integration
-	let timelineIntegration =
+	// Create appropriate integration reactively
+	const timelineIntegration = $derived(
 		component === 'timeline'
 			? createTimelineIntegration(integration as TimelineIntegrationConfig)
-			: null;
-	let notificationIntegration =
+			: null
+	);
+	const notificationIntegration = $derived(
 		component === 'notifications'
 			? createNotificationIntegration(integration as NotificationIntegrationConfig)
-			: null;
+			: null
+	);
 
 	let mounted = false;
 	let connectionError = $state<string | null>(null);

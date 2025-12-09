@@ -11,7 +11,8 @@
 		class?: string;
 	} = $props();
 
-	createSeveredRelationshipsContext({ adapter });
+	import { untrack } from 'svelte';
+	createSeveredRelationshipsContext(untrack(() => ({ adapter })));
 </script>
 
 <SeveredRelationshipsList class={className} />

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createVirtualizer } from '@tanstack/svelte-virtual';
+	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
 	import type { StatusActionHandlers } from './Status/context.js';
@@ -130,11 +131,13 @@
 	}: Props = $props();
 
 	// Create integration instance if config is provided
-	let timelineIntegration = integration
-		? createTimelineIntegration(integration)
-		: adapter && view
-			? createGraphQLTimelineIntegration(adapter, view)
-			: null;
+	const timelineIntegration = $derived(
+		integration
+			? createTimelineIntegration(integration)
+			: adapter && view
+				? createGraphQLTimelineIntegration(adapter, view)
+				: null
+	);
 	let mounted = false;
 
 	// Use store data when integration is available, otherwise fall back to props
@@ -156,11 +159,11 @@
 	let prevScrollTop = 0;
 	let prevItemCount = 0;
 
-	const virtualizer = $derived(
+	const virtualizerStore = $derived(
 		scrollElement
 			? createVirtualizer({
 					count: items.length,
-					getScrollElement: () => scrollElement,
+					getScrollElement: () => scrollElement ?? null,
 					estimateSize: () => estimateSize,
 					overscan,
 				})
@@ -228,15 +231,18 @@
 
 		if (currentItemCount > prevItemCount && prevItemCount > 0) {
 			const prevScrollHeight = scrollElement.scrollHeight;
+			// Capture scrollElement reference for closure
+			const element = scrollElement;
 
 			// Use requestAnimationFrame to wait for DOM updates
 			requestAnimationFrame(() => {
-				const newScrollHeight = scrollElement.scrollHeight;
+				if (!element) return;
+				const newScrollHeight = element.scrollHeight;
 				const heightDiff = newScrollHeight - prevScrollHeight;
 
 				// If items were likely added to the top (scroll position near top)
-				if (heightDiff > 0 && scrollElement.scrollTop < 1000) {
-					scrollElement.scrollTop += heightDiff;
+				if (heightDiff > 0 && element.scrollTop < 1000) {
+					element.scrollTop += heightDiff;
 				}
 			});
 		}
@@ -244,8 +250,8 @@
 		prevItemCount = currentItemCount;
 	});
 
-	const virtualItems = $derived(virtualizer?.getVirtualItems() || []);
-	const totalSize = $derived(virtualizer?.getTotalSize() || 0);
+	const virtualItems = $derived(virtualizerStore ? get(virtualizerStore).getVirtualItems() : []);
+	const totalSize = $derived(virtualizerStore ? get(virtualizerStore).getTotalSize() : 0);
 
 	function handleStatusCardClick(status: Status) {
 		onStatusClick?.(status);

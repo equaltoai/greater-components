@@ -63,9 +63,11 @@
 	const restProps = $restProps<Omit<HTMLAttributes<HTMLDivElement>, 'class'>>();
 
 	// Component state
+	// eslint-disable-next-line svelte/valid-compile
 	let content = $state(initialContent);
 	let contentWarning = $state('');
 	let hasContentWarning = $state(false);
+	// eslint-disable-next-line svelte/valid-compile
 	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(defaultVisibility);
 	let mediaAttachments = $state<ComposeMediaAttachment[]>([]);
 	let poll = $state<ComposePoll | undefined>();

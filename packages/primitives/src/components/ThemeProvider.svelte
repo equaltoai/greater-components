@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import type { Snippet } from 'svelte';
 	import { preferencesStore, type ColorScheme } from '../stores/preferences';
 	import {
@@ -95,9 +95,9 @@
 	// Note: preventFlash, enablePersistence, and enableSystemDetection props are kept
 	// for API compatibility but flash prevention should be handled in app.html.
 	// See Greater Components docs for the recommended approach.
-	void preventFlash;
-	void enablePersistence;
-	void enableSystemDetection;
+	void untrack(() => preventFlash);
+	void untrack(() => enablePersistence);
+	void untrack(() => enableSystemDetection);
 </script>
 
 <!-- 

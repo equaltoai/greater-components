@@ -84,6 +84,7 @@
 		enablePreferences = true,
 	}: Props = $props();
 
+	// eslint-disable-next-line svelte/valid-compile
 	const context = createProfileContext(profileProp, handlersProp, isOwnProfile, adapter);
 
 	let controller: ProfileGraphQLController | null = null;
