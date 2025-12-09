@@ -4,7 +4,7 @@
     "rootDir": ".",
     "outDir": "dist"
   },
-  "include": ["packages/**/*", "apps/**/*"],
+  "include": ["packages/**/*", "packages/**/*.json", "apps/**/*"],
   "exclude": [
     "**/node_modules",
     "**/dist",

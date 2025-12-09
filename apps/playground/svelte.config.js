@@ -46,7 +46,7 @@ const config = {
 					acc[`@equaltoai/greater-components-${pkg}`] = resolvePackageDist(`packages/${pkg}/src`);
 					return acc;
 				},
-				{}
+				/** @type {Record<string, string>} */ ({})
 			),
 			...['auth', 'admin', 'compose', 'messaging', 'search', 'notifications', 'chat'].reduce(
 				(acc, pkg) => {
@@ -55,7 +55,7 @@ const config = {
 					);
 					return acc;
 				},
-				{}
+				/** @type {Record<string, string>} */ ({})
 			),
 			'@equaltoai/greater-components-social': resolvePackageDist('packages/faces/social/src'),
 			'@equaltoai/greater-components': resolvePackageDist('packages/greater-components/src'),

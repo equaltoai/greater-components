@@ -130,7 +130,7 @@ export function createSmoothThemeToggle(
 		const currentTheme = getTheme();
 		const currentIndex = themes.indexOf(currentTheme);
 		const nextIndex = (currentIndex + 1) % themes.length;
-		const nextTheme = themes[nextIndex];
+		const nextTheme = themes[nextIndex] ?? themes[0] ?? 'light';
 
 		await smoothThemeTransition(() => {
 			setTheme(nextTheme);
