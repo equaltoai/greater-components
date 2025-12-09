@@ -81,12 +81,7 @@ Spinner component - Accessible loading indicator with configurable size and colo
 
 	// Compute spinner classes
 	const spinnerClass = $derived(
-		[
-			'gr-spinner',
-			`gr-spinner--${size}`,
-			`gr-spinner--${color}`,
-			className,
-		]
+		['gr-spinner', `gr-spinner--${size}`, `gr-spinner--${color}`, className]
 			.filter(Boolean)
 			.join(' ')
 	);
@@ -95,14 +90,7 @@ Spinner component - Accessible loading indicator with configurable size and colo
 	const pixelSize = $derived(sizeMap[size] || sizeMap.md);
 </script>
 
-<span
-	class={spinnerClass}
-	role="status"
-	aria-label={label}
-	{id}
-	{style}
-	{...restProps}
->
+<span class={spinnerClass} role="status" aria-label={label} {id} {style} {...restProps}>
 	<svg
 		class="gr-spinner__svg"
 		width={pixelSize}

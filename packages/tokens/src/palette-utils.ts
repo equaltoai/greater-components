@@ -10,19 +10,30 @@ import palettesData from './palettes.json';
 export type PalettePreset = 'slate' | 'stone' | 'neutral' | 'zinc' | 'gray';
 
 /** Color scale shade values (50-950) */
-export type ColorShade = '50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | '950';
+export type ColorShade =
+	| '50'
+	| '100'
+	| '200'
+	| '300'
+	| '400'
+	| '500'
+	| '600'
+	| '700'
+	| '800'
+	| '900'
+	| '950';
 
 /** A complete color scale with all shade values */
 export type ColorScale = {
-  [K in ColorShade]?: string;
+	[K in ColorShade]?: string;
 };
 
 /** Custom palette configuration object */
 export interface CustomPalette {
-  /** Gray scale colors (backgrounds, borders, text) */
-  gray?: ColorScale;
-  /** Primary brand colors */
-  primary?: ColorScale;
+	/** Gray scale colors (backgrounds, borders, text) */
+	gray?: ColorScale;
+	/** Primary brand colors */
+	primary?: ColorScale;
 }
 
 /** Palette configuration - either a preset name or custom palette object */
@@ -30,13 +41,13 @@ export type PaletteConfig = PalettePreset | CustomPalette;
 
 /** Palette data structure from palettes.json */
 export interface PaletteData {
-  description: string;
-  gray: {
-    [shade: string]: { value: string };
-  };
-  primary?: {
-    [shade: string]: { value: string };
-  };
+	description: string;
+	gray: {
+		[shade: string]: { value: string };
+	};
+	primary?: {
+		[shade: string]: { value: string };
+	};
 }
 
 /** All available palettes */
@@ -49,15 +60,15 @@ export const palettes = palettesData as Record<PalettePreset, PaletteData>;
  * @returns CSS declarations string
  */
 export function generateColorScaleCSS(prefix: string, scale: ColorScale): string {
-  const declarations: string[] = [];
-  
-  for (const [shade, value] of Object.entries(scale)) {
-    if (value) {
-      declarations.push(`--gr-color-${prefix}-${shade}: ${value};`);
-    }
-  }
-  
-  return declarations.join('\n');
+	const declarations: string[] = [];
+
+	for (const [shade, value] of Object.entries(scale)) {
+		if (value) {
+			declarations.push(`--gr-color-${prefix}-${shade}: ${value};`);
+		}
+	}
+
+	return declarations.join('\n');
 }
 
 /**
@@ -67,26 +78,26 @@ export function generateColorScaleCSS(prefix: string, scale: ColorScale): string
  * @returns CSS declarations string for semantic action colors
  */
 export function generateSemanticActionCSS(primaryScale: ColorScale): string {
-  const declarations: string[] = [];
-  
-  // Map primary colors to semantic action colors
-  if (primaryScale['600']) {
-    declarations.push(`--gr-semantic-action-primary-default: ${primaryScale['600']};`);
-  }
-  if (primaryScale['700']) {
-    declarations.push(`--gr-semantic-action-primary-hover: ${primaryScale['700']};`);
-  }
-  if (primaryScale['800']) {
-    declarations.push(`--gr-semantic-action-primary-active: ${primaryScale['800']};`);
-  }
-  if (primaryScale['300']) {
-    declarations.push(`--gr-semantic-action-primary-disabled: ${primaryScale['300']};`);
-  }
-  if (primaryScale['500']) {
-    declarations.push(`--gr-semantic-focus-ring: ${primaryScale['500']};`);
-  }
-  
-  return declarations.join('\n');
+	const declarations: string[] = [];
+
+	// Map primary colors to semantic action colors
+	if (primaryScale['600']) {
+		declarations.push(`--gr-semantic-action-primary-default: ${primaryScale['600']};`);
+	}
+	if (primaryScale['700']) {
+		declarations.push(`--gr-semantic-action-primary-hover: ${primaryScale['700']};`);
+	}
+	if (primaryScale['800']) {
+		declarations.push(`--gr-semantic-action-primary-active: ${primaryScale['800']};`);
+	}
+	if (primaryScale['300']) {
+		declarations.push(`--gr-semantic-action-primary-disabled: ${primaryScale['300']};`);
+	}
+	if (primaryScale['500']) {
+		declarations.push(`--gr-semantic-focus-ring: ${primaryScale['500']};`);
+	}
+
+	return declarations.join('\n');
 }
 
 /**
@@ -95,18 +106,18 @@ export function generateSemanticActionCSS(primaryScale: ColorScale): string {
  * @returns Complete CSS string for injection
  */
 export function generatePaletteCSS(palette: CustomPalette): string {
-  const parts: string[] = [];
-  
-  if (palette.gray) {
-    parts.push(generateColorScaleCSS('gray', palette.gray));
-  }
-  
-  if (palette.primary) {
-    parts.push(generateColorScaleCSS('primary', palette.primary));
-    parts.push(generateSemanticActionCSS(palette.primary));
-  }
-  
-  return parts.join('\n');
+	const parts: string[] = [];
+
+	if (palette.gray) {
+		parts.push(generateColorScaleCSS('gray', palette.gray));
+	}
+
+	if (palette.primary) {
+		parts.push(generateColorScaleCSS('primary', palette.primary));
+		parts.push(generateSemanticActionCSS(palette.primary));
+	}
+
+	return parts.join('\n');
 }
 
 /**
@@ -115,14 +126,14 @@ export function generatePaletteCSS(palette: CustomPalette): string {
  * @returns ColorScale object or undefined if preset not found
  */
 export function getPresetGrayScale(presetName: PalettePreset): ColorScale | undefined {
-  const preset = palettes[presetName];
-  if (!preset) return undefined;
-  
-  const scale: ColorScale = {};
-  for (const [shade, data] of Object.entries(preset.gray)) {
-    scale[shade as ColorShade] = data.value;
-  }
-  return scale;
+	const preset = palettes[presetName];
+	if (!preset) return undefined;
+
+	const scale: ColorScale = {};
+	for (const [shade, data] of Object.entries(preset.gray)) {
+		scale[shade as ColorShade] = data.value;
+	}
+	return scale;
 }
 
 /**
@@ -132,8 +143,20 @@ export function getPresetGrayScale(presetName: PalettePreset): ColorScale | unde
  * @returns True if all required shades are present
  */
 export function validateColorScale(
-  scale: ColorScale, 
-  requiredShades: ColorShade[] = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']
+	scale: ColorScale,
+	requiredShades: ColorShade[] = [
+		'50',
+		'100',
+		'200',
+		'300',
+		'400',
+		'500',
+		'600',
+		'700',
+		'800',
+		'900',
+		'950',
+	]
 ): boolean {
-  return requiredShades.every(shade => shade in scale && scale[shade] !== undefined);
+	return requiredShades.every((shade) => shade in scale && scale[shade] !== undefined);
 }

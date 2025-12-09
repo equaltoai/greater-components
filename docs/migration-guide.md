@@ -7,7 +7,7 @@ This guide helps you upgrade between major versions of Greater Components.
 ## Version Compatibility
 
 | Greater Components | Svelte | Node.js | TypeScript |
-|--------------------|--------|---------|------------|
+| ------------------ | ------ | ------- | ---------- |
 | 4.x (current)      | 5.x    | 20+     | 5.0+       |
 | 3.x                | 4.x    | 18+     | 4.9+       |
 | 2.x                | 4.x    | 16+     | 4.5+       |
@@ -21,20 +21,22 @@ This guide helps you upgrade between major versions of Greater Components.
 Greater Components 4.x requires Svelte 5 and uses the new runes system.
 
 **Before (Svelte 4):**
+
 ```svelte
 <script>
-  export let value = '';
-  let count = 0;
-  $: doubled = count * 2;
+	export let value = '';
+	let count = 0;
+	$: doubled = count * 2;
 </script>
 ```
 
 **After (Svelte 5):**
+
 ```svelte
 <script>
-  let { value = '' } = $props();
-  let count = $state(0);
-  const doubled = $derived(count * 2);
+	let { value = '' } = $props();
+	let count = $state(0);
+	const doubled = $derived(count * 2);
 </script>
 ```
 
@@ -43,18 +45,20 @@ Greater Components 4.x requires Svelte 5 and uses the new runes system.
 Named slots have been replaced with Svelte 5 snippets.
 
 **Before (Svelte 4):**
+
 ```svelte
 <Button>
-  <span slot="prefix"><Icon /></span>
-  Click me
+	<span slot="prefix"><Icon /></span>
+	Click me
 </Button>
 ```
 
 **After (Svelte 5):**
+
 ```svelte
 <Button>
-  {#snippet prefix()}<Icon />{/snippet}
-  Click me
+	{#snippet prefix()}<Icon />{/snippet}
+	Click me
 </Button>
 ```
 
@@ -63,11 +67,13 @@ Named slots have been replaced with Svelte 5 snippets.
 The CSS import paths have been reorganized for clarity.
 
 **Before:**
+
 ```typescript
 import '@equaltoai/greater-components/styles.css';
 ```
 
 **After:**
+
 ```typescript
 // Import tokens first (REQUIRED)
 import '@equaltoai/greater-components/tokens/theme.css';
@@ -83,24 +89,27 @@ import '@equaltoai/greater-components/style.css';
 The Menu component now uses a compound component pattern.
 
 **Before:**
+
 ```svelte
 <Menu items={[{ label: 'Edit', value: 'edit' }]} onSelect={handleSelect} />
 ```
 
 **After (Compound):**
+
 ```svelte
 <Menu.Root>
-  <Menu.Trigger>Options</Menu.Trigger>
-  <Menu.Items>
-    <Menu.Item onclick={() => handleEdit()}>Edit</Menu.Item>
-  </Menu.Items>
+	<Menu.Trigger>Options</Menu.Trigger>
+	<Menu.Items>
+		<Menu.Item onclick={() => handleEdit()}>Edit</Menu.Item>
+	</Menu.Items>
 </Menu.Root>
 ```
 
 **Or use SimpleMenu for migration:**
+
 ```svelte
 <SimpleMenu items={[{ label: 'Edit', value: 'edit' }]} onSelect={handleSelect}>
-  {#snippet trigger()}<button>Options</button>{/snippet}
+	{#snippet trigger()}<button>Options</button>{/snippet}
 </SimpleMenu>
 ```
 
@@ -130,12 +139,14 @@ The following components were added in 4.x:
 Packages were consolidated under the umbrella package.
 
 **Before:**
+
 ```typescript
 import { Button } from '@equaltoai/greater-primitives';
 import { Status } from '@equaltoai/greater-fediverse';
 ```
 
 **After:**
+
 ```typescript
 import { Button } from '@equaltoai/greater-components/primitives';
 import { Status } from '@equaltoai/greater-components/fediverse';
@@ -146,9 +157,10 @@ import { Status } from '@equaltoai/greater-components/fediverse';
 ThemeProvider is now required at the root of your application.
 
 **After:**
+
 ```svelte
 <ThemeProvider>
-  <slot />
+	<slot />
 </ThemeProvider>
 ```
 
@@ -180,4 +192,4 @@ ThemeProvider is now required at the root of your application.
 
 ---
 
-*Last Updated: December 2025*
+_Last Updated: December 2025_

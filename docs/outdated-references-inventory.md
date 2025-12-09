@@ -15,24 +15,31 @@ This file lists all occurrences of outdated package references (specifically `gr
 The following source files contain JSDoc examples or internal references using the old package name. These are excellent candidates for a "Replace All" refactor.
 
 #### `packages/faces/social/src/index.ts`
+
 - Contains JSDoc examples for `createLesserClient`, `Profile`, `Lists`, `Filters` etc. using `@equaltoai/greater-components-fediverse`.
 
 #### `packages/faces/social/src/components/Status/index.ts`
+
 - JSDoc examples for `Status` usage use `@equaltoai/greater-components-fediverse`.
 
 #### `packages/faces/social/src/components/Timeline/index.ts`
+
 - JSDoc examples for `Timeline` usage use `@equaltoai/greater-components-fediverse`.
 
 #### `packages/faces/social/src/components/Status/README.md`
+
 - Documentation within the component folder.
 
 #### `packages/faces/social/src/components/Timeline/README.md`
+
 - Documentation within the component folder.
 
 #### `packages/faces/social/src/generics/README.md`
+
 - Documentation for generic types.
 
 #### `packages/faces/social/src/examples/realtime-usage.md`
+
 - Usage examples for realtime features.
 
 ### Other Source Files

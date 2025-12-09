@@ -83,11 +83,7 @@ LoadingState component - Wrapper for Spinner with message and fullscreen overlay
 
 	// Compute container classes
 	const containerClass = $derived(
-		[
-			'gr-loading-state',
-			fullscreen && 'gr-loading-state--fullscreen',
-			className,
-		]
+		['gr-loading-state', fullscreen && 'gr-loading-state--fullscreen', className]
 			.filter(Boolean)
 			.join(' ')
 	);

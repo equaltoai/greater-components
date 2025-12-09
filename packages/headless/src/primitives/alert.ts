@@ -381,8 +381,5 @@ export function createAlert(config: AlertConfig = {}): AlertBuilder {
  * Type guard to check if a value is an AlertVariant
  */
 export function isAlertVariant(value: unknown): value is AlertVariant {
-	return (
-		typeof value === 'string' &&
-		['error', 'warning', 'success', 'info'].includes(value)
-	);
+	return typeof value === 'string' && ['error', 'warning', 'success', 'info'].includes(value);
 }

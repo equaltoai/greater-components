@@ -8,10 +8,7 @@
 		children: Snippet;
 	}
 
-	let {
-		class: className = '',
-		children,
-	}: Props = $props();
+	let { class: className = '', children }: Props = $props();
 </script>
 
 <div class="gr-menu-header {className}" role="presentation">

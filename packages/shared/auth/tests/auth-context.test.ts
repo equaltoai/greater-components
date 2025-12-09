@@ -11,6 +11,3 @@ describe('Auth context', () => {
 		}).not.toThrow();
 	});
 });
-
-
-

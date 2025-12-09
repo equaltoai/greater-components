@@ -9,6 +9,3 @@
 <Auth.Root {handlers}>
 	<Auth.InstanceSelector defaultInstance="https://dev.lesser.host" submitLabel="Continue" />
 </Auth.Root>
-
-
-

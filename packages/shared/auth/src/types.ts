@@ -1,8 +1,8 @@
 /**
  * Authentication Component Types
- * 
+ *
  * Type definitions for SignInCard and UserButton components.
- * 
+ *
  * @module Auth/types
  */
 

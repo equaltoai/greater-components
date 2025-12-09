@@ -99,7 +99,15 @@ export interface MenuConfig {
 	/**
 	 * Menu placement - extended options for dropdown positioning
 	 */
-	placement?: 'bottom' | 'bottom-start' | 'bottom-end' | 'top' | 'top-start' | 'top-end' | 'left' | 'right';
+	placement?:
+		| 'bottom'
+		| 'bottom-start'
+		| 'bottom-end'
+		| 'top'
+		| 'top-start'
+		| 'top-end'
+		| 'left'
+		| 'right';
 
 	/**
 	 * Offset from trigger element in pixels

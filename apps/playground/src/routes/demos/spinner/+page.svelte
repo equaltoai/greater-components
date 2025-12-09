@@ -49,7 +49,7 @@
 	<section class="demo-section">
 		<h2>Spinner Sizes</h2>
 		<p>Five size options from extra-small (12px) to extra-large (48px).</p>
-		
+
 		<div class="spinner-row">
 			<div class="spinner-item">
 				<Spinner size="xs" />
@@ -79,7 +79,7 @@
 	<section class="demo-section">
 		<h2>Spinner Colors</h2>
 		<p>Four color options for different contexts and backgrounds.</p>
-		
+
 		<div class="spinner-row">
 			<div class="spinner-item">
 				<Spinner color="primary" />
@@ -105,7 +105,7 @@
 	<section class="demo-section">
 		<h2>LoadingState Component</h2>
 		<p>Wrapper component that combines Spinner with optional message and layout.</p>
-		
+
 		<div class="loading-demos">
 			<div class="loading-demo-item">
 				<LoadingState message="Loading your data..." />
@@ -121,17 +121,11 @@
 	<section class="demo-section">
 		<h2>Fullscreen Overlay</h2>
 		<p>LoadingState can display as a fullscreen overlay for page-level loading.</p>
-		
-		<Button onclick={toggleFullscreen}>
-			Show Fullscreen Loading (2s)
-		</Button>
+
+		<Button onclick={toggleFullscreen}>Show Fullscreen Loading (2s)</Button>
 
 		{#if showFullscreen}
-			<LoadingState 
-				fullscreen 
-				size="lg" 
-				message="Loading application..." 
-			/>
+			<LoadingState fullscreen size="lg" message="Loading application..." />
 		{/if}
 
 		<CodeExample code={fullscreenCode} language="svelte" />
@@ -140,7 +134,7 @@
 	<section class="demo-section">
 		<h2>Button Loading State</h2>
 		<p>Use Spinner inside buttons to indicate loading actions.</p>
-		
+
 		<div class="button-row">
 			<Button disabled>
 				<Spinner size="sm" color="current" />
@@ -158,8 +152,13 @@
 	<section class="demo-section">
 		<h2>Accessibility</h2>
 		<ul class="a11y-list">
-			<li><strong>Role:</strong> Uses <code>role="status"</code> for screen reader announcements</li>
-			<li><strong>ARIA:</strong> Includes <code>aria-live="polite"</code> and <code>aria-busy="true"</code></li>
+			<li>
+				<strong>Role:</strong> Uses <code>role="status"</code> for screen reader announcements
+			</li>
+			<li>
+				<strong>ARIA:</strong> Includes <code>aria-live="polite"</code> and
+				<code>aria-busy="true"</code>
+			</li>
 			<li><strong>Label:</strong> Customizable accessible label (default: "Loading")</li>
 			<li><strong>Motion:</strong> Respects <code>prefers-reduced-motion</code> preference</li>
 		</ul>

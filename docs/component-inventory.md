@@ -45,8 +45,6 @@ This package provides **43 interactive and layout components** for building any 
 
 - FileUpload - File upload with drag-drop
 
-
-
 **Overlays & Menus (5):**
 
 - Modal - Dialog overlay

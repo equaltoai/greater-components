@@ -91,12 +91,7 @@ export type {
 
 // Alert primitive
 export { createAlert, isAlertVariant } from './primitives/alert';
-export type {
-	AlertVariant,
-	AlertState,
-	AlertConfig,
-	AlertBuilder,
-} from './primitives/alert';
+export type { AlertVariant, AlertState, AlertConfig, AlertBuilder } from './primitives/alert';
 
 // Common types
 export type { Action, ActionReturn } from './types/common';

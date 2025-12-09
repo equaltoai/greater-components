@@ -320,12 +320,7 @@
 		left: 0;
 		right: 0;
 		height: 2px;
-		background: linear-gradient(
-			90deg,
-			transparent,
-			var(--gr-color-primary-500),
-			transparent
-		);
+		background: linear-gradient(90deg, transparent, var(--gr-color-primary-500), transparent);
 		animation: loading-bar 1.5s ease-in-out infinite;
 	}
 

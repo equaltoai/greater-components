@@ -1,15 +1,15 @@
 /**
  * Greater Components Svelte Transitions
- * 
+ *
  * Pre-built transition functions for common animation patterns.
  * All transitions respect prefers-reduced-motion and use design token timing.
- * 
+ *
  * @example
  * ```svelte
  * <script>
  *   import { fadeUp, scaleIn } from '@equaltoai/greater-components-primitives/transitions';
  * </script>
- * 
+ *
  * <div transition:fadeUp={{ duration: 300 }}>
  *   Animated content
  * </div>

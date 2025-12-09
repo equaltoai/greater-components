@@ -5,11 +5,11 @@
  */
 import type { MenuPlacement, MenuPosition } from './context';
 export interface PositionConfig {
-    triggerRect: DOMRect;
-    contentRect: DOMRect;
-    placement: MenuPlacement;
-    offset: number;
-    viewportMargin?: number;
+	triggerRect: DOMRect;
+	contentRect: DOMRect;
+	placement: MenuPlacement;
+	offset: number;
+	viewportMargin?: number;
 }
 /**
  * Calculate menu position based on trigger element and preferred placement
@@ -22,5 +22,8 @@ export declare function getScrollParent(element: HTMLElement): HTMLElement | nul
 /**
  * Create a resize/scroll observer for repositioning
  */
-export declare function createPositionObserver(triggerElement: HTMLElement, onUpdate: () => void): () => void;
+export declare function createPositionObserver(
+	triggerElement: HTMLElement,
+	onUpdate: () => void
+): () => void;
 //# sourceMappingURL=positioning.d.ts.map

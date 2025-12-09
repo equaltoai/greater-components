@@ -33,10 +33,10 @@ export interface MenuContextValue {
 	offset: number;
 	loop: boolean;
 	position: MenuPosition;
-	
+
 	// Registered items
 	items: MenuItemConfig[];
-	
+
 	// Actions
 	open: () => void;
 	close: () => void;
@@ -45,13 +45,13 @@ export interface MenuContextValue {
 	registerItem: (item: MenuItemConfig) => void;
 	unregisterItem: (id: string) => void;
 	selectItem: (id: string) => void;
-	
+
 	// Refs
 	triggerElement: HTMLElement | null;
 	contentElement: HTMLElement | null;
 	setTriggerElement: (el: HTMLElement | null) => void;
 	setContentElement: (el: HTMLElement | null) => void;
-	
+
 	// Positioning
 	updatePosition: () => void;
 }
