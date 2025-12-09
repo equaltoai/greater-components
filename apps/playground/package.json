@@ -15,6 +15,7 @@
     "check": "svelte-kit sync && tsc --noEmit"
   },
   "dependencies": {
+    "@equaltoai/greater-components-auth": "workspace:*",
     "@equaltoai/greater-components-chat": "workspace:*",
     "@equaltoai/greater-components-content": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:*",
@@ -22,18 +23,17 @@
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-social": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
-    "@equaltoai/greater-components-utils": "workspace:*",
-    "@equaltoai/greater-components-auth": "workspace:*"
+    "@equaltoai/greater-components-utils": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.0",
     "@sveltejs/adapter-static": "^3.0.10",
-    "@sveltejs/kit": "^2.49.0",
+    "@sveltejs/kit": "^2.49.2",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   }
 }

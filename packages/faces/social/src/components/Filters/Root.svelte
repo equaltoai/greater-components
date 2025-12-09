@@ -32,6 +32,7 @@
 
 	let { handlers = {}, autoFetch = true, class: className = '', children }: Props = $props();
 
+	// eslint-disable-next-line svelte/valid-compile
 	const context = createFiltersContext(handlers);
 
 	onMount(() => {

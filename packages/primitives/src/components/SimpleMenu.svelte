@@ -26,6 +26,7 @@ and want to render them automatically.
 <script lang="ts">
 	import * as Menu from './Menu/index';
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 	import type { MenuPlacement } from './Menu/context';
 
 	interface TriggerProps {
@@ -48,7 +49,11 @@ and want to render them automatically.
 
 	let { items, onItemSelect, trigger, placement = 'bottom-start', open = false }: Props = $props();
 
-	let isOpen = $state(open);
+	let isOpen = $state(untrack(() => open));
+
+	$effect(() => {
+		isOpen = open;
+	});
 
 	function handleToggle() {
 		isOpen = !isOpen;

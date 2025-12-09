@@ -13,8 +13,9 @@
 		class?: string;
 	} = $props();
 
-	const context = createTrustGraphContext({ adapter });
-	context.updateState({ rootActorId });
+	import { untrack } from 'svelte';
+	const context = createTrustGraphContext(untrack(() => ({ adapter })));
+	context.updateState({ rootActorId: untrack(() => rootActorId) });
 </script>
 
 <TrustGraphVisualization class={className} />

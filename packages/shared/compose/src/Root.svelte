@@ -15,7 +15,7 @@ Provides context for child components and handles form submission.
 -->
 
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet, untrack } from 'svelte';
 	import { createComposeContext } from './context.js';
 	import type { ComposeConfig, ComposeHandlers, ComposeState } from './context.js';
 
@@ -44,11 +44,11 @@ Provides context for child components and handles form submission.
 	let { config = {}, handlers = {}, initialState = {}, children }: Props = $props();
 
 	// Create reactive state using Svelte 5 runes
-	const characterLimit = config.characterLimit || 500;
+	const characterLimit = untrack(() => config.characterLimit) || 500;
 	const defaultState: Partial<ComposeState> = {
 		content: '',
 		contentWarning: '',
-		visibility: config.defaultVisibility || 'public',
+		visibility: untrack(() => config.defaultVisibility) || 'public',
 		mediaAttachments: [],
 		submitting: false,
 		error: null,
@@ -59,10 +59,15 @@ Provides context for child components and handles form submission.
 	};
 
 	// Create reactive state
-	let state: ComposeState = $state({
-		...defaultState,
-		...initialState,
-	} as ComposeState);
+	let state: ComposeState = $state(
+		untrack(
+			() =>
+				({
+					...defaultState,
+					...initialState,
+				}) as ComposeState
+		)
+	);
 
 	// Update initial character count
 	state.characterCount = state.content.length + state.contentWarning.length;
@@ -83,7 +88,19 @@ Provides context for child components and handles form submission.
 	}
 
 	// Create context with the reactive state
-	const context = createComposeContext(config, handlers, initialState, state);
+	const context = createComposeContext(
+		untrack(() => config),
+		untrack(() => handlers),
+		untrack(() => initialState),
+		state
+	);
+
+	$effect(() => {
+		// Sync handlers
+		Object.assign(context.handlers, handlers);
+		// Sync config if mutable in context, assuming context.config is the reference
+		Object.assign(context.config, config);
+	});
 
 	// Override reset function to use reactive state
 	context.reset = resetState;

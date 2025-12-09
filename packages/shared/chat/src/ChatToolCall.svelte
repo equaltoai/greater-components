@@ -36,6 +36,7 @@
 		ChevronRightIcon,
 	} from '@equaltoai/greater-components-icons';
 	import type { ToolCall } from './types.js';
+	import { untrack } from 'svelte';
 
 	/**
 	 * ChatToolCall component props
@@ -79,7 +80,7 @@
 	}: Props = $props();
 
 	// Track expanded state
-	let isExpanded = $state(!defaultCollapsed);
+	let isExpanded = $state(untrack(() => !defaultCollapsed));
 
 	// Track result expansion for long results
 	let isResultExpanded = $state(false);

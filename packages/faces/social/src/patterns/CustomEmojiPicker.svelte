@@ -15,7 +15,7 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet, untrack } from 'svelte';
 
 	export interface CustomEmoji {
 		/**
@@ -197,7 +197,7 @@
 		autocompletePrefix = ':',
 		class: className = '',
 		preferStatic = false,
-	} = config;
+	} = untrack(() => config);
 
 	let searchQuery = $state('');
 	let selectedCategory = $state<string>('all');

@@ -15,7 +15,8 @@
 		class?: string;
 	} = $props();
 
-	createInsightsContext({ adapter });
+	import { untrack } from 'svelte';
+	createInsightsContext(untrack(() => ({ adapter })));
 </script>
 
 <InsightsAIAnalysis {objectId} {autoRequest} class={className} />

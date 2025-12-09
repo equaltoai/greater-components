@@ -6,6 +6,7 @@
 		MenuState,
 		type MenuPlacement,
 	} from './context.svelte';
+	import { untrack } from 'svelte';
 	import { createPositionObserver } from './positioning';
 
 	interface Props {
@@ -46,24 +47,36 @@
 	const menuState = new MenuState({
 		menuId,
 		triggerId,
-		placement,
-		offset,
-		loop,
-		closeOnSelect,
+		placement: untrack(() => placement),
+		offset: untrack(() => offset),
+		loop: untrack(() => loop),
+		closeOnSelect: untrack(() => closeOnSelect),
 		onOpenChange: (isOpen) => {
 			open = isOpen;
 			onOpenChange?.(isOpen);
 		},
-		initialOpen: open,
+		initialOpen: untrack(() => open),
 	});
 
 	createMenuContext(menuState);
 
-	// Sync external open prop
+	// Sync external open prop and configuration
 	$effect(() => {
+		// Sync open state
 		if (open !== menuState.isOpen) {
 			if (open) menuState.open();
 			else menuState.close();
+		}
+
+		// Sync configuration props
+		if (placement) menuState.placement = placement;
+		if (offset !== undefined) menuState.offset = offset;
+		if (loop !== undefined) menuState.loop = loop;
+		if (closeOnSelect !== undefined) menuState.closeOnSelect = closeOnSelect;
+
+		// Update position if placement or offset changed while open
+		if (menuState.isOpen && (placement || offset !== undefined)) {
+			menuState.updatePosition();
 		}
 	});
 

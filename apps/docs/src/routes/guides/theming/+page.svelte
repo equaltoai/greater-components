@@ -199,8 +199,7 @@ const customPalette = createPalette({
 		<p>The workbench includes:</p>
 		<ul>
 			<li>
-				<strong>Color Harmony Picker</strong> - Generate complementary, analogous, and triadic color
-				schemes
+				<strong>Color Harmony Picker</strong> - Generate complementary, analogous, and triadic color schemes
 			</li>
 			<li><strong>Contrast Checker</strong> - Validate WCAG contrast ratios</li>
 			<li><strong>Live Preview</strong> - See changes in real-time</li>
@@ -268,8 +267,8 @@ const passes = meetsWCAG('#ffffff', '#6366f1', 'AA');
 				values for automatic dark mode support.
 			</li>
 			<li>
-				<strong>Test contrast ratios</strong> - Always verify text/background combinations meet WCAG
-				AA (4.5:1 for normal text, 3:1 for large text).
+				<strong>Test contrast ratios</strong> - Always verify text/background combinations meet WCAG AA
+				(4.5:1 for normal text, 3:1 for large text).
 			</li>
 			<li>
 				<strong>Provide theme toggle</strong> - Use <code>ThemeSwitcher</code> to let users choose their

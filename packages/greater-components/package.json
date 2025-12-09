@@ -164,8 +164,8 @@
     "test:coverage": "vitest run --coverage"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0",
-    "isomorphic-dompurify": "^2.0.0"
+    "isomorphic-dompurify": "^2.0.0",
+    "svelte": "^5.0.0"
   },
   "peerDependenciesMeta": {
     "isomorphic-dompurify": {
@@ -184,23 +184,23 @@
   },
   "devDependencies": {
     "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-admin": "workspace:*",
+    "@equaltoai/greater-components-auth": "workspace:*",
+    "@equaltoai/greater-components-chat": "workspace:*",
     "@equaltoai/greater-components-cli": "workspace:*",
+    "@equaltoai/greater-components-compose": "workspace:*",
     "@equaltoai/greater-components-content": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-messaging": "workspace:*",
+    "@equaltoai/greater-components-notifications": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-search": "workspace:*",
     "@equaltoai/greater-components-social": "workspace:*",
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
-    "@equaltoai/greater-components-auth": "workspace:*",
-    "@equaltoai/greater-components-admin": "workspace:*",
-    "@equaltoai/greater-components-compose": "workspace:*",
-    "@equaltoai/greater-components-messaging": "workspace:*",
-    "@equaltoai/greater-components-search": "workspace:*",
-    "@equaltoai/greater-components-notifications": "workspace:*",
-    "@equaltoai/greater-components-chat": "workspace:*",
-    "@vitest/coverage-v8": "^4.0.12",
-    "vitest": "^4.0.12"
+    "@vitest/coverage-v8": "^4.0.15",
+    "vitest": "^4.0.15"
   }
 }

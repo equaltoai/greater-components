@@ -260,8 +260,8 @@
 				feel sluggish.
 			</li>
 			<li>
-				<strong>Test on low-end devices</strong> - Animations that work smoothly on your development
-				machine may stutter on mobile devices.
+				<strong>Test on low-end devices</strong> - Animations that work smoothly on your development machine
+				may stutter on mobile devices.
 			</li>
 		</ul>
 
@@ -351,8 +351,8 @@
 			</li>
 			<li><a href="/components/spinner">Spinner Component</a> - Animated loading indicator</li>
 			<li>
-				<a href="https://svelte.dev/docs/svelte-transition">Svelte Transitions</a> - Official Svelte
-				transition documentation
+				<a href="https://svelte.dev/docs/svelte-transition">Svelte Transitions</a> - Official Svelte transition
+				documentation
 			</li>
 		</ul>
 	</section>

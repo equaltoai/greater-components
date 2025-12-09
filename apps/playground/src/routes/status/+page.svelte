@@ -99,8 +99,7 @@ const replies = createThreadReplies();
 			<p>
 				All data comes from <code>createStatusShowcase()</code>, mirroring ActivityPub payloads with
 				spoiler text, media attachments, and poll metadata. We tap into the published
-				<code>StatusCard</code> component and wire the action callbacks so you can drop in API calls
-				later.
+				<code>StatusCard</code> component and wire the action callbacks so you can drop in API calls later.
 			</p>
 		</header>
 

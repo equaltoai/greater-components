@@ -13,7 +13,7 @@ Main content editing textarea with auto-resize and placeholder.
 -->
 
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { getComposeContext } from './context.js';
 
 	interface Props {
@@ -39,7 +39,7 @@ Main content editing textarea with auto-resize and placeholder.
 
 	let textareaEl: HTMLTextAreaElement;
 
-	if (autofocus) {
+	if (untrack(() => autofocus)) {
 		onMount(() => {
 			queueMicrotask(() => textareaEl?.focus());
 		});

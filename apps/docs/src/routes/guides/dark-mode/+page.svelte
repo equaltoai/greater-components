@@ -213,8 +213,8 @@
 				harsh. Use <code>#f8fafc</code> or <code>#f1f5f9</code> instead.
 			</li>
 			<li>
-				<strong>Desaturate colors</strong> - Bright, saturated colors can appear too vibrant in dark
-				mode. Reduce saturation by 10-20%.
+				<strong>Desaturate colors</strong> - Bright, saturated colors can appear too vibrant in dark mode.
+				Reduce saturation by 10-20%.
 			</li>
 			<li>
 				<strong>Maintain hierarchy</strong> - Use different shades of gray to maintain visual hierarchy

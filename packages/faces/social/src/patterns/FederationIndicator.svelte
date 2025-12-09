@@ -15,7 +15,7 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import type { ActivityPubActor } from '../generics/index.js';
 
 	interface FederationConfig {
@@ -43,6 +43,16 @@
 		 * Show tooltip
 		 */
 		showTooltip?: boolean;
+
+		/**
+		 * Show icon
+		 */
+		showIcon?: boolean;
+
+		/**
+		 * Max length to truncate domain
+		 */
+		truncateLength?: number;
 	}
 
 	interface Props {
@@ -93,12 +103,14 @@
 	}: Props = $props();
 
 	const {
-		mode = 'badge',
+		mode = 'full',
 		showInstance = true,
-		position = 'inline',
+		showIcon = true,
+		truncateLength = 30,
 		class: className = '',
-		showTooltip = true,
-	} = config;
+		position,
+		showTooltip,
+	} = $derived(config);
 
 	/**
 	 * Extract instance domain from actor URL
@@ -123,8 +135,11 @@
 	}
 
 	const url = $derived(getActorUrl());
-	const instanceDomain = $derived(getInstanceDomain(url));
-	const isLocal = $derived(instanceDomain === localInstance || instanceDomain === '');
+	const fullDomain = $derived(getInstanceDomain(url));
+	const instanceDomain = $derived(
+		fullDomain.length > truncateLength ? `${fullDomain.slice(0, truncateLength)}...` : fullDomain
+	);
+	const isLocal = $derived(fullDomain === localInstance || fullDomain === '');
 
 	/**
 	 * Get tooltip text
@@ -160,23 +175,29 @@
 		{#if renderLocal}
 			{@render renderLocal()}
 		{:else if mode === 'icon'}
-			<svg class="federation-indicator__icon" viewBox="0 0 24 24" fill="currentColor">
-				<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-			</svg>
-		{:else if mode === 'badge'}
-			<span class="federation-indicator__badge">
-				<svg class="federation-indicator__badge-icon" viewBox="0 0 24 24" fill="currentColor">
+			{#if showIcon}
+				<svg class="federation-indicator__icon" viewBox="0 0 24 24" fill="currentColor">
 					<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
 				</svg>
+			{/if}
+		{:else if mode === 'badge'}
+			<span class="federation-indicator__badge">
+				{#if showIcon}
+					<svg class="federation-indicator__badge-icon" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+					</svg>
+				{/if}
 				{#if showInstance}
 					<span class="federation-indicator__text">Local</span>
 				{/if}
 			</span>
 		{:else}
 			<span class="federation-indicator__full">
-				<svg class="federation-indicator__full-icon" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-				</svg>
+				{#if showIcon}
+					<svg class="federation-indicator__full-icon" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+					</svg>
+				{/if}
 				<span class="federation-indicator__full-text">
 					<span class="federation-indicator__label">Local</span>
 					{#if showInstance}
@@ -188,29 +209,35 @@
 	{:else if renderRemote}
 		{@render renderRemote(instanceDomain)}
 	{:else if mode === 'icon'}
-		<svg class="federation-indicator__icon" viewBox="0 0 24 24" fill="currentColor">
-			<path
-				d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
-			/>
-		</svg>
-	{:else if mode === 'badge'}
-		<span class="federation-indicator__badge">
-			<svg class="federation-indicator__badge-icon" viewBox="0 0 24 24" fill="currentColor">
+		{#if showIcon}
+			<svg class="federation-indicator__icon" viewBox="0 0 24 24" fill="currentColor">
 				<path
 					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
 				/>
 			</svg>
+		{/if}
+	{:else if mode === 'badge'}
+		<span class="federation-indicator__badge">
+			{#if showIcon}
+				<svg class="federation-indicator__badge-icon" viewBox="0 0 24 24" fill="currentColor">
+					<path
+						d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+					/>
+				</svg>
+			{/if}
 			{#if showInstance}
 				<span class="federation-indicator__text">{instanceDomain}</span>
 			{/if}
 		</span>
 	{:else}
 		<span class="federation-indicator__full">
-			<svg class="federation-indicator__full-icon" viewBox="0 0 24 24" fill="currentColor">
-				<path
-					d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
-				/>
-			</svg>
+			{#if showIcon}
+				<svg class="federation-indicator__full-icon" viewBox="0 0 24 24" fill="currentColor">
+					<path
+						d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+					/>
+				</svg>
+			{/if}
 			<span class="federation-indicator__full-text">
 				<span class="federation-indicator__label">Federated</span>
 				{#if showInstance}

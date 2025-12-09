@@ -17,6 +17,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { createMenu } from '@equaltoai/greater-components-headless/menu';
+	import { untrack } from 'svelte';
 	import type { Status } from '../types.js';
 
 	export interface Bookmark {
@@ -245,7 +246,7 @@
 		viewMode = 'list',
 		itemsPerPage = 20,
 		class: className = '',
-	} = config;
+	} = untrack(() => config);
 
 	let searchQuery = $state('');
 	let selectedFolder = $state<string | null>(null);
