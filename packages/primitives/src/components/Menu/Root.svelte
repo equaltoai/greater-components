@@ -114,7 +114,11 @@
 		isOpen = false;
 		activeIndex = -1;
 		tick().then(() => {
-			triggerElement?.focus();
+			// Focus the first focusable element within the trigger, or the trigger itself
+			const focusableSelector =
+				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+			const focusable = triggerElement?.querySelector(focusableSelector) as HTMLElement | null;
+			(focusable ?? triggerElement)?.focus();
 		});
 	}
 
