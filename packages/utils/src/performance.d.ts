@@ -19,7 +19,10 @@
  * debouncedSearch('hello');
  * debouncedSearch('hello world'); // Only this will execute after 300ms
  */
-export declare function debounce<T extends (...args: unknown[]) => unknown>(fn: T, wait: number): (...args: Parameters<T>) => void;
+export declare function debounce<T extends (...args: unknown[]) => unknown>(
+	fn: T,
+	wait: number
+): (...args: Parameters<T>) => void;
 /**
  * Throttle function - ensures function is only called once per interval
  *
@@ -35,10 +38,14 @@ export declare function debounce<T extends (...args: unknown[]) => unknown>(fn: 
  *
  * window.addEventListener('scroll', throttledScroll);
  */
-export declare function throttle<T extends (...args: unknown[]) => unknown>(fn: T, limit: number, options?: {
-    leading?: boolean;
-    trailing?: boolean;
-}): (...args: Parameters<T>) => void;
+export declare function throttle<T extends (...args: unknown[]) => unknown>(
+	fn: T,
+	limit: number,
+	options?: {
+		leading?: boolean;
+		trailing?: boolean;
+	}
+): (...args: Parameters<T>) => void;
 /**
  * Request Animation Frame throttle - ensures function is only called once per frame
  *
@@ -52,7 +59,9 @@ export declare function throttle<T extends (...args: unknown[]) => unknown>(fn: 
  *
  * window.addEventListener('scroll', rafScroll);
  */
-export declare function rafThrottle<T extends (...args: unknown[]) => unknown>(fn: T): (...args: Parameters<T>) => void;
+export declare function rafThrottle<T extends (...args: unknown[]) => unknown>(
+	fn: T
+): (...args: Parameters<T>) => void;
 /**
  * Debounce with immediate execution option
  *
@@ -69,8 +78,12 @@ export declare function rafThrottle<T extends (...args: unknown[]) => unknown>(f
  * debouncedSave({ foo: 'bar' }); // Executes immediately
  * debouncedSave({ foo: 'baz' }); // Debounced
  */
-export declare function debounceImmediate<T extends (...args: unknown[]) => unknown>(fn: T, wait: number, immediate?: boolean): ((...args: Parameters<T>) => void) & {
-    cancel: () => void;
+export declare function debounceImmediate<T extends (...args: unknown[]) => unknown>(
+	fn: T,
+	wait: number,
+	immediate?: boolean
+): ((...args: Parameters<T>) => void) & {
+	cancel: () => void;
 };
 /**
  * Memoize function results
@@ -87,8 +100,11 @@ export declare function debounceImmediate<T extends (...args: unknown[]) => unkn
  * expensiveCalc(5); // Calculates
  * expensiveCalc(5); // Returns cached result
  */
-export declare function memoize<TArgs extends unknown[], TResult>(fn: (...args: TArgs) => TResult, keyResolver?: (...args: TArgs) => string): ((...args: TArgs) => TResult) & {
-    cache: Map<string, TResult>;
+export declare function memoize<TArgs extends unknown[], TResult>(
+	fn: (...args: TArgs) => TResult,
+	keyResolver?: (...args: TArgs) => string
+): ((...args: TArgs) => TResult) & {
+	cache: Map<string, TResult>;
 };
 /**
  * Batch function calls and execute once
@@ -129,13 +145,15 @@ export declare function lazy<T>(loader: () => Promise<T>): () => Promise<T>;
  * cache.set('key1', 123);
  * cache.get('key1'); // 123
  */
-export declare function createLRUCache<K, V>(maxSize: number): {
-    get: (key: K) => V | undefined;
-    set: (key: K, value: V) => void;
-    has: (key: K) => boolean;
-    delete: (key: K) => boolean;
-    clear: () => void;
-    size: () => number;
+export declare function createLRUCache<K, V>(
+	maxSize: number
+): {
+	get: (key: K) => V | undefined;
+	set: (key: K, value: V) => void;
+	has: (key: K) => boolean;
+	delete: (key: K) => boolean;
+	clear: () => void;
+	size: () => number;
 };
 /**
  * Measure execution time of a function
@@ -149,7 +167,11 @@ export declare function createLRUCache<K, V>(maxSize: number): {
  *   // expensive operation
  * }, 'Heavy Calculation');
  */
-export declare function measureTime<TArgs extends unknown[], TResult>(fn: (...args: TArgs) => TResult, label?: string, logger?: (message: string) => void): (...args: TArgs) => TResult;
+export declare function measureTime<TArgs extends unknown[], TResult>(
+	fn: (...args: TArgs) => TResult,
+	label?: string,
+	logger?: (message: string) => void
+): (...args: TArgs) => TResult;
 /**
  * Create a resource pool for reusing objects
  *
@@ -163,10 +185,13 @@ export declare function measureTime<TArgs extends unknown[], TResult>(fn: (...ar
  * // Use worker
  * pool.release(worker);
  */
-export declare function createResourcePool<T>(factory: () => T, maxSize: number): {
-    acquire: () => T;
-    release: (resource: T) => void;
-    size: () => number;
-    drain: () => void;
+export declare function createResourcePool<T>(
+	factory: () => T,
+	maxSize: number
+): {
+	acquire: () => T;
+	release: (resource: T) => void;
+	size: () => number;
+	drain: () => void;
 };
 //# sourceMappingURL=performance.d.ts.map

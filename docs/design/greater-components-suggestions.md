@@ -171,8 +171,12 @@ We inline SVG spinners in 6+ places with identical animation code. Each requires
 </div>
 
 <style>
-  .spinning { animation: spin 1s linear infinite; }
-  @keyframes spin { ... }
+	.spinning {
+		animation: spin 1s linear infinite;
+	}
+	@keyframes spin {
+		/* ... */
+	}
 </style>
 ```
 

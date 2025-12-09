@@ -8,7 +8,12 @@ export declare function getContrastRatio(color1: string, color2: string): number
 /**
  * Check if contrast meets WCAG standards
  */
-export declare function meetsWCAG(color1: string, color2: string, level?: 'AA' | 'AAA', fontSize?: 'small' | 'large'): boolean;
+export declare function meetsWCAG(
+	color1: string,
+	color2: string,
+	level?: 'AA' | 'AAA',
+	fontSize?: 'small' | 'large'
+): boolean;
 /**
  * Suggest a text color (black or white) for a given background
  */
