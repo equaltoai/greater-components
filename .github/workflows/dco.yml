@@ -14,23 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get PR Commits
-        id: get-pr-commits
-        uses: actions/github-script@v8
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          script: |
-            const commits = await github.rest.pulls.listCommits({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number
-            });
-            return commits.data.map(commit => ({
-              sha: commit.sha,
-              message: commit.commit.message,
-              author: commit.commit.author
-            }));
+          fetch-depth: 0
 
       - name: DCO Check
-        uses: dco-org/dco@v1
-        with:
-          continue-on-error: false
+        uses: tim-actions/dco@v1.0
