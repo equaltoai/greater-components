@@ -503,6 +503,17 @@ export const themes = {
           "active": {
             "value": "{color.error.800}"
           }
+        },
+        "link": {
+          "default": {
+            "value": "{color.primary.600}"
+          },
+          "hover": {
+            "value": "{color.primary.700}"
+          },
+          "active": {
+            "value": "{color.primary.800}"
+          }
         }
       },
       "focus": {
@@ -579,13 +590,13 @@ export const themes = {
       "action": {
         "primary": {
           "default": {
-            "value": "{color.primary.500}"
+            "value": "{color.primary.600}"
           },
           "hover": {
-            "value": "{color.primary.400}"
+            "value": "{color.primary.700}"
           },
           "active": {
-            "value": "{color.primary.300}"
+            "value": "{color.primary.800}"
           },
           "disabled": {
             "value": "{color.primary.800}"
@@ -622,6 +633,17 @@ export const themes = {
           },
           "active": {
             "value": "{color.error.300}"
+          }
+        },
+        "link": {
+          "default": {
+            "value": "{color.primary.400}"
+          },
+          "hover": {
+            "value": "{color.primary.300}"
+          },
+          "active": {
+            "value": "{color.primary.200}"
           }
         }
       },
@@ -742,6 +764,17 @@ export const themes = {
           },
           "active": {
             "value": "{color.error.100}"
+          }
+        },
+        "link": {
+          "default": {
+            "value": "{color.primary.400}"
+          },
+          "hover": {
+            "value": "{color.primary.500}"
+          },
+          "active": {
+            "value": "{color.primary.300}"
           }
         }
       },

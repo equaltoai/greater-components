@@ -43,6 +43,11 @@
           "default": { "value": "{color.error.600}" },
           "hover": { "value": "{color.error.700}" },
           "active": { "value": "{color.error.800}" }
+        },
+        "link": {
+          "default": { "value": "{color.primary.600}" },
+          "hover": { "value": "{color.primary.700}" },
+          "active": { "value": "{color.primary.800}" }
         }
       },
       "focus": {
@@ -82,9 +87,9 @@
       },
       "action": {
         "primary": {
-          "default": { "value": "{color.primary.500}" },
-          "hover": { "value": "{color.primary.400}" },
-          "active": { "value": "{color.primary.300}" },
+          "default": { "value": "{color.primary.600}" },
+          "hover": { "value": "{color.primary.700}" },
+          "active": { "value": "{color.primary.800}" },
           "disabled": { "value": "{color.primary.800}" }
         },
         "success": {
@@ -101,6 +106,11 @@
           "default": { "value": "{color.error.500}" },
           "hover": { "value": "{color.error.400}" },
           "active": { "value": "{color.error.300}" }
+        },
+        "link": {
+          "default": { "value": "{color.primary.400}" },
+          "hover": { "value": "{color.primary.300}" },
+          "active": { "value": "{color.primary.200}" }
         }
       },
       "focus": {
@@ -159,6 +169,11 @@
           "default": { "value": "{color.error.300}" },
           "hover": { "value": "{color.error.200}" },
           "active": { "value": "{color.error.100}" }
+        },
+        "link": {
+          "default": { "value": "{color.primary.400}" },
+          "hover": { "value": "{color.primary.500}" },
+          "active": { "value": "{color.primary.300}" }
         }
       },
       "focus": {
