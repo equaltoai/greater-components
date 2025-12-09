@@ -218,6 +218,6 @@ describe('token exports', () => {
 	it('keeps semantic theme hooks pointing at base tokens', () => {
 		expect(themes.light.semantic.background.primary.value).toBe('{color.base.white}');
 		expect(themes.dark.semantic.border.default.value).toBe('{color.gray.700}');
-		expect(themes.highContrast.semantic.action.primary.default.value).toBe('{color.primary.700}');
+		expect(themes.highContrast.semantic.action.primary.default.value).toBe('{color.primary.400}');
 	});
 });

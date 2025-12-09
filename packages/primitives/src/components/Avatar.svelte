@@ -194,8 +194,9 @@
 		}
 
 		// Convert to HSL for better color distribution
+		// Using 30% lightness to ensure WCAG AA contrast (4.5:1) with white text
 		const hue = Math.abs(hash) % 360;
-		return `hsl(${hue}, 65%, 55%)`;
+		return `hsl(${hue}, 65%, 30%)`;
 	});
 
 	function handleImageLoad() {

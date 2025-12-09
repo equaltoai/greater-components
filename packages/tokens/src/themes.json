@@ -140,9 +140,9 @@
       },
       "action": {
         "primary": {
-          "default": { "value": "{color.primary.700}" },
-          "hover": { "value": "{color.primary.800}" },
-          "active": { "value": "{color.primary.600}" },
+          "default": { "value": "{color.primary.400}" },
+          "hover": { "value": "{color.primary.500}" },
+          "active": { "value": "{color.primary.300}" },
           "disabled": { "value": "{color.gray.700}" }
         },
         "success": {
