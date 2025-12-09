@@ -113,6 +113,9 @@ describe('token exports', () => {
 			        "in",
 			        "out",
 			        "inOut",
+			        "decelerate",
+			        "accelerate",
+			        "standard",
 			      ],
 			    },
 			    "radii": [
@@ -134,6 +137,10 @@ describe('token exports', () => {
 			      "2xl",
 			      "inner",
 			      "none",
+			      "glow-sm",
+			      "glow-md",
+			      "glow-lg",
+			      "glow-primary",
 			    ],
 			    "spacingScale": [
 			      "0",
@@ -154,6 +161,7 @@ describe('token exports', () => {
 			    "typography": {
 			      "fontFamily": [
 			        "sans",
+			        "heading",
 			        "serif",
 			        "mono",
 			      ],

@@ -5,11 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import SignInCard from '../src/SignInCard.svelte';
 
-// Mock icon component
-const MockIcon = {
-	$$typeof: Symbol.for('svelte.component'),
-	render: () => ({ html: '<svg data-testid="mock-icon"></svg>' }),
-};
+import { SettingsIcon as MockIcon } from '@equaltoai/greater-components-icons';
 
 describe('SignInCard', () => {
 	const defaultProviders = [
@@ -29,29 +25,29 @@ describe('SignInCard', () => {
 	describe('Rendering', () => {
 		it('renders with default title', () => {
 			render(SignInCard, { props: defaultProps });
-			expect(screen.getByRole('heading', { name: /sign in to continue/i })).toBeInTheDocument();
+			expect(screen.getByRole('heading', { name: /sign in to continue/i })).toBeTruthy();
 		});
 
 		it('renders with custom title', () => {
 			render(SignInCard, { props: { ...defaultProps, title: 'Welcome back' } });
-			expect(screen.getByRole('heading', { name: /welcome back/i })).toBeInTheDocument();
+			expect(screen.getByRole('heading', { name: /welcome back/i })).toBeTruthy();
 		});
 
 		it('renders description when provided', () => {
 			render(SignInCard, { props: { ...defaultProps, description: 'Choose your provider' } });
-			expect(screen.getByText('Choose your provider')).toBeInTheDocument();
+			expect(screen.getByText('Choose your provider')).toBeTruthy();
 		});
 
 		it('renders provider buttons', () => {
 			render(SignInCard, { props: defaultProps });
-			expect(screen.getByRole('button', { name: /sign in with github/i })).toBeInTheDocument();
-			expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: /sign in with github/i })).toBeTruthy();
+			expect(screen.getByRole('button', { name: /sign in with google/i })).toBeTruthy();
 		});
 
 		it('renders provider buttons with correct text', () => {
 			render(SignInCard, { props: defaultProps });
-			expect(screen.getByText('Continue with GitHub')).toBeInTheDocument();
-			expect(screen.getByText('Continue with Google')).toBeInTheDocument();
+			expect(screen.getByText('Continue with GitHub')).toBeTruthy();
+			expect(screen.getByText('Continue with Google')).toBeTruthy();
 		});
 	});
 
@@ -80,14 +76,14 @@ describe('SignInCard', () => {
 			render(SignInCard, { props: { ...defaultProps, loading: true, loadingProvider: 'github' } });
 			
 			const githubButton = screen.getByRole('button', { name: /sign in with github/i });
-			expect(githubButton).toHaveAttribute('aria-busy', 'true');
+			expect(githubButton.getAttribute('aria-busy')).toBe('true');
 		});
 
 		it('disables other provider buttons when one is loading', () => {
 			render(SignInCard, { props: { ...defaultProps, loading: true, loadingProvider: 'github' } });
 			
 			const googleButton = screen.getByRole('button', { name: /sign in with google/i });
-			expect(googleButton).toBeDisabled();
+			expect(googleButton.hasAttribute('disabled')).toBe(true);
 		});
 	});
 
@@ -95,8 +91,8 @@ describe('SignInCard', () => {
 		it('displays error message when error prop is set', () => {
 			render(SignInCard, { props: { ...defaultProps, error: 'Authentication failed' } });
 			
-			expect(screen.getByRole('alert')).toBeInTheDocument();
-			expect(screen.getByText('Authentication failed')).toBeInTheDocument();
+			expect(screen.getByRole('alert')).toBeTruthy();
+			expect(screen.getByText('Authentication failed')).toBeTruthy();
 		});
 
 		it('calls onRetry when retry action is clicked', async () => {
@@ -112,7 +108,7 @@ describe('SignInCard', () => {
 		it('does not show retry button when onRetry is not provided', () => {
 			render(SignInCard, { props: { ...defaultProps, error: 'Failed' } });
 			
-			expect(screen.queryByRole('button', { name: /try again/i })).not.toBeInTheDocument();
+			expect(screen.queryByRole('button', { name: /try again/i })).toBeNull();
 		});
 	});
 
@@ -120,20 +116,20 @@ describe('SignInCard', () => {
 		it('has accessible provider button group', () => {
 			render(SignInCard, { props: defaultProps });
 			
-			expect(screen.getByRole('group', { name: /sign in options/i })).toBeInTheDocument();
+			expect(screen.getByRole('group', { name: /sign in options/i })).toBeTruthy();
 		});
 
 		it('provider buttons have accessible labels', () => {
 			render(SignInCard, { props: defaultProps });
 			
-			expect(screen.getByRole('button', { name: /sign in with github/i })).toBeInTheDocument();
-			expect(screen.getByRole('button', { name: /sign in with google/i })).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: /sign in with github/i })).toBeTruthy();
+			expect(screen.getByRole('button', { name: /sign in with google/i })).toBeTruthy();
 		});
 
 		it('error alert has correct role', () => {
 			render(SignInCard, { props: { ...defaultProps, error: 'Error message' } });
 			
-			expect(screen.getByRole('alert')).toBeInTheDocument();
+			expect(screen.getByRole('alert')).toBeTruthy();
 		});
 	});
 });

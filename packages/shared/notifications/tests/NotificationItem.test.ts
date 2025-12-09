@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /**
  * NotificationItem Logic Tests
  *
@@ -113,7 +114,9 @@ function hasStatus(notification: Notification): boolean {
 
 // Strip HTML tags
 function stripHTMLTags(html: string): string {
-	return html.replace(/<[^>]*>/g, '');
+	const tmp = document.createElement('div');
+	tmp.innerHTML = html;
+	return tmp.textContent || tmp.innerText || '';
 }
 
 // Truncate content

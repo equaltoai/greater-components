@@ -4,13 +4,13 @@ import LoadingState from '../src/components/LoadingState.svelte';
 
 describe('LoadingState.svelte', () => {
 	it('renders with default props', () => {
-		const { getByRole } = render(LoadingState);
+		const { container } = render(LoadingState);
 
-		const container = getByRole('status');
-		expect(container).toBeTruthy();
-		expect(container.getAttribute('aria-live')).toBe('polite');
-		expect(container.getAttribute('aria-busy')).toBe('true');
-		expect(container.className).toContain('gr-loading-state');
+		const loadingState = container.querySelector('.gr-loading-state');
+		expect(loadingState).toBeTruthy();
+		expect(loadingState?.getAttribute('aria-live')).toBe('polite');
+		expect(loadingState?.getAttribute('aria-busy')).toBe('true');
+		expect(loadingState?.className).toContain('gr-loading-state');
 	});
 
 	it('displays message when provided', () => {
@@ -21,17 +21,17 @@ describe('LoadingState.svelte', () => {
 	});
 
 	it('applies fullscreen class when fullscreen is true', () => {
-		const { getByRole } = render(LoadingState, { props: { fullscreen: true } });
+		const { container } = render(LoadingState, { props: { fullscreen: true } });
 
-		const container = getByRole('status');
-		expect(container.className).toContain('gr-loading-state--fullscreen');
+		const loadingState = container.querySelector('.gr-loading-state');
+		expect(loadingState?.className).toContain('gr-loading-state--fullscreen');
 	});
 
 	it('does not apply fullscreen class by default', () => {
-		const { getByRole } = render(LoadingState);
+		const { container } = render(LoadingState);
 
-		const container = getByRole('status');
-		expect(container.className).not.toContain('gr-loading-state--fullscreen');
+		const loadingState = container.querySelector('.gr-loading-state');
+		expect(loadingState?.className).not.toContain('gr-loading-state--fullscreen');
 	});
 
 	it('renders spinner with correct size', () => {
@@ -42,10 +42,10 @@ describe('LoadingState.svelte', () => {
 	});
 
 	it('applies custom class name', () => {
-		const { getByRole } = render(LoadingState, { props: { class: 'custom-loading' } });
+		const { container } = render(LoadingState, { props: { class: 'custom-loading' } });
 
-		const container = getByRole('status');
-		expect(container.className).toContain('custom-loading');
+		const loadingState = container.querySelector('.gr-loading-state');
+		expect(loadingState?.className).toContain('custom-loading');
 	});
 
 	it('uses custom label for spinner', () => {

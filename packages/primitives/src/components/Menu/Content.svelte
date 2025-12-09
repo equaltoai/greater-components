@@ -34,22 +34,24 @@
 	// Click outside handler
 	$effect(() => {
 		if (!ctx.isOpen) return;
-		
+
 		function handleClickOutside(event: MouseEvent) {
 			const target = event.target as Node;
 			if (
-				contentRef && !contentRef.contains(target) &&
-				ctx.triggerElement && !ctx.triggerElement.contains(target)
+				contentRef &&
+				!contentRef.contains(target) &&
+				ctx.triggerElement &&
+				!ctx.triggerElement.contains(target)
 			) {
 				ctx.close();
 			}
 		}
-		
+
 		// Delay to prevent immediate close on open click
 		const timeoutId = setTimeout(() => {
 			document.addEventListener('click', handleClickOutside);
 		}, 0);
-		
+
 		return () => {
 			clearTimeout(timeoutId);
 			document.removeEventListener('click', handleClickOutside);
@@ -60,34 +62,38 @@
 	$effect(() => {
 		if (ctx.isOpen && contentRef) {
 			tick().then(() => {
-				const firstItem = contentRef?.querySelector('[role="menuitem"]:not([aria-disabled="true"])') as HTMLElement;
+				const firstItem = contentRef?.querySelector(
+					'[role="menuitem"]:not([aria-disabled="true"])'
+				) as HTMLElement;
 				firstItem?.focus();
 			});
 		}
 	});
 
 	function handleKeyDown(event: KeyboardEvent) {
-		const enabledItems = ctx.items.filter(item => !item.disabled);
+		const enabledItems = ctx.items.filter((item) => !item.disabled);
 		const currentEnabledIndex = enabledItems.findIndex((_, i) => {
 			const actualIndex = ctx.items.indexOf(enabledItems[i]);
 			return actualIndex === ctx.activeIndex;
 		});
-		
+
 		switch (event.key) {
 			case 'ArrowDown': {
 				event.preventDefault();
-				const nextIndex = currentEnabledIndex < enabledItems.length - 1 
-					? ctx.items.indexOf(enabledItems[currentEnabledIndex + 1])
-					: ctx.items.indexOf(enabledItems[0]);
+				const nextIndex =
+					currentEnabledIndex < enabledItems.length - 1
+						? ctx.items.indexOf(enabledItems[currentEnabledIndex + 1])
+						: ctx.items.indexOf(enabledItems[0]);
 				ctx.setActiveIndex(nextIndex);
 				focusItemAtIndex(nextIndex);
 				break;
 			}
 			case 'ArrowUp': {
 				event.preventDefault();
-				const prevIndex = currentEnabledIndex > 0
-					? ctx.items.indexOf(enabledItems[currentEnabledIndex - 1])
-					: ctx.items.indexOf(enabledItems[enabledItems.length - 1]);
+				const prevIndex =
+					currentEnabledIndex > 0
+						? ctx.items.indexOf(enabledItems[currentEnabledIndex - 1])
+						: ctx.items.indexOf(enabledItems[enabledItems.length - 1]);
 				ctx.setActiveIndex(prevIndex);
 				focusItemAtIndex(prevIndex);
 				break;
@@ -136,19 +142,19 @@
 		if (typeaheadTimeout) {
 			clearTimeout(typeaheadTimeout);
 		}
-		
+
 		typeaheadBuffer += char.toLowerCase();
-		
+
 		// Find matching item
-		const matchIndex = ctx.items.findIndex(item => 
-			!item.disabled && item.label?.toLowerCase().startsWith(typeaheadBuffer)
+		const matchIndex = ctx.items.findIndex(
+			(item) => !item.disabled && item.label?.toLowerCase().startsWith(typeaheadBuffer)
 		);
-		
+
 		if (matchIndex !== -1) {
 			ctx.setActiveIndex(matchIndex);
 			focusItemAtIndex(matchIndex);
 		}
-		
+
 		typeaheadTimeout = setTimeout(() => {
 			typeaheadBuffer = '';
 			typeaheadTimeout = null;
@@ -197,12 +203,12 @@
 		overflow-y: auto;
 		outline: none;
 	}
-	
-	.gr-menu-content[data-placement^="top"] {
+
+	.gr-menu-content[data-placement^='top'] {
 		transform-origin: bottom;
 	}
-	
-	.gr-menu-content[data-placement^="bottom"] {
+
+	.gr-menu-content[data-placement^='bottom'] {
 		transform-origin: top;
 	}
 </style>

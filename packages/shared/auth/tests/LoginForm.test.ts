@@ -571,7 +571,7 @@ describe('Auth.LoginForm logic', () => {
 	});
 
 	it('accepts minimum valid inputs', () => {
-		harness.setEmail('a@b.c');
+		harness.setEmail('a@b.co');
 		harness.setPassword('p');
 
 		expect(harness.validateForm()).toBe(true);

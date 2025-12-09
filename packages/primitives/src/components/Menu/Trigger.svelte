@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { HTMLAttributes } from 'svelte/elements';
 	import { getMenuContext } from './context';
 
-	interface Props {
+	interface Props extends HTMLAttributes<HTMLDivElement> {
 		/** Custom CSS class */
 		class?: string;
 		/** Trigger content */
@@ -11,11 +12,7 @@
 		disabled?: boolean;
 	}
 
-	let {
-		class: className = '',
-		children,
-		disabled = false,
-	}: Props = $props();
+	let { class: className = '', children, disabled = false, ...restProps }: Props = $props();
 
 	const ctx = getMenuContext();
 
@@ -33,7 +30,7 @@
 
 	function handleKeyDown(event: KeyboardEvent) {
 		if (disabled) return;
-		
+
 		switch (event.key) {
 			case 'ArrowDown':
 			case 'Enter':
@@ -46,7 +43,7 @@
 				ctx.open();
 				// Focus last item when opening with ArrowUp
 				if (ctx.items.length > 0) {
-					const lastEnabled = [...ctx.items].reverse().findIndex(item => !item.disabled);
+					const lastEnabled = [...ctx.items].reverse().findIndex((item) => !item.disabled);
 					if (lastEnabled !== -1) {
 						ctx.setActiveIndex(ctx.items.length - 1 - lastEnabled);
 					}
@@ -74,6 +71,7 @@
 	aria-disabled={disabled || undefined}
 	onclick={handleClick}
 	onkeydown={handleKeyDown}
+	{...restProps}
 >
 	{@render children()}
 </div>
@@ -84,8 +82,8 @@
 		align-items: center;
 		cursor: pointer;
 	}
-	
-	.gr-menu-trigger[aria-disabled="true"] {
+
+	.gr-menu-trigger[aria-disabled='true'] {
 		cursor: not-allowed;
 		opacity: 0.5;
 	}

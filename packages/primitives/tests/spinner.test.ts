@@ -14,23 +14,27 @@ describe('Spinner.svelte', () => {
 		expect(spinner.className).toContain('gr-spinner--primary');
 	});
 
-	it('applies size variants correctly', () => {
+	describe('size variants', () => {
 		const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
 
 		sizes.forEach((size) => {
-			const { getByRole } = render(Spinner, { props: { size } });
-			const spinner = getByRole('status');
-			expect(spinner.className).toContain(`gr-spinner--${size}`);
+			it(`applies size ${size} correctly`, () => {
+				const { getByRole } = render(Spinner, { props: { size } });
+				const spinner = getByRole('status');
+				expect(spinner.className).toContain(`gr-spinner--${size}`);
+			});
 		});
 	});
 
-	it('applies color variants correctly', () => {
+	describe('color variants', () => {
 		const colors = ['primary', 'current', 'white', 'gray'] as const;
 
 		colors.forEach((color) => {
-			const { getByRole } = render(Spinner, { props: { color } });
-			const spinner = getByRole('status');
-			expect(spinner.className).toContain(`gr-spinner--${color}`);
+			it(`applies color ${color} correctly`, () => {
+				const { getByRole } = render(Spinner, { props: { color } });
+				const spinner = getByRole('status');
+				expect(spinner.className).toContain(`gr-spinner--${color}`);
+			});
 		});
 	});
 
