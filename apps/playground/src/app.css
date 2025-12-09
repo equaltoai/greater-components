@@ -29,14 +29,14 @@ body {
 }
 
 /* Link styles */
-a {
+body a {
 	color: var(--gr-semantic-action-link-default);
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 2px;
 }
 
-a:hover {
+body a:hover {
 	color: var(--gr-semantic-action-link-hover);
 }
 

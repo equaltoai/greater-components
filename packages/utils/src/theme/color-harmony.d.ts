@@ -2,18 +2,18 @@
  * Color Harmony and Conversion Utilities
  */
 export interface HSL {
-	h: number;
-	s: number;
-	l: number;
+    h: number;
+    s: number;
+    l: number;
 }
 export interface ColorHarmony {
-	base: string;
-	complementary: string[];
-	analogous: string[];
-	triadic: string[];
-	tetradic: string[];
-	splitComplementary: string[];
-	monochromatic: string[];
+    base: string;
+    complementary: string[];
+    analogous: string[];
+    triadic: string[];
+    tetradic: string[];
+    splitComplementary: string[];
+    monochromatic: string[];
 }
 /**
  * Convert Hex color to HSL
