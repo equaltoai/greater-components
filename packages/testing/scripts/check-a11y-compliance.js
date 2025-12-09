@@ -117,7 +117,7 @@ class ComplianceChecker {
 
 	processResultFile(data, filename) {
 		// Handle Playwright test results
-		if (data.tests && Array.isArray(data.tests)) {
+		if ((data.tests && Array.isArray(data.tests)) || (data.suites && Array.isArray(data.suites))) {
 			this.processPlaywrightResults(data);
 		}
 		// Handle direct axe results
@@ -156,6 +156,10 @@ class ComplianceChecker {
 					this.addViolation(violation);
 				}
 			}
+		}
+
+		for (const childSuite of suite.suites || []) {
+			this.processPlaywrightSuite(childSuite);
 		}
 	}
 
