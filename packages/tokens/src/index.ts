@@ -579,13 +579,13 @@ export const themes = {
       "action": {
         "primary": {
           "default": {
-            "value": "{color.primary.600}"
+            "value": "{color.primary.500}"
           },
           "hover": {
-            "value": "{color.primary.700}"
+            "value": "{color.primary.400}"
           },
           "active": {
-            "value": "{color.primary.800}"
+            "value": "{color.primary.300}"
           },
           "disabled": {
             "value": "{color.primary.800}"
