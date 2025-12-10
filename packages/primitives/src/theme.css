@@ -58,7 +58,7 @@
 }
 
 [data-theme='high-contrast'] .gr-button--solid {
-	color: var(--gr-semantic-background-primary, #000000);
+	color: var(--gr-color-base-black);
 }
 
 .gr-button--solid:hover:not(:disabled):not(.gr-button--loading) {
@@ -2855,7 +2855,8 @@
 }
 
 .gr-tabs__tab:focus-visible {
-	box-shadow: 0 0 0 2px var(--gr-semantic-focus-ring);
+	outline: 2px solid var(--gr-semantic-focus-ring);
+	outline-offset: -2px;
 	z-index: 1;
 }
 
@@ -2925,19 +2926,37 @@
 	border: 1px solid var(--gr-semantic-border-default, #e5e7eb);
 }
 
-.gr-tabs--pills .gr-tabs__tab--active {
+.gr-tabs--pills .gr-tabs__tab--active,
+.gr-tabs--pills .gr-tabs__tab--active:hover,
+.gr-tabs--pills .gr-tabs__tab--active:focus,
+.gr-tabs--pills .gr-tabs__tab--active:focus-visible {
 	background-color: var(--gr-semantic-action-primary-default, #2563eb);
 	color: var(--gr-color-base-white, #ffffff);
 	border-color: var(--gr-semantic-action-primary-default, #2563eb);
+	/* Force immediate color change to ensure axe sees final contrast values, not mid-transition */
+	transition: none;
 }
 
-[data-theme='high-contrast'] .gr-tabs--pills .gr-tabs__tab--active,
+[data-theme='high-contrast'] .gr-tabs--pills .gr-tabs__tab--active {
+	background-color: var(--gr-semantic-action-primary-default);
+	border-color: var(--gr-semantic-action-primary-default);
+	color: var(--gr-color-base-black);
+	transition: none;
+}
+
 [data-theme='high-contrast'] .gr-tabs--pills .gr-tabs__tab--active:hover,
 [data-theme='high-contrast'] .gr-tabs--pills .gr-tabs__tab--active:focus,
-[data-theme='high-contrast'] .gr-tabs--pills .gr-tabs__tab--active:active {
-	background-color: #1d4ed8 !important; /* blue-700: darker shade for better contrast */
-	border-color: #1d4ed8 !important;
-	color: #ffffff !important; /* white text on darker blue */
+[data-theme='high-contrast'] .gr-tabs--pills .gr-tabs__tab--active:focus-visible {
+	background-color: var(--gr-semantic-action-primary-hover);
+	border-color: var(--gr-semantic-action-primary-hover);
+	color: var(--gr-color-base-black);
+	transition: none;
+}
+
+[data-theme='high-contrast'] .gr-tabs--pills .gr-tabs__tab:not(.gr-tabs__tab--active) {
+	background-color: transparent;
+	border: 1px solid currentColor;
+	color: var(--gr-semantic-foreground-primary);
 }
 
 .gr-tabs--pills .gr-tabs__tablist {
@@ -2974,6 +2993,12 @@
 		outline: 2px solid currentColor;
 		outline-offset: -2px;
 	}
+}
+
+/* High contrast explicit overrides */
+[data-theme='high-contrast'] .gr-action-bar :global(.gr-action-bar__button:hover:not(:disabled)),
+[data-theme='high-contrast'] .gr-action-bar :global(.gr-action-bar__button--active) {
+	color: var(--gr-color-base-black);
 }
 
 /* Text Styles */
@@ -3690,6 +3715,11 @@ body {
 
 .gr-theme-switcher__preview-button--secondary:hover {
 	background-color: var(--gr-semantic-background-secondary);
+}
+
+[data-theme='high-contrast'] .gr-theme-switcher__preview-button--secondary {
+	background-color: var(--gr-semantic-background-primary);
+	border-width: 2px;
 }
 
 .gr-theme-switcher__actions {

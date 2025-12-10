@@ -24,36 +24,36 @@
 
 /* Reply button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--reply:hover:not(:disabled)) {
-	color: var(--gr-semantic-info-foreground);
-	background-color: var(--gr-semantic-info-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-primary-default);
 }
 
 /* Boost button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--boost:hover:not(:disabled)) {
-	color: var(--gr-semantic-success-foreground);
-	background-color: var(--gr-semantic-success-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-success-default);
 }
 
 .gr-action-bar :global(.gr-action-bar__button--boost.gr-action-bar__button--active) {
-	color: var(--gr-semantic-success-foreground);
-	background-color: var(--gr-semantic-success-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-success-default);
 }
 
 /* Favorite button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--favorite:hover:not(:disabled)) {
-	color: var(--gr-semantic-danger-foreground);
-	background-color: var(--gr-semantic-danger-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-error-default);
 }
 
 .gr-action-bar :global(.gr-action-bar__button--favorite.gr-action-bar__button--active) {
-	color: var(--gr-semantic-danger-foreground);
-	background-color: var(--gr-semantic-danger-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-error-default);
 }
 
 /* Share button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--share:hover:not(:disabled)) {
-	color: var(--gr-semantic-info-foreground);
-	background-color: var(--gr-semantic-info-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-primary-default);
 }
 
 /* Count styling */
@@ -66,7 +66,8 @@
 	font-weight: var(--gr-typography-fontWeight-medium);
 }
 
-.gr-action-bar :global(.gr-action-bar__button--active) .gr-action-bar__count {
+.gr-action-bar :global(.gr-action-bar__button--active) .gr-action-bar__count,
+.gr-action-bar :global(.gr-action-bar__button:hover:not(:disabled)) .gr-action-bar__count {
 	color: currentColor;
 }
 
@@ -107,6 +108,10 @@
 	.gr-action-bar :global(.gr-action-bar__button--active) {
 		outline: 2px solid currentColor;
 		outline-offset: -2px;
+	}
+
+	.gr-action-bar :global(.gr-action-bar__button) .gr-action-bar__count {
+		color: currentColor;
 	}
 }
 
@@ -5373,7 +5378,7 @@ h1 {
 	justify-content: center;
 	gap: 0.5rem;
 	padding: 0.75rem 1.5rem;
-	background: var(--compose-submit-bg, #1d9bf0);
+	background: var(--compose-submit-bg, #0a74c2);
 	color: var(--compose-submit-text, white);
 	border: none;
 	border-radius: var(--compose-submit-radius, 9999px);
@@ -5384,9 +5389,9 @@ h1 {
 }
 
 .compose-submit:hover:not(:disabled) {
-	background: var(--compose-submit-hover-bg, #1a8cd8);
+	background: var(--compose-submit-hover-bg, #085a99);
 	transform: translateY(-1px);
-	box-shadow: 0 2px 8px rgba(29, 155, 240, 0.3);
+	box-shadow: 0 2px 8px rgba(10, 116, 194, 0.3);
 }
 
 .compose-submit:active:not(:disabled) {

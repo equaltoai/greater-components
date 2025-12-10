@@ -11,16 +11,16 @@
  */
 import type { TransitionConfig } from 'svelte/transition';
 export interface ScaleInParams {
-    /** Animation duration in milliseconds */
-    duration?: number;
-    /** Animation delay in milliseconds */
-    delay?: number;
-    /** CSS easing function */
-    easing?: (t: number) => number;
-    /** Starting scale value (0-1, where 1 is full size) */
-    start?: number;
-    /** Whether to also fade opacity */
-    opacity?: boolean;
+	/** Animation duration in milliseconds */
+	duration?: number;
+	/** Animation delay in milliseconds */
+	delay?: number;
+	/** CSS easing function */
+	easing?: (t: number) => number;
+	/** Starting scale value (0-1, where 1 is full size) */
+	start?: number;
+	/** Whether to also fade opacity */
+	opacity?: boolean;
 }
 /**
  * Scale in transition - element scales from center

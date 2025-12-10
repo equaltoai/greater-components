@@ -14,13 +14,55 @@ const extraArgs = process.argv.slice(2).filter((arg) => arg !== '--');
 async function run() {
 	for (const theme of themes) {
 		for (const density of densities) {
-			console.log(`\n📋 Running accessibility tests (theme: ${theme}, density: ${density})`);
-			await runPlaywright(theme.trim(), density.trim());
+			const normalizedTheme = theme.trim();
+			const normalizedDensity = density.trim();
+			console.log(
+				`\n📋 Running accessibility tests (theme: ${normalizedTheme}, density: ${normalizedDensity})`
+			);
+
+			const jobs = [
+				{
+					label: 'Run Axe accessibility tests',
+					args: [
+						'--reporter=json',
+						`--output=test-results/a11y-${normalizedTheme}-${normalizedDensity}`,
+					],
+				},
+				{
+					label: 'Run keyboard navigation tests',
+					args: [
+						'--grep=keyboard',
+						'--reporter=json',
+						`--output=test-results/keyboard-${normalizedTheme}-${normalizedDensity}`,
+					],
+				},
+				{
+					label: 'Run focus management tests',
+					args: [
+						'--reporter=json',
+						`--output=test-results/focus-${normalizedTheme}-${normalizedDensity}`,
+						'tests/a11y/focus.a11y.test.ts',
+					],
+				},
+				{
+					label: 'Run contrast tests',
+					args: [
+						'--reporter=json',
+						`--output=test-results/contrast-${normalizedTheme}-${normalizedDensity}`,
+						'tests/a11y/contrast.a11y.test.ts',
+					],
+				},
+			];
+
+			for (const job of jobs) {
+				console.log(`→ ${job.label}`);
+				await runPlaywright(normalizedTheme, normalizedDensity, job.args);
+			}
 		}
 	}
 }
 
-function runPlaywright(theme, density) {
+function runPlaywright(theme, density, jobSpecificArgs = []) {
 	return new Promise((resolve, reject) => {
 		const child = spawn(
 			'pnpm',
@@ -30,6 +72,7 @@ function runPlaywright(theme, density) {
 				'test',
 				'--config=playwright.a11y.config.ts',
 				'--project=chromium',
+				...jobSpecificArgs,
 				...extraArgs,
 			],
 			{
