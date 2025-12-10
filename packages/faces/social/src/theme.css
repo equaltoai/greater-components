@@ -5966,7 +5966,7 @@ h1 {
 .spoiler-text {
 	flex: 1;
 	font-weight: 500;
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 }
 
 .spoiler-toggle {
@@ -5998,6 +5998,7 @@ h1 {
 	line-height: 1.5;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
+	color: var(--gr-semantic-foreground-primary, inherit);
 }
 
 .content.collapsed {
@@ -13685,7 +13686,7 @@ h1 {
 	border-radius: 9999px;
 	font-size: 0.9375rem;
 	font-weight: 700;
-	color: var(--gr-semantic-background-primary, #ffffff);
+	color: var(--gr-color-base-white, #ffffff);
 	cursor: pointer;
 	transition: background-color 0.2s;
 	white-space: nowrap;
@@ -14539,7 +14540,7 @@ h1 {
 /* Status/Content.svelte Styles */
 .status-content {
 	margin: var(--status-spacing-sm, 0.5rem) 0;
-	color: var(--status-text-primary, #0f1419);
+	color: var(--gr-semantic-foreground-primary, var(--status-text-primary, #0f1419));
 	font-size: var(--status-font-size-base, 1rem);
 	line-height: 1.5;
 	word-wrap: break-word;
@@ -14980,8 +14981,8 @@ h1 {
 /* StatusCard.svelte Styles */
 .status-card {
 	padding: var(--spacing-md, 1rem);
-	border-bottom: 1px solid var(--color-border, #e1e8ed);
-	background: var(--color-bg, white);
+	border-bottom: 1px solid var(--gr-semantic-border-default, var(--color-border, #e1e8ed));
+	background: var(--gr-semantic-background-surface, var(--color-bg, white));
 	transition: background-color 0.2s;
 }
 
@@ -14990,7 +14991,7 @@ h1 {
 }
 
 .status-card.clickable:hover {
-	background: var(--color-bg-hover, #f7f9fa);
+	background: var(--gr-semantic-background-secondary, var(--color-bg-hover, #f7f9fa));
 }
 
 .status-card.compact {
@@ -15042,7 +15043,7 @@ h1 {
 
 .display-name {
 	font-weight: 600;
-	color: var(--color-text, #0f1419);
+	color: var(--gr-semantic-foreground-primary, var(--color-text, #0f1419));
 	text-decoration: none;
 	display: flex;
 	align-items: center;
@@ -15055,20 +15056,21 @@ h1 {
 
 .bot-badge {
 	padding: 2px 4px;
-	background: var(--color-bg-secondary, #f7f9fa);
-	border: 1px solid var(--color-border, #e1e8ed);
+	background: var(--gr-semantic-background-tertiary, var(--color-bg-secondary, #f7f9fa));
+	border: 1px solid var(--gr-semantic-border-default, var(--color-border, #e1e8ed));
 	border-radius: var(--radius-xs, 2px);
 	font-size: var(--font-size-xs, 0.75rem);
 	font-weight: normal;
+	color: var(--gr-semantic-foreground-secondary, inherit);
 }
 
 .account-handle {
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 	font-size: var(--font-size-sm, 0.875rem);
 }
 
 .timestamp {
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 	font-size: var(--font-size-sm, 0.875rem);
 	text-decoration: none;
 	white-space: nowrap;
@@ -15220,7 +15222,7 @@ h1 {
 	display: flex;
 	align-items: center;
 	gap: var(--spacing-2xs, 0.2rem);
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 	font-size: var(--font-size-sm, 0.875rem);
 	margin-left: 0;
 }
@@ -15572,7 +15574,7 @@ h1 {
 	overflow-y: auto;
 	overflow-x: hidden;
 	position: relative;
-	background: var(--color-bg, white);
+	background: var(--gr-semantic-background-primary, var(--color-bg, white));
 }
 
 .virtual-list {
@@ -15591,7 +15593,7 @@ h1 {
 	justify-content: center;
 	align-items: center;
 	padding: var(--spacing-lg, 1.5rem);
-	background: var(--color-bg, white);
+	background: var(--gr-semantic-background-primary, var(--color-bg, white));
 }
 
 .loading-indicator.top {
@@ -15654,7 +15656,7 @@ h1 {
 	height: 100%;
 	overflow: hidden;
 	position: relative;
-	background: var(--color-bg, white);
+	background: var(--gr-semantic-background-primary, var(--color-bg, white));
 	display: flex;
 	flex-direction: column;
 }
