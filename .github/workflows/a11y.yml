@@ -131,7 +131,7 @@ jobs:
     needs: accessibility-tests
     # DISABLED: Visual regression tests are blocking releases and cannot be validated locally
     # Re-enable once local parity is established with test:a11y:ci script
-    if: false  # was: github.event_name == 'pull_request'
+    if: false # was: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout repository
