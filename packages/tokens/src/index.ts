@@ -721,60 +721,60 @@ export const themes = {
       "action": {
         "primary": {
           "default": {
-            "value": "{color.primary.400}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.primary.500}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.primary.300}"
+            "value": "{color.gray.200}"
           },
           "disabled": {
-            "value": "{color.gray.700}"
+            "value": "{color.gray.600}"
           }
         },
         "success": {
           "default": {
-            "value": "{color.success.300}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.success.200}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.success.100}"
+            "value": "{color.gray.200}"
           }
         },
         "warning": {
           "default": {
-            "value": "{color.warning.300}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.warning.200}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.warning.100}"
+            "value": "{color.gray.200}"
           }
         },
         "error": {
           "default": {
-            "value": "{color.error.300}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.error.200}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.error.100}"
+            "value": "{color.gray.200}"
           }
         },
         "link": {
           "default": {
-            "value": "{color.primary.400}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.primary.500}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.primary.300}"
+            "value": "{color.gray.200}"
           }
         }
       },

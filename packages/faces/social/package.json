@@ -21,7 +21,8 @@
       "svelte": "./src/index.ts",
       "import": "./dist/index.js"
     },
-    "./style.css": "./dist/theme.css",
+    "./style.css": "./dist/greater-components-fediverse.css",
+    "./theme.css": "./dist/greater-components-fediverse.css",
     "./src/mockData": {
       "import": "./src/mockData.ts"
     }

@@ -33,6 +33,17 @@ export function applyA11yReporter(currentTest: typeof test = test) {
 		const theme = normalizeTheme(process.env['TEST_THEME']);
 		const density = normalizeDensity(process.env['TEST_DENSITY']);
 
+		// Blur any focused element to clear focus rings before running axe
+		// Focus rings are transient visual states and can cause axe to detect
+		// incorrect background colors due to visual overlap with adjacent elements
+		await page.evaluate(() => {
+			if (document.activeElement instanceof HTMLElement) {
+				document.activeElement.blur();
+			}
+		});
+		// Small delay to ensure focus ring CSS transitions have completed
+		await page.waitForTimeout(100);
+
 		const results = await runAxeTest(page);
 
 		const payload = {

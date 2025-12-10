@@ -176,6 +176,7 @@ class ComplianceChecker {
 					help: violation.help,
 					helpUrl: violation.helpUrl,
 					nodes: violation.nodes?.length || 0,
+					nodeTargets: violation.nodes?.map((n) => n.target?.[0]).filter(Boolean) || [],
 					tags: violation.tags || [],
 					component: this.extractComponentName(violation),
 				});
@@ -402,6 +403,9 @@ class ComplianceChecker {
 				console.log(`  ${i + 1}. [${v.impact.toUpperCase()}] ${v.description}`);
 				if (v.component !== 'unknown') {
 					console.log(`     Component: ${v.component}`);
+				}
+				if (v.nodeTargets && v.nodeTargets.length > 0) {
+					console.log(`     Target: ${v.nodeTargets[0]}`);
 				}
 			});
 		}
