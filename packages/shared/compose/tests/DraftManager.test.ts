@@ -6,6 +6,7 @@ import {
 	listDrafts,
 	cleanupOldDrafts,
 	getDraftAge,
+	formatDraftAge,
 	type Draft,
 } from '../src/DraftManager.js';
 
@@ -305,6 +306,27 @@ describe('DraftManager', () => {
 			const age = getDraftAge('test');
 
 			expect(age).toBeLessThan(0);
+		});
+	});
+
+	describe('formatDraftAge', () => {
+		it('should format just now', () => {
+			expect(formatDraftAge(30 * 1000)).toBe('just now');
+		});
+
+		it('should format minutes', () => {
+			expect(formatDraftAge(60 * 1000)).toBe('1 minute ago');
+			expect(formatDraftAge(2 * 60 * 1000)).toBe('2 minutes ago');
+		});
+
+		it('should format hours', () => {
+			expect(formatDraftAge(60 * 60 * 1000)).toBe('1 hour ago');
+			expect(formatDraftAge(2 * 60 * 60 * 1000)).toBe('2 hours ago');
+		});
+
+		it('should format days', () => {
+			expect(formatDraftAge(24 * 60 * 60 * 1000)).toBe('1 day ago');
+			expect(formatDraftAge(2 * 24 * 60 * 60 * 1000)).toBe('2 days ago');
 		});
 	});
 
