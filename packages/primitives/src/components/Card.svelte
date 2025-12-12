@@ -12,10 +12,17 @@ Card component - Content container with elevation, borders, and semantic section
   {/snippet}
 </Card>
 ```
+
+@example Link card
+```svelte
+<Card variant="elevated" href="/details" hoverable>
+  <p>Click to navigate</p>
+</Card>
+```
 -->
 
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
+	import type { HTMLAttributes, HTMLAnchorAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 
 	/**
@@ -50,6 +57,7 @@ Card component - Content container with elevation, borders, and semantic section
 		/**
 		 * Whether the card is clickable/interactive.
 		 * When true, renders as button with hover states.
+		 * Cannot be used with href.
 		 *
 		 * @defaultValue false
 		 * @public
@@ -58,11 +66,36 @@ Card component - Content container with elevation, borders, and semantic section
 
 		/**
 		 * Whether to show hover effects.
+		 * Automatically enabled when href or clickable is set.
 		 *
 		 * @defaultValue false
 		 * @public
 		 */
 		hoverable?: boolean;
+
+		/**
+		 * URL to navigate to when card is clicked.
+		 * When set, renders the card as an anchor element.
+		 * Cannot be used with clickable.
+		 *
+		 * @public
+		 */
+		href?: string;
+
+		/**
+		 * Target for the link (only applies when href is set).
+		 *
+		 * @public
+		 */
+		target?: HTMLAnchorAttributes['target'];
+
+		/**
+		 * Rel attribute for the link (only applies when href is set).
+		 * Automatically set to 'noopener noreferrer' when target="_blank".
+		 *
+		 * @public
+		 */
+		rel?: string;
 
 		/**
 		 * Additional CSS classes.
@@ -98,6 +131,9 @@ Card component - Content container with elevation, borders, and semantic section
 		padding = 'md',
 		clickable = false,
 		hoverable = false,
+		href,
+		target,
+		rel,
 		class: className = '',
 		header,
 		footer,
@@ -109,6 +145,18 @@ Card component - Content container with elevation, borders, and semantic section
 		...restProps
 	}: Props = $props();
 
+	// Determine if card is interactive (link or button)
+	const isLink = $derived(!!href);
+	const isInteractive = $derived(clickable || isLink);
+
+	// Compute rel attribute for links
+	const computedRel = $derived.by(() => {
+		if (!isLink) return undefined;
+		if (rel) return rel;
+		if (target === '_blank') return 'noopener noreferrer';
+		return undefined;
+	});
+
 	// Compute card classes
 	const cardClass = $derived(() => {
 		const classes = [
@@ -116,7 +164,8 @@ Card component - Content container with elevation, borders, and semantic section
 			`gr-card--${variant}`,
 			`gr-card--padding-${padding}`,
 			clickable && 'gr-card--clickable',
-			(hoverable || clickable) && 'gr-card--hoverable',
+			isLink && 'gr-card--link',
+			(hoverable || isInteractive) && 'gr-card--hoverable',
 			className,
 		]
 			.filter(Boolean)
@@ -125,7 +174,7 @@ Card component - Content container with elevation, borders, and semantic section
 		return classes;
 	});
 
-	// Handle keyboard activation
+	// Handle keyboard activation for clickable cards
 	function handleKeydown(event: KeyboardEvent) {
 		if (clickable && (event.key === 'Enter' || event.key === ' ')) {
 			event.preventDefault();
@@ -143,7 +192,31 @@ Card component - Content container with elevation, borders, and semantic section
 	}
 </script>
 
-{#if clickable}
+{#snippet cardContent()}
+	{#if header}
+		<div class="gr-card__header">
+			{@render header()}
+		</div>
+	{/if}
+
+	<div class="gr-card__content">
+		{#if children}
+			{@render children()}
+		{/if}
+	</div>
+
+	{#if footer}
+		<div class="gr-card__footer">
+			{@render footer()}
+		</div>
+	{/if}
+{/snippet}
+
+{#if isLink}
+	<a class={cardClass()} {href} {target} rel={computedRel} {...restProps}>
+		{@render cardContent()}
+	</a>
+{:else if clickable}
 	<button
 		class={cardClass()}
 		onclick={handleClick}
@@ -152,43 +225,11 @@ Card component - Content container with elevation, borders, and semantic section
 		tabindex={tabindex ?? 0}
 		{...restProps}
 	>
-		{#if header}
-			<div class="gr-card__header">
-				{@render header()}
-			</div>
-		{/if}
-
-		<div class="gr-card__content">
-			{#if children}
-				{@render children()}
-			{/if}
-		</div>
-
-		{#if footer}
-			<div class="gr-card__footer">
-				{@render footer()}
-			</div>
-		{/if}
+		{@render cardContent()}
 	</button>
 {:else}
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 	<div class={cardClass()} {role} {tabindex} {...restProps}>
-		{#if header}
-			<div class="gr-card__header">
-				{@render header()}
-			</div>
-		{/if}
-
-		<div class="gr-card__content">
-			{#if children}
-				{@render children()}
-			{/if}
-		</div>
-
-		{#if footer}
-			<div class="gr-card__footer">
-				{@render footer()}
-			</div>
-		{/if}
+		{@render cardContent()}
 	</div>
 {/if}

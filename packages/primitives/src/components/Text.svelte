@@ -17,10 +17,9 @@ Text component - Paragraph and inline text component with size, weight, and colo
 	 *
 	 * @public
 	 */
-	interface Props
-		extends HTMLAttributes<
-			HTMLParagraphElement | HTMLSpanElement | HTMLDivElement | HTMLLabelElement
-		> {
+	interface Props extends HTMLAttributes<
+		HTMLParagraphElement | HTMLSpanElement | HTMLDivElement | HTMLLabelElement
+	> {
 		/**
 		 * HTML element to render.
 		 * - `p`: Paragraph (default)

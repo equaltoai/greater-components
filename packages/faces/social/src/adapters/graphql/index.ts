@@ -8,7 +8,7 @@
  *
  * @example
  * ```typescript
- * import { createLesserClient } from '@equaltoai/greater-components-fediverse/adapters/graphql';
+ * import { createLesserClient } from '@equaltoai/greater-components/faces/social/adapters/graphql';
  *
  * const client = createLesserClient({
  *   endpoint: 'https://api.lesser.example.com/graphql',

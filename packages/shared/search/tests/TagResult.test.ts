@@ -9,19 +9,13 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { formatCount } from '../src/context.svelte';
 
 // Tag interface
 interface SearchTag {
 	name: string;
 	count: number;
 	trending: boolean;
-}
-
-// Format count for display
-function formatCountLabel(count: number): string {
-	if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M`;
-	if (count >= 1_000) return `${(count / 1_000).toFixed(1)}K`;
-	return count.toString();
 }
 
 // Format tag name with hashtag
@@ -31,7 +25,7 @@ function formatTagName(name: string): string {
 
 // Generate posts label
 function formatPostsLabel(count: number): string {
-	const formatted = formatCountLabel(count);
+	const formatted = formatCount(count);
 	return `${formatted} posts`;
 }
 
@@ -67,43 +61,43 @@ function normalizeTagName(name: string): string {
 
 describe('Search.TagResult - Count Formatting', () => {
 	it('formats small counts as-is', () => {
-		expect(formatCountLabel(0)).toBe('0');
-		expect(formatCountLabel(42)).toBe('42');
-		expect(formatCountLabel(950)).toBe('950');
-		expect(formatCountLabel(999)).toBe('999');
+		expect(formatCount(0)).toBe('0');
+		expect(formatCount(42)).toBe('42');
+		expect(formatCount(950)).toBe('950');
+		expect(formatCount(999)).toBe('999');
 	});
 
 	it('formats thousands with K', () => {
-		expect(formatCountLabel(1000)).toBe('1.0K');
-		expect(formatCountLabel(1200)).toBe('1.2K');
-		expect(formatCountLabel(5000)).toBe('5.0K');
-		expect(formatCountLabel(9999)).toBe('10.0K');
+		expect(formatCount(1000)).toBe('1.0K');
+		expect(formatCount(1200)).toBe('1.2K');
+		expect(formatCount(5000)).toBe('5.0K');
+		expect(formatCount(9999)).toBe('10.0K');
 	});
 
 	it('formats hundreds of thousands', () => {
-		expect(formatCountLabel(100000)).toBe('100.0K');
-		expect(formatCountLabel(500000)).toBe('500.0K');
-		expect(formatCountLabel(999999)).toBe('1000.0K');
+		expect(formatCount(100000)).toBe('100.0K');
+		expect(formatCount(500000)).toBe('500.0K');
+		expect(formatCount(999999)).toBe('1000.0K');
 	});
 
 	it('formats millions with M', () => {
-		expect(formatCountLabel(1_000_000)).toBe('1.0M');
-		expect(formatCountLabel(2_500_000)).toBe('2.5M');
-		expect(formatCountLabel(10_000_000)).toBe('10.0M');
+		expect(formatCount(1_000_000)).toBe('1.0M');
+		expect(formatCount(2_500_000)).toBe('2.5M');
+		expect(formatCount(10_000_000)).toBe('10.0M');
 	});
 
 	it('handles edge at 1000', () => {
-		expect(formatCountLabel(1000)).toBe('1.0K');
+		expect(formatCount(1000)).toBe('1.0K');
 	});
 
 	it('handles edge at 1 million', () => {
-		expect(formatCountLabel(1_000_000)).toBe('1.0M');
+		expect(formatCount(1_000_000)).toBe('1.0M');
 	});
 
 	it('matches algorithmic output', () => {
 		const values = [1, 15, 999, 1_001, 50_000];
 		values.forEach((value) => {
-			const result = formatCountLabel(value);
+			const result = formatCount(value);
 			const expected =
 				value >= 1_000
 					? `${(value / (value >= 1_000_000 ? 1_000_000 : 1_000)).toFixed(1)}${value >= 1_000_000 ? 'M' : 'K'}`
@@ -298,12 +292,12 @@ describe('Search.TagResult - Tag Name Normalization', () => {
 
 describe('Search.TagResult - Edge Cases', () => {
 	it('handles very large counts', () => {
-		expect(formatCountLabel(999_999_999)).toBe('1000.0M');
+		expect(formatCount(999_999_999)).toBe('1000.0M');
 	});
 
 	it('handles negative counts', () => {
 		// Unexpected but should handle gracefully
-		expect(formatCountLabel(-1)).toBe('-1');
+		expect(formatCount(-1)).toBe('-1');
 	});
 
 	it('handles tag with all properties', () => {
@@ -369,7 +363,7 @@ describe('Search.TagResult - Integration', () => {
 		};
 
 		expect(formatTagName(tag.name)).toBe('#fediverse');
-		expect(formatCountLabel(tag.count)).toBe('1.2K');
+		expect(formatCount(tag.count)).toBe('1.2K');
 		expect(formatPostsLabel(tag.count)).toBe('1.2K posts');
 		expect(isTrending(tag)).toBe(false);
 		expect(getTrendingClass(tag.trending)).toBe('');
@@ -387,7 +381,7 @@ describe('Search.TagResult - Integration', () => {
 		};
 
 		expect(formatTagName(tag.name)).toBe('#activitypub');
-		expect(formatCountLabel(tag.count)).toBe('2.5M');
+		expect(formatCount(tag.count)).toBe('2.5M');
 		expect(formatPostsLabel(tag.count)).toBe('2.5M posts');
 		expect(isTrending(tag)).toBe(true);
 		expect(getTrendingClass(tag.trending)).toBe('tag-result--trending');
@@ -411,24 +405,24 @@ describe('Search.TagResult - Integration', () => {
 
 describe('Search.TagResult - Count Boundaries', () => {
 	it('handles boundary at 999/1000', () => {
-		expect(formatCountLabel(999)).toBe('999');
-		expect(formatCountLabel(1000)).toBe('1.0K');
+		expect(formatCount(999)).toBe('999');
+		expect(formatCount(1000)).toBe('1.0K');
 	});
 
 	it('handles boundary at 999999/1000000', () => {
-		expect(formatCountLabel(999999)).toBe('1000.0K');
-		expect(formatCountLabel(1000000)).toBe('1.0M');
+		expect(formatCount(999999)).toBe('1000.0K');
+		expect(formatCount(1000000)).toBe('1.0M');
 	});
 
 	it('formats range of thousands correctly', () => {
-		expect(formatCountLabel(1500)).toBe('1.5K');
-		expect(formatCountLabel(25000)).toBe('25.0K');
-		expect(formatCountLabel(999000)).toBe('999.0K');
+		expect(formatCount(1500)).toBe('1.5K');
+		expect(formatCount(25000)).toBe('25.0K');
+		expect(formatCount(999000)).toBe('999.0K');
 	});
 
 	it('formats range of millions correctly', () => {
-		expect(formatCountLabel(1500000)).toBe('1.5M');
-		expect(formatCountLabel(25000000)).toBe('25.0M');
-		expect(formatCountLabel(999000000)).toBe('999.0M');
+		expect(formatCount(1500000)).toBe('1.5M');
+		expect(formatCount(25000000)).toBe('25.0M');
+		expect(formatCount(999000000)).toBe('999.0M');
 	});
 });

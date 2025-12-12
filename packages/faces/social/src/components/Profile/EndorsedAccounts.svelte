@@ -8,7 +8,7 @@ Supports drag-and-drop reordering (for own profile).
 @example
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+  import { Profile } from '@equaltoai/greater-components/faces/social';
   
   const endorsed = [
     { id: '1', username: 'alice', displayName: 'Alice Wonder', avatar: '...' }
@@ -64,8 +64,8 @@ Supports drag-and-drop reordering (for own profile).
 	let dragOverIndex = $state<number | null>(null);
 	let removingIds = $state<Set<string>>(new Set());
 
-	// Local copy for reordering
-	let localEndorsed = $state<ProfileData[]>([...endorsed]);
+	// Local copy for reordering - initialized empty, synced via $effect
+	let localEndorsed = $state<ProfileData[]>([]);
 
 	// Update local copy when prop changes
 	$effect(() => {

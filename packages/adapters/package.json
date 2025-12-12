@@ -43,13 +43,13 @@
     "graphql-ws": "^6.0.6"
   },
   "devDependencies": {
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "@vitest/ui": "^4.0.12",
-    "jsdom": "^27.2.0",
+    "@types/node": "^24.10.2",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
+    "jsdom": "^27.3.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15",
     "ws": "^8.18.3"
   },
   "peerDependencies": {

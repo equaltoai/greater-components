@@ -1,5 +1,18 @@
 # @equaltoai/greater-components-fediverse
 
+## 4.0.1
+
+### Patch Changes
+
+- Updated dependencies [6f21801]
+  - @equaltoai/greater-components-primitives@3.0.1
+  - @equaltoai/greater-components-admin@4.0.1
+  - @equaltoai/greater-components-auth@4.0.1
+  - @equaltoai/greater-components-compose@4.0.1
+  - @equaltoai/greater-components-messaging@4.0.1
+  - @equaltoai/greater-components-notifications@4.0.1
+  - @equaltoai/greater-components-search@4.0.1
+
 ## 4.0.0
 
 ### Major Changes

@@ -2,7 +2,7 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import {
-		Menu,
+		SimpleMenu,
 		Button,
 		ThemeSwitcher,
 		preferencesStore,
@@ -135,13 +135,13 @@ import { ThemeProvider } from '@equaltoai/greater-components-primitives';
 		</header>
 
 		<div class="menu-stack">
-			<Menu items={primaryMenu} onItemSelect={handleMenuSelect}>
+			<SimpleMenu items={primaryMenu} onItemSelect={handleMenuSelect}>
 				{#snippet trigger({ open, toggle })}
 					<Button aria-expanded={open} aria-haspopup="true" onclick={toggle}>
 						Account actions
 					</Button>
 				{/snippet}
-			</Menu>
+			</SimpleMenu>
 			<p class="status-callout" aria-live="polite">{lastSelection}</p>
 		</div>
 
@@ -163,7 +163,7 @@ import { ThemeProvider } from '@equaltoai/greater-components-primitives';
 			<p>Right-click or use Shift+F10 to open the same Menu component as a context menu.</p>
 		</header>
 
-		<Menu items={contextMenuItems} onItemSelect={handleContextSelect}>
+		<SimpleMenu items={contextMenuItems} onItemSelect={handleContextSelect}>
 			{#snippet trigger({ toggle })}
 				<div
 					class="context-target"
@@ -184,7 +184,7 @@ import { ThemeProvider } from '@equaltoai/greater-components-primitives';
 					Right click or press Shift+F10
 				</div>
 			{/snippet}
-		</Menu>
+		</SimpleMenu>
 
 		<p class="status-callout" aria-live="polite">{contextSelection}</p>
 		<p class="a11y-tip">

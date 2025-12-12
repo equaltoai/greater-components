@@ -10,31 +10,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-
-// Interfaces
-interface MessageParticipant {
-	id: string;
-	username: string;
-	displayName: string;
-	avatar?: string;
-}
-
-interface DirectMessage {
-	id: string;
-	conversationId: string;
-	sender: MessageParticipant;
-	content: string;
-	createdAt: string;
-	read: boolean;
-}
-
-interface Conversation {
-	id: string;
-	participants: MessageParticipant[];
-	lastMessage?: DirectMessage;
-	unreadCount: number;
-	updatedAt: string;
-}
+import type { MessageParticipant, DirectMessage, Conversation } from '../src/context.svelte';
 
 // Check if conversation is selected
 function isConversationSelected(

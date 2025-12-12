@@ -16,7 +16,7 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet, untrack } from 'svelte';
 	import { createMenu } from '@equaltoai/greater-components-headless/menu';
 	import type { ActivityPubActor } from '../generics/index.js';
 
@@ -157,7 +157,7 @@
 		maxVisibleAccounts = 5,
 		class: className = '',
 		showAddAccount = true,
-	} = config;
+	} = untrack(() => config);
 
 	let switching = $state(false);
 	let removingId = $state<string | null>(null);

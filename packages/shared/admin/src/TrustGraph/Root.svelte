@@ -15,6 +15,7 @@ Root component for trust graph visualization and relationship management.
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 	import { createTrustGraphContext, type TrustGraphConfig } from './context.js';
 
 	interface Props {
@@ -47,10 +48,12 @@ Root component for trust graph visualization and relationship management.
 	let { adapter, rootActorId, config = {}, children, class: className = '' }: Props = $props();
 
 	// Create context
-	const context = createTrustGraphContext({
-		adapter,
-		...config,
-	});
+	const context = createTrustGraphContext(
+		untrack(() => ({
+			adapter,
+			...config,
+		}))
+	);
 
 	// Load graph when rootActorId changes
 	$effect(() => {

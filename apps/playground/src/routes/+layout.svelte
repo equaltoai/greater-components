@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import '@equaltoai/greater-components-tokens/theme.css';
 	import '@equaltoai/greater-components-primitives/theme.css';
+	import '@equaltoai/greater-components-social/theme.css';
 	import '../app.css';
 	import {
 		ThemeProvider,
@@ -28,20 +29,18 @@
 		UserIcon,
 		SettingsIcon,
 		SearchIcon,
-		BookOpenIcon,
 	} from '@equaltoai/greater-components-icons';
 	import type { IconComponent } from '@equaltoai/greater-components-icons';
 
 	let { children, data }: { children?: Snippet; data?: LayoutData } = $props();
 
-	const testTheme = $derived(() => data?.testTheme ?? null);
-	const testDensity = $derived(() => data?.testDensity ?? null);
+	const testTheme = $derived(data?.testTheme ?? null);
+	const testDensity = $derived(data?.testDensity ?? null);
 
-	const shouldPreseedPreferences = $derived(() => Boolean(testTheme || testDensity));
+	const shouldPreseedPreferences = $derived(Boolean(testTheme || testDensity));
 
 	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
-		{ href: '/docs', label: 'Documentation', icon: BookOpenIcon, external: true },
 		{ href: '/chat', label: 'Chat Demo', icon: MessageCircleIcon },
 		{ href: '/status', label: 'Status Card Demo', icon: MessageSquareIcon },
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },
@@ -97,10 +96,11 @@
 
 <svelte:head>
 	{#if shouldPreseedPreferences && typeof window === 'undefined'}
-		<script>
+		<!-- eslint-disable svelte/no-at-html-tags -->
+		{@html `<script>
 			(function () {
-				const themeValue = {JSON.stringify(testTheme ?? null)};
-				const densityValue = {JSON.stringify(testDensity ?? null)};
+				const themeValue = ${JSON.stringify(testTheme ?? null)};
+				const densityValue = ${JSON.stringify(testDensity ?? null)};
 
 				try {
 					const raw = localStorage.getItem('gr-preferences-v1');
@@ -128,7 +128,7 @@
 					document.documentElement.setAttribute('data-density', densityValue);
 				}
 			})();
-		</script>
+		<` + `/script>`}
 	{/if}
 </svelte:head>
 
@@ -238,6 +238,11 @@
 	.sidebar-nav a.active {
 		background: var(--gr-semantic-action-primary-default, #2563eb);
 		color: var(--gr-color-base-white, #ffffff);
+	}
+
+	/* High-contrast mode: use black text on lighter primary background for better contrast */
+	:global([data-theme='high-contrast']) .sidebar-nav a.active {
+		color: var(--gr-color-base-black, #000000);
 	}
 
 	.sidebar-footer {

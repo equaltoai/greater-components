@@ -7,6 +7,8 @@ export interface ComponentFile {
 	path: string;
 	content: string;
 	type: 'component' | 'utils' | 'types' | 'styles';
+	/** Whether to transform import paths based on user's alias configuration */
+	transform?: boolean;
 }
 
 export interface ComponentDependency {
@@ -14,9 +16,18 @@ export interface ComponentDependency {
 	version: string;
 }
 
+/** Component type categories */
+export type ComponentType = 'primitive' | 'compound' | 'pattern' | 'adapter' | 'shared' | 'face';
+
+/** Target installation directory */
+export type ComponentTarget = 'components' | 'utils' | 'types' | 'styles';
+
+/** Domain categories for filtering */
+export type ComponentDomain = 'social' | 'blog' | 'community' | 'auth' | 'admin' | 'chat' | 'core';
+
 export interface ComponentMetadata {
 	name: string;
-	type: 'primitive' | 'compound' | 'pattern' | 'adapter';
+	type: ComponentType;
 	description: string;
 	files: ComponentFile[];
 	dependencies: ComponentDependency[];
@@ -24,6 +35,46 @@ export interface ComponentMetadata {
 	registryDependencies: string[]; // Other Greater components this depends on
 	tags: string[];
 	version: string;
+	/** Target installation directory */
+	target?: ComponentTarget;
+	/** Lesser schema version compatibility */
+	lesserVersion?: string;
+	/** Breaking change warnings */
+	breaking?: string[];
+	/** Domain category for filtering */
+	domain?: ComponentDomain;
+}
+
+/**
+ * Face Manifest - Curated collection of components for a specific application type
+ * Extends ComponentMetadata with face-specific configuration
+ */
+export interface FaceManifest extends ComponentMetadata {
+	type: 'face';
+	/** Components included in this face */
+	includes: {
+		/** Primitive components (button, modal, etc.) */
+		primitives: string[];
+		/** Shared modules (auth, compose, notifications, etc.) */
+		shared: string[];
+		/** Pattern components (thread-view, moderation-tools, etc.) */
+		patterns: string[];
+		/** Compound components specific to this face */
+		components: string[];
+	};
+	/** Style configuration */
+	styles: {
+		/** Main CSS bundle path */
+		main: string;
+		/** Optional design tokens path */
+		tokens?: string;
+	};
+	/** Example usage paths */
+	examples?: string[];
+	/** Documentation paths */
+	docs?: string[];
+	/** Recommended shared modules for this face */
+	recommendedShared?: string[];
 }
 
 /**
@@ -890,49 +941,174 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 	},
 };
 
+// Re-export shared module registry
+export {
+	sharedModuleRegistry,
+	getSharedModule,
+	getAllSharedModuleNames,
+	getSharedModulesByDomain,
+	type SharedModuleMetadata,
+} from './shared.js';
+
+// Re-export patterns registry
+export {
+	patternRegistry,
+	getPattern,
+	getAllPatternNames,
+	getPatternsByDomain,
+	getRelatedPatterns,
+	type PatternMetadata,
+} from './patterns.js';
+
+// Re-export faces registry
+export {
+	faceRegistry,
+	getFaceManifest,
+	getAllFaceNames,
+	getFaceComponents,
+	getFaceRecommendedShared,
+	isComponentInFace,
+} from './faces.js';
+
+// Import registries for unified queries
+import { sharedModuleRegistry } from './shared.js';
+import { patternRegistry } from './patterns.js';
+import { faceRegistry } from './faces.js';
+
 /**
  * Get component metadata by name
+ * Searches across all registries: components, shared, patterns
  */
 export function getComponent(name: string): ComponentMetadata | null {
-	return componentRegistry[name] ?? null;
+	// Check main component registry first
+	if (componentRegistry[name]) {
+		return componentRegistry[name];
+	}
+
+	// Check shared module registry
+	if (sharedModuleRegistry[name]) {
+		return sharedModuleRegistry[name] as ComponentMetadata;
+	}
+
+	// Check pattern registry
+	if (patternRegistry[name]) {
+		return patternRegistry[name] as ComponentMetadata;
+	}
+
+	return null;
 }
 
 /**
  * Get all components of a specific type
+ * Searches across all registries
  */
-export function getComponentsByType(type: ComponentMetadata['type']): ComponentMetadata[] {
-	return Object.values(componentRegistry).filter((comp) => comp.type === type);
+export function getComponentsByType(type: ComponentType): ComponentMetadata[] {
+	const results: ComponentMetadata[] = [];
+
+	// From main registry
+	results.push(...Object.values(componentRegistry).filter((comp) => comp.type === type));
+
+	// Check other registries based on type
+	if (type === 'shared') {
+		results.push(...(Object.values(sharedModuleRegistry) as ComponentMetadata[]));
+	} else if (type === 'pattern') {
+		results.push(...(Object.values(patternRegistry) as ComponentMetadata[]));
+	} else if (type === 'face') {
+		results.push(...(Object.values(faceRegistry) as ComponentMetadata[]));
+	}
+
+	return results;
+}
+
+/**
+ * Get all components by domain
+ */
+export function getComponentsByDomain(domain: ComponentDomain): ComponentMetadata[] {
+	const results: ComponentMetadata[] = [];
+
+	// From main registry
+	results.push(...Object.values(componentRegistry).filter((comp) => comp.domain === domain));
+
+	// From shared modules
+	results.push(
+		...(Object.values(sharedModuleRegistry).filter(
+			(mod) => mod.domain === domain
+		) as ComponentMetadata[])
+	);
+
+	// From patterns
+	results.push(
+		...(Object.values(patternRegistry).filter(
+			(pattern) => pattern.domain === domain
+		) as ComponentMetadata[])
+	);
+
+	return results;
 }
 
 /**
  * Get all components with a specific tag
+ * Searches across all registries
  */
 export function getComponentsByTag(tag: string): ComponentMetadata[] {
-	return Object.values(componentRegistry).filter((comp) => comp.tags.includes(tag));
+	const results: ComponentMetadata[] = [];
+
+	results.push(...Object.values(componentRegistry).filter((comp) => comp.tags.includes(tag)));
+
+	results.push(
+		...(Object.values(sharedModuleRegistry).filter((mod) =>
+			mod.tags.includes(tag)
+		) as ComponentMetadata[])
+	);
+
+	results.push(
+		...(Object.values(patternRegistry).filter((pattern) =>
+			pattern.tags.includes(tag)
+		) as ComponentMetadata[])
+	);
+
+	return results;
 }
 
 /**
  * Search components by name or description
+ * Searches across all registries
  */
 export function searchComponents(query: string): ComponentMetadata[] {
 	const lowerQuery = query.toLowerCase();
-	return Object.values(componentRegistry).filter(
-		(comp) =>
-			comp.name.toLowerCase().includes(lowerQuery) ||
-			comp.description.toLowerCase().includes(lowerQuery) ||
-			comp.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))
+	const results: ComponentMetadata[] = [];
+
+	const matchesQuery = (comp: ComponentMetadata) =>
+		comp.name.toLowerCase().includes(lowerQuery) ||
+		comp.description.toLowerCase().includes(lowerQuery) ||
+		comp.tags.some((tag) => tag.toLowerCase().includes(lowerQuery));
+
+	results.push(...Object.values(componentRegistry).filter(matchesQuery));
+
+	results.push(
+		...(Object.values(sharedModuleRegistry).filter(matchesQuery) as ComponentMetadata[])
 	);
+
+	results.push(...(Object.values(patternRegistry).filter(matchesQuery) as ComponentMetadata[]));
+
+	return results;
 }
 
 /**
- * Get all component names
+ * Get all component names from all registries
  */
 export function getAllComponentNames(): string[] {
-	return Object.keys(componentRegistry);
+	const names = new Set<string>(Object.keys(componentRegistry));
+
+	Object.keys(sharedModuleRegistry).forEach((name) => names.add(name));
+	Object.keys(patternRegistry).forEach((name) => names.add(name));
+
+	return Array.from(names);
 }
 
 /**
  * Resolve component dependencies (including registry dependencies)
+ * Works across all registries
  */
 export function resolveComponentDependencies(name: string): string[] {
 	const component = getComponent(name);
@@ -951,4 +1127,48 @@ export function resolveComponentDependencies(name: string): string[] {
 	}
 
 	return Array.from(deps);
+}
+
+/**
+ * Get combined registry statistics
+ */
+export function getRegistryStats(): {
+	primitives: number;
+	compounds: number;
+	patterns: number;
+	adapters: number;
+	shared: number;
+	faces: number;
+	total: number;
+} {
+	const primitives = Object.values(componentRegistry).filter((c) => c.type === 'primitive').length;
+	const compounds = Object.values(componentRegistry).filter((c) => c.type === 'compound').length;
+	const adapters = Object.values(componentRegistry).filter((c) => c.type === 'adapter').length;
+	const patterns = Object.keys(patternRegistry).length;
+	const shared = Object.keys(sharedModuleRegistry).length;
+	const faces = Object.keys(faceRegistry).length;
+
+	return {
+		primitives,
+		compounds,
+		patterns,
+		adapters,
+		shared,
+		faces,
+		total: primitives + compounds + patterns + adapters + shared + faces,
+	};
+}
+
+/**
+ * Get all available component types
+ */
+export function getAllComponentTypes(): ComponentType[] {
+	return ['primitive', 'compound', 'pattern', 'adapter', 'shared', 'face'];
+}
+
+/**
+ * Get all available domains
+ */
+export function getAllDomains(): ComponentDomain[] {
+	return ['social', 'blog', 'community', 'auth', 'admin', 'chat', 'core'];
 }

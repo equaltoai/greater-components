@@ -37,6 +37,12 @@ Object.defineProperty(window, 'localStorage', {
 	value: localStorageMock,
 });
 
+global.ResizeObserver = class ResizeObserver {
+	observe() {}
+	unobserve() {}
+	disconnect() {}
+};
+
 if (typeof HTMLDialogElement !== 'undefined') {
 	if (!HTMLDialogElement.prototype.showModal) {
 		HTMLDialogElement.prototype.showModal = function showModal() {

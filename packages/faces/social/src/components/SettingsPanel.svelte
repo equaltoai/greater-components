@@ -32,8 +32,13 @@
 
 	const hasWindow = typeof window !== 'undefined';
 
-	// State
-	let currentSection = $state(activeSection);
+	// State - initialized with default, then synced with prop via $effect
+	let currentSection = $state('appearance');
+
+	// Sync currentSection when prop changes
+	$effect(() => {
+		currentSection = activeSection;
+	});
 	let isMobile = $state(false);
 	let showMobileMenu = $state(false);
 

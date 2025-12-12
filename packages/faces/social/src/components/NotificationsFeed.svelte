@@ -16,6 +16,7 @@
 
 <script lang="ts">
 	import { createVirtualizer } from '@tanstack/svelte-virtual';
+	import { get } from 'svelte/store';
 	import type { Snippet } from 'svelte';
 	import type { Notification, NotificationGroup, NotificationsFeedProps } from '../types';
 	import { groupNotifications } from '../utils/notificationGrouping';
@@ -74,7 +75,7 @@
 	let prevItemCount = 0;
 
 	// Process notifications into groups or individual items
-	const processedItems = $derived(() => {
+	const processedItems = $derived.by(() => {
 		if (loading && notifications.length === 0) {
 			return [];
 		}
@@ -88,19 +89,19 @@
 		}
 	});
 
-	const virtualizer = $derived(
+	const virtualizerStore = $derived(
 		scrollElement && processedItems.length > 0
 			? createVirtualizer({
 					count: processedItems.length,
-					getScrollElement: () => scrollElement,
+					getScrollElement: () => scrollElement ?? null,
 					estimateSize: () => estimateSize,
 					overscan,
 				})
 			: null
 	);
 
-	const virtualItems = $derived(virtualizer?.getVirtualItems() || []);
-	const totalSize = $derived(virtualizer?.getTotalSize() || 0);
+	const virtualItems = $derived(virtualizerStore ? get(virtualizerStore).getVirtualItems() : []);
+	const totalSize = $derived(virtualizerStore ? get(virtualizerStore).getTotalSize() : 0);
 
 	function handleScroll() {
 		if (!scrollElement || !onLoadMore || !hasMore || loadingMore) return;
@@ -126,15 +127,18 @@
 
 		if (currentItemCount > prevItemCount && prevItemCount > 0) {
 			const prevScrollHeight = scrollElement.scrollHeight;
+			// Capture scrollElement reference for closure
+			const element = scrollElement;
 
 			// Use requestAnimationFrame to wait for DOM updates
 			requestAnimationFrame(() => {
-				const newScrollHeight = scrollElement.scrollHeight;
+				if (!element) return;
+				const newScrollHeight = element.scrollHeight;
 				const heightDiff = newScrollHeight - prevScrollHeight;
 
 				// If items were likely added to the top (scroll position near top)
-				if (heightDiff > 0 && scrollElement.scrollTop < 1000) {
-					scrollElement.scrollTop += heightDiff;
+				if (heightDiff > 0 && element.scrollTop < 1000) {
+					element.scrollTop += heightDiff;
 				}
 			});
 		}
@@ -164,7 +168,7 @@
 	}
 
 	// Count unread notifications
-	const unreadCount = $derived(() => {
+	const unreadCount = $derived.by(() => {
 		return notifications.filter((n) => !n.read).length;
 	});
 </script>

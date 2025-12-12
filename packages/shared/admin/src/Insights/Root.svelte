@@ -15,6 +15,7 @@ Root component for admin insights, analytics, and AI analysis dashboards.
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 	import { createInsightsContext, type InsightsConfig } from './context.js';
 
 	interface Props {
@@ -42,10 +43,12 @@ Root component for admin insights, analytics, and AI analysis dashboards.
 	let { adapter, config = {}, children, class: className = '' }: Props = $props();
 
 	// Create context
-	createInsightsContext({
-		adapter,
-		...config,
-	});
+	createInsightsContext(
+		untrack(() => ({
+			adapter,
+			...config,
+		}))
+	);
 </script>
 
 <div class={`insights-root ${className}`}>

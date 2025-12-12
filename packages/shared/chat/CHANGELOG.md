@@ -1,5 +1,13 @@
 # @equaltoai/greater-components-chat
 
+## 4.2.6
+
+### Patch Changes
+
+- Updated dependencies [6f21801]
+  - @equaltoai/greater-components-primitives@3.0.1
+  - @equaltoai/greater-components-content@4.0.1
+
 ## 4.2.5
 
 ### Patch Changes

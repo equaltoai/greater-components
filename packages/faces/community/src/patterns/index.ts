@@ -1,0 +1,4 @@
+/**
+ * Community Patterns
+ */
+export {};

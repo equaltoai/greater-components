@@ -24,10 +24,17 @@
 		...restProps
 	}: Props = $props();
 
+	// Use getters in context so consumers always get current prop values
 	setContext('list-context', {
-		icon,
-		iconColor,
-		iconSize,
+		get icon() {
+			return icon;
+		},
+		get iconColor() {
+			return iconColor;
+		},
+		get iconSize() {
+			return iconSize;
+		},
 	});
 
 	const listClass = $derived(

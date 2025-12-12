@@ -15,7 +15,7 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet, untrack } from 'svelte';
 	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 
 	interface ContentWarningConfig {
@@ -110,7 +110,7 @@
 		class: className = '',
 		blurContent = true,
 		showIcon = true,
-	} = config;
+	} = untrack(() => config);
 
 	let isExpanded = $state(defaultExpanded);
 	let contentHeight = $state(0);

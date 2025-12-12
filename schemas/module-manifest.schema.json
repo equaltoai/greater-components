@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://equalto.ai/schemas/module-manifest.schema.json",
+  "title": "Greater Components Module Manifest",
+  "description": "Schema for Greater Components shared module manifest files",
+  "type": "object",
+  "required": ["name", "version", "description", "components", "dependencies"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema file"
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^@equaltoai/greater-components-",
+      "description": "Package name following @equaltoai/greater-components-* pattern"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+",
+      "description": "Semantic version number"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the module's purpose"
+    },
+    "components": {
+      "type": "object",
+      "description": "Map of component names to their definitions",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["description"],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Brief description of the component"
+          },
+          "props": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of component prop names"
+          },
+          "subcomponents": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of subcomponent names for compound components"
+          },
+          "exports": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether this component is exported from the module"
+          }
+        }
+      }
+    },
+    "utilities": {
+      "type": "object",
+      "description": "Map of utility module names to their definitions",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["description"],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Brief description of the utility module"
+          },
+          "exports": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "List of exported function/constant names"
+          }
+        }
+      }
+    },
+    "types": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of TypeScript type names exported from the module"
+    },
+    "dependencies": {
+      "type": "object",
+      "required": ["internal", "peer"],
+      "properties": {
+        "internal": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Internal Greater Components package dependencies"
+        },
+        "peer": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Peer dependencies (e.g., svelte)"
+        },
+        "optional": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional dependencies"
+        }
+      }
+    },
+    "lesserSchema": {
+      "type": "object",
+      "description": "Lesser GraphQL schema requirements",
+      "properties": {
+        "mutations": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required GraphQL mutations"
+        },
+        "queries": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required GraphQL queries"
+        },
+        "subscriptions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required GraphQL subscriptions"
+        }
+      }
+    },
+    "integrationPatterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Supported integration patterns"
+    },
+    "features": {
+      "type": "object",
+      "description": "Feature flags indicating module capabilities",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "accessibility": {
+      "type": "object",
+      "properties": {
+        "wcag": {
+          "type": "string",
+          "description": "WCAG compliance level (e.g., '2.1 AA')"
+        },
+        "features": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of accessibility features"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://greater.components.dev/schema.json",
+  "version": "1.0.0",
+  "ref": "greater-v4.2.0",
+  "style": "default",
+  "aliases": {
+    "components": "$lib/components",
+    "utils": "$lib/utils",
+    "ui": "$lib/components/ui",
+    "lib": "$lib",
+    "hooks": "$lib/hooks"
+  },
+  "css": {
+    "tokens": true,
+    "primitives": true,
+    "face": "blog"
+  },
+  "installed": []
+}

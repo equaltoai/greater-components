@@ -5,9 +5,10 @@
 		code: string;
 		title?: string;
 		description?: string;
+		language?: string;
 	}
 
-	let { code, title = 'Usage snippet', description }: Props = $props();
+	let { code, title = 'Usage snippet', description, language = 'javascript' }: Props = $props();
 
 	let copyState = $state<'idle' | 'copied'>('idle');
 
@@ -44,10 +45,16 @@
 	}
 </script>
 
+```
 <div class="code-example">
 	<div class="code-example__header">
 		<div>
-			<p class="label">{title}</p>
+			<p class="label">
+				{title}
+				{#if language}
+					<span class="language-badge">{language}</span>
+				{/if}
+			</p>
 			{#if description}
 				<p class="description">{description}</p>
 			{/if}
@@ -79,11 +86,22 @@
 	}
 
 	.label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 		margin: 0;
 		font-size: var(--gr-typography-fontSize-sm);
 		text-transform: uppercase;
 		letter-spacing: 0.12em;
 		color: var(--gr-semantic-foreground-tertiary);
+	}
+
+	.language-badge {
+		font-size: 0.7em;
+		padding: 0.1em 0.4em;
+		border-radius: 4px;
+		background-color: var(--gr-semantic-background-tertiary);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 
 	.description {

@@ -110,6 +110,7 @@ export class WebSocketClient implements TransportAdapter<WebSocketClientState> {
 	 */
 	destroy(): void {
 		this.isDestroyed = true;
+		this.setState({ status: 'disconnected' });
 		this.cleanup();
 		this.eventHandlers.clear();
 	}

@@ -5,6 +5,8 @@
 	let {
 		level,
 		size,
+		responsiveSize,
+		fluid,
 		weight,
 		align,
 		class: className,
@@ -15,7 +17,7 @@
 	} = $props();
 </script>
 
-<Heading {level} {size} {weight} {align} class={className} {...restProps}>
+<Heading {level} {size} {responsiveSize} {fluid} {weight} {align} class={className} {...restProps}>
 	{#if textContent}
 		{textContent}
 	{/if}

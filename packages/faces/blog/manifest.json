@@ -1,0 +1,188 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-blog",
+  "version": "1.0.0",
+  "description": "Blog/Medium-style UI components for long-form publishing applications",
+  "components": {
+    "Article": {
+      "description": "Compound component for displaying long-form blog articles with rich formatting",
+      "subcomponents": [
+        "Root",
+        "Header",
+        "Content",
+        "Footer",
+        "TableOfContents",
+        "ReadingProgress",
+        "ShareBar",
+        "RelatedPosts"
+      ],
+      "props": ["article", "config", "handlers"],
+      "exports": true
+    },
+    "Author": {
+      "description": "Compound component for author profiles, bios, and metadata",
+      "subcomponents": ["Root", "Card", "Bio", "Avatar", "SocialLinks"],
+      "props": ["author", "showBio", "showSocial"],
+      "exports": true
+    },
+    "Publication": {
+      "description": "Compound component for publication branding and newsletter signup",
+      "subcomponents": ["Root", "Banner", "Logo", "Description", "NewsletterSignup"],
+      "props": ["publication", "config"],
+      "exports": true
+    },
+    "Navigation": {
+      "description": "Compound component for blog navigation, archives, and tag browsing",
+      "subcomponents": ["Root", "ArchiveView", "TagCloud", "CategoryList", "Breadcrumbs"],
+      "props": ["archives", "tags", "categories"],
+      "exports": true
+    },
+    "Editor": {
+      "description": "Compound component for article editing with markdown/WYSIWYG support",
+      "subcomponents": [
+        "Root",
+        "Toolbar",
+        "DraftManager",
+        "RevisionHistory",
+        "SEOMetadata",
+        "CanonicalUrl",
+        "PublishControls"
+      ],
+      "props": ["article", "config", "handlers"],
+      "exports": true
+    },
+    "ReadingTime": {
+      "description": "Displays estimated reading time for an article",
+      "props": ["content", "wordsPerMinute"],
+      "exports": true
+    },
+    "ProgressIndicator": {
+      "description": "Shows scroll progress through article content",
+      "props": ["targetSelector", "position"],
+      "exports": true
+    },
+    "SeriesNavigation": {
+      "description": "Navigation for multi-part article series",
+      "props": ["series", "currentIndex"],
+      "exports": true
+    },
+    "FeaturedImage": {
+      "description": "Hero image display with caption and attribution",
+      "props": ["src", "alt", "caption", "attribution"],
+      "exports": true
+    },
+    "CommentSection": {
+      "description": "Comment display and submission interface",
+      "props": ["comments", "handlers", "config"],
+      "exports": true
+    },
+    "ReactionBar": {
+      "description": "Article reaction buttons (claps, likes, etc.)",
+      "props": ["reactions", "onReact"],
+      "exports": true
+    },
+    "BookmarkButton": {
+      "description": "Save article for later reading",
+      "props": ["bookmarked", "onToggle"],
+      "exports": true
+    },
+    "StructuredData": {
+      "description": "JSON-LD structured data for SEO",
+      "props": ["article", "author", "publication"],
+      "exports": true
+    },
+    "OpenGraphMeta": {
+      "description": "Open Graph meta tags for social sharing",
+      "props": ["title", "description", "image", "url"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "context": {
+      "description": "Context creation and access utilities for compound components",
+      "exports": [
+        "createArticleContext",
+        "getArticleContext",
+        "createEditorContext",
+        "getEditorContext",
+        "createPublicationContext",
+        "getPublicationContext"
+      ]
+    },
+    "reading": {
+      "description": "Reading time and progress calculation utilities",
+      "exports": ["calculateReadingTime", "calculateScrollProgress", "extractHeadings"]
+    },
+    "seo": {
+      "description": "SEO and metadata generation utilities",
+      "exports": ["generateStructuredData", "generateOpenGraphTags", "generateCanonicalUrl"]
+    }
+  },
+  "types": [
+    "ArticleData",
+    "ArticleMetadata",
+    "ArticleConfig",
+    "ArticleHandlers",
+    "ArticleContext",
+    "AuthorData",
+    "AuthorSocialLinks",
+    "AuthorContext",
+    "PublicationData",
+    "PublicationConfig",
+    "PublicationContext",
+    "DraftData",
+    "RevisionData",
+    "EditorConfig",
+    "EditorContext",
+    "ArchiveEntry",
+    "TagData",
+    "CategoryData",
+    "NavigationContext",
+    "CommentData",
+    "ReactionData",
+    "SEOData",
+    "ReadingTimeData",
+    "SeriesData",
+    "HeadingData"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-icons",
+      "@equaltoai/greater-components-content",
+      "@equaltoai/greater-components-utils",
+      "@equaltoai/greater-components-headless"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": ["@equaltoai/greater-components-auth", "@equaltoai/greater-components-search"]
+  },
+  "integrationPatterns": [
+    "rest_api_fetch",
+    "graphql_client",
+    "static_site_generation",
+    "server_side_rendering"
+  ],
+  "features": {
+    "markdown_editing": true,
+    "wysiwyg_editing": true,
+    "draft_autosave": true,
+    "revision_history": true,
+    "seo_optimization": true,
+    "reading_progress": true,
+    "table_of_contents": true,
+    "social_sharing": true,
+    "newsletter_integration": true,
+    "comment_system": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard_navigation",
+      "screen_reader_support",
+      "focus_management",
+      "skip_links",
+      "heading_hierarchy",
+      "landmark_regions"
+    ]
+  }
+}

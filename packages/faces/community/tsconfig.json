@@ -1,0 +1,19 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@equaltoai/greater-components-auth": ["../../shared/auth/src/index.ts"],
+      "@equaltoai/greater-components-search": ["../../shared/search/src/index.ts"],
+      "@equaltoai/greater-components-admin": ["../../shared/admin/src/index.ts"],
+      "@equaltoai/greater-components-notifications": ["../../shared/notifications/src/index.ts"],
+      "@equaltoai/greater-components-content": ["../../content/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "src/**/*.svelte"],
+  "exclude": ["dist", "node_modules", "tests", "stories"]
+}

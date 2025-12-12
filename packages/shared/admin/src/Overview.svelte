@@ -2,7 +2,7 @@
   Admin.Overview - Dashboard Overview
 -->
 <script lang="ts">
-	import { getAdminContext, formatNumber } from './context.js';
+	import { getAdminContext, formatNumber } from './context.svelte.js';
 	import { onMount } from 'svelte';
 
 	interface Props {

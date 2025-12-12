@@ -8,7 +8,7 @@
 -->
 <script lang="ts">
 	import { createModal } from '@equaltoai/greater-components-headless/modal';
-	import { getAdminContext } from './context.js';
+	import { getAdminContext } from './context.svelte.js';
 	import { onMount } from 'svelte';
 
 	interface Props {

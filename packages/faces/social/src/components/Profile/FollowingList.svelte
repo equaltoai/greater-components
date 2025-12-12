@@ -8,7 +8,7 @@ Supports unfollow action.
 @example
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+  import { Profile } from '@equaltoai/greater-components/faces/social';
   
   const following = [
     { id: '1', username: 'jane', displayName: 'Jane Smith', avatar: '...' }

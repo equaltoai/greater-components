@@ -1,5 +1,15 @@
 # @equaltoai/greater-components-primitives
 
+## 3.0.1
+
+### Patch Changes
+
+- 6f21801: - Implemented `Badge` and `Alert` components based on paicodes feedback.
+  - Implemented `Spinner` and `LoadingState` components.
+  - Implemented `SimpleMenu` component for easier dropdowns.
+  - Improved documentation coverage for components and API reference.
+  - Marked implementation suggestions as complete.
+
 ## 3.0.0
 
 ### Major Changes

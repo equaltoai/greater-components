@@ -9,70 +9,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-
-// Message and conversation interfaces
-interface MessageParticipant {
-	id: string;
-	username: string;
-	displayName: string;
-	avatar?: string;
-}
-
-interface DirectMessage {
-	id: string;
-	conversationId: string;
-	sender: MessageParticipant;
-	content: string;
-	createdAt: string;
-	read: boolean;
-	mediaAttachments?: {
-		url: string;
-		type: string;
-		previewUrl?: string;
-	}[];
-}
-
-interface Conversation {
-	id: string;
-	participants: MessageParticipant[];
-	lastMessage?: DirectMessage;
-	unreadCount: number;
-	updatedAt: string;
-}
-
-// Format message timestamp
-function formatMessageTime(timestamp: string): string {
-	const date = new Date(timestamp);
-	const now = new Date();
-	const diff = now.getTime() - date.getTime();
-	const seconds = Math.floor(diff / 1000);
-	const minutes = Math.floor(seconds / 60);
-	const hours = Math.floor(minutes / 60);
-	const days = Math.floor(hours / 24);
-
-	if (days > 7) {
-		return date.toLocaleDateString();
-	}
-	if (days > 0) {
-		return `${days}d ago`;
-	}
-	if (hours > 0) {
-		return `${hours}h ago`;
-	}
-	if (minutes > 0) {
-		return `${minutes}m ago`;
-	}
-	return 'Just now';
-}
-
-// Get conversation display name
-function getConversationName(conversation: Conversation, currentUserId: string): string {
-	const otherParticipants = conversation.participants.filter((p) => p.id !== currentUserId);
-	if (otherParticipants.length === 0) return 'Me';
-	if (otherParticipants.length === 1 && otherParticipants[0])
-		return otherParticipants[0].displayName;
-	return otherParticipants.map((p) => p.displayName).join(', ');
-}
+import { formatMessageTime, getConversationName } from '../src/context.svelte';
+import type { MessageParticipant, DirectMessage, Conversation } from '../src/context.svelte';
 
 // Get other participants (excluding current user)
 function getOtherParticipants(

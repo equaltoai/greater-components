@@ -1,6 +1,6 @@
 # Importing Greater Components
 
-This guide explains the correct ways to import components from the `@equaltoai/greater-components` package (v3.0.0+).
+This guide explains the correct ways to import components from the `@equaltoai/greater-components` package (v4.0.0+).
 
 ## Installation
 
@@ -10,7 +10,7 @@ Install the single umbrella package:
 pnpm add @equaltoai/greater-components
 ```
 
-## Package Structure (v3.0.0)
+## Package Structure (v4.0.0)
 
 Greater Components is organized into these subpaths:
 
@@ -28,8 +28,10 @@ Greater Components is organized into these subpaths:
 | `/shared/messaging`     | Direct messaging                                     |
 | `/shared/search`        | Search components                                    |
 | `/shared/notifications` | Notification feed                                    |
+| `/shared/chat`          | AI Chat interface components                         |
 | `/faces/social`         | Twitter/Mastodon-style UI (Timeline, Status)         |
 | `/adapters`             | Protocol adapters (Lesser GraphQL)                   |
+| `/cli`                  | Command-line tools (cli package)                     |
 
 ## Import Patterns
 
@@ -85,6 +87,9 @@ import * as Search from '@equaltoai/greater-components/shared/search';
 
 // Notifications
 import * as Notifications from '@equaltoai/greater-components/shared/notifications';
+
+// Chat
+import * as Chat from '@equaltoai/greater-components/chat';
 ```
 
 ### 6. Adapters

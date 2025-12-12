@@ -1,36 +1,36 @@
 export interface LinkifyOptions {
-    /**
-     * Base URL for user mentions (e.g., "https://mastodon.social/@")
-     */
-    mentionBaseUrl?: string;
-    /**
-     * Base URL for hashtags (e.g., "https://mastodon.social/tags/")
-     */
-    hashtagBaseUrl?: string;
-    /**
-     * CSS class for mention links
-     */
-    mentionClass?: string;
-    /**
-     * CSS class for hashtag links
-     */
-    hashtagClass?: string;
-    /**
-     * CSS class for URL links
-     */
-    urlClass?: string;
-    /**
-     * Whether to open links in new tab
-     */
-    openInNewTab?: boolean;
-    /**
-     * Maximum length for URL display text
-     */
-    maxUrlLength?: number;
-    /**
-     * Whether to add rel="nofollow" to links
-     */
-    nofollow?: boolean;
+	/**
+	 * Base URL for user mentions (e.g., "https://mastodon.social/@")
+	 */
+	mentionBaseUrl?: string;
+	/**
+	 * Base URL for hashtags (e.g., "https://mastodon.social/tags/")
+	 */
+	hashtagBaseUrl?: string;
+	/**
+	 * CSS class for mention links
+	 */
+	mentionClass?: string;
+	/**
+	 * CSS class for hashtag links
+	 */
+	hashtagClass?: string;
+	/**
+	 * CSS class for URL links
+	 */
+	urlClass?: string;
+	/**
+	 * Whether to open links in new tab
+	 */
+	openInNewTab?: boolean;
+	/**
+	 * Maximum length for URL display text
+	 */
+	maxUrlLength?: number;
+	/**
+	 * Whether to add rel="nofollow" to links
+	 */
+	nofollow?: boolean;
 }
 /**
  * Convert mentions, hashtags, and URLs in text to clickable links

@@ -21,6 +21,7 @@
 	import type { StatusActionHandlers } from '../components/Status/context.js';
 	import ThreadNodeView from './ThreadNodeView.svelte';
 	import type { ThreadNode, ThreadViewProps } from './ThreadView.types.js';
+	import { untrack } from 'svelte';
 
 	let {
 		rootStatus,
@@ -39,7 +40,7 @@
 		highlightedStatusId,
 		mode = 'full',
 		class: className = '',
-	} = config;
+	} = untrack(() => config);
 
 	let collapsedThreads = $state<Set<string>>(new Set());
 	let loadingMore = $state<Set<string>>(new Set());

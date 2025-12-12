@@ -61,25 +61,15 @@
 
 	let {
 		items = [],
-		estimateSize = 200,
-		overscan = 5,
 		loadingTop = false,
 		loadingBottom = false,
 		endReached = false,
-		onLoadMore,
-		onLoadPrevious,
 		gapLoader,
 		endOfFeed,
 		class: className = '',
 		density = 'comfortable',
 		actionHandlers,
 	}: Props = $props();
-
-	// Preserve unused props for API compatibility
-	void estimateSize;
-	void overscan;
-	void onLoadMore;
-	void onLoadPrevious;
 </script>
 
 <div class={`timeline-virtualized ${className}`}>

@@ -2,7 +2,7 @@
   Admin.Reports - Moderation Reports
 -->
 <script lang="ts">
-	import { getAdminContext } from './context.js';
+	import { getAdminContext } from './context.svelte.js';
 	import { onMount } from 'svelte';
 
 	interface Props {

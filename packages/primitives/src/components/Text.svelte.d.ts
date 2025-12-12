@@ -5,10 +5,9 @@ import type { Snippet } from 'svelte';
  *
  * @public
  */
-interface Props
-	extends HTMLAttributes<
-		HTMLParagraphElement | HTMLSpanElement | HTMLDivElement | HTMLLabelElement
-	> {
+interface Props extends HTMLAttributes<
+	HTMLParagraphElement | HTMLSpanElement | HTMLDivElement | HTMLLabelElement
+> {
 	/**
 	 * HTML element to render.
 	 * - `p`: Paragraph (default)

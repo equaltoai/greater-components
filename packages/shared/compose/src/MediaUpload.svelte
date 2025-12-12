@@ -136,12 +136,13 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 		const processedFiles = await processFiles(fileArray, config);
 
 		// Add to files array
+		const startIndex = files.length;
 		files = [...files, ...processedFiles];
 
 		// Start uploading if handler provided
 		if (onUpload) {
-			for (const file of processedFiles) {
-				uploadFile(file);
+			for (let i = 0; i < processedFiles.length; i++) {
+				uploadFile(files[startIndex + i]);
 			}
 		}
 	}

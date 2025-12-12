@@ -395,8 +395,8 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 	}
 
-	// Construct accept string for input
-	const acceptString = accept.files?.join(',') || '';
+	// Construct accept string for input - use $derived to track accept prop changes
+	const acceptString = $derived(accept.files?.join(',') || '');
 </script>
 
 <div

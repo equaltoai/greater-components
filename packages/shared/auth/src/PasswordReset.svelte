@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { getAuthContext, isValidEmail, isValidPassword } from './context.js';
 	import type { PasswordResetData } from './context.js';
@@ -54,7 +55,11 @@
 
 	const { state: authState, handlers, updateState, clearError } = getAuthContext();
 
-	let email = $state(initialEmail);
+	let email = $state(untrack(() => initialEmail));
+
+	$effect(() => {
+		email = initialEmail;
+	});
 	let newPassword = $state('');
 	let confirmPassword = $state('');
 	let requestSent = $state(false);

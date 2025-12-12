@@ -4,7 +4,7 @@
  * Provides shared state and configuration for compound Notifications components.
  * Handles notification grouping, filtering, and read/unread state.
  *
- * @module @equaltoai/greater-components-fediverse/Notifications/context
+ * @module @equaltoai/greater-components/faces/social/Notifications/context
  */
 
 import { getContext, setContext } from 'svelte';

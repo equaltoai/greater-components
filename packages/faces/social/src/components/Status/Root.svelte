@@ -74,6 +74,7 @@ Provides context for child components and handles root-level interactions.
 	const accountLabel = $derived(account ? account.displayName || account.username : 'Deleted post');
 
 	// Create context for child components
+	// Create context for child components
 	const context: StatusContext = {
 		get status() {
 			return status;
@@ -87,14 +88,18 @@ Provides context for child components and handles root-level interactions.
 		get isReblog() {
 			return isReblog;
 		},
-		config: {
-			density: config.density || 'comfortable',
-			showActions: config.showActions ?? true,
-			clickable: config.clickable ?? false,
-			showThread: config.showThread ?? true,
-			class: config.class || '',
+		get config() {
+			return {
+				density: config.density || 'comfortable',
+				showActions: config.showActions ?? true,
+				clickable: config.clickable ?? false,
+				showThread: config.showThread ?? true,
+				class: config.class || '',
+			};
 		},
-		handlers,
+		get handlers() {
+			return handlers;
+		},
 	};
 
 	// Set context once during initialization

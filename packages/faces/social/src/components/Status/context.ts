@@ -4,7 +4,7 @@
  * Provides shared state and configuration for compound Status components.
  * Uses Svelte 5's context API for passing data between Status.* components.
  *
- * @module @equaltoai/greater-components-fediverse/Status/context
+ * @module @equaltoai/greater-components/faces/social/Status/context
  */
 
 import { getContext, setContext } from 'svelte';

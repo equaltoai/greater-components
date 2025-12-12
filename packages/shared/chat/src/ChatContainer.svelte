@@ -16,7 +16,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, untrack } from 'svelte';
 	import { createChatContext } from './context.svelte.js';
 	import type { ChatHandlers, ConnectionStatus } from './context.svelte.js';
 	import type { ChatMessage, ChatSettingsState } from './types.js';
@@ -73,6 +73,18 @@
 		enableKeyboardShortcuts?: boolean;
 
 		/**
+		 * Whether to use flex-based full-height layout
+		 * @default false
+		 */
+		fillHeight?: boolean;
+
+		/**
+		 * Alias for fillHeight - enables flex-based full-height layout
+		 * @default false
+		 */
+		flex?: boolean;
+
+		/**
 		 * Custom CSS class
 		 */
 		class?: string;
@@ -93,12 +105,24 @@
 		initialSettings = {},
 		autoScroll = true,
 		enableKeyboardShortcuts = true,
+		fillHeight = false,
+		flex = false,
 		class: className = '',
 		children,
 	}: Props = $props();
 
+	// Compute effective fillHeight (flex is alias)
+	const effectiveFillHeight = $derived(fillHeight || flex);
+
 	// Create chat context
-	const context = createChatContext(handlers, initialSettings);
+	const context = createChatContext(
+		untrack(() => handlers),
+		untrack(() => initialSettings)
+	);
+
+	$effect(() => {
+		Object.assign(context.handlers, handlers);
+	});
 
 	// Container element reference for scrolling
 	let containerRef: HTMLDivElement | undefined = $state();
@@ -182,6 +206,7 @@
 	const containerClass = $derived.by(() => {
 		const classes = [
 			'chat-container',
+			effectiveFillHeight && 'chat-container--fill-height',
 			context.state.streaming && 'chat-container--streaming',
 			context.state.loading && 'chat-container--loading',
 			context.state.error && 'chat-container--error',
@@ -235,10 +260,17 @@
 		flex-direction: column;
 		height: 100%;
 		min-height: 0;
-		background-color: var(--gr-semantic-background-primary, #ffffff);
-		border-radius: var(--gr-radii-lg, 0.5rem);
+		background-color: var(--gr-semantic-background-primary);
+		border-radius: var(--gr-radii-lg);
 		overflow: hidden;
 		position: relative;
+	}
+
+	/* Fill height variant - uses flex to fill available space */
+	.chat-container--fill-height {
+		flex: 1;
+		height: auto;
+		min-height: 100%;
 	}
 
 	.chat-container__inner {
@@ -259,32 +291,32 @@
 	/* Connection status indicator */
 	.chat-container__status {
 		position: absolute;
-		top: var(--gr-spacing-scale-2, 0.5rem);
-		right: var(--gr-spacing-scale-2, 0.5rem);
+		top: var(--gr-spacing-scale-2);
+		right: var(--gr-spacing-scale-2);
 		display: flex;
 		align-items: center;
-		gap: var(--gr-spacing-scale-2, 0.5rem);
-		padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-3, 0.75rem);
-		background-color: var(--gr-semantic-background-secondary, #f3f4f6);
-		border-radius: var(--gr-radii-full, 9999px);
-		font-size: var(--gr-typography-fontSize-sm, 0.875rem);
-		color: var(--gr-semantic-foreground-secondary, #6b7280);
+		gap: var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+		background-color: var(--gr-semantic-background-secondary);
+		border-radius: var(--gr-radii-full);
+		font-size: var(--gr-typography-fontSize-sm);
+		color: var(--gr-semantic-foreground-secondary);
 		z-index: 10;
 	}
 
 	.chat-container__status-indicator {
 		width: 0.5rem;
 		height: 0.5rem;
-		border-radius: var(--gr-radii-full, 9999px);
+		border-radius: var(--gr-radii-full);
 	}
 
 	.chat-container__status-indicator--connecting {
-		background-color: var(--gr-color-warning-500, #f59e0b);
+		background-color: var(--gr-color-warning-500);
 		animation: pulse 1.5s ease-in-out infinite;
 	}
 
 	.chat-container__status-indicator--error {
-		background-color: var(--gr-color-error-500, #ef4444);
+		background-color: var(--gr-color-error-500);
 	}
 
 	/* Loading state */
@@ -295,23 +327,18 @@
 		left: 0;
 		right: 0;
 		height: 2px;
-		background: linear-gradient(
-			90deg,
-			transparent,
-			var(--gr-color-primary-500, #3b82f6),
-			transparent
-		);
+		background: linear-gradient(90deg, transparent, var(--gr-color-primary-500), transparent);
 		animation: loading-bar 1.5s ease-in-out infinite;
 	}
 
 	/* Streaming state */
-	.chat-container--streaming {
-		/* Visual indicator that streaming is active */
-	}
+	/* .chat-container--streaming {
+		Visual indicator that streaming is active
+	} */
 
 	/* Error state */
 	.chat-container--error {
-		border-color: var(--gr-color-error-300, #fca5a5);
+		border-color: var(--gr-color-error-300);
 	}
 
 	/* Animations */
@@ -334,19 +361,7 @@
 		}
 	}
 
-	/* Dark mode */
-	:global([data-theme='dark']) .chat-container {
-		background-color: var(--gr-semantic-background-primary, #1f2937);
-	}
-
-	:global([data-theme='dark']) .chat-container__status {
-		background-color: var(--gr-semantic-background-secondary, #374151);
-		color: var(--gr-semantic-foreground-secondary, #9ca3af);
-	}
-
-	:global([data-theme='dark']) .chat-container--error {
-		border-color: var(--gr-color-error-700, #b91c1c);
-	}
+	/* Dark mode handled via semantic tokens - no explicit override needed */
 
 	/* Mobile responsive */
 	@media (max-width: 640px) {
@@ -355,10 +370,10 @@
 		}
 
 		.chat-container__status {
-			top: var(--gr-spacing-scale-1, 0.25rem);
-			right: var(--gr-spacing-scale-1, 0.25rem);
-			padding: var(--gr-spacing-scale-1, 0.25rem) var(--gr-spacing-scale-2, 0.5rem);
-			font-size: var(--gr-typography-fontSize-xs, 0.75rem);
+			top: var(--gr-spacing-scale-1);
+			right: var(--gr-spacing-scale-1);
+			padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
+			font-size: var(--gr-typography-fontSize-xs);
 		}
 	}
 

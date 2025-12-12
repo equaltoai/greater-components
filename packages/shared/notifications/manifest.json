@@ -1,0 +1,81 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-notifications",
+  "version": "4.0.1",
+  "description": "Notification components for ActivityPub/Fediverse applications",
+  "components": {
+    "Root": {
+      "description": "Container component providing context for notifications compound components",
+      "props": ["notifications", "groups", "config", "handlers", "initialState", "children"],
+      "exports": true
+    },
+    "Item": {
+      "description": "Individual notification item display",
+      "props": ["notification", "showTimestamp", "showAvatar"],
+      "exports": true
+    },
+    "Group": {
+      "description": "Grouped notification display for similar actions",
+      "props": ["group", "expanded", "onToggle"],
+      "exports": true
+    },
+    "Filter": {
+      "description": "Filter tabs for notification types",
+      "props": ["activeFilter", "onFilterChange"],
+      "exports": true
+    },
+    "LesserNotificationItem": {
+      "description": "Lesser-specific notification types (quote, community_note, trust_update, cost_alert, moderation_action)",
+      "props": ["notification"],
+      "exports": true
+    },
+    "NotificationFilters": {
+      "description": "Settings component for configuring which notification types to receive",
+      "props": ["filters", "onChange"],
+      "exports": true
+    },
+    "PushNotificationSettings": {
+      "description": "Manage push notification subscription settings",
+      "props": ["adapter"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "notificationGrouping": {
+      "description": "Utilities for grouping similar notifications",
+      "exports": ["groupNotifications", "ungroupNotifications", "mergeGroups"]
+    }
+  },
+  "types": [
+    "NotificationsContext",
+    "NotificationsConfig",
+    "NotificationsHandlers",
+    "NotificationsState",
+    "NotificationDisplayMode",
+    "NotificationFilter",
+    "Notification",
+    "NotificationGroup",
+    "NotificationType",
+    "Account",
+    "Status"
+  ],
+  "dependencies": {
+    "internal": ["@equaltoai/greater-components-primitives", "@equaltoai/greater-components-icons"],
+    "peer": ["svelte@^5.43.6"],
+    "optional": ["@equaltoai/greater-components-adapters"]
+  },
+  "lesserSchema": {
+    "mutations": ["markNotificationRead", "markAllNotificationsRead", "dismissNotification"],
+    "queries": ["notifications", "notificationGroups"],
+    "subscriptions": ["notificationReceived", "notificationUpdated"]
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "aria-live-regions",
+      "keyboard-navigation",
+      "screen-reader-announcements",
+      "focus-management"
+    ]
+  }
+}

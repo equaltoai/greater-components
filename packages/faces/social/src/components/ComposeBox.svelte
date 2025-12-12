@@ -58,14 +58,15 @@
 		mediaSlot,
 		pollSlot,
 		class: className = '',
+		...restProps
 	}: Props = $props();
 
-	const restProps = $restProps<Omit<HTMLAttributes<HTMLDivElement>, 'class'>>();
-
 	// Component state
+	// eslint-disable-next-line svelte/valid-compile
 	let content = $state(initialContent);
 	let contentWarning = $state('');
 	let hasContentWarning = $state(false);
+	// eslint-disable-next-line svelte/valid-compile
 	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(defaultVisibility);
 	let mediaAttachments = $state<ComposeMediaAttachment[]>([]);
 	let poll = $state<ComposePoll | undefined>();
@@ -103,7 +104,7 @@
 		return 'var(--gr-semantic-foreground-secondary)';
 	});
 
-	const draftData = $derived<ComposeBoxDraft>(() => ({
+	const draftData = $derived<ComposeBoxDraft>({
 		content,
 		contentWarning,
 		hasContentWarning,
@@ -112,7 +113,7 @@
 		poll,
 		replyToId: replyToStatus?.id,
 		timestamp: Date.now(),
-	}));
+	});
 
 	// Generate unique IDs for accessibility
 	const composeId = `gr-compose-${Math.random().toString(36).substr(2, 9)}`;

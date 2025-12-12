@@ -4,6 +4,7 @@ interface Props {
 	variant?: 'compact' | 'full';
 	showPreview?: boolean;
 	showAdvanced?: boolean;
+	showWorkbench?: boolean;
 	class?: string;
 	value?: ColorScheme;
 	onThemeChange?: (theme: ColorScheme) => void;

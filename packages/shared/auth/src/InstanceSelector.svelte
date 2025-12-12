@@ -12,6 +12,7 @@
   ```
 -->
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { getAuthContext, isValidInstanceUrl } from './context.js';
 
 	interface Props {
@@ -33,8 +34,12 @@
 
 	const { handlers, state: authState, updateState, clearError } = getAuthContext();
 
-	let instanceInput = $state(defaultInstance);
+	let instanceInput = $state(untrack(() => defaultInstance));
 	let instanceError = $state<string | null>(null);
+
+	$effect(() => {
+		instanceInput = defaultInstance;
+	});
 
 	function normalizeInstance(value: string): string {
 		const trimmed = value.trim();

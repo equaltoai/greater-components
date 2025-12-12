@@ -8,7 +8,7 @@ Supports drag-and-drop reordering and management (for own profile).
 @example
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+  import { Profile } from '@equaltoai/greater-components/faces/social';
   
   const hashtags = [
     { name: 'svelte', usageCount: 42, lastUsed: '2024-01-15' },
@@ -71,8 +71,8 @@ Supports drag-and-drop reordering and management (for own profile).
 	let dragOverIndex = $state<number | null>(null);
 	let removingHashtags = $state<Set<string>>(new Set());
 
-	// Local copy for reordering
-	let localHashtags = $state<FeaturedHashtag[]>([...hashtags]);
+	// Local copy for reordering - initialized empty, synced via $effect
+	let localHashtags = $state<FeaturedHashtag[]>([]);
 
 	// Update local copy when prop changes
 	$effect(() => {

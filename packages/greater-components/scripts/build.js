@@ -36,7 +36,6 @@ const packages = [
 	{ key: 'shared/chat', dir: 'shared/chat' },
 	// Faces
 	{ key: 'faces/social', dir: 'faces/social' },
-	{ key: 'fediverse', dir: 'faces/social' },
 	// Tools
 	{ key: 'adapters', dir: 'adapters' },
 	{ key: 'testing', dir: 'testing' },
@@ -159,6 +158,9 @@ function rewriteImports() {
 }
 
 function generateRootBarrels() {
+	const pkgJson = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+	const version = pkgJson.version;
+
 	// Export commonly used packages from the root barrel for convenience
 	const exposedPackages = [
 		'primitives',
@@ -169,15 +171,18 @@ function generateRootBarrels() {
 		'adapters',
 		'testing',
 		'cli',
-		'fediverse',
+		'faces/social',
 	];
 	const entryTargets = exposedPackages
 		.map((key) => `export * from './${key}/index.js';`)
 		.join('\n');
-	const entryTypes = exposedPackages.map((key) => `export * from './${key}/index.js';`).join('\n');
+	const versionExport = `export const version = '${version}';`;
 
-	writeFileSync(join(distDir, 'index.js'), `${entryTargets}\n`, 'utf8');
-	writeFileSync(join(distDir, 'index.d.ts'), `${entryTypes}\n`, 'utf8');
+	const entryTypes = exposedPackages.map((key) => `export * from './${key}/index.js';`).join('\n');
+	const versionType = `export declare const version: string;`;
+
+	writeFileSync(join(distDir, 'index.js'), `${entryTargets}\n${versionExport}\n`, 'utf8');
+	writeFileSync(join(distDir, 'index.d.ts'), `${entryTypes}\n${versionType}\n`, 'utf8');
 }
 
 function aggregateStyles() {
@@ -191,7 +196,7 @@ function aggregateStyles() {
 		const packageDist = join(workspaceRoot, dir, 'dist');
 
 		// Check for common style filenames
-		const styleFiles = ['style.css', 'styles.css', 'theme.css', 'greater-components-fediverse.css'];
+		const styleFiles = ['style.css', 'styles.css', 'theme.css', 'greater-components-social.css'];
 		let foundStyle = false;
 
 		for (const file of styleFiles) {

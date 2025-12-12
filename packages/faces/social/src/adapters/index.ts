@@ -6,7 +6,7 @@
  * @module adapters
  * @example
  * ```typescript
- * import { AdapterCache, RequestBatcher, OptimisticManager } from '@equaltoai/greater-components-fediverse/adapters';
+ * import { AdapterCache, RequestBatcher, OptimisticManager } from '@equaltoai/greater-components/faces/social/adapters';
  *
  * // Create cache
  * const cache = new AdapterCache({ maxSize: 1000, defaultTTL: 300000 });

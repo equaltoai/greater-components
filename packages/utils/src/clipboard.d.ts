@@ -7,10 +7,10 @@
  * Result of a copy operation
  */
 export interface CopyResult {
-    /** Whether the copy operation was successful */
-    success: boolean;
-    /** Error message if the operation failed */
-    error?: string;
+	/** Whether the copy operation was successful */
+	success: boolean;
+	/** Error message if the operation failed */
+	error?: string;
 }
 /**
  * Copies text to the clipboard with fallback for older browsers or non-secure contexts.

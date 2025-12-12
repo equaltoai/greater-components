@@ -25,6 +25,7 @@ Create threads with multiple connected posts, each with its own character limit.
 -->
 
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { countWeightedCharacters } from './UnicodeCounter.js';
 	import type { PostVisibility } from './context.js';
@@ -94,7 +95,7 @@ Create threads with multiple connected posts, each with its own character limit.
 		},
 	]);
 
-	let visibility = $state<PostVisibility>(defaultVisibility);
+	let visibility = $state<PostVisibility>(untrack(() => defaultVisibility));
 	let submitting = $state(false);
 	let error = $state<string | null>(null);
 	let draggedPostId = $state<string | null>(null);

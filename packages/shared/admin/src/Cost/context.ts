@@ -3,7 +3,7 @@
  *
  * Provides shared state for cost tracking and budget management.
  *
- * @module @equaltoai/greater-components-fediverse/Admin/Cost/context
+ * @module @equaltoai/greater-components/faces/social/Admin/Cost/context
  */
 
 import { getContext, setContext } from 'svelte';

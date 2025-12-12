@@ -58,6 +58,16 @@ Badge component - A versatile badge component for status indicators, labels, and
 		 * Description/Content snippet.
 		 */
 		children?: Snippet;
+
+		/**
+		 * Whether to show a pulse animation (useful for status indicators).
+		 */
+		pulse?: boolean;
+
+		/**
+		 * Accessibility live region behavior.
+		 */
+		ariaLive?: 'polite' | 'assertive';
 	}
 
 	let {
@@ -69,19 +79,31 @@ Badge component - A versatile badge component for status indicators, labels, and
 		class: className = '',
 		labelSnippet,
 		children,
+		pulse = false,
+		ariaLive,
 		...restProps
 	}: Props = $props();
 
 	const badgeClass = $derived(
-		['gr-badge', `gr-badge--${variant}`, `gr-badge--${color}`, `gr-badge--${size}`, className]
+		[
+			'gr-badge',
+			`gr-badge--${variant}`,
+			`gr-badge--${color}`,
+			`gr-badge--${size}`,
+			pulse && 'gr-badge--pulse',
+			className,
+		]
 			.filter(Boolean)
 			.join(' ')
 	);
 </script>
 
-<div class={badgeClass} {...restProps}>
+<div class={badgeClass} aria-live={ariaLive} {...restProps}>
 	{#if variant === 'dot'}
-		<span class="gr-badge__dot" aria-hidden="true"></span>
+		<span
+			class={['gr-badge__dot', pulse && 'gr-badge__dot--pulse'].filter(Boolean).join(' ')}
+			aria-hidden="true"
+		></span>
 	{/if}
 
 	{#if label || labelSnippet}

@@ -16,6 +16,14 @@
 import type { ComponentProps } from 'svelte';
 export type { ComponentProps } from 'svelte';
 
+// Re-export palette types for ThemeProvider consumers
+export type {
+	PalettePreset,
+	CustomPalette,
+	ColorScale,
+	ColorShade,
+} from '@equaltoai/greater-components-tokens';
+
 // Import all components (for both export and prop type inference)
 import Button from './components/Button.svelte';
 import CopyButton from './components/CopyButton.svelte';
@@ -26,7 +34,7 @@ import Checkbox from './components/Checkbox.svelte';
 import Switch from './components/Switch.svelte';
 import FileUpload from './components/FileUpload.svelte';
 import Modal from './components/Modal.svelte';
-import Menu from './components/Menu.svelte';
+import * as Menu from './components/Menu/index';
 import Tooltip from './components/Tooltip.svelte';
 import Tabs from './components/Tabs.svelte';
 import Avatar from './components/Avatar.svelte';
@@ -46,6 +54,10 @@ import StepIndicator from './components/StepIndicator.svelte';
 import IconBadge from './components/IconBadge.svelte';
 import DropZone from './components/DropZone.svelte';
 import StreamingText from './components/StreamingText.svelte';
+import Spinner from './components/Spinner.svelte';
+import LoadingState from './components/LoadingState.svelte';
+import Alert from './components/Alert.svelte';
+import SimpleMenu from './components/SimpleMenu.svelte';
 
 /**
  * Core interactive components
@@ -70,8 +82,10 @@ export {
 	FileUpload,
 	/** Modal dialog with focus management and backdrop handling. */
 	Modal,
-	/** Dropdown menu with keyboard navigation and accessibility. */
+	/** Dropdown menu compound components. Use Menu.Root, Menu.Trigger, etc. */
 	Menu,
+	/** Simple menu wrapper for common array-based menu patterns. */
+	SimpleMenu,
 	/** Tooltip with smart positioning and accessibility. */
 	Tooltip,
 	/** Tab navigation with keyboard support and ARIA semantics. */
@@ -110,6 +124,12 @@ export {
 	DropZone,
 	/** StreamingText component for text animation. */
 	StreamingText,
+	/** Spinner component for loading indicators. */
+	Spinner,
+	/** LoadingState component for loading states with message and overlay. */
+	LoadingState,
+	/** Alert component for displaying error, warning, success, and info messages. */
+	Alert,
 };
 
 /**
@@ -140,7 +160,10 @@ export type CheckboxProps = ComponentProps<typeof Checkbox>;
 export type SwitchProps = ComponentProps<typeof Switch>;
 export type FileUploadProps = ComponentProps<typeof FileUpload>;
 export type ModalProps = ComponentProps<typeof Modal>;
-export type MenuProps = ComponentProps<typeof Menu>;
+// Menu is now a compound component namespace, individual component props can be accessed via Menu.Root, Menu.Item, etc.
+export type { MenuPlacement, MenuItemConfig } from './components/Menu/index';
+// SimpleMenu provides a simpler API for common menu patterns
+export type { MenuItem as SimpleMenuItem } from './components/SimpleMenu.svelte';
 export type TooltipProps = ComponentProps<typeof Tooltip>;
 export type TabsProps = ComponentProps<typeof Tabs>;
 export type AvatarProps = ComponentProps<typeof Avatar>;
@@ -160,6 +183,9 @@ export type StepIndicatorProps = ComponentProps<typeof StepIndicator>;
 export type IconBadgeProps = ComponentProps<typeof IconBadge>;
 export type DropZoneProps = ComponentProps<typeof DropZone>;
 export type StreamingTextProps = ComponentProps<typeof StreamingText>;
+export type SpinnerProps = ComponentProps<typeof Spinner>;
+export type LoadingStateProps = ComponentProps<typeof LoadingState>;
+export type AlertProps = ComponentProps<typeof Alert>;
 
 // Select option type
 export interface SelectOption {
@@ -179,3 +205,22 @@ export type {
 	UserPreferences,
 	PreferencesState,
 } from './stores/preferences';
+
+// Transition exports
+export {
+	fadeUp,
+	fadeDown,
+	slideIn,
+	scaleIn,
+	type FadeUpParams,
+	type FadeDownParams,
+	type SlideInParams,
+	type ScaleInParams,
+} from './transitions/index.js';
+
+// Utility exports
+export {
+	smoothThemeTransition,
+	createSmoothThemeToggle,
+	type SmoothThemeTransitionOptions,
+} from './utils/index.js';

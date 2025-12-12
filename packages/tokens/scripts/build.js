@@ -7,7 +7,11 @@ const __dirname = path.dirname(__filename);
 
 // Read token definitions
 const tokensPath = path.join(__dirname, '../src/tokens.json');
+const basePath = path.join(__dirname, '../src/base.json');
+const semanticPath = path.join(__dirname, '../src/semantic.json');
 const themesPath = path.join(__dirname, '../src/themes.json');
+const palettesPath = path.join(__dirname, '../src/palettes.json');
+const animationsPath = path.join(__dirname, '../src/animations.css');
 const distPath = path.join(__dirname, '../dist');
 
 // Ensure dist directory exists
@@ -15,8 +19,27 @@ if (!fs.existsSync(distPath)) {
 	fs.mkdirSync(distPath, { recursive: true });
 }
 
-const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+// Load tokens from new structure if available, fallback to legacy tokens.json
+let tokens;
+if (fs.existsSync(basePath)) {
+	tokens = JSON.parse(fs.readFileSync(basePath, 'utf8'));
+	console.log('  - Using base.json for foundational tokens');
+
+	// Merge semantic tokens if available
+	if (fs.existsSync(semanticPath)) {
+		const semanticTokens = JSON.parse(fs.readFileSync(semanticPath, 'utf8'));
+		tokens = { ...tokens, ...semanticTokens };
+		console.log('  - Merged semantic.json tokens');
+	}
+} else {
+	// Fallback to legacy tokens.json
+	tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+	console.log('  - Using legacy tokens.json');
+}
 const themes = JSON.parse(fs.readFileSync(themesPath, 'utf8'));
+const palettes = fs.existsSync(palettesPath)
+	? JSON.parse(fs.readFileSync(palettesPath, 'utf8'))
+	: {};
 
 // Helper to convert nested object to flat CSS variable format
 function flattenTokens(obj, prefix = '') {
@@ -140,8 +163,122 @@ combinedThemeCSS += `
 }
 `;
 
+// Add theme-aware elevation shadows
+combinedThemeCSS += `
+/* Theme-aware elevation shadows */
+:root, [data-theme="light"] {
+  --gr-shadows-elevation-sm: var(--gr-shadows-sm);
+  --gr-shadows-elevation-md: var(--gr-shadows-md);
+  --gr-shadows-elevation-lg: var(--gr-shadows-lg);
+  --gr-shadows-elevation-hover: var(--gr-shadows-lg);
+}
+
+[data-theme="dark"] {
+  --gr-shadows-elevation-sm: var(--gr-shadows-glow-sm);
+  --gr-shadows-elevation-md: var(--gr-shadows-glow-md);
+  --gr-shadows-elevation-lg: var(--gr-shadows-glow-lg);
+  --gr-shadows-elevation-hover: 0 0 0 1px var(--gr-semantic-border-strong);
+}
+
+[data-theme="highContrast"],
+[data-theme="high-contrast"] {
+  --gr-shadows-elevation-sm: none;
+  --gr-shadows-elevation-md: 0 0 0 1px var(--gr-semantic-border-default);
+  --gr-shadows-elevation-lg: 0 0 0 2px var(--gr-semantic-border-strong);
+  --gr-shadows-elevation-hover: 0 0 0 2px var(--gr-semantic-border-strong);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --gr-shadows-elevation-sm: var(--gr-shadows-glow-sm);
+    --gr-shadows-elevation-md: var(--gr-shadows-glow-md);
+    --gr-shadows-elevation-lg: var(--gr-shadows-glow-lg);
+    --gr-shadows-elevation-hover: 0 0 0 1px var(--gr-semantic-border-strong);
+  }
+}
+
+/* Theme transition utility class */
+.gr-theme-transition {
+  transition: var(--gr-semantic-transition-theme, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease);
+}
+
+.gr-theme-transition * {
+  transition: inherit;
+}
+`;
+
+// Append animations CSS if it exists
+if (fs.existsSync(animationsPath)) {
+	const animationsCSS = fs.readFileSync(animationsPath, 'utf8');
+	combinedThemeCSS += '\n' + animationsCSS;
+	console.log('  - Animations CSS included');
+}
+
 // Write combined theme CSS
 fs.writeFileSync(path.join(distPath, 'theme.css'), combinedThemeCSS);
+
+// Create CSS distribution directory structure
+const cssDir = path.join(distPath, 'css');
+if (!fs.existsSync(cssDir)) {
+	fs.mkdirSync(cssDir, { recursive: true });
+}
+
+// Write base tokens CSS (without themes)
+fs.writeFileSync(path.join(cssDir, 'tokens.css'), baseCSS);
+
+// Write combined theme CSS to css directory as well
+fs.writeFileSync(path.join(cssDir, 'theme.css'), combinedThemeCSS);
+
+// Copy individual theme files to css/themes
+const cssThemesDir = path.join(cssDir, 'themes');
+if (!fs.existsSync(cssThemesDir)) {
+	fs.mkdirSync(cssThemesDir, { recursive: true });
+}
+
+for (const themeName of Object.keys(themes)) {
+	const themeFile = path.join(themesDir, `${themeName}.css`);
+	if (fs.existsSync(themeFile)) {
+		fs.copyFileSync(themeFile, path.join(cssThemesDir, `${themeName}.css`));
+	}
+}
+
+console.log('  - CSS distribution directory created');
+
+// Also write standalone animations CSS to dist
+if (fs.existsSync(animationsPath)) {
+	fs.copyFileSync(animationsPath, path.join(distPath, 'animations.css'));
+}
+
+// Generate palette CSS files
+const palettesDir = path.join(distPath, 'palettes');
+if (!fs.existsSync(palettesDir)) {
+	fs.mkdirSync(palettesDir, { recursive: true });
+}
+
+for (const [paletteName, paletteData] of Object.entries(palettes)) {
+	let paletteCSS = `/* ${paletteData.description || paletteName + ' palette'} */\n`;
+	paletteCSS += ':root {\n';
+
+	// Generate gray scale variables
+	if (paletteData.gray) {
+		for (const [shade, colorData] of Object.entries(paletteData.gray)) {
+			paletteCSS += `  --gr-color-gray-${shade}: ${colorData.value};\n`;
+		}
+	}
+
+	// Generate primary scale variables if defined
+	if (paletteData.primary) {
+		for (const [shade, colorData] of Object.entries(paletteData.primary)) {
+			paletteCSS += `  --gr-color-primary-${shade}: ${colorData.value};\n`;
+		}
+	}
+
+	paletteCSS += '}\n';
+
+	fs.writeFileSync(path.join(palettesDir, `${paletteName}.css`), paletteCSS);
+}
+
+console.log(`  - Palettes: ${Object.keys(palettes).length}`);
 
 // Copy high-contrast CSS if it exists
 const highContrastPath = path.join(__dirname, '../src/high-contrast.css');
@@ -150,6 +287,64 @@ if (fs.existsSync(highContrastPath)) {
 	fs.writeFileSync(path.join(distPath, 'high-contrast.css'), highContrastCSS);
 	console.log('  - High contrast CSS copied');
 }
+
+// Copy source JSON files to dist for runtime usage
+if (fs.existsSync(palettesPath)) {
+	fs.copyFileSync(palettesPath, path.join(distPath, 'palettes.json'));
+}
+
+// Generate SCSS variables
+const scssDir = path.join(distPath, 'scss');
+if (!fs.existsSync(scssDir)) {
+	fs.mkdirSync(scssDir, { recursive: true });
+}
+
+// Generate base tokens SCSS
+let scssTokens = `// Auto-generated SCSS variables from design tokens
+// Do not edit manually - regenerate with: pnpm build
+
+`;
+
+for (const [key, value] of Object.entries(flatTokens)) {
+	const scssVarName = `$gr-${key}`;
+	scssTokens += `${scssVarName}: ${value};\n`;
+}
+
+fs.writeFileSync(path.join(scssDir, '_tokens.scss'), scssTokens);
+
+// Generate semantic tokens SCSS for each theme
+for (const [themeName, themeTokens] of Object.entries(themes)) {
+	const flatThemeTokens = flattenTokens(themeTokens);
+	const resolvedThemeTokens = resolveReferences(flatThemeTokens, flatTokens);
+
+	let scssTheme = `// Auto-generated SCSS variables for ${themeName} theme
+// Do not edit manually
+
+`;
+
+	for (const [key, value] of Object.entries(resolvedThemeTokens)) {
+		const scssVarName = `$gr-${key}`;
+		scssTheme += `${scssVarName}: ${value};\n`;
+	}
+
+	fs.writeFileSync(path.join(scssDir, `_${themeName}.scss`), scssTheme);
+}
+
+// Generate SCSS index file
+let scssIndex = `// Greater Components Design Tokens - SCSS Entry Point
+// Import this file to get all token variables
+
+@forward 'tokens';
+@forward 'light';
+
+// Theme-specific imports (use one):
+// @use 'dark' as dark;
+// @use 'highContrast' as hc;
+`;
+
+fs.writeFileSync(path.join(scssDir, '_index.scss'), scssIndex);
+
+console.log('  - SCSS variables generated');
 
 // Generate TypeScript definitions
 let tsContent = `// Auto-generated token definitions
@@ -184,6 +379,9 @@ export const getMotion = (path: string) => getCSSVar(\`motion-\${path}\`);
 
 // Semantic token getters
 export const getSemanticColor = (path: string) => getCSSVar(\`semantic-\${path}\`);
+
+// Export palette utilities
+export * from './palette-utils';
 `;
 
 // Write TypeScript source file (will be compiled to dist)

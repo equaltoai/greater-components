@@ -1,0 +1,120 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-compose",
+  "version": "4.0.1",
+  "description": "Post/content composer components for ActivityPub/Fediverse applications",
+  "components": {
+    "Root": {
+      "description": "Container component providing context for compose compound components",
+      "props": ["config", "handlers", "initialState", "children"],
+      "exports": true
+    },
+    "Editor": {
+      "description": "Basic text editor textarea for post content",
+      "props": ["autofocus", "placeholder", "disabled"],
+      "exports": true
+    },
+    "EditorWithAutocomplete": {
+      "description": "Enhanced text editor with hashtag/mention/emoji autocomplete",
+      "props": ["autofocus", "placeholder", "disabled"],
+      "exports": true
+    },
+    "AutocompleteMenu": {
+      "description": "Autocomplete dropdown menu for mentions and hashtags",
+      "props": ["items", "onSelect", "position"],
+      "exports": true
+    },
+    "Submit": {
+      "description": "Submit button with loading state",
+      "props": ["text", "disabled"],
+      "exports": true
+    },
+    "CharacterCount": {
+      "description": "Character count display with Unicode support",
+      "props": ["showRemaining", "warnAt"],
+      "exports": true
+    },
+    "VisibilitySelect": {
+      "description": "Visibility selector dropdown (public, unlisted, private, direct)",
+      "props": ["disabled"],
+      "exports": true
+    },
+    "DraftSaver": {
+      "description": "Auto-save drafts to localStorage",
+      "props": ["draftKey", "debounceMs"],
+      "exports": true
+    },
+    "ThreadComposer": {
+      "description": "Multi-post thread composer",
+      "props": ["maxPosts", "onThreadSubmit"],
+      "exports": true
+    },
+    "MediaUpload": {
+      "description": "Media upload with drag & drop and progress tracking",
+      "props": ["accept", "maxFiles", "maxSize"],
+      "exports": true
+    },
+    "ImageEditor": {
+      "description": "Image editor with focal point picker and alt text",
+      "props": ["attachment", "onSave", "onCancel"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "DraftManager": {
+      "description": "Draft persistence and management utilities",
+      "exports": ["saveDraft", "loadDraft", "deleteDraft", "listDrafts"]
+    },
+    "Autocomplete": {
+      "description": "Autocomplete matching and suggestion utilities",
+      "exports": ["matchMentions", "matchHashtags", "matchEmoji"]
+    },
+    "UnicodeCounter": {
+      "description": "Unicode-aware character counting",
+      "exports": ["countCharacters", "countGraphemes"]
+    },
+    "MediaUploadHandler": {
+      "description": "Media upload processing utilities",
+      "exports": ["validateFile", "resizeImage", "generateThumbnail"]
+    },
+    "GraphQLAdapter": {
+      "description": "Lesser GraphQL integration for compose operations",
+      "exports": ["createStatus", "uploadMedia", "searchAccounts", "searchHashtags"]
+    }
+  },
+  "types": [
+    "ComposeContext",
+    "ComposeConfig",
+    "ComposeHandlers",
+    "ComposeState",
+    "PostVisibility",
+    "ComposeAttachment",
+    "QuotePermission",
+    "QuoteType",
+    "MediaAttachment"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-icons",
+      "@equaltoai/greater-components-headless",
+      "@equaltoai/greater-components-utils"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": []
+  },
+  "lesserSchema": {
+    "mutations": ["createStatus", "uploadMedia"],
+    "queries": ["searchAccounts", "searchHashtags", "searchEmoji"],
+    "subscriptions": []
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-labels",
+      "focus-management",
+      "aria-live-regions"
+    ]
+  }
+}

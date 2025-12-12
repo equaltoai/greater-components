@@ -85,6 +85,11 @@
 		onClick: () => handleSubmit(),
 	});
 
+	$effect(() => {
+		submitButton.helpers.setLoading(authState.loading);
+		submitButton.helpers.setDisabled(authState.loading || !agreeToTerms);
+	});
+
 	/**
 	 * Validate form inputs
 	 */

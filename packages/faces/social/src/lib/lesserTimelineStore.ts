@@ -361,15 +361,14 @@ export class LesserTimelineStore {
 			const lesser = item.metadata?.lesser;
 			return Boolean(
 				lesser &&
-					(lesser.estimatedCost !== undefined ||
-						lesser.moderationScore !== undefined ||
-						lesser.hasCommunityNotes ||
-						(lesser.communityNotesCount ?? 0) > 0 ||
-						lesser.isQuote ||
-						lesser.quoteable ||
-						lesser.authorTrustScore !== undefined ||
-						(lesser as { aiModerationAction?: string } | undefined)?.aiModerationAction !==
-							undefined)
+				(lesser.estimatedCost !== undefined ||
+					lesser.moderationScore !== undefined ||
+					lesser.hasCommunityNotes ||
+					(lesser.communityNotesCount ?? 0) > 0 ||
+					lesser.isQuote ||
+					lesser.quoteable ||
+					lesser.authorTrustScore !== undefined ||
+					(lesser as { aiModerationAction?: string } | undefined)?.aiModerationAction !== undefined)
 			);
 		});
 	}

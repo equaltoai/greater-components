@@ -12,7 +12,7 @@ Manages account privacy settings including:
 @example
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+  import { Profile } from '@equaltoai/greater-components/faces/social';
   
   const settings = {
     isPrivate: false,

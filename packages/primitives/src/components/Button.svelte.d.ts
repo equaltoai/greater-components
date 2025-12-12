@@ -50,6 +50,16 @@ interface Props extends Omit<HTMLButtonAttributes, 'type'> {
 	 */
 	loading?: boolean;
 	/**
+	 * Controls how the loading spinner is displayed relative to button content.
+	 * - `replace-prefix`: Spinner replaces the prefix icon (default)
+	 * - `append`: Spinner appears after the button text (in suffix position)
+	 * - `prepend`: Spinner appears before everything (including prefix)
+	 *
+	 * @defaultValue 'replace-prefix'
+	 * @public
+	 */
+	loadingBehavior?: 'replace-prefix' | 'append' | 'prepend';
+	/**
 	 * Additional CSS classes to apply to the button.
 	 *
 	 * @public
@@ -84,7 +94,7 @@ interface Props extends Omit<HTMLButtonAttributes, 'type'> {
  * Click me
  * </Button>
  *
- * <Button variant="outline" loading disabled>
+ * <Button variant="outline" loading loadingBehavior="replace-prefix">
  * {#snippet prefix()}
  *   <Icon name="plus" />
  * {/snippet}

@@ -24,36 +24,36 @@
 
 /* Reply button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--reply:hover:not(:disabled)) {
-	color: var(--gr-semantic-info-foreground);
-	background-color: var(--gr-semantic-info-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-primary-default);
 }
 
 /* Boost button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--boost:hover:not(:disabled)) {
-	color: var(--gr-semantic-success-foreground);
-	background-color: var(--gr-semantic-success-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-success-default);
 }
 
 .gr-action-bar :global(.gr-action-bar__button--boost.gr-action-bar__button--active) {
-	color: var(--gr-semantic-success-foreground);
-	background-color: var(--gr-semantic-success-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-success-default);
 }
 
 /* Favorite button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--favorite:hover:not(:disabled)) {
-	color: var(--gr-semantic-danger-foreground);
-	background-color: var(--gr-semantic-danger-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-error-default);
 }
 
 .gr-action-bar :global(.gr-action-bar__button--favorite.gr-action-bar__button--active) {
-	color: var(--gr-semantic-danger-foreground);
-	background-color: var(--gr-semantic-danger-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-error-default);
 }
 
 /* Share button specific styles */
 .gr-action-bar :global(.gr-action-bar__button--share:hover:not(:disabled)) {
-	color: var(--gr-semantic-info-foreground);
-	background-color: var(--gr-semantic-info-background);
+	color: var(--gr-semantic-background-primary);
+	background-color: var(--gr-semantic-action-primary-default);
 }
 
 /* Count styling */
@@ -62,6 +62,13 @@
 	line-height: 1;
 	min-width: 1.5em;
 	text-align: left;
+	color: var(--gr-semantic-foreground-primary);
+	font-weight: var(--gr-typography-fontWeight-medium);
+}
+
+.gr-action-bar :global(.gr-action-bar__button--active) .gr-action-bar__count,
+.gr-action-bar :global(.gr-action-bar__button:hover:not(:disabled)) .gr-action-bar__count {
+	color: currentColor;
 }
 
 /* Extensions slot */
@@ -101,6 +108,10 @@
 	.gr-action-bar :global(.gr-action-bar__button--active) {
 		outline: 2px solid currentColor;
 		outline-offset: -2px;
+	}
+
+	.gr-action-bar :global(.gr-action-bar__button) .gr-action-bar__count {
+		color: currentColor;
 	}
 }
 
@@ -5367,7 +5378,7 @@ h1 {
 	justify-content: center;
 	gap: 0.5rem;
 	padding: 0.75rem 1.5rem;
-	background: var(--compose-submit-bg, #1d9bf0);
+	background: var(--compose-submit-bg, #0a74c2);
 	color: var(--compose-submit-text, white);
 	border: none;
 	border-radius: var(--compose-submit-radius, 9999px);
@@ -5378,9 +5389,9 @@ h1 {
 }
 
 .compose-submit:hover:not(:disabled) {
-	background: var(--compose-submit-hover-bg, #1a8cd8);
+	background: var(--compose-submit-hover-bg, #085a99);
 	transform: translateY(-1px);
-	box-shadow: 0 2px 8px rgba(29, 155, 240, 0.3);
+	box-shadow: 0 2px 8px rgba(10, 116, 194, 0.3);
 }
 
 .compose-submit:active:not(:disabled) {
@@ -5955,13 +5966,13 @@ h1 {
 .spoiler-text {
 	flex: 1;
 	font-weight: 500;
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 }
 
 .spoiler-toggle {
 	padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
 	background: var(--color-primary, var(--gr-semantic-action-primary-default, #2563eb));
-	color: var(--color-on-primary, var(--gr-semantic-background-primary, #ffffff));
+	color: var(--color-on-primary, var(--gr-color-base-white, #ffffff));
 	border: none;
 	border-radius: var(--radius-sm, 4px);
 	font-size: var(--font-size-sm, 0.875rem);
@@ -5978,10 +5989,16 @@ h1 {
 	outline-offset: 2px;
 }
 
+/* High-contrast mode: use black text on lighter primary background for better contrast */
+[data-theme='high-contrast'] .spoiler-toggle {
+	color: var(--gr-color-base-black, #000000);
+}
+
 .content {
 	line-height: 1.5;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
+	color: var(--gr-semantic-foreground-primary, inherit);
 }
 
 .content.collapsed {
@@ -13182,12 +13199,19 @@ h1 {
 }
 
 .gr-profile-header__field-value :global(a) {
-	color: var(--gr-color-primary-600);
+	color: var(--gr-color-primary-600, #2563eb);
 	text-decoration: none;
+	font-weight: var(--gr-typography-fontWeight-medium);
 }
 
 .gr-profile-header__field-value :global(a:hover) {
 	text-decoration: underline;
+}
+
+:global([data-theme='dark']) .gr-profile-header__field-value :global(a),
+:global([data-theme='highContrast']) .gr-profile-header__field-value :global(a),
+:global([data-theme='high-contrast']) .gr-profile-header__field-value :global(a) {
+	color: var(--gr-color-primary-300, #93c5fd);
 }
 
 .gr-profile-header__field-verified {
@@ -13662,7 +13686,7 @@ h1 {
 	border-radius: 9999px;
 	font-size: 0.9375rem;
 	font-weight: 700;
-	color: var(--gr-semantic-background-primary, #ffffff);
+	color: var(--gr-color-base-white, #ffffff);
 	cursor: pointer;
 	transition: background-color 0.2s;
 	white-space: nowrap;
@@ -13782,7 +13806,7 @@ h1 {
 	background: transparent;
 	font-size: 0.9375rem;
 	font-weight: 600;
-	color: var(--text-secondary, #536471);
+	color: var(--gr-semantic-foreground-secondary, #536471);
 	white-space: nowrap;
 	cursor: pointer;
 	transition: all 0.2s;
@@ -13790,13 +13814,18 @@ h1 {
 
 .search-filters__tab:hover {
 	background: var(--bg-hover, #eff3f4);
-	color: var(--text-primary, #0f1419);
+	color: var(--gr-semantic-foreground-primary, #0f1419);
 }
 
 .search-filters__tab--active {
 	background: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
 	border-color: var(--primary-color, var(--gr-semantic-action-primary-default, #2563eb));
-	color: var(--gr-semantic-background-primary, #ffffff);
+	color: var(--gr-color-base-white, #ffffff);
+}
+
+/* High-contrast mode: use black text on lighter primary background for better contrast */
+[data-theme='high-contrast'] .search-filters__tab--active {
+	color: var(--gr-color-base-black, #000000);
 }
 
 .search-filters__count {
@@ -14511,7 +14540,7 @@ h1 {
 /* Status/Content.svelte Styles */
 .status-content {
 	margin: var(--status-spacing-sm, 0.5rem) 0;
-	color: var(--status-text-primary, #0f1419);
+	color: var(--gr-semantic-foreground-primary, var(--status-text-primary, #0f1419));
 	font-size: var(--status-font-size-base, 1rem);
 	line-height: 1.5;
 	word-wrap: break-word;
@@ -14952,8 +14981,8 @@ h1 {
 /* StatusCard.svelte Styles */
 .status-card {
 	padding: var(--spacing-md, 1rem);
-	border-bottom: 1px solid var(--color-border, #e1e8ed);
-	background: var(--color-bg, white);
+	border-bottom: 1px solid var(--gr-semantic-border-default, var(--color-border, #e1e8ed));
+	background: var(--gr-semantic-background-surface, var(--color-bg, white));
 	transition: background-color 0.2s;
 }
 
@@ -14962,7 +14991,7 @@ h1 {
 }
 
 .status-card.clickable:hover {
-	background: var(--color-bg-hover, #f7f9fa);
+	background: var(--gr-semantic-background-secondary, var(--color-bg-hover, #f7f9fa));
 }
 
 .status-card.compact {
@@ -15014,7 +15043,7 @@ h1 {
 
 .display-name {
 	font-weight: 600;
-	color: var(--color-text, #0f1419);
+	color: var(--gr-semantic-foreground-primary, var(--color-text, #0f1419));
 	text-decoration: none;
 	display: flex;
 	align-items: center;
@@ -15027,20 +15056,21 @@ h1 {
 
 .bot-badge {
 	padding: 2px 4px;
-	background: var(--color-bg-secondary, #f7f9fa);
-	border: 1px solid var(--color-border, #e1e8ed);
+	background: var(--gr-semantic-background-tertiary, var(--color-bg-secondary, #f7f9fa));
+	border: 1px solid var(--gr-semantic-border-default, var(--color-border, #e1e8ed));
 	border-radius: var(--radius-xs, 2px);
 	font-size: var(--font-size-xs, 0.75rem);
 	font-weight: normal;
+	color: var(--gr-semantic-foreground-secondary, inherit);
 }
 
 .account-handle {
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 	font-size: var(--font-size-sm, 0.875rem);
 }
 
 .timestamp {
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 	font-size: var(--font-size-sm, 0.875rem);
 	text-decoration: none;
 	white-space: nowrap;
@@ -15192,7 +15222,7 @@ h1 {
 	display: flex;
 	align-items: center;
 	gap: var(--spacing-2xs, 0.2rem);
-	color: var(--color-text-secondary, #536471);
+	color: var(--gr-semantic-foreground-tertiary, var(--color-text-secondary, #536471));
 	font-size: var(--font-size-sm, 0.875rem);
 	margin-left: 0;
 }
@@ -15544,7 +15574,7 @@ h1 {
 	overflow-y: auto;
 	overflow-x: hidden;
 	position: relative;
-	background: var(--color-bg, white);
+	background: var(--gr-semantic-background-primary, var(--color-bg, white));
 }
 
 .virtual-list {
@@ -15563,7 +15593,7 @@ h1 {
 	justify-content: center;
 	align-items: center;
 	padding: var(--spacing-lg, 1.5rem);
-	background: var(--color-bg, white);
+	background: var(--gr-semantic-background-primary, var(--color-bg, white));
 }
 
 .loading-indicator.top {
@@ -15626,7 +15656,7 @@ h1 {
 	height: 100%;
 	overflow: hidden;
 	position: relative;
-	background: var(--color-bg, white);
+	background: var(--gr-semantic-background-primary, var(--color-bg, white));
 	display: flex;
 	flex-direction: column;
 }

@@ -1,5 +1,8 @@
-import DOMPurify from 'isomorphic-dompurify';
-import type { Config } from 'dompurify';
+import { unified } from 'unified';
+import rehypeParse from 'rehype-parse';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
+import rehypeStringify from 'rehype-stringify';
+import type { Schema } from 'hast-util-sanitize';
 
 export interface SanitizeOptions {
 	/**
@@ -15,9 +18,13 @@ export interface SanitizeOptions {
 	 */
 	allowDataUri?: boolean;
 	/**
-	 * Custom DOMPurify configuration
+	 * Add rel="noopener noreferrer" to external links
 	 */
-	customConfig?: Config;
+	addRelToExternalLinks?: boolean;
+	/**
+	 * Open external links in new tab
+	 */
+	externalLinksInNewTab?: boolean;
 }
 
 /**
@@ -56,56 +63,96 @@ const DEFAULT_ALLOWED_TAGS = [
 const DEFAULT_ALLOWED_ATTRIBUTES = ['href', 'title', 'class', 'rel', 'target'];
 
 /**
- * Sanitize HTML content using DOMPurify with an allow-list approach
+ * Build a rehype-sanitize schema from SanitizeOptions
+ */
+function buildSchema(options: SanitizeOptions): Schema {
+	const {
+		allowedTags = DEFAULT_ALLOWED_TAGS,
+		allowedAttributes = DEFAULT_ALLOWED_ATTRIBUTES,
+		allowDataUri = false,
+		addRelToExternalLinks = true,
+		externalLinksInNewTab = true,
+	} = options;
+
+	// Build protocol list (no data: by default for security)
+	const protocols: string[] = ['http', 'https', 'mailto'];
+	if (allowDataUri) {
+		protocols.push('data');
+	}
+
+	// Build allowed attributes map
+	const attributeMap: Record<string, string[]> = {
+		'*': allowedAttributes.filter((attr) => !['href', 'src'].includes(attr)),
+	};
+
+	// Add href to anchor tags if allowed
+	if (allowedAttributes.includes('href')) {
+		attributeMap['a'] = [
+			'href',
+			'title',
+			...(addRelToExternalLinks ? ['rel'] : []),
+			...(externalLinksInNewTab ? ['target'] : []),
+		];
+	}
+
+	// Add src to img tags if allowed
+	if (allowedAttributes.includes('src')) {
+		attributeMap['img'] = ['src', 'alt', 'title'];
+	}
+
+	return {
+		...defaultSchema,
+		tagNames: allowedTags,
+		attributes: attributeMap,
+		protocols: {
+			href: protocols,
+			src: protocols,
+		},
+	};
+}
+
+/**
+ * Sanitize HTML content using rehype-sanitize with an allow-list approach.
+ * Fully ESM-compatible implementation.
+ *
  * @param dirty - The potentially unsafe HTML string
  * @param options - Sanitization options
  * @returns Sanitized HTML string
  */
 export function sanitizeHtml(dirty: string, options: SanitizeOptions = {}): string {
-	const {
-		allowedTags = DEFAULT_ALLOWED_TAGS,
-		allowedAttributes = DEFAULT_ALLOWED_ATTRIBUTES,
-		allowDataUri = false,
-		customConfig = {},
-	} = options;
-
-	const config: Config = {
-		ALLOWED_TAGS: allowedTags,
-		ALLOWED_ATTR: allowedAttributes,
-		ALLOW_DATA_ATTR: false,
-		ALLOW_UNKNOWN_PROTOCOLS: false,
-		ALLOW_ARIA_ATTR: true,
-		KEEP_CONTENT: true,
-		RETURN_DOM: false,
-		RETURN_DOM_FRAGMENT: false,
-		RETURN_TRUSTED_TYPE: false,
-		SAFE_FOR_TEMPLATES: true,
-		...customConfig,
-	};
-
-	if (!allowDataUri) {
-		config.ALLOWED_URI_REGEXP = /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i;
+	// Handle null/undefined/empty input
+	if (!dirty || typeof dirty !== 'string') {
+		return '';
 	}
 
-	// Add rel="noopener noreferrer" to all external links
-	DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-		if (node.tagName === 'A' && node.hasAttribute('href')) {
-			const href = node.getAttribute('href') || '';
-			if (href.startsWith('http://') || href.startsWith('https://')) {
-				node.setAttribute('rel', 'noopener noreferrer');
-				if (!node.hasAttribute('target')) {
-					node.setAttribute('target', '_blank');
-				}
+	const schema = buildSchema(options);
+	const { addRelToExternalLinks = true, externalLinksInNewTab = true } = options;
+
+	const processor = unified()
+		.use(rehypeParse, { fragment: true })
+		.use(rehypeSanitize, schema)
+		.use(rehypeStringify);
+
+	let result = String(processor.processSync(dirty));
+
+	// Post-process to add rel and target to external links
+	if (addRelToExternalLinks || externalLinksInNewTab) {
+		result = result.replace(/<a\s+href="(https?:\/\/[^"]+)"([^>]*)>/g, (_match, href, rest) => {
+			let attributes = rest || '';
+
+			if (addRelToExternalLinks && !attributes.includes('rel=')) {
+				attributes += ' rel="noopener noreferrer"';
 			}
-		}
-	});
 
-	const clean = DOMPurify.sanitize(dirty, config) as string;
+			if (externalLinksInNewTab && !attributes.includes('target=')) {
+				attributes += ' target="_blank"';
+			}
 
-	// Remove the hook after use to prevent memory leaks
-	DOMPurify.removeHook('afterSanitizeAttributes');
+			return `<a href="${href}"${attributes}>`;
+		});
+	}
 
-	return clean;
+	return result;
 }
 
 /**
@@ -115,10 +162,18 @@ export function sanitizeHtml(dirty: string, options: SanitizeOptions = {}): stri
  * @returns Plain text string
  */
 export function sanitizeForPreview(dirty: string, maxLength = 200): string {
-	const textOnly = DOMPurify.sanitize(dirty, {
-		ALLOWED_TAGS: [],
-		KEEP_CONTENT: true,
-	});
+	// Handle null/undefined/empty input
+	if (!dirty || typeof dirty !== 'string') {
+		return '';
+	}
+
+	// Parse HTML and extract text only
+	const processor = unified()
+		.use(rehypeParse, { fragment: true })
+		.use(rehypeSanitize, { tagNames: [], attributes: {} }) // Strip all tags
+		.use(rehypeStringify);
+
+	const textOnly = String(processor.processSync(dirty)).trim();
 
 	if (textOnly.length <= maxLength) {
 		return textOnly;

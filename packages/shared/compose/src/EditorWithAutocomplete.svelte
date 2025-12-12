@@ -17,7 +17,7 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 -->
 
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { getComposeContext } from './context.js';
 	import AutocompleteMenu from './AutocompleteMenu.svelte';
 	import {
@@ -68,7 +68,7 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 	let loading = $state(false);
 	let menuPosition = $state({ x: 0, y: 0 });
 
-	if (autofocus) {
+	if (untrack(() => autofocus)) {
 		onMount(() => {
 			queueMicrotask(() => textareaEl?.focus());
 		});
@@ -261,7 +261,10 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		properties.forEach((prop) => {
 			const value = style[prop];
 			if (typeof value === 'string') {
-				div.style[prop] = value;
+				div.style.setProperty(
+					(prop as string).replace(/[A-Z]/g, (m: string) => '-' + m.toLowerCase()),
+					value
+				);
 			}
 		});
 

@@ -16,7 +16,7 @@ The compound component pattern provides maximum flexibility while maintaining a 
 
 ```svelte
 <script>
-	import { Status } from '@equaltoai/greater-components-fediverse';
+	import { Status } from '@equaltoai/greater-components/faces/social';
 
 	const post = {
 		id: '123',
@@ -281,7 +281,7 @@ The Status component uses CSS custom properties for easy customization:
 ```svelte
 <!-- lesser/src/components/FeedItem.svelte -->
 <script>
-	import { Status } from '@equaltoai/greater-components-fediverse';
+	import { Status } from '@equaltoai/greater-components/faces/social';
 	import { boostPost, favoritePost } from '$lib/api';
 
 	let { post } = $props();
@@ -348,11 +348,11 @@ The Status component uses CSS custom properties for easy customization:
 Full TypeScript support with proper types:
 
 ```typescript
-import type { Status as StatusType } from '@equaltoai/greater-components-fediverse';
+import type { Status as StatusType } from '@equaltoai/greater-components/faces/social';
 import type {
 	StatusConfig,
 	StatusActionHandlers,
-} from '@equaltoai/greater-components-fediverse/Status';
+} from '@equaltoai/greater-components/faces/social/Status';
 
 const config: StatusConfig = {
 	density: 'comfortable',

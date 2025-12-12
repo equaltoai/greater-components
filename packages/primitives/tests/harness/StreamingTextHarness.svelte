@@ -11,8 +11,9 @@
 		onComplete?: () => void;
 	}>();
 
-	let currentContent = $state(content);
-	let isStreaming = $state(streaming);
+	import { untrack } from 'svelte';
+	let currentContent = $state(untrack(() => content));
+	let isStreaming = $state(untrack(() => streaming));
 
 	export function setStreaming(val: boolean) {
 		isStreaming = val;

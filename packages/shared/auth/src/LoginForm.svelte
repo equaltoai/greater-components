@@ -82,6 +82,11 @@
 		onClick: () => handleWebAuthn(),
 	});
 
+	$effect(() => {
+		submitButton.helpers.setLoading(authState.loading);
+		submitButton.helpers.setDisabled(!email || !password);
+	});
+
 	/**
 	 * Validate form inputs
 	 */

@@ -1,9 +1,8 @@
 <script lang="ts">
 	import Tabs from '../../src/components/Tabs.svelte';
 	import type TabsComponent from '../../src/components/Tabs.svelte';
-	import type { ComponentProps } from 'svelte';
-
-	const { props = {} as ComponentProps<typeof TabsComponent> } = $props<{
+	import { type ComponentProps } from 'svelte';
+	let { props = {} as ComponentProps<typeof TabsComponent> } = $props<{
 		props?: ComponentProps<typeof TabsComponent>;
 	}>();
 
@@ -12,11 +11,11 @@
 		{ id: 'activity', label: 'Activity', content: ActivityContent },
 		{ id: 'settings', label: 'Settings', disabled: true, content: SettingsContent },
 	];
-	const tabs = props.tabs ?? defaultTabs;
-	const finalProps = {
+	const tabs = $derived(props.tabs ?? defaultTabs);
+	const finalProps = $derived({
 		...props,
 		tabs,
-	};
+	});
 </script>
 
 {#snippet OverviewContent()}

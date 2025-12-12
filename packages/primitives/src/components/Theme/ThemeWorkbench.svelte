@@ -15,6 +15,7 @@
 	import SettingsSection from '../Settings/SettingsSection.svelte';
 	import SettingsSelect from '../Settings/SettingsSelect.svelte';
 	import ThemeProvider from '../ThemeProvider.svelte';
+	import { untrack } from 'svelte';
 
 	interface Props {
 		initialColor?: string;
@@ -23,7 +24,7 @@
 
 	let { initialColor = '#3b82f6', onSave }: Props = $props();
 
-	let seedColor = $state(initialColor);
+	let seedColor = $state(untrack(() => initialColor));
 	let harmonyType = $state<keyof Omit<ColorHarmony, 'base'>>('complementary');
 
 	// Derived theme from seed color

@@ -1,0 +1,129 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-auth",
+  "version": "4.0.1",
+  "description": "Authentication components for ActivityPub/Fediverse applications",
+  "components": {
+    "Root": {
+      "description": "Container component providing context for auth compound components",
+      "props": ["handlers", "initialState", "children"],
+      "exports": true
+    },
+    "LoginForm": {
+      "description": "Email/password login form",
+      "props": ["onSubmit", "loading", "error"],
+      "exports": true
+    },
+    "RegisterForm": {
+      "description": "User registration form with validation",
+      "props": ["onSubmit", "loading", "error", "inviteCode"],
+      "exports": true
+    },
+    "WebAuthnSetup": {
+      "description": "WebAuthn/passkey setup component",
+      "props": ["onSetup", "credentials"],
+      "exports": true
+    },
+    "OAuthConsent": {
+      "description": "OAuth consent screen for third-party apps",
+      "props": ["app", "scopes", "onApprove", "onDeny"],
+      "exports": true
+    },
+    "InstanceSelector": {
+      "description": "Instance selection for federated login",
+      "props": ["instances", "onSelect"],
+      "exports": true
+    },
+    "TwoFactorSetup": {
+      "description": "Two-factor authentication setup with QR code",
+      "props": ["secret", "onVerify"],
+      "exports": true
+    },
+    "TwoFactorVerify": {
+      "description": "Two-factor code verification form",
+      "props": ["onVerify", "loading", "error"],
+      "exports": true
+    },
+    "PasswordReset": {
+      "description": "Password reset request and confirmation",
+      "props": ["mode", "onSubmit", "loading", "error"],
+      "exports": true
+    },
+    "BackupCodes": {
+      "description": "Backup codes display and regeneration",
+      "props": ["codes", "onRegenerate"],
+      "exports": true
+    },
+    "WalletConnect": {
+      "description": "Cryptocurrency wallet connection for Web3 auth",
+      "props": ["providers", "onConnect"],
+      "exports": true
+    },
+    "SignInCard": {
+      "description": "OAuth sign-in card with provider buttons",
+      "props": ["title", "providers", "onSignIn"],
+      "exports": true
+    },
+    "UserButton": {
+      "description": "User avatar button with dropdown menu",
+      "props": ["user", "menuItems", "onSignOut"],
+      "exports": true
+    }
+  },
+  "types": [
+    "LoginCredentials",
+    "RegisterData",
+    "WebAuthnCredential",
+    "OAuthData",
+    "TwoFactorData",
+    "PasswordResetData",
+    "WalletConnectionData",
+    "AuthHandlers",
+    "AuthUser",
+    "AuthState",
+    "AuthContext",
+    "OAuthProvider",
+    "SignInCardProps",
+    "AuthUserInfo",
+    "UserMenuItem",
+    "UserButtonProps"
+  ],
+  "dependencies": {
+    "internal": ["@equaltoai/greater-components-primitives", "@equaltoai/greater-components-icons"],
+    "peer": ["svelte@^5.43.6"],
+    "optional": []
+  },
+  "lesserSchema": {
+    "mutations": [
+      "login",
+      "register",
+      "logout",
+      "requestPasswordReset",
+      "resetPassword",
+      "setupTwoFactor",
+      "verifyTwoFactor",
+      "disableTwoFactor",
+      "registerWebAuthn",
+      "generateBackupCodes"
+    ],
+    "queries": ["currentUser", "webAuthnCredentials", "oauthApps"],
+    "subscriptions": []
+  },
+  "features": {
+    "emailPassword": true,
+    "oauth": true,
+    "webAuthn": true,
+    "twoFactor": true,
+    "passwordReset": true,
+    "walletConnect": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-labels",
+      "focus-management",
+      "form-validation-announcements"
+    ]
+  }
+}

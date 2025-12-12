@@ -66,6 +66,10 @@ export interface ChatMessage {
  * Chat container component props
  */
 export interface ChatContainerProps {
+	/** Whether to use flex-based full-height layout */
+	fillHeight?: boolean;
+	/** Alias for fillHeight */
+	flex?: boolean;
 	/** Custom CSS class */
 	class?: string;
 	/** Children content */
@@ -193,6 +197,11 @@ export interface ChatSuggestionItem {
 }
 
 /**
+ * Suggestion placement options
+ */
+export type SuggestionPlacement = 'empty-only' | 'inline' | 'bottom';
+
+/**
  * Chat suggestions component props
  */
 export interface ChatSuggestionsProps {
@@ -202,6 +211,8 @@ export interface ChatSuggestionsProps {
 	onSelect: (suggestion: string) => void;
 	/** Visual variant - pills (default) or cards */
 	variant?: 'pills' | 'cards';
+	/** Placement behavior - empty-only (default), inline, or bottom */
+	placement?: SuggestionPlacement;
 	/** Custom CSS class */
 	class?: string;
 }
