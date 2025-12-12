@@ -55,8 +55,88 @@ describe('Admin.Settings Component', () => {
 		await fireEvent.click(checkbox);
 		expect(checkbox.checked).toBe(false);
 
-		await waitFor(() => {
-			expect(screen.getByText('Unsaved changes')).toBeTruthy();
+				await waitFor(() => {
+
+					expect(screen.getByText('Unsaved changes')).toBeTruthy();
+
+				});
+
+		
+
+				const resetButton = screen.getByText('Reset');
+
+				await fireEvent.click(resetButton);
+
+		
+
+				expect(checkbox.checked).toBe(true);
+
+				expect(screen.queryByText('Unsaved changes')).toBeNull();
+
+			});
+
+		
+
+			it('saves changes', async () => {
+
+				render(SettingsHarness, { handlers });
+
+		
+
+				await waitFor(() => {
+
+					expect(screen.getByText('Open Registration')).toBeTruthy();
+
+				});
+
+		
+
+				const checkboxes = screen.getAllByRole('checkbox');
+
+				const checkbox = checkboxes[0] as HTMLInputElement;
+
+		
+
+				await fireEvent.click(checkbox);
+
+		
+
+				await waitFor(() => {
+
+					expect(screen.getByText('Unsaved changes')).toBeTruthy();
+
+				});
+
+		
+
+				const saveButton = screen.getByText('Save Changes');
+
+				await fireEvent.click(saveButton);
+
+		
+
+				expect(handlers.onUpdateSettings).toHaveBeenCalledWith(
+
+					expect.objectContaining({
+
+						registrationOpen: false,
+
+					})
+
+				);
+
+				
+
+				await waitFor(() => {
+
+					expect(handlers.onFetchSettings).toHaveBeenCalledTimes(2); // Initial + after save
+
+					expect(screen.queryByText('Unsaved changes')).toBeNull();
+
+				});
+
+			});
+
 		});
-	});
-});
+
+		
