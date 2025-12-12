@@ -51,6 +51,13 @@
 		onClick: () => handleVerify(),
 	});
 
+	$effect(() => {
+		verifyButton.helpers.setLoading(authState.loading);
+		verifyButton.helpers.setDisabled(
+			authState.loading || !code.trim() || (method === 'totp' && code.length !== 6)
+		);
+	});
+
 	/**
 	 * Handle verification
 	 */
