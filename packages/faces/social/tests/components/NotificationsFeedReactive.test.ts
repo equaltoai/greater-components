@@ -1,8 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import NotificationsFeedReactive from '../../src/components/NotificationsFeedReactive.svelte';
-import { generateMockNotifications, generateMockGroupedNotifications } from '../../src/mockData';
-import { get } from 'svelte/store';
+import { generateMockNotifications } from '../../src/mockData';
 
 // Mock svelte-virtual
 vi.mock('@tanstack/svelte-virtual', () => ({
@@ -39,6 +38,37 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 	}),
 }));
 
+// Mock integration
+const mockIntegration = {
+    connect: vi.fn().mockResolvedValue(undefined),
+    disconnect: vi.fn(),
+    loadMore: vi.fn(),
+    markAsRead: vi.fn(),
+    markAllAsRead: vi.fn(),
+    dismiss: vi.fn(),
+    toggleGrouping: vi.fn(),
+    refresh: vi.fn(),
+    items: [],
+    groups: [],
+    state: {
+        loading: false,
+        loadingMore: false,
+        hasMore: false,
+        connected: false,
+        error: null,
+        unreadCount: 0,
+        grouped: true
+    }
+};
+
+vi.mock('../../src/lib/integration', async (importOriginal) => {
+    const actual = await importOriginal<any>();
+    return {
+        ...actual,
+        createNotificationIntegration: vi.fn(() => mockIntegration)
+    };
+});
+
 describe('NotificationsFeedReactive', () => {
 	const mockNotifications = generateMockNotifications(5);
 	const mockGroups = [{ 
@@ -53,8 +83,20 @@ describe('NotificationsFeedReactive', () => {
         allRead: false
     }];
 
+    const mockAdapter = {
+        getNotifications: vi.fn().mockResolvedValue({ edges: [], pageInfo: {} }),
+        markAsRead: vi.fn(),
+        subscribe: vi.fn().mockReturnValue(() => {}),
+        setOptions: vi.fn(),
+    };
+
 	beforeEach(() => {
 		vi.clearAllMocks();
+        // Reset mock integration state
+        mockIntegration.items = [];
+        mockIntegration.groups = [];
+        mockIntegration.state.unreadCount = 0;
+        mockIntegration.state.connected = false;
 	});
 
 	it('renders empty state when no notifications', () => {
@@ -81,27 +123,12 @@ describe('NotificationsFeedReactive', () => {
 			notifications: mockNotifications,
 			grouped: false
 		});
-
-		// Check if notifications are rendered (virtualized mock returns all items)
-        // We look for text from the mocked notifications
-        // The mock generator produces content with "Status number X" or similar.
-        // Let's check for the notification types or content.
-        // Note: NotificationItem might be complex, so we check if the container exists.
         
         const feed = screen.getByRole('feed');
         expect(feed).toBeTruthy();
-        
-        // Since we mocked virtualizer to return items for all count, we should see children.
-        // We can inspect the mock data content more closely if needed.
-        // Mock data has "Notification User X".
-        const userRegex = /Notification User \d+/;
-        // expect(screen.getAllByText(userRegex).length).toBeGreaterThan(0);
 	});
 
     it('renders grouped notifications', async () => {
-        // We need to cast the mockGroups to any or match the type structure expected if strictly typed
-        // The mockGroups I defined above is minimal.
-        
         render(NotificationsFeedReactive, {
             notifications: [],
             groups: mockGroups as any,
@@ -112,36 +139,41 @@ describe('NotificationsFeedReactive', () => {
         expect(feed).toBeTruthy();
     });
 
-    it('handles interactions', async () => {
-        const onNotificationClick = vi.fn();
-        const onMarkAsRead = vi.fn();
-        const onDismiss = vi.fn();
-
-        const { component } = render(NotificationsFeedReactive, {
-            notifications: mockNotifications,
-            grouped: false,
-            onNotificationClick,
-            onMarkAsRead,
-            onDismiss
+    it('integrates with adapter', async () => {
+        render(NotificationsFeedReactive, {
+            adapter: mockAdapter as any,
         });
-
-        // We assume NotificationItem renders something clickable.
-        // In a real integration test we'd click the specific item.
-        // For coverage, we can also verify the props are passed down if we shallow render, 
-        // but testing-library renders full tree.
         
-        // Let's try to find a click target. NotificationItem usually has the whole item clickable or buttons.
-        // We can click the first item found.
-        
-        // Note: The virtualizer mock returns items. The component renders them.
-        // We need to make sure the virtual items actually render DOM elements that we can interact with.
-        
-        // If getting specific text is hard due to mock data randomness, we can rely on roles or classes.
-        // Assuming NotificationItem has some article role or similar.
+        // Should show empty state as adapter returns empty
+        expect(screen.getByText('No notifications')).toBeTruthy();
     });
 
-    it('displays custom empty state', () => {
-        // Snippet handling in Svelte 5 testing can be tricky if passing raw snippets.
-        // For now, let's skip complex snippet passing unless we define them in a wrapper.
+    it('renders realtime indicator states', () => {
+         render(NotificationsFeedReactive, {
+            notifications: [],
+            integration: {
+                fetchNotifications: async () => [],
+                subscribe: () => () => {},
+            } as any,
+            showRealtimeIndicator: true
+        });
+        
+        expect(screen.getByText('Connecting...')).toBeTruthy();
+    });
+
+    it('handles mark all as read', async () => {
+        // Setup integration mock state
+        mockIntegration.items = mockNotifications as any;
+        mockIntegration.state.unreadCount = 5;
+        
+        render(NotificationsFeedReactive, {
+            notifications: [],
+            integration: {} as any
+        });
+        
+        const button = screen.getByText('Mark all as read');
+        await fireEvent.click(button);
+        
+        expect(mockIntegration.markAllAsRead).toHaveBeenCalled();
     });
 });

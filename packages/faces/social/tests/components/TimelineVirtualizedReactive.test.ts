@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TimelineVirtualizedReactive from '../../src/components/TimelineVirtualizedReactive.svelte';
 import { generateMockStatuses } from '../../src/mockData';
@@ -41,25 +41,27 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 describe('TimelineVirtualizedReactive', () => {
 	const mockStatuses = generateMockStatuses(5);
 
+    const mockAdapter = {
+        getTimeline: vi.fn().mockResolvedValue({ edges: [], pageInfo: {} }),
+        subscribe: vi.fn().mockReturnValue(() => {}),
+        setOptions: vi.fn(),
+        getActorByUsername: vi.fn(),
+    };
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 	});
 
-	it('renders items', () => {
+	it('renders items from props', () => {
 		render(TimelineVirtualizedReactive, {
 			items: mockStatuses
 		});
 
 		const feed = screen.getByRole('feed');
 		expect(feed).toBeTruthy();
-        
-        // Check for content from mock statuses
-        // The mock generator produces "This is status number X"
-        // Since we mock virtualizer to return all items, they should be rendered.
-        // StatusCard renders content.
 	});
 
-	it('renders loading indicators', () => {
+	it('renders loading indicators from props', () => {
 		render(TimelineVirtualizedReactive, {
 			items: [],
 			loadingTop: true,
@@ -91,17 +93,47 @@ describe('TimelineVirtualizedReactive', () => {
             onStatusClick
         });
         
-        // StatusCard usually has a clickable area or we can click the article
-        // Note: StatusCard implementation details: 
-        // <article class="status-card ... clickable" onclick={...}>
+        // StatusCard rendered via virtualizer
+        // We assume it renders because of the mock
+    });
+
+    it('integrates with adapter', async () => {
+         render(TimelineVirtualizedReactive, {
+            adapter: mockAdapter,
+            view: { type: 'home' }
+        });
         
-        // Since we are mocking virtualizer, we need to ensure the item is rendered.
-        // With count=1, virtualizer returns index 0.
-        // TimelineVirtualizedReactive renders:
-        // {#each virtualItems ...} 
-        //   <div ...> <StatusCard ... /> </div>
+        // Should call connect -> getTimeline
+        // Since getTimeline is called in effect (integration.connect), we might need to wait.
+        // But here we just check if it renders without crashing.
+        expect(screen.getByRole('feed')).toBeTruthy();
+    });
+
+    it('renders realtime indicator states', () => {
+        // We can't easily mock internal integration state to test derived values directly
+        // unless we mock createTimelineIntegration or createGraphQLTimelineIntegration.
+        // However, we can test that the realtime indicator container is present if showRealtimeIndicator is true.
         
-        // We can find by role 'article' if StatusCard renders it.
-        // Or generic role 'button' if clickable.
+        render(TimelineVirtualizedReactive, {
+            items: [],
+            integration: {
+                fetchItems: async () => [],
+                subscribe: () => () => {},
+            },
+            showRealtimeIndicator: true
+        });
+        
+        // Initially connecting
+        expect(screen.getByText('Connecting...')).toBeTruthy();
+    });
+    
+    it('uses actionHandlers function', () => {
+        const actionHandlers = vi.fn().mockReturnValue({});
+        render(TimelineVirtualizedReactive, {
+            items: mockStatuses,
+            actionHandlers
+        });
+        
+        expect(actionHandlers).toHaveBeenCalledWith(mockStatuses[0]);
     });
 });
