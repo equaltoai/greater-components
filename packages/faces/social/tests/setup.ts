@@ -1,4 +1,9 @@
 // @ts-nocheck
+import * as matchers from '@testing-library/jest-dom/matchers';
+import { expect } from 'vitest';
+
+expect.extend(matchers);
+
 // Minimal Svelte runes polyfills so Vitest can instantiate stores/components
 
 const runtime = globalThis as typeof globalThis & {
