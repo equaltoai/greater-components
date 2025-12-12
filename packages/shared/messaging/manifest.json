@@ -1,0 +1,100 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-messaging",
+  "version": "4.0.1",
+  "description": "Direct messaging components for ActivityPub/Fediverse applications",
+  "components": {
+    "Root": {
+      "description": "Container component providing context for messaging compound components",
+      "props": ["handlers", "initialState", "children"],
+      "exports": true
+    },
+    "Conversations": {
+      "description": "Conversation list with unread indicators and search",
+      "props": ["currentUserId", "onConversationClick"],
+      "exports": true
+    },
+    "Thread": {
+      "description": "Message thread display with virtual scrolling",
+      "props": ["conversationId", "autoScroll"],
+      "exports": true
+    },
+    "Composer": {
+      "description": "Message composer with media upload support",
+      "props": ["placeholder", "disabled", "onSend"],
+      "exports": true
+    },
+    "Message": {
+      "description": "Individual message bubble with read receipts",
+      "props": ["message", "showTimestamp", "showReadReceipt"],
+      "exports": true
+    },
+    "NewConversation": {
+      "description": "New conversation dialog with participant search",
+      "props": ["open", "onClose", "onCreate"],
+      "exports": true
+    },
+    "MediaUpload": {
+      "description": "Media upload component for message attachments",
+      "props": ["accept", "maxSize", "onUpload"],
+      "exports": true
+    },
+    "UnreadIndicator": {
+      "description": "Unread message count badge",
+      "props": ["count", "max"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "context": {
+      "description": "Messaging context creation and access utilities",
+      "exports": [
+        "createMessagesContext",
+        "getMessagesContext",
+        "formatMessageTime",
+        "getConversationName"
+      ]
+    }
+  },
+  "types": [
+    "MessageParticipant",
+    "DirectMessage",
+    "Conversation",
+    "MessagesHandlers",
+    "MessagesState",
+    "MessagesContext",
+    "MessageMediaUploadMetadata",
+    "MediaCategory"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-compose",
+      "@equaltoai/greater-components-icons",
+      "@equaltoai/greater-components-headless"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": []
+  },
+  "lesserSchema": {
+    "mutations": ["sendMessage", "markConversationRead", "deleteMessage", "createConversation"],
+    "queries": ["conversations", "conversationMessages", "searchParticipants"],
+    "subscriptions": ["messageReceived", "conversationUpdated", "typingIndicator"]
+  },
+  "features": {
+    "realtime": true,
+    "readReceipts": true,
+    "mediaAttachments": true,
+    "typingIndicators": true,
+    "virtualScrolling": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "aria-live-regions",
+      "keyboard-navigation",
+      "screen-reader-labels",
+      "focus-management"
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-custom-face",
+  "version": "1.0.0",
+  "description": "Example custom face demonstrating face development patterns",
+  "components": {
+    "CustomCard": {
+      "description": "Example compound component for custom face",
+      "subcomponents": ["Root", "Header", "Content", "Footer", "Actions"],
+      "props": ["data", "config", "handlers"],
+      "events": ["onAction", "onSelect"],
+      "slots": ["header", "footer"]
+    }
+  },
+  "patterns": ["custom-layout"],
+  "dependencies": {
+    "primitives": ["button", "card", "avatar"],
+    "shared": [],
+    "npm": []
+  },
+  "styles": {
+    "main": "./dist/custom-face.css",
+    "tokens": "./src/theme.css"
+  },
+  "examples": []
+}

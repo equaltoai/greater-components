@@ -45,16 +45,43 @@ function getPackages() {
 		process.exit(1);
 	}
 
-	const EXCLUDED_PACKAGES = new Set(['testing']);
+	const EXCLUDED_PACKAGE_DIRS = new Set(['testing']);
+	const EXCLUDED_PACKAGE_NAMES = new Set(['@equaltoai/greater-components-testing']);
 
-	return fs
-		.readdirSync(PACKAGES_DIR)
-		.filter((name) => fs.statSync(path.join(PACKAGES_DIR, name)).isDirectory())
-		.filter((name) => {
-			const packageJsonPath = path.join(PACKAGES_DIR, name, 'package.json');
-			return fs.existsSync(packageJsonPath);
-		})
-		.filter((name) => !EXCLUDED_PACKAGES.has(name));
+	const packages = [];
+
+	function scan(dir, relativePath = '') {
+		const entries = fs.readdirSync(dir, { withFileTypes: true });
+		for (const entry of entries) {
+			if (!entry.isDirectory()) continue;
+			if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue;
+
+			const fullPath = path.join(dir, entry.name);
+			const relFromPackages = path.join(relativePath, entry.name);
+			const packageJsonPath = path.join(fullPath, 'package.json');
+
+			if (fs.existsSync(packageJsonPath)) {
+				if (EXCLUDED_PACKAGE_DIRS.has(entry.name)) continue;
+				try {
+					const pkgJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+					if (EXCLUDED_PACKAGE_NAMES.has(pkgJson.name)) continue;
+					if (pkgJson.scripts && pkgJson.scripts['test:coverage']) {
+						packages.push(relFromPackages);
+					} else {
+						log(`ℹ️  Skipping ${relFromPackages} (no test:coverage script)`, colors.blue);
+					}
+				} catch (error) {
+					log(`⚠️  Could not read package.json for ${relFromPackages}: ${error.message}`, colors.yellow);
+				}
+				continue;
+			}
+
+			scan(fullPath, relFromPackages);
+		}
+	}
+
+	scan(PACKAGES_DIR);
+	return packages.sort();
 }
 
 function getCoverageForPackage(packageName) {
@@ -318,7 +345,9 @@ function generateHtmlIndex(packageCoverages, overall) {
       <div class="package">
         <h3>${pkg.package}</h3>
         ${generateMetricsHtml(pkg)}
-        <p><a href="./${pkg.package}/index.html" target="_blank">View detailed report →</a></p>
+        <p><a href="../packages/${pkg.package
+					.split(path.sep)
+					.join('/')}/coverage/index.html" target="_blank">View detailed report →</a></p>
       </div>
     `
 			)

@@ -16,7 +16,7 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { onDestroy } from 'svelte';
+	import { onDestroy, untrack } from 'svelte';
 	import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 	import { createProfileContext } from './context.js';
 	import type { ProfileData, ProfileHandlers } from './context.js';
@@ -84,8 +84,17 @@
 		enablePreferences = true,
 	}: Props = $props();
 
-	// eslint-disable-next-line svelte/valid-compile
-	const context = createProfileContext(profileProp, handlersProp, isOwnProfile, adapter);
+	const initialProfile = untrack(() => profileProp);
+	const initialHandlers = untrack(() => handlersProp);
+	const initialIsOwnProfile = untrack(() => isOwnProfile);
+	const initialAdapter = untrack(() => adapter);
+
+	const context = createProfileContext(
+		initialProfile,
+		initialHandlers,
+		initialIsOwnProfile,
+		initialAdapter
+	);
 
 	let controller: ProfileGraphQLController | null = null;
 

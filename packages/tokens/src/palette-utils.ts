@@ -4,7 +4,7 @@
  */
 
 // Import palettes data directly from JSON
-import palettesData from './palettes.json';
+import palettesData from './palettes.json' with { type: 'json' };
 
 /** Available preset palette names */
 export type PalettePreset = 'slate' | 'stone' | 'neutral' | 'zinc' | 'gray';

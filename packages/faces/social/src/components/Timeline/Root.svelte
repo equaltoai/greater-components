@@ -18,7 +18,7 @@ Provides context for child components and handles virtualization/infinite scroll
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { GenericTimelineItem } from '../../generics/index.js';
-	import { setContext } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import { TIMELINE_CONTEXT_KEY } from './context.js';
 	import type {
 		TimelineCompoundConfig,
@@ -56,21 +56,23 @@ Provides context for child components and handles virtualization/infinite scroll
 
 	let { items, config = {}, handlers = {}, initialState = {}, children }: Props = $props();
 
+	// Capture initial values for state initialization
+	const initialLoading = untrack(() => initialState.loading);
+	const initialLoadingMore = untrack(() => initialState.loadingMore);
+	const initialHasMore = untrack(() => initialState.hasMore);
+	const initialError = untrack(() => initialState.error);
+	const initialScrollTop = untrack(() => initialState.scrollTop);
+
 	// Create reactive state
 	const internalState: TimelineCompoundState = $state({
-		// eslint-disable-next-line svelte/valid-compile
-		loading: initialState.loading ?? false,
-		// eslint-disable-next-line svelte/valid-compile
-		loadingMore: initialState.loadingMore ?? false,
-		// eslint-disable-next-line svelte/valid-compile
-		hasMore: initialState.hasMore ?? true,
-		// eslint-disable-next-line svelte/valid-compile
-		error: initialState.error ?? null,
+		loading: initialLoading ?? false,
+		loadingMore: initialLoadingMore ?? false,
+		hasMore: initialHasMore ?? true,
+		error: initialError ?? null,
 		get itemCount() {
 			return items.length;
 		},
-		// eslint-disable-next-line svelte/valid-compile
-		scrollTop: initialState.scrollTop ?? 0,
+		scrollTop: initialScrollTop ?? 0,
 	});
 
 	// Create context object

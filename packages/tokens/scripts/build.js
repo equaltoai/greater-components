@@ -7,6 +7,8 @@ const __dirname = path.dirname(__filename);
 
 // Read token definitions
 const tokensPath = path.join(__dirname, '../src/tokens.json');
+const basePath = path.join(__dirname, '../src/base.json');
+const semanticPath = path.join(__dirname, '../src/semantic.json');
 const themesPath = path.join(__dirname, '../src/themes.json');
 const palettesPath = path.join(__dirname, '../src/palettes.json');
 const animationsPath = path.join(__dirname, '../src/animations.css');
@@ -17,7 +19,23 @@ if (!fs.existsSync(distPath)) {
 	fs.mkdirSync(distPath, { recursive: true });
 }
 
-const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+// Load tokens from new structure if available, fallback to legacy tokens.json
+let tokens;
+if (fs.existsSync(basePath)) {
+	tokens = JSON.parse(fs.readFileSync(basePath, 'utf8'));
+	console.log('  - Using base.json for foundational tokens');
+
+	// Merge semantic tokens if available
+	if (fs.existsSync(semanticPath)) {
+		const semanticTokens = JSON.parse(fs.readFileSync(semanticPath, 'utf8'));
+		tokens = { ...tokens, ...semanticTokens };
+		console.log('  - Merged semantic.json tokens');
+	}
+} else {
+	// Fallback to legacy tokens.json
+	tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+	console.log('  - Using legacy tokens.json');
+}
 const themes = JSON.parse(fs.readFileSync(themesPath, 'utf8'));
 const palettes = fs.existsSync(palettesPath)
 	? JSON.parse(fs.readFileSync(palettesPath, 'utf8'))
@@ -199,6 +217,33 @@ if (fs.existsSync(animationsPath)) {
 // Write combined theme CSS
 fs.writeFileSync(path.join(distPath, 'theme.css'), combinedThemeCSS);
 
+// Create CSS distribution directory structure
+const cssDir = path.join(distPath, 'css');
+if (!fs.existsSync(cssDir)) {
+	fs.mkdirSync(cssDir, { recursive: true });
+}
+
+// Write base tokens CSS (without themes)
+fs.writeFileSync(path.join(cssDir, 'tokens.css'), baseCSS);
+
+// Write combined theme CSS to css directory as well
+fs.writeFileSync(path.join(cssDir, 'theme.css'), combinedThemeCSS);
+
+// Copy individual theme files to css/themes
+const cssThemesDir = path.join(cssDir, 'themes');
+if (!fs.existsSync(cssThemesDir)) {
+	fs.mkdirSync(cssThemesDir, { recursive: true });
+}
+
+for (const themeName of Object.keys(themes)) {
+	const themeFile = path.join(themesDir, `${themeName}.css`);
+	if (fs.existsSync(themeFile)) {
+		fs.copyFileSync(themeFile, path.join(cssThemesDir, `${themeName}.css`));
+	}
+}
+
+console.log('  - CSS distribution directory created');
+
 // Also write standalone animations CSS to dist
 if (fs.existsSync(animationsPath)) {
 	fs.copyFileSync(animationsPath, path.join(distPath, 'animations.css'));
@@ -247,6 +292,59 @@ if (fs.existsSync(highContrastPath)) {
 if (fs.existsSync(palettesPath)) {
 	fs.copyFileSync(palettesPath, path.join(distPath, 'palettes.json'));
 }
+
+// Generate SCSS variables
+const scssDir = path.join(distPath, 'scss');
+if (!fs.existsSync(scssDir)) {
+	fs.mkdirSync(scssDir, { recursive: true });
+}
+
+// Generate base tokens SCSS
+let scssTokens = `// Auto-generated SCSS variables from design tokens
+// Do not edit manually - regenerate with: pnpm build
+
+`;
+
+for (const [key, value] of Object.entries(flatTokens)) {
+	const scssVarName = `$gr-${key}`;
+	scssTokens += `${scssVarName}: ${value};\n`;
+}
+
+fs.writeFileSync(path.join(scssDir, '_tokens.scss'), scssTokens);
+
+// Generate semantic tokens SCSS for each theme
+for (const [themeName, themeTokens] of Object.entries(themes)) {
+	const flatThemeTokens = flattenTokens(themeTokens);
+	const resolvedThemeTokens = resolveReferences(flatThemeTokens, flatTokens);
+
+	let scssTheme = `// Auto-generated SCSS variables for ${themeName} theme
+// Do not edit manually
+
+`;
+
+	for (const [key, value] of Object.entries(resolvedThemeTokens)) {
+		const scssVarName = `$gr-${key}`;
+		scssTheme += `${scssVarName}: ${value};\n`;
+	}
+
+	fs.writeFileSync(path.join(scssDir, `_${themeName}.scss`), scssTheme);
+}
+
+// Generate SCSS index file
+let scssIndex = `// Greater Components Design Tokens - SCSS Entry Point
+// Import this file to get all token variables
+
+@forward 'tokens';
+@forward 'light';
+
+// Theme-specific imports (use one):
+// @use 'dark' as dark;
+// @use 'highContrast' as hc;
+`;
+
+fs.writeFileSync(path.join(scssDir, '_index.scss'), scssIndex);
+
+console.log('  - SCSS variables generated');
 
 // Generate TypeScript definitions
 let tsContent = `// Auto-generated token definitions

@@ -26,11 +26,18 @@
 - [Patterns](./_patterns.yaml) – Correct vs. incorrect usage patterns with code examples
 - [Decisions](./_decisions.yaml) – Decision trees for package selection and architectural choices
 
+### 🛠️ CLI & Distribution
+
+- [CLI Guide](./cli-guide.md) – Complete CLI command reference, configuration, and troubleshooting
+- [Migration from npm](./migration-from-npm.md) – Migrating from npm packages to CLI distribution
+- [Face Development](./face-development.md) – Creating custom faces with manifest structure and theming
+
 ### 📦 Additional Resources
 
 - [Lesser Integration Guide](../docs/lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
 - [Playground](../apps/playground) – Interactive component demos and examples
 - [Migration Guide](./migration-guide.md) – Upgrading from legacy versions
+- [Example Apps](../examples) – Complete example applications (social, blog, custom face)
 
 ## Audience
 

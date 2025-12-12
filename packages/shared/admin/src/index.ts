@@ -47,4 +47,4 @@ export {
 	type AdminHandlers,
 	type AdminState,
 	type AdminContext,
-} from './context.js';
+} from './context.svelte.js';

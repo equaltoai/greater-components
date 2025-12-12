@@ -4,7 +4,9 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*", "src/*.json"],
   "exclude": ["node_modules", "dist", "tests", "scripts"]

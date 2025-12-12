@@ -10,28 +10,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-
-// Interfaces
-interface MessageParticipant {
-	id: string;
-	username: string;
-	displayName: string;
-	avatar?: string;
-}
-
-interface DirectMessage {
-	id: string;
-	conversationId: string;
-	sender: MessageParticipant;
-	content: string;
-	createdAt: string;
-	read: boolean;
-	mediaAttachments?: {
-		url: string;
-		type: string;
-		previewUrl?: string;
-	}[];
-}
+import type { MessageParticipant, DirectMessage } from '../src/context.svelte';
 
 // Check if message is from current user
 function isOwnMessage(message: DirectMessage, currentUserId: string): boolean {

@@ -1,0 +1,255 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-community",
+  "version": "1.0.0",
+  "description": "Community/Reddit-style UI components for forum-based discussion applications",
+  "components": {
+    "Community": {
+      "description": "Compound component for community display and management",
+      "subcomponents": ["Root", "Index", "Header", "RulesSidebar", "Stats", "Settings"],
+      "props": ["community", "config", "handlers"],
+      "exports": true
+    },
+    "Post": {
+      "description": "Compound component for displaying forum posts with voting and metadata",
+      "subcomponents": [
+        "Root",
+        "Listing",
+        "Card",
+        "Header",
+        "Content",
+        "Footer",
+        "Flair",
+        "Actions"
+      ],
+      "props": ["post", "config", "handlers"],
+      "exports": true
+    },
+    "Thread": {
+      "description": "Compound component for nested comment threading and discussion",
+      "subcomponents": ["Root", "View", "CommentTree", "Comment", "ReplyForm", "LoadMore"],
+      "props": ["thread", "config", "handlers"],
+      "exports": true
+    },
+    "Voting": {
+      "description": "Compound component for upvote/downvote functionality with score display",
+      "subcomponents": ["Root", "Buttons", "Score", "Ratio"],
+      "props": ["score", "userVote", "handlers"],
+      "exports": true
+    },
+    "Flair": {
+      "description": "Compound component for post and user flair selection and display",
+      "subcomponents": ["Root", "Selector", "Badge", "Editor"],
+      "props": ["flairs", "selected", "handlers"],
+      "exports": true
+    },
+    "Moderation": {
+      "description": "Compound component for moderation tools and actions",
+      "subcomponents": [
+        "Root",
+        "Panel",
+        "Queue",
+        "Actions",
+        "BanDialog",
+        "RemoveDialog",
+        "SpamFilter",
+        "Logs"
+      ],
+      "props": ["handlers", "config"],
+      "exports": true
+    },
+    "Wiki": {
+      "description": "Compound component for community wiki pages",
+      "subcomponents": ["Root", "Page", "Editor", "Navigation", "History"],
+      "props": ["wiki", "handlers"],
+      "exports": true
+    },
+    "CommunityIndex": {
+      "description": "List of communities with stats and subscription controls",
+      "props": ["communities", "onSubscribe", "onUnsubscribe"],
+      "exports": true
+    },
+    "CommunityHeader": {
+      "description": "Community banner with name, description, and subscribe button",
+      "props": ["community", "isSubscribed", "onSubscribe"],
+      "exports": true
+    },
+    "PostListing": {
+      "description": "Sortable list of posts with hot, new, top, controversial sorting",
+      "props": ["posts", "sortBy", "onSortChange", "onLoadMore"],
+      "exports": true
+    },
+    "ThreadView": {
+      "description": "Full thread view with nested comments",
+      "props": ["post", "comments", "handlers"],
+      "exports": true
+    },
+    "CommentTree": {
+      "description": "Collapsible hierarchical comment display",
+      "props": ["comments", "depth", "handlers"],
+      "exports": true
+    },
+    "VoteButtons": {
+      "description": "Upvote/downvote buttons with score display",
+      "props": ["score", "userVote", "onUpvote", "onDownvote"],
+      "exports": true
+    },
+    "FlairSelector": {
+      "description": "Flair selection dropdown for posts and users",
+      "props": ["flairs", "selected", "onSelect"],
+      "exports": true
+    },
+    "ModerationPanel": {
+      "description": "Moderation queue and action panel",
+      "props": ["queue", "handlers"],
+      "exports": true
+    },
+    "RulesSidebar": {
+      "description": "Community rules display sidebar",
+      "props": ["rules", "community"],
+      "exports": true
+    },
+    "WikiPage": {
+      "description": "Wiki page content display and editing",
+      "props": ["page", "canEdit", "handlers"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "context": {
+      "description": "Context creation and access utilities for compound components",
+      "exports": [
+        "createCommunityContext",
+        "getCommunityContext",
+        "createPostContext",
+        "getPostContext",
+        "createThreadContext",
+        "getThreadContext",
+        "createModerationContext",
+        "getModerationContext"
+      ]
+    },
+    "sorting": {
+      "description": "Post and comment sorting utilities",
+      "exports": [
+        "sortByHot",
+        "sortByNew",
+        "sortByTop",
+        "sortByControversial",
+        "calculateHotScore",
+        "calculateControversialScore"
+      ]
+    },
+    "voting": {
+      "description": "Vote calculation and display utilities",
+      "exports": ["calculateScore", "calculateRatio", "formatScore", "getVoteDirection"]
+    },
+    "moderation": {
+      "description": "Moderation action utilities",
+      "exports": ["formatBanDuration", "validateBanReason", "formatModAction", "getModActionIcon"]
+    }
+  },
+  "types": [
+    "CommunityData",
+    "CommunityConfig",
+    "CommunityHandlers",
+    "CommunityContext",
+    "CommunityStats",
+    "CommunityRule",
+    "PostData",
+    "PostConfig",
+    "PostHandlers",
+    "PostContext",
+    "PostSortOption",
+    "ThreadData",
+    "ThreadConfig",
+    "ThreadHandlers",
+    "ThreadContext",
+    "CommentData",
+    "CommentSortOption",
+    "VoteData",
+    "VoteDirection",
+    "VoteHandlers",
+    "FlairData",
+    "FlairType",
+    "FlairHandlers",
+    "ModerationAction",
+    "ModerationQueueItem",
+    "ModerationHandlers",
+    "ModerationContext",
+    "BanData",
+    "BanDuration",
+    "SpamFilterRule",
+    "WikiPageData",
+    "WikiRevision",
+    "WikiHandlers"
+  ],
+  "patterns": {
+    "SortingControls": {
+      "description": "Hot, new, top, controversial sorting controls",
+      "props": ["sortBy", "onSortChange", "options"]
+    },
+    "FlairFilter": {
+      "description": "Filter posts by flair",
+      "props": ["flairs", "selected", "onFilterChange"]
+    },
+    "ModActions": {
+      "description": "Remove, lock, sticky, distinguish actions",
+      "props": ["item", "handlers", "permissions"]
+    },
+    "BanDialog": {
+      "description": "Ban user with reason and duration",
+      "props": ["user", "onBan", "onCancel"]
+    },
+    "SpamFilter": {
+      "description": "Auto-moderation rules configuration",
+      "props": ["rules", "onSave", "onTest"]
+    }
+  },
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-icons",
+      "@equaltoai/greater-components-content",
+      "@equaltoai/greater-components-utils",
+      "@equaltoai/greater-components-headless"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": [
+      "@equaltoai/greater-components-auth",
+      "@equaltoai/greater-components-search",
+      "@equaltoai/greater-components-admin",
+      "@equaltoai/greater-components-notifications"
+    ]
+  },
+  "integrationPatterns": [
+    "rest_api_fetch",
+    "graphql_client",
+    "server_side_rendering",
+    "real_time_websocket"
+  ],
+  "features": {
+    "nested_comments": true,
+    "voting_system": true,
+    "flair_system": true,
+    "moderation_tools": true,
+    "wiki_pages": true,
+    "sorting_algorithms": true,
+    "spam_filtering": true,
+    "user_banning": true,
+    "content_locking": true,
+    "post_stickying": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard_navigation",
+      "screen_reader_support",
+      "focus_management",
+      "skip_links",
+      "heading_hierarchy",
+      "landmark_regions",
+      "collapsible_regions"
+    ]
+  }
+}

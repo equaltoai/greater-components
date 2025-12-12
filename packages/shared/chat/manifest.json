@@ -1,0 +1,118 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-chat",
+  "version": "4.2.6",
+  "description": "AI chat interface components with streaming responses, tool calls, and settings",
+  "components": {
+    "Container": {
+      "description": "Main wrapper providing context and flex layout for chat interface",
+      "props": ["handlers", "initialSettings", "children"],
+      "exports": true
+    },
+    "Messages": {
+      "description": "Scrollable message list with auto-scroll behavior",
+      "props": ["messages", "autoScroll"],
+      "exports": true
+    },
+    "Message": {
+      "description": "Individual message bubble with role-based styling (user/assistant/system)",
+      "props": ["message", "showTimestamp", "showAvatar"],
+      "exports": true
+    },
+    "Input": {
+      "description": "Smart message composer with auto-resize, keyboard shortcuts, and file upload",
+      "props": ["placeholder", "disabled", "onSend", "onFileUpload"],
+      "exports": true
+    },
+    "Header": {
+      "description": "Title bar with connection status indicator and action buttons",
+      "props": ["title", "connectionStatus", "onSettings", "onClear"],
+      "exports": true
+    },
+    "ToolCall": {
+      "description": "Tool/function call display with collapsible details and status indicators",
+      "props": ["toolCall", "expanded", "onToggle"],
+      "exports": true
+    },
+    "Suggestions": {
+      "description": "Quick prompt suggestions in pills or cards variants",
+      "props": ["suggestions", "variant", "onSelect"],
+      "exports": true
+    },
+    "Settings": {
+      "description": "Configuration modal for model, temperature, and knowledge base settings",
+      "props": ["open", "settings", "onSave", "onClose"],
+      "exports": true
+    },
+    "MessageAction": {
+      "description": "Action button for message interactions (copy, regenerate, etc.)",
+      "props": ["action", "onClick"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "context": {
+      "description": "Chat context creation and access utilities",
+      "exports": [
+        "createChatContext",
+        "getChatContext",
+        "hasChatContext",
+        "formatMessageTime",
+        "formatStreamDuration",
+        "getConnectionStatusText",
+        "defaultPAISuggestions",
+        "defaultModelOptions"
+      ]
+    }
+  },
+  "types": [
+    "MessageRole",
+    "MessageStatus",
+    "ToolCallStatus",
+    "ToolCall",
+    "ChatMessage",
+    "ChatContainerProps",
+    "ChatMessageProps",
+    "ChatMessagesProps",
+    "ChatInputProps",
+    "ChatToolCallProps",
+    "ChatSuggestion",
+    "ChatSuggestionItem",
+    "ChatSuggestionsProps",
+    "ChatHeaderProps",
+    "ChatSettingsState",
+    "ChatSettingsProps",
+    "KnowledgeBaseConfig",
+    "ChatHandlers",
+    "ChatState",
+    "ChatContextValue",
+    "ConnectionStatus"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-content",
+      "@equaltoai/greater-components-icons"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": []
+  },
+  "integrationPatterns": ["pai-socket-websocket", "rest-api-fetch", "server-sent-events"],
+  "features": {
+    "streaming": true,
+    "toolCalls": true,
+    "markdown": true,
+    "fileUpload": true,
+    "keyboardShortcuts": true,
+    "connectionStatus": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "aria-live-regions",
+      "keyboard-navigation",
+      "screen-reader-labels",
+      "focus-management"
+    ]
+  }
+}

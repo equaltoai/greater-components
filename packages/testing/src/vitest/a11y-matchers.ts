@@ -13,22 +13,6 @@ import {
 import { testElementContrast, WCAG_CONTRAST } from '../a11y/contrast-helpers';
 import { isElementFocusable, isElementTabbable } from '../a11y/focus-helpers';
 
-declare module 'vitest' {
-	interface Assertion {
-		toHaveAccessibleName(): void;
-		toHaveAccessibleName(name: string): void;
-		toHaveRole(role: string): void;
-		toBeAccessible(): void;
-		toHaveContrastRatio(ratio: number): void;
-		toPassWCAGColorContrast(level?: 'AA' | 'AAA'): void;
-		toBeFocusable(): void;
-		toBeTabbable(): void;
-		toHaveValidAria(): void;
-		toHaveFocusIndicator(): void;
-		toBeSemanticHTML(): void;
-	}
-}
-
 /**
  * Check if element has accessible name
  */

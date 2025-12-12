@@ -174,6 +174,84 @@ export declare const tokens: {
 				readonly value: '#7f1d1d';
 			};
 		};
+		readonly info: {
+			readonly '50': {
+				readonly value: '#eff6ff';
+			};
+			readonly '100': {
+				readonly value: '#dbeafe';
+			};
+			readonly '200': {
+				readonly value: '#bfdbfe';
+			};
+			readonly '300': {
+				readonly value: '#93c5fd';
+			};
+			readonly '400': {
+				readonly value: '#60a5fa';
+			};
+			readonly '500': {
+				readonly value: '#3b82f6';
+			};
+			readonly '600': {
+				readonly value: '#2563eb';
+			};
+			readonly '700': {
+				readonly value: '#1d4ed8';
+			};
+			readonly '800': {
+				readonly value: '#1e40af';
+			};
+			readonly '900': {
+				readonly value: '#1e3a8a';
+			};
+		};
+	};
+	readonly spacing: {
+		readonly scale: {
+			readonly '0': {
+				readonly value: '0';
+			};
+			readonly '1': {
+				readonly value: '0.25rem';
+			};
+			readonly '2': {
+				readonly value: '0.5rem';
+			};
+			readonly '3': {
+				readonly value: '0.75rem';
+			};
+			readonly '4': {
+				readonly value: '1rem';
+			};
+			readonly '5': {
+				readonly value: '1.25rem';
+			};
+			readonly '6': {
+				readonly value: '1.5rem';
+			};
+			readonly '8': {
+				readonly value: '2rem';
+			};
+			readonly '10': {
+				readonly value: '2.5rem';
+			};
+			readonly '12': {
+				readonly value: '3rem';
+			};
+			readonly '16': {
+				readonly value: '4rem';
+			};
+			readonly '20': {
+				readonly value: '5rem';
+			};
+			readonly '24': {
+				readonly value: '6rem';
+			};
+			readonly '32': {
+				readonly value: '8rem';
+			};
+		};
 	};
 	readonly typography: {
 		readonly fontFamily: {
@@ -245,52 +323,6 @@ export declare const tokens: {
 			};
 			readonly loose: {
 				readonly value: '2';
-			};
-		};
-	};
-	readonly spacing: {
-		readonly scale: {
-			readonly '0': {
-				readonly value: '0';
-			};
-			readonly '1': {
-				readonly value: '0.25rem';
-			};
-			readonly '2': {
-				readonly value: '0.5rem';
-			};
-			readonly '3': {
-				readonly value: '0.75rem';
-			};
-			readonly '4': {
-				readonly value: '1rem';
-			};
-			readonly '5': {
-				readonly value: '1.25rem';
-			};
-			readonly '6': {
-				readonly value: '1.5rem';
-			};
-			readonly '8': {
-				readonly value: '2rem';
-			};
-			readonly '10': {
-				readonly value: '2.5rem';
-			};
-			readonly '12': {
-				readonly value: '3rem';
-			};
-			readonly '16': {
-				readonly value: '4rem';
-			};
-			readonly '20': {
-				readonly value: '5rem';
-			};
-			readonly '24': {
-				readonly value: '6rem';
-			};
-			readonly '32': {
-				readonly value: '8rem';
 			};
 		};
 	};
@@ -394,6 +426,246 @@ export declare const tokens: {
 			};
 			readonly standard: {
 				readonly value: 'cubic-bezier(0.4, 0, 0.2, 1)';
+			};
+		};
+	};
+	readonly semantic: {
+		readonly background: {
+			readonly primary: {
+				readonly value: '{color.base.white}';
+				readonly description: 'Primary background color';
+			};
+			readonly secondary: {
+				readonly value: '{color.gray.50}';
+				readonly description: 'Secondary background color';
+			};
+			readonly tertiary: {
+				readonly value: '{color.gray.100}';
+				readonly description: 'Tertiary background color';
+			};
+			readonly base: {
+				readonly value: '{color.gray.50}';
+				readonly description: 'Base page background';
+			};
+			readonly surface: {
+				readonly value: '{color.base.white}';
+				readonly description: 'Surface/card background';
+			};
+			readonly raised: {
+				readonly value: '{color.base.white}';
+				readonly description: 'Elevated surface background';
+			};
+			readonly input: {
+				readonly value: '{color.base.white}';
+				readonly description: 'Input field background';
+			};
+			readonly overlay: {
+				readonly value: 'rgba(0, 0, 0, 0.5)';
+				readonly description: 'Modal/dialog overlay';
+			};
+		};
+		readonly foreground: {
+			readonly primary: {
+				readonly value: '{color.gray.900}';
+				readonly description: 'Primary text color';
+			};
+			readonly secondary: {
+				readonly value: '{color.gray.700}';
+				readonly description: 'Secondary text color';
+			};
+			readonly tertiary: {
+				readonly value: '{color.gray.500}';
+				readonly description: 'Tertiary/muted text color';
+			};
+			readonly disabled: {
+				readonly value: '{color.gray.400}';
+				readonly description: 'Disabled text color';
+			};
+			readonly inverse: {
+				readonly value: '{color.base.white}';
+				readonly description: 'Text on dark backgrounds';
+			};
+		};
+		readonly border: {
+			readonly default: {
+				readonly value: '{color.gray.200}';
+				readonly description: 'Default border color';
+			};
+			readonly subtle: {
+				readonly value: '{color.gray.100}';
+				readonly description: 'Subtle/light border color';
+			};
+			readonly strong: {
+				readonly value: '{color.gray.300}';
+				readonly description: 'Strong/emphasized border color';
+			};
+			readonly focus: {
+				readonly value: '{color.primary.500}';
+				readonly description: 'Focus ring border color';
+			};
+		};
+		readonly action: {
+			readonly primary: {
+				readonly default: {
+					readonly value: '{color.primary.600}';
+					readonly description: 'Primary action default state';
+				};
+				readonly hover: {
+					readonly value: '{color.primary.700}';
+					readonly description: 'Primary action hover state';
+				};
+				readonly active: {
+					readonly value: '{color.primary.800}';
+					readonly description: 'Primary action active/pressed state';
+				};
+				readonly disabled: {
+					readonly value: '{color.primary.300}';
+					readonly description: 'Primary action disabled state';
+				};
+			};
+			readonly success: {
+				readonly default: {
+					readonly value: '{color.success.700}';
+					readonly description: 'Success action default state';
+				};
+				readonly hover: {
+					readonly value: '{color.success.800}';
+					readonly description: 'Success action hover state';
+				};
+				readonly active: {
+					readonly value: '{color.success.900}';
+					readonly description: 'Success action active state';
+				};
+				readonly background: {
+					readonly value: '{color.success.50}';
+					readonly description: 'Success background tint';
+				};
+				readonly foreground: {
+					readonly value: '{color.success.700}';
+					readonly description: 'Success text color';
+				};
+			};
+			readonly warning: {
+				readonly default: {
+					readonly value: '{color.warning.600}';
+					readonly description: 'Warning action default state';
+				};
+				readonly hover: {
+					readonly value: '{color.warning.700}';
+					readonly description: 'Warning action hover state';
+				};
+				readonly active: {
+					readonly value: '{color.warning.800}';
+					readonly description: 'Warning action active state';
+				};
+				readonly background: {
+					readonly value: '{color.warning.50}';
+					readonly description: 'Warning background tint';
+				};
+				readonly foreground: {
+					readonly value: '{color.warning.700}';
+					readonly description: 'Warning text color';
+				};
+			};
+			readonly danger: {
+				readonly default: {
+					readonly value: '{color.error.600}';
+					readonly description: 'Danger/error action default state';
+				};
+				readonly hover: {
+					readonly value: '{color.error.700}';
+					readonly description: 'Danger action hover state';
+				};
+				readonly active: {
+					readonly value: '{color.error.800}';
+					readonly description: 'Danger action active state';
+				};
+				readonly background: {
+					readonly value: '{color.error.50}';
+					readonly description: 'Danger background tint';
+				};
+				readonly foreground: {
+					readonly value: '{color.error.700}';
+					readonly description: 'Danger text color';
+				};
+			};
+			readonly info: {
+				readonly default: {
+					readonly value: '{color.info.600}';
+					readonly description: 'Info action default state';
+				};
+				readonly hover: {
+					readonly value: '{color.info.700}';
+					readonly description: 'Info action hover state';
+				};
+				readonly active: {
+					readonly value: '{color.info.800}';
+					readonly description: 'Info action active state';
+				};
+				readonly background: {
+					readonly value: '{color.info.50}';
+					readonly description: 'Info background tint';
+				};
+				readonly foreground: {
+					readonly value: '{color.info.700}';
+					readonly description: 'Info text color';
+				};
+			};
+			readonly link: {
+				readonly default: {
+					readonly value: '{color.primary.600}';
+					readonly description: 'Link default color';
+				};
+				readonly hover: {
+					readonly value: '{color.primary.700}';
+					readonly description: 'Link hover color';
+				};
+				readonly active: {
+					readonly value: '{color.primary.800}';
+					readonly description: 'Link active color';
+				};
+				readonly visited: {
+					readonly value: '{color.primary.800}';
+					readonly description: 'Link visited color';
+				};
+			};
+		};
+		readonly focus: {
+			readonly ring: {
+				readonly value: '{color.primary.500}';
+				readonly description: 'Focus ring color';
+			};
+			readonly 'ring-offset': {
+				readonly value: '2px';
+				readonly description: 'Focus ring offset distance';
+			};
+			readonly 'ring-width': {
+				readonly value: '2px';
+				readonly description: 'Focus ring width';
+			};
+		};
+		readonly status: {
+			readonly success: {
+				readonly value: '{color.success.500}';
+				readonly description: 'Success status indicator';
+			};
+			readonly warning: {
+				readonly value: '{color.warning.500}';
+				readonly description: 'Warning status indicator';
+			};
+			readonly error: {
+				readonly value: '{color.error.500}';
+				readonly description: 'Error status indicator';
+			};
+			readonly info: {
+				readonly value: '{color.info.500}';
+				readonly description: 'Info status indicator';
+			};
+		};
+		readonly transition: {
+			readonly theme: {
+				readonly value: 'background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease';
+				readonly description: 'Theme transition for smooth theme switching';
 			};
 		};
 	};

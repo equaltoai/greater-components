@@ -263,4 +263,121 @@ describe('MediaUploadHandler', () => {
 			expect(result.valid).toBe(true);
 		});
 	});
+
+	describe('processFile', () => {
+		// Mocks for browser APIs
+		const mockCreateObjectURL = vi.fn(() => 'blob:test-url');
+		const mockRevokeObjectURL = vi.fn();
+		const mockImage = {
+			onload: null as (() => void) | null,
+			onerror: null as (() => void) | null,
+			src: '',
+			width: 100,
+			height: 100,
+		};
+		const mockCanvas = {
+			getContext: vi.fn(() => ({
+				drawImage: vi.fn(),
+			})),
+			toDataURL: vi.fn(() => 'data:image/jpeg;base64,thumb'),
+			width: 0,
+			height: 0,
+		};
+		const mockFileReader = {
+			onload: null as ((e: any) => void) | null,
+			readAsDataURL: function (file: File) {
+				if (this.onload) {
+					this.onload({ target: { result: 'data:image/jpeg;base64,data' } });
+				}
+			},
+		};
+
+		beforeEach(() => {
+			global.URL.createObjectURL = mockCreateObjectURL;
+			global.URL.revokeObjectURL = mockRevokeObjectURL;
+			global.Image = class {
+				constructor() {
+					Object.assign(this, mockImage);
+					setTimeout(() => {
+						if (this.onload) this.onload({} as Event);
+					}, 0);
+				}
+				onload: ((e: Event) => void) | null = null;
+				onerror: ((e: Event) => void) | null = null;
+				src: string = '';
+				width: number = 100;
+				height: number = 100;
+			} as any;
+			
+			global.document.createElement = vi.fn((tag) => {
+				if (tag === 'canvas') return mockCanvas as any;
+				return {
+					onloadedmetadata: null,
+					onerror: null,
+					src: '',
+				} as any;
+			});
+			global.FileReader = class {
+				onload: ((e: any) => void) | null = null;
+				readAsDataURL(file: File) {
+					setTimeout(() => {
+						if (this.onload) {
+							this.onload({ target: { result: 'data:image/jpeg;base64,data' } } as any);
+						}
+					}, 0);
+				}
+			} as any;
+		});
+
+		it('should process image file', async () => {
+			const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
+			
+			const { processFile } = await import('../src/MediaUploadHandler.js');
+			const result = await processFile(file);
+
+			expect(result.type).toBe('image');
+			expect(result.status).toBe('pending');
+			expect(result.previewUrl).toBe('blob:test-url');
+		});
+
+		it('should handle validation errors', async () => {
+			const file = new File([''], 'test.exe', { type: 'application/x-msdownload' });
+			const { processFile } = await import('../src/MediaUploadHandler.js');
+			
+			const result = await processFile(file);
+			
+			expect(result.status).toBe('error');
+			expect(result.error).toContain('not allowed');
+		});
+	});
+
+	describe('processFiles', () => {
+		it('should process multiple files', async () => {
+			const files = [
+				new File([''], 'test1.jpg', { type: 'image/jpeg' }),
+				new File([''], 'test2.png', { type: 'image/png' }),
+			];
+
+			const { processFiles } = await import('../src/MediaUploadHandler.js');
+			const results = await processFiles(files);
+
+			expect(results).toHaveLength(2);
+			expect(results[0].type).toBe('image');
+			expect(results[1].type).toBe('image');
+		});
+
+		it('should fail all if validation fails for one (batch validation)', async () => {
+			const files = [
+				new File([''], 'test1.jpg', { type: 'image/jpeg' }),
+				new File([''], 'test2.exe', { type: 'application/x-msdownload' }),
+			];
+
+			const { processFiles } = await import('../src/MediaUploadHandler.js');
+			const results = await processFiles(files);
+
+			expect(results).toHaveLength(2);
+			expect(results[0].status).toBe('error');
+			expect(results[1].status).toBe('error');
+		});
+	});
 });

@@ -136,6 +136,9 @@ export type {
  */
 export { createChatContext } from './context.svelte.js';
 
+// Additional components
+export { default as ThreadView } from './ChatThreadView.svelte';
+
 /**
  * Retrieves the current chat context from a parent Chat.Container.
  * Must be called within a component that is a child of Chat.Container.

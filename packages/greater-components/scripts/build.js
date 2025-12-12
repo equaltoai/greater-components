@@ -158,6 +158,9 @@ function rewriteImports() {
 }
 
 function generateRootBarrels() {
+	const pkgJson = JSON.parse(readFileSync(join(packageRoot, 'package.json'), 'utf8'));
+	const version = pkgJson.version;
+
 	// Export commonly used packages from the root barrel for convenience
 	const exposedPackages = [
 		'primitives',
@@ -168,16 +171,18 @@ function generateRootBarrels() {
 		'adapters',
 		'testing',
 		'cli',
-		'cli',
 		'faces/social',
 	];
 	const entryTargets = exposedPackages
 		.map((key) => `export * from './${key}/index.js';`)
 		.join('\n');
-	const entryTypes = exposedPackages.map((key) => `export * from './${key}/index.js';`).join('\n');
+	const versionExport = `export const version = '${version}';`;
 
-	writeFileSync(join(distDir, 'index.js'), `${entryTargets}\n`, 'utf8');
-	writeFileSync(join(distDir, 'index.d.ts'), `${entryTypes}\n`, 'utf8');
+	const entryTypes = exposedPackages.map((key) => `export * from './${key}/index.js';`).join('\n');
+	const versionType = `export declare const version: string;`;
+
+	writeFileSync(join(distDir, 'index.js'), `${entryTargets}\n${versionExport}\n`, 'utf8');
+	writeFileSync(join(distDir, 'index.d.ts'), `${entryTypes}\n${versionType}\n`, 'utf8');
 }
 
 function aggregateStyles() {

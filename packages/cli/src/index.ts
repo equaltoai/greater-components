@@ -9,6 +9,10 @@ import chalk from 'chalk';
 import { initCommand } from './commands/init.js';
 import { addCommand } from './commands/add.js';
 import { listCommand } from './commands/list.js';
+import { diffCommand } from './commands/diff.js';
+import { updateCommand } from './commands/update.js';
+import { doctorCommand } from './commands/doctor.js';
+import { auditCommand } from './commands/audit.js';
 
 const program = new Command()
 	.name('greater')
@@ -19,6 +23,10 @@ const program = new Command()
 program.addCommand(initCommand);
 program.addCommand(addCommand);
 program.addCommand(listCommand);
+program.addCommand(diffCommand);
+program.addCommand(updateCommand);
+program.addCommand(doctorCommand);
+program.addCommand(auditCommand);
 
 // Error handling
 program.exitOverride();

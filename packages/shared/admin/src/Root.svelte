@@ -4,8 +4,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { untrack } from 'svelte';
-	import { createAdminContext } from './context.js';
-	import type { AdminHandlers } from './context.js';
+	import { createAdminContext } from './context.svelte.js';
+	import type { AdminHandlers } from './context.svelte.js';
 
 	interface Props {
 		handlers?: AdminHandlers;

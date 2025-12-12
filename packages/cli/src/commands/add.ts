@@ -1,5 +1,6 @@
 /**
  * Add command - Add components to your project
+ * Enhanced to support faces, shared modules, patterns, and full dependency resolution
  */
 
 import { Command } from 'commander';
@@ -7,32 +8,140 @@ import prompts from 'prompts';
 import chalk from 'chalk';
 import ora from 'ora';
 import path from 'node:path';
-import { readConfig, configExists, resolveAlias } from '../utils/config.js';
 import {
-	componentRegistry,
-	getComponent,
-	resolveComponentDependencies,
-	getAllComponentNames,
-} from '../registry/index.js';
+	readConfig,
+	configExists,
+	resolveAlias,
+	writeConfig,
+	addInstalledComponent,
+	getInstalledComponentNames,
+} from '../utils/config.js';
+import { componentRegistry, type ComponentMetadata } from '../registry/index.js';
+import { getFaceManifest, getAllFaceNames } from '../registry/faces.js';
+import { getAllSharedModuleNames } from '../registry/shared.js';
+import { getAllPatternNames } from '../registry/patterns.js';
 import type { ComponentFile } from '../registry/index.js';
-import { fetchComponents } from '../utils/fetch.js';
-import { writeComponentFiles } from '../utils/files.js';
+import { fetchComponents, type FetchOptions } from '../utils/fetch.js';
+
+import { writeComponentFilesWithTransform, fileExists } from '../utils/files.js';
 import {
 	installDependencies,
 	getMissingDependencies,
 	detectPackageManager,
 } from '../utils/packages.js';
 import { logger } from '../utils/logger.js';
+import { parseItems, validateParseResult } from '../utils/item-parser.js';
+import {
+	resolveDependencies,
+	getInstallationOrder,
+	type DependencyResolutionResult,
+} from '../utils/dependency-resolver.js';
+import {
+	generatePreview,
+	displayPreview,
+	displayDryRunPreview,
+	displayResolutionErrors,
+} from '../utils/install-preview.js';
+import {
+	resolveFaceDependencies,
+	updateConfigWithFace,
+	injectFaceCss,
+	displayFaceInstallSummary,
+} from '../utils/face-installer.js';
+
+/**
+ * Build interactive selection choices
+ */
+export function buildSelectionChoices(): Array<{ title: string; value: string; description?: string }> {
+	const choices: Array<{ title: string; value: string; description?: string }> = [];
+
+	// Add faces first
+	const faces = getAllFaceNames();
+	if (faces.length > 0) {
+		choices.push({
+			title: chalk.bold.cyan('── Faces ──'),
+			value: '',
+			description: 'Complete UI bundles',
+		});
+		for (const name of faces) {
+			const manifest = getFaceManifest(name);
+			choices.push({
+				title: `  faces/${name}`,
+				value: `faces/${name}`,
+				description: manifest?.description || '',
+			});
+		}
+	}
+
+	// Add primitives
+	const primitives = Object.values(componentRegistry).filter((c) => c.type === 'primitive');
+	if (primitives.length > 0) {
+		choices.push({
+			title: chalk.bold.cyan('── Primitives ──'),
+			value: '',
+			description: 'Headless UI primitives',
+		});
+		for (const comp of primitives) {
+			choices.push({
+				title: `  ${comp.name}`,
+				value: comp.name,
+				description: comp.description,
+			});
+		}
+	}
+
+	// Add shared modules
+	const shared = getAllSharedModuleNames();
+	if (shared.length > 0) {
+		choices.push({
+			title: chalk.bold.cyan('── Shared Modules ──'),
+			value: '',
+			description: 'Reusable feature modules',
+		});
+		for (const name of shared) {
+			choices.push({
+				title: `  shared/${name}`,
+				value: `shared/${name}`,
+				description: '',
+			});
+		}
+	}
+
+	// Add patterns
+	const patterns = getAllPatternNames();
+	if (patterns.length > 0) {
+		choices.push({
+			title: chalk.bold.cyan('── Patterns ──'),
+			value: '',
+			description: 'UI patterns',
+		});
+		for (const name of patterns) {
+			choices.push({
+				title: `  patterns/${name}`,
+				value: `patterns/${name}`,
+				description: '',
+			});
+		}
+	}
+
+	return choices.filter((c) => c.value !== '');
+}
 
 export const addCommand = new Command()
 	.name('add')
-	.description('Add components to your project')
-	.argument('[components...]', 'Components to add')
+	.description('Add components, faces, shared modules, or patterns to your project')
+	.argument('[items...]', 'Items to add (e.g., button modal shared/auth faces/social)')
 	.option('-y, --yes', 'Skip confirmation prompts')
-	.option('-a, --all', 'Add all dependencies')
+	.option('-a, --all', 'Include optional dependencies')
 	.option('--cwd <path>', 'Working directory (default: current directory)')
 	.option('--path <path>', 'Custom installation path')
-	.action(async (components: string[], options) => {
+	.option('--ref <tag>', 'Git ref/tag to fetch from')
+	.option('-f, --force', 'Overwrite existing files')
+	.option('--dry-run', 'Preview installation without writing files')
+	.option('--css-only', 'Only install CSS files (for faces)')
+	.option('--skip-verify', 'Skip integrity verification (development only)')
+	.option('--verify-signature', 'Verify Git tag signature')
+	.action(async (items: string[], options) => {
 		const cwd = path.resolve(options.cwd || process.cwd());
 
 		// Check if initialized
@@ -43,73 +152,124 @@ export const addCommand = new Command()
 		}
 
 		// Read config
-		const config = await readConfig(cwd);
+		let config = await readConfig(cwd);
 		if (!config) {
 			logger.error(chalk.red('✖ Failed to read configuration'));
 			process.exit(1);
 		}
 
-		// Get components to install
-		let selectedComponents: string[] = components;
+		// Get items to install
+		let selectedItems: string[] = items;
 
-		if (selectedComponents.length === 0) {
-			// Interactive selection
-			const availableComponents = getAllComponentNames();
+		if (selectedItems.length === 0) {
+			// Interactive selection with categorized choices
+			const choices = buildSelectionChoices();
 			const response = await prompts({
 				type: 'multiselect',
-				name: 'components',
-				message: 'Select components to add:',
-				choices: availableComponents.map((name) => {
-					const meta = getComponent(name);
-					return {
-						title: name,
-						value: name,
-						description: meta?.description || '',
-					};
-				}),
+				name: 'items',
+				message: 'Select items to add:',
+				choices,
 				hint: 'Space to select. Enter to confirm.',
 			});
 
-			if (!response.components || response.components.length === 0) {
-				logger.warn(chalk.yellow('\n✖ No components selected'));
+			if (!response.items || response.items.length === 0) {
+				logger.warn(chalk.yellow('\n✖ No items selected'));
 				process.exit(0);
 			}
 
-			selectedComponents = response.components;
+			selectedItems = response.items;
 		}
 
-		// Validate components
-		const invalidComponents = selectedComponents.filter((name) => !getComponent(name));
-		if (invalidComponents.length > 0) {
-			logger.error(chalk.red(`\n✖ Unknown components: ${invalidComponents.join(', ')}`));
+		// Parse and validate items
+		const parseResult = parseItems(selectedItems);
+		const validation = validateParseResult(parseResult);
+
+		if (!validation.valid) {
+			logger.error(chalk.red('\n✖ Unknown items:'));
+			for (const error of validation.errors) {
+				logger.error(`  ${chalk.red('→')} ${error}`);
+			}
 			logger.note(
-				chalk.dim('  Run ') +
-					chalk.cyan('greater list') +
-					chalk.dim(' to see available components\n')
+				chalk.dim('\n  Run ') + chalk.cyan('greater list') + chalk.dim(' to see available items\n')
 			);
 			process.exit(1);
 		}
 
+		// Check for face installations
+		const faceItems = parseResult.byType.faces;
+		const nonFaceItems = parseResult.items.filter((i) => i.type !== 'face');
+
+		// Get already installed components for skip list
+		const installedNames = getInstalledComponentNames(config);
+		const skipInstalled = options.force ? [] : installedNames;
+
 		// Resolve dependencies
-		const allComponents = new Set<string>();
-		for (const name of selectedComponents) {
-			resolveComponentDependencies(name).forEach((dep) => allComponents.add(dep));
-		}
+		let resolution: DependencyResolutionResult;
+		let isFaceInstall = false;
 
-		const componentsToInstall = Array.from(allComponents);
+		if (faceItems.length > 0) {
+			// Face installation - resolve face dependencies
+			isFaceInstall = true;
+			const faceName = faceItems[0]?.name ?? '';
+			const faceResolution = resolveFaceDependencies(faceName, {
+				skipOptional: !options.all,
+				skipInstalled,
+			});
 
-		// Show what will be installed
-		logger.info(chalk.bold('\n📦 Components to install:\n'));
-		for (const name of componentsToInstall) {
-			const meta = getComponent(name);
-			if (meta) {
-				const badge = chalk.dim(`[${meta.type}]`);
-				logger.info(`  ${badge} ${name}`);
+			if (!faceResolution) {
+				logger.error(chalk.red(`\n✖ Face "${faceName}" not found`));
+				process.exit(1);
 			}
-		}
-		logger.newline();
 
-		// Confirm
+			resolution = faceResolution;
+
+			// Add any additional non-face items
+			if (nonFaceItems.length > 0) {
+				const additionalResolution = resolveDependencies(nonFaceItems, {
+					includeOptional: options.all,
+					skipInstalled,
+				});
+				// Merge resolutions
+				for (const dep of additionalResolution.resolved) {
+					if (!resolution.resolved.some((r) => r.name === dep.name)) {
+						resolution.resolved.push(dep);
+					}
+				}
+				resolution.npmDependencies.push(...additionalResolution.npmDependencies);
+				resolution.npmDevDependencies.push(...additionalResolution.npmDevDependencies);
+			}
+		} else {
+			// Regular component installation
+			resolution = resolveDependencies(parseResult.items, {
+				includeOptional: options.all,
+				skipInstalled,
+			});
+		}
+
+		// Check for resolution errors
+		if (!resolution.success) {
+			displayResolutionErrors(resolution);
+			process.exit(1);
+		}
+
+		// Check if anything to install
+		if (resolution.resolved.length === 0) {
+			logger.info(chalk.yellow('\n✓ All requested items are already installed\n'));
+			process.exit(0);
+		}
+
+		// Generate and display preview
+		const preview = generatePreview(resolution, config, cwd, options.path);
+
+		// Dry run - just show preview and exit
+		if (options.dryRun) {
+			displayDryRunPreview(preview);
+			process.exit(0);
+		}
+
+		displayPreview(preview);
+
+		// Confirm installation
 		if (!options.yes) {
 			const response = await prompts({
 				type: 'confirm',
@@ -124,56 +284,218 @@ export const addCommand = new Command()
 			}
 		}
 
+		// Check for existing files if not forcing
+		if (!options.force) {
+			const existingFiles: string[] = [];
+			for (const targetPath of preview.targetPaths) {
+				for (const file of targetPath.files) {
+					const fullPath = path.join(targetPath.targetDir, file);
+					if (await fileExists(fullPath)) {
+						existingFiles.push(fullPath);
+					}
+				}
+			}
+
+			if (existingFiles.length > 0) {
+				logger.warn(chalk.yellow('\n⚠️  The following files already exist:'));
+				for (const file of existingFiles.slice(0, 5)) {
+					logger.warn(`  ${chalk.dim(path.relative(cwd, file))}`);
+				}
+				if (existingFiles.length > 5) {
+					logger.warn(chalk.dim(`  ... and ${existingFiles.length - 5} more`));
+				}
+
+				const response = await prompts({
+					type: 'confirm',
+					name: 'overwrite',
+					message: 'Overwrite existing files?',
+					initial: false,
+				});
+
+				if (!response.overwrite) {
+					logger.warn(chalk.yellow('\n✖ Installation cancelled'));
+					logger.note(chalk.dim('  Use --force to overwrite existing files\n'));
+					process.exit(0);
+				}
+			}
+		}
+
+		// Get installation order (dependencies first)
+		const installOrder = getInstallationOrder(resolution);
+
 		// Fetch components
 		const fetchSpinner = ora('Fetching components...').start();
 
+		const fetchOptions: FetchOptions = {
+			ref: options.ref || config.ref,
+			verbose: false,
+			skipVerification: options.skipVerify,
+			verifySignature: options.verifySignature,
+			failFast: true,
+		};
+
 		let componentFiles: Map<string, ComponentFile[]>;
 		try {
-			componentFiles = await fetchComponents(componentsToInstall, componentRegistry);
-			fetchSpinner.succeed(`Fetched ${componentsToInstall.length} component(s)`);
+			// Build registry map for fetching
+			const registryMap: Record<string, ComponentMetadata> = {};
+			for (const dep of resolution.resolved) {
+				registryMap[dep.name] = dep.metadata;
+			}
+
+			componentFiles = await fetchComponents(installOrder, registryMap, fetchOptions);
+			fetchSpinner.succeed(`Fetched ${installOrder.length} component(s)`);
 		} catch (error) {
 			fetchSpinner.fail('Failed to fetch components');
 			console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 			process.exit(1);
 		}
 
-		// Write files
-		const writeSpinner = ora('Writing files...').start();
+		// CSS-only mode for faces
+		if (options.cssOnly && isFaceInstall) {
+			const faceName = faceItems[0]?.name ?? '';
+			const cssSpinner = ora('Injecting CSS imports...').start();
+
+			try {
+				const cssInjected = await injectFaceCss(faceName, config, cwd);
+				if (cssInjected) {
+					cssSpinner.succeed('CSS imports added');
+				} else {
+					cssSpinner.warn('CSS imports need manual configuration');
+				}
+
+				// Update config with face
+				config = await updateConfigWithFace(config, faceName, cwd);
+				logger.success(chalk.green('\n✓ Face CSS configured successfully!\n'));
+				process.exit(0);
+			} catch (error) {
+				cssSpinner.fail('Failed to inject CSS');
+				console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+				process.exit(1);
+			}
+		}
+
+		// Write files with import transformation
+		const writeSpinner = ora('Writing and transforming files...').start();
 
 		try {
-			const targetDir = options.path
-				? path.resolve(cwd, options.path)
-				: resolveAlias(config.aliases.ui, config, cwd);
+			let totalTransformed = 0;
+			let totalFiles = 0;
 
-			for (const [, files] of componentFiles.entries()) {
-				await writeComponentFiles(files, targetDir);
+			for (const dep of resolution.resolved) {
+				const files = componentFiles.get(dep.name);
+				if (!files) continue;
+
+				// Determine target directory based on type
+				let targetDir: string;
+				if (options.path) {
+					targetDir = path.resolve(cwd, options.path);
+				} else {
+					switch (dep.type) {
+						case 'primitive':
+							targetDir = resolveAlias(config.aliases.ui, config, cwd);
+							break;
+						case 'pattern':
+							targetDir = path.join(
+								resolveAlias(config.aliases.components, config, cwd),
+								'patterns'
+							);
+							break;
+						case 'shared':
+							targetDir = path.join(
+								resolveAlias(config.aliases.components, config, cwd),
+								'shared',
+								dep.name
+							);
+							break;
+						case 'adapter':
+							targetDir = path.join(resolveAlias(config.aliases.lib, config, cwd), 'adapters');
+							break;
+						default:
+							targetDir = resolveAlias(config.aliases.components, config, cwd);
+					}
+				}
+
+				const result = await writeComponentFilesWithTransform(files, targetDir, config);
+				totalFiles += result.writtenFiles.length;
+				totalTransformed += result.transformResults.reduce((sum, r) => sum + r.transformedCount, 0);
 			}
 
-			writeSpinner.succeed(`Wrote files to ${path.relative(cwd, targetDir)}`);
+			writeSpinner.succeed(`Wrote ${totalFiles} file(s)`);
+
+			if (totalTransformed > 0) {
+				logger.info(
+					chalk.dim(`  ↳ Transformed ${totalTransformed} import path(s) to match your aliases`)
+				);
+			}
 		} catch (error) {
 			writeSpinner.fail('Failed to write files');
 			console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 			process.exit(1);
 		}
 
-		// Install npm dependencies
-		const allDeps = new Set<{ name: string; version: string }>();
-		const allDevDeps = new Set<{ name: string; version: string }>();
+		// Update installed components tracking in config with checksums
+		const updateConfigSpinner = ora('Updating configuration...').start();
+		try {
+			let updatedConfig = config;
+			// removed unused 'now'
+			for (const dep of resolution.resolved) {
+				const files = componentFiles.get(dep.name);
+				if (files && files.length > 0) {
+					// checksum calculation removed as unused
+				}
 
-		for (const name of componentsToInstall) {
-			const meta = getComponent(name);
-			if (meta) {
-				meta.dependencies.forEach((dep) => allDeps.add(dep));
-				meta.devDependencies.forEach((dep) => allDevDeps.add(dep));
+				updatedConfig = addInstalledComponent(
+					updatedConfig,
+					dep.name,
+					'version' in dep.metadata ? dep.metadata.version : '1.0.0'
+				);
+			}
+
+			// Update face in config if face installation
+			if (isFaceInstall) {
+				const faceName = faceItems[0]?.name ?? '';
+				updatedConfig = {
+					...updatedConfig,
+					css: {
+						...updatedConfig.css,
+						face: faceName,
+					},
+				};
+			}
+
+			await writeConfig(updatedConfig, cwd);
+			config = updatedConfig;
+			updateConfigSpinner.succeed('Updated components.json');
+		} catch (error) {
+			updateConfigSpinner.fail('Failed to update configuration');
+			console.error(chalk.red(error instanceof Error ? error.message : String(error)));
+			// Continue anyway - files are already written
+		}
+
+		// Inject CSS for face installations
+		if (isFaceInstall) {
+			const faceName = faceItems[0]?.name ?? '';
+			const cssSpinner = ora('Configuring CSS imports...').start();
+
+			try {
+				const cssInjected = await injectFaceCss(faceName, config, cwd);
+				if (cssInjected) {
+					cssSpinner.succeed('CSS imports configured');
+				} else {
+					cssSpinner.warn('CSS imports need manual configuration');
+				}
+			} catch {
+				cssSpinner.warn('CSS injection skipped');
 			}
 		}
 
-		const deps = Array.from(allDeps);
-		const devDeps = Array.from(allDevDeps);
+		// Install npm dependencies
+		const allDeps = resolution.npmDependencies;
+		const allDevDeps = resolution.npmDevDependencies;
 
 		// Check which dependencies are missing
-		const missingDeps = await getMissingDependencies(deps, cwd);
-		const missingDevDeps = await getMissingDependencies(devDeps, cwd);
+		const missingDeps = await getMissingDependencies(allDeps, cwd);
+		const missingDevDeps = await getMissingDependencies(allDevDeps, cwd);
 
 		if (missingDeps.length > 0 || missingDevDeps.length > 0) {
 			logger.info(chalk.bold('\n📦 Installing dependencies:\n'));
@@ -210,8 +532,47 @@ export const addCommand = new Command()
 			}
 		}
 
-		// Success
-		logger.success(chalk.green('\n✓ Components added successfully!\n'));
-		logger.note(chalk.dim('Import and use in your components:'));
-		logger.note(chalk.cyan(`  import { ... } from '${config.aliases.ui}'\n`));
+		// Success message
+		if (isFaceInstall) {
+			const faceName = faceItems[0]?.name ?? '';
+			const manifest = getFaceManifest(faceName);
+			if (manifest) {
+				displayFaceInstallSummary({
+					face: faceName,
+					manifest,
+					resolution,
+					cssInjected: true,
+					configUpdated: true,
+				});
+			}
+		} else {
+			logger.success(chalk.green('\n✓ Components added successfully!\n'));
+
+			// Show import examples based on what was installed
+			logger.note(chalk.dim('Import and use in your components:'));
+
+			if (parseResult.byType.primitives.length > 0) {
+				logger.note(chalk.cyan(`  import { Button, Modal } from '${config.aliases.ui}';`));
+			}
+			if (parseResult.byType.shared.length > 0) {
+				const sharedName = parseResult.byType.shared[0]?.name;
+				if (sharedName) {
+					logger.note(
+						chalk.cyan(
+							`  import * as Auth from '${config.aliases.components}/shared/${sharedName}';`
+						)
+					);
+				}
+			}
+			if (parseResult.byType.patterns.length > 0) {
+				// Removed unused pattern import note or fix naming
+				const patternName = parseResult.byType.patterns[0]?.name;
+				if (patternName) {
+					logger.note(
+						chalk.cyan(`  import { ThreadView } from '${config.aliases.components}/patterns';`)
+					);
+				}
+			}
+			logger.newline();
+		}
 	});

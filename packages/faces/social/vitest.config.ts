@@ -20,7 +20,7 @@ export default mergeConfig(
 						statements: 60,
 					},
 				},
-				include: ['src/adapters/**/*.{ts,js}', 'src/lib/timelineStore.ts'],
+				include: ['src/adapters/**/*.{ts,js}', 'src/lib/**/*.ts', 'src/utils/**/*.{ts,js}'],
 				exclude: [
 					'src/**/*.d.ts',
 					'src/**/*.test.{ts,js}',

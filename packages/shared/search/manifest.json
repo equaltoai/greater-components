@@ -1,0 +1,96 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-search",
+  "version": "4.0.1",
+  "description": "Search components for ActivityPub/Fediverse applications with federated search support",
+  "components": {
+    "Root": {
+      "description": "Container component providing context for search compound components",
+      "props": ["handlers", "initialState", "children"],
+      "exports": true
+    },
+    "Bar": {
+      "description": "Search input bar with keyboard shortcuts and recent searches",
+      "props": ["placeholder", "autofocus", "showRecent"],
+      "exports": true
+    },
+    "Filters": {
+      "description": "Filter tabs for search result types (all, actors, notes, tags)",
+      "props": ["activeFilter", "onFilterChange", "showCounts"],
+      "exports": true
+    },
+    "Results": {
+      "description": "Search results container with loading and empty states",
+      "props": ["loading", "emptyMessage"],
+      "exports": true
+    },
+    "ActorResult": {
+      "description": "Actor/account search result item",
+      "props": ["actor", "onClick", "onFollow"],
+      "exports": true
+    },
+    "NoteResult": {
+      "description": "Note/status search result item",
+      "props": ["note", "onClick", "highlightQuery"],
+      "exports": true
+    },
+    "TagResult": {
+      "description": "Hashtag search result item",
+      "props": ["tag", "onClick", "showTrending"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "context": {
+      "description": "Search context creation and access utilities",
+      "exports": [
+        "createInitialSearchState",
+        "createSearchContext",
+        "getSearchContext",
+        "highlightQuery",
+        "formatResultCount",
+        "formatCount"
+      ]
+    }
+  },
+  "types": [
+    "SearchResultType",
+    "SearchActor",
+    "SearchNote",
+    "SearchTag",
+    "SearchResults",
+    "SearchOptions",
+    "SearchHandlers",
+    "SearchState",
+    "SearchContext"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-icons",
+      "@equaltoai/greater-components-headless"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": []
+  },
+  "lesserSchema": {
+    "mutations": [],
+    "queries": ["search", "searchActors", "searchNotes", "searchTags", "trendingTags"],
+    "subscriptions": []
+  },
+  "features": {
+    "federatedSearch": true,
+    "semanticSearch": true,
+    "recentSearches": true,
+    "typeFiltering": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-labels",
+      "focus-management",
+      "aria-live-regions"
+    ]
+  }
+}

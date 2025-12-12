@@ -1,0 +1,131 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-admin",
+  "version": "4.0.1",
+  "description": "Admin dashboard components for ActivityPub instance management",
+  "components": {
+    "Root": {
+      "description": "Container component providing context for admin compound components",
+      "props": ["handlers", "initialState", "children"],
+      "exports": true
+    },
+    "Overview": {
+      "description": "Dashboard overview with key metrics and stats",
+      "props": ["stats"],
+      "exports": true
+    },
+    "Users": {
+      "description": "User management with search, filtering, and actions",
+      "props": ["users", "onAction"],
+      "exports": true
+    },
+    "Reports": {
+      "description": "Report management and moderation queue",
+      "props": ["reports", "onResolve", "onDismiss"],
+      "exports": true
+    },
+    "Moderation": {
+      "description": "Content moderation tools and actions",
+      "props": ["items", "onAction"],
+      "exports": true
+    },
+    "Federation": {
+      "description": "Federation management with instance blocking/limiting",
+      "props": ["instances", "onAction"],
+      "exports": true
+    },
+    "Settings": {
+      "description": "Instance settings configuration",
+      "props": ["settings", "onSave"],
+      "exports": true
+    },
+    "Logs": {
+      "description": "System logs viewer with filtering",
+      "props": ["logs", "filters"],
+      "exports": true
+    },
+    "Analytics": {
+      "description": "Analytics dashboard with charts and metrics",
+      "props": ["data", "period"],
+      "exports": true
+    },
+    "Cost": {
+      "description": "Lesser cost analytics and budget controls",
+      "subcomponents": ["Root", "Dashboard", "Alerts", "BudgetControls"],
+      "exports": true
+    },
+    "Insights": {
+      "description": "AI-powered moderation insights and analytics",
+      "subcomponents": ["Root", "AIAnalysis", "ModerationAnalytics"],
+      "exports": true
+    },
+    "TrustGraph": {
+      "description": "Trust relationship visualization and management",
+      "subcomponents": ["Root", "Visualization", "RelationshipList"],
+      "exports": true
+    },
+    "SeveredRelationships": {
+      "description": "Severed relationship recovery tools",
+      "subcomponents": ["Root", "List", "RecoveryPanel"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "context": {
+      "description": "Admin context creation and access utilities",
+      "exports": ["createAdminContext", "getAdminContext", "formatNumber"]
+    }
+  },
+  "types": [
+    "AdminStats",
+    "AdminUser",
+    "AdminReport",
+    "FederatedInstance",
+    "InstanceSettings",
+    "LogEntry",
+    "AnalyticsData",
+    "AdminHandlers",
+    "AdminState",
+    "AdminContext"
+  ],
+  "dependencies": {
+    "internal": ["@equaltoai/greater-components-primitives", "@equaltoai/greater-components-icons"],
+    "peer": ["svelte@^5.43.6"],
+    "optional": ["@equaltoai/greater-components-adapters"]
+  },
+  "lesserSchema": {
+    "mutations": [
+      "suspendUser",
+      "unsuspendUser",
+      "changeUserRole",
+      "resolveReport",
+      "dismissReport",
+      "blockInstance",
+      "limitInstance",
+      "allowInstance",
+      "updateSettings",
+      "setBudget"
+    ],
+    "queries": [
+      "adminStats",
+      "adminUsers",
+      "adminReports",
+      "federatedInstances",
+      "instanceSettings",
+      "systemLogs",
+      "analyticsData",
+      "costAnalytics",
+      "trustGraph"
+    ],
+    "subscriptions": ["reportCreated", "userActivity", "costAlert"]
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-labels",
+      "focus-management",
+      "data-table-accessibility"
+    ]
+  }
+}
