@@ -3,9 +3,3 @@ import { vi } from 'vitest';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).vi = vi;
 
-// Mock dynamic imports for icon testing
-vi.mock('../src/icons/*.svelte', () => {
-	return {
-		default: () => '<svg></svg>',
-	};
-});
