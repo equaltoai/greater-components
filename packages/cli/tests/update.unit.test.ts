@@ -190,16 +190,123 @@ describe('Update Command', () => {
 		});
 	});
 
-	describe('Version Updates', () => {
-		it('updates component version in config', async () => {
+	describe('Command Execution', () => {
+		let exitSpy: ReturnType<typeof vi.spyOn>;
+
+		beforeEach(() => {
+			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
+		});
+
+		afterEach(() => {
+			exitSpy.mockRestore();
+		});
+
+		it('exits if not initialized', async () => {
+			mockFs.clear();
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['button'], { cwd: '/' });
+			expect(exitSpy).toHaveBeenCalledWith(1);
+		});
+
+		it('exits if no components specified and not --all', async () => {
+			const config = createTestConfig();
+			mockFs.set('/components.json', JSON.stringify(config));
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction([], { cwd: '/' });
+			expect(exitSpy).toHaveBeenCalledWith(1);
+		});
+
+		it('updates all installed components', async () => {
 			const config = createTestConfig({
-				installed: [createInstalledComponent('button', { version: 'v1.0.0' })],
+				installed: [createInstalledComponent('button')],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+			mockFs.set('/src/lib/components/ui/button/button.ts', 'old content');
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction([], { cwd: '/', all: true, yes: true });
+
+			expect(exitSpy).not.toHaveBeenCalledWith(1);
+			const { readFile } = await import('../src/utils/files.js');
+			const content = await readFile('/src/lib/components/ui/button/button.ts');
+			// fetchComponentFiles mock returns 'export const button = { version: 2 };'
+			expect(content).toContain('version: 2');
+		});
+
+		it('updates specific component', async () => {
+			const config = createTestConfig({
+				installed: [createInstalledComponent('button')],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+			mockFs.set('/src/lib/components/ui/button/button.ts', 'old content');
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['button'], { cwd: '/', yes: true });
+
+			expect(exitSpy).not.toHaveBeenCalledWith(1);
+		});
+
+		it('warns if component not installed', async () => {
+			const config = createTestConfig({
+				installed: [],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['button'], { cwd: '/' });
+
+			// Logic says: if items.length > 0, filter installed.
+			// if filtered length is 0, exits with 0 and message "No components to update"
+			expect(exitSpy).toHaveBeenCalledWith(0);
+		});
+
+		it('handles conflicts with overwrite', async () => {
+			const config = createTestConfig({
+				installed: [createInstalledComponent('button', { modified: true })],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+			mockFs.set('/src/lib/components/ui/button/button.ts', 'local modified content');
+
+			const prompts = await import('prompts');
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				confirm: true,
+			});
+			// Conflict resolution prompt
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				resolution: 'overwrite',
 			});
 
-			const { addInstalledComponent } = await import('../src/utils/config.js');
-			const updated = addInstalledComponent(config, 'button', 'v2.0.0');
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['button'], { cwd: '/' });
 
-			expect(updated.installed[0].version).toBe('v2.0.0');
+			const { readFile } = await import('../src/utils/files.js');
+			const content = await readFile('/src/lib/components/ui/button/button.ts');
+			expect(content).toContain('version: 2');
+		});
+
+		it('handles conflicts with keep', async () => {
+			const config = createTestConfig({
+				installed: [createInstalledComponent('button', { modified: true })],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+			mockFs.set('/src/lib/components/ui/button/button.ts', 'local modified content');
+
+			const prompts = await import('prompts');
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				confirm: true,
+			});
+			// Conflict resolution prompt
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				resolution: 'keep',
+			});
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['button'], { cwd: '/' });
+
+			const { readFile } = await import('../src/utils/files.js');
+			const content = await readFile('/src/lib/components/ui/button/button.ts');
+			expect(content).toBe('local modified content');
 		});
 	});
 });

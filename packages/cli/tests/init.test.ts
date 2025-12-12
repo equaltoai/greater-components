@@ -253,4 +253,122 @@ describe('Init Command', () => {
 			expect(faceOption).toBeDefined();
 		});
 	});
+
+	describe('Command Execution', () => {
+		let exitSpy: ReturnType<typeof vi.spyOn>;
+
+		beforeEach(() => {
+			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
+		});
+
+		afterEach(() => {
+			exitSpy.mockRestore();
+		});
+
+		it('exits if not a valid project', async () => {
+			mockFs.clear(); // Empty directory
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/' });
+			expect(exitSpy).toHaveBeenCalledWith(1);
+		});
+
+
+
+		it('exits if Svelte version is invalid', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+			mockFs.set(
+				'/package.json',
+				JSON.stringify({
+					dependencies: { svelte: '^3.0.0' },
+				})
+			);
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/' });
+			expect(exitSpy).toHaveBeenCalledWith(1);
+		});
+
+		it('exits if invalid face option provided', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/', face: 'invalid-face' });
+			expect(exitSpy).toHaveBeenCalledWith(1);
+		});
+
+		it('creates config with defaults when --yes is used', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/', yes: true });
+
+			const { configExists } = await import('../src/utils/config.js');
+			expect(await configExists('/')).toBe(true);
+			expect(exitSpy).not.toHaveBeenCalled();
+		});
+
+		it('prompts for configuration and creates config', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+			const prompts = await import('prompts');
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				style: 'default',
+				componentsPath: '$lib/components/ui',
+				utilsPath: '$lib/utils',
+				hooksPath: '$lib/hooks',
+				face: null,
+			});
+			// Mock confirm prompt
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				confirm: true,
+			});
+			// Mock CSS injection prompt (if any)
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				entryPoint: null, // Skip CSS injection
+			});
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/' });
+
+			const { configExists } = await import('../src/utils/config.js');
+			expect(await configExists('/')).toBe(true);
+		});
+
+		it('cancels if style selection is missing', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+			const prompts = await import('prompts');
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				// No style
+			});
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/' });
+
+			expect(exitSpy).toHaveBeenCalledWith(0);
+			const { configExists } = await import('../src/utils/config.js');
+			expect(await configExists('/')).toBe(false);
+		});
+
+		it('cancels if confirmation is rejected', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+			const prompts = await import('prompts');
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				style: 'default',
+				componentsPath: '$lib/components/ui',
+				utilsPath: '$lib/utils',
+				hooksPath: '$lib/hooks',
+				face: null,
+			});
+			// Mock confirm prompt rejection
+			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+				confirm: false,
+			});
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/' });
+
+			expect(exitSpy).toHaveBeenCalledWith(0);
+			const { configExists } = await import('../src/utils/config.js');
+			expect(await configExists('/')).toBe(false);
+		});
+	});
 });

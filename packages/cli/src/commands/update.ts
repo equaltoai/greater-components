@@ -391,6 +391,135 @@ function displayUpdateResults(results: ComponentUpdateStatus[], dryRun: boolean)
 	}
 }
 
+export const updateAction = async (items: string[], options: {
+	all?: boolean;
+	ref?: string;
+	cwd?: string;
+	force?: boolean;
+	dryRun?: boolean;
+	yes?: boolean;
+}) => {
+	const cwd = path.resolve(options.cwd || process.cwd());
+
+	// Check if initialized
+	if (!(await configExists(cwd))) {
+		logger.error(chalk.red('✖ Greater Components is not initialized'));
+		logger.note(chalk.dim('  Run ') + chalk.cyan('greater init') + chalk.dim(' first\n'));
+		process.exit(1);
+		return;
+	}
+
+	// Read config
+	let config = await readConfig(cwd);
+	if (!config) {
+		logger.error(chalk.red('✖ Failed to read configuration'));
+		process.exit(1);
+		return;
+	}
+
+	// Determine which components to update
+	let componentNames: string[];
+
+	if (options.all) {
+		componentNames = getInstalledComponentNames(config);
+	} else if (items.length > 0) {
+		// Validate specified components
+		const installed = getInstalledComponentNames(config);
+		const notInstalled = items.filter((name) => !installed.includes(name));
+
+		if (notInstalled.length > 0) {
+			logger.warn(chalk.yellow(`\n⚠ Components not installed: ${notInstalled.join(', ')}`));
+			logger.note(
+				chalk.dim('  These will be skipped. Use ') +
+					chalk.cyan('greater add') +
+					chalk.dim(' to install new components.\n')
+			);
+		}
+
+		componentNames = items.filter((name) => installed.includes(name));
+	} else {
+		logger.error(chalk.red('\n✖ No components specified'));
+		logger.note(
+			chalk.dim('  Use ') +
+				chalk.cyan('greater update <component>') +
+				chalk.dim(' or ') +
+				chalk.cyan('greater update --all') +
+				chalk.dim('\n')
+			);
+		process.exit(1);
+		return;
+	}
+
+	if (componentNames.length === 0) {
+		logger.info(chalk.yellow('\n✖ No components to update'));
+		process.exit(0);
+		return;
+	}
+
+	const targetRef = options.ref || config.ref || 'latest';
+	const dryRunLabel = options.dryRun ? chalk.cyan(' [DRY RUN]') : '';
+
+	logger.info(
+		chalk.bold(
+			`\n🔄 Updating ${componentNames.length} component(s) to ${targetRef}${dryRunLabel}\n`
+		)
+	);
+
+	// Confirm if not using --yes
+	if (!options.yes && !options.dryRun) {
+		const response = await prompts({
+			type: 'confirm',
+			name: 'confirm',
+			message: `Update ${componentNames.length} component(s)?`,
+			initial: true,
+			});
+
+		if (!response.confirm) {
+			logger.warn(chalk.yellow('\n✖ Update cancelled'));
+			process.exit(0);
+			return;
+		}
+	}
+
+	const spinner = ora('Updating components...').start();
+
+	// Update each component
+	const results: ComponentUpdateStatus[] = [];
+
+	for (const name of componentNames) {
+		spinner.text = `Updating ${name}...`;
+
+		const result = await updateComponent(name, config, cwd, {
+			ref: options.ref,
+			force: options.force,
+			dryRun: options.dryRun,
+		});
+
+		results.push(result);
+
+		// Update config with new version if successful
+		if (!options.dryRun && !result.skipped && !result.error) {
+			config = addInstalledComponent(config, name, result.targetVersion);
+		}
+	}
+
+	spinner.stop();
+
+	// Save updated config
+	if (!options.dryRun) {
+		await writeConfig(config, cwd);
+	}
+
+	// Display results
+	displayUpdateResults(results, options.dryRun || false);
+
+			// Exit with error code if there were failures
+			const hasErrors = results.some((r) => r.error || r.files.some((f) => f.status === 'error'));
+			if (hasErrors) {
+				process.exit(1);
+				return;
+			}};
+
 export const updateCommand = new Command()
 	.name('update')
 	.description('Update installed components to newer versions')
@@ -401,119 +530,4 @@ export const updateCommand = new Command()
 	.option('-f, --force', 'Overwrite local modifications without prompting')
 	.option('--dry-run', 'Preview updates without making changes')
 	.option('-y, --yes', 'Skip confirmation prompts')
-	.action(async (items: string[], options) => {
-		const cwd = path.resolve(options.cwd || process.cwd());
-
-		// Check if initialized
-		if (!(await configExists(cwd))) {
-			logger.error(chalk.red('✖ Greater Components is not initialized'));
-			logger.note(chalk.dim('  Run ') + chalk.cyan('greater init') + chalk.dim(' first\n'));
-			process.exit(1);
-		}
-
-		// Read config
-		let config = await readConfig(cwd);
-		if (!config) {
-			logger.error(chalk.red('✖ Failed to read configuration'));
-			process.exit(1);
-		}
-
-		// Determine which components to update
-		let componentNames: string[];
-
-		if (options.all) {
-			componentNames = getInstalledComponentNames(config);
-		} else if (items.length > 0) {
-			// Validate specified components
-			const installed = getInstalledComponentNames(config);
-			const notInstalled = items.filter((name) => !installed.includes(name));
-
-			if (notInstalled.length > 0) {
-				logger.warn(chalk.yellow(`\n⚠ Components not installed: ${notInstalled.join(', ')}`));
-				logger.note(
-					chalk.dim('  These will be skipped. Use ') +
-						chalk.cyan('greater add') +
-						chalk.dim(' to install new components.\n')
-				);
-			}
-
-			componentNames = items.filter((name) => installed.includes(name));
-		} else {
-			logger.error(chalk.red('\n✖ No components specified'));
-			logger.note(
-				chalk.dim('  Use ') +
-					chalk.cyan('greater update <component>') +
-					chalk.dim(' or ') +
-					chalk.cyan('greater update --all') +
-					chalk.dim('\n')
-			);
-			process.exit(1);
-		}
-
-		if (componentNames.length === 0) {
-			logger.info(chalk.yellow('\n✖ No components to update'));
-			process.exit(0);
-		}
-
-		const targetRef = options.ref || config.ref || 'latest';
-		const dryRunLabel = options.dryRun ? chalk.cyan(' [DRY RUN]') : '';
-
-		logger.info(
-			chalk.bold(
-				`\n🔄 Updating ${componentNames.length} component(s) to ${targetRef}${dryRunLabel}\n`
-			)
-		);
-
-		// Confirm if not using --yes
-		if (!options.yes && !options.dryRun) {
-			const response = await prompts({
-				type: 'confirm',
-				name: 'confirm',
-				message: `Update ${componentNames.length} component(s)?`,
-				initial: true,
-			});
-
-			if (!response.confirm) {
-				logger.warn(chalk.yellow('\n✖ Update cancelled'));
-				process.exit(0);
-			}
-		}
-
-		const spinner = ora('Updating components...').start();
-
-		// Update each component
-		const results: ComponentUpdateStatus[] = [];
-
-		for (const name of componentNames) {
-			spinner.text = `Updating ${name}...`;
-
-			const result = await updateComponent(name, config, cwd, {
-				ref: options.ref,
-				force: options.force,
-				dryRun: options.dryRun,
-			});
-
-			results.push(result);
-
-			// Update config with new version if successful
-			if (!options.dryRun && !result.skipped && !result.error) {
-				config = addInstalledComponent(config, name, result.targetVersion);
-			}
-		}
-
-		spinner.stop();
-
-		// Save updated config
-		if (!options.dryRun) {
-			await writeConfig(config, cwd);
-		}
-
-		// Display results
-		displayUpdateResults(results, options.dryRun || false);
-
-		// Exit with error code if there were failures
-		const hasErrors = results.some((r) => r.error || r.files.some((f) => f.status === 'error'));
-		if (hasErrors) {
-			process.exit(1);
-		}
-	});
+	.action(updateAction);

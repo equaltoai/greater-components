@@ -189,6 +189,270 @@ function displayPostInitInstructions(
 	logger.newline();
 }
 
+export const initAction = async (options: {
+	yes?: boolean;
+	cwd?: string;
+	ref?: string;
+	skipCss?: boolean;
+	face?: string;
+}) => {
+	const cwd = path.resolve(options.cwd || process.cwd());
+
+	logger.info(chalk.bold('\n✨ Welcome to Greater Components\n'));
+
+	// Check if valid project
+	const spinner = ora('Checking project...').start();
+
+	if (!(await isValidProject(cwd))) {
+		spinner.fail(
+			'Not a valid project. Please run this command in a project root with package.json'
+		);
+		process.exit(1);
+		return;
+	}
+
+	// Check if already initialized
+	if (await configExists(cwd)) {
+		spinner.warn('Greater Components is already initialized in this project');
+		logger.note(chalk.dim('\n  To reinitialize, delete components.json and run again.\n'));
+		process.exit(0);
+	}
+
+	// Detect project details
+	const projectDetails = await detectProjectDetails(cwd);
+	spinner.succeed('Project detected');
+
+	// Display project summary
+	displayProjectSummary(projectDetails);
+
+	// Validate Svelte version
+	const svelteValidation = await validateSvelteVersion(cwd);
+
+	if (!svelteValidation.valid) {
+		logger.error(chalk.red('\n✖ Svelte version requirement not met\n'));
+
+		if (svelteValidation.upgradeInstructions) {
+			logger.info(chalk.yellow(svelteValidation.upgradeInstructions));
+		}
+
+		logger.newline();
+		process.exit(1);
+		return;
+	}
+
+	// Display Svelte version
+	if (svelteValidation.version) {
+		logger.info(
+			chalk.green('✓') +
+				chalk.dim(` Svelte ${svelteValidation.version.raw} detected (requires 5.0.0+)`)
+		);
+		logger.newline();
+	}
+
+	// Validate face option if provided
+	let selectedFace: string | null = options.face || null;
+	if (selectedFace && !['social', 'blog', 'community'].includes(selectedFace)) {
+		logger.error(chalk.red(`\n✖ Invalid face: ${selectedFace}`));
+		logger.note(chalk.dim('  Available faces: social, blog, community\n'));
+		process.exit(1);
+		return;
+	}
+
+	// Get configuration
+	let config: ComponentConfig;
+
+	if (options.yes) {
+		// Non-interactive mode with defaults
+		config = createDefaultConfig({
+			projectType: projectDetails.type,
+			hasTypeScript: projectDetails.hasTypeScript,
+			ref: options.ref || DEFAULT_REF,
+			face: selectedFace,
+		});
+	} else {
+		// Interactive configuration
+		const response = await prompts([
+			{
+				type: 'select',
+				name: 'style',
+				message: 'Which style would you like to use?',
+				choices: [
+					{ title: 'Default', value: 'default', description: 'Clean, modern default style' },
+					{ title: 'New York', value: 'new-york', description: 'Refined, editorial style' },
+					{ title: 'Minimal', value: 'minimal', description: 'Stripped-down, lightweight style' },
+				],
+				initial: 0,
+			},
+			{
+				type: 'text',
+				name: 'componentsPath',
+				message: 'Where would you like to store components?',
+				initial:
+					projectDetails.type === 'sveltekit' ? '$lib/components/ui' : 'src/lib/components/ui',
+			},
+			{
+				type: 'text',
+				name: 'utilsPath',
+				message: 'Where would you like to store utils?',
+				initial: projectDetails.type === 'sveltekit' ? '$lib/utils' : 'src/lib/utils',
+			},
+			{
+				type: 'text',
+				name: 'hooksPath',
+				message: 'Where would you like to store hooks/headless components?',
+				initial: projectDetails.type === 'sveltekit' ? '$lib/hooks' : 'src/lib/hooks',
+			},
+			{
+				type: selectedFace ? null : 'select',
+				name: 'face',
+				message: 'Would you like to use a pre-built face?',
+				choices: AVAILABLE_FACES.map((f) => ({
+					title: f.title,
+					value: f.value,
+					description: f.description,
+				})),
+				initial: 0,
+			},
+		]);
+
+		if (!response.style) {
+			logger.error(chalk.red('\n✖ Setup cancelled'));
+			process.exit(0);
+			return;
+		}
+
+		// Use pre-selected face or prompt response
+		const finalFace = selectedFace || response.face;
+
+		config = {
+			$schema: SCHEMA_URL,
+			version: CONFIG_SCHEMA_VERSION,
+			ref: options.ref || DEFAULT_REF,
+			style: response.style,
+			rsc: false,
+			tsx: projectDetails.hasTypeScript,
+			aliases: {
+				components: response.componentsPath.replace('/ui', ''),
+				utils: response.utilsPath,
+				ui: response.componentsPath,
+				lib: projectDetails.type === 'sveltekit' ? '$lib' : 'src/lib',
+				hooks: response.hooksPath,
+			},
+			css: {
+				tokens: true,
+				primitives: true,
+				face: finalFace,
+			},
+			installed: [],
+		};
+
+		selectedFace = finalFace;
+	}
+
+	// Display configuration summary
+	displayConfigSummary(config, selectedFace);
+
+	// Confirm before proceeding (unless --yes)
+	if (!options.yes) {
+		const confirmResponse = await prompts({
+			type: 'confirm',
+			name: 'confirm',
+			message: 'Create configuration with these settings?',
+			initial: true,
+		});
+
+					if (!confirmResponse.confirm) {
+						logger.warn(chalk.yellow('\n✖ Setup cancelled'));
+						process.exit(0);
+						return;
+					}	}
+
+	// Write configuration
+	const configSpinner = ora('Creating configuration...').start();
+
+	try {
+		await writeConfig(config, cwd);
+		configSpinner.succeed('Configuration created (components.json)');
+	} catch (error) {
+		configSpinner.fail('Failed to create configuration');
+		logger.error(chalk.red(error instanceof Error ? error.message : String(error)));
+		process.exit(1);
+		return;
+	}
+
+	// CSS injection
+	let cssInjected = false;
+
+	if (!options.skipCss && projectDetails.cssEntryPoints.length > 0) {
+		const cssConfig: CssImportConfig = {
+			tokens: config.css?.tokens ?? true,
+			primitives: config.css?.primitives ?? true,
+			face: selectedFace,
+		};
+
+		// Get recommended entry point
+		const recommendedEntry = getRecommendedEntryPoint(
+			projectDetails.cssEntryPoints,
+			projectDetails.type
+		);
+
+		if (recommendedEntry) {
+			let targetEntry = recommendedEntry;
+
+			// In interactive mode, let user choose
+			if (!options.yes && projectDetails.cssEntryPoints.length > 1) {
+				const cssResponse = await prompts({
+					type: 'select',
+					name: 'entryPoint',
+					message: 'Where should CSS imports be added?',
+					choices: [
+						...projectDetails.cssEntryPoints.map((e) => ({
+							title: path.relative(cwd, e.path),
+							value: e,
+							description: `${e.type} file`,
+						})),
+						{ title: 'Skip CSS injection', value: null, description: 'Add imports manually' },
+					],
+					initial: 0,
+				});
+
+				if (cssResponse.entryPoint === undefined) {
+					logger.warn(chalk.yellow('\n✖ Setup cancelled'));
+					process.exit(0);
+					return;
+				}
+
+				targetEntry = cssResponse.entryPoint;
+			}
+
+			if (targetEntry) {
+				const cssSpinner = ora('Injecting CSS imports...').start();
+
+				try {
+					const result = await injectCssImports(targetEntry, cssConfig);
+
+					if (result.success) {
+						if (result.addedImports.length > 0) {
+							cssSpinner.succeed(`Added CSS imports to ${path.relative(cwd, result.filePath)}`);
+							cssInjected = true;
+						} else {
+							cssSpinner.info('CSS imports already present');
+							cssInjected = true;
+						}
+					} else {
+						cssSpinner.warn(`Could not inject CSS: ${result.error}`);
+					}
+				} catch {
+					cssSpinner.warn('CSS injection failed, you can add imports manually');
+				}
+			}
+		}
+	}
+
+	// Display post-init instructions
+	displayPostInitInstructions(config, selectedFace, cssInjected);
+};
+
 export const initCommand = new Command()
 	.name('init')
 	.description('Initialize Greater Components in your project')
@@ -197,254 +461,4 @@ export const initCommand = new Command()
 	.option('--ref <tag>', 'Pin to a specific version tag', DEFAULT_REF)
 	.option('--skip-css', 'Skip automatic CSS injection')
 	.option('--face <name>', 'Pre-select a face (social, blog, community)')
-	.action(async (options) => {
-		const cwd = path.resolve(options.cwd || process.cwd());
-
-		logger.info(chalk.bold('\n✨ Welcome to Greater Components\n'));
-
-		// Check if valid project
-		const spinner = ora('Checking project...').start();
-
-		if (!(await isValidProject(cwd))) {
-			spinner.fail(
-				'Not a valid project. Please run this command in a project root with package.json'
-			);
-			process.exit(1);
-		}
-
-		// Check if already initialized
-		if (await configExists(cwd)) {
-			spinner.warn('Greater Components is already initialized in this project');
-			logger.note(chalk.dim('\n  To reinitialize, delete components.json and run again.\n'));
-			process.exit(0);
-		}
-
-		// Detect project details
-		const projectDetails = await detectProjectDetails(cwd);
-		spinner.succeed('Project detected');
-
-		// Display project summary
-		displayProjectSummary(projectDetails);
-
-		// Validate Svelte version
-		const svelteValidation = await validateSvelteVersion(cwd);
-
-		if (!svelteValidation.valid) {
-			logger.error(chalk.red('\n✖ Svelte version requirement not met\n'));
-
-			if (svelteValidation.upgradeInstructions) {
-				logger.info(chalk.yellow(svelteValidation.upgradeInstructions));
-			}
-
-			logger.newline();
-			process.exit(1);
-		}
-
-		// Display Svelte version
-		if (svelteValidation.version) {
-			logger.info(
-				chalk.green('✓') +
-					chalk.dim(` Svelte ${svelteValidation.version.raw} detected (requires 5.0.0+)`)
-			);
-			logger.newline();
-		}
-
-		// Validate face option if provided
-		let selectedFace: string | null = options.face || null;
-		if (selectedFace && !['social', 'blog', 'community'].includes(selectedFace)) {
-			logger.error(chalk.red(`\n✖ Invalid face: ${selectedFace}`));
-			logger.note(chalk.dim('  Available faces: social, blog, community\n'));
-			process.exit(1);
-		}
-
-		// Get configuration
-		let config: ComponentConfig;
-
-		if (options.yes) {
-			// Non-interactive mode with defaults
-			config = createDefaultConfig({
-				projectType: projectDetails.type,
-				hasTypeScript: projectDetails.hasTypeScript,
-				ref: options.ref || DEFAULT_REF,
-				face: selectedFace,
-			});
-		} else {
-			// Interactive configuration
-			const response = await prompts([
-				{
-					type: 'select',
-					name: 'style',
-					message: 'Which style would you like to use?',
-					choices: [
-						{ title: 'Default', value: 'default', description: 'Clean, modern default style' },
-						{ title: 'New York', value: 'new-york', description: 'Refined, editorial style' },
-						{ title: 'Minimal', value: 'minimal', description: 'Stripped-down, lightweight style' },
-					],
-					initial: 0,
-				},
-				{
-					type: 'text',
-					name: 'componentsPath',
-					message: 'Where would you like to store components?',
-					initial:
-						projectDetails.type === 'sveltekit' ? '$lib/components/ui' : 'src/lib/components/ui',
-				},
-				{
-					type: 'text',
-					name: 'utilsPath',
-					message: 'Where would you like to store utils?',
-					initial: projectDetails.type === 'sveltekit' ? '$lib/utils' : 'src/lib/utils',
-				},
-				{
-					type: 'text',
-					name: 'hooksPath',
-					message: 'Where would you like to store hooks/headless components?',
-					initial: projectDetails.type === 'sveltekit' ? '$lib/hooks' : 'src/lib/hooks',
-				},
-				{
-					type: selectedFace ? null : 'select',
-					name: 'face',
-					message: 'Would you like to use a pre-built face?',
-					choices: AVAILABLE_FACES.map((f) => ({
-						title: f.title,
-						value: f.value,
-						description: f.description,
-					})),
-					initial: 0,
-				},
-			]);
-
-			if (!response.style) {
-				logger.error(chalk.red('\n✖ Setup cancelled'));
-				process.exit(0);
-			}
-
-			// Use pre-selected face or prompt response
-			const finalFace = selectedFace || response.face;
-
-			config = {
-				$schema: SCHEMA_URL,
-				version: CONFIG_SCHEMA_VERSION,
-				ref: options.ref || DEFAULT_REF,
-				style: response.style,
-				rsc: false,
-				tsx: projectDetails.hasTypeScript,
-				aliases: {
-					components: response.componentsPath.replace('/ui', ''),
-					utils: response.utilsPath,
-					ui: response.componentsPath,
-					lib: projectDetails.type === 'sveltekit' ? '$lib' : 'src/lib',
-					hooks: response.hooksPath,
-				},
-				css: {
-					tokens: true,
-					primitives: true,
-					face: finalFace,
-				},
-				installed: [],
-			};
-
-			selectedFace = finalFace;
-		}
-
-		// Display configuration summary
-		displayConfigSummary(config, selectedFace);
-
-		// Confirm before proceeding (unless --yes)
-		if (!options.yes) {
-			const confirmResponse = await prompts({
-				type: 'confirm',
-				name: 'confirm',
-				message: 'Create configuration with these settings?',
-				initial: true,
-			});
-
-			if (!confirmResponse.confirm) {
-				logger.warn(chalk.yellow('\n✖ Setup cancelled'));
-				process.exit(0);
-			}
-		}
-
-		// Write configuration
-		const configSpinner = ora('Creating configuration...').start();
-
-		try {
-			await writeConfig(config, cwd);
-			configSpinner.succeed('Configuration created (components.json)');
-		} catch (error) {
-			configSpinner.fail('Failed to create configuration');
-			logger.error(chalk.red(error instanceof Error ? error.message : String(error)));
-			process.exit(1);
-		}
-
-		// CSS injection
-		let cssInjected = false;
-
-		if (!options.skipCss && projectDetails.cssEntryPoints.length > 0) {
-			const cssConfig: CssImportConfig = {
-				tokens: config.css?.tokens ?? true,
-				primitives: config.css?.primitives ?? true,
-				face: selectedFace,
-			};
-
-			// Get recommended entry point
-			const recommendedEntry = getRecommendedEntryPoint(
-				projectDetails.cssEntryPoints,
-				projectDetails.type
-			);
-
-			if (recommendedEntry) {
-				let targetEntry = recommendedEntry;
-
-				// In interactive mode, let user choose
-				if (!options.yes && projectDetails.cssEntryPoints.length > 1) {
-					const cssResponse = await prompts({
-						type: 'select',
-						name: 'entryPoint',
-						message: 'Where should CSS imports be added?',
-						choices: [
-							...projectDetails.cssEntryPoints.map((e) => ({
-								title: path.relative(cwd, e.path),
-								value: e,
-								description: `${e.type} file`,
-							})),
-							{ title: 'Skip CSS injection', value: null, description: 'Add imports manually' },
-						],
-						initial: 0,
-					});
-
-					if (cssResponse.entryPoint === undefined) {
-						logger.warn(chalk.yellow('\n✖ Setup cancelled'));
-						process.exit(0);
-					}
-
-					targetEntry = cssResponse.entryPoint;
-				}
-
-				if (targetEntry) {
-					const cssSpinner = ora('Injecting CSS imports...').start();
-
-					try {
-						const result = await injectCssImports(targetEntry, cssConfig);
-
-						if (result.success) {
-							if (result.addedImports.length > 0) {
-								cssSpinner.succeed(`Added CSS imports to ${path.relative(cwd, result.filePath)}`);
-								cssInjected = true;
-							} else {
-								cssSpinner.info('CSS imports already present');
-								cssInjected = true;
-							}
-						} else {
-							cssSpinner.warn(`Could not inject CSS: ${result.error}`);
-						}
-					} catch {
-						cssSpinner.warn('CSS injection failed, you can add imports manually');
-					}
-				}
-			}
-		}
-
-		// Display post-init instructions
-		displayPostInitInstructions(config, selectedFace, cssInjected);
-	});
+	.action(initAction);

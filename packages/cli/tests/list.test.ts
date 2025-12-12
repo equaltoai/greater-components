@@ -32,6 +32,7 @@ vi.mock('../src/registry/index.js', () => ({
 			description: 'Button component',
 			tags: ['ui', 'form'],
 			domain: 'core',
+			registryDependencies: [],
 		},
 		modal: {
 			name: 'modal',
@@ -39,6 +40,7 @@ vi.mock('../src/registry/index.js', () => ({
 			description: 'Modal dialog',
 			tags: ['ui', 'overlay'],
 			domain: 'core',
+			registryDependencies: [],
 		},
 		timeline: {
 			name: 'timeline',
@@ -46,6 +48,7 @@ vi.mock('../src/registry/index.js', () => ({
 			description: 'Social timeline',
 			tags: ['social', 'feed'],
 			domain: 'social',
+			registryDependencies: [],
 		},
 	},
 	getComponentsByType: vi.fn(),
@@ -62,9 +65,33 @@ vi.mock('../src/registry/faces.js', () => ({
 			type: 'face',
 			description: 'Social media face',
 			domain: 'social',
+			tags: ['social'],
+			includes: {
+				primitives: ['button'],
+				shared: [],
+				patterns: [],
+				components: [],
+			},
 		},
 	},
-	getFaceManifest: vi.fn(),
+	getFaceManifest: vi.fn((name) => {
+		if (name === 'social') {
+			return {
+				name: 'social',
+				type: 'face',
+				description: 'Social media face',
+				domain: 'social',
+				tags: ['social'],
+				includes: {
+					primitives: ['button'],
+					shared: [],
+					patterns: [],
+					components: [],
+				},
+			};
+		}
+		return undefined;
+	}),
 }));
 
 vi.mock('../src/registry/shared.js', () => ({
@@ -594,21 +621,107 @@ describe('List Display', () => {
 		});
 	});
 
-	describe('displayNoResults', () => {
-		it('displays no results with query', async () => {
-			const { displayNoResults } = await import('../src/commands/list.display.js');
+	describe('Command Execution', () => {
+		beforeEach(() => {
+			mockFs.clear();
+			vi.clearAllMocks();
+		});
+
+		it('lists components without config', async () => {
+			const { listAction } = await import('../src/commands/list.js');
 			const { logger } = await import('../src/utils/logger.js');
 
-			displayNoResults('nonexistent');
+			await listAction(undefined, {});
 
+			expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Greater Components'));
+		});
+
+		it('lists components with installed status', async () => {
+			const config = {
+				version: '1.0.0',
+				ref: 'greater-v4.2.0',
+				style: 'default',
+				aliases: {
+					components: '$lib/components',
+					utils: '$lib/utils',
+					ui: '$lib/components/ui',
+					lib: '$lib',
+					hooks: '$lib/hooks',
+				},
+				installed: [{ name: 'button', version: '1.0.0' }],
+			};
+			mockFs.set('/components.json', JSON.stringify(config));
+
+			const { listAction } = await import('../src/commands/list.js');
+			const { logger } = await import('../src/utils/logger.js');
+
+			await listAction(undefined, {});
+
+			// Verify output implies something is installed or we see checkmarks if we could check specific string
+			// But since display logic is complex, checking it runs without error and calls logger is basic check.
 			expect(logger.info).toHaveBeenCalled();
 		});
 
-		it('displays no results without query', async () => {
-			const { displayNoResults } = await import('../src/commands/list.display.js');
+		it('searches for components', async () => {
+			const { listAction } = await import('../src/commands/list.js');
 			const { logger } = await import('../src/utils/logger.js');
 
-			displayNoResults();
+			await listAction('button', {});
+
+			expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Search results'));
+		});
+
+		it('displays face details', async () => {
+			const { listAction } = await import('../src/commands/list.js');
+			const { logger } = await import('../src/utils/logger.js');
+
+			await listAction('faces/social', {});
+
+			expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Face'));
+		});
+
+		it('handles unknown face', async () => {
+			const { listAction } = await import('../src/commands/list.js');
+			const { logger } = await import('../src/utils/logger.js');
+
+			await listAction('faces/unknown', {});
+
+			expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('not found'));
+		});
+
+		it('outputs JSON', async () => {
+			const { listAction } = await import('../src/commands/list.js');
+			const { logger } = await import('../src/utils/logger.js');
+
+			await listAction(undefined, { json: true });
+
+			const calls = (logger.info as any).mock.calls;
+			const jsonCall = calls.find((call: any[]) => {
+				try {
+					JSON.parse(call[0]);
+					return true;
+				} catch {
+					return false;
+				}
+			});
+			expect(jsonCall).toBeDefined();
+		});
+
+		it('filters by type', async () => {
+			const { listAction } = await import('../src/commands/list.js');
+			const { logger } = await import('../src/utils/logger.js');
+
+			await listAction(undefined, { type: 'primitive' });
+
+			// We expect logger to be called. Detailed content check is hard without mocking display functions returning strings.
+			expect(logger.info).toHaveBeenCalled();
+		});
+
+		it('filters by domain', async () => {
+			const { listAction } = await import('../src/commands/list.js');
+			const { logger } = await import('../src/utils/logger.js');
+
+			await listAction(undefined, { domain: 'social' });
 
 			expect(logger.info).toHaveBeenCalled();
 		});

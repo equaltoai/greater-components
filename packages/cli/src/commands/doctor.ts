@@ -603,143 +603,150 @@ export async function runAutoFix(
 	return { fixed, failed };
 }
 
+export const doctorAction = async (options: {
+	cwd?: string;
+	fix?: boolean;
+	json?: boolean;
+}) => {
+	const cwd = path.resolve(options.cwd || process.cwd());
+
+	if (!options.json) {
+		logger.info(chalk.bold('\n🩺 Greater Components Doctor\n'));
+	}
+
+	// Check if valid project first
+	if (!(await isValidProject(cwd))) {
+		if (options.json) {
+			logger.info(
+				JSON.stringify(
+					{
+						error: 'Not a valid project',
+						message: 'No package.json found in the current directory',
+					},
+					null,
+					2
+				)
+			);
+					} else {
+						logger.error(chalk.red('✖ Not a valid project'));
+						logger.note(chalk.dim('  No package.json found. Run this command in a project root.\n'));
+					}
+					process.exit(1);
+					return;
+				}
+	const results: DiagnosticResult[] = [];
+
+	// Run all diagnostic checks
+	const spinner = ora('Running diagnostics...').start();
+
+	// 1. Check Node.js version
+	results.push(checkNodeVersion());
+
+	// 2. Check Svelte version
+	results.push(await checkSvelteVersion(cwd));
+
+	// 3. Check project structure
+	results.push(await checkProjectStructure(cwd));
+
+	// 4. Check configuration file
+	const configResult = await checkConfigFile(cwd);
+	results.push(configResult);
+
+	// Only continue with config-dependent checks if config exists and is valid
+	let config: ComponentConfig | null = null;
+	if (configResult.passed) {
+		config = await readConfig(cwd);
+	}
+
+	if (config) {
+		// 5. Check alias paths
+		const aliasResults = await checkAliasPaths(cwd, config);
+		results.push(...aliasResults);
+
+		// 6. Check npm dependencies
+		const depResults = await checkNpmDependencies(cwd, config);
+		results.push(...depResults);
+
+		// 7. Check installed components
+		const componentResults = await checkInstalledComponents(cwd, config);
+		results.push(...componentResults);
+
+		// 8. Check orphaned files
+		results.push(await checkOrphanedFiles(cwd, config));
+
+		// 9. Check Lesser version if configured
+		const lesserResult = await checkLesserVersion(config);
+		if (lesserResult) {
+			results.push(lesserResult);
+		}
+	}
+
+	spinner.stop();
+
+	// Calculate summary
+	const summary: DiagnosticSummary = {
+		totalChecks: results.length,
+		passed: results.filter((r) => r.passed).length,
+		failed: results.filter((r) => !r.passed).length,
+		warnings: results.filter((r) => !r.passed && r.severity === 'warning').length,
+		errors: results.filter((r) => !r.passed && r.severity === 'error').length,
+		results,
+	};
+
+	// Output results
+	if (options.json) {
+		logger.info(JSON.stringify(summary, null, 2));
+	} else {
+		// Display each result
+		for (const result of results) {
+			logger.info(formatResult(result));
+		}
+
+		// Display summary
+		displaySummary(summary);
+
+		// Run auto-fix if requested
+		if (options.fix) {
+			const fixableCount = results.filter((r) => !r.passed && r.autoFixable).length;
+
+			if (fixableCount > 0) {
+				logger.newline();
+				logger.info(chalk.bold('🔧 Running auto-fix...\n'));
+
+				const { fixed, failed } = await runAutoFix(results, cwd);
+
+				logger.newline();
+				if (fixed > 0) {
+					logger.success(chalk.green(`✓ Fixed ${fixed} issue(s)`));
+				}
+				if (failed > 0) {
+					logger.error(chalk.red(`✖ Failed to fix ${failed} issue(s)`));
+				}
+			} else {
+				logger.info(chalk.dim('\nNo auto-fixable issues found.'));
+			}
+		} else if (summary.errors > 0 || summary.warnings > 0) {
+			const fixableCount = results.filter((r) => !r.passed && r.autoFixable).length;
+			if (fixableCount > 0) {
+				logger.newline();
+				logger.info(
+					chalk.dim(
+						`Tip: Run ${chalk.cyan('greater doctor --fix')} to auto-fix ${fixableCount} issue(s)`
+					)
+				);
+			}
+		}
+	}
+
+		// Exit with error code if there are errors
+		process.exit(summary.errors > 0 ? 1 : 0);
+		return;
+};
+
 export const doctorCommand = new Command()
 	.name('doctor')
 	.description('Diagnose common issues with Greater Components setup')
 	.option('--cwd <path>', 'Working directory (default: current directory)')
 	.option('--fix', 'Attempt to auto-fix simple issues')
 	.option('--json', 'Output results as JSON')
-	.action(async (options) => {
-		const cwd = path.resolve(options.cwd || process.cwd());
-
-		if (!options.json) {
-			logger.info(chalk.bold('\n🩺 Greater Components Doctor\n'));
-		}
-
-		// Check if valid project first
-		if (!(await isValidProject(cwd))) {
-			if (options.json) {
-				logger.info(
-					JSON.stringify(
-						{
-							error: 'Not a valid project',
-							message: 'No package.json found in the current directory',
-						},
-						null,
-						2
-					)
-				);
-			} else {
-				logger.error(chalk.red('✖ Not a valid project'));
-				logger.note(chalk.dim('  No package.json found. Run this command in a project root.\n'));
-			}
-			process.exit(1);
-		}
-
-		const results: DiagnosticResult[] = [];
-
-		// Run all diagnostic checks
-		const spinner = ora('Running diagnostics...').start();
-
-		// 1. Check Node.js version
-		results.push(checkNodeVersion());
-
-		// 2. Check Svelte version
-		results.push(await checkSvelteVersion(cwd));
-
-		// 3. Check project structure
-		results.push(await checkProjectStructure(cwd));
-
-		// 4. Check configuration file
-		const configResult = await checkConfigFile(cwd);
-		results.push(configResult);
-
-		// Only continue with config-dependent checks if config exists and is valid
-		let config: ComponentConfig | null = null;
-		if (configResult.passed) {
-			config = await readConfig(cwd);
-		}
-
-		if (config) {
-			// 5. Check alias paths
-			const aliasResults = await checkAliasPaths(cwd, config);
-			results.push(...aliasResults);
-
-			// 6. Check npm dependencies
-			const depResults = await checkNpmDependencies(cwd, config);
-			results.push(...depResults);
-
-			// 7. Check installed components
-			const componentResults = await checkInstalledComponents(cwd, config);
-			results.push(...componentResults);
-
-			// 8. Check orphaned files
-			results.push(await checkOrphanedFiles(cwd, config));
-
-			// 9. Check Lesser version if configured
-			const lesserResult = await checkLesserVersion(config);
-			if (lesserResult) {
-				results.push(lesserResult);
-			}
-		}
-
-		spinner.stop();
-
-		// Calculate summary
-		const summary: DiagnosticSummary = {
-			totalChecks: results.length,
-			passed: results.filter((r) => r.passed).length,
-			failed: results.filter((r) => !r.passed).length,
-			warnings: results.filter((r) => !r.passed && r.severity === 'warning').length,
-			errors: results.filter((r) => !r.passed && r.severity === 'error').length,
-			results,
-		};
-
-		// Output results
-		if (options.json) {
-			logger.info(JSON.stringify(summary, null, 2));
-		} else {
-			// Display each result
-			for (const result of results) {
-				logger.info(formatResult(result));
-			}
-
-			// Display summary
-			displaySummary(summary);
-
-			// Run auto-fix if requested
-			if (options.fix) {
-				const fixableCount = results.filter((r) => !r.passed && r.autoFixable).length;
-
-				if (fixableCount > 0) {
-					logger.newline();
-					logger.info(chalk.bold('🔧 Running auto-fix...\n'));
-
-					const { fixed, failed } = await runAutoFix(results, cwd);
-
-					logger.newline();
-					if (fixed > 0) {
-						logger.success(chalk.green(`✓ Fixed ${fixed} issue(s)`));
-					}
-					if (failed > 0) {
-						logger.error(chalk.red(`✖ Failed to fix ${failed} issue(s)`));
-					}
-				} else {
-					logger.info(chalk.dim('\nNo auto-fixable issues found.'));
-				}
-			} else if (summary.errors > 0 || summary.warnings > 0) {
-				const fixableCount = results.filter((r) => !r.passed && r.autoFixable).length;
-				if (fixableCount > 0) {
-					logger.newline();
-					logger.info(
-						chalk.dim(
-							`Tip: Run ${chalk.cyan('greater doctor --fix')} to auto-fix ${fixableCount} issue(s)`
-						)
-					);
-				}
-			}
-		}
-
-		// Exit with error code if there are errors
-		process.exit(summary.errors > 0 ? 1 : 0);
-	});
+	.action(doctorAction);
