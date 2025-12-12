@@ -214,6 +214,104 @@ describe('MediaUpload', () => {
 		expect((descriptionInput as HTMLTextAreaElement).value).toBe('New description');
 	});
 
+	it('should update spoiler text', async () => {
+		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
+		
+		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
+		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
+			{
+				id: '1',
+				file,
+				type: 'image',
+				progress: 100,
+				status: 'complete',
+				sensitive: true, // Initially sensitive
+				spoilerText: '',
+				mediaCategory: 'IMAGE',
+				metadata: { size: 100 },
+			},
+		]);
+
+		const { container } = render(MediaUpload);
+		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+		Object.defineProperty(input, 'files', { value: [file] });
+		await fireEvent.change(input);
+
+		await waitFor(() => {
+			expect(screen.getByPlaceholderText('Optional warning shown before media')).toBeTruthy();
+		});
+
+		const spoilerInput = screen.getByPlaceholderText('Optional warning shown before media');
+		await fireEvent.input(spoilerInput, { target: { value: 'Spoiler alert' } });
+		expect((spoilerInput as HTMLInputElement).value).toBe('Spoiler alert');
+	});
+
+	it('should handle media category change', async () => {
+		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
+		
+		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
+		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
+			{
+				id: '1',
+				file,
+				type: 'image',
+				progress: 100,
+				status: 'complete',
+				sensitive: false,
+				spoilerText: '',
+				mediaCategory: 'IMAGE',
+				metadata: { size: 100 },
+			},
+		]);
+
+		const { container } = render(MediaUpload);
+		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+		Object.defineProperty(input, 'files', { value: [file] });
+		await fireEvent.change(input);
+
+		await waitFor(() => {
+			expect(screen.getByRole('combobox')).toBeTruthy();
+		});
+
+		const select = screen.getByRole('combobox');
+		await fireEvent.change(select, { target: { value: 'VIDEO' } });
+		expect((select as HTMLSelectElement).value).toBe('VIDEO');
+	});
+
+	it('should handle multiple files ordering/removal', async () => {
+		const file1 = new File([''], '1.jpg', { type: 'image/jpeg' });
+		const file2 = new File([''], '2.jpg', { type: 'image/jpeg' });
+		
+		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
+		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
+			{ id: '1', file: file1, type: 'image', status: 'pending', progress: 0, sensitive: false, spoilerText: '', mediaCategory: 'IMAGE', metadata: { size: 100 } },
+			{ id: '2', file: file2, type: 'image', status: 'pending', progress: 0, sensitive: false, spoilerText: '', mediaCategory: 'IMAGE', metadata: { size: 100 } }
+		]);
+
+		const onRemove = vi.fn();
+		const { container } = render(MediaUpload, { onRemove });
+		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
+		
+		Object.defineProperty(input, 'files', { value: [file1, file2] });
+		await fireEvent.change(input);
+
+		await waitFor(() => {
+			expect(screen.getByText('1.jpg')).toBeTruthy();
+			expect(screen.getByText('2.jpg')).toBeTruthy();
+		});
+
+		// Check order by querying filenames
+		const filenames = screen.getAllByText(/\d\.jpg/).map(el => el.textContent);
+		expect(filenames).toEqual(['1.jpg', '2.jpg']);
+
+		// Remove first file
+		const removeBtns = screen.getAllByLabelText('Remove file');
+		await fireEvent.click(removeBtns[0]);
+
+		expect(screen.queryByText('1.jpg')).toBeFalsy();
+		expect(screen.getByText('2.jpg')).toBeTruthy();
+	});
+
 	it('should handle upload error (Error object)', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
 		const onUpload = vi.fn().mockRejectedValue(new Error('Network error'));

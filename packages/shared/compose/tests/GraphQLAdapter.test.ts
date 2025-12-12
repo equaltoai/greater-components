@@ -368,5 +368,78 @@ describe('GraphQLAdapter - Compose Integration', () => {
 			expect(results[0].text).toBe('#test');
 			expect(results[1].text).toBe('#testing');
 		});
+
+		it('should handle autocomplete search for emojis (not implemented)', async () => {
+			const mockAdapter = {
+				search: vi.fn(),
+			} as unknown as LesserGraphQLAdapter;
+
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+
+			const results = await handlers.handleAutocompleteSearch('smile', 'emoji');
+
+			expect(results).toEqual([]);
+		});
+
+		it('should return empty array for unknown autocomplete type', async () => {
+			const mockAdapter = {} as unknown as LesserGraphQLAdapter;
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+			const results = await handlers.handleAutocompleteSearch('test', 'unknown' as any);
+			expect(results).toEqual([]);
+		});
+	});
+
+	describe('createOptimisticComposeHandlers', () => {
+		it('should rollback optimistic update on submit error', async () => {
+			const mockAdapter = {
+				createNote: vi.fn().mockRejectedValue(new Error('Failed')),
+			} as unknown as LesserGraphQLAdapter;
+			const onOptimisticUpdate = vi.fn();
+
+			const handlers = createComposeHandlers({
+				adapter: mockAdapter,
+				currentAccount: mockActor,
+				enableOptimistic: true,
+				onOptimisticUpdate,
+			});
+
+			await expect(handlers.handleSubmit({
+				content: 'Test',
+				visibility: 'public',
+			})).rejects.toThrow('Failed');
+
+			expect(onOptimisticUpdate).toHaveBeenCalledTimes(2);
+			// First call: create optimistic status
+			expect(onOptimisticUpdate.mock.calls[0][0]._optimistic).toBe(true);
+			// Second call: remove optimistic status
+			expect(onOptimisticUpdate.mock.calls[1][0]).toHaveProperty('_remove');
+		});
+
+		it('should rollback optimistic thread update on error', async () => {
+			const mockAdapter = {
+				createNote: vi.fn().mockRejectedValue(new Error('Failed')),
+			} as unknown as LesserGraphQLAdapter;
+			const onOptimisticUpdate = vi.fn();
+
+			const handlers = createComposeHandlers({
+				adapter: mockAdapter,
+				currentAccount: mockActor,
+				enableOptimistic: true,
+				onOptimisticUpdate,
+			});
+
+			await expect(handlers.handleThreadSubmit([
+				{ content: 'P1', visibility: 'public' },
+				{ content: 'P2', visibility: 'public' }
+			])).rejects.toThrow('Failed');
+
+			// 2 creates + 2 removes
+			expect(onOptimisticUpdate).toHaveBeenCalledTimes(4);
+			const calls = onOptimisticUpdate.mock.calls;
+			expect(calls[0][0]._optimistic).toBe(true);
+			expect(calls[1][0]._optimistic).toBe(true);
+			expect(calls[2][0]).toHaveProperty('_remove');
+			expect(calls[3][0]).toHaveProperty('_remove');
+		});
 	});
 });
