@@ -12,6 +12,7 @@
 		matchTriggerWidth?: boolean;
 		/** Maximum height before scrolling */
 		maxHeight?: string;
+		[key: string]: any;
 	}
 
 	let {
@@ -19,6 +20,7 @@
 		children,
 		matchTriggerWidth = false,
 		maxHeight = '300px',
+		...restProps
 	}: Props = $props();
 
 	const ctx = getMenuContext();
@@ -223,6 +225,7 @@
 		style:min-width={matchTriggerWidth ? `${triggerWidth}px` : undefined}
 		style:max-height={maxHeight}
 		onkeydown={handleKeyDown}
+		{...restProps}
 	>
 		{@render children()}
 	</div>
