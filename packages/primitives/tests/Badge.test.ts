@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/svelte';
+import { render, screen } from '@testing-library/svelte';
 import Badge from '../src/components/Badge.svelte';
+import BadgeHarness from './harness/BadgeHarness.svelte';
 
 describe('Badge.svelte', () => {
 	it('renders pill variant by default', () => {
@@ -47,9 +48,36 @@ describe('Badge.svelte', () => {
 	});
 
 	it('renders label snippet', () => {
-		// Can't easily pass snippets in vanilla render without a harness, but we can test that label prop works
-		// For snippets, we usually need a harness component.
-		// Testing text label prop is sufficient for basic verification.
+		render(BadgeHarness, {
+			props: {
+				labelContent: 'Custom Label',
+			}
+		});
+		
+		expect(screen.getByTestId('label-snippet').textContent).toBe('Custom Label');
+	});
+
+	it('renders children snippet (description) for pill variant', () => {
+		render(BadgeHarness, {
+			props: {
+				props: { variant: 'pill', label: 'Title' },
+				childContent: 'Custom Description'
+			}
+		});
+		
+		expect(screen.getByTestId('child-snippet').textContent).toBe('Custom Description');
+		expect(screen.getByText('Title')).toBeTruthy();
+	});
+
+	it('renders children snippet as content for non-pill variants', () => {
+		render(BadgeHarness, {
+			props: {
+				props: { variant: 'filled' },
+				childContent: 'Content Only'
+			}
+		});
+		
+		expect(screen.getByTestId('child-snippet').textContent).toBe('Content Only');
 	});
 
 	it('renders custom class', () => {
