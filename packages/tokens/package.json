@@ -23,7 +23,14 @@
     "./animations.css": "./dist/animations.css",
     "./high-contrast.css": "./dist/high-contrast.css",
     "./themes/*": "./dist/themes/*",
-    "./palettes/*": "./dist/palettes/*"
+    "./palettes/*": "./dist/palettes/*",
+    "./scss": "./dist/scss/_index.scss",
+    "./scss/*": "./dist/scss/*",
+    "./css/*": "./dist/css/*",
+    "./js": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "files": [
     "dist",

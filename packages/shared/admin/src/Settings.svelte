@@ -8,9 +8,9 @@
 -->
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
-	import { getAdminContext } from './context.js';
+	import { getAdminContext } from './context.svelte.js';
 	import { onMount } from 'svelte';
-	import type { InstanceSettings } from './context.js';
+	import type { InstanceSettings } from './context.svelte.js';
 
 	interface Props {
 		class?: string;

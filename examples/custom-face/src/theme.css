@@ -1,0 +1,75 @@
+/**
+ * Custom Face Theme
+ * Override design tokens for your face
+ */
+
+:root {
+	/* Custom color palette */
+	--custom-face-primary: var(--gr-color-primary-600);
+	--custom-face-secondary: var(--gr-color-secondary-500);
+	--custom-face-accent: var(--gr-color-accent-500);
+
+	/* Custom spacing */
+	--custom-face-card-padding: var(--gr-spacing-4);
+	--custom-face-card-gap: var(--gr-spacing-3);
+	--custom-face-section-gap: var(--gr-spacing-6);
+
+	/* Custom typography */
+	--custom-face-heading-weight: 700;
+	--custom-face-body-size: var(--gr-typography-fontSize-base);
+}
+
+/* Dark mode overrides */
+[data-theme='dark'] {
+	--custom-face-primary: var(--gr-color-primary-400);
+	--custom-face-secondary: var(--gr-color-secondary-400);
+	--custom-face-accent: var(--gr-color-accent-400);
+}
+
+/* High contrast mode */
+[data-theme='high-contrast'] {
+	--custom-face-primary: var(--gr-color-primary-900);
+	--custom-face-secondary: var(--gr-color-secondary-900);
+}
+
+/* Component-specific styles */
+.custom-card {
+	--card-bg: var(--gr-color-surface);
+	--card-border: var(--gr-color-border);
+	--card-shadow: var(--gr-shadow-md);
+
+	background: var(--card-bg);
+	border: 1px solid var(--card-border);
+	border-radius: var(--gr-radii-lg);
+	box-shadow: var(--card-shadow);
+	padding: var(--custom-face-card-padding);
+}
+
+.custom-card:hover {
+	--card-shadow: var(--gr-shadow-lg);
+}
+
+.custom-card__header {
+	display: flex;
+	align-items: center;
+	gap: var(--custom-face-card-gap);
+	margin-bottom: var(--gr-spacing-3);
+}
+
+.custom-card__content {
+	color: var(--gr-color-text-primary);
+	font-size: var(--custom-face-body-size);
+	line-height: var(--gr-typography-lineHeight-relaxed);
+}
+
+.custom-card__footer {
+	margin-top: var(--gr-spacing-4);
+	padding-top: var(--gr-spacing-3);
+	border-top: 1px solid var(--gr-color-border);
+}
+
+.custom-card__actions {
+	display: flex;
+	gap: var(--gr-spacing-2);
+	justify-content: flex-end;
+}

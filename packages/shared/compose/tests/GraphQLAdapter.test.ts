@@ -294,5 +294,79 @@ describe('GraphQLAdapter - Compose Integration', () => {
 			);
 			expect(progress).toHaveBeenCalled();
 		});
+
+		it('should handle thread submission', async () => {
+			const mockAdapter = {
+				createNote: vi.fn()
+					.mockResolvedValueOnce({ object: { id: 'note-1' } })
+					.mockResolvedValueOnce({ object: { id: 'note-2' } }),
+			} as unknown as LesserGraphQLAdapter;
+
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+
+			const posts = [
+				{ content: 'Post 1', visibility: 'public' as const },
+				{ content: 'Post 2', visibility: 'public' as const },
+			];
+
+			const results = await handlers.handleThreadSubmit(posts);
+
+			expect(results).toHaveLength(2);
+			expect(mockAdapter.createNote).toHaveBeenCalledTimes(2);
+			
+			// First post
+			expect(mockAdapter.createNote).toHaveBeenNthCalledWith(1, expect.objectContaining({
+				content: 'Post 1',
+				inReplyToId: undefined,
+			}));
+
+			// Second post (reply to first)
+			expect(mockAdapter.createNote).toHaveBeenNthCalledWith(2, expect.objectContaining({
+				content: 'Post 2',
+				inReplyToId: 'note-1',
+			}));
+		});
+
+		it('should handle autocomplete search for mentions', async () => {
+			const mockAdapter = {
+				search: vi.fn().mockResolvedValue({
+					accounts: [
+						{ username: 'alice', displayName: 'Alice' },
+						{ username: 'bob', domain: 'example.com' },
+					],
+				}),
+			} as unknown as LesserGraphQLAdapter;
+
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+
+			const results = await handlers.handleAutocompleteSearch('test', 'mention');
+
+			expect(results).toHaveLength(2);
+			expect(results[0].text).toBe('@alice');
+			expect(results[1].text).toBe('@bob@example.com');
+			expect(mockAdapter.search).toHaveBeenCalledWith(expect.objectContaining({
+				query: 'test',
+				type: 'accounts',
+			}));
+		});
+
+		it('should handle autocomplete search for hashtags', async () => {
+			const mockAdapter = {
+				search: vi.fn().mockResolvedValue({
+					hashtags: [
+						{ name: 'test' },
+						{ name: 'testing' },
+					],
+				}),
+			} as unknown as LesserGraphQLAdapter;
+
+			const handlers = createGraphQLComposeHandlers(mockAdapter);
+
+			const results = await handlers.handleAutocompleteSearch('test', 'hashtag');
+
+			expect(results).toHaveLength(2);
+			expect(results[0].text).toBe('#test');
+			expect(results[1].text).toBe('#testing');
+		});
 	});
 });

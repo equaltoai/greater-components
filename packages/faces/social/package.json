@@ -21,8 +21,51 @@
       "svelte": "./src/index.ts",
       "import": "./dist/index.js"
     },
+    "./manifest.json": "./manifest.json",
     "./style.css": "./dist/greater-components-fediverse.css",
     "./theme.css": "./dist/greater-components-fediverse.css",
+    "./adapters/graphql": {
+      "types": "./dist/adapters/graphql/index.d.ts",
+      "import": "./dist/adapters/graphql/index.js"
+    },
+    "./components/Status": {
+      "types": "./dist/components/Status/index.d.ts",
+      "svelte": "./src/components/Status/index.ts",
+      "import": "./dist/components/Status/index.js"
+    },
+    "./components/Profile": {
+      "types": "./dist/components/Profile/index.d.ts",
+      "svelte": "./src/components/Profile/index.ts",
+      "import": "./dist/components/Profile/index.js"
+    },
+    "./components/Lists": {
+      "types": "./dist/components/Lists/index.d.ts",
+      "svelte": "./src/components/Lists/index.ts",
+      "import": "./dist/components/Lists/index.js"
+    },
+    "./components/Filters": {
+      "types": "./dist/components/Filters/index.d.ts",
+      "svelte": "./src/components/Filters/index.ts",
+      "import": "./dist/components/Filters/index.js"
+    },
+    "./components/Hashtags": {
+      "types": "./dist/components/Hashtags/index.d.ts",
+      "svelte": "./src/components/Hashtags/index.ts",
+      "import": "./dist/components/Hashtags/index.js"
+    },
+    "./components/Timeline": {
+      "types": "./dist/components/Timeline/index.d.ts",
+      "svelte": "./src/components/Timeline/index.ts",
+      "import": "./dist/components/Timeline/index.js"
+    },
+    "./generics": {
+      "types": "./dist/generics/index.d.ts",
+      "import": "./dist/generics/index.js"
+    },
+    "./patterns": {
+      "types": "./dist/patterns/index.d.ts",
+      "import": "./dist/patterns/index.js"
+    },
     "./src/mockData": {
       "import": "./src/mockData.ts"
     }

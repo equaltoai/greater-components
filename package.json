@@ -12,6 +12,10 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r build",
+    "build:registry": "pnpm -r build && node scripts/generate-registry-index.js",
+    "generate-registry": "node scripts/generate-registry-index.js",
+    "generate-registry:dry": "node scripts/generate-registry-index.js --dry-run",
+    "generate-registry:validate": "node scripts/generate-registry-index.js --validate",
     "changeset": "changeset",
     "check": "pnpm -r check",
     "clean": "pnpm -r clean && rm -rf node_modules",

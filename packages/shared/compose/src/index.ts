@@ -47,6 +47,7 @@ import ComposeDraftSaver from './DraftSaver.svelte';
 import ComposeThreadComposer from './ThreadComposer.svelte';
 import ComposeMediaUpload from './MediaUpload.svelte';
 import ComposeImageEditor from './ImageEditor.svelte';
+import ComposeThreadControls from './ThreadControls.svelte';
 
 export {
 	ComposeRoot as Root,
@@ -60,6 +61,7 @@ export {
 	ComposeThreadComposer as ThreadComposer,
 	ComposeMediaUpload as MediaUpload,
 	ComposeImageEditor as ImageEditor,
+	ComposeThreadControls as ThreadControls,
 };
 
 // Export types
@@ -137,6 +139,11 @@ export const Compose = {
 	 * Multi-post thread composer
 	 */
 	ThreadComposer: ComposeThreadComposer,
+
+	/**
+	 * Thread composition settings and controls
+	 */
+	ThreadControls: ComposeThreadControls,
 
 	/**
 	 * Media upload with drag & drop and progress tracking

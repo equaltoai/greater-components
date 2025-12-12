@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@vitest/coverage-v8": "^4.0.15",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "^5.2.9",
     "@types/node": "^24.10.2",

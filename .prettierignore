@@ -36,3 +36,4 @@ LICENSE
 *.generated.*
 **/generated/**
 packages/tokens/src/index.ts
+.pai/

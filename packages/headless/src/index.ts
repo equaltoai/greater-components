@@ -107,3 +107,65 @@ export {
 	getNavigationDirection,
 } from './utils/keyboard';
 export type { NavigationDirection } from './utils/keyboard';
+
+// Behaviors - Framework-agnostic utilities
+export {
+	// Focus Trap
+	createFocusTrap,
+	getFocusableElements,
+	getFirstFocusable,
+	getLastFocusable,
+	isFocusable,
+	// Roving Tabindex
+	createRovingTabindex,
+	// Typeahead
+	createTypeahead,
+	// Popover Positioning
+	createPopover,
+	// Dismissable
+	createDismissable,
+	getDismissableLayerCount,
+	clearDismissableLayers,
+	// Live Region
+	createLiveRegion,
+	getGlobalLiveRegion,
+	announce,
+	announcePolite,
+	announceAssertive,
+} from './behaviors';
+
+export type {
+	// Focus Trap types
+	FocusTrapConfig,
+	FocusTrapState,
+	FocusTrap,
+	// Roving Tabindex types
+	RovingOrientation,
+	RovingTabindexConfig,
+	RovingTabindexState,
+	RovingTabindex,
+	// Typeahead types
+	TypeaheadMatchMode,
+	TypeaheadConfig,
+	TypeaheadState,
+	Typeahead,
+	// Popover types
+	PopoverPlacement,
+	PopoverAlignment,
+	PopoverSide,
+	PopoverConfig,
+	PopoverPosition,
+	PopoverState,
+	Popover,
+	// Dismissable types
+	DismissableConfig,
+	DismissReason,
+	DismissableState,
+	Dismissable,
+	// Live Region types
+	LiveRegionPoliteness,
+	LiveRegionConfig,
+	AnnounceOptions,
+	LiveRegionState,
+	LiveRegion,
+} from './behaviors';

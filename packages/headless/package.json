@@ -39,6 +39,34 @@
     "./tabs": {
       "types": "./dist/primitives/tabs.d.ts",
       "import": "./dist/primitives/tabs.js"
+    },
+    "./behaviors": {
+      "types": "./dist/behaviors/index.d.ts",
+      "import": "./dist/behaviors/index.js"
+    },
+    "./behaviors/focus-trap": {
+      "types": "./dist/behaviors/focus-trap.d.ts",
+      "import": "./dist/behaviors/focus-trap.js"
+    },
+    "./behaviors/roving-tabindex": {
+      "types": "./dist/behaviors/roving-tabindex.d.ts",
+      "import": "./dist/behaviors/roving-tabindex.js"
+    },
+    "./behaviors/typeahead": {
+      "types": "./dist/behaviors/typeahead.d.ts",
+      "import": "./dist/behaviors/typeahead.js"
+    },
+    "./behaviors/popover": {
+      "types": "./dist/behaviors/popover.d.ts",
+      "import": "./dist/behaviors/popover.js"
+    },
+    "./behaviors/dismissable": {
+      "types": "./dist/behaviors/dismissable.d.ts",
+      "import": "./dist/behaviors/dismissable.js"
+    },
+    "./behaviors/live-region": {
+      "types": "./dist/behaviors/live-region.d.ts",
+      "import": "./dist/behaviors/live-region.js"
     }
   },
   "files": [
