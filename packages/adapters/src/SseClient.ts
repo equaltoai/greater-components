@@ -360,7 +360,10 @@ export class SseClient implements TransportAdapter<SseClientState> {
 
 		// EventSource will automatically reconnect on error
 		// But we want to control the reconnection logic
-		if (this.eventSource?.readyState === EventSource.CLOSED) {
+		if (
+			typeof EventSource !== 'undefined' &&
+			this.eventSource?.readyState === EventSource.CLOSED
+		) {
 			this.handleClose();
 		}
 	}
