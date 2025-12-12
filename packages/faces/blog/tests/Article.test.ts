@@ -1,88 +1,138 @@
-/**
- * Article Component Tests
- */
-
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
+import ArticleRoot from '../src/components/Article/Root.svelte';
+import ArticleTestWrapper from './fixtures/ArticleTestWrapper.svelte';
 import type { ArticleData } from '../src/types.js';
 
-// Note: Actual component imports will work once components are fully implemented
-// import ArticleRoot from '../src/components/Article/Root.svelte';
+// Mock dependencies
+vi.mock('@equaltoai/greater-components-utils', () => ({
+    formatDateTime: (date: Date) => date.toISOString().split('T')[0],
+}));
 
 describe('Article Component', () => {
-	const mockArticle: ArticleData = {
-		id: '1',
-		slug: 'test-article',
-		metadata: {
-			title: 'Test Article Title',
-			description: 'Test article description',
-			publishedAt: new Date('2024-01-15'),
-			readingTime: 5,
-			tags: ['test', 'svelte'],
-		},
-		content: '<p>Test content</p>',
-		contentFormat: 'html',
-		author: {
-			id: '1',
-			name: 'Test Author',
-			avatar: '/avatar.jpg',
-		},
-		isPublished: true,
-	};
+    const mockArticle: ArticleData = {
+        id: '1',
+        slug: 'test-article',
+        metadata: {
+            title: 'Test Article Title',
+            description: 'Test article description',
+            publishedAt: new Date('2024-01-15'),
+            readingTime: 5,
+            tags: ['test', 'svelte'],
+            featuredImage: 'image.jpg',
+            featuredImageAlt: 'Alt text',
+            category: 'Tech'
+        },
+        content: '<h2>Introduction</h2><p>Test content</p><h3>Details</h3>',
+        contentFormat: 'html',
+        author: {
+            id: '1',
+            name: 'Test Author',
+            avatar: '/avatar.jpg',
+        },
+        isPublished: true,
+    };
 
-	describe('Article.Root', () => {
-		it.skip('renders article container with correct class', async () => {
-			// Test will be enabled once component is fully implemented
-			// const { container } = render(ArticleRoot, {
-			//   props: { article: mockArticle }
-			// });
-			// expect(container.querySelector('.gr-blog-article')).toBeInTheDocument();
-			expect(true).toBe(true);
-		});
+    describe('Article.Root', () => {
+        it('renders article container with correct class', async () => {
+            const { container } = render(ArticleRoot, {
+                article: mockArticle
+            });
+            expect(container.querySelector('.gr-blog-article')).toBeTruthy();
+        });
 
-		it.skip('applies density class when specified', async () => {
-			// const { container } = render(ArticleRoot, {
-			//   props: { article: mockArticle, config: { density: 'compact' } }
-			// });
-			// expect(container.querySelector('.gr-blog-article--compact')).toBeInTheDocument();
-			expect(true).toBe(true);
-		});
+        it('applies density class when specified', async () => {
+            const { container } = render(ArticleRoot, {
+                article: mockArticle,
+                config: { density: 'compact' }
+            });
+            expect(container.querySelector('.gr-blog-article--compact')).toBeTruthy();
+        });
 
-		it.skip('sets data-article-id attribute', async () => {
-			// const { container } = render(ArticleRoot, {
-			//   props: { article: mockArticle }
-			// });
-			// expect(container.querySelector('[data-article-id="1"]')).toBeInTheDocument();
-			expect(true).toBe(true);
-		});
-	});
+        it('sets data-article-id attribute', async () => {
+            const { container } = render(ArticleRoot, {
+                article: mockArticle
+            });
+            expect(container.querySelector('[data-article-id="1"]')).toBeTruthy();
+        });
+        
+        it('applies tag classes', async () => {
+            const { container } = render(ArticleRoot, {
+                article: mockArticle
+            });
+            expect(container.querySelector('.gr-blog-article--tag-test')).toBeTruthy();
+            expect(container.querySelector('.gr-blog-article--tag-svelte')).toBeTruthy();
+        });
+    });
 
-	describe('Article Types', () => {
-		it('validates ArticleData structure', () => {
-			expect(mockArticle.id).toBe('1');
-			expect(mockArticle.metadata.title).toBe('Test Article Title');
-			expect(mockArticle.author.name).toBe('Test Author');
-		});
+    describe('Article Integration', () => {
+        it('renders header, content, and footer via wrapper', async () => {
+            render(ArticleTestWrapper, { article: mockArticle });
+            
+            // Header
+            expect(screen.getByRole('heading', { name: 'Test Article Title' })).toBeTruthy();
+            expect(screen.getByText('5 min read')).toBeTruthy();
+            expect(screen.getByText('Tech')).toBeTruthy();
+            expect(screen.getByRole('img', { name: 'Alt text' })).toBeTruthy();
+            
+            // Content (headings from HTML)
+            expect(screen.getByRole('heading', { name: 'Introduction' })).toBeTruthy();
+            expect(screen.getByRole('heading', { name: 'Details' })).toBeTruthy();
+            
+            // Footer
+            expect(screen.getByText('test')).toBeTruthy(); // tag
+            expect(screen.getByText('svelte')).toBeTruthy(); // tag
+            expect(screen.getByText('Test Author')).toBeTruthy();
+            
+            // ReadingProgress
+            expect(screen.getByRole('progressbar')).toBeTruthy();
+            
+            // RelatedPosts
+            expect(screen.getByText('Related Posts')).toBeTruthy();
+            expect(screen.getByText('Related 1')).toBeTruthy();
+        });
 
-		it('handles optional fields', () => {
-			const minimalArticle: ArticleData = {
-				id: '2',
-				slug: 'minimal',
-				metadata: {
-					title: 'Minimal',
-					description: 'Minimal description',
-					publishedAt: new Date(),
-				},
-				content: 'Content',
-				contentFormat: 'markdown',
-				author: {
-					id: '1',
-					name: 'Author',
-				},
-				isPublished: false,
-			};
+        it('handles share actions', async () => {
+            render(ArticleTestWrapper, { article: mockArticle });
+            
+            // Mock window.open and clipboard
+            const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+            const writeTextSpy = vi.fn().mockResolvedValue(undefined);
+            Object.assign(navigator, {
+                clipboard: {
+                    writeText: writeTextSpy,
+                },
+            });
+            
+            // Twitter share
+            const twitterBtn = screen.getByText('Twitter');
+            await fireEvent.click(twitterBtn);
+            expect(openSpy).toHaveBeenCalled();
+            expect(openSpy.mock.calls[0][0]).toContain('twitter.com');
+            
+            // Copy link
+            const copyBtn = screen.getByText('Copy Link');
+            await fireEvent.click(copyBtn);
+            expect(writeTextSpy).toHaveBeenCalled();
+        });
 
-			expect(minimalArticle.metadata.readingTime).toBeUndefined();
-			expect(minimalArticle.metadata.tags).toBeUndefined();
-		});
-	});
+        it('renders markdown content fallback', () => {
+            const markdownArticle = { 
+                ...mockArticle, 
+                contentFormat: 'markdown' as const,
+                content: 'Markdown content'
+            };
+            
+            render(ArticleTestWrapper, { article: markdownArticle });
+            expect(screen.getByText('Markdown content')).toBeTruthy();
+        });
+
+        it('hides author when configured', () => {
+            render(ArticleTestWrapper, { 
+                article: mockArticle,
+                config: { showAuthor: false }
+            });
+            expect(screen.queryByText('Test Author')).toBeNull();
+        });
+    });
 });

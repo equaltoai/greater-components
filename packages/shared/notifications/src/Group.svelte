@@ -61,7 +61,7 @@ Displays multiple similar notifications grouped together.
 	/**
 	 * Get group title based on type and count
 	 */
-	const title = $derived(() => {
+	const title = $derived.by(() => {
 		const count = group.notifications.length;
 		const baseTitle =
 			{
@@ -83,7 +83,7 @@ Displays multiple similar notifications grouped together.
 	/**
 	 * Format the names of accounts
 	 */
-	const accountNames = $derived(() => {
+	const accountNames = $derived.by(() => {
 		const notifications = group.notifications;
 		const count = notifications.length;
 
