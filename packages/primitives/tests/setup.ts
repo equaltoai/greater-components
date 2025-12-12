@@ -1,5 +1,6 @@
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/svelte';
+
 const matchMediaMock = vi.fn((query: string) => ({
 	matches: false,
 	media: query,
@@ -55,6 +56,19 @@ if (typeof HTMLDialogElement !== 'undefined') {
 			this.open = false;
 		};
 	}
+}
+
+// Mock Web Animations API
+if (typeof Element !== 'undefined' && !Element.prototype.animate) {
+	Element.prototype.animate = vi.fn().mockImplementation(() => ({
+		finished: Promise.resolve(),
+		cancel: vi.fn(),
+		play: vi.fn(),
+		pause: vi.fn(),
+		reverse: vi.fn(),
+		addEventListener: vi.fn(),
+		removeEventListener: vi.fn(),
+	}));
 }
 
 afterEach(() => {

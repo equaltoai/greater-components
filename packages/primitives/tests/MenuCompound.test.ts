@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent, screen, waitFor } from '@testing-library/svelte';
 import MenuCompoundHarness from './harness/MenuCompoundHarness.svelte';
+import MenuHeaderHarness from './harness/MenuHeaderHarness.svelte';
 
 describe('Menu (Compound)', () => {
 	it('opens via trigger and renders content', async () => {
@@ -64,4 +65,13 @@ describe('Menu (Compound)', () => {
 		
 		await waitFor(() => expect(screen.queryByTestId('menu-content')).toBeNull());
 	});
+
+    it('renders Menu.Header correctly', async () => {
+        render(MenuHeaderHarness);
+        await waitFor(() => expect(screen.getByText('My Header')).toBeTruthy());
+        
+        const header = screen.getByText('My Header');
+        expect(header.classList.contains('gr-menu-header')).toBe(true);
+        expect(header.classList.contains('custom-header')).toBe(true);
+    });
 });
