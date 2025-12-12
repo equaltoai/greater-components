@@ -56,8 +56,6 @@ describe('TransportManager', () => {
 		(HttpPollingClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function(this: any) { return mockPollingClient; });
 
 		// Mock feature support by default all supported
-		// Note: TransportManager.getFeatureSupport might be called in constructor
-		// So we need to mock it before instantiation
 		vi.spyOn(TransportManager, 'getFeatureSupport').mockReturnValue({
 			websocket: true,
 			sse: true,
@@ -136,6 +134,21 @@ describe('TransportManager', () => {
 
 			expect(HttpPollingClient).toHaveBeenCalled();
 			expect(manager.getActiveTransport()).toBe('polling');
+		});
+
+		it('throws if forced transport is not supported', () => {
+			vi.spyOn(TransportManager, 'getFeatureSupport').mockReturnValue({
+				websocket: true,
+				sse: true,
+				polling: false, // polling not supported
+			});
+
+			const manager = new TransportManager({
+				...baseConfig,
+				forceTransport: 'polling'
+			});
+
+			expect(() => manager.connect()).toThrow('not supported');
 		});
 	});
 
@@ -221,20 +234,27 @@ describe('TransportManager', () => {
 
 			manager.connect();
 
-			// We need to find the internal handler that updates state, not the proxied one
-			// The internal handler is bound in setupTransportEventHandlers
-			// The proxied handler is bound in subscribeAllHandlers
-			// setupTransportEventHandlers is called AFTER subscribeAllHandlers
-			// So the internal handler should be the LAST one registered for 'open'
-			const openCalls = mockWsClient.on.mock.calls.filter((c: any) => c[0] === 'open');
-			const wsOpenHandler = openCalls[openCalls.length - 1][1];
+			// We need to trigger the event on the transport
+			// But since we mocked on(), the transport doesn't actually store handlers.
+			// However, TransportManager passes the handler to transport.on
+			// mockWsClient.on IS called.
 			
-			wsOpenHandler({});
-
-			expect(manager.getState().status).toBe('connected');
-			
-			// Verify the external handler was also registered (and thus would be called by the transport if we had a real event emitter)
 			expect(mockWsClient.on).toHaveBeenCalledWith('open', openHandler);
+		});
+
+		it('updates state from transport events', () => {
+			const manager = new TransportManager(baseConfig);
+			manager.connect();
+
+			// Find internal handlers
+			const openHandler = mockWsClient.on.mock.calls.find((c: any) => c[0] === 'open')[1];
+			
+			openHandler({});
+			expect(manager.getState().status).toBe('connected');
+
+			const reconnectingHandler = mockWsClient.on.mock.calls.find((c: any) => c[0] === 'reconnecting')[1];
+			reconnectingHandler({});
+			expect(manager.getState().status).toBe('reconnecting');
 		});
 	});
 
@@ -246,42 +266,33 @@ describe('TransportManager', () => {
 				upgradeAttemptInterval: 1000
 			});
 
-			// Start with polling (forced) or fallback scenario
-			// Let's force polling first, then switch force to auto? No.
-			// Let's simulate a scenario where WebSocket was down but came back.
-			// Actually TransportManager only upgrades if we started lower priority.
-			
-			// We can simulate start with polling by mocking features
-			vi.spyOn(TransportManager, 'getFeatureSupport').mockReturnValue({
+			// Simulate start with polling (mock features initially)
+			const featureSpy = vi.spyOn(TransportManager, 'getFeatureSupport').mockReturnValue({
 				websocket: false,
 				sse: false,
 				polling: true,
 			});
+			
 			manager.connect();
 			expect(manager.getActiveTransport()).toBe('polling');
 
 			// Now enable websocket
-			vi.spyOn(TransportManager, 'getFeatureSupport').mockReturnValue({
+			featureSpy.mockReturnValue({
 				websocket: true,
 				sse: true,
 				polling: true,
 			});
 			
-			// We need to trigger the upgrade timer.
-			// The timer starts when connection opens.
+			// Trigger connect success to start upgrade timer
 			const pollOpenHandler = mockPollingClient.on.mock.calls.find((c: any) => c[0] === 'open')[1];
 			pollOpenHandler({});
 
-			// Advance time
+			// Advance time to trigger upgrade
 			await vi.advanceTimersByTimeAsync(1000);
 
 			// Should attempt to switch to WebSocket
 			expect(WebSocketClient).toHaveBeenCalled();
 			expect(mockWsClient.connect).toHaveBeenCalled();
-			
-			// It updates state to connecting
-			// But it doesn't switch currentTransport reference until we confirm switch logic?
-			// connectWithTransport sets currentTransport.
 			
 			// If upgrade succeeds:
 			const wsOpenHandler = mockWsClient.on.mock.calls.find((c: any) => c[0] === 'open')[1];
@@ -289,9 +300,43 @@ describe('TransportManager', () => {
 
 			expect(manager.getActiveTransport()).toBe('websocket');
 			
-			// Check if old transport is destroyed after delay
+			// Check cleanup of old transport
 			await vi.advanceTimersByTimeAsync(5000);
 			expect(mockPollingClient.destroy).toHaveBeenCalled();
+		});
+	});
+	
+	describe('state aggregation', () => {
+		it('merges state from transport', () => {
+			const manager = new TransportManager(baseConfig);
+			manager.connect();
+			
+			mockWsClient.getState.mockReturnValue({
+				status: 'connected',
+				latency: 42,
+				lastEventId: 'id-1'
+			});
+
+			const state = manager.getState();
+			expect(state.latency).toBe(42);
+			expect(state.lastEventId).toBe('id-1');
+		});
+	});
+
+	describe('sending', () => {
+		it('sends via active transport', () => {
+			const manager = new TransportManager(baseConfig);
+			manager.connect();
+			
+			manager.send('data');
+			expect(mockWsClient.send).toHaveBeenCalledWith('data');
+		});
+
+		it('throws if not connected', () => {
+			const manager = new TransportManager(baseConfig);
+			// Not connected
+			
+			expect(() => manager.send('data')).toThrow('No transport connected');
 		});
 	});
 });
