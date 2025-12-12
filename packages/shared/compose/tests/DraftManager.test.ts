@@ -153,6 +153,19 @@ describe('DraftManager', () => {
 
 			expect(loaded).toEqual(draft);
 		});
+
+		it('should return object even if missing properties (legacy data)', () => {
+			// If saved data is missing savedAt or content, loadDraft currently just returns it as is.
+			// This test documents current behavior, though robustness improvement is desirable.
+			const incomplete = {
+				content: 'Just content'
+			};
+			mockStorage['greater-compose-draft-legacy'] = JSON.stringify(incomplete);
+			
+			const loaded = loadDraft('legacy');
+			expect(loaded).toEqual(incomplete);
+			// Ideally we might want to check for savedAt validity or default it.
+		});
 	});
 
 	describe('deleteDraft', () => {
