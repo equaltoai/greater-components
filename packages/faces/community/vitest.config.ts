@@ -14,11 +14,19 @@ export default defineConfig({
 		environment: 'jsdom',
 		globals: true,
 		setupFiles: ['./tests/setup.ts'],
+		server: {
+			deps: {
+				inline: [/svelte/],
+			},
+		},
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],
 			include: ['src/**/*.{ts,svelte}'],
 			exclude: ['src/**/*.d.ts', 'src/**/index.ts'],
 		},
+	},
+	resolve: {
+		conditions: ['browser'],
 	},
 });

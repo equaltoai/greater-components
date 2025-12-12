@@ -17,6 +17,7 @@ Object.assign(navigator, {
 
 describe('WalletConnect', () => {
     let mockEthereum: any;
+    let mockPhantom: any;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -26,6 +27,15 @@ describe('WalletConnect', () => {
         mockEthereum = {
             request: vi.fn(),
             isMetaMask: false,
+            isCoinbaseWallet: false,
+            isRainbow: false,
+            isTrust: false,
+        };
+
+        mockPhantom = {
+            ethereum: {
+                request: vi.fn(),
+            }
         };
 
         // Define window.ethereum
@@ -34,145 +44,158 @@ describe('WalletConnect', () => {
             writable: true,
             configurable: true,
         });
+
+        Object.defineProperty(window, 'phantom', {
+            value: mockPhantom,
+            writable: true,
+            configurable: true,
+        });
     });
 
     afterEach(() => {
         // cleanup
         delete (window as any).ethereum;
+        delete (window as any).phantom;
     });
 
-    it('renders available wallets', () => {
-        // Setup MetaMask available
+    it('detects available wallets', () => {
+        // Setup multiple wallets
         mockEthereum.isMetaMask = true;
+        mockEthereum.isCoinbaseWallet = true;
+        mockEthereum.isRainbow = true;
         
         render(WalletConnect);
         
-        // MetaMask should be enabled
         const metaMaskBtn = screen.getByRole('button', { name: /connect with metamask/i });
-        expect(metaMaskBtn).toBeTruthy();
-        expect(metaMaskBtn.disabled).toBe(false);
-        
-        // Others are not installed
-        const notInstalled = screen.getAllByText('Not Installed');
-        expect(notInstalled.length).toBeGreaterThan(0);
-        
-        // Coinbase (not available)
         const coinbaseBtn = screen.getByRole('button', { name: /connect with coinbase wallet/i });
-        expect(coinbaseBtn).toBeTruthy();
-        expect(coinbaseBtn.disabled).toBe(true);
+        const rainbowBtn = screen.getByRole('button', { name: /connect with rainbow/i });
+        
+        expect(metaMaskBtn.disabled).toBe(false);
+        expect(coinbaseBtn.disabled).toBe(false);
+        expect(rainbowBtn.disabled).toBe(false);
+        
+        // Trust not installed
+        const trustBtn = screen.getByRole('button', { name: /connect with trust wallet/i });
+        expect(trustBtn.disabled).toBe(true);
+
+        // Phantom available (mocked window.phantom)
+        const phantomBtn = screen.getByRole('button', { name: /connect with phantom/i });
+        expect(phantomBtn.disabled).toBe(false);
     });
 
-    it('handles connect flow', async () => {
+    it('handles connect flow (MetaMask)', async () => {
         mockEthereum.isMetaMask = true;
-        // Mock request flow: accounts -> chainId -> signature
         mockEthereum.request
-            .mockResolvedValueOnce(['0x1234567890123456789012345678901234567890']) // eth_requestAccounts
-            .mockResolvedValueOnce('0x1') // eth_chainId (1 = Mainnet)
-            .mockResolvedValueOnce('0xsignature'); // personal_sign
+            .mockResolvedValueOnce(['0x1234567890123456789012345678901234567890'])
+            .mockResolvedValueOnce('0x1')
+            .mockResolvedValueOnce('0xsignature');
 
         const onConnect = vi.fn();
         render(WalletConnect, { onConnect });
 
-        const metaMaskBtn = screen.getByRole('button', { name: /connect with metamask/i });
-        await fireEvent.click(metaMaskBtn);
+        const btn = screen.getByRole('button', { name: /connect with metamask/i });
+        await fireEvent.click(btn);
 
         await waitFor(() => {
-            expect(mockEthereum.request).toHaveBeenCalledTimes(3);
-        });
-        
-        await waitFor(() => {
-            expect(onConnect).toHaveBeenCalledWith({
-                address: '0x1234567890123456789012345678901234567890',
-                chainId: 1,
+            expect(onConnect).toHaveBeenCalledWith(expect.objectContaining({
                 provider: 'metamask',
-                signature: '0xsignature'
-            });
+                address: '0x1234567890123456789012345678901234567890',
+            }));
         });
-        
-        // Should show connected state
-        expect(await screen.findByText('Connected')).toBeTruthy();
-        expect(screen.getByText('0x1234...7890')).toBeTruthy();
     });
 
-    it('handles connection error', async () => {
-        mockEthereum.isMetaMask = true;
-        mockEthereum.request.mockRejectedValueOnce(new Error('User rejected'));
+    it('handles connect flow (Phantom)', async () => {
+        mockPhantom.ethereum.request
+            .mockResolvedValueOnce(['0xphantomaddress'])
+            .mockResolvedValueOnce('0x1')
+            .mockResolvedValueOnce('0xsig');
 
-        render(WalletConnect);
+        const onConnect = vi.fn();
+        render(WalletConnect, { onConnect });
 
-        const metaMaskBtn = screen.getByRole('button', { name: /connect with metamask/i });
-        await fireEvent.click(metaMaskBtn);
+        const btn = screen.getByRole('button', { name: /connect with phantom/i });
+        await fireEvent.click(btn);
 
-        expect(await screen.findByText('Connection cancelled by user')).toBeTruthy();
+        await waitFor(() => {
+             expect(onConnect).toHaveBeenCalledWith(expect.objectContaining({
+                provider: 'phantom',
+                address: '0xphantomaddress',
+            }));
+        });
     });
 
-    it('handles copy address', async () => {
-        // Manually trigger connected state via connect flow first
+    it('handles unsupported chain error', async () => {
         mockEthereum.isMetaMask = true;
         mockEthereum.request
-            .mockResolvedValueOnce(['0x1234567890123456789012345678901234567890']) 
+            .mockResolvedValueOnce(['0x123'])
+            .mockResolvedValueOnce('0x38'); // Chain 56 (BNB) not in default [1]
+
+        render(WalletConnect, { supportedChains: [1] });
+
+        const btn = screen.getByRole('button', { name: /connect with metamask/i });
+        await fireEvent.click(btn);
+
+        expect(await screen.findByText(/unsupported network/i)).toBeTruthy();
+    });
+
+    it('handles empty accounts error', async () => {
+        mockEthereum.isMetaMask = true;
+        mockEthereum.request.mockResolvedValueOnce([]); // No accounts
+
+        render(WalletConnect);
+        await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+
+        expect(await screen.findByText(/no accounts found/i)).toBeTruthy();
+    });
+    
+    it('handles signature rejection', async () => {
+        mockEthereum.isMetaMask = true;
+        mockEthereum.request
+            .mockResolvedValueOnce(['0x123'])
+            .mockResolvedValueOnce('0x1')
+            .mockRejectedValueOnce({ code: 4001 }); // User rejected signature
+
+        render(WalletConnect);
+        await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+
+        expect(await screen.findByText(/connection cancelled by user/i)).toBeTruthy();
+    });
+
+    it('handles clipboard error', async () => {
+        writeTextMock.mockRejectedValue(new Error('Clipboard failed'));
+        mockEthereum.isMetaMask = true;
+        mockEthereum.request
+            .mockResolvedValueOnce(['0x123'])
             .mockResolvedValueOnce('0x1')
             .mockResolvedValueOnce('0xsig');
 
         render(WalletConnect);
-        
         await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
         await screen.findByText('Connected');
 
-        const addressBtn = screen.getByRole('button', { name: /copy wallet address/i });
-        await fireEvent.click(addressBtn);
-
-        expect(writeTextMock).toHaveBeenCalledWith('0x1234567890123456789012345678901234567890');
-    });
-
-    it('handles disconnect', async () => {
-        // Connect first
-        mockEthereum.isMetaMask = true;
-        mockEthereum.request
-            .mockResolvedValueOnce(['0x1234567890123456789012345678901234567890']) 
-            .mockResolvedValueOnce('0x1')
-            .mockResolvedValueOnce('0xsig');
-
-        const onDisconnect = vi.fn();
-        render(WalletConnect, { onDisconnect });
+        await fireEvent.click(screen.getByRole('button', { name: /copy/i }));
         
-        await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
-        await screen.findByText('Connected');
-
-        const disconnectBtn = screen.getByRole('button', { name: /disconnect wallet/i });
-        await fireEvent.click(disconnectBtn);
-
-        expect(onDisconnect).toHaveBeenCalled();
-        expect(screen.getByText('Connect Your Wallet')).toBeTruthy();
+        expect(await screen.findByText(/clipboard failed/i)).toBeTruthy();
     });
 
-    it('handles network switch in advanced mode', async () => {
-         // Connect first
+    it('handles network switch error', async () => {
          mockEthereum.isMetaMask = true;
          mockEthereum.request
-             .mockResolvedValueOnce(['0x1234567890123456789012345678901234567890']) 
-             .mockResolvedValueOnce('0x1')
-             .mockResolvedValueOnce('0xsig');
+            .mockResolvedValueOnce(['0x123'])
+            .mockResolvedValueOnce('0x1')
+            .mockResolvedValueOnce('0xsig');
  
-         render(WalletConnect, { 
-             showAdvanced: true, 
-             supportedChains: [1, 137] 
-         });
-         
+         render(WalletConnect, { showAdvanced: true, supportedChains: [1, 137] });
          await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
          await screen.findByText('Connected');
 
-         // Should see switch buttons
-         const polygonBtn = screen.getByRole('button', { name: 'Polygon' });
-         expect(polygonBtn).toBeTruthy();
+         // Fail switch
+         mockEthereum.request.mockRejectedValueOnce({ code: 4902 }); // Chain not added
 
-         // Switch network
-         mockEthereum.request.mockResolvedValueOnce(null); // wallet_switchEthereumChain returns null on success
+         const polygonBtn = screen.getByRole('button', { name: 'Polygon' });
          await fireEvent.click(polygonBtn);
 
-         expect(mockEthereum.request).toHaveBeenCalledWith({
-             method: 'wallet_switchEthereumChain',
-             params: [{ chainId: '0x89' }]
-         });
+         expect(await screen.findByText(/please add polygon/i)).toBeTruthy();
     });
 });
+

@@ -470,6 +470,13 @@
 				</div>
 			</div>
 
+			{#if error}
+				<div class="wallet-connect__error" role="alert">
+					<span class="wallet-connect__error-icon">⚠️</span>
+					<span class="wallet-connect__error-text">{error}</span>
+				</div>
+			{/if}
+
 			<div class="wallet-connect__connected-details">
 				<div class="wallet-connect__detail">
 					<span class="wallet-connect__detail-label">Address</span>
