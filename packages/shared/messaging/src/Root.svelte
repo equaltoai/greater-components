@@ -4,8 +4,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { untrack } from 'svelte';
-	import { createMessagesContext } from './context.js';
-	import type { MessagesHandlers } from './context.js';
+	import { createMessagesContext } from './context.svelte.js';
+	import type { MessagesHandlers } from './context.svelte.js';
 	import { onMount } from 'svelte';
 
 	interface Props {

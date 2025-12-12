@@ -17,8 +17,8 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { untrack } from 'svelte';
-	import { createInitialSearchState, createSearchContext } from './context.js';
-	import type { SearchHandlers } from './context.js';
+	import { createInitialSearchState, createSearchContext } from './context.svelte.js';
+	import type { SearchHandlers } from './context.svelte.js';
 
 	interface Props {
 		/**

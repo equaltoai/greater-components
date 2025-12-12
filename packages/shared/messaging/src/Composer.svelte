@@ -3,7 +3,7 @@
 -->
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
-	import { getMessagesContext } from './context.js';
+	import { getMessagesContext } from './context.svelte.js';
 
 	interface Props {
 		class?: string;

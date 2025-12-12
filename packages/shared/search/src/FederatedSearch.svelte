@@ -17,8 +17,8 @@
 	import { Checkbox, Spinner } from '@equaltoai/greater-components-primitives';
 	import { GlobeIcon } from '@equaltoai/greater-components-icons';
 	import { untrack } from 'svelte';
-	import { getSearchContext } from './context.js';
-	import type { SearchResults } from './context.js';
+	import { getSearchContext } from './context.svelte.js';
+	import type { SearchResults } from './context.svelte.js';
 
 	interface FederatedInstance {
 		domain: string;

@@ -3,8 +3,8 @@
 -->
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
-	import { getSearchContext, formatCount } from './context.js';
-	import type { SearchActor } from './context.js';
+	import { getSearchContext, formatCount } from './context.svelte.js';
+	import type { SearchActor } from './context.svelte.js';
 
 	interface Props {
 		actor: SearchActor;

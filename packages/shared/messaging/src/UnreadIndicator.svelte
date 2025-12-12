@@ -4,7 +4,7 @@
   Displays unread message count as a badge.
 -->
 <script lang="ts">
-	import { getMessagesContext } from './context.js';
+	import { getMessagesContext } from './context.svelte.js';
 
 	interface Props {
 		/**

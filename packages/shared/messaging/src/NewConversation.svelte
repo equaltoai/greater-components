@@ -7,7 +7,7 @@
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import { untrack } from 'svelte';
-	import { getMessagesContext, type MessageParticipant } from './context.js';
+	import { getMessagesContext, type MessageParticipant } from './context.svelte.js';
 
 	interface Props {
 		/**

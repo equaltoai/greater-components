@@ -17,8 +17,8 @@
 <script lang="ts">
 	import { TextField, Button, Avatar, Spinner } from '@equaltoai/greater-components-primitives';
 	import { SearchIcon, PlusIcon, MessageCircleIcon } from '@equaltoai/greater-components-icons';
-	import { getMessagesContext } from './context.js';
-	import type { Conversation, MessageParticipant } from './context.js';
+	import { getMessagesContext } from './context.svelte.js';
+	import type { Conversation, MessageParticipant } from './context.svelte.js';
 
 	interface Props {
 		/**

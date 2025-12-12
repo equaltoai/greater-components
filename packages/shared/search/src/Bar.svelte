@@ -13,7 +13,7 @@
 -->
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
-	import { getSearchContext } from './context.js';
+	import { getSearchContext } from './context.svelte.js';
 
 	interface Props {
 		/**

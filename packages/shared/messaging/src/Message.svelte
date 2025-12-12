@@ -2,8 +2,8 @@
   Messages.Message - Individual Message Display
 -->
 <script lang="ts">
-	import { formatMessageTime } from './context.js';
-	import type { DirectMessage } from './context.js';
+	import { formatMessageTime } from './context.svelte.js';
+	import type { DirectMessage } from './context.svelte.js';
 
 	interface Props {
 		message: DirectMessage;

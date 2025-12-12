@@ -2,7 +2,7 @@
   Messages.Thread - Message Thread Display
 -->
 <script lang="ts">
-	import { getMessagesContext } from './context.js';
+	import { getMessagesContext } from './context.svelte.js';
 	import Message from './Message.svelte';
 
 	interface Props {
