@@ -20,7 +20,12 @@ export default mergeConfig(
 						statements: 60,
 					},
 				},
-				include: ['src/adapters/**/*.{ts,js}', 'src/lib/**/*.ts', 'src/utils/**/*.{ts,js}'],
+				include: [
+					'src/adapters/**/*.{ts,js}',
+					'src/lib/**/*.ts',
+					'src/utils/**/*.{ts,js}',
+					'src/components/**/*.svelte',
+				],
 				exclude: [
 					'src/**/*.d.ts',
 					'src/**/*.test.{ts,js}',
