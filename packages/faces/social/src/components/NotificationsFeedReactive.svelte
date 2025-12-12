@@ -1,18 +1,3 @@
-<script module lang="ts">
-	function isNotificationGroup(item: unknown): item is NotificationGroup {
-		return (
-			typeof item === 'object' &&
-			item !== null &&
-			'notifications' in item &&
-			Array.isArray((item as NotificationGroup).notifications)
-		);
-	}
-
-	function getItemId(item: Notification | NotificationGroup): string {
-		return isNotificationGroup(item) ? item.id : item.id;
-	}
-</script>
-
 <script lang="ts">
 	import { createVirtualizer } from '@tanstack/svelte-virtual';
 	import { get } from 'svelte/store';
@@ -21,6 +6,7 @@
 	import type { NotificationIntegrationConfig } from '../lib/integration';
 	import { createNotificationIntegration } from '../lib/integration';
 	import NotificationItem from './NotificationItem.svelte';
+	import { isNotificationGroup, getItemId } from '../utils/notificationGrouping';
 
 	interface Props extends Omit<NotificationsFeedProps, 'notifications' | 'groups'> {
 		/**
