@@ -284,3 +284,16 @@ export function shouldHighlightNotification(notification: Notification): boolean
 	const oneHourAgo = new Date(Date.now() - 3600000);
 	return new Date(notification.createdAt) > oneHourAgo;
 }
+
+export function isNotificationGroup(item: unknown): item is NotificationGroup {
+	return (
+		typeof item === 'object' &&
+		item !== null &&
+		'notifications' in item &&
+		Array.isArray((item as NotificationGroup).notifications)
+	);
+}
+
+export function getItemId(item: Notification | NotificationGroup): string {
+	return isNotificationGroup(item) ? item.id : item.id;
+}
