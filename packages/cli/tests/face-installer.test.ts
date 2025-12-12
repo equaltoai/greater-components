@@ -3,12 +3,18 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getFaceItemsForResolution, resolveFaceDependencies } from '../src/utils/face-installer.js';
+import {
+	getFaceItemsForResolution,
+	resolveFaceDependencies,
+	injectFaceCss,
+} from '../src/utils/face-installer.js';
 import type { FaceManifest, ComponentDomain } from '../src/registry/index.js';
 import type { ComponentConfig } from '../src/utils/config.js';
 import * as faces from '../src/registry/faces.js';
 import * as itemParser from '../src/utils/item-parser.js';
 import * as depResolver from '../src/utils/dependency-resolver.js';
+import * as files from '../src/utils/files.js';
+import * as cssInject from '../src/utils/css-inject.js';
 
 // Mock dependencies
 vi.mock('../src/registry/faces.js', () => ({
@@ -22,6 +28,22 @@ vi.mock('../src/utils/item-parser.js', () => ({
 vi.mock('../src/utils/dependency-resolver.js', () => ({
 	resolveDependencies: vi.fn(),
 }));
+
+vi.mock('../src/utils/files.js', () => ({
+	detectProjectDetails: vi.fn(),
+}));
+
+vi.mock('../src/utils/css-inject.js', () => ({
+	injectCssImports: vi.fn(),
+}));
+
+vi.mock('../src/utils/config.js', async (importOriginal) => {
+	const original = await importOriginal<typeof import('../src/utils/config.js')>();
+	return {
+		...original,
+		writeConfig: vi.fn().mockResolvedValue(undefined),
+	};
+});
 
 const mockManifest: FaceManifest = {
 	name: 'social',
@@ -147,10 +169,7 @@ describe('Face Installer', () => {
 	describe('updateConfigWithFace', () => {
 		it('updates config with face selection', async () => {
 			const { updateConfigWithFace } = await import('../src/utils/face-installer.js');
-			const { writeConfig } = await import('../src/utils/config.js');
-
-			vi.mocked(writeConfig).mockResolvedValue();
-
+			
 			const config = createMockConfig();
 
 			const result = await updateConfigWithFace(config, 'social', '/project');
@@ -160,10 +179,7 @@ describe('Face Installer', () => {
 
 		it('preserves existing css config', async () => {
 			const { updateConfigWithFace } = await import('../src/utils/face-installer.js');
-			const { writeConfig } = await import('../src/utils/config.js');
-
-			vi.mocked(writeConfig).mockResolvedValue();
-
+			
 			const config = createMockConfig({
 				css: {
 					tokens: true,
@@ -231,14 +247,82 @@ describe('Face Installer', () => {
 			expect(() => displayFaceInstallSummary(result)).not.toThrow();
 		});
 	});
-});
+	describe('injectFaceCss', () => {
+		it('warns and returns false if no CSS entry points found', async () => {
+			vi.mocked(files.detectProjectDetails).mockResolvedValue({
+				type: 'sveltekit',
+				hasTypeScript: true,
+				cssEntryPoints: [],
+				svelteConfigPath: null,
+				viteConfigPath: null,
+			});
 
-// Additional mocks for the new tests
-vi.mock('../src/utils/config.js', async (importOriginal) => {
-	const original = await importOriginal<typeof import('../src/utils/config.js')>();
-	return {
-		...original,
-		writeConfig: vi.fn().mockResolvedValue(undefined),
-	};
+			const config = createMockConfig();
+			const result = await injectFaceCss('social', config, '/project');
+
+			expect(result).toBe(false);
+		});
+
+		it('injects CSS successfully', async () => {
+			vi.mocked(files.detectProjectDetails).mockResolvedValue({
+				type: 'sveltekit',
+				hasTypeScript: true,
+				cssEntryPoints: [{ path: '/project/src/app.css', type: 'global' }],
+				svelteConfigPath: null,
+				viteConfigPath: null,
+			});
+
+			vi.mocked(cssInject.injectCssImports).mockResolvedValue({
+				success: true,
+				filePath: '/project/src/app.css',
+				addedImports: ["import '@equaltoai/greater-components/faces/social/style.css';"],
+			});
+
+			const config = createMockConfig();
+			const result = await injectFaceCss('social', config, '/project');
+
+			expect(result).toBe(true);
+			expect(cssInject.injectCssImports).toHaveBeenCalled();
+		});
+
+		it('handles injection failure', async () => {
+			vi.mocked(files.detectProjectDetails).mockResolvedValue({
+				type: 'sveltekit',
+				hasTypeScript: true,
+				cssEntryPoints: [{ path: '/project/src/app.css', type: 'global' }],
+				svelteConfigPath: null,
+				viteConfigPath: null,
+			});
+
+			vi.mocked(cssInject.injectCssImports).mockResolvedValue({
+				success: false,
+				error: 'Failed to read file',
+				filePath: '/project/src/app.css',
+				addedImports: [],
+			});
+
+			const config = createMockConfig();
+			const result = await injectFaceCss('social', config, '/project');
+
+			expect(result).toBe(false);
+		});
+
+		it('handles error during injection process', async () => {
+			vi.mocked(files.detectProjectDetails).mockResolvedValue({
+				type: 'sveltekit',
+				hasTypeScript: true,
+				cssEntryPoints: [{ path: '/project/src/app.css', type: 'global' }],
+				svelteConfigPath: null,
+				viteConfigPath: null,
+			});
+
+			vi.mocked(cssInject.injectCssImports).mockRejectedValue(new Error('Write error'));
+
+			const config = createMockConfig();
+			const result = await injectFaceCss('social', config, '/project');
+
+			expect(result).toBe(false);
+		});
+	});
 });
 
