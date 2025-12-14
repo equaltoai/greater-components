@@ -110,7 +110,7 @@ describe('HttpPollingClient', () => {
 			client.connect();
 			// Wait for initial poll to complete
 			await vi.advanceTimersByTimeAsync(0);
-			
+
 			client.disconnect();
 
 			// After disconnect, should remain disconnected

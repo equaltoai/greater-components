@@ -23,7 +23,7 @@ describe('ComposeBox', () => {
 		})();
 		Object.defineProperty(window, 'localStorage', {
 			value: localStorageMock,
-			configurable: true
+			configurable: true,
 		});
 	});
 
@@ -78,10 +78,10 @@ describe('ComposeBox', () => {
 
 		await fireEvent.input(cwInput, { target: { value: 'Spoilers' } });
 		expect(cwInput).toHaveValue('Spoilers');
-        
-        // Test toggling off
-        await fireEvent.click(screen.getByRole('button', { name: 'Remove content warning' }));
-        expect(screen.queryByPlaceholderText('Content warning')).toBeNull();
+
+		// Test toggling off
+		await fireEvent.click(screen.getByRole('button', { name: 'Remove content warning' }));
+		expect(screen.queryByPlaceholderText('Content warning')).toBeNull();
 	});
 
 	it('saves draft to localStorage', async () => {
@@ -134,7 +134,9 @@ describe('ComposeBox', () => {
 			configurable: true,
 		});
 
-		await fireEvent.change(fileInput!);
+		expect(fileInput).toBeTruthy();
+		if (fileInput) await fireEvent.change(fileInput);
+		else throw new Error('File input not found');
 
 		await waitFor(() => {
 			expect(onMediaUpload).toHaveBeenCalled();
@@ -174,58 +176,58 @@ describe('ComposeBox', () => {
 
 		consoleSpy.mockRestore();
 	});
-    
-    it('handles reply context', () => {
-        const replyToStatus = {
-            id: '1',
-            account: { acct: 'user@test.com', displayName: 'User' },
-            content: 'Original post',
-            createdAt: '2023-01-01',
-            uri: 'url'
-        };
-        
-        render(ComposeBox, { replyToStatus } as any);
-        
-        expect(screen.getByText('Replying to @user@test.com')).toBeTruthy();
-        expect(screen.getByLabelText('Reply to User')).toBeTruthy();
-        expect(screen.getByRole('button', { name: /Reply/i })).toBeTruthy();
-    });
-    
-    it('handles keyboard shortcuts', async () => {
-        const onSubmit = vi.fn();
-        const onCancel = vi.fn();
-        
-        render(ComposeBox, { onSubmit, onCancel, initialContent: 'Test' });
-        
-        const textarea = screen.getByPlaceholderText("What's on your mind?");
-        
-        // Ctrl+Enter to submit
-        await fireEvent.keyDown(textarea, { key: 'Enter', ctrlKey: true });
-        expect(onSubmit).toHaveBeenCalled();
-        
-        // Escape to cancel
-        await fireEvent.keyDown(textarea, { key: 'Escape' });
-        expect(onCancel).toHaveBeenCalled();
-    });
-    
-    it('handles visibility selection', async () => {
-        render(ComposeBox);
-        
-        const select = screen.getByLabelText('Post visibility');
-        await fireEvent.change(select, { target: { value: 'private' } });
-        
-        expect(select).toHaveValue('private');
-    });
-    
-    it('handles hard character limit', async () => {
-        render(ComposeBox, { maxLength: 10, characterCountMode: 'hard' });
-        
-        const textarea = screen.getByPlaceholderText("What's on your mind?");
-        const submitButton = screen.getByRole('button', { name: /Post/i });
-        
-        await fireEvent.input(textarea, { target: { value: '12345678901' } }); // 11 chars
-        
-        expect(screen.getByText('11/10')).toBeTruthy();
-        expect(submitButton).toBeDisabled();
-    });
+
+	it('handles reply context', () => {
+		const replyToStatus = {
+			id: '1',
+			account: { acct: 'user@test.com', displayName: 'User' },
+			content: 'Original post',
+			createdAt: '2023-01-01',
+			uri: 'url',
+		};
+
+		render(ComposeBox, { replyToStatus } as any);
+
+		expect(screen.getByText('Replying to @user@test.com')).toBeTruthy();
+		expect(screen.getByLabelText('Reply to User')).toBeTruthy();
+		expect(screen.getByRole('button', { name: /Reply/i })).toBeTruthy();
+	});
+
+	it('handles keyboard shortcuts', async () => {
+		const onSubmit = vi.fn();
+		const onCancel = vi.fn();
+
+		render(ComposeBox, { onSubmit, onCancel, initialContent: 'Test' });
+
+		const textarea = screen.getByPlaceholderText("What's on your mind?");
+
+		// Ctrl+Enter to submit
+		await fireEvent.keyDown(textarea, { key: 'Enter', ctrlKey: true });
+		expect(onSubmit).toHaveBeenCalled();
+
+		// Escape to cancel
+		await fireEvent.keyDown(textarea, { key: 'Escape' });
+		expect(onCancel).toHaveBeenCalled();
+	});
+
+	it('handles visibility selection', async () => {
+		render(ComposeBox);
+
+		const select = screen.getByLabelText('Post visibility');
+		await fireEvent.change(select, { target: { value: 'private' } });
+
+		expect(select).toHaveValue('private');
+	});
+
+	it('handles hard character limit', async () => {
+		render(ComposeBox, { maxLength: 10, characterCountMode: 'hard' });
+
+		const textarea = screen.getByPlaceholderText("What's on your mind?");
+		const submitButton = screen.getByRole('button', { name: /Post/i });
+
+		await fireEvent.input(textarea, { target: { value: '12345678901' } }); // 11 chars
+
+		expect(screen.getByText('11/10')).toBeTruthy();
+		expect(submitButton).toBeDisabled();
+	});
 });

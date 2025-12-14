@@ -114,15 +114,15 @@ describe('Button.svelte', () => {
 
 			expect(handleClick).not.toHaveBeenCalled();
 		});
-		
+
 		it('calls onkeydown prop', async () => {
 			const handleKeydown = vi.fn();
 			renderButton({ onkeydown: handleKeydown });
-			
+
 			const button = screen.getByRole('button');
 			await fireEvent.keyDown(button, { key: 'A' });
-			
+
 			expect(handleKeydown).toHaveBeenCalled();
-		})
+		});
 	});
 });

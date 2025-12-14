@@ -32,7 +32,10 @@ const makeGraphQLStatus = (id: string, overrides = {}) => ({
 	...overrides,
 });
 
-const makeTimelineResponse = (statuses: ReturnType<typeof makeGraphQLStatus>[], hasMore = true) => ({
+const makeTimelineResponse = (
+	statuses: ReturnType<typeof makeGraphQLStatus>[],
+	hasMore = true
+) => ({
 	edges: statuses.map((status) => ({ node: status, cursor: status.id })),
 	pageInfo: {
 		hasNextPage: hasMore,
@@ -67,7 +70,9 @@ describe('GraphQLTimelineStore', () => {
 		it('creates store with default state', () => {
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -86,7 +91,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -101,7 +108,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -121,7 +130,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -137,7 +148,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'home' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -153,7 +166,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'hashtag', hashtag: 'svelte' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -168,7 +183,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'list', listId: 'list-123' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -185,7 +202,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'profile', username: 'testuser' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -199,16 +218,25 @@ describe('GraphQLTimelineStore', () => {
 			const statuses = [makeGraphQLStatus('1')];
 			mockAdapter.fetchActorTimeline.mockResolvedValue(makeTimelineResponse(statuses));
 
-			const view: GraphQLTimelineView = { type: 'profile', username: 'testuser', actorId: 'cached-actor' };
+			const view: GraphQLTimelineView = {
+				type: 'profile',
+				username: 'testuser',
+				actorId: 'cached-actor',
+			};
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
 			await store.loadInitial();
 
 			expect(mockAdapter.getActorByUsername).not.toHaveBeenCalled();
-			expect(mockAdapter.fetchActorTimeline).toHaveBeenCalledWith('cached-actor', expect.any(Object));
+			expect(mockAdapter.fetchActorTimeline).toHaveBeenCalledWith(
+				'cached-actor',
+				expect.any(Object)
+			);
 		});
 
 		it('prevents concurrent loads', async () => {
@@ -221,7 +249,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -238,7 +268,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -260,7 +292,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -272,11 +306,15 @@ describe('GraphQLTimelineStore', () => {
 		});
 
 		it('clears unread count after loading newer', async () => {
-			mockAdapter.fetchPublicTimeline.mockResolvedValue(makeTimelineResponse([makeGraphQLStatus('1')]));
+			mockAdapter.fetchPublicTimeline.mockResolvedValue(
+				makeTimelineResponse([makeGraphQLStatus('1')])
+			);
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -293,7 +331,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -316,7 +356,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -333,7 +375,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -353,7 +397,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -376,7 +422,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -395,7 +443,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -415,7 +465,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -436,7 +488,9 @@ describe('GraphQLTimelineStore', () => {
 		it('resets unread count to zero', () => {
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -450,7 +504,9 @@ describe('GraphQLTimelineStore', () => {
 		it('calls disconnect', async () => {
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -469,7 +525,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -487,7 +545,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -505,7 +565,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -532,7 +594,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -551,7 +615,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 
@@ -575,7 +641,9 @@ describe('GraphQLTimelineStore', () => {
 
 			const view: GraphQLTimelineView = { type: 'public' };
 			const store = new GraphQLTimelineStore(
-				mockAdapter as unknown as Parameters<typeof GraphQLTimelineStore['prototype']['constructor']>[0],
+				mockAdapter as unknown as Parameters<
+					(typeof GraphQLTimelineStore)['prototype']['constructor']
+				>[0],
 				view
 			);
 

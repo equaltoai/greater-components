@@ -44,10 +44,10 @@ describe('Admin.Federation Component', () => {
 
 		expect(screen.getByText('spam.com')).toBeTruthy();
 		expect(screen.getByText('limited.com')).toBeTruthy();
-		
+
 		expect(screen.getByText('Mastodon')).toBeTruthy();
 		expect(screen.getByText('v4.2.0')).toBeTruthy();
-		
+
 		expect(screen.getByText('allowed')).toBeTruthy();
 		expect(screen.getByText('blocked')).toBeTruthy();
 	});

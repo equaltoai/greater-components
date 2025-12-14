@@ -21,7 +21,10 @@ export default defineConfig({
 			),
 			'@equaltoai/greater-components-icons': path.resolve(__dirname, '../../icons/src/index.ts'),
 			'@equaltoai/greater-components-utils': path.resolve(__dirname, '../../utils/src/index.ts'),
-			'@equaltoai/greater-components-content': path.resolve(__dirname, '../../content/src/index.ts'),
+			'@equaltoai/greater-components-content': path.resolve(
+				__dirname,
+				'../../content/src/index.ts'
+			),
 			'@equaltoai/greater-components-headless/button': path.resolve(
 				__dirname,
 				'../../headless/src/primitives/button.ts'
@@ -34,7 +37,10 @@ export default defineConfig({
 				__dirname,
 				'../../headless/src/index.ts'
 			),
-			'@equaltoai/greater-components-auth': path.resolve(__dirname, '../../shared/auth/src/index.ts'),
+			'@equaltoai/greater-components-auth': path.resolve(
+				__dirname,
+				'../../shared/auth/src/index.ts'
+			),
 			'@equaltoai/greater-components-search': path.resolve(
 				__dirname,
 				'../../shared/search/src/index.ts'

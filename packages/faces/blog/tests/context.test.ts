@@ -4,7 +4,7 @@
  * Tests for Article component context and helper functions.
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { ArticleData, ArticleConfig, ArticleHandlers, HeadingData } from '../src/types';
 
 // Mock Svelte's context functions

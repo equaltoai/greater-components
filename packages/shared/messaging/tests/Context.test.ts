@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMessagesContext, type MessagesHandlers, type Conversation, type DirectMessage } from '../src/context.svelte';
+import {
+	createMessagesContext,
+	type MessagesHandlers,
+	type Conversation,
+	type DirectMessage,
+} from '../src/context.svelte';
 
 // Mock svelte context functions
 vi.mock('svelte', () => ({
@@ -9,7 +14,7 @@ vi.mock('svelte', () => ({
 
 describe('Messages Context', () => {
 	let handlers: MessagesHandlers;
-	
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 		handlers = {
@@ -33,7 +38,7 @@ describe('Messages Context', () => {
 	describe('fetchConversations', () => {
 		it('fetches conversations successfully', async () => {
 			const mockConversations: Conversation[] = [
-				{ id: '1', participants: [], unreadCount: 0, updatedAt: new Date().toISOString() }
+				{ id: '1', participants: [], unreadCount: 0, updatedAt: new Date().toISOString() },
 			];
 			(handlers.onFetchConversations as any).mockResolvedValue(mockConversations);
 
@@ -59,38 +64,38 @@ describe('Messages Context', () => {
 
 	describe('selectConversation', () => {
 		it('selects conversation and fetches messages', async () => {
-			const conversation: Conversation = { 
-				id: '1', 
-				participants: [], 
-				unreadCount: 1, 
-				updatedAt: new Date().toISOString() 
+			const conversation: Conversation = {
+				id: '1',
+				participants: [],
+				unreadCount: 1,
+				updatedAt: new Date().toISOString(),
 			};
 			const mockMessages: DirectMessage[] = [];
-			
+
 			(handlers.onFetchMessages as any).mockResolvedValue(mockMessages);
 			(handlers.onMarkRead as any).mockResolvedValue(undefined);
 
 			const context = createMessagesContext(handlers);
 			// Setup initial conversations to test unread update
 			context.state.conversations = [conversation];
-			
+
 			await context.selectConversation(conversation);
 
 			expect(context.state.selectedConversation).toEqual(conversation);
 			expect(handlers.onFetchMessages).toHaveBeenCalledWith('1');
 			expect(handlers.onMarkRead).toHaveBeenCalledWith('1');
 			expect(context.state.messages).toEqual(mockMessages);
-			
+
 			// Should update unread count locally
 			expect(context.state.conversations[0].unreadCount).toBe(0);
 		});
 
 		it('handles fetch messages error', async () => {
-			const conversation: Conversation = { 
-				id: '1', 
-				participants: [], 
-				unreadCount: 0, 
-				updatedAt: new Date().toISOString() 
+			const conversation: Conversation = {
+				id: '1',
+				participants: [],
+				unreadCount: 0,
+				updatedAt: new Date().toISOString(),
 			};
 			(handlers.onFetchMessages as any).mockRejectedValue(new Error('Fetch messages failed'));
 
@@ -112,11 +117,11 @@ describe('Messages Context', () => {
 
 	describe('sendMessage', () => {
 		it('sends message successfully', async () => {
-			const conversation: Conversation = { 
-				id: '1', 
-				participants: [], 
-				unreadCount: 0, 
-				updatedAt: new Date().toISOString() 
+			const conversation: Conversation = {
+				id: '1',
+				participants: [],
+				unreadCount: 0,
+				updatedAt: new Date().toISOString(),
 			};
 			const newMessage: DirectMessage = {
 				id: 'msg1',
@@ -124,7 +129,7 @@ describe('Messages Context', () => {
 				sender: { id: 'user1', username: 'me', displayName: 'Me' },
 				content: 'Hello',
 				createdAt: new Date().toISOString(),
-				read: true
+				read: true,
 			};
 
 			(handlers.onSendMessage as any).mockResolvedValue(newMessage);
@@ -138,7 +143,7 @@ describe('Messages Context', () => {
 			expect(handlers.onSendMessage).toHaveBeenCalledWith('1', 'Hello', undefined);
 			expect(context.state.messages).toContainEqual(newMessage);
 			expect(context.state.loading).toBe(false);
-			
+
 			// Should update conversation last message
 			expect(context.state.conversations[0].lastMessage).toEqual(newMessage);
 		});
@@ -187,7 +192,7 @@ describe('Messages Context', () => {
 			(handlers.onDeleteMessage as any).mockRejectedValue(new Error('Delete failed'));
 
 			const context = createMessagesContext(handlers);
-			
+
 			await expect(context.deleteMessage('msg1')).rejects.toThrow('Delete failed');
 			expect(context.state.error).toBe('Delete failed');
 		});
@@ -195,11 +200,11 @@ describe('Messages Context', () => {
 
 	describe('markRead', () => {
 		it('marks conversation as read', async () => {
-			const conversation: Conversation = { 
-				id: '1', 
-				participants: [], 
-				unreadCount: 5, 
-				updatedAt: new Date().toISOString() 
+			const conversation: Conversation = {
+				id: '1',
+				participants: [],
+				unreadCount: 5,
+				updatedAt: new Date().toISOString(),
 			};
 			(handlers.onMarkRead as any).mockResolvedValue(undefined);
 

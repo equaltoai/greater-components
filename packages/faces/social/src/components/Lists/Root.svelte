@@ -16,7 +16,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { createListsContext } from './context.js';
-	import type { ListsHandlers } from './context.js';
+	import type { ListsHandlers, ListsState } from './context.js';
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -24,6 +24,11 @@
 		 * Lists event handlers
 		 */
 		handlers?: ListsHandlers;
+
+		/**
+		 * Initial state (for testing)
+		 */
+		initialState?: Partial<ListsState>;
 
 		/**
 		 * Auto-fetch lists on mount
@@ -44,6 +49,7 @@
 
 	let {
 		handlers: handlersProp = {},
+		initialState = {},
 		autoFetch = true,
 		children,
 		class: className = '',
@@ -54,7 +60,7 @@
 
 	// Create lists context - pass handlers reactively
 	// eslint-disable-next-line svelte/valid-compile
-	const context = createListsContext(handlers);
+	const context = createListsContext(handlers, initialState);
 
 	// Auto-fetch on mount
 	onMount(() => {

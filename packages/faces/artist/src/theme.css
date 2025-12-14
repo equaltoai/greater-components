@@ -1,0 +1,364 @@
+/* Greater Components Artist Face Theme
+ * Design tokens optimized for artwork display and artist portfolios
+ * REQ-DESIGN-001 through REQ-DESIGN-006
+ */
+
+/* ============================================================================
+ * Artist Face Design Tokens
+ * ============================================================================ */
+
+:root {
+	/* ========================================================================
+	 * REQ-DESIGN-001: Neutral Base Palette
+	 * Colors that don't compete with artwork
+	 * ======================================================================== */
+
+	/* Background colors */
+	--gr-artist-bg-primary: #fafafa;
+	--gr-artist-bg-secondary: #f5f5f5;
+	--gr-artist-bg-tertiary: #eeeeee;
+	--gr-artist-bg-elevated: #ffffff;
+
+	/* REQ-DESIGN-002: True black for immersive viewing */
+	--gr-artist-bg-immersive: #000000;
+	--gr-artist-bg-immersive-overlay: rgba(0, 0, 0, 0.95);
+
+	/* Surface colors */
+	--gr-artist-surface-primary: #ffffff;
+	--gr-artist-surface-secondary: #fafafa;
+	--gr-artist-surface-muted: #f0f0f0;
+
+	/* Text colors - high contrast for readability */
+	--gr-artist-text-primary: #1a1a1a;
+	--gr-artist-text-secondary: #4a4a4a;
+	--gr-artist-text-tertiary: #6a6a6a;
+	--gr-artist-text-muted: #8a8a8a;
+	--gr-artist-text-inverse: #ffffff;
+
+	/* Border colors */
+	--gr-artist-border-subtle: #e5e5e5;
+	--gr-artist-border-default: #d4d4d4;
+	--gr-artist-border-strong: #a3a3a3;
+
+	/* ========================================================================
+	 * REQ-DESIGN-003: Subtle Accent Colors
+	 * Accents that complement rather than compete with artwork
+	 * ======================================================================== */
+
+	/* Primary accent - subtle warm gray */
+	--gr-artist-accent-primary: #525252;
+	--gr-artist-accent-primary-hover: #404040;
+	--gr-artist-accent-primary-active: #303030;
+
+	/* Secondary accent - cool gray */
+	--gr-artist-accent-secondary: #64748b;
+	--gr-artist-accent-secondary-hover: #475569;
+	--gr-artist-accent-secondary-active: #334155;
+
+	/* Interactive states */
+	--gr-artist-interactive-default: #525252;
+	--gr-artist-interactive-hover: #404040;
+	--gr-artist-interactive-active: #303030;
+	--gr-artist-interactive-focus: rgba(82, 82, 82, 0.2);
+
+	/* Status colors - muted versions */
+	--gr-artist-status-success: #4ade80;
+	--gr-artist-status-warning: #fbbf24;
+	--gr-artist-status-error: #f87171;
+	--gr-artist-status-info: #60a5fa;
+
+	/* AI transparency indicator */
+	--gr-artist-ai-indicator: #a78bfa;
+	--gr-artist-ai-indicator-bg: rgba(167, 139, 250, 0.1);
+
+	/* Ethical sourcing indicator */
+	--gr-artist-ethical-indicator: #34d399;
+	--gr-artist-ethical-indicator-bg: rgba(52, 211, 153, 0.1);
+
+	/* ========================================================================
+	 * REQ-DESIGN-004: Typography Tokens
+	 * Fonts optimized for UI, artist statements, and titles
+	 * ======================================================================== */
+
+	/* Font families */
+	--gr-artist-font-ui: var(--gr-typography-fontFamily-sans, system-ui, -apple-system, sans-serif);
+	--gr-artist-font-statement: var(
+		--gr-typography-fontFamily-serif,
+		Georgia,
+		'Times New Roman',
+		serif
+	);
+	--gr-artist-font-title: var(
+		--gr-typography-fontFamily-sans,
+		system-ui,
+		-apple-system,
+		sans-serif
+	);
+	--gr-artist-font-mono: var(--gr-typography-fontFamily-mono, 'Fira Code', 'Consolas', monospace);
+
+	/* Font sizes */
+	--gr-artist-text-xs: 0.75rem;
+	--gr-artist-text-sm: 0.875rem;
+	--gr-artist-text-base: 1rem;
+	--gr-artist-text-lg: 1.125rem;
+	--gr-artist-text-xl: 1.25rem;
+	--gr-artist-text-2xl: 1.5rem;
+	--gr-artist-text-3xl: 1.875rem;
+	--gr-artist-text-4xl: 2.25rem;
+	--gr-artist-text-5xl: 3rem;
+
+	/* Font weights */
+	--gr-artist-font-light: 300;
+	--gr-artist-font-normal: 400;
+	--gr-artist-font-medium: 500;
+	--gr-artist-font-semibold: 600;
+	--gr-artist-font-bold: 700;
+
+	/* Line heights */
+	--gr-artist-leading-tight: 1.25;
+	--gr-artist-leading-snug: 1.375;
+	--gr-artist-leading-normal: 1.5;
+	--gr-artist-leading-relaxed: 1.625;
+	--gr-artist-leading-loose: 2;
+
+	/* Letter spacing */
+	--gr-artist-tracking-tight: -0.025em;
+	--gr-artist-tracking-normal: 0;
+	--gr-artist-tracking-wide: 0.025em;
+	--gr-artist-tracking-wider: 0.05em;
+	--gr-artist-tracking-widest: 0.1em;
+
+	/* ========================================================================
+	 * REQ-DESIGN-005: Motion Tokens
+	 * Smooth, subtle animations that don't distract from artwork
+	 * ======================================================================== */
+
+	/* Transition durations */
+	--gr-artist-duration-instant: 50ms;
+	--gr-artist-duration-fast: 150ms;
+	--gr-artist-duration-normal: 250ms;
+	--gr-artist-duration-slow: 400ms;
+	--gr-artist-duration-slower: 600ms;
+
+	/* Easing functions */
+	--gr-artist-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+	--gr-artist-ease-in: cubic-bezier(0.4, 0, 1, 1);
+	--gr-artist-ease-out: cubic-bezier(0, 0, 0.2, 1);
+	--gr-artist-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+	/* Specific transitions */
+	--gr-artist-transition-hover: all var(--gr-artist-duration-fast) var(--gr-artist-ease-out);
+	--gr-artist-transition-reveal: all var(--gr-artist-duration-normal) var(--gr-artist-ease-out);
+	--gr-artist-transition-modal: all var(--gr-artist-duration-slow) var(--gr-artist-ease-in-out);
+	--gr-artist-transition-fade: opacity var(--gr-artist-duration-normal)
+		var(--gr-artist-ease-default);
+	--gr-artist-transition-scale: transform var(--gr-artist-duration-normal) var(--gr-artist-ease-out);
+
+	/* ========================================================================
+	 * REQ-DESIGN-006: Spacing and Layout Tokens
+	 * ======================================================================== */
+
+	/* Spacing scale */
+	--gr-artist-space-1: 0.25rem;
+	--gr-artist-space-2: 0.5rem;
+	--gr-artist-space-3: 0.75rem;
+	--gr-artist-space-4: 1rem;
+	--gr-artist-space-5: 1.25rem;
+	--gr-artist-space-6: 1.5rem;
+	--gr-artist-space-8: 2rem;
+	--gr-artist-space-10: 2.5rem;
+	--gr-artist-space-12: 3rem;
+	--gr-artist-space-16: 4rem;
+	--gr-artist-space-20: 5rem;
+	--gr-artist-space-24: 6rem;
+
+	/* Border radius */
+	--gr-artist-radius-none: 0;
+	--gr-artist-radius-sm: 0.125rem;
+	--gr-artist-radius-default: 0.25rem;
+	--gr-artist-radius-md: 0.375rem;
+	--gr-artist-radius-lg: 0.5rem;
+	--gr-artist-radius-xl: 0.75rem;
+	--gr-artist-radius-2xl: 1rem;
+	--gr-artist-radius-full: 9999px;
+
+	/* Shadows - subtle for artwork display */
+	--gr-artist-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+	--gr-artist-shadow-default: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+	--gr-artist-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+	--gr-artist-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+	--gr-artist-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+	/* Gallery-specific tokens */
+	--gr-artist-gallery-gap: var(--gr-artist-space-4);
+	--gr-artist-gallery-gap-tight: var(--gr-artist-space-2);
+	--gr-artist-gallery-gap-loose: var(--gr-artist-space-6);
+
+	/* Artwork card tokens */
+	--gr-artist-card-radius: var(--gr-artist-radius-lg);
+	--gr-artist-card-shadow: var(--gr-artist-shadow-sm);
+	--gr-artist-card-shadow-hover: var(--gr-artist-shadow-md);
+
+	/* Media viewer tokens */
+	--gr-artist-viewer-bg: var(--gr-artist-bg-immersive);
+	--gr-artist-viewer-controls-bg: rgba(0, 0, 0, 0.6);
+	--gr-artist-viewer-controls-color: var(--gr-artist-text-inverse);
+
+	/* Profile tokens */
+	--gr-artist-avatar-size-sm: 2rem;
+	--gr-artist-avatar-size-md: 3rem;
+	--gr-artist-avatar-size-lg: 4rem;
+	--gr-artist-avatar-size-xl: 6rem;
+	--gr-artist-avatar-size-2xl: 8rem;
+
+	/* Badge tokens */
+	--gr-artist-badge-height: 1.5rem;
+	--gr-artist-badge-radius: var(--gr-artist-radius-full);
+	--gr-artist-badge-font-size: var(--gr-artist-text-xs);
+}
+
+/* ============================================================================
+ * Dark Theme Overrides
+ * ============================================================================ */
+
+[data-theme='dark'] {
+	/* Background colors */
+	--gr-artist-bg-primary: #0a0a0a;
+	--gr-artist-bg-secondary: #141414;
+	--gr-artist-bg-tertiary: #1f1f1f;
+	--gr-artist-bg-elevated: #1a1a1a;
+
+	/* Surface colors */
+	--gr-artist-surface-primary: #1a1a1a;
+	--gr-artist-surface-secondary: #262626;
+	--gr-artist-surface-muted: #333333;
+
+	/* Text colors */
+	--gr-artist-text-primary: #fafafa;
+	--gr-artist-text-secondary: #d4d4d4;
+	--gr-artist-text-tertiary: #a3a3a3;
+	--gr-artist-text-muted: #737373;
+	--gr-artist-text-inverse: #0a0a0a;
+
+	/* Border colors */
+	--gr-artist-border-subtle: #262626;
+	--gr-artist-border-default: #333333;
+	--gr-artist-border-strong: #525252;
+
+	/* Accent colors */
+	--gr-artist-accent-primary: #d4d4d4;
+	--gr-artist-accent-primary-hover: #e5e5e5;
+	--gr-artist-accent-primary-active: #f5f5f5;
+
+	/* Interactive states */
+	--gr-artist-interactive-default: #d4d4d4;
+	--gr-artist-interactive-hover: #e5e5e5;
+	--gr-artist-interactive-active: #f5f5f5;
+	--gr-artist-interactive-focus: rgba(212, 212, 212, 0.2);
+
+	/* Shadows - more subtle in dark mode */
+	--gr-artist-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+	--gr-artist-shadow-default: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+	--gr-artist-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+	--gr-artist-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+	--gr-artist-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================================
+ * Reduced Motion Support
+ * ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--gr-artist-duration-instant: 0ms;
+		--gr-artist-duration-fast: 0ms;
+		--gr-artist-duration-normal: 0ms;
+		--gr-artist-duration-slow: 0ms;
+		--gr-artist-duration-slower: 0ms;
+
+		--gr-artist-transition-hover: none;
+		--gr-artist-transition-reveal: none;
+		--gr-artist-transition-modal: none;
+		--gr-artist-transition-fade: none;
+		--gr-artist-transition-scale: none;
+	}
+}
+
+/* ============================================================================
+ * Base Component Styles
+ * ============================================================================ */
+
+.gr-artist-container {
+	font-family: var(--gr-artist-font-ui);
+	color: var(--gr-artist-text-primary);
+	background-color: var(--gr-artist-bg-primary);
+}
+
+.gr-artist-immersive {
+	background-color: var(--gr-artist-bg-immersive);
+	color: var(--gr-artist-text-inverse);
+}
+
+/* Artwork display container */
+.gr-artist-artwork {
+	background-color: var(--gr-artist-surface-primary);
+	border-radius: var(--gr-artist-card-radius);
+	box-shadow: var(--gr-artist-card-shadow);
+	transition: var(--gr-artist-transition-hover);
+}
+
+.gr-artist-artwork:hover {
+	box-shadow: var(--gr-artist-card-shadow-hover);
+}
+
+/* Gallery layouts */
+.gr-artist-gallery-grid {
+	display: grid;
+	gap: var(--gr-artist-gallery-gap);
+}
+
+.gr-artist-gallery-masonry {
+	column-gap: var(--gr-artist-gallery-gap);
+}
+
+/* Typography utilities */
+.gr-artist-title {
+	font-family: var(--gr-artist-font-title);
+	font-weight: var(--gr-artist-font-semibold);
+	line-height: var(--gr-artist-leading-tight);
+}
+
+.gr-artist-statement {
+	font-family: var(--gr-artist-font-statement);
+	font-weight: var(--gr-artist-font-normal);
+	line-height: var(--gr-artist-leading-relaxed);
+}
+
+.gr-artist-ui-text {
+	font-family: var(--gr-artist-font-ui);
+	font-weight: var(--gr-artist-font-normal);
+	line-height: var(--gr-artist-leading-normal);
+}
+
+/* Badge styles */
+.gr-artist-badge {
+	display: inline-flex;
+	align-items: center;
+	height: var(--gr-artist-badge-height);
+	padding: 0 var(--gr-artist-space-2);
+	font-size: var(--gr-artist-badge-font-size);
+	font-weight: var(--gr-artist-font-medium);
+	border-radius: var(--gr-artist-badge-radius);
+	background-color: var(--gr-artist-surface-muted);
+	color: var(--gr-artist-text-secondary);
+}
+
+.gr-artist-badge--ai {
+	background-color: var(--gr-artist-ai-indicator-bg);
+	color: var(--gr-artist-ai-indicator);
+}
+
+.gr-artist-badge--ethical {
+	background-color: var(--gr-artist-ethical-indicator-bg);
+	color: var(--gr-artist-ethical-indicator);
+}

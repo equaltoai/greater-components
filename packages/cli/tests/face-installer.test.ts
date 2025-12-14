@@ -169,7 +169,7 @@ describe('Face Installer', () => {
 	describe('updateConfigWithFace', () => {
 		it('updates config with face selection', async () => {
 			const { updateConfigWithFace } = await import('../src/utils/face-installer.js');
-			
+
 			const config = createMockConfig();
 
 			const result = await updateConfigWithFace(config, 'social', '/project');
@@ -179,7 +179,7 @@ describe('Face Installer', () => {
 
 		it('preserves existing css config', async () => {
 			const { updateConfigWithFace } = await import('../src/utils/face-installer.js');
-			
+
 			const config = createMockConfig({
 				css: {
 					tokens: true,
@@ -325,4 +325,3 @@ describe('Face Installer', () => {
 		});
 	});
 });
-

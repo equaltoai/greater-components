@@ -293,7 +293,10 @@ export function createRovingTabindex(config: RovingTabindexConfig = {}): RovingT
 	function focusFirst(): void {
 		const enabledItems = getEnabledItems();
 		if (enabledItems.length > 0) {
-			setFocusedIndex(enabledItems[0].index);
+			const item = enabledItems[0];
+			if (item) {
+				setFocusedIndex(item.index);
+			}
 		}
 	}
 
@@ -303,7 +306,10 @@ export function createRovingTabindex(config: RovingTabindexConfig = {}): RovingT
 	function focusLast(): void {
 		const enabledItems = getEnabledItems();
 		if (enabledItems.length > 0) {
-			setFocusedIndex(enabledItems[enabledItems.length - 1].index);
+			const item = enabledItems[enabledItems.length - 1];
+			if (item) {
+				setFocusedIndex(item.index);
+			}
 		}
 	}
 
@@ -361,12 +367,14 @@ export function createRovingTabindex(config: RovingTabindexConfig = {}): RovingT
 				break;
 
 			case 'Enter':
-			case ' ':
-				if (state.items[state.focusedIndex]) {
-					currentConfig.onActivate(state.focusedIndex, state.items[state.focusedIndex]);
+			case ' ': {
+				const currentItem = state.items[state.focusedIndex];
+				if (currentItem) {
+					currentConfig.onActivate(state.focusedIndex, currentItem);
 					handled = true;
 				}
 				break;
+			}
 		}
 
 		if (handled) {

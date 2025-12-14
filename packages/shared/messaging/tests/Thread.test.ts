@@ -81,7 +81,7 @@ describe('Thread', () => {
 				sender: { id: 'u1', displayName: 'Alice', avatar: '' },
 				content: 'Hello Alice',
 				createdAt: new Date().toISOString(),
-				read: true
+				read: true,
 			},
 			{
 				id: 'm2',
@@ -89,8 +89,8 @@ describe('Thread', () => {
 				sender: { id: 'me', displayName: 'Me', avatar: '' }, // 'me' is default currentUserId in Message props
 				content: 'Hi there',
 				createdAt: new Date().toISOString(),
-				read: true
-			}
+				read: true,
+			},
 		];
 
 		const target = document.createElement('div');
@@ -99,7 +99,7 @@ describe('Thread', () => {
 
 		const list = target.querySelector('.messages-thread__list');
 		expect(list).toBeTruthy();
-		
+
 		const messages = target.querySelectorAll('.message');
 		expect(messages.length).toBe(2);
 

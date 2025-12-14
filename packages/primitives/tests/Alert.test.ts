@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { render, fireEvent, screen } from '@testing-library/svelte';
 import Alert from '../src/components/Alert.svelte';
 import { describe, it, expect, vi } from 'vitest';
@@ -130,37 +131,37 @@ describe('Alert', () => {
 		expect(screen.getByTestId('custom-icon')).toBeTruthy();
 	});
 
-    it('handles keyboard dismiss (Escape)', async () => {
-        const onDismiss = vi.fn();
-        render(Alert, {
-            props: {
-                dismissible: true,
-                onDismiss,
-                children: createRawSnippet(() => ({
-                    render: () => '<span>Keyboard Dismiss</span>',
-                })),
-            },
-        });
+	it('handles keyboard dismiss (Escape)', async () => {
+		const onDismiss = vi.fn();
+		render(Alert, {
+			props: {
+				dismissible: true,
+				onDismiss,
+				children: createRawSnippet(() => ({
+					render: () => '<span>Keyboard Dismiss</span>',
+				})),
+			},
+		});
 
-        const alert = screen.getByRole('status');
-        await fireEvent.keyDown(alert, { key: 'Escape' });
-        expect(onDismiss).toHaveBeenCalled();
-    });
+		const alert = screen.getByRole('status');
+		await fireEvent.keyDown(alert, { key: 'Escape' });
+		expect(onDismiss).toHaveBeenCalled();
+	});
 
-    it('does not dismiss on Escape if not dismissible', async () => {
-        const onDismiss = vi.fn();
-        render(Alert, {
-            props: {
-                dismissible: false,
-                onDismiss,
-                children: createRawSnippet(() => ({
-                    render: () => '<span>Not Dismissible</span>',
-                })),
-            },
-        });
+	it('does not dismiss on Escape if not dismissible', async () => {
+		const onDismiss = vi.fn();
+		render(Alert, {
+			props: {
+				dismissible: false,
+				onDismiss,
+				children: createRawSnippet(() => ({
+					render: () => '<span>Not Dismissible</span>',
+				})),
+			},
+		});
 
-        const alert = screen.getByRole('status');
-        await fireEvent.keyDown(alert, { key: 'Escape' });
-        expect(onDismiss).not.toHaveBeenCalled();
-    });
+		const alert = screen.getByRole('status');
+		await fireEvent.keyDown(alert, { key: 'Escape' });
+		expect(onDismiss).not.toHaveBeenCalled();
+	});
 });

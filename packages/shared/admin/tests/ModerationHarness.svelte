@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { createAdminContext } from '../src/context.svelte.js';
 	import Moderation from '../src/Moderation.svelte';
 	import type { AdminHandlers } from '../src/context.svelte.js';
@@ -9,7 +10,7 @@
 
 	let { handlers = {} }: Props = $props();
 
-	createAdminContext(handlers);
+	createAdminContext(untrack(() => handlers));
 </script>
 
 <Moderation />

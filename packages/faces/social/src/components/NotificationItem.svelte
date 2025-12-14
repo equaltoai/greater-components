@@ -136,7 +136,7 @@
 	onkeydown={onClick ? handleKeyDown : undefined}
 	{...onClick ? { role: 'button', tabindex: 0 } : {}}
 	aria-label={onClick
-		? "{displayTitle}. {isUnread ? 'Unread. ' : ''}Press Enter to open, M to mark as read, X to dismiss"
+		? `${displayTitle}. ${isUnread ? 'Unread. ' : ''}Press Enter to open, M to mark as read, X to dismiss`
 		: displayTitle}
 	aria-describedby={`notification-time-${notification.id}`}
 >

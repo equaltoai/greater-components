@@ -12,7 +12,7 @@
 		matchTriggerWidth?: boolean;
 		/** Maximum height before scrolling */
 		maxHeight?: string;
-		[key: string]: any;
+		[key: string]: unknown;
 	}
 
 	let {

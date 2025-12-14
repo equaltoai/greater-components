@@ -4,182 +4,187 @@ import ContextLogicHarness from './harness/ContextLogicHarness.svelte';
 import type { ChatContextValue, ChatHandlers } from '../src/context.svelte.js';
 
 describe('Chat Context Logic', () => {
-    async function setup(handlers: ChatHandlers = {}) {
-        let context: ChatContextValue | undefined;
-        
-        const captureContext = (ctx: ChatContextValue) => {
-            context = ctx;
-        };
+	async function setup(handlers: ChatHandlers = {}) {
+		let context: ChatContextValue | undefined;
 
-        const result = render(ContextLogicHarness, {
-            props: {
-                handlers,
-                onContext: captureContext
-            }
-        });
+		const captureContext = (ctx: ChatContextValue) => {
+			context = ctx;
+		};
 
-        await waitFor(() => expect(context).toBeDefined());
-        
-        return { context: context!, ...result };
-    }
+		const result = render(ContextLogicHarness, {
+			props: {
+				handlers,
+				onContext: captureContext,
+			},
+		});
 
-    describe('sendMessage', () => {
-        it('adds user message and calls onSubmit', async () => {
-            const onSubmit = vi.fn();
-            const { context } = await setup({ onSubmit });
+		await waitFor(() => expect(context).toBeDefined());
 
-            await context.sendMessage('Hello world');
+		if (!context) throw new Error('Context not initialized');
+		return { context, ...result };
+	}
 
-            expect(context.state.messages).toHaveLength(1);
-            expect(context.state.messages[0].role).toBe('user');
-            expect(context.state.messages[0].content).toBe('Hello world');
-            expect(context.state.loading).toBe(false); // Should be false after await
-            expect(onSubmit).toHaveBeenCalledWith('Hello world');
-        });
+	describe('sendMessage', () => {
+		it('adds user message and calls onSubmit', async () => {
+			const onSubmit = vi.fn();
+			const { context } = await setup({ onSubmit });
 
-        it('handles submission errors', async () => {
-            const onSubmit = vi.fn().mockRejectedValue(new Error('Network error'));
-            const { context } = await setup({ onSubmit });
+			await context.sendMessage('Hello world');
 
-            // We need to add an assistant message that would be marked as error, 
-            // but sendMessage logic only marks the *last assistant message* as error if it exists.
-            // If we just send a message, there is no assistant message yet.
-            // The logic in context.ts:
-            // state.error = error.message
-            // if (lastMessage && lastMessage.role === 'assistant') ...
-            
-            await context.sendMessage('Hello fail');
+			expect(context.state.messages).toHaveLength(1);
+			expect(context.state.messages[0].role).toBe('user');
+			expect(context.state.messages[0].content).toBe('Hello world');
+			expect(context.state.loading).toBe(false); // Should be false after await
+			expect(onSubmit).toHaveBeenCalledWith('Hello world');
+		});
 
-            expect(context.state.error).toBe('Network error');
-            expect(context.state.loading).toBe(false);
-        });
+		it('handles submission errors', async () => {
+			const onSubmit = vi.fn().mockRejectedValue(new Error('Network error'));
+			const { context } = await setup({ onSubmit });
 
-        it('does not send empty content', async () => {
-            const onSubmit = vi.fn();
-            const { context } = await setup({ onSubmit });
+			// We need to add an assistant message that would be marked as error,
+			// but sendMessage logic only marks the *last assistant message* as error if it exists.
+			// If we just send a message, there is no assistant message yet.
+			// The logic in context.ts:
+			// state.error = error.message
+			// if (lastMessage && lastMessage.role === 'assistant') ...
 
-            await context.sendMessage('   ');
+			await context.sendMessage('Hello fail');
 
-            expect(onSubmit).not.toHaveBeenCalled();
-            expect(context.state.messages).toHaveLength(0);
-        });
-    });
+			expect(context.state.error).toBe('Network error');
+			expect(context.state.loading).toBe(false);
+		});
 
-    describe('retryLastMessage', () => {
-        it('retries the last user message', async () => {
-            const onRetry = vi.fn();
-            const { context } = await setup({ onRetry });
+		it('does not send empty content', async () => {
+			const onSubmit = vi.fn();
+			const { context } = await setup({ onSubmit });
 
-            // Setup messages: User -> Assistant (Error)
-            act(() => {
-                context.addMessage({ role: 'user', content: 'User msg 1', status: 'complete' });
-                context.addMessage({ role: 'assistant', content: 'Assist 1', status: 'complete' });
-                context.addMessage({ role: 'user', content: 'User msg 2', status: 'complete' });
-                context.addMessage({ role: 'assistant', content: 'Error msg', status: 'error' });
-            });
+			await context.sendMessage('   ');
 
-            expect(context.state.messages).toHaveLength(4);
+			expect(onSubmit).not.toHaveBeenCalled();
+			expect(context.state.messages).toHaveLength(0);
+		});
+	});
 
-            await context.retryLastMessage();
+	describe('retryLastMessage', () => {
+		it('retries the last user message', async () => {
+			const onRetry = vi.fn();
+			const { context } = await setup({ onRetry });
 
-            // Should remove messages after the last user message (which is index 2)
-            // So messages 0, 1, 2 remain. 3 is removed.
-            // Wait, logic says: state.messages = state.messages.slice(0, actualIndex + 1);
-            // actualIndex is the index of last user message.
-            
-            expect(context.state.messages).toHaveLength(3);
-            expect(context.state.messages[2].content).toBe('User msg 2');
-            expect(onRetry).toHaveBeenCalled();
-        });
+			// Setup messages: User -> Assistant (Error)
+			act(() => {
+				context.addMessage({ role: 'user', content: 'User msg 1', status: 'complete' });
+				context.addMessage({ role: 'assistant', content: 'Assist 1', status: 'complete' });
+				context.addMessage({ role: 'user', content: 'User msg 2', status: 'complete' });
+				context.addMessage({ role: 'assistant', content: 'Error msg', status: 'error' });
+			});
 
-        it('does nothing if no user message found', async () => {
-            const onRetry = vi.fn();
-            const { context } = await setup({ onRetry });
-            
-            // Empty messages
-            await context.retryLastMessage();
-            
-            expect(onRetry).not.toHaveBeenCalled();
-        });
-    });
+			expect(context.state.messages).toHaveLength(4);
 
-    describe('Tool Calls', () => {
-        it('adds and updates tool calls', async () => {
-            const { context } = await setup();
+			await context.retryLastMessage();
 
-            let msgId: string = '';
-            act(() => {
-                const msg = context.addMessage({ role: 'assistant', content: 'Thinking...', status: 'streaming' });
-                msgId = msg.id;
-            });
+			// Should remove messages after the last user message (which is index 2)
+			// So messages 0, 1, 2 remain. 3 is removed.
+			// Wait, logic says: state.messages = state.messages.slice(0, actualIndex + 1);
+			// actualIndex is the index of last user message.
 
-            let toolCallId: string = '';
-            act(() => {
-                const toolCall = context.addToolCall(msgId, {
-                    name: 'calculator',
-                    args: { expression: '2+2' },
-                    status: 'pending'
-                });
-                toolCallId = toolCall.id;
-            });
+			expect(context.state.messages).toHaveLength(3);
+			expect(context.state.messages[2].content).toBe('User msg 2');
+			expect(onRetry).toHaveBeenCalled();
+		});
 
-            const msg = context.state.messages.find(m => m.id === msgId);
-            expect(msg?.toolCalls).toHaveLength(1);
-            expect(msg?.toolCalls?.[0].name).toBe('calculator');
+		it('does nothing if no user message found', async () => {
+			const onRetry = vi.fn();
+			const { context } = await setup({ onRetry });
 
-            act(() => {
-                context.updateToolCall(msgId, toolCallId, {
-                    result: '4',
-                    status: 'complete'
-                });
-            });
+			// Empty messages
+			await context.retryLastMessage();
 
-            const updatedMsg = context.state.messages.find(m => m.id === msgId);
-            expect(updatedMsg?.toolCalls?.[0].status).toBe('complete');
-            expect(updatedMsg?.toolCalls?.[0].result).toBe('4');
-        });
-    });
+			expect(onRetry).not.toHaveBeenCalled();
+		});
+	});
 
-    describe('Streaming', () => {
-        it('updates stream content and cancels', async () => {
-            const onStopStreaming = vi.fn();
-            const { context } = await setup({ onStopStreaming });
+	describe('Tool Calls', () => {
+		it('adds and updates tool calls', async () => {
+			const { context } = await setup();
 
-            let msgId: string = '';
-            act(() => {
-                const msg = context.addMessage({ role: 'assistant', content: '', status: 'streaming' });
-                msgId = msg.id;
-                context.updateState({ streaming: true });
-            });
+			let msgId: string = '';
+			act(() => {
+				const msg = context.addMessage({
+					role: 'assistant',
+					content: 'Thinking...',
+					status: 'streaming',
+				});
+				msgId = msg.id;
+			});
 
-            act(() => {
-                context.updateStreamContent('Hello');
-            });
+			let toolCallId: string = '';
+			act(() => {
+				const toolCall = context.addToolCall(msgId, {
+					name: 'calculator',
+					args: { expression: '2+2' },
+					status: 'pending',
+				} as any);
+				toolCallId = toolCall.id;
+			});
 
-            expect(context.state.streamContent).toBe('Hello');
-            expect(context.state.messages.find(m => m.id === msgId)?.content).toBe('Hello');
+			const msg = context.state.messages.find((m) => m.id === msgId);
+			expect(msg?.toolCalls).toHaveLength(1);
+			expect((msg?.toolCalls?.[0] as any).name).toBe('calculator');
 
-            act(() => {
-                context.cancelStream();
-            });
+			act(() => {
+				context.updateToolCall(msgId, toolCallId, {
+					result: '4',
+					status: 'complete',
+				});
+			});
 
-            expect(context.state.streaming).toBe(false);
-            expect(context.state.messages.find(m => m.id === msgId)?.status).toBe('complete');
-            expect(onStopStreaming).toHaveBeenCalled();
-        });
-    });
-    
-    describe('Settings', () => {
-        it('toggles settings panel', async () => {
-             const { context } = await setup();
-             
-             expect(context.state.settingsOpen).toBe(false);
-             
-             act(() => {
-                 context.toggleSettings();
-             });
-             
-             expect(context.state.settingsOpen).toBe(true);
-        });
-    });
+			const updatedMsg = context.state.messages.find((m) => m.id === msgId);
+			expect(updatedMsg?.toolCalls?.[0].status).toBe('complete');
+			expect(updatedMsg?.toolCalls?.[0].result).toBe('4');
+		});
+	});
+
+	describe('Streaming', () => {
+		it('updates stream content and cancels', async () => {
+			const onStopStreaming = vi.fn();
+			const { context } = await setup({ onStopStreaming });
+
+			let msgId: string = '';
+			act(() => {
+				const msg = context.addMessage({ role: 'assistant', content: '', status: 'streaming' });
+				msgId = msg.id;
+				context.updateState({ streaming: true });
+			});
+
+			act(() => {
+				context.updateStreamContent('Hello');
+			});
+
+			expect(context.state.streamContent).toBe('Hello');
+			expect(context.state.messages.find((m) => m.id === msgId)?.content).toBe('Hello');
+
+			act(() => {
+				context.cancelStream();
+			});
+
+			expect(context.state.streaming).toBe(false);
+			expect(context.state.messages.find((m) => m.id === msgId)?.status).toBe('complete');
+			expect(onStopStreaming).toHaveBeenCalled();
+		});
+	});
+
+	describe('Settings', () => {
+		it('toggles settings panel', async () => {
+			const { context } = await setup();
+
+			expect(context.state.settingsOpen).toBe(false);
+
+			act(() => {
+				context.toggleSettings();
+			});
+
+			expect(context.state.settingsOpen).toBe(true);
+		});
+	});
 });

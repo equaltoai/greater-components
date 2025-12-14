@@ -1,13 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { 
-	createSearchContext, 
-	createInitialSearchState, 
-	highlightQuery, 
-	formatResultCount, 
+import {
+	createSearchContext,
+	createInitialSearchState,
+	highlightQuery,
+	formatResultCount,
 	formatCount,
 	type SearchHandlers,
 	type SearchState,
-	type SearchResultType
 } from '../src/context.svelte';
 
 // Mock svelte context functions
@@ -19,7 +18,7 @@ vi.mock('svelte', () => ({
 describe('Search Context', () => {
 	let handlers: SearchHandlers;
 	let state: SearchState;
-	
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 		handlers = {
@@ -56,11 +55,13 @@ describe('Search Context', () => {
 		it('handles localStorage errors gracefully', () => {
 			// Mock getItem to throw
 			const originalGetItem = localStorage.getItem;
-			localStorage.getItem = vi.fn(() => { throw new Error('Storage error'); });
-			
+			localStorage.getItem = vi.fn(() => {
+				throw new Error('Storage error');
+			});
+
 			const initialState = createInitialSearchState();
 			expect(initialState.recentSearches).toEqual([]);
-			
+
 			localStorage.getItem = originalGetItem;
 		});
 	});
@@ -72,15 +73,17 @@ describe('Search Context', () => {
 
 			const context = createSearchContext(state, handlers);
 			context.state.query = 'test';
-			
+
 			await context.search();
 
-			expect(handlers.onSearch).toHaveBeenCalledWith(expect.objectContaining({
-				query: 'test',
-				type: undefined, // 'all' -> undefined
-				semantic: false,
-				following: false
-			}));
+			expect(handlers.onSearch).toHaveBeenCalledWith(
+				expect.objectContaining({
+					query: 'test',
+					type: undefined, // 'all' -> undefined
+					semantic: false,
+					following: false,
+				})
+			);
 			expect(context.state.results).toEqual(mockResults);
 			expect(context.state.loading).toBe(false);
 			expect(context.state.error).toBeNull();
@@ -95,9 +98,11 @@ describe('Search Context', () => {
 			const context = createSearchContext(state, handlers);
 			await context.search('custom');
 
-			expect(handlers.onSearch).toHaveBeenCalledWith(expect.objectContaining({
-				query: 'custom'
-			}));
+			expect(handlers.onSearch).toHaveBeenCalledWith(
+				expect.objectContaining({
+					query: 'custom',
+				})
+			);
 		});
 
 		it('does nothing if query is empty', async () => {
@@ -112,7 +117,7 @@ describe('Search Context', () => {
 
 			const context = createSearchContext(state, handlers);
 			context.state.query = 'test';
-			
+
 			await context.search();
 
 			expect(context.state.error).toBe('Search failed');
@@ -141,7 +146,7 @@ describe('Search Context', () => {
 			const context = createSearchContext(state, handlers);
 			// Mock search explicitly to avoid side effects
 			const searchSpy = vi.spyOn(context, 'search').mockImplementation(async () => {});
-			
+
 			context.state.query = 'test';
 			context.setType('actors');
 
@@ -152,7 +157,7 @@ describe('Search Context', () => {
 		it('updates type without search if query empty', () => {
 			const context = createSearchContext(state, handlers);
 			const searchSpy = vi.spyOn(context, 'search');
-			
+
 			context.state.query = '';
 			context.setType('notes');
 
@@ -165,7 +170,7 @@ describe('Search Context', () => {
 		it('toggles semantic and triggers search', () => {
 			const context = createSearchContext(state, handlers);
 			const searchSpy = vi.spyOn(context, 'search').mockImplementation(async () => {});
-			
+
 			context.state.query = 'test';
 			context.state.semantic = false;
 
@@ -183,7 +188,7 @@ describe('Search Context', () => {
 		it('toggles following and triggers search', () => {
 			const context = createSearchContext(state, handlers);
 			const searchSpy = vi.spyOn(context, 'search').mockImplementation(async () => {});
-			
+
 			context.state.query = 'test';
 			context.state.following = false;
 
@@ -198,7 +203,7 @@ describe('Search Context', () => {
 		it('adds search to recent list', () => {
 			const context = createSearchContext(state, handlers);
 			context.addRecentSearch('new search');
-			
+
 			expect(context.state.recentSearches).toEqual(['new search']);
 			expect(localStorage.getItem('greater-search-recent')).toContain('new search');
 		});
@@ -206,21 +211,35 @@ describe('Search Context', () => {
 		it('deduplicates and moves to front', () => {
 			const context = createSearchContext(state, handlers);
 			context.state.recentSearches = ['a', 'b'];
-			
+
 			context.addRecentSearch('b');
-			
+
 			expect(context.state.recentSearches).toEqual(['b', 'a']);
 		});
 
 		it('limits to 10 items', () => {
 			const context = createSearchContext(state, handlers);
-			context.state.recentSearches = ['1','2','3','4','5','6','7','8','9','10'];
-			
+			context.state.recentSearches = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+
 			context.addRecentSearch('11');
-			
+
 			expect(context.state.recentSearches).toHaveLength(10);
 			expect(context.state.recentSearches[0]).toBe('11');
 			expect(context.state.recentSearches).not.toContain('10'); // Should remove last
+		});
+
+		it('handles localStorage write errors gracefully', () => {
+			const originalSetItem = localStorage.setItem;
+			localStorage.setItem = vi.fn(() => {
+				throw new Error('Storage write error');
+			});
+
+			const context = createSearchContext(state, handlers);
+			// Should not throw
+			context.addRecentSearch('new search');
+			expect(context.state.recentSearches).toContain('new search');
+
+			localStorage.setItem = originalSetItem;
 		});
 	});
 

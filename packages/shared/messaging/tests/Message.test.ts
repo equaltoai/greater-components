@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount, unmount } from 'svelte';
 import Message from '../src/Message.svelte';
 
 // Mock context helpers
-vi.mock('../src/context.svelte.js', async () => {
-	const actual = await vi.importActual('../src/context.svelte.js');
+vi.mock('../src/utils.js', async () => {
+	const actual = await vi.importActual('../src/utils.js');
 	return {
 		...actual,
 		formatMessageTime: () => '10:00 AM',
@@ -12,7 +12,12 @@ vi.mock('../src/context.svelte.js', async () => {
 });
 
 describe('Message', () => {
-	const alice = { id: 'u1', username: 'alice', displayName: 'Alice', avatar: 'https://example.com/a.jpg' };
+	const alice = {
+		id: 'u1',
+		username: 'alice',
+		displayName: 'Alice',
+		avatar: 'https://example.com/a.jpg',
+	};
 	const bob = { id: 'u2', username: 'bob', displayName: 'Bob', avatar: '' };
 
 	it('renders own message correctly', () => {
@@ -23,18 +28,18 @@ describe('Message', () => {
 			sender: alice,
 			content: 'My message',
 			createdAt: new Date().toISOString(),
-			read: true
+			read: true,
 		};
 
 		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
 
 		const msg = target.querySelector('.message');
 		expect(msg?.classList.contains('message--own')).toBe(true);
-		
+
 		// Own message shouldn't show avatar or name usually (depending on CSS/Design, but based on template logic)
 		expect(target.querySelector('.message__avatar')).toBeFalsy();
 		expect(target.querySelector('.message__sender')).toBeFalsy();
-		
+
 		expect(target.querySelector('.message__content')?.textContent).toBe('My message');
 		expect(target.querySelector('.message__time')?.textContent).toBe('10:00 AM');
 
@@ -49,7 +54,7 @@ describe('Message', () => {
 			sender: bob,
 			content: 'Hello',
 			createdAt: new Date().toISOString(),
-			read: true
+			read: true,
 		};
 
 		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
@@ -60,7 +65,7 @@ describe('Message', () => {
 		expect(target.querySelector('.message__avatar')).toBeTruthy();
 		// Bob has no avatar, check placeholder
 		expect(target.querySelector('.message__avatar-placeholder')?.textContent?.trim()).toBe('B');
-		
+
 		expect(target.querySelector('.message__sender')?.textContent).toBe('Bob');
 		expect(target.querySelector('.message__content')?.textContent).toBe('Hello');
 
@@ -75,7 +80,7 @@ describe('Message', () => {
 			sender: alice,
 			content: 'Hi',
 			createdAt: new Date().toISOString(),
-			read: true
+			read: true,
 		};
 
 		const instance = mount(Message, { target, props: { message, currentUserId: 'u2' } }); // Alice is 'other'

@@ -51,9 +51,9 @@ describe('Badge.svelte', () => {
 		render(BadgeHarness, {
 			props: {
 				labelContent: 'Custom Label',
-			}
+			},
 		});
-		
+
 		expect(screen.getByTestId('label-snippet').textContent).toBe('Custom Label');
 	});
 
@@ -61,10 +61,10 @@ describe('Badge.svelte', () => {
 		render(BadgeHarness, {
 			props: {
 				props: { variant: 'pill', label: 'Title' },
-				childContent: 'Custom Description'
-			}
+				childContent: 'Custom Description',
+			},
 		});
-		
+
 		expect(screen.getByTestId('child-snippet').textContent).toBe('Custom Description');
 		expect(screen.getByText('Title')).toBeTruthy();
 	});
@@ -73,10 +73,10 @@ describe('Badge.svelte', () => {
 		render(BadgeHarness, {
 			props: {
 				props: { variant: 'filled' },
-				childContent: 'Content Only'
-			}
+				childContent: 'Content Only',
+			},
 		});
-		
+
 		expect(screen.getByTestId('child-snippet').textContent).toBe('Content Only');
 	});
 

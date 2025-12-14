@@ -75,7 +75,7 @@ describe('CharacterCount', () => {
 	it('should have correct aria-label', () => {
 		mockContext.state.characterCount = 123;
 		render(CharacterCount);
-		
+
 		const element = screen.getByRole('status');
 		expect(element.getAttribute('aria-label')).toBe('123 of 500 characters used');
 	});

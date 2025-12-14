@@ -66,7 +66,7 @@ describe('Admin.Cost.BudgetControls', () => {
 
 		await fireEvent.input(domainInput, { target: { value: 'new.com' } });
 		await fireEvent.input(amountInput, { target: { value: '200' } });
-		
+
 		await fireEvent.click(saveButton);
 
 		expect(adapter.setInstanceBudget).toHaveBeenCalledWith('new.com', 200, false);

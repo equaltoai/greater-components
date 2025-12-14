@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { getIcon, iconAliases, iconList, iconCategories, ActivityIcon, GlobeIcon } from '../src/index';
+import {
+	getIcon,
+	iconAliases,
+	iconList,
+	iconCategories,
+	ActivityIcon,
+	GlobeIcon,
+} from '../src/index';
 
 describe('Icon Registry', () => {
 	describe('getIcon', () => {
@@ -21,12 +28,12 @@ describe('Icon Registry', () => {
 			expect(getIcon('')).toBeNull();
 		});
 
-        it('handles direct cache hits vs alias lookups', () => {
-            // "activity" is direct
-            expect(getIcon('activity')).toBe(ActivityIcon);
-            // "world" -> "globe" -> GlobeIcon
-            expect(getIcon('world')).toBe(GlobeIcon);
-        });
+		it('handles direct cache hits vs alias lookups', () => {
+			// "activity" is direct
+			expect(getIcon('activity')).toBe(ActivityIcon);
+			// "world" -> "globe" -> GlobeIcon
+			expect(getIcon('world')).toBe(GlobeIcon);
+		});
 	});
 
 	describe('iconAliases', () => {
@@ -49,25 +56,25 @@ describe('Icon Registry', () => {
 			// Check a known alias
 			expect(iconList).not.toContain('world');
 		});
-        
-        it('has a large number of icons', () => {
-            expect(iconList.length).toBeGreaterThan(100);
-        });
+
+		it('has a large number of icons', () => {
+			expect(iconList.length).toBeGreaterThan(100);
+		});
 	});
 
 	describe('iconCategories', () => {
 		it('has expected categories', () => {
 			expect(iconCategories).toHaveProperty('fediverse');
 			expect(iconCategories).toHaveProperty('brands');
-            expect(iconCategories).toHaveProperty('navigation');
-            expect(iconCategories).toHaveProperty('action');
-            expect(iconCategories).toHaveProperty('media');
-            expect(iconCategories).toHaveProperty('communication');
-            expect(iconCategories).toHaveProperty('user');
-            expect(iconCategories).toHaveProperty('ui');
-            expect(iconCategories).toHaveProperty('status');
-            expect(iconCategories).toHaveProperty('files');
-            expect(iconCategories).toHaveProperty('common');
+			expect(iconCategories).toHaveProperty('navigation');
+			expect(iconCategories).toHaveProperty('action');
+			expect(iconCategories).toHaveProperty('media');
+			expect(iconCategories).toHaveProperty('communication');
+			expect(iconCategories).toHaveProperty('user');
+			expect(iconCategories).toHaveProperty('ui');
+			expect(iconCategories).toHaveProperty('status');
+			expect(iconCategories).toHaveProperty('files');
+			expect(iconCategories).toHaveProperty('common');
 		});
 
 		it('contains valid icons in categories', () => {
@@ -95,12 +102,12 @@ describe('Icon Registry', () => {
 		});
 	});
 
-    describe('Brand Exports', () => {
-        it('can import brands from subpath', async () => {
-             // Dynamic import to test existence
-             const brands = await import('../src/icons/brands/index');
-             expect(brands.GoogleIcon).toBeDefined();
-             expect(brands.AppleIcon).toBeDefined();
-        });
-    });
+	describe('Brand Exports', () => {
+		it('can import brands from subpath', async () => {
+			// Dynamic import to test existence
+			const brands = await import('../src/icons/brands/index');
+			expect(brands.GoogleIcon).toBeDefined();
+			expect(brands.AppleIcon).toBeDefined();
+		});
+	});
 });

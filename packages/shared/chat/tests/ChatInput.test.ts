@@ -22,11 +22,11 @@ const createMockFile = (name: string, size: number, type: string) => {
 };
 
 describe('ChatInput.svelte', () => {
-    // Mock URL.createObjectURL and revokeObjectURL
-    beforeAll(() => {
-        global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
-        global.URL.revokeObjectURL = vi.fn();
-    });
+	// Mock URL.createObjectURL and revokeObjectURL
+	beforeAll(() => {
+		global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+		global.URL.revokeObjectURL = vi.fn();
+	});
 
 	describe('Rendering', () => {
 		it('renders textarea', () => {
@@ -122,24 +122,24 @@ describe('ChatInput.svelte', () => {
 
 			const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
 			const file = createMockFile('test.png', 1024, 'image/png');
-            
-            // Define files property on the input element
+
+			// Define files property on the input element
 			Object.defineProperty(fileInput, 'files', {
 				value: [file],
-                writable: true
+				writable: true,
 			});
 
 			await fireEvent.change(fileInput);
 
 			expect(screen.getByText('test.png')).toBeTruthy();
-            expect(screen.getByText('1.0 KB')).toBeTruthy();
-            
-            // Check that we can send now (even if text empty)
-            expect(screen.getByRole('button', { name: /send message/i })).not.toBeDisabled();
+			expect(screen.getByText('1.0 KB')).toBeTruthy();
+
+			// Check that we can send now (even if text empty)
+			expect(screen.getByRole('button', { name: /send message/i })).not.toBeDisabled();
 		});
 
-        it('removes file when remove button clicked', async () => {
-            const onSend = vi.fn();
+		it('removes file when remove button clicked', async () => {
+			const onSend = vi.fn();
 			const { container } = render(ChatInputHarness, {
 				props: { onSend, showFileUpload: true },
 			});
@@ -149,103 +149,103 @@ describe('ChatInput.svelte', () => {
 			Object.defineProperty(fileInput, 'files', { value: [file] });
 			await fireEvent.change(fileInput);
 
-            expect(screen.getByText('test.png')).toBeTruthy();
-            
-            const removeButton = screen.getByLabelText('Remove test.png');
-            await fireEvent.click(removeButton);
-            
-            expect(screen.queryByText('test.png')).toBeNull();
-        });
+			expect(screen.getByText('test.png')).toBeTruthy();
 
-        it('handles file paste', async () => {
-            const onSend = vi.fn();
+			const removeButton = screen.getByLabelText('Remove test.png');
+			await fireEvent.click(removeButton);
+
+			expect(screen.queryByText('test.png')).toBeNull();
+		});
+
+		it('handles file paste', async () => {
+			const onSend = vi.fn();
 			render(ChatInputHarness, { props: { onSend, showFileUpload: true } });
-            
-            const file = createMockFile('pasted.png', 1024, 'image/png');
-            const clipboardData = {
-                items: [
-                    { 
-                        type: 'image/png', 
-                        getAsFile: () => file 
-                    }
-                ]
-            };
-            
-            const textarea = screen.getByRole('textbox');
-            await fireEvent.paste(textarea, { clipboardData });
-            
-            expect(screen.getByText('pasted.png')).toBeTruthy();
-        });
 
-        it('handles drag and drop', async () => {
-            const onSend = vi.fn();
+			const file = createMockFile('pasted.png', 1024, 'image/png');
+			const clipboardData = {
+				items: [
+					{
+						type: 'image/png',
+						getAsFile: () => file,
+					},
+				],
+			};
+
+			const textarea = screen.getByRole('textbox');
+			await fireEvent.paste(textarea, { clipboardData });
+
+			expect(screen.getByText('pasted.png')).toBeTruthy();
+		});
+
+		it('handles drag and drop', async () => {
+			const onSend = vi.fn();
 			const { container } = render(ChatInputHarness, { props: { onSend, showFileUpload: true } });
-            
-            const dropZone = container.firstChild as HTMLElement;
-            
-            // Drag enter
-            await fireEvent.dragEnter(dropZone);
-            expect(screen.getByText('Drop files here')).toBeTruthy();
-            
-            // Drop
-            const file = createMockFile('dropped.png', 1024, 'image/png');
-            const dataTransfer = {
-                files: [file],
-                dropEffect: 'none'
-            };
-            
-            await fireEvent.drop(dropZone, { dataTransfer });
-            
-            expect(screen.getByText('dropped.png')).toBeTruthy();
-            expect(screen.queryByText('Drop files here')).toBeNull();
-        });
-        
-        it('enforces max file limits', async () => {
-            const onSend = vi.fn();
+
+			const dropZone = container.firstChild as HTMLElement;
+
+			// Drag enter
+			await fireEvent.dragEnter(dropZone);
+			expect(screen.getByText('Drop files here')).toBeTruthy();
+
+			// Drop
+			const file = createMockFile('dropped.png', 1024, 'image/png');
+			const dataTransfer = {
+				files: [file],
+				dropEffect: 'none',
+			};
+
+			await fireEvent.drop(dropZone, { dataTransfer });
+
+			expect(screen.getByText('dropped.png')).toBeTruthy();
+			expect(screen.queryByText('Drop files here')).toBeNull();
+		});
+
+		it('enforces max file limits', async () => {
+			const onSend = vi.fn();
 			const { container } = render(ChatInputHarness, {
 				props: { onSend, showFileUpload: true, maxFiles: 1 },
 			});
 
 			const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
 			const file1 = createMockFile('1.png', 1024, 'image/png');
-            const file2 = createMockFile('2.png', 1024, 'image/png');
+			const file2 = createMockFile('2.png', 1024, 'image/png');
 
 			Object.defineProperty(fileInput, 'files', { value: [file1], configurable: true });
 			await fireEvent.change(fileInput);
-            
-            expect(screen.getByText('1.png')).toBeTruthy();
-            
-            // Try to add another
-            Object.defineProperty(fileInput, 'files', { value: [file2], configurable: true });
+
+			expect(screen.getByText('1.png')).toBeTruthy();
+
+			// Try to add another
+			Object.defineProperty(fileInput, 'files', { value: [file2], configurable: true });
 			await fireEvent.change(fileInput);
-            
-            // Should not add second file
-            expect(screen.queryByText('2.png')).toBeNull();
-        });
+
+			// Should not add second file
+			expect(screen.queryByText('2.png')).toBeNull();
+		});
 	});
 
 	describe('Clearing After Send', () => {
 		it('clears input and attachments after successful send', async () => {
 			const onSend = vi.fn().mockResolvedValue(undefined);
-            const { container } = render(ChatInputHarness, {
+			const { container } = render(ChatInputHarness, {
 				props: { onSend, showFileUpload: true },
 			});
 
-            // Add text and file
+			// Add text and file
 			const textarea = screen.getByRole('textbox');
 			await fireEvent.input(textarea, { target: { value: 'Message' } });
-            
-            const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+
+			const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
 			const file = createMockFile('test.png', 1024, 'image/png');
 			Object.defineProperty(fileInput, 'files', { value: [file] });
 			await fireEvent.change(fileInput);
 
-            // Send
+			// Send
 			await fireEvent.click(screen.getByRole('button', { name: /send message/i }));
 
 			await waitFor(() => {
 				expect(textarea).toHaveValue('');
-                expect(screen.queryByText('test.png')).toBeNull();
+				expect(screen.queryByText('test.png')).toBeNull();
 			});
 		});
 	});

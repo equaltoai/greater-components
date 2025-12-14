@@ -19,8 +19,8 @@
 	<span data-testid="child-snippet">{childContent}</span>
 {/snippet}
 
-<Badge 
-	{...props} 
+<Badge
+	{...props}
 	labelSnippet={labelContent ? myLabelSnippet : undefined}
 	children={childContent ? myChildren : undefined}
 />

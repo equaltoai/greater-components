@@ -10,7 +10,7 @@
 import { getContext, setContext } from 'svelte';
 import type { GenericTimelineItem } from '../../generics/index.js';
 
-const LISTS_CONTEXT_KEY = Symbol('lists-context');
+const LISTS_CONTEXT_KEY = 'lists-context-debug'; // Symbol('lists-context');
 
 /**
  * List data structure
@@ -236,9 +236,13 @@ export interface ListsContext {
  * Create lists context
  *
  * @param handlers - Lists event handlers
+ * @param initialState - Optional initial state
  * @returns Lists context
  */
-export function createListsContext(handlers: ListsHandlers = {}): ListsContext {
+export function createListsContext(
+	handlers: ListsHandlers = {},
+	initialState: Partial<ListsState> = {}
+): ListsContext {
 	const state = $state<ListsState>({
 		lists: [],
 		selectedList: null,
@@ -247,6 +251,7 @@ export function createListsContext(handlers: ListsHandlers = {}): ListsContext {
 		error: null,
 		editorOpen: false,
 		editingList: null,
+		...initialState,
 	});
 
 	const context: ListsContext = {

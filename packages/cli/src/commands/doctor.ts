@@ -603,11 +603,7 @@ export async function runAutoFix(
 	return { fixed, failed };
 }
 
-export const doctorAction = async (options: {
-	cwd?: string;
-	fix?: boolean;
-	json?: boolean;
-}) => {
+export const doctorAction = async (options: { cwd?: string; fix?: boolean; json?: boolean }) => {
 	const cwd = path.resolve(options.cwd || process.cwd());
 
 	if (!options.json) {
@@ -627,13 +623,12 @@ export const doctorAction = async (options: {
 					2
 				)
 			);
-					} else {
-						logger.error(chalk.red('✖ Not a valid project'));
-						logger.note(chalk.dim('  No package.json found. Run this command in a project root.\n'));
-					}
-					process.exit(1);
-					return;
-				}
+		} else {
+			logger.error(chalk.red('✖ Not a valid project'));
+			logger.note(chalk.dim('  No package.json found. Run this command in a project root.\n'));
+		}
+		process.exit(1);
+	}
 	const results: DiagnosticResult[] = [];
 
 	// Run all diagnostic checks
@@ -738,9 +733,8 @@ export const doctorAction = async (options: {
 		}
 	}
 
-		// Exit with error code if there are errors
-		process.exit(summary.errors > 0 ? 1 : 0);
-		return;
+	// Exit with error code if there are errors
+	process.exit(summary.errors > 0 ? 1 : 0);
 };
 
 export const doctorCommand = new Command()

@@ -146,6 +146,7 @@ Alert component - A versatile alert/banner component for displaying error, warni
 	}
 
 	// Handle action button click
+	// Handle action button click
 	function handleAction() {
 		onAction?.();
 	}

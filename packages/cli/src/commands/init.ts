@@ -43,6 +43,11 @@ const AVAILABLE_FACES = [
 	{ title: 'Social', value: 'social', description: 'Twitter/Mastodon-style social media UI' },
 	{ title: 'Blog', value: 'blog', description: 'Long-form content and article UI' },
 	{ title: 'Community', value: 'community', description: 'Forum and group discussion UI' },
+	{
+		title: 'Artist',
+		value: 'artist',
+		description: 'Visual artist portfolios and gallery platforms',
+	},
 ] as const;
 
 /**
@@ -216,6 +221,7 @@ export const initAction = async (options: {
 		spinner.warn('Greater Components is already initialized in this project');
 		logger.note(chalk.dim('\n  To reinitialize, delete components.json and run again.\n'));
 		process.exit(0);
+		return;
 	}
 
 	// Detect project details
@@ -251,9 +257,9 @@ export const initAction = async (options: {
 
 	// Validate face option if provided
 	let selectedFace: string | null = options.face || null;
-	if (selectedFace && !['social', 'blog', 'community'].includes(selectedFace)) {
+	if (selectedFace && !['social', 'blog', 'community', 'artist'].includes(selectedFace)) {
 		logger.error(chalk.red(`\n✖ Invalid face: ${selectedFace}`));
-		logger.note(chalk.dim('  Available faces: social, blog, community\n'));
+		logger.note(chalk.dim('  Available faces: social, blog, community, artist\n'));
 		process.exit(1);
 		return;
 	}
@@ -361,11 +367,12 @@ export const initAction = async (options: {
 			initial: true,
 		});
 
-					if (!confirmResponse.confirm) {
-						logger.warn(chalk.yellow('\n✖ Setup cancelled'));
-						process.exit(0);
-						return;
-					}	}
+		if (!confirmResponse.confirm) {
+			logger.warn(chalk.yellow('\n✖ Setup cancelled'));
+			process.exit(0);
+			return;
+		}
+	}
 
 	// Write configuration
 	const configSpinner = ora('Creating configuration...').start();

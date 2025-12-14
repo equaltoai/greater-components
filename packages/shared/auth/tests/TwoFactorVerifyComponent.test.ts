@@ -11,12 +11,12 @@ describe('TwoFactorVerify Component', () => {
 
 	function setup(props = {}, handlers = {}, initialState = {}) {
 		const mergedHandlers = { ...defaultHandlers, ...handlers };
-		
+
 		const { component, rerender } = render(TestWrapper, {
 			component: TwoFactorVerify,
 			handlers: mergedHandlers,
 			initialState,
-			...props
+			...props,
 		});
 
 		return { handlers: mergedHandlers, component, rerender };
@@ -42,7 +42,7 @@ describe('TwoFactorVerify Component', () => {
 
 		expect(handlers.onTwoFactorVerify).toHaveBeenCalledWith({
 			code: '123456',
-			method: 'totp'
+			method: 'totp',
 		});
 	});
 
@@ -51,17 +51,17 @@ describe('TwoFactorVerify Component', () => {
 
 		const input = screen.getByLabelText('6-Digit Code');
 		await fireEvent.input(input, { target: { value: '123' } });
-		
+
 		// Button should be disabled for short code (based on markup logic)
 		const button = screen.getByRole('button', { name: 'Verify' }) as HTMLButtonElement;
 		expect(button.disabled).toBe(true);
 
 		// Try Enter key
 		await fireEvent.keyDown(input, { key: 'Enter' });
-		
+
 		// Verify logic inside component also checks length
 		expect(handlers.onTwoFactorVerify).not.toHaveBeenCalled();
-		
+
 		// Wait and check if error message appears after explicit verify attempt
 		// Note: The button is disabled, so click won't work.
 		// The `handleVerify` function has a length check, which sets `codeError`.
@@ -69,24 +69,32 @@ describe('TwoFactorVerify Component', () => {
 	});
 
 	it('displays backup option when available', async () => {
-		setup({}, {}, { 
-			twoFactorSession: { 
-				email: 'test@example.com', 
-				methods: ['totp', 'backup'] 
-			} 
-		});
+		setup(
+			{},
+			{},
+			{
+				twoFactorSession: {
+					email: 'test@example.com',
+					methods: ['totp', 'backup'],
+				},
+			}
+		);
 
 		expect(screen.getByRole('button', { name: 'Authenticator App' })).toBeTruthy();
 		expect(screen.getByRole('button', { name: 'Backup Code' })).toBeTruthy();
 	});
 
 	it('switches to backup code method', async () => {
-		const { handlers } = setup({}, {}, { 
-			twoFactorSession: { 
-				email: 'test@example.com', 
-				methods: ['totp', 'backup'] 
-			} 
-		});
+		const { handlers } = setup(
+			{},
+			{},
+			{
+				twoFactorSession: {
+					email: 'test@example.com',
+					methods: ['totp', 'backup'],
+				},
+			}
+		);
 
 		await fireEvent.click(screen.getByRole('button', { name: 'Backup Code' }));
 
@@ -99,7 +107,7 @@ describe('TwoFactorVerify Component', () => {
 
 		expect(handlers.onTwoFactorVerify).toHaveBeenCalledWith({
 			code: 'BACKUP123',
-			method: 'backup'
+			method: 'backup',
 		});
 	});
 
@@ -119,6 +127,8 @@ describe('TwoFactorVerify Component', () => {
 		setup({}, {}, { loading: true });
 
 		expect((screen.getByLabelText('6-Digit Code') as HTMLInputElement).disabled).toBe(true);
-		expect((screen.getByRole('button', { name: 'Verifying...' }) as HTMLButtonElement).disabled).toBe(true);
+		expect(
+			(screen.getByRole('button', { name: 'Verifying...' }) as HTMLButtonElement).disabled
+		).toBe(true);
 	});
 });

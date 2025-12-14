@@ -4,9 +4,9 @@
  * Tests for notification store with real-time updates and grouping.
  */
 
-import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { NotificationStore } from '../src/lib/notificationStore';
-import type { Notification, Account, Status } from '../src/types';
+import type { Notification, Account } from '../src/types';
 
 const baseUrl = 'https://demo.equalto.social';
 
@@ -146,12 +146,14 @@ describe('NotificationStore', () => {
 		});
 
 		it('prevents concurrent loads', async () => {
-			const fetchMock = vi.fn().mockImplementation(
-				() =>
-					new Promise((resolve) =>
-						setTimeout(() => resolve(responseFor([makeNotification('1')])), 100)
-					)
-			);
+			const fetchMock = vi
+				.fn()
+				.mockImplementation(
+					() =>
+						new Promise((resolve) =>
+							setTimeout(() => resolve(responseFor([makeNotification('1')])), 100)
+						)
+				);
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new NotificationStore({ enableRealtime: false });
@@ -233,10 +235,7 @@ describe('NotificationStore', () => {
 		});
 
 		it('updates groups when toggling', async () => {
-			const notifications = [
-				makeNotification('1', 'follow'),
-				makeNotification('2', 'follow'),
-			];
+			const notifications = [makeNotification('1', 'follow'), makeNotification('2', 'follow')];
 			const fetchMock = vi.fn().mockResolvedValue(responseFor(notifications));
 			vi.stubGlobal('fetch', fetchMock);
 
@@ -272,14 +271,12 @@ describe('NotificationStore', () => {
 			let abortSignal: AbortSignal | undefined;
 			const fetchMock = vi.fn().mockImplementation((url, options) => {
 				abortSignal = options?.signal;
-				return new Promise((resolve) =>
-					setTimeout(() => resolve(responseFor([])), 1000)
-				);
+				return new Promise((resolve) => setTimeout(() => resolve(responseFor([])), 1000));
 			});
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new NotificationStore({ enableRealtime: false });
-			const loadPromise = store.loadInitial(baseUrl);
+			const _loadPromise = store.loadInitial(baseUrl);
 
 			store.abort();
 
@@ -349,9 +346,9 @@ describe('NotificationStore', () => {
 		});
 
 		it('handles notification.update', async () => {
-			const fetchMock = vi.fn().mockResolvedValue(
-				responseFor([makeNotification('1', 'follow', { read: false })])
-			);
+			const fetchMock = vi
+				.fn()
+				.mockResolvedValue(responseFor([makeNotification('1', 'follow', { read: false })]));
 			vi.stubGlobal('fetch', fetchMock);
 
 			const transport = new MockTransport();
@@ -405,9 +402,9 @@ describe('NotificationStore', () => {
 		});
 
 		it('does nothing for already read notification', async () => {
-			const fetchMock = vi.fn().mockResolvedValue(
-				responseFor([makeNotification('1', 'follow', { read: true })])
-			);
+			const fetchMock = vi
+				.fn()
+				.mockResolvedValue(responseFor([makeNotification('1', 'follow', { read: true })]));
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new NotificationStore({ enableRealtime: false });
@@ -458,12 +455,14 @@ describe('NotificationStore', () => {
 		});
 
 		it('does nothing when all are read', async () => {
-			const fetchMock = vi.fn().mockResolvedValue(
-				responseFor([
-					makeNotification('1', 'follow', { read: true }),
-					makeNotification('2', 'follow', { read: true }),
-				])
-			);
+			const fetchMock = vi
+				.fn()
+				.mockResolvedValue(
+					responseFor([
+						makeNotification('1', 'follow', { read: true }),
+						makeNotification('2', 'follow', { read: true }),
+					])
+				);
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new NotificationStore({ enableRealtime: false });
@@ -511,13 +510,15 @@ describe('NotificationStore', () => {
 
 	describe('Counts', () => {
 		it('tracks unread count correctly', async () => {
-			const fetchMock = vi.fn().mockResolvedValue(
-				responseFor([
-					makeNotification('1', 'follow', { read: false }),
-					makeNotification('2', 'follow', { read: true }),
-					makeNotification('3', 'follow', { read: false }),
-				])
-			);
+			const fetchMock = vi
+				.fn()
+				.mockResolvedValue(
+					responseFor([
+						makeNotification('1', 'follow', { read: false }),
+						makeNotification('2', 'follow', { read: true }),
+						makeNotification('3', 'follow', { read: false }),
+					])
+				);
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new NotificationStore({ enableRealtime: false });
@@ -547,10 +548,7 @@ describe('NotificationStore', () => {
 
 	describe('Getters', () => {
 		it('returns groups', async () => {
-			const notifications = [
-				makeNotification('1', 'follow'),
-				makeNotification('2', 'follow'),
-			];
+			const notifications = [makeNotification('1', 'follow'), makeNotification('2', 'follow')];
 			const fetchMock = vi.fn().mockResolvedValue(responseFor(notifications));
 			vi.stubGlobal('fetch', fetchMock);
 

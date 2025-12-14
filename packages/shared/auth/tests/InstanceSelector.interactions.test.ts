@@ -29,8 +29,8 @@ describe('Auth.InstanceSelector Interactions', () => {
 		const onOAuthStart = vi.fn();
 		render(InstanceSelectorTestHarness, {
 			props: {
-				handlers: { onOAuthStart }
-			}
+				handlers: { onOAuthStart },
+			},
 		});
 
 		const input = screen.getByLabelText(/instance/i);
@@ -46,8 +46,8 @@ describe('Auth.InstanceSelector Interactions', () => {
 		const onOAuthStart = vi.fn();
 		render(InstanceSelectorTestHarness, {
 			props: {
-				handlers: { onOAuthStart }
-			}
+				handlers: { onOAuthStart },
+			},
 		});
 
 		const input = screen.getByLabelText(/instance/i);
@@ -63,8 +63,8 @@ describe('Auth.InstanceSelector Interactions', () => {
 		const onOAuthStart = vi.fn().mockRejectedValue(new Error('Network error'));
 		render(InstanceSelectorTestHarness, {
 			props: {
-				handlers: { onOAuthStart }
-			}
+				handlers: { onOAuthStart },
+			},
 		});
 
 		const input = screen.getByLabelText(/instance/i);
@@ -79,13 +79,15 @@ describe('Auth.InstanceSelector Interactions', () => {
 
 	it('shows loading state', async () => {
 		// Promise that doesn't resolve immediately
-		let resolveStart: () => void;
-		const onOAuthStart = vi.fn().mockImplementation(() => new Promise<void>(r => resolveStart = r));
-		
+		let resolveStart: () => void = () => {};
+		const onOAuthStart = vi
+			.fn()
+			.mockImplementation(() => new Promise<void>((r) => (resolveStart = r)));
+
 		render(InstanceSelectorTestHarness, {
 			props: {
-				handlers: { onOAuthStart }
-			}
+				handlers: { onOAuthStart },
+			},
 		});
 
 		const input = screen.getByLabelText(/instance/i);
@@ -97,8 +99,8 @@ describe('Auth.InstanceSelector Interactions', () => {
 		expect(button.getAttribute('aria-busy')).toBe('true');
 		expect(button.hasAttribute('disabled')).toBe(true);
 		expect(button.textContent).toContain('Connecting');
-		
+
 		// Cleanup
-		resolveStart!();
+		resolveStart();
 	});
 });

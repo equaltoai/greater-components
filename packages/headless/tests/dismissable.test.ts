@@ -10,7 +10,7 @@ import {
 	createDismissable,
 	getDismissableLayerCount,
 	clearDismissableLayers,
-	type DismissReason,
+	// type DismissReason,
 } from '../src/behaviors/dismissable';
 
 describe('Dismissable Behavior', () => {

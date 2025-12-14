@@ -19,7 +19,7 @@ vi.mock('../src/MediaUploadHandler.js', async (importOriginal) => {
 vi.mock('@equaltoai/greater-components-headless/button', () => ({
 	createButton: () => ({
 		actions: {
-			button: (node: HTMLElement) => ({
+			button: (_node: HTMLElement) => ({
 				destroy: () => {},
 			}),
 		},
@@ -40,7 +40,7 @@ describe('MediaUpload', () => {
 
 	it('should handle file selection', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -59,11 +59,11 @@ describe('MediaUpload', () => {
 
 		const { container } = render(MediaUpload);
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', {
 			value: [file],
 		});
-		
+
 		await fireEvent.change(input);
 
 		await waitFor(() => {
@@ -73,19 +73,19 @@ describe('MediaUpload', () => {
 
 	it('should show error on validation failure', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
-		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ 
-			valid: false, 
-			errors: ['File too large'] 
+
+		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({
+			valid: false,
+			errors: ['File too large'],
 		});
 
 		const { container } = render(MediaUpload);
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', {
 			value: [file],
 		});
-		
+
 		await fireEvent.change(input);
 
 		await waitFor(() => {
@@ -99,7 +99,7 @@ describe('MediaUpload', () => {
 			id: 'server-id-1',
 			url: 'https://example.com/test.jpg',
 		});
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -118,11 +118,11 @@ describe('MediaUpload', () => {
 
 		const { container } = render(MediaUpload, { onUpload });
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', {
 			value: [file],
 		});
-		
+
 		await fireEvent.change(input);
 
 		await waitFor(() => {
@@ -132,7 +132,7 @@ describe('MediaUpload', () => {
 
 	it('should allow removing files', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -153,11 +153,11 @@ describe('MediaUpload', () => {
 		const onRemove = vi.fn();
 		const { container } = render(MediaUpload, { onRemove });
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', {
 			value: [file],
 		});
-		
+
 		await fireEvent.change(input);
 
 		await waitFor(() => {
@@ -173,7 +173,7 @@ describe('MediaUpload', () => {
 
 	it('should update file metadata', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -192,11 +192,11 @@ describe('MediaUpload', () => {
 
 		const { container } = render(MediaUpload);
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', {
 			value: [file],
 		});
-		
+
 		await fireEvent.change(input);
 
 		await waitFor(() => {
@@ -216,7 +216,7 @@ describe('MediaUpload', () => {
 
 	it('should update spoiler text', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -248,7 +248,7 @@ describe('MediaUpload', () => {
 
 	it('should handle media category change', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -281,17 +281,37 @@ describe('MediaUpload', () => {
 	it('should handle multiple files ordering/removal', async () => {
 		const file1 = new File([''], '1.jpg', { type: 'image/jpeg' });
 		const file2 = new File([''], '2.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
-			{ id: '1', file: file1, type: 'image', status: 'pending', progress: 0, sensitive: false, spoilerText: '', mediaCategory: 'IMAGE', metadata: { size: 100 } },
-			{ id: '2', file: file2, type: 'image', status: 'pending', progress: 0, sensitive: false, spoilerText: '', mediaCategory: 'IMAGE', metadata: { size: 100 } }
+			{
+				id: '1',
+				file: file1,
+				type: 'image',
+				status: 'pending',
+				progress: 0,
+				sensitive: false,
+				spoilerText: '',
+				mediaCategory: 'IMAGE',
+				metadata: { size: 100 },
+			},
+			{
+				id: '2',
+				file: file2,
+				type: 'image',
+				status: 'pending',
+				progress: 0,
+				sensitive: false,
+				spoilerText: '',
+				mediaCategory: 'IMAGE',
+				metadata: { size: 100 },
+			},
 		]);
 
 		const onRemove = vi.fn();
 		const { container } = render(MediaUpload, { onRemove });
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', { value: [file1, file2] });
 		await fireEvent.change(input);
 
@@ -301,7 +321,7 @@ describe('MediaUpload', () => {
 		});
 
 		// Check order by querying filenames
-		const filenames = screen.getAllByText(/\d\.jpg/).map(el => el.textContent);
+		const filenames = screen.getAllByText(/\d\.jpg/).map((el) => el.textContent);
 		expect(filenames).toEqual(['1.jpg', '2.jpg']);
 
 		// Remove first file
@@ -315,7 +335,7 @@ describe('MediaUpload', () => {
 	it('should handle upload error (Error object)', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
 		const onUpload = vi.fn().mockRejectedValue(new Error('Network error'));
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -344,7 +364,7 @@ describe('MediaUpload', () => {
 	it('should handle upload error (string)', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
 		const onUpload = vi.fn().mockRejectedValue('String error');
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -373,7 +393,7 @@ describe('MediaUpload', () => {
 	it('should handle upload error (unknown)', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
 		const onUpload = vi.fn().mockRejectedValue({ some: 'object' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -401,7 +421,7 @@ describe('MediaUpload', () => {
 
 	it('should handle drag and drop', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -419,15 +439,15 @@ describe('MediaUpload', () => {
 		]);
 
 		render(MediaUpload);
-		
+
 		const dropZone = screen.getByRole('button', { name: /Click or drag files/ });
 
 		// Trigger drop event
 		const dropEvent = new Event('drop', { bubbles: true, cancelable: true });
 		Object.defineProperty(dropEvent, 'dataTransfer', {
 			value: {
-				files: [file]
-			}
+				files: [file],
+			},
 		});
 
 		fireEvent(dropZone, dropEvent);
@@ -439,7 +459,7 @@ describe('MediaUpload', () => {
 
 	it('should hide Add More button when max files reached', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -458,7 +478,7 @@ describe('MediaUpload', () => {
 
 		const { container } = render(MediaUpload, { maxFiles: 1 });
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', { value: [file] });
 		await fireEvent.change(input);
 
@@ -472,9 +492,9 @@ describe('MediaUpload', () => {
 
 	it('should show progress bar when uploading', async () => {
 		const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-		
+
 		// Create a promise we can resolve later to control upload duration
-		let resolveUpload: (val: any) => void;
+		let resolveUpload: (val: any) => void = () => {};
 		const uploadPromise = new Promise((resolve) => {
 			resolveUpload = resolve;
 		});
@@ -483,7 +503,7 @@ describe('MediaUpload', () => {
 			onProgress(50); // Set progress to 50%
 			return uploadPromise;
 		});
-		
+
 		vi.mocked(MediaUploadHandler.validateFiles).mockReturnValue({ valid: true, errors: [] });
 		vi.mocked(MediaUploadHandler.processFiles).mockResolvedValue([
 			{
@@ -502,15 +522,15 @@ describe('MediaUpload', () => {
 
 		const { container } = render(MediaUpload, { onUpload });
 		const input = container.querySelector('input[type="file"]') as HTMLInputElement;
-		
+
 		Object.defineProperty(input, 'files', { value: [file] });
 		await fireEvent.change(input);
 
 		await waitFor(() => {
 			expect(screen.getByText('50%')).toBeTruthy();
 		});
-		
+
 		// Cleanup - resolve promise to prevent hanging
-		resolveUpload!({ id: '1', url: '' });
+		resolveUpload({ id: '1', url: '' });
 	});
 });

@@ -67,7 +67,7 @@ export type {
 	NotificationsState,
 	NotificationDisplayMode,
 	NotificationFilter,
-} from './context.js';
+} from './context.svelte.js';
 
 // Export notification types
 export type {

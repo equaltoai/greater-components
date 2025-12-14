@@ -122,9 +122,18 @@
 					if (timelineIntegration) {
 						await timelineIntegration.connect();
 						isConnected = timelineIntegration.state.connected;
+						// If the store has an error after connect, respect it
+						if (timelineIntegration.state.error) {
+							connectionError = timelineIntegration.state.error;
+							return;
+						}
 					} else if (notificationIntegration) {
 						await notificationIntegration.connect();
 						isConnected = notificationIntegration.state.connected;
+						if (notificationIntegration.state.error) {
+							connectionError = notificationIntegration.state.error;
+							return;
+						}
 					}
 					connectionError = null;
 				} catch (error) {

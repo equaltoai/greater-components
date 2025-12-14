@@ -297,7 +297,8 @@ describe('GraphQLAdapter - Compose Integration', () => {
 
 		it('should handle thread submission', async () => {
 			const mockAdapter = {
-				createNote: vi.fn()
+				createNote: vi
+					.fn()
 					.mockResolvedValueOnce({ object: { id: 'note-1' } })
 					.mockResolvedValueOnce({ object: { id: 'note-2' } }),
 			} as unknown as LesserGraphQLAdapter;
@@ -313,18 +314,24 @@ describe('GraphQLAdapter - Compose Integration', () => {
 
 			expect(results).toHaveLength(2);
 			expect(mockAdapter.createNote).toHaveBeenCalledTimes(2);
-			
+
 			// First post
-			expect(mockAdapter.createNote).toHaveBeenNthCalledWith(1, expect.objectContaining({
-				content: 'Post 1',
-				inReplyToId: undefined,
-			}));
+			expect(mockAdapter.createNote).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					content: 'Post 1',
+					inReplyToId: undefined,
+				})
+			);
 
 			// Second post (reply to first)
-			expect(mockAdapter.createNote).toHaveBeenNthCalledWith(2, expect.objectContaining({
-				content: 'Post 2',
-				inReplyToId: 'note-1',
-			}));
+			expect(mockAdapter.createNote).toHaveBeenNthCalledWith(
+				2,
+				expect.objectContaining({
+					content: 'Post 2',
+					inReplyToId: 'note-1',
+				})
+			);
 		});
 
 		it('should handle autocomplete search for mentions', async () => {
@@ -344,19 +351,18 @@ describe('GraphQLAdapter - Compose Integration', () => {
 			expect(results).toHaveLength(2);
 			expect(results[0].text).toBe('@alice');
 			expect(results[1].text).toBe('@bob@example.com');
-			expect(mockAdapter.search).toHaveBeenCalledWith(expect.objectContaining({
-				query: 'test',
-				type: 'accounts',
-			}));
+			expect(mockAdapter.search).toHaveBeenCalledWith(
+				expect.objectContaining({
+					query: 'test',
+					type: 'accounts',
+				})
+			);
 		});
 
 		it('should handle autocomplete search for hashtags', async () => {
 			const mockAdapter = {
 				search: vi.fn().mockResolvedValue({
-					hashtags: [
-						{ name: 'test' },
-						{ name: 'testing' },
-					],
+					hashtags: [{ name: 'test' }, { name: 'testing' }],
 				}),
 			} as unknown as LesserGraphQLAdapter;
 
@@ -403,10 +409,12 @@ describe('GraphQLAdapter - Compose Integration', () => {
 				onOptimisticUpdate,
 			});
 
-			await expect(handlers.handleSubmit({
-				content: 'Test',
-				visibility: 'public',
-			})).rejects.toThrow('Failed');
+			await expect(
+				handlers.handleSubmit({
+					content: 'Test',
+					visibility: 'public',
+				})
+			).rejects.toThrow('Failed');
 
 			expect(onOptimisticUpdate).toHaveBeenCalledTimes(2);
 			// First call: create optimistic status
@@ -428,10 +436,12 @@ describe('GraphQLAdapter - Compose Integration', () => {
 				onOptimisticUpdate,
 			});
 
-			await expect(handlers.handleThreadSubmit([
-				{ content: 'P1', visibility: 'public' },
-				{ content: 'P2', visibility: 'public' }
-			])).rejects.toThrow('Failed');
+			await expect(
+				handlers.handleThreadSubmit([
+					{ content: 'P1', visibility: 'public' },
+					{ content: 'P2', visibility: 'public' },
+				])
+			).rejects.toThrow('Failed');
 
 			// 2 creates + 2 removes
 			expect(onOptimisticUpdate).toHaveBeenCalledTimes(4);

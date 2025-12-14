@@ -52,7 +52,7 @@ describe('Admin.Logs Component', () => {
 
 		expect(screen.getByText('High CPU usage')).toBeTruthy();
 		expect(screen.getByText('Database connection failed')).toBeTruthy();
-		
+
 		// Check categories
 		expect(screen.getAllByText('auth').length).toBeGreaterThan(0);
 		expect(screen.getAllByText('system').length).toBeGreaterThan(0);
@@ -86,7 +86,7 @@ describe('Admin.Logs Component', () => {
 		// <select id="logs-level" class="admin-logs__select" bind:value={filterLevel}>
 		// It binds value. `filteredLogs` depends on `filterLevel`.
 		// So it filters client-side immediately.
-		
+
 		// The mock returns all logs. Client side filter should hide non-matching ones.
 		expect(screen.queryByText('User logged in')).toBeNull(); // info
 		expect(screen.getByText('Database connection failed')).toBeTruthy(); // error
@@ -141,7 +141,7 @@ describe('Admin.Logs Component', () => {
 
 		// Advance time
 		await vi.advanceTimersByTimeAsync(5000);
-		
+
 		expect(handlers.onFetchLogs).toHaveBeenCalledTimes(2); // Mount + 1 auto refresh
 
 		await vi.advanceTimersByTimeAsync(5000);
@@ -158,7 +158,7 @@ describe('Admin.Logs Component', () => {
 		// Find details element
 		const details = screen.getByText('Metadata');
 		expect(details).toBeTruthy();
-		
+
 		// In JSDOM details open state might not work perfectly with user events, but we can check existence
 		expect(screen.getByText(/"cpu": "95%"/)).toBeTruthy();
 	});

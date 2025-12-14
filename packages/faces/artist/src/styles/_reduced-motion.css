@@ -1,0 +1,232 @@
+/**
+ * Reduced Motion CSS Utilities
+ *
+ * Respects prefers-reduced-motion preference.
+ * Implements REQ-A11Y-007 and REQ-DESIGN-005.
+ */
+
+/* ============================================================================
+ * Reduced Motion Media Query
+ * ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+	/* Disable all animations */
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	/* Remove parallax effects */
+	.gr-parallax {
+		transform: none !important;
+	}
+
+	/* Disable smooth scrolling */
+	html {
+		scroll-behavior: auto !important;
+	}
+
+	/* Static alternatives for animated elements */
+	.gr-animated {
+		animation: none !important;
+	}
+
+	/* Instant hover states */
+	.gr-hover-animate:hover {
+		transition: none !important;
+	}
+
+	/* Remove loading spinners animation */
+	.gr-spinner {
+		animation: none !important;
+	}
+
+	/* Static skeleton loading */
+	.gr-skeleton {
+		animation: none !important;
+		background: var(--gr-artist-surface-muted, #f0f0f0) !important;
+	}
+
+	/* Disable image zoom animations */
+	.gr-zoom-animate {
+		transition: none !important;
+	}
+
+	/* Gallery reveal without animation */
+	.gr-gallery-reveal {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	/* Modal without animation */
+	.gr-modal-animate {
+		animation: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	/* Carousel without slide animation */
+	.gr-carousel-slide {
+		transition: none !important;
+	}
+}
+
+/* ============================================================================
+ * Motion-Safe Utilities
+ * ============================================================================ */
+
+/* Only animate when motion is OK */
+@media (prefers-reduced-motion: no-preference) {
+	.gr-motion-safe-fade {
+		animation: gr-fade-in 0.3s ease-out;
+	}
+
+	.gr-motion-safe-slide-up {
+		animation: gr-slide-up 0.3s ease-out;
+	}
+
+	.gr-motion-safe-scale {
+		animation: gr-scale-in 0.2s ease-out;
+	}
+
+	.gr-motion-safe-hover {
+		transition:
+			transform 0.2s ease-out,
+			box-shadow 0.2s ease-out;
+	}
+
+	.gr-motion-safe-hover:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--gr-artist-shadow-md);
+	}
+}
+
+/* ============================================================================
+ * Animation Keyframes
+ * ============================================================================ */
+
+@keyframes gr-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes gr-slide-up {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes gr-scale-in {
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes gr-skeleton-pulse {
+	0%,
+	100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+@keyframes gr-spinner-rotate {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* ============================================================================
+ * Static Alternatives
+ * ============================================================================ */
+
+/* Static loading indicator */
+.gr-loading-static {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.gr-loading-static::before {
+	content: '';
+	display: inline-block;
+	width: 1rem;
+	height: 1rem;
+	border: 2px solid currentColor;
+	border-radius: 50%;
+	border-top-color: transparent;
+}
+
+/* Static progress indicator */
+.gr-progress-static {
+	height: 4px;
+	background: var(--gr-artist-surface-muted, #f0f0f0);
+	border-radius: 2px;
+	overflow: hidden;
+}
+
+.gr-progress-static-bar {
+	height: 100%;
+	background: var(--gr-artist-accent-primary, #525252);
+	/* Width set via inline style */
+}
+
+/* Static skeleton */
+.gr-skeleton-static {
+	background: linear-gradient(
+		90deg,
+		var(--gr-artist-surface-muted, #f0f0f0) 0%,
+		var(--gr-artist-surface-secondary, #fafafa) 50%,
+		var(--gr-artist-surface-muted, #f0f0f0) 100%
+	);
+}
+
+/* ============================================================================
+ * Transition Utilities
+ * ============================================================================ */
+
+/* Instant transition class */
+.gr-transition-instant {
+	transition-duration: 0ms !important;
+}
+
+/* Subtle transition (for reduced motion with feedback) */
+.gr-transition-subtle {
+	transition-duration: 50ms !important;
+}
+
+/* Normal transitions (respects reduced motion) */
+.gr-transition-fast {
+	transition-duration: var(--gr-artist-duration-fast, 150ms);
+}
+
+.gr-transition-normal {
+	transition-duration: var(--gr-artist-duration-normal, 250ms);
+}
+
+.gr-transition-slow {
+	transition-duration: var(--gr-artist-duration-slow, 400ms);
+}

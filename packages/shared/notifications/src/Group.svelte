@@ -17,7 +17,7 @@ Displays multiple similar notifications grouped together.
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { NotificationGroup } from './types.js';
-	import { getNotificationsContext } from './context.js';
+	import { getNotificationsContext } from './context.svelte.js';
 
 	interface Props {
 		/**

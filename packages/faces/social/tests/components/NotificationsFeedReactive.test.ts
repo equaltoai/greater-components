@@ -14,7 +14,7 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 			key: `item-${i}`,
 			measureElement: () => {},
 		}));
-		
+
 		const store = {
 			subscribe: (fn: any) => {
 				fn({
@@ -28,7 +28,7 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 			scrollToIndex: vi.fn(),
 			measure: vi.fn(),
 		};
-		
+
 		return store;
 	}),
 }));
@@ -36,11 +36,11 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 // Mock integration state
 // We need to make these behave like they would in Svelte 5 if they are reactive
 // But since we are mocking the module, we just control what the getter returns.
-// The issue is Svelte's reactivity system won't pick up changes to these variables 
+// The issue is Svelte's reactivity system won't pick up changes to these variables
 // unless we force an update or if the component re-reads them.
 // Since `notificationIntegration` is constant, `$derived` accessing `.items` will only re-run if it thinks it should.
 // However, for testing "initial render" we can set them before render.
-// For testing interactions that depend on updates, we might need to rely on the component reacting to props 
+// For testing interactions that depend on updates, we might need to rely on the component reacting to props
 // or re-rendering.
 
 let mockIntegrationState = {
@@ -75,18 +75,24 @@ vi.mock('../../src/lib/integration', async (importOriginal) => {
 		...actual,
 		createNotificationIntegration: vi.fn(() => ({
 			...mockIntegrationMethods,
-			get items() { return mockIntegrationItems; },
-			get groups() { return mockIntegrationGroups; },
-			get state() { return mockIntegrationState; },
+			get items() {
+				return mockIntegrationItems;
+			},
+			get groups() {
+				return mockIntegrationGroups;
+			},
+			get state() {
+				return mockIntegrationState;
+			},
 		})),
 	};
 });
 
 // Helper to mock scroll properties
 function mockScroll(element: HTMLElement, { scrollTop, scrollHeight, clientHeight }: any) {
-    Object.defineProperty(element, 'scrollTop', { value: scrollTop, configurable: true });
-    Object.defineProperty(element, 'scrollHeight', { value: scrollHeight, configurable: true });
-    Object.defineProperty(element, 'clientHeight', { value: clientHeight, configurable: true });
+	Object.defineProperty(element, 'scrollTop', { value: scrollTop, configurable: true });
+	Object.defineProperty(element, 'scrollHeight', { value: scrollHeight, configurable: true });
+	Object.defineProperty(element, 'clientHeight', { value: clientHeight, configurable: true });
 }
 
 describe('NotificationsFeedReactive', () => {
@@ -181,28 +187,28 @@ describe('NotificationsFeedReactive', () => {
 		});
 
 		const feed = screen.getByRole('feed');
-        
-        // Mock properties before scrolling
-        mockScroll(feed, { scrollTop: 1000, scrollHeight: 1600, clientHeight: 500 });
-        
+
+		// Mock properties before scrolling
+		mockScroll(feed, { scrollTop: 1000, scrollHeight: 1600, clientHeight: 500 });
+
 		fireEvent.scroll(feed);
 
 		await waitFor(() => {
 			expect(mockIntegrationMethods.loadMore).toHaveBeenCalled();
 		});
 	});
-    
-    it('handles scroll to load more via props', async () => {
-        const onLoadMore = vi.fn();
+
+	it('handles scroll to load more via props', async () => {
+		const onLoadMore = vi.fn();
 		render(NotificationsFeedReactive, {
 			notifications: mockNotifications,
-            hasMore: true,
-            onLoadMore,
-            grouped: false
+			hasMore: true,
+			onLoadMore,
+			grouped: false,
 		});
 
 		const feed = screen.getByRole('feed');
-        mockScroll(feed, { scrollTop: 1000, scrollHeight: 1600, clientHeight: 500 });
+		mockScroll(feed, { scrollTop: 1000, scrollHeight: 1600, clientHeight: 500 });
 
 		fireEvent.scroll(feed);
 
@@ -227,10 +233,10 @@ describe('NotificationsFeedReactive', () => {
 
 	it('handles realtime indicator interactions', async () => {
 		mockIntegrationState.error = new Error('Connection failed') as any;
-        
+
 		render(NotificationsFeedReactive, {
 			integration: { baseUrl: 'https://test.com' } as any,
-            showRealtimeIndicator: true
+			showRealtimeIndicator: true,
 		});
 
 		const retryButton = screen.getByLabelText('Retry connection');
@@ -238,27 +244,27 @@ describe('NotificationsFeedReactive', () => {
 		expect(mockIntegrationMethods.refresh).toHaveBeenCalled();
 	});
 
-    it('toggles grouping via integration', async () => {
-        mockIntegrationItems = mockNotifications;
-        mockIntegrationState.grouped = true;
+	it('toggles grouping via integration', async () => {
+		mockIntegrationItems = mockNotifications;
+		mockIntegrationState.grouped = true;
 
-        render(NotificationsFeedReactive, {
+		render(NotificationsFeedReactive, {
 			integration: { baseUrl: 'https://test.com' } as any,
-            showRealtimeIndicator: true
+			showRealtimeIndicator: true,
 		});
 
-        const toggleButton = screen.getByLabelText('Toggle notification grouping');
-        await fireEvent.click(toggleButton);
-        expect(mockIntegrationMethods.toggleGrouping).toHaveBeenCalled();
-    });
+		const toggleButton = screen.getByLabelText('Toggle notification grouping');
+		await fireEvent.click(toggleButton);
+		expect(mockIntegrationMethods.toggleGrouping).toHaveBeenCalled();
+	});
 
-    it('renders custom loading state', () => {
-        render(NotificationsFeedReactive, {
-            loading: true,
-            // Testing snippets via props requires complex setup or wrapper component, 
-            // skipping explicitly passing snippet but verifying default content is NOT present if we were to pass one.
-            // But here we just verify default loading state again to be safe.
-        });
-        expect(screen.getByText('Loading notifications...')).toBeTruthy();
-    });
+	it('renders custom loading state', () => {
+		render(NotificationsFeedReactive, {
+			loading: true,
+			// Testing snippets via props requires complex setup or wrapper component,
+			// skipping explicitly passing snippet but verifying default content is NOT present if we were to pass one.
+			// But here we just verify default loading state again to be safe.
+		});
+		expect(screen.getByText('Loading notifications...')).toBeTruthy();
+	});
 });

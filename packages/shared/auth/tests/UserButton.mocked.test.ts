@@ -66,9 +66,7 @@ describe('UserButton (Mocked)', () => {
 
 	it('renders custom menu items', async () => {
 		const onSettings = vi.fn();
-		const menuItems = [
-			{ id: 'settings', label: 'Settings', onClick: onSettings }
-		];
+		const menuItems = [{ id: 'settings', label: 'Settings', onClick: onSettings }];
 
 		render(UserButton, {
 			props: {
@@ -88,9 +86,7 @@ describe('UserButton (Mocked)', () => {
 
 	it('disables menu items', async () => {
 		const onSettings = vi.fn();
-		const menuItems = [
-			{ id: 'settings', label: 'Settings', onClick: onSettings, disabled: true }
-		];
+		const menuItems = [{ id: 'settings', label: 'Settings', onClick: onSettings, disabled: true }];
 
 		render(UserButton, {
 			props: {

@@ -25,7 +25,10 @@ import {
 } from '../src/components/Community/context';
 
 // Test data factories
-const makeCommunity = (id: string = '1', overrides: Partial<CommunityData> = {}): CommunityData => ({
+const makeCommunity = (
+	id: string = '1',
+	overrides: Partial<CommunityData> = {}
+): CommunityData => ({
 	id,
 	name: `test-community-${id}`,
 	title: 'Test Community',
@@ -216,12 +219,8 @@ describe('Community Types', () => {
 				isNsfw: false,
 				isPrivate: false,
 				isQuarantined: false,
-				postFlairs: [
-					{ id: 'f1', text: 'Discussion', type: 'post', backgroundColor: '#FF0000' },
-				],
-				userFlairs: [
-					{ id: 'uf1', text: 'Expert', type: 'user', isEditable: true },
-				],
+				postFlairs: [{ id: 'f1', text: 'Discussion', type: 'post', backgroundColor: '#FF0000' }],
+				userFlairs: [{ id: 'uf1', text: 'Expert', type: 'user', isEditable: true }],
 				wikiEnabled: true,
 				moderators: [
 					{
@@ -431,9 +430,7 @@ describe('Community Types', () => {
 				id: 'q1',
 				type: 'post' as const,
 				content: { id: 'p1', title: 'Reported Post' },
-				reports: [
-					{ reason: 'spam', createdAt: new Date() },
-				],
+				reports: [{ reason: 'spam', createdAt: new Date() }],
 				queue: 'reports' as const,
 				queuedAt: new Date(),
 			};

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { onMount, onDestroy } from 'svelte';
-	import type { HTMLAttributes } from 'svelte/elements';
+
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import { TextField } from '@equaltoai/greater-components-primitives';
 	import type {

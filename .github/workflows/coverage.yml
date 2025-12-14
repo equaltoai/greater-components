@@ -44,7 +44,10 @@ jobs:
       - name: Generate coverage report
         run: pnpm test:coverage:report
         env:
-          COVERAGE_THRESHOLD: '10'
+          COVERAGE_LINES: '75'
+          COVERAGE_FUNCTIONS: '75'
+          COVERAGE_STATEMENTS: '75'
+          COVERAGE_BRANCHES: '60'
         continue-on-error: true
 
       - name: Upload coverage reports to Codecov
@@ -134,7 +137,11 @@ jobs:
             - Statements: ${formatCoverage(overall.statements)}
             - Branches: ${formatCoverage(overall.branches)}
 
-            **Coverage Threshold:** ${coverage.threshold}%
+            **Coverage Thresholds:**
+            - Lines: ${coverage.thresholds.lines}%
+            - Functions: ${coverage.thresholds.functions}%
+            - Statements: ${coverage.thresholds.statements}%
+            - Branches: ${coverage.thresholds.branches}%
 
             </details>
 

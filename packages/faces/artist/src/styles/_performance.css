@@ -1,0 +1,301 @@
+/**
+ * Performance CSS Utilities
+ *
+ * Content visibility, containment, and optimization hints.
+ * Implements REQ-PERF-001 through REQ-PERF-005.
+ */
+
+/* ============================================================================
+ * Content Visibility (REQ-PERF-005)
+ * ============================================================================ */
+
+/* Auto content visibility for off-screen content */
+.gr-content-auto {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 300px;
+}
+
+/* Gallery item with content visibility */
+.gr-gallery-item-lazy {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 400px;
+}
+
+/* Timeline item with content visibility */
+.gr-timeline-item-lazy {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 200px;
+}
+
+/* Profile section with content visibility */
+.gr-profile-section-lazy {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 500px;
+}
+
+/* ============================================================================
+ * CSS Containment
+ * ============================================================================ */
+
+/* Layout containment for isolated components */
+.gr-contain-layout {
+	contain: layout;
+}
+
+/* Paint containment */
+.gr-contain-paint {
+	contain: paint;
+}
+
+/* Size containment */
+.gr-contain-size {
+	contain: size;
+}
+
+/* Strict containment (layout + paint + size) */
+.gr-contain-strict {
+	contain: strict;
+}
+
+/* Content containment (layout + paint) */
+.gr-contain-content {
+	contain: content;
+}
+
+/* Gallery grid containment */
+.gr-gallery-grid {
+	contain: layout style;
+}
+
+/* Card containment */
+.gr-card-contained {
+	contain: layout paint;
+}
+
+/* Modal containment */
+.gr-modal-contained {
+	contain: layout paint style;
+}
+
+/* ============================================================================
+ * Will-Change Hints
+ * ============================================================================ */
+
+/* Transform animations */
+.gr-will-change-transform {
+	will-change: transform;
+}
+
+/* Opacity animations */
+.gr-will-change-opacity {
+	will-change: opacity;
+}
+
+/* Combined transform and opacity */
+.gr-will-change-transform-opacity {
+	will-change: transform, opacity;
+}
+
+/* Scroll position */
+.gr-will-change-scroll {
+	will-change: scroll-position;
+}
+
+/* Remove will-change after animation */
+.gr-will-change-auto {
+	will-change: auto;
+}
+
+/* ============================================================================
+ * Image Loading Optimization (REQ-PERF-001)
+ * ============================================================================ */
+
+/* Progressive image container */
+.gr-progressive-image {
+	position: relative;
+	overflow: hidden;
+	background-color: var(--gr-artist-surface-muted, #f0f0f0);
+}
+
+/* Placeholder blur */
+.gr-progressive-image-placeholder {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: blur(20px);
+	transform: scale(1.1);
+	transition: opacity 0.3s ease-out;
+}
+
+/* Full image */
+.gr-progressive-image-full {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	opacity: 0;
+	transition: opacity 0.3s ease-out;
+}
+
+/* Loaded state */
+.gr-progressive-image--loaded .gr-progressive-image-placeholder {
+	opacity: 0;
+}
+
+.gr-progressive-image--loaded .gr-progressive-image-full {
+	opacity: 1;
+}
+
+/* Lazy load placeholder */
+.gr-lazy-image {
+	background: linear-gradient(
+		110deg,
+		var(--gr-artist-surface-muted, #f0f0f0) 8%,
+		var(--gr-artist-surface-secondary, #fafafa) 18%,
+		var(--gr-artist-surface-muted, #f0f0f0) 33%
+	);
+	background-size: 200% 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.gr-lazy-image {
+		animation: gr-shimmer 1.5s infinite;
+	}
+}
+
+@keyframes gr-shimmer {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: -200% 0;
+	}
+}
+
+/* ============================================================================
+ * Virtual Scrolling (REQ-PERF-005)
+ * ============================================================================ */
+
+/* Virtual scroll container */
+.gr-virtual-scroll {
+	position: relative;
+	overflow-y: auto;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
+}
+
+/* Virtual scroll content */
+.gr-virtual-scroll-content {
+	position: relative;
+	width: 100%;
+}
+
+/* Virtual scroll item */
+.gr-virtual-scroll-item {
+	position: absolute;
+	left: 0;
+	right: 0;
+	will-change: transform;
+}
+
+/* Scroll snap for galleries */
+.gr-scroll-snap-x {
+	scroll-snap-type: x mandatory;
+	-webkit-overflow-scrolling: touch;
+}
+
+.gr-scroll-snap-y {
+	scroll-snap-type: y mandatory;
+	-webkit-overflow-scrolling: touch;
+}
+
+.gr-scroll-snap-item {
+	scroll-snap-align: start;
+}
+
+.gr-scroll-snap-item-center {
+	scroll-snap-align: center;
+}
+
+/* ============================================================================
+ * GPU Acceleration
+ * ============================================================================ */
+
+/* Force GPU layer */
+.gr-gpu-accelerated {
+	transform: translateZ(0);
+	backface-visibility: hidden;
+}
+
+/* 3D transform context */
+.gr-transform-3d {
+	transform-style: preserve-3d;
+	perspective: 1000px;
+}
+
+/* ============================================================================
+ * Render Optimization
+ * ============================================================================ */
+
+/* Prevent layout thrashing */
+.gr-isolate {
+	isolation: isolate;
+}
+
+/* Optimize text rendering */
+.gr-text-optimized {
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Image rendering optimization */
+.gr-image-crisp {
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+}
+
+.gr-image-smooth {
+	image-rendering: auto;
+}
+
+/* ============================================================================
+ * Loading States
+ * ============================================================================ */
+
+/* Skeleton loading */
+.gr-skeleton {
+	background: var(--gr-artist-surface-muted, #f0f0f0);
+	border-radius: var(--gr-artist-radius-default, 0.25rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.gr-skeleton {
+		animation: gr-skeleton-pulse 1.5s ease-in-out infinite;
+	}
+}
+
+/* Skeleton text */
+.gr-skeleton-text {
+	height: 1em;
+	margin-bottom: 0.5em;
+}
+
+.gr-skeleton-text:last-child {
+	width: 80%;
+}
+
+/* Skeleton avatar */
+.gr-skeleton-avatar {
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+}
+
+/* Skeleton image */
+.gr-skeleton-image {
+	width: 100%;
+	aspect-ratio: 4/3;
+}

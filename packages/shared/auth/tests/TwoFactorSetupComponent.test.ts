@@ -12,12 +12,12 @@ describe('TwoFactorSetup Component', () => {
 
 	function setup(props = {}, handlers = {}, initialState = {}) {
 		const mergedHandlers = { ...defaultHandlers, ...handlers };
-		
+
 		const { component, rerender } = render(TestWrapper, {
 			component: TwoFactorSetup,
 			handlers: mergedHandlers,
 			initialState,
-			...props
+			...props,
 		});
 
 		return { handlers: mergedHandlers, component, rerender };
@@ -60,11 +60,12 @@ describe('TwoFactorSetup Component', () => {
 	});
 
 	it('verifies code and shows backup codes', async () => {
-		const onTwoFactorSetup = vi.fn()
+		const onTwoFactorSetup = vi
+			.fn()
 			.mockResolvedValueOnce({ secret: 'SECRET123' }) // for start
 			.mockResolvedValueOnce({ codes: ['CODE1', 'CODE2'] }); // for backup codes
 		const onTwoFactorVerify = vi.fn().mockResolvedValue(undefined);
-		
+
 		const { handlers } = setup({}, { onTwoFactorSetup, onTwoFactorVerify });
 
 		// Start setup
@@ -74,15 +75,15 @@ describe('TwoFactorSetup Component', () => {
 		// Enter verification code
 		const input = screen.getByLabelText('Verification Code');
 		await fireEvent.input(input, { target: { value: '123456' } });
-		
+
 		// Verify
 		await fireEvent.click(screen.getByRole('button', { name: 'Verify and Continue' }));
 
 		expect(handlers.onTwoFactorVerify).toHaveBeenCalledWith({
 			code: '123456',
-			method: 'totp'
+			method: 'totp',
 		});
-		
+
 		expect(handlers.onTwoFactorSetup).toHaveBeenCalledWith('backup');
 
 		// Check transition to backup step
@@ -94,7 +95,7 @@ describe('TwoFactorSetup Component', () => {
 	it('handles verification error', async () => {
 		const onTwoFactorSetup = vi.fn().mockResolvedValue({ secret: 'SECRET123' });
 		const onTwoFactorVerify = vi.fn().mockRejectedValue(new Error('Invalid code'));
-		
+
 		setup({}, { onTwoFactorSetup, onTwoFactorVerify });
 
 		// Start setup
@@ -104,7 +105,7 @@ describe('TwoFactorSetup Component', () => {
 		// Enter verification code
 		const input = screen.getByLabelText('Verification Code');
 		await fireEvent.input(input, { target: { value: '123456' } });
-		
+
 		// Verify
 		await fireEvent.click(screen.getByRole('button', { name: 'Verify and Continue' }));
 
@@ -138,7 +139,8 @@ describe('TwoFactorSetup Component', () => {
 	});
 
 	it('finishes setup', async () => {
-		const onTwoFactorSetup = vi.fn()
+		const onTwoFactorSetup = vi
+			.fn()
 			.mockResolvedValueOnce({ secret: 'SECRET123' })
 			.mockResolvedValueOnce({ codes: ['CODE1'] });
 		const onTwoFactorVerify = vi.fn().mockResolvedValue(undefined);
@@ -149,8 +151,10 @@ describe('TwoFactorSetup Component', () => {
 		// Go through flow
 		await fireEvent.click(screen.getByRole('button', { name: 'Enable Two-Factor Authentication' }));
 		await screen.findByText('Step 1 of 2: Scan QR code');
-		
-		await fireEvent.input(screen.getByLabelText('Verification Code'), { target: { value: '123456' } });
+
+		await fireEvent.input(screen.getByLabelText('Verification Code'), {
+			target: { value: '123456' },
+		});
 		await fireEvent.click(screen.getByRole('button', { name: 'Verify and Continue' }));
 		await screen.findByText('Step 2 of 2: Save your backup codes');
 

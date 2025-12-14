@@ -23,7 +23,15 @@ export type ComponentType = 'primitive' | 'compound' | 'pattern' | 'adapter' | '
 export type ComponentTarget = 'components' | 'utils' | 'types' | 'styles';
 
 /** Domain categories for filtering */
-export type ComponentDomain = 'social' | 'blog' | 'community' | 'auth' | 'admin' | 'chat' | 'core';
+export type ComponentDomain =
+	| 'social'
+	| 'blog'
+	| 'community'
+	| 'auth'
+	| 'admin'
+	| 'chat'
+	| 'core'
+	| 'artist';
 
 export interface ComponentMetadata {
 	name: string;
@@ -218,6 +226,355 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		registryDependencies: [],
 		tags: ['activitypub', 'timeline', 'feed', 'compound', 'virtual-scroll'],
 		version: '1.0.0',
+	},
+
+	// ====================
+	// ARTIST FACE COMPONENTS
+	// ====================
+	artwork: {
+		name: 'artwork',
+		type: 'compound',
+		description:
+			'Compound component for artwork display with metadata, attribution, and AI disclosure',
+		files: [
+			{ path: 'lib/components/Artwork/Root.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/Image.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/Title.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/Attribution.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/Metadata.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/Stats.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/Actions.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/AIDisclosure.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Artwork/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/Artwork/index.ts', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'tooltip'],
+		tags: ['compound', 'artist', 'artwork', 'gallery'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'artwork-card': {
+		name: 'artwork-card',
+		type: 'compound',
+		description: 'Compact artwork card for grid views with hover overlay',
+		files: [{ path: 'lib/components/ArtworkCard.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['compound', 'artist', 'artwork', 'card'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'media-viewer': {
+		name: 'media-viewer',
+		type: 'compound',
+		description: 'Full-screen immersive artwork viewing with zoom and pan',
+		files: [
+			{ path: 'lib/components/MediaViewer/Root.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/MediaViewer/Navigation.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/MediaViewer/ZoomControls.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/MediaViewer/MetadataPanel.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/MediaViewer/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/MediaViewer/index.ts', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'modal'],
+		tags: ['compound', 'artist', 'media', 'viewer', 'lightbox'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'gallery-grid': {
+		name: 'gallery-grid',
+		type: 'compound',
+		description: 'Responsive grid layout for artwork display with virtual scrolling',
+		files: [
+			{ path: 'lib/components/Gallery/Grid.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Gallery/utils.ts', content: '', type: 'utils' },
+			{ path: 'lib/components/Gallery/index.ts', content: '', type: 'component' },
+		],
+		dependencies: [
+			{ name: 'svelte', version: '^5.0.0' },
+			{ name: '@tanstack/svelte-virtual', version: '^3.13.13' },
+		],
+		devDependencies: [],
+		registryDependencies: ['artwork-card'],
+		tags: ['compound', 'artist', 'gallery', 'grid', 'layout'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'gallery-row': {
+		name: 'gallery-row',
+		type: 'compound',
+		description: 'Horizontal scrolling row for curated artwork selections',
+		files: [{ path: 'lib/components/Gallery/Row.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['artwork-card'],
+		tags: ['compound', 'artist', 'gallery', 'row', 'carousel'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'gallery-masonry': {
+		name: 'gallery-masonry',
+		type: 'compound',
+		description: 'Masonry layout respecting artwork aspect ratios',
+		files: [{ path: 'lib/components/Gallery/Masonry.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['artwork-card'],
+		tags: ['compound', 'artist', 'gallery', 'masonry', 'layout'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'artist-profile': {
+		name: 'artist-profile',
+		type: 'compound',
+		description: 'Artist profile as gallery space with portfolio sections',
+		files: [
+			{ path: 'lib/components/ArtistProfile/Root.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/HeroBanner.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Avatar.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Name.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Badges.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Statement.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Stats.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Sections.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Actions.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Edit.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/Timeline.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ArtistProfile/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/ArtistProfile/index.ts', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'tabs', 'modal', 'gallery-grid'],
+		tags: ['compound', 'artist', 'profile', 'portfolio'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'artist-badge': {
+		name: 'artist-badge',
+		type: 'compound',
+		description: 'Professional verification and credential badges',
+		files: [{ path: 'lib/components/ArtistBadge.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['tooltip'],
+		tags: ['compound', 'artist', 'badge', 'verification'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'portfolio-section': {
+		name: 'portfolio-section',
+		type: 'compound',
+		description: 'Customizable gallery section within artist profiles',
+		files: [{ path: 'lib/components/PortfolioSection.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['gallery-grid', 'gallery-row'],
+		tags: ['compound', 'artist', 'portfolio', 'section'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'artist-timeline': {
+		name: 'artist-timeline',
+		type: 'compound',
+		description: 'Timeline for artist career milestones and activity',
+		files: [{ path: 'lib/components/ArtistTimeline.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['compound', 'artist', 'timeline', 'activity'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'discovery-engine': {
+		name: 'discovery-engine',
+		type: 'compound',
+		description: 'AI-powered artwork discovery with style and color search',
+		files: [
+			{ path: 'lib/components/Discovery/Root.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Discovery/SearchBar.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Discovery/Filters.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Discovery/Results.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Discovery/Suggestions.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Discovery/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/Discovery/index.ts', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'gallery-grid'],
+		tags: ['compound', 'artist', 'discovery', 'search', 'ai'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'color-palette-search': {
+		name: 'color-palette-search',
+		type: 'compound',
+		description: 'Search artworks by color palette matching',
+		files: [
+			{
+				path: 'lib/components/Discovery/ColorPaletteSearch.svelte',
+				content: '',
+				type: 'component',
+			},
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button'],
+		tags: ['compound', 'artist', 'discovery', 'color', 'search'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'style-filter': {
+		name: 'style-filter',
+		type: 'compound',
+		description: 'Filter artworks by art style and movement',
+		files: [
+			{ path: 'lib/components/Discovery/StyleFilter.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'menu'],
+		tags: ['compound', 'artist', 'discovery', 'filter', 'style'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'mood-map': {
+		name: 'mood-map',
+		type: 'compound',
+		description: 'Visual mood-based artwork discovery interface',
+		files: [{ path: 'lib/components/Discovery/MoodMap.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['compound', 'artist', 'discovery', 'mood', 'visualization'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	exhibition: {
+		name: 'exhibition',
+		type: 'compound',
+		description: 'Curated exhibition display with navigation and curator notes',
+		files: [
+			{ path: 'lib/components/Exhibition/Root.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Exhibition/Banner.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Exhibition/Gallery.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Exhibition/Statement.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Exhibition/Artists.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Exhibition/Navigation.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Exhibition/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/Exhibition/index.ts', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['gallery-grid', 'artwork-card', 'button'],
+		tags: ['compound', 'artist', 'exhibition', 'curation'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'curator-spotlight': {
+		name: 'curator-spotlight',
+		type: 'compound',
+		description: 'Spotlight component for featured curators',
+		files: [
+			{ path: 'lib/components/Curation/CuratorSpotlight.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['artist-badge'],
+		tags: ['compound', 'artist', 'curation', 'spotlight'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'collection-card': {
+		name: 'collection-card',
+		type: 'compound',
+		description: 'Card component for artwork collections',
+		files: [
+			{ path: 'lib/components/Curation/CollectionCard.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['compound', 'artist', 'collection', 'card'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'ai-disclosure': {
+		name: 'ai-disclosure',
+		type: 'compound',
+		description: 'Transparency component for AI usage disclosure',
+		files: [{ path: 'lib/components/Artwork/AIDisclosure.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['tooltip'],
+		tags: ['compound', 'artist', 'ai', 'transparency', 'ethics'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'tip-jar': {
+		name: 'tip-jar',
+		type: 'compound',
+		description: 'Component for accepting tips and donations',
+		files: [{ path: 'lib/components/Monetization/TipJar.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'modal'],
+		tags: ['compound', 'artist', 'monetization', 'tips'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'direct-purchase': {
+		name: 'direct-purchase',
+		type: 'compound',
+		description: 'Direct artwork purchase component',
+		files: [
+			{ path: 'lib/components/Monetization/DirectPurchase.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'modal'],
+		tags: ['compound', 'artist', 'monetization', 'purchase'],
+		version: '1.0.0',
+		domain: 'artist',
+	},
+
+	'premium-badge': {
+		name: 'premium-badge',
+		type: 'compound',
+		description: 'Badge for premium/subscription features',
+		files: [
+			{ path: 'lib/components/Monetization/PremiumBadge.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['tooltip'],
+		tags: ['compound', 'artist', 'monetization', 'premium'],
+		version: '1.0.0',
+		domain: 'artist',
 	},
 
 	status: {

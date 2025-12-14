@@ -135,11 +135,11 @@ describe('Admin.TrustGraph.RelationshipList', () => {
 	});
 
 	it('shows loading state initially', async () => {
-		let resolvePromise: (value: any) => void;
+		let resolvePromise: (value: any) => void = () => {};
 		const promise = new Promise((resolve) => {
 			resolvePromise = resolve;
 		});
-		
+
 		const adapter = {
 			getTrustGraph: vi.fn().mockReturnValue(promise),
 		} as unknown as LesserGraphQLAdapter;
@@ -153,7 +153,7 @@ describe('Admin.TrustGraph.RelationshipList', () => {
 
 		expect(screen.getByText('Loading relationships...')).toBeTruthy();
 
-		resolvePromise!([]);
+		resolvePromise([]);
 		await waitFor(() => {
 			expect(screen.queryByText('Loading relationships...')).toBeNull();
 		});
@@ -161,7 +161,8 @@ describe('Admin.TrustGraph.RelationshipList', () => {
 
 	it('shows error state and allows retry', async () => {
 		const adapter = {
-			getTrustGraph: vi.fn()
+			getTrustGraph: vi
+				.fn()
 				.mockRejectedValueOnce(new Error('Network error'))
 				.mockResolvedValueOnce([]),
 		} as unknown as LesserGraphQLAdapter;
@@ -183,10 +184,10 @@ describe('Admin.TrustGraph.RelationshipList', () => {
 		await waitFor(() => {
 			expect(screen.getByText('No trust relationships found.')).toBeTruthy();
 		});
-		
+
 		expect(adapter.getTrustGraph).toHaveBeenCalledTimes(2);
 	});
-	
+
 	it('applies correct score classes', async () => {
 		const edges = [
 			{
@@ -233,7 +234,7 @@ describe('Admin.TrustGraph.RelationshipList', () => {
 		await waitFor(() => {
 			const high = screen.getByText('90.0%');
 			expect(high.classList.contains('trust-relationship-list__score--high')).toBe(true);
-			
+
 			const medium = screen.getByText('60.0%');
 			expect(medium.classList.contains('trust-relationship-list__score--medium')).toBe(true);
 

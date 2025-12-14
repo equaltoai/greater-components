@@ -35,10 +35,7 @@ describe('UnreadIndicator', () => {
 	});
 
 	it('renders count when has unread messages', async () => {
-		mockState.conversations = [
-			{ unreadCount: 5 },
-			{ unreadCount: 2 }
-		];
+		mockState.conversations = [{ unreadCount: 5 }, { unreadCount: 2 }];
 
 		const target = document.createElement('div');
 		const instance = mount(UnreadIndicator, { target });
@@ -65,9 +62,7 @@ describe('UnreadIndicator', () => {
 	});
 
 	it('formats counts over 99', async () => {
-		mockState.conversations = [
-			{ unreadCount: 100 }
-		];
+		mockState.conversations = [{ unreadCount: 100 }];
 
 		const target = document.createElement('div');
 		const instance = mount(UnreadIndicator, { target });

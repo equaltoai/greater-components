@@ -1,0 +1,17 @@
+/**
+ * Artist Face CSS Utilities
+ *
+ * Imports all accessibility, reduced motion, and performance CSS utilities.
+ * Import this file to include all utility styles.
+ *
+ * @module @equaltoai/greater-components-artist/styles
+ */
+
+/* Accessibility utilities */
+@import './_accessibility.css';
+
+/* Reduced motion utilities */
+@import './_reduced-motion.css';
+
+/* Performance utilities */
+@import './_performance.css';

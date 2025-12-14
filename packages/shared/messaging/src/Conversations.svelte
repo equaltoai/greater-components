@@ -2,7 +2,8 @@
   Messages.Conversations - Conversations List
 -->
 <script lang="ts">
-	import { getMessagesContext, getConversationName, formatMessageTime } from './context.svelte.js';
+	import { getMessagesContext } from './context.svelte.js';
+	import { getConversationName, formatMessageTime } from './utils.js';
 	import type { Conversation } from './context.svelte.js';
 
 	interface Props {

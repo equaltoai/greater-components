@@ -81,13 +81,13 @@ describe('MediaUpload', () => {
 			id: 'm1',
 			url: 'https://example.com/test.png',
 			previewUrl: 'blob:preview',
-			mediaCategory: 'IMAGE'
+			mediaCategory: 'IMAGE',
 		});
 
 		Object.defineProperty(input, 'files', { value: [file] });
 		input.dispatchEvent(new Event('change', { bubbles: true }));
 
-		await new Promise(resolve => setTimeout(resolve, 10)); // Allow async
+		await new Promise((resolve) => setTimeout(resolve, 10)); // Allow async
 		await flushSync();
 
 		expect(mockHandlers.onUploadMedia).toHaveBeenCalled();
@@ -126,12 +126,12 @@ describe('MediaUpload', () => {
 		mockHandlers.onUploadMedia.mockResolvedValue({
 			id: 'm1',
 			url: 'https://example.com/test.png',
-			mediaCategory: 'IMAGE'
+			mediaCategory: 'IMAGE',
 		});
 
 		Object.defineProperty(input, 'files', { value: [file] });
 		input.dispatchEvent(new Event('change', { bubbles: true }));
-		await new Promise(resolve => setTimeout(resolve, 10));
+		await new Promise((resolve) => setTimeout(resolve, 10));
 		await flushSync();
 
 		expect(target.querySelectorAll('.media-upload__preview').length).toBe(1);
@@ -161,7 +161,7 @@ describe('MediaUpload', () => {
 
 		Object.defineProperty(input, 'files', { value: [file] });
 		input.dispatchEvent(new Event('change', { bubbles: true }));
-		await new Promise(resolve => setTimeout(resolve, 10));
+		await new Promise((resolve) => setTimeout(resolve, 10));
 		await flushSync();
 
 		// Check toggle

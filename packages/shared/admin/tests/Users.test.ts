@@ -62,13 +62,13 @@ describe('Admin.Users Component', () => {
 		expect(screen.getByText('Mod User')).toBeTruthy();
 		expect(screen.getByText('Regular User')).toBeTruthy();
 		expect(screen.getByText('admin@example.com')).toBeTruthy();
-		
+
 		// Check stats
 		expect(screen.getByText('3 users')).toBeTruthy();
 	});
 
 	it('filters users by role', async () => {
-		const { container } = render(UsersHarness, { handlers });
+		render(UsersHarness, { handlers });
 
 		await waitFor(() => {
 			expect(screen.getByText('Admin User')).toBeTruthy();
@@ -90,7 +90,9 @@ describe('Admin.Users Component', () => {
 		const statusSelect = screen.getByLabelText('Status');
 		await fireEvent.change(statusSelect, { target: { value: 'suspended' } });
 
-		expect(handlers.onFetchUsers).toHaveBeenCalledWith(expect.objectContaining({ status: 'suspended' }));
+		expect(handlers.onFetchUsers).toHaveBeenCalledWith(
+			expect.objectContaining({ status: 'suspended' })
+		);
 	});
 
 	it('searches users', async () => {
@@ -102,7 +104,7 @@ describe('Admin.Users Component', () => {
 
 		const searchInput = screen.getByPlaceholderText('Search by username or email...');
 		await fireEvent.input(searchInput, { target: { value: 'mod' } });
-		
+
 		const searchButton = screen.getByLabelText('Search users');
 		await fireEvent.click(searchButton);
 
@@ -135,7 +137,7 @@ describe('Admin.Users Component', () => {
 		await waitFor(() => {
 			expect(handlers.onSuspendUser).toHaveBeenCalledWith(expect.any(String), 'Violation of rules');
 		});
-		
+
 		// Should reload users
 		expect(handlers.onFetchUsers).toHaveBeenCalledTimes(2);
 	});

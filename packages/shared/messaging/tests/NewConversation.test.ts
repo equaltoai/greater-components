@@ -50,7 +50,7 @@ vi.mock('@equaltoai/greater-components-headless/modal', () => ({
 		actions: {
 			backdrop: () => {},
 			content: () => {},
-			close: (node: HTMLElement) => {},
+			close: (_node: HTMLElement) => {},
 		},
 	}),
 }));
@@ -94,15 +94,15 @@ describe('NewConversation', () => {
 		await flushSync();
 
 		mockHandlers.onSearchParticipants.mockResolvedValue([
-			{ id: 'u1', displayName: 'Alice', username: 'alice' }
+			{ id: 'u1', displayName: 'Alice', username: 'alice' },
 		]);
 
 		const input = target.querySelector('input') as HTMLInputElement;
 		input.value = 'Ali';
 		input.dispatchEvent(new Event('input', { bubbles: true }));
-		
+
 		// Wait debounce
-		await new Promise(resolve => setTimeout(resolve, 350));
+		await new Promise((resolve) => setTimeout(resolve, 350));
 		await flushSync();
 
 		expect(mockHandlers.onSearchParticipants).toHaveBeenCalledWith('Ali');
@@ -123,13 +123,13 @@ describe('NewConversation', () => {
 
 		// Mock result
 		mockHandlers.onSearchParticipants.mockResolvedValue([
-			{ id: 'u1', displayName: 'Alice', username: 'alice' }
+			{ id: 'u1', displayName: 'Alice', username: 'alice' },
 		]);
 
 		const input = target.querySelector('input') as HTMLInputElement;
 		input.value = 'Ali';
 		input.dispatchEvent(new Event('input', { bubbles: true }));
-		await new Promise(resolve => setTimeout(resolve, 350));
+		await new Promise((resolve) => setTimeout(resolve, 350));
 		await flushSync();
 
 		// Select
@@ -155,13 +155,13 @@ describe('NewConversation', () => {
 
 		// Mock result
 		mockHandlers.onSearchParticipants.mockResolvedValue([
-			{ id: 'u1', displayName: 'Alice', username: 'alice' }
+			{ id: 'u1', displayName: 'Alice', username: 'alice' },
 		]);
 
 		const input = target.querySelector('input') as HTMLInputElement;
 		input.value = 'Ali';
 		input.dispatchEvent(new Event('input', { bubbles: true }));
-		await new Promise(resolve => setTimeout(resolve, 350));
+		await new Promise((resolve) => setTimeout(resolve, 350));
 		await flushSync();
 
 		// Select
@@ -170,10 +170,12 @@ describe('NewConversation', () => {
 
 		// Create
 		mockHandlers.onCreateConversation.mockResolvedValue({ id: 'c1' });
-		
-		const startBtn = target.querySelector('.new-conversation__button--primary') as HTMLButtonElement;
+
+		const startBtn = target.querySelector(
+			'.new-conversation__button--primary'
+		) as HTMLButtonElement;
 		startBtn.click();
-		await new Promise(resolve => setTimeout(resolve, 0)); // Async handler
+		await new Promise((resolve) => setTimeout(resolve, 0)); // Async handler
 		await flushSync();
 
 		expect(mockHandlers.onCreateConversation).toHaveBeenCalledWith(['u1']);
@@ -194,11 +196,13 @@ describe('NewConversation', () => {
 		await flushSync();
 
 		// Mock result & Select
-		mockHandlers.onSearchParticipants.mockResolvedValue([{ id: 'u1', displayName: 'A', username: 'a' }]);
+		mockHandlers.onSearchParticipants.mockResolvedValue([
+			{ id: 'u1', displayName: 'A', username: 'a' },
+		]);
 		const input = target.querySelector('input') as HTMLInputElement;
 		input.value = 'A';
 		input.dispatchEvent(new Event('input', { bubbles: true }));
-		await new Promise(resolve => setTimeout(resolve, 350));
+		await new Promise((resolve) => setTimeout(resolve, 350));
 		await flushSync();
 		(target.querySelector('.new-conversation__result') as HTMLButtonElement).click();
 		await flushSync();
@@ -206,9 +210,11 @@ describe('NewConversation', () => {
 		// Fail creation
 		mockHandlers.onCreateConversation.mockRejectedValue(new Error('Failed'));
 
-		const startBtn = target.querySelector('.new-conversation__button--primary') as HTMLButtonElement;
+		const startBtn = target.querySelector(
+			'.new-conversation__button--primary'
+		) as HTMLButtonElement;
 		startBtn.click();
-		await new Promise(resolve => setTimeout(resolve, 0));
+		await new Promise((resolve) => setTimeout(resolve, 0));
 		await flushSync();
 
 		expect(target.querySelector('.new-conversation__error')?.textContent).toContain('Failed');

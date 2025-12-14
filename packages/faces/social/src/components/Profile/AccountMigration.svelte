@@ -84,6 +84,7 @@ Handles account migration workflow:
 	function formatDate(dateString: string): string {
 		try {
 			const date = new Date(dateString);
+			if (isNaN(date.getTime())) throw new Error('Invalid date');
 			return date.toLocaleDateString(undefined, {
 				year: 'numeric',
 				month: 'long',
@@ -280,6 +281,12 @@ Handles account migration workflow:
 						>
 							{loading ? 'Canceling...' : 'Cancel Migration'}
 						</button>
+					{/if}
+
+					{#if error}
+						<p class="account-migration__error">
+							{error}
+						</p>
 					{/if}
 
 					{#if isFailed}

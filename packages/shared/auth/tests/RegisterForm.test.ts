@@ -12,12 +12,12 @@ describe('RegisterForm', () => {
 
 	function setup(props = {}, handlers = {}, initialState = {}) {
 		const mergedHandlers = { ...defaultHandlers, ...handlers };
-		
+
 		const { component, rerender } = render(TestWrapper, {
 			component: RegisterForm,
 			handlers: mergedHandlers,
 			initialState,
-			...props
+			...props,
 		});
 
 		return { handlers: mergedHandlers, component, rerender };
@@ -48,7 +48,7 @@ describe('RegisterForm', () => {
 
 		// Check terms to enable button (partially, form still invalid)
 		await fireEvent.click(screen.getByRole('checkbox'));
-		
+
 		// Attempt submit via Enter on email
 		await fireEvent.keyDown(screen.getByLabelText(/email/i), { key: 'Enter' });
 
@@ -73,8 +73,12 @@ describe('RegisterForm', () => {
 	it('validates password match', async () => {
 		const { handlers } = setup();
 
-		await fireEvent.input(screen.getByLabelText(/^password/i), { target: { value: 'Password123' } });
-		await fireEvent.input(screen.getByLabelText(/confirm password/i), { target: { value: 'Password456' } });
+		await fireEvent.input(screen.getByLabelText(/^password/i), {
+			target: { value: 'Password123' },
+		});
+		await fireEvent.input(screen.getByLabelText(/confirm password/i), {
+			target: { value: 'Password456' },
+		});
 		await fireEvent.click(screen.getByRole('checkbox'));
 		await fireEvent.keyDown(screen.getByLabelText(/^password/i), { key: 'Enter' });
 
@@ -85,18 +89,24 @@ describe('RegisterForm', () => {
 	it('validates terms agreement', async () => {
 		const { handlers } = setup();
 
-		await fireEvent.input(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+		await fireEvent.input(screen.getByLabelText(/email/i), {
+			target: { value: 'user@example.com' },
+		});
 		await fireEvent.input(screen.getByLabelText(/^username/i), { target: { value: 'user123' } });
-		await fireEvent.input(screen.getByLabelText(/^password/i), { target: { value: 'Password123' } });
-		await fireEvent.input(screen.getByLabelText(/confirm password/i), { target: { value: 'Password123' } });
-		
+		await fireEvent.input(screen.getByLabelText(/^password/i), {
+			target: { value: 'Password123' },
+		});
+		await fireEvent.input(screen.getByLabelText(/confirm password/i), {
+			target: { value: 'Password123' },
+		});
+
 		// Button should be disabled
 		const button = screen.getByRole('button', { name: 'Create Account' }) as HTMLButtonElement;
 		expect(button.disabled).toBe(true);
 
 		// Try Enter key
 		await fireEvent.keyDown(screen.getByLabelText(/^password/i), { key: 'Enter' });
-		
+
 		expect(screen.getByText('You must agree to the terms to continue')).toBeTruthy();
 		expect(handlers.onRegister).not.toHaveBeenCalled();
 	});
@@ -104,11 +114,19 @@ describe('RegisterForm', () => {
 	it('submits with valid data', async () => {
 		const { handlers } = setup();
 
-		await fireEvent.input(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+		await fireEvent.input(screen.getByLabelText(/email/i), {
+			target: { value: 'user@example.com' },
+		});
 		await fireEvent.input(screen.getByLabelText(/^username/i), { target: { value: 'user123' } });
-		await fireEvent.input(screen.getByLabelText(/display name/i), { target: { value: 'User Name' } });
-		await fireEvent.input(screen.getByLabelText(/^password/i), { target: { value: 'Password123' } });
-		await fireEvent.input(screen.getByLabelText(/confirm password/i), { target: { value: 'Password123' } });
+		await fireEvent.input(screen.getByLabelText(/display name/i), {
+			target: { value: 'User Name' },
+		});
+		await fireEvent.input(screen.getByLabelText(/^password/i), {
+			target: { value: 'Password123' },
+		});
+		await fireEvent.input(screen.getByLabelText(/confirm password/i), {
+			target: { value: 'Password123' },
+		});
 		await fireEvent.click(screen.getByRole('checkbox')); // Agree terms
 
 		await fireEvent.click(screen.getByRole('button', { name: 'Create Account' }));
@@ -128,10 +146,16 @@ describe('RegisterForm', () => {
 
 		expect(screen.getByLabelText(/invite code/i)).toBeTruthy();
 
-		await fireEvent.input(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+		await fireEvent.input(screen.getByLabelText(/email/i), {
+			target: { value: 'user@example.com' },
+		});
 		await fireEvent.input(screen.getByLabelText(/^username/i), { target: { value: 'user123' } });
-		await fireEvent.input(screen.getByLabelText(/^password/i), { target: { value: 'Password123' } });
-		await fireEvent.input(screen.getByLabelText(/confirm password/i), { target: { value: 'Password123' } });
+		await fireEvent.input(screen.getByLabelText(/^password/i), {
+			target: { value: 'Password123' },
+		});
+		await fireEvent.input(screen.getByLabelText(/confirm password/i), {
+			target: { value: 'Password123' },
+		});
 		await fireEvent.click(screen.getByRole('checkbox'));
 
 		// Try submit without invite code
@@ -139,17 +163,21 @@ describe('RegisterForm', () => {
 		expect(screen.getByText('Invite code is required')).toBeTruthy();
 
 		// Fill invite code and submit
-		await fireEvent.input(screen.getByLabelText(/invite code/i), { target: { value: 'INVITE123' } });
+		await fireEvent.input(screen.getByLabelText(/invite code/i), {
+			target: { value: 'INVITE123' },
+		});
 		await fireEvent.click(screen.getByRole('button', { name: 'Create Account' }));
 
-		expect(handlers.onRegister).toHaveBeenCalledWith(expect.objectContaining({
-			inviteCode: 'INVITE123'
-		}));
+		expect(handlers.onRegister).toHaveBeenCalledWith(
+			expect.objectContaining({
+				inviteCode: 'INVITE123',
+			})
+		);
 	});
 
 	it('displays server error', () => {
 		setup({}, {}, { error: 'Registration failed' });
-		
+
 		expect(screen.getByRole('alert').textContent).toContain('Registration failed');
 	});
 
@@ -160,16 +188,16 @@ describe('RegisterForm', () => {
 		expect((screen.getByLabelText(/^username/i) as HTMLInputElement).disabled).toBe(true);
 		expect((screen.getByLabelText(/^password/i) as HTMLInputElement).disabled).toBe(true);
 		expect((screen.getByRole('checkbox') as HTMLInputElement).disabled).toBe(true);
-		
+
 		const button = screen.getByRole('button', { name: /creating account/i }) as HTMLButtonElement;
 		expect(button.disabled).toBe(true);
 	});
 
 	it('navigates to login', async () => {
 		const { handlers } = setup();
-		
+
 		await fireEvent.click(screen.getByText('Sign in'));
-		
+
 		expect(handlers.onNavigateToLogin).toHaveBeenCalled();
 	});
 

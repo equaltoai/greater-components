@@ -11,13 +11,13 @@ describe('WebAuthnSetup Component', () => {
 
 	function setup(props = {}, handlers = {}, initialState = {}) {
 		const mergedHandlers = { ...defaultHandlers, ...handlers };
-		
+
 		const { component, rerender } = render(TestWrapper, {
 			component: WebAuthnSetup,
 			handlers: mergedHandlers,
 			initialState,
 			email: 'test@example.com',
-			...props
+			...props,
 		});
 
 		return { handlers: mergedHandlers, component, rerender };
@@ -28,7 +28,7 @@ describe('WebAuthnSetup Component', () => {
 		// Mock window and navigator for WebAuthn check
 		Object.defineProperty(window, 'navigator', {
 			value: { credentials: {} },
-			writable: true
+			writable: true,
 		});
 	});
 
@@ -58,7 +58,7 @@ describe('WebAuthnSetup Component', () => {
 		await fireEvent.click(screen.getByRole('button', { name: 'Set Up Now' }));
 
 		expect(await screen.findByText("You're all set!")).toBeTruthy();
-		
+
 		await fireEvent.click(screen.getByRole('button', { name: 'Done' }));
 		expect(onComplete).toHaveBeenCalled();
 	});
@@ -71,7 +71,7 @@ describe('WebAuthnSetup Component', () => {
 
 		expect(await screen.findByRole('heading', { name: 'Setup Failed' })).toBeTruthy();
 		expect(screen.getByText('Registration failed')).toBeTruthy();
-		
+
 		// Retry button should be present
 		expect(screen.getByRole('button', { name: 'Try Again' })).toBeTruthy();
 	});
@@ -89,7 +89,7 @@ describe('WebAuthnSetup Component', () => {
 		// Mock navigator without credentials
 		Object.defineProperty(window, 'navigator', {
 			value: {},
-			writable: true
+			writable: true,
 		});
 
 		setup();

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { WebSocketPool, getGlobalWebSocketPool, resetGlobalWebSocketPool } from '../WebSocketPool';
+import { WebSocketPool, resetGlobalWebSocketPool } from '../WebSocketPool';
 
 // Mock WebSocket class
 class MockWebSocket {
@@ -10,7 +10,7 @@ class MockWebSocket {
 
 	url: string;
 	readyState: number = MockWebSocket.CONNECTING;
-	
+
 	onopen: any = null;
 	onclose: any = null;
 	onerror: any = null;
@@ -55,7 +55,7 @@ describe('WebSocketPool', () => {
 		it('creates new connection if none exists', async () => {
 			const pool = new WebSocketPool();
 			const promise = pool.acquire('wss://example.com/1');
-			
+
 			await vi.advanceTimersByTimeAsync(200);
 			const conn = await promise;
 
@@ -82,7 +82,7 @@ describe('WebSocketPool', () => {
 
 		it('limits max connections', async () => {
 			const pool = new WebSocketPool({ maxConnections: 1 });
-			
+
 			// First connection
 			const p1 = pool.acquire('wss://example.com/1');
 			await vi.advanceTimersByTimeAsync(200);
@@ -96,7 +96,7 @@ describe('WebSocketPool', () => {
 
 		it('evicts idle connection to make room', async () => {
 			const pool = new WebSocketPool({ maxConnections: 1 });
-			
+
 			// First connection
 			const p1 = pool.acquire('wss://example.com/1');
 			await vi.advanceTimersByTimeAsync(200);
@@ -164,12 +164,12 @@ describe('WebSocketPool', () => {
 
 	describe('cleanup', () => {
 		it('cleans up idle connections automatically', async () => {
-			const pool = new WebSocketPool({ 
-				idleTimeout: 100 
+			const pool = new WebSocketPool({
+				idleTimeout: 100,
 			});
-			
+
 			// Setup periodic check (need to advance timer for setInterval)
-			
+
 			const p1 = pool.acquire('wss://example.com/1');
 			await vi.advanceTimersByTimeAsync(200);
 			await p1;

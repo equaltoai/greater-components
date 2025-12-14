@@ -1,0 +1,285 @@
+
+> greater-components@4.1.0 lint /home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components
+> eslint . --ext .js,.jsx,.ts,.tsx,.svelte
+
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/SseClient.branch.test.ts
+   67:15  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  159:15  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  195:38  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/SseClient.test.ts
+  131:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  132:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  169:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  176:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  199:30  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  225:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  226:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  229:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  234:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  235:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  238:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/Transport.branch.test.ts
+  1:48  warning  'afterEach' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  4:10  warning  'WebSocketClient' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  7:56  warning  'TransportType' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/TransportFallback.test.ts
+  185:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/WebSocketClient.test.ts
+  130:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  152:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  164:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  165:32  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  165:32  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  180:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  183:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  194:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  197:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  209:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  212:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  229:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  230:31  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  230:31  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  237:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  253:21  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  256:31  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  261:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  291:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  296:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  314:39  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  315:30  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  338:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  357:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/WebSocketPool.test.ts
+  2:25  warning  'getGlobalWebSocketPool' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/graphql/__tests__/LesserGraphQLAdapter.test.ts
+  4:10  warning  'ApolloClient' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/mappers/lesser/__tests__/mappers.branch.test.ts
+   50:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   51:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   52:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   80:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   81:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   82:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   96:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   97:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   98:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  119:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  120:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  121:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/mappers/lesser/__tests__/mappers.test.ts
+    1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  174:20  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  180:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  180:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  198:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  199:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  235:17  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  240:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  326:18  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  380:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  381:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  382:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/fetchHelpers.test.ts
+    7:15  warning  'LesserGraphQLAdapter' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   77:11  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  193:11  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/timelineStore.branch.test.ts
+    3:31  warning  'StreamingEdit' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+    3:46  warning  'TimelineItem' is defined but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+   92:23  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  133:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  192:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  221:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  241:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  264:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  282:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  298:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  318:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  331:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  356:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  364:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  384:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  393:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  398:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  405:11  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  408:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  435:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  453:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  461:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  486:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  515:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  521:12  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  530:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  540:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  549:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  580:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  607:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  640:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  662:10  warning  'mockPayload' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  673:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/timelineStore.test.ts
+   47:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   94:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  141:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  178:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  190:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/unifiedToTimeline.test.ts
+   96:17  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   96:17  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  116:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  117:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/adapters/artistAdapter.ts
+  10:10  warning  'LesserGraphQLAdapter' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  69:50  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/Statement.svelte
+  85:4  warning  `{@html}` can lead to XSS attack  svelte/no-at-html-tags
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/context.ts
+  12:15  warning  'Snippet' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Artwork/context.ts
+  11:15  warning  'Snippet' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/CritiqueCircle/Queue.svelte
+  57:4  warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/CreativeTools/ReferenceBoard.svelte
+  96:23  warning  svelte-ignore comment is used, but not warned  svelte/no-unused-svelte-ignore
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/Suggestions.svelte
+  111:24  warning  svelte-ignore comment is used, but not warned  svelte/no-unused-svelte-ignore
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/context.ts
+  12:15  warning  'Snippet' is defined but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+  16:2   warning  'ArtStyle' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  18:2   warning  'ColorPalette' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Gallery/utils.ts
+  175:24  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  178:8   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  180:22  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  185:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  186:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/commission.ts
+  9:15  warning  'CommissionData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/critique.ts
+    9:15  warning  'ArtworkData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  209:15  warning  Forbidden non-null assertion                                                   @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/discovery.ts
+  200:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/gallery.ts
+  165:66  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/portfolio.ts
+  231:35  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/artistProfileStore.ts
+   55:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  169:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/commissionStore.ts
+   45:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  118:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  173:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/discoveryStore.ts
+   46:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   85:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  243:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/galleryStore.ts
+  199:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/realtimeStore.ts
+  184:41  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  198:3   warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  207:60  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/subscriptions/index.ts
+  111:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  117:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  149:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  155:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  160:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  186:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  191:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  196:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  214:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  220:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  225:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  242:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  247:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  252:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/a11y-testing.ts
+  320:26  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  321:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/accessibility.ts
+  106:27  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  107:26  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  131:5   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  153:7   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  245:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  331:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  525:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/federation.ts
+   21:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  231:15  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  232:16  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/highContrast.ts
+   82:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   83:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   84:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   92:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   92:36  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   93:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   93:36  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   94:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   94:36  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  102:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  103:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  104:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/monitoring.ts
+   72:18  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   86:19  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  294:26  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  295:26  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/performance.ts
+  358:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/reducedMotion.ts
+  213:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/GraphQLAdapter.test.ts
+  198:17  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  203:17  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+✖ 195 problems (0 errors, 195 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

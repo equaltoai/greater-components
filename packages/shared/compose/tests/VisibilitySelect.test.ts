@@ -29,7 +29,7 @@ describe('VisibilitySelect', () => {
 
 	it('should render all visibility options', () => {
 		render(VisibilitySelect);
-		
+
 		const options = screen.getAllByRole('option');
 		expect(options).toHaveLength(4);
 		expect(options[0].textContent).toContain('Public');
@@ -51,17 +51,17 @@ describe('VisibilitySelect', () => {
 
 	it('should update context on change', async () => {
 		render(VisibilitySelect);
-		
+
 		const select = screen.getByRole('combobox');
 		await fireEvent.change(select, { target: { value: 'private' } });
-		
+
 		expect(mockContext.updateState).toHaveBeenCalledWith({ visibility: 'private' });
 	});
 
 	it('should be disabled when submitting', () => {
 		mockContext.state.submitting = true;
 		render(VisibilitySelect);
-		
+
 		const select = screen.getByRole('combobox');
 		expect(select.getAttribute('disabled')).toBe('');
 	});

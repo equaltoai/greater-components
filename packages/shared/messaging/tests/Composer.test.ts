@@ -53,9 +53,9 @@ describe('Composer', () => {
 	it('does not render when no conversation is selected', () => {
 		const target = document.createElement('div');
 		const instance = mount(Composer, { target });
-		
+
 		expect(target.querySelector('.messages-composer')).toBeFalsy();
-		
+
 		unmount(instance);
 	});
 

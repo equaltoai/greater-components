@@ -88,18 +88,44 @@ greater add
 
 Faces are curated component bundles for specific application types:
 
-| Face        | Description               | Components                          |
-| ----------- | ------------------------- | ----------------------------------- |
-| `social`    | Twitter/Mastodon-style UI | Timeline, Status, Profile, Compose  |
-| `blog`      | Medium/WordPress-style UI | Article, Author, Editor, Navigation |
-| `community` | Reddit/Forum-style UI     | Thread, Voting, Moderation, Wiki    |
+| Face        | Description               | Components                              |
+| ----------- | ------------------------- | --------------------------------------- |
+| `social`    | Twitter/Mastodon-style UI | Timeline, Status, Profile, Compose      |
+| `blog`      | Medium/WordPress-style UI | Article, Author, Editor, Navigation     |
+| `community` | Reddit/Forum-style UI     | Thread, Voting, Moderation, Wiki        |
+| `artist`    | Visual artist portfolios  | Gallery, Artwork, Portfolio, Exhibition |
 
 ```bash
 # Install social face
 greater add faces/social
 
+# Install artist face
+greater add faces/artist
+
 # View face details
 greater list faces/social --details
+greater list faces/artist --details
+```
+
+### Artist Face
+
+The Artist Face provides components for visual artist communities and portfolio platforms:
+
+```bash
+# Install the complete Artist Face
+greater add faces/artist
+
+# Install individual Artist components
+greater add artist/Artwork
+greater add artist/GalleryGrid
+greater add artist/ArtistProfile
+
+# Install Artist patterns
+greater add artist/patterns/exhibition
+greater add artist/patterns/commission
+
+# Initialize project with Artist Face
+greater init --face artist
 ```
 
 ## Usage

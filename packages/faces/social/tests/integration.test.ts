@@ -33,7 +33,9 @@ vi.mock('../src/lib/timelineStore', () => {
 });
 
 vi.mock('../src/lib/notificationStore', () => {
-	const MockNotificationStore = vi.fn().mockImplementation(function (this: Record<string, unknown>) {
+	const MockNotificationStore = vi.fn().mockImplementation(function (
+		this: Record<string, unknown>
+	) {
 		this.connectTransport = vi.fn();
 		this.disconnectTransport = vi.fn();
 		this.loadInitial = vi.fn().mockResolvedValue(undefined);
@@ -52,7 +54,9 @@ vi.mock('../src/lib/notificationStore', () => {
 });
 
 vi.mock('../src/lib/graphqlTimelineStore', () => {
-	const MockGraphQLTimelineStore = vi.fn().mockImplementation(function (this: Record<string, unknown>) {
+	const MockGraphQLTimelineStore = vi.fn().mockImplementation(function (
+		this: Record<string, unknown>
+	) {
 		this.connect = vi.fn().mockResolvedValue(undefined);
 		this.disconnect = vi.fn();
 		this.loadNewer = vi.fn().mockResolvedValue(undefined);

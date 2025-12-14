@@ -37,7 +37,7 @@ describe('ConversationPicker', () => {
 
 		expect(target.querySelector('.conversation-picker')).toBeTruthy();
 		expect(target.querySelector('input')).toBeTruthy(); // Search input
-		
+
 		unmount(instance);
 	});
 
@@ -47,14 +47,14 @@ describe('ConversationPicker', () => {
 				id: 'c1',
 				participants: [{ id: 'u1', displayName: 'Alice', username: 'alice', avatar: '' }],
 				unreadCount: 2,
-				lastMessage: { content: 'Hello there' }
+				lastMessage: { content: 'Hello there' },
 			},
 			{
 				id: 'c2',
 				participants: [{ id: 'u2', displayName: 'Bob', username: 'bob', avatar: '' }],
 				unreadCount: 0,
-				lastMessage: { content: 'Hi' }
-			}
+				lastMessage: { content: 'Hi' },
+			},
 		];
 
 		const target = document.createElement('div');
@@ -84,7 +84,7 @@ describe('ConversationPicker', () => {
 				id: 'c2',
 				participants: [{ id: 'u2', displayName: 'Bob', username: 'bob', avatar: '' }],
 				unreadCount: 0,
-			}
+			},
 		];
 
 		const target = document.createElement('div');
@@ -109,27 +109,28 @@ describe('ConversationPicker', () => {
 		await flushSync();
 
 		mockHandlers.onSearchParticipants.mockResolvedValue([
-			{ id: 'u3', displayName: 'Charlie', username: 'charlie', avatar: '' }
+			{ id: 'u3', displayName: 'Charlie', username: 'charlie', avatar: '' },
 		]);
 
 		const input = target.querySelector('input') as HTMLInputElement;
 		input.value = 'Cha';
 		input.dispatchEvent(new Event('input', { bubbles: true }));
-		
+
 		// Wait for debounce (300ms)
-		await new Promise(resolve => setTimeout(resolve, 350));
+		await new Promise((resolve) => setTimeout(resolve, 350));
 		await flushSync();
 
 		expect(mockHandlers.onSearchParticipants).toHaveBeenCalledWith('Cha');
 
 		// Check if results are displayed
-		const peopleHeader = Array.from(target.querySelectorAll('.conversation-picker__section-title'))
-			.find(el => el.textContent === 'People');
+		const peopleHeader = Array.from(
+			target.querySelectorAll('.conversation-picker__section-title')
+		).find((el) => el.textContent === 'People');
 		expect(peopleHeader).toBeTruthy();
 
 		const items = target.querySelectorAll('.conversation-picker__item');
 		// Should see Charlie
-		const charlieItem = Array.from(items).find(item => item.textContent?.includes('Charlie'));
+		const charlieItem = Array.from(items).find((item) => item.textContent?.includes('Charlie'));
 		expect(charlieItem).toBeTruthy();
 
 		unmount(instance);
@@ -143,19 +144,20 @@ describe('ConversationPicker', () => {
 
 		// Mock search result
 		mockHandlers.onSearchParticipants.mockResolvedValue([
-			{ id: 'u3', displayName: 'Charlie', username: 'charlie', avatar: '' }
+			{ id: 'u3', displayName: 'Charlie', username: 'charlie', avatar: '' },
 		]);
 
 		const input = target.querySelector('input') as HTMLInputElement;
 		input.value = 'Cha';
 		input.dispatchEvent(new Event('input', { bubbles: true }));
-		
-		await new Promise(resolve => setTimeout(resolve, 350));
+
+		await new Promise((resolve) => setTimeout(resolve, 350));
 		await flushSync();
 
 		// Select Charlie
-		const charlieItem = Array.from(target.querySelectorAll('.conversation-picker__item'))
-			.find(item => item.textContent?.includes('Charlie')) as HTMLElement;
+		const charlieItem = Array.from(target.querySelectorAll('.conversation-picker__item')).find(
+			(item) => item.textContent?.includes('Charlie')
+		) as HTMLElement;
 		charlieItem.click();
 		await flushSync();
 
@@ -164,14 +166,15 @@ describe('ConversationPicker', () => {
 		expect(target.querySelector('.conversation-picker__chip')?.textContent).toContain('Charlie');
 
 		// Click "Start conversation"
-		const startBtn = Array.from(target.querySelectorAll('button'))
-			.find(btn => btn.textContent?.includes('Start conversation')) as HTMLButtonElement;
+		const startBtn = Array.from(target.querySelectorAll('button')).find((btn) =>
+			btn.textContent?.includes('Start conversation')
+		) as HTMLButtonElement;
 		expect(startBtn).toBeTruthy();
 		startBtn.click();
 		await flushSync();
 
 		expect(onCreateNew).toHaveBeenCalledWith([
-			expect.objectContaining({ id: 'u3', displayName: 'Charlie' })
+			expect.objectContaining({ id: 'u3', displayName: 'Charlie' }),
 		]);
 
 		// Should reset selection
@@ -186,7 +189,7 @@ describe('ConversationPicker', () => {
 				id: 'c1',
 				participants: [{ id: 'u1', displayName: 'Alice', username: 'alice', avatar: '' }],
 				unreadCount: 0,
-			}
+			},
 		];
 
 		const target = document.createElement('div');
@@ -209,18 +212,19 @@ describe('ConversationPicker', () => {
 		await flushSync();
 
 		mockHandlers.onSearchParticipants.mockResolvedValue([
-			{ id: 'u3', displayName: 'Charlie', username: 'charlie', avatar: '' }
+			{ id: 'u3', displayName: 'Charlie', username: 'charlie', avatar: '' },
 		]);
 
 		const input = target.querySelector('input') as HTMLInputElement;
 		input.value = 'Cha';
 		input.dispatchEvent(new Event('input', { bubbles: true }));
-		await new Promise(resolve => setTimeout(resolve, 350));
+		await new Promise((resolve) => setTimeout(resolve, 350));
 		await flushSync();
 
 		// Select
-		const charlieItem = Array.from(target.querySelectorAll('.conversation-picker__item'))
-			.find(item => item.textContent?.includes('Charlie')) as HTMLElement;
+		const charlieItem = Array.from(target.querySelectorAll('.conversation-picker__item')).find(
+			(item) => item.textContent?.includes('Charlie')
+		) as HTMLElement;
 		charlieItem.click();
 		await flushSync();
 

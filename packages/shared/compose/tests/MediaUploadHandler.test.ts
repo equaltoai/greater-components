@@ -176,6 +176,9 @@ describe('MediaUploadHandler', () => {
 				metadata: {
 					size: 1024,
 				},
+				sensitive: false,
+				spoilerText: '',
+				mediaCategory: 'IMAGE',
 			};
 
 			// Just verify it doesn't throw
@@ -192,6 +195,9 @@ describe('MediaUploadHandler', () => {
 				metadata: {
 					size: 1024,
 				},
+				sensitive: false,
+				spoilerText: '',
+				mediaCategory: 'IMAGE',
 			};
 
 			expect(() => cleanupMediaFile(mediaFile)).not.toThrow();
@@ -209,6 +215,9 @@ describe('MediaUploadHandler', () => {
 					progress: 100,
 					status: 'complete',
 					metadata: { size: 1024 },
+					sensitive: false,
+					spoilerText: '',
+					mediaCategory: 'IMAGE',
 				},
 				{
 					id: 'test-2',
@@ -218,6 +227,9 @@ describe('MediaUploadHandler', () => {
 					progress: 100,
 					status: 'complete',
 					metadata: { size: 2048 },
+					sensitive: false,
+					spoilerText: '',
+					mediaCategory: 'IMAGE',
 				},
 			];
 
@@ -283,14 +295,7 @@ describe('MediaUploadHandler', () => {
 			width: 0,
 			height: 0,
 		};
-		const mockFileReader = {
-			onload: null as ((e: any) => void) | null,
-			readAsDataURL: function (file: File) {
-				if (this.onload) {
-					this.onload({ target: { result: 'data:image/jpeg;base64,data' } });
-				}
-			},
-		};
+		// const mockFileReader = { ... };
 
 		beforeEach(() => {
 			global.URL.createObjectURL = mockCreateObjectURL;
@@ -308,7 +313,7 @@ describe('MediaUploadHandler', () => {
 				width: number = 100;
 				height: number = 100;
 			} as any;
-			
+
 			global.document.createElement = vi.fn((tag) => {
 				if (tag === 'canvas') return mockCanvas as any;
 				return {
@@ -319,7 +324,7 @@ describe('MediaUploadHandler', () => {
 			});
 			global.FileReader = class {
 				onload: ((e: any) => void) | null = null;
-				readAsDataURL(file: File) {
+				readAsDataURL(_file: File) {
 					setTimeout(() => {
 						if (this.onload) {
 							this.onload({ target: { result: 'data:image/jpeg;base64,data' } } as any);
@@ -331,7 +336,7 @@ describe('MediaUploadHandler', () => {
 
 		it('should process image file', async () => {
 			const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
-			
+
 			const { processFile } = await import('../src/MediaUploadHandler.js');
 			const result = await processFile(file);
 
@@ -343,9 +348,9 @@ describe('MediaUploadHandler', () => {
 		it('should handle validation errors', async () => {
 			const file = new File([''], 'test.exe', { type: 'application/x-msdownload' });
 			const { processFile } = await import('../src/MediaUploadHandler.js');
-			
+
 			const result = await processFile(file);
-			
+
 			expect(result.status).toBe('error');
 			expect(result.error).toContain('not allowed');
 		});

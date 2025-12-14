@@ -220,6 +220,7 @@ export function createTypeahead(config: TypeaheadConfig = {}): Typeahead {
 		// First pass: search from startIndex to end
 		for (let i = startIndex; i < items.length; i++) {
 			const item = items[i];
+			if (!item) continue;
 			if (currentConfig.isDisabled(item, i)) continue;
 
 			const text = currentConfig.getItemText(item, i);
@@ -233,6 +234,7 @@ export function createTypeahead(config: TypeaheadConfig = {}): Typeahead {
 		// Second pass: wrap around from beginning to startIndex
 		for (let i = 0; i < startIndex; i++) {
 			const item = items[i];
+			if (!item) continue;
 			if (currentConfig.isDisabled(item, i)) continue;
 
 			const text = currentConfig.getItemText(item, i);

@@ -60,9 +60,6 @@ export type {
 	MessagesContext,
 } from './context.svelte.js';
 
-export {
-	createMessagesContext,
-	getMessagesContext,
-	formatMessageTime,
-	getConversationName,
-} from './context.svelte.js';
+export { createMessagesContext, getMessagesContext } from './context.svelte.js';
+
+export { formatMessageTime, getConversationName } from './utils.js';

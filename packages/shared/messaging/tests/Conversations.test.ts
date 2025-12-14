@@ -24,7 +24,8 @@ vi.mock('../src/context.svelte.js', async () => {
 			state: mockState,
 			selectConversation: mockSelectConversation,
 		}),
-		getConversationName: (conversation: any) => conversation.participants[0]?.displayName || 'Unknown',
+		getConversationName: (conversation: any) =>
+			conversation.participants[0]?.displayName || 'Unknown',
 		formatMessageTime: () => '10:00 AM',
 	};
 });
@@ -40,7 +41,7 @@ describe('Conversations', () => {
 	it('renders title', () => {
 		const target = document.createElement('div');
 		const instance = mount(Conversations, { target });
-		
+
 		expect(target.querySelector('.messages-conversations__title')?.textContent).toBe('Messages');
 
 		unmount(instance);
@@ -79,14 +80,14 @@ describe('Conversations', () => {
 				id: 'c1',
 				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
 				unreadCount: 2,
-				lastMessage: { content: 'Hello', createdAt: '' }
+				lastMessage: { content: 'Hello', createdAt: '' },
 			},
 			{
 				id: 'c2',
 				participants: [{ id: 'u2', displayName: 'Bob', avatar: '' }],
 				unreadCount: 0,
-				lastMessage: { content: 'Hi', createdAt: '' }
-			}
+				lastMessage: { content: 'Hi', createdAt: '' },
+			},
 		];
 
 		const target = document.createElement('div');
@@ -112,7 +113,7 @@ describe('Conversations', () => {
 				id: 'c1',
 				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
 				unreadCount: 0,
-			}
+			},
 		];
 
 		const target = document.createElement('div');
@@ -124,7 +125,9 @@ describe('Conversations', () => {
 		await flushSync();
 
 		expect(mockSelectConversation).toHaveBeenCalledWith(expect.objectContaining({ id: 'c1' }));
-		expect(mockHandlers.onConversationClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'c1' }));
+		expect(mockHandlers.onConversationClick).toHaveBeenCalledWith(
+			expect.objectContaining({ id: 'c1' })
+		);
 
 		unmount(instance);
 	});

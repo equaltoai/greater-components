@@ -272,8 +272,6 @@ describe('Init Command', () => {
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
-
-
 		it('exits if Svelte version is invalid', async () => {
 			mockFs.setupProject(SVELTEKIT_PROJECT);
 			mockFs.set(

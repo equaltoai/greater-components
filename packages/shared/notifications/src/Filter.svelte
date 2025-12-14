@@ -20,8 +20,8 @@ Allows users to filter notifications by type (all, mentions, follows, etc.).
 -->
 
 <script lang="ts">
-	import { getNotificationsContext } from './context.js';
-	import type { NotificationFilter } from './context.js';
+	import { getNotificationsContext } from './context.svelte.js';
+	import type { NotificationFilter } from './context.svelte.js';
 
 	interface Props {
 		/**

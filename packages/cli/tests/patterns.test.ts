@@ -72,7 +72,7 @@ describe('patternRegistry', () => {
 
 	it('all patterns have valid domain', () => {
 		for (const pattern of Object.values(patternRegistry)) {
-			expect(['social', 'blog', 'community', 'core']).toContain(pattern.domain);
+			expect(['social', 'blog', 'community', 'core', 'artist']).toContain(pattern.domain);
 		}
 	});
 

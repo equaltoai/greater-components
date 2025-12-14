@@ -86,7 +86,7 @@
 
 		verifyButton.helpers.setLoading(authState.loading);
 		verifyButton.helpers.setDisabled(authState.loading || verificationCode.length !== 6);
-		
+
 		finishButton.helpers.setLoading(authState.loading);
 
 		cancelButton.helpers.setDisabled(authState.loading);

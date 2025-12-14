@@ -21,6 +21,93 @@ export interface PatternMetadata extends Omit<ComponentMetadata, 'type'> {
  */
 export const patternRegistry: Record<string, PatternMetadata> = {
 	// ====================
+	// ARTIST FACE PATTERNS
+	// ====================
+	'exhibition-view': {
+		name: 'exhibition-view',
+		type: 'pattern',
+		description: 'Curated exhibition display with navigation and curator notes',
+		useCase: 'Display themed art exhibitions with multiple artists and curatorial context',
+		files: [
+			{ path: 'patterns/exhibition-view/Root.svelte', content: '', type: 'component' },
+			{ path: 'patterns/exhibition-view/Gallery.svelte', content: '', type: 'component' },
+			{ path: 'patterns/exhibition-view/Navigation.svelte', content: '', type: 'component' },
+			{ path: 'patterns/exhibition-view/CuratorNote.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['gallery-grid', 'artwork-card', 'modal'],
+		tags: ['pattern', 'artist', 'exhibition', 'gallery', 'curation'],
+		version: '1.0.0',
+		domain: 'artist',
+		relatedPatterns: ['commission-workflow', 'critique-session'],
+	},
+
+	'commission-workflow': {
+		name: 'commission-workflow',
+		type: 'pattern',
+		description: 'End-to-end commission request and fulfillment workflow',
+		useCase: 'Manage art commission requests from inquiry through delivery and review',
+		files: [
+			{ path: 'patterns/commission-workflow/Root.svelte', content: '', type: 'component' },
+			{ path: 'patterns/commission-workflow/Request.svelte', content: '', type: 'component' },
+			{ path: 'patterns/commission-workflow/Quote.svelte', content: '', type: 'component' },
+			{ path: 'patterns/commission-workflow/Progress.svelte', content: '', type: 'component' },
+			{ path: 'patterns/commission-workflow/Delivery.svelte', content: '', type: 'component' },
+			{ path: 'patterns/commission-workflow/Review.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['button', 'modal', 'tabs'],
+		tags: ['pattern', 'artist', 'commission', 'workflow', 'monetization'],
+		version: '1.0.0',
+		domain: 'artist',
+		relatedPatterns: ['exhibition-view', 'wip-thread'],
+	},
+
+	'critique-session': {
+		name: 'critique-session',
+		type: 'pattern',
+		description: 'Structured artwork critique with annotations and feedback',
+		useCase: 'Facilitate constructive feedback sessions on artwork with visual annotations',
+		files: [
+			{ path: 'patterns/critique-session/Root.svelte', content: '', type: 'component' },
+			{ path: 'patterns/critique-session/Canvas.svelte', content: '', type: 'component' },
+			{ path: 'patterns/critique-session/Annotations.svelte', content: '', type: 'component' },
+			{ path: 'patterns/critique-session/Comments.svelte', content: '', type: 'component' },
+			{ path: 'patterns/critique-session/Summary.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['media-viewer', 'button', 'tooltip'],
+		tags: ['pattern', 'artist', 'critique', 'feedback', 'community'],
+		version: '1.0.0',
+		domain: 'artist',
+		relatedPatterns: ['wip-thread', 'exhibition-view'],
+	},
+
+	'wip-thread': {
+		name: 'wip-thread',
+		type: 'pattern',
+		description: 'Work-in-progress thread with version history and comments',
+		useCase: 'Share creative process with version tracking and community engagement',
+		files: [
+			{ path: 'patterns/wip-thread/Root.svelte', content: '', type: 'component' },
+			{ path: 'patterns/wip-thread/Timeline.svelte', content: '', type: 'component' },
+			{ path: 'patterns/wip-thread/VersionCard.svelte', content: '', type: 'component' },
+			{ path: 'patterns/wip-thread/Compare.svelte', content: '', type: 'component' },
+			{ path: 'patterns/wip-thread/Comments.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['artwork-card', 'media-viewer', 'button'],
+		tags: ['pattern', 'artist', 'wip', 'process', 'versioning'],
+		version: '1.0.0',
+		domain: 'artist',
+		relatedPatterns: ['critique-session', 'commission-workflow'],
+	},
+
+	// ====================
 	// THREAD VIEW
 	// ====================
 	'thread-view': {

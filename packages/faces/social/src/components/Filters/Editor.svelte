@@ -101,6 +101,14 @@
 		onClick: () => handleSubmit(),
 	});
 
+	// Sync button states
+	$effect(() => {
+		saveButton.helpers.setDisabled(!isValid);
+		saveButton.helpers.setLoading(filtersState.saving);
+
+		cancelButton.helpers.setDisabled(filtersState.saving);
+	});
+
 	const allContexts: { value: FilterContext; label: string; description: string }[] = [
 		{
 			value: 'home',

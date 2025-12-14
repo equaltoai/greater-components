@@ -6,13 +6,13 @@ import { HttpPollingClient } from '../HttpPollingClient';
 
 // Mock transports
 vi.mock('../WebSocketClient', () => ({
-	WebSocketClient: vi.fn()
+	WebSocketClient: vi.fn(),
 }));
 vi.mock('../SseClient', () => ({
-	SseClient: vi.fn()
+	SseClient: vi.fn(),
 }));
 vi.mock('../HttpPollingClient', () => ({
-	HttpPollingClient: vi.fn()
+	HttpPollingClient: vi.fn(),
 }));
 
 describe('TransportManager', () => {
@@ -44,16 +44,26 @@ describe('TransportManager', () => {
 			send: vi.fn(),
 			on: vi.fn(() => vi.fn()),
 			getState: vi.fn().mockReturnValue({ status: 'disconnected', error: null }),
-			type
+			type,
 		});
 
 		mockWsClient = createMockTransport('websocket');
 		mockSseClient = createMockTransport('sse');
 		mockPollingClient = createMockTransport('polling');
 
-		(WebSocketClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function(this: any) { return mockWsClient; });
-		(SseClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function(this: any) { return mockSseClient; });
-		(HttpPollingClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function(this: any) { return mockPollingClient; });
+		(WebSocketClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (
+			this: any
+		) {
+			return mockWsClient;
+		});
+		(SseClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (this: any) {
+			return mockSseClient;
+		});
+		(HttpPollingClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (
+			this: any
+		) {
+			return mockPollingClient;
+		});
 
 		// Mock feature support by default all supported
 		vi.spyOn(TransportManager, 'getFeatureSupport').mockReturnValue({
@@ -128,7 +138,7 @@ describe('TransportManager', () => {
 		it('respects forced transport', () => {
 			const manager = new TransportManager({
 				...baseConfig,
-				forceTransport: 'polling'
+				forceTransport: 'polling',
 			});
 			manager.connect();
 
@@ -145,7 +155,7 @@ describe('TransportManager', () => {
 
 			const manager = new TransportManager({
 				...baseConfig,
-				forceTransport: 'polling'
+				forceTransport: 'polling',
 			});
 
 			expect(() => manager.connect()).toThrow('not supported');
@@ -156,7 +166,7 @@ describe('TransportManager', () => {
 		it('falls back to SSE when WebSocket fails persistently', () => {
 			const manager = new TransportManager({
 				...baseConfig,
-				maxFailuresBeforeSwitch: 2
+				maxFailuresBeforeSwitch: 2,
 			});
 			manager.connect();
 
@@ -180,12 +190,12 @@ describe('TransportManager', () => {
 		it('falls back immediately on fatal errors (404, not supported)', () => {
 			const manager = new TransportManager({
 				...baseConfig,
-				maxFailuresBeforeSwitch: 1
+				maxFailuresBeforeSwitch: 1,
 			});
 			manager.connect();
 
 			const wsErrorHandler = mockWsClient.on.mock.calls.find((c: any) => c[0] === 'error')[1];
-			
+
 			// Simulate not supported error
 			wsErrorHandler({ error: new Error('WebSocket not supported by server') });
 
@@ -201,7 +211,7 @@ describe('TransportManager', () => {
 
 			const manager = new TransportManager({
 				...baseConfig,
-				maxFailuresBeforeSwitch: 1
+				maxFailuresBeforeSwitch: 1,
 			});
 			const closeHandler = vi.fn();
 			manager.on('close', closeHandler);
@@ -220,7 +230,7 @@ describe('TransportManager', () => {
 		it('handles disconnect', () => {
 			const manager = new TransportManager(baseConfig);
 			manager.connect();
-			
+
 			manager.disconnect();
 
 			expect(mockWsClient.disconnect).toHaveBeenCalled();
@@ -238,7 +248,7 @@ describe('TransportManager', () => {
 			// But since we mocked on(), the transport doesn't actually store handlers.
 			// However, TransportManager passes the handler to transport.on
 			// mockWsClient.on IS called.
-			
+
 			expect(mockWsClient.on).toHaveBeenCalledWith('open', openHandler);
 		});
 
@@ -248,11 +258,13 @@ describe('TransportManager', () => {
 
 			// Find internal handlers
 			const openHandler = mockWsClient.on.mock.calls.find((c: any) => c[0] === 'open')[1];
-			
+
 			openHandler({});
 			expect(manager.getState().status).toBe('connected');
 
-			const reconnectingHandler = mockWsClient.on.mock.calls.find((c: any) => c[0] === 'reconnecting')[1];
+			const reconnectingHandler = mockWsClient.on.mock.calls.find(
+				(c: any) => c[0] === 'reconnecting'
+			)[1];
 			reconnectingHandler({});
 			expect(manager.getState().status).toBe('reconnecting');
 		});
@@ -263,7 +275,7 @@ describe('TransportManager', () => {
 			const manager = new TransportManager({
 				...baseConfig,
 				enableUpgradeAttempts: true,
-				upgradeAttemptInterval: 1000
+				upgradeAttemptInterval: 1000,
 			});
 
 			// Simulate start with polling (mock features initially)
@@ -272,7 +284,7 @@ describe('TransportManager', () => {
 				sse: false,
 				polling: true,
 			});
-			
+
 			manager.connect();
 			expect(manager.getActiveTransport()).toBe('polling');
 
@@ -282,7 +294,7 @@ describe('TransportManager', () => {
 				sse: true,
 				polling: true,
 			});
-			
+
 			// Trigger connect success to start upgrade timer
 			const pollOpenHandler = mockPollingClient.on.mock.calls.find((c: any) => c[0] === 'open')[1];
 			pollOpenHandler({});
@@ -293,28 +305,28 @@ describe('TransportManager', () => {
 			// Should attempt to switch to WebSocket
 			expect(WebSocketClient).toHaveBeenCalled();
 			expect(mockWsClient.connect).toHaveBeenCalled();
-			
+
 			// If upgrade succeeds:
 			const wsOpenHandler = mockWsClient.on.mock.calls.find((c: any) => c[0] === 'open')[1];
 			wsOpenHandler({});
 
 			expect(manager.getActiveTransport()).toBe('websocket');
-			
+
 			// Check cleanup of old transport
 			await vi.advanceTimersByTimeAsync(5000);
 			expect(mockPollingClient.destroy).toHaveBeenCalled();
 		});
 	});
-	
+
 	describe('state aggregation', () => {
 		it('merges state from transport', () => {
 			const manager = new TransportManager(baseConfig);
 			manager.connect();
-			
+
 			mockWsClient.getState.mockReturnValue({
 				status: 'connected',
 				latency: 42,
-				lastEventId: 'id-1'
+				lastEventId: 'id-1',
 			});
 
 			const state = manager.getState();
@@ -327,7 +339,7 @@ describe('TransportManager', () => {
 		it('sends via active transport', () => {
 			const manager = new TransportManager(baseConfig);
 			manager.connect();
-			
+
 			manager.send('data');
 			expect(mockWsClient.send).toHaveBeenCalledWith('data');
 		});
@@ -335,7 +347,7 @@ describe('TransportManager', () => {
 		it('throws if not connected', () => {
 			const manager = new TransportManager(baseConfig);
 			// Not connected
-			
+
 			expect(() => manager.send('data')).toThrow('No transport connected');
 		});
 	});

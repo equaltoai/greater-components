@@ -10,14 +10,14 @@ class MockWebSocket {
 
 	url: string;
 	readyState: number = MockWebSocket.CONNECTING;
-	
+
 	// Event handlers
 	onopen: any = null;
 	onclose: any = null;
 	onerror: any = null;
 	onmessage: any = null;
 
-	private listeners: Record<string, Function[]> = {};
+	private listeners: Record<string, ((event: any) => void)[]> = {};
 
 	constructor(url: string) {
 		this.url = url;
@@ -36,20 +36,20 @@ class MockWebSocket {
 		this.dispatchEvent({ type: 'close', code, reason });
 	});
 
-	addEventListener(event: string, handler: Function) {
+	addEventListener(event: string, handler: (event: any) => void) {
 		if (!this.listeners[event]) this.listeners[event] = [];
 		this.listeners[event].push(handler);
 	}
 
-	removeEventListener(event: string, handler: Function) {
+	removeEventListener(event: string, handler: (event: any) => void) {
 		if (!this.listeners[event]) return;
-		this.listeners[event] = this.listeners[event].filter(h => h !== handler);
+		this.listeners[event] = this.listeners[event].filter((h) => h !== handler);
 	}
 
 	dispatchEvent(event: any) {
 		const type = event.type;
 		if (this.listeners[type]) {
-			this.listeners[type].forEach(handler => handler(event));
+			this.listeners[type].forEach((handler) => handler(event));
 		}
 		if (type === 'open' && this.onopen) this.onopen(event);
 		if (type === 'close' && this.onclose) this.onclose(event);
@@ -67,11 +67,12 @@ describe('WebSocketClient', () => {
 		vi.useFakeTimers();
 		originalWebSocket = globalThis.WebSocket;
 		socketInstance = null;
-		
+
 		// Capture the socket instance
 		globalThis.WebSocket = class CapturingWebSocket extends MockWebSocket {
 			constructor(url: string) {
 				super(url);
+				// eslint-disable-next-line @typescript-eslint/no-this-alias
 				socketInstance = this;
 			}
 		} as any;
@@ -118,15 +119,15 @@ describe('WebSocketClient', () => {
 		});
 
 		it('constructs correct URL with auth token', async () => {
-			const client = new WebSocketClient({ 
+			const client = new WebSocketClient({
 				url: 'wss://example.com/ws',
-				authToken: 'secret-token'
+				authToken: 'secret-token',
 			});
-			
+
 			client.connect();
-			
+
 			expect(socketInstance).toBeDefined();
-			expect(socketInstance!.url).toContain('token=secret-token');
+			expect(socketInstance?.url).toContain('token=secret-token');
 		});
 
 		it('constructs correct URL with lastEventId', async () => {
@@ -137,18 +138,18 @@ describe('WebSocketClient', () => {
 				removeItem: vi.fn(),
 				clear: vi.fn(),
 				length: 0,
-				key: vi.fn()
+				key: vi.fn(),
 			};
 
-			const client = new WebSocketClient({ 
+			const client = new WebSocketClient({
 				url: 'wss://example.com/ws',
-				storage: mockStorage
+				storage: mockStorage,
 			});
-			
+
 			client.connect();
-			
+
 			expect(socketInstance).toBeDefined();
-			expect(socketInstance!.url).toContain('lastEventId=last-id-123');
+			expect(socketInstance?.url).toContain('lastEventId=last-id-123');
 		});
 	});
 
@@ -160,8 +161,8 @@ describe('WebSocketClient', () => {
 
 			client.send({ type: 'test', data: 'foo' });
 
-			expect(socketInstance!.send).toHaveBeenCalled();
-			const sentData = JSON.parse(socketInstance!.send.mock.calls[0][0] as string);
+			expect(socketInstance?.send).toHaveBeenCalled();
+			const sentData = JSON.parse(socketInstance?.send.mock.calls[0]?.[0] as string);
 			expect(sentData.type).toBe('test');
 			expect(sentData.data).toBe('foo');
 			expect(sentData.timestamp).toBeDefined();
@@ -176,10 +177,9 @@ describe('WebSocketClient', () => {
 			await vi.advanceTimersByTimeAsync(20);
 
 			const msg = { type: 'test', data: 'bar' };
-			socketInstance!.dispatchEvent({ type: 'message', data: JSON.stringify(msg) });
-
+			socketInstance?.dispatchEvent({ type: 'message', data: JSON.stringify(msg) });
 			expect(messageHandler).toHaveBeenCalled();
-			expect(messageHandler.mock.calls[0][0].data).toEqual(msg);
+			expect(messageHandler.mock.calls[0]?.[0].data).toEqual(msg);
 		});
 
 		it('handles malformed messages', async () => {
@@ -190,10 +190,9 @@ describe('WebSocketClient', () => {
 			client.connect();
 			await vi.advanceTimersByTimeAsync(20);
 
-			socketInstance!.dispatchEvent({ type: 'message', data: 'invalid-json' });
-
+			socketInstance?.dispatchEvent({ type: 'message', data: 'invalid-json' });
 			expect(errorHandler).toHaveBeenCalled();
-			expect(errorHandler.mock.calls[0][0].error.message).toContain('Failed to parse message');
+			expect(errorHandler.mock.calls[0]?.[0].error.message).toContain('Failed to parse message');
 		});
 
 		it('handles type-specific event emission', async () => {
@@ -205,19 +204,19 @@ describe('WebSocketClient', () => {
 			await vi.advanceTimersByTimeAsync(20);
 
 			const msg = { type: 'custom-type', data: 'payload' };
-			socketInstance!.dispatchEvent({ type: 'message', data: JSON.stringify(msg) });
+			socketInstance?.dispatchEvent({ type: 'message', data: JSON.stringify(msg) });
 
 			expect(typeHandler).toHaveBeenCalled();
-			expect(typeHandler.mock.calls[0][0].data).toBe('payload');
+			expect(typeHandler.mock.calls[0]?.[0].data).toBe('payload');
 		});
 	});
 
 	describe('heartbeat and latency', () => {
 		it('sends pings and handles timeouts', async () => {
-			const client = new WebSocketClient({ 
+			const client = new WebSocketClient({
 				url: 'wss://example.com/ws',
 				heartbeatInterval: 100,
-				heartbeatTimeout: 50
+				heartbeatTimeout: 50,
 			});
 
 			client.connect();
@@ -225,22 +224,22 @@ describe('WebSocketClient', () => {
 
 			// Advance to trigger ping
 			await vi.advanceTimersByTimeAsync(100);
-			expect(socketInstance!.send).toHaveBeenCalled();
-			const pingMsg = JSON.parse(socketInstance!.send.mock.calls[0][0] as string);
+			expect(socketInstance?.send).toHaveBeenCalled();
+			const pingMsg = JSON.parse(socketInstance?.send.mock.calls[0]?.[0] as string);
 			expect(pingMsg.type).toBe('ping');
 
 			// Advance to trigger timeout
 			await vi.advanceTimersByTimeAsync(50);
-			
+
 			// Should have closed due to timeout
-			expect(socketInstance!.close).toHaveBeenCalled();
+			expect(socketInstance?.close).toHaveBeenCalled();
 			expect(client.getState().error?.message).toBe('Heartbeat timeout');
 		});
 
 		it('calculates latency on pong', async () => {
-			const client = new WebSocketClient({ 
+			const client = new WebSocketClient({
 				url: 'wss://example.com/ws',
-				heartbeatInterval: 100
+				heartbeatInterval: 100,
 			});
 
 			client.connect();
@@ -248,16 +247,18 @@ describe('WebSocketClient', () => {
 
 			// Trigger ping
 			await vi.advanceTimersByTimeAsync(100);
-			
-			const sendCall = socketInstance!.send.mock.calls.find(args => args[0].includes('"type":"ping"'));
-			const pingMsg = JSON.parse(sendCall![0] as string);
+
+			const sendCall = socketInstance?.send.mock.calls.find((args) =>
+				args[0].includes('"type":"ping"')
+			);
+			const pingMsg = JSON.parse(sendCall?.[0] as string);
 			const timestamp = pingMsg.timestamp;
 
 			// Respond with pong after 20ms
 			vi.advanceTimersByTime(20);
-			socketInstance!.dispatchEvent({ 
-				type: 'message', 
-				data: JSON.stringify({ type: 'pong', timestamp }) 
+			socketInstance?.dispatchEvent({
+				type: 'message',
+				data: JSON.stringify({ type: 'pong', timestamp }),
 			});
 
 			// Check for range to avoid flakiness with precise timer advancements
@@ -271,26 +272,26 @@ describe('WebSocketClient', () => {
 			const initialDelay = 100;
 			vi.spyOn(Math, 'random').mockReturnValue(0);
 
-			const client = new WebSocketClient({ 
+			const client = new WebSocketClient({
 				url: 'wss://example.com/ws',
 				initialReconnectDelay: initialDelay,
 				maxReconnectAttempts: 5,
-				jitterFactor: 0
+				jitterFactor: 0,
 			});
-			
+
 			const reconnectingHandler = vi.fn();
 			client.on('reconnecting', reconnectingHandler);
 
 			client.connect();
 			await vi.advanceTimersByTimeAsync(20);
-			
+
 			// Simulate connection close
-			socketInstance!.close(1006);
+			socketInstance?.close(1006);
 			expect(client.getState().status).toBe('reconnecting');
-			
+
 			// Check first attempt (delay = initialDelay)
 			expect(reconnectingHandler).toHaveBeenCalledTimes(1);
-			expect(reconnectingHandler.mock.calls[0][0].data.delay).toBe(initialDelay);
+			expect(reconnectingHandler.mock.calls[0]?.[0].data.delay).toBe(initialDelay);
 
 			// Wait for reconnect
 			await vi.advanceTimersByTimeAsync(initialDelay);
@@ -308,15 +309,16 @@ describe('WebSocketClient', () => {
 			client.connect();
 			await vi.advanceTimersByTimeAsync(20);
 
-			const removeListenerSpy = vi.spyOn(socketInstance!, 'removeEventListener');
-			const closeSpy = vi.spyOn(socketInstance!, 'close');
+			if (!socketInstance) throw new Error('No socket');
+			const removeListenerSpy = vi.spyOn(socketInstance, 'removeEventListener');
+			const closeSpy = vi.spyOn(socketInstance, 'close');
 
 			client.destroy();
 
 			expect(removeListenerSpy).toHaveBeenCalled();
 			expect(closeSpy).toHaveBeenCalled();
 			expect(client.getState().status).toBe('disconnected');
-			
+
 			// Should throw if used after destroy
 			expect(() => client.connect()).toThrow('destroyed');
 		});
@@ -325,14 +327,14 @@ describe('WebSocketClient', () => {
 			const client = new WebSocketClient({ url: 'wss://example.com/ws' });
 			const msgHandler = vi.fn();
 			client.on('message', msgHandler);
-			
+
 			client.connect();
 			await vi.advanceTimersByTimeAsync(20);
 
 			const savedSocket = socketInstance;
 			client.destroy();
 
-			savedSocket!.dispatchEvent({ type: 'message', data: '{}' });
+			savedSocket?.dispatchEvent({ type: 'message', data: '{}' });
 			expect(msgHandler).not.toHaveBeenCalled();
 		});
 	});
@@ -351,7 +353,7 @@ describe('WebSocketClient', () => {
 			client.connect();
 			await vi.advanceTimersByTimeAsync(20);
 
-			socketInstance!.dispatchEvent({ type: 'message', data: '{}' });
+			socketInstance?.dispatchEvent({ type: 'message', data: '{}' });
 
 			expect(badHandler).toHaveBeenCalled();
 			expect(goodHandler).toHaveBeenCalled();

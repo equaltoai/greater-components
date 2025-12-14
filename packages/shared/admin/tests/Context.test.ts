@@ -5,22 +5,23 @@ import type { AdminContext } from '../src/context.svelte.js';
 
 describe('Admin Context', () => {
 	it('initializes with default state', () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		render(ContextHarness, {
 			props: {
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		expect(context!.state.loading).toBe(false);
-		expect(context!.state.error).toBe(null);
-		expect(context!.state.stats).toBe(null);
+		if (!context) throw new Error('Context missing');
+		expect(context.state.loading).toBe(false);
+		expect(context.state.error).toBe(null);
+		expect(context.state.stats).toBe(null);
 	});
 
 	it('fetches stats successfully', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const mockStats = {
 			totalUsers: 100,
 			activeUsers: 50,
@@ -36,26 +37,28 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchStats();
-		
-		expect(context!.state.loading).toBe(true);
-		
+		if (!context) throw new Error('Context missing');
+		context.fetchStats();
+
+		expect(context.state.loading).toBe(true);
+
 		await waitFor(() => {
-			expect(context!.state.loading).toBe(false);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.loading).toBe(false);
 		});
 
-		expect(context!.state.stats).toEqual(mockStats);
+		expect(context.state.stats).toEqual(mockStats);
 		expect(handlers.onFetchStats).toHaveBeenCalled();
 	});
 
 	it('handles fetch error', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const handlers = {
 			onFetchStats: vi.fn().mockRejectedValue(new Error('Fetch failed')),
 		};
@@ -63,22 +66,24 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchStats();
+		if (!context) throw new Error('Context missing');
+		context.fetchStats();
 
 		await waitFor(() => {
-			expect(context!.state.error).toBe('Fetch failed');
-			expect(context!.state.loading).toBe(false);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.error).toBe('Fetch failed');
+			expect(context.state.loading).toBe(false);
 		});
 	});
 
 	it('fetches users', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const mockUsers = [{ id: '1', username: 'u1' }];
 		const handlers = {
 			onFetchUsers: vi.fn().mockResolvedValue(mockUsers),
@@ -87,55 +92,59 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchUsers({ role: 'admin' });
+		if (!context) throw new Error('Context missing');
+		context.fetchUsers({ role: 'admin' });
 
 		await waitFor(() => {
-			expect(context!.state.users).toEqual(mockUsers);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.users).toEqual(mockUsers);
 		});
 
 		expect(handlers.onFetchUsers).toHaveBeenCalledWith({ role: 'admin' });
 	});
 
-    it('updates state manually', () => {
-        let context: AdminContext;
-        render(ContextHarness, {
-            props: {
-                onContext: (ctx) => {
-                    context = ctx;
-                },
-            },
-        });
+	it('updates state manually', () => {
+		let context: AdminContext | undefined;
+		render(ContextHarness, {
+			props: {
+				onContext: (ctx: AdminContext) => {
+					context = ctx;
+				},
+			},
+		});
 
-        context!.updateState({ loading: true, error: 'Manual error' });
-        expect(context!.state.loading).toBe(true);
-        expect(context!.state.error).toBe('Manual error');
-    });
+		if (!context) throw new Error('Context missing');
+		context.updateState({ loading: true, error: 'Manual error' });
+		expect(context.state.loading).toBe(true);
+		expect(context.state.error).toBe('Manual error');
+	});
 
-    it('clears error', () => {
-        let context: AdminContext;
-        render(ContextHarness, {
-            props: {
-                onContext: (ctx) => {
-                    context = ctx;
-                },
-            },
-        });
+	it('clears error', () => {
+		let context: AdminContext | undefined;
+		render(ContextHarness, {
+			props: {
+				onContext: (ctx: AdminContext) => {
+					context = ctx;
+				},
+			},
+		});
 
-        context!.updateState({ error: 'Some error' });
-        expect(context!.state.error).toBe('Some error');
-        
-        context!.clearError();
-        expect(context!.state.error).toBe(null);
-    });
+		if (!context) throw new Error('Context missing');
+		context.updateState({ error: 'Some error' });
+		expect(context.state.error).toBe('Some error');
+
+		context.clearError();
+		expect(context.state.error).toBe(null);
+	});
 
 	it('fetches reports', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const mockReports = [{ id: '1', reason: 'spam' }];
 		const handlers = {
 			onFetchReports: vi.fn().mockResolvedValue(mockReports),
@@ -144,22 +153,24 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchReports('pending');
+		if (!context) throw new Error('Context missing');
+		context.fetchReports('pending');
 
 		await waitFor(() => {
-			expect(context!.state.reports).toEqual(mockReports);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.reports).toEqual(mockReports);
 		});
 		expect(handlers.onFetchReports).toHaveBeenCalledWith('pending');
 	});
 
 	it('fetches instances', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const mockInstances = [{ domain: 'example.com' }];
 		const handlers = {
 			onFetchInstances: vi.fn().mockResolvedValue(mockInstances),
@@ -168,22 +179,24 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchInstances();
+		if (!context) throw new Error('Context missing');
+		context.fetchInstances();
 
 		await waitFor(() => {
-			expect(context!.state.instances).toEqual(mockInstances);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.instances).toEqual(mockInstances);
 		});
 		expect(handlers.onFetchInstances).toHaveBeenCalled();
 	});
 
 	it('fetches settings', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const mockSettings = { name: 'My Instance' };
 		const handlers = {
 			onFetchSettings: vi.fn().mockResolvedValue(mockSettings),
@@ -192,22 +205,24 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchSettings();
+		if (!context) throw new Error('Context missing');
+		context.fetchSettings();
 
 		await waitFor(() => {
-			expect(context!.state.settings).toEqual(mockSettings);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.settings).toEqual(mockSettings);
 		});
 		expect(handlers.onFetchSettings).toHaveBeenCalled();
 	});
 
 	it('fetches logs', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const mockLogs = [{ id: '1', message: 'error' }];
 		const handlers = {
 			onFetchLogs: vi.fn().mockResolvedValue(mockLogs),
@@ -216,22 +231,24 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchLogs({ level: 'error' });
+		if (!context) throw new Error('Context missing');
+		context.fetchLogs({ level: 'error' });
 
 		await waitFor(() => {
-			expect(context!.state.logs).toEqual(mockLogs);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.logs).toEqual(mockLogs);
 		});
 		expect(handlers.onFetchLogs).toHaveBeenCalledWith({ level: 'error' });
 	});
 
 	it('fetches analytics', async () => {
-		let context: AdminContext;
+		let context: AdminContext | undefined;
 		const mockAnalytics = { period: 'day', userGrowth: [] };
 		const handlers = {
 			onFetchAnalytics: vi.fn().mockResolvedValue(mockAnalytics),
@@ -240,16 +257,18 @@ describe('Admin Context', () => {
 		render(ContextHarness, {
 			props: {
 				handlers,
-				onContext: (ctx) => {
+				onContext: (ctx: AdminContext) => {
 					context = ctx;
 				},
 			},
 		});
 
-		context!.fetchAnalytics('day');
+		if (!context) throw new Error('Context missing');
+		context.fetchAnalytics('day');
 
 		await waitFor(() => {
-			expect(context!.state.analytics).toEqual(mockAnalytics);
+			if (!context) throw new Error('Context missing');
+			expect(context.state.analytics).toEqual(mockAnalytics);
 		});
 		expect(handlers.onFetchAnalytics).toHaveBeenCalledWith('day');
 	});

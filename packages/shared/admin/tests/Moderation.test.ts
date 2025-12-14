@@ -50,7 +50,7 @@ describe('Admin.Moderation Component', () => {
 
 		const input = screen.getByPlaceholderText('Search by username or email...');
 		await fireEvent.input(input, { target: { value: 'bad' } });
-		
+
 		const searchButton = screen.getByText('Search');
 		await fireEvent.click(searchButton);
 
@@ -82,7 +82,7 @@ describe('Admin.Moderation Component', () => {
 		expect(screen.getByText('Moderation Action')).toBeTruthy();
 		// It appears in both results and selected view
 		expect(screen.getAllByText('@baduser').length).toBeGreaterThan(1);
-		
+
 		// Check available actions for active user
 		expect(screen.getByText('Suspend User')).toBeTruthy();
 		// Unsuspend should NOT be visible or disabled/hidden?
@@ -106,7 +106,7 @@ describe('Admin.Moderation Component', () => {
 
 		// Check form appears
 		expect(screen.getByText('Reason (Required)')).toBeTruthy();
-		
+
 		// Try to submit without reason (should be disabled or alert)
 		const submitButton = screen.getByRole('button', { name: 'Suspend' });
 		expect(submitButton.hasAttribute('disabled')).toBe(true);
@@ -145,7 +145,7 @@ describe('Admin.Moderation Component', () => {
 
 		// Check form
 		expect(screen.getByText(/This will restore access for/)).toBeTruthy();
-		
+
 		// Submit
 		const submitButton = screen.getByRole('button', { name: 'Unsuspend' });
 		await fireEvent.click(submitButton);

@@ -5,7 +5,12 @@ import type { AutocompleteSuggestion } from '../src/Autocomplete.js';
 
 describe('AutocompleteMenu', () => {
 	const mockSuggestions: AutocompleteSuggestion[] = [
-		{ type: 'mention', text: '@john', value: '@john@example.com', metadata: { displayName: 'John Doe' } },
+		{
+			type: 'mention',
+			text: '@john',
+			value: '@john@example.com',
+			metadata: { displayName: 'John Doe' },
+		},
 		{ type: 'hashtag', text: '#test', value: 'test' },
 		{ type: 'emoji', text: ':smile:', value: '😊' },
 	];
@@ -51,7 +56,7 @@ describe('AutocompleteMenu', () => {
 		const items = screen.getAllByRole('option');
 		expect(items[1].getAttribute('aria-selected')).toBe('true');
 		expect(items[1].classList.contains('autocomplete-menu__item--selected')).toBe(true);
-		
+
 		expect(items[0].getAttribute('aria-selected')).toBe('false');
 	});
 

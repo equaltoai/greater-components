@@ -32,7 +32,7 @@ const makeUnifiedStatus = (id: string, overrides = {}) => ({
 	url: `https://example.social/@user/${id}`,
 	content: `<p>Status ${id}</p>`,
 	createdAt: '2024-01-15T12:00:00Z',
-	editedAt: null,
+	editedAt: undefined,
 	visibility: 'public' as const,
 	sensitive: false,
 	spoilerText: '',
@@ -47,19 +47,42 @@ const makeUnifiedStatus = (id: string, overrides = {}) => ({
 	account: {
 		id: `acct-${id}`,
 		username: 'testuser',
+		acct: 'testuser@example.social',
 		displayName: 'Test User',
 		avatar: 'https://example.social/avatar.jpg',
+		header: 'https://example.social/header.jpg',
 		note: 'Test bio',
+		createdAt: '2024-01-01T00:00:00Z',
+		followersCount: 100,
+		followingCount: 50,
+		statusesCount: 500,
+		locked: false,
+		emojis: [],
+		fields: [],
+		verified: false,
+		bot: false,
+		metadata: {
+			source: 'unknown' as const,
+			apiVersion: '1',
+			lastUpdated: 1704067200000,
+		},
 	},
 	mediaAttachments: [],
 	mentions: [],
 	tags: [],
 	emojis: [],
-	metadata: {},
+	metadata: {
+		source: 'unknown' as const,
+		apiVersion: '1',
+		lastUpdated: 1704067200000,
+	},
 	...overrides,
 });
 
-const makeTimelineResponse = (statuses: ReturnType<typeof makeUnifiedStatus>[], hasMore = true) => ({
+const makeTimelineResponse = (
+	statuses: ReturnType<typeof makeUnifiedStatus>[],
+	hasMore = true
+) => ({
 	edges: statuses.map((status) => ({ node: status, cursor: status.id })),
 	pageInfo: {
 		hasNextPage: hasMore,
@@ -167,7 +190,9 @@ describe('LesserTimelineStore', () => {
 		});
 
 		it('sets hasMore based on pageInfo', async () => {
-			mockAdapter.fetchTimeline.mockResolvedValue(makeTimelineResponse([makeUnifiedStatus('1')], false));
+			mockAdapter.fetchTimeline.mockResolvedValue(
+				makeTimelineResponse([makeUnifiedStatus('1')], false)
+			);
 
 			const store = new LesserTimelineStore({
 				adapter: mockAdapter as unknown as LesserTimelineConfig['adapter'],
@@ -199,7 +224,9 @@ describe('LesserTimelineStore', () => {
 		});
 
 		it('does nothing when hasMore is false', async () => {
-			mockAdapter.fetchTimeline.mockResolvedValue(makeTimelineResponse([makeUnifiedStatus('1')], false));
+			mockAdapter.fetchTimeline.mockResolvedValue(
+				makeTimelineResponse([makeUnifiedStatus('1')], false)
+			);
 
 			const store = new LesserTimelineStore({
 				adapter: mockAdapter as unknown as LesserTimelineConfig['adapter'],
@@ -350,9 +377,7 @@ describe('LesserTimelineStore', () => {
 		});
 
 		it('does nothing for non-existent id', async () => {
-			mockAdapter.fetchTimeline.mockResolvedValue(
-				makeTimelineResponse([makeUnifiedStatus('1')])
-			);
+			mockAdapter.fetchTimeline.mockResolvedValue(makeTimelineResponse([makeUnifiedStatus('1')]));
 
 			const store = new LesserTimelineStore({
 				adapter: mockAdapter as unknown as LesserTimelineConfig['adapter'],
@@ -368,7 +393,7 @@ describe('LesserTimelineStore', () => {
 
 	describe('cancel', () => {
 		it('aborts pending operations', async () => {
-			let resolvePromise: (value: unknown) => void;
+			let resolvePromise: ((value: unknown) => void) | undefined;
 			mockAdapter.fetchTimeline.mockImplementation(
 				() =>
 					new Promise((resolve) => {
@@ -380,13 +405,13 @@ describe('LesserTimelineStore', () => {
 				adapter: mockAdapter as unknown as LesserTimelineConfig['adapter'],
 			});
 
-			const loadPromise = store.loadInitial();
+			const _loadPromise = store.loadInitial();
 
 			store.cancel();
 
 			// Resolve to avoid hanging
-			resolvePromise!(makeTimelineResponse([]));
-			await loadPromise;
+			if (resolvePromise) resolvePromise(makeTimelineResponse([]));
+			await _loadPromise;
 		});
 	});
 

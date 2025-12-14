@@ -38,8 +38,10 @@ describe('TransportFallback', () => {
 			on: vi.fn(() => vi.fn()),
 			getState: vi.fn().mockReturnValue({ status: 'disconnected', error: null }),
 		};
-		(SseClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function(this: any) { return mockSseClient; });
-		(SseClient as unknown as ReturnType<typeof vi.fn>).isSupported = vi.fn().mockReturnValue(true);
+		(SseClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (this: any) {
+			return mockSseClient;
+		});
+		(SseClient as any).isSupported = vi.fn().mockReturnValue(true);
 
 		mockPollingClient = {
 			connect: vi.fn(),
@@ -49,7 +51,11 @@ describe('TransportFallback', () => {
 			on: vi.fn(() => vi.fn()),
 			getState: vi.fn().mockReturnValue({ status: 'disconnected', error: null }),
 		};
-		(HttpPollingClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function(this: any) { return mockPollingClient; });
+		(HttpPollingClient as unknown as ReturnType<typeof vi.fn>).mockImplementation(function (
+			this: any
+		) {
+			return mockPollingClient;
+		});
 	});
 
 	afterEach(() => {
@@ -74,8 +80,8 @@ describe('TransportFallback', () => {
 		});
 
 		it('connects to polling if SSE is not supported', () => {
-			(SseClient as unknown as ReturnType<typeof vi.fn>).isSupported = vi.fn().mockReturnValue(false);
-			
+			(SseClient as any).isSupported = vi.fn().mockReturnValue(false);
+
 			const fallback = new TransportFallback(baseConfig);
 			fallback.connect();
 
@@ -87,7 +93,7 @@ describe('TransportFallback', () => {
 		it('connects to polling if forced', () => {
 			const fallback = new TransportFallback({
 				...baseConfig,
-				forceTransport: 'polling'
+				forceTransport: 'polling',
 			});
 			fallback.connect();
 
@@ -98,7 +104,7 @@ describe('TransportFallback', () => {
 		it('does nothing if already connected', () => {
 			const fallback = new TransportFallback(baseConfig);
 			fallback.connect();
-			
+
 			// Try connecting again
 			fallback.connect();
 
@@ -138,7 +144,7 @@ describe('TransportFallback', () => {
 		it('does not fallback if autoFallback is false', () => {
 			const fallback = new TransportFallback({
 				...baseConfig,
-				autoFallback: false
+				autoFallback: false,
 			});
 			fallback.connect();
 
@@ -147,7 +153,7 @@ describe('TransportFallback', () => {
 			// If autoFallback is false, it might not subscribe to error for fallback purposes
 			// But let's check implementation:
 			// if (this.config.autoFallback && this.currentTransport) { ... }
-			
+
 			expect(errorCall).toBeUndefined(); // Assuming it doesn't subscribe if autoFallback is false
 		});
 
@@ -176,7 +182,9 @@ describe('TransportFallback', () => {
 			errorCall[1]({ error: new Error('Network error') });
 
 			expect(fallbackHandler).toHaveBeenCalled();
-			expect(fallbackHandler.mock.calls[0][0].data).toEqual({ from: 'sse', to: 'polling' });
+			const args = fallbackHandler.mock.calls[0];
+			expect(args).toBeDefined();
+			expect(args?.[0].data).toEqual({ from: 'sse', to: 'polling' });
 		});
 
 		it('only attempts fallback once', () => {
@@ -189,22 +197,22 @@ describe('TransportFallback', () => {
 			errorCall[1]({ error: new Error('Network error') });
 
 			expect(fallback.getTransportType()).toBe('polling');
-			
+
 			// Clear mocks
 			(HttpPollingClient as unknown as ReturnType<typeof vi.fn>).mockClear();
 
 			// Try to fallback again (e.g. from polling error?)
 			// Implementation: private fallbackToPolling() { if (this.fallbackAttempted ...) return; }
-			
+
 			// We can't easily access the private method, but if we trigger another error?
 			// The polling client handles its own errors usually.
 			// But if we simulate something that would trigger fallback if it wasn't already done...
 			// The fallback logic is mostly tied to SSE errors.
 			// If we explicitly call connect() again?
 			// But connect() returns if currentTransport is set.
-			
+
 			// Let's verify fallbackAttempted flag logic by inspecting if it tries to connect SSE again on next connect call if disconnected?
-			
+
 			fallback.disconnect();
 			fallback.connect();
 
@@ -234,12 +242,12 @@ describe('TransportFallback', () => {
 
 		it('proxies getState', () => {
 			const fallback = new TransportFallback(baseConfig);
-			
+
 			expect(fallback.getState().status).toBe('disconnected');
 
 			fallback.connect();
 			mockSseClient.getState.mockReturnValue({ status: 'connected', error: null });
-			
+
 			expect(fallback.getState().status).toBe('connected');
 			expect(fallback.getState().transport).toBe('sse');
 		});

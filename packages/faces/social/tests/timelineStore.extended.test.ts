@@ -4,7 +4,7 @@
  * Additional tests for TimelineStore focusing on uncovered functionality.
  */
 
-import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { TimelineStore } from '../src/lib/timelineStore';
 import type { Status } from '../src/types';
 
@@ -174,9 +174,7 @@ describe('TimelineStore Extended', () => {
 				.fn()
 				.mockImplementation(
 					() =>
-						new Promise((resolve) =>
-							setTimeout(() => resolve(responseFor([makeStatus('a')])), 100)
-						)
+						new Promise((resolve) => setTimeout(() => resolve(responseFor([makeStatus('a')])), 100))
 				);
 			vi.stubGlobal('fetch', fetchMock);
 
@@ -203,9 +201,7 @@ describe('TimelineStore Extended', () => {
 		});
 
 		it('prevents loadOlder when endReached', async () => {
-			const fetchMock = vi
-				.fn()
-				.mockResolvedValueOnce(responseFor([makeStatus('a')])); // Less than preloadCount
+			const fetchMock = vi.fn().mockResolvedValueOnce(responseFor([makeStatus('a')])); // Less than preloadCount
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new TimelineStore({ preloadCount: 2, enableRealtime: false });
@@ -232,7 +228,9 @@ describe('TimelineStore Extended', () => {
 
 	describe('updateStatus', () => {
 		it('updates an existing status', async () => {
-			const fetchMock = vi.fn().mockResolvedValue(responseFor([makeStatus('a', { content: 'old' })]));
+			const fetchMock = vi
+				.fn()
+				.mockResolvedValue(responseFor([makeStatus('a', { content: 'old' })]));
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new TimelineStore({ enableRealtime: false });
@@ -306,7 +304,7 @@ describe('TimelineStore Extended', () => {
 			vi.stubGlobal('fetch', fetchMock);
 
 			const store = new TimelineStore({ enableRealtime: false });
-			const loadPromise = store.loadInitial(baseUrl);
+			const _loadPromise = store.loadInitial(baseUrl);
 
 			store.abort();
 
@@ -390,7 +388,7 @@ describe('TimelineStore Extended', () => {
 
 	describe('Getter Methods', () => {
 		it('returns loading state', async () => {
-			let resolvePromise: (value: Response) => void;
+			let resolvePromise: ((value: Response) => void) | undefined;
 			const fetchMock = vi.fn().mockImplementation(
 				() =>
 					new Promise<Response>((resolve) => {
@@ -404,7 +402,7 @@ describe('TimelineStore Extended', () => {
 
 			expect(store.loading).toBe(true);
 
-			resolvePromise!(responseFor([makeStatus('a')]));
+			if (resolvePromise) resolvePromise(responseFor([makeStatus('a')]));
 			await loadPromise;
 
 			expect(store.loading).toBe(false);

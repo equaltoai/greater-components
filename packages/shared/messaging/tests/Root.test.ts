@@ -7,11 +7,11 @@ const { mockContext, mockCreateMessagesContext } = vi.hoisted(() => {
 	const mockContext = {
 		handlers: {},
 		fetchConversations: vi.fn(),
-		state: { conversations: [] }
+		state: { conversations: [] },
 	};
 	return {
 		mockContext,
-		mockCreateMessagesContext: vi.fn(() => mockContext)
+		mockCreateMessagesContext: vi.fn(() => mockContext),
 	};
 });
 
@@ -38,11 +38,11 @@ describe('Root', () => {
 		// However, standard mount doesn't support snippets in `props` easily yet for testing?
 		// We can try passing it if the test helper supports it, or use a wrapper component.
 		// But let's check if it renders the wrapper div first.
-		
+
 		const instance = mount(Root, { target });
-		
+
 		expect(target.querySelector('.messages-root')).toBeTruthy();
-		
+
 		unmount(instance);
 	});
 
@@ -53,7 +53,7 @@ describe('Root', () => {
 
 		expect(mockCreateMessagesContext).toHaveBeenCalled();
 		// We can't easily check the arguments because of untrack(), but we can check if it was called.
-		
+
 		unmount(instance);
 	});
 
@@ -83,16 +83,16 @@ describe('Root', () => {
 		const instance = mount(Root, { target, props: { handlers: handlers1 } });
 		await flushSync();
 
-		const handlers2 = { onSendMessage: vi.fn(), onUploadMedia: vi.fn() };
-		// Update props - relying on Svelte 5 state reactivity if mount returns instance with $set? 
-		// Or we need to remount/update. `mount` returns { $set, $destroy } in Svelte 4, 
+		// const handlers2 = { onSendMessage: vi.fn(), onUploadMedia: vi.fn() };
+		// Update props - relying on Svelte 5 state reactivity if mount returns instance with $set?
+		// Or we need to remount/update. `mount` returns { $set, $destroy } in Svelte 4,
 		// but in Svelte 5 `mount` returns the exports object.
-		// Since we can't easily update props from outside without a wrapper in Svelte 5 testing yet 
+		// Since we can't easily update props from outside without a wrapper in Svelte 5 testing yet
 		// (unless using a specific test runner adapter), we might skip this or use a wrapper.
-		
+
 		// For now, let's assume initial render updates handlers.
 		// The effect in Root runs: Object.assign(context.handlers, handlers);
-		
+
 		// We can check if mockContext.handlers has the properties.
 		expect(mockContext.handlers).toMatchObject(handlers1);
 

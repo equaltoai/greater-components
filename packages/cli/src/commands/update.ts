@@ -391,14 +391,17 @@ function displayUpdateResults(results: ComponentUpdateStatus[], dryRun: boolean)
 	}
 }
 
-export const updateAction = async (items: string[], options: {
-	all?: boolean;
-	ref?: string;
-	cwd?: string;
-	force?: boolean;
-	dryRun?: boolean;
-	yes?: boolean;
-}) => {
+export const updateAction = async (
+	items: string[],
+	options: {
+		all?: boolean;
+		ref?: string;
+		cwd?: string;
+		force?: boolean;
+		dryRun?: boolean;
+		yes?: boolean;
+	}
+) => {
 	const cwd = path.resolve(options.cwd || process.cwd());
 
 	// Check if initialized
@@ -445,7 +448,7 @@ export const updateAction = async (items: string[], options: {
 				chalk.dim(' or ') +
 				chalk.cyan('greater update --all') +
 				chalk.dim('\n')
-			);
+		);
 		process.exit(1);
 		return;
 	}
@@ -472,7 +475,7 @@ export const updateAction = async (items: string[], options: {
 			name: 'confirm',
 			message: `Update ${componentNames.length} component(s)?`,
 			initial: true,
-			});
+		});
 
 		if (!response.confirm) {
 			logger.warn(chalk.yellow('\n✖ Update cancelled'));
@@ -513,12 +516,13 @@ export const updateAction = async (items: string[], options: {
 	// Display results
 	displayUpdateResults(results, options.dryRun || false);
 
-			// Exit with error code if there were failures
-			const hasErrors = results.some((r) => r.error || r.files.some((f) => f.status === 'error'));
-			if (hasErrors) {
-				process.exit(1);
-				return;
-			}};
+	// Exit with error code if there were failures
+	const hasErrors = results.some((r) => r.error || r.files.some((f) => f.status === 'error'));
+	if (hasErrors) {
+		process.exit(1);
+		return;
+	}
+};
 
 export const updateCommand = new Command()
 	.name('update')

@@ -52,9 +52,7 @@ export default defineConfig({
 					statements: 80,
 				},
 			},
-			include: [
-				'src/components/**/*.svelte',
-			],
+			include: ['src/components/**/*.svelte', 'src/components/**/*.ts'],
 			exclude: [
 				'src/**/*.d.ts',
 				'src/**/*.test.{ts,js}',
@@ -69,9 +67,9 @@ export default defineConfig({
 		deps: {
 			optimizer: {
 				web: {
-					include: ['@tanstack/svelte-virtual']
-				}
-			}
-		}
+					include: ['@tanstack/svelte-virtual'],
+				},
+			},
+		},
 	},
 });

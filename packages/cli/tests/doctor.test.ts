@@ -550,14 +550,14 @@ describe('checkInstalledComponents extended', () => {
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [
-			{
-				name: 'nonexistent-component',
-				version: '1.0.0',
-				installedAt: new Date().toISOString(),
-				modified: false,
-				checksums: [],
-			},
-		],
+				{
+					name: 'nonexistent-component',
+					version: '1.0.0',
+					installedAt: new Date().toISOString(),
+					modified: false,
+					checksums: [],
+				},
+			],
 		};
 
 		const results = await checkInstalledComponents('/project', config);
@@ -1023,140 +1023,140 @@ describe('checkInstalledComponents file verification', () => {
 	});
 });
 
-	describe('Command Execution', () => {
-		let exitSpy: ReturnType<typeof vi.spyOn>;
+describe('Command Execution', () => {
+	let exitSpy: ReturnType<typeof vi.spyOn>;
 
-		beforeEach(() => {
-			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
-		});
-
-		afterEach(() => {
-			exitSpy.mockRestore();
-		});
-
-		it('exits if not a valid project', async () => {
-			const pkgPath = path.join('/project', 'package.json');
-			fsStore.delete(pkgPath); // Ensure no package.json
-
-			const { doctorAction } = await import('../src/commands/doctor.js');
-			await doctorAction({ cwd: '/project' });
-
-			expect(exitSpy).toHaveBeenCalledWith(1);
-		});
-
-		it('outputs JSON when requested', async () => {
-			// Setup valid project
-			const pkgPath = path.join('/project', 'package.json');
-			fsStore.set(
-				pkgPath,
-				JSON.stringify({
-					dependencies: { svelte: '^5.0.0' },
-				})
-			);
-			const configPath = path.join('/project', 'components.json');
-			fsStore.set(
-				configPath,
-				JSON.stringify({
-					$schema: 'https://greater.components.dev/schema.json',
-					version: '1.0.0',
-					style: 'default',
-					aliases: {
-						components: '$lib/components',
-						utils: '$lib/utils',
-						ui: '$lib/components/ui',
-						lib: '$lib',
-						hooks: '$lib/hooks',
-					},
-					installed: [],
-				})
-			);
-
-			const { doctorAction } = await import('../src/commands/doctor.js');
-			const { logger } = await import('../src/utils/logger.js');
-
-			await doctorAction({ cwd: '/project', json: true });
-
-			expect(logger.info).toHaveBeenCalled();
-			const calls = (logger.info as any).mock.calls;
-			const jsonCall = calls.find((call: any[]) => {
-				try {
-					const parsed = JSON.parse(call[0]);
-					return parsed.totalChecks !== undefined;
-				} catch {
-					return false;
-				}
-			});
-			expect(jsonCall).toBeDefined();
-		});
-
-		it('runs diagnostics and outputs summary (text)', async () => {
-			// Setup valid project
-			const pkgPath = path.join('/project', 'package.json');
-			fsStore.set(
-				pkgPath,
-				JSON.stringify({
-					dependencies: { svelte: '^5.0.0' },
-				})
-			);
-			const configPath = path.join('/project', 'components.json');
-			fsStore.set(
-				configPath,
-				JSON.stringify({
-					$schema: 'https://greater.components.dev/schema.json',
-					version: '1.0.0',
-					style: 'default',
-					aliases: {
-						components: '$lib/components',
-						utils: '$lib/utils',
-						ui: '$lib/components/ui',
-						lib: '$lib',
-						hooks: '$lib/hooks',
-					},
-					installed: [],
-				})
-			);
-
-			const { doctorAction } = await import('../src/commands/doctor.js');
-			const { logger } = await import('../src/utils/logger.js');
-
-			await doctorAction({ cwd: '/project' });
-
-			// Check for summary header
-			expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Summary'));
-		});
-
-		it('attempts to fix issues when --fix is provided', async () => {
-			// Setup valid project but missing alias dir
-			const pkgPath = path.join('/project', 'package.json');
-			fsStore.set(
-				pkgPath,
-				JSON.stringify({
-					dependencies: { svelte: '^5.0.0' },
-				})
-			);
-			const configPath = path.join('/project', 'components.json');
-			fsStore.set(
-				configPath,
-				JSON.stringify({
-					$schema: 'https://greater.components.dev/schema.json',
-					version: '1.0.0',
-					style: 'default',
-					aliases: {
-						ui: '$lib/components/ui', // Missing dir
-					},
-					installed: [],
-				})
-			);
-
-			const { doctorAction } = await import('../src/commands/doctor.js');
-			const { logger } = await import('../src/utils/logger.js');
-
-			await doctorAction({ cwd: '/project', fix: true });
-
-			expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Running auto-fix'));
-			expect(fsMock.ensureDir).toHaveBeenCalled();
-		});
+	beforeEach(() => {
+		exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
 	});
+
+	afterEach(() => {
+		exitSpy.mockRestore();
+	});
+
+	it('exits if not a valid project', async () => {
+		const pkgPath = path.join('/project', 'package.json');
+		fsStore.delete(pkgPath); // Ensure no package.json
+
+		const { doctorAction } = await import('../src/commands/doctor.js');
+		await doctorAction({ cwd: '/project' });
+
+		expect(exitSpy).toHaveBeenCalledWith(1);
+	});
+
+	it('outputs JSON when requested', async () => {
+		// Setup valid project
+		const pkgPath = path.join('/project', 'package.json');
+		fsStore.set(
+			pkgPath,
+			JSON.stringify({
+				dependencies: { svelte: '^5.0.0' },
+			})
+		);
+		const configPath = path.join('/project', 'components.json');
+		fsStore.set(
+			configPath,
+			JSON.stringify({
+				$schema: 'https://greater.components.dev/schema.json',
+				version: '1.0.0',
+				style: 'default',
+				aliases: {
+					components: '$lib/components',
+					utils: '$lib/utils',
+					ui: '$lib/components/ui',
+					lib: '$lib',
+					hooks: '$lib/hooks',
+				},
+				installed: [],
+			})
+		);
+
+		const { doctorAction } = await import('../src/commands/doctor.js');
+		const { logger } = await import('../src/utils/logger.js');
+
+		await doctorAction({ cwd: '/project', json: true });
+
+		expect(logger.info).toHaveBeenCalled();
+		const calls = (logger.info as any).mock.calls;
+		const jsonCall = calls.find((call: any[]) => {
+			try {
+				const parsed = JSON.parse(call[0]);
+				return parsed.totalChecks !== undefined;
+			} catch {
+				return false;
+			}
+		});
+		expect(jsonCall).toBeDefined();
+	});
+
+	it('runs diagnostics and outputs summary (text)', async () => {
+		// Setup valid project
+		const pkgPath = path.join('/project', 'package.json');
+		fsStore.set(
+			pkgPath,
+			JSON.stringify({
+				dependencies: { svelte: '^5.0.0' },
+			})
+		);
+		const configPath = path.join('/project', 'components.json');
+		fsStore.set(
+			configPath,
+			JSON.stringify({
+				$schema: 'https://greater.components.dev/schema.json',
+				version: '1.0.0',
+				style: 'default',
+				aliases: {
+					components: '$lib/components',
+					utils: '$lib/utils',
+					ui: '$lib/components/ui',
+					lib: '$lib',
+					hooks: '$lib/hooks',
+				},
+				installed: [],
+			})
+		);
+
+		const { doctorAction } = await import('../src/commands/doctor.js');
+		const { logger } = await import('../src/utils/logger.js');
+
+		await doctorAction({ cwd: '/project' });
+
+		// Check for summary header
+		expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Summary'));
+	});
+
+	it('attempts to fix issues when --fix is provided', async () => {
+		// Setup valid project but missing alias dir
+		const pkgPath = path.join('/project', 'package.json');
+		fsStore.set(
+			pkgPath,
+			JSON.stringify({
+				dependencies: { svelte: '^5.0.0' },
+			})
+		);
+		const configPath = path.join('/project', 'components.json');
+		fsStore.set(
+			configPath,
+			JSON.stringify({
+				$schema: 'https://greater.components.dev/schema.json',
+				version: '1.0.0',
+				style: 'default',
+				aliases: {
+					ui: '$lib/components/ui', // Missing dir
+				},
+				installed: [],
+			})
+		);
+
+		const { doctorAction } = await import('../src/commands/doctor.js');
+		const { logger } = await import('../src/utils/logger.js');
+
+		await doctorAction({ cwd: '/project', fix: true });
+
+		expect(logger.info).toHaveBeenCalledWith(expect.stringContaining('Running auto-fix'));
+		expect(fsMock.ensureDir).toHaveBeenCalled();
+	});
+});
 
 // Mock logger for displaySummary and runAutoFix tests
 vi.mock('../src/utils/logger.js', () => ({
@@ -1406,4 +1406,3 @@ describe('runAutoFix', () => {
 		expect(failed).toBe(0);
 	});
 });
-

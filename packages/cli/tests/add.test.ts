@@ -50,14 +50,16 @@ vi.mock('../src/utils/fetch.js', () => ({
 		files: [{ path: 'button.ts', content: 'export const button = {};', type: 'component' }],
 		ref: 'greater-v4.2.0',
 	}),
-	fetchComponents: vi.fn().mockResolvedValue(
-		new Map([
-			[
-				'button',
-				[{ path: 'button.ts', content: 'export const button = {};', type: 'component' }],
-			],
-		])
-	),
+	fetchComponents: vi
+		.fn()
+		.mockResolvedValue(
+			new Map([
+				[
+					'button',
+					[{ path: 'button.ts', content: 'export const button = {};', type: 'component' }],
+				],
+			])
+		),
 }));
 
 vi.mock('../src/registry/index.js', () => ({
@@ -389,9 +391,8 @@ describe('Add Command', () => {
 			const { getComponent } = await import('../src/registry/index.js');
 			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
 
-			const { resolveDependencies, getInstallationOrder } = await import(
-				'../src/utils/dependency-resolver.js'
-			);
+			const { resolveDependencies, getInstallationOrder } =
+				await import('../src/utils/dependency-resolver.js');
 			const { parseItemName } = await import('../src/utils/item-parser.js');
 
 			const items = [parseItemName('button')];

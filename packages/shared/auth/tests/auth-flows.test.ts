@@ -6,177 +6,179 @@ import TwoFactorVerify from '../src/TwoFactorVerify.svelte';
 import WebAuthnSetup from '../src/WebAuthnSetup.svelte';
 
 describe('Auth Flow Integration Tests', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-    describe('OAuth Consent Flow', () => {
-        const clientInfo = {
-            name: 'Test App',
-            website: 'https://example.com',
-            description: 'A test app',
-        };
-        const scopes = [{ id: 'read', name: 'Read', description: 'Read access' }];
-        const defaultProps = {
-            clientInfo,
-            scopes,
-            clientId: 'client-123',
-            redirectUri: 'https://example.com/cb',
-            state: 'xyzState',
-        };
+	describe('OAuth Consent Flow', () => {
+		const clientInfo = {
+			name: 'Test App',
+			website: 'https://example.com',
+			description: 'A test app',
+		};
+		const scopes = [{ id: 'read', name: 'Read', description: 'Read access' }];
+		const defaultProps = {
+			clientInfo,
+			scopes,
+			clientId: 'client-123',
+			redirectUri: 'https://example.com/cb',
+			state: 'xyzState',
+		};
 
-        it('completes successful authorization flow', async () => {
-            const onOAuthAuthorize = vi.fn().mockResolvedValue(undefined);
-            
-            render(TestWrapper, {
-                component: OAuthConsent,
-                handlers: { onOAuthAuthorize },
-                ...defaultProps
-            });
+		it('completes successful authorization flow', async () => {
+			const onOAuthAuthorize = vi.fn().mockResolvedValue(undefined);
 
-            const authorizeBtn = screen.getByRole('button', { name: /Authorize Test App/i });
-            await fireEvent.click(authorizeBtn);
+			render(TestWrapper, {
+				component: OAuthConsent,
+				handlers: { onOAuthAuthorize },
+				...defaultProps,
+			});
 
-            expect(onOAuthAuthorize).toHaveBeenCalledWith({
-                clientId: 'client-123',
-                redirectUri: 'https://example.com/cb',
-                scope: ['read'],
-                state: 'xyzState',
-            });
-            
-            // Should verify loading state handling if possible, but immediate resolve makes it hard to catch 'loading' true.
-            // But we can check that error is not present.
-            expect(screen.queryByRole('alert')).toBeNull();
-        });
+			const authorizeBtn = screen.getByRole('button', { name: /Authorize Test App/i });
+			await fireEvent.click(authorizeBtn);
 
-        it('handles authorization failure flow', async () => {
-            const onOAuthAuthorize = vi.fn().mockRejectedValue(new Error('Consent denied by server'));
-            
-            render(TestWrapper, {
-                component: OAuthConsent,
-                handlers: { onOAuthAuthorize },
-                ...defaultProps
-            });
+			expect(onOAuthAuthorize).toHaveBeenCalledWith({
+				clientId: 'client-123',
+				redirectUri: 'https://example.com/cb',
+				scope: ['read'],
+				state: 'xyzState',
+			});
 
-            const authorizeBtn = screen.getByRole('button', { name: /Authorize Test App/i });
-            await fireEvent.click(authorizeBtn);
+			// Should verify loading state handling if possible, but immediate resolve makes it hard to catch 'loading' true.
+			// But we can check that error is not present.
+			expect(screen.queryByRole('alert')).toBeNull();
+		});
 
-            expect(onOAuthAuthorize).toHaveBeenCalled();
-            
-            const alert = await screen.findByRole('alert');
-            expect(alert.textContent).toContain('Consent denied by server');
-        });
-    });
+		it('handles authorization failure flow', async () => {
+			const onOAuthAuthorize = vi.fn().mockRejectedValue(new Error('Consent denied by server'));
 
-    describe('2FA Recovery Flow', () => {
-        const initialState = {
-            twoFactorSession: {
-                email: 'user@example.com',
-                methods: ['totp', 'backup'] as any
-            }
-        };
+			render(TestWrapper, {
+				component: OAuthConsent,
+				handlers: { onOAuthAuthorize },
+				...defaultProps,
+			});
 
-        it('allows recovery via backup code', async () => {
-            const onTwoFactorVerify = vi.fn().mockResolvedValue(undefined);
+			const authorizeBtn = screen.getByRole('button', { name: /Authorize Test App/i });
+			await fireEvent.click(authorizeBtn);
 
-            render(TestWrapper, {
-                component: TwoFactorVerify,
-                handlers: { onTwoFactorVerify },
-                initialState
-            });
+			expect(onOAuthAuthorize).toHaveBeenCalled();
 
-            // Switch to backup tab
-            const backupTab = screen.getByRole('button', { name: /Backup Code/i });
-            await fireEvent.click(backupTab);
+			const alert = await screen.findByRole('alert');
+			expect(alert.textContent).toContain('Consent denied by server');
+		});
+	});
 
-            // Enter backup code
-            const input = screen.getByLabelText('Backup Code');
-            await fireEvent.input(input, { target: { value: 'BACKUP-CODE-123' } });
+	describe('2FA Recovery Flow', () => {
+		const initialState = {
+			twoFactorSession: {
+				email: 'user@example.com',
+				methods: ['totp', 'backup'] as any,
+			},
+		};
 
-            // Verify
-            const verifyBtn = screen.getByRole('button', { name: 'Verify' });
-            await fireEvent.click(verifyBtn);
+		it('allows recovery via backup code', async () => {
+			const onTwoFactorVerify = vi.fn().mockResolvedValue(undefined);
 
-            expect(onTwoFactorVerify).toHaveBeenCalledWith({
-                code: 'BACKUP-CODE-123',
-                method: 'backup'
-            });
-        });
+			render(TestWrapper, {
+				component: TwoFactorVerify,
+				handlers: { onTwoFactorVerify },
+				initialState,
+			});
 
-        it('handles invalid backup code', async () => {
-            const onTwoFactorVerify = vi.fn().mockRejectedValue(new Error('Invalid backup code'));
+			// Switch to backup tab
+			const backupTab = screen.getByRole('button', { name: /Backup Code/i });
+			await fireEvent.click(backupTab);
 
-            render(TestWrapper, {
-                component: TwoFactorVerify,
-                handlers: { onTwoFactorVerify },
-                initialState
-            });
+			// Enter backup code
+			const input = screen.getByLabelText('Backup Code');
+			await fireEvent.input(input, { target: { value: 'BACKUP-CODE-123' } });
 
-            // Switch to backup tab
-            await fireEvent.click(screen.getByRole('button', { name: /Backup Code/i }));
+			// Verify
+			const verifyBtn = screen.getByRole('button', { name: 'Verify' });
+			await fireEvent.click(verifyBtn);
 
-            // Enter invalid code
-            await fireEvent.input(screen.getByLabelText('Backup Code'), { target: { value: 'WRONG-CODE' } });
-            await fireEvent.click(screen.getByRole('button', { name: 'Verify' }));
+			expect(onTwoFactorVerify).toHaveBeenCalledWith({
+				code: 'BACKUP-CODE-123',
+				method: 'backup',
+			});
+		});
 
-            // Check for error
-            const alert = await screen.findByRole('alert');
-            expect(alert.textContent).toContain('Invalid backup code');
-        });
-    });
+		it('handles invalid backup code', async () => {
+			const onTwoFactorVerify = vi.fn().mockRejectedValue(new Error('Invalid backup code'));
 
-    describe('WebAuthn Unsupported Browser', () => {
-        const originalNavigator = window.navigator;
+			render(TestWrapper, {
+				component: TwoFactorVerify,
+				handlers: { onTwoFactorVerify },
+				initialState,
+			});
 
-        afterEach(() => {
-            // Restore navigator
-            Object.defineProperty(window, 'navigator', {
-                value: originalNavigator,
-                writable: true,
-                configurable: true,
-            });
-        });
+			// Switch to backup tab
+			await fireEvent.click(screen.getByRole('button', { name: /Backup Code/i }));
 
-        it('displays unavailable message when WebAuthn is not supported', async () => {
-            // Mock navigator to remove credentials. 
-            // We use an empty object (or partial) that definitely lacks 'credentials' key.
-            // Spreading originalNavigator might copy 'credentials' if it was own property, 
-            // or we need to ensure it's not present.
-            Object.defineProperty(window, 'navigator', {
-                value: {}, 
-                writable: true,
-                configurable: true,
-            });
+			// Enter invalid code
+			await fireEvent.input(screen.getByLabelText('Backup Code'), {
+				target: { value: 'WRONG-CODE' },
+			});
+			await fireEvent.click(screen.getByRole('button', { name: 'Verify' }));
 
-            // Verify mock
-            expect('credentials' in window.navigator).toBe(false);
+			// Check for error
+			const alert = await screen.findByRole('alert');
+			expect(alert.textContent).toContain('Invalid backup code');
+		});
+	});
 
-            render(TestWrapper, {
-                component: WebAuthnSetup,
-                email: 'user@example.com'
-            });
+	describe('WebAuthn Unsupported Browser', () => {
+		const originalNavigator = window.navigator;
 
-            expect(screen.getByText(/WebAuthn is not available/i)).toBeTruthy();
-            expect(screen.getByText(/Please use a modern browser/i)).toBeTruthy();
-            
-            expect(screen.queryByRole('button', { name: /Set Up Now/i })).toBeNull();
-        });
+		afterEach(() => {
+			// Restore navigator
+			Object.defineProperty(window, 'navigator', {
+				value: originalNavigator,
+				writable: true,
+				configurable: true,
+			});
+		});
 
-        it('displays setup intro when WebAuthn IS supported', async () => {
-             // Mock navigator to have credentials
-             Object.defineProperty(window, 'navigator', {
-                value: { ...originalNavigator, credentials: {} },
-                writable: true,
-                configurable: true,
-            });
+		it('displays unavailable message when WebAuthn is not supported', async () => {
+			// Mock navigator to remove credentials.
+			// We use an empty object (or partial) that definitely lacks 'credentials' key.
+			// Spreading originalNavigator might copy 'credentials' if it was own property,
+			// or we need to ensure it's not present.
+			Object.defineProperty(window, 'navigator', {
+				value: {},
+				writable: true,
+				configurable: true,
+			});
 
-            render(TestWrapper, {
-                component: WebAuthnSetup,
-                email: 'user@example.com'
-            });
+			// Verify mock
+			expect('credentials' in window.navigator).toBe(false);
 
-            expect(screen.queryByText(/WebAuthn is not available/i)).toBeNull();
-            expect(screen.getByRole('button', { name: /Set Up Now/i })).toBeTruthy();
-        });
-    });
+			render(TestWrapper, {
+				component: WebAuthnSetup,
+				email: 'user@example.com',
+			});
+
+			expect(screen.getByText(/WebAuthn is not available/i)).toBeTruthy();
+			expect(screen.getByText(/Please use a modern browser/i)).toBeTruthy();
+
+			expect(screen.queryByRole('button', { name: /Set Up Now/i })).toBeNull();
+		});
+
+		it('displays setup intro when WebAuthn IS supported', async () => {
+			// Mock navigator to have credentials
+			Object.defineProperty(window, 'navigator', {
+				value: { ...originalNavigator, credentials: {} },
+				writable: true,
+				configurable: true,
+			});
+
+			render(TestWrapper, {
+				component: WebAuthnSetup,
+				email: 'user@example.com',
+			});
+
+			expect(screen.queryByText(/WebAuthn is not available/i)).toBeNull();
+			expect(screen.getByRole('button', { name: /Set Up Now/i })).toBeTruthy();
+		});
+	});
 });

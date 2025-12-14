@@ -1,6 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/svelte';
-import { describe, it, expect, vi } from 'vitest';
-import ThreadControls from '../src/ThreadControls.svelte';
+import { describe, it, vi } from 'vitest';
+// import ThreadControls from '../src/ThreadControls.svelte';
 
 // Mock primitives
 vi.mock('@equaltoai/greater-components-primitives', () => ({
@@ -13,7 +12,7 @@ vi.mock('@equaltoai/greater-components-primitives', () => ({
 			el.onclick = () => {
 				props.checked = !props.checked;
 			};
-			// @ts-ignore
+			// @ts-ignore - Mocking component mount
 			this.mount = (target) => target.appendChild(el);
 		}
 	},
@@ -30,7 +29,7 @@ vi.mock('@equaltoai/greater-components-primitives', () => ({
 			el.onchange = (e: any) => {
 				props.value = e.target.value;
 			};
-			// @ts-ignore
+			// @ts-ignore - Mocking component mount
 			this.mount = (target) => target.appendChild(el);
 		}
 	},
@@ -41,10 +40,10 @@ vi.mock('@equaltoai/greater-components-primitives', () => ({
 			// Svelte 5 children snippet handling is complex to mock in class component style without svelte
 			// So we just simulate click
 			el.onclick = props.onclick;
-			// @ts-ignore
+			// @ts-ignore - Mocking component mount
 			this.mount = (target) => target.appendChild(el);
 		}
-	}
+	},
 }));
 
 // Mock icons
@@ -57,7 +56,7 @@ vi.mock('@equaltoai/greater-components-icons', () => ({
 	},
 	LinkIcon: class {
 		constructor() {}
-	}
+	},
 }));
 
 describe('ThreadControls', () => {
@@ -67,7 +66,6 @@ describe('ThreadControls', () => {
 		// If the primitives are Svelte 5, I should mock them as functions.
 		// If they are Svelte 4, the class syntax is correct.
 		// Assuming they are components.
-		
 		// Let's try rendering and see if it explodes.
 		// If it fails, I might just skip this test or use a simpler mock.
 	});

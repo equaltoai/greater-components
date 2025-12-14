@@ -1,0 +1,992 @@
+
+> greater-components@4.1.0 lint /home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components
+> eslint . --ext .js,.jsx,.ts,.tsx,.svelte
+
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/apps/playground/src/routes/artist/+page.svelte
+  107:4  error  Each block should have a key  svelte/require-each-key
+  111:7  error  Each block should have a key  svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/apps/playground/src/routes/artist/artwork/+page.svelte
+  119:5  error  Each block should have a key  svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/SseClient.branch.test.ts
+   67:15  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  159:15  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  195:38  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/SseClient.test.ts
+  131:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  132:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  169:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  176:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  199:30  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  225:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  226:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  229:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  234:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  235:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  238:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/Transport.branch.test.ts
+  1:48  warning  'afterEach' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
+  4:10  warning  'WebSocketClient' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  7:56  warning  'TransportType' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/TransportFallback.test.ts
+  185:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/WebSocketClient.test.ts
+  130:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  152:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  164:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  165:32  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  165:32  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  180:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  183:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  194:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  197:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  209:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  212:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  229:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  230:31  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  230:31  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  237:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  253:21  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  256:31  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  261:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  291:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  296:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  314:39  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  315:30  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  338:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  357:4   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/__tests__/WebSocketPool.test.ts
+  2:25  warning  'getGlobalWebSocketPool' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/graphql/__tests__/LesserGraphQLAdapter.test.ts
+  4:10  warning  'ApolloClient' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/mappers/lesser/__tests__/mappers.branch.test.ts
+   50:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   51:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   52:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   80:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   81:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   82:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   96:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   97:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   98:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  119:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  120:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  121:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/mappers/lesser/__tests__/mappers.test.ts
+    1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  174:20  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  180:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  180:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  198:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  199:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  235:17  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  240:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  326:18  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  380:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  381:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+  382:11  warning  Forbidden non-null assertion                                          @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/fetchHelpers.test.ts
+    7:15  warning  'LesserGraphQLAdapter' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   77:11  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  193:11  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/timelineStore.branch.test.ts
+    3:31  warning  'StreamingEdit' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+    3:46  warning  'TimelineItem' is defined but never used. Allowed unused vars must match /^_/u          @typescript-eslint/no-unused-vars
+   92:23  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  133:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  192:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  221:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  241:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  264:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  282:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  298:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  318:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  331:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  356:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  364:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  384:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  393:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  398:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  405:11  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  408:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  435:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  453:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  461:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  486:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  515:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  521:12  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  530:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  540:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  549:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  580:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  607:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  640:17  warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+  662:10  warning  'mockPayload' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  673:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/timelineStore.test.ts
+   47:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   94:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  141:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  178:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  190:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/adapters/src/stores/__tests__/unifiedToTimeline.test.ts
+   96:17  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   96:17  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  116:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  117:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/adapters/artistAdapter.ts
+  10:10  warning  'LesserGraphQLAdapter' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  69:50  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistBadge.svelte
+  93:1  error  noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex(a11y_no_noninteractive_tabindex)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/HeroBanner.svelte
+  118:3   error  Redundant role 'banner'
+https://svelte.dev/e/a11y_no_redundant_roles(a11y_no_redundant_roles)  svelte/valid-compile
+  138:5   error  Each block should have a key                                                                   svelte/require-each-key
+  138:35  error  '_' is defined but never used                                                                  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/Root.svelte
+   92:3   error  This reference only captures the initial value of `layout`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)          svelte/valid-compile
+   93:3   error  This reference only captures the initial value of `showHeroBanner`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+   94:3   error  This reference only captures the initial value of `enableParallax`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+   95:3   error  This reference only captures the initial value of `showSocial`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)      svelte/valid-compile
+   96:13  error  This reference only captures the initial value of `isOwnProfile`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)    svelte/valid-compile
+   99:41  error  This reference only captures the initial value of `artist`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)          svelte/valid-compile
+   99:49  error  This reference only captures the initial value of `isOwnProfile`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)    svelte/valid-compile
+   99:71  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)        svelte/valid-compile
+  102:6   error  'prefersReducedMotion' is assigned a value but never used                                                                                                                                           @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/Sections.svelte
+  18:41  error  'PortfolioSectionData' is defined but never used   @typescript-eslint/no-unused-vars
+  31:18  error  'isOwnProfile' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/Statement.svelte
+  40:18  error    'isEditing' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  77:4   warning  `{@html}` can lead to XSS attack                svelte/no-at-html-tags
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/Stats.svelte
+  49:28  error  'professionalMode' is assigned a value but never used                                                                                                               @typescript-eslint/no-unused-vars
+  80:4   error  `<button>` cannot have role 'listitem'
+https://svelte.dev/e/a11y_no_interactive_element_to_noninteractive_role(a11y_no_interactive_element_to_noninteractive_role)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtistProfile/context.ts
+  12:15  warning  'Snippet' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Artwork/Image.svelte
+  91:23  error  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Artwork/Metadata.svelte
+  44:26  error  This reference only captures the initial value of `defaultExpanded`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Artwork/Title.svelte
+  58:25  error  This reference only captures the initial value of `level`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Artwork/context.ts
+  11:15  warning  'Snippet' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/ArtworkCard.svelte
+   68:26  error  This reference only captures the initial value of `artwork`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)            svelte/valid-compile
+  130:1   error  Non-interactive element `<article>` cannot have interactive role 'button'
+https://svelte.dev/e/a11y_no_noninteractive_element_to_interactive_role(a11y_no_noninteractive_element_to_interactive_role)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/Collaboration/Project.svelte
+  52:6  error  Each block should have a key  svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/Collaboration/Root.svelte
+   99:3   error  This reference only captures the initial value of `showProject`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)       svelte/valid-compile
+  100:3   error  This reference only captures the initial value of `showContributors`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+  101:3   error  This reference only captures the initial value of `showUploads`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)       svelte/valid-compile
+  102:3   error  This reference only captures the initial value of `showGallery`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)       svelte/valid-compile
+  103:3   error  This reference only captures the initial value of `showSplit`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)         svelte/valid-compile
+  106:8   error  'ctx' is assigned a value but never used                                                                                                                                                              @typescript-eslint/no-unused-vars
+  106:41  error  This reference only captures the initial value of `collaboration`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)     svelte/valid-compile
+  106:56  error  This reference only captures the initial value of `role`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)              svelte/valid-compile
+  106:70  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)          svelte/valid-compile
+  155:6   error  Each block should have a key                                                                                                                                                                          svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/Collaboration/Split.svelte
+  11:3  error  'calculateTotalSplit' is defined but never used  @typescript-eslint/no-unused-vars
+  12:3  error  'isSplitValid' is defined but never used         @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/Collaboration/Uploads.svelte
+  26:6  error  `fileInput` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update(non_reactive_update)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/CritiqueCircle/History.svelte
+  105:6  error  `<button>` cannot have role 'listitem'
+https://svelte.dev/e/a11y_no_interactive_element_to_noninteractive_role(a11y_no_interactive_element_to_noninteractive_role)  svelte/valid-compile
+  146:6  error  Each block should have a key                                                                                                                                        svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/CritiqueCircle/Queue.svelte
+  53:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/CritiqueCircle/Root.svelte
+   97:3   error  This reference only captures the initial value of `showQueue`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)                svelte/valid-compile
+   98:3   error  This reference only captures the initial value of `showSession`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)              svelte/valid-compile
+   99:3   error  This reference only captures the initial value of `showHistory`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)              svelte/valid-compile
+  100:3   error  This reference only captures the initial value of `showMembers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)              svelte/valid-compile
+  101:3   error  This reference only captures the initial value of `enableAnonymousFeedback`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+  104:42  error  This reference only captures the initial value of `circle`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)                   svelte/valid-compile
+  104:50  error  This reference only captures the initial value of `membership`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)               svelte/valid-compile
+  104:70  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)                 svelte/valid-compile
+  150:6   error  Each block should have a key                                                                                                                                                                                 svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/CritiqueCircle/Session.svelte
+   20:10  error  'circle' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  129:7   error  Each block should have a key                 svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Community/MentorMatch.svelte
+   63:48  error  This reference only captures the initial value of `filters`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+   67:8   error  'availabilityOptions' is assigned a value but only used as a type                                                                                                                            @typescript-eslint/no-unused-vars
+   80:11  error  'getAvailabilityLabel' is defined but never used                                                                                                                                             @typescript-eslint/no-unused-vars
+  141:76  error  Unexpected any. Specify a different type                                                                                                                                                     @typescript-eslint/no-explicit-any
+  146:6   error  Each block should have a key                                                                                                                                                                 svelte/require-each-key
+  192:9   error  Each block should have a key                                                                                                                                                                 svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/CreativeTools/CommissionWorkflow/Root.svelte
+  22:38  error  This reference only captures the initial value of `commission`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+  22:50  error  This reference only captures the initial value of `role`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)        svelte/valid-compile
+  22:56  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)    svelte/valid-compile
+  40:4   error  Each block should have a key                                                                                                                                                                    svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/CreativeTools/CritiqueMode/Image.svelte
+  17:27  error  'handlers' is assigned a value but never used                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  66:1   error  Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events(a11y_click_events_have_key_events)  svelte/valid-compile
+  66:1   error  Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)                                                                                                       svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/CreativeTools/CritiqueMode/Root.svelte
+  38:3   error  This reference only captures the initial value of `enableAnnotations`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)   svelte/valid-compile
+  39:3   error  This reference only captures the initial value of `enableDrawing`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)       svelte/valid-compile
+  40:3   error  This reference only captures the initial value of `showCategories`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)      svelte/valid-compile
+  41:3   error  This reference only captures the initial value of `categories`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)          svelte/valid-compile
+  44:36  error  This reference only captures the initial value of `artwork`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)             svelte/valid-compile
+  44:53  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)            svelte/valid-compile
+  44:63  error  This reference only captures the initial value of `initialAnnotations`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/CreativeTools/ReferenceBoard.svelte
+  74:1  error  Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+  93:4  error  Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/CreativeTools/WorkInProgress/Compare.svelte
+  104:7   error  Each block should have a key   svelte/require-each-key
+  104:32  error  '_' is defined but never used  @typescript-eslint/no-unused-vars
+  112:7   error  Each block should have a key   svelte/require-each-key
+  112:32  error  '_' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/CreativeTools/WorkInProgress/Root.svelte
+   93:3   error  This reference only captures the initial value of `showTimeline`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)      svelte/valid-compile
+   94:3   error  This reference only captures the initial value of `showComments`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)      svelte/valid-compile
+   95:3   error  This reference only captures the initial value of `enableComparison`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+   96:3   error  This reference only captures the initial value of `showProgress`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)      svelte/valid-compile
+   97:3   error  This reference only captures the initial value of `allowUpdates`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)      svelte/valid-compile
+  100:8   error  'ctx' is assigned a value but never used                                                                                                                                                              @typescript-eslint/no-unused-vars
+  100:31  error  This reference only captures the initial value of `thread`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)            svelte/valid-compile
+  100:47  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)          svelte/valid-compile
+  100:57  error  This reference only captures the initial value of `isOwner`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)           svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Curation/CollectionCard.svelte
+   28:16  error  'ArtistData' is defined but never used                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   94:21  error  This reference only captures the initial value of `isSaved`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)            svelte/valid-compile
+  126:1   error  Non-interactive element `<article>` cannot have interactive role 'button'
+https://svelte.dev/e/a11y_no_noninteractive_element_to_interactive_role(a11y_no_noninteractive_element_to_interactive_role)  svelte/valid-compile
+  194:6   error  Each block should have a key                                                                                                                                                                           svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Curation/CuratorSpotlight.svelte
+  105:25  error  This reference only captures the initial value of `isFollowing`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+  185:4   error  Each block should have a key                                                                                                                                                                     svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/ColorPaletteSearch.svelte
+  111:40  error  'file' is defined but never used                                                                                                                                    @typescript-eslint/no-unused-vars
+  146:3   error  Each block should have a key                                                                                                                                        svelte/require-each-key
+  147:4   error  `<button>` cannot have role 'listitem'
+https://svelte.dev/e/a11y_no_interactive_element_to_noninteractive_role(a11y_no_interactive_element_to_noninteractive_role)  svelte/valid-compile
+  216:3   error  Each block should have a key                                                                                                                                        svelte/require-each-key
+  223:5   error  Each block should have a key                                                                                                                                        svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/Filters.svelte
+   45:26  error  This reference only captures the initial value of `defaultExpanded`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+  251:4   error  Each block should have a key                                                                                                                                                                         svelte/require-each-key
+  252:5   error  `<button>` cannot have role 'listitem'
+https://svelte.dev/e/a11y_no_interactive_element_to_noninteractive_role(a11y_no_interactive_element_to_noninteractive_role)                                   svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/MoodMap.svelte
+  141:3  error  Each block should have a key                                                                                                                                                                svelte/require-each-key
+  158:3  error  Elements with the ARIA role "slider" must have the following attributes defined: "aria-valuenow"
+https://svelte.dev/e/a11y_role_has_required_aria_props(a11y_role_has_required_aria_props)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/Results.svelte
+  126:6   error  Each block should have a key                                                                                                                                                                                svelte/require-each-key
+  139:5   error  Each block should have a key                                                                                                                                                                                svelte/require-each-key
+  139:24  error  '_' is defined but never used                                                                                                                                                                               @typescript-eslint/no-unused-vars
+  183:5   error  noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex(a11y_no_noninteractive_tabindex)                                                         svelte/valid-compile
+  183:5   error  Non-interactive element `<article>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/Root.svelte
+   96:3   error  This reference only captures the initial value of `enableColorSearch`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)   svelte/valid-compile
+   97:3   error  This reference only captures the initial value of `enableMoodMap`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)       svelte/valid-compile
+   98:3   error  This reference only captures the initial value of `enableStyleFilter`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)   svelte/valid-compile
+   99:3   error  This reference only captures the initial value of `enableVisualSearch`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)  svelte/valid-compile
+  100:3   error  This reference only captures the initial value of `showFilters`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)         svelte/valid-compile
+  101:3   error  This reference only captures the initial value of `showSuggestions`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)     svelte/valid-compile
+  104:37  error  This reference only captures the initial value of `store`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)               svelte/valid-compile
+  104:52  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)            svelte/valid-compile
+  107:26  error  This reference only captures the initial value of `store`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)               svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/SearchBar.svelte
+   56:3  error  'showVoiceSearch' is assigned a value but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   70:6  error  `fileInput` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update(non_reactive_update)                                                                                                                          svelte/valid-compile
+  213:4  error  The attribute 'aria-expanded' is not supported by the role 'searchbox'. This role is implicit on the element `<input>`
+https://svelte.dev/e/a11y_role_supports_aria_props_implicit(a11y_role_supports_aria_props_implicit)                                                                                   svelte/valid-compile
+  277:4  error  Each block should have a key                                                                                                                                                                                                                                                                                 svelte/require-each-key
+  278:5  error  Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events(a11y_click_events_have_key_events)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/StyleFilter.svelte
+  136:4  error  Each block should have a key                                                                                                                                        svelte/require-each-key
+  139:6  error  `<button>` cannot have role 'listitem'
+https://svelte.dev/e/a11y_no_interactive_element_to_noninteractive_role(a11y_no_interactive_element_to_noninteractive_role)  svelte/valid-compile
+  158:3  error  Each block should have a key                                                                                                                                        svelte/require-each-key
+  168:6  error  Each block should have a key                                                                                                                                        svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/Suggestions.svelte
+  111:5  error  noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex(a11y_no_noninteractive_tabindex)                                                         svelte/valid-compile
+  111:5  error  Non-interactive element `<article>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Discovery/context.ts
+  12:15  warning  'Snippet' is defined but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+  16:2   warning  'ArtStyle' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  18:2   warning  'ColorPalette' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Exhibition/Artists.svelte
+  19:16  error  'ArtistData' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Exhibition/Gallery.svelte
+  79:43  error  'index' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Exhibition/Root.svelte
+   99:3   error  This reference only captures the initial value of `showCurator`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)             svelte/valid-compile
+  100:3   error  This reference only captures the initial value of `showArtworkCount`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)        svelte/valid-compile
+  101:3   error  This reference only captures the initial value of `showDates`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)               svelte/valid-compile
+  102:3   error  This reference only captures the initial value of `showLocation`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)            svelte/valid-compile
+  103:3   error  This reference only captures the initial value of `enableVirtualTour`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)       svelte/valid-compile
+  106:38  error  This reference only captures the initial value of `exhibition`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)              svelte/valid-compile
+  106:58  error  This reference only captures the initial value of `handlers`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)                svelte/valid-compile
+  106:68  error  This reference only captures the initial value of `layout`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)                  svelte/valid-compile
+  155:1   error  Non-interactive element `<article>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Gallery/Grid.svelte
+  164:8  error  'visibleItems' is assigned a value but never used                                                                                                                                                       @typescript-eslint/no-unused-vars
+  272:1  error  Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+  291:6  error  Each block should have a key                                                                                                                                                                            svelte/require-each-key
+  293:8  error  Each block should have a key                                                                                                                                                                            svelte/require-each-key
+  296:9  error  noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex(a11y_no_noninteractive_tabindex)                                                     svelte/valid-compile
+  296:9  error  Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+  323:4  error  Each block should have a key                                                                                                                                                                            svelte/require-each-key
+  325:6  error  Each block should have a key                                                                                                                                                                            svelte/require-each-key
+  328:7  error  noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex(a11y_no_noninteractive_tabindex)                                                     svelte/valid-compile
+  328:7  error  Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Gallery/Masonry.svelte
+  26:3  error  'measureAspectRatio' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Gallery/Row.svelte
+  207:3  error  noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex(a11y_no_noninteractive_tabindex)                                                     svelte/valid-compile
+  207:3  error  Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions(a11y_no_noninteractive_element_interactions)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Gallery/utils.ts
+  175:24  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  178:8   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  180:22  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  185:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  186:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/MediaViewer/Navigation.svelte
+  116:5  error  Each block should have a key                                                                                                                                                                                              svelte/require-each-key
+  121:7  error  The attribute 'aria-selected' is not supported by the role 'button'. This role is implicit on the element `<button>`
+https://svelte.dev/e/a11y_role_supports_aria_props_implicit(a11y_role_supports_aria_props_implicit)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/MediaViewer/Root.svelte
+   72:3   error  This reference only captures the initial value of `currentIndex`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)                                                                                                             svelte/valid-compile
+   82:24  error  This reference only captures the initial value of `currentArtwork`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally(state_referenced_locally)                                                                                                           svelte/valid-compile
+  219:1   error  Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus(a11y_interactive_supports_focus)                                                                                                                                                 svelte/valid-compile
+  219:1   error  Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events(a11y_click_events_have_key_events)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Monetization/PremiumBadge.svelte
+  124:1  error  noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex(a11y_no_noninteractive_tabindex)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Monetization/ProtectionTools.svelte
+  361:7  error  A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control(a11y_label_has_associated_control)  svelte/valid-compile
+  420:7  error  A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control(a11y_label_has_associated_control)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Transparency/AIDisclosure.svelte
+  205:8  error  Each block should have a key  svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Transparency/AIOptOutControls.svelte
+   39:16  error  'AIOptOutStatus' is defined but never used                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+  215:3   error  Each block should have a key                                                                                                                                                                                                                                                                                 svelte/require-each-key
+  354:3   error  Elements with the 'alertdialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus(a11y_interactive_supports_focus)                                                                                                                                            svelte/valid-compile
+  354:3   error  Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events(a11y_click_events_have_key_events)  svelte/valid-compile
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Transparency/EthicalSourcingBadge.svelte
+  311:7  error  Each block should have a key  svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/components/Transparency/ProcessDocumentation.svelte
+  215:9  error  Each block should have a key  svelte/require-each-key
+  220:9  error  Each block should have a key  svelte/require-each-key
+  242:8  error  Each block should have a key  svelte/require-each-key
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/commission.ts
+  9:15  warning  'CommissionData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/critique.ts
+    9:15  warning  'ArtworkData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  209:15  warning  Forbidden non-null assertion                                                   @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/discovery.ts
+  200:45  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/gallery.ts
+  165:66  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/patterns/portfolio.ts
+    9:15  warning  'ArtistData' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+    9:27  warning  'ArtworkData' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  231:35  warning  Forbidden non-null assertion                                                   @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/artistProfileStore.ts
+   55:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  169:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/commissionStore.ts
+   45:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  118:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  173:63  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/discoveryStore.ts
+   46:67  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   85:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  243:39  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/galleryStore.ts
+   19:2   warning  'createPaginatedState' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   25:2   warning  'confirmOptimistic' is defined but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+   26:2   warning  'rollbackOptimistic' is defined but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+  202:39  warning  Unexpected any. Specify a different type                                                @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/offlineStore.ts
+  224:3  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/realtimeStore.ts
+   14:2   warning  'RealtimeConnectionState' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  185:41  warning  Unexpected any. Specify a different type                                                   @typescript-eslint/no-explicit-any
+  199:3   warning  Forbidden non-null assertion                                                               @typescript-eslint/no-non-null-assertion
+  208:60  warning  Unexpected any. Specify a different type                                                   @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/stores/types.ts
+  12:28  warning  'ArtworkHandlers' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  13:27  warning  'ProfileHandlers' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/subscriptions/index.ts
+  111:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  117:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  122:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  149:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  155:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  160:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  186:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  191:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  196:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  214:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  220:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  225:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  242:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  247:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  252:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/a11y-testing.ts
+   10:34  warning  'ensureContrastRatio' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  320:26  warning  Forbidden non-null assertion                                                           @typescript-eslint/no-non-null-assertion
+  321:25  warning  Forbidden non-null assertion                                                           @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/accessibility.ts
+  106:27  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  107:26  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  131:5   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  153:7   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  245:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  331:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  525:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/federation.ts
+   21:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  231:15  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+  232:16  warning  Forbidden non-null assertion              @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/highContrast.ts
+   82:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   83:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   84:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   92:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   92:36  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   93:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   93:36  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   94:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   94:36  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  102:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  103:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  104:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/monitoring.ts
+   72:18  warning  Forbidden non-null assertion                                                                @typescript-eslint/no-non-null-assertion
+   86:19  warning  Forbidden non-null assertion                                                                @typescript-eslint/no-non-null-assertion
+  176:9   warning  'navigationStart' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  294:26  warning  Forbidden non-null assertion                                                                @typescript-eslint/no-non-null-assertion
+  295:26  warning  Forbidden non-null assertion                                                                @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/performance.ts
+   67:45  warning  'transitionDuration' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  358:11  warning  Forbidden non-null assertion                                                                   @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/src/utils/reducedMotion.ts
+  213:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/tests/a11y/keyboard-navigation.test.ts
+  12:10  warning  'simulateKeyboard' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+  12:28  warning  'simulateArrowNavigation' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/tests/components/Artwork.test.ts
+  12:10  warning  'render' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  12:18  warning  'screen' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  12:26  warning  'waitFor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/tests/components/ArtworkCard.test.ts
+  13:10  warning  'render' is defined but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+  13:18  warning  'screen' is defined but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+  13:26  warning  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  59:18  warning  Forbidden non-null assertion                                                 @typescript-eslint/no-non-null-assertion
+  59:46  warning  Forbidden non-null assertion                                                 @typescript-eslint/no-non-null-assertion
+  65:18  warning  Forbidden non-null assertion                                                 @typescript-eslint/no-non-null-assertion
+  65:46  warning  Forbidden non-null assertion                                                 @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/tests/components/MediaViewer.test.ts
+  14:10  warning  'simulateKeyboard' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/tests/integration/discovery-flow.test.ts
+  178:8  error  'filters' is never reassigned. Use 'const' instead  prefer-const
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/tests/stores/commissionStore.test.ts
+  15:2   warning  'createMockCommissionList' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  91:10  warning  'commission' is assigned a value but never used. Allowed unused vars must match /^_/u       @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/artist/tests/utils/index.ts
+  121:6  error  'state' is never reassigned. Use 'const' instead  prefer-const
+  170:6  error  'state' is never reassigned. Use 'const' instead  prefer-const
+  222:6  error  'state' is never reassigned. Use 'const' instead  prefer-const
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/blog/tests/Article.test.ts
+  2:37  warning  'waitFor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/blog/tests/context.test.ts
+  7:48  warning  'afterEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/community/tests/render.test.ts
+  1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u      @typescript-eslint/no-unused-vars
+  2:18  warning  'screen' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/ActionBar.test.ts
+  13:8  warning  'mockStates' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/ComposeBox.test.ts
+  137:26  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Filters/Editor.test.ts
+  1:37  warning  'waitFor' is defined but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+  2:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  2:48  warning  'afterEach' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Lists/Editor.test.ts
+  2:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  2:48  warning  'afterEach' is defined but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Lists/MemberPicker.test.ts
+  2:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/NotificationComponents.test.ts
+  1:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+  5:29  warning  'NotificationGroup' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/EndorsedAccounts.test.ts
+  160:10  warning  'items' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/GraphQLAdapter.coverage.test.ts
+  1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/GraphQLAdapter.test.ts
+    5:2   warning  'adapterThatReturnsActor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+    8:22  warning  'validProfileData' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+    9:10  warning  'flushPromises' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  234:19  warning  Forbidden non-null assertion                                                               @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/PreferencesController.test.ts
+  163:60  warning  'input' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/ProfileEdit.test.ts
+  1:37  warning  'waitFor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/ProfileHeader.test.ts
+  34:9  warning  'toggleEdit' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/ProfileStats.test.ts
+  35:11  warning  'component' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  52:25  warning  Forbidden non-null assertion                                                          @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Profile/PushNotificationsController.test.ts
+  1:32  warning  'vi' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/SettingsPanel.test.ts
+   46:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   57:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   68:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   79:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   95:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   97:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   98:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  121:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Status/Actions.test.ts
+  1:37  warning  'waitFor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/StatusCard.test.ts
+  79:9  warning  'buttons' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/Timeline/TimelineComponents.test.ts
+  27:25  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/TimelineVirtualized.test.ts
+  2:18  warning  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/TimelineVirtualizedReactive.test.ts
+  1:26  warning  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/components/coverage-harness.ts
+  69:24  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  71:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/helpers/browser/mockPushApis.ts
+  57:7  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/helpers/fakes/createFakeLesserAdapter.ts
+  36:48  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  47:22  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/helpers/fixtures/preferences.ts
+   1:34  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  39:37  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/helpers/fixtures/profile.ts
+   1:15  warning  'Account' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   3:26  warning  Unexpected any. Specify a different type                                   @typescript-eslint/no-explicit-any
+  19:34  warning  Unexpected any. Specify a different type                                   @typescript-eslint/no-explicit-any
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/lesserTimelineStore.test.ts
+  393:4  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/listsContext.test.ts
+  8:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/notificationStore.test.ts
+    7:47  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+    9:38  warning  'Status' is defined but never used. Allowed unused vars must match /^_/u                @typescript-eslint/no-unused-vars
+  279:10  warning  'loadPromise' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/timelineStore.extended.test.ts
+    7:47  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u            @typescript-eslint/no-unused-vars
+  307:10  warning  'loadPromise' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  405:4   warning  Forbidden non-null assertion                                                            @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/social/tests/transport.test.ts
+  13:7  warning  'TransportEventType' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/headless/src/behaviors/roving-tabindex.ts
+  296:20  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  306:20  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/headless/tests/dismissable.test.ts
+  13:7  warning  'DismissReason' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/headless/tests/live-region.test.ts
+  13:2  warning  'announcePolite' is defined but never used. Allowed unused vars must match /^_/u     @typescript-eslint/no-unused-vars
+  14:2  warning  'announceAssertive' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/primitives/tests/SimpleMenu.test.ts
+  75:41  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/primitives/tests/smoothThemeTransition.test.ts
+  30:3  warning  Include a description after the "@ts-ignore" directive to explain why the @ts-ignore is necessary. The description must be 5 characters or longer  @typescript-eslint/ban-ts-comment
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/primitives/tests/transitions.test.ts
+  33:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  56:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  74:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  81:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  97:16  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/admin/tests/Context.test.ts
+   17:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   18:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   19:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   45:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   47:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   50:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   53:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   72:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   75:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   76:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   96:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+   99:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  115:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  116:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  117:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  130:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  131:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  133:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  134:10  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  153:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  156:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  177:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  180:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  201:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  204:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  225:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  228:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  249:3   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  252:11  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/admin/tests/TrustGraph.test.ts
+  156:3  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/admin/tests/Users.test.ts
+  71:11  warning  'container' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/auth/tests/BackupCodes.test.ts
+  1:48  warning  'afterEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/auth/tests/InstanceSelector.interactions.test.ts
+  104:3  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/auth/tests/PasswordReset.test.ts
+  2:37  warning  'waitFor' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/chat/tests/ContextLogic.test.ts
+  23:21  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/DraftSaver.test.ts
+  138:11  warning  'rerender' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/Editor.test.ts
+  73:9  warning  'form' is assigned a value but never used. Allowed unused vars must match /^_/u           @typescript-eslint/no-unused-vars
+  74:9  warning  'editorElement' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  99:9  warning  'closestMock' is assigned a value but never used. Allowed unused vars must match /^_/u    @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/EditorWithAutocomplete.test.ts
+   5:13  warning  'Context' is defined but never used. Allowed unused vars must match /^_/u         @typescript-eslint/no-unused-vars
+  24:42  warning  'importOriginal' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/MediaUpload.test.ts
+   22:13  warning  'node' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  534:3   warning  Forbidden non-null assertion                                            @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/MediaUploadHandler.test.ts
+  286:9   warning  'mockFileReader' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  288:29  warning  'file' is defined but never used. Allowed unused args must match /^_/u                     @typescript-eslint/no-unused-vars
+  322:19  warning  'file' is defined but never used. Allowed unused args must match /^_/u                     @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/Root.test.ts
+    4:8   warning  'Submit' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+   49:26  warning  Forbidden non-null assertion                                              @typescript-eslint/no-non-null-assertion
+   67:26  warning  Forbidden non-null assertion                                              @typescript-eslint/no-non-null-assertion
+   97:36  warning  Forbidden non-null assertion                                              @typescript-eslint/no-non-null-assertion
+  103:3   warning  Forbidden non-null assertion                                              @typescript-eslint/no-non-null-assertion
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/Submit.test.ts
+  19:13  warning  'node' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/ThreadComposer.test.ts
+  11:41  warning  'options' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  28:13  warning  'node' is defined but never used. Allowed unused args must match /^_/u     @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/compose/tests/ThreadControls.test.ts
+   1:10  warning  'render' is defined but never used. Allowed unused vars must match /^_/u                                                                           @typescript-eslint/no-unused-vars
+   1:18  warning  'screen' is defined but never used. Allowed unused vars must match /^_/u                                                                           @typescript-eslint/no-unused-vars
+   1:26  warning  'fireEvent' is defined but never used. Allowed unused vars must match /^_/u                                                                        @typescript-eslint/no-unused-vars
+   2:24  warning  'expect' is defined but never used. Allowed unused vars must match /^_/u                                                                           @typescript-eslint/no-unused-vars
+   3:8   warning  'ThreadControls' is defined but never used. Allowed unused vars must match /^_/u                                                                   @typescript-eslint/no-unused-vars
+  16:4   warning  Include a description after the "@ts-ignore" directive to explain why the @ts-ignore is necessary. The description must be 5 characters or longer  @typescript-eslint/ban-ts-comment
+  33:4   warning  Include a description after the "@ts-ignore" directive to explain why the @ts-ignore is necessary. The description must be 5 characters or longer  @typescript-eslint/ban-ts-comment
+  44:4   warning  Include a description after the "@ts-ignore" directive to explain why the @ts-ignore is necessary. The description must be 5 characters or longer  @typescript-eslint/ban-ts-comment
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/messaging/tests/Message.test.ts
+  1:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/messaging/tests/NewConversation.test.ts
+  53:12  warning  'node' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/messaging/tests/Root.test.ts
+  86:9  warning  'handlers2' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/messaging/tests/messaging.test.ts
+  12:13  warning  'context' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  69:15  warning  'node' is defined but never used. Allowed unused args must match /^_/u     @typescript-eslint/no-unused-vars
+  70:14  warning  'node' is defined but never used. Allowed unused args must match /^_/u     @typescript-eslint/no-unused-vars
+  71:12  warning  'node' is defined but never used. Allowed unused args must match /^_/u     @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/notifications/tests/Item.test.ts
+   97:9   warning  'content' is assigned a value but never used. Allowed unused vars must match /^_/u   @typescript-eslint/no-unused-vars
+  176:11  warning  'rerender' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  188:11  warning  'rerender' is assigned a value but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/notifications/tests/LesserNotificationItem.test.ts
+  1:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/notifications/tests/NotificationFilters.test.ts
+  1:36  warning  'beforeEach' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/notifications/tests/Root.test.ts
+  4:13  warning  'context' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/search/tests/BarComponent.test.ts
+  10:5  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+  12:6  warning  Unexpected console statement. Only these console methods are allowed: warn, error  no-console
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/search/tests/Context.test.ts
+  10:7  warning  'SearchResultType' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/search/tests/FederatedSearch.test.ts
+    4:10  warning  'getSearchContext' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  189:54  warning  'q' is defined but never used. Allowed unused args must match /^_/u                 @typescript-eslint/no-unused-vars
+  189:57  warning  'instances' is defined but never used. Allowed unused args must match /^_/u         @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/search/tests/ResultsComponent.test.ts
+  2:26  warning  'flushSync' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/shared/search/tests/search.test.ts
+  9:13  warning  'context' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/tokens/tests/palette-utils.test.ts
+  8:2  warning  'palettes' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+✖ 547 problems (176 errors, 371 warnings)
+  4 errors and 0 warnings potentially fixable with the `--fix` option.
+
+ ELIFECYCLE  Command failed with exit code 1.

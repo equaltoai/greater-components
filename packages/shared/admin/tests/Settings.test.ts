@@ -32,15 +32,15 @@ describe('Admin.Settings Component', () => {
 
 		expect(screen.getByDisplayValue('A test instance')).toBeTruthy();
 		expect(screen.getByText('Open Registration')).toBeTruthy(); // Checkbox label text
-		
+
 		// For checkbox state check
 		const checkboxes = screen.getAllByRole('checkbox');
 		// Assuming Open Registration is the first checkbox based on the source
 		expect((checkboxes[0] as HTMLInputElement).checked).toBe(true);
-		
+
 		expect(screen.getByDisplayValue('500')).toBeTruthy();
 	});
-    // ... (rest of tests)
+	// ... (rest of tests)
 
 	it('toggles checkboxes', async () => {
 		render(SettingsHarness, { handlers });
@@ -51,92 +51,54 @@ describe('Admin.Settings Component', () => {
 
 		const checkboxes = screen.getAllByRole('checkbox');
 		const checkbox = checkboxes[0] as HTMLInputElement; // Open Registration
-		
+
 		await fireEvent.click(checkbox);
 		expect(checkbox.checked).toBe(false);
 
-				await waitFor(() => {
-
-					expect(screen.getByText('Unsaved changes')).toBeTruthy();
-
-				});
-
-		
-
-				const resetButton = screen.getByText('Reset');
-
-				await fireEvent.click(resetButton);
-
-		
-
-				expect(checkbox.checked).toBe(true);
-
-				expect(screen.queryByText('Unsaved changes')).toBeNull();
-
-			});
-
-		
-
-			it('saves changes', async () => {
-
-				render(SettingsHarness, { handlers });
-
-		
-
-				await waitFor(() => {
-
-					expect(screen.getByText('Open Registration')).toBeTruthy();
-
-				});
-
-		
-
-				const checkboxes = screen.getAllByRole('checkbox');
-
-				const checkbox = checkboxes[0] as HTMLInputElement;
-
-		
-
-				await fireEvent.click(checkbox);
-
-		
-
-				await waitFor(() => {
-
-					expect(screen.getByText('Unsaved changes')).toBeTruthy();
-
-				});
-
-		
-
-				const saveButton = screen.getByText('Save Changes');
-
-				await fireEvent.click(saveButton);
-
-		
-
-				expect(handlers.onUpdateSettings).toHaveBeenCalledWith(
-
-					expect.objectContaining({
-
-						registrationOpen: false,
-
-					})
-
-				);
-
-				
-
-				await waitFor(() => {
-
-					expect(handlers.onFetchSettings).toHaveBeenCalledTimes(2); // Initial + after save
-
-					expect(screen.queryByText('Unsaved changes')).toBeNull();
-
-				});
-
-			});
-
+		await waitFor(() => {
+			expect(screen.getByText('Unsaved changes')).toBeTruthy();
 		});
 
-		
+		const resetButton = screen.getByText('Reset');
+
+		await fireEvent.click(resetButton);
+
+		expect(checkbox.checked).toBe(true);
+
+		expect(screen.queryByText('Unsaved changes')).toBeNull();
+	});
+
+	it('saves changes', async () => {
+		render(SettingsHarness, { handlers });
+
+		await waitFor(() => {
+			expect(screen.getByText('Open Registration')).toBeTruthy();
+		});
+
+		const checkboxes = screen.getAllByRole('checkbox');
+
+		const checkbox = checkboxes[0] as HTMLInputElement;
+
+		await fireEvent.click(checkbox);
+
+		await waitFor(() => {
+			expect(screen.getByText('Unsaved changes')).toBeTruthy();
+		});
+
+		const saveButton = screen.getByText('Save Changes');
+
+		await fireEvent.click(saveButton);
+
+		expect(handlers.onUpdateSettings).toHaveBeenCalledWith(
+			expect.objectContaining({
+				registrationOpen: false,
+			})
+		);
+
+		await waitFor(() => {
+			expect(handlers.onFetchSettings).toHaveBeenCalledTimes(2); // Initial + after save
+
+			expect(screen.queryByText('Unsaved changes')).toBeNull();
+		});
+	});
+});

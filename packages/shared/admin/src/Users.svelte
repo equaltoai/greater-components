@@ -6,8 +6,8 @@
 <script lang="ts">
 	import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import { getAdminContext } from './context.svelte.js';
-	        import { onMount } from 'svelte';
-	        import type { AdminUser } from './context.svelte.js';
+	import { onMount } from 'svelte';
+	import type { AdminUser } from './context.svelte.js';
 	interface Props {
 		class?: string;
 	}

@@ -16,7 +16,7 @@ vi.mock('../src/context.js', async (importOriginal) => {
 vi.mock('@equaltoai/greater-components-headless/button', () => ({
 	createButton: () => ({
 		actions: {
-			button: (node: HTMLElement) => ({
+			button: (_node: HTMLElement) => ({
 				destroy: () => {},
 			}),
 		},
@@ -61,7 +61,7 @@ describe('Submit', () => {
 	it('should be disabled when over limit', () => {
 		mockContext.state.overLimit = true;
 		render(Submit);
-		
+
 		// Note: We check if the button helper was called, but checking actual DOM attribute requires component to bind it correctly.
 		// The component uses `submitButton.helpers.setDisabled(isDisabled)`.
 		// But headless button action usually handles the attribute.
@@ -69,14 +69,14 @@ describe('Submit', () => {
 		// However, we can verify that `setDisabled` was called if we could spy on it.
 		// Since we construct the mock inside `vi.mock`, getting the reference is tricky.
 		// But we can check if the button element exists.
-		
+
 		expect(screen.getByRole('button')).toBeTruthy();
 	});
 
 	it('should be disabled when content is empty', () => {
 		mockContext.state.content = '';
 		render(Submit);
-		
+
 		expect(screen.getByRole('button')).toBeTruthy();
 	});
 });

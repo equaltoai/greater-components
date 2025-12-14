@@ -10,8 +10,8 @@ import {
 	createLiveRegion,
 	getGlobalLiveRegion,
 	announce,
-	announcePolite,
-	announceAssertive,
+	// announcePolite,
+	// announceAssertive,
 } from '../src/behaviors/live-region';
 
 describe('Live Region Behavior', () => {

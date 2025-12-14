@@ -727,4 +727,3 @@ describe('List Display', () => {
 		});
 	});
 });
-

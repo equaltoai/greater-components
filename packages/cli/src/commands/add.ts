@@ -52,7 +52,11 @@ import {
 /**
  * Build interactive selection choices
  */
-export function buildSelectionChoices(): Array<{ title: string; value: string; description?: string }> {
+export function buildSelectionChoices(): Array<{
+	title: string;
+	value: string;
+	description?: string;
+}> {
 	const choices: Array<{ title: string; value: string; description?: string }> = [];
 
 	// Add faces first
@@ -127,18 +131,21 @@ export function buildSelectionChoices(): Array<{ title: string; value: string; d
 	return choices.filter((c) => c.value !== '');
 }
 
-export const addAction = async (items: string[], options: {
-	yes?: boolean;
-	all?: boolean;
-	cwd?: string;
-	path?: string;
-	ref?: string;
-	force?: boolean;
-	dryRun?: boolean;
-	cssOnly?: boolean;
-	skipVerify?: boolean;
-	verifySignature?: boolean;
-}) => {
+export const addAction = async (
+	items: string[],
+	options: {
+		yes?: boolean;
+		all?: boolean;
+		cwd?: string;
+		path?: string;
+		ref?: string;
+		force?: boolean;
+		dryRun?: boolean;
+		cssOnly?: boolean;
+		skipVerify?: boolean;
+		verifySignature?: boolean;
+	}
+) => {
 	const cwd = path.resolve(options.cwd || process.cwd());
 
 	// Check if initialized
@@ -405,10 +412,7 @@ export const addAction = async (items: string[], options: {
 						targetDir = resolveAlias(config.aliases.ui, config, cwd);
 						break;
 					case 'pattern':
-						targetDir = path.join(
-							resolveAlias(config.aliases.components, config, cwd),
-							'patterns'
-						);
+						targetDir = path.join(resolveAlias(config.aliases.components, config, cwd), 'patterns');
 						break;
 					case 'shared':
 						targetDir = path.join(
@@ -570,9 +574,7 @@ export const addAction = async (items: string[], options: {
 			const sharedName = parseResult.byType.shared[0]?.name;
 			if (sharedName) {
 				logger.note(
-					chalk.cyan(
-						`  import * as Auth from '${config.aliases.components}/shared/${sharedName}';`
-					)
+					chalk.cyan(`  import * as Auth from '${config.aliases.components}/shared/${sharedName}';`)
 				);
 			}
 		}

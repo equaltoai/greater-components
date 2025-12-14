@@ -14,12 +14,12 @@ describe('LoginForm', () => {
 
 	function setup(props = {}, handlers = {}, initialState = {}) {
 		const mergedHandlers = { ...defaultHandlers, ...handlers };
-		
+
 		const { component, rerender } = render(TestWrapper, {
 			component: LoginForm,
 			handlers: mergedHandlers,
 			initialState,
-			...props
+			...props,
 		});
 
 		return { handlers: mergedHandlers, component, rerender };
@@ -67,7 +67,9 @@ describe('LoginForm', () => {
 	it('submits with valid credentials', async () => {
 		const { handlers } = setup();
 
-		await fireEvent.input(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+		await fireEvent.input(screen.getByLabelText(/email/i), {
+			target: { value: 'user@example.com' },
+		});
 		await fireEvent.input(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
 		await fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
 
@@ -81,24 +83,30 @@ describe('LoginForm', () => {
 	it('toggles remember me', async () => {
 		const { handlers } = setup();
 
-		await fireEvent.input(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+		await fireEvent.input(screen.getByLabelText(/email/i), {
+			target: { value: 'user@example.com' },
+		});
 		await fireEvent.input(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
 		await fireEvent.click(screen.getByLabelText(/remember me/i));
 		await fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
 
-		expect(handlers.onLogin).toHaveBeenCalledWith(expect.objectContaining({
-			remember: true
-		}));
+		expect(handlers.onLogin).toHaveBeenCalledWith(
+			expect.objectContaining({
+				remember: true,
+			})
+		);
 	});
 
 	it('handles webauthn login', async () => {
 		const { handlers } = setup();
 
-		await fireEvent.input(screen.getByLabelText(/email/i), { target: { value: 'user@example.com' } });
+		await fireEvent.input(screen.getByLabelText(/email/i), {
+			target: { value: 'user@example.com' },
+		});
 		await fireEvent.click(screen.getByRole('button', { name: /sign in with biometric/i }));
 
 		expect(handlers.onWebAuthnLogin).toHaveBeenCalledWith({
-			email: 'user@example.com'
+			email: 'user@example.com',
 		});
 	});
 
@@ -113,7 +121,7 @@ describe('LoginForm', () => {
 
 	it('displays server error', () => {
 		setup({}, {}, { error: 'Invalid credentials' });
-		
+
 		expect(screen.getByRole('alert').textContent).toContain('Invalid credentials');
 	});
 
@@ -122,31 +130,33 @@ describe('LoginForm', () => {
 
 		expect((screen.getByLabelText(/email/i) as HTMLInputElement).disabled).toBe(true);
 		expect((screen.getByLabelText(/password/i) as HTMLInputElement).disabled).toBe(true);
-		expect((screen.getByRole('button', { name: /signing in/i }) as HTMLButtonElement).disabled).toBe(true);
+		expect(
+			(screen.getByRole('button', { name: /signing in/i }) as HTMLButtonElement).disabled
+		).toBe(true);
 	});
 
 	it('navigates to forgot password', async () => {
 		const { handlers } = setup();
-		
+
 		await fireEvent.click(screen.getByText('Forgot password?'));
-		
+
 		expect(handlers.onNavigateToForgotPassword).toHaveBeenCalled();
 	});
 
 	it('navigates to register', async () => {
 		const { handlers } = setup();
-		
+
 		await fireEvent.click(screen.getByText('Sign up'));
-		
+
 		expect(handlers.onNavigateToRegister).toHaveBeenCalled();
 	});
-	
+
 	it('hides options when configured', () => {
-		setup({ 
-			showWebAuthn: false, 
-			showRememberMe: false, 
-			showForgotPassword: false, 
-			showRegisterLink: false 
+		setup({
+			showWebAuthn: false,
+			showRememberMe: false,
+			showForgotPassword: false,
+			showRegisterLink: false,
 		});
 
 		expect(screen.queryByText(/sign in with biometric/i)).toBeNull();

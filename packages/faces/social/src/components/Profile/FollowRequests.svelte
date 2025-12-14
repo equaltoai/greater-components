@@ -132,14 +132,18 @@ Supports batch operations and request filtering.
 			return;
 		}
 
-		processingIds.add(requestId);
+		processingIds = new Set(processingIds).add(requestId);
 		try {
 			await context.handlers.onApproveFollowRequest(requestId);
-			selectedIds.delete(requestId);
+			const newSelected = new Set(selectedIds);
+			newSelected.delete(requestId);
+			selectedIds = newSelected;
 		} catch (err) {
 			console.error('Failed to approve follow request:', err);
 		} finally {
-			processingIds.delete(requestId);
+			const newProcessing = new Set(processingIds);
+			newProcessing.delete(requestId);
+			processingIds = newProcessing;
 		}
 	}
 
@@ -151,14 +155,18 @@ Supports batch operations and request filtering.
 			return;
 		}
 
-		processingIds.add(requestId);
+		processingIds = new Set(processingIds).add(requestId);
 		try {
 			await context.handlers.onRejectFollowRequest(requestId);
-			selectedIds.delete(requestId);
+			const newSelected = new Set(selectedIds);
+			newSelected.delete(requestId);
+			selectedIds = newSelected;
 		} catch (err) {
 			console.error('Failed to reject follow request:', err);
 		} finally {
-			processingIds.delete(requestId);
+			const newProcessing = new Set(processingIds);
+			newProcessing.delete(requestId);
+			processingIds = newProcessing;
 		}
 	}
 
@@ -166,24 +174,28 @@ Supports batch operations and request filtering.
 	 * Toggle selection for a request
 	 */
 	function toggleSelection(requestId: string) {
-		if (selectedIds.has(requestId)) {
-			selectedIds.delete(requestId);
+		const newSelected = new Set(selectedIds);
+		if (newSelected.has(requestId)) {
+			newSelected.delete(requestId);
 		} else {
-			selectedIds.add(requestId);
+			newSelected.add(requestId);
 		}
+		selectedIds = newSelected;
 	}
 
 	/**
 	 * Toggle all visible requests
 	 */
 	function toggleSelectAll() {
+		const newSelected = new Set(selectedIds);
 		if (allSelected) {
 			// Deselect all
-			filteredRequests.forEach((req) => selectedIds.delete(req.id));
+			filteredRequests.forEach((req) => newSelected.delete(req.id));
 		} else {
 			// Select all
-			filteredRequests.forEach((req) => selectedIds.add(req.id));
+			filteredRequests.forEach((req) => newSelected.add(req.id));
 		}
+		selectedIds = newSelected;
 	}
 
 	/**
@@ -194,7 +206,7 @@ Supports batch operations and request filtering.
 		for (const id of ids) {
 			await handleApprove(id);
 		}
-		selectedIds.clear();
+		selectedIds = new Set();
 	}
 
 	/**
@@ -205,7 +217,7 @@ Supports batch operations and request filtering.
 		for (const id of ids) {
 			await handleReject(id);
 		}
-		selectedIds.clear();
+		selectedIds = new Set();
 	}
 </script>
 

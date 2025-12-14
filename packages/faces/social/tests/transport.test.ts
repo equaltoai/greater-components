@@ -4,8 +4,10 @@
  * Tests for the TransportManager real-time communication layer.
  */
 
+/* eslint-disable @typescript-eslint/no-this-alias */
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { TransportManager, type TransportConfig, type TransportEventType } from '../src/lib/transport';
+import { TransportManager, type TransportConfig } from '../src/lib/transport';
 
 // Mock WebSocket
 class MockWebSocket {

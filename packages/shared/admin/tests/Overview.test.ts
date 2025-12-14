@@ -29,10 +29,10 @@ describe('Admin.Overview Component', () => {
 		});
 
 		// Check formatted numbers (assuming formatNumber works as expected, 1.5K)
-		// formatNumber implementation: 
+		// formatNumber implementation:
 		// if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
 		// if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-		
+
 		expect(screen.getByText('1.5K')).toBeTruthy(); // 1500
 		expect(screen.getByText('1.2K')).toBeTruthy(); // 1200
 		expect(screen.getByText('50.0K')).toBeTruthy(); // 50000
