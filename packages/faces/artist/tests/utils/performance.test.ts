@@ -7,7 +7,7 @@ import {
 	maintainScrollPosition,
 	preloadImage,
 	generateSizes,
-	recycleNodes
+	recycleNodes,
 } from '../../src/utils/performance';
 
 describe('performance Utils', () => {
@@ -27,11 +27,11 @@ describe('performance Utils', () => {
 	beforeEach(() => {
 		imageInstances = [];
 		observerInstances = [];
-		// @ts-ignore
+		// @ts-ignore - Resetting performance object for testing
 		global.Image = MockImage;
-		
+
 		// Mock IntersectionObserver
-		// @ts-ignore
+		// @ts-ignore - Mocking performance observer
 		global.IntersectionObserver = class MockIntersectionObserver {
 			_callback: any;
 			constructor(callback: any) {
@@ -54,19 +54,19 @@ describe('performance Utils', () => {
 			const loader = createProgressiveLoader({
 				placeholder: 'thumb.jpg',
 				src: 'full.jpg',
-				onLoad
+				onLoad,
 			});
-			
+
 			expect(loader.state.isLoading).toBe(false);
 			expect(loader.state.currentSrc).toBe('thumb.jpg');
-			
+
 			loader.start();
 			expect(loader.state.isLoading).toBe(true);
-			
+
 			// Simulate load
 			const img = imageInstances[0];
 			img.onload();
-			
+
 			expect(loader.state.isLoading).toBe(false);
 			expect(loader.state.isLoaded).toBe(true);
 			expect(loader.state.currentSrc).toBe('full.jpg');
@@ -79,30 +79,30 @@ describe('performance Utils', () => {
 			const loader = createProgressiveLoader({
 				placeholder: 'thumb.jpg',
 				src: 'broken.jpg',
-				onError
+				onError,
 			});
-			
+
 			loader.start();
 			const img = imageInstances[0];
 			img.onerror();
-			
+
 			expect(loader.state.isLoading).toBe(false);
 			expect(loader.state.error).toBeTruthy();
 			expect(onError).toHaveBeenCalled();
 		});
-		
+
 		it('allows aborting', () => {
 			const loader = createProgressiveLoader({
 				placeholder: 'thumb.jpg',
-				src: 'full.jpg'
+				src: 'full.jpg',
 			});
-			
+
 			loader.start();
 			loader.abort();
-			
+
 			const img = imageInstances[0];
 			img.onload(); // Should be ignored
-			
+
 			expect(loader.state.isLoaded).toBe(false);
 		});
 	});
@@ -111,7 +111,7 @@ describe('performance Utils', () => {
 		it('generates correct string', () => {
 			const srcset = generateSrcSet([
 				{ width: 300, url: 'small.jpg' },
-				{ width: 1000, url: 'large.jpg' }
+				{ width: 1000, url: 'large.jpg' },
 			]);
 			expect(srcset).toBe('small.jpg 300w, large.jpg 1000w');
 		});
@@ -119,10 +119,7 @@ describe('performance Utils', () => {
 
 	describe('generateSizes', () => {
 		it('generates sizes attribute', () => {
-			const sizes = generateSizes([
-				{ minWidth: 800, size: '800px' },
-				{ size: '100vw' }
-			]);
+			const sizes = generateSizes([{ minWidth: 800, size: '800px' }, { size: '100vw' }]);
 			expect(sizes).toBe('(min-width: 800px) 800px, 100vw');
 		});
 	});
@@ -131,28 +128,28 @@ describe('performance Utils', () => {
 		it('observes element', () => {
 			const img = document.createElement('img');
 			img.dataset['src'] = 'real.jpg';
-			
+
 			const cleanup = lazyLoadImage(img);
-			
+
 			expect(observerInstances.length).toBe(1);
 			const observerInstance = observerInstances[0];
 			expect(observerInstance.observe).toHaveBeenCalledWith(img);
-			
+
 			cleanup();
 		});
-		
+
 		it('loads image on intersection', () => {
 			const img = document.createElement('img');
 			img.dataset['src'] = 'real.jpg';
-			
+
 			lazyLoadImage(img);
-			
+
 			const observerInstance = observerInstances[0];
 			const callback = observerInstance._callback;
-			
+
 			// Simulate intersection
 			callback([{ isIntersecting: true, target: img }]);
-			
+
 			expect(img.src).toContain('real.jpg');
 			expect(observerInstance.unobserve).toHaveBeenCalledWith(img);
 		});
@@ -181,33 +178,33 @@ describe('performance Utils', () => {
 				items,
 				estimatedItemHeight: 50,
 				containerHeight: 200, // Show ~4 items
-				overscan: 1
+				overscan: 1,
 			});
-			
+
 			// Scroll top 0
 			let state = list.calculateVisibleItems(0);
 			// 0-4 visible, +/- 1 overscan -> 0-5
 			expect(state.startIndex).toBe(0);
 			// height 200 / 50 = 4 items. Overscan 1. End index around 5.
 			// visible items: 0,1,2,3 (in viewport) + 4 (overscan) = 5 items total 0-4
-			// actually logic: 
-			// start 0. 
+			// actually logic:
+			// start 0.
 			// visible height loop: 0(50), 1(100), 2(150), 3(200). End index 4.
 			// Overscan 1 -> end 5.
 			expect(state.visibleItems.length).toBeGreaterThanOrEqual(4);
 			// expect(state.visibleItems[0].index).toBe(0);
-			
+
 			// Scroll to 500 (item 10)
 			state = list.calculateVisibleItems(500);
 			// 500 / 50 = 10. Start index ~10.
 			expect(state.startIndex).toBeGreaterThanOrEqual(8); // overscan
 		});
-		
+
 		it('calculates total height', () => {
 			const list = createVirtualList({
 				items: [1, 2, 3],
 				estimatedItemHeight: 100,
-				containerHeight: 500
+				containerHeight: 500,
 			});
 			const state = list.calculateVisibleItems(0);
 			expect(state.totalHeight).toBe(300);
@@ -217,47 +214,47 @@ describe('performance Utils', () => {
 	describe('recycleNodes', () => {
 		it('reuses existing nodes', () => {
 			const container = document.createElement('div');
-			const renderItem = (item: any, i: number) => {
+			const renderItem = (item: any, _i: number) => {
 				const el = document.createElement('div');
 				el.textContent = String(item);
 				return el;
 			};
 			const keyFn = (item: any) => String(item);
-			
+
 			// First render
 			recycleNodes(container, [{ item: 1, index: 0, offset: 0 }], renderItem, keyFn);
 			expect(container.children.length).toBe(1);
 			const firstChild = container.children[0] as HTMLElement;
-			
+
 			// Second render (same item, diff offset)
 			recycleNodes(container, [{ item: 1, index: 0, offset: 50 }], renderItem, keyFn);
 			expect(container.children.length).toBe(1);
 			expect(container.children[0]).toBe(firstChild); // Same node
 			expect(firstChild.style.top).toBe('50px');
-			
+
 			// Third render (new item)
 			recycleNodes(container, [{ item: 2, index: 1, offset: 100 }], renderItem, keyFn);
 			expect(container.children.length).toBe(1); // Old removed
-			expect(container.children[0].textContent).toBe('2');
+			expect(container.children[0]?.textContent).toBe('2');
 		});
 	});
 
 	describe('maintainScrollPosition', () => {
 		it('saves and restores scroll', () => {
 			const { save, restore } = maintainScrollPosition('test');
-			
+
 			// Mock scroll
 			global.window.scrollX = 0;
 			global.window.scrollY = 100;
 			global.window.scrollTo = vi.fn();
-			
+
 			save();
-			
+
 			// Reset
 			global.window.scrollY = 0;
-			
+
 			restore();
-			
+
 			expect(window.scrollTo).toHaveBeenCalledWith(0, 100);
 		});
 	});

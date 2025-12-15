@@ -364,7 +364,7 @@ describe('ProfileGraphQLController', () => {
 			const result = mapper(input);
 			// Fields that have at least name OR value are kept.
 			expect(result.fields).toHaveLength(4);
-			
+
 			expect(result.fields[0]).toEqual({ name: 'n', value: '', verifiedAt: undefined });
 			expect(result.fields[1]).toEqual({ name: '', value: 'v', verifiedAt: undefined });
 			expect(result.fields[2]).toEqual({ name: 'Valid', value: 'Value', verifiedAt: undefined });

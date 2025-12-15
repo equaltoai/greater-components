@@ -5,7 +5,6 @@
 	import { MediaViewer } from '@equaltoai/greater-components-artist/components/MediaViewer';
 	import ArtworkCard from '@equaltoai/greater-components-artist/components/ArtworkCard';
 	import { componentArtworks } from '$lib/data/artist';
-	import { base } from '$app/paths';
 
 	const sampleArtwork = componentArtworks[0];
 	const galleryArtworks = componentArtworks.slice(0, 3);
@@ -114,17 +113,17 @@
 	{#if viewerOpen}
 		<MediaViewer.Root
 			artworks={galleryArtworks}
-			currentIndex={0}
+			{currentIndex}
 			config={{
 				background: 'black',
 				showMetadata: true,
 				showSocial: false,
 				enableZoom: true,
-				enablePan: true
+				enablePan: true,
 			}}
 			handlers={{
 				onClose: () => (viewerOpen = false),
-				onNavigate: (index) => (currentIndex = index)
+				onNavigate: (index) => (currentIndex = index),
 			}}
 		/>
 	{/if}

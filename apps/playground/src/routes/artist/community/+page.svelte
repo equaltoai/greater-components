@@ -1,8 +1,11 @@
 <script lang="ts">
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
-	import { CritiqueCircle, MentorMatch } from '@equaltoai/greater-components-artist/components/Community';
-	
+	import {
+		CritiqueCircle,
+		MentorMatch,
+	} from '@equaltoai/greater-components-artist/components/Community';
+
 	const circleData = {
 		id: 'circle-1',
 		name: 'Digital Illustrators',
@@ -10,7 +13,7 @@
 		rules: 'Be constructive. Respect privacy.',
 		members: [],
 		queue: [],
-		history: []
+		history: [],
 	};
 
 	const communityExample = `
@@ -56,7 +59,7 @@
 				</div>
 			</CritiqueCircle.Root>
 		</div>
-		
+
 		<CodeExample code={communityExample} language="svelte" />
 	</section>
 
@@ -96,19 +99,20 @@
 		border-radius: var(--radius-lg);
 		margin-bottom: var(--space-6);
 	}
-	
+
 	.circle-layout {
 		display: grid;
 		grid-template-columns: 1fr 300px;
 		gap: var(--space-6);
 	}
-	
-	.main-col, .side-col {
+
+	.main-col,
+	.side-col {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-6);
 	}
-	
+
 	@media (max-width: 900px) {
 		.circle-layout {
 			grid-template-columns: 1fr;

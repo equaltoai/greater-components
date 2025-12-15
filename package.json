@@ -38,13 +38,16 @@
     "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
     "test:a11y:ci": "node scripts/run-a11y-ci.js",
     "test:visual": "pnpm -r test:visual",
-    "typecheck": "NODE_OPTIONS='--max-old-space-size=8192' pnpm run sveltekit:sync && tsc --noEmit",
+    "playwright:install": "pnpm --filter @equaltoai/greater-components-testing exec playwright install",
+    "playwright:install:with-deps": "pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps",
+    "typecheck": "NODE_OPTIONS='--max-old-space-size=8192' pnpm run sveltekit:sync && NODE_OPTIONS='--max-old-space-size=8192' tsc --noEmit",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "publish:jsr": "node scripts/publish-jsr.js",
     "publish:jsr:dry": "node scripts/publish-jsr.js --dry-run",
     "publish:jsr:single": "node scripts/publish-jsr.js --package",
     "analyze:bundles": "node scripts/analyze-bundles.js",
-    "postinstall": "pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps"
+    "release:tag": "node scripts/release-tag.js",
+    "release:tag:dry": "node scripts/release-tag.js --dry-run"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

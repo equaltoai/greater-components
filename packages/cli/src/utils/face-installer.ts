@@ -11,7 +11,12 @@ import { resolveDependencies, type DependencyResolutionResult } from './dependen
 import { parseItemName, type ParsedItem } from './item-parser.js';
 import type { ComponentConfig } from './config.js';
 import { writeConfig } from './config.js';
-import { injectCssImports, type CssImportConfig } from './css-inject.js';
+import {
+	injectCssImports,
+	copyCssFiles,
+	type CssImportConfig,
+	type ExtendedCssImportConfig,
+} from './css-inject.js';
 import { detectProjectDetails } from './files.js';
 import { logger } from './logger.js';
 
@@ -127,6 +132,7 @@ export async function updateConfigWithFace(
 
 /**
  * Inject face CSS imports into project
+ * Supports both npm package imports and local file imports based on config.css.source
  */
 export async function injectFaceCss(
 	faceName: string,
@@ -134,15 +140,24 @@ export async function injectFaceCss(
 	cwd: string
 ): Promise<boolean> {
 	const projectDetails = await detectProjectDetails(cwd);
+	const isLocalMode = config.css?.source === 'local';
+	const localDir = config.css?.localDir ?? 'styles/greater';
+	const libAlias = config.aliases.lib;
 
 	if (projectDetails.cssEntryPoints.length === 0) {
 		logger.warn(chalk.yellow('⚠️  No CSS entry point found. Please add CSS imports manually.'));
 		logger.note(chalk.dim(`  Add to your layout/entry file:`));
-		logger.note(chalk.cyan(`    import '@equaltoai/greater-components/tokens/theme.css';`));
-		logger.note(chalk.cyan(`    import '@equaltoai/greater-components/primitives/style.css';`));
-		logger.note(
-			chalk.cyan(`    import '@equaltoai/greater-components/faces/${faceName}/style.css';`)
-		);
+		if (isLocalMode) {
+			logger.note(chalk.cyan(`    import '${libAlias}/${localDir}/tokens.css';`));
+			logger.note(chalk.cyan(`    import '${libAlias}/${localDir}/primitives.css';`));
+			logger.note(chalk.cyan(`    import '${libAlias}/${localDir}/${faceName}.css';`));
+		} else {
+			logger.note(chalk.cyan(`    import '@equaltoai/greater-components/tokens/theme.css';`));
+			logger.note(chalk.cyan(`    import '@equaltoai/greater-components/primitives/style.css';`));
+			logger.note(
+				chalk.cyan(`    import '@equaltoai/greater-components/faces/${faceName}/style.css';`)
+			);
+		}
 		return false;
 	}
 
@@ -150,6 +165,46 @@ export async function injectFaceCss(
 		tokens: config.css?.tokens ?? true,
 		primitives: config.css?.primitives ?? true,
 		face: faceName,
+	};
+
+	// For local mode, copy CSS files first
+	if (isLocalMode && config.ref) {
+		try {
+			const copyResult = await copyCssFiles({
+				ref: config.ref,
+				cssConfig,
+				libDir: libAlias,
+				localDir,
+				cwd,
+				overwrite: false,
+			});
+
+			if (copyResult.success) {
+				if (copyResult.copiedFiles.length > 0) {
+					logger.info(
+						chalk.green(
+							`✓ Copied ${copyResult.copiedFiles.length} CSS file(s) to ${path.relative(cwd, copyResult.targetDir)}`
+						)
+					);
+				}
+			} else {
+				logger.warn(chalk.yellow(`⚠️  Could not copy CSS files: ${copyResult.error}`));
+			}
+		} catch (error) {
+			logger.warn(
+				chalk.yellow(
+					`⚠️  CSS file copying failed: ${error instanceof Error ? error.message : String(error)}`
+				)
+			);
+		}
+	}
+
+	// Build extended config for import generation
+	const extendedCssConfig: ExtendedCssImportConfig = {
+		...cssConfig,
+		source: config.css?.source ?? 'local',
+		localDir,
+		libAlias,
 	};
 
 	// Try to inject into the first entry point
@@ -161,7 +216,7 @@ export async function injectFaceCss(
 	}
 
 	try {
-		const result = await injectCssImports(entryPoint, cssConfig);
+		const result = await injectCssImports(entryPoint, extendedCssConfig);
 
 		if (result.success) {
 			logger.info(chalk.green(`✓ CSS imports added to ${path.relative(cwd, result.filePath)}`));

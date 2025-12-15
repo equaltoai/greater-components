@@ -30,13 +30,13 @@ describe('Exhibition Behavior', () => {
 
 	it('handles artwork click', async () => {
 		const onArtworkClick = vi.fn();
-		
+
 		render(ExhibitionTest, {
 			props: {
 				exhibition: mockExhibition,
 				handlers: { onArtworkClick },
 				layout: 'gallery',
-			}
+			},
 		});
 
 		const artBtn = screen.getByLabelText(/View Art 1/);

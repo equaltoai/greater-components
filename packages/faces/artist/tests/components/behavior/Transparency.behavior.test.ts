@@ -13,7 +13,7 @@ describe('Transparency Behavior', () => {
 					component: 'AIOptOutControls',
 					props: { currentStatus: status },
 					handlers: { onUpdate },
-				}
+				},
 			});
 
 			// Toggle Generative AI
@@ -24,9 +24,11 @@ describe('Transparency Behavior', () => {
 			const confirmBtn = screen.getByText('Confirm');
 			await fireEvent.click(confirmBtn);
 
-			expect(onUpdate).toHaveBeenCalledWith(expect.objectContaining({
-				generativeAI: true
-			}));
+			expect(onUpdate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					generativeAI: true,
+				})
+			);
 		});
 	});
 
@@ -44,7 +46,7 @@ describe('Transparency Behavior', () => {
 				props: {
 					component: 'AIDisclosure',
 					props: { usage, variant: 'badge' },
-				}
+				},
 			});
 
 			const badge = screen.getByLabelText(/AI-assisted artwork/);

@@ -34,7 +34,7 @@ const PACKAGE_CONFIGS = {
 	primitives: {
 		type: 'primitives',
 		srcDir: 'src',
-		extensions: ['.svelte', '.ts', '.js'],
+		extensions: ['.svelte', '.ts', '.js', '.css'],
 	},
 	headless: {
 		type: 'primitives',
@@ -74,7 +74,7 @@ const PACKAGE_CONFIGS = {
 };
 
 // Faces to scan (under packages/faces/)
-const FACES = ['social', 'blog', 'community'];
+const FACES = ['social', 'blog', 'community', 'artist'];
 
 // Shared modules to scan (under packages/shared/)
 const SHARED_MODULES = ['auth', 'compose', 'notifications', 'search', 'admin', 'chat', 'messaging'];

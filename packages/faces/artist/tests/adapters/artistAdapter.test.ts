@@ -226,12 +226,12 @@ describe('createArtistAdapter', () => {
 				'Direct status update to UNKNOWN not supported'
 			);
 		});
-        
-        it('updateCommissionStatus throws for DELIVERED status', async () => {
-            await expect(artistAdapter.updateCommissionStatus('1', 'DELIVERED' as any)).rejects.toThrow(
-                'Use deliverCommission() for delivery'
-            );
-        });
+
+		it('updateCommissionStatus throws for DELIVERED status', async () => {
+			await expect(artistAdapter.updateCommissionStatus('1', 'DELIVERED' as any)).rejects.toThrow(
+				'Use deliverCommission() for delivery'
+			);
+		});
 
 		it('submitQuote calls mutation', async () => {
 			const commissionId = '1';

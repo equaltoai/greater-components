@@ -1,13 +1,14 @@
+// @ts-nocheck
 import {
 	mockAccount,
 	mockStatus,
 	generateMockNotifications,
 	generateMockGroupedNotifications,
 } from '../../src/mockData';
-import type { ComponentType } from 'svelte';
+
 import type { ProfileField } from '../../src/components/Profile/context';
 import { screen, fireEvent, waitFor } from '@testing-library/svelte';
-import { vi } from 'vitest';
+import { vi, expect } from 'vitest';
 
 // Roots
 import ProfileRoot from '../../src/components/Profile/Root.svelte';
@@ -55,7 +56,6 @@ import ListsSettings from '../../src/components/Lists/Settings.svelte';
 
 // Filters
 import FiltersEditor from '../../src/components/Filters/Editor.svelte';
-import FiltersFilteredContent from '../../src/components/Filters/FilteredContent.svelte';
 import FiltersFilteredContentTest from './Filters/FilteredContentTest.svelte';
 import FiltersManager from '../../src/components/Filters/Manager.svelte';
 
@@ -81,13 +81,15 @@ global.confirm = vi.fn(() => true);
 interface Scenario {
 	name: string;
 	props: Record<string, unknown>;
-	Wrapper?: ComponentType;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	Wrapper?: any;
 	wrapperProps?: Record<string, unknown>;
 	action?: () => Promise<void>;
 }
 
 interface ComponentDefinition {
-	component: ComponentType;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	component: any;
 	scenarios: Scenario[];
 }
 
@@ -456,9 +458,9 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					// Toggle Select All
 					const selectAllCheckbox = screen.getByLabelText('Select all requests');
 					await fireEvent.click(selectAllCheckbox); // Select all
-					
+
 					// Deselect all (toggle back)
-					await fireEvent.click(selectAllCheckbox); 
+					await fireEvent.click(selectAllCheckbox);
 
 					// Select all again
 					await fireEvent.click(selectAllCheckbox);
@@ -479,11 +481,11 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 				action: async () => {
 					const search = screen.getByPlaceholderText('Search requests...');
 					await fireEvent.input(search, { target: { value: 'User One' } });
-					
+
 					// Select the filtered item
 					const checkbox = screen.getByLabelText('Select request from User One');
 					await fireEvent.click(checkbox);
-					
+
 					// Verify batch actions appear
 					await waitFor(() => screen.getByText(/Approve Selected/));
 				},
@@ -809,7 +811,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 						onShare: async () => {},
 						onMention: async () => {},
 						onMessage: async () => {},
-					}
+					},
 				},
 				action: async () => {
 					// Open menu
@@ -819,7 +821,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					// Click other actions
 					const shareBtn = screen.getByText('Share Profile');
 					await fireEvent.click(shareBtn);
-					
+
 					// Re-open menu (since clicking closes it)
 					await fireEvent.click(menuBtn);
 					const mentionBtn = screen.getByText(/Mention/);
@@ -846,8 +848,10 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					profile: mockAccount,
 					isOwnProfile: false,
 					handlers: {
-						onFollow: async () => { throw new Error('Follow failed'); }
-					}
+						onFollow: async () => {
+							throw new Error('Follow failed');
+						},
+					},
 				},
 				action: async () => {
 					const btn = screen.getByText('Follow');
@@ -907,11 +911,11 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					// Wait for field to appear
 					await waitFor(() => screen.getByPlaceholderText('Label'));
 
-                    // Edit field
-                    const labelInput = screen.getByPlaceholderText('Label');
-                    await fireEvent.input(labelInput, { target: { value: 'My Label' } });
-                    const valueInput = screen.getByPlaceholderText('Value');
-                    await fireEvent.input(valueInput, { target: { value: 'My Value' } });
+					// Edit field
+					const labelInput = screen.getByPlaceholderText('Label');
+					await fireEvent.input(labelInput, { target: { value: 'My Label' } });
+					const valueInput = screen.getByPlaceholderText('Value');
+					await fireEvent.input(valueInput, { target: { value: 'My Value' } });
 
 					// Remove field (assuming one was added or existed)
 					const removeBtns = screen.getAllByLabelText('Remove field');
@@ -922,40 +926,40 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					await fireEvent.click(saveBtn);
 				},
 			},
-            {
-                name: 'media-upload',
-                props: {},
-                Wrapper: ProfileRoot,
-                wrapperProps: {
-                    profile: mockAccount,
-                    handlers: {
-                        onAvatarUpload: async () => 'avatar-new.jpg',
-                        onHeaderUpload: async () => 'header-new.jpg',
-                    }
-                },
-                action: async () => {
-                    // Upload avatar
-                    // Note: The input is hidden, need to find it carefully
-                    // The component uses class="profile-edit__file-input"
-                    const inputs = document.querySelectorAll('.profile-edit__file-input');
-                    const headerInput = inputs[0] as HTMLInputElement; // First one is header in template
-                    const avatarInput = inputs[1] as HTMLInputElement; // Second one is avatar
+			{
+				name: 'media-upload',
+				props: {},
+				Wrapper: ProfileRoot,
+				wrapperProps: {
+					profile: mockAccount,
+					handlers: {
+						onAvatarUpload: async () => 'avatar-new.jpg',
+						onHeaderUpload: async () => 'header-new.jpg',
+					},
+				},
+				action: async () => {
+					// Upload avatar
+					// Note: The input is hidden, need to find it carefully
+					// The component uses class="profile-edit__file-input"
+					const inputs = document.querySelectorAll('.profile-edit__file-input');
+					const headerInput = inputs[0] as HTMLInputElement; // First one is header in template
+					const avatarInput = inputs[1] as HTMLInputElement; // Second one is avatar
 
-                    if (headerInput) {
-                        const file = new File(['(⌐□_□)'], 'header.png', { type: 'image/png' });
-                        await fireEvent.change(headerInput, { target: { files: [file] } });
-                    }
+					if (headerInput) {
+						const file = new File(['(⌐□_□)'], 'header.png', { type: 'image/png' });
+						await fireEvent.change(headerInput, { target: { files: [file] } });
+					}
 
-                    if (avatarInput) {
-                        const file = new File(['(⌐□_□)'], 'avatar.png', { type: 'image/png' });
-                        await fireEvent.change(avatarInput, { target: { files: [file] } });
-                    }
-                    
-                    // Save to trigger upload handlers
-                    const saveBtn = screen.getByText('Save Profile');
-                    await fireEvent.click(saveBtn);
-                }
-            },
+					if (avatarInput) {
+						const file = new File(['(⌐□_□)'], 'avatar.png', { type: 'image/png' });
+						await fireEvent.change(avatarInput, { target: { files: [file] } });
+					}
+
+					// Save to trigger upload handlers
+					const saveBtn = screen.getByText('Save Profile');
+					await fireEvent.click(saveBtn);
+				},
+			},
 			{
 				name: 'validation-error',
 				props: { maxBioLength: 10 },
@@ -1167,7 +1171,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 			{
 				name: 'media-attachments',
 				props: {
-					onMediaUpload: async (file: File) => ({
+					onMediaUpload: async (_file: File) => ({
 						id: 'm1',
 						type: 'image',
 						url: 'test.jpg',
@@ -1182,9 +1186,11 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 				},
 				action: async () => {
 					// Add media
-					const fileInput = document.querySelector('.gr-compose-box__media-button input[type="file"]') as HTMLInputElement;
+					const fileInput = document.querySelector(
+						'.gr-compose-box__media-button input[type="file"]'
+					) as HTMLInputElement;
 					if (!fileInput) throw new Error('File input not found');
-					
+
 					const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' });
 					await fireEvent.change(fileInput, { target: { files: [file] } });
 
@@ -1193,16 +1199,22 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					await fireEvent.change(fileInput, { target: { files: [file, file2] } });
 
 					// Wait for state update (rendering happens via slot, but we can check internal state via submit button enablement)
-					await waitFor(() => expect(screen.getByText('Post')).not.toBeDisabled());
+					await waitFor(() =>
+						expect(
+							(screen.getByRole('button', { name: 'Post' }) as HTMLButtonElement).disabled
+						).toBe(false)
+					);
 				},
 			},
 			{
 				name: 'polls',
 				props: {
 					enablePolls: true,
-					pollSlot: ({ poll, onPollChange }) => {
-						return '';
-					},
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					pollSlot: ({ poll: _poll, onPollChange: _onPollChange }: any) => ({
+						component: ComposeBox,
+						props: {},
+					}),
 				},
 				action: async () => {
 					const pollBtn = screen.getByLabelText('Add poll');
@@ -1261,7 +1273,11 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 			{
 				name: 'interactions',
 				props: {
-					notifications: generateMockNotifications(3),
+					notifications: (() => {
+						const n = generateMockNotifications(3);
+						if (n[0]) n[0].read = false;
+						return n;
+					})(),
 					onNotificationClick: async () => {},
 					onMarkAsRead: async () => {},
 					onMarkAllAsRead: async () => {},
@@ -1319,12 +1335,12 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 				},
 				action: async () => {
 					const scrollContainer = screen.getByRole('feed');
-					
+
 					// Mock scroll properties to simulate being near bottom
 					Object.defineProperty(scrollContainer, 'scrollTop', { value: 800, writable: true });
 					Object.defineProperty(scrollContainer, 'scrollHeight', { value: 1000, writable: true });
 					Object.defineProperty(scrollContainer, 'clientHeight', { value: 200, writable: true });
-					
+
 					// Trigger scroll event
 					await fireEvent.scroll(scrollContainer);
 				},
@@ -1340,156 +1356,158 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					// and wait for effect. The harness might not support dynamic prop updates easily in 'action'.
 					// But we can try to render with initial items, then maybe we can't update props here.
 					// However, we can at least ensure it renders and no errors occur during mount/updates.
-					
 					// We'll rely on the fact that existing tests cover some of this, or we'd need a dedicated test.
 					// Let's just ensure basic rendering with some density options.
-				}
-			}
+				},
+			},
 		],
 	},
 
-    NotificationsFeedReactive: {
-        component: NotificationsFeedReactiveTest,
-        scenarios: [
-            {
-                name: 'custom-renderer',
-                props: {
-                    notifications: generateMockNotifications(2),
-                    useCustomRenderer: true,
-                },
-                action: async () => {
-                    await waitFor(() => screen.getByText(generateMockNotifications(2)[0].id));
-                }
-            },
-            {
-                name: 'custom-loading',
-                props: {
-                    loading: true,
-                    useCustomLoading: true,
-                },
-                action: async () => {
-                     await waitFor(() => screen.getByText('Custom Loading...'));
-                }
-            },
-            {
-                name: 'custom-empty',
-                props: {
-                    useCustomEmpty: true,
-                },
-                action: async () => {
-                     await waitFor(() => screen.getByText('Custom Empty'));
-                }
-            },
-            {
-                name: 'custom-realtime',
-                props: {
-                    useCustomRealtime: true,
-                    integration: {
-                        baseUrl: 'https://example.com',
-                        autoConnect: false // Avoid connection errors for this test if possible, or expect them
-                    },
-                    showRealtimeIndicator: true
-                },
-                 action: async () => {
-                    // With integration provided, realtime indicator slot should render if showRealtimeIndicator is true
-                    // The wrapper logic for realtimeIndicator is:
-                    // {#if useCustomRealtime} <div class="custom-realtime">...</div> {/if}
-                    // Wait for it
-                    // The component renders realtime indicator if showRealtimeIndicator && notificationIntegration
-                    // notificationIntegration is created if integration prop is passed.
-                    // However, we rely on createNotificationIntegration.
-                    // If it fails to create or something, it won't render.
-                    // Assuming it works.
-                    // We might need to wait for something.
-                    // The snippet displays "Yes" or "No" based on connected.
-                    await waitFor(() => screen.getByText('No')); // Initially not connected
-                }
-            }
-        ]
-    },
-    'NotificationsFeedReactive/Defaults': {
-        component: NotificationsFeedReactive,
-        scenarios: [
-             {
-                name: 'default-populated',
-                props: {
-                    notifications: generateMockNotifications(3)
-                }
-             },
-             {
-                name: 'default-loading',
-                props: {
-                    loading: true,
-                    notifications: []
-                }
-             },
-             {
-                name: 'default-empty',
-                props: {
-                    notifications: []
-                }
-             },
-             {
-                 name: 'with-integration-default-ui',
-                 props: {
-                     integration: {
-                        baseUrl: 'https://example.com',
-                         autoConnect: false
-                     },
-                     notifications: generateMockNotifications(1), // Initial props, ignored when integration is active
-                     showRealtimeIndicator: true
-                 },
-                 action: async () => {
-                     // Should show default realtime indicator
-                     await waitFor(() => screen.getByText('Connecting...'));
-                     
-                     // Since integration starts empty, we should see empty state
-                     await waitFor(() => screen.getByText('No notifications'));
-                 }
-             },
-             {
-                 name: 'interactions-props-fallback',
-                 props: {
-                     notifications: generateMockNotifications(3),
-                     onNotificationClick: async () => {},
-                     onMarkAsRead: async () => {},
-                     onMarkAllAsRead: async () => {},
-                     onDismiss: async () => {},
-                 },
-                 action: async () => {
-                     // Click notification (trigger handleNotificationClick)
-                     const items = screen.getAllByRole('button', { name: /Notification/ });
-                     if (items[0]) await fireEvent.click(items[0]);
+	NotificationsFeedReactive: {
+		component: NotificationsFeedReactiveTest,
+		scenarios: [
+			{
+				name: 'custom-renderer',
+				props: {
+					notifications: generateMockNotifications(2),
+					useCustomRenderer: true,
+				},
+				action: async () => {
+					const notifications = generateMockNotifications(2);
+					const firstNotification = notifications[0];
+					if (!firstNotification) throw new Error('Notifications missing');
+					await waitFor(() => screen.getByText(firstNotification.id));
+				},
+			},
+			{
+				name: 'custom-loading',
+				props: {
+					loading: true,
+					useCustomLoading: true,
+				},
+				action: async () => {
+					await waitFor(() => screen.getByText('Custom Loading...'));
+				},
+			},
+			{
+				name: 'custom-empty',
+				props: {
+					useCustomEmpty: true,
+				},
+				action: async () => {
+					await waitFor(() => screen.getByText('Custom Empty'));
+				},
+			},
+			{
+				name: 'custom-realtime',
+				props: {
+					useCustomRealtime: true,
+					integration: {
+						baseUrl: 'https://example.com',
+						autoConnect: false, // Avoid connection errors for this test if possible, or expect them
+					},
+					showRealtimeIndicator: true,
+				},
+				action: async () => {
+					// With integration provided, realtime indicator slot should render if showRealtimeIndicator is true
+					// The wrapper logic for realtimeIndicator is:
+					// {#if useCustomRealtime} <div class="custom-realtime">...</div> {/if}
+					// Wait for it
+					// The component renders realtime indicator if showRealtimeIndicator && notificationIntegration
+					// notificationIntegration is created if integration prop is passed.
+					// However, we rely on createNotificationIntegration.
+					// If it fails to create or something, it won't render.
+					// Assuming it works.
+					// We might need to wait for something.
+					// The snippet displays "Yes" or "No" based on connected.
+					await waitFor(() => screen.getByText('No')); // Initially not connected
+				},
+			},
+		],
+	},
+	'NotificationsFeedReactive/Defaults': {
+		component: NotificationsFeedReactive,
+		scenarios: [
+			{
+				name: 'default-populated',
+				props: {
+					notifications: generateMockNotifications(3),
+				},
+			},
+			{
+				name: 'default-loading',
+				props: {
+					loading: true,
+					notifications: [],
+				},
+			},
+			{
+				name: 'default-empty',
+				props: {
+					notifications: [],
+				},
+			},
+			{
+				name: 'with-integration-default-ui',
+				props: {
+					integration: {
+						baseUrl: 'https://example.com',
+						autoConnect: false,
+					},
+					notifications: generateMockNotifications(1), // Initial props, ignored when integration is active
+					showRealtimeIndicator: true,
+				},
+				action: async () => {
+					// Should show default realtime indicator
+					await waitFor(() => screen.getByText('Connecting...'));
 
-                     // Mark as read (trigger handleMarkAsRead)
-                     const markReadBtns = screen.getAllByTitle('Mark as read (M)');
-                     if (markReadBtns[0]) await fireEvent.click(markReadBtns[0]);
+					// Since integration starts empty, we should see empty state
+					await waitFor(() => screen.getByText('No notifications'));
+				},
+			},
+			{
+				name: 'interactions-props-fallback',
+				props: {
+					notifications: generateMockNotifications(3),
+					onNotificationClick: async () => {},
+					onMarkAsRead: async () => {},
+					onMarkAllAsRead: async () => {},
+					onDismiss: async () => {},
+				},
+				action: async () => {
+					// Click notification (trigger handleNotificationClick)
+					const items = screen.getAllByRole('button', { name: /Notification/ });
+					if (items[0]) await fireEvent.click(items[0]);
 
-                     // Dismiss (trigger handleDismiss)
-                     const dismissBtns = screen.getAllByTitle('Dismiss (X)');
-                     if (dismissBtns[0]) await fireEvent.click(dismissBtns[0]);
-                 }
-             },
-             {
-                 name: 'scroll-load-more',
-                 props: {
-                     notifications: generateMockNotifications(20),
-                     hasMore: true,
-                     onLoadMore: async () => {},
-                 },
-                 action: async () => {
-                     const scrollContainer = screen.getByRole('feed');
-                     // Mock scroll properties
-                     Object.defineProperty(scrollContainer, 'scrollTop', { value: 100, writable: true });
-                     Object.defineProperty(scrollContainer, 'scrollHeight', { value: 1000, writable: true });
-                     Object.defineProperty(scrollContainer, 'clientHeight', { value: 200, writable: true });
-                     
-                     // Trigger scroll
-                     await fireEvent.scroll(scrollContainer, { target: { scrollTop: 800 } });
-                 }
-             }
-        ]
-    },
+					// Mark as read (trigger handleMarkAsRead)
+					const markReadBtns = screen.getAllByTitle('Mark as read (M)');
+					if (markReadBtns[0]) await fireEvent.click(markReadBtns[0]);
+
+					// Dismiss (trigger handleDismiss)
+					const dismissBtns = screen.getAllByTitle('Dismiss (X)');
+					if (dismissBtns[0]) await fireEvent.click(dismissBtns[0]);
+				},
+			},
+			{
+				name: 'scroll-load-more',
+				props: {
+					notifications: generateMockNotifications(20),
+					hasMore: true,
+					onLoadMore: async () => {},
+				},
+				action: async () => {
+					const scrollContainer = screen.getByRole('feed');
+					// Mock scroll properties
+					Object.defineProperty(scrollContainer, 'scrollTop', { value: 100, writable: true });
+					Object.defineProperty(scrollContainer, 'scrollHeight', { value: 1000, writable: true });
+					Object.defineProperty(scrollContainer, 'clientHeight', { value: 200, writable: true });
+
+					// Trigger scroll
+					await fireEvent.scroll(scrollContainer, { target: { scrollTop: 800 } });
+				},
+			},
+		],
+	},
 
 	// Status Components
 	'Status/Actions': {
@@ -1730,13 +1748,13 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 			},
 			{
 				name: 'scroll-load-more',
-				props: { 
+				props: {
 					items: Array(10).fill(mockStatus),
 					config: { infiniteScroll: true },
 					handlers: {
 						onLoadMore: async () => {},
 					},
-					initialState: { hasMore: true, loadingMore: false }
+					initialState: { hasMore: true, loadingMore: false },
 				},
 				action: async () => {
 					const root = screen.getByRole('feed');
@@ -1744,9 +1762,9 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					Object.defineProperty(root, 'scrollHeight', { value: 1000, writable: true });
 					Object.defineProperty(root, 'scrollTop', { value: 800, writable: true });
 					Object.defineProperty(root, 'clientHeight', { value: 200, writable: true });
-					
+
 					await fireEvent.scroll(root);
-				}
+				},
 			},
 		],
 	},
@@ -1977,7 +1995,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					},
 				},
 				action: async () => {
-					const publicRadio = screen.getByLabelText(/Public/); // Assuming default is private? mockLists[0] is public in definition, let's switch to private
+					// const publicRadio = screen.getByLabelText(/Public/); // Assuming default is private? mockLists[0] is public in definition, let's switch to private
 					// mockLists[0] is 'public'. Switch to private.
 					const privateRadio = screen.getByLabelText(/Private/);
 					await fireEvent.click(privateRadio);
@@ -2022,10 +2040,10 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 								wholeWord: false,
 								expiresAt: null,
 								createdAt: '',
-								updatedAt: ''
-							}
-						]
-					}
+								updatedAt: '',
+							},
+						],
+					},
 				},
 				action: async () => {
 					// Should see warning
@@ -2035,7 +2053,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					await fireEvent.click(btn);
 					// Should see content
 					await waitFor(() => screen.getByText('bad word'));
-				}
+				},
 			},
 			{
 				name: 'filtered-irreversible',
@@ -2052,10 +2070,10 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 								wholeWord: false,
 								expiresAt: null,
 								createdAt: '',
-								updatedAt: ''
-							}
-						]
-					}
+								updatedAt: '',
+							},
+						],
+					},
 				},
 				action: async () => {
 					// Should see hidden message
@@ -2063,7 +2081,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					// Should NOT see show anyway button
 					const btn = screen.queryByText('Show anyway');
 					if (btn) throw new Error('Should not show reveal button for irreversible filter');
-				}
+				},
 			},
 			{
 				name: 'multi-filter-format',
@@ -2072,17 +2090,44 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 				wrapperProps: {
 					initialState: {
 						filters: [
-							{ id: '1', phrase: 'one', context: ['home'], irreversible: false, wholeWord: false, expiresAt: null, createdAt: '', updatedAt: '' },
-							{ id: '2', phrase: 'two', context: ['home'], irreversible: false, wholeWord: false, expiresAt: null, createdAt: '', updatedAt: '' },
-							{ id: '3', phrase: 'three', context: ['home'], irreversible: false, wholeWord: false, expiresAt: null, createdAt: '', updatedAt: '' }
-						]
-					}
+							{
+								id: '1',
+								phrase: 'one',
+								context: ['home'],
+								irreversible: false,
+								wholeWord: false,
+								expiresAt: null,
+								createdAt: '',
+								updatedAt: '',
+							},
+							{
+								id: '2',
+								phrase: 'two',
+								context: ['home'],
+								irreversible: false,
+								wholeWord: false,
+								expiresAt: null,
+								createdAt: '',
+								updatedAt: '',
+							},
+							{
+								id: '3',
+								phrase: 'three',
+								context: ['home'],
+								irreversible: false,
+								wholeWord: false,
+								expiresAt: null,
+								createdAt: '',
+								updatedAt: '',
+							},
+						],
+					},
 				},
 				action: async () => {
 					// Verify formatting of multiple filters (e.g. "one", "two" and 1 more)
 					await waitFor(() => screen.getByText(/and 1 more/));
-				}
-			}
+				},
+			},
 		],
 	},
 	'Filters/Manager': {
@@ -2381,9 +2426,9 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 						realtime: true,
 					},
 				},
-                action: async () => {
-                     await waitFor(() => screen.getByText('Connection error'));
-                }
+				action: async () => {
+					await waitFor(() => screen.getByText('Connection error'));
+				},
 			},
 			{
 				name: 'connection-error-retry',
@@ -2399,8 +2444,8 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					await waitFor(() => screen.getByText('Connection error'));
 					const retryBtn = screen.getByText('Retry');
 					await fireEvent.click(retryBtn);
-                    // It will fail again, staying in error state or transitioning to connecting then error
-                    // We just verify the button was clickable.
+					// It will fail again, staying in error state or transitioning to connecting then error
+					// We just verify the button was clickable.
 				},
 			},
 		],

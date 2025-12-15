@@ -78,9 +78,9 @@ test.describe('Artist focus', () => {
 
 		// Ideally check that focus is within dialog
 		// This assertion assumes the implementation focuses the first element or the dialog itself
-		// await expect(page.locator(':focus')).toBeVisible(); 
-        
-        // Check restoration
+		// await expect(page.locator(':focus')).toBeVisible();
+
+		// Check restoration
 		await page.keyboard.press('Escape');
 		await expect(dialog).not.toBeVisible();
 		await expect(openButton).toBeFocused();

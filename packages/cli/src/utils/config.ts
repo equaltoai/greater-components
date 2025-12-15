@@ -20,7 +20,12 @@ export const CONFIG_SCHEMA_VERSION = '1.0.0';
 /**
  * Default Git ref for fetching components
  */
-export const DEFAULT_REF = 'greater-v4.2.0';
+export const DEFAULT_REF = 'latest';
+
+/**
+ * Fallback Git ref when "latest" cannot be resolved
+ */
+export const FALLBACK_REF = 'main';
 
 /**
  * File checksum entry for tracking installed file integrity
@@ -46,12 +51,23 @@ export const installedComponentSchema = z.object({
 export type InstalledComponent = z.infer<typeof installedComponentSchema>;
 
 /**
+ * CSS source mode for imports
+ * - 'local': Copy CSS files to consumer project (recommended for shadcn-style)
+ * - 'npm': Use npm package imports (legacy)
+ */
+export type CssSourceMode = 'local' | 'npm';
+
+/**
  * CSS configuration schema
  */
 export const cssConfigSchema = z.object({
 	tokens: z.boolean().default(true),
 	primitives: z.boolean().default(true),
 	face: z.union([z.string(), z.null()]).default(null),
+	/** CSS source mode: 'local' copies CSS files, 'npm' uses package imports */
+	source: z.enum(['local', 'npm']).default('local'),
+	/** Local CSS directory path relative to aliases.lib (only used when source is 'local') */
+	localDir: z.string().default('styles/greater'),
 });
 
 export type CssConfig = z.infer<typeof cssConfigSchema>;
@@ -86,6 +102,8 @@ export const componentConfigSchema = z.object({
 		tokens: true,
 		primitives: true,
 		face: null,
+		source: 'local',
+		localDir: 'styles/greater',
 	}),
 	installed: z.array(installedComponentSchema).optional().default([]),
 	lesserVersion: z.string().optional(),
@@ -529,6 +547,8 @@ export function createDefaultConfig(options: CreateConfigOptions = {}): Componen
 			tokens: true,
 			primitives: true,
 			face: options.face ?? null,
+			source: 'local',
+			localDir: 'styles/greater',
 		},
 		installed: [],
 	};

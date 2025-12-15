@@ -17,7 +17,7 @@
     "ref": {
       "type": "string",
       "description": "Git ref (tag/commit) to fetch components from",
-      "default": "greater-v4.2.0",
+      "default": "latest",
       "examples": ["greater-v4.2.0", "greater-v4.1.0", "main"]
     },
     "style": {

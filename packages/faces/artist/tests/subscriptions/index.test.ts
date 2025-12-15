@@ -163,16 +163,16 @@ describe('Subscriptions', () => {
 				subscribe: mockObservableSubscribe,
 			});
 
-			// Since we might have issues with $state in .ts files, 
-            // we will try to instantiate it. 
-            // If it fails due to $state not being transformed, the test will fail.
+			// Since we might have issues with $state in .ts files,
+			// we will try to instantiate it.
+			// If it fails due to $state not being transformed, the test will fail.
 			const store = createGalleryStore(mockAdapter, galleryId);
 
 			expect(store.connected).toBe(true);
 			expect(store.events).toEqual([]);
 
 			// Simulate event
-            // @ts-ignore
+			// @ts-ignore - nextCallback is assigned in callback
 			if (nextCallback) nextCallback({ data: eventData });
 
 			// Wait for potential reactivity updates if any (though $state is sync usually)
@@ -180,36 +180,36 @@ describe('Subscriptions', () => {
 			expect(store.events[0]).toEqual(eventData.galleryUpdated);
 		});
 
-        it('should clear events', () => {
-             const galleryId = 'gallery-123';
-             const store = createGalleryStore(mockAdapter, galleryId);
-             
-             // Manually push if we can't trigger via subscription easily or rely on previous test
-             // But let's trust the subscription mechanism
-             // ...
-             // Actually, testing clearEvents:
-             store.clearEvents();
-             expect(store.events).toEqual([]);
-        });
+		it('should clear events', () => {
+			const galleryId = 'gallery-123';
+			const store = createGalleryStore(mockAdapter, galleryId);
 
-        it('should destroy subscription', () => {
-            const mockUnsubscribe = vi.fn();
+			// Manually push if we can't trigger via subscription easily or rely on previous test
+			// But let's trust the subscription mechanism
+			// ...
+			// Actually, testing clearEvents:
+			store.clearEvents();
+			expect(store.events).toEqual([]);
+		});
+
+		it('should destroy subscription', () => {
+			const mockUnsubscribe = vi.fn();
 			mockSubscribe.mockReturnValue({
 				subscribe: () => ({ unsubscribe: mockUnsubscribe }),
 			});
-            
-            const store = createGalleryStore(mockAdapter, 'gallery-123');
-            store.destroy();
-            
-            expect(mockUnsubscribe).toHaveBeenCalled();
-            expect(store.connected).toBe(false);
-        });
+
+			const store = createGalleryStore(mockAdapter, 'gallery-123');
+			store.destroy();
+
+			expect(mockUnsubscribe).toHaveBeenCalled();
+			expect(store.connected).toBe(false);
+		});
 	});
-    
-    describe('createCommissionStore', () => {
-        it('should create store and handle events', () => {
-            const commissionId = 'comm-1';
-             const eventData = {
+
+	describe('createCommissionStore', () => {
+		it('should create store and handle events', () => {
+			const commissionId = 'comm-1';
+			const eventData = {
 				commissionUpdated: {
 					type: 'status_changed',
 					commissionId,
@@ -218,23 +218,23 @@ describe('Subscriptions', () => {
 			};
 
 			let nextCallback: (val: any) => void;
-            const mockObservableSubscribe = vi.fn((observer) => {
+			const mockObservableSubscribe = vi.fn((observer) => {
 				nextCallback = observer.next;
 				return { unsubscribe: vi.fn() };
 			});
-            mockSubscribe.mockReturnValue({
+			mockSubscribe.mockReturnValue({
 				subscribe: mockObservableSubscribe,
 			});
 
-            const store = createCommissionStore(mockAdapter, commissionId);
-            
-            expect(store.connected).toBe(true);
-            
-            // @ts-ignore
-            if (nextCallback) nextCallback({ data: eventData });
-            
-            expect(store.events).toHaveLength(1);
-            expect(store.events[0]).toEqual(eventData.commissionUpdated);
-        });
-    });
+			const store = createCommissionStore(mockAdapter, commissionId);
+
+			expect(store.connected).toBe(true);
+
+			// @ts-ignore - nextCallback is assigned in callback
+			if (nextCallback) nextCallback({ data: eventData });
+
+			expect(store.events).toHaveLength(1);
+			expect(store.events[0]).toEqual(eventData.commissionUpdated);
+		});
+	});
 });

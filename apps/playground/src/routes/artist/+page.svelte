@@ -11,7 +11,11 @@
 					href: `${base}/artist/artwork`,
 					description: 'Artwork display compound component',
 				},
-				{ name: 'Gallery', href: `${base}/artist/gallery`, description: 'Gallery layouts and grids' },
+				{
+					name: 'Gallery',
+					href: `${base}/artist/gallery`,
+					description: 'Gallery layouts and grids',
+				},
 			],
 		},
 		{
@@ -22,7 +26,11 @@
 					href: `${base}/artist/profile`,
 					description: 'Artist portfolio and profile',
 				},
-				{ name: 'Timeline', href: `${base}/artist/timeline`, description: 'Career timeline and activity' },
+				{
+					name: 'Timeline',
+					href: `${base}/artist/timeline`,
+					description: 'Career timeline and activity',
+				},
 			],
 		},
 		{

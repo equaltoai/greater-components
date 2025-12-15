@@ -230,7 +230,7 @@ Features scroll snap, navigation arrows, and lazy loading.
 							{#if itemRenderer}
 								{@render itemRenderer(item, index)}
 							{:else}
-								<ArtworkCard artwork={item} variant="row" size={cardSize} />
+								<ArtworkCard artwork={item} variant="row" size={cardSize} tagName="div" />
 							{/if}
 						</button>
 					{:else}
@@ -278,7 +278,7 @@ Features scroll snap, navigation arrows, and lazy loading.
 	.row-title {
 		font-size: var(--gr-font-size-lg);
 		font-weight: var(--gr-font-weight-semibold);
-		color: var(--gr-color-gray-100);
+		color: var(--gr-artist-adaptive-text);
 		margin: 0;
 	}
 
@@ -286,7 +286,7 @@ Features scroll snap, navigation arrows, and lazy loading.
 		display: flex;
 		align-items: center;
 		gap: var(--gr-spacing-scale-1);
-		color: var(--gr-color-primary-400);
+		color: var(--gr-artist-link-text);
 		text-decoration: none;
 		font-size: var(--gr-font-size-sm);
 		font-weight: var(--gr-font-weight-medium);

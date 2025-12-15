@@ -195,7 +195,7 @@ REQ-PHIL-003: Prominent but doesn't compete with artwork.
 
 	.gr-artist-artwork-attribution-username {
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-artist-adaptive-muted, var(--gr-color-gray-500));
+		color: var(--gr-artist-adaptive-muted, var(--gr-color-gray-400));
 	}
 
 	/* REQ-A11Y-007: Reduced motion support */

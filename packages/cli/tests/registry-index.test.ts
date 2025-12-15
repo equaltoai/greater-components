@@ -29,6 +29,7 @@ vi.mock('../src/utils/git-fetch.js', () => ({
 }));
 
 const mockIndex = {
+	schemaVersion: '1.0.0',
 	version: '1.0.0',
 	ref: 'greater-v1.0.0',
 	generatedAt: '2023-01-01T00:00:00.000Z',
@@ -36,12 +37,14 @@ const mockIndex = {
 		button: {
 			name: 'button',
 			version: '1.0.0',
-			description: undefined,
 			tags: [],
 			dependencies: [],
+			peerDependencies: [],
 			files: [{ path: 'button.svelte', checksum: 'sha256-abc=' }],
 		},
 	},
+	faces: {},
+	shared: {},
 	checksums: {},
 };
 

@@ -60,6 +60,16 @@ Click handler to open MediaViewer or navigate
 		 * Custom CSS class
 		 */
 		class?: string;
+
+		/**
+		 * Tab index for keyboard navigation
+		 */
+		tabindex?: number;
+
+		/**
+		 * HTML tag to render
+		 */
+		tagName?: 'button' | 'div';
 	}
 
 	let {
@@ -70,6 +80,8 @@ Click handler to open MediaViewer or navigate
 		aspectRatio = 'preserve',
 		onclick,
 		class: className = '',
+		tabindex = 0,
+		tagName = 'button',
 	}: Props = $props();
 
 	// Image loading state
@@ -131,12 +143,15 @@ Click handler to open MediaViewer or navigate
 	);
 </script>
 
-<button
-	type="button"
+<svelte:element
+	this={tagName}
+	type={tagName === 'button' ? 'button' : undefined}
+	role={tagName === 'button' ? undefined : 'button'}
 	class={cardClass}
 	style={aspectRatioStyle()}
 	onclick={handleClick}
-	aria-label={`${artwork.title} by ${artwork.artist.name}`}
+	aria-label={tagName === 'button' ? `${artwork.title} by ${artwork.artist.name}` : undefined}
+	tabindex={tagName === 'button' ? tabindex : undefined}
 >
 	{#if loadState === 'error'}
 		<div class="gr-artist-artwork-card-fallback">
@@ -220,7 +235,7 @@ Click handler to open MediaViewer or navigate
 			</svg>
 		</div>
 	{/if}
-</button>
+</svelte:element>
 
 <style>
 	.gr-artist-artwork-card {

@@ -148,14 +148,12 @@ Subtle styling until hover/focus.
 		align-items: center;
 		gap: var(--gr-spacing-scale-4);
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
-		/* REQ-PHIL-001: Subtle until hover/focus */
-		opacity: 0.6;
 		transition: opacity var(--gr-artist-transition-hover, 200ms ease-out);
 	}
 
 	.gr-artist-artwork-stats:hover,
 	.gr-artist-artwork-stats:focus-within {
-		opacity: 1;
+		/* maintained for transition reference */
 	}
 
 	.gr-artist-artwork-stats-item {

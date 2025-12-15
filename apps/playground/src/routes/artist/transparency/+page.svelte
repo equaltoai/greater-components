@@ -2,25 +2,37 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { Transparency } from '@equaltoai/greater-components-artist/components/Transparency';
-	
+
 	const aiUsage = {
 		usedAI: true,
 		description: 'Used AI for background generation and texture synthesis.',
 		tools: ['Midjourney', 'Stable Diffusion'],
-		generators: ['Background', 'Texture']
+		generators: ['Background', 'Texture'],
 	};
 
 	const processSteps = [
-		{ title: 'Sketch', description: 'Initial pencil sketch.', imageUrl: '/images/artist/artwork1.svg' },
-		{ title: 'Line Art', description: 'Clean digital line art.', imageUrl: '/images/artist/artwork4.svg' },
+		{
+			title: 'Sketch',
+			description: 'Initial pencil sketch.',
+			imageUrl: '/images/artist/artwork1.svg',
+		},
+		{
+			title: 'Line Art',
+			description: 'Clean digital line art.',
+			imageUrl: '/images/artist/artwork4.svg',
+		},
 		{ title: 'Color', description: 'Flat colors added.', imageUrl: '/images/artist/artwork5.svg' },
-		{ title: 'Final', description: 'Rendering and lighting.', imageUrl: '/images/artist/artwork2.svg' }
+		{
+			title: 'Final',
+			description: 'Rendering and lighting.',
+			imageUrl: '/images/artist/artwork2.svg',
+		},
 	];
-	
+
 	let optOutStatus = $state({
 		discoveryAI: true,
 		generativeAI: false,
-		allAI: false
+		allAI: false,
 	});
 
 	function handleUpdate(newStatus: typeof optOutStatus) {
@@ -75,12 +87,9 @@
 			<p>Controls for opting out of AI training.</p>
 		</header>
 		<div class="demo-container">
-			<Transparency.AIOptOutControls 
-				currentStatus={optOutStatus}
-				onUpdate={handleUpdate}
-			/>
+			<Transparency.AIOptOutControls currentStatus={optOutStatus} onUpdate={handleUpdate} />
 		</div>
-		
+
 		<CodeExample code={transparencyExample} language="svelte" />
 	</section>
 
@@ -120,7 +129,7 @@
 		border-radius: var(--radius-lg);
 		margin-bottom: var(--space-6);
 	}
-	
+
 	.disclosure-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

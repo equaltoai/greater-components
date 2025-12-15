@@ -256,6 +256,12 @@ The package includes a comprehensive CI workflow (`.github/workflows/a11y.yml`) 
 ### Local Development
 
 ```bash
+# Install Playwright browsers (one-time, per machine)
+pnpm exec playwright install
+
+# On Linux CI you may need system dependencies
+pnpm exec playwright install --with-deps
+
 # Run all accessibility tests
 pnpm test:a11y
 

@@ -3,7 +3,7 @@
  * Tests for component updates with conflict handling
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	MockFileSystem,
 	SVELTEKIT_PROJECT,
@@ -194,7 +194,9 @@ describe('Update Command', () => {
 		let exitSpy: ReturnType<typeof vi.spyOn>;
 
 		beforeEach(() => {
-			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
+			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
 		});
 
 		afterEach(() => {
@@ -204,7 +206,7 @@ describe('Update Command', () => {
 		it('exits if not initialized', async () => {
 			mockFs.clear();
 			const { updateAction } = await import('../src/commands/update.js');
-			await updateAction(['button'], { cwd: '/' });
+			await expect(updateAction(['button'], { cwd: '/' })).rejects.toThrow('process.exit called');
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -213,7 +215,7 @@ describe('Update Command', () => {
 			mockFs.set('/components.json', JSON.stringify(config));
 
 			const { updateAction } = await import('../src/commands/update.js');
-			await updateAction([], { cwd: '/' });
+			await expect(updateAction([], { cwd: '/' })).rejects.toThrow('process.exit called');
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -254,7 +256,7 @@ describe('Update Command', () => {
 			mockFs.set('/components.json', JSON.stringify(config));
 
 			const { updateAction } = await import('../src/commands/update.js');
-			await updateAction(['button'], { cwd: '/' });
+			await expect(updateAction(['button'], { cwd: '/' })).rejects.toThrow('process.exit called');
 
 			// Logic says: if items.length > 0, filter installed.
 			// if filtered length is 0, exits with 0 and message "No components to update"

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import CommunityTest from './CommunityTest.svelte';
-import type { CritiqueCircleData, CollaborationData } from '../../src/types/community.js';
+import type { CritiqueCircleData } from '../../../src/types/community.js';
 
 describe('Community Behavior', () => {
 	const mockArtwork = {
@@ -34,14 +34,14 @@ describe('Community Behavior', () => {
 
 		it('allows submitting feedback when session is active', async () => {
 			const onCritique = vi.fn();
-			
+
 			render(CommunityTest, {
 				props: {
 					component: 'CritiqueCircle',
 					circle: mockCircle,
 					membership: 'member',
 					handlers: { onCritique },
-				}
+				},
 			});
 
 			// Check session active
@@ -51,7 +51,7 @@ describe('Community Behavior', () => {
 			// Submit feedback
 			const textarea = screen.getByLabelText('Your Feedback');
 			await fireEvent.input(textarea, { target: { value: 'Great colors!' } });
-			
+
 			const submitBtn = screen.getByText('Submit Feedback');
 			await fireEvent.click(submitBtn);
 
@@ -63,14 +63,14 @@ describe('Community Behavior', () => {
 	describe('MentorMatch', () => {
 		it('filters mentors', async () => {
 			const onSearch = vi.fn();
-			
+
 			render(CommunityTest, {
 				props: {
 					component: 'MentorMatch',
 					mode: 'find-mentor',
 					matches: [],
 					handlers: { onSearch },
-				}
+				},
 			});
 
 			const stylesInput = screen.getByLabelText('Art Styles');

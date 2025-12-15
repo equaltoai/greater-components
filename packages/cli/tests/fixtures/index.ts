@@ -29,6 +29,8 @@ export const DEFAULT_TEST_CONFIG: ComponentConfig = {
 		tokens: true,
 		primitives: true,
 		face: null,
+		source: 'local',
+		localDir: 'styles/greater',
 	},
 	installed: [],
 };

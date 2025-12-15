@@ -263,6 +263,18 @@ test('modal renders footer snippet', () => {
 
 ### Setup
 
+Install Playwright browsers (one-time, per machine) before running E2E/a11y/visual suites:
+
+```bash
+pnpm playwright:install
+```
+
+On Linux CI you may need system dependencies:
+
+```bash
+pnpm playwright:install:with-deps
+```
+
 ```typescript
 // playwright.config.ts
 import { defineConfig, devices } from '@playwright/test';
@@ -753,6 +765,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm playwright:install:with-deps
 
       - name: Run unit tests
         run: pnpm test:unit

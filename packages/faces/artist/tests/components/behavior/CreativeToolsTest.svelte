@@ -13,7 +13,11 @@
 	let { thread, handlers = {}, component }: Props = $props();
 </script>
 
-<WIPTestWrapper {thread} {handlers} initialState={{ comparison: { isActive: true, mode: 'side-by-side', versionA: 0, versionB: 1 } }}>
+<WIPTestWrapper
+	{thread}
+	{handlers}
+	initialState={{ comparison: { isActive: true, mode: 'side-by-side', versionA: 0, versionB: 1 } }}
+>
 	{#if component === 'Compare'}
 		<Compare />
 	{:else if component === 'VersionCard'}

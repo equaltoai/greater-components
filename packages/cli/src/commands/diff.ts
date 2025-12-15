@@ -12,6 +12,7 @@ import {
 	getInstalledComponent,
 	getInstalledComponentNames,
 	resolveAlias,
+	FALLBACK_REF,
 	type ComponentConfig,
 } from '../utils/config.js';
 import { getComponent } from '../registry/index.js';
@@ -19,6 +20,7 @@ import { fetchComponentFiles, type FetchOptions } from '../utils/fetch.js';
 import { readFile, fileExists } from '../utils/files.js';
 import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js';
 import { logger } from '../utils/logger.js';
+import { resolveRef } from '../utils/registry-index.js';
 
 /**
  * Result of diffing a single component
@@ -91,7 +93,7 @@ async function diffComponent(
 	componentName: string,
 	config: ComponentConfig,
 	cwd: string,
-	options: { ref?: string }
+	options: { ref: string }
 ): Promise<ComponentDiffResult> {
 	const component = getComponent(componentName);
 
@@ -106,7 +108,7 @@ async function diffComponent(
 
 	const installed = getInstalledComponent(componentName, config);
 	const fetchOptions: FetchOptions = {
-		ref: options.ref || config.ref,
+		ref: options.ref,
 	};
 
 	// Fetch remote files
@@ -287,6 +289,8 @@ export const diffCommand = new Command()
 			process.exit(1);
 		}
 
+		const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
+
 		// Determine which components to diff
 		let componentNames: string[];
 
@@ -320,7 +324,7 @@ export const diffCommand = new Command()
 
 		logger.info(
 			chalk.bold(
-				`\n🔍 Comparing ${componentNames.length} component(s) against ${options.ref || config.ref}...\n`
+				`\n🔍 Comparing ${componentNames.length} component(s) against ${resolved.ref}...\n`
 			)
 		);
 
@@ -328,7 +332,7 @@ export const diffCommand = new Command()
 		const results: ComponentDiffResult[] = [];
 
 		for (const name of componentNames) {
-			const result = await diffComponent(name, config, cwd, { ref: options.ref });
+			const result = await diffComponent(name, config, cwd, { ref: resolved.ref });
 			results.push(result);
 
 			if (!options.summary) {

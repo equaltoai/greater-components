@@ -14,8 +14,10 @@ import {
 	SCHEMA_URL,
 	CONFIG_SCHEMA_VERSION,
 	DEFAULT_REF,
+	FALLBACK_REF,
 	type ComponentConfig,
 } from '../utils/config.js';
+import { resolveRef } from '../utils/registry-index.js';
 import {
 	isValidProject,
 	detectProjectDetails,
@@ -26,7 +28,9 @@ import {
 import {
 	injectCssImports,
 	getRecommendedEntryPoint,
+	copyCssFiles,
 	type CssImportConfig,
+	type ExtendedCssImportConfig,
 } from '../utils/css-inject.js';
 import { faceRegistry } from '../registry/faces.js';
 import { logger } from '../utils/logger.js';
@@ -260,6 +264,9 @@ export const initAction = async (options: {
 		process.exit(1);
 	}
 
+	// Resolve ref (supports "latest" alias via registry/latest.json)
+	const resolved = await resolveRef(options.ref || DEFAULT_REF, undefined, FALLBACK_REF);
+
 	// Get configuration
 	let config: ComponentConfig;
 
@@ -268,7 +275,7 @@ export const initAction = async (options: {
 		config = createDefaultConfig({
 			projectType: projectDetails.type,
 			hasTypeScript: projectDetails.hasTypeScript,
-			ref: options.ref || DEFAULT_REF,
+			ref: resolved.ref,
 			face: selectedFace,
 		});
 	} else {
@@ -328,7 +335,7 @@ export const initAction = async (options: {
 		config = {
 			$schema: SCHEMA_URL,
 			version: CONFIG_SCHEMA_VERSION,
-			ref: options.ref || DEFAULT_REF,
+			ref: resolved.ref,
 			style: response.style,
 			rsc: false,
 			tsx: projectDetails.hasTypeScript,
@@ -343,6 +350,8 @@ export const initAction = async (options: {
 				tokens: true,
 				primitives: true,
 				face: finalFace,
+				source: 'local',
+				localDir: 'styles/greater',
 			},
 			installed: [],
 		};
@@ -382,12 +391,57 @@ export const initAction = async (options: {
 
 	// CSS injection
 	let cssInjected = false;
+	let _cssCopied = false;
 
 	if (!options.skipCss && projectDetails.cssEntryPoints.length > 0) {
+		const isLocalMode = config.css?.source === 'local';
+		const localDir = config.css?.localDir ?? 'styles/greater';
+		const libAlias = config.aliases.lib;
+
 		const cssConfig: CssImportConfig = {
 			tokens: config.css?.tokens ?? true,
 			primitives: config.css?.primitives ?? true,
 			face: selectedFace,
+		};
+
+		// Step 1: Copy CSS files for local mode
+		if (isLocalMode) {
+			const copySpinner = ora('Copying CSS files...').start();
+
+			try {
+				const copyResult = await copyCssFiles({
+					ref: config.ref,
+					cssConfig,
+					libDir: libAlias,
+					localDir,
+					cwd,
+					overwrite: false,
+				});
+
+				if (copyResult.success) {
+					if (copyResult.copiedFiles.length > 0) {
+						copySpinner.succeed(
+							`Copied ${copyResult.copiedFiles.length} CSS file(s) to ${path.relative(cwd, copyResult.targetDir)}`
+						);
+						_cssCopied = true;
+					} else if (copyResult.skippedFiles.length > 0) {
+						copySpinner.info('CSS files already exist (skipped)');
+						_cssCopied = true;
+					}
+				} else {
+					copySpinner.warn(`Could not copy CSS files: ${copyResult.error}`);
+				}
+			} catch {
+				copySpinner.warn('CSS file copying failed, you can copy files manually');
+			}
+		}
+
+		// Step 2: Build extended config for import generation
+		const extendedCssConfig: ExtendedCssImportConfig = {
+			...cssConfig,
+			source: config.css?.source ?? 'local',
+			localDir,
+			libAlias,
 		};
 
 		// Get recommended entry point
@@ -428,7 +482,7 @@ export const initAction = async (options: {
 				const cssSpinner = ora('Injecting CSS imports...').start();
 
 				try {
-					const result = await injectCssImports(targetEntry, cssConfig);
+					const result = await injectCssImports(targetEntry, extendedCssConfig);
 
 					if (result.success) {
 						if (result.addedImports.length > 0) {
@@ -457,7 +511,7 @@ export const initCommand = new Command()
 	.description('Initialize Greater Components in your project')
 	.option('-y, --yes', 'Skip prompts and use defaults')
 	.option('--cwd <path>', 'Working directory (default: current directory)')
-	.option('--ref <tag>', 'Pin to a specific version tag', DEFAULT_REF)
+	.option('--ref <tag>', 'Pin to a specific version tag (default: latest stable)')
 	.option('--skip-css', 'Skip automatic CSS injection')
 	.option('--face <name>', 'Pre-select a face (social, blog, community)')
 	.action(initAction);

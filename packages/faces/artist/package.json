@@ -105,7 +105,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && cp src/theme.css dist/greater-components-artist.css",
+    "build": "vite build && tsc -p tsconfig.build.json --emitDeclarationOnly && cp src/theme.css dist/greater-components-artist.css",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",

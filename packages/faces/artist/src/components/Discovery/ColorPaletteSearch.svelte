@@ -162,24 +162,26 @@ Features:
 			</div>
 		{/each}
 		{#if colors.length < maxColors}
-			<div class="color-palette-search__add">
-				<input
-					type="color"
-					class="color-palette-search__picker"
-					value={colorInput}
-					oninput={handleColorInputChange}
-					aria-label="Pick a color"
-				/>
-				<button
-					type="button"
-					class="color-palette-search__add-btn"
-					onclick={handleAddColor}
-					aria-label="Add selected color"
-				>
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-						<path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" />
-					</svg>
-				</button>
+			<div role="listitem">
+				<div class="color-palette-search__add">
+					<input
+						type="color"
+						class="color-palette-search__picker"
+						value={colorInput}
+						oninput={handleColorInputChange}
+						aria-label="Pick a color"
+					/>
+					<button
+						type="button"
+						class="color-palette-search__add-btn"
+						onclick={handleAddColor}
+						aria-label="Add selected color"
+					>
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+							<path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" />
+						</svg>
+					</button>
+				</div>
 			</div>
 		{/if}
 	</div>
@@ -209,6 +211,7 @@ Features:
 			accept="image/*"
 			class="sr-only"
 			onchange={handleFileSelect}
+			aria-label="Upload image for color extraction"
 		/>
 	</div>
 
@@ -495,7 +498,7 @@ Features:
 		justify-content: space-between;
 		margin-top: var(--gr-spacing-scale-1);
 		font-size: var(--gr-typography-fontSize-xs);
-		color: var(--gr-color-gray-500);
+		color: var(--gr-color-gray-400);
 	}
 
 	.color-palette-search__mode {

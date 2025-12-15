@@ -1,0 +1,26 @@
+{
+  "data": {
+    "timeline": {
+      "edges": [
+        {
+          "node": {
+            "id": "1",
+            "content": "Hello world from mock timeline!",
+            "createdAt": "2023-01-01T12:00:00Z",
+            "visibility": "PUBLIC",
+            "sensitive": false,
+            "repliesCount": 0,
+            "likesCount": 5,
+            "sharesCount": 2,
+            "actor": {
+              "id": "https://example.com/user1",
+              "username": "mockuser",
+              "displayName": "Mock User",
+              "avatar": null
+            }
+          }
+        }
+      ]
+    }
+  }
+}

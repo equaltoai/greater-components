@@ -96,18 +96,18 @@ describe('ArtistProfileStore', () => {
 				adapter: mockAdapter as any,
 				isOwnProfile: true,
 			});
-			
-            // Load initial
-             mockAdapter.query.mockResolvedValue({ data: { artist: { id: '1', statement: 'Old' } } });
-             await store.loadProfile('1');
-             
-            store.startEditing();
-            store.updatePendingChanges({ statement: 'New' });
-            expect(store.get().artist?.statement).toBe('New'); // Optimistic
-            
-            store.cancelEditing();
-            expect(store.get().isEditing).toBe(false);
-            expect(store.get().artist?.statement).toBe('Old'); // Rolled back
+
+			// Load initial
+			mockAdapter.query.mockResolvedValue({ data: { artist: { id: '1', statement: 'Old' } } });
+			await store.loadProfile('1');
+
+			store.startEditing();
+			store.updatePendingChanges({ statement: 'New' });
+			expect(store.get().artist?.statement).toBe('New'); // Optimistic
+
+			store.cancelEditing();
+			expect(store.get().isEditing).toBe(false);
+			expect(store.get().artist?.statement).toBe('Old'); // Rolled back
 		});
 
 		it('saves changes', async () => {
@@ -115,47 +115,49 @@ describe('ArtistProfileStore', () => {
 				adapter: mockAdapter as any,
 				isOwnProfile: true,
 			});
-            
-             // Load initial
-             mockAdapter.query.mockResolvedValue({ data: { artist: { id: '1', statement: 'Old' } } });
-             await store.loadProfile('1');
+
+			// Load initial
+			mockAdapter.query.mockResolvedValue({ data: { artist: { id: '1', statement: 'Old' } } });
+			await store.loadProfile('1');
 
 			store.startEditing();
 			store.updatePendingChanges({ statement: 'Updated' });
 
-            mockAdapter.mutate.mockResolvedValue({ data: { success: true } });
+			mockAdapter.mutate.mockResolvedValue({ data: { success: true } });
 
 			await store.saveChanges();
 
 			expect(store.get().isEditing).toBe(false);
 			expect(store.get().artist?.statement).toBe('Updated');
-            expect(mockAdapter.mutate).toHaveBeenCalledWith(expect.objectContaining({
-                mutation: 'UpdateArtistProfile',
-                variables: {
-                    id: '1',
-                    input: { statement: 'Updated' }
-                }
-            }));
+			expect(mockAdapter.mutate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					mutation: 'UpdateArtistProfile',
+					variables: {
+						id: '1',
+						input: { statement: 'Updated' },
+					},
+				})
+			);
 		});
-        
-        it('handles save error', async () => {
-            const store = createArtistProfileStore({
+
+		it('handles save error', async () => {
+			const store = createArtistProfileStore({
 				adapter: mockAdapter as any,
 				isOwnProfile: true,
 			});
-            store.startEditing();
+			store.startEditing();
 			store.updatePendingChanges({ statement: 'Updated' });
-            
-            mockAdapter.mutate.mockRejectedValue(new Error('Save failed'));
-            
-            await store.saveChanges();
-            
-            expect(store.get().error).toBeTruthy();
-            expect(store.get().loading).toBe(false);
-            // Should stay in edit mode
-             expect(store.get().isEditing).toBe(true); // Wait, code sets isEditing: false in catch block?
-             // Checking source: 
-             /*
+
+			mockAdapter.mutate.mockRejectedValue(new Error('Save failed'));
+
+			await store.saveChanges();
+
+			expect(store.get().error).toBeTruthy();
+			expect(store.get().loading).toBe(false);
+			// Should stay in edit mode
+			expect(store.get().isEditing).toBe(true); // Wait, code sets isEditing: false in catch block?
+			// Checking source:
+			/*
                 catch (error) {
                         state.update((current) => ({
                                 ...current,
@@ -164,9 +166,9 @@ describe('ArtistProfileStore', () => {
                         }));
                 }
              */
-             // It does NOT set isEditing: false in catch. Good.
-             expect(store.get().isEditing).toBe(true);
-        });
+			// It does NOT set isEditing: false in catch. Good.
+			expect(store.get().isEditing).toBe(true);
+		});
 	});
 
 	describe('Sections', () => {
@@ -190,18 +192,18 @@ describe('ArtistProfileStore', () => {
 			const store = createArtistProfileStore({ adapter: mockAdapter as any });
 			store.addSection({ title: 'S1', items: [], layout: 'grid' });
 			store.addSection({ title: 'S2', items: [], layout: 'grid' });
-            
-            const [s1, s2] = store.get().sections;
-            expect(s1.order).toBe(0);
-            expect(s2.order).toBe(1);
 
-            store.reorderSections([s2.id, s1.id]);
-            
-            const reordered = store.get().sections;
-            expect(reordered[0].id).toBe(s2.id);
-            expect(reordered[0].order).toBe(0);
-            expect(reordered[1].id).toBe(s1.id);
-            expect(reordered[1].order).toBe(1);
+			const [s1, s2] = store.get().sections;
+			expect(s1.order).toBe(0);
+			expect(s2.order).toBe(1);
+
+			store.reorderSections([s2.id, s1.id]);
+
+			const reordered = store.get().sections;
+			expect(reordered[0].id).toBe(s2.id);
+			expect(reordered[0].order).toBe(0);
+			expect(reordered[1].id).toBe(s1.id);
+			expect(reordered[1].order).toBe(1);
 		});
 	});
 });

@@ -213,8 +213,10 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 			const nextIndex = getNextIndex(focusedIndex, direction, actualColumns, processedItems.length);
 			focusedIndex = nextIndex;
 
-			// Focus the element
-			const element = containerRef?.querySelector(`[data-index="${nextIndex}"]`) as HTMLElement;
+			// Focus the element (button inside the wrapper)
+			const element = containerRef?.querySelector(
+				`[data-index="${nextIndex}"] button`
+			) as HTMLElement;
 			element?.focus();
 		}
 	}
@@ -258,17 +260,15 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	});
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
 	bind:this={containerRef}
 	class={`gallery-grid ${className}`}
-	role="feed"
+	role="region"
 	aria-label={`Gallery with ${items.length} artworks`}
 	aria-busy={false}
 	onscroll={handleScroll}
 	onkeydown={handleKeydown}
-	tabindex="0"
 	style:--gallery-columns={actualColumns}
 	style:--gallery-gap={`${GAP_SIZES[gap]}px`}
 >
@@ -289,18 +289,20 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 									class="gallery-item"
 									class:focused={focusedIndex === globalIndex}
 									data-index={globalIndex}
-									tabindex={globalIndex === 0 ? 0 : -1}
-									role="button"
+									role="article"
 									aria-label={getAriaLabel(globalIndex)}
-									onfocus={() => handleItemFocus(globalIndex)}
-									onclick={() => handleItemClick(item)}
-									onkeydown={(e) => e.key === 'Enter' && handleItemClick(item)}
+									onfocusin={() => handleItemFocus(globalIndex)}
 									style:--aspect-ratio={aspectRatio}
 								>
 									{#if itemRenderer}
 										{@render itemRenderer(item, globalIndex)}
 									{:else}
-										<ArtworkCard artwork={item} variant="grid" />
+										<ArtworkCard
+											artwork={item}
+											variant="grid"
+											tabindex={focusedIndex === globalIndex ? 0 : -1}
+											onclick={() => handleItemClick(item)}
+										/>
 									{/if}
 								</div>
 							{/each}
@@ -321,18 +323,20 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 							class="gallery-item"
 							class:focused={focusedIndex === globalIndex}
 							data-index={globalIndex}
-							tabindex={globalIndex === 0 ? 0 : -1}
-							role="button"
+							role="article"
 							aria-label={getAriaLabel(globalIndex)}
-							onfocus={() => handleItemFocus(globalIndex)}
-							onclick={() => handleItemClick(item)}
-							onkeydown={(e) => e.key === 'Enter' && handleItemClick(item)}
+							onfocusin={() => handleItemFocus(globalIndex)}
 							style:--aspect-ratio={aspectRatio}
 						>
 							{#if itemRenderer}
 								{@render itemRenderer(item, globalIndex)}
 							{:else}
-								<ArtworkCard artwork={item} variant="grid" />
+								<ArtworkCard
+									artwork={item}
+									variant="grid"
+									tabindex={focusedIndex === globalIndex ? 0 : -1}
+									onclick={() => handleItemClick(item)}
+								/>
 							{/if}
 						</div>
 					{/each}
@@ -358,7 +362,7 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 		position: absolute;
 		top: -40px;
 		left: 0;
-		background: var(--gr-color-primary-500);
+		background: var(--gr-color-primary-700);
 		color: white;
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		z-index: 100;

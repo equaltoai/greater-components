@@ -295,7 +295,7 @@ export function resetErrorBoundary(): ErrorBoundaryState {
  * Create error message for display
  */
 export function formatErrorMessage(
-	error: Error | null,
+	error: unknown,
 	fallback = 'An unexpected error occurred'
 ): string {
 	if (!error) return fallback;
@@ -305,7 +305,19 @@ export function formatErrorMessage(
 		return fallback;
 	}
 
-	return error.message || fallback;
+	if (typeof error === 'string') {
+		return error;
+	}
+
+	if (error instanceof Error) {
+		return error.message || fallback;
+	}
+
+	if (typeof error === 'object' && 'message' in error) {
+		return (error as { message: string }).message || fallback;
+	}
+
+	return fallback;
 }
 
 // ============================================================================

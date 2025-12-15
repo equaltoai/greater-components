@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
 	detectHighContrastMode,
 	createHighContrastObserver,
@@ -31,9 +31,9 @@ describe('highContrast Utils', () => {
 			const originalWindow = global.window;
 			// @ts-ignore - simulating server-side
 			delete global.window;
-			
+
 			expect(detectHighContrastMode()).toBe('none');
-			
+
 			global.window = originalWindow;
 		});
 
@@ -110,7 +110,7 @@ describe('highContrast Utils', () => {
 		it('unsubscribes on cleanup', () => {
 			const callback = vi.fn();
 			const cleanup = createHighContrastObserver(callback);
-			
+
 			cleanup();
 
 			expect(removeEventListenerMock).toHaveBeenCalledTimes(3);
@@ -129,16 +129,16 @@ describe('highContrast Utils', () => {
 			changeHandler({});
 			expect(callback).toHaveBeenCalled();
 		});
-		
+
 		it('returns no-op function when window is undefined', () => {
 			const originalWindow = global.window;
-			// @ts-ignore
+			// @ts-ignore - Simulate server-side by deleting window
 			delete global.window;
-			
+
 			const cleanup = createHighContrastObserver(() => {});
 			expect(typeof cleanup).toBe('function');
 			cleanup(); // Should not throw
-			
+
 			global.window = originalWindow;
 		});
 	});
@@ -224,7 +224,7 @@ describe('highContrast Utils', () => {
 			const styleEl = document.getElementById('gr-high-contrast-styles');
 			expect(styleEl).toBeTruthy();
 			expect(styleEl?.textContent).toContain(HIGH_CONTRAST_STYLES.textColor);
-			
+
 			cleanup();
 			expect(document.documentElement.classList.contains('gr-high-contrast')).toBe(false);
 			expect(document.getElementById('gr-high-contrast-styles')).toBeNull();
@@ -232,18 +232,18 @@ describe('highContrast Utils', () => {
 
 		it('supports custom styles', () => {
 			applyHighContrastStyles(HIGH_CONTRAST_DARK_STYLES);
-			
+
 			const styleEl = document.getElementById('gr-high-contrast-styles');
 			expect(styleEl?.textContent).toContain(HIGH_CONTRAST_DARK_STYLES.textColor);
 		});
-		
+
 		it('replaces existing styles if called again', () => {
 			applyHighContrastStyles();
 			const style1 = document.getElementById('gr-high-contrast-styles');
-			
+
 			applyHighContrastStyles(HIGH_CONTRAST_DARK_STYLES);
 			const style2 = document.getElementById('gr-high-contrast-styles');
-			
+
 			expect(style2).not.toBe(style1); // Should be a new element or at least content changed if we were just updating text, but implementation removes and recreates
 			expect(document.querySelectorAll('#gr-high-contrast-styles').length).toBe(1);
 			expect(style2?.textContent).toContain(HIGH_CONTRAST_DARK_STYLES.textColor);

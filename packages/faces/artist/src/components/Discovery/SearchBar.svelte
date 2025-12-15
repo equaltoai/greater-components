@@ -270,7 +270,11 @@ Features:
 			onblur={handleBlur}
 			onkeydown={handleKeydown}
 			aria-label="Search artworks"
-			aria-controls="search-suggestions"
+			role="combobox"
+			aria-controls={showDropdown && displaySuggestions.length > 0
+				? 'search-suggestions'
+				: undefined}
+			aria-expanded={showDropdown && displaySuggestions.length > 0}
 			aria-autocomplete="list"
 			autocomplete="off"
 		/>

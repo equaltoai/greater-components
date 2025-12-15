@@ -1,17 +1,22 @@
 <script lang="ts">
-  import { createCritiqueContext } from '../../../src/components/CreativeTools/CritiqueMode/context.ts';
-  import type { ArtworkData } from '../../../src/types/artwork.js';
-  import type { Component as SvelteComponent } from 'svelte';
+	import { createCritiqueContext } from '../../../src/components/CreativeTools/CritiqueMode/context.js';
+	import type { CritiqueSubmission } from '../../../src/types/community.js';
+	import type { ArtworkData } from '../../../src/components/Artwork/context.js';
+	import type { Component as SvelteComponent } from 'svelte';
+	import { untrack } from 'svelte';
 
-  interface Props {
-    artwork: ArtworkData;
-    Component: SvelteComponent<any>;
-    props?: Record<string, any>;
-  }
+	interface Props {
+		submission: CritiqueSubmission;
+		Component: SvelteComponent<Record<string, unknown>>;
+		props?: Record<string, unknown>;
+	}
 
-  let { artwork, Component, props = {} }: Props = $props();
+	let { submission, Component, props = {} }: Props = $props();
 
-  createCritiqueContext(artwork);
+	createCritiqueContext(
+		untrack(() => submission.artwork as unknown as ArtworkData),
+		untrack(() => ({}))
+	);
 </script>
 
 <Component {...props} />

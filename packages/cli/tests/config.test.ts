@@ -443,6 +443,8 @@ describe('Config Schema Validation', () => {
 				tokens: true,
 				primitives: true,
 				face: null,
+				source: 'local',
+				localDir: 'styles/greater',
 			});
 		});
 

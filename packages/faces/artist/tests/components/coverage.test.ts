@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import { componentsToCover } from './coverage-harness';
+// const componentsToCover = {}; // Temporary override
 import Wrapper from './Wrapper.svelte';
 
 describe('Artist Component Coverage Harness', () => {

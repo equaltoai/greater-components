@@ -8,6 +8,7 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import os from 'node:os';
 import { fetchFromGitTag, NetworkError } from './git-fetch.js';
+import { FALLBACK_REF } from './config.js';
 
 /**
  * Registry index file path within the repository
@@ -15,10 +16,16 @@ import { fetchFromGitTag, NetworkError } from './git-fetch.js';
 const REGISTRY_INDEX_PATH = 'registry/index.json';
 
 /**
+ * Latest ref file path within the repository
+ */
+const REGISTRY_LATEST_PATH = 'registry/latest.json';
+
+/**
  * Cache configuration
  */
 const CACHE_DIR = path.join(os.homedir(), '.greater-components', 'registry');
 const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
+const LATEST_TTL_MS = 5 * 60 * 1000; // 5 minutes for latest.json
 
 /**
  * File checksum entry schema
@@ -38,25 +45,89 @@ export const registryComponentSchema = z.object({
 	name: z.string(),
 	version: z.string(),
 	description: z.string().optional(),
+	type: z.string().optional(),
 	files: z.array(fileChecksumSchema),
 	dependencies: z.array(z.string()).optional().default([]),
+	peerDependencies: z.array(z.string()).optional().default([]),
 	tags: z.array(z.string()).optional().default([]),
 });
 
 export type RegistryComponent = z.infer<typeof registryComponentSchema>;
 
 /**
- * Registry index schema
+ * Face entry in the registry index (curated component collections)
+ */
+export const registryFaceSchema = z.object({
+	name: z.string(),
+	version: z.string(),
+	description: z.string().optional(),
+	includes: z
+		.object({
+			primitives: z.array(z.string()).optional().default([]),
+			shared: z.array(z.string()).optional().default([]),
+			patterns: z.array(z.string()).optional().default([]),
+			components: z.array(z.string()).optional().default([]),
+		})
+		.optional(),
+	files: z.array(fileChecksumSchema),
+	styles: z
+		.object({
+			main: z.string(),
+			tokens: z.string().optional(),
+		})
+		.optional(),
+	dependencies: z.array(z.string()).optional().default([]),
+	peerDependencies: z.array(z.string()).optional().default([]),
+});
+
+export type RegistryFace = z.infer<typeof registryFaceSchema>;
+
+/**
+ * Shared module entry in the registry index
+ */
+export const registrySharedSchema = z.object({
+	name: z.string(),
+	version: z.string(),
+	description: z.string().optional(),
+	exports: z.array(z.string()).optional().default([]),
+	files: z.array(fileChecksumSchema),
+	dependencies: z.array(z.string()).optional().default([]),
+	types: z.array(z.string()).optional().default([]),
+});
+
+export type RegistryShared = z.infer<typeof registrySharedSchema>;
+
+/**
+ * Registry index schema - supports both legacy and enhanced format
  */
 export const registryIndexSchema = z.object({
+	$schema: z.string().optional(),
+	schemaVersion: z.string().optional().default('1.0.0'),
 	version: z.string(),
 	ref: z.string(),
 	generatedAt: z.string().datetime(),
-	components: z.record(z.string(), registryComponentSchema),
 	checksums: z.record(z.string(), z.string()).optional().default({}),
+	components: z.record(z.string(), registryComponentSchema),
+	faces: z.record(z.string(), registryFaceSchema).optional().default({}),
+	shared: z.record(z.string(), registrySharedSchema).optional().default({}),
 });
 
 export type RegistryIndex = z.infer<typeof registryIndexSchema>;
+
+/**
+ * Latest ref schema (registry/latest.json)
+ */
+export const latestRefSchema = z.object({
+	ref: z.string(),
+	version: z.string(),
+	updatedAt: z.string().optional(),
+});
+
+export type LatestRef = z.infer<typeof latestRefSchema>;
+
+function isLatestAlias(ref?: string): boolean {
+	return (ref ?? '').trim().toLowerCase() === 'latest';
+}
 
 /**
  * Cached registry index metadata
@@ -332,4 +403,189 @@ export function hasComponent(index: RegistryIndex, componentName: string): boole
  */
 export function getAllComponentNames(index: RegistryIndex): string[] {
 	return Object.keys(index.components);
+}
+
+/**
+ * Get all face names from the registry index
+ */
+export function getAllFaceNames(index: RegistryIndex): string[] {
+	return Object.keys(index.faces);
+}
+
+/**
+ * Get all shared module names from the registry index
+ */
+export function getAllSharedNames(index: RegistryIndex): string[] {
+	return Object.keys(index.shared);
+}
+
+/**
+ * Check if a face exists in the registry index
+ */
+export function hasFace(index: RegistryIndex, faceName: string): boolean {
+	return faceName in index.faces;
+}
+
+/**
+ * Check if a shared module exists in the registry index
+ */
+export function hasShared(index: RegistryIndex, sharedName: string): boolean {
+	return sharedName in index.shared;
+}
+
+/**
+ * Get face metadata from the registry index
+ */
+export function getFace(index: RegistryIndex, faceName: string): RegistryFace | null {
+	return index.faces[faceName] || null;
+}
+
+/**
+ * Get shared module metadata from the registry index
+ */
+export function getShared(index: RegistryIndex, sharedName: string): RegistryShared | null {
+	return index.shared[sharedName] || null;
+}
+
+/**
+ * Fetch the latest ref from registry/latest.json
+ *
+ * This fetches from the main branch to get the most current stable version.
+ *
+ * @param options Fetch options
+ * @returns Latest ref info, or null if not available
+ */
+export async function fetchLatestRef(options: {
+	/** Skip cache and always fetch from network */
+	skipCache?: boolean;
+} = {}): Promise<LatestRef | null> {
+	const { skipCache = false } = options;
+
+	// Check cache first
+	const cachePath = path.join(CACHE_DIR, 'latest.json');
+	const metadataPath = path.join(CACHE_DIR, 'latest.meta.json');
+
+	if (!skipCache) {
+		try {
+			if (await fs.pathExists(cachePath) && await fs.pathExists(metadataPath)) {
+				const metadata = JSON.parse(await fs.readFile(metadataPath, 'utf-8'));
+				const age = Date.now() - metadata.fetchedAt;
+
+				if (age < LATEST_TTL_MS) {
+					const content = await fs.readFile(cachePath, 'utf-8');
+					return latestRefSchema.parse(JSON.parse(content));
+				}
+			}
+		} catch {
+			// Cache read failed, continue to fetch
+		}
+	}
+
+	// Fetch from main branch
+	try {
+		const content = await fetchFromGitTag('main', REGISTRY_LATEST_PATH, {
+			skipCache: true,
+		});
+
+		const json = JSON.parse(content.toString('utf-8'));
+		const latest = latestRefSchema.parse(json);
+
+		// Cache the result
+		try {
+			await fs.ensureDir(CACHE_DIR);
+			await fs.writeFile(cachePath, JSON.stringify(latest, null, 2));
+			await fs.writeFile(metadataPath, JSON.stringify({ fetchedAt: Date.now() }));
+		} catch {
+			// Cache write failed, continue
+		}
+
+		return latest;
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Resolve the ref to use for registry operations
+ *
+ * Priority order:
+ * 1. Explicit ref parameter (e.g., --ref flag)
+ * 2. ref from components.json
+ * 3. Latest stable from registry/latest.json
+ * 4. Fallback to default ref constant
+ *
+ * @param explicitRef Explicit ref from CLI flag
+ * @param configRef Ref from components.json
+ * @param fallbackRef Fallback ref if all else fails
+ * @returns Resolved ref to use
+ */
+export async function resolveRef(
+	explicitRef?: string,
+	configRef?: string,
+	fallbackRef: string = FALLBACK_REF
+): Promise<{ ref: string; source: 'explicit' | 'config' | 'latest' | 'fallback' }> {
+	// Priority 1: Explicit ref
+	if (explicitRef && !isLatestAlias(explicitRef)) {
+		return { ref: explicitRef, source: 'explicit' };
+	}
+
+	// Priority 2: Config ref
+	if (configRef && !isLatestAlias(configRef)) {
+		return { ref: configRef, source: 'config' };
+	}
+
+	// Priority 3: Latest stable from registry/latest.json
+	try {
+		const latest = await fetchLatestRef();
+		if (latest?.ref) {
+			return { ref: latest.ref, source: 'latest' };
+		}
+	} catch {
+		// Failed to fetch latest, continue to fallback
+	}
+
+	// Priority 4: Fallback
+	return { ref: fallbackRef, source: 'fallback' };
+}
+
+/**
+ * Get checksums for a face from the registry index
+ */
+export function getFaceChecksums(
+	index: RegistryIndex,
+	faceName: string
+): Record<string, string> | null {
+	const face = index.faces[faceName];
+
+	if (!face) {
+		return null;
+	}
+
+	const checksums: Record<string, string> = {};
+	for (const file of face.files) {
+		checksums[file.path] = file.checksum;
+	}
+
+	return checksums;
+}
+
+/**
+ * Get checksums for a shared module from the registry index
+ */
+export function getSharedChecksums(
+	index: RegistryIndex,
+	sharedName: string
+): Record<string, string> | null {
+	const shared = index.shared[sharedName];
+
+	if (!shared) {
+		return null;
+	}
+
+	const checksums: Record<string, string> = {};
+	for (const file of shared.files) {
+		checksums[file.path] = file.checksum;
+	}
+
+	return checksums;
 }

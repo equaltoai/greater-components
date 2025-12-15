@@ -3,10 +3,10 @@
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { Monetization } from '@equaltoai/greater-components-artist/components/Monetization';
 	import { demoArtist, artworks } from '$lib/data/artist';
-	
+
 	const pricing = {
 		price: { amount: 150, currency: 'USD' },
-		available: true
+		available: true,
 	};
 
 	const monetizationExample = `
@@ -41,10 +41,10 @@
 			<p>Buy artworks directly from the artist.</p>
 		</header>
 		<div class="demo-container">
-			<Monetization.DirectPurchase artwork={artworks[0]} pricing={pricing} />
+			<Monetization.DirectPurchase artwork={artworks[0]} {pricing} />
 		</div>
 	</section>
-	
+
 	<section class="demo-section">
 		<header>
 			<h2>Protection Tools</h2>

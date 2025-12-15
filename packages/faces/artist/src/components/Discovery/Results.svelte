@@ -153,7 +153,7 @@ Features:
 				<circle cx="12" cy="12" r="10" stroke-width="2" />
 				<path d="M12 8v4M12 16h.01" stroke-width="2" stroke-linecap="round" />
 			</svg>
-			<h3>Something went wrong</h3>
+			<h2>Something went wrong</h2>
 			<p>{storeState.error.message}</p>
 			<button type="button" onclick={() => store.search(storeState.query)}> Try again </button>
 		</div>
@@ -164,7 +164,7 @@ Features:
 				<circle cx="11" cy="11" r="8" stroke-width="2" />
 				<path d="M21 21l-4.35-4.35" stroke-width="2" stroke-linecap="round" />
 			</svg>
-			<h3>No results found</h3>
+			<h2>No results found</h2>
 			{#if storeState.query}
 				<p>Try adjusting your search or filters</p>
 			{:else}
@@ -431,8 +431,8 @@ Features:
 		margin-bottom: var(--gr-spacing-scale-4);
 	}
 
-	.results__empty h3,
-	.results__error h3 {
+	.results__empty h2,
+	.results__error h2 {
 		margin: 0 0 var(--gr-spacing-scale-2);
 		color: var(--gr-color-gray-200);
 	}

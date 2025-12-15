@@ -24,8 +24,20 @@ vi.mock('execa', () => ({
 	execa: vi.fn(async () => ({})),
 }));
 vi.mock('../src/utils/registry-index.js', () => ({
-	fetchRegistryIndex: vi.fn(async () => ({ components: {}, faces: {} })),
-	getComponentChecksums: vi.fn(() => null),
+	fetchRegistryIndex: vi.fn(async () => ({
+		schemaVersion: '1.0.0',
+		version: '1.0.0',
+		ref: 'v1.0.0',
+		generatedAt: new Date().toISOString(),
+		checksums: {},
+		components: {},
+		faces: {},
+		shared: {},
+	})),
+	resolveRef: vi.fn().mockImplementation(async (explicitRef?: string) => ({
+		ref: explicitRef || 'main',
+		source: explicitRef ? 'explicit' : 'fallback',
+	})),
 }));
 
 describe('config utilities', () => {
@@ -54,6 +66,8 @@ describe('config utilities', () => {
 				tokens: true,
 				primitives: true,
 				face: null,
+				source: 'local',
+				localDir: 'styles/greater',
 			},
 			installed: [],
 			$schema: 'https://greater.components.dev/schema.json',

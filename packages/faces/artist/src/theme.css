@@ -35,6 +35,14 @@
 	--gr-artist-text-muted: #8a8a8a;
 	--gr-artist-text-inverse: #ffffff;
 
+	/* Adaptive contrast tokens */
+
+	--gr-artist-adaptive-text: #1a1a1a;
+
+	--gr-artist-adaptive-muted: #525252;
+
+	--gr-artist-link-text: #2563eb;
+
 	/* Border colors */
 	--gr-artist-border-subtle: #e5e5e5;
 	--gr-artist-border-default: #d4d4d4;
@@ -240,6 +248,14 @@
 	--gr-artist-text-muted: #737373;
 	--gr-artist-text-inverse: #0a0a0a;
 
+	/* Adaptive contrast tokens */
+
+	--gr-artist-adaptive-text: #ffffff;
+
+	--gr-artist-adaptive-muted: #d4d4d4;
+
+	--gr-artist-link-text: #60a5fa;
+
 	/* Border colors */
 	--gr-artist-border-subtle: #262626;
 	--gr-artist-border-default: #333333;
@@ -262,6 +278,57 @@
 	--gr-artist-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
 	--gr-artist-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
 	--gr-artist-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================================
+ * High Contrast Theme
+ * ============================================================================ */
+
+[data-theme='high-contrast'] {
+	/* Backgrounds - Stark Black */
+	--gr-artist-bg-primary: #000000;
+	--gr-artist-bg-secondary: #000000;
+	--gr-artist-bg-tertiary: #000000;
+	--gr-artist-bg-elevated: #000000;
+	--gr-artist-bg-immersive: #000000;
+
+	/* Surface */
+	--gr-artist-surface-primary: #000000;
+	--gr-artist-surface-secondary: #000000;
+	--gr-artist-surface-muted: #1a1a1a;
+
+	/* Text - Absolute White */
+	--gr-artist-text-primary: #ffffff;
+	--gr-artist-text-secondary: #ffffff;
+	--gr-artist-text-tertiary: #ffffff;
+	--gr-artist-text-muted: #ffffff;
+	--gr-artist-text-inverse: #000000;
+
+	/* Adaptive tokens */
+	--gr-artist-adaptive-text: #ffffff;
+	--gr-artist-adaptive-muted: #ffffff;
+	--gr-artist-link-text: #ffffff;
+
+	/* Borders - Strong boundaries */
+	--gr-artist-border-subtle: #ffffff;
+	--gr-artist-border-default: #ffffff;
+	--gr-artist-border-strong: #ffffff;
+
+	/* Accents */
+	--gr-artist-accent-primary: #ffffff;
+	--gr-artist-accent-secondary: #ffffff;
+
+	/* Interactive */
+	--gr-artist-interactive-default: #ffffff;
+	--gr-artist-interactive-hover: #ffffff;
+	--gr-artist-interactive-active: #ffffff;
+	--gr-artist-interactive-focus: rgba(255, 255, 255, 0.5);
+
+	/* Status */
+	--gr-artist-status-success: #00ff00;
+	--gr-artist-status-warning: #ffff00;
+	--gr-artist-status-error: #ff0000;
+	--gr-artist-status-info: #00ffff;
 }
 
 /* ============================================================================

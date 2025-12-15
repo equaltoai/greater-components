@@ -16,16 +16,17 @@ import {
 	debounce,
 	createNetworkObserver,
 	isOnline,
-    persistToIndexedDB,
-    loadFromIndexedDB
-} from '../../src/stores/utils';
+	persistToIndexedDB,
+} from '../../src/stores/utils.js';
 
 // Mock IndexedDB
 const mockIndexedDB = {
-    open: vi.fn(),
+	open: vi.fn(),
 };
-// @ts-ignore
-global.indexedDB = mockIndexedDB;
+
+Object.defineProperty(global, 'indexedDB', {
+	value: mockIndexedDB as unknown as IDBFactory,
+});
 
 describe('Store Utilities', () => {
 	describe('ReactiveState', () => {
@@ -78,8 +79,8 @@ describe('Store Utilities', () => {
 			const newState = mergePaginatedItems(initialState, newItems, pageInfo);
 
 			expect(newState.items).toHaveLength(3);
-			expect(newState.items[0].id).toBe('1');
-			expect(newState.items[1].id).toBe('2');
+			expect(newState.items[0]?.id).toBe('1');
+			expect(newState.items[1]?.id).toBe('2');
 			expect(newState.cursor).toBe('cursor-2');
 		});
 
@@ -111,14 +112,14 @@ describe('Store Utilities', () => {
 			const result = applyFilters(items, filters, filterFns);
 
 			expect(result).toHaveLength(1);
-			expect(result[0].id).toBe(3);
+			expect(result[0]?.id).toBe(3);
 		});
-        
-        it('createFilterPredicate handles array values', () => {
-            const predicate = createFilterPredicate({ tags: [] }, { tags: () => true });
-            // Empty array should be ignored
-            expect(predicate({} as any)).toBe(true);
-        });
+
+		it('createFilterPredicate handles array values', () => {
+			const predicate = createFilterPredicate({ tags: [] }, { tags: () => true });
+			// Empty array should be ignored
+			expect(predicate({} as any)).toBe(true);
+		});
 	});
 
 	describe('Optimistic Update Utilities', () => {
@@ -128,7 +129,7 @@ describe('Store Utilities', () => {
 			const newState = optimisticAdd(state, newItem);
 
 			expect(newState.items).toHaveLength(1);
-			expect(newState.items[0].isOptimistic).toBe(true);
+			expect(newState.items[0]?.isOptimistic).toBe(true);
 			expect(newState.pendingOperations.get('1')).toEqual({ type: 'add', data: newItem });
 		});
 
@@ -137,9 +138,9 @@ describe('Store Utilities', () => {
 			const updates = { val: 2 };
 			const newState = optimisticUpdate(state, '1', updates);
 
-			expect(newState.items[0].data.val).toBe(2);
-			expect(newState.items[0].isOptimistic).toBe(true);
-			expect(newState.items[0].rollbackData?.val).toBe(1);
+			expect(newState.items[0]?.data.val).toBe(2);
+			expect(newState.items[0]?.isOptimistic).toBe(true);
+			expect(newState.items[0]?.rollbackData?.val).toBe(1);
 			expect(newState.pendingOperations.get('1')?.type).toBe('update');
 		});
 
@@ -156,7 +157,7 @@ describe('Store Utilities', () => {
 			state = optimisticAdd(state, { id: '1' });
 			state = confirmOptimistic(state, '1');
 
-			expect(state.items[0].isOptimistic).toBe(false);
+			expect(state.items[0]?.isOptimistic).toBe(false);
 			expect(state.pendingOperations.has('1')).toBe(false);
 		});
 
@@ -167,14 +168,14 @@ describe('Store Utilities', () => {
 
 			expect(state.items).toHaveLength(0);
 		});
-        
-        it('rollbackOptimistic should revert update', () => {
+
+		it('rollbackOptimistic should revert update', () => {
 			let state = createOptimisticState([{ id: '1', val: 1 }]);
-            state = optimisticUpdate(state, '1', { val: 2 });
+			state = optimisticUpdate(state, '1', { val: 2 });
 			state = rollbackOptimistic(state, '1');
 
-			expect(state.items[0].data.val).toBe(1);
-            expect(state.items[0].isOptimistic).toBe(false);
+			expect(state.items[0]?.data.val).toBe(1);
+			expect(state.items[0]?.isOptimistic).toBe(false);
 		});
 	});
 
@@ -185,7 +186,7 @@ describe('Store Utilities', () => {
 
 		it('should persist to localStorage', () => {
 			persistToLocalStorage('test-key', { foo: 'bar' });
-			const stored = JSON.parse(localStorage.getItem('test-key')!);
+			const stored = JSON.parse(localStorage.getItem('test-key') || '{}');
 			expect(stored).toEqual({ foo: 'bar' });
 		});
 
@@ -232,65 +233,64 @@ describe('Store Utilities', () => {
 			});
 			expect(isOnline()).toBe(true);
 		});
-        
-        it('createNetworkObserver should add event listeners', () => {
-            const addSpy = vi.spyOn(window, 'addEventListener');
-            const removeSpy = vi.spyOn(window, 'removeEventListener');
-            
-            const cleanup = createNetworkObserver(vi.fn(), vi.fn());
-            
-            expect(addSpy).toHaveBeenCalledWith('online', expect.any(Function));
-            expect(addSpy).toHaveBeenCalledWith('offline', expect.any(Function));
-            
-            cleanup();
-            
-            expect(removeSpy).toHaveBeenCalledWith('online', expect.any(Function));
-            expect(removeSpy).toHaveBeenCalledWith('offline', expect.any(Function));
-        });
+
+		it('createNetworkObserver should add event listeners', () => {
+			const addSpy = vi.spyOn(window, 'addEventListener');
+			const removeSpy = vi.spyOn(window, 'removeEventListener');
+
+			const cleanup = createNetworkObserver(vi.fn(), vi.fn());
+
+			expect(addSpy).toHaveBeenCalledWith('online', expect.any(Function));
+			expect(addSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+
+			cleanup();
+
+			expect(removeSpy).toHaveBeenCalledWith('online', expect.any(Function));
+			expect(removeSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+		});
 	});
-    
-    describe('IndexedDB Utilities', () => {
-        // Since we are mocking the implementation inside the test file (global.indexedDB),
-        // we can check if it calls the methods. However, testing the actual IDB logic requires
-        // a more complex mock or library. For now, we verified the function calls IDB methods.
-        
-        it('persistToIndexedDB calls open', async () => {
-             const requestMock = {
-                 onerror: null,
-                 onupgradeneeded: null,
-                 onsuccess: null,
-                 result: {
-                     objectStoreNames: { contains: () => false },
-                     createObjectStore: vi.fn(),
-                     transaction: vi.fn(() => ({
-                         objectStore: vi.fn(() => ({
-                             put: vi.fn(() => ({ onerror: null, onsuccess: null })),
-                         })),
-                         oncomplete: null
-                     })),
-                     close: vi.fn()
-                 }
-             };
-             // @ts-ignore
-             mockIndexedDB.open.mockReturnValue(requestMock);
-             
-             // We can't easily await the promise because we need to trigger callbacks manually
-             // This is hard to test without a proper fake-indexeddb. 
-             // We will skip deep testing of this and rely on the fact that it's standard IDB code.
-             // Or we could trigger the callbacks.
-             
-             const promise = persistToIndexedDB('db', 'store', 'key', 'val');
-             
-             // trigger success
-             // @ts-ignore
-             if(requestMock.onsuccess) requestMock.onsuccess();
-             
-             // Inside onsuccess:
-             // It calls transaction...
-             
-             // This is getting complicated to mock perfectly without a library.
-             // Given the scope, let's assume if it compiles and calls `open`, it's a good start.
-             expect(mockIndexedDB.open).toHaveBeenCalledWith('db', 1);
-        });
-    });
+
+	describe('IndexedDB Utilities', () => {
+		// Since we are mocking the implementation inside the test file (global.indexedDB),
+		// we can check if it calls the methods. However, testing the actual IDB logic requires
+		// a more complex mock or library. For now, we verified the function calls IDB methods.
+
+		it('persistToIndexedDB calls open', async () => {
+			const requestMock = {
+				onerror: null,
+				onupgradeneeded: null,
+				onsuccess: null,
+				result: {
+					objectStoreNames: { contains: () => false },
+					createObjectStore: vi.fn(),
+					transaction: vi.fn(() => ({
+						objectStore: vi.fn(() => ({
+							put: vi.fn(() => ({ onerror: null, onsuccess: null })),
+						})),
+						oncomplete: null,
+					})),
+					close: vi.fn(),
+				},
+			};
+			mockIndexedDB.open.mockReturnValue(requestMock as unknown as IDBOpenDBRequest);
+
+			// We can't easily await the promise because we need to trigger callbacks manually
+			// This is hard to test without a proper fake-indexeddb.
+			// We will skip deep testing of this and rely on the fact that it's standard IDB code.
+			// Or we could trigger the callbacks.
+
+			void persistToIndexedDB('db', 'store', 'key', 'val');
+
+			// trigger success
+			const req = requestMock as unknown as IDBOpenDBRequest;
+			if (req.onsuccess) req.onsuccess.call(req, new Event('success'));
+
+			// Inside onsuccess:
+			// It calls transaction...
+
+			// This is getting complicated to mock perfectly without a library.
+			// Given the scope, let's assume if it compiles and calls `open`, it's a good start.
+			expect(mockIndexedDB.open).toHaveBeenCalledWith('db', 1);
+		});
+	});
 });

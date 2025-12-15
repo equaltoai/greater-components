@@ -118,7 +118,7 @@ describe('StatusCard', () => {
 		};
 
 		const { container } = render(StatusCard, { props: { status: mediaStatus } });
-		
+
 		// Image - use class selector for specificity or check existence
 		const mediaImage = container.querySelector('.media-image');
 		expect(mediaImage).toBeTruthy();
@@ -135,23 +135,23 @@ describe('StatusCard', () => {
 		expect(screen.getByText('Attachment')).toBeTruthy();
 	});
 
-    it('handles media categories', () => {
-        const mediaStatus: Status = {
-            ...mockStatus,
-            mediaAttachments: [
-                { id: 'c1', type: 'unknown', url: 'img.jpg', mediaCategory: 'IMAGE' },
-                { id: 'c2', type: 'unknown', url: 'vid.mp4', mediaCategory: 'VIDEO' },
-                 { id: 'c3', type: 'unknown', url: 'vid.mp4', mediaCategory: 'GIFV' },
-                { id: 'c4', type: 'unknown', url: 'audio.mp3', mediaCategory: 'AUDIO' },
-                { id: 'c5', type: 'unknown', url: 'file.pdf', mediaCategory: 'unknown' },
-            ],
-        };
-        
-        render(StatusCard, { props: { status: mediaStatus } });
-        // Just verify it doesn't crash and renders *something* for each
-        const items = document.querySelectorAll('.media-item');
-        expect(items.length).toBe(5);
-    });
+	it('handles media categories', () => {
+		const mediaStatus: Status = {
+			...mockStatus,
+			mediaAttachments: [
+				{ id: 'c1', type: 'unknown', url: 'img.jpg', mediaCategory: 'IMAGE' },
+				{ id: 'c2', type: 'unknown', url: 'vid.mp4', mediaCategory: 'VIDEO' },
+				{ id: 'c3', type: 'unknown', url: 'vid.mp4', mediaCategory: 'GIFV' },
+				{ id: 'c4', type: 'unknown', url: 'audio.mp3', mediaCategory: 'AUDIO' },
+				{ id: 'c5', type: 'unknown', url: 'file.pdf', mediaCategory: 'unknown' },
+			],
+		};
+
+		render(StatusCard, { props: { status: mediaStatus } });
+		// Just verify it doesn't crash and renders *something* for each
+		const items = document.querySelectorAll('.media-item');
+		expect(items.length).toBe(5);
+	});
 
 	it('shows sensitive content overlay', async () => {
 		const sensitiveStatus: Status = {
@@ -211,4 +211,3 @@ describe('StatusCard', () => {
 		expect(onclick).toHaveBeenCalledWith(mockStatus);
 	});
 });
-

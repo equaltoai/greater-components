@@ -83,17 +83,12 @@ Features:
 	}
 </script>
 
-<div
-	class={`avatar avatar--${size} ${className}`}
-	style:--avatar-size={`${sizeValues[size]}px`}
-	role="img"
-	aria-label={`${artist.displayName}'s avatar${showStatus ? `, ${statusLabels[artist.status]}` : ''}`}
->
+<div class={`avatar avatar--${size} ${className}`} style:--avatar-size={`${sizeValues[size]}px`}>
 	<button
 		class="avatar__button"
 		onclick={handleClick}
 		onkeydown={handleKeydown}
-		aria-label={`View ${artist.displayName}'s avatar`}
+		aria-label={`View ${artist.displayName}'s avatar${showStatus ? `, ${statusLabels[artist.status]}` : ''}`}
 		type="button"
 	>
 		{#if artist.avatar && !imageError}

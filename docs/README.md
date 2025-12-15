@@ -29,7 +29,9 @@
 ### 🛠️ CLI & Distribution
 
 - [CLI Guide](./cli-guide.md) – Complete CLI command reference, configuration, and troubleshooting
+- [Lesser Faces & CLI Model](./lesser-faces-and-cli-model.md) – Design doc for Git-tag releases and source-first distribution
 - [Migration from npm](./migration-from-npm.md) – Migrating from npm packages to CLI distribution
+- [Shadcn-Style Transition Plan](./shadcn-style-transition-plan.md) – Execution plan for a shadcn-style “CLI installs from tags” approach
 - [Face Development](./face-development.md) – Creating custom faces with manifest structure and theming
 
 ### 📦 Additional Resources

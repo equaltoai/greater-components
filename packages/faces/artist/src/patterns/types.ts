@@ -329,6 +329,25 @@ export interface GalleryPatternHandlers {
 	onOpenViewer?: (artwork: ArtworkData, index: number) => void;
 }
 
+/**
+ * Gallery pattern methods
+ */
+export interface GalleryPatternMethods {
+	setLayout: (layout: GalleryLayout) => void;
+	setSort: (option: GallerySortOption) => void;
+	setFilters: (filters: DiscoveryFilters) => void;
+	clearFilters: () => void;
+	handleArtworkClick: (artwork: ArtworkData) => void;
+	openViewer: (artwork: ArtworkData) => void;
+	closeViewer: () => void;
+	navigateViewer: (direction: 'next' | 'prev') => void;
+	getCurrentViewerArtwork: () => ArtworkData | undefined;
+	loadMore: () => Promise<ArtworkData[]>;
+	getColumnCount: () => number;
+	getItemCount: () => number;
+	isEmpty: () => boolean;
+}
+
 // ============================================================================
 // Upload Pattern Types
 // ============================================================================
@@ -398,13 +417,13 @@ export interface UploadPatternHandlers {
 /**
  * Pattern factory result
  */
-export interface PatternFactoryResult<TConfig, THandlers> {
+export interface PatternFactoryResult<TConfig, THandlers, TState = unknown> {
 	/** Pattern configuration */
 	config: TConfig;
 	/** Pattern handlers */
 	handlers: THandlers;
 	/** Pattern state */
-	state: Record<string, unknown>;
+	state: TState;
 	/** Cleanup function */
 	destroy: () => void;
 }
@@ -412,7 +431,7 @@ export interface PatternFactoryResult<TConfig, THandlers> {
 /**
  * Pattern factory function type
  */
-export type PatternFactory<TConfig, THandlers> = (
+export type PatternFactory<TConfig, THandlers, TState = Record<string, unknown>> = (
 	config: TConfig,
 	handlers?: Partial<THandlers>
-) => PatternFactoryResult<TConfig, THandlers>;
+) => PatternFactoryResult<TConfig, THandlers, TState>;

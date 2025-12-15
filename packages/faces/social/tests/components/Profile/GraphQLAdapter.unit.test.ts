@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ProfileGraphQLController } from '../../../src/components/Profile/GraphQLAdapter';
 import { createFakeLesserAdapter } from '../../helpers/fakes/createFakeLesserAdapter';
 import { createTestProfileContext } from '../../helpers/fakes/createTestProfileContext';
@@ -153,11 +153,7 @@ describe('ProfileGraphQLController Unit', () => {
 
 			await context.handlers.onLoadMoreFollowers?.();
 
-			expect(adapter.getFollowers).toHaveBeenCalledWith(
-				'testuser',
-				40,
-				'next-page'
-			);
+			expect(adapter.getFollowers).toHaveBeenCalledWith('testuser', 40, 'next-page');
 			expect(context.state.followers).toHaveLength(1);
 			expect(context.state.followersCursor).toBeNull();
 		});
@@ -172,21 +168,17 @@ describe('ProfileGraphQLController Unit', () => {
 
 			await context.handlers.onLoadMoreFollowing?.();
 
-			expect(adapter.getFollowing).toHaveBeenCalledWith(
-				'testuser',
-				40,
-				'next-page'
-			);
+			expect(adapter.getFollowing).toHaveBeenCalledWith('testuser', 40, 'next-page');
 			expect(context.state.following).toHaveLength(1);
 			expect(context.state.followingCursor).toBeNull();
 		});
 	});
 
-    describe('Relationship Updates', () => {
-         beforeEach(async () => {
+	describe('Relationship Updates', () => {
+		beforeEach(async () => {
 			adapter.getActorByUsername.mockResolvedValue(validActor);
-            // Setup a follower to update
-            adapter.getFollowers.mockResolvedValue({
+			// Setup a follower to update
+			adapter.getFollowers.mockResolvedValue({
 				actors: [{ id: 'f1', username: 'follower1', relationship: { following: false } }],
 				totalCount: 1,
 				nextCursor: null,
@@ -195,14 +187,14 @@ describe('ProfileGraphQLController Unit', () => {
 			await controller.initialize();
 		});
 
-        it('updates relationship in lists when following', async () => {
-            await context.handlers.onFollow?.('f1');
-            expect(context.state.followers[0].relationship?.following).toBe(true);
-        });
+		it('updates relationship in lists when following', async () => {
+			await context.handlers.onFollow?.('f1');
+			expect(context.state.followers[0].relationship?.following).toBe(true);
+		});
 
-         it('updates relationship in lists when muting', async () => {
-            await context.handlers.onMute?.('f1', false);
-            expect(context.state.followers[0].relationship?.muting).toBe(true);
-        });
-    });
+		it('updates relationship in lists when muting', async () => {
+			await context.handlers.onMute?.('f1', false);
+			expect(context.state.followers[0].relationship?.muting).toBe(true);
+		});
+	});
 });

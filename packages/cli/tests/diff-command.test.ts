@@ -30,6 +30,11 @@ vi.mock('../src/utils/config.js', () => ({
 	getInstalledComponent: vi.fn(),
 	getInstalledComponentNames: vi.fn(),
 	resolveAlias: vi.fn(),
+	FALLBACK_REF: 'main',
+}));
+
+vi.mock('../src/utils/registry-index.js', () => ({
+	resolveRef: vi.fn().mockResolvedValue({ ref: 'v1', source: 'config' }),
 }));
 
 vi.mock('../src/registry/index.js', () => ({

@@ -11,7 +11,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import ArtworkRoot from '../../src/components/Artwork/Root.svelte';
-import { createMockArtwork, createMockArtworkWithAI } from '../mocks/mockArtwork.js';
+import { createMockArtwork } from '../mocks/mockArtwork.js';
 
 describe('Artwork Component', () => {
 	const mockArtwork = createMockArtwork('test-1');
@@ -24,10 +24,10 @@ describe('Artwork Component', () => {
 		it('renders with correct aria-label', () => {
 			render(ArtworkRoot, {
 				props: {
-					artwork: mockArtwork
-				}
+					artwork: mockArtwork,
+				},
 			});
-			
+
 			const article = screen.getByRole('article');
 			expect(article).not.toBeNull();
 			const expectedLabel = `Artwork: ${mockArtwork.title} by ${mockArtwork.artist.name}`;
@@ -38,15 +38,15 @@ describe('Artwork Component', () => {
 			const { rerender, container } = render(ArtworkRoot, {
 				props: {
 					artwork: mockArtwork,
-					config: { density: 'compact' }
-				}
+					config: { density: 'compact' },
+				},
 			});
 
 			expect(container.querySelector('.gr-artist-artwork--compact')).not.toBeNull();
 
 			rerender({
 				artwork: mockArtwork,
-				config: { density: 'spacious' }
+				config: { density: 'spacious' },
 			});
 			expect(container.querySelector('.gr-artist-artwork--spacious')).not.toBeNull();
 		});
@@ -55,8 +55,8 @@ describe('Artwork Component', () => {
 			const { container } = render(ArtworkRoot, {
 				props: {
 					artwork: mockArtwork,
-					config: { displayMode: 'card' }
-				}
+					config: { displayMode: 'card' },
+				},
 			});
 
 			expect(container.querySelector('.gr-artist-artwork--card')).not.toBeNull();
@@ -65,8 +65,8 @@ describe('Artwork Component', () => {
 		it('includes data-artwork-id attribute', () => {
 			render(ArtworkRoot, {
 				props: {
-					artwork: mockArtwork
-				}
+					artwork: mockArtwork,
+				},
 			});
 
 			const article = screen.getByRole('article');

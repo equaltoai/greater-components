@@ -8,7 +8,7 @@ import {
 	getTransitionCSS,
 	getAnimationCSS,
 	motionSafe,
-	FADE_IN
+	FADE_IN,
 } from '../../src/utils/reducedMotion';
 
 describe('reducedMotion Utils', () => {
@@ -49,7 +49,7 @@ describe('reducedMotion Utils', () => {
 
 		it('returns false if window is undefined', () => {
 			const originalWindow = global.window;
-			// @ts-ignore
+			// @ts-ignore - Mocking read-only property for testing purposes
 			delete global.window;
 			expect(detectReducedMotion()).toBe(false);
 			global.window = originalWindow;
@@ -81,9 +81,9 @@ describe('reducedMotion Utils', () => {
 			const result = createMotionSafeAnimation({
 				duration: 300,
 				easing: 'ease',
-				properties: { opacity: '1' }
+				properties: { opacity: '1' },
 			});
-			
+
 			expect(result.duration).toBe(300);
 			expect(result.isReduced).toBe(false);
 			expect(result.transition).toContain('opacity 300ms ease');
@@ -95,9 +95,9 @@ describe('reducedMotion Utils', () => {
 				duration: 300,
 				easing: 'ease',
 				properties: { opacity: '1' },
-				reducedMotionBehavior: 'instant'
+				reducedMotionBehavior: 'instant',
 			});
-			
+
 			expect(result.duration).toBe(0);
 			expect(result.isReduced).toBe(true);
 			expect(result.transition).toBe('none');
@@ -109,9 +109,9 @@ describe('reducedMotion Utils', () => {
 				duration: 300,
 				easing: 'ease',
 				properties: { opacity: '1' },
-				reducedMotionBehavior: 'subtle'
+				reducedMotionBehavior: 'subtle',
 			});
-			
+
 			expect(result.duration).toBe(50);
 			expect(result.isReduced).toBe(true);
 			expect(result.transition).toContain('50ms');
@@ -153,7 +153,7 @@ describe('reducedMotion Utils', () => {
 			expect(getTransitionCSS('opacity', 200)).toBe('none');
 		});
 	});
-	
+
 	describe('getAnimationCSS', () => {
 		it('returns CSS string normally', () => {
 			matchMediaMock.mockReturnValue({ matches: false });
@@ -171,20 +171,20 @@ describe('reducedMotion Utils', () => {
 			matchMediaMock.mockReturnValue({
 				matches: false,
 				addEventListener: addEventListenerMock,
-				removeEventListener: removeEventListenerMock
+				removeEventListener: removeEventListenerMock,
 			});
 			const node = document.createElement('div');
 			node.style.setProperty = vi.fn();
-			
+
 			const action = motionSafe(node, { animation: FADE_IN });
-			
+
 			expect(node.style.transition).toContain('opacity');
 			expect(node.style.setProperty).toHaveBeenCalledWith('opacity', '1');
-			
+
 			// Update
 			action.update({ animation: FADE_IN, active: false });
 			expect(node.style.transition).toBe('');
-			
+
 			action.destroy();
 		});
 	});

@@ -3,7 +3,7 @@
  * Tests for project initialization with different configurations
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
 	MockFileSystem,
@@ -42,6 +42,10 @@ vi.mock('../src/utils/logger.js', () => ({
 		error: vi.fn(),
 		newline: vi.fn(),
 	},
+}));
+
+vi.mock('../src/utils/registry-index.js', () => ({
+	resolveRef: vi.fn().mockResolvedValue({ ref: 'greater-v4.2.0', source: 'fallback' }),
 }));
 
 describe('Init Command', () => {
@@ -258,7 +262,9 @@ describe('Init Command', () => {
 		let exitSpy: ReturnType<typeof vi.spyOn>;
 
 		beforeEach(() => {
-			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
+			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {
+				throw new Error('process.exit called');
+			}) as any);
 		});
 
 		afterEach(() => {
@@ -268,7 +274,7 @@ describe('Init Command', () => {
 		it('exits if not a valid project', async () => {
 			mockFs.clear(); // Empty directory
 			const { initAction } = await import('../src/commands/init.js');
-			await initAction({ cwd: '/' });
+			await expect(initAction({ cwd: '/' })).rejects.toThrow('process.exit called');
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -282,7 +288,7 @@ describe('Init Command', () => {
 			);
 
 			const { initAction } = await import('../src/commands/init.js');
-			await initAction({ cwd: '/' });
+			await expect(initAction({ cwd: '/' })).rejects.toThrow('process.exit called');
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -290,7 +296,9 @@ describe('Init Command', () => {
 			mockFs.setupProject(SVELTEKIT_PROJECT);
 
 			const { initAction } = await import('../src/commands/init.js');
-			await initAction({ cwd: '/', face: 'invalid-face' });
+			await expect(initAction({ cwd: '/', face: 'invalid-face' })).rejects.toThrow(
+				'process.exit called'
+			);
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -339,7 +347,7 @@ describe('Init Command', () => {
 			});
 
 			const { initAction } = await import('../src/commands/init.js');
-			await initAction({ cwd: '/' });
+			await expect(initAction({ cwd: '/' })).rejects.toThrow('process.exit called');
 
 			expect(exitSpy).toHaveBeenCalledWith(0);
 			const { configExists } = await import('../src/utils/config.js');
@@ -362,7 +370,7 @@ describe('Init Command', () => {
 			});
 
 			const { initAction } = await import('../src/commands/init.js');
-			await initAction({ cwd: '/' });
+			await expect(initAction({ cwd: '/' })).rejects.toThrow('process.exit called');
 
 			expect(exitSpy).toHaveBeenCalledWith(0);
 			const { configExists } = await import('../src/utils/config.js');

@@ -38,7 +38,7 @@ describe('CreativeTools Behavior', () => {
 				props: {
 					thread: mockThread,
 					component: 'Compare',
-				}
+				},
 			});
 
 			const sliderBtn = screen.getByText('Slider');
@@ -57,13 +57,13 @@ describe('CreativeTools Behavior', () => {
 	describe('WorkInProgress.VersionCard', () => {
 		it('handles like interaction', async () => {
 			const onLikeUpdate = vi.fn();
-			
+
 			render(CreativeToolsTest, {
 				props: {
 					thread: mockThread,
 					component: 'VersionCard',
 					handlers: { onLikeUpdate },
-				}
+				},
 			});
 
 			const likeBtn = screen.getByLabelText('Like this update');

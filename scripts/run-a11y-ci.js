@@ -23,14 +23,7 @@ const steps = [
 	{
 		title: 'Install Playwright browsers',
 		cmd: 'pnpm',
-		args: [
-			'--filter',
-			'@equaltoai/greater-components-testing',
-			'exec',
-			'playwright',
-			'install',
-			'--with-deps',
-		],
+		args: ['--filter', '@equaltoai/greater-components-testing', 'exec', 'playwright', 'install'],
 	},
 	{
 		title: 'Run accessibility matrix (themes x densities)',

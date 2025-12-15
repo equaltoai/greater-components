@@ -18,12 +18,18 @@
 
 	// Manual context creation for testing to support isEditing override
 	setContext(ARTIST_PROFILE_CONTEXT_KEY, {
-		artist,
-		isOwnProfile,
+		get artist() {
+			return artist;
+		},
+		get isOwnProfile() {
+			return isOwnProfile;
+		},
 		config: DEFAULT_PROFILE_CONFIG,
 		handlers: {},
 		layout: 'gallery',
-		isEditing,
+		get isEditing() {
+			return isEditing;
+		},
 		isFollowing: false,
 		professionalMode: false,
 	});

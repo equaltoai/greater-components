@@ -109,9 +109,14 @@ vi.mock(srcPath('utils/config.js'), () => ({
 	configExists: mockConfigExists,
 	readConfig: mockReadConfig,
 	resolveAlias: mockResolveAlias,
-	DEFAULT_REF: 'greater-v4.2.0',
+	DEFAULT_REF: 'latest',
+	FALLBACK_REF: 'main',
 	getInstalledComponentNames: vi.fn(() => []),
 	addInstalledComponent: vi.fn((config) => config),
+}));
+
+vi.mock(srcPath('utils/registry-index.js'), () => ({
+	resolveRef: vi.fn().mockResolvedValue({ ref: 'greater-v4.2.0', source: 'fallback' }),
 }));
 
 vi.mock(srcPath('utils/files.js'), () => ({

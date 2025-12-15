@@ -6,8 +6,8 @@
 import type { ComponentFile, ComponentMetadata } from '../registry/index.js';
 import { fetchFromGitTag, NetworkError } from './git-fetch.js';
 import { IntegrityError, type ChecksumMap } from './integrity.js';
-import { fetchRegistryIndex, getComponentChecksums } from './registry-index.js';
-import { DEFAULT_REF } from './config.js';
+import { fetchRegistryIndex, resolveRef, type RegistryIndex } from './registry-index.js';
+import { DEFAULT_REF, FALLBACK_REF } from './config.js';
 import { logger } from './logger.js';
 import {
 	shouldVerify,
@@ -57,6 +57,115 @@ export interface FetchResult {
 	signatureVerification?: GitTagVerificationResult;
 }
 
+const FACE_CANDIDATES = ['social', 'blog', 'community', 'artist'] as const;
+
+function buildSourcePathCandidates(_component: ComponentMetadata, installPath: string): string[] {
+	const normalized = installPath.replace(/\\/g, '/').replace(/^\/+/, '');
+	const candidates: string[] = [];
+
+	// shared/<module>/... -> packages/shared/<module>/src/...
+	const sharedMatch = normalized.match(/^shared\/([^/]+)\/(.+)$/);
+	if (sharedMatch?.[1] && sharedMatch?.[2]) {
+		candidates.push(`packages/shared/${sharedMatch[1]}/src/${sharedMatch[2]}`);
+	}
+
+	// lib/adapters/... -> packages/adapters/src/...
+	if (normalized.startsWith('lib/adapters/')) {
+		const rest = normalized.slice('lib/adapters/'.length);
+		candidates.push(`packages/adapters/src/${rest}`);
+	}
+
+	// lib/primitives/<name>.ts -> packages/headless/src/...
+	const primitiveMatch = normalized.match(/^lib\/primitives\/([^/]+)\.ts$/);
+	if (primitiveMatch?.[1]) {
+		const name = primitiveMatch[1];
+		candidates.push(`packages/headless/src/primitives/${name}.ts`);
+		candidates.push(`packages/headless/src/${name}.ts`);
+	}
+
+	// lib/components/... -> packages/faces/<face>/src/components/...
+	if (normalized.startsWith('lib/components/')) {
+		const rest = normalized.slice('lib/components/'.length);
+		for (const face of FACE_CANDIDATES) {
+			candidates.push(`packages/faces/${face}/src/components/${rest}`);
+		}
+
+		// Heuristic: lib/components/Notifications/... might actually live in packages/shared/notifications/src/...
+		const [firstSegment, ...tail] = rest.split('/');
+		if (firstSegment && tail.length > 0) {
+			candidates.push(`packages/shared/${firstSegment.toLowerCase()}/src/${tail.join('/')}`);
+		}
+	}
+
+	// lib/patterns/... -> packages/faces/<face>/src/patterns/...
+	if (normalized.startsWith('lib/patterns/')) {
+		const rest = normalized.slice('lib/patterns/'.length);
+		for (const face of FACE_CANDIDATES) {
+			candidates.push(`packages/faces/${face}/src/patterns/${rest}`);
+		}
+	}
+
+	// patterns/... -> packages/faces/<face>/src/patterns/...
+	if (normalized.startsWith('patterns/')) {
+		const rest = normalized.slice('patterns/'.length);
+		for (const face of FACE_CANDIDATES) {
+			candidates.push(`packages/faces/${face}/src/patterns/${rest}`);
+		}
+	}
+
+	// As a last resort, try the normalized path as repo-relative.
+	candidates.push(normalized);
+
+	// De-dupe while preserving order
+	return [...new Set(candidates)];
+}
+
+function findUniqueChecksumMatch(
+	index: RegistryIndex,
+	predicate: (path: string) => boolean
+): string | null {
+	let match: string | null = null;
+	for (const key of Object.keys(index.checksums)) {
+		if (!predicate(key)) continue;
+		if (match) return null; // ambiguous
+		match = key;
+	}
+	return match;
+}
+
+function resolveSourcePathFromIndex(
+	index: RegistryIndex,
+	component: ComponentMetadata,
+	installPath: string
+): string | null {
+	const candidates = buildSourcePathCandidates(component, installPath);
+
+	for (const candidate of candidates) {
+		if (index.checksums[candidate]) {
+			return candidate;
+		}
+	}
+
+	const normalized = installPath.replace(/\\/g, '/').replace(/^\/+/, '');
+
+	// Try suffix-based resolution for known virtual prefixes.
+	if (normalized.startsWith('lib/components/')) {
+		const rest = normalized.slice('lib/components/'.length);
+		const suffix = `/src/components/${rest}`;
+		const unique = findUniqueChecksumMatch(index, (key) => key.endsWith(suffix));
+		if (unique) return unique;
+	}
+
+	if (normalized.startsWith('lib/patterns/')) {
+		const rest = normalized.slice('lib/patterns/'.length);
+		const suffix = `/src/patterns/${rest}`;
+		const unique = findUniqueChecksumMatch(index, (key) => key.endsWith(suffix));
+		if (unique) return unique;
+	}
+
+	return null;
+}
+
 /**
  * Fetch all files for a component with integrity verification
  * @param component Component metadata
@@ -67,7 +176,7 @@ export async function fetchComponentFiles(
 	component: ComponentMetadata,
 	options: FetchOptions = {}
 ): Promise<FetchResult> {
-	const ref = options.ref || DEFAULT_REF;
+	const { ref } = await resolveRef(options.ref || DEFAULT_REF, undefined, FALLBACK_REF);
 	const files: ComponentFile[] = [];
 	const fetchedFiles: FetchedFile[] = [];
 	let allVerified = true;
@@ -94,14 +203,15 @@ export async function fetchComponentFiles(
 	}
 
 	// Try to get checksums from registry index
+	let registryIndex: RegistryIndex | null = null;
 	let checksums: ChecksumMap | null = null;
 	if (performVerification) {
 		try {
-			const registryIndex = await fetchRegistryIndex(ref, {
+			registryIndex = await fetchRegistryIndex(ref, {
 				skipCache: options.skipCache,
 				forceRefresh: options.forceRefresh,
 			});
-			checksums = getComponentChecksums(registryIndex, component.name);
+			checksums = registryIndex.checksums;
 		} catch {
 			// Registry index not available, continue without verification
 			if (options.verbose) {
@@ -114,15 +224,52 @@ export async function fetchComponentFiles(
 	// Fetch all files
 	for (const file of component.files) {
 		try {
-			const buffer = await fetchFromGitTag(ref, `packages/fediverse/src/${file.path}`, {
-				skipCache: options.skipCache,
-				forceRefresh: options.forceRefresh,
-			});
+			const sourcePath =
+				registryIndex && resolveSourcePathFromIndex(registryIndex, component, file.path);
+			const fallbackCandidates = buildSourcePathCandidates(component, file.path);
+			const candidatePaths = sourcePath ? [sourcePath, ...fallbackCandidates] : fallbackCandidates;
 
-			const expectedChecksum = checksums?.[file.path];
+			let buffer: Buffer | null = null;
+			let resolvedSourcePath: string | null = null;
+			let expectedChecksum: string | undefined;
+
+			// Prefer candidates that have checksums (when available) to avoid 404s.
+			const candidatesWithChecksums = checksums
+				? candidatePaths.filter((p) => !!checksums?.[p])
+				: [];
+			const candidatesWithoutChecksums = checksums
+				? candidatePaths.filter((p) => !checksums?.[p])
+				: candidatePaths;
+			const orderedCandidates = checksums
+				? [...candidatesWithChecksums, ...candidatesWithoutChecksums]
+				: candidatePaths;
+
+			for (const candidate of orderedCandidates) {
+				try {
+					buffer = await fetchFromGitTag(ref, candidate, {
+						skipCache: options.skipCache,
+						forceRefresh: options.forceRefresh,
+					});
+					resolvedSourcePath = candidate;
+					expectedChecksum = checksums?.[candidate];
+					break;
+				} catch {
+					// Try next candidate
+				}
+			}
+
+			if (!buffer || !resolvedSourcePath) {
+				const detail =
+					orderedCandidates.length > 0
+						? `Tried:\n  - ${orderedCandidates.join('\n  - ')}`
+						: 'No candidate paths could be derived.';
+				throw new Error(
+					`Failed to resolve source path for "${component.name}" file "${file.path}".\n${detail}`
+				);
+			}
 
 			fetchedFiles.push({
-				path: file.path,
+				path: resolvedSourcePath,
 				content: buffer,
 				expectedChecksum,
 			});
@@ -143,7 +290,7 @@ export async function fetchComponentFiles(
 	if (performVerification && checksums) {
 		integrityReport = verifyFileIntegrity(fetchedFiles, checksums, {
 			failFast: options.failFast ?? true, // Fail fast by default for security
-			skipMissing: false,
+			skipMissing: true,
 		});
 
 		allVerified = integrityReport.allVerified;

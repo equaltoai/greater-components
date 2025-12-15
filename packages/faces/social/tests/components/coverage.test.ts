@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest';
 import { render } from '@testing-library/svelte';
 import { componentsToCover } from './coverage-harness';
+// const componentsToCover = {}; // Temporary override
 import Wrapper from './Wrapper.svelte';
 
 // Mock virtualizer for jsdom
@@ -34,13 +35,13 @@ describe('Component Coverage Harness', () => {
 			if (url.toString().includes('success')) {
 				return Promise.resolve({
 					ok: true,
-					json: () => Promise.resolve([{ id: '1', content: 'test' }])
+					json: () => Promise.resolve([{ id: '1', content: 'test' }]),
 				});
 			}
 			return Promise.resolve({
 				ok: false,
 				status: 500,
-				statusText: 'Internal Server Error'
+				statusText: 'Internal Server Error',
 			});
 		});
 	});

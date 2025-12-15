@@ -22,7 +22,10 @@ vi.mock('../src/utils/git-fetch.js', () => ({
 
 vi.mock('../src/utils/registry-index.js', () => ({
 	fetchRegistryIndex: vi.fn(),
-	getComponentChecksums: vi.fn(),
+	resolveRef: vi.fn().mockImplementation(async (explicitRef?: string) => ({
+		ref: explicitRef || 'main',
+		source: explicitRef ? 'explicit' : 'fallback',
+	})),
 }));
 
 vi.mock('../src/utils/security.js', () => ({
@@ -105,8 +108,7 @@ describe('fetch utilities', () => {
 		it('should handle verification when enabled', async () => {
 			const { fetchFromGitTag } = await import('../src/utils/git-fetch.js');
 			const { shouldVerify, verifyFileIntegrity } = await import('../src/utils/security.js');
-			const { fetchRegistryIndex, getComponentChecksums } =
-				await import('../src/utils/registry-index.js');
+			const { fetchRegistryIndex } = await import('../src/utils/registry-index.js');
 
 			vi.mocked(shouldVerify).mockReturnValue(true);
 			vi.mocked(fetchFromGitTag).mockResolvedValue(Buffer.from('content'));
@@ -117,7 +119,6 @@ describe('fetch utilities', () => {
 				components: {},
 				checksums: {},
 			});
-			vi.mocked(getComponentChecksums).mockReturnValue({ 'Test.svelte': 'abc123' });
 			vi.mocked(verifyFileIntegrity).mockReturnValue({
 				allVerified: true,
 				totalFiles: 1,

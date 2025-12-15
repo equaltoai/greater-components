@@ -16,9 +16,11 @@ import {
 	getInstalledComponentNames,
 	addInstalledComponent,
 	resolveAlias,
+	FALLBACK_REF,
 	type ComponentConfig,
 	type InstalledComponent,
 } from '../utils/config.js';
+import { resolveRef } from '../utils/registry-index.js';
 import { getComponent } from '../registry/index.js';
 import { fetchComponentFiles, type FetchOptions } from '../utils/fetch.js';
 import { readFile, writeFile, fileExists } from '../utils/files.js';
@@ -154,7 +156,7 @@ async function updateComponent(
 	config: ComponentConfig,
 	cwd: string,
 	options: {
-		ref?: string;
+		ref: string;
 		force?: boolean;
 		dryRun?: boolean;
 	}
@@ -165,7 +167,7 @@ async function updateComponent(
 		return {
 			componentName,
 			currentVersion: 'unknown',
-			targetVersion: options.ref || config.ref || 'latest',
+			targetVersion: options.ref,
 			files: [],
 			hasConflicts: false,
 			skipped: true,
@@ -175,10 +177,10 @@ async function updateComponent(
 
 	const installed = getInstalledComponent(componentName, config);
 	const currentVersion = installed?.version || 'not installed';
-	const targetVersion = options.ref || config.ref || 'latest';
+	const targetVersion = options.ref;
 
 	const fetchOptions: FetchOptions = {
-		ref: options.ref || config.ref,
+		ref: options.ref,
 	};
 
 	// Fetch remote files
@@ -418,6 +420,8 @@ export const updateAction = async (
 		process.exit(1);
 	}
 
+	const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
+
 	// Determine which components to update
 	let componentNames: string[];
 
@@ -455,7 +459,7 @@ export const updateAction = async (
 		process.exit(0);
 	}
 
-	const targetRef = options.ref || config.ref || 'latest';
+	const targetRef = resolved.ref;
 	const dryRunLabel = options.dryRun ? chalk.cyan(' [DRY RUN]') : '';
 
 	logger.info(
@@ -488,7 +492,7 @@ export const updateAction = async (
 		spinner.text = `Updating ${name}...`;
 
 		const result = await updateComponent(name, config, cwd, {
-			ref: options.ref,
+			ref: targetRef,
 			force: options.force,
 			dryRun: options.dryRun,
 		});
@@ -505,6 +509,10 @@ export const updateAction = async (
 
 	// Save updated config
 	if (!options.dryRun) {
+		config = {
+			...config,
+			ref: targetRef,
+		};
 		await writeConfig(config, cwd);
 	}
 

@@ -13,6 +13,7 @@ import type {
 	GalleryLayout,
 	GallerySortOption,
 	PatternFactoryResult,
+	GalleryPatternMethods,
 } from './types.js';
 import {
 	createPatternId,
@@ -88,7 +89,11 @@ export interface GalleryPatternState {
 export function createGalleryPattern(
 	config: GalleryPatternConfig,
 	handlers: Partial<GalleryPatternHandlers> = {}
-): PatternFactoryResult<GalleryPatternConfig, GalleryPatternHandlers> {
+): PatternFactoryResult<
+	GalleryPatternConfig,
+	GalleryPatternHandlers,
+	GalleryPatternState & GalleryPatternMethods
+> {
 	const id = createPatternId('gallery');
 
 	// Initialize state

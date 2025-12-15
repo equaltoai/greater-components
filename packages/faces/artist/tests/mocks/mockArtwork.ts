@@ -10,7 +10,7 @@ import type { ArtworkData } from '../../src/components/Artwork/context.js';
 /**
  * Creates a mock artwork with default values
  */
-export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = {}): any {
+export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = {}): ArtworkData {
 	return {
 		id,
 		slug: `artwork-${id}`, // Combined type requirement
@@ -39,7 +39,7 @@ export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = 
 		artistId: `artist-${id}`,
 		artistName: `Artist ${id}`,
 		artistAvatar: `https://example.com/avatars/artist${id}.jpg`,
-		
+
 		metadata: {
 			medium: 'Digital',
 			materials: ['Procreate', 'iPad Pro'],
@@ -57,18 +57,18 @@ export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = 
 		viewCount: 100,
 		likeCount: 25,
 		commentCount: 10,
-		
+
 		aiUsage: {
 			hasAI: false,
 		},
 		altText: `Artwork titled ${overrides.title || `Artwork ${id}`}`,
 		createdAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),
-		
+
 		isPublished: true, // Type requirement
 		isFeatured: false,
 		tags: ['digital', 'illustration'],
-		
+
 		...overrides,
 	} as unknown as ArtworkData; // Force cast to satisfy the specific import in this file, though consumers might cast it differently
 }
@@ -94,9 +94,26 @@ export function createMockArtworkWithAI(
 /**
  * Creates a list of mock artworks
  */
-export function createMockArtworkList(count: number, startId = 1): any[] {
-	return Array.from({ length: count }, (_, i) => createMockArtwork(`artwork-${startId + i}`));
-}
+export const createMockArtworkList = (
+	count: number,
+	startId = 1,
+	overrides: Partial<ArtworkData> = {}
+): ArtworkData[] => {
+	// Handle case where 2nd arg is overrides (legacy support if needed, or strictly enforce new signature?)
+	// Given the test error passed 11 as 2nd arg, it expects startId.
+	// If existing calls pass overrides as 2nd arg, they will break unless we check type.
+	let actualStartId = startId;
+	let actualOverrides = overrides;
+
+	if (typeof startId === 'object') {
+		actualOverrides = startId;
+		actualStartId = 1;
+	}
+
+	return Array.from({ length: count }, (_, i) =>
+		createMockArtwork(`artwork-${actualStartId + i}`, actualOverrides)
+	);
+};
 
 /**
  * Creates a mock artwork with specific aspect ratio

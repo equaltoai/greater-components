@@ -8,7 +8,7 @@ import {
 	parseMetadata,
 	serializeLicense,
 	toActivityPubCollection,
-	ActivityPubNote
+	ActivityPubNote,
 } from '../../src/utils/federation';
 
 // Mock types locally to avoid dependency issues during test setup if types are complex
@@ -26,7 +26,7 @@ const mockArtwork = {
 		username: 'alice',
 		displayName: 'Alice',
 		id: 'alice-id',
-		avatar: ''
+		avatar: '',
 	},
 	mediaAttachments: [
 		{
@@ -37,9 +37,9 @@ const mockArtwork = {
 			description: 'Alt text',
 			blurhash: 'LEHV6n9F',
 			meta: {
-				original: { width: 800, height: 600 }
-			}
-		}
+				original: { width: 800, height: 600 },
+			},
+		},
 	],
 	metadata: {
 		medium: 'Oil on Canvas',
@@ -47,8 +47,8 @@ const mockArtwork = {
 		dimensions: '10x10',
 		style: ['Impressionism'],
 		license: 'CC-BY',
-		noAI: true
-	}
+		noAI: true,
+	},
 };
 
 describe('federation Utils', () => {
@@ -56,14 +56,14 @@ describe('federation Utils', () => {
 		it('converts artwork to Note', () => {
 			// @ts-ignore - partial mock
 			const note = toActivityPubNote(mockArtwork, 'https://instance.com');
-			
+
 			expect(note.type).toBe('Note');
 			expect(note.id).toBe(mockArtwork.uri);
 			expect(note.attributedTo).toBe('https://instance.com/users/alice');
 			expect(note.content).toContain('Test Artwork');
 			expect(note.attachment).toHaveLength(1);
-			expect(note.attachment[0].type).toBe('Image');
-			
+			expect(note.attachment?.[0]?.type).toBe('Image');
+
 			// Custom fields
 			expect(note['artist:metadata']?.medium).toBe('Oil on Canvas');
 			expect(note['artist:license']).toBe('CC-BY');
@@ -86,20 +86,20 @@ describe('federation Utils', () => {
 						mediaType: 'image/jpeg',
 						url: 'img.jpg',
 						width: 100,
-						height: 100
-					}
+						height: 100,
+					},
 				],
 				to: [],
 				'artist:metadata': {
 					medium: 'Digital',
-					year: 2024
+					year: 2024,
 				},
 				'artist:license': 'CC0',
-				'artist:noAI': false
+				'artist:noAI': false,
 			};
 
 			const artwork = fromActivityPubNote(note);
-			
+
 			expect(artwork?.title).toBe('Title');
 			expect(artwork?.description).toBe('Title Description');
 			expect(artwork?.mediaAttachments).toHaveLength(1);
@@ -117,14 +117,14 @@ describe('federation Utils', () => {
 				content: 'Just content',
 				published: mockDate,
 				attachment: [],
-				to: []
+				to: [],
 			};
 
 			const artwork = fromActivityPubNote(note);
 			expect(artwork?.metadata).toBeDefined();
 			expect(artwork?.metadata?.medium).toBeNull(); // Default
 		});
-		
+
 		it('returns null on error', () => {
 			// @ts-ignore - invalid input
 			const result = fromActivityPubNote(null);
@@ -143,7 +143,7 @@ describe('federation Utils', () => {
 			expect(parsed).toEqual({
 				instanceUrl: 'https://inst.com',
 				username: 'bob',
-				artworkId: '789'
+				artworkId: '789',
 			});
 		});
 
@@ -155,7 +155,7 @@ describe('federation Utils', () => {
 
 	describe('Metadata Serialization', () => {
 		it('serializes partial metadata', () => {
-			// @ts-ignore
+			// @ts-ignore - Partial input
 			const result = serializeMetadata({ medium: 'Paint' });
 			expect(result.medium).toBe('Paint');
 			expect(result.year).toBeUndefined();
@@ -166,23 +166,23 @@ describe('federation Utils', () => {
 			expect(result.medium).toBe('Paint');
 			expect(result.materials).toEqual([]);
 		});
-		
+
 		it('parses undefined extension', () => {
 			const result = parseMetadata(undefined);
 			expect(result.medium).toBeNull();
 		});
 	});
-	
+
 	describe('serializeLicense', () => {
 		it('normalizes known licenses', () => {
 			expect(serializeLicense('cc-by')).toBe('CC-BY-4.0');
 			expect(serializeLicense('All Rights Reserved')).toBe('All Rights Reserved');
 		});
-		
+
 		it('returns original if unknown', () => {
 			expect(serializeLicense('Unknown License')).toBe('Unknown License');
 		});
-		
+
 		it('returns undefined for null', () => {
 			expect(serializeLicense(null)).toBeUndefined();
 		});

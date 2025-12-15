@@ -15,6 +15,7 @@ import {
 	writeConfig,
 	addInstalledComponent,
 	getInstalledComponentNames,
+	FALLBACK_REF,
 } from '../utils/config.js';
 import { componentRegistry, type ComponentMetadata } from '../registry/index.js';
 import { getFaceManifest, getAllFaceNames } from '../registry/faces.js';
@@ -48,6 +49,7 @@ import {
 	injectFaceCss,
 	displayFaceInstallSummary,
 } from '../utils/face-installer.js';
+import { resolveRef } from '../utils/registry-index.js';
 
 /**
  * Build interactive selection choices
@@ -161,6 +163,8 @@ export const addAction = async (
 		logger.error(chalk.red('✖ Failed to read configuration'));
 		process.exit(1);
 	}
+
+	const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
 
 	// Get items to install
 	let selectedItems: string[] = items;
@@ -331,7 +335,7 @@ export const addAction = async (
 	const fetchSpinner = ora('Fetching components...').start();
 
 	const fetchOptions: FetchOptions = {
-		ref: options.ref || config.ref,
+		ref: resolved.ref,
 		verbose: false,
 		skipVerification: options.skipVerify,
 		verifySignature: options.verifySignature,
@@ -448,7 +452,7 @@ export const addAction = async (
 			updatedConfig = addInstalledComponent(
 				updatedConfig,
 				dep.name,
-				'version' in dep.metadata ? dep.metadata.version : '1.0.0'
+				resolved.ref
 			);
 		}
 
@@ -463,6 +467,11 @@ export const addAction = async (
 				},
 			};
 		}
+
+		updatedConfig = {
+			...updatedConfig,
+			ref: resolved.ref,
+		};
 
 		await writeConfig(updatedConfig, cwd);
 		config = updatedConfig;

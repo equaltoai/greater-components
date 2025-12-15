@@ -1,6 +1,6 @@
 <script lang="ts">
 	import NotificationsFeedReactive from '../../src/components/NotificationsFeedReactive.svelte';
-	import type { Notification, NotificationGroup } from '../../src/types';
+	import type { Notification } from '../../src/types';
 	import type { NotificationIntegrationConfig } from '../../src/lib/integration';
 
 	interface Props {
@@ -11,7 +11,7 @@
 		useCustomRealtime?: boolean;
 		useCustomLoading?: boolean;
 		useCustomEmpty?: boolean;
-        integration?: NotificationIntegrationConfig;
+		integration?: NotificationIntegrationConfig;
 	}
 
 	let {
@@ -22,16 +22,11 @@
 		useCustomRealtime = false,
 		useCustomLoading = false,
 		useCustomEmpty = false,
-        integration,
+		integration,
 	}: Props = $props();
 </script>
 
-<NotificationsFeedReactive
-	{notifications}
-	{loading}
-	{emptyStateMessage}
-    {integration}
->
+<NotificationsFeedReactive {notifications} {loading} {emptyStateMessage} {integration}>
 	{#snippet notificationRenderer({ notification })}
 		{#if useCustomRenderer}
 			<div class="custom-item">{notification.id}</div>

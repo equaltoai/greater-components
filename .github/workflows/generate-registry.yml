@@ -47,11 +47,27 @@ jobs:
       - name: Validate registry index
         run: node scripts/validate-registry-index.js --strict
 
-      - name: Upload registry index artifact
+      - name: Update latest.json
+        if: startsWith(github.ref, 'refs/tags/greater-v')
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#greater-v}
+          cat > registry/latest.json << EOF
+          {
+            "ref": "$TAG",
+            "version": "$VERSION",
+            "updatedAt": "$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")"
+          }
+          EOF
+          echo "Updated latest.json to point to $TAG"
+
+      - name: Upload registry artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: registry-index
-          path: registry/index.json
+          name: registry
+          path: |
+            registry/index.json
+            registry/latest.json
           retention-days: 30
 
       - name: Get release info
@@ -66,16 +82,19 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/') && github.event.inputs.dry_run != 'true'
         uses: softprops/action-gh-release@v2
         with:
-          files: registry/index.json
+          files: |
+            registry/index.json
+            registry/latest.json
           tag_name: ${{ steps.release.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit registry index
+      - name: Commit registry files
         if: startsWith(github.ref, 'refs/tags/') && github.event.inputs.dry_run != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add registry/index.json
-          git commit -m "chore: update registry index for ${{ steps.release.outputs.tag }}" || echo "No changes to commit"
+          git add registry/index.json registry/latest.json
+          git commit -m "chore: update registry for ${{ steps.release.outputs.tag }}" || echo "No changes to commit"
           git push origin HEAD:main || echo "Could not push to main"
+

@@ -6,7 +6,7 @@
 	import { componentArtworks } from '$lib/data/artist';
 
 	const store = createDiscoveryStore({
-		initialItems: componentArtworks
+		initialItems: componentArtworks,
 	});
 
 	const discoveryExample = `
@@ -36,12 +36,12 @@
 					<DiscoveryEngine.SearchBar />
 					<DiscoveryEngine.Filters />
 				</div>
-				
+
 				<div class="discovery-grid">
 					<div class="results-area">
 						<DiscoveryEngine.Results />
 					</div>
-					<aside class="discovery-sidebar">
+					<div class="discovery-sidebar">
 						<div class="widget">
 							<h3>Suggestions</h3>
 							<DiscoveryEngine.Suggestions />
@@ -54,11 +54,11 @@
 							<h3>Mood Map</h3>
 							<DiscoveryEngine.MoodMap />
 						</div>
-					</aside>
+					</div>
 				</div>
 			</DiscoveryEngine.Root>
 		</div>
-		
+
 		<CodeExample code={discoveryExample} language="svelte" />
 	</section>
 </DemoPage>
@@ -70,26 +70,26 @@
 		border: 1px solid var(--color-border);
 		border-radius: var(--radius-lg);
 	}
-	
+
 	.discovery-header {
 		margin-bottom: var(--space-6);
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-4);
 	}
-	
+
 	.discovery-grid {
 		display: grid;
 		grid-template-columns: 1fr 300px;
 		gap: var(--space-6);
 	}
-	
+
 	@media (max-width: 900px) {
 		.discovery-grid {
 			grid-template-columns: 1fr;
 		}
 	}
-	
+
 	.widget {
 		margin-bottom: var(--space-6);
 		padding: var(--space-4);
@@ -97,7 +97,7 @@
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-border);
 	}
-	
+
 	.widget h3 {
 		font-size: var(--font-size-md);
 		margin-bottom: var(--space-3);

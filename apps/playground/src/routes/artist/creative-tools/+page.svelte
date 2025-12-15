@@ -2,7 +2,7 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { WorkInProgress } from '@equaltoai/greater-components-artist/components/CreativeTools';
-	
+
 	const wipData = {
 		id: 'wip-1',
 		title: 'Character Design v3',
@@ -12,20 +12,20 @@
 		currentProgress: 60,
 		isComplete: false,
 		updates: [
-			{ 
-				id: 'v1', 
-				content: 'Initial sketch', 
+			{
+				id: 'v1',
+				content: 'Initial sketch',
 				media: [{ type: 'image', url: '/images/artist/artwork1.svg' }],
-				createdAt: new Date(Date.now() - 86400000).toISOString() 
+				createdAt: new Date(Date.now() - 86400000).toISOString(),
 			},
-			{ 
-				id: 'v2', 
-				content: 'Color pass', 
+			{
+				id: 'v2',
+				content: 'Color pass',
 				media: [{ type: 'image', url: '/images/artist/artwork4.svg' }],
-				createdAt: new Date().toISOString() 
-			}
+				createdAt: new Date().toISOString(),
+			},
 		],
-		createdAt: new Date().toISOString()
+		createdAt: new Date().toISOString(),
 	};
 
 	const creativeExample = `
@@ -64,7 +64,7 @@
 				</div>
 			</WorkInProgress.Root>
 		</div>
-		
+
 		<CodeExample code={creativeExample} language="svelte" />
 	</section>
 </DemoPage>
@@ -94,20 +94,20 @@
 		border-radius: var(--radius-lg);
 		margin-bottom: var(--space-6);
 	}
-	
+
 	.wip-layout {
 		display: grid;
 		grid-template-columns: 1fr 300px;
 		gap: var(--space-6);
 		margin-top: var(--space-6);
 	}
-	
+
 	.wip-sidebar {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-6);
 	}
-	
+
 	@media (max-width: 900px) {
 		.wip-layout {
 			grid-template-columns: 1fr;

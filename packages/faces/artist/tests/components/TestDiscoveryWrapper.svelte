@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import {
 		DISCOVERY_CONTEXT_KEY,
 		DEFAULT_DISCOVERY_CONFIG,
@@ -10,7 +10,7 @@
 	import { writable } from 'svelte/store';
 
 	interface Props {
-		initialState?: any;
+		initialState?: Record<string, unknown>;
 		handlers?: DiscoveryHandlers;
 		children: Snippet;
 	}
@@ -28,7 +28,7 @@
 		hasMore: false,
 		total: 0,
 		page: 1,
-		...initialState,
+		...untrack(() => initialState),
 	};
 
 	const { subscribe, set, update } = writable(storeState);
@@ -49,9 +49,11 @@
 
 	// Manual context creation for testing
 	const context: DiscoveryContext = {
-		store: mockStore as any,
+		store: mockStore as unknown as DiscoveryContext['store'],
 		config: DEFAULT_DISCOVERY_CONFIG,
-		handlers,
+		get handlers() {
+			return handlers;
+		},
 		searchMode: 'text',
 		sortBy: 'relevance',
 		filtersExpanded: false,

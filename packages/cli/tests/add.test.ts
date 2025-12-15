@@ -3,7 +3,7 @@
  * Tests for component addition with various scenarios
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	MockFileSystem,
 	SVELTEKIT_PROJECT,
@@ -421,7 +421,9 @@ describe('Add Command', () => {
 		let exitSpy: ReturnType<typeof vi.spyOn>;
 
 		beforeEach(() => {
-			exitSpy = vi.spyOn(process, 'exit').mockImplementation((() => {}) as any);
+			exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code: number) => {
+				throw new Error(`process.exit called with ${code}`);
+			}) as any);
 		});
 
 		afterEach(() => {
@@ -431,7 +433,7 @@ describe('Add Command', () => {
 		it('exits if not initialized', async () => {
 			mockFs.clear(); // Empty directory
 			const { addAction } = await import('../src/commands/add.js');
-			await addAction(['button'], { cwd: '/' });
+			await expect(addAction(['button'], { cwd: '/' })).rejects.toThrow('process.exit called');
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -464,6 +466,9 @@ describe('Add Command', () => {
 			});
 
 			const { addAction } = await import('../src/commands/add.js');
+			const { getComponent } = await import('../src/registry/index.js');
+			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
+
 			// We need to mock parseItems to return something valid
 			// And resolveDependencies to return success
 
@@ -471,9 +476,8 @@ describe('Add Command', () => {
 			// But for this test file, let's assume we can rely on some real logic if we set up mocks correctly.
 			// The current file mocks registry/index.js which is good.
 
-			await addAction([], { cwd: '/' });
-			// Expectations handled by mocks implicitly, but we can check if it didn't exit with error
-			expect(exitSpy).not.toHaveBeenCalledWith(1);
+			await expect(addAction([], { cwd: '/' })).rejects.toThrow('process.exit called with 0');
+			// expect(exitSpy).not.toHaveBeenCalledWith(1);
 		});
 
 		it('exits if no items selected in prompt', async () => {
@@ -486,8 +490,8 @@ describe('Add Command', () => {
 			});
 
 			const { addAction } = await import('../src/commands/add.js');
-			await addAction([], { cwd: '/' });
-			expect(exitSpy).toHaveBeenCalledWith(0);
+			await expect(addAction([], { cwd: '/' })).rejects.toThrow('process.exit called with 0');
+			// expect(exitSpy).not.toHaveBeenCalledWith(1); // Implied by exit(0)
 		});
 
 		it('validates items and exits on error', async () => {
@@ -528,7 +532,7 @@ describe('Add Command', () => {
 			const { getComponent } = await import('../src/registry/index.js');
 			(getComponent as any).mockReturnValue(null);
 
-			await addAction(['nonexistent'], { cwd: '/' });
+			await expect(addAction(['nonexistent'], { cwd: '/' })).rejects.toThrow('process.exit called');
 			expect(exitSpy).toHaveBeenCalledWith(1);
 		});
 
@@ -540,7 +544,9 @@ describe('Add Command', () => {
 			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
 
 			const { addAction } = await import('../src/commands/add.js');
-			await addAction(['button'], { cwd: '/', dryRun: true });
+			await expect(addAction(['button'], { cwd: '/', dryRun: true })).rejects.toThrow(
+				'process.exit called'
+			);
 
 			expect(exitSpy).toHaveBeenCalledWith(0);
 			// Verify no files written (mockFs check)
@@ -568,7 +574,7 @@ describe('Add Command', () => {
 			});
 
 			const { addAction } = await import('../src/commands/add.js');
-			await addAction(['button'], { cwd: '/' });
+			await expect(addAction(['button'], { cwd: '/' })).rejects.toThrow('process.exit called');
 
 			expect(exitSpy).toHaveBeenCalledWith(0); // cancelled
 		});

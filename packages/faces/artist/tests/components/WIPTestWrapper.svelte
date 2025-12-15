@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import {
 		WIP_CONTEXT_KEY,
 		DEFAULT_WIP_CONFIG,
-		type WIPThreadData,
 		type ComparisonState,
 	} from '../../src/components/CreativeTools/WorkInProgress/context.js';
+	import type { WIPThreadData } from '../../src/types/creative-tools.js';
 	import type { Snippet } from 'svelte';
 	import type { WIPHandlers } from '../../src/types/creative-tools.js';
 
@@ -27,21 +27,31 @@
 		isActive: false,
 		mode: 'side-by-side',
 		versionA: 0,
-		versionB: thread.updates.length - 1,
+
+		versionB: untrack(() => thread.updates.length - 1),
 		sliderPosition: 50,
 		overlayOpacity: 0.5,
-		...initialState.comparison,
+
+		...untrack(() => initialState.comparison),
 	});
 
 	// Manual context creation for testing
 	setContext(WIP_CONTEXT_KEY, {
-		thread,
+		get thread() {
+			return thread;
+		},
 		config: DEFAULT_WIP_CONFIG,
-		handlers,
-		currentVersionIndex: initialState.currentVersionIndex ?? thread.updates.length - 1,
+		get handlers() {
+			return handlers;
+		},
+
+		currentVersionIndex:
+			untrack(() => initialState.currentVersionIndex) ?? untrack(() => thread.updates.length - 1),
 		comparison,
 		isFollowing: false,
-		isOwner,
+		get isOwner() {
+			return isOwner;
+		},
 		selectedUpdate: null,
 	});
 </script>

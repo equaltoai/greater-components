@@ -1,16 +1,20 @@
 <script lang="ts">
-  import { createArtistProfileContext, type ArtistData } from '../../../src/components/ArtistProfile/context.ts';
-  import type { Component as SvelteComponent } from 'svelte';
+	import { untrack } from 'svelte';
+	import {
+		createArtistProfileContext,
+		type ArtistData,
+	} from '../../../src/components/ArtistProfile/context.js';
+	import type { Component as SvelteComponent } from 'svelte';
 
-  interface Props {
-    artist: ArtistData;
-    Component: SvelteComponent<any>;
-    props?: Record<string, any>;
-  }
+	interface Props {
+		artist: ArtistData;
+		Component: SvelteComponent<Record<string, unknown>>;
+		props?: Record<string, unknown>;
+	}
 
-  let { artist, Component, props = {} }: Props = $props();
+	let { artist, Component, props = {} }: Props = $props();
 
-  createArtistProfileContext(artist);
+	createArtistProfileContext(untrack(() => artist));
 </script>
 
 <Component {...props} />

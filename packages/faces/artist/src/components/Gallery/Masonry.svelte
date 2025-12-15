@@ -209,7 +209,7 @@ Supports virtual scrolling for large galleries.
 					{#if itemRenderer}
 						{@render itemRenderer(position.item, index)}
 					{:else}
-						<ArtworkCard artwork={position.item} variant="masonry" />
+						<ArtworkCard artwork={position.item} variant="masonry" tagName="div" />
 					{/if}
 				</button>
 			</div>

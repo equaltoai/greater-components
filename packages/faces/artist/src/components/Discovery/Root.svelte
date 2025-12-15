@@ -170,7 +170,7 @@ Implements accessibility with semantic heading structure and landmark regions
 		position: absolute;
 		top: -40px;
 		left: 0;
-		background: var(--gr-color-primary-500);
+		background: var(--gr-color-primary-700);
 		color: white;
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
 		z-index: 100;

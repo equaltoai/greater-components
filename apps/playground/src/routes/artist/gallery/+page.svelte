@@ -1,7 +1,11 @@
 <script lang="ts">
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
-	import { GalleryGrid, GalleryRow, GalleryMasonry } from '@equaltoai/greater-components-artist/components/Gallery';
+	import {
+		GalleryGrid,
+		GalleryRow,
+		GalleryMasonry,
+	} from '@equaltoai/greater-components-artist/components/Gallery';
 	import { componentArtworks } from '$lib/data/artist';
 	import { base } from '$app/paths';
 
