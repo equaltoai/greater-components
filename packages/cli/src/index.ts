@@ -13,6 +13,7 @@ import { diffCommand } from './commands/diff.js';
 import { updateCommand } from './commands/update.js';
 import { doctorCommand } from './commands/doctor.js';
 import { auditCommand } from './commands/audit.js';
+import { cacheCommand } from './commands/cache.js';
 
 const program = new Command()
 	.name('greater')
@@ -27,6 +28,7 @@ program.addCommand(diffCommand);
 program.addCommand(updateCommand);
 program.addCommand(doctorCommand);
 program.addCommand(auditCommand);
+program.addCommand(cacheCommand);
 
 // Error handling
 program.exitOverride();

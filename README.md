@@ -4,8 +4,6 @@
 
 **Modern UI components for building accessible Fediverse applications**
 
-[![JSR](https://jsr.io/badges/@equaltoai/greater-components/primitives)](https://jsr.io/@equaltoai/greater-components/primitives)
-[![npm version](https://img.shields.io/npm/v/@equaltoai/greater-components/primitives.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/primitives)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![Svelte 5](https://img.shields.io/badge/Svelte-5-orange.svg)](https://svelte.dev/)
@@ -36,45 +34,26 @@ Greater Components is a comprehensive, production-ready UI component library des
 
 ### Installation
 
-#### Option 1: CLI (Recommended for Customization)
-
-The Greater CLI copies components as source code to your project, giving you full control:
+The Greater CLI copies components as source code to your project (shadcn-style), giving you full control:
 
 ```bash
-# Install CLI globally
-npm install -g @equaltoai/greater-components-cli
-
 # Initialize in your project
 cd my-sveltekit-app
-greater init
+npx @equaltoai/greater-components-cli init
 
 # Add components
-greater add button modal menu
+npx @equaltoai/greater-components-cli add button modal menu
 
 # Add a complete face (component bundle)
-greater add faces/social
+npx @equaltoai/greater-components-cli add faces/social
+
+# Upgrade to a specific version
+npx @equaltoai/greater-components-cli upgrade --to greater-v4.2.0
 ```
 
-**Benefits:** Full source ownership, easy customization, no dependency lock-in.
+**Benefits:** Full source ownership, easy customization, deterministic installs via Git tags, no npm publish tokens required.
 
 📖 See [CLI Guide](./docs/cli-guide.md) for complete documentation.
-
-#### Option 2: npm Package (Quick Start)
-
-Install as a traditional npm dependency:
-
-```bash
-# Using npm
-npm install @equaltoai/greater-components
-
-# Using pnpm
-pnpm add @equaltoai/greater-components
-
-# Using JSR
-npx jsr add @equaltoai/greater-components
-```
-
-**Benefits:** Automatic updates, simpler setup, smaller initial footprint.
 
 ### Basic Usage
 
@@ -197,23 +176,28 @@ npx jsr add @equaltoai/greater-components
 
 ## 📦 Package Overview
 
+All packages are installed as source code via the CLI. No npm registry dependency required.
+
 ### Core Packages
 
-| Package                                                               | Description                                              | Version                                                                                                                                                     |
-| --------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[@equaltoai/greater-components/headless](./packages/headless)**     | 🆕 Headless UI primitives - behavior without styling     | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/headless.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/headless)     |
-| **[@equaltoai/greater-components/primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/primitives.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/primitives) |
-| **[@equaltoai/greater-components/tokens](./packages/tokens)**         | Design system tokens and theming                         | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/tokens.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/tokens)         |
-| **[@equaltoai/greater-components/icons](./packages/icons)**           | 300+ SVG icons including Fediverse-specific ones         | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/icons.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/icons)           |
+| Package | Description |
+| ------- | ----------- |
+| **[headless](./packages/headless)** | 🆕 Headless UI primitives - behavior without styling |
+| **[primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) |
+| **[tokens](./packages/tokens)** | Design system tokens and theming |
+| **[icons](./packages/icons)** | 300+ SVG icons including Fediverse-specific ones |
 
 ### Specialized Packages
 
-| Package                                                             | Description                                          | Version                                                                                                                                                   |
-| ------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[@equaltoai/greater-components/fediverse](./packages/fediverse)** | Social media components (Timeline, StatusCard, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/fediverse.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/fediverse) |
-| **[@equaltoai/greater-components/utils](./packages/utils)**         | Utility functions for web applications               | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/utils.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/utils)         |
-| **[@equaltoai/greater-components/adapters](./packages/adapters)**   | Protocol adapters for Fediverse servers              | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/adapters.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/adapters)   |
-| **[@equaltoai/greater-components/testing](./packages/testing)**     | Testing utilities and accessibility helpers          | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/testing.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/testing)     |
+| Package | Description |
+| ------- | ----------- |
+| **[faces/social](./packages/faces/social)** | Social media components (Timeline, Profile, etc.) |
+| **[faces/artist](./packages/faces/artist)** | Artist portfolio and gallery components |
+| **[faces/blog](./packages/faces/blog)** | Blog and content publishing components |
+| **[faces/community](./packages/faces/community)** | Community and forum components |
+| **[utils](./packages/utils)** | Utility functions for web applications |
+| **[adapters](./packages/adapters)** | Protocol adapters for Fediverse servers |
+| **[testing](./packages/testing)** | Testing utilities and accessibility helpers |
 
 ## 🌟 Key Features
 
@@ -343,9 +327,10 @@ test('button handles clicks', () => {
 
 ## 🔐 Security
 
-Security is a top priority. All packages are:
+Security is a top priority:
 
-- **Signed with npm provenance** for supply chain security
+- **Git tag based distribution** - Releases are pinned to signed Git tags for supply chain security
+- **Checksum verification** - All installed files are verified against checksums in `registry/index.json`
 - **Regularly audited** for vulnerabilities
 - **AGPL-3.0 licensed** for transparency
 

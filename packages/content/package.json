@@ -35,9 +35,6 @@
     "src",
     "dist"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "svelte-package --output dist",
     "dev": "svelte-package --output dist --watch",

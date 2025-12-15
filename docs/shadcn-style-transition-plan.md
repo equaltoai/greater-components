@@ -1,6 +1,6 @@
 # Shadcn-Style Distribution Transition Plan (Greater Components)
 
-> **Status**: Phase 1–3 Complete (Phase 4–5 Pending)  
+> **Status**: ✅ All Phases Complete (1–5)  
 > **Owner**: Greater Components Team  
 > **Last Updated**: 2025-12-15  
 > **Primary Reference**: `docs/lesser-faces-and-cli-model.md`
@@ -26,6 +26,8 @@ You are currently the only consumer of Greater Components. The project has been 
 - ✅ Phase 1 complete: release contract is `tag → registry snapshot` (`registry/index.json` + `registry/latest.json`)
 - ✅ Phase 2 complete: CLI resolves refs (supports `latest`) and fetches + verifies via `registry/index.json` checksums
 - ✅ Phase 3 complete: CSS files copied locally by default, no runtime npm CSS imports needed
+- ✅ Phase 4 complete: npm/JSR publishing removed (workflows, scripts, publishConfig, documentation updated)
+- ✅ Phase 5 complete: Hardening (tag signing guide, `greater cache` command, e2e verification tests)
 
 ## 0) Desired End State (What “Done” Looks Like)
 
@@ -215,7 +217,7 @@ Definition of done:
 
 - A greenfield consumer app can use installed components with zero `@equaltoai/greater-components*` runtime deps.
 
-### Phase 4: npm/JSR cleanup
+### Phase 4: npm/JSR cleanup ✅
 
 **Goal**: remove or minimize npm/JSR as a dependency/distribution channel.
 

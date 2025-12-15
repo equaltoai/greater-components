@@ -74,9 +74,6 @@
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "prebuild": "pnpm --filter @equaltoai/greater-components-adapters build",
     "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js && cp src/theme.css dist/greater-components-fediverse.css",

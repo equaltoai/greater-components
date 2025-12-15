@@ -172,9 +172,6 @@
       "optional": true
     }
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@apollo/client": "^4.0.9",
     "@apollo/client-react-streaming": "^0.14.0",

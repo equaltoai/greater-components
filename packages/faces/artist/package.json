@@ -101,9 +101,6 @@
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "vite build && tsc -p tsconfig.build.json --emitDeclarationOnly && cp src/theme.css dist/greater-components-artist.css",
     "clean": "rm -rf dist",

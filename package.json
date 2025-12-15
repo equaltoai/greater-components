@@ -29,7 +29,6 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte --fix",
     "preinstall": "npx only-allow pnpm",
     "prepare": "husky",
-    "release": "changeset publish",
     "test": "pnpm -r --filter \"!@equaltoai/greater-components-testing\" test",
     "test:coverage": "pnpm -r --filter \"!@equaltoai/greater-components-testing\" test:coverage",
     "test:coverage:report": "COVERAGE_LINES=75 COVERAGE_FUNCTIONS=75 COVERAGE_STATEMENTS=75 COVERAGE_BRANCHES=60 node scripts/aggregate-coverage.js",
@@ -42,9 +41,6 @@
     "playwright:install:with-deps": "pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps",
     "typecheck": "NODE_OPTIONS='--max-old-space-size=8192' pnpm run sveltekit:sync && NODE_OPTIONS='--max-old-space-size=8192' tsc --noEmit",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
-    "publish:jsr": "node scripts/publish-jsr.js",
-    "publish:jsr:dry": "node scripts/publish-jsr.js --dry-run",
-    "publish:jsr:single": "node scripts/publish-jsr.js --package",
     "analyze:bundles": "node scripts/analyze-bundles.js",
     "release:tag": "node scripts/release-tag.js",
     "release:tag:dry": "node scripts/release-tag.js --dry-run"

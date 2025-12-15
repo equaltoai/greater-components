@@ -58,9 +58,6 @@
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "vite build && tsc -b --force --emitDeclarationOnly && cp src/theme.css dist/greater-components-blog.css",
     "clean": "rm -rf dist",
