@@ -44,6 +44,21 @@
       "svelte": "./src/components/Discovery/index.ts",
       "import": "./dist/components/Discovery/index.js"
     },
+    "./components/MediaViewer": {
+      "types": "./dist/components/MediaViewer/index.d.ts",
+      "svelte": "./src/components/MediaViewer/index.ts",
+      "import": "./dist/components/MediaViewer/index.js"
+    },
+    "./components/ArtworkCard": {
+      "types": "./dist/components/ArtworkCard.svelte.d.ts",
+      "svelte": "./src/components/ArtworkCard.svelte",
+      "import": "./dist/components/ArtworkCard.svelte"
+    },
+    "./components/ArtistTimeline": {
+      "types": "./dist/components/ArtistTimeline.svelte.d.ts",
+      "svelte": "./src/components/ArtistTimeline.svelte",
+      "import": "./dist/components/ArtistTimeline.svelte"
+    },
     "./components/Exhibition": {
       "types": "./dist/components/Exhibition/index.d.ts",
       "svelte": "./src/components/Exhibition/index.ts",

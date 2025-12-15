@@ -7,6 +7,7 @@
 	import '@equaltoai/greater-components-tokens/theme.css';
 	import '@equaltoai/greater-components-primitives/theme.css';
 	import '@equaltoai/greater-components-social/theme.css';
+	import '@equaltoai/greater-components-artist/theme.css';
 	import '../app.css';
 	import {
 		ThemeProvider,
@@ -29,6 +30,7 @@
 		UserIcon,
 		SettingsIcon,
 		SearchIcon,
+		FeatherIcon,
 	} from '@equaltoai/greater-components-icons';
 	import type { IconComponent } from '@equaltoai/greater-components-icons';
 
@@ -46,6 +48,7 @@
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },
 		{ href: '/timeline', label: 'Timeline Demo', icon: ActivityIcon },
 		{ href: '/profile', label: 'Profile App', icon: UserIcon },
+		{ href: '/artist', label: 'Artist Face', icon: FeatherIcon },
 		{ href: '/settings', label: 'Settings App', icon: SettingsIcon },
 		{ href: '/search', label: 'Search App', icon: SearchIcon },
 		{ href: '/notifications', label: 'Notifications Demo', icon: BellIcon },

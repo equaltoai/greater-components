@@ -1,31 +1,15 @@
 <script lang="ts">
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
-	import { GalleryGrid, GalleryRow, GalleryMasonry } from '@equaltoai/greater-components-artist';
-	import type { ArtworkData } from '@equaltoai/greater-components-artist/types';
+	import { GalleryGrid, GalleryRow, GalleryMasonry } from '@equaltoai/greater-components-artist/components/Gallery';
+	import { componentArtworks } from '$lib/data/artist';
+	import { base } from '$app/paths';
 
-	// Generate sample artworks with varying aspect ratios
-	const sampleArtworks: ArtworkData[] = Array.from({ length: 12 }, (_, i) => ({
-		id: `artwork-${i + 1}`,
+	// Generate sample artworks by cycling through the 5 real ones
+	const sampleArtworks = Array.from({ length: 12 }, (_, i) => ({
+		...componentArtworks[i % componentArtworks.length],
+		id: `gallery-artwork-${i + 1}`,
 		title: `Artwork ${i + 1}`,
-		imageUrl: `https://picsum.photos/seed/gallery${i}/${300 + (i % 3) * 100}/${400 + (i % 4) * 50}`,
-		thumbnailUrl: `https://picsum.photos/seed/gallery${i}/150/150`,
-		artist: {
-			id: 'artist-1',
-			name: 'Demo Artist',
-			username: 'demoartist',
-			avatar: 'https://picsum.photos/seed/avatar/100/100',
-		},
-		metadata: {
-			medium: 'Digital Art',
-			year: 2024,
-		},
-		stats: {
-			views: Math.floor(Math.random() * 1000),
-			likes: Math.floor(Math.random() * 100),
-			collections: Math.floor(Math.random() * 20),
-			comments: Math.floor(Math.random() * 10),
-		},
 	}));
 
 	let gridColumns = $state<number | 'auto'>('auto');
@@ -44,7 +28,7 @@
 <GalleryRow 
   items={featuredArtworks}
   title="Featured This Week"
-  showAllLink="/gallery/featured"
+  showAllLink="${base}/artist/gallery"
   cardSize="md"
 />`;
 
@@ -109,7 +93,7 @@
 			<GalleryRow
 				items={sampleArtworks.slice(0, 6)}
 				title="Featured This Week"
-				showAllLink="/artist/gallery"
+				showAllLink={`${base}/artist/gallery`}
 				cardSize="md"
 			/>
 		</div>

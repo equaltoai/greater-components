@@ -56,7 +56,7 @@ Features:
 			<svelte:element this={`h${level}`} class="profile-name__display">
 				{artist.displayName}
 				{#if artist.verified}
-					<span class="profile-name__verified" title="Verified Artist" aria-label="Verified">
+					<span class="profile-name__verified" role="img" title="Verified Artist" aria-label="Verified">
 						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
 							<path
 								d="M10 0L12.5 2.5L16 2L16.5 5.5L19.5 7L18 10L19.5 13L16.5 14.5L16 18L12.5 17.5L10 20L7.5 17.5L4 18L3.5 14.5L0.5 13L2 10L0.5 7L3.5 5.5L4 2L7.5 2.5L10 0Z"
@@ -78,7 +78,7 @@ Features:
 		<svelte:element this={`h${level}`} class="profile-name__display">
 			{artist.displayName}
 			{#if artist.verified}
-				<span class="profile-name__verified" title="Verified Artist" aria-label="Verified">
+				<span class="profile-name__verified" role="img" title="Verified Artist" aria-label="Verified">
 					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
 						<path
 							d="M10 0L12.5 2.5L16 2L16.5 5.5L19.5 7L18 10L19.5 13L16.5 14.5L16 18L12.5 17.5L10 20L7.5 17.5L4 18L3.5 14.5L0.5 13L2 10L0.5 7L3.5 5.5L4 2L7.5 2.5L10 0Z"

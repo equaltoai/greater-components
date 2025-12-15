@@ -213,7 +213,6 @@ export const initAction = async (options: {
 			'Not a valid project. Please run this command in a project root with package.json'
 		);
 		process.exit(1);
-		return;
 	}
 
 	// Check if already initialized
@@ -221,7 +220,6 @@ export const initAction = async (options: {
 		spinner.warn('Greater Components is already initialized in this project');
 		logger.note(chalk.dim('\n  To reinitialize, delete components.json and run again.\n'));
 		process.exit(0);
-		return;
 	}
 
 	// Detect project details
@@ -243,7 +241,6 @@ export const initAction = async (options: {
 
 		logger.newline();
 		process.exit(1);
-		return;
 	}
 
 	// Display Svelte version
@@ -261,7 +258,6 @@ export const initAction = async (options: {
 		logger.error(chalk.red(`\n✖ Invalid face: ${selectedFace}`));
 		logger.note(chalk.dim('  Available faces: social, blog, community, artist\n'));
 		process.exit(1);
-		return;
 	}
 
 	// Get configuration
@@ -324,7 +320,6 @@ export const initAction = async (options: {
 		if (!response.style) {
 			logger.error(chalk.red('\n✖ Setup cancelled'));
 			process.exit(0);
-			return;
 		}
 
 		// Use pre-selected face or prompt response
@@ -370,7 +365,6 @@ export const initAction = async (options: {
 		if (!confirmResponse.confirm) {
 			logger.warn(chalk.yellow('\n✖ Setup cancelled'));
 			process.exit(0);
-			return;
 		}
 	}
 
@@ -384,7 +378,6 @@ export const initAction = async (options: {
 		configSpinner.fail('Failed to create configuration');
 		logger.error(chalk.red(error instanceof Error ? error.message : String(error)));
 		process.exit(1);
-		return;
 	}
 
 	// CSS injection
@@ -426,7 +419,6 @@ export const initAction = async (options: {
 				if (cssResponse.entryPoint === undefined) {
 					logger.warn(chalk.yellow('\n✖ Setup cancelled'));
 					process.exit(0);
-					return;
 				}
 
 				targetEntry = cssResponse.entryPoint;

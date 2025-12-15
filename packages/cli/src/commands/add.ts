@@ -153,7 +153,6 @@ export const addAction = async (
 		logger.error(chalk.red('✖ Greater Components is not initialized'));
 		logger.note(chalk.dim('  Run ') + chalk.cyan('greater init') + chalk.dim(' first\n'));
 		process.exit(1);
-		return;
 	}
 
 	// Read config
@@ -161,7 +160,6 @@ export const addAction = async (
 	if (!config) {
 		logger.error(chalk.red('✖ Failed to read configuration'));
 		process.exit(1);
-		return;
 	}
 
 	// Get items to install
@@ -181,7 +179,6 @@ export const addAction = async (
 		if (!response.items || response.items.length === 0) {
 			logger.warn(chalk.yellow('\n✖ No items selected'));
 			process.exit(0);
-			return;
 		}
 
 		selectedItems = response.items;
@@ -200,7 +197,6 @@ export const addAction = async (
 			chalk.dim('\n  Run ') + chalk.cyan('greater list') + chalk.dim(' to see available items\n')
 		);
 		process.exit(1);
-		return;
 	}
 
 	// Check for face installations
@@ -227,7 +223,6 @@ export const addAction = async (
 		if (!faceResolution) {
 			logger.error(chalk.red(`\n✖ Face "${faceName}" not found`));
 			process.exit(1);
-			return;
 		}
 
 		resolution = faceResolution;
@@ -259,14 +254,12 @@ export const addAction = async (
 	if (!resolution.success) {
 		displayResolutionErrors(resolution);
 		process.exit(1);
-		return;
 	}
 
 	// Check if anything to install
 	if (resolution.resolved.length === 0) {
 		logger.info(chalk.yellow('\n✓ All requested items are already installed\n'));
 		process.exit(0);
-		return;
 	}
 
 	// Generate and display preview
@@ -276,7 +269,6 @@ export const addAction = async (
 	if (options.dryRun) {
 		displayDryRunPreview(preview);
 		process.exit(0);
-		return;
 	}
 
 	displayPreview(preview);
@@ -293,7 +285,6 @@ export const addAction = async (
 		if (!response.confirm) {
 			logger.warn(chalk.yellow('\n✖ Installation cancelled'));
 			process.exit(0);
-			return;
 		}
 	}
 
@@ -329,7 +320,6 @@ export const addAction = async (
 				logger.warn(chalk.yellow('\n✖ Installation cancelled'));
 				logger.note(chalk.dim('  Use --force to overwrite existing files\n'));
 				process.exit(0);
-				return;
 			}
 		}
 	}
@@ -362,7 +352,6 @@ export const addAction = async (
 		fetchSpinner.fail('Failed to fetch components');
 		console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 		process.exit(1);
-		return;
 	}
 
 	// CSS-only mode for faces
@@ -382,12 +371,10 @@ export const addAction = async (
 			config = await updateConfigWithFace(config, faceName, cwd);
 			logger.success(chalk.green('\n✓ Face CSS configured successfully!\n'));
 			process.exit(0);
-			return;
 		} catch (error) {
 			cssSpinner.fail('Failed to inject CSS');
 			console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 			process.exit(1);
-			return;
 		}
 	}
 
@@ -445,7 +432,6 @@ export const addAction = async (
 		writeSpinner.fail('Failed to write files');
 		console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 		process.exit(1);
-		return;
 	}
 
 	// Update installed components tracking in config with checksums
@@ -544,7 +530,6 @@ export const addAction = async (
 			installSpinner.fail('Failed to install dependencies');
 			console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 			process.exit(1);
-			return;
 		}
 	}
 

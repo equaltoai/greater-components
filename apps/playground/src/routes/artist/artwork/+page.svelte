@@ -1,52 +1,14 @@
 <script lang="ts">
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
-	import { Artwork, ArtworkCard, MediaViewer } from '@equaltoai/greater-components-artist';
-	import type { ArtworkData } from '@equaltoai/greater-components-artist/types';
+	import { Artwork } from '@equaltoai/greater-components-artist/components/Artwork';
+	import { MediaViewer } from '@equaltoai/greater-components-artist/components/MediaViewer';
+	import ArtworkCard from '@equaltoai/greater-components-artist/components/ArtworkCard';
+	import { componentArtworks } from '$lib/data/artist';
+	import { base } from '$app/paths';
 
-	const sampleArtwork: ArtworkData = {
-		id: '1',
-		title: 'Sunset Over Mountains',
-		imageUrl: 'https://picsum.photos/seed/artwork1/800/600',
-		thumbnailUrl: 'https://picsum.photos/seed/artwork1/200/150',
-		artist: {
-			id: 'artist-1',
-			name: 'Jane Artist',
-			username: 'janeartist',
-			avatar: 'https://picsum.photos/seed/avatar1/100/100',
-		},
-		metadata: {
-			medium: 'Oil on canvas',
-			dimensions: '24x36 inches',
-			year: 2024,
-			materials: ['Oil paint', 'Canvas'],
-		},
-		stats: {
-			views: 1250,
-			likes: 89,
-			collections: 12,
-			comments: 7,
-		},
-		aiUsage: {
-			usedAI: false,
-		},
-	};
-
-	const galleryArtworks: ArtworkData[] = [
-		sampleArtwork,
-		{
-			...sampleArtwork,
-			id: '2',
-			title: 'Forest Morning',
-			imageUrl: 'https://picsum.photos/seed/artwork2/600/800',
-		},
-		{
-			...sampleArtwork,
-			id: '3',
-			title: 'Ocean Waves',
-			imageUrl: 'https://picsum.photos/seed/artwork3/800/800',
-		},
-	];
+	const sampleArtwork = componentArtworks[0];
+	const galleryArtworks = componentArtworks.slice(0, 3);
 
 	let viewerOpen = $state(false);
 	let currentIndex = $state(0);
@@ -97,7 +59,7 @@
 				<Artwork.Root artwork={sampleArtwork}>
 					<Artwork.Image />
 					<Artwork.Title />
-					<Artwork.Attribution />
+					<Artwork.Attribution profileBaseUrl="/greater-components/artist" />
 					<Artwork.Metadata />
 					<Artwork.Stats />
 					<Artwork.Actions />
@@ -150,16 +112,20 @@
 	</section>
 
 	{#if viewerOpen}
-		<MediaViewer
+		<MediaViewer.Root
 			artworks={galleryArtworks}
-			{currentIndex}
-			background="black"
-			showMetadata={true}
-			showSocial={false}
-			enableZoom={true}
-			enablePan={true}
-			onClose={() => (viewerOpen = false)}
-			onNavigate={(index) => (currentIndex = index)}
+			currentIndex={0}
+			config={{
+				background: 'black',
+				showMetadata: true,
+				showSocial: false,
+				enableZoom: true,
+				enablePan: true
+			}}
+			handlers={{
+				onClose: () => (viewerOpen = false),
+				onNavigate: (index) => (currentIndex = index)
+			}}
 		/>
 	{/if}
 </DemoPage>

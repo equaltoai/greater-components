@@ -182,6 +182,12 @@ importers:
 
   apps/playground:
     dependencies:
+      '@equaltoai/greater-components-adapters':
+        specifier: workspace:*
+        version: link:../../packages/adapters
+      '@equaltoai/greater-components-artist':
+        specifier: workspace:*
+        version: link:../../packages/faces/artist
       '@equaltoai/greater-components-auth':
         specifier: workspace:*
         version: link:../../packages/shared/auth

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DemoPage from '$lib/components/DemoPage.svelte';
+	import { base } from '$app/paths';
 
 	const sections = [
 		{
@@ -7,10 +8,10 @@
 			items: [
 				{
 					name: 'Artwork',
-					href: '/artist/artwork',
+					href: `${base}/artist/artwork`,
 					description: 'Artwork display compound component',
 				},
-				{ name: 'Gallery', href: '/artist/gallery', description: 'Gallery layouts and grids' },
+				{ name: 'Gallery', href: `${base}/artist/gallery`, description: 'Gallery layouts and grids' },
 			],
 		},
 		{
@@ -18,10 +19,10 @@
 			items: [
 				{
 					name: 'Artist Profile',
-					href: '/artist/profile',
+					href: `${base}/artist/profile`,
 					description: 'Artist portfolio and profile',
 				},
-				{ name: 'Timeline', href: '/artist/timeline', description: 'Career timeline and activity' },
+				{ name: 'Timeline', href: `${base}/artist/timeline`, description: 'Career timeline and activity' },
 			],
 		},
 		{
@@ -29,7 +30,7 @@
 			items: [
 				{
 					name: 'Discovery Engine',
-					href: '/artist/discovery',
+					href: `${base}/artist/discovery`,
 					description: 'AI-powered search and filters',
 				},
 			],
@@ -39,7 +40,7 @@
 			items: [
 				{
 					name: 'Creative Tools',
-					href: '/artist/creative-tools',
+					href: `${base}/artist/creative-tools`,
 					description: 'WIP, critique, commissions',
 				},
 			],
@@ -49,7 +50,7 @@
 			items: [
 				{
 					name: 'Community',
-					href: '/artist/community',
+					href: `${base}/artist/community`,
 					description: 'Critique circles and collaboration',
 				},
 			],
@@ -59,12 +60,12 @@
 			items: [
 				{
 					name: 'Transparency',
-					href: '/artist/transparency',
+					href: `${base}/artist/transparency`,
 					description: 'AI disclosure and process docs',
 				},
 				{
 					name: 'Monetization',
-					href: '/artist/monetization',
+					href: `${base}/artist/monetization`,
 					description: 'Tips, purchases, and sales',
 				},
 			],

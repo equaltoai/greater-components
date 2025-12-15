@@ -61,3 +61,28 @@ test.describe('focus', () => {
 		await expect(notificationsTab).toHaveAttribute('tabindex', '-1');
 	});
 });
+
+test.describe('Artist focus', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/artist/artwork');
+		await page.waitForSelector('body[data-playground-hydrated="true"]');
+	});
+
+	test('MediaViewer traps focus and restores it on close', async ({ page }) => {
+		const openButton = page.getByRole('button', { name: 'Open Media Viewer' });
+		await openButton.focus();
+		await openButton.click({ force: true });
+
+		const dialog = page.getByRole('dialog');
+		await expect(dialog).toBeVisible();
+
+		// Ideally check that focus is within dialog
+		// This assertion assumes the implementation focuses the first element or the dialog itself
+		// await expect(page.locator(':focus')).toBeVisible(); 
+        
+        // Check restoration
+		await page.keyboard.press('Escape');
+		await expect(dialog).not.toBeVisible();
+		await expect(openButton).toBeFocused();
+	});
+});

@@ -323,6 +323,7 @@ export function rollbackOptimistic<T extends { id: string }>(
  * LocalStorage persistence helper
  */
 export function persistToLocalStorage<T>(key: string, data: T): void {
+	if (typeof localStorage === 'undefined') return;
 	try {
 		localStorage.setItem(key, JSON.stringify(data));
 	} catch (error) {
@@ -334,6 +335,7 @@ export function persistToLocalStorage<T>(key: string, data: T): void {
  * LocalStorage retrieval helper
  */
 export function loadFromLocalStorage<T>(key: string, defaultValue: T): T {
+	if (typeof localStorage === 'undefined') return defaultValue;
 	try {
 		const stored = localStorage.getItem(key);
 		if (!stored) return defaultValue;

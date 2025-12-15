@@ -409,7 +409,6 @@ export const updateAction = async (
 		logger.error(chalk.red('✖ Greater Components is not initialized'));
 		logger.note(chalk.dim('  Run ') + chalk.cyan('greater init') + chalk.dim(' first\n'));
 		process.exit(1);
-		return;
 	}
 
 	// Read config
@@ -417,7 +416,6 @@ export const updateAction = async (
 	if (!config) {
 		logger.error(chalk.red('✖ Failed to read configuration'));
 		process.exit(1);
-		return;
 	}
 
 	// Determine which components to update
@@ -450,13 +448,11 @@ export const updateAction = async (
 				chalk.dim('\n')
 		);
 		process.exit(1);
-		return;
 	}
 
 	if (componentNames.length === 0) {
 		logger.info(chalk.yellow('\n✖ No components to update'));
 		process.exit(0);
-		return;
 	}
 
 	const targetRef = options.ref || config.ref || 'latest';
@@ -480,7 +476,6 @@ export const updateAction = async (
 		if (!response.confirm) {
 			logger.warn(chalk.yellow('\n✖ Update cancelled'));
 			process.exit(0);
-			return;
 		}
 	}
 
@@ -520,7 +515,6 @@ export const updateAction = async (
 	const hasErrors = results.some((r) => r.error || r.files.some((f) => f.status === 'error'));
 	if (hasErrors) {
 		process.exit(1);
-		return;
 	}
 };
 

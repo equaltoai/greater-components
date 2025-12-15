@@ -117,8 +117,8 @@ Features:
 		<span
 			class="avatar__status"
 			style:--status-color={statusColors[artist.status]}
-			aria-label={statusLabels[artist.status]}
 			title={statusLabels[artist.status]}
+			aria-hidden="true"
 		></span>
 	{/if}
 </div>
