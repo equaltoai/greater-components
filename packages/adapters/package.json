@@ -36,7 +36,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.0.9",
+    "@apollo/client": "^4.0.10",
     "@apollo/client-react-streaming": "^0.14.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "graphql": "^16.12.0",
@@ -44,12 +44,12 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "@vitest/ui": "^4.0.12",
-    "jsdom": "^27.2.0",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
+    "jsdom": "^27.3.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15",
     "ws": "^8.18.3"
   },
   "peerDependencies": {
