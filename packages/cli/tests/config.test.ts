@@ -39,7 +39,7 @@ describe('Config Schema Validation', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 			};
 
@@ -368,7 +368,7 @@ describe('Config Schema Validation', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 			};
 
@@ -390,7 +390,7 @@ describe('Config Schema Validation', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 			};
 
@@ -411,7 +411,7 @@ describe('Config Schema Validation', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 			};
 
@@ -433,7 +433,7 @@ describe('Config Schema Validation', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 			};
 
@@ -462,7 +462,7 @@ describe('Config Schema Validation', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 			};
 
@@ -508,7 +508,7 @@ describe('Config Schema Validation', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 			};
 

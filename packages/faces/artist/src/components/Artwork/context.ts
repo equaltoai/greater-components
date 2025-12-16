@@ -8,74 +8,13 @@
  */
 
 import { getContext, setContext } from 'svelte';
+import type { ArtworkData } from '../../types/artwork.js';
+
+export type { ArtworkData } from '../../types/artwork.js';
 
 // ============================================================================
 // Types
 // ============================================================================
-
-/**
- * Artwork data structure
- */
-export interface ArtworkData {
-	/** Unique artwork identifier */
-	id: string;
-	/** Artwork title */
-	title: string;
-	/** Artwork description */
-	description?: string;
-	/** Image URLs at different resolutions */
-	images: {
-		/** Thumbnail (< 1KB, for blur-up placeholder) */
-		thumbnail: string;
-		/** Low resolution preview */
-		preview: string;
-		/** Standard resolution */
-		standard: string;
-		/** High resolution for zoom */
-		full: string;
-	};
-	/** Image dimensions */
-	dimensions?: {
-		width: number;
-		height: number;
-	};
-	/** Artist information */
-	artist: {
-		id: string;
-		name: string;
-		username: string;
-		avatar?: string;
-		verified?: boolean;
-	};
-	/** Artwork metadata */
-	metadata: {
-		medium?: string;
-		materials?: string[];
-		year?: number;
-		dimensions?: string;
-		tags?: string[];
-	};
-	/** Engagement statistics */
-	stats: {
-		views: number;
-		likes: number;
-		collections: number;
-		comments: number;
-	};
-	/** AI usage disclosure */
-	aiUsage?: {
-		hasAI: boolean;
-		tools?: string[];
-		percentage?: number;
-		description?: string;
-	};
-	/** Alt text for accessibility */
-	altText: string;
-	/** Creation timestamp */
-	createdAt: string | Date;
-	/** Last update timestamp */
-	updatedAt?: string | Date;
-}
 
 /**
  * Artwork display configuration

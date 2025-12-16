@@ -86,7 +86,7 @@ export function createGalleryStore(config: GalleryStoreConfig = {}): GalleryStor
 	const filterFunctions: Partial<
 		Record<keyof GalleryFilters, (item: ArtworkData, value: unknown) => boolean>
 	> = {
-		artist: (item, value) => item.artistId === value,
+		artist: (item, value) => item.artist.id === value,
 		style: (item, value) => {
 			const styles = value as string[];
 			return styles.length === 0 || styles.some((s) => item.metadata.style?.includes(s));
@@ -97,7 +97,7 @@ export function createGalleryStore(config: GalleryStoreConfig = {}): GalleryStor
 		},
 		hasAI: (item, value) => {
 			if (value === undefined) return true;
-			return item.aiUsage?.aiUsed === value;
+			return item.aiUsage?.hasAI === value;
 		},
 		dateRange: (item, value) => {
 			const range = value as { start: Date; end: Date };
@@ -145,7 +145,7 @@ export function createGalleryStore(config: GalleryStoreConfig = {}): GalleryStor
 				});
 				break;
 			case 'popular':
-				sorted.sort((a, b) => (b.likeCount ?? 0) - (a.likeCount ?? 0));
+				sorted.sort((a, b) => b.stats.likes - a.stats.likes);
 				break;
 			case 'trending':
 				// Trending could be a combination of recency and engagement
@@ -164,9 +164,9 @@ export function createGalleryStore(config: GalleryStoreConfig = {}): GalleryStor
 	 * Calculates trending score for an artwork
 	 */
 	function calculateTrendingScore(artwork: ArtworkData): number {
-		const likes = artwork.likeCount ?? 0;
-		const views = artwork.viewCount ?? 0;
-		const comments = artwork.commentCount ?? 0;
+		const likes = artwork.stats.likes;
+		const views = artwork.stats.views;
+		const comments = artwork.stats.comments;
 
 		const ageInHours = artwork.createdAt
 			? (Date.now() - new Date(artwork.createdAt).getTime()) / (1000 * 60 * 60)

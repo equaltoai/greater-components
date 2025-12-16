@@ -119,7 +119,7 @@ function displayConfigSummary(config: ComponentConfig, face: string | null): voi
 	logger.info(`  ${chalk.dim('Style:')} ${chalk.cyan(config.style)}`);
 	logger.info(`  ${chalk.dim('Components:')} ${chalk.cyan(config.aliases.ui)}`);
 	logger.info(`  ${chalk.dim('Utils:')} ${chalk.cyan(config.aliases.utils)}`);
-	logger.info(`  ${chalk.dim('Hooks:')} ${chalk.cyan(config.aliases.hooks)}`);
+	logger.info(`  ${chalk.dim('Headless Primitives:')} ${chalk.cyan(config.aliases.hooks)}`);
 	logger.info(`  ${chalk.dim('Version Tag:')} ${chalk.cyan(config.ref)}`);
 
 	if (face) {
@@ -308,8 +308,8 @@ export const initAction = async (options: {
 			{
 				type: 'text',
 				name: 'hooksPath',
-				message: 'Where would you like to store hooks/headless components?',
-				initial: projectDetails.type === 'sveltekit' ? '$lib/hooks' : 'src/lib/hooks',
+				message: 'Where would you like to store headless primitives?',
+				initial: projectDetails.type === 'sveltekit' ? '$lib/primitives' : 'src/lib/primitives',
 			},
 			{
 				type: selectedFace ? null : 'select',
@@ -513,5 +513,5 @@ export const initCommand = new Command()
 	.option('--cwd <path>', 'Working directory (default: current directory)')
 	.option('--ref <tag>', 'Pin to a specific version tag (default: latest stable)')
 	.option('--skip-css', 'Skip automatic CSS injection')
-	.option('--face <name>', 'Pre-select a face (social, blog, community)')
+	.option('--face <name>', 'Pre-select a face (social, blog, community, artist)')
 	.action(initAction);

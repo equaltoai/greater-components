@@ -17,7 +17,8 @@
 -->
 <script lang="ts">
 	import { type Snippet } from 'svelte';
-	import { createMenu, createModal } from '@equaltoai/greater-components-headless';
+	import { createMenu } from '@equaltoai/greater-components-headless/menu';
+	import { createModal } from '@equaltoai/greater-components-headless/modal';
 	import type { ActivityPubActor, GenericStatus } from '../generics/index.js';
 
 	export type ModerationType = 'block' | 'mute' | 'report' | 'hide' | 'addNote';

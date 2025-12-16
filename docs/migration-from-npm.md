@@ -59,11 +59,11 @@ Common imports to look for:
 // Primitives
 import { Button, Modal, Card } from '@equaltoai/greater-components/primitives';
 
-// Icons
-import { HomeIcon, SettingsIcon } from '@equaltoai/greater-components/icons';
+	// Icons
+	import { HomeIcon, SettingsIcon } from '@equaltoai/greater-components/icons';
 
-// Social face
-import { Status, Timeline, Profile } from '@equaltoai/greater-components/fediverse';
+	// Social face
+	import { Profile, Status, TimelineCompound } from '@equaltoai/greater-components/faces/social';
 ```
 
 ### Step 4: Add Components via CLI
@@ -71,8 +71,8 @@ import { Status, Timeline, Profile } from '@equaltoai/greater-components/fediver
 Add each component you're using:
 
 ```bash
-# Add primitives
-greater add button modal card tabs menu tooltip
+# Add headless primitives (behavior-only)
+greater add button modal menu tooltip tabs
 
 # Add faces (includes all face components)
 greater add faces/social
@@ -86,16 +86,19 @@ greater add status timeline profile
 **Before (npm):**
 
 ```typescript
-import { Button } from '@equaltoai/greater-components/primitives';
-import { Status } from '@equaltoai/greater-components/fediverse';
+	import { Button } from '@equaltoai/greater-components/primitives';
+	import { Status } from '@equaltoai/greater-components/faces/social';
 ```
 
 **After (CLI):**
 
 ```typescript
-import Button from '$lib/components/ui/Button/Button.svelte';
-import Status from '$lib/components/ui/Status/Status.svelte';
+import StatusRoot from '$lib/components/Status/Root.svelte';
+import StatusHeader from '$lib/components/Status/Header.svelte';
+import StatusContent from '$lib/components/Status/Content.svelte';
 ```
+
+**Note:** The CLI installs **headless primitives** (e.g. `createButton`) under `$lib/primitives/*`. Migrating from the styled Svelte primitives in `@equaltoai/greater-components/primitives` is not 1:1 and may require refactoring component usage to actions/builders.
 
 ### Step 6: Update CSS Imports
 
@@ -120,8 +123,10 @@ Then update imports:
 
 ```svelte
 <script>
-	import '$lib/styles/tokens/theme.css';
-	import '$lib/styles/primitives/style.css';
+	// Default local CSS directory: $lib/styles/greater
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
+	import '$lib/styles/greater/social.css';
 </script>
 ```
 
@@ -139,30 +144,30 @@ pnpm remove @equaltoai/greater-components
 
 ## Import Path Reference
 
-### Primitives
+### Headless Primitives (CLI)
 
-| npm Import                                            | CLI Import                                |
-| ----------------------------------------------------- | ----------------------------------------- |
-| `@equaltoai/greater-components/primitives` → `Button` | `$lib/components/ui/Button/Button.svelte` |
-| `@equaltoai/greater-components/primitives` → `Modal`  | `$lib/components/ui/Modal/Modal.svelte`   |
-| `@equaltoai/greater-components/primitives` → `Card`   | `$lib/components/ui/Card/Card.svelte`     |
-| `@equaltoai/greater-components/primitives` → `Tabs`   | `$lib/components/ui/Tabs/Tabs.svelte`     |
-| `@equaltoai/greater-components/primitives` → `Menu`   | `$lib/components/ui/Menu/Menu.svelte`     |
+| CLI Item   | Installed Path                |
+| ---------- | ----------------------------- |
+| `button`   | `$lib/primitives/button.ts`   |
+| `modal`    | `$lib/primitives/modal.ts`    |
+| `menu`     | `$lib/primitives/menu.ts`     |
+| `tooltip`  | `$lib/primitives/tooltip.ts`  |
+| `tabs`     | `$lib/primitives/tabs.ts`     |
 
-### Fediverse Components
+### Social Face Components
 
 | npm Import                                             | CLI Import                                    |
 | ------------------------------------------------------ | --------------------------------------------- |
-| `@equaltoai/greater-components/fediverse` → `Status`   | `$lib/components/ui/Status/Status.svelte`     |
-| `@equaltoai/greater-components/fediverse` → `Timeline` | `$lib/components/ui/Timeline/Timeline.svelte` |
-| `@equaltoai/greater-components/fediverse` → `Profile`  | `$lib/components/ui/Profile/Profile.svelte`   |
+| `@equaltoai/greater-components/faces/social` → `Status`            | `$lib/components/Status/Root.svelte`          |
+| `@equaltoai/greater-components/faces/social` → `Timeline*`         | `$lib/components/Timeline/Root.svelte`        |
+| `@equaltoai/greater-components/faces/social` → `Profile`           | `$lib/components/Profile/Root.svelte`         |
 
 ### Shared Modules
 
 | npm Import                                     | CLI Import                            |
 | ---------------------------------------------- | ------------------------------------- |
-| `@equaltoai/greater-components/shared/auth`    | `$lib/components/ui/Auth/index.ts`    |
-| `@equaltoai/greater-components/shared/compose` | `$lib/components/ui/Compose/index.ts` |
+| `@equaltoai/greater-components/shared/auth`    | `$lib/components/auth/Root.svelte`    |
+| `@equaltoai/greater-components/shared/compose` | `$lib/components/compose/Root.svelte` |
 
 ---
 
@@ -199,11 +204,11 @@ No changes required for standard SvelteKit projects.
 import { Button, Modal } from '@equaltoai/greater-components/primitives';
 ```
 
-**CLI:** Default exports from file paths
+**CLI:** Mix of headless primitives (`.ts`) and Svelte components (`.svelte`)
 
 ```typescript
-import Button from '$lib/components/ui/Button/Button.svelte';
-import Modal from '$lib/components/ui/Modal/Modal.svelte';
+import { createButton } from '$lib/primitives/button';
+import StatusRoot from '$lib/components/Status/Root.svelte';
 ```
 
 ### 2. Component Updates
@@ -227,14 +232,10 @@ greater update --all
 
 **npm:** Types from `@equaltoai/greater-components/types`
 
-**CLI:** Types co-located with components
+**CLI:** Types are co-located with installed source files
 
 ```typescript
-// Before
-import type { ButtonProps } from '@equaltoai/greater-components/primitives';
-
-// After
-import type { ButtonProps } from '$lib/components/ui/Button/types';
+import type { StatusConfig } from '$lib/components/Status/context.js';
 ```
 
 ---
@@ -244,7 +245,7 @@ import type { ButtonProps } from '$lib/components/ui/Button/types';
 You can use both npm and CLI simultaneously:
 
 1. **Keep npm for CSS**: Automatic style updates
-2. **Use CLI for components**: Full customization control
+2. **Use CLI for local source**: Incrementally adopt source-first (e.g. adapters, headless primitives)
 
 ```svelte
 <script>
@@ -252,8 +253,8 @@ You can use both npm and CLI simultaneously:
 	import '@equaltoai/greater-components/tokens/theme.css';
 	import '@equaltoai/greater-components/primitives/style.css';
 
-	// Components from CLI (customizable)
-	import Button from '$lib/components/ui/Button/Button.svelte';
+	// Headless primitives from CLI (behavior-only)
+	import { createButton } from '$lib/primitives/button';
 </script>
 ```
 
@@ -267,11 +268,10 @@ For large projects, use this script to update imports:
 #!/bin/bash
 # migrate-imports.sh
 
-# Map of old imports to new imports
-declare -A IMPORT_MAP=(
-  ["@equaltoai/greater-components/primitives"]="$lib/components/ui"
-  ["@equaltoai/greater-components/fediverse"]="$lib/components/ui"
-)
+	# Map of old imports to new imports
+	declare -A IMPORT_MAP=(
+	  ["@equaltoai/greater-components/faces/social"]="$lib/components"
+	)
 
 # Find and replace imports
 for old_import in "${!IMPORT_MAP[@]}"; do
@@ -306,7 +306,7 @@ If migration fails, restore npm packages:
 pnpm add @equaltoai/greater-components
 
 # Remove CLI components
-rm -rf src/lib/components/ui
+rm -rf src/lib/components src/lib/patterns src/lib/primitives
 
 # Remove CLI config
 rm components.json

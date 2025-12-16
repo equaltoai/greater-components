@@ -29,7 +29,11 @@ Greater Components is organized into these subpaths:
 | `/shared/search`        | Search components                                    |
 | `/shared/notifications` | Notification feed                                    |
 | `/shared/chat`          | AI Chat interface components                         |
+| `/chat`                 | Alias for `/shared/chat`                             |
 | `/faces/social`         | Twitter/Mastodon-style UI (Timeline, Status)         |
+| `/faces/blog`           | Blog/publishing UI (Article, Author, Editor)         |
+| `/faces/community`      | Forum/community UI (Community, Post, Thread)         |
+| `/faces/artist`         | Artist/portfolio UI (Artwork, Gallery, Discovery)    |
 | `/adapters`             | Protocol adapters (Lesser GraphQL)                   |
 | `/cli`                  | Command-line tools (cli package)                     |
 
@@ -62,12 +66,15 @@ For syntax highlighting and markdown rendering:
 import { CodeBlock, MarkdownRenderer } from '@equaltoai/greater-components/content';
 ```
 
-**Note:** This package has heavy dependencies (shiki, marked). Only import if you need these components.
+**Note:** This package has heavier dependencies (shiki + markdown parsing pipeline). Only import if you need these components.
 
-### 4. Social Face (Twitter-style)
+### 4. Faces (Curated UI Bundles)
 
 ```typescript
-import { Timeline, Status, ActionBar } from '@equaltoai/greater-components/faces/social';
+import { Status } from '@equaltoai/greater-components/faces/social';
+import { Article } from '@equaltoai/greater-components/faces/blog';
+import { Community } from '@equaltoai/greater-components/faces/community';
+import { Artwork } from '@equaltoai/greater-components/faces/artist';
 ```
 
 ### 5. Shared Components
@@ -119,6 +126,16 @@ import '@equaltoai/greater-components/primitives/style.css';
 import '@equaltoai/greater-components/faces/social/style.css';
 ```
 
+**For apps using blog/community/artist face components:**
+
+```typescript
+import '@equaltoai/greater-components/tokens/theme.css';
+import '@equaltoai/greater-components/primitives/style.css';
+import '@equaltoai/greater-components/faces/blog/style.css';
+// or: faces/community/style.css
+// or: faces/artist/style.css
+```
+
 **Import Order (Critical!):**
 
 ```typescript
@@ -147,7 +164,7 @@ See the [CSS Architecture Guide](./css-architecture.md) for full documentation.
 import { Timeline } from '@equaltoai/greater-components/fediverse';
 
 // ✅ CORRECT - Use faces/social
-import { Timeline } from '@equaltoai/greater-components/faces/social';
+import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 ```
 
 ### ❌ CodeBlock/MarkdownRenderer from Primitives

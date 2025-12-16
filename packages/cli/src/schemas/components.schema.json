@@ -88,8 +88,8 @@
         },
         "hooks": {
           "type": "string",
-          "default": "$lib/hooks",
-          "description": "Hooks/composables directory"
+          "default": "$lib/primitives",
+          "description": "Headless primitives directory"
         }
       },
       "required": ["components", "utils"]

@@ -18,43 +18,36 @@
 /**
  * Community compound component for community display and management
  */
-export * from './components/Community/index.js';
 export { Community } from './components/Community/index.js';
 
 /**
  * Post compound component for forum posts with voting
  */
-export * from './components/Post/index.js';
 export { Post } from './components/Post/index.js';
 
 /**
  * Thread compound component for nested comment threading
  */
-export * from './components/Thread/index.js';
 export { Thread } from './components/Thread/index.js';
 
 /**
  * Voting compound component for upvote/downvote functionality
  */
-export * from './components/Voting/index.js';
 export { Voting } from './components/Voting/index.js';
 
 /**
  * Flair compound component for post and user flairs
  */
-export * from './components/Flair/index.js';
 export { Flair } from './components/Flair/index.js';
 
 /**
  * Moderation compound component for mod tools
  */
-export * from './components/Moderation/index.js';
 export { Moderation } from './components/Moderation/index.js';
 
 /**
  * Wiki compound component for community wikis
  */
-export * from './components/Wiki/index.js';
 export { Wiki } from './components/Wiki/index.js';
 
 // ============================================================================
@@ -127,6 +120,7 @@ export type {
 	WikiPageData,
 	WikiRevision,
 	WikiHandlers,
+	WikiContext,
 	// Supporting types
 	AuthorData,
 	ModeratorData,

@@ -11,6 +11,6 @@
       "@equaltoai/greater-components-notifications": ["../../shared/notifications/src/index.ts"]
     }
   },
-  "include": ["src/**/*", "src/**/*.svelte", "tests/**/*"],
-  "exclude": ["dist", "node_modules", "stories"]
+  "include": ["src/**/*", "src/**/*.svelte"],
+  "exclude": ["dist", "node_modules", "stories", "tests"]
 }

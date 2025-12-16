@@ -31,7 +31,7 @@
 		<CodeExample
 			code={`<script>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import { ThemeProvider } from '@equaltoai/greater-components-primitives';
+  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 </script>
 
 <ThemeProvider theme="dark">
@@ -56,7 +56,7 @@
 		</p>
 
 		<CodeExample
-			code={`import { palettePresets } from '@equaltoai/greater-components-tokens';
+code={`import { palettePresets } from '@equaltoai/greater-components/tokens';
 
 // Available presets
 const presets = {
@@ -81,7 +81,7 @@ const presets = {
 		<p>Create your own color palette by defining primary, secondary, and semantic colors.</p>
 
 		<CodeExample
-			code={`import { createPalette } from '@equaltoai/greater-components-tokens';
+code={`import { createPalette } from '@equaltoai/greater-components/tokens';
 
 // Generate a complete palette from a single brand color
 const customPalette = createPalette({
@@ -180,7 +180,7 @@ const customPalette = createPalette({
 		<CodeExample
 			code={`<script>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import { ThemeWorkbench } from '@equaltoai/greater-components-primitives';
+  import { ThemeWorkbench } from '@equaltoai/greater-components/primitives';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleSave(theme) {
@@ -217,7 +217,7 @@ const customPalette = createPalette({
   generateColorHarmony,
   getContrastRatio,
   meetsWCAG 
-} from '@equaltoai/greater-components-utils';
+} from '@equaltoai/greater-components/utils';
 
 // Generate complete theme from brand color
 const theme = generateTheme('#6366f1');

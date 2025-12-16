@@ -4,11 +4,12 @@
  */
 
 import chalk from 'chalk';
+import path from 'node:path';
 import type { DependencyResolutionResult, ResolvedDependency } from './dependency-resolver.js';
 import { groupByType, estimateDiskSpace } from './dependency-resolver.js';
 import type { ComponentConfig } from './config.js';
-import { resolveAlias } from './config.js';
 import { logger } from './logger.js';
+import { getInstallTarget } from './install-path.js';
 
 /**
  * Target path information for a component
@@ -43,37 +44,6 @@ export interface InstallationPreview {
 }
 
 /**
- * Get target directory for a component type
- */
-function getTargetDir(
-	type: string,
-	config: ComponentConfig,
-	cwd: string,
-	customPath?: string
-): string {
-	if (customPath) {
-		return customPath;
-	}
-
-	switch (type) {
-		case 'primitive':
-			return resolveAlias(config.aliases.ui, config, cwd);
-		case 'compound':
-			return resolveAlias(config.aliases.components, config, cwd);
-		case 'pattern':
-			return resolveAlias(config.aliases.components, config, cwd) + '/patterns';
-		case 'shared':
-			return resolveAlias(config.aliases.components, config, cwd) + '/shared';
-		case 'face':
-			return resolveAlias(config.aliases.components, config, cwd);
-		case 'adapter':
-			return resolveAlias(config.aliases.lib, config, cwd) + '/adapters';
-		default:
-			return resolveAlias(config.aliases.components, config, cwd);
-	}
-}
-
-/**
  * Generate installation preview from resolution result
  */
 export function generatePreview(
@@ -84,13 +54,15 @@ export function generatePreview(
 ): InstallationPreview {
 	const byType = groupByType(result);
 	const diskSpace = estimateDiskSpace(result);
+	const overrideDir = customPath ? path.resolve(cwd, customPath) : null;
 
 	const targetPaths: TargetPathInfo[] = result.resolved.map((dep) => {
-		const targetDir = getTargetDir(dep.type, config, cwd, customPath);
-		const files =
-			'files' in dep.metadata && dep.metadata.files
-				? dep.metadata.files.map((f: { path: string }) => f.path)
-				: [];
+		const rawFiles =
+			'files' in dep.metadata && dep.metadata.files ? (dep.metadata.files as Array<{ path: string }>) : [];
+
+		const firstTarget = rawFiles[0] ? getInstallTarget(rawFiles[0].path, config, cwd) : null;
+		const targetDir = overrideDir ?? firstTarget?.targetDir ?? cwd;
+		const files = rawFiles.map((file) => getInstallTarget(file.path, config, cwd).relativePath);
 
 		return {
 			name: dep.name,

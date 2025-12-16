@@ -2,14 +2,47 @@
 
 ## Purpose
 
-This document lists EVERY component available in Greater Components.
-If a component is not listed here, it DOES NOT EXIST.
+This document lists the primary **public** components and entrypoints intended for consumption (npm exports + face bundles). Internal/private components may exist in source but are not considered part of the public API.
+
+## Faces Packages
+
+### Social Face (`@equaltoai/greater-components/faces/social`)
+
+- **Core Components:** `Timeline`, `Status`, `Profile`, `Lists`, `Filters`, `Hashtags`
+- **Patterns:** `ThreadView`, `ContentWarningHandler`, `VisibilitySelector`, `ModerationTools`, `FederationIndicator`, `InstancePicker`, `CustomEmojiPicker`, `PollComposer`, `MediaComposer`, `BookmarkManager`
+
+### Blog Face (`@equaltoai/greater-components/faces/blog`)
+
+- `Article`
+- `Author`
+- `Publication`
+- `Navigation`
+- `Editor`
+
+### Community Face (`@equaltoai/greater-components/faces/community`)
+
+- `Community`
+- `Post`
+- `Thread`
+- `Voting`
+- `Flair`
+- `Moderation`
+- `Wiki`
+
+### Artist Face (`@equaltoai/greater-components/faces/artist`)
+
+- **Core Components:** `Artwork`, `ArtworkCard`, `ArtistProfile`, `GalleryGrid`, `GalleryRow`, `GalleryMasonry`, `DiscoveryEngine`, `MediaViewer`
+- **Creative Tools:** `WorkInProgress`, `CritiqueMode`, `ReferenceBoard`, `CommissionWorkflow`
+- **Community:** `CritiqueCircle`, `Collaboration`, `MentorMatch`
+- **Transparency:** `ProcessDocumentation`, `AIOptOutControls`, `EthicalSourcingBadge`
+- **Monetization:** `TipJar`, `DirectPurchase`, `PremiumBadge`, `ProtectionTools`, `InstitutionalTools`
+- **Utilities:** `createArtistAdapter`, `toActivityPubNote`, `generateArtworkUri`, `serializeMetadata`
 
 ## Primitives Package (@equaltoai/greater-components/primitives)
 
 ### Package Scope
 
-This package provides **43 interactive and layout components** for building any type of website.
+This package provides **41 interactive and layout components** for building any type of website.
 
 **What Primitives Provides:**
 
@@ -21,9 +54,9 @@ This package provides **43 interactive and layout components** for building any 
 
 - Theme system (provider, switcher)
 
-- Advanced interactions (code blocks, drag-drop, markdown, streaming text)
+- Advanced interactions (drag-drop, streaming text)
 
-### All 43 Components (Complete List)
+### All 41 Components (Complete List)
 
 **Form Controls (9):**
 
@@ -57,15 +90,13 @@ This package provides **43 interactive and layout components** for building any 
 
 - Tabs - Tab navigation
 
-**Display & Status (14):**
+**Display & Status (13):**
 
 - Alert - Error, warning, success, info banners with actions
 
 - Avatar - User avatar with fallback
 
 - Badge - Status indicators and labels
-
-- CodeBlock - Syntax highlighting ⚠️ _Requires peer dep: `shiki`_
 
 - GradientText - Gradient text effect
 
@@ -76,8 +107,6 @@ This package provides **43 interactive and layout components** for building any 
 - ListItem - List item with icon support
 
 - LoadingState - Loading overlay with message
-
-- MarkdownRenderer - Safe markdown rendering ⚠️ _Requires peer deps: `isomorphic-dompurify`, `marked`_
 
 - Skeleton - Loading placeholder
 
@@ -289,30 +318,6 @@ This package provides **43 interactive and layout components** for building any 
 
 **Reference:** See [api-reference.md#iconbadge](./api-reference.md#iconbadge) for complete API
 
-#### CodeBlock
-
-**Purpose:** Syntax highlighting code block with copy button.
-
-**⚠️ Peer Dependency Required:** This component requires `shiki` to be installed:
-
-```bash
-pnpm add shiki
-```
-
-**When to Use:**
-
-- Documentation code snippets
-- Chat code responses
-
-**Key Props:**
-
-- `code`: string
-- `language`: string
-- `showCopy`: boolean
-- `showLineNumbers`: boolean
-
-**Reference:** See [api-reference.md#codeblock](./api-reference.md#codeblock) for complete API
-
 #### DropZone
 
 **Purpose:** Drag and drop file upload area.
@@ -329,28 +334,6 @@ pnpm add shiki
 - `onDrop`: callback
 
 **Reference:** See [api-reference.md#dropzone](./api-reference.md#dropzone) for complete API
-
-#### MarkdownRenderer
-
-**Purpose:** Renders markdown safely.
-
-**⚠️ Peer Dependencies Required:** This component requires `isomorphic-dompurify` and `marked`:
-
-```bash
-pnpm add isomorphic-dompurify marked
-```
-
-**When to Use:**
-
-- AI responses
-- User content
-
-**Key Props:**
-
-- `content`: string
-- `sanitize`: boolean
-
-**Reference:** See [api-reference.md#markdownrenderer](./api-reference.md#markdownrenderer) for complete API
 
 #### StreamingText
 
@@ -1224,6 +1207,68 @@ Combine HTML + Button component:
 - `<ul><li>` with styling
 - SvelteKit links with `<a>` elements
 
+## Content Package (@equaltoai/greater-components/content)
+
+### Package Scope
+
+This package provides rich content rendering components (syntax highlighting + safe Markdown rendering). It is split out because it includes heavier dependencies (e.g. Shiki and unified/rehype tooling).
+
+### Components (2)
+
+- CodeBlock - Syntax highlighting code block with copy button
+- MarkdownRenderer - Safe markdown rendering
+
+### Detailed Component Reference
+
+#### CodeBlock
+
+**Purpose:** Syntax highlighting code block with copy button.
+
+**When to Use:**
+
+- Documentation code snippets
+- Chat/code responses
+
+**Key Props:**
+
+- `code`: string (required)
+- `language`: string (`'text'` disables highlighting)
+- `showCopy`: boolean
+- `showLineNumbers`: boolean
+- `highlightLines`: number[]
+- `maxHeight`: string | number
+- `wrap`: boolean
+- `filename`: string
+
+**Import:**
+
+```ts
+import { CodeBlock } from '@equaltoai/greater-components/content';
+```
+
+#### MarkdownRenderer
+
+**Purpose:** Renders Markdown safely using a sanitized unified pipeline.
+
+**When to Use:**
+
+- Documentation content
+- User-generated Markdown (with sanitization enabled)
+
+**Key Props:**
+
+- `content`: string (required)
+- `sanitize`: boolean
+- `allowedTags`: string[]
+- `enableLinks`: boolean
+- `openLinksInNewTab`: boolean
+
+**Import:**
+
+```ts
+import { MarkdownRenderer } from '@equaltoai/greater-components/content';
+```
+
 ## Chat Package (@equaltoai/greater-components/chat)
 
 ### Package Scope
@@ -1468,8 +1513,8 @@ Store messages in localStorage, IndexedDB, or your backend.
 | Typography             | Primitives       | `@equaltoai/greater-components/primitives` |
 | **AI chat interface**  | **Chat**         | `@equaltoai/greater-components/chat`       |
 | Icons                  | Icons            | `@equaltoai/greater-components/icons`      |
-| Social media feed      | Fediverse        | `@equaltoai/greater-components/fediverse`  |
-| User profiles          | Fediverse        | `@equaltoai/greater-components/fediverse`  |
+| Social media feed      | Faces (Social)   | `@equaltoai/greater-components/faces/social` |
+| User profiles          | Faces (Social)   | `@equaltoai/greater-components/faces/social` |
 | Complete style control | Headless         | `@equaltoai/greater-components/headless`   |
 | ActivityPub connection | Adapters         | `@equaltoai/greater-components/adapters`   |
 | Utility functions      | Utils            | `@equaltoai/greater-components/utils`      |
@@ -1480,8 +1525,8 @@ Store messages in localStorage, IndexedDB, or your backend.
 → Primitives (Container, Section, Heading, Text, Card, Button)
 → Icons (for decorative icons)
 
-**Building a Fediverse client?**
-→ Fediverse (Timeline, Status, Profile)
+**Building an ActivityPub client?**
+→ Faces (Social) (Timeline, Status, Profile)
 → Primitives (for settings pages, forms)
 → Adapters (to connect to server)
 → Icons (UI icons)
@@ -1495,8 +1540,7 @@ Store messages in localStorage, IndexedDB, or your backend.
 → Icons (work with any styling)
 
 **Need custom data fetching?**
-→ Adapters (extend BaseAdapter)
-→ Fediverse stores as examples
+→ Adapters (GraphQL adapter + stores + mappers)
 
 ## Icons Package (@equaltoai/greater-components/icons)
 
@@ -1740,16 +1784,18 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ```svelte
 <script>
-	import { Timeline, Status } from '@equaltoai/greater-components/faces/social';
+	import { Status, TimelineCompound as Timeline } from '@equaltoai/greater-components/faces/social';
 </script>
 
 <Timeline.Root {items}>
-	{#each items as item}
-		<Timeline.Item {item}>
-			<Status.Root status={item}>
-				<Status.Header />
-				<Status.Content />
-			</Status.Root>
+	{#each items as item, index}
+		<Timeline.Item {item} {index}>
+			{#if item.status}
+				<Status.Root status={item.status}>
+					<Status.Header />
+					<Status.Content />
+				</Status.Root>
+			{/if}
 		</Timeline.Item>
 	{/each}
 
@@ -1827,15 +1873,17 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ### Stores & Helpers
 
-**createTimelineStore** - Standard ActivityPub timeline management
+**TimelineVirtualizedReactive** - Virtualized timeline component with optional GraphQL-backed paging
 
-- **Purpose:** Manages timeline state, pagination, updates
-- **Returns:** Store with items, loading, error states, refresh/loadMore methods
+- **Purpose:** Renders large feeds efficiently (TanStack Virtual) and can self-manage paging via `adapter + view`
 
-**createLesserTimelineStore** - Lesser-enhanced timeline management
+**TransportManager** - Streaming transport for real-time updates
 
-- **Purpose:** Timeline with Lesser-specific features (cost, trust, moderation)
-- **Additional Features:** Trust filtering, cost tracking, AI insights
+- **Purpose:** Centralizes streaming connection management (WebSocket/SSE/polling + fallbacks)
+
+**createTimelineIntegration / createGraphQLTimelineIntegration** - Store-to-component integration helpers
+
+- **Purpose:** Connect timeline components to REST or GraphQL data sources
 
 ### What Faces Package Does NOT Provide
 
@@ -2018,11 +2066,12 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 
 ## Adapters Package (@equaltoai/greater-components/adapters)
 
-### Protocol Adapters (2 Concrete, 1 Abstract)
+### Key Exports
 
-- `LesserGraphQLAdapter` - For Lesser instances (GraphQL + Subscriptions)
-- `MastodonRESTAdapter` - For Mastodon/Pleroma instances (REST API)
-- `BaseAdapter` - Abstract class for building custom adapters
+- `LesserGraphQLAdapter` - Typed GraphQL client for Lesser
+- `createTimelineStore`, `createNotificationStore` - Reactive stores for paging + streaming updates
+- `TransportManager` + transport clients (WebSocket/SSE/polling) and fallback orchestration
+- `mapMastodonStatus`, `mapLesserPost`, etc - Mappers for server payloads → unified model
 
 ## Utils Package (@equaltoai/greater-components/utils)
 
@@ -2052,7 +2101,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 #### Method 2: Check Source Code
 
 1. Primitives: `packages/primitives/src/index.ts`
-2. Fediverse: `packages/fediverse/src/index.ts`
+2. Social face: `packages/faces/social/src/index.ts`
 3. Icons: `packages/icons/src/index.ts`
 4. If component is not exported, it DOES NOT EXIST
 
@@ -2120,12 +2169,13 @@ When a component doesn't exist, here's what to use instead:
 
 ### Total Components Across All Packages
 
-- **Primitives:** 43 components (including settings and theme tools)
+- **Primitives:** 41 components (plus compound subcomponents)
+- **Content:** 2 components (CodeBlock, MarkdownRenderer)
 - **Chat:** 9 components + context utilities
-- **Headless:** 5 primitives
-- **Fediverse:** 50+ components (including all sub-components and compounds)
+- **Headless:** Behavior primitives (`create*` helpers)
+- **Faces (Social):** Social UI components + compounds (Status, Timeline, Profile, etc.)
 - **Icons:** 300+ icons
-- **Adapters:** 3 adapters
+- **Adapters:** Transport + GraphQL adapter + stores + mappers
 - **Utils:** ~15 utility functions
 - **Transitions:** 4 animation utilities (fadeUp, fadeDown, slideIn, scaleIn)
 - **Testing:** 3 test helpers

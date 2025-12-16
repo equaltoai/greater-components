@@ -255,6 +255,23 @@
 	line-height: var(--gr-blog-line-height-body);
 }
 
+.gr-blog-author-card__links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--gr-spacing-scale-2);
+	margin-top: var(--gr-spacing-scale-3);
+}
+
+.gr-blog-author-card__link {
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-primary-600);
+	text-decoration: none;
+}
+
+.gr-blog-author-card__link:hover {
+	text-decoration: underline;
+}
+
 /* ============================================================================
  * Publication Banner
  * ============================================================================ */
@@ -426,6 +443,66 @@
 .gr-blog-editor-toolbar__button--active {
 	background: var(--gr-color-primary-100);
 	color: var(--gr-color-primary-700);
+}
+
+/* ============================================================================
+ * Editor Layout
+ * ============================================================================ */
+
+.gr-blog-editor__body {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--gr-spacing-scale-4);
+	margin-top: var(--gr-spacing-scale-4);
+}
+
+.gr-blog-editor__body textarea {
+	width: 100%;
+	min-height: 240px;
+	padding: var(--gr-spacing-scale-4);
+	border: 1px solid var(--gr-color-neutral-200);
+	border-radius: var(--gr-radii-md);
+	font-family: var(--gr-blog-font-family-body);
+	font-size: var(--gr-typography-fontSize-base);
+	line-height: var(--gr-blog-line-height-body);
+}
+
+.gr-blog-editor__preview {
+	padding: var(--gr-spacing-scale-4);
+	border: 1px solid var(--gr-color-neutral-200);
+	border-radius: var(--gr-radii-md);
+	background: var(--gr-color-neutral-50);
+	max-height: 60vh;
+	overflow: auto;
+}
+
+.gr-blog-editor__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--gr-spacing-scale-3);
+	margin-top: var(--gr-spacing-scale-3);
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-neutral-600);
+}
+
+.gr-blog-editor__meta button {
+	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
+	border: 1px solid var(--gr-color-neutral-200);
+	background: var(--gr-color-neutral-50);
+	border-radius: var(--gr-radii-md);
+	cursor: pointer;
+}
+
+.gr-blog-editor__meta button:hover {
+	background: var(--gr-color-neutral-100);
+}
+
+@media (min-width: 900px) {
+	.gr-blog-editor__body {
+		grid-template-columns: 1fr 1fr;
+		align-items: start;
+	}
 }
 
 /* ============================================================================

@@ -108,7 +108,7 @@
 	description="Fully accessible tabs primitive built on Svelte 5 runes."
 	status="beta"
 	version="0.4.0"
-	importPath="@equaltoai/greater-components-primitives"
+	importPath="@equaltoai/greater-components/primitives"
 	{props}
 	{examplesMeta}
 	{accessibility}

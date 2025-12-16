@@ -7,29 +7,42 @@ describe('Community Behavior', () => {
 	const mockArtwork = {
 		id: 'art1',
 		title: 'Art 1',
-		artistName: 'Artist 1',
-		imageUrl: 'img.jpg',
-		thumbnailUrl: 'thumb.jpg',
+		images: {
+			thumbnail: 'thumb.jpg',
+			preview: 'img.jpg',
+			standard: 'img.jpg',
+			full: 'img.jpg',
+		},
+		artist: {
+			id: 'artist-1',
+			name: 'Artist 1',
+			username: 'artist1',
+		},
+		metadata: {},
+		stats: { views: 0, likes: 0, collections: 0, comments: 0 },
+		altText: 'Art 1',
 		createdAt: new Date().toISOString(),
-		images: { standard: 'img.jpg' },
 	};
 
 	describe('CritiqueCircle', () => {
 		const mockCircle: CritiqueCircleData = {
 			id: 'cc1',
 			name: 'Test Circle',
+			description: 'A test critique circle',
 			members: [],
 			queue: [],
 			activeSession: {
 				id: 'sub1',
 				artwork: mockArtwork,
+				submitterId: 'artist-1',
 				submittedAt: new Date().toISOString(),
-				status: 'critiquing',
 				critiques: [],
 				feedbackRequested: 'Colors',
+				isComplete: false,
 			},
 			history: [],
 			isPublic: true,
+			createdAt: new Date().toISOString(),
 		};
 
 		it('allows submitting feedback when session is active', async () => {

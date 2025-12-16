@@ -43,8 +43,7 @@ Component styles define the visual appearance using token variables:
 
 ```
 primitives/style.css                      # Primitive components (Button, Card, etc.)
-fediverse/greater-components-fediverse.css  # Fediverse components
-style.css                                 # Combined bundle (all components)
+faces/social/style.css                    # Social face components (Timeline, Status, Profile, etc.)
 ```
 
 **Component classes include:**
@@ -79,16 +78,17 @@ For apps using only basic components (Button, Card, Container, Heading, Text, et
 </ThemeProvider>
 ```
 
-### Full Setup (All Components)
+### Full Setup (Primitives + Social Face)
 
-For apps using fediverse components (Timeline, Status, Profile, ActionBar, etc.):
+For apps using social face components (Timeline, Status, Profile, ActionBar, etc.):
 
 ```svelte
 <script lang="ts">
 	// Layer 1: Design tokens
 	import '@equaltoai/greater-components/tokens/theme.css';
-	// Layer 2: All component styles (primitives + fediverse)
-	import '@equaltoai/greater-components/style.css';
+	// Layer 2: Primitives + social face styles
+	import '@equaltoai/greater-components/primitives/style.css';
+	import '@equaltoai/greater-components/faces/social/style.css';
 
 	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 
@@ -169,11 +169,11 @@ styles last
 
 | Symptom                                                             | Cause                                        | Solution                                         |
 | ------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------ |
-| Components render but appear completely unstyled (browser defaults) | Missing component CSS                        | Add `primitives/style.css` or `style.css` import |
+| Components render but appear completely unstyled (browser defaults) | Missing component CSS                        | Add `primitives/style.css` (and face CSS if used) |
 | Styles partially work, colors/spacing wrong                         | Missing token CSS                            | Add `tokens/theme.css` before component CSS      |
 | Console shows `var(--gr-*)` as invalid value                        | Tokens not loaded or loaded after components | Import `tokens/theme.css` FIRST                  |
 | Dark mode not working                                               | Missing dark theme override                  | Add `tokens/themes/dark.css` after base tokens   |
-| Fediverse components unstyled                                       | Using primitives-only import                 | Switch to `style.css` (combined bundle)          |
+| Social face components unstyled                                     | Face CSS not imported                        | Import `faces/social/style.css` after primitives |
 | Button/Card have no styling but render                              | Component CSS missing                        | Verify `primitives/style.css` is imported        |
 
 ### Quick Diagnosis
@@ -207,8 +207,7 @@ document.querySelector('.gr-button');
 | `tokens/themes/light.css`                    | ~140 lines    | Light theme (same as base, for explicit selection) |
 | `tokens/themes/highContrast.css`             | ~140 lines    | High contrast accessibility theme                  |
 | `primitives/style.css`                       | ~3,000 lines  | Primitive component class definitions              |
-| `fediverse/greater-components-fediverse.css` | ~16,000 lines | Fediverse component class definitions              |
-| `style.css`                                  | ~19,000 lines | Combined bundle (primitives + fediverse)           |
+| `faces/social/style.css`                     | ~10,000 lines | Social face component class definitions            |
 
 ### File Aliases
 
@@ -231,5 +230,5 @@ These files are identical (aliases for convenience):
 
 1. **Always import both layers:** tokens AND component styles
 2. **Order matters:** tokens first, then theme variants, then component styles
-3. **Choose the right bundle:** `primitives/style.css` for basic apps, `style.css` for fediverse
+3. **Choose the right styles:** `primitives/style.css` for basic apps, plus face CSS as needed
 4. **Theme variants are optional:** Only import if using dark mode or high contrast

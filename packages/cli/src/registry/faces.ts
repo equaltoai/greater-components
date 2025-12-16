@@ -33,7 +33,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 				'thread-view',
 				'moderation-tools',
 				'visibility-selector',
-				'content-warning',
+				'content-warning-handler',
 				'custom-emoji-picker',
 				'federation-indicator',
 				'instance-picker',
@@ -48,9 +48,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
 		examples: [
-			'examples/social/timeline-page.svelte',
-			'examples/social/profile-page.svelte',
-			'examples/social/compose-modal.svelte',
+			'examples/social-app/README.md',
 		],
 		docs: [
 			'docs/faces/social/getting-started.md',
@@ -78,18 +76,14 @@ export const faceRegistry: Record<string, FaceManifest> = {
 		includes: {
 			primitives: ['button', 'modal', 'menu', 'tooltip', 'tabs'],
 			shared: ['auth', 'compose', 'notifications', 'search'],
-			patterns: ['thread-view', 'content-warning', 'media-composer', 'bookmark-manager'],
-			components: ['article-feed', 'article-view', 'author-profile', 'comments', 'reading-list'],
+			patterns: ['thread-view', 'content-warning-handler', 'media-composer', 'bookmark-manager'],
+			components: ['article', 'author', 'publication', 'navigation', 'editor'],
 		},
 		styles: {
 			main: '@equaltoai/greater-components/faces/blog/style.css',
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
-		examples: [
-			'examples/blog/article-page.svelte',
-			'examples/blog/author-page.svelte',
-			'examples/blog/reading-list.svelte',
-		],
+		examples: ['examples/blog-app/README.md'],
 		docs: ['docs/faces/blog/getting-started.md', 'docs/faces/blog/article-rendering.md'],
 		recommendedShared: ['auth', 'compose', 'search'],
 		lesserVersion: '1.0.0',
@@ -112,25 +106,14 @@ export const faceRegistry: Record<string, FaceManifest> = {
 		includes: {
 			primitives: ['button', 'modal', 'menu', 'tooltip', 'tabs'],
 			shared: ['auth', 'compose', 'notifications', 'search', 'admin'],
-			patterns: ['thread-view', 'moderation-tools', 'content-warning', 'poll-composer'],
-			components: [
-				'group-list',
-				'group-view',
-				'discussion-thread',
-				'member-list',
-				'group-settings',
-				'moderation-queue',
-			],
+			patterns: ['thread-view', 'moderation-tools', 'content-warning-handler', 'poll-composer'],
+			components: ['community', 'post', 'thread', 'voting', 'flair', 'moderation', 'wiki'],
 		},
 		styles: {
 			main: '@equaltoai/greater-components/faces/community/style.css',
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
-		examples: [
-			'examples/community/group-page.svelte',
-			'examples/community/discussion-page.svelte',
-			'examples/community/moderation-dashboard.svelte',
-		],
+		examples: [],
 		docs: [
 			'docs/faces/community/getting-started.md',
 			'docs/faces/community/group-management.md',
@@ -160,7 +143,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 		includes: {
 			primitives: ['button', 'modal', 'menu', 'tooltip', 'tabs'],
 			shared: ['auth', 'compose', 'notifications', 'search'],
-			patterns: ['exhibition-view', 'commission-workflow', 'critique-session', 'wip-thread'],
+			patterns: [],
 			components: [
 				'artwork',
 				'artwork-card',
@@ -202,10 +185,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
 		examples: [
-			'examples/artist/gallery-page.svelte',
-			'examples/artist/portfolio-page.svelte',
-			'examples/artist/exhibition-page.svelte',
-			'examples/artist/commission-flow.svelte',
+			'examples/artist-app/README.md',
 		],
 		docs: [
 			'docs/faces/artist/getting-started.md',

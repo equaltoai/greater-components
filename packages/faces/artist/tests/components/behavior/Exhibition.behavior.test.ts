@@ -1,31 +1,40 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import ExhibitionTest from './ExhibitionTest.svelte';
-import type { ExhibitionData } from '../../src/types/exhibition.js';
+import type { ExhibitionData } from '../../../src/types/curation.js';
 
 describe('Exhibition Behavior', () => {
 	const mockArtwork = {
 		id: 'art1',
 		title: 'Art 1',
-		artistId: 'a1',
-		artistName: 'Artist',
-		imageUrl: 'img.jpg',
-		thumbnailUrl: 'thumb.jpg',
+		images: {
+			thumbnail: 'thumb.jpg',
+			preview: 'img.jpg',
+			standard: 'img.jpg',
+			full: 'img.jpg',
+		},
+		artist: {
+			id: 'a1',
+			name: 'Artist',
+			username: 'artist',
+		},
+		metadata: {},
+		stats: { views: 0, likes: 0, collections: 0, comments: 0 },
+		altText: 'Art 1',
 		createdAt: new Date().toISOString(),
-		images: { standard: 'img.jpg' },
 	};
 
 	const mockExhibition: ExhibitionData = {
 		id: 'ex1',
+		slug: 'expo-1',
 		title: 'Expo 1',
 		description: 'Desc',
-		artistId: 'a1',
-		artistName: 'Artist',
 		coverImage: 'cover.jpg',
+		curator: { id: 'cur-1', name: 'Curator', isVerified: true },
 		startDate: new Date().toISOString(),
-		status: 'published',
+		status: 'current',
 		artworks: [mockArtwork],
-		layout: 'gallery',
+		createdAt: new Date().toISOString(),
 	};
 
 	it('handles artwork click', async () => {

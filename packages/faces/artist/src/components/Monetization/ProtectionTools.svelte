@@ -27,7 +27,7 @@ Features:
 -->
 
 <script lang="ts">
-	import type { ArtworkData } from '../../types/index.js';
+	import type { ArtworkData } from '../Artwork/context.js';
 
 	interface ReportData {
 		type: 'theft' | 'misattribution' | 'unauthorized_use' | 'ai_training' | 'other';
@@ -294,14 +294,14 @@ Features:
 		<div class="gr-monetization-protection-attribution-content">
 			<p class="gr-monetization-protection-attribution-text">
 				© {new Date(artwork.createdAt).getFullYear()}
-				{artwork.artistName}. All rights reserved.
+				{artwork.artist.name}. All rights reserved.
 			</p>
 			<button
 				type="button"
 				class="gr-monetization-protection-copy"
 				onclick={() =>
 					navigator.clipboard.writeText(
-						`© ${new Date(artwork.createdAt).getFullYear()} ${artwork.artistName}. All rights reserved.`
+						`© ${new Date(artwork.createdAt).getFullYear()} ${artwork.artist.name}. All rights reserved.`
 					)}
 			>
 				<svg

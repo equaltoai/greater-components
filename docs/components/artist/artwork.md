@@ -1,263 +1,257 @@
-# Artwork Components
+# Artwork Components (Artist Face)
 
-> Display components for artwork presentation with progressive loading and accessibility
+> Artwork-first UI primitives for portfolio and gallery experiences
 
-## Overview
+## Imports
 
-The Artwork components provide a comprehensive system for displaying visual artwork with proper attribution, metadata, and social interactions. The design philosophy prioritizes the artwork itself, with UI elements receding until interaction.
+```ts
+import { Artwork, ArtworkCard, MediaViewer } from '@equaltoai/greater-components/faces/artist';
+```
 
-## Artwork.Root
+## `ArtworkData` Shape
 
-The main compound component container for artwork display.
+`Artwork.Root` (and components that render artworks/cards) expects a single normalized artwork object with precomputed image URLs and accessible alt text:
 
-### Basic Usage
+```ts
+const artwork = {
+	id: '1',
+	title: 'Sunset Over Mountains',
+	description: 'Oil on canvas study in warm evening light.',
+	images: {
+		thumbnail: '/artwork/sunset-thumb.jpg',
+		preview: '/artwork/sunset-preview.jpg',
+		standard: '/artwork/sunset.jpg',
+		full: '/artwork/sunset-full.jpg',
+	},
+	dimensions: { width: 1200, height: 800 },
+	artist: {
+		id: 'artist-1',
+		name: 'Jane Artist',
+		username: 'janeartist',
+		avatar: '/avatars/jane.jpg',
+		verified: true,
+	},
+	metadata: {
+		medium: 'Oil on canvas',
+		materials: ['Oil paint', 'Canvas'],
+		year: 2024,
+		dimensions: '24×36 in',
+		tags: ['landscape'],
+	},
+	stats: { views: 1250, likes: 89, collections: 12, comments: 7 },
+	aiUsage: { hasAI: false },
+	altText: 'Oil painting of a sun setting behind layered mountain ridges.',
+	createdAt: new Date().toISOString(),
+};
+```
+
+## `Artwork.Root`
+
+`Artwork` is a compound component. `Artwork.Root` provides context to its children; subcomponents read the current artwork/config/handlers from context.
 
 ```svelte
 <script lang="ts">
-	import { Artwork } from '@equaltoai/greater-components-artist';
-	import type { ArtworkData } from '@equaltoai/greater-components-artist/types';
+	import { Artwork } from '@equaltoai/greater-components/faces/artist';
 
-	const artwork: ArtworkData = {
-		id: '1',
-		title: 'Sunset Over Mountains',
-		imageUrl: '/artwork/sunset.jpg',
-		thumbnailUrl: '/artwork/sunset-thumb.jpg',
-		artist: {
-			id: 'artist-1',
-			name: 'Jane Artist',
-			username: 'janeartist',
-			avatar: '/avatars/jane.jpg',
-		},
-		metadata: {
-			medium: 'Oil on canvas',
-			dimensions: '24x36 inches',
-			year: 2024,
-			materials: ['Oil paint', 'Canvas'],
-		},
-		stats: {
-			views: 1250,
-			likes: 89,
-			collections: 12,
-			comments: 7,
-		},
+	const handlers = {
+		onLike: async (artwork) => console.log('like', artwork.id),
+		onArtistClick: (artistId) => console.log('artist', artistId),
 	};
 </script>
 
-<Artwork.Root {artwork}>
-	<Artwork.Image />
-	<Artwork.Title />
-	<Artwork.Attribution />
-	<Artwork.Metadata />
+<Artwork.Root {artwork} config={{ density: 'comfortable', showAIDisclosure: true }} {handlers}>
+	<Artwork.Image aspectRatio="preserve" />
+	<Artwork.Title linkTo={`/artwork/${artwork.id}`} />
+	<Artwork.Attribution profileBaseUrl="/artist" />
+	<Artwork.Metadata collapsible />
 	<Artwork.Stats />
 	<Artwork.Actions />
+	<Artwork.AIDisclosure variant="badge" />
 </Artwork.Root>
 ```
 
 ### Props
 
-| Prop       | Type              | Default  | Description           |
-| ---------- | ----------------- | -------- | --------------------- |
-| `artwork`  | `ArtworkData`     | required | Artwork data object   |
-| `config`   | `ArtworkConfig`   | `{}`     | Display configuration |
-| `handlers` | `ArtworkHandlers` | `{}`     | Event handlers        |
+| Prop       | Type              | Default | Notes |
+| ---------- | ----------------- | ------- | ----- |
+| `artwork`  | `ArtworkData`     | -       | Required |
+| `config`   | `ArtworkConfig`   | `{}`    | Display toggles + density |
+| `handlers` | `ArtworkHandlers` | `{}`    | Interaction callbacks |
+| `children` | `Snippet`         | -       | Compound children |
 
-### Config Options
+### `ArtworkConfig`
 
-```typescript
-interface ArtworkConfig {
-	showMetadata?: boolean; // Show metadata section
-	showStats?: boolean; // Show statistics
-	showActions?: boolean; // Show action buttons
-	showAIDisclosure?: boolean; // Show AI usage badge
-	compactMode?: boolean; // Compact display mode
-	linkToDetail?: boolean; // Link image to detail page
-}
-```
+| Field | Type | Default |
+| --- | --- | --- |
+| `density` | `'compact' \| 'comfortable' \| 'spacious'` | `'comfortable'` |
+| `displayMode` | `'card' \| 'detail' \| 'immersive'` | `'card'` |
+| `showMetadata` | `boolean` | `true` |
+| `showStats` | `boolean` | `true` |
+| `showActions` | `boolean` | `true` |
+| `showAIDisclosure` | `boolean` | `true` |
+| `progressiveLoading` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-### Event Handlers
+### `ArtworkHandlers`
 
-```typescript
-interface ArtworkHandlers {
-	onLike?: (artwork: ArtworkData) => void;
-	onCollect?: (artwork: ArtworkData) => void;
-	onShare?: (artwork: ArtworkData) => void;
-	onComment?: (artwork: ArtworkData) => void;
-	onClick?: (artwork: ArtworkData) => void;
-}
-```
+| Handler | Signature |
+| --- | --- |
+| `onLike` | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onCollect` | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onShare` | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onComment` | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onClick` | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onArtistClick` | `(artistId: string) => void \| Promise<void>` |
+| `onImageError` | `(error: Error) => void` |
 
 ## Subcomponents
 
-### Artwork.Image
+All `Artwork.*` subcomponents read from context; they do not accept an `artwork` prop.
 
-High-resolution image with progressive loading.
+### `Artwork.Image`
 
-```svelte
-<Artwork.Image loading="lazy" placeholder={artwork.thumbnailUrl} aspectRatio="preserve" />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `aspectRatio` | `'preserve' \| '1:1' \| '4:3' \| '16:9'` | `'preserve'` |
+| `class` | `string` | `''` |
 
-| Prop          | Type                                     | Default       | Description                |
-| ------------- | ---------------------------------------- | ------------- | -------------------------- |
-| `loading`     | `'eager' \| 'lazy'`                      | `'lazy'`      | Loading strategy           |
-| `placeholder` | `string`                                 | -             | Low-res placeholder URL    |
-| `aspectRatio` | `'preserve' \| '1:1' \| '4:3' \| '16:9'` | `'preserve'`  | Aspect ratio handling      |
-| `alt`         | `string`                                 | artwork.title | Alt text for accessibility |
+### `Artwork.Title`
 
-### Artwork.Title
+| Prop | Type | Default |
+| --- | --- | --- |
+| `linkTo` | `string` | - |
+| `maxLines` | `number` | `2` |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3` |
+| `class` | `string` | `''` |
 
-Artwork title with optional link.
+### `Artwork.Attribution`
 
-```svelte
-<Artwork.Title linkTo={`/artwork/${artwork.id}`} truncate={false} />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `showAvatar` | `boolean` | `true` |
+| `linkToProfile` | `boolean` | `true` |
+| `profileBaseUrl` | `string` | `'/artist'` |
+| `class` | `string` | `''` |
 
-| Prop        | Type      | Default | Description                  |
-| ----------- | --------- | ------- | ---------------------------- |
-| `linkTo`    | `string`  | -       | Link destination             |
-| `truncate`  | `boolean` | `false` | Truncate long titles         |
-| `maxLength` | `number`  | `100`   | Max characters if truncating |
+### `Artwork.Metadata`
 
-### Artwork.Attribution
+| Prop | Type | Default |
+| --- | --- | --- |
+| `collapsible` | `boolean` | `false` |
+| `defaultExpanded` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-Artist name, avatar, and link.
+### `Artwork.Stats`
 
-```svelte
-<Artwork.Attribution showAvatar={true} linkToProfile={true} />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `showViews` | `boolean` | `true` |
+| `showLikes` | `boolean` | `true` |
+| `showCollections` | `boolean` | `true` |
+| `showComments` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-| Prop            | Type           | Default | Description            |
-| --------------- | -------------- | ------- | ---------------------- |
-| `showAvatar`    | `boolean`      | `true`  | Show artist avatar     |
-| `linkToProfile` | `boolean`      | `true`  | Link to artist profile |
-| `size`          | `'sm' \| 'md'` | `'md'`  | Attribution size       |
+### `Artwork.Actions`
 
-### Artwork.Metadata
+| Prop | Type | Default |
+| --- | --- | --- |
+| `showLike` | `boolean` | `true` |
+| `showCollect` | `boolean` | `true` |
+| `showShare` | `boolean` | `true` |
+| `showComment` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-Medium, dimensions, year, materials.
+### `Artwork.AIDisclosure`
 
-```svelte
-<Artwork.Metadata fields={['medium', 'dimensions', 'year']} layout="inline" />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `variant` | `'badge' \| 'detailed' \| 'inline'` | `'badge'` |
+| `expandable` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-| Prop     | Type                    | Default    | Description       |
-| -------- | ----------------------- | ---------- | ----------------- |
-| `fields` | `string[]`              | all        | Fields to display |
-| `layout` | `'inline' \| 'stacked'` | `'inline'` | Layout style      |
+## `ArtworkCard`
 
-### Artwork.Stats
-
-Views, likes, collections, comments.
-
-```svelte
-<Artwork.Stats show={['likes', 'collections', 'comments']} compact={false} />
-```
-
-### Artwork.Actions
-
-Like, collect, share, comment buttons.
-
-```svelte
-<Artwork.Actions actions={['like', 'collect', 'share', 'comment']} variant="subtle" />
-```
-
-| Prop      | Type                      | Default    | Description     |
-| --------- | ------------------------- | ---------- | --------------- |
-| `actions` | `string[]`                | all        | Actions to show |
-| `variant` | `'subtle' \| 'prominent'` | `'subtle'` | Button style    |
-
-### Artwork.AIDisclosure
-
-AI usage transparency badge.
+Compact rendering for grids/rows/masonry. Uses the same `ArtworkData` shape.
 
 ```svelte
-<Artwork.AIDisclosure variant="badge" expandable={true} />
-```
-
-## ArtworkCard
-
-Compact artwork representation for grid views.
-
-```svelte
-<script lang="ts">
-	import { ArtworkCard } from '@equaltoai/greater-components-artist';
-</script>
-
 <ArtworkCard
-	{artwork}
+	artwork={artwork}
+	variant="grid"
 	size="md"
-	showOverlay={true}
-	aspectRatio="preserve"
-	onclick={() => openViewer(artwork)}
+	onclick={(art) => console.log('open', art.id)}
 />
 ```
 
-### Props
+| Prop | Type | Default |
+| --- | --- | --- |
+| `artwork` | `ArtworkData` | - |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'auto'` | `'auto'` |
+| `variant` | `'grid' \| 'row' \| 'list' \| 'masonry'` | `'grid'` |
+| `showOverlay` | `boolean` | `true` |
+| `aspectRatio` | `'preserve' \| '1:1' \| '4:3' \| '16:9'` | `'preserve'` |
+| `onclick` | `(artwork: ArtworkData) => void` | - |
+| `tabindex` | `number` | `0` |
+| `tagName` | `'button' \| 'div'` | `'button'` |
+| `class` | `string` | `''` |
 
-| Prop          | Type                                     | Default      | Description        |
-| ------------- | ---------------------------------------- | ------------ | ------------------ |
-| `artwork`     | `ArtworkData`                            | required     | Artwork data       |
-| `size`        | `'sm' \| 'md' \| 'lg' \| 'auto'`         | `'auto'`     | Card size variant  |
-| `showOverlay` | `boolean`                                | `true`       | Show info on hover |
-| `aspectRatio` | `'preserve' \| '1:1' \| '4:3' \| '16:9'` | `'preserve'` | Aspect ratio       |
+## `MediaViewer`
 
-## MediaViewer
-
-Full-screen immersive artwork viewing experience.
+Full-screen lightbox viewer. `MediaViewer` is also a compound component.
 
 ```svelte
 <script lang="ts">
-	import { MediaViewer } from '@equaltoai/greater-components-artist';
+	import { MediaViewer } from '@equaltoai/greater-components/faces/artist';
 
-	let viewerOpen = $state(false);
 	let currentIndex = $state(0);
+	let open = $state(true);
 </script>
 
-{#if viewerOpen}
-	<MediaViewer
-		artworks={galleryArtworks}
+{#if open}
+	<MediaViewer.Root
+		artworks={artworks}
 		{currentIndex}
-		background="black"
-		showMetadata={true}
-		showSocial={false}
-		enableZoom={true}
-		enablePan={true}
-		onClose={() => (viewerOpen = false)}
-		onNavigate={(index) => (currentIndex = index)}
-	/>
+		config={{ background: 'black', showMetadata: true, showThumbnails: true }}
+		handlers={{
+			onClose: () => (open = false),
+			onNavigate: (i) => (currentIndex = i),
+		}}
+	>
+		<MediaViewer.Navigation />
+		<MediaViewer.ZoomControls />
+		<MediaViewer.MetadataPanel />
+	</MediaViewer.Root>
 {/if}
 ```
 
-### Props
+### `MediaViewer.Root` Props
 
-| Prop           | Type                          | Default   | Description                 |
-| -------------- | ----------------------------- | --------- | --------------------------- |
-| `artworks`     | `ArtworkData[]`               | required  | Array of artworks           |
-| `currentIndex` | `number`                      | `0`       | Currently displayed index   |
-| `background`   | `'dark' \| 'black' \| 'blur'` | `'black'` | Background style            |
-| `showMetadata` | `boolean`                     | `true`    | Display metadata panel      |
-| `showSocial`   | `boolean`                     | `false`   | Display social elements     |
-| `enableZoom`   | `boolean`                     | `true`    | Enable pinch/scroll zoom    |
-| `enablePan`    | `boolean`                     | `true`    | Enable pan on zoomed images |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `artworks` | `ArtworkData[]` | - |
+| `currentIndex` | `number` | `0` |
+| `config` | `MediaViewerConfig` | `{}` |
+| `handlers` | `MediaViewerHandlers` | `{}` |
+| `children` | `Snippet` | - |
 
-### Events
+### `MediaViewerConfig`
 
-| Event           | Payload             | Description                    |
-| --------------- | ------------------- | ------------------------------ |
-| `onClose`       | -                   | Viewer closed                  |
-| `onNavigate`    | `number`            | Navigation between artworks    |
-| `onZoom`        | `number`            | Zoom level changed             |
-| `onInteraction` | `{ type, artwork }` | Like/collect/share from viewer |
+| Field | Type | Default |
+| --- | --- | --- |
+| `background` | `'dark' \| 'black' \| 'blur'` | `'black'` |
+| `showMetadata` | `boolean` | `true` |
+| `showSocial` | `boolean` | `false` |
+| `enableZoom` | `boolean` | `true` |
+| `enablePan` | `boolean` | `true` |
+| `showThumbnails` | `boolean` | `true` |
 
-### Keyboard Navigation
+### `MediaViewerHandlers`
 
-| Key          | Action           |
-| ------------ | ---------------- |
-| `Escape`     | Close viewer     |
-| `ArrowLeft`  | Previous artwork |
-| `ArrowRight` | Next artwork     |
-| `+` / `=`    | Zoom in          |
-| `-`          | Zoom out         |
-| `0`          | Reset zoom       |
+| Handler | Signature |
+| --- | --- |
+| `onClose` | `() => void` |
+| `onNavigate` | `(index: number) => void` |
+| `onZoom` | `(level: number) => void` |
+| `onInteraction` | `(type: string, artwork: ArtworkData) => void` |
 | `i`          | Toggle metadata  |
 
 ## Accessibility

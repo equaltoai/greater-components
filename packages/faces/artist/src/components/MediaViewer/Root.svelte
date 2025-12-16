@@ -75,7 +75,7 @@ Swipe gestures for touch devices.
 
 	// Image loading state
 	let imageLoaded = $state(false);
-	let imageSrc = $state(untrack(() => currentArtwork?.imageUrl || ''));
+	let imageSrc = $state(untrack(() => currentArtwork?.images.full || ''));
 
 	// Touch handling for swipe
 	let touchStartX = 0;
@@ -200,7 +200,7 @@ Swipe gestures for touch devices.
 		const artwork = artworks[context.currentIndex];
 		if (artwork) {
 			imageLoaded = false;
-			imageSrc = artwork.imageUrl;
+			imageSrc = artwork.images.full;
 		}
 	});
 
@@ -256,7 +256,7 @@ Swipe gestures for touch devices.
 		{#if currentArtwork}
 			<img
 				src={imageSrc}
-				alt={currentArtwork.title}
+				alt={currentArtwork.altText}
 				class="gr-artist-media-viewer-image"
 				class:loaded={imageLoaded}
 				style="transform: scale({context.zoomLevel}) translate({context.panOffset.x}px, {context

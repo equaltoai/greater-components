@@ -35,7 +35,7 @@ export default defineConfig({
 			'@equaltoai/greater-components-tokens': path.resolve('../../packages/tokens/src'),
 			'@equaltoai/greater-components-icons': path.resolve('../../packages/icons/src'),
 			'@equaltoai/greater-components-utils': path.resolve('../../packages/utils/src'),
-			'@equaltoai/greater-components-fediverse': path.resolve('../../packages/fediverse/src'),
+			'@equaltoai/greater-components-social': path.resolve('../../packages/faces/social/src'),
 			'@equaltoai/greater-components-adapters': path.resolve('../../packages/adapters/src'),
 		},
 	},

@@ -124,7 +124,7 @@ Optional thumbnail strip.
 						aria-label={`View ${artwork.title}`}
 					>
 						<img
-							src={artwork.thumbnailUrl || artwork.imageUrl}
+							src={artwork.images.thumbnail}
 							alt=""
 							loading="lazy"
 							aria-hidden="true"

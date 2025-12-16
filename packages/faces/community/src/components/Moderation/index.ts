@@ -19,18 +19,17 @@
  * @module @equaltoai/greater-components/faces/community/Moderation
  */
 
-// Placeholder - components to be implemented
-// export { default as Root } from './Root.svelte';
-// export { default as Panel } from './Panel.svelte';
-// export { default as Queue } from './Queue.svelte';
-// export { default as Actions } from './Actions.svelte';
-// export { default as BanDialog } from './BanDialog.svelte';
-// export { default as RemoveDialog } from './RemoveDialog.svelte';
-// export { default as SpamFilter } from './SpamFilter.svelte';
-// export { default as Logs } from './Logs.svelte';
+export { default as Root } from './Root.svelte';
+export { default as Panel } from './Panel.svelte';
+export { default as Queue } from './Queue.svelte';
+export { default as Log } from './Log.svelte';
 
-// Export context utilities (to be implemented)
-// export { createModerationContext, getModerationContext } from './context.js';
+export {
+	MODERATION_CONTEXT_KEY,
+	createModerationContext,
+	getModerationContext,
+	hasModerationContext,
+} from './context.js';
 
 // Export types
 export type {
@@ -47,12 +46,19 @@ export type {
  * Moderation compound component
  */
 export const Moderation = {
-	// Root: {} as typeof import('./Root.svelte').default,
-	// Panel: {} as typeof import('./Panel.svelte').default,
-	// Queue: {} as typeof import('./Queue.svelte').default,
-	// Actions: {} as typeof import('./Actions.svelte').default,
-	// BanDialog: {} as typeof import('./BanDialog.svelte').default,
-	// RemoveDialog: {} as typeof import('./RemoveDialog.svelte').default,
-	// SpamFilter: {} as typeof import('./SpamFilter.svelte').default,
-	// Logs: {} as typeof import('./Logs.svelte').default,
+	Root: {} as typeof import('./Root.svelte').default,
+	Panel: {} as typeof import('./Panel.svelte').default,
+	Queue: {} as typeof import('./Queue.svelte').default,
+	Log: {} as typeof import('./Log.svelte').default,
 };
+
+// Dynamic imports for tree-shaking
+import Root from './Root.svelte';
+import Panel from './Panel.svelte';
+import Queue from './Queue.svelte';
+import Log from './Log.svelte';
+
+Moderation.Root = Root;
+Moderation.Panel = Panel;
+Moderation.Queue = Queue;
+Moderation.Log = Log;

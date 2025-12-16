@@ -36,6 +36,9 @@ const packages = [
 	{ key: 'shared/chat', dir: 'shared/chat' },
 	// Faces
 	{ key: 'faces/social', dir: 'faces/social' },
+	{ key: 'faces/blog', dir: 'faces/blog' },
+	{ key: 'faces/community', dir: 'faces/community' },
+	{ key: 'faces/artist', dir: 'faces/artist' },
 	// Tools
 	{ key: 'adapters', dir: 'adapters' },
 	{ key: 'testing', dir: 'testing' },
@@ -103,6 +106,15 @@ function rewriteImports() {
 		}
 	}
 
+	function resolvePackageKey(pkgName) {
+		if (packageNames.has(pkgName)) return pkgName;
+		const sharedKey = `shared/${pkgName}`;
+		if (packageNames.has(sharedKey)) return sharedKey;
+		const faceKey = `faces/${pkgName}`;
+		if (packageNames.has(faceKey)) return faceKey;
+		return null;
+	}
+
 	files.forEach((file) => {
 		let content = readFileSync(file, 'utf8');
 		const originalContent = content;
@@ -111,12 +123,13 @@ function rewriteImports() {
 		const regex = /@equaltoai\/greater-components-([a-z0-9-]+)(?:\/([^'"]*))?/g;
 
 		content = content.replace(regex, (match, pkgName, subpath) => {
-			if (!packageNames.has(pkgName)) {
+			const resolvedKey = resolvePackageKey(pkgName);
+			if (!resolvedKey) {
 				return match;
 			}
 
 			const fileDir = dirname(file);
-			const targetDir = join(distDir, pkgName);
+			const targetDir = join(distDir, resolvedKey);
 			let relPath = relative(fileDir, targetDir);
 
 			if (!relPath.startsWith('.')) {
@@ -128,7 +141,7 @@ function rewriteImports() {
 
 			if (subpath) {
 				// Try to resolve using exports
-				const exports = packageExports[pkgName];
+				const exports = packageExports[resolvedKey];
 				const exportKey = `./${subpath}`;
 
 				if (exports && exports[exportKey]) {
@@ -172,6 +185,9 @@ function generateRootBarrels() {
 		'testing',
 		'cli',
 		'faces/social',
+		'faces/blog',
+		'faces/community',
+		'faces/artist',
 	];
 	const entryTargets = exposedPackages
 		.map((key) => `export * from './${key}/index.js';`)
@@ -196,7 +212,16 @@ function aggregateStyles() {
 		const packageDist = join(workspaceRoot, dir, 'dist');
 
 		// Check for common style filenames
-		const styleFiles = ['style.css', 'styles.css', 'theme.css', 'greater-components-social.css'];
+		const styleFiles = [
+			'style.css',
+			'styles.css',
+			'theme.css',
+			'greater-components-social.css',
+			'greater-components-blog.css',
+			'greater-components-community.css',
+			'greater-components-artist.css',
+			'greater-components-fediverse.css',
+		];
 		let foundStyle = false;
 
 		for (const file of styleFiles) {

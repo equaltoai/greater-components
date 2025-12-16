@@ -702,86 +702,25 @@ This scoping pattern ensures clean compilation with no warnings while maintainin
 
 ### Complete Lesser Setup
 
-✅ **CORRECT: Full Lesser integration with all features**
+✅ **CORRECT: Lesser GraphQL timeline with built-in virtualization**
 
 ```svelte
 <script>
 	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { Status, createLesserTimelineStore } from '@equaltoai/greater-components/fediverse';
+	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 
 	// Initialize Lesser adapter with GraphQL
 	const adapter = new LesserGraphQLAdapter({
-		endpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
 		token: import.meta.env.VITE_LESSER_TOKEN,
-		enableSubscriptions: true,
-		subscriptionEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
+		// Optional: enables GraphQL subscriptions (real-time updates) when supported by your instance
+		wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
 	});
 
-	// Create timeline with real-time updates
-	const timeline = createLesserTimelineStore({
-		adapter,
-		type: 'HOME',
-		enableRealtime: true,
-		virtualScrolling: true,
-		estimateSize: 400,
-	});
-
-	// Handle quote posts
-	async function handleQuote(status: Status) {
-		const content = prompt('Add your comment:');
-		if (content) {
-			await adapter.quoteStatus(status.id, content);
-			timeline.refresh();
-		}
-	}
-
-	// Handle community notes
-	async function handleAddNote(statusId: string) {
-		const note = prompt('Add community note:');
-		if (note) {
-			await adapter.addCommunityNote(statusId, note);
-		}
-	}
+	const view = { type: 'home' };
 </script>
 
-<div class="timeline">
-	{#if timeline.isLoading}
-		<p>Loading timeline...</p>
-	{:else if timeline.error}
-		<p>Error: {timeline.error}</p>
-	{:else}
-		{#each timeline.items as status}
-			<Status.Root {status}>
-				<Status.Header />
-				<Status.Content />
-
-				<!-- Lesser-exclusive features -->
-				<Status.LesserMetadata showCost showTrust showModeration />
-
-				<Status.CommunityNotes enableVoting onAddNote={() => handleAddNote(status.id)} />
-
-				<Status.Actions
-					onReply={handleReply}
-					onBoost={handleBoost}
-					onFavorite={handleFavorite}
-					onQuote={() => handleQuote(status)}
-				/>
-			</Status.Root>
-		{/each}
-
-		{#if timeline.hasMore}
-			<Button onclick={() => timeline.loadMore()}>Load More</Button>
-		{/if}
-	{/if}
-</div>
-
-<style>
-	.timeline {
-		max-width: 600px;
-		margin: 0 auto;
-		padding: 1rem;
-	}
-</style>
+<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
 ```
 
 **Environment variables (`.env`):**
@@ -789,7 +728,7 @@ This scoping pattern ensures clean compilation with no warnings while maintainin
 ```bash
 VITE_LESSER_ENDPOINT=https://your-instance.social/graphql
 VITE_LESSER_TOKEN=your-auth-token
-VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
+VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 ```
 
 ---
@@ -798,43 +737,14 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ### Virtual Scrolling for Performance
 
-✅ **CORRECT: Enable virtual scrolling for large timelines**
+✅ **CORRECT: Use TimelineVirtualizedReactive for large timelines**
 
 ```svelte
 <script>
-	import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
-	import { Status } from '@equaltoai/greater-components/fediverse';
-
-	const timeline = createTimelineStore({
-		adapter,
-		type: 'HOME',
-		virtualScrolling: true,
-		estimateSize: 400, // Estimated height per item in pixels
-	});
+	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 </script>
 
-<div class="timeline-container" style="height: 100vh; overflow: auto;">
-	<div style="height: {timeline.totalSize}px; position: relative;">
-		{#each timeline.virtualItems as virtualRow}
-			{@const status = timeline.items[virtualRow.index]}
-			<div
-				style="
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          transform: translateY({virtualRow.start}px);
-        "
-			>
-				<Status.Root {status}>
-					<Status.Header />
-					<Status.Content />
-					<Status.Actions />
-				</Status.Root>
-			</div>
-		{/each}
-	</div>
-</div>
+<TimelineVirtualizedReactive {items} estimateSize={320} overscan={8} />
 ```
 
 **Performance benefits:**
@@ -854,38 +764,53 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ```svelte
 <script>
-	import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
+	import { LesserGraphQLAdapter, createTimelineStore } from '@equaltoai/greater-components/adapters';
 	import { Button } from '@equaltoai/greater-components/primitives';
 
 	let errorMessage = $state('');
 	let errorType = $state<'auth' | 'network' | 'rate-limit' | 'unknown'>('unknown');
 
+	const adapter = new LesserGraphQLAdapter({
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
+		token: import.meta.env.VITE_LESSER_TOKEN,
+	});
+
 	const timeline = createTimelineStore({
 		adapter,
-		type: 'HOME',
-		onError: (error) => {
-			console.error('Timeline error:', error);
+		timeline: { type: 'home' },
+	});
 
-			// Categorize and provide helpful messages
-			if (error.message.includes('401') || error.message.includes('403')) {
+	$effect(() => {
+		const unsubscribe = timeline.subscribe((state) => {
+			if (!state.error) return;
+
+			console.error('Timeline error:', state.error);
+
+			const message = state.error.message;
+			if (message.includes('401') || message.includes('403')) {
 				errorType = 'auth';
 				errorMessage = 'Authentication failed. Please log in again.';
-			} else if (error.message.includes('rate limit')) {
+			} else if (message.includes('rate limit')) {
 				errorType = 'rate-limit';
 				errorMessage = 'Too many requests. Please wait a moment and try again.';
-			} else if (error.message.includes('network') || error.message.includes('fetch')) {
+			} else if (message.includes('network') || message.includes('fetch')) {
 				errorType = 'network';
 				errorMessage = 'Network error. Check your connection and try again.';
 			} else {
 				errorType = 'unknown';
 				errorMessage = 'Something went wrong. Please try again.';
 			}
-		},
+		});
+
+		void timeline.refresh();
+
+		return unsubscribe;
 	});
 
-	function handleRetry() {
+	async function handleRetry() {
 		errorMessage = '';
-		timeline.refresh();
+		await timeline.refresh();
 	}
 
 	function handleReauth() {

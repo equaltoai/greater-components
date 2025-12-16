@@ -76,12 +76,24 @@ greater add
 
 ### 3. Use Components
 
+By default, the CLI installs source files under `src/lib`:
+
+- Face components: `$lib/components/...`
+- Shared modules: `$lib/components/<module>/...`
+- Patterns: `$lib/patterns/...`
+- Headless primitives: `$lib/primitives/...`
+- Adapters: `$lib/adapters/...`
+
 ```svelte
-<script>
-	import Button from '$lib/components/ui/Button/Button.svelte';
+<script lang="ts">
+	import { createButton } from '$lib/primitives/button';
+
+	const button = createButton({
+		onClick: () => console.log('Clicked!'),
+	});
 </script>
 
-<Button variant="solid" onclick={() => console.log('Clicked!')}>Click Me</Button>
+<button use:button.actions.button>Click Me</button>
 ```
 
 ---
@@ -102,9 +114,9 @@ greater init [options]
 | --------------- | ------------------------------------------- | ----------------- |
 | `-y, --yes`     | Skip prompts, use defaults                  | `false`           |
 | `--cwd <path>`  | Working directory                           | Current directory |
-| `--ref <tag>`   | Pin to specific version tag                 | `greater-v4.2.0`  |
+| `--ref <tag>`   | Pin to specific Git ref/tag (or `latest`)   | `latest`          |
 | `--skip-css`    | Skip automatic CSS injection                | `false`           |
-| `--face <name>` | Pre-select a face (social, blog, community) | `null`            |
+| `--face <name>` | Pre-select a face (social, blog, community, artist) | `null`    |
 
 **What It Does:**
 
@@ -191,12 +203,11 @@ greater add button --force
 When adding a component, the CLI automatically resolves and installs dependencies:
 
 ```
-timeline
-├── status (registry dependency)
-│   ├── avatar (primitive)
-│   └── button (primitive)
-├── virtual-scroller (utility)
-└── button (primitive)
+faces/social
+├── primitives: button, modal, menu, tooltip, tabs
+├── components: timeline, status, profile, lists, filters, hashtags
+├── patterns: thread-view, moderation-tools, visibility-selector, federation-indicator, …
+└── shared: auth, compose, notifications, search, admin, messaging
 ```
 
 ---
@@ -218,7 +229,7 @@ greater list [query] [options]
 | Option              | Description                                                         |
 | ------------------- | ------------------------------------------------------------------- |
 | `-t, --type <type>` | Filter by type: primitive, compound, pattern, adapter, shared, face |
-| `--domain <domain>` | Filter by domain: social, blog, community, auth, admin, chat, core  |
+| `--domain <domain>` | Filter by domain: social, blog, community, artist, auth, admin, chat, core  |
 | `--installed`       | Show only installed components                                      |
 | `--available`       | Show only not-installed components                                  |
 | `--json`            | Output as JSON                                                      |
@@ -321,6 +332,36 @@ Button has local modifications. Options:
 
 ---
 
+### `greater cache`
+
+Manage the local cache for offline use.
+
+```bash
+greater cache <command> [options]
+```
+
+**Commands:**
+
+- `greater cache ls` – List cached refs
+- `greater cache clear --all` – Clear all cached files
+- `greater cache clear <ref>` – Clear cache for a specific ref
+- `greater cache prefetch <ref> [items...]` – Pre-populate cache for offline use
+
+**Examples:**
+
+```bash
+# List cached refs
+greater cache ls
+
+# Prefetch everything for a ref
+greater cache prefetch greater-v4.2.0 --all
+
+# Prefetch a face + a few components
+greater cache prefetch greater-v4.2.0 faces/social shared/auth button
+```
+
+---
+
 ### `greater doctor`
 
 Diagnose common issues with your Greater Components setup.
@@ -387,23 +428,30 @@ The configuration file created by `greater init`:
 {
 	"$schema": "https://greater.components.dev/schema.json",
 	"version": "1.0.0",
-	"ref": "greater-v4.2.0",
+	"ref": "latest",
 	"style": "default",
 	"aliases": {
 		"components": "$lib/components",
 		"utils": "$lib/utils",
 		"ui": "$lib/components/ui",
 		"lib": "$lib",
-		"hooks": "$lib/hooks"
+		"hooks": "$lib/primitives"
 	},
 	"css": {
 		"tokens": true,
 		"primitives": true,
-		"face": null
+		"face": null,
+		"source": "local",
+		"localDir": "styles/greater"
 	},
 	"installed": []
 }
 ```
+
+Notes:
+
+- Registry file paths starting with `lib/` install relative to `aliases.lib` (default: `$lib`) and keep their `components/`, `patterns/`, `primitives/`, and `adapters/` subfolders.
+- Registry file paths starting with `shared/` install relative to `aliases.components` (default: `$lib/components`).
 
 ### Configuration Options
 
@@ -417,10 +465,12 @@ The configuration file created by `greater init`:
 | `aliases.utils`      | string       | Utilities directory                                      |
 | `aliases.ui`         | string       | UI components directory                                  |
 | `aliases.lib`        | string       | Library root                                             |
-| `aliases.hooks`      | string       | Hooks directory                                          |
+| `aliases.hooks`      | string       | Headless primitives directory                            |
 | `css.tokens`         | boolean      | Include design tokens CSS                                |
 | `css.primitives`     | boolean      | Include primitive styles CSS                             |
 | `css.face`           | string\|null | Active face name                                         |
+| `css.source`         | string       | CSS source mode: `local` (copied files) or `npm`         |
+| `css.localDir`       | string       | Local CSS directory path (relative to `aliases.lib`)     |
 | `installed`          | array        | List of installed components                             |
 
 ### Installed Component Entry
@@ -428,10 +478,10 @@ The configuration file created by `greater init`:
 ```json
 {
 	"name": "button",
-	"version": "4.2.0",
+	"version": "greater-vX.Y.Z",
 	"installedAt": "2024-12-10T12:00:00Z",
 	"modified": false,
-	"checksums": [{ "path": "Button.svelte", "checksum": "sha256-abc123..." }]
+	"checksums": [{ "path": "lib/primitives/button.ts", "checksum": "sha256-abc123..." }]
 }
 ```
 
@@ -468,7 +518,7 @@ All operations are logged to `~/.greater-components/audit.log`:
 ```
 📦 INSTALL 2024-12-10T12:00:00Z
    Component: button
-   Ref: greater-v4.2.0
+   Ref: latest
    Integrity: ✓ Verified
 ```
 

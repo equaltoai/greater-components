@@ -186,51 +186,47 @@ test('textfield shows error message', () => {
 
 ### Testing Async Operations
 
+When your UI updates state after `await` (fetches, mutations, etc.), use `waitFor` to assert once the UI has settled.
+
+```svelte
+<!-- AsyncActionDemo.svelte -->
+<script lang="ts">
+	let { load } = $props<{ load: () => Promise<string> }>();
+
+	let result = $state('');
+	let loading = $state(false);
+
+	async function run() {
+		loading = true;
+		result = await load();
+		loading = false;
+	}
+</script>
+
+<button onclick={run} disabled={loading} type="button">
+	{loading ? 'Running…' : 'Run'}
+</button>
+
+{#if result}
+	<p>{result}</p>
+{/if}
+```
+
 ```typescript
-import { test, expect, vi } from 'vitest';
-import { render, fireEvent, waitFor } from '@equaltoai/greater-components/testing';
-import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
+	import { test, expect, vi } from 'vitest';
+	import { render, fireEvent, waitFor } from '@equaltoai/greater-components/testing';
+	import AsyncActionDemo from './AsyncActionDemo.svelte';
 
-test('timeline loads and displays statuses', async () => {
-	const mockAdapter = {
-		getTimeline: vi.fn().mockResolvedValue([
-			{ id: '1', content: 'First post' },
-			{ id: '2', content: 'Second post' },
-		]),
-	};
+	test('shows result after async action', async () => {
+		const load = vi.fn().mockResolvedValue('Done');
+		const { getByRole, getByText } = render(AsyncActionDemo, { props: { load } });
 
-	const timeline = createTimelineStore({
-		adapter: mockAdapter,
-		type: 'HOME',
+		await fireEvent.click(getByRole('button', { name: 'Run' }));
+
+		await waitFor(() => {
+			expect(getByText('Done')).toBeInTheDocument();
+		});
 	});
-
-	await waitFor(() => {
-		expect(timeline.items).toHaveLength(2);
-		expect(timeline.isLoading).toBe(false);
-	});
-
-	expect(timeline.items[0].content).toBe('First post');
-});
-
-test('timeline handles errors', async () => {
-	const mockAdapter = {
-		getTimeline: vi.fn().mockRejectedValue(new Error('Network error')),
-	};
-
-	let errorMessage = '';
-	const timeline = createTimelineStore({
-		adapter: mockAdapter,
-		type: 'HOME',
-		onError: (error) => {
-			errorMessage = error.message;
-		},
-	});
-
-	await waitFor(() => {
-		expect(timeline.error).toBeTruthy();
-		expect(errorMessage).toBe('Network error');
-	});
-});
 ```
 
 ### Testing Snippets

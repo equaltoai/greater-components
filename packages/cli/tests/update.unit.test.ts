@@ -46,7 +46,11 @@ vi.mock('../src/utils/logger.js', () => ({
 vi.mock('../src/utils/fetch.js', () => ({
 	fetchComponentFiles: vi.fn().mockResolvedValue({
 		files: [
-			{ path: 'button.ts', content: 'export const button = { version: 2 };', type: 'component' },
+			{
+				path: 'lib/primitives/button.ts',
+				content: 'export const button = { version: 2 };',
+				type: 'component',
+			},
 		],
 		ref: 'greater-v4.3.0',
 	}),
@@ -56,7 +60,7 @@ vi.mock('../src/registry/index.js', () => ({
 	getComponent: vi.fn().mockReturnValue({
 		name: 'button',
 		type: 'primitive',
-		files: [{ path: 'button.ts', content: '', type: 'component' }],
+		files: [{ path: 'lib/primitives/button.ts', content: '', type: 'component' }],
 		dependencies: [],
 		devDependencies: [],
 		registryDependencies: [],
@@ -224,14 +228,14 @@ describe('Update Command', () => {
 				installed: [createInstalledComponent('button')],
 			});
 			mockFs.set('/components.json', JSON.stringify(config));
-			mockFs.set('/src/lib/components/ui/button/button.ts', 'old content');
+			mockFs.set('/src/lib/primitives/button.ts', 'old content');
 
 			const { updateAction } = await import('../src/commands/update.js');
 			await updateAction([], { cwd: '/', all: true, yes: true });
 
 			expect(exitSpy).not.toHaveBeenCalledWith(1);
 			const { readFile } = await import('../src/utils/files.js');
-			const content = await readFile('/src/lib/components/ui/button/button.ts');
+			const content = await readFile('/src/lib/primitives/button.ts');
 			// fetchComponentFiles mock returns 'export const button = { version: 2 };'
 			expect(content).toContain('version: 2');
 		});
@@ -241,7 +245,7 @@ describe('Update Command', () => {
 				installed: [createInstalledComponent('button')],
 			});
 			mockFs.set('/components.json', JSON.stringify(config));
-			mockFs.set('/src/lib/components/ui/button/button.ts', 'old content');
+			mockFs.set('/src/lib/primitives/button.ts', 'old content');
 
 			const { updateAction } = await import('../src/commands/update.js');
 			await updateAction(['button'], { cwd: '/', yes: true });
@@ -268,7 +272,7 @@ describe('Update Command', () => {
 				installed: [createInstalledComponent('button', { modified: true })],
 			});
 			mockFs.set('/components.json', JSON.stringify(config));
-			mockFs.set('/src/lib/components/ui/button/button.ts', 'local modified content');
+			mockFs.set('/src/lib/primitives/button.ts', 'local modified content');
 
 			const prompts = await import('prompts');
 			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -283,7 +287,7 @@ describe('Update Command', () => {
 			await updateAction(['button'], { cwd: '/' });
 
 			const { readFile } = await import('../src/utils/files.js');
-			const content = await readFile('/src/lib/components/ui/button/button.ts');
+			const content = await readFile('/src/lib/primitives/button.ts');
 			expect(content).toContain('version: 2');
 		});
 
@@ -292,7 +296,7 @@ describe('Update Command', () => {
 				installed: [createInstalledComponent('button', { modified: true })],
 			});
 			mockFs.set('/components.json', JSON.stringify(config));
-			mockFs.set('/src/lib/components/ui/button/button.ts', 'local modified content');
+			mockFs.set('/src/lib/primitives/button.ts', 'local modified content');
 
 			const prompts = await import('prompts');
 			(prompts.default as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
@@ -307,7 +311,7 @@ describe('Update Command', () => {
 			await updateAction(['button'], { cwd: '/' });
 
 			const { readFile } = await import('../src/utils/files.js');
-			const content = await readFile('/src/lib/components/ui/button/button.ts');
+			const content = await readFile('/src/lib/primitives/button.ts');
 			expect(content).toBe('local modified content');
 		});
 	});

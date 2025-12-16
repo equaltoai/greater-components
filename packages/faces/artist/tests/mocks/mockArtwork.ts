@@ -11,12 +11,10 @@ import type { ArtworkData } from '../../src/components/Artwork/context.js';
  * Creates a mock artwork with default values
  */
 export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = {}): ArtworkData {
-	return {
+	const base: ArtworkData = {
 		id,
-		slug: `artwork-${id}`, // Combined type requirement
 		title: `Artwork ${id}`,
 		description: `Description for artwork ${id}`,
-		imageUrl: `https://example.com/artworks/${id}/standard.jpg`, // Combined type requirement
 		images: {
 			thumbnail: `https://example.com/artworks/${id}/thumb.jpg`,
 			preview: `https://example.com/artworks/${id}/preview.jpg`,
@@ -27,7 +25,6 @@ export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = 
 			width: 1920,
 			height: 1080,
 		},
-		// Component Context expected structure
 		artist: {
 			id: `artist-${id}`,
 			name: `Artist ${id}`,
@@ -35,17 +32,13 @@ export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = 
 			avatar: `https://example.com/avatars/artist${id}.jpg`,
 			verified: false,
 		},
-		// Store/Type expected structure
-		artistId: `artist-${id}`,
-		artistName: `Artist ${id}`,
-		artistAvatar: `https://example.com/avatars/artist${id}.jpg`,
-
 		metadata: {
 			medium: 'Digital',
 			materials: ['Procreate', 'iPad Pro'],
 			year: 2024,
 			dimensions: '1920x1080px',
 			tags: ['digital', 'illustration'],
+			style: ['Digital'],
 		},
 		stats: {
 			views: 100,
@@ -53,24 +46,29 @@ export function createMockArtwork(id: string, overrides: Partial<ArtworkData> = 
 			collections: 5,
 			comments: 10,
 		},
-		// Flattened stats for Type expected structure
-		viewCount: 100,
-		likeCount: 25,
-		commentCount: 10,
-
 		aiUsage: {
 			hasAI: false,
 		},
-		altText: `Artwork titled ${overrides.title || `Artwork ${id}`}`,
+		altText: '',
 		createdAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),
-
-		isPublished: true, // Type requirement
 		isFeatured: false,
-		tags: ['digital', 'illustration'],
+	};
 
+	const merged: ArtworkData = {
+		...base,
 		...overrides,
-	} as unknown as ArtworkData; // Force cast to satisfy the specific import in this file, though consumers might cast it differently
+		images: { ...base.images, ...overrides.images },
+		artist: { ...base.artist, ...overrides.artist },
+		metadata: { ...base.metadata, ...overrides.metadata },
+		stats: { ...base.stats, ...overrides.stats },
+		aiUsage: overrides.aiUsage ? { ...base.aiUsage, ...overrides.aiUsage } : base.aiUsage,
+	};
+
+	return {
+		...merged,
+		altText: merged.altText || `Artwork titled ${merged.title}`,
+	};
 }
 
 /**

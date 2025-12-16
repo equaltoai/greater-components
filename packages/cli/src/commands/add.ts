@@ -11,13 +11,12 @@ import path from 'node:path';
 import {
 	readConfig,
 	configExists,
-	resolveAlias,
 	writeConfig,
 	addInstalledComponent,
 	getInstalledComponentNames,
 	FALLBACK_REF,
 } from '../utils/config.js';
-import { componentRegistry, type ComponentMetadata } from '../registry/index.js';
+import { componentRegistry, getComponent, type ComponentMetadata } from '../registry/index.js';
 import { getFaceManifest, getAllFaceNames } from '../registry/faces.js';
 import { getAllSharedModuleNames } from '../registry/shared.js';
 import { getAllPatternNames } from '../registry/patterns.js';
@@ -25,6 +24,7 @@ import type { ComponentFile } from '../registry/index.js';
 import { fetchComponents, type FetchOptions } from '../utils/fetch.js';
 
 import { writeComponentFilesWithTransform, fileExists } from '../utils/files.js';
+import { getInstallTarget } from '../utils/install-path.js';
 import {
 	installDependencies,
 	getMissingDependencies,
@@ -50,6 +50,14 @@ import {
 	displayFaceInstallSummary,
 } from '../utils/face-installer.js';
 import { resolveRef } from '../utils/registry-index.js';
+
+const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
+const GREATER_TAG_VERSION_RE = /^greater-v(\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?)$/;
+
+function getGreaterComponentsVersionSpec(ref: string): string {
+	const match = GREATER_TAG_VERSION_RE.exec(ref);
+	return match?.[1] ?? 'latest';
+}
 
 /**
  * Build interactive selection choices
@@ -266,6 +274,20 @@ export const addAction = async (
 		process.exit(0);
 	}
 
+	// Ensure the umbrella package is installed when installing any non-headless components.
+	const requiresGreaterComponents = resolution.resolved.some(
+		(dep) => dep.type === 'face' || dep.type === 'shared' || dep.type === 'compound'
+	);
+	if (
+		requiresGreaterComponents &&
+		!resolution.npmDependencies.some((dep) => dep.name === GREATER_COMPONENTS_PACKAGE)
+	) {
+		resolution.npmDependencies.push({
+			name: GREATER_COMPONENTS_PACKAGE,
+			version: getGreaterComponentsVersionSpec(resolved.ref),
+		});
+	}
+
 	// Generate and display preview
 	const preview = generatePreview(resolution, config, cwd, options.path);
 
@@ -393,36 +415,24 @@ export const addAction = async (
 			const files = componentFiles.get(dep.name);
 			if (!files) continue;
 
-			// Determine target directory based on type
-			let targetDir: string;
-			if (options.path) {
-				targetDir = path.resolve(cwd, options.path);
-			} else {
-				switch (dep.type) {
-					case 'primitive':
-						targetDir = resolveAlias(config.aliases.ui, config, cwd);
-						break;
-					case 'pattern':
-						targetDir = path.join(resolveAlias(config.aliases.components, config, cwd), 'patterns');
-						break;
-					case 'shared':
-						targetDir = path.join(
-							resolveAlias(config.aliases.components, config, cwd),
-							'shared',
-							dep.name
-						);
-						break;
-					case 'adapter':
-						targetDir = path.join(resolveAlias(config.aliases.lib, config, cwd), 'adapters');
-						break;
-					default:
-						targetDir = resolveAlias(config.aliases.components, config, cwd);
-				}
+			const overrideDir = options.path ? path.resolve(cwd, options.path) : null;
+			const byTargetDir = new Map<string, ComponentFile[]>();
+
+			for (const file of files) {
+				const target = getInstallTarget(file.path, config, cwd);
+				const targetDir = overrideDir ?? target.targetDir;
+				const mappedFile: ComponentFile = { ...file, path: target.relativePath };
+
+				const group = byTargetDir.get(targetDir) ?? [];
+				group.push(mappedFile);
+				byTargetDir.set(targetDir, group);
 			}
 
-			const result = await writeComponentFilesWithTransform(files, targetDir, config);
-			totalFiles += result.writtenFiles.length;
-			totalTransformed += result.transformResults.reduce((sum, r) => sum + r.transformedCount, 0);
+			for (const [targetDir, groupFiles] of byTargetDir) {
+				const result = await writeComponentFilesWithTransform(groupFiles, targetDir, config);
+				totalFiles += result.writtenFiles.length;
+				totalTransformed += result.transformResults.reduce((sum, r) => sum + r.transformedCount, 0);
+			}
 		}
 
 		writeSpinner.succeed(`Wrote ${totalFiles} file(s)`);
@@ -555,35 +565,52 @@ export const addAction = async (
 				configUpdated: true,
 			});
 		}
-	} else {
-		logger.success(chalk.green('\n✓ Components added successfully!\n'));
+		} else {
+			logger.success(chalk.green('\n✓ Components added successfully!\n'));
 
-		// Show import examples based on what was installed
-		logger.note(chalk.dim('Import and use in your components:'));
+			// Show import examples based on what was installed
+			logger.note(chalk.dim('Import and use in your components:'));
 
-		if (parseResult.byType.primitives.length > 0) {
-			logger.note(chalk.cyan(`  import { Button, Modal } from '${config.aliases.ui}';`));
-		}
-		if (parseResult.byType.shared.length > 0) {
-			const sharedName = parseResult.byType.shared[0]?.name;
-			if (sharedName) {
-				logger.note(
-					chalk.cyan(`  import * as Auth from '${config.aliases.components}/shared/${sharedName}';`)
-				);
+			if (parseResult.byType.primitives.length > 0) {
+				const primitiveName = parseResult.byType.primitives[0]?.name;
+				if (primitiveName) {
+					const functionName =
+						'create' + primitiveName.slice(0, 1).toUpperCase() + primitiveName.slice(1);
+					logger.note(
+						chalk.cyan(
+							`  import { ${functionName} } from '${config.aliases.lib}/primitives/${primitiveName}';`
+						)
+					);
+				}
 			}
-		}
-		if (parseResult.byType.patterns.length > 0) {
-			// Removed unused pattern import note or fix naming
-			const patternName = parseResult.byType.patterns[0]?.name;
-			if (patternName) {
-				logger.note(
-					chalk.cyan(`  import { ThreadView } from '${config.aliases.components}/patterns';`)
-				);
+			if (parseResult.byType.shared.length > 0) {
+				const sharedName = parseResult.byType.shared[0]?.name;
+				if (sharedName) {
+					const namespaceName = sharedName.slice(0, 1).toUpperCase() + sharedName.slice(1);
+					logger.note(
+						chalk.cyan(
+							`  import * as ${namespaceName} from '${config.aliases.components}/${sharedName}';`
+						)
+					);
+				}
 			}
+			if (parseResult.byType.patterns.length > 0) {
+				const patternName = parseResult.byType.patterns[0]?.name;
+				const pattern = patternName ? getComponent(patternName) : null;
+				const patternFile = pattern?.files?.find((file) => file.path.endsWith('.svelte'));
+				if (patternName && patternFile) {
+					const target = getInstallTarget(patternFile.path, config, cwd);
+					const componentName = path.basename(target.relativePath).replace(/\.svelte$/, '');
+					logger.note(
+						chalk.cyan(
+							`  import ${componentName} from '${config.aliases.lib}/${target.relativePath}';`
+						)
+					);
+				}
+			}
+			logger.newline();
 		}
-		logger.newline();
-	}
-};
+	};
 
 export const addCommand = new Command()
 	.name('add')

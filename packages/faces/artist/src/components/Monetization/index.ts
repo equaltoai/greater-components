@@ -12,12 +12,14 @@ export { default as TipJar } from './TipJar.svelte';
 export { default as DirectPurchase } from './DirectPurchase.svelte';
 export { default as PremiumBadge } from './PremiumBadge.svelte';
 export { default as ProtectionTools } from './ProtectionTools.svelte';
+export { default as InstitutionalTools } from './InstitutionalTools.svelte';
 
 // Import components for compound object
 import TipJarComponent from './TipJar.svelte';
 import DirectPurchaseComponent from './DirectPurchase.svelte';
 import PremiumBadgeComponent from './PremiumBadge.svelte';
 import ProtectionToolsComponent from './ProtectionTools.svelte';
+import InstitutionalToolsComponent from './InstitutionalTools.svelte';
 
 /**
  * Monetization compound component namespace
@@ -39,4 +41,5 @@ export const Monetization = {
 	DirectPurchase: DirectPurchaseComponent,
 	PremiumBadge: PremiumBadgeComponent,
 	ProtectionTools: ProtectionToolsComponent,
+	InstitutionalTools: InstitutionalToolsComponent,
 };

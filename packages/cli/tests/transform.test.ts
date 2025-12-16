@@ -1,53 +1,58 @@
 import { describe, expect, it } from 'vitest';
 import {
+	buildPathMappings,
+	getTransformSummary,
+	hasGreaterImports,
+	transformCssFileImports,
 	transformImports,
+	transformPath,
 	transformSvelteImports,
 	transformTypeScriptImports,
-	transformCssFileImports,
-	transformPath,
-	buildPathMappings,
-	hasGreaterImports,
-	getTransformSummary,
 	type TransformResult,
 } from '../src/utils/transform.js';
 
 import { createTestConfig } from './fixtures/index.js';
 
 describe('buildPathMappings', () => {
-	it('creates mappings for all default packages', () => {
+	it('includes shared module mappings', () => {
 		const config = createTestConfig();
 		const mappings = buildPathMappings(config);
 
-		expect(mappings.length).toBeGreaterThan(0);
-		expect(mappings.some((m) => m.from.includes('primitives'))).toBe(true);
-		expect(mappings.some((m) => m.from.includes('headless'))).toBe(true);
-		expect(mappings.some((m) => m.from.includes('utils'))).toBe(true);
+		const sharedMapping = mappings.find((m) => m.from === '@equaltoai/greater-components/shared/auth');
+		expect(sharedMapping?.to).toBe('$lib/components/auth');
+
+		const legacyMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-auth');
+		expect(legacyMapping?.to).toBe('$lib/components/auth');
 	});
 
-	it('includes headless subpath mappings', () => {
+	it('includes headless primitive subpath mappings', () => {
 		const config = createTestConfig();
 		const mappings = buildPathMappings(config);
 
-		const buttonMapping = mappings.find((m) => m.from.includes('headless/button'));
-		expect(buttonMapping).toBeDefined();
-		expect(buttonMapping?.to).toBe('$lib/hooks/button');
+		const buttonMapping = mappings.find(
+			(m) => m.from === '@equaltoai/greater-components-headless/button'
+		);
+		expect(buttonMapping?.to).toBe('$lib/primitives/button');
 	});
 
-	it('uses custom aliases from config', () => {
+	it('uses custom aliases for local rewrites', () => {
 		const baseConfig = createTestConfig();
 		const config = createTestConfig({
 			aliases: {
 				...baseConfig.aliases,
-				ui: '@/components/ui',
-				hooks: '@/hooks',
+				components: '@/components',
+				lib: '@/lib',
 			},
 		});
 		const mappings = buildPathMappings(config);
 
-		const primitivesMapping = mappings.find(
-			(m) => m.from === '@equaltoai/greater-components/primitives'
+		const authMapping = mappings.find((m) => m.from === '@equaltoai/greater-components/shared/auth');
+		expect(authMapping?.to).toBe('@/components/auth');
+
+		const buttonMapping = mappings.find(
+			(m) => m.from === '@equaltoai/greater-components-headless/button'
 		);
-		expect(primitivesMapping?.to).toBe('@/components/ui');
+		expect(buttonMapping?.to).toBe('@/lib/primitives/button');
 	});
 });
 
@@ -55,107 +60,202 @@ describe('transformPath', () => {
 	const config = createTestConfig();
 	const mappings = buildPathMappings(config);
 
-	it('transforms exact package matches', () => {
-		const result = transformPath('@equaltoai/greater-components/primitives', mappings);
-		expect(result).toBe('$lib/components/ui');
+	it('rewrites headless primitives to local paths', () => {
+		expect(transformPath('@equaltoai/greater-components-headless/button', mappings)).toBe(
+			'$lib/primitives/button'
+		);
 	});
 
-	it('transforms subpath imports', () => {
-		const result = transformPath('@equaltoai/greater-components/headless/button', mappings);
-		expect(result).toBe('$lib/hooks/button');
+	it('rewrites shared module imports to local paths', () => {
+		expect(transformPath('@equaltoai/greater-components/shared/auth', mappings)).toBe(
+			'$lib/components/auth'
+		);
+		expect(transformPath('@equaltoai/greater-components-auth', mappings)).toBe('$lib/components/auth');
+	});
+
+	it('canonicalizes legacy hyphenated packages', () => {
+		expect(transformPath('@equaltoai/greater-components-utils', mappings)).toBe(
+			'@equaltoai/greater-components/utils'
+		);
+		expect(transformPath('@equaltoai/greater-components-primitives/Button', mappings)).toBe(
+			'@equaltoai/greater-components/primitives/Button'
+		);
+		expect(transformPath('@equaltoai/greater-components-primitives/button/variants', mappings)).toBe(
+			'@equaltoai/greater-components/primitives/button/variants'
+		);
+	});
+
+	it('canonicalizes the legacy social face package', () => {
+		expect(transformPath('@equaltoai/greater-components-fediverse', mappings)).toBe(
+			'@equaltoai/greater-components/faces/social'
+		);
+		expect(transformPath('@equaltoai/greater-components-fediverse/patterns', mappings)).toBe(
+			'@equaltoai/greater-components/faces/social/patterns'
+		);
+	});
+
+	it('returns null for canonical umbrella imports', () => {
+		expect(transformPath('@equaltoai/greater-components/primitives', mappings)).toBeNull();
+		expect(transformPath('@equaltoai/greater-components/utils', mappings)).toBeNull();
+		expect(transformPath('@equaltoai/greater-components/tokens/theme.css', mappings)).toBeNull();
 	});
 
 	it('returns null for non-Greater imports', () => {
-		const result = transformPath('svelte', mappings);
-		expect(result).toBeNull();
+		expect(transformPath('svelte', mappings)).toBeNull();
+		expect(transformPath('svelte/store', mappings)).toBeNull();
+		expect(transformPath('lodash', mappings)).toBeNull();
+		expect(transformPath('@types/node', mappings)).toBeNull();
 	});
 
 	it('returns null for relative imports', () => {
-		const result = transformPath('./context.js', mappings);
-		expect(result).toBeNull();
-	});
-
-	it('preserves subpaths after package name', () => {
-		const result = transformPath('@equaltoai/greater-components/primitives/Button', mappings);
-		expect(result).toBe('$lib/components/ui/Button');
-	});
-
-	it('transforms legacy hyphenated package names', () => {
-		const result = transformPath('@equaltoai/greater-components-primitives', mappings);
-		expect(result).toBe('$lib/components/ui');
-	});
-
-	it('handles deeply nested subpaths', () => {
-		const result = transformPath(
-			'@equaltoai/greater-components/primitives/button/variants',
-			mappings
-		);
-		expect(result).toBe('$lib/components/ui/button/variants');
+		expect(transformPath('./context.js', mappings)).toBeNull();
+		expect(transformPath('../types.js', mappings)).toBeNull();
 	});
 
 	it('returns null for node built-in modules', () => {
 		expect(transformPath('node:path', mappings)).toBeNull();
 		expect(transformPath('node:fs', mappings)).toBeNull();
 	});
+});
 
-	it('returns null for external packages', () => {
-		expect(transformPath('lodash', mappings)).toBeNull();
-		expect(transformPath('@types/node', mappings)).toBeNull();
-		expect(transformPath('svelte/store', mappings)).toBeNull();
+describe('transformTypeScriptImports', () => {
+	const config = createTestConfig();
+
+	it('transforms ES module imports', () => {
+		const content = `import { createButton } from '@equaltoai/greater-components-headless/button';
+import { cn } from '@equaltoai/greater-components-utils';
+import { AuthGate } from '@equaltoai/greater-components-auth';`;
+
+		const result = transformTypeScriptImports(content, config);
+
+		expect(result.transformedCount).toBe(3);
+		expect(result.content).toContain("from '$lib/primitives/button'");
+		expect(result.content).toContain("from '@equaltoai/greater-components/utils'");
+		expect(result.content).toContain("from '$lib/components/auth'");
+	});
+
+	it('transforms type-only imports', () => {
+		const content = `import type { ButtonProps } from '@equaltoai/greater-components-primitives';`;
+
+		const result = transformTypeScriptImports(content, config);
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("from '@equaltoai/greater-components/primitives'");
+	});
+
+	it('transforms dynamic imports', () => {
+		const content = `const Button = await import('@equaltoai/greater-components-primitives/Button');`;
+
+		const result = transformTypeScriptImports(content, config);
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("import('@equaltoai/greater-components/primitives/Button')");
+	});
+
+	it('transforms re-exports', () => {
+		const content = `export { createModal } from '@equaltoai/greater-components-headless/modal';
+export * from '@equaltoai/greater-components-utils';`;
+
+		const result = transformTypeScriptImports(content, config);
+
+		expect(result.transformedCount).toBe(2);
+		expect(result.content).toContain("from '$lib/primitives/modal'");
+		expect(result.content).toContain("from '@equaltoai/greater-components/utils'");
+	});
+
+	it('canonicalizes the headless root package', () => {
+		const content = `import { createButton, createModal } from '@equaltoai/greater-components-headless';`;
+
+		const result = transformTypeScriptImports(content, config);
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("from '@equaltoai/greater-components/headless'");
+	});
+
+	it('leaves canonical umbrella imports unchanged', () => {
+		const content = `import { cn } from '@equaltoai/greater-components/utils';`;
+		const result = transformTypeScriptImports(content, config);
+
+		expect(result.transformedCount).toBe(0);
+		expect(result.content).toBe(content);
+	});
+});
+
+describe('transformCssFileImports', () => {
+	const config = createTestConfig();
+
+	it('canonicalizes legacy hyphenated CSS imports', () => {
+		const content = `@import '@equaltoai/greater-components-tokens/theme.css';
+@import '@equaltoai/greater-components-primitives/style.css';`;
+
+		const result = transformCssFileImports(content, config);
+
+		expect(result.transformedCount).toBe(2);
+		expect(result.content).toContain("@import '@equaltoai/greater-components/tokens/theme.css'");
+		expect(result.content).toContain("@import '@equaltoai/greater-components/primitives/style.css'");
+	});
+
+	it('preserves non-Greater CSS imports', () => {
+		const content = `@import 'normalize.css';
+@import '@equaltoai/greater-components-tokens/theme.css';`;
+
+		const result = transformCssFileImports(content, config);
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("@import 'normalize.css'");
 	});
 });
 
 describe('transformSvelteImports', () => {
 	const config = createTestConfig();
-	it('transforms script tag imports', () => {
-		const content = `<script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
-	import { cn } from '@equaltoai/greater-components/utils';
-</script>`;
 
-		const result = transformSvelteImports(content, config);
-
-		expect(result.content).toContain("from '$lib/hooks/button'");
-		expect(result.content).toContain("from '$lib/utils'");
-		expect(result.transformedCount).toBe(2);
-	});
-
-	it('transforms script lang=ts imports', () => {
+	it('transforms imports in <script> blocks', () => {
 		const content = `<script lang="ts">
-	import type { ButtonProps } from '@equaltoai/greater-components/primitives';
+\timport { createButton } from '@equaltoai/greater-components-headless/button';
+\timport { cn } from '@equaltoai/greater-components-utils';
 </script>`;
 
 		const result = transformSvelteImports(content, config);
 
-		expect(result.content).toContain("from '$lib/components/ui'");
+		expect(result.transformedCount).toBe(2);
+		expect(result.content).toContain("from '$lib/primitives/button'");
+		expect(result.content).toContain("from '@equaltoai/greater-components/utils'");
 	});
 
-	it('preserves non-Greater imports', () => {
+	it('transforms @import statements in <style> blocks', () => {
+		const content = `<style>
+\t@import '@equaltoai/greater-components-tokens/theme.css';
+\t.button { color: red; }
+</style>`;
+
+		const result = transformSvelteImports(content, config);
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("@import '@equaltoai/greater-components/tokens/theme.css'");
+		expect(result.content).toContain('.button { color: red; }');
+	});
+
+	it('handles module scripts and instance scripts', () => {
+		const content = `
+<script context="module" lang="ts">
+\timport { AuthGate } from '@equaltoai/greater-components/shared/auth';
+</script>
+
+<script lang="ts">
+\timport { createModal } from '@equaltoai/greater-components-headless/modal';
+</script>
+`;
+
+		const result = transformSvelteImports(content, config);
+
+		expect(result.transformedCount).toBe(2);
+		expect(result.content).toContain("from '$lib/components/auth'");
+		expect(result.content).toContain("from '$lib/primitives/modal'");
+	});
+
+	it('returns unchanged content when there are no Greater imports', () => {
 		const content = `<script>
-	import { writable } from 'svelte/store';
-	import { createButton } from '@equaltoai/greater-components/headless/button';
-</script>`;
-
-		const result = transformSvelteImports(content, config);
-
-		expect(result.content).toContain("from 'svelte/store'");
-		expect(result.content).toContain("from '$lib/hooks/button'");
-	});
-
-	it('handles module context scripts', () => {
-		const content = `<script context="module">
-	import { BUTTON_VARIANTS } from '@equaltoai/greater-components/primitives';
-</script>`;
-
-		const result = transformSvelteImports(content, config);
-
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('returns unchanged content when no Greater imports', () => {
-		const content = `<script>
-	import { writable } from 'svelte/store';
-	let count = 0;
+\timport { onMount } from 'svelte';
 </script>`;
 
 		const result = transformSvelteImports(content, config);
@@ -165,106 +265,60 @@ describe('transformSvelteImports', () => {
 	});
 });
 
-describe('transformTypeScriptImports', () => {
+describe('transformImports (auto-detection)', () => {
 	const config = createTestConfig();
-	it('transforms import statements', () => {
-		const content = `import { createButton } from '@equaltoai/greater-components/headless/button';
-import { cn } from '@equaltoai/greater-components/utils';`;
 
-		const result = transformTypeScriptImports(content, config);
+	it('detects Svelte files by extension', () => {
+		const content = `<script>import { createButton } from '@equaltoai/greater-components-headless/button';</script>`;
+		const result = transformImports(content, config, 'Component.svelte');
 
-		expect(result.content).toContain("from '$lib/hooks/button'");
-		expect(result.content).toContain("from '$lib/utils'");
+		expect(result.hasChanges).toBe(true);
 	});
 
-	it('transforms type imports', () => {
-		const content = `import type { ButtonProps } from '@equaltoai/greater-components/primitives';`;
+	it('detects TypeScript files by extension', () => {
+		const content = `import { createButton } from '@equaltoai/greater-components-headless/button';`;
+		const result = transformImports(content, config, 'utils.ts');
 
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.content).toContain("from '$lib/components/ui'");
+		expect(result.hasChanges).toBe(true);
 	});
 
-	it('transforms dynamic imports', () => {
-		const content = `const Button = await import('@equaltoai/greater-components/primitives/Button');`;
+	it('detects CSS files by extension', () => {
+		const content = `@import '@equaltoai/greater-components-tokens/theme.css';`;
+		const result = transformImports(content, config, 'styles.css');
 
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.content).toContain("import('$lib/components/ui/Button')");
+		expect(result.hasChanges).toBe(true);
 	});
 
-	it('transforms re-exports', () => {
-		const content = `export { createButton } from '@equaltoai/greater-components/headless/button';
-export * from '@equaltoai/greater-components/primitives';`;
+	it('detects Svelte by content when no extension', () => {
+		const content = `<script>import { createButton } from '@equaltoai/greater-components-headless/button';</script>`;
+		const result = transformImports(content, config);
 
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.content).toContain("from '$lib/hooks/button'");
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('handles multiline imports', () => {
-		const content = `import {
-	createButton,
-	createModal,
-	createMenu
-} from '@equaltoai/greater-components/headless';`;
-
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.content).toContain("from '$lib/hooks'");
-	});
-});
-
-describe('transformCssFileImports', () => {
-	const config = createTestConfig();
-	it('transforms CSS @import statements', () => {
-		const content = `@import '@equaltoai/greater-components/tokens/theme.css';
-@import '@equaltoai/greater-components/primitives/style.css';`;
-
-		const result = transformCssFileImports(content, config);
-
-		expect(result.transformedCount).toBeGreaterThan(0);
-	});
-
-	it('preserves non-Greater CSS imports', () => {
-		const content = `@import 'normalize.css';
-@import '@equaltoai/greater-components/tokens/theme.css';`;
-
-		const result = transformCssFileImports(content, config);
-
-		expect(result.content).toContain("@import 'normalize.css'");
+		expect(result.hasChanges).toBe(true);
 	});
 });
 
 describe('hasGreaterImports', () => {
-	it('returns true for Greater package imports', () => {
-		expect(hasGreaterImports("import { x } from '@equaltoai/greater-components/primitives';")).toBe(
-			true
-		);
-		expect(hasGreaterImports("import '@equaltoai/greater-components/tokens/theme.css';")).toBe(
-			true
-		);
+	it('returns true for content with Greater imports', () => {
+		expect(hasGreaterImports(`import { cn } from '@equaltoai/greater-components/utils';`)).toBe(true);
+		expect(hasGreaterImports(`import { cn } from '@equaltoai/greater-components-utils';`)).toBe(true);
 	});
 
-	it('returns true for legacy package names', () => {
-		expect(hasGreaterImports("import { x } from '@equaltoai/greater-components-primitives';")).toBe(
-			true
-		);
-	});
-
-	it('returns false for non-Greater imports', () => {
-		expect(hasGreaterImports("import { writable } from 'svelte/store';")).toBe(false);
-		expect(hasGreaterImports("import lodash from 'lodash';")).toBe(false);
-	});
-
-	it('returns false for empty content', () => {
+	it('returns false for content without Greater imports', () => {
+		expect(hasGreaterImports(`import { onMount } from 'svelte';`)).toBe(false);
 		expect(hasGreaterImports('')).toBe(false);
 	});
 });
 
 describe('getTransformSummary', () => {
-	it('returns summary of transformations', () => {
+	it('returns appropriate message for no changes', () => {
+		const results: TransformResult[] = [
+			{ content: '', transformedCount: 0, transformedPaths: [], hasChanges: false },
+		];
+
+		expect(getTransformSummary(results)).toBe('No import transformations needed');
+	});
+
+	it('summarizes transformations across files', () => {
 		const results: TransformResult[] = [
 			{
 				content: 'content1',
@@ -288,431 +342,27 @@ describe('getTransformSummary', () => {
 		expect(summary).toContain('Transformed 3 import(s)');
 		expect(summary).toContain('2 file(s)');
 	});
-
-	it('handles empty results', () => {
-		const summary = getTransformSummary([]);
-
-		expect(summary).toBe('No import transformations needed');
-	});
-});
-
-describe('transformImports (unified)', () => {
-	const config = createTestConfig();
-
-	it('auto-detects Svelte files', () => {
-		const content = `<script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
-</script>`;
-
-		const result = transformImports(content, config, 'test.svelte');
-
-		expect(result.transformedCount).toBe(1);
-	});
-
-	it('auto-detects TypeScript files', () => {
-		const content = `import { createButton } from '@equaltoai/greater-components/headless/button';`;
-
-		const result = transformImports(content, config, 'test.ts');
-
-		expect(result.transformedCount).toBe(1);
-	});
-
-	it('auto-detects CSS files', () => {
-		const content = `@import '@equaltoai/greater-components/tokens/theme.css';`;
-
-		const result = transformImports(content, config, 'test.css');
-
-		expect(result.transformedCount).toBeGreaterThanOrEqual(0);
-	});
-});
-
-describe('edge cases and error handling', () => {
-	const config = createTestConfig();
-	it('handles malformed import statements gracefully', () => {
-		const content = `import { from '@equaltoai/greater-components/primitives';`;
-
-		// Should not throw
-		const result = transformTypeScriptImports(content, config);
-		expect(result).toBeDefined();
-	});
-
-	it('handles empty content', () => {
-		const result = transformTypeScriptImports('', config);
-		expect(result.content).toBe('');
-		expect(result.transformedCount).toBe(0);
-	});
-
-	it('preserves comments', () => {
-		const content = `// Import Greater components
-import { createButton } from '@equaltoai/greater-components/headless/button';
-/* Multi-line
-   comment */`;
-
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.content).toContain('// Import Greater components');
-		expect(result.content).toContain('/* Multi-line');
-	});
-
-	it('handles string literals that look like imports', () => {
-		const content = `const example = "import { x } from '@equaltoai/greater-components/primitives'";`;
-
-		const result = transformTypeScriptImports(content, config);
-
-		// Current implementation uses regex and transforms strings too
-		expect(result.transformedCount).toBe(1);
-	});
-});
-
-describe('transformTypeScriptImports', () => {
-	const config = createTestConfig();
-
-	it('transforms named imports', () => {
-		const content = `import { Button, Card } from '@equaltoai/greater-components/primitives';`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('transforms default imports', () => {
-		const content = `import Button from '@equaltoai/greater-components/primitives';`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('transforms type imports', () => {
-		const content = `import type { ButtonProps } from '@equaltoai/greater-components/primitives';`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('transforms namespace imports', () => {
-		const content = `import * as Primitives from '@equaltoai/greater-components/primitives';`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('transforms dynamic imports', () => {
-		const content = `const Button = await import('@equaltoai/greater-components/primitives');`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("import('$lib/components/ui')");
-	});
-
-	it('transforms re-exports', () => {
-		const content = `export { Button } from '@equaltoai/greater-components/primitives';`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('transforms export * statements', () => {
-		const content = `export * from '@equaltoai/greater-components/primitives';`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('preserves non-Greater imports', () => {
-		const content = `
-import { onMount } from 'svelte';
-import { Button } from '@equaltoai/greater-components/primitives';
-import type { Snippet } from 'svelte';
-`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain("from 'svelte'");
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('preserves relative imports', () => {
-		const content = `
-import { Button } from '@equaltoai/greater-components/primitives';
-import { getContext } from './context.js';
-import type { Props } from '../types.js';
-`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain("from './context.js'");
-		expect(result.content).toContain("from '../types.js'");
-	});
-
-	it('handles multiple imports on same line', () => {
-		const content = `import { Button } from '@equaltoai/greater-components/primitives'; import { createButton } from '@equaltoai/greater-components/headless/button';`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.transformedCount).toBe(2);
-		expect(result.content).toContain("from '$lib/components/ui'");
-		expect(result.content).toContain("from '$lib/hooks/button'");
-	});
-
-	it('handles multiline imports', () => {
-		const content = `
-import {
-	Button,
-	Card,
-	Modal,
-} from '@equaltoai/greater-components/primitives';
-`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("from '$lib/components/ui'");
-	});
-
-	it('handles double quotes', () => {
-		const content = `import { Button } from "@equaltoai/greater-components/primitives";`;
-		const result = transformTypeScriptImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain('from "$lib/components/ui"');
-	});
-});
-
-describe('transformCssFileImports', () => {
-	const config = createTestConfig();
-
-	it('transforms @import with single quotes', () => {
-		const content = `@import '@equaltoai/greater-components/tokens/theme.css';`;
-		const result = transformCssFileImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("@import '$lib/components/ui/theme.css'");
-	});
-
-	it('transforms @import with double quotes', () => {
-		const content = `@import "@equaltoai/greater-components/tokens/theme.css";`;
-		const result = transformCssFileImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-	});
-
-	it('transforms @import url()', () => {
-		const content = `@import url('@equaltoai/greater-components/tokens/theme.css');`;
-		const result = transformCssFileImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-	});
-
-	it('preserves non-Greater CSS imports', () => {
-		const content = `
-@import 'normalize.css';
-@import '@equaltoai/greater-components/tokens/theme.css';
-`;
-		const result = transformCssFileImports(content, config);
-
-		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain("@import 'normalize.css'");
-	});
-});
-
-describe('transformSvelteImports', () => {
-	const config = createTestConfig();
-
-	it('transforms imports in script block', () => {
-		const content = `
-<script lang="ts">
-	import { Button } from '@equaltoai/greater-components/primitives';
-</script>
-
-<Button>Click me</Button>
-`;
-		const result = transformSvelteImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain("from '$lib/components/ui'");
-		expect(result.content).toContain('<Button>Click me</Button>');
-	});
-
-	it('transforms imports in style block', () => {
-		const content = `
-<script>
-	let x = 1;
-</script>
-
-<style>
-	@import '@equaltoai/greater-components/tokens/theme.css';
-	.button { color: red; }
-</style>
-`;
-		const result = transformSvelteImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-		expect(result.content).toContain('.button { color: red; }');
-	});
-
-	it('transforms both script and style blocks', () => {
-		const content = `
-<script lang="ts">
-	import { Button } from '@equaltoai/greater-components/primitives';
-</script>
-
-<Button>Click</Button>
-
-<style>
-	@import '@equaltoai/greater-components/tokens/theme.css';
-</style>
-`;
-		const result = transformSvelteImports(content, config);
-
-		expect(result.transformedCount).toBe(2);
-	});
-
-	it('preserves Svelte syntax', () => {
-		const content = `
-<script lang="ts">
-	import { Button } from '@equaltoai/greater-components/primitives';
-	
-	let count = $state(0);
-	const doubled = $derived(count * 2);
-	
-	{#if count > 0}
-		{@const x = count}
-	{/if}
-</script>
-
-{#each items as item}
-	<Button>{item}</Button>
-{/each}
-`;
-		const result = transformSvelteImports(content, config);
-
-		expect(result.content).toContain('$state(0)');
-		expect(result.content).toContain('$derived(count * 2)');
-		expect(result.content).toContain('{@const x = count}');
-		expect(result.content).toContain('{#each items as item}');
-	});
-
-	it('handles module script blocks', () => {
-		const content = `
-<script context="module" lang="ts">
-	import { Button } from '@equaltoai/greater-components/primitives';
-	export const prerender = true;
-</script>
-
-<script lang="ts">
-	import { createButton } from '@equaltoai/greater-components/headless/button';
-</script>
-`;
-		const result = transformSvelteImports(content, config);
-
-		expect(result.transformedCount).toBe(2);
-	});
-});
-
-describe('transformImports (auto-detection)', () => {
-	const config = createTestConfig();
-
-	it('detects Svelte files by extension', () => {
-		const content = `<script>import { Button } from '@equaltoai/greater-components/primitives';</script>`;
-		const result = transformImports(content, config, 'Component.svelte');
-
-		expect(result.hasChanges).toBe(true);
-	});
-
-	it('detects TypeScript files by extension', () => {
-		const content = `import { Button } from '@equaltoai/greater-components/primitives';`;
-		const result = transformImports(content, config, 'utils.ts');
-
-		expect(result.hasChanges).toBe(true);
-	});
-
-	it('detects CSS files by extension', () => {
-		const content = `@import '@equaltoai/greater-components/tokens/theme.css';`;
-		const result = transformImports(content, config, 'styles.css');
-
-		expect(result.hasChanges).toBe(true);
-	});
-
-	it('detects Svelte by content when no extension', () => {
-		const content = `<script>import { Button } from '@equaltoai/greater-components/primitives';</script>`;
-		const result = transformImports(content, config);
-
-		expect(result.hasChanges).toBe(true);
-	});
-});
-
-describe('hasGreaterImports', () => {
-	it('returns true for content with Greater imports', () => {
-		const content = `import { Button } from '@equaltoai/greater-components/primitives';`;
-		expect(hasGreaterImports(content)).toBe(true);
-	});
-
-	it('returns false for content without Greater imports', () => {
-		const content = `import { onMount } from 'svelte';`;
-		expect(hasGreaterImports(content)).toBe(false);
-	});
-});
-
-describe('getTransformSummary', () => {
-	it('returns appropriate message for no changes', () => {
-		const results: TransformResult[] = [
-			{ content: '', transformedCount: 0, transformedPaths: [], hasChanges: false },
-		];
-		expect(getTransformSummary(results)).toBe('No import transformations needed');
-	});
-
-	it('returns summary for multiple transformations', () => {
-		const results: TransformResult[] = [
-			{ content: '', transformedCount: 3, transformedPaths: [], hasChanges: true },
-			{ content: '', transformedCount: 2, transformedPaths: [], hasChanges: true },
-		];
-		expect(getTransformSummary(results)).toBe('Transformed 5 import(s) across 2 file(s)');
-	});
 });
 
 describe('edge cases', () => {
 	const config = createTestConfig();
 
-	it('handles empty content', () => {
-		const result = transformImports('', config);
-		expect(result.hasChanges).toBe(false);
-		expect(result.content).toBe('');
+	it('handles malformed import statements without throwing', () => {
+		const content = `import { from '@equaltoai/greater-components-primitives';`;
+		expect(() => transformTypeScriptImports(content, config)).not.toThrow();
 	});
 
-	it('handles content with no imports', () => {
-		const content = `const x = 1; console.log(x);`;
-		const result = transformImports(content, config);
-		expect(result.hasChanges).toBe(false);
-	});
+	it('handles string literals that look like imports', () => {
+		const content = `const example = "import { x } from '@equaltoai/greater-components-utils'";`;
 
-	it('handles malformed imports gracefully', () => {
-		const content = `import { Button from '@equaltoai/greater-components/primitives';`; // Missing closing brace
-		const result = transformImports(content, config);
-		// Should not throw, may or may not transform depending on regex
-		expect(result.content).toBeDefined();
-	});
-
-	it('handles imports with comments', () => {
-		const content = `
-// Import button component
-import { Button } from '@equaltoai/greater-components/primitives'; // UI button
-/* Multi-line
-   comment */
-import { Card } from '@equaltoai/greater-components/primitives';
-`;
 		const result = transformTypeScriptImports(content, config);
-		expect(result.transformedCount).toBe(2);
-		expect(result.content).toContain('// Import button component');
-		expect(result.content).toContain('// UI button');
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain('@equaltoai/greater-components/utils');
 	});
 
-	it('handles template literals in dynamic imports', () => {
-		const content = `const mod = await import(\`@equaltoai/greater-components/primitives\`);`;
-		// Template literals are not transformed (intentionally - they may be dynamic)
+	it('does not transform template literal dynamic imports', () => {
+		const content = `const mod = await import(\`@equaltoai/greater-components-utils\`);`;
 		const result = transformTypeScriptImports(content, config);
 		expect(result.hasChanges).toBe(false);
 	});

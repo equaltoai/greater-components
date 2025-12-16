@@ -785,3 +785,16 @@ export interface ModerationContext {
 	loading: boolean;
 	error: string | null;
 }
+
+/**
+ * Wiki context
+ */
+export interface WikiContext {
+	page: WikiPageData;
+	handlers: WikiHandlers;
+	editing: boolean;
+	draft: string;
+	history: WikiRevision[];
+	loading: boolean;
+	error: string | null;
+}

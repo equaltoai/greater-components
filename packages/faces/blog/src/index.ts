@@ -18,31 +18,26 @@
 /**
  * Article compound component for long-form content display
  */
-export * from './components/Article/index.js';
 export { Article } from './components/Article/index.js';
 
 /**
  * Author compound component for author profiles and bios
  */
-export * from './components/Author/index.js';
 export { Author } from './components/Author/index.js';
 
 /**
  * Publication compound component for publication branding
  */
-export * from './components/Publication/index.js';
 export { Publication } from './components/Publication/index.js';
 
 /**
  * Navigation compound component for archives and browsing
  */
-export * from './components/Navigation/index.js';
 export { Navigation } from './components/Navigation/index.js';
 
 /**
  * Editor compound component for content creation
  */
-export * from './components/Editor/index.js';
 export { Editor } from './components/Editor/index.js';
 
 // ============================================================================

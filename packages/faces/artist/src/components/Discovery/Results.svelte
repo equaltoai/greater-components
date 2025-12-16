@@ -189,7 +189,7 @@ Features:
 							onclick={() => handleResultClick(artwork)}
 							aria-label={`View ${artwork.title}`}
 						>
-							<img src={artwork.imageUrl} alt={artwork.title} loading="lazy" />
+							<img src={artwork.images.preview} alt={artwork.altText} loading="lazy" />
 						</button>
 						<div class="results__item-overlay">
 							<button
@@ -213,7 +213,7 @@ Features:
 							onclick={() => handleResultClick(artwork)}
 						>
 							<h4 class="results__item-title">{artwork.title}</h4>
-							<p class="results__item-artist">{artwork.artistName}</p>
+							<p class="results__item-artist">{artwork.artist.name}</p>
 						</button>
 					</div>
 				</div>

@@ -244,10 +244,11 @@ describe('shared module registry', () => {
 			expect(auth.registryDependencies).toContain('modal');
 		});
 
-		it('admin module should have tabs as registry dependency', () => {
+		it('admin module should have button and modal as registry dependencies', () => {
 			const admin = getSharedModule('admin') as SharedModuleMetadata;
 
-			expect(admin.registryDependencies).toContain('tabs');
+			expect(admin.registryDependencies).toContain('button');
+			expect(admin.registryDependencies).toContain('modal');
 		});
 	});
 

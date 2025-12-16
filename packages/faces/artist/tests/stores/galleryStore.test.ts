@@ -151,8 +151,8 @@ describe('GalleryStore', () => {
 
 		it('applies client-side filtering', () => {
 			const artworks = createMockArtworkList(2);
-			artworks[0].artistId = 'artist-1';
-			artworks[1].artistId = 'artist-2';
+			artworks[0].artist = { ...artworks[0].artist, id: 'artist-1' };
+			artworks[1].artist = { ...artworks[1].artist, id: 'artist-2' };
 
 			const store = createGalleryStore({
 				adapter: mockAdapter as any,
@@ -162,7 +162,7 @@ describe('GalleryStore', () => {
 			store.updateFilters({ artist: 'artist-1' });
 
 			expect(store.get().items).toHaveLength(1);
-			expect(store.get().items[0].artistId).toBe('artist-1');
+			expect(store.get().items[0].artist.id).toBe('artist-1');
 		});
 
 		it('clears filters', () => {
@@ -195,8 +195,8 @@ describe('GalleryStore', () => {
 
 		it('sorts by popular', () => {
 			const items = createMockArtworkList(2);
-			items[0].likeCount = 10;
-			items[1].likeCount = 100;
+			items[0].stats = { ...items[0].stats, likes: 10 };
+			items[1].stats = { ...items[1].stats, likes: 100 };
 
 			const store = createGalleryStore({
 				adapter: mockAdapter as any,
@@ -282,13 +282,11 @@ describe('GalleryStore', () => {
 			const items = createMockArtworkList(2);
 			// Item 1: Old but many likes (high trending score potentially)
 			items[0].createdAt = new Date(Date.now() - 10000000).toISOString();
-			items[0].likeCount = 1000;
-			items[0].viewCount = 5000;
+			items[0].stats = { ...items[0].stats, likes: 1000, views: 5000, comments: 0 };
 
 			// Item 2: New but few likes
 			items[1].createdAt = new Date().toISOString();
-			items[1].likeCount = 0;
-			items[1].viewCount = 0;
+			items[1].stats = { ...items[1].stats, likes: 0, views: 0, comments: 0 };
 
 			const store = createGalleryStore({
 				adapter: mockAdapter as any,

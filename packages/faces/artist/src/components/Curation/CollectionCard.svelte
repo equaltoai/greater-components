@@ -136,7 +136,7 @@ Features:
 	<div class="collection-card__preview" style="--preview-count: {Math.min(preview, 4)}">
 		{#each previewArtworks as artwork, index (artwork.id)}
 			<div class="collection-card__preview-item" class:large={index === 0 && preview <= 4}>
-				<img src={artwork.thumbnailUrl || artwork.imageUrl} alt="" loading="lazy" />
+				<img src={artwork.images.thumbnail} alt="" loading="lazy" />
 			</div>
 		{/each}
 		{#if previewArtworks.length === 0}

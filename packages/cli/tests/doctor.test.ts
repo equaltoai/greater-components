@@ -120,7 +120,7 @@ describe('doctor command utilities', () => {
 						utils: '$lib/utils',
 						ui: '$lib/components/ui',
 						lib: '$lib',
-						hooks: '$lib/hooks',
+						hooks: '$lib/primitives',
 					},
 					installed: [],
 				})
@@ -240,7 +240,7 @@ describe('doctor command utilities', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				css: { tokens: true, primitives: true, face: null },
 				installed: [],
@@ -277,7 +277,7 @@ describe('doctor command utilities', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				css: { tokens: true, primitives: true, face: null },
 				installed: [],
@@ -304,7 +304,7 @@ describe('doctor command utilities', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				css: { tokens: true, primitives: true, face: null },
 				installed: [],
@@ -333,7 +333,7 @@ describe('doctor command utilities', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				css: { tokens: true, primitives: true, face: null },
 				installed: [],
@@ -342,7 +342,7 @@ describe('doctor command utilities', () => {
 			const result = await checkOrphanedFiles('/project', config);
 
 			expect(result.passed).toBe(true);
-			expect(result.message).toContain('does not exist');
+			expect(result.message).toContain('No orphaned component files detected');
 		});
 	});
 
@@ -361,7 +361,7 @@ describe('doctor command utilities', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				css: { tokens: true, primitives: true, face: null },
 				installed: [],
@@ -386,7 +386,7 @@ describe('doctor command utilities', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				css: { tokens: true, primitives: true, face: null },
 				installed: [],
@@ -546,7 +546,7 @@ describe('checkInstalledComponents extended', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [
@@ -600,7 +600,7 @@ describe('checkNpmDependencies extended', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [],
@@ -621,13 +621,8 @@ describe('checkOrphanedFiles extended', () => {
 		vi.clearAllMocks();
 	});
 
-	it('should handle error when reading UI directory fails', async () => {
+	it('should not rely on scanning a UI directory', async () => {
 		const { checkOrphanedFiles } = await import('../src/commands/doctor.js');
-
-		// Set up for UI directory to exist but readdir to fail
-		const uiDir = path.join('/project', 'src', 'lib', 'components', 'ui');
-		fsStore.set(uiDir, ''); // Mark directory as existing
-		fsMock.readdir.mockRejectedValueOnce(new Error('Permission denied'));
 
 		const config = {
 			version: '1.0.0',
@@ -640,7 +635,7 @@ describe('checkOrphanedFiles extended', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [],
@@ -649,35 +644,32 @@ describe('checkOrphanedFiles extended', () => {
 		const result = await checkOrphanedFiles('/project', config);
 
 		expect(result.passed).toBe(true);
-		expect(result.message).toContain('Could not scan');
+		expect(result.message).toContain('No orphaned component files detected');
 	});
 
-	it('should detect orphaned directories in UI folder', async () => {
+	it('should detect orphaned components by unexpected files on disk', async () => {
 		const { checkOrphanedFiles } = await import('../src/commands/doctor.js');
 		const { getComponent } = await import('../src/registry/index.js');
 
-		// Mock getComponent to return true for 'button' (simulating it's a known component)
-		vi.mocked(getComponent).mockReturnValue({
-			name: 'button',
-			type: 'primitive',
-			description: 'Button',
-			files: [],
-			dependencies: [],
-			devDependencies: [],
-			registryDependencies: [],
-			tags: [],
-			version: '1.0.0',
-			domain: 'core',
-		} as any);
+		vi.mocked(getComponent).mockImplementation((name: string) => {
+			if (name !== 'button') return null as any;
+			return {
+				name: 'button',
+				type: 'primitive',
+				description: 'Button',
+				files: [{ path: 'lib/primitives/button.ts', content: '', type: 'component' }],
+				dependencies: [],
+				devDependencies: [],
+				registryDependencies: [],
+				tags: [],
+				version: '1.0.0',
+				domain: 'core',
+			} as any;
+		});
 
-		// Set up for UI directory to exist
-		const uiDir = path.join('/project', 'src', 'lib', 'components', 'ui');
-		fsStore.set(uiDir, ''); // Mark directory as existing
-
-		// Mock readdir to return a directory that's not in installed
-		fsMock.readdir.mockResolvedValueOnce([
-			{ name: 'button', isDirectory: () => true, isFile: () => false },
-		] as any);
+		// Create a file for a component that is NOT tracked in components.json
+		const orphanedPath = path.join('/project', 'src', 'lib', 'primitives', 'button.ts');
+		fsStore.set(orphanedPath, 'export const orphaned = true;');
 
 		const config = {
 			version: '1.0.0',
@@ -690,7 +682,7 @@ describe('checkOrphanedFiles extended', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [], // Empty - no components installed in config
@@ -700,18 +692,12 @@ describe('checkOrphanedFiles extended', () => {
 
 		expect(result.passed).toBe(false);
 		expect(result.severity).toBe('warning');
-		expect(result.message).toContain('not tracked in config');
+		expect(result.message).toContain('not tracked in components.json');
+		expect(result.details).toContain('button');
 	});
 
 	it('should pass when no orphaned files detected', async () => {
 		const { checkOrphanedFiles } = await import('../src/commands/doctor.js');
-
-		// Set up for UI directory to exist
-		const uiDir = path.join('/project', 'src', 'lib', 'components', 'ui');
-		fsStore.set(uiDir, ''); // Mark directory as existing
-
-		// Mock readdir to return empty (no directories)
-		fsMock.readdir.mockResolvedValueOnce([]);
 
 		const config = {
 			version: '1.0.0',
@@ -724,7 +710,7 @@ describe('checkOrphanedFiles extended', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [],
@@ -733,7 +719,7 @@ describe('checkOrphanedFiles extended', () => {
 		const result = await checkOrphanedFiles('/project', config);
 
 		expect(result.passed).toBe(true);
-		expect(result.message).toContain('No orphaned');
+		expect(result.message).toContain('No orphaned component files detected');
 	});
 });
 
@@ -752,7 +738,7 @@ describe('checkInstalledComponents file verification', () => {
 			name: 'button',
 			type: 'primitive',
 			description: 'Button',
-			files: [{ path: 'button/Button.svelte', content: '', type: 'component' }],
+			files: [{ path: 'lib/primitives/button.ts', content: '', type: 'component' }],
 			dependencies: [],
 			devDependencies: [],
 			registryDependencies: [],
@@ -772,7 +758,7 @@ describe('checkInstalledComponents file verification', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [
@@ -804,7 +790,7 @@ describe('checkInstalledComponents file verification', () => {
 			name: 'button',
 			type: 'primitive',
 			description: 'Button',
-			files: [{ path: 'button/Button.svelte', content: 'original', type: 'component' }],
+			files: [{ path: 'lib/primitives/button.ts', content: 'original', type: 'component' }],
 			dependencies: [],
 			devDependencies: [],
 			registryDependencies: [],
@@ -813,8 +799,7 @@ describe('checkInstalledComponents file verification', () => {
 			domain: 'core',
 		} as any);
 
-		const uiDir = path.join('/project', 'src', 'lib', 'components', 'ui');
-		const filePath = path.join(uiDir, 'button', 'Button.svelte');
+		const filePath = path.join('/project', 'src', 'lib', 'primitives', 'button.ts');
 		fsStore.set(filePath, 'modified content'); // Different content
 
 		const config = {
@@ -828,7 +813,7 @@ describe('checkInstalledComponents file verification', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [
@@ -839,7 +824,7 @@ describe('checkInstalledComponents file verification', () => {
 					modified: false,
 					checksums: [
 						{
-							path: 'button/Button.svelte',
+							path: 'lib/primitives/button.ts',
 							checksum: 'sha256-original-checksum',
 						},
 					],
@@ -868,7 +853,7 @@ describe('checkInstalledComponents file verification', () => {
 			name: 'button',
 			type: 'primitive',
 			description: 'Button',
-			files: [{ path: 'button/Button.svelte', content: fileContent, type: 'component' }],
+			files: [{ path: 'lib/primitives/button.ts', content: fileContent, type: 'component' }],
 			dependencies: [],
 			devDependencies: [],
 			registryDependencies: [],
@@ -877,8 +862,7 @@ describe('checkInstalledComponents file verification', () => {
 			domain: 'core',
 		} as any);
 
-		const uiDir = path.join('/project', 'src', 'lib', 'components', 'ui');
-		const filePath = path.join(uiDir, 'button', 'Button.svelte');
+		const filePath = path.join('/project', 'src', 'lib', 'primitives', 'button.ts');
 		fsStore.set(filePath, fileContent);
 
 		const config = {
@@ -892,7 +876,7 @@ describe('checkInstalledComponents file verification', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [
@@ -903,7 +887,7 @@ describe('checkInstalledComponents file verification', () => {
 					modified: false,
 					checksums: [
 						{
-							path: 'button/Button.svelte',
+							path: 'lib/primitives/button.ts',
 							checksum: expectedChecksum,
 						},
 					],
@@ -927,7 +911,7 @@ describe('checkInstalledComponents file verification', () => {
 			name: 'button',
 			type: 'primitive',
 			description: 'Button',
-			files: [{ path: 'button/Button.svelte', content: 'content', type: 'component' }],
+			files: [{ path: 'lib/primitives/button.ts', content: 'content', type: 'component' }],
 			dependencies: [],
 			devDependencies: [],
 			registryDependencies: [],
@@ -936,8 +920,7 @@ describe('checkInstalledComponents file verification', () => {
 			domain: 'core',
 		} as any);
 
-		const uiDir = path.join('/project', 'src', 'lib', 'components', 'ui');
-		const filePath = path.join(uiDir, 'button', 'Button.svelte');
+		const filePath = path.join('/project', 'src', 'lib', 'primitives', 'button.ts');
 		fsStore.set(filePath, 'content');
 		fsMock.readFile.mockRejectedValueOnce(new Error('Read error'));
 
@@ -952,7 +935,7 @@ describe('checkInstalledComponents file verification', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [
@@ -961,7 +944,7 @@ describe('checkInstalledComponents file verification', () => {
 					version: '1.0.0',
 					installedAt: new Date().toISOString(),
 					modified: false,
-					checksums: [{ path: 'button/Button.svelte', checksum: 'sha256-somechecksum' }],
+					checksums: [{ path: 'lib/primitives/button.ts', checksum: 'sha256-somechecksum' }],
 				},
 			],
 		};
@@ -979,7 +962,7 @@ describe('checkInstalledComponents file verification', () => {
 			name: 'button',
 			type: 'primitive',
 			description: 'Button',
-			files: [{ path: 'button/Button.svelte', content: 'content', type: 'component' }],
+			files: [{ path: 'lib/primitives/button.ts', content: 'content', type: 'component' }],
 			dependencies: [],
 			devDependencies: [],
 			registryDependencies: [],
@@ -988,8 +971,7 @@ describe('checkInstalledComponents file verification', () => {
 			domain: 'core',
 		} as any);
 
-		const uiDir = path.join('/project', 'src', 'lib', 'components', 'ui');
-		const filePath = path.join(uiDir, 'button', 'Button.svelte');
+		const filePath = path.join('/project', 'src', 'lib', 'primitives', 'button.ts');
 		fsStore.set(filePath, 'content');
 
 		const config = {
@@ -1003,7 +985,7 @@ describe('checkInstalledComponents file verification', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
 			},
 			css: { tokens: true, primitives: true, face: null },
 			installed: [
@@ -1065,7 +1047,7 @@ describe('Command Execution', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				installed: [],
 			})
@@ -1110,7 +1092,7 @@ describe('Command Execution', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				installed: [],
 			})

@@ -140,11 +140,11 @@ export function createGalleryPattern(
 					(a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
 				);
 			case 'popular':
-				return sorted.sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0));
+				return sorted.sort((a, b) => b.stats.likes - a.stats.likes);
 			case 'title':
 				return sorted.sort((a, b) => a.title.localeCompare(b.title));
 			case 'artist':
-				return sorted.sort((a, b) => a.artistName.localeCompare(b.artistName));
+				return sorted.sort((a, b) => a.artist.name.localeCompare(b.artist.name));
 			default:
 				return sorted;
 		}
@@ -158,9 +158,9 @@ export function createGalleryPattern(
 				const query = filters.query.toLowerCase();
 				const matchesQuery =
 					item.title.toLowerCase().includes(query) ||
-					item.artistName.toLowerCase().includes(query) ||
+					item.artist.name.toLowerCase().includes(query) ||
 					item.description?.toLowerCase().includes(query) ||
-					item.tags?.some((tag) => tag.toLowerCase().includes(query));
+					item.metadata.tags?.some((tag) => tag.toLowerCase().includes(query));
 
 				if (!matchesQuery) return false;
 			}
@@ -175,7 +175,7 @@ export function createGalleryPattern(
 
 			// Medium filter
 			if (filters.mediums?.length) {
-				if (!filters.mediums.includes(item.metadata.medium)) {
+				if (!item.metadata.medium || !filters.mediums.includes(item.metadata.medium)) {
 					return false;
 				}
 			}
@@ -187,7 +187,7 @@ export function createGalleryPattern(
 
 			// AI usage filter
 			if (filters.aiUsage && filters.aiUsage !== 'any') {
-				const hasAI = item.aiUsage?.aiUsed;
+				const hasAI = item.aiUsage?.hasAI;
 				if (filters.aiUsage === 'no-ai' && hasAI) return false;
 				if (filters.aiUsage === 'ai-assisted' && !hasAI) return false;
 			}

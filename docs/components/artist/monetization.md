@@ -14,14 +14,14 @@ Tip integration for supporting artists.
 
 ```svelte
 <script lang="ts">
-	import { TipJar } from '@equaltoai/greater-components-artist';
+	import { Monetization } from '@equaltoai/greater-components/faces/artist';
 
-	async function handleTip(amount: number, currency: string) {
-		await processTip({ artistId: artist.id, amount, currency });
+	async function handleTip(amount: number, currency: string, message?: string, isAnonymous?: boolean) {
+		await processTip({ artistId: artist.id, amount, currency, message, isAnonymous });
 	}
 </script>
 
-<TipJar {artist} presets={[5, 10, 25, 50]} currency="USD" onTip={handleTip} />
+<Monetization.TipJar {artist} handlers={{ onTip: handleTip }} />
 ```
 
 ### Props
@@ -29,24 +29,28 @@ Tip integration for supporting artists.
 | Prop          | Type                                   | Default       | Description          |
 | ------------- | -------------------------------------- | ------------- | -------------------- |
 | `artist`      | `ArtistData`                           | required      | Artist to tip        |
-| `presets`     | `number[]`                             | `[5, 10, 25]` | Preset amounts       |
-| `currency`    | `string`                               | `'USD'`       | Currency code        |
-| `allowCustom` | `boolean`                              | `true`        | Allow custom amounts |
-| `showMessage` | `boolean`                              | `true`        | Allow tip messages   |
-| `onTip`       | `(amount, currency, message?) => void` | -             | Tip callback         |
+| `config`      | `TipJarConfig`                         | `{}`          | Tip jar configuration |
+| `handlers`    | `TipJarHandlers`                       | `{}`          | Event handlers       |
+| `recentTips`  | `TipData[]`                            | `[]`          | Optional recent tips |
+| `class`       | `string`                               | `''`          | Custom CSS class     |
 
 ### Customization
 
 ```svelte
-<TipJar
+<Monetization.TipJar
 	{artist}
-	presets={[1, 3, 5, 10]}
-	currency="EUR"
-	allowCustom={true}
-	minAmount={1}
-	maxAmount={500}
-	showMessage={true}
-	messageMaxLength={200}
+	config={{
+		currency: 'EUR',
+		minAmount: 1,
+		maxAmount: 500,
+		allowCustomAmount: true,
+		allowMessages: true,
+		presets: [
+			{ id: 'tip-1', amount: 1, currency: 'EUR', label: 'Thanks' },
+			{ id: 'tip-5', amount: 5, currency: 'EUR', label: 'Support' },
+		],
+	}}
+	handlers={{ onTip: handleTip }}
 />
 ```
 
@@ -58,31 +62,20 @@ Direct artwork purchase setup.
 
 ```svelte
 <script lang="ts">
-	import { DirectPurchase } from '@equaltoai/greater-components-artist';
+	import { Monetization } from '@equaltoai/greater-components/faces/artist';
 
-	const purchaseOptions = {
-		digital: {
-			price: 25,
-			currency: 'USD',
-			includes: ['High-res PNG', 'Print-ready PDF'],
-		},
-		print: {
-			sizes: [
-				{ size: '8x10', price: 45 },
-				{ size: '16x20', price: 85 },
-				{ size: '24x36', price: 150 },
-			],
-			shipping: 'calculated',
-		},
-		original: {
-			price: 1200,
-			currency: 'USD',
-			available: true,
-		},
+	const pricing = {
+		original: { price: 2500, currency: 'USD', available: true },
+		prints: [{ id: 'sm', size: '8x10\"', price: 45, currency: 'USD', description: 'Archival print' }],
+		licenses: [{ id: 'personal', type: 'personal', price: 25, currency: 'USD', terms: 'Personal use only' }],
 	};
+
+	async function handlePurchase(options) {
+		await startCheckout(options);
+	}
 </script>
 
-<DirectPurchase {artwork} options={purchaseOptions} onPurchase={handlePurchase} />
+<Monetization.DirectPurchase {artwork} {pricing} onPurchase={handlePurchase} />
 ```
 
 ### Props
@@ -90,98 +83,36 @@ Direct artwork purchase setup.
 | Prop         | Type                        | Default  | Description       |
 | ------------ | --------------------------- | -------- | ----------------- |
 | `artwork`    | `ArtworkData`               | required | Artwork for sale  |
-| `options`    | `PurchaseOptions`           | required | Purchase options  |
-| `onPurchase` | `(option, details) => void` | -        | Purchase callback |
+| `pricing`    | `PricingData`               | required | Pricing model     |
+| `onPurchase` | `(options) => void`         | -        | Purchase callback |
+| `onInquiry`  | `(message) => void`         | -        | Inquiry callback  |
 
-### Purchase Types
-
-#### Digital Download
-
-```svelte
-<DirectPurchase.Digital
-	price={25}
-	currency="USD"
-	files={['high-res.png', 'print-ready.pdf']}
-	license="personal"
-/>
-```
-
-#### Print Options
-
-```svelte
-<DirectPurchase.Print
-	sizes={printSizes}
-	materials={['canvas', 'paper', 'metal']}
-	framing={framingOptions}
-	shipping={shippingCalculator}
-/>
-```
-
-#### Original Artwork
-
-```svelte
-<DirectPurchase.Original price={1200} currency="USD" available={true} inquiryOnly={false} />
-```
-
-### License Options
-
-```svelte
-<DirectPurchase
-	{artwork}
-	licenses={[
-		{ type: 'personal', price: 25, description: 'Personal use only' },
-		{ type: 'commercial', price: 150, description: 'Commercial use allowed' },
-		{ type: 'exclusive', price: 500, description: 'Exclusive rights' },
-	]}
-/>
-```
-
-## Institutional Features
+## InstitutionalTools
 
 Features for galleries, museums, and institutions.
 
-### Gallery Integration
-
 ```svelte
 <script lang="ts">
-	import { GalleryIntegration } from '@equaltoai/greater-components-artist';
+	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+
+	const account = {
+		id: 'inst-1',
+		name: 'Example Gallery',
+		type: 'gallery',
+		isVerified: true,
+		website: 'https://example.com',
+		description: 'Contemporary art gallery',
+	};
 </script>
 
-<GalleryIntegration
-	gallery={galleryData}
-	features={{
-		exhibition: true,
-		sales: true,
-		commissions: true,
-		licensing: true,
+<Monetization.InstitutionalTools
+	{account}
+	handlers={{
+		onUpdateAccount: async (updates) => saveUpdates(updates),
+		onAddArtist: async (artistId, role) => addArtist(artistId, role),
+		onCreateExhibition: async (draft) => createExhibition(draft),
 	}}
 />
-```
-
-### Museum Mode
-
-```svelte
-<script lang="ts">
-	import { MuseumMode } from '@equaltoai/greater-components-artist';
-</script>
-
-<MuseumMode
-	institution={museumData}
-	collection={artworkCollection}
-	features={{
-		virtualTours: true,
-		audioGuides: true,
-		educationalContent: true,
-	}}
-/>
-```
-
-### Institutional Badges
-
-```svelte
-<InstitutionalBadge type="museum" institution="MoMA" verified={true} />
-
-<InstitutionalBadge type="gallery" institution="Gagosian" verified={true} />
 ```
 
 ## Premium Features
@@ -189,21 +120,21 @@ Features for galleries, museums, and institutions.
 ### Premium Badge
 
 ```svelte
-<PremiumBadge tier="pro" features={['priority-support', 'analytics', 'custom-domain']} />
+<script lang="ts">
+	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+</script>
+
+<Monetization.PremiumBadge tier="pro" features={['priority-support', 'analytics', 'custom-domain']} />
 ```
 
 ### Protection Tools
 
 ```svelte
-<ProtectionTools
-	{artwork}
-	features={{
-		watermarking: true,
-		rightClickProtection: true,
-		downloadPrevention: true,
-		dmcaSupport: true,
-	}}
-/>
+<script lang="ts">
+	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+</script>
+
+<Monetization.ProtectionTools {artwork} onReport={handleReport} onWatermark={handleWatermark} />
 ```
 
 ## Accessibility
@@ -211,9 +142,8 @@ Features for galleries, museums, and institutions.
 ### Screen Reader Support
 
 ```svelte
-<TipJar {artist} aria-label="Support {artist.name}" />
-
-<DirectPurchase {artwork} aria-label="Purchase options for {artwork.title}" />
+<Monetization.TipJar {artist} />
+<Monetization.DirectPurchase {artwork} {pricing} />
 ```
 
 ### Keyboard Navigation

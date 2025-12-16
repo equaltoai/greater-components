@@ -320,7 +320,7 @@ describe('Init Command', () => {
 				style: 'default',
 				componentsPath: '$lib/components/ui',
 				utilsPath: '$lib/utils',
-				hooksPath: '$lib/hooks',
+				hooksPath: '$lib/primitives',
 				face: null,
 			});
 			// Mock confirm prompt
@@ -361,7 +361,7 @@ describe('Init Command', () => {
 				style: 'default',
 				componentsPath: '$lib/components/ui',
 				utilsPath: '$lib/utils',
-				hooksPath: '$lib/hooks',
+				hooksPath: '$lib/primitives',
 				face: null,
 			});
 			// Mock confirm prompt rejection

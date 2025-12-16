@@ -12,7 +12,7 @@
 
 ### 📚 Core Documentation
 
-- [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, fediverse, adapters, icons, tokens, utils)
+- [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, faces/*, adapters, icons, tokens, utils)
 - [Chat Component Suite](./chat-suite.md) – AI chat interface components with streaming, tool calls, and settings
 - [Core Patterns](./core-patterns.md) – Canonical usage patterns with examples for styled components, headless components, theming, and Lesser integration
 - [CSS Architecture](./css-architecture.md) – Two-layer CSS system, import configurations, and styling troubleshooting
@@ -36,7 +36,7 @@
 
 ### 📦 Additional Resources
 
-- [Lesser Integration Guide](../docs/lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
+- [Lesser Integration Guide](./lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
 - [Playground](../apps/playground) – Interactive component demos and examples
 - [Migration Guide](./migration-guide.md) – Upgrading from legacy versions
 - [Example Apps](../examples) – Complete example applications (social, blog, custom face)
@@ -95,8 +95,11 @@ Greater Components is a **monorepo of composable packages** for building Fediver
 ### Specialized Packages
 
 - **faces/social** – Social media components (Status, Timeline, Profile, etc.) @equaltoai/greater-components/faces/social
+- **faces/blog** – Blog/publishing components @equaltoai/greater-components/faces/blog
+- **faces/community** – Community/forum components @equaltoai/greater-components/faces/community
+- **faces/artist** – Visual artist portfolio components @equaltoai/greater-components/faces/artist
 - **content** – Rich content rendering components (Markdown, CodeBlock)
-- **adapters** – Protocol adapters for Lesser, Mastodon, Pleroma
+- **adapters** – Transport + Lesser GraphQL adapter + stores + mappers
 - **utils** – Common utilities for web applications
 - **testing** – Testing helpers and accessibility validators
 
@@ -146,15 +149,15 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 ### Fediverse with Lesser
 
 ```svelte
-<script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import * as Status from '@equaltoai/greater-components/faces/social/Status';
+		<script>
+			import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+			import { Status } from '@equaltoai/greater-components/faces/social';
 
-	const adapter = new LesserGraphQLAdapter({
-		endpoint: 'https://my-instance.social/graphql',
-		token: 'my-auth-token',
-	});
-</script>
+			const adapter = new LesserGraphQLAdapter({
+				httpEndpoint: 'https://my-instance.social/graphql',
+				token: 'my-auth-token',
+		});
+	</script>
 
 <Status.Root {status}>
 	<Status.Header />

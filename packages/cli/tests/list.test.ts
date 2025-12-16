@@ -646,7 +646,7 @@ describe('List Display', () => {
 					utils: '$lib/utils',
 					ui: '$lib/components/ui',
 					lib: '$lib',
-					hooks: '$lib/hooks',
+					hooks: '$lib/primitives',
 				},
 				installed: [{ name: 'button', version: '1.0.0' }],
 			};

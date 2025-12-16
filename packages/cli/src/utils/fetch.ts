@@ -83,6 +83,18 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 		candidates.push(`packages/headless/src/${name}.ts`);
 	}
 
+	// lib/types/... -> packages/headless/src/types/...
+	if (normalized.startsWith('lib/types/')) {
+		const rest = normalized.slice('lib/types/'.length);
+		candidates.push(`packages/headless/src/types/${rest}`);
+	}
+
+	// lib/utils/... -> packages/headless/src/utils/...
+	if (normalized.startsWith('lib/utils/')) {
+		const rest = normalized.slice('lib/utils/'.length);
+		candidates.push(`packages/headless/src/utils/${rest}`);
+	}
+
 	// lib/components/... -> packages/faces/<face>/src/components/...
 	if (normalized.startsWith('lib/components/')) {
 		const rest = normalized.slice('lib/components/'.length);

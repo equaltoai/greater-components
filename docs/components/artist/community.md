@@ -14,20 +14,17 @@ Structured critique group/space.
 
 ```svelte
 <script lang="ts">
-	import { CritiqueCircle } from '@equaltoai/greater-components-artist';
+	import { CritiqueCircle } from '@equaltoai/greater-components/faces/artist';
+	import type { CritiqueCircleData, CritiqueCircleHandlers } from '@equaltoai/greater-components/faces/artist/types/community';
 
-	const circle = {
-		id: 'circle-1',
-		name: 'Digital Art Critique Group',
-		description: 'Weekly critique sessions for digital artists',
-		members: membersList,
-		moderators: moderatorsList,
-		schedule: 'Saturdays 2PM EST',
-		rules: critiqueRules,
+	const circle: CritiqueCircleData = /* load from your backend */ null as unknown as CritiqueCircleData;
+	const handlers: CritiqueCircleHandlers = {
+		onSubmit: async (_circle, _artwork, _feedbackRequested) => {},
+		onCritique: async (_submission, _annotations, _summary) => {},
 	};
 </script>
 
-<CritiqueCircle.Root {circle} membership="member">
+<CritiqueCircle.Root {circle} membership="member" {handlers}>
 	<CritiqueCircle.Queue />
 	<CritiqueCircle.Session />
 	<CritiqueCircle.History />
@@ -39,42 +36,20 @@ Structured critique group/space.
 
 | Prop         | Type                                  | Default    | Description |
 | ------------ | ------------------------------------- | ---------- | ----------- |
-| `circle`     | `CritiqueCircleData`                  | required   | Circle data |
+| `circle`     | `CritiqueCircleData`                  | required   | Circle data (queue/history/members) |
 | `membership` | `'member' \| 'moderator' \| 'viewer'` | `'viewer'` | User role   |
+| `handlers`   | `CritiqueCircleHandlers`              | `{}`       | Interaction callbacks |
+| `showQueue`  | `boolean`                             | `true`     | Show queue panel |
+| `showSession`| `boolean`                             | `true`     | Show active session |
+| `showHistory`| `boolean`                             | `true`     | Show history panel |
+| `showMembers`| `boolean`                             | `true`     | Show members panel |
+| `enableAnonymousFeedback` | `boolean`                 | `true`     | Allow anonymous feedback |
+| `class`      | `string`                              | `''`       | Custom class |
+| `children`   | `Snippet`                             | required   | Compound children |
 
 ### Subcomponents
 
-#### CritiqueCircle.Queue
-
-Critique request queue.
-
-```svelte
-<CritiqueCircle.Queue showPosition={true} allowReorder={membership === 'moderator'} />
-```
-
-#### CritiqueCircle.Session
-
-Active critique session.
-
-```svelte
-<CritiqueCircle.Session artwork={currentArtwork} timeLimit={15} showTimer={true} />
-```
-
-#### CritiqueCircle.History
-
-Past critiques.
-
-```svelte
-<CritiqueCircle.History filter="my-submissions" showFeedback={true} />
-```
-
-#### CritiqueCircle.Members
-
-Circle membership.
-
-```svelte
-<CritiqueCircle.Members showRoles={true} showActivity={true} />
-```
+All `CritiqueCircle.*` subcomponents are context-driven; they do not take `circle` props directly (only `class`).
 
 ## Collaboration.Root
 
@@ -84,19 +59,17 @@ Multi-artist collaboration space.
 
 ```svelte
 <script lang="ts">
-	import { Collaboration } from '@equaltoai/greater-components-artist';
+	import { Collaboration } from '@equaltoai/greater-components/faces/artist';
+	import type { CollaborationData, CollaborationHandlers } from '@equaltoai/greater-components/faces/artist/types/community';
 
-	const project = {
-		id: 'collab-1',
-		title: 'Community Mural Project',
-		description: 'Collaborative digital mural for city arts initiative',
-		contributors: contributorsList,
-		status: 'in-progress',
-		uploads: projectUploads,
+	const collaboration: CollaborationData =
+		/* load from your backend */ null as unknown as CollaborationData;
+	const handlers: CollaborationHandlers = {
+		onUploadAsset: async (_collaboration, _file) => {},
 	};
 </script>
 
-<Collaboration.Root {project}>
+<Collaboration.Root {collaboration} role="contributor" {handlers}>
 	<Collaboration.Project />
 	<Collaboration.Contributors />
 	<Collaboration.Uploads />
@@ -107,45 +80,7 @@ Multi-artist collaboration space.
 
 ### Subcomponents
 
-#### Collaboration.Project
-
-Project overview.
-
-```svelte
-<Collaboration.Project showTimeline={true} showMilestones={true} />
-```
-
-#### Collaboration.Contributors
-
-Artist attribution chain.
-
-```svelte
-<Collaboration.Contributors showRoles={true} showContributions={true} />
-```
-
-#### Collaboration.Uploads
-
-Contribution management.
-
-```svelte
-<Collaboration.Uploads allowUpload={isContributor} showVersions={true} />
-```
-
-#### Collaboration.Gallery
-
-Collaborative gallery.
-
-```svelte
-<Collaboration.Gallery layout="masonry" showAttribution={true} />
-```
-
-#### Collaboration.Split
-
-Revenue/credit split.
-
-```svelte
-<Collaboration.Split splits={revenueSplits} editable={isOwner} />
-```
+All `Collaboration.*` subcomponents are context-driven; they do not take `collaboration` props directly (only `class`).
 
 ## MentorMatch
 
@@ -155,58 +90,26 @@ Mentor-mentee connection interface.
 
 ```svelte
 <script lang="ts">
-	import { MentorMatch } from '@equaltoai/greater-components-artist';
+	import { MentorMatch } from '@equaltoai/greater-components/faces/artist';
 
-	const filters = {
-		medium: ['digital-art', 'illustration'],
-		experience: 'intermediate',
-		availability: 'weekly',
+	const filters = { styles: ['digital-art', 'illustration'], menteeLevel: 'intermediate' };
+	const handlers = {
+		onSearch: (nextFilters) => console.log('search', nextFilters),
+		onRequestMentorship: (mentor, program) => console.log('request', mentor.id, program),
 	};
 </script>
 
-<MentorMatch mode="find-mentor" {filters} onMatch={handleMatch} />
+<MentorMatch mode="find-mentor" {filters} {handlers} />
 ```
 
 ### Props
 
 | Prop      | Type                                         | Default  | Description       |
 | --------- | -------------------------------------------- | -------- | ----------------- |
-| `mode`    | `'find-mentor' \| 'find-mentee' \| 'active'` | required | Interface mode    |
+| `mode`    | `'find-mentor' \| 'find-mentee' \| 'active'` | `'find-mentor'` | Interface mode |
 | `filters` | `MentorFilters`                              | `{}`     | Matching criteria |
-
-### Modes
-
-#### Find Mentor
-
-```svelte
-<MentorMatch
-	mode="find-mentor"
-	filters={{
-		specialties: ['character-design'],
-		experience: '5+ years',
-		style: 'structured',
-	}}
-/>
-```
-
-#### Find Mentee
-
-```svelte
-<MentorMatch
-	mode="find-mentee"
-	filters={{
-		level: 'beginner',
-		commitment: 'serious',
-		goals: ['portfolio-building'],
-	}}
-/>
-```
-
-#### Active Mentorship
-
-```svelte
-<MentorMatch mode="active" relationship={mentorshipData} showProgress={true} showSchedule={true} />
-```
+| `matches` | `MentorMatch[]`                              | `[]`     | Candidate matches |
+| `handlers` | `MentorMatchHandlers`                       | `{}`     | Callbacks (search/request) |
 
 ## Accessibility
 
@@ -223,5 +126,5 @@ Mentor-mentee connection interface.
 ```svelte
 <CritiqueCircle.Root {circle} aria-label="Critique circle: {circle.name}" />
 
-<Collaboration.Root {project} aria-label="Collaboration project: {project.title}" />
+<Collaboration.Root {collaboration} aria-label="Collaboration: {collaboration.title}" />
 ```

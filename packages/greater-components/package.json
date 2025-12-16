@@ -133,7 +133,40 @@
       "svelte": "./dist/faces/social/src/*.svelte",
       "import": "./dist/faces/social/*.js"
     },
-    "./faces/social/style.css": "./dist/faces/social/theme.css",
+    "./faces/social/style.css": "./dist/faces/social/greater-components-fediverse.css",
+    "./faces/blog": {
+      "types": "./dist/faces/blog/index.d.ts",
+      "svelte": "./dist/faces/blog/src/index.ts",
+      "import": "./dist/faces/blog/index.js"
+    },
+    "./faces/blog/*": {
+      "types": "./dist/faces/blog/*.d.ts",
+      "svelte": "./dist/faces/blog/src/*.svelte",
+      "import": "./dist/faces/blog/*.js"
+    },
+    "./faces/blog/style.css": "./dist/faces/blog/greater-components-blog.css",
+    "./faces/community": {
+      "types": "./dist/faces/community/index.d.ts",
+      "svelte": "./dist/faces/community/src/index.ts",
+      "import": "./dist/faces/community/index.js"
+    },
+    "./faces/community/*": {
+      "types": "./dist/faces/community/*.d.ts",
+      "svelte": "./dist/faces/community/src/*.svelte",
+      "import": "./dist/faces/community/*.js"
+    },
+    "./faces/community/style.css": "./dist/faces/community/greater-components-community.css",
+    "./faces/artist": {
+      "types": "./dist/faces/artist/index.d.ts",
+      "svelte": "./dist/faces/artist/src/index.ts",
+      "import": "./dist/faces/artist/index.js"
+    },
+    "./faces/artist/*": {
+      "types": "./dist/faces/artist/*.d.ts",
+      "svelte": "./dist/faces/artist/src/*.svelte",
+      "import": "./dist/faces/artist/*.js"
+    },
+    "./faces/artist/style.css": "./dist/faces/artist/greater-components-artist.css",
     "./adapters": {
       "types": "./dist/adapters/index.d.ts",
       "import": "./dist/adapters/index.js"

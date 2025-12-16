@@ -121,7 +121,7 @@ Features:
 					}}
 				>
 					<div class="suggestions__item-image">
-						<img src={artwork.imageUrl} alt={artwork.title} loading="lazy" />
+						<img src={artwork.images.preview} alt={artwork.altText} loading="lazy" />
 						<div class="suggestions__item-overlay">
 							<button
 								type="button"
@@ -135,7 +135,7 @@ Features:
 					</div>
 					<div class="suggestions__item-info">
 						<h3 class="suggestions__item-title">{artwork.title}</h3>
-						<p class="suggestions__item-artist">{artwork.artistName}</p>
+						<p class="suggestions__item-artist">{artwork.artist.name}</p>
 						{#if showConfidence}
 							<div class="suggestions__item-confidence">
 								<span class="suggestions__confidence-bar" style:--confidence="85%"></span>

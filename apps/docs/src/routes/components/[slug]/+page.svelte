@@ -15,6 +15,10 @@
 	}
 
 	function installCommand(pkg: string) {
+		if (!component) return `pnpm add @equaltoai/greater-components`;
+		if (component.npm.package === '@equaltoai/greater-components-primitives') {
+			return `pnpm add @equaltoai/greater-components`;
+		}
 		return `npx @equaltoai/greater-components-cli add ${pkg}`;
 	}
 </script>
@@ -58,9 +62,9 @@
 
 				<div class="install-section">
 					<div class="install-code">
-						<code>{installCommand(component.npm.package)}</code>
+						<code>{installCommand(component.slug)}</code>
 					</div>
-					<button class="copy-btn" onclick={() => copyCode(installCommand(component.npm.package))}>
+					<button class="copy-btn" onclick={() => copyCode(installCommand(component.slug))}>
 						{copiedCode ? 'Copied!' : 'Copy'}
 					</button>
 				</div>
@@ -263,7 +267,7 @@
 					<h3>Using the CLI (Recommended)</h3>
 					<p>Add the component directly to your project with full source code:</p>
 					<div class="code-block">
-						<pre><code>{installCommand(component.npm.package)}</code></pre>
+						<pre><code>{installCommand(component.slug)}</code></pre>
 					</div>
 
 					<h3>Manual Installation</h3>

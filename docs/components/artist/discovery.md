@@ -1,340 +1,167 @@
-# Discovery Components
+# Discovery Components (Artist Face)
 
-> AI-powered art discovery and search interface components
+> Store-driven search + filtering UI (DiscoveryEngine) plus standalone filter widgets
 
-## Overview
+## Imports
 
-Discovery components provide intelligent search and filtering capabilities for artwork, leveraging AI for style recognition, color palette extraction, composition analysis, and mood mapping.
+```ts
+import {
+	DiscoveryEngine,
+	createDiscoveryStore,
+	ColorPaletteSearch,
+	StyleFilter,
+	MoodMap,
+} from '@equaltoai/greater-components/faces/artist';
+```
 
-## DiscoveryEngine.Root
+## `DiscoveryEngine`
 
-Main container for the discovery interface.
-
-### Basic Usage
+`DiscoveryEngine` is a compound component built around a `createDiscoveryStore()` instance.
 
 ```svelte
 <script lang="ts">
-	import { DiscoveryEngine } from '@equaltoai/greater-components-artist';
-	import type { DiscoveryFilter } from '@equaltoai/greater-components-artist/types';
+	import { DiscoveryEngine, createDiscoveryStore } from '@equaltoai/greater-components/faces/artist';
 
-	let filters = $state<DiscoveryFilter>({});
-	let results = $state([]);
-
-	async function handleSearch(query: string, filters: DiscoveryFilter) {
-		results = await searchArtworks(query, filters);
-	}
+	const store = createDiscoveryStore();
+	const handlers = {
+		onResultClick: (artwork) => console.log('open', artwork.id),
+		onMoreLikeThis: (artwork) => console.log('similar to', artwork.id),
+	};
 </script>
 
-<DiscoveryEngine.Root onSearch={handleSearch}>
+<DiscoveryEngine.Root {store} {handlers}>
 	<DiscoveryEngine.SearchBar />
 	<DiscoveryEngine.Filters />
-	<DiscoveryEngine.Results items={results} />
+	<DiscoveryEngine.Results />
 	<DiscoveryEngine.Suggestions />
 </DiscoveryEngine.Root>
 ```
 
-## Subcomponents
+### `DiscoveryEngine.Root` Props
 
-### DiscoveryEngine.SearchBar
+| Prop | Type | Default |
+| --- | --- | --- |
+| `store` | `DiscoveryStore` | - |
+| `handlers` | `DiscoveryHandlers` | `{}` |
+| `enableColorSearch` | `boolean` | `true` |
+| `enableMoodMap` | `boolean` | `true` |
+| `enableStyleFilter` | `boolean` | `true` |
+| `enableVisualSearch` | `boolean` | `true` |
+| `showFilters` | `boolean` | `true` |
+| `showSuggestions` | `boolean` | `true` |
+| `class` | `string` | `''` |
+| `children` | `Snippet` | - |
 
-Text and visual search input.
+### `DiscoveryEngine.SearchBar` Props
 
-```svelte
-<DiscoveryEngine.SearchBar
-	placeholder="Search artworks, artists, styles..."
-	showVisualSearch={true}
-	showVoiceSearch={true}
-	onSearch={handleSearch}
-/>
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `placeholder` | `string` | `'Search artworks, artists, styles...'` |
+| `showVisualSearch` | `boolean` | `true` |
+| `showRecent` | `boolean` | `true` |
+| `maxSuggestions` | `number` | `8` |
+| `debounceMs` | `number` | `300` |
+| `searchAsYouType` | `boolean` | `true` |
+| `minSearchChars` | `number` | `2` |
+| `class` | `string` | `''` |
 
-| Prop               | Type       | Default       | Description         |
-| ------------------ | ---------- | ------------- | ------------------- |
-| `placeholder`      | `string`   | `'Search...'` | Input placeholder   |
-| `showVisualSearch` | `boolean`  | `true`        | Enable image search |
-| `showVoiceSearch`  | `boolean`  | `false`       | Enable voice search |
-| `suggestions`      | `string[]` | `[]`          | Search suggestions  |
+### `DiscoveryEngine.Filters` Props
 
-### DiscoveryEngine.Filters
+| Prop | Type | Default |
+| --- | --- | --- |
+| `collapsible` | `boolean` | `true` |
+| `defaultExpanded` | `boolean` | `false` |
+| `class` | `string` | `''` |
 
-Combined filter panel.
+### `DiscoveryEngine.Results` Props
 
-```svelte
-<DiscoveryEngine.Filters
-	filters={['style', 'color', 'medium', 'mood', 'date']}
-	layout="horizontal"
-	collapsible={true}
-/>
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `layout` | `'grid' \| 'masonry' \| 'list'` | `'grid'` |
+| `columns` | `2 \| 3 \| 4 \| 5 \| 6` | `4` |
+| `showSort` | `boolean` | `true` |
+| `showCount` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-### DiscoveryEngine.Results
+### `DiscoveryEngine.Suggestions` Props
 
-Search results with gallery layout.
+| Prop | Type | Default |
+| --- | --- | --- |
+| `title` | `string` | `'Suggested for you'` |
+| `maxItems` | `number` | `6` |
+| `showConfidence` | `boolean` | `false` |
+| `class` | `string` | `''` |
 
-```svelte
-<DiscoveryEngine.Results
-	items={results}
-	layout="grid"
-	loading={isSearching}
-	emptyMessage="No artworks found"
-/>
-```
+## Standalone Filter Widgets
 
-### DiscoveryEngine.Suggestions
+These components can be used independently (outside `DiscoveryEngine`), or you can use them to build your own filter UI.
 
-AI-generated similar work suggestions.
+### `ColorPaletteSearch`
 
-```svelte
-<DiscoveryEngine.Suggestions basedOn={selectedArtwork} count={6} title="Similar Works" />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `colors` | `string[]` (bindable) | `[]` |
+| `tolerance` | `number` (bindable) | `50` |
+| `mode` | `'any' \| 'all' \| 'dominant'` (bindable) | `'any'` |
+| `maxColors` | `number` | `5` |
+| `onSearch` | `(colors: string[]) => void` | - |
+| `class` | `string` | `''` |
 
-## ColorPaletteSearch
+### `StyleFilter`
 
-Search artworks by color harmony.
+| Prop | Type | Default |
+| --- | --- | --- |
+| `styles` | `ArtStyle[]` (bindable) | `[]` |
+| `selected` | `string[]` (bindable) | `[]` |
+| `showCount` | `boolean` | `true` |
+| `onChange` | `(selected: string[]) => void` | - |
+| `class` | `string` | `''` |
 
-### Basic Usage
+### `MoodMap`
 
-```svelte
-<script lang="ts">
-	import { ColorPaletteSearch } from '@equaltoai/greater-components-artist';
-
-	let selectedColors = $state<string[]>([]);
-
-	function handleColorSearch(colors: string[]) {
-		searchByColors(colors);
-	}
-</script>
-
-<ColorPaletteSearch
-	colors={selectedColors}
-	tolerance={15}
-	mode="dominant"
-	onSearch={handleColorSearch}
-/>
-```
-
-### Props
-
-| Prop          | Type                           | Default | Description                      |
-| ------------- | ------------------------------ | ------- | -------------------------------- |
-| `colors`      | `string[]`                     | `[]`    | Selected color values            |
-| `tolerance`   | `number`                       | `15`    | Color matching tolerance (0-100) |
-| `mode`        | `'any' \| 'all' \| 'dominant'` | `'any'` | Match mode                       |
-| `maxColors`   | `number`                       | `5`     | Maximum colors to select         |
-| `showPicker`  | `boolean`                      | `true`  | Show color picker                |
-| `showPresets` | `boolean`                      | `true`  | Show preset palettes             |
-| `onSearch`    | `(colors: string[]) => void`   | -       | Search callback                  |
-
-### Color Match Modes
-
-```svelte
-<!-- Match any selected color -->
-<ColorPaletteSearch mode="any" />
-
-<!-- Match all selected colors -->
-<ColorPaletteSearch mode="all" />
-
-<!-- Match dominant color -->
-<ColorPaletteSearch mode="dominant" />
-```
-
-### Preset Palettes
-
-```svelte
-<ColorPaletteSearch
-	presets={[
-		{ name: 'Warm', colors: ['#FF6B6B', '#FFA07A', '#FFD700'] },
-		{ name: 'Cool', colors: ['#4169E1', '#00CED1', '#98FB98'] },
-		{ name: 'Earth', colors: ['#8B4513', '#D2691E', '#F4A460'] },
-		{ name: 'Monochrome', colors: ['#2C2C2C', '#666666', '#CCCCCC'] },
-	]}
-/>
-```
-
-## StyleFilter
-
-Filter artworks by artistic style/movement.
-
-### Basic Usage
-
-```svelte
-<script lang="ts">
-	import { StyleFilter } from '@equaltoai/greater-components-artist';
-
-	let selectedStyles = $state<string[]>([]);
-</script>
-
-<StyleFilter
-	selected={selectedStyles}
-	showCount={true}
-	onSelect={(styles) => (selectedStyles = styles)}
-/>
-```
-
-### Props
-
-| Prop          | Type         | Default     | Description              |
-| ------------- | ------------ | ----------- | ------------------------ |
-| `styles`      | `ArtStyle[]` | AI-detected | Available styles         |
-| `selected`    | `string[]`   | `[]`        | Selected style IDs       |
-| `showCount`   | `boolean`    | `true`      | Show artwork counts      |
-| `multiSelect` | `boolean`    | `true`      | Allow multiple selection |
-| `searchable`  | `boolean`    | `true`      | Enable style search      |
-
-### Style Categories
-
-```svelte
-<StyleFilter
-	categories={[
-		{
-			name: 'Traditional',
-			styles: ['impressionism', 'realism', 'baroque', 'renaissance'],
-		},
-		{
-			name: 'Modern',
-			styles: ['abstract', 'minimalism', 'pop-art', 'surrealism'],
-		},
-		{
-			name: 'Contemporary',
-			styles: ['digital-art', 'mixed-media', 'installation', 'conceptual'],
-		},
-	]}
-/>
-```
-
-## MoodMap
-
-Visual mood/emotion-based discovery interface.
-
-### Basic Usage
-
-```svelte
-<script lang="ts">
-	import { MoodMap } from '@equaltoai/greater-components-artist';
-
-	let selection = $state({ x: 0.5, y: 0.5 });
-
-	function handleMoodSelect(point: { x: number; y: number }) {
-		searchByMood(point);
-	}
-</script>
-
-<MoodMap dimensions={['energy', 'valence']} {selection} onSelect={handleMoodSelect} />
-```
-
-### Props
-
-| Prop          | Type                       | Default                 | Description           |
-| ------------- | -------------------------- | ----------------------- | --------------------- |
-| `dimensions`  | `[string, string]`         | `['energy', 'valence']` | Mood axes             |
-| `selection`   | `{ x: number; y: number }` | -                       | Selected mood point   |
-| `showLabels`  | `boolean`                  | `true`                  | Show axis labels      |
-| `showPreview` | `boolean`                  | `true`                  | Show artwork previews |
-
-### Mood Dimensions
-
-```svelte
-<!-- Energy vs Valence (default) -->
-<MoodMap dimensions={['energy', 'valence']} />
-
-<!-- Complexity vs Harmony -->
-<MoodMap dimensions={['complexity', 'harmony']} />
-
-<!-- Warmth vs Intensity -->
-<MoodMap dimensions={['warmth', 'intensity']} />
-```
-
-### Axis Labels
-
-```svelte
-<MoodMap
-	dimensions={['energy', 'valence']}
-	labels={{
-		xMin: 'Calm',
-		xMax: 'Energetic',
-		yMin: 'Melancholic',
-		yMax: 'Joyful',
-	}}
-/>
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `dimensions` | `[string, string]` | `['Energy', 'Valence']` |
+| `selection` | `{ x: number; y: number }` (bindable) | `{ x: 0, y: 0 }` |
+| `radius` | `number` | `0.2` |
+| `onChange` | `(dimensions: MoodDimensions) => void` | - |
+| `class` | `string` | `''` |
 
 ## AI-Powered Features
 
-### Visual Search
+### Visual Search (integration hook)
+
+`DiscoveryEngine.SearchBar` calls `handlers.onVisualSearch(file)` when a user uploads an image. Wire this to your backend and update your store as needed.
 
 ```svelte
 <script lang="ts">
-	async function handleImageUpload(file: File) {
-		const results = await searchByImage(file);
-		// Returns similar artworks based on visual analysis
-	}
+	import { DiscoveryEngine, createDiscoveryStore } from '@equaltoai/greater-components/faces/artist';
+
+	const store = createDiscoveryStore();
+	const handlers = {
+		onVisualSearch: async (file: File) => {
+			// Upload to your backend + update store filters/results
+			console.log('visual search', file.name);
+		},
+	};
 </script>
 
-<DiscoveryEngine.SearchBar showVisualSearch={true} onImageUpload={handleImageUpload} />
-```
-
-### Style Recognition
-
-```svelte
-<script lang="ts">
-	// AI automatically detects styles in uploaded artwork
-	const detectedStyles = await analyzeArtworkStyle(imageUrl);
-	// Returns: ['impressionism', 'landscape', 'oil-painting']
-</script>
-```
-
-### Color Extraction
-
-```svelte
-<script lang="ts">
-	// Extract dominant colors from artwork
-	const palette = await extractColorPalette(imageUrl);
-	// Returns: ['#2C5F2D', '#97BC62', '#F5F5DC', '#8B4513']
-</script>
-
-<ColorPaletteSearch colors={palette} />
-```
-
-### Composition Analysis
-
-```svelte
-<script lang="ts">
-	// Analyze artwork composition
-	const composition = await analyzeComposition(imageUrl);
-	// Returns: { balance: 'asymmetric', focus: 'center', depth: 'layered' }
-</script>
-```
-
-## Search Configuration
-
-### Advanced Search
-
-```svelte
-<DiscoveryEngine.Root>
+<DiscoveryEngine.Root {store} {handlers}>
 	<DiscoveryEngine.SearchBar />
-
-	<DiscoveryEngine.AdvancedFilters>
-		<DiscoveryEngine.DateRange />
-		<DiscoveryEngine.MediumFilter />
-		<DiscoveryEngine.DimensionFilter />
-		<DiscoveryEngine.PriceRange />
-		<DiscoveryEngine.LicenseFilter />
-	</DiscoveryEngine.AdvancedFilters>
-
 	<DiscoveryEngine.Results />
 </DiscoveryEngine.Root>
 ```
+
+## Search Configuration
 
 ### Filter Persistence
 
 ```svelte
 <script lang="ts">
-	import { createDiscoveryStore } from '@equaltoai/greater-components-artist/stores';
+	import { createDiscoveryStore } from '@equaltoai/greater-components/faces/artist';
 
-	const discovery = createDiscoveryStore({
-		persistFilters: true,
-		storageKey: 'discovery-filters',
-	});
+	const discovery = createDiscoveryStore();
+	// Recent searches + saved searches persist to `localStorage` by default.
 </script>
 
 <DiscoveryEngine.Root store={discovery}>

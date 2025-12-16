@@ -9,7 +9,7 @@
 [![Svelte 5](https://img.shields.io/badge/Svelte-5-orange.svg)](https://svelte.dev/)
 [![Coverage](https://img.shields.io/codecov/c/github/equaltoai/greater-components)](https://codecov.io/gh/equaltoai/greater-components)
 
-[**Documentation**](./API_DOCUMENTATION.md) • [**Playground**](apps/playground/src/routes) • [**Getting Started**](#quick-start) • [**Examples**](./examples) • [**Contributing**](./CONTRIBUTING.md)
+[**Documentation**](./docs/README.md) • [**Playground**](apps/playground/src/routes) • [**Getting Started**](#quick-start) • [**Examples**](./examples) • [**Contributing**](./CONTRIBUTING.md)
 
 </div>
 
@@ -47,8 +47,8 @@ npx @equaltoai/greater-components-cli add button modal menu
 # Add a complete face (component bundle)
 npx @equaltoai/greater-components-cli add faces/social
 
-# Upgrade to a specific version
-npx @equaltoai/greater-components-cli upgrade --to greater-v4.2.0
+# Update installed components to a specific Git tag
+npx @equaltoai/greater-components-cli update --ref greater-vX.Y.Z
 ```
 
 **Benefits:** Full source ownership, easy customization, deterministic installs via Git tags, no npm publish tokens required.
@@ -126,53 +126,29 @@ npx @equaltoai/greater-components-cli upgrade --to greater-v4.2.0
 ### Fediverse Example (Lesser-native)
 
 ```svelte
-<script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { Status, Admin, Hashtags } from '@equaltoai/greater-components/fediverse';
-	import { createLesserTimelineStore } from '@equaltoai/greater-components/fediverse';
+	<script>
+		import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+		import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 
-	// Initialize Lesser adapter with GraphQL endpoint
-	const adapter = new LesserGraphQLAdapter({
-		endpoint: 'https://your-instance.social/graphql',
-		token: 'your-auth-token',
-	});
+		// Initialize Lesser adapter with GraphQL endpoint
+		const adapter = new LesserGraphQLAdapter({
+			httpEndpoint: 'https://your-instance.social/graphql',
+			token: 'your-auth-token',
+		});
 
-	// Create timeline with Lesser-specific features
-	const timeline = createLesserTimelineStore({
-		adapter,
-		type: 'HASHTAG',
-		hashtags: ['svelte', 'fediverse'],
-		hashtagMode: 'ANY',
-	});
-
-	// Access Lesser-specific metadata
-	const postsWithCost = timeline.getItemsWithCost();
-	const postsWithTrust = timeline.getItemsWithTrustScore();
+		const view = {
+			type: 'home',
+	};
 </script>
 
-<!-- Display status with Lesser features -->
-<Status.Root {status}>
-	<Status.Header />
-	<Status.Content />
-	<Status.LesserMetadata showCost showTrust showModeration />
-	<Status.CommunityNotes enableVoting />
-	<Status.Actions onQuote={handleQuote} />
-</Status.Root>
-
-<!-- Admin dashboard with cost analytics -->
-<Admin.Cost.Root {adapter}>
-	<Admin.Cost.Dashboard period="WEEK" />
-	<Admin.Cost.BudgetControls />
-</Admin.Cost.Root>
+<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
 ```
 
 ## ✅ Phase 5 – Documentation & Testing
 
 - **Demo suite docs**: `/demo-suite` plus `/demo-suite/{timeline,profile,settings,search}` now outline props, handlers, accessibility, and performance notes for every Phase 4 surface.
 - **New primitives coverage**: `/components/tabs` and `/components/switch` pages document the runes-based API with live demos.
-- **Testing upgrades**: Vitest specs for `apps/playground/src/lib/stores/storage.ts` and `packages/fediverse/src/lib/timelineStore.ts` + Playwright flows in `packages/testing/tests/demo/{timeline,profile,settings,search}.spec.ts`.
-- **Performance tracking**: Lighthouse (Playground build) scored 98/100/100/100 with notes logged in `docs/planning/greater-alignment-log.md`.
-- **Deployment runbook**: Follow `docs/deployment/demo-suite.md` for build/preview/publish commands, including the new Lighthouse + Playwright validation steps.
+- **Testing upgrades**: Vitest coverage for adapters/stores plus Playwright flows in `packages/testing/tests/demo/*.spec.ts`.
 
 ## 📦 Package Overview
 
@@ -307,11 +283,10 @@ test('button handles clicks', () => {
 ### 📖 **Documentation**
 
 - [**Lesser Integration Guide**](./docs/lesser-integration-guide.md) - Complete Lesser setup and feature guide
-- [**API Reference**](./API_DOCUMENTATION.md) - Complete API documentation
-- [**API Stability Guide**](./API_STABILITY.md) - Backwards compatibility guarantees
+- [**API Reference**](./docs/api-reference.md) - Complete API documentation
 - [**Component Documentation**](./docs/components/) - Individual component guides
-- [**Migration Guide**](./docs/migration/) - Upgrade instructions
-- [**Troubleshooting**](./docs/troubleshooting/) - Common issues and solutions
+- [**Migration Guide**](./docs/migration-guide.md) - Upgrade instructions
+- [**Troubleshooting**](./docs/troubleshooting.md) - Common issues and solutions
 
 ### 🎮 **Interactive Examples**
 

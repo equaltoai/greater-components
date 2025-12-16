@@ -277,21 +277,15 @@ const createMockWIPThread = (): WIPThreadData => ({
 // Hybrid Mock for Artwork to satisfy both types/artwork and Artwork/context
 const createMockArtwork = (): ArtworkData => ({
 	id: 'art1',
-	slug: 'masterpiece',
 	title: 'Masterpiece',
+	description: 'A wonderful piece',
 	artist: {
 		id: 'a1',
 		name: 'Test Artist',
 		username: 'testartist',
 		verified: true,
+		avatar: 'avatar.jpg',
 	},
-	artistId: 'a1',
-	artistName: 'Test Artist',
-	artistAvatar: 'avatar.jpg',
-	description: 'A wonderful piece',
-	imageUrl: 'art.jpg',
-	thumbnailUrl: 'art-thumb.jpg',
-	additionalImages: ['art-full.jpg'],
 	createdAt: '2023-01-01T12:00:00Z',
 	images: {
 		thumbnail: 'art-thumb.jpg',
@@ -302,8 +296,7 @@ const createMockArtwork = (): ArtworkData => ({
 	metadata: {
 		medium: 'Oil on canvas',
 		year: 2023,
-		dimensions: '24x36', // String for context, check conflict
-		// types/artwork might expect object. We'll leave string here as component usage is likely more sensitive to runtime crash.
+		dimensions: '24x36',
 	},
 	stats: {
 		views: 1000,
@@ -311,10 +304,7 @@ const createMockArtwork = (): ArtworkData => ({
 		comments: 10,
 		collections: 5,
 	},
-	viewCount: 1000,
-	likeCount: 100,
-	commentCount: 10,
-	isPublished: true,
+	aiUsage: { hasAI: false },
 	altText: 'A painting',
 });
 
@@ -452,10 +442,26 @@ const createMockCollection = (): CollectionData => ({
 	ownerAvatar: 'avatar.jpg',
 	artworks: [
 		createMockArtwork(),
-		{ ...createMockArtwork(), id: 'art2', thumbnailUrl: 'thumb2.jpg' },
-		{ ...createMockArtwork(), id: 'art3', thumbnailUrl: 'thumb3.jpg' },
-		{ ...createMockArtwork(), id: 'art4', thumbnailUrl: 'thumb4.jpg' },
-		{ ...createMockArtwork(), id: 'art5', thumbnailUrl: 'thumb5.jpg' },
+		{
+			...createMockArtwork(),
+			id: 'art2',
+			images: { ...createMockArtwork().images, thumbnail: 'thumb2.jpg' },
+		},
+		{
+			...createMockArtwork(),
+			id: 'art3',
+			images: { ...createMockArtwork().images, thumbnail: 'thumb3.jpg' },
+		},
+		{
+			...createMockArtwork(),
+			id: 'art4',
+			images: { ...createMockArtwork().images, thumbnail: 'thumb4.jpg' },
+		},
+		{
+			...createMockArtwork(),
+			id: 'art5',
+			images: { ...createMockArtwork().images, thumbnail: 'thumb5.jpg' },
+		},
 	],
 	artworkCount: 5,
 	visibility: 'public',

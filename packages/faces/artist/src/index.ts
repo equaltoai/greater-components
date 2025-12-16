@@ -1,9 +1,9 @@
 /**
- * Artist Face - Federation and API Integration
+ * Artist Face - Portfolio and federation tooling
  *
- * Exports for ActivityPub federation support and Lesser GraphQL API integration.
+ * Exports UI components for artist portfolio experiences plus ActivityPub federation utilities.
  *
- * @module @equaltoai/greater-components-artist
+ * @module @equaltoai/greater-components/faces/artist
  */
 
 // ============================================================================
@@ -69,7 +69,77 @@ export {
 } from './subscriptions';
 
 // ============================================================================
-// Types
+// UI Components
+// ============================================================================
+
+export { Artwork } from './components/Artwork/index.js';
+export { ArtistProfile } from './components/ArtistProfile/index.js';
+
+export { Gallery, GalleryGrid, GalleryRow, GalleryMasonry } from './components/Gallery/index.js';
+
+export {
+	DiscoveryEngine,
+	ColorPaletteSearch,
+	StyleFilter,
+	MoodMap,
+} from './components/Discovery/index.js';
+
+export { MediaViewer } from './components/MediaViewer/index.js';
+export { Exhibition } from './components/Exhibition/index.js';
+
+export {
+	WorkInProgress,
+	CritiqueMode,
+	ReferenceBoard,
+	CommissionWorkflow,
+} from './components/CreativeTools/index.js';
+
+export { CritiqueCircle, Collaboration, MentorMatch } from './components/Community/index.js';
+
+export { Transparency, ProcessDocumentation, AIOptOutControls, EthicalSourcingBadge } from './components/Transparency/index.js';
+
+export {
+	Monetization,
+	TipJar,
+	DirectPurchase,
+	PremiumBadge,
+	ProtectionTools,
+	InstitutionalTools,
+} from './components/Monetization/index.js';
+
+export { CuratorSpotlight, CollectionCard } from './components/Curation/index.js';
+
+export { default as ArtworkCard } from './components/ArtworkCard.svelte';
+export { default as ArtistTimeline } from './components/ArtistTimeline.svelte';
+export { default as PortfolioSection } from './components/PortfolioSection.svelte';
+export { default as ArtistBadge } from './components/ArtistBadge.svelte';
+
+// ============================================================================
+// Stores (namespaced to avoid export collisions)
+// ============================================================================
+
+export * as Stores from './stores/index.js';
+
+export {
+	createDiscoveryStore,
+	createArtistProfileStore,
+	createRealtimeStore,
+	createOfflineStore,
+} from './stores/index.js';
+
+export {
+	createGalleryStore as createGalleryStateStore,
+	createCommissionStore as createCommissionStateStore,
+} from './stores/index.js';
+
+// ============================================================================
+// Patterns (namespaced to avoid export collisions)
+// ============================================================================
+
+export * as Patterns from './patterns/index.js';
+
+// ============================================================================
+// API Entity Types
 // ============================================================================
 
 export type {
@@ -77,8 +147,8 @@ export type {
 	Account,
 	MediaAttachment,
 	MediaMeta,
-	// Artwork types
-	Artwork,
+	// Artwork types (aliased to avoid collision with Artwork component namespace)
+	Artwork as ArtworkEntity,
 	ArtworkMetadata,
 	MoodData,
 	AIUsageData,
@@ -95,11 +165,11 @@ export type {
 	DiscoveryFilter,
 	DateRangeInput,
 	ColorSearchMode,
-	// Artist profile types
-	ArtistProfile,
-	ArtistBadge,
+	// Artist profile types (aliased to avoid collision with component exports)
+	ArtistProfile as ArtistProfileEntity,
+	ArtistBadge as ArtistBadgeEntity,
 	BadgeType,
-	PortfolioSection,
+	PortfolioSection as PortfolioSectionEntity,
 	SectionLayout,
 	ArtistStats,
 	CommissionInfo,
@@ -124,4 +194,4 @@ export type {
 	ArtworkEdge,
 	PageInfo,
 	Collection,
-} from './types';
+} from './types/index.js';

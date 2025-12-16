@@ -46,3 +46,22 @@ export const Article = {
 	ShareBar: {} as typeof import('./ShareBar.svelte').default,
 	RelatedPosts: {} as typeof import('./RelatedPosts.svelte').default,
 };
+
+// Dynamic imports for tree-shaking
+import Root from './Root.svelte';
+import Header from './Header.svelte';
+import Content from './Content.svelte';
+import Footer from './Footer.svelte';
+import TableOfContents from './TableOfContents.svelte';
+import ReadingProgress from './ReadingProgress.svelte';
+import ShareBar from './ShareBar.svelte';
+import RelatedPosts from './RelatedPosts.svelte';
+
+Article.Root = Root;
+Article.Header = Header;
+Article.Content = Content;
+Article.Footer = Footer;
+Article.TableOfContents = TableOfContents;
+Article.ReadingProgress = ReadingProgress;
+Article.ShareBar = ShareBar;
+Article.RelatedPosts = RelatedPosts;

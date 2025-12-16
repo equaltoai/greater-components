@@ -23,9 +23,9 @@
 // Placeholder exports - components to be implemented
 export { default as Root } from './Root.svelte';
 // export { default as Index } from './Index.svelte';
-// export { default as Header } from './Header.svelte';
-// export { default as RulesSidebar } from './RulesSidebar.svelte';
-// export { default as Stats } from './Stats.svelte';
+export { default as Header } from './Header.svelte';
+export { default as RulesSidebar } from './RulesSidebar.svelte';
+export { default as Stats } from './Stats.svelte';
 // export { default as Settings } from './Settings.svelte';
 
 // Export context utilities
@@ -46,12 +46,18 @@ export type { CommunityContext } from './context.js';
 export const Community = {
 	Root: {} as typeof import('./Root.svelte').default,
 	// Index: {} as typeof import('./Index.svelte').default,
-	// Header: {} as typeof import('./Header.svelte').default,
-	// RulesSidebar: {} as typeof import('./RulesSidebar.svelte').default,
-	// Stats: {} as typeof import('./Stats.svelte').default,
+	Header: {} as typeof import('./Header.svelte').default,
+	RulesSidebar: {} as typeof import('./RulesSidebar.svelte').default,
+	Stats: {} as typeof import('./Stats.svelte').default,
 	// Settings: {} as typeof import('./Settings.svelte').default,
 };
 
 // Dynamic imports for tree-shaking
 import Root from './Root.svelte';
+import Header from './Header.svelte';
+import RulesSidebar from './RulesSidebar.svelte';
+import Stats from './Stats.svelte';
 Community.Root = Root;
+Community.Header = Header;
+Community.RulesSidebar = RulesSidebar;
+Community.Stats = Stats;

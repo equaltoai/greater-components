@@ -65,7 +65,7 @@ const CSS_IMPORTS_NPM = {
  * These are the relative paths from the repo root to the CSS source files
  */
 export const CSS_SOURCE_PATHS = {
-	tokens: 'packages/tokens/src/animations.css',
+	tokens: 'packages/tokens/dist/theme.css',
 	primitives: 'packages/primitives/src/theme.css',
 	faces: {
 		social: 'packages/faces/social/src/theme.css',

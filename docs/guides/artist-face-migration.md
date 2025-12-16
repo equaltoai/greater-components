@@ -12,46 +12,43 @@ This guide covers migrating an existing application from the Social Face to the 
 
 | Social Face     | Artist Face       | Notes                     |
 | --------------- | ----------------- | ------------------------- |
-| `Timeline`      | `GalleryGrid`     | Different layout paradigm |
-| `StatusCard`    | `ArtworkCard`     | Art-focused metadata      |
-| `StatusActions` | `Artwork.Actions` | Different action set      |
+| `TimelineVirtualizedReactive` | `GalleryGrid`     | Different layout paradigm |
+| `Status`                    | `ArtworkCard`     | Art-focused metadata      |
+| `Status.Actions`            | `Artwork.Actions` | Different action set      |
 
 ### Profile Components
 
 | Social Face     | Artist Face               | Notes                |
 | --------------- | ------------------------- | -------------------- |
-| `ProfileHeader` | `ArtistProfile.Root`      | Portfolio-focused    |
-| `ProfileBio`    | `ArtistProfile.Statement` | Rich formatting      |
-| `ProfileStats`  | `ArtistProfile.Stats`     | Art-specific metrics |
+| `Profile.Root`  | `ArtistProfile.Root`      | Portfolio-focused    |
+| `Profile.Header` | `ArtistProfile.HeroBanner` | Rich formatting      |
+| `Profile.Stats` | `ArtistProfile.Stats`     | Art-specific metrics |
 
 ### Content Display
 
 | Social Face     | Artist Face     | Notes                |
 | --------------- | --------------- | -------------------- |
-| `StatusContent` | `Artwork.Root`  | Image-first design   |
-| `MediaGallery`  | `MediaViewer`   | Enhanced zoom/pan    |
-| `ComposeBox`    | `ArtworkUpload` | Metadata-rich upload |
+| `Status.Content` | `Artwork.Root` | Image-first design   |
+| `Status.Media`  | `MediaViewer`   | Enhanced zoom/pan    |
+| `ComposeBox`    | _No direct equivalent_ | Use `createArtistAdapter().createArtwork()` plus your own upload UI |
 
 ## Migration Steps
 
 ### 1. Update Dependencies
 
 ```bash
-# Remove social face (if standalone)
-pnpm remove @equaltoai/greater-components-social
-
-# Add artist face
-pnpm add @equaltoai/greater-components-artist
+# Ensure the umbrella package is installed (includes the Social Face)
+pnpm add @equaltoai/greater-components
 ```
 
 ### 2. Update Imports
 
 ```typescript
 // Before (Social Face)
-import { Timeline, StatusCard, ProfileHeader } from '@equaltoai/greater-components-social';
+import { Profile, Status, TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 
 // After (Artist Face)
-import { GalleryGrid, ArtworkCard, ArtistProfile } from '@equaltoai/greater-components-artist';
+import { Artwork, ArtworkCard, ArtistProfile, GalleryGrid } from '@equaltoai/greater-components/faces/artist';
 ```
 
 ### 3. Update Data Types
@@ -67,13 +64,16 @@ interface Status {
 }
 
 // After (Artist Face)
-interface Artwork {
+interface ArtworkData {
 	id: string;
 	title: string;
-	imageUrl: string;
-	artist: ArtistData;
-	metadata: ArtworkMetadata;
-	// ...
+	images: {
+		thumbnail: string;
+		preview: string;
+		standard: string;
+		full: string;
+	};
+	altText: string;
 }
 ```
 
@@ -83,7 +83,7 @@ interface Artwork {
 
 ```svelte
 <!-- Before -->
-<Timeline {statuses} onLoadMore={loadMore} />
+<TimelineVirtualizedReactive items={statuses} onLoadMore={loadMore} />
 
 <!-- After -->
 <GalleryGrid items={artworks} columns="auto" gap="md" onLoadMore={loadMore} />
@@ -93,12 +93,12 @@ interface Artwork {
 
 ```svelte
 <!-- Before -->
-<StatusCard {status}>
-	<StatusHeader />
-	<StatusContent />
-	<StatusMedia />
-	<StatusActions />
-</StatusCard>
+<Status.Root {status}>
+	<Status.Header />
+	<Status.Content />
+	<Status.Media />
+	<Status.Actions />
+</Status.Root>
 
 <!-- After -->
 <Artwork.Root {artwork}>
@@ -114,12 +114,11 @@ interface Artwork {
 
 ```svelte
 <!-- Before -->
-<ProfileHeader {profile}>
-	<ProfileAvatar />
-	<ProfileName />
-	<ProfileBio />
-	<ProfileStats />
-</ProfileHeader>
+<Profile.Root {profile} isOwnProfile={false}>
+	<Profile.Header />
+	<Profile.Stats />
+	<Profile.Tabs />
+</Profile.Root>
 
 <!-- After -->
 <ArtistProfile.Root {artist}>
@@ -137,31 +136,30 @@ interface Artwork {
 ### Fetching Content
 
 ```typescript
-// Before (Social Face)
-const statuses = await api.getTimeline({ type: 'home' });
+import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+import { createArtistAdapter } from '@equaltoai/greater-components/faces/artist';
 
-// After (Artist Face)
-const artworks = await artistApi.getGallery({
-	type: 'home',
-	includeMetadata: true,
+const baseAdapter = new LesserGraphQLAdapter({
+	endpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+	token: import.meta.env.VITE_LESSER_TOKEN,
+	enableSubscriptions: true,
 });
+
+const artistAdapter = createArtistAdapter(baseAdapter);
+
+const artworks = await artistAdapter.getArtworks({ first: 20 });
 ```
 
 ### Search
 
 ```typescript
-// Before (Social Face)
-const results = await api.search({ q: 'landscape' });
-
-// After (Artist Face)
-const results = await artistApi.discover({
-	query: 'landscape',
-	filters: {
+const results = await artistAdapter.discoverArtworks(
+	{
 		styles: ['impressionism'],
-		colors: ['#4169E1'],
 		mood: { energy: 0.3, valence: 0.7 },
 	},
-});
+	{ first: 20 }
+);
 ```
 
 ## Theme Customization
@@ -199,8 +197,8 @@ For large applications, consider gradual migration:
 
 ```svelte
 <script>
-	import { GalleryGrid } from '@equaltoai/greater-components-artist';
-	import { Timeline } from '@equaltoai/greater-components-social';
+	import { GalleryGrid } from '@equaltoai/greater-components/faces/artist';
+	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 
 	let useArtistFace = $state(true);
 </script>
@@ -208,7 +206,7 @@ For large applications, consider gradual migration:
 {#if useArtistFace}
 	<GalleryGrid items={artworks} />
 {:else}
-	<Timeline {statuses} />
+	<TimelineVirtualizedReactive items={statuses} />
 {/if}
 ```
 

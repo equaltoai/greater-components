@@ -511,6 +511,39 @@
 	padding: var(--gr-spacing-scale-4);
 }
 
+.gr-community-mod-panel__refresh {
+	border: 1px solid var(--gr-community-card-border);
+	background: var(--gr-community-card-background);
+	color: var(--gr-color-text-primary);
+	border-radius: var(--gr-radii-md);
+	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
+	font-size: var(--gr-typography-fontSize-sm);
+	font-weight: var(--gr-typography-fontWeight-medium);
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+}
+
+.gr-community-mod-panel__refresh:hover {
+	background: var(--gr-color-neutral-100);
+}
+
+.gr-community-mod-panel__refresh:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.gr-community-mod-panel__status {
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
+	margin: 0;
+}
+
+.gr-community-mod-panel__error {
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-error-600);
+	margin: 0 0 var(--gr-spacing-scale-2);
+}
+
 .gr-community-mod-queue-item {
 	display: flex;
 	gap: var(--gr-spacing-scale-3);
@@ -520,10 +553,100 @@
 	margin-bottom: var(--gr-spacing-scale-2);
 }
 
+.gr-community-mod-queue-item__content {
+	flex: 1;
+	min-width: 0;
+}
+
+.gr-community-mod-queue-item__title {
+	font-size: var(--gr-typography-fontSize-base);
+	font-weight: var(--gr-typography-fontWeight-semibold);
+	color: var(--gr-color-text-primary);
+	margin: 0 0 var(--gr-spacing-scale-1);
+}
+
+.gr-community-mod-queue-item__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--gr-spacing-scale-2);
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
+}
+
+.gr-community-mod-queue-item__reports {
+	margin: var(--gr-spacing-scale-2) 0 0;
+	padding-left: var(--gr-spacing-scale-4);
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
+}
+
+.gr-community-mod-queue-item__report-detail {
+	color: var(--gr-color-text-tertiary);
+}
+
+.gr-community-mod-queue-item__preview {
+	margin-top: var(--gr-spacing-scale-2);
+	padding: var(--gr-spacing-scale-2);
+	border-radius: var(--gr-radii-md);
+	background: var(--gr-color-neutral-50);
+	border: 1px solid var(--gr-color-border-secondary);
+}
+
 .gr-community-mod-queue-item__actions {
 	display: flex;
 	gap: var(--gr-spacing-scale-2);
 	margin-top: var(--gr-spacing-scale-2);
+}
+
+.gr-community-mod-queue-item__actions button {
+	border: 1px solid var(--gr-community-card-border);
+	background: var(--gr-community-card-background);
+	color: var(--gr-color-text-primary);
+	border-radius: var(--gr-radii-md);
+	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
+	font-size: var(--gr-typography-fontSize-sm);
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+}
+
+.gr-community-mod-queue-item__actions button:hover {
+	background: var(--gr-color-neutral-100);
+}
+
+.gr-community-mod-log {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--gr-spacing-scale-2);
+}
+
+.gr-community-mod-log__entry {
+	padding: var(--gr-spacing-scale-3);
+	border: 1px solid var(--gr-community-card-border);
+	border-radius: var(--gr-radii-md);
+	background: var(--gr-community-card-background);
+}
+
+.gr-community-mod-log__summary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--gr-spacing-scale-2);
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
+}
+
+.gr-community-mod-log__action {
+	font-weight: var(--gr-typography-fontWeight-semibold);
+	color: var(--gr-color-text-primary);
+	text-transform: uppercase;
+}
+
+.gr-community-mod-log__meta {
+	margin-top: var(--gr-spacing-scale-1);
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-tertiary);
 }
 
 /* ============================================================================
@@ -540,6 +663,15 @@
 	height: 200px;
 	object-fit: cover;
 	border-radius: var(--gr-community-card-radius) var(--gr-community-card-radius) 0 0;
+}
+
+.gr-community-header__banner--placeholder {
+	background: linear-gradient(
+		135deg,
+		var(--gr-color-neutral-100),
+		var(--gr-color-neutral-200),
+		var(--gr-color-neutral-100)
+	);
 }
 
 .gr-community-header__info {
@@ -590,4 +722,183 @@
 .gr-community-header__stat-value {
 	font-weight: var(--gr-typography-fontWeight-bold);
 	color: var(--gr-color-text-primary);
+}
+
+.gr-community-header__subscribe {
+	border: 1px solid var(--gr-community-card-border);
+	background: var(--gr-community-card-background);
+	color: var(--gr-color-text-primary);
+	border-radius: var(--gr-radii-full);
+	padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-4);
+	font-size: var(--gr-typography-fontSize-sm);
+	font-weight: var(--gr-typography-fontWeight-medium);
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease,
+		border-color 0.15s ease;
+}
+
+.gr-community-header__subscribe:hover {
+	background: var(--gr-color-neutral-100);
+}
+
+/* ============================================================================
+ * Wiki
+ * ============================================================================ */
+
+.gr-community-wiki {
+	max-width: var(--gr-community-wiki-content-max-width);
+	margin: 0 auto;
+}
+
+.gr-community-wiki__header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--gr-spacing-scale-4);
+	padding: var(--gr-spacing-scale-4);
+	background: var(--gr-community-card-background);
+	border: 1px solid var(--gr-community-card-border);
+	border-radius: var(--gr-community-card-radius);
+}
+
+.gr-community-wiki__heading {
+	min-width: 0;
+}
+
+.gr-community-wiki__title {
+	margin: 0;
+	font-size: var(--gr-typography-fontSize-xl);
+	font-weight: var(--gr-typography-fontWeight-bold);
+	color: var(--gr-color-text-primary);
+}
+
+.gr-community-wiki__meta {
+	margin: var(--gr-spacing-scale-1) 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--gr-spacing-scale-2);
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
+}
+
+.gr-community-wiki__actions {
+	display: flex;
+	gap: var(--gr-spacing-scale-2);
+	flex-shrink: 0;
+}
+
+.gr-community-wiki__action {
+	border: 1px solid var(--gr-community-card-border);
+	background: var(--gr-community-card-background);
+	color: var(--gr-color-text-primary);
+	border-radius: var(--gr-radii-md);
+	padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-3);
+	font-size: var(--gr-typography-fontSize-sm);
+	font-weight: var(--gr-typography-fontWeight-medium);
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+}
+
+.gr-community-wiki__action:hover {
+	background: var(--gr-color-neutral-100);
+}
+
+.gr-community-wiki__action:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.gr-community-wiki__status {
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
+	margin: var(--gr-spacing-scale-2) 0 0;
+}
+
+.gr-community-wiki__error {
+	margin: var(--gr-spacing-scale-2) 0 0;
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-error-600);
+}
+
+.gr-community-wiki__content {
+	margin-top: var(--gr-spacing-scale-3);
+	padding: var(--gr-spacing-scale-4);
+	background: var(--gr-community-card-background);
+	border: 1px solid var(--gr-community-card-border);
+	border-radius: var(--gr-community-card-radius);
+}
+
+.gr-community-wiki__editor {
+	margin-top: var(--gr-spacing-scale-3);
+	padding: var(--gr-spacing-scale-4);
+	background: var(--gr-community-card-background);
+	border: 1px solid var(--gr-community-card-border);
+	border-radius: var(--gr-community-card-radius);
+	display: flex;
+	flex-direction: column;
+	gap: var(--gr-spacing-scale-3);
+}
+
+.gr-community-wiki__field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--gr-spacing-scale-1);
+}
+
+.gr-community-wiki__field-label {
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
+}
+
+.gr-community-wiki__textarea,
+.gr-community-wiki__input {
+	border: 1px solid var(--gr-community-card-border);
+	border-radius: var(--gr-radii-md);
+	padding: var(--gr-spacing-scale-2);
+	font-size: var(--gr-typography-fontSize-sm);
+	background: var(--gr-color-surface-primary);
+	color: var(--gr-color-text-primary);
+}
+
+.gr-community-wiki__textarea {
+	min-height: 220px;
+	resize: vertical;
+	font-family: var(--gr-typography-fontFamily-mono);
+}
+
+.gr-community-wiki__editor-actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.gr-community-wiki-history {
+	margin-top: var(--gr-spacing-scale-3);
+}
+
+.gr-community-wiki-history__list {
+	list-style: none;
+	padding: 0;
+	margin: var(--gr-spacing-scale-2) 0 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--gr-spacing-scale-2);
+}
+
+.gr-community-wiki-history__item {
+	padding: var(--gr-spacing-scale-3);
+	background: var(--gr-community-card-background);
+	border: 1px solid var(--gr-community-card-border);
+	border-radius: var(--gr-radii-md);
+}
+
+.gr-community-wiki-history__rev {
+	font-weight: var(--gr-typography-fontWeight-semibold);
+	color: var(--gr-color-text-primary);
+}
+
+.gr-community-wiki-history__reason {
+	margin-top: var(--gr-spacing-scale-1);
+	font-size: var(--gr-typography-fontSize-sm);
+	color: var(--gr-color-text-secondary);
 }

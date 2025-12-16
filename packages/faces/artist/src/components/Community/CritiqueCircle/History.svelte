@@ -34,7 +34,7 @@ CritiqueCircle.History - Past critiques archive
 			items = items.filter(
 				(item) =>
 					item.artwork.title.toLowerCase().includes(query) ||
-					item.artwork.artistName.toLowerCase().includes(query) ||
+					item.artwork.artist.name.toLowerCase().includes(query) ||
 					item.feedbackRequested?.toLowerCase().includes(query)
 			);
 		}
@@ -110,14 +110,14 @@ CritiqueCircle.History - Past critiques archive
 							onclick={() => handleSelectItem(item)}
 						>
 							<img
-								src={item.artwork.thumbnailUrl || item.artwork.imageUrl}
-								alt={item.artwork.title}
+								src={item.artwork.images.thumbnail}
+								alt={item.artwork.altText}
 								class="critique-history__thumbnail"
 							/>
 							<div class="critique-history__item-info">
 								<span class="critique-history__item-title">{item.artwork.title}</span>
 								<span class="critique-history__item-artist">
-									by {item.artwork.artistName}
+									by {item.artwork.artist.name}
 								</span>
 								<span class="critique-history__item-meta">
 									{item.critiques.length} critique{item.critiques.length !== 1 ? 's' : ''} •

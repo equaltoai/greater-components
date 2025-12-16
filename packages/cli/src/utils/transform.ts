@@ -1,6 +1,11 @@
 /**
  * Import Path Transformation Engine
- * Transforms internal Greater Components import paths to consumer project aliases
+ * Transforms legacy/internal Greater Components import paths to a consumer-friendly layout.
+ *
+ * - Canonicalizes legacy hyphenated packages (e.g. `@equaltoai/greater-components-utils`)
+ *   to umbrella subpath imports (e.g. `@equaltoai/greater-components/utils`).
+ * - Rewrites shared module imports to local CLI-installed paths based on `components.json`
+ *   (e.g. `@equaltoai/greater-components-auth` → `$lib/components/auth` by default).
  */
 
 import type { ComponentConfig } from './config.js';
@@ -32,43 +37,34 @@ export interface TransformResult {
 }
 
 /**
- * Default path mappings for Greater Components internal packages
- * Maps internal package names to consumer alias keys
- *
- * Based on official Greater Components v3.0.0+ package structure:
- * - /primitives - Core UI components (Button, Card, Modal, etc.)
- * - /headless - Behavior-only components (no styling)
- * - /utils - Shared helper functions
- * - /icons - Feather icons and custom icons
- * - /tokens - Design system tokens and CSS variables
- * - /adapters - Protocol adapters (Lesser GraphQL)
- * - /content - Rich content rendering (CodeBlock, MarkdownRenderer)
- * - /faces/social - Twitter/Mastodon-style UI (Timeline, Status)
- * - /shared/* - Shared components (auth, admin, compose, messaging, search, notifications)
+ * Legacy package rewrites (hyphenated → umbrella subpath).
  */
-const DEFAULT_PATH_MAPPINGS: Record<string, keyof ComponentConfig['aliases']> = {
-	// Current v3.0.0+ slash-based paths (official)
-	'@equaltoai/greater-components/primitives': 'ui',
-	'@equaltoai/greater-components/headless': 'hooks',
-	'@equaltoai/greater-components/utils': 'utils',
-	'@equaltoai/greater-components/icons': 'ui',
-	'@equaltoai/greater-components/tokens': 'ui',
-	'@equaltoai/greater-components/adapters': 'lib',
-	'@equaltoai/greater-components/content': 'ui',
-	// Legacy hyphenated paths (for backwards compatibility)
-	'@equaltoai/greater-components-primitives': 'ui',
-	'@equaltoai/greater-components-headless': 'hooks',
-	'@equaltoai/greater-components-utils': 'utils',
-	'@equaltoai/greater-components-icons': 'ui',
-	'@equaltoai/greater-components-tokens': 'ui',
-	'@equaltoai/greater-components-adapters': 'lib',
-	'@equaltoai/greater-components-content': 'ui',
+const LEGACY_PACKAGE_REWRITES: Record<string, string> = {
+	'@equaltoai/greater-components-primitives': '@equaltoai/greater-components/primitives',
+	'@equaltoai/greater-components-icons': '@equaltoai/greater-components/icons',
+	'@equaltoai/greater-components-tokens': '@equaltoai/greater-components/tokens',
+	'@equaltoai/greater-components-utils': '@equaltoai/greater-components/utils',
+	'@equaltoai/greater-components-content': '@equaltoai/greater-components/content',
+	'@equaltoai/greater-components-adapters': '@equaltoai/greater-components/adapters',
+	'@equaltoai/greater-components-headless': '@equaltoai/greater-components/headless',
+	// Social face legacy name
+	'@equaltoai/greater-components-fediverse': '@equaltoai/greater-components/faces/social',
 };
 
 /**
- * Subpath mappings for headless package (e.g., /button, /modal)
+ * Shared module package names that can be installed locally by the CLI.
  */
-const HEADLESS_SUBPATHS = ['button', 'modal', 'menu', 'tooltip', 'tabs'];
+const SHARED_MODULES = [
+	'auth',
+	'admin',
+	'compose',
+	'messaging',
+	'search',
+	'notifications',
+	'chat',
+] as const;
+
+const HEADLESS_PRIMITIVE_SUBPATHS = ['button', 'menu', 'modal', 'tooltip', 'tabs'] as const;
 
 /**
  * Build path mappings from config aliases
@@ -77,49 +73,32 @@ export function buildPathMappings(config: ComponentConfig): PathMapping[] {
 	const mappings: PathMapping[] = [];
 	const aliases = config.aliases;
 
-	// Add headless subpath mappings first (more specific)
-	for (const subpath of HEADLESS_SUBPATHS) {
-		// Current v3.0.0+ format
-		mappings.push({
-			from: `@equaltoai/greater-components/headless/${subpath}`,
-			to: `${aliases.hooks}/${subpath}`,
-			isGlob: false,
-		});
-		// Legacy format
-		mappings.push({
-			from: `@equaltoai/greater-components-headless/${subpath}`,
-			to: `${aliases.hooks}/${subpath}`,
-			isGlob: false,
-		});
-	}
-
-	// Add base package mappings
-	for (const [pkg, aliasKey] of Object.entries(DEFAULT_PATH_MAPPINGS)) {
-		const targetAlias = aliases[aliasKey];
-		if (targetAlias) {
-			mappings.push({
-				from: pkg,
-				to: targetAlias,
-				isGlob: false,
-			});
-		}
-	}
-
-	// Add faces/social mapping (Twitter/Mastodon-style UI)
-	mappings.push({
-		from: '@equaltoai/greater-components/faces/social',
-		to: aliases.ui,
-		isGlob: false,
-	});
-
-	// Shared component paths (auth, admin, compose, messaging, search, notifications)
-	const sharedPaths = ['auth', 'admin', 'compose', 'messaging', 'search', 'notifications'];
-	for (const shared of sharedPaths) {
+	// Local shared modules (preferred when installed via CLI)
+	for (const shared of SHARED_MODULES) {
 		mappings.push({
 			from: `@equaltoai/greater-components/shared/${shared}`,
 			to: `${aliases.components}/${shared}`,
 			isGlob: false,
 		});
+		mappings.push({
+			from: `@equaltoai/greater-components-${shared}`,
+			to: `${aliases.components}/${shared}`,
+			isGlob: false,
+		});
+	}
+
+	// Headless primitives should resolve to locally installed builders.
+	for (const primitive of HEADLESS_PRIMITIVE_SUBPATHS) {
+		mappings.push({
+			from: `@equaltoai/greater-components-headless/${primitive}`,
+			to: `${aliases.lib}/primitives/${primitive}`,
+			isGlob: false,
+		});
+	}
+
+	// Legacy package rewrites (hyphenated → umbrella subpath)
+	for (const [from, to] of Object.entries(LEGACY_PACKAGE_REWRITES)) {
+		mappings.push({ from, to, isGlob: false });
 	}
 
 	return mappings;

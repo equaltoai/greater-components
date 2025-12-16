@@ -1029,7 +1029,7 @@ CSS cascade order:
 
 1. **Token defaults** (`tokens/theme.css`)
 2. **Primitive styles** (`primitives/style.css`)
-3. **Face styles** (`faces/social/theme.css`)
+3. **Face styles** (`faces/social/style.css`)
 4. **App overrides** (`app.css`)
 
 ```css
@@ -1117,12 +1117,13 @@ greater add faces/social
 
 # 4. Configure Lesser connection
 # In src/lib/lesser.ts
-import { createTransportManager } from '$lib/adapters/graphql';
+	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
 
-export const lesser = createTransportManager({
-  endpoint: 'https://api.myinstance.social/graphql',
-  websocket: 'wss://api.myinstance.social/ws',
-});
+	export const lesser = new LesserGraphQLAdapter({
+	  httpEndpoint: 'https://api.myinstance.social/graphql',
+	  wsEndpoint: 'wss://api.myinstance.social/graphql',
+	  token: import.meta.env.VITE_LESSER_TOKEN,
+	});
 
 # 5. Build your routes
 # src/routes/+page.svelte

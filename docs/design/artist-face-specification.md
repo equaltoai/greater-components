@@ -1190,10 +1190,9 @@ client.subscribe('federation:artwork', (event) => {
 import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
 
 const adapter = new LesserGraphQLAdapter({
-	endpoint: import.meta.env.VITE_LESSER_GRAPHQL,
+	httpEndpoint: import.meta.env.VITE_LESSER_GRAPHQL,
+	wsEndpoint: import.meta.env.VITE_LESSER_WS,
 	token: import.meta.env.VITE_LESSER_TOKEN,
-	enableSubscriptions: true,
-	subscriptionEndpoint: import.meta.env.VITE_LESSER_WS,
 });
 
 // Artist Face uses same adapter as Social Face

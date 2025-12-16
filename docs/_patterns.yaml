@@ -186,38 +186,23 @@ patterns:
   lesser_graphql_integration:
     name: 'Integrating with Lesser via GraphQL'
     problem: 'Need type-safe Lesser integration with advanced features'
-    solution: 'Use LesserGraphQLAdapter with generated types'
+    solution: 'Use LesserGraphQLAdapter with GraphQL-backed timeline components'
     correct_example: |
       <script>
         // CORRECT: Use LesserGraphQLAdapter for type-safe integration
         // Provides full TypeScript support and advanced Lesser features
         import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-        import { Status, createLesserTimelineStore } from '@equaltoai/greater-components/fediverse';
+        import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
         
         const adapter = new LesserGraphQLAdapter({
-          endpoint: 'https://my-instance.social/graphql',
+          httpEndpoint: 'https://my-instance.social/graphql',
           token: import.meta.env.VITE_LESSER_TOKEN,
-          enableSubscriptions: true
         });
         
-        // Create timeline with Lesser-specific features
-        const timeline = createLesserTimelineStore({
-          adapter,
-          type: 'HOME',
-          enableRealtime: true
-        });
+        const view = { type: 'home' };
       </script>
 
-      {#each timeline.items as status}
-        <Status.Root {status}>
-          <Status.Header />
-          <Status.Content />
-          <!-- Lesser-exclusive features -->
-          <Status.LesserMetadata showCost showTrust showModeration />
-          <Status.CommunityNotes enableVoting />
-          <Status.Actions onQuote={handleQuote} />
-        </Status.Root>
-      {/each}
+      <TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
     anti_patterns:
       - name: 'Hardcoding API Tokens'
         why: 'Security risk and prevents environment-based configuration'
@@ -225,7 +210,7 @@ patterns:
           // INCORRECT: Never hardcode authentication tokens
           // Tokens exposed in source code and version control
           const adapter = new LesserGraphQLAdapter({
-            endpoint: 'https://my-instance.social/graphql',
+            httpEndpoint: 'https://my-instance.social/graphql',
             token: 'sk_live_abc123xyz789' // SECURITY RISK!
           });
         consequences:
@@ -237,94 +222,61 @@ patterns:
   mastodon_rest_integration:
     name: 'Integrating with Mastodon via REST API'
     problem: 'Need to connect to standard Mastodon instances'
-    solution: 'Use MastodonRESTAdapter for standard ActivityPub servers'
+    solution: 'Use your REST client and map payloads with MastodonAdapter'
     correct_example: |
-      <script>
-        // CORRECT: Use MastodonRESTAdapter for Mastodon/Pleroma/etc
-        // Provides standard Mastodon API compatibility
-        import { MastodonRESTAdapter } from '@equaltoai/greater-components/adapters';
-        import { Status, createTimelineStore } from '@equaltoai/greater-components/fediverse';
-        
-        const adapter = new MastodonRESTAdapter({
-          instanceUrl: 'https://mastodon.social',
-          accessToken: import.meta.env.VITE_MASTODON_TOKEN
-        });
-        
-        const timeline = createTimelineStore({
-          adapter,
-          type: 'PUBLIC',
-          local: true
+      <script lang="ts">
+        import {
+          MastodonAdapter,
+          type MastodonStatus,
+          Status,
+        } from '@equaltoai/greater-components/faces/social';
+
+        const mapper = new MastodonAdapter();
+        let items = $state([]);
+
+        $effect(() => {
+          void (async () => {
+            const response = await fetch(
+              'https://mastodon.social/api/v1/timelines/public?local=true'
+            );
+            const payload = (await response.json()) as MastodonStatus[];
+            items = payload.map((status) => mapper.toGeneric(status));
+          })();
         });
       </script>
 
-      {#each timeline.items as status}
+      {#each items as status (status.id)}
         <Status.Root {status}>
           <Status.Header />
           <Status.Content />
+          <Status.Media />
           <Status.Actions />
         </Status.Root>
       {/each}
     anti_patterns:
-      - name: 'Using Wrong Adapter'
-        why: 'Lesser features require LesserGraphQLAdapter, not REST adapter'
+      - name: 'Using the wrong server API'
+        why: 'Lesser-only features require the Lesser GraphQL API'
         incorrect_example: |
-          // INCORRECT: Can't use Lesser features with REST adapter
-          // Lesser-specific features require GraphQL adapter
-          import { MastodonRESTAdapter } from '@equaltoai/greater-components/adapters';
-
-          const adapter = new MastodonRESTAdapter({
-            instanceUrl: 'https://lesser-instance.social' // Lesser doesn't use REST API
-          });
-
-          // These won't work with REST adapter:
-          // - Quote posts
-          // - Community notes
-          // - Trust scores
-          // - Cost analytics
+          // INCORRECT: Mastodon REST endpoints won't provide Lesser-only fields
+          const response = await fetch('https://lesser-instance.social/api/v1/timelines/home');
+          // For Lesser-specific features, use LesserGraphQLAdapter against /graphql instead.
         consequences:
           - missing_advanced_features
-          - api_errors
           - incomplete_data
           - poor_user_experience
 
   virtual_scrolling_timelines:
     name: 'Implementing Virtual Scrolling for Large Timelines'
     problem: 'Timeline with thousands of posts causes performance issues'
-    solution: 'Use virtual scrolling with timeline stores'
+    solution: 'Use TimelineVirtualizedReactive (TanStack Virtual built-in)'
     correct_example: |
       <script>
-        // CORRECT: Use virtual scrolling for large lists
-        // Only renders visible items for better performance
-        import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
-        import { Status } from '@equaltoai/greater-components/fediverse';
-        
-        const timeline = createTimelineStore({
-          adapter,
-          type: 'HOME',
-          virtualScrolling: true, // Enable virtual scrolling
-          estimateSize: 400 // Estimated height per status
-        });
+        // CORRECT: Virtualization happens inside the component
+        import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
       </script>
 
-      <div class="timeline-container" style="height: 100vh;">
-        {#each timeline.virtualItems as virtualRow}
-          {@const status = timeline.items[virtualRow.index]}
-          <div 
-            style="
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              transform: translateY({virtualRow.start}px);
-            "
-          >
-            <Status.Root {status}>
-              <Status.Header />
-              <Status.Content />
-              <Status.Actions />
-            </Status.Root>
-          </div>
-        {/each}
+      <div style="height: 100vh;">
+        <TimelineVirtualizedReactive {items} estimateSize={320} overscan={8} />
       </div>
     anti_patterns:
       - name: 'Rendering All Items'
@@ -332,14 +284,9 @@ patterns:
         incorrect_example: |
           // INCORRECT: Don't render all timeline items at once
           // Causes severe performance issues with large timelines
-          <script>
-            const timeline = createTimelineStore({ adapter, type: 'HOME' });
-            // No virtual scrolling - will render all items
-          </script>
-
-          {#each timeline.items as status}
+          {#each items as status}
             <!-- Renders 1000+ status cards = browser freeze -->
-            <Status.Root {status}>...</Status.Root>
+            <StatusCard {status} />
           {/each}
         consequences:
           - browser_freeze_with_large_lists
@@ -457,32 +404,32 @@ patterns:
       <script>
         // CORRECT: Handle errors gracefully with user feedback
         // Provides loading states and error messages
-        import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
+        import { createTimelineStore } from '@equaltoai/greater-components/adapters';
         
         let errorMessage = $state('');
-        let isLoading = $state(false);
+        let isLoading = $state(true);
         
         const timeline = createTimelineStore({
           adapter,
-          type: 'HOME',
-          onError: (error) => {
-            console.error('Timeline error:', error);
-            
-            if (error.message.includes('401')) {
-              errorMessage = 'Authentication failed. Please log in again.';
-            } else if (error.message.includes('rate limit')) {
-              errorMessage = 'Too many requests. Please try again later.';
-            } else {
-              errorMessage = 'Failed to load timeline. Please try again.';
-            }
-          }
+          timeline: { type: 'home' },
+        });
+
+        $effect(() => {
+          const unsubscribe = timeline.subscribe((state) => {
+            isLoading = state.isLoading;
+            errorMessage = state.error?.message ?? '';
+          });
+
+          void timeline.refresh();
+
+          return unsubscribe;
         });
       </script>
 
       {#if errorMessage}
         <div class="error-banner">
           {errorMessage}
-          <button onclick={() => timeline.refresh()}>Retry</button>
+          <button onclick={() => timeline.refresh()} disabled={isLoading}>Retry</button>
         </div>
       {/if}
     anti_patterns:
@@ -491,11 +438,7 @@ patterns:
         incorrect_example: |
           // INCORRECT: Don't ignore errors silently
           // Users have no idea what went wrong or how to fix it
-          const timeline = createTimelineStore({
-            adapter,
-            type: 'HOME'
-            // No error handling - errors disappear silently
-          });
+          const timeline = createTimelineStore({ adapter, timeline: { type: 'home' } });
 
           // Timeline fails but user sees loading spinner forever
         consequences:
@@ -940,20 +883,21 @@ patterns:
           - flash_of_unstyled_content
           - inconsistent_styling
 
-  css_setup_full:
-    name: 'Full CSS Setup (All Components)'
-    problem: 'Need CSS imports for apps using fediverse components'
-    solution: 'Use the combined CSS bundle instead of primitives-only'
-    use_when:
-      - using_fediverse_components
-      - building_social_media_features
-      - need_timeline_status_profile_components
+	  css_setup_full:
+	    name: 'Full CSS Setup (All Components)'
+	    problem: 'Need CSS imports for apps using social face components'
+	    solution: 'Import the face CSS after primitives'
+	    use_when:
+	      - using_social_face_components
+	      - building_social_media_features
+	      - need_timeline_status_profile_components
     correct_example: |
       <!-- src/routes/+layout.svelte -->
       <script lang="ts">
-        // CORRECT: Use combined bundle for apps with fediverse components
+        // CORRECT: Tokens first, then primitives, then face styles
         import '@equaltoai/greater-components/tokens/theme.css';
-        import '@equaltoai/greater-components/style.css';  // Combined: primitives + fediverse
+        import '@equaltoai/greater-components/primitives/style.css';
+        import '@equaltoai/greater-components/faces/social/style.css';
 
         import { ThemeProvider } from '@equaltoai/greater-components/primitives';
 
@@ -964,9 +908,9 @@ patterns:
         {@render children()}
       </ThemeProvider>
     why_this_works:
-      - combined_bundle_includes_all_component_styles
-      - fediverse_components_properly_styled
-      - single_import_for_all_styles
+      - face_styles_extend_primitives_classes
+      - social_components_properly_styled
+      - modular_css_imports_match_package_structure
 
   css_setup_dark_theme:
     name: 'Dark Theme CSS Setup'

@@ -15,15 +15,15 @@
 
   ### Import Path Changes
 
-  ```typescript
-  // OLD (v2.x)
-  import { Timeline } from '@equaltoai/greater-components/fediverse';
-  import { CodeBlock } from '@equaltoai/greater-components/primitives';
+	  ```typescript
+	  // OLD (v2.x)
+	  import { Timeline } from '@equaltoai/greater-components/fediverse';
+	  import { CodeBlock } from '@equaltoai/greater-components/primitives';
 
-  // NEW (v3.0)
-  import { Timeline } from '@equaltoai/greater-components/faces/social';
-  import { CodeBlock } from '@equaltoai/greater-components/content';
-  ```
+	  // NEW (v3.0)
+	  import { TimelineCompound as Timeline } from '@equaltoai/greater-components/faces/social';
+	  import { CodeBlock } from '@equaltoai/greater-components/content';
+	  ```
 
   ### New Package Paths
   - `@equaltoai/greater-components/content` - CodeBlock, MarkdownRenderer

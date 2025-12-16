@@ -23,8 +23,9 @@ import {
 } from '../utils/files.js';
 import { detectPackageManager, isDependencyInstalled } from '../utils/packages.js';
 import { computeChecksum } from '../utils/integrity.js';
-import { getComponent } from '../registry/index.js';
+import { getAllComponentNames, getComponent } from '../registry/index.js';
 import { logger } from '../utils/logger.js';
+import { getInstalledFilePath } from '../utils/install-path.js';
 
 /**
  * Severity levels for diagnostic checks
@@ -327,10 +328,8 @@ export async function checkInstalledComponents(
 			continue;
 		}
 
-		const uiDir = resolveAlias(config.aliases.ui, config, cwd);
-
 		for (const file of component.files) {
-			const localPath = path.join(uiDir, installed.name, path.basename(file.path));
+			const localPath = getInstalledFilePath(file.path, config, cwd);
 			const exists = await fileExists(localPath);
 
 			if (!exists) {
@@ -418,46 +417,46 @@ export async function checkOrphanedFiles(
 	cwd: string,
 	config: ComponentConfig
 ): Promise<DiagnosticResult> {
-	const uiDir = resolveAlias(config.aliases.ui, config, cwd);
 	const installedNames = new Set(getInstalledComponentNames(config));
-	const orphanedDirs: string[] = [];
+	const expectedFiles = new Set<string>();
 
-	if (!(await fs.pathExists(uiDir))) {
-		return {
-			name: 'Orphaned Files',
-			passed: true,
-			severity: 'info',
-			message: 'UI directory does not exist yet',
-		};
+	for (const installed of config.installed ?? []) {
+		const component = getComponent(installed.name);
+		if (!component) continue;
+
+		for (const file of component.files) {
+			expectedFiles.add(getInstalledFilePath(file.path, config, cwd));
+		}
 	}
 
-	try {
-		const entries = await fs.readdir(uiDir, { withFileTypes: true });
+	const orphanedComponents = new Set<string>();
 
-		for (const entry of entries) {
-			if (entry.isDirectory() && !installedNames.has(entry.name)) {
-				// Check if it's a known component in registry
-				if (getComponent(entry.name)) {
-					orphanedDirs.push(entry.name);
-				}
+	// Iterate over all known components in the registry by checking filesystem presence for their expected files.
+	// This avoids assuming a particular on-disk folder layout (shadcn-style) and works for `lib/*` + `shared/*`.
+	for (const componentName of getAllComponentNames()) {
+		if (installedNames.has(componentName)) continue;
+
+		const component = getComponent(componentName);
+		if (!component) continue;
+
+		for (const file of component.files) {
+			const localPath = getInstalledFilePath(file.path, config, cwd);
+			if (expectedFiles.has(localPath)) continue;
+			if (await fs.pathExists(localPath)) {
+				orphanedComponents.add(componentName);
+				break;
 			}
 		}
-	} catch {
-		return {
-			name: 'Orphaned Files',
-			passed: true,
-			severity: 'info',
-			message: 'Could not scan UI directory',
-		};
 	}
 
-	if (orphanedDirs.length > 0) {
+	if (orphanedComponents.size > 0) {
+		const list = Array.from(orphanedComponents).sort();
 		return {
 			name: 'Orphaned Files',
 			passed: false,
 			severity: 'warning',
-			message: `${orphanedDirs.length} component folder(s) not tracked in config`,
-			details: orphanedDirs.join(', '),
+			message: `${list.length} component(s) have files on disk but are not tracked in components.json`,
+			details: list.join(', '),
 			fix: 'Add to config with: greater add <component> or remove manually',
 			autoFixable: false,
 		};

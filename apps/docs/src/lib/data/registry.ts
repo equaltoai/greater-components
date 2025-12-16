@@ -556,36 +556,37 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: [],
 		npm: {
-			package: '@equaltoai/greater-components-social',
-			version: '1.0.0',
+			package: '@equaltoai/greater-components',
+			version: '4.2.6',
 		},
 		github: {
-			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/fediverse/src/components/Timeline',
+			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/faces/social/src/components/Timeline',
 		},
 		examples: [
 			{
 				name: 'Basic Timeline',
 				description: 'Simple timeline with items',
-				code: `<script>
-  import * as Timeline from '@equaltoai/greater-components-social/Timeline';
-  
-  const items = [
-    { id: '1', content: 'First post' },
-    { id: '2', content: 'Second post' }
-  ];
+				code: `<script lang="ts">
+	  import { Status, TimelineCompound as Timeline } from '@equaltoai/greater-components/faces/social';
+	  import type { GenericTimelineItem } from '@equaltoai/greater-components/faces/social';
 
-  const handlers = {
-    onItemClick: (item) => console.log('Clicked:', item),
-    onLoadMore: () => console.log('Load more')
-  };
-</script>
+	  const items: GenericTimelineItem[] = [];
+	</script>
 
-<Timeline.Root {items} {handlers}>
-  {#each items as item}
-    <Timeline.Item {item} />
-  {/each}
-  <Timeline.LoadMore />
-</Timeline.Root>`,
+	<Timeline.Root {items}>
+	  {#each items as item, index}
+	    <Timeline.Item {item} {index}>
+	      {#if item.status}
+	        <Status.Root status={item.status}>
+	          <Status.Header />
+	          <Status.Content />
+	          <Status.Actions />
+	        </Status.Root>
+	      {/if}
+	    </Timeline.Item>
+	  {/each}
+	  <Timeline.LoadMore />
+	</Timeline.Root>`,
 			},
 		],
 		tags: ['activitypub', 'timeline', 'feed', 'compound', 'virtual-scroll', 'real-time'],
@@ -626,24 +627,23 @@ export const components: Component[] = [
 		dependencies: ['svelte@^5.0.0'],
 		registryDependencies: ['button'],
 		npm: {
-			package: '@equaltoai/greater-components-social',
-			version: '1.0.0',
+			package: '@equaltoai/greater-components',
+			version: '4.2.6',
 		},
 		github: {
-			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/fediverse/src/components/Auth',
+			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/shared/auth/src',
 		},
 		examples: [
 			{
 				name: 'Login Form',
 				description: 'Complete login experience',
-				code: `<script>
-  import * as Auth from '@equaltoai/greater-components-social/Auth';
-  
+				code: `<script lang="ts">
+  import * as Auth from '@equaltoai/greater-components/shared/auth';
+
   const handlers = {
-    onLogin: async ({ email, password, remember }) => {
-      const result = await api.login(email, password);
-      return result;
-    }
+    onLogin: async ({ email, password }) => {
+      return api.login(email, password);
+    },
   };
 </script>
 
@@ -689,37 +689,31 @@ export const components: Component[] = [
 		dependencies: [],
 		registryDependencies: [],
 		npm: {
-			package: '@equaltoai/greater-components-social',
-			version: '1.0.0',
+			package: '@equaltoai/greater-components',
+			version: '4.2.6',
 		},
 		github: {
-			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/fediverse/src/adapters/graphql',
+			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/adapters/src/graphql',
 		},
 		examples: [
 			{
 				name: 'Basic Usage',
 				description: 'Initialize client and fetch timeline',
-				code: `import { createGraphQLClient } from '@equaltoai/greater-components-social/adapters/graphql';
+				code: `import { LesserGraphQLAdapter, createTimelineStore } from '@equaltoai/greater-components/adapters';
 
-const client = createGraphQLClient({
-  endpoint: 'https://api.lesser.example.com/graphql',
+const adapter = new LesserGraphQLAdapter({
+  httpEndpoint: 'https://api.lesser.example.com/graphql',
+  wsEndpoint: 'wss://api.lesser.example.com/graphql',
   token: 'your-auth-token',
-  enableCache: true,
-  cacheTTL: 300000 // 5 minutes
 });
 
-// Fetch timeline (automatically cached)
-const timeline = await client.query(GET_TIMELINE, {
-  limit: 20,
-  type: 'home'
+const timeline = createTimelineStore({
+  adapter,
+  timeline: { type: 'home' },
 });
 
-// Subscribe to real-time updates
-const unsubscribe = client.subscribe(
-  TIMELINE_UPDATES,
-  (event) => console.log('New activity:', event),
-  { type: 'home' }
-);`,
+await timeline.refresh();
+timeline.subscribe((state) => console.log(state.items.length));`,
 			},
 		],
 		tags: ['adapter', 'graphql', 'lesser', 'cache', 'websocket', 'real-time'],

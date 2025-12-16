@@ -28,8 +28,8 @@ describe('patternRegistry', () => {
 		expect(patternRegistry['visibility-selector']).toBeDefined();
 	});
 
-	it('contains content-warning pattern', () => {
-		expect(patternRegistry['content-warning']).toBeDefined();
+	it('contains content-warning-handler pattern', () => {
+		expect(patternRegistry['content-warning-handler']).toBeDefined();
 	});
 
 	it('contains custom-emoji-picker pattern', () => {
@@ -114,11 +114,11 @@ describe('getPattern', () => {
 	});
 
 	it('returns content-warning pattern', () => {
-		const pattern = getPattern('content-warning');
+		const pattern = getPattern('content-warning-handler');
 
 		expect(pattern).not.toBeNull();
 		if (pattern) {
-			expect(pattern.name).toBe('content-warning');
+			expect(pattern.name).toBe('content-warning-handler');
 		}
 	});
 
@@ -155,7 +155,7 @@ describe('getAllPatternNames', () => {
 		expect(names).toContain('thread-view');
 		expect(names).toContain('moderation-tools');
 		expect(names).toContain('visibility-selector');
-		expect(names).toContain('content-warning');
+		expect(names).toContain('content-warning-handler');
 		expect(names).toContain('custom-emoji-picker');
 		expect(names).toContain('federation-indicator');
 		expect(names).toContain('instance-picker');
@@ -243,11 +243,11 @@ describe('getRelatedPatterns', () => {
 		}
 	});
 
-	it('returns related patterns for content-warning', () => {
-		const pattern = getPattern('content-warning');
+	it('returns related patterns for content-warning-handler', () => {
+		const pattern = getPattern('content-warning-handler');
 
 		if (pattern?.relatedPatterns && pattern.relatedPatterns.length > 0) {
-			const related = getRelatedPatterns('content-warning');
+			const related = getRelatedPatterns('content-warning-handler');
 
 			expect(related).toBeInstanceOf(Array);
 			expect(related.length).toBeGreaterThan(0);
@@ -327,8 +327,8 @@ describe('pattern content validation', () => {
 		}
 	});
 
-	it('content-warning has related patterns', () => {
-		const pattern = getPattern('content-warning');
+	it('content-warning-handler has related patterns', () => {
+		const pattern = getPattern('content-warning-handler');
 
 		if (pattern) {
 			expect(pattern.relatedPatterns).toBeDefined();

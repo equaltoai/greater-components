@@ -218,7 +218,7 @@ const initialDocuments: SearchDocument[] = [
 	{
 		id: 'adapters',
 		title: 'Adapters',
-		content: 'Platform adapters for Mastodon, Bluesky, etc',
+		content: 'Transport + Lesser GraphQL adapter + stores + mappers',
 		href: '/api/adapters',
 		category: 'API Reference',
 		section: 'Integration',

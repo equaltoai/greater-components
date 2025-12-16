@@ -15,7 +15,6 @@ import {
 	getInstalledComponent,
 	getInstalledComponentNames,
 	addInstalledComponent,
-	resolveAlias,
 	FALLBACK_REF,
 	type ComponentConfig,
 	type InstalledComponent,
@@ -28,6 +27,7 @@ import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js'
 
 import { transformImports } from '../utils/transform.js';
 import { logger } from '../utils/logger.js';
+import { getInstalledFilePath } from '../utils/install-path.js';
 
 /**
  * Conflict resolution choice
@@ -57,20 +57,6 @@ interface FileUpdateStatus {
 	hasLocalModifications: boolean;
 	diff?: DiffResult;
 	error?: string;
-}
-
-/**
- * Get the local file path for a component file
- */
-function getLocalFilePath(
-	componentName: string,
-	filePath: string,
-	config: ComponentConfig,
-	cwd: string
-): string {
-	const uiDir = resolveAlias(config.aliases.ui, config, cwd);
-	const fileName = path.basename(filePath);
-	return path.join(uiDir, componentName, fileName);
 }
 
 /**
@@ -205,7 +191,7 @@ async function updateComponent(
 	let skipComponent = false;
 
 	for (const file of component.files) {
-		const localPath = getLocalFilePath(componentName, file.path, config, cwd);
+		const localPath = getInstalledFilePath(file.path, config, cwd);
 		const remoteContent = remoteFiles.get(file.path) || '';
 
 		const status: FileUpdateStatus = {

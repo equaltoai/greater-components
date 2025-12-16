@@ -186,7 +186,7 @@ export const listCommand = new Command()
 	)
 	.option(
 		'--domain <domain>',
-		'Filter by domain (social, blog, community, auth, admin, chat, core)'
+		'Filter by domain (social, blog, community, artist, auth, admin, chat, core)'
 	)
 	.option('--installed', 'Show only installed components')
 	.option('--available', 'Show only not-installed components')

@@ -833,34 +833,6 @@ Container for icons with consistent shapes, sizes, and colors.
 
 ---
 
-#### CodeBlock
-
-Syntax highlighting code block. **⚠️ Requires peer dependency: `shiki`**
-
-**Props:**
-
-| Prop              | Type      | Default  | Description               |
-| ----------------- | --------- | -------- | ------------------------- |
-| `code`            | `string`  | -        | Code content              |
-| `language`        | `string`  | `'text'` | Language for highlighting |
-| `showCopy`        | `boolean` | `true`   | Show copy button          |
-| `showLineNumbers` | `boolean` | `false`  | Show line numbers         |
-
----
-
-#### MarkdownRenderer
-
-Safe markdown rendering. **⚠️ Requires peer dependencies: `isomorphic-dompurify`, `marked`**
-
-**Props:**
-
-| Prop       | Type      | Default | Description      |
-| ---------- | --------- | ------- | ---------------- |
-| `content`  | `string`  | `''`    | Markdown content |
-| `sanitize` | `boolean` | `true`  | Sanitize HTML    |
-
----
-
 ### Layout & Typography
 
 #### Card
@@ -1744,11 +1716,46 @@ interface SpinnerConfig {
 
 ## Faces Package
 
+Faces are curated UI kits for different product surfaces. Each face exports components and patterns and has its own CSS bundle:
+
+- Social: `@equaltoai/greater-components/faces/social` (+ `@equaltoai/greater-components/faces/social/style.css`)
+- Blog: `@equaltoai/greater-components/faces/blog` (+ `@equaltoai/greater-components/faces/blog/style.css`)
+- Community: `@equaltoai/greater-components/faces/community` (+ `@equaltoai/greater-components/faces/community/style.css`)
+- Artist: `@equaltoai/greater-components/faces/artist` (+ `@equaltoai/greater-components/faces/artist/style.css`)
+
+### Social Face
+
 `@equaltoai/greater-components/faces/social`
 
-Social media components for ActivityPub applications (formerly Fediverse package).
+Social media components and ActivityPub patterns for Mastodon/Pleroma/Lesser-style UIs.
 
-**Key Components:** Status, Timeline, Profile, Auth, Filters, Hashtags, Lists
+**Key Components:** `Timeline`, `Status`, `Profile`, `Lists`, `Filters`, `Hashtags`  
+**Key Patterns:** `ThreadView`, `ContentWarningHandler`, `VisibilitySelector`, `ModerationTools`, `FederationIndicator`
+
+### Blog Face
+
+`@equaltoai/greater-components/faces/blog`
+
+Long-form publishing UI for articles and publications.
+
+**Key Components:** `Article`, `Author`, `Publication`, `Navigation`, `Editor`
+
+### Community Face
+
+`@equaltoai/greater-components/faces/community`
+
+Forum/group discussion UI.
+
+**Key Components:** `Community`, `Post`, `Thread`, `Voting`, `Flair`, `Moderation`, `Wiki`
+
+### Artist Face
+
+`@equaltoai/greater-components/faces/artist`
+
+Portfolio-centric + community tooling for visual artists, including federation utilities and an adapter extension.
+
+**Key Components:** `Artwork`, `GalleryGrid`, `ArtistProfile`, `DiscoveryEngine`, `MediaViewer`  
+**Also Includes:** `createArtistAdapter`, `toActivityPubNote`, `generateArtworkUri`, `serializeMetadata`
 
 ---
 
@@ -1756,7 +1763,45 @@ Social media components for ActivityPub applications (formerly Fediverse package
 
 `@equaltoai/greater-components/content`
 
-Content rendering components including safe Markdown rendering.
+Content rendering components (syntax highlighting + safe Markdown rendering). This package is split out because it includes heavier dependencies (e.g. Shiki and unified/rehype tooling).
+
+### CodeBlock
+
+Syntax highlighting code block.
+
+**Props:**
+
+| Prop              | Type                     | Default        | Description                           |
+| ----------------- | ------------------------ | -------------- | ------------------------------------- |
+| `code`            | `string`                 | -              | Code content                          |
+| `language`        | `string`                 | `'text'`       | Language for highlighting             |
+| `showCopy`        | `boolean`                | `true`         | Show copy button                      |
+| `showLineNumbers` | `boolean`                | `false`        | Show line numbers                     |
+| `highlightLines`  | `number[]`               | `[]`           | Lines to highlight (1-based)          |
+| `maxHeight`       | `string \| number`       | -              | Maximum height before scrolling       |
+| `wrap`            | `boolean`                | `false`        | Wrap long lines                       |
+| `filename`        | `string`                 | -              | Filename to display in the header     |
+| `variant`         | `'outlined' \| 'filled'` | `'outlined'`   | Visual variant                        |
+| `theme`           | `string`                 | `'github-dark'` | Shiki theme name                      |
+| `class`           | `string`                 | `''`           | Additional CSS classes                |
+| `onCopy`          | `(code: string) => void` | -              | Callback when code is copied          |
+
+### MarkdownRenderer
+
+Safe markdown rendering.
+
+**Props:**
+
+| Prop               | Type                     | Default | Description                          |
+| ------------------ | ------------------------ | ------- | ------------------------------------ |
+| `content`          | `string`                 | -       | Markdown content                     |
+| `sanitize`         | `boolean`                | `true`  | Sanitize output HTML                 |
+| `allowedTags`      | `string[]`               | -       | Override allowed HTML tags           |
+| `enableLinks`      | `boolean`                | `true`  | Enable clickable links               |
+| `openLinksInNewTab`| `boolean`                | `true`  | Add `target="_blank"` + safe `rel`   |
+| `class`            | `string`                 | `''`    | Additional CSS classes               |
+| `onRenderComplete` | `() => void`             | -       | Callback when rendering completes    |
+| `onError`          | `(error: Error) => void` | -       | Callback on render error             |
 
 ---
 
@@ -1779,13 +1824,16 @@ Domain-specific logic and state management.
 
 `@equaltoai/greater-components/adapters`
 
-Protocol adapters for different ActivityPub servers.
+Transport, GraphQL, stores, and mappers for Lesser integration and protocol payload conversion.
 
-| Adapter                | Description                |
-| ---------------------- | -------------------------- |
-| `LesserGraphQLAdapter` | Lesser server with GraphQL |
-| `MastodonRESTAdapter`  | Mastodon REST API          |
-| `PleromaRESTAdapter`   | Pleroma REST API           |
+| Export                 | Description                                          |
+| ---------------------- | ---------------------------------------------------- |
+| `LesserGraphQLAdapter` | Typed GraphQL adapter for Lesser (queries/mutations) |
+| `createGraphQLClient`  | Apollo client factory (HTTP + optional WebSocket)    |
+| `createTimelineStore`  | Reactive timeline store (paging + optional streaming)|
+| `TransportManager`     | Streaming transport orchestration                    |
+| `mapMastodonStatus`    | Mapper: Mastodon REST payload → unified model        |
+| `mapLesserPost`        | Mapper: Lesser GraphQL payload → unified model       |
 
 ---
 

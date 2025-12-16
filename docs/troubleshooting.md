@@ -204,7 +204,8 @@ Import BOTH CSS layers in your root layout:
 ```svelte
 <script lang="ts">
 	import '@equaltoai/greater-components/tokens/theme.css';
-	import '@equaltoai/greater-components/style.css'; // Combined bundle (primitives + fediverse)
+	import '@equaltoai/greater-components/primitives/style.css';
+	import '@equaltoai/greater-components/faces/social/style.css';
 </script>
 ```
 
@@ -228,7 +229,7 @@ getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-
 | Components render but unstyled      | `primitives/style.css` | Add component styles import                    |
 | CSS variables show as invalid       | `tokens/theme.css`     | Add tokens import FIRST                        |
 | Both unstyled AND invalid variables | Both files             | Add both imports in correct order              |
-| Fediverse components unstyled       | `style.css` bundle     | Use combined bundle instead of primitives-only |
+| Social face components unstyled     | Face CSS               | Add `faces/social/style.css` after primitives  |
 
 See [CSS Architecture Guide](./css-architecture.md) for complete documentation.
 
@@ -704,34 +705,10 @@ Rendering all items instead of using virtual scrolling
 
 ```svelte
 <script>
-	import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
-
-	const timeline = createTimelineStore({
-		adapter,
-		type: 'HOME',
-		virtualScrolling: true, // Enable virtual scrolling
-		estimateSize: 400, // Estimated item height
-	});
+	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 </script>
 
-<div class="timeline" style="height: 100vh; overflow: auto;">
-	<div style="height: {timeline.totalSize}px; position: relative;">
-		{#each timeline.virtualItems as virtualRow}
-			{@const item = timeline.items[virtualRow.index]}
-			<div
-				style="
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        transform: translateY({virtualRow.start}px);
-      "
-			>
-				<Status {item} />
-			</div>
-		{/each}
-	</div>
-</div>
+<TimelineVirtualizedReactive {items} estimateSize={320} />
 ```
 
 **Performance targets:**
@@ -916,7 +893,7 @@ VITE_LESSER_TOKEN=your-auth-token-here
 	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
 
 	const adapter = new LesserGraphQLAdapter({
-		endpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
 		token: import.meta.env.VITE_LESSER_TOKEN,
 	});
 </script>
@@ -927,12 +904,18 @@ VITE_LESSER_TOKEN=your-auth-token-here
 ```typescript
 let token = getStoredToken();
 
-adapter.onError = async (error) => {
-	if (error.message.includes('401')) {
-		token = await refreshToken();
-		adapter.updateToken(token);
+async function withAuth<T>(fn: () => Promise<T>): Promise<T> {
+	try {
+		return await fn();
+	} catch (error) {
+		if (error instanceof Error && (error.message.includes('401') || error.message.includes('403'))) {
+			token = await refreshToken();
+			adapter.updateToken(token);
+			return await fn();
+		}
+		throw error;
 	}
-};
+}
 ```
 
 ---
@@ -952,10 +935,9 @@ Subscription endpoint incorrect or not enabled
 
 ```typescript
 const adapter = new LesserGraphQLAdapter({
-	endpoint: 'https://your-instance.social/graphql',
-	token: token,
-	enableSubscriptions: true,
-	subscriptionEndpoint: 'wss://your-instance.social/graphql', // WebSocket URL
+	httpEndpoint: 'https://your-instance.social/graphql',
+	wsEndpoint: 'wss://your-instance.social/graphql',
+	token,
 });
 ```
 
@@ -980,21 +962,18 @@ ws.onerror = (error) => console.error('WebSocket error:', error);
 - Cost analytics unavailable
 
 **Cause:**
-Using MastodonRESTAdapter instead of LesserGraphQLAdapter
+Using a non-Lesser data source (e.g. REST timelines) instead of the Lesser GraphQL adapter
 
 **Solution:**
 
 ```svelte
 <script>
-	// INCORRECT: REST adapter doesn't support Lesser features
-	import { MastodonRESTAdapter } from '@equaltoai/greater-components/adapters';
-
-	// CORRECT: Use GraphQL adapter for Lesser
 	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
 
 	const adapter = new LesserGraphQLAdapter({
-		endpoint: 'https://lesser-instance.social/graphql',
-		token: token,
+		httpEndpoint: 'https://lesser-instance.social/graphql',
+		wsEndpoint: 'wss://lesser-instance.social/graphql',
+		token,
 	});
 </script>
 ```

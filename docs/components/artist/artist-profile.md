@@ -1,361 +1,198 @@
-# Artist Profile Components
+# Artist Profile Components (Artist Face)
 
-> Components for artist portfolios, profiles, and professional presentation
+> Portfolio-style artist profiles as a compound component
 
-## Overview
+## Imports
 
-Artist Profile components transform user profiles into legitimate portfolio experiences with customizable gallery sections, professional badges, and comprehensive statistics.
+```ts
+import { ArtistProfile, ArtistBadge, PortfolioSection } from '@equaltoai/greater-components/faces/artist';
+```
 
-## ArtistProfile.Root
+## `ArtistProfile`
 
-Container compound component for artist gallery/portfolio.
-
-### Basic Usage
+`ArtistProfile` is a compound component. Use `<ArtistProfile.Root>` to set context, then compose the UI with `ArtistProfile.*`.
 
 ```svelte
 <script lang="ts">
-	import { ArtistProfile } from '@equaltoai/greater-components-artist';
-	import type { ArtistData } from '@equaltoai/greater-components-artist/types';
+	import { ArtistProfile } from '@equaltoai/greater-components/faces/artist';
 
-	const artist: ArtistData = {
+	const artist = {
 		id: 'artist-1',
-		slug: 'jane-artist',
-		name: 'Jane Artist',
+		displayName: 'Jane Artist',
 		username: 'janeartist',
-		pronouns: 'she/her',
-		shortBio: 'Contemporary oil painter exploring light and shadow',
-		statement: 'My work explores the interplay between natural light...',
+		profileUrl: '/artists/janeartist',
 		avatar: '/avatars/jane.jpg',
 		heroBanner: '/banners/jane-hero.jpg',
-		location: 'Portland, OR',
-		primaryMedium: 'Oil Painting',
-		mediums: ['Oil Painting', 'Watercolor', 'Mixed Media'],
-		badges: [
-			{ type: 'verified', label: 'Verified Artist', verified: true },
-			{ type: 'pro', label: 'Pro Member', verified: true },
-		],
+		statement: 'My work explores the interplay between natural light...',
+		heroArtworks: [],
+		badges: [{ type: 'verified', tooltip: 'Verified artist identity' }],
+		status: 'online',
+		verified: true,
+		commissionStatus: 'open',
 		stats: {
-			artworkCount: 127,
-			followerCount: 3420,
-			followingCount: 156,
+			followers: 3420,
+			following: 156,
+			works: 127,
+			exhibitions: 4,
+			collaborations: 12,
 			totalViews: 45000,
-			totalLikes: 8900,
 		},
-		acceptsCommissions: true,
-		commissionStatus: 'Open for commissions',
+		sections: [],
+		joinedAt: new Date().toISOString(),
 	};
-
-	let isOwnProfile = $state(false);
 </script>
 
-<ArtistProfile.Root {artist} {isOwnProfile}>
-	<ArtistProfile.HeroBanner />
+<ArtistProfile.Root {artist} isOwnProfile={false} showSocial={true}>
+	<ArtistProfile.HeroBanner rotating />
 	<ArtistProfile.Avatar />
-	<ArtistProfile.Name />
+	<ArtistProfile.Name showUsername linkToProfile />
 	<ArtistProfile.Badges />
 	<ArtistProfile.Statement />
 	<ArtistProfile.Stats />
-	<ArtistProfile.Sections />
 	<ArtistProfile.Actions />
+	<ArtistProfile.Sections />
 </ArtistProfile.Root>
 ```
 
-### Props
+### `ArtistProfile.Root` Props
 
-| Prop           | Type              | Default  | Description         |
-| -------------- | ----------------- | -------- | ------------------- |
-| `artist`       | `ArtistData`      | required | Artist profile data |
-| `isOwnProfile` | `boolean`         | `false`  | Viewing own profile |
-| `handlers`     | `ProfileHandlers` | `{}`     | Event handlers      |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `artist` | `ArtistData` | - |
+| `isOwnProfile` | `boolean` | `false` |
+| `handlers` | `ProfileHandlers` | `{}` |
+| `layout` | `'gallery' \| 'portfolio' \| 'timeline'` | `'gallery'` |
+| `showHeroBanner` | `boolean` | `true` |
+| `enableParallax` | `boolean` | `true` |
+| `showSocial` | `boolean` | `true` |
+| `class` | `string` | `''` |
+| `children` | `Snippet` | - |
 
-### Event Handlers
+### Notes
 
-```typescript
-interface ProfileHandlers {
-	onFollow?: (artist: ArtistData) => void;
-	onMessage?: (artist: ArtistData) => void;
-	onCommission?: (artist: ArtistData) => void;
-	onShare?: (artist: ArtistData) => void;
-	onEdit?: () => void;
-}
-```
+- “Professional mode” is `showSocial={false}` (hides social affordances like follow in `ArtistProfile.Actions`).
+- Edit UI is enabled via `isOwnProfile={true}` and `handlers` (`onEdit`, `onSave`, `onCancel`).
 
 ## Subcomponents
 
-### ArtistProfile.HeroBanner
+### `ArtistProfile.HeroBanner` Props
 
-Signature artwork banner (rotating or static).
+| Prop | Type | Default |
+| --- | --- | --- |
+| `height` | `'sm' \| 'md' \| 'lg' \| 'full'` | `'md'` |
+| `rotating` | `boolean` | `false` |
+| `rotationInterval` | `number` | `5000` |
+| `class` | `string` | `''` |
 
-```svelte
-<ArtistProfile.HeroBanner mode="static" height={300} parallax={true} />
-```
+### `ArtistProfile.Avatar` Props
 
-| Prop               | Type                                    | Default    | Description             |
-| ------------------ | --------------------------------------- | ---------- | ----------------------- |
-| `mode`             | `'static' \| 'rotating' \| 'slideshow'` | `'static'` | Banner mode             |
-| `height`           | `number`                                | `250`      | Banner height in pixels |
-| `parallax`         | `boolean`                               | `false`    | Enable parallax effect  |
-| `rotationInterval` | `number`                                | `5000`     | Rotation interval (ms)  |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'lg'` |
+| `showStatus` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-### ArtistProfile.Avatar
+### `ArtistProfile.Name` Props
 
-Artist avatar with status indicator.
+| Prop | Type | Default |
+| --- | --- | --- |
+| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `1` |
+| `showUsername` | `boolean` | `true` |
+| `linkToProfile` | `boolean` | `false` |
+| `class` | `string` | `''` |
 
-```svelte
-<ArtistProfile.Avatar size="xl" showStatus={true} editable={isOwnProfile} />
-```
+### `ArtistProfile.Badges` Props
 
-| Prop         | Type                           | Default | Description          |
-| ------------ | ------------------------------ | ------- | -------------------- |
-| `size`       | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'xl'`  | Avatar size          |
-| `showStatus` | `boolean`                      | `true`  | Show online status   |
-| `editable`   | `boolean`                      | `false` | Allow avatar editing |
+| Prop | Type | Default |
+| --- | --- | --- |
+| `size` | `'sm' \| 'md'` | `'md'` |
+| `maxVisible` | `number` | `5` |
+| `class` | `string` | `''` |
 
-### ArtistProfile.Name
+### `ArtistProfile.Statement` Props
 
-Display name with verification badge.
+| Prop | Type | Default |
+| --- | --- | --- |
+| `maxLines` | `number` | `5` |
+| `expandable` | `boolean` | `true` |
+| `class` | `string` | `''` |
 
-```svelte
-<ArtistProfile.Name showUsername={true} showPronouns={true} />
-```
+### `ArtistProfile.Stats` Props
 
-### ArtistProfile.Badges
+| Prop | Type | Default |
+| --- | --- | --- |
+| `show` | `(keyof ArtistStats)[]` | `['followers','works','exhibitions','collaborations']` |
+| `clickable` | `boolean` | `true` |
+| `direction` | `'row' \| 'column'` | `'row'` |
+| `class` | `string` | `''` |
 
-Professional badges display.
+### `ArtistProfile.Sections` Props
 
-```svelte
-<ArtistProfile.Badges maxVisible={5} showTooltips={true} />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `class` | `string` | `''` |
 
-### ArtistProfile.Statement
+### `ArtistProfile.Actions` Props
 
-Rich-formatted artist statement.
+| Prop | Type | Default |
+| --- | --- | --- |
+| `showFollow` | `boolean` | `true` |
+| `showMessage` | `boolean` | `true` |
+| `showCommission` | `boolean` | `true` |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` |
+| `class` | `string` | `''` |
 
-```svelte
-<ArtistProfile.Statement truncate={true} maxLength={300} expandable={true} />
-```
+### `ArtistProfile.Edit` Props
 
-### ArtistProfile.Stats
+| Prop | Type | Default |
+| --- | --- | --- |
+| `class` | `string` | `''` |
 
-Followers, works, exhibitions, collaborations.
+### `ArtistProfile.Timeline` Props
 
-```svelte
-<ArtistProfile.Stats show={['artworks', 'followers', 'following', 'views']} layout="horizontal" />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `items` | `TimelineItem[]` | `[]` |
+| `showSocial` | `boolean` | `true` |
+| `onLoadMore` | `() => void \| Promise<void>` | - |
+| `hasMore` | `boolean` | `false` |
+| `class` | `string` | `''` |
 
-### ArtistProfile.Sections
+## Standalone Components
 
-Customizable gallery sections.
-
-```svelte
-<ArtistProfile.Sections
-	sections={[
-		{ id: 'featured', title: 'Featured Work', layout: 'featured' },
-		{ id: 'recent', title: 'Recent Work', layout: 'grid' },
-		{ id: 'collections', title: 'Collections', layout: 'row' },
-	]}
-	editable={isOwnProfile}
-/>
-```
-
-### ArtistProfile.Actions
-
-Follow, message, commission buttons.
-
-```svelte
-<ArtistProfile.Actions actions={['follow', 'message', 'commission', 'share']} />
-```
-
-### ArtistProfile.Edit
-
-Profile editing mode.
-
-```svelte
-{#if isOwnProfile}
-	<ArtistProfile.Edit onSave={handleSave} onCancel={handleCancel} />
-{/if}
-```
-
-### ArtistProfile.Timeline
-
-Artist activity timeline.
-
-```svelte
-<ArtistProfile.Timeline events={timelineEvents} layout="vertical" />
-```
-
-## ArtistBadge
-
-Professional verification/credential badge.
+### `ArtistBadge`
 
 ```svelte
 <script lang="ts">
-	import { ArtistBadge } from '@equaltoai/greater-components-artist';
+	import { ArtistBadge } from '@equaltoai/greater-components/faces/artist';
 </script>
 
-<ArtistBadge type="verified" tooltip="Verified professional artist" size="md" />
-
-<ArtistBadge type="educator" tooltip="Art educator with 5+ years experience" />
-
-<ArtistBadge type="institution" tooltip="Affiliated with MoMA" />
+<ArtistBadge type="verified" tooltip="Verified artist identity" />
 ```
 
-### Props
+| Prop | Type | Default |
+| --- | --- | --- |
+| `type` | `'verified' \| 'educator' \| 'institution' \| 'mentor' \| 'curator'` | - |
+| `tooltip` | `string` | - |
+| `size` | `'sm' \| 'md'` | `'md'` |
+| `class` | `string` | `''` |
 
-| Prop      | Type           | Default  | Description         |
-| --------- | -------------- | -------- | ------------------- |
-| `type`    | `BadgeType`    | required | Badge type          |
-| `tooltip` | `string`       | -        | Explanation tooltip |
-| `size`    | `'sm' \| 'md'` | `'md'`   | Badge size          |
-
-### Badge Types
-
-- `verified` - Verified artist identity
-- `educator` - Art educator
-- `institution` - Institutional affiliation
-- `mentor` - Available for mentoring
-- `curator` - Curator credentials
-- `pro` - Professional member
-- `emerging` - Emerging artist
-- `established` - Established artist
-- `ai-transparent` - AI usage transparency
-
-## PortfolioSection
-
-Customizable gallery section within a profile.
+### `PortfolioSection`
 
 ```svelte
 <script lang="ts">
-	import { PortfolioSection } from '@equaltoai/greater-components-artist';
+	import { PortfolioSection } from '@equaltoai/greater-components/faces/artist';
 </script>
 
-<PortfolioSection
-	title="Featured Work"
-	description="My most celebrated pieces"
-	items={featuredArtworks}
-	layout="featured"
-	editable={isOwnProfile}
-/>
+<PortfolioSection title="Featured Works" items={artworks} layout="featured" onReorder={console.log} />
 ```
 
-### Props
-
-| Prop          | Type                            | Default  | Description         |
-| ------------- | ------------------------------- | -------- | ------------------- |
-| `title`       | `string`                        | required | Section title       |
-| `description` | `string`                        | -        | Section description |
-| `items`       | `ArtworkData[]`                 | `[]`     | Artworks in section |
-| `layout`      | `'grid' \| 'row' \| 'featured'` | `'grid'` | Section layout      |
-| `editable`    | `boolean`                       | `false`  | Enable editing      |
-
-### Pre-defined Section Types
-
-```svelte
-<!-- Recent Work -->
-<PortfolioSection title="Recent Work" items={recentArtworks} layout="grid" />
-
-<!-- Featured -->
-<PortfolioSection title="Featured" items={featuredArtworks} layout="featured" />
-
-<!-- Collections -->
-<PortfolioSection title="Collections" items={collections} layout="row" />
-
-<!-- Commissions -->
-<PortfolioSection title="Commission Examples" items={commissionExamples} layout="grid" />
-
-<!-- Work in Progress -->
-<PortfolioSection title="Work in Progress" items={wipArtworks} layout="row" />
-```
-
-## Edit Mode
-
-### Enabling Edit Mode
-
-```svelte
-<script lang="ts">
-	let editMode = $state(false);
-
-	async function handleSave(updates: Partial<ArtistData>) {
-		await updateProfile(updates);
-		editMode = false;
-	}
-</script>
-
-<ArtistProfile.Root {artist} isOwnProfile={true}>
-	{#if editMode}
-		<ArtistProfile.Edit onSave={handleSave} onCancel={() => (editMode = false)} />
-	{:else}
-		<ArtistProfile.HeroBanner />
-		<ArtistProfile.Avatar />
-		<!-- ... other components -->
-		<button onclick={() => (editMode = true)}>Edit Profile</button>
-	{/if}
-</ArtistProfile.Root>
-```
-
-### Editable Fields
-
-```svelte
-<ArtistProfile.Edit>
-	<ArtistProfile.Edit.Avatar />
-	<ArtistProfile.Edit.Banner />
-	<ArtistProfile.Edit.Name />
-	<ArtistProfile.Edit.Bio />
-	<ArtistProfile.Edit.Statement />
-	<ArtistProfile.Edit.Location />
-	<ArtistProfile.Edit.Mediums />
-	<ArtistProfile.Edit.SocialLinks />
-	<ArtistProfile.Edit.CommissionStatus />
-</ArtistProfile.Edit>
-```
-
-## Professional Mode
-
-Enhanced features for professional artists.
-
-```svelte
-<ArtistProfile.Root {artist} mode="professional">
-	<ArtistProfile.HeroBanner />
-	<ArtistProfile.Avatar />
-	<ArtistProfile.Name />
-	<ArtistProfile.Badges />
-	<ArtistProfile.Statement />
-	<ArtistProfile.Stats />
-
-	<!-- Professional-only sections -->
-	<ArtistProfile.CV />
-	<ArtistProfile.Exhibitions />
-	<ArtistProfile.Press />
-	<ArtistProfile.ContactForm />
-</ArtistProfile.Root>
-```
-
-## Accessibility
-
-### Landmark Regions
-
-```svelte
-<ArtistProfile.Root {artist}>
-	<header>
-		<ArtistProfile.HeroBanner />
-		<ArtistProfile.Avatar />
-		<ArtistProfile.Name />
-	</header>
-
-	<main>
-		<ArtistProfile.Statement />
-		<ArtistProfile.Sections />
-	</main>
-
-	<aside>
-		<ArtistProfile.Stats />
-		<ArtistProfile.Actions />
-	</aside>
-</ArtistProfile.Root>
-```
-
-### Focus Management
-
-```svelte
-<ArtistProfile.Root {artist} focusOnMount={true} announceOnLoad={true} />
-```
+| Prop | Type | Default |
+| --- | --- | --- |
+| `title` | `string` | - |
+| `description` | `string` | - |
+| `items` | `ArtworkData[]` | `[]` |
+| `layout` | `'grid' \| 'row' \| 'featured'` | `'grid'` |
+| `editable` | `boolean` | `false` |
+| `onReorder` | `(itemIds: string[]) => void` | - |
+| `class` | `string` | `''` |

@@ -12,7 +12,7 @@ const mockConfig = {
 		utils: '$lib/utils',
 		ui: '$lib/ui',
 		lib: '$lib',
-		hooks: '$lib/hooks',
+		hooks: '$lib/primitives',
 	},
 };
 

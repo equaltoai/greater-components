@@ -8,25 +8,30 @@ Transparency components ensure clear communication about AI usage in artwork cre
 
 ## AIDisclosure
 
-AI usage transparency badge and details.
+AI usage transparency badge and details (standalone).
 
 ### Basic Usage
 
 ```svelte
 <script lang="ts">
-	import { AIDisclosure } from '@equaltoai/greater-components-artist';
+	import { Transparency } from '@equaltoai/greater-components/faces/artist';
 
-	const aiUsage = {
-		usedAI: true,
-		types: ['reference-generation', 'color-suggestion'],
-		tools: ['Midjourney', 'Adobe Firefly'],
-		percentage: 15,
-		description:
-			'AI was used to generate initial reference images and suggest color palettes. All final artwork is hand-painted.',
+	const usage = {
+		hasAI: true,
+		tools: [
+			{
+				name: 'Midjourney',
+				usage: 'generation',
+				description: 'Initial concept reference generation',
+			},
+		],
+		humanContribution: 85,
+		aiContribution: 15,
+		disclosureLevel: 'detailed',
 	};
 </script>
 
-<AIDisclosure usage={aiUsage} variant="badge" expandable={true} />
+<Transparency.AIDisclosure {usage} variant="badge" expandable />
 ```
 
 ### Props
@@ -36,54 +41,12 @@ AI usage transparency badge and details.
 | `usage`      | `AIUsageData`                       | required  | AI usage details        |
 | `variant`    | `'badge' \| 'detailed' \| 'inline'` | `'badge'` | Display variant         |
 | `expandable` | `boolean`                           | `true`    | Show detailed breakdown |
+| `class`      | `string`                            | `''`      | Custom CSS class        |
 
-### Variants
+### Notes
 
-#### Badge Variant
-
-Compact badge for artwork cards.
-
-```svelte
-<AIDisclosure usage={aiUsage} variant="badge" />
-```
-
-#### Detailed Variant
-
-Full disclosure panel.
-
-```svelte
-<AIDisclosure usage={aiUsage} variant="detailed" showTools={true} showPercentage={true} />
-```
-
-#### Inline Variant
-
-Inline text disclosure.
-
-```svelte
-<AIDisclosure usage={aiUsage} variant="inline" />
-```
-
-### AI Usage Types
-
-```typescript
-type AIUsageType =
-	| 'none' // No AI used
-	| 'reference-generation' // AI-generated references
-	| 'color-suggestion' // AI color palette suggestions
-	| 'composition-assist' // AI composition assistance
-	| 'upscaling' // AI image upscaling
-	| 'background-generation' // AI-generated backgrounds
-	| 'style-transfer' // AI style transfer
-	| 'full-generation' // Fully AI-generated
-	| 'ai-assisted' // General AI assistance
-	| 'ai-collaboration'; // Human-AI collaboration
-```
-
-### No AI Badge
-
-```svelte
-<AIDisclosure usage={{ usedAI: false }} variant="badge" showNoAIBadge={true} />
-```
+- This component is standalone and does not depend on `Artwork` context.
+- For disclosure tied to an `Artwork` object, use `Artwork.AIDisclosure` inside `<Artwork.Root>`.
 
 ## ProcessDocumentation
 
@@ -93,38 +56,37 @@ Human creativity documentation for AI-assisted work.
 
 ```svelte
 <script lang="ts">
-	import { ProcessDocumentation } from '@equaltoai/greater-components-artist';
+	import { Transparency } from '@equaltoai/greater-components/faces/artist';
 
 	const steps = [
 		{
 			id: '1',
+			order: 1,
 			type: 'human',
-			title: 'Initial Concept Sketch',
-			description: 'Hand-drawn thumbnail sketches exploring composition',
-			imageUrl: '/process/sketch.jpg',
-			timestamp: '2024-03-01T10:00:00Z',
+			title: 'Initial concept sketch',
+			description: 'Hand-drawn thumbnails exploring composition',
+			timestamp: new Date().toISOString(),
 		},
 		{
 			id: '2',
-			type: 'ai-assisted',
-			title: 'Reference Generation',
-			description: 'Used Midjourney to generate lighting references',
-			imageUrl: '/process/reference.jpg',
-			aiTool: 'Midjourney',
-			timestamp: '2024-03-01T11:00:00Z',
+			order: 2,
+			type: 'ai',
+			title: 'AI-assisted references',
+			description: 'Generated lighting reference options',
+			timestamp: new Date().toISOString(),
 		},
 		{
 			id: '3',
+			order: 3,
 			type: 'human',
-			title: 'Final Painting',
-			description: 'Hand-painted final artwork in Photoshop',
-			imageUrl: '/process/final.jpg',
-			timestamp: '2024-03-05T16:00:00Z',
+			title: 'Final painting',
+			description: 'Hand-painted final artwork',
+			timestamp: new Date().toISOString(),
 		},
 	];
 </script>
 
-<ProcessDocumentation {steps} showAIContribution={true} />
+<Transparency.ProcessDocumentation {steps} showAIContribution />
 ```
 
 ### Props
@@ -133,23 +95,27 @@ Human creativity documentation for AI-assisted work.
 | -------------------- | ---------------------- | ------------ | --------------------------- |
 | `steps`              | `ProcessStep[]`        | `[]`         | Process documentation       |
 | `showAIContribution` | `boolean`              | `true`       | Highlight AI vs human steps |
-| `layout`             | `'timeline' \| 'grid'` | `'timeline'` | Display layout              |
+| `title`              | `string`               | `'Creative Process'` | Header title     |
+| `overview`           | `string`               | -            | Optional overview text      |
+| `totalTime`          | `string`               | -            | Optional duration summary   |
+| `enableExport`       | `boolean`              | `false`      | Enable export handler       |
+| `compact`            | `boolean`              | `false`      | Compact mode                |
+| `class`              | `string`               | `''`         | Custom CSS class            |
 
 ### Step Types
 
 ```typescript
 interface ProcessStep {
 	id: string;
-	type: 'human' | 'ai-assisted' | 'ai-generated';
+	order: number;
+	type: 'human' | 'ai' | 'hybrid';
 	title: string;
 	description?: string;
-	imageUrl?: string;
-	aiTool?: string;
-	timestamp?: string;
+	timestamp?: string | Date;
 }
 ```
 
-## Opt-Out Controls
+## AIOptOutControls
 
 Artist controls for AI training opt-out.
 
@@ -157,66 +123,45 @@ Artist controls for AI training opt-out.
 
 ```svelte
 <script lang="ts">
-	import { OptOutControls } from '@equaltoai/greater-components-artist';
+	import { Transparency } from '@equaltoai/greater-components/faces/artist';
 
-	let settings = $state({
-		optOutOfTraining: true,
-		allowStyleAnalysis: false,
-		allowColorExtraction: true,
-		showNoAIBadge: true,
+	let status = $state({
+		discoveryAI: true,
+		generativeAI: false,
+		allAI: false,
 	});
 </script>
 
-<OptOutControls {settings} onUpdate={(newSettings) => (settings = newSettings)} />
+<Transparency.AIOptOutControls currentStatus={status} onUpdate={(next) => (status = next)} />
 ```
 
 ### Settings
 
 ```typescript
-interface AIOptOutSettings {
-	optOutOfTraining: boolean; // Opt out of AI training
-	allowStyleAnalysis: boolean; // Allow style analysis
-	allowColorExtraction: boolean; // Allow color extraction
-	showNoAIBadge: boolean; // Display "No AI" badge
-	licenseRestrictions: string[]; // License restrictions
+interface GranularAIOptOutStatus {
+	discoveryAI: boolean;
+	generativeAI: boolean;
+	allAI: boolean;
 }
 ```
 
-### Per-Artwork Controls
+## EthicalSourcingBadge
 
 ```svelte
 <script lang="ts">
-	import { ArtworkAISettings } from '@equaltoai/greater-components-artist';
+	import { Transparency } from '@equaltoai/greater-components/faces/artist';
+
+	const verification = {
+		id: '1',
+		category: 'ai-ethics',
+		level: 'third-party-verified',
+		title: 'Ethical AI Training',
+		description: 'Model trained on ethically sourced data',
+		verifiedAt: new Date(),
+	};
 </script>
 
-<ArtworkAISettings
-	{artwork}
-	settings={{
-		optOutOfTraining: true,
-		noDerivatives: true,
-		requireAttribution: true,
-	}}
-/>
-```
-
-## Ethical Badges
-
-### No AI Training Badge
-
-```svelte
-<NoAITrainingBadge tooltip="This artwork is opted out of AI training" />
-```
-
-### Human-Made Badge
-
-```svelte
-<HumanMadeBadge verified={true} tooltip="100% human-created artwork" />
-```
-
-### Ethical Sourcing Badge
-
-```svelte
-<EthicalSourcingBadge tooltip="All references ethically sourced" />
+<Transparency.EthicalSourcingBadge {verification} />
 ```
 
 ## Accessibility
@@ -224,7 +169,7 @@ interface AIOptOutSettings {
 ### Screen Reader Support
 
 ```svelte
-<AIDisclosure usage={aiUsage} aria-label="AI usage disclosure" announceOnExpand={true} />
+<Transparency.AIDisclosure {usage} />
 ```
 
 ### Keyboard Navigation

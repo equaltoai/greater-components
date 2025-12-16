@@ -81,18 +81,18 @@ Features:
 					type="button"
 					class="exhibition-gallery__item"
 					onclick={() => handleArtworkClick(artwork)}
-					aria-label={`View ${artwork.title} by ${artwork.artistName}`}
+					aria-label={`View ${artwork.title} by ${artwork.artist.name}`}
 				>
 					<img
-						src={artwork.thumbnailUrl || artwork.imageUrl}
-						alt={artwork.title}
+						src={artwork.images.preview}
+						alt={artwork.altText}
 						class="exhibition-gallery__image"
 						loading="lazy"
 					/>
 					{#if showCaptions}
 						<div class="exhibition-gallery__caption">
 							<span class="exhibition-gallery__title">{artwork.title}</span>
-							<span class="exhibition-gallery__artist">{artwork.artistName}</span>
+							<span class="exhibition-gallery__artist">{artwork.artist.name}</span>
 						</div>
 					{/if}
 				</button>
@@ -116,8 +116,8 @@ Features:
 						onclick={() => handleArtworkClick(artwork)}
 					>
 						<img
-							src={artwork.imageUrl}
-							alt={artwork.title}
+							src={artwork.images.standard}
+							alt={artwork.altText}
 							class="exhibition-gallery__narrative-image"
 							loading={index < 3 ? 'eager' : 'lazy'}
 						/>
@@ -125,7 +125,7 @@ Features:
 					<div class="exhibition-gallery__narrative-content">
 						<h3 class="exhibition-gallery__narrative-title">{artwork.title}</h3>
 						<p class="exhibition-gallery__narrative-artist">
-							{artwork.artistName}
+							{artwork.artist.name}
 							{#if artwork.metadata?.year}
 								<span>, {artwork.metadata.year}</span>
 							{/if}
@@ -164,8 +164,8 @@ Features:
 									onclick={() => handleArtworkClick(artwork)}
 								>
 									<img
-										src={artwork.thumbnailUrl || artwork.imageUrl}
-										alt={artwork.title}
+										src={artwork.images.thumbnail}
+										alt={artwork.altText}
 										class="exhibition-gallery__timeline-image"
 										loading="lazy"
 									/>

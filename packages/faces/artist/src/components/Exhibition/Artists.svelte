@@ -42,7 +42,7 @@ Features:
 
 	// Count artworks per artist
 	function getArtworkCount(artistId: string): number {
-		return exhibition.artworks.filter((artwork) => artwork.artistId === artistId).length;
+		return exhibition.artworks.filter((artwork) => artwork.artist.id === artistId).length;
 	}
 
 	// Show all state

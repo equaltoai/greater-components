@@ -107,14 +107,13 @@ CritiqueCircle.Queue - Critique request queue management
 						<div class="critique-queue__position">#{item.position}</div>
 						<div class="critique-queue__artwork">
 							<img
-								src={item.artwork.thumbnailUrl || ''}
-								alt={item.artwork.title}
+								src={item.artwork.images.thumbnail}
+								alt={item.artwork.altText}
 								class="critique-queue__thumbnail"
 							/>
 							<div class="critique-queue__details">
 								<span class="critique-queue__artwork-title">{item.artwork.title}</span>
-								<span class="critique-queue__artist">by {item.artwork.artistName || 'Unknown'}</span
-								>
+								<span class="critique-queue__artist">by {item.artwork.artist.name}</span>
 							</div>
 						</div>
 						<div class="critique-queue__wait">

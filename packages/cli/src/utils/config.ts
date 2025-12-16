@@ -96,7 +96,7 @@ export const componentConfigSchema = z.object({
 		utils: z.string().default('$lib/utils'),
 		ui: z.string().default('$lib/components/ui'),
 		lib: z.string().default('$lib'),
-		hooks: z.string().default('$lib/hooks'),
+		hooks: z.string().default('$lib/primitives'),
 	}),
 	css: cssConfigSchema.optional().default({
 		tokens: true,
@@ -541,7 +541,7 @@ export function createDefaultConfig(options: CreateConfigOptions = {}): Componen
 			utils: `${libPrefix}/utils`,
 			ui: `${libPrefix}/components/ui`,
 			lib: libPrefix,
-			hooks: `${libPrefix}/hooks`,
+			hooks: `${libPrefix}/primitives`,
 		},
 		css: {
 			tokens: true,

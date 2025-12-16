@@ -30,7 +30,7 @@
 		<CodeExample
 			code={`<script>
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  import { ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components-primitives';
+  import { ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components/primitives';
 </script>
 
 <ThemeProvider>
@@ -58,7 +58,7 @@
 
 		<CodeExample
 			code={`<script>
-  import { ThemeProvider } from '@equaltoai/greater-components-primitives';
+  import { ThemeProvider } from '@equaltoai/greater-components/primitives';
   import { browser } from '$app/environment';
 
   // Detect system preference
@@ -87,7 +87,8 @@
 		<h3>Listening for System Changes</h3>
 		<p>React to system preference changes in real-time:</p>
 
-		code={`<script>
+		<CodeExample
+			code={`<script>
   import { onMount } from 'svelte';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,8 +108,8 @@
 </script>
 
 <p>Current theme: {theme}</p>`}
-
-		language="svelte" />
+			language="svelte"
+		/>
 	</section>
 
 	<section>

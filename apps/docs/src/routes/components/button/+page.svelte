@@ -130,7 +130,7 @@
 	description="A versatile button component with multiple variants, sizes, and states. Fully accessible and customizable."
 	status="stable"
 	version="0.1.0"
-	importPath="@equaltoai/greater-components-primitives"
+	importPath="@equaltoai/greater-components/primitives"
 	{props}
 	{events}
 	{slots}

@@ -35,7 +35,7 @@ Features:
 -->
 
 <script lang="ts">
-	import type { ArtworkData } from '../../types/index.js';
+	import type { ArtworkData } from '../Artwork/context.js';
 
 	/**
 	 * Print option for artwork
@@ -513,7 +513,7 @@ Features:
 				onclick={(e) => e.stopPropagation()}
 				onkeydown={(e) => e.stopPropagation()}
 			>
-				<h4 class="gr-monetization-purchase-inquiry-title">Contact {artwork.artistName}</h4>
+				<h4 class="gr-monetization-purchase-inquiry-title">Contact {artwork.artist.name}</h4>
 				<textarea
 					class="gr-monetization-purchase-inquiry-input"
 					placeholder="Your message..."

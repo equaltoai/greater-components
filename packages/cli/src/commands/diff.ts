@@ -11,7 +11,6 @@ import {
 	configExists,
 	getInstalledComponent,
 	getInstalledComponentNames,
-	resolveAlias,
 	FALLBACK_REF,
 	type ComponentConfig,
 } from '../utils/config.js';
@@ -21,6 +20,7 @@ import { readFile, fileExists } from '../utils/files.js';
 import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js';
 import { logger } from '../utils/logger.js';
 import { resolveRef } from '../utils/registry-index.js';
+import { getInstalledFilePath } from '../utils/install-path.js';
 
 /**
  * Result of diffing a single component
@@ -69,21 +69,6 @@ function formatColoredDiff(unifiedDiff: string): string {
 	});
 
 	return coloredLines.join('\n');
-}
-
-/**
- * Get the local file path for a component file
- */
-function getLocalFilePath(
-	componentName: string,
-	filePath: string,
-	config: ComponentConfig,
-	cwd: string
-): string {
-	const uiDir = resolveAlias(config.aliases.ui, config, cwd);
-	// Component files are typically stored in ui directory with component name
-	const fileName = path.basename(filePath);
-	return path.join(uiDir, componentName, fileName);
 }
 
 /**
@@ -138,7 +123,7 @@ async function diffComponent(
 	let hasLocalModifications = false;
 
 	for (const file of component.files) {
-		const localPath = getLocalFilePath(componentName, file.path, config, cwd);
+		const localPath = getInstalledFilePath(file.path, config, cwd);
 		const remoteContent = remoteFiles.get(file.path) || '';
 
 		const result: FileDiffResult = {

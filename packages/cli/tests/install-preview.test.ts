@@ -37,7 +37,7 @@ function createMockConfig(): ComponentConfig {
 			utils: '$lib/utils',
 			ui: '$lib/components/ui',
 			lib: '$lib',
-			hooks: '$lib/hooks',
+			hooks: '$lib/primitives',
 		},
 		css: {
 			tokens: true,

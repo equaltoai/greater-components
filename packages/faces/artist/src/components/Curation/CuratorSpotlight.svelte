@@ -211,8 +211,8 @@ Features:
 						aria-label={`View ${artwork.title}`}
 					>
 						<img
-							src={artwork.imageUrl || artwork.thumbnailUrl}
-							alt={artwork.title}
+							src={artwork.images.preview}
+							alt={artwork.altText}
 							loading="lazy"
 						/>
 					</button>

@@ -1,253 +1,90 @@
-# Gallery Components
+# Gallery Components (Artist Face)
 
-> Layout components for displaying artwork collections with virtual scrolling and responsive behavior
+> Grid/row/masonry layouts for displaying `ArtworkData[]`
 
-## Overview
+## Imports
 
-Gallery components provide flexible layouts for displaying artwork collections. They support virtual scrolling for performance, responsive column counts, and various clustering modes.
-
-## GalleryGrid
-
-Masonry-style grid layout for artwork display.
-
-### Basic Usage
-
-```svelte
-<script lang="ts">
-	import { GalleryGrid } from '@equaltoai/greater-components-artist';
-	import type { ArtworkData } from '@equaltoai/greater-components-artist/types';
-
-	let artworks: ArtworkData[] = $state([]);
-	let loading = $state(false);
-
-	async function loadMore() {
-		loading = true;
-		const newArtworks = await fetchArtworks();
-		artworks = [...artworks, ...newArtworks];
-		loading = false;
-	}
-</script>
-
-<GalleryGrid
-	items={artworks}
-	columns="auto"
-	gap="md"
-	virtualScrolling={true}
-	onLoadMore={loadMore}
-/>
+```ts
+import { Gallery, GalleryGrid, GalleryRow, GalleryMasonry } from '@equaltoai/greater-components/faces/artist';
 ```
 
-### Props
+## `Gallery` Namespace
 
-| Prop               | Type                                       | Default  | Description                      |
-| ------------------ | ------------------------------------------ | -------- | -------------------------------- |
-| `items`            | `ArtworkData[]`                            | `[]`     | Artworks to display              |
-| `columns`          | `number \| 'auto'`                         | `'auto'` | Column count or auto-responsive  |
-| `gap`              | `'sm' \| 'md' \| 'lg'`                     | `'md'`   | Gap between items                |
-| `clustering`       | `'none' \| 'artist' \| 'theme' \| 'smart'` | `'none'` | Smart grouping mode              |
-| `virtualScrolling` | `boolean`                                  | `true`   | Enable virtual scrolling         |
-| `overscan`         | `number`                                   | `5`      | Items to render outside viewport |
-| `onLoadMore`       | `() => void`                               | -        | Infinite scroll callback         |
-| `loading`          | `boolean`                                  | `false`  | Loading state                    |
-
-### Responsive Columns
+All layouts are also exposed via a single namespace:
 
 ```svelte
-<GalleryGrid
-	items={artworks}
-	columns="auto"
-	breakpoints={{
-		sm: 1, // 1 column on mobile
-		md: 2, // 2 columns on tablet
-		lg: 3, // 3 columns on desktop
-		xl: 4, // 4 columns on large screens
-	}}
-/>
+<Gallery.Grid items={artworks} />
+<Gallery.Row items={featured} title="Featured" />
+<Gallery.Masonry items={artworks} />
 ```
 
-### Clustering Modes
+## `GalleryGrid`
+
+Masonry-style grid with optional clustering and automatic virtual scrolling for large sets.
 
 ```svelte
-<!-- Group by artist -->
-<GalleryGrid items={artworks} clustering="artist" />
-
-<!-- Group by theme/style -->
-<GalleryGrid items={artworks} clustering="theme" />
-
-<!-- AI-powered smart grouping -->
-<GalleryGrid items={artworks} clustering="smart" />
+<GalleryGrid items={artworks} columns="auto" gap="md" clustering="none" onLoadMore={loadMore} />
 ```
 
-### Virtual Scrolling Configuration
+| Prop | Type | Default |
+| --- | --- | --- |
+| `items` | `ArtworkData[]` | `[]` |
+| `columns` | `number \| 'auto'` | `'auto'` |
+| `gap` | `'sm' \| 'md' \| 'lg'` | `'md'` |
+| `clustering` | `'none' \| 'artist' \| 'theme' \| 'smart'` | `'none'` |
+| `virtualScrolling` | `boolean` | `false` |
+| `onLoadMore` | `() => void` | - |
+| `onItemClick` | `(item: ArtworkData) => void` | - |
+| `scrollKey` | `string` | `'gallery'` |
+| `itemRenderer` | `Snippet<[ArtworkData, number]>` | - |
+| `class` | `string` | `''` |
+
+## `GalleryRow`
+
+Horizontal row with scroll snapping + arrow controls.
 
 ```svelte
-<GalleryGrid
-	items={artworks}
-	virtualScrolling={true}
-	overscan={10}
-	estimatedItemHeight={300}
-	scrollContainer={containerRef}
-/>
+<GalleryRow items={featured} title="Featured This Week" showAllLink="/gallery/featured" cardSize="md" />
 ```
 
-## GalleryRow
+| Prop | Type | Default |
+| --- | --- | --- |
+| `items` | `ArtworkData[]` | `[]` |
+| `title` | `string` | - |
+| `showAllLink` | `string` | - |
+| `cardSize` | `'sm' \| 'md' \| 'lg'` | `'md'` |
+| `onItemClick` | `(item: ArtworkData) => void` | - |
+| `itemRenderer` | `Snippet<[ArtworkData, number]>` | - |
+| `class` | `string` | `''` |
 
-Horizontal scrolling row for curated selections.
+## `GalleryMasonry`
 
-### Basic Usage
+Absolute-positioned masonry layout (variable height) with optional virtual scrolling.
 
 ```svelte
-<script lang="ts">
-	import { GalleryRow } from '@equaltoai/greater-components-artist';
-</script>
-
-<GalleryRow
-	items={featuredArtworks}
-	title="Featured This Week"
-	showAllLink="/gallery/featured"
-	cardSize="md"
-/>
+<GalleryMasonry items={artworks} columnWidth={280} gap={16} onLoadMore={loadMore} />
 ```
 
-### Props
+| Prop | Type | Default |
+| --- | --- | --- |
+| `items` | `ArtworkData[]` | `[]` |
+| `columnWidth` | `number` | `280` |
+| `gap` | `number` | `16` |
+| `virtualScrolling` | `boolean` | `false` |
+| `onLoadMore` | `() => void` | - |
+| `onItemClick` | `(item: ArtworkData) => void` | - |
+| `scrollKey` | `string` | `'masonry'` |
+| `itemRenderer` | `Snippet<[ArtworkData, number]>` | - |
+| `class` | `string` | `''` |
 
-| Prop          | Type                   | Default | Description             |
-| ------------- | ---------------------- | ------- | ----------------------- |
-| `items`       | `ArtworkData[]`        | `[]`    | Artworks to display     |
-| `title`       | `string`               | -       | Row title               |
-| `showAllLink` | `string`               | -       | Link to full collection |
-| `cardSize`    | `'sm' \| 'md' \| 'lg'` | `'md'`  | Card size in row        |
-| `scrollSnap`  | `boolean`              | `true`  | Enable scroll snapping  |
-| `showArrows`  | `boolean`              | `true`  | Show navigation arrows  |
+## Custom Rendering (`itemRenderer`)
 
-### Multiple Rows
+Use a snippet prop to render each item:
 
 ```svelte
-<div class="gallery-rows">
-	<GalleryRow items={recentArtworks} title="Recent Uploads" showAllLink="/gallery/recent" />
+{#snippet renderItem(item, index)}
+	<ArtworkCard artwork={item} variant="grid" tabindex={index === 0 ? 0 : -1} />
+{/snippet}
 
-	<GalleryRow items={trendingArtworks} title="Trending Now" showAllLink="/gallery/trending" />
-
-	<GalleryRow
-		items={followingArtworks}
-		title="From Artists You Follow"
-		showAllLink="/gallery/following"
-	/>
-</div>
-```
-
-## GalleryMasonry
-
-Variable-height masonry layout respecting artwork aspect ratios.
-
-### Basic Usage
-
-```svelte
-<script lang="ts">
-	import { GalleryMasonry } from '@equaltoai/greater-components-artist';
-</script>
-
-<GalleryMasonry items={artworks} columnWidth={300} gap={16} />
-```
-
-### Props
-
-| Prop          | Type            | Default | Description              |
-| ------------- | --------------- | ------- | ------------------------ |
-| `items`       | `ArtworkData[]` | `[]`    | Artworks to display      |
-| `columnWidth` | `number`        | `300`   | Target column width (px) |
-| `gap`         | `number`        | `16`    | Gap between items (px)   |
-| `minColumns`  | `number`        | `1`     | Minimum column count     |
-| `maxColumns`  | `number`        | `6`     | Maximum column count     |
-
-### Responsive Configuration
-
-```svelte
-<GalleryMasonry
-	items={artworks}
-	columnWidth={300}
-	gap={16}
-	responsive={{
-		sm: { columnWidth: 150, gap: 8 },
-		md: { columnWidth: 250, gap: 12 },
-		lg: { columnWidth: 300, gap: 16 },
-	}}
-/>
-```
-
-## Performance
-
-### Virtual Scrolling
-
-Virtual scrolling renders only visible items plus overscan:
-
-```svelte
-<GalleryGrid
-	items={largeCollection}
-	virtualScrolling={true}
-	overscan={5}
-	onVisibleRangeChange={(start, end) => {
-		console.log(`Rendering items ${start} to ${end}`);
-	}}
-/>
-```
-
-### Lazy Loading Images
-
-```svelte
-<GalleryGrid items={artworks} lazyLoadImages={true} placeholderColor="#f0f0f0" />
-```
-
-### Intersection Observer
-
-```svelte
-<GalleryGrid items={artworks} onLoadMore={loadMore} loadMoreThreshold={0.8} />
-```
-
-## Accessibility
-
-### Keyboard Navigation
-
-| Key         | Action                |
-| ----------- | --------------------- |
-| `Tab`       | Move to next item     |
-| `Shift+Tab` | Move to previous item |
-| `Enter`     | Open artwork          |
-| `Home`      | Go to first item      |
-| `End`       | Go to last item       |
-
-### Screen Reader Support
-
-```svelte
-<GalleryGrid items={artworks} aria-label="Artwork gallery" announceOnLoad={true} />
-```
-
-### Focus Management
-
-```svelte
-<GalleryGrid items={artworks} focusOnMount={false} restoreFocusOnUpdate={true} />
-```
-
-## Styling
-
-### CSS Custom Properties
-
-```css
-.gallery-grid {
-	--gallery-gap-sm: 8px;
-	--gallery-gap-md: 16px;
-	--gallery-gap-lg: 24px;
-	--gallery-card-radius: var(--radius-md);
-	--gallery-card-shadow: var(--shadow-sm);
-}
-```
-
-### Custom Card Rendering
-
-```svelte
-<GalleryGrid items={artworks}>
-	{#snippet card(artwork)}
-		<CustomArtworkCard {artwork} />
-	{/snippet}
-</GalleryGrid>
+<GalleryGrid items={artworks} itemRenderer={renderItem} />
 ```
