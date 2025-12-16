@@ -74,7 +74,7 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -22,13 +22,13 @@
     },
     "./CodeBlock": {
       "types": "./dist/components/CodeBlock.svelte.d.ts",
-      "svelte": "./dist/components/CodeBlock.svelte.js",
-      "import": "./dist/components/CodeBlock.svelte.js"
+      "svelte": "./dist/components/CodeBlock.svelte",
+      "import": "./dist/components/CodeBlock.svelte"
     },
     "./MarkdownRenderer": {
       "types": "./dist/components/MarkdownRenderer.svelte.d.ts",
-      "svelte": "./dist/components/MarkdownRenderer.svelte.js",
-      "import": "./dist/components/MarkdownRenderer.svelte.js"
+      "svelte": "./dist/components/MarkdownRenderer.svelte",
+      "import": "./dist/components/MarkdownRenderer.svelte"
     }
   },
   "files": [

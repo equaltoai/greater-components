@@ -36,7 +36,7 @@ Wiki.Editor - Simple markdown editor for wiki pages
 			rows="12"
 			bind:value={context.draft}
 			disabled={context.loading}
-		/>
+		></textarea>
 	</label>
 
 	<label class="gr-community-wiki__field">
@@ -50,4 +50,3 @@ Wiki.Editor - Simple markdown editor for wiki pages
 		</button>
 	</div>
 </div>
-

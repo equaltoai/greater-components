@@ -186,7 +186,7 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 				bind:value={state.draft.content}
 				oninput={emitChange}
 				disabled={state.isSaving}
-			/>
+			></textarea>
 
 			{#if state.config.mode === 'split'}
 				<div class="gr-blog-editor__preview" aria-label="Preview">
@@ -219,4 +219,3 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 		</div>
 	{/if}
 </section>
-

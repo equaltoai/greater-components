@@ -17,7 +17,7 @@
 	import type { Snippet } from 'svelte';
 	import { createListsContext } from './context.js';
 	import type { ListsHandlers, ListsState } from './context.js';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 
 	interface Props {
 		/**
@@ -55,12 +55,8 @@
 		class: className = '',
 	}: Props = $props();
 
-	// Reactive handlers
-	const handlers = $derived(handlersProp);
-
-	// Create lists context - pass handlers reactively
 	// eslint-disable-next-line svelte/valid-compile
-	const context = createListsContext(handlers, initialState);
+	const context = createListsContext(untrack(() => handlersProp), untrack(() => initialState));
 
 	// Auto-fetch on mount
 	onMount(() => {

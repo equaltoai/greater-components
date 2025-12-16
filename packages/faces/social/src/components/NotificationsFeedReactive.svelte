@@ -2,6 +2,7 @@
 	import { createVirtualizer } from '@tanstack/svelte-virtual';
 	import { get } from 'svelte/store';
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 	import type { Notification, NotificationGroup, NotificationsFeedProps } from '../types';
 	import type { NotificationIntegrationConfig } from '../lib/integration';
 	import { createNotificationIntegration } from '../lib/integration';
@@ -95,7 +96,9 @@
 
 	// Create integration instance if config is provided
 	// eslint-disable-next-line svelte/valid-compile
-	let notificationIntegration = integration ? createNotificationIntegration(integration) : null;
+	let notificationIntegration = untrack(() =>
+		integration ? createNotificationIntegration(integration) : null
+	);
 	let mounted = false;
 
 	// Use store data when integration is available, otherwise fall back to props

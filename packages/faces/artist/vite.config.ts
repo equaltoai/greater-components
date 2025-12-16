@@ -43,10 +43,12 @@ export default defineConfig({
 			entry: {
 				index: resolve(__dirname, 'src/index.ts'),
 				'components/Artwork/index': resolve(__dirname, 'src/components/Artwork/index.ts'),
+				'components/ArtworkCard/index': resolve(__dirname, 'src/components/ArtworkCard/index.ts'),
 				'components/ArtistProfile/index': resolve(
 					__dirname,
 					'src/components/ArtistProfile/index.ts'
 				),
+				'components/ArtistTimeline/index': resolve(__dirname, 'src/components/ArtistTimeline/index.ts'),
 				'components/Gallery/index': resolve(__dirname, 'src/components/Gallery/index.ts'),
 				'components/Discovery/index': resolve(__dirname, 'src/components/Discovery/index.ts'),
 				'components/Exhibition/index': resolve(__dirname, 'src/components/Exhibition/index.ts'),

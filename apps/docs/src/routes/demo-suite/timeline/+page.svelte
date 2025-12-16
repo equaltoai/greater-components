@@ -171,7 +171,7 @@
 			detail: 'Unit tests covering hydration, loadMore queuing, and error simulation.',
 		},
 		{
-			label: 'packages/fediverse/tests/timelineStore.test.ts',
+			label: 'packages/faces/social/tests/timelineStore.test.ts',
 			detail: 'TimelineStore prepend/append coverage for transport + pagination APIs.',
 		},
 	];

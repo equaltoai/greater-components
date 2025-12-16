@@ -7,7 +7,7 @@ Allows users to filter notifications by type (all, mentions, follows, etc.).
 @example
 ```svelte
 <script>
-  import { Notifications } from '@equaltoai/greater-components-fediverse';
+  import { Notifications } from '@equaltoai/greater-components-notifications';
 </script>
 
 <Notifications.Root {notifications}>

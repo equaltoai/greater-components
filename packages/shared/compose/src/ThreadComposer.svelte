@@ -7,7 +7,7 @@ Create threads with multiple connected posts, each with its own character limit.
 @example
 ```svelte
 <script>
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { Compose } from '@equaltoai/greater-components-compose';
   
   async function handleSubmitThread(posts) {
     // Submit posts in sequence

@@ -8,6 +8,7 @@ Thread.Comment - Single comment with nesting support
 	import { getThreadContext } from './context.js';
 	import { Voting } from '../Voting/index.js';
 	import { Flair } from '../Flair/index.js';
+	import Comment from './Comment.svelte';
 
 	interface Props {
 		comment: CommentData;
@@ -128,7 +129,7 @@ Thread.Comment - Single comment with nesting support
 	{#if canShowChildren}
 		<div class="gr-community-comment__children">
 			{#each comment.children as child (child.id)}
-				<svelte:self comment={child} />
+				<Comment comment={child} />
 			{/each}
 		</div>
 	{/if}

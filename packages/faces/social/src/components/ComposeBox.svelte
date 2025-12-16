@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, untrack } from 'svelte';
 
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import { TextField } from '@equaltoai/greater-components-primitives';
@@ -63,11 +63,13 @@
 
 	// Component state
 	// eslint-disable-next-line svelte/valid-compile
-	let content = $state(initialContent);
+	let content = $state(untrack(() => initialContent));
 	let contentWarning = $state('');
 	let hasContentWarning = $state(false);
 	// eslint-disable-next-line svelte/valid-compile
-	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(defaultVisibility);
+	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(
+		untrack(() => defaultVisibility)
+	);
 	let mediaAttachments = $state<ComposeMediaAttachment[]>([]);
 	let poll = $state<ComposePoll | undefined>();
 	let isSubmitting = $state(false);

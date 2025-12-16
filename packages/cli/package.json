@@ -33,7 +33,12 @@
     "svelte"
   ],
   "author": "Greater Components Team",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/cli"
+  },
   "dependencies": {
     "chalk": "^5.6.2",
     "commander": "^14.0.2",

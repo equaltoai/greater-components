@@ -6,9 +6,9 @@ export default defineConfig({
 		lib: {
 			entry: {
 				index: resolve(__dirname, 'src/index.ts'),
-				playwright: resolve(__dirname, 'src/playwright/index.ts'),
-				vitest: resolve(__dirname, 'src/vitest/index.ts'),
-				a11y: resolve(__dirname, 'src/a11y/index.ts'),
+				'playwright/index': resolve(__dirname, 'src/playwright/index.ts'),
+				'vitest/index': resolve(__dirname, 'src/vitest/index.ts'),
+				'a11y/index': resolve(__dirname, 'src/a11y/index.ts'),
 			},
 			name: 'GreaterTesting',
 			formats: ['es'],

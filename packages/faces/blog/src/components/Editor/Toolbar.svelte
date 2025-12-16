@@ -39,7 +39,7 @@ Editor.Toolbar - Formatting toolbar for the blog editor
 <div class={`gr-blog-editor-toolbar ${className}`} role="toolbar" aria-label="Editor toolbar">
 	{#each actions as group, groupIndex}
 		{#if groupIndex > 0}
-			<div class="gr-blog-editor-toolbar__divider" aria-hidden="true" />
+			<div class="gr-blog-editor-toolbar__divider" aria-hidden="true"></div>
 		{/if}
 		{#each group as action (action.id)}
 			<button

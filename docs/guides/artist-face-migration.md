@@ -37,7 +37,10 @@ This guide covers migrating an existing application from the Social Face to the 
 ### 1. Update Dependencies
 
 ```bash
-# Ensure the umbrella package is installed (includes the Social Face)
+# Using CLI (recommended)
+npx @equaltoai/greater-components-cli add faces/artist
+
+# Or using package manager
 pnpm add @equaltoai/greater-components
 ```
 

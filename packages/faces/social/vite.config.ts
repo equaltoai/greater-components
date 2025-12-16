@@ -38,6 +38,8 @@ export default defineConfig({
 		lib: {
 			entry: {
 				index: resolve(__dirname, 'src/index.ts'),
+				'patterns/index': resolve(__dirname, 'src/patterns/index.ts'),
+				'components/Hashtags/index': resolve(__dirname, 'src/components/Hashtags/index.ts'),
 				'components/StatusCard': resolve(__dirname, 'src/components/StatusCard.svelte'),
 				'components/TimelineVirtualized': resolve(
 					__dirname,

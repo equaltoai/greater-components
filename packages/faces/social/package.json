@@ -76,7 +76,7 @@
   ],
   "scripts": {
     "prebuild": "pnpm --filter @equaltoai/greater-components-adapters build",
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js && cp src/theme.css dist/greater-components-fediverse.css",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-fediverse.css",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",

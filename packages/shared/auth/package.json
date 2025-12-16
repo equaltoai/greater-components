@@ -26,7 +26,7 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

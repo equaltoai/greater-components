@@ -1,4 +1,4 @@
-# @equaltoai/greater-components-fediverse
+# @equaltoai/greater-components-social
 
 ## 4.0.1
 

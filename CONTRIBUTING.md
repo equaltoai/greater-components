@@ -115,7 +115,7 @@ By making a contribution to this project, I certify that:
 - Run `pnpm test:unit` for unit tests
 - Run `pnpm test:e2e` for end-to-end tests
 - If Playwright tests fail due to missing browsers, run `pnpm playwright:install`
-- Maintain minimum 90% code coverage
+- Maintain the repo coverage thresholds (see `pnpm test:coverage:report`)
 
 ### Commit Messages
 

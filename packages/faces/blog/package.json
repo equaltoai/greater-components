@@ -59,7 +59,7 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && cp src/theme.css dist/greater-components-blog.css",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-blog.css",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",

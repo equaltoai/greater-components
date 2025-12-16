@@ -26,7 +26,7 @@ Renders an author card optimized for blog contexts.
 	{#if author.avatar}
 		<img class="gr-blog-author-card__avatar" src={author.avatar} alt={`${author.name} avatar`} />
 	{:else}
-		<div class="gr-blog-author-card__avatar" aria-hidden="true" />
+		<div class="gr-blog-author-card__avatar" aria-hidden="true"></div>
 	{/if}
 
 	<div class="gr-blog-author-card__info">
@@ -47,4 +47,3 @@ Renders an author card optimized for blog contexts.
 		{/if}
 	</div>
 </div>
-

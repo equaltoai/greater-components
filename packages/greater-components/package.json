@@ -41,8 +41,8 @@
     },
     "./primitives/*": {
       "types": "./dist/primitives/components/*.svelte.d.ts",
-      "svelte": "./dist/primitives/components/*.svelte.js",
-      "import": "./dist/primitives/components/*.svelte.js"
+      "svelte": "./dist/primitives/components/*.svelte",
+      "import": "./dist/primitives/components/*.svelte"
     },
     "./primitives/theme.css": "./dist/primitives/theme.css",
     "./primitives/styles.css": "./dist/primitives/styles.css",
@@ -61,9 +61,9 @@
       "default": "./dist/icons/index.js"
     },
     "./icons/*": {
-      "types": "./dist/icons/*.svelte.d.ts",
-      "svelte": "./dist/icons/*.svelte.js",
-      "import": "./dist/icons/*.svelte.js"
+      "types": "./dist/icons/icons/*.svelte.d.ts",
+      "svelte": "./dist/icons/icons/*.svelte",
+      "import": "./dist/icons/icons/*.svelte"
     },
     "./headless": {
       "types": "./dist/headless/index.d.ts",

@@ -6,7 +6,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { createFiltersContext, type FiltersHandlers, type FiltersState } from './context.js';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 
 	interface Props {
 		/**
@@ -44,7 +44,7 @@
 	}: Props = $props();
 
 	// eslint-disable-next-line svelte/valid-compile
-	const context = createFiltersContext(handlers, initialState);
+	const context = createFiltersContext(untrack(() => handlers), untrack(() => initialState));
 
 	onMount(() => {
 		if (autoFetch) {

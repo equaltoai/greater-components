@@ -33,7 +33,7 @@
     }
   },
   "scripts": {
-    "build": "vite build && tsc --build",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest watch",

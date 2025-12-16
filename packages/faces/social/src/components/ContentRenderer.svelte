@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { sanitizeHtml, linkifyMentions } from '@equaltoai/greater-components-utils';
+	import { untrack } from 'svelte';
 	import type { Mention, Tag } from '../types';
 
 	interface Props {
@@ -54,7 +55,7 @@
 	}: Props = $props();
 
 	// eslint-disable-next-line svelte/valid-compile
-	let expanded = $state(!collapsed || !spoilerText);
+	let expanded = $state(untrack(() => !collapsed || !spoilerText));
 
 	function toggleExpanded() {
 		if (spoilerText) {

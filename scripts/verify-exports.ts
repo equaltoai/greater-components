@@ -10,7 +10,7 @@ import {
 	ContrastChecker,
 } from '@equaltoai/greater-components-primitives';
 
-import { Profile } from '@equaltoai/greater-components-fediverse';
+import { Profile } from '@equaltoai/greater-components-social';
 
 import {
 	createPreferenceStore,

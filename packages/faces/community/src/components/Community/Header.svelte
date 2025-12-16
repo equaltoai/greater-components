@@ -20,14 +20,17 @@ Community.Header - Community heading block
 	{#if community.bannerUrl}
 		<img class="gr-community-header__banner" src={community.bannerUrl} alt="" loading="lazy" />
 	{:else}
-		<div class="gr-community-header__banner gr-community-header__banner--placeholder" aria-hidden="true" />
+		<div
+			class="gr-community-header__banner gr-community-header__banner--placeholder"
+			aria-hidden="true"
+		></div>
 	{/if}
 
 	<div class="gr-community-header__info">
 		{#if community.iconUrl}
 			<img class="gr-community-header__icon" src={community.iconUrl} alt="" loading="lazy" />
 		{:else}
-			<div class="gr-community-header__icon" aria-hidden="true" />
+			<div class="gr-community-header__icon" aria-hidden="true"></div>
 		{/if}
 
 		<div class="gr-community-header__details">

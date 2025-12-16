@@ -19,28 +19,33 @@ The Artist Face is a specialized component bundle designed for visual artist com
 
 ## Installation
 
-```bash
-# Using pnpm (recommended)
-pnpm add @equaltoai/greater-components-artist
-
-# Using npm
-npm install @equaltoai/greater-components-artist
-
-# Using yarn
-yarn add @equaltoai/greater-components-artist
-```
-
-### Using the CLI
+### Using the CLI (Recommended)
 
 ```bash
 # Initialize Greater Components with Artist Face
-greater init --face artist
+npx @equaltoai/greater-components-cli init --face artist
 
 # Add specific components
-greater add faces/artist/Artwork
-greater add faces/artist/Gallery
-greater add faces/artist/ArtistProfile
+npx @equaltoai/greater-components-cli add artwork gallery-grid artist-profile
+
+# Or add the entire face
+npx @equaltoai/greater-components-cli add faces/artist
 ```
+
+### Using Package Manager (Alternative)
+
+```bash
+# Using pnpm
+pnpm add @equaltoai/greater-components
+
+# Using npm
+npm install @equaltoai/greater-components
+
+# Using yarn
+yarn add @equaltoai/greater-components
+```
+
+> **Note**: The CLI method copies source files into your project, giving you full control. The package manager method installs from npm.
 
 ## Quick Start
 

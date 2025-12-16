@@ -26,8 +26,8 @@ Greater Components follows a comprehensive testing approach:
 
 ### Coverage Targets
 
-- **Overall:** 80%+ code coverage
-- **Core Components:** 90%+ coverage
+- **Overall:** 75%+ code coverage (default thresholds enforced by `pnpm test:coverage:report`)
+- **Core Components:** 90%+ coverage (goal)
 - **Accessibility:** 100% coverage
 - **Critical Paths:** 100% coverage
 

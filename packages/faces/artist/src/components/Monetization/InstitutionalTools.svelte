@@ -5,6 +5,7 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 -->
 
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import type {
 		InstitutionalAccount,
 		InstitutionalToolsConfig,
@@ -27,9 +28,9 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 	let artistId = $state('');
 	let artistRole = $state('represented');
 
-	let draftName = $state(account.name);
-	let draftWebsite = $state(account.website ?? '');
-	let draftDescription = $state(account.description ?? '');
+	let draftName = $state(untrack(() => account.name));
+	let draftWebsite = $state(untrack(() => account.website ?? ''));
+	let draftDescription = $state(untrack(() => account.description ?? ''));
 
 	$effect(() => {
 		draftName = account.name;
@@ -94,7 +95,11 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 
 			<label class="gr-monetization-institutional__field">
 				<span>Description</span>
-				<textarea class="gr-monetization-institutional__textarea" rows="3" bind:value={draftDescription} />
+				<textarea
+					class="gr-monetization-institutional__textarea"
+					rows="3"
+					bind:value={draftDescription}
+				></textarea>
 			</label>
 
 			{#if handlers.onUpdateAccount}
@@ -243,4 +248,3 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 		background: var(--gr-color-surface-tertiary);
 	}
 </style>
-

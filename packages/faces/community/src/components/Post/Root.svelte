@@ -129,18 +129,18 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 			<div class="gr-community-post__meta">
 				{#if context.config.showCommunity}
 					<span>{postState.community.title}</span>
-					<span class="gr-community-post__meta-separator" aria-hidden="true" />
+					<span class="gr-community-post__meta-separator" aria-hidden="true"></span>
 				{/if}
 
 				{#if context.config.showAuthor}
 					<span>by {postState.author.username}</span>
-					<span class="gr-community-post__meta-separator" aria-hidden="true" />
+					<span class="gr-community-post__meta-separator" aria-hidden="true"></span>
 				{/if}
 
 				<span>{formatTimestamp(postState.createdAt)}</span>
 
 				{#if context.config.showFlair && postState.flair}
-					<span class="gr-community-post__meta-separator" aria-hidden="true" />
+					<span class="gr-community-post__meta-separator" aria-hidden="true"></span>
 					<Flair.Badge flair={postState.flair} />
 				{/if}
 			</div>

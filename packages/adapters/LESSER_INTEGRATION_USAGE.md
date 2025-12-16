@@ -133,7 +133,7 @@ const allLesserUnread = notificationStore.getUnreadLesserNotifications();
 
 ```svelte
 <script>
-	import { Status } from '@equaltoai/greater-components-fediverse';
+	import { Status } from '@equaltoai/greater-components-social';
 	import { mapLesserPost } from '@equaltoai/greater-components-adapters';
 
 	let { lesserPost } = $props(); // From GraphQL
@@ -158,7 +158,7 @@ const allLesserUnread = notificationStore.getUnreadLesserNotifications();
 
 ```svelte
 <script>
-	import * as Profile from '@equaltoai/greater-components-fediverse/Profile';
+	import * as Profile from '@equaltoai/greater-components-social/components/Profile';
 	import { mapLesserAccount } from '@equaltoai/greater-components-adapters';
 
 	let { lesserAccount } = $props();
@@ -179,7 +179,7 @@ const allLesserUnread = notificationStore.getUnreadLesserNotifications();
 
 ```svelte
 <script>
-	import { Notifications } from '@equaltoai/greater-components-fediverse';
+	import { Notifications } from '@equaltoai/greater-components-social';
 	import { unifiedNotificationToStoreNotification } from '@equaltoai/greater-components-adapters';
 
 	let { lesserNotifications } = $props();
@@ -289,4 +289,4 @@ it('should populate Lesser metadata from UnifiedStatus', () => {
 
 - [Greater Alignment Log](../../docs/planning/greater-alignment-log.md) - Phase 2 implementation details
 - [Lesser Schema](../../schemas/lesser/schema.graphql) - Authoritative GraphQL schema
-- [Component Documentation](../../packages/fediverse/src/components/) - UI component guides
+- [Component Documentation](../../packages/faces/social/src/components/) - UI component guides
