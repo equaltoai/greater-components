@@ -33,6 +33,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./style.css": "./dist/style.css",
     "./primitives": {
       "types": "./dist/primitives/index.d.ts",
       "svelte": "./dist/primitives/index.js",
@@ -85,47 +86,47 @@
     },
     "./shared/auth": {
       "types": "./dist/shared/auth/index.d.ts",
-      "svelte": "./dist/shared/auth/src/index.ts",
+      "svelte": "./dist/shared/auth/index.js",
       "import": "./dist/shared/auth/index.js"
     },
     "./shared/admin": {
       "types": "./dist/shared/admin/index.d.ts",
-      "svelte": "./dist/shared/admin/src/index.ts",
+      "svelte": "./dist/shared/admin/index.js",
       "import": "./dist/shared/admin/index.js"
     },
     "./shared/compose": {
       "types": "./dist/shared/compose/index.d.ts",
-      "svelte": "./dist/shared/compose/src/index.ts",
+      "svelte": "./dist/shared/compose/index.js",
       "import": "./dist/shared/compose/index.js"
     },
     "./shared/messaging": {
       "types": "./dist/shared/messaging/index.d.ts",
-      "svelte": "./dist/shared/messaging/src/index.ts",
+      "svelte": "./dist/shared/messaging/index.js",
       "import": "./dist/shared/messaging/index.js"
     },
     "./shared/search": {
       "types": "./dist/shared/search/index.d.ts",
-      "svelte": "./dist/shared/search/src/index.ts",
+      "svelte": "./dist/shared/search/index.js",
       "import": "./dist/shared/search/index.js"
     },
     "./shared/notifications": {
       "types": "./dist/shared/notifications/index.d.ts",
-      "svelte": "./dist/shared/notifications/src/index.ts",
+      "svelte": "./dist/shared/notifications/index.js",
       "import": "./dist/shared/notifications/index.js"
     },
     "./shared/chat": {
       "types": "./dist/shared/chat/index.d.ts",
-      "svelte": "./dist/shared/chat/src/index.ts",
+      "svelte": "./dist/shared/chat/index.js",
       "import": "./dist/shared/chat/index.js"
     },
     "./chat": {
       "types": "./dist/shared/chat/index.d.ts",
-      "svelte": "./dist/shared/chat/src/index.ts",
+      "svelte": "./dist/shared/chat/index.js",
       "import": "./dist/shared/chat/index.js"
     },
     "./faces/social": {
       "types": "./dist/faces/social/index.d.ts",
-      "svelte": "./dist/faces/social/src/index.ts",
+      "svelte": "./dist/faces/social/index.js",
       "import": "./dist/faces/social/index.js"
     },
     "./faces/social/*": {
@@ -136,7 +137,7 @@
     "./faces/social/style.css": "./dist/faces/social/greater-components-fediverse.css",
     "./faces/blog": {
       "types": "./dist/faces/blog/index.d.ts",
-      "svelte": "./dist/faces/blog/src/index.ts",
+      "svelte": "./dist/faces/blog/index.js",
       "import": "./dist/faces/blog/index.js"
     },
     "./faces/blog/*": {
@@ -147,7 +148,7 @@
     "./faces/blog/style.css": "./dist/faces/blog/greater-components-blog.css",
     "./faces/community": {
       "types": "./dist/faces/community/index.d.ts",
-      "svelte": "./dist/faces/community/src/index.ts",
+      "svelte": "./dist/faces/community/index.js",
       "import": "./dist/faces/community/index.js"
     },
     "./faces/community/*": {
@@ -158,7 +159,7 @@
     "./faces/community/style.css": "./dist/faces/community/greater-components-community.css",
     "./faces/artist": {
       "types": "./dist/faces/artist/index.d.ts",
-      "svelte": "./dist/faces/artist/src/index.ts",
+      "svelte": "./dist/faces/artist/index.js",
       "import": "./dist/faces/artist/index.js"
     },
     "./faces/artist/*": {

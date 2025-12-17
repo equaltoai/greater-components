@@ -55,6 +55,7 @@
 	}: Props = $props();
 
 	let expanded = $state(untrack(() => !collapsed || !spoilerText));
+	const contentId = `content-${Math.random().toString(36).slice(2, 11)}`;
 
 	function toggleExpanded() {
 		if (spoilerText) {
@@ -150,7 +151,7 @@
 				class="spoiler-toggle"
 				onclick={toggleExpanded}
 				aria-expanded={expanded}
-				aria-controls={`content-${Math.random().toString(36).substr(2, 9)}`}
+				aria-controls={contentId}
 			>
 				{expanded ? 'Hide' : 'Show more'}
 			</button>
@@ -161,7 +162,7 @@
 		<div
 			class="content"
 			class:collapsed={spoilerText && !expanded}
-			id={`content-${Math.random().toString(36).substr(2, 9)}`}
+			id={contentId}
 			aria-hidden={spoilerText && !expanded}
 			use:setHtml={processedContent}
 		></div>
