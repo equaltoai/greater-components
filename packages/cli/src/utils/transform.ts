@@ -67,11 +67,17 @@ const SHARED_MODULES = [
 const HEADLESS_PRIMITIVE_SUBPATHS = ['button', 'menu', 'modal', 'tooltip', 'tabs'] as const;
 
 /**
+ * Core packages that should be mapped to the greater alias
+ */
+const CORE_PACKAGES = ['primitives', 'icons', 'tokens', 'utils', 'content', 'adapters'] as const;
+
+/**
  * Build path mappings from config aliases
  */
 export function buildPathMappings(config: ComponentConfig): PathMapping[] {
 	const mappings: PathMapping[] = [];
 	const aliases = config.aliases;
+	const isVendoredMode = config.installMode === 'vendored';
 
 	// Local shared modules (preferred when installed via CLI)
 	for (const shared of SHARED_MODULES) {
@@ -91,14 +97,38 @@ export function buildPathMappings(config: ComponentConfig): PathMapping[] {
 	for (const primitive of HEADLESS_PRIMITIVE_SUBPATHS) {
 		mappings.push({
 			from: `@equaltoai/greater-components-headless/${primitive}`,
-			to: `${aliases.lib}/primitives/${primitive}`,
+			to: `${aliases.hooks}/${primitive}`,
+			isGlob: false,
+		});
+		mappings.push({
+			from: `@equaltoai/greater-components/headless/${primitive}`,
+			to: `${aliases.hooks}/${primitive}`,
 			isGlob: false,
 		});
 	}
 
+	// Core packages mapped to greater alias in fully-vendored mode.
+	if (isVendoredMode) {
+		for (const pkg of CORE_PACKAGES) {
+			mappings.push({
+				from: `@equaltoai/greater-components/${pkg}`,
+				to: `${aliases.greater}/${pkg}`,
+				isGlob: false,
+			});
+			mappings.push({
+				from: `@equaltoai/greater-components-${pkg}`,
+				to: `${aliases.greater}/${pkg}`,
+				isGlob: false,
+			});
+		}
+	}
+
 	// Legacy package rewrites (hyphenated → umbrella subpath)
-	for (const [from, to] of Object.entries(LEGACY_PACKAGE_REWRITES)) {
-		mappings.push({ from, to, isGlob: false });
+	// Only apply these in hybrid mode (vendored mode rewrites core packages locally).
+	if (!isVendoredMode) {
+		for (const [from, to] of Object.entries(LEGACY_PACKAGE_REWRITES)) {
+			mappings.push({ from, to, isGlob: false });
+		}
 	}
 
 	return mappings;

@@ -15,6 +15,7 @@ export const DEFAULT_TEST_CONFIG: ComponentConfig = {
 	$schema: 'https://greater.components.dev/schema.json',
 	version: '1.0.0',
 	ref: 'greater-v4.2.0',
+	installMode: 'vendored',
 	style: 'default',
 	rsc: false,
 	tsx: true,
@@ -24,6 +25,7 @@ export const DEFAULT_TEST_CONFIG: ComponentConfig = {
 		ui: '$lib/components/ui',
 		lib: '$lib',
 		hooks: '$lib/primitives',
+		greater: '$lib/greater',
 	},
 	css: {
 		tokens: true,

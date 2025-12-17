@@ -59,6 +59,43 @@ export interface FetchResult {
 
 const FACE_CANDIDATES = ['social', 'blog', 'community', 'artist'] as const;
 
+const CORE_PACKAGE_NAMES = new Set([
+	'primitives',
+	'icons',
+	'tokens',
+	'utils',
+	'content',
+	'adapters',
+]);
+
+function isCorePackage(component: ComponentMetadata): boolean {
+	return CORE_PACKAGE_NAMES.has(component.name) && component.tags?.includes('core');
+}
+
+function inferFileType(relativePath: string): ComponentFile['type'] {
+	if (relativePath.endsWith('.css')) return 'styles';
+	if (relativePath.endsWith('.d.ts') || relativePath.endsWith('.d.ts.map')) return 'types';
+	if (relativePath.endsWith('.svelte') || relativePath.includes('.svelte.')) return 'component';
+	return 'utils';
+}
+
+function buildCorePackageFileList(index: RegistryIndex, packageName: string): ComponentFile[] {
+	const entry = index.components[packageName];
+	if (!entry) {
+		throw new Error(`Core package "${packageName}" not found in registry index`);
+	}
+
+	return entry.files.map((file) => {
+		const withoutSrc = file.path.startsWith('src/') ? file.path.slice('src/'.length) : file.path;
+		return {
+			path: `greater/${packageName}/${withoutSrc}`,
+			content: '',
+			type: inferFileType(withoutSrc),
+			transform: true,
+		};
+	});
+}
+
 function buildSourcePathCandidates(_component: ComponentMetadata, installPath: string): string[] {
 	const normalized = installPath.replace(/\\/g, '/').replace(/^\/+/, '');
 	const candidates: string[] = [];
@@ -67,6 +104,18 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 	const sharedMatch = normalized.match(/^shared\/([^/]+)\/(.+)$/);
 	if (sharedMatch?.[1] && sharedMatch?.[2]) {
 		candidates.push(`packages/shared/${sharedMatch[1]}/src/${sharedMatch[2]}`);
+	}
+
+	// greater/<package>/... -> packages/<package>/src/...
+	const greaterMatch = normalized.match(/^greater\/([^/]+)\/(.+)$/);
+	if (greaterMatch?.[1] && greaterMatch?.[2]) {
+		const pkg = greaterMatch[1];
+		const rest = greaterMatch[2];
+		candidates.push(`packages/${pkg}/src/${rest}`);
+		// Special case for headless primitives which might be in packages/headless/src/primitives/
+		if (pkg === 'headless' && !rest.startsWith('primitives/')) {
+			candidates.push(`packages/headless/src/primitives/${rest}`);
+		}
 	}
 
 	// lib/adapters/... -> packages/adapters/src/...
@@ -193,6 +242,7 @@ export async function fetchComponentFiles(
 	const fetchedFiles: FetchedFile[] = [];
 	let allVerified = true;
 	let signatureVerification: GitTagVerificationResult | undefined;
+	const corePackage = isCorePackage(component);
 
 	// Determine if verification should be performed
 	const performVerification = shouldVerify(options);
@@ -217,14 +267,22 @@ export async function fetchComponentFiles(
 	// Try to get checksums from registry index
 	let registryIndex: RegistryIndex | null = null;
 	let checksums: ChecksumMap | null = null;
-	if (performVerification) {
+	if (performVerification || corePackage) {
 		try {
 			registryIndex = await fetchRegistryIndex(ref, {
 				skipCache: options.skipCache,
 				forceRefresh: options.forceRefresh,
 			});
 			checksums = registryIndex.checksums;
-		} catch {
+		} catch (error) {
+			if (corePackage) {
+				throw new Error(
+					`Failed to load registry index for core package "${component.name}": ${
+						error instanceof Error ? error.message : String(error)
+					}`
+				);
+			}
+
 			// Registry index not available, continue without verification
 			if (options.verbose) {
 				logger.warn(`  ⚠ Registry index not available, skipping verification`);
@@ -233,8 +291,13 @@ export async function fetchComponentFiles(
 		}
 	}
 
+	const filesToFetch =
+		corePackage && registryIndex
+			? buildCorePackageFileList(registryIndex, component.name)
+			: component.files;
+
 	// Fetch all files
-	for (const file of component.files) {
+	for (const file of filesToFetch) {
 		try {
 			const sourcePath =
 				registryIndex && resolveSourcePathFromIndex(registryIndex, component, file.path);

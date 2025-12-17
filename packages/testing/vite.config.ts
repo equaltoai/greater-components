@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { computeExternal } from '../../scripts/vite/external';
 
 export default defineConfig({
 	build: {
@@ -14,19 +15,7 @@ export default defineConfig({
 			formats: ['es'],
 		},
 		rollupOptions: {
-			external: [
-				'axe-core',
-				'axe-playwright',
-				'@axe-core/playwright',
-				'@playwright/test',
-				'@testing-library/svelte',
-				'@testing-library/user-event',
-				'@vitest/ui',
-				'vitest',
-				'svelte',
-				'focus-trap',
-				'tabbable',
-			],
+			external: computeExternal(__dirname),
 			output: {
 				dir: 'dist',
 				format: 'es',

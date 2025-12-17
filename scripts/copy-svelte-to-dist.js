@@ -32,6 +32,17 @@ function copySvelteFiles(currentDir) {
 		const destPath = join(distDir, relPath);
 		mkdirSync(dirname(destPath), { recursive: true });
 		copyFileSync(entryPath, destPath);
+
+		// Copy generated type definitions alongside Svelte source, when present.
+		for (const typeSuffix of ['.d.ts', '.d.ts.map']) {
+			const typeSourcePath = `${entryPath}${typeSuffix}`;
+			if (!existsSync(typeSourcePath)) continue;
+
+			const typeRelPath = relative(srcDir, typeSourcePath);
+			const typeDestPath = join(distDir, typeRelPath);
+			mkdirSync(dirname(typeDestPath), { recursive: true });
+			copyFileSync(typeSourcePath, typeDestPath);
+		}
 	}
 }
 

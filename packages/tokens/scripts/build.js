@@ -20,9 +20,11 @@ if (!fs.existsSync(distPath)) {
 }
 
 // Load tokens from new structure if available, fallback to legacy tokens.json
+let baseTokens;
 let tokens;
 if (fs.existsSync(basePath)) {
-	tokens = JSON.parse(fs.readFileSync(basePath, 'utf8'));
+	baseTokens = JSON.parse(fs.readFileSync(basePath, 'utf8'));
+	tokens = baseTokens;
 	console.log('  - Using base.json for foundational tokens');
 
 	// Merge semantic tokens if available
@@ -33,7 +35,8 @@ if (fs.existsSync(basePath)) {
 	}
 } else {
 	// Fallback to legacy tokens.json
-	tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+	baseTokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+	tokens = baseTokens;
 	console.log('  - Using legacy tokens.json');
 }
 const themes = JSON.parse(fs.readFileSync(themesPath, 'utf8'));
@@ -60,18 +63,84 @@ function flattenTokens(obj, prefix = '') {
 	return result;
 }
 
-// Helper to resolve token references
-function resolveReferences(tokens, flatTokens) {
-	const resolved = {};
+function getTokenReference(value) {
+	if (typeof value !== 'string') return null;
 
-	for (const [key, value] of Object.entries(tokens)) {
-		if (typeof value === 'string' && value.startsWith('{') && value.endsWith('}')) {
-			// This is a reference
-			const refKey = value.slice(1, -1).replace(/\./g, '-');
-			resolved[key] = flatTokens[refKey] || value;
-		} else {
-			resolved[key] = value;
+	const match = value.match(/^\{([^}]+)\}$/);
+	if (!match) return null;
+
+	return match[1];
+}
+
+function getReferenceKey(referencePath) {
+	return referencePath.replace(/\./g, '-');
+}
+
+function resolveReferences(tokensToResolve, lookupTokens, { mode }) {
+	const resolved = {};
+	const resolvedLookup = {};
+	const resolving = new Set();
+
+	function resolveKey(key) {
+		if (key in resolvedLookup) return resolvedLookup[key];
+		if (resolving.has(key)) {
+			throw new Error(`Cycle detected while resolving token: ${key}`);
 		}
+
+		resolving.add(key);
+		const value = lookupTokens[key];
+		const referencePath = getTokenReference(value);
+
+		if (!referencePath) {
+			resolvedLookup[key] = value;
+			resolving.delete(key);
+			return value;
+		}
+
+		const refKey = getReferenceKey(referencePath);
+		if (!(refKey in lookupTokens)) {
+			throw new Error(`Unresolved token reference: ${key} = ${value} (missing ${refKey})`);
+		}
+
+		if (mode === 'css-var') {
+			const rewritten = `var(--gr-${refKey})`;
+			resolvedLookup[key] = rewritten;
+			resolving.delete(key);
+			return rewritten;
+		}
+
+		if (mode !== 'value') {
+			throw new Error(`Unknown resolveReferences mode: ${mode}`);
+		}
+
+		const resolvedValue = resolveKey(refKey);
+		resolvedLookup[key] = resolvedValue;
+		resolving.delete(key);
+		return resolvedValue;
+	}
+
+	for (const [key, value] of Object.entries(tokensToResolve)) {
+		const referencePath = getTokenReference(value);
+		if (!referencePath) {
+			resolved[key] = value;
+			continue;
+		}
+
+		const refKey = getReferenceKey(referencePath);
+		if (!(refKey in lookupTokens)) {
+			throw new Error(`Unresolved token reference: ${key} = ${value} (missing ${refKey})`);
+		}
+
+		if (mode === 'css-var') {
+			resolved[key] = `var(--gr-${refKey})`;
+			continue;
+		}
+
+		if (mode !== 'value') {
+			throw new Error(`Unknown resolveReferences mode: ${mode}`);
+		}
+
+		resolved[key] = resolveKey(refKey);
 	}
 
 	return resolved;
@@ -96,12 +165,14 @@ function getThemeSelectors(themeName) {
 }
 
 // Generate base tokens CSS
-const flatTokens = flattenTokens(tokens);
-const lightThemeDefaults = resolveReferences(flattenTokens(themes.light), flatTokens);
+const flatBaseTokens = flattenTokens(baseTokens);
+const lightThemeDefaults = resolveReferences(flattenTokens(themes.light), flatBaseTokens, {
+	mode: 'css-var',
+});
 
 let baseCSS = ':root {\n';
 
-for (const [key, value] of Object.entries(flatTokens)) {
+for (const [key, value] of Object.entries(flatBaseTokens)) {
 	baseCSS += `  --gr-${key}: ${value};\n`;
 }
 
@@ -123,7 +194,10 @@ ${Object.entries(lightThemeDefaults)
 
 for (const [themeName, themeTokens] of Object.entries(themes)) {
 	const flatThemeTokens = flattenTokens(themeTokens);
-	const resolvedThemeTokens = resolveReferences(flatThemeTokens, flatTokens);
+	const themeLookupTokens = { ...flatBaseTokens, ...flatThemeTokens };
+	const resolvedThemeTokens = resolveReferences(flatThemeTokens, themeLookupTokens, {
+		mode: 'css-var',
+	});
 
 	const selectorList = getThemeSelectors(themeName)
 		.map((selector) => `[data-theme="${selector}"]`)
@@ -148,7 +222,9 @@ for (const [themeName, themeTokens] of Object.entries(themes)) {
 combinedThemeCSS += `
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    ${Object.entries(resolveReferences(flattenTokens(themes.dark), flatTokens))
+    ${Object.entries(
+			resolveReferences(flattenTokens(themes.dark), flatBaseTokens, { mode: 'css-var' })
+		)
 			.map(([key, value]) => `    --gr-${key}: ${value};`)
 			.join('\n')}
   }
@@ -156,7 +232,9 @@ combinedThemeCSS += `
 
 @media (prefers-contrast: high) {
   :root:not([data-theme]) {
-    ${Object.entries(resolveReferences(flattenTokens(themes.highContrast), flatTokens))
+    ${Object.entries(
+			resolveReferences(flattenTokens(themes.highContrast), flatBaseTokens, { mode: 'css-var' })
+		)
 			.map(([key, value]) => `    --gr-${key}: ${value};`)
 			.join('\n')}
   }
@@ -305,7 +383,7 @@ let scssTokens = `// Auto-generated SCSS variables from design tokens
 
 `;
 
-for (const [key, value] of Object.entries(flatTokens)) {
+for (const [key, value] of Object.entries(flatBaseTokens)) {
 	const scssVarName = `$gr-${key}`;
 	scssTokens += `${scssVarName}: ${value};\n`;
 }
@@ -315,7 +393,10 @@ fs.writeFileSync(path.join(scssDir, '_tokens.scss'), scssTokens);
 // Generate semantic tokens SCSS for each theme
 for (const [themeName, themeTokens] of Object.entries(themes)) {
 	const flatThemeTokens = flattenTokens(themeTokens);
-	const resolvedThemeTokens = resolveReferences(flatThemeTokens, flatTokens);
+	const themeLookupTokens = { ...flatBaseTokens, ...flatThemeTokens };
+	const resolvedThemeTokens = resolveReferences(flatThemeTokens, themeLookupTokens, {
+		mode: 'value',
+	});
 
 	let scssTheme = `// Auto-generated SCSS variables for ${themeName} theme
 // Do not edit manually
@@ -391,7 +472,7 @@ fs.writeFileSync(path.join(__dirname, '../src/index.ts'), tsContent);
 fs.writeFileSync(path.join(distPath, 'tokens.d.ts'), tsContent);
 
 console.log('✅ Tokens built successfully!');
-console.log(`  - Base tokens: ${Object.keys(flatTokens).length}`);
+console.log(`  - Base tokens: ${Object.keys(flatBaseTokens).length}`);
 console.log(`  - Themes: ${Object.keys(themes).length}`);
 console.log(`  - Output: ${distPath}`);
 

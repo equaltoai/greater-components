@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*"
   },
   "devDependencies": {

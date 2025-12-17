@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 	import defaultAvatar from '../assets/greater-default-profile.png';
 	import Spinner from './Spinner.svelte';
 
@@ -226,7 +227,8 @@
 	});
 
 	// Generate unique ID for status
-	const statusId = `avatar-status-${Math.random().toString(36).substr(2, 9)}`;
+	const generatedStatusId = useStableId('avatar-status');
+	const statusId = $derived(generatedStatusId.value);
 </script>
 
 {#snippet AvatarContent()}

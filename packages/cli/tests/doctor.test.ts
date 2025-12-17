@@ -29,6 +29,25 @@ vi.mock('../src/registry/index.js', async (importOriginal) => {
 	};
 });
 
+const BASE_COMPONENT_CONFIG = {
+	version: '1.0.0',
+	ref: 'greater-v4.2.0',
+	installMode: 'vendored' as const,
+	style: 'default' as const,
+	rsc: false,
+	tsx: false,
+	aliases: {
+		components: '$lib/components',
+		utils: '$lib/utils',
+		ui: '$lib/components/ui',
+		lib: '$lib',
+		hooks: '$lib/primitives',
+		greater: '$lib/greater',
+	},
+	css: { tokens: true, primitives: true, face: null },
+	installed: [],
+};
+
 describe('doctor command utilities', () => {
 	beforeEach(() => {
 		fsStore.clear();
@@ -229,28 +248,13 @@ describe('doctor command utilities', () => {
 		it('should check if alias paths exist', async () => {
 			const { checkAliasPaths } = await import('../src/commands/doctor.js');
 
-			const config = {
-				version: '1.0.0',
-				ref: 'greater-v4.2.0',
-				style: 'default' as const,
-				rsc: false,
-				tsx: false,
-				aliases: {
-					components: '$lib/components',
-					utils: '$lib/utils',
-					ui: '$lib/components/ui',
-					lib: '$lib',
-					hooks: '$lib/primitives',
-				},
-				css: { tokens: true, primitives: true, face: null },
-				installed: [],
-			};
+			const config = { ...BASE_COMPONENT_CONFIG };
 
 			const results = await checkAliasPaths('/project', config);
 
 			expect(Array.isArray(results)).toBe(true);
 			// Each alias should have a diagnostic result
-			expect(results.length).toBe(5);
+			expect(results.length).toBe(6);
 		});
 	});
 
@@ -266,22 +270,7 @@ describe('doctor command utilities', () => {
 				})
 			);
 
-			const config = {
-				version: '1.0.0',
-				ref: 'greater-v4.2.0',
-				style: 'default' as const,
-				rsc: false,
-				tsx: false,
-				aliases: {
-					components: '$lib/components',
-					utils: '$lib/utils',
-					ui: '$lib/components/ui',
-					lib: '$lib',
-					hooks: '$lib/primitives',
-				},
-				css: { tokens: true, primitives: true, face: null },
-				installed: [],
-			};
+			const config = { ...BASE_COMPONENT_CONFIG };
 
 			const results = await checkNpmDependencies('/project', config);
 
@@ -293,22 +282,7 @@ describe('doctor command utilities', () => {
 		it('should report no components when none are installed', async () => {
 			const { checkInstalledComponents } = await import('../src/commands/doctor.js');
 
-			const config = {
-				version: '1.0.0',
-				ref: 'greater-v4.2.0',
-				style: 'default' as const,
-				rsc: false,
-				tsx: false,
-				aliases: {
-					components: '$lib/components',
-					utils: '$lib/utils',
-					ui: '$lib/components/ui',
-					lib: '$lib',
-					hooks: '$lib/primitives',
-				},
-				css: { tokens: true, primitives: true, face: null },
-				installed: [],
-			};
+			const config = { ...BASE_COMPONENT_CONFIG };
 
 			const results = await checkInstalledComponents('/project', config);
 
@@ -322,22 +296,7 @@ describe('doctor command utilities', () => {
 		it('should pass when UI directory does not exist', async () => {
 			const { checkOrphanedFiles } = await import('../src/commands/doctor.js');
 
-			const config = {
-				version: '1.0.0',
-				ref: 'greater-v4.2.0',
-				style: 'default' as const,
-				rsc: false,
-				tsx: false,
-				aliases: {
-					components: '$lib/components',
-					utils: '$lib/utils',
-					ui: '$lib/components/ui',
-					lib: '$lib',
-					hooks: '$lib/primitives',
-				},
-				css: { tokens: true, primitives: true, face: null },
-				installed: [],
-			};
+			const config = { ...BASE_COMPONENT_CONFIG };
 
 			const result = await checkOrphanedFiles('/project', config);
 
@@ -350,22 +309,7 @@ describe('doctor command utilities', () => {
 		it('should return null when no lesserVersion is configured', async () => {
 			const { checkLesserVersion } = await import('../src/commands/doctor.js');
 
-			const config = {
-				version: '1.0.0',
-				ref: 'greater-v4.2.0',
-				style: 'default' as const,
-				rsc: false,
-				tsx: false,
-				aliases: {
-					components: '$lib/components',
-					utils: '$lib/utils',
-					ui: '$lib/components/ui',
-					lib: '$lib',
-					hooks: '$lib/primitives',
-				},
-				css: { tokens: true, primitives: true, face: null },
-				installed: [],
-			};
+			const config = { ...BASE_COMPONENT_CONFIG };
 
 			const result = await checkLesserVersion(config);
 
@@ -375,23 +319,7 @@ describe('doctor command utilities', () => {
 		it('should return info when lesserVersion is configured', async () => {
 			const { checkLesserVersion } = await import('../src/commands/doctor.js');
 
-			const config = {
-				version: '1.0.0',
-				ref: 'greater-v4.2.0',
-				style: 'default' as const,
-				rsc: false,
-				tsx: false,
-				aliases: {
-					components: '$lib/components',
-					utils: '$lib/utils',
-					ui: '$lib/components/ui',
-					lib: '$lib',
-					hooks: '$lib/primitives',
-				},
-				css: { tokens: true, primitives: true, face: null },
-				installed: [],
-				lesserVersion: '1.0.0',
-			};
+			const config = { ...BASE_COMPONENT_CONFIG, lesserVersion: '1.0.0' };
 
 			const result = await checkLesserVersion(config);
 
@@ -536,19 +464,7 @@ describe('checkInstalledComponents extended', () => {
 		const { checkInstalledComponents } = await import('../src/commands/doctor.js');
 
 		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
+			...BASE_COMPONENT_CONFIG,
 			installed: [
 				{
 					name: 'nonexistent-component',
@@ -589,22 +505,7 @@ describe('checkNpmDependencies extended', () => {
 			})
 		);
 
-		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
-			installed: [],
-		};
+		const config = { ...BASE_COMPONENT_CONFIG };
 
 		const results = await checkNpmDependencies('/project', config);
 
@@ -624,22 +525,7 @@ describe('checkOrphanedFiles extended', () => {
 	it('should not rely on scanning a UI directory', async () => {
 		const { checkOrphanedFiles } = await import('../src/commands/doctor.js');
 
-		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
-			installed: [],
-		};
+		const config = { ...BASE_COMPONENT_CONFIG };
 
 		const result = await checkOrphanedFiles('/project', config);
 
@@ -671,22 +557,7 @@ describe('checkOrphanedFiles extended', () => {
 		const orphanedPath = path.join('/project', 'src', 'lib', 'primitives', 'button.ts');
 		fsStore.set(orphanedPath, 'export const orphaned = true;');
 
-		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
-			installed: [], // Empty - no components installed in config
-		};
+		const config = { ...BASE_COMPONENT_CONFIG };
 
 		const result = await checkOrphanedFiles('/project', config);
 
@@ -699,22 +570,7 @@ describe('checkOrphanedFiles extended', () => {
 	it('should pass when no orphaned files detected', async () => {
 		const { checkOrphanedFiles } = await import('../src/commands/doctor.js');
 
-		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
-			installed: [],
-		};
+		const config = { ...BASE_COMPONENT_CONFIG };
 
 		const result = await checkOrphanedFiles('/project', config);
 
@@ -748,19 +604,7 @@ describe('checkInstalledComponents file verification', () => {
 		} as any);
 
 		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
+			...BASE_COMPONENT_CONFIG,
 			installed: [
 				{
 					name: 'button',
@@ -803,19 +647,7 @@ describe('checkInstalledComponents file verification', () => {
 		fsStore.set(filePath, 'modified content'); // Different content
 
 		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
+			...BASE_COMPONENT_CONFIG,
 			installed: [
 				{
 					name: 'button',
@@ -866,19 +698,7 @@ describe('checkInstalledComponents file verification', () => {
 		fsStore.set(filePath, fileContent);
 
 		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
+			...BASE_COMPONENT_CONFIG,
 			installed: [
 				{
 					name: 'button',
@@ -925,19 +745,7 @@ describe('checkInstalledComponents file verification', () => {
 		fsMock.readFile.mockRejectedValueOnce(new Error('Read error'));
 
 		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
+			...BASE_COMPONENT_CONFIG,
 			installed: [
 				{
 					name: 'button',
@@ -975,19 +783,7 @@ describe('checkInstalledComponents file verification', () => {
 		fsStore.set(filePath, 'content');
 
 		const config = {
-			version: '1.0.0',
-			ref: 'greater-v4.2.0',
-			style: 'default' as const,
-			rsc: false,
-			tsx: false,
-			aliases: {
-				components: '$lib/components',
-				utils: '$lib/utils',
-				ui: '$lib/components/ui',
-				lib: '$lib',
-				hooks: '$lib/primitives',
-			},
-			css: { tokens: true, primitives: true, face: null },
+			...BASE_COMPONENT_CONFIG,
 			installed: [
 				{
 					name: 'button',

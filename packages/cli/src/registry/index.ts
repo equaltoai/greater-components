@@ -90,6 +90,76 @@ export interface FaceManifest extends ComponentMetadata {
  */
 export const componentRegistry: Record<string, ComponentMetadata> = {
 	// ====================
+	// CORE PACKAGES
+	// ====================
+	primitives: {
+		name: 'primitives',
+		type: 'shared',
+		description: 'Styled UI primitives package',
+		files: [{ path: 'greater/primitives/index.ts', content: '', type: 'component' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: ['tokens', 'icons'],
+		tags: ['core', 'primitives', 'styled'],
+		version: '1.0.0',
+	},
+	icons: {
+		name: 'icons',
+		type: 'shared',
+		description: 'Icon library package',
+		files: [{ path: 'greater/icons/index.ts', content: '', type: 'component' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['core', 'icons'],
+		version: '1.0.0',
+	},
+	tokens: {
+		name: 'tokens',
+		type: 'shared',
+		description: 'Design tokens package',
+		files: [{ path: 'greater/tokens/index.ts', content: '', type: 'component' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['core', 'tokens'],
+		version: '1.0.0',
+	},
+	utils: {
+		name: 'utils',
+		type: 'shared',
+		description: 'Utilities package',
+		files: [{ path: 'greater/utils/index.ts', content: '', type: 'utils' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['core', 'utils'],
+		version: '1.0.0',
+	},
+	content: {
+		name: 'content',
+		type: 'shared',
+		description: 'Content rendering package',
+		files: [{ path: 'greater/content/index.ts', content: '', type: 'component' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['core', 'content'],
+		version: '1.0.0',
+	},
+	adapters: {
+		name: 'adapters',
+		type: 'shared',
+		description: 'Protocol adapters package',
+		files: [{ path: 'greater/adapters/index.ts', content: '', type: 'utils' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['core', 'adapters'],
+		version: '1.0.0',
+	},
+
+	// ====================
 	// HEADLESS PRIMITIVES
 	// ====================
 	button: {

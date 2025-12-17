@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { resolve } from 'path';
+import { computeExternal } from '../../../scripts/vite/external';
 
 export default defineConfig({
 	plugins: [
@@ -70,21 +71,7 @@ export default defineConfig({
 			formats: ['es'],
 		},
 		rollupOptions: {
-			external: [
-				'svelte',
-				'@equaltoai/greater-components-tokens',
-				/^@equaltoai\/greater-components-tokens\//,
-				'@equaltoai/greater-components-utils',
-				/^@equaltoai\/greater-components-utils\//,
-				'@equaltoai/greater-components-primitives',
-				/^@equaltoai\/greater-components-primitives\//,
-				'@equaltoai/greater-components-icons',
-				/^@equaltoai\/greater-components-icons\//,
-				'@equaltoai/greater-components-adapters',
-				/^@equaltoai\/greater-components-adapters\//,
-				'@equaltoai/greater-components-headless',
-				/@equaltoai\/greater-components-headless\/.*/,
-			],
+			external: computeExternal(__dirname),
 			output: {
 				preserveModules: true,
 				preserveModulesRoot: 'src',

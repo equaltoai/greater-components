@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import type { Snippet } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 	import { getMenuContext } from './context.svelte';
 
 	interface Props {
@@ -34,7 +35,8 @@
 	}: Props = $props();
 
 	const ctx = getMenuContext();
-	const itemId = `${ctx.menuId}-item-${Math.random().toString(36).slice(2, 9)}`;
+	const generatedId = useStableId('item');
+	const itemId = $derived(`${ctx.menuId}-${generatedId.value}`);
 
 	// Register item with context
 	onMount(() => {

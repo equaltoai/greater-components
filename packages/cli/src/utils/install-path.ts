@@ -33,6 +33,14 @@ export function getInstallTarget(
 ): InstallTarget {
 	const normalized = normalizeRegistryPath(filePath);
 
+	// Headless primitives are installed relative to `aliases.hooks` (default: `$lib/primitives`)
+	if (normalized.startsWith('lib/primitives/')) {
+		return {
+			targetDir: resolveAlias(config.aliases.hooks, config, cwd),
+			relativePath: normalized.slice('lib/primitives/'.length),
+		};
+	}
+
 	if (normalized.startsWith('lib/')) {
 		return {
 			targetDir: resolveAlias(config.aliases.lib, config, cwd),
@@ -44,6 +52,13 @@ export function getInstallTarget(
 		return {
 			targetDir: resolveAlias(config.aliases.components, config, cwd),
 			relativePath: normalized.slice('shared/'.length),
+		};
+	}
+
+	if (normalized.startsWith('greater/')) {
+		return {
+			targetDir: resolveAlias(config.aliases.greater, config, cwd),
+			relativePath: normalized.slice('greater/'.length),
 		};
 	}
 

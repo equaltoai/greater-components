@@ -340,6 +340,9 @@ describe('Add Command Extended', () => {
 		it('adds greater-components package if needed', async () => {
 			const { addAction } = await import('../src/commands/add.js');
 
+			// Hybrid mode should ensure the umbrella package is present.
+			mockFs.set('/components.json', JSON.stringify(createTestConfig({ installMode: 'hybrid' })));
+
 			vi.mocked(faceInstaller.resolveFaceDependencies).mockReturnValue({
 				success: true,
 				resolved: [{ name: 'timeline', type: 'compound', metadata: {} as any }], // compound requires umbrella

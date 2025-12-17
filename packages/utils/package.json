@@ -24,7 +24,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build && tsc -b --force --emitDeclarationOnly",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../scripts/copy-svelte-to-dist.js",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",
@@ -42,6 +42,8 @@
     "unified": "^11.0.5"
   },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@testing-library/svelte": "5.2.9",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "@vitest/coverage-v8": "^4.0.15",

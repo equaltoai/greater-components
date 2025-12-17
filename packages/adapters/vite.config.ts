@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { computeExternal } from '../../scripts/vite/external';
 
 export default defineConfig({
 	build: {
@@ -9,14 +10,7 @@ export default defineConfig({
 			formats: ['es'],
 		},
 		rollupOptions: {
-			external: (id) => {
-				return (
-					id.startsWith('svelte') ||
-					id.startsWith('@apollo/client') ||
-					id.startsWith('graphql') ||
-					id === 'graphql-ws'
-				);
-			},
+			external: computeExternal(__dirname),
 			output: {
 				preserveModules: true,
 				preserveModulesRoot: 'src',

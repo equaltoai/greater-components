@@ -58,6 +58,13 @@ export type InstalledComponent = z.infer<typeof installedComponentSchema>;
 export type CssSourceMode = 'local' | 'npm';
 
 /**
+ * Installation mode for Greater Components
+ * - 'vendored': CLI vendors all Greater runtime code into the app (no @equaltoai/greater-components runtime dependency)
+ * - 'hybrid': CLI vendors face/shared/pattern code; core packages come from @equaltoai/greater-components (legacy)
+ */
+export type InstallMode = 'vendored' | 'hybrid';
+
+/**
  * CSS configuration schema
  */
 export const cssConfigSchema = z.object({
@@ -80,6 +87,7 @@ export const componentConfigSchema = z.object({
 	$schema: z.string().optional(),
 	version: z.string().default(CONFIG_SCHEMA_VERSION),
 	ref: z.string().optional().default(DEFAULT_REF),
+	installMode: z.enum(['vendored', 'hybrid']).default('vendored'),
 	style: z.enum(['default', 'new-york', 'minimal', 'custom']).default('default'),
 	rsc: z.boolean().default(false),
 	tsx: z.boolean().default(true),
@@ -97,6 +105,7 @@ export const componentConfigSchema = z.object({
 		ui: z.string().default('$lib/components/ui'),
 		lib: z.string().default('$lib'),
 		hooks: z.string().default('$lib/primitives'),
+		greater: z.string().default('$lib/greater'),
 	}),
 	css: cssConfigSchema.optional().default({
 		tokens: true,
@@ -144,6 +153,7 @@ export function needsMigration(config: Record<string, unknown>): boolean {
 	return (
 		!config['version'] ||
 		!config['ref'] ||
+		!config['installMode'] ||
 		!config['css'] ||
 		!config['installed'] ||
 		!config['$schema']
@@ -176,6 +186,12 @@ export function migrateConfig(oldConfig: Record<string, unknown>): MigrationResu
 	if (!newConfig['ref']) {
 		newConfig['ref'] = DEFAULT_REF;
 		changes.push(`Added ref: ${DEFAULT_REF}`);
+	}
+
+	// Add installMode if missing
+	if (!newConfig['installMode']) {
+		newConfig['installMode'] = 'vendored';
+		changes.push('Added installMode: vendored');
 	}
 
 	// Add css config if missing
@@ -304,8 +320,10 @@ export function resolveAlias(
 		'@/ui': aliases.ui,
 		'@/lib': aliases.lib,
 		'@/hooks': aliases.hooks,
+		'@/greater': aliases.greater,
 		'$lib/components': aliases.components,
 		'$lib/utils': aliases.utils,
+		'$lib/greater': aliases.greater,
 		$lib: aliases.lib,
 	};
 
@@ -533,6 +551,7 @@ export function createDefaultConfig(options: CreateConfigOptions = {}): Componen
 		$schema: SCHEMA_URL,
 		version: CONFIG_SCHEMA_VERSION,
 		ref: options.ref || DEFAULT_REF,
+		installMode: 'vendored',
 		style: 'default',
 		rsc: false,
 		tsx: options.hasTypeScript ?? true,
@@ -542,6 +561,7 @@ export function createDefaultConfig(options: CreateConfigOptions = {}): Componen
 			ui: `${libPrefix}/components/ui`,
 			lib: libPrefix,
 			hooks: `${libPrefix}/primitives`,
+			greater: `${libPrefix}/greater`,
 		},
 		css: {
 			tokens: true,

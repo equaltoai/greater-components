@@ -31,7 +31,7 @@ import {
 	detectPackageManager,
 } from '../utils/packages.js';
 import { logger } from '../utils/logger.js';
-import { parseItems, validateParseResult } from '../utils/item-parser.js';
+import { parseItems, parseItemName, validateParseResult } from '../utils/item-parser.js';
 import {
 	resolveDependencies,
 	getInstallationOrder,
@@ -53,6 +53,8 @@ import { resolveRef } from '../utils/registry-index.js';
 
 const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
 const GREATER_TAG_VERSION_RE = /^greater-v(\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?)$/;
+
+const CORE_PACKAGES = ['primitives', 'icons', 'tokens', 'utils', 'content', 'adapters'];
 
 function getGreaterComponentsVersionSpec(ref: string): string {
 	const match = GREATER_TAG_VERSION_RE.exec(ref);
@@ -227,6 +229,7 @@ export const addAction = async (
 		// Face installation - resolve face dependencies
 		isFaceInstall = true;
 		const faceName = faceItems[0]?.name ?? '';
+
 		const faceResolution = resolveFaceDependencies(faceName, {
 			skipOptional: !options.all,
 			skipInstalled,
@@ -274,12 +277,64 @@ export const addAction = async (
 		process.exit(0);
 	}
 
+	const isVendoredMode = config.installMode === 'vendored';
+
+	// In vendored mode, ensure core packages are installed when needed.
+	const needsCorePackages = isVendoredMode
+		? resolution.resolved.some(
+				(dep) =>
+					dep.type === 'face' ||
+					dep.type === 'shared' ||
+					dep.type === 'compound' ||
+					dep.type === 'pattern' ||
+					dep.type === 'adapter'
+			)
+		: false;
+
+	if (needsCorePackages) {
+		const missingCore = CORE_PACKAGES.filter(
+			(pkg) => !skipInstalled.includes(pkg) && !resolution.resolved.some((dep) => dep.name === pkg)
+		);
+
+		if (missingCore.length > 0) {
+			const coreItems = missingCore.map((name) => parseItemName(name));
+			const missingCoreItems = coreItems.filter((item) => !item.found).map((item) => item.input);
+			if (missingCoreItems.length > 0) {
+				logger.error(chalk.red('\n✖ Missing core registry items:'));
+				for (const name of missingCoreItems) {
+					logger.error(`  ${chalk.red('→')} ${name}`);
+				}
+				process.exit(1);
+			}
+
+			const coreResolution = resolveDependencies(coreItems, {
+				includeOptional: options.all,
+				skipInstalled,
+			});
+
+			if (!coreResolution.success) {
+				displayResolutionErrors(coreResolution);
+				process.exit(1);
+			}
+
+			for (const dep of coreResolution.resolved) {
+				if (!resolution.resolved.some((r) => r.name === dep.name)) {
+					resolution.resolved.push(dep);
+				}
+			}
+			resolution.npmDependencies.push(...coreResolution.npmDependencies);
+			resolution.npmDevDependencies.push(...coreResolution.npmDevDependencies);
+		}
+	}
+
 	// Ensure the umbrella package is installed when installing any non-headless components.
+	// Skip if in vendored mode.
 	const requiresGreaterComponents = resolution.resolved.some(
 		(dep) => dep.type === 'face' || dep.type === 'shared' || dep.type === 'compound'
 	);
 	if (
 		requiresGreaterComponents &&
+		!isVendoredMode &&
 		!resolution.npmDependencies.some((dep) => dep.name === GREATER_COMPONENTS_PACKAGE)
 	) {
 		resolution.npmDependencies.push({

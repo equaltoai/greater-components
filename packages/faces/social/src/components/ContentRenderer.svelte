@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sanitizeHtml, linkifyMentions } from '@equaltoai/greater-components-utils';
+	import { sanitizeHtml, linkifyMentions, useStableId } from '@equaltoai/greater-components-utils';
 	import { untrack } from 'svelte';
 	import type { Mention, Tag } from '../types';
 
@@ -55,7 +55,8 @@
 	}: Props = $props();
 
 	let expanded = $state(untrack(() => !collapsed || !spoilerText));
-	const contentId = `content-${Math.random().toString(36).slice(2, 11)}`;
+	const generatedId = useStableId('content');
+	const contentId = $derived(generatedId.value);
 
 	function toggleExpanded() {
 		if (spoilerText) {

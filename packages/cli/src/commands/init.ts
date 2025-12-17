@@ -336,6 +336,7 @@ export const initAction = async (options: {
 			$schema: SCHEMA_URL,
 			version: CONFIG_SCHEMA_VERSION,
 			ref: resolved.ref,
+			installMode: 'vendored',
 			style: response.style,
 			rsc: false,
 			tsx: projectDetails.hasTypeScript,
@@ -345,6 +346,7 @@ export const initAction = async (options: {
 				ui: response.componentsPath,
 				lib: projectDetails.type === 'sveltekit' ? '$lib' : 'src/lib',
 				hooks: response.hooksPath,
+				greater: projectDetails.type === 'sveltekit' ? '$lib/greater' : 'src/lib/greater',
 			},
 			css: {
 				tokens: true,

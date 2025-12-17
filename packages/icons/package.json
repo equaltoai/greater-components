@@ -51,8 +51,9 @@
     "src"
   ],
   "scripts": {
-    "build": "node scripts/build.js && svelte-package --output dist",
-    "dev": "node scripts/build.js --watch",
+    "generate": "node scripts/build.js",
+    "build": "svelte-package --output dist",
+    "dev": "pnpm run generate -- --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",

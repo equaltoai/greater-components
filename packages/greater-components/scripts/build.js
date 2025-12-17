@@ -82,7 +82,12 @@ function getAllFiles(dir) {
 		if (stat && stat.isDirectory()) {
 			results = results.concat(getAllFiles(file));
 		} else {
-			if (file.endsWith('.js') || file.endsWith('.d.ts') || file.endsWith('.svelte')) {
+			if (
+				file.endsWith('.js') ||
+				file.endsWith('.ts') ||
+				file.endsWith('.d.ts') ||
+				file.endsWith('.svelte')
+			) {
 				results.push(file);
 			}
 		}

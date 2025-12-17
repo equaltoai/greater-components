@@ -37,13 +37,25 @@ describe('buildPathMappings', () => {
 		expect(buttonMapping?.to).toBe('$lib/primitives/button');
 	});
 
+	it('includes core package mappings in vendored mode', () => {
+		const config = createTestConfig();
+		const mappings = buildPathMappings(config);
+
+		const utilsHyphenated = mappings.find((m) => m.from === '@equaltoai/greater-components-utils');
+		expect(utilsHyphenated?.to).toBe('$lib/greater/utils');
+
+		const utilsUmbrella = mappings.find((m) => m.from === '@equaltoai/greater-components/utils');
+		expect(utilsUmbrella?.to).toBe('$lib/greater/utils');
+	});
+
 	it('uses custom aliases for local rewrites', () => {
 		const baseConfig = createTestConfig();
 		const config = createTestConfig({
 			aliases: {
 				...baseConfig.aliases,
 				components: '@/components',
-				lib: '@/lib',
+				hooks: '@/hooks',
+				greater: '@/greater',
 			},
 		});
 		const mappings = buildPathMappings(config);
@@ -56,11 +68,11 @@ describe('buildPathMappings', () => {
 		const buttonMapping = mappings.find(
 			(m) => m.from === '@equaltoai/greater-components-headless/button'
 		);
-		expect(buttonMapping?.to).toBe('@/lib/primitives/button');
+		expect(buttonMapping?.to).toBe('@/hooks/button');
 	});
 });
 
-describe('transformPath', () => {
+describe('transformPath (vendored mode)', () => {
 	const config = createTestConfig();
 	const mappings = buildPathMappings(config);
 
@@ -78,6 +90,43 @@ describe('transformPath', () => {
 			'$lib/components/auth'
 		);
 	});
+
+	it('rewrites core package imports to greater alias', () => {
+		expect(transformPath('@equaltoai/greater-components-utils', mappings)).toBe(
+			'$lib/greater/utils'
+		);
+		expect(transformPath('@equaltoai/greater-components-primitives/Button', mappings)).toBe(
+			'$lib/greater/primitives/Button'
+		);
+		expect(
+			transformPath('@equaltoai/greater-components-primitives/button/variants', mappings)
+		).toBe('$lib/greater/primitives/button/variants');
+		expect(transformPath('@equaltoai/greater-components/tokens/theme.css', mappings)).toBe(
+			'$lib/greater/tokens/theme.css'
+		);
+	});
+
+	it('returns null for non-Greater imports', () => {
+		expect(transformPath('svelte', mappings)).toBeNull();
+		expect(transformPath('svelte/store', mappings)).toBeNull();
+		expect(transformPath('lodash', mappings)).toBeNull();
+		expect(transformPath('@types/node', mappings)).toBeNull();
+	});
+
+	it('returns null for relative imports', () => {
+		expect(transformPath('./context.js', mappings)).toBeNull();
+		expect(transformPath('../types.js', mappings)).toBeNull();
+	});
+
+	it('returns null for node built-in modules', () => {
+		expect(transformPath('node:path', mappings)).toBeNull();
+		expect(transformPath('node:fs', mappings)).toBeNull();
+	});
+});
+
+describe('transformPath (hybrid mode)', () => {
+	const config = createTestConfig({ installMode: 'hybrid' });
+	const mappings = buildPathMappings(config);
 
 	it('canonicalizes legacy hyphenated packages', () => {
 		expect(transformPath('@equaltoai/greater-components-utils', mappings)).toBe(
@@ -105,23 +154,6 @@ describe('transformPath', () => {
 		expect(transformPath('@equaltoai/greater-components/utils', mappings)).toBeNull();
 		expect(transformPath('@equaltoai/greater-components/tokens/theme.css', mappings)).toBeNull();
 	});
-
-	it('returns null for non-Greater imports', () => {
-		expect(transformPath('svelte', mappings)).toBeNull();
-		expect(transformPath('svelte/store', mappings)).toBeNull();
-		expect(transformPath('lodash', mappings)).toBeNull();
-		expect(transformPath('@types/node', mappings)).toBeNull();
-	});
-
-	it('returns null for relative imports', () => {
-		expect(transformPath('./context.js', mappings)).toBeNull();
-		expect(transformPath('../types.js', mappings)).toBeNull();
-	});
-
-	it('returns null for node built-in modules', () => {
-		expect(transformPath('node:path', mappings)).toBeNull();
-		expect(transformPath('node:fs', mappings)).toBeNull();
-	});
 });
 
 describe('transformTypeScriptImports', () => {
@@ -136,7 +168,7 @@ import { AuthGate } from '@equaltoai/greater-components-auth';`;
 
 		expect(result.transformedCount).toBe(3);
 		expect(result.content).toContain("from '$lib/primitives/button'");
-		expect(result.content).toContain("from '@equaltoai/greater-components/utils'");
+		expect(result.content).toContain("from '$lib/greater/utils'");
 		expect(result.content).toContain("from '$lib/components/auth'");
 	});
 
@@ -146,7 +178,7 @@ import { AuthGate } from '@equaltoai/greater-components-auth';`;
 		const result = transformTypeScriptImports(content, config);
 
 		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain("from '@equaltoai/greater-components/primitives'");
+		expect(result.content).toContain("from '$lib/greater/primitives'");
 	});
 
 	it('transforms dynamic imports', () => {
@@ -155,7 +187,7 @@ import { AuthGate } from '@equaltoai/greater-components-auth';`;
 		const result = transformTypeScriptImports(content, config);
 
 		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain("import('@equaltoai/greater-components/primitives/Button')");
+		expect(result.content).toContain("import('$lib/greater/primitives/Button')");
 	});
 
 	it('transforms re-exports', () => {
@@ -166,13 +198,14 @@ export * from '@equaltoai/greater-components-utils';`;
 
 		expect(result.transformedCount).toBe(2);
 		expect(result.content).toContain("from '$lib/primitives/modal'");
-		expect(result.content).toContain("from '@equaltoai/greater-components/utils'");
+		expect(result.content).toContain("from '$lib/greater/utils'");
 	});
 
 	it('canonicalizes the headless root package', () => {
 		const content = `import { createButton, createModal } from '@equaltoai/greater-components-headless';`;
 
-		const result = transformTypeScriptImports(content, config);
+		const hybridConfig = createTestConfig({ installMode: 'hybrid' });
+		const result = transformTypeScriptImports(content, hybridConfig);
 
 		expect(result.transformedCount).toBe(1);
 		expect(result.content).toContain("from '@equaltoai/greater-components/headless'");
@@ -180,7 +213,8 @@ export * from '@equaltoai/greater-components-utils';`;
 
 	it('leaves canonical umbrella imports unchanged', () => {
 		const content = `import { cn } from '@equaltoai/greater-components/utils';`;
-		const result = transformTypeScriptImports(content, config);
+		const hybridConfig = createTestConfig({ installMode: 'hybrid' });
+		const result = transformTypeScriptImports(content, hybridConfig);
 
 		expect(result.transformedCount).toBe(0);
 		expect(result.content).toBe(content);
@@ -190,17 +224,15 @@ export * from '@equaltoai/greater-components-utils';`;
 describe('transformCssFileImports', () => {
 	const config = createTestConfig();
 
-	it('canonicalizes legacy hyphenated CSS imports', () => {
+	it('rewrites core package CSS imports in vendored mode', () => {
 		const content = `@import '@equaltoai/greater-components-tokens/theme.css';
 @import '@equaltoai/greater-components-primitives/style.css';`;
 
 		const result = transformCssFileImports(content, config);
 
 		expect(result.transformedCount).toBe(2);
-		expect(result.content).toContain("@import '@equaltoai/greater-components/tokens/theme.css'");
-		expect(result.content).toContain(
-			"@import '@equaltoai/greater-components/primitives/style.css'"
-		);
+		expect(result.content).toContain("@import '$lib/greater/tokens/theme.css'");
+		expect(result.content).toContain("@import '$lib/greater/primitives/style.css'");
 	});
 
 	it('preserves non-Greater CSS imports', () => {
@@ -227,7 +259,7 @@ describe('transformSvelteImports', () => {
 
 		expect(result.transformedCount).toBe(2);
 		expect(result.content).toContain("from '$lib/primitives/button'");
-		expect(result.content).toContain("from '@equaltoai/greater-components/utils'");
+		expect(result.content).toContain("from '$lib/greater/utils'");
 	});
 
 	it('transforms @import statements in <style> blocks', () => {
@@ -239,7 +271,7 @@ describe('transformSvelteImports', () => {
 		const result = transformSvelteImports(content, config);
 
 		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain("@import '@equaltoai/greater-components/tokens/theme.css'");
+		expect(result.content).toContain("@import '$lib/greater/tokens/theme.css'");
 		expect(result.content).toContain('.button { color: red; }');
 	});
 
@@ -370,7 +402,7 @@ describe('edge cases', () => {
 		const result = transformTypeScriptImports(content, config);
 
 		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain('@equaltoai/greater-components/utils');
+		expect(result.content).toContain('$lib/greater/utils');
 	});
 
 	it('does not transform template literal dynamic imports', () => {

@@ -54,7 +54,7 @@ const PACKAGE_CONFIGS = {
 	utils: {
 		type: 'utilities',
 		srcDir: 'src',
-		extensions: ['.ts', '.js'],
+		extensions: ['.svelte', '.ts', '.js'],
 	},
 	adapters: {
 		type: 'adapters',
@@ -153,7 +153,9 @@ function getFilesRecursive(dir, extensions, basePath = '') {
 		return files;
 	}
 
-	const entries = fs.readdirSync(dir, { withFileTypes: true });
+	const entries = fs
+		.readdirSync(dir, { withFileTypes: true })
+		.sort((a, b) => a.name.localeCompare(b.name));
 
 	for (const entry of entries) {
 		const fullPath = path.join(dir, entry.name);

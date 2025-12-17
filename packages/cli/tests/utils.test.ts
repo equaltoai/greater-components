@@ -52,6 +52,7 @@ describe('config utilities', () => {
 
 		const cwd = '/project';
 		const config: ComponentConfig = {
+			installMode: 'vendored',
 			style: 'default',
 			rsc: false,
 			tsx: true,
@@ -61,6 +62,7 @@ describe('config utilities', () => {
 				ui: '$lib/components/ui',
 				lib: '$lib',
 				hooks: '$lib/primitives',
+				greater: '$lib/greater',
 			},
 			css: {
 				tokens: true,
