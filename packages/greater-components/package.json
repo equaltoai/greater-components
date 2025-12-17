@@ -129,10 +129,47 @@
       "svelte": "./dist/faces/social/index.js",
       "import": "./dist/faces/social/index.js"
     },
-    "./faces/social/*": {
-      "types": "./dist/faces/social/*.d.ts",
-      "svelte": "./dist/faces/social/src/*.svelte",
-      "import": "./dist/faces/social/*.js"
+    "./faces/social/adapters/graphql": {
+      "types": "./dist/faces/social/adapters/graphql/index.d.ts",
+      "import": "./dist/faces/social/adapters/graphql/index.js"
+    },
+    "./faces/social/components/Status": {
+      "types": "./dist/faces/social/components/Status/index.d.ts",
+      "svelte": "./dist/faces/social/components/Status/index.js",
+      "import": "./dist/faces/social/components/Status/index.js"
+    },
+    "./faces/social/components/Profile": {
+      "types": "./dist/faces/social/components/Profile/index.d.ts",
+      "svelte": "./dist/faces/social/components/Profile/index.js",
+      "import": "./dist/faces/social/components/Profile/index.js"
+    },
+    "./faces/social/components/Lists": {
+      "types": "./dist/faces/social/components/Lists/index.d.ts",
+      "svelte": "./dist/faces/social/components/Lists/index.js",
+      "import": "./dist/faces/social/components/Lists/index.js"
+    },
+    "./faces/social/components/Filters": {
+      "types": "./dist/faces/social/components/Filters/index.d.ts",
+      "svelte": "./dist/faces/social/components/Filters/index.js",
+      "import": "./dist/faces/social/components/Filters/index.js"
+    },
+    "./faces/social/components/Hashtags": {
+      "types": "./dist/faces/social/components/Hashtags/index.d.ts",
+      "svelte": "./dist/faces/social/components/Hashtags/index.js",
+      "import": "./dist/faces/social/components/Hashtags/index.js"
+    },
+    "./faces/social/components/Timeline": {
+      "types": "./dist/faces/social/components/Timeline/index.d.ts",
+      "svelte": "./dist/faces/social/components/Timeline/index.js",
+      "import": "./dist/faces/social/components/Timeline/index.js"
+    },
+    "./faces/social/generics": {
+      "types": "./dist/faces/social/generics/index.d.ts",
+      "import": "./dist/faces/social/generics/index.js"
+    },
+    "./faces/social/patterns": {
+      "types": "./dist/faces/social/patterns/index.d.ts",
+      "import": "./dist/faces/social/patterns/index.js"
     },
     "./faces/social/style.css": "./dist/faces/social/greater-components-fediverse.css",
     "./faces/blog": {
@@ -140,10 +177,34 @@
       "svelte": "./dist/faces/blog/index.js",
       "import": "./dist/faces/blog/index.js"
     },
-    "./faces/blog/*": {
-      "types": "./dist/faces/blog/*.d.ts",
-      "svelte": "./dist/faces/blog/src/*.svelte",
-      "import": "./dist/faces/blog/*.js"
+    "./faces/blog/components/Article": {
+      "types": "./dist/faces/blog/components/Article/index.d.ts",
+      "svelte": "./dist/faces/blog/components/Article/index.js",
+      "import": "./dist/faces/blog/components/Article/index.js"
+    },
+    "./faces/blog/components/Author": {
+      "types": "./dist/faces/blog/components/Author/index.d.ts",
+      "svelte": "./dist/faces/blog/components/Author/index.js",
+      "import": "./dist/faces/blog/components/Author/index.js"
+    },
+    "./faces/blog/components/Publication": {
+      "types": "./dist/faces/blog/components/Publication/index.d.ts",
+      "svelte": "./dist/faces/blog/components/Publication/index.js",
+      "import": "./dist/faces/blog/components/Publication/index.js"
+    },
+    "./faces/blog/components/Navigation": {
+      "types": "./dist/faces/blog/components/Navigation/index.d.ts",
+      "svelte": "./dist/faces/blog/components/Navigation/index.js",
+      "import": "./dist/faces/blog/components/Navigation/index.js"
+    },
+    "./faces/blog/components/Editor": {
+      "types": "./dist/faces/blog/components/Editor/index.d.ts",
+      "svelte": "./dist/faces/blog/components/Editor/index.js",
+      "import": "./dist/faces/blog/components/Editor/index.js"
+    },
+    "./faces/blog/patterns": {
+      "types": "./dist/faces/blog/patterns/index.d.ts",
+      "import": "./dist/faces/blog/patterns/index.js"
     },
     "./faces/blog/style.css": "./dist/faces/blog/greater-components-blog.css",
     "./faces/community": {
@@ -151,10 +212,44 @@
       "svelte": "./dist/faces/community/index.js",
       "import": "./dist/faces/community/index.js"
     },
-    "./faces/community/*": {
-      "types": "./dist/faces/community/*.d.ts",
-      "svelte": "./dist/faces/community/src/*.svelte",
-      "import": "./dist/faces/community/*.js"
+    "./faces/community/components/Community": {
+      "types": "./dist/faces/community/components/Community/index.d.ts",
+      "svelte": "./dist/faces/community/components/Community/index.js",
+      "import": "./dist/faces/community/components/Community/index.js"
+    },
+    "./faces/community/components/Post": {
+      "types": "./dist/faces/community/components/Post/index.d.ts",
+      "svelte": "./dist/faces/community/components/Post/index.js",
+      "import": "./dist/faces/community/components/Post/index.js"
+    },
+    "./faces/community/components/Thread": {
+      "types": "./dist/faces/community/components/Thread/index.d.ts",
+      "svelte": "./dist/faces/community/components/Thread/index.js",
+      "import": "./dist/faces/community/components/Thread/index.js"
+    },
+    "./faces/community/components/Voting": {
+      "types": "./dist/faces/community/components/Voting/index.d.ts",
+      "svelte": "./dist/faces/community/components/Voting/index.js",
+      "import": "./dist/faces/community/components/Voting/index.js"
+    },
+    "./faces/community/components/Flair": {
+      "types": "./dist/faces/community/components/Flair/index.d.ts",
+      "svelte": "./dist/faces/community/components/Flair/index.js",
+      "import": "./dist/faces/community/components/Flair/index.js"
+    },
+    "./faces/community/components/Moderation": {
+      "types": "./dist/faces/community/components/Moderation/index.d.ts",
+      "svelte": "./dist/faces/community/components/Moderation/index.js",
+      "import": "./dist/faces/community/components/Moderation/index.js"
+    },
+    "./faces/community/components/Wiki": {
+      "types": "./dist/faces/community/components/Wiki/index.d.ts",
+      "svelte": "./dist/faces/community/components/Wiki/index.js",
+      "import": "./dist/faces/community/components/Wiki/index.js"
+    },
+    "./faces/community/patterns": {
+      "types": "./dist/faces/community/patterns/index.d.ts",
+      "import": "./dist/faces/community/patterns/index.js"
     },
     "./faces/community/style.css": "./dist/faces/community/greater-components-community.css",
     "./faces/artist": {
@@ -162,10 +257,77 @@
       "svelte": "./dist/faces/artist/index.js",
       "import": "./dist/faces/artist/index.js"
     },
-    "./faces/artist/*": {
-      "types": "./dist/faces/artist/*.d.ts",
-      "svelte": "./dist/faces/artist/src/*.svelte",
-      "import": "./dist/faces/artist/*.js"
+    "./faces/artist/components/Artwork": {
+      "types": "./dist/faces/artist/components/Artwork/index.d.ts",
+      "svelte": "./dist/faces/artist/components/Artwork/index.js",
+      "import": "./dist/faces/artist/components/Artwork/index.js"
+    },
+    "./faces/artist/components/ArtistProfile": {
+      "types": "./dist/faces/artist/components/ArtistProfile/index.d.ts",
+      "svelte": "./dist/faces/artist/components/ArtistProfile/index.js",
+      "import": "./dist/faces/artist/components/ArtistProfile/index.js"
+    },
+    "./faces/artist/components/Gallery": {
+      "types": "./dist/faces/artist/components/Gallery/index.d.ts",
+      "svelte": "./dist/faces/artist/components/Gallery/index.js",
+      "import": "./dist/faces/artist/components/Gallery/index.js"
+    },
+    "./faces/artist/components/Discovery": {
+      "types": "./dist/faces/artist/components/Discovery/index.d.ts",
+      "svelte": "./dist/faces/artist/components/Discovery/index.js",
+      "import": "./dist/faces/artist/components/Discovery/index.js"
+    },
+    "./faces/artist/components/MediaViewer": {
+      "types": "./dist/faces/artist/components/MediaViewer/index.d.ts",
+      "svelte": "./dist/faces/artist/components/MediaViewer/index.js",
+      "import": "./dist/faces/artist/components/MediaViewer/index.js"
+    },
+    "./faces/artist/components/ArtworkCard": {
+      "types": "./dist/faces/artist/components/ArtworkCard/index.d.ts",
+      "svelte": "./dist/faces/artist/components/ArtworkCard/index.js",
+      "import": "./dist/faces/artist/components/ArtworkCard/index.js"
+    },
+    "./faces/artist/components/ArtistTimeline": {
+      "types": "./dist/faces/artist/components/ArtistTimeline/index.d.ts",
+      "svelte": "./dist/faces/artist/components/ArtistTimeline/index.js",
+      "import": "./dist/faces/artist/components/ArtistTimeline/index.js"
+    },
+    "./faces/artist/components/Exhibition": {
+      "types": "./dist/faces/artist/components/Exhibition/index.d.ts",
+      "svelte": "./dist/faces/artist/components/Exhibition/index.js",
+      "import": "./dist/faces/artist/components/Exhibition/index.js"
+    },
+    "./faces/artist/components/CreativeTools": {
+      "types": "./dist/faces/artist/components/CreativeTools/index.d.ts",
+      "svelte": "./dist/faces/artist/components/CreativeTools/index.js",
+      "import": "./dist/faces/artist/components/CreativeTools/index.js"
+    },
+    "./faces/artist/components/Community": {
+      "types": "./dist/faces/artist/components/Community/index.d.ts",
+      "svelte": "./dist/faces/artist/components/Community/index.js",
+      "import": "./dist/faces/artist/components/Community/index.js"
+    },
+    "./faces/artist/components/Transparency": {
+      "types": "./dist/faces/artist/components/Transparency/index.d.ts",
+      "svelte": "./dist/faces/artist/components/Transparency/index.js",
+      "import": "./dist/faces/artist/components/Transparency/index.js"
+    },
+    "./faces/artist/components/Monetization": {
+      "types": "./dist/faces/artist/components/Monetization/index.d.ts",
+      "svelte": "./dist/faces/artist/components/Monetization/index.js",
+      "import": "./dist/faces/artist/components/Monetization/index.js"
+    },
+    "./faces/artist/patterns": {
+      "types": "./dist/faces/artist/patterns/index.d.ts",
+      "import": "./dist/faces/artist/patterns/index.js"
+    },
+    "./faces/artist/stores": {
+      "types": "./dist/faces/artist/stores/index.d.ts",
+      "import": "./dist/faces/artist/stores/index.js"
+    },
+    "./faces/artist/types": {
+      "types": "./dist/faces/artist/types/index.d.ts",
+      "import": "./dist/faces/artist/types/index.js"
     },
     "./faces/artist/style.css": "./dist/faces/artist/greater-components-artist.css",
     "./adapters": {
