@@ -101,7 +101,9 @@ describe('WebSocketClient Improved Coverage', () => {
 			await vi.advanceTimersByTimeAsync(1000);
 
 			expect(socketInstance?.send).toHaveBeenCalled();
-			const msg = JSON.parse(socketInstance!.send.mock.calls[0]![0]);
+			const args = socketInstance?.send.mock.calls[0];
+			expect(args).toBeDefined();
+			const msg = JSON.parse(args?.[0]);
 			expect(msg.type).toBe('ping');
 		});
 

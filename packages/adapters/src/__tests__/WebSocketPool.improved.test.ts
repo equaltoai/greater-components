@@ -62,7 +62,8 @@ describe('WebSocketPool Improved Coverage', () => {
 
 			// Establish initial connection
 			const promise = pool.acquire('wss://example.com/reconnect');
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			// Simulate open
 			socket.readyState = MockWebSocket.OPEN;
@@ -84,7 +85,8 @@ describe('WebSocketPool Improved Coverage', () => {
 
 			// Should have created a new socket
 			expect(mockSockets.length).toBe(2);
-			const newSocket = mockSockets[1]!;
+			const newSocket = mockSockets[1];
+			if (!newSocket) throw new Error('New socket not found');
 			expect(newSocket.url).toBe('wss://example.com/reconnect');
 		});
 
@@ -95,7 +97,8 @@ describe('WebSocketPool Improved Coverage', () => {
 			});
 
 			const promise = pool.acquire('wss://example.com/max-attempts');
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			socket.readyState = MockWebSocket.OPEN;
 			if (socket.onopen) socket.onopen();
@@ -109,7 +112,8 @@ describe('WebSocketPool Improved Coverage', () => {
 
 			await vi.advanceTimersByTimeAsync(100);
 			expect(mockSockets.length).toBe(2);
-			const retrySocket1 = mockSockets[1]!;
+			const retrySocket1 = mockSockets[1];
+			if (!retrySocket1) throw new Error('Retry socket not found');
 
 			// Let's simulate the retry failing to connect
 			// To do this, we need to let the createConnection proceed to waitForConnection
@@ -139,7 +143,8 @@ describe('WebSocketPool Improved Coverage', () => {
 			});
 
 			const promise = pool.acquire('wss://example.com/heartbeat');
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			socket.readyState = MockWebSocket.OPEN;
 			if (socket.onopen) socket.onopen();
@@ -160,7 +165,8 @@ describe('WebSocketPool Improved Coverage', () => {
 			});
 
 			const promise = pool.acquire('wss://example.com/heartbeat-fail');
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			socket.readyState = MockWebSocket.OPEN;
 			if (socket.onopen) socket.onopen();
@@ -204,7 +210,7 @@ describe('WebSocketPool Improved Coverage', () => {
 			await promise;
 
 			expect(error).not.toBeNull();
-			expect(error!.message).toBe('WebSocket connection timeout');
+			expect(error?.message).toBe('WebSocket connection timeout');
 		});
 
 		it('should fail immediately if socket closes while connecting', async () => {
@@ -215,7 +221,8 @@ describe('WebSocketPool Improved Coverage', () => {
 			const promise = pool.acquire('wss://example.com/fail').catch((e) => {
 				error = e as Error;
 			});
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			// Close immediately
 			socket.readyState = MockWebSocket.CLOSED;
@@ -227,7 +234,7 @@ describe('WebSocketPool Improved Coverage', () => {
 			await promise;
 
 			expect(error).not.toBeNull();
-			expect(error!.message).toBe('WebSocket connection failed');
+			expect(error?.message).toBe('WebSocket connection failed');
 		});
 	});
 
@@ -235,7 +242,8 @@ describe('WebSocketPool Improved Coverage', () => {
 		it('should handle handler errors gracefully', async () => {
 			const pool = new WebSocketPool();
 			const promise = pool.acquire('wss://example.com/handler-error');
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			socket.readyState = MockWebSocket.OPEN;
 			if (socket.onopen) socket.onopen();
@@ -263,7 +271,8 @@ describe('WebSocketPool Improved Coverage', () => {
 		it('should handle send errors', async () => {
 			const pool = new WebSocketPool();
 			const promise = pool.acquire('wss://example.com/send-error');
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			socket.readyState = MockWebSocket.OPEN;
 			if (socket.onopen) socket.onopen();
@@ -292,7 +301,8 @@ describe('WebSocketPool Improved Coverage', () => {
 		it('should throw if sending on a not connected socket', async () => {
 			const pool = new WebSocketPool();
 			const promise = pool.acquire('wss://example.com/not-connected');
-			const socket = mockSockets[0]!;
+			const socket = mockSockets[0];
+			if (!socket) throw new Error('Socket not found');
 
 			socket.readyState = MockWebSocket.OPEN;
 			if (socket.onopen) socket.onopen();
@@ -313,14 +323,16 @@ describe('WebSocketPool Improved Coverage', () => {
 		it('should close all connections', async () => {
 			const pool = new WebSocketPool();
 			const p1 = pool.acquire('wss://example.com/1');
-			const s1 = mockSockets[0]!;
+			const s1 = mockSockets[0];
+			if (!s1) throw new Error('Socket 1 not found');
 			s1.readyState = MockWebSocket.OPEN;
 			if (s1.onopen) s1.onopen();
 			await vi.advanceTimersByTimeAsync(200); // connect
 			await p1;
 
 			const p2 = pool.acquire('wss://example.com/2');
-			const s2 = mockSockets[1]!;
+			const s2 = mockSockets[1];
+			if (!s2) throw new Error('Socket 2 not found');
 			s2.readyState = MockWebSocket.OPEN;
 			if (s2.onopen) s2.onopen();
 			await vi.advanceTimersByTimeAsync(200); // connect

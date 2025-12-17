@@ -263,7 +263,7 @@ describe('OfflineStore', () => {
 		});
 
 		it('prevents concurrent processing', async () => {
-			let resolveProcessor: () => void;
+			let resolveProcessor: (() => void) | undefined;
 			const queueProcessor = vi.fn().mockImplementation(() => {
 				return new Promise<void>((resolve) => {
 					resolveProcessor = resolve;
@@ -285,7 +285,7 @@ describe('OfflineStore', () => {
 			await p2;
 
 			// Finish p1
-			if (resolveProcessor!) resolveProcessor();
+			if (resolveProcessor) resolveProcessor();
 			await p1;
 
 			expect(queueProcessor).toHaveBeenCalledTimes(1);

@@ -11,14 +11,6 @@ import {
 	mapLesserTimelineConnection,
 	handleLesserGraphQLResponse,
 } from '../mappers.js';
-import type {
-	LesserAccountFragment,
-	LesserPostFragment,
-	LesserNotificationFragment,
-	LesserStreamingUpdate,
-	LesserObjectFragment,
-	LesserTimelineConnection,
-} from '../types.js';
 
 describe('Lesser Mappers Coverage', () => {
 	const validAccount = { id: 'acc1', handle: 'user@domain', displayName: 'User' };
