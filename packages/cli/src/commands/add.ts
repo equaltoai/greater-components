@@ -50,11 +50,20 @@ import {
 	displayFaceInstallSummary,
 } from '../utils/face-installer.js';
 import { resolveRef } from '../utils/registry-index.js';
+import { hasGreaterImports } from '../utils/transform.js';
 
 const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
 const GREATER_TAG_VERSION_RE = /^greater-v(\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?)$/;
 
-const CORE_PACKAGES = ['primitives', 'icons', 'tokens', 'utils', 'content', 'adapters'];
+const CORE_PACKAGES = [
+	'primitives',
+	'icons',
+	'tokens',
+	'utils',
+	'content',
+	'adapters',
+	'headless',
+];
 
 function getGreaterComponentsVersionSpec(ref: string): string {
 	const match = GREATER_TAG_VERSION_RE.exec(ref);
@@ -327,6 +336,14 @@ export const addAction = async (
 		}
 	}
 
+	// In vendored mode, headless primitives are provided by the vendored headless core package.
+	// Skip installing them as transitive dependencies to avoid duplicated and inconsistent layouts.
+	if (isVendoredMode && needsCorePackages) {
+		resolution.resolved = resolution.resolved.filter(
+			(dep) => dep.type !== 'primitive' || dep.isDirectRequest
+		);
+	}
+
 	// Ensure the umbrella package is installed when installing any non-headless components.
 	// Skip if in vendored mode.
 	const requiresGreaterComponents = resolution.resolved.some(
@@ -461,6 +478,7 @@ export const addAction = async (
 
 	// Write files with import transformation
 	const writeSpinner = ora('Writing and transforming files...').start();
+	const vendoredImportFailures: string[] = [];
 
 	try {
 		let totalTransformed = 0;
@@ -487,6 +505,15 @@ export const addAction = async (
 				const result = await writeComponentFilesWithTransform(groupFiles, targetDir, config);
 				totalFiles += result.writtenFiles.length;
 				totalTransformed += result.transformResults.reduce((sum, r) => sum + r.transformedCount, 0);
+
+				if (isVendoredMode) {
+					for (let i = 0; i < result.writtenFiles.length; i++) {
+						const content = result.transformResults[i]?.content;
+						if (content && hasGreaterImports(content)) {
+							vendoredImportFailures.push(result.writtenFiles[i] ?? '');
+						}
+					}
+				}
 			}
 		}
 
@@ -497,23 +524,31 @@ export const addAction = async (
 				chalk.dim(`  ↳ Transformed ${totalTransformed} import path(s) to match your aliases`)
 			);
 		}
+
+		// Vendored import gate: ensure no runtime coupling on @equaltoai/greater-components*
+		if (isVendoredMode && vendoredImportFailures.length > 0) {
+			logger.error(
+				chalk.red(
+					'\n✖ Verification Failed: Found remaining @equaltoai/greater-components imports in vendored files:'
+				)
+			);
+			for (const file of [...new Set(vendoredImportFailures)].filter(Boolean)) {
+				logger.error(`  ${chalk.red('→')} ${path.relative(cwd, file)}`);
+			}
+			process.exit(1);
+		}
 	} catch (error) {
 		writeSpinner.fail('Failed to write files');
 		console.error(chalk.red(error instanceof Error ? error.message : String(error)));
 		process.exit(1);
 	}
 
-	// Update installed components tracking in config with checksums
+	// Update installed components tracking in config
 	const updateConfigSpinner = ora('Updating configuration...').start();
 	try {
 		let updatedConfig = config;
-		// removed unused 'now'
-		for (const dep of resolution.resolved) {
-			const files = componentFiles.get(dep.name);
-			if (files && files.length > 0) {
-				// checksum calculation removed as unused
-			}
 
+		for (const dep of resolution.resolved) {
 			updatedConfig = addInstalledComponent(updatedConfig, dep.name, resolved.ref);
 		}
 

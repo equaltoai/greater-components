@@ -69,7 +69,15 @@ const HEADLESS_PRIMITIVE_SUBPATHS = ['button', 'menu', 'modal', 'tooltip', 'tabs
 /**
  * Core packages that should be mapped to the greater alias
  */
-const CORE_PACKAGES = ['primitives', 'icons', 'tokens', 'utils', 'content', 'adapters'] as const;
+const CORE_PACKAGES = [
+	'primitives',
+	'icons',
+	'tokens',
+	'utils',
+	'content',
+	'adapters',
+	'headless',
+] as const;
 
 /**
  * Build path mappings from config aliases
@@ -94,17 +102,21 @@ export function buildPathMappings(config: ComponentConfig): PathMapping[] {
 	}
 
 	// Headless primitives should resolve to locally installed builders.
-	for (const primitive of HEADLESS_PRIMITIVE_SUBPATHS) {
-		mappings.push({
-			from: `@equaltoai/greater-components-headless/${primitive}`,
-			to: `${aliases.hooks}/${primitive}`,
-			isGlob: false,
-		});
-		mappings.push({
-			from: `@equaltoai/greater-components/headless/${primitive}`,
-			to: `${aliases.hooks}/${primitive}`,
-			isGlob: false,
-		});
+	// Only apply specific mappings in non-vendored mode (hybrid),
+	// as vendored mode handles headless via the generic core package mapping.
+	if (!isVendoredMode) {
+		for (const primitive of HEADLESS_PRIMITIVE_SUBPATHS) {
+			mappings.push({
+				from: `@equaltoai/greater-components-headless/${primitive}`,
+				to: `${aliases.hooks}/${primitive}`,
+				isGlob: false,
+			});
+			mappings.push({
+				from: `@equaltoai/greater-components/headless/${primitive}`,
+				to: `${aliases.hooks}/${primitive}`,
+				isGlob: false,
+			});
+		}
 	}
 
 	// Core packages mapped to greater alias in fully-vendored mode.
@@ -172,6 +184,8 @@ const IMPORT_PATTERNS = {
 	// ES module imports: import { x } from 'path' or import x from 'path'
 	esImport:
 		/import\s+(?:type\s+)?(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)\s*,?\s*)*\s*from\s*(['"])([^'"]+)\1/g,
+	// Side-effect imports: import 'path'
+	sideEffectImport: /import\s*(['"])([^'"]+)\1/g,
 	// Dynamic imports: import('path') or import("path")
 	dynamicImport: /import\s*\(\s*(['"])([^'"]+)\1\s*\)/g,
 	// Re-exports: export { x } from 'path' or export * from 'path'
@@ -414,7 +428,134 @@ export function transformImports(
  * Check if content contains any Greater Components imports
  */
 export function hasGreaterImports(content: string): boolean {
-	return content.includes('@equaltoai/greater-components');
+	if (!content.includes('@equaltoai/greater-components')) return false;
+
+	const stripped = stripComments(content);
+
+	for (const pattern of [
+		IMPORT_PATTERNS.esImport,
+		IMPORT_PATTERNS.dynamicImport,
+		IMPORT_PATTERNS.reExport,
+		IMPORT_PATTERNS.cssImport,
+		IMPORT_PATTERNS.sideEffectImport,
+	]) {
+		pattern.lastIndex = 0;
+		let match: RegExpExecArray | null;
+		while ((match = pattern.exec(stripped)) !== null) {
+			const importPath = match[2];
+			if (importPath?.includes('@equaltoai/greater-components')) return true;
+		}
+	}
+
+	return false;
+}
+
+type StripState = 'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template';
+
+function stripComments(content: string): string {
+	let state: StripState = 'normal';
+	let result = '';
+
+	for (let i = 0; i < content.length; i++) {
+		const char = content[i] ?? '';
+		const next = content[i + 1] ?? '';
+
+		if (state === 'line-comment') {
+			if (char === '\n') {
+				state = 'normal';
+				result += '\n';
+			} else {
+				result += ' ';
+			}
+			continue;
+		}
+
+		if (state === 'block-comment') {
+			if (char === '*' && next === '/') {
+				state = 'normal';
+				result += '  ';
+				i++;
+				continue;
+			}
+
+			if (char === '\n') {
+				result += '\n';
+			} else {
+				result += ' ';
+			}
+			continue;
+		}
+
+		if (state === 'single') {
+			result += char;
+			if (char === '\\') {
+				result += next;
+				i++;
+				continue;
+			}
+			if (char === "'") state = 'normal';
+			continue;
+		}
+
+		if (state === 'double') {
+			result += char;
+			if (char === '\\') {
+				result += next;
+				i++;
+				continue;
+			}
+			if (char === '"') state = 'normal';
+			continue;
+		}
+
+		if (state === 'template') {
+			result += char;
+			if (char === '\\') {
+				result += next;
+				i++;
+				continue;
+			}
+			if (char === '`') state = 'normal';
+			continue;
+		}
+
+		// normal
+		if (char === '/' && next === '/') {
+			state = 'line-comment';
+			result += '  ';
+			i++;
+			continue;
+		}
+
+		if (char === '/' && next === '*') {
+			state = 'block-comment';
+			result += '  ';
+			i++;
+			continue;
+		}
+
+		if (char === "'") {
+			state = 'single';
+			result += char;
+			continue;
+		}
+
+		if (char === '"') {
+			state = 'double';
+			result += char;
+			continue;
+		}
+
+		if (char === '`') {
+			state = 'template';
+			result += char;
+			continue;
+		}
+
+		result += char;
+	}
+
+	return result;
 }
 
 /**

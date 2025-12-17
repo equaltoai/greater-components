@@ -27,13 +27,19 @@ describe('buildPathMappings', () => {
 		expect(legacyMapping?.to).toBe('$lib/components/auth');
 	});
 
-	it('includes headless primitive subpath mappings', () => {
+	it('includes headless core mapping in vendored mode', () => {
 		const config = createTestConfig();
 		const mappings = buildPathMappings(config);
 
-		const buttonMapping = mappings.find(
-			(m) => m.from === '@equaltoai/greater-components-headless/button'
-		);
+		const headlessMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-headless');
+		expect(headlessMapping?.to).toBe('$lib/greater/headless');
+	});
+
+	it('includes headless primitive subpath mappings in hybrid mode', () => {
+		const config = createTestConfig({ installMode: 'hybrid' });
+		const mappings = buildPathMappings(config);
+
+		const buttonMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-headless/button');
 		expect(buttonMapping?.to).toBe('$lib/primitives/button');
 	});
 
@@ -65,10 +71,8 @@ describe('buildPathMappings', () => {
 		);
 		expect(authMapping?.to).toBe('@/components/auth');
 
-		const buttonMapping = mappings.find(
-			(m) => m.from === '@equaltoai/greater-components-headless/button'
-		);
-		expect(buttonMapping?.to).toBe('@/hooks/button');
+		const headlessMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-headless');
+		expect(headlessMapping?.to).toBe('@/greater/headless');
 	});
 });
 
@@ -78,7 +82,7 @@ describe('transformPath (vendored mode)', () => {
 
 	it('rewrites headless primitives to local paths', () => {
 		expect(transformPath('@equaltoai/greater-components-headless/button', mappings)).toBe(
-			'$lib/primitives/button'
+			'$lib/greater/headless/button'
 		);
 	});
 
@@ -167,7 +171,7 @@ import { AuthGate } from '@equaltoai/greater-components-auth';`;
 		const result = transformTypeScriptImports(content, config);
 
 		expect(result.transformedCount).toBe(3);
-		expect(result.content).toContain("from '$lib/primitives/button'");
+		expect(result.content).toContain("from '$lib/greater/headless/button'");
 		expect(result.content).toContain("from '$lib/greater/utils'");
 		expect(result.content).toContain("from '$lib/components/auth'");
 	});
@@ -197,7 +201,7 @@ export * from '@equaltoai/greater-components-utils';`;
 		const result = transformTypeScriptImports(content, config);
 
 		expect(result.transformedCount).toBe(2);
-		expect(result.content).toContain("from '$lib/primitives/modal'");
+		expect(result.content).toContain("from '$lib/greater/headless/modal'");
 		expect(result.content).toContain("from '$lib/greater/utils'");
 	});
 
@@ -258,7 +262,7 @@ describe('transformSvelteImports', () => {
 		const result = transformSvelteImports(content, config);
 
 		expect(result.transformedCount).toBe(2);
-		expect(result.content).toContain("from '$lib/primitives/button'");
+		expect(result.content).toContain("from '$lib/greater/headless/button'");
 		expect(result.content).toContain("from '$lib/greater/utils'");
 	});
 
@@ -290,7 +294,7 @@ describe('transformSvelteImports', () => {
 
 		expect(result.transformedCount).toBe(2);
 		expect(result.content).toContain("from '$lib/components/auth'");
-		expect(result.content).toContain("from '$lib/primitives/modal'");
+		expect(result.content).toContain("from '$lib/greater/headless/modal'");
 	});
 
 	it('returns unchanged content when there are no Greater imports', () => {
@@ -345,11 +349,27 @@ describe('hasGreaterImports', () => {
 		expect(hasGreaterImports(`import { cn } from '@equaltoai/greater-components-utils';`)).toBe(
 			true
 		);
+		expect(hasGreaterImports(`import '@equaltoai/greater-components/utils';`)).toBe(true);
+		expect(hasGreaterImports(`export { cn } from '@equaltoai/greater-components/utils';`)).toBe(true);
+		expect(hasGreaterImports(`const mod = await import('@equaltoai/greater-components/utils');`)).toBe(
+			true
+		);
 	});
 
 	it('returns false for content without Greater imports', () => {
 		expect(hasGreaterImports(`import { onMount } from 'svelte';`)).toBe(false);
 		expect(hasGreaterImports('')).toBe(false);
+	});
+
+	it('ignores references inside comments', () => {
+		expect(
+			hasGreaterImports(
+				`/**\n * @module @equaltoai/greater-components/utils\n * import { cn } from '@equaltoai/greater-components/utils';\n */\nexport const x = 1;`
+			)
+		).toBe(false);
+		expect(hasGreaterImports(`// import { cn } from '@equaltoai/greater-components/utils';`)).toBe(
+			false
+		);
 	});
 });
 

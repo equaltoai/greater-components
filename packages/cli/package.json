@@ -49,11 +49,23 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@sveltejs/adapter-auto": "^7.0.0",
+    "@sveltejs/kit": "^2.49.2",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.10.2",
     "@types/prompts": "^2.4.9",
     "@vitest/coverage-v8": "^4.0.15",
+    "hast-util-to-mdast": "^10.1.2",
+    "mdast-util-gfm": "^3.1.0",
+    "mdast-util-to-markdown": "^2.1.2",
+    "rehype-parse": "^9.0.1",
+    "rehype-sanitize": "^6.0.0",
+    "rehype-stringify": "^10.0.1",
+    "svelte-check": "^4.3.4",
     "typescript": "^5.9.3",
+    "unified": "^11.0.5",
+    "vite": "^7.2.7",
     "vitest": "^4.0.15"
   }
 }

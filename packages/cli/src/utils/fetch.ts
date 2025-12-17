@@ -66,6 +66,7 @@ const CORE_PACKAGE_NAMES = new Set([
 	'utils',
 	'content',
 	'adapters',
+	'headless',
 ]);
 
 function isCorePackage(component: ComponentMetadata): boolean {
@@ -112,10 +113,6 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 		const pkg = greaterMatch[1];
 		const rest = greaterMatch[2];
 		candidates.push(`packages/${pkg}/src/${rest}`);
-		// Special case for headless primitives which might be in packages/headless/src/primitives/
-		if (pkg === 'headless' && !rest.startsWith('primitives/')) {
-			candidates.push(`packages/headless/src/primitives/${rest}`);
-		}
 	}
 
 	// lib/adapters/... -> packages/adapters/src/...
@@ -155,6 +152,14 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 		const [firstSegment, ...tail] = rest.split('/');
 		if (firstSegment && tail.length > 0) {
 			candidates.push(`packages/shared/${firstSegment.toLowerCase()}/src/${tail.join('/')}`);
+		}
+	}
+
+	// lib/generics/... -> packages/faces/<face>/src/generics/...
+	if (normalized.startsWith('lib/generics/')) {
+		const rest = normalized.slice('lib/generics/'.length);
+		for (const face of FACE_CANDIDATES) {
+			candidates.push(`packages/faces/${face}/src/generics/${rest}`);
 		}
 	}
 
@@ -220,6 +225,13 @@ function resolveSourcePathFromIndex(
 	if (normalized.startsWith('lib/patterns/')) {
 		const rest = normalized.slice('lib/patterns/'.length);
 		const suffix = `/src/patterns/${rest}`;
+		const unique = findUniqueChecksumMatch(index, (key) => key.endsWith(suffix));
+		if (unique) return unique;
+	}
+
+	if (normalized.startsWith('lib/generics/')) {
+		const rest = normalized.slice('lib/generics/'.length);
+		const suffix = `/src/generics/${rest}`;
 		const unique = findUniqueChecksumMatch(index, (key) => key.endsWith(suffix));
 		if (unique) return unique;
 	}

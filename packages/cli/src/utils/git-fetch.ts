@@ -146,6 +146,21 @@ export async function clearAllCache(): Promise<void> {
  * @returns File content as a Buffer
  */
 async function fetchWithRetry(ref: string, filePath: string): Promise<Buffer> {
+	// Check for local repo override
+	const localRepoRoot = process.env['GREATER_CLI_LOCAL_REPO_ROOT'];
+	if (localRepoRoot) {
+		const localPath = path.join(localRepoRoot, filePath);
+		try {
+			return await fs.readFile(localPath);
+		} catch (error) {
+			throw new NetworkError(
+				`Local file not found: ${filePath}`,
+				404,
+				localPath
+			);
+		}
+	}
+
 	const url = `${GITHUB_RAW_URL}/${ref}/${filePath}`;
 
 	// Enforce HTTPS for all requests
@@ -230,6 +245,11 @@ export async function fetchFromGitTag(
 	} = {}
 ): Promise<Buffer> {
 	const { skipCache = false, forceRefresh = false } = options;
+
+	// In local repo mode, always read from disk and bypass cache.
+	if (process.env['GREATER_CLI_LOCAL_REPO_ROOT']) {
+		return fetchWithRetry(ref, filePath);
+	}
 
 	// Check cache first (unless skipping or forcing refresh)
 	if (!skipCache && !forceRefresh) {

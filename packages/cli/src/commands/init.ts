@@ -332,30 +332,25 @@ export const initAction = async (options: {
 		// Use pre-selected face or prompt response
 		const finalFace = selectedFace || response.face;
 
-		config = {
-			$schema: SCHEMA_URL,
-			version: CONFIG_SCHEMA_VERSION,
+		// Create base config with defaults
+		const defaultConfig = createDefaultConfig({
+			projectType: projectDetails.type,
+			hasTypeScript: projectDetails.hasTypeScript,
 			ref: resolved.ref,
-			installMode: 'vendored',
+			face: finalFace,
+		});
+
+		// Override with user selections
+		config = {
+			...defaultConfig,
 			style: response.style,
-			rsc: false,
-			tsx: projectDetails.hasTypeScript,
 			aliases: {
+				...defaultConfig.aliases,
 				components: response.componentsPath.replace('/ui', ''),
 				utils: response.utilsPath,
 				ui: response.componentsPath,
-				lib: projectDetails.type === 'sveltekit' ? '$lib' : 'src/lib',
 				hooks: response.hooksPath,
-				greater: projectDetails.type === 'sveltekit' ? '$lib/greater' : 'src/lib/greater',
 			},
-			css: {
-				tokens: true,
-				primitives: true,
-				face: finalFace,
-				source: 'local',
-				localDir: 'styles/greater',
-			},
-			installed: [],
 		};
 
 		selectedFace = finalFace;
