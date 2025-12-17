@@ -250,7 +250,11 @@ describe('Lesser Mappers Coverage', () => {
 			const result = mapLesserStreamingUpdate(update as any);
 			expect(result.success).toBe(true);
 			expect(result.data && 'type' in result.data ? result.data.type : undefined).toBe('status');
-			expect(result.data && 'payload' in result.data ? (result.data.payload as { id?: string })?.id : undefined).toBe('acc1');
+			expect(
+				result.data && 'payload' in result.data
+					? (result.data.payload as { id?: string })?.id
+					: undefined
+			).toBe('acc1');
 		});
 	});
 

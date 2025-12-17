@@ -5,33 +5,44 @@
 /** Available preset palette names */
 export type PalettePreset = 'slate' | 'stone' | 'neutral' | 'zinc' | 'gray';
 /** Color scale shade values (50-950) */
-export type ColorShade = '50' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900' | '950';
+export type ColorShade =
+	| '50'
+	| '100'
+	| '200'
+	| '300'
+	| '400'
+	| '500'
+	| '600'
+	| '700'
+	| '800'
+	| '900'
+	| '950';
 /** A complete color scale with all shade values */
 export type ColorScale = {
-    [K in ColorShade]?: string;
+	[K in ColorShade]?: string;
 };
 /** Custom palette configuration object */
 export interface CustomPalette {
-    /** Gray scale colors (backgrounds, borders, text) */
-    gray?: ColorScale;
-    /** Primary brand colors */
-    primary?: ColorScale;
+	/** Gray scale colors (backgrounds, borders, text) */
+	gray?: ColorScale;
+	/** Primary brand colors */
+	primary?: ColorScale;
 }
 /** Palette configuration - either a preset name or custom palette object */
 export type PaletteConfig = PalettePreset | CustomPalette;
 /** Palette data structure from palettes.json */
 export interface PaletteData {
-    description: string;
-    gray: {
-        [shade: string]: {
-            value: string;
-        };
-    };
-    primary?: {
-        [shade: string]: {
-            value: string;
-        };
-    };
+	description: string;
+	gray: {
+		[shade: string]: {
+			value: string;
+		};
+	};
+	primary?: {
+		[shade: string]: {
+			value: string;
+		};
+	};
 }
 /** All available palettes */
 export declare const palettes: Record<PalettePreset, PaletteData>;
@@ -67,5 +78,8 @@ export declare function getPresetGrayScale(presetName: PalettePreset): ColorScal
  * @param requiredShades - Array of required shade values
  * @returns True if all required shades are present
  */
-export declare function validateColorScale(scale: ColorScale, requiredShades?: ColorShade[]): boolean;
+export declare function validateColorScale(
+	scale: ColorScale,
+	requiredShades?: ColorShade[]
+): boolean;
 //# sourceMappingURL=palette-utils.d.ts.map
