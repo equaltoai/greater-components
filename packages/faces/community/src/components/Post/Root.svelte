@@ -159,7 +159,11 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 				<button type="button" class="gr-community-post__action" onclick={navigateToPost}>
 					{postState.commentCount} comments
 				</button>
-				<button type="button" class="gr-community-post__action" onclick={() => context.handlers.onShare?.(postState.id)}>
+				<button
+					type="button"
+					class="gr-community-post__action"
+					onclick={() => context.handlers.onShare?.(postState.id)}
+				>
 					Share
 				</button>
 				<button type="button" class="gr-community-post__action" onclick={toggleSave}>

@@ -167,14 +167,14 @@ styles last
 
 ## Troubleshooting
 
-| Symptom                                                             | Cause                                        | Solution                                         |
-| ------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| Symptom                                                             | Cause                                        | Solution                                          |
+| ------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
 | Components render but appear completely unstyled (browser defaults) | Missing component CSS                        | Add `primitives/style.css` (and face CSS if used) |
-| Styles partially work, colors/spacing wrong                         | Missing token CSS                            | Add `tokens/theme.css` before component CSS      |
-| Console shows `var(--gr-*)` as invalid value                        | Tokens not loaded or loaded after components | Import `tokens/theme.css` FIRST                  |
-| Dark mode not working                                               | Missing dark theme override                  | Add `tokens/themes/dark.css` after base tokens   |
-| Social face components unstyled                                     | Face CSS not imported                        | Import `faces/social/style.css` after primitives |
-| Button/Card have no styling but render                              | Component CSS missing                        | Verify `primitives/style.css` is imported        |
+| Styles partially work, colors/spacing wrong                         | Missing token CSS                            | Add `tokens/theme.css` before component CSS       |
+| Console shows `var(--gr-*)` as invalid value                        | Tokens not loaded or loaded after components | Import `tokens/theme.css` FIRST                   |
+| Dark mode not working                                               | Missing dark theme override                  | Add `tokens/themes/dark.css` after base tokens    |
+| Social face components unstyled                                     | Face CSS not imported                        | Import `faces/social/style.css` after primitives  |
+| Button/Card have no styling but render                              | Component CSS missing                        | Verify `primitives/style.css` is imported         |
 
 ### Quick Diagnosis
 
@@ -200,14 +200,14 @@ document.querySelector('.gr-button');
 
 ## File Reference
 
-| Import Path                                  | Size          | Contents                                           |
-| -------------------------------------------- | ------------- | -------------------------------------------------- |
-| `tokens/theme.css`                           | ~180 lines    | Base design tokens (CSS custom properties)         |
-| `tokens/themes/dark.css`                     | ~140 lines    | Dark theme variable overrides                      |
-| `tokens/themes/light.css`                    | ~140 lines    | Light theme (same as base, for explicit selection) |
-| `tokens/themes/highContrast.css`             | ~140 lines    | High contrast accessibility theme                  |
-| `primitives/style.css`                       | ~3,000 lines  | Primitive component class definitions              |
-| `faces/social/style.css`                     | ~10,000 lines | Social face component class definitions            |
+| Import Path                      | Size          | Contents                                           |
+| -------------------------------- | ------------- | -------------------------------------------------- |
+| `tokens/theme.css`               | ~180 lines    | Base design tokens (CSS custom properties)         |
+| `tokens/themes/dark.css`         | ~140 lines    | Dark theme variable overrides                      |
+| `tokens/themes/light.css`        | ~140 lines    | Light theme (same as base, for explicit selection) |
+| `tokens/themes/highContrast.css` | ~140 lines    | High contrast accessibility theme                  |
+| `primitives/style.css`           | ~3,000 lines  | Primitive component class definitions              |
+| `faces/social/style.css`         | ~10,000 lines | Social face component class definitions            |
 
 ### File Aliases
 

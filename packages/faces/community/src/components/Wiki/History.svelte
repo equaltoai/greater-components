@@ -52,7 +52,12 @@ Wiki.History - Revision history viewer
 
 {#if context.handlers.onFetchHistory}
 	<section class="gr-community-wiki-history" aria-label="Wiki history">
-		<button type="button" class="gr-community-wiki__action" onclick={toggle} disabled={context.loading}>
+		<button
+			type="button"
+			class="gr-community-wiki__action"
+			onclick={toggle}
+			disabled={context.loading}
+		>
 			{open ? 'Hide history' : 'Show history'}
 		</button>
 
@@ -76,7 +81,11 @@ Wiki.History - Revision history viewer
 								<div class="gr-community-wiki-history__reason">{revision.reason}</div>
 							{/if}
 							{#if context.handlers.onRevert}
-								<button type="button" class="gr-community-wiki__action" onclick={() => revert(revision.id)}>
+								<button
+									type="button"
+									class="gr-community-wiki__action"
+									onclick={() => revert(revision.id)}
+								>
 									Revert
 								</button>
 							{/if}
@@ -87,4 +96,3 @@ Wiki.History - Revision history viewer
 		{/if}
 	</section>
 {/if}
-

@@ -49,6 +49,7 @@ describe('ArtistProfile Smoke Tests', () => {
 			{ name: 'Actions', Component: ArtistProfile.Actions },
 			{ name: 'HeroBanner', Component: ArtistProfile.HeroBanner },
 			{ name: 'Timeline', Component: ArtistProfile.Timeline },
+			{ name: 'Sections', Component: ArtistProfile.Sections },
 		];
 
 		it.each(components)('renders $name without errors', ({ Component }) => {

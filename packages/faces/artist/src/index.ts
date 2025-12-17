@@ -96,7 +96,12 @@ export {
 
 export { CritiqueCircle, Collaboration, MentorMatch } from './components/Community/index.js';
 
-export { Transparency, ProcessDocumentation, AIOptOutControls, EthicalSourcingBadge } from './components/Transparency/index.js';
+export {
+	Transparency,
+	ProcessDocumentation,
+	AIOptOutControls,
+	EthicalSourcingBadge,
+} from './components/Transparency/index.js';
 
 export {
 	Monetization,

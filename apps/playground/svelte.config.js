@@ -57,7 +57,12 @@ const config = {
 				},
 				/** @type {Record<string, string>} */ ({})
 			),
-			'@equaltoai/greater-components-social': resolvePackageDist('packages/faces/social/src'),
+			...['social', 'artist', 'community', 'blog'].reduce((acc, pkg) => {
+				acc[`@equaltoai/greater-components-${pkg}`] = resolvePackageDist(
+					`packages/faces/${pkg}/src`
+				);
+				return acc;
+			}, /** @type {Record<string, string>} */ ({})),
 			'@equaltoai/greater-components': resolvePackageDist('packages/greater-components/src'),
 			'@equaltoai/greater-components-cli': resolvePackageDist('packages/cli/src'),
 			'@equaltoai/greater-components-content': resolvePackageDist('packages/content/src'),

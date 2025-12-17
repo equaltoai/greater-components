@@ -32,7 +32,7 @@ npx @equaltoai/greater-components-cli add faces/artist
 			avatar: '/curators/maria.jpg',
 			statement: 'This exhibition brings together artists who...',
 		},
-		artworks: [...],
+		artworks: [], // Populated with ArtworkData
 		startDate: '2024-03-01',
 		endDate: '2024-04-30',
 		coverImage: '/exhibitions/light-shadow-cover.jpg',
@@ -49,14 +49,14 @@ npx @equaltoai/greater-components-cli add faces/artist
 
 ## Components
 
-| Component | Description |
-|-----------|-------------|
-| `Exhibition.Root` | Container with exhibition context |
-| `Exhibition.Header` | Title, dates, cover image |
-| `Exhibition.CuratorNote` | Curator statement and bio |
-| `Exhibition.Gallery` | Artwork display with layout options |
-| `Exhibition.Navigation` | Previous/next exhibition navigation |
-| `Exhibition.Artists` | Featured artists list |
+| Component                | Description                         |
+| ------------------------ | ----------------------------------- |
+| `Exhibition.Root`        | Container with exhibition context   |
+| `Exhibition.Header`      | Title, dates, cover image           |
+| `Exhibition.CuratorNote` | Curator statement and bio           |
+| `Exhibition.Gallery`     | Artwork display with layout options |
+| `Exhibition.Navigation`  | Previous/next exhibition navigation |
+| `Exhibition.Artists`     | Featured artists list               |
 
 ## Layout Options
 
@@ -93,10 +93,7 @@ Feature curators alongside their exhibitions:
 	import { CuratorSpotlight } from '$lib/components/faces/artist';
 </script>
 
-<CuratorSpotlight
-	curator={exhibition.curator}
-	exhibitions={curatorExhibitions}
-/>
+<CuratorSpotlight curator={exhibition.curator} exhibitions={curatorExhibitions} />
 ```
 
 ## Collection Cards

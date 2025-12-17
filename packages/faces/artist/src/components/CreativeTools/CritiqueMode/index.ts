@@ -23,7 +23,7 @@ export {
 	type CritiqueContext,
 	type AnnotationTool,
 	type ZoomState,
-} from './context.js';
+} from './context.svelte.js';
 
 export const CritiqueMode = Object.assign(Root, {
 	Root,

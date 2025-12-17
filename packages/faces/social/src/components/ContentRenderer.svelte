@@ -54,7 +54,6 @@
 		onToggle,
 	}: Props = $props();
 
-	// eslint-disable-next-line svelte/valid-compile
 	let expanded = $state(untrack(() => !collapsed || !spoilerText));
 
 	function toggleExpanded() {

@@ -72,37 +72,37 @@ const artwork = {
 
 ### Props
 
-| Prop       | Type              | Default | Notes |
-| ---------- | ----------------- | ------- | ----- |
-| `artwork`  | `ArtworkData`     | -       | Required |
+| Prop       | Type              | Default | Notes                     |
+| ---------- | ----------------- | ------- | ------------------------- |
+| `artwork`  | `ArtworkData`     | -       | Required                  |
 | `config`   | `ArtworkConfig`   | `{}`    | Display toggles + density |
-| `handlers` | `ArtworkHandlers` | `{}`    | Interaction callbacks |
-| `children` | `Snippet`         | -       | Compound children |
+| `handlers` | `ArtworkHandlers` | `{}`    | Interaction callbacks     |
+| `children` | `Snippet`         | -       | Compound children         |
 
 ### `ArtworkConfig`
 
-| Field | Type | Default |
-| --- | --- | --- |
-| `density` | `'compact' \| 'comfortable' \| 'spacious'` | `'comfortable'` |
-| `displayMode` | `'card' \| 'detail' \| 'immersive'` | `'card'` |
-| `showMetadata` | `boolean` | `true` |
-| `showStats` | `boolean` | `true` |
-| `showActions` | `boolean` | `true` |
-| `showAIDisclosure` | `boolean` | `true` |
-| `progressiveLoading` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Field                | Type                                       | Default         |
+| -------------------- | ------------------------------------------ | --------------- |
+| `density`            | `'compact' \| 'comfortable' \| 'spacious'` | `'comfortable'` |
+| `displayMode`        | `'card' \| 'detail' \| 'immersive'`        | `'card'`        |
+| `showMetadata`       | `boolean`                                  | `true`          |
+| `showStats`          | `boolean`                                  | `true`          |
+| `showActions`        | `boolean`                                  | `true`          |
+| `showAIDisclosure`   | `boolean`                                  | `true`          |
+| `progressiveLoading` | `boolean`                                  | `true`          |
+| `class`              | `string`                                   | `''`            |
 
 ### `ArtworkHandlers`
 
-| Handler | Signature |
-| --- | --- |
-| `onLike` | `(artwork: ArtworkData) => void \| Promise<void>` |
-| `onCollect` | `(artwork: ArtworkData) => void \| Promise<void>` |
-| `onShare` | `(artwork: ArtworkData) => void \| Promise<void>` |
-| `onComment` | `(artwork: ArtworkData) => void \| Promise<void>` |
-| `onClick` | `(artwork: ArtworkData) => void \| Promise<void>` |
-| `onArtistClick` | `(artistId: string) => void \| Promise<void>` |
-| `onImageError` | `(error: Error) => void` |
+| Handler         | Signature                                         |
+| --------------- | ------------------------------------------------- |
+| `onLike`        | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onCollect`     | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onShare`       | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onComment`     | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onClick`       | `(artwork: ArtworkData) => void \| Promise<void>` |
+| `onArtistClick` | `(artistId: string) => void \| Promise<void>`     |
+| `onImageError`  | `(error: Error) => void`                          |
 
 ## Subcomponents
 
@@ -110,89 +110,84 @@ All `Artwork.*` subcomponents read from context; they do not accept an `artwork`
 
 ### `Artwork.Image`
 
-| Prop | Type | Default |
-| --- | --- | --- |
+| Prop          | Type                                     | Default      |
+| ------------- | ---------------------------------------- | ------------ |
 | `aspectRatio` | `'preserve' \| '1:1' \| '4:3' \| '16:9'` | `'preserve'` |
-| `class` | `string` | `''` |
+| `class`       | `string`                                 | `''`         |
 
 ### `Artwork.Title`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `linkTo` | `string` | - |
-| `maxLines` | `number` | `2` |
-| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3` |
-| `class` | `string` | `''` |
+| Prop       | Type                         | Default |
+| ---------- | ---------------------------- | ------- |
+| `linkTo`   | `string`                     | -       |
+| `maxLines` | `number`                     | `2`     |
+| `level`    | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `3`     |
+| `class`    | `string`                     | `''`    |
 
 ### `Artwork.Attribution`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `showAvatar` | `boolean` | `true` |
-| `linkToProfile` | `boolean` | `true` |
-| `profileBaseUrl` | `string` | `'/artist'` |
-| `class` | `string` | `''` |
+| Prop             | Type      | Default     |
+| ---------------- | --------- | ----------- |
+| `showAvatar`     | `boolean` | `true`      |
+| `linkToProfile`  | `boolean` | `true`      |
+| `profileBaseUrl` | `string`  | `'/artist'` |
+| `class`          | `string`  | `''`        |
 
 ### `Artwork.Metadata`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `collapsible` | `boolean` | `false` |
-| `defaultExpanded` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Prop              | Type      | Default |
+| ----------------- | --------- | ------- |
+| `collapsible`     | `boolean` | `false` |
+| `defaultExpanded` | `boolean` | `true`  |
+| `class`           | `string`  | `''`    |
 
 ### `Artwork.Stats`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `showViews` | `boolean` | `true` |
-| `showLikes` | `boolean` | `true` |
-| `showCollections` | `boolean` | `true` |
-| `showComments` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Prop              | Type      | Default |
+| ----------------- | --------- | ------- |
+| `showViews`       | `boolean` | `true`  |
+| `showLikes`       | `boolean` | `true`  |
+| `showCollections` | `boolean` | `true`  |
+| `showComments`    | `boolean` | `true`  |
+| `class`           | `string`  | `''`    |
 
 ### `Artwork.Actions`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `showLike` | `boolean` | `true` |
-| `showCollect` | `boolean` | `true` |
-| `showShare` | `boolean` | `true` |
-| `showComment` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Prop          | Type      | Default |
+| ------------- | --------- | ------- |
+| `showLike`    | `boolean` | `true`  |
+| `showCollect` | `boolean` | `true`  |
+| `showShare`   | `boolean` | `true`  |
+| `showComment` | `boolean` | `true`  |
+| `class`       | `string`  | `''`    |
 
 ### `Artwork.AIDisclosure`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `variant` | `'badge' \| 'detailed' \| 'inline'` | `'badge'` |
-| `expandable` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Prop         | Type                                | Default   |
+| ------------ | ----------------------------------- | --------- |
+| `variant`    | `'badge' \| 'detailed' \| 'inline'` | `'badge'` |
+| `expandable` | `boolean`                           | `true`    |
+| `class`      | `string`                            | `''`      |
 
 ## `ArtworkCard`
 
 Compact rendering for grids/rows/masonry. Uses the same `ArtworkData` shape.
 
 ```svelte
-<ArtworkCard
-	artwork={artwork}
-	variant="grid"
-	size="md"
-	onclick={(art) => console.log('open', art.id)}
-/>
+<ArtworkCard {artwork} variant="grid" size="md" onclick={(art) => console.log('open', art.id)} />
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `artwork` | `ArtworkData` | - |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'auto'` | `'auto'` |
-| `variant` | `'grid' \| 'row' \| 'list' \| 'masonry'` | `'grid'` |
-| `showOverlay` | `boolean` | `true` |
+| Prop          | Type                                     | Default      |
+| ------------- | ---------------------------------------- | ------------ |
+| `artwork`     | `ArtworkData`                            | -            |
+| `size`        | `'sm' \| 'md' \| 'lg' \| 'auto'`         | `'auto'`     |
+| `variant`     | `'grid' \| 'row' \| 'list' \| 'masonry'` | `'grid'`     |
+| `showOverlay` | `boolean`                                | `true`       |
 | `aspectRatio` | `'preserve' \| '1:1' \| '4:3' \| '16:9'` | `'preserve'` |
-| `onclick` | `(artwork: ArtworkData) => void` | - |
-| `tabindex` | `number` | `0` |
-| `tagName` | `'button' \| 'div'` | `'button'` |
-| `class` | `string` | `''` |
+| `onclick`     | `(artwork: ArtworkData) => void`         | -            |
+| `tabindex`    | `number`                                 | `0`          |
+| `tagName`     | `'button' \| 'div'`                      | `'button'`   |
+| `class`       | `string`                                 | `''`         |
 
 ## `MediaViewer`
 
@@ -208,7 +203,7 @@ Full-screen lightbox viewer. `MediaViewer` is also a compound component.
 
 {#if open}
 	<MediaViewer.Root
-		artworks={artworks}
+		{artworks}
 		{currentIndex}
 		config={{ background: 'black', showMetadata: true, showThumbnails: true }}
 		handlers={{
@@ -225,34 +220,34 @@ Full-screen lightbox viewer. `MediaViewer` is also a compound component.
 
 ### `MediaViewer.Root` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `artworks` | `ArtworkData[]` | - |
-| `currentIndex` | `number` | `0` |
-| `config` | `MediaViewerConfig` | `{}` |
-| `handlers` | `MediaViewerHandlers` | `{}` |
-| `children` | `Snippet` | - |
+| Prop           | Type                  | Default |
+| -------------- | --------------------- | ------- |
+| `artworks`     | `ArtworkData[]`       | -       |
+| `currentIndex` | `number`              | `0`     |
+| `config`       | `MediaViewerConfig`   | `{}`    |
+| `handlers`     | `MediaViewerHandlers` | `{}`    |
+| `children`     | `Snippet`             | -       |
 
 ### `MediaViewerConfig`
 
-| Field | Type | Default |
-| --- | --- | --- |
-| `background` | `'dark' \| 'black' \| 'blur'` | `'black'` |
-| `showMetadata` | `boolean` | `true` |
-| `showSocial` | `boolean` | `false` |
-| `enableZoom` | `boolean` | `true` |
-| `enablePan` | `boolean` | `true` |
-| `showThumbnails` | `boolean` | `true` |
+| Field            | Type                          | Default   |
+| ---------------- | ----------------------------- | --------- |
+| `background`     | `'dark' \| 'black' \| 'blur'` | `'black'` |
+| `showMetadata`   | `boolean`                     | `true`    |
+| `showSocial`     | `boolean`                     | `false`   |
+| `enableZoom`     | `boolean`                     | `true`    |
+| `enablePan`      | `boolean`                     | `true`    |
+| `showThumbnails` | `boolean`                     | `true`    |
 
 ### `MediaViewerHandlers`
 
-| Handler | Signature |
-| --- | --- |
-| `onClose` | `() => void` |
-| `onNavigate` | `(index: number) => void` |
-| `onZoom` | `(level: number) => void` |
+| Handler         | Signature                                      |
+| --------------- | ---------------------------------------------- |
+| `onClose`       | `() => void`                                   |
+| `onNavigate`    | `(index: number) => void`                      |
+| `onZoom`        | `(level: number) => void`                      |
 | `onInteraction` | `(type: string, artwork: ArtworkData) => void` |
-| `i`          | Toggle metadata  |
+| `i`             | Toggle metadata                                |
 
 ## Accessibility
 

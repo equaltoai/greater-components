@@ -1771,20 +1771,20 @@ Syntax highlighting code block.
 
 **Props:**
 
-| Prop              | Type                     | Default        | Description                           |
-| ----------------- | ------------------------ | -------------- | ------------------------------------- |
-| `code`            | `string`                 | -              | Code content                          |
-| `language`        | `string`                 | `'text'`       | Language for highlighting             |
-| `showCopy`        | `boolean`                | `true`         | Show copy button                      |
-| `showLineNumbers` | `boolean`                | `false`        | Show line numbers                     |
-| `highlightLines`  | `number[]`               | `[]`           | Lines to highlight (1-based)          |
-| `maxHeight`       | `string \| number`       | -              | Maximum height before scrolling       |
-| `wrap`            | `boolean`                | `false`        | Wrap long lines                       |
-| `filename`        | `string`                 | -              | Filename to display in the header     |
-| `variant`         | `'outlined' \| 'filled'` | `'outlined'`   | Visual variant                        |
-| `theme`           | `string`                 | `'github-dark'` | Shiki theme name                      |
-| `class`           | `string`                 | `''`           | Additional CSS classes                |
-| `onCopy`          | `(code: string) => void` | -              | Callback when code is copied          |
+| Prop              | Type                     | Default         | Description                       |
+| ----------------- | ------------------------ | --------------- | --------------------------------- |
+| `code`            | `string`                 | -               | Code content                      |
+| `language`        | `string`                 | `'text'`        | Language for highlighting         |
+| `showCopy`        | `boolean`                | `true`          | Show copy button                  |
+| `showLineNumbers` | `boolean`                | `false`         | Show line numbers                 |
+| `highlightLines`  | `number[]`               | `[]`            | Lines to highlight (1-based)      |
+| `maxHeight`       | `string \| number`       | -               | Maximum height before scrolling   |
+| `wrap`            | `boolean`                | `false`         | Wrap long lines                   |
+| `filename`        | `string`                 | -               | Filename to display in the header |
+| `variant`         | `'outlined' \| 'filled'` | `'outlined'`    | Visual variant                    |
+| `theme`           | `string`                 | `'github-dark'` | Shiki theme name                  |
+| `class`           | `string`                 | `''`            | Additional CSS classes            |
+| `onCopy`          | `(code: string) => void` | -               | Callback when code is copied      |
 
 ### MarkdownRenderer
 
@@ -1792,16 +1792,16 @@ Safe markdown rendering.
 
 **Props:**
 
-| Prop               | Type                     | Default | Description                          |
-| ------------------ | ------------------------ | ------- | ------------------------------------ |
-| `content`          | `string`                 | -       | Markdown content                     |
-| `sanitize`         | `boolean`                | `true`  | Sanitize output HTML                 |
-| `allowedTags`      | `string[]`               | -       | Override allowed HTML tags           |
-| `enableLinks`      | `boolean`                | `true`  | Enable clickable links               |
-| `openLinksInNewTab`| `boolean`                | `true`  | Add `target="_blank"` + safe `rel`   |
-| `class`            | `string`                 | `''`    | Additional CSS classes               |
-| `onRenderComplete` | `() => void`             | -       | Callback when rendering completes    |
-| `onError`          | `(error: Error) => void` | -       | Callback on render error             |
+| Prop                | Type                     | Default | Description                        |
+| ------------------- | ------------------------ | ------- | ---------------------------------- |
+| `content`           | `string`                 | -       | Markdown content                   |
+| `sanitize`          | `boolean`                | `true`  | Sanitize output HTML               |
+| `allowedTags`       | `string[]`               | -       | Override allowed HTML tags         |
+| `enableLinks`       | `boolean`                | `true`  | Enable clickable links             |
+| `openLinksInNewTab` | `boolean`                | `true`  | Add `target="_blank"` + safe `rel` |
+| `class`             | `string`                 | `''`    | Additional CSS classes             |
+| `onRenderComplete`  | `() => void`             | -       | Callback when rendering completes  |
+| `onError`           | `(error: Error) => void` | -       | Callback on render error           |
 
 ---
 
@@ -1826,14 +1826,14 @@ Domain-specific logic and state management.
 
 Transport, GraphQL, stores, and mappers for Lesser integration and protocol payload conversion.
 
-| Export                 | Description                                          |
-| ---------------------- | ---------------------------------------------------- |
-| `LesserGraphQLAdapter` | Typed GraphQL adapter for Lesser (queries/mutations) |
-| `createGraphQLClient`  | Apollo client factory (HTTP + optional WebSocket)    |
-| `createTimelineStore`  | Reactive timeline store (paging + optional streaming)|
-| `TransportManager`     | Streaming transport orchestration                    |
-| `mapMastodonStatus`    | Mapper: Mastodon REST payload → unified model        |
-| `mapLesserPost`        | Mapper: Lesser GraphQL payload → unified model       |
+| Export                 | Description                                           |
+| ---------------------- | ----------------------------------------------------- |
+| `LesserGraphQLAdapter` | Typed GraphQL adapter for Lesser (queries/mutations)  |
+| `createGraphQLClient`  | Apollo client factory (HTTP + optional WebSocket)     |
+| `createTimelineStore`  | Reactive timeline store (paging + optional streaming) |
+| `TransportManager`     | Streaming transport orchestration                     |
+| `mapMastodonStatus`    | Mapper: Mastodon REST payload → unified model         |
+| `mapLesserPost`        | Mapper: Lesser GraphQL payload → unified model        |
 
 ---
 

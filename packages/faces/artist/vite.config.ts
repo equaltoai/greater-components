@@ -48,7 +48,10 @@ export default defineConfig({
 					__dirname,
 					'src/components/ArtistProfile/index.ts'
 				),
-				'components/ArtistTimeline/index': resolve(__dirname, 'src/components/ArtistTimeline/index.ts'),
+				'components/ArtistTimeline/index': resolve(
+					__dirname,
+					'src/components/ArtistTimeline/index.ts'
+				),
 				'components/Gallery/index': resolve(__dirname, 'src/components/Gallery/index.ts'),
 				'components/Discovery/index': resolve(__dirname, 'src/components/Discovery/index.ts'),
 				'components/Exhibition/index': resolve(__dirname, 'src/components/Exhibition/index.ts'),

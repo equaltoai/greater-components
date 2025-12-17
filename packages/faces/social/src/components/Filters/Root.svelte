@@ -43,8 +43,10 @@
 		children,
 	}: Props = $props();
 
-	// eslint-disable-next-line svelte/valid-compile
-	const context = createFiltersContext(untrack(() => handlers), untrack(() => initialState));
+	const context = createFiltersContext(
+		untrack(() => handlers),
+		untrack(() => initialState)
+	);
 
 	onMount(() => {
 		if (autoFetch) {

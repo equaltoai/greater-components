@@ -8,6 +8,7 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 	import type { Snippet } from 'svelte';
 	import { untrack } from 'svelte';
 	import { MarkdownRenderer } from '@equaltoai/greater-components-content';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import type { DraftData, EditorConfig, EditorContext } from '../../types.js';
 	import { createEditorContext, DEFAULT_EDITOR_CONFIG } from './context.js';
 	import Toolbar from './Toolbar.svelte';
@@ -57,12 +58,16 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 	let textarea: HTMLTextAreaElement | null = $state(null);
 
 	const wordCount = $derived(
-		state.config.showWordCount
-			? (state.draft.content.trim().match(/\S+/g)?.length ?? 0)
-			: undefined
+		state.config.showWordCount ? (state.draft.content.trim().match(/\S+/g)?.length ?? 0) : undefined
 	);
 	const readingMinutes = $derived(
-		state.config.showReadingTime && wordCount !== undefined ? Math.max(1, Math.ceil(wordCount / 200)) : undefined
+		state.config.showReadingTime && wordCount !== undefined
+			? Math.max(1, Math.ceil(wordCount / 200))
+			: undefined
+	);
+
+	const previewHtml = $derived(
+		state.draft.contentFormat !== 'markdown' ? sanitizeHtml(state.draft.content) : ''
 	);
 
 	function emitChange() {
@@ -193,7 +198,8 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 					{#if state.draft.contentFormat === 'markdown'}
 						<MarkdownRenderer content={state.draft.content} />
 					{:else}
-						{@html state.draft.content}
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html previewHtml}
 					{/if}
 				</div>
 			{/if}
@@ -208,10 +214,10 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 			{/if}
 			{#if state.isSaving}
 				<span>Saving…</span>
-			{:else if state.lastSaved}
-				<span>Saved</span>
 			{:else if state.isDirty}
 				<span>Unsaved changes</span>
+			{:else if state.lastSaved}
+				<span>Saved</span>
 			{/if}
 			{#if onSave && state.isDirty && !state.isSaving}
 				<button type="button" onclick={saveDraft}>Save</button>

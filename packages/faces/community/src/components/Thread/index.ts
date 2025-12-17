@@ -34,4 +34,3 @@ import Comment from './Comment.svelte';
 Thread.Root = Root;
 Thread.CommentTree = CommentTree;
 Thread.Comment = Comment;
-

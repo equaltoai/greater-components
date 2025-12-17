@@ -62,11 +62,11 @@
 	}: Props = $props();
 
 	// Component state
-	// eslint-disable-next-line svelte/valid-compile
+
 	let content = $state(untrack(() => initialContent));
 	let contentWarning = $state('');
 	let hasContentWarning = $state(false);
-	// eslint-disable-next-line svelte/valid-compile
+
 	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(
 		untrack(() => defaultVisibility)
 	);

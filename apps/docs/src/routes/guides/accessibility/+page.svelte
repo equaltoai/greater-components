@@ -31,9 +31,7 @@
 
 	<section>
 		<h2>Testing with axe</h2>
-		<p>
-			Use the testing helpers package to run accessibility checks in component tests.
-		</p>
+		<p>Use the testing helpers package to run accessibility checks in component tests.</p>
 		<CodeExample
 			language="typescript"
 			code={`import { test, expect } from 'vitest';
@@ -47,4 +45,3 @@ test('button has no a11y violations', async () => {
 		/>
 	</section>
 </article>
-

@@ -29,7 +29,7 @@ export {
 	type CritiqueContext,
 	type AnnotationTool,
 	type ZoomState,
-} from './CritiqueMode/context.js';
+} from './CritiqueMode/context.svelte.js';
 
 // ReferenceBoard standalone component
 export { default as ReferenceBoard } from './ReferenceBoard.svelte';

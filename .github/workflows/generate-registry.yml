@@ -97,4 +97,3 @@ jobs:
           git add registry/index.json registry/latest.json
           git commit -m "chore: update registry for ${{ steps.release.outputs.tag }}" || echo "No changes to commit"
           git push origin HEAD:main || echo "Could not push to main"
-

@@ -35,4 +35,3 @@ export function hasModerationContext(): boolean {
 }
 
 export type { ModerationContext };
-

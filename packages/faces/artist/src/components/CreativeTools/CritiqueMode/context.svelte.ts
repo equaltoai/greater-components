@@ -101,7 +101,7 @@ export function createCritiqueContext(
 	handlers: CritiqueHandlers = {},
 	initialAnnotations: CritiqueAnnotation[] = []
 ): CritiqueContext {
-	const context: CritiqueContext = {
+	const context: CritiqueContext = $state({
 		get artwork() {
 			return artwork;
 		},
@@ -124,7 +124,7 @@ export function createCritiqueContext(
 		},
 		isAnnotating: false,
 		pendingAnnotation: null,
-	};
+	});
 
 	setContext(CRITIQUE_CONTEXT_KEY, context);
 	return context;
@@ -147,12 +147,7 @@ export function getCritiqueContext(): CritiqueContext {
  * Checks if critique context exists
  */
 export function hasCritiqueContext(): boolean {
-	try {
-		getContext<CritiqueContext>(CRITIQUE_CONTEXT_KEY);
-		return true;
-	} catch {
-		return false;
-	}
+	return !!getContext<CritiqueContext>(CRITIQUE_CONTEXT_KEY);
 }
 
 // ============================================================================

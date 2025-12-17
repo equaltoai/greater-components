@@ -9,17 +9,26 @@
 	interface Props {
 		artist: ArtistData;
 		isOwnProfile?: boolean;
+		config?: Record<string, unknown>;
 		handlers?: ProfileHandlers;
 		Component: SvelteComponent<Record<string, unknown>>;
 		props?: Record<string, unknown>;
 	}
 
-	let { artist, isOwnProfile = false, handlers = {}, Component, props = {} }: Props = $props();
+	let {
+		artist,
+		isOwnProfile = false,
+		config = {},
+		handlers = {},
+		Component,
+		props = {},
+	}: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	createArtistProfileContext(
 		() => artist,
 		() => isOwnProfile,
-		{},
+		config,
 		() => handlers
 	);
 </script>

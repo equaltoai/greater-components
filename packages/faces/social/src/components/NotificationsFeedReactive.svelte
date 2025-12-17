@@ -95,7 +95,7 @@
 	}: Props = $props();
 
 	// Create integration instance if config is provided
-	// eslint-disable-next-line svelte/valid-compile
+
 	let notificationIntegration = untrack(() =>
 		integration ? createNotificationIntegration(integration) : null
 	);

@@ -129,6 +129,7 @@ git tag -v greater-v4.2.0
 ```
 
 Expected output for a valid GPG signature:
+
 ```
 gpg: Signature made Mon Dec 15 10:00:00 2025 EST
 gpg:                using RSA key ABC123...
@@ -136,6 +137,7 @@ gpg: Good signature from "Maintainer Name <maintainer@example.com>"
 ```
 
 Expected output for a valid SSH signature:
+
 ```
 Good "git" signature for maintainer@example.com with ED25519 key SHA256:...
 ```
@@ -166,14 +168,14 @@ echo "maintainer@example.com ssh-ed25519 AAAA... maintainer@example.com" >> ~/.c
 
 The CLI uses these status messages for signature verification:
 
-| Status | Icon | Meaning |
-|--------|------|---------|
-| `valid` | ✅ | Signature is valid and trusted |
-| `invalid` | ❌ | Signature is present but verification failed |
-| `unsigned` | ⚠️ | Tag has no signature |
-| `unknown_key` | ⚠️ | Signature exists but key is not trusted |
-| `expired` | ⚠️ | Signature key has expired |
-| `error` | ❌ | Verification process failed |
+| Status        | Icon | Meaning                                      |
+| ------------- | ---- | -------------------------------------------- |
+| `valid`       | ✅   | Signature is valid and trusted               |
+| `invalid`     | ❌   | Signature is present but verification failed |
+| `unsigned`    | ⚠️   | Tag has no signature                         |
+| `unknown_key` | ⚠️   | Signature exists but key is not trusted      |
+| `expired`     | ⚠️   | Signature key has expired                    |
+| `error`       | ❌   | Verification process failed                  |
 
 ## Security Best Practices
 
@@ -197,6 +199,7 @@ The CLI uses these status messages for signature verification:
 ### "gpg: Can't check signature: No public key"
 
 Import the maintainer's public key:
+
 ```bash
 gpg --keyserver keyserver.ubuntu.com --recv-keys <KEY_ID>
 ```
@@ -204,6 +207,7 @@ gpg --keyserver keyserver.ubuntu.com --recv-keys <KEY_ID>
 ### "error: gpg failed to sign the data"
 
 Ensure your GPG agent is running:
+
 ```bash
 gpgconf --launch gpg-agent
 ```
@@ -211,6 +215,7 @@ gpgconf --launch gpg-agent
 ### "error: SSH key not found"
 
 Check your SSH key path:
+
 ```bash
 git config --get user.signingkey
 ```
@@ -218,6 +223,7 @@ git config --get user.signingkey
 ### SSH signing not working on macOS
 
 Add this to `~/.ssh/config`:
+
 ```
 Host *
   AddKeysToAgent yes

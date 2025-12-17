@@ -21,6 +21,13 @@ vi.mock('@equaltoai/greater-components-headless/button', () => ({
 	}),
 }));
 
+const { mockContextState } = vi.hoisted(() => ({
+	mockContextState: {
+		loading: false,
+		error: null as string | null,
+	},
+}));
+
 const mockUpdateState = vi.fn();
 const mockClearError = vi.fn();
 const mockOnPasswordResetRequest = vi.fn();
@@ -28,9 +35,8 @@ const mockOnPasswordResetConfirm = vi.fn();
 const mockOnNavigateToLogin = vi.fn();
 
 const mockContext = {
-	state: {
-		loading: false,
-		error: null,
+	get state() {
+		return mockContextState;
 	},
 	handlers: {
 		onPasswordResetRequest: mockOnPasswordResetRequest,
@@ -54,8 +60,8 @@ vi.mock('../src/context.js', () => ({
 describe('PasswordReset', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
-		mockContext.state.loading = false;
-		mockContext.state.error = null;
+		mockContextState.loading = false;
+		mockContextState.error = null;
 	});
 
 	describe('Request Mode', () => {
@@ -65,6 +71,14 @@ describe('PasswordReset', () => {
 			expect(screen.getByRole('heading', { name: 'Reset your password' })).toBeTruthy();
 			expect(screen.getByLabelText(/email/i)).toBeTruthy();
 			expect(screen.getByRole('button', { name: /send reset instructions/i })).toBeTruthy();
+		});
+
+		it('renders error state', () => {
+			mockContextState.error = 'Something went wrong';
+			render(PasswordReset, { mode: 'request' });
+
+			expect(screen.getByRole('alert')).toBeTruthy();
+			expect(screen.getByText('Something went wrong')).toBeTruthy();
 		});
 
 		it('validates empty email', async () => {
@@ -128,6 +142,17 @@ describe('PasswordReset', () => {
 
 			expect(mockUpdateState).toHaveBeenCalledWith({ error: 'User not found' });
 		});
+
+		it('submits on enter key', async () => {
+			mockIsValidEmail.mockReturnValue(true);
+			render(PasswordReset, { mode: 'request' });
+
+			const emailInput = screen.getByLabelText(/email/i);
+			await fireEvent.input(emailInput, { target: { value: 'user@example.com' } });
+			await fireEvent.keyDown(emailInput, { key: 'Enter' });
+
+			expect(mockOnPasswordResetRequest).toHaveBeenCalledWith('user@example.com');
+		});
 	});
 
 	describe('Confirm Mode', () => {
@@ -138,6 +163,14 @@ describe('PasswordReset', () => {
 			expect(screen.getByLabelText(/^New Password/i)).toBeTruthy();
 			expect(screen.getByLabelText(/^Confirm Password/i)).toBeTruthy();
 			expect(screen.getByRole('button', { name: /reset password/i })).toBeTruthy();
+		});
+
+		it('renders error state', () => {
+			mockContextState.error = 'Invalid token';
+			render(PasswordReset, { mode: 'confirm', token: 'abc' });
+
+			expect(screen.getByRole('alert')).toBeTruthy();
+			expect(screen.getByText('Invalid token')).toBeTruthy();
 		});
 
 		it('validates password match', async () => {
@@ -189,6 +222,20 @@ describe('PasswordReset', () => {
 				token: 'abc',
 				newPassword: 'ValidPass1!',
 			});
+		});
+
+		it('submits on enter key', async () => {
+			mockIsValidPassword.mockReturnValue({ valid: true, message: 'OK' });
+			render(PasswordReset, { mode: 'confirm', token: 'abc' });
+
+			const newPwd = screen.getByLabelText(/^New Password/i);
+			await fireEvent.input(newPwd, { target: { value: 'ValidPass1!' } });
+
+			const confirmPwd = screen.getByLabelText(/^Confirm Password/i);
+			await fireEvent.input(confirmPwd, { target: { value: 'ValidPass1!' } });
+			await fireEvent.keyDown(confirmPwd, { key: 'Enter' });
+
+			expect(mockOnPasswordResetConfirm).toHaveBeenCalled();
 		});
 	});
 

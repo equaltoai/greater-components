@@ -12,4 +12,3 @@ Wiki.Page - Render wiki page content
 <article class="gr-community-wiki__content">
 	<MarkdownRenderer content={context.page.content} />
 </article>
-

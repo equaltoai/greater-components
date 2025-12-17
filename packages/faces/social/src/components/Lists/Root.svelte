@@ -55,8 +55,10 @@
 		class: className = '',
 	}: Props = $props();
 
-	// eslint-disable-next-line svelte/valid-compile
-	const context = createListsContext(untrack(() => handlersProp), untrack(() => initialState));
+	const context = createListsContext(
+		untrack(() => handlersProp),
+		untrack(() => initialState)
+	);
 
 	// Auto-fetch on mount
 	onMount(() => {

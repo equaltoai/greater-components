@@ -91,16 +91,16 @@ Human creativity documentation for AI-assisted work.
 
 ### Props
 
-| Prop                 | Type                   | Default      | Description                 |
-| -------------------- | ---------------------- | ------------ | --------------------------- |
-| `steps`              | `ProcessStep[]`        | `[]`         | Process documentation       |
-| `showAIContribution` | `boolean`              | `true`       | Highlight AI vs human steps |
-| `title`              | `string`               | `'Creative Process'` | Header title     |
-| `overview`           | `string`               | -            | Optional overview text      |
-| `totalTime`          | `string`               | -            | Optional duration summary   |
-| `enableExport`       | `boolean`              | `false`      | Enable export handler       |
-| `compact`            | `boolean`              | `false`      | Compact mode                |
-| `class`              | `string`               | `''`         | Custom CSS class            |
+| Prop                 | Type            | Default              | Description                 |
+| -------------------- | --------------- | -------------------- | --------------------------- |
+| `steps`              | `ProcessStep[]` | `[]`                 | Process documentation       |
+| `showAIContribution` | `boolean`       | `true`               | Highlight AI vs human steps |
+| `title`              | `string`        | `'Creative Process'` | Header title                |
+| `overview`           | `string`        | -                    | Optional overview text      |
+| `totalTime`          | `string`        | -                    | Optional duration summary   |
+| `enableExport`       | `boolean`       | `false`              | Enable export handler       |
+| `compact`            | `boolean`       | `false`              | Compact mode                |
+| `class`              | `string`        | `''`                 | Custom CSS class            |
 
 ### Step Types
 

@@ -101,7 +101,7 @@ import '@equaltoai/greater-components/faces/artist/style.css';
 <script lang="ts">
 	import { Gallery } from '$lib/components/faces/artist';
 
-	const artworks = [...]; // Array of ArtworkData
+	const artworks = []; // Array of ArtworkData
 </script>
 
 <!-- Masonry Layout (variable heights) -->
@@ -146,17 +146,17 @@ import '@equaltoai/greater-components/faces/artist/style.css';
 
 ## Key Component Groups
 
-| Component | Description | Documentation |
-|-----------|-------------|---------------|
-| `Artwork` | Compound component for artwork display | [View Docs](../../components/artist/artwork.md) |
-| `Gallery` | Grid, Masonry, Row layouts | [Gallery Integration](./gallery-integration.md) |
-| `ArtistProfile` | Portfolio profile pages | [View Docs](../../components/artist/artist-profile.md) |
-| `Discovery` | AI-powered artwork search | [View Docs](../../components/artist/discovery.md) |
-| `Exhibition` | Curated showcases | [View Docs](../../components/artist/gallery.md) |
-| `CreativeTools` | WIP, Critique, Commission | [View Docs](../../components/artist/creative-tools.md) |
-| `Community` | CritiqueCircle, Collaboration | [View Docs](../../components/artist/community.md) |
-| `Transparency` | AI disclosure, ethical badges | [AI Transparency](./ai-transparency.md) |
-| `Monetization` | TipJar, DirectPurchase | [View Docs](../../components/artist/monetization.md) |
+| Component       | Description                            | Documentation                                          |
+| --------------- | -------------------------------------- | ------------------------------------------------------ |
+| `Artwork`       | Compound component for artwork display | [View Docs](../../components/artist/artwork.md)        |
+| `Gallery`       | Grid, Masonry, Row layouts             | [Gallery Integration](./gallery-integration.md)        |
+| `ArtistProfile` | Portfolio profile pages                | [View Docs](../../components/artist/artist-profile.md) |
+| `Discovery`     | AI-powered artwork search              | [View Docs](../../components/artist/discovery.md)      |
+| `Exhibition`    | Curated showcases                      | [View Docs](../../components/artist/gallery.md)        |
+| `CreativeTools` | WIP, Critique, Commission              | [View Docs](../../components/artist/creative-tools.md) |
+| `Community`     | CritiqueCircle, Collaboration          | [View Docs](../../components/artist/community.md)      |
+| `Transparency`  | AI disclosure, ethical badges          | [AI Transparency](./ai-transparency.md)                |
+| `Monetization`  | TipJar, DirectPurchase                 | [View Docs](../../components/artist/monetization.md)   |
 
 ## Next Steps
 

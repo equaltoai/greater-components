@@ -88,4 +88,3 @@ Provides context for child wiki components.
 		<History />
 	{/if}
 </section>
-

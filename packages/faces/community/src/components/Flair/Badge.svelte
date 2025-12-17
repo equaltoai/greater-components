@@ -30,10 +30,9 @@ Flair.Badge - Display a post/user flair badge
 	});
 </script>
 
-<span class={flairClass} style={style}>
+<span class={flairClass} {style}>
 	{#if flair.emoji}
 		<span class="gr-community-flair__emoji" aria-hidden="true">{flair.emoji}</span>
 	{/if}
 	<span>{flair.text}</span>
 </span>
-

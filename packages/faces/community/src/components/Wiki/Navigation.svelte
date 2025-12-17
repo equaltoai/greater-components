@@ -34,7 +34,12 @@ Wiki.Navigation - Title and action bar for a wiki page
 
 	<div class="gr-community-wiki__actions" aria-label="Wiki actions">
 		{#if context.handlers.onSave}
-			<button type="button" class="gr-community-wiki__action" onclick={toggleEditing} disabled={context.loading}>
+			<button
+				type="button"
+				class="gr-community-wiki__action"
+				onclick={toggleEditing}
+				disabled={context.loading}
+			>
 				{context.editing ? 'Cancel' : 'Edit'}
 			</button>
 		{/if}
@@ -44,4 +49,3 @@ Wiki.Navigation - Title and action bar for a wiki page
 {#if context.error}
 	<p class="gr-community-wiki__error" role="alert">{context.error}</p>
 {/if}
-

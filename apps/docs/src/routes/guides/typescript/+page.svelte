@@ -45,4 +45,3 @@ import type { ThemeConfig } from '@equaltoai/greater-components/tokens';`}
 		/>
 	</section>
 </article>
-

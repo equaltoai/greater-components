@@ -58,7 +58,9 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 		});
 	}
 
-	const containerClass = $derived(['gr-monetization-institutional', className].filter(Boolean).join(' '));
+	const containerClass = $derived(
+		['gr-monetization-institutional', className].filter(Boolean).join(' ')
+	);
 </script>
 
 <section class={containerClass} aria-label="Institutional tools">
@@ -75,7 +77,11 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 		</div>
 
 		{#if enableAnalytics && handlers.onViewAnalytics}
-			<button type="button" class="gr-monetization-institutional__action" onclick={() => handlers.onViewAnalytics?.()}>
+			<button
+				type="button"
+				class="gr-monetization-institutional__action"
+				onclick={() => handlers.onViewAnalytics?.()}
+			>
 				View analytics
 			</button>
 		{/if}
@@ -142,7 +148,11 @@ REQ-ECON-006: Institutional tools (galleries, schools, collectives)
 			<div class="gr-monetization-institutional__panel" aria-label="Exhibition management">
 				<h4 class="gr-monetization-institutional__panel-title">Exhibitions</h4>
 				{#if handlers.onCreateExhibition}
-					<button type="button" class="gr-monetization-institutional__action" onclick={createExhibition}>
+					<button
+						type="button"
+						class="gr-monetization-institutional__action"
+						onclick={createExhibition}
+					>
 						Create exhibition
 					</button>
 				{/if}

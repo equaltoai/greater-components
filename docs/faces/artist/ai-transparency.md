@@ -18,12 +18,12 @@ npx @equaltoai/greater-components-cli add faces/artist
 
 ## Components Overview
 
-| Component | Purpose |
-|-----------|---------|
-| `AIDisclosure` | Badge/inline disclosure of AI tool usage |
+| Component              | Purpose                                      |
+| ---------------------- | -------------------------------------------- |
+| `AIDisclosure`         | Badge/inline disclosure of AI tool usage     |
 | `ProcessDocumentation` | Visual timeline of human vs AI contributions |
-| `AIOptOutControls` | User controls for AI training preferences |
-| `EthicalSourcingBadge` | Verification of ethical AI training data |
+| `AIOptOutControls`     | User controls for AI training preferences    |
+| `EthicalSourcingBadge` | Verification of ethical AI training data     |
 
 ## AIDisclosure
 
@@ -56,11 +56,11 @@ Display AI usage information with configurable detail levels.
 
 ### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `usage` | `AIUsageData` | required | AI usage details |
-| `variant` | `'badge' \| 'inline' \| 'detailed'` | `'badge'` | Display style |
-| `expandable` | `boolean` | `true` | Allow expansion for more details |
+| Prop         | Type                                | Default   | Description                      |
+| ------------ | ----------------------------------- | --------- | -------------------------------- |
+| `usage`      | `AIUsageData`                       | required  | AI usage details                 |
+| `variant`    | `'badge' \| 'inline' \| 'detailed'` | `'badge'` | Display style                    |
+| `expandable` | `boolean`                           | `true`    | Allow expansion for more details |
 
 ### AIUsageData Shape
 
@@ -115,21 +115,17 @@ Document the creative process with clear human vs AI contribution tracking.
 	];
 </script>
 
-<Transparency.ProcessDocumentation
-	steps={processSteps}
-	showAIContribution
-	showTimeline
-/>
+<Transparency.ProcessDocumentation steps={processSteps} showAIContribution showTimeline />
 ```
 
 ### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `steps` | `ProcessStep[]` | required | Process documentation steps |
-| `showAIContribution` | `boolean` | `true` | Highlight AI vs human steps |
-| `showTimeline` | `boolean` | `true` | Display chronological timeline |
-| `showMedia` | `boolean` | `true` | Show attached images/videos |
+| Prop                 | Type            | Default  | Description                    |
+| -------------------- | --------------- | -------- | ------------------------------ |
+| `steps`              | `ProcessStep[]` | required | Process documentation steps    |
+| `showAIContribution` | `boolean`       | `true`   | Highlight AI vs human steps    |
+| `showTimeline`       | `boolean`       | `true`   | Display chronological timeline |
+| `showMedia`          | `boolean`       | `true`   | Show attached images/videos    |
 
 ## AIOptOutControls
 
@@ -156,11 +152,11 @@ Allow artists to control how their work is used for AI training.
 
 ### Opt-Out Levels
 
-| Level | Description |
-|-------|-------------|
-| `discovery` | Discovery/recommendation AI (style matching, similar artists) |
-| `generative` | Generative AI training (image generation models) |
-| `research` | Academic and non-commercial research |
+| Level        | Description                                                   |
+| ------------ | ------------------------------------------------------------- |
+| `discovery`  | Discovery/recommendation AI (style matching, similar artists) |
+| `generative` | Generative AI training (image generation models)              |
+| `research`   | Academic and non-commercial research                          |
 
 ## EthicalSourcingBadge
 
@@ -190,11 +186,11 @@ Combine transparency components with artwork display:
 	<Artwork.Image />
 	<Artwork.Title />
 	<Artwork.Attribution />
-	
+
 	{#if artwork.aiUsage?.hasAI}
 		<Transparency.AIDisclosure usage={artwork.aiUsage} variant="badge" />
 	{/if}
-	
+
 	<Artwork.Actions />
 </Artwork.Root>
 ```

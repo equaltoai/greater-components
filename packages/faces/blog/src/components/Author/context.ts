@@ -53,4 +53,3 @@ export function hasAuthorContext(): boolean {
 }
 
 export type { AuthorContext };
-

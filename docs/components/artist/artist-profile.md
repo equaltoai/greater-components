@@ -5,7 +5,11 @@
 ## Imports
 
 ```ts
-import { ArtistProfile, ArtistBadge, PortfolioSection } from '@equaltoai/greater-components/faces/artist';
+import {
+	ArtistProfile,
+	ArtistBadge,
+	PortfolioSection,
+} from '@equaltoai/greater-components/faces/artist';
 ```
 
 ## `ArtistProfile`
@@ -56,17 +60,17 @@ import { ArtistProfile, ArtistBadge, PortfolioSection } from '@equaltoai/greater
 
 ### `ArtistProfile.Root` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `artist` | `ArtistData` | - |
-| `isOwnProfile` | `boolean` | `false` |
-| `handlers` | `ProfileHandlers` | `{}` |
-| `layout` | `'gallery' \| 'portfolio' \| 'timeline'` | `'gallery'` |
-| `showHeroBanner` | `boolean` | `true` |
-| `enableParallax` | `boolean` | `true` |
-| `showSocial` | `boolean` | `true` |
-| `class` | `string` | `''` |
-| `children` | `Snippet` | - |
+| Prop             | Type                                     | Default     |
+| ---------------- | ---------------------------------------- | ----------- |
+| `artist`         | `ArtistData`                             | -           |
+| `isOwnProfile`   | `boolean`                                | `false`     |
+| `handlers`       | `ProfileHandlers`                        | `{}`        |
+| `layout`         | `'gallery' \| 'portfolio' \| 'timeline'` | `'gallery'` |
+| `showHeroBanner` | `boolean`                                | `true`      |
+| `enableParallax` | `boolean`                                | `true`      |
+| `showSocial`     | `boolean`                                | `true`      |
+| `class`          | `string`                                 | `''`        |
+| `children`       | `Snippet`                                | -           |
 
 ### Notes
 
@@ -77,86 +81,86 @@ import { ArtistProfile, ArtistBadge, PortfolioSection } from '@equaltoai/greater
 
 ### `ArtistProfile.HeroBanner` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `height` | `'sm' \| 'md' \| 'lg' \| 'full'` | `'md'` |
-| `rotating` | `boolean` | `false` |
-| `rotationInterval` | `number` | `5000` |
-| `class` | `string` | `''` |
+| Prop               | Type                             | Default |
+| ------------------ | -------------------------------- | ------- |
+| `height`           | `'sm' \| 'md' \| 'lg' \| 'full'` | `'md'`  |
+| `rotating`         | `boolean`                        | `false` |
+| `rotationInterval` | `number`                         | `5000`  |
+| `class`            | `string`                         | `''`    |
 
 ### `ArtistProfile.Avatar` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'lg'` |
-| `showStatus` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Prop         | Type                           | Default |
+| ------------ | ------------------------------ | ------- |
+| `size`       | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'lg'`  |
+| `showStatus` | `boolean`                      | `true`  |
+| `class`      | `string`                       | `''`    |
 
 ### `ArtistProfile.Name` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `level` | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `1` |
-| `showUsername` | `boolean` | `true` |
-| `linkToProfile` | `boolean` | `false` |
-| `class` | `string` | `''` |
+| Prop            | Type                         | Default |
+| --------------- | ---------------------------- | ------- |
+| `level`         | `1 \| 2 \| 3 \| 4 \| 5 \| 6` | `1`     |
+| `showUsername`  | `boolean`                    | `true`  |
+| `linkToProfile` | `boolean`                    | `false` |
+| `class`         | `string`                     | `''`    |
 
 ### `ArtistProfile.Badges` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `size` | `'sm' \| 'md'` | `'md'` |
-| `maxVisible` | `number` | `5` |
-| `class` | `string` | `''` |
+| Prop         | Type           | Default |
+| ------------ | -------------- | ------- |
+| `size`       | `'sm' \| 'md'` | `'md'`  |
+| `maxVisible` | `number`       | `5`     |
+| `class`      | `string`       | `''`    |
 
 ### `ArtistProfile.Statement` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `maxLines` | `number` | `5` |
-| `expandable` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Prop         | Type      | Default |
+| ------------ | --------- | ------- |
+| `maxLines`   | `number`  | `5`     |
+| `expandable` | `boolean` | `true`  |
+| `class`      | `string`  | `''`    |
 
 ### `ArtistProfile.Stats` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `show` | `(keyof ArtistStats)[]` | `['followers','works','exhibitions','collaborations']` |
-| `clickable` | `boolean` | `true` |
-| `direction` | `'row' \| 'column'` | `'row'` |
-| `class` | `string` | `''` |
+| Prop        | Type                    | Default                                                |
+| ----------- | ----------------------- | ------------------------------------------------------ |
+| `show`      | `(keyof ArtistStats)[]` | `['followers','works','exhibitions','collaborations']` |
+| `clickable` | `boolean`               | `true`                                                 |
+| `direction` | `'row' \| 'column'`     | `'row'`                                                |
+| `class`     | `string`                | `''`                                                   |
 
 ### `ArtistProfile.Sections` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `class` | `string` | `''` |
+| Prop    | Type     | Default |
+| ------- | -------- | ------- |
+| `class` | `string` | `''`    |
 
 ### `ArtistProfile.Actions` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `showFollow` | `boolean` | `true` |
-| `showMessage` | `boolean` | `true` |
-| `showCommission` | `boolean` | `true` |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` |
-| `class` | `string` | `''` |
+| Prop             | Type                   | Default |
+| ---------------- | ---------------------- | ------- |
+| `showFollow`     | `boolean`              | `true`  |
+| `showMessage`    | `boolean`              | `true`  |
+| `showCommission` | `boolean`              | `true`  |
+| `size`           | `'sm' \| 'md' \| 'lg'` | `'md'`  |
+| `class`          | `string`               | `''`    |
 
 ### `ArtistProfile.Edit` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `class` | `string` | `''` |
+| Prop    | Type     | Default |
+| ------- | -------- | ------- |
+| `class` | `string` | `''`    |
 
 ### `ArtistProfile.Timeline` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `items` | `TimelineItem[]` | `[]` |
-| `showSocial` | `boolean` | `true` |
-| `onLoadMore` | `() => void \| Promise<void>` | - |
-| `hasMore` | `boolean` | `false` |
-| `class` | `string` | `''` |
+| Prop         | Type                          | Default |
+| ------------ | ----------------------------- | ------- |
+| `items`      | `TimelineItem[]`              | `[]`    |
+| `showSocial` | `boolean`                     | `true`  |
+| `onLoadMore` | `() => void \| Promise<void>` | -       |
+| `hasMore`    | `boolean`                     | `false` |
+| `class`      | `string`                      | `''`    |
 
 ## Standalone Components
 
@@ -170,12 +174,12 @@ import { ArtistProfile, ArtistBadge, PortfolioSection } from '@equaltoai/greater
 <ArtistBadge type="verified" tooltip="Verified artist identity" />
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `type` | `'verified' \| 'educator' \| 'institution' \| 'mentor' \| 'curator'` | - |
-| `tooltip` | `string` | - |
-| `size` | `'sm' \| 'md'` | `'md'` |
-| `class` | `string` | `''` |
+| Prop      | Type                                                                 | Default |
+| --------- | -------------------------------------------------------------------- | ------- |
+| `type`    | `'verified' \| 'educator' \| 'institution' \| 'mentor' \| 'curator'` | -       |
+| `tooltip` | `string`                                                             | -       |
+| `size`    | `'sm' \| 'md'`                                                       | `'md'`  |
+| `class`   | `string`                                                             | `''`    |
 
 ### `PortfolioSection`
 
@@ -184,15 +188,20 @@ import { ArtistProfile, ArtistBadge, PortfolioSection } from '@equaltoai/greater
 	import { PortfolioSection } from '@equaltoai/greater-components/faces/artist';
 </script>
 
-<PortfolioSection title="Featured Works" items={artworks} layout="featured" onReorder={console.log} />
+<PortfolioSection
+	title="Featured Works"
+	items={artworks}
+	layout="featured"
+	onReorder={console.log}
+/>
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `title` | `string` | - |
-| `description` | `string` | - |
-| `items` | `ArtworkData[]` | `[]` |
-| `layout` | `'grid' \| 'row' \| 'featured'` | `'grid'` |
-| `editable` | `boolean` | `false` |
-| `onReorder` | `(itemIds: string[]) => void` | - |
-| `class` | `string` | `''` |
+| Prop          | Type                            | Default  |
+| ------------- | ------------------------------- | -------- |
+| `title`       | `string`                        | -        |
+| `description` | `string`                        | -        |
+| `items`       | `ArtworkData[]`                 | `[]`     |
+| `layout`      | `'grid' \| 'row' \| 'featured'` | `'grid'` |
+| `editable`    | `boolean`                       | `false`  |
+| `onReorder`   | `(itemIds: string[]) => void`   | -        |
+| `class`       | `string`                        | `''`     |

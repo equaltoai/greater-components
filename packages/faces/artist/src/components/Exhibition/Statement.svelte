@@ -129,7 +129,8 @@ Features:
 	}
 
 	.exhibition-statement__heading {
-		font-size: var(--gr-font-size-lg(--gr-font-weight-semibold);
+		font-size: var(--gr-font-size-lg);
+		font-weight: var(--gr-font-weight-semibold);
 		color: var(--gr-color-gray-100);
 		margin: 0 0 var(--gr-spacing-scale-4) 0;
 	}

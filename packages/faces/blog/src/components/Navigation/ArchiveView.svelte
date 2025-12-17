@@ -29,7 +29,7 @@ Navigation.ArchiveView - Month/year archive navigation
 </script>
 
 <section class="gr-blog-archive" aria-label="Archive">
-	{#each grouped as [year, entries]}
+	{#each grouped as [year, entries] (year)}
 		<div class="gr-blog-archive__year">{year}</div>
 		{#each entries as entry (entry.url)}
 			<div class="gr-blog-archive__month">
@@ -46,4 +46,3 @@ Navigation.ArchiveView - Month/year archive navigation
 		{/each}
 	{/each}
 </section>
-

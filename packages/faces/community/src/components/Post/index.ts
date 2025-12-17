@@ -25,4 +25,3 @@ export const Post = {
 // Dynamic imports for tree-shaking
 import Root from './Root.svelte';
 Post.Root = Root;
-

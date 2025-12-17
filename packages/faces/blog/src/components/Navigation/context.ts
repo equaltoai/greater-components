@@ -47,4 +47,3 @@ export function hasNavigationContext(): boolean {
 }
 
 export type { NavigationContext };
-

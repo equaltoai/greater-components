@@ -16,12 +16,7 @@ Editor.Toolbar - Formatting toolbar for the blog editor
 		class?: string;
 	}
 
-	let {
-		disabled = false,
-		active = [],
-		onAction,
-		class: className = '',
-	}: Props = $props();
+	let { disabled = false, active = [], onAction, class: className = '' }: Props = $props();
 
 	const actions: ToolbarAction[][] = [
 		[
@@ -37,7 +32,7 @@ Editor.Toolbar - Formatting toolbar for the blog editor
 </script>
 
 <div class={`gr-blog-editor-toolbar ${className}`} role="toolbar" aria-label="Editor toolbar">
-	{#each actions as group, groupIndex}
+	{#each actions as group, groupIndex (groupIndex)}
 		{#if groupIndex > 0}
 			<div class="gr-blog-editor-toolbar__divider" aria-hidden="true"></div>
 		{/if}
@@ -46,7 +41,7 @@ Editor.Toolbar - Formatting toolbar for the blog editor
 				type="button"
 				class="gr-blog-editor-toolbar__button"
 				class:gr-blog-editor-toolbar__button--active={active.includes(action.id)}
-				disabled={disabled}
+				{disabled}
 				aria-label={action.label}
 				onclick={() => onAction?.(action.id)}
 			>

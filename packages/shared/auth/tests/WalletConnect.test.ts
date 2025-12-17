@@ -199,4 +199,138 @@ describe('WalletConnect', () => {
 
 		expect(await screen.findByText(/please add polygon/i)).toBeTruthy();
 	});
+
+	it('handles network switch generic error', async () => {
+		mockEthereum.isMetaMask = true;
+		mockEthereum.request
+			.mockResolvedValueOnce(['0x123'])
+			.mockResolvedValueOnce('0x1')
+			.mockResolvedValueOnce('0xsig');
+
+		render(WalletConnect, { showAdvanced: true, supportedChains: [1, 137] });
+		await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+		await screen.findByText('Connected');
+
+		// Fail switch generic
+		mockEthereum.request.mockRejectedValueOnce(new Error('Network error'));
+
+		const polygonBtn = screen.getByRole('button', { name: 'Polygon' });
+		await fireEvent.click(polygonBtn);
+
+		expect(await screen.findByText('Network error')).toBeTruthy();
+	});
+
+	it('handles clipboard unavailable', async () => {
+		// Temporarily remove clipboard
+		const originalClipboard = navigator.clipboard;
+		Object.defineProperty(navigator, 'clipboard', { value: undefined, writable: true });
+
+		mockEthereum.isMetaMask = true;
+		mockEthereum.request
+			.mockResolvedValueOnce(['0x123'])
+			.mockResolvedValueOnce('0x1')
+			.mockResolvedValueOnce('0xsig');
+
+		render(WalletConnect);
+		await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+		await screen.findByText('Connected');
+
+		await fireEvent.click(screen.getByRole('button', { name: /copy/i }));
+
+		expect(await screen.findByText(/clipboard is unavailable/i)).toBeTruthy();
+
+		// Restore
+		Object.defineProperty(navigator, 'clipboard', { value: originalClipboard, writable: true });
+	});
+
+	it('handles disconnect error', async () => {
+		mockEthereum.isMetaMask = true;
+		mockEthereum.request
+			.mockResolvedValueOnce(['0x123'])
+			.mockResolvedValueOnce('0x1')
+			.mockResolvedValueOnce('0xsig');
+
+		const onDisconnect = vi.fn().mockRejectedValue(new Error('Disconnect failed'));
+		render(WalletConnect, { onDisconnect });
+		await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+		await screen.findByText('Connected');
+
+		await fireEvent.click(screen.getByRole('button', { name: /disconnect/i }));
+
+		expect(await screen.findByText('Disconnect failed')).toBeTruthy();
+	});
+
+	it('handles generic connection error', async () => {
+		mockEthereum.isMetaMask = true;
+		mockEthereum.request.mockRejectedValueOnce(new Error('Connection failed'));
+
+		render(WalletConnect);
+		await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+
+		expect(await screen.findByText('Connection failed')).toBeTruthy();
+	});
+
+	it('handles string error', async () => {
+		mockEthereum.isMetaMask = true;
+		mockEthereum.request.mockRejectedValueOnce('String Error');
+
+		render(WalletConnect);
+		await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+
+		expect(await screen.findByText('String Error')).toBeTruthy();
+	});
+
+	it('handles successful disconnect', async () => {
+		mockEthereum.isMetaMask = true;
+		mockEthereum.request
+			.mockResolvedValueOnce(['0x123'])
+			.mockResolvedValueOnce('0x1')
+			.mockResolvedValueOnce('0xsig');
+
+		const onDisconnect = vi.fn();
+		render(WalletConnect, { onDisconnect });
+		await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+		await screen.findByText('Connected');
+
+		await fireEvent.click(screen.getByRole('button', { name: /disconnect/i }));
+
+		expect(onDisconnect).toHaveBeenCalled();
+		expect(screen.getByText('Connect Your Wallet')).toBeTruthy();
+	});
+
+	it('handles successful network switch', async () => {
+		mockEthereum.isMetaMask = true;
+		mockEthereum.request
+			.mockResolvedValueOnce(['0x123'])
+			.mockResolvedValueOnce('0x1')
+			.mockResolvedValueOnce('0xsig');
+
+		render(WalletConnect, { showAdvanced: true, supportedChains: [1, 137] });
+		await fireEvent.click(screen.getByRole('button', { name: /connect with metamask/i }));
+		await screen.findByText('Connected');
+
+		// Switch success
+		mockEthereum.request.mockResolvedValueOnce(null);
+
+		const polygonBtn = screen.getByRole('button', { name: 'Polygon' });
+		await fireEvent.click(polygonBtn);
+
+		// Expect chainId to update in state? Component doesn't expose it, but UI might update?
+		// The component updates `wallet.chainId` and displays `getChainName(wallet.chainId)`.
+		// It was 'Ethereum' (1). Should become 'Polygon' (137).
+		expect(await screen.findByText('Network')).toBeTruthy();
+		// We can check if the detail value changed to Polygon
+		// Note: The button text is also "Polygon", so we need to be careful with getByText
+		// The "Network" value display:
+		// <span class="wallet-connect__detail-value">{wallet ? getChainName(wallet.chainId) : 'Unknown'}</span>
+
+		// Let's look for the detail value specifically or just text "Polygon" that is NOT the button?
+		// But "Polygon" button is disabled after switch?
+		// `disabled={wallet.chainId === chainId}`
+
+		await waitFor(() => {
+			const polygonBtnAfter = screen.getByRole('button', { name: 'Polygon' });
+			expect(polygonBtnAfter.disabled).toBe(true);
+		});
+	});
 });

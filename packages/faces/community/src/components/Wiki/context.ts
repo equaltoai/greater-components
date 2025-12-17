@@ -19,7 +19,9 @@ export function createWikiContext(context: WikiContext): WikiContext {
 export function getWikiContext(): WikiContext {
 	const context = getContext<WikiContext>(WIKI_CONTEXT_KEY);
 	if (!context) {
-		throw new Error('Wiki context not found. Make sure this component is used within a Wiki.Root component.');
+		throw new Error(
+			'Wiki context not found. Make sure this component is used within a Wiki.Root component.'
+		);
 	}
 	return context;
 }
@@ -33,4 +35,3 @@ export function hasWikiContext(): boolean {
 }
 
 export type { WikiContext };
-

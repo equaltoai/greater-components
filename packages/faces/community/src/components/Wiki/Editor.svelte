@@ -41,11 +41,21 @@ Wiki.Editor - Simple markdown editor for wiki pages
 
 	<label class="gr-community-wiki__field">
 		<span class="gr-community-wiki__field-label">Edit reason (optional)</span>
-		<input class="gr-community-wiki__input" type="text" bind:value={reason} disabled={context.loading} />
+		<input
+			class="gr-community-wiki__input"
+			type="text"
+			bind:value={reason}
+			disabled={context.loading}
+		/>
 	</label>
 
 	<div class="gr-community-wiki__editor-actions">
-		<button type="button" class="gr-community-wiki__action" onclick={save} disabled={context.loading}>
+		<button
+			type="button"
+			class="gr-community-wiki__action"
+			onclick={save}
+			disabled={context.loading}
+		>
 			Save
 		</button>
 	</div>

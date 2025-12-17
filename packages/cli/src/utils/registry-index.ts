@@ -455,10 +455,12 @@ export function getShared(index: RegistryIndex, sharedName: string): RegistrySha
  * @param options Fetch options
  * @returns Latest ref info, or null if not available
  */
-export async function fetchLatestRef(options: {
-	/** Skip cache and always fetch from network */
-	skipCache?: boolean;
-} = {}): Promise<LatestRef | null> {
+export async function fetchLatestRef(
+	options: {
+		/** Skip cache and always fetch from network */
+		skipCache?: boolean;
+	} = {}
+): Promise<LatestRef | null> {
 	const { skipCache = false } = options;
 
 	// Check cache first
@@ -467,7 +469,7 @@ export async function fetchLatestRef(options: {
 
 	if (!skipCache) {
 		try {
-			if (await fs.pathExists(cachePath) && await fs.pathExists(metadataPath)) {
+			if ((await fs.pathExists(cachePath)) && (await fs.pathExists(metadataPath))) {
 				const metadata = JSON.parse(await fs.readFile(metadataPath, 'utf-8'));
 				const age = Date.now() - metadata.fetchedAt;
 

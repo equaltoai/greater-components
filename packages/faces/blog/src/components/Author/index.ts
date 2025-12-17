@@ -30,4 +30,3 @@ import Card from './Card.svelte';
 
 Author.Root = Root;
 Author.Card = Card;
-

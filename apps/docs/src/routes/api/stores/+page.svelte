@@ -4,7 +4,10 @@
 
 <svelte:head>
 	<title>Stores API - Greater Components</title>
-	<meta name="description" content="Reactive stores and state helpers exported by Greater Components." />
+	<meta
+		name="description"
+		content="Reactive stores and state helpers exported by Greater Components."
+	/>
 </svelte:head>
 
 <article class="guide-page">
@@ -29,4 +32,3 @@ await timeline.refresh();`}
 		/>
 	</section>
 </article>
-

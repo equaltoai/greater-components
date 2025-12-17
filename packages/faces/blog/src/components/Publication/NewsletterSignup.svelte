@@ -80,7 +80,7 @@ Publication.NewsletterSignup - Newsletter signup CTA
 				type="email"
 				name="email"
 				autocomplete="email"
-				placeholder={placeholder}
+				{placeholder}
 				bind:value={email}
 				disabled={loading}
 				aria-invalid={error ? 'true' : 'false'}
@@ -102,4 +102,3 @@ Publication.NewsletterSignup - Newsletter signup CTA
 		{/if}
 	</div>
 {/if}
-

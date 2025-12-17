@@ -24,4 +24,3 @@ Navigation.TagCloud - Tag cloud navigation
 		</a>
 	{/each}
 </div>
-

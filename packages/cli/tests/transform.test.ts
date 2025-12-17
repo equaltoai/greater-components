@@ -18,7 +18,9 @@ describe('buildPathMappings', () => {
 		const config = createTestConfig();
 		const mappings = buildPathMappings(config);
 
-		const sharedMapping = mappings.find((m) => m.from === '@equaltoai/greater-components/shared/auth');
+		const sharedMapping = mappings.find(
+			(m) => m.from === '@equaltoai/greater-components/shared/auth'
+		);
 		expect(sharedMapping?.to).toBe('$lib/components/auth');
 
 		const legacyMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-auth');
@@ -46,7 +48,9 @@ describe('buildPathMappings', () => {
 		});
 		const mappings = buildPathMappings(config);
 
-		const authMapping = mappings.find((m) => m.from === '@equaltoai/greater-components/shared/auth');
+		const authMapping = mappings.find(
+			(m) => m.from === '@equaltoai/greater-components/shared/auth'
+		);
 		expect(authMapping?.to).toBe('@/components/auth');
 
 		const buttonMapping = mappings.find(
@@ -70,7 +74,9 @@ describe('transformPath', () => {
 		expect(transformPath('@equaltoai/greater-components/shared/auth', mappings)).toBe(
 			'$lib/components/auth'
 		);
-		expect(transformPath('@equaltoai/greater-components-auth', mappings)).toBe('$lib/components/auth');
+		expect(transformPath('@equaltoai/greater-components-auth', mappings)).toBe(
+			'$lib/components/auth'
+		);
 	});
 
 	it('canonicalizes legacy hyphenated packages', () => {
@@ -80,9 +86,9 @@ describe('transformPath', () => {
 		expect(transformPath('@equaltoai/greater-components-primitives/Button', mappings)).toBe(
 			'@equaltoai/greater-components/primitives/Button'
 		);
-		expect(transformPath('@equaltoai/greater-components-primitives/button/variants', mappings)).toBe(
-			'@equaltoai/greater-components/primitives/button/variants'
-		);
+		expect(
+			transformPath('@equaltoai/greater-components-primitives/button/variants', mappings)
+		).toBe('@equaltoai/greater-components/primitives/button/variants');
 	});
 
 	it('canonicalizes the legacy social face package', () => {
@@ -192,7 +198,9 @@ describe('transformCssFileImports', () => {
 
 		expect(result.transformedCount).toBe(2);
 		expect(result.content).toContain("@import '@equaltoai/greater-components/tokens/theme.css'");
-		expect(result.content).toContain("@import '@equaltoai/greater-components/primitives/style.css'");
+		expect(result.content).toContain(
+			"@import '@equaltoai/greater-components/primitives/style.css'"
+		);
 	});
 
 	it('preserves non-Greater CSS imports', () => {
@@ -299,8 +307,12 @@ describe('transformImports (auto-detection)', () => {
 
 describe('hasGreaterImports', () => {
 	it('returns true for content with Greater imports', () => {
-		expect(hasGreaterImports(`import { cn } from '@equaltoai/greater-components/utils';`)).toBe(true);
-		expect(hasGreaterImports(`import { cn } from '@equaltoai/greater-components-utils';`)).toBe(true);
+		expect(hasGreaterImports(`import { cn } from '@equaltoai/greater-components/utils';`)).toBe(
+			true
+		);
+		expect(hasGreaterImports(`import { cn } from '@equaltoai/greater-components-utils';`)).toBe(
+			true
+		);
 	});
 
 	it('returns false for content without Greater imports', () => {

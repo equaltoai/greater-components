@@ -1,12 +1,12 @@
 import type {
-	Artwork,
-	ArtistProfile,
+	ArtworkEntity as Artwork,
+	ArtistProfileEntity as ArtistProfile,
 	Collection,
 	ArtistStats,
 	ArtworkStats,
 	MoodData,
 	AIUsageData,
-	PortfolioSection,
+	PortfolioSectionEntity as PortfolioSection,
 } from '@equaltoai/greater-components-artist';
 import { base } from '$app/paths';
 

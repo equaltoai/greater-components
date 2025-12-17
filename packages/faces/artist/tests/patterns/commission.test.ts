@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
 	createCommissionPattern,
@@ -185,6 +186,222 @@ describe('Commission Pattern', () => {
 		it('returns role-specific descriptions', () => {
 			expect(getStepDescription('quote', 'artist')).toContain('Provide a quote');
 			expect(getStepDescription('quote', 'client')).toContain('Review the quote');
+		});
+	});
+
+	describe('Composed Handlers', () => {
+		const createPatternWithHandlers = (handlers: any = {}) => {
+			return createCommissionPattern(
+				{
+					role: 'artist',
+					onStepComplete: vi.fn(),
+					onCancel: vi.fn(),
+				},
+				handlers
+			);
+		};
+
+		it('handles onQuoteSubmit', async () => {
+			const onQuoteSubmit = vi.fn();
+			const pattern = createPatternWithHandlers({ onQuoteSubmit });
+
+			// Setup required fields for validation if completeStep is called
+			// Quote requires amount, timeline, deliverables
+
+			// However, onQuoteSubmit calls updateStepData BEFORE calling completeStep
+			// So we just need to ensure the data passed makes it valid
+
+			// Wait, completeStep is called at the end.
+			// So we need to ensure we are in the right step?
+			// Default starts at 'inquiry', but onQuoteSubmit is for 'quote' step.
+			// But handlers might be called regardless? No, completeStep acts on currentStep.
+
+			// Let's force current step to 'quote' first
+			pattern.state.goToStep('quote'); // Needs to be accessible though.
+			// Easier to mock state or just force it via updateStepData + validation?
+
+			// Let's just create a pattern that starts at 'quote'
+			const patternAtQuote = createCommissionPattern(
+				{
+					role: 'artist',
+					commission: { status: 'quoted' } as any, // This sets initial step to 'quote'
+					onStepComplete: vi.fn(),
+					onCancel: vi.fn(),
+				},
+				{ onQuoteSubmit }
+			);
+
+			await patternAtQuote.handlers.onQuoteSubmit?.(100, {
+				timeline: '1 week',
+				deliverables: 'Art',
+			});
+
+			expect(onQuoteSubmit).toHaveBeenCalledWith(100, { timeline: '1 week', deliverables: 'Art' });
+			expect(patternAtQuote.state.stepData.quote).toMatchObject({
+				amount: 100,
+				timeline: '1 week',
+				deliverables: 'Art',
+			});
+		});
+
+		it('handles onAgreementAccept', async () => {
+			const onAgreementAccept = vi.fn();
+			const pattern = createCommissionPattern(
+				{
+					role: 'client',
+					commission: { status: 'accepted' } as any, // 'agreement' step
+					onStepComplete: vi.fn(),
+					onCancel: vi.fn(),
+				},
+				{ onAgreementAccept }
+			);
+
+			await pattern.handlers.onAgreementAccept?.();
+
+			expect(onAgreementAccept).toHaveBeenCalled();
+			expect(pattern.state.stepData.agreement).toMatchObject({ accepted: true });
+		});
+
+		it('handles onPaymentProcess', async () => {
+			const onPaymentProcess = vi.fn();
+			const pattern = createCommissionPattern(
+				{
+					role: 'client', // Payment is usually client action
+					onStepComplete: vi.fn(),
+					onCancel: vi.fn(),
+				},
+				{ onPaymentProcess }
+			);
+
+			// Force step to payment. To do that we need completed steps.
+
+			// Let's walk through it.
+			// Inquiry -> Quote -> Agreement -> Payment.
+
+			pattern.state.updateStepData('inquiry', { description: 'd', budget: 'b' });
+			await pattern.state.completeStep(); // -> quote
+
+			pattern.state.updateStepData('quote', { amount: 100, timeline: 't', deliverables: 'd' });
+			await pattern.state.completeStep(); // -> agreement
+
+			pattern.state.updateStepData('agreement', { accepted: true });
+			await pattern.state.completeStep(); // -> payment
+
+			expect(pattern.state.currentStep).toBe('payment');
+
+			// Payment requires paymentMethod to be set before completion
+			pattern.state.updateStepData('payment', { paymentMethod: 'credit_card' });
+
+			await pattern.handlers.onPaymentProcess?.('milestone-1');
+
+			expect(onPaymentProcess).toHaveBeenCalledWith('milestone-1');
+			expect(pattern.state.stepData.payment).toMatchObject({
+				milestoneId: 'milestone-1',
+				processed: true,
+			});
+		});
+
+		it('handles onProgressUpdate', async () => {
+			const onProgressUpdate = vi.fn();
+			const pattern = createCommissionPattern(
+				{
+					role: 'artist',
+					onStepComplete: vi.fn(),
+					onCancel: vi.fn(),
+				},
+				{ onProgressUpdate }
+			);
+
+			await pattern.handlers.onProgressUpdate?.('update text', ['img1']);
+			expect(onProgressUpdate).toHaveBeenCalledWith('update text', ['img1']);
+		});
+
+		it('handles onRevisionRequest', async () => {
+			const onRevisionRequest = vi.fn();
+			const revisionPattern = createCommissionPattern(
+				{
+					role: 'client',
+					onStepComplete: vi.fn(),
+					onCancel: vi.fn(),
+				},
+				{ onRevisionRequest }
+			);
+
+			await revisionPattern.handlers.onRevisionRequest?.('fix this');
+
+			expect(onRevisionRequest).toHaveBeenCalledWith('fix this');
+			expect(revisionPattern.state.stepData.revision).toMatchObject({ feedback: 'fix this' });
+		});
+
+		it('handles onDelivery', async () => {
+			const onDelivery = vi.fn();
+			// Fast forward to delivery by starting at revision and completing it
+			const patternRev = createCommissionPattern(
+				{
+					role: 'artist',
+					commission: { status: 'revision' } as any,
+					onStepComplete: vi.fn(),
+					onCancel: vi.fn(),
+				},
+				{ onDelivery }
+			);
+
+			// complete revision
+			await patternRev.state.completeStep(); // revision has no validation, so completes.
+
+			expect(patternRev.state.currentStep).toBe('delivery');
+
+			await patternRev.handlers.onDelivery?.(['file1']);
+
+			expect(onDelivery).toHaveBeenCalledWith(['file1']);
+			expect(patternRev.state.stepData.delivery).toMatchObject({ files: ['file1'] });
+		});
+	});
+
+	describe('Persistence Error Handling', () => {
+		let setItemSpy: any;
+		let getItemSpy: any;
+
+		beforeEach(() => {
+			setItemSpy = vi.spyOn(Storage.prototype, 'setItem');
+			getItemSpy = vi.spyOn(Storage.prototype, 'getItem');
+		});
+
+		afterEach(() => {
+			vi.restoreAllMocks();
+		});
+
+		it('handles setItem error gracefully', () => {
+			setItemSpy.mockImplementation(() => {
+				throw new Error('Storage full');
+			});
+
+			const pattern = createCommissionPattern({
+				role: 'client',
+				onStepComplete: vi.fn(),
+				onCancel: vi.fn(),
+				enablePersistence: true,
+			});
+
+			// Should not throw
+			expect(() => pattern.destroy()).not.toThrow();
+		});
+
+		it('handles getItem error gracefully', () => {
+			getItemSpy.mockImplementation(() => {
+				throw new Error('Corrupt data');
+			});
+
+			const pattern = createCommissionPattern({
+				role: 'client',
+				onStepComplete: vi.fn(),
+				onCancel: vi.fn(),
+				enablePersistence: true,
+			});
+
+			// Should not throw and use defaults
+			expect(() => pattern.state).not.toThrow();
+			expect(pattern.state.currentStep).toBe('inquiry');
 		});
 	});
 });

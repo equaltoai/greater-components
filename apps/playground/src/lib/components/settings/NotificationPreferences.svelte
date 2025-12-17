@@ -1,4 +1,4 @@
-	<script>
+<script>
 	import { SettingsSection, SettingsToggle } from '@equaltoai/greater-components-primitives';
 	import { NotificationFilters } from '@equaltoai/greater-components-notifications';
 

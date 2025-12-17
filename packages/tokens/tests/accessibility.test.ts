@@ -6,6 +6,7 @@ import {
 	meetsWCAG_AA,
 	meetsWCAG_AAA,
 	checkContrast,
+	validateThemeContrast,
 	WCAG_REQUIREMENTS,
 } from '../src/accessibility';
 
@@ -60,6 +61,11 @@ describe('WCAG Accessibility Utilities', () => {
 			const ratio2 = getContrastRatio('#ffffff', '#2563eb');
 			expect(ratio1).toBeCloseTo(ratio2, 5);
 		});
+
+		it('should throw error for invalid hex', () => {
+			expect(() => getContrastRatio('invalid', '#ffffff')).toThrow();
+			expect(() => getContrastRatio('#ffffff', 'invalid')).toThrow();
+		});
 	});
 
 	describe('meetsWCAG_AA', () => {
@@ -87,6 +93,17 @@ describe('WCAG Accessibility Utilities', () => {
 		});
 	});
 
+	describe('meetsWCAG_AAA', () => {
+		it('should use large text threshold when specified', () => {
+			// #808080 on black is ~5:1
+			// Passes Large AAA (4.5), Fails Normal AAA (7.0)
+			const color = '#808080';
+			const bg = '#000000';
+			expect(meetsWCAG_AAA(color, bg, true)).toBe(true);
+			expect(meetsWCAG_AAA(color, bg, false)).toBe(false);
+		});
+	});
+
 	describe('checkContrast', () => {
 		it('should return comprehensive results', () => {
 			const result = checkContrast('#000000', '#ffffff');
@@ -99,6 +116,40 @@ describe('WCAG Accessibility Utilities', () => {
 				meetsAAALargeText: true,
 			});
 			expect(result.ratio).toBeCloseTo(21, 0);
+		});
+	});
+
+	describe('validateThemeContrast', () => {
+		it('should validate compliant theme', () => {
+			const mockGetColor = (path: string) => {
+				if (path.includes('background')) return '#ffffff';
+				if (path.includes('foreground')) return '#000000';
+				return '#000000';
+			};
+			const result = validateThemeContrast({}, mockGetColor);
+			expect(result.valid).toBe(true);
+			expect(result.results.length).toBeGreaterThan(0);
+		});
+
+		it('should fail non-compliant theme', () => {
+			const mockGetColor = (path: string) => {
+				if (path.includes('background')) return '#ffffff';
+				// Low contrast on white
+				return '#eeeeee';
+			};
+			const result = validateThemeContrast({}, mockGetColor);
+			expect(result.valid).toBe(false);
+		});
+
+		it('should handle missing/invalid colors gracefully', () => {
+			const mockGetColor = () => {
+				throw new Error('Color not found');
+			};
+			const result = validateThemeContrast({}, mockGetColor);
+			// Should valid be true or false? The code skips pairs if error occurs.
+			// If all skip, valid remains true.
+			expect(result.valid).toBe(true);
+			expect(result.results).toHaveLength(0);
 		});
 	});
 

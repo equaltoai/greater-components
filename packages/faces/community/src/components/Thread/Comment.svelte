@@ -3,6 +3,7 @@ Thread.Comment - Single comment with nesting support
 -->
 
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { MarkdownRenderer } from '@equaltoai/greater-components-content';
 	import type { CommentData, VoteDirection } from '../../types.js';
 	import { getThreadContext } from './context.js';
@@ -14,7 +15,12 @@ Thread.Comment - Single comment with nesting support
 		comment: CommentData;
 	}
 
-	let { comment }: Props = $props();
+	let { comment: commentProp }: Props = $props();
+	let comment = $state(untrack(() => commentProp));
+
+	$effect(() => {
+		comment = commentProp;
+	});
 
 	const { config, handlers } = getThreadContext();
 
@@ -24,7 +30,9 @@ Thread.Comment - Single comment with nesting support
 	const modClass = $derived(comment.isMod ? 'gr-community-comment--mod' : '');
 
 	const commentClass = $derived(
-		['gr-community-comment', depthClass, collapsedClass, opClass, modClass].filter(Boolean).join(' ')
+		['gr-community-comment', depthClass, collapsedClass, opClass, modClass]
+			.filter(Boolean)
+			.join(' ')
 	);
 
 	function toggleCollapse() {
@@ -63,7 +71,8 @@ Thread.Comment - Single comment with nesting support
 
 	const authorFlair = $derived(config.showFlairs ? comment.authorFlair : undefined);
 	const createdAt = $derived.by(() => {
-		const date = typeof comment.createdAt === 'string' ? new Date(comment.createdAt) : comment.createdAt;
+		const date =
+			typeof comment.createdAt === 'string' ? new Date(comment.createdAt) : comment.createdAt;
 		return date.toLocaleString();
 	});
 

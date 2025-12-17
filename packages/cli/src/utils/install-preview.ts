@@ -58,7 +58,9 @@ export function generatePreview(
 
 	const targetPaths: TargetPathInfo[] = result.resolved.map((dep) => {
 		const rawFiles =
-			'files' in dep.metadata && dep.metadata.files ? (dep.metadata.files as Array<{ path: string }>) : [];
+			'files' in dep.metadata && dep.metadata.files
+				? (dep.metadata.files as Array<{ path: string }>)
+				: [];
 
 		const firstTarget = rawFiles[0] ? getInstallTarget(rawFiles[0].path, config, cwd) : null;
 		const targetDir = overrideDir ?? firstTarget?.targetDir ?? cwd;

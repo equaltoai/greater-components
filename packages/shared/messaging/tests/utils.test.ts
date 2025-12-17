@@ -60,10 +60,7 @@ describe('utils', () => {
 		it('returns other user name for 1-on-1', () => {
 			const conversation: Conversation = {
 				id: 'c1',
-				participants: [
-					{ id: 'u1', displayName: 'Me', username: 'me' },
-					otherUser,
-				],
+				participants: [{ id: 'u1', displayName: 'Me', username: 'me' }, otherUser],
 				unreadCount: 0,
 				updatedAt: '',
 			};
@@ -73,17 +70,11 @@ describe('utils', () => {
 		it('returns joined names for group chat', () => {
 			const conversation: Conversation = {
 				id: 'c1',
-				participants: [
-					{ id: 'u1', displayName: 'Me', username: 'me' },
-					otherUser,
-					thirdUser,
-				],
+				participants: [{ id: 'u1', displayName: 'Me', username: 'me' }, otherUser, thirdUser],
 				unreadCount: 0,
 				updatedAt: '',
 			};
-			expect(getConversationName(conversation, currentUserId)).toBe(
-				'Other User, Third User'
-			);
+			expect(getConversationName(conversation, currentUserId)).toBe('Other User, Third User');
 		});
 	});
 });

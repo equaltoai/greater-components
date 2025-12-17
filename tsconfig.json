@@ -17,6 +17,9 @@
     "**/*.spec.ts",
     "**/*.spec.js",
     "**/*.stories.ts",
-    "**/scripts/*.js"
+    "**/scripts/*.js",
+    "packages/*/dist/**",
+    "packages/*/*/dist/**",
+    "packages/*/*/*/dist/**"
   ]
 }

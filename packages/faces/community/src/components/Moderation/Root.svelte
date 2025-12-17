@@ -56,4 +56,3 @@ Provides context for Moderation compound components.
 		<Panel />
 	{/if}
 </div>
-

@@ -4,7 +4,10 @@
 
 <svelte:head>
 	<title>Adapters API - Greater Components</title>
-	<meta name="description" content="Transport, GraphQL adapter, and mappers for Lesser integration." />
+	<meta
+		name="description"
+		content="Transport, GraphQL adapter, and mappers for Lesser integration."
+	/>
 </svelte:head>
 
 <article class="guide-page">
@@ -31,4 +34,3 @@ const adapter = new LesserGraphQLAdapter({
 		/>
 	</section>
 </article>
-

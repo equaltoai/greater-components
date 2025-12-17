@@ -210,11 +210,7 @@ Features:
 						onclick={() => handleArtworkClick(artwork)}
 						aria-label={`View ${artwork.title}`}
 					>
-						<img
-							src={artwork.images.preview}
-							alt={artwork.altText}
-							loading="lazy"
-						/>
+						<img src={artwork.images.preview} alt={artwork.altText} loading="lazy" />
 					</button>
 				{/each}
 			</div>

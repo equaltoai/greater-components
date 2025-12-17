@@ -53,4 +53,3 @@ Provides context for child components and handles root-level layout.
 		<Card />
 	{/if}
 </section>
-

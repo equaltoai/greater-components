@@ -36,7 +36,7 @@
 	});
 
 	// Manual context creation for testing
-	setContext(WIP_CONTEXT_KEY, {
+	const context = $state({
 		get thread() {
 			return thread;
 		},
@@ -54,6 +54,8 @@
 		},
 		selectedUpdate: null,
 	});
+
+	setContext(WIP_CONTEXT_KEY, context);
 </script>
 
 <div class="wip-test-wrapper">

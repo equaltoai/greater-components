@@ -1,0 +1,184 @@
+
+> @equaltoai/greater-components-primitives@3.0.1 test /home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/primitives
+> vitest run --coverage
+
+
+[1m[46m RUN [49m[22m [36mv4.0.15 [39m[90m/home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/primitives[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+4:29:27 PM [vite-plugin-svelte] src/components/Menu.svelte:15:1 The `customElement` option is used when generating a custom element. Did you forget the `customElement: true` compile option?
+https://svelte.dev/e/options_missing_custom_element
+4:29:27 PM [vite-plugin-svelte] src/components/Tooltip.svelte:2:1 The `customElement` option is used when generating a custom element. Did you forget the `customElement: true` compile option?
+https://svelte.dev/e/options_missing_custom_element
+4:29:27 PM [vite-plugin-svelte] src/components/Tabs.svelte:2:1 The `customElement` option is used when generating a custom element. Did you forget the `customElement: true` compile option?
+https://svelte.dev/e/options_missing_custom_element
+ [32m✓[39m tests/smoothThemeTransition.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 94[2mms[22m[39m
+ [32m✓[39m tests/fileupload.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 47[2mms[22m[39m
+ [32m✓[39m tests/positioning.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 86[2mms[22m[39m
+ [32m✓[39m tests/loadingstate.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m tests/text.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 81[2mms[22m[39m
+ [32m✓[39m tests/GradientText.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 87[2mms[22m[39m
+ [32m✓[39m tests/textarea.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 152[2mms[22m[39m
+ [32m✓[39m tests/Badge.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 89[2mms[22m[39m
+ [32m✓[39m tests/textfield.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 166[2mms[22m[39m
+ [32m✓[39m tests/List.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 89[2mms[22m[39m
+ [32m✓[39m tests/select.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 288[2mms[22m[39m
+ [32m✓[39m tests/transitions.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 157[2mms[22m[39m
+ [32m✓[39m tests/heading.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 231[2mms[22m[39m
+ [32m✓[39m tests/avatar.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 265[2mms[22m[39m
+ [32m✓[39m tests/modal.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 261[2mms[22m[39m
+ [32m✓[39m tests/ListItem.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 91[2mms[22m[39m
+ [32m✓[39m tests/card.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 306[2mms[22m[39m
+ [32m✓[39m tests/spinner.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 435[2mms[22m[39m
+ [32m✓[39m tests/Alert.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 412[2mms[22m[39m
+ [32m✓[39m tests/DropZone.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 446[2mms[22m[39m
+ [32m✓[39m tests/button.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 393[2mms[22m[39m
+ [32m✓[39m tests/menu.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 576[2mms[22m[39m
+ [32m✓[39m tests/Settings.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 226[2mms[22m[39m
+ [32m✓[39m tests/tabs.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 607[2mms[22m[39m
+ [32m✓[39m tests/Theme.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 183[2mms[22m[39m
+ [32m✓[39m tests/MenuItem.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 417[2mms[22m[39m
+ [32m✓[39m tests/MenuCompound.test.ts [2m([22m[2m10 tests[22m[2m | [22m[33m1 skipped[39m[2m)[22m[33m 428[2mms[22m[39m
+ [32m✓[39m tests/SimpleMenu.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 492[2mms[22m[39m
+ [32m✓[39m tests/StreamingText.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+ [32m✓[39m tests/tooltip.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 996[2mms[22m[39m
+     [33m[2m✓[22m[39m respects hover/touch delays, auto placement, and outside clicks [33m 625[2mms[22m[39m
+ [32m✓[39m tests/container.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 60[2mms[22m[39m
+ [32m✓[39m tests/skeleton.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m tests/themeswitcher.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 481[2mms[22m[39m
+ [32m✓[39m tests/switch.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/section.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m tests/preferences.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/checkbox.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/themeprovider.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/StepIndicator.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m tests/IconBadge.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 45[2mms[22m[39m
+ [32m✓[39m tests/CopyButton.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m41 passed[39m[22m[90m (41)[39m
+[2m      Tests [22m [1m[32m344 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (345)[39m
+[2m   Start at [22m 16:29:25
+[2m   Duration [22m 4.33s[2m (transform 26.67s, setup 22.12s, import 19.99s, tests 9.19s, environment 21.82s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   87.21 |    67.84 |   87.14 |   86.77 |                   
+ src               |       0 |        0 |       0 |       0 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+ src/components    |   86.55 |    68.56 |   87.19 |   85.45 |                   
+  Alert.svelte     |     100 |      100 |     100 |     100 |                   
+  ...t.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Avatar.svelte    |   78.41 |    63.36 |   79.16 |   79.34 | ...87,305,313-318 
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Badge.svelte     |     100 |      100 |     100 |     100 |                   
+  ...e.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Button.svelte    |   93.84 |    92.15 |     100 |   95.65 | 166,233           
+  ...n.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Card.svelte      |   79.54 |    68.75 |      75 |   84.37 | 154-157,216-217   
+  Card.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Checkbox.svelte  |     100 |        0 |     100 |     100 | 33                
+  ...x.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Container.svelte |   81.25 |    53.84 |   83.33 |      76 | 145,152,165-170   
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...Button.svelte |   94.54 |    82.35 |     100 |   95.65 | 122,140           
+  ...n.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  DropZone.svelte  |   85.36 |    76.53 |    87.5 |   87.61 | ...25,385,412-414 
+  ...e.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...Upload.svelte |   93.84 |       90 |     100 |   93.47 | 38-39,44          
+  ...d.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...ntText.svelte |     100 |    77.77 |     100 |     100 | 87-94             
+  ...t.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Heading.svelte   |   97.05 |    68.75 |     100 |     100 | 199-208           
+  ...g.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  IconBadge.svelte |     100 |    66.66 |     100 |     100 | 87                
+  ...e.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  List.svelte      |     100 |       75 |     100 |     100 | 45                
+  List.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ListItem.svelte  |     100 |    69.23 |     100 |     100 | 39,47-53          
+  ...m.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...gState.svelte |     100 |      100 |     100 |     100 |                   
+  ...e.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Menu.svelte      |   85.26 |    57.89 |   83.72 |   83.33 | ...44-347,378-383 
+  Modal.svelte     |   80.64 |    61.81 |   84.21 |   80.51 | ...53,261-266,293 
+  ...l.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Section.svelte   |   81.25 |    68.75 |     100 |   76.92 | ...16,221-223,226 
+  ...n.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Select.svelte    |     100 |       75 |     100 |     100 | 54                
+  ...t.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...leMenu.svelte |     100 |      100 |     100 |     100 |                   
+  ...u.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Skeleton.svelte  |   72.05 |    42.85 |   71.42 |      70 | ...26-128,148-166 
+  ...n.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Spinner.svelte   |     100 |       50 |     100 |     100 | 90                
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...icator.svelte |     100 |    93.75 |     100 |     100 | 101               
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...ngText.svelte |   96.15 |       80 |     100 |   95.23 | 96                
+  ...t.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Switch.svelte    |   81.81 |      100 |     100 |   88.88 | 47                
+  ...h.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Tabs.svelte      |   87.96 |    61.53 |   94.28 |   84.15 | ...24-126,171-187 
+  Tabs.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Text.svelte      |     100 |      100 |     100 |     100 |                   
+  Text.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  TextArea.svelte  |   59.52 |    58.33 |   77.77 |      75 | ...0,59-66,96,102 
+  ...a.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  TextField.svelte |   70.68 |       75 |   69.23 |      75 | ...02,109,135,142 
+  ...d.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...ovider.svelte |   73.52 |       50 |     100 |      75 | ...3,59,64,67,112 
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...itcher.svelte |   88.35 |    74.62 |   78.78 |   82.54 | ...20,526,591-606 
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Tooltip.svelte   |   84.55 |    57.14 |   85.71 |    82.6 | ...30-232,244-258 
+  ...p.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+ ...omponents/Menu |   86.96 |    64.28 |   88.75 |      88 |                   
+  Content.svelte   |      80 |    48.33 |   71.42 |   79.77 | ...55-156,173-199 
+  ...t.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Header.svelte    |     100 |       50 |     100 |     100 | 14                
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Item.svelte      |   97.36 |    83.33 |     100 |     100 | 74-83             
+  Item.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Root.svelte      |     100 |    73.91 |     100 |     100 | 72-78,98          
+  Root.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Separator.svelte |     100 |       50 |     100 |     100 | 10                
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  Trigger.svelte   |   69.14 |    58.62 |   85.71 |   72.09 | ...23,131,160-162 
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...t.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...ext.svelte.ts |   93.75 |    66.66 |     100 |   95.89 | 99,113,176        
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  positioning.d.ts |       0 |        0 |       0 |       0 |                   
+  positioning.ts   |   98.46 |    88.88 |      80 |     100 | 59,65,74          
+ ...nents/Settings |   92.68 |      100 |     100 |   95.23 |                   
+  ...sField.svelte |     100 |      100 |     100 |     100 |                   
+  ...d.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...sGroup.svelte |     100 |      100 |     100 |     100 |                   
+  ...p.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...ection.svelte |   85.71 |      100 |     100 |   85.71 | 20                
+  ...n.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...Select.svelte |     100 |      100 |     100 |     100 |                   
+  ...t.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...Toggle.svelte |      75 |      100 |     100 |     100 |                   
+  ...e.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+ ...mponents/Theme |   96.63 |    60.52 |   95.65 |   98.33 |                   
+  ...Picker.svelte |     100 |     62.5 |     100 |     100 | 16-30,45-47       
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...hecker.svelte |     100 |    61.11 |     100 |     100 | 21-46             
+  ...r.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+  ...kbench.svelte |   91.66 |       50 |    87.5 |   95.65 | 43                
+  ...h.svelte.d.ts |       0 |        0 |       0 |       0 |                   
+ src/stores        |   83.87 |    64.51 |   80.64 |   87.39 |                   
+  preferences.d.ts |       0 |        0 |       0 |       0 |                   
+  preferences.ts   |   83.87 |    64.51 |   80.64 |   87.39 | ...01,357,369-373 
+ src/transitions   |   88.57 |       80 |   66.66 |   88.57 |                   
+  fadeDown.ts      |    87.5 |    77.77 |   66.66 |    87.5 | 31                
+  fadeUp.ts        |    87.5 |    77.77 |   66.66 |    87.5 | 31                
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  scaleIn.ts       |   88.88 |       80 |   66.66 |   88.88 | 33                
+  slideIn.ts       |      90 |    83.33 |   66.66 |      90 | 35                
+ src/utils         |     100 |    72.22 |     100 |     100 |                   
+  index.ts         |       0 |        0 |       0 |       0 |                   
+  ...Transition.ts |     100 |    72.22 |     100 |     100 | 35,80-106,133     
+-------------------|---------|----------|---------|---------|-------------------

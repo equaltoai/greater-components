@@ -140,4 +140,3 @@ Use the Status compound components when you need fine-grained layout control or 
 - If SSR fails in SvelteKit, ensure you only access `import.meta.env` in module code that runs in the browser (or use private env vars on the server).
 
 See `docs/troubleshooting.md` for more verified fixes.
-

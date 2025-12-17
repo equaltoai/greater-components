@@ -33,4 +33,3 @@ sanitizeHtml('<b>hello</b>');`}
 		/>
 	</section>
 </article>
-

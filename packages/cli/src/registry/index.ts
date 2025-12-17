@@ -581,15 +581,51 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Work-in-progress thread with version history and community feedback',
 		files: [
-			{ path: 'lib/components/CreativeTools/WorkInProgress/Root.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/Header.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/VersionList.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/VersionCard.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/Timeline.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/Compare.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/Comments.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/context.ts', content: '', type: 'types' },
-			{ path: 'lib/components/CreativeTools/WorkInProgress/index.ts', content: '', type: 'component' },
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/Root.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/Header.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/VersionList.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/VersionCard.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/Timeline.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/Compare.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/Comments.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/context.ts',
+				content: '',
+				type: 'types',
+			},
+			{
+				path: 'lib/components/CreativeTools/WorkInProgress/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -604,11 +640,27 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Structured critique interface with annotation tools',
 		files: [
-			{ path: 'lib/components/CreativeTools/CritiqueMode/Root.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/CritiqueMode/Image.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/CritiqueMode/Annotations.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/CreativeTools/CritiqueMode/Root.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/CritiqueMode/Image.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/CritiqueMode/Annotations.svelte',
+				content: '',
+				type: 'component',
+			},
 			{ path: 'lib/components/CreativeTools/CritiqueMode/context.ts', content: '', type: 'types' },
-			{ path: 'lib/components/CreativeTools/CritiqueMode/index.ts', content: '', type: 'component' },
+			{
+				path: 'lib/components/CreativeTools/CritiqueMode/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -622,7 +674,13 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		name: 'reference-board',
 		type: 'compound',
 		description: 'Reference board for collecting inspiration and materials',
-		files: [{ path: 'lib/components/CreativeTools/ReferenceBoard.svelte', content: '', type: 'component' }],
+		files: [
+			{
+				path: 'lib/components/CreativeTools/ReferenceBoard.svelte',
+				content: '',
+				type: 'component',
+			},
+		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: [],
@@ -636,9 +694,21 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Commission request workflow component for artists',
 		files: [
-			{ path: 'lib/components/CreativeTools/CommissionWorkflow/Root.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/CreativeTools/CommissionWorkflow/context.ts', content: '', type: 'types' },
-			{ path: 'lib/components/CreativeTools/CommissionWorkflow/index.ts', content: '', type: 'component' },
+			{
+				path: 'lib/components/CreativeTools/CommissionWorkflow/Root.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/CreativeTools/CommissionWorkflow/context.ts',
+				content: '',
+				type: 'types',
+			},
+			{
+				path: 'lib/components/CreativeTools/CommissionWorkflow/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -653,11 +723,31 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Critique circle sessions with member queue and feedback history',
 		files: [
-			{ path: 'lib/components/Community/CritiqueCircle/Root.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/CritiqueCircle/Session.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/CritiqueCircle/Queue.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/CritiqueCircle/Members.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/CritiqueCircle/History.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Community/CritiqueCircle/Root.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/CritiqueCircle/Session.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/CritiqueCircle/Queue.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/CritiqueCircle/Members.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/CritiqueCircle/History.svelte',
+				content: '',
+				type: 'component',
+			},
 			{ path: 'lib/components/Community/CritiqueCircle/context.ts', content: '', type: 'types' },
 			{ path: 'lib/components/Community/CritiqueCircle/index.ts', content: '', type: 'component' },
 		],
@@ -674,12 +764,36 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Collaborative projects with shared gallery and contributor management',
 		files: [
-			{ path: 'lib/components/Community/Collaboration/Root.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/Collaboration/Project.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/Collaboration/Gallery.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/Collaboration/Contributors.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/Collaboration/Split.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Community/Collaboration/Uploads.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Community/Collaboration/Root.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/Collaboration/Project.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/Collaboration/Gallery.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/Collaboration/Contributors.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/Collaboration/Split.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Community/Collaboration/Uploads.svelte',
+				content: '',
+				type: 'component',
+			},
 			{ path: 'lib/components/Community/Collaboration/context.ts', content: '', type: 'types' },
 			{ path: 'lib/components/Community/Collaboration/index.ts', content: '', type: 'component' },
 		],
@@ -695,7 +809,9 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		name: 'mentor-match',
 		type: 'compound',
 		description: 'Mentor matching component for artist communities',
-		files: [{ path: 'lib/components/Community/MentorMatch.svelte', content: '', type: 'component' }],
+		files: [
+			{ path: 'lib/components/Community/MentorMatch.svelte', content: '', type: 'component' },
+		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button'],
@@ -709,7 +825,11 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Process documentation component for transparency and provenance',
 		files: [
-			{ path: 'lib/components/Transparency/ProcessDocumentation.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Transparency/ProcessDocumentation.svelte',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -724,7 +844,11 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Controls for opting out of AI training and indexing',
 		files: [
-			{ path: 'lib/components/Transparency/AIOptOutControls.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Transparency/AIOptOutControls.svelte',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -739,7 +863,11 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Badge for ethical sourcing and provenance signals',
 		files: [
-			{ path: 'lib/components/Transparency/EthicalSourcingBadge.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Transparency/EthicalSourcingBadge.svelte',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -754,7 +882,11 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Institutional tooling for galleries and organizations',
 		files: [
-			{ path: 'lib/components/Monetization/InstitutionalTools.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Monetization/InstitutionalTools.svelte',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -769,7 +901,11 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Reporting and protection tools for artworks and creators',
 		files: [
-			{ path: 'lib/components/Monetization/ProtectionTools.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Monetization/ProtectionTools.svelte',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
@@ -1087,7 +1223,11 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		files: [
 			{ path: 'lib/components/Publication/Root.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Publication/Banner.svelte', content: '', type: 'component' },
-			{ path: 'lib/components/Publication/NewsletterSignup.svelte', content: '', type: 'component' },
+			{
+				path: 'lib/components/Publication/NewsletterSignup.svelte',
+				content: '',
+				type: 'component',
+			},
 			{ path: 'lib/components/Publication/context.ts', content: '', type: 'types' },
 			{ path: 'lib/components/Publication/index.ts', content: '', type: 'component' },
 		],

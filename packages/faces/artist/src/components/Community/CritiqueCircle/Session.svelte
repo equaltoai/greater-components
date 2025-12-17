@@ -55,23 +55,23 @@ CritiqueCircle.Session - Active critique session display
 		<h3 class="critique-session__title">Active Session</h3>
 
 		{#if session.isActive && session.currentSubmission}
-				<div class="critique-session__active">
-					<!-- Artwork being critiqued -->
-					<div class="critique-session__artwork">
-						<img
-							src={session.currentSubmission.artwork.images.standard}
-							alt={session.currentSubmission.artwork.altText}
-							class="critique-session__image"
-						/>
-						<div class="critique-session__artwork-info">
-							<h4 class="critique-session__artwork-title">
-								{session.currentSubmission.artwork.title}
-							</h4>
-							<p class="critique-session__artwork-artist">
-								by {session.currentSubmission.artwork.artist.name}
-							</p>
-						</div>
+			<div class="critique-session__active">
+				<!-- Artwork being critiqued -->
+				<div class="critique-session__artwork">
+					<img
+						src={session.currentSubmission.artwork.images.standard}
+						alt={session.currentSubmission.artwork.altText}
+						class="critique-session__image"
+					/>
+					<div class="critique-session__artwork-info">
+						<h4 class="critique-session__artwork-title">
+							{session.currentSubmission.artwork.title}
+						</h4>
+						<p class="critique-session__artwork-artist">
+							by {session.currentSubmission.artwork.artist.name}
+						</p>
 					</div>
+				</div>
 
 				<!-- Feedback requested -->
 				{#if session.currentSubmission.feedbackRequested}

@@ -38,8 +38,8 @@ Renders an author card optimized for blog contexts.
 
 		{#if showSocial && socialEntries.length > 0}
 			<div class="gr-blog-author-card__links">
-				{#each socialEntries as [key, href]}
-					<a class="gr-blog-author-card__link" href={href} rel="me noopener noreferrer" target="_blank">
+				{#each socialEntries as [key, href] (key)}
+					<a class="gr-blog-author-card__link" {href} rel="me noopener noreferrer" target="_blank">
 						{key}
 					</a>
 				{/each}

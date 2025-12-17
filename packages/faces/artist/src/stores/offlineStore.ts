@@ -172,7 +172,9 @@ export function createOfflineStore(config: OfflineStoreConfig = {}): OfflineStor
 
 		// Try to process immediately if online
 		if (state.value.isOnline && autoSync) {
-			processQueue();
+			processQueue().catch((error) => {
+				console.warn('[OfflineStore] Failed to auto-process queue:', error);
+			});
 		}
 	}
 
@@ -218,7 +220,12 @@ export function createOfflineStore(config: OfflineStoreConfig = {}): OfflineStor
 	/**
 	 * Processes a single queue item
 	 */
-	async function processQueueItem(_item: SyncQueueItem): Promise<void> {
+	async function processQueueItem(item: SyncQueueItem): Promise<void> {
+		if (config.queueProcessor) {
+			await config.queueProcessor(item);
+			return;
+		}
+
 		// This would integrate with the adapter to sync the action
 		// For now, we simulate the sync
 		// console.log('[OfflineStore] Processing queue item:', item);

@@ -47,9 +47,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 			main: '@equaltoai/greater-components/faces/social/style.css',
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
-		examples: [
-			'examples/social-app/README.md',
-		],
+		examples: ['examples/social-app/README.md'],
 		docs: [
 			'docs/faces/social/getting-started.md',
 			'docs/faces/social/timeline-integration.md',
@@ -184,9 +182,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 			main: '@equaltoai/greater-components/faces/artist/style.css',
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
-		examples: [
-			'examples/artist-app/README.md',
-		],
+		examples: ['examples/artist-app/README.md'],
 		docs: [
 			'docs/faces/artist/getting-started.md',
 			'docs/faces/artist/gallery-integration.md',

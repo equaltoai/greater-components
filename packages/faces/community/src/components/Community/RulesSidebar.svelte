@@ -24,4 +24,3 @@ Community.RulesSidebar - Display community rules
 		</div>
 	</aside>
 {/if}
-

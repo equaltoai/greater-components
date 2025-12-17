@@ -3,10 +3,12 @@ import { render } from '@testing-library/svelte';
 import { Monetization } from '../../../src/components/Monetization/index.ts';
 import { createMockArtist } from '../../mocks/mockArtist.ts';
 import { createMockArtwork } from '../../mocks/mockArtwork.ts';
+import { createMockInstitutionalAccount } from '../../mocks/mockMonetization.ts';
 
 describe('Monetization Smoke Tests', () => {
 	const mockArtist = createMockArtist('m1');
 	const mockArtwork = createMockArtwork('mw1');
+	const mockInstitution = createMockInstitutionalAccount('mi1');
 
 	beforeEach(() => {
 		vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -50,6 +52,15 @@ describe('Monetization Smoke Tests', () => {
 		render(Monetization.ProtectionTools, {
 			props: {
 				artwork: mockArtwork,
+			},
+		});
+		expect(console.error).not.toHaveBeenCalled();
+	});
+
+	it('renders InstitutionalTools', () => {
+		render(Monetization.InstitutionalTools, {
+			props: {
+				account: mockInstitution,
 			},
 		});
 		expect(console.error).not.toHaveBeenCalled();

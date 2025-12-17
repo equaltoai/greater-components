@@ -20,7 +20,10 @@ import {
 
 ```svelte
 <script lang="ts">
-	import { DiscoveryEngine, createDiscoveryStore } from '@equaltoai/greater-components/faces/artist';
+	import {
+		DiscoveryEngine,
+		createDiscoveryStore,
+	} from '@equaltoai/greater-components/faces/artist';
 
 	const store = createDiscoveryStore();
 	const handlers = {
@@ -39,58 +42,58 @@ import {
 
 ### `DiscoveryEngine.Root` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `store` | `DiscoveryStore` | - |
-| `handlers` | `DiscoveryHandlers` | `{}` |
-| `enableColorSearch` | `boolean` | `true` |
-| `enableMoodMap` | `boolean` | `true` |
-| `enableStyleFilter` | `boolean` | `true` |
-| `enableVisualSearch` | `boolean` | `true` |
-| `showFilters` | `boolean` | `true` |
-| `showSuggestions` | `boolean` | `true` |
-| `class` | `string` | `''` |
-| `children` | `Snippet` | - |
+| Prop                 | Type                | Default |
+| -------------------- | ------------------- | ------- |
+| `store`              | `DiscoveryStore`    | -       |
+| `handlers`           | `DiscoveryHandlers` | `{}`    |
+| `enableColorSearch`  | `boolean`           | `true`  |
+| `enableMoodMap`      | `boolean`           | `true`  |
+| `enableStyleFilter`  | `boolean`           | `true`  |
+| `enableVisualSearch` | `boolean`           | `true`  |
+| `showFilters`        | `boolean`           | `true`  |
+| `showSuggestions`    | `boolean`           | `true`  |
+| `class`              | `string`            | `''`    |
+| `children`           | `Snippet`           | -       |
 
 ### `DiscoveryEngine.SearchBar` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `placeholder` | `string` | `'Search artworks, artists, styles...'` |
-| `showVisualSearch` | `boolean` | `true` |
-| `showRecent` | `boolean` | `true` |
-| `maxSuggestions` | `number` | `8` |
-| `debounceMs` | `number` | `300` |
-| `searchAsYouType` | `boolean` | `true` |
-| `minSearchChars` | `number` | `2` |
-| `class` | `string` | `''` |
+| Prop               | Type      | Default                                 |
+| ------------------ | --------- | --------------------------------------- |
+| `placeholder`      | `string`  | `'Search artworks, artists, styles...'` |
+| `showVisualSearch` | `boolean` | `true`                                  |
+| `showRecent`       | `boolean` | `true`                                  |
+| `maxSuggestions`   | `number`  | `8`                                     |
+| `debounceMs`       | `number`  | `300`                                   |
+| `searchAsYouType`  | `boolean` | `true`                                  |
+| `minSearchChars`   | `number`  | `2`                                     |
+| `class`            | `string`  | `''`                                    |
 
 ### `DiscoveryEngine.Filters` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `collapsible` | `boolean` | `true` |
+| Prop              | Type      | Default |
+| ----------------- | --------- | ------- |
+| `collapsible`     | `boolean` | `true`  |
 | `defaultExpanded` | `boolean` | `false` |
-| `class` | `string` | `''` |
+| `class`           | `string`  | `''`    |
 
 ### `DiscoveryEngine.Results` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `layout` | `'grid' \| 'masonry' \| 'list'` | `'grid'` |
-| `columns` | `2 \| 3 \| 4 \| 5 \| 6` | `4` |
-| `showSort` | `boolean` | `true` |
-| `showCount` | `boolean` | `true` |
-| `class` | `string` | `''` |
+| Prop        | Type                            | Default  |
+| ----------- | ------------------------------- | -------- |
+| `layout`    | `'grid' \| 'masonry' \| 'list'` | `'grid'` |
+| `columns`   | `2 \| 3 \| 4 \| 5 \| 6`         | `4`      |
+| `showSort`  | `boolean`                       | `true`   |
+| `showCount` | `boolean`                       | `true`   |
+| `class`     | `string`                        | `''`     |
 
 ### `DiscoveryEngine.Suggestions` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `title` | `string` | `'Suggested for you'` |
-| `maxItems` | `number` | `6` |
-| `showConfidence` | `boolean` | `false` |
-| `class` | `string` | `''` |
+| Prop             | Type      | Default               |
+| ---------------- | --------- | --------------------- |
+| `title`          | `string`  | `'Suggested for you'` |
+| `maxItems`       | `number`  | `6`                   |
+| `showConfidence` | `boolean` | `false`               |
+| `class`          | `string`  | `''`                  |
 
 ## Standalone Filter Widgets
 
@@ -98,34 +101,34 @@ These components can be used independently (outside `DiscoveryEngine`), or you c
 
 ### `ColorPaletteSearch`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `colors` | `string[]` (bindable) | `[]` |
-| `tolerance` | `number` (bindable) | `50` |
-| `mode` | `'any' \| 'all' \| 'dominant'` (bindable) | `'any'` |
-| `maxColors` | `number` | `5` |
-| `onSearch` | `(colors: string[]) => void` | - |
-| `class` | `string` | `''` |
+| Prop        | Type                                      | Default |
+| ----------- | ----------------------------------------- | ------- |
+| `colors`    | `string[]` (bindable)                     | `[]`    |
+| `tolerance` | `number` (bindable)                       | `50`    |
+| `mode`      | `'any' \| 'all' \| 'dominant'` (bindable) | `'any'` |
+| `maxColors` | `number`                                  | `5`     |
+| `onSearch`  | `(colors: string[]) => void`              | -       |
+| `class`     | `string`                                  | `''`    |
 
 ### `StyleFilter`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `styles` | `ArtStyle[]` (bindable) | `[]` |
-| `selected` | `string[]` (bindable) | `[]` |
-| `showCount` | `boolean` | `true` |
-| `onChange` | `(selected: string[]) => void` | - |
-| `class` | `string` | `''` |
+| Prop        | Type                           | Default |
+| ----------- | ------------------------------ | ------- |
+| `styles`    | `ArtStyle[]` (bindable)        | `[]`    |
+| `selected`  | `string[]` (bindable)          | `[]`    |
+| `showCount` | `boolean`                      | `true`  |
+| `onChange`  | `(selected: string[]) => void` | -       |
+| `class`     | `string`                       | `''`    |
 
 ### `MoodMap`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `dimensions` | `[string, string]` | `['Energy', 'Valence']` |
-| `selection` | `{ x: number; y: number }` (bindable) | `{ x: 0, y: 0 }` |
-| `radius` | `number` | `0.2` |
-| `onChange` | `(dimensions: MoodDimensions) => void` | - |
-| `class` | `string` | `''` |
+| Prop         | Type                                   | Default                 |
+| ------------ | -------------------------------------- | ----------------------- |
+| `dimensions` | `[string, string]`                     | `['Energy', 'Valence']` |
+| `selection`  | `{ x: number; y: number }` (bindable)  | `{ x: 0, y: 0 }`        |
+| `radius`     | `number`                               | `0.2`                   |
+| `onChange`   | `(dimensions: MoodDimensions) => void` | -                       |
+| `class`      | `string`                               | `''`                    |
 
 ## AI-Powered Features
 
@@ -135,7 +138,10 @@ These components can be used independently (outside `DiscoveryEngine`), or you c
 
 ```svelte
 <script lang="ts">
-	import { DiscoveryEngine, createDiscoveryStore } from '@equaltoai/greater-components/faces/artist';
+	import {
+		DiscoveryEngine,
+		createDiscoveryStore,
+	} from '@equaltoai/greater-components/faces/artist';
 
 	const store = createDiscoveryStore();
 	const handlers = {

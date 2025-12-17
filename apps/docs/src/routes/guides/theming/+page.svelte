@@ -56,7 +56,7 @@
 		</p>
 
 		<CodeExample
-code={`import { palettePresets } from '@equaltoai/greater-components/tokens';
+			code={`import { palettePresets } from '@equaltoai/greater-components/tokens';
 
 // Available presets
 const presets = {
@@ -81,7 +81,7 @@ const presets = {
 		<p>Create your own color palette by defining primary, secondary, and semantic colors.</p>
 
 		<CodeExample
-code={`import { createPalette } from '@equaltoai/greater-components/tokens';
+			code={`import { createPalette } from '@equaltoai/greater-components/tokens';
 
 // Generate a complete palette from a single brand color
 const customPalette = createPalette({

@@ -57,4 +57,3 @@ export function hasPublicationContext(): boolean {
 }
 
 export type { PublicationContext, PublicationConfig };
-

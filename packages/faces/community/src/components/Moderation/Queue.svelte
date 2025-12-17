@@ -115,4 +115,3 @@ Moderation.Queue - Render the moderation queue
 		{/each}
 	</div>
 {/if}
-

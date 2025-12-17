@@ -196,7 +196,9 @@ describe('Cache Command', () => {
 
 			mockGetFaceChecksums.mockReturnValue({ 'packages/faces/social/src/index.ts': 'sha256-abc' });
 			mockGetSharedChecksums.mockReturnValue({ 'packages/shared/auth/src/index.ts': 'sha256-def' });
-			mockGetComponentChecksums.mockReturnValue({ 'packages/primitives/src/button.svelte': 'sha256-ghi' });
+			mockGetComponentChecksums.mockReturnValue({
+				'packages/primitives/src/button.svelte': 'sha256-ghi',
+			});
 
 			mockFetchFromGitTag.mockResolvedValue(Buffer.from('content'));
 		});
@@ -248,7 +250,14 @@ describe('Cache Command', () => {
 
 			const program = new Command();
 			program.addCommand(cacheCommand);
-			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v4.2.0', 'faces/social']);
+			await program.parseAsync([
+				'node',
+				'test',
+				'cache',
+				'prefetch',
+				'greater-v4.2.0',
+				'faces/social',
+			]);
 
 			expect(mockGetFaceChecksums).toHaveBeenCalledWith(expect.anything(), 'social');
 		});
@@ -258,7 +267,14 @@ describe('Cache Command', () => {
 
 			const program = new Command();
 			program.addCommand(cacheCommand);
-			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v4.2.0', 'shared/auth']);
+			await program.parseAsync([
+				'node',
+				'test',
+				'cache',
+				'prefetch',
+				'greater-v4.2.0',
+				'shared/auth',
+			]);
 
 			expect(mockGetSharedChecksums).toHaveBeenCalledWith(expect.anything(), 'auth');
 		});

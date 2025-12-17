@@ -50,7 +50,7 @@ vi.mock('@equaltoai/greater-components-headless/modal', () => ({
 		actions: {
 			backdrop: () => {},
 			content: () => {},
-			close: (node: HTMLElement) => {
+			close: (_node: HTMLElement) => {
 				// Mock close action click handler if needed, usually handled by button helper
 				// but here let's just make it do nothing or simulate click if we test it specifically
 				return { destroy: () => {} };
@@ -96,7 +96,9 @@ describe('NewConversation', () => {
 		(target.querySelector('.new-conversation__trigger') as HTMLButtonElement).click();
 		await flushSync();
 
-		const cancelBtn = target.querySelector('.new-conversation__button--secondary') as HTMLButtonElement;
+		const cancelBtn = target.querySelector(
+			'.new-conversation__button--secondary'
+		) as HTMLButtonElement;
 		cancelBtn.click();
 		await flushSync();
 
@@ -201,7 +203,7 @@ describe('NewConversation', () => {
 		await flushSync();
 
 		expect(target.querySelector('.new-conversation__chip-name')?.textContent).toContain('Alice');
-		
+
 		// Search query should be cleared
 		expect(input.value).toBe('');
 
@@ -281,7 +283,9 @@ describe('NewConversation', () => {
 
 		mockHandlers.onCreateConversation.mockResolvedValue({ id: 'c1' });
 
-		const startBtn = target.querySelector('.new-conversation__button--primary') as HTMLButtonElement;
+		const startBtn = target.querySelector(
+			'.new-conversation__button--primary'
+		) as HTMLButtonElement;
 		startBtn.click();
 		await new Promise((resolve) => setTimeout(resolve, 0));
 		await flushSync();
@@ -317,7 +321,9 @@ describe('NewConversation', () => {
 
 		mockHandlers.onCreateConversation.mockResolvedValue(null);
 
-		const startBtn = target.querySelector('.new-conversation__button--primary') as HTMLButtonElement;
+		const startBtn = target.querySelector(
+			'.new-conversation__button--primary'
+		) as HTMLButtonElement;
 		startBtn.click();
 		await new Promise((resolve) => setTimeout(resolve, 0));
 		await flushSync();
@@ -351,7 +357,9 @@ describe('NewConversation', () => {
 
 		mockHandlers.onCreateConversation.mockRejectedValue(new Error('Failed'));
 
-		const startBtn = target.querySelector('.new-conversation__button--primary') as HTMLButtonElement;
+		const startBtn = target.querySelector(
+			'.new-conversation__button--primary'
+		) as HTMLButtonElement;
 		startBtn.click();
 		await new Promise((resolve) => setTimeout(resolve, 0));
 		await flushSync();

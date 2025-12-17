@@ -126,18 +126,18 @@ npx @equaltoai/greater-components-cli update --ref greater-vX.Y.Z
 ### Fediverse Example (Lesser-native)
 
 ```svelte
-	<script>
-		import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-		import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+<script>
+	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 
-		// Initialize Lesser adapter with GraphQL endpoint
-		const adapter = new LesserGraphQLAdapter({
-			httpEndpoint: 'https://your-instance.social/graphql',
-			token: 'your-auth-token',
-		});
+	// Initialize Lesser adapter with GraphQL endpoint
+	const adapter = new LesserGraphQLAdapter({
+		httpEndpoint: 'https://your-instance.social/graphql',
+		token: 'your-auth-token',
+	});
 
-		const view = {
-			type: 'home',
+	const view = {
+		type: 'home',
 	};
 </script>
 
@@ -156,24 +156,24 @@ All packages are installed as source code via the CLI. No npm registry dependenc
 
 ### Core Packages
 
-| Package | Description |
-| ------- | ----------- |
-| **[headless](./packages/headless)** | 🆕 Headless UI primitives - behavior without styling |
+| Package                                 | Description                                              |
+| --------------------------------------- | -------------------------------------------------------- |
+| **[headless](./packages/headless)**     | 🆕 Headless UI primitives - behavior without styling     |
 | **[primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) |
-| **[tokens](./packages/tokens)** | Design system tokens and theming |
-| **[icons](./packages/icons)** | 300+ SVG icons including Fediverse-specific ones |
+| **[tokens](./packages/tokens)**         | Design system tokens and theming                         |
+| **[icons](./packages/icons)**           | 300+ SVG icons including Fediverse-specific ones         |
 
 ### Specialized Packages
 
-| Package | Description |
-| ------- | ----------- |
-| **[faces/social](./packages/faces/social)** | Social media components (Timeline, Profile, etc.) |
-| **[faces/artist](./packages/faces/artist)** | Artist portfolio and gallery components |
-| **[faces/blog](./packages/faces/blog)** | Blog and content publishing components |
-| **[faces/community](./packages/faces/community)** | Community and forum components |
-| **[utils](./packages/utils)** | Utility functions for web applications |
-| **[adapters](./packages/adapters)** | Protocol adapters for Fediverse servers |
-| **[testing](./packages/testing)** | Testing utilities and accessibility helpers |
+| Package                                           | Description                                       |
+| ------------------------------------------------- | ------------------------------------------------- |
+| **[faces/social](./packages/faces/social)**       | Social media components (Timeline, Profile, etc.) |
+| **[faces/artist](./packages/faces/artist)**       | Artist portfolio and gallery components           |
+| **[faces/blog](./packages/faces/blog)**           | Blog and content publishing components            |
+| **[faces/community](./packages/faces/community)** | Community and forum components                    |
+| **[utils](./packages/utils)**                     | Utility functions for web applications            |
+| **[adapters](./packages/adapters)**               | Protocol adapters for Fediverse servers           |
+| **[testing](./packages/testing)**                 | Testing utilities and accessibility helpers       |
 
 ## 🌟 Key Features
 

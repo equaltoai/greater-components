@@ -19,7 +19,6 @@ Thread.CommentTree - Render a list of top-level comments
 
 <div class="gr-community-thread" aria-label="Comments">
 	{#each list as comment (comment.id)}
-		<Comment comment={comment} />
+		<Comment {comment} />
 	{/each}
 </div>
-

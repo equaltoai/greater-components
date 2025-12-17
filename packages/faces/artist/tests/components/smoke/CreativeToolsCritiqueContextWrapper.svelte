@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createCritiqueContext } from '../../../src/components/CreativeTools/CritiqueMode/context.js';
+	import { createCritiqueContext } from '../../../src/components/CreativeTools/CritiqueMode/context.svelte.js';
 	import type { CritiqueSubmission } from '../../../src/types/community.js';
 	import type { ArtworkData } from '../../../src/components/Artwork/context.js';
 	import type { Component as SvelteComponent } from 'svelte';

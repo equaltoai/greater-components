@@ -123,12 +123,7 @@ Optional thumbnail strip.
 						aria-selected={index === context.currentIndex}
 						aria-label={`View ${artwork.title}`}
 					>
-						<img
-							src={artwork.images.thumbnail}
-							alt=""
-							loading="lazy"
-							aria-hidden="true"
-						/>
+						<img src={artwork.images.thumbnail} alt="" loading="lazy" aria-hidden="true" />
 					</button>
 				{/each}
 			</div>

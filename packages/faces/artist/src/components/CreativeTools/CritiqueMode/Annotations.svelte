@@ -5,7 +5,7 @@ CritiqueMode.Annotations - Visual annotation layer
 -->
 
 <script lang="ts">
-	import { getCritiqueContext } from './context.js';
+	import { getCritiqueContext } from './context.svelte.js';
 
 	interface Props {
 		class?: string;

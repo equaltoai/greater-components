@@ -24,4 +24,3 @@ Community.Stats - Community stats block
 		<div>Created {createdAt}</div>
 	</section>
 {/if}
-

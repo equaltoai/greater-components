@@ -390,50 +390,34 @@ Create a component with complete styling control:
 
 Create a social timeline using the social face:
 
-```svelte
-	<!-- src/routes/+page.svelte -->
-	<script>
-		import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-		import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+````svelte
+<!-- src/routes/+page.svelte -->
+<script>
+	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 
-		// Initialize Lesser adapter
-		const adapter = new LesserGraphQLAdapter({
-			httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
-			token: import.meta.env.VITE_LESSER_TOKEN,
-			// Optional: enables GraphQL subscriptions (real-time updates) when supported by your Lesser instance
-			wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
-		});
+	// Initialize Lesser adapter
+	const adapter = new LesserGraphQLAdapter({
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		token: import.meta.env.VITE_LESSER_TOKEN,
+		// Optional: enables GraphQL subscriptions (real-time updates) when supported by your Lesser instance
+		wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
+	});
 
-		const view = { type: 'home' };
-	</script>
+	const view = { type: 'home' };
+</script>
 
-	<main>
-		<h1>My Fediverse Timeline</h1>
+<main>
+	<h1>My Fediverse Timeline</h1>
 
-		<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
-	</main>
+	<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
+</main>
 
-	```
-
-**Create `.env` file:**
-
-	```bash
-	VITE_LESSER_ENDPOINT=https://your-instance.social/graphql
-	VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
-	VITE_LESSER_TOKEN=your-auth-token
-	```
-
-## Local Development
-
-### Run Development Server
-
-```bash
-# Start dev server (SvelteKit)
-pnpm dev
-
-# Or for Vite-only projects
-vite dev
-```
+``` **Create `.env` file:** ```bash VITE_LESSER_ENDPOINT=https://your-instance.social/graphql
+VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql VITE_LESSER_TOKEN=your-auth-token ``` ##
+Local Development ### Run Development Server ```bash # Start dev server (SvelteKit) pnpm dev # Or
+for Vite-only projects vite dev
+````
 
 **What this does:**
 

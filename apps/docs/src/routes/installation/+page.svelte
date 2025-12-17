@@ -38,10 +38,7 @@ npx @equaltoai/greater-components-cli add faces/social`}
 		/>
 
 		<h3>Using npm/pnpm (umbrella package)</h3>
-		<CodeExample
-			language="bash"
-			code={`pnpm add @equaltoai/greater-components`}
-		/>
+		<CodeExample language="bash" code={`pnpm add @equaltoai/greater-components`} />
 	</section>
 
 	<section>
@@ -64,25 +61,22 @@ npx @equaltoai/greater-components-cli add faces/social`}
 				<p>Design tokens for theming and consistent styling.</p>
 			</div>
 
-				<div class="package-item">
-					<h4>Icons</h4>
-					<CodeExample language="bash" code={`npm install @equaltoai/greater-components-icons`} />
-					<p>Comprehensive icon library with 200+ SVG icons.</p>
-				</div>
+			<div class="package-item">
+				<h4>Icons</h4>
+				<CodeExample language="bash" code={`npm install @equaltoai/greater-components-icons`} />
+				<p>Comprehensive icon library with 200+ SVG icons.</p>
+			</div>
 
-				<div class="package-item">
-					<h4>Content Rendering</h4>
-					<CodeExample
-						language="bash"
-						code={`npm install @equaltoai/greater-components-content`}
-					/>
-					<p>Markdown + syntax highlighting components (CodeBlock, MarkdownRenderer).</p>
-				</div>
+			<div class="package-item">
+				<h4>Content Rendering</h4>
+				<CodeExample language="bash" code={`npm install @equaltoai/greater-components-content`} />
+				<p>Markdown + syntax highlighting components (CodeBlock, MarkdownRenderer).</p>
+			</div>
 
-				<div class="package-item">
-					<h4>Utilities</h4>
-					<CodeExample language="bash" code={`npm install @equaltoai/greater-components-utils`} />
-					<p>Helper functions and utilities.</p>
+			<div class="package-item">
+				<h4>Utilities</h4>
+				<CodeExample language="bash" code={`npm install @equaltoai/greater-components-utils`} />
+				<p>Helper functions and utilities.</p>
 			</div>
 		</div>
 	</section>

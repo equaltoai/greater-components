@@ -110,13 +110,13 @@ greater init [options]
 
 **Options:**
 
-| Option          | Description                                 | Default           |
-| --------------- | ------------------------------------------- | ----------------- |
-| `-y, --yes`     | Skip prompts, use defaults                  | `false`           |
-| `--cwd <path>`  | Working directory                           | Current directory |
-| `--ref <tag>`   | Pin to specific Git ref/tag (or `latest`)   | `latest`          |
-| `--skip-css`    | Skip automatic CSS injection                | `false`           |
-| `--face <name>` | Pre-select a face (social, blog, community, artist) | `null`    |
+| Option          | Description                                         | Default           |
+| --------------- | --------------------------------------------------- | ----------------- |
+| `-y, --yes`     | Skip prompts, use defaults                          | `false`           |
+| `--cwd <path>`  | Working directory                                   | Current directory |
+| `--ref <tag>`   | Pin to specific Git ref/tag (or `latest`)           | `latest`          |
+| `--skip-css`    | Skip automatic CSS injection                        | `false`           |
+| `--face <name>` | Pre-select a face (social, blog, community, artist) | `null`            |
 
 **What It Does:**
 
@@ -226,14 +226,14 @@ greater list [query] [options]
 
 **Options:**
 
-| Option              | Description                                                         |
-| ------------------- | ------------------------------------------------------------------- |
-| `-t, --type <type>` | Filter by type: primitive, compound, pattern, adapter, shared, face |
-| `--domain <domain>` | Filter by domain: social, blog, community, artist, auth, admin, chat, core  |
-| `--installed`       | Show only installed components                                      |
-| `--available`       | Show only not-installed components                                  |
-| `--json`            | Output as JSON                                                      |
-| `--details`         | Show detailed information for faces                                 |
+| Option              | Description                                                                |
+| ------------------- | -------------------------------------------------------------------------- |
+| `-t, --type <type>` | Filter by type: primitive, compound, pattern, adapter, shared, face        |
+| `--domain <domain>` | Filter by domain: social, blog, community, artist, auth, admin, chat, core |
+| `--installed`       | Show only installed components                                             |
+| `--available`       | Show only not-installed components                                         |
+| `--json`            | Output as JSON                                                             |
+| `--details`         | Show detailed information for faces                                        |
 
 **Examples:**
 

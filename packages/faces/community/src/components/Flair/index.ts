@@ -17,4 +17,3 @@ export const Flair = {
 // Dynamic imports for tree-shaking
 import Badge from './Badge.svelte';
 Flair.Badge = Badge;
-

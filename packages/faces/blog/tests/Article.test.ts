@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import ArticleRoot from '../src/components/Article/Root.svelte';
-import ArticleTestWrapper from './fixtures/ArticleTestWrapper.svelte';
+import FullArticleTestWrapper from './fixtures/FullArticleTestWrapper.svelte';
 import type { ArticleData } from '../src/types.js';
 
 // Mock dependencies
@@ -67,7 +67,7 @@ describe('Article Component', () => {
 
 	describe('Article Integration', () => {
 		it('renders header, content, and footer via wrapper', async () => {
-			render(ArticleTestWrapper, { article: _mockArticle });
+			render(FullArticleTestWrapper, { article: _mockArticle });
 
 			// Header
 			expect(screen.getByRole('heading', { name: 'Test Article Title' })).toBeTruthy();
@@ -93,7 +93,7 @@ describe('Article Component', () => {
 		});
 
 		it('handles share actions', async () => {
-			render(ArticleTestWrapper, { article: _mockArticle });
+			render(FullArticleTestWrapper, { article: _mockArticle });
 
 			// Mock window.open and clipboard
 			const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
@@ -123,12 +123,12 @@ describe('Article Component', () => {
 				content: 'Markdown content',
 			};
 
-			render(ArticleTestWrapper, { article: markdownArticle });
+			render(FullArticleTestWrapper, { article: markdownArticle });
 			expect(screen.getByText('Markdown content')).toBeTruthy();
 		});
 
 		it('hides author when configured', () => {
-			render(ArticleTestWrapper, {
+			render(FullArticleTestWrapper, {
 				article: _mockArticle,
 				config: { showAuthor: false },
 			});

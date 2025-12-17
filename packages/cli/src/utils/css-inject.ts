@@ -111,7 +111,7 @@ function getLocalCssPath(libAlias: string, localDir: string, fileName: string): 
 /**
  * Generate CSS import statements based on configuration
  * Import order is critical: tokens first, then primitives, then face styles
- * 
+ *
  * @param config - CSS import configuration
  * @returns Array of import statements
  */
@@ -225,15 +225,7 @@ export interface CopyCssFilesOptions {
  * Fetches files from the Git tag and writes them to the local CSS directory
  */
 export async function copyCssFiles(options: CopyCssFilesOptions): Promise<CssCopyResult> {
-	const {
-		ref,
-		cssConfig,
-		libDir,
-		localDir,
-		cwd,
-		overwrite = false,
-		skipCache = false,
-	} = options;
+	const { ref, cssConfig, libDir, localDir, cwd, overwrite = false, skipCache = false } = options;
 
 	// Resolve the target directory
 	// Convert $lib to actual path if needed

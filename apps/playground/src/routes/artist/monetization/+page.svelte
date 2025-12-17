@@ -2,7 +2,7 @@
 	import DemoPage from '$lib/components/DemoPage.svelte';
 	import CodeExample from '$lib/components/CodeExample.svelte';
 	import { Monetization } from '@equaltoai/greater-components-artist/components/Monetization';
-	import { demoArtist, artworks } from '$lib/data/artist';
+	import { demoArtist, componentArtworks } from '$lib/data/artist';
 
 	const pricing = {
 		price: { amount: 150, currency: 'USD' },
@@ -41,7 +41,7 @@
 			<p>Buy artworks directly from the artist.</p>
 		</header>
 		<div class="demo-container">
-			<Monetization.DirectPurchase artwork={artworks[0]} {pricing} />
+			<Monetization.DirectPurchase artwork={componentArtworks[0]} {pricing} />
 		</div>
 	</section>
 
@@ -51,7 +51,7 @@
 			<p>Protect your intellectual property.</p>
 		</header>
 		<div class="demo-container">
-			<Monetization.ProtectionTools artwork={artworks[0]} />
+			<Monetization.ProtectionTools artwork={componentArtworks[0]} />
 		</div>
 
 		<CodeExample code={monetizationExample} language="svelte" />

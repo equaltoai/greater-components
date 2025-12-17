@@ -59,11 +59,11 @@ Common imports to look for:
 // Primitives
 import { Button, Modal, Card } from '@equaltoai/greater-components/primitives';
 
-	// Icons
-	import { HomeIcon, SettingsIcon } from '@equaltoai/greater-components/icons';
+// Icons
+import { HomeIcon, SettingsIcon } from '@equaltoai/greater-components/icons';
 
-	// Social face
-	import { Profile, Status, TimelineCompound } from '@equaltoai/greater-components/faces/social';
+// Social face
+import { Profile, Status, TimelineCompound } from '@equaltoai/greater-components/faces/social';
 ```
 
 ### Step 4: Add Components via CLI
@@ -86,8 +86,8 @@ greater add status timeline profile
 **Before (npm):**
 
 ```typescript
-	import { Button } from '@equaltoai/greater-components/primitives';
-	import { Status } from '@equaltoai/greater-components/faces/social';
+import { Button } from '@equaltoai/greater-components/primitives';
+import { Status } from '@equaltoai/greater-components/faces/social';
 ```
 
 **After (CLI):**
@@ -146,21 +146,21 @@ pnpm remove @equaltoai/greater-components
 
 ### Headless Primitives (CLI)
 
-| CLI Item   | Installed Path                |
-| ---------- | ----------------------------- |
-| `button`   | `$lib/primitives/button.ts`   |
-| `modal`    | `$lib/primitives/modal.ts`    |
-| `menu`     | `$lib/primitives/menu.ts`     |
-| `tooltip`  | `$lib/primitives/tooltip.ts`  |
-| `tabs`     | `$lib/primitives/tabs.ts`     |
+| CLI Item  | Installed Path               |
+| --------- | ---------------------------- |
+| `button`  | `$lib/primitives/button.ts`  |
+| `modal`   | `$lib/primitives/modal.ts`   |
+| `menu`    | `$lib/primitives/menu.ts`    |
+| `tooltip` | `$lib/primitives/tooltip.ts` |
+| `tabs`    | `$lib/primitives/tabs.ts`    |
 
 ### Social Face Components
 
-| npm Import                                             | CLI Import                                    |
-| ------------------------------------------------------ | --------------------------------------------- |
-| `@equaltoai/greater-components/faces/social` → `Status`            | `$lib/components/Status/Root.svelte`          |
-| `@equaltoai/greater-components/faces/social` → `Timeline*`         | `$lib/components/Timeline/Root.svelte`        |
-| `@equaltoai/greater-components/faces/social` → `Profile`           | `$lib/components/Profile/Root.svelte`         |
+| npm Import                                                 | CLI Import                             |
+| ---------------------------------------------------------- | -------------------------------------- |
+| `@equaltoai/greater-components/faces/social` → `Status`    | `$lib/components/Status/Root.svelte`   |
+| `@equaltoai/greater-components/faces/social` → `Timeline*` | `$lib/components/Timeline/Root.svelte` |
+| `@equaltoai/greater-components/faces/social` → `Profile`   | `$lib/components/Profile/Root.svelte`  |
 
 ### Shared Modules
 

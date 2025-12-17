@@ -213,20 +213,20 @@ When your UI updates state after `await` (fetches, mutations, etc.), use `waitFo
 ```
 
 ```typescript
-	import { test, expect, vi } from 'vitest';
-	import { render, fireEvent, waitFor } from '@equaltoai/greater-components/testing';
-	import AsyncActionDemo from './AsyncActionDemo.svelte';
+import { test, expect, vi } from 'vitest';
+import { render, fireEvent, waitFor } from '@equaltoai/greater-components/testing';
+import AsyncActionDemo from './AsyncActionDemo.svelte';
 
-	test('shows result after async action', async () => {
-		const load = vi.fn().mockResolvedValue('Done');
-		const { getByRole, getByText } = render(AsyncActionDemo, { props: { load } });
+test('shows result after async action', async () => {
+	const load = vi.fn().mockResolvedValue('Done');
+	const { getByRole, getByText } = render(AsyncActionDemo, { props: { load } });
 
-		await fireEvent.click(getByRole('button', { name: 'Run' }));
+	await fireEvent.click(getByRole('button', { name: 'Run' }));
 
-		await waitFor(() => {
-			expect(getByText('Done')).toBeInTheDocument();
-		});
+	await waitFor(() => {
+		expect(getByText('Done')).toBeInTheDocument();
 	});
+});
 ```
 
 ### Testing Snippets

@@ -10,27 +10,27 @@ This guide covers migrating an existing application from the Social Face to the 
 
 ### Timeline → Gallery
 
-| Social Face     | Artist Face       | Notes                     |
-| --------------- | ----------------- | ------------------------- |
+| Social Face                   | Artist Face       | Notes                     |
+| ----------------------------- | ----------------- | ------------------------- |
 | `TimelineVirtualizedReactive` | `GalleryGrid`     | Different layout paradigm |
-| `Status`                    | `ArtworkCard`     | Art-focused metadata      |
-| `Status.Actions`            | `Artwork.Actions` | Different action set      |
+| `Status`                      | `ArtworkCard`     | Art-focused metadata      |
+| `Status.Actions`              | `Artwork.Actions` | Different action set      |
 
 ### Profile Components
 
-| Social Face     | Artist Face               | Notes                |
-| --------------- | ------------------------- | -------------------- |
-| `Profile.Root`  | `ArtistProfile.Root`      | Portfolio-focused    |
+| Social Face      | Artist Face                | Notes                |
+| ---------------- | -------------------------- | -------------------- |
+| `Profile.Root`   | `ArtistProfile.Root`       | Portfolio-focused    |
 | `Profile.Header` | `ArtistProfile.HeroBanner` | Rich formatting      |
-| `Profile.Stats` | `ArtistProfile.Stats`     | Art-specific metrics |
+| `Profile.Stats`  | `ArtistProfile.Stats`      | Art-specific metrics |
 
 ### Content Display
 
-| Social Face     | Artist Face     | Notes                |
-| --------------- | --------------- | -------------------- |
-| `Status.Content` | `Artwork.Root` | Image-first design   |
-| `Status.Media`  | `MediaViewer`   | Enhanced zoom/pan    |
-| `ComposeBox`    | _No direct equivalent_ | Use `createArtistAdapter().createArtwork()` plus your own upload UI |
+| Social Face      | Artist Face            | Notes                                                               |
+| ---------------- | ---------------------- | ------------------------------------------------------------------- |
+| `Status.Content` | `Artwork.Root`         | Image-first design                                                  |
+| `Status.Media`   | `MediaViewer`          | Enhanced zoom/pan                                                   |
+| `ComposeBox`     | _No direct equivalent_ | Use `createArtistAdapter().createArtwork()` plus your own upload UI |
 
 ## Migration Steps
 
@@ -48,10 +48,19 @@ pnpm add @equaltoai/greater-components
 
 ```typescript
 // Before (Social Face)
-import { Profile, Status, TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+import {
+	Profile,
+	Status,
+	TimelineVirtualizedReactive,
+} from '@equaltoai/greater-components/faces/social';
 
 // After (Artist Face)
-import { Artwork, ArtworkCard, ArtistProfile, GalleryGrid } from '@equaltoai/greater-components/faces/artist';
+import {
+	Artwork,
+	ArtworkCard,
+	ArtistProfile,
+	GalleryGrid,
+} from '@equaltoai/greater-components/faces/artist';
 ```
 
 ### 3. Update Data Types

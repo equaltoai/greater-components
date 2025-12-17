@@ -15,7 +15,6 @@ Hashtags.Root - Hashtag Management Container
 
 	let { adapter, children, class: className = '' }: Props = $props();
 
-	// eslint-disable-next-line svelte/valid-compile
 	createHashtagsContext(untrack(() => ({ adapter })));
 </script>
 

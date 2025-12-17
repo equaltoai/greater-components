@@ -61,4 +61,3 @@ export function getInstalledFilePath(
 	const target = getInstallTarget(filePath, config, cwd);
 	return path.join(target.targetDir, target.relativePath);
 }
-

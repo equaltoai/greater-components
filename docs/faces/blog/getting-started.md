@@ -1,14 +1,43 @@
 # Blog Face: Getting Started
 
-The blog face provides Medium/WordPress-style UI for long-form publishing (Article, Author, Publication, Navigation, Editor).
+> Medium/WordPress-style UI components for long-form publishing.
 
-## Install
+The Blog Face provides components designed for blog platforms, publications, and content management systems. It includes Article, Author, Publication, Navigation, and Editor components optimized for long-form reading experiences.
+
+## Installation
+
+### Option 1: CLI (Recommended)
 
 ```bash
-pnpm add @equaltoai/greater-components
+# Initialize with Blog Face
+npx @equaltoai/greater-components-cli init --face blog
+
+# Or add to an existing project
+npx @equaltoai/greater-components-cli add faces/blog
+```
+
+### Option 2: Add Individual Components
+
+```bash
+# Add specific component groups
+npx @equaltoai/greater-components-cli add article author publication
+
+# Add editor and navigation
+npx @equaltoai/greater-components-cli add editor navigation
 ```
 
 ## Required CSS
+
+If using CLI with local CSS mode (default), imports are injected automatically:
+
+```ts
+// Automatically added by CLI init
+import '$lib/styles/greater/tokens.css';
+import '$lib/styles/greater/primitives.css';
+import '$lib/styles/greater/blog.css';
+```
+
+If using npm packages directly:
 
 ```ts
 import '@equaltoai/greater-components/tokens/theme.css';
@@ -18,36 +47,101 @@ import '@equaltoai/greater-components/faces/blog/style.css';
 
 ## Basic Usage
 
+### Displaying an Article
+
 ```svelte
 <script lang="ts">
-	import { Article } from '@equaltoai/greater-components/faces/blog';
+	import { Article } from '$lib/components/faces/blog';
+	// Or from npm: import { Article } from '@equaltoai/greater-components/faces/blog';
 
 	const article = {
 		id: 'a1',
 		slug: 'hello-long-form',
 		metadata: {
-			title: 'Hello, long-form',
-			description: 'A demo article rendered with the blog face',
+			title: 'Hello, Long-Form Content',
+			description: 'A demonstration of the blog face article components',
 			publishedAt: new Date().toISOString(),
-			tags: ['demo'],
+			readingTime: 5,
+			tags: ['demo', 'tutorial'],
 		},
-		content: '# Heading\\n\\nThis is a demo article.',
+		content: '# Introduction\n\nThis is a demo article with full markdown support.',
 		contentFormat: 'markdown',
-		author: { id: 'u1', name: 'Demo Author', username: 'demo' },
+		author: {
+			id: 'u1',
+			name: 'Demo Author',
+			username: 'demo',
+			avatar: '/avatars/demo.jpg',
+		},
 		isPublished: true,
 	};
-<\/script>
+</script>
 
 <Article.Root {article}>
 	<Article.Header />
+	<Article.TableOfContents />
 	<Article.Content />
 	<Article.Footer />
+	<Article.RelatedPosts posts={relatedPosts} />
 </Article.Root>
 ```
 
-## CLI Install
+### Author Card
 
-```bash
-greater init --face blog
-greater add faces/blog
+```svelte
+<script lang="ts">
+	import { Author } from '$lib/components/faces/blog';
+
+	const author = {
+		id: 'u1',
+		name: 'Demo Author',
+		username: 'demo',
+		avatar: '/avatars/demo.jpg',
+		bio: 'Tech writer and software enthusiast.',
+		socialLinks: {
+			twitter: 'https://twitter.com/demo',
+			github: 'https://github.com/demo',
+		},
+	};
+</script>
+
+<Author.Root {author} showBio showSocial>
+	<Author.Card />
+</Author.Root>
 ```
+
+### Navigation Components
+
+```svelte
+<script lang="ts">
+	import { Navigation } from '$lib/components/faces/blog';
+</script>
+
+<Navigation.Root {categories} {archives}>
+	<Navigation.Categories />
+	<Navigation.ArchiveView />
+	<Navigation.TagCloud />
+</Navigation.Root>
+```
+
+## Key Component Groups
+
+| Component     | Description                | Documentation                               |
+| ------------- | -------------------------- | ------------------------------------------- |
+| `Article`     | Article display with TOC   | [Article Rendering](./article-rendering.md) |
+| `Author`      | Author bio and cards       | Coming soon                                 |
+| `Publication` | Publication/blog branding  | Coming soon                                 |
+| `Navigation`  | Categories, archives, tags | Coming soon                                 |
+| `Editor`      | Rich text editor           | Coming soon                                 |
+
+## Content Rendering
+
+The blog face integrates with the `content` package for markdown rendering:
+
+```typescript
+import { MarkdownRenderer } from '@equaltoai/greater-components/content';
+```
+
+## Next Steps
+
+- [Article Rendering](./article-rendering.md) – Markdown and rich content
+- [Core Patterns](../../core-patterns.md) – Common patterns and best practices

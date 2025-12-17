@@ -19,7 +19,11 @@ Publication.Banner - Publication branding banner
 <header class="gr-blog-publication-banner">
 	<div class="gr-blog-publication-banner__brand">
 		{#if publication.logo}
-			<img class="gr-blog-publication-banner__logo" src={publication.logo} alt={`${publication.name} logo`} />
+			<img
+				class="gr-blog-publication-banner__logo"
+				src={publication.logo}
+				alt={`${publication.name} logo`}
+			/>
 		{/if}
 		<span class="gr-blog-publication-banner__name">{publication.name}</span>
 	</div>
@@ -30,4 +34,3 @@ Publication.Banner - Publication branding banner
 		</span>
 	{/if}
 </header>
-

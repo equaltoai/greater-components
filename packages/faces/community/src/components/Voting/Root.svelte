@@ -67,7 +67,7 @@ Voting.Root - Upvote/downvote controls
 		type="button"
 		class="gr-community-vote__button gr-community-vote__button--upvote"
 		class:gr-community-vote__button--active={userVote === 1}
-		disabled={disabled}
+		{disabled}
 		aria-pressed={userVote === 1}
 		aria-label="Upvote"
 		onclick={handleUpvote}
@@ -81,7 +81,7 @@ Voting.Root - Upvote/downvote controls
 		type="button"
 		class="gr-community-vote__button gr-community-vote__button--downvote"
 		class:gr-community-vote__button--active={userVote === -1}
-		disabled={disabled}
+		{disabled}
 		aria-pressed={userVote === -1}
 		aria-label="Downvote"
 		onclick={handleDownvote}
@@ -89,4 +89,3 @@ Voting.Root - Upvote/downvote controls
 		▼
 	</button>
 </div>
-

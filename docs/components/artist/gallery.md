@@ -5,7 +5,12 @@
 ## Imports
 
 ```ts
-import { Gallery, GalleryGrid, GalleryRow, GalleryMasonry } from '@equaltoai/greater-components/faces/artist';
+import {
+	Gallery,
+	GalleryGrid,
+	GalleryRow,
+	GalleryMasonry,
+} from '@equaltoai/greater-components/faces/artist';
 ```
 
 ## `Gallery` Namespace
@@ -26,36 +31,41 @@ Masonry-style grid with optional clustering and automatic virtual scrolling for 
 <GalleryGrid items={artworks} columns="auto" gap="md" clustering="none" onLoadMore={loadMore} />
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `items` | `ArtworkData[]` | `[]` |
-| `columns` | `number \| 'auto'` | `'auto'` |
-| `gap` | `'sm' \| 'md' \| 'lg'` | `'md'` |
-| `clustering` | `'none' \| 'artist' \| 'theme' \| 'smart'` | `'none'` |
-| `virtualScrolling` | `boolean` | `false` |
-| `onLoadMore` | `() => void` | - |
-| `onItemClick` | `(item: ArtworkData) => void` | - |
-| `scrollKey` | `string` | `'gallery'` |
-| `itemRenderer` | `Snippet<[ArtworkData, number]>` | - |
-| `class` | `string` | `''` |
+| Prop               | Type                                       | Default     |
+| ------------------ | ------------------------------------------ | ----------- |
+| `items`            | `ArtworkData[]`                            | `[]`        |
+| `columns`          | `number \| 'auto'`                         | `'auto'`    |
+| `gap`              | `'sm' \| 'md' \| 'lg'`                     | `'md'`      |
+| `clustering`       | `'none' \| 'artist' \| 'theme' \| 'smart'` | `'none'`    |
+| `virtualScrolling` | `boolean`                                  | `false`     |
+| `onLoadMore`       | `() => void`                               | -           |
+| `onItemClick`      | `(item: ArtworkData) => void`              | -           |
+| `scrollKey`        | `string`                                   | `'gallery'` |
+| `itemRenderer`     | `Snippet<[ArtworkData, number]>`           | -           |
+| `class`            | `string`                                   | `''`        |
 
 ## `GalleryRow`
 
 Horizontal row with scroll snapping + arrow controls.
 
 ```svelte
-<GalleryRow items={featured} title="Featured This Week" showAllLink="/gallery/featured" cardSize="md" />
+<GalleryRow
+	items={featured}
+	title="Featured This Week"
+	showAllLink="/gallery/featured"
+	cardSize="md"
+/>
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `items` | `ArtworkData[]` | `[]` |
-| `title` | `string` | - |
-| `showAllLink` | `string` | - |
-| `cardSize` | `'sm' \| 'md' \| 'lg'` | `'md'` |
-| `onItemClick` | `(item: ArtworkData) => void` | - |
-| `itemRenderer` | `Snippet<[ArtworkData, number]>` | - |
-| `class` | `string` | `''` |
+| Prop           | Type                             | Default |
+| -------------- | -------------------------------- | ------- |
+| `items`        | `ArtworkData[]`                  | `[]`    |
+| `title`        | `string`                         | -       |
+| `showAllLink`  | `string`                         | -       |
+| `cardSize`     | `'sm' \| 'md' \| 'lg'`           | `'md'`  |
+| `onItemClick`  | `(item: ArtworkData) => void`    | -       |
+| `itemRenderer` | `Snippet<[ArtworkData, number]>` | -       |
+| `class`        | `string`                         | `''`    |
 
 ## `GalleryMasonry`
 
@@ -65,17 +75,17 @@ Absolute-positioned masonry layout (variable height) with optional virtual scrol
 <GalleryMasonry items={artworks} columnWidth={280} gap={16} onLoadMore={loadMore} />
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `items` | `ArtworkData[]` | `[]` |
-| `columnWidth` | `number` | `280` |
-| `gap` | `number` | `16` |
-| `virtualScrolling` | `boolean` | `false` |
-| `onLoadMore` | `() => void` | - |
-| `onItemClick` | `(item: ArtworkData) => void` | - |
-| `scrollKey` | `string` | `'masonry'` |
-| `itemRenderer` | `Snippet<[ArtworkData, number]>` | - |
-| `class` | `string` | `''` |
+| Prop               | Type                             | Default     |
+| ------------------ | -------------------------------- | ----------- |
+| `items`            | `ArtworkData[]`                  | `[]`        |
+| `columnWidth`      | `number`                         | `280`       |
+| `gap`              | `number`                         | `16`        |
+| `virtualScrolling` | `boolean`                        | `false`     |
+| `onLoadMore`       | `() => void`                     | -           |
+| `onItemClick`      | `(item: ArtworkData) => void`    | -           |
+| `scrollKey`        | `string`                         | `'masonry'` |
+| `itemRenderer`     | `Snippet<[ArtworkData, number]>` | -           |
+| `class`            | `string`                         | `''`        |
 
 ## Custom Rendering (`itemRenderer`)
 

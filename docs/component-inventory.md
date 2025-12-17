@@ -1506,18 +1506,18 @@ Store messages in localStorage, IndexedDB, or your backend.
 
 ### Quick Decision Matrix
 
-| Need                   | Use This Package | Import From                                |
-| ---------------------- | ---------------- | ------------------------------------------ |
-| Button, form inputs    | Primitives       | `@equaltoai/greater-components/primitives` |
-| Layout containers      | Primitives       | `@equaltoai/greater-components/primitives` |
-| Typography             | Primitives       | `@equaltoai/greater-components/primitives` |
-| **AI chat interface**  | **Chat**         | `@equaltoai/greater-components/chat`       |
-| Icons                  | Icons            | `@equaltoai/greater-components/icons`      |
+| Need                   | Use This Package | Import From                                  |
+| ---------------------- | ---------------- | -------------------------------------------- |
+| Button, form inputs    | Primitives       | `@equaltoai/greater-components/primitives`   |
+| Layout containers      | Primitives       | `@equaltoai/greater-components/primitives`   |
+| Typography             | Primitives       | `@equaltoai/greater-components/primitives`   |
+| **AI chat interface**  | **Chat**         | `@equaltoai/greater-components/chat`         |
+| Icons                  | Icons            | `@equaltoai/greater-components/icons`        |
 | Social media feed      | Faces (Social)   | `@equaltoai/greater-components/faces/social` |
 | User profiles          | Faces (Social)   | `@equaltoai/greater-components/faces/social` |
-| Complete style control | Headless         | `@equaltoai/greater-components/headless`   |
-| ActivityPub connection | Adapters         | `@equaltoai/greater-components/adapters`   |
-| Utility functions      | Utils            | `@equaltoai/greater-components/utils`      |
+| Complete style control | Headless         | `@equaltoai/greater-components/headless`     |
+| ActivityPub connection | Adapters         | `@equaltoai/greater-components/adapters`     |
+| Utility functions      | Utils            | `@equaltoai/greater-components/utils`        |
 
 ### Use Case to Package Mapping
 

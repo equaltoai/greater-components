@@ -16,7 +16,12 @@ Tip integration for supporting artists.
 <script lang="ts">
 	import { Monetization } from '@equaltoai/greater-components/faces/artist';
 
-	async function handleTip(amount: number, currency: string, message?: string, isAnonymous?: boolean) {
+	async function handleTip(
+		amount: number,
+		currency: string,
+		message?: string,
+		isAnonymous?: boolean
+	) {
 		await processTip({ artistId: artist.id, amount, currency, message, isAnonymous });
 	}
 </script>
@@ -26,13 +31,13 @@ Tip integration for supporting artists.
 
 ### Props
 
-| Prop          | Type                                   | Default       | Description          |
-| ------------- | -------------------------------------- | ------------- | -------------------- |
-| `artist`      | `ArtistData`                           | required      | Artist to tip        |
-| `config`      | `TipJarConfig`                         | `{}`          | Tip jar configuration |
-| `handlers`    | `TipJarHandlers`                       | `{}`          | Event handlers       |
-| `recentTips`  | `TipData[]`                            | `[]`          | Optional recent tips |
-| `class`       | `string`                               | `''`          | Custom CSS class     |
+| Prop         | Type             | Default  | Description           |
+| ------------ | ---------------- | -------- | --------------------- |
+| `artist`     | `ArtistData`     | required | Artist to tip         |
+| `config`     | `TipJarConfig`   | `{}`     | Tip jar configuration |
+| `handlers`   | `TipJarHandlers` | `{}`     | Event handlers        |
+| `recentTips` | `TipData[]`      | `[]`     | Optional recent tips  |
+| `class`      | `string`         | `''`     | Custom CSS class      |
 
 ### Customization
 
@@ -66,8 +71,12 @@ Direct artwork purchase setup.
 
 	const pricing = {
 		original: { price: 2500, currency: 'USD', available: true },
-		prints: [{ id: 'sm', size: '8x10\"', price: 45, currency: 'USD', description: 'Archival print' }],
-		licenses: [{ id: 'personal', type: 'personal', price: 25, currency: 'USD', terms: 'Personal use only' }],
+		prints: [
+			{ id: 'sm', size: '8x10\"', price: 45, currency: 'USD', description: 'Archival print' },
+		],
+		licenses: [
+			{ id: 'personal', type: 'personal', price: 25, currency: 'USD', terms: 'Personal use only' },
+		],
 	};
 
 	async function handlePurchase(options) {
@@ -80,12 +89,12 @@ Direct artwork purchase setup.
 
 ### Props
 
-| Prop         | Type                        | Default  | Description       |
-| ------------ | --------------------------- | -------- | ----------------- |
-| `artwork`    | `ArtworkData`               | required | Artwork for sale  |
-| `pricing`    | `PricingData`               | required | Pricing model     |
-| `onPurchase` | `(options) => void`         | -        | Purchase callback |
-| `onInquiry`  | `(message) => void`         | -        | Inquiry callback  |
+| Prop         | Type                | Default  | Description       |
+| ------------ | ------------------- | -------- | ----------------- |
+| `artwork`    | `ArtworkData`       | required | Artwork for sale  |
+| `pricing`    | `PricingData`       | required | Pricing model     |
+| `onPurchase` | `(options) => void` | -        | Purchase callback |
+| `onInquiry`  | `(message) => void` | -        | Inquiry callback  |
 
 ## InstitutionalTools
 
@@ -124,7 +133,10 @@ Features for galleries, museums, and institutions.
 	import { Monetization } from '@equaltoai/greater-components/faces/artist';
 </script>
 
-<Monetization.PremiumBadge tier="pro" features={['priority-support', 'analytics', 'custom-domain']} />
+<Monetization.PremiumBadge
+	tier="pro"
+	features={['priority-support', 'analytics', 'custom-domain']}
+/>
 ```
 
 ### Protection Tools

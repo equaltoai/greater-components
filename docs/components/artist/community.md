@@ -15,9 +15,13 @@ Structured critique group/space.
 ```svelte
 <script lang="ts">
 	import { CritiqueCircle } from '@equaltoai/greater-components/faces/artist';
-	import type { CritiqueCircleData, CritiqueCircleHandlers } from '@equaltoai/greater-components/faces/artist/types/community';
+	import type {
+		CritiqueCircleData,
+		CritiqueCircleHandlers,
+	} from '@equaltoai/greater-components/faces/artist/types/community';
 
-	const circle: CritiqueCircleData = /* load from your backend */ null as unknown as CritiqueCircleData;
+	const circle: CritiqueCircleData =
+		/* load from your backend */ null as unknown as CritiqueCircleData;
 	const handlers: CritiqueCircleHandlers = {
 		onSubmit: async (_circle, _artwork, _feedbackRequested) => {},
 		onCritique: async (_submission, _annotations, _summary) => {},
@@ -34,18 +38,18 @@ Structured critique group/space.
 
 ### Props
 
-| Prop         | Type                                  | Default    | Description |
-| ------------ | ------------------------------------- | ---------- | ----------- |
-| `circle`     | `CritiqueCircleData`                  | required   | Circle data (queue/history/members) |
-| `membership` | `'member' \| 'moderator' \| 'viewer'` | `'viewer'` | User role   |
-| `handlers`   | `CritiqueCircleHandlers`              | `{}`       | Interaction callbacks |
-| `showQueue`  | `boolean`                             | `true`     | Show queue panel |
-| `showSession`| `boolean`                             | `true`     | Show active session |
-| `showHistory`| `boolean`                             | `true`     | Show history panel |
-| `showMembers`| `boolean`                             | `true`     | Show members panel |
-| `enableAnonymousFeedback` | `boolean`                 | `true`     | Allow anonymous feedback |
-| `class`      | `string`                              | `''`       | Custom class |
-| `children`   | `Snippet`                             | required   | Compound children |
+| Prop                      | Type                                  | Default    | Description                         |
+| ------------------------- | ------------------------------------- | ---------- | ----------------------------------- |
+| `circle`                  | `CritiqueCircleData`                  | required   | Circle data (queue/history/members) |
+| `membership`              | `'member' \| 'moderator' \| 'viewer'` | `'viewer'` | User role                           |
+| `handlers`                | `CritiqueCircleHandlers`              | `{}`       | Interaction callbacks               |
+| `showQueue`               | `boolean`                             | `true`     | Show queue panel                    |
+| `showSession`             | `boolean`                             | `true`     | Show active session                 |
+| `showHistory`             | `boolean`                             | `true`     | Show history panel                  |
+| `showMembers`             | `boolean`                             | `true`     | Show members panel                  |
+| `enableAnonymousFeedback` | `boolean`                             | `true`     | Allow anonymous feedback            |
+| `class`                   | `string`                              | `''`       | Custom class                        |
+| `children`                | `Snippet`                             | required   | Compound children                   |
 
 ### Subcomponents
 
@@ -60,7 +64,10 @@ Multi-artist collaboration space.
 ```svelte
 <script lang="ts">
 	import { Collaboration } from '@equaltoai/greater-components/faces/artist';
-	import type { CollaborationData, CollaborationHandlers } from '@equaltoai/greater-components/faces/artist/types/community';
+	import type {
+		CollaborationData,
+		CollaborationHandlers,
+	} from '@equaltoai/greater-components/faces/artist/types/community';
 
 	const collaboration: CollaborationData =
 		/* load from your backend */ null as unknown as CollaborationData;
@@ -104,12 +111,12 @@ Mentor-mentee connection interface.
 
 ### Props
 
-| Prop      | Type                                         | Default  | Description       |
-| --------- | -------------------------------------------- | -------- | ----------------- |
-| `mode`    | `'find-mentor' \| 'find-mentee' \| 'active'` | `'find-mentor'` | Interface mode |
-| `filters` | `MentorFilters`                              | `{}`     | Matching criteria |
-| `matches` | `MentorMatch[]`                              | `[]`     | Candidate matches |
-| `handlers` | `MentorMatchHandlers`                       | `{}`     | Callbacks (search/request) |
+| Prop       | Type                                         | Default         | Description                |
+| ---------- | -------------------------------------------- | --------------- | -------------------------- |
+| `mode`     | `'find-mentor' \| 'find-mentee' \| 'active'` | `'find-mentor'` | Interface mode             |
+| `filters`  | `MentorFilters`                              | `{}`            | Matching criteria          |
+| `matches`  | `MentorMatch[]`                              | `[]`            | Candidate matches          |
+| `handlers` | `MentorMatchHandlers`                        | `{}`            | Callbacks (search/request) |
 
 ## Accessibility
 

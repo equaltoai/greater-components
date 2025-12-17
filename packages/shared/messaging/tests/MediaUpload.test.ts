@@ -146,7 +146,9 @@ describe('MediaUpload', () => {
 		await flushSync();
 
 		expect(target.querySelector('.media-upload__error')).toBeTruthy();
-		expect(target.querySelector('.media-upload__error')?.textContent).toContain('Maximum 1 attachment allowed');
+		expect(target.querySelector('.media-upload__error')?.textContent).toContain(
+			'Maximum 1 attachment allowed'
+		);
 		expect(mockHandlers.onUploadMedia).not.toHaveBeenCalled();
 
 		unmount(instance);
@@ -246,7 +248,9 @@ describe('MediaUpload', () => {
 		await flushSync();
 
 		// Spoiler
-		const spoilerInput = target.querySelector('input[placeholder="Optional warning before media"]') as HTMLInputElement;
+		const spoilerInput = target.querySelector(
+			'input[placeholder="Optional warning before media"]'
+		) as HTMLInputElement;
 		spoilerInput.value = 'Spoiler Alert';
 		spoilerInput.dispatchEvent(new Event('input', { bubbles: true }));
 		await flushSync();
@@ -298,7 +302,7 @@ describe('MediaUpload', () => {
 			url: 'a.mp3',
 			mediaCategory: 'AUDIO',
 		});
-		
+
 		Object.defineProperty(input, 'files', { value: [audioFile], configurable: true });
 		input.dispatchEvent(new Event('change', { bubbles: true }));
 		await new Promise((resolve) => setTimeout(resolve, 10));
@@ -341,7 +345,7 @@ describe('MediaUpload', () => {
 
 		expect(target.querySelector('.media-upload__error')).toBeTruthy();
 		expect(target.querySelector('.media-upload__error')?.textContent).toContain('Upload failed');
-		
+
 		// Spinner should be gone
 		expect(target.querySelector('.media-upload__spinner')).toBeFalsy();
 

@@ -69,19 +69,19 @@ The CSS import paths have been reorganized for clarity.
 **Before:**
 
 ```typescript
-	import '@equaltoai/greater-components/styles.css';
+import '@equaltoai/greater-components/styles.css';
 ```
 
 **After:**
 
 ```typescript
-	// Import tokens first (REQUIRED)
-	import '@equaltoai/greater-components/tokens/theme.css';
+// Import tokens first (REQUIRED)
+import '@equaltoai/greater-components/tokens/theme.css';
 
-	// Then import component styles
-	import '@equaltoai/greater-components/primitives/style.css';
-	// Plus face styles as needed (e.g. Social face):
-	import '@equaltoai/greater-components/faces/social/style.css';
+// Then import component styles
+import '@equaltoai/greater-components/primitives/style.css';
+// Plus face styles as needed (e.g. Social face):
+import '@equaltoai/greater-components/faces/social/style.css';
 ```
 
 #### 4. Menu Component API
@@ -148,8 +148,8 @@ import { Status } from '@equaltoai/greater-fediverse';
 **After:**
 
 ```typescript
-	import { Button } from '@equaltoai/greater-components/primitives';
-	import { Status } from '@equaltoai/greater-components/faces/social';
+import { Button } from '@equaltoai/greater-components/primitives';
+import { Status } from '@equaltoai/greater-components/faces/social';
 ```
 
 #### 2. ThemeProvider Required

@@ -5,7 +5,7 @@
 5: -->
 
 <script lang="ts">
-	import { getCritiqueContext, zoomIn, zoomOut, resetZoom } from './context.js';
+	import { getCritiqueContext, zoomIn, zoomOut, resetZoom } from './context.svelte.js';
 
 	interface Props {
 		class?: string;

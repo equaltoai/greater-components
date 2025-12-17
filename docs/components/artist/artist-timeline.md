@@ -23,7 +23,14 @@ import { ArtistTimeline } from '@equaltoai/greater-components/faces/artist';
 		verified: true,
 		commissionStatus: 'open',
 		badges: [],
-		stats: { followers: 1, following: 1, works: 1, exhibitions: 0, collaborations: 0, totalViews: 1 },
+		stats: {
+			followers: 1,
+			following: 1,
+			works: 1,
+			exhibitions: 0,
+			collaborations: 0,
+			totalViews: 1,
+		},
 		sections: [],
 		joinedAt: new Date().toISOString(),
 	};
@@ -45,14 +52,14 @@ import { ArtistTimeline } from '@equaltoai/greater-components/faces/artist';
 
 ## Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `artist` | `ArtistData` | - |
-| `items` | `TimelineItem[]` | `[]` |
-| `showSocial` | `boolean` | `true` |
-| `onLoadMore` | `() => void \| Promise<void>` | - |
-| `hasMore` | `boolean` | `false` |
-| `class` | `string` | `''` |
+| Prop         | Type                          | Default |
+| ------------ | ----------------------------- | ------- |
+| `artist`     | `ArtistData`                  | -       |
+| `items`      | `TimelineItem[]`              | `[]`    |
+| `showSocial` | `boolean`                     | `true`  |
+| `onLoadMore` | `() => void \| Promise<void>` | -       |
+| `hasMore`    | `boolean`                     | `false` |
+| `class`      | `string`                      | `''`    |
 
 ## `TimelineItem` Shape
 

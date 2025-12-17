@@ -22,14 +22,14 @@ npx @equaltoai/greater-components-cli add faces/artist
 Request → Quote → Contract → Progress → Delivery → Review
 ```
 
-| Stage | Description | Components |
-|-------|-------------|------------|
-| **Request** | Client submits commission request | `CommissionWorkflow.Request` |
-| **Quote** | Artist provides quote and terms | `CommissionWorkflow.Quote` |
-| **Contract** | Both parties agree to terms | `CommissionWorkflow.Contract` |
-| **Progress** | WIP updates and communication | `CommissionWorkflow.Progress` |
-| **Delivery** | Final artwork delivery | `CommissionWorkflow.Delivery` |
-| **Review** | Client review and feedback | `CommissionWorkflow.Review` |
+| Stage        | Description                       | Components                    |
+| ------------ | --------------------------------- | ----------------------------- |
+| **Request**  | Client submits commission request | `CommissionWorkflow.Request`  |
+| **Quote**    | Artist provides quote and terms   | `CommissionWorkflow.Quote`    |
+| **Contract** | Both parties agree to terms       | `CommissionWorkflow.Contract` |
+| **Progress** | WIP updates and communication     | `CommissionWorkflow.Progress` |
+| **Delivery** | Final artwork delivery            | `CommissionWorkflow.Delivery` |
+| **Review**   | Client review and feedback        | `CommissionWorkflow.Review`   |
 
 ## Basic Usage
 
@@ -46,7 +46,7 @@ Request → Quote → Contract → Progress → Delivery → Review
 		description: 'Portrait painting, oil on canvas, 24x36 inches',
 		price: { amount: 500, currency: 'USD' },
 		deadline: '2024-03-15',
-		updates: [...],
+		updates: [],
 		createdAt: '2024-01-15T10:00:00Z',
 	};
 
@@ -96,15 +96,15 @@ Allow clients to submit commission requests:
 
 ### Request Form Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `description` | `string` | Yes | Detailed commission description |
-| `category` | `string` | Yes | Commission type |
-| `budget` | `{ min, max, currency }` | Configurable | Budget range |
-| `deadline` | `Date` | Configurable | Desired completion date |
-| `references` | `File[]` | No | Reference images |
-| `dimensions` | `string` | No | Desired size |
-| `medium` | `string` | No | Preferred medium |
+| Field         | Type                     | Required     | Description                     |
+| ------------- | ------------------------ | ------------ | ------------------------------- |
+| `description` | `string`                 | Yes          | Detailed commission description |
+| `category`    | `string`                 | Yes          | Commission type                 |
+| `budget`      | `{ min, max, currency }` | Configurable | Budget range                    |
+| `deadline`    | `Date`                   | Configurable | Desired completion date         |
+| `references`  | `File[]`                 | No           | Reference images                |
+| `dimensions`  | `string`                 | No           | Desired size                    |
+| `medium`      | `string`                 | No           | Preferred medium                |
 
 ## Artist Quote
 
@@ -123,7 +123,7 @@ Artists can respond with quotes and terms:
 </script>
 
 <CommissionWorkflow.Quote
-	commission={commission}
+	{commission}
 	onSend={handleQuoteSend}
 	config={{
 		allowMilestones: true,
@@ -192,13 +192,13 @@ Track work-in-progress with updates and client communication:
 
 ### Update Types
 
-| Type | Description |
-|------|-------------|
-| `progress` | General WIP update with optional media |
+| Type        | Description                                           |
+| ----------- | ----------------------------------------------------- |
+| `progress`  | General WIP update with optional media                |
 | `milestone` | Milestone completion (triggers payment if configured) |
-| `revision` | Revision request or response |
-| `message` | Client-artist communication |
-| `approval` | Client approval required |
+| `revision`  | Revision request or response                          |
+| `message`   | Client-artist communication                           |
+| `approval`  | Client approval required                              |
 
 ## Delivery
 
@@ -227,16 +227,16 @@ Commission status flow:
 
 ```ts
 type CommissionStatus =
-	| 'pending'      // Request submitted, awaiting artist response
-	| 'quoted'       // Artist sent quote, awaiting client response
-	| 'accepted'     // Client accepted, awaiting deposit
+	| 'pending' // Request submitted, awaiting artist response
+	| 'quoted' // Artist sent quote, awaiting client response
+	| 'accepted' // Client accepted, awaiting deposit
 	| 'deposit-paid' // Deposit received, work can begin
-	| 'in-progress'  // Work underway
-	| 'revision'     // Revision requested
-	| 'delivered'    // Work delivered, awaiting final payment
-	| 'completed'    // Fully paid and closed
-	| 'cancelled'    // Cancelled by either party
-	| 'disputed';    // Payment or delivery dispute
+	| 'in-progress' // Work underway
+	| 'revision' // Revision requested
+	| 'delivered' // Work delivered, awaiting final payment
+	| 'completed' // Fully paid and closed
+	| 'cancelled' // Cancelled by either party
+	| 'disputed'; // Payment or delivery dispute
 ```
 
 ## Using Commission Patterns
@@ -271,12 +271,9 @@ Connect to payment providers:
 
 <CommissionWorkflow.Root {commission} role="artist">
 	<CommissionWorkflow.Progress />
-	
+
 	{#if commission.status === 'deposit-paid' || commission.status === 'delivered'}
-		<Monetization.DirectPurchase
-			pricing={commission.quote}
-			onPurchase={handlePayment}
-		/>
+		<Monetization.DirectPurchase pricing={commission.quote} onPurchase={handlePayment} />
 	{/if}
 </CommissionWorkflow.Root>
 ```
@@ -285,16 +282,16 @@ Connect to payment providers:
 
 Commission events trigger notifications:
 
-| Event | Artist Notification | Client Notification |
-|-------|---------------------|---------------------|
-| New Request | ✅ | - |
-| Quote Sent | - | ✅ |
-| Quote Accepted | ✅ | - |
-| Deposit Paid | ✅ | ✅ |
-| Progress Update | - | ✅ |
-| Revision Requested | ✅ | - |
-| Delivered | - | ✅ |
-| Completed | ✅ | ✅ |
+| Event              | Artist Notification | Client Notification |
+| ------------------ | ------------------- | ------------------- |
+| New Request        | ✅                  | -                   |
+| Quote Sent         | -                   | ✅                  |
+| Quote Accepted     | ✅                  | -                   |
+| Deposit Paid       | ✅                  | ✅                  |
+| Progress Update    | -                   | ✅                  |
+| Revision Requested | ✅                  | -                   |
+| Delivered          | -                   | ✅                  |
+| Completed          | ✅                  | ✅                  |
 
 ## Related Documentation
 

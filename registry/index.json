@@ -1873,10 +1873,7 @@
         "@equaltoai/greater-components-icons",
         "@equaltoai/greater-components-utils"
       ],
-      "peerDependencies": [
-        "@equaltoai/greater-components-tokens",
-        "svelte"
-      ],
+      "peerDependencies": ["@equaltoai/greater-components-tokens", "svelte"],
       "tags": []
     },
     "headless": {
@@ -2017,9 +2014,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "icons": {
@@ -5070,9 +5065,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "tokens": {
@@ -5269,9 +5262,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "adapters": {
@@ -5622,9 +5613,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "content": {
@@ -6295,9 +6284,7 @@
         "@equaltoai/greater-components-admin",
         "@equaltoai/greater-components-messaging"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     },
     "blog": {
       "name": "blog",
@@ -6315,13 +6302,7 @@
           "StructuredData",
           "OpenGraphMeta"
         ],
-        "shared": [
-          "primitives",
-          "icons",
-          "content",
-          "utils",
-          "headless"
-        ],
+        "shared": ["primitives", "icons", "content", "utils", "headless"],
         "patterns": [],
         "components": [
           "Article",
@@ -6443,9 +6424,7 @@
         "@equaltoai/greater-components-utils",
         "@equaltoai/greater-components-headless"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     },
     "community": {
       "name": "community",
@@ -6464,13 +6443,7 @@
           "RulesSidebar",
           "WikiPage"
         ],
-        "shared": [
-          "primitives",
-          "icons",
-          "content",
-          "utils",
-          "headless"
-        ],
+        "shared": ["primitives", "icons", "content", "utils", "headless"],
         "patterns": [],
         "components": [
           "Community",
@@ -6570,9 +6543,7 @@
         "@equaltoai/greater-components-utils",
         "@equaltoai/greater-components-headless"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     },
     "artist": {
       "name": "artist",
@@ -6603,14 +6574,7 @@
           "PremiumBadge",
           "InstitutionalTools"
         ],
-        "shared": [
-          "primitives",
-          "headless",
-          "icons",
-          "tokens",
-          "adapters",
-          "utils"
-        ],
+        "shared": ["primitives", "headless", "icons", "tokens", "adapters", "utils"],
         "patterns": [],
         "components": [
           "Artwork",
@@ -7410,9 +7374,7 @@
         "@equaltoai/greater-components-adapters",
         "@equaltoai/greater-components-utils"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     }
   },
   "shared": {
@@ -7779,15 +7741,7 @@
       "name": "search",
       "version": "4.0.1",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
-      "exports": [
-        "Root",
-        "Bar",
-        "Filters",
-        "Results",
-        "ActorResult",
-        "NoteResult",
-        "TagResult"
-      ],
+      "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
       "files": [
         {
           "path": "src/ActorResult.svelte",

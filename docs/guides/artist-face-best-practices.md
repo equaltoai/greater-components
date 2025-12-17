@@ -9,7 +9,7 @@
 `ArtworkData` is intentionally pre-normalized for rendering. Populate `images.thumbnail/preview/standard/full` and a meaningful `altText`, then let `Artwork.Image` handle progressive loading (enabled by default).
 
 ```svelte
-<Artwork.Root artwork={artwork} config={{ progressiveLoading: true }}>
+<Artwork.Root {artwork} config={{ progressiveLoading: true }}>
 	<Artwork.Image aspectRatio="preserve" />
 </Artwork.Root>
 ```

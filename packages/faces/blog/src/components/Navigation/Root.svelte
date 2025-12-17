@@ -50,4 +50,3 @@ Provides context for ArchiveView/TagCloud/etc.
 		{/if}
 	{/if}
 </nav>
-

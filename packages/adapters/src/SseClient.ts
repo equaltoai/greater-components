@@ -45,7 +45,7 @@ export class SseClient implements TransportAdapter<SseClientState> {
 			heartbeatTimeout: config.heartbeatTimeout || 60000,
 			initialReconnectDelay: config.initialReconnectDelay || 500,
 			maxReconnectDelay: config.maxReconnectDelay || 30000,
-			jitterFactor: config.jitterFactor || 0.3,
+			jitterFactor: config.jitterFactor ?? 0.3,
 			maxReconnectAttempts: config.maxReconnectAttempts || Infinity,
 			enableLatencySampling: config.enableLatencySampling !== false,
 			latencySamplingInterval: config.latencySamplingInterval || 10000,

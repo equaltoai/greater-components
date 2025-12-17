@@ -1,0 +1,16 @@
+{
+  "face": "artist",
+  "ref": "greater-v4.1.0",
+  "style": "default",
+  "tailwind": false,
+  "typescript": true,
+  "components": {
+    "path": "src/lib/components"
+  },
+  "css": {
+    "import": true,
+    "source": "local",
+    "localDir": "styles/greater"
+  },
+  "libDir": "src/lib"
+}

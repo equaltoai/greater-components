@@ -67,6 +67,8 @@ Event handlers from context.
 		try {
 			await handlers.onLike(artwork);
 			context.isLiked = !context.isLiked;
+		} catch (error) {
+			console.error('Failed to like artwork:', error);
 		} finally {
 			isLiking = false;
 		}
@@ -79,6 +81,8 @@ Event handlers from context.
 		try {
 			await handlers.onCollect(artwork);
 			context.isCollected = !context.isCollected;
+		} catch (error) {
+			console.error('Failed to collect artwork:', error);
 		} finally {
 			isCollecting = false;
 		}

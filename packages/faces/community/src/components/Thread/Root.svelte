@@ -49,7 +49,9 @@ Renders the parent post plus a comment tree with sorting.
 		context.handlers.onSortChange?.(sortBy);
 	}
 
-	const rootClass = $derived(['gr-community-thread-root', context.config.class].filter(Boolean).join(' '));
+	const rootClass = $derived(
+		['gr-community-thread-root', context.config.class].filter(Boolean).join(' ')
+	);
 </script>
 
 <section class={rootClass} data-thread-post-id={threadState.post.id}>
@@ -74,4 +76,3 @@ Renders the parent post plus a comment tree with sorting.
 		<CommentTree comments={threadState.comments} />
 	{/if}
 </section>
-

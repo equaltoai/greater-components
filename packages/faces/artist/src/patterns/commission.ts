@@ -330,7 +330,7 @@ export function createCommissionPattern(
 	// Compose handlers
 	const composedHandlers: CommissionPatternHandlers = {
 		onQuoteSubmit: async (amount, details) => {
-			updateStepData('quote', { amount, details });
+			updateStepData('quote', { amount, ...details });
 			await handlers.onQuoteSubmit?.(amount, details);
 			await completeStep();
 		},

@@ -51,6 +51,56 @@ describe('Admin.Insights Components', () => {
 		expect(screen.getByText(/Confidence:/i).textContent).toContain('91.0%');
 	});
 
+	it('renders AI detection and spam analysis', async () => {
+		const analysis = {
+			id: 'analysis-2',
+			objectId: 'status-3',
+			objectType: 'NOTE',
+			overallRisk: 0.85,
+			moderationAction: 'remove',
+			confidence: 0.95,
+			analyzedAt: new Date().toISOString(),
+			textAnalysis: {
+				sentiment: 'negative',
+				toxicityScore: 0.9,
+				containsPII: true,
+				dominantLanguage: 'en',
+			},
+			aiDetection: {
+				aiGeneratedProbability: 0.98,
+				generationModel: 'GPT-4',
+			},
+			spamAnalysis: {
+				spamScore: 0.88,
+				spamIndicators: [{ type: 'LINK_FARM' }, { type: 'KEYWORD_STUFFING' }],
+			},
+		};
+
+		const adapter = {
+			...baseAdapter(),
+			getAIAnalysis: vi.fn().mockResolvedValue(analysis),
+		} as unknown as LesserGraphQLAdapter;
+
+		render(InsightsAIAnalysisHarness, {
+			props: {
+				adapter,
+				objectId: 'status-3',
+			},
+		});
+
+		await screen.findByText('AI Analysis');
+
+		// AI Detection
+		expect(screen.getByText('AI Content Detection')).toBeTruthy();
+		expect(screen.getByText('98.0%')).toBeTruthy();
+		expect(screen.getByText('GPT-4')).toBeTruthy();
+
+		// Spam Analysis
+		expect(screen.getByText('Spam Detection')).toBeTruthy();
+		expect(screen.getByText('88.0%')).toBeTruthy();
+		expect(screen.getByText('LINK_FARM')).toBeTruthy();
+	});
+
 	it('requests analysis when autoRequest enabled and no data present', async () => {
 		const adapter = {
 			...baseAdapter(),

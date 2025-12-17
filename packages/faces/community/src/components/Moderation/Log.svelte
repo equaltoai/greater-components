@@ -46,4 +46,3 @@ Moderation.Log - Display moderation log entries
 		{/each}
 	</ul>
 {/if}
-

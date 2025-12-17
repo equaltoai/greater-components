@@ -53,6 +53,13 @@ describe('palette-utils', () => {
 			expect(css).toContain('default: #600');
 			expect(css).not.toContain('hover');
 		});
+
+		it('handles missing default (600) key', () => {
+			const scale: ColorScale = { '700': '#700' };
+			const css = generateSemanticActionCSS(scale);
+			expect(css).not.toContain('default');
+			expect(css).toContain('hover: #700');
+		});
 	});
 
 	describe('generatePaletteCSS', () => {

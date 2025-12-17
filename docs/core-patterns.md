@@ -764,7 +764,10 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```svelte
 <script>
-	import { LesserGraphQLAdapter, createTimelineStore } from '@equaltoai/greater-components/adapters';
+	import {
+		LesserGraphQLAdapter,
+		createTimelineStore,
+	} from '@equaltoai/greater-components/adapters';
 	import { Button } from '@equaltoai/greater-components/primitives';
 
 	let errorMessage = $state('');

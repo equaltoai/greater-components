@@ -432,6 +432,8 @@ export interface OfflineStoreConfig {
 	maxSavedArtworks?: number;
 	/** Auto-sync when online */
 	autoSync?: boolean;
+	/** Custom queue processor for testing/DI */
+	queueProcessor?: (item: SyncQueueItem) => Promise<void>;
 }
 
 /**

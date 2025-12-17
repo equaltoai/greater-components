@@ -15,14 +15,17 @@ import {
 	stateChangeAnnouncement,
 	validateAltText,
 	generateAltTextTemplate,
+	type FocusTrap,
 } from '../../src/utils/accessibility';
 
 describe('accessibility Utils', () => {
 	let container: HTMLElement;
+	let activeTrap: FocusTrap | undefined;
 
 	beforeEach(() => {
 		container = document.createElement('div');
 		document.body.appendChild(container);
+		activeTrap = undefined;
 
 		// Mock offsetParent for visibility checks - simplified
 		Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
@@ -34,6 +37,9 @@ describe('accessibility Utils', () => {
 	});
 
 	afterEach(() => {
+		if (activeTrap && activeTrap.isActive()) {
+			activeTrap.deactivate();
+		}
 		document.body.removeChild(container);
 		vi.restoreAllMocks();
 	});
@@ -91,6 +97,7 @@ describe('accessibility Utils', () => {
 			const firstFocusSpy = vi.spyOn(first, 'focus');
 
 			const trap = createFocusTrap({ container });
+			activeTrap = trap;
 
 			trap.activate();
 			expect(trap.isActive()).toBe(true);
@@ -100,21 +107,6 @@ describe('accessibility Utils', () => {
 
 			// Should focus first element by default
 			expect(firstFocusSpy).toHaveBeenCalled();
-
-			// Simulate Tab on last element
-			// last.focus(); // Focus doesn't work well in this env, but we can simulate the event
-
-			// const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
-			// Mock activeElement logic if needed by util:
-			// The util checks document.activeElement.
-			// Since focus() doesn't update it, we might need to assume the util logic will proceed based on event.
-
-			// If we can't test the tab wrapping logic easily because activeElement isn't updated,
-			// we can at least verify the trap is active.
-			// But let's try to stub activeElement for the event dispatch?
-			// document.activeElement is read-only.
-
-			// For now, satisfy with focus spy.
 		});
 
 		it('deactivates and restores focus', () => {
@@ -134,12 +126,124 @@ describe('accessibility Utils', () => {
 			// But we can verify `trap.deactivate()` calls `returnFocus` if provided.
 
 			const trap = createFocusTrap({ container, returnFocus: previous });
+			activeTrap = trap;
 			trap.activate();
 			trap.deactivate();
 
 			expect(trap.isActive()).toBe(false);
 			expect(focusSpy).toHaveBeenCalled();
 			document.body.removeChild(previous);
+		});
+
+		it('handles Tab key wrapping', () => {
+			container.innerHTML = `
+				<button id="first">First</button>
+				<button id="last">Last</button>
+			`;
+			const first = container.querySelector('#first') as HTMLElement;
+			const last = container.querySelector('#last') as HTMLElement;
+
+			const trap = createFocusTrap({ container });
+			activeTrap = trap;
+			trap.activate();
+
+			// Mock activeElement as last element
+			vi.spyOn(document, 'activeElement', 'get').mockReturnValue(last);
+
+			const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+			const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+			const firstFocusSpy = vi.spyOn(first, 'focus');
+
+			document.dispatchEvent(event);
+
+			expect(preventDefaultSpy).toHaveBeenCalled();
+			expect(firstFocusSpy).toHaveBeenCalled();
+		});
+
+		it('handles Shift+Tab key wrapping', () => {
+			container.innerHTML = `
+				<button id="first">First</button>
+				<button id="last">Last</button>
+			`;
+			const first = container.querySelector('#first') as HTMLElement;
+			const last = container.querySelector('#last') as HTMLElement;
+
+			const trap = createFocusTrap({ container });
+			activeTrap = trap;
+			trap.activate();
+
+			// Mock activeElement as first element
+			vi.spyOn(document, 'activeElement', 'get').mockReturnValue(first);
+
+			const event = new KeyboardEvent('keydown', {
+				key: 'Tab',
+				shiftKey: true,
+				bubbles: true,
+				cancelable: true,
+			});
+			const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+			const lastFocusSpy = vi.spyOn(last, 'focus');
+
+			document.dispatchEvent(event);
+
+			expect(preventDefaultSpy).toHaveBeenCalled();
+			expect(lastFocusSpy).toHaveBeenCalled();
+		});
+
+		it('handles empty container', () => {
+			container.innerHTML = '';
+			const trap = createFocusTrap({ container });
+			activeTrap = trap;
+			trap.activate();
+
+			const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+			const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+			document.dispatchEvent(event);
+
+			expect(preventDefaultSpy).toHaveBeenCalled();
+		});
+
+		it('handles focusin outside container', () => {
+			container.innerHTML = '<button>Inside</button>';
+			const outside = document.createElement('button');
+			document.body.appendChild(outside);
+
+			const inside = container.querySelector('button') as HTMLElement;
+			const insideFocusSpy = vi.spyOn(inside, 'focus');
+
+			const trap = createFocusTrap({ container });
+			activeTrap = trap;
+			trap.activate();
+
+			const event = new FocusEvent('focusin', { bubbles: true });
+			Object.defineProperty(event, 'target', { value: outside });
+
+			document.dispatchEvent(event);
+
+			expect(insideFocusSpy).toHaveBeenCalled();
+			document.body.removeChild(outside);
+		});
+
+		it('handles escape key deactivation', () => {
+			const onEscape = vi.fn();
+			const trap = createFocusTrap({ container, onEscape });
+			activeTrap = trap;
+			trap.activate();
+
+			const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
+			document.dispatchEvent(event);
+
+			expect(onEscape).toHaveBeenCalled();
+		});
+
+		it('ignores keydown when inactive', () => {
+			createFocusTrap({ container });
+			// Not activated
+
+			const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true });
+			const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+			document.dispatchEvent(event);
+			expect(preventDefaultSpy).not.toHaveBeenCalled();
 		});
 	});
 
@@ -153,11 +257,12 @@ describe('accessibility Utils', () => {
 			target.scrollIntoView = vi.fn();
 			const focusSpy = vi.spyOn(target, 'focus');
 
-			const link = createSkipLink({ targetId: 'main' });
+			const link = createSkipLink({ targetId: 'main', className: 'custom-skip' });
 			document.body.appendChild(link);
 
 			expect(link.tagName).toBe('A');
 			expect(link.getAttribute('href')).toBe('#main');
+			expect(link.className).toBe('custom-skip');
 
 			link.click();
 
@@ -196,53 +301,60 @@ describe('accessibility Utils', () => {
 			`;
 			const buttons = container.querySelectorAll('button');
 
-			// Spy on focus for target elements
-			// Spy on focus for target elements
 			if (!buttons[1] || !buttons[3]) throw new Error('Buttons missing');
 			const focusSpy1 = vi.spyOn(buttons[1], 'focus');
+			const focusSpy2 = vi.spyOn(buttons[2], 'focus');
 			const focusSpy3 = vi.spyOn(buttons[3], 'focus');
+			const focusSpy0 = vi.spyOn(buttons[0], 'focus');
 
+			const onSelect = vi.fn();
 			const cleanup = createGridNavigation({
 				container,
 				columns: 2,
 				itemSelector: 'button',
-				wrap: false,
+				wrap: true,
+				onSelect,
 			});
 
-			// We need to simulate activeElement being the first button for the logic to work
-			// Since we can't set it easily, we'll mock the document.activeElement getter for this test block?
-			// Or we can rely on findIndex logic.
-			// findIndex matches item === document.activeElement.
-			// If activeElement is body, index is -1.
-			// Logic: if (currentIndex === -1) return;
-
-			// So grid navigation DOES NOT WORK if focus is broken.
-			// We MUST fix focus or mock activeElement.
-
-			// Let's try to mock document.activeElement by using Object.defineProperty on document.
-			// const originalActiveElement = Object.getOwnPropertyDescriptor(Document.prototype, 'activeElement');
-
-			Object.defineProperty(document, 'activeElement', {
-				value: buttons[0],
-				writable: true,
-				configurable: true,
-			});
+			let activeElement = buttons[0];
+			vi.spyOn(document, 'activeElement', 'get').mockImplementation(() => activeElement);
 
 			// Right -> 2
 			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
 			expect(focusSpy1).toHaveBeenCalled();
 
-			// Update active element to simulate focus change
-			Object.defineProperty(document, 'activeElement', { value: buttons[1] });
+			// Update active element to 2 (index 1)
+			activeElement = buttons[1];
 
-			// Down -> 4
+			// Down -> 4 (index 3)
 			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
 			expect(focusSpy3).toHaveBeenCalled();
 
-			cleanup();
+			// Left wrapping -> 3 (index 2) (from 4/index 3 -> left -> 3/index 2)
+			activeElement = buttons[3];
+			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+			expect(focusSpy2).toHaveBeenCalled();
 
-			// Restore? It's JSDOM, maybe hard to restore perfectly but configurable: true helps.
-			// Ideally revert to original getter.
+			// Up wrapping (from 3/index 2 -> up -> 1/index 0)
+			activeElement = buttons[2];
+			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }));
+			expect(focusSpy0).toHaveBeenCalled();
+
+			// Home -> 0
+			vi.clearAllMocks(); // Clear mocks to verify Home specifically
+			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'Home', bubbles: true }));
+			expect(focusSpy0).toHaveBeenCalled();
+
+			// End -> 3
+			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
+			expect(focusSpy3).toHaveBeenCalledTimes(2);
+
+			// Enter -> Select
+			activeElement = buttons[0]; // Reset to 0
+			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+			expect(onSelect).toHaveBeenCalled();
+
+			cleanup();
 		});
 	});
 
@@ -266,11 +378,7 @@ describe('accessibility Utils', () => {
 			expect(buttons[1].getAttribute('tabindex')).toBe('-1');
 
 			// Mock activeElement
-			Object.defineProperty(document, 'activeElement', {
-				value: buttons[0],
-				writable: true,
-				configurable: true,
-			});
+			vi.spyOn(document, 'activeElement', 'get').mockReturnValue(buttons[0]);
 
 			container.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
 
@@ -293,6 +401,11 @@ describe('accessibility Utils', () => {
 			await new Promise((resolve) => requestAnimationFrame(resolve));
 
 			expect(region?.textContent).toBe('Hello');
+
+			// Reuse existing region
+			announceToScreenReader('World');
+			await new Promise((resolve) => requestAnimationFrame(resolve));
+			expect(region?.textContent).toBe('World');
 		});
 	});
 
@@ -317,6 +430,27 @@ describe('accessibility Utils', () => {
 		it('allows empty alt text for decorative images', () => {
 			const result = validateAltText('', { isDecorative: true });
 			expect(result.valid).toBe(true);
+		});
+
+		it('warns on short alt text', () => {
+			const result = validateAltText('Cat');
+			expect(result.warnings.some((w) => w.includes('too brief'))).toBe(true);
+		});
+
+		it('warns on long alt text', () => {
+			const longText = 'a'.repeat(126);
+			const result = validateAltText(longText);
+			expect(result.warnings.some((w) => w.includes('long'))).toBe(true);
+		});
+
+		it('suggests long description for complex images', () => {
+			const result = validateAltText('Chart', { isComplex: true });
+			expect(result.suggestions.some((s) => s.includes('long description'))).toBe(true);
+		});
+
+		it('flags placeholder text', () => {
+			const result = validateAltText('placeholder');
+			expect(result.errors.some((e) => e.includes('placeholder'))).toBe(true);
 		});
 	});
 

@@ -69,6 +69,41 @@ describe('federation Utils', () => {
 			expect(note['artist:license']).toBe('CC-BY');
 			expect(note['artist:noAI']).toBe(true);
 		});
+
+		it('escapes HTML in content', () => {
+			const specialArtwork = {
+				...mockArtwork,
+				title: 'Me & You <3',
+				description: 'This is "quoted" text',
+				metadata: { ...mockArtwork.metadata, style: ['Pop Art & More'] },
+			};
+
+			// @ts-ignore: Testing special characters handling
+			const note = toActivityPubNote(specialArtwork, 'https://instance.com');
+
+			expect(note.content).toContain('Me &amp; You &lt;3');
+			expect(note.content).toContain('&quot;quoted&quot;');
+			expect(note.content).toContain('#popart&amp;more');
+		});
+
+		it('handles missing metadata in content generation', () => {
+			const minimalArtwork = {
+				...mockArtwork,
+				metadata: {
+					...mockArtwork.metadata,
+					medium: null,
+					year: null,
+					dimensions: null,
+					style: [],
+				},
+			};
+
+			// @ts-ignore: Testing missing metadata handling
+			const note = toActivityPubNote(minimalArtwork, 'https://instance.com');
+
+			// Should not contain the metadata paragraph
+			expect(note.content).not.toContain('<em>');
+		});
 	});
 
 	describe('fromActivityPubNote', () => {
@@ -130,6 +165,19 @@ describe('federation Utils', () => {
 			const result = fromActivityPubNote(null);
 			expect(result).toBeNull();
 		});
+
+		it('catches parsing errors', () => {
+			const note = {
+				id: '1',
+				type: 'Note',
+				// Missing content which causes parseNoteContent to throw if it expects string
+				content: null,
+			};
+
+			// @ts-ignore: Testing parsing error handling
+			const result = fromActivityPubNote(note);
+			expect(result).toBeNull();
+		});
 	});
 
 	describe('URI Utilities', () => {
@@ -150,6 +198,8 @@ describe('federation Utils', () => {
 		it('returns null for invalid URI', () => {
 			expect(parseArtworkUri('https://inst.com/other/path')).toBeNull();
 			expect(parseArtworkUri('invalid-url')).toBeNull();
+			expect(parseArtworkUri('https://inst.com/users/bob/posts/123')).toBeNull();
+			expect(parseArtworkUri('https://inst.com/users//artworks/123')).toBeNull();
 		});
 	});
 

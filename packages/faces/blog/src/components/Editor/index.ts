@@ -30,4 +30,3 @@ import Toolbar from './Toolbar.svelte';
 
 Editor.Root = Root;
 Editor.Toolbar = Toolbar;
-

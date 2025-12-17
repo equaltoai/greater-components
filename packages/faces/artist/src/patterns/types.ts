@@ -106,7 +106,7 @@ export interface CommissionPatternConfig {
  */
 export interface CommissionPatternHandlers {
 	/** Called when quote is submitted */
-	onQuoteSubmit?: (amount: number, details: string) => Promise<void>;
+	onQuoteSubmit?: (amount: number, details: Record<string, unknown>) => Promise<void>;
 	/** Called when agreement is accepted */
 	onAgreementAccept?: () => Promise<void>;
 	/** Called when payment is processed */

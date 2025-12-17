@@ -55,6 +55,8 @@ Features:
 			await handlers.onSave?.({});
 			isEditing = false;
 			ctx.isEditing = false;
+		} catch (error) {
+			console.error('Failed to save profile:', error);
 		} finally {
 			isSaving = false;
 		}

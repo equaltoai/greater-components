@@ -13,17 +13,8 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
 import { logger } from '../utils/logger.js';
-import {
-	getCacheStatus,
-	getCachedRefs,
-	type CacheStatus,
-} from '../utils/offline.js';
-import {
-	clearCache,
-	clearAllCache,
-	getCacheDir,
-	fetchFromGitTag,
-} from '../utils/git-fetch.js';
+import { getCacheStatus, getCachedRefs, type CacheStatus } from '../utils/offline.js';
+import { clearCache, clearAllCache, getCacheDir, fetchFromGitTag } from '../utils/git-fetch.js';
 import {
 	fetchRegistryIndex,
 	resolveRef,
@@ -35,8 +26,6 @@ import {
 	getComponentChecksums,
 } from '../utils/registry-index.js';
 import { FALLBACK_REF } from '../utils/config.js';
-
-
 
 /**
  * List cached refs and their status
@@ -75,9 +64,7 @@ async function listAction(): Promise<void> {
 				: chalk.yellow('no registry');
 			const fileCount = status.cachedFiles.length;
 
-			logger.info(
-				`  ${icon} ${chalk.cyan(status.ref)} - ${fileCount} file(s), ${registryStatus}`
-			);
+			logger.info(`  ${icon} ${chalk.cyan(status.ref)} - ${fileCount} file(s), ${registryStatus}`);
 		}
 
 		logger.info('');
@@ -135,7 +122,10 @@ interface PrefetchItem {
 async function resolveItems(
 	ref: string,
 	items: string[]
-): Promise<{ items: PrefetchItem[]; registryIndex: Awaited<ReturnType<typeof fetchRegistryIndex>> }> {
+): Promise<{
+	items: PrefetchItem[];
+	registryIndex: Awaited<ReturnType<typeof fetchRegistryIndex>>;
+}> {
 	const registryIndex = await fetchRegistryIndex(ref);
 	const resolvedItems: PrefetchItem[] = [];
 
@@ -292,9 +282,9 @@ async function prefetchAction(
 		// Show summary
 		logger.info('');
 		logger.info(chalk.bold('Summary:'));
-		const faceCount = resolvedItems.filter(i => i.type === 'face').length;
-		const sharedCount = resolvedItems.filter(i => i.type === 'shared').length;
-		const componentCount = resolvedItems.filter(i => i.type === 'component').length;
+		const faceCount = resolvedItems.filter((i) => i.type === 'face').length;
+		const sharedCount = resolvedItems.filter((i) => i.type === 'shared').length;
+		const componentCount = resolvedItems.filter((i) => i.type === 'component').length;
 
 		if (faceCount > 0) logger.info(`  Faces: ${faceCount}`);
 		if (sharedCount > 0) logger.info(`  Shared modules: ${sharedCount}`);
@@ -316,11 +306,7 @@ export const cacheCommand = new Command()
 	.description('Manage the local cache for offline use');
 
 // Subcommand: ls
-cacheCommand
-	.command('ls')
-	.alias('list')
-	.description('List all cached refs')
-	.action(listAction);
+cacheCommand.command('ls').alias('list').description('List all cached refs').action(listAction);
 
 // Subcommand: clear
 cacheCommand

@@ -65,6 +65,43 @@ describe('Subscriptions', () => {
 			expect(callback).toHaveBeenCalledWith(eventData.galleryUpdated);
 		});
 
+		it('should handle missing data gracefully', () => {
+			const callback = vi.fn();
+			const mockObservableSubscribe = vi.fn((observer) => {
+				observer.next({ data: null }); // Missing data
+				observer.next({}); // Missing payload
+				return { unsubscribe: vi.fn() };
+			});
+
+			mockSubscribe.mockReturnValue({
+				subscribe: mockObservableSubscribe,
+			});
+
+			subscribeToGallery(mockAdapter, 'gallery-123', callback);
+
+			expect(callback).not.toHaveBeenCalled();
+		});
+
+		it('should handle subscription errors', () => {
+			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const callback = vi.fn();
+			const error = new Error('Subscription failed');
+
+			const mockObservableSubscribe = vi.fn((observer) => {
+				if (observer.error) observer.error(error);
+				return { unsubscribe: vi.fn() };
+			});
+
+			mockSubscribe.mockReturnValue({
+				subscribe: mockObservableSubscribe,
+			});
+
+			subscribeToGallery(mockAdapter, 'gallery-123', callback);
+
+			expect(consoleSpy).toHaveBeenCalledWith('Gallery subscription error:', error);
+			consoleSpy.mockRestore();
+		});
+
 		it('should return unsubscribe function', () => {
 			const callback = vi.fn();
 			const mockUnsubscribe = vi.fn();
@@ -94,6 +131,35 @@ describe('Subscriptions', () => {
 				})
 			);
 		});
+
+		it('should invoke callback on event', () => {
+			const callback = vi.fn();
+			const eventData = {
+				commissionUpdated: { type: 'status_changed', commissionId: '1' },
+			};
+			const mockObservableSubscribe = vi.fn((observer) => {
+				observer.next({ data: eventData });
+				return { unsubscribe: vi.fn() };
+			});
+			mockSubscribe.mockReturnValue({ subscribe: mockObservableSubscribe });
+
+			subscribeToCommission(mockAdapter, 'comm-1', callback);
+			expect(callback).toHaveBeenCalledWith(eventData.commissionUpdated);
+		});
+
+		it('should handle errors', () => {
+			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const callback = vi.fn();
+			const mockObservableSubscribe = vi.fn((observer) => {
+				if (observer.error) observer.error('Error');
+				return { unsubscribe: vi.fn() };
+			});
+			mockSubscribe.mockReturnValue({ subscribe: mockObservableSubscribe });
+
+			subscribeToCommission(mockAdapter, 'comm-1', callback);
+			expect(consoleSpy).toHaveBeenCalledWith('Commission subscription error:', 'Error');
+			consoleSpy.mockRestore();
+		});
 	});
 
 	describe('subscribeToFederation', () => {
@@ -107,6 +173,35 @@ describe('Subscriptions', () => {
 					query: expect.stringContaining('subscription FederationEvent'),
 				})
 			);
+		});
+
+		it('should invoke callback on event', () => {
+			const callback = vi.fn();
+			const eventData = {
+				federationEvent: { type: 'remote_artwork_received' },
+			};
+			const mockObservableSubscribe = vi.fn((observer) => {
+				observer.next({ data: eventData });
+				return { unsubscribe: vi.fn() };
+			});
+			mockSubscribe.mockReturnValue({ subscribe: mockObservableSubscribe });
+
+			subscribeToFederation(mockAdapter, callback);
+			expect(callback).toHaveBeenCalledWith(eventData.federationEvent);
+		});
+
+		it('should handle errors', () => {
+			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+			const callback = vi.fn();
+			const mockObservableSubscribe = vi.fn((observer) => {
+				if (observer.error) observer.error('Error');
+				return { unsubscribe: vi.fn() };
+			});
+			mockSubscribe.mockReturnValue({ subscribe: mockObservableSubscribe });
+
+			subscribeToFederation(mockAdapter, callback);
+			expect(consoleSpy).toHaveBeenCalledWith('Federation subscription error:', 'Error');
+			consoleSpy.mockRestore();
 		});
 	});
 
@@ -124,6 +219,28 @@ describe('Subscriptions', () => {
 				})
 			);
 		});
+
+		it('should invoke callback and handle errors', () => {
+			const callback = vi.fn();
+			const eventData = {
+				artworkInteraction: { type: 'artwork_liked' },
+			};
+			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+			// Test both success and error in one go to mock setup once if possible, or separate
+			const mockObservableSubscribe = vi.fn((observer) => {
+				observer.next({ data: eventData });
+				if (observer.error) observer.error('Error');
+				return { unsubscribe: vi.fn() };
+			});
+			mockSubscribe.mockReturnValue({ subscribe: mockObservableSubscribe });
+
+			subscribeToArtworkInteractions(mockAdapter, 'art-1', callback);
+
+			expect(callback).toHaveBeenCalledWith(eventData.artworkInteraction);
+			expect(consoleSpy).toHaveBeenCalledWith('Artwork interaction subscription error:', 'Error');
+			consoleSpy.mockRestore();
+		});
 	});
 
 	describe('subscribeToMyCommissions', () => {
@@ -137,6 +254,27 @@ describe('Subscriptions', () => {
 					query: expect.stringContaining('subscription MyCommissionUpdated'),
 				})
 			);
+		});
+
+		it('should invoke callback and handle errors', () => {
+			const callback = vi.fn();
+			const eventData = {
+				myCommissionUpdated: { type: 'status_changed' },
+			};
+			const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+			const mockObservableSubscribe = vi.fn((observer) => {
+				observer.next({ data: eventData });
+				if (observer.error) observer.error('Error');
+				return { unsubscribe: vi.fn() };
+			});
+			mockSubscribe.mockReturnValue({ subscribe: mockObservableSubscribe });
+
+			subscribeToMyCommissions(mockAdapter, callback);
+
+			expect(callback).toHaveBeenCalledWith(eventData.myCommissionUpdated);
+			expect(consoleSpy).toHaveBeenCalledWith('My commissions subscription error:', 'Error');
+			consoleSpy.mockRestore();
 		});
 	});
 
@@ -235,6 +373,21 @@ describe('Subscriptions', () => {
 
 			expect(store.events).toHaveLength(1);
 			expect(store.events[0]).toEqual(eventData.commissionUpdated);
+		});
+
+		it('should clear events and destroy', () => {
+			const mockUnsubscribe = vi.fn();
+			mockSubscribe.mockReturnValue({
+				subscribe: () => ({ unsubscribe: mockUnsubscribe }),
+			});
+
+			const store = createCommissionStore(mockAdapter, 'comm-1');
+			store.clearEvents();
+			expect(store.events).toEqual([]);
+
+			store.destroy();
+			expect(mockUnsubscribe).toHaveBeenCalled();
+			expect(store.connected).toBe(false);
 		});
 	});
 });

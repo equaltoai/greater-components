@@ -17,4 +17,3 @@ export const Voting = {
 // Dynamic imports for tree-shaking
 import Root from './Root.svelte';
 Voting.Root = Root;
-

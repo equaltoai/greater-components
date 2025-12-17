@@ -43,6 +43,12 @@ export function createArticleContext(
 	config: ArticleConfig = {},
 	handlers: ArticleHandlers = {}
 ): ArticleContext {
+	const state = $state({
+		headings: [] as HeadingData[],
+		activeHeadingId: null as string | null,
+		scrollProgress: 0,
+	});
+
 	const context: ArticleContext = {
 		get article() {
 			return article;
@@ -56,9 +62,24 @@ export function createArticleContext(
 		get handlers() {
 			return handlers;
 		},
-		headings: [],
-		activeHeadingId: null,
-		scrollProgress: 0,
+		get headings() {
+			return state.headings;
+		},
+		set headings(v) {
+			state.headings = v;
+		},
+		get activeHeadingId() {
+			return state.activeHeadingId;
+		},
+		set activeHeadingId(v) {
+			state.activeHeadingId = v;
+		},
+		get scrollProgress() {
+			return state.scrollProgress;
+		},
+		set scrollProgress(v) {
+			state.scrollProgress = v;
+		},
 	};
 
 	setContext(ARTICLE_CONTEXT_KEY, context);

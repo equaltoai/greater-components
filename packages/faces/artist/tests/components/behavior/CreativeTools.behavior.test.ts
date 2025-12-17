@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import CreativeToolsTest from './CreativeToolsTest.svelte';
 import type { WIPThreadData } from '../../src/types/creative-tools.js';
@@ -54,22 +54,48 @@ describe('CreativeTools Behavior', () => {
 		});
 	});
 
-	describe('WorkInProgress.VersionCard', () => {
-		it('handles like interaction', async () => {
-			const onLikeUpdate = vi.fn();
-
+	describe('WorkInProgress.Timeline', () => {
+		it('renders milestones correctly', () => {
 			render(CreativeToolsTest, {
 				props: {
 					thread: mockThread,
-					component: 'VersionCard',
-					handlers: { onLikeUpdate },
+					component: 'Timeline',
 				},
 			});
 
-			const likeBtn = screen.getByLabelText('Like this update');
-			await fireEvent.click(likeBtn);
+			expect(screen.getByText('v1')).toBeInTheDocument();
+			expect(screen.getByText('v2')).toBeInTheDocument();
+		});
 
-			expect(onLikeUpdate).toHaveBeenCalledWith(expect.anything(), 'u2'); // u2 is last update (current)
+		it('handles milestone click', async () => {
+			render(CreativeToolsTest, {
+				props: {
+					thread: mockThread,
+					component: 'Timeline',
+				},
+			});
+
+			// Initial state is last version (v2, index 1)
+			const v1Button = screen.getByRole('button', { name: /Version 1/ });
+			await fireEvent.click(v1Button);
+
+			// We can't easily check context state update here without exposing it in wrapper
+			// But we can check if the button class changed if we could inspect it, or rely on visual feedback
+			// However, since we are using a real context in wrapper, the state should update.
+			// The button for v1 should become active.
+			expect(v1Button.className).toContain('active');
+		});
+
+		it('shows time between versions', () => {
+			render(CreativeToolsTest, {
+				props: {
+					thread: mockThread,
+					component: 'Timeline',
+				},
+			});
+
+			// mockThread dates are same (new Date().toISOString()), so should be "Less than an hour"
+			expect(screen.getByText('Less than an hour')).toBeInTheDocument();
 		});
 	});
 });

@@ -1,0 +1,6 @@
+
+> @equaltoai/greater-components-blog@1.0.0 test /home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/blog
+> vitest run --coverage --reporter=text
+
+4:12:40 PM [vite-plugin-svelte] no Svelte config found at /home/aron/ai-workspace/codebases/penny-advanced-interfaces/greater-components/packages/faces/blog - using default configuration.
+ ELIFECYCLE  Test failed. See above for more details.

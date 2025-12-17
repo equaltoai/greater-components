@@ -1479,8 +1479,8 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					const items = screen.getAllByRole('button', { name: /Notification/ });
 					if (items[0]) await fireEvent.click(items[0]);
 
-					// Mark as read (trigger handleMarkAsRead)
-					const markReadBtns = screen.getAllByTitle('Mark as read (M)');
+					// Mark as read (trigger handleMarkAsRead) - use queryAllByTitle since it may not be present
+					const markReadBtns = screen.queryAllByTitle('Mark as read (M)');
 					if (markReadBtns[0]) await fireEvent.click(markReadBtns[0]);
 
 					// Dismiss (trigger handleDismiss)

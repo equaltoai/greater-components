@@ -224,12 +224,12 @@ getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-
 
 **Quick Diagnosis Table:**
 
-| Symptom                             | Missing Import         | Solution                                       |
-| ----------------------------------- | ---------------------- | ---------------------------------------------- |
-| Components render but unstyled      | `primitives/style.css` | Add component styles import                    |
-| CSS variables show as invalid       | `tokens/theme.css`     | Add tokens import FIRST                        |
-| Both unstyled AND invalid variables | Both files             | Add both imports in correct order              |
-| Social face components unstyled     | Face CSS               | Add `faces/social/style.css` after primitives  |
+| Symptom                             | Missing Import         | Solution                                      |
+| ----------------------------------- | ---------------------- | --------------------------------------------- |
+| Components render but unstyled      | `primitives/style.css` | Add component styles import                   |
+| CSS variables show as invalid       | `tokens/theme.css`     | Add tokens import FIRST                       |
+| Both unstyled AND invalid variables | Both files             | Add both imports in correct order             |
+| Social face components unstyled     | Face CSS               | Add `faces/social/style.css` after primitives |
 
 See [CSS Architecture Guide](./css-architecture.md) for complete documentation.
 
@@ -908,7 +908,10 @@ async function withAuth<T>(fn: () => Promise<T>): Promise<T> {
 	try {
 		return await fn();
 	} catch (error) {
-		if (error instanceof Error && (error.message.includes('401') || error.message.includes('403'))) {
+		if (
+			error instanceof Error &&
+			(error.message.includes('401') || error.message.includes('403'))
+		) {
 			token = await refreshToken();
 			adapter.updateToken(token);
 			return await fn();

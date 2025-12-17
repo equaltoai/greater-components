@@ -64,4 +64,75 @@ describe('ArtistProfile Behavior', () => {
 			expect(screen.getByText('Edit Profile')).toBeInTheDocument();
 		});
 	});
+
+	describe('Badges', () => {
+		const badges = [
+			{ type: 'verified', tooltip: 'Verified Artist' },
+			{ type: 'educator', tooltip: 'Art Educator' },
+			{ type: 'institution', tooltip: 'Institutional Account' },
+			{ type: 'mentor', tooltip: 'Community Mentor' },
+			{ type: 'curator', tooltip: 'Gallery Curator' },
+		];
+
+		const artistWithBadges = {
+			...mockArtist,
+			badges: badges,
+		};
+
+		it('renders visible badges', () => {
+			render(TestArtistProfileWrapper, {
+				props: {
+					artist: artistWithBadges,
+					Component: ArtistProfile.Badges,
+					props: { maxVisible: 4 },
+				},
+			});
+
+			// Check first 4 badges are rendered
+			expect(screen.getByLabelText('Verified: Verified Artist')).toBeInTheDocument();
+			expect(screen.getByLabelText('Educator: Art Educator')).toBeInTheDocument();
+			expect(screen.getByLabelText('Institution: Institutional Account')).toBeInTheDocument();
+			expect(screen.getByLabelText('Mentor: Community Mentor')).toBeInTheDocument();
+
+			// Check overflow button (should show +1 because total is 5)
+			expect(screen.getByText('+1')).toBeInTheDocument();
+		});
+
+		it('toggles overflow menu', async () => {
+			render(TestArtistProfileWrapper, {
+				props: {
+					artist: artistWithBadges,
+					Component: ArtistProfile.Badges,
+					props: { maxVisible: 3 },
+				},
+			});
+
+			const overflowBtn = screen.getByText('+2');
+
+			// Initial state: menu not visible (4th badge 'Mentor' should not be visible)
+			expect(screen.queryByLabelText('Mentor: Community Mentor')).not.toBeInTheDocument();
+
+			// Open menu
+			await fireEvent.click(overflowBtn);
+			expect(screen.getByLabelText('Mentor: Community Mentor')).toBeInTheDocument();
+			expect(overflowBtn).toHaveAttribute('aria-expanded', 'true');
+
+			// Close menu
+			await fireEvent.click(overflowBtn);
+			expect(screen.queryByLabelText('Mentor: Community Mentor')).not.toBeInTheDocument();
+			expect(overflowBtn).toHaveAttribute('aria-expanded', 'false');
+		});
+
+		it('does not show overflow button if no overflow', () => {
+			render(TestArtistProfileWrapper, {
+				props: {
+					artist: artistWithBadges,
+					Component: ArtistProfile.Badges,
+					props: { maxVisible: 10 },
+				},
+			});
+
+			expect(screen.queryByText(/\+/)).not.toBeInTheDocument();
+		});
+	});
 });

@@ -67,6 +67,11 @@ Features:
 		 * Custom CSS class
 		 */
 		class?: string;
+
+		/**
+		 * Contributors (optional override for testing)
+		 */
+		contributors?: ArtistData[];
 	}
 
 	let {
@@ -78,6 +83,7 @@ Features:
 		onSave,
 		onClick,
 		class: className = '',
+		contributors: propContributors = [],
 	}: Props = $props();
 
 	// Preview artworks
@@ -86,6 +92,7 @@ Features:
 	// Contributors for collaborative collections
 	const contributors = $derived(() => {
 		if (!collaborative) return [];
+		if (propContributors.length > 0) return propContributors;
 		// Mock contributors - in real app would come from collection data
 		return [] as ArtistData[];
 	});
@@ -102,6 +109,8 @@ Features:
 		try {
 			await onSave?.(collection);
 			saved = !saved;
+		} catch (error) {
+			console.error('Failed to save collection:', error);
 		} finally {
 			saveLoading = false;
 		}

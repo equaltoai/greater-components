@@ -5,7 +5,12 @@
 ## Imports
 
 ```ts
-import { WorkInProgress, CritiqueMode, ReferenceBoard, CommissionWorkflow } from '@equaltoai/greater-components/faces/artist';
+import {
+	WorkInProgress,
+	CritiqueMode,
+	ReferenceBoard,
+	CommissionWorkflow,
+} from '@equaltoai/greater-components/faces/artist';
 ```
 
 ## `WorkInProgress`
@@ -47,18 +52,18 @@ Work-in-progress documentation as a compound component (thread header, updates l
 
 ### `WorkInProgress.Root` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `thread` | `WIPThreadData` | - |
-| `handlers` | `WIPHandlers` | `{}` |
-| `isOwner` | `boolean` | `false` |
-| `showTimeline` | `boolean` | `true` |
-| `showComments` | `boolean` | `true` |
-| `enableComparison` | `boolean` | `true` |
-| `showProgress` | `boolean` | `true` |
-| `allowUpdates` | `boolean` | `false` |
-| `class` | `string` | `''` |
-| `children` | `Snippet` | - |
+| Prop               | Type            | Default |
+| ------------------ | --------------- | ------- |
+| `thread`           | `WIPThreadData` | -       |
+| `handlers`         | `WIPHandlers`   | `{}`    |
+| `isOwner`          | `boolean`       | `false` |
+| `showTimeline`     | `boolean`       | `true`  |
+| `showComments`     | `boolean`       | `true`  |
+| `enableComparison` | `boolean`       | `true`  |
+| `showProgress`     | `boolean`       | `true`  |
+| `allowUpdates`     | `boolean`       | `false` |
+| `class`            | `string`        | `''`    |
+| `children`         | `Snippet`       | -       |
 
 ## `CritiqueMode`
 
@@ -73,17 +78,17 @@ Structured critique UI for a single artwork, with an interactive image view and 
 
 ### `CritiqueMode.Root` Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `artwork` | `ArtworkData` | - |
-| `handlers` | `CritiqueHandlers` | `{}` |
-| `initialAnnotations` | `CritiqueAnnotation[]` | `[]` |
-| `enableAnnotations` | `boolean` | `true` |
-| `enableDrawing` | `boolean` | `true` |
-| `showCategories` | `boolean` | `true` |
-| `categories` | `string[] \| undefined` | - |
-| `class` | `string` | `''` |
-| `children` | `Snippet` | - |
+| Prop                 | Type                    | Default |
+| -------------------- | ----------------------- | ------- |
+| `artwork`            | `ArtworkData`           | -       |
+| `handlers`           | `CritiqueHandlers`      | `{}`    |
+| `initialAnnotations` | `CritiqueAnnotation[]`  | `[]`    |
+| `enableAnnotations`  | `boolean`               | `true`  |
+| `enableDrawing`      | `boolean`               | `true`  |
+| `showCategories`     | `boolean`               | `true`  |
+| `categories`         | `string[] \| undefined` | -       |
+| `class`              | `string`                | `''`    |
+| `children`           | `Snippet`               | -       |
 
 ## `ReferenceBoard`
 
@@ -114,14 +119,14 @@ Standalone mood board / reference collection component.
 <ReferenceBoard {board} editable={true} layout="freeform" />
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `board` | `ReferenceBoardData` | - |
-| `editable` | `boolean` | `false` |
-| `showSources` | `boolean` | `true` |
-| `handlers` | `ReferenceBoardHandlers` | `{}` |
-| `layout` | `'grid' \| 'freeform'` | `'freeform'` |
-| `class` | `string` | `''` |
+| Prop          | Type                     | Default      |
+| ------------- | ------------------------ | ------------ |
+| `board`       | `ReferenceBoardData`     | -            |
+| `editable`    | `boolean`                | `false`      |
+| `showSources` | `boolean`                | `true`       |
+| `handlers`    | `ReferenceBoardHandlers` | `{}`         |
+| `layout`      | `'grid' \| 'freeform'`   | `'freeform'` |
+| `class`       | `string`                 | `''`         |
 
 ## `CommissionWorkflow`
 
@@ -150,10 +155,10 @@ Commission workflow scaffolding (step nav + context). You provide the step conte
 </CommissionWorkflow.Root>
 ```
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `commission` | `CommissionData` | - |
-| `role` | `'artist' \| 'client'` | - |
-| `handlers` | `CommissionHandlers` | `{}` |
-| `class` | `string` | `''` |
-| `children` | `Snippet` | - |
+| Prop         | Type                   | Default |
+| ------------ | ---------------------- | ------- |
+| `commission` | `CommissionData`       | -       |
+| `role`       | `'artist' \| 'client'` | -       |
+| `handlers`   | `CommissionHandlers`   | `{}`    |
+| `class`      | `string`               | `''`    |
+| `children`   | `Snippet`              | -       |

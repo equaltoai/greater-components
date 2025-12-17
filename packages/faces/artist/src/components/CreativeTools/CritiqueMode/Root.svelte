@@ -6,9 +6,13 @@ CritiqueMode.Root - Container for structured critique interface
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createCritiqueContext, type CritiqueConfig } from './context.js';
+	import { createCritiqueContext } from './context.svelte.js';
 	import type { ArtworkData } from '../../Artwork/context.js';
-	import type { CritiqueAnnotation, CritiqueHandlers } from '../../../types/creative-tools.js';
+	import type {
+		CritiqueAnnotation,
+		CritiqueHandlers,
+		CritiqueConfig,
+	} from '../../../types/creative-tools.js';
 
 	interface Props {
 		artwork: ArtworkData;

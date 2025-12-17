@@ -11,15 +11,12 @@ Displays active cost alerts and budget warnings from admin streaming store.
 
 	interface Props {
 		class?: string;
+		alerts?: Array<Record<string, unknown>>;
 	}
 
-	let { class: className = '' }: Props = $props();
+	let { class: className = '', alerts = [] }: Props = $props();
 
 	getCostContext();
-
-	// Note: In a real implementation, this would connect to adminStreamingStore
-	// For now, providing structure
-	const alerts = $state<Array<Record<string, unknown>>>([]);
 </script>
 
 <div class={`cost-alerts ${className}`}>

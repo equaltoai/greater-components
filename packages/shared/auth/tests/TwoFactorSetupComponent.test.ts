@@ -4,6 +4,17 @@ import TwoFactorSetup from '../src/TwoFactorSetup.svelte';
 import TestWrapper from './fixtures/TestWrapper.svelte';
 import type { AuthHandlers } from '../src/context.js';
 
+// Mocks
+const writeTextMock = vi.fn();
+Object.assign(navigator, {
+	clipboard: {
+		writeText: writeTextMock,
+	},
+});
+
+global.URL.createObjectURL = vi.fn(() => 'blob:url');
+global.URL.revokeObjectURL = vi.fn();
+
 describe('TwoFactorSetup Component', () => {
 	const defaultHandlers: AuthHandlers = {
 		onTwoFactorSetup: vi.fn(),
@@ -25,6 +36,8 @@ describe('TwoFactorSetup Component', () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		writeTextMock.mockReset();
+		writeTextMock.mockResolvedValue(undefined);
 	});
 
 	it('renders intro step correctly', () => {
@@ -162,5 +175,82 @@ describe('TwoFactorSetup Component', () => {
 		await fireEvent.click(screen.getByRole('button', { name: 'Done' }));
 
 		expect(onComplete).toHaveBeenCalledWith(['CODE1']);
+	});
+
+	it('copies secret to clipboard', async () => {
+		const onTwoFactorSetup = vi.fn().mockResolvedValue({ secret: 'SECRET123' });
+		setup({}, { onTwoFactorSetup });
+
+		await fireEvent.click(screen.getByRole('button', { name: 'Enable Two-Factor Authentication' }));
+		await screen.findByText('Step 1 of 2: Scan QR code');
+
+		const copyBtn = screen.getByLabelText('Copy secret code');
+		await fireEvent.click(copyBtn);
+
+		expect(writeTextMock).toHaveBeenCalledWith('SECRET123');
+	});
+
+	it('copies backup codes to clipboard', async () => {
+		const onTwoFactorSetup = vi
+			.fn()
+			.mockResolvedValueOnce({ secret: 'SECRET123' })
+			.mockResolvedValueOnce({ codes: ['CODE1', 'CODE2'] });
+		const onTwoFactorVerify = vi.fn().mockResolvedValue(undefined);
+
+		setup({}, { onTwoFactorSetup, onTwoFactorVerify });
+
+		await fireEvent.click(screen.getByRole('button', { name: 'Enable Two-Factor Authentication' }));
+		await screen.findByText('Step 1 of 2: Scan QR code');
+
+		await fireEvent.input(screen.getByLabelText('Verification Code'), {
+			target: { value: '123456' },
+		});
+		await fireEvent.click(screen.getByRole('button', { name: 'Verify and Continue' }));
+		await screen.findByText('Step 2 of 2: Save your backup codes');
+
+		const copyBtn = screen.getByRole('button', { name: /copy codes/i });
+		await fireEvent.click(copyBtn);
+
+		expect(writeTextMock).toHaveBeenCalledWith('CODE1\nCODE2');
+	});
+
+	it('downloads backup codes', async () => {
+		const onTwoFactorSetup = vi
+			.fn()
+			.mockResolvedValueOnce({ secret: 'SECRET123' })
+			.mockResolvedValueOnce({ codes: ['CODE1', 'CODE2'] });
+		const onTwoFactorVerify = vi.fn().mockResolvedValue(undefined);
+
+		setup({}, { onTwoFactorSetup, onTwoFactorVerify });
+
+		await fireEvent.click(screen.getByRole('button', { name: 'Enable Two-Factor Authentication' }));
+		await screen.findByText('Step 1 of 2: Scan QR code');
+
+		await fireEvent.input(screen.getByLabelText('Verification Code'), {
+			target: { value: '123456' },
+		});
+		await fireEvent.click(screen.getByRole('button', { name: 'Verify and Continue' }));
+		await screen.findByText('Step 2 of 2: Save your backup codes');
+
+		const downloadBtn = screen.getByRole('button', { name: /download codes/i });
+		await fireEvent.click(downloadBtn);
+
+		expect(global.URL.createObjectURL).toHaveBeenCalled();
+	});
+
+	it('handles clipboard error', async () => {
+		const onTwoFactorSetup = vi.fn().mockResolvedValue({ secret: 'SECRET123' });
+		setup({}, { onTwoFactorSetup });
+		writeTextMock.mockRejectedValueOnce(new Error('Clipboard failed'));
+		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+		await fireEvent.click(screen.getByRole('button', { name: 'Enable Two-Factor Authentication' }));
+		await screen.findByText('Step 1 of 2: Scan QR code');
+
+		const copyBtn = screen.getByLabelText('Copy secret code');
+		await fireEvent.click(copyBtn);
+
+		expect(writeTextMock).toHaveBeenCalledWith('SECRET123');
+		expect(consoleSpy).toHaveBeenCalled();
 	});
 });

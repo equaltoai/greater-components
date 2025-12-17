@@ -12,7 +12,7 @@
 
 ### 📚 Core Documentation
 
-- [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, faces/*, adapters, icons, tokens, utils)
+- [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, faces/\*, adapters, icons, tokens, utils)
 - [Chat Component Suite](./chat-suite.md) – AI chat interface components with streaming, tool calls, and settings
 - [Core Patterns](./core-patterns.md) – Canonical usage patterns with examples for styled components, headless components, theming, and Lesser integration
 - [CSS Architecture](./css-architecture.md) – Two-layer CSS system, import configurations, and styling troubleshooting
@@ -149,15 +149,15 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 ### Fediverse with Lesser
 
 ```svelte
-		<script>
-			import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-			import { Status } from '@equaltoai/greater-components/faces/social';
+<script>
+	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+	import { Status } from '@equaltoai/greater-components/faces/social';
 
-			const adapter = new LesserGraphQLAdapter({
-				httpEndpoint: 'https://my-instance.social/graphql',
-				token: 'my-auth-token',
-		});
-	</script>
+	const adapter = new LesserGraphQLAdapter({
+		httpEndpoint: 'https://my-instance.social/graphql',
+		token: 'my-auth-token',
+	});
+</script>
 
 <Status.Root {status}>
 	<Status.Header />

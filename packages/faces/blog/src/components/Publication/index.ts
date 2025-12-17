@@ -34,4 +34,3 @@ import NewsletterSignup from './NewsletterSignup.svelte';
 Publication.Root = Root;
 Publication.Banner = Banner;
 Publication.NewsletterSignup = NewsletterSignup;
-

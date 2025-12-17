@@ -9,6 +9,7 @@
     "paths": {
       "@equaltoai/greater-components-auth": ["../../shared/auth/src/index.ts"],
       "@equaltoai/greater-components-search": ["../../shared/search/src/index.ts"],
+      "@equaltoai/greater-components-utils": ["../../utils/src/index.ts"],
       "@equaltoai/greater-components-content": ["../../content/src/index.ts"]
     }
   },

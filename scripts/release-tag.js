@@ -172,7 +172,9 @@ async function main() {
 		log(`   Would commit: "chore(release): ${tagName}"`, colors.yellow);
 	} else {
 		if (hasUncommittedChanges()) {
-			exec('git add registry/ package.json pnpm-lock.yaml CHANGELOG.md packages/*/package.json packages/*/CHANGELOG.md packages/*/*/package.json packages/*/*/CHANGELOG.md || true');
+			exec(
+				'git add registry/ package.json pnpm-lock.yaml CHANGELOG.md packages/*/package.json packages/*/CHANGELOG.md packages/*/*/package.json packages/*/*/CHANGELOG.md || true'
+			);
 			exec(`git commit -m "chore(release): ${tagName}"`);
 			log('✅ Changes committed', colors.green);
 		} else {

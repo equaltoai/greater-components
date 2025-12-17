@@ -36,4 +36,3 @@ function copySvelteFiles(currentDir) {
 }
 
 copySvelteFiles(srcDir);
-

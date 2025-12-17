@@ -33,4 +33,3 @@ import TagCloud from './TagCloud.svelte';
 Navigation.Root = Root;
 Navigation.ArchiveView = ArchiveView;
 Navigation.TagCloud = TagCloud;
-

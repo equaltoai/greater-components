@@ -46,4 +46,3 @@ export function hasEditorContext(): boolean {
 }
 
 export type { EditorContext, EditorConfig };
-

@@ -14,6 +14,7 @@ export default defineConfig({
 		conditions: ['browser'],
 		alias: {
 			'@equaltoai/greater-components-fediverse': resolve(__dirname, 'src'),
+			'@equaltoai/greater-components-social': resolve(__dirname, 'src'),
 			'@equaltoai/greater-components-primitives': resolve(
 				__dirname,
 				'../../primitives/src/index.ts'
@@ -34,6 +35,7 @@ export default defineConfig({
 			),
 			'@equaltoai/greater-components-headless': resolve(__dirname, '../../headless/src/index.ts'),
 			'@equaltoai/greater-components-auth': resolve(__dirname, '../../shared/auth/src/index.ts'),
+			'@equaltoai/greater-components-adapters': resolve(__dirname, '../../adapters/src/index.ts'),
 		},
 	},
 	test: {
