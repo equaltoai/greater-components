@@ -58,7 +58,6 @@ const FACE_CASES = [
 
 beforeAll(async () => {
 	// Build CLI
-	console.log('Building CLI...');
 	await execa('pnpm', ['build'], { cwd: CLI_ROOT });
 });
 
@@ -92,14 +91,12 @@ test.each(FACE_CASES)(
 		});
 
 		try {
-			console.log(`Running init (${face})...`);
 			// 1. Init
 			await execa('node', [CLI_BIN, 'init', '--yes', '--face', face, '--cwd', fixtureRoot], {
 				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
 			});
 			expect(await fs.pathExists(path.join(fixtureRoot, 'components.json'))).toBe(true);
 
-			console.log(`Running add faces/${face}...`);
 			// 2. Add Face
 			await execa('node', [CLI_BIN, 'add', '--yes', `faces/${face}`, '--cwd', fixtureRoot], {
 				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
@@ -130,19 +127,17 @@ test.each(FACE_CASES)(
 
 			// Verify key files exist
 			expect(await fs.pathExists(path.join(fixtureRoot, componentFile))).toBe(true);
-			expect(await fs.pathExists(path.join(fixtureRoot, 'src/lib/greater/headless/button.ts'))).toBe(
-				true
-			);
+			expect(
+				await fs.pathExists(path.join(fixtureRoot, 'src/lib/greater/headless/button.ts'))
+			).toBe(true);
 			await extraChecks(fixtureRoot);
 
-			console.log(`Running svelte-kit sync (${face})...`);
 			// 3. SvelteKit sync
 			await execa(path.join(CLI_ROOT, 'node_modules/.bin/svelte-kit'), ['sync'], {
 				cwd: fixtureRoot,
 				stdio: 'inherit',
 			});
 
-			console.log(`Running build (${face})...`);
 			// 4. Build (bundles installed components via routes)
 			await execa(path.join(CLI_ROOT, 'node_modules/.bin/vite'), ['build'], {
 				cwd: fixtureRoot,
@@ -150,7 +145,6 @@ test.each(FACE_CASES)(
 			});
 
 			// 5. Verify no @equaltoai/greater-components runtime imports in vendored files
-			console.log('Verifying imports...');
 			const srcDir = path.join(fixtureRoot, 'src');
 			const files = await getFilesRecursively(srcDir);
 
@@ -196,5 +190,9 @@ async function ensureNodeModuleLink(
 	if (!(await fs.pathExists(workspacePackagePath))) return;
 
 	await fs.ensureDir(path.dirname(targetPath));
-	await fs.symlink(workspacePackagePath, targetPath, process.platform === 'win32' ? 'junction' : 'dir');
+	await fs.symlink(
+		workspacePackagePath,
+		targetPath,
+		process.platform === 'win32' ? 'junction' : 'dir'
+	);
 }

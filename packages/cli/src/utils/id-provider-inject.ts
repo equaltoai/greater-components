@@ -86,7 +86,7 @@ export async function injectIdProvider(
 
 		// Process scripts to inject import
 		// We look for the instance script (no context="module")
-		let scriptBlock = scripts.find((s) => !s.includes('context="module"'));
+		const scriptBlock = scripts.find((s) => !s.includes('context="module"'));
 
 		if (scriptBlock) {
 			// Inject into existing instance script

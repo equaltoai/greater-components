@@ -126,6 +126,7 @@ export default [
 			'**/*.config.js',
 			'**/*.config.ts',
 			'**/scripts/*.js',
+			'**/.tmp/**',
 		],
 	},
 ];

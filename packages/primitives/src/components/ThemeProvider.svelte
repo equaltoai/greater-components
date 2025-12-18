@@ -107,16 +107,6 @@
 	the recommended app.html approach.
 -->
 
-<svelte:head>
-	{#if customCSS}
-		<style id="gr-theme-customization">
-		:root {
-			{@html customCSS}
-		}
-		</style>
-	{/if}
-</svelte:head>
-
-<div class="gr-theme-provider" data-theme-provider>
+<div class="gr-theme-provider" data-theme-provider style={customCSS}>
 	{@render children()}
 </div>

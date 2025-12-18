@@ -11,8 +11,6 @@ import {
 	createDefaultConfig,
 	writeConfig,
 	configExists,
-	SCHEMA_URL,
-	CONFIG_SCHEMA_VERSION,
 	DEFAULT_REF,
 	FALLBACK_REF,
 	type ComponentConfig,

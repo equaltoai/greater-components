@@ -55,15 +55,7 @@ import { hasGreaterImports } from '../utils/transform.js';
 const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
 const GREATER_TAG_VERSION_RE = /^greater-v(\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?)$/;
 
-const CORE_PACKAGES = [
-	'primitives',
-	'icons',
-	'tokens',
-	'utils',
-	'content',
-	'adapters',
-	'headless',
-];
+const CORE_PACKAGES = ['primitives', 'icons', 'tokens', 'utils', 'content', 'adapters', 'headless'];
 
 function getGreaterComponentsVersionSpec(ref: string): string {
 	const match = GREATER_TAG_VERSION_RE.exec(ref);

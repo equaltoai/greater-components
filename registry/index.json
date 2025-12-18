@@ -1,8 +1,8 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2025-12-18T02:39:31.276Z",
-  "ref": "unknown",
+  "generatedAt": "2025-12-18T05:21:57.119Z",
+  "ref": "1b2a758b6cf6",
   "version": "4.1.0",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
@@ -99,7 +99,7 @@
     "packages/primitives/src/components/Theme/ContrastChecker.svelte.d.ts": "sha256-CfSDEpbv/qEMI9Btjsr7i6tuYMi2cCFb1vfZ6epZmzY=",
     "packages/primitives/src/components/Theme/ThemeWorkbench.svelte": "sha256-ns6c4Ui/+ARMOIUzJU5N6gkDO2cg22P3A2zBY8+/0rk=",
     "packages/primitives/src/components/Theme/ThemeWorkbench.svelte.d.ts": "sha256-97U+zLtFUgPuhsrf88yd3FX9B9cJ1P8s2uujhrLEamg=",
-    "packages/primitives/src/components/ThemeProvider.svelte": "sha256-+OYLTP24HJSwNryZCNPyI4hffTYyy1urcReiMfJgW0E=",
+    "packages/primitives/src/components/ThemeProvider.svelte": "sha256-9ZcrLtJvQ39qmv//khv5m4sVPv6M/+uFZffyCah634U=",
     "packages/primitives/src/components/ThemeProvider.svelte.d.ts": "sha256-396L/aTKQc98NIM0JQqnc6r/Sh/ZJTdsO4warBbKGHs=",
     "packages/primitives/src/components/ThemeSwitcher.svelte": "sha256-ROmcCLEnkRcBfL6HPcKp3ajWtsBElPz47sZB6Nwz9YM=",
     "packages/primitives/src/components/ThemeSwitcher.svelte.d.ts": "sha256-N/uWOxPCJMqp0sIqPfADQjzt2W8O4/W1+fxKwTgCoVg=",
@@ -1799,8 +1799,8 @@
         },
         {
           "path": "src/components/ThemeProvider.svelte",
-          "checksum": "sha256-+OYLTP24HJSwNryZCNPyI4hffTYyy1urcReiMfJgW0E=",
-          "size": 3488
+          "checksum": "sha256-9ZcrLtJvQ39qmv//khv5m4sVPv6M/+uFZffyCah634U=",
+          "size": 3368
         },
         {
           "path": "src/components/ThemeProvider.svelte.d.ts",

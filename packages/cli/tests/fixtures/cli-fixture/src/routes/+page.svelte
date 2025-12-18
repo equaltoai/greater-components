@@ -3,7 +3,7 @@
 	import { createButton } from '$lib/greater/headless/button';
 
 	const button = createButton();
-	const status = {} as any;
+	const status = {} as Record<string, unknown>;
 </script>
 
 <h1>Greater CLI Smoke</h1>

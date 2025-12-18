@@ -31,7 +31,9 @@ describe('buildPathMappings', () => {
 		const config = createTestConfig();
 		const mappings = buildPathMappings(config);
 
-		const headlessMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-headless');
+		const headlessMapping = mappings.find(
+			(m) => m.from === '@equaltoai/greater-components-headless'
+		);
 		expect(headlessMapping?.to).toBe('$lib/greater/headless');
 	});
 
@@ -39,7 +41,9 @@ describe('buildPathMappings', () => {
 		const config = createTestConfig({ installMode: 'hybrid' });
 		const mappings = buildPathMappings(config);
 
-		const buttonMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-headless/button');
+		const buttonMapping = mappings.find(
+			(m) => m.from === '@equaltoai/greater-components-headless/button'
+		);
 		expect(buttonMapping?.to).toBe('$lib/primitives/button');
 	});
 
@@ -71,7 +75,9 @@ describe('buildPathMappings', () => {
 		);
 		expect(authMapping?.to).toBe('@/components/auth');
 
-		const headlessMapping = mappings.find((m) => m.from === '@equaltoai/greater-components-headless');
+		const headlessMapping = mappings.find(
+			(m) => m.from === '@equaltoai/greater-components-headless'
+		);
 		expect(headlessMapping?.to).toBe('@/greater/headless');
 	});
 });
@@ -350,10 +356,12 @@ describe('hasGreaterImports', () => {
 			true
 		);
 		expect(hasGreaterImports(`import '@equaltoai/greater-components/utils';`)).toBe(true);
-		expect(hasGreaterImports(`export { cn } from '@equaltoai/greater-components/utils';`)).toBe(true);
-		expect(hasGreaterImports(`const mod = await import('@equaltoai/greater-components/utils');`)).toBe(
+		expect(hasGreaterImports(`export { cn } from '@equaltoai/greater-components/utils';`)).toBe(
 			true
 		);
+		expect(
+			hasGreaterImports(`const mod = await import('@equaltoai/greater-components/utils');`)
+		).toBe(true);
 	});
 
 	it('returns false for content without Greater imports', () => {

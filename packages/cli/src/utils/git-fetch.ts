@@ -152,12 +152,8 @@ async function fetchWithRetry(ref: string, filePath: string): Promise<Buffer> {
 		const localPath = path.join(localRepoRoot, filePath);
 		try {
 			return await fs.readFile(localPath);
-		} catch (error) {
-			throw new NetworkError(
-				`Local file not found: ${filePath}`,
-				404,
-				localPath
-			);
+		} catch {
+			throw new NetworkError(`Local file not found: ${filePath}`, 404, localPath);
 		}
 	}
 

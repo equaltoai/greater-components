@@ -108,7 +108,6 @@ function auditPackage(packageJsonPath) {
 	const content = fs.readFileSync(packageJsonPath, 'utf8');
 	const pkg = JSON.parse(content);
 	const packageDir = path.dirname(packageJsonPath);
-	const relativePath = path.relative(rootDir, packageJsonPath);
 
 	if (!pkg.exports) {
 		return { errors: [], warnings: [] };
