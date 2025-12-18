@@ -21,14 +21,14 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -36,6 +36,9 @@ jobs:
 
       - name: Build packages
         run: pnpm build
+
+      - name: Validate packages
+        run: pnpm validate:package
 
       - name: Run tests with coverage
         run: pnpm test:coverage

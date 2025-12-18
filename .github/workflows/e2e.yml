@@ -39,6 +39,9 @@ jobs:
       - name: Build packages
         run: pnpm build
 
+      - name: Validate packages
+        run: pnpm validate:package
+
       - name: Run SSR Playwright tests
         working-directory: packages/testing
         run: pnpm exec playwright test --config=playwright.demo.config.ts --project=${{ matrix.browser }}
