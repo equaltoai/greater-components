@@ -16,9 +16,11 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 	import { untrack } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 
 	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
 		content: string;
+		id?: string;
 		placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
 		trigger?: 'hover' | 'focus' | 'click' | 'manual';
 		delay?: { show?: number; hide?: number } | number;
@@ -29,6 +31,7 @@
 
 	let {
 		content,
+		id,
 		placement = 'top',
 		trigger = 'hover',
 		delay = { show: 500, hide: 100 },
@@ -296,7 +299,8 @@
 	});
 
 	// Generate unique ID for accessibility
-	const tooltipId = `tooltip-${Math.random().toString(36).substr(2, 9)}`;
+	const stableId = useStableId('tooltip');
+	const tooltipId = $derived(id || stableId.value || undefined);
 </script>
 
 <div class="gr-tooltip-container">

@@ -86,14 +86,19 @@ Create threads with multiple connected posts, each with its own character limit.
 	}: Props = $props();
 
 	// Thread state
-	let posts = $state<ThreadPost[]>([
-		{
-			id: crypto.randomUUID(),
+	let postIdCounter = 0;
+
+	function createEmptyPost(): ThreadPost {
+		postIdCounter += 1;
+		return {
+			id: `thread-post-${postIdCounter}`,
 			content: '',
 			characterCount: 0,
 			overLimit: false,
-		},
-	]);
+		};
+	}
+
+	let posts = $state<ThreadPost[]>([createEmptyPost()]);
 
 	let visibility = $state<PostVisibility>(untrack(() => defaultVisibility));
 	let submitting = $state(false);
@@ -147,12 +152,7 @@ Create threads with multiple connected posts, each with its own character limit.
 			return;
 		}
 
-		posts.push({
-			id: crypto.randomUUID(),
-			content: '',
-			characterCount: 0,
-			overLimit: false,
-		});
+		posts.push(createEmptyPost());
 
 		// Focus the new post's textarea
 		setTimeout(() => {
@@ -277,14 +277,7 @@ Create threads with multiple connected posts, each with its own character limit.
 			await onSubmitThread(postsToSubmit);
 
 			// Reset on success
-			posts = [
-				{
-					id: crypto.randomUUID(),
-					content: '',
-					characterCount: 0,
-					overLimit: false,
-				},
-			];
+			posts = [createEmptyPost()];
 		} catch (err) {
 			error = extractErrorMessage(err);
 		} finally {
@@ -300,14 +293,7 @@ Create threads with multiple connected posts, each with its own character limit.
 			onCancel();
 		} else {
 			// Reset to single empty post
-			posts = [
-				{
-					id: crypto.randomUUID(),
-					content: '',
-					characterCount: 0,
-					overLimit: false,
-				},
-			];
+			posts = [createEmptyPost()];
 			error = null;
 		}
 	}

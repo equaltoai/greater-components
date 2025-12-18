@@ -206,14 +206,12 @@
 		value: string;
 	};
 
-	const generateOptionId = () =>
-		typeof crypto !== 'undefined' && 'randomUUID' in crypto
-			? crypto.randomUUID()
-			: `poll-option-${Math.random().toString(36).slice(2, 11)}`;
+	let optionCounter = 0;
 
 	function createOption(value = ''): DraftPollOption {
+		optionCounter += 1;
 		return {
-			id: generateOptionId(),
+			id: `poll-option-${optionCounter}`,
 			value,
 		};
 	}

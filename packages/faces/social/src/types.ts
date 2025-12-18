@@ -477,4 +477,5 @@ export interface ComposeBoxProps {
 	onMediaUpload?: (file: File) => Promise<ComposeMediaAttachment>;
 	onMediaRemove?: (id: string) => void;
 	className?: string;
+	id?: string;
 }

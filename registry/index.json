@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2025-12-17T23:58:30.574Z",
+  "generatedAt": "2025-12-18T02:39:31.276Z",
   "ref": "unknown",
   "version": "4.1.0",
   "checksums": {
@@ -22,7 +22,7 @@
     "packages/primitives/src/components/Container.svelte.d.ts": "sha256-skMVMUkV6C2zhKzRCNUSsp2vxdWxTmGrlRFCVnSN6YA=",
     "packages/primitives/src/components/CopyButton.svelte": "sha256-MtqSkDZWm50V83Y4LfZE1FTUyVnazKXttKRnNTNZa9w=",
     "packages/primitives/src/components/CopyButton.svelte.d.ts": "sha256-7LUligFuM4XNGE32wuruCNcy11n7Fkx4JUfdkgsoXF0=",
-    "packages/primitives/src/components/DropZone.svelte": "sha256-ufA2xgd/gQiok6KCfRLP4MjrNsa6S9yS3fU8VwdUcsI=",
+    "packages/primitives/src/components/DropZone.svelte": "sha256-6PYWJPVPI1yiAZmpNY0zJaVKhWIGA5BsAyLfcXZvuY0=",
     "packages/primitives/src/components/DropZone.svelte.d.ts": "sha256-foBPUtQVZwl9DWErXO+2DcQiPbfCX6mW2VexF568XTE=",
     "packages/primitives/src/components/FileUpload.svelte": "sha256-i2uKmSm1yKZFCylMyUJVM1R+MZaK/6yR9ozV23G8rxc=",
     "packages/primitives/src/components/FileUpload.svelte.d.ts": "sha256-eFyEDM61OSTFb21L0h8N2ExmddL/KRjzvxfG1gwOabE=",
@@ -57,7 +57,7 @@
     "packages/primitives/src/components/Menu/Trigger.svelte": "sha256-A/pRMaJGWstLX4mJxEEkGuae8NaGhGEpjn5RtW/hIKA=",
     "packages/primitives/src/components/Menu/Trigger.svelte.d.ts": "sha256-ZEpRFtoA9gkKeMmyHozcsBaSOPiltIoSLe6xlAJz7uA=",
     "packages/primitives/src/components/Menu.svelte": "sha256-FWw3lZ5T5+GYTUoSMwxggaqT5Y7FgZGHy1FiO4stnBs=",
-    "packages/primitives/src/components/Modal.svelte": "sha256-jfxXlvAnKRQO104ZgSb31PMIdv9qI76ByR4EeBwwxSc=",
+    "packages/primitives/src/components/Modal.svelte": "sha256-Ck/hULEx55xbIAFzxt5PM9Lw2LU+HMSIKnPM8cpc6mg=",
     "packages/primitives/src/components/Modal.svelte.d.ts": "sha256-+gXwIDzccV+jjP7Fx5urz8ZLKlcMXfdK05OSDYcc33s=",
     "packages/primitives/src/components/Section.svelte": "sha256-pbxU/JdTluNhF2bU29Z4a2BPmDw/we56w+3Cc00DMus=",
     "packages/primitives/src/components/Section.svelte.d.ts": "sha256-vjcoDrPdJFdCXwIO92NfviYYy25O0Wrp6qwZb/nQa8Q=",
@@ -89,7 +89,7 @@
     "packages/primitives/src/components/Tabs.svelte.d.ts": "sha256-s+nlRBFBl4TJ1Elu0hdlrhqRH7qCp1kEMixk/3WPrDk=",
     "packages/primitives/src/components/Text.svelte": "sha256-ZZZKpM37DXPLTEmZkuK6PhiPbgoRUxJbXXv0mKWEn1k=",
     "packages/primitives/src/components/Text.svelte.d.ts": "sha256-fHfy7jod4/xI/l0i0+x1rnF/ZrCsAyvc25aYGgmTTw8=",
-    "packages/primitives/src/components/TextArea.svelte": "sha256-cv/Otvcgy0VEKRHLV+T+Zj/pagx+q3iW0FPFvzx8yig=",
+    "packages/primitives/src/components/TextArea.svelte": "sha256-o/0qw5TIszkesccFpWqaa2Ugxh/d8FFT6B9vrZG0QNE=",
     "packages/primitives/src/components/TextArea.svelte.d.ts": "sha256-rdWU743muQaV+GWcEbvFhMdeAifaRMYSatkAWPMH76M=",
     "packages/primitives/src/components/TextField.svelte": "sha256-t23xvL/8eJsZgJFF93fDbc/i9dTAouZKWUp2W4RKO7I=",
     "packages/primitives/src/components/TextField.svelte.d.ts": "sha256-Y++LKbkrvNvoXLTuSQWjjd0FrLQs9DoKmAUQfG7hF4w=",
@@ -103,7 +103,7 @@
     "packages/primitives/src/components/ThemeProvider.svelte.d.ts": "sha256-396L/aTKQc98NIM0JQqnc6r/Sh/ZJTdsO4warBbKGHs=",
     "packages/primitives/src/components/ThemeSwitcher.svelte": "sha256-ROmcCLEnkRcBfL6HPcKp3ajWtsBElPz47sZB6Nwz9YM=",
     "packages/primitives/src/components/ThemeSwitcher.svelte.d.ts": "sha256-N/uWOxPCJMqp0sIqPfADQjzt2W8O4/W1+fxKwTgCoVg=",
-    "packages/primitives/src/components/Tooltip.svelte": "sha256-sPHhnGjMxtShFIx7fV5ewvj0VyRKJ1peNTLvqWGMBW4=",
+    "packages/primitives/src/components/Tooltip.svelte": "sha256-IAIflrJXznPD4YnyOir1iWHcKTiTe9lDyV5ICvfYDb0=",
     "packages/primitives/src/components/Tooltip.svelte.d.ts": "sha256-jArDEgBoXVPcm5H3dIeKipLESmOiSVyr+kf6FlghBkM=",
     "packages/primitives/src/index.d.ts": "sha256-UYa0W67ZeiB+3B8Im8mPnDO6PYk06DR56eEDLRAmIG4=",
     "packages/primitives/src/index.ts": "sha256-sleNGedBiStbrDxjaNgsUrzRSlcSq1qGfjS1Kp0xWa8=",
@@ -886,7 +886,7 @@
     "packages/faces/social/src/app.d.ts": "sha256-2SefztlLM+Zcte8Kp+3UArYXJ6BL5NdQdr+IqLyOJcM=",
     "packages/faces/social/src/components/ActionBar.svelte": "sha256-N7EIony+QE+E65BkIZpb9UvXli4W2BqGvsh0jm2NV+o=",
     "packages/faces/social/src/components/Auth/index.ts": "sha256-I2AozOALfKpQeqC0mbRy72f3JBlAwkB/NLgAqOAOsgc=",
-    "packages/faces/social/src/components/ComposeBox.svelte": "sha256-UYHDt8MMPBVborbL+Ud1T8FOriIGEaaa13cLYgb1KTQ=",
+    "packages/faces/social/src/components/ComposeBox.svelte": "sha256-nXxCOn/H+ze7UgLV0wZd6wj0UaklCbH6WjMuvlcVAkE=",
     "packages/faces/social/src/components/ContentRenderer.svelte": "sha256-pEv3Ln/F1cRscjwWOKLgYT498vsCERbeS1wU5sx49Ac=",
     "packages/faces/social/src/components/Filters/context.ts": "sha256-8yk/0fp1VLFlQCtIu7GqqqdIEhoAeGHQANi4xpU4DD4=",
     "packages/faces/social/src/components/Filters/Editor.svelte": "sha256-+FJIp0t2oUoZXAfj/p1KpP5YjVdD+bDAMl9i25TX7JM=",
@@ -933,7 +933,7 @@
     "packages/faces/social/src/components/Profile/Timeline.svelte": "sha256-c0Iy1SudUO5lg/uoxHlbiY+5Pfi+5BsV8BIgRQYiolY=",
     "packages/faces/social/src/components/Profile/TrustBadge.svelte": "sha256-/uJhevFpcI/3Mi2efYFDxmvVGdl5WtsL1SsJk6okKOU=",
     "packages/faces/social/src/components/Profile/VerifiedFields.svelte": "sha256-1tjd7pGob172EhK8moXtLForz2HIxTIzn9Cyjyz/Mow=",
-    "packages/faces/social/src/components/ProfileHeader.svelte": "sha256-K341KhuaKij7GfkcnXcDjP+Cx+IzFOU0BCbAA+0P4fg=",
+    "packages/faces/social/src/components/ProfileHeader.svelte": "sha256-O2rcmcLKHUOsA/v9ByDBp6XHZ8EEoyuHUP6QSQZ4l0M=",
     "packages/faces/social/src/components/RealtimeWrapper.svelte": "sha256-4YyFn1PtiM/n+kdURw7unY++dodmGjoLy6PvC0kRHvo=",
     "packages/faces/social/src/components/SettingsPanel.svelte": "sha256-n+Ca8cXXPu6ndzpmGJDEn/yy3SXx6+z/RTeg13uzzyU=",
     "packages/faces/social/src/components/Status/Actions.svelte": "sha256-XBS+ynWSy9pQzEEn0lNijdW7Zwb56FlLuBOyNvvoDbQ=",
@@ -974,13 +974,13 @@
     "packages/faces/social/src/patterns/InstancePicker.svelte": "sha256-WnUW6BVrwEvmnHZt1XZv+VeLdJuJWaIS4OKfU6fKuP4=",
     "packages/faces/social/src/patterns/MediaComposer.svelte": "sha256-MPI3/15ptIUkW2xbEVP14iWiMK9xmKlDQ0cAjr/9ciw=",
     "packages/faces/social/src/patterns/ModerationTools.svelte": "sha256-dsmbk2fx7249qf+PLUrnVXg8zSNkp0W0HcIDMKtJ0xw=",
-    "packages/faces/social/src/patterns/PollComposer.svelte": "sha256-ozy0NB/yx0luQTocZpLZPR9x1/wFkXXZrI4YHJY/uiQ=",
+    "packages/faces/social/src/patterns/PollComposer.svelte": "sha256-PlJ1Yt6w0+jHP58Fig+DxzTYPSaAboXPobEoAgtV5OY=",
     "packages/faces/social/src/patterns/ThreadNodeView.svelte": "sha256-uQbhcBztOHphfFqC7HZr4jlnuCYDmksLVdeZVuxj5YI=",
     "packages/faces/social/src/patterns/ThreadView.svelte": "sha256-jYyQwX5bwerk2PrCjMPO+e9oRgrlElCb0CPJts8L2Yc=",
     "packages/faces/social/src/patterns/ThreadView.types.ts": "sha256-ujiFoiGKR4V2AOnsfgVHoBcdJDas4iAR2q6hzcWiGts=",
     "packages/faces/social/src/patterns/VisibilitySelector.svelte": "sha256-u0lxPUqzx59glvkW1CH+oZSEO/hOj3uOruK9w69yIvM=",
     "packages/faces/social/src/theme.css": "sha256-PvZhCWDlzHzF4iZsGoOTjnQZhy1V4KGvt01DeSSItRU=",
-    "packages/faces/social/src/types.ts": "sha256-lqZtF263uoJpzTkmruJi0GLESBfhdHlEiDTKcNNXhFA=",
+    "packages/faces/social/src/types.ts": "sha256-6NYrNcSGwHuIJ98n5v5+jPut3crbOhP4mUPoHkS67OQ=",
     "packages/faces/social/src/utils/notificationGrouping.ts": "sha256-lC360gYGIxMbWdc+PyXEzLfaK/zDUOggcSUlO86m7ck=",
     "packages/faces/blog/src/components/Article/Content.svelte": "sha256-cFXiN8Mnpxwj1U8kECrbMeSVvitQ/PNsNMCxASYAgGA=",
     "packages/faces/blog/src/components/Article/context.ts": "sha256-bYXS4NwSLcHdl8QnpVedTKNR94Tq1CjD+lUzj4zuwKI=",
@@ -1233,7 +1233,7 @@
     "packages/shared/compose/src/MediaUploadHandler.ts": "sha256-yrlp/QNy5pfrhxLypX+li8yX+LgqVyQUKAA0DiFbQxY=",
     "packages/shared/compose/src/Root.svelte": "sha256-Z7GshOaltslRFeDPbFETYAYy6USpvW7L004QTeTMGSQ=",
     "packages/shared/compose/src/Submit.svelte": "sha256-vlQapz78vCRaXRojfrudP/4yY/DTyHDQ9bxueJwLD0U=",
-    "packages/shared/compose/src/ThreadComposer.svelte": "sha256-T1VwCL24fNbmvBt+OMQRwU7VWqZK0e4vA2teWSzBQtc=",
+    "packages/shared/compose/src/ThreadComposer.svelte": "sha256-zfnmg1WWLbQ3vuaYmPnFgzCpKn5Dj1kI/P3wnAQadTg=",
     "packages/shared/compose/src/ThreadControls.svelte": "sha256-78UTTyLXw4Kj1UPVhpiBATrkWBx8Pnhh1LYugLhG7Vs=",
     "packages/shared/compose/src/types.ts": "sha256-8ovFbZvdAJ0m03hrxIOeAPd9aimhX2mAt/DQ8HZcby0=",
     "packages/shared/compose/src/UnicodeCounter.ts": "sha256-NSa7uxa1qqByrpywxeCI1RQG0BZZYujkKCMYgVI74z0=",
@@ -1263,7 +1263,7 @@
     "packages/shared/search/src/TagResult.svelte": "sha256-HxW5fPk+WPfsOR5QUMFC6tVNgSufQKLbTm5paEL1ypk=",
     "packages/shared/admin/src/Analytics.svelte": "sha256-4TJ19dl1UU8jOR7zEd4O+V/BbXgw3ciXPp2keZY8fAQ=",
     "packages/shared/admin/src/context.svelte.ts": "sha256-hvyURva5FN7DfPLn+OkRkxo4rkAiKjos+iYlAMsRoCE=",
-    "packages/shared/admin/src/Cost/Alerts.svelte": "sha256-+AWjM8TX4S5hOIwMlkju3/HHzQ+XJdrGe6q8q60y0Ic=",
+    "packages/shared/admin/src/Cost/Alerts.svelte": "sha256-eoQJxtsnb03xDJLyPVy/wRzHKG/E1JrEzb67n2W5xXE=",
     "packages/shared/admin/src/Cost/BudgetControls.svelte": "sha256-G66P503gdIDw9xkQ1dDT4zwas3TYv1YBzP18/qckFAU=",
     "packages/shared/admin/src/Cost/context.ts": "sha256-2rH2hvjOmqOjRPRy5k7jupwEVGy0dbGX1D23UFtK/rU=",
     "packages/shared/admin/src/Cost/Dashboard.svelte": "sha256-s8USqrL2W30zhY94dkLt8gpUf7BsjExNd/JMVZBPrDk=",
@@ -1295,7 +1295,7 @@
     "packages/shared/admin/src/Users.svelte": "sha256-eJnq6ySKkUKIFYdke6qok7zSM/e0BasyO9rUiN7gmGg=",
     "packages/shared/chat/src/ChatContainer.svelte": "sha256-4L3qh3ZYzITj/wNgVQ4SyUL0uPzj75GflXgEJxADyGA=",
     "packages/shared/chat/src/ChatHeader.svelte": "sha256-KlBPVy0gdgTJ0mgn4/InoGnwSxyuJvwsP0DS2q0kxYg=",
-    "packages/shared/chat/src/ChatInput.svelte": "sha256-5o5jtrj9/Dtn4Vag6iP4rPKxB+bFBOGWTMRlFf2jZJo=",
+    "packages/shared/chat/src/ChatInput.svelte": "sha256-RdIHJtnMTgm9FMAIVjbwc4d3Ep+pOsKx26T8jw0Cxkc=",
     "packages/shared/chat/src/ChatMessage.svelte": "sha256-YNSEBG/84CMu6YYltZMPfuDsW4kuWEAzf28QNDYWPrY=",
     "packages/shared/chat/src/ChatMessageAction.svelte": "sha256-pEcRybpKjXTvpfBEUzEK5ZsqQFY7Mequc8wdLyCBHso=",
     "packages/shared/chat/src/ChatMessages.svelte": "sha256-sIjbn4TRyHfJkE6PVl5ERSK8SyNITbnchY4EdW5/CAo=",
@@ -1414,8 +1414,8 @@
         },
         {
           "path": "src/components/DropZone.svelte",
-          "checksum": "sha256-ufA2xgd/gQiok6KCfRLP4MjrNsa6S9yS3fU8VwdUcsI=",
-          "size": 10613
+          "checksum": "sha256-6PYWJPVPI1yiAZmpNY0zJaVKhWIGA5BsAyLfcXZvuY0=",
+          "size": 10832
         },
         {
           "path": "src/components/DropZone.svelte.d.ts",
@@ -1589,8 +1589,8 @@
         },
         {
           "path": "src/components/Modal.svelte",
-          "checksum": "sha256-jfxXlvAnKRQO104ZgSb31PMIdv9qI76ByR4EeBwwxSc=",
-          "size": 6722
+          "checksum": "sha256-Ck/hULEx55xbIAFzxt5PM9Lw2LU+HMSIKnPM8cpc6mg=",
+          "size": 6926
         },
         {
           "path": "src/components/Modal.svelte.d.ts",
@@ -1749,8 +1749,8 @@
         },
         {
           "path": "src/components/TextArea.svelte",
-          "checksum": "sha256-cv/Otvcgy0VEKRHLV+T+Zj/pagx+q3iW0FPFvzx8yig=",
-          "size": 2303
+          "checksum": "sha256-o/0qw5TIszkesccFpWqaa2Ugxh/d8FFT6B9vrZG0QNE=",
+          "size": 2439
         },
         {
           "path": "src/components/TextArea.svelte.d.ts",
@@ -1819,8 +1819,8 @@
         },
         {
           "path": "src/components/Tooltip.svelte",
-          "checksum": "sha256-sPHhnGjMxtShFIx7fV5ewvj0VyRKJ1peNTLvqWGMBW4=",
-          "size": 8002
+          "checksum": "sha256-IAIflrJXznPD4YnyOir1iWHcKTiTe9lDyV5ICvfYDb0=",
+          "size": 8124
         },
         {
           "path": "src/components/Tooltip.svelte.d.ts",
@@ -1927,10 +1927,7 @@
         "@equaltoai/greater-components-icons",
         "@equaltoai/greater-components-utils"
       ],
-      "peerDependencies": [
-        "@equaltoai/greater-components-tokens",
-        "svelte"
-      ],
+      "peerDependencies": ["@equaltoai/greater-components-tokens", "svelte"],
       "tags": []
     },
     "headless": {
@@ -2071,9 +2068,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "icons": {
@@ -5124,9 +5119,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "tokens": {
@@ -5368,9 +5361,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "adapters": {
@@ -5721,9 +5712,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        "svelte"
-      ],
+      "peerDependencies": ["svelte"],
       "tags": []
     },
     "content": {
@@ -5897,8 +5886,8 @@
         },
         {
           "path": "src/components/ComposeBox.svelte",
-          "checksum": "sha256-UYHDt8MMPBVborbL+Ud1T8FOriIGEaaa13cLYgb1KTQ=",
-          "size": 13506
+          "checksum": "sha256-nXxCOn/H+ze7UgLV0wZd6wj0UaklCbH6WjMuvlcVAkE=",
+          "size": 13750
         },
         {
           "path": "src/components/ContentRenderer.svelte",
@@ -6132,8 +6121,8 @@
         },
         {
           "path": "src/components/ProfileHeader.svelte",
-          "checksum": "sha256-K341KhuaKij7GfkcnXcDjP+Cx+IzFOU0BCbAA+0P4fg=",
-          "size": 11887
+          "checksum": "sha256-O2rcmcLKHUOsA/v9ByDBp6XHZ8EEoyuHUP6QSQZ4l0M=",
+          "size": 12037
         },
         {
           "path": "src/components/RealtimeWrapper.svelte",
@@ -6337,8 +6326,8 @@
         },
         {
           "path": "src/patterns/PollComposer.svelte",
-          "checksum": "sha256-ozy0NB/yx0luQTocZpLZPR9x1/wFkXXZrI4YHJY/uiQ=",
-          "size": 22194
+          "checksum": "sha256-PlJ1Yt6w0+jHP58Fig+DxzTYPSaAboXPobEoAgtV5OY=",
+          "size": 22074
         },
         {
           "path": "src/patterns/ThreadNodeView.svelte",
@@ -6367,8 +6356,8 @@
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-lqZtF263uoJpzTkmruJi0GLESBfhdHlEiDTKcNNXhFA=",
-          "size": 10038
+          "checksum": "sha256-6NYrNcSGwHuIJ98n5v5+jPut3crbOhP4mUPoHkS67OQ=",
+          "size": 10052
         },
         {
           "path": "src/utils/notificationGrouping.ts",
@@ -6394,9 +6383,7 @@
         "@equaltoai/greater-components-admin",
         "@equaltoai/greater-components-messaging"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     },
     "blog": {
       "name": "blog",
@@ -6414,13 +6401,7 @@
           "StructuredData",
           "OpenGraphMeta"
         ],
-        "shared": [
-          "primitives",
-          "icons",
-          "content",
-          "utils",
-          "headless"
-        ],
+        "shared": ["primitives", "icons", "content", "utils", "headless"],
         "patterns": [],
         "components": [
           "Article",
@@ -6612,9 +6593,7 @@
         "@equaltoai/greater-components-utils",
         "@equaltoai/greater-components-headless"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     },
     "community": {
       "name": "community",
@@ -6633,13 +6612,7 @@
           "RulesSidebar",
           "WikiPage"
         ],
-        "shared": [
-          "primitives",
-          "icons",
-          "content",
-          "utils",
-          "headless"
-        ],
+        "shared": ["primitives", "icons", "content", "utils", "headless"],
         "patterns": [],
         "components": [
           "Community",
@@ -6849,9 +6822,7 @@
         "@equaltoai/greater-components-utils",
         "@equaltoai/greater-components-headless"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     },
     "artist": {
       "name": "artist",
@@ -6882,14 +6853,7 @@
           "PremiumBadge",
           "InstitutionalTools"
         ],
-        "shared": [
-          "primitives",
-          "headless",
-          "icons",
-          "tokens",
-          "adapters",
-          "utils"
-        ],
+        "shared": ["primitives", "headless", "icons", "tokens", "adapters", "utils"],
         "patterns": [],
         "components": [
           "Artwork",
@@ -7704,9 +7668,7 @@
         "@equaltoai/greater-components-adapters",
         "@equaltoai/greater-components-utils"
       ],
-      "peerDependencies": [
-        "svelte@^5.43.6"
-      ]
+      "peerDependencies": ["svelte@^5.43.6"]
     }
   },
   "shared": {
@@ -7929,8 +7891,8 @@
         },
         {
           "path": "src/ThreadComposer.svelte",
-          "checksum": "sha256-T1VwCL24fNbmvBt+OMQRwU7VWqZK0e4vA2teWSzBQtc=",
-          "size": 9942
+          "checksum": "sha256-zfnmg1WWLbQ3vuaYmPnFgzCpKn5Dj1kI/P3wnAQadTg=",
+          "size": 9803
         },
         {
           "path": "src/ThreadControls.svelte",
@@ -8073,15 +8035,7 @@
       "name": "search",
       "version": "4.0.1",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
-      "exports": [
-        "Root",
-        "Bar",
-        "Filters",
-        "Results",
-        "ActorResult",
-        "NoteResult",
-        "TagResult"
-      ],
+      "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
       "files": [
         {
           "path": "src/ActorResult.svelte",
@@ -8183,8 +8137,8 @@
         },
         {
           "path": "src/Cost/Alerts.svelte",
-          "checksum": "sha256-+AWjM8TX4S5hOIwMlkju3/HHzQ+XJdrGe6q8q60y0Ic=",
-          "size": 643
+          "checksum": "sha256-eoQJxtsnb03xDJLyPVy/wRzHKG/E1JrEzb67n2W5xXE=",
+          "size": 634
         },
         {
           "path": "src/Cost/BudgetControls.svelte",
@@ -8377,8 +8331,8 @@
         },
         {
           "path": "src/ChatInput.svelte",
-          "checksum": "sha256-5o5jtrj9/Dtn4Vag6iP4rPKxB+bFBOGWTMRlFf2jZJo=",
-          "size": 18023
+          "checksum": "sha256-RdIHJtnMTgm9FMAIVjbwc4d3Ep+pOsKx26T8jw0Cxkc=",
+          "size": 18058
         },
         {
           "path": "src/ChatMessage.svelte",

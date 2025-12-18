@@ -32,6 +32,7 @@ import {
 	type CssImportConfig,
 	type ExtendedCssImportConfig,
 } from '../utils/css-inject.js';
+import { injectIdProvider } from '../utils/id-provider-inject.js';
 import { faceRegistry } from '../registry/faces.js';
 import { logger } from '../utils/logger.js';
 
@@ -496,6 +497,28 @@ export const initAction = async (options: {
 					cssSpinner.warn('CSS injection failed, you can add imports manually');
 				}
 			}
+		}
+	}
+
+	// IdProvider injection
+	const rootLayout = projectDetails.cssEntryPoints.find((e) => e.type === 'root-layout');
+	if (rootLayout) {
+		const idSpinner = ora('Injecting IdProvider...').start();
+		try {
+			const result = await injectIdProvider(rootLayout.path, config);
+			if (result.success) {
+				if (result.skipped) {
+					idSpinner.info('IdProvider already configured');
+				} else {
+					idSpinner.succeed(`IdProvider injected into ${path.relative(cwd, rootLayout.path)}`);
+				}
+			} else {
+				idSpinner.warn(`Failed to inject IdProvider: ${result.error}`);
+			}
+		} catch (error) {
+			idSpinner.warn(
+				`Failed to inject IdProvider: ${error instanceof Error ? error.message : String(error)}`
+			);
 		}
 	}
 

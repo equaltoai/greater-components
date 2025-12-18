@@ -4,6 +4,7 @@
 
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import { TextField } from '@equaltoai/greater-components-primitives';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 	import type {
 		ComposeBoxProps,
 		ComposeBoxDraft,
@@ -58,6 +59,7 @@
 		mediaSlot,
 		pollSlot,
 		class: className = '',
+		id,
 		...restProps
 	}: Props = $props();
 
@@ -118,11 +120,12 @@
 	});
 
 	// Generate unique IDs for accessibility
-	const composeId = `gr-compose-${Math.random().toString(36).substr(2, 9)}`;
-	const textareaId = `${composeId}-textarea`;
-	const cwId = `${composeId}-cw`;
-	const charCountId = `${composeId}-char-count`;
-	const cwCharCountId = `${composeId}-cw-char-count`;
+	const stableId = useStableId('compose-box');
+	const composeId = $derived(id || stableId.value || undefined);
+	const textareaId = $derived(composeId ? `${composeId}-textarea` : undefined);
+	const cwId = $derived(composeId ? `${composeId}-cw` : undefined);
+	const charCountId = $derived(composeId ? `${composeId}-char-count` : undefined);
+	const cwCharCountId = $derived(composeId ? `${composeId}-cw-char-count` : undefined);
 
 	// Auto-resize textarea
 	function resizeTextarea(textarea: HTMLTextAreaElement) {

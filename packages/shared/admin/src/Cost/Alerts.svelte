@@ -25,7 +25,7 @@ Displays active cost alerts and budget warnings from admin streaming store.
 		<p>No active cost alerts.</p>
 	{:else}
 		<ul>
-			{#each alerts as alert (alert.id || Math.random())}
+			{#each alerts as alert, i (alert.id || i)}
 				<li>{alert.message}</li>
 			{/each}
 		</ul>

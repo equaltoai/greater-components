@@ -17,6 +17,7 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { tick } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 
 	/**
 	 * Modal component props interface.
@@ -31,6 +32,13 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 		 * @public
 		 */
 		open?: boolean;
+
+		/**
+		 * ID for the modal element.
+		 *
+		 * @public
+		 */
+		id?: string;
 
 		/**
 		 * Title text to display in the modal header.
@@ -121,6 +129,7 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 
 	let {
 		open = $bindable(false),
+		id,
 		title,
 		size = 'md',
 		closeOnEscape = true,
@@ -145,8 +154,9 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 	let mounted = $state(false);
 
 	// Generate unique ID for ARIA labelling
-	const modalId = $derived(`gr-modal-${Math.random().toString(36).substr(2, 9)}`);
-	const titleId = $derived(`${modalId}-title`);
+	const stableId = useStableId('modal');
+	const modalId = $derived(id || stableId.value || undefined);
+	const titleId = $derived(modalId ? `${modalId}-title` : undefined);
 
 	// Compute modal classes
 	const modalClass = $derived(() => {
@@ -272,7 +282,7 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 		bind:this={dialog}
 		class={modalClass()}
 		aria-modal="true"
-		aria-labelledby={title ? titleId : undefined}
+		aria-labelledby={title && titleId ? titleId : undefined}
 		onkeydown={handleKeydown}
 		onclick={handleBackdropClick}
 		onclose={handleClose}

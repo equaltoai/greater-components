@@ -111,6 +111,7 @@
 	let attachedFiles = $state<AttachedFile[]>([]);
 	let isDragging = $state(false);
 	let isSending = $state(false);
+	let attachmentIdCounter = 0;
 
 	// Constants
 	const MAX_ROWS = 6;
@@ -264,7 +265,8 @@
 	 * Generate unique ID for attachments
 	 */
 	function generateId(): string {
-		return `file_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+		attachmentIdCounter += 1;
+		return `file_${Date.now()}_${attachmentIdCounter}`;
 	}
 
 	/**
