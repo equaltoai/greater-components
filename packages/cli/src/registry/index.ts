@@ -6,6 +6,8 @@
 export interface ComponentFile {
 	path: string;
 	content: string;
+	/** Raw (binary) file content when applicable (e.g. images, fonts). */
+	raw?: Buffer;
 	type: 'component' | 'utils' | 'types' | 'styles';
 	/** Whether to transform import paths based on user's alias configuration */
 	transform?: boolean;
@@ -775,7 +777,11 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				content: '',
 				type: 'component',
 			},
-			{ path: 'lib/components/CreativeTools/CritiqueMode/context.ts', content: '', type: 'types' },
+			{
+				path: 'lib/components/CreativeTools/CritiqueMode/context.svelte.ts',
+				content: '',
+				type: 'types',
+			},
 			{
 				path: 'lib/components/CreativeTools/CritiqueMode/index.ts',
 				content: '',

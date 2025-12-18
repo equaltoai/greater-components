@@ -11,6 +11,50 @@ const CLI_BIN = path.join(CLI_ROOT, 'dist/index.js');
 const FIXTURE_TEMPLATE_ROOT = path.resolve(__dirname, '../fixtures/cli-fixture');
 const TMP_ROOT = path.resolve(__dirname, '../.tmp');
 const REPO_ROOT = path.resolve(CLI_ROOT, '../../');
+const CONTENT_NODE_MODULES = path.join(REPO_ROOT, 'packages/content/node_modules');
+const CONTENT_DEPENDENCIES = [
+	'hast-util-sanitize',
+	'rehype-sanitize',
+	'rehype-stringify',
+	'remark-gfm',
+	'remark-parse',
+	'remark-rehype',
+	'shiki',
+	'unified',
+] as const;
+
+const FACE_CASES = [
+	{
+		face: 'social',
+		componentFile: 'src/lib/components/Status/Root.svelte',
+		componentImport: '$lib/components/Status/Root.svelte',
+		componentName: 'StatusRoot',
+		extraChecks: async (fixtureRoot: string) => {
+			expect(await fs.pathExists(path.join(fixtureRoot, 'src/lib/generics/index.ts'))).toBe(true);
+		},
+	},
+	{
+		face: 'blog',
+		componentFile: 'src/lib/components/Article/Root.svelte',
+		componentImport: '$lib/components/Article/Root.svelte',
+		componentName: 'ArticleRoot',
+		extraChecks: async () => {},
+	},
+	{
+		face: 'community',
+		componentFile: 'src/lib/components/Thread/Root.svelte',
+		componentImport: '$lib/components/Thread/Root.svelte',
+		componentName: 'ThreadRoot',
+		extraChecks: async () => {},
+	},
+	{
+		face: 'artist',
+		componentFile: 'src/lib/components/Artwork/Root.svelte',
+		componentImport: '$lib/components/Artwork/Root.svelte',
+		componentName: 'ArtworkRoot',
+		extraChecks: async () => {},
+	},
+] as const;
 
 beforeAll(async () => {
 	// Build CLI
@@ -18,9 +62,9 @@ beforeAll(async () => {
 	await execa('pnpm', ['build'], { cwd: CLI_ROOT });
 });
 
-test(
-	'CLI Smoke Test: Init, Add, Build',
-	async () => {
+test.each(FACE_CASES)(
+	'CLI Smoke Test: Init, Add, Build ($face face)',
+	async ({ face, componentFile, componentImport, componentName, extraChecks }) => {
 		await fs.ensureDir(TMP_ROOT);
 		const fixtureRoot = await fs.mkdtemp(path.join(TMP_ROOT, 'cli-fixture-'));
 
@@ -47,37 +91,58 @@ test(
 			},
 		});
 
-		console.log('Running init...');
 		try {
+			console.log(`Running init (${face})...`);
 			// 1. Init
-			await execa('node', [CLI_BIN, 'init', '--yes', '--cwd', fixtureRoot], {
+			await execa('node', [CLI_BIN, 'init', '--yes', '--face', face, '--cwd', fixtureRoot], {
 				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
 			});
 			expect(await fs.pathExists(path.join(fixtureRoot, 'components.json'))).toBe(true);
 
-			console.log('Running add faces/social...');
-			// 2. Add Social Face
-			await execa('node', [CLI_BIN, 'add', '--yes', 'faces/social', '--cwd', fixtureRoot], {
+			console.log(`Running add faces/${face}...`);
+			// 2. Add Face
+			await execa('node', [CLI_BIN, 'add', '--yes', `faces/${face}`, '--cwd', fixtureRoot], {
 				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
 			});
 
-			// Verify key files exist
-			expect(await fs.pathExists(path.join(fixtureRoot, 'src/lib/components/Status/Root.svelte'))).toBe(
-				true
+			// Ensure we actually bundle installed code
+			await fs.writeFile(
+				path.join(fixtureRoot, 'src/routes/+page.svelte'),
+				`<script lang="ts">
+\timport ${componentName} from '${componentImport}';
+\timport { createButton } from '$lib/greater/headless/button';
+
+\tconst button = createButton();
+</script>
+
+<h1>Greater CLI Smoke (${face})</h1>
+
+<button use:button.actions.button>Click</button>
+
+<${componentName} />\n`
 			);
-			expect(await fs.pathExists(path.join(fixtureRoot, 'src/lib/generics/index.ts'))).toBe(true);
+
+			// The fixture does not install dependencies from the network.
+			// Provide required third-party deps by linking from the monorepo workspace.
+			for (const dep of CONTENT_DEPENDENCIES) {
+				await ensureNodeModuleLink(fixtureRoot, dep, path.join(CONTENT_NODE_MODULES, dep));
+			}
+
+			// Verify key files exist
+			expect(await fs.pathExists(path.join(fixtureRoot, componentFile))).toBe(true);
 			expect(await fs.pathExists(path.join(fixtureRoot, 'src/lib/greater/headless/button.ts'))).toBe(
 				true
 			);
+			await extraChecks(fixtureRoot);
 
-			console.log('Running svelte-kit sync...');
+			console.log(`Running svelte-kit sync (${face})...`);
 			// 3. SvelteKit sync
 			await execa(path.join(CLI_ROOT, 'node_modules/.bin/svelte-kit'), ['sync'], {
 				cwd: fixtureRoot,
 				stdio: 'inherit',
 			});
 
-			console.log('Running build...');
+			console.log(`Running build (${face})...`);
 			// 4. Build (bundles installed components via routes)
 			await execa(path.join(CLI_ROOT, 'node_modules/.bin/vite'), ['build'], {
 				cwd: fixtureRoot,
@@ -119,4 +184,17 @@ async function getFilesRecursively(dir: string): Promise<string[]> {
 		}
 	}
 	return files;
+}
+
+async function ensureNodeModuleLink(
+	fixtureRoot: string,
+	packageName: string,
+	workspacePackagePath: string
+): Promise<void> {
+	const targetPath = path.join(fixtureRoot, 'node_modules', packageName);
+	if (await fs.pathExists(targetPath)) return;
+	if (!(await fs.pathExists(workspacePackagePath))) return;
+
+	await fs.ensureDir(path.dirname(targetPath));
+	await fs.symlink(workspacePackagePath, targetPath, process.platform === 'win32' ? 'junction' : 'dir');
 }

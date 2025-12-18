@@ -3,6 +3,7 @@
  * Supports Git-based fetching with integrity verification
  */
 
+import path from 'node:path';
 import type { ComponentFile, ComponentMetadata } from '../registry/index.js';
 import { fetchFromGitTag, NetworkError } from './git-fetch.js';
 import { IntegrityError, type ChecksumMap } from './integrity.js';
@@ -80,6 +81,30 @@ function inferFileType(relativePath: string): ComponentFile['type'] {
 	return 'utils';
 }
 
+const BINARY_EXTENSIONS = new Set([
+	'.png',
+	'.jpg',
+	'.jpeg',
+	'.gif',
+	'.webp',
+	'.avif',
+	'.ico',
+	'.bmp',
+	'.tiff',
+	'.svg',
+	'.woff',
+	'.woff2',
+	'.ttf',
+	'.otf',
+	'.eot',
+	'.wasm',
+]);
+
+function isBinaryFilePath(filePath: string): boolean {
+	const ext = path.extname(filePath).toLowerCase();
+	return BINARY_EXTENSIONS.has(ext);
+}
+
 function buildCorePackageFileList(index: RegistryIndex, packageName: string): ComponentFile[] {
 	const entry = index.components[packageName];
 	if (!entry) {
@@ -92,7 +117,7 @@ function buildCorePackageFileList(index: RegistryIndex, packageName: string): Co
 			path: `greater/${packageName}/${withoutSrc}`,
 			content: '',
 			type: inferFileType(withoutSrc),
-			transform: true,
+			transform: !isBinaryFilePath(withoutSrc),
 		};
 	});
 }
@@ -361,9 +386,13 @@ export async function fetchComponentFiles(
 				expectedChecksum,
 			});
 
+			const isBinary = isBinaryFilePath(file.path);
+
 			files.push({
 				...file,
-				content: buffer.toString('utf-8'),
+				content: isBinary ? '' : buffer.toString('utf-8'),
+				raw: isBinary ? buffer : undefined,
+				transform: isBinary ? false : file.transform,
 			});
 		} catch (error) {
 			throw new Error(

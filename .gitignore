@@ -80,6 +80,7 @@ storybook-static/
 
 .playwright-mcp/
 .tmp-tabs-restprops/
+packages/cli/tests/.tmp/
 working/
 
 .pai

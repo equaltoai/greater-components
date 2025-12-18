@@ -18,10 +18,15 @@ export async function ensureDir(dirPath: string): Promise<void> {
 /**
  * Write file with directory creation
  */
-export async function writeFile(filePath: string, content: string): Promise<void> {
+export async function writeFile(filePath: string, content: string | Buffer): Promise<void> {
 	const dir = path.dirname(filePath);
 	await ensureDir(dir);
-	await fs.writeFile(filePath, content, 'utf-8');
+	if (typeof content === 'string') {
+		await fs.writeFile(filePath, content, 'utf-8');
+		return;
+	}
+
+	await fs.writeFile(filePath, content);
 }
 
 /**
@@ -60,7 +65,7 @@ export async function writeComponentFiles(
 ): Promise<void> {
 	for (const file of files) {
 		const filePath = path.join(targetDir, file.path);
-		await writeFile(filePath, file.content);
+		await writeFile(filePath, file.raw ?? file.content);
 	}
 }
 
@@ -78,6 +83,19 @@ export async function writeComponentFilesWithTransform(
 
 	for (const file of files) {
 		const filePath = path.join(targetDir, file.path);
+
+		// Binary files (or explicitly non-transforming files) are written as-is.
+		if (file.raw || file.transform === false) {
+			transformResults.push({
+				content: '',
+				transformedCount: 0,
+				transformedPaths: [],
+				hasChanges: false,
+			});
+			await writeFile(filePath, file.raw ?? file.content);
+			writtenFiles.push(filePath);
+			continue;
+		}
 
 		// Transform imports based on file type
 		const result = transformImports(file.content, config, file.path);

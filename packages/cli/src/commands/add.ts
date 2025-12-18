@@ -339,9 +339,7 @@ export const addAction = async (
 	// In vendored mode, headless primitives are provided by the vendored headless core package.
 	// Skip installing them as transitive dependencies to avoid duplicated and inconsistent layouts.
 	if (isVendoredMode && needsCorePackages) {
-		resolution.resolved = resolution.resolved.filter(
-			(dep) => dep.type !== 'primitive' || dep.isDirectRequest
-		);
+		resolution.resolved = resolution.resolved.filter((dep) => dep.type !== 'primitive');
 	}
 
 	// Ensure the umbrella package is installed when installing any non-headless components.

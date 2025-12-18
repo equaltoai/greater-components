@@ -34,7 +34,7 @@ const PACKAGE_CONFIGS = {
 	primitives: {
 		type: 'primitives',
 		srcDir: 'src',
-		extensions: ['.svelte', '.ts', '.js', '.css'],
+		extensions: ['.svelte', '.ts', '.js', '.css', '.png'],
 	},
 	headless: {
 		type: 'primitives',
@@ -49,7 +49,7 @@ const PACKAGE_CONFIGS = {
 	tokens: {
 		type: 'utilities',
 		srcDir: 'src',
-		extensions: ['.css', '.ts', '.js'],
+		extensions: ['.css', '.ts', '.js', '.json'],
 	},
 	utils: {
 		type: 'utilities',

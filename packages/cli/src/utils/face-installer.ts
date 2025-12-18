@@ -104,10 +104,24 @@ export function resolveFaceDependencies(
 		}
 	}
 
-	return resolveDependencies(items, {
+	const resolution = resolveDependencies(items, {
 		includeOptional: !options.skipOptional,
 		skipInstalled: options.skipInstalled,
 	});
+
+	for (const dep of manifest.dependencies) {
+		if (!resolution.npmDependencies.some((d) => d.name === dep.name)) {
+			resolution.npmDependencies.push(dep);
+		}
+	}
+
+	for (const dep of manifest.devDependencies) {
+		if (!resolution.npmDevDependencies.some((d) => d.name === dep.name)) {
+			resolution.npmDevDependencies.push(dep);
+		}
+	}
+
+	return resolution;
 }
 
 /**

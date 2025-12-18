@@ -430,7 +430,7 @@ export function transformImports(
 export function hasGreaterImports(content: string): boolean {
 	if (!content.includes('@equaltoai/greater-components')) return false;
 
-	const stripped = stripComments(content);
+	const stripped = stripComments(stripHtmlComments(content));
 
 	for (const pattern of [
 		IMPORT_PATTERNS.esImport,
@@ -451,6 +451,12 @@ export function hasGreaterImports(content: string): boolean {
 }
 
 type StripState = 'normal' | 'line-comment' | 'block-comment' | 'single' | 'double' | 'template';
+
+function stripHtmlComments(content: string): string {
+	if (!content.includes('<!--')) return content;
+
+	return content.replace(/<!--[\s\S]*?-->/g, (match) => match.replace(/[^\n]/g, ' '));
+}
 
 function stripComments(content: string): string {
 	let state: StripState = 'normal';
