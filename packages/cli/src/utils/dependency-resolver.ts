@@ -3,6 +3,7 @@
  * Builds dependency trees, detects cycles, and orders installation
  */
 
+import type { RegistryIndex } from './registry-index.js';
 import {
 	getComponent,
 	type ComponentMetadata,
@@ -62,6 +63,8 @@ export interface ResolutionOptions {
 	maxDepth?: number;
 	/** Skip already installed components */
 	skipInstalled?: string[];
+	/** Registry index for dynamic resolution */
+	registryIndex?: RegistryIndex;
 }
 
 /**
@@ -75,23 +78,51 @@ interface ResolutionState {
 	missing: Array<{ name: string; requiredBy: string }>;
 	npmDeps: Map<string, ComponentDependency>;
 	npmDevDeps: Map<string, ComponentDependency>;
+	registryIndex?: RegistryIndex;
 }
 
 /**
  * Get all dependencies for a component (registry + face includes)
  */
 function getComponentDependencies(
-	_name: string,
-	metadata: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata
+	name: string,
+	metadata: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata,
+	registryIndex?: RegistryIndex
 ): string[] {
 	const deps: string[] = [];
 
-	// Registry dependencies (other Greater components)
-	if ('registryDependencies' in metadata && metadata.registryDependencies) {
-		deps.push(...metadata.registryDependencies);
+	// If we have a registry index, use it as the source of truth for internal dependencies
+	if (registryIndex) {
+		const indexEntry =
+			registryIndex.components[name] ||
+			registryIndex.faces?.[name] ||
+			registryIndex.shared?.[name];
+
+		if (indexEntry) {
+			// In registry-index schema: 'dependencies' are internal registry deps
+			if (indexEntry.dependencies) {
+				deps.push(...indexEntry.dependencies.map((d) => d.name));
+			}
+			
+			// For faces, we still need includes from metadata if not fully expanded in deps
+			// But generate-registry-index should have put them in dependencies.
+			// Let's keep face includes just in case, but usually registry deps are sufficient.
+		}
+	} 
+	
+	// Fallback or augmentation with static metadata
+	if (!registryIndex || deps.length === 0) {
+		// Registry dependencies (other Greater components)
+		if ('registryDependencies' in metadata && metadata.registryDependencies) {
+			deps.push(...metadata.registryDependencies);
+		}
 	}
 
 	// Face includes (primitives, shared, patterns, components)
+	// These are structural inclusions, not just dependencies, so we always include them
+	// UNLESS the registry index already accounts for them in 'dependencies'.
+	// But `includes` is used for more than just installation (e.g. constructing the face).
+	// We should preserve them.
 	if ('includes' in metadata) {
 		const face = metadata as FaceManifest;
 		deps.push(...face.includes.primitives);
@@ -198,19 +229,38 @@ function resolveComponent(
 	state.path.push(name);
 
 	// Collect NPM dependencies
-	if ('dependencies' in metadata && metadata.dependencies) {
-		for (const dep of metadata.dependencies) {
-			state.npmDeps.set(dep.name, dep);
+	// Priority: Registry Index (dynamic) > Static Metadata
+	let npmDepsFound = false;
+	
+	if (state.registryIndex) {
+		const indexEntry = 
+			state.registryIndex.components[name] || 
+			state.registryIndex.faces?.[name] || 
+			state.registryIndex.shared?.[name];
+			
+		if (indexEntry && indexEntry.peerDependencies && indexEntry.peerDependencies.length > 0) {
+			for (const dep of indexEntry.peerDependencies) {
+				state.npmDeps.set(dep.name, { name: dep.name, version: dep.version, dev: dep.dev });
+			}
+			npmDepsFound = true;
 		}
 	}
-	if ('devDependencies' in metadata && metadata.devDependencies) {
-		for (const dep of metadata.devDependencies) {
-			state.npmDevDeps.set(dep.name, dep);
+
+	if (!npmDepsFound) {
+		if ('dependencies' in metadata && metadata.dependencies) {
+			for (const dep of metadata.dependencies) {
+				state.npmDeps.set(dep.name, dep);
+			}
+		}
+		if ('devDependencies' in metadata && metadata.devDependencies) {
+			for (const dep of metadata.devDependencies) {
+				state.npmDevDeps.set(dep.name, dep);
+			}
 		}
 	}
 
 	// Get and resolve dependencies
-	const dependencies = getComponentDependencies(name, metadata);
+	const dependencies = getComponentDependencies(name, metadata, state.registryIndex);
 
 	for (const depName of dependencies) {
 		resolveComponent(depName, state, depth + 1, false, options, name);
@@ -247,6 +297,7 @@ export function resolveDependencies(
 		missing: [],
 		npmDeps: new Map(),
 		npmDevDeps: new Map(),
+		registryIndex: options.registryIndex
 	};
 
 	// Resolve each requested item
