@@ -543,7 +543,7 @@ export function announceToScreenReader(
  * Create ARIA description for an element
  */
 export function createAriaDescription(element: HTMLElement, description: string): () => void {
-	const descId = `desc-${Math.random().toString(36).substring(2, 9)}`;
+	const descId = `desc-${self.crypto.randomUUID()}`;
 
 	const descElement = document.createElement('span');
 	descElement.id = descId;

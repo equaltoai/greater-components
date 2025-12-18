@@ -15,7 +15,7 @@ export default defineConfig({
 			formats: ['es'],
 		},
 		rollupOptions: {
-			external: computeExternal(__dirname),
+			external: [...computeExternal(__dirname), 'vitest', /^vitest\//],
 			output: {
 				dir: 'dist',
 				format: 'es',

@@ -16,6 +16,7 @@ export interface ComponentFile {
 export interface ComponentDependency {
 	name: string;
 	version: string;
+	dev?: boolean;
 }
 
 /** Component type categories */

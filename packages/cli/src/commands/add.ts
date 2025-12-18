@@ -49,7 +49,7 @@ import {
 	injectFaceCss,
 	displayFaceInstallSummary,
 } from '../utils/face-installer.js';
-import { resolveRef } from '../utils/registry-index.js';
+import { resolveRef, fetchRegistryIndex, type RegistryIndex } from '../utils/registry-index.js';
 import { hasGreaterImports } from '../utils/transform.js';
 
 const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
@@ -177,6 +177,19 @@ export const addAction = async (
 
 	const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
 
+	// Fetch registry index for dependency resolution
+	const registrySpinner = ora('Loading registry...').start();
+	let registryIndex: RegistryIndex | undefined;
+	try {
+		registryIndex = await fetchRegistryIndex(resolved.ref);
+		registrySpinner.succeed('Registry loaded');
+	} catch (error) {
+		registrySpinner.warn(
+			`Failed to load registry index: ${error instanceof Error ? error.message : String(error)}`
+		);
+		logger.warn(chalk.yellow('Falling back to static dependency resolution (may be outdated)'));
+	}
+
 	// Get items to install
 	let selectedItems: string[] = items;
 
@@ -234,6 +247,7 @@ export const addAction = async (
 		const faceResolution = resolveFaceDependencies(faceName, {
 			skipOptional: !options.all,
 			skipInstalled,
+			registryIndex,
 		});
 
 		if (!faceResolution) {
@@ -248,6 +262,7 @@ export const addAction = async (
 			const additionalResolution = resolveDependencies(nonFaceItems, {
 				includeOptional: options.all,
 				skipInstalled,
+				registryIndex,
 			});
 			// Merge resolutions
 			for (const dep of additionalResolution.resolved) {
@@ -263,6 +278,7 @@ export const addAction = async (
 		resolution = resolveDependencies(parseResult.items, {
 			includeOptional: options.all,
 			skipInstalled,
+			registryIndex,
 		});
 	}
 
@@ -311,6 +327,7 @@ export const addAction = async (
 			const coreResolution = resolveDependencies(coreItems, {
 				includeOptional: options.all,
 				skipInstalled,
+				registryIndex,
 			});
 
 			if (!coreResolution.success) {
@@ -586,8 +603,14 @@ export const addAction = async (
 	}
 
 	// Install npm dependencies
-	const allDeps = resolution.npmDependencies;
-	const allDevDeps = resolution.npmDevDependencies;
+	const allDeps = resolution.npmDependencies.filter((dep) => {
+		if (!isVendoredMode) return true;
+		return !dep.name.startsWith('@equaltoai/greater-components-');
+	});
+	const allDevDeps = resolution.npmDevDependencies.filter((dep) => {
+		if (!isVendoredMode) return true;
+		return !dep.name.startsWith('@equaltoai/greater-components-');
+	});
 
 	// Check which dependencies are missing
 	const missingDeps = await getMissingDependencies(allDeps, cwd);

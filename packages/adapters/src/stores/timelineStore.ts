@@ -1369,7 +1369,7 @@ export function createTimelineStore(config: TimelineConfig): TimelineStore {
 	}
 
 	function generateId(): string {
-		return `timeline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+		return `timeline_${globalThis.crypto.randomUUID()}`;
 	}
 
 	// Lesser-specific filters and selectors

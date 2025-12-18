@@ -15,6 +15,8 @@ import { doctorCommand } from './commands/doctor.js';
 import { auditCommand } from './commands/audit.js';
 import { cacheCommand } from './commands/cache.js';
 
+console.log('[DEBUG] ENV GREATER_CLI_LOCAL_REPO_ROOT:', process.env['GREATER_CLI_LOCAL_REPO_ROOT']);
+
 const program = new Command()
 	.name('greater')
 	.description('CLI for adding Greater Components to your project')

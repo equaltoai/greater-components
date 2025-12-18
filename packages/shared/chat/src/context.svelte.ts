@@ -130,14 +130,14 @@ export interface ChatContextValue {
  * Generate a unique message ID
  */
 function generateMessageId(): string {
-	return `msg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+	return `msg_${globalThis.crypto.randomUUID()}`;
 }
 
 /**
  * Generate a unique tool call ID
  */
 function generateToolCallId(): string {
-	return `tc_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+	return `tc_${globalThis.crypto.randomUUID()}`;
 }
 
 /**

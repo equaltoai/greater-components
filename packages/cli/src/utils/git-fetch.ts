@@ -150,6 +150,7 @@ async function fetchWithRetry(ref: string, filePath: string): Promise<Buffer> {
 	const localRepoRoot = process.env['GREATER_CLI_LOCAL_REPO_ROOT'];
 	if (localRepoRoot) {
 		const localPath = path.join(localRepoRoot, filePath);
+		console.log(`[DEBUG] Fetching local file: ${localPath}`);
 		try {
 			return await fs.readFile(localPath);
 		} catch {

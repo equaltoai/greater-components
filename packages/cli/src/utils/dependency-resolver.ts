@@ -94,22 +94,22 @@ function getComponentDependencies(
 	// If we have a registry index, use it as the source of truth for internal dependencies
 	if (registryIndex) {
 		const indexEntry =
-			registryIndex.components[name] ||
-			registryIndex.faces?.[name] ||
-			registryIndex.shared?.[name];
+			registryIndex.components[name] || registryIndex.faces?.[name] || registryIndex.shared?.[name];
 
 		if (indexEntry) {
 			// In registry-index schema: 'dependencies' are internal registry deps
 			if (indexEntry.dependencies) {
-				deps.push(...indexEntry.dependencies.map((d) => d.name));
+				const names = indexEntry.dependencies.map((d) => d.name);
+				console.log(`[DEBUG] Resolved dependencies for ${name} from registry:`, names);
+				deps.push(...names);
 			}
-			
-			// For faces, we still need includes from metadata if not fully expanded in deps
-			// But generate-registry-index should have put them in dependencies.
-			// Let's keep face includes just in case, but usually registry deps are sufficient.
+		} else {
+			console.log(`[DEBUG] Entry not found in registry for ${name}`);
 		}
-	} 
-	
+	} else {
+		console.log(`[DEBUG] No registry index available for ${name}`);
+	}
+
 	// Fallback or augmentation with static metadata
 	if (!registryIndex || deps.length === 0) {
 		// Registry dependencies (other Greater components)
@@ -231,13 +231,13 @@ function resolveComponent(
 	// Collect NPM dependencies
 	// Priority: Registry Index (dynamic) > Static Metadata
 	let npmDepsFound = false;
-	
+
 	if (state.registryIndex) {
-		const indexEntry = 
-			state.registryIndex.components[name] || 
-			state.registryIndex.faces?.[name] || 
+		const indexEntry =
+			state.registryIndex.components[name] ||
+			state.registryIndex.faces?.[name] ||
 			state.registryIndex.shared?.[name];
-			
+
 		if (indexEntry && indexEntry.peerDependencies && indexEntry.peerDependencies.length > 0) {
 			for (const dep of indexEntry.peerDependencies) {
 				state.npmDeps.set(dep.name, { name: dep.name, version: dep.version, dev: dep.dev });
@@ -297,7 +297,7 @@ export function resolveDependencies(
 		missing: [],
 		npmDeps: new Map(),
 		npmDevDeps: new Map(),
-		registryIndex: options.registryIndex
+		registryIndex: options.registryIndex,
 	};
 
 	// Resolve each requested item

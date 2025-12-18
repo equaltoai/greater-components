@@ -1061,7 +1061,7 @@ export function createNotificationStore(config: NotificationConfig): Notificatio
 	}
 
 	function generateId(): string {
-		return `notification_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+		return `notification_${globalThis.crypto.randomUUID()}`;
 	}
 
 	// Lesser-specific notification helpers

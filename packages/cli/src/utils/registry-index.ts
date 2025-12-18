@@ -39,6 +39,17 @@ export const fileChecksumSchema = z.object({
 export type FileChecksum = z.infer<typeof fileChecksumSchema>;
 
 /**
+ * Component dependency schema
+ */
+export const componentDependencySchema = z.object({
+	name: z.string(),
+	version: z.string(),
+	dev: z.boolean().optional(),
+});
+
+export type ComponentDependency = z.infer<typeof componentDependencySchema>;
+
+/**
  * Component entry in the registry index
  */
 export const registryComponentSchema = z.object({
@@ -47,8 +58,8 @@ export const registryComponentSchema = z.object({
 	description: z.string().optional(),
 	type: z.string().optional(),
 	files: z.array(fileChecksumSchema),
-	dependencies: z.array(z.string()).optional().default([]),
-	peerDependencies: z.array(z.string()).optional().default([]),
+	dependencies: z.array(componentDependencySchema).optional().default([]),
+	peerDependencies: z.array(componentDependencySchema).optional().default([]),
 	tags: z.array(z.string()).optional().default([]),
 });
 
@@ -76,8 +87,8 @@ export const registryFaceSchema = z.object({
 			tokens: z.string().optional(),
 		})
 		.optional(),
-	dependencies: z.array(z.string()).optional().default([]),
-	peerDependencies: z.array(z.string()).optional().default([]),
+	dependencies: z.array(componentDependencySchema).optional().default([]),
+	peerDependencies: z.array(componentDependencySchema).optional().default([]),
 });
 
 export type RegistryFace = z.infer<typeof registryFaceSchema>;
@@ -91,7 +102,8 @@ export const registrySharedSchema = z.object({
 	description: z.string().optional(),
 	exports: z.array(z.string()).optional().default([]),
 	files: z.array(fileChecksumSchema),
-	dependencies: z.array(z.string()).optional().default([]),
+	dependencies: z.array(componentDependencySchema).optional().default([]),
+	peerDependencies: z.array(componentDependencySchema).optional().default([]),
 	types: z.array(z.string()).optional().default([]),
 });
 
@@ -281,6 +293,22 @@ export async function fetchRegistryIndex(
 	} = {}
 ): Promise<RegistryIndex> {
 	const { skipCache = false, forceRefresh = false, ttlMs = DEFAULT_TTL_MS } = options;
+
+	// Check for local repo override
+	if (process.env['GREATER_CLI_LOCAL_REPO_ROOT']) {
+		const localPath = path.join(
+			process.env['GREATER_CLI_LOCAL_REPO_ROOT'],
+			'registry',
+			'index.json'
+		);
+
+		if (await fs.pathExists(localPath)) {
+			console.log(`[DEBUG] Loading registry from local path: ${localPath}`);
+			const content = await fs.readFile(localPath, 'utf8');
+            console.log(`[DEBUG] Registry content start: ${content.substring(0, 100)}`);
+			return registryIndexSchema.parse(JSON.parse(content));
+		}
+	}
 
 	// Check cache first (unless skipping or forcing refresh)
 	if (!skipCache && !forceRefresh) {

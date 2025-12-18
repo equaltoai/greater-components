@@ -153,7 +153,7 @@ export function createOfflineStore(config: OfflineStoreConfig = {}): OfflineStor
 	function queueAction(item: Omit<SyncQueueItem, 'id' | 'createdAt' | 'retryCount'>): void {
 		const queueItem: SyncQueueItem = {
 			...item,
-			id: `sync-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+			id: `sync-${globalThis.crypto.randomUUID()}`,
 			createdAt: Date.now(),
 			retryCount: 0,
 		};

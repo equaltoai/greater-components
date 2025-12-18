@@ -8,6 +8,7 @@ import chalk from 'chalk';
 import type { FaceManifest } from '../registry/index.js';
 import { getFaceManifest } from '../registry/faces.js';
 import { resolveDependencies, type DependencyResolutionResult } from './dependency-resolver.js';
+import type { RegistryIndex } from './registry-index.js';
 import { parseItemName, type ParsedItem } from './item-parser.js';
 import type { ComponentConfig } from './config.js';
 import { writeConfig } from './config.js';
@@ -32,6 +33,8 @@ export interface FaceInstallOptions {
 	skipOptional?: boolean;
 	/** Already installed components to skip */
 	skipInstalled?: string[];
+	/** Registry index for dynamic resolution */
+	registryIndex?: RegistryIndex;
 }
 
 /**
@@ -107,6 +110,7 @@ export function resolveFaceDependencies(
 	const resolution = resolveDependencies(items, {
 		includeOptional: !options.skipOptional,
 		skipInstalled: options.skipInstalled,
+		registryIndex: options.registryIndex,
 	});
 
 	for (const dep of manifest.dependencies) {

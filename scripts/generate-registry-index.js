@@ -19,6 +19,7 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { builtinModules } from 'node:module';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -107,6 +108,74 @@ function computeChecksum(content) {
 	const hash = createHash('sha256');
 	hash.update(content);
 	return `sha256-${hash.digest('base64')}`;
+}
+
+/**
+ * Extract imports from file content
+ */
+function extractImports(content) {
+	const imports = new Set();
+
+	// Static imports
+	const importFromRegex = /^\s*import\s+(?:type\s+)?[\s\S]*?\sfrom\s+['"]([^'"]+)['"]/gm;
+	// Side-effect imports
+	const importSideEffectRegex = /^\s*import\s+['"]([^'"]+)['"]/gm;
+	// Export from
+	const exportFromRegex =
+		/^\s*export\s+(?:type\s+)?(?:\*|\{[\s\S]*?\})\s*from\s+['"]([^'"]+)['"]/gm;
+	// Dynamic imports
+	const dynamicImportRegex = /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+
+	let match;
+	while ((match = importFromRegex.exec(content)) !== null) {
+		imports.add(match[1]);
+	}
+	while ((match = importSideEffectRegex.exec(content)) !== null) {
+		imports.add(match[1]);
+	}
+	while ((match = exportFromRegex.exec(content)) !== null) {
+		imports.add(match[1]);
+	}
+	while ((match = dynamicImportRegex.exec(content)) !== null) {
+		imports.add(match[1]);
+	}
+
+	return Array.from(imports);
+}
+
+/**
+ * Analyze directory for external dependencies
+ */
+function analyzeDependencies(dir, extensions) {
+	const externalDeps = new Set();
+	const files = getFilesRecursive(dir, extensions);
+
+	for (const file of files) {
+		const fullPath = path.join(dir, file);
+		const content = fs.readFileSync(fullPath, 'utf8');
+		const imports = extractImports(content);
+
+		for (const imp of imports) {
+			if (imp.startsWith('.') || imp.startsWith('/')) continue;
+			if (builtinModules.includes(imp) || imp.startsWith('node:')) continue;
+			// Skip Svelte internals as they are implicit peer deps usually
+			if (imp === 'svelte' || imp.startsWith('svelte/')) continue;
+
+			// Handle scoped packages
+			let pkgName = imp;
+			if (imp.startsWith('@')) {
+				const parts = imp.split('/');
+				if (parts.length >= 2) pkgName = `${parts[0]}/${parts[1]}`;
+			} else {
+				const parts = imp.split('/');
+				if (parts.length >= 1) pkgName = parts[0];
+			}
+
+			externalDeps.add(pkgName);
+		}
+	}
+
+	return Array.from(externalDeps).sort();
 }
 
 /**
@@ -205,6 +274,42 @@ function processFiles(packageDir, srcDir, extensions, verbose) {
 }
 
 /**
+ * Collect versions of all workspace packages
+ */
+function getPackageVersions() {
+	const versions = {};
+	
+	// Core packages
+	for (const pkgName of Object.keys(PACKAGE_CONFIGS)) {
+		const p = path.join(PACKAGES_DIR, pkgName, 'package.json');
+		if (fs.existsSync(p)) {
+			 const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
+			 versions[pkg.name] = pkg.version;
+		}
+	}
+	
+	// Faces
+	for (const face of FACES) {
+		const p = path.join(PACKAGES_DIR, 'faces', face, 'package.json');
+		if (fs.existsSync(p)) {
+			 const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
+			 versions[pkg.name] = pkg.version;
+		}
+	}
+	
+	// Shared
+	for (const mod of SHARED_MODULES) {
+		const p = path.join(PACKAGES_DIR, 'shared', mod, 'package.json');
+		if (fs.existsSync(p)) {
+			 const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
+			 versions[pkg.name] = pkg.version;
+		}
+	}
+	
+	return versions;
+}
+
+/**
  * Read manifest.json if it exists
  */
 function readManifest(manifestPath) {
@@ -215,9 +320,44 @@ function readManifest(manifestPath) {
 }
 
 /**
+ * Resolve dependency version from package.json
+ */
+function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
+	if (!packageJson) return 'latest';
+	
+	const allDeps = {
+		...packageJson.dependencies,
+		...packageJson.peerDependencies,
+		...packageJson.devDependencies,
+	};
+	
+	let version = allDeps[depName] || 'latest';
+
+	if (version.startsWith('workspace:')) {
+		if (workspaceVersions && workspaceVersions[depName]) {
+			return workspaceVersions[depName];
+		}
+        console.warn(`[WARN] Could not resolve workspace version for ${depName}`);
+		return 'latest';
+	}
+
+	return version;
+}
+
+/**
+ * Map dependency names to objects with versions
+ */
+function mapDependencies(depNames, packageJson, workspaceVersions) {
+	return depNames.map((name) => ({
+		name,
+		version: resolveDependencyVersion(name, packageJson, workspaceVersions),
+	}));
+}
+
+/**
  * Process a package and extract component metadata
  */
-function processPackage(packageName, config, verbose) {
+function processPackage(packageName, config, verbose, workspaceVersions) {
 	const packageDir = path.join(PACKAGES_DIR, packageName);
 	const packageJsonPath = path.join(packageDir, 'package.json');
 
@@ -229,16 +369,33 @@ function processPackage(packageName, config, verbose) {
 	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 	const files = processFiles(packageDir, config.srcDir, config.extensions, verbose);
 
+	// Analyze actual used dependencies from source
+	const detectedDeps = analyzeDependencies(path.join(packageDir, config.srcDir), config.extensions);
+
+	// Filter for internal dependencies (Greater components)
+	const internalDeps = detectedDeps.filter((dep) =>
+		dep.startsWith('@equaltoai/greater-components') && dep !== packageJson.name
+	);
+
+	// Filter for external dependencies (everything else)
+	// We merge detected external deps with declared ones to be safe
+	const externalDepsNames = new Set([
+		...Object.keys(packageJson.dependencies || {}),
+		...Object.keys(packageJson.peerDependencies || {}),
+		...detectedDeps.filter((dep) => !dep.startsWith('@equaltoai/greater-components')),
+	]);
+
 	return {
 		name: packageName,
 		version: packageJson.version,
 		description: packageJson.description || '',
 		type: config.type,
 		files,
-		dependencies: Object.keys(packageJson.dependencies || {}).filter((dep) =>
-			dep.startsWith('@equaltoai/greater-components')
-		),
-		peerDependencies: Object.keys(packageJson.peerDependencies || {}),
+		dependencies: internalDeps.map(dep => ({
+			name: dep.replace('@equaltoai/greater-components-', ''),
+			version: resolveDependencyVersion(dep, packageJson, workspaceVersions)
+		})),
+		peerDependencies: mapDependencies(Array.from(externalDepsNames), packageJson, workspaceVersions),
 		tags: packageJson.keywords || [],
 	};
 }
@@ -246,7 +403,7 @@ function processPackage(packageName, config, verbose) {
 /**
  * Process a face package
  */
-function processFace(faceName, verbose) {
+function processFace(faceName, verbose, workspaceVersions) {
 	const faceDir = path.join(PACKAGES_DIR, 'faces', faceName);
 	const manifestPath = path.join(faceDir, 'manifest.json');
 	const packageJsonPath = path.join(faceDir, 'package.json');
@@ -259,13 +416,39 @@ function processFace(faceName, verbose) {
 
 	// Get version from package.json if it exists, otherwise from manifest
 	let version = manifest.version;
+	let declaredDeps = [];
+	let packageJson = {};
+	
 	if (fs.existsSync(packageJsonPath)) {
-		const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+		packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 		version = packageJson.version || version;
+		declaredDeps = [
+			...Object.keys(packageJson.dependencies || {}),
+			...Object.keys(packageJson.peerDependencies || {}),
+		];
 	}
 
 	// Process source files
-	const files = processFiles(faceDir, 'src', ['.svelte', '.ts', '.js', '.css'], verbose);
+	const extensions = ['.svelte', '.ts', '.js', '.css'];
+	const files = processFiles(faceDir, 'src', extensions, verbose);
+
+	// Analyze actual used dependencies from source
+	const detectedDeps = analyzeDependencies(path.join(faceDir, 'src'), extensions);
+
+	// Combine declared and detected external deps
+	const externalDeps = new Set([
+		...declaredDeps,
+		...detectedDeps.filter((dep) => !dep.startsWith('@equaltoai/greater-components')),
+	]);
+
+	// Internal dependencies often come from manifest, but we can verify with detected ones
+	const internalDeps = new Set([
+		...(manifest.dependencies?.internal || []),
+		...detectedDeps.filter((dep) => dep.startsWith('@equaltoai/greater-components')),
+	]);
+	
+	// Filter self-dependency if packageJson has name
+	const filteredInternalDeps = Array.from(internalDeps).filter(dep => dep !== packageJson.name);
 
 	return {
 		name: faceName,
@@ -275,10 +458,9 @@ function processFace(faceName, verbose) {
 			primitives: Object.keys(manifest.components || {}).filter(
 				(c) => manifest.components[c].subcomponents === undefined
 			),
-			shared:
-				manifest.dependencies?.internal?.map((dep) =>
-					dep.replace('@equaltoai/greater-components-', '')
-				) || [],
+			shared: filteredInternalDeps
+				.map((dep) => dep.replace('@equaltoai/greater-components-', ''))
+				.filter((name) => !name.startsWith('@equaltoai/greater-components')), // Clean up any misses
 			patterns: [],
 			components: Object.keys(manifest.components || {}),
 		},
@@ -287,17 +469,21 @@ function processFace(faceName, verbose) {
 			main: `@equaltoai/greater-components/faces/${faceName}/style.css`,
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
-		dependencies: manifest.dependencies?.internal || [],
-		peerDependencies: manifest.dependencies?.peer || [],
+		dependencies: filteredInternalDeps.sort().map(dep => ({
+			name: dep.replace('@equaltoai/greater-components-', ''),
+			version: resolveDependencyVersion(dep, packageJson, workspaceVersions)
+		})),
+		peerDependencies: mapDependencies(Array.from(externalDeps).sort(), packageJson, workspaceVersions),
 	};
 }
 
 /**
  * Process a shared module
  */
-function processSharedModule(moduleName, verbose) {
+function processSharedModule(moduleName, verbose, workspaceVersions) {
 	const moduleDir = path.join(PACKAGES_DIR, 'shared', moduleName);
 	const manifestPath = path.join(moduleDir, 'manifest.json');
+	const packageJsonPath = path.join(moduleDir, 'package.json');
 
 	const manifest = readManifest(manifestPath);
 	if (!manifest) {
@@ -305,8 +491,36 @@ function processSharedModule(moduleName, verbose) {
 		return null;
 	}
 
+	let declaredDeps = [];
+	let packageJson = {};
+	
+	if (fs.existsSync(packageJsonPath)) {
+		packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+		declaredDeps = [
+			...Object.keys(packageJson.dependencies || {}),
+			...Object.keys(packageJson.peerDependencies || {}),
+		];
+	}
+
 	// Process source files
-	const files = processFiles(moduleDir, 'src', ['.svelte', '.ts', '.js'], verbose);
+	const extensions = ['.svelte', '.ts', '.js'];
+	const files = processFiles(moduleDir, 'src', extensions, verbose);
+
+	// Analyze actual used dependencies from source
+	const detectedDeps = analyzeDependencies(path.join(moduleDir, 'src'), extensions);
+
+	const externalDeps = new Set([
+		...declaredDeps,
+		...detectedDeps.filter((dep) => !dep.startsWith('@equaltoai/greater-components')),
+	]);
+
+	const internalDeps = new Set([
+		...(manifest.dependencies?.internal || []),
+		...detectedDeps.filter((dep) => dep.startsWith('@equaltoai/greater-components')),
+	]);
+
+	// Filter self-dependency
+	const filteredInternalDeps = Array.from(internalDeps).filter(dep => dep !== packageJson.name);
 
 	return {
 		name: moduleName,
@@ -314,7 +528,11 @@ function processSharedModule(moduleName, verbose) {
 		description: manifest.description,
 		exports: Object.keys(manifest.components || {}),
 		files,
-		dependencies: manifest.dependencies?.internal || [],
+		dependencies: filteredInternalDeps.sort().map(dep => ({
+			name: dep.replace('@equaltoai/greater-components-', ''),
+			version: resolveDependencyVersion(dep, packageJson, workspaceVersions)
+		})),
+		peerDependencies: mapDependencies(Array.from(externalDeps).sort(), packageJson, workspaceVersions),
 		types: manifest.types || [],
 	};
 }
@@ -443,6 +661,9 @@ async function main() {
 	const version = getVersion();
 	const ref = getGitRef();
 	const generatedAt = new Date().toISOString();
+	
+	// Get workspace versions
+	const workspaceVersions = getPackageVersions();
 
 	log(`📋 Version: ${version}`, colors.cyan);
 	log(`🏷️  Git ref: ${ref}`, colors.cyan);
@@ -454,7 +675,7 @@ async function main() {
 
 	for (const [packageName, config] of Object.entries(PACKAGE_CONFIGS)) {
 		log(`  Processing ${packageName}...`);
-		const result = processPackage(packageName, config, verbose);
+		const result = processPackage(packageName, config, verbose, workspaceVersions);
 		if (result) {
 			components[packageName] = result;
 			log(`  ✅ ${packageName}: ${result.files.length} files`, colors.green);
@@ -467,7 +688,7 @@ async function main() {
 
 	for (const faceName of FACES) {
 		log(`  Processing ${faceName}...`);
-		const result = processFace(faceName, verbose);
+		const result = processFace(faceName, verbose, workspaceVersions);
 		if (result) {
 			faces[faceName] = result;
 			log(`  ✅ ${faceName}: ${result.files.length} files`, colors.green);
@@ -480,7 +701,7 @@ async function main() {
 
 	for (const moduleName of SHARED_MODULES) {
 		log(`  Processing ${moduleName}...`);
-		const result = processSharedModule(moduleName, verbose);
+		const result = processSharedModule(moduleName, verbose, workspaceVersions);
 		if (result) {
 			shared[moduleName] = result;
 			log(`  ✅ ${moduleName}: ${result.files.length} files`, colors.green);

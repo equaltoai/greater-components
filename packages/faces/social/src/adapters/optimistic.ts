@@ -269,7 +269,7 @@ export class OptimisticManager<TState> {
  * Helper to generate unique update IDs
  */
 export function generateUpdateId(prefix: string = 'update'): OptimisticUpdateId {
-	return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+	return `${prefix}_${globalThis.crypto.randomUUID()}`;
 }
 
 /**

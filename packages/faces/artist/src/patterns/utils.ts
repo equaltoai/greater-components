@@ -335,7 +335,7 @@ export function composeClasses(...classes: (string | undefined | null | false)[]
  * Create unique ID for pattern instances
  */
 export function createPatternId(prefix: string): string {
-	return `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
+	return `${prefix}-${globalThis.crypto.randomUUID()}`;
 }
 
 /**

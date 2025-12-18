@@ -118,7 +118,7 @@ export function createCritiquePattern(
 
 	// Generate annotation ID
 	const generateAnnotationId = (): string => {
-		return `annotation-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+		return `annotation-${globalThis.crypto.randomUUID()}`;
 	};
 
 	// Add annotation

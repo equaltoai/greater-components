@@ -72,6 +72,7 @@ const mockIndex = {
 			version: '1.0.0',
 			files: [{ path: 'utils.ts', checksum: 'sha256-ghi=' }],
 			dependencies: [],
+			peerDependencies: [],
 			exports: [],
 			types: [],
 		},

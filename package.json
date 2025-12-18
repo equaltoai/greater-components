@@ -48,7 +48,7 @@
     "validate:tokens": "node scripts/audit-tokens-placeholders.mjs",
     "playwright:install": "pnpm --filter @equaltoai/greater-components-testing exec playwright install",
     "playwright:install:with-deps": "pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps",
-    "typecheck": "NODE_OPTIONS='--max-old-space-size=8192' pnpm run sveltekit:sync && NODE_OPTIONS='--max-old-space-size=8192' tsc --noEmit",
+    "typecheck": "NODE_OPTIONS='--max-old-space-size=16384' pnpm run sveltekit:sync && NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "analyze:bundles": "node scripts/analyze-bundles.js",
     "release:tag": "node scripts/release-tag.js",
