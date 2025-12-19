@@ -17,32 +17,26 @@
 
 ## Installation
 
-### Global Installation (Recommended)
+### Run Without Installing (Recommended)
 
 ```bash
-# Using npm
-npm install -g @equaltoai/greater-components-cli
-
-# Using pnpm
-pnpm add -g @equaltoai/greater-components-cli
-
-# Using yarn
-yarn global add @equaltoai/greater-components-cli
-```
-
-### Using npx (No Installation)
-
-```bash
-# Run any command without installing
+npx @equaltoai/greater-components-cli --version
 npx @equaltoai/greater-components-cli init
-npx @equaltoai/greater-components-cli add button
+npx @equaltoai/greater-components-cli add faces/social
 ```
 
-### Verify Installation
+If you prefer pnpm:
 
 ```bash
+pnpm dlx @equaltoai/greater-components-cli init
+pnpm dlx @equaltoai/greater-components-cli add faces/social
+```
+
+### Global Install (Optional)
+
+```bash
+pnpm add -g @equaltoai/greater-components-cli
 greater --version
-# Output: 1.0.0
 ```
 
 ---
@@ -53,7 +47,7 @@ greater --version
 
 ```bash
 cd my-sveltekit-app
-greater init
+npx @equaltoai/greater-components-cli init
 ```
 
 This creates a `components.json` configuration file and optionally injects CSS imports.
@@ -62,31 +56,31 @@ This creates a `components.json` configuration file and optionally injects CSS i
 
 ```bash
 # Add a single component
-greater add button
+npx @equaltoai/greater-components-cli add button
 
 # Add multiple components
-greater add button modal menu tabs
+npx @equaltoai/greater-components-cli add button modal menu tabs
 
 # Add a complete face (component bundle)
-greater add faces/social
+npx @equaltoai/greater-components-cli add faces/social
 
 # Interactive selection
-greater add
+npx @equaltoai/greater-components-cli add
 ```
 
 ### 3. Use Components
 
 By default, the CLI installs source files under `src/lib`:
 
-- Face components: `$lib/components/...`
-- Shared modules: `$lib/components/<module>/...`
-- Patterns: `$lib/patterns/...`
-- Headless primitives: `$lib/primitives/...`
-- Adapters: `$lib/adapters/...`
+- Core packages (vendored): `$lib/greater/*` (primitives, headless, icons, tokens, utils, content, adapters)
+- Face/compound components: `$lib/components/*`
+- Shared modules: `$lib/components/<module>/*`
+- Patterns: `$lib/patterns/*`
+- Face generics (when applicable): `$lib/generics/*`
 
 ```svelte
 <script lang="ts">
-	import { createButton } from '$lib/primitives/button';
+	import { createButton } from '$lib/greater/headless/button';
 
 	const button = createButton({
 		onClick: () => console.log('Clicked!'),
@@ -429,13 +423,15 @@ The configuration file created by `greater init`:
 	"$schema": "https://greater.components.dev/schema.json",
 	"version": "1.0.0",
 	"ref": "latest",
+	"installMode": "vendored",
 	"style": "default",
 	"aliases": {
 		"components": "$lib/components",
 		"utils": "$lib/utils",
 		"ui": "$lib/components/ui",
 		"lib": "$lib",
-		"hooks": "$lib/primitives"
+		"hooks": "$lib/primitives",
+		"greater": "$lib/greater"
 	},
 	"css": {
 		"tokens": true,
@@ -450,6 +446,7 @@ The configuration file created by `greater init`:
 
 Notes:
 
+- Registry file paths starting with `greater/` install relative to `aliases.greater` (default: `$lib/greater`).
 - Registry file paths starting with `lib/` install relative to `aliases.lib` (default: `$lib`) and keep their `components/`, `patterns/`, `primitives/`, and `adapters/` subfolders.
 - Registry file paths starting with `shared/` install relative to `aliases.components` (default: `$lib/components`).
 
@@ -460,16 +457,18 @@ Notes:
 | `$schema`            | string       | JSON Schema URL for validation                           |
 | `version`            | string       | Configuration schema version                             |
 | `ref`                | string       | Git tag for fetching components                          |
+| `installMode`        | string       | `vendored` (default) or `hybrid` (legacy)                |
 | `style`              | string       | Style preset: `default`, `new-york`, `minimal`, `custom` |
 | `aliases.components` | string       | Base components directory                                |
 | `aliases.utils`      | string       | Utilities directory                                      |
 | `aliases.ui`         | string       | UI components directory                                  |
 | `aliases.lib`        | string       | Library root                                             |
-| `aliases.hooks`      | string       | Headless primitives directory                            |
+| `aliases.hooks`      | string       | Legacy headless primitives directory                     |
+| `aliases.greater`    | string       | Vendored core packages root                              |
 | `css.tokens`         | boolean      | Include design tokens CSS                                |
 | `css.primitives`     | boolean      | Include primitive styles CSS                             |
 | `css.face`           | string\|null | Active face name                                         |
-| `css.source`         | string       | CSS source mode: `local` (copied files) or `npm`         |
+| `css.source`         | string       | CSS source mode: `local` (copied files) or `npm` (legacy) |
 | `css.localDir`       | string       | Local CSS directory path (relative to `aliases.lib`)     |
 | `installed`          | array        | List of installed components                             |
 
@@ -481,7 +480,7 @@ Notes:
 	"version": "greater-vX.Y.Z",
 	"installedAt": "2024-12-10T12:00:00Z",
 	"modified": false,
-	"checksums": [{ "path": "lib/primitives/button.ts", "checksum": "sha256-abc123..." }]
+	"checksums": [{ "path": "greater/headless/button.ts", "checksum": "sha256-abc123..." }]
 }
 ```
 
@@ -576,9 +575,9 @@ Ensure you're in a valid Svelte project root with:
 Add to your root layout:
 
 ```svelte
-<script>
-	import '@equaltoai/greater-components/tokens/theme.css';
-	import '@equaltoai/greater-components/primitives/style.css';
+<script lang="ts">
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
 </script>
 ```
 

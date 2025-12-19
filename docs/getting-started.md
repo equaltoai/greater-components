@@ -7,7 +7,7 @@ This guide walks you through installing, configuring, and deploying Greater Comp
 **Required:**
 
 - Node.js >= 20.0.0
-- pnpm >= 9.0.0 (recommended) or npm >= 10.0.0
+- pnpm >= 9.0.0 (recommended; via Corepack)
 - Svelte >= 5.0.0 (must support runes system)
 - TypeScript >= 5.0.0 (strongly recommended)
 
@@ -25,12 +25,8 @@ This guide walks you through installing, configuring, and deploying Greater Comp
 
 ## Installation
 
-Greater Components supports two distribution models:
-
-1. **Source-first (recommended):** Use the Greater CLI to copy components and CSS into your repo (shadcn-style).
-2. **Package install:** Install `@equaltoai/greater-components` (umbrella package) and import from package subpaths.
-
-### Option 1: Source-first via CLI (Recommended)
+Greater Components uses a **CLI-first, vendored** distribution model: the CLI copies Greater code + CSS into your repo,
+pinned to a Git ref, so your app has **no runtime dependency** on npm-published Greater packages.
 
 ```bash
 # Initialize in your project (creates components.json and injects CSS imports)
@@ -52,29 +48,19 @@ import '$lib/styles/greater/primitives.css';
 import '$lib/styles/greater/social.css';
 ```
 
+In vendored mode, the CLI also vendors runtime code under:
+
+- Core packages: `$lib/greater/*` (primitives, headless, icons, tokens, utils, content, adapters)
+- Face/components: `$lib/components/*`
+
 See [CLI Guide](./cli-guide.md) for the full command reference and configuration options.
-
-### Option 2: Install the Umbrella Package (npm/pnpm)
-
-```bash
-# pnpm (recommended)
-pnpm add @equaltoai/greater-components
-
-# npm
-npm install @equaltoai/greater-components
-
-# yarn
-yarn add @equaltoai/greater-components
-```
 
 ### Step 1b: Content Package Dependencies (Optional)
 
-If you need CodeBlock or MarkdownRenderer components, install from the `/content` path. These have heavy dependencies that are isolated from the core package:
+If you need `CodeBlock` or `MarkdownRenderer`, import them from the vendored content package:
 
-```bash
-# No additional install needed - dependencies are in the content package
-# Just import from the content path:
-import { CodeBlock, MarkdownRenderer } from '@equaltoai/greater-components/content';
+```ts
+import { CodeBlock, MarkdownRenderer } from '$lib/greater/content';
 ```
 
 **Note:** In v3.0.0, CodeBlock and MarkdownRenderer moved from `/primitives` to `/content` to keep the core package lightweight. If you're only using basic components (Button, Card, Container, etc.), you don't need the content package.
@@ -128,7 +114,7 @@ export default config;
 
 **CRITICAL:** Greater Components uses a layered CSS architecture. You must import tokens **and** component styles.
 
-#### If you installed via CLI (default local CSS mode)
+#### Vendored (default local CSS mode)
 
 ```svelte
 <!-- src/routes/+layout.svelte -->
@@ -138,7 +124,7 @@ export default config;
 	// Optional (if you installed a face)
 	import '$lib/styles/greater/social.css';
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 	let { children } = $props();
 </script>
 
@@ -147,26 +133,7 @@ export default config;
 </ThemeProvider>
 ```
 
-#### If you installed the umbrella package from npm
-
-```svelte
-<!-- src/routes/+layout.svelte -->
-<script lang="ts">
-	import '@equaltoai/greater-components/tokens/theme.css';
-	import '@equaltoai/greater-components/primitives/style.css';
-	// Optional (if using the social face)
-	import '@equaltoai/greater-components/faces/social/style.css';
-
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
-	let { children } = $props();
-</script>
-
-<ThemeProvider>
-	{@render children()}
-</ThemeProvider>
-```
-
-> **Important:** Both imports are required. Without the primitives styles file (`$lib/styles/greater/primitives.css` in CLI local mode, or `@equaltoai/greater-components/primitives/style.css` in npm mode), components render but appear completely unstyled (browser defaults). For advanced CSS configuration, see the [CSS Architecture Guide](./css-architecture.md).
+> **Important:** Both imports are required. Without `$lib/styles/greater/primitives.css`, components render but appear completely unstyled (browser defaults). For advanced CSS configuration, see the [CSS Architecture Guide](./css-architecture.md).
 
 **Why Both Imports Are Required:**
 
@@ -180,32 +147,32 @@ Without the component styles layer, components render with browser defaults.
 
 ```typescript
 // ✅ CORRECT ORDER
-import '@equaltoai/greater-components/tokens/theme.css'; // 1. Tokens first
-import '@equaltoai/greater-components/primitives/style.css'; // 2. Component styles second
-import { Button } from '@equaltoai/greater-components/primitives'; // 3. Components last
+import '$lib/styles/greater/tokens.css'; // 1. Tokens first
+import '$lib/styles/greater/primitives.css'; // 2. Component styles second
+import { Button } from '$lib/greater/primitives'; // 3. Components last
 
 // ❌ WRONG ORDER - Component styles before tokens
-import '@equaltoai/greater-components/primitives/style.css'; // Uses undefined variables!
-import '@equaltoai/greater-components/tokens/theme.css';
+import '$lib/styles/greater/primitives.css'; // Uses undefined variables!
+import '$lib/styles/greater/tokens.css';
 ```
 
 **Common Mistakes:**
 
 ```typescript
 // ❌ WRONG - Missing component styles (most common issue!)
-import '@equaltoai/greater-components/tokens/theme.css';
-import { Button, Card } from '@equaltoai/greater-components/primitives';
+import '$lib/styles/greater/tokens.css';
+import { Button, Card } from '$lib/greater/primitives';
 // Result: Components render but appear as unstyled browser defaults
 
 // ❌ WRONG - CSS imported in child component instead of root
 // src/routes/+page.svelte
-import '@equaltoai/greater-components/tokens/theme.css'; // Too late!
+import '$lib/styles/greater/tokens.css'; // Too late!
 // Should be in +layout.svelte
 
 // ✅ CORRECT - Both CSS layers imported once at root
 // src/routes/+layout.svelte
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
+import '$lib/styles/greater/tokens.css';
+import '$lib/styles/greater/primitives.css';
 ```
 
 **Verification:**
@@ -274,8 +241,8 @@ Create your first component with styled primitives:
 ```svelte
 <!-- src/routes/+page.svelte -->
 <script>
-  import { Button, Modal, ThemeProvider, Card, Heading, Text } from '@equaltoai/greater-components/primitives';
-  import { SettingsIcon } from '@equaltoai/greater-components/icons';
+  import { Button, Modal, ThemeProvider, Card, Heading, Text } from '$lib/greater/primitives';
+  import { SettingsIcon } from '$lib/greater/icons';
 
   let showSettings = $state(false);
 </script>
@@ -338,8 +305,8 @@ Create a component with complete styling control:
 ```svelte
 <!-- src/routes/+page.svelte -->
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
-	import { SettingsIcon } from '@equaltoai/greater-components/icons';
+	import { createButton } from '$lib/greater/headless/button';
+	import { SettingsIcon } from '$lib/greater/icons';
 
 	const button = createButton({
 		type: 'button',
@@ -390,11 +357,11 @@ Create a component with complete styling control:
 
 Create a social timeline using the social face:
 
-````svelte
+```svelte
 <!-- src/routes/+page.svelte -->
-<script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+<script lang="ts">
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 
 	// Initialize Lesser adapter
 	const adapter = new LesserGraphQLAdapter({
@@ -412,12 +379,27 @@ Create a social timeline using the social face:
 
 	<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
 </main>
+```
 
-``` **Create `.env` file:** ```bash VITE_LESSER_ENDPOINT=https://your-instance.social/graphql
-VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql VITE_LESSER_TOKEN=your-auth-token ``` ##
-Local Development ### Run Development Server ```bash # Start dev server (SvelteKit) pnpm dev # Or
-for Vite-only projects vite dev
-````
+Create `.env` file:
+
+```bash
+VITE_LESSER_ENDPOINT=https://your-instance.social/graphql
+VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
+VITE_LESSER_TOKEN=your-auth-token
+```
+
+## Local Development
+
+### Run Development Server
+
+```bash
+# Start dev server (SvelteKit)
+pnpm dev
+
+# Or for Vite-only projects
+vite dev
+```
 
 **What this does:**
 
@@ -506,7 +488,7 @@ netlify deploy --prod
 
 ```svelte
 <script>
-	import { Button } from '@equaltoai/greater-components/primitives';
+	import { Button } from '$lib/greater/primitives';
 
 	let clicks = $state(0);
 </script>
@@ -522,7 +504,7 @@ netlify deploy --prod
 
 ```svelte
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
+	import { createButton } from '$lib/greater/headless/button';
 
 	const button = createButton({
 		onClick: () => alert('Works!'),
@@ -538,7 +520,7 @@ netlify deploy --prod
 
 ```svelte
 <script>
-	import { ThemeProvider, ThemeSwitcher, Button } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider, ThemeSwitcher, Button } from '$lib/greater/primitives';
 </script>
 
 <ThemeProvider>
@@ -572,21 +554,22 @@ curl https://your-instance.social/graphql \
 
 ## Troubleshooting
 
-### Issue: "Cannot find module '@equaltoai/greater-components/primitives'"
+### Issue: "Cannot find module '$lib/greater/primitives'"
 
-**Cause:** Package not installed or not in package.json
+**Cause:** Greater CLI has not been run (or vendored files are missing).
 
 **Solution:**
 
 ```bash
-pnpm add @equaltoai/greater-components
+npx @equaltoai/greater-components-cli init
+npx @equaltoai/greater-components-cli add primitives
 ```
 
 **Verification:**
 
 ```bash
-pnpm list | grep greater-components
-# Should show installed packages
+ls src/lib/greater/primitives
+# Should exist after install
 ```
 
 ### Issue: "Svelte 5 runes not working"
@@ -651,10 +634,10 @@ Ensure your root layout imports both CSS layers:
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
 	// ✅ BOTH imports required
-	import '@equaltoai/greater-components/tokens/theme.css'; // Design tokens
-	import '@equaltoai/greater-components/primitives/style.css'; // Component styles
+	import '$lib/styles/greater/tokens.css'; // Design tokens
+	import '$lib/styles/greater/primitives.css'; // Component styles
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 </script>
 
 <ThemeProvider>

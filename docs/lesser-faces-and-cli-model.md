@@ -454,11 +454,11 @@ Options:
 
 4. **Optionally inject CSS imports**:
    - Detect `+layout.svelte` or `main.ts` entry point
-   - Insert:
-     ```css
-     @import '@equaltoai/greater-components/tokens/theme.css';
-     @import '@equaltoai/greater-components/primitives/style.css';
-     ```
+	   - Insert:
+	     ```css
+	     @import '$lib/styles/greater/tokens.css';
+	     @import '$lib/styles/greater/primitives.css';
+	     ```
 
 **Exit conditions:**
 
@@ -1117,7 +1117,7 @@ greater add faces/social
 
 # 4. Configure Lesser connection
 # In src/lib/lesser.ts
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 	export const lesser = new LesserGraphQLAdapter({
 	  httpEndpoint: 'https://api.myinstance.social/graphql',

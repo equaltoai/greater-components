@@ -31,7 +31,7 @@
 	let MediaViewer;
 
 	onMount(async () => {
-		const module = await import('@equaltoai/greater-components/faces/artist');
+		const module = await import('$lib/components/MediaViewer');
 		MediaViewer = module.MediaViewer;
 	});
 </script>
@@ -45,32 +45,7 @@
 
 ## Federation (API entities)
 
-Federation utilities operate on the API entity types exported from the face (not `ArtworkData`):
-
-```ts
-import {
-	toActivityPubNote,
-	generateArtworkUri,
-	serializeMetadata,
-	serializeLicense,
-	serializeNoAI,
-	type ArtworkEntity,
-} from '@equaltoai/greater-components/faces/artist';
-
-const note = toActivityPubNote(artworkEntity as ArtworkEntity, 'https://example.com');
-
-const uri = generateArtworkUri(
-	'https://example.com',
-	(artworkEntity as ArtworkEntity).account.username,
-	(artworkEntity as ArtworkEntity).id
-);
-
-const metadata = serializeMetadata((artworkEntity as ArtworkEntity).metadata);
-const rights = {
-	license: serializeLicense((artworkEntity as ArtworkEntity).metadata.license),
-	noAI: serializeNoAI((artworkEntity as ArtworkEntity).metadata.noAI),
-};
-```
+Keep ActivityPub transformations in your API/adapters layer (not inside your UI components). The Artist Face UI components expect already-normalized `ArtworkData` and related view models.
 
 ## AI Transparency
 

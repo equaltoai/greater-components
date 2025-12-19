@@ -17,7 +17,7 @@ When the AI is generating a response, use `StreamingText` to show the cursor eff
 
 ```svelte
 <script>
-	import { StreamingText } from '@equaltoai/greater-components/primitives';
+	import { StreamingText } from '$lib/greater/primitives';
 
 	let content = 'Thinking...';
 	let isGenerating = true;
@@ -36,7 +36,7 @@ Once generation is complete, switch to `MarkdownRenderer` to render headings, bo
 
 ````svelte
 <script>
-  import { MarkdownRenderer } from '@equaltoai/greater-components/primitives';
+  import { MarkdownRenderer } from '$lib/greater/content';
 
   const finalResponse = `
   # Solution
@@ -65,8 +65,8 @@ Use `DropZone` to allow users to upload files for context.
 
 ```svelte
 <script>
-	import { DropZone, IconBadge } from '@equaltoai/greater-components/primitives';
-	import { FileIcon } from '@equaltoai/greater-components/icons';
+	import { DropZone, IconBadge } from '$lib/greater/primitives';
+	import { FileIcon } from '$lib/greater/icons';
 
 	function handleDrop(items) {
 		items.forEach((item) => {
@@ -95,7 +95,7 @@ If you want to display code outside of markdown (e.g. a file viewer), use `CodeB
 
 ```svelte
 <script>
-	import { CodeBlock } from '@equaltoai/greater-components/primitives';
+	import { CodeBlock } from '$lib/greater/content';
 </script>
 
 <CodeBlock
@@ -113,15 +113,15 @@ Here is how you can combine them into a simple chat view.
 
 ````svelte
 <script>
+  import { MarkdownRenderer } from '$lib/greater/content';
   import {
-    MarkdownRenderer,
     StreamingText,
     DropZone,
     TextField,
     Button,
     Container,
     Card
-  } from '@equaltoai/greater-components/primitives';
+  } from '$lib/greater/primitives';
 
   let messages = $state([
     { role: 'user', content: 'How do I use array map?' }

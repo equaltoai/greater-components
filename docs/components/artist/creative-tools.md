@@ -5,12 +5,10 @@
 ## Imports
 
 ```ts
-import {
-	WorkInProgress,
-	CritiqueMode,
-	ReferenceBoard,
-	CommissionWorkflow,
-} from '@equaltoai/greater-components/faces/artist';
+import { WorkInProgress } from '$lib/components/CreativeTools/WorkInProgress';
+import { CritiqueMode } from '$lib/components/CreativeTools/CritiqueMode';
+import ReferenceBoard from '$lib/components/CreativeTools/ReferenceBoard.svelte';
+import { CommissionWorkflow } from '$lib/components/CreativeTools/CommissionWorkflow';
 ```
 
 ## `WorkInProgress`
@@ -19,7 +17,7 @@ Work-in-progress documentation as a compound component (thread header, updates l
 
 ```svelte
 <script lang="ts">
-	import { WorkInProgress } from '@equaltoai/greater-components/faces/artist';
+	import { WorkInProgress } from '$lib/components/CreativeTools/WorkInProgress';
 
 	const thread = {
 		id: 'wip-1',
@@ -96,7 +94,7 @@ Standalone mood board / reference collection component.
 
 ```svelte
 <script lang="ts">
-	import { ReferenceBoard } from '@equaltoai/greater-components/faces/artist';
+	import ReferenceBoard from '$lib/components/CreativeTools/ReferenceBoard.svelte';
 
 	const board = {
 		id: 'board-1',
@@ -134,7 +132,7 @@ Commission workflow scaffolding (step nav + context). You provide the step conte
 
 ```svelte
 <script lang="ts">
-	import { CommissionWorkflow } from '@equaltoai/greater-components/faces/artist';
+	import { CommissionWorkflow } from '$lib/components/CreativeTools/CommissionWorkflow';
 
 	const commission = {
 		id: 'comm-1',

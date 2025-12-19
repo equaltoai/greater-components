@@ -45,8 +45,8 @@ concepts:
 
   primitives_package:
     type: component_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/primitives'
+    package_name: '$lib'
+    import_path: '$lib/greater/primitives'
     purpose: 'Styled UI components for any website type - Fediverse, landing pages, marketing sites, documentation'
 
     use_cases:
@@ -145,8 +145,8 @@ concepts:
 
   headless_package:
     type: component_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/headless'
+    package_name: '$lib'
+    import_path: '$lib/greater/headless'
     purpose: 'Behavior-only components for maximum styling control'
     provides:
       - createButton
@@ -183,8 +183,8 @@ concepts:
 
   fediverse_package:
     type: component_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/faces/social'
+    package_name: '$lib'
+    import_path: '$lib/components'
     purpose: 'Social UI components for ActivityPub applications (formerly fediverse)'
     provides:
       - Status_compound_components
@@ -225,8 +225,8 @@ concepts:
 
   chat_package:
     type: component_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/chat'
+    package_name: '$lib'
+    import_path: '$lib/components/chat'
     purpose: 'AI chat interface components with streaming responses, tool calls, and settings'
     provides:
       - Container_component
@@ -312,8 +312,8 @@ concepts:
 
   adapters_package:
     type: integration_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/adapters'
+    package_name: '$lib'
+    import_path: '$lib/greater/adapters'
     purpose: 'Transport adapters, GraphQL integration, and reactive stores for ActivityPub/Lesser'
     provides:
       - LesserGraphQLAdapter
@@ -354,8 +354,8 @@ concepts:
 
   tokens_package:
     type: design_system_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/tokens'
+    package_name: '$lib'
+    import_path: '$lib/greater/tokens'
     purpose: 'Design system tokens and theming infrastructure'
     provides:
       - color_tokens
@@ -383,8 +383,8 @@ concepts:
 
   icons_package:
     type: asset_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/icons'
+    package_name: '$lib'
+    import_path: '$lib/greater/icons'
     purpose: '300+ SVG icons including Fediverse-specific ones'
     provides:
       - ui_icons
@@ -407,8 +407,8 @@ concepts:
 
   utils_package:
     type: utility_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/utils'
+    package_name: '$lib'
+    import_path: '$lib/greater/utils'
     purpose: 'Common utilities for web applications'
     provides:
       - date_formatting
@@ -424,8 +424,8 @@ concepts:
 
   testing_package:
     type: testing_package
-    package_name: '@equaltoai/greater-components'
-    import_path: '@equaltoai/greater-components/testing'
+    package_name: 'monorepo-only'
+    import_path: 'packages/testing'
     purpose: 'Testing utilities and accessibility helpers'
     provides:
       - render_helper

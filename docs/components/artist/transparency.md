@@ -14,7 +14,7 @@ AI usage transparency badge and details (standalone).
 
 ```svelte
 <script lang="ts">
-	import { Transparency } from '@equaltoai/greater-components/faces/artist';
+	import AIDisclosure from '$lib/components/Artwork/AIDisclosure.svelte';
 
 	const usage = {
 		hasAI: true,
@@ -31,7 +31,7 @@ AI usage transparency badge and details (standalone).
 	};
 </script>
 
-<Transparency.AIDisclosure {usage} variant="badge" expandable />
+<AIDisclosure {usage} variant="badge" expandable />
 ```
 
 ### Props
@@ -56,7 +56,7 @@ Human creativity documentation for AI-assisted work.
 
 ```svelte
 <script lang="ts">
-	import { Transparency } from '@equaltoai/greater-components/faces/artist';
+	import ProcessDocumentation from '$lib/components/Transparency/ProcessDocumentation.svelte';
 
 	const steps = [
 		{
@@ -86,7 +86,7 @@ Human creativity documentation for AI-assisted work.
 	];
 </script>
 
-<Transparency.ProcessDocumentation {steps} showAIContribution />
+<ProcessDocumentation {steps} showAIContribution />
 ```
 
 ### Props
@@ -123,7 +123,7 @@ Artist controls for AI training opt-out.
 
 ```svelte
 <script lang="ts">
-	import { Transparency } from '@equaltoai/greater-components/faces/artist';
+	import AIOptOutControls from '$lib/components/Transparency/AIOptOutControls.svelte';
 
 	let status = $state({
 		discoveryAI: true,
@@ -132,7 +132,7 @@ Artist controls for AI training opt-out.
 	});
 </script>
 
-<Transparency.AIOptOutControls currentStatus={status} onUpdate={(next) => (status = next)} />
+<AIOptOutControls currentStatus={status} onUpdate={(next) => (status = next)} />
 ```
 
 ### Settings
@@ -149,7 +149,7 @@ interface GranularAIOptOutStatus {
 
 ```svelte
 <script lang="ts">
-	import { Transparency } from '@equaltoai/greater-components/faces/artist';
+	import EthicalSourcingBadge from '$lib/components/Transparency/EthicalSourcingBadge.svelte';
 
 	const verification = {
 		id: '1',
@@ -161,7 +161,7 @@ interface GranularAIOptOutStatus {
 	};
 </script>
 
-<Transparency.EthicalSourcingBadge {verification} />
+<EthicalSourcingBadge {verification} />
 ```
 
 ## Accessibility
@@ -169,7 +169,7 @@ interface GranularAIOptOutStatus {
 ### Screen Reader Support
 
 ```svelte
-<Transparency.AIDisclosure {usage} />
+<AIDisclosure {usage} />
 ```
 
 ### Keyboard Navigation

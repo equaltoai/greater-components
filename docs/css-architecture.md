@@ -20,10 +20,9 @@ Both layers must be imported for components to render correctly.
 Design tokens are CSS custom properties that define the visual foundation:
 
 ```
-tokens/theme.css              # Base tokens (always required)
-tokens/themes/light.css       # Light theme (default, optional)
-tokens/themes/dark.css        # Dark theme overrides
-tokens/themes/highContrast.css  # Accessibility theme
+styles/greater/tokens.css        # Tokens + themes (required)
+styles/greater/primitives.css    # Primitive styles (required)
+styles/greater/social.css        # Social face styles (optional)
 ```
 
 **Token categories:**
@@ -42,8 +41,8 @@ tokens/themes/highContrast.css  # Accessibility theme
 Component styles define the visual appearance using token variables:
 
 ```
-primitives/style.css                      # Primitive components (Button, Card, etc.)
-faces/social/style.css                    # Social face components (Timeline, Status, Profile, etc.)
+styles/greater/primitives.css             # Primitive components (Button, Card, etc.)
+styles/greater/social.css                 # Social face components (Timeline, Status, Profile, etc.)
 ```
 
 **Component classes include:**
@@ -64,11 +63,11 @@ For apps using only basic components (Button, Card, Container, Heading, Text, et
 ```svelte
 <script lang="ts">
 	// Layer 1: Design tokens (colors, spacing, typography variables)
-	import '@equaltoai/greater-components/tokens/theme.css';
+	import '$lib/styles/greater/tokens.css';
 	// Layer 2: Component styles (button, card, container classes)
-	import '@equaltoai/greater-components/primitives/style.css';
+	import '$lib/styles/greater/primitives.css';
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let { children } = $props();
 </script>
@@ -85,12 +84,12 @@ For apps using social face components (Timeline, Status, Profile, ActionBar, etc
 ```svelte
 <script lang="ts">
 	// Layer 1: Design tokens
-	import '@equaltoai/greater-components/tokens/theme.css';
+	import '$lib/styles/greater/tokens.css';
 	// Layer 2: Primitives + social face styles
-	import '@equaltoai/greater-components/primitives/style.css';
-	import '@equaltoai/greater-components/faces/social/style.css';
+	import '$lib/styles/greater/primitives.css';
+	import '$lib/styles/greater/social.css';
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let { children } = $props();
 </script>
@@ -104,14 +103,10 @@ For apps using social face components (Timeline, Status, Profile, ActionBar, etc
 
 ```svelte
 <script lang="ts">
-	// Layer 1: Base tokens
-	import '@equaltoai/greater-components/tokens/theme.css';
-	// Layer 1b: Dark theme overrides
-	import '@equaltoai/greater-components/tokens/themes/dark.css';
-	// Layer 2: Component styles
-	import '@equaltoai/greater-components/primitives/style.css';
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let { children } = $props();
 </script>
@@ -125,14 +120,10 @@ For apps using social face components (Timeline, Status, Profile, ActionBar, etc
 
 ```svelte
 <script lang="ts">
-	// Layer 1: Base tokens
-	import '@equaltoai/greater-components/tokens/theme.css';
-	// Layer 1b: High contrast overrides
-	import '@equaltoai/greater-components/tokens/themes/highContrast.css';
-	// Layer 2: Component styles
-	import '@equaltoai/greater-components/primitives/style.css';
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let { children } = $props();
 </script>
@@ -148,17 +139,14 @@ For apps using social face components (Timeline, Status, Profile, ActionBar, etc
 
 **Critical:** Tokens must be imported before component styles.
 
-```svelte
-// ✅ CORRECT: Proper import order import '@equaltoai/greater-components/tokens/theme.css'; // 1.
-Base tokens first import '@equaltoai/greater-components/tokens/themes/dark.css'; // 2. Theme
-overrides (optional) import '@equaltoai/greater-components/primitives/style.css'; // 3. Component
-styles last
-```
+```ts
+// ✅ CORRECT: Proper import order
+import '$lib/styles/greater/tokens.css';
+import '$lib/styles/greater/primitives.css';
 
-```svelte
-// ❌ INCORRECT: Component styles before tokens import
-'@equaltoai/greater-components/primitives/style.css'; // Wrong - uses undefined variables import
-'@equaltoai/greater-components/tokens/theme.css'; // Too late - variables needed above
+// ❌ INCORRECT: Component styles before tokens
+import '$lib/styles/greater/primitives.css';
+import '$lib/styles/greater/tokens.css';
 ```
 
 **Why order matters:** Component styles reference token variables like `var(--gr-color-primary-600)`. If tokens aren't loaded first, these variables are undefined and components won't style correctly.
@@ -169,12 +157,12 @@ styles last
 
 | Symptom                                                             | Cause                                        | Solution                                          |
 | ------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
-| Components render but appear completely unstyled (browser defaults) | Missing component CSS                        | Add `primitives/style.css` (and face CSS if used) |
-| Styles partially work, colors/spacing wrong                         | Missing token CSS                            | Add `tokens/theme.css` before component CSS       |
-| Console shows `var(--gr-*)` as invalid value                        | Tokens not loaded or loaded after components | Import `tokens/theme.css` FIRST                   |
-| Dark mode not working                                               | Missing dark theme override                  | Add `tokens/themes/dark.css` after base tokens    |
-| Social face components unstyled                                     | Face CSS not imported                        | Import `faces/social/style.css` after primitives  |
-| Button/Card have no styling but render                              | Component CSS missing                        | Verify `primitives/style.css` is imported         |
+| Components render but appear completely unstyled (browser defaults) | Missing component CSS                        | Add `$lib/styles/greater/primitives.css` (and face CSS if used) |
+| Styles partially work, colors/spacing wrong                         | Missing token CSS                            | Add `$lib/styles/greater/tokens.css` before component CSS       |
+| Console shows `var(--gr-*)` as invalid value                        | Tokens not loaded or loaded after components | Import `$lib/styles/greater/tokens.css` FIRST     |
+| Dark mode not working                                               | Theme not set                                | Ensure `ThemeProvider defaultTheme="dark"` or set `data-theme="dark"` |
+| Social face components unstyled                                     | Face CSS not imported                        | Import `$lib/styles/greater/social.css` after primitives          |
+| Button/Card have no styling but render                              | Component CSS missing                        | Verify `$lib/styles/greater/primitives.css` is imported           |
 
 ### Quick Diagnosis
 
@@ -184,7 +172,7 @@ styles last
 // In browser console
 getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-600');
 // Should return: "#2563eb" (or similar hex color)
-// If empty: tokens/theme.css not loaded
+// If empty: $lib/styles/greater/tokens.css not loaded
 ```
 
 **Test 2: Check component classes**
@@ -202,18 +190,9 @@ document.querySelector('.gr-button');
 
 | Import Path                      | Size          | Contents                                           |
 | -------------------------------- | ------------- | -------------------------------------------------- |
-| `tokens/theme.css`               | ~180 lines    | Base design tokens (CSS custom properties)         |
-| `tokens/themes/dark.css`         | ~140 lines    | Dark theme variable overrides                      |
-| `tokens/themes/light.css`        | ~140 lines    | Light theme (same as base, for explicit selection) |
-| `tokens/themes/highContrast.css` | ~140 lines    | High contrast accessibility theme                  |
-| `primitives/style.css`           | ~3,000 lines  | Primitive component class definitions              |
-| `faces/social/style.css`         | ~10,000 lines | Social face component class definitions            |
-
-### File Aliases
-
-These files are identical (aliases for convenience):
-
-- `primitives/style.css` = `primitives/styles.css` = `primitives/theme.css`
+| `$lib/styles/greater/tokens.css`     | ~180+ lines   | Tokens + theme variables (light/dark/high-contrast) |
+| `$lib/styles/greater/primitives.css` | ~3,000+ lines | Primitive component class definitions               |
+| `$lib/styles/greater/social.css`     | ~10,000+ lines| Social face component class definitions             |
 
 ---
 
@@ -229,6 +208,6 @@ These files are identical (aliases for convenience):
 ## Summary
 
 1. **Always import both layers:** tokens AND component styles
-2. **Order matters:** tokens first, then theme variants, then component styles
-3. **Choose the right styles:** `primitives/style.css` for basic apps, plus face CSS as needed
-4. **Theme variants are optional:** Only import if using dark mode or high contrast
+2. **Order matters:** tokens first, then primitives, then face CSS (if used)
+3. **Choose the right styles:** `$lib/styles/greater/primitives.css` for basic apps, plus face CSS as needed
+4. **Theme switching:** use `ThemeProvider` or set `data-theme` (tokens are in `$lib/styles/greater/tokens.css`)

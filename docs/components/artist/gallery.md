@@ -5,12 +5,7 @@
 ## Imports
 
 ```ts
-import {
-	Gallery,
-	GalleryGrid,
-	GalleryRow,
-	GalleryMasonry,
-} from '@equaltoai/greater-components/faces/artist';
+import { Gallery, GalleryGrid, GalleryRow, GalleryMasonry } from '$lib/components/Gallery';
 ```
 
 ## `Gallery` Namespace

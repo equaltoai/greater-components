@@ -5,11 +5,9 @@
 ## Imports
 
 ```ts
-import {
-	ArtistProfile,
-	ArtistBadge,
-	PortfolioSection,
-} from '@equaltoai/greater-components/faces/artist';
+import { ArtistProfile } from '$lib/components/ArtistProfile';
+import ArtistBadge from '$lib/components/ArtistBadge.svelte';
+import PortfolioSection from '$lib/components/PortfolioSection.svelte';
 ```
 
 ## `ArtistProfile`
@@ -18,7 +16,7 @@ import {
 
 ```svelte
 <script lang="ts">
-	import { ArtistProfile } from '@equaltoai/greater-components/faces/artist';
+	import { ArtistProfile } from '$lib/components/ArtistProfile';
 
 	const artist = {
 		id: 'artist-1',
@@ -168,7 +166,7 @@ import {
 
 ```svelte
 <script lang="ts">
-	import { ArtistBadge } from '@equaltoai/greater-components/faces/artist';
+	import ArtistBadge from '$lib/components/ArtistBadge.svelte';
 </script>
 
 <ArtistBadge type="verified" tooltip="Verified artist identity" />
@@ -185,7 +183,7 @@ import {
 
 ```svelte
 <script lang="ts">
-	import { PortfolioSection } from '@equaltoai/greater-components/faces/artist';
+	import PortfolioSection from '$lib/components/PortfolioSection.svelte';
 </script>
 
 <PortfolioSection

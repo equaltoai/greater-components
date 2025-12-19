@@ -37,30 +37,22 @@ This guide covers migrating an existing application from the Social Face to the 
 ### 1. Update Dependencies
 
 ```bash
-# Using CLI (recommended)
 npx @equaltoai/greater-components-cli add faces/artist
-
-# Or using package manager
-pnpm add @equaltoai/greater-components
 ```
 
 ### 2. Update Imports
 
 ```typescript
 // Before (Social Face)
-import {
-	Profile,
-	Status,
-	TimelineVirtualizedReactive,
-} from '@equaltoai/greater-components/faces/social';
+import * as Profile from '$lib/components/Profile';
+import { Status } from '$lib/components/Status';
+import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 
 // After (Artist Face)
-import {
-	Artwork,
-	ArtworkCard,
-	ArtistProfile,
-	GalleryGrid,
-} from '@equaltoai/greater-components/faces/artist';
+import { Artwork } from '$lib/components/Artwork';
+import ArtworkCard from '$lib/components/ArtworkCard';
+import * as ArtistProfile from '$lib/components/ArtistProfile';
+import { GalleryGrid } from '$lib/components/Gallery';
 ```
 
 ### 3. Update Data Types
@@ -148,18 +140,15 @@ interface ArtworkData {
 ### Fetching Content
 
 ```typescript
-import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-import { createArtistAdapter } from '@equaltoai/greater-components/faces/artist';
+import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
-const baseAdapter = new LesserGraphQLAdapter({
-	endpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+// Your data layer can continue to use the standard Lesser adapter.
+// Map the resulting data into the Artist Face component props (e.g. ArtworkData).
+const adapter = new LesserGraphQLAdapter({
+	httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+	wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
 	token: import.meta.env.VITE_LESSER_TOKEN,
-	enableSubscriptions: true,
 });
-
-const artistAdapter = createArtistAdapter(baseAdapter);
-
-const artworks = await artistAdapter.getArtworks({ first: 20 });
 ```
 
 ### Search
@@ -209,8 +198,8 @@ For large applications, consider gradual migration:
 
 ```svelte
 <script>
-	import { GalleryGrid } from '@equaltoai/greater-components/faces/artist';
-	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+	import { GalleryGrid } from '$lib/components/Gallery';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 
 	let useArtistFace = $state(true);
 </script>

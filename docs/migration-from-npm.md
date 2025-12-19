@@ -25,13 +25,9 @@ The CLI distribution model offers several advantages:
 
 ## Migration Steps
 
-### Step 1: Install the CLI
+### Step 1: Run the CLI
 
 ```bash
-# Global installation
-npm install -g @equaltoai/greater-components-cli
-
-# Or use npx
 npx @equaltoai/greater-components-cli --version
 ```
 
@@ -39,7 +35,7 @@ npx @equaltoai/greater-components-cli --version
 
 ```bash
 cd your-project
-greater init
+npx @equaltoai/greater-components-cli init
 ```
 
 This creates `components.json` with your project configuration.
@@ -71,14 +67,11 @@ import { Profile, Status, TimelineCompound } from '@equaltoai/greater-components
 Add each component you're using:
 
 ```bash
-# Add headless primitives (behavior-only)
-greater add button modal menu tooltip tabs
-
-# Add faces (includes all face components)
-greater add faces/social
+# Add a face bundle (includes core packages + face components)
+npx @equaltoai/greater-components-cli add faces/social
 
 # Or add individual face components
-greater add status timeline profile
+npx @equaltoai/greater-components-cli add status timeline profile
 ```
 
 ### Step 5: Update Import Paths
@@ -93,33 +86,19 @@ import { Status } from '@equaltoai/greater-components/faces/social';
 **After (CLI):**
 
 ```typescript
-import StatusRoot from '$lib/components/Status/Root.svelte';
-import StatusHeader from '$lib/components/Status/Header.svelte';
-import StatusContent from '$lib/components/Status/Content.svelte';
+import { Button } from '$lib/greater/primitives';
+import { Status } from '$lib/components/Status';
 ```
 
-**Note:** The CLI installs **headless primitives** (e.g. `createButton`) under `$lib/primitives/*`. Migrating from the styled Svelte primitives in `@equaltoai/greater-components/primitives` is not 1:1 and may require refactoring component usage to actions/builders.
+Headless builders live under `$lib/greater/headless/*`:
+
+```ts
+import { createButton } from '$lib/greater/headless/button';
+```
 
 ### Step 6: Update CSS Imports
 
-CSS imports remain the same if you're using the npm package for styles:
-
-```svelte
-<script>
-	// These stay the same - CSS comes from npm package
-	import '@equaltoai/greater-components/tokens/theme.css';
-	import '@equaltoai/greater-components/primitives/style.css';
-</script>
-```
-
-**Alternative: Copy CSS locally**
-
-```bash
-# Copy CSS files to your project
-greater add --css-only
-```
-
-Then update imports:
+Use the vendored CSS files (usually injected by `greater init`):
 
 ```svelte
 <script>
@@ -130,7 +109,7 @@ Then update imports:
 </script>
 ```
 
-### Step 7: Remove npm Packages (Optional)
+### Step 7: Remove npm Packages
 
 Once migration is complete, you can remove the npm packages:
 
@@ -138,36 +117,34 @@ Once migration is complete, you can remove the npm packages:
 pnpm remove @equaltoai/greater-components
 ```
 
-**Note:** Keep the npm package if you want automatic CSS updates or prefer hybrid approach.
-
 ---
 
 ## Import Path Reference
 
-### Headless Primitives (CLI)
+### Headless Primitives (Vendored)
 
 | CLI Item  | Installed Path               |
 | --------- | ---------------------------- |
-| `button`  | `$lib/primitives/button.ts`  |
-| `modal`   | `$lib/primitives/modal.ts`   |
-| `menu`    | `$lib/primitives/menu.ts`    |
-| `tooltip` | `$lib/primitives/tooltip.ts` |
-| `tabs`    | `$lib/primitives/tabs.ts`    |
+| `button`  | `$lib/greater/headless/button.ts`  |
+| `modal`   | `$lib/greater/headless/modal.ts`   |
+| `menu`    | `$lib/greater/headless/menu.ts`    |
+| `tooltip` | `$lib/greater/headless/tooltip.ts` |
+| `tabs`    | `$lib/greater/headless/tabs.ts`    |
 
 ### Social Face Components
 
 | npm Import                                                 | CLI Import                             |
 | ---------------------------------------------------------- | -------------------------------------- |
-| `@equaltoai/greater-components/faces/social` → `Status`    | `$lib/components/Status/Root.svelte`   |
-| `@equaltoai/greater-components/faces/social` → `Timeline*` | `$lib/components/Timeline/Root.svelte` |
-| `@equaltoai/greater-components/faces/social` → `Profile`   | `$lib/components/Profile/Root.svelte`  |
+| `@equaltoai/greater-components/faces/social` → `Status`    | `$lib/components/Status`              |
+| `@equaltoai/greater-components/faces/social` → `Timeline*` | `$lib/components/Timeline`            |
+| `@equaltoai/greater-components/faces/social` → `Profile`   | `$lib/components/Profile`             |
 
 ### Shared Modules
 
 | npm Import                                     | CLI Import                            |
 | ---------------------------------------------- | ------------------------------------- |
-| `@equaltoai/greater-components/shared/auth`    | `$lib/components/auth/Root.svelte`    |
-| `@equaltoai/greater-components/shared/compose` | `$lib/components/compose/Root.svelte` |
+| `@equaltoai/greater-components/shared/auth`    | `$lib/components/auth`               |
+| `@equaltoai/greater-components/shared/compose` | `$lib/components/compose`            |
 
 ---
 
@@ -183,7 +160,8 @@ For custom aliases, update `components.json`:
 {
 	"aliases": {
 		"ui": "@/components/ui",
-		"utils": "@/utils"
+		"utils": "@/utils",
+		"greater": "@/greater"
 	}
 }
 ```
@@ -204,28 +182,29 @@ No changes required for standard SvelteKit projects.
 import { Button, Modal } from '@equaltoai/greater-components/primitives';
 ```
 
-**CLI:** Mix of headless primitives (`.ts`) and Svelte components (`.svelte`)
+**CLI:** Vendored core packages + face components
 
 ```typescript
-import { createButton } from '$lib/primitives/button';
-import StatusRoot from '$lib/components/Status/Root.svelte';
+import { Button, Modal } from '$lib/greater/primitives';
+import { createButton } from '$lib/greater/headless/button';
+import { Status } from '$lib/components/Status';
 ```
 
 ### 2. Component Updates
 
 **npm:** Automatic updates via `pnpm update`
 
-**CLI:** Manual updates via `greater update`
+**CLI:** Manual updates via the CLI
 
 ```bash
 # Check for updates
-greater diff button
+npx @equaltoai/greater-components-cli diff button
 
 # Update specific component
-greater update button
+npx @equaltoai/greater-components-cli update button
 
 # Update all
-greater update --all
+npx @equaltoai/greater-components-cli update --all
 ```
 
 ### 3. TypeScript Types
@@ -237,28 +216,6 @@ greater update --all
 ```typescript
 import type { StatusConfig } from '$lib/components/Status/context.js';
 ```
-
----
-
-## Hybrid Approach
-
-You can use both npm and CLI simultaneously:
-
-1. **Keep npm for CSS**: Automatic style updates
-2. **Use CLI for local source**: Incrementally adopt source-first (e.g. adapters, headless primitives)
-
-```svelte
-<script>
-	// CSS from npm (auto-updates)
-	import '@equaltoai/greater-components/tokens/theme.css';
-	import '@equaltoai/greater-components/primitives/style.css';
-
-	// Headless primitives from CLI (behavior-only)
-	import { createButton } from '$lib/primitives/button';
-</script>
-```
-
----
 
 ## Automated Migration Script
 
@@ -299,17 +256,18 @@ After migration, verify:
 
 ## Rollback
 
-If migration fails, restore npm packages:
+If migration fails, roll back the vendored install using version control (recommended):
 
 ```bash
-# Reinstall npm package
-pnpm add @equaltoai/greater-components
+# Revert local changes (if you haven't committed)
+git restore .
 
-# Remove CLI components
-rm -rf src/lib/components src/lib/patterns src/lib/primitives
+# Or revert a migration commit
+# git revert <commit>
 
-# Remove CLI config
-rm components.json
+# Manual cleanup (only if needed)
+rm -rf src/lib/greater src/lib/components src/lib/patterns src/lib/generics src/lib/styles/greater
+rm -f components.json
 ```
 
 ---

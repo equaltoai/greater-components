@@ -14,15 +14,10 @@ Structured critique group/space.
 
 ```svelte
 <script lang="ts">
-	import { CritiqueCircle } from '@equaltoai/greater-components/faces/artist';
-	import type {
-		CritiqueCircleData,
-		CritiqueCircleHandlers,
-	} from '@equaltoai/greater-components/faces/artist/types/community';
+	import { CritiqueCircle } from '$lib/components/Community/CritiqueCircle';
 
-	const circle: CritiqueCircleData =
-		/* load from your backend */ null as unknown as CritiqueCircleData;
-	const handlers: CritiqueCircleHandlers = {
+	const circle = /* load from your backend */ null as any;
+	const handlers = {
 		onSubmit: async (_circle, _artwork, _feedbackRequested) => {},
 		onCritique: async (_submission, _annotations, _summary) => {},
 	};
@@ -63,15 +58,10 @@ Multi-artist collaboration space.
 
 ```svelte
 <script lang="ts">
-	import { Collaboration } from '@equaltoai/greater-components/faces/artist';
-	import type {
-		CollaborationData,
-		CollaborationHandlers,
-	} from '@equaltoai/greater-components/faces/artist/types/community';
+	import { Collaboration } from '$lib/components/Community/Collaboration';
 
-	const collaboration: CollaborationData =
-		/* load from your backend */ null as unknown as CollaborationData;
-	const handlers: CollaborationHandlers = {
+	const collaboration = /* load from your backend */ null as any;
+	const handlers = {
 		onUploadAsset: async (_collaboration, _file) => {},
 	};
 </script>
@@ -97,7 +87,7 @@ Mentor-mentee connection interface.
 
 ```svelte
 <script lang="ts">
-	import { MentorMatch } from '@equaltoai/greater-components/faces/artist';
+	import MentorMatch from '$lib/components/Community/MentorMatch.svelte';
 
 	const filters = { styles: ['digital-art', 'illustration'], menteeLevel: 'intermediate' };
 	const handlers = {

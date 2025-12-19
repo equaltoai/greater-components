@@ -15,7 +15,7 @@ npx @equaltoai/greater-components-cli add shared/auth
 
 ```svelte
 <script lang="ts">
-	import * as Auth from '$lib/components/shared/auth';
+	import * as Auth from '$lib/components/auth';
 </script>
 
 <!-- Login Form -->
@@ -38,7 +38,7 @@ npx @equaltoai/greater-components-cli add shared/auth
 
 ```svelte
 <script lang="ts">
-	import { InstancePicker } from '$lib/components/shared/auth';
+	import { InstancePicker } from '$lib/components/auth';
 
 	async function handleInstanceSelect(instance: string) {
 		const app = await registerOAuthApp(instance);
@@ -69,7 +69,7 @@ export async function load({ url }) {
 ### Step 3: Session Management
 
 ```typescript
-import { createAuthStore } from '@equaltoai/greater-components/shared/auth';
+import { createAuthStore } from '$lib/components/auth';
 
 export const auth = createAuthStore({
 	storage: 'localStorage',
@@ -85,7 +85,7 @@ if (auth.isAuthenticated) {
 ## Adapter Integration
 
 ```typescript
-import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 const adapter = new LesserGraphQLAdapter({
 	httpEndpoint: 'https://your-instance.social/graphql',

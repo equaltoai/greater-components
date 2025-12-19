@@ -37,22 +37,13 @@ import '$lib/styles/greater/primitives.css';
 import '$lib/styles/greater/community.css';
 ```
 
-If using npm packages directly:
-
-```ts
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
-import '@equaltoai/greater-components/faces/community/style.css';
-```
-
 ## Basic Usage
 
 ### Community Header
 
 ```svelte
 <script lang="ts">
-	import { Community } from '$lib/components/faces/community';
-	// Or from npm: import { Community } from '@equaltoai/greater-components/faces/community';
+	import { Community } from '$lib/components/Community';
 
 	const community = {
 		id: 'c1',
@@ -85,7 +76,7 @@ import '@equaltoai/greater-components/faces/community/style.css';
 
 ```svelte
 <script lang="ts">
-	import { Post } from '$lib/components/faces/community';
+	import { Post } from '$lib/components/Post';
 
 	const post = {
 		id: 'p1',
@@ -117,7 +108,7 @@ import '@equaltoai/greater-components/faces/community/style.css';
 
 ```svelte
 <script lang="ts">
-	import { Thread } from '$lib/components/faces/community';
+	import { Thread } from '$lib/components/Thread';
 </script>
 
 <Thread.Root {comments} {handlers}>

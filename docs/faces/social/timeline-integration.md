@@ -8,41 +8,32 @@ The Timeline component is one of the most important parts of the Social Face, pr
 
 ```svelte
 <script lang="ts">
-	import { Timeline } from '$lib/components/faces/social';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
+
+	const adapter = new LesserGraphQLAdapter({
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
+		token: import.meta.env.VITE_LESSER_TOKEN,
+	});
+
+	const view = { type: 'home' } as const;
 </script>
 
-<Timeline.Root store={timelineStore}>
-	<Timeline.Header title="Home" />
-	<Timeline.Feed />
-	<Timeline.LoadMore />
-</Timeline.Root>
+<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
 ```
 
-## Timeline Store
+## Timeline Views
 
-The timeline uses a reactive store for state management:
-
-```typescript
-import { createTimelineStore } from '@equaltoai/greater-components/adapters';
-
-const timeline = createTimelineStore({
-	type: 'home', // 'home' | 'local' | 'federated' | 'user' | 'hashtag'
-	adapter: lesserAdapter,
-	options: {
-		limit: 20,
-		realtime: true,
-	},
-});
-```
+`TimelineVirtualizedReactive` supports multiple view modes via the `view` prop.
 
 ## Timeline Types
 
 | Type        | Description                        | Props     |
 | ----------- | ---------------------------------- | --------- |
 | `home`      | Home timeline of followed accounts | -         |
-| `local`     | Local instance timeline            | -         |
-| `federated` | Federated/public timeline          | -         |
-| `user`      | Single user's timeline             | `userId`  |
+| `public`    | Public timeline                    | -         |
+| `profile`   | Single user's timeline             | `username` |
 | `hashtag`   | Hashtag timeline                   | `hashtag` |
 | `list`      | List timeline                      | `listId`  |
 
@@ -52,7 +43,7 @@ For large timelines, use the virtualized timeline component:
 
 ```svelte
 <script lang="ts">
-	import { TimelineVirtualized } from '$lib/components/faces/social';
+	import TimelineVirtualized from '$lib/components/TimelineVirtualized.svelte';
 </script>
 
 <TimelineVirtualized {adapter} view={{ type: 'home' }} estimateSize={320} overscan={3} />
@@ -68,16 +59,7 @@ For large timelines, use the virtualized timeline component:
 
 Enable real-time updates with WebSocket streaming:
 
-```typescript
-const timeline = createTimelineStore({
-	type: 'home',
-	adapter,
-	options: {
-		realtime: true,
-		streamEndpoint: 'wss://your-instance.social/streaming',
-	},
-});
-```
+Provide `wsEndpoint` to your `LesserGraphQLAdapter` and keep `TimelineVirtualizedReactive` mounted.
 
 ## Thread Views
 

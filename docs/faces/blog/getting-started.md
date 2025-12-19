@@ -37,22 +37,13 @@ import '$lib/styles/greater/primitives.css';
 import '$lib/styles/greater/blog.css';
 ```
 
-If using npm packages directly:
-
-```ts
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
-import '@equaltoai/greater-components/faces/blog/style.css';
-```
-
 ## Basic Usage
 
 ### Displaying an Article
 
 ```svelte
 <script lang="ts">
-	import { Article } from '$lib/components/faces/blog';
-	// Or from npm: import { Article } from '@equaltoai/greater-components/faces/blog';
+	import { Article } from '$lib/components/Article';
 
 	const article = {
 		id: 'a1',
@@ -89,7 +80,7 @@ import '@equaltoai/greater-components/faces/blog/style.css';
 
 ```svelte
 <script lang="ts">
-	import { Author } from '$lib/components/faces/blog';
+	import { Author } from '$lib/components/Author';
 
 	const author = {
 		id: 'u1',
@@ -113,7 +104,7 @@ import '@equaltoai/greater-components/faces/blog/style.css';
 
 ```svelte
 <script lang="ts">
-	import { Navigation } from '$lib/components/faces/blog';
+	import { Navigation } from '$lib/components/Navigation';
 </script>
 
 <Navigation.Root {categories} {archives}>
@@ -138,7 +129,7 @@ import '@equaltoai/greater-components/faces/blog/style.css';
 The blog face integrates with the `content` package for markdown rendering:
 
 ```typescript
-import { MarkdownRenderer } from '@equaltoai/greater-components/content';
+import { MarkdownRenderer } from '$lib/greater/content';
 ```
 
 ## Next Steps

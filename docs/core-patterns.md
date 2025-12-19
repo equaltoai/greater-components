@@ -27,7 +27,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { Container, Card, Section } from '@equaltoai/greater-components/primitives';
+	import { Container, Card, Section } from '$lib/greater/primitives';
 </script>
 
 <div class="page-wrapper">
@@ -70,7 +70,7 @@ Canonical usage patterns with examples for common scenarios.
 		Text,
 		Button,
 		Card,
-	} from '@equaltoai/greater-components/primitives';
+	} from '$lib/greater/primitives';
 </script>
 
 <!-- Hero Section -->
@@ -138,8 +138,8 @@ Canonical usage patterns with examples for common scenarios.
 ```svelte
 <script>
 	// CORRECT: Styled components work immediately with consistent styling
-	import { Button, Modal, TextField } from '@equaltoai/greater-components/primitives';
-	import { SaveIcon } from '@equaltoai/greater-components/icons';
+	import { Button, Modal, TextField } from '$lib/greater/primitives';
+	import { SaveIcon } from '$lib/greater/icons';
 
 	let formData = $state({ name: '', email: '' });
 	let showModal = $state(false);
@@ -184,8 +184,8 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { Card, Button } from '@equaltoai/greater-components/primitives';
-	import { EditIcon, DeleteIcon } from '@equaltoai/greater-components/icons';
+	import { Card, Button } from '$lib/greater/primitives';
+	import { EditIcon, DeleteIcon } from '$lib/greater/icons';
 </script>
 
 <Card variant="elevated" padding="lg">
@@ -223,7 +223,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { Card } from '@equaltoai/greater-components/primitives';
+	import { Card } from '$lib/greater/primitives';
 	import { goto } from '$app/navigation';
 </script>
 
@@ -250,7 +250,7 @@ Canonical usage patterns with examples for common scenarios.
 ```svelte
 <script>
 	// CORRECT: Headless provides behavior, you provide styling
-	import { createButton, createModal } from '@equaltoai/greater-components/headless';
+	import { createButton, createModal } from '$lib/greater/headless';
 
 	let isOpen = $state(false);
 
@@ -328,7 +328,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
+	import { createButton } from '$lib/greater/headless/button';
 	import { yourDesignSystem } from '$lib/design-system';
 
 	const button = createButton({
@@ -360,7 +360,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { ThemeProvider, Button, Modal } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider, Button, Modal } from '$lib/greater/primitives';
 </script>
 
 <ThemeProvider>
@@ -414,8 +414,8 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { ThemeProvider, ThemeSwitcher, Button } from '@equaltoai/greater-components/primitives';
-	import { SunIcon, MoonIcon } from '@equaltoai/greater-components/icons';
+	import { ThemeProvider, ThemeSwitcher, Button } from '$lib/greater/primitives';
+	import { SunIcon, MoonIcon } from '$lib/greater/icons';
 
 	let theme = $state('light');
 
@@ -479,7 +479,7 @@ Wrap classes applied to Greater Components (or any component) with `:global()`:
 
 ```svelte
 <script>
-	import { Heading, Text, Section, Button } from '@equaltoai/greater-components/primitives';
+	import { Heading, Text, Section, Button } from '$lib/greater/primitives';
 </script>
 
 <Section class="hero-section">
@@ -533,7 +533,7 @@ Wrap classes applied to Greater Components (or any component) with `:global()`:
 
 ```svelte
 <script>
-	import { Card, Heading } from '@equaltoai/greater-components/primitives';
+	import { Card, Heading } from '$lib/greater/primitives';
 </script>
 
 <!-- Components - need :global() -->
@@ -706,8 +706,8 @@ This scoping pattern ensures clean compilation with no warnings while maintainin
 
 ```svelte
 <script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 
 	// Initialize Lesser adapter with GraphQL
 	const adapter = new LesserGraphQLAdapter({
@@ -741,7 +741,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```svelte
 <script>
-	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 </script>
 
 <TimelineVirtualizedReactive {items} estimateSize={320} overscan={8} />
@@ -767,8 +767,8 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 	import {
 		LesserGraphQLAdapter,
 		createTimelineStore,
-	} from '@equaltoai/greater-components/adapters';
-	import { Button } from '@equaltoai/greater-components/primitives';
+	} from '$lib/greater/adapters';
+	import { Button } from '$lib/greater/primitives';
 
 	let errorMessage = $state('');
 	let errorType = $state<'auth' | 'network' | 'rate-limit' | 'unknown'>('unknown');
@@ -860,7 +860,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```svelte
 <script>
-	import { Button, TextField } from '@equaltoai/greater-components/primitives';
+	import { Button, TextField } from '$lib/greater/primitives';
 
 	// Reactive state
 	let count = $state(0);
@@ -904,7 +904,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```svelte
 <script>
-	import { Menu, Button } from '@equaltoai/greater-components/primitives';
+	import { Menu, Button } from '$lib/greater/primitives';
 
 	let items = [
 		{ label: 'Edit', action: () => console.log('edit') },
@@ -938,8 +938,8 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```svelte
 <script>
-	import { Button } from '@equaltoai/greater-components/primitives';
-	import { CloseIcon } from '@equaltoai/greater-components/icons';
+	import { Button } from '$lib/greater/primitives';
+	import { CloseIcon } from '$lib/greater/icons';
 </script>
 
 <Button variant="ghost" aria-label="Close dialog" onclick={handleClose}>
@@ -957,7 +957,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```svelte
 <script>
-	import { Button } from '@equaltoai/greater-components/primitives';
+	import { Button } from '$lib/greater/primitives';
 
 	let showEditor = $state(false);
 	let Editor;
@@ -982,14 +982,14 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```typescript
 // BEST: Specific imports
-import { Button } from '@equaltoai/greater-components/primitives/Button';
-import { Modal } from '@equaltoai/greater-components/primitives/Modal';
+import Button from '$lib/greater/primitives/components/Button.svelte';
+import Modal from '$lib/greater/primitives/components/Modal.svelte';
 
 // GOOD: Named imports (relies on tree-shaking)
-import { Button, Modal } from '@equaltoai/greater-components/primitives';
+import { Button, Modal } from '$lib/greater/primitives';
 
 // AVOID: Imports everything
-import * as Primitives from '@equaltoai/greater-components/primitives';
+import * as Primitives from '$lib/greater/primitives';
 ```
 
 ---
@@ -1002,7 +1002,7 @@ import * as Primitives from '@equaltoai/greater-components/primitives';
 
 ```svelte
 <script>
-	import { Modal, Button } from '@equaltoai/greater-components/primitives';
+	import { Modal, Button } from '$lib/greater/primitives';
 
 	let isMobile = $state(false);
 

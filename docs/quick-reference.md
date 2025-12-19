@@ -8,10 +8,11 @@ This document provides essential information in a format optimized for AI code g
 
 ## Essential Setup (3 Required Steps)
 
-### Step 1: Install Package
+### Step 1: Init + Vendor (CLI)
 
 ```bash
-pnpm add @equaltoai/greater-components
+npx @equaltoai/greater-components-cli init
+npx @equaltoai/greater-components-cli add primitives icons tokens headless
 ```
 
 ### Step 2: Configure TypeScript (tsconfig.json)
@@ -48,11 +49,11 @@ const config = {
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-	// ✅ STEP 1: Import theme CSS FIRST (this line is REQUIRED)
-	import '@equaltoai/greater-components/tokens/theme.css';
+	// ✅ Import CSS layers (tokens first, then primitives)
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
 
-	// ✅ STEP 2: Import ThemeProvider after theme CSS
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let { children } = $props();
 </script>
@@ -67,9 +68,11 @@ const config = {
 ```svelte
 <!-- src/App.svelte -->
 <script lang="ts">
-	// ✅ Import theme CSS FIRST
-	import '@equaltoai/greater-components/tokens/theme.css';
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	// ✅ Import CSS layers (tokens first, then primitives)
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
+
+	import { ThemeProvider } from '$lib/greater/primitives';
 </script>
 
 <ThemeProvider>
@@ -105,7 +108,7 @@ import {
 	// Theme
 	ThemeProvider,
 	ThemeSwitcher,
-} from '@equaltoai/greater-components/primitives';
+} from '$lib/greater/primitives';
 ```
 
 ### Icons (300+ Feather Icons)
@@ -120,13 +123,14 @@ import {
 	SettingsIcon,
 	UserIcon,
 	SearchIcon,
-} from '@equaltoai/greater-components/icons';
+} from '$lib/greater/icons';
 ```
 
 ### Theme CSS (Required - Import Once at Root)
 
 ```typescript
-import '@equaltoai/greater-components/tokens/theme.css';
+import '$lib/styles/greater/tokens.css';
+import '$lib/styles/greater/primitives.css';
 ```
 
 ---
@@ -364,8 +368,8 @@ size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 
 ```svelte
 <script>
-	import { Container, Button, ThemeSwitcher } from '@equaltoai/greater-components/primitives';
-	import { MenuIcon, XIcon } from '@equaltoai/greater-components/icons';
+	import { Container, Button, ThemeSwitcher } from '$lib/greater/primitives';
+	import { MenuIcon, XIcon } from '$lib/greater/icons';
 
 	let mobileMenuOpen = $state(false);
 </script>
@@ -428,8 +432,8 @@ size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 		Heading,
 		Text,
 		Button,
-	} from '@equaltoai/greater-components/primitives';
-	import { ArrowRightIcon } from '@equaltoai/greater-components/icons';
+	} from '$lib/greater/primitives';
+	import { ArrowRightIcon } from '$lib/greater/icons';
 </script>
 
 <Section spacing="xl" class="hero-section">
@@ -489,8 +493,8 @@ size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 		Heading,
 		Card,
 		Text,
-	} from '@equaltoai/greater-components/primitives';
-	import { CodeIcon, ZapIcon, ShieldIcon } from '@equaltoai/greater-components/icons';
+	} from '$lib/greater/primitives';
+	import { CodeIcon, ZapIcon, ShieldIcon } from '$lib/greater/icons';
 
 	const features = [
 		{ icon: CodeIcon, title: 'Developer First', description: 'Built with DX in mind' },
@@ -548,8 +552,9 @@ size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 ```svelte
 <!-- Add to root layout FIRST -->
 <script>
-	import '@equaltoai/greater-components/tokens/theme.css'; // ← Add this
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
+	import { ThemeProvider } from '$lib/greater/primitives';
 </script>
 ```
 

@@ -14,7 +14,7 @@ Tip integration for supporting artists.
 
 ```svelte
 <script lang="ts">
-	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+	import TipJar from '$lib/components/Monetization/TipJar.svelte';
 
 	async function handleTip(
 		amount: number,
@@ -26,7 +26,7 @@ Tip integration for supporting artists.
 	}
 </script>
 
-<Monetization.TipJar {artist} handlers={{ onTip: handleTip }} />
+<TipJar {artist} handlers={{ onTip: handleTip }} />
 ```
 
 ### Props
@@ -42,7 +42,7 @@ Tip integration for supporting artists.
 ### Customization
 
 ```svelte
-<Monetization.TipJar
+<TipJar
 	{artist}
 	config={{
 		currency: 'EUR',
@@ -67,7 +67,7 @@ Direct artwork purchase setup.
 
 ```svelte
 <script lang="ts">
-	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+	import DirectPurchase from '$lib/components/Monetization/DirectPurchase.svelte';
 
 	const pricing = {
 		original: { price: 2500, currency: 'USD', available: true },
@@ -84,7 +84,7 @@ Direct artwork purchase setup.
 	}
 </script>
 
-<Monetization.DirectPurchase {artwork} {pricing} onPurchase={handlePurchase} />
+<DirectPurchase {artwork} {pricing} onPurchase={handlePurchase} />
 ```
 
 ### Props
@@ -102,7 +102,7 @@ Features for galleries, museums, and institutions.
 
 ```svelte
 <script lang="ts">
-	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+	import InstitutionalTools from '$lib/components/Monetization/InstitutionalTools.svelte';
 
 	const account = {
 		id: 'inst-1',
@@ -114,7 +114,7 @@ Features for galleries, museums, and institutions.
 	};
 </script>
 
-<Monetization.InstitutionalTools
+<InstitutionalTools
 	{account}
 	handlers={{
 		onUpdateAccount: async (updates) => saveUpdates(updates),
@@ -130,10 +130,10 @@ Features for galleries, museums, and institutions.
 
 ```svelte
 <script lang="ts">
-	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+	import PremiumBadge from '$lib/components/Monetization/PremiumBadge.svelte';
 </script>
 
-<Monetization.PremiumBadge
+<PremiumBadge
 	tier="pro"
 	features={['priority-support', 'analytics', 'custom-domain']}
 />
@@ -143,10 +143,10 @@ Features for galleries, museums, and institutions.
 
 ```svelte
 <script lang="ts">
-	import { Monetization } from '@equaltoai/greater-components/faces/artist';
+	import ProtectionTools from '$lib/components/Monetization/ProtectionTools.svelte';
 </script>
 
-<Monetization.ProtectionTools {artwork} onReport={handleReport} onWatermark={handleWatermark} />
+<ProtectionTools {artwork} onReport={handleReport} onWatermark={handleWatermark} />
 ```
 
 ## Accessibility
@@ -154,8 +154,8 @@ Features for galleries, museums, and institutions.
 ### Screen Reader Support
 
 ```svelte
-<Monetization.TipJar {artist} />
-<Monetization.DirectPurchase {artwork} {pricing} />
+<TipJar {artist} />
+<DirectPurchase {artwork} {pricing} />
 ```
 
 ### Keyboard Navigation

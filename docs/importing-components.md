@@ -1,188 +1,103 @@
-# Importing Greater Components
+# Importing Greater Components (Vendored)
 
-This guide explains the correct ways to import components from the `@equaltoai/greater-components` package (v4.0.0+).
+This guide explains the correct import paths when using the **Greater CLI** in `installMode: "vendored"` (default).
 
-## Installation
+In vendored mode:
 
-Install the single umbrella package:
+- Greater code is copied into your repo (shadcn-style).
+- Your app has **no runtime dependency** on `@equaltoai/greater-components`.
+
+## Install (CLI)
 
 ```bash
-pnpm add @equaltoai/greater-components
+npx @equaltoai/greater-components-cli init
+
+# Add a face bundle (recommended starting point)
+npx @equaltoai/greater-components-cli add faces/social
+
+# Or add core packages directly
+npx @equaltoai/greater-components-cli add primitives icons tokens headless
 ```
 
-## Package Structure (v4.0.0)
+## Default Import Paths
 
-Greater Components is organized into these subpaths:
+### 1. Core Packages (`$lib/greater/*`)
 
-| Path                    | Purpose                                              |
-| ----------------------- | ---------------------------------------------------- |
-| `/primitives`           | Core UI components (Button, Card, Modal, etc.)       |
-| `/tokens`               | Design system tokens and CSS variables               |
-| `/icons`                | Feather icons and custom icons                       |
-| `/headless`             | Behavior-only components (no styling)                |
-| `/utils`                | Shared helper functions                              |
-| `/content`              | Rich content rendering (CodeBlock, MarkdownRenderer) |
-| `/shared/auth`          | Authentication components                            |
-| `/shared/admin`         | Admin dashboard components                           |
-| `/shared/compose`       | Post/content composer                                |
-| `/shared/messaging`     | Direct messaging                                     |
-| `/shared/search`        | Search components                                    |
-| `/shared/notifications` | Notification feed                                    |
-| `/shared/chat`          | AI Chat interface components                         |
-| `/chat`                 | Alias for `/shared/chat`                             |
-| `/faces/social`         | Twitter/Mastodon-style UI (Timeline, Status)         |
-| `/faces/blog`           | Blog/publishing UI (Article, Author, Editor)         |
-| `/faces/community`      | Forum/community UI (Community, Post, Thread)         |
-| `/faces/artist`         | Artist/portfolio UI (Artwork, Gallery, Discovery)    |
-| `/adapters`             | Protocol adapters (Lesser GraphQL)                   |
-| `/cli`                  | Command-line tools (cli package)                     |
+| Package      | Import path                  | Notes |
+| ------------ | ---------------------------- | ----- |
+| Primitives   | `$lib/greater/primitives`    | Styled Svelte components |
+| Headless     | `$lib/greater/headless/*`    | Builders/actions (e.g. `button`, `tabs`) |
+| Icons        | `$lib/greater/icons`         | SVG icon components |
+| Tokens (JS)  | `$lib/greater/tokens`        | Token helpers/constants (CSS is separate) |
+| Utils        | `$lib/greater/utils`         | Shared utilities |
+| Content      | `$lib/greater/content`       | Markdown + syntax highlighting components |
+| Adapters     | `$lib/greater/adapters`      | Lesser GraphQL + stores |
 
-## Import Patterns
+**Example: primitives**
 
-### 1. Primitives (Core UI)
-
-```typescript
-import {
-	Button,
-	Container,
-	Modal,
-	Card,
-	Heading,
-	Text,
-} from '@equaltoai/greater-components/primitives';
+```ts
+import { Button, Modal, ThemeProvider } from '$lib/greater/primitives';
 ```
 
-### 2. Icons
+**Example: headless**
 
-```typescript
-import { MenuIcon, HomeIcon, SearchIcon } from '@equaltoai/greater-components/icons';
+```ts
+import { createButton } from '$lib/greater/headless/button';
 ```
 
-### 3. Content (Heavy Dependencies)
+### 2. Face + Compound Components (`$lib/components/*`)
 
-For syntax highlighting and markdown rendering:
+Face installs place components under `$lib/components`. Compound components typically have an `index.ts` exporting a
+compound API.
 
-```typescript
-import { CodeBlock, MarkdownRenderer } from '@equaltoai/greater-components/content';
+**Example: Status (compound API)**
+
+```ts
+import { Status } from '$lib/components/Status';
 ```
 
-**Note:** This package has heavier dependencies (shiki + markdown parsing pipeline). Only import if you need these components.
+**Example: single-file component**
 
-### 4. Faces (Curated UI Bundles)
-
-```typescript
-import { Status } from '@equaltoai/greater-components/faces/social';
-import { Article } from '@equaltoai/greater-components/faces/blog';
-import { Community } from '@equaltoai/greater-components/faces/community';
-import { Artwork } from '@equaltoai/greater-components/faces/artist';
+```ts
+import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 ```
 
-### 5. Shared Components
+### 3. Shared Modules (`$lib/components/<module>`)
 
-```typescript
-// Authentication
-import * as Auth from '@equaltoai/greater-components/shared/auth';
+Shared modules install under `$lib/components/<module>`.
 
-// Compose/posting
-import * as Compose from '@equaltoai/greater-components/shared/compose';
-
-// Messaging
-import * as Messaging from '@equaltoai/greater-components/shared/messaging';
-
-// Search
-import * as Search from '@equaltoai/greater-components/shared/search';
-
-// Notifications
-import * as Notifications from '@equaltoai/greater-components/shared/notifications';
-
-// Chat
-import * as Chat from '@equaltoai/greater-components/chat';
+```ts
+import * as Auth from '$lib/components/auth';
+import * as Chat from '$lib/components/chat';
 ```
 
-### 6. Adapters
+### 4. Patterns (`$lib/patterns/*`)
 
-```typescript
-import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+```ts
+import ThreadView from '$lib/patterns/thread-view/ThreadView.svelte';
 ```
 
-## Styles
+## Styles (REQUIRED)
 
-**REQUIRED:** Greater Components uses a two-layer CSS architecture. Import **BOTH** CSS files in your root layout:
+Greater Components uses a two-layer CSS architecture. Import **both** CSS files in your root layout:
 
-```typescript
-// src/routes/+layout.svelte (SvelteKit)
-
-// Layer 1: Design tokens (colors, spacing, typography variables)
-import '@equaltoai/greater-components/tokens/theme.css';
-// Layer 2: Component styles (button, card, container classes)
-import '@equaltoai/greater-components/primitives/style.css';
+```ts
+import '$lib/styles/greater/tokens.css';
+import '$lib/styles/greater/primitives.css';
 ```
 
-**For apps using social face components:**
+If you installed a face, also import its CSS:
 
-```typescript
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
-import '@equaltoai/greater-components/faces/social/style.css';
-```
-
-**For apps using blog/community/artist face components:**
-
-```typescript
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
-import '@equaltoai/greater-components/faces/blog/style.css';
-// or: faces/community/style.css
-// or: faces/artist/style.css
-```
-
-**Import Order (Critical!):**
-
-```typescript
-// ✅ CORRECT - Tokens first, then component styles
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
-import { ThemeProvider, Button } from '@equaltoai/greater-components/primitives';
-
-// ❌ WRONG - Missing component styles
-import '@equaltoai/greater-components/tokens/theme.css';
-import { Button } from '@equaltoai/greater-components/primitives';
-
-// ❌ WRONG - Component styles before tokens
-import '@equaltoai/greater-components/primitives/style.css';
-import '@equaltoai/greater-components/tokens/theme.css';
+```ts
+import '$lib/styles/greater/social.css';
 ```
 
 See the [CSS Architecture Guide](./css-architecture.md) for full documentation.
 
-## Incorrect Import Patterns
+## Customizing Paths
 
-### ❌ Old Fediverse Path (Removed in v3.0.0)
+You can change where files are installed by editing `components.json`:
 
-```typescript
-// ❌ WRONG - This path no longer exists
-import { Timeline } from '@equaltoai/greater-components/fediverse';
-
-// ✅ CORRECT - Use faces/social
-import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
-```
-
-### ❌ CodeBlock/MarkdownRenderer from Primitives
-
-```typescript
-// ❌ WRONG - These moved to content package
-import { CodeBlock } from '@equaltoai/greater-components/primitives';
-
-// ✅ CORRECT - Import from content
-import { CodeBlock } from '@equaltoai/greater-components/content';
-```
-
-### ❌ Direct Component Paths
-
-```typescript
-// ❌ AVOID - Internal path
-import { Button } from '@equaltoai/greater-components/dist/primitives/components/Button.svelte';
-
-// ✅ CORRECT - Use subpath exports
-import { Button } from '@equaltoai/greater-components/primitives';
-```
+- `aliases.greater` (default `$lib/greater`)
+- `aliases.components` (default `$lib/components`)
+- `css.localDir` (default `styles/greater`, relative to `aliases.lib`)

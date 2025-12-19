@@ -76,12 +76,12 @@ import '@equaltoai/greater-components/styles.css';
 
 ```typescript
 // Import tokens first (REQUIRED)
-import '@equaltoai/greater-components/tokens/theme.css';
+import '$lib/styles/greater/tokens.css';
 
 // Then import component styles
-import '@equaltoai/greater-components/primitives/style.css';
+import '$lib/styles/greater/primitives.css';
 // Plus face styles as needed (e.g. Social face):
-import '@equaltoai/greater-components/faces/social/style.css';
+import '$lib/styles/greater/social.css';
 ```
 
 #### 4. Menu Component API
@@ -148,8 +148,8 @@ import { Status } from '@equaltoai/greater-fediverse';
 **After:**
 
 ```typescript
-import { Button } from '@equaltoai/greater-components/primitives';
-import { Status } from '@equaltoai/greater-components/faces/social';
+import { Button } from '$lib/greater/primitives';
+import { Status } from '$lib/components/Status';
 ```
 
 #### 2. ThemeProvider Required

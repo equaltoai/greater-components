@@ -37,22 +37,13 @@ import '$lib/styles/greater/primitives.css';
 import '$lib/styles/greater/artist.css';
 ```
 
-If using npm packages directly:
-
-```ts
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
-import '@equaltoai/greater-components/faces/artist/style.css';
-```
-
 ## Basic Usage
 
 ### Displaying Artwork
 
 ```svelte
 <script lang="ts">
-	import { Artwork } from '$lib/components/faces/artist';
-	// Or from npm: import { Artwork } from '@equaltoai/greater-components/faces/artist';
+	import { Artwork } from '$lib/components/Artwork';
 
 	const artwork = {
 		id: '1',
@@ -99,7 +90,7 @@ import '@equaltoai/greater-components/faces/artist/style.css';
 
 ```svelte
 <script lang="ts">
-	import { Gallery } from '$lib/components/faces/artist';
+	import { Gallery } from '$lib/components/Gallery';
 
 	const artworks = []; // Array of ArtworkData
 </script>
@@ -118,7 +109,7 @@ import '@equaltoai/greater-components/faces/artist/style.css';
 
 ```svelte
 <script lang="ts">
-	import { ArtistProfile } from '$lib/components/faces/artist';
+	import * as ArtistProfile from '$lib/components/ArtistProfile';
 
 	const artist = {
 		id: 'artist-1',

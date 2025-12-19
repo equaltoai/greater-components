@@ -37,22 +37,13 @@ import '$lib/styles/greater/primitives.css';
 import '$lib/styles/greater/social.css';
 ```
 
-If using npm packages directly:
-
-```ts
-import '@equaltoai/greater-components/tokens/theme.css';
-import '@equaltoai/greater-components/primitives/style.css';
-import '@equaltoai/greater-components/faces/social/style.css';
-```
-
 ## Basic Usage
 
 ### Displaying a Status
 
 ```svelte
 <script lang="ts">
-	import { Status } from '$lib/components/faces/social';
-	// Or from npm: import { Status } from '@equaltoai/greater-components/faces/social';
+	import { Status } from '$lib/components/Status';
 
 	const status = {
 		id: '1',
@@ -88,24 +79,26 @@ import '@equaltoai/greater-components/faces/social/style.css';
 
 ```svelte
 <script lang="ts">
-	import { Timeline } from '$lib/components/faces/social';
-	import { createTimelineStore } from '$lib/stores';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 
-	const timeline = createTimelineStore({ type: 'home' });
+	const adapter = new LesserGraphQLAdapter({
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
+		token: import.meta.env.VITE_LESSER_TOKEN,
+	});
+
+	const view = { type: 'home' } as const;
 </script>
 
-<Timeline.Root store={timeline}>
-	<Timeline.Header title="Home" />
-	<Timeline.Feed />
-	<Timeline.LoadMore />
-</Timeline.Root>
+<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
 ```
 
 ### User Profile
 
 ```svelte
 <script lang="ts">
-	import { Profile } from '$lib/components/faces/social';
+	import * as Profile from '$lib/components/Profile';
 </script>
 
 <Profile.Root {account}>
@@ -131,7 +124,7 @@ import '@equaltoai/greater-components/faces/social/style.css';
 
 ```typescript
 // src/lib/api.ts
-import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 export const adapter = new LesserGraphQLAdapter({
 	httpEndpoint: 'https://your-instance.social/graphql',

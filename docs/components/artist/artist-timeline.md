@@ -5,14 +5,14 @@
 ## Imports
 
 ```ts
-import { ArtistTimeline } from '@equaltoai/greater-components/faces/artist';
+import ArtistTimeline from '$lib/components/ArtistTimeline';
 ```
 
 ## Basic Usage
 
 ```svelte
 <script lang="ts">
-	import { ArtistTimeline } from '@equaltoai/greater-components/faces/artist';
+	import ArtistTimeline from '$lib/components/ArtistTimeline';
 
 	const artist = {
 		id: 'artist-1',

@@ -4,7 +4,7 @@
 > **Version:** 0.1.0  
 > **Last Updated:** December 13, 2024  
 > **Author:** Greater Components Team  
-> **Package Path:** `@equaltoai/greater-components/faces/artist`
+> **Vendored Path:** `$lib/components/*` (via `npx @equaltoai/greater-components-cli add faces/artist`)
 
 ---
 
@@ -1030,11 +1030,11 @@ packages/faces/artist/
 
 **Internal:**
 
-- `@equaltoai/greater-components-primitives` (Button, Card, Modal, etc.)
-- `@equaltoai/greater-components-headless` (behavior primitives)
-- `@equaltoai/greater-components-icons`
-- `@equaltoai/greater-components-adapters` (WebSocket, GraphQL)
-- `@equaltoai/greater-components-tokens`
+- `$lib/greater/primitives` (Button, Card, Modal, etc.)
+- `$lib/greater/headless` (behavior primitives)
+- `$lib/greater/icons`
+- `$lib/greater/adapters` (WebSocket, GraphQL)
+- `$lib/greater/tokens`
 
 **Shared Modules:**
 
@@ -1187,7 +1187,7 @@ client.subscribe('federation:artwork', (event) => {
 ### Adapter Configuration
 
 ```typescript
-import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 const adapter = new LesserGraphQLAdapter({
 	httpEndpoint: import.meta.env.VITE_LESSER_GRAPHQL,

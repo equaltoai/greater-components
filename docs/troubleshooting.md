@@ -6,11 +6,11 @@ Common issues with verified fixes from production experience.
 
 | Symptom                                    | Likely Cause                       | Section                                           |
 | ------------------------------------------ | ---------------------------------- | ------------------------------------------------- |
-| "Cannot find module '@equaltoai/...'"      | Package not installed              | [Installation Issues](#installation-issues)       |
+| "Cannot find module '$lib/greater/...'"    | Greater not vendored yet           | [Installation Issues](#installation-issues)       |
 | "Could not resolve 'isomorphic-dompurify'" | Missing peer dependency            | [Peer Dependency Issues](#peer-dependency-issues) |
 | "Could not resolve 'marked'" / "shiki"     | Missing peer dependency            | [Peer Dependency Issues](#peer-dependency-issues) |
-| Components render but appear unstyled      | Missing `primitives/style.css`     | [Styling Issues](#styling-issues)                 |
-| CSS variables show as invalid              | Missing `tokens/theme.css`         | [Styling Issues](#styling-issues)                 |
+| Components render but appear unstyled      | Missing `$lib/styles/greater/primitives.css` | [Styling Issues](#styling-issues)         |
+| CSS variables show as invalid              | Missing `$lib/styles/greater/tokens.css`     | [Styling Issues](#styling-issues)         |
 | `preventFlashScript is not defined`        | Missing theme flash prevention     | [Theming Issues](#theming-issues)                 |
 | "Snippets not working"                     | Using Svelte 4 slot syntax         | [Svelte 5 Migration](#svelte-5-migration)         |
 | "$state is not defined"                    | Not using Svelte 5                 | [Svelte 5 Migration](#svelte-5-migration)         |
@@ -25,7 +25,7 @@ Common issues with verified fixes from production experience.
 
 ## Installation Issues
 
-### Issue: Cannot find module '@equaltoai/greater-components/primitives'
+### Issue: Cannot find module '$lib/greater/primitives'
 
 **Symptoms:**
 
@@ -34,29 +34,26 @@ Common issues with verified fixes from production experience.
 - TypeScript cannot resolve types
 
 **Cause:**
-Package not installed or not in package.json
+Greater CLI has not been run (or the vendored files were not added).
 
 **Solution:**
 
 ```bash
-# Install missing package
-pnpm add @equaltoai/greater-components
+# Initialize Greater in your project (creates components.json + injects CSS)
+npx @equaltoai/greater-components-cli init
 
-# Or install all core packages
-pnpm add @equaltoai/greater-components \
-         @equaltoai/greater-components/tokens \
-         @equaltoai/greater-components/icons
+# Add a face bundle (includes core packages + components)
+npx @equaltoai/greater-components-cli add faces/social
+
+# Or add only core packages
+npx @equaltoai/greater-components-cli add primitives icons tokens headless
 ```
 
 **Verification:**
 
 ```bash
-# Check package is installed
-pnpm list | grep greater-components
-# Should show installed packages
-
-# Verify package.json
-cat package.json | grep greater-components
+ls src/lib/greater/primitives
+ls src/lib/greater/icons
 ```
 
 **Prevention:**
@@ -75,29 +72,18 @@ cat package.json | grep greater-components
 - Cannot run pnpm scripts
 
 **Cause:**
-pnpm not installed globally
+pnpm not enabled (or not installed)
 
 **Solution:**
 
 ```bash
-# Install pnpm globally
-npm install -g pnpm
-
-# Or use npx
-npx pnpm install
+# Node 20+ includes Corepack
+corepack enable
+corepack prepare pnpm@9 --activate
 
 # Verify installation
 pnpm --version
 # Should show 9.0.0 or higher
-```
-
-**Alternative:**
-Use npm or yarn instead:
-
-```bash
-npm install @equaltoai/greater-components
-# or
-yarn add @equaltoai/greater-components
 ```
 
 ---
@@ -116,7 +102,7 @@ yarn add @equaltoai/greater-components
 **Full Error Example:**
 
 ```
-[vite]: Rollup failed to resolve import "isomorphic-dompurify" from "node_modules/@equaltoai/greater-components/dist/primitives/components/MarkdownRenderer.svelte"
+[vite]: Rollup failed to resolve import "isomorphic-dompurify" from "src/lib/greater/content/components/MarkdownRenderer.svelte"
 ```
 
 **Cause:**
@@ -172,10 +158,10 @@ pnpm build  # Should complete successfully
 
 Greater Components uses a **two-layer CSS architecture**. Both layers must be imported:
 
-1. `tokens/theme.css` - Design tokens (CSS variables)
-2. `primitives/style.css` - Component class definitions
+1. `$lib/styles/greater/tokens.css` - Design tokens (CSS variables)
+2. `$lib/styles/greater/primitives.css` - Component class definitions
 
-**Most common cause:** Only importing `tokens/theme.css` but missing `primitives/style.css`.
+**Most common cause:** Only importing `$lib/styles/greater/tokens.css` but missing `$lib/styles/greater/primitives.css`.
 
 **Solution:**
 
@@ -185,11 +171,11 @@ Import BOTH CSS layers in your root layout:
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
 	// ✅ Layer 1: Design tokens (colors, spacing, typography variables)
-	import '@equaltoai/greater-components/tokens/theme.css';
+	import '$lib/styles/greater/tokens.css';
 	// ✅ Layer 2: Component styles (button, card, container classes)
-	import '@equaltoai/greater-components/primitives/style.css';
+	import '$lib/styles/greater/primitives.css';
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let { children } = $props();
 </script>
@@ -203,9 +189,9 @@ Import BOTH CSS layers in your root layout:
 
 ```svelte
 <script lang="ts">
-	import '@equaltoai/greater-components/tokens/theme.css';
-	import '@equaltoai/greater-components/primitives/style.css';
-	import '@equaltoai/greater-components/faces/social/style.css';
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
+	import '$lib/styles/greater/social.css';
 </script>
 ```
 
@@ -226,10 +212,10 @@ getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-
 
 | Symptom                             | Missing Import         | Solution                                      |
 | ----------------------------------- | ---------------------- | --------------------------------------------- |
-| Components render but unstyled      | `primitives/style.css` | Add component styles import                   |
-| CSS variables show as invalid       | `tokens/theme.css`     | Add tokens import FIRST                       |
+| Components render but unstyled      | `$lib/styles/greater/primitives.css` | Add component styles import              |
+| CSS variables show as invalid       | `$lib/styles/greater/tokens.css`     | Add tokens import FIRST                  |
 | Both unstyled AND invalid variables | Both files             | Add both imports in correct order             |
-| Social face components unstyled     | Face CSS               | Add `faces/social/style.css` after primitives |
+| Social face components unstyled     | Face CSS               | Add `$lib/styles/greater/social.css` after primitives |
 
 See [CSS Architecture Guide](./css-architecture.md) for complete documentation.
 
@@ -249,13 +235,16 @@ Token CSS file not loaded, or loaded AFTER component styles.
 
 **Solution:**
 
-Ensure `tokens/theme.css` is imported FIRST:
+Ensure `$lib/styles/greater/tokens.css` is imported FIRST:
 
-```svelte
-// ✅ CORRECT ORDER import '@equaltoai/greater-components/tokens/theme.css'; // 1. Tokens first
-import '@equaltoai/greater-components/primitives/style.css'; // 2. Components second // ❌ WRONG
-ORDER import '@equaltoai/greater-components/primitives/style.css'; // Uses undefined variables!
-import '@equaltoai/greater-components/tokens/theme.css'; // Too late
+```ts
+// ✅ CORRECT ORDER
+import '$lib/styles/greater/tokens.css'; // 1. Tokens first
+import '$lib/styles/greater/primitives.css'; // 2. Component styles second
+
+// ❌ WRONG ORDER (styles before tokens)
+import '$lib/styles/greater/primitives.css';
+import '$lib/styles/greater/tokens.css';
 ```
 
 ---
@@ -453,7 +442,7 @@ pnpm typecheck
 - "Could not find declaration file"
 
 **Cause:**
-TypeScript not picking up package types
+TypeScript not picking up vendored types (or the vendored files are missing).
 
 **Solution:**
 
@@ -461,15 +450,18 @@ TypeScript not picking up package types
 # Ensure TypeScript is installed
 pnpm add -D typescript
 
-# Regenerate types
-pnpm build
+# (SvelteKit) refresh generated types
+pnpm svelte-kit sync
+
+# If types were accidentally deleted, re-add core packages
+npx @equaltoai/greater-components-cli add primitives --force
 ```
 
 **Check types exist:**
 
 ```bash
 # Verify .d.ts files exist
-ls node_modules/@equaltoai/greater-components/primitives/dist/*.d.ts
+ls src/lib/greater/primitives/index.d.ts
 ```
 
 ---
@@ -571,7 +563,7 @@ ThemeProvider not wrapping app or data-theme attribute not set
 
 ```svelte
 <script>
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let theme = $state<'light' | 'dark'>('light');
 </script>
@@ -666,7 +658,7 @@ Theme not persisted to localStorage
 
 ```svelte
 <script>
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	// Load from localStorage
 	let theme = $state<'light' | 'dark'>(
@@ -704,8 +696,8 @@ Rendering all items instead of using virtual scrolling
 **Solution:**
 
 ```svelte
-<script>
-	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+<script lang="ts">
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 </script>
 
 <TimelineVirtualizedReactive {items} estimateSize={320} />
@@ -733,20 +725,12 @@ Importing entire packages instead of specific components
 **Solution:**
 
 ```typescript
-// GOOD: Specific imports
-import { Button } from '@equaltoai/greater-components/primitives/Button';
-import { Modal } from '@equaltoai/greater-components/primitives/Modal';
+// GOOD: Import only what you use
+import { Button, Modal } from '$lib/greater/primitives';
 
-// AVOID: Barrel imports (larger bundle)
-import {
-	Button,
-	Modal,
-	TextField,
-	Select /* everything */,
-} from '@equaltoai/greater-components/primitives';
-
-// NEVER: Namespace imports (imports everything)
-import * as Primitives from '@equaltoai/greater-components/primitives';
+// For strict bundle control, import component files directly
+import ButtonComponent from '$lib/greater/primitives/components/Button.svelte';
+import ModalComponent from '$lib/greater/primitives/components/Modal.svelte';
 ```
 
 **Analyze bundle:**
@@ -889,8 +873,8 @@ VITE_LESSER_TOKEN=your-auth-token-here
 ```
 
 ```svelte
-<script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+<script lang="ts">
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 	const adapter = new LesserGraphQLAdapter({
 		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
@@ -970,8 +954,8 @@ Using a non-Lesser data source (e.g. REST timelines) instead of the Lesser Graph
 **Solution:**
 
 ```svelte
-<script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+<script lang="ts">
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 	const adapter = new LesserGraphQLAdapter({
 		httpEndpoint: 'https://lesser-instance.social/graphql',

@@ -45,7 +45,7 @@ Direct usage of the markdown renderer:
 
 ```svelte
 <script lang="ts">
-	import { MarkdownRenderer } from '@equaltoai/greater-components/content';
+	import { MarkdownRenderer } from '$lib/greater/content';
 </script>
 
 <MarkdownRenderer content={markdownString} allowHtml={false} syntaxHighlight={true} />

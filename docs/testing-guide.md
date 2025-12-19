@@ -82,8 +82,8 @@ Object.defineProperty(window, 'matchMedia', {
 
 ```typescript
 import { test, expect, vi } from 'vitest';
-import { render, fireEvent } from '@equaltoai/greater-components/testing';
-import { Button } from '@equaltoai/greater-components/primitives';
+import { render, fireEvent } from '@testing-library/svelte';
+import Button from '$lib/greater/primitives/components/Button.svelte';
 
 test('button renders correctly', () => {
 	const { getByRole } = render(Button, {
@@ -148,8 +148,8 @@ test('button is disabled when disabled prop is true', () => {
 
 ```typescript
 import { test, expect } from 'vitest';
-import { render, fireEvent } from '@equaltoai/greater-components/testing';
-import { TextField } from '@equaltoai/greater-components/primitives';
+import { render, fireEvent } from '@testing-library/svelte';
+import TextField from '$lib/greater/primitives/components/TextField.svelte';
 
 test('textfield updates value on input', async () => {
 	let value = $state('');
@@ -214,7 +214,7 @@ When your UI updates state after `await` (fetches, mutations, etc.), use `waitFo
 
 ```typescript
 import { test, expect, vi } from 'vitest';
-import { render, fireEvent, waitFor } from '@equaltoai/greater-components/testing';
+import { render, fireEvent, waitFor } from '@testing-library/svelte';
 import AsyncActionDemo from './AsyncActionDemo.svelte';
 
 test('shows result after async action', async () => {
@@ -233,8 +233,8 @@ test('shows result after async action', async () => {
 
 ```typescript
 import { test, expect } from 'vitest';
-import { render } from '@equaltoai/greater-components/testing';
-import { Modal } from '@equaltoai/greater-components/primitives';
+import { render } from '@testing-library/svelte';
+import Modal from '$lib/greater/primitives/components/Modal.svelte';
 
 test('modal renders footer snippet', () => {
 	const { getByText } = render(Modal, {
@@ -446,10 +446,11 @@ test('mobile modal takes full screen', async ({ page }) => {
 ### Automated Testing with axe-core
 
 ```typescript
-import { test, expect } from 'vitest';
-import { render } from '@equaltoai/greater-components/testing';
-import { axe, toHaveNoViolations } from 'jest-axe';
-import { Button } from '@equaltoai/greater-components/primitives';
+	import { test, expect } from 'vitest';
+	import { render } from '@testing-library/svelte';
+	import { axe, toHaveNoViolations } from 'jest-axe';
+	import Button from '$lib/greater/primitives/components/Button.svelte';
+	import Modal from '$lib/greater/primitives/components/Modal.svelte';
 
 expect.extend(toHaveNoViolations);
 

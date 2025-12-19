@@ -5,27 +5,18 @@
 ## Imports
 
 ```ts
-import {
-	DiscoveryEngine,
-	createDiscoveryStore,
-	ColorPaletteSearch,
-	StyleFilter,
-	MoodMap,
-} from '@equaltoai/greater-components/faces/artist';
+import { DiscoveryEngine, ColorPaletteSearch, StyleFilter, MoodMap } from '$lib/components/Discovery';
 ```
 
 ## `DiscoveryEngine`
 
-`DiscoveryEngine` is a compound component built around a `createDiscoveryStore()` instance.
+`DiscoveryEngine` is a compound component built around a `DiscoveryStore` instance (provided by you).
 
 ```svelte
 <script lang="ts">
-	import {
-		DiscoveryEngine,
-		createDiscoveryStore,
-	} from '@equaltoai/greater-components/faces/artist';
+	import { DiscoveryEngine } from '$lib/components/Discovery';
 
-	const store = createDiscoveryStore();
+	const store = /* your DiscoveryStore implementation */ null as any;
 	const handlers = {
 		onResultClick: (artwork) => console.log('open', artwork.id),
 		onMoreLikeThis: (artwork) => console.log('similar to', artwork.id),
@@ -138,12 +129,9 @@ These components can be used independently (outside `DiscoveryEngine`), or you c
 
 ```svelte
 <script lang="ts">
-	import {
-		DiscoveryEngine,
-		createDiscoveryStore,
-	} from '@equaltoai/greater-components/faces/artist';
+	import { DiscoveryEngine } from '$lib/components/Discovery';
 
-	const store = createDiscoveryStore();
+	const store = /* your DiscoveryStore implementation */ null as any;
 	const handlers = {
 		onVisualSearch: async (file: File) => {
 			// Upload to your backend + update store filters/results
@@ -164,10 +152,10 @@ These components can be used independently (outside `DiscoveryEngine`), or you c
 
 ```svelte
 <script lang="ts">
-	import { createDiscoveryStore } from '@equaltoai/greater-components/faces/artist';
+	import { DiscoveryEngine } from '$lib/components/Discovery';
 
-	const discovery = createDiscoveryStore();
-	// Recent searches + saved searches persist to `localStorage` by default.
+	const discovery = /* your DiscoveryStore implementation */ null as any;
+	// Persist filters/queries inside your store (e.g., localStorage) if desired.
 </script>
 
 <DiscoveryEngine.Root store={discovery}>

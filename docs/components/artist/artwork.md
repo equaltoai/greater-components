@@ -5,7 +5,9 @@
 ## Imports
 
 ```ts
-import { Artwork, ArtworkCard, MediaViewer } from '@equaltoai/greater-components/faces/artist';
+import { Artwork } from '$lib/components/Artwork';
+import ArtworkCard from '$lib/components/ArtworkCard';
+import { MediaViewer } from '$lib/components/MediaViewer';
 ```
 
 ## `ArtworkData` Shape
@@ -51,7 +53,7 @@ const artwork = {
 
 ```svelte
 <script lang="ts">
-	import { Artwork } from '@equaltoai/greater-components/faces/artist';
+	import { Artwork } from '$lib/components/Artwork';
 
 	const handlers = {
 		onLike: async (artwork) => console.log('like', artwork.id),
@@ -195,7 +197,7 @@ Full-screen lightbox viewer. `MediaViewer` is also a compound component.
 
 ```svelte
 <script lang="ts">
-	import { MediaViewer } from '@equaltoai/greater-components/faces/artist';
+	import { MediaViewer } from '$lib/components/MediaViewer';
 
 	let currentIndex = $state(0);
 	let open = $state(true);

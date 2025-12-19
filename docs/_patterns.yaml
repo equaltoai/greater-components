@@ -10,8 +10,8 @@ patterns:
       <script>
         // CORRECT: Import styled components for quick development
         // Provides consistent styling, accessibility, and theming support
-        import { Button, Modal } from '@equaltoai/greater-components/primitives';
-        import { SettingsIcon } from '@equaltoai/greater-components/icons';
+        import { Button, Modal } from '$lib/greater/primitives';
+        import { SettingsIcon } from '$lib/greater/icons';
         
         let showSettings = $state(false);
       </script>
@@ -59,7 +59,7 @@ patterns:
         incorrect_example: |
           // INCORRECT: Don't mix different UI libraries
           // Creates style conflicts and inconsistent UX
-          import { Button } from '@equaltoai/greater-components/primitives';
+          import { Button } from '$lib/greater/primitives';
           import { Modal } from 'some-other-ui-library';
 
           // Style conflicts and inconsistent theming
@@ -77,7 +77,7 @@ patterns:
       <script>
         // CORRECT: Use headless components for styling flexibility
         // Provides behavior, accessibility, and keyboard navigation without styling opinions
-        import { createButton } from '@equaltoai/greater-components/headless/button';
+        import { createButton } from '$lib/greater/headless/button';
         
         const button = createButton({
           type: 'button',
@@ -115,7 +115,7 @@ patterns:
           // INCORRECT: Don't fight against styled component CSS
           // If overriding everything, use headless components instead
           <script>
-            import { Button } from '@equaltoai/greater-components/primitives';
+            import { Button } from '$lib/greater/primitives';
           </script>
 
           <Button class="my-override" variant="solid">Click</Button>
@@ -141,7 +141,7 @@ patterns:
       <script>
         // CORRECT: Override design tokens for custom branding
         // Changes apply globally without component modifications
-        import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+        import { ThemeProvider } from '$lib/greater/primitives';
       </script>
 
       <ThemeProvider>
@@ -171,7 +171,7 @@ patterns:
           // INCORRECT: Don't modify component library source files
           // Changes are lost when updating packages
 
-          // In node_modules/@equaltoai/greater-components/primitives/Button.svelte
+          // In $lib/greater/primitives/components/Button.svelte
           <style>
             .button {
               background: #my-custom-color; /* Don't do this! */
@@ -191,8 +191,8 @@ patterns:
       <script>
         // CORRECT: Use LesserGraphQLAdapter for type-safe integration
         // Provides full TypeScript support and advanced Lesser features
-        import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-        import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+        import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+        import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
         
         const adapter = new LesserGraphQLAdapter({
           httpEndpoint: 'https://my-instance.social/graphql',
@@ -224,12 +224,12 @@ patterns:
     problem: 'Need to connect to standard Mastodon instances'
     solution: 'Use your REST client and map payloads with MastodonAdapter'
     correct_example: |
-      <script lang="ts">
-        import {
-          MastodonAdapter,
-          type MastodonStatus,
-          Status,
-        } from '@equaltoai/greater-components/faces/social';
+	      <script lang="ts">
+	        import {
+	          MastodonAdapter,
+	          type MastodonStatus,
+	        } from '$lib/generics/adapters';
+	        import { Status } from '$lib/components/Status';
 
         const mapper = new MastodonAdapter();
         let items = $state([]);
@@ -270,10 +270,10 @@ patterns:
     problem: 'Timeline with thousands of posts causes performance issues'
     solution: 'Use TimelineVirtualizedReactive (TanStack Virtual built-in)'
     correct_example: |
-      <script>
-        // CORRECT: Virtualization happens inside the component
-        import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
-      </script>
+	      <script>
+	        // CORRECT: Virtualization happens inside the component
+	        import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
+	      </script>
 
       <div style="height: 100vh;">
         <TimelineVirtualizedReactive {items} estimateSize={320} overscan={8} />
@@ -300,9 +300,9 @@ patterns:
     solution: 'Components include built-in keyboard support, test thoroughly'
     correct_example: |
       <script>
-        // CORRECT: Components handle keyboard navigation automatically
-        // Test with keyboard-only usage
-        import { Menu } from '@equaltoai/greater-components/primitives';
+	        // CORRECT: Components handle keyboard navigation automatically
+	        // Test with keyboard-only usage
+	        import { Menu } from '$lib/greater/primitives';
         
         let menuItems = [
           { label: 'Edit', action: () => console.log('edit') },
@@ -357,12 +357,12 @@ patterns:
     problem: 'Need to customize component parts without breaking structure'
     solution: 'Use Svelte 5 snippets for flexible composition'
     correct_example: |
-      <script>
-        // CORRECT: Use snippets for flexible component composition
-        // Svelte 5 pattern for customizable component parts
-        import { Button, Modal } from '@equaltoai/greater-components/primitives';
-        import { SaveIcon, TrashIcon } from '@equaltoai/greater-components/icons';
-      </script>
+	      <script>
+	        // CORRECT: Use snippets for flexible component composition
+	        // Svelte 5 pattern for customizable component parts
+	        import { Button, Modal } from '$lib/greater/primitives';
+	        import { SaveIcon, TrashIcon } from '$lib/greater/icons';
+	      </script>
 
       <Modal open={true} title="Confirm Action">
         <!-- Custom modal content -->
@@ -401,10 +401,10 @@ patterns:
     problem: 'Network errors and API failures must be handled properly'
     solution: 'Use try-catch with user-friendly error messages'
     correct_example: |
-      <script>
-        // CORRECT: Handle errors gracefully with user feedback
-        // Provides loading states and error messages
-        import { createTimelineStore } from '@equaltoai/greater-components/adapters';
+	      <script>
+	        // CORRECT: Handle errors gracefully with user feedback
+	        // Provides loading states and error messages
+	        import { createTimelineStore } from '$lib/greater/adapters';
         
         let errorMessage = $state('');
         let isLoading = $state(true);
@@ -452,10 +452,10 @@ patterns:
     problem: 'Components must work on mobile, tablet, and desktop'
     solution: 'Use responsive design tokens and media queries'
     correct_example: |
-      <script>
-        // CORRECT: Components adapt to screen size
-        // Use responsive props and CSS media queries
-        import { Modal, Button } from '@equaltoai/greater-components/primitives';
+	      <script>
+	        // CORRECT: Components adapt to screen size
+	        // Use responsive props and CSS media queries
+	        import { Modal, Button } from '$lib/greater/primitives';
         
         let isMobile = $state(false);
         
@@ -517,9 +517,9 @@ patterns:
     solution: 'Use $state, $derived, and $effect runes'
     correct_example: |
       <script>
-        // CORRECT: Use Svelte 5 runes for state management
-        // Provides fine-grained reactivity
-        import { Button } from '@equaltoai/greater-components/primitives';
+	        // CORRECT: Use Svelte 5 runes for state management
+	        // Provides fine-grained reactivity
+	        import { Button } from '$lib/greater/primitives';
         
         // Reactive state
         let count = $state(0);
@@ -565,15 +565,15 @@ patterns:
     solution: 'Use Container + Section for structure, Card for features, Heading + Text for typography, Button for CTAs'
     correct_example: |
       <script>
-        import { 
-          Container, 
-          Section, 
-          Heading, 
-          Text, 
-          Button, 
-          Card 
-        } from '@equaltoai/greater-components/primitives';
-        import { ArrowRightIcon, CheckCircleIcon } from '@equaltoai/greater-components/icons';
+	        import { 
+	          Container, 
+	          Section, 
+	          Heading, 
+	          Text, 
+	          Button, 
+	          Card 
+	        } from '$lib/greater/primitives';
+	        import { ArrowRightIcon, CheckCircleIcon } from '$lib/greater/icons';
       </script>
 
       <main>
@@ -650,8 +650,8 @@ patterns:
       - name: 'Looking for Grid component'
         why: "Grid component doesn't exist, use CSS Grid"
         incorrect_example: |
-          // WRONG: Grid component does not exist
-          import { Grid } from '@equaltoai/greater-components/primitives';
+	          // WRONG: Grid component does not exist
+	          import { Grid } from '$lib/greater/primitives';
 
           <Grid columns={3}>
             <Card>...</Card>
@@ -670,8 +670,8 @@ patterns:
       - name: 'Looking for Nav/Navbar component'
         why: "Navigation components don't exist, build with HTML + primitives"
         incorrect_example: |
-          // WRONG: Nav component does not exist
-          import { Navbar } from '@equaltoai/greater-components/primitives';
+	          // WRONG: Nav component does not exist
+	          import { Navbar } from '$lib/greater/primitives';
         correct_example: |
           // CORRECT: Build nav with HTML + Container + Button
           <nav>
@@ -695,9 +695,9 @@ patterns:
     problem: 'Need consistent typography across pages with semantic structure'
     solution: 'Use Heading for all headings (h1-h6), Text for body content with variants'
     correct_example: |
-      <script>
-        import { Heading, Text } from '@equaltoai/greater-components/primitives';
-      </script>
+	      <script>
+	        import { Heading, Text } from '$lib/greater/primitives';
+	      </script>
 
       <article>
         <!-- Main title -->
@@ -775,7 +775,7 @@ patterns:
     solution: 'Use Card component with header/footer snippets for structured content'
     correct_example: |
       <script>
-        import { Card, Button } from '@equaltoai/greater-components/primitives';
+        import { Card, Button } from '$lib/greater/primitives';
       </script>
 
       <!-- Static card -->
@@ -839,11 +839,11 @@ patterns:
       <script lang="ts">
         // CORRECT: Import BOTH CSS layers in root layout
         // Layer 1: Design tokens (colors, spacing, typography variables)
-        import '@equaltoai/greater-components/tokens/theme.css';
+        import '$lib/styles/greater/tokens.css';
         // Layer 2: Component styles (button, card, container classes)
-        import '@equaltoai/greater-components/primitives/style.css';
+        import '$lib/styles/greater/primitives.css';
 
-        import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+        import { ThemeProvider } from '$lib/greater/primitives';
 
         let { children } = $props();
       </script>
@@ -856,8 +856,8 @@ patterns:
         why: 'Components render but appear as browser defaults'
         incorrect_example: |
           // INCORRECT: Only importing tokens without component styles
-          import '@equaltoai/greater-components/tokens/theme.css';
-          import { Button } from '@equaltoai/greater-components/primitives';
+          import '$lib/styles/greater/tokens.css';
+          import { Button } from '$lib/greater/primitives';
           // Button will render but look unstyled!
         consequences:
           - components_render_unstyled
@@ -867,8 +867,8 @@ patterns:
         why: 'Component styles reference token variables that must exist first'
         incorrect_example: |
           // INCORRECT: Component styles before tokens
-          import '@equaltoai/greater-components/primitives/style.css';
-          import '@equaltoai/greater-components/tokens/theme.css';
+          import '$lib/styles/greater/primitives.css';
+          import '$lib/styles/greater/tokens.css';
         consequences:
           - css_variables_undefined
           - partial_styling_issues
@@ -877,7 +877,7 @@ patterns:
         incorrect_example: |
           // INCORRECT: Importing CSS in +page.svelte instead of +layout.svelte
           // src/routes/+page.svelte
-          import '@equaltoai/greater-components/tokens/theme.css';
+          import '$lib/styles/greater/tokens.css';
           // Too late! Other components may have already loaded
         consequences:
           - flash_of_unstyled_content
@@ -895,11 +895,11 @@ patterns:
       <!-- src/routes/+layout.svelte -->
       <script lang="ts">
         // CORRECT: Tokens first, then primitives, then face styles
-        import '@equaltoai/greater-components/tokens/theme.css';
-        import '@equaltoai/greater-components/primitives/style.css';
-        import '@equaltoai/greater-components/faces/social/style.css';
+        import '$lib/styles/greater/tokens.css';
+        import '$lib/styles/greater/primitives.css';
+        import '$lib/styles/greater/social.css';
 
-        import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+        import { ThemeProvider } from '$lib/greater/primitives';
 
         let { children } = $props();
       </script>
@@ -923,19 +923,15 @@ patterns:
       <!-- src/routes/+layout.svelte -->
       <script lang="ts">
         // CORRECT: Dark theme setup
-        // 1. Base tokens first
-        import '@equaltoai/greater-components/tokens/theme.css';
-        // 2. Dark theme overrides
-        import '@equaltoai/greater-components/tokens/themes/dark.css';
-        // 3. Component styles last
-        import '@equaltoai/greater-components/primitives/style.css';
+        import '$lib/styles/greater/tokens.css';
+        import '$lib/styles/greater/primitives.css';
 
-        import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+        import { ThemeProvider } from '$lib/greater/primitives';
 
         let { children } = $props();
       </script>
 
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider theme="dark">
         {@render children()}
       </ThemeProvider>
     why_this_works:
@@ -994,7 +990,7 @@ patterns:
       <script lang="ts">
         // CORRECT: Import Chat components as namespace
         // Provides clear API and component relationships
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         let messages = $state<Chat.ChatMessage[]>([]);
         
@@ -1038,7 +1034,7 @@ patterns:
         why: 'Makes it unclear which package components come from'
         incorrect_example: |
           // INCORRECT: Loses namespace context
-          import { Container, Messages, Input } from '@equaltoai/greater-components/chat';
+          import { Container, Messages, Input } from '$lib/components/chat';
           // Unclear these are Chat components vs other Container/Input
         consequences:
           - naming_confusion
@@ -1066,7 +1062,7 @@ patterns:
       - improving_perceived_performance
     correct_example: |
       <script lang="ts">
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         let messages = $state<Chat.ChatMessage[]>([]);
         
@@ -1137,7 +1133,7 @@ patterns:
       - debugging_ai_tool_usage
     correct_example: |
       <script lang="ts">
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         let messages = $state<Chat.ChatMessage[]>([]);
         
@@ -1199,7 +1195,7 @@ patterns:
       - showing_capabilities
     correct_example: |
       <script lang="ts">
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         let messages = $state<Chat.ChatMessage[]>([]);
         
@@ -1237,7 +1233,7 @@ patterns:
       </Chat.Container>
     alternative_with_default_suggestions: |
       // Use built-in PAI suggestions
-      import { defaultPAISuggestions } from '@equaltoai/greater-components/chat';
+      import { defaultPAISuggestions } from '$lib/components/chat';
 
       <Chat.Suggestions 
         suggestions={defaultPAISuggestions}
@@ -1254,7 +1250,7 @@ patterns:
       - advanced_user_controls
     correct_example: |
       <script lang="ts">
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         let messages = $state<Chat.ChatMessage[]>([]);
         let settingsOpen = $state(false);
@@ -1314,7 +1310,7 @@ patterns:
     correct_example: |
       <!-- ChatWrapper.svelte - Parent component -->
       <script lang="ts">
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         // Create context with handlers
         const context = Chat.createChatContext({
@@ -1337,7 +1333,7 @@ patterns:
 
       <!-- CustomMessageList.svelte - Child component -->
       <script lang="ts">
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         // Access context from parent Container
         const context = Chat.getChatContext();
@@ -1367,7 +1363,7 @@ patterns:
         incorrect_example: |
           // INCORRECT: No Container parent
           <script>
-            import { getChatContext } from '@equaltoai/greater-components/chat';
+            import { getChatContext } from '$lib/components/chat';
             
             // This will throw an error!
             const context = getChatContext();
@@ -1386,7 +1382,7 @@ patterns:
       - server_push_updates
     correct_example: |
       <script lang="ts">
-        import * as Chat from '@equaltoai/greater-components/chat';
+        import * as Chat from '$lib/components/chat';
         
         let messages = $state<Chat.ChatMessage[]>([]);
         let connectionStatus = $state<'connected' | 'connecting' | 'disconnected'>('disconnected');

@@ -2,7 +2,7 @@
 
 <!-- AI Training: Canonical guide for integrating Greater Components with Lesser via GraphQL -->
 
-This guide covers the current, supported way to integrate Greater Components with a Lesser instance using the `@equaltoai/greater-components/adapters` GraphQL client and the Social face UI.
+This guide covers the current, supported way to integrate Greater Components with a Lesser instance using the vendored `$lib/greater/adapters` GraphQL client and the Social face UI.
 
 ## Prerequisites
 
@@ -13,20 +13,14 @@ This guide covers the current, supported way to integrate Greater Components wit
 
 ## Installation
 
-### Option A: CLI (recommended)
+### CLI (recommended)
 
 ```bash
 # Initialize config + CSS injection
 npx @equaltoai/greater-components-cli init --face social
 
 # Install the Social face bundle (components + shared modules + patterns)
-greater add faces/social
-```
-
-### Option B: npm (umbrella package)
-
-```bash
-pnpm add @equaltoai/greater-components
+npx @equaltoai/greater-components-cli add faces/social
 ```
 
 ## CSS setup (required)
@@ -36,11 +30,11 @@ Import tokens first, then primitives, then the Social face CSS:
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-	import '@equaltoai/greater-components/tokens/theme.css';
-	import '@equaltoai/greater-components/primitives/style.css';
-	import '@equaltoai/greater-components/faces/social/style.css';
+	import '$lib/styles/greater/tokens.css';
+	import '$lib/styles/greater/primitives.css';
+	import '$lib/styles/greater/social.css';
 
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 
 	let { children } = $props();
 </script>
@@ -56,7 +50,7 @@ Create a single adapter instance and reuse it across your app:
 
 ```ts
 // src/lib/lesser.ts
-import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 export const lesser = new LesserGraphQLAdapter({
 	httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
@@ -81,7 +75,7 @@ VITE_LESSER_TOKEN=your-auth-token
 ```svelte
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 	import { lesser } from '$lib/lesser';
 
 	const view = { type: 'home' } as const;
@@ -109,7 +103,7 @@ Use the Status compound components when you need fine-grained layout control or 
 
 ```svelte
 <script lang="ts">
-	import { Status } from '@equaltoai/greater-components/faces/social';
+	import { Status } from '$lib/components/Status';
 
 	// Provide a status object from your data layer.
 	// The Social face components consume generic ActivityPub-shaped data.

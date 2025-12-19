@@ -10,12 +10,12 @@ The `CopyButton` component handles the entire copy interaction, including the vi
 
 ```svelte
 <script>
-	import { CopyButton } from '@equaltoai/greater-components/primitives';
+	import { CopyButton } from '$lib/greater/primitives';
 </script>
 
 <div class="command-bar">
-	<code>npm install @equaltoai/greater-components</code>
-	<CopyButton text="npm install @equaltoai/greater-components" />
+	<code>npx @equaltoai/greater-components-cli add faces/social</code>
+	<CopyButton text="npx @equaltoai/greater-components-cli add faces/social" />
 </div>
 ```
 
@@ -56,8 +56,8 @@ Export any part of your page (e.g., an article or documentation section) to a Ma
 
 ```svelte
 <script>
-	import { exportToMarkdown } from '@equaltoai/greater-components/utils';
-	import { Button } from '@equaltoai/greater-components/primitives';
+	import { exportToMarkdown } from '$lib/greater/utils';
+	import { Button } from '$lib/greater/primitives';
 
 	async function exportArticle() {
 		await exportToMarkdown({
@@ -79,8 +79,8 @@ Format and export chat histories, preserving timestamps and role names.
 
 ```svelte
 <script>
-	import { exportChatToMarkdown } from '@equaltoai/greater-components/utils';
-	import { Button } from '@equaltoai/greater-components/primitives';
+	import { exportChatToMarkdown } from '$lib/greater/utils';
+	import { Button } from '$lib/greater/primitives';
 
 	let messages = [
 		{ id: '1', role: 'user', content: 'How does PAI work?', timestamp: new Date() },

@@ -30,7 +30,7 @@ Complete API documentation for all Greater Components packages.
 
 ## Primitives Package
 
-`@equaltoai/greater-components/primitives`
+`$lib/greater/primitives`
 
 ### Form Controls
 
@@ -79,7 +79,7 @@ Button for copying text to clipboard with visual feedback.
 **Example:**
 
 ```svelte
-<CopyButton text="npm install @equaltoai/greater-components" />
+<CopyButton text="npx @equaltoai/greater-components-cli add faces/social" />
 ```
 
 ---
@@ -317,8 +317,8 @@ Dropdown menu compound component with keyboard navigation and accessibility.
 
 ```svelte
 <script>
-	import * as Menu from '@equaltoai/greater-components/primitives/Menu';
-	import { EditIcon, TrashIcon } from '@equaltoai/greater-components/icons';
+	import { Button, Menu } from '$lib/greater/primitives';
+	import { EditIcon, TrashIcon } from '$lib/greater/icons';
 </script>
 
 <Menu.Root>
@@ -421,7 +421,7 @@ interface TabData {
 
 ```svelte
 <script>
-	import { Tabs } from '@equaltoai/greater-components/primitives';
+	import { Tabs } from '$lib/greater/primitives';
 
 	const tabs = [
 		{ id: 'account', label: 'Account' },
@@ -592,7 +592,7 @@ Loading placeholder with shape variants and animations.
 
 ```svelte
 <script>
-	import { Skeleton } from '@equaltoai/greater-components/primitives';
+	import { Skeleton } from '$lib/greater/primitives';
 	let loading = true;
 </script>
 
@@ -633,7 +633,7 @@ Text display with typewriter cursor effect for AI streaming responses.
 
 ````svelte
 <script>
-  import { StreamingText } from '@equaltoai/greater-components/primitives';
+  import { StreamingText } from '$lib/greater/primitives';
 
   let content = $state('');
   let streaming = $state(true);
@@ -683,7 +683,7 @@ Eye-catching gradient text effect with presets and custom colors.
 
 ```svelte
 <script>
-  import { GradientText } from '@equaltoai/greater-components/primitives';
+  import { GradientText } from '$lib/greater/primitives';
 </script>
 
 <!-- Preset gradient -->
@@ -739,8 +739,8 @@ Individual item within a List. Inherits icon and color from parent List.
 
 ```svelte
 <script>
-	import { List, ListItem } from '@equaltoai/greater-components/primitives';
-	import { CheckCircleIcon, AlertIcon } from '@equaltoai/greater-components/icons';
+	import { List, ListItem } from '$lib/greater/primitives';
+	import { CheckCircleIcon, AlertIcon } from '$lib/greater/icons';
 </script>
 
 <List icon={CheckCircleIcon} iconColor="success" spacing="md">
@@ -780,7 +780,7 @@ Numbered badge for tutorials and multi-step workflows.
 
 ```svelte
 <script>
-	import { StepIndicator } from '@equaltoai/greater-components/primitives';
+	import { StepIndicator } from '$lib/greater/primitives';
 </script>
 
 <div style="display: flex; gap: 1rem;">
@@ -820,8 +820,8 @@ Container for icons with consistent shapes, sizes, and colors.
 
 ```svelte
 <script>
-	import { IconBadge } from '@equaltoai/greater-components/primitives';
-	import { TargetIcon, SettingsIcon, RocketIcon } from '@equaltoai/greater-components/icons';
+	import { IconBadge } from '$lib/greater/primitives';
+	import { TargetIcon, SettingsIcon, RocketIcon } from '$lib/greater/icons';
 </script>
 
 <div style="display: flex; gap: 1rem;">
@@ -1062,11 +1062,11 @@ interface SettingsSelectProps<T> {
 
 ### Transitions
 
-Import from `@equaltoai/greater-components/primitives`:
+Import from `$lib/greater/primitives`:
 
 ```svelte
 <script>
-	import { fadeUp, fadeDown, slideIn, scaleIn } from '@equaltoai/greater-components/primitives';
+	import { fadeUp, fadeDown, slideIn, scaleIn } from '$lib/greater/primitives';
 </script>
 
 <div transition:fadeUp={{ duration: 400, delay: 100 }}>Fade up</div>
@@ -1089,7 +1089,7 @@ Import from `@equaltoai/greater-components/primitives`:
 Apply smooth CSS transitions during theme changes.
 
 ```typescript
-import { smoothThemeTransition } from '@equaltoai/greater-components/primitives';
+import { smoothThemeTransition } from '$lib/greater/primitives';
 
 smoothThemeTransition(() => {
 	document.documentElement.setAttribute('data-theme', 'dark');
@@ -1101,7 +1101,7 @@ smoothThemeTransition(() => {
 Create a theme toggle function with transitions.
 
 ```typescript
-import { createSmoothThemeToggle } from '@equaltoai/greater-components/primitives';
+import { createSmoothThemeToggle } from '$lib/greater/primitives';
 
 const toggleTheme = createSmoothThemeToggle();
 toggleTheme(); // Toggles between light/dark with animation
@@ -1112,7 +1112,7 @@ toggleTheme(); // Toggles between light/dark with animation
 User preference management with persistence.
 
 ```typescript
-import { preferencesStore, getPreferences } from '@equaltoai/greater-components/primitives';
+import { preferencesStore, getPreferences } from '$lib/greater/primitives';
 
 const prefs = getPreferences();
 preferencesStore.subscribe((prefs) => console.log(prefs));
@@ -1122,7 +1122,7 @@ preferencesStore.subscribe((prefs) => console.log(prefs));
 
 ## Chat Package
 
-`@equaltoai/greater-components/chat`
+`$lib/components/chat`
 
 See [Chat Component Suite](./chat-suite.md) for comprehensive documentation.
 
@@ -1149,7 +1149,7 @@ import {
 	setChatContext,
 	hasChatContext,
 	type ChatContextValue,
-} from '@equaltoai/greater-components/chat';
+} from '$lib/components/chat';
 
 interface ChatContextValue {
 	state: ChatState;
@@ -1175,7 +1175,7 @@ interface ChatContextValue {
 
 ## Headless Package
 
-`@equaltoai/greater-components/headless`
+`$lib/greater/headless`
 
 Behavior-only primitives providing accessibility, keyboard navigation, and state management without any styling. Use these when you need full control over appearance.
 
@@ -1232,7 +1232,7 @@ interface ButtonConfig {
 
 ```svelte
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless';
+	import { createButton } from '$lib/greater/headless';
 
 	const btn = createButton({
 		onClick: () => console.log('Clicked!'),
@@ -1301,7 +1301,7 @@ interface ModalConfig {
 
 ```svelte
 <script>
-	import { createModal } from '@equaltoai/greater-components/headless';
+	import { createModal } from '$lib/greater/headless';
 	const modal = createModal();
 </script>
 
@@ -1365,7 +1365,7 @@ interface MenuConfig {
 
 ```svelte
 <script>
-	import { createMenu } from '@equaltoai/greater-components/headless';
+	import { createMenu } from '$lib/greater/headless';
 	const menu = createMenu({
 		onSelect: (val) => console.log('Selected:', val),
 	});
@@ -1426,7 +1426,7 @@ interface TabsConfig {
 
 ```svelte
 <script>
-	import { createTabs } from '@equaltoai/greater-components/headless';
+	import { createTabs } from '$lib/greater/headless';
 	const tabs = createTabs();
 </script>
 
@@ -1484,7 +1484,7 @@ interface TooltipConfig {
 
 ```svelte
 <script>
-	import { createTooltip } from '@equaltoai/greater-components/headless';
+	import { createTooltip } from '$lib/greater/headless';
 	const tooltip = createTooltip({ placement: 'right' });
 </script>
 
@@ -1547,7 +1547,7 @@ interface TextFieldConfig {
 
 ```svelte
 <script>
-	import { createTextField } from '@equaltoai/greater-components/headless';
+	import { createTextField } from '$lib/greater/headless';
 	const email = createTextField({
 		type: 'email',
 		required: true,
@@ -1718,14 +1718,14 @@ interface SpinnerConfig {
 
 Faces are curated UI kits for different product surfaces. Each face exports components and patterns and has its own CSS bundle:
 
-- Social: `@equaltoai/greater-components/faces/social` (+ `@equaltoai/greater-components/faces/social/style.css`)
-- Blog: `@equaltoai/greater-components/faces/blog` (+ `@equaltoai/greater-components/faces/blog/style.css`)
-- Community: `@equaltoai/greater-components/faces/community` (+ `@equaltoai/greater-components/faces/community/style.css`)
-- Artist: `@equaltoai/greater-components/faces/artist` (+ `@equaltoai/greater-components/faces/artist/style.css`)
+- Social (+ `$lib/styles/greater/social.css`)
+- Blog (+ `$lib/styles/greater/blog.css`)
+- Community (+ `$lib/styles/greater/community.css`)
+- Artist (+ `$lib/styles/greater/artist.css`)
 
 ### Social Face
 
-`@equaltoai/greater-components/faces/social`
+Installed via `greater add faces/social`. Components are vendored under `$lib/components/*` (and supporting types under `$lib/generics/*` where applicable).
 
 Social media components and ActivityPub patterns for Mastodon/Pleroma/Lesser-style UIs.
 
@@ -1734,7 +1734,7 @@ Social media components and ActivityPub patterns for Mastodon/Pleroma/Lesser-sty
 
 ### Blog Face
 
-`@equaltoai/greater-components/faces/blog`
+Installed via `greater add faces/blog`. Components are vendored under `$lib/components/*`.
 
 Long-form publishing UI for articles and publications.
 
@@ -1742,7 +1742,7 @@ Long-form publishing UI for articles and publications.
 
 ### Community Face
 
-`@equaltoai/greater-components/faces/community`
+Installed via `greater add faces/community`. Components are vendored under `$lib/components/*`.
 
 Forum/group discussion UI.
 
@@ -1750,7 +1750,7 @@ Forum/group discussion UI.
 
 ### Artist Face
 
-`@equaltoai/greater-components/faces/artist`
+Installed via `greater add faces/artist`. Components are vendored under `$lib/components/*`.
 
 Portfolio-centric + community tooling for visual artists, including federation utilities and an adapter extension.
 
@@ -1761,7 +1761,7 @@ Portfolio-centric + community tooling for visual artists, including federation u
 
 ## Content Package
 
-`@equaltoai/greater-components/content`
+`$lib/greater/content`
 
 Content rendering components (syntax highlighting + safe Markdown rendering). This package is split out because it includes heavier dependencies (e.g. Shiki and unified/rehype tooling).
 
@@ -1807,22 +1807,22 @@ Safe markdown rendering.
 
 ## Shared Packages
 
-`@equaltoai/greater-components/shared/*`
+`$lib/components/*`
 
 Domain-specific logic and state management.
 
-- **Auth**: `@equaltoai/greater-components/shared/auth`
-- **Admin**: `@equaltoai/greater-components/shared/admin`
-- **Compose**: `@equaltoai/greater-components/shared/compose`
-- **Messaging**: `@equaltoai/greater-components/shared/messaging`
-- **Notifications**: `@equaltoai/greater-components/shared/notifications`
-- **Search**: `@equaltoai/greater-components/shared/search`
+- **Auth**: `$lib/components/auth`
+- **Admin**: `$lib/components/admin`
+- **Compose**: `$lib/components/compose`
+- **Messaging**: `$lib/components/messaging`
+- **Notifications**: `$lib/components/notifications`
+- **Search**: `$lib/components/search`
 
 ---
 
 ## Adapters Package
 
-`@equaltoai/greater-components/adapters`
+`$lib/greater/adapters`
 
 Transport, GraphQL, stores, and mappers for Lesser integration and protocol payload conversion.
 
@@ -1839,30 +1839,27 @@ Transport, GraphQL, stores, and mappers for Lesser integration and protocol payl
 
 ## Tokens Package
 
-`@equaltoai/greater-components/tokens`
+`$lib/greater/tokens`
 
 Design system tokens and theme infrastructure.
 
 **CSS Imports:**
 
-```typescript
-import '@equaltoai/greater-components/tokens/theme.css'; // Base tokens
-// Themes
-import '@equaltoai/greater-components/tokens/themes/dark.css';
-import '@equaltoai/greater-components/tokens/themes/light.css';
+```ts
+import '$lib/styles/greater/tokens.css';
 ```
 
 ---
 
 ## Icons Package
 
-`@equaltoai/greater-components/icons`
+`$lib/greater/icons`
 
 300+ SVG icons including Fediverse-specific icons.
 
 ```svelte
 <script>
-	import { SaveIcon, SendIcon, SettingsIcon } from '@equaltoai/greater-components/icons';
+	import { SaveIcon, SendIcon, SettingsIcon } from '$lib/greater/icons';
 </script>
 
 <SaveIcon size={24} />
@@ -1872,7 +1869,7 @@ import '@equaltoai/greater-components/tokens/themes/light.css';
 
 ## Utils Package
 
-`@equaltoai/greater-components/utils`
+`$lib/greater/utils`
 
 Common utilities for web applications.
 
@@ -1880,14 +1877,11 @@ Common utilities for web applications.
 
 ## Testing Package
 
-`@equaltoai/greater-components/testing`
+`packages/testing` (monorepo-only)
 
 Testing utilities and accessibility validators.
 
-```typescript
-import { render, fireEvent } from '@equaltoai/greater-components/testing';
-import { axe } from '@equaltoai/greater-components/testing/a11y';
-```
+This repo uses Vitest + Testing Library + axe; consumer apps can use their preferred test stack.
 
 ---
 

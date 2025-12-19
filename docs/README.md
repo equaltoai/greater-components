@@ -94,10 +94,10 @@ Greater Components is a **monorepo of composable packages** for building Fediver
 
 ### Specialized Packages
 
-- **faces/social** – Social media components (Status, Timeline, Profile, etc.) @equaltoai/greater-components/faces/social
-- **faces/blog** – Blog/publishing components @equaltoai/greater-components/faces/blog
-- **faces/community** – Community/forum components @equaltoai/greater-components/faces/community
-- **faces/artist** – Visual artist portfolio components @equaltoai/greater-components/faces/artist
+- **faces/social** – Social media components (Status, Timeline, Profile, etc.) (vendored under `$lib/components/*`)
+- **faces/blog** – Blog/publishing components (vendored under `$lib/components/*`)
+- **faces/community** – Community/forum components (vendored under `$lib/components/*`)
+- **faces/artist** – Visual artist portfolio components (vendored under `$lib/components/*`)
 - **content** – Rich content rendering components (Markdown, CodeBlock)
 - **adapters** – Transport + Lesser GraphQL adapter + stores + mappers
 - **utils** – Common utilities for web applications
@@ -113,8 +113,8 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 
 ```svelte
 <script>
-	import { Button, Modal } from '@equaltoai/greater-components/primitives';
-	import { SettingsIcon } from '@equaltoai/greater-components/icons';
+	import { Button, Modal } from '$lib/greater/primitives';
+	import { SettingsIcon } from '$lib/greater/icons';
 
 	let showSettings = false;
 </script>
@@ -133,7 +133,7 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 
 ```svelte
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
+	import { createButton } from '$lib/greater/headless/button';
 
 	const button = createButton({
 		onClick: () => console.log('Clicked!'),
@@ -150,8 +150,8 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 
 ```svelte
 <script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { Status } from '@equaltoai/greater-components/faces/social';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+	import { Status } from '$lib/components/Status';
 
 	const adapter = new LesserGraphQLAdapter({
 		httpEndpoint: 'https://my-instance.social/graphql',
