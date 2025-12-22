@@ -52,23 +52,23 @@
     "svelte": "^5.43.6"
   },
   "dependencies": {
-    "isomorphic-dompurify": "^2.32.0",
+    "isomorphic-dompurify": "^2.34.0",
     "marked": "^17.0.1",
-    "shiki": "^3.15.0"
+    "shiki": "^3.20.0"
   },
   "devDependencies": {
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@sveltejs/package": "^2.5.6",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@testing-library/svelte": "^5.2.9",
+    "@testing-library/svelte": "^5.2.10",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "jsdom": "^27.2.0",
+    "@vitest/coverage-v8": "^4.0.16",
+    "jsdom": "^27.3.0",
     "svelte": "^5.43.14",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   },
   "private": true
 }

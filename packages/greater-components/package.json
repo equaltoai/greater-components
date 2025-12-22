@@ -176,8 +176,8 @@
     "access": "public"
   },
   "dependencies": {
-    "@apollo/client": "^4.0.9",
-    "@apollo/client-react-streaming": "^0.14.0",
+    "@apollo/client": "^4.0.11",
+    "@apollo/client-react-streaming": "^0.14.3",
     "@graphql-typed-document-node/core": "^3.2.0",
     "graphql": "^16.12.0",
     "graphql-ws": "^6.0.6"
@@ -200,7 +200,7 @@
     "@equaltoai/greater-components-search": "workspace:*",
     "@equaltoai/greater-components-notifications": "workspace:*",
     "@equaltoai/greater-components-chat": "workspace:*",
-    "@vitest/coverage-v8": "^4.0.12",
-    "vitest": "^4.0.12"
+    "@vitest/coverage-v8": "^4.0.16",
+    "vitest": "^4.0.16"
   }
 }

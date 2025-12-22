@@ -50,24 +50,24 @@
     "@axe-core/playwright": "^4.11.0",
     "axe-core": "^4.11.0",
     "axe-playwright": "^2.2.2",
-    "focus-trap": "^7.6.6",
+    "focus-trap": "^7.7.0",
     "tabbable": "^6.3.0"
   },
   "devDependencies": {
     "@percy/playwright": "^1.0.10",
-    "@playwright/test": "^1.56.1",
-    "@testing-library/svelte": "^5.2.9",
+    "@playwright/test": "^1.57.0",
+    "@testing-library/svelte": "^5.2.10",
     "@testing-library/user-event": "^14.6.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "@vitest/ui": "^4.0.12",
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/ui": "^4.0.16",
     "chromatic": "^13.3.4",
     "commander": "^14.0.2",
-    "jsdom": "^27.2.0",
-    "playwright": "^1.56.1",
+    "jsdom": "^27.3.0",
+    "playwright": "^1.57.0",
     "svelte": "^5.43.14",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"
