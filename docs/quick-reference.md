@@ -426,13 +426,7 @@ size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Text,
-		Button,
-	} from '$lib/greater/primitives';
+	import { Section, Container, Heading, Text, Button } from '$lib/greater/primitives';
 	import { ArrowRightIcon } from '$lib/greater/icons';
 </script>
 
@@ -487,13 +481,7 @@ size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Card,
-		Text,
-	} from '$lib/greater/primitives';
+	import { Section, Container, Heading, Card, Text } from '$lib/greater/primitives';
 	import { CodeIcon, ZapIcon, ShieldIcon } from '$lib/greater/icons';
 
 	const features = [

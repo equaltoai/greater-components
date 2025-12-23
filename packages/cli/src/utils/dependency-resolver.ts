@@ -14,6 +14,7 @@ import { getFaceManifest } from '../registry/faces.js';
 import { getSharedModule, type SharedModuleMetadata } from '../registry/shared.js';
 import { getPattern, type PatternMetadata } from '../registry/patterns.js';
 import type { ParsedItem } from './item-parser.js';
+import { logger } from './logger.js';
 
 /**
  * Resolved dependency with depth information
@@ -100,14 +101,14 @@ function getComponentDependencies(
 			// In registry-index schema: 'dependencies' are internal registry deps
 			if (indexEntry.dependencies) {
 				const names = indexEntry.dependencies.map((d) => d.name);
-				console.log(`[DEBUG] Resolved dependencies for ${name} from registry:`, names);
+				logger.debug(`Resolved dependencies for ${name} from registry: ${names.join(', ')}`);
 				deps.push(...names);
 			}
 		} else {
-			console.log(`[DEBUG] Entry not found in registry for ${name}`);
+			logger.debug(`Entry not found in registry for ${name}`);
 		}
 	} else {
-		console.log(`[DEBUG] No registry index available for ${name}`);
+		logger.debug(`No registry index available for ${name}`);
 	}
 
 	// Fallback or augmentation with static metadata

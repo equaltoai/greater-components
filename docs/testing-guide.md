@@ -446,11 +446,11 @@ test('mobile modal takes full screen', async ({ page }) => {
 ### Automated Testing with axe-core
 
 ```typescript
-	import { test, expect } from 'vitest';
-	import { render } from '@testing-library/svelte';
-	import { axe, toHaveNoViolations } from 'jest-axe';
-	import Button from '$lib/greater/primitives/components/Button.svelte';
-	import Modal from '$lib/greater/primitives/components/Modal.svelte';
+import { test, expect } from 'vitest';
+import { render } from '@testing-library/svelte';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import Button from '$lib/greater/primitives/components/Button.svelte';
+import Modal from '$lib/greater/primitives/components/Modal.svelte';
 
 expect.extend(toHaveNoViolations);
 

@@ -23,15 +23,15 @@ npx @equaltoai/greater-components-cli add primitives icons tokens headless
 
 ### 1. Core Packages (`$lib/greater/*`)
 
-| Package      | Import path                  | Notes |
-| ------------ | ---------------------------- | ----- |
-| Primitives   | `$lib/greater/primitives`    | Styled Svelte components |
-| Headless     | `$lib/greater/headless/*`    | Builders/actions (e.g. `button`, `tabs`) |
-| Icons        | `$lib/greater/icons`         | SVG icon components |
-| Tokens (JS)  | `$lib/greater/tokens`        | Token helpers/constants (CSS is separate) |
-| Utils        | `$lib/greater/utils`         | Shared utilities |
-| Content      | `$lib/greater/content`       | Markdown + syntax highlighting components |
-| Adapters     | `$lib/greater/adapters`      | Lesser GraphQL + stores |
+| Package     | Import path               | Notes                                     |
+| ----------- | ------------------------- | ----------------------------------------- |
+| Primitives  | `$lib/greater/primitives` | Styled Svelte components                  |
+| Headless    | `$lib/greater/headless/*` | Builders/actions (e.g. `button`, `tabs`)  |
+| Icons       | `$lib/greater/icons`      | SVG icon components                       |
+| Tokens (JS) | `$lib/greater/tokens`     | Token helpers/constants (CSS is separate) |
+| Utils       | `$lib/greater/utils`      | Shared utilities                          |
+| Content     | `$lib/greater/content`    | Markdown + syntax highlighting components |
+| Adapters    | `$lib/greater/adapters`   | Lesser GraphQL + stores                   |
 
 **Example: primitives**
 

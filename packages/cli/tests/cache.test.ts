@@ -35,6 +35,7 @@ vi.mock('ora', () => ({
 
 const mockLogger = {
 	info: vi.fn(),
+	debug: vi.fn(),
 	success: vi.fn(),
 	warn: vi.fn(),
 	error: vi.fn(),

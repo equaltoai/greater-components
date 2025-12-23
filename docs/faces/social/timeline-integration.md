@@ -29,13 +29,13 @@ The Timeline component is one of the most important parts of the Social Face, pr
 
 ## Timeline Types
 
-| Type        | Description                        | Props     |
-| ----------- | ---------------------------------- | --------- |
-| `home`      | Home timeline of followed accounts | -         |
-| `public`    | Public timeline                    | -         |
-| `profile`   | Single user's timeline             | `username` |
-| `hashtag`   | Hashtag timeline                   | `hashtag` |
-| `list`      | List timeline                      | `listId`  |
+| Type      | Description                        | Props      |
+| --------- | ---------------------------------- | ---------- |
+| `home`    | Home timeline of followed accounts | -          |
+| `public`  | Public timeline                    | -          |
+| `profile` | Single user's timeline             | `username` |
+| `hashtag` | Hashtag timeline                   | `hashtag`  |
+| `list`    | List timeline                      | `listId`   |
 
 ## Virtualized Scrolling
 

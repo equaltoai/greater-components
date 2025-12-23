@@ -7,10 +7,12 @@ import fs from 'fs-extra';
 // Mock dependencies
 vi.mock('../src/utils/logger.js', () => ({
 	logger: {
+		debug: vi.fn(),
 		info: vi.fn(),
 		success: vi.fn(),
 		error: vi.fn(),
 		warn: vi.fn(),
+		newline: vi.fn(),
 	},
 }));
 

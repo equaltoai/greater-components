@@ -452,25 +452,25 @@ Notes:
 
 ### Configuration Options
 
-| Key                  | Type         | Description                                              |
-| -------------------- | ------------ | -------------------------------------------------------- |
-| `$schema`            | string       | JSON Schema URL for validation                           |
-| `version`            | string       | Configuration schema version                             |
-| `ref`                | string       | Git tag for fetching components                          |
-| `installMode`        | string       | `vendored` (default) or `hybrid` (legacy)                |
-| `style`              | string       | Style preset: `default`, `new-york`, `minimal`, `custom` |
-| `aliases.components` | string       | Base components directory                                |
-| `aliases.utils`      | string       | Utilities directory                                      |
-| `aliases.ui`         | string       | UI components directory                                  |
-| `aliases.lib`        | string       | Library root                                             |
-| `aliases.hooks`      | string       | Legacy headless primitives directory                     |
-| `aliases.greater`    | string       | Vendored core packages root                              |
-| `css.tokens`         | boolean      | Include design tokens CSS                                |
-| `css.primitives`     | boolean      | Include primitive styles CSS                             |
-| `css.face`           | string\|null | Active face name                                         |
+| Key                  | Type         | Description                                               |
+| -------------------- | ------------ | --------------------------------------------------------- |
+| `$schema`            | string       | JSON Schema URL for validation                            |
+| `version`            | string       | Configuration schema version                              |
+| `ref`                | string       | Git tag for fetching components                           |
+| `installMode`        | string       | `vendored` (default) or `hybrid` (legacy)                 |
+| `style`              | string       | Style preset: `default`, `new-york`, `minimal`, `custom`  |
+| `aliases.components` | string       | Base components directory                                 |
+| `aliases.utils`      | string       | Utilities directory                                       |
+| `aliases.ui`         | string       | UI components directory                                   |
+| `aliases.lib`        | string       | Library root                                              |
+| `aliases.hooks`      | string       | Legacy headless primitives directory                      |
+| `aliases.greater`    | string       | Vendored core packages root                               |
+| `css.tokens`         | boolean      | Include design tokens CSS                                 |
+| `css.primitives`     | boolean      | Include primitive styles CSS                              |
+| `css.face`           | string\|null | Active face name                                          |
 | `css.source`         | string       | CSS source mode: `local` (copied files) or `npm` (legacy) |
-| `css.localDir`       | string       | Local CSS directory path (relative to `aliases.lib`)     |
-| `installed`          | array        | List of installed components                             |
+| `css.localDir`       | string       | Local CSS directory path (relative to `aliases.lib`)      |
+| `installed`          | array        | List of installed components                              |
 
 ### Installed Component Entry
 

@@ -278,34 +278,34 @@ function processFiles(packageDir, srcDir, extensions, verbose) {
  */
 function getPackageVersions() {
 	const versions = {};
-	
+
 	// Core packages
 	for (const pkgName of Object.keys(PACKAGE_CONFIGS)) {
 		const p = path.join(PACKAGES_DIR, pkgName, 'package.json');
 		if (fs.existsSync(p)) {
-			 const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
-			 versions[pkg.name] = pkg.version;
+			const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
+			versions[pkg.name] = pkg.version;
 		}
 	}
-	
+
 	// Faces
 	for (const face of FACES) {
 		const p = path.join(PACKAGES_DIR, 'faces', face, 'package.json');
 		if (fs.existsSync(p)) {
-			 const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
-			 versions[pkg.name] = pkg.version;
+			const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
+			versions[pkg.name] = pkg.version;
 		}
 	}
-	
+
 	// Shared
 	for (const mod of SHARED_MODULES) {
 		const p = path.join(PACKAGES_DIR, 'shared', mod, 'package.json');
 		if (fs.existsSync(p)) {
-			 const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
-			 versions[pkg.name] = pkg.version;
+			const pkg = JSON.parse(fs.readFileSync(p, 'utf8'));
+			versions[pkg.name] = pkg.version;
 		}
 	}
-	
+
 	return versions;
 }
 
@@ -324,20 +324,20 @@ function readManifest(manifestPath) {
  */
 function resolveDependencyVersion(depName, packageJson, workspaceVersions) {
 	if (!packageJson) return 'latest';
-	
+
 	const allDeps = {
 		...packageJson.dependencies,
 		...packageJson.peerDependencies,
 		...packageJson.devDependencies,
 	};
-	
+
 	let version = allDeps[depName] || 'latest';
 
 	if (version.startsWith('workspace:')) {
 		if (workspaceVersions && workspaceVersions[depName]) {
 			return workspaceVersions[depName];
 		}
-        console.warn(`[WARN] Could not resolve workspace version for ${depName}`);
+		console.warn(`[WARN] Could not resolve workspace version for ${depName}`);
 		return 'latest';
 	}
 
@@ -373,8 +373,8 @@ function processPackage(packageName, config, verbose, workspaceVersions) {
 	const detectedDeps = analyzeDependencies(path.join(packageDir, config.srcDir), config.extensions);
 
 	// Filter for internal dependencies (Greater components)
-	const internalDeps = detectedDeps.filter((dep) =>
-		dep.startsWith('@equaltoai/greater-components') && dep !== packageJson.name
+	const internalDeps = detectedDeps.filter(
+		(dep) => dep.startsWith('@equaltoai/greater-components') && dep !== packageJson.name
 	);
 
 	// Filter for external dependencies (everything else)
@@ -391,11 +391,15 @@ function processPackage(packageName, config, verbose, workspaceVersions) {
 		description: packageJson.description || '',
 		type: config.type,
 		files,
-		dependencies: internalDeps.map(dep => ({
+		dependencies: internalDeps.map((dep) => ({
 			name: dep.replace('@equaltoai/greater-components-', ''),
-			version: resolveDependencyVersion(dep, packageJson, workspaceVersions)
+			version: resolveDependencyVersion(dep, packageJson, workspaceVersions),
 		})),
-		peerDependencies: mapDependencies(Array.from(externalDepsNames), packageJson, workspaceVersions),
+		peerDependencies: mapDependencies(
+			Array.from(externalDepsNames),
+			packageJson,
+			workspaceVersions
+		),
 		tags: packageJson.keywords || [],
 	};
 }
@@ -418,7 +422,7 @@ function processFace(faceName, verbose, workspaceVersions) {
 	let version = manifest.version;
 	let declaredDeps = [];
 	let packageJson = {};
-	
+
 	if (fs.existsSync(packageJsonPath)) {
 		packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 		version = packageJson.version || version;
@@ -446,9 +450,9 @@ function processFace(faceName, verbose, workspaceVersions) {
 		...(manifest.dependencies?.internal || []),
 		...detectedDeps.filter((dep) => dep.startsWith('@equaltoai/greater-components')),
 	]);
-	
+
 	// Filter self-dependency if packageJson has name
-	const filteredInternalDeps = Array.from(internalDeps).filter(dep => dep !== packageJson.name);
+	const filteredInternalDeps = Array.from(internalDeps).filter((dep) => dep !== packageJson.name);
 
 	return {
 		name: faceName,
@@ -469,11 +473,15 @@ function processFace(faceName, verbose, workspaceVersions) {
 			main: `@equaltoai/greater-components/faces/${faceName}/style.css`,
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
 		},
-		dependencies: filteredInternalDeps.sort().map(dep => ({
+		dependencies: filteredInternalDeps.sort().map((dep) => ({
 			name: dep.replace('@equaltoai/greater-components-', ''),
-			version: resolveDependencyVersion(dep, packageJson, workspaceVersions)
+			version: resolveDependencyVersion(dep, packageJson, workspaceVersions),
 		})),
-		peerDependencies: mapDependencies(Array.from(externalDeps).sort(), packageJson, workspaceVersions),
+		peerDependencies: mapDependencies(
+			Array.from(externalDeps).sort(),
+			packageJson,
+			workspaceVersions
+		),
 	};
 }
 
@@ -493,7 +501,7 @@ function processSharedModule(moduleName, verbose, workspaceVersions) {
 
 	let declaredDeps = [];
 	let packageJson = {};
-	
+
 	if (fs.existsSync(packageJsonPath)) {
 		packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 		declaredDeps = [
@@ -520,7 +528,7 @@ function processSharedModule(moduleName, verbose, workspaceVersions) {
 	]);
 
 	// Filter self-dependency
-	const filteredInternalDeps = Array.from(internalDeps).filter(dep => dep !== packageJson.name);
+	const filteredInternalDeps = Array.from(internalDeps).filter((dep) => dep !== packageJson.name);
 
 	return {
 		name: moduleName,
@@ -528,11 +536,15 @@ function processSharedModule(moduleName, verbose, workspaceVersions) {
 		description: manifest.description,
 		exports: Object.keys(manifest.components || {}),
 		files,
-		dependencies: filteredInternalDeps.sort().map(dep => ({
+		dependencies: filteredInternalDeps.sort().map((dep) => ({
 			name: dep.replace('@equaltoai/greater-components-', ''),
-			version: resolveDependencyVersion(dep, packageJson, workspaceVersions)
+			version: resolveDependencyVersion(dep, packageJson, workspaceVersions),
 		})),
-		peerDependencies: mapDependencies(Array.from(externalDeps).sort(), packageJson, workspaceVersions),
+		peerDependencies: mapDependencies(
+			Array.from(externalDeps).sort(),
+			packageJson,
+			workspaceVersions
+		),
 		types: manifest.types || [],
 	};
 }
@@ -661,7 +673,7 @@ async function main() {
 	const version = getVersion();
 	const ref = getGitRef();
 	const generatedAt = new Date().toISOString();
-	
+
 	// Get workspace versions
 	const workspaceVersions = getPackageVersions();
 

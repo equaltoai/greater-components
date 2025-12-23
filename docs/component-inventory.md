@@ -1506,18 +1506,18 @@ Store messages in localStorage, IndexedDB, or your backend.
 
 ### Quick Decision Matrix
 
-| Need                   | Use This Package | Import From                                  |
-| ---------------------- | ---------------- | -------------------------------------------- |
-| Button, form inputs    | Primitives       | `$lib/greater/primitives`                    |
-| Layout containers      | Primitives       | `$lib/greater/primitives`                    |
-| Typography             | Primitives       | `$lib/greater/primitives`                    |
-| **AI chat interface**  | **Chat**         | `$lib/components/chat`                       |
-| Icons                  | Icons            | `$lib/greater/icons`                         |
-| Social media feed      | Faces (Social)   | `$lib/components/*`                          |
-| User profiles          | Faces (Social)   | `$lib/components/*`                          |
-| Complete style control | Headless         | `$lib/greater/headless`                      |
-| ActivityPub connection | Adapters         | `$lib/greater/adapters`                      |
-| Utility functions      | Utils            | `$lib/greater/utils`                         |
+| Need                   | Use This Package | Import From               |
+| ---------------------- | ---------------- | ------------------------- |
+| Button, form inputs    | Primitives       | `$lib/greater/primitives` |
+| Layout containers      | Primitives       | `$lib/greater/primitives` |
+| Typography             | Primitives       | `$lib/greater/primitives` |
+| **AI chat interface**  | **Chat**         | `$lib/components/chat`    |
+| Icons                  | Icons            | `$lib/greater/icons`      |
+| Social media feed      | Faces (Social)   | `$lib/components/*`       |
+| User profiles          | Faces (Social)   | `$lib/components/*`       |
+| Complete style control | Headless         | `$lib/greater/headless`   |
+| ActivityPub connection | Adapters         | `$lib/greater/adapters`   |
+| Utility functions      | Utils            | `$lib/greater/utils`      |
 
 ### Use Case to Package Mapping
 

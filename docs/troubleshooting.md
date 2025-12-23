@@ -4,22 +4,22 @@ Common issues with verified fixes from production experience.
 
 ## Quick Diagnosis
 
-| Symptom                                    | Likely Cause                       | Section                                           |
-| ------------------------------------------ | ---------------------------------- | ------------------------------------------------- |
-| "Cannot find module '$lib/greater/...'"    | Greater not vendored yet           | [Installation Issues](#installation-issues)       |
-| "Could not resolve 'isomorphic-dompurify'" | Missing peer dependency            | [Peer Dependency Issues](#peer-dependency-issues) |
-| "Could not resolve 'marked'" / "shiki"     | Missing peer dependency            | [Peer Dependency Issues](#peer-dependency-issues) |
-| Components render but appear unstyled      | Missing `$lib/styles/greater/primitives.css` | [Styling Issues](#styling-issues)         |
-| CSS variables show as invalid              | Missing `$lib/styles/greater/tokens.css`     | [Styling Issues](#styling-issues)         |
-| `preventFlashScript is not defined`        | Missing theme flash prevention     | [Theming Issues](#theming-issues)                 |
-| "Snippets not working"                     | Using Svelte 4 slot syntax         | [Svelte 5 Migration](#svelte-5-migration)         |
-| "$state is not defined"                    | Not using Svelte 5                 | [Svelte 5 Migration](#svelte-5-migration)         |
-| Type errors                                | TypeScript misconfiguration        | [TypeScript Issues](#typescript-issues)           |
-| Modal not closing                          | Missing onClose handler            | [Component Issues](#component-issues)             |
-| Theme not applying                         | CSS variables not loading          | [Theming Issues](#theming-issues)                 |
-| Timeline performance slow                  | Virtual scrolling not enabled      | [Performance Issues](#performance-issues)         |
-| SSR hydration errors                       | Client-only code running on server | [SSR Issues](#ssr-issues)                         |
-| Lesser adapter 401 error                   | Invalid or expired token           | [Lesser Integration](#lesser-integration)         |
+| Symptom                                    | Likely Cause                                 | Section                                           |
+| ------------------------------------------ | -------------------------------------------- | ------------------------------------------------- |
+| "Cannot find module '$lib/greater/...'"    | Greater not vendored yet                     | [Installation Issues](#installation-issues)       |
+| "Could not resolve 'isomorphic-dompurify'" | Missing peer dependency                      | [Peer Dependency Issues](#peer-dependency-issues) |
+| "Could not resolve 'marked'" / "shiki"     | Missing peer dependency                      | [Peer Dependency Issues](#peer-dependency-issues) |
+| Components render but appear unstyled      | Missing `$lib/styles/greater/primitives.css` | [Styling Issues](#styling-issues)                 |
+| CSS variables show as invalid              | Missing `$lib/styles/greater/tokens.css`     | [Styling Issues](#styling-issues)                 |
+| `preventFlashScript is not defined`        | Missing theme flash prevention               | [Theming Issues](#theming-issues)                 |
+| "Snippets not working"                     | Using Svelte 4 slot syntax                   | [Svelte 5 Migration](#svelte-5-migration)         |
+| "$state is not defined"                    | Not using Svelte 5                           | [Svelte 5 Migration](#svelte-5-migration)         |
+| Type errors                                | TypeScript misconfiguration                  | [TypeScript Issues](#typescript-issues)           |
+| Modal not closing                          | Missing onClose handler                      | [Component Issues](#component-issues)             |
+| Theme not applying                         | CSS variables not loading                    | [Theming Issues](#theming-issues)                 |
+| Timeline performance slow                  | Virtual scrolling not enabled                | [Performance Issues](#performance-issues)         |
+| SSR hydration errors                       | Client-only code running on server           | [SSR Issues](#ssr-issues)                         |
+| Lesser adapter 401 error                   | Invalid or expired token                     | [Lesser Integration](#lesser-integration)         |
 
 ---
 
@@ -210,12 +210,12 @@ getComputedStyle(document.documentElement).getPropertyValue('--gr-color-primary-
 
 **Quick Diagnosis Table:**
 
-| Symptom                             | Missing Import         | Solution                                      |
-| ----------------------------------- | ---------------------- | --------------------------------------------- |
-| Components render but unstyled      | `$lib/styles/greater/primitives.css` | Add component styles import              |
-| CSS variables show as invalid       | `$lib/styles/greater/tokens.css`     | Add tokens import FIRST                  |
-| Both unstyled AND invalid variables | Both files             | Add both imports in correct order             |
-| Social face components unstyled     | Face CSS               | Add `$lib/styles/greater/social.css` after primitives |
+| Symptom                             | Missing Import                       | Solution                                              |
+| ----------------------------------- | ------------------------------------ | ----------------------------------------------------- |
+| Components render but unstyled      | `$lib/styles/greater/primitives.css` | Add component styles import                           |
+| CSS variables show as invalid       | `$lib/styles/greater/tokens.css`     | Add tokens import FIRST                               |
+| Both unstyled AND invalid variables | Both files                           | Add both imports in correct order                     |
+| Social face components unstyled     | Face CSS                             | Add `$lib/styles/greater/social.css` after primitives |
 
 See [CSS Architecture Guide](./css-architecture.md) for complete documentation.
 

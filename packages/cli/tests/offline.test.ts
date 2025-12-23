@@ -32,9 +32,11 @@ vi.mock('../src/utils/git-fetch.js', () => ({
 
 vi.mock('../src/utils/logger.js', () => ({
 	logger: {
+		debug: vi.fn(),
 		info: vi.fn(),
 		warn: vi.fn(),
 		error: vi.fn(),
+		newline: vi.fn(),
 	},
 }));
 

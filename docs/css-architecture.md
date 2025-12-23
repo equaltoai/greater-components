@@ -155,14 +155,14 @@ import '$lib/styles/greater/tokens.css';
 
 ## Troubleshooting
 
-| Symptom                                                             | Cause                                        | Solution                                          |
-| ------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------- |
-| Components render but appear completely unstyled (browser defaults) | Missing component CSS                        | Add `$lib/styles/greater/primitives.css` (and face CSS if used) |
-| Styles partially work, colors/spacing wrong                         | Missing token CSS                            | Add `$lib/styles/greater/tokens.css` before component CSS       |
-| Console shows `var(--gr-*)` as invalid value                        | Tokens not loaded or loaded after components | Import `$lib/styles/greater/tokens.css` FIRST     |
+| Symptom                                                             | Cause                                        | Solution                                                              |
+| ------------------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------- |
+| Components render but appear completely unstyled (browser defaults) | Missing component CSS                        | Add `$lib/styles/greater/primitives.css` (and face CSS if used)       |
+| Styles partially work, colors/spacing wrong                         | Missing token CSS                            | Add `$lib/styles/greater/tokens.css` before component CSS             |
+| Console shows `var(--gr-*)` as invalid value                        | Tokens not loaded or loaded after components | Import `$lib/styles/greater/tokens.css` FIRST                         |
 | Dark mode not working                                               | Theme not set                                | Ensure `ThemeProvider defaultTheme="dark"` or set `data-theme="dark"` |
-| Social face components unstyled                                     | Face CSS not imported                        | Import `$lib/styles/greater/social.css` after primitives          |
-| Button/Card have no styling but render                              | Component CSS missing                        | Verify `$lib/styles/greater/primitives.css` is imported           |
+| Social face components unstyled                                     | Face CSS not imported                        | Import `$lib/styles/greater/social.css` after primitives              |
+| Button/Card have no styling but render                              | Component CSS missing                        | Verify `$lib/styles/greater/primitives.css` is imported               |
 
 ### Quick Diagnosis
 
@@ -188,11 +188,11 @@ document.querySelector('.gr-button');
 
 ## File Reference
 
-| Import Path                      | Size          | Contents                                           |
-| -------------------------------- | ------------- | -------------------------------------------------- |
-| `$lib/styles/greater/tokens.css`     | ~180+ lines   | Tokens + theme variables (light/dark/high-contrast) |
-| `$lib/styles/greater/primitives.css` | ~3,000+ lines | Primitive component class definitions               |
-| `$lib/styles/greater/social.css`     | ~10,000+ lines| Social face component class definitions             |
+| Import Path                          | Size           | Contents                                            |
+| ------------------------------------ | -------------- | --------------------------------------------------- |
+| `$lib/styles/greater/tokens.css`     | ~180+ lines    | Tokens + theme variables (light/dark/high-contrast) |
+| `$lib/styles/greater/primitives.css` | ~3,000+ lines  | Primitive component class definitions               |
+| `$lib/styles/greater/social.css`     | ~10,000+ lines | Social face component class definitions             |
 
 ---
 

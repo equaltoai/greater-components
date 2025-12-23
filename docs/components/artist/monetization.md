@@ -133,10 +133,7 @@ Features for galleries, museums, and institutions.
 	import PremiumBadge from '$lib/components/Monetization/PremiumBadge.svelte';
 </script>
 
-<PremiumBadge
-	tier="pro"
-	features={['priority-support', 'analytics', 'custom-domain']}
-/>
+<PremiumBadge tier="pro" features={['priority-support', 'analytics', 'custom-domain']} />
 ```
 
 ### Protection Tools

@@ -454,11 +454,11 @@ Options:
 
 4. **Optionally inject CSS imports**:
    - Detect `+layout.svelte` or `main.ts` entry point
-	   - Insert:
-	     ```css
-	     @import '$lib/styles/greater/tokens.css';
-	     @import '$lib/styles/greater/primitives.css';
-	     ```
+     - Insert:
+       ```css
+       @import '$lib/styles/greater/tokens.css';
+       @import '$lib/styles/greater/primitives.css';
+       ```
 
 **Exit conditions:**
 

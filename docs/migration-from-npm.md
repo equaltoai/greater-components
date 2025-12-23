@@ -123,8 +123,8 @@ pnpm remove @equaltoai/greater-components
 
 ### Headless Primitives (Vendored)
 
-| CLI Item  | Installed Path               |
-| --------- | ---------------------------- |
+| CLI Item  | Installed Path                     |
+| --------- | ---------------------------------- |
 | `button`  | `$lib/greater/headless/button.ts`  |
 | `modal`   | `$lib/greater/headless/modal.ts`   |
 | `menu`    | `$lib/greater/headless/menu.ts`    |
@@ -133,18 +133,18 @@ pnpm remove @equaltoai/greater-components
 
 ### Social Face Components
 
-| npm Import                                                 | CLI Import                             |
-| ---------------------------------------------------------- | -------------------------------------- |
-| `@equaltoai/greater-components/faces/social` → `Status`    | `$lib/components/Status`              |
-| `@equaltoai/greater-components/faces/social` → `Timeline*` | `$lib/components/Timeline`            |
-| `@equaltoai/greater-components/faces/social` → `Profile`   | `$lib/components/Profile`             |
+| npm Import                                                 | CLI Import                 |
+| ---------------------------------------------------------- | -------------------------- |
+| `@equaltoai/greater-components/faces/social` → `Status`    | `$lib/components/Status`   |
+| `@equaltoai/greater-components/faces/social` → `Timeline*` | `$lib/components/Timeline` |
+| `@equaltoai/greater-components/faces/social` → `Profile`   | `$lib/components/Profile`  |
 
 ### Shared Modules
 
-| npm Import                                     | CLI Import                            |
-| ---------------------------------------------- | ------------------------------------- |
-| `@equaltoai/greater-components/shared/auth`    | `$lib/components/auth`               |
-| `@equaltoai/greater-components/shared/compose` | `$lib/components/compose`            |
+| npm Import                                     | CLI Import                |
+| ---------------------------------------------- | ------------------------- |
+| `@equaltoai/greater-components/shared/auth`    | `$lib/components/auth`    |
+| `@equaltoai/greater-components/shared/compose` | `$lib/components/compose` |
 
 ---
 

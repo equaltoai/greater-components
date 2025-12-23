@@ -33,9 +33,11 @@ vi.mock('../src/utils/security.js', () => ({
 
 vi.mock('../src/utils/logger.js', () => ({
 	logger: {
+		debug: vi.fn(),
 		info: vi.fn(),
 		warn: vi.fn(),
 		error: vi.fn(),
+		newline: vi.fn(),
 	},
 }));
 

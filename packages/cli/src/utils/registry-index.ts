@@ -9,6 +9,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { fetchFromGitTag, NetworkError } from './git-fetch.js';
 import { FALLBACK_REF } from './config.js';
+import { logger } from './logger.js';
 
 /**
  * Registry index file path within the repository
@@ -303,9 +304,9 @@ export async function fetchRegistryIndex(
 		);
 
 		if (await fs.pathExists(localPath)) {
-			console.log(`[DEBUG] Loading registry from local path: ${localPath}`);
+			logger.debug(`Loading registry from local path: ${localPath}`);
 			const content = await fs.readFile(localPath, 'utf8');
-            console.log(`[DEBUG] Registry content start: ${content.substring(0, 100)}`);
+			logger.debug(`Registry content start: ${content.substring(0, 100)}`);
 			return registryIndexSchema.parse(JSON.parse(content));
 		}
 	}

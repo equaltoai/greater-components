@@ -34,6 +34,7 @@ vi.mock('prompts', () => ({
 }));
 
 const mockLogger = {
+	debug: vi.fn(),
 	info: vi.fn(),
 	success: vi.fn(),
 	warn: vi.fn(),

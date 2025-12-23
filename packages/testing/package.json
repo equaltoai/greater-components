@@ -70,10 +70,14 @@
   },
   "peerDependencies": {
     "@playwright/test": "^1.57.0",
-    "svelte": "^5.43.6"
+    "svelte": "^5.43.6",
+    "vitest": "^4.0.15"
   },
   "peerDependenciesMeta": {
     "@playwright/test": {
+      "optional": true
+    },
+    "vitest": {
       "optional": true
     }
   }

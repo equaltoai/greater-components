@@ -5,7 +5,12 @@
 ## Imports
 
 ```ts
-import { DiscoveryEngine, ColorPaletteSearch, StyleFilter, MoodMap } from '$lib/components/Discovery';
+import {
+	DiscoveryEngine,
+	ColorPaletteSearch,
+	StyleFilter,
+	MoodMap,
+} from '$lib/components/Discovery';
 ```
 
 ## `DiscoveryEngine`

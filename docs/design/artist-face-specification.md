@@ -1187,7 +1187,7 @@ client.subscribe('federation:artwork', (event) => {
 ### Adapter Configuration
 
 ```typescript
-	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
 const adapter = new LesserGraphQLAdapter({
 	httpEndpoint: import.meta.env.VITE_LESSER_GRAPHQL,

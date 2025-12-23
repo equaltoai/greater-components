@@ -361,10 +361,14 @@
   },
   "peerDependencies": {
     "isomorphic-dompurify": "^2.0.0",
-    "svelte": "^5.0.0"
+    "svelte": "^5.0.0",
+    "vitest": "^4.0.15"
   },
   "peerDependenciesMeta": {
     "isomorphic-dompurify": {
+      "optional": true
+    },
+    "vitest": {
       "optional": true
     }
   },

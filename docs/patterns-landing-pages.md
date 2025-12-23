@@ -12,13 +12,7 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Container,
-		Section,
-		Heading,
-		Text,
-		Button,
-	} from '$lib/greater/primitives';
+	import { Container, Section, Heading, Text, Button } from '$lib/greater/primitives';
 	import { ArrowRightIcon, PlayIcon } from '$lib/greater/icons';
 
 	let showDemo = $state(false);
@@ -77,13 +71,7 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Card,
-		Text,
-	} from '$lib/greater/primitives';
+	import { Section, Container, Heading, Card, Text } from '$lib/greater/primitives';
 	import { CodeIcon, ZapIcon, ShieldIcon } from '$lib/greater/icons';
 </script>
 
@@ -153,14 +141,7 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Card,
-		Text,
-		Button,
-	} from '$lib/greater/primitives';
+	import { Section, Container, Heading, Card, Text, Button } from '$lib/greater/primitives';
 	import { CheckIcon } from '$lib/greater/icons';
 
 	const features = ['Feature 1', 'Feature 2', 'Feature 3'];
@@ -279,13 +260,7 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Text,
-		Card,
-	} from '$lib/greater/primitives';
+	import { Section, Container, Heading, Text, Card } from '$lib/greater/primitives';
 	import { PlusIcon } from '$lib/greater/icons'; // Or a dedicated Accordion component if available
 </script>
 

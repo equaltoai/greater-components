@@ -6,13 +6,13 @@ Build conversational AI interfaces with the Greater Components Chat suite. These
 
 ## Package Information
 
-| Property           | Value                     |
-| ------------------ | ------------------------- |
-| **CLI Item**       | `shared/chat`             |
-| **Import Path**    | `$lib/components/chat`    |
-| **Version**        | 4.0.0                     |
-| **Components**     | 8                         |
-| **Svelte Version** | 5.x (Runes)               |
+| Property           | Value                  |
+| ------------------ | ---------------------- |
+| **CLI Item**       | `shared/chat`          |
+| **Import Path**    | `$lib/components/chat` |
+| **Version**        | 4.0.0                  |
+| **Components**     | 8                      |
+| **Svelte Version** | 5.x (Runes)            |
 
 ## Installation
 

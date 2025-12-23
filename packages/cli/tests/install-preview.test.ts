@@ -16,6 +16,7 @@ import type { ComponentConfig } from '../src/utils/config.js';
 // Mock the logger
 vi.mock('../src/utils/logger.js', () => ({
 	logger: {
+		debug: vi.fn(),
 		info: vi.fn(),
 		error: vi.fn(),
 		warn: vi.fn(),

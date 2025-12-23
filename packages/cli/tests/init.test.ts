@@ -35,6 +35,7 @@ vi.mock('prompts', () => ({
 
 vi.mock('../src/utils/logger.js', () => ({
 	logger: {
+		debug: vi.fn(),
 		info: vi.fn(),
 		success: vi.fn(),
 		note: vi.fn(),

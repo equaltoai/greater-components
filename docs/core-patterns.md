@@ -63,14 +63,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import {
-		Container,
-		Section,
-		Heading,
-		Text,
-		Button,
-		Card,
-	} from '$lib/greater/primitives';
+	import { Container, Section, Heading, Text, Button, Card } from '$lib/greater/primitives';
 </script>
 
 <!-- Hero Section -->
@@ -764,10 +757,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 
 ```svelte
 <script>
-	import {
-		LesserGraphQLAdapter,
-		createTimelineStore,
-	} from '$lib/greater/adapters';
+	import { LesserGraphQLAdapter, createTimelineStore } from '$lib/greater/adapters';
 	import { Button } from '$lib/greater/primitives';
 
 	let errorMessage = $state('');

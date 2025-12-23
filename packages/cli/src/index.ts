@@ -14,8 +14,11 @@ import { updateCommand } from './commands/update.js';
 import { doctorCommand } from './commands/doctor.js';
 import { auditCommand } from './commands/audit.js';
 import { cacheCommand } from './commands/cache.js';
+import { logger } from './utils/logger.js';
 
-console.log('[DEBUG] ENV GREATER_CLI_LOCAL_REPO_ROOT:', process.env['GREATER_CLI_LOCAL_REPO_ROOT']);
+logger.debug(
+	`ENV GREATER_CLI_LOCAL_REPO_ROOT: ${process.env['GREATER_CLI_LOCAL_REPO_ROOT'] ?? ''}`
+);
 
 const program = new Command()
 	.name('greater')

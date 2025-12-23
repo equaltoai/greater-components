@@ -224,12 +224,12 @@ patterns:
     problem: 'Need to connect to standard Mastodon instances'
     solution: 'Use your REST client and map payloads with MastodonAdapter'
     correct_example: |
-	      <script lang="ts">
-	        import {
-	          MastodonAdapter,
-	          type MastodonStatus,
-	        } from '$lib/generics/adapters';
-	        import { Status } from '$lib/components/Status';
+      <script lang="ts">
+        import {
+          MastodonAdapter,
+          type MastodonStatus,
+        } from '$lib/generics/adapters';
+        import { Status } from '$lib/components/Status';
 
         const mapper = new MastodonAdapter();
         let items = $state([]);
@@ -270,10 +270,10 @@ patterns:
     problem: 'Timeline with thousands of posts causes performance issues'
     solution: 'Use TimelineVirtualizedReactive (TanStack Virtual built-in)'
     correct_example: |
-	      <script>
-	        // CORRECT: Virtualization happens inside the component
-	        import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
-	      </script>
+      <script>
+        // CORRECT: Virtualization happens inside the component
+        import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
+      </script>
 
       <div style="height: 100vh;">
         <TimelineVirtualizedReactive {items} estimateSize={320} overscan={8} />
@@ -300,9 +300,9 @@ patterns:
     solution: 'Components include built-in keyboard support, test thoroughly'
     correct_example: |
       <script>
-	        // CORRECT: Components handle keyboard navigation automatically
-	        // Test with keyboard-only usage
-	        import { Menu } from '$lib/greater/primitives';
+        // CORRECT: Components handle keyboard navigation automatically
+        // Test with keyboard-only usage
+        import { Menu } from '$lib/greater/primitives';
         
         let menuItems = [
           { label: 'Edit', action: () => console.log('edit') },
@@ -357,12 +357,12 @@ patterns:
     problem: 'Need to customize component parts without breaking structure'
     solution: 'Use Svelte 5 snippets for flexible composition'
     correct_example: |
-	      <script>
-	        // CORRECT: Use snippets for flexible component composition
-	        // Svelte 5 pattern for customizable component parts
-	        import { Button, Modal } from '$lib/greater/primitives';
-	        import { SaveIcon, TrashIcon } from '$lib/greater/icons';
-	      </script>
+      <script>
+        // CORRECT: Use snippets for flexible component composition
+        // Svelte 5 pattern for customizable component parts
+        import { Button, Modal } from '$lib/greater/primitives';
+        import { SaveIcon, TrashIcon } from '$lib/greater/icons';
+      </script>
 
       <Modal open={true} title="Confirm Action">
         <!-- Custom modal content -->
@@ -401,10 +401,10 @@ patterns:
     problem: 'Network errors and API failures must be handled properly'
     solution: 'Use try-catch with user-friendly error messages'
     correct_example: |
-	      <script>
-	        // CORRECT: Handle errors gracefully with user feedback
-	        // Provides loading states and error messages
-	        import { createTimelineStore } from '$lib/greater/adapters';
+      <script>
+        // CORRECT: Handle errors gracefully with user feedback
+        // Provides loading states and error messages
+        import { createTimelineStore } from '$lib/greater/adapters';
         
         let errorMessage = $state('');
         let isLoading = $state(true);
@@ -452,10 +452,10 @@ patterns:
     problem: 'Components must work on mobile, tablet, and desktop'
     solution: 'Use responsive design tokens and media queries'
     correct_example: |
-	      <script>
-	        // CORRECT: Components adapt to screen size
-	        // Use responsive props and CSS media queries
-	        import { Modal, Button } from '$lib/greater/primitives';
+      <script>
+        // CORRECT: Components adapt to screen size
+        // Use responsive props and CSS media queries
+        import { Modal, Button } from '$lib/greater/primitives';
         
         let isMobile = $state(false);
         
@@ -517,9 +517,9 @@ patterns:
     solution: 'Use $state, $derived, and $effect runes'
     correct_example: |
       <script>
-	        // CORRECT: Use Svelte 5 runes for state management
-	        // Provides fine-grained reactivity
-	        import { Button } from '$lib/greater/primitives';
+        // CORRECT: Use Svelte 5 runes for state management
+        // Provides fine-grained reactivity
+        import { Button } from '$lib/greater/primitives';
         
         // Reactive state
         let count = $state(0);
@@ -565,15 +565,15 @@ patterns:
     solution: 'Use Container + Section for structure, Card for features, Heading + Text for typography, Button for CTAs'
     correct_example: |
       <script>
-	        import { 
-	          Container, 
-	          Section, 
-	          Heading, 
-	          Text, 
-	          Button, 
-	          Card 
-	        } from '$lib/greater/primitives';
-	        import { ArrowRightIcon, CheckCircleIcon } from '$lib/greater/icons';
+        import { 
+          Container, 
+          Section, 
+          Heading, 
+          Text, 
+          Button, 
+          Card 
+        } from '$lib/greater/primitives';
+        import { ArrowRightIcon, CheckCircleIcon } from '$lib/greater/icons';
       </script>
 
       <main>
@@ -650,8 +650,8 @@ patterns:
       - name: 'Looking for Grid component'
         why: "Grid component doesn't exist, use CSS Grid"
         incorrect_example: |
-	          // WRONG: Grid component does not exist
-	          import { Grid } from '$lib/greater/primitives';
+          // WRONG: Grid component does not exist
+          import { Grid } from '$lib/greater/primitives';
 
           <Grid columns={3}>
             <Card>...</Card>
@@ -670,8 +670,8 @@ patterns:
       - name: 'Looking for Nav/Navbar component'
         why: "Navigation components don't exist, build with HTML + primitives"
         incorrect_example: |
-	          // WRONG: Nav component does not exist
-	          import { Navbar } from '$lib/greater/primitives';
+          // WRONG: Nav component does not exist
+          import { Navbar } from '$lib/greater/primitives';
         correct_example: |
           // CORRECT: Build nav with HTML + Container + Button
           <nav>
@@ -695,9 +695,9 @@ patterns:
     problem: 'Need consistent typography across pages with semantic structure'
     solution: 'Use Heading for all headings (h1-h6), Text for body content with variants'
     correct_example: |
-	      <script>
-	        import { Heading, Text } from '$lib/greater/primitives';
-	      </script>
+      <script>
+        import { Heading, Text } from '$lib/greater/primitives';
+      </script>
 
       <article>
         <!-- Main title -->

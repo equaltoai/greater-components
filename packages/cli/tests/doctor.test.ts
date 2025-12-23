@@ -939,6 +939,7 @@ describe('Command Execution', () => {
 // Mock logger for displaySummary and runAutoFix tests
 vi.mock('../src/utils/logger.js', () => ({
 	logger: {
+		debug: vi.fn(),
 		info: vi.fn(),
 		error: vi.fn(),
 		warn: vi.fn(),
