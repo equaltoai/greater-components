@@ -112,11 +112,9 @@ function hasStatus(notification: Notification): boolean {
 	return 'status' in notification && !!notification.status;
 }
 
-// Strip HTML tags
+// Strip HTML tags using regex (safe for test purposes - no DOM manipulation)
 function stripHTMLTags(html: string): string {
-	const tmp = document.createElement('div');
-	tmp.innerHTML = html;
-	return tmp.textContent || tmp.innerText || '';
+	return html.replace(/<[^>]*>/g, '');
 }
 
 // Truncate content
