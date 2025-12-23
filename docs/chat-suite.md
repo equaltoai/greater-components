@@ -17,7 +17,7 @@ Build conversational AI interfaces with the Greater Components Chat suite. These
 ## Installation
 
 ```bash
-npx @equaltoai/greater-components-cli add shared/chat
+greater add shared/chat
 ```
 
 Ensure your app also imports the required CSS layers (usually injected by `greater init`):

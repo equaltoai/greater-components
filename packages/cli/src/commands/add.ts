@@ -51,6 +51,7 @@ import {
 } from '../utils/face-installer.js';
 import { resolveRef, fetchRegistryIndex, type RegistryIndex } from '../utils/registry-index.js';
 import { hasGreaterImports } from '../utils/transform.js';
+import { ensureLocalRepoRoot } from '../utils/local-repo.js';
 
 const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
 const GREATER_TAG_VERSION_RE = /^greater-v(\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?)$/;
@@ -160,6 +161,7 @@ export const addAction = async (
 	}
 ) => {
 	const cwd = path.resolve(options.cwd || process.cwd());
+	ensureLocalRepoRoot(cwd);
 
 	// Check if initialized
 	if (!(await configExists(cwd))) {

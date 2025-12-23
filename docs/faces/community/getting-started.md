@@ -10,20 +10,20 @@ The Community Face provides components for building community platforms with pos
 
 ```bash
 # Initialize with Community Face
-npx @equaltoai/greater-components-cli init --face community
+greater init --face community
 
 # Or add to an existing project
-npx @equaltoai/greater-components-cli add faces/community
+greater add faces/community
 ```
 
 ### Option 2: Add Individual Components
 
 ```bash
 # Add specific component groups
-npx @equaltoai/greater-components-cli add community post thread
+greater add community post thread
 
 # Add moderation and wiki
-npx @equaltoai/greater-components-cli add moderation wiki voting flair
+greater add moderation wiki voting flair
 ```
 
 ## Required CSS

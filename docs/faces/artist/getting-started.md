@@ -10,20 +10,20 @@ The Artist Face provides artwork-first components designed for visual artist por
 
 ```bash
 # Initialize with Artist Face
-npx @equaltoai/greater-components-cli init --face artist
+greater init --face artist
 
 # Or add to an existing project
-npx @equaltoai/greater-components-cli add faces/artist
+greater add faces/artist
 ```
 
 ### Option 2: Add Individual Components
 
 ```bash
 # Add specific component groups
-npx @equaltoai/greater-components-cli add artwork gallery-grid artist-profile
+greater add artwork gallery-grid artist-profile
 
 # Add discovery components
-npx @equaltoai/greater-components-cli add discovery-engine color-palette-search
+greater add discovery-engine color-palette-search
 ```
 
 ## Required CSS

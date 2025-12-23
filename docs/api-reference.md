@@ -79,7 +79,7 @@ Button for copying text to clipboard with visual feedback.
 **Example:**
 
 ```svelte
-<CopyButton text="npx @equaltoai/greater-components-cli add faces/social" />
+<CopyButton text="greater add faces/social" />
 ```
 
 ---

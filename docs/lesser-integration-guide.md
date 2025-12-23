@@ -17,10 +17,10 @@ This guide covers the current, supported way to integrate Greater Components wit
 
 ```bash
 # Initialize config + CSS injection
-npx @equaltoai/greater-components-cli init --face social
+greater init --face social
 
 # Install the Social face bundle (components + shared modules + patterns)
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 ```
 
 ## CSS setup (required)

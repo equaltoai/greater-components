@@ -931,16 +931,15 @@ for (const file of files) {
 
 The CLI itself is distributed via:
 
-1. **npm** (for convenience): Users run `npx @equaltoai/greater-components-cli`
-2. **GitHub Releases**: Signed binaries with published checksums
-3. **Local clone**: `node ./packages/cli/dist/index.js`
+1. **GitHub Releases**: Install the packaged CLI tarball
+2. **Local clone**: `node ./packages/cli/dist/index.js`
 
 For maximum security, users can clone the repo and run the CLI directly:
 
 ```bash
 git clone https://github.com/equaltoai/greater-components
 cd greater-components
-pnpm install && pnpm build
+pnpm install && pnpm --filter @equaltoai/greater-components-cli build
 node ./packages/cli/dist/index.js init
 ```
 
@@ -1103,7 +1102,7 @@ npx sv create my-social-app
 cd my-social-app
 
 # 2. Initialize Greater Components
-npx @equaltoai/greater-components-cli init
+greater init
 
 # 3. Add the social face
 greater add faces/social

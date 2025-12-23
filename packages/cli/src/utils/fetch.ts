@@ -356,6 +356,7 @@ export async function fetchComponentFiles(
 				? [...candidatesWithChecksums, ...candidatesWithoutChecksums]
 				: candidatePaths;
 
+			let lastCandidateError: unknown;
 			for (const candidate of orderedCandidates) {
 				try {
 					buffer = await fetchFromGitTag(ref, candidate, {
@@ -365,8 +366,8 @@ export async function fetchComponentFiles(
 					resolvedSourcePath = candidate;
 					expectedChecksum = checksums?.[candidate];
 					break;
-				} catch {
-					// Try next candidate
+				} catch (error) {
+					lastCandidateError = error;
 				}
 			}
 
@@ -375,8 +376,23 @@ export async function fetchComponentFiles(
 					orderedCandidates.length > 0
 						? `Tried:\n  - ${orderedCandidates.join('\n  - ')}`
 						: 'No candidate paths could be derived.';
+				const suggestions: string[] = [];
+				if (!process.env['GREATER_CLI_LOCAL_REPO_ROOT']) {
+					suggestions.push(
+						`If you're running from a local clone, set GREATER_CLI_LOCAL_REPO_ROOT=/path/to/greater-components.`
+					);
+				}
+				suggestions.push(
+					`Ensure the CLI can reach GitHub for ref "${ref}" (or pin a release tag via --ref greater-vX.Y.Z).`
+				);
+
+				const lastErrorMessage =
+					lastCandidateError instanceof Error ? lastCandidateError.message : null;
+				const lastErrorLine = lastErrorMessage ? `\nLast error: ${lastErrorMessage}` : '';
+				const suggestionBlock =
+					suggestions.length > 0 ? `\n\n${suggestions.join('\n')}${lastErrorLine}` : '';
 				throw new Error(
-					`Failed to resolve source path for "${component.name}" file "${file.path}".\n${detail}`
+					`Failed to resolve source path for "${component.name}" file "${file.path}".\n${detail}${suggestionBlock}`
 				);
 			}
 

@@ -8,7 +8,7 @@ The Social Face integrates with the shared auth module to provide login, signup,
 
 ```bash
 # Add auth module via CLI
-npx @equaltoai/greater-components-cli add shared/auth
+greater add shared/auth
 ```
 
 ## Auth Components

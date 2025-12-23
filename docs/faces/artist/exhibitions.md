@@ -7,13 +7,13 @@ The Exhibition components enable curated art showcases with narrative layouts, c
 ## Installation
 
 ```bash
-npx @equaltoai/greater-components-cli add exhibition
+greater add exhibition
 ```
 
 Or install as part of the Artist Face:
 
 ```bash
-npx @equaltoai/greater-components-cli add faces/artist
+greater add faces/artist
 ```
 
 ## Basic Usage

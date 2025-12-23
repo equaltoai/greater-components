@@ -28,6 +28,7 @@ import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js'
 import { transformImports } from '../utils/transform.js';
 import { logger } from '../utils/logger.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
+import { ensureLocalRepoRoot } from '../utils/local-repo.js';
 
 /**
  * Conflict resolution choice
@@ -391,6 +392,7 @@ export const updateAction = async (
 	}
 ) => {
 	const cwd = path.resolve(options.cwd || process.cwd());
+	ensureLocalRepoRoot(cwd);
 
 	// Check if initialized
 	if (!(await configExists(cwd))) {

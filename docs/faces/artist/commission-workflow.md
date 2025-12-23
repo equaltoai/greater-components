@@ -7,13 +7,13 @@ The CommissionWorkflow components provide a complete system for managing art com
 ## Installation
 
 ```bash
-npx @equaltoai/greater-components-cli add commission-workflow
+greater add commission-workflow
 ```
 
 Or install as part of the Artist Face:
 
 ```bash
-npx @equaltoai/greater-components-cli add faces/artist
+greater add faces/artist
 ```
 
 ## Commission Lifecycle

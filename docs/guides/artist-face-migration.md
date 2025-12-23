@@ -37,7 +37,7 @@ This guide covers migrating an existing application from the Social Face to the 
 ### 1. Update Dependencies
 
 ```bash
-npx @equaltoai/greater-components-cli add faces/artist
+greater add faces/artist
 ```
 
 ### 2. Update Imports

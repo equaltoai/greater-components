@@ -19,7 +19,7 @@
 		if (component.npm.package === '@equaltoai/greater-components-primitives') {
 			return `pnpm add @equaltoai/greater-components`;
 		}
-		return `npx @equaltoai/greater-components-cli add ${pkg}`;
+		return `greater add ${pkg}`;
 	}
 </script>
 

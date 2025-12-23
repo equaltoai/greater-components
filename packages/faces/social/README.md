@@ -6,7 +6,7 @@ Social/Twitter-style UI components for ActivityPub/Fediverse applications. Part 
 
 ```bash
 # Using the Greater CLI (recommended)
-npx @equaltoai/greater-cli add face:social
+greater add faces/social
 
 # Or install directly
 pnpm add @equaltoai/greater-components-social
@@ -120,16 +120,16 @@ The social face references these shared modules (install separately):
 
 ```bash
 # Authentication
-npx @equaltoai/greater-cli add shared/auth
+greater add shared/auth
 
 # Post composition
-npx @equaltoai/greater-cli add shared/compose
+greater add shared/compose
 
 # Notifications
-npx @equaltoai/greater-cli add shared/notifications
+greater add shared/notifications
 
 # Search
-npx @equaltoai/greater-cli add shared/search
+greater add shared/search
 ```
 
 ## Theme Customization

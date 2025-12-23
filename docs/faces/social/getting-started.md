@@ -10,20 +10,20 @@ The Social Face provides components for building social media interfaces includi
 
 ```bash
 # Initialize with Social Face
-npx @equaltoai/greater-components-cli init --face social
+greater init --face social
 
 # Or add to an existing project
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 ```
 
 ### Option 2: Add Individual Components
 
 ```bash
 # Add specific component groups
-npx @equaltoai/greater-components-cli add status timeline profile
+greater add status timeline profile
 
 # Add additional features
-npx @equaltoai/greater-components-cli add lists filters hashtags
+greater add lists filters hashtags
 ```
 
 ## Required CSS

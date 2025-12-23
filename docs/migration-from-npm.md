@@ -21,6 +21,7 @@ The CLI distribution model offers several advantages:
 
 - Node.js >= 20.0.0
 - Svelte >= 5.0.0
+- Greater CLI installed (see [CLI Guide](./cli-guide.md#installation))
 - Existing project using `@equaltoai/greater-components` npm packages
 
 ## Migration Steps
@@ -28,14 +29,14 @@ The CLI distribution model offers several advantages:
 ### Step 1: Run the CLI
 
 ```bash
-npx @equaltoai/greater-components-cli --version
+greater --version
 ```
 
 ### Step 2: Initialize CLI Configuration
 
 ```bash
 cd your-project
-npx @equaltoai/greater-components-cli init
+greater init
 ```
 
 This creates `components.json` with your project configuration.
@@ -68,10 +69,10 @@ Add each component you're using:
 
 ```bash
 # Add a face bundle (includes core packages + face components)
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 
 # Or add individual face components
-npx @equaltoai/greater-components-cli add status timeline profile
+greater add status timeline profile
 ```
 
 ### Step 5: Update Import Paths
@@ -198,13 +199,13 @@ import { Status } from '$lib/components/Status';
 
 ```bash
 # Check for updates
-npx @equaltoai/greater-components-cli diff button
+greater diff button
 
 # Update specific component
-npx @equaltoai/greater-components-cli update button
+greater update button
 
 # Update all
-npx @equaltoai/greater-components-cli update --all
+greater update --all
 ```
 
 ### 3. TypeScript Types

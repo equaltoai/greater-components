@@ -14,8 +14,8 @@ The `CopyButton` component handles the entire copy interaction, including the vi
 </script>
 
 <div class="command-bar">
-	<code>npx @equaltoai/greater-components-cli add faces/social</code>
-	<CopyButton text="npx @equaltoai/greater-components-cli add faces/social" />
+	<code>greater add faces/social</code>
+	<CopyButton text="greater add faces/social" />
 </div>
 ```
 

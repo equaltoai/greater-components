@@ -21,6 +21,7 @@ import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js'
 import { logger } from '../utils/logger.js';
 import { resolveRef } from '../utils/registry-index.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
+import { ensureLocalRepoRoot } from '../utils/local-repo.js';
 
 /**
  * Result of diffing a single component
@@ -259,6 +260,7 @@ export const diffCommand = new Command()
 	.option('--summary', 'Show summary only, no detailed diff')
 	.action(async (items: string[], options) => {
 		const cwd = path.resolve(options.cwd || process.cwd());
+		ensureLocalRepoRoot(cwd);
 
 		// Check if initialized
 		if (!(await configExists(cwd))) {

@@ -30,11 +30,15 @@
 		<h3>Using the CLI (recommended)</h3>
 		<CodeExample
 			language="bash"
-			code={`# Initialize config + CSS injection
-npx @equaltoai/greater-components-cli init --face social
+			code={`# Install the CLI from GitHub Releases
+# Replace \`greater-vX.Y.Z\` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
+
+# Initialize config + CSS injection
+greater init --face social
 
 # Install the Social face bundle
-npx @equaltoai/greater-components-cli add faces/social`}
+greater add faces/social`}
 		/>
 
 		<h3>Using npm/pnpm (umbrella package)</h3>

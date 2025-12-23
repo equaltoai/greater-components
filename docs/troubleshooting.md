@@ -40,13 +40,13 @@ Greater CLI has not been run (or the vendored files were not added).
 
 ```bash
 # Initialize Greater in your project (creates components.json + injects CSS)
-npx @equaltoai/greater-components-cli init
+greater init
 
 # Add a face bundle (includes core packages + components)
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 
 # Or add only core packages
-npx @equaltoai/greater-components-cli add primitives icons tokens headless
+greater add primitives icons tokens headless
 ```
 
 **Verification:**
@@ -454,7 +454,7 @@ pnpm add -D typescript
 pnpm svelte-kit sync
 
 # If types were accidentally deleted, re-add core packages
-npx @equaltoai/greater-components-cli add primitives --force
+greater add primitives --force
 ```
 
 **Check types exist:**

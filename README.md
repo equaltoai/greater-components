@@ -37,18 +37,22 @@ Greater Components is a comprehensive, production-ready UI component library des
 The Greater CLI copies components as source code to your project (shadcn-style), giving you full control:
 
 ```bash
+# Install the CLI from GitHub Releases (recommended)
+# Replace `greater-vX.Y.Z` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
+
 # Initialize in your project
 cd my-sveltekit-app
-npx @equaltoai/greater-components-cli init
+greater init
 
 # Add components
-npx @equaltoai/greater-components-cli add button modal menu
+greater add button modal menu
 
 # Add a complete face (component bundle)
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 
 # Update installed components to a specific Git tag
-npx @equaltoai/greater-components-cli update --ref greater-vX.Y.Z
+greater update --ref greater-vX.Y.Z
 ```
 
 **Benefits:** Full source ownership, easy customization, deterministic installs via Git tags, no npm publish tokens required.

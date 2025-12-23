@@ -82,5 +82,6 @@ storybook-static/
 .tmp-tabs-restprops/
 packages/cli/tests/.tmp/
 working/
+trial/
 
 .pai

@@ -11,8 +11,8 @@ This document provides essential information in a format optimized for AI code g
 ### Step 1: Init + Vendor (CLI)
 
 ```bash
-npx @equaltoai/greater-components-cli init
-npx @equaltoai/greater-components-cli add primitives icons tokens headless
+greater init
+greater add primitives icons tokens headless
 ```
 
 ### Step 2: Configure TypeScript (tsconfig.json)

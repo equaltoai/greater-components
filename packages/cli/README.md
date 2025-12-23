@@ -17,14 +17,32 @@ The Greater CLI allows you to add ActivityPub components to your project as sour
 ## Installation
 
 ```bash
-# Global installation (recommended)
-npm install -g @equaltoai/greater-components-cli
+# Install from GitHub Releases (recommended)
+# Replace `greater-vX.Y.Z` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
 
-# Using pnpm
-pnpm add -g @equaltoai/greater-components-cli
+# Verify
+greater --version
+```
 
-# Using npx (no install required)
-npx @equaltoai/greater-components-cli init
+Or build from source (Git):
+
+```bash
+git clone https://github.com/equaltoai/greater-components.git
+cd greater-components
+pnpm install
+pnpm --filter @equaltoai/greater-components-cli build
+
+node packages/cli/dist/index.js --version
+node packages/cli/dist/index.js init
+```
+
+Optional: install the built CLI globally from your clone:
+
+```bash
+cd packages/cli
+pnpm pack --out ../../artifacts/greater-components-cli.tgz
+npm install -g ../../artifacts/greater-components-cli.tgz
 ```
 
 ## Quick Start

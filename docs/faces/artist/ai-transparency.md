@@ -7,13 +7,13 @@ The Artist Face includes comprehensive transparency components for disclosing AI
 ## Installation
 
 ```bash
-npx @equaltoai/greater-components-cli add ai-disclosure process-documentation ai-opt-out-controls
+greater add ai-disclosure process-documentation ai-opt-out-controls
 ```
 
 Or install the entire transparency group:
 
 ```bash
-npx @equaltoai/greater-components-cli add faces/artist
+greater add faces/artist
 ```
 
 ## Components Overview

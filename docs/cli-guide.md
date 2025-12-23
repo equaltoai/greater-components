@@ -17,26 +17,46 @@
 
 ## Installation
 
-### Run Without Installing (Recommended)
+The Greater CLI is distributed via Git (not the npm registry). Install it from a GitHub Release, or build it from this
+repo.
 
 ```bash
-npx @equaltoai/greater-components-cli --version
-npx @equaltoai/greater-components-cli init
-npx @equaltoai/greater-components-cli add faces/social
+# Install from GitHub Releases (recommended)
+# Replace `greater-vX.Y.Z` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
+
+# Verify
+greater --version
 ```
 
 If you prefer pnpm:
 
 ```bash
-pnpm dlx @equaltoai/greater-components-cli init
-pnpm dlx @equaltoai/greater-components-cli add faces/social
+pnpm add -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
 ```
 
-### Global Install (Optional)
+Or build from source (Git):
 
 ```bash
-pnpm add -g @equaltoai/greater-components-cli
-greater --version
+git clone https://github.com/equaltoai/greater-components.git
+cd greater-components
+pnpm install
+
+# Build just the CLI
+pnpm --filter @equaltoai/greater-components-cli build
+
+# Run without installing
+node packages/cli/dist/index.js --version
+node packages/cli/dist/index.js init
+node packages/cli/dist/index.js add faces/social
+```
+
+Optional: install the built CLI globally from your clone:
+
+```bash
+cd packages/cli
+pnpm pack --out ../../artifacts/greater-components-cli.tgz
+npm install -g ../../artifacts/greater-components-cli.tgz
 ```
 
 ---
@@ -47,7 +67,7 @@ greater --version
 
 ```bash
 cd my-sveltekit-app
-npx @equaltoai/greater-components-cli init
+greater init
 ```
 
 This creates a `components.json` configuration file and optionally injects CSS imports.
@@ -56,16 +76,16 @@ This creates a `components.json` configuration file and optionally injects CSS i
 
 ```bash
 # Add a single component
-npx @equaltoai/greater-components-cli add button
+greater add button
 
 # Add multiple components
-npx @equaltoai/greater-components-cli add button modal menu tabs
+greater add button modal menu tabs
 
 # Add a complete face (component bundle)
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 
 # Interactive selection
-npx @equaltoai/greater-components-cli add
+greater add
 ```
 
 ### 3. Use Components

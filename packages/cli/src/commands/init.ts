@@ -33,6 +33,7 @@ import {
 import { injectIdProvider } from '../utils/id-provider-inject.js';
 import { faceRegistry } from '../registry/faces.js';
 import { logger } from '../utils/logger.js';
+import { ensureLocalRepoRoot } from '../utils/local-repo.js';
 
 /**
  * Available faces for selection
@@ -205,6 +206,7 @@ export const initAction = async (options: {
 	face?: string;
 }) => {
 	const cwd = path.resolve(options.cwd || process.cwd());
+	ensureLocalRepoRoot(cwd);
 
 	logger.info(chalk.bold('\n✨ Welcome to Greater Components\n'));
 

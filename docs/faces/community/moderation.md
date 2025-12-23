@@ -7,7 +7,7 @@ The Community Face includes comprehensive moderation components for managing con
 ## Installation
 
 ```bash
-npx @equaltoai/greater-components-cli add moderation
+greater add moderation
 ```
 
 ## Moderation Components

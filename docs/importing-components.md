@@ -10,13 +10,13 @@ In vendored mode:
 ## Install (CLI)
 
 ```bash
-npx @equaltoai/greater-components-cli init
+greater init
 
 # Add a face bundle (recommended starting point)
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 
 # Or add core packages directly
-npx @equaltoai/greater-components-cli add primitives icons tokens headless
+greater add primitives icons tokens headless
 ```
 
 ## Default Import Paths

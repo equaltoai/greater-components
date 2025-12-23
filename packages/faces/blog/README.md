@@ -6,7 +6,7 @@ Blog/Medium-style UI components for long-form publishing applications. Part of t
 
 ```bash
 # Using the Greater CLI (recommended)
-npx @equaltoai/greater-cli add face:blog
+greater add faces/blog
 
 # Or install directly
 pnpm add @equaltoai/greater-components-blog
@@ -119,10 +119,10 @@ The blog face can integrate with these shared modules:
 
 ```bash
 # Authentication (for comments, bookmarks)
-npx @equaltoai/greater-cli add shared/auth
+greater add shared/auth
 
 # Search (for article search)
-npx @equaltoai/greater-cli add shared/search
+greater add shared/search
 ```
 
 ## Theme Customization

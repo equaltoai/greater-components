@@ -4,7 +4,7 @@
 > **Version:** 0.1.0  
 > **Last Updated:** December 13, 2024  
 > **Author:** Greater Components Team  
-> **Vendored Path:** `$lib/components/*` (via `npx @equaltoai/greater-components-cli add faces/artist`)
+> **Vendored Path:** `$lib/components/*` (via `greater add faces/artist`)
 
 ---
 

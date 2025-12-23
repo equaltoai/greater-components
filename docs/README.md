@@ -33,6 +33,7 @@
 - [Migration from npm](./migration-from-npm.md) – Migrating from npm packages to CLI distribution
 - [Shadcn-Style Transition Plan](./shadcn-style-transition-plan.md) – Execution plan for a shadcn-style “CLI installs from tags” approach
 - [Face Development](./face-development.md) – Creating custom faces with manifest structure and theming
+- [GitHub Releases](./devops/github-releases.md) – Publishing release artifacts (including the CLI)
 
 ### 📦 Additional Resources
 

@@ -227,7 +227,7 @@ This package provides **41 interactive and layout components** for building any 
 	import { CopyButton } from '$lib/greater/primitives';
 </script>
 
-<CopyButton text="npx @equaltoai/greater-components-cli add faces/social" />
+<CopyButton text="greater add faces/social" />
 ```
 
 **Reference:** See [api-reference.md#copybutton](./api-reference.md#copybutton) for complete API

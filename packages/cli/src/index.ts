@@ -15,7 +15,9 @@ import { doctorCommand } from './commands/doctor.js';
 import { auditCommand } from './commands/audit.js';
 import { cacheCommand } from './commands/cache.js';
 import { logger } from './utils/logger.js';
+import { ensureLocalRepoRoot } from './utils/local-repo.js';
 
+ensureLocalRepoRoot(process.cwd());
 logger.debug(
 	`ENV GREATER_CLI_LOCAL_REPO_ROOT: ${process.env['GREATER_CLI_LOCAL_REPO_ROOT'] ?? ''}`
 );

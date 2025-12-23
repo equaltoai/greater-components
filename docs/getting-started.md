@@ -29,15 +29,19 @@ Greater Components uses a **CLI-first, vendored** distribution model: the CLI co
 pinned to a Git ref, so your app has **no runtime dependency** on npm-published Greater packages.
 
 ```bash
+# Install the CLI from GitHub Releases (recommended)
+# Replace `greater-vX.Y.Z` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
+
 # Initialize in your project (creates components.json and injects CSS imports)
 cd my-sveltekit-app
-npx @equaltoai/greater-components-cli init
+greater init
 
 # Add components
-npx @equaltoai/greater-components-cli add button modal
+greater add button modal
 
 # Add a complete face (optional)
-npx @equaltoai/greater-components-cli add faces/social
+greater add faces/social
 ```
 
 By default, the CLI uses **local CSS mode** and injects imports like:
@@ -561,8 +565,8 @@ curl https://your-instance.social/graphql \
 **Solution:**
 
 ```bash
-npx @equaltoai/greater-components-cli init
-npx @equaltoai/greater-components-cli add primitives
+greater init
+greater add primitives
 ```
 
 **Verification:**

@@ -7,13 +7,13 @@ The Gallery namespace provides three layout strategies optimized for different u
 ## Installation
 
 ```bash
-npx @equaltoai/greater-components-cli add gallery-grid gallery-masonry gallery-row
+greater add gallery-grid gallery-masonry gallery-row
 ```
 
 Or install as part of the Artist Face:
 
 ```bash
-npx @equaltoai/greater-components-cli add faces/artist
+greater add faces/artist
 ```
 
 ## Required CSS

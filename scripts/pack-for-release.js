@@ -17,6 +17,7 @@ const packages = {
 	'faces/social': 'greater-components-social',
 	testing: 'greater-components-testing',
 	headless: 'greater-components-headless',
+	cli: 'greater-components-cli',
 };
 
 function run(command, cwd = rootDir) {
@@ -77,9 +78,10 @@ function main() {
 			// Move and rename to artifacts dir
 			// We standardize the name to pkg-name.tgz (or pkg-name-ver.tgz if we prefer)
 			// For releases, having the version in the name is good, but pnpm pack adds it by default.
-			// Let's keep the versioned name for clarity.
+			// Let's keep the versioned name for clarity (except for the CLI, which we publish as a stable asset name).
 			const sourcePath = join(packagePath, tgzFile);
-			const destPath = join(artifactsDir, tgzFile);
+			const destFileName = dirName === 'cli' ? 'greater-components-cli.tgz' : tgzFile;
+			const destPath = join(artifactsDir, destFileName);
 
 			renameSync(sourcePath, destPath);
 			console.log(`✅ Packed: ${destPath}`);

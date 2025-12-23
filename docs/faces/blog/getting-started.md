@@ -10,20 +10,20 @@ The Blog Face provides components designed for blog platforms, publications, and
 
 ```bash
 # Initialize with Blog Face
-npx @equaltoai/greater-components-cli init --face blog
+greater init --face blog
 
 # Or add to an existing project
-npx @equaltoai/greater-components-cli add faces/blog
+greater add faces/blog
 ```
 
 ### Option 2: Add Individual Components
 
 ```bash
 # Add specific component groups
-npx @equaltoai/greater-components-cli add article author publication
+greater add article author publication
 
 # Add editor and navigation
-npx @equaltoai/greater-components-cli add editor navigation
+greater add editor navigation
 ```
 
 ## Required CSS

@@ -23,13 +23,13 @@ The Artist Face is a specialized component bundle designed for visual artist com
 
 ```bash
 # Initialize Greater Components with Artist Face
-npx @equaltoai/greater-components-cli init --face artist
+greater init --face artist
 
 # Add specific components
-npx @equaltoai/greater-components-cli add artwork gallery-grid artist-profile
+greater add artwork gallery-grid artist-profile
 
 # Or add the entire face
-npx @equaltoai/greater-components-cli add faces/artist
+greater add faces/artist
 ```
 
 ### Using Package Manager (Alternative)
