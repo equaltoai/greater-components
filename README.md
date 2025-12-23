@@ -19,6 +19,7 @@
 
 Greater Components is a comprehensive, production-ready UI component library designed specifically for building modern Fediverse applications. Built with **Svelte 5**, **TypeScript**, and **accessibility-first principles**, it provides everything you need to create engaging social media experiences that work for everyone.
 
+
 **Architected for Lesser**: Greater Components is purpose-built for the [Lesser](https://github.com/lesserhq/lesser) ActivityPub server, with full support for advanced features like quote posts, community notes, AI-powered moderation, trust graphs, cost analytics, and real-time federation health monitoring. While compatible with other ActivityPub servers (Mastodon, Pleroma, etc.), Lesser integration unlocks the complete feature set.
 
 ### 🎯 Perfect for
