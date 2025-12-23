@@ -345,7 +345,7 @@ function findSvelteInsertionPoint(content: string): {
 	needsScriptTag: boolean;
 } {
 	// Look for existing <script> tag
-	const scriptMatch = content.match(/<script[^>]*>/);
+	const scriptMatch = content.match(/<script[^>]*>/i);
 
 	if (scriptMatch && scriptMatch.index !== undefined) {
 		// Insert after the opening script tag

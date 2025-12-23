@@ -50,8 +50,8 @@ export async function injectIdProvider(
 		const importStmt = `import { IdProvider } from '${importPath}';`;
 
 		// Split content into scripts, styles, and template
-		const scriptRegex = /<script(\s+[^>]*)?>([\s\S]*?)<\/script>/g;
-		const styleRegex = /<style(\s+[^>]*)?>([\s\S]*?)<\/style>/g;
+		const scriptRegex = /<script(\s+[^>]*)?>([\s\S]*?)<\/script>/gi;
+		const styleRegex = /<style(\s+[^>]*)?>([\s\S]*?)<\/style>/gi;
 
 		const scripts: string[] = [];
 		const styles: string[] = [];
@@ -92,7 +92,7 @@ export async function injectIdProvider(
 			// Inject into existing instance script
 			if (!hasImport) {
 				scripts[scripts.indexOf(scriptBlock)] = scriptBlock.replace(
-					/<script(\s+[^>]*)?>\s*/,
+					/<script(\s+[^>]*)?>\s*/i,
 					(match) => `${match}\t${importStmt}\n`
 				);
 			}
