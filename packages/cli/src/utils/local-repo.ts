@@ -35,4 +35,3 @@ export function ensureLocalRepoRoot(startDir: string): string | null {
 	process.env[LOCAL_REPO_ENV] = detected;
 	return detected;
 }
-

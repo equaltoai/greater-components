@@ -24,4 +24,3 @@ greater --version
 
 - `node scripts/pack-for-release.js` deletes and recreates `artifacts/`.
 - For signed tags, see `docs/tag-signing-guide.md`.
-
