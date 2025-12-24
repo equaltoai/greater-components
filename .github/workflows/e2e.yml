@@ -51,7 +51,7 @@ jobs:
         run: pnpm exec playwright test --config=playwright.demo.csr.config.ts --project=csr-${{ matrix.browser }}
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: playwright-report-${{ matrix.browser }}
@@ -59,7 +59,7 @@ jobs:
           retention-days: 7
 
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: test-results-${{ matrix.browser }}

@@ -110,7 +110,7 @@ jobs:
         working-directory: packages/testing
 
       - name: Upload accessibility test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: accessibility-results-${{ matrix.theme }}-${{ matrix.density }}
@@ -173,7 +173,7 @@ jobs:
         working-directory: packages/testing
 
       - name: Upload visual test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: visual-regression-results
@@ -229,7 +229,7 @@ jobs:
         working-directory: packages/testing
 
       - name: Upload compliance report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: accessibility-compliance-report
           path: |
