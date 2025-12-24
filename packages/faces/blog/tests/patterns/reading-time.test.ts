@@ -9,8 +9,14 @@ function calculateReadingTime(text: string, wpm = 200): number {
 }
 
 function calculateReadingTimeFromHtml(html: string, wpm = 200): number {
-	// Strip HTML tags
-	const text = html.replace(/<[^>]*>/g, '');
+	// Strip HTML tags using character-based approach (ReDoS-safe)
+	let text = '';
+	let inTag = false;
+	for (const char of html) {
+		if (char === '<') inTag = true;
+		else if (char === '>') inTag = false;
+		else if (!inTag) text += char;
+	}
 	return calculateReadingTime(text, wpm);
 }
 

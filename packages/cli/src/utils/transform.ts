@@ -179,17 +179,18 @@ export function transformPath(importPath: string, mappings: PathMapping[]): stri
 
 /**
  * Regex patterns for different import types
+ * Patterns are designed to avoid ReDoS (no nested quantifiers on overlapping character classes)
  */
 const IMPORT_PATTERNS = {
 	// ES module imports: import { x } from 'path' or import x from 'path'
-	esImport:
-		/import\s+(?:type\s+)?(?:(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)\s*,?\s*)*\s*from\s*(['"])([^'"]+)\1/g,
+	// Simplified to avoid nested quantifiers - matches import ... from 'path'
+	esImport: /import\s+[^'"]+from\s*(['"])([^'"]+)\1/g,
 	// Side-effect imports: import 'path'
 	sideEffectImport: /import\s*(['"])([^'"]+)\1/g,
 	// Dynamic imports: import('path') or import("path")
 	dynamicImport: /import\s*\(\s*(['"])([^'"]+)\1\s*\)/g,
 	// Re-exports: export { x } from 'path' or export * from 'path'
-	reExport: /export\s+(?:type\s+)?(?:\{[^}]*\}|\*)\s*from\s*(['"])([^'"]+)\1/g,
+	reExport: /export\s+[^'"]+from\s*(['"])([^'"]+)\1/g,
 	// CSS @import: @import 'path' or @import url('path')
 	cssImport: /@import\s+(?:url\s*\(\s*)?(['"])([^'"]+)\1(?:\s*\))?/g,
 };

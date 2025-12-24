@@ -422,14 +422,43 @@ function parseNoteContent(content: string): {
 	const titleMatch = content.match(/<strong>([^<]+)<\/strong>/);
 	const title = titleMatch ? titleMatch[1] : null;
 
-	// Rest as description (simplified)
-	const description =
-		content
-			.replace(/<[^>]+>/g, ' ')
-			.replace(/\s+/g, ' ')
-			.trim() || null;
+	// Rest as description - strip HTML tags safely (avoiding ReDoS)
+	const stripped = stripHtmlTags(content);
+	const description = stripped.replace(/\s+/g, ' ').trim() || null;
 
 	return { title: title ?? null, description: description ?? null };
+}
+
+/**
+ * Strip HTML tags safely (ReDoS-safe implementation)
+ */
+function stripHtmlTags(html: string): string {
+	// Use a limit on tag length to prevent ReDoS
+	let result = '';
+	let inTag = false;
+	let tagLength = 0;
+	const maxTagLength = 1000; // Safety limit
+
+	for (let i = 0; i < html.length; i++) {
+		const char = html[i];
+		if (char === '<') {
+			inTag = true;
+			tagLength = 0;
+		} else if (char === '>' && inTag) {
+			inTag = false;
+			result += ' ';
+		} else if (!inTag) {
+			result += char;
+		} else {
+			tagLength++;
+			// Safety: if tag is too long, it's probably not a real tag
+			if (tagLength > maxTagLength) {
+				inTag = false;
+				result += '<' + html.substring(i - tagLength, i + 1);
+			}
+		}
+	}
+	return result;
 }
 
 /**
