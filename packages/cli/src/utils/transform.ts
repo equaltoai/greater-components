@@ -283,42 +283,58 @@ function transformCssImports(content: string, mappings: PathMapping[]): Transfor
 }
 
 /**
- * Extract and transform script blocks from Svelte files
+ * Extract and transform script blocks from Svelte files using indexOf (CodeQL-safe)
  */
 function extractScriptBlocks(
 	content: string
 ): Array<{ start: number; end: number; content: string }> {
-	const blocks: Array<{ start: number; end: number; content: string }> = [];
-	const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
-	let match;
-
-	while ((match = scriptRegex.exec(content)) !== null) {
-		blocks.push({
-			start: match.index,
-			end: match.index + match[0].length,
-			content: match[1] ?? '',
-		});
-	}
-
-	return blocks;
+	return extractTagBlocks(content, 'script');
 }
 
 /**
- * Extract and transform style blocks from Svelte files
+ * Extract and transform style blocks from Svelte files using indexOf (CodeQL-safe)
  */
 function extractStyleBlocks(
 	content: string
 ): Array<{ start: number; end: number; content: string }> {
-	const blocks: Array<{ start: number; end: number; content: string }> = [];
-	const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
-	let match;
+	return extractTagBlocks(content, 'style');
+}
 
-	while ((match = styleRegex.exec(content)) !== null) {
+/**
+ * Extract blocks by tag name using indexOf instead of regex
+ */
+function extractTagBlocks(
+	content: string,
+	tagName: string
+): Array<{ start: number; end: number; content: string }> {
+	const blocks: Array<{ start: number; end: number; content: string }> = [];
+	const lowerContent = content.toLowerCase();
+	const openTag = `<${tagName}`;
+	const closeTag = `</${tagName}>`;
+
+	let searchFrom = 0;
+	while (true) {
+		const startIdx = lowerContent.indexOf(openTag, searchFrom);
+		if (startIdx === -1) break;
+
+		// Find the end of the opening tag
+		const openTagEnd = content.indexOf('>', startIdx);
+		if (openTagEnd === -1) break;
+
+		// Find the closing tag
+		const closeIdx = lowerContent.indexOf(closeTag, openTagEnd);
+		if (closeIdx === -1) break;
+
+		const blockEnd = closeIdx + closeTag.length;
+		const innerContent = content.substring(openTagEnd + 1, closeIdx);
+
 		blocks.push({
-			start: match.index,
-			end: match.index + match[0].length,
-			content: match[1] ?? '',
+			start: startIdx,
+			end: blockEnd,
+			content: innerContent,
 		});
+
+		searchFrom = blockEnd;
 	}
 
 	return blocks;

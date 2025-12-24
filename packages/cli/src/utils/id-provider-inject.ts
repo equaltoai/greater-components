@@ -49,34 +49,19 @@ export async function injectIdProvider(
 
 		const importStmt = `import { IdProvider } from '${importPath}';`;
 
-		// Split content into scripts, styles, and template
-		const scriptRegex = /<script(\s+[^>]*)?>([\s\S]*?)<\/script>/gi;
-		const styleRegex = /<style(\s+[^>]*)?>([\s\S]*?)<\/style>/gi;
-
+		// Extract blocks using explicit parsing (safer than regex for CodeQL)
 		const scripts: string[] = [];
 		const styles: string[] = [];
 		let template = content;
 
-		// Extract scripts
-		template = template.replace(scriptRegex, (match) => {
-			scripts.push(match);
-			return '';
-		});
+		// Extract script blocks by finding opening and closing tags
+		template = extractBlocks(template, 'script', scripts);
+		// Extract style blocks
+		template = extractBlocks(template, 'style', styles);
 
-		// Extract styles
-		template = template.replace(styleRegex, (match) => {
-			styles.push(match);
-			return '';
-		});
-
-		// Extract top-level Svelte special elements that must remain at the component root.
+		// Extract top-level Svelte special elements
 		const specialBlocks: string[] = [];
-		const specialRegex =
-			/<svelte:(head|options)(\s+[^>]*)?>[\s\S]*?<\/svelte:\1>|<svelte:(window|body)(\s+[^>]*)?\s*\/?>/g;
-		template = template.replace(specialRegex, (match) => {
-			specialBlocks.push(match);
-			return '';
-		});
+		template = extractSvelteSpecialBlocks(template, specialBlocks);
 
 		// Trim template to avoid excessive whitespace
 		template = template.trim();
@@ -122,4 +107,93 @@ export async function injectIdProvider(
 			error: error instanceof Error ? error.message : String(error),
 		};
 	}
+}
+
+/**
+ * Extract blocks of a given tag type from content using indexOf.
+ * Safer than regex for CodeQL analysis.
+ */
+function extractBlocks(content: string, tagName: string, blocks: string[]): string {
+	let result = content;
+	const openTag = `<${tagName}`;
+	const closeTag = `</${tagName}>`;
+
+	let searchFrom = 0;
+	while (true) {
+		const startIdx = result.toLowerCase().indexOf(openTag.toLowerCase(), searchFrom);
+		if (startIdx === -1) break;
+
+		// Find the end of the opening tag
+		const openTagEnd = result.indexOf('>', startIdx);
+		if (openTagEnd === -1) break;
+
+		// Find the closing tag
+		const closeIdx = result.toLowerCase().indexOf(closeTag.toLowerCase(), openTagEnd);
+		if (closeIdx === -1) break;
+
+		const blockEnd = closeIdx + closeTag.length;
+		const block = result.substring(startIdx, blockEnd);
+		blocks.push(block);
+
+		// Remove the block from result
+		result = result.substring(0, startIdx) + result.substring(blockEnd);
+		// Continue searching from same position
+	}
+
+	return result;
+}
+
+/**
+ * Extract Svelte special blocks like svelte:head, svelte:options, svelte:window, svelte:body
+ */
+function extractSvelteSpecialBlocks(content: string, blocks: string[]): string {
+	let result = content;
+
+	// Handle paired tags: svelte:head, svelte:options
+	for (const tag of ['svelte:head', 'svelte:options']) {
+		const openTag = `<${tag}`;
+		const closeTag = `</${tag}>`;
+
+		let searchFrom = 0;
+		while (true) {
+			const startIdx = result.indexOf(openTag, searchFrom);
+			if (startIdx === -1) break;
+
+			const closeIdx = result.indexOf(closeTag, startIdx);
+			if (closeIdx === -1) break;
+
+			const blockEnd = closeIdx + closeTag.length;
+			blocks.push(result.substring(startIdx, blockEnd));
+			result = result.substring(0, startIdx) + result.substring(blockEnd);
+		}
+	}
+
+	// Handle self-closing tags: svelte:window, svelte:body
+	for (const tag of ['svelte:window', 'svelte:body']) {
+		const openTag = `<${tag}`;
+
+		let searchFrom = 0;
+		while (true) {
+			const startIdx = result.indexOf(openTag, searchFrom);
+			if (startIdx === -1) break;
+
+			// Find end of tag (could be /> or >)
+			const closeSlash = result.indexOf('/>', startIdx);
+			const closeAngle = result.indexOf('>', startIdx);
+
+			let blockEnd: number;
+			if (closeSlash !== -1 && (closeAngle === -1 || closeSlash < closeAngle)) {
+				blockEnd = closeSlash + 2;
+			} else if (closeAngle !== -1) {
+				blockEnd = closeAngle + 1;
+			} else {
+				break;
+			}
+
+			blocks.push(result.substring(startIdx, blockEnd));
+			result = result.substring(0, startIdx) + result.substring(blockEnd);
+		}
+	}
+
+	return result;
 }
