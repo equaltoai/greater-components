@@ -1,8 +1,8 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2025-12-18T22:44:44.231Z",
-  "ref": "232a0b706b32",
+  "generatedAt": "2025-12-23T23:48:31.170Z",
+  "ref": "6f749bab62f8",
   "version": "4.1.0",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
@@ -1203,7 +1203,7 @@
     "packages/faces/artist/src/utils/performance.ts": "sha256-5YZX0uasCeIMt0XO1qlXdvFlQ9duGJx1pdqHUwAEyHs=",
     "packages/faces/artist/src/utils/reducedMotion.ts": "sha256-VFivEhKfWxQXW/4efeYwndmXlJqnNxS7t0VVDYLNnEE=",
     "packages/shared/auth/src/BackupCodes.svelte": "sha256-4gsspo1jcXvK46P7kGKHSLJJlcF84WfSDkoKrXKLp0E=",
-    "packages/shared/auth/src/context.ts": "sha256-UH3aJzXtYprMsm43Z6nV/0ArZ+AlgwxvKuwVxBXqagw=",
+    "packages/shared/auth/src/context.ts": "sha256-lAMwah47PV11KmyQZfA9hvA69IIPvJv+czihr/jyfQI=",
     "packages/shared/auth/src/index.ts": "sha256-Zh8kb9HfRMEsvO5vziM1oWKEAyytVsOttIMO865gEsI=",
     "packages/shared/auth/src/InstanceSelector.svelte": "sha256-sgPoyTY+wi/VxDKre9/VJ58FwkQ+Uk17gtGmobpeGFY=",
     "packages/shared/auth/src/LoginForm.svelte": "sha256-BL8pxwJtQMrdziNDqcOnFetIF8GcG6J3d4sF8HH0Ywc=",
@@ -6663,7 +6663,13 @@
           "StructuredData",
           "OpenGraphMeta"
         ],
-        "shared": ["primitives", "icons", "content", "utils", "headless"],
+        "shared": [
+          "primitives",
+          "icons",
+          "content",
+          "utils",
+          "headless"
+        ],
         "patterns": [],
         "components": [
           "Article",
@@ -6930,7 +6936,13 @@
           "RulesSidebar",
           "WikiPage"
         ],
-        "shared": ["primitives", "icons", "content", "utils", "headless"],
+        "shared": [
+          "primitives",
+          "icons",
+          "content",
+          "utils",
+          "headless"
+        ],
         "patterns": [],
         "components": [
           "Community",
@@ -7231,7 +7243,14 @@
           "PremiumBadge",
           "InstitutionalTools"
         ],
-        "shared": ["primitives", "headless", "icons", "tokens", "adapters", "utils"],
+        "shared": [
+          "primitives",
+          "headless",
+          "icons",
+          "tokens",
+          "adapters",
+          "utils"
+        ],
         "patterns": [],
         "components": [
           "Artwork",
@@ -8140,8 +8159,8 @@
         },
         {
           "path": "src/context.ts",
-          "checksum": "sha256-UH3aJzXtYprMsm43Z6nV/0ArZ+AlgwxvKuwVxBXqagw=",
-          "size": 7259
+          "checksum": "sha256-lAMwah47PV11KmyQZfA9hvA69IIPvJv+czihr/jyfQI=",
+          "size": 8132
         },
         {
           "path": "src/index.ts",
@@ -8566,7 +8585,15 @@
       "name": "search",
       "version": "4.0.1",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
-      "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
+      "exports": [
+        "Root",
+        "Bar",
+        "Filters",
+        "Results",
+        "ActorResult",
+        "NoteResult",
+        "TagResult"
+      ],
       "files": [
         {
           "path": "src/ActorResult.svelte",
