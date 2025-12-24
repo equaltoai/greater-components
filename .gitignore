@@ -16,6 +16,7 @@ package/
 
 # Testing
 coverage/
+!**/tests/components/coverage/
 *.lcov
 .nyc_output
 playwright-report/
