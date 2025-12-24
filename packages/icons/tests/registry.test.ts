@@ -6,6 +6,7 @@ import {
 	iconCategories,
 	ActivityIcon,
 	GlobeIcon,
+	WalletIcon,
 } from '../src/index';
 
 describe('Icon Registry', () => {
@@ -18,6 +19,10 @@ describe('Icon Registry', () => {
 			// 'world' is alias for 'globe'
 			expect(getIcon('world')).toBe(GlobeIcon);
 			expect(getIcon('globe')).toBe(GlobeIcon);
+		});
+
+		it('returns component for wallet icon', () => {
+			expect(getIcon('wallet')).toBe(WalletIcon);
 		});
 
 		it('returns null for invalid icon name', () => {

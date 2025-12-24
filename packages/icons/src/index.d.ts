@@ -298,6 +298,7 @@ export declare const VolumeIcon: IconComponent;
 export declare const Volume1Icon: IconComponent;
 export declare const Volume2Icon: IconComponent;
 export declare const VolumeXIcon: IconComponent;
+export declare const WalletIcon: IconComponent;
 export declare const WatchIcon: IconComponent;
 export declare const WifiIcon: IconComponent;
 export declare const WifiOffIcon: IconComponent;
@@ -600,6 +601,7 @@ export type IconName =
 	| 'volume-1'
 	| 'volume-2'
 	| 'volume-x'
+	| 'wallet'
 	| 'watch'
 	| 'wifi'
 	| 'wifi-off'

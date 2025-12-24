@@ -43,6 +43,8 @@ import ThemeProvider from './components/ThemeProvider.svelte';
 import Badge from './components/Badge.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
+import DefinitionList from './components/DefinitionList.svelte';
+import DefinitionItem from './components/DefinitionItem.svelte';
 import GradientText from './components/GradientText.svelte';
 import StepIndicator from './components/StepIndicator.svelte';
 import IconBadge from './components/IconBadge.svelte';
@@ -107,6 +109,10 @@ export {
 	List,
 	/** ListItem component for items within a List. */
 	ListItem,
+	/** DefinitionList component for rendering key/value rows. */
+	DefinitionList,
+	/** DefinitionItem component for label/value pairs within a DefinitionList. */
+	DefinitionItem,
 	/** GradientText component for eye-catching text effects. */
 	GradientText,
 	/** StepIndicator component for multi-step workflows. */
@@ -165,6 +171,8 @@ export type ThemeProviderProps = ComponentProps<typeof ThemeProvider>;
 export type BadgeProps = ComponentProps<typeof Badge>;
 export type ListProps = ComponentProps<typeof List>;
 export type ListItemProps = ComponentProps<typeof ListItem>;
+export type DefinitionListProps = ComponentProps<typeof DefinitionList>;
+export type DefinitionItemProps = ComponentProps<typeof DefinitionItem>;
 export type GradientTextProps = ComponentProps<typeof GradientText>;
 export type StepIndicatorProps = ComponentProps<typeof StepIndicator>;
 export type IconBadgeProps = ComponentProps<typeof IconBadge>;

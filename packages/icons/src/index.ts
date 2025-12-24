@@ -289,6 +289,7 @@ import VolumeIcon from './icons/volume.svelte';
 import Volume1Icon from './icons/volume-1.svelte';
 import Volume2Icon from './icons/volume-2.svelte';
 import VolumeXIcon from './icons/volume-x.svelte';
+import WalletIcon from './icons/wallet.svelte';
 import WatchIcon from './icons/watch.svelte';
 import WifiIcon from './icons/wifi.svelte';
 import WifiOffIcon from './icons/wifi-off.svelte';
@@ -591,6 +592,7 @@ export {
 	Volume1Icon,
 	Volume2Icon,
 	VolumeXIcon,
+	WalletIcon,
 	WatchIcon,
 	WifiIcon,
 	WifiOffIcon,
@@ -894,6 +896,7 @@ const iconRegistry: Record<string, Component> = {
 	'volume-1': Volume1Icon,
 	'volume-2': Volume2Icon,
 	'volume-x': VolumeXIcon,
+	wallet: WalletIcon,
 	watch: WatchIcon,
 	wifi: WifiIcon,
 	'wifi-off': WifiOffIcon,
@@ -1197,6 +1200,7 @@ export type IconName =
 	| 'volume-1'
 	| 'volume-2'
 	| 'volume-x'
+	| 'wallet'
 	| 'watch'
 	| 'wifi'
 	| 'wifi-off'
@@ -1552,6 +1556,7 @@ export const iconList = [
 	'volume-1',
 	'volume-2',
 	'volume-x',
+	'wallet',
 	'watch',
 	'wifi',
 	'wifi-off',
@@ -1582,6 +1587,7 @@ export const iconCategories = {
 		'greater-than',
 		'equals',
 		'building',
+		'wallet',
 	],
 	brands: [
 		'google',

@@ -103,6 +103,11 @@ const fediverseIcons = {
 		contents:
 			'<rect x="3" y="7" width="7" height="15" rx="1"/><rect x="14" y="3" width="7" height="19" rx="1"/><line x1="6" y1="11" x2="6" y2="11.01"/><line x1="6" y1="15" x2="6" y2="15.01"/><line x1="17.5" y1="7" x2="17.5" y2="7.01"/><line x1="17.5" y1="11" x2="17.5" y2="11.01"/><line x1="17.5" y1="15" x2="17.5" y2="15.01"/><line x1="17.5" y1="19" x2="17.5" y2="19.01"/>',
 	},
+	wallet: {
+		name: 'wallet',
+		contents:
+			'<path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2"/><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M22 12h-6a2 2 0 0 0 0 4h6"></path><circle cx="16" cy="14" r="1"></circle>',
+	},
 };
 
 // Icon aliases for common names

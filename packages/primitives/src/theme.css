@@ -1959,6 +1959,92 @@
 	color: var(--gr-color-gray-500);
 }
 
+/* Definition List Styles */
+.gr-definition-list {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.gr-definition-list--dividers .gr-definition-item + .gr-definition-item {
+	border-top: 1px solid var(--gr-semantic-border-default);
+}
+
+.gr-definition-list--density-md .gr-definition-item {
+	padding: var(--gr-spacing-scale-4) var(--gr-spacing-scale-4);
+}
+
+.gr-definition-list--density-sm .gr-definition-item {
+	padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4);
+}
+
+.gr-definition-item {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--gr-spacing-scale-2);
+	min-width: 0;
+}
+
+@media (min-width: 640px) {
+	.gr-definition-item {
+		grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+		column-gap: var(--gr-spacing-scale-6);
+	}
+
+	.gr-definition-item__label {
+		grid-column: 1;
+	}
+
+	.gr-definition-item__content {
+		grid-column: 2;
+	}
+}
+
+.gr-definition-item__label {
+	margin: 0;
+	font-size: calc(var(--gr-typography-fontSize-sm) * var(--gr-font-scale, 1));
+	font-weight: var(--gr-typography-fontWeight-medium);
+	color: var(--gr-semantic-foreground-secondary);
+}
+
+.gr-definition-item__content {
+	margin: 0;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: start;
+	gap: var(--gr-spacing-scale-3);
+	min-width: 0;
+}
+
+.gr-definition-item__value {
+	min-width: 0;
+	color: var(--gr-semantic-foreground-primary);
+	font-size: calc(var(--gr-typography-fontSize-sm) * var(--gr-font-scale, 1));
+	line-height: var(--gr-typography-lineHeight-normal);
+	user-select: text;
+	word-break: break-word;
+}
+
+.gr-definition-item__value--nowrap {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	word-break: normal;
+}
+
+.gr-definition-item__value--monospace {
+	font-family: var(--gr-typography-fontFamily-mono);
+}
+
+.gr-definition-item__actions {
+	display: flex;
+	align-items: center;
+	gap: var(--gr-spacing-scale-2);
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+
 /* MarkdownRenderer Styles */
 .gr-markdown {
 	line-height: 1.6;

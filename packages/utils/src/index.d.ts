@@ -26,6 +26,11 @@ export * from './relativeTime.js';
  */
 export * from './linkifyMentions.js';
 /**
+ * String formatting utilities.
+ * @public
+ */
+export * from './truncateMiddle.js';
+/**
  * Keyboard shortcut handling utilities.
  * @public
  */
