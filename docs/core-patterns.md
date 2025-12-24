@@ -27,7 +27,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { Container, Card, Section } from '@equaltoai/greater-components/primitives';
+	import { Container, Card, Section } from '$lib/greater/primitives';
 </script>
 
 <div class="page-wrapper">
@@ -63,14 +63,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import {
-		Container,
-		Section,
-		Heading,
-		Text,
-		Button,
-		Card,
-	} from '@equaltoai/greater-components/primitives';
+	import { Container, Section, Heading, Text, Button, Card } from '$lib/greater/primitives';
 </script>
 
 <!-- Hero Section -->
@@ -138,8 +131,8 @@ Canonical usage patterns with examples for common scenarios.
 ```svelte
 <script>
 	// CORRECT: Styled components work immediately with consistent styling
-	import { Button, Modal, TextField } from '@equaltoai/greater-components/primitives';
-	import { SaveIcon } from '@equaltoai/greater-components/icons';
+	import { Button, Modal, TextField } from '$lib/greater/primitives';
+	import { SaveIcon } from '$lib/greater/icons';
 
 	let formData = $state({ name: '', email: '' });
 	let showModal = $state(false);
@@ -184,8 +177,8 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { Card, Button } from '@equaltoai/greater-components/primitives';
-	import { EditIcon, DeleteIcon } from '@equaltoai/greater-components/icons';
+	import { Card, Button } from '$lib/greater/primitives';
+	import { EditIcon, DeleteIcon } from '$lib/greater/icons';
 </script>
 
 <Card variant="elevated" padding="lg">
@@ -223,7 +216,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { Card } from '@equaltoai/greater-components/primitives';
+	import { Card } from '$lib/greater/primitives';
 	import { goto } from '$app/navigation';
 </script>
 
@@ -250,7 +243,7 @@ Canonical usage patterns with examples for common scenarios.
 ```svelte
 <script>
 	// CORRECT: Headless provides behavior, you provide styling
-	import { createButton, createModal } from '@equaltoai/greater-components/headless';
+	import { createButton, createModal } from '$lib/greater/headless';
 
 	let isOpen = $state(false);
 
@@ -328,7 +321,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
+	import { createButton } from '$lib/greater/headless/button';
 	import { yourDesignSystem } from '$lib/design-system';
 
 	const button = createButton({
@@ -360,7 +353,7 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { ThemeProvider, Button, Modal } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider, Button, Modal } from '$lib/greater/primitives';
 </script>
 
 <ThemeProvider>
@@ -414,8 +407,8 @@ Canonical usage patterns with examples for common scenarios.
 
 ```svelte
 <script>
-	import { ThemeProvider, ThemeSwitcher, Button } from '@equaltoai/greater-components/primitives';
-	import { SunIcon, MoonIcon } from '@equaltoai/greater-components/icons';
+	import { ThemeProvider, ThemeSwitcher, Button } from '$lib/greater/primitives';
+	import { SunIcon, MoonIcon } from '$lib/greater/icons';
 
 	let theme = $state('light');
 
@@ -479,7 +472,7 @@ Wrap classes applied to Greater Components (or any component) with `:global()`:
 
 ```svelte
 <script>
-	import { Heading, Text, Section, Button } from '@equaltoai/greater-components/primitives';
+	import { Heading, Text, Section, Button } from '$lib/greater/primitives';
 </script>
 
 <Section class="hero-section">
@@ -533,7 +526,7 @@ Wrap classes applied to Greater Components (or any component) with `:global()`:
 
 ```svelte
 <script>
-	import { Card, Heading } from '@equaltoai/greater-components/primitives';
+	import { Card, Heading } from '$lib/greater/primitives';
 </script>
 
 <!-- Components - need :global() -->
@@ -702,86 +695,25 @@ This scoping pattern ensures clean compilation with no warnings while maintainin
 
 ### Complete Lesser Setup
 
-✅ **CORRECT: Full Lesser integration with all features**
+✅ **CORRECT: Lesser GraphQL timeline with built-in virtualization**
 
 ```svelte
 <script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { Status, createLesserTimelineStore } from '@equaltoai/greater-components/fediverse';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 
 	// Initialize Lesser adapter with GraphQL
 	const adapter = new LesserGraphQLAdapter({
-		endpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
 		token: import.meta.env.VITE_LESSER_TOKEN,
-		enableSubscriptions: true,
-		subscriptionEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
+		// Optional: enables GraphQL subscriptions (real-time updates) when supported by your instance
+		wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
 	});
 
-	// Create timeline with real-time updates
-	const timeline = createLesserTimelineStore({
-		adapter,
-		type: 'HOME',
-		enableRealtime: true,
-		virtualScrolling: true,
-		estimateSize: 400,
-	});
-
-	// Handle quote posts
-	async function handleQuote(status: Status) {
-		const content = prompt('Add your comment:');
-		if (content) {
-			await adapter.quoteStatus(status.id, content);
-			timeline.refresh();
-		}
-	}
-
-	// Handle community notes
-	async function handleAddNote(statusId: string) {
-		const note = prompt('Add community note:');
-		if (note) {
-			await adapter.addCommunityNote(statusId, note);
-		}
-	}
+	const view = { type: 'home' };
 </script>
 
-<div class="timeline">
-	{#if timeline.isLoading}
-		<p>Loading timeline...</p>
-	{:else if timeline.error}
-		<p>Error: {timeline.error}</p>
-	{:else}
-		{#each timeline.items as status}
-			<Status.Root {status}>
-				<Status.Header />
-				<Status.Content />
-
-				<!-- Lesser-exclusive features -->
-				<Status.LesserMetadata showCost showTrust showModeration />
-
-				<Status.CommunityNotes enableVoting onAddNote={() => handleAddNote(status.id)} />
-
-				<Status.Actions
-					onReply={handleReply}
-					onBoost={handleBoost}
-					onFavorite={handleFavorite}
-					onQuote={() => handleQuote(status)}
-				/>
-			</Status.Root>
-		{/each}
-
-		{#if timeline.hasMore}
-			<Button onclick={() => timeline.loadMore()}>Load More</Button>
-		{/if}
-	{/if}
-</div>
-
-<style>
-	.timeline {
-		max-width: 600px;
-		margin: 0 auto;
-		padding: 1rem;
-	}
-</style>
+<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
 ```
 
 **Environment variables (`.env`):**
@@ -789,7 +721,7 @@ This scoping pattern ensures clean compilation with no warnings while maintainin
 ```bash
 VITE_LESSER_ENDPOINT=https://your-instance.social/graphql
 VITE_LESSER_TOKEN=your-auth-token
-VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
+VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/graphql
 ```
 
 ---
@@ -798,43 +730,14 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ### Virtual Scrolling for Performance
 
-✅ **CORRECT: Enable virtual scrolling for large timelines**
+✅ **CORRECT: Use TimelineVirtualizedReactive for large timelines**
 
 ```svelte
 <script>
-	import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
-	import { Status } from '@equaltoai/greater-components/fediverse';
-
-	const timeline = createTimelineStore({
-		adapter,
-		type: 'HOME',
-		virtualScrolling: true,
-		estimateSize: 400, // Estimated height per item in pixels
-	});
+	import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 </script>
 
-<div class="timeline-container" style="height: 100vh; overflow: auto;">
-	<div style="height: {timeline.totalSize}px; position: relative;">
-		{#each timeline.virtualItems as virtualRow}
-			{@const status = timeline.items[virtualRow.index]}
-			<div
-				style="
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          transform: translateY({virtualRow.start}px);
-        "
-			>
-				<Status.Root {status}>
-					<Status.Header />
-					<Status.Content />
-					<Status.Actions />
-				</Status.Root>
-			</div>
-		{/each}
-	</div>
-</div>
+<TimelineVirtualizedReactive {items} estimateSize={320} overscan={8} />
 ```
 
 **Performance benefits:**
@@ -854,38 +757,53 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ```svelte
 <script>
-	import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
-	import { Button } from '@equaltoai/greater-components/primitives';
+	import { LesserGraphQLAdapter, createTimelineStore } from '$lib/greater/adapters';
+	import { Button } from '$lib/greater/primitives';
 
 	let errorMessage = $state('');
 	let errorType = $state<'auth' | 'network' | 'rate-limit' | 'unknown'>('unknown');
 
+	const adapter = new LesserGraphQLAdapter({
+		httpEndpoint: import.meta.env.VITE_LESSER_ENDPOINT,
+		wsEndpoint: import.meta.env.VITE_LESSER_WS_ENDPOINT,
+		token: import.meta.env.VITE_LESSER_TOKEN,
+	});
+
 	const timeline = createTimelineStore({
 		adapter,
-		type: 'HOME',
-		onError: (error) => {
-			console.error('Timeline error:', error);
+		timeline: { type: 'home' },
+	});
 
-			// Categorize and provide helpful messages
-			if (error.message.includes('401') || error.message.includes('403')) {
+	$effect(() => {
+		const unsubscribe = timeline.subscribe((state) => {
+			if (!state.error) return;
+
+			console.error('Timeline error:', state.error);
+
+			const message = state.error.message;
+			if (message.includes('401') || message.includes('403')) {
 				errorType = 'auth';
 				errorMessage = 'Authentication failed. Please log in again.';
-			} else if (error.message.includes('rate limit')) {
+			} else if (message.includes('rate limit')) {
 				errorType = 'rate-limit';
 				errorMessage = 'Too many requests. Please wait a moment and try again.';
-			} else if (error.message.includes('network') || error.message.includes('fetch')) {
+			} else if (message.includes('network') || message.includes('fetch')) {
 				errorType = 'network';
 				errorMessage = 'Network error. Check your connection and try again.';
 			} else {
 				errorType = 'unknown';
 				errorMessage = 'Something went wrong. Please try again.';
 			}
-		},
+		});
+
+		void timeline.refresh();
+
+		return unsubscribe;
 	});
 
-	function handleRetry() {
+	async function handleRetry() {
 		errorMessage = '';
-		timeline.refresh();
+		await timeline.refresh();
 	}
 
 	function handleReauth() {
@@ -932,7 +850,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ```svelte
 <script>
-	import { Button, TextField } from '@equaltoai/greater-components/primitives';
+	import { Button, TextField } from '$lib/greater/primitives';
 
 	// Reactive state
 	let count = $state(0);
@@ -976,7 +894,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ```svelte
 <script>
-	import { Menu, Button } from '@equaltoai/greater-components/primitives';
+	import { Menu, Button } from '$lib/greater/primitives';
 
 	let items = [
 		{ label: 'Edit', action: () => console.log('edit') },
@@ -1010,8 +928,8 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ```svelte
 <script>
-	import { Button } from '@equaltoai/greater-components/primitives';
-	import { CloseIcon } from '@equaltoai/greater-components/icons';
+	import { Button } from '$lib/greater/primitives';
+	import { CloseIcon } from '$lib/greater/icons';
 </script>
 
 <Button variant="ghost" aria-label="Close dialog" onclick={handleClose}>
@@ -1029,7 +947,7 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ```svelte
 <script>
-	import { Button } from '@equaltoai/greater-components/primitives';
+	import { Button } from '$lib/greater/primitives';
 
 	let showEditor = $state(false);
 	let Editor;
@@ -1054,14 +972,14 @@ VITE_LESSER_WS_ENDPOINT=wss://your-instance.social/subscriptions
 
 ```typescript
 // BEST: Specific imports
-import { Button } from '@equaltoai/greater-components/primitives/Button';
-import { Modal } from '@equaltoai/greater-components/primitives/Modal';
+import Button from '$lib/greater/primitives/components/Button.svelte';
+import Modal from '$lib/greater/primitives/components/Modal.svelte';
 
 // GOOD: Named imports (relies on tree-shaking)
-import { Button, Modal } from '@equaltoai/greater-components/primitives';
+import { Button, Modal } from '$lib/greater/primitives';
 
 // AVOID: Imports everything
-import * as Primitives from '@equaltoai/greater-components/primitives';
+import * as Primitives from '$lib/greater/primitives';
 ```
 
 ---
@@ -1074,7 +992,7 @@ import * as Primitives from '@equaltoai/greater-components/primitives';
 
 ```svelte
 <script>
-	import { Modal, Button } from '@equaltoai/greater-components/primitives';
+	import { Modal, Button } from '$lib/greater/primitives';
 
 	let isMobile = $state(false);
 

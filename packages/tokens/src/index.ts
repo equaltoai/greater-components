@@ -176,12 +176,93 @@ export const tokens = {
       "900": {
         "value": "#7f1d1d"
       }
+    },
+    "info": {
+      "50": {
+        "value": "#eff6ff"
+      },
+      "100": {
+        "value": "#dbeafe"
+      },
+      "200": {
+        "value": "#bfdbfe"
+      },
+      "300": {
+        "value": "#93c5fd"
+      },
+      "400": {
+        "value": "#60a5fa"
+      },
+      "500": {
+        "value": "#3b82f6"
+      },
+      "600": {
+        "value": "#2563eb"
+      },
+      "700": {
+        "value": "#1d4ed8"
+      },
+      "800": {
+        "value": "#1e40af"
+      },
+      "900": {
+        "value": "#1e3a8a"
+      }
+    }
+  },
+  "spacing": {
+    "scale": {
+      "0": {
+        "value": "0"
+      },
+      "1": {
+        "value": "0.25rem"
+      },
+      "2": {
+        "value": "0.5rem"
+      },
+      "3": {
+        "value": "0.75rem"
+      },
+      "4": {
+        "value": "1rem"
+      },
+      "5": {
+        "value": "1.25rem"
+      },
+      "6": {
+        "value": "1.5rem"
+      },
+      "8": {
+        "value": "2rem"
+      },
+      "10": {
+        "value": "2.5rem"
+      },
+      "12": {
+        "value": "3rem"
+      },
+      "16": {
+        "value": "4rem"
+      },
+      "20": {
+        "value": "5rem"
+      },
+      "24": {
+        "value": "6rem"
+      },
+      "32": {
+        "value": "8rem"
+      }
     }
   },
   "typography": {
     "fontFamily": {
       "sans": {
         "value": "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+      },
+      "heading": {
+        "value": "var(--gr-typography-fontFamily-sans)"
       },
       "serif": {
         "value": "Georgia, Cambria, 'Times New Roman', Times, serif"
@@ -248,52 +329,6 @@ export const tokens = {
       }
     }
   },
-  "spacing": {
-    "scale": {
-      "0": {
-        "value": "0"
-      },
-      "1": {
-        "value": "0.25rem"
-      },
-      "2": {
-        "value": "0.5rem"
-      },
-      "3": {
-        "value": "0.75rem"
-      },
-      "4": {
-        "value": "1rem"
-      },
-      "5": {
-        "value": "1.25rem"
-      },
-      "6": {
-        "value": "1.5rem"
-      },
-      "8": {
-        "value": "2rem"
-      },
-      "10": {
-        "value": "2.5rem"
-      },
-      "12": {
-        "value": "3rem"
-      },
-      "16": {
-        "value": "4rem"
-      },
-      "20": {
-        "value": "5rem"
-      },
-      "24": {
-        "value": "6rem"
-      },
-      "32": {
-        "value": "8rem"
-      }
-    }
-  },
   "radii": {
     "none": {
       "value": "0"
@@ -344,6 +379,18 @@ export const tokens = {
     },
     "none": {
       "value": "none"
+    },
+    "glow-sm": {
+      "value": "0 0 4px 0 rgb(255 255 255 / 0.05), 0 0 1px 0 rgb(255 255 255 / 0.1)"
+    },
+    "glow-md": {
+      "value": "0 0 8px 0 rgb(255 255 255 / 0.07), 0 0 2px 0 rgb(255 255 255 / 0.1)"
+    },
+    "glow-lg": {
+      "value": "0 0 16px 0 rgb(255 255 255 / 0.1), 0 0 4px 0 rgb(255 255 255 / 0.15)"
+    },
+    "glow-primary": {
+      "value": "0 0 12px 0 var(--gr-color-primary-500)"
     }
   },
   "motion": {
@@ -373,6 +420,255 @@ export const tokens = {
       },
       "inOut": {
         "value": "cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      "decelerate": {
+        "value": "cubic-bezier(0, 0, 0.2, 1)"
+      },
+      "accelerate": {
+        "value": "cubic-bezier(0.4, 0, 1, 1)"
+      },
+      "standard": {
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)"
+      }
+    }
+  },
+  "semantic": {
+    "background": {
+      "primary": {
+        "value": "{color.base.white}",
+        "description": "Primary background color"
+      },
+      "secondary": {
+        "value": "{color.gray.50}",
+        "description": "Secondary background color"
+      },
+      "tertiary": {
+        "value": "{color.gray.100}",
+        "description": "Tertiary background color"
+      },
+      "base": {
+        "value": "{color.gray.50}",
+        "description": "Base page background"
+      },
+      "surface": {
+        "value": "{color.base.white}",
+        "description": "Surface/card background"
+      },
+      "raised": {
+        "value": "{color.base.white}",
+        "description": "Elevated surface background"
+      },
+      "input": {
+        "value": "{color.base.white}",
+        "description": "Input field background"
+      },
+      "overlay": {
+        "value": "rgba(0, 0, 0, 0.5)",
+        "description": "Modal/dialog overlay"
+      }
+    },
+    "foreground": {
+      "primary": {
+        "value": "{color.gray.900}",
+        "description": "Primary text color"
+      },
+      "secondary": {
+        "value": "{color.gray.700}",
+        "description": "Secondary text color"
+      },
+      "tertiary": {
+        "value": "{color.gray.500}",
+        "description": "Tertiary/muted text color"
+      },
+      "disabled": {
+        "value": "{color.gray.400}",
+        "description": "Disabled text color"
+      },
+      "inverse": {
+        "value": "{color.base.white}",
+        "description": "Text on dark backgrounds"
+      }
+    },
+    "border": {
+      "default": {
+        "value": "{color.gray.200}",
+        "description": "Default border color"
+      },
+      "subtle": {
+        "value": "{color.gray.100}",
+        "description": "Subtle/light border color"
+      },
+      "strong": {
+        "value": "{color.gray.300}",
+        "description": "Strong/emphasized border color"
+      },
+      "focus": {
+        "value": "{color.primary.500}",
+        "description": "Focus ring border color"
+      }
+    },
+    "action": {
+      "primary": {
+        "default": {
+          "value": "{color.primary.600}",
+          "description": "Primary action default state"
+        },
+        "hover": {
+          "value": "{color.primary.700}",
+          "description": "Primary action hover state"
+        },
+        "active": {
+          "value": "{color.primary.800}",
+          "description": "Primary action active/pressed state"
+        },
+        "disabled": {
+          "value": "{color.primary.300}",
+          "description": "Primary action disabled state"
+        }
+      },
+      "success": {
+        "default": {
+          "value": "{color.success.700}",
+          "description": "Success action default state"
+        },
+        "hover": {
+          "value": "{color.success.800}",
+          "description": "Success action hover state"
+        },
+        "active": {
+          "value": "{color.success.900}",
+          "description": "Success action active state"
+        },
+        "background": {
+          "value": "{color.success.50}",
+          "description": "Success background tint"
+        },
+        "foreground": {
+          "value": "{color.success.700}",
+          "description": "Success text color"
+        }
+      },
+      "warning": {
+        "default": {
+          "value": "{color.warning.600}",
+          "description": "Warning action default state"
+        },
+        "hover": {
+          "value": "{color.warning.700}",
+          "description": "Warning action hover state"
+        },
+        "active": {
+          "value": "{color.warning.800}",
+          "description": "Warning action active state"
+        },
+        "background": {
+          "value": "{color.warning.50}",
+          "description": "Warning background tint"
+        },
+        "foreground": {
+          "value": "{color.warning.700}",
+          "description": "Warning text color"
+        }
+      },
+      "danger": {
+        "default": {
+          "value": "{color.error.600}",
+          "description": "Danger/error action default state"
+        },
+        "hover": {
+          "value": "{color.error.700}",
+          "description": "Danger action hover state"
+        },
+        "active": {
+          "value": "{color.error.800}",
+          "description": "Danger action active state"
+        },
+        "background": {
+          "value": "{color.error.50}",
+          "description": "Danger background tint"
+        },
+        "foreground": {
+          "value": "{color.error.700}",
+          "description": "Danger text color"
+        }
+      },
+      "info": {
+        "default": {
+          "value": "{color.info.600}",
+          "description": "Info action default state"
+        },
+        "hover": {
+          "value": "{color.info.700}",
+          "description": "Info action hover state"
+        },
+        "active": {
+          "value": "{color.info.800}",
+          "description": "Info action active state"
+        },
+        "background": {
+          "value": "{color.info.50}",
+          "description": "Info background tint"
+        },
+        "foreground": {
+          "value": "{color.info.700}",
+          "description": "Info text color"
+        }
+      },
+      "link": {
+        "default": {
+          "value": "{color.primary.600}",
+          "description": "Link default color"
+        },
+        "hover": {
+          "value": "{color.primary.700}",
+          "description": "Link hover color"
+        },
+        "active": {
+          "value": "{color.primary.800}",
+          "description": "Link active color"
+        },
+        "visited": {
+          "value": "{color.primary.800}",
+          "description": "Link visited color"
+        }
+      }
+    },
+    "focus": {
+      "ring": {
+        "value": "{color.primary.500}",
+        "description": "Focus ring color"
+      },
+      "ring-offset": {
+        "value": "2px",
+        "description": "Focus ring offset distance"
+      },
+      "ring-width": {
+        "value": "2px",
+        "description": "Focus ring width"
+      }
+    },
+    "status": {
+      "success": {
+        "value": "{color.success.500}",
+        "description": "Success status indicator"
+      },
+      "warning": {
+        "value": "{color.warning.500}",
+        "description": "Warning status indicator"
+      },
+      "error": {
+        "value": "{color.error.500}",
+        "description": "Error status indicator"
+      },
+      "info": {
+        "value": "{color.info.500}",
+        "description": "Info status indicator"
+      }
+    },
+    "transition": {
+      "theme": {
+        "value": "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease",
+        "description": "Theme transition for smooth theme switching"
       }
     }
   }
@@ -390,6 +686,21 @@ export const themes = {
         },
         "tertiary": {
           "value": "{color.gray.100}"
+        },
+        "base": {
+          "value": "{color.gray.50}"
+        },
+        "surface": {
+          "value": "{color.base.white}"
+        },
+        "raised": {
+          "value": "{color.base.white}"
+        },
+        "input": {
+          "value": "{color.base.white}"
+        },
+        "overlay": {
+          "value": "rgba(0, 0, 0, 0.5)"
         }
       },
       "foreground": {
@@ -434,13 +745,13 @@ export const themes = {
         },
         "success": {
           "default": {
-            "value": "{color.success.600}"
-          },
-          "hover": {
             "value": "{color.success.700}"
           },
-          "active": {
+          "hover": {
             "value": "{color.success.800}"
+          },
+          "active": {
+            "value": "{color.success.900}"
           }
         },
         "warning": {
@@ -464,11 +775,33 @@ export const themes = {
           "active": {
             "value": "{color.error.800}"
           }
+        },
+        "link": {
+          "default": {
+            "value": "{color.primary.600}"
+          },
+          "hover": {
+            "value": "{color.primary.700}"
+          },
+          "active": {
+            "value": "{color.primary.800}"
+          }
         }
       },
       "focus": {
         "ring": {
           "value": "{color.primary.500}"
+        },
+        "ring-offset": {
+          "value": "2px"
+        },
+        "ring-width": {
+          "value": "2px"
+        }
+      },
+      "transition": {
+        "theme": {
+          "value": "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease"
         }
       }
     }
@@ -484,6 +817,21 @@ export const themes = {
         },
         "tertiary": {
           "value": "{color.gray.800}"
+        },
+        "base": {
+          "value": "{color.gray.950}"
+        },
+        "surface": {
+          "value": "{color.gray.900}"
+        },
+        "raised": {
+          "value": "{color.gray.800}"
+        },
+        "input": {
+          "value": "{color.gray.800}"
+        },
+        "overlay": {
+          "value": "rgba(0, 0, 0, 0.75)"
         }
       },
       "foreground": {
@@ -558,11 +906,33 @@ export const themes = {
           "active": {
             "value": "{color.error.300}"
           }
+        },
+        "link": {
+          "default": {
+            "value": "{color.primary.400}"
+          },
+          "hover": {
+            "value": "{color.primary.300}"
+          },
+          "active": {
+            "value": "{color.primary.200}"
+          }
         }
       },
       "focus": {
         "ring": {
           "value": "{color.primary.400}"
+        },
+        "ring-offset": {
+          "value": "2px"
+        },
+        "ring-width": {
+          "value": "2px"
+        }
+      },
+      "transition": {
+        "theme": {
+          "value": "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease"
         }
       }
     }
@@ -578,6 +948,21 @@ export const themes = {
         },
         "tertiary": {
           "value": "{color.gray.900}"
+        },
+        "base": {
+          "value": "{color.base.black}"
+        },
+        "surface": {
+          "value": "{color.gray.950}"
+        },
+        "raised": {
+          "value": "{color.gray.900}"
+        },
+        "input": {
+          "value": "{color.gray.900}"
+        },
+        "overlay": {
+          "value": "rgba(0, 0, 0, 0.85)"
         }
       },
       "foreground": {
@@ -608,55 +993,77 @@ export const themes = {
       "action": {
         "primary": {
           "default": {
-            "value": "{color.primary.700}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.primary.800}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.primary.600}"
+            "value": "{color.gray.200}"
           },
           "disabled": {
-            "value": "{color.gray.700}"
+            "value": "{color.gray.600}"
           }
         },
         "success": {
           "default": {
-            "value": "{color.success.300}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.success.200}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.success.100}"
+            "value": "{color.gray.200}"
           }
         },
         "warning": {
           "default": {
-            "value": "{color.warning.300}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.warning.200}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.warning.100}"
+            "value": "{color.gray.200}"
           }
         },
         "error": {
           "default": {
-            "value": "{color.error.300}"
+            "value": "{color.base.white}"
           },
           "hover": {
-            "value": "{color.error.200}"
+            "value": "{color.gray.100}"
           },
           "active": {
-            "value": "{color.error.100}"
+            "value": "{color.gray.200}"
+          }
+        },
+        "link": {
+          "default": {
+            "value": "{color.base.white}"
+          },
+          "hover": {
+            "value": "{color.gray.100}"
+          },
+          "active": {
+            "value": "{color.gray.200}"
           }
         }
       },
       "focus": {
         "ring": {
           "value": "{color.primary.200}"
+        },
+        "ring-offset": {
+          "value": "3px"
+        },
+        "ring-width": {
+          "value": "3px"
+        }
+      },
+      "transition": {
+        "theme": {
+          "value": "background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease"
         }
       }
     }
@@ -688,3 +1095,6 @@ export const getMotion = (path: string) => getCSSVar(`motion-${path}`);
 
 // Semantic token getters
 export const getSemanticColor = (path: string) => getCSSVar(`semantic-${path}`);
+
+// Export palette utilities
+export * from './palette-utils';

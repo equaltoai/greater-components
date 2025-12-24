@@ -47,6 +47,14 @@
 		onClick: () => handleClose(),
 	});
 
+	// Sync button states
+	$effect(() => {
+		saveButton.helpers.setDisabled(listsState.loading);
+		saveButton.helpers.setLoading(listsState.loading);
+
+		cancelButton.helpers.setDisabled(listsState.loading);
+	});
+
 	// Initialize form when editing list changes
 	$effect(() => {
 		if (listsState.editingList) {

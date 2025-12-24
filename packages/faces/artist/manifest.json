@@ -1,0 +1,295 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-artist",
+  "version": "1.0.0",
+  "description": "Artist portfolio and gallery UI components for visual artists and creative professionals",
+  "components": {
+    "Artwork": {
+      "description": "Compound component for displaying artwork with metadata, attribution, and AI disclosure",
+      "subcomponents": [
+        "Root",
+        "Image",
+        "Title",
+        "Attribution",
+        "Metadata",
+        "Stats",
+        "Actions",
+        "AIDisclosure"
+      ],
+      "props": ["artwork", "config", "handlers"],
+      "exports": true
+    },
+    "ArtworkCard": {
+      "description": "Standalone card component for artwork display in grids and lists",
+      "props": ["artwork", "variant", "showMetadata"],
+      "exports": true
+    },
+    "MediaViewer": {
+      "description": "Full-screen media viewer with zoom, pan, and navigation controls",
+      "props": ["media", "initialIndex", "onClose"],
+      "exports": true
+    },
+    "GalleryGrid": {
+      "description": "Grid layout for artwork display with responsive columns",
+      "props": ["artworks", "columns", "gap"],
+      "exports": true
+    },
+    "GalleryRow": {
+      "description": "Horizontal row layout for artwork display",
+      "props": ["artworks", "height", "gap"],
+      "exports": true
+    },
+    "GalleryMasonry": {
+      "description": "Masonry layout for artwork display with variable heights",
+      "props": ["artworks", "columns", "gap"],
+      "exports": true
+    },
+    "ArtistProfile": {
+      "description": "Compound component for artist profiles with portfolio sections",
+      "subcomponents": [
+        "Root",
+        "HeroBanner",
+        "Avatar",
+        "Name",
+        "Badges",
+        "Statement",
+        "Stats",
+        "Sections",
+        "Actions",
+        "Edit",
+        "Timeline"
+      ],
+      "props": ["artist", "config", "handlers"],
+      "exports": true
+    },
+    "ArtistBadge": {
+      "description": "Badge component for artist verification and achievements",
+      "props": ["type", "label", "verified"],
+      "exports": true
+    },
+    "PortfolioSection": {
+      "description": "Section component for organizing portfolio content",
+      "props": ["title", "artworks", "layout"],
+      "exports": true
+    },
+    "ArtistTimeline": {
+      "description": "Timeline component for artist career milestones (REQ-VIEW-003)",
+      "props": ["events", "orientation", "config"],
+      "exports": true
+    },
+    "DiscoveryEngine": {
+      "description": "Compound component for artwork discovery and search",
+      "subcomponents": ["Root", "Filters", "Results", "Suggestions"],
+      "props": ["filters", "config", "handlers"],
+      "exports": true
+    },
+    "ColorPaletteSearch": {
+      "description": "Search component using color palette matching",
+      "props": ["colors", "tolerance", "onSearch"],
+      "exports": true
+    },
+    "StyleFilter": {
+      "description": "Filter component for art styles and movements",
+      "props": ["styles", "selected", "onChange"],
+      "exports": true
+    },
+    "MoodMap": {
+      "description": "Visual mood-based discovery interface",
+      "props": ["dimensions", "position", "onSelect"],
+      "exports": true
+    },
+    "Exhibition": {
+      "description": "Compound component for curated exhibitions",
+      "subcomponents": ["Root", "Header", "Gallery", "CuratorNote", "Navigation"],
+      "props": ["exhibition", "config", "handlers"],
+      "exports": true
+    },
+    "CuratorSpotlight": {
+      "description": "Spotlight component for featured curators",
+      "props": ["curator", "exhibitions"],
+      "exports": true
+    },
+    "CollectionCard": {
+      "description": "Card component for artwork collections",
+      "props": ["collection", "variant", "showCount"],
+      "exports": true
+    },
+    "WorkInProgress": {
+      "description": "Compound component for sharing work-in-progress updates",
+      "subcomponents": ["Root", "Thread", "Update", "Media", "Comments"],
+      "props": ["thread", "config", "handlers"],
+      "exports": true
+    },
+    "CritiqueMode": {
+      "description": "Compound component for artwork critique and feedback",
+      "subcomponents": ["Root", "Canvas", "Annotations", "Comments", "Summary"],
+      "props": ["artwork", "config", "handlers"],
+      "exports": true
+    },
+    "ReferenceBoard": {
+      "description": "Component for organizing reference images and inspiration",
+      "props": ["references", "layout", "handlers"],
+      "exports": true
+    },
+    "CommissionWorkflow": {
+      "description": "Compound component for managing commission requests",
+      "subcomponents": ["Root", "Request", "Quote", "Progress", "Delivery", "Review"],
+      "props": ["commission", "config", "handlers"],
+      "exports": true
+    },
+    "CritiqueCircle": {
+      "description": "Compound component for group critique sessions",
+      "subcomponents": ["Root", "Members", "Queue", "ActiveCritique", "History"],
+      "props": ["circle", "config", "handlers"],
+      "exports": true
+    },
+    "Collaboration": {
+      "description": "Compound component for collaborative art projects",
+      "subcomponents": ["Root", "Members", "Canvas", "Chat", "History"],
+      "props": ["project", "config", "handlers"],
+      "exports": true
+    },
+    "MentorMatch": {
+      "description": "Component for connecting artists with mentors",
+      "props": ["filters", "matches", "handlers"],
+      "exports": true
+    },
+    "AIDisclosure": {
+      "description": "Transparency component for AI usage disclosure",
+      "props": ["usage", "tools", "percentage"],
+      "exports": true
+    },
+    "ProcessDocumentation": {
+      "description": "Component for documenting creative process",
+      "props": ["steps", "media", "config"],
+      "exports": true
+    },
+    "AIOptOutControls": {
+      "description": "Controls for AI training opt-out preferences",
+      "props": ["status", "onChange"],
+      "exports": true
+    },
+    "EthicalSourcingBadge": {
+      "description": "Badge for ethical sourcing verification",
+      "props": ["verification", "details"],
+      "exports": true
+    },
+    "TipJar": {
+      "description": "Component for accepting tips and donations",
+      "props": ["config", "handlers"],
+      "exports": true
+    },
+    "PremiumBadge": {
+      "description": "Badge for premium/subscription features",
+      "props": ["tier", "features"],
+      "exports": true
+    },
+    "InstitutionalTools": {
+      "description": "Tools for institutional accounts (galleries, museums)",
+      "props": ["account", "config", "handlers"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "context": {
+      "description": "Context creation and access utilities for compound components",
+      "exports": [
+        "createArtworkContext",
+        "getArtworkContext",
+        "createArtistContext",
+        "getArtistContext",
+        "createGalleryContext",
+        "getGalleryContext",
+        "createExhibitionContext",
+        "getExhibitionContext"
+      ]
+    },
+    "gallery": {
+      "description": "Gallery layout and clustering utilities",
+      "exports": ["calculateMasonryLayout", "clusterByColor", "clusterByStyle", "clusterByMood"]
+    },
+    "discovery": {
+      "description": "Discovery and search utilities",
+      "exports": ["matchColorPalette", "calculateStyleSimilarity", "mapMoodDimensions"]
+    }
+  },
+  "types": [
+    "ArtworkData",
+    "ArtworkConfig",
+    "ArtworkHandlers",
+    "ArtworkMetadata",
+    "AIUsageData",
+    "ArtistData",
+    "ArtistConfig",
+    "ProfileHandlers",
+    "ArtistBadgeType",
+    "GalleryConfig",
+    "GalleryClusteringMode",
+    "DiscoveryFilters",
+    "ArtStyle",
+    "ColorPalette",
+    "MoodDimensions",
+    "ExhibitionData",
+    "CuratorData",
+    "CollectionData",
+    "WIPThreadData",
+    "WIPHandlers",
+    "CritiqueConfig",
+    "ReferenceBoardData",
+    "CommissionData",
+    "CommissionStatus",
+    "CritiqueCircleData",
+    "CollaborationData",
+    "MentorFilters",
+    "AITool",
+    "ProcessStep",
+    "AIOptOutStatus",
+    "EthicalVerification",
+    "TipData",
+    "PremiumFeatures",
+    "InstitutionalAccount"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-headless",
+      "@equaltoai/greater-components-icons",
+      "@equaltoai/greater-components-tokens",
+      "@equaltoai/greater-components-adapters",
+      "@equaltoai/greater-components-utils"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": [
+      "@equaltoai/greater-components-auth",
+      "@equaltoai/greater-components-notifications"
+    ]
+  },
+  "integrationPatterns": [
+    "rest_api_fetch",
+    "graphql_client",
+    "static_site_generation",
+    "server_side_rendering"
+  ],
+  "features": {
+    "artwork_display": true,
+    "gallery_layouts": true,
+    "artist_profiles": true,
+    "discovery_engine": true,
+    "exhibitions": true,
+    "creative_tools": true,
+    "community_features": true,
+    "ai_transparency": true,
+    "monetization": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard_navigation",
+      "screen_reader_support",
+      "focus_management",
+      "image_descriptions",
+      "color_contrast",
+      "reduced_motion_support"
+    ]
+  }
+}

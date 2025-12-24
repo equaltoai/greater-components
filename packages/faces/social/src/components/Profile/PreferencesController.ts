@@ -203,7 +203,11 @@ export class PreferencesGraphQLController {
 			};
 		}
 
-		if (settings.searchableBySearchEngines !== undefined || settings.discoverable !== undefined) {
+		if (
+			settings.searchableBySearchEngines !== undefined ||
+			settings.discoverable !== undefined ||
+			settings.hideFollowers !== undefined
+		) {
 			const privacy = this.state.preferences?.privacy;
 			updates.privacy = {
 				defaultVisibility: privacy?.defaultVisibility ?? 'PUBLIC',
@@ -226,9 +230,7 @@ export class PreferencesGraphQLController {
 			const privacy = this.state.preferences?.privacy;
 			updates.privacy = {
 				...(updates.privacy ?? privacy ?? {}),
-				defaultVisibility: settings.isPrivate
-					? 'PRIVATE'
-					: (privacy?.defaultVisibility ?? 'PUBLIC'),
+				defaultVisibility: settings.isPrivate ? 'PRIVATE' : 'PUBLIC',
 				indexable: privacy?.indexable ?? true,
 				showOnlineStatus: privacy?.showOnlineStatus ?? false,
 			};
@@ -418,6 +420,12 @@ export class PreferencesGraphQLController {
 
 		if (updates.reblogFilters) {
 			input['reblogFilters'] = updates.reblogFilters;
+		}
+
+		if (updates.privacy) {
+			input['defaultVisibility'] = updates.privacy.defaultVisibility;
+			input['indexable'] = updates.privacy.indexable;
+			input['showOnlineStatus'] = updates.privacy.showOnlineStatus;
 		}
 
 		return input;

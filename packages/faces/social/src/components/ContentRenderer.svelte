@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { sanitizeHtml, linkifyMentions } from '@equaltoai/greater-components-utils';
+	import { sanitizeHtml, linkifyMentions, useStableId } from '@equaltoai/greater-components-utils';
+	import { untrack } from 'svelte';
 	import type { Mention, Tag } from '../types';
 
 	interface Props {
@@ -53,7 +54,9 @@
 		onToggle,
 	}: Props = $props();
 
-	let expanded = $state(!collapsed || !spoilerText);
+	let expanded = $state(untrack(() => !collapsed || !spoilerText));
+	const generatedId = useStableId('content');
+	const contentId = $derived(generatedId.value);
 
 	function toggleExpanded() {
 		if (spoilerText) {
@@ -149,7 +152,7 @@
 				class="spoiler-toggle"
 				onclick={toggleExpanded}
 				aria-expanded={expanded}
-				aria-controls={`content-${Math.random().toString(36).substr(2, 9)}`}
+				aria-controls={contentId}
 			>
 				{expanded ? 'Hide' : 'Show more'}
 			</button>
@@ -160,7 +163,7 @@
 		<div
 			class="content"
 			class:collapsed={spoilerText && !expanded}
-			id={`content-${Math.random().toString(36).substr(2, 9)}`}
+			id={contentId}
 			aria-hidden={spoilerText && !expanded}
 			use:setHtml={processedContent}
 		></div>

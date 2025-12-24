@@ -354,7 +354,7 @@ Traditional component libraries force you into their design decisions. Headless 
 
 ## Examples
 
-See the `@equaltoai/greater-components-fediverse` package for real-world usage of these primitives in:
+See the `@equaltoai/greater-components-social` package for real-world usage of these primitives in:
 
 - Status compound component
 - Timeline compound component

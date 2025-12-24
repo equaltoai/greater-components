@@ -21,14 +21,14 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version-file: '.nvmrc'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -37,6 +37,9 @@ jobs:
       - name: Build packages
         run: pnpm build
 
+      - name: Validate packages
+        run: pnpm validate:package
+
       - name: Run tests with coverage
         run: pnpm test:coverage
         continue-on-error: true
@@ -44,7 +47,10 @@ jobs:
       - name: Generate coverage report
         run: pnpm test:coverage:report
         env:
-          COVERAGE_THRESHOLD: '10'
+          COVERAGE_LINES: '75'
+          COVERAGE_FUNCTIONS: '75'
+          COVERAGE_STATEMENTS: '75'
+          COVERAGE_BRANCHES: '60'
         continue-on-error: true
 
       - name: Upload coverage reports to Codecov
@@ -134,7 +140,11 @@ jobs:
             - Statements: ${formatCoverage(overall.statements)}
             - Branches: ${formatCoverage(overall.branches)}
 
-            **Coverage Threshold:** ${coverage.threshold}%
+            **Coverage Thresholds:**
+            - Lines: ${coverage.thresholds.lines}%
+            - Functions: ${coverage.thresholds.functions}%
+            - Statements: ${coverage.thresholds.statements}%
+            - Branches: ${coverage.thresholds.branches}%
 
             </details>
 

@@ -90,7 +90,11 @@ By making a contribution to this project, I certify that:
    ```bash
    pnpm install
    ```
-4. Create a feature branch:
+4. Install Playwright browsers (only needed for Playwright-based tests like `pnpm test:e2e` / `pnpm test:a11y`):
+   ```bash
+   pnpm playwright:install
+   ```
+5. Create a feature branch:
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -110,7 +114,8 @@ By making a contribution to this project, I certify that:
 - Run `pnpm test` to run all tests
 - Run `pnpm test:unit` for unit tests
 - Run `pnpm test:e2e` for end-to-end tests
-- Maintain minimum 90% code coverage
+- If Playwright tests fail due to missing browsers, run `pnpm playwright:install`
+- Maintain the repo coverage thresholds (see `pnpm test:coverage:report`)
 
 ### Commit Messages
 

@@ -20,22 +20,40 @@
       "svelte": "./dist/index.js",
       "import": "./dist/index.js"
     },
+    "./icons/*.svelte": {
+      "types": "./dist/icons/*.svelte.d.ts",
+      "svelte": "./dist/icons/*.svelte",
+      "import": "./dist/icons/*.svelte"
+    },
     "./icons/*": {
       "types": "./dist/icons/*.svelte.d.ts",
-      "svelte": "./dist/icons/*.svelte.js",
-      "import": "./dist/icons/*.svelte.js"
+      "svelte": "./dist/icons/*.svelte",
+      "import": "./dist/icons/*.svelte"
+    },
+    "./icons/brands": {
+      "types": "./dist/icons/brands/index.d.ts",
+      "svelte": "./dist/icons/brands/index.js",
+      "import": "./dist/icons/brands/index.js"
+    },
+    "./icons/brands/*.svelte": {
+      "types": "./dist/icons/brands/*.svelte.d.ts",
+      "svelte": "./dist/icons/brands/*.svelte",
+      "import": "./dist/icons/brands/*.svelte"
+    },
+    "./icons/brands/*": {
+      "types": "./dist/icons/brands/*.svelte.d.ts",
+      "svelte": "./dist/icons/brands/*.svelte",
+      "import": "./dist/icons/brands/*.svelte"
     }
   },
   "files": [
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "build": "node scripts/build.js && svelte-package --output dist",
-    "dev": "node scripts/build.js --watch",
+    "generate": "node scripts/build.js",
+    "build": "svelte-package --output dist",
+    "dev": "pnpm run generate -- --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -45,16 +63,16 @@
     "svelte": "^5.43.6"
   },
   "devDependencies": {
-    "@sveltejs/package": "^2.5.6",
+    "@sveltejs/package": "^2.5.7",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "chokidar": "^4.0.3",
+    "@types/node": "^24.10.2",
+    "@vitest/coverage-v8": "^4.0.15",
+    "chokidar": "^5.0.0",
     "feather-icons": "^4.29.2",
-    "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   }
 }

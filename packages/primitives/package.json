@@ -1,13 +1,13 @@
 {
   "name": "@equaltoai/greater-components-primitives",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "description": "Primitive UI components for Greater Components",
   "license": "AGPL-3.0-only",
   "author": "Greater Contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/greater/greater-components.git",
+    "url": "https://github.com/equaltoai/greater-components.git",
     "directory": "packages/primitives"
   },
   "main": "./dist/index.js",
@@ -22,112 +22,133 @@
     },
     "./Button": {
       "types": "./dist/components/Button.svelte.d.ts",
-      "svelte": "./dist/components/Button.svelte.js",
-      "import": "./dist/components/Button.svelte.js"
+      "svelte": "./dist/components/Button.svelte",
+      "import": "./dist/components/Button.svelte"
     },
     "./Modal": {
       "types": "./dist/components/Modal.svelte.d.ts",
-      "svelte": "./dist/components/Modal.svelte.js",
-      "import": "./dist/components/Modal.svelte.js"
+      "svelte": "./dist/components/Modal.svelte",
+      "import": "./dist/components/Modal.svelte"
     },
     "./TextField": {
       "types": "./dist/components/TextField.svelte.d.ts",
-      "svelte": "./dist/components/TextField.svelte.js",
-      "import": "./dist/components/TextField.svelte.js"
+      "svelte": "./dist/components/TextField.svelte",
+      "import": "./dist/components/TextField.svelte"
     },
     "./TextArea": {
       "types": "./dist/components/TextArea.svelte.d.ts",
-      "svelte": "./dist/components/TextArea.svelte.js",
-      "import": "./dist/components/TextArea.svelte.js"
+      "svelte": "./dist/components/TextArea.svelte",
+      "import": "./dist/components/TextArea.svelte"
     },
     "./Select": {
       "types": "./dist/components/Select.svelte.d.ts",
-      "svelte": "./dist/components/Select.svelte.js",
-      "import": "./dist/components/Select.svelte.js"
+      "svelte": "./dist/components/Select.svelte",
+      "import": "./dist/components/Select.svelte"
     },
     "./Checkbox": {
       "types": "./dist/components/Checkbox.svelte.d.ts",
-      "svelte": "./dist/components/Checkbox.svelte.js",
-      "import": "./dist/components/Checkbox.svelte.js"
+      "svelte": "./dist/components/Checkbox.svelte",
+      "import": "./dist/components/Checkbox.svelte"
     },
     "./Switch": {
       "types": "./dist/components/Switch.svelte.d.ts",
-      "svelte": "./dist/components/Switch.svelte.js",
-      "import": "./dist/components/Switch.svelte.js"
+      "svelte": "./dist/components/Switch.svelte",
+      "import": "./dist/components/Switch.svelte"
     },
     "./FileUpload": {
       "types": "./dist/components/FileUpload.svelte.d.ts",
-      "svelte": "./dist/components/FileUpload.svelte.js",
-      "import": "./dist/components/FileUpload.svelte.js"
+      "svelte": "./dist/components/FileUpload.svelte",
+      "import": "./dist/components/FileUpload.svelte"
     },
     "./Menu": {
       "types": "./dist/components/Menu.svelte.d.ts",
-      "svelte": "./dist/components/Menu.svelte.js",
-      "import": "./dist/components/Menu.svelte.js"
+      "svelte": "./dist/components/Menu.svelte",
+      "import": "./dist/components/Menu.svelte"
     },
     "./Tooltip": {
       "types": "./dist/components/Tooltip.svelte.d.ts",
-      "svelte": "./dist/components/Tooltip.svelte.js",
-      "import": "./dist/components/Tooltip.svelte.js"
+      "svelte": "./dist/components/Tooltip.svelte",
+      "import": "./dist/components/Tooltip.svelte"
     },
     "./Tabs": {
       "types": "./dist/components/Tabs.svelte.d.ts",
-      "svelte": "./dist/components/Tabs.svelte.js",
-      "import": "./dist/components/Tabs.svelte.js"
+      "svelte": "./dist/components/Tabs.svelte",
+      "import": "./dist/components/Tabs.svelte"
     },
     "./Avatar": {
       "types": "./dist/components/Avatar.svelte.d.ts",
-      "svelte": "./dist/components/Avatar.svelte.js",
-      "import": "./dist/components/Avatar.svelte.js"
+      "svelte": "./dist/components/Avatar.svelte",
+      "import": "./dist/components/Avatar.svelte"
     },
     "./Skeleton": {
       "types": "./dist/components/Skeleton.svelte.d.ts",
-      "svelte": "./dist/components/Skeleton.svelte.js",
-      "import": "./dist/components/Skeleton.svelte.js"
+      "svelte": "./dist/components/Skeleton.svelte",
+      "import": "./dist/components/Skeleton.svelte"
     },
     "./Card": {
       "types": "./dist/components/Card.svelte.d.ts",
-      "svelte": "./dist/components/Card.svelte.js",
-      "import": "./dist/components/Card.svelte.js"
+      "svelte": "./dist/components/Card.svelte",
+      "import": "./dist/components/Card.svelte"
     },
     "./Container": {
       "types": "./dist/components/Container.svelte.d.ts",
-      "svelte": "./dist/components/Container.svelte.js",
-      "import": "./dist/components/Container.svelte.js"
+      "svelte": "./dist/components/Container.svelte",
+      "import": "./dist/components/Container.svelte"
     },
     "./Section": {
       "types": "./dist/components/Section.svelte.d.ts",
-      "svelte": "./dist/components/Section.svelte.js",
-      "import": "./dist/components/Section.svelte.js"
+      "svelte": "./dist/components/Section.svelte",
+      "import": "./dist/components/Section.svelte"
     },
     "./Heading": {
       "types": "./dist/components/Heading.svelte.d.ts",
-      "svelte": "./dist/components/Heading.svelte.js",
-      "import": "./dist/components/Heading.svelte.js"
+      "svelte": "./dist/components/Heading.svelte",
+      "import": "./dist/components/Heading.svelte"
     },
     "./Text": {
       "types": "./dist/components/Text.svelte.d.ts",
-      "svelte": "./dist/components/Text.svelte.js",
-      "import": "./dist/components/Text.svelte.js"
+      "svelte": "./dist/components/Text.svelte",
+      "import": "./dist/components/Text.svelte"
     },
     "./ThemeSwitcher": {
       "types": "./dist/components/ThemeSwitcher.svelte.d.ts",
-      "svelte": "./dist/components/ThemeSwitcher.svelte.js",
-      "import": "./dist/components/ThemeSwitcher.svelte.js"
+      "svelte": "./dist/components/ThemeSwitcher.svelte",
+      "import": "./dist/components/ThemeSwitcher.svelte"
     },
     "./ThemeProvider": {
       "types": "./dist/components/ThemeProvider.svelte.d.ts",
-      "svelte": "./dist/components/ThemeProvider.svelte.js",
-      "import": "./dist/components/ThemeProvider.svelte.js"
+      "svelte": "./dist/components/ThemeProvider.svelte",
+      "import": "./dist/components/ThemeProvider.svelte"
+    },
+    "./components/*.svelte": {
+      "types": "./dist/components/*.svelte.d.ts",
+      "svelte": "./dist/components/*.svelte",
+      "import": "./dist/components/*.svelte"
     },
     "./components/*": {
       "types": "./dist/components/*.svelte.d.ts",
-      "svelte": "./dist/components/*.svelte.js",
-      "import": "./dist/components/*.svelte.js"
+      "svelte": "./dist/components/*.svelte",
+      "import": "./dist/components/*.svelte"
     },
     "./stores/*": {
       "types": "./dist/stores/*.d.ts",
       "import": "./dist/stores/*.js"
+    },
+    "./transitions": {
+      "types": "./dist/transitions/index.d.ts",
+      "import": "./dist/transitions/index.js"
+    },
+    "./transitions/*": {
+      "types": "./dist/transitions/*.d.ts",
+      "import": "./dist/transitions/*.js"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "import": "./dist/utils/*.js"
     },
     "./theme.css": "./dist/theme.css",
     "./style.css": "./dist/style.css",
@@ -137,9 +158,6 @@
     "src",
     "dist"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "svelte-package --output dist && node scripts/build-css.js",
     "dev": "svelte-package --output dist --watch",
@@ -158,16 +176,16 @@
   },
   "devDependencies": {
     "@equaltoai/greater-components-tokens": "workspace:*",
-    "@sveltejs/package": "^2.5.6",
+    "@sveltejs/package": "^2.5.7",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/svelte": "^5.2.9",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "@types/node": "^24.10.2",
+    "@vitest/coverage-v8": "^4.0.15",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   },
   "private": true
 }

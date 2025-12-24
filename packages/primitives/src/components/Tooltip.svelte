@@ -15,9 +15,12 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 
 	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
 		content: string;
+		id?: string;
 		placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
 		trigger?: 'hover' | 'focus' | 'click' | 'manual';
 		delay?: { show?: number; hide?: number } | number;
@@ -28,6 +31,7 @@
 
 	let {
 		content,
+		id,
 		placement = 'top',
 		trigger = 'hover',
 		delay = { show: 500, hide: 100 },
@@ -52,7 +56,11 @@
 	let showTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let hideTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let longPressTimeout: ReturnType<typeof setTimeout> | null = $state(null);
-	let actualPlacement = $state(placement);
+	let actualPlacement = $state(untrack(() => placement));
+
+	$effect(() => {
+		actualPlacement = placement;
+	});
 
 	// Computed tooltip position
 	let tooltipPosition = $state({ top: 0, left: 0 });
@@ -291,13 +299,13 @@
 	});
 
 	// Generate unique ID for accessibility
-	const tooltipId = `tooltip-${Math.random().toString(36).substr(2, 9)}`;
+	const stableId = useStableId('tooltip');
+	const tooltipId = $derived(id || stableId.value || undefined);
 </script>
 
 <div class="gr-tooltip-container">
-	<svelte:element
-		this={trigger === 'click' ? 'button' : 'div'}
-		type={trigger === 'click' ? 'button' : undefined}
+	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+	<div
 		bind:this={triggerElement}
 		class="gr-tooltip-trigger"
 		aria-describedby={isVisible ? tooltipId : undefined}
@@ -310,9 +318,10 @@
 		ontouchend={handleTouchEnd}
 		onkeydown={handleKeydown}
 		role={trigger === 'click' ? 'button' : 'presentation'}
+		tabindex={trigger === 'click' ? 0 : undefined}
 	>
 		{@render children()}
-	</svelte:element>
+	</div>
 
 	{#if isVisible}
 		<div

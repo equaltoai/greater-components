@@ -1,24 +1,29 @@
-import type { Config } from 'dompurify';
 export interface SanitizeOptions {
-    /**
-     * Allow specific HTML tags
-     */
-    allowedTags?: string[];
-    /**
-     * Allow specific attributes
-     */
-    allowedAttributes?: string[];
-    /**
-     * Allow data URIs in src attributes
-     */
-    allowDataUri?: boolean;
-    /**
-     * Custom DOMPurify configuration
-     */
-    customConfig?: Config;
+	/**
+	 * Allow specific HTML tags
+	 */
+	allowedTags?: string[];
+	/**
+	 * Allow specific attributes
+	 */
+	allowedAttributes?: string[];
+	/**
+	 * Allow data URIs in src attributes
+	 */
+	allowDataUri?: boolean;
+	/**
+	 * Add rel="noopener noreferrer" to external links
+	 */
+	addRelToExternalLinks?: boolean;
+	/**
+	 * Open external links in new tab
+	 */
+	externalLinksInNewTab?: boolean;
 }
 /**
- * Sanitize HTML content using DOMPurify with an allow-list approach
+ * Sanitize HTML content using rehype-sanitize with an allow-list approach.
+ * Fully ESM-compatible implementation.
+ *
  * @param dirty - The potentially unsafe HTML string
  * @param options - Sanitization options
  * @returns Sanitized HTML string

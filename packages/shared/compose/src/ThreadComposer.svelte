@@ -7,7 +7,7 @@ Create threads with multiple connected posts, each with its own character limit.
 @example
 ```svelte
 <script>
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { Compose } from '@equaltoai/greater-components-compose';
   
   async function handleSubmitThread(posts) {
     // Submit posts in sequence
@@ -25,6 +25,7 @@ Create threads with multiple connected posts, each with its own character limit.
 -->
 
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 	import { countWeightedCharacters } from './UnicodeCounter.js';
 	import type { PostVisibility } from './context.js';
@@ -85,16 +86,21 @@ Create threads with multiple connected posts, each with its own character limit.
 	}: Props = $props();
 
 	// Thread state
-	let posts = $state<ThreadPost[]>([
-		{
-			id: crypto.randomUUID(),
+	let postIdCounter = 0;
+
+	function createEmptyPost(): ThreadPost {
+		postIdCounter += 1;
+		return {
+			id: `thread-post-${postIdCounter}`,
 			content: '',
 			characterCount: 0,
 			overLimit: false,
-		},
-	]);
+		};
+	}
 
-	let visibility = $state<PostVisibility>(defaultVisibility);
+	let posts = $state<ThreadPost[]>([createEmptyPost()]);
+
+	let visibility = $state<PostVisibility>(untrack(() => defaultVisibility));
 	let submitting = $state(false);
 	let error = $state<string | null>(null);
 	let draggedPostId = $state<string | null>(null);
@@ -146,12 +152,7 @@ Create threads with multiple connected posts, each with its own character limit.
 			return;
 		}
 
-		posts.push({
-			id: crypto.randomUUID(),
-			content: '',
-			characterCount: 0,
-			overLimit: false,
-		});
+		posts.push(createEmptyPost());
 
 		// Focus the new post's textarea
 		setTimeout(() => {
@@ -276,14 +277,7 @@ Create threads with multiple connected posts, each with its own character limit.
 			await onSubmitThread(postsToSubmit);
 
 			// Reset on success
-			posts = [
-				{
-					id: crypto.randomUUID(),
-					content: '',
-					characterCount: 0,
-					overLimit: false,
-				},
-			];
+			posts = [createEmptyPost()];
 		} catch (err) {
 			error = extractErrorMessage(err);
 		} finally {
@@ -299,14 +293,7 @@ Create threads with multiple connected posts, each with its own character limit.
 			onCancel();
 		} else {
 			// Reset to single empty post
-			posts = [
-				{
-					id: crypto.randomUUID(),
-					content: '',
-					characterCount: 0,
-					overLimit: false,
-				},
-			];
+			posts = [createEmptyPost()];
 			error = null;
 		}
 	}

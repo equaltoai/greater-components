@@ -14,7 +14,7 @@
 
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
-	import type { Snippet } from 'svelte';
+	import { untrack, type Snippet } from 'svelte';
 
 	interface TabData {
 		id: string;
@@ -42,18 +42,20 @@
 		class: className = '',
 		onTabChange,
 		...restProps
-	}: Props = $props<Props>();
+	}: Props = $props();
 
-	// State management
-	let currentActiveTab = $state(activeTab ?? tabs[0]?.id);
+	// State management - initialize as undefined, sync via effect
+	let currentActiveTab: string | undefined = $state(undefined);
 	let focusedTabIndex = $state(0);
 	let tablistElement: HTMLElement | null = $state(null);
 
 	// Sync external activeTab prop with internal state
 	$effect(() => {
-		if (activeTab !== undefined && activeTab !== currentActiveTab) {
-			currentActiveTab = activeTab;
-			const tabIndex = tabs.findIndex((tab) => tab.id === activeTab);
+		// Initialize on first run or when activeTab prop changes
+		const targetTab = activeTab ?? tabs[0]?.id;
+		if (targetTab !== undefined && targetTab !== untrack(() => currentActiveTab)) {
+			currentActiveTab = targetTab;
+			const tabIndex = tabs.findIndex((tab) => tab.id === targetTab);
 			if (tabIndex !== -1) {
 				focusedTabIndex = tabIndex;
 			}
@@ -151,7 +153,7 @@
 		let nextIndex = focusedTabIndex + 1;
 
 		// Skip disabled tabs
-		while (nextIndex < tabs.length && tabs[nextIndex].disabled) {
+		while (nextIndex < tabs.length && tabs[nextIndex]?.disabled) {
 			nextIndex++;
 		}
 
@@ -169,14 +171,14 @@
 		let prevIndex = focusedTabIndex - 1;
 
 		// Skip disabled tabs
-		while (prevIndex >= 0 && tabs[prevIndex].disabled) {
+		while (prevIndex >= 0 && tabs[prevIndex]?.disabled) {
 			prevIndex--;
 		}
 
 		// Wrap around to last non-disabled tab
 		if (prevIndex < 0) {
 			prevIndex = tabs.length - 1;
-			while (prevIndex >= 0 && tabs[prevIndex].disabled) {
+			while (prevIndex >= 0 && tabs[prevIndex]?.disabled) {
 				prevIndex--;
 			}
 		}
@@ -195,7 +197,7 @@
 
 	function moveToLastTab() {
 		let lastIndex = tabs.length - 1;
-		while (lastIndex >= 0 && tabs[lastIndex].disabled) {
+		while (lastIndex >= 0 && tabs[lastIndex]?.disabled) {
 			lastIndex--;
 		}
 		if (lastIndex !== -1 && lastIndex !== focusedTabIndex) {
@@ -234,15 +236,6 @@
 				onclick={() => selectTab(tab.id)}
 				onkeydown={(e) => handleTabKeydown(e, index)}
 				onfocus={() => (focusedTabIndex = index)}
-				style={`background-color: ${
-					isActive
-						? 'var(--gr-semantic-action-primary-active, #1e40af)'
-						: 'var(--gr-semantic-background-primary, #030712)'
-				}; color: ${
-					isActive
-						? 'var(--gr-color-base-white, #ffffff)'
-						: 'var(--gr-semantic-foreground-secondary, #e5e7eb)'
-				};`}
 			>
 				{tab.label}
 			</button>

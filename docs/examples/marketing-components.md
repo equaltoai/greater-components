@@ -8,7 +8,7 @@ Use badges to highlight status, new features, or categories.
 
 ```svelte
 <script>
-	import { Badge } from '@equaltoai/greater-components/primitives';
+	import { Badge } from '$lib/greater/primitives';
 </script>
 
 <!-- Hero Badge -->
@@ -29,8 +29,8 @@ Create feature lists or steps with icons.
 
 ```svelte
 <script>
-	import { List, ListItem } from '@equaltoai/greater-components/primitives';
-	import { CheckIcon, XIcon } from '@equaltoai/greater-components/icons';
+	import { List, ListItem } from '$lib/greater/primitives';
+	import { CheckIcon, XIcon } from '$lib/greater/icons';
 </script>
 
 <!-- Feature List -->
@@ -53,7 +53,7 @@ Add visual impact to headings.
 
 ```svelte
 <script>
-	import { GradientText, Heading } from '@equaltoai/greater-components/primitives';
+	import { GradientText, Heading } from '$lib/greater/primitives';
 </script>
 
 <Heading level={1} size="5xl">
@@ -67,7 +67,7 @@ Visualize multi-step processes or tutorials.
 
 ```svelte
 <script>
-	import { StepIndicator } from '@equaltoai/greater-components/primitives';
+	import { StepIndicator } from '$lib/greater/primitives';
 </script>
 
 <div class="steps">
@@ -83,8 +83,8 @@ Showcase features with consistent iconography.
 
 ```svelte
 <script>
-	import { IconBadge, Card, Heading, Text } from '@equaltoai/greater-components/primitives';
-	import { ZapIcon } from '@equaltoai/greater-components/icons';
+	import { IconBadge, Card, Heading, Text } from '$lib/greater/primitives';
+	import { ZapIcon } from '$lib/greater/icons';
 </script>
 
 <Card>

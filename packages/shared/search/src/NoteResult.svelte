@@ -3,8 +3,8 @@
 -->
 <script lang="ts">
 	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
-	import { getSearchContext, formatCount, highlightQuery } from './context.js';
-	import type { SearchNote } from './context.js';
+	import { getSearchContext, formatCount, highlightQuery } from './context.svelte.js';
+	import type { SearchNote } from './context.svelte.js';
 
 	interface Props {
 		note: SearchNote;
@@ -42,7 +42,7 @@
 		return `${seconds}s`;
 	}
 
-	const highlightedContent = $derived(() =>
+	const highlightedContent = $derived(
 		sanitizeHtml(highlightQuery(note.content, searchState.query), {
 			allowedTags: ['mark', 'span', 'em', 'strong', 'b', 'i', 'u', 'br', 'p', 'a'],
 			allowedAttributes: ['class', 'href', 'rel', 'target', 'title'],

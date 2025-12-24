@@ -39,17 +39,42 @@
     "./tabs": {
       "types": "./dist/primitives/tabs.d.ts",
       "import": "./dist/primitives/tabs.js"
+    },
+    "./behaviors": {
+      "types": "./dist/behaviors/index.d.ts",
+      "import": "./dist/behaviors/index.js"
+    },
+    "./behaviors/focus-trap": {
+      "types": "./dist/behaviors/focus-trap.d.ts",
+      "import": "./dist/behaviors/focus-trap.js"
+    },
+    "./behaviors/roving-tabindex": {
+      "types": "./dist/behaviors/roving-tabindex.d.ts",
+      "import": "./dist/behaviors/roving-tabindex.js"
+    },
+    "./behaviors/typeahead": {
+      "types": "./dist/behaviors/typeahead.d.ts",
+      "import": "./dist/behaviors/typeahead.js"
+    },
+    "./behaviors/popover": {
+      "types": "./dist/behaviors/popover.d.ts",
+      "import": "./dist/behaviors/popover.js"
+    },
+    "./behaviors/dismissable": {
+      "types": "./dist/behaviors/dismissable.d.ts",
+      "import": "./dist/behaviors/dismissable.js"
+    },
+    "./behaviors/live-region": {
+      "types": "./dist/behaviors/live-region.d.ts",
+      "import": "./dist/behaviors/live-region.js"
     }
   },
   "files": [
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -62,13 +87,13 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/svelte": "^5.2.9",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "@types/node": "^24.10.2",
+    "@vitest/coverage-v8": "^4.0.15",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   },
   "dependencies": {
     "focus-trap": "^7.6.6",

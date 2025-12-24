@@ -6,33 +6,32 @@ Build conversational AI interfaces with the Greater Components Chat suite. These
 
 ## Package Information
 
-| Property           | Value                                |
-| ------------------ | ------------------------------------ |
-| **Package**        | `@equaltoai/greater-components-chat` |
-| **Import Path**    | `@equaltoai/greater-components/chat` |
-| **Version**        | 4.0.0                                |
-| **Components**     | 8                                    |
-| **Svelte Version** | 5.x (Runes)                          |
+| Property           | Value                  |
+| ------------------ | ---------------------- |
+| **CLI Item**       | `shared/chat`          |
+| **Import Path**    | `$lib/components/chat` |
+| **Version**        | 4.0.0                  |
+| **Components**     | 8                      |
+| **Svelte Version** | 5.x (Runes)            |
 
 ## Installation
 
-The chat package is included in the Greater Components umbrella package:
-
 ```bash
-pnpm add @equaltoai/greater-components
+greater add shared/chat
 ```
 
-Or install the standalone package:
+Ensure your app also imports the required CSS layers (usually injected by `greater init`):
 
-```bash
-pnpm add @equaltoai/greater-components-chat
+```ts
+import '$lib/styles/greater/tokens.css';
+import '$lib/styles/greater/primitives.css';
 ```
 
 ## Quick Start
 
 ```svelte
 <script>
-	import * as Chat from '@equaltoai/greater-components/chat';
+	import * as Chat from '$lib/components/chat';
 
 	let messages = $state([]);
 
@@ -343,7 +342,7 @@ Quick prompt suggestions displayed in empty state or after responses.
 **Default PAI Suggestions:**
 
 ```typescript
-import { defaultPAISuggestions } from '@equaltoai/greater-components/chat';
+import { defaultPAISuggestions } from '$lib/components/chat';
 // ['What is PAI?', 'How do I create a scope?', ...]
 ```
 
@@ -417,7 +416,7 @@ The chat suite provides a context system for shared state management.
 Creates a new chat context with handlers and initial settings.
 
 ```typescript
-import { createChatContext } from '@equaltoai/greater-components/chat';
+import { createChatContext } from '$lib/components/chat';
 
 const context = createChatContext(
 	{
@@ -443,7 +442,7 @@ const context = createChatContext(
 Retrieves the current chat context from a parent Container.
 
 ```typescript
-import { getChatContext } from '@equaltoai/greater-components/chat';
+import { getChatContext } from '$lib/components/chat';
 
 // In a child component
 const context = getChatContext();
@@ -459,7 +458,7 @@ context.addMessage({
 Checks if a chat context exists.
 
 ```typescript
-import { hasChatContext, getChatContext } from '@equaltoai/greater-components/chat';
+import { hasChatContext, getChatContext } from '$lib/components/chat';
 
 if (hasChatContext()) {
 	const context = getChatContext();
@@ -559,7 +558,7 @@ interface KnowledgeBaseConfig {
 Formats a timestamp for display.
 
 ```typescript
-import { formatMessageTime } from '@equaltoai/greater-components/chat';
+import { formatMessageTime } from '$lib/components/chat';
 
 formatMessageTime(new Date()); // "2:30 PM"
 ```
@@ -569,7 +568,7 @@ formatMessageTime(new Date()); // "2:30 PM"
 Formats streaming duration.
 
 ```typescript
-import { formatStreamDuration } from '@equaltoai/greater-components/chat';
+import { formatStreamDuration } from '$lib/components/chat';
 
 formatStreamDuration(startTimestamp); // "5s"
 ```
@@ -579,7 +578,7 @@ formatStreamDuration(startTimestamp); // "5s"
 Gets human-readable connection status.
 
 ```typescript
-import { getConnectionStatusText } from '@equaltoai/greater-components/chat';
+import { getConnectionStatusText } from '$lib/components/chat';
 
 getConnectionStatusText('connecting'); // "Connecting..."
 ```
@@ -590,7 +589,7 @@ getConnectionStatusText('connecting'); // "Connecting..."
 
 ```svelte
 <script>
-	import * as Chat from '@equaltoai/greater-components/chat';
+	import * as Chat from '$lib/components/chat';
 
 	let messages = $state([]);
 	let settingsOpen = $state(false);
@@ -709,7 +708,7 @@ For real-time streaming with WebSocket connections:
 
 ```svelte
 <script>
-	import * as Chat from '@equaltoai/greater-components/chat';
+	import * as Chat from '$lib/components/chat';
 
 	let messages = $state([]);
 	let connectionStatus = $state('disconnected');

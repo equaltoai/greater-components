@@ -17,7 +17,7 @@ Displays multiple similar notifications grouped together.
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { NotificationGroup } from './types.js';
-	import { getNotificationsContext } from './context.js';
+	import { getNotificationsContext } from './context.svelte.js';
 
 	interface Props {
 		/**
@@ -61,7 +61,7 @@ Displays multiple similar notifications grouped together.
 	/**
 	 * Get group title based on type and count
 	 */
-	const title = $derived(() => {
+	const title = $derived.by(() => {
 		const count = group.notifications.length;
 		const baseTitle =
 			{
@@ -83,7 +83,7 @@ Displays multiple similar notifications grouped together.
 	/**
 	 * Format the names of accounts
 	 */
-	const accountNames = $derived(() => {
+	const accountNames = $derived.by(() => {
 		const notifications = group.notifications;
 		const count = notifications.length;
 

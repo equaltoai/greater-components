@@ -1,0 +1,98 @@
+{
+  "name": "@equaltoai/greater-components-blog",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Blog/Medium-style UI components for Greater Components",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/faces/blog"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "svelte": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./manifest.json": "./manifest.json",
+    "./style.css": "./dist/greater-components-blog.css",
+    "./theme.css": "./dist/greater-components-blog.css",
+    "./components/Article": {
+      "types": "./dist/components/Article/index.d.ts",
+      "svelte": "./src/components/Article/index.ts",
+      "import": "./dist/components/Article/index.js"
+    },
+    "./components/Author": {
+      "types": "./dist/components/Author/index.d.ts",
+      "svelte": "./src/components/Author/index.ts",
+      "import": "./dist/components/Author/index.js"
+    },
+    "./components/Publication": {
+      "types": "./dist/components/Publication/index.d.ts",
+      "svelte": "./src/components/Publication/index.ts",
+      "import": "./dist/components/Publication/index.js"
+    },
+    "./components/Navigation": {
+      "types": "./dist/components/Navigation/index.d.ts",
+      "svelte": "./src/components/Navigation/index.ts",
+      "import": "./dist/components/Navigation/index.js"
+    },
+    "./components/Editor": {
+      "types": "./dist/components/Editor/index.d.ts",
+      "svelte": "./src/components/Editor/index.ts",
+      "import": "./dist/components/Editor/index.js"
+    },
+    "./patterns": {
+      "types": "./dist/patterns/index.d.ts",
+      "import": "./dist/patterns/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-blog.css",
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@equaltoai/greater-components-auth": "workspace:*",
+    "@equaltoai/greater-components-content": "workspace:*",
+    "@equaltoai/greater-components-headless": "workspace:^",
+    "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-search": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/svelte": "5.2.9",
+    "@types/node": "^24.10.2",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
+  },
+  "peerDependencies": {
+    "svelte": "^5.43.6"
+  }
+}

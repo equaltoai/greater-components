@@ -1,0 +1,13 @@
+node_modules
+.svelte-kit
+.vite
+build
+dist
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+.pnpm
+components.json
+src/lib
+src/greater
+styles

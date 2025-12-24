@@ -26,8 +26,8 @@ Greater Components follows a comprehensive testing approach:
 
 ### Coverage Targets
 
-- **Overall:** 80%+ code coverage
-- **Core Components:** 90%+ coverage
+- **Overall:** 75%+ code coverage (default thresholds enforced by `pnpm test:coverage:report`)
+- **Core Components:** 90%+ coverage (goal)
 - **Accessibility:** 100% coverage
 - **Critical Paths:** 100% coverage
 
@@ -82,8 +82,8 @@ Object.defineProperty(window, 'matchMedia', {
 
 ```typescript
 import { test, expect, vi } from 'vitest';
-import { render, fireEvent } from '@equaltoai/greater-components/testing';
-import { Button } from '@equaltoai/greater-components/primitives';
+import { render, fireEvent } from '@testing-library/svelte';
+import Button from '$lib/greater/primitives/components/Button.svelte';
 
 test('button renders correctly', () => {
 	const { getByRole } = render(Button, {
@@ -148,8 +148,8 @@ test('button is disabled when disabled prop is true', () => {
 
 ```typescript
 import { test, expect } from 'vitest';
-import { render, fireEvent } from '@equaltoai/greater-components/testing';
-import { TextField } from '@equaltoai/greater-components/primitives';
+import { render, fireEvent } from '@testing-library/svelte';
+import TextField from '$lib/greater/primitives/components/TextField.svelte';
 
 test('textfield updates value on input', async () => {
 	let value = $state('');
@@ -186,49 +186,45 @@ test('textfield shows error message', () => {
 
 ### Testing Async Operations
 
+When your UI updates state after `await` (fetches, mutations, etc.), use `waitFor` to assert once the UI has settled.
+
+```svelte
+<!-- AsyncActionDemo.svelte -->
+<script lang="ts">
+	let { load } = $props<{ load: () => Promise<string> }>();
+
+	let result = $state('');
+	let loading = $state(false);
+
+	async function run() {
+		loading = true;
+		result = await load();
+		loading = false;
+	}
+</script>
+
+<button onclick={run} disabled={loading} type="button">
+	{loading ? 'Running…' : 'Run'}
+</button>
+
+{#if result}
+	<p>{result}</p>
+{/if}
+```
+
 ```typescript
 import { test, expect, vi } from 'vitest';
-import { render, fireEvent, waitFor } from '@equaltoai/greater-components/testing';
-import { createTimelineStore } from '@equaltoai/greater-components/fediverse';
+import { render, fireEvent, waitFor } from '@testing-library/svelte';
+import AsyncActionDemo from './AsyncActionDemo.svelte';
 
-test('timeline loads and displays statuses', async () => {
-	const mockAdapter = {
-		getTimeline: vi.fn().mockResolvedValue([
-			{ id: '1', content: 'First post' },
-			{ id: '2', content: 'Second post' },
-		]),
-	};
+test('shows result after async action', async () => {
+	const load = vi.fn().mockResolvedValue('Done');
+	const { getByRole, getByText } = render(AsyncActionDemo, { props: { load } });
 
-	const timeline = createTimelineStore({
-		adapter: mockAdapter,
-		type: 'HOME',
-	});
+	await fireEvent.click(getByRole('button', { name: 'Run' }));
 
 	await waitFor(() => {
-		expect(timeline.items).toHaveLength(2);
-		expect(timeline.isLoading).toBe(false);
-	});
-
-	expect(timeline.items[0].content).toBe('First post');
-});
-
-test('timeline handles errors', async () => {
-	const mockAdapter = {
-		getTimeline: vi.fn().mockRejectedValue(new Error('Network error')),
-	};
-
-	let errorMessage = '';
-	const timeline = createTimelineStore({
-		adapter: mockAdapter,
-		type: 'HOME',
-		onError: (error) => {
-			errorMessage = error.message;
-		},
-	});
-
-	await waitFor(() => {
-		expect(timeline.error).toBeTruthy();
-		expect(errorMessage).toBe('Network error');
+		expect(getByText('Done')).toBeInTheDocument();
 	});
 });
 ```
@@ -237,8 +233,8 @@ test('timeline handles errors', async () => {
 
 ```typescript
 import { test, expect } from 'vitest';
-import { render } from '@equaltoai/greater-components/testing';
-import { Modal } from '@equaltoai/greater-components/primitives';
+import { render } from '@testing-library/svelte';
+import Modal from '$lib/greater/primitives/components/Modal.svelte';
 
 test('modal renders footer snippet', () => {
 	const { getByText } = render(Modal, {
@@ -262,6 +258,18 @@ test('modal renders footer snippet', () => {
 ## E2E Testing with Playwright
 
 ### Setup
+
+Install Playwright browsers (one-time, per machine) before running E2E/a11y/visual suites:
+
+```bash
+pnpm playwright:install
+```
+
+On Linux CI you may need system dependencies:
+
+```bash
+pnpm playwright:install:with-deps
+```
 
 ```typescript
 // playwright.config.ts
@@ -439,9 +447,10 @@ test('mobile modal takes full screen', async ({ page }) => {
 
 ```typescript
 import { test, expect } from 'vitest';
-import { render } from '@equaltoai/greater-components/testing';
+import { render } from '@testing-library/svelte';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { Button } from '@equaltoai/greater-components/primitives';
+import Button from '$lib/greater/primitives/components/Button.svelte';
+import Modal from '$lib/greater/primitives/components/Modal.svelte';
 
 expect.extend(toHaveNoViolations);
 
@@ -753,6 +762,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm playwright:install:with-deps
 
       - name: Run unit tests
         run: pnpm test:unit

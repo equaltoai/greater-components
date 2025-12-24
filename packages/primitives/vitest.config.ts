@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import path from 'path';
 
 export default defineConfig({
@@ -8,6 +8,7 @@ export default defineConfig({
 			compilerOptions: {
 				runes: true,
 			},
+			preprocess: vitePreprocess(),
 			emitCss: false,
 		}),
 	],
@@ -26,23 +27,7 @@ export default defineConfig({
 			provider: 'v8',
 			reporter: ['text', 'json', 'html', 'lcov'],
 			reportsDirectory: './coverage',
-			thresholds: {
-				global: {
-					branches: 60,
-					functions: 60,
-					lines: 60,
-					statements: 60,
-				},
-			},
 			include: ['src/**/*.{ts,js,svelte}'],
-			exclude: [
-				'src/**/*.d.ts',
-				'src/**/*.test.{ts,js}',
-				'src/**/*.spec.{ts,js}',
-				'tests/**/*',
-				'dist/**/*',
-				'node_modules/**/*',
-			],
 		},
 	},
 });

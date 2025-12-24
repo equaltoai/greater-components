@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { HTMLTextAreaAttributes } from 'svelte/elements';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 
 	interface Props extends Omit<HTMLTextAreaAttributes, 'value'> {
 		value?: string;
@@ -35,9 +36,10 @@
 		...restProps
 	}: Props = $props();
 
-	const textareaId = $derived(id ?? `gr-textarea-${Math.random().toString(36).slice(2)}`);
-	const helpTextId = $derived(`${textareaId}-help`);
-	const errorId = $derived(`${textareaId}-error`);
+	const stableId = useStableId('textarea');
+	const textareaId = $derived(id || stableId.value || undefined);
+	const helpTextId = $derived(textareaId ? `${textareaId}-help` : undefined);
+	const errorId = $derived(textareaId ? `${textareaId}-error` : undefined);
 
 	const isInvalid = $derived(invalid || Boolean(errorMessage));
 

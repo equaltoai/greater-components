@@ -8,29 +8,30 @@ decisions:
       - condition: 'Building UI from scratch'
         check: 'Do you need styled components or complete styling control?'
         if_yes:
-          choice: 'Use @equaltoai/greater-components/primitives'
+          choice: 'Use vendored primitives ($lib/greater/primitives)'
           reason: 'Ready-to-use components with consistent styling, theming, and accessibility built-in'
           example: |
-            import { Button, Modal, TextField } from '@equaltoai/greater-components/primitives';
+            import { Button, Modal, TextField } from '$lib/greater/primitives';
             // Components work immediately with default styling
         if_no:
-          choice: 'Use @equaltoai/greater-components/headless'
+          choice: 'Use vendored headless builders ($lib/greater/headless/*)'
           reason: 'Behavior-only components let you apply your own styling completely'
           example: |
-            import { createButton } from '@equaltoai/greater-components/headless/button';
+            import { createButton } from '$lib/greater/headless/button';
             // Provides behavior, you provide all styling
       - condition: 'Building Fediverse/ActivityPub application'
         check: 'Are you building social media features?'
         if_yes:
-          choice: 'Use @equaltoai/greater-components/fediverse'
-          reason: 'Pre-built Status, Timeline, Profile components for social apps'
+          choice: 'Use social face components (vendored under $lib/components/*)'
+          reason: 'Pre-built social UI components and patterns (Status, Timeline, Profile, Notifications)'
           example: |
-            import { Status, Timeline } from '@equaltoai/greater-components/fediverse';
-            // Social media components ready to use
+            import { Status } from '$lib/components/Status';
+            import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
+            // Social components ready to use
         if_no:
           check: 'Do you just need ActivityPub data access?'
           if_yes:
-            choice: 'Use @equaltoai/greater-components/adapters'
+            choice: 'Use adapters (vendored under $lib/greater/adapters)'
             reason: 'Protocol adapters for data fetching without UI components'
           if_no:
             choice: 'Use primitives package for general UI'
@@ -45,28 +46,27 @@ decisions:
           choice: 'Use LesserGraphQLAdapter'
           reason: 'Provides GraphQL access to advanced Lesser features like quote posts, community notes, trust graphs, and cost analytics'
           example: |
-            import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
+            import { LesserGraphQLAdapter } from '$lib/greater/adapters';
 
             const adapter = new LesserGraphQLAdapter({
-              endpoint: 'https://lesser-instance.social/graphql',
+              httpEndpoint: 'https://lesser-instance.social/graphql',
               token: import.meta.env.VITE_LESSER_TOKEN,
-              enableSubscriptions: true
+              // Optional: enables GraphQL subscriptions (real-time updates) when supported by your instance
+              wsEndpoint: 'wss://lesser-instance.social/graphql'
             });
         if_no:
-          check: 'Is it Mastodon, Pleroma, or standard ActivityPub?'
+          check: 'Is it Mastodon or Pleroma?'
           if_yes:
-            choice: 'Use MastodonRESTAdapter'
-            reason: 'Compatible with Mastodon REST API used by most ActivityPub servers'
+            choice: 'Use MastodonAdapter/PleromaAdapter (type conversion) + your REST client'
+            reason: 'Greater provides mappers to convert server payloads into generic ActivityPub types for UI components'
             example: |
-              import { MastodonRESTAdapter } from '@equaltoai/greater-components/adapters';
+              import { MastodonAdapter } from '$lib/generics/adapters';
 
-              const adapter = new MastodonRESTAdapter({
-                instanceUrl: 'https://mastodon.social',
-                accessToken: import.meta.env.VITE_MASTODON_TOKEN
-              });
+              const mapper = new MastodonAdapter();
+              const genericStatus = mapper.toGeneric(mastodonStatusPayload);
           if_no:
-            choice: 'Extend BaseAdapter'
-            reason: 'Create custom adapter for non-standard servers'
+            choice: 'Use your own client + map into GenericStatus/GenericTimelineItem'
+            reason: 'Greater UI components consume generic ActivityPub types'
 
   styling_approach:
     question: 'How should I style my components?'
@@ -106,7 +106,7 @@ decisions:
           choice: 'Use ThemeProvider with theme switching'
           reason: 'Built-in theme system with smooth transitions'
           example: |
-            import { ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components/primitives';
+            import { ThemeProvider, ThemeSwitcher } from '$lib/greater/primitives';
 
             <ThemeProvider>
               <ThemeSwitcher />
@@ -133,34 +133,28 @@ decisions:
       - condition: 'Building a timeline feature'
         check: 'Will the timeline have more than 100 items?'
         if_yes:
-          choice: 'Enable virtual scrolling'
-          reason: 'Prevents performance issues with large lists'
+          choice: 'Use TimelineVirtualizedReactive'
+          reason: 'Built-in TanStack Virtual integration for large feeds'
           example: |
-            const timeline = createTimelineStore({
-              adapter,
-              type: 'HOME',
-              virtualScrolling: true,
-              estimateSize: 400
-            });
+            import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
+            // Virtualization happens inside the component (estimateSize + overscan)
         if_no:
-          choice: 'Use standard timeline without virtual scrolling'
+          choice: 'Render a simple list or use Timeline compound components'
           reason: 'Simpler implementation for smaller lists'
       - condition: 'Choosing timeline type'
-        check: 'Using Lesser instance?'
+        check: 'Using a Lesser instance?'
         if_yes:
-          choice: 'Use createLesserTimelineStore'
-          reason: 'Access to Lesser-specific features and real-time updates'
+          choice: 'Use LesserGraphQLAdapter + TimelineVirtualizedReactive'
+          reason: 'GraphQL-backed paging with virtualization and load-more on scroll'
           example: |
-            import { createLesserTimelineStore } from '@equaltoai/greater-components/fediverse';
+            import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+            import TimelineVirtualizedReactive from '$lib/components/TimelineVirtualizedReactive.svelte';
 
-            const timeline = createLesserTimelineStore({
-              adapter: lesserAdapter,
-              type: 'HOME',
-              enableRealtime: true
-            });
+            const adapter = new LesserGraphQLAdapter({ httpEndpoint, token, wsEndpoint });
+            const view = { type: 'home' };
         if_no:
-          choice: 'Use createTimelineStore'
-          reason: 'Standard ActivityPub timeline without Lesser features'
+          choice: 'Provide `items` and wire `onLoadMore` yourself'
+          reason: 'Connect your data source and pass statuses into the timeline component'
 
   component_composition:
     question: 'How should I customize component parts?'
@@ -244,20 +238,21 @@ decisions:
       - condition: 'Implementing error handling'
         check: 'Are errors user-facing?'
         if_yes:
-          choice: 'Provide onError callback with user-friendly messages'
+          choice: 'Subscribe to store state + show user-friendly messages'
           reason: 'Users need to understand what went wrong and how to recover'
           example: |
-            const timeline = createTimelineStore({
-              adapter,
-              type: 'HOME',
-              onError: (error) => {
-                if (error.message.includes('401')) {
-                  showError('Please log in again');
-                } else if (error.message.includes('rate limit')) {
-                  showError('Too many requests. Try again later');
-                } else {
-                  showError('Something went wrong. Please try again');
-                }
+            const timeline = createTimelineStore({ adapter, timeline: { type: 'home' } });
+
+            timeline.subscribe((state) => {
+              const error = state.error;
+              if (!error) return;
+
+              if (error.message.includes('401') || error.message.includes('403')) {
+                showError('Please log in again');
+              } else if (error.message.includes('rate limit')) {
+                showError('Too many requests. Try again later');
+              } else {
+                showError('Something went wrong. Please try again');
               }
             });
         if_no:
@@ -284,10 +279,10 @@ decisions:
             reason: 'Better tree-shaking with direct imports'
             example: |
               // GOOD: Specific imports
-              import { Button } from '@equaltoai/greater-components/primitives/Button';
+              import Button from '$lib/greater/primitives/components/Button.svelte';
 
               // AVOID: Barrel imports (imports everything)
-              import { Button } from '@equaltoai/greater-components/primitives';
+              import { Button } from '$lib/greater/primitives';
           if_no:
             check: 'Is the problem with initial load?'
             if_yes:
@@ -308,8 +303,8 @@ decisions:
           choice: 'Unit tests with Vitest'
           reason: 'Fast tests for component logic'
           example: |
-            import { render, fireEvent } from '@equaltoai/greater-components/testing';
-            import { Button } from '@equaltoai/greater-components/primitives';
+            import { render, fireEvent } from '@testing-library/svelte';
+            import Button from '$lib/greater/primitives/components/Button.svelte';
 
             test('button handles clicks', () => {
               const handleClick = vi.fn();
@@ -425,10 +420,10 @@ decisions:
       - condition: 'Adding icons to components'
         check: 'Need Fediverse-specific icons?'
         if_yes:
-          choice: 'Use @equaltoai/greater-components/icons'
+          choice: 'Use vendored icons ($lib/greater/icons)'
           reason: 'Includes Boost, Favorite, Quote, and other Fediverse icons'
           example: |
-            import { BoostIcon, FavoriteIcon } from '@equaltoai/greater-components/icons';
+            import { BoostIcon, FavoriteIcon } from '$lib/greater/icons';
         if_no:
           check: 'Need custom icons?'
           if_yes:
@@ -444,19 +439,13 @@ decisions:
       - condition: 'Need live updates'
         check: 'Using Lesser?'
         if_yes:
-          choice: 'Enable GraphQL subscriptions'
-          reason: 'Lesser provides 21 real-time subscription types'
+          choice: 'Enable GraphQL subscriptions (wsEndpoint)'
+          reason: 'Provide a WebSocket endpoint so subscription-based helpers can connect'
           example: |
             const adapter = new LesserGraphQLAdapter({
-              endpoint: 'https://lesser.social/graphql',
-              token: token,
-              enableSubscriptions: true
-            });
-
-            const timeline = createLesserTimelineStore({
-              adapter,
-              type: 'HOME',
-              enableRealtime: true
+              httpEndpoint: 'https://lesser.social/graphql',
+              wsEndpoint: 'wss://lesser.social/graphql',
+              token
             });
         if_no:
           check: 'Using Mastodon?'
@@ -570,7 +559,7 @@ decisions:
             # If you need "code" icon:
             # 1. Check inventory: "code" is listed
             # 2. Convert: code → CodeIcon
-            # 3. Import: import { CodeIcon } from '@equaltoai/greater-components/icons';
+            # 3. Import: import { CodeIcon } from '$lib/greater/icons';
         if_no:
           check: 'Do you have a semantic concept (API, workflow, etc.)?'
           if_yes:
@@ -847,72 +836,74 @@ decisions:
       design tokens AND component styles for components to render correctly.
     decision_tree:
       - condition: 'Setting up CSS imports'
-        check: 'Are you using fediverse components (Status, Timeline, Profile)?'
+        check: 'Are you using social face components (Status, Timeline, Profile)?'
         if_yes:
-          choice: 'Import tokens/theme.css + style.css (combined bundle)'
-          reason: 'Combined bundle includes both primitive and fediverse component styles'
+          choice: 'Import tokens.css + primitives.css + social.css'
+          reason: 'Face styles layer on top of primitives'
           example: |
             // In root layout (+layout.svelte)
-            import '@equaltoai/greater-components/tokens/theme.css';
-            import '@equaltoai/greater-components/style.css';  // Combined bundle
+            import '$lib/styles/greater/tokens.css';
+            import '$lib/styles/greater/primitives.css';
+            import '$lib/styles/greater/social.css';
         if_no:
-          choice: 'Import tokens/theme.css + primitives/style.css'
+          choice: 'Import tokens.css + primitives.css'
           reason: 'Smaller bundle when only using primitive components'
-          example: |
-            // In root layout (+layout.svelte)
-            import '@equaltoai/greater-components/tokens/theme.css';
-            import '@equaltoai/greater-components/primitives/style.css';
+        example: |
+          // In root layout (+layout.svelte)
+          import '$lib/styles/greater/tokens.css';
+          import '$lib/styles/greater/primitives.css';
       - condition: 'Adding theme support'
         check: 'Do you want dark mode or other theme variants?'
         if_yes:
-          choice: 'Add theme variant CSS after base tokens'
-          reason: 'Theme variants override specific token values'
+          choice: 'Use ThemeProvider or set data-theme'
+          reason: 'Theme switching is controlled by tokens + ThemeProvider, not separate CSS files'
           example: |
-            import '@equaltoai/greater-components/tokens/theme.css';      // Base tokens
-            import '@equaltoai/greater-components/tokens/themes/dark.css'; // Dark overrides
-            import '@equaltoai/greater-components/primitives/style.css';  // Component styles
+            import '$lib/styles/greater/tokens.css';
+            import '$lib/styles/greater/primitives.css';
+
+            // Then switch themes by setting an attribute/class (or use ThemeProvider)
+            // document.documentElement.dataset.theme = 'dark';
         if_no:
           choice: 'Use base tokens only'
           reason: 'Default light theme is included in base tokens'
     important_rules:
-      - rule: 'Always import tokens/theme.css FIRST'
+      - rule: 'Always import tokens.css FIRST'
         reason: 'Component styles reference token variables that must exist'
-      - rule: 'Always import component styles (primitives/style.css or style.css)'
+      - rule: 'Always import primitives.css'
         reason: 'Without component styles, components render as browser defaults'
+      - rule: 'Import face CSS after primitives when needed'
+        reason: 'Face components add their own class definitions on top of primitives'
       - rule: 'Import CSS in root layout, not in page components'
         reason: 'Ensures CSS loads before any component renders'
     troubleshooting:
       components_unstyled:
-        cause: 'Missing primitives/style.css import'
-        solution: 'Add import for primitives/style.css after tokens/theme.css'
+        cause: 'Missing primitives.css import'
+        solution: 'Add import for primitives.css after tokens.css'
       css_variables_invalid:
-        cause: 'tokens/theme.css missing or imported after component styles'
-        solution: 'Ensure tokens/theme.css is imported FIRST'
-      fediverse_unstyled:
-        cause: 'Using primitives/style.css instead of combined bundle'
-        solution: 'Switch to style.css for apps using fediverse components'
+        cause: 'tokens.css missing or imported after component styles'
+        solution: 'Ensure tokens.css is imported FIRST'
+      social_face_unstyled:
+        cause: 'social.css not imported'
+        solution: 'Import social.css after primitives.css'
     documentation_link: './css-architecture.md'
 
   peer_dependency_strategy:
     question: 'Do I need to install peer dependencies?'
     context: >
-      Some Greater Components require external dependencies that are not bundled.
-      These must be installed when using specific components.
+      Greater Components is vendored into your app, so optional dependencies are installed in your app when needed.
     decision_tree:
       - condition: 'Using MarkdownRenderer component'
         check: 'Are you rendering user-generated markdown?'
         if_yes:
-          choice: 'Install isomorphic-dompurify and marked'
-          reason: 'Required for safe markdown parsing and HTML sanitization'
-          command: 'pnpm add isomorphic-dompurify marked'
+          choice: 'Install markdown dependencies'
+          reason: 'MarkdownRenderer requires marked + a sanitizer in your app'
         if_no:
           choice: 'No peer dependencies needed for this component'
       - condition: 'Using CodeBlock component'
         check: 'Are you displaying syntax-highlighted code?'
         if_yes:
-          choice: 'Install shiki'
-          reason: 'Required for syntax highlighting'
-          command: 'pnpm add shiki'
+          choice: 'Install syntax highlighting dependency'
+          reason: 'CodeBlock requires shiki in your app'
         if_no:
           choice: 'No peer dependencies needed for this component'
       - condition: 'Using only basic components'
@@ -922,12 +913,12 @@ decisions:
           reason: 'Basic primitive components have no external dependencies'
     quick_reference:
       MarkdownRenderer:
-        dependencies: ['isomorphic-dompurify', 'marked']
-        install: 'pnpm add isomorphic-dompurify marked'
+        dependencies: ['marked', 'isomorphic-dompurify']
+        install: 'pnpm add marked isomorphic-dompurify'
       CodeBlock:
         dependencies: ['shiki']
         install: 'pnpm add shiki'
       sanitizeHtml_util:
-        dependencies: ['isomorphic-dompurify']
-        install: 'pnpm add isomorphic-dompurify'
-    install_all: 'pnpm add isomorphic-dompurify marked shiki'
+        dependencies: []
+        install: 'none'
+    install_all: 'pnpm add marked isomorphic-dompurify shiki'

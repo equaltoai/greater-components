@@ -2,8 +2,8 @@
   Search.TagResult - Tag Search Result Item
 -->
 <script lang="ts">
-	import { getSearchContext, formatCount } from './context.js';
-	import type { SearchTag } from './context.js';
+	import { getSearchContext, formatCount } from './context.svelte.js';
+	import type { SearchTag } from './context.svelte.js';
 
 	interface Props {
 		tag: SearchTag;

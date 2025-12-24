@@ -6,8 +6,8 @@
   @component
 -->
 <script lang="ts">
-	import { getSearchContext } from './context.js';
-	import type { SearchResultType } from './context.js';
+	import { getSearchContext } from './context.svelte.js';
+	import type { SearchResultType } from './context.svelte.js';
 
 	interface Props {
 		class?: string;

@@ -11,7 +11,7 @@ Handles account migration workflow:
 @example
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+  import { Profile } from '@equaltoai/greater-components/faces/social';
   
   const migration = {
     targetAccount: {
@@ -84,6 +84,7 @@ Handles account migration workflow:
 	function formatDate(dateString: string): string {
 		try {
 			const date = new Date(dateString);
+			if (isNaN(date.getTime())) throw new Error('Invalid date');
 			return date.toLocaleDateString(undefined, {
 				year: 'numeric',
 				month: 'long',
@@ -261,8 +262,7 @@ Handles account migration workflow:
 
 					{#if migration.followersCount !== undefined}
 						<p class="account-migration__followers">
-							{migration.followersCount} follower{migration.followersCount !== 1 ? 's' : ''} will be
-							notified
+							{migration.followersCount} follower{migration.followersCount !== 1 ? 's' : ''} will be notified
 						</p>
 					{/if}
 
@@ -281,6 +281,12 @@ Handles account migration workflow:
 						>
 							{loading ? 'Canceling...' : 'Cancel Migration'}
 						</button>
+					{/if}
+
+					{#if error}
+						<p class="account-migration__error">
+							{error}
+						</p>
 					{/if}
 
 					{#if isFailed}

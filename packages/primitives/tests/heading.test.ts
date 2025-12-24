@@ -111,4 +111,29 @@ describe('Heading.svelte', () => {
 		const el = container.querySelector('.gr-heading');
 		expect(el?.classList.contains('gr-heading--size-base')).toBe(true);
 	});
+
+	it('applies fluid typography classes', () => {
+		const { container } = render(Heading, { level: 1, fluid: true });
+		const el = container.querySelector('.gr-heading');
+		expect(el?.classList.contains('gr-heading--fluid')).toBe(true);
+		// Default size for level 1 is 5xl
+		expect(el?.classList.contains('gr-heading--fluid-5xl')).toBe(true);
+	});
+
+	it('applies responsive size classes', () => {
+		const responsiveSize = {
+			sm: 'lg' as const,
+			md: 'xl' as const,
+			lg: '2xl' as const,
+			xl: '3xl' as const,
+		};
+		const { container } = render(Heading, { level: 1, responsiveSize });
+		const el = container.querySelector('.gr-heading');
+
+		expect(el?.classList.contains('gr-heading--responsive')).toBe(true);
+		expect(el?.classList.contains('gr-heading--sm-lg')).toBe(true);
+		expect(el?.classList.contains('gr-heading--md-xl')).toBe(true);
+		expect(el?.classList.contains('gr-heading--lg-2xl')).toBe(true);
+		expect(el?.classList.contains('gr-heading--xl-3xl')).toBe(true);
+	});
 });

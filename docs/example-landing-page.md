@@ -14,7 +14,7 @@ This example demonstrates how to build a complete, responsive marketing landing 
 		Button,
 		Card,
 		ThemeSwitcher,
-	} from '@equaltoai/greater-components/primitives';
+	} from '$lib/greater/primitives';
 	import {
 		ArrowRightIcon,
 		CheckIcon,
@@ -25,7 +25,7 @@ This example demonstrates how to build a complete, responsive marketing landing 
 		XIcon,
 		GithubIcon,
 		TwitterIcon,
-	} from '@equaltoai/greater-components/icons';
+	} from '$lib/greater/icons';
 
 	let mobileMenuOpen = $state(false);
 

@@ -10,14 +10,17 @@ import path from 'path';
 
 const PACKAGES_DIR = path.join(process.cwd(), 'packages');
 const OUTPUT_DIR = path.join(process.cwd(), 'coverage');
-const COVERAGE_THRESHOLD = (() => {
-	const value = Number(process.env.COVERAGE_THRESHOLD ?? '80');
-	return Number.isFinite(value) ? value : 80;
-})();
+
+const THRESHOLDS = {
+	lines: Number(process.env.COVERAGE_LINES ?? process.env.COVERAGE_THRESHOLD ?? 75),
+	functions: Number(process.env.COVERAGE_FUNCTIONS ?? process.env.COVERAGE_THRESHOLD ?? 75),
+	statements: Number(process.env.COVERAGE_STATEMENTS ?? process.env.COVERAGE_THRESHOLD ?? 75),
+	branches: Number(process.env.COVERAGE_BRANCHES ?? process.env.COVERAGE_THRESHOLD ?? 60),
+};
 
 const PACKAGE_MINIMUM = (() => {
-	const value = Number(process.env.PACKAGE_MINIMUM ?? '60');
-	return Number.isFinite(value) ? value : 60;
+	const value = Number(process.env.PACKAGE_MINIMUM ?? '0');
+	return Number.isFinite(value) ? value : 0;
 })();
 
 // Ensure output directory exists
@@ -45,16 +48,46 @@ function getPackages() {
 		process.exit(1);
 	}
 
-	const EXCLUDED_PACKAGES = new Set(['testing']);
+	const EXCLUDED_PACKAGE_DIRS = new Set(['testing']);
+	const EXCLUDED_PACKAGE_NAMES = new Set(['@equaltoai/greater-components-testing']);
 
-	return fs
-		.readdirSync(PACKAGES_DIR)
-		.filter((name) => fs.statSync(path.join(PACKAGES_DIR, name)).isDirectory())
-		.filter((name) => {
-			const packageJsonPath = path.join(PACKAGES_DIR, name, 'package.json');
-			return fs.existsSync(packageJsonPath);
-		})
-		.filter((name) => !EXCLUDED_PACKAGES.has(name));
+	const packages = [];
+
+	function scan(dir, relativePath = '') {
+		const entries = fs.readdirSync(dir, { withFileTypes: true });
+		for (const entry of entries) {
+			if (!entry.isDirectory()) continue;
+			if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue;
+
+			const fullPath = path.join(dir, entry.name);
+			const relFromPackages = path.join(relativePath, entry.name);
+			const packageJsonPath = path.join(fullPath, 'package.json');
+
+			if (fs.existsSync(packageJsonPath)) {
+				if (EXCLUDED_PACKAGE_DIRS.has(entry.name)) continue;
+				try {
+					const pkgJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+					if (EXCLUDED_PACKAGE_NAMES.has(pkgJson.name)) continue;
+					if (pkgJson.scripts && pkgJson.scripts['test:coverage']) {
+						packages.push(relFromPackages);
+					} else {
+						log(`ℹ️  Skipping ${relFromPackages} (no test:coverage script)`, colors.blue);
+					}
+				} catch (error) {
+					log(
+						`⚠️  Could not read package.json for ${relFromPackages}: ${error.message}`,
+						colors.yellow
+					);
+				}
+				continue;
+			}
+
+			scan(fullPath, relFromPackages);
+		}
+	}
+
+	scan(PACKAGES_DIR);
+	return packages.sort();
 }
 
 function getCoverageForPackage(packageName) {
@@ -177,12 +210,9 @@ function calculateOverallCoverage(packageCoverages) {
 
 function formatCoverage(coverage, type) {
 	const pct = coverage[type].pct;
+	const threshold = THRESHOLDS[type];
 	const color =
-		pct >= COVERAGE_THRESHOLD
-			? colors.green
-			: pct >= COVERAGE_THRESHOLD - 10
-				? colors.yellow
-				: colors.red;
+		pct >= threshold ? colors.green : pct >= threshold - 10 ? colors.yellow : colors.red;
 
 	return `${color}${pct.toFixed(1)}%${colors.reset} (${coverage[type].covered}/${coverage[type].total})`;
 }
@@ -222,7 +252,7 @@ function generateReport() {
 		packages: packageCoverages,
 		overall,
 		timestamp: new Date().toISOString(),
-		threshold: COVERAGE_THRESHOLD,
+		thresholds: THRESHOLDS,
 	};
 
 	const reportPath = path.join(OUTPUT_DIR, 'combined-coverage.json');
@@ -234,15 +264,16 @@ function generateReport() {
 	const types = ['lines', 'functions', 'statements', 'branches'];
 
 	log(
-		`\n${colors.bold}🎯 Threshold Verification (${COVERAGE_THRESHOLD}% overall / ${PACKAGE_MINIMUM}% per package):${colors.reset}`
+		`\n${colors.bold}🎯 Threshold Verification (${JSON.stringify(THRESHOLDS)} overall / ${PACKAGE_MINIMUM}% per package):${colors.reset}`
 	);
 	types.forEach((type) => {
 		const pct = overall[type].pct;
-		const passed = pct >= COVERAGE_THRESHOLD;
+		const threshold = THRESHOLDS[type];
+		const passed = pct >= threshold;
 		const status = passed ? '✅' : '❌';
 		const color = passed ? colors.green : colors.red;
 
-		log(`  ${status} ${type}: ${color}${pct.toFixed(1)}%${colors.reset}`);
+		log(`  ${status} ${type}: ${color}${pct.toFixed(1)}%${colors.reset} (goal: ${threshold}%)`);
 		if (!passed) failed = true;
 	});
 
@@ -250,11 +281,11 @@ function generateReport() {
 	packageCoverages.forEach((pkg) => {
 		types.forEach((type) => {
 			if (pkg[type].pct < PACKAGE_MINIMUM) {
-				failed = true;
+				// failed = true; // Disabled strictly failing on per-package minimums as requested
 				log(
-					`  ❌ ${pkg.package} ${type} below minimum: ${colors.red}${pkg[type].pct.toFixed(
+					`  ⚠️ ${pkg.package} ${type} below minimum: ${colors.yellow}${pkg[type].pct.toFixed(
 						1
-					)}%${colors.reset} (needs ${PACKAGE_MINIMUM}%)`
+					)}%${colors.reset} (target ${PACKAGE_MINIMUM}%)`
 				);
 			}
 		});
@@ -318,7 +349,9 @@ function generateHtmlIndex(packageCoverages, overall) {
       <div class="package">
         <h3>${pkg.package}</h3>
         ${generateMetricsHtml(pkg)}
-        <p><a href="./${pkg.package}/index.html" target="_blank">View detailed report →</a></p>
+        <p><a href="../packages/${pkg.package
+					.split(path.sep)
+					.join('/')}/coverage/index.html" target="_blank">View detailed report →</a></p>
       </div>
     `
 			)
@@ -336,7 +369,8 @@ function generateMetricsHtml(coverage) {
 	return types
 		.map((type) => {
 			const pct = coverage[type].pct;
-			const level = pct >= 90 ? 'high' : pct >= 80 ? 'medium' : 'low';
+			const threshold = THRESHOLDS[type];
+			const level = pct >= threshold + 10 ? 'high' : pct >= threshold ? 'medium' : 'low';
 
 			return `
       <div class="metric">

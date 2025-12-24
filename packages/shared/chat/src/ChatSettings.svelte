@@ -36,6 +36,7 @@
 		Button,
 		Text,
 	} from '@equaltoai/greater-components-primitives';
+	import { untrack } from 'svelte';
 	import type { ChatSettingsState, KnowledgeBaseConfig } from './types.js';
 
 	/**
@@ -111,7 +112,7 @@
 	}: Props = $props();
 
 	// Local state for form values (allows cancel to revert)
-	let localSettings = $state<ChatSettingsState>({ ...settings });
+	let localSettings = $state<ChatSettingsState>(untrack(() => ({ ...settings })));
 
 	// Sync local settings when external settings change
 	$effect(() => {
@@ -268,7 +269,7 @@
 					value={String(localSettings.maxTokens ?? 4096)}
 					type="text"
 					placeholder="4096"
-					oninput={(e) => handleMaxTokensChange(e.target.value)}
+					oninput={(e) => handleMaxTokensChange((e.target as HTMLInputElement).value)}
 				/>
 				<Text size="sm" color="secondary" class="chat-settings__helper">
 					Maximum number of tokens in the response. Higher values allow longer responses.

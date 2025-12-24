@@ -439,7 +439,7 @@ export class LesserGraphQLAdapter {
 		this.client.close();
 	}
 
-	private async query<
+	public async query<
 		TData extends Record<string, unknown>,
 		TVariables extends OperationVariables = OperationVariables,
 	>(
@@ -463,7 +463,7 @@ export class LesserGraphQLAdapter {
 		return data;
 	}
 
-	private async mutate<
+	public async mutate<
 		TData extends Record<string, unknown>,
 		TVariables extends OperationVariables = OperationVariables,
 	>(document: TypedDocumentNode<TData, TVariables>, variables?: TVariables): Promise<TData> {

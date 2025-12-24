@@ -16,14 +16,19 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { createListsContext } from './context.js';
-	import type { ListsHandlers } from './context.js';
-	import { onMount } from 'svelte';
+	import type { ListsHandlers, ListsState } from './context.js';
+	import { onMount, untrack } from 'svelte';
 
 	interface Props {
 		/**
 		 * Lists event handlers
 		 */
 		handlers?: ListsHandlers;
+
+		/**
+		 * Initial state (for testing)
+		 */
+		initialState?: Partial<ListsState>;
 
 		/**
 		 * Auto-fetch lists on mount
@@ -42,10 +47,18 @@
 		class?: string;
 	}
 
-	let { handlers = {}, autoFetch = true, children, class: className = '' }: Props = $props();
+	let {
+		handlers: handlersProp = {},
+		initialState = {},
+		autoFetch = true,
+		children,
+		class: className = '',
+	}: Props = $props();
 
-	// Create lists context
-	const context = createListsContext(handlers);
+	const context = createListsContext(
+		untrack(() => handlersProp),
+		untrack(() => initialState)
+	);
 
 	// Auto-fetch on mount
 	onMount(() => {

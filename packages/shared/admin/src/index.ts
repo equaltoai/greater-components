@@ -8,7 +8,7 @@
  *
  * @example
  * ```svelte
- * import * as Admin from '@equaltoai/greater-components-fediverse/Admin';
+ * import * as Admin from '@equaltoai/greater-components/faces/social/Admin';
  *
  * <Admin.Root {handlers}>
  *   <Admin.Overview />
@@ -47,4 +47,4 @@ export {
 	type AdminHandlers,
 	type AdminState,
 	type AdminContext,
-} from './context.js';
+} from './context.svelte.js';

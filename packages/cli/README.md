@@ -1,22 +1,149 @@
 # @equaltoai/greater-components-cli
 
-> CLI for adding Greater Components to your project
+> CLI for adding Greater Components to your project with full source code ownership
 
 ## Overview
 
-The Greater CLI allows you to add ActivityPub components to your project with full source code ownership. Inspired by shadcn/ui, this approach gives you complete control over the components in your codebase.
+The Greater CLI allows you to add ActivityPub components to your project as source code, giving you complete control and customization freedom. Inspired by shadcn/ui, this approach eliminates dependency lock-in while providing production-ready components.
+
+**Key Benefits:**
+
+- 📦 **Full Source Ownership** – Components live in your codebase
+- 🎨 **Easy Customization** – Modify anything without forking
+- 🔒 **No Breaking Changes** – Updates are opt-in
+- 🌳 **Optimal Bundle Size** – Only include what you use
+- 🔐 **Secure Distribution** – Git-based with integrity verification
 
 ## Installation
 
 ```bash
-# Using npm
-npm install -g @equaltoai/greater-components-cli
+# Install from GitHub Releases (recommended)
+# Replace `greater-vX.Y.Z` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
 
-# Using pnpm
-pnpm add -g @equaltoai/greater-components-cli
+# Verify
+greater --version
+```
 
-# Using npx (no install required)
-npx @equaltoai/greater-components-cli init
+Or build from source (Git):
+
+```bash
+git clone https://github.com/equaltoai/greater-components.git
+cd greater-components
+pnpm install
+pnpm --filter @equaltoai/greater-components-cli build
+
+node packages/cli/dist/index.js --version
+node packages/cli/dist/index.js init
+```
+
+Optional: install the built CLI globally from your clone:
+
+```bash
+cd packages/cli
+pnpm pack --out ../../artifacts/greater-components-cli.tgz
+npm install -g ../../artifacts/greater-components-cli.tgz
+```
+
+## Quick Start
+
+```bash
+# 1. Initialize in your SvelteKit project
+cd my-sveltekit-app
+greater init
+
+# 2. Add components
+greater add button modal menu
+
+# 3. Add a complete face (component bundle)
+greater add faces/social
+
+# 4. Use in your app
+```
+
+```svelte
+<script>
+	import Button from '$lib/components/ui/Button/Button.svelte';
+</script>
+
+<Button variant="solid">Click Me</Button>
+```
+
+## Commands
+
+| Command                     | Description                                   |
+| --------------------------- | --------------------------------------------- |
+| `greater init`              | Initialize Greater Components in your project |
+| `greater add [items...]`    | Add components, faces, or shared modules      |
+| `greater list [query]`      | List available components with filtering      |
+| `greater diff [item]`       | Show changes between installed and latest     |
+| `greater update [items...]` | Update installed components                   |
+| `greater doctor`            | Diagnose setup issues                         |
+| `greater audit`             | View security audit log                       |
+
+## Adding Components
+
+```bash
+# Add primitives
+greater add button modal menu tabs tooltip
+
+# Add a face (complete UI bundle)
+greater add faces/social    # Social media UI
+greater add faces/blog      # Blog/publishing UI
+greater add faces/community # Forum/community UI
+
+# Add shared modules
+greater add shared/auth shared/compose shared/notifications
+
+# Add patterns
+greater add patterns/thread-view patterns/moderation-tools
+
+# Interactive selection
+greater add
+```
+
+## Faces
+
+Faces are curated component bundles for specific application types:
+
+| Face        | Description               | Components                              |
+| ----------- | ------------------------- | --------------------------------------- |
+| `social`    | Twitter/Mastodon-style UI | Timeline, Status, Profile, Compose      |
+| `blog`      | Medium/WordPress-style UI | Article, Author, Editor, Navigation     |
+| `community` | Reddit/Forum-style UI     | Thread, Voting, Moderation, Wiki        |
+| `artist`    | Visual artist portfolios  | Gallery, Artwork, Portfolio, Exhibition |
+
+```bash
+# Install social face
+greater add faces/social
+
+# Install artist face
+greater add faces/artist
+
+# View face details
+greater list faces/social --details
+greater list faces/artist --details
+```
+
+### Artist Face
+
+The Artist Face provides components for visual artist communities and portfolio platforms:
+
+```bash
+# Install the complete Artist Face
+greater add faces/artist
+
+# Install individual Artist components
+greater add artist/Artwork
+greater add artist/GalleryGrid
+greater add artist/ArtistProfile
+
+# Install Artist patterns
+greater add artist/patterns/exhibition
+greater add artist/patterns/commission
+
+# Initialize project with Artist Face
+greater init --face artist
 ```
 
 ## Usage
@@ -49,245 +176,3 @@ greater add
 # Add with dependencies
 greater add timeline
 ```
-
-The CLI will:
-
-1. Fetch component source code
-2. Resolve and install dependencies
-3. Copy files to your project
-4. Install npm dependencies
-
-### List Components
-
-View all available components:
-
-```bash
-# List all
-greater list
-
-# Filter by type
-greater list --type primitive
-greater list --type compound
-greater list --type pattern
-```
-
-## Configuration
-
-The `components.json` file controls how components are added:
-
-```json
-{
-	"style": "default",
-	"rsc": false,
-	"tsx": true,
-	"aliases": {
-		"components": "$lib/components",
-		"utils": "$lib/utils",
-		"ui": "$lib/components/ui",
-		"lib": "$lib",
-		"hooks": "$lib/hooks"
-	}
-}
-```
-
-## Components
-
-### Headless Primitives
-
-Behavior-only components with no styling:
-
-- `button` - Accessible button with keyboard navigation
-- `modal` - Modal with focus trap and ESC handling
-- `menu` - Dropdown menu with keyboard navigation
-- `tooltip` - Smart positioning tooltip
-- `tabs` - Tabbed interface with arrow keys
-
-### Compound Components
-
-Complete UI components for ActivityPub:
-
-- `timeline` - Feed with virtual scrolling
-- `status` - Post/status display
-- `notifications` - Notification feed
-- `compose` - Compose new posts
-
-### Patterns
-
-Advanced ActivityPub patterns:
-
-- `thread-view` - Conversation threading
-- `moderation-tools` - Block, mute, report
-- `visibility-selector` - Post visibility
-- `custom-emoji-picker` - Server emoji support
-
-### Lesser Integration
-
-Components for Lesser GraphQL API:
-
-- `auth` - Authentication system
-- `profile` - User profiles
-- `search` - Search with filters
-- `lists` - List management
-- `messages` - Direct messages
-- `admin` - Admin dashboard
-
-### Adapters
-
-API integration layers:
-
-- `graphql-adapter` - Lesser GraphQL client
-
-## Project Structure
-
-After initialization, components are added to your project:
-
-```
-src/
-├── lib/
-│   ├── components/
-│   │   └── ui/           # Greater Components go here
-│   │       ├── button/
-│   │       ├── modal/
-│   │       └── timeline/
-│   └── utils/            # Utility functions
-└── routes/               # Your routes
-```
-
-## Requirements
-
-- **Svelte 5+** - Uses latest Runes API
-- **Node.js 18+** - For CLI execution
-- **SvelteKit or Vite** - Project setup
-
-## Philosophy
-
-### Why Copy Instead of Install?
-
-1. **Full Control** - Components live in your codebase
-2. **Customization** - Modify anything without forking
-3. **No Breaking Changes** - Updates are opt-in
-4. **Tree-Shaking** - Only bundle what you use
-5. **Learning** - Read and understand the code
-
-### Comparison with npm
-
-| Aspect        | CLI (Copy) | npm (Install) |
-| ------------- | ---------- | ------------- |
-| Control       | Full       | Limited       |
-| Customization | Easy       | Fork required |
-| Updates       | Manual     | Automatic     |
-| Bundle Size   | Optimal    | All included  |
-| Lock-in       | None       | Dependency    |
-
-## Examples
-
-### Basic Setup
-
-```bash
-# Initialize
-cd my-sveltekit-app
-greater init
-
-# Add primitives
-greater add button modal menu
-
-# Add ActivityPub components
-greater add timeline status notifications
-```
-
-### Lesser Integration
-
-```bash
-# Full Lesser setup
-greater add auth profile search lists messages admin graphql-adapter
-```
-
-### Custom Path
-
-```bash
-# Install to custom location
-greater add button --path src/components/primitives
-```
-
-## CLI Options
-
-### Global Options
-
-```bash
---cwd <path>     # Working directory
---yes            # Skip prompts
---help           # Show help
---version        # Show version
-```
-
-### Init Options
-
-```bash
-greater init [options]
-
--y, --yes        # Use defaults
---cwd <path>     # Working directory
-```
-
-### Add Options
-
-```bash
-greater add [components...] [options]
-
--y, --yes        # Skip confirmation
--a, --all        # Add all dependencies
---cwd <path>     # Working directory
---path <path>    # Custom install path
-```
-
-### List Options
-
-```bash
-greater list [options]
-
--t, --type <type>  # Filter by type
-```
-
-## Troubleshooting
-
-### Command Not Found
-
-```bash
-# Make sure CLI is installed globally
-npm list -g @equaltoai/greater-components-cli
-
-# Or use npx
-npx @equaltoai/greater-components-cli --version
-```
-
-### Permission Errors
-
-```bash
-# Use npx to avoid permission issues
-npx @equaltoai/greater-components-cli init
-
-# Or install locally
-npm install --save-dev @equaltoai/greater-components-cli
-npx greater init
-```
-
-### Svelte Version
-
-```bash
-# Check Svelte version
-npm list svelte
-
-# Upgrade to Svelte 5
-npm install svelte@^5.0.0
-```
-
-## Links
-
-- **Documentation**: https://greater.fediverse.dev
-- **Repository**: https://github.com/equaltoai/greater-components
-- **Issues**: https://github.com/equaltoai/greater-components/issues
-- **NPM**: https://www.npmjs.com/package/@equaltoai/greater-components-cli
-
-## License
-
-MIT © Greater Components Team

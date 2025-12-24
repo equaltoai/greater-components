@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 
 const PACKAGES = [
 	'@equaltoai/greater-components-primitives',
-	'@equaltoai/greater-components-fediverse',
+	'@equaltoai/greater-components-social',
 	'@equaltoai/greater-components-tokens',
 	'@equaltoai/greater-components-icons',
 	'@equaltoai/greater-components-utils',

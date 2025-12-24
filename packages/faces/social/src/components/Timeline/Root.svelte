@@ -18,7 +18,7 @@ Provides context for child components and handles virtualization/infinite scroll
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { GenericTimelineItem } from '../../generics/index.js';
-	import { setContext } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import { TIMELINE_CONTEXT_KEY } from './context.js';
 	import type {
 		TimelineCompoundConfig,
@@ -56,14 +56,23 @@ Provides context for child components and handles virtualization/infinite scroll
 
 	let { items, config = {}, handlers = {}, initialState = {}, children }: Props = $props();
 
+	// Capture initial values for state initialization
+	const initialLoading = untrack(() => initialState.loading);
+	const initialLoadingMore = untrack(() => initialState.loadingMore);
+	const initialHasMore = untrack(() => initialState.hasMore);
+	const initialError = untrack(() => initialState.error);
+	const initialScrollTop = untrack(() => initialState.scrollTop);
+
 	// Create reactive state
 	const internalState: TimelineCompoundState = $state({
-		loading: initialState.loading ?? false,
-		loadingMore: initialState.loadingMore ?? false,
-		hasMore: initialState.hasMore ?? true,
-		error: initialState.error ?? null,
-		itemCount: items.length,
-		scrollTop: initialState.scrollTop ?? 0,
+		loading: initialLoading ?? false,
+		loadingMore: initialLoadingMore ?? false,
+		hasMore: initialHasMore ?? true,
+		error: initialError ?? null,
+		get itemCount() {
+			return items.length;
+		},
+		scrollTop: initialScrollTop ?? 0,
 	});
 
 	// Create context object
@@ -71,18 +80,22 @@ Provides context for child components and handles virtualization/infinite scroll
 		get items() {
 			return items;
 		},
-		config: {
-			mode: config.mode || 'feed',
-			density: config.density || 'comfortable',
-			virtualized: config.virtualized ?? true,
-			infiniteScroll: config.infiniteScroll ?? true,
-			realtime: config.realtime ?? false,
-			showLoading: config.showLoading ?? true,
-			estimatedItemHeight: config.estimatedItemHeight || 200,
-			overscan: config.overscan || 5,
-			class: config.class || '',
+		get config() {
+			return {
+				mode: config.mode || 'feed',
+				density: config.density || 'comfortable',
+				virtualized: config.virtualized ?? true,
+				infiniteScroll: config.infiniteScroll ?? true,
+				realtime: config.realtime ?? false,
+				showLoading: config.showLoading ?? true,
+				estimatedItemHeight: config.estimatedItemHeight || 200,
+				overscan: config.overscan || 5,
+				class: config.class || '',
+			};
 		},
-		handlers,
+		get handlers() {
+			return handlers;
+		},
 		state: internalState,
 		updateState: (partial: Partial<TimelineCompoundState>) => {
 			Object.assign(internalState, partial);

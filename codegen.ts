@@ -3,9 +3,9 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
 	overwrite: true,
 	schema: 'schemas/lesser/schema.graphql',
-	documents: 'packages/fediverse/src/adapters/graphql/documents/**/*.graphql',
+	documents: 'packages/faces/social/src/adapters/graphql/documents/**/*.graphql',
 	generates: {
-		'packages/fediverse/src/adapters/graphql/generated/types.ts': {
+		'packages/faces/social/src/adapters/graphql/generated/types.ts': {
 			plugins: ['typescript', 'typescript-operations', 'typed-document-node'],
 			config: {
 				skipTypename: false,
@@ -67,10 +67,10 @@ const config: CodegenConfig = {
 				nonOptionalTypename: true,
 			},
 		},
-		'packages/fediverse/src/adapters/graphql/generated/introspection.json': {
+		'packages/faces/social/src/adapters/graphql/generated/introspection.json': {
 			plugins: ['introspection'],
 		},
-		'packages/fediverse/src/adapters/graphql/generated/possible-types.ts': {
+		'packages/faces/social/src/adapters/graphql/generated/possible-types.ts': {
 			plugins: ['fragment-matcher'],
 		},
 	},

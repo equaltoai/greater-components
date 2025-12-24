@@ -136,6 +136,9 @@ export type {
  */
 export { createChatContext } from './context.svelte.js';
 
+// Additional components
+export { default as ThreadView } from './ChatThreadView.svelte';
+
 /**
  * Retrieves the current chat context from a parent Chat.Container.
  * Must be called within a component that is a child of Chat.Container.
@@ -295,6 +298,26 @@ export { default as Input } from './ChatInput.svelte';
  * @public
  */
 export { default as ToolCallDisplay } from './ChatToolCall.svelte';
+
+/**
+ * Individual message action button component.
+ *
+ * Provides a reusable action button for chat message actions.
+ *
+ * @example
+ * ```svelte
+ * <Chat.MessageAction
+ *   label="Copy"
+ *   onclick={() => copyToClipboard(content)}
+ * >
+ *   {#snippet icon()}
+ *     <CopyIcon size={14} />
+ *   {/snippet}
+ * </Chat.MessageAction>
+ * ```
+ * @public
+ */
+export { default as MessageAction } from './ChatMessageAction.svelte';
 
 /**
  * Chat interface header component.

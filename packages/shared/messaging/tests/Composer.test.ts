@@ -1,466 +1,218 @@
-/**
- * Messages.Composer Component Tests
- *
- * Tests for message composition logic including:
- * - Content validation
- * - Send button state
- * - Keyboard shortcuts
- * - Message trimming
- * - Character limits
- */
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { mount, unmount, flushSync } from 'svelte';
+import Composer from '../src/Composer.svelte';
 
-import { describe, it, expect } from 'vitest';
+// Mock context
+const { mockHandlers, mockState, mockSendMessage } = vi.hoisted(() => ({
+	mockHandlers: {},
+	mockState: {
+		selectedConversation: null,
+		loading: false,
+	},
+	mockSendMessage: vi.fn(),
+}));
 
-// Content validation
-function isValidContent(content: string): boolean {
-	return content.trim().length > 0;
-}
-
-// Check if send should be disabled
-function isSendDisabled(content: string, loading: boolean): boolean {
-	return loading || !isValidContent(content);
-}
-
-// Check if input should be disabled
-function isInputDisabled(loading: boolean): boolean {
-	return loading;
-}
-
-// Get send button text
-function getSendButtonText(loading: boolean): string {
-	return loading ? 'Sending...' : 'Send';
-}
-
-// Trim message content
-function trimContent(content: string): string {
-	return content.trim();
-}
-
-// Check if should send on key
-function shouldSendOnKey(event: { key: string; shiftKey: boolean }): boolean {
-	return event.key === 'Enter' && !event.shiftKey;
-}
-
-// Check if content is empty
-function isContentEmpty(content: string): boolean {
-	return content.length === 0;
-}
-
-// Check if content is whitespace only
-function isWhitespaceOnly(content: string): boolean {
-	return content.trim().length === 0 && content.length > 0;
-}
-
-// Get content length
-function getContentLength(content: string): number {
-	return content.length;
-}
-
-// Get trimmed length
-function getTrimmedLength(content: string): number {
-	return content.trim().length;
-}
-
-// Check if content exceeds max length
-function exceedsMaxLength(content: string, maxLength: number): boolean {
-	return content.length > maxLength;
-}
-
-// Truncate content to max length
-function truncateContent(content: string, maxLength: number): string {
-	if (content.length <= maxLength) return content;
-	return content.slice(0, maxLength);
-}
-
-// Count lines in content
-function countLines(content: string): number {
-	if (content.length === 0) return 0;
-	return content.split('\n').length;
-}
-
-// Check if multiline
-function isMultiline(content: string): boolean {
-	return content.includes('\n');
-}
-
-// Get last line
-function getLastLine(content: string): string {
-	const lines = content.split('\n');
-	return lines[lines.length - 1] || '';
-}
-
-// Get first line
-function getFirstLine(content: string): string {
-	const lines = content.split('\n');
-	return lines[0] || '';
-}
-
-// Remove extra whitespace
-function normalizeWhitespace(content: string): string {
-	return content.replace(/\s+/g, ' ').trim();
-}
-
-// Check if has leading whitespace
-function hasLeadingWhitespace(content: string): boolean {
-	return content.length > 0 && content[0] === ' ';
-}
-
-// Check if has trailing whitespace
-function hasTrailingWhitespace(content: string): boolean {
-	return content.length > 0 && content[content.length - 1] === ' ';
-}
-
-describe('Messages.Composer - Content Validation', () => {
-	it('validates non-empty content', () => {
-		expect(isValidContent('Hello')).toBe(true);
-	});
-
-	it('invalidates empty content', () => {
-		expect(isValidContent('')).toBe(false);
-	});
-
-	it('invalidates whitespace-only content', () => {
-		expect(isValidContent('   ')).toBe(false);
-		expect(isValidContent('\n')).toBe(false);
-		expect(isValidContent('\t')).toBe(false);
-	});
-
-	it('validates content with leading/trailing whitespace', () => {
-		expect(isValidContent('  Hello  ')).toBe(true);
-	});
-
-	it('validates multiline content', () => {
-		expect(isValidContent('Hello\nWorld')).toBe(true);
-	});
+vi.mock('../src/context.svelte.js', async () => {
+	const actual = await vi.importActual('../src/context.svelte.js');
+	return {
+		...actual,
+		getMessagesContext: () => ({
+			handlers: mockHandlers,
+			state: mockState,
+			sendMessage: mockSendMessage,
+		}),
+	};
 });
 
-describe('Messages.Composer - Send Button State', () => {
-	it('disables when loading', () => {
-		expect(isSendDisabled('Hello', true)).toBe(true);
+// Mock headless button
+vi.mock('@equaltoai/greater-components-headless/button', () => ({
+	createButton: (config: any) => ({
+		actions: {
+			button: (node: HTMLElement) => {
+				const handler = (e: Event) => {
+					if (!(node as HTMLButtonElement).disabled) {
+						config.onClick?.(e);
+					}
+				};
+				node.addEventListener('click', handler);
+				return {
+					destroy: () => node.removeEventListener('click', handler),
+				};
+			},
+		},
+	}),
+}));
+
+describe('Composer', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+		mockState.selectedConversation = null;
+		mockState.loading = false;
 	});
 
-	it('disables when content invalid', () => {
-		expect(isSendDisabled('', false)).toBe(true);
-		expect(isSendDisabled('   ', false)).toBe(true);
+	it('does not render when no conversation is selected', () => {
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+
+		expect(target.querySelector('.messages-composer')).toBeFalsy();
+
+		unmount(instance);
 	});
 
-	it('enables when content valid and not loading', () => {
-		expect(isSendDisabled('Hello', false)).toBe(false);
+	it('renders when conversation is selected', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
+
+		expect(target.querySelector('.messages-composer')).toBeTruthy();
+		expect(target.querySelector('textarea')).toBeTruthy();
+		expect(target.querySelector('button')).toBeTruthy();
+
+		unmount(instance);
 	});
 
-	it('disables when both loading and invalid content', () => {
-		expect(isSendDisabled('', true)).toBe(true);
-	});
-});
+	it('disables send button when empty', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
 
-describe('Messages.Composer - Input State', () => {
-	it('disables input when loading', () => {
-		expect(isInputDisabled(true)).toBe(true);
-	});
+		const button = target.querySelector('button') as HTMLButtonElement;
+		expect(button.disabled).toBe(true);
 
-	it('enables input when not loading', () => {
-		expect(isInputDisabled(false)).toBe(false);
-	});
-});
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		textarea.value = '   '; // Whitespace only
+		textarea.dispatchEvent(new Event('input', { bubbles: true }));
+		await flushSync();
 
-describe('Messages.Composer - Button Text', () => {
-	it('shows "Sending..." when loading', () => {
-		expect(getSendButtonText(true)).toBe('Sending...');
-	});
+		expect(button.disabled).toBe(true);
 
-	it('shows "Send" when not loading', () => {
-		expect(getSendButtonText(false)).toBe('Send');
-	});
-});
-
-describe('Messages.Composer - Content Trimming', () => {
-	it('trims leading whitespace', () => {
-		expect(trimContent('  Hello')).toBe('Hello');
+		unmount(instance);
 	});
 
-	it('trims trailing whitespace', () => {
-		expect(trimContent('Hello  ')).toBe('Hello');
+	it('enables send button when content exists', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
+
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		textarea.value = 'Hello';
+		textarea.dispatchEvent(new Event('input', { bubbles: true }));
+		await flushSync();
+
+		const button = target.querySelector('button') as HTMLButtonElement;
+		expect(button.disabled).toBe(false);
+
+		unmount(instance);
 	});
 
-	it('trims both sides', () => {
-		expect(trimContent('  Hello  ')).toBe('Hello');
+	it('sends message on button click', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
+
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		textarea.value = 'Hello world';
+		textarea.dispatchEvent(new Event('input', { bubbles: true }));
+		await flushSync();
+
+		const button = target.querySelector('button') as HTMLButtonElement;
+		button.click();
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		await flushSync();
+
+		expect(mockSendMessage).toHaveBeenCalledWith('Hello world');
+		expect(textarea.value).toBe(''); // Should clear after send
+
+		unmount(instance);
 	});
 
-	it('preserves internal whitespace', () => {
-		expect(trimContent('Hello  World')).toBe('Hello  World');
+	it('sends message on Enter key (without Shift)', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
+
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		textarea.value = 'Hello Enter';
+		textarea.dispatchEvent(new Event('input', { bubbles: true }));
+		await flushSync();
+
+		const event = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+		textarea.dispatchEvent(event);
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		await flushSync();
+
+		expect(mockSendMessage).toHaveBeenCalledWith('Hello Enter');
+		expect(event.defaultPrevented).toBe(true);
+		expect(textarea.value).toBe('');
+
+		unmount(instance);
 	});
 
-	it('preserves newlines in content', () => {
-		expect(trimContent('Hello\nWorld')).toBe('Hello\nWorld');
+	it('does not send on Shift+Enter', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
+
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		textarea.value = 'Line 1';
+		textarea.dispatchEvent(new Event('input', { bubbles: true }));
+		await flushSync();
+
+		const event = new KeyboardEvent('keydown', { key: 'Enter', shiftKey: true, bubbles: true });
+		textarea.dispatchEvent(event);
+		await flushSync();
+
+		expect(mockSendMessage).not.toHaveBeenCalled();
+		// Content should remain
+		expect(textarea.value).toBe('Line 1');
+
+		unmount(instance);
 	});
 
-	it('trims whitespace around newlines', () => {
-		expect(trimContent('  Hello\nWorld  ')).toBe('Hello\nWorld');
-	});
-});
+	it('handles loading state', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		mockState.loading = true;
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
 
-describe('Messages.Composer - Keyboard Shortcuts', () => {
-	it('sends on Enter without Shift', () => {
-		expect(shouldSendOnKey({ key: 'Enter', shiftKey: false })).toBe(true);
-	});
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		const button = target.querySelector('button') as HTMLButtonElement;
 
-	it('does not send on Shift+Enter', () => {
-		expect(shouldSendOnKey({ key: 'Enter', shiftKey: true })).toBe(false);
-	});
+		expect(textarea.disabled).toBe(true);
+		expect(button.disabled).toBe(true);
+		expect(button.textContent).toContain('Sending...');
 
-	it('does not send on other keys', () => {
-		expect(shouldSendOnKey({ key: 'a', shiftKey: false })).toBe(false);
-		expect(shouldSendOnKey({ key: 'Space', shiftKey: false })).toBe(false);
+		unmount(instance);
 	});
 
-	it('does not send on Shift with other keys', () => {
-		expect(shouldSendOnKey({ key: 'a', shiftKey: true })).toBe(false);
-	});
-});
+	it('handles send error', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0 };
+		const target = document.createElement('div');
+		const instance = mount(Composer, { target });
+		await flushSync();
 
-describe('Messages.Composer - Content Checks', () => {
-	it('detects empty content', () => {
-		expect(isContentEmpty('')).toBe(true);
-	});
+		mockSendMessage.mockRejectedValueOnce(new Error('Send failed'));
 
-	it('detects non-empty content', () => {
-		expect(isContentEmpty('Hello')).toBe(false);
-		expect(isContentEmpty(' ')).toBe(false);
-	});
+		const textarea = target.querySelector('textarea') as HTMLTextAreaElement;
+		textarea.value = 'Fail me';
+		textarea.dispatchEvent(new Event('input', { bubbles: true }));
+		await flushSync();
 
-	it('detects whitespace-only content', () => {
-		expect(isWhitespaceOnly('   ')).toBe(true);
-		expect(isWhitespaceOnly('\n')).toBe(true);
-		expect(isWhitespaceOnly('\t')).toBe(true);
-	});
+		const button = target.querySelector('button') as HTMLButtonElement;
+		button.click();
+		await flushSync();
 
-	it('does not detect valid content as whitespace', () => {
-		expect(isWhitespaceOnly('Hello')).toBe(false);
-	});
+		expect(mockSendMessage).toHaveBeenCalledWith('Fail me');
+		// Should NOT clear content on error
+		expect(textarea.value).toBe('Fail me');
 
-	it('does not detect empty as whitespace-only', () => {
-		expect(isWhitespaceOnly('')).toBe(false);
-	});
-});
-
-describe('Messages.Composer - Content Length', () => {
-	it('gets content length', () => {
-		expect(getContentLength('Hello')).toBe(5);
-		expect(getContentLength('')).toBe(0);
-	});
-
-	it('gets trimmed length', () => {
-		expect(getTrimmedLength('  Hello  ')).toBe(5);
-		expect(getTrimmedLength('   ')).toBe(0);
-	});
-
-	it('counts unicode characters', () => {
-		expect(getContentLength('世界')).toBe(2);
-		expect(getContentLength('🌍')).toBe(2); // Emoji is 2 UTF-16 code units
-	});
-
-	it('checks if exceeds max length', () => {
-		expect(exceedsMaxLength('Hello', 10)).toBe(false);
-		expect(exceedsMaxLength('Hello', 5)).toBe(false);
-		expect(exceedsMaxLength('Hello', 4)).toBe(true);
-	});
-
-	it('truncates content', () => {
-		expect(truncateContent('Hello World', 5)).toBe('Hello');
-		expect(truncateContent('Hello', 10)).toBe('Hello');
-	});
-});
-
-describe('Messages.Composer - Line Handling', () => {
-	it('counts lines', () => {
-		expect(countLines('Hello')).toBe(1);
-		expect(countLines('Hello\nWorld')).toBe(2);
-		expect(countLines('A\nB\nC')).toBe(3);
-		expect(countLines('')).toBe(0);
-	});
-
-	it('detects multiline content', () => {
-		expect(isMultiline('Hello\nWorld')).toBe(true);
-		expect(isMultiline('Hello')).toBe(false);
-	});
-
-	it('gets last line', () => {
-		expect(getLastLine('Hello\nWorld')).toBe('World');
-		expect(getLastLine('Hello')).toBe('Hello');
-		expect(getLastLine('')).toBe('');
-	});
-
-	it('gets first line', () => {
-		expect(getFirstLine('Hello\nWorld')).toBe('Hello');
-		expect(getFirstLine('Hello')).toBe('Hello');
-		expect(getFirstLine('')).toBe('');
-	});
-
-	it('handles trailing newline', () => {
-		expect(countLines('Hello\n')).toBe(2);
-		expect(getLastLine('Hello\n')).toBe('');
-	});
-});
-
-describe('Messages.Composer - Whitespace Normalization', () => {
-	it('normalizes multiple spaces', () => {
-		expect(normalizeWhitespace('Hello    World')).toBe('Hello World');
-	});
-
-	it('normalizes newlines', () => {
-		expect(normalizeWhitespace('Hello\nWorld')).toBe('Hello World');
-	});
-
-	it('normalizes tabs', () => {
-		expect(normalizeWhitespace('Hello\tWorld')).toBe('Hello World');
-	});
-
-	it('trims after normalization', () => {
-		expect(normalizeWhitespace('  Hello  World  ')).toBe('Hello World');
-	});
-
-	it('handles already normalized content', () => {
-		expect(normalizeWhitespace('Hello World')).toBe('Hello World');
-	});
-});
-
-describe('Messages.Composer - Whitespace Detection', () => {
-	it('detects leading whitespace', () => {
-		expect(hasLeadingWhitespace(' Hello')).toBe(true);
-		expect(hasLeadingWhitespace('Hello')).toBe(false);
-	});
-
-	it('detects trailing whitespace', () => {
-		expect(hasTrailingWhitespace('Hello ')).toBe(true);
-		expect(hasTrailingWhitespace('Hello')).toBe(false);
-	});
-
-	it('handles empty string', () => {
-		expect(hasLeadingWhitespace('')).toBe(false);
-		expect(hasTrailingWhitespace('')).toBe(false);
-	});
-
-	it('handles whitespace-only', () => {
-		expect(hasLeadingWhitespace('   ')).toBe(true);
-		expect(hasTrailingWhitespace('   ')).toBe(true);
-	});
-});
-
-describe('Messages.Composer - Edge Cases', () => {
-	it('handles very long content', () => {
-		const longContent = 'A'.repeat(10000);
-		expect(isValidContent(longContent)).toBe(true);
-		expect(getContentLength(longContent)).toBe(10000);
-	});
-
-	it('handles unicode in content', () => {
-		expect(isValidContent('世界')).toBe(true);
-		expect(trimContent(' 世界 ')).toBe('世界');
-	});
-
-	it('handles emoji in content', () => {
-		expect(isValidContent('Hello 🌍')).toBe(true);
-		expect(trimContent(' Hello 🌍 ')).toBe('Hello 🌍');
-	});
-
-	it('handles special characters', () => {
-		expect(isValidContent('@#$%')).toBe(true);
-		expect(trimContent(' @#$% ')).toBe('@#$%');
-	});
-
-	it('handles mixed line endings', () => {
-		// split('\n') treats \r\n as one line break, so A\nB\rC\r\nD has 3 lines
-		expect(countLines('A\nB\rC\r\nD')).toBe(3);
-	});
-
-	it('handles content with only newlines', () => {
-		expect(isValidContent('\n\n\n')).toBe(false);
-		expect(isWhitespaceOnly('\n\n\n')).toBe(true);
-	});
-});
-
-describe('Messages.Composer - Integration', () => {
-	it('validates complete send flow', () => {
-		const content = '  Hello World  ';
-		const loading = false;
-
-		expect(isValidContent(content)).toBe(true);
-		expect(isSendDisabled(content, loading)).toBe(false);
-		expect(trimContent(content)).toBe('Hello World');
-		expect(getSendButtonText(loading)).toBe('Send');
-	});
-
-	it('prevents send during loading', () => {
-		const content = 'Hello World';
-		const loading = true;
-
-		expect(isValidContent(content)).toBe(true);
-		expect(isSendDisabled(content, loading)).toBe(true);
-		expect(isInputDisabled(loading)).toBe(true);
-		expect(getSendButtonText(loading)).toBe('Sending...');
-	});
-
-	it('handles keyboard shortcut flow', () => {
-		const enterEvent = { key: 'Enter', shiftKey: false };
-		const shiftEnterEvent = { key: 'Enter', shiftKey: true };
-		const content = 'Hello';
-
-		expect(shouldSendOnKey(enterEvent)).toBe(true);
-		expect(shouldSendOnKey(shiftEnterEvent)).toBe(false);
-		expect(isValidContent(content)).toBe(true);
-	});
-
-	it('handles multiline message composition', () => {
-		const content = 'Line 1\nLine 2\nLine 3';
-
-		expect(isValidContent(content)).toBe(true);
-		expect(isMultiline(content)).toBe(true);
-		expect(countLines(content)).toBe(3);
-		expect(getFirstLine(content)).toBe('Line 1');
-		expect(getLastLine(content)).toBe('Line 3');
-	});
-
-	it('handles content validation edge cases', () => {
-		const cases = [
-			{ content: '', valid: false },
-			{ content: '   ', valid: false },
-			{ content: '\n\n', valid: false },
-			{ content: 'Hello', valid: true },
-			{ content: '  Hello  ', valid: true },
-			{ content: 'Hello\nWorld', valid: true },
-		];
-
-		for (const testCase of cases) {
-			expect(isValidContent(testCase.content)).toBe(testCase.valid);
-		}
-	});
-
-	it('handles character limit scenarios', () => {
-		const maxLength = 280;
-		const shortContent = 'Hello';
-		const exactContent = 'A'.repeat(280);
-		const longContent = 'A'.repeat(300);
-
-		expect(exceedsMaxLength(shortContent, maxLength)).toBe(false);
-		expect(exceedsMaxLength(exactContent, maxLength)).toBe(false);
-		expect(exceedsMaxLength(longContent, maxLength)).toBe(true);
-		expect(truncateContent(longContent, maxLength)).toHaveLength(maxLength);
-	});
-});
-
-describe('Messages.Composer - State Combinations', () => {
-	const stateTests = [
-		{ content: '', loading: false, disabled: true, text: 'Send' },
-		{ content: '   ', loading: false, disabled: true, text: 'Send' },
-		{ content: 'Hello', loading: false, disabled: false, text: 'Send' },
-		{ content: '', loading: true, disabled: true, text: 'Sending...' },
-		{ content: 'Hello', loading: true, disabled: true, text: 'Sending...' },
-	];
-
-	it('handles all state combinations', () => {
-		for (const test of stateTests) {
-			expect(isSendDisabled(test.content, test.loading)).toBe(test.disabled);
-			expect(getSendButtonText(test.loading)).toBe(test.text);
-		}
+		unmount(instance);
 	});
 });

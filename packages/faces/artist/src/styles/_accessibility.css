@@ -1,0 +1,300 @@
+/**
+ * Accessibility CSS Utilities
+ *
+ * Focus rings, skip links, screen reader styles, and high contrast overrides.
+ * Implements REQ-A11Y-001 through REQ-A11Y-007.
+ */
+
+/* ============================================================================
+ * Focus Ring Styles (REQ-A11Y-004)
+ * ============================================================================ */
+
+/* Default focus ring */
+.gr-focus-ring:focus,
+.gr-focus-ring:focus-visible {
+	outline: 2px solid var(--gr-artist-interactive-focus, #525252);
+	outline-offset: 2px;
+}
+
+/* Focus ring for dark backgrounds */
+.gr-focus-ring-light:focus,
+.gr-focus-ring-light:focus-visible {
+	outline: 2px solid #ffffff;
+	outline-offset: 2px;
+}
+
+/* Focus ring for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:not([tabindex='-1']):focus-visible {
+	outline: 2px solid var(--gr-artist-interactive-focus, #525252);
+	outline-offset: 2px;
+}
+
+/* Remove default outline when using focus-visible */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+select:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* High visibility focus for gallery items */
+.gr-gallery-item:focus-visible {
+	outline: 3px solid var(--gr-artist-accent-primary, #525252);
+	outline-offset: 4px;
+	z-index: 10;
+}
+
+/* Focus within for compound components */
+.gr-focus-within:focus-within {
+	outline: 2px solid var(--gr-artist-interactive-focus, #525252);
+	outline-offset: 2px;
+}
+
+/* ============================================================================
+ * Skip Link Styles (REQ-A11Y-004)
+ * ============================================================================ */
+
+.gr-skip-link {
+	position: absolute;
+	top: -100%;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 9999;
+	padding: 1rem 2rem;
+	background-color: var(--gr-artist-bg-elevated, #ffffff);
+	color: var(--gr-artist-text-primary, #1a1a1a);
+	border: 2px solid var(--gr-artist-border-strong, #a3a3a3);
+	border-radius: var(--gr-artist-radius-md, 0.375rem);
+	font-weight: var(--gr-artist-font-semibold, 600);
+	text-decoration: none;
+	white-space: nowrap;
+	transition: top 0.2s ease-out;
+}
+
+.gr-skip-link:focus {
+	top: 1rem;
+	outline: 2px solid var(--gr-artist-interactive-focus, #525252);
+	outline-offset: 2px;
+}
+
+/* Multiple skip links */
+.gr-skip-links {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background: var(--gr-artist-bg-elevated, #ffffff);
+	transform: translateY(-100%);
+	transition: transform 0.2s ease-out;
+}
+
+.gr-skip-links:focus-within {
+	transform: translateY(0);
+}
+
+/* ============================================================================
+ * Screen Reader Only Styles (REQ-A11Y-005)
+ * ============================================================================ */
+
+.gr-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Screen reader only but focusable */
+.gr-sr-only-focusable:focus,
+.gr-sr-only-focusable:active {
+	position: static;
+	width: auto;
+	height: auto;
+	padding: inherit;
+	margin: inherit;
+	overflow: visible;
+	clip: auto;
+	white-space: normal;
+}
+
+/* Live region for announcements */
+.gr-live-region {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* ============================================================================
+ * High Contrast Overrides (REQ-A11Y-003)
+ * ============================================================================ */
+
+/* High contrast mode detection */
+@media (prefers-contrast: more) {
+	:root {
+		--gr-artist-text-primary: #000000;
+		--gr-artist-text-secondary: #1a1a1a;
+		--gr-artist-bg-primary: #ffffff;
+		--gr-artist-border-default: #000000;
+		--gr-artist-interactive-focus: #000000;
+	}
+
+	/* Increase border visibility */
+	button,
+	input,
+	select,
+	textarea {
+		border-width: 2px !important;
+		border-color: var(--gr-artist-border-default) !important;
+	}
+
+	/* Ensure links are underlined */
+	a {
+		text-decoration: underline !important;
+	}
+
+	/* Stronger focus indicators */
+	*:focus-visible {
+		outline-width: 3px !important;
+	}
+}
+
+/* Forced colors mode (Windows High Contrast) */
+@media (forced-colors: active) {
+	/* Let system colors take over for UI */
+	button,
+	input,
+	select,
+	textarea,
+	a {
+		forced-color-adjust: auto;
+	}
+
+	/* Preserve artwork colors */
+	.gr-artwork-image,
+	.gr-artwork-container img,
+	[data-preserve-colors='true'] {
+		forced-color-adjust: none;
+	}
+
+	/* Ensure focus is visible */
+	*:focus-visible {
+		outline: 3px solid CanvasText !important;
+		outline-offset: 2px !important;
+	}
+}
+
+/* ============================================================================
+ * Color Blind Friendly Indicators (REQ-A11Y-006)
+ * ============================================================================ */
+
+/* Status indicators with shapes */
+.gr-status-indicator {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.gr-status-indicator::before {
+	content: '';
+	display: inline-block;
+	width: 0.75rem;
+	height: 0.75rem;
+}
+
+.gr-status-indicator--success::before {
+	background-color: var(--gr-artist-status-success, #4ade80);
+	border-radius: 50%;
+	/* Circle for success */
+}
+
+.gr-status-indicator--warning::before {
+	background-color: var(--gr-artist-status-warning, #fbbf24);
+	/* Triangle for warning */
+	clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.gr-status-indicator--error::before {
+	background-color: var(--gr-artist-status-error, #f87171);
+	/* Square for error */
+}
+
+.gr-status-indicator--info::before {
+	background-color: var(--gr-artist-status-info, #60a5fa);
+	/* Diamond for info */
+	transform: rotate(45deg);
+}
+
+/* Badge types with distinct shapes */
+.gr-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	border-radius: var(--gr-artist-radius-default, 0.25rem);
+	font-size: var(--gr-artist-text-sm, 0.875rem);
+}
+
+.gr-badge--verified {
+	background-color: var(--gr-artist-status-success, #4ade80);
+}
+
+.gr-badge--verified::before {
+	content: '✓';
+}
+
+.gr-badge--ai {
+	background-color: var(--gr-artist-ai-indicator-bg);
+	color: var(--gr-artist-ai-indicator);
+}
+
+.gr-badge--ai::before {
+	content: '◆';
+}
+
+/* ============================================================================
+ * Interactive State Indicators (Non-Color)
+ * ============================================================================ */
+
+/* Hover state with underline */
+.gr-interactive:hover {
+	text-decoration: underline;
+}
+
+/* Active state with scale */
+.gr-interactive:active {
+	transform: scale(0.98);
+}
+
+/* Selected state with border */
+.gr-interactive[aria-selected='true'],
+.gr-interactive[aria-pressed='true'],
+.gr-interactive[aria-checked='true'] {
+	border: 2px solid currentColor;
+}
+
+/* Disabled state with opacity and cursor */
+.gr-interactive:disabled,
+.gr-interactive[aria-disabled='true'] {
+	opacity: 0.5;
+	cursor: not-allowed;
+}

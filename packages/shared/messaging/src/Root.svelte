@@ -3,8 +3,9 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createMessagesContext } from './context.js';
-	import type { MessagesHandlers } from './context.js';
+	import { untrack } from 'svelte';
+	import { createMessagesContext } from './context.svelte.js';
+	import type { MessagesHandlers } from './context.svelte.js';
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -16,7 +17,11 @@
 
 	let { handlers = {}, autoFetch = true, children, class: className = '' }: Props = $props();
 
-	const context = createMessagesContext(handlers);
+	const context = createMessagesContext(untrack(() => handlers));
+
+	$effect(() => {
+		Object.assign(context.handlers, handlers);
+	});
 
 	onMount(() => {
 		if (autoFetch) {

@@ -80,6 +80,18 @@
 		onClick: () => handleCancel(),
 	});
 
+	$effect(() => {
+		startButton.helpers.setLoading(authState.loading);
+		startButton.helpers.setDisabled(authState.loading);
+
+		verifyButton.helpers.setLoading(authState.loading);
+		verifyButton.helpers.setDisabled(authState.loading || verificationCode.length !== 6);
+
+		finishButton.helpers.setLoading(authState.loading);
+
+		cancelButton.helpers.setDisabled(authState.loading);
+	});
+
 	/**
 	 * Start 2FA setup
 	 */

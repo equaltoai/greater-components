@@ -6,7 +6,7 @@
   @component
 -->
 <script lang="ts">
-	import { getSearchContext } from './context.js';
+	import { getSearchContext } from './context.svelte.js';
 	import ActorResult from './ActorResult.svelte';
 	import NoteResult from './NoteResult.svelte';
 	import TagResult from './TagResult.svelte';
@@ -77,7 +77,7 @@
 			<section class="search-results__section">
 				<h3 class="search-results__heading">Tags</h3>
 				<div class="search-results__tags">
-					{#each searchState.results.tags as tag (tag.id)}
+					{#each searchState.results.tags as tag (tag.name)}
 						<TagResult {tag} />
 					{/each}
 				</div>

@@ -1,0 +1,298 @@
+# Artwork GraphQL Schema
+# Implements REQ-FED-001: Artwork as ActivityPub Note with Image attachments
+# Implements REQ-FED-002: Artist attribution preserved in federation
+
+"""
+Artwork type representing a visual art piece with ActivityPub federation support.
+Maps to ActivityPub Note with Image attachments for federation.
+"""
+type Artwork {
+	id: ID!
+	"""
+	ActivityPub URI for federation (e.g., https://instance.social/users/artist/statuses/123)
+	"""
+	uri: String!
+	"""
+	Web URL for viewing the artwork
+	"""
+	url: String!
+	title: String!
+	description: String
+	"""
+	HTML content for rich descriptions
+	"""
+	content: String!
+	"""
+	Artist account - preserved in federation per REQ-FED-002
+	"""
+	account: Account!
+	"""
+	Media attachments (images, videos)
+	"""
+	mediaAttachments: [MediaAttachment!]!
+	"""
+	Artwork-specific metadata
+	"""
+	metadata: ArtworkMetadata!
+	"""
+	AI usage disclosure data
+	"""
+	aiUsage: AIUsageData
+	"""
+	Engagement statistics
+	"""
+	stats: ArtworkStats!
+	createdAt: DateTime!
+	updatedAt: DateTime
+}
+
+"""
+Artwork metadata for artistic context.
+Federated with graceful degradation per REQ-FED-003.
+"""
+type ArtworkMetadata {
+	"""
+	Artistic medium (oil, digital, watercolor, etc.)
+	"""
+	medium: String
+	"""
+	Physical dimensions (e.g., "24x36 inches")
+	"""
+	dimensions: String
+	"""
+	Year of creation
+	"""
+	year: Int
+	"""
+	Materials used
+	"""
+	materials: [String!]
+	"""
+	Artistic styles/movements
+	"""
+	style: [String!]
+	"""
+	Dominant colors extracted from artwork
+	"""
+	colors: [String!]
+	"""
+	Mood/emotional data
+	"""
+	mood: MoodData
+	"""
+	License information - federated per REQ-FED-008
+	"""
+	license: String
+	"""
+	AI training opt-out flag - federated per REQ-FED-009
+	"""
+	noAI: Boolean!
+}
+
+"""
+Mood/emotional resonance data for discovery.
+"""
+type MoodData {
+	"""
+	Energy level (0-1, calm to energetic)
+	"""
+	energy: Float
+	"""
+	Valence (0-1, negative to positive)
+	"""
+	valence: Float
+	"""
+	Descriptive mood tags
+	"""
+	tags: [String!]
+}
+
+"""
+AI usage disclosure for transparency.
+"""
+type AIUsageData {
+	"""
+	Whether AI was used in creation
+	"""
+	used: Boolean!
+	"""
+	Type of AI usage (generation, assistance, enhancement)
+	"""
+	type: AIUsageType
+	"""
+	Description of AI involvement
+	"""
+	description: String
+	"""
+	AI tools/models used
+	"""
+	tools: [String!]
+}
+
+enum AIUsageType {
+	NONE
+	REFERENCE
+	ASSISTANCE
+	ENHANCEMENT
+	GENERATION
+	FULL_GENERATION
+}
+
+"""
+Artwork engagement statistics.
+"""
+type ArtworkStats {
+	viewCount: Int!
+	likeCount: Int!
+	collectCount: Int!
+	commentCount: Int!
+	shareCount: Int!
+}
+
+"""
+Input for creating artwork.
+"""
+input CreateArtworkInput {
+	title: String!
+	description: String
+	content: String
+	"""
+	Media attachment IDs from upload
+	"""
+	mediaIds: [ID!]!
+	metadata: ArtworkMetadataInput!
+	aiUsage: AIUsageInput
+	visibility: Visibility!
+}
+
+"""
+Input for updating artwork.
+"""
+input UpdateArtworkInput {
+	title: String
+	description: String
+	content: String
+	metadata: ArtworkMetadataInput
+	aiUsage: AIUsageInput
+	visibility: Visibility
+}
+
+input ArtworkMetadataInput {
+	medium: String
+	dimensions: String
+	year: Int
+	materials: [String!]
+	style: [String!]
+	colors: [String!]
+	mood: MoodInput
+	license: String
+	noAI: Boolean
+}
+
+input MoodInput {
+	energy: Float
+	valence: Float
+	tags: [String!]
+}
+
+input AIUsageInput {
+	used: Boolean!
+	type: AIUsageType
+	description: String
+	tools: [String!]
+}
+
+enum Visibility {
+	PUBLIC
+	UNLISTED
+	FOLLOWERS_ONLY
+	DIRECT
+}
+
+"""
+Artwork connection for pagination.
+"""
+type ArtworkConnection {
+	edges: [ArtworkEdge!]!
+	pageInfo: PageInfo!
+	totalCount: Int!
+}
+
+type ArtworkEdge {
+	cursor: String!
+	node: Artwork!
+}
+
+"""
+Payload for artwork mutations.
+"""
+type CreateArtworkPayload {
+	success: Boolean!
+	artwork: Artwork
+	errors: [String!]
+}
+
+type UpdateArtworkPayload {
+	success: Boolean!
+	artwork: Artwork
+	errors: [String!]
+}
+
+type DeleteArtworkPayload {
+	success: Boolean!
+	deletedId: ID
+	errors: [String!]
+}
+
+type CollectArtworkPayload {
+	success: Boolean!
+	artwork: Artwork
+	collection: Collection
+	errors: [String!]
+}
+
+# Queries
+extend type Query {
+	"""
+	Get single artwork by ID
+	"""
+	artwork(id: ID!): Artwork
+
+	"""
+	Get paginated artworks with optional filter
+	"""
+	artworks(first: Int, after: String, filter: ArtworkFilter): ArtworkConnection!
+}
+
+# Mutations
+extend type Mutation {
+	"""
+	Create new artwork
+	"""
+	createArtwork(input: CreateArtworkInput!): CreateArtworkPayload!
+
+	"""
+	Update existing artwork
+	"""
+	updateArtwork(id: ID!, input: UpdateArtworkInput!): UpdateArtworkPayload!
+
+	"""
+	Delete artwork
+	"""
+	deleteArtwork(id: ID!): DeleteArtworkPayload!
+
+	"""
+	Add artwork to collection
+	"""
+	collectArtwork(id: ID!): CollectArtworkPayload!
+}
+
+input ArtworkFilter {
+	artistId: ID
+	styles: [String!]
+	medium: [String!]
+	yearFrom: Int
+	yearTo: Int
+	hasAI: Boolean
+	noAI: Boolean
+}

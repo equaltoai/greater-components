@@ -16,6 +16,7 @@ Root component for cost tracking, budgets, and alerts.
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 	import { createCostContext, type CostConfig } from './context.js';
 
 	interface Props {
@@ -43,10 +44,12 @@ Root component for cost tracking, budgets, and alerts.
 	let { adapter, config = {}, children, class: className = '' }: Props = $props();
 
 	// Create context
-	createCostContext({
-		adapter,
-		...config,
-	});
+	createCostContext(
+		untrack(() => ({
+			adapter,
+			...config,
+		}))
+	);
 </script>
 
 <div class={`cost-root ${className}`}>

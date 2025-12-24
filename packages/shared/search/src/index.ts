@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Search from '@equaltoai/greater-components-fediverse/Search';
+ *   import * as Search from '@equaltoai/greater-components/faces/social/Search';
  *
  *   const handlers = {
  *     onSearch: async (options) => {
@@ -37,6 +37,7 @@ export { default as Results } from './Results.svelte';
 export { default as ActorResult } from './ActorResult.svelte';
 export { default as NoteResult } from './NoteResult.svelte';
 export { default as TagResult } from './TagResult.svelte';
+export { default as FederatedSearch } from './FederatedSearch.svelte';
 
 // Export types and context utilities
 export type {
@@ -49,7 +50,7 @@ export type {
 	SearchHandlers,
 	SearchState,
 	SearchContext,
-} from './context.js';
+} from './context.svelte.js';
 
 export {
 	createInitialSearchState,
@@ -58,4 +59,4 @@ export {
 	highlightQuery,
 	formatResultCount,
 	formatCount,
-} from './context.js';
+} from './context.svelte.js';

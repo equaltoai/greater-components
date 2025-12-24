@@ -184,9 +184,13 @@ export interface FiltersContext {
  * Create filters context
  *
  * @param handlers - Filters event handlers
+ * @param initialState - Optional initial state
  * @returns Filters context
  */
-export function createFiltersContext(handlers: FiltersHandlers = {}): FiltersContext {
+export function createFiltersContext(
+	handlers: FiltersHandlers = {},
+	initialState: Partial<FiltersState> = {}
+): FiltersContext {
 	const state = $state<FiltersState>({
 		filters: [],
 		selectedFilter: null,
@@ -199,6 +203,7 @@ export function createFiltersContext(handlers: FiltersHandlers = {}): FiltersCon
 			totalFiltered: 0,
 			filteredToday: 0,
 		},
+		...initialState,
 	});
 
 	const context: FiltersContext = {

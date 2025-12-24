@@ -1,5 +1,15 @@
 # @equaltoai/greater-components
 
+## 4.2.6
+
+### Patch Changes
+
+- 6f21801: - Implemented `Badge` and `Alert` components based on paicodes feedback.
+  - Implemented `Spinner` and `LoadingState` components.
+  - Implemented `SimpleMenu` component for easier dropdowns.
+  - Improved documentation coverage for components and API reference.
+  - Marked implementation suggestions as complete.
+
 ## 4.2.5
 
 ### Patch Changes
@@ -184,7 +194,7 @@
   import { CodeBlock } from '@equaltoai/greater-components/primitives';
 
   // NEW (v3.0)
-  import { Timeline } from '@equaltoai/greater-components/faces/social';
+  import { TimelineCompound as Timeline } from '@equaltoai/greater-components/faces/social';
   import { CodeBlock } from '@equaltoai/greater-components/content';
   ```
 

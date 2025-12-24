@@ -505,7 +505,7 @@ export interface AdminReport {
 export interface StreamingUpdate {
 	/** Update type */
 	type: // Core Mastodon events
-	| 'status'
+		| 'status'
 		| 'delete'
 		| 'notification'
 		| 'filters_changed'

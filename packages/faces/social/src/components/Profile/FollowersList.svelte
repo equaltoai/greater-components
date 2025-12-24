@@ -8,7 +8,7 @@ Supports removing followers (for own profile).
 @example
 ```svelte
 <script>
-  import { Profile } from '@equaltoai/greater-components-fediverse';
+  import { Profile } from '@equaltoai/greater-components/faces/social';
   
   const followers = [
     { id: '1', username: 'john', displayName: 'John Doe', avatar: '...' }

@@ -7,7 +7,7 @@
  * @example Basic usage
  * ```svelte
  * <script>
- *   import { Notifications } from '@equaltoai/greater-components-fediverse';
+ *   import { Notifications } from '@equaltoai/greater-components/faces/social';
  *
  *   const notifications = [...]; // Notification[] from API
  * </script>
@@ -38,7 +38,7 @@
  * </Notifications.Root>
  * ```
  *
- * @module @equaltoai/greater-components-fediverse/Notifications
+ * @module @equaltoai/greater-components/faces/social/Notifications
  */
 
 import NotificationsRoot from './Root.svelte';
@@ -46,6 +46,8 @@ import NotificationsItem from './Item.svelte';
 import NotificationsGroup from './Group.svelte';
 import NotificationsFilter from './Filter.svelte';
 import NotificationsLesserNotificationItem from './LesserNotificationItem.svelte';
+import NotificationFiltersComponent from './NotificationFilters.svelte';
+import PushNotificationSettingsComponent from './PushNotificationSettings.svelte';
 
 export {
 	NotificationsRoot as Root,
@@ -53,6 +55,8 @@ export {
 	NotificationsGroup as Group,
 	NotificationsFilter as Filter,
 	NotificationsLesserNotificationItem as LesserNotificationItem,
+	NotificationFiltersComponent as NotificationFilters,
+	PushNotificationSettingsComponent as PushNotificationSettings,
 };
 
 // Export types
@@ -63,7 +67,19 @@ export type {
 	NotificationsState,
 	NotificationDisplayMode,
 	NotificationFilter,
-} from './context.js';
+} from './context.svelte.js';
+
+// Export notification types
+export type {
+	Notification,
+	NotificationGroup,
+	NotificationType,
+	Account,
+	Status,
+} from './types.js';
+
+// Export grouping utilities
+export * as NotificationGrouping from './utils/notificationGrouping.js';
 
 /**
  * Notifications compound component
@@ -101,6 +117,16 @@ export const Notifications = {
 	 * Lesser-specific notification item (quote, community_note, trust_update, cost_alert, moderation_action)
 	 */
 	LesserNotificationItem: NotificationsLesserNotificationItem,
+
+	/**
+	 * Settings component for configuring which notification types to receive
+	 */
+	NotificationFilters: NotificationFiltersComponent,
+
+	/**
+	 * Manage push notification subscription settings
+	 */
+	PushNotificationSettings: PushNotificationSettingsComponent,
 };
 
 export default Notifications;

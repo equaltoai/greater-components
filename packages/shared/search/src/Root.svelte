@@ -16,8 +16,9 @@
 -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createInitialSearchState, createSearchContext } from './context.js';
-	import type { SearchHandlers } from './context.js';
+	import { untrack } from 'svelte';
+	import { createInitialSearchState, createSearchContext } from './context.svelte.js';
+	import type { SearchHandlers } from './context.svelte.js';
 
 	interface Props {
 		/**
@@ -44,8 +45,15 @@
 	let { handlers = {}, initialQuery = '', children, class: className = '' }: Props = $props();
 
 	// Create search context
-	const searchState = $state(createInitialSearchState(initialQuery));
-	const context = createSearchContext(searchState, handlers);
+	const searchState = $state(createInitialSearchState(untrack(() => initialQuery)));
+	const context = createSearchContext(
+		searchState,
+		untrack(() => handlers)
+	);
+
+	$effect(() => {
+		Object.assign(context.handlers, handlers);
+	});
 
 	// Auto-search if initial query provided
 	$effect(() => {

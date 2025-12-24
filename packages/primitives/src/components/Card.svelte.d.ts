@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'svelte/elements';
+import type { HTMLAttributes, HTMLAnchorAttributes } from 'svelte/elements';
 import type { Snippet } from 'svelte';
 /**
  * Card component props interface.
@@ -30,6 +30,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 	/**
 	 * Whether the card is clickable/interactive.
 	 * When true, renders as button with hover states.
+	 * Cannot be used with href.
 	 *
 	 * @defaultValue false
 	 * @public
@@ -37,11 +38,33 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 	clickable?: boolean;
 	/**
 	 * Whether to show hover effects.
+	 * Automatically enabled when href or clickable is set.
 	 *
 	 * @defaultValue false
 	 * @public
 	 */
 	hoverable?: boolean;
+	/**
+	 * URL to navigate to when card is clicked.
+	 * When set, renders the card as an anchor element.
+	 * Cannot be used with clickable.
+	 *
+	 * @public
+	 */
+	href?: string;
+	/**
+	 * Target for the link (only applies when href is set).
+	 *
+	 * @public
+	 */
+	target?: HTMLAnchorAttributes['target'];
+	/**
+	 * Rel attribute for the link (only applies when href is set).
+	 * Automatically set to 'noopener noreferrer' when target="_blank".
+	 *
+	 * @public
+	 */
+	rel?: string;
 	/**
 	 * Additional CSS classes.
 	 *
@@ -79,6 +102,13 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
  * {#snippet footer()}
  *   <Button>Action</Button>
  * {/snippet}
+ * </Card>
+ * ```
+ *
+ * @example Link card
+ * ```svelte
+ * <Card variant="elevated" href="/details" hoverable>
+ * <p>Click to navigate</p>
  * </Card>
  * ```
  */

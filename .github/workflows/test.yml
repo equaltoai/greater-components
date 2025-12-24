@@ -33,6 +33,28 @@ jobs:
       - name: Build packages
         run: pnpm build
 
+      - name: Validate packages
+        run: pnpm validate:package
+
+      - name: Check for registry changes
+        id: check_registry
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          if git diff --name-only origin/${{ github.base_ref }} HEAD | grep -qE 'registry/index\.json|scripts/generate-registry-index\.js|schemas/registry-index\.schema\.json'; then
+            echo "run_validation=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_validation=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate Registry (Strict)
+        if: steps.check_registry.outputs.run_validation == 'true'
+        run: |
+          if ! pnpm validate:registry; then
+            echo "::error::Registry validation failed. Please run 'pnpm generate-registry' locally and commit the changes."
+            exit 1
+          fi
+
       - name: Run unit tests
         run: pnpm test:unit
 

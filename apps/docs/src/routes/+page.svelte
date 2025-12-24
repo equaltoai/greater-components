@@ -37,7 +37,8 @@
 	];
 
 	const quickStart = `# Install CLI
-npm install -g @equaltoai/greater-components-cli
+# Replace \`greater-vX.Y.Z\` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
 
 # Initialize in your project
 cd my-sveltekit-app
@@ -128,7 +129,7 @@ greater add timeline status notifications`;
 					<div class="step-number">1</div>
 					<div class="step-content">
 						<h3>Install CLI</h3>
-						<p>Install the Greater CLI globally or use with npx</p>
+						<p>Install the Greater CLI from GitHub Releases (or build from source)</p>
 					</div>
 				</div>
 				<div class="step">

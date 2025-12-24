@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Avatar } from '@equaltoai/greater-components-primitives';
-	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
+	import { sanitizeHtml, useStableId } from '@equaltoai/greater-components-utils';
 	import ContentRenderer from './ContentRenderer.svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
@@ -201,9 +201,11 @@
 	}
 
 	// Generate unique IDs for accessibility
-	const bannerId = `profile-banner-${Math.random().toString(36).substr(2, 9)}`;
-	const bioId = `profile-bio-${Math.random().toString(36).substr(2, 9)}`;
-	const fieldsId = `profile-fields-${Math.random().toString(36).substr(2, 9)}`;
+	const stableId = useStableId('profile-header');
+	const profileHeaderId = $derived(stableId.value || undefined);
+	const bannerId = $derived(profileHeaderId ? `${profileHeaderId}-banner` : undefined);
+	const bioId = $derived(profileHeaderId ? `${profileHeaderId}-bio` : undefined);
+	const fieldsId = $derived(profileHeaderId ? `${profileHeaderId}-fields` : undefined);
 </script>
 
 <article class={profileHeaderClass()}>

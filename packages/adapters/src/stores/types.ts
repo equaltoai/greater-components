@@ -131,7 +131,7 @@ export interface TimelinePageInfo {
 
 export interface TimelineConfig {
 	/** Transport manager for streaming updates */
-	transportManager: TransportManager;
+	transportManager?: TransportManager;
 	/** Optional WebSocket pool for streaming */
 	webSocketPool?: WebSocketPool;
 	/** Lesser GraphQL adapter for fetching timelines */

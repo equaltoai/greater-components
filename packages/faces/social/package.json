@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-social",
   "private": true,
-  "version": "4.0.0",
+  "version": "4.0.1",
   "type": "module",
   "description": "Social/Twitter-style UI components for Greater Components (formerly fediverse)",
   "license": "AGPL-3.0-only",
@@ -21,7 +21,51 @@
       "svelte": "./src/index.ts",
       "import": "./dist/index.js"
     },
-    "./style.css": "./dist/theme.css",
+    "./manifest.json": "./manifest.json",
+    "./style.css": "./dist/greater-components-fediverse.css",
+    "./theme.css": "./dist/greater-components-fediverse.css",
+    "./adapters/graphql": {
+      "types": "./dist/adapters/graphql/index.d.ts",
+      "import": "./dist/adapters/graphql/index.js"
+    },
+    "./components/Status": {
+      "types": "./dist/components/Status/index.d.ts",
+      "svelte": "./src/components/Status/index.ts",
+      "import": "./dist/components/Status/index.js"
+    },
+    "./components/Profile": {
+      "types": "./dist/components/Profile/index.d.ts",
+      "svelte": "./src/components/Profile/index.ts",
+      "import": "./dist/components/Profile/index.js"
+    },
+    "./components/Lists": {
+      "types": "./dist/components/Lists/index.d.ts",
+      "svelte": "./src/components/Lists/index.ts",
+      "import": "./dist/components/Lists/index.js"
+    },
+    "./components/Filters": {
+      "types": "./dist/components/Filters/index.d.ts",
+      "svelte": "./src/components/Filters/index.ts",
+      "import": "./dist/components/Filters/index.js"
+    },
+    "./components/Hashtags": {
+      "types": "./dist/components/Hashtags/index.d.ts",
+      "svelte": "./src/components/Hashtags/index.ts",
+      "import": "./dist/components/Hashtags/index.js"
+    },
+    "./components/Timeline": {
+      "types": "./dist/components/Timeline/index.d.ts",
+      "svelte": "./src/components/Timeline/index.ts",
+      "import": "./dist/components/Timeline/index.js"
+    },
+    "./generics": {
+      "types": "./dist/generics/index.d.ts",
+      "import": "./dist/generics/index.js"
+    },
+    "./patterns": {
+      "types": "./dist/patterns/index.d.ts",
+      "import": "./dist/patterns/index.js"
+    },
     "./src/mockData": {
       "import": "./src/mockData.ts"
     }
@@ -30,12 +74,9 @@
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "prebuild": "pnpm --filter @equaltoai/greater-components-adapters build",
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js && cp src/theme.css dist/greater-components-fediverse.css",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node scripts/fix-dollar-vars.js && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-fediverse.css",
     "clean": "rm -rf dist",
     "dev": "vite build --watch",
     "test": "vitest run",
@@ -48,36 +89,36 @@
   },
   "dependencies": {
     "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-admin": "workspace:*",
+    "@equaltoai/greater-components-auth": "workspace:*",
+    "@equaltoai/greater-components-compose": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:^",
     "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-messaging": "workspace:*",
+    "@equaltoai/greater-components-notifications": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-search": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
-    "@equaltoai/greater-components-auth": "workspace:*",
-    "@equaltoai/greater-components-admin": "workspace:*",
-    "@equaltoai/greater-components-compose": "workspace:*",
-    "@equaltoai/greater-components-messaging": "workspace:*",
-    "@equaltoai/greater-components-search": "workspace:*",
-    "@equaltoai/greater-components-notifications": "workspace:*",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@tanstack/svelte-virtual": "^3.13.12"
+    "@tanstack/svelte-virtual": "^3.13.13"
   },
   "devDependencies": {
     "@babel/parser": "^7.28.5",
     "@babel/traverse": "^7.28.5",
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.57.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.2.9",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "@vitest/ui": "^4.0.12",
+    "@types/node": "^24.10.2",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
     "axe-core": "^4.11.0",
-    "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

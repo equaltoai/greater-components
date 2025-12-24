@@ -7,7 +7,7 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 @example
 ```svelte
 <script>
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { Compose } from '@equaltoai/greater-components-compose';
   
   async function handleUpload(file) {
     const formData = new FormData();
@@ -136,12 +136,13 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 		const processedFiles = await processFiles(fileArray, config);
 
 		// Add to files array
+		const startIndex = files.length;
 		files = [...files, ...processedFiles];
 
 		// Start uploading if handler provided
 		if (onUpload) {
-			for (const file of processedFiles) {
-				uploadFile(file);
+			for (let i = 0; i < processedFiles.length; i++) {
+				uploadFile(files[startIndex + i]);
 			}
 		}
 	}

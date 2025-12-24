@@ -324,7 +324,7 @@ packages/primitives/src/components/
 <!-- Button.svelte -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createButton } from '@equaltoai/greater-components/headless/button';
+	import { createButton } from '$lib/greater/headless/button';
 
 	interface Props {
 		variant?: 'solid' | 'outline' | 'ghost' | 'danger';
@@ -631,7 +631,7 @@ Every component must have unit tests covering:
 
 ```typescript
 import { test, expect } from 'vitest';
-import { render, fireEvent } from '@equaltoai/greater-components/testing';
+import { render, fireEvent } from '@testing-library/svelte';
 import { Button } from './Button.svelte';
 
 test('button renders with correct text', () => {
@@ -710,7 +710,7 @@ All components must:
 
 ```typescript
 import { test, expect } from 'vitest';
-import { render } from '@equaltoai/greater-components/testing';
+import { render } from '@testing-library/svelte';
 import { axe } from 'axe-core';
 
 test('button has no accessibility violations', async () => {

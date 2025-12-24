@@ -29,15 +29,15 @@ body {
 }
 
 /* Link styles */
-a {
-	color: var(--gr-semantic-action-primary-default);
+body a {
+	color: var(--gr-semantic-action-link-default);
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 2px;
 }
 
-a:hover {
-	color: var(--gr-semantic-action-primary-hover);
+body a:hover {
+	color: var(--gr-semantic-action-link-hover);
 }
 
 a:focus-visible {

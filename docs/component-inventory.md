@@ -2,14 +2,47 @@
 
 ## Purpose
 
-This document lists EVERY component available in Greater Components.
-If a component is not listed here, it DOES NOT EXIST.
+This document lists the primary **public** components and entrypoints intended for consumption (vendored entrypoints + face bundles). Internal/private components may exist in source but are not considered part of the public API.
 
-## Primitives Package (@equaltoai/greater-components/primitives)
+## Faces Packages
+
+### Social Face
+
+- **Core Components:** `Timeline`, `Status`, `Profile`, `Lists`, `Filters`, `Hashtags`
+- **Patterns:** `ThreadView`, `ContentWarningHandler`, `VisibilitySelector`, `ModerationTools`, `FederationIndicator`, `InstancePicker`, `CustomEmojiPicker`, `PollComposer`, `MediaComposer`, `BookmarkManager`
+
+### Blog Face
+
+- `Article`
+- `Author`
+- `Publication`
+- `Navigation`
+- `Editor`
+
+### Community Face
+
+- `Community`
+- `Post`
+- `Thread`
+- `Voting`
+- `Flair`
+- `Moderation`
+- `Wiki`
+
+### Artist Face
+
+- **Core Components:** `Artwork`, `ArtworkCard`, `ArtistProfile`, `GalleryGrid`, `GalleryRow`, `GalleryMasonry`, `DiscoveryEngine`, `MediaViewer`
+- **Creative Tools:** `WorkInProgress`, `CritiqueMode`, `ReferenceBoard`, `CommissionWorkflow`
+- **Community:** `CritiqueCircle`, `Collaboration`, `MentorMatch`
+- **Transparency:** `ProcessDocumentation`, `AIOptOutControls`, `EthicalSourcingBadge`
+- **Monetization:** `TipJar`, `DirectPurchase`, `PremiumBadge`, `ProtectionTools`, `InstitutionalTools`
+- **Utilities:** `createArtistAdapter`, `toActivityPubNote`, `generateArtworkUri`, `serializeMetadata`
+
+## Primitives Package (`$lib/greater/primitives`)
 
 ### Package Scope
 
-This package provides **30 interactive and layout components** for building any type of website.
+This package provides **41 interactive and layout components** for building any type of website.
 
 **What Primitives Provides:**
 
@@ -21,9 +54,9 @@ This package provides **30 interactive and layout components** for building any 
 
 - Theme system (provider, switcher)
 
-- Advanced interactions (code blocks, drag-drop, markdown, streaming text)
+- Advanced interactions (drag-drop, streaming text)
 
-### All 30 Components (Complete List)
+### All 41 Components (Complete List)
 
 **Form Controls (9):**
 
@@ -45,23 +78,25 @@ This package provides **30 interactive and layout components** for building any 
 
 - FileUpload - File upload with drag-drop
 
-**Overlays & Menus (4):**
+**Overlays & Menus (5):**
 
 - Modal - Dialog overlay
 
-- Menu - Dropdown menu
+- Menu - Dropdown menu (compound component)
+
+- SimpleMenu - Simple array-based menu wrapper
 
 - Tooltip - Hover tooltip
 
 - Tabs - Tab navigation
 
-**Display & Status (11):**
+**Display & Status (13):**
+
+- Alert - Error, warning, success, info banners with actions
 
 - Avatar - User avatar with fallback
 
 - Badge - Status indicators and labels
-
-- CodeBlock - Syntax highlighting ⚠️ _Requires peer dep: `shiki`_
 
 - GradientText - Gradient text effect
 
@@ -71,9 +106,11 @@ This package provides **30 interactive and layout components** for building any 
 
 - ListItem - List item with icon support
 
-- MarkdownRenderer - Safe markdown rendering ⚠️ _Requires peer deps: `isomorphic-dompurify`, `marked`_
+- LoadingState - Loading overlay with message
 
 - Skeleton - Loading placeholder
+
+- Spinner - Animated loading indicator
 
 - StepIndicator - Numbered workflow badge
 
@@ -93,9 +130,27 @@ This package provides **30 interactive and layout components** for building any 
 
 - Text - Paragraph/span/div with typography control
 
-**Theme System (1):**
+**Theme System (4):**
 
 - ThemeProvider - Theme context provider
+
+- ColorHarmonyPicker - Color palette generator
+
+- ContrastChecker - WCAG contrast validation
+
+- ThemeWorkbench - Interactive theme builder
+
+**Settings Components (5):**
+
+- SettingsSection - Grouped settings container
+
+- SettingsGroup - Settings group with title
+
+- SettingsField - Individual setting field
+
+- SettingsToggle - Toggle setting with label
+
+- SettingsSelect - Dropdown setting with label
 
 ### Detailed Component Reference
 
@@ -131,8 +186,8 @@ This package provides **30 interactive and layout components** for building any 
 
 ```svelte
 <script>
-	import { Button } from '@equaltoai/greater-components/primitives';
-	import { SaveIcon } from '@equaltoai/greater-components/icons';
+	import { Button } from '$lib/greater/primitives';
+	import { SaveIcon } from '$lib/greater/icons';
 </script>
 
 <Button variant="solid" size="md" loading={saving}>
@@ -169,10 +224,10 @@ This package provides **30 interactive and layout components** for building any 
 
 ```svelte
 <script>
-	import { CopyButton } from '@equaltoai/greater-components/primitives';
+	import { CopyButton } from '$lib/greater/primitives';
 </script>
 
-<CopyButton text="npm install package" />
+<CopyButton text="greater add faces/social" />
 ```
 
 **Reference:** See [api-reference.md#copybutton](./api-reference.md#copybutton) for complete API
@@ -263,30 +318,6 @@ This package provides **30 interactive and layout components** for building any 
 
 **Reference:** See [api-reference.md#iconbadge](./api-reference.md#iconbadge) for complete API
 
-#### CodeBlock
-
-**Purpose:** Syntax highlighting code block with copy button.
-
-**⚠️ Peer Dependency Required:** This component requires `shiki` to be installed:
-
-```bash
-pnpm add shiki
-```
-
-**When to Use:**
-
-- Documentation code snippets
-- Chat code responses
-
-**Key Props:**
-
-- `code`: string
-- `language`: string
-- `showCopy`: boolean
-- `showLineNumbers`: boolean
-
-**Reference:** See [api-reference.md#codeblock](./api-reference.md#codeblock) for complete API
-
 #### DropZone
 
 **Purpose:** Drag and drop file upload area.
@@ -304,28 +335,6 @@ pnpm add shiki
 
 **Reference:** See [api-reference.md#dropzone](./api-reference.md#dropzone) for complete API
 
-#### MarkdownRenderer
-
-**Purpose:** Renders markdown safely.
-
-**⚠️ Peer Dependencies Required:** This component requires `isomorphic-dompurify` and `marked`:
-
-```bash
-pnpm add isomorphic-dompurify marked
-```
-
-**When to Use:**
-
-- AI responses
-- User content
-
-**Key Props:**
-
-- `content`: string
-- `sanitize`: boolean
-
-**Reference:** See [api-reference.md#markdownrenderer](./api-reference.md#markdownrenderer) for complete API
-
 #### StreamingText
 
 **Purpose:** Streaming text effect.
@@ -341,6 +350,172 @@ pnpm add isomorphic-dompurify marked
 - `showCursor`: boolean
 
 **Reference:** See [api-reference.md#streamingtext](./api-reference.md#streamingtext) for complete API
+
+#### Alert
+
+**Purpose:** A versatile alert/banner component for displaying error, warning, success, and info messages. Provides consistent styling for contextual feedback with optional actions and dismissibility.
+
+**When to Use:**
+
+- Error messages and validation feedback
+- Success confirmations
+- Warning notices
+- Information banners
+- Session expired / reconnection prompts
+
+**When NOT to Use:**
+
+- Toast-style transient notifications (use a toast library)
+- Inline form validation (use TextField error prop)
+- Modal confirmations (use Modal component)
+
+**Key Props:**
+
+- `variant`: 'error' | 'warning' | 'success' | 'info' - Visual style and default icon
+- `title`: string - Optional prominent title
+- `dismissible`: boolean - Show close button
+- `onDismiss`: () => void - Dismiss callback
+- `actionLabel`: string - Optional action button text
+- `onAction`: () => void - Action button callback
+- `icon`: Snippet - Custom icon override
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { Alert } from '$lib/greater/primitives';
+</script>
+
+<Alert variant="error" title="Connection Lost" dismissible onDismiss={handleDismiss}>
+	Your session has expired. Please sign in again.
+</Alert>
+
+<Alert variant="success" actionLabel="View Details" onAction={handleView}>
+	Your changes have been saved successfully.
+</Alert>
+```
+
+**Reference:** See [api-reference.md#alert](./api-reference.md#alert) for complete API
+
+#### Spinner
+
+**Purpose:** Accessible loading indicator with configurable size and color. Provides visual feedback during async operations.
+
+**When to Use:**
+
+- Button loading states
+- Inline loading indicators
+- Form submission feedback
+- Component-level loading
+
+**When NOT to Use:**
+
+- Full-page loading (use LoadingState with fullscreen)
+- Skeleton placeholders (use Skeleton)
+- Progress indicators (use progress bar)
+
+**Key Props:**
+
+- `size`: 'xs' | 'sm' | 'md' | 'lg' | 'xl' - Spinner size (12-48px)
+- `color`: 'primary' | 'current' | 'white' | 'gray' - Spinner color
+- `label`: string - Accessible screen reader label (default: 'Loading')
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { Spinner } from '$lib/greater/primitives';
+</script>
+
+<Spinner size="md" color="primary" />
+<Spinner size="sm" color="white" label="Saving..." />
+```
+
+**Reference:** See [api-reference.md#spinner](./api-reference.md#spinner) for complete API
+
+#### LoadingState
+
+**Purpose:** Wrapper for Spinner with message and fullscreen overlay support. Provides a complete loading state UI for pages or sections.
+
+**When to Use:**
+
+- Page-level loading states
+- Modal content loading
+- Section loading with context message
+- Fullscreen loading overlays
+
+**When NOT to Use:**
+
+- Inline loading (use Spinner)
+- Button loading (use Button loading prop)
+- Skeleton loading (use Skeleton)
+
+**Key Props:**
+
+- `size`: 'xs' | 'sm' | 'md' | 'lg' | 'xl' - Spinner size
+- `message`: string - Loading message displayed below spinner
+- `fullscreen`: boolean - Display as fullscreen overlay
+- `label`: string - Accessible label (default: 'Loading')
+- `children`: Snippet - Custom content instead of spinner
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { LoadingState } from '$lib/greater/primitives';
+</script>
+
+<LoadingState message="Loading your data..." />
+
+<LoadingState fullscreen size="lg" message="Connecting to server..." />
+```
+
+**Reference:** See [api-reference.md#loadingstate](./api-reference.md#loadingstate) for complete API
+
+#### SimpleMenu
+
+**Purpose:** Simple array-based menu wrapper for common dropdown patterns. Provides a simplified API compared to the compound Menu component.
+
+**When to Use:**
+
+- Quick dropdown menus from an array
+- Action menus with simple items
+- Settings dropdowns
+- Context menus
+
+**When NOT to Use:**
+
+- Complex nested menus (use Menu compound)
+- Menus requiring custom item rendering (use Menu compound)
+- Navigation dropdowns with icons (use Menu compound)
+
+**Key Props:**
+
+- `items`: MenuItem[] - Array of menu items { label, value, disabled?, separator? }
+- `onSelect`: (value: string) => void - Selection callback
+- `trigger`: Snippet - Trigger element content
+- `placement`: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' - Menu position
+
+**Quick Example:**
+
+```svelte
+<script>
+	import { SimpleMenu } from '$lib/greater/primitives';
+
+	const options = [
+		{ label: 'Edit', value: 'edit' },
+		{ label: 'Delete', value: 'delete', disabled: false },
+	];
+</script>
+
+<SimpleMenu items={options} onSelect={(value) => handleAction(value)}>
+	{#snippet trigger()}
+		<button>Options</button>
+	{/snippet}
+</SimpleMenu>
+```
+
+**Reference:** See [api-reference.md#simplemenu](./api-reference.md#simplemenu) for complete API
 
 #### TextField
 
@@ -372,7 +547,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { TextField } from '@equaltoai/greater-components/primitives';
+	import { TextField } from '$lib/greater/primitives';
 </script>
 
 <TextField
@@ -416,7 +591,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { TextArea } from '@equaltoai/greater-components/primitives';
+	import { TextArea } from '$lib/greater/primitives';
 </script>
 
 <TextArea bind:value={bio} label="Biography" rows={4} placeholder="Tell us about yourself..." />
@@ -452,7 +627,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Select } from '@equaltoai/greater-components/primitives';
+	import { Select } from '$lib/greater/primitives';
 
 	const roles = [
 		{ label: 'Admin', value: 'admin' },
@@ -491,7 +666,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Checkbox } from '@equaltoai/greater-components/primitives';
+	import { Checkbox } from '$lib/greater/primitives';
 </script>
 
 <Checkbox bind:checked={accepted} label="I agree to the Terms of Service" />
@@ -523,7 +698,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Switch } from '@equaltoai/greater-components/primitives';
+	import { Switch } from '$lib/greater/primitives';
 </script>
 
 <Switch bind:checked={notifications} label="Enable Push Notifications" />
@@ -552,7 +727,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { FileUpload } from '@equaltoai/greater-components/primitives';
+	import { FileUpload } from '$lib/greater/primitives';
 </script>
 
 <FileUpload accept="image/*" onSelect={(files) => handleUpload(files)}>
@@ -591,7 +766,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Modal, Button } from '@equaltoai/greater-components/primitives';
+	import { Modal, Button } from '$lib/greater/primitives';
 </script>
 
 <Modal bind:open={showDialog} title="Confirm Deletion">
@@ -628,7 +803,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Menu } from '@equaltoai/greater-components/primitives';
+	import { Menu } from '$lib/greater/primitives';
 </script>
 
 <Menu.Root>
@@ -667,7 +842,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Tooltip, Button } from '@equaltoai/greater-components/primitives';
+	import { Tooltip, Button } from '$lib/greater/primitives';
 </script>
 
 <Tooltip content="Settings and Preferences">
@@ -695,7 +870,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Tabs } from '@equaltoai/greater-components/primitives';
+	import { Tabs } from '$lib/greater/primitives';
 </script>
 
 <Tabs.Root value="account">
@@ -731,7 +906,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Avatar } from '@equaltoai/greater-components/primitives';
+	import { Avatar } from '$lib/greater/primitives';
 </script>
 
 <Avatar src={user.image} fallback="JD" alt="John Doe" />
@@ -759,7 +934,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Skeleton } from '@equaltoai/greater-components/primitives';
+	import { Skeleton } from '$lib/greater/primitives';
 </script>
 
 <div class="profile-loading">
@@ -791,7 +966,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { ThemeProvider } from '@equaltoai/greater-components/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 </script>
 
 <ThemeProvider defaultTheme="system">
@@ -828,7 +1003,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { ThemeSwitcher } from '@equaltoai/greater-components/primitives';
+	import { ThemeSwitcher } from '$lib/greater/primitives';
 </script>
 
 <!-- Most common: compact dropdown in navbar -->
@@ -870,7 +1045,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Card, Button } from '@equaltoai/greater-components/primitives';
+	import { Card, Button } from '$lib/greater/primitives';
 </script>
 
 <Card variant="outlined" padding="md">
@@ -907,7 +1082,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Container } from '@equaltoai/greater-components/primitives';
+	import { Container } from '$lib/greater/primitives';
 </script>
 
 <Container maxWidth="lg" padding="md">
@@ -937,7 +1112,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Section, Container } from '@equaltoai/greater-components/primitives';
+	import { Section, Container } from '$lib/greater/primitives';
 </script>
 
 <Section spacing="lg">
@@ -970,7 +1145,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Heading } from '@equaltoai/greater-components/primitives';
+	import { Heading } from '$lib/greater/primitives';
 </script>
 
 <Heading level={1} size="4xl" align="center">Title</Heading>
@@ -1000,7 +1175,7 @@ pnpm add isomorphic-dompurify marked
 
 ```svelte
 <script>
-	import { Text } from '@equaltoai/greater-components/primitives';
+	import { Text } from '$lib/greater/primitives';
 </script>
 
 <Text size="lg" color="secondary">Subtitle text</Text>
@@ -1032,7 +1207,69 @@ Combine HTML + Button component:
 - `<ul><li>` with styling
 - SvelteKit links with `<a>` elements
 
-## Chat Package (@equaltoai/greater-components/chat)
+## Content Package (`$lib/greater/content`)
+
+### Package Scope
+
+This package provides rich content rendering components (syntax highlighting + safe Markdown rendering). It is split out because it includes heavier dependencies (e.g. Shiki and unified/rehype tooling).
+
+### Components (2)
+
+- CodeBlock - Syntax highlighting code block with copy button
+- MarkdownRenderer - Safe markdown rendering
+
+### Detailed Component Reference
+
+#### CodeBlock
+
+**Purpose:** Syntax highlighting code block with copy button.
+
+**When to Use:**
+
+- Documentation code snippets
+- Chat/code responses
+
+**Key Props:**
+
+- `code`: string (required)
+- `language`: string (`'text'` disables highlighting)
+- `showCopy`: boolean
+- `showLineNumbers`: boolean
+- `highlightLines`: number[]
+- `maxHeight`: string | number
+- `wrap`: boolean
+- `filename`: string
+
+**Import:**
+
+```ts
+import { CodeBlock } from '$lib/greater/content';
+```
+
+#### MarkdownRenderer
+
+**Purpose:** Renders Markdown safely using a sanitized unified pipeline.
+
+**When to Use:**
+
+- Documentation content
+- User-generated Markdown (with sanitization enabled)
+
+**Key Props:**
+
+- `content`: string (required)
+- `sanitize`: boolean
+- `allowedTags`: string[]
+- `enableLinks`: boolean
+- `openLinksInNewTab`: boolean
+
+**Import:**
+
+```ts
+import { MarkdownRenderer } from '$lib/greater/content';
+```
+
+## Chat Package (`$lib/components/chat`)
 
 ### Package Scope
 
@@ -1082,7 +1319,7 @@ This package provides **8 components** for building AI chat interfaces with stre
 
 ```svelte
 <script>
-	import * as Chat from '@equaltoai/greater-components/chat';
+	import * as Chat from '$lib/components/chat';
 </script>
 
 <Chat.Container>
@@ -1269,18 +1506,18 @@ Store messages in localStorage, IndexedDB, or your backend.
 
 ### Quick Decision Matrix
 
-| Need                   | Use This Package | Import From                                |
-| ---------------------- | ---------------- | ------------------------------------------ |
-| Button, form inputs    | Primitives       | `@equaltoai/greater-components/primitives` |
-| Layout containers      | Primitives       | `@equaltoai/greater-components/primitives` |
-| Typography             | Primitives       | `@equaltoai/greater-components/primitives` |
-| **AI chat interface**  | **Chat**         | `@equaltoai/greater-components/chat`       |
-| Icons                  | Icons            | `@equaltoai/greater-components/icons`      |
-| Social media feed      | Fediverse        | `@equaltoai/greater-components/fediverse`  |
-| User profiles          | Fediverse        | `@equaltoai/greater-components/fediverse`  |
-| Complete style control | Headless         | `@equaltoai/greater-components/headless`   |
-| ActivityPub connection | Adapters         | `@equaltoai/greater-components/adapters`   |
-| Utility functions      | Utils            | `@equaltoai/greater-components/utils`      |
+| Need                   | Use This Package | Import From               |
+| ---------------------- | ---------------- | ------------------------- |
+| Button, form inputs    | Primitives       | `$lib/greater/primitives` |
+| Layout containers      | Primitives       | `$lib/greater/primitives` |
+| Typography             | Primitives       | `$lib/greater/primitives` |
+| **AI chat interface**  | **Chat**         | `$lib/components/chat`    |
+| Icons                  | Icons            | `$lib/greater/icons`      |
+| Social media feed      | Faces (Social)   | `$lib/components/*`       |
+| User profiles          | Faces (Social)   | `$lib/components/*`       |
+| Complete style control | Headless         | `$lib/greater/headless`   |
+| ActivityPub connection | Adapters         | `$lib/greater/adapters`   |
+| Utility functions      | Utils            | `$lib/greater/utils`      |
 
 ### Use Case to Package Mapping
 
@@ -1288,8 +1525,8 @@ Store messages in localStorage, IndexedDB, or your backend.
 → Primitives (Container, Section, Heading, Text, Card, Button)
 → Icons (for decorative icons)
 
-**Building a Fediverse client?**
-→ Fediverse (Timeline, Status, Profile)
+**Building an ActivityPub client?**
+→ Faces (Social) (Timeline, Status, Profile)
 → Primitives (for settings pages, forms)
 → Adapters (to connect to server)
 → Icons (UI icons)
@@ -1303,10 +1540,9 @@ Store messages in localStorage, IndexedDB, or your backend.
 → Icons (work with any styling)
 
 **Need custom data fetching?**
-→ Adapters (extend BaseAdapter)
-→ Fediverse stores as examples
+→ Adapters (GraphQL adapter + stores + mappers)
 
-## Icons Package (@equaltoai/greater-components/icons)
+## Icons Package (`$lib/greater/icons`)
 
 ### Naming Convention
 
@@ -1454,7 +1690,7 @@ Filename (kebab-case) → Export (PascalCase + Icon):
 - ❌ DOES NOT EXIST: DocumentIcon, PageIcon
 - **Recommendation:** Use FileTextIcon or BookIcon
 
-## Fediverse Package (@equaltoai/greater-components/fediverse)
+## Faces Package (Social) (`$lib/components/*`)
 
 This package provides components specifically for building ActivityPub/Fediverse social media applications.
 
@@ -1505,7 +1741,7 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ```svelte
 <script>
-	import { Status } from '@equaltoai/greater-components/fediverse';
+	import { Status } from '$lib/components/Status';
 </script>
 
 <Status.Root {status} {handlers}>
@@ -1548,16 +1784,19 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ```svelte
 <script>
-	import { Timeline, Status } from '@equaltoai/greater-components/fediverse';
+	import { Status } from '$lib/components/Status';
+	import { Timeline } from '$lib/components/Timeline';
 </script>
 
 <Timeline.Root {items}>
-	{#each items as item}
-		<Timeline.Item {item}>
-			<Status.Root status={item}>
-				<Status.Header />
-				<Status.Content />
-			</Status.Root>
+	{#each items as item, index}
+		<Timeline.Item {item} {index}>
+			{#if item.status}
+				<Status.Root status={item.status}>
+					<Status.Header />
+					<Status.Content />
+				</Status.Root>
+			{/if}
 		</Timeline.Item>
 	{/each}
 
@@ -1635,17 +1874,19 @@ This package provides components specifically for building ActivityPub/Fediverse
 
 ### Stores & Helpers
 
-**createTimelineStore** - Standard ActivityPub timeline management
+**TimelineVirtualizedReactive** - Virtualized timeline component with optional GraphQL-backed paging
 
-- **Purpose:** Manages timeline state, pagination, updates
-- **Returns:** Store with items, loading, error states, refresh/loadMore methods
+- **Purpose:** Renders large feeds efficiently (TanStack Virtual) and can self-manage paging via `adapter + view`
 
-**createLesserTimelineStore** - Lesser-enhanced timeline management
+**TransportManager** - Streaming transport for real-time updates
 
-- **Purpose:** Timeline with Lesser-specific features (cost, trust, moderation)
-- **Additional Features:** Trust filtering, cost tracking, AI insights
+- **Purpose:** Centralizes streaming connection management (WebSocket/SSE/polling + fallbacks)
 
-### What Fediverse Package Does NOT Provide
+**createTimelineIntegration / createGraphQLTimelineIntegration** - Store-to-component integration helpers
+
+- **Purpose:** Connect timeline components to REST or GraphQL data sources
+
+### What Faces Package Does NOT Provide
 
 ❌ NO Authentication backend (provides UI only, you implement auth logic)
 ❌ NO API client (you provide the adapter/fetch logic)
@@ -1654,7 +1895,7 @@ This package provides components specifically for building ActivityPub/Fediverse
 ❌ NO State persistence (you handle localStorage/sessionStorage)
 ❌ NO Push notifications (you implement notification service)
 
-## Headless Package (@equaltoai/greater-components/headless)
+## Headless Package (`$lib/greater/headless`)
 
 Headless components provide **behavior and accessibility WITHOUT any styling**. Use these when you have an existing design system or need complete CSS control.
 
@@ -1699,7 +1940,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 
 ```svelte
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
+	import { createButton } from '$lib/greater/headless/button';
 
 	const button = createButton({
 		onClick: () => console.log('clicked'),
@@ -1746,7 +1987,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 
 ```svelte
 <script>
-	import { createModal } from '@equaltoai/greater-components/headless/modal';
+	import { createModal } from '$lib/greater/headless/modal';
 
 	let isOpen = $state(false);
 
@@ -1824,15 +2065,16 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 - No indicator/underline animations
 - No panel transitions
 
-## Adapters Package (@equaltoai/greater-components/adapters)
+## Adapters Package (`$lib/greater/adapters`)
 
-### Protocol Adapters (2 Concrete, 1 Abstract)
+### Key Exports
 
-- `LesserGraphQLAdapter` - For Lesser instances (GraphQL + Subscriptions)
-- `MastodonRESTAdapter` - For Mastodon/Pleroma instances (REST API)
-- `BaseAdapter` - Abstract class for building custom adapters
+- `LesserGraphQLAdapter` - Typed GraphQL client for Lesser
+- `createTimelineStore`, `createNotificationStore` - Reactive stores for paging + streaming updates
+- `TransportManager` + transport clients (WebSocket/SSE/polling) and fallback orchestration
+- `mapMastodonStatus`, `mapLesserPost`, etc - Mappers for server payloads → unified model
 
-## Utils Package (@equaltoai/greater-components/utils)
+## Utils Package (`$lib/greater/utils`)
 
 ### Utilities
 
@@ -1840,7 +2082,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 - **String Manipulation:** `truncate`, `stripHtml`, `sanitizeHtml`
 - **Validation:** `isValidUrl`, `isValidEmail`
 
-## Testing Package (@equaltoai/greater-components/testing)
+## Testing Package (`packages/testing`, monorepo-only)
 
 ### Test Helpers
 
@@ -1860,7 +2102,7 @@ Headless components provide **behavior and accessibility WITHOUT any styling**. 
 #### Method 2: Check Source Code
 
 1. Primitives: `packages/primitives/src/index.ts`
-2. Fediverse: `packages/fediverse/src/index.ts`
+2. Social face: `packages/faces/social/src/index.ts`
 3. Icons: `packages/icons/src/index.ts`
 4. If component is not exported, it DOES NOT EXIST
 
@@ -1928,13 +2170,15 @@ When a component doesn't exist, here's what to use instead:
 
 ### Total Components Across All Packages
 
-- **Primitives:** 21 components
-- **Chat:** 8 components + context utilities
-- **Headless:** 5 primitives
-- **Fediverse:** 50+ components (including all sub-components and compounds)
+- **Primitives:** 41 components (plus compound subcomponents)
+- **Content:** 2 components (CodeBlock, MarkdownRenderer)
+- **Chat:** 9 components + context utilities
+- **Headless:** Behavior primitives (`create*` helpers)
+- **Faces (Social):** Social UI components + compounds (Status, Timeline, Profile, etc.)
 - **Icons:** 300+ icons
-- **Adapters:** 3 adapters
+- **Adapters:** Transport + GraphQL adapter + stores + mappers
 - **Utils:** ~15 utility functions
+- **Transitions:** 4 animation utilities (fadeUp, fadeDown, slideIn, scaleIn)
 - **Testing:** 3 test helpers
 
 ### Key Principle

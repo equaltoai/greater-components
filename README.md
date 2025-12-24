@@ -4,14 +4,12 @@
 
 **Modern UI components for building accessible Fediverse applications**
 
-[![JSR](https://jsr.io/badges/@equaltoai/greater-components/primitives)](https://jsr.io/@equaltoai/greater-components/primitives)
-[![npm version](https://img.shields.io/npm/v/@equaltoai/greater-components/primitives.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/primitives)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![Svelte 5](https://img.shields.io/badge/Svelte-5-orange.svg)](https://svelte.dev/)
 [![Coverage](https://img.shields.io/codecov/c/github/equaltoai/greater-components)](https://codecov.io/gh/equaltoai/greater-components)
 
-[**Documentation**](./API_DOCUMENTATION.md) • [**Playground**](apps/playground/src/routes) • [**Getting Started**](#quick-start) • [**Examples**](./examples) • [**Contributing**](./CONTRIBUTING.md)
+[**Documentation**](./docs/README.md) • [**Playground**](apps/playground/src/routes) • [**Getting Started**](#quick-start) • [**Examples**](./examples) • [**Contributing**](./CONTRIBUTING.md)
 
 </div>
 
@@ -36,25 +34,30 @@ Greater Components is a comprehensive, production-ready UI component library des
 
 ### Installation
 
-#### Via npm (Recommended)
-
-Greater Components is distributed as a single package containing all modules.
+The Greater CLI copies components as source code to your project (shadcn-style), giving you full control:
 
 ```bash
-npm install @equaltoai/greater-components
+# Install the CLI from GitHub Releases (recommended)
+# Replace `greater-vX.Y.Z` with a real tag from https://github.com/equaltoai/greater-components/releases
+npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
+
+# Initialize in your project
+cd my-sveltekit-app
+greater init
+
+# Add components
+greater add button modal menu
+
+# Add a complete face (component bundle)
+greater add faces/social
+
+# Update installed components to a specific Git tag
+greater update --ref greater-vX.Y.Z
 ```
 
-#### Via pnpm
+**Benefits:** Full source ownership, easy customization, deterministic installs via Git tags, no npm publish tokens required.
 
-```bash
-pnpm add @equaltoai/greater-components
-```
-
-#### Via JSR
-
-```bash
-npx jsr add @equaltoai/greater-components
-```
+📖 See [CLI Guide](./docs/cli-guide.md) for complete documentation.
 
 ### Basic Usage
 
@@ -129,71 +132,52 @@ npx jsr add @equaltoai/greater-components
 ```svelte
 <script>
 	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { Status, Admin, Hashtags } from '@equaltoai/greater-components/fediverse';
-	import { createLesserTimelineStore } from '@equaltoai/greater-components/fediverse';
+	import { TimelineVirtualizedReactive } from '@equaltoai/greater-components/faces/social';
 
 	// Initialize Lesser adapter with GraphQL endpoint
 	const adapter = new LesserGraphQLAdapter({
-		endpoint: 'https://your-instance.social/graphql',
+		httpEndpoint: 'https://your-instance.social/graphql',
 		token: 'your-auth-token',
 	});
 
-	// Create timeline with Lesser-specific features
-	const timeline = createLesserTimelineStore({
-		adapter,
-		type: 'HASHTAG',
-		hashtags: ['svelte', 'fediverse'],
-		hashtagMode: 'ANY',
-	});
-
-	// Access Lesser-specific metadata
-	const postsWithCost = timeline.getItemsWithCost();
-	const postsWithTrust = timeline.getItemsWithTrustScore();
+	const view = {
+		type: 'home',
+	};
 </script>
 
-<!-- Display status with Lesser features -->
-<Status.Root {status}>
-	<Status.Header />
-	<Status.Content />
-	<Status.LesserMetadata showCost showTrust showModeration />
-	<Status.CommunityNotes enableVoting />
-	<Status.Actions onQuote={handleQuote} />
-</Status.Root>
-
-<!-- Admin dashboard with cost analytics -->
-<Admin.Cost.Root {adapter}>
-	<Admin.Cost.Dashboard period="WEEK" />
-	<Admin.Cost.BudgetControls />
-</Admin.Cost.Root>
+<TimelineVirtualizedReactive {adapter} {view} estimateSize={320} />
 ```
 
 ## ✅ Phase 5 – Documentation & Testing
 
 - **Demo suite docs**: `/demo-suite` plus `/demo-suite/{timeline,profile,settings,search}` now outline props, handlers, accessibility, and performance notes for every Phase 4 surface.
 - **New primitives coverage**: `/components/tabs` and `/components/switch` pages document the runes-based API with live demos.
-- **Testing upgrades**: Vitest specs for `apps/playground/src/lib/stores/storage.ts` and `packages/fediverse/src/lib/timelineStore.ts` + Playwright flows in `packages/testing/tests/demo/{timeline,profile,settings,search}.spec.ts`.
-- **Performance tracking**: Lighthouse (Playground build) scored 98/100/100/100 with notes logged in `docs/planning/greater-alignment-log.md`.
-- **Deployment runbook**: Follow `docs/deployment/demo-suite.md` for build/preview/publish commands, including the new Lighthouse + Playwright validation steps.
+- **Testing upgrades**: Vitest coverage for adapters/stores plus Playwright flows in `packages/testing/tests/demo/*.spec.ts`.
 
 ## 📦 Package Overview
 
+All packages are installed as source code via the CLI. No npm registry dependency required.
+
 ### Core Packages
 
-| Package                                                               | Description                                              | Version                                                                                                                                                     |
-| --------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[@equaltoai/greater-components/headless](./packages/headless)**     | 🆕 Headless UI primitives - behavior without styling     | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/headless.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/headless)     |
-| **[@equaltoai/greater-components/primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/primitives.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/primitives) |
-| **[@equaltoai/greater-components/tokens](./packages/tokens)**         | Design system tokens and theming                         | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/tokens.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/tokens)         |
-| **[@equaltoai/greater-components/icons](./packages/icons)**           | 300+ SVG icons including Fediverse-specific ones         | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/icons.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/icons)           |
+| Package                                 | Description                                              |
+| --------------------------------------- | -------------------------------------------------------- |
+| **[headless](./packages/headless)**     | 🆕 Headless UI primitives - behavior without styling     |
+| **[primitives](./packages/primitives)** | Essential UI components (Button, Modal, TextField, etc.) |
+| **[tokens](./packages/tokens)**         | Design system tokens and theming                         |
+| **[icons](./packages/icons)**           | 300+ SVG icons including Fediverse-specific ones         |
 
 ### Specialized Packages
 
-| Package                                                             | Description                                          | Version                                                                                                                                                   |
-| ------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **[@equaltoai/greater-components/fediverse](./packages/fediverse)** | Social media components (Timeline, StatusCard, etc.) | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/fediverse.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/fediverse) |
-| **[@equaltoai/greater-components/utils](./packages/utils)**         | Utility functions for web applications               | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/utils.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/utils)         |
-| **[@equaltoai/greater-components/adapters](./packages/adapters)**   | Protocol adapters for Fediverse servers              | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/adapters.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/adapters)   |
-| **[@equaltoai/greater-components/testing](./packages/testing)**     | Testing utilities and accessibility helpers          | [![npm](https://img.shields.io/npm/v/@equaltoai/greater-components/testing.svg)](https://www.npmjs.com/package/@equaltoai/greater-components/testing)     |
+| Package                                           | Description                                       |
+| ------------------------------------------------- | ------------------------------------------------- |
+| **[faces/social](./packages/faces/social)**       | Social media components (Timeline, Profile, etc.) |
+| **[faces/artist](./packages/faces/artist)**       | Artist portfolio and gallery components           |
+| **[faces/blog](./packages/faces/blog)**           | Blog and content publishing components            |
+| **[faces/community](./packages/faces/community)** | Community and forum components                    |
+| **[utils](./packages/utils)**                     | Utility functions for web applications            |
+| **[adapters](./packages/adapters)**               | Protocol adapters for Fediverse servers           |
+| **[testing](./packages/testing)**                 | Testing utilities and accessibility helpers       |
 
 ## 🌟 Key Features
 
@@ -303,11 +287,10 @@ test('button handles clicks', () => {
 ### 📖 **Documentation**
 
 - [**Lesser Integration Guide**](./docs/lesser-integration-guide.md) - Complete Lesser setup and feature guide
-- [**API Reference**](./API_DOCUMENTATION.md) - Complete API documentation
-- [**API Stability Guide**](./API_STABILITY.md) - Backwards compatibility guarantees
+- [**API Reference**](./docs/api-reference.md) - Complete API documentation
 - [**Component Documentation**](./docs/components/) - Individual component guides
-- [**Migration Guide**](./docs/migration/) - Upgrade instructions
-- [**Troubleshooting**](./docs/troubleshooting/) - Common issues and solutions
+- [**Migration Guide**](./docs/migration-guide.md) - Upgrade instructions
+- [**Troubleshooting**](./docs/troubleshooting.md) - Common issues and solutions
 
 ### 🎮 **Interactive Examples**
 
@@ -323,9 +306,10 @@ test('button handles clicks', () => {
 
 ## 🔐 Security
 
-Security is a top priority. All packages are:
+Security is a top priority:
 
-- **Signed with npm provenance** for supply chain security
+- **Git tag based distribution** - Releases are pinned to signed Git tags for supply chain security
+- **Checksum verification** - All installed files are verified against checksums in `registry/index.json`
 - **Regularly audited** for vulnerabilities
 - **AGPL-3.0 licensed** for transparency
 

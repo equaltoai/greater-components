@@ -11,15 +11,12 @@ Displays active cost alerts and budget warnings from admin streaming store.
 
 	interface Props {
 		class?: string;
+		alerts?: Array<Record<string, unknown>>;
 	}
 
-	let { class: className = '' }: Props = $props();
+	let { class: className = '', alerts = [] }: Props = $props();
 
 	getCostContext();
-
-	// Note: In a real implementation, this would connect to adminStreamingStore
-	// For now, providing structure
-	const alerts = $state<Array<Record<string, unknown>>>([]);
 </script>
 
 <div class={`cost-alerts ${className}`}>
@@ -28,7 +25,7 @@ Displays active cost alerts and budget warnings from admin streaming store.
 		<p>No active cost alerts.</p>
 	{:else}
 		<ul>
-			{#each alerts as alert (alert.id || Math.random())}
+			{#each alerts as alert, i (alert.id || i)}
 				<li>{alert.message}</li>
 			{/each}
 		</ul>

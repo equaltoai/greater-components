@@ -9,7 +9,7 @@
  * @example
  * ```svelte
  * <script>
- *   import * as Messages from '@equaltoai/greater-components-fediverse/Messages';
+ *   import * as Messages from '@equaltoai/greater-components/faces/social/Messages';
  *
  *   const handlers = {
  *     onFetchConversations: async () => {
@@ -48,6 +48,7 @@ export { default as Message } from './Message.svelte';
 export { default as NewConversation } from './NewConversation.svelte';
 export { default as MediaUpload } from './MediaUpload.svelte';
 export { default as UnreadIndicator } from './UnreadIndicator.svelte';
+export { default as ConversationPicker } from './ConversationPicker.svelte';
 
 // Export types and context utilities
 export type {
@@ -57,11 +58,8 @@ export type {
 	MessagesHandlers,
 	MessagesState,
 	MessagesContext,
-} from './context.js';
+} from './context.svelte.js';
 
-export {
-	createMessagesContext,
-	getMessagesContext,
-	formatMessageTime,
-	getConversationName,
-} from './context.js';
+export { createMessagesContext, getMessagesContext } from './context.svelte.js';
+
+export { formatMessageTime, getConversationName } from './utils.js';

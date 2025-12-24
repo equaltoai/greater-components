@@ -46,7 +46,7 @@
 			code:
 				`<` +
 				`script lang="ts">
-  import { Switch } from '@equaltoai/greater-components-primitives';
+  import { Switch } from '@equaltoai/greater-components/primitives';
   let autoplayMedia = $state(true);
 </` +
 				`script>
@@ -88,7 +88,7 @@
 	description="Minimal toggle switch built on a native checkbox for instant accessibility."
 	status="beta"
 	version="0.2.0"
-	importPath="@equaltoai/greater-components-primitives"
+	importPath="@equaltoai/greater-components/primitives"
 	{props}
 	{examplesMeta}
 	{accessibility}

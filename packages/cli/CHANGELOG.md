@@ -21,7 +21,7 @@
   import { CodeBlock } from '@equaltoai/greater-components/primitives';
 
   // NEW (v3.0)
-  import { Timeline } from '@equaltoai/greater-components/faces/social';
+  import { TimelineCompound as Timeline } from '@equaltoai/greater-components/faces/social';
   import { CodeBlock } from '@equaltoai/greater-components/content';
   ```
 

@@ -16,7 +16,7 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import { createButton } from '@equaltoai/greater-components-headless/button';
 
 	export interface PollOption {
@@ -182,8 +182,8 @@
 	let { mode, poll, config = {}, handlers = {}, renderOption }: Props = $props();
 
 	const {
-		minOptions = 2,
 		maxOptions = 4,
+		minOptions = 2,
 		maxOptionLength = 50,
 		expirationOptions = [
 			{ label: '5 minutes', seconds: 300 },
@@ -198,7 +198,7 @@
 		class: className = '',
 		showPercentages = true,
 		animateResults = true,
-	} = config;
+	} = $derived(config);
 
 	// Create mode state
 	type DraftPollOption = {
@@ -206,14 +206,12 @@
 		value: string;
 	};
 
-	const generateOptionId = () =>
-		typeof crypto !== 'undefined' && 'randomUUID' in crypto
-			? crypto.randomUUID()
-			: `poll-option-${Math.random().toString(36).slice(2, 11)}`;
+	let optionCounter = 0;
 
 	function createOption(value = ''): DraftPollOption {
+		optionCounter += 1;
 		return {
-			id: generateOptionId(),
+			id: `poll-option-${optionCounter}`,
 			value,
 		};
 	}

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { onMount, onDestroy } from 'svelte';
-	import type { HTMLAttributes } from 'svelte/elements';
+	import { onMount, onDestroy, untrack } from 'svelte';
+
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import { TextField } from '@equaltoai/greater-components-primitives';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 	import type {
 		ComposeBoxProps,
 		ComposeBoxDraft,
@@ -58,15 +59,19 @@
 		mediaSlot,
 		pollSlot,
 		class: className = '',
+		id,
+		...restProps
 	}: Props = $props();
 
-	const restProps = $restProps<Omit<HTMLAttributes<HTMLDivElement>, 'class'>>();
-
 	// Component state
-	let content = $state(initialContent);
+
+	let content = $state(untrack(() => initialContent));
 	let contentWarning = $state('');
 	let hasContentWarning = $state(false);
-	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(defaultVisibility);
+
+	let visibility = $state<'public' | 'unlisted' | 'private' | 'direct'>(
+		untrack(() => defaultVisibility)
+	);
 	let mediaAttachments = $state<ComposeMediaAttachment[]>([]);
 	let poll = $state<ComposePoll | undefined>();
 	let isSubmitting = $state(false);
@@ -103,7 +108,7 @@
 		return 'var(--gr-semantic-foreground-secondary)';
 	});
 
-	const draftData = $derived<ComposeBoxDraft>(() => ({
+	const draftData = $derived<ComposeBoxDraft>({
 		content,
 		contentWarning,
 		hasContentWarning,
@@ -112,14 +117,15 @@
 		poll,
 		replyToId: replyToStatus?.id,
 		timestamp: Date.now(),
-	}));
+	});
 
 	// Generate unique IDs for accessibility
-	const composeId = `gr-compose-${Math.random().toString(36).substr(2, 9)}`;
-	const textareaId = `${composeId}-textarea`;
-	const cwId = `${composeId}-cw`;
-	const charCountId = `${composeId}-char-count`;
-	const cwCharCountId = `${composeId}-cw-char-count`;
+	const stableId = useStableId('compose-box');
+	const composeId = $derived(id || stableId.value || undefined);
+	const textareaId = $derived(composeId ? `${composeId}-textarea` : undefined);
+	const cwId = $derived(composeId ? `${composeId}-cw` : undefined);
+	const charCountId = $derived(composeId ? `${composeId}-char-count` : undefined);
+	const cwCharCountId = $derived(composeId ? `${composeId}-cw-char-count` : undefined);
 
 	// Auto-resize textarea
 	function resizeTextarea(textarea: HTMLTextAreaElement) {

@@ -116,6 +116,12 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 
 	let isOver = $state(false);
 	let fileInput: HTMLInputElement;
+	let droppedItemIdCounter = 0;
+
+	function nextDroppedItemId(type: DroppedItem['type']): string {
+		droppedItemIdCounter += 1;
+		return `dropzone-${type}-${Date.now()}-${droppedItemIdCounter}`;
+	}
 
 	function handleDragEnter(e: DragEvent) {
 		if (disabled) return;
@@ -218,7 +224,7 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 					}
 
 					droppedItems.push({
-						id: crypto.randomUUID(),
+						id: nextDroppedItemId('file'),
 						type: 'file',
 						content,
 						file,
@@ -245,14 +251,14 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 			if (accept.urls && (uriList || (text && isValidUrl(text)))) {
 				const url = uriList || text;
 				droppedItems.push({
-					id: crypto.randomUUID(),
+					id: nextDroppedItemId('url'),
 					type: 'url',
 					content: url,
 					name: url,
 				});
 			} else if (accept.text && text) {
 				droppedItems.push({
-					id: crypto.randomUUID(),
+					id: nextDroppedItemId('text'),
 					type: 'text',
 					content: text,
 					name: text.slice(0, 20) + (text.length > 20 ? '...' : ''),
@@ -326,7 +332,7 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 					}
 
 					droppedItems.push({
-						id: crypto.randomUUID(),
+						id: nextDroppedItemId('file'),
 						type: 'file',
 						content,
 						file,
@@ -395,8 +401,8 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 	}
 
-	// Construct accept string for input
-	const acceptString = accept.files?.join(',') || '';
+	// Construct accept string for input - use $derived to track accept prop changes
+	const acceptString = $derived(accept.files?.join(',') || '');
 </script>
 
 <div

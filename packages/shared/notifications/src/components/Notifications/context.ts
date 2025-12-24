@@ -8,4 +8,4 @@ export {
 	type NotificationsHandlers,
 	type NotificationsState,
 	type NotificationsContext,
-} from '../../context.js';
+} from '../../context.svelte.js';

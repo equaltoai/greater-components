@@ -98,7 +98,7 @@
 
 	<section class="import-section">
 		<h2>Import</h2>
-		<CodeExample language="javascript" code={`import ${name} from '${importPath}';`} />
+		<CodeExample language="javascript" code={`import { ${name} } from '${importPath}';`} />
 	</section>
 
 	{#if examplesMeta.length > 0 && examples}

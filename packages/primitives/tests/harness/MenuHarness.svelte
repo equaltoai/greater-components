@@ -3,7 +3,7 @@
 	import type MenuComponent from '../../src/components/Menu.svelte';
 	import type { ComponentProps } from 'svelte';
 
-	const { props = {} as ComponentProps<typeof MenuComponent> } = $props<{
+	let { props = {} as ComponentProps<typeof MenuComponent> } = $props<{
 		props?: ComponentProps<typeof MenuComponent>;
 	}>();
 
@@ -13,13 +13,13 @@
 		{ id: 'settings', label: 'Settings' },
 	];
 
-	const items = props.items ?? defaultItems;
-	const triggerSnippet = props.trigger ?? Trigger;
-	const finalProps = {
+	const items = $derived(props.items ?? defaultItems);
+	const triggerSnippet = $derived(props.trigger ?? Trigger);
+	const finalProps = $derived({
 		...props,
 		items,
 		trigger: triggerSnippet,
-	};
+	});
 </script>
 
 {#snippet Trigger({ open, toggle })}

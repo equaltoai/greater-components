@@ -1,0 +1,195 @@
+# Discovery GraphQL Schema
+# Implements REQ-FED-006: Federated search via WebFinger
+
+"""
+Discovery filter for artwork search.
+"""
+input DiscoveryFilter {
+	"""
+	Filter by artistic styles
+	"""
+	styles: [String!]
+	"""
+	Filter by mood/emotion
+	"""
+	mood: MoodInput
+	"""
+	Filter by medium
+	"""
+	medium: [String!]
+	"""
+	Filter by specific artist
+	"""
+	artist: ID
+	"""
+	Filter by date range
+	"""
+	dateRange: DateRangeInput
+	"""
+	Include federated results
+	"""
+	includeFederated: Boolean
+}
+
+input DateRangeInput {
+	from: DateTime
+	to: DateTime
+}
+
+"""
+Color search mode for palette-based discovery.
+"""
+enum ColorSearchMode {
+	"""
+	Match any of the specified colors
+	"""
+	ANY
+	"""
+	Match all specified colors
+	"""
+	ALL
+	"""
+	Match dominant color
+	"""
+	DOMINANT
+	"""
+	Match color harmony/palette
+	"""
+	HARMONY
+}
+
+"""
+Artist profile with portfolio information.
+"""
+type ArtistProfile {
+	id: ID!
+	"""
+	ActivityPub URI for federation
+	"""
+	uri: String!
+	account: Account!
+	"""
+	Artist statement/bio
+	"""
+	statement: String
+	"""
+	Professional badges
+	"""
+	badges: [ArtistBadge!]!
+	"""
+	Portfolio sections
+	"""
+	sections: [PortfolioSection!]!
+	"""
+	Featured/signature artwork
+	"""
+	featuredArtwork: Artwork
+	"""
+	Artist statistics
+	"""
+	stats: ArtistStats!
+	"""
+	Commission availability
+	"""
+	acceptingCommissions: Boolean!
+	"""
+	Commission info
+	"""
+	commissionInfo: CommissionInfo
+}
+
+type ArtistBadge {
+	type: BadgeType!
+	label: String!
+	verifiedAt: DateTime
+}
+
+enum BadgeType {
+	VERIFIED
+	EDUCATOR
+	INSTITUTION
+	MENTOR
+	CURATOR
+	PRO
+}
+
+type PortfolioSection {
+	id: ID!
+	title: String!
+	description: String
+	artworks: [Artwork!]!
+	layout: SectionLayout!
+	order: Int!
+}
+
+enum SectionLayout {
+	GRID
+	ROW
+	FEATURED
+	MASONRY
+}
+
+type ArtistStats {
+	artworkCount: Int!
+	followerCount: Int!
+	followingCount: Int!
+	totalViews: Int!
+	totalLikes: Int!
+	exhibitionCount: Int!
+}
+
+type CommissionInfo {
+	status: CommissionStatus!
+	priceRange: String
+	turnaround: String
+	description: String
+}
+
+# Discovery Queries
+extend type Query {
+	"""
+	Discover artworks with AI-powered filtering
+	"""
+	discoverArtworks(filter: DiscoveryFilter, first: Int, after: String): ArtworkConnection!
+
+	"""
+	Get artist profile by ID
+	"""
+	artistProfile(id: ID!): ArtistProfile
+
+	"""
+	Search artworks by text query with optional filters
+	"""
+	searchArtworks(
+		query: String!
+		filter: DiscoveryFilter
+		first: Int
+		after: String
+	): ArtworkConnection!
+
+	"""
+	Find similar artworks using AI analysis
+	"""
+	similarArtworks(artworkId: ID!, limit: Int): [Artwork!]!
+
+	"""
+	Search by color palette
+	"""
+	colorSearch(
+		colors: [String!]!
+		tolerance: Int
+		mode: ColorSearchMode
+		first: Int
+		after: String
+	): ArtworkConnection!
+
+	"""
+	Search by artistic style
+	"""
+	styleSearch(styles: [String!]!, first: Int, after: String): ArtworkConnection!
+
+	"""
+	WebFinger lookup for federated artist discovery (REQ-FED-006)
+	"""
+	webFingerLookup(acct: String!): ArtistProfile
+}

@@ -1,0 +1,380 @@
+# Commission GraphQL Schema
+# Implements REQ-FED-005: Commission workflow remains local (not federated)
+
+"""
+Commission status enum.
+"""
+enum CommissionStatus {
+	"""
+	Initial request submitted
+	"""
+	REQUESTED
+	"""
+	Artist reviewing request
+	"""
+	REVIEWING
+	"""
+	Quote provided by artist
+	"""
+	QUOTED
+	"""
+	Quote accepted, contract pending
+	"""
+	ACCEPTED
+	"""
+	Contract signed, work in progress
+	"""
+	IN_PROGRESS
+	"""
+	Work completed, pending delivery
+	"""
+	COMPLETED
+	"""
+	Final delivery sent
+	"""
+	DELIVERED
+	"""
+	Commission cancelled
+	"""
+	CANCELLED
+	"""
+	Dispute raised
+	"""
+	DISPUTED
+}
+
+"""
+Commission representing a custom artwork request.
+Note: Commission workflow remains local per REQ-FED-005.
+"""
+type Commission {
+	id: ID!
+	"""
+	Client requesting the commission
+	"""
+	client: Account!
+	"""
+	Artist fulfilling the commission
+	"""
+	artist: Account!
+	"""
+	Current status
+	"""
+	status: CommissionStatus!
+	"""
+	Initial request details
+	"""
+	request: CommissionRequest!
+	"""
+	Artist's quote/proposal
+	"""
+	quote: CommissionQuote
+	"""
+	Agreed contract terms
+	"""
+	contract: CommissionContract
+	"""
+	Progress updates
+	"""
+	progress: [CommissionUpdate!]!
+	"""
+	Final delivery
+	"""
+	delivery: CommissionDelivery
+	createdAt: DateTime!
+	updatedAt: DateTime
+}
+
+"""
+Initial commission request from client.
+"""
+type CommissionRequest {
+	id: ID!
+	"""
+	Description of requested artwork
+	"""
+	description: String!
+	"""
+	Reference images
+	"""
+	references: [MediaAttachment!]
+	"""
+	Requested style
+	"""
+	style: String
+	"""
+	Requested medium
+	"""
+	medium: String
+	"""
+	Size/dimensions requested
+	"""
+	dimensions: String
+	"""
+	Client's budget range
+	"""
+	budget: String
+	"""
+	Requested deadline
+	"""
+	deadline: DateTime
+	"""
+	Additional notes
+	"""
+	notes: String
+	createdAt: DateTime!
+}
+
+"""
+Artist's quote/proposal for commission.
+"""
+type CommissionQuote {
+	id: ID!
+	"""
+	Quoted price
+	"""
+	price: Money!
+	"""
+	Estimated completion time
+	"""
+	estimatedDays: Int!
+	"""
+	What's included
+	"""
+	includes: [String!]!
+	"""
+	Revision policy
+	"""
+	revisions: Int!
+	"""
+	Quote expiration
+	"""
+	expiresAt: DateTime
+	"""
+	Artist's notes
+	"""
+	notes: String
+	createdAt: DateTime!
+}
+
+type Money {
+	amount: Float!
+	currency: String!
+}
+
+"""
+Agreed contract terms.
+"""
+type CommissionContract {
+	id: ID!
+	"""
+	Final agreed price
+	"""
+	price: Money!
+	"""
+	Payment terms
+	"""
+	paymentTerms: String!
+	"""
+	Delivery deadline
+	"""
+	deadline: DateTime!
+	"""
+	Usage rights granted
+	"""
+	usageRights: String!
+	"""
+	Revision terms
+	"""
+	revisionTerms: String!
+	"""
+	Cancellation policy
+	"""
+	cancellationPolicy: String!
+	"""
+	Client signature timestamp
+	"""
+	clientSignedAt: DateTime
+	"""
+	Artist signature timestamp
+	"""
+	artistSignedAt: DateTime
+}
+
+"""
+Progress update during commission.
+"""
+type CommissionUpdate {
+	id: ID!
+	"""
+	Update type
+	"""
+	type: UpdateType!
+	"""
+	Update message
+	"""
+	message: String!
+	"""
+	Attached media (WIP images)
+	"""
+	media: [MediaAttachment!]
+	"""
+	Revision number if applicable
+	"""
+	revisionNumber: Int
+	createdAt: DateTime!
+}
+
+enum UpdateType {
+	SKETCH
+	WORK_IN_PROGRESS
+	REVISION
+	MILESTONE
+	MESSAGE
+	REVISION_REQUEST
+}
+
+"""
+Final commission delivery.
+"""
+type CommissionDelivery {
+	id: ID!
+	"""
+	Final artwork files
+	"""
+	files: [MediaAttachment!]!
+	"""
+	Delivery message
+	"""
+	message: String
+	"""
+	Whether client has accepted
+	"""
+	accepted: Boolean!
+	"""
+	Acceptance timestamp
+	"""
+	acceptedAt: DateTime
+	createdAt: DateTime!
+}
+
+# Commission Inputs
+input CommissionRequestInput {
+	artistId: ID!
+	description: String!
+	referenceIds: [ID!]
+	style: String
+	medium: String
+	dimensions: String
+	budget: String
+	deadline: DateTime
+	notes: String
+}
+
+input QuoteInput {
+	price: MoneyInput!
+	estimatedDays: Int!
+	includes: [String!]!
+	revisions: Int!
+	expiresAt: DateTime
+	notes: String
+}
+
+input MoneyInput {
+	amount: Float!
+	currency: String!
+}
+
+input ProgressInput {
+	type: UpdateType!
+	message: String!
+	mediaIds: [ID!]
+	revisionNumber: Int
+}
+
+input DeliveryInput {
+	fileIds: [ID!]!
+	message: String
+}
+
+# Commission Mutations
+extend type Mutation {
+	"""
+	Create a new commission request
+	"""
+	createCommissionRequest(input: CommissionRequestInput!): Commission!
+
+	"""
+	Artist submits quote for commission
+	"""
+	submitQuote(commissionId: ID!, input: QuoteInput!): Commission!
+
+	"""
+	Client accepts quote
+	"""
+	acceptQuote(commissionId: ID!): Commission!
+
+	"""
+	Decline quote
+	"""
+	declineQuote(commissionId: ID!, reason: String): Commission!
+
+	"""
+	Update commission progress
+	"""
+	updateProgress(commissionId: ID!, input: ProgressInput!): Commission!
+
+	"""
+	Deliver completed commission
+	"""
+	deliverCommission(commissionId: ID!, input: DeliveryInput!): Commission!
+
+	"""
+	Accept delivery
+	"""
+	acceptDelivery(commissionId: ID!): Commission!
+
+	"""
+	Request revision
+	"""
+	requestRevision(commissionId: ID!, feedback: String!): Commission!
+
+	"""
+	Cancel commission
+	"""
+	cancelCommission(commissionId: ID!, reason: String!): Commission!
+}
+
+# Commission Queries
+extend type Query {
+	"""
+	Get commission by ID
+	"""
+	commission(id: ID!): Commission
+
+	"""
+	Get user's commissions (as client or artist)
+	"""
+	myCommissions(
+		role: CommissionRole
+		status: [CommissionStatus!]
+		first: Int
+		after: String
+	): CommissionConnection!
+}
+
+enum CommissionRole {
+	CLIENT
+	ARTIST
+}
+
+type CommissionConnection {
+	edges: [CommissionEdge!]!
+	pageInfo: PageInfo!
+	totalCount: Int!
+}
+
+type CommissionEdge {
+	cursor: String!
+	node: Commission!
+}

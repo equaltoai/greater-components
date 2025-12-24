@@ -87,7 +87,7 @@
 		onQuote: actionHandlers?.onQuote ? () => actionHandlers.onQuote!(status) : undefined,
 	});
 
-	let sensitiveVisibility: Record<string, boolean> = {};
+	let sensitiveVisibility = $state<Record<string, boolean>>({});
 
 	function getPreviewType(
 		media: (typeof actualStatus.mediaAttachments)[number]

@@ -31,4 +31,41 @@ describe('Select.svelte', () => {
 		expect(placeholder.disabled).toBe(true);
 		expect(placeholder.selected).toBe(true);
 	});
+
+	it('renders disabled state', () => {
+		const { getByRole } = render(Select, {
+			props: { options, disabled: true },
+		});
+
+		const select = getByRole('combobox') as HTMLSelectElement;
+		expect(select.disabled).toBe(true);
+	});
+
+	it('renders required attribute', () => {
+		const { getByRole } = render(Select, {
+			props: { options, required: true },
+		});
+
+		const select = getByRole('combobox') as HTMLSelectElement;
+		expect(select.required).toBe(true);
+	});
+
+	it('renders custom class', () => {
+		const { getByRole } = render(Select, {
+			props: { options, class: 'custom-class' },
+		});
+
+		const select = getByRole('combobox');
+		expect(select.classList.contains('custom-class')).toBe(true);
+	});
+
+	it('handles change without onchange handler', async () => {
+		const { getByRole } = render(Select, {
+			props: { options },
+		});
+
+		const select = getByRole('combobox') as HTMLSelectElement;
+		await fireEvent.change(select, { target: { value: 'beta' } });
+		expect(select.value).toBe('beta');
+	});
 });

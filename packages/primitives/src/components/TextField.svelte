@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 
 	interface Props extends Omit<HTMLInputAttributes, 'type' | 'value'> {
 		label?: string;
@@ -43,7 +44,8 @@
 	}: Props = $props();
 
 	// Generate unique ID for accessibility
-	const fieldId = $derived(id || `gr-textfield-${Math.random().toString(36).substr(2, 9)}`);
+	const generatedId = useStableId('textfield');
+	const fieldId = $derived(id || generatedId.value);
 	const helpTextId = $derived(`${fieldId}-help`);
 	const errorId = $derived(`${fieldId}-error`);
 

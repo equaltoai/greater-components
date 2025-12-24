@@ -134,20 +134,21 @@
 	let wallet = $state<ConnectedWallet | null>(null);
 	let error = $state<string | null>(null);
 	let selectedProvider = $state<WalletProvider | null>(null);
+	let wallets = $state<WalletInfo[]>([]);
 
 	// Headless buttons
 	const walletButtons = new Map<WalletProvider, ReturnType<typeof createButton>>();
 	const disconnectButton = createButton();
 
 	/**
-	 * Available wallet providers
+	 * Initialize wallets and buttons
 	 */
-	const wallets = $derived<WalletInfo[]>(() => {
+	$effect(() => {
 		const providersWindow = getWindowProviders();
 		const ethereum = providersWindow?.ethereum;
 		const phantomEthereum = providersWindow?.phantom?.ethereum;
 
-		return [
+		const availableWallets: WalletInfo[] = [
 			{
 				provider: 'metamask',
 				name: 'MetaMask',
@@ -185,13 +186,10 @@
 				available: true, // WalletConnect is always available (uses QR code)
 			},
 		];
-	});
 
-	/**
-	 * Initialize wallet button instances
-	 */
-	$effect(() => {
-		wallets.forEach((w) => {
+		wallets = availableWallets;
+
+		availableWallets.forEach((w) => {
 			if (!walletButtons.has(w.provider)) {
 				walletButtons.set(w.provider, createButton());
 			}
@@ -471,6 +469,13 @@
 					</p>
 				</div>
 			</div>
+
+			{#if error}
+				<div class="wallet-connect__error" role="alert">
+					<span class="wallet-connect__error-icon">⚠️</span>
+					<span class="wallet-connect__error-text">{error}</span>
+				</div>
+			{/if}
 
 			<div class="wallet-connect__connected-details">
 				<div class="wallet-connect__detail">

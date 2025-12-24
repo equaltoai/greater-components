@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /**
  * NotificationItem Logic Tests
  *
@@ -111,9 +112,16 @@ function hasStatus(notification: Notification): boolean {
 	return 'status' in notification && !!notification.status;
 }
 
-// Strip HTML tags
+// Strip HTML tags using character-based approach (ReDoS-safe)
 function stripHTMLTags(html: string): string {
-	return html.replace(/<[^>]*>/g, '');
+	let result = '';
+	let inTag = false;
+	for (const char of html) {
+		if (char === '<') inTag = true;
+		else if (char === '>') inTag = false;
+		else if (!inTag) result += char;
+	}
+	return result;
 }
 
 // Truncate content

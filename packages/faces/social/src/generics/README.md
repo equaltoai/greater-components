@@ -18,7 +18,7 @@ The Fediverse is diverse! Each platform (Mastodon, Pleroma, Misskey, etc.) imple
 Represents any federated actor (Person, Organization, Service, etc.)
 
 ```typescript
-import type { ActivityPubActor } from '@equaltoai/greater-components-fediverse/generics';
+import type { ActivityPubActor } from '@equaltoai/greater-components/faces/social/generics';
 
 const actor: ActivityPubActor = {
 	id: 'https://mastodon.social/users/alice',
@@ -39,7 +39,7 @@ const actor: ActivityPubActor = {
 Represents any federated object (Note, Article, Video, etc.)
 
 ```typescript
-import type { ActivityPubObject } from '@equaltoai/greater-components-fediverse/generics';
+import type { ActivityPubObject } from '@equaltoai/greater-components/faces/social/generics';
 
 const post: ActivityPubObject = {
 	id: 'https://mastodon.social/users/alice/statuses/123',
@@ -56,7 +56,7 @@ const post: ActivityPubObject = {
 A unified status interface that works across all platforms
 
 ```typescript
-import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
+import type { GenericStatus } from '@equaltoai/greater-components/faces/social/generics';
 
 const status: GenericStatus = {
 	id: '123',
@@ -79,8 +79,8 @@ const status: GenericStatus = {
 Converts Mastodon API responses to generic types:
 
 ```typescript
-import { MastodonAdapter } from '@equaltoai/greater-components-fediverse/generics/adapters';
-import type { MastodonStatus } from '@equaltoai/greater-components-fediverse/generics/adapters';
+import { MastodonAdapter } from '@equaltoai/greater-components/faces/social/generics/adapters';
+import type { MastodonStatus } from '@equaltoai/greater-components/faces/social/generics/adapters';
 
 const adapter = new MastodonAdapter();
 
@@ -98,7 +98,7 @@ const genericStatus = adapter.toGeneric(mastodonStatus);
 Handles Pleroma-specific extensions like emoji reactions:
 
 ```typescript
-import { PleromaAdapter } from '@equaltoai/greater-components-fediverse/generics/adapters';
+import { PleromaAdapter } from '@equaltoai/greater-components/faces/social/generics/adapters';
 
 const adapter = new PleromaAdapter();
 const genericStatus = adapter.toGeneric(pleromaStatus);
@@ -114,7 +114,7 @@ if (genericStatus.activityPubObject.extensions?.pleroma) {
 Works with native ActivityPub objects:
 
 ```typescript
-import { LesserAdapter } from '@equaltoai/greater-components-fediverse/generics/adapters';
+import { LesserAdapter } from '@equaltoai/greater-components/faces/social/generics/adapters';
 
 const adapter = new LesserAdapter();
 const genericStatus = adapter.toGeneric(lesserStatus);
@@ -125,7 +125,7 @@ const genericStatus = adapter.toGeneric(lesserStatus);
 Don't know which platform you're using? Auto-detect it!
 
 ```typescript
-import { autoDetectAdapter } from '@equaltoai/greater-components-fediverse/generics/adapters';
+import { autoDetectAdapter } from '@equaltoai/greater-components/faces/social/generics/adapters';
 
 const rawStatus = await fetch('/api/status/123').then((r) => r.json());
 const adapter = autoDetectAdapter(rawStatus);
@@ -141,9 +141,9 @@ if (adapter) {
 
 ```svelte
 <script lang="ts">
-	import { Timeline } from '@equaltoai/greater-components-fediverse';
-	import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
-	import { MastodonAdapter } from '@equaltoai/greater-components-fediverse/generics/adapters';
+	import { Timeline } from '@equaltoai/greater-components/faces/social';
+	import type { GenericStatus } from '@equaltoai/greater-components/faces/social/generics';
+	import { MastodonAdapter } from '@equaltoai/greater-components/faces/social/generics/adapters';
 
 	// Fetch from your platform
 	const mastodonStatuses = await fetchStatuses();
@@ -170,8 +170,8 @@ if (adapter) {
 
 ```svelte
 <script lang="ts">
-	import * as Status from '@equaltoai/greater-components-fediverse/Status';
-	import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
+	import * as Status from '@equaltoai/greater-components/faces/social/Status';
+	import type { GenericStatus } from '@equaltoai/greater-components/faces/social/generics';
 
 	interface Props {
 		status: GenericStatus; // Works with ANY platform!
@@ -195,8 +195,8 @@ if (adapter) {
 Access platform-specific extensions with type safety:
 
 ```typescript
-import type { ActivityPubActor } from '@equaltoai/greater-components-fediverse/generics';
-import type { MastodonExtensions } from '@equaltoai/greater-components-fediverse/generics/adapters';
+import type { ActivityPubActor } from '@equaltoai/greater-components/faces/social/generics';
+import type { MastodonExtensions } from '@equaltoai/greater-components/faces/social/generics/adapters';
 
 const actor: ActivityPubActor<MastodonExtensions> = {
 	id: 'https://mastodon.social/users/alice',
@@ -247,7 +247,7 @@ import {
 	isLike,
 	isAnnounce,
 	isFollow,
-} from '@equaltoai/greater-components-fediverse/generics';
+} from '@equaltoai/greater-components/faces/social/generics';
 
 // Check if actor is fully loaded
 if (isFullActor(object.attributedTo)) {
@@ -269,7 +269,7 @@ if (isAnnounce(activity)) {
 ### Extract IDs
 
 ```typescript
-import { extractActor, extractObject } from '@equaltoai/greater-components-fediverse/generics';
+import { extractActor, extractObject } from '@equaltoai/greater-components/faces/social/generics';
 
 // Works with both strings and objects
 const actorId = extractActor(object.attributedTo);
@@ -282,7 +282,7 @@ const objectId = extractObject(activity.object);
 ### Parse Timestamps
 
 ```typescript
-import { parseTimestamp } from '@equaltoai/greater-components-fediverse/generics';
+import { parseTimestamp } from '@equaltoai/greater-components/faces/social/generics';
 
 const date = parseTimestamp(object.published);
 // Returns: Date object
@@ -291,7 +291,7 @@ const date = parseTimestamp(object.published);
 ### Get Visibility
 
 ```typescript
-import { getVisibility } from '@equaltoai/greater-components-fediverse/generics';
+import { getVisibility } from '@equaltoai/greater-components/faces/social/generics';
 
 const visibility = getVisibility(object);
 // Returns: 'public' | 'unlisted' | 'private' | 'direct'
@@ -305,7 +305,7 @@ Create an adapter for a custom platform:
 import type {
 	GenericAdapter,
 	GenericStatus,
-} from '@equaltoai/greater-components-fediverse/generics';
+} from '@equaltoai/greater-components/faces/social/generics';
 
 export interface MyPlatformStatus {
 	// Your platform's status type
@@ -366,7 +366,7 @@ function displayStatus(status: Status) {
 **After:**
 
 ```typescript
-import type { GenericStatus } from '@equaltoai/greater-components-fediverse/generics';
+import type { GenericStatus } from '@equaltoai/greater-components/faces/social/generics';
 
 function displayStatus(status: GenericStatus) {
 	return status.account.name; // Works with any platform!

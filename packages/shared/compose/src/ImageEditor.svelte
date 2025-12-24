@@ -7,7 +7,7 @@ Edit image metadata, set focal points for proper cropping, and add alt text.
 @example
 ```svelte
 <script>
-  import { Compose } from '@equaltoai/greater-components-fediverse';
+  import { Compose } from '@equaltoai/greater-components-compose';
   
   let image = {
     url: '/path/to/image.jpg',

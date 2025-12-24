@@ -1,12 +1,42 @@
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
+	import { useStableId } from '@equaltoai/greater-components-utils';
 	import defaultAvatar from '../assets/greater-default-profile.png';
+	import Spinner from './Spinner.svelte';
+
+	// Map avatar size to spinner size
+	const avatarSpinnerSizeMap: Record<string, 'xs' | 'sm' | 'md' | 'lg'> = {
+		xs: 'xs',
+		sm: 'xs',
+		md: 'sm',
+		lg: 'sm',
+		xl: 'md',
+		'2xl': 'lg',
+	};
 
 	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
 		src?: string;
 		alt?: string;
 		name?: string;
+		/**
+		 * Text label fallback for chat interfaces (e.g., "You", "PAI", "AI")
+		 * Used when fallbackMode is 'label'
+		 */
+		label?: string;
+		/**
+		 * Icon snippet fallback for avatar
+		 * Used when fallbackMode is 'icon'
+		 */
+		labelIcon?: Snippet;
+		/**
+		 * Controls which fallback to use when image is not available
+		 * - 'initials': Show initials from name prop (default)
+		 * - 'label': Show label text
+		 * - 'icon': Show labelIcon or default user icon
+		 * @default 'initials'
+		 */
+		fallbackMode?: 'initials' | 'label' | 'icon';
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 		shape?: 'circle' | 'square' | 'rounded';
 		loading?: boolean;
@@ -14,12 +44,16 @@
 		statusPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 		class?: string;
 		fallback?: Snippet;
+		role?: string;
 	}
 
 	let {
 		src,
 		alt,
 		name = '',
+		label,
+		labelIcon,
+		fallbackMode = 'initials',
 		size = 'md',
 		shape = 'circle',
 		loading = false,
@@ -62,7 +96,7 @@
 		'treeitem',
 	]);
 
-	const parsedTabIndex = $derived<number | undefined>(() => {
+	const parsedTabIndex = $derived.by<number | undefined>(() => {
 		if (tabindex === undefined || tabindex === null) {
 			return undefined;
 		}
@@ -73,7 +107,7 @@
 		return Number.isFinite(numericValue) ? numericValue : undefined;
 	});
 
-	const hasInteractiveHandlers = $derived(() => Boolean(onclick || onkeydown || onkeyup));
+	const hasInteractiveHandlers = $derived.by(() => Boolean(onclick || onkeydown || onkeyup));
 
 	const isInteractiveRole = (roleValue: string | undefined): boolean => {
 		if (!roleValue) {
@@ -82,7 +116,7 @@
 		return INTERACTIVE_ROLES.has(roleValue);
 	};
 
-	const isInteractive = $derived(() => {
+	const isInteractive = $derived.by(() => {
 		if (isInteractiveRole(role)) {
 			return true;
 		}
@@ -101,7 +135,7 @@
 	let imageElement: HTMLImageElement | null = $state(null);
 
 	// Compute avatar classes
-	const avatarClass = $derived(() => {
+	const avatarClass = $derived.by(() => {
 		const classes = [
 			'gr-avatar',
 			`gr-avatar--${size}`,
@@ -117,7 +151,7 @@
 	});
 
 	// Compute status classes
-	const statusClass = $derived(() => {
+	const statusClass = $derived.by(() => {
 		if (!status) return '';
 
 		const classes = [
@@ -132,7 +166,7 @@
 	});
 
 	// Generate initials from name
-	const initials = $derived(() => {
+	const initials = $derived.by(() => {
 		if (!name) return '';
 
 		const words = name.trim().split(/\s+/);
@@ -149,19 +183,21 @@
 		}
 	});
 
-	// Generate background color from name
-	const initialsBackgroundColor = $derived(() => {
-		if (!name) return 'var(--gr-semantic-background-secondary)';
+	// Generate background color from name or label
+	const initialsBackgroundColor = $derived.by(() => {
+		const colorSource = name || label;
+		if (!colorSource) return 'var(--gr-semantic-background-secondary)';
 
 		// Simple hash function to generate consistent color
 		let hash = 0;
-		for (let i = 0; i < name.length; i++) {
-			hash = name.charCodeAt(i) + ((hash << 5) - hash);
+		for (let i = 0; i < colorSource.length; i++) {
+			hash = colorSource.charCodeAt(i) + ((hash << 5) - hash);
 		}
 
 		// Convert to HSL for better color distribution
+		// Using 30% lightness to ensure WCAG AA contrast (4.5:1) with white text
 		const hue = Math.abs(hash) % 360;
-		return `hsl(${hue}, 65%, 55%)`;
+		return `hsl(${hue}, 65%, 30%)`;
 	});
 
 	function handleImageLoad() {
@@ -183,53 +219,72 @@
 	});
 
 	// Compute accessible name
-	const accessibleName = $derived(() => {
+	const accessibleName = $derived.by(() => {
 		if (alt) return alt;
 		if (name) return name;
+		if (label) return label;
 		return 'Avatar';
 	});
 
 	// Generate unique ID for status
-	const statusId = `avatar-status-${Math.random().toString(36).substr(2, 9)}`;
+	const generatedStatusId = useStableId('avatar-status');
+	const statusId = $derived(generatedStatusId.value);
 </script>
 
 {#snippet AvatarContent()}
 	{#if loading}
-		<div class="gr-avatar__loading" aria-hidden="true">
-			<svg
-				class="gr-avatar__spinner"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<path d="M21 12a9 9 0 11-6.219-8.56" />
-			</svg>
+		<div class="gr-avatar__loading" aria-busy="true">
+			<Spinner size={avatarSpinnerSizeMap[size] || 'sm'} color="current" label="Loading avatar" />
 		</div>
 	{:else if src && !imageError}
 		<img
 			bind:this={imageElement}
 			class="gr-avatar__image"
 			{src}
-			alt={alt || name || 'Avatar'}
+			alt={alt || name || label || 'Avatar'}
 			onload={handleImageLoad}
 			onerror={handleImageError}
 			style="display: {imageLoaded ? 'block' : 'none'}"
 		/>
 
 		{#if !imageLoaded}
-			{@const computedInitials = initials()}
+			{@const computedInitials = initials}
 			<div class="gr-avatar__placeholder" aria-hidden="true">
-				{#if computedInitials}
-					<span class="gr-avatar__initials" style="background-color: {initialsBackgroundColor()}">
+				{#if fallback}
+					{@render fallback()}
+				{:else if fallbackMode === 'label' && label}
+					<span
+						class="gr-avatar__label"
+						style="background-color: {initialsBackgroundColor}; color: white;"
+					>
+						{label}
+					</span>
+				{:else if fallbackMode === 'icon'}
+					<span class="gr-avatar__icon" style="background-color: {initialsBackgroundColor};">
+						{#if labelIcon}
+							{@render labelIcon()}
+						{:else}
+							<svg
+								class="gr-avatar__default-icon"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+								<circle cx="12" cy="7" r="4" />
+							</svg>
+						{/if}
+					</span>
+				{:else if fallbackMode === 'initials' && computedInitials}
+					<span
+						class="gr-avatar__initials"
+						style="background-color: {initialsBackgroundColor}; color: white;"
+					>
 						{computedInitials}
 					</span>
-				{:else if fallback}
-					{@render fallback()}
 				{:else}
 					<img
 						class="gr-avatar__fallback-image"
@@ -242,18 +297,50 @@
 		{/if}
 	{:else}
 		<!-- No image src or image failed to load -->
-		{@const computedInitials = initials()}
+		{@const computedInitials = initials}
 		<div class="gr-avatar__placeholder" aria-hidden="true">
-			{#if computedInitials}
+			{#if fallback}
+				<!-- Custom fallback snippet takes highest priority -->
+				{@render fallback()}
+			{:else if fallbackMode === 'label' && label}
+				<!-- Label fallback mode -->
+				<span
+					class="gr-avatar__label"
+					style="background-color: {initialsBackgroundColor}; color: white;"
+				>
+					{label}
+				</span>
+			{:else if fallbackMode === 'icon'}
+				<!-- Icon fallback mode -->
+				<span class="gr-avatar__icon" style="background-color: {initialsBackgroundColor};">
+					{#if labelIcon}
+						{@render labelIcon()}
+					{:else}
+						<!-- Default user icon -->
+						<svg
+							class="gr-avatar__default-icon"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+							<circle cx="12" cy="7" r="4" />
+						</svg>
+					{/if}
+				</span>
+			{:else if fallbackMode === 'initials' && computedInitials}
+				<!-- Initials fallback mode (default) -->
 				<span
 					class="gr-avatar__initials"
-					style="background-color: {initialsBackgroundColor()}; color: white;"
+					style="background-color: {initialsBackgroundColor}; color: white;"
 				>
 					{computedInitials}
 				</span>
-			{:else if fallback}
-				{@render fallback()}
 			{:else}
+				<!-- Ultimate fallback: default avatar image -->
 				<img
 					class="gr-avatar__fallback-image"
 					src={defaultAvatar}
@@ -265,14 +352,14 @@
 	{/if}
 
 	{#if status}
-		<div class={statusClass()} id={statusId} role="status" aria-label={`Status: ${status}`}></div>
+		<div class={statusClass} id={statusId} role="status" aria-label={`Status: ${status}`}></div>
 	{/if}
 {/snippet}
 
 {#if isInteractive}
 	<button
-		class={avatarClass()}
-		aria-label={ariaLabel ?? accessibleName()}
+		class={avatarClass}
+		aria-label={ariaLabel ?? accessibleName}
 		aria-labelledby={ariaLabelledby}
 		aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
 		{id}
@@ -292,9 +379,9 @@
 	</button>
 {:else}
 	<div
-		class={avatarClass()}
+		class={avatarClass}
 		role={role ?? 'img'}
-		aria-label={ariaLabel ?? accessibleName()}
+		aria-label={ariaLabel ?? accessibleName}
 		aria-labelledby={ariaLabelledby}
 		aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
 		{id}

@@ -12,7 +12,7 @@
 
 ### 📚 Core Documentation
 
-- [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, fediverse, adapters, icons, tokens, utils)
+- [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, faces/\*, adapters, icons, tokens, utils)
 - [Chat Component Suite](./chat-suite.md) – AI chat interface components with streaming, tool calls, and settings
 - [Core Patterns](./core-patterns.md) – Canonical usage patterns with examples for styled components, headless components, theming, and Lesser integration
 - [CSS Architecture](./css-architecture.md) – Two-layer CSS system, import configurations, and styling troubleshooting
@@ -26,11 +26,21 @@
 - [Patterns](./_patterns.yaml) – Correct vs. incorrect usage patterns with code examples
 - [Decisions](./_decisions.yaml) – Decision trees for package selection and architectural choices
 
+### 🛠️ CLI & Distribution
+
+- [CLI Guide](./cli-guide.md) – Complete CLI command reference, configuration, and troubleshooting
+- [Lesser Faces & CLI Model](./lesser-faces-and-cli-model.md) – Design doc for Git-tag releases and source-first distribution
+- [Migration from npm](./migration-from-npm.md) – Migrating from npm packages to CLI distribution
+- [Shadcn-Style Transition Plan](./shadcn-style-transition-plan.md) – Execution plan for a shadcn-style “CLI installs from tags” approach
+- [Face Development](./face-development.md) – Creating custom faces with manifest structure and theming
+- [GitHub Releases](./devops/github-releases.md) – Publishing release artifacts (including the CLI)
+
 ### 📦 Additional Resources
 
-- [Lesser Integration Guide](../docs/lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
+- [Lesser Integration Guide](./lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
 - [Playground](../apps/playground) – Interactive component demos and examples
-- [Migration Guide](../docs/migration) – Upgrading from legacy versions
+- [Migration Guide](./migration-guide.md) – Upgrading from legacy versions
+- [Example Apps](../examples) – Complete example applications (social, blog, custom face)
 
 ## Audience
 
@@ -85,8 +95,12 @@ Greater Components is a **monorepo of composable packages** for building Fediver
 
 ### Specialized Packages
 
-- **fediverse** – Social media components (Status, Timeline, Profile, etc.)
-- **adapters** – Protocol adapters for Lesser, Mastodon, Pleroma
+- **faces/social** – Social media components (Status, Timeline, Profile, etc.) (vendored under `$lib/components/*`)
+- **faces/blog** – Blog/publishing components (vendored under `$lib/components/*`)
+- **faces/community** – Community/forum components (vendored under `$lib/components/*`)
+- **faces/artist** – Visual artist portfolio components (vendored under `$lib/components/*`)
+- **content** – Rich content rendering components (Markdown, CodeBlock)
+- **adapters** – Transport + Lesser GraphQL adapter + stores + mappers
 - **utils** – Common utilities for web applications
 - **testing** – Testing helpers and accessibility validators
 
@@ -100,8 +114,8 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 
 ```svelte
 <script>
-	import { Button, Modal } from '@equaltoai/greater-components/primitives';
-	import { SettingsIcon } from '@equaltoai/greater-components/icons';
+	import { Button, Modal } from '$lib/greater/primitives';
+	import { SettingsIcon } from '$lib/greater/icons';
 
 	let showSettings = false;
 </script>
@@ -120,7 +134,7 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 
 ```svelte
 <script>
-	import { createButton } from '@equaltoai/greater-components/headless/button';
+	import { createButton } from '$lib/greater/headless/button';
 
 	const button = createButton({
 		onClick: () => console.log('Clicked!'),
@@ -137,11 +151,11 @@ Built for **Lesser-first** development with full ActivityPub/Fediverse support. 
 
 ```svelte
 <script>
-	import { LesserGraphQLAdapter } from '@equaltoai/greater-components/adapters';
-	import { Status } from '@equaltoai/greater-components/fediverse';
+	import { LesserGraphQLAdapter } from '$lib/greater/adapters';
+	import { Status } from '$lib/components/Status';
 
 	const adapter = new LesserGraphQLAdapter({
-		endpoint: 'https://my-instance.social/graphql',
+		httpEndpoint: 'https://my-instance.social/graphql',
 		token: 'my-auth-token',
 	});
 </script>
@@ -180,7 +194,7 @@ See [Development Guidelines](./development-guidelines.md) for complete standards
 
 ## Version and Compatibility
 
-- **Current Version**: 1.0+ (following semantic versioning)
+- **Current Version**: 4.0+ (following semantic versioning)
 - **Svelte**: Requires 5.0+ (uses runes system)
 - **TypeScript**: 5.0+ recommended
 - **Node**: 20.0+ required

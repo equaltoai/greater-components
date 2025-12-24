@@ -62,6 +62,8 @@ test.describe('contrast', () => {
 			name: 'Force high contrast mode',
 		});
 
+		await forceHighContrast.uncheck();
+
 		await lightRadio.check();
 		await expect(previewStatus).toContainText('light');
 
@@ -70,5 +72,24 @@ test.describe('contrast', () => {
 
 		await forceHighContrast.uncheck();
 		await expect(previewStatus).toContainText('light');
+	});
+});
+
+test.describe('Artist contrast', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/artist/gallery');
+		await page.waitForSelector('body[data-playground-hydrated="true"]');
+	});
+
+	test('headings are structured sequentially', async ({ page }) => {
+		// H1 should be the page title
+		await expect(page.getByRole('heading', { level: 1, name: 'Gallery Components' })).toBeVisible();
+
+		// H2s should be section titles
+		const h2s = page.getByRole('heading', { level: 2 });
+		await expect(h2s.first()).toBeVisible();
+
+		const count = await h2s.count();
+		expect(count).toBeGreaterThan(0);
 	});
 });

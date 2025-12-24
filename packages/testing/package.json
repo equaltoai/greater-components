@@ -32,18 +32,17 @@
       "import": "./dist/a11y/index.js"
     }
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "build": "vite build && tsc --build",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:coverage": "vitest run --coverage",
+    "test:a11y": "node scripts/run-a11y-matrix.js",
     "test:demo": "playwright test --config=playwright.demo.config.ts",
     "test:demo:csr": "playwright test --config=playwright.demo.csr.config.ts",
     "test:e2e": "pnpm run test:demo && pnpm run test:demo:csr",
+    "test:visual": "playwright test --config=playwright.visual.config.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -55,21 +54,31 @@
   },
   "devDependencies": {
     "@percy/playwright": "^1.0.10",
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.57.0",
     "@testing-library/svelte": "^5.2.9",
     "@testing-library/user-event": "^14.6.1",
-    "@vitest/coverage-v8": "^4.0.12",
-    "@vitest/ui": "^4.0.12",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
     "chromatic": "^13.3.4",
     "commander": "^14.0.2",
-    "jsdom": "^27.2.0",
-    "playwright": "^1.56.1",
-    "svelte": "^5.43.14",
+    "jsdom": "^27.3.0",
+    "playwright": "^1.57.0",
+    "svelte": "^5.45.8",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   },
   "peerDependencies": {
-    "svelte": "^5.43.6"
+    "@playwright/test": "^1.57.0",
+    "svelte": "^5.43.6",
+    "vitest": "^4.0.15"
+  },
+  "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": true
+    },
+    "vitest": {
+      "optional": true
+    }
   }
 }

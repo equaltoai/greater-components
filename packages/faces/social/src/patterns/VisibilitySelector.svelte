@@ -15,7 +15,7 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import { createMenu } from '@equaltoai/greater-components-headless/menu';
 
 	export type PostVisibility = 'public' | 'unlisted' | 'private' | 'direct';
@@ -95,7 +95,7 @@
 		showDescriptions = true,
 		showIcons = true,
 		class: className = '',
-	} = config;
+	} = $derived(config);
 
 	/**
 	 * Visibility option definitions
@@ -145,7 +145,7 @@
 	 */
 	const menu = createMenu({
 		closeOnSelect: true,
-		onSelect: (val) => select(val as PostVisibility),
+		onSelect: (val: unknown) => select(val as PostVisibility),
 	});
 </script>
 

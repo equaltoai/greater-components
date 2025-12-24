@@ -97,9 +97,27 @@ export interface MenuConfig {
 	typeaheadTimeout?: number;
 
 	/**
-	 * Menu placement
+	 * Menu placement - extended options for dropdown positioning
 	 */
-	placement?: 'bottom' | 'top' | 'left' | 'right';
+	placement?:
+		| 'bottom'
+		| 'bottom-start'
+		| 'bottom-end'
+		| 'top'
+		| 'top-start'
+		| 'top-end'
+		| 'left'
+		| 'right';
+
+	/**
+	 * Offset from trigger element in pixels
+	 */
+	offset?: number;
+
+	/**
+	 * Enable smart positioning (auto-flip on viewport overflow)
+	 */
+	smartPositioning?: boolean;
 
 	/**
 	 * Called when open state changes
@@ -221,7 +239,9 @@ export function createMenu(config: MenuConfig = {}) {
 		loop: loopProp = true,
 		typeAhead: enableTypeahead = true,
 		typeaheadTimeout = 500,
-		placement = 'bottom',
+		placement = 'bottom-start',
+		offset: _offsetProp = 4,
+		smartPositioning: _smartPositioning = true,
 		onOpen,
 		onClose,
 		onOpenChange,

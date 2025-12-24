@@ -1,5 +1,12 @@
 type LogPayload = string | number | boolean | null | undefined;
 
+const isDebugEnabled = (): boolean => {
+	const raw = process.env['GREATER_CLI_DEBUG'];
+	if (!raw) return false;
+
+	return !['0', 'false', 'off', 'no'].includes(raw.toLowerCase().trim());
+};
+
 const stringify = (message: LogPayload = ''): string => {
 	if (message === null || message === undefined) {
 		return '';
@@ -35,6 +42,10 @@ export const logger = {
 	},
 	note: (message?: LogPayload): void => {
 		writeStdout(message);
+	},
+	debug: (message?: LogPayload): void => {
+		if (!isDebugEnabled()) return;
+		writeStderr(`[DEBUG] ${stringify(message)}`);
 	},
 	warn: (message?: LogPayload): void => {
 		writeStderr(message);

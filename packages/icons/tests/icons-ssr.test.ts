@@ -42,6 +42,52 @@ describe('Icons SSR', () => {
 		}
 	});
 
+	it('SSR renders icons with custom color, stroke, and class', () => {
+		for (const [name, Icon] of iconEntries) {
+			const props = { color: 'red', strokeWidth: 3, class: 'custom-class' };
+
+			// We reuse the render logic (simplified for brevity if possible, or copy-paste)
+			const html =
+				typeof (Icon as { render?: (props: Record<string, unknown>) => { html: string } })
+					.render === 'function'
+					? (Icon as { render: (props: Record<string, unknown>) => { html: string } }).render(props)
+							.html
+					: (() => {
+							const target = document.createElement('div');
+
+							const instance = mount(Icon as any, { target, props });
+							const markup = target.innerHTML;
+							unmount(instance);
+							return markup;
+						})();
+
+			const doc = new DOMParser().parseFromString(html, 'text/html');
+			const svg = doc.querySelector('svg');
+
+			if (!svg) throw new Error(`Missing svg for ${name}`);
+
+			// Check custom props applied
+			// Note: brand icons (fill-based) might behave differently for strokeWidth
+			// But they all accept color (as fill or stroke) and class.
+
+			// Just check class and color mostly
+			expect(svg.getAttribute('class')).toContain('custom-class');
+
+			// Check color application (either stroke or fill)
+			const stroke = svg.getAttribute('stroke');
+			const fill = svg.getAttribute('fill');
+
+			// If it's not 'none', it should be 'red'
+			if (stroke && stroke !== 'none') {
+				expect(stroke).toBe('red');
+				expect(svg.getAttribute('stroke-width')).toBe('3');
+			} else if (fill && fill !== 'none') {
+				// Brand icons use fill
+				expect(fill).toBe('red');
+			}
+		}
+	});
+
 	it('supports accessible rendering with aria labels and titles', () => {
 		const Icon = Icons.AlertCircleIcon;
 		const html =

@@ -1,6 +1,26 @@
 import type { HTMLAttributes } from 'svelte/elements';
 import type { Snippet } from 'svelte';
 /**
+ * Size type for heading sizes.
+ * @public
+ */
+type HeadingSize = 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+/**
+ * Responsive size configuration for different breakpoints.
+ * Uses mobile-first approach where smaller breakpoints cascade up.
+ * @public
+ */
+interface ResponsiveSize {
+	/** Size for small screens (≥640px) */
+	sm?: HeadingSize;
+	/** Size for medium screens (≥768px) */
+	md?: HeadingSize;
+	/** Size for large screens (≥1024px) */
+	lg?: HeadingSize;
+	/** Size for extra-large screens (≥1280px) */
+	xl?: HeadingSize;
+}
+/**
  * Heading component props interface.
  *
  * @public
@@ -29,7 +49,38 @@ interface Props extends HTMLAttributes<HTMLHeadingElement> {
 	 * @defaultValue Maps to level (h1=5xl, h2=4xl, h3=3xl, h4=2xl, h5=xl, h6=lg)
 	 * @public
 	 */
-	size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
+	size?: HeadingSize;
+	/**
+	 * Responsive size configuration for different breakpoints.
+	 * Uses mobile-first approach. When set, overrides the `size` prop
+	 * at specified breakpoints.
+	 *
+	 * @example
+	 * ```svelte
+	 * <Heading level={1} responsiveSize={{ sm: '2xl', md: '3xl', lg: '4xl', xl: '5xl' }}>
+	 *   Hero Title
+	 * </Heading>
+	 * ```
+	 *
+	 * @public
+	 */
+	responsiveSize?: ResponsiveSize;
+	/**
+	 * Enable fluid typography using CSS clamp().
+	 * When true, font-size smoothly scales between breakpoints.
+	 * Uses predefined clamp ranges based on the size prop.
+	 *
+	 * Default fluid ranges:
+	 * - `5xl`: clamp(2rem, 5vw + 1rem, 3rem)
+	 * - `4xl`: clamp(1.75rem, 4vw + 0.75rem, 2.25rem)
+	 * - `3xl`: clamp(1.5rem, 3vw + 0.5rem, 1.875rem)
+	 * - `2xl`: clamp(1.25rem, 2.5vw + 0.5rem, 1.5rem)
+	 * - `xl`: clamp(1.125rem, 2vw + 0.5rem, 1.25rem)
+	 *
+	 * @defaultValue false
+	 * @public
+	 */
+	fluid?: boolean;
 	/**
 	 * Font weight.
 	 * - `normal`: 400
@@ -68,6 +119,20 @@ interface Props extends HTMLAttributes<HTMLHeadingElement> {
  * @example
  * ```svelte
  * <Heading level={1} align="center">Page Title</Heading>
+ * ```
+ *
+ * @example Responsive sizing
+ * ```svelte
+ * <Heading level={1} responsiveSize={{ sm: '2xl', md: '3xl', lg: '4xl', xl: '5xl' }}>
+ * Responsive Hero Title
+ * </Heading>
+ * ```
+ *
+ * @example Fluid typography
+ * ```svelte
+ * <Heading level={1} size="5xl" fluid>
+ * Smoothly Scaling Title
+ * </Heading>
  * ```
  */
 declare const Heading: import('svelte').Component<Props, {}, ''>;

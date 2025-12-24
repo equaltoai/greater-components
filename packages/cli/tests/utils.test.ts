@@ -23,6 +23,22 @@ vi.mock('fs-extra', () => ({
 vi.mock('execa', () => ({
 	execa: vi.fn(async () => ({})),
 }));
+vi.mock('../src/utils/registry-index.js', () => ({
+	fetchRegistryIndex: vi.fn(async () => ({
+		schemaVersion: '1.0.0',
+		version: '1.0.0',
+		ref: 'v1.0.0',
+		generatedAt: new Date().toISOString(),
+		checksums: {},
+		components: {},
+		faces: {},
+		shared: {},
+	})),
+	resolveRef: vi.fn().mockImplementation(async (explicitRef?: string) => ({
+		ref: explicitRef || 'main',
+		source: explicitRef ? 'explicit' : 'fallback',
+	})),
+}));
 
 describe('config utilities', () => {
 	beforeEach(() => {
@@ -36,6 +52,7 @@ describe('config utilities', () => {
 
 		const cwd = '/project';
 		const config: ComponentConfig = {
+			installMode: 'vendored',
 			style: 'default',
 			rsc: false,
 			tsx: true,
@@ -44,8 +61,20 @@ describe('config utilities', () => {
 				utils: '$lib/utils',
 				ui: '$lib/components/ui',
 				lib: '$lib',
-				hooks: '$lib/hooks',
+				hooks: '$lib/primitives',
+				greater: '$lib/greater',
 			},
+			css: {
+				tokens: true,
+				primitives: true,
+				face: null,
+				source: 'local',
+				localDir: 'styles/greater',
+			},
+			installed: [],
+			$schema: 'https://greater.components.dev/schema.json',
+			ref: 'greater-v4.2.0',
+			version: '1.0.0',
 		};
 
 		expect(await configExists(cwd)).toBe(false);
@@ -92,6 +121,7 @@ describe('file utilities', () => {
 				dependencies: { svelte: '^5.0.1', '@sveltejs/kit': '^2.0.0' },
 			})
 		);
+		fsStore.set('/proj/svelte.config.js', 'export default {}');
 
 		const files: ComponentFile[] = [{ path: 'Foo.svelte', content: '<p/>', type: 'component' }];
 
@@ -190,6 +220,7 @@ describe('fetch utilities', () => {
 		const fetchMock = vi.fn(async () => ({
 			ok: true,
 			text: async () => 'file content',
+			arrayBuffer: async () => Buffer.from('file content'),
 		}));
 		// @ts-expect-error global override for tests
 		global.fetch = fetchMock;

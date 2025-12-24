@@ -301,8 +301,25 @@ export function getAuthContext(): AuthContext {
  * Validate email format
  */
 export function isValidEmail(email: string): boolean {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	return emailRegex.test(email);
+	// Simple email validation that avoids ReDoS-vulnerable patterns
+	// Uses explicit length limits to prevent polynomial backtracking
+	if (email.length > 254) return false;
+	const parts = email.split('@');
+	if (parts.length !== 2) return false;
+	const [local, domain] = parts;
+	if (!local || !domain || local.length > 64 || domain.length > 253) return false;
+	// Check domain has at least one dot and valid TLD
+	const domainParts = domain.split('.');
+	if (domainParts.length < 2) return false;
+	// Reject empty domain parts (catches '.com', 'example..com', etc.)
+	if (domainParts.some((part) => part.length === 0)) return false;
+	const tld = domainParts[domainParts.length - 1];
+	if (!tld || tld.length < 2 || !/^[a-zA-Z]+$/.test(tld)) return false;
+	// Basic character validation (no consecutive dots, proper chars)
+	if (/\.\./.test(email)) return false;
+	if (!/^[a-zA-Z0-9._%+-]+$/.test(local)) return false;
+	if (!/^[a-zA-Z0-9.-]+$/.test(domain)) return false;
+	return true;
 }
 
 /**

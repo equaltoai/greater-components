@@ -1,0 +1,258 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://equalto.ai/schemas/registry-index.schema.json",
+  "title": "Greater Components Registry Index",
+  "description": "Schema for the Greater Components registry index file containing component metadata and checksums",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "ref",
+    "version",
+    "checksums",
+    "components",
+    "faces",
+    "shared"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema file"
+    },
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Version of the registry index schema"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the registry was generated"
+    },
+    "ref": {
+      "type": "string",
+      "description": "Git tag or commit SHA this registry was generated from"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$",
+      "description": "Semantic version from root package.json"
+    },
+    "checksums": {
+      "type": "object",
+      "description": "Map of file paths to SHA-256 checksums in SRI format",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^sha256-[A-Za-z0-9+/]+=*$"
+      }
+    },
+    "components": {
+      "type": "object",
+      "description": "Map of component names to their metadata",
+      "additionalProperties": {
+        "$ref": "#/definitions/ComponentMetadata"
+      }
+    },
+    "faces": {
+      "type": "object",
+      "description": "Map of face names to their manifests",
+      "additionalProperties": {
+        "$ref": "#/definitions/FaceManifest"
+      }
+    },
+    "shared": {
+      "type": "object",
+      "description": "Map of shared module names to their metadata",
+      "additionalProperties": {
+        "$ref": "#/definitions/SharedModuleMetadata"
+      }
+    }
+  },
+  "definitions": {
+    "FileChecksum": {
+      "type": "object",
+      "required": ["path", "checksum"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Relative file path from package root"
+        },
+        "checksum": {
+          "type": "string",
+          "pattern": "^sha256-[A-Za-z0-9+/]+=*$",
+          "description": "SHA-256 checksum in SRI format"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "File size in bytes"
+        }
+      }
+    },
+    "Dependency": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "dev": { "type": "boolean" }
+      }
+    },
+    "ComponentMetadata": {
+      "type": "object",
+      "required": ["name", "version", "description", "files", "dependencies"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Component name"
+        },
+        "version": {
+          "type": "string",
+          "description": "Component version"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of the component"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["primitive", "compound", "pattern", "adapter"],
+          "description": "Component type category"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileChecksum"
+          },
+          "description": "List of files with checksums"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          },
+          "description": "Internal registry dependencies"
+        },
+        "peerDependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          },
+          "description": "External peer dependencies"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Searchable tags"
+        }
+      }
+    },
+    "FaceManifest": {
+      "type": "object",
+      "required": ["name", "version", "description", "includes", "files"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Face name"
+        },
+        "version": {
+          "type": "string",
+          "description": "Face version"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of the face"
+        },
+        "includes": {
+          "type": "object",
+          "properties": {
+            "primitives": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "shared": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "patterns": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "components": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileChecksum"
+          }
+        },
+        "styles": {
+          "type": "object",
+          "properties": {
+            "main": { "type": "string" },
+            "tokens": { "type": "string" }
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          }
+        },
+        "peerDependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          }
+        }
+      }
+    },
+    "SharedModuleMetadata": {
+      "type": "object",
+      "required": ["name", "version", "description", "exports", "files"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Shared module name"
+        },
+        "version": {
+          "type": "string",
+          "description": "Module version"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of the module"
+        },
+        "exports": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Exported component/function names"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileChecksum"
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          }
+        },
+        "peerDependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Dependency"
+          }
+        }
+      }
+    }
+  }
+}

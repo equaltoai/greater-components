@@ -1,5 +1,6 @@
 <!--
 MarkdownRenderer component - Renders markdown content safely with syntax highlighting support.
+Uses the unified ecosystem (remark + rehype) for ESM-compatible markdown processing.
 
 @component
 @example
@@ -8,8 +9,13 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 ```
 -->
 <script lang="ts">
-	import DOMPurify from 'isomorphic-dompurify';
-	import { marked } from 'marked';
+	import { unified } from 'unified';
+	import remarkParse from 'remark-parse';
+	import remarkGfm from 'remark-gfm';
+	import remarkRehype from 'remark-rehype';
+	import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
+	import rehypeStringify from 'rehype-stringify';
+	import type { Schema } from 'hast-util-sanitize';
 
 	interface Props {
 		/**
@@ -24,7 +30,7 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 		sanitize?: boolean;
 
 		/**
-		 * List of allowed HTML tags.
+		 * List of allowed HTML tags. If not provided, uses default safe tags.
 		 */
 		allowedTags?: string[];
 
@@ -66,7 +72,7 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 		content,
 		sanitize = true,
 		allowedTags,
-		// enableCodeHighlight = true, // Unused in this component logic, seems handled by marked or CSS?
+		// enableCodeHighlight = true, // Handled by CSS
 		enableLinks = true,
 		openLinksInNewTab = true,
 		class: className = '',
@@ -75,78 +81,103 @@ MarkdownRenderer component - Renders markdown content safely with syntax highlig
 		...restProps
 	}: Props = $props();
 
-	// Configure marked
-	const renderer = new marked.Renderer();
+	// Build custom sanitization schema
+	function buildSanitizeSchema(): Schema {
+		const schema: Schema = {
+			...defaultSchema,
+			tagNames: allowedTags || [
+				'p',
+				'br',
+				'strong',
+				'b',
+				'em',
+				'i',
+				'code',
+				'pre',
+				'h1',
+				'h2',
+				'h3',
+				'h4',
+				'h5',
+				'h6',
+				'ul',
+				'ol',
+				'li',
+				'a',
+				'blockquote',
+				'table',
+				'thead',
+				'tbody',
+				'tr',
+				'th',
+				'td',
+				'del',
+				'img',
+				'hr',
+				'span',
+				'div',
+			],
+			attributes: {
+				...defaultSchema.attributes,
+				a: enableLinks
+					? ['href', 'title', ...(openLinksInNewTab ? (['target', 'rel'] as const) : [])]
+					: [],
+				img: ['src', 'alt', 'title'],
+				'*': ['className', 'class'],
+			},
+		};
 
-	// Custom link renderer
-	renderer.link = ({ href, title, text }) => {
+		return schema;
+	}
+
+	// Create the markdown processor
+	function createProcessor() {
+		const processor = unified().use(remarkParse).use(remarkGfm).use(remarkRehype, {
+			allowDangerousHtml: false,
+		});
+
+		if (sanitize) {
+			processor.use(rehypeSanitize, buildSanitizeSchema());
+		}
+
+		processor.use(rehypeStringify);
+
+		return processor;
+	}
+
+	// Post-process HTML to add target="_blank" to links if needed
+	function postProcessHtml(html: string): string {
 		if (!enableLinks) {
-			return text;
+			// Remove link hrefs but keep text
+			return html.replace(/<a[^>]*>([^<]*)<\/a>/g, '$1');
 		}
-		let out = `<a href="${href}"`;
-		if (title) {
-			out += ` title="${title}"`;
-		}
+
 		if (openLinksInNewTab) {
-			out += ' target="_blank" rel="noopener noreferrer"';
+			// Add target="_blank" and rel="noopener noreferrer" to all links
+			return html.replace(
+				/<a\s+href="([^"]*)"([^>]*)>/g,
+				'<a href="$1" target="_blank" rel="noopener noreferrer"$2>'
+			);
 		}
-		out += `>${text}</a>`;
-		return out;
-	};
+
+		return html;
+	}
 
 	const renderedHtml = $derived.by(() => {
 		try {
 			if (!content) return '';
 
-			const html = marked.parse(content, {
-				renderer,
-				breaks: true,
-				gfm: true,
-			});
+			const processor = createProcessor();
+			const result = processor.processSync(content);
+			let html = String(result);
 
-			// marked.parse can return Promise if async is enabled, but by default it is sync.
-			if (html instanceof Promise) {
-				return '';
-			}
+			// Apply post-processing for link behavior
+			html = postProcessHtml(html);
 
-			if (!sanitize) return html;
-
-			const sanitized = DOMPurify.sanitize(html, {
-				ALLOWED_TAGS: allowedTags || [
-					'p',
-					'br',
-					'strong',
-					'em',
-					'code',
-					'pre',
-					'h1',
-					'h2',
-					'h3',
-					'h4',
-					'h5',
-					'h6',
-					'ul',
-					'ol',
-					'li',
-					'a',
-					'blockquote',
-					'table',
-					'thead',
-					'tbody',
-					'tr',
-					'th',
-					'td',
-					'del',
-					'img',
-					'hr',
-				],
-				ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel'],
-			});
-
-			return sanitized;
+			return html;
 		} catch (error: unknown) {
 			if (onError && error instanceof Error) onError(error);
-			// Fallback to text
+			// Fallback to escaped text
 			return content
 				.replace(/&/g, '&amp;')
 				.replace(/</g, '&lt;')

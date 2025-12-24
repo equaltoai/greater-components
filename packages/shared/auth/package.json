@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-auth",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "type": "module",
   "description": "Authentication components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -25,28 +25,28 @@
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js",
     "dev": "vite build --watch",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@equaltoai/greater-components-headless": "workspace:*",
+    "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@vitest/coverage-v8": "^4.0.15",
     "@testing-library/svelte": "^5.2.9",
-    "@types/node": "^24.10.1",
-    "jsdom": "^27.2.0",
-    "svelte": "^5.43.14",
+    "@types/node": "^24.10.2",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vitest": "^4.0.12"
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

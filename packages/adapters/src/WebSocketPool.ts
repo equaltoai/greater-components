@@ -266,7 +266,10 @@ export class WebSocketPool {
 	/**
 	 * Create a new WebSocket connection
 	 */
-	private async createConnection(url: string): Promise<PooledWebSocket> {
+	private async createConnection(
+		url: string,
+		initialReconnectAttempts = 0
+	): Promise<PooledWebSocket> {
 		const socket = new WebSocket(url);
 
 		const connection: PooledWebSocket = {
@@ -275,7 +278,7 @@ export class WebSocketPool {
 			state: 'connecting',
 			refCount: 1,
 			lastActivity: Date.now(),
-			reconnectAttempts: 0,
+			reconnectAttempts: initialReconnectAttempts,
 		};
 
 		this.connections.set(url, connection);
@@ -399,7 +402,7 @@ export class WebSocketPool {
 		await new Promise((resolve) => setTimeout(resolve, this.config.reconnectDelay));
 
 		try {
-			await this.createConnection(connection.url);
+			await this.createConnection(connection.url, connection.reconnectAttempts);
 		} catch (error) {
 			this.logger.error(`Reconnection failed for ${connection.url}`, { error });
 		}

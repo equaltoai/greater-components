@@ -45,7 +45,7 @@ export class SseClient implements TransportAdapter<SseClientState> {
 			heartbeatTimeout: config.heartbeatTimeout || 60000,
 			initialReconnectDelay: config.initialReconnectDelay || 500,
 			maxReconnectDelay: config.maxReconnectDelay || 30000,
-			jitterFactor: config.jitterFactor || 0.3,
+			jitterFactor: config.jitterFactor ?? 0.3,
 			maxReconnectAttempts: config.maxReconnectAttempts || Infinity,
 			enableLatencySampling: config.enableLatencySampling !== false,
 			latencySamplingInterval: config.latencySamplingInterval || 10000,
@@ -360,7 +360,7 @@ export class SseClient implements TransportAdapter<SseClientState> {
 
 		// EventSource will automatically reconnect on error
 		// But we want to control the reconnection logic
-		if (this.eventSource?.readyState === EventSource.CLOSED) {
+		if (typeof EventSource !== 'undefined' && this.eventSource?.readyState === EventSource.CLOSED) {
 			this.handleClose();
 		}
 	}

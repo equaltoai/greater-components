@@ -17,12 +17,12 @@ Provides context for child components and handles overall notifications display.
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { Notification, NotificationGroup } from './types.js';
-	import { createNotificationsContext } from './context.js';
+	import { createNotificationsContext } from './context.svelte.js';
 	import type {
 		NotificationsConfig,
 		NotificationsHandlers,
 		NotificationsState,
-	} from './context.js';
+	} from './context.svelte.js';
 
 	interface Props {
 		/**

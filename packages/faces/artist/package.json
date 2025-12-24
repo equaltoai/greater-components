@@ -1,0 +1,142 @@
+{
+  "name": "@equaltoai/greater-components-artist",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Artist portfolio and gallery UI components for Greater Components",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/faces/artist"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "svelte": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./manifest.json": "./manifest.json",
+    "./style.css": "./dist/greater-components-artist.css",
+    "./theme.css": "./dist/greater-components-artist.css",
+    "./components/Artwork": {
+      "types": "./dist/components/Artwork/index.d.ts",
+      "svelte": "./src/components/Artwork/index.ts",
+      "import": "./dist/components/Artwork/index.js"
+    },
+    "./components/ArtistProfile": {
+      "types": "./dist/components/ArtistProfile/index.d.ts",
+      "svelte": "./src/components/ArtistProfile/index.ts",
+      "import": "./dist/components/ArtistProfile/index.js"
+    },
+    "./components/Gallery": {
+      "types": "./dist/components/Gallery/index.d.ts",
+      "svelte": "./src/components/Gallery/index.ts",
+      "import": "./dist/components/Gallery/index.js"
+    },
+    "./components/Discovery": {
+      "types": "./dist/components/Discovery/index.d.ts",
+      "svelte": "./src/components/Discovery/index.ts",
+      "import": "./dist/components/Discovery/index.js"
+    },
+    "./components/MediaViewer": {
+      "types": "./dist/components/MediaViewer/index.d.ts",
+      "svelte": "./src/components/MediaViewer/index.ts",
+      "import": "./dist/components/MediaViewer/index.js"
+    },
+    "./components/ArtworkCard": {
+      "types": "./dist/components/ArtworkCard/index.d.ts",
+      "svelte": "./src/components/ArtworkCard/index.ts",
+      "import": "./dist/components/ArtworkCard/index.js"
+    },
+    "./components/ArtistTimeline": {
+      "types": "./dist/components/ArtistTimeline/index.d.ts",
+      "svelte": "./src/components/ArtistTimeline/index.ts",
+      "import": "./dist/components/ArtistTimeline/index.js"
+    },
+    "./components/Exhibition": {
+      "types": "./dist/components/Exhibition/index.d.ts",
+      "svelte": "./src/components/Exhibition/index.ts",
+      "import": "./dist/components/Exhibition/index.js"
+    },
+    "./components/CreativeTools": {
+      "types": "./dist/components/CreativeTools/index.d.ts",
+      "svelte": "./src/components/CreativeTools/index.ts",
+      "import": "./dist/components/CreativeTools/index.js"
+    },
+    "./components/Community": {
+      "types": "./dist/components/Community/index.d.ts",
+      "svelte": "./src/components/Community/index.ts",
+      "import": "./dist/components/Community/index.js"
+    },
+    "./components/Transparency": {
+      "types": "./dist/components/Transparency/index.d.ts",
+      "svelte": "./src/components/Transparency/index.ts",
+      "import": "./dist/components/Transparency/index.js"
+    },
+    "./components/Monetization": {
+      "types": "./dist/components/Monetization/index.d.ts",
+      "svelte": "./src/components/Monetization/index.ts",
+      "import": "./dist/components/Monetization/index.js"
+    },
+    "./patterns": {
+      "types": "./dist/patterns/index.d.ts",
+      "import": "./dist/patterns/index.js"
+    },
+    "./stores": {
+      "types": "./dist/stores/index.d.ts",
+      "import": "./dist/stores/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -b tsconfig.build.json --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-artist.css",
+    "clean": "rm -rf dist",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@apollo/client": "^4.0.9",
+    "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-auth": "workspace:*",
+    "@equaltoai/greater-components-headless": "workspace:^",
+    "@equaltoai/greater-components-icons": "workspace:*",
+    "@equaltoai/greater-components-notifications": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-tokens": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/svelte": "5.2.9",
+    "@types/node": "^24.10.2",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
+    "jsdom": "^27.3.0",
+    "svelte": "^5.45.8",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.7",
+    "vitest": "^4.0.15"
+  },
+  "peerDependencies": {
+    "svelte": "^5.43.6"
+  }
+}

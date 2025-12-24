@@ -49,7 +49,7 @@ Shows cost breakdown by service and operation.
 	{:else if breakdown}
 		{@const data = breakdown as {
 			totalCost: number;
-			breakdown: Array<{ operation: string; cost: number; count: number }>;
+			breakdown: Array;
 		}}
 		<div>Total: {fmt(data.totalCost)}</div>
 		<ul>

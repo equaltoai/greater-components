@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-- `packages/*` contains publishable libraries: `greater-components` bundles exports, while `primitives`, `headless`, `fediverse`, `adapters`, `icons`, `tokens`, `utils`, and `testing` house feature-specific code.
+- `packages/*` contains publishable libraries: `greater-components` bundles exports, while `primitives`, `headless`, `faces/*`, `shared/*`, `adapters`, `icons`, `tokens`, `utils`, and `testing` house feature-specific code.
 - `apps/docs` builds the documentation site and `apps/playground` is the local sandbox for rapid component trials.
 - Reference material sits in `docs/`; shared schemas live in `schema.graphql` and `schemas/`; automation scripts (coverage aggregation, publishing) live in `scripts/`.
 - Builds emit to each package's `dist/`; regenerate via scripts instead of editing generated output.
@@ -24,7 +24,7 @@
 ## Testing Guidelines
 
 - Vitest powers unit, integration, visual, and accessibility suites under `packages/*/tests`; run `pnpm test` or scoped commands such as `pnpm test:unit`, `pnpm test:a11y`, and `pnpm test:visual`.
-- Maintain ≥90% coverage (per CONTRIBUTING). Use `pnpm test:coverage` and roll up reports with `pnpm test:coverage:report`.
+- Maintain the repo coverage thresholds (see `pnpm test:coverage:report` and `scripts/aggregate-coverage.js`).
 - Prefer fixtures from `packages/testing` and adapters in `packages/adapters` for realistic GraphQL and transport scenarios.
 
 ## Commit & Pull Request Guidelines
@@ -36,5 +36,5 @@
 ## Environment & Tooling Notes
 
 - Husky with lint-staged formats staged files and runs lightweight checks; fix failures locally before retrying the commit.
-- Use `pnpm --filter @equaltoai/greater-components-fediverse dev` (or similar) to iterate without rebuilding the entire monorepo.
+- Use `pnpm --filter @equaltoai/greater-components-social dev` (or similar) to iterate without rebuilding the entire monorepo.
 - Secrets and API credentials must stay local; adapters expect runtime configuration instead of hard-coded values.

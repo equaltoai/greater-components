@@ -111,6 +111,7 @@
 	let attachedFiles = $state<AttachedFile[]>([]);
 	let isDragging = $state(false);
 	let isSending = $state(false);
+	let attachmentIdCounter = 0;
 
 	// Constants
 	const MAX_ROWS = 6;
@@ -264,7 +265,8 @@
 	 * Generate unique ID for attachments
 	 */
 	function generateId(): string {
-		return `file_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+		attachmentIdCounter += 1;
+		return `file_${Date.now()}_${attachmentIdCounter}`;
 	}
 
 	/**
@@ -549,20 +551,15 @@
 		bottom: 0;
 		display: flex;
 		flex-direction: column;
-		gap: var(--gr-spacing-scale-2, 0.5rem);
-		padding: var(--gr-spacing-scale-3, 0.75rem) var(--gr-spacing-scale-4, 1rem);
-		background: var(--gr-color-surface, #ffffff);
-		border-top: 1px solid var(--gr-color-border, #e5e7eb);
-		border-radius: var(--gr-radii-lg, 0.5rem) var(--gr-radii-lg, 0.5rem) 0 0;
-		box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+		gap: var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-3) var(--gr-spacing-scale-4);
+		background: var(--gr-semantic-background-primary);
+		border-top: 1px solid var(--gr-semantic-border-default);
+		border-radius: var(--gr-radii-lg) var(--gr-radii-lg) 0 0;
+		box-shadow: var(--gr-shadows-sm);
 	}
 
-	/* Dark mode */
-	:global([data-theme='dark']) .chat-input {
-		background: var(--gr-color-surface-dark, #1f2937);
-		border-top-color: var(--gr-color-border-dark, #374151);
-		box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.2);
-	}
+	/* Dark mode handled via semantic tokens - no explicit override needed */
 
 	.chat-input--disabled {
 		opacity: 0.7;
@@ -580,62 +577,45 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--gr-color-primary-50, #eff6ff);
-		border: 2px dashed var(--gr-color-primary-500, #3b82f6);
-		border-radius: var(--gr-radii-lg, 0.5rem);
+		background: var(--gr-color-primary-50);
+		border: 2px dashed var(--gr-color-primary-500);
+		border-radius: var(--gr-radii-lg);
 		z-index: 10;
-	}
-
-	:global([data-theme='dark']) .chat-input__drag-overlay {
-		background: var(--gr-color-primary-900, #1e3a5f);
-		border-color: var(--gr-color-primary-400, #60a5fa);
 	}
 
 	.chat-input__drag-content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: var(--gr-spacing-scale-2, 0.5rem);
-		color: var(--gr-color-primary-600, #2563eb);
-		font-weight: var(--gr-typography-fontWeight-medium, 500);
-	}
-
-	:global([data-theme='dark']) .chat-input__drag-content {
-		color: var(--gr-color-primary-300, #93c5fd);
+		gap: var(--gr-spacing-scale-2);
+		color: var(--gr-color-primary-600);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 
 	/* Attachments */
 	.chat-input__attachments {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--gr-spacing-scale-2, 0.5rem);
-		padding-bottom: var(--gr-spacing-scale-2, 0.5rem);
-		border-bottom: 1px solid var(--gr-color-border, #e5e7eb);
-	}
-
-	:global([data-theme='dark']) .chat-input__attachments {
-		border-bottom-color: var(--gr-color-border-dark, #374151);
+		gap: var(--gr-spacing-scale-2);
+		padding-bottom: var(--gr-spacing-scale-2);
+		border-bottom: 1px solid var(--gr-semantic-border-default);
 	}
 
 	.chat-input__attachment {
 		display: flex;
 		align-items: center;
-		gap: var(--gr-spacing-scale-2, 0.5rem);
-		padding: var(--gr-spacing-scale-1, 0.25rem) var(--gr-spacing-scale-2, 0.5rem);
-		background: var(--gr-color-gray-100, #f3f4f6);
-		border-radius: var(--gr-radii-md, 0.375rem);
+		gap: var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-1) var(--gr-spacing-scale-2);
+		background: var(--gr-semantic-background-secondary);
+		border-radius: var(--gr-radii-md);
 		max-width: 200px;
-	}
-
-	:global([data-theme='dark']) .chat-input__attachment {
-		background: var(--gr-color-gray-800, #1f2937);
 	}
 
 	.chat-input__attachment-preview {
 		width: 32px;
 		height: 32px;
 		object-fit: cover;
-		border-radius: var(--gr-radii-sm, 0.25rem);
+		border-radius: var(--gr-radii-sm);
 	}
 
 	.chat-input__attachment-icon {
@@ -644,14 +624,9 @@
 		justify-content: center;
 		width: 32px;
 		height: 32px;
-		background: var(--gr-color-gray-200, #e5e7eb);
-		border-radius: var(--gr-radii-sm, 0.25rem);
-		color: var(--gr-color-gray-500, #6b7280);
-	}
-
-	:global([data-theme='dark']) .chat-input__attachment-icon {
-		background: var(--gr-color-gray-700, #374151);
-		color: var(--gr-color-gray-400, #9ca3af);
+		background: var(--gr-semantic-background-tertiary);
+		border-radius: var(--gr-radii-sm);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.chat-input__attachment-info {
@@ -662,25 +637,17 @@
 	}
 
 	.chat-input__attachment-name {
-		font-size: var(--gr-typography-fontSize-sm, 0.875rem);
-		font-weight: var(--gr-typography-fontWeight-medium, 500);
-		color: var(--gr-color-text-primary, #111827);
+		font-size: var(--gr-typography-fontSize-sm);
+		font-weight: var(--gr-typography-fontWeight-medium);
+		color: var(--gr-semantic-foreground-primary);
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	:global([data-theme='dark']) .chat-input__attachment-name {
-		color: var(--gr-color-text-primary-dark, #f9fafb);
-	}
-
 	.chat-input__attachment-size {
-		font-size: var(--gr-typography-fontSize-xs, 0.75rem);
-		color: var(--gr-color-text-secondary, #6b7280);
-	}
-
-	:global([data-theme='dark']) .chat-input__attachment-size {
-		color: var(--gr-color-text-secondary-dark, #9ca3af);
+		font-size: var(--gr-typography-fontSize-xs);
+		color: var(--gr-semantic-foreground-secondary);
 	}
 
 	.chat-input__attachment-remove {
@@ -692,31 +659,26 @@
 		padding: 0;
 		border: none;
 		background: transparent;
-		color: var(--gr-color-gray-400, #9ca3af);
+		color: var(--gr-semantic-foreground-tertiary);
 		cursor: pointer;
-		border-radius: var(--gr-radii-full, 9999px);
+		border-radius: var(--gr-radii-full);
 		transition: all 150ms ease;
 	}
 
 	.chat-input__attachment-remove:hover {
-		background: var(--gr-color-gray-200, #e5e7eb);
-		color: var(--gr-color-gray-600, #4b5563);
-	}
-
-	:global([data-theme='dark']) .chat-input__attachment-remove:hover {
-		background: var(--gr-color-gray-600, #4b5563);
-		color: var(--gr-color-gray-300, #d1d5db);
+		background: var(--gr-semantic-background-tertiary);
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	/* Input container - unified visual container for all input elements */
 	.chat-input__container {
 		display: flex;
 		align-items: center;
-		gap: var(--gr-spacing-scale-2, 0.5rem);
-		padding: var(--gr-spacing-scale-2, 0.5rem) var(--gr-spacing-scale-3, 0.75rem);
-		background: var(--gr-color-gray-50, #f9fafb);
-		border: 1px solid var(--gr-color-border, #e5e7eb);
-		border-radius: var(--gr-radii-lg, 0.5rem);
+		gap: var(--gr-spacing-scale-2);
+		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+		background: var(--gr-semantic-background-secondary);
+		border: 1px solid var(--gr-semantic-border-default);
+		border-radius: var(--gr-radii-lg);
 		transition:
 			border-color 150ms ease,
 			box-shadow 150ms ease;
@@ -727,28 +689,18 @@
 
 	/* Focus state on container when textarea is focused */
 	.chat-input__container:focus-within {
-		border-color: var(--gr-color-primary-500, #3b82f6);
-		box-shadow: 0 0 0 3px var(--gr-color-primary-100, #dbeafe);
-	}
-
-	:global([data-theme='dark']) .chat-input__container {
-		background: var(--gr-color-gray-800, #1f2937);
-		border-color: var(--gr-color-border-dark, #374151);
-	}
-
-	:global([data-theme='dark']) .chat-input__container:focus-within {
-		border-color: var(--gr-color-primary-400, #60a5fa);
-		box-shadow: 0 0 0 3px var(--gr-color-primary-900, #1e3a5f);
+		border-color: var(--gr-color-primary-500);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--gr-color-primary-500) 20%, transparent);
 	}
 
 	/* Error state on container */
 	.chat-input__container:has(.chat-input__textarea--error) {
-		border-color: var(--gr-color-error-500, #ef4444);
+		border-color: var(--gr-color-error-500);
 	}
 
 	.chat-input__container:has(.chat-input__textarea--error):focus-within {
-		border-color: var(--gr-color-error-500, #ef4444);
-		box-shadow: 0 0 0 3px var(--gr-color-error-100, #fee2e2);
+		border-color: var(--gr-color-error-500);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--gr-color-error-500) 20%, transparent);
 	}
 
 	/* Disabled state on container */
@@ -786,10 +738,10 @@
 		min-height: 24px;
 		max-height: 144px; /* 6 lines * 24px */
 		padding: 0;
-		font-family: var(--gr-typography-fontFamily-sans, system-ui, sans-serif);
-		font-size: var(--gr-typography-fontSize-base, 1rem);
+		font-family: var(--gr-typography-fontFamily-sans);
+		font-size: var(--gr-typography-fontSize-base);
 		line-height: 1.5;
-		color: var(--gr-color-text-primary, #111827);
+		color: var(--gr-semantic-foreground-primary);
 		background: transparent;
 		border: none;
 		resize: none;
@@ -797,16 +749,8 @@
 		outline: none;
 	}
 
-	:global([data-theme='dark']) .chat-input__textarea {
-		color: var(--gr-color-text-primary-dark, #f9fafb);
-	}
-
 	.chat-input__textarea::placeholder {
-		color: var(--gr-color-text-placeholder, #9ca3af);
-	}
-
-	:global([data-theme='dark']) .chat-input__textarea::placeholder {
-		color: var(--gr-color-text-placeholder-dark, #6b7280);
+		color: var(--gr-semantic-foreground-tertiary);
 	}
 
 	.chat-input__textarea:disabled {
@@ -825,29 +769,17 @@
 
 	/* Character count */
 	.chat-input__char-count {
-		font-size: var(--gr-typography-fontSize-xs, 0.75rem);
-		color: var(--gr-color-text-secondary, #6b7280);
+		font-size: var(--gr-typography-fontSize-xs);
+		color: var(--gr-semantic-foreground-secondary);
 		transition: color 150ms ease;
 	}
 
-	:global([data-theme='dark']) .chat-input__char-count {
-		color: var(--gr-color-text-secondary-dark, #9ca3af);
-	}
-
 	.chat-input__char-count--warning {
-		color: var(--gr-color-warning-600, #d97706);
-	}
-
-	:global([data-theme='dark']) .chat-input__char-count--warning {
-		color: var(--gr-color-warning-400, #fbbf24);
+		color: var(--gr-color-warning-600);
 	}
 
 	.chat-input__char-count--error {
-		color: var(--gr-color-error-600, #dc2626);
-		font-weight: var(--gr-typography-fontWeight-medium, 500);
-	}
-
-	:global([data-theme='dark']) .chat-input__char-count--error {
-		color: var(--gr-color-error-400, #f87171);
+		color: var(--gr-color-error-600);
+		font-weight: var(--gr-typography-fontWeight-medium);
 	}
 </style>

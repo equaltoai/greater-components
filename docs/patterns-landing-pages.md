@@ -12,14 +12,8 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Container,
-		Section,
-		Heading,
-		Text,
-		Button,
-	} from '@equaltoai/greater-components/primitives';
-	import { ArrowRightIcon, PlayIcon } from '@equaltoai/greater-components/icons';
+	import { Container, Section, Heading, Text, Button } from '$lib/greater/primitives';
+	import { ArrowRightIcon, PlayIcon } from '$lib/greater/icons';
 
 	let showDemo = $state(false);
 </script>
@@ -77,14 +71,8 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Card,
-		Text,
-	} from '@equaltoai/greater-components/primitives';
-	import { CodeIcon, ZapIcon, ShieldIcon } from '@equaltoai/greater-components/icons';
+	import { Section, Container, Heading, Card, Text } from '$lib/greater/primitives';
+	import { CodeIcon, ZapIcon, ShieldIcon } from '$lib/greater/icons';
 </script>
 
 <Section spacing="lg">
@@ -153,15 +141,8 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Card,
-		Text,
-		Button,
-	} from '@equaltoai/greater-components/primitives';
-	import { CheckIcon } from '@equaltoai/greater-components/icons';
+	import { Section, Container, Heading, Card, Text, Button } from '$lib/greater/primitives';
+	import { CheckIcon } from '$lib/greater/icons';
 
 	const features = ['Feature 1', 'Feature 2', 'Feature 3'];
 </script>
@@ -279,14 +260,8 @@ Use HTML for layout + Primitives for interaction:
 
 ```svelte
 <script>
-	import {
-		Section,
-		Container,
-		Heading,
-		Text,
-		Card,
-	} from '@equaltoai/greater-components/primitives';
-	import { PlusIcon } from '@equaltoai/greater-components/icons'; // Or a dedicated Accordion component if available
+	import { Section, Container, Heading, Text, Card } from '$lib/greater/primitives';
+	import { PlusIcon } from '$lib/greater/icons'; // Or a dedicated Accordion component if available
 </script>
 
 <Section spacing="lg">
@@ -343,13 +318,13 @@ Use HTML for layout + Primitives for interaction:
 ### ❌ INCORRECT: Looking for components that don't exist
 
 ```svelte
-// THESE DO NOT EXIST: import {(Grid, Flex, Nav, Table, Image)} from '@equaltoai/greater-components/primitives';
+// THESE DO NOT EXIST: import {(Grid, Flex, Nav, Table, Image)} from '$lib/greater/primitives';
 ```
 
 ### ✅ CORRECT: Use HTML + Primitives
 
 ```svelte
-import {(Container, Section, Heading, Text, Card, Button)} from '@equaltoai/greater-components/primitives';
+import {(Container, Section, Heading, Text, Card, Button)} from '$lib/greater/primitives';
 
 <!-- Use HTML for layout structure -->
 <div style="display: grid; grid-template-columns: 1fr 1fr;">

@@ -1,0 +1,372 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-social",
+  "version": "4.0.1",
+  "description": "Social/Twitter-style UI components for ActivityPub/Fediverse applications",
+  "components": {
+    "Status": {
+      "description": "Compound component for displaying ActivityPub status/post cards",
+      "subcomponents": [
+        "Root",
+        "Header",
+        "Content",
+        "Media",
+        "Actions",
+        "LesserMetadata",
+        "CommunityNotes"
+      ],
+      "props": ["status", "config", "handlers"],
+      "exports": true
+    },
+    "StatusCard": {
+      "description": "Legacy status card component (deprecated - use Status compound)",
+      "props": ["status", "onReply", "onBoost", "onFavorite", "onShare"],
+      "exports": true
+    },
+    "TimelineVirtualized": {
+      "description": "High-performance virtualized timeline with virtual scrolling",
+      "props": ["items", "onLoadMore", "loading", "hasMore"],
+      "exports": true
+    },
+    "Timeline": {
+      "description": "Compound timeline component with virtualization and infinite scroll",
+      "subcomponents": ["Root", "Item", "LoadMore", "EmptyState", "ErrorState"],
+      "props": ["items", "handlers", "config"],
+      "exports": true
+    },
+    "ActionBar": {
+      "description": "Action bar with reply, boost, favorite, and share buttons",
+      "props": ["status", "onReply", "onBoost", "onFavorite", "onShare"],
+      "exports": true
+    },
+    "ContentRenderer": {
+      "description": "Content renderer for sanitized HTML with mentions and hashtags",
+      "props": ["content", "mentions", "tags", "emojis"],
+      "exports": true
+    },
+    "Profile": {
+      "description": "Compound component for user profile display and editing",
+      "subcomponents": [
+        "Root",
+        "Header",
+        "Stats",
+        "Tabs",
+        "Fields",
+        "Edit",
+        "VerifiedFields",
+        "PrivacySettings",
+        "FollowRequests",
+        "FollowersList",
+        "FollowingList",
+        "EndorsedAccounts",
+        "FeaturedHashtags",
+        "AccountMigration",
+        "TrustBadge",
+        "Timeline"
+      ],
+      "props": ["profile", "handlers", "isOwnProfile"],
+      "exports": true
+    },
+    "ProfileHeader": {
+      "description": "Legacy profile header (deprecated - use Profile compound)",
+      "props": ["profile", "onFollow", "onBlock", "onMute"],
+      "exports": true
+    },
+    "Lists": {
+      "description": "Compound component for list management",
+      "subcomponents": ["Root", "Manager", "Editor", "Timeline", "MemberPicker", "Settings"],
+      "props": ["handlers"],
+      "exports": true
+    },
+    "Filters": {
+      "description": "Compound component for content filter management",
+      "subcomponents": ["Root", "Manager", "Editor", "FilteredContent"],
+      "props": ["handlers"],
+      "exports": true
+    },
+    "Hashtags": {
+      "description": "Compound component for hashtag management",
+      "subcomponents": ["Root", "FollowedList", "MutedList", "Controls"],
+      "props": ["handlers"],
+      "exports": true
+    },
+    "NotificationsFeed": {
+      "description": "Notifications feed display (deprecated - use shared/notifications)",
+      "props": ["notifications", "onMarkRead"],
+      "exports": true
+    },
+    "NotificationItem": {
+      "description": "Individual notification item display",
+      "props": ["notification", "onClick"],
+      "exports": true
+    },
+    "RealtimeWrapper": {
+      "description": "Wrapper component for adding real-time capabilities",
+      "props": ["config", "onEvent", "children"],
+      "exports": true
+    },
+    "SettingsPanel": {
+      "description": "Settings panel for timeline and notification preferences",
+      "props": ["settings", "onSave"],
+      "exports": true
+    },
+    "ComposeBox": {
+      "description": "Post composition box (deprecated - use shared/compose)",
+      "props": ["onSubmit", "replyTo", "quoteTo"],
+      "exports": true
+    },
+    "ThreadView": {
+      "description": "Thread/conversation view pattern for displaying status replies",
+      "props": ["rootStatus", "ancestors", "descendants"],
+      "exports": true
+    },
+    "ModerationTools": {
+      "description": "Content moderation tools pattern",
+      "props": ["status", "isAuthor", "isAdmin", "onAction"],
+      "exports": true
+    },
+    "VisibilitySelector": {
+      "description": "Post visibility selection pattern (public, unlisted, private, direct)",
+      "props": ["value", "onChange", "disabled"],
+      "exports": true
+    },
+    "ContentWarningHandler": {
+      "description": "Content warning/spoiler handling pattern",
+      "props": ["spoilerText", "content", "initiallyRevealed"],
+      "exports": true
+    },
+    "FederationIndicator": {
+      "description": "Federation status indicator pattern",
+      "props": ["actor", "showFullUrl", "showStatusIcon"],
+      "exports": true
+    },
+    "InstancePicker": {
+      "description": "Instance selection pattern for federated login",
+      "props": ["instances", "selectedInstance", "onSelect"],
+      "exports": true
+    },
+    "CustomEmojiPicker": {
+      "description": "Custom emoji picker pattern",
+      "props": ["emojis", "onSelect", "showSearch"],
+      "exports": true
+    },
+    "PollComposer": {
+      "description": "Poll creation pattern",
+      "props": ["options", "maxOptions", "multiple", "expiresIn", "onChange"],
+      "exports": true
+    },
+    "MediaComposer": {
+      "description": "Media attachment composition pattern",
+      "props": ["attachments", "maxAttachments", "onAdd", "onRemove", "onUpdate"],
+      "exports": true
+    },
+    "BookmarkManager": {
+      "description": "Bookmark management pattern",
+      "props": ["bookmarks", "folders", "onRemove", "onFolderSelect"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "graphql": {
+      "description": "Lesser GraphQL adapter with typed operations",
+      "exports": ["createLesserClient", "createGraphQLClient", "LesserClient", "GraphQLClient"]
+    },
+    "adapters": {
+      "description": "Platform adapters for Mastodon, Pleroma, and Lesser",
+      "exports": [
+        "MastodonAdapter",
+        "PleromaAdapter",
+        "LesserAdapter",
+        "createAdapter",
+        "autoDetectAdapter"
+      ]
+    },
+    "generics": {
+      "description": "Generic ActivityPub types and utilities",
+      "exports": [
+        "isFullActor",
+        "isFullObject",
+        "isNote",
+        "isLike",
+        "isAnnounce",
+        "isFollow",
+        "extractActor",
+        "extractObject",
+        "parseTimestamp",
+        "getVisibility"
+      ]
+    },
+    "context": {
+      "description": "Context creation and access utilities for compound components",
+      "exports": [
+        "createStatusContext",
+        "getStatusContext",
+        "createProfileContext",
+        "getProfileContext",
+        "createListsContext",
+        "getListsContext",
+        "createFiltersContext",
+        "getFiltersContext"
+      ]
+    }
+  },
+  "types": [
+    "MediaAttachment",
+    "MediaCategory",
+    "Account",
+    "Reputation",
+    "Vouch",
+    "CommunityNote",
+    "QuoteContext",
+    "QuotePermission",
+    "Mention",
+    "Tag",
+    "Card",
+    "Poll",
+    "Status",
+    "NotificationType",
+    "Notification",
+    "NotificationGroup",
+    "StatusContext",
+    "StatusConfig",
+    "StatusActionHandlers",
+    "ProfileData",
+    "ProfileField",
+    "ProfileRelationship",
+    "ProfileEditData",
+    "ProfileTab",
+    "ProfileHandlers",
+    "ProfileState",
+    "ProfileContext",
+    "ListData",
+    "ListMember",
+    "ListFormData",
+    "ListsHandlers",
+    "ListsState",
+    "ListsContext",
+    "ContentFilter",
+    "FilterContext",
+    "FilterAction",
+    "FilterFormData",
+    "FiltersHandlers",
+    "FiltersState",
+    "FiltersContext",
+    "ActivityPubActor",
+    "ActivityPubObject",
+    "ActivityPubActivity",
+    "ActivityPubImage",
+    "ActivityPubTag",
+    "GenericStatus",
+    "GenericTimelineItem",
+    "GenericNotification",
+    "GenericAdapter",
+    "GraphQLConfig",
+    "Variables",
+    "GraphQLResponse",
+    "GraphQLError",
+    "LesserActor",
+    "LesserNote",
+    "LesserActivity",
+    "TimelineResult",
+    "Visibility",
+    "UserPreferences",
+    "TimelineContext",
+    "TimelineCompoundConfig",
+    "TimelineHandlers",
+    "TimelineCompoundState",
+    "TimelineMode",
+    "TimelineDensity"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-headless",
+      "@equaltoai/greater-components-icons",
+      "@equaltoai/greater-components-tokens",
+      "@equaltoai/greater-components-utils",
+      "@equaltoai/greater-components-adapters",
+      "@equaltoai/greater-components-auth",
+      "@equaltoai/greater-components-compose",
+      "@equaltoai/greater-components-notifications",
+      "@equaltoai/greater-components-search",
+      "@equaltoai/greater-components-admin",
+      "@equaltoai/greater-components-messaging"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": ["@tanstack/svelte-virtual@^3.13.13", "@graphql-typed-document-node/core@^3.2.0"]
+  },
+  "lesserSchema": {
+    "mutations": [
+      "createNote",
+      "deleteNote",
+      "likeNote",
+      "unlikeNote",
+      "announceNote",
+      "unannounceNote",
+      "followActor",
+      "unfollowActor",
+      "blockActor",
+      "unblockActor",
+      "muteActor",
+      "unmuteActor",
+      "updateProfile",
+      "createList",
+      "updateList",
+      "deleteList",
+      "addListMember",
+      "removeListMember",
+      "createFilter",
+      "updateFilter",
+      "deleteFilter",
+      "followHashtag",
+      "unfollowHashtag",
+      "muteHashtag",
+      "unmuteHashtag"
+    ],
+    "queries": [
+      "timeline",
+      "homeTimeline",
+      "publicTimeline",
+      "hashtagTimeline",
+      "listTimeline",
+      "note",
+      "noteThread",
+      "actor",
+      "actorTimeline",
+      "followers",
+      "following",
+      "lists",
+      "list",
+      "listMembers",
+      "filters",
+      "followedHashtags",
+      "mutedHashtags",
+      "notifications",
+      "search"
+    ],
+    "subscriptions": ["timelineUpdated", "notificationReceived", "noteUpdated", "actorUpdated"]
+  },
+  "integrationPatterns": ["lesser-graphql", "mastodon-rest", "pleroma-rest", "activitypub-generic"],
+  "features": {
+    "virtualScrolling": true,
+    "realtimeStreaming": true,
+    "offlineSupport": false,
+    "lesserAdvancedFeatures": true,
+    "quotePosts": true,
+    "communityNotes": true,
+    "trustGraphs": true,
+    "costAnalytics": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": [
+      "keyboard-navigation",
+      "screen-reader-support",
+      "focus-management",
+      "aria-labels",
+      "reduced-motion-support",
+      "high-contrast-themes",
+      "semantic-html"
+    ]
+  }
+}

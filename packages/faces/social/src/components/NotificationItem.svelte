@@ -35,7 +35,7 @@
 	const iconColor = $derived(getNotificationColor(notification.type));
 	const timeString = $derived(formatNotificationTime(notification.createdAt));
 
-	const displayTitle = $derived(() => {
+	const displayTitle = $derived.by(() => {
 		if (group) {
 			return getGroupTitle(group);
 		}
@@ -67,7 +67,7 @@
 		}
 	});
 
-	const avatars = $derived(() => {
+	const avatars = $derived.by(() => {
 		if (group) {
 			return group.accounts.slice(0, 4); // Show up to 4 avatars
 		}
@@ -87,9 +87,9 @@
 		return null;
 	}
 
-	const notificationStatus = $derived(() => getNotificationStatus(notification));
+	const notificationStatus = $derived.by(() => getNotificationStatus(notification));
 
-	const statusPreview = $derived(() => {
+	const statusPreview = $derived.by(() => {
 		const status = notificationStatus;
 		if (!status?.content) return '';
 
@@ -136,7 +136,7 @@
 	onkeydown={onClick ? handleKeyDown : undefined}
 	{...onClick ? { role: 'button', tabindex: 0 } : {}}
 	aria-label={onClick
-		? "{displayTitle}. {isUnread ? 'Unread. ' : ''}Press Enter to open, M to mark as read, X to dismiss"
+		? `${displayTitle}. ${isUnread ? 'Unread. ' : ''}Press Enter to open, M to mark as read, X to dismiss`
 		: displayTitle}
 	aria-describedby={`notification-time-${notification.id}`}
 >

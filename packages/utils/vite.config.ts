@@ -1,7 +1,16 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { computeExternal } from '../../scripts/vite/external';
 
 export default defineConfig({
+	plugins: [
+		svelte({
+			compilerOptions: {
+				runes: true,
+			},
+		}),
+	],
 	build: {
 		lib: {
 			entry: resolve(__dirname, 'src/index.ts'),
@@ -9,7 +18,7 @@ export default defineConfig({
 			formats: ['es'],
 		},
 		rollupOptions: {
-			external: ['svelte', 'dompurify', 'isomorphic-dompurify'],
+			external: computeExternal(__dirname),
 			output: {
 				preserveModules: true,
 				preserveModulesRoot: 'src',

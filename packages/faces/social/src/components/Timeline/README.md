@@ -19,7 +19,7 @@ Built using the **compound component pattern**, Timeline provides maximum flexib
 	import {
 		TimelineCompound as Timeline,
 		StatusCompound as Status,
-	} from '@equaltoai/greater-components-fediverse';
+	} from '@equaltoai/greater-components/faces/social';
 
 	const posts = [
 		/* ... */
@@ -214,7 +214,7 @@ import type {
 	TimelineCompoundState,
 	TimelineMode,
 	TimelineDensity,
-} from '@equaltoai/greater-components-fediverse';
+} from '@equaltoai/greater-components/faces/social';
 
 const config: TimelineCompoundConfig = {
 	mode: 'feed',
@@ -252,7 +252,7 @@ Timeline components follow WCAG 2.1 AA guidelines:
 	import {
 		TimelineCompound as Timeline,
 		StatusCompound as Status,
-	} from '@equaltoai/greater-components-fediverse';
+	} from '@equaltoai/greater-components/faces/social';
 
 	let posts = $state([]);
 	let hasMore = $state(true);

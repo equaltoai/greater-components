@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://greater.components.dev/schema.json",
+  "title": "Greater Components Configuration",
+  "description": "Configuration schema for Greater Components CLI - supports Lesser Faces distribution model with Git-based versioning",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference URL"
+    },
+    "version": {
+      "type": "string",
+      "description": "Configuration schema version",
+      "default": "1.0.0"
+    },
+    "ref": {
+      "type": "string",
+      "description": "Git ref (tag/commit) to fetch components from",
+      "default": "latest",
+      "examples": ["greater-v4.2.0", "greater-v4.1.0", "main"]
+    },
+    "style": {
+      "type": "string",
+      "enum": ["default", "new-york", "minimal", "custom"],
+      "default": "default",
+      "description": "Component styling preset"
+    },
+    "rsc": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable React Server Components compatibility (not applicable for Svelte)"
+    },
+    "tsx": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use TypeScript for generated files"
+    },
+    "tailwind": {
+      "type": "object",
+      "description": "Tailwind CSS configuration",
+      "properties": {
+        "config": {
+          "type": "string",
+          "description": "Path to tailwind.config.js"
+        },
+        "css": {
+          "type": "string",
+          "description": "Path to global CSS file"
+        },
+        "baseColor": {
+          "type": "string",
+          "enum": ["slate", "gray", "zinc", "neutral", "stone"],
+          "default": "slate",
+          "description": "Base color palette"
+        },
+        "cssVariables": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use CSS variables for theming"
+        }
+      },
+      "required": ["config", "css"]
+    },
+    "aliases": {
+      "type": "object",
+      "description": "Path aliases for component installation",
+      "properties": {
+        "components": {
+          "type": "string",
+          "default": "$lib/components",
+          "description": "Base components directory"
+        },
+        "utils": {
+          "type": "string",
+          "default": "$lib/utils",
+          "description": "Utilities directory"
+        },
+        "ui": {
+          "type": "string",
+          "default": "$lib/components/ui",
+          "description": "UI components directory (where Greater Components are installed)"
+        },
+        "lib": {
+          "type": "string",
+          "default": "$lib",
+          "description": "Library root directory"
+        },
+        "hooks": {
+          "type": "string",
+          "default": "$lib/primitives",
+          "description": "Headless primitives directory"
+        }
+      },
+      "required": ["components", "utils"]
+    },
+    "css": {
+      "type": "object",
+      "description": "CSS import configuration for Greater Components",
+      "properties": {
+        "tokens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Import design tokens CSS"
+        },
+        "primitives": {
+          "type": "boolean",
+          "default": true,
+          "description": "Import primitives component CSS"
+        },
+        "face": {
+          "type": ["string", "null"],
+          "default": null,
+          "description": "Face-specific CSS bundle to import (e.g., 'social', 'blog', 'community')",
+          "examples": ["social", "blog", "community", null]
+        }
+      }
+    },
+    "installed": {
+      "type": "array",
+      "description": "Tracking array for installed components",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Component name"
+          },
+          "version": {
+            "type": "string",
+            "description": "Installed component version"
+          },
+          "installedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp of installation"
+          },
+          "modified": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the component has been locally modified"
+          }
+        },
+        "required": ["name", "version", "installedAt"]
+      },
+      "default": []
+    },
+    "lesserVersion": {
+      "type": "string",
+      "description": "Target Lesser GraphQL schema version for compatibility",
+      "examples": ["1.0.0", "1.1.0"]
+    }
+  },
+  "required": ["version", "aliases"],
+  "additionalProperties": false
+}

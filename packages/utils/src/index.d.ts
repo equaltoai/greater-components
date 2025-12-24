@@ -57,4 +57,10 @@ export * from './preferences.js';
  * @public
  */
 export * from './theme/index.js';
+/**
+ * ID generation utilities.
+ * @public
+ */
+export { default as IdProvider } from './id-provider.svelte';
+export * from './use-stable-id.svelte.js';
 //# sourceMappingURL=index.d.ts.map

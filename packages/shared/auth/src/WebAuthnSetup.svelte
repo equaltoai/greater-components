@@ -75,6 +75,13 @@
 		onClick: () => handleDone(),
 	});
 
+	$effect(() => {
+		setupButton.helpers.setLoading(authState.loading);
+		setupButton.helpers.setDisabled(authState.loading);
+
+		skipButton.helpers.setDisabled(authState.loading);
+	});
+
 	/**
 	 * Check if WebAuthn is available
 	 */

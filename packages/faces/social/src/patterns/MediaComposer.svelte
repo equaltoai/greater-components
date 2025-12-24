@@ -15,7 +15,7 @@
   ```
 -->
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+	import { type Snippet, untrack } from 'svelte';
 
 	export interface MediaComposerAttachment {
 		/**
@@ -202,7 +202,7 @@
 		layout = 'grid',
 		class: className = '',
 		enableDragDrop = true,
-	} = config;
+	} = untrack(() => config);
 
 	let editingAltTextId = $state<string | null>(null);
 	let editingFocalPointId = $state<string | null>(null);

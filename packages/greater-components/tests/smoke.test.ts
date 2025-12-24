@@ -102,9 +102,9 @@ const importPackage = async () => {
 describe('@equaltoai/greater-components export surface', () => {
 	it('exposes the aggregate entry points from sub-packages', async () => {
 		const pkg = await importPackage();
-		const [adapters, fediverse, headless, icons, primitives, testing, utils] = await Promise.all([
+		const [adapters, social, headless, icons, primitives, testing, utils] = await Promise.all([
 			import('../dist/adapters/index.js'),
-			import('../dist/fediverse/index.js'),
+			import('../dist/faces/social/index.js'),
 			import('../dist/headless/index.js'),
 			import('../dist/icons/index.js'),
 			import('../dist/primitives/index.js'),
@@ -112,7 +112,7 @@ describe('@equaltoai/greater-components export surface', () => {
 			import('../dist/utils/index.js'),
 		]);
 
-		const { adapterCache } = await import('../dist/fediverse/adapters/cache.js');
+		const { adapterCache } = await import('../dist/faces/social/adapters/cache.js');
 		const { generateId } = await import('../dist/headless/utils/id.js');
 
 		const expectedKeys = [
@@ -257,7 +257,7 @@ describe('@equaltoai/greater-components export surface', () => {
 		expect(testing.createComponentTestSuite({ name: 'Widget' }).tests.axe).toContain('axe');
 
 		expect(adapters).toBeDefined();
-		expect(fediverse).toBeDefined();
+		expect(social).toBeDefined();
 		expect(headless).toBeDefined();
 		expect(icons.ActivityIcon).toBeDefined();
 		expect(primitives).toBeDefined();
@@ -525,7 +525,7 @@ describe('@equaltoai/greater-components export surface', () => {
 		expect(formatted).toContain('K');
 	});
 
-	it('tests fediverse notification grouping and visibility', async () => {
+	it('tests social notification grouping and visibility', async () => {
 		const pkg = await importPackage();
 
 		// Test notification grouping

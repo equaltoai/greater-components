@@ -20,6 +20,22 @@ export async function detectPackageManager(cwd: string): Promise<'pnpm' | 'yarn'
 		return 'yarn';
 	}
 
+	// Fall back to package.json#packageManager (Corepack)
+	const packageJsonPath = path.join(cwd, 'package.json');
+	if (await fs.pathExists(packageJsonPath)) {
+		try {
+			const content = await fs.readFile(packageJsonPath, 'utf-8');
+			const pkg = JSON.parse(content) as { packageManager?: unknown };
+			if (typeof pkg.packageManager === 'string') {
+				if (pkg.packageManager.startsWith('pnpm@')) return 'pnpm';
+				if (pkg.packageManager.startsWith('yarn@')) return 'yarn';
+				if (pkg.packageManager.startsWith('npm@')) return 'npm';
+			}
+		} catch {
+			// Ignore and fall back to npm
+		}
+	}
+
 	return 'npm';
 }
 

@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
-	import { getMessagesContext, type MessageMediaUploadMetadata } from './context.js';
+	import { getMessagesContext, type MessageMediaUploadMetadata } from './context.svelte.js';
 	import { MediaUploadHandler } from '@equaltoai/greater-components-compose';
 
 	const { mapMimeTypeToMediaCategory } = MediaUploadHandler;

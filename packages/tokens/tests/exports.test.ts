@@ -63,6 +63,18 @@ describe('token exports', () => {
 			        "900",
 			        "950",
 			      ],
+			      "info": [
+			        "50",
+			        "100",
+			        "200",
+			        "300",
+			        "400",
+			        "500",
+			        "600",
+			        "700",
+			        "800",
+			        "900",
+			      ],
 			      "primary": [
 			        "50",
 			        "100",
@@ -113,6 +125,9 @@ describe('token exports', () => {
 			        "in",
 			        "out",
 			        "inOut",
+			        "decelerate",
+			        "accelerate",
+			        "standard",
 			      ],
 			    },
 			    "radii": [
@@ -134,6 +149,10 @@ describe('token exports', () => {
 			      "2xl",
 			      "inner",
 			      "none",
+			      "glow-sm",
+			      "glow-md",
+			      "glow-lg",
+			      "glow-primary",
 			    ],
 			    "spacingScale": [
 			      "0",
@@ -154,6 +173,7 @@ describe('token exports', () => {
 			    "typography": {
 			      "fontFamily": [
 			        "sans",
+			        "heading",
 			        "serif",
 			        "mono",
 			      ],
@@ -210,6 +230,6 @@ describe('token exports', () => {
 	it('keeps semantic theme hooks pointing at base tokens', () => {
 		expect(themes.light.semantic.background.primary.value).toBe('{color.base.white}');
 		expect(themes.dark.semantic.border.default.value).toBe('{color.gray.700}');
-		expect(themes.highContrast.semantic.action.primary.default.value).toBe('{color.primary.700}');
+		expect(themes.highContrast.semantic.action.primary.default.value).toBe('{color.base.white}');
 	});
 });

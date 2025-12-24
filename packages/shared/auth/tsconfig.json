@@ -20,7 +20,8 @@
     "paths": {
       "@equaltoai/greater-components-headless": ["../../headless/dist/index.d.ts"],
       "@equaltoai/greater-components-headless/*": ["../../headless/dist/*"],
-      "@equaltoai/greater-components-primitives": ["../../primitives/dist/index.d.ts"]
+      "@equaltoai/greater-components-primitives": ["../../primitives/dist/index.d.ts"],
+      "@equaltoai/greater-components-icons": ["../../icons/dist/index.d.ts"]
     }
   },
   "include": ["src/**/*"],
