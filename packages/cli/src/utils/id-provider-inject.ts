@@ -118,7 +118,7 @@ function extractBlocks(content: string, tagName: string, blocks: string[]): stri
 	const openTag = `<${tagName}`;
 	const closeTag = `</${tagName}>`;
 
-	let searchFrom = 0;
+	const searchFrom = 0;
 	while (true) {
 		const startIdx = result.toLowerCase().indexOf(openTag.toLowerCase(), searchFrom);
 		if (startIdx === -1) break;
@@ -154,7 +154,7 @@ function extractSvelteSpecialBlocks(content: string, blocks: string[]): string {
 		const openTag = `<${tag}`;
 		const closeTag = `</${tag}>`;
 
-		let searchFrom = 0;
+		const searchFrom = 0;
 		while (true) {
 			const startIdx = result.indexOf(openTag, searchFrom);
 			if (startIdx === -1) break;
@@ -172,7 +172,7 @@ function extractSvelteSpecialBlocks(content: string, blocks: string[]): string {
 	for (const tag of ['svelte:window', 'svelte:body']) {
 		const openTag = `<${tag}`;
 
-		let searchFrom = 0;
+		const searchFrom = 0;
 		while (true) {
 			const startIdx = result.indexOf(openTag, searchFrom);
 			if (startIdx === -1) break;
