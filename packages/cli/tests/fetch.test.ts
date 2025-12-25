@@ -8,6 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Mock dependencies
 vi.mock('../src/utils/git-fetch.js', () => ({
 	fetchFromGitTag: vi.fn(),
+	resolveGitRefToCommit: vi.fn().mockResolvedValue(null),
 	NetworkError: class NetworkError extends Error {
 		constructor(
 			message: string,

@@ -22,6 +22,7 @@ import { logger } from '../utils/logger.js';
 import { resolveRef } from '../utils/registry-index.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
 import { ensureLocalRepoRoot } from '../utils/local-repo.js';
+import { resolveRefForFetch } from '../utils/ref.js';
 
 /**
  * Result of diffing a single component
@@ -276,7 +277,8 @@ export const diffCommand = new Command()
 			process.exit(1);
 		}
 
-		const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
+			const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
+			const targetRef = await resolveRefForFetch(resolved.ref);
 
 		// Determine which components to diff
 		let componentNames: string[];
@@ -309,22 +311,22 @@ export const diffCommand = new Command()
 			}
 		}
 
-		logger.info(
-			chalk.bold(
-				`\n🔍 Comparing ${componentNames.length} component(s) against ${resolved.ref}...\n`
-			)
-		);
+			logger.info(
+				chalk.bold(
+					`\n🔍 Comparing ${componentNames.length} component(s) against ${targetRef}...\n`
+				)
+			);
 
 		// Diff each component
 		const results: ComponentDiffResult[] = [];
 
-		for (const name of componentNames) {
-			const result = await diffComponent(name, config, cwd, { ref: resolved.ref });
-			results.push(result);
+			for (const name of componentNames) {
+				const result = await diffComponent(name, config, cwd, { ref: targetRef });
+				results.push(result);
 
-			if (!options.summary) {
-				displayComponentDiff(result);
-			}
+				if (!options.summary) {
+					displayComponentDiff(result);
+				}
 		}
 
 		// Display summary

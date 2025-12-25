@@ -10,6 +10,7 @@ import { IntegrityError, type ChecksumMap } from './integrity.js';
 import { fetchRegistryIndex, resolveRef, type RegistryIndex } from './registry-index.js';
 import { DEFAULT_REF, FALLBACK_REF } from './config.js';
 import { logger } from './logger.js';
+import { resolveRefForFetch } from './ref.js';
 import {
 	shouldVerify,
 	verifyGitTag,
@@ -274,7 +275,8 @@ export async function fetchComponentFiles(
 	component: ComponentMetadata,
 	options: FetchOptions = {}
 ): Promise<FetchResult> {
-	const { ref } = await resolveRef(options.ref || DEFAULT_REF, undefined, FALLBACK_REF);
+	const { ref: resolvedRef } = await resolveRef(options.ref || DEFAULT_REF, undefined, FALLBACK_REF);
+	const ref = await resolveRefForFetch(resolvedRef);
 	const files: ComponentFile[] = [];
 	const fetchedFiles: FetchedFile[] = [];
 	let allVerified = true;

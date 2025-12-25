@@ -16,6 +16,7 @@ import {
 	type ComponentConfig,
 } from '../utils/config.js';
 import { resolveRef } from '../utils/registry-index.js';
+import { resolveRefForFetch } from '../utils/ref.js';
 import {
 	isValidProject,
 	detectProjectDetails,
@@ -267,18 +268,19 @@ export const initAction = async (options: {
 
 	// Resolve ref (supports "latest" alias via registry/latest.json)
 	const resolved = await resolveRef(options.ref || DEFAULT_REF, undefined, FALLBACK_REF);
+	const targetRef = await resolveRefForFetch(resolved.ref);
 
 	// Get configuration
 	let config: ComponentConfig;
 
 	if (options.yes) {
 		// Non-interactive mode with defaults
-		config = createDefaultConfig({
-			projectType: projectDetails.type,
-			hasTypeScript: projectDetails.hasTypeScript,
-			ref: resolved.ref,
-			face: selectedFace,
-		});
+			config = createDefaultConfig({
+				projectType: projectDetails.type,
+				hasTypeScript: projectDetails.hasTypeScript,
+				ref: targetRef,
+				face: selectedFace,
+			});
 	} else {
 		// Interactive configuration
 		const response = await prompts([
@@ -334,12 +336,12 @@ export const initAction = async (options: {
 		const finalFace = selectedFace || response.face;
 
 		// Create base config with defaults
-		const defaultConfig = createDefaultConfig({
-			projectType: projectDetails.type,
-			hasTypeScript: projectDetails.hasTypeScript,
-			ref: resolved.ref,
-			face: finalFace,
-		});
+			const defaultConfig = createDefaultConfig({
+				projectType: projectDetails.type,
+				hasTypeScript: projectDetails.hasTypeScript,
+				ref: targetRef,
+				face: finalFace,
+			});
 
 		// Override with user selections
 		config = {

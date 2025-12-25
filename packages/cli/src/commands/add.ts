@@ -52,6 +52,7 @@ import {
 import { resolveRef, fetchRegistryIndex, type RegistryIndex } from '../utils/registry-index.js';
 import { hasGreaterImports } from '../utils/transform.js';
 import { ensureLocalRepoRoot } from '../utils/local-repo.js';
+import { resolveRefForFetch } from '../utils/ref.js';
 
 const GREATER_COMPONENTS_PACKAGE = '@equaltoai/greater-components';
 const GREATER_TAG_VERSION_RE = /^greater-v(\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?)$/;
@@ -178,12 +179,13 @@ export const addAction = async (
 	}
 
 	const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
+	const targetRef = await resolveRefForFetch(resolved.ref);
 
 	// Fetch registry index for dependency resolution
 	const registrySpinner = ora('Loading registry...').start();
 	let registryIndex: RegistryIndex | undefined;
 	try {
-		registryIndex = await fetchRegistryIndex(resolved.ref);
+		registryIndex = await fetchRegistryIndex(targetRef);
 		registrySpinner.succeed('Registry loaded');
 	} catch (error) {
 		registrySpinner.warn(
@@ -362,12 +364,12 @@ export const addAction = async (
 		requiresGreaterComponents &&
 		!isVendoredMode &&
 		!resolution.npmDependencies.some((dep) => dep.name === GREATER_COMPONENTS_PACKAGE)
-	) {
-		resolution.npmDependencies.push({
-			name: GREATER_COMPONENTS_PACKAGE,
-			version: getGreaterComponentsVersionSpec(resolved.ref),
-		});
-	}
+		) {
+			resolution.npmDependencies.push({
+				name: GREATER_COMPONENTS_PACKAGE,
+				version: getGreaterComponentsVersionSpec(targetRef),
+			});
+		}
 
 	// Generate and display preview
 	const preview = generatePreview(resolution, config, cwd, options.path);
@@ -437,13 +439,13 @@ export const addAction = async (
 	// Fetch components
 	const fetchSpinner = ora('Fetching components...').start();
 
-	const fetchOptions: FetchOptions = {
-		ref: resolved.ref,
-		verbose: false,
-		skipVerification: options.skipVerify,
-		verifySignature: options.verifySignature,
-		failFast: true,
-	};
+		const fetchOptions: FetchOptions = {
+			ref: targetRef,
+			verbose: false,
+			skipVerification: options.skipVerify,
+			verifySignature: options.verifySignature,
+			failFast: true,
+		};
 
 	let componentFiles: Map<string, ComponentFile[]>;
 	try {
@@ -555,11 +557,11 @@ export const addAction = async (
 	// Update installed components tracking in config
 	const updateConfigSpinner = ora('Updating configuration...').start();
 	try {
-		let updatedConfig = config;
+			let updatedConfig = config;
 
-		for (const dep of resolution.resolved) {
-			updatedConfig = addInstalledComponent(updatedConfig, dep.name, resolved.ref);
-		}
+			for (const dep of resolution.resolved) {
+				updatedConfig = addInstalledComponent(updatedConfig, dep.name, targetRef);
+			}
 
 		// Update face in config if face installation
 		if (isFaceInstall) {
@@ -573,10 +575,10 @@ export const addAction = async (
 			};
 		}
 
-		updatedConfig = {
-			...updatedConfig,
-			ref: resolved.ref,
-		};
+			updatedConfig = {
+				...updatedConfig,
+				ref: targetRef,
+			};
 
 		await writeConfig(updatedConfig, cwd);
 		config = updatedConfig;

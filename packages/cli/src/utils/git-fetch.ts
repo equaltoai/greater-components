@@ -13,6 +13,10 @@ import { logger } from './logger.js';
  */
 const GITHUB_REPO = 'equaltoai/greater-components';
 const GITHUB_RAW_URL = `https://github.com/${GITHUB_REPO}/raw`;
+const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}`;
+
+const RESOLVE_REF_TIMEOUT_MS = 5_000;
+const resolvedRefCache = new Map<string, string>();
 
 /**
  * Cache configuration
@@ -72,6 +76,52 @@ export class CacheError extends Error {
  */
 function sleep(ms: number): Promise<void> {
 	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Resolve a branch/tag name to an immutable commit SHA via the GitHub API.
+ *
+ * This helps avoid checksum mismatches when using moving refs (e.g. "main") together with cached
+ * registry indexes.
+ */
+export async function resolveGitRefToCommit(ref: string): Promise<string | null> {
+	// In local repo mode, the ref is irrelevant (we read directly from disk).
+	if (process.env['GREATER_CLI_LOCAL_REPO_ROOT']) return null;
+
+	const trimmed = ref.trim();
+	if (!trimmed) return null;
+
+	const cached = resolvedRefCache.get(trimmed);
+	if (cached) return cached;
+
+	const url = `${GITHUB_API_URL}/commits/${encodeURIComponent(trimmed)}`;
+	validateHttpsUrl(url);
+
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), RESOLVE_REF_TIMEOUT_MS);
+
+	try {
+		const headers: Record<string, string> = {
+			Accept: 'application/vnd.github+json',
+			'User-Agent': 'greater-components-cli',
+		};
+
+		const token = process.env['GITHUB_TOKEN'];
+		if (token) headers['Authorization'] = `Bearer ${token}`;
+
+		const response = await fetch(url, { headers, signal: controller.signal });
+		if (!response.ok) return null;
+
+		const json = (await response.json()) as { sha?: unknown };
+		if (typeof json.sha !== 'string' || !json.sha) return null;
+
+		resolvedRefCache.set(trimmed, json.sha);
+		return json.sha;
+	} catch {
+		return null;
+	} finally {
+		clearTimeout(timeoutId);
+	}
 }
 
 /**

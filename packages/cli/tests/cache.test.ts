@@ -57,6 +57,7 @@ vi.mock('../src/utils/git-fetch.js', () => ({
 	clearCache: mockClearCache,
 	clearAllCache: mockClearAllCache,
 	fetchFromGitTag: mockFetchFromGitTag,
+	resolveGitRefToCommit: vi.fn().mockResolvedValue(null),
 	isCached: vi.fn(),
 }));
 
@@ -80,6 +81,8 @@ const mockGetComponentChecksums = vi.fn();
 vi.mock('../src/utils/registry-index.js', () => ({
 	fetchRegistryIndex: mockFetchRegistryIndex,
 	resolveRef: mockResolveRef,
+	clearRegistryCache: vi.fn(),
+	clearAllRegistryCache: vi.fn(),
 	getAllFaceNames: mockGetAllFaceNames,
 	getAllSharedNames: mockGetAllSharedNames,
 	getAllComponentNames: mockGetAllComponentNames,

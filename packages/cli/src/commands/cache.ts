@@ -18,6 +18,8 @@ import { clearCache, clearAllCache, getCacheDir, fetchFromGitTag } from '../util
 import {
 	fetchRegistryIndex,
 	resolveRef,
+	clearRegistryCache,
+	clearAllRegistryCache,
 	getAllFaceNames,
 	getAllSharedNames,
 	getAllComponentNames,
@@ -26,6 +28,7 @@ import {
 	getComponentChecksums,
 } from '../utils/registry-index.js';
 import { FALLBACK_REF } from '../utils/config.js';
+import { resolveRefForFetch } from '../utils/ref.js';
 
 /**
  * List cached refs and their status
@@ -83,12 +86,15 @@ async function clearAction(ref?: string, options?: { all?: boolean }): Promise<v
 
 	try {
 		if (ref) {
+			const targetRef = await resolveRefForFetch(ref);
+			const refsToClear = targetRef !== ref ? [ref, targetRef] : [ref];
+
 			// Clear specific ref
-			await clearCache(ref);
+			await Promise.all(refsToClear.flatMap((r) => [clearCache(r), clearRegistryCache(r)]));
 			spinner.succeed(`Cleared cache for ${chalk.cyan(ref)}`);
 		} else if (options?.all) {
 			// Clear all cache
-			await clearAllCache();
+			await Promise.all([clearAllCache(), clearAllRegistryCache()]);
 			spinner.succeed('Cleared all cached files');
 		} else {
 			// Show warning and ask for confirmation
@@ -229,15 +235,16 @@ async function prefetchAction(
 	// Resolve the ref
 	const { ref, source } = await resolveRef(refOrItems, undefined, FALLBACK_REF);
 	const displayRef = source === 'explicit' ? refOrItems : ref;
+	const targetRef = await resolveRefForFetch(ref);
 
 	logger.info(`Prefetching files from ${chalk.cyan(displayRef)}...`);
 	logger.info('');
 
 	const spinner = ora('Loading registry index...').start();
 
-	try {
-		// Resolve items to prefetch
-		const { items: resolvedItems } = await resolveItems(ref, options.all ? [] : items);
+		try {
+			// Resolve items to prefetch
+			const { items: resolvedItems } = await resolveItems(targetRef, options.all ? [] : items);
 
 		if (resolvedItems.length === 0) {
 			spinner.info('No items to prefetch');
@@ -252,15 +259,15 @@ async function prefetchAction(
 		let errorCount = 0;
 		const errors: string[] = [];
 
-		for (const item of resolvedItems) {
-			for (const filePath of item.files) {
-				try {
-					await fetchFromGitTag(ref, filePath, { skipCache: false });
-					fetchedCount++;
-					spinner.text = `Prefetching... ${fetchedCount}/${totalFiles}`;
-				} catch {
-					errorCount++;
-					errors.push(`${item.name}/${filePath.split('/').pop()}`);
+			for (const item of resolvedItems) {
+				for (const filePath of item.files) {
+					try {
+						await fetchFromGitTag(targetRef, filePath, { skipCache: false });
+						fetchedCount++;
+						spinner.text = `Prefetching... ${fetchedCount}/${totalFiles}`;
+					} catch {
+						errorCount++;
+						errors.push(`${item.name}/${filePath.split('/').pop()}`);
 				}
 			}
 		}
@@ -288,14 +295,14 @@ async function prefetchAction(
 
 		if (faceCount > 0) logger.info(`  Faces: ${faceCount}`);
 		if (sharedCount > 0) logger.info(`  Shared modules: ${sharedCount}`);
-		if (componentCount > 0) logger.info(`  Components: ${componentCount}`);
-		logger.info(`  Total files: ${fetchedCount}`);
-		logger.info('');
-		logger.info(chalk.dim(`Cache location: ${getCacheDir(ref)}`));
-	} catch (error) {
-		spinner.fail('Failed to prefetch');
-		throw error;
-	}
+			if (componentCount > 0) logger.info(`  Components: ${componentCount}`);
+			logger.info(`  Total files: ${fetchedCount}`);
+			logger.info('');
+			logger.info(chalk.dim(`Cache location: ${getCacheDir(targetRef)}`));
+		} catch (error) {
+			spinner.fail('Failed to prefetch');
+			throw error;
+		}
 }
 
 /**

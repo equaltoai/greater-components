@@ -15,6 +15,7 @@ import * as security from '../src/utils/security.js';
 
 vi.mock('../src/utils/git-fetch.js', () => ({
 	fetchFromGitTag: vi.fn(),
+	resolveGitRefToCommit: vi.fn().mockResolvedValue(null),
 	NetworkError: class NetworkError extends Error {},
 }));
 

@@ -29,6 +29,7 @@ import { transformImports } from '../utils/transform.js';
 import { logger } from '../utils/logger.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
 import { ensureLocalRepoRoot } from '../utils/local-repo.js';
+import { resolveRefForFetch } from '../utils/ref.js';
 
 /**
  * Conflict resolution choice
@@ -409,6 +410,7 @@ export const updateAction = async (
 	}
 
 	const resolved = await resolveRef(options.ref, config.ref, FALLBACK_REF);
+	const targetRef = await resolveRefForFetch(resolved.ref);
 
 	// Determine which components to update
 	let componentNames: string[];
@@ -447,8 +449,7 @@ export const updateAction = async (
 		process.exit(0);
 	}
 
-	const targetRef = resolved.ref;
-	const dryRunLabel = options.dryRun ? chalk.cyan(' [DRY RUN]') : '';
+		const dryRunLabel = options.dryRun ? chalk.cyan(' [DRY RUN]') : '';
 
 	logger.info(
 		chalk.bold(
