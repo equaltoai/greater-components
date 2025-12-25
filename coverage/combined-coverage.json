@@ -1,0 +1,332 @@
+{
+  "packages": [
+    {
+      "package": "adapters",
+      "lines": {
+        "total": 2779,
+        "covered": 2490,
+        "pct": 89.6
+      },
+      "functions": {
+        "total": 556,
+        "covered": 522,
+        "pct": 93.88
+      },
+      "statements": {
+        "total": 2779,
+        "covered": 2490,
+        "pct": 89.6
+      },
+      "branches": {
+        "total": 2185,
+        "covered": 1739,
+        "pct": 79.59
+      }
+    },
+    {
+      "package": "cli",
+      "lines": {
+        "total": 3714,
+        "covered": 3234,
+        "pct": 87.08
+      },
+      "functions": {
+        "total": 449,
+        "covered": 409,
+        "pct": 91.09
+      },
+      "statements": {
+        "total": 3714,
+        "covered": 3234,
+        "pct": 87.08
+      },
+      "branches": {
+        "total": 2169,
+        "covered": 1633,
+        "pct": 75.29
+      }
+    },
+    {
+      "package": "content",
+      "lines": {
+        "total": 88,
+        "covered": 76,
+        "pct": 86.36
+      },
+      "functions": {
+        "total": 15,
+        "covered": 14,
+        "pct": 93.33
+      },
+      "statements": {
+        "total": 88,
+        "covered": 76,
+        "pct": 86.36
+      },
+      "branches": {
+        "total": 48,
+        "covered": 34,
+        "pct": 70.83
+      }
+    },
+    {
+      "package": "headless",
+      "lines": {
+        "total": 1806,
+        "covered": 1656,
+        "pct": 91.69
+      },
+      "functions": {
+        "total": 344,
+        "covered": 318,
+        "pct": 92.44
+      },
+      "statements": {
+        "total": 1806,
+        "covered": 1656,
+        "pct": 91.69
+      },
+      "branches": {
+        "total": 1272,
+        "covered": 1033,
+        "pct": 81.21
+      }
+    },
+    {
+      "package": "icons",
+      "lines": {
+        "total": 1532,
+        "covered": 1532,
+        "pct": 100
+      },
+      "functions": {
+        "total": 1,
+        "covered": 1,
+        "pct": 100
+      },
+      "statements": {
+        "total": 1532,
+        "covered": 1532,
+        "pct": 100
+      },
+      "branches": {
+        "total": 614,
+        "covered": 309,
+        "pct": 50.33
+      }
+    },
+    {
+      "package": "primitives",
+      "lines": {
+        "total": 2847,
+        "covered": 2544,
+        "pct": 89.36
+      },
+      "functions": {
+        "total": 576,
+        "covered": 510,
+        "pct": 88.54
+      },
+      "statements": {
+        "total": 2847,
+        "covered": 2544,
+        "pct": 89.36
+      },
+      "branches": {
+        "total": 1487,
+        "covered": 1038,
+        "pct": 69.8
+      }
+    },
+    {
+      "package": "shared/admin",
+      "lines": {
+        "total": 1809,
+        "covered": 1676,
+        "pct": 92.65
+      },
+      "functions": {
+        "total": 307,
+        "covered": 275,
+        "pct": 89.58
+      },
+      "statements": {
+        "total": 1809,
+        "covered": 1676,
+        "pct": 92.65
+      },
+      "branches": {
+        "total": 478,
+        "covered": 333,
+        "pct": 69.67
+      }
+    },
+    {
+      "package": "shared/auth",
+      "lines": {
+        "total": 1538,
+        "covered": 1452,
+        "pct": 94.41
+      },
+      "functions": {
+        "total": 223,
+        "covered": 209,
+        "pct": 93.72
+      },
+      "statements": {
+        "total": 1538,
+        "covered": 1452,
+        "pct": 94.41
+      },
+      "branches": {
+        "total": 641,
+        "covered": 500,
+        "pct": 78
+      }
+    },
+    {
+      "package": "shared/compose",
+      "lines": {
+        "total": 1422,
+        "covered": 1253,
+        "pct": 88.12
+      },
+      "functions": {
+        "total": 300,
+        "covered": 267,
+        "pct": 89
+      },
+      "statements": {
+        "total": 1422,
+        "covered": 1253,
+        "pct": 88.12
+      },
+      "branches": {
+        "total": 676,
+        "covered": 510,
+        "pct": 75.44
+      }
+    },
+    {
+      "package": "shared/notifications",
+      "lines": {
+        "total": 467,
+        "covered": 422,
+        "pct": 90.36
+      },
+      "functions": {
+        "total": 74,
+        "covered": 68,
+        "pct": 91.89
+      },
+      "statements": {
+        "total": 467,
+        "covered": 422,
+        "pct": 90.36
+      },
+      "branches": {
+        "total": 351,
+        "covered": 237,
+        "pct": 67.52
+      }
+    },
+    {
+      "package": "shared/search",
+      "lines": {
+        "total": 500,
+        "covered": 476,
+        "pct": 95.2
+      },
+      "functions": {
+        "total": 119,
+        "covered": 111,
+        "pct": 93.28
+      },
+      "statements": {
+        "total": 500,
+        "covered": 476,
+        "pct": 95.2
+      },
+      "branches": {
+        "total": 205,
+        "covered": 154,
+        "pct": 75.12
+      }
+    },
+    {
+      "package": "tokens",
+      "lines": {
+        "total": 97,
+        "covered": 96,
+        "pct": 98.97
+      },
+      "functions": {
+        "total": 22,
+        "covered": 22,
+        "pct": 100
+      },
+      "statements": {
+        "total": 97,
+        "covered": 96,
+        "pct": 98.97
+      },
+      "branches": {
+        "total": 50,
+        "covered": 48,
+        "pct": 96
+      }
+    },
+    {
+      "package": "utils",
+      "lines": {
+        "total": 680,
+        "covered": 602,
+        "pct": 88.53
+      },
+      "functions": {
+        "total": 117,
+        "covered": 113,
+        "pct": 96.58
+      },
+      "statements": {
+        "total": 680,
+        "covered": 602,
+        "pct": 88.53
+      },
+      "branches": {
+        "total": 467,
+        "covered": 351,
+        "pct": 75.16
+      }
+    }
+  ],
+  "overall": {
+    "lines": {
+      "total": 19279,
+      "covered": 17509,
+      "pct": 90.82
+    },
+    "functions": {
+      "total": 3103,
+      "covered": 2839,
+      "pct": 91.49
+    },
+    "statements": {
+      "total": 19279,
+      "covered": 17509,
+      "pct": 90.82
+    },
+    "branches": {
+      "total": 10643,
+      "covered": 7919,
+      "pct": 74.41
+    }
+  },
+  "timestamp": "2025-12-25T01:32:56.691Z",
+  "thresholds": {
+    "lines": 75,
+    "functions": 75,
+    "statements": 75,
+    "branches": 60
+  }
+}
