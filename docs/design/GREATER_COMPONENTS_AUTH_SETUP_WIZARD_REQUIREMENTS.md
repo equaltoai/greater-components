@@ -98,4 +98,3 @@ If the icon set does not already include a clear wallet icon, add a `wallet` ico
 
 - No request for a `Link` component: Greater intentionally uses HTML `<a>` directly (per component inventory guidance).
 - No setup-wizard-specific compound component is requested at this stage; the wizard flow should remain application-owned and reflect Lesser’s backend contract.
-

@@ -49,4 +49,3 @@ describe('DefinitionList', () => {
 		expect(value?.classList.contains('gr-definition-item__value--nowrap')).toBe(true);
 	});
 });
-

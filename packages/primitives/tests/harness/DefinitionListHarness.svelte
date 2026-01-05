@@ -30,22 +30,14 @@
 
 <DefinitionList {...listProps}>
 	{#each items as item, index (item.label)}
-		<DefinitionItem
-			label={item.label}
-			monospace={item.monospace}
-			wrap={item.wrap}
-			{...itemProps}
-		>
+		<DefinitionItem label={item.label} monospace={item.monospace} wrap={item.wrap} {...itemProps}>
 			{item.value}
 
 			{#snippet actions()}
 				{#if item.actions}
-					<button type="button" data-testid={`action-${index}`}>
-						Action
-					</button>
+					<button type="button" data-testid={`action-${index}`}> Action </button>
 				{/if}
 			{/snippet}
 		</DefinitionItem>
 	{/each}
 </DefinitionList>
-

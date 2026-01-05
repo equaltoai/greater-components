@@ -364,12 +364,12 @@ export const addAction = async (
 		requiresGreaterComponents &&
 		!isVendoredMode &&
 		!resolution.npmDependencies.some((dep) => dep.name === GREATER_COMPONENTS_PACKAGE)
-		) {
-			resolution.npmDependencies.push({
-				name: GREATER_COMPONENTS_PACKAGE,
-				version: getGreaterComponentsVersionSpec(targetRef),
-			});
-		}
+	) {
+		resolution.npmDependencies.push({
+			name: GREATER_COMPONENTS_PACKAGE,
+			version: getGreaterComponentsVersionSpec(targetRef),
+		});
+	}
 
 	// Generate and display preview
 	const preview = generatePreview(resolution, config, cwd, options.path);
@@ -439,13 +439,13 @@ export const addAction = async (
 	// Fetch components
 	const fetchSpinner = ora('Fetching components...').start();
 
-		const fetchOptions: FetchOptions = {
-			ref: targetRef,
-			verbose: false,
-			skipVerification: options.skipVerify,
-			verifySignature: options.verifySignature,
-			failFast: true,
-		};
+	const fetchOptions: FetchOptions = {
+		ref: targetRef,
+		verbose: false,
+		skipVerification: options.skipVerify,
+		verifySignature: options.verifySignature,
+		failFast: true,
+	};
 
 	let componentFiles: Map<string, ComponentFile[]>;
 	try {
@@ -557,11 +557,11 @@ export const addAction = async (
 	// Update installed components tracking in config
 	const updateConfigSpinner = ora('Updating configuration...').start();
 	try {
-			let updatedConfig = config;
+		let updatedConfig = config;
 
-			for (const dep of resolution.resolved) {
-				updatedConfig = addInstalledComponent(updatedConfig, dep.name, targetRef);
-			}
+		for (const dep of resolution.resolved) {
+			updatedConfig = addInstalledComponent(updatedConfig, dep.name, targetRef);
+		}
 
 		// Update face in config if face installation
 		if (isFaceInstall) {
@@ -575,10 +575,10 @@ export const addAction = async (
 			};
 		}
 
-			updatedConfig = {
-				...updatedConfig,
-				ref: targetRef,
-			};
+		updatedConfig = {
+			...updatedConfig,
+			ref: targetRef,
+		};
 
 		await writeConfig(updatedConfig, cwd);
 		config = updatedConfig;

@@ -32,4 +32,3 @@
 <dl class={listClass} {...restProps}>
 	{@render children()}
 </dl>
-

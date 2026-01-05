@@ -11,9 +11,9 @@ describe('truncateMiddle', () => {
 	});
 
 	it('supports custom head, tail, and ellipsis', () => {
-		expect(truncateMiddle('abcdefghijklmnopqrstuvwxyz', { head: 2, tail: 2, ellipsis: '...' })).toBe(
-			'ab...yz'
-		);
+		expect(
+			truncateMiddle('abcdefghijklmnopqrstuvwxyz', { head: 2, tail: 2, ellipsis: '...' })
+		).toBe('ab...yz');
 	});
 
 	it('supports head-only and tail-only truncation', () => {
@@ -30,4 +30,3 @@ describe('truncateMiddle', () => {
 		expect(truncateMiddle('abcdef', { head: 2, tail: 2, ellipsis: '...' })).toBe('abcdef');
 	});
 });
-
