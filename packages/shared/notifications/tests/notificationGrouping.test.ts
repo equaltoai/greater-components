@@ -340,7 +340,8 @@ describe('Notification Grouping Utilities', () => {
 		it('should return formatted date for older notifications', () => {
 			const weeksAgo = new Date(now.getTime() - 1209600000); // 2 weeks ago
 			const formatted = formatNotificationTime(weeksAgo.toISOString());
-			expect(formatted).toMatch(/^[A-Z][a-z]{2} \d{1,2}$/); // "Jan 15" format
+			// "Jan 15" format (same year) or "Dec 22, 2025" format (different year)
+			expect(formatted).toMatch(/^[A-Z][a-z]{2} \d{1,2}(, \d{4})?$/);
 		});
 
 		it('should handle Date objects as well as ISO strings', () => {
