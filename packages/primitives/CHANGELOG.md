@@ -1,5 +1,85 @@
 # @equaltoai/greater-components-primitives
 
+## 3.1.0
+
+### Minor Changes
+
+- **CSP Compatibility**: Refactored core primitive components for strict Content Security Policy compliance
+
+  ## Breaking Changes
+
+  ### Skeleton Component
+  - **Width and height props now accept preset values only**
+  - Width presets: `'full' | '1/2' | '1/3' | '2/3' | '1/4' | '3/4' | 'content' | 'auto'`
+  - Height presets: `'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'`
+  - Arbitrary string/number values are no longer supported
+  - For custom sizes, use the `class` prop with external CSS
+
+  **Migration:**
+  ```svelte
+  <!-- Before -->
+  <Skeleton width="250px" height="80px" />
+  
+  <!-- After -->
+  <Skeleton width="1/2" height="lg" />
+  <!-- Or for custom sizes -->
+  <Skeleton class="custom-skeleton" />
+  ```
+
+  ### Avatar Component
+  - **Background colors now use deterministic hash-based color classes**
+  - Same name/label always produces the same color across sessions
+  - Color classes: `gr-avatar--color-0` through `gr-avatar--color-11`
+  - All colors meet WCAG AA contrast requirements
+  - No API changes required - behavior is now deterministic
+
+  ### Text Component
+  - **Line clamping now supports 2-6 lines only via preset classes**
+  - Supported values: 2, 3, 4, 5, 6
+  - Out-of-range line counts require external CSS
+  - Single-line truncation still works with `truncate` prop alone
+
+  **Migration:**
+  ```svelte
+  <!-- Before -->
+  <Text truncate lines={10}>Long text...</Text>
+  
+  <!-- After (supported range) -->
+  <Text truncate lines={3}>Clamped to 3 lines...</Text>
+  <!-- Or for other line counts -->
+  <Text truncate class="clamp-10">Long text...</Text>
+  ```
+
+  ### Container Component
+  - **Gutter prop now accepts preset values only**
+  - Gutter presets: `'none' | 'sm' | 'md' | 'lg' | 'xl'`
+  - Custom gutter values require external CSS with `--gr-container-custom-gutter` variable
+
+  **Migration:**
+  ```svelte
+  <!-- Before -->
+  <Container gutter="2.5rem">Content</Container>
+  
+  <!-- After -->
+  <Container gutter="lg">Content</Container>
+  <!-- Or for custom gutters -->
+  <Container class="custom-gutter">Content</Container>
+  ```
+
+  ## Benefits
+
+  - **Strict CSP Compliance**: All components work in environments without `'unsafe-inline'`
+  - **Better Security**: No inline styles that could be exploited
+  - **Improved Performance**: Class-based styles are more efficient
+  - **Design System Consistency**: Preset values ensure consistent styling
+  - **Lesser Compatibility**: Works in Lesser deployments with CloudFront CSP headers
+
+  ## Documentation
+
+  - See [CSP Compatibility Guide](../../docs/csp-compatibility.md) for technical details
+  - See [CSP Migration Guide](../../docs/csp-migration-guide.md) for detailed migration instructions
+  - Updated component documentation in README with preset APIs and examples
+
 ## 3.0.1
 
 ### Patch Changes

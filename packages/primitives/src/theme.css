@@ -1076,6 +1076,76 @@
 	background-color: #f59e0b; /* amber-500 */
 }
 
+/* Image display control */
+.gr-avatar__image {
+	display: none;
+}
+
+.gr-avatar__image--loaded {
+	display: block;
+}
+
+/* Color palette for initials, labels, and icons (WCAG AA compliant) */
+.gr-avatar--color-0 {
+	background-color: hsl(0, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-1 {
+	background-color: hsl(30, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-2 {
+	background-color: hsl(60, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-3 {
+	background-color: hsl(90, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-4 {
+	background-color: hsl(120, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-5 {
+	background-color: hsl(150, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-6 {
+	background-color: hsl(180, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-7 {
+	background-color: hsl(210, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-8 {
+	background-color: hsl(240, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-9 {
+	background-color: hsl(270, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-10 {
+	background-color: hsl(300, 65%, 30%);
+	color: white;
+}
+
+.gr-avatar--color-11 {
+	background-color: hsl(330, 65%, 30%);
+	color: white;
+}
+
 /* Loading state */
 .gr-avatar--loading {
 	pointer-events: none;
@@ -1468,7 +1538,20 @@
 	padding-right: var(--gr-spacing-scale-8);
 }
 
-/* Custom gutter (uses CSS variable) */
+/*
+ * Custom gutter pattern (CSP-compliant):
+ * For custom gutter values, apply a class to the Container and set
+ * the --gr-container-custom-gutter CSS variable in your own stylesheet:
+ *
+ * <Container class="my-custom-gutter">...</Container>
+ *
+ * .my-custom-gutter {
+ *   --gr-container-custom-gutter: 2rem;
+ * }
+ *
+ * Note: The Container component no longer accepts numeric/string gutter values
+ * directly to maintain strict CSP compliance (no inline styles).
+ */
 .gr-container--padded-custom {
 	padding-left: var(--gr-container-custom-gutter);
 	padding-right: var(--gr-container-custom-gutter);
@@ -2582,18 +2665,84 @@
 	border-radius: var(--gr-radii-sm);
 	transform: scale(1, 0.8);
 	transform-origin: 0 50%;
+	height: 1em;
+	width: 100%;
 }
 
 .gr-skeleton--circular {
 	border-radius: 50%;
+	width: 40px;
+	height: 40px;
 }
 
 .gr-skeleton--rectangular {
 	border-radius: 0;
+	width: 100%;
+	height: 120px;
 }
 
 .gr-skeleton--rounded {
 	border-radius: var(--gr-radii-md);
+	width: 100%;
+	height: 120px;
+}
+
+/* Width presets */
+.gr-skeleton--width-full {
+	width: 100%;
+}
+
+.gr-skeleton--width-1\/2 {
+	width: 50%;
+}
+
+.gr-skeleton--width-1\/3 {
+	width: 33.333%;
+}
+
+.gr-skeleton--width-2\/3 {
+	width: 66.667%;
+}
+
+.gr-skeleton--width-1\/4 {
+	width: 25%;
+}
+
+.gr-skeleton--width-3\/4 {
+	width: 75%;
+}
+
+.gr-skeleton--width-content {
+	width: fit-content;
+}
+
+.gr-skeleton--width-auto {
+	width: auto;
+}
+
+/* Height presets */
+.gr-skeleton--height-xs {
+	height: 1rem;
+}
+
+.gr-skeleton--height-sm {
+	height: 1.5rem;
+}
+
+.gr-skeleton--height-md {
+	height: 2rem;
+}
+
+.gr-skeleton--height-lg {
+	height: 3rem;
+}
+
+.gr-skeleton--height-xl {
+	height: 4rem;
+}
+
+.gr-skeleton--height-2xl {
+	height: 6rem;
 }
 
 /* Animation styles */
@@ -3163,17 +3312,40 @@
 }
 
 /* Truncation */
-.gr-text--truncate:not(.gr-text--clamp) {
+.gr-text--truncate:not(.gr-text--clamp-2):not(.gr-text--clamp-3):not(.gr-text--clamp-4):not(.gr-text--clamp-5):not(.gr-text--clamp-6) {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.gr-text--clamp {
+.gr-text--clamp-2,
+.gr-text--clamp-3,
+.gr-text--clamp-4,
+.gr-text--clamp-5,
+.gr-text--clamp-6 {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
-	-webkit-line-clamp: var(--gr-text-clamp-lines, 1);
 	overflow: hidden;
+}
+
+.gr-text--clamp-2 {
+	-webkit-line-clamp: 2;
+}
+
+.gr-text--clamp-3 {
+	-webkit-line-clamp: 3;
+}
+
+.gr-text--clamp-4 {
+	-webkit-line-clamp: 4;
+}
+
+.gr-text--clamp-5 {
+	-webkit-line-clamp: 5;
+}
+
+.gr-text--clamp-6 {
+	-webkit-line-clamp: 6;
 }
 
 /* TextArea Styles */

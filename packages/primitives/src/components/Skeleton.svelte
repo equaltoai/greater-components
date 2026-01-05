@@ -2,10 +2,13 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 
+	type WidthPreset = 'full' | '1/2' | '1/3' | '2/3' | '1/4' | '3/4' | 'content' | 'auto';
+	type HeightPreset = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+
 	interface Props extends HTMLAttributes<HTMLDivElement> {
 		variant?: 'text' | 'circular' | 'rectangular' | 'rounded';
-		width?: string | number;
-		height?: string | number;
+		width?: WidthPreset;
+		height?: HeightPreset;
 		animation?: 'pulse' | 'wave' | 'none';
 		class?: string;
 		loading?: boolean;
@@ -21,7 +24,6 @@
 		loading = true,
 		children,
 		id,
-		style: styleProp,
 		onclick,
 		onmouseenter,
 		onmouseleave,
@@ -95,45 +97,14 @@
 			'gr-skeleton',
 			`gr-skeleton--${variant}`,
 			animation !== 'none' && `gr-skeleton--${animation}`,
+			width && `gr-skeleton--width-${width}`,
+			height && `gr-skeleton--height-${height}`,
 			className,
 		]
 			.filter(Boolean)
 			.join(' ');
 
 		return classes;
-	});
-
-	// Compute skeleton styles
-	const skeletonStyle = $derived(() => {
-		const styles: Record<string, string> = {};
-
-		if (width !== undefined) {
-			styles.width = typeof width === 'number' ? `${width}px` : width;
-		}
-
-		if (height !== undefined) {
-			styles.height = typeof height === 'number' ? `${height}px` : height;
-		}
-
-		// Default dimensions for different variants
-		if (variant === 'text') {
-			if (!height) styles.height = '1em';
-			if (!width) styles.width = '100%';
-		} else if (variant === 'circular') {
-			const size = width || height || '40px';
-			styles.width = typeof size === 'number' ? `${size}px` : size;
-			styles.height = typeof size === 'number' ? `${size}px` : size;
-		} else if (variant === 'rectangular' || variant === 'rounded') {
-			if (!width) styles.width = '100%';
-			if (!height) styles.height = '120px';
-		}
-
-		// Merge with provided style prop
-		const baseStyle = Object.entries(styles)
-			.map(([key, value]) => `${key}: ${value}`)
-			.join('; ');
-
-		return styleProp ? `${baseStyle}; ${styleProp}` : baseStyle;
 	});
 </script>
 
@@ -147,7 +118,6 @@
 	{#if isInteractive()}
 		<button
 			class={skeletonClass()}
-			style={skeletonStyle()}
 			{role}
 			aria-label={ariaLabel ?? 'Loading'}
 			aria-labelledby={ariaLabelledby}
@@ -168,7 +138,6 @@
 	{:else}
 		<div
 			class={skeletonClass()}
-			style={skeletonStyle()}
 			aria-hidden="true"
 			role={role ?? 'status'}
 			aria-label={ariaLabel ?? 'Loading'}

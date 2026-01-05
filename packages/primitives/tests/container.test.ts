@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
+import * as fc from 'fast-check';
 import Container from '../src/components/Container.svelte';
 
 describe('Container.svelte', () => {
@@ -111,3 +112,90 @@ describe('Container.svelte', () => {
 		expect(el?.getAttribute('style')).toContain('background: red');
 	});
 });
+
+	describe('CSP Compliance - Property-Based Tests', () => {
+		// Property 24: Container preset gutters emit no style attribute
+		// Feature: csp-baseline-and-primitives, Property 24
+		// Validates: Requirements 6.1, 6.3
+		it('Property 24: preset gutters emit no style attribute', () => {
+			fc.assert(
+				fc.property(
+					fc.constantFrom('none', 'sm', 'md', 'lg', 'xl'),
+					(gutterValue) => {
+						const { container } = render(Container, { props: { gutter: gutterValue } });
+						const el = container.querySelector('.gr-container');
+						return el !== null && !el.hasAttribute('style');
+					}
+				),
+				{ numRuns: 100 }
+			);
+		});
+
+		// Property 25: Container custom gutter emits no style attribute
+		// Feature: csp-baseline-and-primitives, Property 25
+		// Validates: Requirements 6.5
+		it('Property 25: custom gutter emits no style attribute', () => {
+			fc.assert(
+				fc.property(fc.constant({}), () => {
+					// Custom gutters are no longer supported via props
+					// They must be set via external CSS
+					// This test verifies that even without gutter prop, no style attribute is emitted
+					const { container } = render(Container, { props: { class: 'custom-gutter' } });
+					const el = container.querySelector('.gr-container');
+					return el !== null && !el.hasAttribute('style');
+				}),
+				{ numRuns: 100 }
+			);
+		});
+
+		// Property 26: Container preset-only API
+		// Feature: csp-baseline-and-primitives, Property 26
+		// Validates: Requirements 6.7
+		it('Property 26: preset-only API', () => {
+			fc.assert(
+				fc.property(
+					fc.constantFrom('none', 'sm', 'md', 'lg', 'xl'),
+					(gutterValue) => {
+						// TypeScript should enforce this at compile time
+						// This test verifies runtime behavior with valid presets
+						const { container } = render(Container, { props: { gutter: gutterValue } });
+						const el = container.querySelector('.gr-container');
+						// Verify the correct class is applied
+						if (gutterValue === 'none') {
+							return (
+								el !== null &&
+								!el.classList.contains('gr-container--padded-sm') &&
+								!el.classList.contains('gr-container--padded-md') &&
+								!el.classList.contains('gr-container--padded-lg') &&
+								!el.classList.contains('gr-container--padded-xl')
+							);
+						}
+						return el !== null && el.classList.contains(`gr-container--padded-${gutterValue}`);
+					}
+				),
+				{ numRuns: 100 }
+			);
+		});
+
+		// Property 27: Container universal CSP compliance
+		// Feature: csp-baseline-and-primitives, Property 27
+		// Validates: Requirements 7.4
+		it('Property 27: universal CSP compliance across all prop combinations', () => {
+			fc.assert(
+				fc.property(
+					fc.record({
+						maxWidth: fc.option(fc.constantFrom('sm', 'md', 'lg', 'xl', '2xl', 'full')),
+						size: fc.option(fc.constantFrom('sm', 'md', 'lg', 'xl', '2xl', 'full')),
+						gutter: fc.option(fc.constantFrom('none', 'sm', 'md', 'lg', 'xl')),
+						centered: fc.boolean(),
+					}),
+					(props) => {
+						const { container } = render(Container, { props });
+						const el = container.querySelector('.gr-container');
+						return el !== null && !el.hasAttribute('style');
+					}
+				),
+				{ numRuns: 100 }
+			);
+		});
+	});

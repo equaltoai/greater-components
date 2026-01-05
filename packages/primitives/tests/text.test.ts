@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
+import * as fc from 'fast-check';
 import Text from '../src/components/Text.svelte';
 import TextHarness from './harness/TextHarness.svelte';
 
@@ -101,8 +102,8 @@ describe('Text.svelte', () => {
 		const { container } = render(Text, { truncate: true, lines: 3 });
 		const el = container.querySelector('.gr-text');
 		expect(el?.classList.contains('gr-text--truncate')).toBe(true);
-		expect(el?.classList.contains('gr-text--clamp')).toBe(true);
-		expect(el?.getAttribute('style')).toContain('--gr-text-clamp-lines: 3');
+		expect(el?.classList.contains('gr-text--clamp-3')).toBe(true);
+		expect(el?.hasAttribute('style')).toBe(false);
 	});
 
 	it('does not truncate by default', () => {
@@ -128,5 +129,126 @@ describe('Text.svelte', () => {
 		const { container } = render(Text, { as: 'label', for: 'input-id' });
 		const el = container.querySelector('label');
 		expect(el?.getAttribute('for')).toBe('input-id');
+	});
+});
+
+describe('Text.svelte - CSP Compliance Property Tests', () => {
+	// Helper function to check for style attributes
+	const hasNoStyleAttribute = (element: Element | null): boolean => {
+		if (!element) return false;
+		return !element.hasAttribute('style');
+	};
+
+	// Helper function to extract getClampClass logic for testing
+	const getClampClass = (lines?: number): string => {
+		if (!lines) return '';
+		if (lines >= 2 && lines <= 6) {
+			return `gr-text--clamp-${lines}`;
+		}
+		return '';
+	};
+
+	it('Property 20: Text truncate emits no style attribute', () => {
+		// Feature: csp-baseline-and-primitives, Property 20
+		// Validates: Requirements 5.1
+		fc.assert(
+			fc.property(
+				fc.integer({ min: 2, max: 6 }),
+				(lines) => {
+					const { container } = render(Text, { props: { truncate: true, lines } });
+					const element = container.querySelector('.gr-text');
+					return hasNoStyleAttribute(element);
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('Property 21: Text clamp class generation', () => {
+		// Feature: csp-baseline-and-primitives, Property 21
+		// Validates: Requirements 5.3
+		fc.assert(
+			fc.property(
+				fc.constantFrom(2, 3, 4, 5, 6),
+				(lines) => {
+					const expectedClass = `gr-text--clamp-${lines}`;
+					const generatedClass = getClampClass(lines);
+					
+					// Also verify the component renders with the correct class
+					const { container } = render(Text, { props: { truncate: true, lines } });
+					const element = container.querySelector('.gr-text');
+					
+					return (
+						generatedClass === expectedClass &&
+						element?.classList.contains(expectedClass) === true
+					);
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('Property 22: Text removes CSS variable injection', () => {
+		// Feature: csp-baseline-and-primitives, Property 22
+		// Validates: Requirements 5.5
+		fc.assert(
+			fc.property(
+				fc.integer({ min: 1, max: 10 }),
+				(lines) => {
+					const { container } = render(Text, { props: { truncate: true, lines } });
+					const element = container.querySelector('.gr-text');
+					
+					// Check that no style attribute exists
+					if (element?.hasAttribute('style')) {
+						return false;
+					}
+					
+					// Check that the style attribute doesn't contain the CSS variable
+					const styleAttr = element?.getAttribute('style');
+					if (styleAttr && styleAttr.includes('--gr-text-clamp-lines')) {
+						return false;
+					}
+					
+					return true;
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	it('Property 23: Text universal CSP compliance', () => {
+		// Feature: csp-baseline-and-primitives, Property 23
+		// Validates: Requirements 7.3
+		fc.assert(
+			fc.property(
+				fc.record({
+					as: fc.constantFrom('p', 'span', 'div', 'label'),
+					size: fc.constantFrom('xs', 'sm', 'base', 'lg', 'xl', '2xl'),
+					weight: fc.constantFrom('normal', 'medium', 'semibold', 'bold'),
+					color: fc.constantFrom('primary', 'secondary', 'tertiary', 'success', 'warning', 'error'),
+					align: fc.constantFrom('left', 'center', 'right', 'justify'),
+					truncate: fc.boolean(),
+					lines: fc.option(fc.integer({ min: 2, max: 6 })),
+				}),
+				(props) => {
+					const { container } = render(Text, { 
+						props: {
+							...props,
+							lines: props.lines ?? undefined,
+						}
+					});
+					
+					// Check all elements for style attributes
+					const allElements = container.querySelectorAll('*');
+					for (const element of allElements) {
+						if (element.hasAttribute('style')) {
+							return false;
+						}
+					}
+					return true;
+				}
+			),
+			{ numRuns: 100 }
+		);
 	});
 });
