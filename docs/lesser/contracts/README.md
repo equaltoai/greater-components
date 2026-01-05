@@ -39,15 +39,15 @@ Client generation guidance:
 
 ## Common workflow (contract change)
 
-1) Update the source of truth (routes/handlers or `graph/*.graphql`)
-2) Regenerate contracts:
+1. Update the source of truth (routes/handlers or `graph/*.graphql`)
+2. Regenerate contracts:
 
 ```bash
 ./lesser generate openapi
 ./lesser schema
 ```
 
-3) Verify:
+3. Verify:
 
 ```bash
 ./lesser verify

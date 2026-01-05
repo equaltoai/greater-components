@@ -275,7 +275,11 @@ export async function fetchComponentFiles(
 	component: ComponentMetadata,
 	options: FetchOptions = {}
 ): Promise<FetchResult> {
-	const { ref: resolvedRef } = await resolveRef(options.ref || DEFAULT_REF, undefined, FALLBACK_REF);
+	const { ref: resolvedRef } = await resolveRef(
+		options.ref || DEFAULT_REF,
+		undefined,
+		FALLBACK_REF
+	);
 	const ref = await resolveRefForFetch(resolvedRef);
 	const files: ComponentFile[] = [];
 	const fetchedFiles: FetchedFile[] = [];
