@@ -2,7 +2,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
 	overwrite: true,
-	schema: 'schemas/lesser/schema.graphql',
+	schema: 'docs/lesser/contracts/graphql-schema.graphql',
 	documents: 'packages/faces/social/src/adapters/graphql/documents/**/*.graphql',
 	generates: {
 		'packages/faces/social/src/adapters/graphql/generated/types.ts': {
