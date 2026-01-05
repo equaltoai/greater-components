@@ -1,8 +1,8 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2025-12-24T05:21:39.349Z",
-  "ref": "85f5c54c5109",
+  "generatedAt": "2026-01-05T16:44:00.258Z",
+  "ref": "702b60ecbde8",
   "version": "4.1.0",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
@@ -22,10 +22,10 @@
     "packages/primitives/src/components/Container.svelte.d.ts": "sha256-skMVMUkV6C2zhKzRCNUSsp2vxdWxTmGrlRFCVnSN6YA=",
     "packages/primitives/src/components/CopyButton.svelte": "sha256-MtqSkDZWm50V83Y4LfZE1FTUyVnazKXttKRnNTNZa9w=",
     "packages/primitives/src/components/CopyButton.svelte.d.ts": "sha256-7LUligFuM4XNGE32wuruCNcy11n7Fkx4JUfdkgsoXF0=",
-    "packages/primitives/src/components/DefinitionItem.svelte": "sha256-C8JihMYMwIMENpfCsjZ3zgmyKj7AaPy/aFdjJrnNVJY=",
-    "packages/primitives/src/components/DefinitionItem.svelte.d.ts": "sha256-Ed1K/VefKYHW9Bn/pvqI7WgTitFHiajswXZ3z+tkNdE=",
-    "packages/primitives/src/components/DefinitionList.svelte": "sha256-nfNqunEwp7W8x1OPmuB0iAto0ePX6uvOKc0OlcxPgb4=",
-    "packages/primitives/src/components/DefinitionList.svelte.d.ts": "sha256-tHZParlr0d5W8kqSHJCy3VYh9Z8eewMOy5PziKr/Rxw=",
+    "packages/primitives/src/components/DefinitionItem.svelte": "sha256-+Y0OU0QCBV09qcOSnMAUgoSWP7b1cG5G3ORpfIgijh4=",
+    "packages/primitives/src/components/DefinitionItem.svelte.d.ts": "sha256-VZw3eDKmfW005yIs0hdGBpERqmITkTXUb3ZwykpNiNc=",
+    "packages/primitives/src/components/DefinitionList.svelte": "sha256-DnIC8jvaW1js8NzCBs3NnNtLZCNsDKyOls7znav7TRk=",
+    "packages/primitives/src/components/DefinitionList.svelte.d.ts": "sha256-GetFE2LUG+mB0xeEpC2qqojQ7vQElZPr8hqTBvaXUlg=",
     "packages/primitives/src/components/DropZone.svelte": "sha256-6PYWJPVPI1yiAZmpNY0zJaVKhWIGA5BsAyLfcXZvuY0=",
     "packages/primitives/src/components/DropZone.svelte.d.ts": "sha256-foBPUtQVZwl9DWErXO+2DcQiPbfCX6mW2VexF568XTE=",
     "packages/primitives/src/components/FileUpload.svelte": "sha256-i2uKmSm1yKZFCylMyUJVM1R+MZaK/6yR9ozV23G8rxc=",
@@ -806,8 +806,8 @@
     "packages/utils/src/theme/index.ts": "sha256-CHytM0oSppGCb34SuQ1ey1b/ovSksyjzsYwcGXtf2z0=",
     "packages/utils/src/theme/theme-generator.d.ts": "sha256-8Oa2VmKBIcexhqvWmcZF9dvnbrZH3zBkCvV6MXUr7ws=",
     "packages/utils/src/theme/theme-generator.ts": "sha256-T8foUW5UChDq+QNZCXuhBEXyZb1rBnsKx/1elWsfd1A=",
-    "packages/utils/src/truncateMiddle.d.ts": "sha256-UaL4jfbEWViv2njGb0Jz6uQNlAp8EKkxfG6aqk4mWeY=",
-    "packages/utils/src/truncateMiddle.ts": "sha256-9mMCrhqn0vLm3rD2+1PIXTGcCe5+XmfW6BGsmBXm4sc=",
+    "packages/utils/src/truncateMiddle.d.ts": "sha256-zKOTfYiENqkqlmMWkOs6wGBast2pmQf32DR9Smt3PIw=",
+    "packages/utils/src/truncateMiddle.ts": "sha256-AVAtw8C6dJPV0rAL1zdOKRP0jaFxfiIAVFQe1BwXYYM=",
     "packages/utils/src/use-stable-id.svelte.d.ts": "sha256-KWGt/iWi44OtZFOYNzc2UhxiO3jUnNtMmsn2MzU5XTk=",
     "packages/utils/src/use-stable-id.svelte.ts": "sha256-6CETa5fah0IrZe6kp2hPOQYEGBVvZSNf2vJqdd2HoMM=",
     "packages/adapters/src/examples/TransportManagerExample.ts": "sha256-wQ7sepE4UYE23zTCihyktGomWPmEXvzYfbWPT0Aco2c=",
@@ -818,7 +818,7 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-M0UwWko7U1Cgv/EZv6CStGHfwidKao9BxgJRvKcF8N8=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-kBSv2BrFyurBE6riWv9mzCDlQyP/zjiBPOUrR+xpdTM=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-f3axr+/ohrU+kSiAnyqT1/ZA3ec71HAk1PGzfldTgPo=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-ux8c3zpaXnQ5+dqMK+YgJ2f3qG78u/qkoqj5S1A+9dQ=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-oxd6nEvGRW6xM+FlLeQdyIIIShGu/tYv7Eej9MvzWNg=",
@@ -845,6 +845,7 @@
     "packages/adapters/src/mappers/mastodon/types.ts": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-P7MTLrDEubSZl1pZBMawRRvTOir3YTyJW9FAgVoIg3E=",
+    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-jVnkBaHyAXTExBaxee+L3I68l5imrjJ8kb3+WO4GQeM=",
     "packages/adapters/src/SseClient.d.ts": "sha256-fxMEJHoDY/ae3mkTtv9yw5N1jfD5wLSrJ4ixrJ+TYoU=",
     "packages/adapters/src/SseClient.ts": "sha256-XJ1v33MnEkm1CRobboaQ0hOpTvFjDOkd1GX6UocQ2Q4=",
     "packages/adapters/src/stores/adminStreamingStore.d.ts": "sha256-SjxwZTLzZw3QyuExX+Wt0TR7TzXTI6z+yb/aTRSyQ0M=",
@@ -885,7 +886,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-gT7brhxX/HWQSvwr7XkbIHD7r77jK5XVmnkTR1M7jtA=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-SYarAEkH3jrGOq1Vg7Vt+DaqluvgxaKvIGNbGqOs+YI=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
     "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
@@ -1422,23 +1423,23 @@
         },
         {
           "path": "src/components/DefinitionItem.svelte",
-          "checksum": "sha256-C8JihMYMwIMENpfCsjZ3zgmyKj7AaPy/aFdjJrnNVJY=",
-          "size": 1094
+          "checksum": "sha256-+Y0OU0QCBV09qcOSnMAUgoSWP7b1cG5G3ORpfIgijh4=",
+          "size": 1093
         },
         {
           "path": "src/components/DefinitionItem.svelte.d.ts",
-          "checksum": "sha256-Ed1K/VefKYHW9Bn/pvqI7WgTitFHiajswXZ3z+tkNdE=",
-          "size": 478
+          "checksum": "sha256-VZw3eDKmfW005yIs0hdGBpERqmITkTXUb3ZwykpNiNc=",
+          "size": 477
         },
         {
           "path": "src/components/DefinitionList.svelte",
-          "checksum": "sha256-nfNqunEwp7W8x1OPmuB0iAto0ePX6uvOKc0OlcxPgb4=",
-          "size": 669
+          "checksum": "sha256-DnIC8jvaW1js8NzCBs3NnNtLZCNsDKyOls7znav7TRk=",
+          "size": 668
         },
         {
           "path": "src/components/DefinitionList.svelte.d.ts",
-          "checksum": "sha256-tHZParlr0d5W8kqSHJCy3VYh9Z8eewMOy5PziKr/Rxw=",
-          "size": 450
+          "checksum": "sha256-GetFE2LUG+mB0xeEpC2qqojQ7vQElZPr8hqTBvaXUlg=",
+          "size": 449
         },
         {
           "path": "src/components/DropZone.svelte",
@@ -5434,13 +5435,13 @@
         },
         {
           "path": "src/truncateMiddle.d.ts",
-          "checksum": "sha256-UaL4jfbEWViv2njGb0Jz6uQNlAp8EKkxfG6aqk4mWeY=",
-          "size": 724
+          "checksum": "sha256-zKOTfYiENqkqlmMWkOs6wGBast2pmQf32DR9Smt3PIw=",
+          "size": 723
         },
         {
           "path": "src/truncateMiddle.ts",
-          "checksum": "sha256-9mMCrhqn0vLm3rD2+1PIXTGcCe5+XmfW6BGsmBXm4sc=",
-          "size": 1155
+          "checksum": "sha256-AVAtw8C6dJPV0rAL1zdOKRP0jaFxfiIAVFQe1BwXYYM=",
+          "size": 1154
         },
         {
           "path": "src/use-stable-id.svelte.d.ts",
@@ -5550,8 +5551,8 @@
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-f3axr+/ohrU+kSiAnyqT1/ZA3ec71HAk1PGzfldTgPo=",
-          "size": 930342
+          "checksum": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
+          "size": 1014252
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -5682,6 +5683,11 @@
           "path": "src/models/unified.ts",
           "checksum": "sha256-P7MTLrDEubSZl1pZBMawRRvTOir3YTyJW9FAgVoIg3E=",
           "size": 15357
+        },
+        {
+          "path": "src/rest/generated/lesser-api.ts",
+          "checksum": "sha256-jVnkBaHyAXTExBaxee+L3I68l5imrjJ8kb3+WO4GQeM=",
+          "size": 418191
         },
         {
           "path": "src/SseClient.d.ts",
@@ -6050,8 +6056,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-SYarAEkH3jrGOq1Vg7Vt+DaqluvgxaKvIGNbGqOs+YI=",
-          "size": 930337
+          "checksum": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
+          "size": 1014252
         },
         {
           "path": "src/adapters/graphql/index.ts",
@@ -6711,7 +6717,13 @@
           "StructuredData",
           "OpenGraphMeta"
         ],
-        "shared": ["primitives", "icons", "content", "utils", "headless"],
+        "shared": [
+          "primitives",
+          "icons",
+          "content",
+          "utils",
+          "headless"
+        ],
         "patterns": [],
         "components": [
           "Article",
@@ -6978,7 +6990,13 @@
           "RulesSidebar",
           "WikiPage"
         ],
-        "shared": ["primitives", "icons", "content", "utils", "headless"],
+        "shared": [
+          "primitives",
+          "icons",
+          "content",
+          "utils",
+          "headless"
+        ],
         "patterns": [],
         "components": [
           "Community",
@@ -7279,7 +7297,14 @@
           "PremiumBadge",
           "InstitutionalTools"
         ],
-        "shared": ["primitives", "headless", "icons", "tokens", "adapters", "utils"],
+        "shared": [
+          "primitives",
+          "headless",
+          "icons",
+          "tokens",
+          "adapters",
+          "utils"
+        ],
         "patterns": [],
         "components": [
           "Artwork",
@@ -8614,7 +8639,15 @@
       "name": "search",
       "version": "4.0.1",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
-      "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
+      "exports": [
+        "Root",
+        "Bar",
+        "Filters",
+        "Results",
+        "ActorResult",
+        "NoteResult",
+        "TagResult"
+      ],
       "files": [
         {
           "path": "src/ActorResult.svelte",
