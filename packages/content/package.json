@@ -68,7 +68,7 @@
     "@types/node": "^24.10.2",
     "@vitest/coverage-v8": "^4.0.15",
     "jsdom": "^27.3.0",
-    "svelte": "^5.45.8",
+    "svelte": "^5.46.1",
     "typescript": "^5.9.3",
     "vite": "^7.2.7",
     "vitest": "^4.0.15"
