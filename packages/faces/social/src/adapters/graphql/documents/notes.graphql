@@ -71,7 +71,9 @@ mutation ShareObject($id: ID!) {
 }
 
 mutation UnshareObject($id: ID!) {
-	unshareObject(id: $id)
+	unshareObject(id: $id) {
+		...ObjectFields
+	}
 }
 
 mutation BookmarkObject($id: ID!) {
