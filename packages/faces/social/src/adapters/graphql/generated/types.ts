@@ -91,6 +91,15 @@ export type AccessLog = {
   readonly timestamp: Scalars['Time']['output'];
 };
 
+export type AccountQuotePermissions = {
+  readonly __typename: 'AccountQuotePermissions';
+  readonly allowFollowers: Scalars['Boolean']['output'];
+  readonly allowMentioned: Scalars['Boolean']['output'];
+  readonly allowPublic: Scalars['Boolean']['output'];
+  readonly blockList: ReadonlyArray<Scalars['String']['output']>;
+  readonly username: Scalars['String']['output'];
+};
+
 export type AccountSuggestion = {
   readonly __typename: 'AccountSuggestion';
   readonly account: Actor;
@@ -164,6 +173,340 @@ export type ActorType =
   | 'PERSON'
   | 'SERVICE';
 
+export type AddFilterKeywordInput = {
+  readonly keyword: Scalars['String']['input'];
+  readonly wholeWord?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type AdminAccount = {
+  readonly __typename: 'AdminAccount';
+  readonly actor?: Maybe<Actor>;
+  readonly approved: Scalars['Boolean']['output'];
+  readonly confirmed: Scalars['Boolean']['output'];
+  readonly createdAt: Scalars['Time']['output'];
+  readonly disabled: Scalars['Boolean']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly ip?: Maybe<Scalars['String']['output']>;
+  readonly ips: ReadonlyArray<AdminIp>;
+  readonly locale: Scalars['String']['output'];
+  readonly reportsCount: Scalars['Int']['output'];
+  readonly resolvedReportsCount: Scalars['Int']['output'];
+  readonly role: AdminRole;
+  readonly silenced: Scalars['Boolean']['output'];
+  readonly suspended: Scalars['Boolean']['output'];
+  readonly username: Scalars['String']['output'];
+};
+
+export type AdminAccountActionInput = {
+  readonly id: Scalars['ID']['input'];
+  readonly text?: InputMaybe<Scalars['String']['input']>;
+  readonly type: Scalars['String']['input'];
+};
+
+export type AdminAccountConnection = {
+  readonly __typename: 'AdminAccountConnection';
+  readonly accounts: ReadonlyArray<AdminAccount>;
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+};
+
+export type AdminCreateAnnouncementInput = {
+  readonly allDay?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly endsAt?: InputMaybe<Scalars['Time']['input']>;
+  readonly startsAt?: InputMaybe<Scalars['Time']['input']>;
+  readonly text: Scalars['String']['input'];
+};
+
+export type AdminCreateUserInput = {
+  readonly displayName?: InputMaybe<Scalars['String']['input']>;
+  readonly email?: InputMaybe<Scalars['String']['input']>;
+  /** Deprecated: Lesser is passwordless; this field is ignored if provided. */
+  readonly password?: InputMaybe<Scalars['String']['input']>;
+  readonly role?: InputMaybe<Scalars['String']['input']>;
+  readonly username: Scalars['String']['input'];
+};
+
+export type AdminDomainAllow = {
+  readonly __typename: 'AdminDomainAllow';
+  readonly createdAt: Scalars['Time']['output'];
+  readonly domain: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+};
+
+export type AdminDomainAllowConnection = {
+  readonly __typename: 'AdminDomainAllowConnection';
+  readonly allows: ReadonlyArray<AdminDomainAllow>;
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+};
+
+export type AdminDomainBlock = {
+  readonly __typename: 'AdminDomainBlock';
+  readonly createdAt: Scalars['Time']['output'];
+  readonly domain: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly obfuscate: Scalars['Boolean']['output'];
+  readonly privateComment?: Maybe<Scalars['String']['output']>;
+  readonly publicComment?: Maybe<Scalars['String']['output']>;
+  readonly rejectMedia: Scalars['Boolean']['output'];
+  readonly rejectReports: Scalars['Boolean']['output'];
+  readonly severity: Scalars['String']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AdminDomainBlockConnection = {
+  readonly __typename: 'AdminDomainBlockConnection';
+  readonly blocks: ReadonlyArray<AdminDomainBlock>;
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+};
+
+export type AdminDomainBlockCreateInput = {
+  readonly domain: Scalars['String']['input'];
+  readonly obfuscate?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly privateComment?: InputMaybe<Scalars['String']['input']>;
+  readonly publicComment?: InputMaybe<Scalars['String']['input']>;
+  readonly rejectMedia?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly rejectReports?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly severity?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AdminDomainBlockUpdateInput = {
+  readonly obfuscate?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly privateComment?: InputMaybe<Scalars['String']['input']>;
+  readonly publicComment?: InputMaybe<Scalars['String']['input']>;
+  readonly rejectMedia?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly rejectReports?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly severity?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AdminEmailDomainBlock = {
+  readonly __typename: 'AdminEmailDomainBlock';
+  readonly createdAt: Scalars['Time']['output'];
+  readonly domain: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+};
+
+export type AdminEmailDomainBlockConnection = {
+  readonly __typename: 'AdminEmailDomainBlockConnection';
+  readonly blocks: ReadonlyArray<AdminEmailDomainBlock>;
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+};
+
+export type AdminFederationInstance = {
+  readonly __typename: 'AdminFederationInstance';
+  readonly detailsJSON?: Maybe<Scalars['String']['output']>;
+  readonly instance: AdminFederationInstanceInfo;
+};
+
+export type AdminFederationInstanceConnection = {
+  readonly __typename: 'AdminFederationInstanceConnection';
+  readonly instances: ReadonlyArray<AdminFederationInstanceInfo>;
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+};
+
+export type AdminFederationInstanceInfo = {
+  readonly __typename: 'AdminFederationInstanceInfo';
+  readonly activeUsers: Scalars['Int']['output'];
+  readonly domain: Scalars['String']['output'];
+  readonly firstSeen: Scalars['Time']['output'];
+  readonly isSilenced: Scalars['Boolean']['output'];
+  readonly isSuspended: Scalars['Boolean']['output'];
+  readonly lastSeen: Scalars['Time']['output'];
+  readonly software?: Maybe<Scalars['String']['output']>;
+  readonly totalMessages: Scalars['Int']['output'];
+  readonly trustScore: Scalars['Float']['output'];
+  readonly version?: Maybe<Scalars['String']['output']>;
+};
+
+export type AdminFederationStatistics = {
+  readonly __typename: 'AdminFederationStatistics';
+  readonly activeInstances: Scalars['Int']['output'];
+  readonly timeRange: AdminFederationStatisticsTimeRange;
+  readonly totalMessages: Scalars['Int']['output'];
+  readonly totalUsers: Scalars['Int']['output'];
+};
+
+export type AdminFederationStatisticsTimeRange = {
+  readonly __typename: 'AdminFederationStatisticsTimeRange';
+  readonly end: Scalars['Time']['output'];
+  readonly start: Scalars['Time']['output'];
+};
+
+export type AdminIp = {
+  readonly __typename: 'AdminIP';
+  readonly ip: Scalars['String']['output'];
+  readonly usedAt: Scalars['Time']['output'];
+};
+
+export type AdminModerationEvent = {
+  readonly __typename: 'AdminModerationEvent';
+  readonly actorId: Scalars['ID']['output'];
+  readonly category: Scalars['String']['output'];
+  readonly confidenceScore: Scalars['Float']['output'];
+  readonly createdAt: Scalars['Time']['output'];
+  readonly eventType: Scalars['String']['output'];
+  readonly evidenceJSON?: Maybe<Scalars['String']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly objectId: Scalars['ID']['output'];
+  readonly objectType: Scalars['String']['output'];
+  readonly reason?: Maybe<Scalars['String']['output']>;
+  readonly severity: Scalars['String']['output'];
+};
+
+export type AdminModerationEventConnection = {
+  readonly __typename: 'AdminModerationEventConnection';
+  readonly events: ReadonlyArray<AdminModerationEvent>;
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+};
+
+export type AdminModerationEventFilter = {
+  readonly actorId?: InputMaybe<Scalars['ID']['input']>;
+  readonly category?: InputMaybe<Scalars['String']['input']>;
+  readonly eventType?: InputMaybe<Scalars['String']['input']>;
+  readonly minSeverity?: InputMaybe<Scalars['Int']['input']>;
+  readonly objectId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type AdminModerationEventOverrideInput = {
+  readonly decision: Scalars['String']['input'];
+  readonly eventId: Scalars['ID']['input'];
+  readonly reason?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AdminModerationEventOverrideResult = {
+  readonly __typename: 'AdminModerationEventOverrideResult';
+  readonly action: Scalars['String']['output'];
+  readonly admin: Scalars['String']['output'];
+  readonly decision: Scalars['String']['output'];
+  readonly eventId: Scalars['ID']['output'];
+  readonly override: Scalars['Boolean']['output'];
+  readonly reason?: Maybe<Scalars['String']['output']>;
+};
+
+export type AdminReport = {
+  readonly __typename: 'AdminReport';
+  readonly actionTaken: Scalars['Boolean']['output'];
+  readonly actionTakenAt?: Maybe<Scalars['Time']['output']>;
+  readonly actionTakenBy?: Maybe<Actor>;
+  readonly assignedAccount?: Maybe<Actor>;
+  readonly category: Scalars['String']['output'];
+  readonly comment?: Maybe<Scalars['String']['output']>;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly forwarded: Scalars['Boolean']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly reporter: Actor;
+  readonly statuses: ReadonlyArray<Object>;
+  readonly target: Actor;
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AdminReportAction =
+  | 'ASSIGN_TO_SELF'
+  | 'REOPEN'
+  | 'RESOLVE'
+  | 'UNASSIGN';
+
+export type AdminReportConnection = {
+  readonly __typename: 'AdminReportConnection';
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+  readonly reports: ReadonlyArray<AdminReport>;
+};
+
+export type AdminReportStatus =
+  | 'OPEN'
+  | 'REJECTED'
+  | 'RESOLVED';
+
+export type AdminReviewer = {
+  readonly __typename: 'AdminReviewer';
+  readonly accuracyRate: Scalars['Float']['output'];
+  readonly accurateReviews: Scalars['Int']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly lastReviewAt?: Maybe<Scalars['Time']['output']>;
+  readonly role: Scalars['String']['output'];
+  readonly totalReviews: Scalars['Int']['output'];
+  readonly username: Scalars['String']['output'];
+};
+
+export type AdminReviewerRoleResult = {
+  readonly __typename: 'AdminReviewerRoleResult';
+  readonly newRole: Scalars['String']['output'];
+  readonly updatedBy: Scalars['String']['output'];
+  readonly userId: Scalars['ID']['output'];
+  readonly username: Scalars['String']['output'];
+};
+
+export type AdminRole = {
+  readonly __typename: 'AdminRole';
+  readonly id: Scalars['ID']['output'];
+  readonly name: Scalars['String']['output'];
+  readonly permissions: Scalars['Int']['output'];
+};
+
+export type AdminStatusConnection = {
+  readonly __typename: 'AdminStatusConnection';
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+  readonly statuses: ReadonlyArray<Object>;
+};
+
+export type AdminStatusFilter = {
+  readonly byDomain?: InputMaybe<Scalars['String']['input']>;
+  readonly flagged?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly local?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly maxDate?: InputMaybe<Scalars['Time']['input']>;
+  readonly media?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly minDate?: InputMaybe<Scalars['Time']['input']>;
+  readonly remote?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly reported?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly sensitive?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly visibility?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AdminTrustGraph = {
+  readonly __typename: 'AdminTrustGraph';
+  readonly edges: ReadonlyArray<AdminTrustGraphEdge>;
+  readonly nodes: ReadonlyArray<AdminTrustGraphNode>;
+  readonly stats: AdminTrustGraphStats;
+};
+
+export type AdminTrustGraphEdge = {
+  readonly __typename: 'AdminTrustGraphEdge';
+  readonly createdAt: Scalars['Time']['output'];
+  readonly from: Scalars['ID']['output'];
+  readonly to: Scalars['ID']['output'];
+  readonly trust: Scalars['Float']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AdminTrustGraphNode = {
+  readonly __typename: 'AdminTrustGraphNode';
+  readonly id: Scalars['ID']['output'];
+  readonly type: Scalars['String']['output'];
+};
+
+export type AdminTrustGraphStats = {
+  readonly __typename: 'AdminTrustGraphStats';
+  readonly totalEdges: Scalars['Int']['output'];
+  readonly totalNodes: Scalars['Int']['output'];
+};
+
+export type AdminUpdateTrustInput = {
+  readonly category?: InputMaybe<Scalars['String']['input']>;
+  readonly fromActorId: Scalars['ID']['input'];
+  readonly reason?: InputMaybe<Scalars['String']['input']>;
+  readonly toActorId: Scalars['ID']['input'];
+  readonly trust: Scalars['Float']['input'];
+};
+
+export type AdminUpdateTrustResult = {
+  readonly __typename: 'AdminUpdateTrustResult';
+  readonly category: Scalars['String']['output'];
+  readonly fromActorId: Scalars['ID']['output'];
+  readonly reason?: Maybe<Scalars['String']['output']>;
+  readonly toActorId: Scalars['ID']['output'];
+  readonly trust: Scalars['Float']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+  readonly updatedBy: Scalars['String']['output'];
+};
+
 export type AffectedRelationship = {
   readonly __typename: 'AffectedRelationship';
   readonly actor: Actor;
@@ -195,6 +538,70 @@ export type AlertSeverity =
   | 'ERROR'
   | 'INFO'
   | 'WARNING';
+
+export type Announcement = {
+  readonly __typename: 'Announcement';
+  readonly allDay: Scalars['Boolean']['output'];
+  readonly content: Scalars['String']['output'];
+  readonly endsAt?: Maybe<Scalars['Time']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly publishedAt: Scalars['Time']['output'];
+  readonly reactions: ReadonlyArray<AnnouncementReaction>;
+  readonly read: Scalars['Boolean']['output'];
+  readonly startsAt?: Maybe<Scalars['Time']['output']>;
+  readonly text: Scalars['String']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AnnouncementReaction = {
+  readonly __typename: 'AnnouncementReaction';
+  readonly count: Scalars['Int']['output'];
+  readonly me: Scalars['Boolean']['output'];
+  readonly name: Scalars['String']['output'];
+  readonly staticUrl?: Maybe<Scalars['String']['output']>;
+  readonly url?: Maybe<Scalars['String']['output']>;
+};
+
+export type Article = {
+  readonly __typename: 'Article';
+  readonly author: Actor;
+  readonly canonicalUrl?: Maybe<Scalars['String']['output']>;
+  readonly categories: ReadonlyArray<Category>;
+  readonly content: Scalars['String']['output'];
+  readonly contentFormat: ContentFormat;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly editorNotes?: Maybe<Scalars['String']['output']>;
+  readonly excerpt?: Maybe<Scalars['String']['output']>;
+  readonly featuredImage?: Maybe<Media>;
+  readonly id: Scalars['ID']['output'];
+  readonly ogImage?: Maybe<Scalars['String']['output']>;
+  readonly publishedAt: Scalars['Time']['output'];
+  readonly readingTimeMinutes: Scalars['Int']['output'];
+  readonly reviewStatus?: Maybe<Scalars['String']['output']>;
+  readonly seoDescription?: Maybe<Scalars['String']['output']>;
+  readonly seoTitle?: Maybe<Scalars['String']['output']>;
+  readonly series?: Maybe<Series>;
+  readonly seriesOrder?: Maybe<Scalars['Int']['output']>;
+  readonly slug: Scalars['String']['output'];
+  readonly subtitle?: Maybe<Scalars['String']['output']>;
+  readonly tableOfContents: ReadonlyArray<TocEntry>;
+  readonly title: Scalars['String']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+  readonly wordCount: Scalars['Int']['output'];
+};
+
+export type ArticleConnection = {
+  readonly __typename: 'ArticleConnection';
+  readonly edges: ReadonlyArray<ArticleEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type ArticleEdge = {
+  readonly __typename: 'ArticleEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: Article;
+};
 
 export type Attachment = {
   readonly __typename: 'Attachment';
@@ -249,6 +656,21 @@ export type BudgetAlert = {
   readonly timestamp: Scalars['Time']['output'];
 };
 
+export type Category = {
+  readonly __typename: 'Category';
+  readonly articleCount: Scalars['Int']['output'];
+  readonly children: ReadonlyArray<Category>;
+  readonly color?: Maybe<Scalars['String']['output']>;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly description?: Maybe<Scalars['String']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly name: Scalars['String']['output'];
+  readonly order: Scalars['Int']['output'];
+  readonly parent?: Maybe<Category>;
+  readonly slug: Scalars['String']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
 export type CategoryStats = {
   readonly __typename: 'CategoryStats';
   readonly accuracy: Scalars['Float']['output'];
@@ -263,6 +685,11 @@ export type Celebrity = {
   readonly urls: ReadonlyArray<Scalars['String']['output']>;
 };
 
+export type ChangeType =
+  | 'CREATE'
+  | 'RESTORE'
+  | 'UPDATE';
+
 export type CommunityNote = {
   readonly __typename: 'CommunityNote';
   readonly author: Actor;
@@ -271,6 +698,19 @@ export type CommunityNote = {
   readonly helpful: Scalars['Int']['output'];
   readonly id: Scalars['ID']['output'];
   readonly notHelpful: Scalars['Int']['output'];
+};
+
+export type CommunityNoteConnection = {
+  readonly __typename: 'CommunityNoteConnection';
+  readonly edges: ReadonlyArray<CommunityNoteEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type CommunityNoteEdge = {
+  readonly __typename: 'CommunityNoteEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: CommunityNote;
 };
 
 export type CommunityNoteInput = {
@@ -291,6 +731,10 @@ export type ConnectionType =
   | 'MIXED'
   | 'QUOTES'
   | 'REPLIES';
+
+export type ContentFormat =
+  | 'HTML'
+  | 'MARKDOWN';
 
 export type ContentMap = {
   readonly __typename: 'ContentMap';
@@ -379,11 +823,75 @@ export type CostUpdate = {
   readonly operationCost: Scalars['Int']['output'];
 };
 
+export type CreateArticleInput = {
+  readonly canonicalUrl?: InputMaybe<Scalars['String']['input']>;
+  readonly categoryIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+  readonly content: Scalars['String']['input'];
+  readonly contentFormat?: ContentFormat;
+  readonly editorNotes?: InputMaybe<Scalars['String']['input']>;
+  readonly excerpt?: InputMaybe<Scalars['String']['input']>;
+  readonly featuredImageId?: InputMaybe<Scalars['ID']['input']>;
+  readonly ogImage?: InputMaybe<Scalars['String']['input']>;
+  readonly reviewStatus?: InputMaybe<Scalars['String']['input']>;
+  readonly seoDescription?: InputMaybe<Scalars['String']['input']>;
+  readonly seoTitle?: InputMaybe<Scalars['String']['input']>;
+  readonly seriesId?: InputMaybe<Scalars['ID']['input']>;
+  readonly seriesOrder?: InputMaybe<Scalars['Int']['input']>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+  readonly subtitle?: InputMaybe<Scalars['String']['input']>;
+  readonly title: Scalars['String']['input'];
+};
+
+export type CreateCategoryInput = {
+  readonly color?: InputMaybe<Scalars['String']['input']>;
+  readonly description?: InputMaybe<Scalars['String']['input']>;
+  readonly name: Scalars['String']['input'];
+  readonly order?: InputMaybe<Scalars['Int']['input']>;
+  readonly parentId?: InputMaybe<Scalars['ID']['input']>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateDraftInput = {
+  readonly content: Scalars['String']['input'];
+  readonly contentFormat?: ContentFormat;
+  readonly contentType?: ObjectType;
+  readonly objectId?: InputMaybe<Scalars['ID']['input']>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+  readonly title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type CreateEmojiInput = {
   readonly category?: InputMaybe<Scalars['String']['input']>;
   readonly image: Scalars['String']['input'];
   readonly shortcode: Scalars['String']['input'];
   readonly visibleInPicker?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CreateExportInput = {
+  readonly dateRange?: InputMaybe<DateRangeInput>;
+  readonly format: ExportFormat;
+  readonly includeMedia?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly type: ExportType;
+};
+
+export type CreateFilterInput = {
+  readonly context: ReadonlyArray<Scalars['String']['input']>;
+  readonly expiresInSeconds?: InputMaybe<Scalars['Int']['input']>;
+  readonly filterAction?: InputMaybe<FilterAction>;
+  readonly keywords?: InputMaybe<ReadonlyArray<CreateFilterKeywordInput>>;
+  readonly title: Scalars['String']['input'];
+};
+
+export type CreateFilterKeywordInput = {
+  readonly keyword: Scalars['String']['input'];
+  readonly wholeWord?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CreateImportInput = {
+  readonly file: Scalars['Upload']['input'];
+  readonly filename?: InputMaybe<Scalars['String']['input']>;
+  readonly mode?: InputMaybe<ImportMode>;
+  readonly type: ImportType;
 };
 
 export type CreateListInput = {
@@ -413,6 +921,16 @@ export type CreateNotePayload = {
   readonly object: Object;
 };
 
+export type CreatePublicationInput = {
+  readonly bannerId?: InputMaybe<Scalars['ID']['input']>;
+  readonly customDomain?: InputMaybe<Scalars['String']['input']>;
+  readonly description?: InputMaybe<Scalars['String']['input']>;
+  readonly logoId?: InputMaybe<Scalars['ID']['input']>;
+  readonly name: Scalars['String']['input'];
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+  readonly tagline?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type CreateQuoteNoteInput = {
   readonly content: Scalars['String']['input'];
   readonly mediaIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
@@ -422,6 +940,29 @@ export type CreateQuoteNoteInput = {
   readonly sensitive?: InputMaybe<Scalars['Boolean']['input']>;
   readonly spoilerText?: InputMaybe<Scalars['String']['input']>;
   readonly visibility?: InputMaybe<Visibility>;
+};
+
+export type CreateReportInput = {
+  readonly accountId: Scalars['ID']['input'];
+  readonly category?: InputMaybe<Scalars['String']['input']>;
+  readonly comment?: InputMaybe<Scalars['String']['input']>;
+  readonly forward?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly ruleIds?: InputMaybe<ReadonlyArray<Scalars['Int']['input']>>;
+  readonly statusIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+};
+
+export type CreateSeriesInput = {
+  readonly coverImageUrl?: InputMaybe<Scalars['String']['input']>;
+  readonly description?: InputMaybe<Scalars['String']['input']>;
+  readonly isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+  readonly title: Scalars['String']['input'];
+};
+
+export type CreateVouchInput = {
+  readonly confidence: Scalars['Float']['input'];
+  readonly context?: InputMaybe<Scalars['String']['input']>;
+  readonly to: Scalars['ID']['input'];
 };
 
 export type CustomEmoji = {
@@ -445,6 +986,11 @@ export type DatabaseStatus = {
   readonly status: HealthStatus;
   readonly throughput: Scalars['Float']['output'];
   readonly type: Scalars['String']['output'];
+};
+
+export type DateRangeInput = {
+  readonly end: Scalars['Time']['input'];
+  readonly start: Scalars['Time']['input'];
 };
 
 export type DigestFrequency =
@@ -471,6 +1017,51 @@ export type DiscoveryPreferences = {
   readonly showFollowCounts: Scalars['Boolean']['output'];
 };
 
+export type DomainBlockPage = {
+  readonly __typename: 'DomainBlockPage';
+  readonly domains: ReadonlyArray<Scalars['String']['output']>;
+  readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type Draft = {
+  readonly __typename: 'Draft';
+  readonly author: Actor;
+  readonly autosaveVersion: Scalars['Int']['output'];
+  readonly content: Scalars['String']['output'];
+  readonly contentFormat: ContentFormat;
+  readonly contentType: ObjectType;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly lastSavedAt: Scalars['Time']['output'];
+  readonly objectId?: Maybe<Scalars['ID']['output']>;
+  readonly scheduledAt?: Maybe<Scalars['Time']['output']>;
+  readonly slug?: Maybe<Scalars['String']['output']>;
+  readonly status: DraftStatus;
+  readonly title?: Maybe<Scalars['String']['output']>;
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type DraftConnection = {
+  readonly __typename: 'DraftConnection';
+  readonly edges: ReadonlyArray<DraftEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type DraftEdge = {
+  readonly __typename: 'DraftEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: Draft;
+};
+
+export type DraftStatus =
+  | 'DRAFT'
+  | 'FAILED'
+  | 'PUBLISHED'
+  | 'PUBLISHING'
+  | 'SCHEDULED';
+
 export type Driver = {
   readonly __typename: 'Driver';
   readonly cost: Scalars['Float']['output'];
@@ -491,6 +1082,47 @@ export type ExpandMediaPreference =
   | 'DEFAULT'
   | 'HIDE_ALL'
   | 'SHOW_ALL';
+
+export type ExportFormat =
+  | 'ACTIVITYPUB'
+  | 'CSV'
+  | 'MASTODON';
+
+export type ExportJob = {
+  readonly __typename: 'ExportJob';
+  readonly createdAt: Scalars['Time']['output'];
+  readonly downloadUrl?: Maybe<Scalars['String']['output']>;
+  readonly error?: Maybe<Scalars['String']['output']>;
+  readonly expiresAt?: Maybe<Scalars['Time']['output']>;
+  readonly fileSize?: Maybe<Scalars['Int']['output']>;
+  readonly format: ExportFormat;
+  readonly id: Scalars['ID']['output'];
+  readonly recordCount?: Maybe<Scalars['Int']['output']>;
+  readonly status: Scalars['String']['output'];
+  readonly type: ExportType;
+};
+
+export type ExportJobConnection = {
+  readonly __typename: 'ExportJobConnection';
+  readonly edges: ReadonlyArray<ExportJobEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type ExportJobEdge = {
+  readonly __typename: 'ExportJobEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: ExportJob;
+};
+
+export type ExportType =
+  | 'ARCHIVE'
+  | 'BLOCKS'
+  | 'BOOKMARKS'
+  | 'FOLLOWERS'
+  | 'FOLLOWING'
+  | 'LISTS'
+  | 'MUTES';
 
 export type FederationCost = {
   readonly __typename: 'FederationCost';
@@ -629,6 +1261,58 @@ export type Field = {
   readonly verifiedAt?: Maybe<Scalars['Time']['output']>;
 };
 
+export type Filter = {
+  readonly __typename: 'Filter';
+  readonly context: ReadonlyArray<Scalars['String']['output']>;
+  readonly expiresAt?: Maybe<Scalars['String']['output']>;
+  readonly filterAction: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly keywords?: Maybe<ReadonlyArray<FilterKeyword>>;
+  readonly statuses?: Maybe<ReadonlyArray<FilterStatus>>;
+  readonly title: Scalars['String']['output'];
+};
+
+export type FilterAction =
+  | 'BLUR'
+  | 'HIDE'
+  | 'WARN';
+
+export type FilterKeyword = {
+  readonly __typename: 'FilterKeyword';
+  readonly id: Scalars['ID']['output'];
+  readonly keyword: Scalars['String']['output'];
+  readonly wholeWord: Scalars['Boolean']['output'];
+};
+
+export type FilterStatus = {
+  readonly __typename: 'FilterStatus';
+  readonly id: Scalars['ID']['output'];
+  readonly statusId: Scalars['String']['output'];
+};
+
+export type FilterTestInput = {
+  readonly content: Scalars['String']['input'];
+  readonly context: ReadonlyArray<Scalars['String']['input']>;
+};
+
+export type FilterTestPayload = {
+  readonly __typename: 'FilterTestPayload';
+  readonly content: Scalars['String']['output'];
+  readonly matchedCount: Scalars['Int']['output'];
+  readonly results: ReadonlyArray<FilterTestResult>;
+  readonly totalFilters: Scalars['Int']['output'];
+};
+
+export type FilterTestResult = {
+  readonly __typename: 'FilterTestResult';
+  readonly action: Scalars['String']['output'];
+  readonly filterId: Scalars['ID']['output'];
+  readonly filterTitle: Scalars['String']['output'];
+  readonly matchScore: Scalars['Float']['output'];
+  readonly matchedRules: ReadonlyArray<Scalars['String']['output']>;
+  readonly severity: Scalars['String']['output'];
+};
+
 export type FlagInput = {
   readonly evidence?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
   readonly objectId: Scalars['ID']['input'];
@@ -653,6 +1337,41 @@ export type FlowNode = {
 export type FocusInput = {
   readonly x: Scalars['Float']['input'];
   readonly y: Scalars['Float']['input'];
+};
+
+export type GroupedNotificationGroup = {
+  readonly __typename: 'GroupedNotificationGroup';
+  readonly allNotificationIds: ReadonlyArray<Scalars['ID']['output']>;
+  readonly count: Scalars['Int']['output'];
+  readonly earliestCreatedAt: Scalars['Time']['output'];
+  readonly groupKey: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly latestCreatedAt: Scalars['Time']['output'];
+  readonly mostRecentNotificationId?: Maybe<Scalars['ID']['output']>;
+  readonly read: Scalars['Boolean']['output'];
+  readonly sampleActorIds: ReadonlyArray<Scalars['ID']['output']>;
+  readonly sampleActors: ReadonlyArray<Actor>;
+  readonly summary: Scalars['String']['output'];
+  readonly targetStatusId?: Maybe<Scalars['ID']['output']>;
+  readonly type: Scalars['String']['output'];
+};
+
+export type GroupedNotificationsInput = {
+  readonly after?: InputMaybe<Scalars['Cursor']['input']>;
+  readonly excludeTypes?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly first?: InputMaybe<Scalars['Int']['input']>;
+  readonly includeAll?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly options?: InputMaybe<GroupingStrategyInput>;
+  readonly types?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+};
+
+export type GroupingStrategyInput = {
+  readonly groupByTarget?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly groupByType?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly maxGroupSize?: InputMaybe<Scalars['Int']['input']>;
+  readonly minGroupSize?: InputMaybe<Scalars['Int']['input']>;
+  readonly sampleSize?: InputMaybe<Scalars['Int']['input']>;
+  readonly timeWindowHours?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Hashtag = {
@@ -792,6 +1511,50 @@ export type ImageAnalysisCapabilities = {
   readonly violenceDetection: Scalars['Boolean']['output'];
 };
 
+export type ImportJob = {
+  readonly __typename: 'ImportJob';
+  readonly createdAt: Scalars['Time']['output'];
+  readonly errors: ReadonlyArray<Scalars['String']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly processed: Scalars['Int']['output'];
+  readonly results?: Maybe<ImportResults>;
+  readonly status: Scalars['String']['output'];
+  readonly total?: Maybe<Scalars['Int']['output']>;
+  readonly type: ImportType;
+};
+
+export type ImportJobConnection = {
+  readonly __typename: 'ImportJobConnection';
+  readonly edges: ReadonlyArray<ImportJobEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type ImportJobEdge = {
+  readonly __typename: 'ImportJobEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: ImportJob;
+};
+
+export type ImportMode =
+  | 'MERGE'
+  | 'OVERWRITE';
+
+export type ImportResults = {
+  readonly __typename: 'ImportResults';
+  readonly failed: Scalars['Int']['output'];
+  readonly skipped: Scalars['Int']['output'];
+  readonly success: Scalars['Int']['output'];
+};
+
+export type ImportType =
+  | 'BLOCKS'
+  | 'BOOKMARKS'
+  | 'FOLLOWERS'
+  | 'FOLLOWING'
+  | 'LISTS'
+  | 'MUTES';
+
 export type InfrastructureAlert = {
   readonly __typename: 'InfrastructureAlert';
   readonly id: Scalars['ID']['output'];
@@ -826,6 +1589,14 @@ export type InfrastructureStatus = {
   readonly healthy: Scalars['Boolean']['output'];
   readonly queues: ReadonlyArray<QueueStatus>;
   readonly services: ReadonlyArray<ServiceStatus>;
+};
+
+export type InstanceActivityEntry = {
+  readonly __typename: 'InstanceActivityEntry';
+  readonly logins: Scalars['Int']['output'];
+  readonly registrations: Scalars['Int']['output'];
+  readonly statuses: Scalars['Int']['output'];
+  readonly week: Scalars['String']['output'];
 };
 
 export type InstanceBudget = {
@@ -870,6 +1641,14 @@ export type InstanceCost = {
   readonly percentage: Scalars['Float']['output'];
 };
 
+export type InstanceDomainBlock = {
+  readonly __typename: 'InstanceDomainBlock';
+  readonly comment: Scalars['String']['output'];
+  readonly digest: Scalars['String']['output'];
+  readonly domain: Scalars['String']['output'];
+  readonly severity: Scalars['String']['output'];
+};
+
 export type InstanceHealthMetrics = {
   readonly __typename: 'InstanceHealthMetrics';
   readonly costEfficiency: Scalars['Float']['output'];
@@ -895,6 +1674,28 @@ export type InstanceHealthStatus =
   | 'OFFLINE'
   | 'UNKNOWN'
   | 'WARNING';
+
+export type InstanceInfo = {
+  readonly __typename: 'InstanceInfo';
+  readonly approvalRequired: Scalars['Boolean']['output'];
+  readonly contactAccount?: Maybe<Actor>;
+  readonly description: Scalars['String']['output'];
+  readonly domain: Scalars['String']['output'];
+  readonly domainCount: Scalars['Int']['output'];
+  readonly email?: Maybe<Scalars['String']['output']>;
+  readonly invitesEnabled: Scalars['Boolean']['output'];
+  readonly languages: ReadonlyArray<Scalars['String']['output']>;
+  readonly registrationsOpen: Scalars['Boolean']['output'];
+  readonly rules: ReadonlyArray<InstanceRule>;
+  readonly shortDescription?: Maybe<Scalars['String']['output']>;
+  readonly sourceUrl?: Maybe<Scalars['String']['output']>;
+  readonly statusCount: Scalars['Int']['output'];
+  readonly streamingUrl?: Maybe<Scalars['String']['output']>;
+  readonly thumbnailUrl?: Maybe<Scalars['String']['output']>;
+  readonly title: Scalars['String']['output'];
+  readonly userCount: Scalars['Int']['output'];
+  readonly version: Scalars['String']['output'];
+};
 
 export type InstanceMetadata = {
   readonly __typename: 'InstanceMetadata';
@@ -942,6 +1743,12 @@ export type InstanceRelations = {
   readonly recommendations: ReadonlyArray<FederationRecommendation>;
 };
 
+export type InstanceRule = {
+  readonly __typename: 'InstanceRule';
+  readonly id: Scalars['ID']['output'];
+  readonly text: Scalars['String']['output'];
+};
+
 export type IssueSeverity =
   | 'CRITICAL'
   | 'HIGH'
@@ -967,6 +1774,23 @@ export type ListUpdate = {
   readonly timestamp: Scalars['Time']['output'];
   readonly type: Scalars['String']['output'];
 };
+
+export type Marker = {
+  readonly __typename: 'Marker';
+  readonly lastReadId: Scalars['ID']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+  readonly version: Scalars['Int']['output'];
+};
+
+export type MarkerSet = {
+  readonly __typename: 'MarkerSet';
+  readonly home?: Maybe<Marker>;
+  readonly notifications?: Maybe<Marker>;
+};
+
+export type MarkerTimeline =
+  | 'HOME'
+  | 'NOTIFICATIONS';
 
 export type Media = {
   readonly __typename: 'Media';
@@ -1106,6 +1930,30 @@ export type ModerationAlert = {
   readonly timestamp: Scalars['Time']['output'];
 };
 
+export type ModerationConsensusResult = {
+  readonly __typename: 'ModerationConsensusResult';
+  readonly category: Scalars['String']['output'];
+  readonly confidenceScore: Scalars['Float']['output'];
+  readonly consensusScore?: Maybe<Scalars['Float']['output']>;
+  readonly decidedAt?: Maybe<Scalars['Time']['output']>;
+  readonly decision?: Maybe<Scalars['String']['output']>;
+  readonly eventId: Scalars['ID']['output'];
+  readonly objectId: Scalars['ID']['output'];
+  readonly reviewerCount: Scalars['Int']['output'];
+  readonly reviews: ReadonlyArray<ModerationConsensusReview>;
+  readonly severity: Scalars['Int']['output'];
+};
+
+export type ModerationConsensusReview = {
+  readonly __typename: 'ModerationConsensusReview';
+  readonly action: Scalars['String']['output'];
+  readonly confidence: Scalars['Float']['output'];
+  readonly reviewedAt: Scalars['Time']['output'];
+  readonly reviewerDomain?: Maybe<Scalars['String']['output']>;
+  readonly reviewerId: Scalars['ID']['output'];
+  readonly trustWeight: Scalars['Float']['output'];
+};
+
 export type ModerationDashboard = {
   readonly __typename: 'ModerationDashboard';
   readonly averageResponseTime: Scalars['Duration']['output'];
@@ -1144,6 +1992,51 @@ export type ModerationFilter = {
   readonly priority?: InputMaybe<Priority>;
   readonly severity?: InputMaybe<ModerationSeverity>;
   readonly unhandled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type ModerationHistoryDecision = {
+  readonly __typename: 'ModerationHistoryDecision';
+  readonly action: Scalars['String']['output'];
+  readonly consensusScore: Scalars['Float']['output'];
+  readonly decidedAt: Scalars['Time']['output'];
+  readonly eventId: Scalars['ID']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly objectId: Scalars['ID']['output'];
+  readonly reviewerCount: Scalars['Int']['output'];
+  readonly trustWeightTotal: Scalars['Float']['output'];
+};
+
+export type ModerationHistoryEvent = {
+  readonly __typename: 'ModerationHistoryEvent';
+  readonly actorId: Scalars['ID']['output'];
+  readonly category: Scalars['String']['output'];
+  readonly confidenceScore: Scalars['Float']['output'];
+  readonly createdAt: Scalars['Time']['output'];
+  readonly eventType: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly objectId: Scalars['ID']['output'];
+  readonly objectType: Scalars['String']['output'];
+  readonly reason?: Maybe<Scalars['String']['output']>;
+  readonly severity: Scalars['Int']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type ModerationHistoryResult = {
+  readonly __typename: 'ModerationHistoryResult';
+  readonly currentStatus: Scalars['String']['output'];
+  readonly decisions: ReadonlyArray<ModerationHistoryDecision>;
+  readonly events: ReadonlyArray<ModerationHistoryEvent>;
+  readonly lastUpdated: Scalars['Time']['output'];
+  readonly objectId: Scalars['ID']['output'];
+  readonly timeline: ReadonlyArray<ModerationHistoryTimelineEntry>;
+};
+
+export type ModerationHistoryTimelineEntry = {
+  readonly __typename: 'ModerationHistoryTimelineEntry';
+  readonly decision?: Maybe<ModerationHistoryDecision>;
+  readonly event?: Maybe<ModerationHistoryEvent>;
+  readonly timestamp: Scalars['Time']['output'];
+  readonly type: Scalars['String']['output'];
 };
 
 export type ModerationItem = {
@@ -1191,6 +2084,22 @@ export type ModerationPeriod =
   | 'MONTHLY'
   | 'WEEKLY';
 
+export type ModerationReviewInput = {
+  readonly action: Scalars['String']['input'];
+  readonly confidence: Scalars['Float']['input'];
+  readonly eventId: Scalars['ID']['input'];
+  readonly notes?: InputMaybe<Scalars['String']['input']>;
+  readonly severity: Scalars['Int']['input'];
+};
+
+export type ModerationReviewResult = {
+  readonly __typename: 'ModerationReviewResult';
+  readonly action: Scalars['String']['output'];
+  readonly eventId: Scalars['ID']['output'];
+  readonly reviewId: Scalars['ID']['output'];
+  readonly reviewedAt: Scalars['Time']['output'];
+};
+
 export type ModerationSampleInput = {
   readonly confidence: Scalars['Float']['input'];
   readonly label: Scalars['String']['input'];
@@ -1205,6 +2114,16 @@ export type ModerationSeverity =
   | 'LOW'
   | 'MEDIUM';
 
+export type ModerationTrustScore = {
+  readonly __typename: 'ModerationTrustScore';
+  readonly actorDomain?: Maybe<Scalars['String']['output']>;
+  readonly actorId: Scalars['ID']['output'];
+  readonly calculatedAt: Scalars['Time']['output'];
+  readonly overallScore: Scalars['Float']['output'];
+  readonly scores: ReadonlyArray<TrustCategoryScore>;
+  readonly trusterCount: Scalars['Int']['output'];
+};
+
 export type ModeratorStats = {
   readonly __typename: 'ModeratorStats';
   readonly accuracy: Scalars['Float']['output'];
@@ -1218,49 +2137,114 @@ export type ModeratorStats = {
 
 export type Mutation = {
   readonly __typename: 'Mutation';
+  readonly acceptFollowRequest: Relationship;
   readonly acknowledgeSeverance: AcknowledgePayload;
   readonly addAccountsToList: List;
+  readonly addAnnouncementReaction: Scalars['Boolean']['output'];
+  readonly addArticleToCategory: Article;
+  readonly addArticleToSeries: Series;
   readonly addCommunityNote: CommunityNotePayload;
+  readonly addDomainBlock: Scalars['Boolean']['output'];
+  readonly addFilterKeyword: FilterKeyword;
+  readonly addFilterStatus: FilterStatus;
+  readonly adminAccountAction: Scalars['Boolean']['output'];
+  readonly adminCreateAnnouncement: Announcement;
+  readonly adminCreateDomainAllow: AdminDomainAllow;
+  readonly adminCreateDomainBlock: AdminDomainBlock;
+  readonly adminCreateEmailDomainBlock: AdminEmailDomainBlock;
+  readonly adminCreateUser: AdminAccount;
+  readonly adminDeleteDomainAllow: Scalars['Boolean']['output'];
+  readonly adminDeleteDomainBlock: Scalars['Boolean']['output'];
+  readonly adminDeleteEmailDomainBlock: Scalars['Boolean']['output'];
+  readonly adminDeleteStatus: Scalars['Boolean']['output'];
+  readonly adminDemoteReviewer: AdminReviewerRoleResult;
+  readonly adminOverrideModerationEvent: AdminModerationEventOverrideResult;
+  readonly adminPromoteReviewer: AdminReviewerRoleResult;
+  readonly adminReportAction: AdminReport;
+  readonly adminSetStatusSensitive: Object;
+  readonly adminUpdateDomainBlock: AdminDomainBlock;
+  readonly adminUpdateTrust: AdminUpdateTrustResult;
   readonly attemptReconnection: ReconnectionPayload;
+  readonly autosaveDraft: Draft;
   readonly blockActor: Relationship;
   readonly bookmarkObject: Object;
+  readonly cancelImport: ImportJob;
+  readonly cancelScheduledDraft: Draft;
   readonly cancelScheduledStatus: Scalars['Boolean']['output'];
   readonly clearNotifications: Scalars['Boolean']['output'];
+  readonly createArticle: Article;
+  readonly createCategory: Category;
+  readonly createDraft: Draft;
   readonly createEmoji: CustomEmoji;
+  readonly createExport: ExportJob;
+  readonly createFilter: Filter;
+  readonly createImport: ImportJob;
   readonly createList: List;
   readonly createModerationPattern: ModerationPattern;
   readonly createNote: CreateNotePayload;
+  readonly createPublication: Publication;
   readonly createQuoteNote: CreateNotePayload;
+  readonly createReport: Report;
+  readonly createSeries: Series;
+  readonly createVouch: Vouch;
+  readonly deleteArticle: Scalars['Boolean']['output'];
+  readonly deleteCategory: Scalars['Boolean']['output'];
   readonly deleteConversation: Scalars['Boolean']['output'];
+  readonly deleteDraft: Scalars['Boolean']['output'];
   readonly deleteEmoji: Scalars['Boolean']['output'];
+  readonly deleteFilter: Scalars['Boolean']['output'];
+  readonly deleteFilterKeyword: Scalars['Boolean']['output'];
+  readonly deleteFilterStatus: Scalars['Boolean']['output'];
   readonly deleteList: Scalars['Boolean']['output'];
   readonly deleteModerationPattern: Scalars['Boolean']['output'];
   readonly deleteObject: Scalars['Boolean']['output'];
   readonly deletePushSubscription: Scalars['Boolean']['output'];
+  readonly deleteSeries: Scalars['Boolean']['output'];
+  readonly dismissAnnouncement: Scalars['Boolean']['output'];
   readonly dismissNotification: Scalars['Boolean']['output'];
+  readonly exportReputation: PortableReputation;
   readonly flagObject: FlagPayload;
   readonly followActor: Activity;
   readonly followHashtag: HashtagFollowPayload;
+  readonly importReputation: ReputationImportResult;
+  readonly invitePublicationMember: PublicationMember;
   readonly likeObject: Activity;
   readonly markConversationAsRead: Conversation;
+  readonly markNotificationGroupAsRead: Scalars['Boolean']['output'];
   readonly muteActor: Relationship;
   readonly muteHashtag: MuteHashtagPayload;
+  readonly muteStatus: Scalars['Boolean']['output'];
   readonly optimizeFederationCosts: CostOptimizationResult;
   readonly pauseFederation: FederationManagementStatus;
   readonly pinObject: Object;
   readonly preloadMedia: ReadonlyArray<MediaStream>;
+  readonly publishDraft: Article;
+  readonly registerAccount: RegisterAccountPayload;
   readonly registerPushSubscription: PushSubscription;
+  readonly rejectFollowRequest: Relationship;
   readonly removeAccountsFromList: List;
+  readonly removeAnnouncementReaction: Scalars['Boolean']['output'];
+  readonly removeArticleFromCategory: Article;
+  readonly removeArticleFromSeries: Series;
+  readonly removeDomainBlock: Scalars['Boolean']['output'];
+  readonly removePublicationMember: Scalars['Boolean']['output'];
+  readonly reorderSeriesArticles: Series;
   readonly reportStreamingQuality: StreamingQualityReport;
   readonly requestAIAnalysis: AiAnalysisRequest;
   readonly requestStreamingUrl: MediaStream;
+  readonly restoreRevision: Article;
   readonly resumeFederation: FederationManagementStatus;
+  readonly revokeVouch: Scalars['Boolean']['output'];
+  readonly saveMarkers: MarkerSet;
+  readonly scheduleDraft: Draft;
   readonly scheduleStatus: ScheduledStatus;
   readonly setFederationLimit: FederationLimit;
   readonly setInstanceBudget: InstanceBudget;
   readonly shareObject: Object;
+  readonly submitModerationReview: ModerationReviewResult;
   readonly syncMissingReplies: SyncRepliesPayload;
   readonly syncThread: SyncThreadPayload;
+  readonly testFilters: FilterTestPayload;
   readonly trainModerationModel: TrainingResult;
   readonly unblockActor: Scalars['Boolean']['output'];
   readonly unbookmarkObject: Scalars['Boolean']['output'];
@@ -1268,24 +2252,40 @@ export type Mutation = {
   readonly unfollowHashtag: UnfollowHashtagPayload;
   readonly unlikeObject: Scalars['Boolean']['output'];
   readonly unmuteActor: Scalars['Boolean']['output'];
+  readonly unmuteStatus: Scalars['Boolean']['output'];
   readonly unpinObject: Scalars['Boolean']['output'];
-  readonly unshareObject: Scalars['Boolean']['output'];
+  readonly unshareObject: Object;
+  readonly updateAccountQuotePermissions: AccountQuotePermissions;
+  readonly updateArticle: Article;
+  readonly updateCategory: Category;
+  readonly updateDraft: Draft;
   readonly updateEmoji: CustomEmoji;
+  readonly updateFilter: Filter;
   readonly updateHashtagNotifications: UpdateHashtagNotificationsPayload;
   readonly updateList: List;
   readonly updateMedia: Media;
   readonly updateModerationPattern: ModerationPattern;
   readonly updateProfile: Actor;
+  readonly updatePublication: Publication;
+  readonly updatePublicationMemberRole: PublicationMember;
   readonly updatePushSubscription: PushSubscription;
   readonly updateQuotePermissions: UpdateQuotePermissionsPayload;
   readonly updateRelationship: Relationship;
   readonly updateScheduledStatus: ScheduledStatus;
+  readonly updateSeries: Series;
+  readonly updateStatus: Object;
   readonly updateStreamingPreferences: UserPreferences;
   readonly updateTrust: TrustEdge;
   readonly updateUserPreferences: UserPreferences;
   readonly uploadMedia: UploadMediaPayload;
+  readonly verifyReputation: ReputationVerificationResult;
   readonly voteCommunityNote: CommunityNote;
   readonly withdrawFromQuotes: WithdrawQuotePayload;
+};
+
+
+export type MutationAcceptFollowRequestArgs = {
+  accountId: Scalars['ID']['input'];
 };
 
 
@@ -1300,12 +2300,142 @@ export type MutationAddAccountsToListArgs = {
 };
 
 
+export type MutationAddAnnouncementReactionArgs = {
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationAddArticleToCategoryArgs = {
+  articleId: Scalars['ID']['input'];
+  categoryId: Scalars['ID']['input'];
+};
+
+
+export type MutationAddArticleToSeriesArgs = {
+  articleId: Scalars['ID']['input'];
+  order?: InputMaybe<Scalars['Int']['input']>;
+  seriesId: Scalars['ID']['input'];
+};
+
+
 export type MutationAddCommunityNoteArgs = {
   input: CommunityNoteInput;
 };
 
 
+export type MutationAddDomainBlockArgs = {
+  domain: Scalars['String']['input'];
+};
+
+
+export type MutationAddFilterKeywordArgs = {
+  filterId: Scalars['ID']['input'];
+  input: AddFilterKeywordInput;
+};
+
+
+export type MutationAddFilterStatusArgs = {
+  filterId: Scalars['ID']['input'];
+  statusId: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminAccountActionArgs = {
+  input: AdminAccountActionInput;
+};
+
+
+export type MutationAdminCreateAnnouncementArgs = {
+  input: AdminCreateAnnouncementInput;
+};
+
+
+export type MutationAdminCreateDomainAllowArgs = {
+  domain: Scalars['String']['input'];
+};
+
+
+export type MutationAdminCreateDomainBlockArgs = {
+  input: AdminDomainBlockCreateInput;
+};
+
+
+export type MutationAdminCreateEmailDomainBlockArgs = {
+  domain: Scalars['String']['input'];
+};
+
+
+export type MutationAdminCreateUserArgs = {
+  input: AdminCreateUserInput;
+};
+
+
+export type MutationAdminDeleteDomainAllowArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminDeleteDomainBlockArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminDeleteEmailDomainBlockArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminDeleteStatusArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminDemoteReviewerArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminOverrideModerationEventArgs = {
+  input: AdminModerationEventOverrideInput;
+};
+
+
+export type MutationAdminPromoteReviewerArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminReportActionArgs = {
+  action: AdminReportAction;
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAdminSetStatusSensitiveArgs = {
+  id: Scalars['ID']['input'];
+  sensitive: Scalars['Boolean']['input'];
+};
+
+
+export type MutationAdminUpdateDomainBlockArgs = {
+  id: Scalars['ID']['input'];
+  input: AdminDomainBlockUpdateInput;
+};
+
+
+export type MutationAdminUpdateTrustArgs = {
+  input: AdminUpdateTrustInput;
+};
+
+
 export type MutationAttemptReconnectionArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationAutosaveDraftArgs = {
+  content: Scalars['String']['input'];
   id: Scalars['ID']['input'];
 };
 
@@ -1320,13 +2450,53 @@ export type MutationBookmarkObjectArgs = {
 };
 
 
+export type MutationCancelImportArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationCancelScheduledDraftArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationCancelScheduledStatusArgs = {
   id: Scalars['ID']['input'];
 };
 
 
+export type MutationCreateArticleArgs = {
+  input: CreateArticleInput;
+};
+
+
+export type MutationCreateCategoryArgs = {
+  input: CreateCategoryInput;
+};
+
+
+export type MutationCreateDraftArgs = {
+  input: CreateDraftInput;
+};
+
+
 export type MutationCreateEmojiArgs = {
   input: CreateEmojiInput;
+};
+
+
+export type MutationCreateExportArgs = {
+  input: CreateExportInput;
+};
+
+
+export type MutationCreateFilterArgs = {
+  input: CreateFilterInput;
+};
+
+
+export type MutationCreateImportArgs = {
+  input: CreateImportInput;
 };
 
 
@@ -1345,8 +2515,38 @@ export type MutationCreateNoteArgs = {
 };
 
 
+export type MutationCreatePublicationArgs = {
+  input: CreatePublicationInput;
+};
+
+
 export type MutationCreateQuoteNoteArgs = {
   input: CreateQuoteNoteInput;
+};
+
+
+export type MutationCreateReportArgs = {
+  input: CreateReportInput;
+};
+
+
+export type MutationCreateSeriesArgs = {
+  input: CreateSeriesInput;
+};
+
+
+export type MutationCreateVouchArgs = {
+  input: CreateVouchInput;
+};
+
+
+export type MutationDeleteArticleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteCategoryArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1355,8 +2555,30 @@ export type MutationDeleteConversationArgs = {
 };
 
 
+export type MutationDeleteDraftArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationDeleteEmojiArgs = {
   shortcode: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteFilterArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteFilterKeywordArgs = {
+  filterId: Scalars['ID']['input'];
+  keywordId: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteFilterStatusArgs = {
+  filterId: Scalars['ID']['input'];
+  filterStatusId: Scalars['ID']['input'];
 };
 
 
@@ -1371,6 +2593,16 @@ export type MutationDeleteModerationPatternArgs = {
 
 
 export type MutationDeleteObjectArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteSeriesArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDismissAnnouncementArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1396,6 +2628,18 @@ export type MutationFollowHashtagArgs = {
 };
 
 
+export type MutationImportReputationArgs = {
+  document: Scalars['String']['input'];
+};
+
+
+export type MutationInvitePublicationMemberArgs = {
+  publicationId: Scalars['ID']['input'];
+  role: PublicationRole;
+  userId: Scalars['ID']['input'];
+};
+
+
 export type MutationLikeObjectArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1403,6 +2647,11 @@ export type MutationLikeObjectArgs = {
 
 export type MutationMarkConversationAsReadArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationMarkNotificationGroupAsReadArgs = {
+  groupId: Scalars['ID']['input'];
 };
 
 
@@ -1415,6 +2664,12 @@ export type MutationMuteActorArgs = {
 export type MutationMuteHashtagArgs = {
   hashtag: Scalars['String']['input'];
   until?: InputMaybe<Scalars['Time']['input']>;
+};
+
+
+export type MutationMuteStatusArgs = {
+  durationSeconds?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1440,14 +2695,64 @@ export type MutationPreloadMediaArgs = {
 };
 
 
+export type MutationPublishDraftArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationRegisterAccountArgs = {
+  input: RegisterAccountInput;
+};
+
+
 export type MutationRegisterPushSubscriptionArgs = {
   input: RegisterPushSubscriptionInput;
+};
+
+
+export type MutationRejectFollowRequestArgs = {
+  accountId: Scalars['ID']['input'];
 };
 
 
 export type MutationRemoveAccountsFromListArgs = {
   accountIds: ReadonlyArray<Scalars['ID']['input']>;
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveAnnouncementReactionArgs = {
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveArticleFromCategoryArgs = {
+  articleId: Scalars['ID']['input'];
+  categoryId: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveArticleFromSeriesArgs = {
+  articleId: Scalars['ID']['input'];
+  seriesId: Scalars['ID']['input'];
+};
+
+
+export type MutationRemoveDomainBlockArgs = {
+  domain: Scalars['String']['input'];
+};
+
+
+export type MutationRemovePublicationMemberArgs = {
+  publicationId: Scalars['ID']['input'];
+  userId: Scalars['ID']['input'];
+};
+
+
+export type MutationReorderSeriesArticlesArgs = {
+  articleIds: ReadonlyArray<Scalars['ID']['input']>;
+  seriesId: Scalars['ID']['input'];
 };
 
 
@@ -1469,8 +2774,30 @@ export type MutationRequestStreamingUrlArgs = {
 };
 
 
+export type MutationRestoreRevisionArgs = {
+  objectId: Scalars['ID']['input'];
+  version: Scalars['Int']['input'];
+};
+
+
 export type MutationResumeFederationArgs = {
   domain: Scalars['String']['input'];
+};
+
+
+export type MutationRevokeVouchArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationSaveMarkersArgs = {
+  input: ReadonlyArray<SaveMarkerInput>;
+};
+
+
+export type MutationScheduleDraftArgs = {
+  id: Scalars['ID']['input'];
+  scheduledAt: Scalars['Time']['input'];
 };
 
 
@@ -1497,6 +2824,11 @@ export type MutationShareObjectArgs = {
 };
 
 
+export type MutationSubmitModerationReviewArgs = {
+  input: ModerationReviewInput;
+};
+
+
 export type MutationSyncMissingRepliesArgs = {
   noteId: Scalars['ID']['input'];
 };
@@ -1505,6 +2837,11 @@ export type MutationSyncMissingRepliesArgs = {
 export type MutationSyncThreadArgs = {
   depth?: InputMaybe<Scalars['Int']['input']>;
   noteUrl: Scalars['String']['input'];
+};
+
+
+export type MutationTestFiltersArgs = {
+  input: FilterTestInput;
 };
 
 
@@ -1544,6 +2881,11 @@ export type MutationUnmuteActorArgs = {
 };
 
 
+export type MutationUnmuteStatusArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationUnpinObjectArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1554,9 +2896,38 @@ export type MutationUnshareObjectArgs = {
 };
 
 
+export type MutationUpdateAccountQuotePermissionsArgs = {
+  input: UpdateAccountQuotePermissionsInput;
+};
+
+
+export type MutationUpdateArticleArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateArticleInput;
+};
+
+
+export type MutationUpdateCategoryArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateCategoryInput;
+};
+
+
+export type MutationUpdateDraftArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateDraftInput;
+};
+
+
 export type MutationUpdateEmojiArgs = {
   input: UpdateEmojiInput;
   shortcode: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateFilterArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateFilterInput;
 };
 
 
@@ -1589,6 +2960,19 @@ export type MutationUpdateProfileArgs = {
 };
 
 
+export type MutationUpdatePublicationArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdatePublicationInput;
+};
+
+
+export type MutationUpdatePublicationMemberRoleArgs = {
+  publicationId: Scalars['ID']['input'];
+  role: PublicationRole;
+  userId: Scalars['ID']['input'];
+};
+
+
 export type MutationUpdatePushSubscriptionArgs = {
   input: UpdatePushSubscriptionInput;
 };
@@ -1613,6 +2997,18 @@ export type MutationUpdateScheduledStatusArgs = {
 };
 
 
+export type MutationUpdateSeriesArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateSeriesInput;
+};
+
+
+export type MutationUpdateStatusArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateStatusInput;
+};
+
+
 export type MutationUpdateStreamingPreferencesArgs = {
   input: StreamingPreferencesInput;
 };
@@ -1630,6 +3026,11 @@ export type MutationUpdateUserPreferencesArgs = {
 
 export type MutationUploadMediaArgs = {
   input: UploadMediaInput;
+};
+
+
+export type MutationVerifyReputationArgs = {
+  document: Scalars['String']['input'];
 };
 
 
@@ -1702,6 +3103,7 @@ export type Object = {
   readonly __typename: 'Object';
   readonly actor: Actor;
   readonly attachments: ReadonlyArray<Attachment>;
+  readonly boosted: Scalars['Boolean']['output'];
   readonly boostedObject?: Maybe<Object>;
   readonly communityNotes: ReadonlyArray<CommunityNote>;
   readonly content: Scalars['String']['output'];
@@ -1720,6 +3122,7 @@ export type Object = {
   readonly quoteUrl?: Maybe<Scalars['String']['output']>;
   readonly quoteable: Scalars['Boolean']['output'];
   readonly quotes: QuoteConnection;
+  readonly relationshipType: ObjectRelationshipType;
   readonly repliesCount: Scalars['Int']['output'];
   readonly sensitive: Scalars['Boolean']['output'];
   readonly sharesCount: Scalars['Int']['output'];
@@ -1757,6 +3160,10 @@ export type ObjectExplanation = {
   readonly storageCost: Scalars['Float']['output'];
   readonly storageLocation: Scalars['String']['output'];
 };
+
+export type ObjectRelationshipType =
+  | 'BOOST'
+  | 'ORIGINAL';
 
 export type ObjectType =
   | 'ARTICLE'
@@ -1921,6 +3328,37 @@ export type ProfileFieldInput = {
   readonly verifiedAt?: InputMaybe<Scalars['Time']['input']>;
 };
 
+export type Publication = {
+  readonly __typename: 'Publication';
+  readonly actor: Actor;
+  readonly bannerUrl?: Maybe<Scalars['String']['output']>;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly customDomain?: Maybe<Scalars['String']['output']>;
+  readonly description?: Maybe<Scalars['String']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly logoUrl?: Maybe<Scalars['String']['output']>;
+  readonly members: ReadonlyArray<PublicationMember>;
+  readonly name: Scalars['String']['output'];
+  readonly slug: Scalars['String']['output'];
+  readonly tagline?: Maybe<Scalars['String']['output']>;
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type PublicationMember = {
+  readonly __typename: 'PublicationMember';
+  readonly bio?: Maybe<Scalars['String']['output']>;
+  readonly displayName?: Maybe<Scalars['String']['output']>;
+  readonly joinedAt: Scalars['Time']['output'];
+  readonly role: PublicationRole;
+  readonly user: Actor;
+};
+
+export type PublicationRole =
+  | 'CONTRIBUTOR'
+  | 'EDITOR'
+  | 'OWNER'
+  | 'WRITER';
+
 export type PushSubscription = {
   readonly __typename: 'PushSubscription';
   readonly alerts: PushSubscriptionAlerts;
@@ -1988,75 +3426,239 @@ export type QualityStats = {
 
 export type Query = {
   readonly __typename: 'Query';
+  readonly accountQuotePermissions: AccountQuotePermissions;
   readonly actor?: Maybe<Actor>;
+  readonly adminAccount?: Maybe<AdminAccount>;
+  readonly adminAccounts: AdminAccountConnection;
+  readonly adminDomainAllows: AdminDomainAllowConnection;
+  readonly adminDomainBlock?: Maybe<AdminDomainBlock>;
+  readonly adminDomainBlocks: AdminDomainBlockConnection;
+  readonly adminEmailDomainBlocks: AdminEmailDomainBlockConnection;
+  readonly adminFederationInstance: AdminFederationInstance;
+  readonly adminFederationInstances: AdminFederationInstanceConnection;
+  readonly adminFederationStatistics: AdminFederationStatistics;
+  readonly adminModerationEvents: AdminModerationEventConnection;
+  readonly adminModerationReviewers: ReadonlyArray<AdminReviewer>;
+  readonly adminReport?: Maybe<AdminReport>;
+  readonly adminReports: AdminReportConnection;
+  readonly adminStatus?: Maybe<Object>;
+  readonly adminStatuses: AdminStatusConnection;
+  readonly adminTrustGraph: AdminTrustGraph;
   readonly affectedRelationships: AffectedRelationshipConnection;
   readonly aiAnalysis?: Maybe<AiAnalysis>;
   readonly aiCapabilities: AiCapabilities;
   readonly aiStats: AiStats;
+  readonly allSeries: SeriesConnection;
+  readonly announcements: ReadonlyArray<Announcement>;
+  readonly article?: Maybe<Article>;
+  readonly articleBySlug?: Maybe<Article>;
+  readonly articles: ArticleConnection;
   readonly bandwidthUsage: BandwidthReport;
+  readonly blocks: ActorListPage;
+  readonly bookmarks: ObjectConnection;
+  readonly categories: ReadonlyArray<Category>;
+  readonly category?: Maybe<Category>;
+  readonly categoryBySlug?: Maybe<Category>;
+  readonly communityNotesByAuthor: CommunityNoteConnection;
   readonly conversation?: Maybe<Conversation>;
   readonly conversations: ReadonlyArray<Conversation>;
   readonly costBreakdown: CostBreakdown;
   readonly costProjections: CostProjection;
   readonly customEmojis: ReadonlyArray<CustomEmoji>;
+  readonly domainBlocks: DomainBlockPage;
+  readonly draft?: Maybe<Draft>;
+  readonly endorsements: ReadonlyArray<Actor>;
   readonly explainObject: ObjectExplanation;
+  readonly export?: Maybe<ExportJob>;
+  readonly exports: ExportJobConnection;
+  readonly favourites: ObjectConnection;
   readonly federationCosts: FederationCostConnection;
   readonly federationFlow: FederationFlow;
   readonly federationHealth: ReadonlyArray<FederationManagementStatus>;
   readonly federationLimits: ReadonlyArray<FederationLimit>;
   readonly federationMap: FederationGraph;
   readonly federationStatus: FederationStatus;
+  readonly filter?: Maybe<Filter>;
+  readonly filters: ReadonlyArray<Filter>;
+  readonly followRequests: ActorListPage;
   readonly followedHashtags: HashtagConnection;
   readonly followers: ActorListPage;
   readonly following: ActorListPage;
+  readonly groupedNotifications: ReadonlyArray<GroupedNotificationGroup>;
   readonly hashtag?: Maybe<Hashtag>;
   readonly hashtagTimeline: PostConnection;
+  readonly import?: Maybe<ImportJob>;
+  readonly imports: ImportJobConnection;
   readonly infrastructureHealth: InfrastructureStatus;
+  readonly instance: InstanceInfo;
+  readonly instanceActivity: ReadonlyArray<InstanceActivityEntry>;
   readonly instanceBudgets: ReadonlyArray<InstanceBudget>;
+  readonly instanceDomainBlocks: ReadonlyArray<InstanceDomainBlock>;
   readonly instanceHealthReport: InstanceHealthReport;
   readonly instanceMetrics: InstanceMetrics;
+  readonly instancePeers: ReadonlyArray<Scalars['String']['output']>;
   readonly instanceRelationships: InstanceRelations;
+  readonly linkTimeline: ObjectConnection;
   readonly list?: Maybe<List>;
   readonly listAccounts: ReadonlyArray<Actor>;
   readonly lists: ReadonlyArray<List>;
+  readonly markers: MarkerSet;
   readonly media?: Maybe<Media>;
   readonly mediaLibrary: MediaConnection;
   readonly mediaStreamUrl: MediaStream;
+  readonly moderationConsensus: ModerationConsensusResult;
   readonly moderationDashboard: ModerationDashboard;
   readonly moderationEffectiveness: ModerationEffectiveness;
+  readonly moderationHistory: ModerationHistoryResult;
   readonly moderationPatterns: ReadonlyArray<ModerationPattern>;
   readonly moderationQueue: ReadonlyArray<ModerationDecision>;
+  readonly moderationTrustScore: ModerationTrustScore;
   readonly moderatorActivity: ModeratorStats;
   readonly multiHashtagTimeline: PostConnection;
+  readonly mutes: ActorListPage;
+  readonly myDrafts: DraftConnection;
+  readonly myPublications: ReadonlyArray<Publication>;
+  readonly notification?: Maybe<Notification>;
   readonly notifications: NotificationConnection;
   readonly object?: Maybe<Object>;
   readonly patternEffectiveness: PatternStats;
   readonly performanceMetrics: PerformanceReport;
   readonly popularStreams: StreamConnection;
   readonly profileDirectory: ProfileDirectory;
+  readonly publication?: Maybe<Publication>;
+  readonly publicationBySlug?: Maybe<Publication>;
   readonly pushSubscription?: Maybe<PushSubscription>;
   readonly relationship?: Maybe<Relationship>;
   readonly relationships: ReadonlyArray<Relationship>;
   readonly removeSuggestion: Scalars['Boolean']['output'];
+  readonly reputation: Reputation;
+  readonly revision?: Maybe<Revision>;
+  readonly revisions: RevisionConnection;
+  readonly rootCategories: ReadonlyArray<Category>;
   readonly scheduledStatus?: Maybe<ScheduledStatus>;
   readonly scheduledStatuses: ReadonlyArray<ScheduledStatus>;
   readonly search: SearchResult;
+  readonly series?: Maybe<Series>;
+  readonly seriesBySlug?: Maybe<Series>;
   readonly severedRelationships: SeveredRelationshipConnection;
   readonly slowQueries: ReadonlyArray<QueryPerformance>;
+  readonly statusFavouritedBy: ActorListPage;
+  readonly statusHistory: ReadonlyArray<StatusEdit>;
+  readonly statusRebloggedBy: ActorListPage;
   readonly streamingAnalytics: StreamingAnalytics;
   readonly suggestedHashtags: ReadonlyArray<HashtagSuggestion>;
   readonly suggestions: ReadonlyArray<AccountSuggestion>;
   readonly supportedBitrates: ReadonlyArray<Bitrate>;
   readonly threadContext?: Maybe<ThreadContext>;
   readonly timeline: ObjectConnection;
+  readonly translateStatus: TranslationResult;
+  readonly translationLanguages: ReadonlyArray<TranslationLanguage>;
+  readonly trendingLinks: ReadonlyArray<TrendingLink>;
+  readonly trendingStatuses: ReadonlyArray<TrendingStatus>;
+  readonly trendingTags: ReadonlyArray<TrendingTag>;
+  readonly trends: ReadonlyArray<TrendingItem>;
   readonly trustGraph: ReadonlyArray<TrustEdge>;
   readonly userPreferences: UserPreferences;
+  readonly viewer: Actor;
+  readonly vouches: ReadonlyArray<Vouch>;
+};
+
+
+export type QueryAccountQuotePermissionsArgs = {
+  username: Scalars['String']['input'];
 };
 
 
 export type QueryActorArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryAdminAccountArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryAdminAccountsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryAdminDomainAllowsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryAdminDomainBlockArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryAdminDomainBlocksArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryAdminEmailDomainBlocksArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryAdminFederationInstanceArgs = {
+  domain: Scalars['String']['input'];
+};
+
+
+export type QueryAdminFederationInstancesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryAdminFederationStatisticsArgs = {
+  end?: InputMaybe<Scalars['Time']['input']>;
+  start?: InputMaybe<Scalars['Time']['input']>;
+};
+
+
+export type QueryAdminModerationEventsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  filter?: InputMaybe<AdminModerationEventFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryAdminReportArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryAdminReportsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<AdminReportStatus>;
+};
+
+
+export type QueryAdminStatusArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryAdminStatusesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  filter?: InputMaybe<AdminStatusFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryAdminTrustGraphArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -2075,8 +3677,68 @@ export type QueryAiStatsArgs = {
 };
 
 
+export type QueryAllSeriesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  authorId?: InputMaybe<Scalars['ID']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryArticleArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryArticleBySlugArgs = {
+  slug: Scalars['String']['input'];
+};
+
+
+export type QueryArticlesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  authorId?: InputMaybe<Scalars['ID']['input']>;
+  categoryId?: InputMaybe<Scalars['ID']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  seriesId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
 export type QueryBandwidthUsageArgs = {
   period: TimePeriod;
+};
+
+
+export type QueryBlocksArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryBookmarksArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryCategoriesArgs = {
+  parentId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type QueryCategoryArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryCategoryBySlugArgs = {
+  slug: Scalars['String']['input'];
+};
+
+
+export type QueryCommunityNotesByAuthorArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  username: Scalars['String']['input'];
 };
 
 
@@ -2101,8 +3763,36 @@ export type QueryCostProjectionsArgs = {
 };
 
 
+export type QueryDomainBlocksArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryDraftArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type QueryExplainObjectArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryExportArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryExportsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryFavouritesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -2140,6 +3830,17 @@ export type QueryFederationStatusArgs = {
 };
 
 
+export type QueryFilterArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryFollowRequestsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryFollowedHashtagsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -2160,6 +3861,11 @@ export type QueryFollowingArgs = {
 };
 
 
+export type QueryGroupedNotificationsArgs = {
+  input?: InputMaybe<GroupedNotificationsInput>;
+};
+
+
 export type QueryHashtagArgs = {
   name: Scalars['String']['input'];
 };
@@ -2173,8 +3879,29 @@ export type QueryHashtagTimelineArgs = {
 };
 
 
+export type QueryImportArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryImportsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryInstanceActivityArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryInstanceBudgetsArgs = {
   exceeded?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
+export type QueryInstanceDomainBlocksArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -2183,8 +3910,20 @@ export type QueryInstanceHealthReportArgs = {
 };
 
 
+export type QueryInstancePeersArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryInstanceRelationshipsArgs = {
   domain: Scalars['String']['input'];
+};
+
+
+export type QueryLinkTimelineArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  url: Scalars['String']['input'];
 };
 
 
@@ -2195,6 +3934,11 @@ export type QueryListArgs = {
 
 export type QueryListAccountsArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryMarkersArgs = {
+  timelines?: InputMaybe<ReadonlyArray<MarkerTimeline>>;
 };
 
 
@@ -2215,6 +3959,11 @@ export type QueryMediaStreamUrlArgs = {
 };
 
 
+export type QueryModerationConsensusArgs = {
+  eventId: Scalars['ID']['input'];
+};
+
+
 export type QueryModerationDashboardArgs = {
   filter?: InputMaybe<ModerationFilter>;
 };
@@ -2223,6 +3972,11 @@ export type QueryModerationDashboardArgs = {
 export type QueryModerationEffectivenessArgs = {
   patternId: Scalars['ID']['input'];
   period: ModerationPeriod;
+};
+
+
+export type QueryModerationHistoryArgs = {
+  objectId: Scalars['ID']['input'];
 };
 
 
@@ -2240,6 +3994,11 @@ export type QueryModerationQueueArgs = {
 };
 
 
+export type QueryModerationTrustScoreArgs = {
+  actorId: Scalars['ID']['input'];
+};
+
+
 export type QueryModeratorActivityArgs = {
   moderatorId: Scalars['ID']['input'];
   period: TimePeriod;
@@ -2251,6 +4010,25 @@ export type QueryMultiHashtagTimelineArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   hashtags: ReadonlyArray<Scalars['String']['input']>;
   mode: HashtagMode;
+};
+
+
+export type QueryMutesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryMyDraftsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  contentType?: InputMaybe<ObjectType>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<DraftStatus>;
+};
+
+
+export type QueryNotificationArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -2290,6 +4068,16 @@ export type QueryProfileDirectoryArgs = {
 };
 
 
+export type QueryPublicationArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryPublicationBySlugArgs = {
+  slug: Scalars['String']['input'];
+};
+
+
 export type QueryRelationshipArgs = {
   id: Scalars['ID']['input'];
 };
@@ -2302,6 +4090,24 @@ export type QueryRelationshipsArgs = {
 
 export type QueryRemoveSuggestionArgs = {
   accountId: Scalars['ID']['input'];
+};
+
+
+export type QueryReputationArgs = {
+  actorId: Scalars['ID']['input'];
+};
+
+
+export type QueryRevisionArgs = {
+  objectId: Scalars['ID']['input'];
+  version: Scalars['Int']['input'];
+};
+
+
+export type QueryRevisionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  objectId: Scalars['ID']['input'];
 };
 
 
@@ -2324,6 +4130,16 @@ export type QuerySearchArgs = {
 };
 
 
+export type QuerySeriesArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QuerySeriesBySlugArgs = {
+  slug: Scalars['String']['input'];
+};
+
+
 export type QuerySeveredRelationshipsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -2333,6 +4149,26 @@ export type QuerySeveredRelationshipsArgs = {
 
 export type QuerySlowQueriesArgs = {
   threshold: Scalars['Duration']['input'];
+};
+
+
+export type QueryStatusFavouritedByArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryStatusHistoryArgs = {
+  id: Scalars['ID']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryStatusRebloggedByArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  id: Scalars['ID']['input'];
 };
 
 
@@ -2372,9 +4208,40 @@ export type QueryTimelineArgs = {
 };
 
 
+export type QueryTranslateStatusArgs = {
+  id: Scalars['ID']['input'];
+  targetLanguage?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryTrendingLinksArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryTrendingStatusesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryTrendingTagsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryTrendsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryTrustGraphArgs = {
   actorId: Scalars['ID']['input'];
   category?: InputMaybe<TrustCategory>;
+};
+
+
+export type QueryVouchesArgs = {
+  actorId: Scalars['ID']['input'];
 };
 
 export type QueryPerformance = {
@@ -2472,6 +4339,20 @@ export type ReconnectionPayload = {
   readonly success: Scalars['Boolean']['output'];
 };
 
+export type RegisterAccountInput = {
+  readonly agreement: Scalars['Boolean']['input'];
+  readonly defaultPostingVisibility?: InputMaybe<Visibility>;
+  readonly locale?: InputMaybe<Scalars['String']['input']>;
+  readonly reason?: InputMaybe<Scalars['String']['input']>;
+  readonly username: Scalars['String']['input'];
+};
+
+export type RegisterAccountPayload = {
+  readonly __typename: 'RegisterAccountPayload';
+  readonly actor: Actor;
+  readonly created: Scalars['Boolean']['output'];
+};
+
 export type RegisterPushSubscriptionInput = {
   readonly alerts: PushSubscriptionAlertsInput;
   readonly endpoint: Scalars['String']['input'];
@@ -2507,6 +4388,20 @@ export type RepliesPolicy =
   | 'FOLLOWED'
   | 'LIST'
   | 'NONE';
+
+export type Report = {
+  readonly __typename: 'Report';
+  readonly actionTaken: Scalars['Boolean']['output'];
+  readonly actionTakenAt?: Maybe<Scalars['Time']['output']>;
+  readonly category: Scalars['String']['output'];
+  readonly comment?: Maybe<Scalars['String']['output']>;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly forwarded: Scalars['Boolean']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly ruleIds: ReadonlyArray<Scalars['Int']['output']>;
+  readonly statusIds: ReadonlyArray<Scalars['ID']['output']>;
+  readonly targetAccount?: Maybe<Actor>;
+};
 
 export type Reputation = {
   readonly __typename: 'Reputation';
@@ -2557,6 +4452,37 @@ export type ReputationVerificationResult = {
   readonly valid: Scalars['Boolean']['output'];
 };
 
+export type Revision = {
+  readonly __typename: 'Revision';
+  readonly changeSummary?: Maybe<Scalars['String']['output']>;
+  readonly changeType: ChangeType;
+  readonly changedBy: Actor;
+  readonly content: Scalars['String']['output'];
+  readonly createdAt: Scalars['Time']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly metadataJson?: Maybe<Scalars['String']['output']>;
+  readonly objectId: Scalars['ID']['output'];
+  readonly version: Scalars['Int']['output'];
+};
+
+export type RevisionConnection = {
+  readonly __typename: 'RevisionConnection';
+  readonly edges: ReadonlyArray<RevisionEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type RevisionEdge = {
+  readonly __typename: 'RevisionEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: Revision;
+};
+
+export type SaveMarkerInput = {
+  readonly lastReadId: Scalars['ID']['input'];
+  readonly timeline: MarkerTimeline;
+};
+
 export type ScheduleStatusInput = {
   readonly inReplyToId?: InputMaybe<Scalars['ID']['input']>;
   readonly language?: InputMaybe<Scalars['String']['input']>;
@@ -2597,6 +4523,33 @@ export type SentimentScores = {
   readonly negative: Scalars['Float']['output'];
   readonly neutral: Scalars['Float']['output'];
   readonly positive: Scalars['Float']['output'];
+};
+
+export type Series = {
+  readonly __typename: 'Series';
+  readonly articleCount: Scalars['Int']['output'];
+  readonly author: Actor;
+  readonly coverImageUrl?: Maybe<Scalars['String']['output']>;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly description?: Maybe<Scalars['String']['output']>;
+  readonly id: Scalars['ID']['output'];
+  readonly isComplete: Scalars['Boolean']['output'];
+  readonly slug: Scalars['String']['output'];
+  readonly title: Scalars['String']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type SeriesConnection = {
+  readonly __typename: 'SeriesConnection';
+  readonly edges: ReadonlyArray<SeriesEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type SeriesEdge = {
+  readonly __typename: 'SeriesEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: Series;
 };
 
 export type ServiceCategory =
@@ -2675,6 +4628,15 @@ export type SpamIndicator = {
   readonly description: Scalars['String']['output'];
   readonly severity: Scalars['Float']['output'];
   readonly type: Scalars['String']['output'];
+};
+
+export type StatusEdit = {
+  readonly __typename: 'StatusEdit';
+  readonly account: Actor;
+  readonly content: Scalars['String']['output'];
+  readonly createdAt: Scalars['Time']['output'];
+  readonly sensitive: Scalars['Boolean']['output'];
+  readonly spoilerText?: Maybe<Scalars['String']['output']>;
 };
 
 export type StatusParams = {
@@ -2906,6 +4868,13 @@ export type SyncThreadPayload = {
   readonly thread: ThreadContext;
 };
 
+export type TocEntry = {
+  readonly __typename: 'TOCEntry';
+  readonly id: Scalars['String']['output'];
+  readonly level: Scalars['Int']['output'];
+  readonly text: Scalars['String']['output'];
+};
+
 export type Tag = {
   readonly __typename: 'Tag';
   readonly name: Scalars['String']['output'];
@@ -3001,15 +4970,78 @@ export type TrainingResult = {
   readonly trainingTime: Scalars['Int']['output'];
 };
 
+export type TranslationLanguage = {
+  readonly __typename: 'TranslationLanguage';
+  readonly code: Scalars['String']['output'];
+  readonly name: Scalars['String']['output'];
+};
+
+export type TranslationResult = {
+  readonly __typename: 'TranslationResult';
+  readonly content: Scalars['String']['output'];
+  readonly detectedLanguage: Scalars['String']['output'];
+  readonly provider: Scalars['String']['output'];
+  readonly spoilerText?: Maybe<Scalars['String']['output']>;
+};
+
 export type Trend =
   | 'DECREASING'
   | 'INCREASING'
   | 'STABLE';
 
+export type TrendingItem = {
+  readonly __typename: 'TrendingItem';
+  readonly hashtag?: Maybe<TrendingTag>;
+  readonly link?: Maybe<TrendingLink>;
+  readonly status?: Maybe<TrendingStatus>;
+  readonly type: TrendingItemType;
+};
+
+export type TrendingItemType =
+  | 'HASHTAG'
+  | 'LINK'
+  | 'STATUS';
+
+export type TrendingLink = {
+  readonly __typename: 'TrendingLink';
+  readonly authorName: Scalars['String']['output'];
+  readonly description: Scalars['String']['output'];
+  readonly image: Scalars['String']['output'];
+  readonly shares: Scalars['Int']['output'];
+  readonly title: Scalars['String']['output'];
+  readonly type: Scalars['String']['output'];
+  readonly url: Scalars['String']['output'];
+};
+
+export type TrendingStatus = {
+  readonly __typename: 'TrendingStatus';
+  readonly authorId: Scalars['ID']['output'];
+  readonly content: Scalars['String']['output'];
+  readonly engagements: Scalars['Int']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly publishedAt: Scalars['Time']['output'];
+  readonly url: Scalars['String']['output'];
+};
+
+export type TrendingTag = {
+  readonly __typename: 'TrendingTag';
+  readonly accounts: Scalars['Int']['output'];
+  readonly history: ReadonlyArray<Scalars['Int']['output']>;
+  readonly name: Scalars['String']['output'];
+  readonly url: Scalars['String']['output'];
+  readonly uses: Scalars['Int']['output'];
+};
+
 export type TrustCategory =
   | 'BEHAVIOR'
   | 'CONTENT'
   | 'TECHNICAL';
+
+export type TrustCategoryScore = {
+  readonly __typename: 'TrustCategoryScore';
+  readonly category: Scalars['String']['output'];
+  readonly score: Scalars['Float']['output'];
+};
 
 export type TrustEdge = {
   readonly __typename: 'TrustEdge';
@@ -3032,9 +5064,58 @@ export type UnfollowHashtagPayload = {
   readonly success: Scalars['Boolean']['output'];
 };
 
+export type UpdateAccountQuotePermissionsInput = {
+  readonly allowFollowers?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly allowMentioned?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly allowPublic?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly blockList?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+};
+
+export type UpdateArticleInput = {
+  readonly canonicalUrl?: InputMaybe<Scalars['String']['input']>;
+  readonly categoryIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+  readonly content?: InputMaybe<Scalars['String']['input']>;
+  readonly contentFormat?: InputMaybe<ContentFormat>;
+  readonly editorNotes?: InputMaybe<Scalars['String']['input']>;
+  readonly excerpt?: InputMaybe<Scalars['String']['input']>;
+  readonly featuredImageId?: InputMaybe<Scalars['ID']['input']>;
+  readonly ogImage?: InputMaybe<Scalars['String']['input']>;
+  readonly reviewStatus?: InputMaybe<Scalars['String']['input']>;
+  readonly seoDescription?: InputMaybe<Scalars['String']['input']>;
+  readonly seoTitle?: InputMaybe<Scalars['String']['input']>;
+  readonly seriesId?: InputMaybe<Scalars['ID']['input']>;
+  readonly seriesOrder?: InputMaybe<Scalars['Int']['input']>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+  readonly subtitle?: InputMaybe<Scalars['String']['input']>;
+  readonly title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateCategoryInput = {
+  readonly color?: InputMaybe<Scalars['String']['input']>;
+  readonly description?: InputMaybe<Scalars['String']['input']>;
+  readonly name?: InputMaybe<Scalars['String']['input']>;
+  readonly order?: InputMaybe<Scalars['Int']['input']>;
+  readonly parentId?: InputMaybe<Scalars['ID']['input']>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateDraftInput = {
+  readonly content?: InputMaybe<Scalars['String']['input']>;
+  readonly contentFormat?: InputMaybe<ContentFormat>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+  readonly title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateEmojiInput = {
   readonly category?: InputMaybe<Scalars['String']['input']>;
   readonly visibleInPicker?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type UpdateFilterInput = {
+  readonly context?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly expiresInSeconds?: InputMaybe<Scalars['Int']['input']>;
+  readonly filterAction?: InputMaybe<FilterAction>;
+  readonly title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateHashtagNotificationsPayload = {
@@ -3069,6 +5150,16 @@ export type UpdateProfileInput = {
   readonly sensitive?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type UpdatePublicationInput = {
+  readonly bannerId?: InputMaybe<Scalars['ID']['input']>;
+  readonly customDomain?: InputMaybe<Scalars['String']['input']>;
+  readonly description?: InputMaybe<Scalars['String']['input']>;
+  readonly logoId?: InputMaybe<Scalars['ID']['input']>;
+  readonly name?: InputMaybe<Scalars['String']['input']>;
+  readonly slug?: InputMaybe<Scalars['String']['input']>;
+  readonly tagline?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdatePushSubscriptionInput = {
   readonly alerts: PushSubscriptionAlertsInput;
 };
@@ -3089,6 +5180,21 @@ export type UpdateRelationshipInput = {
 
 export type UpdateScheduledStatusInput = {
   readonly scheduledAt: Scalars['Time']['input'];
+};
+
+export type UpdateSeriesInput = {
+  readonly coverImageUrl?: InputMaybe<Scalars['String']['input']>;
+  readonly description?: InputMaybe<Scalars['String']['input']>;
+  readonly isComplete?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateStatusInput = {
+  readonly attachmentIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+  readonly content: Scalars['String']['input'];
+  readonly language?: InputMaybe<Scalars['String']['input']>;
+  readonly sensitive?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly spoilerText?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateUserPreferencesInput = {
@@ -3590,7 +5696,7 @@ export type UnshareObjectMutationVariables = Exact<{
 }>;
 
 
-export type UnshareObjectMutation = { readonly __typename: 'Mutation', readonly unshareObject: boolean };
+export type UnshareObjectMutation = { readonly __typename: 'Mutation', readonly unshareObject: { readonly __typename: 'Object', readonly id: string, readonly type: ObjectType, readonly content: string, readonly visibility: Visibility, readonly sensitive: boolean, readonly spoilerText?: string | null | undefined, readonly createdAt: string, readonly updatedAt: string, readonly repliesCount: number, readonly likesCount: number, readonly sharesCount: number, readonly estimatedCost: number, readonly moderationScore?: number | null | undefined, readonly quoteUrl?: string | null | undefined, readonly quoteable: boolean, readonly quotePermissions: QuotePermission, readonly quoteCount: number, readonly boostedObject?: { readonly __typename: 'Object', readonly id: string, readonly type: ObjectType, readonly content: string, readonly visibility: Visibility, readonly sensitive: boolean, readonly spoilerText?: string | null | undefined, readonly createdAt: string, readonly updatedAt: string, readonly repliesCount: number, readonly likesCount: number, readonly sharesCount: number, readonly estimatedCost: number, readonly moderationScore?: number | null | undefined, readonly quoteUrl?: string | null | undefined, readonly quoteable: boolean, readonly quotePermissions: QuotePermission, readonly quoteCount: number, readonly contentMap: ReadonlyArray<{ readonly __typename: 'ContentMap', readonly language: string, readonly content: string }>, readonly attachments: ReadonlyArray<{ readonly __typename: 'Attachment', readonly id: string, readonly type: string, readonly url: string, readonly preview?: string | null | undefined, readonly description?: string | null | undefined, readonly blurhash?: string | null | undefined, readonly width?: number | null | undefined, readonly height?: number | null | undefined, readonly duration?: number | null | undefined }>, readonly tags: ReadonlyArray<{ readonly __typename: 'Tag', readonly name: string, readonly url: string }>, readonly mentions: ReadonlyArray<{ readonly __typename: 'Mention', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly url: string }>, readonly quoteContext?: { readonly __typename: 'QuoteContext', readonly quoteAllowed: boolean, readonly quoteType: QuoteType, readonly withdrawn: boolean, readonly originalAuthor: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> }, readonly originalNote?: { readonly __typename: 'Object', readonly id: string, readonly type: ObjectType } | null | undefined } | null | undefined, readonly communityNotes: ReadonlyArray<{ readonly __typename: 'CommunityNote', readonly id: string, readonly content: string, readonly helpful: number, readonly notHelpful: number, readonly createdAt: string, readonly author: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> } }>, readonly actor: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> }, readonly inReplyTo?: { readonly __typename: 'Object', readonly id: string, readonly type: ObjectType, readonly actor: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> } } | null | undefined } | null | undefined, readonly contentMap: ReadonlyArray<{ readonly __typename: 'ContentMap', readonly language: string, readonly content: string }>, readonly attachments: ReadonlyArray<{ readonly __typename: 'Attachment', readonly id: string, readonly type: string, readonly url: string, readonly preview?: string | null | undefined, readonly description?: string | null | undefined, readonly blurhash?: string | null | undefined, readonly width?: number | null | undefined, readonly height?: number | null | undefined, readonly duration?: number | null | undefined }>, readonly tags: ReadonlyArray<{ readonly __typename: 'Tag', readonly name: string, readonly url: string }>, readonly mentions: ReadonlyArray<{ readonly __typename: 'Mention', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly url: string }>, readonly quoteContext?: { readonly __typename: 'QuoteContext', readonly quoteAllowed: boolean, readonly quoteType: QuoteType, readonly withdrawn: boolean, readonly originalAuthor: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> }, readonly originalNote?: { readonly __typename: 'Object', readonly id: string, readonly type: ObjectType } | null | undefined } | null | undefined, readonly communityNotes: ReadonlyArray<{ readonly __typename: 'CommunityNote', readonly id: string, readonly content: string, readonly helpful: number, readonly notHelpful: number, readonly createdAt: string, readonly author: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> } }>, readonly actor: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> }, readonly inReplyTo?: { readonly __typename: 'Object', readonly id: string, readonly type: ObjectType, readonly actor: { readonly __typename: 'Actor', readonly id: string, readonly username: string, readonly domain?: string | null | undefined, readonly displayName?: string | null | undefined, readonly summary?: string | null | undefined, readonly avatar?: string | null | undefined, readonly header?: string | null | undefined, readonly followers: number, readonly following: number, readonly statusesCount: number, readonly bot: boolean, readonly locked: boolean, readonly updatedAt: string, readonly trustScore: number, readonly fields: ReadonlyArray<{ readonly __typename: 'Field', readonly name: string, readonly value: string, readonly verifiedAt?: string | null | undefined }> } } | null | undefined } };
 
 export type BookmarkObjectMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -4032,7 +6138,7 @@ export const DeleteObjectDocument = {"kind":"Document","definitions":[{"kind":"O
 export const LikeObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LikeObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"likeObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActivityFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FieldFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Field"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActorSummary"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"header"}},{"kind":"Field","name":{"kind":"Name","value":"followers"}},{"kind":"Field","name":{"kind":"Name","value":"following"}},{"kind":"Field","name":{"kind":"Name","value":"statusesCount"}},{"kind":"Field","name":{"kind":"Name","value":"bot"}},{"kind":"Field","name":{"kind":"Name","value":"locked"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"trustScore"}},{"kind":"Field","name":{"kind":"Name","value":"fields"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FieldFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActivityFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Activity"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"published"}},{"kind":"Field","name":{"kind":"Name","value":"cost"}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"object"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}},{"kind":"Field","name":{"kind":"Name","value":"target"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]} as unknown as DocumentNode<LikeObjectMutation, LikeObjectMutationVariables>;
 export const UnlikeObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UnlikeObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unlikeObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<UnlikeObjectMutation, UnlikeObjectMutationVariables>;
 export const ShareObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ShareObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"shareObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AttachmentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attachment"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"preview"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"blurhash"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TagFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Tag"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MentionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Mention"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FieldFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Field"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActorSummary"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"header"}},{"kind":"Field","name":{"kind":"Name","value":"followers"}},{"kind":"Field","name":{"kind":"Name","value":"following"}},{"kind":"Field","name":{"kind":"Name","value":"statusesCount"}},{"kind":"Field","name":{"kind":"Name","value":"bot"}},{"kind":"Field","name":{"kind":"Name","value":"locked"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"trustScore"}},{"kind":"Field","name":{"kind":"Name","value":"fields"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FieldFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"QuoteContextFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"QuoteContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"quoteAllowed"}},{"kind":"Field","name":{"kind":"Name","value":"quoteType"}},{"kind":"Field","name":{"kind":"Name","value":"withdrawn"}},{"kind":"Field","name":{"kind":"Name","value":"originalAuthor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"originalNote"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommunityNoteFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CommunityNote"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"helpful"}},{"kind":"Field","name":{"kind":"Name","value":"notHelpful"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectContentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"contentMap"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"sensitive"}},{"kind":"Field","name":{"kind":"Name","value":"spoilerText"}},{"kind":"Field","name":{"kind":"Name","value":"attachments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AttachmentFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TagFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mentions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MentionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"repliesCount"}},{"kind":"Field","name":{"kind":"Name","value":"likesCount"}},{"kind":"Field","name":{"kind":"Name","value":"sharesCount"}},{"kind":"Field","name":{"kind":"Name","value":"estimatedCost"}},{"kind":"Field","name":{"kind":"Name","value":"moderationScore"}},{"kind":"Field","name":{"kind":"Name","value":"quoteUrl"}},{"kind":"Field","name":{"kind":"Name","value":"quoteable"}},{"kind":"Field","name":{"kind":"Name","value":"quotePermissions"}},{"kind":"Field","name":{"kind":"Name","value":"quoteContext"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"QuoteContextFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quoteCount"}},{"kind":"Field","name":{"kind":"Name","value":"communityNotes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CommunityNoteFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"inReplyTo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}},{"kind":"Field","name":{"kind":"Name","value":"boostedObject"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}}]}}]}}]} as unknown as DocumentNode<ShareObjectMutation, ShareObjectMutationVariables>;
-export const UnshareObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UnshareObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unshareObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<UnshareObjectMutation, UnshareObjectMutationVariables>;
+export const UnshareObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UnshareObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unshareObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AttachmentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attachment"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"preview"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"blurhash"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TagFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Tag"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MentionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Mention"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FieldFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Field"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActorSummary"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"header"}},{"kind":"Field","name":{"kind":"Name","value":"followers"}},{"kind":"Field","name":{"kind":"Name","value":"following"}},{"kind":"Field","name":{"kind":"Name","value":"statusesCount"}},{"kind":"Field","name":{"kind":"Name","value":"bot"}},{"kind":"Field","name":{"kind":"Name","value":"locked"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"trustScore"}},{"kind":"Field","name":{"kind":"Name","value":"fields"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FieldFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"QuoteContextFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"QuoteContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"quoteAllowed"}},{"kind":"Field","name":{"kind":"Name","value":"quoteType"}},{"kind":"Field","name":{"kind":"Name","value":"withdrawn"}},{"kind":"Field","name":{"kind":"Name","value":"originalAuthor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"originalNote"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommunityNoteFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CommunityNote"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"helpful"}},{"kind":"Field","name":{"kind":"Name","value":"notHelpful"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectContentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"contentMap"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"sensitive"}},{"kind":"Field","name":{"kind":"Name","value":"spoilerText"}},{"kind":"Field","name":{"kind":"Name","value":"attachments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AttachmentFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TagFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mentions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MentionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"repliesCount"}},{"kind":"Field","name":{"kind":"Name","value":"likesCount"}},{"kind":"Field","name":{"kind":"Name","value":"sharesCount"}},{"kind":"Field","name":{"kind":"Name","value":"estimatedCost"}},{"kind":"Field","name":{"kind":"Name","value":"moderationScore"}},{"kind":"Field","name":{"kind":"Name","value":"quoteUrl"}},{"kind":"Field","name":{"kind":"Name","value":"quoteable"}},{"kind":"Field","name":{"kind":"Name","value":"quotePermissions"}},{"kind":"Field","name":{"kind":"Name","value":"quoteContext"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"QuoteContextFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quoteCount"}},{"kind":"Field","name":{"kind":"Name","value":"communityNotes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CommunityNoteFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"inReplyTo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}},{"kind":"Field","name":{"kind":"Name","value":"boostedObject"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}}]}}]}}]} as unknown as DocumentNode<UnshareObjectMutation, UnshareObjectMutationVariables>;
 export const BookmarkObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"BookmarkObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bookmarkObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AttachmentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attachment"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"preview"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"blurhash"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TagFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Tag"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MentionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Mention"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FieldFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Field"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActorSummary"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"header"}},{"kind":"Field","name":{"kind":"Name","value":"followers"}},{"kind":"Field","name":{"kind":"Name","value":"following"}},{"kind":"Field","name":{"kind":"Name","value":"statusesCount"}},{"kind":"Field","name":{"kind":"Name","value":"bot"}},{"kind":"Field","name":{"kind":"Name","value":"locked"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"trustScore"}},{"kind":"Field","name":{"kind":"Name","value":"fields"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FieldFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"QuoteContextFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"QuoteContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"quoteAllowed"}},{"kind":"Field","name":{"kind":"Name","value":"quoteType"}},{"kind":"Field","name":{"kind":"Name","value":"withdrawn"}},{"kind":"Field","name":{"kind":"Name","value":"originalAuthor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"originalNote"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommunityNoteFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CommunityNote"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"helpful"}},{"kind":"Field","name":{"kind":"Name","value":"notHelpful"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectContentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"contentMap"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"sensitive"}},{"kind":"Field","name":{"kind":"Name","value":"spoilerText"}},{"kind":"Field","name":{"kind":"Name","value":"attachments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AttachmentFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TagFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mentions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MentionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"repliesCount"}},{"kind":"Field","name":{"kind":"Name","value":"likesCount"}},{"kind":"Field","name":{"kind":"Name","value":"sharesCount"}},{"kind":"Field","name":{"kind":"Name","value":"estimatedCost"}},{"kind":"Field","name":{"kind":"Name","value":"moderationScore"}},{"kind":"Field","name":{"kind":"Name","value":"quoteUrl"}},{"kind":"Field","name":{"kind":"Name","value":"quoteable"}},{"kind":"Field","name":{"kind":"Name","value":"quotePermissions"}},{"kind":"Field","name":{"kind":"Name","value":"quoteContext"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"QuoteContextFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quoteCount"}},{"kind":"Field","name":{"kind":"Name","value":"communityNotes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CommunityNoteFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"inReplyTo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}},{"kind":"Field","name":{"kind":"Name","value":"boostedObject"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}}]}}]}}]} as unknown as DocumentNode<BookmarkObjectMutation, BookmarkObjectMutationVariables>;
 export const UnbookmarkObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UnbookmarkObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unbookmarkObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<UnbookmarkObjectMutation, UnbookmarkObjectMutationVariables>;
 export const PinObjectDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"PinObject"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pinObject"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AttachmentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Attachment"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"preview"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"blurhash"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TagFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Tag"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"MentionFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Mention"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"FieldFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Field"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"verifiedAt"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ActorSummary"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Actor"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"displayName"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"avatar"}},{"kind":"Field","name":{"kind":"Name","value":"header"}},{"kind":"Field","name":{"kind":"Name","value":"followers"}},{"kind":"Field","name":{"kind":"Name","value":"following"}},{"kind":"Field","name":{"kind":"Name","value":"statusesCount"}},{"kind":"Field","name":{"kind":"Name","value":"bot"}},{"kind":"Field","name":{"kind":"Name","value":"locked"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"trustScore"}},{"kind":"Field","name":{"kind":"Name","value":"fields"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"FieldFields"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"QuoteContextFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"QuoteContext"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"quoteAllowed"}},{"kind":"Field","name":{"kind":"Name","value":"quoteType"}},{"kind":"Field","name":{"kind":"Name","value":"withdrawn"}},{"kind":"Field","name":{"kind":"Name","value":"originalAuthor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"originalNote"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CommunityNoteFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CommunityNote"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"helpful"}},{"kind":"Field","name":{"kind":"Name","value":"notHelpful"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectContentFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"contentMap"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}},{"kind":"Field","name":{"kind":"Name","value":"visibility"}},{"kind":"Field","name":{"kind":"Name","value":"sensitive"}},{"kind":"Field","name":{"kind":"Name","value":"spoilerText"}},{"kind":"Field","name":{"kind":"Name","value":"attachments"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AttachmentFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TagFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mentions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"MentionFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"repliesCount"}},{"kind":"Field","name":{"kind":"Name","value":"likesCount"}},{"kind":"Field","name":{"kind":"Name","value":"sharesCount"}},{"kind":"Field","name":{"kind":"Name","value":"estimatedCost"}},{"kind":"Field","name":{"kind":"Name","value":"moderationScore"}},{"kind":"Field","name":{"kind":"Name","value":"quoteUrl"}},{"kind":"Field","name":{"kind":"Name","value":"quoteable"}},{"kind":"Field","name":{"kind":"Name","value":"quotePermissions"}},{"kind":"Field","name":{"kind":"Name","value":"quoteContext"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"QuoteContextFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"quoteCount"}},{"kind":"Field","name":{"kind":"Name","value":"communityNotes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CommunityNoteFields"}}]}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}},{"kind":"Field","name":{"kind":"Name","value":"inReplyTo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"actor"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ActorSummary"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ObjectFields"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Object"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}},{"kind":"Field","name":{"kind":"Name","value":"boostedObject"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ObjectContentFields"}}]}}]}}]} as unknown as DocumentNode<PinObjectMutation, PinObjectMutationVariables>;

@@ -449,7 +449,7 @@ export const updateAction = async (
 		process.exit(0);
 	}
 
-		const dryRunLabel = options.dryRun ? chalk.cyan(' [DRY RUN]') : '';
+	const dryRunLabel = options.dryRun ? chalk.cyan(' [DRY RUN]') : '';
 
 	logger.info(
 		chalk.bold(

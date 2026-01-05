@@ -25,4 +25,3 @@ export async function resolveRefForFetch(ref: string): Promise<string> {
 	const commit = await resolveGitRefToCommit(ref);
 	return commit ?? ref;
 }
-

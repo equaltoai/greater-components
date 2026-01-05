@@ -1,2 +1,1 @@
-{"version":3,"file":"truncateMiddle.d.ts","sourceRoot":"","sources":["truncateMiddle.ts"],"names":[],"mappings":""}
-
+{"version":3,"file":"truncateMiddle.d.ts","sourceRoot":"","sources":["truncateMiddle.ts"],"names":[],"mappings":"AAAA;;;;;;;;;GASG;AACH,MAAM,WAAW,qBAAqB;IACrC,iDAAiD;IACjD,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,+CAA+C;IAC/C,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,mFAAmF;IACnF,QAAQ,CAAC,EAAE,MAAM,CAAC;CAClB;AAED;;;;GAIG;AACH,wBAAgB,cAAc,CAAC,KAAK,EAAE,MAAM,EAAE,IAAI,GAAE,qBAA0B,GAAG,MAAM,CAetF"}
