@@ -126,34 +126,34 @@ Features:
 	</header>
 {/if}
 
-	<style>
-		.hero-banner {
-			position: relative;
-			width: 100%;
-			height: 300px;
-			overflow: hidden;
-		}
+<style>
+	.hero-banner {
+		position: relative;
+		width: 100%;
+		height: 300px;
+		overflow: hidden;
+	}
 
-		.hero-banner--sm {
-			height: 200px;
-		}
+	.hero-banner--sm {
+		height: 200px;
+	}
 
-		.hero-banner--md {
-			height: 300px;
-		}
+	.hero-banner--md {
+		height: 300px;
+	}
 
-		.hero-banner--lg {
-			height: 400px;
-		}
+	.hero-banner--lg {
+		height: 400px;
+	}
 
-		.hero-banner--full {
-			height: 100vh;
-		}
+	.hero-banner--full {
+		height: 100vh;
+	}
 
-		.hero-banner__image-container {
-			position: absolute;
-			inset: 0;
-		}
+	.hero-banner__image-container {
+		position: absolute;
+		inset: 0;
+	}
 
 	.hero-banner__image {
 		width: 100%;

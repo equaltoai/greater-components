@@ -70,7 +70,8 @@
 	<section>
 		<h2>Custom Themes (External CSS)</h2>
 		<p>
-			For strict CSP compatibility, shipped components do not support runtime “custom theme objects” or a
+			For strict CSP compatibility, shipped components do not support runtime “custom theme objects”
+			or a
 			<code>style</code> prop. To customize your theme, define CSS custom properties in your own
 			stylesheets (scoped via <code>class</code> when appropriate).
 		</p>
@@ -174,8 +175,8 @@
 		/>
 
 		<p>
-			The workbench is intended for development workflows. For strict CSP deployments, export the result
-			and apply it via external CSS (not per-instance inline styles).
+			The workbench is intended for development workflows. For strict CSP deployments, export the
+			result and apply it via external CSS (not per-instance inline styles).
 		</p>
 
 		<p>The workbench includes:</p>
@@ -222,8 +223,8 @@ const passes = meetsWCAG('#ffffff', '#6366f1', 'AA');
 	<section>
 		<h2>Component-Level Theming</h2>
 		<p>
-			Override theme values for specific components using CSS classes. Inline style attributes are not
-			CSP-safe and are not supported by shipped components.
+			Override theme values for specific components using CSS classes. Inline style attributes are
+			not CSP-safe and are not supported by shipped components.
 		</p>
 
 		<CodeExample
@@ -263,7 +264,7 @@ const passes = meetsWCAG('#ffffff', '#6366f1', 'AA');
 			</li>
 			<li>
 				<strong>Document custom tokens</strong> - If you create custom tokens, document them for your
-			team.
+				team.
 			</li>
 		</ul>
 	</section>
@@ -275,10 +276,12 @@ const passes = meetsWCAG('#ffffff', '#6366f1', 'AA');
 				<a href="/guides/dark-mode">Dark Mode Guide</a> - Best practices for dark mode implementation
 			</li>
 			<li>
-				<a href="/guides/csp-compatibility">CSP Compatibility</a> - Strict CSP constraints and supported patterns
+				<a href="/guides/csp-compatibility">CSP Compatibility</a> - Strict CSP constraints and supported
+				patterns
 			</li>
 			<li>
-				<a href="/guides/csp-migration">CSP Migration Guide</a> - Before/after examples for CSP-driven breaking changes
+				<a href="/guides/csp-migration">CSP Migration Guide</a> - Before/after examples for CSP-driven
+				breaking changes
 			</li>
 			<li><a href="/tokens/colors">Color Tokens Reference</a> - Complete list of color tokens</li>
 			<li>

@@ -7,10 +7,7 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 -->
 
 <script lang="ts">
-	import type {
-		ReferenceBoardData,
-		ReferenceBoardHandlers,
-	} from '../../types/creative-tools.js';
+	import type { ReferenceBoardData, ReferenceBoardHandlers } from '../../types/creative-tools.js';
 
 	interface Props {
 		board: ReferenceBoardData;

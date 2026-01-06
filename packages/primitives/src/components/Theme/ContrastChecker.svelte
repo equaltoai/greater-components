@@ -22,16 +22,19 @@
 	// For custom preset, use provided colors
 	// Note: Actual contrast calculation requires computed colors from CSS
 	// This is a simplified version that shows the preset classes
-	
+
 	// Default colors for calculation (these would ideally be read from CSS)
-	const presetColorsMap: Record<Exclude<ContrastPreset, 'custom'>, { fg: string; bg: string; label: string }> = {
+	const presetColorsMap: Record<
+		Exclude<ContrastPreset, 'custom'>,
+		{ fg: string; bg: string; label: string }
+	> = {
 		'text-on-surface': { fg: '#1f2937', bg: '#ffffff', label: 'Text on Surface' },
 		'primary-on-surface': { fg: '#3b82f6', bg: '#ffffff', label: 'Primary on Surface' },
 		'text-on-primary': { fg: '#ffffff', bg: '#3b82f6', label: 'Text on Primary' },
 	};
 
 	let colors = $derived(
-		preset === 'custom' 
+		preset === 'custom'
 			? { fg: foreground || '#000000', bg: background || '#ffffff', label: 'Custom' }
 			: presetColorsMap[preset]
 	);
@@ -53,7 +56,13 @@
 	<div class="gr-contrast-checker__metrics">
 		<div class="gr-contrast-checker__metric-row">
 			<span class="gr-contrast-checker__metric-label">Contrast Ratio ({colors.label})</span>
-			<span class="gr-contrast-checker__metric-value gr-contrast-checker__metric-value--{ratio < 3 ? 'fail' : ratio < 4.5 ? 'warn' : 'pass'}">
+			<span
+				class="gr-contrast-checker__metric-value gr-contrast-checker__metric-value--{ratio < 3
+					? 'fail'
+					: ratio < 4.5
+						? 'warn'
+						: 'pass'}"
+			>
 				{ratio.toFixed(2)}:1
 			</span>
 		</div>
@@ -61,19 +70,31 @@
 		<div class="gr-contrast-checker__compliance-grid">
 			<div class="gr-contrast-checker__compliance-item">
 				<span class="gr-contrast-checker__compliance-label">AA Normal</span>
-				<span class="gr-contrast-checker__compliance-badge gr-contrast-checker__compliance-badge--{passesAA ? 'pass' : 'fail'}">
+				<span
+					class="gr-contrast-checker__compliance-badge gr-contrast-checker__compliance-badge--{passesAA
+						? 'pass'
+						: 'fail'}"
+				>
 					{passesAA ? 'Pass' : 'Fail'}
 				</span>
 			</div>
 			<div class="gr-contrast-checker__compliance-item">
 				<span class="gr-contrast-checker__compliance-label">AA Large</span>
-				<span class="gr-contrast-checker__compliance-badge gr-contrast-checker__compliance-badge--{passesAALarge ? 'pass' : 'fail'}">
+				<span
+					class="gr-contrast-checker__compliance-badge gr-contrast-checker__compliance-badge--{passesAALarge
+						? 'pass'
+						: 'fail'}"
+				>
 					{passesAALarge ? 'Pass' : 'Fail'}
 				</span>
 			</div>
 			<div class="gr-contrast-checker__compliance-item">
 				<span class="gr-contrast-checker__compliance-label">AAA Normal</span>
-				<span class="gr-contrast-checker__compliance-badge gr-contrast-checker__compliance-badge--{passesAAA ? 'pass' : 'fail'}">
+				<span
+					class="gr-contrast-checker__compliance-badge gr-contrast-checker__compliance-badge--{passesAAA
+						? 'pass'
+						: 'fail'}"
+				>
 					{passesAAA ? 'Pass' : 'Fail'}
 				</span>
 			</div>

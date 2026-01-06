@@ -48,11 +48,11 @@ test.describe('Artist Face demo', () => {
 
 		test('keyboard: gallery cards reachable via Tab', async ({ page }) => {
 			// Fallback to checking for ANY interactive element in the grid
-			const grid = page.locator('.gallery-grid');
+			const grid = page.locator('.gallery-grid').first();
 			await expect(grid).toBeVisible();
 
 			// If items are not rendering, this will fail
-			const items = page.locator('.gallery-item');
+			const items = grid.locator('.gallery-item');
 			if ((await items.count()) > 0) {
 				await expect(items.first()).toBeVisible();
 			}

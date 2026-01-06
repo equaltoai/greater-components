@@ -65,6 +65,7 @@ pnpm add @equaltoai/greater-components-primitives
 Loading placeholder component with preset-based sizing for strict CSP compliance.
 
 **Props:**
+
 - `variant`: `'text' | 'circular' | 'rectangular' | 'rounded'` (default: `'text'`)
 - `width`: `'full' | '1/2' | '1/3' | '2/3' | '1/4' | '3/4' | 'content' | 'auto'`
 - `height`: `'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'`
@@ -72,6 +73,7 @@ Loading placeholder component with preset-based sizing for strict CSP compliance
 - `loading`: `boolean` (default: `true`)
 
 **Example:**
+
 ```svelte
 <Skeleton variant="text" width="full" height="md" />
 <Skeleton variant="circular" width="auto" height="xl" />
@@ -79,6 +81,7 @@ Loading placeholder component with preset-based sizing for strict CSP compliance
 ```
 
 **CSP Compliance:**
+
 - All sizing is class-based using preset values
 - No inline styles are emitted
 - For custom sizes, use the `class` prop with external CSS
@@ -88,6 +91,7 @@ Loading placeholder component with preset-based sizing for strict CSP compliance
 User profile component with deterministic color classes for consistent identity visualization.
 
 **Props:**
+
 - `src`: Image URL
 - `alt`: Image alt text
 - `name`: User name (generates initials and color)
@@ -100,6 +104,7 @@ User profile component with deterministic color classes for consistent identity 
 - `loading`: `boolean`
 
 **Example:**
+
 ```svelte
 <Avatar name="Jane Doe" size="lg" />
 <Avatar src="/profile.jpg" alt="User" status="online" />
@@ -107,6 +112,7 @@ User profile component with deterministic color classes for consistent identity 
 ```
 
 **CSP Compliance:**
+
 - Background colors use deterministic hash-based color classes (`gr-avatar--color-0` through `gr-avatar--color-11`)
 - Same name/label always produces the same color across sessions
 - Image display controlled via CSS classes, not inline styles
@@ -117,6 +123,7 @@ User profile component with deterministic color classes for consistent identity 
 Typography component with bounded line clamping for strict CSP compliance.
 
 **Props:**
+
 - `as`: `'p' | 'span' | 'div' | 'label'` (default: `'p'`)
 - `size`: `'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl'` (default: `'base'`)
 - `weight`: `'normal' | 'medium' | 'semibold' | 'bold'` (default: `'normal'`)
@@ -126,6 +133,7 @@ Typography component with bounded line clamping for strict CSP compliance.
 - `lines`: `number` (2-6 supported for CSP compliance)
 
 **Example:**
+
 ```svelte
 <Text size="lg" weight="semibold">Heading Text</Text>
 <Text truncate>Single line truncation</Text>
@@ -133,6 +141,7 @@ Typography component with bounded line clamping for strict CSP compliance.
 ```
 
 **CSP Compliance:**
+
 - Line clamping uses predefined classes (`gr-text--clamp-2` through `gr-text--clamp-6`)
 - No inline CSS variables for line counts
 - For line counts outside 2-6 range, use the `class` prop with external CSS
@@ -142,36 +151,40 @@ Typography component with bounded line clamping for strict CSP compliance.
 Layout container with preset gutters for strict CSP compliance.
 
 **Props:**
+
 - `maxWidth` / `size`: `'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'` (default: `'lg'`)
 - `gutter`: `'none' | 'sm' | 'md' | 'lg' | 'xl'` (default: `'md'`)
 - `centered`: `boolean` (default: `true`)
 
 **Example:**
+
 ```svelte
 <Container size="xl" gutter="lg">
-  <h1>Page Content</h1>
+	<h1>Page Content</h1>
 </Container>
 
 <Container maxWidth="md" gutter="none">
-  <p>No padding</p>
+	<p>No padding</p>
 </Container>
 ```
 
 **CSP Compliance:**
+
 - Only preset gutter values are supported
 - No inline CSS variables for custom gutters
 - For custom gutters, use the `class` prop with external CSS to set `--gr-container-custom-gutter`
 
 **Custom Gutter Example:**
+
 ```svelte
 <Container size="lg" class="custom-gutter">
-  <h1>Custom Padding</h1>
+	<h1>Custom Padding</h1>
 </Container>
 
 <style>
-  :global(.custom-gutter) {
-    --gr-container-custom-gutter: 2.5rem;
-  }
+	:global(.custom-gutter) {
+		--gr-container-custom-gutter: 2.5rem;
+	}
 </style>
 ```
 

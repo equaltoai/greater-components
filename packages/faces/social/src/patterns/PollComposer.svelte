@@ -497,30 +497,30 @@
 									{/if}
 								</div>
 
-									{#if !resultsHidden}
-										{@const percent = Math.max(0, Math.min(100, getPercentage(option)))}
-										<div
-											class="poll-composer__result-bar"
-											class:poll-composer__result-bar--animate={animateResults}
+								{#if !resultsHidden}
+									{@const percent = Math.max(0, Math.min(100, getPercentage(option)))}
+									<div
+										class="poll-composer__result-bar"
+										class:poll-composer__result-bar--animate={animateResults}
+									>
+										<svg
+											class="poll-composer__result-bar-svg"
+											viewBox="0 0 100 1"
+											preserveAspectRatio="none"
+											aria-hidden="true"
 										>
-											<svg
-												class="poll-composer__result-bar-svg"
-												viewBox="0 0 100 1"
-												preserveAspectRatio="none"
-												aria-hidden="true"
-											>
-												<rect
-													class="poll-composer__result-bar-fill"
-													x="0"
-													y="0"
-													width={percent}
-													height="1"
-												/>
-											</svg>
-										</div>
-									{/if}
+											<rect
+												class="poll-composer__result-bar-fill"
+												x="0"
+												y="0"
+												width={percent}
+												height="1"
+											/>
+										</svg>
+									</div>
 								{/if}
-							</div>
+							{/if}
+						</div>
 					{:else}
 						<!-- Show voting options -->
 						<button

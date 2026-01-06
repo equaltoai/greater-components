@@ -76,16 +76,16 @@ Features:
 	const parsedStatement = $derived(artist.statement ? parseStatement(artist.statement) : '');
 </script>
 
-	{#if artist.statement}
-		<section class={`profile-statement ${className}`} aria-label="Artist statement">
-			<div
-				bind:this={contentRef}
-				class={`profile-statement__content profile-statement__content--max-lines-${maxLinesClamped}`}
-				class:truncated={!isExpanded && isTruncated}
-			>
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html parsedStatement}
-			</div>
+{#if artist.statement}
+	<section class={`profile-statement ${className}`} aria-label="Artist statement">
+		<div
+			bind:this={contentRef}
+			class={`profile-statement__content profile-statement__content--max-lines-${maxLinesClamped}`}
+			class:truncated={!isExpanded && isTruncated}
+		>
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+			{@html parsedStatement}
+		</div>
 
 		{#if expandable && isTruncated}
 			<button
@@ -115,66 +115,66 @@ Features:
 		color: var(--gr-color-gray-200);
 	}
 
-		.profile-statement__content.truncated {
-			display: -webkit-box;
-			-webkit-box-orient: vertical;
-			overflow: hidden;
-		}
+	.profile-statement__content.truncated {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
 
-		.profile-statement__content--max-lines-1.truncated {
-			-webkit-line-clamp: 1;
-			line-clamp: 1;
-		}
+	.profile-statement__content--max-lines-1.truncated {
+		-webkit-line-clamp: 1;
+		line-clamp: 1;
+	}
 
-		.profile-statement__content--max-lines-2.truncated {
-			-webkit-line-clamp: 2;
-			line-clamp: 2;
-		}
+	.profile-statement__content--max-lines-2.truncated {
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+	}
 
-		.profile-statement__content--max-lines-3.truncated {
-			-webkit-line-clamp: 3;
-			line-clamp: 3;
-		}
+	.profile-statement__content--max-lines-3.truncated {
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
+	}
 
-		.profile-statement__content--max-lines-4.truncated {
-			-webkit-line-clamp: 4;
-			line-clamp: 4;
-		}
+	.profile-statement__content--max-lines-4.truncated {
+		-webkit-line-clamp: 4;
+		line-clamp: 4;
+	}
 
-		.profile-statement__content--max-lines-5.truncated {
-			-webkit-line-clamp: 5;
-			line-clamp: 5;
-		}
+	.profile-statement__content--max-lines-5.truncated {
+		-webkit-line-clamp: 5;
+		line-clamp: 5;
+	}
 
-		.profile-statement__content--max-lines-6.truncated {
-			-webkit-line-clamp: 6;
-			line-clamp: 6;
-		}
+	.profile-statement__content--max-lines-6.truncated {
+		-webkit-line-clamp: 6;
+		line-clamp: 6;
+	}
 
-		.profile-statement__content--max-lines-7.truncated {
-			-webkit-line-clamp: 7;
-			line-clamp: 7;
-		}
+	.profile-statement__content--max-lines-7.truncated {
+		-webkit-line-clamp: 7;
+		line-clamp: 7;
+	}
 
-		.profile-statement__content--max-lines-8.truncated {
-			-webkit-line-clamp: 8;
-			line-clamp: 8;
-		}
+	.profile-statement__content--max-lines-8.truncated {
+		-webkit-line-clamp: 8;
+		line-clamp: 8;
+	}
 
-		.profile-statement__content--max-lines-9.truncated {
-			-webkit-line-clamp: 9;
-			line-clamp: 9;
-		}
+	.profile-statement__content--max-lines-9.truncated {
+		-webkit-line-clamp: 9;
+		line-clamp: 9;
+	}
 
-		.profile-statement__content--max-lines-10.truncated {
-			-webkit-line-clamp: 10;
-			line-clamp: 10;
-		}
+	.profile-statement__content--max-lines-10.truncated {
+		-webkit-line-clamp: 10;
+		line-clamp: 10;
+	}
 
-		.profile-statement__content :global(strong) {
-			font-weight: var(--gr-font-weight-semibold);
-			color: var(--gr-color-gray-100);
-		}
+	.profile-statement__content :global(strong) {
+		font-weight: var(--gr-font-weight-semibold);
+		color: var(--gr-color-gray-100);
+	}
 
 	.profile-statement__content :global(em) {
 		font-style: italic;

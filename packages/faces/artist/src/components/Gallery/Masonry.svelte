@@ -83,13 +83,13 @@ Supports virtual scrolling for large galleries.
 </script>
 
 <GalleryGrid
-	items={items}
+	{items}
 	columns="auto"
 	gap={gapSize}
 	clustering="none"
-	onLoadMore={onLoadMore}
-	onItemClick={onItemClick}
+	{onLoadMore}
+	{onItemClick}
 	class={className}
-	scrollKey={scrollKey}
-	itemRenderer={itemRenderer}
+	{scrollKey}
+	{itemRenderer}
 />

@@ -3437,7 +3437,9 @@
 }
 
 /* Truncation */
-.gr-text--truncate:not(.gr-text--clamp-2):not(.gr-text--clamp-3):not(.gr-text--clamp-4):not(.gr-text--clamp-5):not(.gr-text--clamp-6) {
+.gr-text--truncate:not(.gr-text--clamp-2):not(.gr-text--clamp-3):not(.gr-text--clamp-4):not(
+		.gr-text--clamp-5
+	):not(.gr-text--clamp-6) {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -3769,7 +3771,8 @@
 
 /* ThemeProvider Typography Presets - Heading Fonts (CSP-compliant) */
 .gr-theme-provider--heading-system {
-	--gr-typography-fontFamily-heading: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--gr-typography-fontFamily-heading:
+		system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .gr-theme-provider--heading-sans {
@@ -3777,16 +3780,19 @@
 }
 
 .gr-theme-provider--heading-serif {
-	--gr-typography-fontFamily-heading: 'Crimson Pro', Georgia, Cambria, 'Times New Roman', Times, serif;
+	--gr-typography-fontFamily-heading:
+		'Crimson Pro', Georgia, Cambria, 'Times New Roman', Times, serif;
 }
 
 .gr-theme-provider--heading-mono {
-	--gr-typography-fontFamily-heading: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	--gr-typography-fontFamily-heading:
+		'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
 /* ThemeProvider Typography Presets - Body Fonts (CSP-compliant) */
 .gr-theme-provider--body-system {
-	--gr-typography-fontFamily-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--gr-typography-fontFamily-sans:
+		system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .gr-theme-provider--body-sans {
@@ -3798,7 +3804,8 @@
 }
 
 .gr-theme-provider--body-mono {
-	--gr-typography-fontFamily-sans: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	--gr-typography-fontFamily-sans:
+		'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
 /* Global theme-aware styles */

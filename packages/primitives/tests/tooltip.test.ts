@@ -204,7 +204,6 @@ describe('Tooltip.svelte', () => {
 	});
 });
 
-
 describe('Tooltip CSP Compliance - Property Tests', () => {
 	const mockAnimation = () =>
 		vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
@@ -222,7 +221,13 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 			fc.asyncProperty(
 				fc.record({
 					content: fc.string({ minLength: 1, maxLength: 50 }),
-					placement: fc.constantFrom('top', 'bottom', 'left', 'right', 'auto') as fc.Arbitrary<Placement>,
+					placement: fc.constantFrom(
+						'top',
+						'bottom',
+						'left',
+						'right',
+						'auto'
+					) as fc.Arbitrary<Placement>,
 					trigger: fc.constantFrom('hover', 'focus', 'click') as fc.Arbitrary<Trigger>,
 					disabled: fc.boolean(),
 				}),
@@ -251,13 +256,16 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 						}
 
 						// Wait for tooltip to appear
-						await waitFor(() => {
-							const tooltip = container.querySelector('.gr-tooltip');
-							if (!props.disabled && tooltip) {
-								// CSP compliance: no style attribute should be present
-								expect(tooltip.hasAttribute('style')).toBe(false);
-							}
-						}, { timeout: 100 });
+						await waitFor(
+							() => {
+								const tooltip = container.querySelector('.gr-tooltip');
+								if (!props.disabled && tooltip) {
+									// CSP compliance: no style attribute should be present
+									expect(tooltip.hasAttribute('style')).toBe(false);
+								}
+							},
+							{ timeout: 100 }
+						);
 					}
 
 					unmount();
@@ -278,7 +286,9 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 
 		await fc.assert(
 			fc.asyncProperty(
-				fc.constantFrom('top', 'bottom', 'left', 'right') as fc.Arbitrary<'top' | 'bottom' | 'left' | 'right'>,
+				fc.constantFrom('top', 'bottom', 'left', 'right') as fc.Arbitrary<
+					'top' | 'bottom' | 'left' | 'right'
+				>,
 				async (placement) => {
 					const { container, unmount } = render(TooltipHarness, {
 						props: {
@@ -297,12 +307,15 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 
 					await fireEvent.click(trigger);
 
-					await waitFor(() => {
-						const tooltip = container.querySelector('.gr-tooltip');
-						expect(tooltip).not.toBeNull();
-						// Should have the correct placement class
-						expect(tooltip?.classList.contains(`gr-tooltip--${placement}`)).toBe(true);
-					}, { timeout: 100 });
+					await waitFor(
+						() => {
+							const tooltip = container.querySelector('.gr-tooltip');
+							expect(tooltip).not.toBeNull();
+							// Should have the correct placement class
+							expect(tooltip?.classList.contains(`gr-tooltip--${placement}`)).toBe(true);
+						},
+						{ timeout: 100 }
+					);
 
 					unmount();
 					return true;
@@ -321,40 +334,39 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 		const raf = mockAnimation();
 
 		await fc.assert(
-			fc.asyncProperty(
-				fc.string({ minLength: 1, maxLength: 50 }),
-				async (content) => {
-					const { container, unmount } = render(TooltipHarness, {
+			fc.asyncProperty(fc.string({ minLength: 1, maxLength: 50 }), async (content) => {
+				const { container, unmount } = render(TooltipHarness, {
+					props: {
 						props: {
-							props: {
-								content,
-								placement: 'auto',
-								trigger: 'click',
-								delay: { show: 0, hide: 0 },
-							},
+							content,
+							placement: 'auto',
+							trigger: 'click',
+							delay: { show: 0, hide: 0 },
 						},
-					});
+					},
+				});
 
-					const trigger = getTrigger(container);
-					expect(trigger).not.toBeNull();
-					if (!trigger) throw new Error('tooltip trigger not found');
+				const trigger = getTrigger(container);
+				expect(trigger).not.toBeNull();
+				if (!trigger) throw new Error('tooltip trigger not found');
 
-					// Mock getBoundingClientRect for consistent auto placement
-					vi.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
-						top: 200,
-						left: 200,
-						right: 300,
-						bottom: 250,
-						width: 100,
-						height: 50,
-						x: 200,
-						y: 200,
-						toJSON: () => ({}),
-					});
+				// Mock getBoundingClientRect for consistent auto placement
+				vi.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
+					top: 200,
+					left: 200,
+					right: 300,
+					bottom: 250,
+					width: 100,
+					height: 50,
+					x: 200,
+					y: 200,
+					toJSON: () => ({}),
+				});
 
-					await fireEvent.click(trigger);
+				await fireEvent.click(trigger);
 
-					await waitFor(() => {
+				await waitFor(
+					() => {
 						const tooltip = container.querySelector('.gr-tooltip');
 						expect(tooltip).not.toBeNull();
 						// Should have exactly one of the valid placement classes
@@ -364,12 +376,13 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 							tooltip?.classList.contains('gr-tooltip--left') ||
 							tooltip?.classList.contains('gr-tooltip--right');
 						expect(hasValidPlacement).toBe(true);
-					}, { timeout: 100 });
+					},
+					{ timeout: 100 }
+				);
 
-					unmount();
-					return true;
-				}
-			),
+				unmount();
+				return true;
+			}),
 			{ numRuns: 100 }
 		);
 
@@ -384,48 +397,63 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 
 		// Test different viewport edge scenarios
 		const edgeScenarios = [
-			{ name: 'top-edge', rect: { top: 10, left: 200, right: 300, bottom: 60 }, expected: 'bottom' },
-			{ name: 'bottom-edge', rect: { top: 700, left: 200, right: 300, bottom: 750 }, expected: 'top' },
-			{ name: 'left-edge', rect: { top: 200, left: 10, right: 110, bottom: 250 }, expected: 'right' },
-			{ name: 'right-edge', rect: { top: 200, left: 900, right: 1000, bottom: 250 }, expected: 'left' },
+			{
+				name: 'top-edge',
+				rect: { top: 10, left: 200, right: 300, bottom: 60 },
+				expected: 'bottom',
+			},
+			{
+				name: 'bottom-edge',
+				rect: { top: 700, left: 200, right: 300, bottom: 750 },
+				expected: 'top',
+			},
+			{
+				name: 'left-edge',
+				rect: { top: 200, left: 10, right: 110, bottom: 250 },
+				expected: 'right',
+			},
+			{
+				name: 'right-edge',
+				rect: { top: 200, left: 900, right: 1000, bottom: 250 },
+				expected: 'left',
+			},
 		];
 
 		await fc.assert(
-			fc.asyncProperty(
-				fc.constantFrom(...edgeScenarios),
-				async (scenario) => {
-					// Mock window dimensions
-					Object.defineProperty(window, 'innerHeight', { value: 768, writable: true });
-					Object.defineProperty(window, 'innerWidth', { value: 1024, writable: true });
+			fc.asyncProperty(fc.constantFrom(...edgeScenarios), async (scenario) => {
+				// Mock window dimensions
+				Object.defineProperty(window, 'innerHeight', { value: 768, writable: true });
+				Object.defineProperty(window, 'innerWidth', { value: 1024, writable: true });
 
-					const { container, unmount } = render(TooltipHarness, {
+				const { container, unmount } = render(TooltipHarness, {
+					props: {
 						props: {
-							props: {
-								content: 'Edge test tooltip',
-								placement: 'auto',
-								trigger: 'click',
-								delay: { show: 0, hide: 0 },
-							},
+							content: 'Edge test tooltip',
+							placement: 'auto',
+							trigger: 'click',
+							delay: { show: 0, hide: 0 },
 						},
-					});
+					},
+				});
 
-					const trigger = getTrigger(container);
-					expect(trigger).not.toBeNull();
-					if (!trigger) throw new Error('tooltip trigger not found');
+				const trigger = getTrigger(container);
+				expect(trigger).not.toBeNull();
+				if (!trigger) throw new Error('tooltip trigger not found');
 
-					// Mock getBoundingClientRect for edge scenario
-					vi.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
-						...scenario.rect,
-						width: scenario.rect.right - scenario.rect.left,
-						height: scenario.rect.bottom - scenario.rect.top,
-						x: scenario.rect.left,
-						y: scenario.rect.top,
-						toJSON: () => ({}),
-					});
+				// Mock getBoundingClientRect for edge scenario
+				vi.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
+					...scenario.rect,
+					width: scenario.rect.right - scenario.rect.left,
+					height: scenario.rect.bottom - scenario.rect.top,
+					x: scenario.rect.left,
+					y: scenario.rect.top,
+					toJSON: () => ({}),
+				});
 
-					await fireEvent.click(trigger);
+				await fireEvent.click(trigger);
 
-					await waitFor(() => {
+				await waitFor(
+					() => {
 						const tooltip = container.querySelector('.gr-tooltip');
 						expect(tooltip).not.toBeNull();
 						// Should have a valid placement class (may not always match expected due to heuristics)
@@ -435,12 +463,13 @@ describe('Tooltip CSP Compliance - Property Tests', () => {
 							tooltip?.classList.contains('gr-tooltip--left') ||
 							tooltip?.classList.contains('gr-tooltip--right');
 						expect(hasValidPlacement).toBe(true);
-					}, { timeout: 100 });
+					},
+					{ timeout: 100 }
+				);
 
-					unmount();
-					return true;
-				}
-			),
+				unmount();
+				return true;
+			}),
 			{ numRuns: 100 }
 		);
 

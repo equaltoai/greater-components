@@ -94,7 +94,6 @@ describe('Section.svelte', () => {
 	});
 });
 
-
 describe('Section CSP Compliance - Property Tests', () => {
 	// Property 4: Section universal CSP compliance
 	// Feature: csp-theme-layout-primitives, Property 4
@@ -104,17 +103,37 @@ describe('Section CSP Compliance - Property Tests', () => {
 			fc.property(
 				fc.record({
 					spacing: fc.option(
-						fc.constantFrom('none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl') as fc.Arbitrary<SpacingPreset>,
+						fc.constantFrom(
+							'none',
+							'sm',
+							'md',
+							'lg',
+							'xl',
+							'2xl',
+							'3xl',
+							'4xl'
+						) as fc.Arbitrary<SpacingPreset>,
 						{ nil: undefined }
 					),
 					background: fc.option(
-						fc.constantFrom('default', 'muted', 'accent', 'gradient') as fc.Arbitrary<BackgroundPreset>,
+						fc.constantFrom(
+							'default',
+							'muted',
+							'accent',
+							'gradient'
+						) as fc.Arbitrary<BackgroundPreset>,
 						{ nil: undefined }
 					),
 					gradientDirection: fc.option(
 						fc.constantFrom(
-							'to-top', 'to-bottom', 'to-left', 'to-right',
-							'to-top-left', 'to-top-right', 'to-bottom-left', 'to-bottom-right'
+							'to-top',
+							'to-bottom',
+							'to-left',
+							'to-right',
+							'to-top-left',
+							'to-top-right',
+							'to-bottom-left',
+							'to-bottom-right'
 						) as fc.Arbitrary<GradientDirection>,
 						{ nil: undefined }
 					),
@@ -153,7 +172,16 @@ describe('Section CSP Compliance - Property Tests', () => {
 	it('Property 5: Section spacing class generation - correct class for each spacing preset', () => {
 		fc.assert(
 			fc.property(
-				fc.constantFrom('none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl') as fc.Arbitrary<SpacingPreset>,
+				fc.constantFrom(
+					'none',
+					'sm',
+					'md',
+					'lg',
+					'xl',
+					'2xl',
+					'3xl',
+					'4xl'
+				) as fc.Arbitrary<SpacingPreset>,
 				(spacing) => {
 					const { container } = render(Section, { spacing });
 
@@ -207,13 +235,19 @@ describe('Section CSP Compliance - Property Tests', () => {
 		fc.assert(
 			fc.property(
 				fc.constantFrom(
-					'to-top', 'to-bottom', 'to-left', 'to-right',
-					'to-top-left', 'to-top-right', 'to-bottom-left', 'to-bottom-right'
+					'to-top',
+					'to-bottom',
+					'to-left',
+					'to-right',
+					'to-top-left',
+					'to-top-right',
+					'to-bottom-left',
+					'to-bottom-right'
 				) as fc.Arbitrary<GradientDirection>,
 				(gradientDirection) => {
-					const { container } = render(Section, { 
-						background: 'gradient', 
-						gradientDirection 
+					const { container } = render(Section, {
+						background: 'gradient',
+						gradientDirection,
 					});
 
 					const element = container.querySelector('.gr-section');
@@ -221,7 +255,9 @@ describe('Section CSP Compliance - Property Tests', () => {
 					// Should have the gradient background class
 					expect(element?.classList.contains('gr-section--bg-gradient')).toBe(true);
 					// Should have the correct gradient direction class
-					expect(element?.classList.contains(`gr-section--gradient-${gradientDirection}`)).toBe(true);
+					expect(element?.classList.contains(`gr-section--gradient-${gradientDirection}`)).toBe(
+						true
+					);
 
 					return true;
 				}

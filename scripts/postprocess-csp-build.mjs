@@ -119,4 +119,3 @@ for (const htmlFilePath of htmlFiles) {
 console.log(
 	`CSP postprocess complete: ${filesUpdated} HTML file(s) updated, ${scriptsExtracted} inline script(s) extracted`
 );
-

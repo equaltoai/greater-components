@@ -16,10 +16,11 @@
   - For custom sizes, use the `class` prop with external CSS
 
   **Migration:**
+
   ```svelte
   <!-- Before -->
   <Skeleton width="250px" height="80px" />
-  
+
   <!-- After -->
   <Skeleton width="1/2" height="lg" />
   <!-- Or for custom sizes -->
@@ -40,10 +41,11 @@
   - Single-line truncation still works with `truncate` prop alone
 
   **Migration:**
+
   ```svelte
   <!-- Before -->
   <Text truncate lines={10}>Long text...</Text>
-  
+
   <!-- After (supported range) -->
   <Text truncate lines={3}>Clamped to 3 lines...</Text>
   <!-- Or for other line counts -->
@@ -56,10 +58,11 @@
   - Custom gutter values require external CSS with `--gr-container-custom-gutter` variable
 
   **Migration:**
+
   ```svelte
   <!-- Before -->
   <Container gutter="2.5rem">Content</Container>
-  
+
   <!-- After -->
   <Container gutter="lg">Content</Container>
   <!-- Or for custom gutters -->
@@ -67,7 +70,6 @@
   ```
 
   ## Benefits
-
   - **Strict CSP Compliance**: All components work in environments without `'unsafe-inline'`
   - **Better Security**: No inline styles that could be exploited
   - **Improved Performance**: Class-based styles are more efficient
@@ -75,7 +77,6 @@
   - **Lesser Compatibility**: Works in Lesser deployments with CloudFront CSP headers
 
   ## Documentation
-
   - See [CSP Compatibility Guide](../../docs/csp-compatibility.md) for technical details
   - See [CSP Migration Guide](../../docs/csp-migration-guide.md) for detailed migration instructions
   - Updated component documentation in README with preset APIs and examples

@@ -657,15 +657,15 @@
 								</div>
 							</button>
 
-								<div class="bookmark-manager__item-actions">
-									{#if bookmark.folder}
-										{@const folderColorIndex = getFolderColorIndex(bookmark.folder)}
-										<span
-											class={`bookmark-manager__folder-badge bookmark-manager__folder-badge--color-${folderColorIndex}`}
-										>
-											{bookmark.folder}
-										</span>
-									{/if}
+							<div class="bookmark-manager__item-actions">
+								{#if bookmark.folder}
+									{@const folderColorIndex = getFolderColorIndex(bookmark.folder)}
+									<span
+										class={`bookmark-manager__folder-badge bookmark-manager__folder-badge--color-${folderColorIndex}`}
+									>
+										{bookmark.folder}
+									</span>
+								{/if}
 
 								{#if bookmark.tags}
 									{#each bookmark.tags as tag (tag)}
@@ -1074,58 +1074,58 @@
 		align-items: center;
 	}
 
-		.bookmark-manager__folder-badge,
-		.bookmark-manager__tag-badge {
-			padding: 0.25rem 0.5rem;
-			border-radius: 0.25rem;
-			font-size: 0.625rem;
-			font-weight: 600;
-			white-space: nowrap;
-		}
+	.bookmark-manager__folder-badge,
+	.bookmark-manager__tag-badge {
+		padding: 0.25rem 0.5rem;
+		border-radius: 0.25rem;
+		font-size: 0.625rem;
+		font-weight: 600;
+		white-space: nowrap;
+	}
 
-		.bookmark-manager__folder-badge--color-0 {
-			background: rgba(29, 155, 240, 0.12);
-			color: rgb(29, 155, 240);
-		}
+	.bookmark-manager__folder-badge--color-0 {
+		background: rgba(29, 155, 240, 0.12);
+		color: rgb(29, 155, 240);
+	}
 
-		.bookmark-manager__folder-badge--color-1 {
-			background: rgba(0, 186, 124, 0.12);
-			color: rgb(0, 186, 124);
-		}
+	.bookmark-manager__folder-badge--color-1 {
+		background: rgba(0, 186, 124, 0.12);
+		color: rgb(0, 186, 124);
+	}
 
-		.bookmark-manager__folder-badge--color-2 {
-			background: rgba(249, 24, 128, 0.12);
-			color: rgb(249, 24, 128);
-		}
+	.bookmark-manager__folder-badge--color-2 {
+		background: rgba(249, 24, 128, 0.12);
+		color: rgb(249, 24, 128);
+	}
 
-		.bookmark-manager__folder-badge--color-3 {
-			background: rgba(255, 173, 31, 0.12);
-			color: rgb(255, 173, 31);
-		}
+	.bookmark-manager__folder-badge--color-3 {
+		background: rgba(255, 173, 31, 0.12);
+		color: rgb(255, 173, 31);
+	}
 
-		.bookmark-manager__folder-badge--color-4 {
-			background: rgba(121, 75, 196, 0.12);
-			color: rgb(121, 75, 196);
-		}
+	.bookmark-manager__folder-badge--color-4 {
+		background: rgba(121, 75, 196, 0.12);
+		color: rgb(121, 75, 196);
+	}
 
-		.bookmark-manager__folder-badge--color-5 {
-			background: rgba(0, 132, 255, 0.12);
-			color: rgb(0, 132, 255);
-		}
+	.bookmark-manager__folder-badge--color-5 {
+		background: rgba(0, 132, 255, 0.12);
+		color: rgb(0, 132, 255);
+	}
 
-		.bookmark-manager__folder-badge--color-6 {
-			background: rgba(83, 100, 113, 0.12);
-			color: rgb(83, 100, 113);
-		}
+	.bookmark-manager__folder-badge--color-6 {
+		background: rgba(83, 100, 113, 0.12);
+		color: rgb(83, 100, 113);
+	}
 
-		.bookmark-manager__folder-badge--color-7 {
-			background: rgba(147, 51, 234, 0.12);
-			color: rgb(147, 51, 234);
-		}
+	.bookmark-manager__folder-badge--color-7 {
+		background: rgba(147, 51, 234, 0.12);
+		color: rgb(147, 51, 234);
+	}
 
-		.bookmark-manager__tag-badge {
-			background: var(--bg-secondary, #f7f9fa);
-			color: var(--text-secondary, #536471);
+	.bookmark-manager__tag-badge {
+		background: var(--bg-secondary, #f7f9fa);
+		color: var(--text-secondary, #536471);
 	}
 
 	.bookmark-manager__action-btn {

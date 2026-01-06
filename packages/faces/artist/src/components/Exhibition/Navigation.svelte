@@ -72,27 +72,33 @@ Features:
 	class={`exhibition-nav exhibition-nav--${position} ${className}`}
 	aria-label="Exhibition navigation"
 >
-		{#if showProgress}
-			{@const progressPercent = Math.max(0, Math.min(100, progress))}
-			<div
-				class="exhibition-nav__progress"
-				role="progressbar"
-				aria-valuenow={navigation.currentIndex + 1}
-				aria-valuemin={1}
-				aria-valuemax={navigation.totalArtworks}
+	{#if showProgress}
+		{@const progressPercent = Math.max(0, Math.min(100, progress))}
+		<div
+			class="exhibition-nav__progress"
+			role="progressbar"
+			aria-valuenow={navigation.currentIndex + 1}
+			aria-valuemin={1}
+			aria-valuemax={navigation.totalArtworks}
+		>
+			<svg
+				class="exhibition-nav__progress-bar"
+				viewBox="0 0 100 1"
+				preserveAspectRatio="none"
+				aria-hidden="true"
 			>
-				<svg
-					class="exhibition-nav__progress-bar"
-					viewBox="0 0 100 1"
-					preserveAspectRatio="none"
-					aria-hidden="true"
-				>
-					<rect class="exhibition-nav__progress-fill" x="0" y="0" width={progressPercent} height="1" />
-				</svg>
-				<span class="exhibition-nav__progress-text">
-					{navigation.currentIndex + 1} of {navigation.totalArtworks}
-				</span>
-			</div>
+				<rect
+					class="exhibition-nav__progress-fill"
+					x="0"
+					y="0"
+					width={progressPercent}
+					height="1"
+				/>
+			</svg>
+			<span class="exhibition-nav__progress-text">
+				{navigation.currentIndex + 1} of {navigation.totalArtworks}
+			</span>
+		</div>
 	{/if}
 
 	<div class="exhibition-nav__controls">
@@ -179,20 +185,20 @@ Features:
 		overflow: hidden;
 	}
 
-		.exhibition-nav__progress-bar {
-			width: 100%;
-			height: 100%;
-			display: block;
-		}
+	.exhibition-nav__progress-bar {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
 
-		.exhibition-nav__progress-fill {
-			fill: var(--gr-color-primary-500);
-		}
+	.exhibition-nav__progress-fill {
+		fill: var(--gr-color-primary-500);
+	}
 
-		.exhibition-nav__progress-text {
-			position: absolute;
-			top: var(--gr-spacing-scale-2);
-			left: 50%;
+	.exhibition-nav__progress-text {
+		position: absolute;
+		top: var(--gr-spacing-scale-2);
+		left: 50%;
 		transform: translateX(-50%);
 		font-size: var(--gr-font-size-xs);
 		color: var(--gr-color-gray-400);

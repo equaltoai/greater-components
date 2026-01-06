@@ -196,15 +196,15 @@
 						onclick={() => selectConversation(conversation)}
 						role="option"
 						aria-selected="false"
-						>
-							<div class="conversation-picker__avatars">
-								{#each conversation.participants.slice(0, 3) as participant (participant.id)}
-									<div class="conversation-picker__avatar">
-										<Avatar src={participant.avatar} alt="" size="sm" />
-									</div>
-								{/each}
-							</div>
-							<div class="conversation-picker__item-info">
+					>
+						<div class="conversation-picker__avatars">
+							{#each conversation.participants.slice(0, 3) as participant (participant.id)}
+								<div class="conversation-picker__avatar">
+									<Avatar src={participant.avatar} alt="" size="sm" />
+								</div>
+							{/each}
+						</div>
+						<div class="conversation-picker__item-info">
 							<span class="conversation-picker__item-name">
 								{conversation.participants.map((p) => p.displayName).join(', ')}
 							</span>

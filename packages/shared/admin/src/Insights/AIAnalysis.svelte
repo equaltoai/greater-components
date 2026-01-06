@@ -135,30 +135,30 @@ deepfake detection, and moderation recommendations.
 			{/if}
 		</div>
 	{:else}
-			<div class="ai-analysis__content">
-				<!-- Overall Risk -->
-					<div class="ai-analysis__section">
-						<h4 class="ai-analysis__section-title">Overall Assessment</h4>
-						<div class="ai-analysis__risk">
-							<div class="ai-analysis__risk-meter">
-								<svg
-									class="ai-analysis__risk-meter-svg"
-									viewBox="0 0 100 1"
-								preserveAspectRatio="none"
-								aria-hidden="true"
-							>
-								<rect
-									class={`ai-analysis__risk-fill ai-analysis__risk-fill--${overallRiskSeverity}`}
-									x="0"
-									y="0"
-									width={overallRiskPercent}
-									height="1"
-								/>
-							</svg>
-						</div>
-						<div class="ai-analysis__risk-info">
-							<span class="ai-analysis__risk-score">{formatPercent(analysis.overallRisk)} Risk</span>
-							<span class="ai-analysis__risk-action">Action: {analysis.moderationAction}</span>
+		<div class="ai-analysis__content">
+			<!-- Overall Risk -->
+			<div class="ai-analysis__section">
+				<h4 class="ai-analysis__section-title">Overall Assessment</h4>
+				<div class="ai-analysis__risk">
+					<div class="ai-analysis__risk-meter">
+						<svg
+							class="ai-analysis__risk-meter-svg"
+							viewBox="0 0 100 1"
+							preserveAspectRatio="none"
+							aria-hidden="true"
+						>
+							<rect
+								class={`ai-analysis__risk-fill ai-analysis__risk-fill--${overallRiskSeverity}`}
+								x="0"
+								y="0"
+								width={overallRiskPercent}
+								height="1"
+							/>
+						</svg>
+					</div>
+					<div class="ai-analysis__risk-info">
+						<span class="ai-analysis__risk-score">{formatPercent(analysis.overallRisk)} Risk</span>
+						<span class="ai-analysis__risk-action">Action: {analysis.moderationAction}</span>
 						<span class="ai-analysis__risk-confidence"
 							>Confidence: {formatPercent(analysis.confidence)}</span
 						>
@@ -170,18 +170,18 @@ deepfake detection, and moderation recommendations.
 			{#if analysis.textAnalysis}
 				<div class="ai-analysis__section">
 					<h4 class="ai-analysis__section-title">Text Analysis</h4>
-						<dl class="ai-analysis__details">
-							<dt>Sentiment:</dt>
-							<dd>{analysis.textAnalysis.sentiment}</dd>
+					<dl class="ai-analysis__details">
+						<dt>Sentiment:</dt>
+						<dd>{analysis.textAnalysis.sentiment}</dd>
 
-							<dt>Toxicity:</dt>
-							<dd
-								class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
-									analysis.textAnalysis.toxicityScore
-								)}`}
-							>
-								{formatPercent(analysis.textAnalysis.toxicityScore)}
-							</dd>
+						<dt>Toxicity:</dt>
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.textAnalysis.toxicityScore
+							)}`}
+						>
+							{formatPercent(analysis.textAnalysis.toxicityScore)}
+						</dd>
 
 						{#if analysis.textAnalysis.containsPII}
 							<dt>PII Detected:</dt>
@@ -206,14 +206,14 @@ deepfake detection, and moderation recommendations.
 							</dd>
 						{/if}
 
-							<dt>Violence Score:</dt>
-							<dd
-								class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
-									analysis.imageAnalysis.violenceScore
-								)}`}
-							>
-								{formatPercent(analysis.imageAnalysis.violenceScore)}
-							</dd>
+						<dt>Violence Score:</dt>
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.imageAnalysis.violenceScore
+							)}`}
+						>
+							{formatPercent(analysis.imageAnalysis.violenceScore)}
+						</dd>
 
 						{#if analysis.imageAnalysis.deepfakeScore > 0.5}
 							<dt>Deepfake:</dt>
@@ -229,15 +229,15 @@ deepfake detection, and moderation recommendations.
 			{#if analysis.aiDetection}
 				<div class="ai-analysis__section">
 					<h4 class="ai-analysis__section-title">AI Content Detection</h4>
-						<dl class="ai-analysis__details">
-							<dt>AI Generated:</dt>
-							<dd
-								class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
-									analysis.aiDetection.aiGeneratedProbability
-								)}`}
-							>
-								{formatPercent(analysis.aiDetection.aiGeneratedProbability)}
-							</dd>
+					<dl class="ai-analysis__details">
+						<dt>AI Generated:</dt>
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.aiDetection.aiGeneratedProbability
+							)}`}
+						>
+							{formatPercent(analysis.aiDetection.aiGeneratedProbability)}
+						</dd>
 
 						{#if analysis.aiDetection.generationModel}
 							<dt>Model:</dt>
@@ -251,15 +251,15 @@ deepfake detection, and moderation recommendations.
 			{#if analysis.spamAnalysis}
 				<div class="ai-analysis__section">
 					<h4 class="ai-analysis__section-title">Spam Detection</h4>
-						<dl class="ai-analysis__details">
-							<dt>Spam Score:</dt>
-							<dd
-								class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
-									analysis.spamAnalysis.spamScore
-								)}`}
-							>
-								{formatPercent(analysis.spamAnalysis.spamScore)}
-							</dd>
+					<dl class="ai-analysis__details">
+						<dt>Spam Score:</dt>
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.spamAnalysis.spamScore
+							)}`}
+						>
+							{formatPercent(analysis.spamAnalysis.spamScore)}
+						</dd>
 
 						<dt>Indicators:</dt>
 						<dd>

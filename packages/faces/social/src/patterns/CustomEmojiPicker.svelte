@@ -185,25 +185,25 @@
 		renderCategory,
 	}: Props = $props();
 
-		const {
-			mode = 'popover',
-			showSearch = true,
-			showCategories = true,
-			showFavorites = true,
-			showRecent = true,
-			maxVisible = 200,
-			emojiSize = 32,
-			enableAutocomplete = true,
-			autocompletePrefix = ':',
-			class: className = '',
-			preferStatic = false,
-		} = untrack(() => config);
+	const {
+		mode = 'popover',
+		showSearch = true,
+		showCategories = true,
+		showFavorites = true,
+		showRecent = true,
+		maxVisible = 200,
+		emojiSize = 32,
+		enableAutocomplete = true,
+		autocompletePrefix = ':',
+		class: className = '',
+		preferStatic = false,
+	} = untrack(() => config);
 
-		const emojiSizePreset = emojiSize <= 24 ? 'sm' : emojiSize <= 36 ? 'md' : 'lg';
+	const emojiSizePreset = emojiSize <= 24 ? 'sm' : emojiSize <= 36 ? 'md' : 'lg';
 
-		let searchQuery = $state('');
-		let selectedCategory = $state<string>('all');
-		let hoveredEmoji = $state<string | null>(null);
+	let searchQuery = $state('');
+	let selectedCategory = $state<string>('all');
+	let hoveredEmoji = $state<string | null>(null);
 
 	/**
 	 * Get categories from emojis
@@ -361,7 +361,9 @@
 	}
 </script>
 
-<div class={`emoji-picker emoji-picker--${mode} emoji-picker--size-${emojiSizePreset} ${className}`}>
+<div
+	class={`emoji-picker emoji-picker--${mode} emoji-picker--size-${emojiSizePreset} ${className}`}
+>
 	{#if showSearch}
 		<div class="emoji-picker__search">
 			<svg class="emoji-picker__search-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -415,24 +417,20 @@
 			{#if filteredEmojis.length > 0}
 				<div class="emoji-picker__grid">
 					{#each filteredEmojis as emoji (emoji.shortcode)}
-							<button
-								class="emoji-picker__emoji"
-								class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-								onclick={() => selectEmoji(emoji)}
-								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-								onmouseleave={() => (hoveredEmoji = null)}
-								title={`:${emoji.shortcode}:`}
-								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-							>
-								{#if renderEmoji}
-									{@render renderEmoji(emoji)}
-								{:else}
-									<img
-										src={getEmojiUrl(emoji)}
-										alt={`:${emoji.shortcode}:`}
-										loading="lazy"
-									/>
-								{/if}
+						<button
+							class="emoji-picker__emoji"
+							class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
+							onclick={() => selectEmoji(emoji)}
+							onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+							onmouseleave={() => (hoveredEmoji = null)}
+							title={`:${emoji.shortcode}:`}
+							aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+						>
+							{#if renderEmoji}
+								{@render renderEmoji(emoji)}
+							{:else}
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
+							{/if}
 
 							{#if showFavorites}
 								<span
@@ -473,19 +471,15 @@
 					<h3 class="emoji-picker__section-title">Favorites</h3>
 					<div class="emoji-picker__grid">
 						{#each favoriteEmojisList as emoji (emoji.shortcode)}
-								<button
-									class="emoji-picker__emoji emoji-picker__emoji--favorite"
-									onclick={() => selectEmoji(emoji)}
-									onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-									onmouseleave={() => (hoveredEmoji = null)}
-									title={`:${emoji.shortcode}:`}
-									aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-								>
-									<img
-										src={getEmojiUrl(emoji)}
-										alt={`:${emoji.shortcode}:`}
-										loading="lazy"
-									/>
+							<button
+								class="emoji-picker__emoji emoji-picker__emoji--favorite"
+								onclick={() => selectEmoji(emoji)}
+								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+								onmouseleave={() => (hoveredEmoji = null)}
+								title={`:${emoji.shortcode}:`}
+								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+							>
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 								<span
 									class="emoji-picker__favorite-btn"
 									role="button"
@@ -507,20 +501,16 @@
 					<h3 class="emoji-picker__section-title">Recently Used</h3>
 					<div class="emoji-picker__grid">
 						{#each recentEmojisList as emoji (emoji.shortcode)}
-								<button
-									class="emoji-picker__emoji"
-									class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-									onclick={() => selectEmoji(emoji)}
-									onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-									onmouseleave={() => (hoveredEmoji = null)}
-									title={`:${emoji.shortcode}:`}
-									aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-								>
-									<img
-										src={getEmojiUrl(emoji)}
-										alt={`:${emoji.shortcode}:`}
-										loading="lazy"
-									/>
+							<button
+								class="emoji-picker__emoji"
+								class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
+								onclick={() => selectEmoji(emoji)}
+								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+								onmouseleave={() => (hoveredEmoji = null)}
+								title={`:${emoji.shortcode}:`}
+								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+							>
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 								{#if showFavorites}
 									<span
 										class="emoji-picker__favorite-btn"
@@ -556,20 +546,16 @@
 								<h3 class="emoji-picker__section-title">{category}</h3>
 								<div class="emoji-picker__grid">
 									{#each categoryEmojis.slice(0, maxVisible) as emoji (emoji.shortcode)}
-											<button
-												class="emoji-picker__emoji"
-												class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-												onclick={() => selectEmoji(emoji)}
-												onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-												onmouseleave={() => (hoveredEmoji = null)}
-												title={`:${emoji.shortcode}:`}
-												aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-											>
-												<img
-													src={getEmojiUrl(emoji)}
-													alt={`:${emoji.shortcode}:`}
-													loading="lazy"
-												/>
+										<button
+											class="emoji-picker__emoji"
+											class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
+											onclick={() => selectEmoji(emoji)}
+											onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+											onmouseleave={() => (hoveredEmoji = null)}
+											title={`:${emoji.shortcode}:`}
+											aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+										>
+											<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 											{#if showFavorites}
 												<span
 													class="emoji-picker__favorite-btn"
@@ -600,20 +586,16 @@
 				{#if emojisByCategory[selectedCategory]?.length > 0}
 					<div class="emoji-picker__grid">
 						{#each emojisByCategory[selectedCategory] as emoji (emoji.shortcode)}
-								<button
-									class="emoji-picker__emoji"
-									class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-									onclick={() => selectEmoji(emoji)}
-									onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-									onmouseleave={() => (hoveredEmoji = null)}
-									title={`:${emoji.shortcode}:`}
-									aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-								>
-									<img
-										src={getEmojiUrl(emoji)}
-										alt={`:${emoji.shortcode}:`}
-										loading="lazy"
-									/>
+							<button
+								class="emoji-picker__emoji"
+								class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
+								onclick={() => selectEmoji(emoji)}
+								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+								onmouseleave={() => (hoveredEmoji = null)}
+								title={`:${emoji.shortcode}:`}
+								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+							>
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 								{#if showFavorites}
 									<span
 										class="emoji-picker__favorite-btn"
@@ -660,28 +642,28 @@
 	{/if}
 </div>
 
-	<style>
-		.emoji-picker {
-			display: flex;
-			flex-direction: column;
-			background: var(--bg-primary, #ffffff);
-			border: 1px solid var(--border-color, #e1e8ed);
-			border-radius: 0.5rem;
-			overflow: hidden;
-			--emoji-size: 2rem;
-		}
+<style>
+	.emoji-picker {
+		display: flex;
+		flex-direction: column;
+		background: var(--bg-primary, #ffffff);
+		border: 1px solid var(--border-color, #e1e8ed);
+		border-radius: 0.5rem;
+		overflow: hidden;
+		--emoji-size: 2rem;
+	}
 
-		.emoji-picker--size-sm {
-			--emoji-size: 1.5rem;
-		}
+	.emoji-picker--size-sm {
+		--emoji-size: 1.5rem;
+	}
 
-		.emoji-picker--size-md {
-			--emoji-size: 2rem;
-		}
+	.emoji-picker--size-md {
+		--emoji-size: 2rem;
+	}
 
-		.emoji-picker--size-lg {
-			--emoji-size: 2.5rem;
-		}
+	.emoji-picker--size-lg {
+		--emoji-size: 2.5rem;
+	}
 
 	.emoji-picker--popover {
 		width: 22rem;
@@ -804,21 +786,21 @@
 		text-transform: capitalize;
 	}
 
-		.emoji-picker__grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(var(--emoji-size), 1fr));
-			gap: 0.25rem;
-		}
+	.emoji-picker__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(var(--emoji-size), 1fr));
+		gap: 0.25rem;
+	}
 
-		.emoji-picker__emoji {
-			position: relative;
-			box-sizing: border-box;
-			width: var(--emoji-size);
-			height: var(--emoji-size);
-			padding: 0.25rem;
-			background: transparent;
-			border: none;
-			border-radius: 0.25rem;
+	.emoji-picker__emoji {
+		position: relative;
+		box-sizing: border-box;
+		width: var(--emoji-size);
+		height: var(--emoji-size);
+		padding: 0.25rem;
+		background: transparent;
+		border: none;
+		border-radius: 0.25rem;
 		cursor: pointer;
 		transition: all 0.2s;
 	}

@@ -90,12 +90,12 @@ Features:
 	};
 </script>
 
-	<button
-		class={`artist-badge artist-badge--${type} artist-badge--${size} ${className}`}
-		aria-label={`${config.label}: ${tooltipText}`}
-		onmouseenter={() => {
-			showTooltip = true;
-		}}
+<button
+	class={`artist-badge artist-badge--${type} artist-badge--${size} ${className}`}
+	aria-label={`${config.label}: ${tooltipText}`}
+	onmouseenter={() => {
+		showTooltip = true;
+	}}
 	onmouseleave={() => {
 		showTooltip = false;
 	}}
@@ -128,59 +128,59 @@ Features:
 	{/if}
 </button>
 
-	<style>
-		.artist-badge {
-			position: relative;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			width: 24px;
-			height: 24px;
-			border-radius: 50%;
-			background: var(--gr-color-primary-500);
-			color: white;
-			cursor: help;
-			border: none;
+<style>
+	.artist-badge {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		border-radius: 50%;
+		background: var(--gr-color-primary-500);
+		color: white;
+		cursor: help;
+		border: none;
 		padding: 0;
 		margin: 0;
 		font: inherit;
 		appearance: none;
-		}
+	}
 
-		.artist-badge--sm {
-			width: 20px;
-			height: 20px;
-		}
+	.artist-badge--sm {
+		width: 20px;
+		height: 20px;
+	}
 
-		.artist-badge--md {
-			width: 24px;
-			height: 24px;
-		}
+	.artist-badge--md {
+		width: 24px;
+		height: 24px;
+	}
 
-		.artist-badge--verified {
-			background: var(--gr-color-primary-500);
-		}
+	.artist-badge--verified {
+		background: var(--gr-color-primary-500);
+	}
 
-		.artist-badge--educator {
-			background: var(--gr-color-success-500);
-		}
+	.artist-badge--educator {
+		background: var(--gr-color-success-500);
+	}
 
-		.artist-badge--institution {
-			background: var(--gr-color-warning-500);
-		}
+	.artist-badge--institution {
+		background: var(--gr-color-warning-500);
+	}
 
-		.artist-badge--mentor {
-			background: var(--gr-color-info-500);
-		}
+	.artist-badge--mentor {
+		background: var(--gr-color-info-500);
+	}
 
-		.artist-badge--curator {
-			background: var(--gr-color-secondary-500);
-		}
+	.artist-badge--curator {
+		background: var(--gr-color-secondary-500);
+	}
 
-		.artist-badge:focus {
-			outline: 2px solid white;
-			outline-offset: 2px;
-		}
+	.artist-badge:focus {
+		outline: 2px solid white;
+		outline-offset: 2px;
+	}
 
 	.artist-badge__tooltip {
 		position: absolute;

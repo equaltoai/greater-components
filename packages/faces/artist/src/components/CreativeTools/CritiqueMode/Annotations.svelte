@@ -54,14 +54,14 @@ CritiqueMode.Annotations - Visual annotation layer
 			{#each annotations as annotation, index (annotation.id)}
 				{@const x = annotation.position.x * 100}
 				{@const y = annotation.position.y * 100}
-					<g
-						class="critique-annotations__marker"
-						class:selected={ctx.selectedAnnotationId === annotation.id}
-						role="button"
-						tabindex={-1}
-						onclick={() => handleAnnotationClick(annotation.id)}
-						onkeydown={(event) => handleMarkerKeyDown(event, annotation.id)}
-					>
+				<g
+					class="critique-annotations__marker"
+					class:selected={ctx.selectedAnnotationId === annotation.id}
+					role="button"
+					tabindex={-1}
+					onclick={() => handleAnnotationClick(annotation.id)}
+					onkeydown={(event) => handleMarkerKeyDown(event, annotation.id)}
+				>
 					<circle class="critique-annotations__marker-hit" cx={x} cy={y} r="4" />
 					<circle
 						class="critique-annotations__marker-fill"
@@ -71,7 +71,7 @@ CritiqueMode.Annotations - Visual annotation layer
 						fill={getColor(annotation.category)}
 					/>
 					<circle class="critique-annotations__marker-outline" cx={x} cy={y} r="2.5" />
-					<text class="critique-annotations__marker-text" x={x} y={y}>
+					<text class="critique-annotations__marker-text" {x} {y}>
 						{index + 1}
 					</text>
 				</g>

@@ -167,38 +167,42 @@ Supports three display variants:
 		{#if variant === 'detailed' || isExpanded}
 			<div class="gr-transparency-ai-details" role="region" aria-label="AI usage details">
 				<!-- Contribution breakdown -->
-					<div class="gr-transparency-ai-contribution">
-						<div class="gr-transparency-ai-contribution-header">
-							<span class="gr-transparency-ai-contribution-title">Contribution Breakdown</span>
-						</div>
-						<div class="gr-transparency-ai-contribution-bar" role="img" aria-label="Contribution breakdown">
-							<svg
-								class="gr-transparency-ai-contribution-bar-svg"
-								viewBox="0 0 100 1"
-								preserveAspectRatio="none"
-								aria-hidden="true"
-							>
-								<rect
-									class="gr-transparency-ai-contribution-fill gr-transparency-ai-contribution-fill--human"
-									x="0"
-									y="0"
-									width={humanPercent}
-									height="1"
-								/>
-								<rect
-									class="gr-transparency-ai-contribution-fill gr-transparency-ai-contribution-fill--ai"
-									x={humanPercent}
-									y="0"
-									width={aiPercentRemainder}
-									height="1"
-								/>
-							</svg>
-						</div>
-						<div class="gr-transparency-ai-contribution-labels">
-							<span class="gr-transparency-ai-contribution-label">Human {humanPercent}%</span>
-							<span class="gr-transparency-ai-contribution-label">AI {aiPercent}%</span>
-						</div>
+				<div class="gr-transparency-ai-contribution">
+					<div class="gr-transparency-ai-contribution-header">
+						<span class="gr-transparency-ai-contribution-title">Contribution Breakdown</span>
 					</div>
+					<div
+						class="gr-transparency-ai-contribution-bar"
+						role="img"
+						aria-label="Contribution breakdown"
+					>
+						<svg
+							class="gr-transparency-ai-contribution-bar-svg"
+							viewBox="0 0 100 1"
+							preserveAspectRatio="none"
+							aria-hidden="true"
+						>
+							<rect
+								class="gr-transparency-ai-contribution-fill gr-transparency-ai-contribution-fill--human"
+								x="0"
+								y="0"
+								width={humanPercent}
+								height="1"
+							/>
+							<rect
+								class="gr-transparency-ai-contribution-fill gr-transparency-ai-contribution-fill--ai"
+								x={humanPercent}
+								y="0"
+								width={aiPercentRemainder}
+								height="1"
+							/>
+						</svg>
+					</div>
+					<div class="gr-transparency-ai-contribution-labels">
+						<span class="gr-transparency-ai-contribution-label">Human {humanPercent}%</span>
+						<span class="gr-transparency-ai-contribution-label">AI {aiPercent}%</span>
+					</div>
+				</div>
 
 				<!-- Tools used -->
 				{#if usage.tools?.length}

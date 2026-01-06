@@ -409,28 +409,25 @@
 								</div>
 							{/if}
 
-								{#if !attachment.uploaded && attachment.uploadProgress !== undefined}
-									{@const progressPercent = Math.max(
-										0,
-										Math.min(100, attachment.uploadProgress)
-									)}
-									<div class="media-composer__progress">
-										<svg
-											class="media-composer__progress-svg"
-											viewBox="0 0 100 1"
-											preserveAspectRatio="none"
-											aria-hidden="true"
-										>
-											<rect
-												class="media-composer__progress-bar"
-												x="0"
-												y="0"
-												width={progressPercent}
-												height="1"
-											/>
-										</svg>
-									</div>
-								{/if}
+							{#if !attachment.uploaded && attachment.uploadProgress !== undefined}
+								{@const progressPercent = Math.max(0, Math.min(100, attachment.uploadProgress))}
+								<div class="media-composer__progress">
+									<svg
+										class="media-composer__progress-svg"
+										viewBox="0 0 100 1"
+										preserveAspectRatio="none"
+										aria-hidden="true"
+									>
+										<rect
+											class="media-composer__progress-bar"
+											x="0"
+											y="0"
+											width={progressPercent}
+											height="1"
+										/>
+									</svg>
+								</div>
+							{/if}
 
 							{#if attachment.error}
 								<div class="media-composer__error">
@@ -443,30 +440,30 @@
 								</div>
 							{/if}
 
-								{#if enableFocalPoint && attachment.type === 'image' && editingFocalPointId === attachment.id}
-									{@const pos = getFocalPointPosition(attachment)}
-									<button
-										class="media-composer__focal-overlay"
-										onclick={(e) => updateFocalPoint(attachment.id, e)}
-										aria-label="Set focal point"
+							{#if enableFocalPoint && attachment.type === 'image' && editingFocalPointId === attachment.id}
+								{@const pos = getFocalPointPosition(attachment)}
+								<button
+									class="media-composer__focal-overlay"
+									onclick={(e) => updateFocalPoint(attachment.id, e)}
+									aria-label="Set focal point"
+								>
+									<svg
+										class="media-composer__focal-point"
+										viewBox="0 0 100 100"
+										preserveAspectRatio="none"
+										aria-hidden="true"
 									>
-										<svg
-											class="media-composer__focal-point"
-											viewBox="0 0 100 100"
-											preserveAspectRatio="none"
-											aria-hidden="true"
-										>
-											<circle
-												class="media-composer__focal-point-inner"
-												cx={pos.x}
-												cy={pos.y}
-												r="4"
-												vector-effect="non-scaling-stroke"
-											/>
-										</svg>
-									</button>
-								{/if}
-							</div>
+										<circle
+											class="media-composer__focal-point-inner"
+											cx={pos.x}
+											cy={pos.y}
+											r="4"
+											vector-effect="non-scaling-stroke"
+										/>
+									</svg>
+								</button>
+							{/if}
+						</div>
 
 						<div class="media-composer__controls">
 							{#if enableFocalPoint && attachment.type === 'image'}

@@ -63,13 +63,13 @@
 		emojiRenderer?: (text: string) => string;
 	}
 
-		let {
-			account,
-			showBanner = true,
-			avatarSize = 'xl',
-			showBio = true,
-			showFields = true,
-			showJoinDate = true,
+	let {
+		account,
+		showBanner = true,
+		avatarSize = 'xl',
+		showBio = true,
+		showFields = true,
+		showJoinDate = true,
 		showCounts = true,
 		clickableCounts = false,
 		followButton,
@@ -90,12 +90,12 @@
 		const classes = ['gr-profile-header', className].filter(Boolean).join(' ');
 
 		return classes;
-		});
+	});
 
-		// Display name with emoji support
-		const processedDisplayName = $derived(() => {
-			if (emojiRenderer) {
-				return emojiRenderer(account.displayName || account.username);
+	// Display name with emoji support
+	const processedDisplayName = $derived(() => {
+		if (emojiRenderer) {
+			return emojiRenderer(account.displayName || account.username);
 		}
 		return account.displayName || account.username;
 	});
@@ -201,26 +201,26 @@
 
 <article class={profileHeaderClass()}>
 	<!-- Banner Section -->
-		{#if showBanner}
-			<div
-				class="gr-profile-header__banner"
-				id={bannerId}
-				role="img"
-				aria-label={account.header ? 'Profile banner' : 'Profile banner (default color)'}
-			>
-				{#if account.header && !bannerError}
-					<img
-						bind:this={bannerElement}
-						src={account.header}
-						alt=""
-						class="gr-profile-header__banner-image"
-						onload={handleBannerLoad}
-						onerror={handleBannerError}
-						hidden={!bannerLoaded}
-					/>
-				{/if}
-			</div>
-		{/if}
+	{#if showBanner}
+		<div
+			class="gr-profile-header__banner"
+			id={bannerId}
+			role="img"
+			aria-label={account.header ? 'Profile banner' : 'Profile banner (default color)'}
+		>
+			{#if account.header && !bannerError}
+				<img
+					bind:this={bannerElement}
+					src={account.header}
+					alt=""
+					class="gr-profile-header__banner-image"
+					onload={handleBannerLoad}
+					onerror={handleBannerError}
+					hidden={!bannerLoaded}
+				/>
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Profile Info Section -->
 	<div class="gr-profile-header__content">

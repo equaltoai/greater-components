@@ -99,9 +99,7 @@ Swipe gestures for touch devices.
 		if (index === -1) return 1;
 
 		const nextIndex =
-			direction === 'in'
-				? Math.min(ZOOM_LEVELS.length - 1, index + 1)
-				: Math.max(0, index - 1);
+			direction === 'in' ? Math.min(ZOOM_LEVELS.length - 1, index + 1) : Math.max(0, index - 1);
 
 		return ZOOM_LEVELS[nextIndex] ?? 1;
 	}

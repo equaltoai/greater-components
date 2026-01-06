@@ -21,7 +21,7 @@ describe('CSP Scanner Property Tests', () => {
 						// Create a temporary test directory
 						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
 						mkdirSync(testDir, { recursive: true });
-						
+
 						try {
 							// Generate content with known number of style attributes
 							const contentLines = [...lines];
@@ -29,19 +29,17 @@ describe('CSP Scanner Property Tests', () => {
 								contentLines.push(`<div style="color: red;">Test</div>`);
 							}
 							const content = contentLines.join('\n');
-							
+
 							// Write test file
 							const testFile = join(testDir, 'test.svelte');
 							writeFileSync(testFile, content);
-							
+
 							// Scan the file
 							const violations = scanSvelteSource(testDir);
-							
+
 							// Count style-attribute violations
-							const styleAttrCount = violations.filter(
-								v => v.type === 'style-attribute'
-							).length;
-							
+							const styleAttrCount = violations.filter((v) => v.type === 'style-attribute').length;
+
 							// Should detect exactly the number of style attributes we added
 							return styleAttrCount === styleCount;
 						} finally {
@@ -68,7 +66,7 @@ describe('CSP Scanner Property Tests', () => {
 						// Create a temporary test directory
 						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
 						mkdirSync(testDir, { recursive: true });
-						
+
 						try {
 							// Generate content with known number of style bindings
 							const contentLines = [...lines];
@@ -76,19 +74,17 @@ describe('CSP Scanner Property Tests', () => {
 								contentLines.push(`<div style={dynamicStyle}>Test</div>`);
 							}
 							const content = contentLines.join('\n');
-							
+
 							// Write test file
 							const testFile = join(testDir, 'test.svelte');
 							writeFileSync(testFile, content);
-							
+
 							// Scan the file
 							const violations = scanSvelteSource(testDir);
-							
+
 							// Count style-binding violations
-							const styleBindingCount = violations.filter(
-								v => v.type === 'style-binding'
-							).length;
-							
+							const styleBindingCount = violations.filter((v) => v.type === 'style-binding').length;
+
 							// Should detect exactly the number of style bindings we added
 							return styleBindingCount === bindingCount;
 						} finally {
@@ -115,7 +111,7 @@ describe('CSP Scanner Property Tests', () => {
 						// Create a temporary test directory
 						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
 						mkdirSync(testDir, { recursive: true });
-						
+
 						try {
 							// Generate content with known number of style directives
 							const contentLines = [...lines];
@@ -123,19 +119,19 @@ describe('CSP Scanner Property Tests', () => {
 								contentLines.push(`<div style:width="{size}px">Test</div>`);
 							}
 							const content = contentLines.join('\n');
-							
+
 							// Write test file
 							const testFile = join(testDir, 'test.svelte');
 							writeFileSync(testFile, content);
-							
+
 							// Scan the file
 							const violations = scanSvelteSource(testDir);
-							
+
 							// Count style-directive violations
 							const styleDirectiveCount = violations.filter(
-								v => v.type === 'style-directive'
+								(v) => v.type === 'style-directive'
 							).length;
-							
+
 							// Should detect exactly the number of style directives we added
 							return styleDirectiveCount === directiveCount;
 						} finally {
@@ -157,41 +153,36 @@ describe('CSP Scanner Property Tests', () => {
 		 */
 		it('should detect all style="..." attributes in HTML files', () => {
 			fc.assert(
-				fc.property(
-					fc.nat({ max: 5 }),
-					(styleCount) => {
-						// Create a temporary test directory
-						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
-						mkdirSync(testDir, { recursive: true });
-						
-						try {
-							// Generate HTML with known number of inline styles
-							let html = '<!DOCTYPE html><html><body>';
-							for (let i = 0; i < styleCount; i++) {
-								html += `<div style="color: red;">Test ${i}</div>`;
-							}
-							html += '</body></html>';
-							
-							// Write test file
-							const testFile = join(testDir, 'test.html');
-							writeFileSync(testFile, html);
-							
-							// Scan the file
-							const violations = scanBuildOutput(testDir);
-							
-							// Count inline-style violations
-							const inlineStyleCount = violations.filter(
-								v => v.type === 'inline-style'
-							).length;
-							
-							// Should detect exactly the number of inline styles we added
-							return inlineStyleCount === styleCount;
-						} finally {
-							// Cleanup
-							rmSync(testDir, { recursive: true, force: true });
+				fc.property(fc.nat({ max: 5 }), (styleCount) => {
+					// Create a temporary test directory
+					const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
+					mkdirSync(testDir, { recursive: true });
+
+					try {
+						// Generate HTML with known number of inline styles
+						let html = '<!DOCTYPE html><html><body>';
+						for (let i = 0; i < styleCount; i++) {
+							html += `<div style="color: red;">Test ${i}</div>`;
 						}
+						html += '</body></html>';
+
+						// Write test file
+						const testFile = join(testDir, 'test.html');
+						writeFileSync(testFile, html);
+
+						// Scan the file
+						const violations = scanBuildOutput(testDir);
+
+						// Count inline-style violations
+						const inlineStyleCount = violations.filter((v) => v.type === 'inline-style').length;
+
+						// Should detect exactly the number of inline styles we added
+						return inlineStyleCount === styleCount;
+					} finally {
+						// Cleanup
+						rmSync(testDir, { recursive: true, force: true });
 					}
-				),
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -203,44 +194,39 @@ describe('CSP Scanner Property Tests', () => {
 		 */
 		it('should detect all inline <script> tags in HTML files', () => {
 			fc.assert(
-				fc.property(
-					fc.nat({ max: 5 }),
-					(scriptCount) => {
-						// Create a temporary test directory
-						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
-						mkdirSync(testDir, { recursive: true });
-						
-						try {
-							// Generate HTML with known number of inline scripts
-							let html = '<!DOCTYPE html><html><body>';
-							for (let i = 0; i < scriptCount; i++) {
-								html += `<script>console.log('test ${i}');</script>`;
-							}
-							// Add external script (should not be detected)
-							html += '<script src="external.js"></script>';
-							html += '</body></html>';
-							
-							// Write test file
-							const testFile = join(testDir, 'test.html');
-							writeFileSync(testFile, html);
-							
-							// Scan the file
-							const violations = scanBuildOutput(testDir);
-							
-							// Count inline-script violations
-							const inlineScriptCount = violations.filter(
-								v => v.type === 'inline-script'
-							).length;
-							
-							// Should detect exactly the number of inline scripts we added
-							// (not the external script)
-							return inlineScriptCount === scriptCount;
-						} finally {
-							// Cleanup
-							rmSync(testDir, { recursive: true, force: true });
+				fc.property(fc.nat({ max: 5 }), (scriptCount) => {
+					// Create a temporary test directory
+					const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
+					mkdirSync(testDir, { recursive: true });
+
+					try {
+						// Generate HTML with known number of inline scripts
+						let html = '<!DOCTYPE html><html><body>';
+						for (let i = 0; i < scriptCount; i++) {
+							html += `<script>console.log('test ${i}');</script>`;
 						}
+						// Add external script (should not be detected)
+						html += '<script src="external.js"></script>';
+						html += '</body></html>';
+
+						// Write test file
+						const testFile = join(testDir, 'test.html');
+						writeFileSync(testFile, html);
+
+						// Scan the file
+						const violations = scanBuildOutput(testDir);
+
+						// Count inline-script violations
+						const inlineScriptCount = violations.filter((v) => v.type === 'inline-script').length;
+
+						// Should detect exactly the number of inline scripts we added
+						// (not the external script)
+						return inlineScriptCount === scriptCount;
+					} finally {
+						// Cleanup
+						rmSync(testDir, { recursive: true, force: true });
 					}
-				),
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -261,18 +247,18 @@ describe('CSP Scanner Property Tests', () => {
 						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
 						const primitivesDir = join(testDir, 'packages', 'primitives', 'src', 'components');
 						mkdirSync(primitivesDir, { recursive: true });
-						
+
 						try {
 							// Create a component file with a style violation
 							const content = `<div style="color: red;">${componentName}</div>`;
 							const testFile = join(primitivesDir, `${componentName}.svelte`);
 							writeFileSync(testFile, content);
-							
+
 							// Scan the file
 							const violations = scanSvelteSource(testDir);
-							
+
 							// All violations should be categorized as ship-blocking
-							return violations.every(v => v.category === 'ship-blocking');
+							return violations.every((v) => v.category === 'ship-blocking');
 						} finally {
 							// Cleanup
 							rmSync(testDir, { recursive: true, force: true });
@@ -290,50 +276,48 @@ describe('CSP Scanner Property Tests', () => {
 		 */
 		it('should include file path, line number, type, and snippet for each violation', () => {
 			fc.assert(
-				fc.property(
-					fc.nat({ min: 1, max: 5 }),
-					(violationCount) => {
-						// Create a temporary test directory
-						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
-						mkdirSync(testDir, { recursive: true });
-						
-						try {
-							// Generate content with violations
-							let content = '';
-							for (let i = 0; i < violationCount; i++) {
-								content += `<div style="color: red;">Test ${i}</div>\n`;
-							}
-							
-							// Write test file
-							const testFile = join(testDir, 'test.svelte');
-							writeFileSync(testFile, content);
-							
-							// Scan the file
-							const violations = scanSvelteSource(testDir);
-							
-							// Every violation should have required fields
-							return violations.every(v => 
-								v.file && 
+				fc.property(fc.nat({ min: 1, max: 5 }), (violationCount) => {
+					// Create a temporary test directory
+					const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
+					mkdirSync(testDir, { recursive: true });
+
+					try {
+						// Generate content with violations
+						let content = '';
+						for (let i = 0; i < violationCount; i++) {
+							content += `<div style="color: red;">Test ${i}</div>\n`;
+						}
+
+						// Write test file
+						const testFile = join(testDir, 'test.svelte');
+						writeFileSync(testFile, content);
+
+						// Scan the file
+						const violations = scanSvelteSource(testDir);
+
+						// Every violation should have required fields
+						return violations.every(
+							(v) =>
+								v.file &&
 								typeof v.file === 'string' &&
-								typeof v.line === 'number' && 
+								typeof v.line === 'number' &&
 								v.line > 0 &&
 								typeof v.column === 'number' &&
 								v.column > 0 &&
-								v.type && 
+								v.type &&
 								(v.type === 'style-attribute' ||
 									v.type === 'style-binding' ||
 									v.type === 'style-directive' ||
 									v.type === 'style-shorthand') &&
-								v.snippet && 
+								v.snippet &&
 								typeof v.snippet === 'string' &&
 								v.snippet.length > 0
-							);
-						} finally {
-							// Cleanup
-							rmSync(testDir, { recursive: true, force: true });
-						}
+						);
+					} finally {
+						// Cleanup
+						rmSync(testDir, { recursive: true, force: true });
 					}
-				),
+				}),
 				{ numRuns: 100 }
 			);
 		});
@@ -347,16 +331,16 @@ describe('CSP Scanner Property Tests', () => {
 			// Create a temporary test directory
 			const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
 			mkdirSync(testDir, { recursive: true });
-			
+
 			try {
 				// Create a test file with a violation
 				const content = `<div style="color: red;">Test</div>`;
 				const testFile = join(testDir, 'test.svelte');
 				writeFileSync(testFile, content);
-				
+
 				// Generate report
 				const report = generateReport([testDir], []);
-				
+
 				// Report should have followUp count in summary
 				expect(report.summary).toHaveProperty('followUp');
 				expect(typeof report.summary.followUp).toBe('number');

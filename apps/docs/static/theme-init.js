@@ -13,4 +13,3 @@
 		// Ignore theme detection failures (e.g., blocked storage).
 	}
 })();
-

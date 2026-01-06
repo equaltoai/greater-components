@@ -379,15 +379,15 @@
 		margin: 0;
 	}
 
-		.cw-handler__content {
-			max-height: 0;
-			overflow: hidden;
-			transition: max-height 200ms ease-in-out;
-		}
+	.cw-handler__content {
+		max-height: 0;
+		overflow: hidden;
+		transition: max-height 200ms ease-in-out;
+	}
 
-		.cw-handler--expanded .cw-handler__content {
-			max-height: 2000px;
-		}
+	.cw-handler--expanded .cw-handler__content {
+		max-height: 2000px;
+	}
 
 	.cw-handler__content--blur {
 		filter: blur(10px);

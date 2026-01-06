@@ -46,23 +46,23 @@
 		>;
 	}
 
-		let {
-			notifications = [],
-			groups = [],
-			grouped = true,
-			onNotificationClick,
-			onMarkAsRead,
-			onMarkAllAsRead,
-			onDismiss,
-			loading = false,
-			loadingMore = false,
-			hasMore = false,
-			onLoadMore,
-			emptyStateMessage = 'No notifications yet',
-			density = 'comfortable',
-			className = '',
-			emptyState,
-			loadingState,
+	let {
+		notifications = [],
+		groups = [],
+		grouped = true,
+		onNotificationClick,
+		onMarkAsRead,
+		onMarkAllAsRead,
+		onDismiss,
+		loading = false,
+		loadingMore = false,
+		hasMore = false,
+		onLoadMore,
+		emptyStateMessage = 'No notifications yet',
+		density = 'comfortable',
+		className = '',
+		emptyState,
+		loadingState,
 		notificationRenderer,
 	}: Props = $props();
 
@@ -82,8 +82,8 @@
 			return groupNotifications(notifications);
 		} else {
 			return notifications;
-			}
-		});
+		}
+	});
 
 	function handleScroll() {
 		if (!scrollElement || !onLoadMore || !hasMore || loadingMore) return;
@@ -201,40 +201,40 @@
 				<p>{emptyStateMessage}</p>
 			{/if}
 		</div>
-		{:else}
-			<!-- Notifications list -->
-			<div
-				class="notifications-scroll"
-				bind:this={scrollElement}
-				onscroll={handleScroll}
+	{:else}
+		<!-- Notifications list -->
+		<div
+			class="notifications-scroll"
+			bind:this={scrollElement}
+			onscroll={handleScroll}
 			role="feed"
-				aria-label="Notifications"
-				aria-busy={loadingMore}
-			>
-				{#each processedItems as item (getItemId(item))}
-					{#if notificationRenderer}
-						{@render notificationRenderer({
-							notification: isNotificationGroup(item) ? item.sampleNotification : item,
-							group: isNotificationGroup(item) ? item : undefined,
-							isGrouped: grouped,
-							onClick: handleNotificationClick,
-							onMarkAsRead: handleMarkAsRead,
-							onDismiss: handleDismiss,
-						})}
-					{:else}
-						<NotificationItem
-							notification={isNotificationGroup(item) ? item.sampleNotification : item}
-							group={isNotificationGroup(item) ? item : undefined}
-							{density}
-							onClick={handleNotificationClick}
-							onMarkAsRead={handleMarkAsRead}
-							onDismiss={handleDismiss}
-						/>
-					{/if}
-				{/each}
+			aria-label="Notifications"
+			aria-busy={loadingMore}
+		>
+			{#each processedItems as item (getItemId(item))}
+				{#if notificationRenderer}
+					{@render notificationRenderer({
+						notification: isNotificationGroup(item) ? item.sampleNotification : item,
+						group: isNotificationGroup(item) ? item : undefined,
+						isGrouped: grouped,
+						onClick: handleNotificationClick,
+						onMarkAsRead: handleMarkAsRead,
+						onDismiss: handleDismiss,
+					})}
+				{:else}
+					<NotificationItem
+						notification={isNotificationGroup(item) ? item.sampleNotification : item}
+						group={isNotificationGroup(item) ? item : undefined}
+						{density}
+						onClick={handleNotificationClick}
+						onMarkAsRead={handleMarkAsRead}
+						onDismiss={handleDismiss}
+					/>
+				{/if}
+			{/each}
 
-				<!-- Load more indicator -->
-				{#if loadingMore}
+			<!-- Load more indicator -->
+			{#if loadingMore}
 				<div class="load-more-indicator" aria-live="polite">
 					<div class="loading-spinner" aria-label="Loading more notifications"></div>
 					<p>Loading more...</p>

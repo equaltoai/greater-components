@@ -120,13 +120,18 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 		fc.assert(
 			fc.property(
 				fc.record({
-					preset: fc.constantFrom('text-on-surface', 'primary-on-surface', 'text-on-primary', 'custom'),
+					preset: fc.constantFrom(
+						'text-on-surface',
+						'primary-on-surface',
+						'text-on-primary',
+						'custom'
+					),
 				}),
 				(props) => {
 					const { container } = render(ContrastChecker, { props });
 					const element = container.querySelector('.gr-contrast-checker');
 					expect(element).toBeTruthy();
-					
+
 					// CSP compliance: no style attribute should be present on any element
 					const allElements = container.querySelectorAll('*');
 					for (const el of allElements) {
@@ -144,7 +149,14 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 		fc.assert(
 			fc.property(
 				fc.record({
-					harmonyType: fc.constantFrom('complementary', 'analogous', 'triadic', 'tetradic', 'splitComplementary', 'monochromatic'),
+					harmonyType: fc.constantFrom(
+						'complementary',
+						'analogous',
+						'triadic',
+						'tetradic',
+						'splitComplementary',
+						'monochromatic'
+					),
 				}),
 				(props) => {
 					// Use a valid hex color
@@ -155,7 +167,7 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 					const { container } = render(ColorHarmonyPicker, { props: validProps });
 					const element = container.querySelector('.gr-color-harmony-picker');
 					expect(element).toBeTruthy();
-					
+
 					// CSP compliance: no inline style attributes
 					const allElements = container.querySelectorAll('*');
 					for (const el of allElements) {
@@ -179,7 +191,7 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 					const { container } = render(ThemeWorkbench, { props });
 					const element = container.querySelector('.gr-theme-workbench');
 					expect(element).toBeTruthy();
-					
+
 					// CSP compliance: no inline style attributes
 					const allElements = container.querySelectorAll('*');
 					for (const el of allElements) {
@@ -206,7 +218,7 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 					const { container } = render(ContrastChecker, { props: { preset } });
 					const preview = container.querySelector('.gr-contrast-checker__preview');
 					expect(preview).toBeTruthy();
-					
+
 					// Should have the preset class
 					expect(preview?.classList.contains(`gr-contrast-checker__preview--${preset}`)).toBe(true);
 					return true;
@@ -217,55 +229,51 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 
 		// Test ColorHarmonyPicker uses CSS custom properties for swatches
 		fc.assert(
-			fc.property(
-				fc.constantFrom('complementary', 'analogous', 'triadic'),
-				(harmonyType) => {
-					const { container } = render(ColorHarmonyPicker, { 
-						props: { seedColor: '#ff0000', harmonyType } 
-					});
-					
-					// Base swatch should have the base class
-					const baseSwatch = container.querySelector('.gr-color-harmony-picker__swatch--base');
-					expect(baseSwatch).toBeTruthy();
-					
-					// Harmony swatches should have the harmony class
-					const harmonySwatches = container.querySelectorAll('.gr-color-harmony-picker__swatch--harmony');
-					expect(harmonySwatches.length).toBeGreaterThan(0);
-					
-					return true;
-				}
-			),
+			fc.property(fc.constantFrom('complementary', 'analogous', 'triadic'), (harmonyType) => {
+				const { container } = render(ColorHarmonyPicker, {
+					props: { seedColor: '#ff0000', harmonyType },
+				});
+
+				// Base swatch should have the base class
+				const baseSwatch = container.querySelector('.gr-color-harmony-picker__swatch--base');
+				expect(baseSwatch).toBeTruthy();
+
+				// Harmony swatches should have the harmony class
+				const harmonySwatches = container.querySelectorAll(
+					'.gr-color-harmony-picker__swatch--harmony'
+				);
+				expect(harmonySwatches.length).toBeGreaterThan(0);
+
+				return true;
+			}),
 			{ numRuns: 100 }
 		);
 
 		// Test ThemeWorkbench swatch grid uses preset classes
 		fc.assert(
-			fc.property(
-				fc.constant('#3b82f6'),
-				(initialColor) => {
-					const { container } = render(ThemeWorkbench, { props: { initialColor } });
-					
-					// Swatch grid should contain preset swatch classes
-					const swatchGrid = container.querySelector('.gr-theme-workbench__swatch-grid');
-					expect(swatchGrid).toBeTruthy();
-					
-					// Should have primary color scale swatches
-					const swatches = swatchGrid?.querySelectorAll('.gr-swatch');
-					expect(swatches?.length).toBeGreaterThan(0);
-					
-					// Each swatch should have a preset class
-					for (const swatch of swatches || []) {
-						const hasPresetClass = Array.from(swatch.classList).some(
-							cls => cls.startsWith('gr-swatch--primary-')
-						);
-						if (!hasPresetClass) {
-							return false;
-						}
+			fc.property(fc.constant('#3b82f6'), (initialColor) => {
+				const { container } = render(ThemeWorkbench, { props: { initialColor } });
+
+				// Swatch grid should contain preset swatch classes
+				const swatchGrid = container.querySelector('.gr-theme-workbench__swatch-grid');
+				expect(swatchGrid).toBeTruthy();
+
+				// Should have primary color scale swatches
+				const swatches = swatchGrid?.querySelectorAll('.gr-swatch');
+				expect(swatches?.length).toBeGreaterThan(0);
+
+				// Each swatch should have a preset class
+				for (const swatch of swatches || []) {
+					const hasPresetClass = Array.from(swatch.classList).some((cls) =>
+						cls.startsWith('gr-swatch--primary-')
+					);
+					if (!hasPresetClass) {
+						return false;
 					}
-					
-					return true;
 				}
-			),
+
+				return true;
+			}),
 			{ numRuns: 100 }
 		);
 	});

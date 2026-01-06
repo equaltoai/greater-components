@@ -152,11 +152,7 @@ Features:
 					onclick={() => removeColor(color)}
 					aria-label={`Remove color ${color}`}
 				>
-					<svg
-						class="color-palette-search__color-swatch"
-						viewBox="0 0 20 20"
-						aria-hidden="true"
-					>
+					<svg class="color-palette-search__color-swatch" viewBox="0 0 20 20" aria-hidden="true">
 						<circle cx="10" cy="10" r="9" fill={color} />
 					</svg>
 					<span class="color-palette-search__color-value">{color}</span>

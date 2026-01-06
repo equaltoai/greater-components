@@ -49,9 +49,9 @@ const __dirname = dirname(__filename);
  */
 function maskNonMarkup(content) {
 	return content
-		.replace(/<script[\s\S]*?<\/script>/gi, match => match.replace(/[^\n]/g, ' '))
-		.replace(/<style[\s\S]*?<\/style>/gi, match => match.replace(/[^\n]/g, ' '))
-		.replace(/<!--[\s\S]*?-->/g, match => match.replace(/[^\n]/g, ' '));
+		.replace(/<script[\s\S]*?<\/script>/gi, (match) => match.replace(/[^\n]/g, ' '))
+		.replace(/<style[\s\S]*?<\/style>/gi, (match) => match.replace(/[^\n]/g, ' '))
+		.replace(/<!--[\s\S]*?-->/g, (match) => match.replace(/[^\n]/g, ' '));
 }
 
 /**
@@ -86,14 +86,14 @@ function lineSnippet(content, lineNumber) {
  */
 function findFiles(dir, pattern) {
 	const results = [];
-	
+
 	try {
 		const entries = readdirSync(dir);
-		
+
 		for (const entry of entries) {
 			const fullPath = join(dir, entry);
 			const stat = statSync(fullPath);
-			
+
 			if (stat.isDirectory()) {
 				// Skip generated or irrelevant directories
 				if (
@@ -123,7 +123,7 @@ function findFiles(dir, pattern) {
 
 		console.warn(`Warning: Could not read directory ${dir}: ${err.message}`);
 	}
-	
+
 	return results;
 }
 
@@ -144,21 +144,20 @@ function categorizeViolation() {
 export function scanSvelteSource(pattern) {
 	const workspaceRoot = join(__dirname, '..');
 	const results = [];
-	
+
 	// Determine if pattern is absolute or relative
-	const searchPath = pattern.startsWith('/') || pattern.startsWith('C:') 
-		? pattern 
-		: join(workspaceRoot, pattern);
-	
+	const searchPath =
+		pattern.startsWith('/') || pattern.startsWith('C:') ? pattern : join(workspaceRoot, pattern);
+
 	// Find all .svelte files matching the pattern
 	const files = findFiles(searchPath, '.svelte');
-	
+
 	for (const filePath of files) {
 		try {
 			const content = readFileSync(filePath, 'utf-8');
 			const masked = maskNonMarkup(content);
 			const relPath = relative(workspaceRoot, filePath);
-			
+
 			const addViolation = (matchIndex, type, remediation) => {
 				const { line, column } = indexToLineColumn(content, matchIndex);
 
@@ -178,7 +177,7 @@ export function scanSvelteSource(pattern) {
 			for (const match of masked.matchAll(styleAttrRegex)) {
 				addViolation(match.index, 'style-attribute', 'Replace inline style with a CSS class');
 			}
-			
+
 			// Scan for style={...} bindings
 			const styleBindingRegex = /\bstyle\s*=\s*\{[^}]*\}/g;
 			for (const match of masked.matchAll(styleBindingRegex)) {
@@ -191,11 +190,10 @@ export function scanSvelteSource(pattern) {
 			for (const match of masked.matchAll(styleShorthandRegex)) {
 				addViolation(match.index, 'style-shorthand', 'Remove style shorthand and use CSS classes');
 			}
-			
-	// Scan for style: directives (Svelte style directives)
-	// These compile to inline styles in the rendered HTML
-	const styleDirectiveRegex =
-		/\bstyle:[a-zA-Z-]+\s*=\s*(\{[^}]*\}|"[^"]*"|'[^']*')/g;
+
+			// Scan for style: directives (Svelte style directives)
+			// These compile to inline styles in the rendered HTML
+			const styleDirectiveRegex = /\bstyle:[a-zA-Z-]+\s*=\s*(\{[^}]*\}|"[^"]*"|'[^']*')/g;
 			for (const match of masked.matchAll(styleDirectiveRegex)) {
 				addViolation(
 					match.index,
@@ -207,7 +205,7 @@ export function scanSvelteSource(pattern) {
 			console.warn(`Warning: Could not read file ${filePath}: ${err.message}`);
 		}
 	}
-	
+
 	return results;
 }
 
@@ -219,21 +217,22 @@ export function scanSvelteSource(pattern) {
 export function scanBuildOutput(directory) {
 	const workspaceRoot = join(__dirname, '..');
 	const results = [];
-	
+
 	// Determine if directory is absolute or relative
-	const buildDir = directory.startsWith('/') || directory.startsWith('C:')
-		? directory
-		: join(workspaceRoot, directory);
-	
+	const buildDir =
+		directory.startsWith('/') || directory.startsWith('C:')
+			? directory
+			: join(workspaceRoot, directory);
+
 	// Find all HTML files
 	const files = findFiles(buildDir, '.html');
-	
+
 	for (const filePath of files) {
 		try {
 			const content = readFileSync(filePath, 'utf-8');
 			const relPath = relative(workspaceRoot, filePath);
 			const root = parse(content);
-			
+
 			// Find all elements with style attributes
 			const elementsWithStyle = root.querySelectorAll('[style]');
 			for (const element of elementsWithStyle) {
@@ -243,7 +242,7 @@ export function scanBuildOutput(directory) {
 					const elementHtml = element.toString();
 					const position = content.indexOf(elementHtml);
 					const lineNumber = content.substring(0, position).split('\n').length;
-					
+
 					results.push({
 						file: relPath,
 						line: lineNumber,
@@ -253,7 +252,7 @@ export function scanBuildOutput(directory) {
 					});
 				}
 			}
-			
+
 			// Find all inline script tags (without src attribute)
 			const scripts = root.querySelectorAll('script');
 			for (const script of scripts) {
@@ -261,7 +260,7 @@ export function scanBuildOutput(directory) {
 					const scriptHtml = script.toString();
 					const position = content.indexOf(scriptHtml);
 					const lineNumber = content.substring(0, position).split('\n').length;
-					
+
 					results.push({
 						file: relPath,
 						line: lineNumber,
@@ -275,7 +274,7 @@ export function scanBuildOutput(directory) {
 			console.warn(`Warning: Could not parse file ${filePath}: ${err.message}`);
 		}
 	}
-	
+
 	return results;
 }
 
@@ -288,40 +287,38 @@ export function scanBuildOutput(directory) {
 export function generateReport(sourcePaths, buildPaths) {
 	const sourceViolations = [];
 	const buildViolations = [];
-	
+
 	// Scan source files
 	for (const path of sourcePaths) {
 		sourceViolations.push(...scanSvelteSource(path));
 	}
-	
+
 	// Scan build output
 	for (const path of buildPaths) {
 		buildViolations.push(...scanBuildOutput(path));
 	}
-	
+
 	// Calculate summary
 	const totalViolations = sourceViolations.length + buildViolations.length;
 	const allViolations = [...sourceViolations, ...buildViolations];
-	const shipBlocking = allViolations.filter(v => v.category === 'ship-blocking').length;
+	const shipBlocking = allViolations.filter((v) => v.category === 'ship-blocking').length;
 	const followUp = totalViolations - shipBlocking;
-	
+
 	// Identify ship-blocking components
-	const shipBlockingComponents = [...new Set(
-		sourceViolations
-			.filter(v => v.category === 'ship-blocking')
-			.map(v => v.file)
-	)].sort();
-	
+	const shipBlockingComponents = [
+		...new Set(sourceViolations.filter((v) => v.category === 'ship-blocking').map((v) => v.file)),
+	].sort();
+
 	return {
 		timestamp: new Date().toISOString(),
 		summary: {
 			totalViolations,
 			shipBlocking,
-			followUp
+			followUp,
 		},
 		sourceViolations,
 		buildViolations,
-		shipBlockingComponents
+		shipBlockingComponents,
 	};
 }
 
@@ -338,7 +335,7 @@ function formatReportMarkdown(report) {
 	md += `- Ship-Blocking: ${report.summary.shipBlocking}\n`;
 	md += `- Follow-Up: ${report.summary.followUp}\n`;
 	md += `\n`;
-	
+
 	if (report.shipBlockingComponents.length > 0) {
 		md += `## Ship-Blocking Components\n\n`;
 		for (const component of report.shipBlockingComponents) {
@@ -346,11 +343,13 @@ function formatReportMarkdown(report) {
 		}
 		md += `\n`;
 	}
-	
+
 	// Group violations by category for clearer reporting
-	const shipBlockingViolations = report.sourceViolations.filter(v => v.category === 'ship-blocking');
-	const followUpViolations = report.sourceViolations.filter(v => v.category === 'follow-up');
-	
+	const shipBlockingViolations = report.sourceViolations.filter(
+		(v) => v.category === 'ship-blocking'
+	);
+	const followUpViolations = report.sourceViolations.filter((v) => v.category === 'follow-up');
+
 	if (shipBlockingViolations.length > 0) {
 		md += `## Ship-Blocking Source Violations\n\n`;
 		for (const violation of shipBlockingViolations) {
@@ -361,7 +360,7 @@ function formatReportMarkdown(report) {
 			md += `- Snippet: \`${violation.snippet}\`\n\n`;
 		}
 	}
-	
+
 	if (followUpViolations.length > 0) {
 		md += `## Follow-Up Source Violations\n\n`;
 		for (const violation of followUpViolations) {
@@ -372,7 +371,7 @@ function formatReportMarkdown(report) {
 			md += `- Snippet: \`${violation.snippet}\`\n\n`;
 		}
 	}
-	
+
 	if (report.buildViolations.length > 0) {
 		md += `## Build Violations\n\n`;
 		for (const violation of report.buildViolations) {
@@ -387,7 +386,7 @@ function formatReportMarkdown(report) {
 			md += `- Snippet: \`${violation.snippet}\`\n\n`;
 		}
 	}
-	
+
 	return md;
 }
 
@@ -395,13 +394,13 @@ function formatReportMarkdown(report) {
 if (import.meta.url === `file://${process.argv[1]}`) {
 	const sourcePaths = ['packages'];
 	const buildPaths = ['apps/docs/build', 'apps/playground/build'];
-	
+
 	console.log('Scanning for CSP violations...\n');
-	
+
 	const report = generateReport(sourcePaths, buildPaths);
-	
+
 	console.log(formatReportMarkdown(report));
-	
+
 	// Exit with error code if any violations found
 	if (report.summary.totalViolations > 0) {
 		process.exit(1);

@@ -63,14 +63,11 @@ describe('Skeleton.svelte', () => {
 		// Validates: Requirements 3.3, 3.5
 		it('Property 9: preset heights emit no style attribute', () => {
 			fc.assert(
-				fc.property(
-					fc.constantFrom('xs', 'sm', 'md', 'lg', 'xl', '2xl'),
-					(height) => {
-						const { container } = render(Skeleton, { props: { height } });
-						const skeleton = container.querySelector('.gr-skeleton');
-						return skeleton !== null && !skeleton.hasAttribute('style');
-					}
-				),
+				fc.property(fc.constantFrom('xs', 'sm', 'md', 'lg', 'xl', '2xl'), (height) => {
+					const { container } = render(Skeleton, { props: { height } });
+					const skeleton = container.querySelector('.gr-skeleton');
+					return skeleton !== null && !skeleton.hasAttribute('style');
+				}),
 				{ numRuns: 100 }
 			);
 		});

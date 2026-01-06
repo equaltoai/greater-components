@@ -251,100 +251,100 @@
 		opacity: 0.9;
 	}
 
-		:global(.thread-view__replies) {
-			display: flex;
-			flex-direction: column;
-			gap: 0.5rem;
-		}
+	:global(.thread-view__replies) {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
 
-		:global(.thread-view__reply--depth-0) {
-			--depth: 0;
-		}
+	:global(.thread-view__reply--depth-0) {
+		--depth: 0;
+	}
 
-		:global(.thread-view__reply--depth-1) {
-			--depth: 1;
-		}
+	:global(.thread-view__reply--depth-1) {
+		--depth: 1;
+	}
 
-		:global(.thread-view__reply--depth-2) {
-			--depth: 2;
-		}
+	:global(.thread-view__reply--depth-2) {
+		--depth: 2;
+	}
 
-		:global(.thread-view__reply--depth-3) {
-			--depth: 3;
-		}
+	:global(.thread-view__reply--depth-3) {
+		--depth: 3;
+	}
 
-		:global(.thread-view__reply--depth-4) {
-			--depth: 4;
-		}
+	:global(.thread-view__reply--depth-4) {
+		--depth: 4;
+	}
 
-		:global(.thread-view__reply--depth-5) {
-			--depth: 5;
-		}
+	:global(.thread-view__reply--depth-5) {
+		--depth: 5;
+	}
 
-		:global(.thread-view__reply--depth-6) {
-			--depth: 6;
-		}
+	:global(.thread-view__reply--depth-6) {
+		--depth: 6;
+	}
 
-		:global(.thread-view__reply--depth-7) {
-			--depth: 7;
-		}
+	:global(.thread-view__reply--depth-7) {
+		--depth: 7;
+	}
 
-		:global(.thread-view__reply--depth-8) {
-			--depth: 8;
-		}
+	:global(.thread-view__reply--depth-8) {
+		--depth: 8;
+	}
 
-		:global(.thread-view__reply--depth-9) {
-			--depth: 9;
-		}
+	:global(.thread-view__reply--depth-9) {
+		--depth: 9;
+	}
 
-		:global(.thread-view__reply--depth-10) {
-			--depth: 10;
-		}
+	:global(.thread-view__reply--depth-10) {
+		--depth: 10;
+	}
 
-		:global(.thread-view__reply--depth-11) {
-			--depth: 11;
-		}
+	:global(.thread-view__reply--depth-11) {
+		--depth: 11;
+	}
 
-		:global(.thread-view__reply--depth-12) {
-			--depth: 12;
-		}
+	:global(.thread-view__reply--depth-12) {
+		--depth: 12;
+	}
 
-		:global(.thread-view__reply--depth-13) {
-			--depth: 13;
-		}
+	:global(.thread-view__reply--depth-13) {
+		--depth: 13;
+	}
 
-		:global(.thread-view__reply--depth-14) {
-			--depth: 14;
-		}
+	:global(.thread-view__reply--depth-14) {
+		--depth: 14;
+	}
 
-		:global(.thread-view__reply--depth-15) {
-			--depth: 15;
-		}
+	:global(.thread-view__reply--depth-15) {
+		--depth: 15;
+	}
 
-		:global(.thread-view__reply--depth-16) {
-			--depth: 16;
-		}
+	:global(.thread-view__reply--depth-16) {
+		--depth: 16;
+	}
 
-		:global(.thread-view__reply--depth-17) {
-			--depth: 17;
-		}
+	:global(.thread-view__reply--depth-17) {
+		--depth: 17;
+	}
 
-		:global(.thread-view__reply--depth-18) {
-			--depth: 18;
-		}
+	:global(.thread-view__reply--depth-18) {
+		--depth: 18;
+	}
 
-		:global(.thread-view__reply--depth-19) {
-			--depth: 19;
-		}
+	:global(.thread-view__reply--depth-19) {
+		--depth: 19;
+	}
 
-		:global(.thread-view__reply--depth-20) {
-			--depth: 20;
-		}
+	:global(.thread-view__reply--depth-20) {
+		--depth: 20;
+	}
 
-		:global(.thread-view__reply) {
-			position: relative;
-			padding-left: calc(var(--depth, 0) * 1.5rem);
-			transition: background-color 0.2s;
+	:global(.thread-view__reply) {
+		position: relative;
+		padding-left: calc(var(--depth, 0) * 1.5rem);
+		transition: background-color 0.2s;
 	}
 
 	:global(.thread-view--has-lines .thread-view__reply::before) {

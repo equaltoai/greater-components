@@ -134,23 +134,22 @@ Handles quote, community_note, trust_update, cost_alert, and moderation_action n
 	}
 </script>
 
-	<button
-		class={`lesser-notification-item ${className}`}
-		class:unread={!notification.isRead}
-		type="button"
-		aria-label={`${notification.type} notification`}
-		onclick={handleClick}
-	>
+<button
+	class={`lesser-notification-item ${className}`}
+	class:unread={!notification.isRead}
+	type="button"
+	aria-label={`${notification.type} notification`}
+	onclick={handleClick}
+>
+	<div class={`lesser-notification-item__icon lesser-notification-item__icon--${notificationType}`}>
+		<svg viewBox="0 0 24 24" aria-hidden="true">
+			<path fill="currentColor" d={iconMap[notificationType]} />
+		</svg>
+	</div>
 
-		<div class={`lesser-notification-item__icon lesser-notification-item__icon--${notificationType}`}>
-			<svg viewBox="0 0 24 24" aria-hidden="true">
-				<path fill="currentColor" d={iconMap[notificationType]} />
-			</svg>
-		</div>
-
-		<div class="lesser-notification-item__content">
-			{#if content}
-				{@render content()}
+	<div class="lesser-notification-item__content">
+		{#if content}
+			{@render content()}
 		{:else}
 			<div class="lesser-notification-item__header">
 				<span class="lesser-notification-item__account">
@@ -226,5 +225,5 @@ Handles quote, community_note, trust_update, cost_alert, and moderation_action n
 				</div>
 			{/if}
 		{/if}
-		</div>
-	</button>
+	</div>
+</button>

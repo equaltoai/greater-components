@@ -18,9 +18,7 @@
 
 	let containerRef: HTMLDivElement;
 
-	const zoomPercent = $derived(
-		Math.max(50, Math.min(400, Math.round(zoom.level * 4) * 25))
-	);
+	const zoomPercent = $derived(Math.max(50, Math.min(400, Math.round(zoom.level * 4) * 25)));
 
 	// Handle keypad controls
 	function handleKeyDown(event: KeyboardEvent) {
@@ -76,9 +74,7 @@
 	role="application"
 	aria-label={`Interactive view of ${artwork.altText}`}
 >
-	<div
-		class={`critique-image__wrapper critique-image__wrapper--zoom-${zoomPercent}`}
-	>
+	<div class={`critique-image__wrapper critique-image__wrapper--zoom-${zoomPercent}`}>
 		<img
 			src={artwork.images.full}
 			alt={artwork.altText}

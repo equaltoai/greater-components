@@ -23,8 +23,8 @@
 	<section>
 		<h2>1) Skeleton: Preset Sizing</h2>
 		<p>
-			Strict CSP blocks <code>style="..."</code>, so Skeleton no longer supports arbitrary width/height
-			values.
+			Strict CSP blocks <code>style="..."</code>, so Skeleton no longer supports arbitrary
+			width/height values.
 		</p>
 
 		<CodeExample
@@ -141,8 +141,8 @@
 	<section>
 		<h2>5) Remove Any Use of the style Prop</h2>
 		<p>
-			Shipped Greater components do not support a <code>style</code> prop under strict CSP. If you
-			were using it for token overrides, move those overrides into external CSS classes.
+			Shipped Greater components do not support a <code>style</code> prop under strict CSP. If you were
+			using it for token overrides, move those overrides into external CSS classes.
 		</p>
 		<CodeExample
 			language="svelte"
@@ -161,8 +161,8 @@
 	<section>
 		<h2>Next</h2>
 		<p>
-			See <a href="/guides/csp-compatibility">CSP Compatibility</a> for the full strict-CSP contract
-			and a component matrix.
+			See <a href="/guides/csp-compatibility">CSP Compatibility</a> for the full strict-CSP contract and
+			a component matrix.
 		</p>
 	</section>
 </article>

@@ -304,17 +304,17 @@
 			</div>
 		{/if}
 
-			{#each items as item (item.id)}
-				{@const handlersForItem =
-					typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-				<StatusCard
-					status={item}
-					{density}
-					showActions={true}
-					actionHandlers={handlersForItem}
-					onClick={() => handleStatusCardClick(item)}
-				/>
-			{/each}
+		{#each items as item (item.id)}
+			{@const handlersForItem =
+				typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
+			<StatusCard
+				status={item}
+				{density}
+				showActions={true}
+				actionHandlers={handlersForItem}
+				onClick={() => handleStatusCardClick(item)}
+			/>
+		{/each}
 
 		{#if loadingBottom && !endReached}
 			<div class="loading-indicator bottom">

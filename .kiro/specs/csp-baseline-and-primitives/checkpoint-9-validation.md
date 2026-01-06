@@ -9,12 +9,12 @@
 
 Ran CSP scanner against all four refactored components:
 
-| Component | Violations | Status |
-|-----------|-----------|--------|
-| Skeleton.svelte | 0 | ✅ PASS |
-| Avatar.svelte | 0 | ✅ PASS |
-| Text.svelte | 0 | ✅ PASS |
-| Container.svelte | 0 | ✅ PASS |
+| Component        | Violations | Status  |
+| ---------------- | ---------- | ------- |
+| Skeleton.svelte  | 0          | ✅ PASS |
+| Avatar.svelte    | 0          | ✅ PASS |
+| Text.svelte      | 0          | ✅ PASS |
+| Container.svelte | 0          | ✅ PASS |
 
 **Total violations in refactored components: 0**
 
@@ -68,6 +68,7 @@ Duration    1.79s
 ```
 
 **Breakdown:**
+
 - `skeleton.test.ts`: 7 tests passed
 - `avatar.test.ts`: 12 tests passed (including Property 12: Avatar image display emits no style attribute)
 - `text.test.ts`: 22 tests passed

@@ -28,7 +28,11 @@ export type {
 // Preset types for strict-CSP-safe APIs
 export type { WidthPreset, HeightPreset } from './components/Skeleton.svelte';
 export type { ContainerSize, GutterPreset } from './components/Container.svelte';
-export type { SpacingPreset, BackgroundPreset, GradientDirection } from './components/Section.svelte';
+export type {
+	SpacingPreset,
+	BackgroundPreset,
+	GradientDirection,
+} from './components/Section.svelte';
 export type { Placement } from './components/Tooltip.svelte';
 
 // Import all components (for both export and prop type inference)

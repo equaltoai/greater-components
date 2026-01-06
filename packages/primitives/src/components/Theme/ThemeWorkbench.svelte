@@ -32,7 +32,18 @@
 	let theme = $derived(generateTheme(seedColor));
 
 	// Primary color scale keys for swatch grid
-	const primaryScaleKeys = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] as const;
+	const primaryScaleKeys = [
+		'50',
+		'100',
+		'200',
+		'300',
+		'400',
+		'500',
+		'600',
+		'700',
+		'800',
+		'900',
+	] as const;
 
 	const harmonyOptions = [
 		{ value: 'complementary', label: 'Complementary' },
@@ -91,10 +102,7 @@
 
 				<div class="gr-theme-workbench__swatch-grid">
 					{#each primaryScaleKeys as key (key)}
-						<div 
-							class="gr-swatch gr-swatch--primary-{key}" 
-							title="Primary {key}"
-						></div>
+						<div class="gr-swatch gr-swatch--primary-{key}" title="Primary {key}"></div>
 					{/each}
 				</div>
 			</Card>

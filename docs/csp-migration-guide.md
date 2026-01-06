@@ -11,17 +11,20 @@ Greater Components v3.1.0 introduces strict Content Security Policy (CSP) compat
 ### Skeleton Component
 
 **What Changed:**
+
 - Width and height props now only accept preset values (no arbitrary strings/numbers)
 - Inline style attributes are no longer emitted
 - Custom sizing requires external CSS classes
 
 **Before (v3.0.x):**
+
 ```svelte
 <Skeleton width="250px" height="80px" />
 <Skeleton width={customWidth} height={customHeight} />
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Use preset values -->
 <Skeleton width="1/2" height="lg" />
@@ -31,16 +34,17 @@ Greater Components v3.1.0 introduces strict Content Security Policy (CSP) compat
 <Skeleton class="custom-skeleton" />
 
 <style>
-  :global(.custom-skeleton) {
-    width: 250px;
-    height: 80px;
-  }
+	:global(.custom-skeleton) {
+		width: 250px;
+		height: 80px;
+	}
 </style>
 ```
 
 **Available Presets:**
 
 Width presets:
+
 - `'full'` - 100%
 - `'1/2'` - 50%
 - `'1/3'` - 33.333%
@@ -51,6 +55,7 @@ Width presets:
 - `'auto'` - auto
 
 Height presets:
+
 - `'xs'` - 1rem
 - `'sm'` - 1.5rem
 - `'md'` - 2rem
@@ -61,17 +66,20 @@ Height presets:
 ### Avatar Component
 
 **What Changed:**
+
 - Background colors now use deterministic hash-based color classes
 - Image display controlled via CSS classes instead of inline styles
 - Colors are consistent across sessions for the same name/label
 
 **Before (v3.0.x):**
+
 ```svelte
 <!-- Colors were randomly generated on each render -->
 <Avatar name="Jane Doe" />
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Same name always produces same color -->
 <Avatar name="Jane Doe" />
@@ -79,6 +87,7 @@ Height presets:
 ```
 
 **Migration Notes:**
+
 - No code changes required - the API is the same
 - Colors are now deterministic (same input = same color)
 - All 12 color classes meet WCAG AA contrast requirements
@@ -87,17 +96,20 @@ Height presets:
 ### Text Component
 
 **What Changed:**
+
 - Line clamping now only supports 2-6 lines via preset classes
 - No inline CSS variables for line counts
 - Out-of-range line counts require external CSS
 
 **Before (v3.0.x):**
+
 ```svelte
 <Text truncate lines={10}>Long text...</Text>
 <Text truncate lines={customLineCount}>Dynamic lines...</Text>
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Supported range: 2-6 lines -->
 <Text truncate lines={3}>Clamped to 3 lines...</Text>
@@ -106,33 +118,37 @@ Height presets:
 <Text truncate class="clamp-10">Long text...</Text>
 
 <style>
-  :global(.clamp-10) {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 10;
-    overflow: hidden;
-  }
+	:global(.clamp-10) {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 10;
+		overflow: hidden;
+	}
 </style>
 ```
 
 **Supported Line Counts:**
+
 - 2, 3, 4, 5, 6 (via `gr-text--clamp-N` classes)
 - Single-line truncation still works with `truncate` prop alone
 
 ### Container Component
 
 **What Changed:**
+
 - Gutter prop now only accepts preset values
 - Custom gutter values require external CSS
 - No inline CSS variables for custom gutters
 
 **Before (v3.0.x):**
+
 ```svelte
 <Container gutter="2.5rem">Content</Container>
 <Container gutter={customGutter}>Content</Container>
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Use preset values -->
 <Container gutter="lg">Content</Container>
@@ -141,13 +157,14 @@ Height presets:
 <Container class="custom-gutter">Content</Container>
 
 <style>
-  :global(.custom-gutter) {
-    --gr-container-custom-gutter: 2.5rem;
-  }
+	:global(.custom-gutter) {
+		--gr-container-custom-gutter: 2.5rem;
+	}
 </style>
 ```
 
 **Available Gutter Presets:**
+
 - `'none'` - No padding
 - `'sm'` - 0.75rem
 - `'md'` - 1rem (default)
@@ -157,56 +174,56 @@ Height presets:
 ### ThemeProvider Component
 
 **What Changed:**
+
 - Custom palette prop removed (required inline CSS variable injection)
 - Arbitrary font string props removed
 - New preset-based font props added
 - All theming now uses CSS classes
 
 **Before (v3.0.x):**
+
 ```svelte
-<ThemeProvider 
-  customPalette={{
-    primary: '#6366f1',
-    secondary: '#8b5cf6',
-    accent: '#ec4899'
-  }}
-  headingFont="'Custom Font', sans-serif"
-  bodyFont="'Another Font', sans-serif"
+<ThemeProvider
+	customPalette={{
+		primary: '#6366f1',
+		secondary: '#8b5cf6',
+		accent: '#ec4899',
+	}}
+	headingFont="'Custom Font', sans-serif"
+	bodyFont="'Another Font', sans-serif"
 >
-  <App />
+	<App />
 </ThemeProvider>
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Use preset values -->
-<ThemeProvider 
-  palette="slate"
-  headingFontPreset="serif"
-  bodyFontPreset="sans"
->
-  <App />
+<ThemeProvider palette="slate" headingFontPreset="serif" bodyFontPreset="sans">
+	<App />
 </ThemeProvider>
 
 <!-- For custom theming, use external CSS -->
 <ThemeProvider class="my-custom-theme">
-  <App />
+	<App />
 </ThemeProvider>
 
 <style>
-  :global(.my-custom-theme) {
-    --gr-color-primary: #6366f1;
-    --gr-color-secondary: #8b5cf6;
-    --gr-color-accent: #ec4899;
-    --gr-typography-fontFamily-heading: 'Custom Font', sans-serif;
-    --gr-typography-fontFamily-sans: 'Another Font', sans-serif;
-  }
+	:global(.my-custom-theme) {
+		--gr-color-primary: #6366f1;
+		--gr-color-secondary: #8b5cf6;
+		--gr-color-accent: #ec4899;
+		--gr-typography-fontFamily-heading: 'Custom Font', sans-serif;
+		--gr-typography-fontFamily-sans: 'Another Font', sans-serif;
+	}
 </style>
 ```
 
 **Available Presets:**
 
 Palette presets:
+
 - `'slate'` - Cool gray tones
 - `'stone'` - Warm gray tones
 - `'neutral'` - Pure gray tones
@@ -214,6 +231,7 @@ Palette presets:
 - `'gray'` - Standard gray tones
 
 Font presets:
+
 - `'system'` - System UI fonts
 - `'sans'` - Inter font family
 - `'serif'` - Crimson Pro font family
@@ -222,44 +240,44 @@ Font presets:
 ### Section Component
 
 **What Changed:**
+
 - Spacing prop now only accepts preset values (no arbitrary strings/numbers)
 - Background prop now only accepts preset values (no arbitrary CSS)
 - Inline style attributes are no longer emitted
 - Custom values require external CSS classes
 
 **Before (v3.0.x):**
+
 ```svelte
 <Section spacing="7rem">Content</Section>
 <Section spacing={customSpacing}>Content</Section>
-<Section background="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-  Content
-</Section>
+<Section background="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">Content</Section>
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Use preset values -->
 <Section spacing="xl">Content</Section>
 <Section spacing="3xl">Content</Section>
-<Section background="gradient" gradientDirection="to-bottom-right">
-  Content
-</Section>
+<Section background="gradient" gradientDirection="to-bottom-right">Content</Section>
 
 <!-- For custom values, use external CSS -->
 <Section class="custom-section">Content</Section>
 
 <style>
-  :global(.custom-section) {
-    margin-top: 7rem;
-    margin-bottom: 7rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
+	:global(.custom-section) {
+		margin-top: 7rem;
+		margin-bottom: 7rem;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	}
 </style>
 ```
 
 **Available Presets:**
 
 Spacing presets:
+
 - `'none'` - 0
 - `'sm'` - 2rem
 - `'md'` - 4rem (default)
@@ -270,56 +288,61 @@ Spacing presets:
 - `'4xl'` - 16rem
 
 Background presets:
+
 - `'default'` - Transparent/inherit
 - `'muted'` - Subtle secondary background
 - `'accent'` - Primary color tinted background
 - `'gradient'` - Gradient background (use with gradientDirection)
 
 Gradient directions:
+
 - `'to-top'`, `'to-bottom'`, `'to-left'`, `'to-right'`
 - `'to-top-left'`, `'to-top-right'`, `'to-bottom-left'`, `'to-bottom-right'`
 
 ### Tooltip Component
 
 **What Changed:**
+
 - Positioning now uses CSS classes instead of inline pixel values
 - Auto placement uses viewport heuristics to select placement class
 - No more inline `style="position: absolute; top: Npx; left: Npx"`
 - Tooltips are positioned relative to trigger, not viewport
 
 **Before (v3.0.x):**
+
 ```svelte
 <!-- Tooltip used inline styles for pixel-perfect positioning -->
 <Tooltip content="Help text" placement="top">
-  <Button>Hover me</Button>
+	<Button>Hover me</Button>
 </Tooltip>
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Same API, but CSS-based positioning -->
 <Tooltip content="Help text" placement="top">
-  <Button>Hover me</Button>
+	<Button>Hover me</Button>
 </Tooltip>
 
 <!-- Auto placement still works -->
 <Tooltip content="Auto positioned" placement="auto">
-  <Button>Hover me</Button>
+	<Button>Hover me</Button>
 </Tooltip>
 
 <!-- For pixel-perfect positioning, use external CSS -->
 <Tooltip content="Custom position" class="custom-tooltip">
-  <Button>Hover me</Button>
+	<Button>Hover me</Button>
 </Tooltip>
 
 <style>
-  :global(.custom-tooltip) {
-    /* Override default positioning */
-    top: auto !important;
-    bottom: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%) translateY(-120%) !important;
-  }
+	:global(.custom-tooltip) {
+		/* Override default positioning */
+		top: auto !important;
+		bottom: auto !important;
+		left: 50% !important;
+		transform: translateX(-50%) translateY(-120%) !important;
+	}
 </style>
 ```
 
@@ -327,46 +350,51 @@ Gradient directions:
 
 The CSS-based positioning approach has some trade-offs:
 
-| Feature                    | Previous (Inline Styles)        | Current (CSS Classes)           |
-| -------------------------- | ------------------------------- | ------------------------------- |
-| Pixel-perfect positioning  | ✅ Calculated per-pixel         | ❌ Relative to trigger          |
-| Viewport edge handling     | ✅ Precise repositioning        | ⚠️ Class-based fallback         |
-| CSP compliance             | ❌ Requires unsafe-inline       | ✅ Fully compliant              |
-| Performance                | ⚠️ JS calculations on show      | ✅ Pure CSS positioning         |
+| Feature                   | Previous (Inline Styles)   | Current (CSS Classes)   |
+| ------------------------- | -------------------------- | ----------------------- |
+| Pixel-perfect positioning | ✅ Calculated per-pixel    | ❌ Relative to trigger  |
+| Viewport edge handling    | ✅ Precise repositioning   | ⚠️ Class-based fallback |
+| CSP compliance            | ❌ Requires unsafe-inline  | ✅ Fully compliant      |
+| Performance               | ⚠️ JS calculations on show | ✅ Pure CSS positioning |
 
 For most use cases, the CSS-based positioning is sufficient. If you need pixel-perfect positioning, use external CSS.
 
 ### ThemeSwitcher Component
 
 **What Changed:**
+
 - Preview buttons now use preset color classes instead of inline styles
 - `showAdvanced` prop removed (custom color pickers required inline styles)
 - `showWorkbench` prop removed (dynamic color preview required inline styles)
 
 **Before (v3.0.x):**
+
 ```svelte
 <ThemeSwitcher showAdvanced showWorkbench />
 ```
 
 **After (v3.1.0+):**
+
 ```svelte
 <!-- Advanced features removed for CSP compliance -->
 <ThemeSwitcher variant="full" showPreview />
 
 <!-- For advanced theme customization, use external CSS with ThemeProvider -->
 <ThemeProvider class="my-custom-theme">
-  <ThemeSwitcher />
+	<ThemeSwitcher />
 </ThemeProvider>
 ```
 
 ### Theme Tooling Components
 
 **What Changed:**
+
 - ThemeWorkbench, ColorHarmonyPicker, and ContrastChecker now use preset color classes
 - These components are marked as development-only tools
 - Dynamic color swatches use CSS custom properties set via classes
 
 **Migration Notes:**
+
 - These components are intended for design-time use, not production
 - For production deployments with strict CSP, use predefined color palettes
 - If you need dynamic color preview in production, consider a separate dev-tools package
@@ -428,10 +456,10 @@ For cases where presets don't fit, extract styles to CSS:
 <Skeleton class="hero-skeleton" />
 
 <style>
-  :global(.hero-skeleton) {
-    width: 250px;
-    height: 80px;
-  }
+	:global(.hero-skeleton) {
+		width: 250px;
+		height: 80px;
+	}
 </style>
 ```
 
@@ -441,8 +469,10 @@ Verify your application works under strict CSP:
 
 ```html
 <!-- Add to your HTML head for testing -->
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; style-src 'self'; script-src 'self'">
+<meta
+	http-equiv="Content-Security-Policy"
+	content="default-src 'self'; style-src 'self'; script-src 'self'"
+/>
 ```
 
 If components render correctly with this CSP header, you're good to go!
@@ -452,18 +482,20 @@ If components render correctly with this CSP header, you're good to go!
 ### Responsive Skeleton Sizing
 
 **Before:**
+
 ```svelte
 <script>
-  let width = $state(isMobile ? '100%' : '50%');
+	let width = $state(isMobile ? '100%' : '50%');
 </script>
 
-<Skeleton width={width} />
+<Skeleton {width} />
 ```
 
 **After:**
+
 ```svelte
 <script>
-  let widthClass = $state(isMobile ? 'full' : '1/2');
+	let widthClass = $state(isMobile ? 'full' : '1/2');
 </script>
 
 <Skeleton width={widthClass} />
@@ -472,119 +504,127 @@ If components render correctly with this CSP header, you're good to go!
 ### Dynamic Line Clamping
 
 **Before:**
+
 ```svelte
 <script>
-  let lines = $state(expanded ? 10 : 3);
+	let lines = $state(expanded ? 10 : 3);
 </script>
 
-<Text truncate lines={lines}>Long text...</Text>
+<Text truncate {lines}>Long text...</Text>
 ```
 
 **After:**
+
 ```svelte
 <script>
-  let lines = $state(expanded ? 6 : 3); // Clamp to supported range
+	let lines = $state(expanded ? 6 : 3); // Clamp to supported range
 </script>
 
-<Text truncate lines={lines}>Long text...</Text>
+<Text truncate {lines}>Long text...</Text>
 
 <!-- Or use conditional rendering for out-of-range values -->
 {#if expanded}
-  <Text class="clamp-10">Long text...</Text>
+	<Text class="clamp-10">Long text...</Text>
 {:else}
-  <Text truncate lines={3}>Long text...</Text>
+	<Text truncate lines={3}>Long text...</Text>
 {/if}
 
 <style>
-  :global(.clamp-10) {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 10;
-    overflow: hidden;
-  }
+	:global(.clamp-10) {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 10;
+		overflow: hidden;
+	}
 </style>
 ```
 
 ### Custom Container Gutters
 
 **Before:**
+
 ```svelte
 <script>
-  let gutter = $state('2.5rem');
+	let gutter = $state('2.5rem');
 </script>
 
-<Container gutter={gutter}>Content</Container>
+<Container {gutter}>Content</Container>
 ```
 
 **After:**
+
 ```svelte
 <script>
-  let gutterClass = $state('custom-gutter-large');
+	let gutterClass = $state('custom-gutter-large');
 </script>
 
 <Container class={gutterClass}>Content</Container>
 
 <style>
-  :global(.custom-gutter-large) {
-    --gr-container-custom-gutter: 2.5rem;
-  }
+	:global(.custom-gutter-large) {
+		--gr-container-custom-gutter: 2.5rem;
+	}
 </style>
 ```
 
 ### Dynamic Theme Switching
 
 **Before:**
+
 ```svelte
 <script>
-  let customColors = $state({
-    primary: '#6366f1',
-    secondary: '#8b5cf6'
-  });
+	let customColors = $state({
+		primary: '#6366f1',
+		secondary: '#8b5cf6',
+	});
 </script>
 
 <ThemeProvider customPalette={customColors}>
-  <App />
+	<App />
 </ThemeProvider>
 ```
 
 **After:**
+
 ```svelte
 <script>
-  // Define theme classes in your stylesheet
-  let themeClass = $state('theme-indigo');
+	// Define theme classes in your stylesheet
+	let themeClass = $state('theme-indigo');
 </script>
 
 <ThemeProvider class={themeClass}>
-  <App />
+	<App />
 </ThemeProvider>
 
 <style>
-  :global(.theme-indigo) {
-    --gr-color-primary: #6366f1;
-    --gr-color-secondary: #8b5cf6;
-  }
-  :global(.theme-purple) {
-    --gr-color-primary: #8b5cf6;
-    --gr-color-secondary: #a855f7;
-  }
+	:global(.theme-indigo) {
+		--gr-color-primary: #6366f1;
+		--gr-color-secondary: #8b5cf6;
+	}
+	:global(.theme-purple) {
+		--gr-color-primary: #8b5cf6;
+		--gr-color-secondary: #a855f7;
+	}
 </style>
 ```
 
 ### Responsive Section Spacing
 
 **Before:**
+
 ```svelte
 <script>
-  let spacing = $state(isMobile ? '2rem' : '6rem');
+	let spacing = $state(isMobile ? '2rem' : '6rem');
 </script>
 
-<Section spacing={spacing}>Content</Section>
+<Section {spacing}>Content</Section>
 ```
 
 **After:**
+
 ```svelte
 <script>
-  let spacingPreset = $state(isMobile ? 'sm' : 'lg');
+	let spacingPreset = $state(isMobile ? 'sm' : 'lg');
 </script>
 
 <Section spacing={spacingPreset}>Content</Section>
@@ -593,22 +633,20 @@ If components render correctly with this CSP header, you're good to go!
 ### Custom Section Backgrounds
 
 **Before:**
+
 ```svelte
-<Section background="linear-gradient(to right, #667eea, #764ba2)">
-  Hero content
-</Section>
+<Section background="linear-gradient(to right, #667eea, #764ba2)">Hero content</Section>
 ```
 
 **After:**
+
 ```svelte
-<Section class="hero-gradient">
-  Hero content
-</Section>
+<Section class="hero-gradient">Hero content</Section>
 
 <style>
-  :global(.hero-gradient) {
-    background: linear-gradient(to right, #667eea, #764ba2);
-  }
+	:global(.hero-gradient) {
+		background: linear-gradient(to right, #667eea, #764ba2);
+	}
 </style>
 ```
 
@@ -617,18 +655,18 @@ If components render correctly with this CSP header, you're good to go!
 All preset types are exported for type safety:
 
 ```typescript
-import type { 
-  // Milestone 1 types
-  WidthPreset, 
-  HeightPreset, 
-  GutterPreset,
-  // Milestone 2 types
-  PalettePreset,
-  FontPreset,
-  SpacingPreset,
-  BackgroundPreset,
-  GradientDirection,
-  Placement
+import type {
+	// Milestone 1 types
+	WidthPreset,
+	HeightPreset,
+	GutterPreset,
+	// Milestone 2 types
+	PalettePreset,
+	FontPreset,
+	SpacingPreset,
+	BackgroundPreset,
+	GradientDirection,
+	Placement,
 } from '@equaltoai/greater-components-primitives';
 
 // Type-safe preset values

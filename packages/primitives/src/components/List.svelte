@@ -42,12 +42,7 @@
 	});
 
 	const listClass = $derived(() =>
-		[
-			'gr-list',
-			`gr-list--spacing-${spacing}`,
-			maxWidth && `gr-list--max-${maxWidth}`,
-			className,
-		]
+		['gr-list', `gr-list--spacing-${spacing}`, maxWidth && `gr-list--max-${maxWidth}`, className]
 			.filter(Boolean)
 			.join(' ')
 	);

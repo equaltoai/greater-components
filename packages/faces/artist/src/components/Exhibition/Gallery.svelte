@@ -204,40 +204,40 @@ Features:
 	}
 
 	/* Grid layout */
-		.exhibition-gallery__grid {
-			display: grid;
-			grid-template-columns: repeat(3, 1fr);
-			gap: var(--gr-spacing-scale-4);
-		}
+	.exhibition-gallery__grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--gr-spacing-scale-4);
+	}
 
-		.exhibition-gallery__grid--columns-1 {
-			grid-template-columns: repeat(1, 1fr);
-		}
+	.exhibition-gallery__grid--columns-1 {
+		grid-template-columns: repeat(1, 1fr);
+	}
 
-		.exhibition-gallery__grid--columns-2 {
-			grid-template-columns: repeat(2, 1fr);
-		}
+	.exhibition-gallery__grid--columns-2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
 
-		.exhibition-gallery__grid--columns-3 {
-			grid-template-columns: repeat(3, 1fr);
-		}
+	.exhibition-gallery__grid--columns-3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
 
-		.exhibition-gallery__grid--columns-4 {
-			grid-template-columns: repeat(4, 1fr);
-		}
+	.exhibition-gallery__grid--columns-4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
 
-		.exhibition-gallery__grid--columns-5 {
-			grid-template-columns: repeat(5, 1fr);
-		}
+	.exhibition-gallery__grid--columns-5 {
+		grid-template-columns: repeat(5, 1fr);
+	}
 
-		.exhibition-gallery__grid--columns-6 {
-			grid-template-columns: repeat(6, 1fr);
-		}
+	.exhibition-gallery__grid--columns-6 {
+		grid-template-columns: repeat(6, 1fr);
+	}
 
-		.exhibition-gallery__item {
-			position: relative;
-			background: none;
-			border: none;
+	.exhibition-gallery__item {
+		position: relative;
+		background: none;
+		border: none;
 		padding: 0;
 		cursor: pointer;
 		overflow: hidden;

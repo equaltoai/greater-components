@@ -30,6 +30,7 @@ Content-Security-Policy:
 **Requirement 1.2: script-src does not include 'unsafe-inline'**
 
 The `script-src` directive uses nonce-based script loading and does NOT include `'unsafe-inline'`. This means:
+
 - Inline `<script>` tags without a matching nonce are blocked
 - Event handler attributes (`onclick`, `onload`, etc.) are blocked
 - `javascript:` URLs are blocked
@@ -37,6 +38,7 @@ The `script-src` directive uses nonce-based script loading and does NOT include 
 **Requirement 1.3: style-src does not include 'unsafe-inline' or 'unsafe-hashes'**
 
 The `style-src` directive uses nonce-based stylesheet loading and does NOT include `'unsafe-inline'` or `'unsafe-hashes'`. This means:
+
 - Inline `<style>` tags without a matching nonce are blocked
 - **`style="..."` attributes on HTML elements are blocked**
 - CSS loaded via `@import` without proper nonce is blocked
@@ -54,6 +56,7 @@ Greater Components maintains a strict policy:
 > **No shipped components shall emit inline `style` attributes or inline `<script>` tags in their rendered output.**
 
 This policy is:
+
 - **Enforceable**: Automated CSP scanners validate compliance in CI/CD pipelines
 - **Comprehensive**: Applies to all components in `packages/primitives`, `packages/faces/*`, and `packages/shared/*`
 - **Non-negotiable**: Components that violate this policy are considered ship-blocking bugs
@@ -84,8 +87,8 @@ Greater Components **do not support** a `style` prop for shipped components. Thi
 ```css
 /* Define custom styles in your stylesheet */
 .custom-button {
-  background: red;
-  padding: 20px;
+	background: red;
+	padding: 20px;
 }
 ```
 
@@ -110,12 +113,12 @@ If you need custom styling:
 
 ```css
 .custom-avatar {
-  --gr-avatar-size: 80px;
-  border: 2px solid gold;
+	--gr-avatar-size: 80px;
+	border: 2px solid gold;
 }
 
 .custom-container {
-  --gr-container-custom-gutter: 3rem;
+	--gr-container-custom-gutter: 3rem;
 }
 ```
 
@@ -125,24 +128,24 @@ If you need custom styling:
 
 The following table shows the CSP compliance status of all Greater Components primitives:
 
-| Component | CSP Status | Milestone | Notes |
-| --------- | ---------- | --------- | ----- |
-| **Core Primitives (Milestone 1)** | | | |
-| Skeleton | ✅ Compliant | 1 | Preset-based width/height |
-| Avatar | ✅ Compliant | 1 | Deterministic color classes |
-| Text | ✅ Compliant | 1 | Preset line clamping (2-6) |
-| Container | ✅ Compliant | 1 | Preset gutters |
-| Button | ✅ Compliant | 1 | No inline styles |
-| Card | ✅ Compliant | 1 | No inline styles |
-| **Theme & Layout (Milestone 2)** | | | |
-| ThemeProvider | ✅ Compliant | 2 | Preset palettes and fonts |
-| Section | ✅ Compliant | 2 | Preset spacing and backgrounds |
-| ThemeSwitcher | ✅ Compliant | 2 | Preset preview colors |
-| Tooltip | ✅ Compliant | 2 | CSS-based positioning |
-| **Theme Tooling (Dev-Only)** | | | |
-| ThemeWorkbench | ⚠️ Dev-Only | 2 | Not for production CSP environments |
-| ColorHarmonyPicker | ⚠️ Dev-Only | 2 | Not for production CSP environments |
-| ContrastChecker | ⚠️ Dev-Only | 2 | Not for production CSP environments |
+| Component                         | CSP Status   | Milestone | Notes                               |
+| --------------------------------- | ------------ | --------- | ----------------------------------- |
+| **Core Primitives (Milestone 1)** |              |           |                                     |
+| Skeleton                          | ✅ Compliant | 1         | Preset-based width/height           |
+| Avatar                            | ✅ Compliant | 1         | Deterministic color classes         |
+| Text                              | ✅ Compliant | 1         | Preset line clamping (2-6)          |
+| Container                         | ✅ Compliant | 1         | Preset gutters                      |
+| Button                            | ✅ Compliant | 1         | No inline styles                    |
+| Card                              | ✅ Compliant | 1         | No inline styles                    |
+| **Theme & Layout (Milestone 2)**  |              |           |                                     |
+| ThemeProvider                     | ✅ Compliant | 2         | Preset palettes and fonts           |
+| Section                           | ✅ Compliant | 2         | Preset spacing and backgrounds      |
+| ThemeSwitcher                     | ✅ Compliant | 2         | Preset preview colors               |
+| Tooltip                           | ✅ Compliant | 2         | CSS-based positioning               |
+| **Theme Tooling (Dev-Only)**      |              |           |                                     |
+| ThemeWorkbench                    | ⚠️ Dev-Only  | 2         | Not for production CSP environments |
+| ColorHarmonyPicker                | ⚠️ Dev-Only  | 2         | Not for production CSP environments |
+| ContrastChecker                   | ⚠️ Dev-Only  | 2         | Not for production CSP environments |
 
 ### Theme Tooling Components (Development-Only)
 
@@ -165,6 +168,7 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 #### Milestone 1 Components
 
 **Skeleton Component**:
+
 ```svelte
 <!-- Width presets -->
 <Skeleton width="full" />
@@ -178,6 +182,7 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 ```
 
 **Avatar Component**:
+
 ```svelte
 <!-- Deterministic color classes based on name -->
 <Avatar name="John Doe" />
@@ -185,6 +190,7 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 ```
 
 **Text Component**:
+
 ```svelte
 <!-- Bounded line clamping (2-6 lines) -->
 <Text truncate lines={3} />
@@ -192,6 +198,7 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 ```
 
 **Container Component**:
+
 ```svelte
 <!-- Preset gutters -->
 <Container gutter="md" />
@@ -201,24 +208,26 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 #### Milestone 2 Components
 
 **ThemeProvider Component**:
+
 ```svelte
 <!-- Palette presets -->
 <ThemeProvider palette="slate">
-  <App />
+	<App />
 </ThemeProvider>
 
 <!-- Typography presets -->
 <ThemeProvider headingFontPreset="serif" bodyFontPreset="sans">
-  <App />
+	<App />
 </ThemeProvider>
 
 <!-- Custom theming via external CSS -->
 <ThemeProvider class="my-custom-theme">
-  <App />
+	<App />
 </ThemeProvider>
 ```
 
 **Section Component**:
+
 ```svelte
 <!-- Spacing presets -->
 <Section spacing="lg">Content</Section>
@@ -226,25 +235,25 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 
 <!-- Background presets -->
 <Section background="muted">Muted section</Section>
-<Section background="gradient" gradientDirection="to-bottom-right">
-  Gradient section
-</Section>
+<Section background="gradient" gradientDirection="to-bottom-right">Gradient section</Section>
 ```
 
 **Tooltip Component**:
+
 ```svelte
 <!-- Placement presets -->
 <Tooltip content="Help" placement="top">
-  <Button>Hover me</Button>
+	<Button>Hover me</Button>
 </Tooltip>
 
 <!-- Auto placement -->
 <Tooltip content="Auto positioned" placement="auto">
-  <Button>Hover me</Button>
+	<Button>Hover me</Button>
 </Tooltip>
 ```
 
 **ThemeSwitcher Component**:
+
 ```svelte
 <!-- Compact variant -->
 <ThemeSwitcher variant="compact" />
@@ -267,19 +276,19 @@ For values outside preset ranges, use the `class` prop with external CSS:
 ```css
 /* External stylesheet */
 .custom-skeleton {
-  width: 37.5%;
-  height: 2.75rem;
+	width: 37.5%;
+	height: 2.75rem;
 }
 
 .custom-text {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 10;
-  overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 10;
+	overflow: hidden;
 }
 
 .custom-container {
-  --gr-container-custom-gutter: 2.5rem;
+	--gr-container-custom-gutter: 2.5rem;
 }
 ```
 
@@ -349,10 +358,10 @@ CSP validation is integrated into the CI/CD pipeline through the `validate:packa
 
 ```json
 {
-  "scripts": {
-    "validate:csp": "node scripts/audit-csp.mjs",
-    "validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp"
-  }
+	"scripts": {
+		"validate:csp": "node scripts/audit-csp.mjs",
+		"validate:package": "pnpm validate:exports && pnpm validate:dist && pnpm validate:deps && pnpm validate:cli && pnpm validate:tokens && pnpm validate:ids && pnpm validate:csp"
+	}
 }
 ```
 
@@ -384,10 +393,12 @@ pnpm lint && pnpm typecheck && pnpm validate:csp
 The scanner categorizes violations based on file location:
 
 **Ship-Blocking** (fails CI):
+
 - Files in `packages/primitives/src/components/`
 - Core components that ship to all consumers
 
 **Follow-Up** (reported but doesn't fail CI):
+
 - Files in `packages/faces/*/src/`
 - Files in `packages/shared/*/src/`
 - Application code in `apps/`
@@ -410,22 +421,26 @@ Example remediation:
 
 ```svelte
 <!-- ❌ Before: CSP violation -->
-<div style="width: {width}px; height: {height}px;">
-  Content
-</div>
+<div style="width: {width}px; height: {height}px;">Content</div>
 
 <!-- ✅ After: CSP compliant -->
-<div class="gr-component {widthClass} {heightClass}">
-  Content
-</div>
+<div class="gr-component {widthClass} {heightClass}">Content</div>
 ```
 
 ```css
 /* Add preset classes in component CSS */
-.gr-component--width-sm { width: 200px; }
-.gr-component--width-md { width: 400px; }
-.gr-component--height-sm { height: 100px; }
-.gr-component--height-md { height: 200px; }
+.gr-component--width-sm {
+	width: 200px;
+}
+.gr-component--width-md {
+	width: 400px;
+}
+.gr-component--height-sm {
+	height: 100px;
+}
+.gr-component--height-md {
+	height: 200px;
+}
 ```
 
 ## Migration Guide
@@ -455,18 +470,21 @@ If you're using Greater Components in a CSP-restricted environment:
 Components refactored for CSP compliance may have breaking API changes:
 
 #### Milestone 1 Components
+
 - **Skeleton**: `width` and `height` now accept preset strings, not arbitrary numbers
 - **Avatar**: Background colors are deterministic based on name hash, not customizable
 - **Text**: `lines` prop supports 2-6 only; other values require external CSS
 - **Container**: `gutter` accepts preset strings only; custom values require external CSS
 
 #### Milestone 2 Components
+
 - **ThemeProvider**: `customPalette`, `headingFont`, and `bodyFont` props removed; use `headingFontPreset`, `bodyFontPreset`, and `class` prop with external CSS
 - **Section**: `spacing` and `background` now accept preset values only; arbitrary CSS values require external CSS
 - **ThemeSwitcher**: `showAdvanced` and `showWorkbench` props removed; use external CSS for custom theming
 - **Tooltip**: Positioning is now CSS-based (relative to trigger); pixel-perfect positioning requires external CSS
 
 #### Theme Tooling (Dev-Only)
+
 - **ThemeWorkbench**: Marked as development-only; uses preset swatch classes
 - **ColorHarmonyPicker**: Marked as development-only; uses preset color classes
 - **ContrastChecker**: Marked as development-only; uses preset color combinations
@@ -482,83 +500,83 @@ Greater Components uses property-based testing to verify CSP compliance:
 ```typescript
 // Milestone 1 Example: Verify no style attributes across all prop combinations
 fc.assert(
-  fc.property(
-    fc.record({
-      variant: fc.constantFrom('text', 'circular', 'rectangular'),
-      width: fc.option(fc.constantFrom('full', '1/2', '1/3')),
-      height: fc.option(fc.constantFrom('xs', 'sm', 'md', 'lg'))
-    }),
-    (props) => {
-      const { container } = render(Skeleton, { props });
-      const element = container.querySelector('.gr-skeleton');
-      return element && !element.hasAttribute('style');
-    }
-  ),
-  { numRuns: 100 }
+	fc.property(
+		fc.record({
+			variant: fc.constantFrom('text', 'circular', 'rectangular'),
+			width: fc.option(fc.constantFrom('full', '1/2', '1/3')),
+			height: fc.option(fc.constantFrom('xs', 'sm', 'md', 'lg')),
+		}),
+		(props) => {
+			const { container } = render(Skeleton, { props });
+			const element = container.querySelector('.gr-skeleton');
+			return element && !element.hasAttribute('style');
+		}
+	),
+	{ numRuns: 100 }
 );
 ```
 
 ```typescript
 // Milestone 2 Example: ThemeProvider CSP compliance
 fc.assert(
-  fc.property(
-    fc.record({
-      theme: fc.option(fc.constantFrom('light', 'dark', 'high-contrast', 'auto')),
-      palette: fc.option(fc.constantFrom('slate', 'stone', 'neutral', 'zinc', 'gray')),
-      headingFontPreset: fc.option(fc.constantFrom('system', 'sans', 'serif', 'mono')),
-      bodyFontPreset: fc.option(fc.constantFrom('system', 'sans', 'serif', 'mono'))
-    }),
-    (props) => {
-      const { container } = render(ThemeProvider, { props: { ...props, children: mockSnippet } });
-      const element = container.querySelector('.gr-theme-provider');
-      return element && !element.hasAttribute('style');
-    }
-  ),
-  { numRuns: 100 }
+	fc.property(
+		fc.record({
+			theme: fc.option(fc.constantFrom('light', 'dark', 'high-contrast', 'auto')),
+			palette: fc.option(fc.constantFrom('slate', 'stone', 'neutral', 'zinc', 'gray')),
+			headingFontPreset: fc.option(fc.constantFrom('system', 'sans', 'serif', 'mono')),
+			bodyFontPreset: fc.option(fc.constantFrom('system', 'sans', 'serif', 'mono')),
+		}),
+		(props) => {
+			const { container } = render(ThemeProvider, { props: { ...props, children: mockSnippet } });
+			const element = container.querySelector('.gr-theme-provider');
+			return element && !element.hasAttribute('style');
+		}
+	),
+	{ numRuns: 100 }
 );
 ```
 
 ```typescript
 // Milestone 2 Example: Section CSP compliance
 fc.assert(
-  fc.property(
-    fc.record({
-      spacing: fc.option(fc.constantFrom('none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl')),
-      background: fc.option(fc.constantFrom('default', 'muted', 'accent', 'gradient')),
-      gradientDirection: fc.option(fc.constantFrom('to-top', 'to-bottom', 'to-left', 'to-right'))
-    }),
-    (props) => {
-      const { container } = render(Section, { props });
-      const element = container.querySelector('.gr-section');
-      return element && !element.hasAttribute('style');
-    }
-  ),
-  { numRuns: 100 }
+	fc.property(
+		fc.record({
+			spacing: fc.option(fc.constantFrom('none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl')),
+			background: fc.option(fc.constantFrom('default', 'muted', 'accent', 'gradient')),
+			gradientDirection: fc.option(fc.constantFrom('to-top', 'to-bottom', 'to-left', 'to-right')),
+		}),
+		(props) => {
+			const { container } = render(Section, { props });
+			const element = container.querySelector('.gr-section');
+			return element && !element.hasAttribute('style');
+		}
+	),
+	{ numRuns: 100 }
 );
 ```
 
 ```typescript
 // Milestone 2 Example: Tooltip CSP compliance
 fc.assert(
-  fc.property(
-    fc.record({
-      content: fc.string({ minLength: 1 }),
-      placement: fc.constantFrom('top', 'bottom', 'left', 'right', 'auto'),
-      trigger: fc.constantFrom('hover', 'focus', 'click'),
-      disabled: fc.boolean()
-    }),
-    async (props) => {
-      const { container } = render(Tooltip, { props: { ...props, children: mockSnippet } });
-      const trigger = container.querySelector('.gr-tooltip-trigger');
-      await fireEvent.mouseEnter(trigger);
-      await waitFor(() => {
-        const tooltip = container.querySelector('.gr-tooltip');
-        return tooltip && !tooltip.hasAttribute('style');
-      });
-      return true;
-    }
-  ),
-  { numRuns: 100 }
+	fc.property(
+		fc.record({
+			content: fc.string({ minLength: 1 }),
+			placement: fc.constantFrom('top', 'bottom', 'left', 'right', 'auto'),
+			trigger: fc.constantFrom('hover', 'focus', 'click'),
+			disabled: fc.boolean(),
+		}),
+		async (props) => {
+			const { container } = render(Tooltip, { props: { ...props, children: mockSnippet } });
+			const trigger = container.querySelector('.gr-tooltip-trigger');
+			await fireEvent.mouseEnter(trigger);
+			await waitFor(() => {
+				const tooltip = container.querySelector('.gr-tooltip');
+				return tooltip && !tooltip.hasAttribute('style');
+			});
+			return true;
+		}
+	),
+	{ numRuns: 100 }
 );
 ```
 
@@ -567,9 +585,12 @@ fc.assert(
 To verify CSP compliance in your application:
 
 1. **Enable strict CSP in development**:
+
 ```html
-<meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; style-src 'self'; script-src 'self';">
+<meta
+	http-equiv="Content-Security-Policy"
+	content="default-src 'self'; style-src 'self'; script-src 'self';"
+/>
 ```
 
 2. **Check browser console**: Look for CSP violation warnings

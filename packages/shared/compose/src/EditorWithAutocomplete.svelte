@@ -62,10 +62,10 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 
 	let textareaEl: HTMLTextAreaElement;
 	let showAutocomplete = $state(false);
-		let autocompleteMatch = $state<AutocompleteMatch | null>(null);
-		let suggestions = $state<AutocompleteSuggestion[]>([]);
-		let selectedIndex = $state(0);
-		let loading = $state(false);
+	let autocompleteMatch = $state<AutocompleteMatch | null>(null);
+	let suggestions = $state<AutocompleteSuggestion[]>([]);
+	let selectedIndex = $state(0);
+	let loading = $state(false);
 
 	if (untrack(() => autofocus)) {
 		onMount(() => {
@@ -99,10 +99,10 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 			return;
 		}
 
-			autocompleteMatch = match;
+		autocompleteMatch = match;
 
-			// Fetch suggestions
-			if (searchHandler) {
+		// Fetch suggestions
+		if (searchHandler) {
 			loading = true;
 			try {
 				const allSuggestions = await searchHandler(match.query, match.type);
@@ -206,8 +206,7 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		showAutocomplete = false;
 		autocompleteMatch = null;
 	}
-
-	</script>
+</script>
 
 <div class="editor-with-autocomplete">
 	<textarea
@@ -223,13 +222,13 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		aria-describedby="compose-character-count"
 	></textarea>
 
-		{#if showAutocomplete && autocompleteMatch}
-			<AutocompleteMenu
-				{suggestions}
-				{selectedIndex}
-				{loading}
-				onSelect={handleSelectSuggestion}
-				onClose={handleCloseAutocomplete}
-			/>
+	{#if showAutocomplete && autocompleteMatch}
+		<AutocompleteMenu
+			{suggestions}
+			{selectedIndex}
+			{loading}
+			onSelect={handleSelectSuggestion}
+			onClose={handleCloseAutocomplete}
+		/>
 	{/if}
 </div>

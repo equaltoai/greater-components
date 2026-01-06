@@ -152,14 +152,11 @@ describe('Text.svelte - CSP Compliance Property Tests', () => {
 		// Feature: csp-baseline-and-primitives, Property 20
 		// Validates: Requirements 5.1
 		fc.assert(
-			fc.property(
-				fc.integer({ min: 2, max: 6 }),
-				(lines) => {
-					const { container } = render(Text, { props: { truncate: true, lines } });
-					const element = container.querySelector('.gr-text');
-					return hasNoStyleAttribute(element);
-				}
-			),
+			fc.property(fc.integer({ min: 2, max: 6 }), (lines) => {
+				const { container } = render(Text, { props: { truncate: true, lines } });
+				const element = container.querySelector('.gr-text');
+				return hasNoStyleAttribute(element);
+			}),
 			{ numRuns: 100 }
 		);
 	});
@@ -168,22 +165,18 @@ describe('Text.svelte - CSP Compliance Property Tests', () => {
 		// Feature: csp-baseline-and-primitives, Property 21
 		// Validates: Requirements 5.3
 		fc.assert(
-			fc.property(
-				fc.constantFrom(2, 3, 4, 5, 6),
-				(lines) => {
-					const expectedClass = `gr-text--clamp-${lines}`;
-					const generatedClass = getClampClass(lines);
-					
-					// Also verify the component renders with the correct class
-					const { container } = render(Text, { props: { truncate: true, lines } });
-					const element = container.querySelector('.gr-text');
-					
-					return (
-						generatedClass === expectedClass &&
-						element?.classList.contains(expectedClass) === true
-					);
-				}
-			),
+			fc.property(fc.constantFrom(2, 3, 4, 5, 6), (lines) => {
+				const expectedClass = `gr-text--clamp-${lines}`;
+				const generatedClass = getClampClass(lines);
+
+				// Also verify the component renders with the correct class
+				const { container } = render(Text, { props: { truncate: true, lines } });
+				const element = container.querySelector('.gr-text');
+
+				return (
+					generatedClass === expectedClass && element?.classList.contains(expectedClass) === true
+				);
+			}),
 			{ numRuns: 100 }
 		);
 	});
@@ -192,26 +185,23 @@ describe('Text.svelte - CSP Compliance Property Tests', () => {
 		// Feature: csp-baseline-and-primitives, Property 22
 		// Validates: Requirements 5.5
 		fc.assert(
-			fc.property(
-				fc.integer({ min: 1, max: 10 }),
-				(lines) => {
-					const { container } = render(Text, { props: { truncate: true, lines } });
-					const element = container.querySelector('.gr-text');
-					
-					// Check that no style attribute exists
-					if (element?.hasAttribute('style')) {
-						return false;
-					}
-					
-					// Check that the style attribute doesn't contain the CSS variable
-					const styleAttr = element?.getAttribute('style');
-					if (styleAttr && styleAttr.includes('--gr-text-clamp-lines')) {
-						return false;
-					}
-					
-					return true;
+			fc.property(fc.integer({ min: 1, max: 10 }), (lines) => {
+				const { container } = render(Text, { props: { truncate: true, lines } });
+				const element = container.querySelector('.gr-text');
+
+				// Check that no style attribute exists
+				if (element?.hasAttribute('style')) {
+					return false;
 				}
-			),
+
+				// Check that the style attribute doesn't contain the CSS variable
+				const styleAttr = element?.getAttribute('style');
+				if (styleAttr && styleAttr.includes('--gr-text-clamp-lines')) {
+					return false;
+				}
+
+				return true;
+			}),
 			{ numRuns: 100 }
 		);
 	});
@@ -231,13 +221,13 @@ describe('Text.svelte - CSP Compliance Property Tests', () => {
 					lines: fc.option(fc.integer({ min: 2, max: 6 })),
 				}),
 				(props) => {
-					const { container } = render(Text, { 
+					const { container } = render(Text, {
 						props: {
 							...props,
 							lines: props.lines ?? undefined,
-						}
+						},
 					});
-					
+
 					// Check all elements for style attributes
 					const allElements = container.querySelectorAll('*');
 					for (const element of allElements) {

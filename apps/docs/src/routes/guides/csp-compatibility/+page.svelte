@@ -189,16 +189,16 @@
 		</p>
 		<CodeExample language="bash" code={`pnpm validate:csp`} />
 		<p>
-			It fails CI if any shipped templates emit inline styles, or if the docs/playground build output
-			contains inline <code>&lt;script&gt;</code> tags or <code>style="..."</code> attributes.
+			It fails CI if any shipped templates emit inline styles, or if the docs/playground build
+			output contains inline <code>&lt;script&gt;</code> tags or <code>style="..."</code> attributes.
 		</p>
 	</section>
 
 	<section>
 		<h2>Next</h2>
 		<p>
-			See <a href="/guides/csp-migration">CSP Migration Guide</a> for concrete before/after examples
-			for breaking changes.
+			See <a href="/guides/csp-migration">CSP Migration Guide</a> for concrete before/after examples for
+			breaking changes.
 		</p>
 	</section>
 </article>

@@ -117,7 +117,9 @@ describe('ThemeSwitcher.svelte', () => {
 		// CSP compliance: no inline style attribute
 		expect(previewButton.hasAttribute('style')).toBe(false);
 		// Should use preset class instead
-		expect(previewButton.classList.contains('gr-theme-switcher__preview-button--primary')).toBe(true);
+		expect(previewButton.classList.contains('gr-theme-switcher__preview-button--primary')).toBe(
+			true
+		);
 	});
 });
 
@@ -129,10 +131,9 @@ describe('ThemeSwitcher CSP Compliance - Property Tests', () => {
 		fc.assert(
 			fc.property(
 				fc.record({
-					variant: fc.option(
-						fc.constantFrom('compact', 'full') as fc.Arbitrary<Variant>,
-						{ nil: undefined }
-					),
+					variant: fc.option(fc.constantFrom('compact', 'full') as fc.Arbitrary<Variant>, {
+						nil: undefined,
+					}),
 					showPreview: fc.option(fc.boolean(), { nil: undefined }),
 					value: fc.option(
 						fc.constantFrom('light', 'dark', 'high-contrast', 'auto') as fc.Arbitrary<ColorScheme>,
@@ -181,8 +182,12 @@ describe('ThemeSwitcher CSP Compliance - Property Tests', () => {
 					});
 
 					// Find preview buttons
-					const primaryButton = container.querySelector('.gr-theme-switcher__preview-button--primary');
-					const secondaryButton = container.querySelector('.gr-theme-switcher__preview-button--secondary');
+					const primaryButton = container.querySelector(
+						'.gr-theme-switcher__preview-button--primary'
+					);
+					const secondaryButton = container.querySelector(
+						'.gr-theme-switcher__preview-button--secondary'
+					);
 
 					// Both buttons should exist
 					expect(primaryButton).toBeTruthy();
@@ -194,7 +199,9 @@ describe('ThemeSwitcher CSP Compliance - Property Tests', () => {
 
 					// Both should have the base preview button class
 					expect(primaryButton?.classList.contains('gr-theme-switcher__preview-button')).toBe(true);
-					expect(secondaryButton?.classList.contains('gr-theme-switcher__preview-button')).toBe(true);
+					expect(secondaryButton?.classList.contains('gr-theme-switcher__preview-button')).toBe(
+						true
+					);
 
 					return true;
 				}

@@ -60,7 +60,9 @@
 	let showTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let hideTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let longPressTimeout: ReturnType<typeof setTimeout> | null = $state(null);
-	let actualPlacement: ActualPlacement = $state(untrack(() => (placement === 'auto' ? 'top' : placement)));
+	let actualPlacement: ActualPlacement = $state(
+		untrack(() => (placement === 'auto' ? 'top' : placement))
+	);
 
 	$effect(() => {
 		if (placement !== 'auto') {

@@ -327,15 +327,15 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 	const canAddMore = $derived(files.length < maxFiles);
 </script>
 
-	<div class={`media-upload ${className}`}>
-		<input
-			bind:this={fileInput}
-			class="media-upload__input"
-			type="file"
-			accept="image/*,video/*,audio/*"
-			multiple
-			onchange={handleInputChange}
-		/>
+<div class={`media-upload ${className}`}>
+	<input
+		bind:this={fileInput}
+		class="media-upload__input"
+		type="file"
+		accept="image/*,video/*,audio/*"
+		multiple
+		onchange={handleInputChange}
+	/>
 
 	{#if error}
 		<div class="media-upload__error" role="alert">

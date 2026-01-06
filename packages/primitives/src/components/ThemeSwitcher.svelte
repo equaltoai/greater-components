@@ -21,15 +21,15 @@
 		children?: Snippet;
 	}
 
-		let {
-			variant = 'compact', // Default to compact for header usage
-			showPreview = true,
-			showAdvanced: _showAdvanced = false,
-			showWorkbench: _showWorkbench = false,
-			class: className = '',
-			value,
-			onThemeChange,
-			children,
+	let {
+		variant = 'compact', // Default to compact for header usage
+		showPreview = true,
+		showAdvanced: _showAdvanced = false,
+		showWorkbench: _showWorkbench = false,
+		class: className = '',
+		value,
+		onThemeChange,
+		children,
 	}: Props = $props();
 
 	// Get reactive state from preferences store

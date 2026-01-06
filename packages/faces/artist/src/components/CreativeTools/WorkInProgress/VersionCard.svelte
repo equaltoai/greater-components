@@ -86,7 +86,14 @@ WorkInProgress.VersionCard - Individual version display with notes
 						preserveAspectRatio="none"
 						aria-hidden="true"
 					>
-						<rect class="wip-version-card__progress-track" x="0" y="0" width="100" height="8" rx="4" />
+						<rect
+							class="wip-version-card__progress-track"
+							x="0"
+							y="0"
+							width="100"
+							height="8"
+							rx="4"
+						/>
 						<rect
 							class="wip-version-card__progress-fill"
 							x="0"

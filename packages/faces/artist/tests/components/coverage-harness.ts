@@ -773,36 +773,36 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					layout: 'grid',
 				},
 			},
-				{
-					name: 'editable',
-					props: {
-						board: mockReferenceBoard,
-						editable: true,
-						handlers: {
-							onRemoveItem: vi.fn(),
-							onUpdateItem: vi.fn(),
-							onSave: vi.fn(),
-							onShare: vi.fn(),
-						},
-					},
-					action: async () => {
-						// Remove item
-						const removeBtns = screen.getAllByLabelText('Remove reference');
-						if (removeBtns[0]) {
-							await fireEvent.click(removeBtns[0]);
-						}
-
-						// Save
-						const saveBtn = screen.getByText('Save Board');
-						await fireEvent.click(saveBtn);
-
-						// Share
-						const shareBtn = screen.getByText('Share');
-						await fireEvent.click(shareBtn);
+			{
+				name: 'editable',
+				props: {
+					board: mockReferenceBoard,
+					editable: true,
+					handlers: {
+						onRemoveItem: vi.fn(),
+						onUpdateItem: vi.fn(),
+						onSave: vi.fn(),
+						onShare: vi.fn(),
 					},
 				},
-			],
-		},
+				action: async () => {
+					// Remove item
+					const removeBtns = screen.getAllByLabelText('Remove reference');
+					if (removeBtns[0]) {
+						await fireEvent.click(removeBtns[0]);
+					}
+
+					// Save
+					const saveBtn = screen.getByText('Save Board');
+					await fireEvent.click(saveBtn);
+
+					// Share
+					const shareBtn = screen.getByText('Share');
+					await fireEvent.click(shareBtn);
+				},
+			},
+		],
+	},
 
 	// Discovery - SearchBar
 	'Discovery/SearchBar': {

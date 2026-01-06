@@ -182,7 +182,12 @@ Features:
 		<div class="mood-map__gradient" aria-hidden="true"></div>
 
 		<!-- Selection indicator -->
-		<svg class="mood-map__selection" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+		<svg
+			class="mood-map__selection"
+			viewBox="0 0 100 100"
+			preserveAspectRatio="none"
+			aria-hidden="true"
+		>
 			<circle
 				class="mood-map__selection-ring"
 				cx={selectionX}

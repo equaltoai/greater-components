@@ -366,25 +366,25 @@ Hover/focus contextual information with CSS-based positioning for CSP compliance
 
 **Props:**
 
-| Prop        | Type                                                | Default                    | Description                                    |
-| ----------- | --------------------------------------------------- | -------------------------- | ---------------------------------------------- |
-| `content`   | `string`                                            | -                          | Tooltip content (required)                     |
-| `id`        | `string`                                            | -                          | Custom ID for accessibility                    |
-| `placement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'auto'`  | `'top'`                    | Position relative to trigger                   |
-| `trigger`   | `'hover' \| 'focus' \| 'click' \| 'manual'`         | `'hover'`                  | How tooltip is triggered                       |
-| `delay`     | `number \| { show?: number; hide?: number }`        | `{ show: 500, hide: 100 }` | Show/hide delay (ms)                           |
-| `disabled`  | `boolean`                                           | `false`                    | Disable tooltip                                |
-| `class`     | `string`                                            | `''`                       | Additional CSS classes                         |
-| `children`  | `Snippet`                                           | -                          | Trigger element                                |
+| Prop        | Type                                               | Default                    | Description                  |
+| ----------- | -------------------------------------------------- | -------------------------- | ---------------------------- |
+| `content`   | `string`                                           | -                          | Tooltip content (required)   |
+| `id`        | `string`                                           | -                          | Custom ID for accessibility  |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'auto'` | `'top'`                    | Position relative to trigger |
+| `trigger`   | `'hover' \| 'focus' \| 'click' \| 'manual'`        | `'hover'`                  | How tooltip is triggered     |
+| `delay`     | `number \| { show?: number; hide?: number }`       | `{ show: 500, hide: 100 }` | Show/hide delay (ms)         |
+| `disabled`  | `boolean`                                          | `false`                    | Disable tooltip              |
+| `class`     | `string`                                           | `''`                       | Additional CSS classes       |
+| `children`  | `Snippet`                                          | -                          | Trigger element              |
 
 **Placement Options:**
 
-| Placement | Description                                           |
-| --------- | ----------------------------------------------------- |
-| `top`     | Above the trigger, centered horizontally              |
-| `bottom`  | Below the trigger, centered horizontally              |
-| `left`    | Left of the trigger, centered vertically              |
-| `right`   | Right of the trigger, centered vertically             |
+| Placement | Description                                            |
+| --------- | ------------------------------------------------------ |
+| `top`     | Above the trigger, centered horizontally               |
+| `bottom`  | Below the trigger, centered horizontally               |
+| `left`    | Left of the trigger, centered vertically               |
+| `right`   | Right of the trigger, centered vertically              |
 | `auto`    | Automatically selects best placement based on viewport |
 
 **CSP Compliance:**
@@ -405,44 +405,44 @@ The tooltip uses CSS-based positioning relative to its trigger element:
 
 **Positioning Constraints vs Previous Implementation:**
 
-| Feature                    | Previous (Inline Styles)        | Current (CSS Classes)           |
-| -------------------------- | ------------------------------- | ------------------------------- |
-| Pixel-perfect positioning  | ✅ Calculated per-pixel         | ❌ Relative to trigger          |
-| Viewport edge handling     | ✅ Precise repositioning        | ⚠️ Class-based fallback         |
-| CSP compliance             | ❌ Requires unsafe-inline       | ✅ Fully compliant              |
-| Performance                | ⚠️ JS calculations on show      | ✅ Pure CSS positioning         |
+| Feature                   | Previous (Inline Styles)   | Current (CSS Classes)   |
+| ------------------------- | -------------------------- | ----------------------- |
+| Pixel-perfect positioning | ✅ Calculated per-pixel    | ❌ Relative to trigger  |
+| Viewport edge handling    | ✅ Precise repositioning   | ⚠️ Class-based fallback |
+| CSP compliance            | ❌ Requires unsafe-inline  | ✅ Fully compliant      |
+| Performance               | ⚠️ JS calculations on show | ✅ Pure CSS positioning |
 
 **Example:**
 
 ```svelte
 <script>
-  import { Tooltip, Button } from '$lib/greater/primitives';
-  import { SettingsIcon, InfoIcon } from '$lib/greater/icons';
+	import { Tooltip, Button } from '$lib/greater/primitives';
+	import { SettingsIcon, InfoIcon } from '$lib/greater/icons';
 </script>
 
 <!-- Basic usage -->
 <Tooltip content="Settings">
-  <Button variant="ghost"><SettingsIcon /></Button>
+	<Button variant="ghost"><SettingsIcon /></Button>
 </Tooltip>
 
 <!-- Different placements -->
 <Tooltip content="Info" placement="bottom">
-  <InfoIcon />
+	<InfoIcon />
 </Tooltip>
 
 <!-- Auto placement -->
 <Tooltip content="Automatically positioned" placement="auto">
-  <Button>Hover me</Button>
+	<Button>Hover me</Button>
 </Tooltip>
 
 <!-- Click trigger -->
 <Tooltip content="Click to toggle" trigger="click">
-  <Button>Click me</Button>
+	<Button>Click me</Button>
 </Tooltip>
 
 <!-- Custom delay -->
 <Tooltip content="Quick show" delay={{ show: 100, hide: 200 }}>
-  <span>Hover for quick tooltip</span>
+	<span>Hover for quick tooltip</span>
 </Tooltip>
 ```
 
@@ -453,11 +453,11 @@ For pixel-perfect positioning requirements, use the `class` prop with external C
 ```css
 /* In your app's stylesheet */
 .my-custom-tooltip {
-  /* Override default positioning */
-  top: auto !important;
-  bottom: auto !important;
-  left: 50% !important;
-  transform: translateX(-50%) translateY(-120%) !important;
+	/* Override default positioning */
+	top: auto !important;
+	bottom: auto !important;
+	left: 50% !important;
+	transform: translateX(-50%) translateY(-120%) !important;
 }
 ```
 
@@ -654,15 +654,15 @@ Loading placeholder with shape variants and animations.
 
 **Props:**
 
-| Prop        | Type                                                 | Default   | Description                      |
-| ----------- | ---------------------------------------------------- | --------- | -------------------------------- |
-| `variant`   | `'text' \| 'circular' \| 'rectangular' \| 'rounded'` | `'text'`  | Shape variant                    |
-| `width`     | `'full' \| '1/2' \| '1/3' \| '2/3' \| '1/4' \| '3/4' \| 'content' \| 'auto'` | - | Width preset (use `class` for custom widths) |
-| `height`    | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'`       | -         | Height preset (use `class` for custom heights) |
-| `animation` | `'pulse' \| 'wave' \| 'none'`                        | `'pulse'` | Animation type                   |
-| `loading`   | `boolean`                                            | `true`    | Show skeleton or children        |
-| `children`  | `Snippet`                                            | -         | Content to show when not loading |
-| `class`     | `string`                                             | `''`      | Additional CSS classes           |
+| Prop        | Type                                                                         | Default   | Description                                    |
+| ----------- | ---------------------------------------------------------------------------- | --------- | ---------------------------------------------- |
+| `variant`   | `'text' \| 'circular' \| 'rectangular' \| 'rounded'`                         | `'text'`  | Shape variant                                  |
+| `width`     | `'full' \| '1/2' \| '1/3' \| '2/3' \| '1/4' \| '3/4' \| 'content' \| 'auto'` | -         | Width preset (use `class` for custom widths)   |
+| `height`    | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'`                              | -         | Height preset (use `class` for custom heights) |
+| `animation` | `'pulse' \| 'wave' \| 'none'`                                                | `'pulse'` | Animation type                                 |
+| `loading`   | `boolean`                                                                    | `true`    | Show skeleton or children                      |
+| `children`  | `Snippet`                                                                    | -         | Content to show when not loading               |
+| `class`     | `string`                                                                     | `''`      | Additional CSS classes                         |
 
 **Variant Defaults:**
 
@@ -965,27 +965,27 @@ Semantic section wrapper with vertical spacing. Uses preset-based spacing and ba
 
 **Props:**
 
-| Prop                | Type                                                                                                                  | Default      | Description                                    |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------- |
-| `spacing`           | `'none' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl'`                                                   | `'md'`       | Vertical margin preset                         |
-| `background`        | `'default' \| 'muted' \| 'accent' \| 'gradient'`                                                                      | `'default'`  | Background preset                              |
+| Prop                | Type                                                                                                                             | Default       | Description                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | ----------------------------------------------- |
+| `spacing`           | `'none' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl'`                                                              | `'md'`        | Vertical margin preset                          |
+| `background`        | `'default' \| 'muted' \| 'accent' \| 'gradient'`                                                                                 | `'default'`   | Background preset                               |
 | `gradientDirection` | `'to-top' \| 'to-bottom' \| 'to-left' \| 'to-right' \| 'to-top-left' \| 'to-top-right' \| 'to-bottom-left' \| 'to-bottom-right'` | `'to-bottom'` | Gradient direction (when background="gradient") |
-| `padding`           | `boolean \| 'sm' \| 'md' \| 'lg'`                                                                                     | `false`      | Horizontal padding                             |
-| `centered`          | `boolean`                                                                                                             | `false`      | Center text                                    |
-| `class`             | `string`                                                                                                              | `''`         | Additional CSS classes for custom styling      |
+| `padding`           | `boolean \| 'sm' \| 'md' \| 'lg'`                                                                                                | `false`       | Horizontal padding                              |
+| `centered`          | `boolean`                                                                                                                        | `false`       | Center text                                     |
+| `class`             | `string`                                                                                                                         | `''`          | Additional CSS classes for custom styling       |
 
 **Spacing Presets:**
 
-| Preset | Value  |
-| ------ | ------ |
-| `none` | 0      |
-| `sm`   | 2rem   |
-| `md`   | 4rem   |
-| `lg`   | 6rem   |
-| `xl`   | 8rem   |
-| `2xl`  | 10rem  |
-| `3xl`  | 12rem  |
-| `4xl`  | 16rem  |
+| Preset | Value |
+| ------ | ----- |
+| `none` | 0     |
+| `sm`   | 2rem  |
+| `md`   | 4rem  |
+| `lg`   | 6rem  |
+| `xl`   | 8rem  |
+| `2xl`  | 10rem |
+| `3xl`  | 12rem |
+| `4xl`  | 16rem |
 
 **CSP Compliance:**
 
@@ -997,45 +997,45 @@ Section is fully CSP-compliant and emits no inline `style` attributes. All styli
 
 **Removed Features (v3.1.0+):**
 
-| Removed Feature           | Migration Path                                      |
-| ------------------------- | --------------------------------------------------- |
-| Arbitrary spacing values  | Use preset values or `class` prop with external CSS |
-| Arbitrary background CSS  | Use preset values or `class` prop with external CSS |
+| Removed Feature          | Migration Path                                      |
+| ------------------------ | --------------------------------------------------- |
+| Arbitrary spacing values | Use preset values or `class` prop with external CSS |
+| Arbitrary background CSS | Use preset values or `class` prop with external CSS |
 
 **Example:**
 
 ```svelte
 <script>
-  import { Section, Container, Heading } from '$lib/greater/primitives';
+	import { Section, Container, Heading } from '$lib/greater/primitives';
 </script>
 
 <!-- Basic usage -->
 <Section spacing="lg">
-  <Container>
-    <Heading>Section Title</Heading>
-    <p>Section content...</p>
-  </Container>
+	<Container>
+		<Heading>Section Title</Heading>
+		<p>Section content...</p>
+	</Container>
 </Section>
 
 <!-- With background -->
 <Section spacing="xl" background="muted" padding="md">
-  <Container>
-    <Heading>Muted Background</Heading>
-  </Container>
+	<Container>
+		<Heading>Muted Background</Heading>
+	</Container>
 </Section>
 
 <!-- Gradient background -->
 <Section background="gradient" gradientDirection="to-bottom-right" spacing="2xl">
-  <Container>
-    <Heading>Gradient Section</Heading>
-  </Container>
+	<Container>
+		<Heading>Gradient Section</Heading>
+	</Container>
 </Section>
 
 <!-- Custom styling via external CSS -->
 <Section class="my-custom-section">
-  <Container>
-    <Heading>Custom Section</Heading>
-  </Container>
+	<Container>
+		<Heading>Custom Section</Heading>
+	</Container>
 </Section>
 ```
 
@@ -1046,9 +1046,9 @@ For custom spacing or background values beyond presets, use the `class` prop:
 ```css
 /* In your app's stylesheet */
 .my-custom-section {
-  margin-top: 7rem;
-  margin-bottom: 7rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	margin-top: 7rem;
+	margin-bottom: 7rem;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 ```
 
@@ -1095,14 +1095,14 @@ Theme context provider for the application. Applies theme presets using CSS clas
 
 **Props:**
 
-| Prop                | Type                                               | Default | Description                                    |
-| ------------------- | -------------------------------------------------- | ------- | ---------------------------------------------- |
-| `theme`             | `'light' \| 'dark' \| 'high-contrast' \| 'auto'`   | -       | Theme mode                                     |
-| `palette`           | `'slate' \| 'stone' \| 'neutral' \| 'zinc' \| 'gray'` | -    | Color palette preset                           |
-| `headingFontPreset` | `'system' \| 'sans' \| 'serif' \| 'mono'`          | -       | Heading font preset                            |
-| `bodyFontPreset`    | `'system' \| 'sans' \| 'serif' \| 'mono'`          | -       | Body font preset                               |
-| `class`             | `string`                                           | `''`    | Additional CSS classes for custom theming      |
-| `children`          | `Snippet`                                          | -       | Content to wrap                                |
+| Prop                | Type                                                  | Default | Description                               |
+| ------------------- | ----------------------------------------------------- | ------- | ----------------------------------------- |
+| `theme`             | `'light' \| 'dark' \| 'high-contrast' \| 'auto'`      | -       | Theme mode                                |
+| `palette`           | `'slate' \| 'stone' \| 'neutral' \| 'zinc' \| 'gray'` | -       | Color palette preset                      |
+| `headingFontPreset` | `'system' \| 'sans' \| 'serif' \| 'mono'`             | -       | Heading font preset                       |
+| `bodyFontPreset`    | `'system' \| 'sans' \| 'serif' \| 'mono'`             | -       | Body font preset                          |
+| `class`             | `string`                                              | `''`    | Additional CSS classes for custom theming |
+| `children`          | `Snippet`                                             | -       | Content to wrap                           |
 
 **CSP Compliance:**
 
@@ -1126,26 +1126,22 @@ The following props have been removed for CSP compliance:
 
 ```svelte
 <script>
-  import { ThemeProvider } from '$lib/greater/primitives';
+	import { ThemeProvider } from '$lib/greater/primitives';
 </script>
 
 <!-- Basic usage with presets -->
 <ThemeProvider theme="dark" palette="slate">
-  <App />
+	<App />
 </ThemeProvider>
 
 <!-- With typography presets -->
-<ThemeProvider 
-  palette="neutral" 
-  headingFontPreset="serif" 
-  bodyFontPreset="sans"
->
-  <App />
+<ThemeProvider palette="neutral" headingFontPreset="serif" bodyFontPreset="sans">
+	<App />
 </ThemeProvider>
 
 <!-- Custom theming via external CSS -->
 <ThemeProvider class="my-custom-theme">
-  <App />
+	<App />
 </ThemeProvider>
 ```
 
@@ -1156,13 +1152,13 @@ For custom palettes or fonts beyond presets, define CSS variables in your styles
 ```css
 /* In your app's stylesheet */
 .my-custom-theme {
-  --gr-color-primary: #6366f1;
-  --gr-color-primary-50: #eef2ff;
-  --gr-color-primary-100: #e0e7ff;
-  /* ... define full color scale */
-  
-  --gr-typography-fontFamily-heading: 'Custom Font', sans-serif;
-  --gr-typography-fontFamily-sans: 'Another Font', sans-serif;
+	--gr-color-primary: #6366f1;
+	--gr-color-primary-50: #eef2ff;
+	--gr-color-primary-100: #e0e7ff;
+	/* ... define full color scale */
+
+	--gr-typography-fontFamily-heading: 'Custom Font', sans-serif;
+	--gr-typography-fontFamily-sans: 'Another Font', sans-serif;
 }
 ```
 
@@ -1176,12 +1172,12 @@ UI control for theme toggling. Uses preset-based styling for CSP compliance.
 
 **Props:**
 
-| Prop          | Type                                               | Default     | Description                                    |
-| ------------- | -------------------------------------------------- | ----------- | ---------------------------------------------- |
-| `variant`     | `'compact' \| 'full'`                              | `'compact'` | UI variant                                     |
-| `showPreview` | `boolean`                                          | `true`      | Show theme previews                            |
-| `value`       | `'light' \| 'dark' \| 'high-contrast' \| 'auto'`   | -           | Current theme value (bindable)                 |
-| `class`       | `string`                                           | `''`        | Additional CSS classes                         |
+| Prop          | Type                                             | Default     | Description                    |
+| ------------- | ------------------------------------------------ | ----------- | ------------------------------ |
+| `variant`     | `'compact' \| 'full'`                            | `'compact'` | UI variant                     |
+| `showPreview` | `boolean`                                        | `true`      | Show theme previews            |
+| `value`       | `'light' \| 'dark' \| 'high-contrast' \| 'auto'` | -           | Current theme value (bindable) |
+| `class`       | `string`                                         | `''`        | Additional CSS classes         |
 
 **CSP Compliance:**
 
@@ -1189,10 +1185,10 @@ ThemeSwitcher is fully CSP-compliant and emits no inline `style` attributes. Pre
 
 **Removed Features (v3.1.0+):**
 
-| Removed Feature  | Reason                                              |
-| ---------------- | --------------------------------------------------- |
-| `showAdvanced`   | Custom color pickers required inline styles         |
-| `showWorkbench`  | Dynamic color preview required inline styles        |
+| Removed Feature | Reason                                       |
+| --------------- | -------------------------------------------- |
+| `showAdvanced`  | Custom color pickers required inline styles  |
+| `showWorkbench` | Dynamic color preview required inline styles |
 
 For advanced theme customization, use external CSS with the ThemeProvider's `class` prop.
 
@@ -1200,9 +1196,9 @@ For advanced theme customization, use external CSS with the ThemeProvider's `cla
 
 ```svelte
 <script>
-  import { ThemeSwitcher } from '$lib/greater/primitives';
-  
-  let theme = $state('auto');
+	import { ThemeSwitcher } from '$lib/greater/primitives';
+
+	let theme = $state('auto');
 </script>
 
 <!-- Compact variant -->
@@ -1222,10 +1218,10 @@ Visual color harmony selector. Uses preset color classes for CSP compliance.
 
 **Props:**
 
-| Prop          | Type                                                                                                   | Default           | Description           |
-| ------------- | ------------------------------------------------------------------------------------------------------ | ----------------- | --------------------- |
-| `harmonyType` | `'complementary' \| 'analogous' \| 'triadic' \| 'tetradic' \| 'splitComplementary' \| 'monochromatic'` | `'complementary'` | Harmony type          |
-| `onSelect`    | `(colors: string[]) => void`                                                                           | -                 | Selection callback    |
+| Prop          | Type                                                                                                   | Default           | Description            |
+| ------------- | ------------------------------------------------------------------------------------------------------ | ----------------- | ---------------------- |
+| `harmonyType` | `'complementary' \| 'analogous' \| 'triadic' \| 'tetradic' \| 'splitComplementary' \| 'monochromatic'` | `'complementary'` | Harmony type           |
+| `onSelect`    | `(colors: string[]) => void`                                                                           | -                 | Selection callback     |
 | `class`       | `string`                                                                                               | `''`              | Additional CSS classes |
 
 ---
