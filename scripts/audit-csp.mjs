@@ -49,8 +49,8 @@ const __dirname = dirname(__filename);
  */
 function maskNonMarkup(content) {
 	return content
-		.replace(/<script[\s\S]*?<\/script\s*>/gi, (match) => match.replace(/[^\n]/g, ' '))
-		.replace(/<style[\s\S]*?<\/style\s*>/gi, (match) => match.replace(/[^\n]/g, ' '))
+		.replace(/<script[\s\S]*?<\/script\b[^>]*>/gi, (match) => match.replace(/[^\n]/g, ' '))
+		.replace(/<style[\s\S]*?<\/style\b[^>]*>/gi, (match) => match.replace(/[^\n]/g, ' '))
 		.replace(/<!--[\s\S]*?-->/g, (match) => match.replace(/[^\n]/g, ' '));
 }
 

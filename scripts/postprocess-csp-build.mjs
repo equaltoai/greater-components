@@ -67,7 +67,7 @@ if (!existsSync(buildDir) || !statSync(buildDir).isDirectory()) {
 }
 
 const htmlFiles = findHtmlFiles(buildDir);
-const inlineScriptRegex = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+const inlineScriptRegex = /<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi;
 
 let filesUpdated = 0;
 let scriptsExtracted = 0;
