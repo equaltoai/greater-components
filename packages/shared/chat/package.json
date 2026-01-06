@@ -40,12 +40,12 @@
     "@equaltoai/greater-components-primitives": "workspace:*"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@sveltejs/vite-plugin-svelte": "^6.2.2",
     "@vitest/coverage-v8": "^4.0.15",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "^5.2.9",
     "@types/node": "^24.10.2",
-    "svelte": "^5.45.8",
+    "svelte": "^5.46.1",
     "typescript": "^5.9.3",
     "vite": "^7.2.7",
     "vitest": "^4.0.15"
