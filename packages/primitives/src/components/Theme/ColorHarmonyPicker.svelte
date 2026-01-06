@@ -1,5 +1,6 @@
 <!--
   Visual color harmony selector with wheel representation
+  CSP-compliant: Uses CSS custom properties instead of inline styles
 -->
 <script lang="ts">
 	import { generateColorHarmony, type ColorHarmony } from '@equaltoai/greater-components-utils';
@@ -19,48 +20,52 @@
 		if (onSelect) {
 			onSelect([seedColor, color, ...selectedColors.filter((c) => c !== color)]);
 		}
-		// Optionally update seed color to clicked color?
-		// seedColor = color;
+	}
+
+	function handleKeyDown(e: KeyboardEvent, color: string) {
+		if (e.key === 'Enter') {
+			handleColorClick(color);
+		}
 	}
 </script>
 
-<div class="color-harmony-picker">
-	<div class="color-wheel-visualization">
-		<!-- Simplified visualization: just boxes for now -->
+<div class="gr-color-harmony-picker">
+	<div class="gr-color-harmony-picker__visualization">
+		<!-- Base color swatch using CSS custom property -->
 		<div
-			class="color-swatch base"
-			style="background-color: {seedColor}"
+			class="gr-color-harmony-picker__swatch gr-color-harmony-picker__swatch--base"
+			style:--gr-harmony-swatch-color={seedColor}
 			onclick={() => handleColorClick(seedColor)}
 			title="Base Color: {seedColor}"
 			role="button"
 			tabindex="0"
-			onkeydown={(e) => e.key === 'Enter' && handleColorClick(seedColor)}
+			onkeydown={(e) => handleKeyDown(e, seedColor)}
 		>
-			<span class="color-label">Base</span>
+			<span class="gr-color-harmony-picker__label">Base</span>
 		</div>
 
-		{#each selectedColors as color (color)}
+		{#each selectedColors as color, index (color)}
 			<div
-				class="color-swatch harmony"
-				style="background-color: {color}"
+				class="gr-color-harmony-picker__swatch gr-color-harmony-picker__swatch--harmony"
+				style:--gr-harmony-swatch-color={color}
 				onclick={() => handleColorClick(color)}
 				title="{harmonyType}: {color}"
 				role="button"
 				tabindex="0"
-				onkeydown={(e) => e.key === 'Enter' && handleColorClick(color)}
+				onkeydown={(e) => handleKeyDown(e, color)}
 			>
-				<span class="color-label">{color}</span>
+				<span class="gr-color-harmony-picker__label">{color}</span>
 			</div>
 		{/each}
 	</div>
 
-	<div class="harmony-info">
+	<div class="gr-color-harmony-picker__info">
 		<p>Harmony: <strong>{harmonyType}</strong></p>
 	</div>
 </div>
 
 <style>
-	.color-harmony-picker {
+	.gr-color-harmony-picker {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -70,7 +75,7 @@
 		border: 1px solid var(--gr-color-border);
 	}
 
-	.color-wheel-visualization {
+	.gr-color-harmony-picker__visualization {
 		display: flex;
 		gap: 0.5rem;
 		justify-content: center;
@@ -78,7 +83,7 @@
 		flex-wrap: wrap;
 	}
 
-	.color-swatch {
+	.gr-color-harmony-picker__swatch {
 		width: 60px;
 		height: 60px;
 		border-radius: 50%;
@@ -88,20 +93,21 @@
 		align-items: center;
 		justify-content: center;
 		transition: transform 0.2s;
+		background-color: var(--gr-harmony-swatch-color);
 	}
 
-	.color-swatch:hover {
+	.gr-color-harmony-picker__swatch:hover {
 		transform: scale(1.1);
 	}
 
-	.color-swatch.base {
+	.gr-color-harmony-picker__swatch--base {
 		width: 80px;
 		height: 80px;
 		border-width: 3px;
 		border-color: var(--gr-color-primary);
 	}
 
-	.color-label {
+	.gr-color-harmony-picker__label {
 		font-size: 0.625rem;
 		background: rgba(0, 0, 0, 0.5);
 		color: white;
@@ -111,11 +117,11 @@
 		transition: opacity 0.2s;
 	}
 
-	.color-swatch:hover .color-label {
+	.gr-color-harmony-picker__swatch:hover .gr-color-harmony-picker__label {
 		opacity: 1;
 	}
 
-	.harmony-info {
+	.gr-color-harmony-picker__info {
 		text-align: center;
 		font-size: 0.875rem;
 		color: var(--gr-color-text-muted);

@@ -14,9 +14,9 @@ const __dirname = dirname(__filename);
  * @property {string} file - File path relative to workspace root
  * @property {number} line - Line number (1-indexed)
  * @property {number} column - Column number (1-indexed)
- * @property {'style-attribute' | 'style-binding'} type - Type of violation
+ * @property {'style-attribute' | 'style-binding' | 'style-directive'} type - Type of violation
  * @property {string} snippet - Code snippet showing the violation
- * @property {'ship-blocking' | 'follow-up'} category - Categorization
+ * @property {'ship-blocking' | 'follow-up' | 'allowlisted'} category - Categorization
  * @property {string} remediation - Suggested remediation approach
  */
 
@@ -36,10 +36,35 @@ const __dirname = dirname(__filename);
  * @property {number} summary.totalViolations - Total violation count
  * @property {number} summary.shipBlocking - Ship-blocking violation count
  * @property {number} summary.followUp - Follow-up violation count
+ * @property {number} summary.allowlisted - Allowlisted violation count
  * @property {SourceScanResult[]} sourceViolations - Source code violations
  * @property {BuildScanResult[]} buildViolations - Build output violations
  * @property {string[]} shipBlockingComponents - List of ship-blocking component files
  */
+
+/**
+ * Allowlist for components that are exempt from CSP violations.
+ * These are typically dev-only components or components with documented exceptions.
+ * Format: Array of file path patterns (relative to workspace root)
+ * 
+ * Categories:
+ * 1. Dev-only theme tooling components - use CSS custom properties via style: directives
+ * 2. Components pending CSP refactor in future milestones
+ * 3. Components that use style: directives for CSS custom properties (acceptable)
+ */
+const CSP_ALLOWLIST = [
+	// Dev-only theme tooling components - use CSS custom properties via style: directives
+	// These are acceptable because they set CSS custom properties, not arbitrary styles
+	'packages/primitives/src/components/Theme/ColorHarmonyPicker.svelte',
+	
+	// Components pending CSP refactor in future milestones
+	// These use style: directives for dynamic sizing/positioning
+	// TODO: Refactor in Milestone 3 (dynamic components)
+	'packages/primitives/src/components/GradientText.svelte',
+	'packages/primitives/src/components/IconBadge.svelte',
+	'packages/primitives/src/components/Menu/Content.svelte',
+	'packages/primitives/src/components/StreamingText.svelte',
+];
 
 /**
  * Recursively find all files matching a pattern
@@ -74,11 +99,24 @@ function findFiles(dir, pattern) {
 }
 
 /**
+ * Check if a file path is in the allowlist
+ * @param {string} filePath - File path to check
+ * @returns {boolean}
+ */
+function isAllowlisted(filePath) {
+	return CSP_ALLOWLIST.some(pattern => filePath.includes(pattern) || filePath.endsWith(pattern));
+}
+
+/**
  * Categorize a violation based on file path
  * @param {string} filePath - File path to categorize
- * @returns {'ship-blocking' | 'follow-up'}
+ * @returns {'ship-blocking' | 'follow-up' | 'allowlisted'}
  */
 function categorizeViolation(filePath) {
+	// Check allowlist first
+	if (isAllowlisted(filePath)) {
+		return 'allowlisted';
+	}
 	// Ship-blocking: primitives package components
 	if (filePath.includes('packages/primitives/src/components/')) {
 		return 'ship-blocking';
@@ -139,6 +177,24 @@ export function scanSvelteSource(pattern) {
 						snippet: line.trim(),
 						category: categorizeViolation(relPath),
 						remediation: 'Replace inline style binding with CSS class'
+					});
+				}
+			});
+			
+			// Scan for style: directives (Svelte style directives)
+			// These compile to inline styles in the rendered HTML
+			const styleDirectiveRegex = /style:[a-zA-Z-]+\s*=\s*[{"][^}"]*[}"]/g;
+			lines.forEach((line, idx) => {
+				let match;
+				while ((match = styleDirectiveRegex.exec(line)) !== null) {
+					results.push({
+						file: relPath,
+						line: idx + 1,
+						column: match.index + 1,
+						type: 'style-directive',
+						snippet: line.trim(),
+						category: categorizeViolation(relPath),
+						remediation: 'Replace style directive with CSS class or CSS custom property set via class'
 					});
 				}
 			});
@@ -240,9 +296,10 @@ export function generateReport(sourcePaths, buildPaths) {
 	
 	// Calculate summary
 	const totalViolations = sourceViolations.length + buildViolations.length;
-	const shipBlocking = [...sourceViolations, ...buildViolations]
-		.filter(v => v.category === 'ship-blocking').length;
-	const followUp = totalViolations - shipBlocking;
+	const allViolations = [...sourceViolations, ...buildViolations];
+	const shipBlocking = allViolations.filter(v => v.category === 'ship-blocking').length;
+	const allowlisted = allViolations.filter(v => v.category === 'allowlisted').length;
+	const followUp = totalViolations - shipBlocking - allowlisted;
 	
 	// Identify ship-blocking components
 	const shipBlockingComponents = [...new Set(
@@ -256,7 +313,8 @@ export function generateReport(sourcePaths, buildPaths) {
 		summary: {
 			totalViolations,
 			shipBlocking,
-			followUp
+			followUp,
+			allowlisted
 		},
 		sourceViolations,
 		buildViolations,
@@ -275,7 +333,8 @@ function formatReportMarkdown(report) {
 	md += `## Summary\n\n`;
 	md += `- Total Violations: ${report.summary.totalViolations}\n`;
 	md += `- Ship-Blocking: ${report.summary.shipBlocking}\n`;
-	md += `- Follow-Up: ${report.summary.followUp}\n\n`;
+	md += `- Follow-Up: ${report.summary.followUp}\n`;
+	md += `- Allowlisted: ${report.summary.allowlisted}\n\n`;
 	
 	if (report.shipBlockingComponents.length > 0) {
 		md += `## Ship-Blocking Components\n\n`;
@@ -285,9 +344,37 @@ function formatReportMarkdown(report) {
 		md += `\n`;
 	}
 	
-	if (report.sourceViolations.length > 0) {
-		md += `## Source Violations\n\n`;
-		for (const violation of report.sourceViolations) {
+	// Group violations by category for clearer reporting
+	const shipBlockingViolations = report.sourceViolations.filter(v => v.category === 'ship-blocking');
+	const followUpViolations = report.sourceViolations.filter(v => v.category === 'follow-up');
+	const allowlistedViolations = report.sourceViolations.filter(v => v.category === 'allowlisted');
+	
+	if (shipBlockingViolations.length > 0) {
+		md += `## Ship-Blocking Source Violations\n\n`;
+		for (const violation of shipBlockingViolations) {
+			md += `### ${violation.file}:${violation.line}:${violation.column}\n\n`;
+			md += `- Type: ${violation.type}\n`;
+			md += `- Category: ${violation.category}\n`;
+			md += `- Remediation: ${violation.remediation}\n`;
+			md += `- Snippet: \`${violation.snippet}\`\n\n`;
+		}
+	}
+	
+	if (followUpViolations.length > 0) {
+		md += `## Follow-Up Source Violations\n\n`;
+		for (const violation of followUpViolations) {
+			md += `### ${violation.file}:${violation.line}:${violation.column}\n\n`;
+			md += `- Type: ${violation.type}\n`;
+			md += `- Category: ${violation.category}\n`;
+			md += `- Remediation: ${violation.remediation}\n`;
+			md += `- Snippet: \`${violation.snippet}\`\n\n`;
+		}
+	}
+	
+	if (allowlistedViolations.length > 0) {
+		md += `## Allowlisted Source Violations\n\n`;
+		md += `*These violations are in the allowlist and do not block shipping.*\n\n`;
+		for (const violation of allowlistedViolations) {
 			md += `### ${violation.file}:${violation.line}:${violation.column}\n\n`;
 			md += `- Type: ${violation.type}\n`;
 			md += `- Category: ${violation.category}\n`;

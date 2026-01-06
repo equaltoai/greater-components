@@ -100,6 +100,53 @@ describe('CSP Scanner Property Tests', () => {
 				{ numRuns: 100 }
 			);
 		});
+
+		/**
+		 * Property 7: Source scanner detects style directives
+		 * Feature: csp-theme-layout-primitives, Property 7
+		 * Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5
+		 */
+		it('should detect all style:property={...} directives in Svelte files', () => {
+			fc.assert(
+				fc.property(
+					fc.array(fc.string(), { minLength: 0, maxLength: 10 }),
+					fc.nat({ max: 5 }),
+					(lines, directiveCount) => {
+						// Create a temporary test directory
+						const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
+						mkdirSync(testDir, { recursive: true });
+						
+						try {
+							// Generate content with known number of style directives
+							const contentLines = [...lines];
+							for (let i = 0; i < directiveCount; i++) {
+								contentLines.push(`<div style:width="{size}px">Test</div>`);
+							}
+							const content = contentLines.join('\n');
+							
+							// Write test file
+							const testFile = join(testDir, 'test.svelte');
+							writeFileSync(testFile, content);
+							
+							// Scan the file
+							const violations = scanSvelteSource(testDir);
+							
+							// Count style-directive violations
+							const styleDirectiveCount = violations.filter(
+								v => v.type === 'style-directive'
+							).length;
+							
+							// Should detect exactly the number of style directives we added
+							return styleDirectiveCount === directiveCount;
+						} finally {
+							// Cleanup
+							rmSync(testDir, { recursive: true, force: true });
+						}
+					}
+				),
+				{ numRuns: 100 }
+			);
+		});
 	});
 
 	describe('Build Scanner', () => {
@@ -273,7 +320,7 @@ describe('CSP Scanner Property Tests', () => {
 								typeof v.column === 'number' &&
 								v.column > 0 &&
 								v.type && 
-								(v.type === 'style-attribute' || v.type === 'style-binding') &&
+								(v.type === 'style-attribute' || v.type === 'style-binding' || v.type === 'style-directive') &&
 								v.snippet && 
 								typeof v.snippet === 'string' &&
 								v.snippet.length > 0
@@ -286,6 +333,37 @@ describe('CSP Scanner Property Tests', () => {
 				),
 				{ numRuns: 100 }
 			);
+		});
+
+		/**
+		 * Property 8: Report summary includes allowlisted count
+		 * Feature: csp-theme-layout-primitives, Property 8
+		 * Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5
+		 */
+		it('should include allowlisted count in report summary', () => {
+			// Create a temporary test directory
+			const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
+			mkdirSync(testDir, { recursive: true });
+			
+			try {
+				// Create a test file with a violation
+				const content = `<div style="color: red;">Test</div>`;
+				const testFile = join(testDir, 'test.svelte');
+				writeFileSync(testFile, content);
+				
+				// Generate report
+				const report = generateReport([testDir], []);
+				
+				// Report should have allowlisted count in summary
+				expect(report.summary).toHaveProperty('allowlisted');
+				expect(typeof report.summary.allowlisted).toBe('number');
+				expect(report.summary.totalViolations).toBe(
+					report.summary.shipBlocking + report.summary.followUp + report.summary.allowlisted
+				);
+			} finally {
+				// Cleanup
+				rmSync(testDir, { recursive: true, force: true });
+			}
 		});
 	});
 });

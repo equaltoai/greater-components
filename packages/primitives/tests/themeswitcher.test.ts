@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, fireEvent } from '@testing-library/svelte';
+import * as fc from 'fast-check';
 import ThemeSwitcher from '../src/components/ThemeSwitcher.svelte';
 import { preferencesStore } from '../src/stores/preferences';
+
+// Type definitions matching ThemeSwitcher component props
+type ColorScheme = 'light' | 'dark' | 'high-contrast' | 'auto';
+type Variant = 'compact' | 'full';
 
 afterEach(() => {
 	vi.restoreAllMocks();
@@ -71,31 +76,6 @@ describe('ThemeSwitcher.svelte', () => {
 		expect(preferencesStore.state.resolvedColorScheme).toBe('high-contrast');
 	});
 
-	it('surfaces an error when importing an invalid preferences file', async () => {
-		const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
-		const importSpy = vi.spyOn(preferencesStore, 'import').mockReturnValue(false);
-
-		class MockFileReader {
-			onload: ((event: { target: { result: string } }) => void) | null = null;
-			readAsText(_file: File) {
-				this.onload?.({ target: { result: '{bad json' } });
-			}
-		}
-
-		vi.stubGlobal('FileReader', MockFileReader);
-
-		const { getByLabelText } = render(ThemeSwitcher, {
-			props: { variant: 'full', showPreview: false, showAdvanced: true },
-		});
-
-		const input = getByLabelText('Import Settings') as HTMLInputElement;
-		const file = new File(['{}'], 'prefs.json', { type: 'application/json' });
-		await fireEvent.change(input, { target: { files: [file] } });
-
-		expect(importSpy).toHaveBeenCalled();
-		expect(alertSpy).toHaveBeenCalledWith('Invalid preferences file');
-	});
-
 	it('updates motion preference and reflects system reduced motion state', async () => {
 		const motionSpy = vi.spyOn(preferencesStore, 'setMotion');
 		const { container, unmount } = render(ThemeSwitcher, {
@@ -128,25 +108,98 @@ describe('ThemeSwitcher.svelte', () => {
 		expect(reducedContainer.textContent).toContain('System prefers reduced motion');
 	});
 
-	it('applies custom colors and updates the preview styling', async () => {
-		const colorSpy = vi.spyOn(preferencesStore, 'setCustomColors');
-		const { getByLabelText, getByRole } = render(ThemeSwitcher, {
-			props: { variant: 'full', showPreview: true, showAdvanced: true },
+	it('renders preview with preset color classes (no inline styles)', () => {
+		const { getByRole } = render(ThemeSwitcher, {
+			props: { variant: 'full', showPreview: true },
 		});
 
-		const primaryHexInput = getByLabelText('Primary color hex value') as HTMLInputElement;
-		const secondaryHexInput = getByLabelText('Secondary color hex value') as HTMLInputElement;
-
-		await fireEvent.input(primaryHexInput, { target: { value: '#123456' } });
-		await fireEvent.input(secondaryHexInput, { target: { value: '#abcdef' } });
-
-		expect(colorSpy).toHaveBeenCalledWith(
-			expect.objectContaining({ primary: '#123456', secondary: '#abcdef' })
-		);
-		expect(preferencesStore.preferences.customColors.primary).toBe('#123456');
-		expect(preferencesStore.preferences.customColors.secondary).toBe('#abcdef');
-
 		const previewButton = getByRole('button', { name: 'Primary' });
-		expect(previewButton.getAttribute('style')).toContain('rgb(18, 52, 86)');
+		// CSP compliance: no inline style attribute
+		expect(previewButton.hasAttribute('style')).toBe(false);
+		// Should use preset class instead
+		expect(previewButton.classList.contains('gr-theme-switcher__preview-button--primary')).toBe(true);
+	});
+});
+
+describe('ThemeSwitcher CSP Compliance - Property Tests', () => {
+	// Property 8: ThemeSwitcher universal CSP compliance
+	// Feature: csp-theme-layout-primitives, Property 8
+	// **Validates: Requirements 3.1, 3.2, 3.3, 6.3**
+	it('Property 8: ThemeSwitcher universal CSP compliance - no style attribute for any prop combination', () => {
+		fc.assert(
+			fc.property(
+				fc.record({
+					variant: fc.option(
+						fc.constantFrom('compact', 'full') as fc.Arbitrary<Variant>,
+						{ nil: undefined }
+					),
+					showPreview: fc.option(fc.boolean(), { nil: undefined }),
+					value: fc.option(
+						fc.constantFrom('light', 'dark', 'high-contrast', 'auto') as fc.Arbitrary<ColorScheme>,
+						{ nil: undefined }
+					),
+				}),
+				(props) => {
+					// Filter out undefined values
+					const filteredProps = Object.fromEntries(
+						Object.entries(props).filter(([, v]) => v !== undefined)
+					);
+
+					const { container } = render(ThemeSwitcher, filteredProps);
+
+					// Check the main theme switcher element
+					const element = container.querySelector('.gr-theme-switcher');
+					expect(element).toBeTruthy();
+					// CSP compliance: no style attribute should be present on main element
+					expect(element?.hasAttribute('style')).toBe(false);
+
+					// Check all child elements for style attributes
+					const allElements = container.querySelectorAll('*');
+					allElements.forEach((el) => {
+						expect(el.hasAttribute('style')).toBe(false);
+					});
+
+					return true;
+				}
+			),
+			{ numRuns: 100 }
+		);
+	});
+
+	// Property 9: ThemeSwitcher preview uses preset classes
+	// Feature: csp-theme-layout-primitives, Property 9
+	// **Validates: Requirements 3.4, 3.5**
+	it('Property 9: ThemeSwitcher preview uses preset classes - preview buttons use CSS classes not inline styles', () => {
+		fc.assert(
+			fc.property(
+				fc.constantFrom('light', 'dark', 'high-contrast', 'auto') as fc.Arbitrary<ColorScheme>,
+				(value) => {
+					const { container } = render(ThemeSwitcher, {
+						variant: 'full',
+						showPreview: true,
+						value,
+					});
+
+					// Find preview buttons
+					const primaryButton = container.querySelector('.gr-theme-switcher__preview-button--primary');
+					const secondaryButton = container.querySelector('.gr-theme-switcher__preview-button--secondary');
+
+					// Both buttons should exist
+					expect(primaryButton).toBeTruthy();
+					expect(secondaryButton).toBeTruthy();
+
+					// Neither should have inline styles
+					expect(primaryButton?.hasAttribute('style')).toBe(false);
+					expect(secondaryButton?.hasAttribute('style')).toBe(false);
+
+					// Both should have the base preview button class
+					expect(primaryButton?.classList.contains('gr-theme-switcher__preview-button')).toBe(true);
+					expect(secondaryButton?.classList.contains('gr-theme-switcher__preview-button')).toBe(true);
+
+					return true;
+				}
+			),
+			{ numRuns: 100 }
+		);
 	});
 });

@@ -154,6 +154,223 @@ Height presets:
 - `'lg'` - 1.5rem
 - `'xl'` - 2rem
 
+### ThemeProvider Component
+
+**What Changed:**
+- Custom palette prop removed (required inline CSS variable injection)
+- Arbitrary font string props removed
+- New preset-based font props added
+- All theming now uses CSS classes
+
+**Before (v3.0.x):**
+```svelte
+<ThemeProvider 
+  customPalette={{
+    primary: '#6366f1',
+    secondary: '#8b5cf6',
+    accent: '#ec4899'
+  }}
+  headingFont="'Custom Font', sans-serif"
+  bodyFont="'Another Font', sans-serif"
+>
+  <App />
+</ThemeProvider>
+```
+
+**After (v3.1.0+):**
+```svelte
+<!-- Use preset values -->
+<ThemeProvider 
+  palette="slate"
+  headingFontPreset="serif"
+  bodyFontPreset="sans"
+>
+  <App />
+</ThemeProvider>
+
+<!-- For custom theming, use external CSS -->
+<ThemeProvider class="my-custom-theme">
+  <App />
+</ThemeProvider>
+
+<style>
+  :global(.my-custom-theme) {
+    --gr-color-primary: #6366f1;
+    --gr-color-secondary: #8b5cf6;
+    --gr-color-accent: #ec4899;
+    --gr-typography-fontFamily-heading: 'Custom Font', sans-serif;
+    --gr-typography-fontFamily-sans: 'Another Font', sans-serif;
+  }
+</style>
+```
+
+**Available Presets:**
+
+Palette presets:
+- `'slate'` - Cool gray tones
+- `'stone'` - Warm gray tones
+- `'neutral'` - Pure gray tones
+- `'zinc'` - Blue-gray tones
+- `'gray'` - Standard gray tones
+
+Font presets:
+- `'system'` - System UI fonts
+- `'sans'` - Inter font family
+- `'serif'` - Crimson Pro font family
+- `'mono'` - JetBrains Mono font family
+
+### Section Component
+
+**What Changed:**
+- Spacing prop now only accepts preset values (no arbitrary strings/numbers)
+- Background prop now only accepts preset values (no arbitrary CSS)
+- Inline style attributes are no longer emitted
+- Custom values require external CSS classes
+
+**Before (v3.0.x):**
+```svelte
+<Section spacing="7rem">Content</Section>
+<Section spacing={customSpacing}>Content</Section>
+<Section background="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+  Content
+</Section>
+```
+
+**After (v3.1.0+):**
+```svelte
+<!-- Use preset values -->
+<Section spacing="xl">Content</Section>
+<Section spacing="3xl">Content</Section>
+<Section background="gradient" gradientDirection="to-bottom-right">
+  Content
+</Section>
+
+<!-- For custom values, use external CSS -->
+<Section class="custom-section">Content</Section>
+
+<style>
+  :global(.custom-section) {
+    margin-top: 7rem;
+    margin-bottom: 7rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+</style>
+```
+
+**Available Presets:**
+
+Spacing presets:
+- `'none'` - 0
+- `'sm'` - 2rem
+- `'md'` - 4rem (default)
+- `'lg'` - 6rem
+- `'xl'` - 8rem
+- `'2xl'` - 10rem
+- `'3xl'` - 12rem
+- `'4xl'` - 16rem
+
+Background presets:
+- `'default'` - Transparent/inherit
+- `'muted'` - Subtle secondary background
+- `'accent'` - Primary color tinted background
+- `'gradient'` - Gradient background (use with gradientDirection)
+
+Gradient directions:
+- `'to-top'`, `'to-bottom'`, `'to-left'`, `'to-right'`
+- `'to-top-left'`, `'to-top-right'`, `'to-bottom-left'`, `'to-bottom-right'`
+
+### Tooltip Component
+
+**What Changed:**
+- Positioning now uses CSS classes instead of inline pixel values
+- Auto placement uses viewport heuristics to select placement class
+- No more inline `style="position: absolute; top: Npx; left: Npx"`
+- Tooltips are positioned relative to trigger, not viewport
+
+**Before (v3.0.x):**
+```svelte
+<!-- Tooltip used inline styles for pixel-perfect positioning -->
+<Tooltip content="Help text" placement="top">
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+**After (v3.1.0+):**
+```svelte
+<!-- Same API, but CSS-based positioning -->
+<Tooltip content="Help text" placement="top">
+  <Button>Hover me</Button>
+</Tooltip>
+
+<!-- Auto placement still works -->
+<Tooltip content="Auto positioned" placement="auto">
+  <Button>Hover me</Button>
+</Tooltip>
+
+<!-- For pixel-perfect positioning, use external CSS -->
+<Tooltip content="Custom position" class="custom-tooltip">
+  <Button>Hover me</Button>
+</Tooltip>
+
+<style>
+  :global(.custom-tooltip) {
+    /* Override default positioning */
+    top: auto !important;
+    bottom: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) translateY(-120%) !important;
+  }
+</style>
+```
+
+**Positioning Constraints:**
+
+The CSS-based positioning approach has some trade-offs:
+
+| Feature                    | Previous (Inline Styles)        | Current (CSS Classes)           |
+| -------------------------- | ------------------------------- | ------------------------------- |
+| Pixel-perfect positioning  | ✅ Calculated per-pixel         | ❌ Relative to trigger          |
+| Viewport edge handling     | ✅ Precise repositioning        | ⚠️ Class-based fallback         |
+| CSP compliance             | ❌ Requires unsafe-inline       | ✅ Fully compliant              |
+| Performance                | ⚠️ JS calculations on show      | ✅ Pure CSS positioning         |
+
+For most use cases, the CSS-based positioning is sufficient. If you need pixel-perfect positioning, use external CSS.
+
+### ThemeSwitcher Component
+
+**What Changed:**
+- Preview buttons now use preset color classes instead of inline styles
+- `showAdvanced` prop removed (custom color pickers required inline styles)
+- `showWorkbench` prop removed (dynamic color preview required inline styles)
+
+**Before (v3.0.x):**
+```svelte
+<ThemeSwitcher showAdvanced showWorkbench />
+```
+
+**After (v3.1.0+):**
+```svelte
+<!-- Advanced features removed for CSP compliance -->
+<ThemeSwitcher variant="full" showPreview />
+
+<!-- For advanced theme customization, use external CSS with ThemeProvider -->
+<ThemeProvider class="my-custom-theme">
+  <ThemeSwitcher />
+</ThemeProvider>
+```
+
+### Theme Tooling Components
+
+**What Changed:**
+- ThemeWorkbench, ColorHarmonyPicker, and ContrastChecker now use preset color classes
+- These components are marked as development-only tools
+- Dynamic color swatches use CSS custom properties set via classes
+
+**Migration Notes:**
+- These components are intended for design-time use, not production
+- For production deployments with strict CSP, use predefined color palettes
+- If you need dynamic color preview in production, consider a separate dev-tools package
+
 ## Migration Strategy
 
 ### Step 1: Audit Your Usage
@@ -161,6 +378,7 @@ Height presets:
 Search your codebase for components that may be affected:
 
 ```bash
+# Milestone 1 components
 # Find Skeleton with custom sizing
 grep -r "Skeleton.*width=" src/
 grep -r "Skeleton.*height=" src/
@@ -170,6 +388,20 @@ grep -r "Text.*lines=" src/
 
 # Find Container with custom gutters
 grep -r "Container.*gutter=" src/
+
+# Milestone 2 components
+# Find ThemeProvider with custom palette or fonts
+grep -r "ThemeProvider.*customPalette" src/
+grep -r "ThemeProvider.*headingFont=" src/
+grep -r "ThemeProvider.*bodyFont=" src/
+
+# Find Section with custom spacing or background
+grep -r "Section.*spacing=" src/
+grep -r "Section.*background=" src/
+
+# Find ThemeSwitcher with advanced features
+grep -r "ThemeSwitcher.*showAdvanced" src/
+grep -r "ThemeSwitcher.*showWorkbench" src/
 ```
 
 ### Step 2: Update to Presets
@@ -299,21 +531,123 @@ If components render correctly with this CSP header, you're good to go!
 </style>
 ```
 
+### Dynamic Theme Switching
+
+**Before:**
+```svelte
+<script>
+  let customColors = $state({
+    primary: '#6366f1',
+    secondary: '#8b5cf6'
+  });
+</script>
+
+<ThemeProvider customPalette={customColors}>
+  <App />
+</ThemeProvider>
+```
+
+**After:**
+```svelte
+<script>
+  // Define theme classes in your stylesheet
+  let themeClass = $state('theme-indigo');
+</script>
+
+<ThemeProvider class={themeClass}>
+  <App />
+</ThemeProvider>
+
+<style>
+  :global(.theme-indigo) {
+    --gr-color-primary: #6366f1;
+    --gr-color-secondary: #8b5cf6;
+  }
+  :global(.theme-purple) {
+    --gr-color-primary: #8b5cf6;
+    --gr-color-secondary: #a855f7;
+  }
+</style>
+```
+
+### Responsive Section Spacing
+
+**Before:**
+```svelte
+<script>
+  let spacing = $state(isMobile ? '2rem' : '6rem');
+</script>
+
+<Section spacing={spacing}>Content</Section>
+```
+
+**After:**
+```svelte
+<script>
+  let spacingPreset = $state(isMobile ? 'sm' : 'lg');
+</script>
+
+<Section spacing={spacingPreset}>Content</Section>
+```
+
+### Custom Section Backgrounds
+
+**Before:**
+```svelte
+<Section background="linear-gradient(to right, #667eea, #764ba2)">
+  Hero content
+</Section>
+```
+
+**After:**
+```svelte
+<Section class="hero-gradient">
+  Hero content
+</Section>
+
+<style>
+  :global(.hero-gradient) {
+    background: linear-gradient(to right, #667eea, #764ba2);
+  }
+</style>
+```
+
 ## TypeScript Support
 
 All preset types are exported for type safety:
 
 ```typescript
 import type { 
+  // Milestone 1 types
   WidthPreset, 
   HeightPreset, 
-  GutterPreset 
+  GutterPreset,
+  // Milestone 2 types
+  PalettePreset,
+  FontPreset,
+  SpacingPreset,
+  BackgroundPreset,
+  GradientDirection,
+  Placement
 } from '@equaltoai/greater-components-primitives';
 
 // Type-safe preset values
 const width: WidthPreset = '1/2';
 const height: HeightPreset = 'lg';
 const gutter: GutterPreset = 'md';
+
+// Theme presets
+const palette: PalettePreset = 'slate';
+const headingFont: FontPreset = 'serif';
+const bodyFont: FontPreset = 'sans';
+
+// Section presets
+const spacing: SpacingPreset = 'xl';
+const background: BackgroundPreset = 'gradient';
+const direction: GradientDirection = 'to-bottom-right';
+
+// Tooltip placement
+const placement: Placement = 'auto';
 ```
 
 ## Benefits of CSP Compliance

@@ -2544,11 +2544,8 @@
 	margin-bottom: 16rem;
 }
 
-/* Custom spacing (uses CSS variable) */
-.gr-section--spacing-custom {
-	margin-top: var(--gr-section-custom-spacing);
-	margin-bottom: var(--gr-section-custom-spacing);
-}
+/* Custom spacing - REMOVED for CSP compliance */
+/* For custom spacing, use the class prop with external CSS */
 
 /* Background variants */
 .gr-section--bg-muted {
@@ -2598,10 +2595,8 @@
 	--gr-section-gradient-direction: to bottom right;
 }
 
-/* Custom background (uses CSS variable) */
-.gr-section--bg-custom {
-	background: var(--gr-section-custom-background);
-}
+/* Custom background - REMOVED for CSP compliance */
+/* For custom backgrounds, use the class prop with external CSS */
 
 /* Padding variants (horizontal) */
 .gr-section--padded-sm {
@@ -3571,6 +3566,111 @@
 	display: contents;
 }
 
+/* ThemeProvider Palette Presets (CSP-compliant) */
+.gr-theme-provider--palette-slate {
+	--gr-color-gray-50: #f8fafc;
+	--gr-color-gray-100: #f1f5f9;
+	--gr-color-gray-200: #e2e8f0;
+	--gr-color-gray-300: #cbd5e1;
+	--gr-color-gray-400: #94a3b8;
+	--gr-color-gray-500: #64748b;
+	--gr-color-gray-600: #475569;
+	--gr-color-gray-700: #334155;
+	--gr-color-gray-800: #1e293b;
+	--gr-color-gray-900: #0f172a;
+	--gr-color-gray-950: #020617;
+}
+
+.gr-theme-provider--palette-stone {
+	--gr-color-gray-50: #fafaf9;
+	--gr-color-gray-100: #f5f5f4;
+	--gr-color-gray-200: #e7e5e4;
+	--gr-color-gray-300: #d6d3d1;
+	--gr-color-gray-400: #a8a29e;
+	--gr-color-gray-500: #78716c;
+	--gr-color-gray-600: #57534e;
+	--gr-color-gray-700: #44403c;
+	--gr-color-gray-800: #292524;
+	--gr-color-gray-900: #1c1917;
+	--gr-color-gray-950: #0c0a09;
+}
+
+.gr-theme-provider--palette-neutral {
+	--gr-color-gray-50: #fafafa;
+	--gr-color-gray-100: #f5f5f5;
+	--gr-color-gray-200: #e5e5e5;
+	--gr-color-gray-300: #d4d4d4;
+	--gr-color-gray-400: #a3a3a3;
+	--gr-color-gray-500: #737373;
+	--gr-color-gray-600: #525252;
+	--gr-color-gray-700: #404040;
+	--gr-color-gray-800: #262626;
+	--gr-color-gray-900: #171717;
+	--gr-color-gray-950: #0a0a0a;
+}
+
+.gr-theme-provider--palette-zinc {
+	--gr-color-gray-50: #fafafa;
+	--gr-color-gray-100: #f4f4f5;
+	--gr-color-gray-200: #e4e4e7;
+	--gr-color-gray-300: #d4d4d8;
+	--gr-color-gray-400: #a1a1aa;
+	--gr-color-gray-500: #71717a;
+	--gr-color-gray-600: #52525b;
+	--gr-color-gray-700: #3f3f46;
+	--gr-color-gray-800: #27272a;
+	--gr-color-gray-900: #18181b;
+	--gr-color-gray-950: #09090b;
+}
+
+.gr-theme-provider--palette-gray {
+	--gr-color-gray-50: #f9fafb;
+	--gr-color-gray-100: #f3f4f6;
+	--gr-color-gray-200: #e5e7eb;
+	--gr-color-gray-300: #d1d5db;
+	--gr-color-gray-400: #9ca3af;
+	--gr-color-gray-500: #6b7280;
+	--gr-color-gray-600: #4b5563;
+	--gr-color-gray-700: #374151;
+	--gr-color-gray-800: #1f2937;
+	--gr-color-gray-900: #111827;
+	--gr-color-gray-950: #030712;
+}
+
+/* ThemeProvider Typography Presets - Heading Fonts (CSP-compliant) */
+.gr-theme-provider--heading-system {
+	--gr-typography-fontFamily-heading: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.gr-theme-provider--heading-sans {
+	--gr-typography-fontFamily-heading: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.gr-theme-provider--heading-serif {
+	--gr-typography-fontFamily-heading: 'Crimson Pro', Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+
+.gr-theme-provider--heading-mono {
+	--gr-typography-fontFamily-heading: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/* ThemeProvider Typography Presets - Body Fonts (CSP-compliant) */
+.gr-theme-provider--body-system {
+	--gr-typography-fontFamily-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.gr-theme-provider--body-sans {
+	--gr-typography-fontFamily-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.gr-theme-provider--body-serif {
+	--gr-typography-fontFamily-sans: 'Crimson Pro', Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+
+.gr-theme-provider--body-mono {
+	--gr-typography-fontFamily-sans: 'JetBrains Mono', 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
 /* Global theme-aware styles */
 :root {
 	/* Default light theme (fallback) */
@@ -4056,6 +4156,7 @@ body {
 
 .gr-tooltip {
 	position: absolute;
+	z-index: 9999;
 	padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 	background-color: var(--gr-color-gray-900);
 	color: var(--gr-color-base-white);
@@ -4065,8 +4166,8 @@ body {
 	border-radius: var(--gr-radii-md);
 	box-shadow: var(--gr-shadow-lg);
 	opacity: 0;
-	transform: scale(0.95);
-	transition-property: opacity, transform;
+	pointer-events: none;
+	transition-property: opacity;
 	transition-duration: var(--gr-motion-duration-fast);
 	transition-timing-function: var(--gr-motion-easing-out);
 	max-width: 20rem;
@@ -4076,7 +4177,7 @@ body {
 
 .gr-tooltip--visible {
 	opacity: 1;
-	transform: scale(1);
+	pointer-events: auto;
 }
 
 .gr-tooltip__content {
@@ -4088,6 +4189,35 @@ body {
 	width: 0;
 	height: 0;
 	border: 4px solid transparent;
+}
+
+/* Placement classes - CSS-based positioning relative to trigger */
+.gr-tooltip--top {
+	bottom: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-bottom: 8px;
+}
+
+.gr-tooltip--bottom {
+	top: 100%;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-top: 8px;
+}
+
+.gr-tooltip--left {
+	right: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	margin-right: 8px;
+}
+
+.gr-tooltip--right {
+	left: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	margin-left: 8px;
 }
 
 /* Arrow positioning for each placement */
@@ -4123,11 +4253,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
 	.gr-tooltip {
 		transition-duration: 0ms;
-		transform: none;
-	}
-
-	.gr-tooltip--visible {
-		transform: none;
 	}
 }
 
@@ -4160,4 +4285,129 @@ body {
 	.gr-tooltip {
 		border: 1px solid currentColor;
 	}
+}
+
+/* ============================================
+   THEME TOOLING COMPONENT STYLES
+   CSP-compliant preset classes for theme tools
+   ============================================ */
+
+/* Swatch base styles */
+.gr-swatch {
+	height: 100%;
+	width: 100%;
+}
+
+/* Primary color scale swatches */
+.gr-swatch--primary-50 {
+	background-color: var(--gr-color-primary-50, #eff6ff);
+}
+
+.gr-swatch--primary-100 {
+	background-color: var(--gr-color-primary-100, #dbeafe);
+}
+
+.gr-swatch--primary-200 {
+	background-color: var(--gr-color-primary-200, #bfdbfe);
+}
+
+.gr-swatch--primary-300 {
+	background-color: var(--gr-color-primary-300, #93c5fd);
+}
+
+.gr-swatch--primary-400 {
+	background-color: var(--gr-color-primary-400, #60a5fa);
+}
+
+.gr-swatch--primary-500 {
+	background-color: var(--gr-color-primary-500, #3b82f6);
+}
+
+.gr-swatch--primary-600 {
+	background-color: var(--gr-color-primary-600, #2563eb);
+}
+
+.gr-swatch--primary-700 {
+	background-color: var(--gr-color-primary-700, #1d4ed8);
+}
+
+.gr-swatch--primary-800 {
+	background-color: var(--gr-color-primary-800, #1e40af);
+}
+
+.gr-swatch--primary-900 {
+	background-color: var(--gr-color-primary-900, #1e3a8a);
+}
+
+/* Gray color scale swatches */
+.gr-swatch--gray-50 {
+	background-color: var(--gr-color-gray-50, #f9fafb);
+}
+
+.gr-swatch--gray-100 {
+	background-color: var(--gr-color-gray-100, #f3f4f6);
+}
+
+.gr-swatch--gray-200 {
+	background-color: var(--gr-color-gray-200, #e5e7eb);
+}
+
+.gr-swatch--gray-300 {
+	background-color: var(--gr-color-gray-300, #d1d5db);
+}
+
+.gr-swatch--gray-400 {
+	background-color: var(--gr-color-gray-400, #9ca3af);
+}
+
+.gr-swatch--gray-500 {
+	background-color: var(--gr-color-gray-500, #6b7280);
+}
+
+.gr-swatch--gray-600 {
+	background-color: var(--gr-color-gray-600, #4b5563);
+}
+
+.gr-swatch--gray-700 {
+	background-color: var(--gr-color-gray-700, #374151);
+}
+
+.gr-swatch--gray-800 {
+	background-color: var(--gr-color-gray-800, #1f2937);
+}
+
+.gr-swatch--gray-900 {
+	background-color: var(--gr-color-gray-900, #111827);
+}
+
+/* Semantic color swatches */
+.gr-swatch--success {
+	background-color: var(--gr-color-success-500, #22c55e);
+}
+
+.gr-swatch--warning {
+	background-color: var(--gr-color-warning-500, #f59e0b);
+}
+
+.gr-swatch--error {
+	background-color: var(--gr-color-error-500, #ef4444);
+}
+
+.gr-swatch--info {
+	background-color: var(--gr-color-info-500, #3b82f6);
+}
+
+/* Harmony color swatches - use CSS custom property for dynamic colors */
+.gr-swatch--harmony {
+	background-color: var(--gr-harmony-swatch-color);
+}
+
+/* Theme Workbench specific styles */
+.gr-theme-workbench__swatch-grid .gr-swatch {
+	transition: transform 0.15s ease-out;
+}
+
+.gr-theme-workbench__swatch-grid .gr-swatch:hover {
+	transform: scaleY(1.1);
+	z-index: 1;
 }

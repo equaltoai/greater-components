@@ -38,3 +38,6 @@ jobs:
 
       - name: TypeScript type checking
         run: pnpm typecheck
+
+      - name: CSP Compliance Check
+        run: pnpm validate:csp

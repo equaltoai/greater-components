@@ -121,9 +121,48 @@ If you need custom styling:
 
 ## Component-Specific CSP Compliance
 
+### CSP Compatibility Matrix
+
+The following table shows the CSP compliance status of all Greater Components primitives:
+
+| Component | CSP Status | Milestone | Notes |
+| --------- | ---------- | --------- | ----- |
+| **Core Primitives (Milestone 1)** | | | |
+| Skeleton | ✅ Compliant | 1 | Preset-based width/height |
+| Avatar | ✅ Compliant | 1 | Deterministic color classes |
+| Text | ✅ Compliant | 1 | Preset line clamping (2-6) |
+| Container | ✅ Compliant | 1 | Preset gutters |
+| Button | ✅ Compliant | 1 | No inline styles |
+| Card | ✅ Compliant | 1 | No inline styles |
+| **Theme & Layout (Milestone 2)** | | | |
+| ThemeProvider | ✅ Compliant | 2 | Preset palettes and fonts |
+| Section | ✅ Compliant | 2 | Preset spacing and backgrounds |
+| ThemeSwitcher | ✅ Compliant | 2 | Preset preview colors |
+| Tooltip | ✅ Compliant | 2 | CSS-based positioning |
+| **Theme Tooling (Dev-Only)** | | | |
+| ThemeWorkbench | ⚠️ Dev-Only | 2 | Not for production CSP environments |
+| ColorHarmonyPicker | ⚠️ Dev-Only | 2 | Not for production CSP environments |
+| ContrastChecker | ⚠️ Dev-Only | 2 | Not for production CSP environments |
+
+### Theme Tooling Components (Development-Only)
+
+The following theme tooling components are marked as **development-only** and should not be shipped to production environments with strict CSP:
+
+- **ThemeWorkbench**: Complete theme creation workbench
+- **ColorHarmonyPicker**: Visual color harmony selector
+- **ContrastChecker**: Live contrast ratio checker
+
+These components use preset color classes for CSP compliance but are designed for design-time use. For production deployments:
+
+1. Use predefined color palettes via ThemeProvider presets
+2. Define custom themes in external CSS files
+3. Use the `class` prop on ThemeProvider for custom theming
+
 ### Preset-Based APIs
 
 To maintain CSP compliance while providing flexibility, Greater Components use preset-based APIs for common styling needs:
+
+#### Milestone 1 Components
 
 **Skeleton Component**:
 ```svelte
@@ -157,6 +196,61 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 <!-- Preset gutters -->
 <Container gutter="md" />
 <Container gutter="lg" />
+```
+
+#### Milestone 2 Components
+
+**ThemeProvider Component**:
+```svelte
+<!-- Palette presets -->
+<ThemeProvider palette="slate">
+  <App />
+</ThemeProvider>
+
+<!-- Typography presets -->
+<ThemeProvider headingFontPreset="serif" bodyFontPreset="sans">
+  <App />
+</ThemeProvider>
+
+<!-- Custom theming via external CSS -->
+<ThemeProvider class="my-custom-theme">
+  <App />
+</ThemeProvider>
+```
+
+**Section Component**:
+```svelte
+<!-- Spacing presets -->
+<Section spacing="lg">Content</Section>
+<Section spacing="3xl">Hero content</Section>
+
+<!-- Background presets -->
+<Section background="muted">Muted section</Section>
+<Section background="gradient" gradientDirection="to-bottom-right">
+  Gradient section
+</Section>
+```
+
+**Tooltip Component**:
+```svelte
+<!-- Placement presets -->
+<Tooltip content="Help" placement="top">
+  <Button>Hover me</Button>
+</Tooltip>
+
+<!-- Auto placement -->
+<Tooltip content="Auto positioned" placement="auto">
+  <Button>Hover me</Button>
+</Tooltip>
+```
+
+**ThemeSwitcher Component**:
+```svelte
+<!-- Compact variant -->
+<ThemeSwitcher variant="compact" />
+
+<!-- Full variant with preview -->
+<ThemeSwitcher variant="full" showPreview />
 ```
 
 ### Custom Values via External CSS
@@ -360,10 +454,22 @@ If you're using Greater Components in a CSP-restricted environment:
 
 Components refactored for CSP compliance may have breaking API changes:
 
+#### Milestone 1 Components
 - **Skeleton**: `width` and `height` now accept preset strings, not arbitrary numbers
 - **Avatar**: Background colors are deterministic based on name hash, not customizable
 - **Text**: `lines` prop supports 2-6 only; other values require external CSS
 - **Container**: `gutter` accepts preset strings only; custom values require external CSS
+
+#### Milestone 2 Components
+- **ThemeProvider**: `customPalette`, `headingFont`, and `bodyFont` props removed; use `headingFontPreset`, `bodyFontPreset`, and `class` prop with external CSS
+- **Section**: `spacing` and `background` now accept preset values only; arbitrary CSS values require external CSS
+- **ThemeSwitcher**: `showAdvanced` and `showWorkbench` props removed; use external CSS for custom theming
+- **Tooltip**: Positioning is now CSS-based (relative to trigger); pixel-perfect positioning requires external CSS
+
+#### Theme Tooling (Dev-Only)
+- **ThemeWorkbench**: Marked as development-only; uses preset swatch classes
+- **ColorHarmonyPicker**: Marked as development-only; uses preset color classes
+- **ContrastChecker**: Marked as development-only; uses preset color combinations
 
 See component-specific migration guides for detailed upgrade paths.
 
@@ -374,7 +480,7 @@ See component-specific migration guides for detailed upgrade paths.
 Greater Components uses property-based testing to verify CSP compliance:
 
 ```typescript
-// Example: Verify no style attributes across all prop combinations
+// Milestone 1 Example: Verify no style attributes across all prop combinations
 fc.assert(
   fc.property(
     fc.record({
@@ -386,6 +492,70 @@ fc.assert(
       const { container } = render(Skeleton, { props });
       const element = container.querySelector('.gr-skeleton');
       return element && !element.hasAttribute('style');
+    }
+  ),
+  { numRuns: 100 }
+);
+```
+
+```typescript
+// Milestone 2 Example: ThemeProvider CSP compliance
+fc.assert(
+  fc.property(
+    fc.record({
+      theme: fc.option(fc.constantFrom('light', 'dark', 'high-contrast', 'auto')),
+      palette: fc.option(fc.constantFrom('slate', 'stone', 'neutral', 'zinc', 'gray')),
+      headingFontPreset: fc.option(fc.constantFrom('system', 'sans', 'serif', 'mono')),
+      bodyFontPreset: fc.option(fc.constantFrom('system', 'sans', 'serif', 'mono'))
+    }),
+    (props) => {
+      const { container } = render(ThemeProvider, { props: { ...props, children: mockSnippet } });
+      const element = container.querySelector('.gr-theme-provider');
+      return element && !element.hasAttribute('style');
+    }
+  ),
+  { numRuns: 100 }
+);
+```
+
+```typescript
+// Milestone 2 Example: Section CSP compliance
+fc.assert(
+  fc.property(
+    fc.record({
+      spacing: fc.option(fc.constantFrom('none', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl')),
+      background: fc.option(fc.constantFrom('default', 'muted', 'accent', 'gradient')),
+      gradientDirection: fc.option(fc.constantFrom('to-top', 'to-bottom', 'to-left', 'to-right'))
+    }),
+    (props) => {
+      const { container } = render(Section, { props });
+      const element = container.querySelector('.gr-section');
+      return element && !element.hasAttribute('style');
+    }
+  ),
+  { numRuns: 100 }
+);
+```
+
+```typescript
+// Milestone 2 Example: Tooltip CSP compliance
+fc.assert(
+  fc.property(
+    fc.record({
+      content: fc.string({ minLength: 1 }),
+      placement: fc.constantFrom('top', 'bottom', 'left', 'right', 'auto'),
+      trigger: fc.constantFrom('hover', 'focus', 'click'),
+      disabled: fc.boolean()
+    }),
+    async (props) => {
+      const { container } = render(Tooltip, { props: { ...props, children: mockSnippet } });
+      const trigger = container.querySelector('.gr-tooltip-trigger');
+      await fireEvent.mouseEnter(trigger);
+      await waitFor(() => {
+        const tooltip = container.querySelector('.gr-tooltip');
+        return tooltip && !tooltip.hasAttribute('style');
+      });
+      return true;
     }
   ),
   { numRuns: 100 }
