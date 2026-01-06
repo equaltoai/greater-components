@@ -766,7 +766,16 @@ async function main() {
 			fs.mkdirSync(registryDir, { recursive: true });
 		}
 
-		fs.writeFileSync(OUTPUT_PATH, JSON.stringify(registryIndex, null, 2));
+		let output = JSON.stringify(registryIndex);
+		try {
+			const prettier = await import('prettier');
+			output = await prettier.format(output, { filepath: OUTPUT_PATH });
+		} catch {
+			// Fallback for environments without Prettier installed.
+			output = JSON.stringify(registryIndex, null, 2) + '\n';
+		}
+
+		fs.writeFileSync(OUTPUT_PATH, output);
 		log(`✅ Registry index written to ${OUTPUT_PATH}`, colors.green);
 	}
 }
