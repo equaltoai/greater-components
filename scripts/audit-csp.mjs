@@ -130,10 +130,9 @@ function findFiles(dir, pattern) {
 /**
  * Categorize a violation based on file path.
  * Strict CSP policy treats all violations as ship-blocking.
- * @param {string} filePath - File path to categorize
  * @returns {'ship-blocking' | 'follow-up'}
  */
-function categorizeViolation(filePath) {
+function categorizeViolation() {
 	return 'ship-blocking';
 }
 
@@ -193,10 +192,10 @@ export function scanSvelteSource(pattern) {
 				addViolation(match.index, 'style-shorthand', 'Remove style shorthand and use CSS classes');
 			}
 			
-			// Scan for style: directives (Svelte style directives)
-			// These compile to inline styles in the rendered HTML
-			const styleDirectiveRegex =
-				/\bstyle:[a-zA-Z-]+\s*=\s*(\{[^}]*\}|\"[^\"]*\"|'[^']*')/g;
+	// Scan for style: directives (Svelte style directives)
+	// These compile to inline styles in the rendered HTML
+	const styleDirectiveRegex =
+		/\bstyle:[a-zA-Z-]+\s*=\s*(\{[^}]*\}|"[^"]*"|'[^']*')/g;
 			for (const match of masked.matchAll(styleDirectiveRegex)) {
 				addViolation(
 					match.index,

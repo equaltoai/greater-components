@@ -44,7 +44,7 @@ Truncation for long titles with tooltip.
 	const context = getArtworkContext();
 	const { artwork } = context;
 
-	const maxLinesClamped = Math.max(1, Math.min(6, Math.round(maxLines)));
+	const maxLinesClamped = $derived(Math.max(1, Math.min(6, Math.round(maxLines))));
 
 	// Determine if title needs truncation
 	const needsTruncation = $derived(artwork.title.length > 60);

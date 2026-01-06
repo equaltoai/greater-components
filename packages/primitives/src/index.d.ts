@@ -22,7 +22,11 @@ export type {
 } from '@equaltoai/greater-components-tokens';
 export type { WidthPreset, HeightPreset } from './components/Skeleton.svelte';
 export type { ContainerSize, GutterPreset } from './components/Container.svelte';
-export type { SpacingPreset, BackgroundPreset, GradientDirection } from './components/Section.svelte';
+export type {
+	SpacingPreset,
+	BackgroundPreset,
+	GradientDirection,
+} from './components/Section.svelte';
 export type { Placement } from './components/Tooltip.svelte';
 import Button from './components/Button.svelte';
 import CopyButton from './components/CopyButton.svelte';

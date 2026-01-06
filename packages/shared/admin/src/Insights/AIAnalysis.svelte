@@ -92,6 +92,13 @@ deepfake detection, and moderation recommendations.
 	function formatPercent(value: number): string {
 		return `${(value * 100).toFixed(1)}%`;
 	}
+
+	const overallRiskPercent = $derived(() =>
+		analysis ? Math.max(0, Math.min(100, analysis.overallRisk * 100)) : 0
+	);
+	const overallRiskSeverity = $derived(() =>
+		analysis ? getSeverity(analysis.overallRisk) : 'success'
+	);
 </script>
 
 <div class={`ai-analysis ${className}`}>
@@ -128,17 +135,15 @@ deepfake detection, and moderation recommendations.
 			{/if}
 		</div>
 	{:else}
-		<div class="ai-analysis__content">
-			<!-- Overall Risk -->
-				<div class="ai-analysis__section">
-					<h4 class="ai-analysis__section-title">Overall Assessment</h4>
-					<div class="ai-analysis__risk">
-						{@const overallRiskPercent = Math.max(0, Math.min(100, analysis.overallRisk * 100))}
-						{@const overallRiskSeverity = getSeverity(analysis.overallRisk)}
-						<div class="ai-analysis__risk-meter">
-							<svg
-								class="ai-analysis__risk-meter-svg"
-								viewBox="0 0 100 1"
+			<div class="ai-analysis__content">
+				<!-- Overall Risk -->
+					<div class="ai-analysis__section">
+						<h4 class="ai-analysis__section-title">Overall Assessment</h4>
+						<div class="ai-analysis__risk">
+							<div class="ai-analysis__risk-meter">
+								<svg
+									class="ai-analysis__risk-meter-svg"
+									viewBox="0 0 100 1"
 								preserveAspectRatio="none"
 								aria-hidden="true"
 							>

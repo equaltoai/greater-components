@@ -50,7 +50,7 @@
     width: 250px;
     height: 80px;
   }
-<\/style>`}
+</style>`}
 		/>
 	</section>
 
@@ -84,7 +84,7 @@
     -webkit-line-clamp: 10;
     overflow: hidden;
   }
-<\/style>`}
+</style>`}
 		/>
 	</section>
 
@@ -117,7 +117,7 @@
   :global(.custom-gutter) {
     --gr-container-custom-gutter: 2.5rem;
   }
-<\/style>`}
+</style>`}
 		/>
 	</section>
 
@@ -154,7 +154,7 @@
     --gr-button-bg: var(--gr-color-primary-600);
     --gr-button-bg-hover: var(--gr-color-primary-700);
   }
-<\/style>`}
+</style>`}
 		/>
 	</section>
 
@@ -225,4 +225,3 @@
 		text-decoration: underline;
 	}
 </style>
-

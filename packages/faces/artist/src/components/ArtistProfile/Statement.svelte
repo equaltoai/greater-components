@@ -39,7 +39,7 @@ Features:
 	const ctx = getArtistProfileContext();
 	const { artist } = ctx;
 
-	const maxLinesClamped = Math.max(1, Math.min(10, Math.round(maxLines)));
+	const maxLinesClamped = $derived(Math.max(1, Math.min(10, Math.round(maxLines))));
 
 	// Expanded state
 	let isExpanded = $state(false);

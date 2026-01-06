@@ -481,36 +481,36 @@ describe('Notification Grouping Utilities', () => {
 
 	describe('getNotificationColor', () => {
 		it('should return primary color for mention', () => {
-			expect(getNotificationColor('mention')).toContain('--color-primary');
+			expect(getNotificationColor('mention')).toBe('primary');
 		});
 
 		it('should return success color for reblog', () => {
-			expect(getNotificationColor('reblog')).toContain('--color-success');
+			expect(getNotificationColor('reblog')).toBe('success');
 		});
 
 		it('should return accent color for favourite', () => {
-			expect(getNotificationColor('favourite')).toContain('--color-accent');
+			expect(getNotificationColor('favourite')).toBe('accent');
 		});
 
 		it('should return secondary color for follow', () => {
-			expect(getNotificationColor('follow')).toContain('--color-secondary');
+			expect(getNotificationColor('follow')).toBe('secondary');
 		});
 
 		it('should return secondary color for follow_request', () => {
-			expect(getNotificationColor('follow_request')).toContain('--color-secondary');
+			expect(getNotificationColor('follow_request')).toBe('secondary');
 		});
 
 		it('should return info color for poll', () => {
-			expect(getNotificationColor('poll')).toContain('--color-info');
+			expect(getNotificationColor('poll')).toBe('info');
 		});
 
 		it('should return warning color for admin types', () => {
-			expect(getNotificationColor('admin.sign_up')).toContain('--color-warning');
-			expect(getNotificationColor('admin.report')).toContain('--color-warning');
+			expect(getNotificationColor('admin.sign_up')).toBe('warning');
+			expect(getNotificationColor('admin.report')).toBe('warning');
 		});
 
 		it('should return default color for unknown type', () => {
-			expect(getNotificationColor('unknown' as any)).toContain('--color-text-secondary');
+			expect(getNotificationColor('unknown' as any)).toBe('muted');
 		});
 	});
 

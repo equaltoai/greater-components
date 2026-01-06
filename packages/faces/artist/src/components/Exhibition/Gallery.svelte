@@ -40,7 +40,7 @@ Features:
 	const ctx = getExhibitionContext();
 	const { exhibition, layout, navigation, handlers } = ctx;
 
-	const columnsClamped = Math.max(1, Math.min(6, Math.round(columns)));
+	const columnsClamped = $derived(Math.max(1, Math.min(6, Math.round(columns))));
 
 	// Handle artwork click
 	function handleArtworkClick(artwork: ArtworkData) {

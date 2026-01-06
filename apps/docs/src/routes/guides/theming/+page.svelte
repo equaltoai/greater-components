@@ -88,7 +88,7 @@
     --gr-semantic-action-primary-default: var(--gr-color-primary-600);
     --gr-semantic-action-primary-hover: var(--gr-color-primary-700);
   }
-<\/style>`}
+</style>`}
 			language="svelte"
 		/>
 	</section>

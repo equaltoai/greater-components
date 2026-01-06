@@ -142,7 +142,7 @@
     width: 280px;
     height: 80px;
   }
-<\/style>`}
+</style>`}
 		/>
 
 		<h3>Text clamping</h3>
@@ -161,7 +161,7 @@
     -webkit-line-clamp: 10;
     overflow: hidden;
   }
-<\/style>`}
+</style>`}
 		/>
 
 		<h3>Custom container gutters</h3>
@@ -177,7 +177,7 @@
   :global(.custom-gutter) {
     --gr-container-custom-gutter: 2.5rem;
   }
-<\/style>`}
+</style>`}
 		/>
 	</section>
 
@@ -302,4 +302,3 @@
 		border-bottom: none;
 	}
 </style>
-

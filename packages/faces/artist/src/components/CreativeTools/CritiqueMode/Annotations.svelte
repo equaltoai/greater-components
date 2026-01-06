@@ -34,6 +34,13 @@ CritiqueMode.Annotations - Visual annotation layer
 	function handleAnnotationClick(id: string) {
 		ctx.selectedAnnotationId = ctx.selectedAnnotationId === id ? null : id;
 	}
+
+	function handleMarkerKeyDown(event: KeyboardEvent, id: string) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleAnnotationClick(id);
+		}
+	}
 </script>
 
 {#if config.enableAnnotations}
@@ -47,11 +54,14 @@ CritiqueMode.Annotations - Visual annotation layer
 			{#each annotations as annotation, index (annotation.id)}
 				{@const x = annotation.position.x * 100}
 				{@const y = annotation.position.y * 100}
-				<g
-					class="critique-annotations__marker"
-					class:selected={ctx.selectedAnnotationId === annotation.id}
-					onclick={() => handleAnnotationClick(annotation.id)}
-				>
+					<g
+						class="critique-annotations__marker"
+						class:selected={ctx.selectedAnnotationId === annotation.id}
+						role="button"
+						tabindex={-1}
+						onclick={() => handleAnnotationClick(annotation.id)}
+						onkeydown={(event) => handleMarkerKeyDown(event, annotation.id)}
+					>
 					<circle class="critique-annotations__marker-hit" cx={x} cy={y} r="4" />
 					<circle
 						class="critique-annotations__marker-fill"
