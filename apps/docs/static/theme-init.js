@@ -1,9 +1,10 @@
 // Theme detection for docs site (externalized for strict CSP compatibility).
 (function () {
 	try {
+		const theme = localStorage.getItem('theme');
 		if (
-			localStorage.theme === 'dark' ||
-			(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+			theme === 'dark' ||
+			(theme === null && window.matchMedia('(prefers-color-scheme: dark)').matches)
 		) {
 			document.documentElement.classList.add('dark');
 		} else {
