@@ -62,11 +62,11 @@
 
 	const skeletonSnippet = `
 <div class="skeleton-card">
-  <Skeleton variant="circular" width="48px" height="48px" />
+  <Skeleton variant="circular" class="layout-avatar-skeleton" />
   <div class="skeleton-lines">
-    <Skeleton width="60%" />
-    <Skeleton width="80%" />
-    <Skeleton width="40%" />
+    <Skeleton width="2/3" />
+    <Skeleton width="3/4" />
+    <Skeleton width="1/3" />
   </div>
 </div>`;
 
@@ -163,11 +163,11 @@ const contentTabs = [
 		<div class="skeleton-list">
 			{#each skeletonPlaceholders as placeholder (placeholder)}
 				<div class="skeleton-card" aria-label={`Loading card ${placeholder + 1}`}>
-					<Skeleton variant="circular" width="48px" height="48px" />
+					<Skeleton variant="circular" class="layout-avatar-skeleton" />
 					<div class="skeleton-lines">
-						<Skeleton width="70%" />
-						<Skeleton width="55%" />
-						<Skeleton width="40%" />
+						<Skeleton width="3/4" />
+						<Skeleton width="2/3" />
+						<Skeleton width="1/3" />
 					</div>
 				</div>
 			{/each}
@@ -396,6 +396,11 @@ const contentTabs = [
 		border: 1px solid var(--gr-semantic-border-subtle);
 		border-radius: var(--gr-radii-lg);
 		align-items: center;
+	}
+
+	:global(.layout-avatar-skeleton) {
+		width: 48px;
+		height: 48px;
 	}
 
 	.skeleton-lines {

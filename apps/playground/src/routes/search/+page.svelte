@@ -154,7 +154,7 @@
 				{#if searchLoading && statusResults.length === 0}
 					<div class="status-skeletons">
 						{#each statusSkeletons as placeholder (placeholder)}
-							<Skeleton width="100%" height="120px" data-index={placeholder} />
+							<Skeleton variant="rounded" data-index={placeholder} />
 						{/each}
 					</div>
 				{:else if !searchLoading && statusResults.length === 0}
@@ -198,7 +198,7 @@
 				<section class="side-card">
 					<h3>People</h3>
 					{#if searchLoading && !lastResults}
-						<Skeleton width="100%" height="64px" />
+						<Skeleton variant="rounded" height="xl" />
 					{:else if lastResults?.actors.length}
 						<ul class="actor-list">
 							{#each lastResults.actors as actor (actor.id)}
@@ -221,7 +221,7 @@
 				<section class="side-card">
 					<h3>Hashtags</h3>
 					{#if searchLoading && !lastResults}
-						<Skeleton width="100%" height="40px" />
+						<Skeleton variant="rounded" height="lg" />
 					{:else if lastResults?.tags.length}
 						<div class="tag-grid">
 							{#each lastResults.tags as tag (tag.name)}

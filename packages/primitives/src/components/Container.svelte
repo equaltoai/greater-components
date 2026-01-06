@@ -39,13 +39,13 @@ Container component - Max-width wrapper for content centering.
 	 * Size/max-width preset values.
 	 * @public
 	 */
-	type ContainerSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
+	export type ContainerSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 
 	/**
 	 * Gutter/padding preset values.
 	 * @public
 	 */
-	type GutterPreset = 'none' | 'sm' | 'md' | 'lg' | 'xl';
+	export type GutterPreset = 'none' | 'sm' | 'md' | 'lg' | 'xl';
 
 	/**
 	 * Container component props interface.

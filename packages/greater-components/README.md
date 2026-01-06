@@ -30,3 +30,10 @@ import { createTimelineIntegration } from '@equaltoai/greater-components/adapter
 
 Subpath exports mirror the previous workspace packages.
 See the root project documentation for detailed guides and APIs.
+
+## CSP Compatibility
+
+Greater Components is designed to work under strict Content Security Policy (CSP) environments (no inline scripts/styles).
+
+- [CSP Compatibility Guide](../../docs/csp-compatibility.md)
+- [CSP Migration Guide](../../docs/csp-migration-guide.md)

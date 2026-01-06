@@ -18,12 +18,13 @@
 	import { untrack } from 'svelte';
 	import { useStableId } from '@equaltoai/greater-components-utils';
 
-	type Placement = 'top' | 'bottom' | 'left' | 'right';
+	export type Placement = 'top' | 'bottom' | 'left' | 'right' | 'auto';
+	type ActualPlacement = Exclude<Placement, 'auto'>;
 
 	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
 		content: string;
 		id?: string;
-		placement?: Placement | 'auto';
+		placement?: Placement;
 		trigger?: 'hover' | 'focus' | 'click' | 'manual';
 		delay?: { show?: number; hide?: number } | number;
 		disabled?: boolean;
@@ -59,7 +60,7 @@
 	let showTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let hideTimeout: ReturnType<typeof setTimeout> | null = $state(null);
 	let longPressTimeout: ReturnType<typeof setTimeout> | null = $state(null);
-	let actualPlacement: Placement = $state(untrack(() => (placement === 'auto' ? 'top' : placement)));
+	let actualPlacement: ActualPlacement = $state(untrack(() => (placement === 'auto' ? 'top' : placement)));
 
 	$effect(() => {
 		if (placement !== 'auto') {
@@ -87,7 +88,7 @@
 	 * Uses viewport heuristics to select the best placement class.
 	 * Returns a placement string (no pixel calculations).
 	 */
-	function calculatePlacement(): Placement {
+	function calculatePlacement(): ActualPlacement {
 		if (placement !== 'auto') return placement;
 		if (!triggerElement) return 'top';
 

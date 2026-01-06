@@ -22,6 +22,10 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.gr-csp-display-contents {
+	display: contents;
+}
+
 /* Focus styles */
 :focus-visible {
 	outline: 2px solid var(--gr-semantic-focus-ring);

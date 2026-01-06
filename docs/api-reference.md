@@ -657,8 +657,8 @@ Loading placeholder with shape variants and animations.
 | Prop        | Type                                                 | Default   | Description                      |
 | ----------- | ---------------------------------------------------- | --------- | -------------------------------- |
 | `variant`   | `'text' \| 'circular' \| 'rectangular' \| 'rounded'` | `'text'`  | Shape variant                    |
-| `width`     | `string \| number`                                   | -         | Width (px if number)             |
-| `height`    | `string \| number`                                   | -         | Height (px if number)            |
+| `width`     | `'full' \| '1/2' \| '1/3' \| '2/3' \| '1/4' \| '3/4' \| 'content' \| 'auto'` | - | Width preset (use `class` for custom widths) |
+| `height`    | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl'`       | -         | Height preset (use `class` for custom heights) |
 | `animation` | `'pulse' \| 'wave' \| 'none'`                        | `'pulse'` | Animation type                   |
 | `loading`   | `boolean`                                            | `true`    | Show skeleton or children        |
 | `children`  | `Snippet`                                            | -         | Content to show when not loading |
@@ -680,13 +680,13 @@ Loading placeholder with shape variants and animations.
 </script>
 
 <!-- Text placeholder -->
-<Skeleton variant="text" width="80%" />
+<Skeleton variant="text" width="3/4" />
 
-<!-- Avatar placeholder -->
-<Skeleton variant="circular" width={48} height={48} />
+<!-- Avatar placeholder (defaults to 40px square) -->
+<Skeleton variant="circular" />
 
 <!-- Card placeholder -->
-<Skeleton variant="rounded" height="200px" animation="wave" />
+<Skeleton variant="rounded" animation="wave" />
 
 <!-- Conditional rendering -->
 <Skeleton {loading}>

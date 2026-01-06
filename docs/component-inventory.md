@@ -926,8 +926,8 @@ This package provides **41 interactive and layout components** for building any 
 **Key Props:**
 
 - `variant`: 'text' | 'circular' | 'rectangular'
-- `width`: string
-- `height`: string
+- `width`: preset ('full', '1/2', '1/3', '2/3', '1/4', '3/4', 'content', 'auto')
+- `height`: preset ('xs', 'sm', 'md', 'lg', 'xl', '2xl')
 - `animation`: 'pulse' | 'wave' | 'none'
 
 **Quick Example:**
@@ -938,10 +938,10 @@ This package provides **41 interactive and layout components** for building any 
 </script>
 
 <div class="profile-loading">
-	<Skeleton variant="circular" width="40px" height="40px" />
+	<Skeleton variant="circular" />
 	<div class="text">
-		<Skeleton variant="text" width="120px" />
-		<Skeleton variant="text" width="80px" />
+		<Skeleton variant="text" width="1/3" />
+		<Skeleton variant="text" width="1/4" />
 	</div>
 </div>
 ```

@@ -52,6 +52,9 @@ jobs:
             pnpm --filter @greater-components/docs build
           fi
 
+      - name: CSP Compliance Check (built output)
+        run: pnpm validate:csp
+
       - name: Prepare deployment bundle
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |

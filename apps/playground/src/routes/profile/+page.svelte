@@ -250,7 +250,7 @@
 	{#if mediaLoading}
 		<div class="media-grid">
 			{#each mediaSkeletons as placeholder (placeholder)}
-				<Skeleton width="100%" height="160px" data-index={placeholder} />
+				<Skeleton variant="rounded" class="profile-media-skeleton" data-index={placeholder} />
 			{/each}
 		</div>
 	{:else}
@@ -317,6 +317,10 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 		gap: 1rem;
+	}
+
+	:global(.profile-media-skeleton) {
+		height: 160px;
 	}
 
 	.media-grid figure {

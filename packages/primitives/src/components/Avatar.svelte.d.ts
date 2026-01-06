@@ -29,6 +29,7 @@ interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
 	statusPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 	class?: string;
 	fallback?: Snippet;
+	role?: string;
 }
 declare const Avatar: import('svelte').Component<Props, {}, ''>;
 type Avatar = ReturnType<typeof Avatar>;

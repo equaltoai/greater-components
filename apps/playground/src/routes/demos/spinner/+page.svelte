@@ -89,7 +89,7 @@
 				<Spinner color="gray" />
 				<span>gray</span>
 			</div>
-			<div class="spinner-item" style="color: #3b82f6;">
+			<div class="spinner-item spinner-item--current">
 				<Spinner color="current" />
 				<span>current</span>
 			</div>
@@ -201,6 +201,10 @@
 	.spinner-item span {
 		font-size: var(--gr-typography-fontSize-sm);
 		color: var(--gr-semantic-foreground-secondary);
+	}
+
+	.spinner-item--current {
+		color: #3b82f6;
 	}
 
 	.spinner-item.dark-bg {

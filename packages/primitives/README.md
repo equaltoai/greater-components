@@ -179,4 +179,9 @@ Layout container with preset gutters for strict CSP compliance.
 
 All components in this package are designed for strict Content Security Policy (CSP) compliance. They emit no inline `style` attributes and work in environments where `'unsafe-inline'` is not allowed in `style-src` directives.
 
-For more information, see the [CSP Compatibility Guide](../../docs/csp-compatibility.md).
+For details and migration examples:
+
+- [CSP Compatibility Guide](../../docs/csp-compatibility.md)
+- [CSP Migration Guide](../../docs/csp-migration-guide.md)
+
+CI enforcement: `pnpm validate:csp`.

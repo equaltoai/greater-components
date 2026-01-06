@@ -42,6 +42,43 @@ const __dirname = dirname(__filename);
  */
 
 /**
+ * Replace non-markup regions with whitespace so pattern scans don't false-positive
+ * (keeps indices stable by preserving newlines and overall string length).
+ * @param {string} content
+ * @returns {string}
+ */
+function maskNonMarkup(content) {
+	return content
+		.replace(/<script[\s\S]*?<\/script>/gi, match => match.replace(/[^\n]/g, ' '))
+		.replace(/<style[\s\S]*?<\/style>/gi, match => match.replace(/[^\n]/g, ' '))
+		.replace(/<!--[\s\S]*?-->/g, match => match.replace(/[^\n]/g, ' '));
+}
+
+/**
+ * Convert a string index into 1-indexed line and column numbers.
+ * @param {string} content
+ * @param {number} index
+ * @returns {{ line: number, column: number }}
+ */
+function indexToLineColumn(content, index) {
+	const linesBefore = content.slice(0, index).split('\n');
+	const line = linesBefore.length;
+	const column = linesBefore.at(-1)?.length + 1;
+	return { line, column };
+}
+
+/**
+ * Extract a single-line snippet for a match location.
+ * @param {string} content
+ * @param {number} lineNumber - 1-indexed
+ * @returns {string}
+ */
+function lineSnippet(content, lineNumber) {
+	const lines = content.split('\n');
+	return (lines[lineNumber - 1] ?? '').trim();
+}
+
+/**
  * Recursively find all files matching a pattern
  * @param {string} dir - Directory to search
  * @param {string} pattern - File extension pattern (e.g., '.svelte')
@@ -79,6 +116,11 @@ function findFiles(dir, pattern) {
 			}
 		}
 	} catch (err) {
+		// Missing directories are common in CI when build output hasn't been produced yet.
+		if (err && typeof err === 'object' && 'code' in err && err.code === 'ENOENT') {
+			return results;
+		}
+
 		console.warn(`Warning: Could not read directory ${dir}: ${err.message}`);
 	}
 	
@@ -86,16 +128,13 @@ function findFiles(dir, pattern) {
 }
 
 /**
- * Categorize a violation based on file path
+ * Categorize a violation based on file path.
+ * Strict CSP policy treats all violations as ship-blocking.
  * @param {string} filePath - File path to categorize
  * @returns {'ship-blocking' | 'follow-up'}
  */
 function categorizeViolation(filePath) {
-	// Ship-blocking: primitives package components
-	if (filePath.includes('packages/primitives/src/components/')) {
-		return 'ship-blocking';
-	}
-	return 'follow-up';
+	return 'ship-blocking';
 }
 
 /**
@@ -118,78 +157,53 @@ export function scanSvelteSource(pattern) {
 	for (const filePath of files) {
 		try {
 			const content = readFileSync(filePath, 'utf-8');
-			const lines = content.split('\n');
+			const masked = maskNonMarkup(content);
 			const relPath = relative(workspaceRoot, filePath);
 			
-			// Scan for style="..." attributes
-			const styleAttrRegex = /style\s*=\s*"[^"]*"/g;
-			lines.forEach((line, idx) => {
-				let match;
-				while ((match = styleAttrRegex.exec(line)) !== null) {
-					results.push({
-						file: relPath,
-						line: idx + 1,
-						column: match.index + 1,
-						type: 'style-attribute',
-						snippet: line.trim(),
-						category: categorizeViolation(relPath),
-						remediation: 'Replace inline style with CSS class'
-					});
-				}
-			});
+			const addViolation = (matchIndex, type, remediation) => {
+				const { line, column } = indexToLineColumn(content, matchIndex);
+
+				results.push({
+					file: relPath,
+					line,
+					column,
+					type,
+					snippet: lineSnippet(content, line),
+					category: categorizeViolation(relPath),
+					remediation,
+				});
+			};
+
+			// Scan for style="..." or style='...' attributes
+			const styleAttrRegex = /\bstyle\s*=\s*("([^"]*)"|'([^']*)')/g;
+			for (const match of masked.matchAll(styleAttrRegex)) {
+				addViolation(match.index, 'style-attribute', 'Replace inline style with a CSS class');
+			}
 			
 			// Scan for style={...} bindings
-			const styleBindingRegex = /style\s*=\s*\{[^}]*\}/g;
-			lines.forEach((line, idx) => {
-				let match;
-				while ((match = styleBindingRegex.exec(line)) !== null) {
-					results.push({
-						file: relPath,
-						line: idx + 1,
-						column: match.index + 1,
-						type: 'style-binding',
-						snippet: line.trim(),
-						category: categorizeViolation(relPath),
-						remediation: 'Replace inline style binding with CSS class'
-					});
-				}
-			});
+			const styleBindingRegex = /\bstyle\s*=\s*\{[^}]*\}/g;
+			for (const match of masked.matchAll(styleBindingRegex)) {
+				addViolation(match.index, 'style-binding', 'Replace style binding with a CSS class');
+			}
 
 			// Scan for {style} shorthand attributes
 			// Svelte compiles this to a style=... attribute in the rendered HTML.
 			const styleShorthandRegex = /\{style\}/g;
-			lines.forEach((line, idx) => {
-				let match;
-				while ((match = styleShorthandRegex.exec(line)) !== null) {
-					results.push({
-						file: relPath,
-						line: idx + 1,
-						column: match.index + 1,
-						type: 'style-shorthand',
-						snippet: line.trim(),
-						category: categorizeViolation(relPath),
-						remediation: 'Remove style shorthand and use CSS classes'
-					});
-				}
-			});
+			for (const match of masked.matchAll(styleShorthandRegex)) {
+				addViolation(match.index, 'style-shorthand', 'Remove style shorthand and use CSS classes');
+			}
 			
 			// Scan for style: directives (Svelte style directives)
 			// These compile to inline styles in the rendered HTML
-			const styleDirectiveRegex = /style:[a-zA-Z-]+\s*=\s*[{"][^}"]*[}"]/g;
-			lines.forEach((line, idx) => {
-				let match;
-				while ((match = styleDirectiveRegex.exec(line)) !== null) {
-					results.push({
-						file: relPath,
-						line: idx + 1,
-						column: match.index + 1,
-						type: 'style-directive',
-						snippet: line.trim(),
-						category: categorizeViolation(relPath),
-						remediation: 'Replace style directive with CSS class or CSS custom property set via class'
-					});
-				}
-			});
+			const styleDirectiveRegex =
+				/\bstyle:[a-zA-Z-]+\s*=\s*(\{[^}]*\}|\"[^\"]*\"|'[^']*')/g;
+			for (const match of masked.matchAll(styleDirectiveRegex)) {
+				addViolation(
+					match.index,
+					'style-directive',
+					'Replace style directive with a CSS class (or class-based CSS variable)'
+				);
+			}
 		} catch (err) {
 			console.warn(`Warning: Could not read file ${filePath}: ${err.message}`);
 		}
@@ -236,7 +250,7 @@ export function scanBuildOutput(directory) {
 						line: lineNumber,
 						type: 'inline-style',
 						snippet: elementHtml.substring(0, 100) + (elementHtml.length > 100 ? '...' : ''),
-						category: categorizeViolation(relPath)
+						category: categorizeViolation(relPath),
 					});
 				}
 			}
@@ -254,7 +268,7 @@ export function scanBuildOutput(directory) {
 						line: lineNumber,
 						type: 'inline-script',
 						snippet: scriptHtml.substring(0, 100) + (scriptHtml.length > 100 ? '...' : ''),
-						category: categorizeViolation(relPath)
+						category: categorizeViolation(relPath),
 					});
 				}
 			}
@@ -366,6 +380,11 @@ function formatReportMarkdown(report) {
 			md += `### ${violation.file}:${violation.line}\n\n`;
 			md += `- Type: ${violation.type}\n`;
 			md += `- Category: ${violation.category}\n`;
+			md += `- Remediation: ${
+				violation.type === 'inline-style'
+					? 'Remove inline style attributes from built HTML output'
+					: 'Replace inline scripts with external scripts (src=)'
+			}\n`;
 			md += `- Snippet: \`${violation.snippet}\`\n\n`;
 		}
 	}
@@ -384,8 +403,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	
 	console.log(formatReportMarkdown(report));
 	
-	// Exit with error code if ship-blocking violations found
-	if (report.summary.shipBlocking > 0) {
+	// Exit with error code if any violations found
+	if (report.summary.totalViolations > 0) {
 		process.exit(1);
 	}
 }
