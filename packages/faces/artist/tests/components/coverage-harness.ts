@@ -786,16 +786,6 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					},
 				},
 				action: async () => {
-					// Simulate drag on first item
-					const items = screen.getAllByRole('button', { name: /Reference/ });
-					if (items[0]) {
-						await fireEvent.mouseDown(items[0], { clientX: 100, clientY: 100 });
-						if (items[0].parentElement) {
-							await fireEvent.mouseMove(items[0].parentElement, { clientX: 150, clientY: 150 });
-							await fireEvent.mouseUp(items[0].parentElement);
-						}
-					}
-
 					// Remove item
 					const removeBtns = screen.getAllByLabelText('Remove reference');
 					if (removeBtns[0]) {
@@ -805,6 +795,10 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					// Save
 					const saveBtn = screen.getByText('Save Board');
 					await fireEvent.click(saveBtn);
+
+					// Share
+					const shareBtn = screen.getByText('Share');
+					await fireEvent.click(shareBtn);
 				},
 			},
 		],

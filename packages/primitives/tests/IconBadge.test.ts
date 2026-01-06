@@ -12,13 +12,11 @@ describe('IconBadge.svelte', () => {
 
 	it('applies sizes', () => {
 		const sizes = ['sm', 'md', 'lg', 'xl'] as const;
-		const sizeMap = { sm: 40, md: 56, lg: 72, xl: 96 };
 
 		sizes.forEach((size) => {
 			const { container } = render(IconBadge, { props: { icon: CheckIcon, size } });
 			const badge = container.querySelector('.gr-icon-badge') as HTMLElement;
-			expect(badge.style.width).toBe(`${sizeMap[size]}px`);
-			expect(badge.style.height).toBe(`${sizeMap[size]}px`);
+			expect(badge.classList.contains(`gr-icon-badge--size-${size}`)).toBe(true);
 		});
 	});
 

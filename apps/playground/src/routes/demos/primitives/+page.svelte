@@ -109,9 +109,9 @@
 		</div>
 
 		<div class="demo-row">
-			<Card variant="elevated" style="width: 300px;" hoverable>
+			<Card variant="elevated" class="demo-card" hoverable>
 				{#snippet header()}
-					<h3 style="margin: 0;">Elevated Card</h3>
+					<h3 class="demo-card__title">Elevated Card</h3>
 				{/snippet}
 				<p>This is an elevated, clickable card content.</p>
 				{#snippet footer()}
@@ -119,9 +119,9 @@
 				{/snippet}
 			</Card>
 
-			<Card variant="outlined" style="width: 300px;">
+			<Card variant="outlined" class="demo-card">
 				{#snippet header()}
-					<h3 style="margin: 0;">Outlined Card</h3>
+					<h3 class="demo-card__title">Outlined Card</h3>
 				{/snippet}
 				<p>This is an outlined card content.</p>
 			</Card>
@@ -138,7 +138,7 @@
 			<p>This content is centered with max-width: md (768px).</p>
 		</Container>
 
-		<Container maxWidth="sm" class="demo-container" style="margin-top: 1rem;">
+		<Container maxWidth="sm" class="demo-container demo-container--spaced">
 			<p>This content is centered with max-width: sm (640px).</p>
 		</Container>
 	</section>
@@ -149,7 +149,7 @@
 			<p>Semantic wrappers with vertical spacing consistency.</p>
 		</div>
 
-		<div style="border: 1px solid var(--gr-semantic-border-subtle);">
+		<div class="demo-section-wrapper">
 			<Section spacing="sm" class="demo-section-inner">
 				<p>Section with 'sm' spacing (2rem margin top/bottom).</p>
 			</Section>
@@ -232,6 +232,18 @@
 		color: var(--gr-semantic-foreground-secondary);
 	}
 
+	.demo-section-wrapper {
+		border: 1px solid var(--gr-semantic-border-subtle);
+	}
+
+	:global(.demo-card) {
+		width: 300px;
+	}
+
+	.demo-card__title {
+		margin: 0;
+	}
+
 	.modal-actions {
 		display: flex;
 		justify-content: flex-end;
@@ -244,6 +256,10 @@
 		padding-top: 1rem;
 		padding-bottom: 1rem;
 		text-align: center;
+	}
+
+	:global(.demo-container--spaced) {
+		margin-top: 1rem;
 	}
 
 	:global(.demo-section-inner) {

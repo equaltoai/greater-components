@@ -108,7 +108,7 @@ Features:
 	}
 
 	// Extract colors from image (mock implementation)
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 	async function extractColorsFromImage(_: File) {
 		// In a real implementation, this would use canvas or a color extraction library
 		// For now, we'll add some placeholder colors
@@ -149,11 +149,12 @@ Features:
 				<button
 					type="button"
 					class="color-palette-search__color"
-					style:--color={color}
 					onclick={() => removeColor(color)}
 					aria-label={`Remove color ${color}`}
 				>
-					<span class="color-palette-search__color-swatch"></span>
+					<svg class="color-palette-search__color-swatch" viewBox="0 0 20 20" aria-hidden="true">
+						<circle cx="10" cy="10" r="9" fill={color} />
+					</svg>
 					<span class="color-palette-search__color-value">{color}</span>
 					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
 						<path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round" />
@@ -226,7 +227,14 @@ Features:
 				aria-label={`Apply ${palette.name} palette`}
 			>
 				{#each palette.colors as color (color)}
-					<span class="color-palette-search__preset-color" style:--color={color}></span>
+					<svg
+						class="color-palette-search__preset-color"
+						viewBox="0 0 16 16"
+						preserveAspectRatio="none"
+						aria-hidden="true"
+					>
+						<rect x="0" y="0" width="16" height="16" fill={color} />
+					</svg>
 				{/each}
 			</button>
 		{/each}
@@ -337,9 +345,13 @@ Features:
 	.color-palette-search__color-swatch {
 		width: 20px;
 		height: 20px;
-		background: var(--color);
 		border-radius: var(--gr-radii-full);
-		border: 2px solid var(--gr-color-gray-500);
+		overflow: hidden;
+	}
+
+	.color-palette-search__color-swatch circle {
+		stroke: var(--gr-color-gray-500);
+		stroke-width: 2px;
 	}
 
 	.color-palette-search__color-value {
@@ -451,9 +463,10 @@ Features:
 	}
 
 	.color-palette-search__preset-color {
+		display: block;
 		width: 16px;
 		height: 16px;
-		background: var(--color);
+		overflow: hidden;
 	}
 
 	.color-palette-search__preset-color:first-child {

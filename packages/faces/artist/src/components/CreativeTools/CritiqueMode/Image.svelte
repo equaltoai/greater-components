@@ -17,8 +17,8 @@
 	const { artwork, config, zoom } = ctx;
 
 	let containerRef: HTMLDivElement;
-	let isDragging = $state(false);
-	let dragStart = $state({ x: 0, y: 0 });
+
+	const zoomPercent = $derived(Math.max(50, Math.min(400, Math.round(zoom.level * 4) * 25)));
 
 	// Handle keypad controls
 	function handleKeyDown(event: KeyboardEvent) {
@@ -34,25 +34,12 @@
 			case '0':
 				resetZoom(ctx);
 				break;
-			case 'ArrowUp':
-				ctx.zoom.offsetY += 20;
-				break;
-			case 'ArrowDown':
-				ctx.zoom.offsetY -= 20;
-				break;
-			case 'ArrowLeft':
-				ctx.zoom.offsetX += 20;
-				break;
-			case 'ArrowRight':
-				ctx.zoom.offsetX -= 20;
-				break;
 		}
 	}
 
 	// Handle click for annotation
 	function handleClick(event: MouseEvent) {
 		if (!ctx.isAnnotating || !config.enableAnnotations) return;
-		if (isDragging) return;
 
 		const rect = containerRef.getBoundingClientRect();
 		const x = (event.clientX - rect.left) / rect.width;
@@ -68,27 +55,10 @@
 	function handleWheel(event: WheelEvent) {
 		event.preventDefault();
 		if (event.deltaY < 0) {
-			zoomIn(ctx, 0.1);
+			zoomIn(ctx);
 		} else {
-			zoomOut(ctx, 0.1);
+			zoomOut(ctx);
 		}
-	}
-
-	// Handle pan
-	function handleMouseDown(event: MouseEvent) {
-		if (event.button !== 0) return;
-		isDragging = true;
-		dragStart = { x: event.clientX - zoom.offsetX, y: event.clientY - zoom.offsetY };
-	}
-
-	function handleMouseMove(event: MouseEvent) {
-		if (!isDragging) return;
-		ctx.zoom.offsetX = event.clientX - dragStart.x;
-		ctx.zoom.offsetY = event.clientY - dragStart.y;
-	}
-
-	function handleMouseUp() {
-		isDragging = false;
 	}
 </script>
 
@@ -99,20 +69,12 @@
 	class={`critique-image ${className}`}
 	onclick={handleClick}
 	onwheel={handleWheel}
-	onmousedown={handleMouseDown}
-	onmousemove={handleMouseMove}
-	onmouseup={handleMouseUp}
-	onmouseleave={handleMouseUp}
 	onkeydown={handleKeyDown}
 	tabindex="0"
 	role="application"
 	aria-label={`Interactive view of ${artwork.altText}`}
 >
-	<div
-		class="critique-image__wrapper"
-		style="transform: scale({zoom.level}) translate({zoom.offsetX / zoom.level}px, {zoom.offsetY /
-			zoom.level}px)"
-	>
+	<div class={`critique-image__wrapper critique-image__wrapper--zoom-${zoomPercent}`}>
 		<img
 			src={artwork.images.full}
 			alt={artwork.altText}
@@ -124,7 +86,7 @@
 	<!-- Zoom controls -->
 	<div class="critique-image__zoom-controls">
 		<button type="button" onclick={() => zoomIn(ctx)} aria-label="Zoom in">+</button>
-		<span>{Math.round(zoom.level * 100)}%</span>
+		<span>{zoomPercent}%</span>
 		<button type="button" onclick={() => zoomOut(ctx)} aria-label="Zoom out">−</button>
 		<button type="button" onclick={() => resetZoom(ctx)} aria-label="Reset zoom">Reset</button>
 	</div>
@@ -144,6 +106,66 @@
 		height: 100%;
 		transform-origin: center center;
 		transition: transform 0.1s ease-out;
+	}
+
+	.critique-image__wrapper--zoom-50 {
+		transform: scale(0.5);
+	}
+
+	.critique-image__wrapper--zoom-75 {
+		transform: scale(0.75);
+	}
+
+	.critique-image__wrapper--zoom-100 {
+		transform: scale(1);
+	}
+
+	.critique-image__wrapper--zoom-125 {
+		transform: scale(1.25);
+	}
+
+	.critique-image__wrapper--zoom-150 {
+		transform: scale(1.5);
+	}
+
+	.critique-image__wrapper--zoom-175 {
+		transform: scale(1.75);
+	}
+
+	.critique-image__wrapper--zoom-200 {
+		transform: scale(2);
+	}
+
+	.critique-image__wrapper--zoom-225 {
+		transform: scale(2.25);
+	}
+
+	.critique-image__wrapper--zoom-250 {
+		transform: scale(2.5);
+	}
+
+	.critique-image__wrapper--zoom-275 {
+		transform: scale(2.75);
+	}
+
+	.critique-image__wrapper--zoom-300 {
+		transform: scale(3);
+	}
+
+	.critique-image__wrapper--zoom-325 {
+		transform: scale(3.25);
+	}
+
+	.critique-image__wrapper--zoom-350 {
+		transform: scale(3.5);
+	}
+
+	.critique-image__wrapper--zoom-375 {
+		transform: scale(3.75);
+	}
+
+	.critique-image__wrapper--zoom-400 {
+		transform: scale(4);
 	}
 
 	.critique-image__img {

@@ -135,7 +135,7 @@ Features:
 	{#if storeState.loading}
 		<!-- Loading state -->
 		<div class="results__loading" aria-label="Loading results">
-			<div class="results__grid" style:--columns={columns}>
+			<div class={`results__grid results__grid--columns-${columns}`}>
 				<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 				{#each Array(8) as _, i (i)}
 					<div class="results__skeleton">
@@ -174,10 +174,9 @@ Features:
 	{:else}
 		<!-- Results grid -->
 		<div
-			class="results__grid"
+			class={`results__grid results__grid--columns-${columns}`}
 			class:results__grid--masonry={layout === 'masonry'}
 			class:results__grid--list={layout === 'list'}
-			style:--columns={columns}
 			role="list"
 		>
 			{#each storeState.results as artwork (artwork.id)}
@@ -266,11 +265,35 @@ Features:
 
 	.results__grid {
 		display: grid;
-		grid-template-columns: repeat(var(--columns, 4), 1fr);
+		grid-template-columns: repeat(4, 1fr);
 		gap: var(--gr-spacing-scale-4);
 	}
 
-	.results__grid--list {
+	.results__grid--columns-1 {
+		grid-template-columns: repeat(1, 1fr);
+	}
+
+	.results__grid--columns-2 {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.results__grid--columns-3 {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.results__grid--columns-4 {
+		grid-template-columns: repeat(4, 1fr);
+	}
+
+	.results__grid--columns-5 {
+		grid-template-columns: repeat(5, 1fr);
+	}
+
+	.results__grid--columns-6 {
+		grid-template-columns: repeat(6, 1fr);
+	}
+
+	.results__grid.results__grid--list {
 		grid-template-columns: 1fr;
 	}
 
@@ -456,19 +479,19 @@ Features:
 	/* Responsive */
 	@media (max-width: 1024px) {
 		.results__grid {
-			--columns: 3;
+			grid-template-columns: repeat(3, 1fr);
 		}
 	}
 
 	@media (max-width: 768px) {
 		.results__grid {
-			--columns: 2;
+			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 
 	@media (max-width: 480px) {
 		.results__grid {
-			--columns: 1;
+			grid-template-columns: repeat(1, 1fr);
 		}
 	}
 

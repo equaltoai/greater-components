@@ -25,11 +25,8 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	import ArtworkCard from '../ArtworkCard.svelte';
 	import {
 		calculateColumns,
-		calculateColumnWidth,
 		balanceColumns,
 		measureAspectRatio,
-		shouldUseVirtualScrolling,
-		createVirtualScroller,
 		clusterByArtist,
 		clusterByTheme,
 		clusterSmart,
@@ -64,11 +61,6 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 		clustering?: ClusteringMode;
 
 		/**
-		 * Enable virtual scrolling (auto-enabled for > 50 items)
-		 */
-		virtualScrolling?: boolean;
-
-		/**
 		 * Callback when more items should be loaded
 		 */
 		onLoadMore?: () => void;
@@ -99,7 +91,6 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 		columns = 'auto',
 		gap = 'md',
 		clustering = 'none',
-		virtualScrolling = false,
 		onLoadMore,
 		onItemClick,
 		class: className = '',
@@ -110,8 +101,6 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	// Container reference
 	let containerRef: HTMLElement | null = $state(null);
 	let containerWidth = $state(0);
-	let containerHeight = $state(0);
-	let scrollTop = $state(0);
 
 	// Focused item for keyboard navigation
 	let focusedIndex = $state(-1);
@@ -120,9 +109,6 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	const actualColumns = $derived(
 		columns === 'auto' ? calculateColumns(containerWidth, { gap: GAP_SIZES[gap] }) : columns
 	);
-
-	// Calculate column width
-	const columnWidth = $derived(calculateColumnWidth(containerWidth, actualColumns, GAP_SIZES[gap]));
 
 	// Process items based on clustering
 	const processedItems = $derived.by(() => {
@@ -142,31 +128,13 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	// Balance items across columns for masonry layout
 	const masonryColumns = $derived(balanceColumns(processedItems, actualColumns));
 
-	// Determine if virtual scrolling should be used
-	const useVirtualScrolling = $derived(virtualScrolling || shouldUseVirtualScrolling(items.length));
-
-	// Virtual scroll state
-	const virtualState = $derived.by(() => {
-		if (!useVirtualScrolling) return null;
-
-		return createVirtualScroller(
-			{
-				containerHeight,
-				estimatedItemHeight: columnWidth / 1.5, // Assume average aspect ratio
-				overscan: 5,
-				totalItems: processedItems.length,
-			},
-			scrollTop
-		);
-	});
-
 	// Handle scroll for virtual scrolling and infinite scroll
 	function handleScroll(event: Event) {
 		const target = event.target as HTMLElement;
-		scrollTop = target.scrollTop;
+		const nextScrollTop = target.scrollTop;
 
 		// Save scroll position
-		saveScrollPosition(scrollKey, scrollTop);
+		saveScrollPosition(scrollKey, nextScrollTop);
 
 		// Check for infinite scroll trigger
 		if (onLoadMore) {
@@ -231,6 +199,13 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 		onItemClick?.(item);
 	}
 
+	function getAspectRatioClass(ratio: number): string {
+		if (ratio >= 1.6) return 'gallery-item--ratio-16-9';
+		if (ratio >= 1.2) return 'gallery-item--ratio-4-3';
+		if (ratio >= 0.9) return 'gallery-item--ratio-1-1';
+		return 'gallery-item--ratio-3-4';
+	}
+
 	// Get position info for screen reader
 	function getAriaLabel(index: number): string {
 		const { row, column, totalRows } = getPositionInfo(index, actualColumns, processedItems.length);
@@ -244,7 +219,6 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 		const observer = new ResizeObserver((entries) => {
 			for (const entry of entries) {
 				containerWidth = entry.contentRect.width;
-				containerHeight = entry.contentRect.height;
 			}
 		});
 
@@ -263,87 +237,49 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
 	bind:this={containerRef}
-	class={`gallery-grid ${className}`}
+	class={`gallery-grid gallery-grid--gap-${gap} ${className}`}
 	role="region"
-	aria-label={`Gallery with ${items.length} artworks`}
+	aria-label={scrollKey === 'gallery'
+		? `Gallery with ${items.length} artworks`
+		: `Gallery (${scrollKey}) with ${items.length} artworks`}
 	aria-busy={false}
 	onscroll={handleScroll}
 	onkeydown={handleKeydown}
-	style:--gallery-columns={actualColumns}
-	style:--gallery-gap={`${GAP_SIZES[gap]}px`}
 >
 	<!-- Skip link for accessibility -->
 	<a href="#gallery-end" class="skip-link">Skip gallery</a>
 
-	{#if useVirtualScrolling && virtualState}
-		<!-- Virtual scrolling container -->
-		<div class="virtual-container" style:height={`${virtualState.totalHeight}px`}>
-			<div class="virtual-content" style:transform={`translateY(${virtualState.offsetTop}px)`}>
-				<div class="masonry-grid">
-					{#each masonryColumns as column, colIndex (colIndex)}
-						<div class="masonry-column">
-							{#each column.items as item, itemIndex (item.id)}
-								{@const globalIndex = colIndex + itemIndex * actualColumns}
-								{@const aspectRatio = measureAspectRatio(item)}
-								<div
-									class="gallery-item"
-									class:focused={focusedIndex === globalIndex}
-									data-index={globalIndex}
-									role="article"
-									aria-label={getAriaLabel(globalIndex)}
-									onfocusin={() => handleItemFocus(globalIndex)}
-									style:--aspect-ratio={aspectRatio}
-								>
-									{#if itemRenderer}
-										{@render itemRenderer(item, globalIndex)}
-									{:else}
-										<ArtworkCard
-											artwork={item}
-											variant="grid"
-											tabindex={focusedIndex === globalIndex ? 0 : -1}
-											onclick={() => handleItemClick(item)}
-										/>
-									{/if}
-								</div>
-							{/each}
-						</div>
-					{/each}
-				</div>
+	<!-- Standard masonry grid -->
+	<div class="masonry-grid">
+		{#each masonryColumns as column, colIndex (colIndex)}
+			<div class="masonry-column">
+				{#each column.items as item, itemIndex (item.id)}
+					{@const globalIndex = colIndex + itemIndex * actualColumns}
+					{@const aspectRatio = measureAspectRatio(item)}
+					{@const aspectRatioClass = getAspectRatioClass(aspectRatio)}
+					<div
+						class={`gallery-item ${aspectRatioClass}`}
+						class:focused={focusedIndex === globalIndex}
+						data-index={globalIndex}
+						role="article"
+						aria-label={getAriaLabel(globalIndex)}
+						onfocusin={() => handleItemFocus(globalIndex)}
+					>
+						{#if itemRenderer}
+							{@render itemRenderer(item, globalIndex)}
+						{:else}
+							<ArtworkCard
+								artwork={item}
+								variant="grid"
+								tabindex={focusedIndex === globalIndex ? 0 : -1}
+								onclick={() => handleItemClick(item)}
+							/>
+						{/if}
+					</div>
+				{/each}
 			</div>
-		</div>
-	{:else}
-		<!-- Standard masonry grid -->
-		<div class="masonry-grid">
-			{#each masonryColumns as column, colIndex (colIndex)}
-				<div class="masonry-column">
-					{#each column.items as item, itemIndex (item.id)}
-						{@const globalIndex = colIndex + itemIndex * actualColumns}
-						{@const aspectRatio = measureAspectRatio(item)}
-						<div
-							class="gallery-item"
-							class:focused={focusedIndex === globalIndex}
-							data-index={globalIndex}
-							role="article"
-							aria-label={getAriaLabel(globalIndex)}
-							onfocusin={() => handleItemFocus(globalIndex)}
-							style:--aspect-ratio={aspectRatio}
-						>
-							{#if itemRenderer}
-								{@render itemRenderer(item, globalIndex)}
-							{:else}
-								<ArtworkCard
-									artwork={item}
-									variant="grid"
-									tabindex={focusedIndex === globalIndex ? 0 : -1}
-									onclick={() => handleItemClick(item)}
-								/>
-							{/if}
-						</div>
-					{/each}
-				</div>
-			{/each}
-		</div>
-	{/if}
+		{/each}
+	</div>
 
 	<div id="gallery-end" tabindex="-1" class="sr-only">End of gallery</div>
 </div>
@@ -353,9 +289,22 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 		position: relative;
 		width: 100%;
 		height: 100%;
+		--gallery-gap: 16px;
 		overflow-y: auto;
 		overflow-x: hidden;
 		scroll-behavior: smooth;
+	}
+
+	.gallery-grid--gap-sm {
+		--gallery-gap: 8px;
+	}
+
+	.gallery-grid--gap-md {
+		--gallery-gap: 16px;
+	}
+
+	.gallery-grid--gap-lg {
+		--gallery-gap: 24px;
 	}
 
 	.skip-link {
@@ -371,18 +320,6 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 
 	.skip-link:focus {
 		top: 0;
-	}
-
-	.virtual-container {
-		position: relative;
-		width: 100%;
-	}
-
-	.virtual-content {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
 	}
 
 	.masonry-grid {
@@ -401,7 +338,7 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	.gallery-item {
 		position: relative;
 		width: 100%;
-		aspect-ratio: var(--aspect-ratio, 1);
+		aspect-ratio: 1 / 1;
 		border-radius: var(--gr-radii-md);
 		overflow: hidden;
 		cursor: pointer;
@@ -423,6 +360,22 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	.gallery-item.focused {
 		outline: 2px solid var(--gr-color-primary-500);
 		outline-offset: 2px;
+	}
+
+	.gallery-item--ratio-1-1 {
+		aspect-ratio: 1 / 1;
+	}
+
+	.gallery-item--ratio-4-3 {
+		aspect-ratio: 4 / 3;
+	}
+
+	.gallery-item--ratio-16-9 {
+		aspect-ratio: 16 / 9;
+	}
+
+	.gallery-item--ratio-3-4 {
+		aspect-ratio: 3 / 4;
 	}
 
 	.sr-only {

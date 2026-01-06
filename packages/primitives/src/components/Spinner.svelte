@@ -66,7 +66,7 @@ Spinner component - Accessible loading indicator with configurable size and colo
 		label = 'Loading',
 		class: className = '',
 		id,
-		style,
+		style: _style,
 		...restProps
 	}: Props = $props();
 
@@ -90,7 +90,7 @@ Spinner component - Accessible loading indicator with configurable size and colo
 	const pixelSize = $derived(sizeMap[size] || sizeMap.md);
 </script>
 
-<span class={spinnerClass} role="status" aria-label={label} {id} {style} {...restProps}>
+<span class={spinnerClass} role="status" aria-label={label} {id} {...restProps}>
 	<svg
 		class="gr-spinner__svg"
 		width={pixelSize}

@@ -214,27 +214,36 @@ export function getNotificationIcon(type: NotificationType): string {
 /**
  * Get color for notification type
  */
-export function getNotificationColor(type: NotificationType): string {
+export type NotificationColor =
+	| 'primary'
+	| 'success'
+	| 'accent'
+	| 'secondary'
+	| 'info'
+	| 'warning'
+	| 'muted';
+
+export function getNotificationColor(type: NotificationType): NotificationColor {
 	switch (type) {
 		case 'mention':
-			return 'var(--color-primary, #1d9bf0)';
+			return 'primary';
 		case 'reblog':
-			return 'var(--color-success, #00ba7c)';
+			return 'success';
 		case 'favourite':
-			return 'var(--color-accent, #f91880)';
+			return 'accent';
 		case 'follow':
 		case 'follow_request':
-			return 'var(--color-secondary, #794bc4)';
+			return 'secondary';
 		case 'poll':
-			return 'var(--color-info, #0084ff)';
+			return 'info';
 		case 'status':
 		case 'update':
-			return 'var(--color-primary, #1d9bf0)';
+			return 'primary';
 		case 'admin.sign_up':
 		case 'admin.report':
-			return 'var(--color-warning, #ffad1f)';
+			return 'warning';
 		default:
-			return 'var(--color-text-secondary, #536471)';
+			return 'muted';
 	}
 }
 

@@ -129,6 +129,7 @@ Button component - Accessible interactive element with loading states, variants,
 		suffix,
 		onclick,
 		onkeydown,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

@@ -338,6 +338,12 @@
 	font-size: 1.1em;
 }
 
+.gr-community-flair__dot {
+	width: 0.6em;
+	height: 0.6em;
+	flex-shrink: 0;
+}
+
 .gr-community-flair--post {
 	background: var(--gr-color-neutral-100);
 	color: var(--gr-color-text-primary);

@@ -44,7 +44,8 @@
 		<ul>
 			<li><strong>light</strong> - Clean, modern light interface (default)</li>
 			<li><strong>dark</strong> - Easy-on-the-eyes dark mode</li>
-			<li><strong>highContrast</strong> - WCAG AAA compliant high contrast</li>
+			<li><strong>high-contrast</strong> - WCAG AAA compliant high contrast</li>
+			<li><strong>auto</strong> - Follow system preference</li>
 		</ul>
 	</section>
 
@@ -56,63 +57,40 @@
 		</p>
 
 		<CodeExample
-			code={`import { palettePresets } from '@equaltoai/greater-components/tokens';
-
-// Available presets
-const presets = {
-  default: { ... },    // Blue primary
-  ocean: { ... },      // Teal/cyan palette
-  forest: { ... },     // Green palette
-  sunset: { ... },     // Orange/amber palette
-  berry: { ... },      // Purple/pink palette
-  slate: { ... },      // Neutral gray palette
-};
-
-// Apply a preset
-<ThemeProvider palette={palettePresets.ocean}>
+			code={`<!-- Palette presets are class-based for strict CSP compatibility -->
+<ThemeProvider palette="slate">
   <YourApp />
-</ThemeProvider>`}
-			language="typescript"
+</ThemeProvider>
+
+<!-- Available presets: slate, stone, neutral, zinc, gray -->`}
+			language="svelte"
 		/>
 	</section>
 
 	<section>
-		<h2>Custom Color Palettes</h2>
-		<p>Create your own color palette by defining primary, secondary, and semantic colors.</p>
+		<h2>Custom Themes (External CSS)</h2>
+		<p>
+			For strict CSP compatibility, shipped components do not support runtime “custom theme objects”
+			or a
+			<code>style</code> prop. To customize your theme, define CSS custom properties in your own
+			stylesheets (scoped via <code>class</code> when appropriate).
+		</p>
 
 		<CodeExample
-			code={`import { createPalette } from '@equaltoai/greater-components/tokens';
-
-// Generate a complete palette from a single brand color
-const customPalette = createPalette({
-  primary: '#6366f1',  // Your brand color
-  // Optional overrides
-  secondary: '#ec4899',
-  success: '#22c55e',
-  warning: '#f59e0b',
-  error: '#ef4444',
-});
-
-<ThemeProvider palette={customPalette}>
+			code={`<ThemeProvider class="brand-theme">
   <YourApp />
-</ThemeProvider>`}
-			language="typescript"
-		/>
+</ThemeProvider>
 
-		<h3>Palette Structure</h3>
-		<p>A complete palette includes these color scales:</p>
-
-		<CodeExample
-			code={`interface ColorPalette {
-  primary: ColorScale;    // 50-950 shades
-  secondary: ColorScale;
-  gray: ColorScale;
-  success: ColorScale;
-  warning: ColorScale;
-  error: ColorScale;
-  info: ColorScale;
-}`}
-			language="typescript"
+<style>
+  :global(.brand-theme) {
+    /* Override a small set of tokens */
+    --gr-color-primary-600: #4f46e5;
+    --gr-color-primary-700: #4338ca;
+    --gr-semantic-action-primary-default: var(--gr-color-primary-600);
+    --gr-semantic-action-primary-hover: var(--gr-color-primary-700);
+  }
+</style>`}
+			language="svelte"
 		/>
 	</section>
 
@@ -196,6 +174,11 @@ const customPalette = createPalette({
 			language="svelte"
 		/>
 
+		<p>
+			The workbench is intended for development workflows. For strict CSP deployments, export the
+			result and apply it via external CSS (not per-instance inline styles).
+		</p>
+
 		<p>The workbench includes:</p>
 		<ul>
 			<li>
@@ -239,7 +222,10 @@ const passes = meetsWCAG('#ffffff', '#6366f1', 'AA');
 
 	<section>
 		<h2>Component-Level Theming</h2>
-		<p>Override theme values for specific components using CSS classes or inline styles:</p>
+		<p>
+			Override theme values for specific components using CSS classes. Inline style attributes are
+			not CSP-safe and are not supported by shipped components.
+		</p>
 
 		<CodeExample
 			code={`<!-- Using CSS class -->
@@ -252,9 +238,7 @@ const passes = meetsWCAG('#ffffff', '#6366f1', 'AA');
     --gr-button-border-radius: 9999px;
   }
 </style>
-
-<!-- Using style prop -->
-<Button style="--gr-button-bg: #10b981;">Green Button</Button>`}
+`}
 			language="svelte"
 		/>
 	</section>
@@ -290,6 +274,14 @@ const passes = meetsWCAG('#ffffff', '#6366f1', 'AA');
 		<ul>
 			<li>
 				<a href="/guides/dark-mode">Dark Mode Guide</a> - Best practices for dark mode implementation
+			</li>
+			<li>
+				<a href="/guides/csp-compatibility">CSP Compatibility</a> - Strict CSP constraints and supported
+				patterns
+			</li>
+			<li>
+				<a href="/guides/csp-migration">CSP Migration Guide</a> - Before/after examples for CSP-driven
+				breaking changes
 			</li>
 			<li><a href="/tokens/colors">Color Tokens Reference</a> - Complete list of color tokens</li>
 			<li>

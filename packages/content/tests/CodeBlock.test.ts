@@ -118,10 +118,10 @@ describe('CodeBlock.svelte', () => {
 		});
 	});
 
-	it('applies max height style', () => {
-		const { container } = render(CodeBlock, { props: { code: 'test', maxHeight: 200 } });
+	it('applies max height preset class', () => {
+		const { container } = render(CodeBlock, { props: { code: 'test', maxHeight: 'md' } });
 		const content = container.querySelector('.gr-code-block__content') as HTMLElement;
-		expect(content.style.maxHeight).toBe('200px');
+		expect(content.classList.contains('gr-code-block--max-height-md')).toBe(true);
 	});
 
 	it('applies wrap class', () => {

@@ -56,6 +56,10 @@ body {
 	overflow-x: hidden;
 }
 
+.gr-csp-display-contents {
+	display: contents;
+}
+
 /* Typography */
 h1,
 h2,

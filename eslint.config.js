@@ -28,6 +28,13 @@ export default [
 			},
 		},
 		rules: {
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+				},
+			],
 			'svelte/no-at-html-tags': 'warn',
 			'svelte/valid-compile': 'error',
 			'svelte/no-reactive-reassign': 'error',

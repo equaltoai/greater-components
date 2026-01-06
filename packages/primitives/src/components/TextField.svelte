@@ -40,6 +40,7 @@
 		onfocus,
 		oninput,
 		onkeydown,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

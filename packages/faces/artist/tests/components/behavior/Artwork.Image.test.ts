@@ -188,17 +188,15 @@ describe('Artwork.Image', () => {
 
 	it('respects aspect ratio preserve', () => {
 		render(Artwork.Image, { props: { aspectRatio: 'preserve' } });
-		// The style is applied to the container
-		// We can't easily check style on container without selecting it by class
-		// But we can check if it exists
 		const figure = screen.getByRole('figure'); // figure wrap has the style
-		// style: aspect-ratio: 800 / 600
-		expect(figure).toHaveStyle({ aspectRatio: '800 / 600' });
+		expect(figure).toHaveClass('gr-artist-artwork-image-container--ratio-4-3');
+		expect(figure).not.toHaveAttribute('style');
 	});
 
 	it('respects aspect ratio 1:1', () => {
 		render(Artwork.Image, { props: { aspectRatio: '1:1' } });
 		const figure = screen.getByRole('figure');
-		expect(figure).toHaveStyle({ aspectRatio: '1 / 1' });
+		expect(figure).toHaveClass('gr-artist-artwork-image-container--ratio-1-1');
+		expect(figure).not.toHaveAttribute('style');
 	});
 });

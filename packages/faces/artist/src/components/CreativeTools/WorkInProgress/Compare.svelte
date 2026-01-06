@@ -34,13 +34,17 @@ WorkInProgress.Compare - Version comparison tool
 	// Handle slider drag
 	function handleSliderInput(event: Event) {
 		const target = event.target as HTMLInputElement;
-		ctx.comparison.sliderPosition = parseInt(target.value, 10);
+		const next = parseInt(target.value, 10);
+		const clamped = Math.max(0, Math.min(100, Number.isFinite(next) ? next : 50));
+		ctx.comparison.sliderPosition = Math.round(clamped / 5) * 5;
 	}
 
 	// Handle opacity change
 	function handleOpacityInput(event: Event) {
 		const target = event.target as HTMLInputElement;
-		ctx.comparison.overlayOpacity = parseFloat(target.value);
+		const next = parseFloat(target.value);
+		const clamped = Math.max(0, Math.min(1, Number.isFinite(next) ? next : 0.5));
+		ctx.comparison.overlayOpacity = Math.round(clamped * 10) / 10;
 	}
 
 	// Handle version selection
@@ -57,6 +61,14 @@ WorkInProgress.Compare - Version comparison tool
 	// Images
 	const imageA = $derived(getVersionImage(comparison.versionA));
 	const imageB = $derived(getVersionImage(comparison.versionB));
+
+	const sliderPosition = $derived(
+		Math.max(0, Math.min(100, Math.round(comparison.sliderPosition / 5) * 5))
+	);
+
+	const overlayOpacityPercent = $derived(
+		Math.max(0, Math.min(100, Math.round(comparison.overlayOpacity * 10) * 10))
+	);
 </script>
 
 {#if config.enableComparison && comparison.isActive}
@@ -148,13 +160,14 @@ WorkInProgress.Compare - Version comparison tool
 						{/if}
 						{#if imageA}
 							<div
-								class="wip-compare__slider-overlay"
-								style="clip-path: inset(0 {100 - comparison.sliderPosition}% 0 0)"
+								class={`wip-compare__slider-overlay wip-compare__slider-overlay--p${sliderPosition}`}
 							>
 								<img src={imageA} alt={`Version ${comparison.versionA + 1}`} />
 							</div>
 						{/if}
-						<div class="wip-compare__slider-handle" style="left: {comparison.sliderPosition}%">
+						<div
+							class={`wip-compare__slider-handle wip-compare__slider-handle--p${sliderPosition}`}
+						>
 							<div class="wip-compare__slider-line"></div>
 						</div>
 					</div>
@@ -162,6 +175,7 @@ WorkInProgress.Compare - Version comparison tool
 						type="range"
 						min="0"
 						max="100"
+						step="5"
 						value={comparison.sliderPosition}
 						oninput={handleSliderInput}
 						class="wip-compare__slider-input"
@@ -181,8 +195,7 @@ WorkInProgress.Compare - Version comparison tool
 						<img
 							src={imageA}
 							alt={`Version ${comparison.versionA + 1}`}
-							class="wip-compare__overlay-top"
-							style="opacity: {comparison.overlayOpacity}"
+							class={`wip-compare__overlay-top wip-compare__overlay-top--opacity-${overlayOpacityPercent}`}
 						/>
 					{/if}
 					<label class="wip-compare__opacity-control">
@@ -319,6 +332,90 @@ WorkInProgress.Compare - Version comparison tool
 		height: 100%;
 	}
 
+	.wip-compare__slider-overlay--p0 {
+		clip-path: inset(0 100% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p5 {
+		clip-path: inset(0 95% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p10 {
+		clip-path: inset(0 90% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p15 {
+		clip-path: inset(0 85% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p20 {
+		clip-path: inset(0 80% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p25 {
+		clip-path: inset(0 75% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p30 {
+		clip-path: inset(0 70% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p35 {
+		clip-path: inset(0 65% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p40 {
+		clip-path: inset(0 60% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p45 {
+		clip-path: inset(0 55% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p50 {
+		clip-path: inset(0 50% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p55 {
+		clip-path: inset(0 45% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p60 {
+		clip-path: inset(0 40% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p65 {
+		clip-path: inset(0 35% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p70 {
+		clip-path: inset(0 30% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p75 {
+		clip-path: inset(0 25% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p80 {
+		clip-path: inset(0 20% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p85 {
+		clip-path: inset(0 15% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p90 {
+		clip-path: inset(0 10% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p95 {
+		clip-path: inset(0 5% 0 0);
+	}
+
+	.wip-compare__slider-overlay--p100 {
+		clip-path: inset(0 0 0 0);
+	}
+
 	.wip-compare__slider-overlay img {
 		width: 100%;
 		height: 100%;
@@ -331,6 +428,90 @@ WorkInProgress.Compare - Version comparison tool
 		bottom: 0;
 		width: 4px;
 		transform: translateX(-50%);
+	}
+
+	.wip-compare__slider-handle--p0 {
+		left: 0%;
+	}
+
+	.wip-compare__slider-handle--p5 {
+		left: 5%;
+	}
+
+	.wip-compare__slider-handle--p10 {
+		left: 10%;
+	}
+
+	.wip-compare__slider-handle--p15 {
+		left: 15%;
+	}
+
+	.wip-compare__slider-handle--p20 {
+		left: 20%;
+	}
+
+	.wip-compare__slider-handle--p25 {
+		left: 25%;
+	}
+
+	.wip-compare__slider-handle--p30 {
+		left: 30%;
+	}
+
+	.wip-compare__slider-handle--p35 {
+		left: 35%;
+	}
+
+	.wip-compare__slider-handle--p40 {
+		left: 40%;
+	}
+
+	.wip-compare__slider-handle--p45 {
+		left: 45%;
+	}
+
+	.wip-compare__slider-handle--p50 {
+		left: 50%;
+	}
+
+	.wip-compare__slider-handle--p55 {
+		left: 55%;
+	}
+
+	.wip-compare__slider-handle--p60 {
+		left: 60%;
+	}
+
+	.wip-compare__slider-handle--p65 {
+		left: 65%;
+	}
+
+	.wip-compare__slider-handle--p70 {
+		left: 70%;
+	}
+
+	.wip-compare__slider-handle--p75 {
+		left: 75%;
+	}
+
+	.wip-compare__slider-handle--p80 {
+		left: 80%;
+	}
+
+	.wip-compare__slider-handle--p85 {
+		left: 85%;
+	}
+
+	.wip-compare__slider-handle--p90 {
+		left: 90%;
+	}
+
+	.wip-compare__slider-handle--p95 {
+		left: 95%;
+	}
+
+	.wip-compare__slider-handle--p100 {
+		left: 100%;
 	}
 
 	.wip-compare__slider-line {
@@ -362,6 +543,50 @@ WorkInProgress.Compare - Version comparison tool
 		height: 100%;
 		object-fit: cover;
 		border-radius: var(--gr-radius-md);
+	}
+
+	.wip-compare__overlay-top--opacity-0 {
+		opacity: 0;
+	}
+
+	.wip-compare__overlay-top--opacity-10 {
+		opacity: 0.1;
+	}
+
+	.wip-compare__overlay-top--opacity-20 {
+		opacity: 0.2;
+	}
+
+	.wip-compare__overlay-top--opacity-30 {
+		opacity: 0.3;
+	}
+
+	.wip-compare__overlay-top--opacity-40 {
+		opacity: 0.4;
+	}
+
+	.wip-compare__overlay-top--opacity-50 {
+		opacity: 0.5;
+	}
+
+	.wip-compare__overlay-top--opacity-60 {
+		opacity: 0.6;
+	}
+
+	.wip-compare__overlay-top--opacity-70 {
+		opacity: 0.7;
+	}
+
+	.wip-compare__overlay-top--opacity-80 {
+		opacity: 0.8;
+	}
+
+	.wip-compare__overlay-top--opacity-90 {
+		opacity: 0.9;
+	}
+
+	.wip-compare__overlay-top--opacity-100 {
+		opacity: 1;
 	}
 
 	.wip-compare__opacity-control {

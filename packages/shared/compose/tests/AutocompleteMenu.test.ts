@@ -18,7 +18,6 @@ describe('AutocompleteMenu', () => {
 	const defaultProps = {
 		suggestions: mockSuggestions,
 		selectedIndex: 0,
-		position: { x: 100, y: 200 },
 		onSelect: vi.fn(),
 		onClose: vi.fn(),
 	};
@@ -70,12 +69,11 @@ describe('AutocompleteMenu', () => {
 		expect(onSelect).toHaveBeenCalledWith(mockSuggestions[1]);
 	});
 
-	it('should position menu correctly', () => {
+	it('should not use inline styles', () => {
 		const { container } = render(AutocompleteMenu, defaultProps);
 		const menu = container.querySelector('.autocomplete-menu') as HTMLElement;
 
-		expect(menu.style.left).toBe('100px');
-		expect(menu.style.top).toBe('200px');
+		expect(menu.getAttribute('style')).toBeNull();
 	});
 
 	it('should close on Escape key', async () => {

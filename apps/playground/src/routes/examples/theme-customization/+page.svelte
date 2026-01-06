@@ -22,7 +22,9 @@
 			<h2>Saved Themes</h2>
 			{#each savedThemes as theme (theme.id)}
 				<div class="theme-card">
-					<div class="color-swatch" style="background: {theme.colors.primary[500]}"></div>
+					<svg class="color-swatch" viewBox="0 0 1 1" role="img" aria-label="Primary color preview">
+						<rect x="0" y="0" width="1" height="1" fill={theme.colors.primary[500]} />
+					</svg>
 					<pre>{JSON.stringify(theme, null, 2)}</pre>
 				</div>
 			{/each}
@@ -52,6 +54,7 @@
 		width: 50px;
 		height: 50px;
 		border-radius: 4px;
+		overflow: hidden;
 		margin-bottom: 1rem;
 	}
 

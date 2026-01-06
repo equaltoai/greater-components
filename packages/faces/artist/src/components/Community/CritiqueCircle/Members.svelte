@@ -106,7 +106,7 @@ CritiqueCircle.Members - Circle membership management
 					<div class="critique-members__info">
 						<div class="critique-members__name-row">
 							<span class="critique-members__name">{member.artist.displayName}</span>
-							<span class="critique-members__badge" style="background: {badge.color}">
+							<span class={`critique-members__badge critique-members__badge--${member.role}`}>
 								{badge.label}
 							</span>
 						</div>
@@ -246,6 +246,19 @@ CritiqueCircle.Members - Circle membership management
 		border-radius: var(--gr-radius-sm);
 		font-size: var(--gr-font-size-xs);
 		color: white;
+		background: var(--gr-color-gray-600);
+	}
+
+	.critique-members__badge--admin {
+		background: var(--gr-color-primary-600);
+	}
+
+	.critique-members__badge--moderator {
+		background: var(--gr-color-success-600);
+	}
+
+	.critique-members__badge--member {
+		background: var(--gr-color-gray-600);
 	}
 
 	.critique-members__username {

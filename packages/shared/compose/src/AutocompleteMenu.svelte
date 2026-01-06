@@ -27,11 +27,6 @@ Shows hashtag, mention, and emoji suggestions while typing.
 		selectedIndex: number;
 
 		/**
-		 * Position of the menu
-		 */
-		position: { x: number; y: number };
-
-		/**
 		 * Loading state
 		 */
 		loading?: boolean;
@@ -55,7 +50,6 @@ Shows hashtag, mention, and emoji suggestions while typing.
 	let {
 		suggestions,
 		selectedIndex = 0,
-		position,
 		loading = false,
 		onSelect,
 		onClose,
@@ -112,7 +106,6 @@ Shows hashtag, mention, and emoji suggestions while typing.
 <div
 	bind:this={menuEl}
 	class={`autocomplete-menu ${className}`}
-	style={`left: ${position.x}px; top: ${position.y}px;`}
 	role="listbox"
 	aria-label="Autocomplete suggestions"
 >

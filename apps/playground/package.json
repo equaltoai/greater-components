@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "vite dev",
     "dev:csr": "vite dev --mode csr",
-    "build": "svelte-kit sync && vite build && node ./scripts/export-static.mjs",
+    "build": "svelte-kit sync && vite build && node ./scripts/export-static.mjs && node ../../scripts/postprocess-csp-build.mjs build --base /greater-components",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

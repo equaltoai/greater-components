@@ -108,6 +108,10 @@ Supports three display variants:
 			.filter(Boolean)
 			.join(' ')
 	);
+
+	const humanPercent = $derived(Math.max(0, Math.min(100, usage.humanContribution)));
+	const aiPercent = $derived(Math.max(0, Math.min(100, usage.aiContribution)));
+	const aiPercentRemainder = $derived(Math.max(0, Math.min(100 - humanPercent, aiPercent)));
 </script>
 
 {#if usage?.hasAI}
@@ -167,33 +171,36 @@ Supports three display variants:
 					<div class="gr-transparency-ai-contribution-header">
 						<span class="gr-transparency-ai-contribution-title">Contribution Breakdown</span>
 					</div>
-					<div class="gr-transparency-ai-contribution-bar">
-						<div
-							class="gr-transparency-ai-contribution-human"
-							style="width: {usage.humanContribution}%"
-							role="progressbar"
-							aria-valuenow={usage.humanContribution}
-							aria-valuemin={0}
-							aria-valuemax={100}
-							aria-label="Human contribution"
+					<div
+						class="gr-transparency-ai-contribution-bar"
+						role="img"
+						aria-label="Contribution breakdown"
+					>
+						<svg
+							class="gr-transparency-ai-contribution-bar-svg"
+							viewBox="0 0 100 1"
+							preserveAspectRatio="none"
+							aria-hidden="true"
 						>
-							<span class="gr-transparency-ai-contribution-label">
-								Human {usage.humanContribution}%
-							</span>
-						</div>
-						<div
-							class="gr-transparency-ai-contribution-ai"
-							style="width: {usage.aiContribution}%"
-							role="progressbar"
-							aria-valuenow={usage.aiContribution}
-							aria-valuemin={0}
-							aria-valuemax={100}
-							aria-label="AI contribution"
-						>
-							<span class="gr-transparency-ai-contribution-label">
-								AI {usage.aiContribution}%
-							</span>
-						</div>
+							<rect
+								class="gr-transparency-ai-contribution-fill gr-transparency-ai-contribution-fill--human"
+								x="0"
+								y="0"
+								width={humanPercent}
+								height="1"
+							/>
+							<rect
+								class="gr-transparency-ai-contribution-fill gr-transparency-ai-contribution-fill--ai"
+								x={humanPercent}
+								y="0"
+								width={aiPercentRemainder}
+								height="1"
+							/>
+						</svg>
+					</div>
+					<div class="gr-transparency-ai-contribution-labels">
+						<span class="gr-transparency-ai-contribution-label">Human {humanPercent}%</span>
+						<span class="gr-transparency-ai-contribution-label">AI {aiPercent}%</span>
 					</div>
 				</div>
 

@@ -32,6 +32,7 @@
 				},
 			]
 		>;
+		style?: string;
 	}
 
 	let {
@@ -60,6 +61,7 @@
 		pollSlot,
 		class: className = '',
 		id,
+		style: _style,
 		...restProps
 	}: Props = $props();
 
@@ -102,10 +104,12 @@
 			(!hasContentWarning || contentWarning.trim().length <= maxCwLength)
 	);
 
-	const characterCountColor = $derived(() => {
-		if (isOverLimit) return 'var(--gr-semantic-action-error-default)';
-		if (isAtSoftLimit) return 'var(--gr-semantic-action-warning-default)';
-		return 'var(--gr-semantic-foreground-secondary)';
+	type CharacterCountTone = 'default' | 'warning' | 'error';
+
+	const characterCountTone = $derived<CharacterCountTone>(() => {
+		if (isOverLimit) return 'error';
+		if (isAtSoftLimit) return 'warning';
+		return 'default';
 	});
 
 	const draftData = $derived<ComposeBoxDraft>({
@@ -381,7 +385,7 @@
 			<div
 				id={cwCharCountId}
 				class="gr-compose-box__char-count"
-				style={`color: ${cwLength > maxCwLength ? 'var(--gr-semantic-action-error-default)' : 'var(--gr-semantic-foreground-secondary)'}`}
+				class:gr-compose-box__char-count--error={cwLength > maxCwLength}
 				aria-live="polite"
 			>
 				{cwLength}/{maxCwLength}
@@ -411,7 +415,8 @@
 			<div
 				id={charCountId}
 				class="gr-compose-box__char-count"
-				style={`color: ${characterCountColor()}`}
+				class:gr-compose-box__char-count--warning={characterCountTone() === 'warning'}
+				class:gr-compose-box__char-count--error={characterCountTone() === 'error'}
 				aria-live="polite"
 				aria-atomic="true"
 			>

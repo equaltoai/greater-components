@@ -66,7 +66,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 	let suggestions = $state<AutocompleteSuggestion[]>([]);
 	let selectedIndex = $state(0);
 	let loading = $state(false);
-	let menuPosition = $state({ x: 0, y: 0 });
 
 	if (untrack(() => autofocus)) {
 		onMount(() => {
@@ -101,15 +100,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		}
 
 		autocompleteMatch = match;
-
-		// Calculate menu position
-		const rect = textareaEl.getBoundingClientRect();
-		const coords = getCaretCoordinates(textareaEl, cursorPos);
-		const scrollY = typeof window !== 'undefined' ? window.scrollY : 0;
-		menuPosition = {
-			x: rect.left + coords.left,
-			y: rect.top + coords.top + coords.height + scrollY,
-		};
 
 		// Fetch suggestions
 		if (searchHandler) {
@@ -216,80 +206,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		showAutocomplete = false;
 		autocompleteMatch = null;
 	}
-
-	/**
-	 * Get caret coordinates in textarea
-	 * Based on https://github.com/component/textarea-caret-position
-	 */
-	function getCaretCoordinates(
-		element: HTMLTextAreaElement,
-		position: number
-	): { left: number; top: number; height: number } {
-		// Create a mirror div
-		const div = document.createElement('div');
-		const style = getComputedStyle(element);
-		const properties: Array<keyof CSSStyleDeclaration> = [
-			'boxSizing',
-			'width',
-			'height',
-			'overflowX',
-			'overflowY',
-			'borderTopWidth',
-			'borderRightWidth',
-			'borderBottomWidth',
-			'borderLeftWidth',
-			'paddingTop',
-			'paddingRight',
-			'paddingBottom',
-			'paddingLeft',
-			'fontStyle',
-			'fontVariant',
-			'fontWeight',
-			'fontStretch',
-			'fontSize',
-			'fontSizeAdjust',
-			'lineHeight',
-			'fontFamily',
-			'textAlign',
-			'textTransform',
-			'textIndent',
-			'textDecoration',
-			'letterSpacing',
-			'wordSpacing',
-		];
-
-		properties.forEach((prop) => {
-			const value = style[prop];
-			if (typeof value === 'string') {
-				div.style.setProperty(
-					(prop as string).replace(/[A-Z]/g, (m: string) => '-' + m.toLowerCase()),
-					value
-				);
-			}
-		});
-
-		div.style.position = 'absolute';
-		div.style.visibility = 'hidden';
-		div.style.whiteSpace = 'pre-wrap';
-		div.style.wordWrap = 'break-word';
-		div.textContent = element.value.substring(0, position);
-
-		const span = document.createElement('span');
-		span.textContent = element.value.substring(position) || '.';
-		div.appendChild(span);
-
-		document.body.appendChild(div);
-
-		const coordinates = {
-			left: span.offsetLeft,
-			top: span.offsetTop,
-			height: span.offsetHeight,
-		};
-
-		document.body.removeChild(div);
-
-		return coordinates;
-	}
 </script>
 
 <div class="editor-with-autocomplete">
@@ -310,7 +226,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 		<AutocompleteMenu
 			{suggestions}
 			{selectedIndex}
-			position={menuPosition}
 			{loading}
 			onSelect={handleSelectSuggestion}
 			onClose={handleCloseAutocomplete}

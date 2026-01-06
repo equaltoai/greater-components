@@ -95,7 +95,7 @@ describe('CreativeTools Behavior', () => {
 			});
 
 			// mockThread dates are same (new Date().toISOString()), so should be "Less than an hour"
-			expect(screen.getByText('Less than an hour')).toBeInTheDocument();
+			expect(screen.getByText(/Less than an hour/)).toBeInTheDocument();
 		});
 	});
 });

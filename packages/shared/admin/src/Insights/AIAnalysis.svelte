@@ -81,15 +81,24 @@ deepfake detection, and moderation recommendations.
 		loadAnalysis();
 	});
 
-	function getSeverityColor(score: number): string {
-		if (score >= 0.8) return 'var(--danger-color, #f4211e)';
-		if (score >= 0.5) return 'var(--warning-color, #ff9800)';
-		return 'var(--success-color, #10b981)';
+	type Severity = 'danger' | 'warning' | 'success';
+
+	function getSeverity(score: number): Severity {
+		if (score >= 0.8) return 'danger';
+		if (score >= 0.5) return 'warning';
+		return 'success';
 	}
 
 	function formatPercent(value: number): string {
 		return `${(value * 100).toFixed(1)}%`;
 	}
+
+	const overallRiskPercent = $derived(() =>
+		analysis ? Math.max(0, Math.min(100, analysis.overallRisk * 100)) : 0
+	);
+	const overallRiskSeverity = $derived(() =>
+		analysis ? getSeverity(analysis.overallRisk) : 'success'
+	);
 </script>
 
 <div class={`ai-analysis ${className}`}>
@@ -132,12 +141,20 @@ deepfake detection, and moderation recommendations.
 				<h4 class="ai-analysis__section-title">Overall Assessment</h4>
 				<div class="ai-analysis__risk">
 					<div class="ai-analysis__risk-meter">
-						<div
-							class="ai-analysis__risk-fill"
-							style="width: {formatPercent(
-								analysis.overallRisk
-							)}; background-color: {getSeverityColor(analysis.overallRisk)}"
-						></div>
+						<svg
+							class="ai-analysis__risk-meter-svg"
+							viewBox="0 0 100 1"
+							preserveAspectRatio="none"
+							aria-hidden="true"
+						>
+							<rect
+								class={`ai-analysis__risk-fill ai-analysis__risk-fill--${overallRiskSeverity}`}
+								x="0"
+								y="0"
+								width={overallRiskPercent}
+								height="1"
+							/>
+						</svg>
 					</div>
 					<div class="ai-analysis__risk-info">
 						<span class="ai-analysis__risk-score">{formatPercent(analysis.overallRisk)} Risk</span>
@@ -158,7 +175,11 @@ deepfake detection, and moderation recommendations.
 						<dd>{analysis.textAnalysis.sentiment}</dd>
 
 						<dt>Toxicity:</dt>
-						<dd style="color: {getSeverityColor(analysis.textAnalysis.toxicityScore)}">
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.textAnalysis.toxicityScore
+							)}`}
+						>
 							{formatPercent(analysis.textAnalysis.toxicityScore)}
 						</dd>
 
@@ -186,7 +207,11 @@ deepfake detection, and moderation recommendations.
 						{/if}
 
 						<dt>Violence Score:</dt>
-						<dd style="color: {getSeverityColor(analysis.imageAnalysis.violenceScore)}">
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.imageAnalysis.violenceScore
+							)}`}
+						>
 							{formatPercent(analysis.imageAnalysis.violenceScore)}
 						</dd>
 
@@ -206,7 +231,11 @@ deepfake detection, and moderation recommendations.
 					<h4 class="ai-analysis__section-title">AI Content Detection</h4>
 					<dl class="ai-analysis__details">
 						<dt>AI Generated:</dt>
-						<dd style="color: {getSeverityColor(analysis.aiDetection.aiGeneratedProbability)}">
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.aiDetection.aiGeneratedProbability
+							)}`}
+						>
 							{formatPercent(analysis.aiDetection.aiGeneratedProbability)}
 						</dd>
 
@@ -224,7 +253,11 @@ deepfake detection, and moderation recommendations.
 					<h4 class="ai-analysis__section-title">Spam Detection</h4>
 					<dl class="ai-analysis__details">
 						<dt>Spam Score:</dt>
-						<dd style="color: {getSeverityColor(analysis.spamAnalysis.spamScore)}">
+						<dd
+							class={`ai-analysis__severity ai-analysis__severity--${getSeverity(
+								analysis.spamAnalysis.spamScore
+							)}`}
+						>
 							{formatPercent(analysis.spamAnalysis.spamScore)}
 						</dd>
 

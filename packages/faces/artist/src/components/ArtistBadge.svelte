@@ -92,9 +92,6 @@ Features:
 
 <button
 	class={`artist-badge artist-badge--${type} artist-badge--${size} ${className}`}
-	style:--badge-color={config.color}
-	style:--badge-size={`${sizeValues[size].badge}px`}
-	style:--icon-size={`${sizeValues[size].icon}px`}
 	aria-label={`${config.label}: ${tooltipText}`}
 	onmouseenter={() => {
 		showTooltip = true;
@@ -137,10 +134,10 @@ Features:
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: var(--badge-size);
-		height: var(--badge-size);
+		width: 24px;
+		height: 24px;
 		border-radius: 50%;
-		background: var(--badge-color);
+		background: var(--gr-color-primary-500);
 		color: white;
 		cursor: help;
 		border: none;
@@ -150,8 +147,38 @@ Features:
 		appearance: none;
 	}
 
+	.artist-badge--sm {
+		width: 20px;
+		height: 20px;
+	}
+
+	.artist-badge--md {
+		width: 24px;
+		height: 24px;
+	}
+
+	.artist-badge--verified {
+		background: var(--gr-color-primary-500);
+	}
+
+	.artist-badge--educator {
+		background: var(--gr-color-success-500);
+	}
+
+	.artist-badge--institution {
+		background: var(--gr-color-warning-500);
+	}
+
+	.artist-badge--mentor {
+		background: var(--gr-color-info-500);
+	}
+
+	.artist-badge--curator {
+		background: var(--gr-color-secondary-500);
+	}
+
 	.artist-badge:focus {
-		outline: 2px solid var(--badge-color);
+		outline: 2px solid white;
 		outline-offset: 2px;
 	}
 

@@ -19,6 +19,7 @@ Article.ReadingProgress - Scroll progress indicator
 
 	const context = getArticleContext();
 	const progress = $derived(context.scrollProgress);
+	const progressPercent = $derived(Math.max(0, Math.min(100, progress * 100)));
 
 	let cleanup: (() => void) | undefined;
 
@@ -47,10 +48,23 @@ Article.ReadingProgress - Scroll progress indicator
 	class="gr-blog-reading-progress"
 	class:gr-blog-reading-progress--bottom={position === 'bottom'}
 	role="progressbar"
-	aria-valuenow={Math.round(progress * 100)}
+	aria-valuenow={Math.round(progressPercent)}
 	aria-valuemin={0}
 	aria-valuemax={100}
 	aria-label="Reading progress"
 >
-	<div class="gr-blog-reading-progress__bar" style="width: {progress * 100}%"></div>
+	<svg
+		class="gr-blog-reading-progress__bar"
+		viewBox="0 0 100 1"
+		preserveAspectRatio="none"
+		aria-hidden="true"
+	>
+		<rect
+			class="gr-blog-reading-progress__bar-fill"
+			x="0"
+			y="0"
+			width={progressPercent}
+			height="1"
+		/>
+	</svg>
 </div>

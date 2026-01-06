@@ -63,21 +63,6 @@ Features:
 		}
 	});
 
-	// Parallax scroll effect
-	let scrollY = $state(0);
-	let parallaxOffset = $derived(config.enableParallax && !prefersReducedMotion ? scrollY * 0.3 : 0);
-
-	$effect(() => {
-		if (typeof window === 'undefined' || !config.enableParallax || prefersReducedMotion) return;
-
-		const handleScroll = () => {
-			scrollY = window.scrollY;
-		};
-
-		window.addEventListener('scroll', handleScroll, { passive: true });
-		return () => window.removeEventListener('scroll', handleScroll);
-	});
-
 	// Artwork rotation
 	$effect(() => {
 		if (!rotating || !artist.heroArtworks?.length || prefersReducedMotion) return;
@@ -100,21 +85,11 @@ Features:
 		}
 		return artist.heroBanner || artist.heroArtworks?.[0]?.images.full;
 	});
-
-	// Height values
-	const heightValues = {
-		sm: '200px',
-		md: '300px',
-		lg: '400px',
-		full: '100vh',
-	};
 </script>
 
 {#if config.showHeroBanner && bannerImage}
 	<header
 		class={`hero-banner hero-banner--${height} ${className}`}
-		style:--banner-height={heightValues[height]}
-		style:--parallax-offset={`${parallaxOffset}px`}
 		aria-label={`${artist.displayName}'s banner`}
 	>
 		<div class="hero-banner__image-container">
@@ -155,15 +130,29 @@ Features:
 	.hero-banner {
 		position: relative;
 		width: 100%;
-		height: var(--banner-height);
+		height: 300px;
 		overflow: hidden;
+	}
+
+	.hero-banner--sm {
+		height: 200px;
+	}
+
+	.hero-banner--md {
+		height: 300px;
+	}
+
+	.hero-banner--lg {
+		height: 400px;
+	}
+
+	.hero-banner--full {
+		height: 100vh;
 	}
 
 	.hero-banner__image-container {
 		position: absolute;
 		inset: 0;
-		transform: translateY(var(--parallax-offset, 0));
-		will-change: transform;
 	}
 
 	.hero-banner__image {

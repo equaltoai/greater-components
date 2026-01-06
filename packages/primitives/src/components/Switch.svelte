@@ -17,6 +17,7 @@
 		name,
 		label,
 		onchange,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

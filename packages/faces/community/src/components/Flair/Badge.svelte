@@ -22,15 +22,15 @@ Flair.Badge - Display a post/user flair badge
 			.join(' ')
 	);
 
-	const style = $derived.by(() => {
-		const styles: string[] = [];
-		if (flair.backgroundColor) styles.push(`background:${flair.backgroundColor}`);
-		if (flair.textColor) styles.push(`color:${flair.textColor}`);
-		return styles.join(';');
-	});
+	const dotColor = $derived.by(() => flair.backgroundColor ?? flair.textColor ?? null);
 </script>
 
-<span class={flairClass} {style}>
+<span class={flairClass}>
+	{#if dotColor}
+		<svg class="gr-community-flair__dot" viewBox="0 0 10 10" aria-hidden="true">
+			<circle cx="5" cy="5" r="5" fill={dotColor} />
+		</svg>
+	{/if}
 	{#if flair.emoji}
 		<span class="gr-community-flair__emoji" aria-hidden="true">{flair.emoji}</span>
 	{/if}

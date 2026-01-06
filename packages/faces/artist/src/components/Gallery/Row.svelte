@@ -216,10 +216,9 @@ Features scroll snap, navigation arrows, and lazy loading.
 		>
 			{#each items as item, index (item.id)}
 				<div
-					class="row-item"
+					class={`row-item row-item--${cardSize}`}
 					class:loaded={visibleIndices.has(index)}
 					data-index={index}
-					style:--card-width={`${cardWidth}px`}
 				>
 					{#if visibleIndices.has(index) || index < 5}
 						<button
@@ -372,8 +371,19 @@ Features scroll snap, navigation arrows, and lazy loading.
 
 	.row-item {
 		flex-shrink: 0;
-		width: var(--card-width);
 		scroll-snap-align: start;
+	}
+
+	.row-item--sm {
+		width: 200px;
+	}
+
+	.row-item--md {
+		width: 280px;
+	}
+
+	.row-item--lg {
+		width: 360px;
 	}
 
 	.item-button {

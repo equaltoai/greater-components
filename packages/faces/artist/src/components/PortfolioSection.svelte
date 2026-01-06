@@ -114,13 +114,6 @@ Features:
 		draggedId = null;
 		dragOverId = null;
 	}
-
-	// Grid columns based on layout
-	const gridColumns = $derived(
-		layout === 'featured'
-			? 'repeat(auto-fill, minmax(400px, 1fr))'
-			: 'repeat(auto-fill, minmax(280px, 1fr))'
-	);
 </script>
 
 <section class={`portfolio-section portfolio-section--${layout} ${className}`}>
@@ -135,7 +128,6 @@ Features:
 		<div
 			class="portfolio-section__content"
 			class:editable
-			style:--grid-columns={gridColumns}
 			role={layout === 'row' ? 'list' : 'grid'}
 		>
 			{#each items as item (item.id)}
@@ -189,8 +181,12 @@ Features:
 
 	.portfolio-section__content {
 		display: grid;
-		grid-template-columns: var(--grid-columns);
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 		gap: var(--gr-spacing-scale-4);
+	}
+
+	.portfolio-section--featured .portfolio-section__content {
+		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 	}
 
 	.portfolio-section--row .portfolio-section__content {

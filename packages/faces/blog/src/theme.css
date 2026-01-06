@@ -149,8 +149,12 @@
 
 .gr-blog-reading-progress__bar {
 	height: 100%;
-	background: var(--gr-blog-progress-color);
-	transition: width 100ms ease-out;
+	width: 100%;
+	display: block;
+}
+
+.gr-blog-reading-progress__bar-fill {
+	fill: var(--gr-blog-progress-color);
 }
 
 /* ============================================================================

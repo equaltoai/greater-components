@@ -85,11 +85,22 @@
 						{@const max = getMaxValue(adminState.analytics.userGrowth)}
 						{@const height = getChartHeight(dataPoint.count, max)}
 						<div class="admin-analytics__bar-container">
-							<div
-								class="admin-analytics__bar admin-analytics__bar--primary"
-								style={`height: ${height}%`}
-								title={`${dataPoint.count} users`}
-							></div>
+							<svg
+								class="admin-analytics__bar-svg"
+								viewBox="0 0 10 100"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<title>{`${dataPoint.count} users`}</title>
+								<rect
+									class="admin-analytics__bar-rect admin-analytics__bar-rect--primary"
+									x="0"
+									y={100 - height}
+									width="10"
+									{height}
+									rx="2"
+								/>
+							</svg>
 							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
 						</div>
 					{/each}
@@ -121,11 +132,22 @@
 						{@const max = getMaxValue(adminState.analytics.postActivity)}
 						{@const height = getChartHeight(dataPoint.count, max)}
 						<div class="admin-analytics__bar-container">
-							<div
-								class="admin-analytics__bar admin-analytics__bar--success"
-								style={`height: ${height}%`}
-								title={`${dataPoint.count} posts`}
-							></div>
+							<svg
+								class="admin-analytics__bar-svg"
+								viewBox="0 0 10 100"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<title>{`${dataPoint.count} posts`}</title>
+								<rect
+									class="admin-analytics__bar-rect admin-analytics__bar-rect--success"
+									x="0"
+									y={100 - height}
+									width="10"
+									{height}
+									rx="2"
+								/>
+							</svg>
 							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
 						</div>
 					{/each}
@@ -157,11 +179,22 @@
 						{@const max = getMaxValue(adminState.analytics.federationActivity)}
 						{@const height = getChartHeight(dataPoint.count, max)}
 						<div class="admin-analytics__bar-container">
-							<div
-								class="admin-analytics__bar admin-analytics__bar--warning"
-								style={`height: ${height}%`}
-								title={`${dataPoint.count} activities`}
-							></div>
+							<svg
+								class="admin-analytics__bar-svg"
+								viewBox="0 0 10 100"
+								preserveAspectRatio="none"
+								aria-hidden="true"
+							>
+								<title>{`${dataPoint.count} activities`}</title>
+								<rect
+									class="admin-analytics__bar-rect admin-analytics__bar-rect--warning"
+									x="0"
+									y={100 - height}
+									width="10"
+									{height}
+									rx="2"
+								/>
+							</svg>
 							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
 						</div>
 					{/each}

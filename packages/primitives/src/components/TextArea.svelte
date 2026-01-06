@@ -33,6 +33,7 @@
 		invalid = false,
 		onchange,
 		oninput,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

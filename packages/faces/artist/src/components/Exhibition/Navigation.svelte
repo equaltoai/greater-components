@@ -73,6 +73,7 @@ Features:
 	aria-label="Exhibition navigation"
 >
 	{#if showProgress}
+		{@const progressPercent = Math.max(0, Math.min(100, progress))}
 		<div
 			class="exhibition-nav__progress"
 			role="progressbar"
@@ -80,7 +81,20 @@ Features:
 			aria-valuemin={1}
 			aria-valuemax={navigation.totalArtworks}
 		>
-			<div class="exhibition-nav__progress-bar" style="width: {progress}%"></div>
+			<svg
+				class="exhibition-nav__progress-bar"
+				viewBox="0 0 100 1"
+				preserveAspectRatio="none"
+				aria-hidden="true"
+			>
+				<rect
+					class="exhibition-nav__progress-fill"
+					x="0"
+					y="0"
+					width={progressPercent}
+					height="1"
+				/>
+			</svg>
 			<span class="exhibition-nav__progress-text">
 				{navigation.currentIndex + 1} of {navigation.totalArtworks}
 			</span>
@@ -172,9 +186,13 @@ Features:
 	}
 
 	.exhibition-nav__progress-bar {
+		width: 100%;
 		height: 100%;
-		background: var(--gr-color-primary-500);
-		transition: width 0.3s ease;
+		display: block;
+	}
+
+	.exhibition-nav__progress-fill {
+		fill: var(--gr-color-primary-500);
 	}
 
 	.exhibition-nav__progress-text {

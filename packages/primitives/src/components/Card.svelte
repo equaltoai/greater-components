@@ -142,6 +142,7 @@ Card component - Content container with elevation, borders, and semantic section
 		onkeydown,
 		role,
 		tabindex,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

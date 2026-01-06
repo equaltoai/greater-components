@@ -137,7 +137,7 @@ describe('ArtistProfile.HeroBanner', () => {
 		expect(img).toHaveAttribute('src', 'https://example.com/art1.jpg');
 	});
 
-	it('handles parallax scrolling', async () => {
+	it('does not emit inline parallax styles (strict CSP)', async () => {
 		render(TestArtistProfileWrapper, {
 			props: {
 				artist: mockArtist,
@@ -148,9 +148,7 @@ describe('ArtistProfile.HeroBanner', () => {
 		});
 
 		const banner = screen.getByRole('banner', { name: /banner/i });
-
-		// Initial offset 0
-		expect(banner).toHaveStyle({ '--parallax-offset': '0px' });
+		expect(banner).not.toHaveAttribute('style');
 
 		// Scroll
 		await act(async () => {
@@ -158,11 +156,10 @@ describe('ArtistProfile.HeroBanner', () => {
 			window.dispatchEvent(new Event('scroll'));
 		});
 
-		// Offset should be scrollY * 0.3 = 30
-		expect(banner).toHaveStyle({ '--parallax-offset': '30px' });
+		expect(banner).not.toHaveAttribute('style');
 	});
 
-	it('disables parallax on reduced motion', async () => {
+	it('does not emit parallax styles under reduced motion (strict CSP)', async () => {
 		window.matchMedia = vi.fn().mockImplementation((query) => ({
 			matches: query === '(prefers-reduced-motion: reduce)',
 			media: query,
@@ -184,6 +181,7 @@ describe('ArtistProfile.HeroBanner', () => {
 		});
 
 		const banner = screen.getByRole('banner', { name: /banner/i });
+		expect(banner).not.toHaveAttribute('style');
 
 		// Scroll
 		await act(async () => {
@@ -191,8 +189,7 @@ describe('ArtistProfile.HeroBanner', () => {
 			window.dispatchEvent(new Event('scroll'));
 		});
 
-		// Offset should remain 0
-		expect(banner).toHaveStyle({ '--parallax-offset': '0px' });
+		expect(banner).not.toHaveAttribute('style');
 	});
 
 	it('falls back to first artwork when banner is missing', () => {

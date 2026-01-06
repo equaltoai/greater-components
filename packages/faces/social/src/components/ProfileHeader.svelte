@@ -66,7 +66,6 @@
 	let {
 		account,
 		showBanner = true,
-		bannerFallbackColor = 'var(--gr-color-primary-500)',
 		avatarSize = 'xl',
 		showBio = true,
 		showFields = true,
@@ -91,14 +90,6 @@
 		const classes = ['gr-profile-header', className].filter(Boolean).join(' ');
 
 		return classes;
-	});
-
-	// Banner style computation
-	const bannerStyle = $derived(() => {
-		if (showBanner && account.header && !bannerError && bannerLoaded) {
-			return `background-image: url('${account.header}');`;
-		}
-		return `background-color: ${bannerFallbackColor};`;
 	});
 
 	// Display name with emoji support
@@ -213,12 +204,11 @@
 	{#if showBanner}
 		<div
 			class="gr-profile-header__banner"
-			style={bannerStyle()}
 			id={bannerId}
 			role="img"
 			aria-label={account.header ? 'Profile banner' : 'Profile banner (default color)'}
 		>
-			{#if account.header}
+			{#if account.header && !bannerError}
 				<img
 					bind:this={bannerElement}
 					src={account.header}
@@ -226,7 +216,7 @@
 					class="gr-profile-header__banner-image"
 					onload={handleBannerLoad}
 					onerror={handleBannerError}
-					style={`display: ${bannerLoaded ? 'block' : 'none'}`}
+					hidden={!bannerLoaded}
 				/>
 			{/if}
 		</div>

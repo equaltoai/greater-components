@@ -39,6 +39,8 @@ Features:
 	const ctx = getArtistProfileContext();
 	const { artist } = ctx;
 
+	const maxLinesClamped = $derived(Math.max(1, Math.min(10, Math.round(maxLines))));
+
 	// Expanded state
 	let isExpanded = $state(false);
 
@@ -51,7 +53,7 @@ Features:
 
 		// Check if content overflows
 		const lineHeight = parseInt(getComputedStyle(contentRef).lineHeight);
-		const maxHeight = lineHeight * maxLines;
+		const maxHeight = lineHeight * maxLinesClamped;
 		isTruncated = contentRef.scrollHeight > maxHeight;
 	});
 
@@ -78,9 +80,8 @@ Features:
 	<section class={`profile-statement ${className}`} aria-label="Artist statement">
 		<div
 			bind:this={contentRef}
-			class="profile-statement__content"
+			class={`profile-statement__content profile-statement__content--max-lines-${maxLinesClamped}`}
 			class:truncated={!isExpanded && isTruncated}
-			style:--max-lines={maxLines}
 		>
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html parsedStatement}
@@ -116,10 +117,58 @@ Features:
 
 	.profile-statement__content.truncated {
 		display: -webkit-box;
-		-webkit-line-clamp: var(--max-lines);
-		line-clamp: var(--max-lines);
 		-webkit-box-orient: vertical;
 		overflow: hidden;
+	}
+
+	.profile-statement__content--max-lines-1.truncated {
+		-webkit-line-clamp: 1;
+		line-clamp: 1;
+	}
+
+	.profile-statement__content--max-lines-2.truncated {
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+	}
+
+	.profile-statement__content--max-lines-3.truncated {
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
+	}
+
+	.profile-statement__content--max-lines-4.truncated {
+		-webkit-line-clamp: 4;
+		line-clamp: 4;
+	}
+
+	.profile-statement__content--max-lines-5.truncated {
+		-webkit-line-clamp: 5;
+		line-clamp: 5;
+	}
+
+	.profile-statement__content--max-lines-6.truncated {
+		-webkit-line-clamp: 6;
+		line-clamp: 6;
+	}
+
+	.profile-statement__content--max-lines-7.truncated {
+		-webkit-line-clamp: 7;
+		line-clamp: 7;
+	}
+
+	.profile-statement__content--max-lines-8.truncated {
+		-webkit-line-clamp: 8;
+		line-clamp: 8;
+	}
+
+	.profile-statement__content--max-lines-9.truncated {
+		-webkit-line-clamp: 9;
+		line-clamp: 9;
+	}
+
+	.profile-statement__content--max-lines-10.truncated {
+		-webkit-line-clamp: 10;
+		line-clamp: 10;
 	}
 
 	.profile-statement__content :global(strong) {

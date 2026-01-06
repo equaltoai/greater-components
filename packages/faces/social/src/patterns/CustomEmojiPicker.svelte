@@ -199,6 +199,8 @@
 		preferStatic = false,
 	} = untrack(() => config);
 
+	const emojiSizePreset = emojiSize <= 24 ? 'sm' : emojiSize <= 36 ? 'md' : 'lg';
+
 	let searchQuery = $state('');
 	let selectedCategory = $state<string>('all');
 	let hoveredEmoji = $state<string | null>(null);
@@ -359,7 +361,9 @@
 	}
 </script>
 
-<div class={`emoji-picker emoji-picker--${mode} ${className}`}>
+<div
+	class={`emoji-picker emoji-picker--${mode} emoji-picker--size-${emojiSizePreset} ${className}`}
+>
 	{#if showSearch}
 		<div class="emoji-picker__search">
 			<svg class="emoji-picker__search-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -421,17 +425,11 @@
 							onmouseleave={() => (hoveredEmoji = null)}
 							title={`:${emoji.shortcode}:`}
 							aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-							style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
 						>
 							{#if renderEmoji}
 								{@render renderEmoji(emoji)}
 							{:else}
-								<img
-									src={getEmojiUrl(emoji)}
-									alt={`:${emoji.shortcode}:`}
-									loading="lazy"
-									style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
-								/>
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 							{/if}
 
 							{#if showFavorites}
@@ -480,14 +478,8 @@
 								onmouseleave={() => (hoveredEmoji = null)}
 								title={`:${emoji.shortcode}:`}
 								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-								style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
 							>
-								<img
-									src={getEmojiUrl(emoji)}
-									alt={`:${emoji.shortcode}:`}
-									loading="lazy"
-									style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
-								/>
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 								<span
 									class="emoji-picker__favorite-btn"
 									role="button"
@@ -517,14 +509,8 @@
 								onmouseleave={() => (hoveredEmoji = null)}
 								title={`:${emoji.shortcode}:`}
 								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-								style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
 							>
-								<img
-									src={getEmojiUrl(emoji)}
-									alt={`:${emoji.shortcode}:`}
-									loading="lazy"
-									style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
-								/>
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 								{#if showFavorites}
 									<span
 										class="emoji-picker__favorite-btn"
@@ -568,14 +554,8 @@
 											onmouseleave={() => (hoveredEmoji = null)}
 											title={`:${emoji.shortcode}:`}
 											aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-											style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
 										>
-											<img
-												src={getEmojiUrl(emoji)}
-												alt={`:${emoji.shortcode}:`}
-												loading="lazy"
-												style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
-											/>
+											<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 											{#if showFavorites}
 												<span
 													class="emoji-picker__favorite-btn"
@@ -614,14 +594,8 @@
 								onmouseleave={() => (hoveredEmoji = null)}
 								title={`:${emoji.shortcode}:`}
 								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-								style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
 							>
-								<img
-									src={getEmojiUrl(emoji)}
-									alt={`:${emoji.shortcode}:`}
-									loading="lazy"
-									style={`width: ${emojiSize}px; height: ${emojiSize}px;`}
-								/>
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
 								{#if showFavorites}
 									<span
 										class="emoji-picker__favorite-btn"
@@ -676,6 +650,19 @@
 		border: 1px solid var(--border-color, #e1e8ed);
 		border-radius: 0.5rem;
 		overflow: hidden;
+		--emoji-size: 2rem;
+	}
+
+	.emoji-picker--size-sm {
+		--emoji-size: 1.5rem;
+	}
+
+	.emoji-picker--size-md {
+		--emoji-size: 2rem;
+	}
+
+	.emoji-picker--size-lg {
+		--emoji-size: 2.5rem;
 	}
 
 	.emoji-picker--popover {
@@ -801,12 +788,15 @@
 
 	.emoji-picker__grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(2rem, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(var(--emoji-size), 1fr));
 		gap: 0.25rem;
 	}
 
 	.emoji-picker__emoji {
 		position: relative;
+		box-sizing: border-box;
+		width: var(--emoji-size);
+		height: var(--emoji-size);
 		padding: 0.25rem;
 		background: transparent;
 		border: none;

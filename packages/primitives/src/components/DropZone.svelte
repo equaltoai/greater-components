@@ -111,6 +111,7 @@ DropZone component - Drag and drop file upload area with validation and mobile f
 		onDragEnter,
 		onDragLeave,
 		children,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

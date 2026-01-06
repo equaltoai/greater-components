@@ -233,13 +233,21 @@ Edit image metadata, set focal points for proper cropping, and add alt text.
 			/>
 
 			{#if showFocalPoint}
-				<div
+				<svg
 					class="image-editor__focal-point"
-					style={`left: ${focalPositionPercent.x}%; top: ${focalPositionPercent.y}%;`}
+					viewBox="0 0 100 100"
+					preserveAspectRatio="none"
 					role="presentation"
+					aria-hidden="true"
 				>
-					<div class="image-editor__focal-point-inner"></div>
-				</div>
+					<circle
+						class="image-editor__focal-point-inner"
+						cx={focalPositionPercent.x}
+						cy={focalPositionPercent.y}
+						r="4"
+						vector-effect="non-scaling-stroke"
+					/>
+				</svg>
 
 				<div class="image-editor__focal-instructions">Click or drag to set focal point</div>
 			{/if}

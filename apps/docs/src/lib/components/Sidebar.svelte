@@ -28,6 +28,8 @@
 			title: 'Guides',
 			items: [
 				{ title: 'Theming', href: '/guides/theming' },
+				{ title: 'CSP Compatibility', href: '/guides/csp-compatibility' },
+				{ title: 'CSP Migration', href: '/guides/csp-migration' },
 				{ title: 'Dark Mode', href: '/guides/dark-mode' },
 				{ title: 'Animations', href: '/guides/animations' },
 				{ title: 'Accessibility', href: '/guides/accessibility' },

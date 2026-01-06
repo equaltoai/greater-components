@@ -37,3 +37,6 @@ LICENSE
 **/generated/**
 packages/tokens/src/index.ts
 .pai/
+
+# Prettier is non-idempotent on this large snapshot file
+planning/csp-violations-baseline.md

@@ -158,7 +158,7 @@
 					{#if branches.length > 0}
 						<div class="chat-thread-view__branches" role="list" aria-label="Conversation branches">
 							{#each branches as branch (branch.id)}
-								<div role="listitem" style="display: contents;">
+								<div role="listitem" class="chat-thread-view__branch-item">
 									<button
 										class="chat-thread-view__branch-link"
 										class:chat-thread-view__branch-link--active={branch.id ===
@@ -289,6 +289,10 @@
 	.chat-thread-view__branch-button:hover {
 		background: var(--gr-color-surface-hover);
 		color: var(--gr-color-text-primary);
+	}
+
+	.chat-thread-view__branch-item {
+		display: contents;
 	}
 
 	.chat-thread-view__branches {

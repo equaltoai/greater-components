@@ -7,11 +7,7 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 -->
 
 <script lang="ts">
-	import type {
-		ReferenceBoardData,
-		ReferenceItem,
-		ReferenceBoardHandlers,
-	} from '../../types/creative-tools.js';
+	import type { ReferenceBoardData, ReferenceBoardHandlers } from '../../types/creative-tools.js';
 
 	interface Props {
 		board: ReferenceBoardData;
@@ -31,59 +27,42 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		class: className = '',
 	}: Props = $props();
 
-	// Local state
-	let draggingItem = $state<string | null>(null);
-	let dragOffset = $state({ x: 0, y: 0 });
-
-	// Handle drag start
-	function handleDragStart(event: MouseEvent, item: ReferenceItem) {
-		if (!editable) return;
-		draggingItem = item.id;
-		const rect = (event.target as HTMLElement).getBoundingClientRect();
-		dragOffset = {
-			x: event.clientX - rect.left,
-			y: event.clientY - rect.top,
-		};
-	}
-
-	// Handle drag
-	function handleDrag(event: MouseEvent) {
-		if (!draggingItem || !editable) return;
-
-		const container = event.currentTarget as HTMLElement;
-		const rect = container.getBoundingClientRect();
-		const x = (event.clientX - rect.left - dragOffset.x) / rect.width;
-		const y = (event.clientY - rect.top - dragOffset.y) / rect.height;
-
-		handlers.onUpdateItem?.(draggingItem, {
-			position: { x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)) },
-		});
-	}
-
-	// Handle drag end
-	function handleDragEnd() {
-		draggingItem = null;
-	}
+	const effectiveLayout = $derived(layout === 'freeform' ? 'grid' : layout);
 
 	// Handle remove
 	function handleRemove(itemId: string) {
 		handlers.onRemoveItem?.(itemId);
 	}
+
+	const boardRatioClass = $derived(() => {
+		const ratio = board.dimensions.width / board.dimensions.height;
+		if (ratio >= 1.6) return 'reference-board--ratio-wide';
+		if (ratio >= 1.2) return 'reference-board--ratio-landscape';
+		if (ratio >= 0.9) return 'reference-board--ratio-square';
+		return 'reference-board--ratio-portrait';
+	});
+
+	const backgroundFill = $derived(
+		board.backgroundColor?.trim() ? board.backgroundColor : 'var(--gr-color-gray-900)'
+	);
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
-	class={`reference-board reference-board--${layout} ${className}`}
-	style="aspect-ratio: {board.dimensions.width} / {board.dimensions
-		.height}; background: {board.backgroundColor || 'var(--gr-color-gray-900)'}"
-	onmousemove={handleDrag}
-	onmouseup={handleDragEnd}
-	onmouseleave={handleDragEnd}
+	class={`reference-board reference-board--${effectiveLayout} ${boardRatioClass} ${className}`}
 	role="application"
 	tabindex="0"
 	aria-label={`Reference board: ${board.title}`}
 >
+	<svg
+		class="reference-board__background"
+		viewBox="0 0 100 100"
+		preserveAspectRatio="none"
+		aria-hidden="true"
+	>
+		<rect x="0" y="0" width="100" height="100" fill={backgroundFill} />
+	</svg>
+
 	<header class="reference-board__header">
 		<h2 class="reference-board__title">{board.title}</h2>
 		{#if board.description}
@@ -91,26 +70,11 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		{/if}
 	</header>
 
-	<div class="reference-board__canvas">
+	<div class="reference-board__canvas" role="list" aria-label="Reference items">
 		{#each board.items as item (item.id)}
 			<div
 				class="reference-board__item"
-				class:dragging={draggingItem === item.id}
-				style="
-					{layout === 'freeform'
-					? `
-						left: ${item.position.x * 100}%;
-						top: ${item.position.y * 100}%;
-						width: ${item.size.width}px;
-						height: ${item.size.height}px;
-						transform: rotate(${item.rotation || 0}deg);
-						z-index: ${item.zIndex || 1};
-					`
-					: ''}
-				"
-				onmousedown={(e) => handleDragStart(e, item)}
-				role="button"
-				tabindex="0"
+				role="listitem"
 				aria-label={item.title || 'Reference image'}
 			>
 				<img
@@ -166,11 +130,38 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 	.reference-board {
 		position: relative;
 		width: 100%;
+		aspect-ratio: 4 / 3;
 		border-radius: var(--gr-radius-lg);
 		overflow: hidden;
 	}
 
+	.reference-board--ratio-square {
+		aspect-ratio: 1 / 1;
+	}
+
+	.reference-board--ratio-landscape {
+		aspect-ratio: 4 / 3;
+	}
+
+	.reference-board--ratio-wide {
+		aspect-ratio: 16 / 9;
+	}
+
+	.reference-board--ratio-portrait {
+		aspect-ratio: 3 / 4;
+	}
+
+	.reference-board__background {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+	}
+
 	.reference-board__header {
+		position: relative;
+		z-index: 1;
 		padding: var(--gr-spacing-scale-4);
 		background: rgba(0, 0, 0, 0.5);
 	}
@@ -190,35 +181,24 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 
 	.reference-board__canvas {
 		position: relative;
+		z-index: 1;
 		width: 100%;
 		height: calc(100% - 80px);
-	}
-
-	.reference-board--grid .reference-board__canvas {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-4);
-	}
-
-	.reference-board--freeform .reference-board__item {
-		position: absolute;
+		align-content: start;
 	}
 
 	.reference-board__item {
 		position: relative;
-		cursor: grab;
+		cursor: default;
 		transition: box-shadow 0.2s;
 	}
 
 	.reference-board__item:hover {
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-	}
-
-	.reference-board__item.dragging {
-		cursor: grabbing;
-		opacity: 0.8;
-		z-index: 100 !important;
 	}
 
 	.reference-board__image {
@@ -285,6 +265,7 @@ Implements REQ-FR-006: Creative Tools for Artistic Process
 		position: absolute;
 		bottom: var(--gr-spacing-scale-4);
 		right: var(--gr-spacing-scale-4);
+		z-index: 2;
 		display: flex;
 		gap: var(--gr-spacing-scale-2);
 	}

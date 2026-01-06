@@ -198,13 +198,10 @@
 						aria-selected="false"
 					>
 						<div class="conversation-picker__avatars">
-							{#each conversation.participants.slice(0, 3) as participant, i (participant.id)}
-								<Avatar
-									src={participant.avatar}
-									alt=""
-									size="sm"
-									style="margin-left: {i > 0 ? '-8px' : '0'}"
-								/>
+							{#each conversation.participants.slice(0, 3) as participant (participant.id)}
+								<div class="conversation-picker__avatar">
+									<Avatar src={participant.avatar} alt="" size="sm" />
+								</div>
 							{/each}
 						</div>
 						<div class="conversation-picker__item-info">
@@ -331,6 +328,10 @@
 
 	.conversation-picker__avatars {
 		display: flex;
+	}
+
+	.conversation-picker__avatar:not(:first-child) {
+		margin-left: -8px;
 	}
 
 	.conversation-picker__item-info {

@@ -41,17 +41,18 @@ Implements REQ-PERF-001: Progressive image loading
 	let currentSrc = $state(artwork.images.thumbnail);
 	let isFullLoaded = $state(false);
 
-	// Compute aspect ratio style
-	const aspectRatioStyle = $derived(() => {
-		if (aspectRatio === 'preserve' && artwork.dimensions) {
-			return `aspect-ratio: ${artwork.dimensions.width} / ${artwork.dimensions.height}`;
-		}
-		const ratios: Record<string, string> = {
-			'1:1': 'aspect-ratio: 1 / 1',
-			'4:3': 'aspect-ratio: 4 / 3',
-			'16:9': 'aspect-ratio: 16 / 9',
-		};
-		return ratios[aspectRatio] || '';
+	// Compute aspect ratio class (strict CSP safe: no inline styles)
+	const aspectRatioClass = $derived(() => {
+		if (aspectRatio === '1:1') return 'gr-artist-artwork-image-container--ratio-1-1';
+		if (aspectRatio === '4:3') return 'gr-artist-artwork-image-container--ratio-4-3';
+		if (aspectRatio === '16:9') return 'gr-artist-artwork-image-container--ratio-16-9';
+
+		// preserve (bucketed)
+		const ratio = artwork.dimensions ? artwork.dimensions.width / artwork.dimensions.height : 1;
+		if (ratio >= 1.6) return 'gr-artist-artwork-image-container--ratio-16-9';
+		if (ratio >= 1.2) return 'gr-artist-artwork-image-container--ratio-4-3';
+		if (ratio >= 0.9) return 'gr-artist-artwork-image-container--ratio-1-1';
+		return 'gr-artist-artwork-image-container--ratio-3-4';
 	});
 
 	// Progressive loading effect
@@ -116,7 +117,7 @@ Implements REQ-PERF-001: Progressive image loading
 	);
 </script>
 
-<figure class="gr-artist-artwork-image-container" style={aspectRatioStyle()}>
+<figure class={`gr-artist-artwork-image-container ${aspectRatioClass()}`}>
 	{#if loadState === 'error'}
 		<div class="gr-artist-artwork-image-fallback" role="img" aria-label={artwork.altText}>
 			<svg
@@ -150,9 +151,26 @@ Implements REQ-PERF-001: Progressive image loading
 	.gr-artist-artwork-image-container {
 		position: relative;
 		width: 100%;
+		aspect-ratio: 1 / 1;
 		overflow: hidden;
 		background: var(--gr-artist-bg-secondary, var(--gr-color-gray-900));
 		margin: 0;
+	}
+
+	.gr-artist-artwork-image-container--ratio-1-1 {
+		aspect-ratio: 1 / 1;
+	}
+
+	.gr-artist-artwork-image-container--ratio-4-3 {
+		aspect-ratio: 4 / 3;
+	}
+
+	.gr-artist-artwork-image-container--ratio-16-9 {
+		aspect-ratio: 16 / 9;
+	}
+
+	.gr-artist-artwork-image-container--ratio-3-4 {
+		aspect-ratio: 3 / 4;
 	}
 
 	.gr-artist-artwork-image {

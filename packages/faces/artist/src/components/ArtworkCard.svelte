@@ -116,17 +116,18 @@ Click handler to open MediaViewer or navigate
 		return num.toString();
 	}
 
-	// Compute aspect ratio style
-	const aspectRatioStyle = $derived(() => {
-		if (aspectRatio === 'preserve' && artwork.dimensions) {
-			return `aspect-ratio: ${artwork.dimensions.width} / ${artwork.dimensions.height}`;
-		}
-		const ratios: Record<string, string> = {
-			'1:1': 'aspect-ratio: 1 / 1',
-			'4:3': 'aspect-ratio: 4 / 3',
-			'16:9': 'aspect-ratio: 16 / 9',
-		};
-		return ratios[aspectRatio] || '';
+	// Compute aspect ratio class (strict CSP safe: no inline styles)
+	const aspectRatioClass = $derived(() => {
+		if (aspectRatio === '1:1') return 'gr-artist-artwork-card--ratio-1-1';
+		if (aspectRatio === '4:3') return 'gr-artist-artwork-card--ratio-4-3';
+		if (aspectRatio === '16:9') return 'gr-artist-artwork-card--ratio-16-9';
+
+		// preserve (bucketed)
+		const ratio = artwork.dimensions ? artwork.dimensions.width / artwork.dimensions.height : 1;
+		if (ratio >= 1.6) return 'gr-artist-artwork-card--ratio-16-9';
+		if (ratio >= 1.2) return 'gr-artist-artwork-card--ratio-4-3';
+		if (ratio >= 0.9) return 'gr-artist-artwork-card--ratio-1-1';
+		return 'gr-artist-artwork-card--ratio-3-4';
 	});
 
 	// Compute CSS classes
@@ -135,6 +136,7 @@ Click handler to open MediaViewer or navigate
 			'gr-artist-artwork-card',
 			`gr-artist-artwork-card--${size}`,
 			`gr-artist-artwork-card--${variant}`,
+			aspectRatioClass(),
 			loadState === 'loading' && 'gr-artist-artwork-card--loading',
 			className,
 		]
@@ -148,7 +150,6 @@ Click handler to open MediaViewer or navigate
 	type={tagName === 'button' ? 'button' : undefined}
 	role={tagName === 'button' ? undefined : 'button'}
 	class={cardClass}
-	style={aspectRatioStyle()}
 	onclick={handleClick}
 	aria-label={tagName === 'button' ? `${artwork.title} by ${artwork.artist.name}` : undefined}
 	tabindex={tagName === 'button' ? tabindex : undefined}
@@ -252,6 +253,23 @@ Click handler to open MediaViewer or navigate
 		text-align: left;
 		display: block;
 		width: 100%;
+		aspect-ratio: 1 / 1;
+	}
+
+	.gr-artist-artwork-card--ratio-1-1 {
+		aspect-ratio: 1 / 1;
+	}
+
+	.gr-artist-artwork-card--ratio-4-3 {
+		aspect-ratio: 4 / 3;
+	}
+
+	.gr-artist-artwork-card--ratio-16-9 {
+		aspect-ratio: 16 / 9;
+	}
+
+	.gr-artist-artwork-card--ratio-3-4 {
+		aspect-ratio: 3 / 4;
 	}
 
 	.gr-artist-artwork-card:hover {

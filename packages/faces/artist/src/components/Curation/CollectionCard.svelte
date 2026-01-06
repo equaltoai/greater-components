@@ -142,7 +142,7 @@ Features:
 	></button>
 
 	<!-- Preview grid -->
-	<div class="collection-card__preview" style="--preview-count: {Math.min(preview, 4)}">
+	<div class="collection-card__preview">
 		{#each previewArtworks as artwork, index (artwork.id)}
 			<div class="collection-card__preview-item" class:large={index === 0 && preview <= 4}>
 				<img src={artwork.images.thumbnail} alt="" loading="lazy" />

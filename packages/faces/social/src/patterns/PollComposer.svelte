@@ -498,11 +498,26 @@
 								</div>
 
 								{#if !resultsHidden}
+									{@const percent = Math.max(0, Math.min(100, getPercentage(option)))}
 									<div
 										class="poll-composer__result-bar"
 										class:poll-composer__result-bar--animate={animateResults}
-										style={`width: ${getPercentage(option)}%`}
-									></div>
+									>
+										<svg
+											class="poll-composer__result-bar-svg"
+											viewBox="0 0 100 1"
+											preserveAspectRatio="none"
+											aria-hidden="true"
+										>
+											<rect
+												class="poll-composer__result-bar-fill"
+												x="0"
+												y="0"
+												width={percent}
+												height="1"
+											/>
+										</svg>
+									</div>
 								{/if}
 							{/if}
 						</div>
@@ -849,18 +864,36 @@
 		top: 0;
 		left: 0;
 		height: 100%;
-		background: var(--primary-color-light, rgba(29, 155, 240, 0.1));
+		width: 100%;
 		z-index: 0;
-		transition: width 0.3s ease-out;
+	}
+
+	.poll-composer__result-bar-svg {
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+
+	.poll-composer__result-bar-fill {
+		fill: var(--primary-color-light, rgba(29, 155, 240, 0.1));
+		transform-box: fill-box;
+		transform-origin: left center;
 	}
 
 	.poll-composer__result-bar--animate {
-		animation: growBar 0.6s ease-out;
+		animation: none;
 	}
 
-	@keyframes growBar {
+	.poll-composer__result-bar--animate .poll-composer__result-bar-fill {
+		animation: growBarScale 0.6s ease-out;
+	}
+
+	@keyframes growBarScale {
 		from {
-			width: 0;
+			transform: scaleX(0);
+		}
+		to {
+			transform: scaleX(1);
 		}
 	}
 

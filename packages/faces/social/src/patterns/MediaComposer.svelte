@@ -297,14 +297,14 @@
 	/**
 	 * Get focal point position for display
 	 */
-	function getFocalPointPosition(attachment: MediaComposerAttachment): { x: string; y: string } {
+	function getFocalPointPosition(attachment: MediaComposerAttachment): { x: number; y: number } {
 		const focus = attachment.meta?.focus;
-		if (!focus) return { x: '50%', y: '50%' };
+		if (!focus) return { x: 50, y: 50 };
 
 		const x = ((focus.x + 1) / 2) * 100;
 		const y = ((focus.y + 1) / 2) * 100;
 
-		return { x: `${x}%`, y: `${y}%` };
+		return { x, y };
 	}
 
 	/**
@@ -410,11 +410,22 @@
 							{/if}
 
 							{#if !attachment.uploaded && attachment.uploadProgress !== undefined}
+								{@const progressPercent = Math.max(0, Math.min(100, attachment.uploadProgress))}
 								<div class="media-composer__progress">
-									<div
-										class="media-composer__progress-bar"
-										style={`width: ${attachment.uploadProgress}%`}
-									></div>
+									<svg
+										class="media-composer__progress-svg"
+										viewBox="0 0 100 1"
+										preserveAspectRatio="none"
+										aria-hidden="true"
+									>
+										<rect
+											class="media-composer__progress-bar"
+											x="0"
+											y="0"
+											width={progressPercent}
+											height="1"
+										/>
+									</svg>
 								</div>
 							{/if}
 
@@ -436,10 +447,20 @@
 									onclick={(e) => updateFocalPoint(attachment.id, e)}
 									aria-label="Set focal point"
 								>
-									<div
+									<svg
 										class="media-composer__focal-point"
-										style={`left: ${pos.x}; top: ${pos.y}`}
-									></div>
+										viewBox="0 0 100 100"
+										preserveAspectRatio="none"
+										aria-hidden="true"
+									>
+										<circle
+											class="media-composer__focal-point-inner"
+											cx={pos.x}
+											cy={pos.y}
+											r="4"
+											vector-effect="non-scaling-stroke"
+										/>
+									</svg>
 								</button>
 							{/if}
 						</div>
@@ -675,10 +696,14 @@
 		background: rgba(0, 0, 0, 0.3);
 	}
 
-	.media-composer__progress-bar {
+	.media-composer__progress-svg {
+		width: 100%;
 		height: 100%;
-		background: var(--primary-color, #1d9bf0);
-		transition: width 0.3s ease;
+		display: block;
+	}
+
+	.media-composer__progress-bar {
+		fill: var(--primary-color, #1d9bf0);
 	}
 
 	.media-composer__error {
@@ -712,25 +737,17 @@
 
 	.media-composer__focal-point {
 		position: absolute;
-		width: 2rem;
-		height: 2rem;
-		margin: -1rem 0 0 -1rem;
-		border: 2px solid white;
-		border-radius: 50%;
-		box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+		inset: 0;
+		width: 100%;
+		height: 100%;
 		pointer-events: none;
 	}
 
-	.media-composer__focal-point::before {
-		content: '';
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		width: 0.5rem;
-		height: 0.5rem;
-		margin: -0.25rem 0 0 -0.25rem;
-		background: white;
-		border-radius: 50%;
+	.media-composer__focal-point-inner {
+		fill: transparent;
+		stroke: white;
+		stroke-width: 2px;
+		filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
 	}
 
 	.media-composer__controls {

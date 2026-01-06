@@ -330,11 +330,11 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 <div class={`media-upload ${className}`}>
 	<input
 		bind:this={fileInput}
+		class="media-upload__input"
 		type="file"
 		accept="image/*,video/*,audio/*"
 		multiple
 		onchange={handleInputChange}
-		style="display: none;"
 	/>
 
 	{#if error}

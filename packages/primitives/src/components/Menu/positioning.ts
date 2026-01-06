@@ -4,7 +4,7 @@
  * @module @equaltoai/greater-components/primitives/Menu/positioning
  */
 
-import type { MenuPlacement, MenuPosition } from './context.svelte';
+import type { MenuPlacement } from './context.svelte';
 
 export interface PositionConfig {
 	triggerRect: DOMRect;
@@ -15,9 +15,10 @@ export interface PositionConfig {
 }
 
 /**
- * Calculate menu position based on trigger element and preferred placement
+ * Calculate the best placement based on trigger element and preferred placement.
+ * Returns a placement string only (no pixel positioning) for strict CSP compatibility.
  */
-export function calculatePosition(config: PositionConfig): MenuPosition {
+export function calculatePlacement(config: PositionConfig): MenuPlacement {
 	const { triggerRect, contentRect, placement, offset, viewportMargin = 8 } = config;
 
 	const viewportWidth = window.innerWidth;
@@ -85,7 +86,7 @@ export function calculatePosition(config: PositionConfig): MenuPosition {
 	x = Math.max(viewportMargin, Math.min(x, viewportWidth - contentRect.width - viewportMargin));
 	y = Math.max(viewportMargin, Math.min(y, viewportHeight - contentRect.height - viewportMargin));
 
-	return { x, y, placement: finalPlacement };
+	return finalPlacement;
 }
 
 /**
