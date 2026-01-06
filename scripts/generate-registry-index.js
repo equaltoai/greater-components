@@ -642,6 +642,24 @@ async function main() {
 	const dryRun = args.includes('--dry-run');
 	const validateOnly = args.includes('--validate');
 	const verbose = args.includes('--verbose');
+	const refOverride = (() => {
+		const direct = args.find((arg) => arg.startsWith('--ref='));
+		if (direct) {
+			const value = direct.slice('--ref='.length);
+			return value.length > 0 ? value : undefined;
+		}
+
+		const idx = args.indexOf('--ref');
+		if (idx === -1) return undefined;
+
+		const value = args[idx + 1];
+		if (!value || value.startsWith('--')) {
+			log('❌ Missing value for --ref', colors.red);
+			process.exit(1);
+		}
+
+		return value;
+	})();
 
 	log('\n' + '='.repeat(60), colors.bold);
 	log('📦 Greater Components Registry Index Generator', colors.bold);
@@ -671,7 +689,7 @@ async function main() {
 
 	// Get metadata
 	const version = getVersion();
-	const ref = getGitRef();
+	const ref = refOverride ?? getGitRef();
 	const generatedAt = new Date().toISOString();
 
 	// Get workspace versions

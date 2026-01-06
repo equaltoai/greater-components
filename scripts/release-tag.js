@@ -149,10 +149,10 @@ async function main() {
 	log('\n3️⃣  Regenerating registry/index.json...', colors.blue);
 
 	if (dryRun) {
-		log('   Would run: node scripts/generate-registry-index.js', colors.yellow);
+		log(`   Would run: node scripts/generate-registry-index.js --ref ${tagName}`, colors.yellow);
 	} else {
 		try {
-			exec('node scripts/generate-registry-index.js');
+			exec(`node scripts/generate-registry-index.js --ref ${tagName}`);
 			log('✅ Registry index regenerated', colors.green);
 		} catch (error) {
 			log('❌ Registry index generation failed', colors.red);
