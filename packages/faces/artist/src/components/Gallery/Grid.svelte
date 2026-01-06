@@ -239,7 +239,9 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	bind:this={containerRef}
 	class={`gallery-grid gallery-grid--gap-${gap} ${className}`}
 	role="region"
-	aria-label={`Gallery with ${items.length} artworks`}
+	aria-label={scrollKey === 'gallery'
+		? `Gallery with ${items.length} artworks`
+		: `Gallery (${scrollKey}) with ${items.length} artworks`}
 	aria-busy={false}
 	onscroll={handleScroll}
 	onkeydown={handleKeydown}

@@ -108,7 +108,7 @@ Features:
 	}
 
 	// Extract colors from image (mock implementation)
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 	async function extractColorsFromImage(_: File) {
 		// In a real implementation, this would use canvas or a color extraction library
 		// For now, we'll add some placeholder colors

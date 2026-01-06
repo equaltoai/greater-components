@@ -4190,12 +4190,11 @@ body {
 
 .gr-theme-switcher__preview-button--primary {
 	background-color: var(--gr-semantic-action-primary-default);
-	color: var(--gr-semantic-background-primary, #ffffff);
+	color: var(--gr-color-base-white, #ffffff);
 }
 
-:global([data-theme='dark'] .gr-theme-switcher__preview-button--primary),
-:global([data-theme='high-contrast'] .gr-theme-switcher__preview-button--primary) {
-	color: #000000;
+[data-theme='high-contrast'] .gr-theme-switcher__preview-button--primary {
+	color: var(--gr-color-base-black, #000000);
 }
 
 .gr-theme-switcher__preview-button--primary:hover {
