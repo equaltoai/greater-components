@@ -56,6 +56,7 @@
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "analyze:bundles": "node scripts/analyze-bundles.js",
     "release:prepare": "node scripts/prepare-github-release.js",
+    "release:cut": "node scripts/cut-github-release.js",
     "release:tag": "node scripts/release-tag.js",
     "release:tag:dry": "node scripts/release-tag.js --dry-run"
   },

@@ -21,6 +21,10 @@ A **Greater Components release** is a single, immutable reference that clients c
 
 ## Creating a Release (Maintainers)
 
+If you want a single command that orchestrates the full flow (prepare → PR → merge premain → open release PR), run:
+
+- `pnpm release:cut 0.1.0`
+
 1. Prepare the release commit on `premain` (bump version + update registry refs):
    - `pnpm release:prepare 0.1.0`
    - Commit and merge to `premain` via PR.
