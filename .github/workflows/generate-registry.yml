@@ -1,9 +1,8 @@
-name: Generate Registry Index
+name: Publish GitHub Release Artifacts
 
 on:
   push:
     tags:
-      - 'v*'
       - 'greater-v*'
   workflow_dispatch:
     inputs:
@@ -41,25 +40,37 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Generate registry index
-        run: node scripts/generate-registry-index.js
-
       - name: Validate registry index
         run: node scripts/validate-registry-index.js --strict
 
-      - name: Update latest.json
-        if: startsWith(github.ref, 'refs/tags/greater-v')
+      - name: Validate release metadata
         run: |
           TAG=${GITHUB_REF#refs/tags/}
-          VERSION=${TAG#greater-v}
-          cat > registry/latest.json << EOF
-          {
-            "ref": "$TAG",
-            "version": "$VERSION",
-            "updatedAt": "$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")"
+          node - <<'NODE'
+          const fs = require('node:fs');
+
+          const tag = process.env.TAG;
+          const version = tag.replace(/^greater-v/, '');
+
+          const index = JSON.parse(fs.readFileSync('registry/index.json', 'utf8'));
+          const latest = JSON.parse(fs.readFileSync('registry/latest.json', 'utf8'));
+
+          const failures = [];
+          if (index.version !== version) failures.push(`registry/index.json.version must be ${version}`);
+          if (index.ref !== tag) failures.push(`registry/index.json.ref must be ${tag}`);
+          if (latest.version !== version) failures.push(`registry/latest.json.version must be ${version}`);
+          if (latest.ref !== tag) failures.push(`registry/latest.json.ref must be ${tag}`);
+
+          if (failures.length > 0) {
+            for (const msg of failures) console.error(`::error::${msg}`);
+            process.exit(1);
           }
-          EOF
-          echo "Updated latest.json to point to $TAG"
+          NODE
+        env:
+          TAG: ${{ github.ref_name }}
+
+      - name: Pack release artifacts
+        run: node scripts/pack-for-release.js
 
       - name: Upload registry artifacts
         uses: actions/upload-artifact@v4
@@ -85,15 +96,7 @@ jobs:
           files: |
             registry/index.json
             registry/latest.json
+            artifacts/*
           tag_name: ${{ steps.release.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit registry files
-        if: startsWith(github.ref, 'refs/tags/') && github.event.inputs.dry_run != 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add registry/index.json registry/latest.json
-          git commit -m "chore: update registry for ${{ steps.release.outputs.tag }}" || echo "No changes to commit"
-          git push origin HEAD:main || echo "Could not push to main"

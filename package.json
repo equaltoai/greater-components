@@ -55,6 +55,7 @@
     "typecheck": "NODE_OPTIONS='--max-old-space-size=16384' pnpm run sveltekit:sync && NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "analyze:bundles": "node scripts/analyze-bundles.js",
+    "release:prepare": "node scripts/prepare-github-release.js",
     "release:tag": "node scripts/release-tag.js",
     "release:tag:dry": "node scripts/release-tag.js --dry-run"
   },
