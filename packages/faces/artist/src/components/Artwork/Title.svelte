@@ -44,12 +44,19 @@ Truncation for long titles with tooltip.
 	const context = getArtworkContext();
 	const { artwork } = context;
 
+	const maxLinesClamped = Math.max(1, Math.min(6, Math.round(maxLines)));
+
 	// Determine if title needs truncation
 	const needsTruncation = $derived(artwork.title.length > 60);
 
 	// Compute CSS classes
 	const titleClass = $derived(
-		['gr-artist-artwork-title', needsTruncation && 'gr-artist-artwork-title--truncated', className]
+		[
+			'gr-artist-artwork-title',
+			needsTruncation && 'gr-artist-artwork-title--truncated',
+			`gr-artist-artwork-title--max-lines-${maxLinesClamped}`,
+			className,
+		]
 			.filter(Boolean)
 			.join(' ')
 	);
@@ -58,7 +65,7 @@ Truncation for long titles with tooltip.
 	const HeadingTag = $derived(`h${level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6');
 </script>
 
-<svelte:element this={HeadingTag} class={titleClass} style="--max-lines: {maxLines}">
+<svelte:element this={HeadingTag} class={titleClass}>
 	{#if linkTo}
 		<a href={linkTo} class="gr-artist-artwork-title-link" title={artwork.title}>
 			{artwork.title}
@@ -84,11 +91,39 @@ Truncation for long titles with tooltip.
 
 	.gr-artist-artwork-title--truncated {
 		display: -webkit-box;
-		-webkit-line-clamp: var(--max-lines, 2);
-		line-clamp: var(--max-lines, 2);
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.gr-artist-artwork-title--max-lines-1.gr-artist-artwork-title--truncated {
+		-webkit-line-clamp: 1;
+		line-clamp: 1;
+	}
+
+	.gr-artist-artwork-title--max-lines-2.gr-artist-artwork-title--truncated {
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+	}
+
+	.gr-artist-artwork-title--max-lines-3.gr-artist-artwork-title--truncated {
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
+	}
+
+	.gr-artist-artwork-title--max-lines-4.gr-artist-artwork-title--truncated {
+		-webkit-line-clamp: 4;
+		line-clamp: 4;
+	}
+
+	.gr-artist-artwork-title--max-lines-5.gr-artist-artwork-title--truncated {
+		-webkit-line-clamp: 5;
+		line-clamp: 5;
+	}
+
+	.gr-artist-artwork-title--max-lines-6.gr-artist-artwork-title--truncated {
+		-webkit-line-clamp: 6;
+		line-clamp: 6;
 	}
 
 	.gr-artist-artwork-title-link {

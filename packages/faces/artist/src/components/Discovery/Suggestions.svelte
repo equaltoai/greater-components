@@ -138,7 +138,7 @@ Features:
 						<p class="suggestions__item-artist">{artwork.artist.name}</p>
 						{#if showConfidence}
 							<div class="suggestions__item-confidence">
-								<span class="suggestions__confidence-bar" style:--confidence="85%"></span>
+								<span class="suggestions__confidence-bar" aria-hidden="true"></span>
 								<span class="suggestions__confidence-text">85% match</span>
 							</div>
 						{/if}
@@ -306,7 +306,7 @@ Features:
 	.suggestions__confidence-bar::after {
 		content: '';
 		display: block;
-		width: var(--confidence, 0%);
+		width: 85%;
 		height: 100%;
 		background: var(--gr-color-primary-500);
 	}

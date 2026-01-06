@@ -156,13 +156,13 @@
 				{#if showBranches}
 					{@const branches = getBranchesFromMessage(message.id)}
 					{#if branches.length > 0}
-						<div class="chat-thread-view__branches" role="list" aria-label="Conversation branches">
-							{#each branches as branch (branch.id)}
-								<div role="listitem" style="display: contents;">
-									<button
-										class="chat-thread-view__branch-link"
-										class:chat-thread-view__branch-link--active={branch.id ===
-											thread.activeBranchId}
+							<div class="chat-thread-view__branches" role="list" aria-label="Conversation branches">
+								{#each branches as branch (branch.id)}
+									<div role="listitem" class="chat-thread-view__branch-item">
+										<button
+											class="chat-thread-view__branch-link"
+											class:chat-thread-view__branch-link--active={branch.id ===
+												thread.activeBranchId}
 										onclick={() => selectBranch(branch.id)}
 									>
 										<GitBranchIcon size={12} />
@@ -286,15 +286,19 @@
 		transition: all 0.2s ease;
 	}
 
-	.chat-thread-view__branch-button:hover {
-		background: var(--gr-color-surface-hover);
-		color: var(--gr-color-text-primary);
-	}
+		.chat-thread-view__branch-button:hover {
+			background: var(--gr-color-surface-hover);
+			color: var(--gr-color-text-primary);
+		}
 
-	.chat-thread-view__branches {
-		display: flex;
-		flex-direction: column;
-		gap: var(--gr-spacing-scale-1);
+		.chat-thread-view__branch-item {
+			display: contents;
+		}
+
+		.chat-thread-view__branches {
+			display: flex;
+			flex-direction: column;
+			gap: var(--gr-spacing-scale-1);
 		margin-left: calc(32px + var(--gr-spacing-scale-2));
 		padding-left: var(--gr-spacing-scale-3);
 		border-left: 2px solid var(--gr-color-border-subtle);

@@ -787,6 +787,26 @@
 	line-height: 1.5;
 }
 
+.gr-code-block--max-height-sm {
+	max-height: 12rem;
+	overflow-y: auto;
+}
+
+.gr-code-block--max-height-md {
+	max-height: 18rem;
+	overflow-y: auto;
+}
+
+.gr-code-block--max-height-lg {
+	max-height: 24rem;
+	overflow-y: auto;
+}
+
+.gr-code-block--max-height-xl {
+	max-height: 32rem;
+	overflow-y: auto;
+}
+
 .gr-code-block--wrap .gr-code-block__content {
 	white-space: pre-wrap;
 	word-break: break-all;

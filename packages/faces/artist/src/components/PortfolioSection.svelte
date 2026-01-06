@@ -115,13 +115,7 @@ Features:
 		dragOverId = null;
 	}
 
-	// Grid columns based on layout
-	const gridColumns = $derived(
-		layout === 'featured'
-			? 'repeat(auto-fill, minmax(400px, 1fr))'
-			: 'repeat(auto-fill, minmax(280px, 1fr))'
-	);
-</script>
+	</script>
 
 <section class={`portfolio-section portfolio-section--${layout} ${className}`}>
 	<header class="portfolio-section__header">
@@ -131,13 +125,12 @@ Features:
 		{/if}
 	</header>
 
-	{#if items.length > 0}
-		<div
-			class="portfolio-section__content"
-			class:editable
-			style:--grid-columns={gridColumns}
-			role={layout === 'row' ? 'list' : 'grid'}
-		>
+		{#if items.length > 0}
+			<div
+				class="portfolio-section__content"
+				class:editable
+				role={layout === 'row' ? 'list' : 'grid'}
+			>
 			{#each items as item (item.id)}
 				<div
 					class="portfolio-section__item"
@@ -187,15 +180,19 @@ Features:
 		color: var(--gr-color-gray-400);
 	}
 
-	.portfolio-section__content {
-		display: grid;
-		grid-template-columns: var(--grid-columns);
-		gap: var(--gr-spacing-scale-4);
-	}
+		.portfolio-section__content {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: var(--gr-spacing-scale-4);
+		}
 
-	.portfolio-section--row .portfolio-section__content {
-		display: flex;
-		overflow-x: auto;
+		.portfolio-section--featured .portfolio-section__content {
+			grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+		}
+
+		.portfolio-section--row .portfolio-section__content {
+			display: flex;
+			overflow-x: auto;
 		gap: var(--gr-spacing-scale-4);
 		padding-bottom: var(--gr-spacing-scale-2);
 		scroll-snap-type: x mandatory;

@@ -81,6 +81,33 @@ Swipe gestures for touch devices.
 	let touchStartX = 0;
 	let touchStartY = 0;
 
+	const ZOOM_LEVELS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 5] as const;
+
+	function normalizeZoomLevel(level: number): number {
+		let closest = ZOOM_LEVELS[0];
+		for (const candidate of ZOOM_LEVELS) {
+			if (Math.abs(candidate - level) < Math.abs(closest - level)) {
+				closest = candidate;
+			}
+		}
+		return closest;
+	}
+
+	function zoomStep(direction: 'in' | 'out'): number {
+		const normalized = normalizeZoomLevel(context.zoomLevel);
+		const index = ZOOM_LEVELS.indexOf(normalized);
+		if (index === -1) return 1;
+
+		const nextIndex =
+			direction === 'in'
+				? Math.min(ZOOM_LEVELS.length - 1, index + 1)
+				: Math.max(0, index - 1);
+
+		return ZOOM_LEVELS[nextIndex] ?? 1;
+	}
+
+	const zoomPercent = $derived(Math.round(normalizeZoomLevel(context.zoomLevel) * 100));
+
 	// Handle keyboard navigation
 	function handleKeydown(e: KeyboardEvent) {
 		switch (e.key) {
@@ -132,14 +159,14 @@ Swipe gestures for touch devices.
 	// Zoom functions
 	function zoomIn() {
 		if (context.config.enableZoom) {
-			context.zoomLevel = Math.min(context.zoomLevel * 1.5, 5);
+			context.zoomLevel = zoomStep('in');
 			handlers.onZoom?.(context.zoomLevel);
 		}
 	}
 
 	function zoomOut() {
 		if (context.config.enableZoom) {
-			context.zoomLevel = Math.max(context.zoomLevel / 1.5, 0.5);
+			context.zoomLevel = zoomStep('out');
 			handlers.onZoom?.(context.zoomLevel);
 		}
 	}
@@ -257,10 +284,8 @@ Swipe gestures for touch devices.
 			<img
 				src={imageSrc}
 				alt={currentArtwork.altText}
-				class="gr-artist-media-viewer-image"
+				class={`gr-artist-media-viewer-image gr-artist-media-viewer-image--zoom-${zoomPercent}`}
 				class:loaded={imageLoaded}
-				style="transform: scale({context.zoomLevel}) translate({context.panOffset.x}px, {context
-					.panOffset.y}px)"
 				onload={() => (imageLoaded = true)}
 				draggable="false"
 			/>
@@ -342,10 +367,44 @@ Swipe gestures for touch devices.
 		max-height: 100%;
 		object-fit: contain;
 		opacity: 0;
+		transform: scale(1);
+		transform-origin: center center;
 		transition:
 			opacity 300ms ease-out,
 			transform 200ms ease-out;
 		user-select: none;
+	}
+
+	.gr-artist-media-viewer-image--zoom-50 {
+		transform: scale(0.5);
+	}
+
+	.gr-artist-media-viewer-image--zoom-75 {
+		transform: scale(0.75);
+	}
+
+	.gr-artist-media-viewer-image--zoom-100 {
+		transform: scale(1);
+	}
+
+	.gr-artist-media-viewer-image--zoom-150 {
+		transform: scale(1.5);
+	}
+
+	.gr-artist-media-viewer-image--zoom-200 {
+		transform: scale(2);
+	}
+
+	.gr-artist-media-viewer-image--zoom-300 {
+		transform: scale(3);
+	}
+
+	.gr-artist-media-viewer-image--zoom-400 {
+		transform: scale(4);
+	}
+
+	.gr-artist-media-viewer-image--zoom-500 {
+		transform: scale(5);
 	}
 
 	.gr-artist-media-viewer-image.loaded {

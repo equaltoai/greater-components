@@ -43,14 +43,22 @@ Article.ReadingProgress - Scroll progress indicator
 	});
 </script>
 
-<div
-	class="gr-blog-reading-progress"
-	class:gr-blog-reading-progress--bottom={position === 'bottom'}
-	role="progressbar"
+	<div
+		class="gr-blog-reading-progress"
+		class:gr-blog-reading-progress--bottom={position === 'bottom'}
+		role="progressbar"
 	aria-valuenow={Math.round(progress * 100)}
 	aria-valuemin={0}
-	aria-valuemax={100}
-	aria-label="Reading progress"
->
-	<div class="gr-blog-reading-progress__bar" style="width: {progress * 100}%"></div>
-</div>
+		aria-valuemax={100}
+		aria-label="Reading progress"
+	>
+		{@const progressPercent = Math.max(0, Math.min(100, progress * 100))}
+		<svg
+			class="gr-blog-reading-progress__bar"
+			viewBox="0 0 100 1"
+			preserveAspectRatio="none"
+			aria-hidden="true"
+		>
+			<rect class="gr-blog-reading-progress__bar-fill" x="0" y="0" width={progressPercent} height="1" />
+		</svg>
+	</div>

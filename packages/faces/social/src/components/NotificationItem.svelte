@@ -146,7 +146,7 @@
 	{/if}
 
 	<!-- Icon -->
-	<div class="notification-icon" style={`color: ${iconColor}`}>
+	<div class={`notification-icon notification-icon--${iconColor}`}>
 		<svg
 			width="20"
 			height="20"

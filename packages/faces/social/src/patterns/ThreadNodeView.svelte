@@ -51,13 +51,12 @@
 	} as StatusActionHandlers);
 </script>
 
-<div
-	class="thread-view__reply"
-	class:thread-view__reply--highlighted={isHighlighted}
-	class:thread-view__reply--deep={isTooDeep}
-	class:thread-view__reply--collapsed={isCollapsed}
-	style={`--depth: ${node.depth}`}
->
+	<div
+		class={`thread-view__reply thread-view__reply--depth-${Math.min(node.depth, 20)}`}
+		class:thread-view__reply--highlighted={isHighlighted}
+		class:thread-view__reply--deep={isTooDeep}
+		class:thread-view__reply--collapsed={isCollapsed}
+	>
 	{#if isTooDeep}
 		<button class="thread-view__continue" onclick={() => handlers.onNavigate?.(node.status.id)}>
 			Continue thread ({replyCount}

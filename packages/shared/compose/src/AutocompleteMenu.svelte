@@ -15,7 +15,7 @@ Shows hashtag, mention, and emoji suggestions while typing.
 <script lang="ts">
 	import type { AutocompleteSuggestion } from './Autocomplete.js';
 
-	interface Props {
+		interface Props {
 		/**
 		 * Array of suggestions to display
 		 */
@@ -26,15 +26,10 @@ Shows hashtag, mention, and emoji suggestions while typing.
 		 */
 		selectedIndex: number;
 
-		/**
-		 * Position of the menu
-		 */
-		position: { x: number; y: number };
-
-		/**
-		 * Loading state
-		 */
-		loading?: boolean;
+			/**
+			 * Loading state
+			 */
+			loading?: boolean;
 
 		/**
 		 * Callback when suggestion is selected
@@ -52,14 +47,13 @@ Shows hashtag, mention, and emoji suggestions while typing.
 		class?: string;
 	}
 
-	let {
-		suggestions,
-		selectedIndex = 0,
-		position,
-		loading = false,
-		onSelect,
-		onClose,
-		class: className = '',
+		let {
+			suggestions,
+			selectedIndex = 0,
+			loading = false,
+			onSelect,
+			onClose,
+			class: className = '',
 	}: Props = $props();
 
 	let menuEl: HTMLDivElement | null = null;
@@ -109,13 +103,12 @@ Shows hashtag, mention, and emoji suggestions while typing.
 	});
 </script>
 
-<div
-	bind:this={menuEl}
-	class={`autocomplete-menu ${className}`}
-	style={`left: ${position.x}px; top: ${position.y}px;`}
-	role="listbox"
-	aria-label="Autocomplete suggestions"
->
+	<div
+		bind:this={menuEl}
+		class={`autocomplete-menu ${className}`}
+		role="listbox"
+		aria-label="Autocomplete suggestions"
+	>
 	{#if loading}
 		<div class="autocomplete-menu__loading">
 			<span class="autocomplete-menu__spinner"></span>

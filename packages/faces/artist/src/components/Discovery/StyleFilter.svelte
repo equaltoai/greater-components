@@ -134,16 +134,16 @@ Features:
 	{#if selected.length > 0}
 		<div class="style-filter__selected" role="list" aria-label="Selected styles">
 			{#each selected as styleId (styleId)}
-				{@const style = displayStyles.find((s) => s.id === styleId)}
-				{#if style}
+				{@const selectedStyle = displayStyles.find((s) => s.id === styleId)}
+				{#if selectedStyle}
 					<div role="listitem">
 						<button
 							type="button"
 							class="style-filter__chip"
 							onclick={() => toggleStyle(styleId)}
-							aria-label={`Remove ${style.name}`}
+							aria-label={`Remove ${selectedStyle.name}`}
 						>
-							<span>{style.name}</span>
+							<span>{selectedStyle.name}</span>
 							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
 								<path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round" />
 							</svg>

@@ -28,54 +28,82 @@ WorkInProgress.Timeline - Visual progress timeline
 	function handleMilestoneClick(index: number) {
 		navigateToVersion(ctx, index);
 	}
+
+	const timeBetween = $derived.by(() => {
+		if (!showTimeBetween || thread.updates.length < 2) return [];
+
+		const pairs: Array<{ from: number; to: number; label: string }> = [];
+		for (let i = 0; i < thread.updates.length - 1; i++) {
+			const update = thread.updates[i];
+			const nextUpdate = thread.updates[i + 1];
+			if (!update || !nextUpdate) continue;
+			pairs.push({
+				from: i,
+				to: i + 1,
+				label: formatTimeBetweenVersions(update, nextUpdate),
+			});
+		}
+		return pairs;
+	});
 </script>
 
 {#if config.showTimeline}
-	<div class={`wip-timeline ${className}`} role="navigation" aria-label="Progress timeline">
-		<div class="wip-timeline__track">
-			<div
-				class="wip-timeline__progress"
-				style="width: {thread.currentProgress}%"
-				role="progressbar"
-				aria-valuenow={thread.currentProgress}
-				aria-valuemin={0}
-				aria-valuemax={100}
-			></div>
+	<nav class={`wip-timeline ${className}`} aria-label="Progress timeline">
+		<div
+			class="wip-timeline__track"
+			role="progressbar"
+			aria-valuenow={thread.currentProgress}
+			aria-valuemin={0}
+			aria-valuemax={100}
+		>
+			<svg
+				class="wip-timeline__track-svg"
+				viewBox="0 0 100 4"
+				preserveAspectRatio="none"
+				aria-hidden="true"
+			>
+				<rect class="wip-timeline__track-bg" x="0" y="0" width="100" height="4" rx="2" />
+				<rect
+					class="wip-timeline__track-fill"
+					x="0"
+					y="0"
+					width={thread.currentProgress}
+					height="4"
+					rx="2"
+				/>
+			</svg>
 		</div>
 
-		<div class="wip-timeline__milestones">
+		<div class="wip-timeline__milestones" role="list">
 			{#each thread.updates as update, index (update.id)}
-				{@const position =
-					thread.updates.length > 1 ? (index / (thread.updates.length - 1)) * 100 : 50}
 				<button
 					type="button"
 					class="wip-timeline__milestone"
 					class:active={ctx.currentVersionIndex === index}
 					class:current={index === thread.updates.length - 1}
-					style="left: {position}%"
 					onclick={() => handleMilestoneClick(index)}
 					aria-label={`Version ${index + 1}, ${update.progress || 0}% complete`}
 					aria-current={ctx.currentVersionIndex === index ? 'step' : undefined}
 				>
-					<span class="wip-timeline__milestone-dot"></span>
+					<span class="wip-timeline__milestone-dot" aria-hidden="true"></span>
 					<span class="wip-timeline__milestone-label">v{index + 1}</span>
 					{#if update.progress !== undefined}
 						<span class="wip-timeline__milestone-progress">{update.progress}%</span>
 					{/if}
 				</button>
-
-				{#if showTimeBetween && index < thread.updates.length - 1}
-					{@const nextUpdate = thread.updates[index + 1]}
-					<span
-						class="wip-timeline__time-between"
-						style="left: {position + ((1 / (thread.updates.length - 1)) * 100) / 2}%"
-					>
-						{formatTimeBetweenVersions(update, nextUpdate)}
-					</span>
-				{/if}
 			{/each}
 		</div>
-	</div>
+
+		{#if showTimeBetween && timeBetween.length > 0}
+			<ol class="wip-timeline__time-between" aria-label="Time between versions">
+				{#each timeBetween as item (item.from)}
+					<li class="wip-timeline__time-between-item">
+						v{item.from + 1} → v{item.to + 1}: {item.label}
+					</li>
+				{/each}
+			</ol>
+		{/if}
+	</nav>
 {/if}
 
 <style>
@@ -86,30 +114,17 @@ WorkInProgress.Timeline - Visual progress timeline
 
 	.wip-timeline__track {
 		position: relative;
-		height: 4px;
-		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-full);
-	}
-
-	.wip-timeline__progress {
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
-		background: var(--gr-color-primary-500);
-		border-radius: var(--gr-radius-full);
-		transition: width 0.3s ease;
+		margin-bottom: var(--gr-spacing-scale-6);
 	}
 
 	.wip-timeline__milestones {
-		position: relative;
-		height: 60px;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: var(--gr-spacing-scale-2);
 	}
 
 	.wip-timeline__milestone {
-		position: absolute;
-		top: -8px;
-		transform: translateX(-50%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -156,16 +171,32 @@ WorkInProgress.Timeline - Visual progress timeline
 	}
 
 	.wip-timeline__time-between {
-		position: absolute;
-		top: 24px;
-		transform: translateX(-50%);
+		margin: var(--gr-spacing-scale-4) 0 0;
+		padding: 0;
+		list-style: none;
 		font-size: var(--gr-font-size-xs);
 		color: var(--gr-color-gray-500);
-		white-space: nowrap;
+	}
+
+	.wip-timeline__time-between-item {
+		margin: var(--gr-spacing-scale-1) 0 0;
+	}
+
+	.wip-timeline__track-svg {
+		display: block;
+		width: 100%;
+		height: 4px;
+	}
+
+	.wip-timeline__track-bg {
+		fill: var(--gr-color-gray-700);
+	}
+
+	.wip-timeline__track-fill {
+		fill: var(--gr-color-primary-500);
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.wip-timeline__progress,
 		.wip-timeline__milestone-dot {
 			transition: none;
 		}

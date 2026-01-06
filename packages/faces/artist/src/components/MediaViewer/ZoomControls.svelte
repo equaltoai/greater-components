@@ -24,17 +24,44 @@ Reset zoom button.
 	const context = getMediaViewerContext();
 	const { config, handlers } = context;
 
+	const ZOOM_LEVELS = [0.5, 0.75, 1, 1.5, 2, 3, 4, 5] as const;
+
+	function normalizeZoomLevel(level: number): number {
+		let closest = ZOOM_LEVELS[0];
+		for (const candidate of ZOOM_LEVELS) {
+			if (Math.abs(candidate - level) < Math.abs(closest - level)) {
+				closest = candidate;
+			}
+		}
+		return closest;
+	}
+
+	function zoomStep(direction: 'in' | 'out'): number {
+		const normalized = normalizeZoomLevel(context.zoomLevel);
+		const index = ZOOM_LEVELS.indexOf(normalized);
+		if (index === -1) return 1;
+
+		const nextIndex =
+			direction === 'in'
+				? Math.min(ZOOM_LEVELS.length - 1, index + 1)
+				: Math.max(0, index - 1);
+
+		return ZOOM_LEVELS[nextIndex] ?? 1;
+	}
+
+	const normalizedZoom = $derived(normalizeZoomLevel(context.zoomLevel));
+
 	// Zoom functions
 	function zoomIn() {
 		if (config.enableZoom) {
-			context.zoomLevel = Math.min(context.zoomLevel * 1.5, 5);
+			context.zoomLevel = zoomStep('in');
 			handlers.onZoom?.(context.zoomLevel);
 		}
 	}
 
 	function zoomOut() {
 		if (config.enableZoom) {
-			context.zoomLevel = Math.max(context.zoomLevel / 1.5, 0.5);
+			context.zoomLevel = zoomStep('out');
 			handlers.onZoom?.(context.zoomLevel);
 		}
 	}
@@ -46,7 +73,7 @@ Reset zoom button.
 	}
 
 	// Format zoom percentage
-	const zoomPercent = $derived(Math.round(context.zoomLevel * 100));
+	const zoomPercent = $derived(Math.round(normalizedZoom * 100));
 </script>
 
 {#if config.enableZoom}
@@ -54,7 +81,7 @@ Reset zoom button.
 		<button
 			class="gr-artist-media-viewer-zoom-btn"
 			onclick={zoomOut}
-			disabled={context.zoomLevel <= 0.5}
+			disabled={normalizedZoom <= 0.5}
 			aria-label="Zoom out"
 		>
 			<svg
@@ -78,7 +105,7 @@ Reset zoom button.
 		<button
 			class="gr-artist-media-viewer-zoom-btn"
 			onclick={zoomIn}
-			disabled={context.zoomLevel >= 5}
+			disabled={normalizedZoom >= 5}
 			aria-label="Zoom in"
 		>
 			<svg
@@ -99,7 +126,7 @@ Reset zoom button.
 		<button
 			class="gr-artist-media-viewer-zoom-btn gr-artist-media-viewer-zoom-reset"
 			onclick={resetZoom}
-			disabled={context.zoomLevel === 1}
+			disabled={normalizedZoom === 1}
 			aria-label="Reset zoom"
 		>
 			<svg

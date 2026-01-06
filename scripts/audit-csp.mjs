@@ -58,8 +58,20 @@ function findFiles(dir, pattern) {
 			const stat = statSync(fullPath);
 			
 			if (stat.isDirectory()) {
-				// Skip node_modules, dist, build, coverage, .git
-				if (!['node_modules', 'dist', 'build', 'coverage', '.git', '.svelte-kit'].includes(entry)) {
+				// Skip generated or irrelevant directories
+				if (
+					![
+						'node_modules',
+						'dist',
+						'build',
+						'coverage',
+						'.git',
+						'.svelte-kit',
+						'.tmp',
+						'test',
+						'tests',
+					].includes(entry)
+				) {
 					results.push(...findFiles(fullPath, pattern));
 				}
 			} else if (stat.isFile() && fullPath.endsWith(pattern)) {

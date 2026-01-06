@@ -106,8 +106,9 @@ describe('CritiqueMode Annotations', () => {
 			},
 		});
 
-		const marker1 = screen.getByLabelText(/Annotation 1/);
-		expect(marker1.getAttribute('style')).toContain('--marker-color: #3b82f6');
+		const fills = document.body.querySelectorAll('.critique-annotations__marker-fill');
+		expect(fills).toHaveLength(2);
+		expect(fills[0]?.getAttribute('fill')).toBe('#3b82f6');
 	});
 
 	it('does not render when disabled in config', () => {

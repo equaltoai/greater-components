@@ -132,7 +132,7 @@ Implements REQ-COMM-002: Collaboration
 		<div class="collaboration__info">
 			<div class="collaboration__title-row">
 				<h2 class="collaboration__title">{collaboration.title}</h2>
-				<span class="collaboration__status" style="background: {statusBadge.color}">
+				<span class={`collaboration__status collaboration__status--${collaboration.status}`}>
 					{statusBadge.label}
 				</span>
 			</div>
@@ -219,6 +219,27 @@ Implements REQ-COMM-002: Collaboration
 		font-size: var(--gr-font-size-sm);
 		font-weight: var(--gr-font-weight-medium);
 		color: white;
+		background: var(--gr-color-gray-600);
+	}
+
+	.collaboration__status--planning {
+		background: var(--gr-color-gray-600);
+	}
+
+	.collaboration__status--active {
+		background: var(--gr-color-success-600);
+	}
+
+	.collaboration__status--paused {
+		background: var(--gr-color-warning-600);
+	}
+
+	.collaboration__status--completed {
+		background: var(--gr-color-success-600);
+	}
+
+	.collaboration__status--cancelled {
+		background: var(--gr-color-error-600);
 	}
 
 	.collaboration__description {

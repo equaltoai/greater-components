@@ -106,15 +106,12 @@
 		defaultExpanded = false,
 		showPreview = false,
 		previewLength = 100,
-		animationDuration = 200,
 		class: className = '',
 		blurContent = true,
 		showIcon = true,
 	} = untrack(() => config);
 
 	let isExpanded = $state(defaultExpanded);
-	let contentHeight = $state(0);
-	let contentRef: HTMLElement;
 
 	/**
 	 * Toggle expand/collapse
@@ -183,15 +180,6 @@
 	$effect(() => {
 		if (sanitizedContentRef) {
 			sanitizedContentRef.innerHTML = sanitizedHtmlContent;
-		}
-	});
-
-	/**
-	 * Update content height for animation
-	 */
-	$effect(() => {
-		if (contentRef) {
-			contentHeight = contentRef.scrollHeight;
 		}
 	});
 </script>
@@ -276,8 +264,6 @@
 	<div
 		class="cw-handler__content"
 		class:cw-handler__content--blur={!isExpanded && blurContent}
-		style={`--content-height: ${contentHeight}px; --animation-duration: ${animationDuration}ms;`}
-		bind:this={contentRef}
 		aria-hidden={!isExpanded}
 	>
 		<div class="cw-handler__content-inner">
@@ -393,15 +379,15 @@
 		margin: 0;
 	}
 
-	.cw-handler__content {
-		max-height: 0;
-		overflow: hidden;
-		transition: max-height var(--animation-duration, 200ms) ease-in-out;
-	}
+		.cw-handler__content {
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 200ms ease-in-out;
+		}
 
-	.cw-handler--expanded .cw-handler__content {
-		max-height: var(--content-height, 1000px);
-	}
+		.cw-handler--expanded .cw-handler__content {
+			max-height: 2000px;
+		}
 
 	.cw-handler__content--blur {
 		filter: blur(10px);

@@ -245,12 +245,12 @@ Handles account migration workflow:
 										alt=""
 										class="account-migration__target-avatar"
 									/>
-								{:else}
-									<div class="account-migration__target-avatar" style="background: #ccc;"></div>
-								{/if}
-								<div class="account-migration__target-info">
-									<span class="account-migration__target-name">
-										{migration.targetAccount.displayName}
+									{:else}
+										<div class="account-migration__target-avatar account-migration__target-avatar--placeholder"></div>
+									{/if}
+									<div class="account-migration__target-info">
+										<span class="account-migration__target-name">
+											{migration.targetAccount.displayName}
 									</span>
 									<span class="account-migration__target-username">
 										@{migration.targetAccount.username}

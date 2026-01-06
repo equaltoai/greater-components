@@ -10,8 +10,11 @@ CodeBlock component - Syntax highlighting code block with copy button.
 <script lang="ts">
 	import { CopyButton } from '@equaltoai/greater-components-primitives';
 	import type { Highlighter } from 'shiki';
+	import type { HTMLAttributes } from 'svelte/elements';
 
-	interface Props {
+	type MaxHeightPreset = 'sm' | 'md' | 'lg' | 'xl';
+
+	interface Props extends HTMLAttributes<HTMLDivElement> {
 		/**
 		 * The code to display.
 		 */
@@ -41,9 +44,9 @@ CodeBlock component - Syntax highlighting code block with copy button.
 		highlightLines?: number[];
 
 		/**
-		 * Maximum height before scrolling (CSS value).
+		 * Maximum height before scrolling.
 		 */
-		maxHeight?: string | number;
+		maxHeight?: MaxHeightPreset;
 
 		/**
 		 * Whether to wrap long lines.
@@ -79,21 +82,22 @@ CodeBlock component - Syntax highlighting code block with copy button.
 		onCopy?: (code: string) => void;
 	}
 
-	let {
-		code,
-		language = 'text',
-		showCopy = true,
-		showLineNumbers = false,
-		highlightLines = [],
-		maxHeight,
-		wrap = false,
-		filename,
-		variant = 'outlined',
-		theme = 'github-dark',
-		class: className = '',
-		onCopy,
-		...restProps
-	}: Props = $props();
+		let {
+			code,
+			language = 'text',
+			showCopy = true,
+			showLineNumbers = false,
+			highlightLines = [],
+			maxHeight,
+			wrap = false,
+			filename,
+			variant = 'outlined',
+			theme = 'github-dark',
+			class: className = '',
+			onCopy,
+			style: _style,
+			...restProps
+		}: Props = $props();
 
 	let highlightedCode = $state('');
 	let loading = $state(true);
@@ -192,11 +196,11 @@ CodeBlock component - Syntax highlighting code block with copy button.
 	}
 </script>
 
-<div
-	class="gr-code-block gr-code-block--{variant} {className}"
-	class:gr-code-block--has-filename={!!filename}
-	{...restProps}
->
+	<div
+		class="gr-code-block gr-code-block--{variant} {className}"
+		class:gr-code-block--has-filename={!!filename}
+		{...restProps}
+	>
 	{#if filename}
 		<div class="gr-code-block__header">
 			<span class="gr-code-block__filename">{filename}</span>
@@ -213,12 +217,15 @@ CodeBlock component - Syntax highlighting code block with copy button.
 		</div>
 	{/if}
 
-	<div
-		class="gr-code-block__content"
-		style:max-height={typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight}
-		class:gr-code-block--wrap={wrap}
-		class:gr-code-block--line-numbers={showLineNumbers}
-	>
+		<div
+			class="gr-code-block__content"
+			class:gr-code-block--max-height-sm={maxHeight === 'sm'}
+			class:gr-code-block--max-height-md={maxHeight === 'md'}
+			class:gr-code-block--max-height-lg={maxHeight === 'lg'}
+			class:gr-code-block--max-height-xl={maxHeight === 'xl'}
+			class:gr-code-block--wrap={wrap}
+			class:gr-code-block--line-numbers={showLineNumbers}
+		>
 		{#if loading}
 			<pre class="gr-code-block__pre"><code>{code}</code></pre>
 		{:else}

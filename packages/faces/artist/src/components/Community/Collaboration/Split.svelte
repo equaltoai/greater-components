@@ -113,7 +113,22 @@ Collaboration.Split - Revenue/credit split configuration
 								<span class="collab-split__percent">%</span>
 							</div>
 							<div class="collab-split__bar">
-								<div class="collab-split__bar-fill" style="width: {currentValue}%"></div>
+								<svg
+									class="collab-split__bar-svg"
+									viewBox="0 0 100 8"
+									preserveAspectRatio="none"
+									aria-hidden="true"
+								>
+									<rect class="collab-split__bar-track" x="0" y="0" width="100" height="8" rx="4" />
+									<rect
+										class="collab-split__bar-fill"
+										x="0"
+										y="0"
+										width={currentValue}
+										height="8"
+										rx="4"
+									/>
+								</svg>
 							</div>
 						</div>
 					{/each}
@@ -262,16 +277,21 @@ Collaboration.Split - Revenue/credit split configuration
 	}
 
 	.collab-split__bar {
+		width: 100%;
+	}
+
+	.collab-split__bar-svg {
+		display: block;
+		width: 100%;
 		height: 8px;
-		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-full);
-		overflow: hidden;
+	}
+
+	.collab-split__bar-track {
+		fill: var(--gr-color-gray-700);
 	}
 
 	.collab-split__bar-fill {
-		height: 100%;
-		background: var(--gr-color-primary-500);
-		transition: width 0.2s;
+		fill: var(--gr-color-primary-500);
 	}
 
 	.collab-split__total {

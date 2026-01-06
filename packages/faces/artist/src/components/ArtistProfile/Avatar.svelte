@@ -39,22 +39,6 @@ Features:
 	const ctx = getArtistProfileContext();
 	const { artist, handlers } = ctx;
 
-	// Size values in pixels
-	const sizeValues = {
-		sm: 40,
-		md: 64,
-		lg: 96,
-		xl: 128,
-	};
-
-	// Status colors
-	const statusColors: Record<ArtistStatus, string> = {
-		online: 'var(--gr-color-success-500)',
-		offline: 'var(--gr-color-gray-500)',
-		busy: 'var(--gr-color-error-500)',
-		away: 'var(--gr-color-warning-500)',
-	};
-
 	// Status labels for accessibility
 	const statusLabels: Record<ArtistStatus, string> = {
 		online: 'Online',
@@ -83,7 +67,7 @@ Features:
 	}
 </script>
 
-<div class={`avatar avatar--${size} ${className}`} style:--avatar-size={`${sizeValues[size]}px`}>
+<div class={`avatar avatar--${size} ${className}`}>
 	<button
 		class="avatar__button"
 		onclick={handleClick}
@@ -110,8 +94,7 @@ Features:
 
 	{#if showStatus}
 		<span
-			class="avatar__status"
-			style:--status-color={statusColors[artist.status]}
+			class={`avatar__status avatar__status--${artist.status}`}
 			title={statusLabels[artist.status]}
 			aria-hidden="true"
 		></span>
@@ -124,6 +107,22 @@ Features:
 		width: var(--avatar-size);
 		height: var(--avatar-size);
 		flex-shrink: 0;
+	}
+
+	.avatar--sm {
+		--avatar-size: 40px;
+	}
+
+	.avatar--md {
+		--avatar-size: 64px;
+	}
+
+	.avatar--lg {
+		--avatar-size: 96px;
+	}
+
+	.avatar--xl {
+		--avatar-size: 128px;
 	}
 
 	.avatar__button {
@@ -177,8 +176,23 @@ Features:
 		min-width: 12px;
 		min-height: 12px;
 		border-radius: 50%;
-		background: var(--status-color);
 		border: 2px solid var(--gr-color-gray-900);
+	}
+
+	.avatar__status--online {
+		background: var(--gr-color-success-500);
+	}
+
+	.avatar__status--offline {
+		background: var(--gr-color-gray-500);
+	}
+
+	.avatar__status--busy {
+		background: var(--gr-color-error-500);
+	}
+
+	.avatar__status--away {
+		background: var(--gr-color-warning-500);
 	}
 
 	/* Size variants */

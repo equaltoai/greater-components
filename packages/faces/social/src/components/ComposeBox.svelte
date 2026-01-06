@@ -12,8 +12,8 @@
 		ComposePoll,
 	} from '../types.js';
 
-	interface Props extends ComposeBoxProps {
-		mediaSlot?: Snippet<
+		interface Props extends ComposeBoxProps {
+			mediaSlot?: Snippet<
 			[
 				{
 					attachments: ComposeMediaAttachment[];
@@ -23,7 +23,7 @@
 				},
 			]
 		>;
-		pollSlot?: Snippet<
+			pollSlot?: Snippet<
 			[
 				{
 					poll?: ComposePoll;
@@ -31,8 +31,9 @@
 					disabled: boolean;
 				},
 			]
-		>;
-	}
+			>;
+			style?: string;
+		}
 
 	let {
 		initialContent = '',
@@ -56,12 +57,13 @@
 		onDraftSave,
 		onMediaUpload,
 		onMediaRemove,
-		mediaSlot,
-		pollSlot,
-		class: className = '',
-		id,
-		...restProps
-	}: Props = $props();
+			mediaSlot,
+			pollSlot,
+			class: className = '',
+			id,
+			style: _style,
+			...restProps
+		}: Props = $props();
 
 	// Component state
 
@@ -102,11 +104,13 @@
 			(!hasContentWarning || contentWarning.trim().length <= maxCwLength)
 	);
 
-	const characterCountColor = $derived(() => {
-		if (isOverLimit) return 'var(--gr-semantic-action-error-default)';
-		if (isAtSoftLimit) return 'var(--gr-semantic-action-warning-default)';
-		return 'var(--gr-semantic-foreground-secondary)';
-	});
+		type CharacterCountTone = 'default' | 'warning' | 'error';
+
+		const characterCountTone = $derived<CharacterCountTone>(() => {
+			if (isOverLimit) return 'error';
+			if (isAtSoftLimit) return 'warning';
+			return 'default';
+		});
 
 	const draftData = $derived<ComposeBoxDraft>({
 		content,
@@ -378,14 +382,14 @@
 				onfocus={handleFocus}
 				onblur={handleBlur}
 			/>
-			<div
-				id={cwCharCountId}
-				class="gr-compose-box__char-count"
-				style={`color: ${cwLength > maxCwLength ? 'var(--gr-semantic-action-error-default)' : 'var(--gr-semantic-foreground-secondary)'}`}
-				aria-live="polite"
-			>
-				{cwLength}/{maxCwLength}
-			</div>
+				<div
+					id={cwCharCountId}
+					class="gr-compose-box__char-count"
+					class:gr-compose-box__char-count--error={cwLength > maxCwLength}
+					aria-live="polite"
+				>
+					{cwLength}/{maxCwLength}
+				</div>
 		</div>
 	{/if}
 
@@ -407,14 +411,15 @@
 			onblur={handleBlur}
 		></textarea>
 
-		{#if showCharacterCount || isAtSoftLimit}
-			<div
-				id={charCountId}
-				class="gr-compose-box__char-count"
-				style={`color: ${characterCountColor()}`}
-				aria-live="polite"
-				aria-atomic="true"
-			>
+			{#if showCharacterCount || isAtSoftLimit}
+				<div
+					id={charCountId}
+					class="gr-compose-box__char-count"
+					class:gr-compose-box__char-count--warning={characterCountTone() === 'warning'}
+					class:gr-compose-box__char-count--error={characterCountTone() === 'error'}
+					aria-live="polite"
+					aria-atomic="true"
+				>
 				{contentLength}{characterCountMode === 'hard' ? `/${maxLength}` : ''}
 			</div>
 		{/if}

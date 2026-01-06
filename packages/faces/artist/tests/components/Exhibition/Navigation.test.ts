@@ -45,11 +45,13 @@ describe('Exhibition.Navigation', () => {
 		expect(progressBar).toHaveAttribute('aria-valuenow', '2'); // Index 1 + 1
 		expect(progressBar).toHaveAttribute('aria-valuemax', '3');
 		expect(screen.getByText('2 of 3')).toBeInTheDocument();
-		// Check width style
+
+		// Progress fill uses SVG rect width (0–100 scale)
 		// 2/3 = 66.666%
-		// The style is inline, so we can check it
-		const bar = progressBar.querySelector('.exhibition-nav__progress-bar');
-		expect(bar).toHaveStyle({ width: '66.66666666666666%' });
+		const fill = progressBar.querySelector('.exhibition-nav__progress-fill');
+		expect(fill).toBeTruthy();
+		const width = parseFloat(fill?.getAttribute('width') || '0');
+		expect(width).toBeCloseTo(66.666, 2);
 	});
 
 	it('hides progress when showProgress is false', () => {

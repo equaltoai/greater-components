@@ -27,12 +27,12 @@ describe('Masonry Component', () => {
 
 	it('renders correctly with default props', () => {
 		const { container } = render(Masonry, { items: mockArtworks });
-		expect(container.querySelector('.gallery-masonry')).toBeTruthy();
-		expect(container.querySelectorAll('.masonry-item')).toHaveLength(10);
+		expect(container.querySelector('.gallery-grid')).toBeTruthy();
+		expect(container.querySelectorAll('.gallery-item')).toHaveLength(10);
 	});
 
 	it('calculates columns based on container width', async () => {
-		render(Masonry, { items: mockArtworks, columnWidth: 200 });
+		const { container } = render(Masonry, { items: mockArtworks });
 
 		// Simulate resize
 		await act(() => {
@@ -47,11 +47,8 @@ describe('Masonry Component', () => {
 		// We can check if observe was called
 		expect(observeMock).toHaveBeenCalled();
 
-		// Ideally we would check the styles, but JSDOM doesn't do layout.
-		// However, the component updates inline styles based on calculation.
-		// With 800px width and 200px column width, we expect roughly 3 or 4 columns.
-		// We can check if style attribute contains expected values if we knew logic details.
-		// For now, ensuring no error and observer interaction is good enough for coverage.
+		// With container width 800px and default min width 280px, we expect 2 columns.
+		expect(container.querySelectorAll('.masonry-column')).toHaveLength(2);
 	});
 
 	it('handles item clicks', async () => {
@@ -74,7 +71,7 @@ describe('Masonry Component', () => {
 			onLoadMore,
 		});
 
-		const masonry = container.querySelector('.gallery-masonry') as HTMLElement;
+		const masonry = container.querySelector('.gallery-grid') as HTMLElement;
 
 		// Mock scroll properties
 		Object.defineProperty(masonry, 'scrollHeight', { value: 1000, configurable: true });
@@ -93,7 +90,7 @@ describe('Masonry Component', () => {
 			onLoadMore,
 		});
 
-		const masonry = container.querySelector('.gallery-masonry') as HTMLElement;
+		const masonry = container.querySelector('.gallery-grid') as HTMLElement;
 
 		// Mock scroll properties
 		Object.defineProperty(masonry, 'scrollHeight', { value: 1000, configurable: true });
@@ -110,16 +107,9 @@ describe('Masonry Component', () => {
 		// skipping for now or would need a wrapper component
 	});
 
-	it('supports virtual scrolling', async () => {
+	it('does not use virtual scrolling containers', async () => {
 		const manyItems = Array.from({ length: 100 }, (_, i) => createMockArtwork(String(i)));
-		render(Masonry, {
-			items: manyItems,
-			virtualScrolling: true,
-		});
-
-		// Check if rendered items count is less than total (virtualization)
-		// JSDOM might render all if container size is not set or calculated as 0
-		// But we mock resize observer now.
+		const { container } = render(Masonry, { items: manyItems });
 
 		await act(() => {
 			if (resizeCallback) {
@@ -130,8 +120,8 @@ describe('Masonry Component', () => {
 			}
 		});
 
-		// With virtual scrolling, and container height 600, it should render subset.
-		// But we need to ensure update happened.
+		expect(container.querySelector('.virtual-container')).toBeNull();
+		expect(container.querySelector('.virtual-content')).toBeNull();
 	});
 
 	it('restores scroll position', async () => {

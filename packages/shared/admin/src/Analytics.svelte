@@ -80,20 +80,31 @@
 			<!-- User Growth -->
 			<div class="admin-analytics__chart-card">
 				<h3 class="admin-analytics__chart-title">User Growth</h3>
-				<div class="admin-analytics__chart">
-					{#each adminState.analytics.userGrowth as dataPoint (dataPoint.date)}
-						{@const max = getMaxValue(adminState.analytics.userGrowth)}
-						{@const height = getChartHeight(dataPoint.count, max)}
-						<div class="admin-analytics__bar-container">
-							<div
-								class="admin-analytics__bar admin-analytics__bar--primary"
-								style={`height: ${height}%`}
-								title={`${dataPoint.count} users`}
-							></div>
-							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
-						</div>
-					{/each}
-				</div>
+					<div class="admin-analytics__chart">
+						{#each adminState.analytics.userGrowth as dataPoint (dataPoint.date)}
+							{@const max = getMaxValue(adminState.analytics.userGrowth)}
+							{@const height = getChartHeight(dataPoint.count, max)}
+							<div class="admin-analytics__bar-container">
+								<svg
+									class="admin-analytics__bar-svg"
+									viewBox="0 0 10 100"
+									preserveAspectRatio="none"
+									aria-hidden="true"
+								>
+									<title>{`${dataPoint.count} users`}</title>
+									<rect
+										class="admin-analytics__bar-rect admin-analytics__bar-rect--primary"
+										x="0"
+										y={100 - height}
+										width="10"
+										height={height}
+										rx="2"
+									/>
+								</svg>
+								<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
+							</div>
+						{/each}
+					</div>
 				<div class="admin-analytics__chart-summary">
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Total</span>
@@ -116,20 +127,31 @@
 			<!-- Post Activity -->
 			<div class="admin-analytics__chart-card">
 				<h3 class="admin-analytics__chart-title">Post Activity</h3>
-				<div class="admin-analytics__chart">
-					{#each adminState.analytics.postActivity as dataPoint (dataPoint.date)}
-						{@const max = getMaxValue(adminState.analytics.postActivity)}
-						{@const height = getChartHeight(dataPoint.count, max)}
-						<div class="admin-analytics__bar-container">
-							<div
-								class="admin-analytics__bar admin-analytics__bar--success"
-								style={`height: ${height}%`}
-								title={`${dataPoint.count} posts`}
-							></div>
-							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
-						</div>
-					{/each}
-				</div>
+					<div class="admin-analytics__chart">
+						{#each adminState.analytics.postActivity as dataPoint (dataPoint.date)}
+							{@const max = getMaxValue(adminState.analytics.postActivity)}
+							{@const height = getChartHeight(dataPoint.count, max)}
+							<div class="admin-analytics__bar-container">
+								<svg
+									class="admin-analytics__bar-svg"
+									viewBox="0 0 10 100"
+									preserveAspectRatio="none"
+									aria-hidden="true"
+								>
+									<title>{`${dataPoint.count} posts`}</title>
+									<rect
+										class="admin-analytics__bar-rect admin-analytics__bar-rect--success"
+										x="0"
+										y={100 - height}
+										width="10"
+										height={height}
+										rx="2"
+									/>
+								</svg>
+								<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
+							</div>
+						{/each}
+					</div>
 				<div class="admin-analytics__chart-summary">
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Total</span>
@@ -152,20 +174,31 @@
 			<!-- Federation Activity -->
 			<div class="admin-analytics__chart-card">
 				<h3 class="admin-analytics__chart-title">Federation Activity</h3>
-				<div class="admin-analytics__chart">
-					{#each adminState.analytics.federationActivity as dataPoint (dataPoint.date)}
-						{@const max = getMaxValue(adminState.analytics.federationActivity)}
-						{@const height = getChartHeight(dataPoint.count, max)}
-						<div class="admin-analytics__bar-container">
-							<div
-								class="admin-analytics__bar admin-analytics__bar--warning"
-								style={`height: ${height}%`}
-								title={`${dataPoint.count} activities`}
-							></div>
-							<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
-						</div>
-					{/each}
-				</div>
+					<div class="admin-analytics__chart">
+						{#each adminState.analytics.federationActivity as dataPoint (dataPoint.date)}
+							{@const max = getMaxValue(adminState.analytics.federationActivity)}
+							{@const height = getChartHeight(dataPoint.count, max)}
+							<div class="admin-analytics__bar-container">
+								<svg
+									class="admin-analytics__bar-svg"
+									viewBox="0 0 10 100"
+									preserveAspectRatio="none"
+									aria-hidden="true"
+								>
+									<title>{`${dataPoint.count} activities`}</title>
+									<rect
+										class="admin-analytics__bar-rect admin-analytics__bar-rect--warning"
+										x="0"
+										y={100 - height}
+										width="10"
+										height={height}
+										rx="2"
+									/>
+								</svg>
+								<span class="admin-analytics__bar-label">{formatDate(dataPoint.date)}</span>
+							</div>
+						{/each}
+					</div>
 				<div class="admin-analytics__chart-summary">
 					<div class="admin-analytics__summary-item">
 						<span class="admin-analytics__summary-label">Total</span>

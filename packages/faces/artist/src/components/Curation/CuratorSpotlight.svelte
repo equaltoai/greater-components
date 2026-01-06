@@ -198,11 +198,9 @@ Features:
 
 	<!-- Artwork preview -->
 	{#if previewArtworks.length > 0}
+		{@const previewCountClamped = Math.min(previewArtworks.length, 4)}
 		<div class="curator-spotlight__preview">
-			<div
-				class="curator-spotlight__preview-grid"
-				style="--preview-count: {previewArtworks.length}"
-			>
+			<div class={`curator-spotlight__preview-grid curator-spotlight__preview-grid--count-${previewCountClamped}`}>
 				{#each previewArtworks as artwork (artwork.id)}
 					<button
 						type="button"
@@ -427,16 +425,32 @@ Features:
 		gap: var(--gr-spacing-scale-2);
 	}
 
-	.curator-spotlight__preview-grid {
-		display: grid;
-		grid-template-columns: repeat(var(--preview-count, 4), 1fr);
-		gap: var(--gr-spacing-scale-2);
-	}
+		.curator-spotlight__preview-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: var(--gr-spacing-scale-2);
+		}
 
-	.curator-spotlight__preview-item {
-		aspect-ratio: 1;
-		padding: 0;
-		border: none;
+		.curator-spotlight__preview-grid--count-1 {
+			grid-template-columns: repeat(1, 1fr);
+		}
+
+		.curator-spotlight__preview-grid--count-2 {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.curator-spotlight__preview-grid--count-3 {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		.curator-spotlight__preview-grid--count-4 {
+			grid-template-columns: repeat(4, 1fr);
+		}
+
+		.curator-spotlight__preview-item {
+			aspect-ratio: 1;
+			padding: 0;
+			border: none;
 		border-radius: var(--gr-radius-sm);
 		overflow: hidden;
 		cursor: pointer;

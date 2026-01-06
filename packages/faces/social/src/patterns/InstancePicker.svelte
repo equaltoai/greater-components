@@ -159,6 +159,8 @@
 		showAddAccount = true,
 	} = untrack(() => config);
 
+	const maxVisibleAccountsClamped = Math.max(1, Math.min(10, maxVisibleAccounts));
+
 	let switching = $state(false);
 	let removingId = $state<string | null>(null);
 
@@ -294,13 +296,15 @@
 			{/if}
 		</button>
 
-		{#if menu.state.open}
-			<div use:menu.actions.menu class="instance-picker__menu">
-				<div class="instance-picker__accounts" style={`max-height: ${maxVisibleAccounts * 64}px`}>
-					{#each sortedAccounts as account (account.id)}
-						<button
-							use:menu.actions.item={account.id}
-							class="instance-picker__account"
+			{#if menu.state.open}
+				<div use:menu.actions.menu class="instance-picker__menu">
+					<div
+						class={`instance-picker__accounts instance-picker__accounts--max-${maxVisibleAccountsClamped}`}
+					>
+						{#each sortedAccounts as account (account.id)}
+							<button
+								use:menu.actions.item={account.id}
+								class="instance-picker__account"
 							class:instance-picker__account--current={account.id === currentAccount.id}
 						>
 							{#if renderAccount}
@@ -516,14 +520,54 @@
 		z-index: 1000;
 	}
 
-	.instance-picker__accounts {
-		overflow-y: auto;
-	}
+		.instance-picker__accounts {
+			overflow-y: auto;
+		}
 
-	.instance-picker__account {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
+		.instance-picker__accounts--max-1 {
+			max-height: 4rem;
+		}
+
+		.instance-picker__accounts--max-2 {
+			max-height: 8rem;
+		}
+
+		.instance-picker__accounts--max-3 {
+			max-height: 12rem;
+		}
+
+		.instance-picker__accounts--max-4 {
+			max-height: 16rem;
+		}
+
+		.instance-picker__accounts--max-5 {
+			max-height: 20rem;
+		}
+
+		.instance-picker__accounts--max-6 {
+			max-height: 24rem;
+		}
+
+		.instance-picker__accounts--max-7 {
+			max-height: 28rem;
+		}
+
+		.instance-picker__accounts--max-8 {
+			max-height: 32rem;
+		}
+
+		.instance-picker__accounts--max-9 {
+			max-height: 36rem;
+		}
+
+		.instance-picker__accounts--max-10 {
+			max-height: 40rem;
+		}
+
+		.instance-picker__account {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
 		width: 100%;
 		padding: 0.75rem;
 		background: transparent;

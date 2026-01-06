@@ -75,6 +75,7 @@ Features:
 	// Convert selection to CSS position (0-100%)
 	const selectionX = $derived(((selection.x + 1) / 2) * 100);
 	const selectionY = $derived(((1 - selection.y) / 2) * 100); // Invert Y for CSS
+	const selectionRadius = $derived(Math.max(0, Math.min(0.5, radius)) * 100);
 
 	// Handle mouse/touch events
 	function handlePointerDown(event: PointerEvent) {
@@ -181,16 +182,15 @@ Features:
 		<div class="mood-map__gradient" aria-hidden="true"></div>
 
 		<!-- Selection indicator -->
-		<div
-			class="mood-map__selection"
-			style:left="{selectionX}%"
-			style:top="{selectionY}%"
-			style:--radius="{radius * 100}%"
-			aria-hidden="true"
-		>
-			<div class="mood-map__selection-ring"></div>
-			<div class="mood-map__selection-dot"></div>
-		</div>
+		<svg class="mood-map__selection" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+			<circle
+				class="mood-map__selection-ring"
+				cx={selectionX}
+				cy={selectionY}
+				r={selectionRadius}
+			/>
+			<circle class="mood-map__selection-dot" cx={selectionX} cy={selectionY} r="2" />
+		</svg>
 	</div>
 
 	<!-- Current values -->
@@ -350,29 +350,21 @@ Features:
 
 	.mood-map__selection {
 		position: absolute;
-		transform: translate(-50%, -50%);
+		inset: 0;
 		pointer-events: none;
 	}
 
 	.mood-map__selection-ring {
-		position: absolute;
-		width: calc(var(--radius) * 2);
-		height: calc(var(--radius) * 2);
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		border: 2px solid var(--gr-color-primary-500);
-		border-radius: 50%;
+		fill: none;
+		stroke: var(--gr-color-primary-500);
+		stroke-width: 0.75;
 		opacity: 0.5;
 	}
 
 	.mood-map__selection-dot {
-		width: 16px;
-		height: 16px;
-		background: var(--gr-color-primary-500);
-		border: 2px solid white;
-		border-radius: 50%;
-		box-shadow: var(--gr-shadow-md);
+		fill: var(--gr-color-primary-500);
+		stroke: white;
+		stroke-width: 0.75;
 	}
 
 	.mood-map__values {

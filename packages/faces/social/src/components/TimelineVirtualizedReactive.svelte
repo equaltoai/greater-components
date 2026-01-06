@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { createVirtualizer } from '@tanstack/svelte-virtual';
-	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
 	import type { StatusActionHandlers } from './Status/context.js';
@@ -109,8 +107,6 @@
 	let {
 		items: propItems = [],
 		integration,
-		estimateSize = 200,
-		overscan = 5,
 		loadingTop: propLoadingTop = false,
 		loadingBottom: propLoadingBottom = false,
 		endReached: propEndReached = false,
@@ -158,17 +154,6 @@
 	let scrollElement = $state<HTMLDivElement>();
 	let prevScrollTop = 0;
 	let prevItemCount = 0;
-
-	const virtualizerStore = $derived(
-		scrollElement
-			? createVirtualizer({
-					count: items.length,
-					getScrollElement: () => scrollElement ?? null,
-					estimateSize: () => estimateSize,
-					overscan,
-				})
-			: null
-	);
 
 	// Auto-connect on mount
 	$effect(() => {
@@ -250,9 +235,6 @@
 		prevItemCount = currentItemCount;
 	});
 
-	const virtualItems = $derived(virtualizerStore ? get(virtualizerStore).getVirtualItems() : []);
-	const totalSize = $derived(virtualizerStore ? get(virtualizerStore).getTotalSize() : 0);
-
 	function handleStatusCardClick(status: Status) {
 		onStatusClick?.(status);
 	}
@@ -322,34 +304,17 @@
 			</div>
 		{/if}
 
-		<div class="virtual-list" style={`height: ${totalSize}px; position: relative;`}>
-			{#each virtualItems as virtualItem (items[virtualItem.index]?.id || virtualItem.index)}
-				{@const item = items[virtualItem.index]}
-				{#if item}
-					{@const handlersForItem =
-						typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-					<div
-						data-index={virtualItem.index}
-						style="
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: {virtualItem.size}px;
-              transform: translateY({virtualItem.start}px);
-            "
-					>
-						<StatusCard
-							status={item}
-							{density}
-							showActions={true}
-							actionHandlers={handlersForItem}
-							onClick={() => handleStatusCardClick(item)}
-						/>
-					</div>
-				{/if}
+			{#each items as item (item.id)}
+				{@const handlersForItem =
+					typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
+				<StatusCard
+					status={item}
+					{density}
+					showActions={true}
+					actionHandlers={handlersForItem}
+					onClick={() => handleStatusCardClick(item)}
+				/>
 			{/each}
-		</div>
 
 		{#if loadingBottom && !endReached}
 			<div class="loading-indicator bottom">

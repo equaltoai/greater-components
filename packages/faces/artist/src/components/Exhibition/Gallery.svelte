@@ -40,6 +40,8 @@ Features:
 	const ctx = getExhibitionContext();
 	const { exhibition, layout, navigation, handlers } = ctx;
 
+	const columnsClamped = Math.max(1, Math.min(6, Math.round(columns)));
+
 	// Handle artwork click
 	function handleArtworkClick(artwork: ArtworkData) {
 		handlers.onArtworkClick?.(artwork);
@@ -75,7 +77,7 @@ Features:
 
 	{#if layout === 'gallery'}
 		<!-- Grid layout -->
-		<div class="exhibition-gallery__grid" style="--columns: {columns}">
+		<div class={`exhibition-gallery__grid exhibition-gallery__grid--columns-${columnsClamped}`}>
 			{#each exhibition.artworks as artwork (artwork.id)}
 				<button
 					type="button"
@@ -202,16 +204,40 @@ Features:
 	}
 
 	/* Grid layout */
-	.exhibition-gallery__grid {
-		display: grid;
-		grid-template-columns: repeat(var(--columns, 3), 1fr);
-		gap: var(--gr-spacing-scale-4);
-	}
+		.exhibition-gallery__grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: var(--gr-spacing-scale-4);
+		}
 
-	.exhibition-gallery__item {
-		position: relative;
-		background: none;
-		border: none;
+		.exhibition-gallery__grid--columns-1 {
+			grid-template-columns: repeat(1, 1fr);
+		}
+
+		.exhibition-gallery__grid--columns-2 {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.exhibition-gallery__grid--columns-3 {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		.exhibition-gallery__grid--columns-4 {
+			grid-template-columns: repeat(4, 1fr);
+		}
+
+		.exhibition-gallery__grid--columns-5 {
+			grid-template-columns: repeat(5, 1fr);
+		}
+
+		.exhibition-gallery__grid--columns-6 {
+			grid-template-columns: repeat(6, 1fr);
+		}
+
+		.exhibition-gallery__item {
+			position: relative;
+			background: none;
+			border: none;
 		padding: 0;
 		cursor: pointer;
 		overflow: hidden;

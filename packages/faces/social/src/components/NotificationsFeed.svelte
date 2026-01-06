@@ -15,8 +15,6 @@
 </script>
 
 <script lang="ts">
-	import { createVirtualizer } from '@tanstack/svelte-virtual';
-	import { get } from 'svelte/store';
 	import type { Snippet } from 'svelte';
 	import type { Notification, NotificationGroup, NotificationsFeedProps } from '../types';
 	import { groupNotifications } from '../utils/notificationGrouping';
@@ -48,25 +46,23 @@
 		>;
 	}
 
-	let {
-		notifications = [],
-		groups = [],
-		grouped = true,
-		onNotificationClick,
-		onMarkAsRead,
-		onMarkAllAsRead,
-		onDismiss,
-		loading = false,
-		loadingMore = false,
-		hasMore = false,
-		onLoadMore,
-		emptyStateMessage = 'No notifications yet',
-		estimateSize = 120,
-		overscan = 5,
-		density = 'comfortable',
-		className = '',
-		emptyState,
-		loadingState,
+		let {
+			notifications = [],
+			groups = [],
+			grouped = true,
+			onNotificationClick,
+			onMarkAsRead,
+			onMarkAllAsRead,
+			onDismiss,
+			loading = false,
+			loadingMore = false,
+			hasMore = false,
+			onLoadMore,
+			emptyStateMessage = 'No notifications yet',
+			density = 'comfortable',
+			className = '',
+			emptyState,
+			loadingState,
 		notificationRenderer,
 	}: Props = $props();
 
@@ -86,22 +82,8 @@
 			return groupNotifications(notifications);
 		} else {
 			return notifications;
-		}
-	});
-
-	const virtualizerStore = $derived(
-		scrollElement && processedItems.length > 0
-			? createVirtualizer({
-					count: processedItems.length,
-					getScrollElement: () => scrollElement ?? null,
-					estimateSize: () => estimateSize,
-					overscan,
-				})
-			: null
-	);
-
-	const virtualItems = $derived(virtualizerStore ? get(virtualizerStore).getVirtualItems() : []);
-	const totalSize = $derived(virtualizerStore ? get(virtualizerStore).getTotalSize() : 0);
+			}
+		});
 
 	function handleScroll() {
 		if (!scrollElement || !onLoadMore || !hasMore || loadingMore) return;
@@ -219,57 +201,40 @@
 				<p>{emptyStateMessage}</p>
 			{/if}
 		</div>
-	{:else}
-		<!-- Virtualized notifications list -->
-		<div
-			class="notifications-scroll"
-			bind:this={scrollElement}
-			onscroll={handleScroll}
+		{:else}
+			<!-- Notifications list -->
+			<div
+				class="notifications-scroll"
+				bind:this={scrollElement}
+				onscroll={handleScroll}
 			role="feed"
-			aria-label="Notifications"
-			aria-busy={loadingMore}
-		>
-			<div class="virtual-list" style={`height: ${totalSize}px; position: relative;`}>
-				{#each virtualItems as virtualItem (getItemId(processedItems[virtualItem.index]))}
-					{@const item = processedItems[virtualItem.index]}
-					{#if item}
-						<div
-							data-index={virtualItem.index}
-							style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: {virtualItem.size}px;
-                transform: translateY({virtualItem.start}px);
-              "
-						>
-							{#if notificationRenderer}
-								{@render notificationRenderer({
-									notification: isNotificationGroup(item) ? item.sampleNotification : item,
-									group: isNotificationGroup(item) ? item : undefined,
-									isGrouped: grouped,
-									onClick: handleNotificationClick,
-									onMarkAsRead: handleMarkAsRead,
-									onDismiss: handleDismiss,
-								})}
-							{:else}
-								<NotificationItem
-									notification={isNotificationGroup(item) ? item.sampleNotification : item}
-									group={isNotificationGroup(item) ? item : undefined}
-									{density}
-									onClick={handleNotificationClick}
-									onMarkAsRead={handleMarkAsRead}
-									onDismiss={handleDismiss}
-								/>
-							{/if}
-						</div>
+				aria-label="Notifications"
+				aria-busy={loadingMore}
+			>
+				{#each processedItems as item (getItemId(item))}
+					{#if notificationRenderer}
+						{@render notificationRenderer({
+							notification: isNotificationGroup(item) ? item.sampleNotification : item,
+							group: isNotificationGroup(item) ? item : undefined,
+							isGrouped: grouped,
+							onClick: handleNotificationClick,
+							onMarkAsRead: handleMarkAsRead,
+							onDismiss: handleDismiss,
+						})}
+					{:else}
+						<NotificationItem
+							notification={isNotificationGroup(item) ? item.sampleNotification : item}
+							group={isNotificationGroup(item) ? item : undefined}
+							{density}
+							onClick={handleNotificationClick}
+							onMarkAsRead={handleMarkAsRead}
+							onDismiss={handleDismiss}
+						/>
 					{/if}
 				{/each}
-			</div>
 
-			<!-- Load more indicator -->
-			{#if loadingMore}
+				<!-- Load more indicator -->
+				{#if loadingMore}
 				<div class="load-more-indicator" aria-live="polite">
 					<div class="loading-spinner" aria-label="Loading more notifications"></div>
 					<p>Loading more...</p>

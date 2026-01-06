@@ -73,11 +73,29 @@ WorkInProgress.VersionCard - Individual version display with notes
 		<!-- Content -->
 		<div class="wip-version-card__content">
 			{#if displayUpdate.progress !== undefined}
-				<div class="wip-version-card__progress">
-					<div
-						class="wip-version-card__progress-bar"
-						style="width: {displayUpdate.progress}%"
-					></div>
+				<div
+					class="wip-version-card__progress"
+					role="progressbar"
+					aria-valuenow={displayUpdate.progress}
+					aria-valuemin={0}
+					aria-valuemax={100}
+				>
+					<svg
+						class="wip-version-card__progress-svg"
+						viewBox="0 0 100 8"
+						preserveAspectRatio="none"
+						aria-hidden="true"
+					>
+						<rect class="wip-version-card__progress-track" x="0" y="0" width="100" height="8" rx="4" />
+						<rect
+							class="wip-version-card__progress-fill"
+							x="0"
+							y="0"
+							width={displayUpdate.progress}
+							height="8"
+							rx="4"
+						/>
+					</svg>
 					<span class="wip-version-card__progress-text">{displayUpdate.progress}% complete</span>
 				</div>
 			{/if}
@@ -155,19 +173,21 @@ WorkInProgress.VersionCard - Individual version display with notes
 
 	.wip-version-card__progress {
 		position: relative;
-		height: 8px;
-		background: var(--gr-color-gray-700);
-		border-radius: var(--gr-radius-full);
-		overflow: hidden;
+		width: 100%;
 	}
 
-	.wip-version-card__progress-bar {
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
-		background: var(--gr-color-primary-500);
-		transition: width 0.3s ease;
+	.wip-version-card__progress-svg {
+		display: block;
+		width: 100%;
+		height: 8px;
+	}
+
+	.wip-version-card__progress-track {
+		fill: var(--gr-color-gray-700);
+	}
+
+	.wip-version-card__progress-fill {
+		fill: var(--gr-color-primary-500);
 	}
 
 	.wip-version-card__progress-text {
