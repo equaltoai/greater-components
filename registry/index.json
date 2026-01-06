@@ -7017,14 +7017,7 @@
           "PremiumBadge",
           "InstitutionalTools"
         ],
-        "shared": [
-          "primitives",
-          "headless",
-          "icons",
-          "tokens",
-          "adapters",
-          "utils"
-        ],
+        "shared": ["primitives", "headless", "icons", "tokens", "adapters", "utils"],
         "patterns": [],
         "components": [
           "Artwork",
@@ -8266,15 +8259,7 @@
       "name": "search",
       "version": "4.0.1",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
-      "exports": [
-        "Root",
-        "Bar",
-        "Filters",
-        "Results",
-        "ActorResult",
-        "NoteResult",
-        "TagResult"
-      ],
+      "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
       "files": [
         {
           "path": "src/ActorResult.svelte",
