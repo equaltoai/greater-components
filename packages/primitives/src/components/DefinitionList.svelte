@@ -14,6 +14,7 @@
 		dividers = true,
 		class: className = '',
 		children,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

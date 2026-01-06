@@ -1663,6 +1663,66 @@
 	background-size: 100%;
 	background-repeat: no-repeat;
 	display: inline-block; /* Ensures clip works well on inline elements */
+	--gr-gradient-text-direction: to right;
+	--gr-gradient-text-from: var(--gr-color-primary-600);
+	--gr-gradient-text-to: var(--gr-color-primary-400);
+	background-image: linear-gradient(
+		var(--gr-gradient-text-direction),
+		var(--gr-gradient-text-from),
+		var(--gr-gradient-text-to)
+	);
+}
+
+.gr-gradient-text--gradient-primary {
+	--gr-gradient-text-from: var(--gr-color-primary-600);
+	--gr-gradient-text-to: var(--gr-color-primary-400);
+}
+
+.gr-gradient-text--gradient-success {
+	--gr-gradient-text-from: var(--gr-color-success-600);
+	--gr-gradient-text-to: var(--gr-color-success-400);
+}
+
+.gr-gradient-text--gradient-warning {
+	--gr-gradient-text-from: var(--gr-color-warning-600);
+	--gr-gradient-text-to: var(--gr-color-warning-400);
+}
+
+.gr-gradient-text--gradient-error {
+	--gr-gradient-text-from: var(--gr-color-error-600);
+	--gr-gradient-text-to: var(--gr-color-error-400);
+}
+
+.gr-gradient-text--direction-to-right {
+	--gr-gradient-text-direction: to right;
+}
+
+.gr-gradient-text--direction-to-left {
+	--gr-gradient-text-direction: to left;
+}
+
+.gr-gradient-text--direction-to-top {
+	--gr-gradient-text-direction: to top;
+}
+
+.gr-gradient-text--direction-to-bottom {
+	--gr-gradient-text-direction: to bottom;
+}
+
+.gr-gradient-text--direction-to-top-right {
+	--gr-gradient-text-direction: to top right;
+}
+
+.gr-gradient-text--direction-to-top-left {
+	--gr-gradient-text-direction: to top left;
+}
+
+.gr-gradient-text--direction-to-bottom-right {
+	--gr-gradient-text-direction: to bottom right;
+}
+
+.gr-gradient-text--direction-to-bottom-left {
+	--gr-gradient-text-direction: to bottom left;
 }
 
 /* Heading Styles */
@@ -1891,6 +1951,27 @@
 	transition: all 0.2s ease;
 }
 
+/* Sizes */
+.gr-icon-badge--size-sm {
+	width: 40px;
+	height: 40px;
+}
+
+.gr-icon-badge--size-md {
+	width: 56px;
+	height: 56px;
+}
+
+.gr-icon-badge--size-lg {
+	width: 72px;
+	height: 72px;
+}
+
+.gr-icon-badge--size-xl {
+	width: 96px;
+	height: 96px;
+}
+
 /* Shapes */
 .gr-icon-badge--circle {
 	border-radius: var(--gr-radii-full);
@@ -1980,6 +2061,30 @@
 	margin: 0;
 	display: flex;
 	flex-direction: column;
+}
+
+.gr-list--max-sm {
+	max-width: 640px;
+}
+
+.gr-list--max-md {
+	max-width: 768px;
+}
+
+.gr-list--max-lg {
+	max-width: 1024px;
+}
+
+.gr-list--max-xl {
+	max-width: 1280px;
+}
+
+.gr-list--max-2xl {
+	max-width: 1536px;
+}
+
+.gr-list--max-full {
+	max-width: 100%;
 }
 
 .gr-list--spacing-sm {
@@ -2969,6 +3074,11 @@
 	margin-left: 1px;
 	font-weight: bold;
 	transition: opacity 0.1s;
+	opacity: 0;
+}
+
+.gr-cursor--visible {
+	opacity: 1;
 }
 
 /* Switch Styles */

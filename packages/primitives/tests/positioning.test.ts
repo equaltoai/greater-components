@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
-	calculatePosition,
+	calculatePlacement,
 	getScrollParent,
 	createPositionObserver,
 	type PositionConfig,
@@ -32,7 +32,7 @@ describe('Menu Positioning', () => {
 		height: 300,
 	} as DOMRect;
 
-	describe('calculatePosition', () => {
+	describe('calculatePlacement', () => {
 		// Use a centered trigger for basic tests to avoid edge overflows
 		const centerTrigger = {
 			left: 400,
@@ -50,12 +50,7 @@ describe('Menu Positioning', () => {
 				placement: 'bottom-start',
 				offset: 8,
 			};
-			const pos = calculatePosition(config);
-			expect(pos).toEqual({
-				x: 400,
-				y: 440 + 8,
-				placement: 'bottom-start',
-			});
+			expect(calculatePlacement(config)).toBe('bottom-start');
 		});
 
 		it('positions bottom-end correctly', () => {
@@ -65,12 +60,7 @@ describe('Menu Positioning', () => {
 				placement: 'bottom-end',
 				offset: 8,
 			};
-			const pos = calculatePosition(config);
-			expect(pos).toEqual({
-				x: 500 - 200, // 300
-				y: 440 + 8,
-				placement: 'bottom-end',
-			});
+			expect(calculatePlacement(config)).toBe('bottom-end');
 		});
 
 		it('positions top-start correctly', () => {
@@ -80,12 +70,7 @@ describe('Menu Positioning', () => {
 				placement: 'top-start',
 				offset: 8,
 			};
-			const pos = calculatePosition(config);
-			expect(pos).toEqual({
-				x: 400,
-				y: 400 - 300 - 8, // 92
-				placement: 'top-start',
-			});
+			expect(calculatePlacement(config)).toBe('top-start');
 		});
 
 		it('positions top-end correctly', () => {
@@ -95,12 +80,7 @@ describe('Menu Positioning', () => {
 				placement: 'top-end',
 				offset: 8,
 			};
-			const pos = calculatePosition(config);
-			expect(pos).toEqual({
-				x: 500 - 200, // 300
-				y: 400 - 300 - 8, // 92
-				placement: 'top-end',
-			});
+			expect(calculatePlacement(config)).toBe('top-end');
 		});
 
 		it('flips to top if bottom overflows', () => {
@@ -112,11 +92,7 @@ describe('Menu Positioning', () => {
 				placement: 'bottom-start',
 				offset: 8,
 			};
-			// 740 + 8 + 300 = 1048 > 800 (overflows)
-			// Flip to top: 700 - 300 - 8 = 392 (fits)
-			const pos = calculatePosition(config);
-			expect(pos.y).toBe(392);
-			expect(pos.placement).toBe('top-start');
+			expect(calculatePlacement(config)).toBe('top-start');
 		});
 
 		it('flips to bottom if top overflows', () => {
@@ -128,11 +104,7 @@ describe('Menu Positioning', () => {
 				placement: 'top-start',
 				offset: 8,
 			};
-			// 50 - 300 - 8 = -258 (overflows)
-			// Flip to bottom: 90 + 8 = 98 (fits)
-			const pos = calculatePosition(config);
-			expect(pos.y).toBe(98);
-			expect(pos.placement).toBe('bottom-start');
+			expect(calculatePlacement(config)).toBe('bottom-start');
 		});
 
 		it('adjusts horizontal position if overflows right', () => {
@@ -144,13 +116,7 @@ describe('Menu Positioning', () => {
 				placement: 'bottom-start',
 				offset: 8,
 			};
-			// x = 900. 900 + 200 = 1100 > 1000.
-			// Should clamp to 1000 - 200 - margin(8) = 792
-			const pos = calculatePosition(config);
-			expect(pos.x).toBe(792);
-			// Should also flip alignment if applicable? Logic says:
-			// if (wouldOverflowRight) ... if (finalPlacement.endsWith('-start')) replace with '-end'
-			expect(pos.placement).toBe('bottom-end');
+			expect(calculatePlacement(config)).toBe('bottom-end');
 		});
 
 		it('adjusts horizontal position if overflows left', () => {
@@ -162,11 +128,7 @@ describe('Menu Positioning', () => {
 				placement: 'bottom-end',
 				offset: 8,
 			};
-			// x = 100 - 200 = -100. Overflows left.
-			// Should clamp to margin (8)
-			const pos = calculatePosition(config);
-			expect(pos.x).toBe(8);
-			expect(pos.placement).toBe('bottom-start');
+			expect(calculatePlacement(config)).toBe('bottom-start');
 		});
 	});
 

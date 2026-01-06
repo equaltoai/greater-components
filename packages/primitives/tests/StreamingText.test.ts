@@ -62,12 +62,12 @@ describe('StreamingText.svelte', () => {
 		// The component sets cursorVisible = true initially.
 		// Then interval flips it.
 
-		expect(cursor.style.opacity).toBe('1');
+		expect(cursor.classList.contains('gr-cursor--visible')).toBe(true);
 
 		await vi.advanceTimersByTimeAsync(500);
-		expect(cursor.style.opacity).toBe('0');
+		expect(cursor.classList.contains('gr-cursor--visible')).toBe(false);
 
 		await vi.advanceTimersByTimeAsync(500);
-		expect(cursor.style.opacity).toBe('1');
+		expect(cursor.classList.contains('gr-cursor--visible')).toBe(true);
 	});
 });

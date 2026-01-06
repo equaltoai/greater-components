@@ -156,15 +156,10 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 					const element = container.querySelector('.gr-color-harmony-picker');
 					expect(element).toBeTruthy();
 					
-					// CSP compliance: check that swatches use CSS custom properties, not inline styles
-					// The style:--gr-harmony-swatch-color directive is CSP-safe as it sets a CSS variable
-					const swatches = container.querySelectorAll('.gr-color-harmony-picker__swatch');
-					for (const swatch of swatches) {
-						// Check that no traditional inline style attributes are present
-						// Note: Svelte's style: directive sets CSS custom properties which is CSP-safe
-						const styleAttr = swatch.getAttribute('style');
-						if (styleAttr && !styleAttr.startsWith('--')) {
-							// Only CSS custom property assignments are allowed
+					// CSP compliance: no inline style attributes
+					const allElements = container.querySelectorAll('*');
+					for (const el of allElements) {
+						if (el.hasAttribute('style')) {
 							return false;
 						}
 					}
@@ -185,12 +180,10 @@ describe('Theme Tooling CSP Compliance - Property Tests', () => {
 					const element = container.querySelector('.gr-theme-workbench');
 					expect(element).toBeTruthy();
 					
-					// CSP compliance: no inline style attributes (except CSS custom properties)
+					// CSP compliance: no inline style attributes
 					const allElements = container.querySelectorAll('*');
 					for (const el of allElements) {
-						const styleAttr = el.getAttribute('style');
-						if (styleAttr && !styleAttr.startsWith('--')) {
-							// Only CSS custom property assignments are allowed
+						if (el.hasAttribute('style')) {
 							return false;
 						}
 					}

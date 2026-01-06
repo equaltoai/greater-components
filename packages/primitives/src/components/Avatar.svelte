@@ -62,7 +62,6 @@
 		class: className = '',
 		fallback,
 		id,
-		style,
 		onclick,
 		onmouseenter,
 		onmouseleave,
@@ -355,7 +354,6 @@
 		aria-labelledby={ariaLabelledby}
 		aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
 		{id}
-		{style}
 		{onclick}
 		{onmouseenter}
 		{onmouseleave}
@@ -377,7 +375,6 @@
 		aria-labelledby={ariaLabelledby}
 		aria-describedby={ariaDescribedby ?? (status ? statusId : undefined)}
 		{id}
-		{style}
 		{onclick}
 		{onmouseenter}
 		{onmouseleave}

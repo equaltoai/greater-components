@@ -320,7 +320,10 @@ describe('CSP Scanner Property Tests', () => {
 								typeof v.column === 'number' &&
 								v.column > 0 &&
 								v.type && 
-								(v.type === 'style-attribute' || v.type === 'style-binding' || v.type === 'style-directive') &&
+								(v.type === 'style-attribute' ||
+									v.type === 'style-binding' ||
+									v.type === 'style-directive' ||
+									v.type === 'style-shorthand') &&
 								v.snippet && 
 								typeof v.snippet === 'string' &&
 								v.snippet.length > 0
@@ -336,11 +339,11 @@ describe('CSP Scanner Property Tests', () => {
 		});
 
 		/**
-		 * Property 8: Report summary includes allowlisted count
+		 * Property 8: Report summary totals are consistent
 		 * Feature: csp-theme-layout-primitives, Property 8
 		 * Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.5
 		 */
-		it('should include allowlisted count in report summary', () => {
+		it('should include consistent summary totals in report', () => {
 			// Create a temporary test directory
 			const testDir = join(tmpdir(), `csp-test-${Date.now()}-${Math.random()}`);
 			mkdirSync(testDir, { recursive: true });
@@ -354,11 +357,11 @@ describe('CSP Scanner Property Tests', () => {
 				// Generate report
 				const report = generateReport([testDir], []);
 				
-				// Report should have allowlisted count in summary
-				expect(report.summary).toHaveProperty('allowlisted');
-				expect(typeof report.summary.allowlisted).toBe('number');
+				// Report should have followUp count in summary
+				expect(report.summary).toHaveProperty('followUp');
+				expect(typeof report.summary.followUp).toBe('number');
 				expect(report.summary.totalViolations).toBe(
-					report.summary.shipBlocking + report.summary.followUp + report.summary.allowlisted
+					report.summary.shipBlocking + report.summary.followUp
 				);
 			} finally {
 				// Cleanup

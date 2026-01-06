@@ -139,6 +139,7 @@ Container component - Max-width wrapper for content centering.
 		centered = true,
 		class: className = '',
 		children,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

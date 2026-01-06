@@ -166,6 +166,7 @@ with your own CSS classes defined in your application's stylesheet.
 		gradientDirection = 'to-bottom',
 		class: className = '',
 		children,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

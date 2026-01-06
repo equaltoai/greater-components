@@ -121,6 +121,7 @@ Text component - Paragraph and inline text component with size, weight, and colo
 		lines,
 		class: className = '',
 		children,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

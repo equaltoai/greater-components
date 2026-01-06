@@ -22,10 +22,10 @@ describe('List.svelte', () => {
 		expect(list?.classList.contains('gr-list--spacing-lg')).toBe(true);
 	});
 
-	it('applies max-width style', () => {
-		const { container } = render(ListHarness, { props: { listProps: { maxWidth: 500 } } });
-		const list = container.querySelector('.gr-list') as HTMLElement;
-		expect(list.style.maxWidth).toBe('500px');
+	it('applies max-width class', () => {
+		const { container } = render(ListHarness, { props: { listProps: { maxWidth: 'md' } } });
+		const list = container.querySelector('.gr-list');
+		expect(list?.classList.contains('gr-list--max-md')).toBe(true);
 	});
 
 	it('renders ListItem children correctly', () => {

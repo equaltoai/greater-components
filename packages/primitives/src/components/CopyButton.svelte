@@ -91,8 +91,9 @@ CopyButton component - A button that copies text to the clipboard with visual fe
 		labels = {},
 		onCopy,
 		class: className = '',
+		style: _style,
 		...restProps
-	}: Props = $props();
+	}: Props & { style?: string } = $props();
 
 	let copied = $state(false);
 	let error = $state('');

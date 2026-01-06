@@ -58,6 +58,7 @@
 		class: className = '',
 		trigger,
 		onItemSelect,
+		style: _style,
 		...restProps
 	}: Props = $props<Props>();
 

@@ -40,6 +40,7 @@
 		disabled = false,
 		class: className = '',
 		children,
+		style: _style,
 		...restProps
 	}: Props = $props<Props>();
 

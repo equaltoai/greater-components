@@ -1,6 +1,6 @@
 <!--
   Visual color harmony selector with wheel representation
-  CSP-compliant: Uses CSS custom properties instead of inline styles
+  CSP-compliant: Uses SVG fill attributes (no inline styles)
 -->
 <script lang="ts">
 	import { generateColorHarmony, type ColorHarmony } from '@equaltoai/greater-components-utils';
@@ -22,40 +22,55 @@
 		}
 	}
 
-	function handleKeyDown(e: KeyboardEvent, color: string) {
-		if (e.key === 'Enter') {
-			handleColorClick(color);
-		}
+	function handleSwatchKeyDown(event: KeyboardEvent, color: string) {
+		if (event.key !== 'Enter' && event.key !== ' ') return;
+		event.preventDefault();
+		handleColorClick(color);
 	}
 </script>
 
 <div class="gr-color-harmony-picker">
 	<div class="gr-color-harmony-picker__visualization">
-		<!-- Base color swatch using CSS custom property -->
-		<div
+		<button
+			type="button"
 			class="gr-color-harmony-picker__swatch gr-color-harmony-picker__swatch--base"
-			style:--gr-harmony-swatch-color={seedColor}
 			onclick={() => handleColorClick(seedColor)}
+			onkeydown={(event) => handleSwatchKeyDown(event, seedColor)}
 			title="Base Color: {seedColor}"
-			role="button"
-			tabindex="0"
-			onkeydown={(e) => handleKeyDown(e, seedColor)}
+			aria-label="Base Color: {seedColor}"
 		>
+			<svg class="gr-color-harmony-picker__swatch-svg" viewBox="0 0 60 60" aria-hidden="true">
+				<circle
+					class="gr-color-harmony-picker__swatch-circle"
+					cx="30"
+					cy="30"
+					r="28"
+					fill={seedColor}
+				/>
+			</svg>
 			<span class="gr-color-harmony-picker__label">Base</span>
-		</div>
+		</button>
 
-		{#each selectedColors as color, index (color)}
-			<div
+		{#each selectedColors as color (color)}
+			<button
+				type="button"
 				class="gr-color-harmony-picker__swatch gr-color-harmony-picker__swatch--harmony"
-				style:--gr-harmony-swatch-color={color}
 				onclick={() => handleColorClick(color)}
+				onkeydown={(event) => handleSwatchKeyDown(event, color)}
 				title="{harmonyType}: {color}"
-				role="button"
-				tabindex="0"
-				onkeydown={(e) => handleKeyDown(e, color)}
+				aria-label="{harmonyType}: {color}"
 			>
+				<svg class="gr-color-harmony-picker__swatch-svg" viewBox="0 0 60 60" aria-hidden="true">
+					<circle
+						class="gr-color-harmony-picker__swatch-circle"
+						cx="30"
+						cy="30"
+						r="28"
+						fill={color}
+					/>
+				</svg>
 				<span class="gr-color-harmony-picker__label">{color}</span>
-			</div>
+			</button>
 		{/each}
 	</div>
 
@@ -89,11 +104,24 @@
 		border-radius: 50%;
 		border: 2px solid var(--gr-color-border);
 		cursor: pointer;
+		padding: 0;
+		background: transparent;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		transition: transform 0.2s;
-		background-color: var(--gr-harmony-swatch-color);
+		position: relative;
+	}
+
+	.gr-color-harmony-picker__swatch-svg {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.gr-color-harmony-picker__swatch-circle {
+		transform-origin: 50% 50%;
 	}
 
 	.gr-color-harmony-picker__swatch:hover {

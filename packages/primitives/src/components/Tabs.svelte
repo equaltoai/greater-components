@@ -41,6 +41,7 @@
 		variant = 'default',
 		class: className = '',
 		onTabChange,
+		style: _style,
 		...restProps
 	}: Props = $props();
 

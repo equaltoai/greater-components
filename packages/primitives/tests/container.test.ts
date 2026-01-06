@@ -105,11 +105,10 @@ describe('Container.svelte', () => {
 		expect(el?.classList.contains('custom-class')).toBe(true);
 	});
 
-	it('merges custom styles', () => {
-		// checking style attribute presence if passed via restProps
+	it('ignores style prop', () => {
 		const { container } = render(Container, { style: 'background: red;' });
 		const el = container.querySelector('.gr-container');
-		expect(el?.getAttribute('style')).toContain('background: red');
+		expect(el?.hasAttribute('style')).toBe(false);
 	});
 });
 
