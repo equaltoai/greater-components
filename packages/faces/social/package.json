@@ -101,24 +101,24 @@
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@tanstack/svelte-virtual": "^3.13.13"
+    "@tanstack/svelte-virtual": "^3.13.17"
   },
   "devDependencies": {
     "@babel/parser": "^7.28.5",
     "@babel/traverse": "^7.28.5",
     "@playwright/test": "^1.57.0",
-    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@sveltejs/vite-plugin-svelte": "^6.2.2",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/svelte": "5.2.9",
-    "@types/node": "^24.10.2",
-    "@vitest/coverage-v8": "^4.0.15",
-    "@vitest/ui": "^4.0.15",
-    "axe-core": "^4.11.0",
-    "jsdom": "^27.3.0",
-    "svelte": "^5.45.8",
+    "@testing-library/svelte": "5.3.1",
+    "@types/node": "^25.0.3",
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/ui": "^4.0.16",
+    "axe-core": "^4.11.1",
+    "jsdom": "^27.4.0",
+    "svelte": "^5.46.1",
     "typescript": "^5.9.3",
-    "vite": "^7.2.7",
-    "vitest": "^4.0.15"
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

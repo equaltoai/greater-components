@@ -55,23 +55,23 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "shiki": "^3.19.0",
+    "shiki": "^3.20.0",
     "unified": "^11.0.5"
   },
   "devDependencies": {
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@sveltejs/package": "^2.5.7",
-    "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@testing-library/svelte": "^5.2.9",
+    "@sveltejs/vite-plugin-svelte": "^6.2.2",
+    "@testing-library/svelte": "^5.3.1",
     "@types/hast": "^3.0.4",
-    "@types/node": "^24.10.2",
-    "@vitest/coverage-v8": "^4.0.15",
-    "jsdom": "^27.3.0",
-    "svelte": "^5.45.8",
+    "@types/node": "^25.0.3",
+    "@vitest/coverage-v8": "^4.0.16",
+    "jsdom": "^27.4.0",
+    "svelte": "^5.46.1",
     "typescript": "^5.9.3",
-    "vite": "^7.2.7",
-    "vitest": "^4.0.15"
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   },
   "private": true
 }

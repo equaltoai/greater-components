@@ -1,9 +1,9 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-01-06T19:14:06.914Z",
-  "ref": "8084acec6b6e",
-  "version": "4.1.0",
+  "generatedAt": "2026-01-06T23:05:30.020Z",
+  "ref": "greater-v0.1.0",
+  "version": "0.1.0",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
     "packages/primitives/src/components/Alert.svelte": "sha256-u2NxgZaKcWBdBgWD6zO/V0fmcWkeYvG+naIJd9TjcJg=",
@@ -1953,36 +1953,15 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "utils",
-          "version": "3.0.0"
-        }
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "tokens", "version": "2.0.1" },
+        { "name": "utils", "version": "3.0.0" }
       ],
       "peerDependencies": [
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "@equaltoai/greater-components-utils",
-          "version": "3.0.0"
-        },
-        {
-          "name": "@equaltoai/greater-components-tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
+        { "name": "@equaltoai/greater-components-utils", "version": "3.0.0" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "2.0.1" },
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "tags": []
     },
@@ -2125,18 +2104,9 @@
       ],
       "dependencies": [],
       "peerDependencies": [
-        {
-          "name": "focus-trap",
-          "version": "^7.6.6"
-        },
-        {
-          "name": "tabbable",
-          "version": "^6.3.0"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "focus-trap", "version": "^7.7.1" },
+        { "name": "tabbable", "version": "^6.4.0" },
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "tags": []
     },
@@ -5198,12 +5168,7 @@
         }
       ],
       "dependencies": [],
-      "peerDependencies": [
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
-      ],
+      "peerDependencies": [{ "name": "svelte", "version": "^5.46.1" }],
       "tags": []
     },
     "tokens": {
@@ -5456,50 +5421,17 @@
       ],
       "dependencies": [],
       "peerDependencies": [
-        {
-          "name": "hast-util-to-mdast",
-          "version": "^10.1.2"
-        },
-        {
-          "name": "mdast-util-gfm",
-          "version": "^3.1.0"
-        },
-        {
-          "name": "mdast-util-to-markdown",
-          "version": "^2.1.2"
-        },
-        {
-          "name": "rehype-parse",
-          "version": "^9.0.1"
-        },
-        {
-          "name": "rehype-sanitize",
-          "version": "^6.0.0"
-        },
-        {
-          "name": "rehype-stringify",
-          "version": "^10.0.1"
-        },
-        {
-          "name": "unified",
-          "version": "^11.0.5"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.43.6"
-        },
-        {
-          "name": "hast",
-          "version": "latest"
-        },
-        {
-          "name": "hast-util-sanitize",
-          "version": "^5.0.2"
-        },
-        {
-          "name": "mdast",
-          "version": "latest"
-        }
+        { "name": "hast-util-to-mdast", "version": "^10.1.2" },
+        { "name": "mdast-util-gfm", "version": "^3.1.0" },
+        { "name": "mdast-util-to-markdown", "version": "^2.1.2" },
+        { "name": "rehype-parse", "version": "^9.0.1" },
+        { "name": "rehype-sanitize", "version": "^6.0.0" },
+        { "name": "rehype-stringify", "version": "^10.0.1" },
+        { "name": "unified", "version": "^11.0.5" },
+        { "name": "svelte", "version": "^5.43.6" },
+        { "name": "hast", "version": "latest" },
+        { "name": "hast-util-sanitize", "version": "^5.0.2" },
+        { "name": "mdast", "version": "latest" }
       ],
       "tags": []
     },
@@ -5857,30 +5789,12 @@
       ],
       "dependencies": [],
       "peerDependencies": [
-        {
-          "name": "@apollo/client",
-          "version": "^4.0.9"
-        },
-        {
-          "name": "@apollo/client-react-streaming",
-          "version": "^0.14.0"
-        },
-        {
-          "name": "@graphql-typed-document-node/core",
-          "version": "^3.2.0"
-        },
-        {
-          "name": "graphql",
-          "version": "^16.12.0"
-        },
-        {
-          "name": "graphql-ws",
-          "version": "^6.0.6"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.43.6"
-        }
+        { "name": "@apollo/client", "version": "^4.0.11" },
+        { "name": "@apollo/client-react-streaming", "version": "^0.14.3" },
+        { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
+        { "name": "graphql", "version": "^16.12.0" },
+        { "name": "graphql-ws", "version": "^6.0.6" },
+        { "name": "svelte", "version": "^5.43.6" }
       ],
       "tags": []
     },
@@ -5906,57 +5820,22 @@
           "size": 1242
         }
       ],
-      "dependencies": [
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        }
-      ],
+      "dependencies": [{ "name": "primitives", "version": "3.0.1" }],
       "peerDependencies": [
-        {
-          "name": "hast-util-sanitize",
-          "version": "^5.0.2"
-        },
-        {
-          "name": "rehype-sanitize",
-          "version": "^6.0.0"
-        },
-        {
-          "name": "rehype-stringify",
-          "version": "^10.0.1"
-        },
-        {
-          "name": "remark-gfm",
-          "version": "^4.0.1"
-        },
-        {
-          "name": "remark-parse",
-          "version": "^11.0.0"
-        },
-        {
-          "name": "remark-rehype",
-          "version": "^11.1.2"
-        },
-        {
-          "name": "shiki",
-          "version": "^3.19.0"
-        },
-        {
-          "name": "unified",
-          "version": "^11.0.5"
-        },
+        { "name": "hast-util-sanitize", "version": "^5.0.2" },
+        { "name": "rehype-sanitize", "version": "^6.0.0" },
+        { "name": "rehype-stringify", "version": "^10.0.1" },
+        { "name": "remark-gfm", "version": "^4.0.1" },
+        { "name": "remark-parse", "version": "^11.0.0" },
+        { "name": "remark-rehype", "version": "^11.1.2" },
+        { "name": "shiki", "version": "^3.20.0" },
+        { "name": "unified", "version": "^11.0.5" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "@equaltoai/greater-components-tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-tokens", "version": "2.0.1" },
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "tags": []
     }
@@ -6585,84 +6464,33 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        {
-          "name": "@equaltoai/greater-components",
-          "version": "latest"
-        },
-        {
-          "name": "adapters",
-          "version": "3.0.0"
-        },
-        {
-          "name": "admin",
-          "version": "4.0.1"
-        },
-        {
-          "name": "auth",
-          "version": "4.0.1"
-        },
-        {
-          "name": "compose",
-          "version": "4.0.1"
-        },
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "messaging",
-          "version": "4.0.1"
-        },
-        {
-          "name": "notifications",
-          "version": "4.0.1"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        },
-        {
-          "name": "search",
-          "version": "4.0.1"
-        },
-        {
-          "name": "tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "utils",
-          "version": "3.0.0"
-        }
+        { "name": "@equaltoai/greater-components", "version": "latest" },
+        { "name": "adapters", "version": "3.0.0" },
+        { "name": "admin", "version": "4.0.1" },
+        { "name": "auth", "version": "4.0.1" },
+        { "name": "compose", "version": "4.0.1" },
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "messaging", "version": "4.0.1" },
+        { "name": "notifications", "version": "4.0.1" },
+        { "name": "primitives", "version": "3.0.1" },
+        { "name": "search", "version": "4.0.1" },
+        { "name": "tokens", "version": "2.0.1" },
+        { "name": "utils", "version": "3.0.0" }
       ],
       "peerDependencies": [
         {
           "name": "@equaltoai/greater-components-adapters",
           "version": "3.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-admin",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-auth",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-compose",
-          "version": "4.0.1"
-        },
+        { "name": "@equaltoai/greater-components-admin", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-auth", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-compose", "version": "4.0.1" },
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-messaging",
           "version": "4.0.1"
@@ -6675,30 +6503,12 @@
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "@equaltoai/greater-components-search",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-utils",
-          "version": "3.0.0"
-        },
-        {
-          "name": "@graphql-typed-document-node/core",
-          "version": "^3.2.0"
-        },
-        {
-          "name": "@tanstack/svelte-virtual",
-          "version": "^3.13.13"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-search", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "2.0.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "3.0.0" },
+        { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
+        { "name": "@tanstack/svelte-virtual", "version": "^3.13.17" },
+        { "name": "svelte", "version": "^5.46.1" }
       ]
     },
     "blog": {
@@ -6903,68 +6713,29 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        {
-          "name": "@equaltoai/greater-components",
-          "version": "latest"
-        },
-        {
-          "name": "content",
-          "version": "4.0.1"
-        },
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        },
-        {
-          "name": "utils",
-          "version": "3.0.0"
-        }
+        { "name": "@equaltoai/greater-components", "version": "latest" },
+        { "name": "content", "version": "4.0.1" },
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" },
+        { "name": "utils", "version": "3.0.0" }
       ],
       "peerDependencies": [
-        {
-          "name": "@equaltoai/greater-components-auth",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-content",
-          "version": "4.0.1"
-        },
+        { "name": "@equaltoai/greater-components-auth", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-content", "version": "4.0.1" },
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "@equaltoai/greater-components-search",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-utils",
-          "version": "3.0.0"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-search", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "2.0.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "3.0.0" },
+        { "name": "svelte", "version": "^5.46.1" }
       ]
     },
     "community": {
@@ -7188,48 +6959,21 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        {
-          "name": "content",
-          "version": "4.0.1"
-        },
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        },
-        {
-          "name": "utils",
-          "version": "3.0.0"
-        }
+        { "name": "content", "version": "4.0.1" },
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" },
+        { "name": "utils", "version": "3.0.0" }
       ],
       "peerDependencies": [
-        {
-          "name": "@equaltoai/greater-components-admin",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-auth",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-content",
-          "version": "4.0.1"
-        },
+        { "name": "@equaltoai/greater-components-admin", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-auth", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-content", "version": "4.0.1" },
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-notifications",
           "version": "4.0.1"
@@ -7238,22 +6982,10 @@
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "@equaltoai/greater-components-search",
-          "version": "4.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-utils",
-          "version": "3.0.0"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-search", "version": "4.0.1" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "2.0.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "3.0.0" },
+        { "name": "svelte", "version": "^5.46.1" }
       ]
     },
     "artist": {
@@ -8093,56 +7825,26 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        {
-          "name": "@equaltoai/greater-components",
-          "version": "latest"
-        },
-        {
-          "name": "adapters",
-          "version": "3.0.0"
-        },
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        },
-        {
-          "name": "tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "utils",
-          "version": "3.0.0"
-        }
+        { "name": "@equaltoai/greater-components", "version": "latest" },
+        { "name": "adapters", "version": "3.0.0" },
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" },
+        { "name": "tokens", "version": "2.0.1" },
+        { "name": "utils", "version": "3.0.0" }
       ],
       "peerDependencies": [
-        {
-          "name": "@apollo/client",
-          "version": "^4.0.9"
-        },
+        { "name": "@apollo/client", "version": "^4.0.11" },
         {
           "name": "@equaltoai/greater-components-adapters",
           "version": "3.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-auth",
-          "version": "4.0.1"
-        },
+        { "name": "@equaltoai/greater-components-auth", "version": "4.0.1" },
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-notifications",
           "version": "4.0.1"
@@ -8151,18 +7853,9 @@
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "@equaltoai/greater-components-tokens",
-          "version": "2.0.1"
-        },
-        {
-          "name": "@equaltoai/greater-components-utils",
-          "version": "3.0.0"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-tokens", "version": "2.0.1" },
+        { "name": "@equaltoai/greater-components-utils", "version": "3.0.0" },
+        { "name": "svelte", "version": "^5.46.1" }
       ]
     }
   },
@@ -8269,36 +7962,21 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        }
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" }
       ],
       "peerDependencies": [
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "types": [
         "LoginCredentials",
@@ -8439,48 +8117,24 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "adapters",
-          "version": "latest"
-        },
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        },
-        {
-          "name": "utils",
-          "version": "3.0.0"
-        }
+        { "name": "adapters", "version": "latest" },
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" },
+        { "name": "utils", "version": "3.0.0" }
       ],
       "peerDependencies": [
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "@equaltoai/greater-components-utils",
-          "version": "3.0.0"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-utils", "version": "3.0.0" },
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "types": [
         "ComposeContext",
@@ -8575,32 +8229,17 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "adapters",
-          "version": "latest"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        }
+        { "name": "adapters", "version": "latest" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" }
       ],
       "peerDependencies": [
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "types": [
         "NotificationsContext",
@@ -8674,44 +8313,23 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        },
-        {
-          "name": "utils",
-          "version": "3.0.0"
-        }
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" },
+        { "name": "utils", "version": "3.0.0" }
       ],
       "peerDependencies": [
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "@equaltoai/greater-components-utils",
-          "version": "3.0.0"
-        },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "@equaltoai/greater-components-utils", "version": "3.0.0" },
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "types": [
         "SearchResultType",
@@ -8907,40 +8525,22 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "adapters",
-          "version": "latest"
-        },
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        }
+        { "name": "adapters", "version": "latest" },
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" }
       ],
       "peerDependencies": [
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "types": [
         "AdminStats",
@@ -9038,40 +8638,22 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "content",
-          "version": "4.0.1"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        }
+        { "name": "content", "version": "4.0.1" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" }
       ],
       "peerDependencies": [
-        {
-          "name": "@equaltoai/greater-components-content",
-          "version": "4.0.1"
-        },
+        { "name": "@equaltoai/greater-components-content", "version": "4.0.1" },
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "types": [
         "MessageRole",
@@ -9179,44 +8761,23 @@
         }
       ],
       "dependencies": [
-        {
-          "name": "compose",
-          "version": "4.0.1"
-        },
-        {
-          "name": "headless",
-          "version": "2.0.0"
-        },
-        {
-          "name": "icons",
-          "version": "2.0.0"
-        },
-        {
-          "name": "primitives",
-          "version": "3.0.1"
-        }
+        { "name": "compose", "version": "4.0.1" },
+        { "name": "headless", "version": "2.0.0" },
+        { "name": "icons", "version": "2.0.0" },
+        { "name": "primitives", "version": "3.0.1" }
       ],
       "peerDependencies": [
-        {
-          "name": "@equaltoai/greater-components-compose",
-          "version": "4.0.1"
-        },
+        { "name": "@equaltoai/greater-components-compose", "version": "4.0.1" },
         {
           "name": "@equaltoai/greater-components-headless",
           "version": "2.0.0"
         },
-        {
-          "name": "@equaltoai/greater-components-icons",
-          "version": "2.0.0"
-        },
+        { "name": "@equaltoai/greater-components-icons", "version": "2.0.0" },
         {
           "name": "@equaltoai/greater-components-primitives",
           "version": "3.0.1"
         },
-        {
-          "name": "svelte",
-          "version": "^5.45.8"
-        }
+        { "name": "svelte", "version": "^5.46.1" }
       ],
       "types": [
         "MessageParticipant",
