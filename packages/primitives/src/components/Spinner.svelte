@@ -87,7 +87,7 @@ Spinner component - Accessible loading indicator with configurable size and colo
 	);
 
 	// Get pixel size for SVG
-	const pixelSize = $derived(sizeMap[size] || sizeMap.md);
+	const pixelSize = $derived(sizeMap[size] || sizeMap['md']);
 </script>
 
 <span class={spinnerClass} role="status" aria-label={label} {id} {...restProps}>

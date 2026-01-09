@@ -39,5 +39,11 @@ jobs:
       - name: TypeScript type checking
         run: pnpm typecheck
 
+      - name: Svelte component type checking
+        run: pnpm check:svelte
+
+      - name: Consumer TypeScript checks
+        run: pnpm typecheck:consumer
+
       - name: CSP Compliance Check
         run: pnpm validate:csp

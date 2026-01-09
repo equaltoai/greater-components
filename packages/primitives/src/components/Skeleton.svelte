@@ -5,7 +5,7 @@
 	export type WidthPreset = 'full' | '1/2' | '1/3' | '2/3' | '1/4' | '3/4' | 'content' | 'auto';
 	export type HeightPreset = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
-	interface Props extends HTMLAttributes<HTMLDivElement> {
+	interface Props extends HTMLAttributes<HTMLElement> {
 		variant?: 'text' | 'circular' | 'rectangular' | 'rounded';
 		width?: WidthPreset;
 		height?: HeightPreset;
@@ -57,7 +57,7 @@
 		'treeitem',
 	]);
 
-	const parsedTabIndex = $derived<number | undefined>(() => {
+	const parsedTabIndex = $derived.by<number | undefined>(() => {
 		if (tabindex === undefined || tabindex === null) {
 			return undefined;
 		}
@@ -68,23 +68,23 @@
 		return Number.isFinite(numericValue) ? numericValue : undefined;
 	});
 
-	const hasInteractiveHandlers = $derived(() => Boolean(onclick || onkeydown || onkeyup));
+	const hasInteractiveHandlers = $derived(Boolean(onclick || onkeydown || onkeyup));
 
-	const isInteractiveRole = (roleValue: string | undefined): boolean => {
+	const isInteractiveRole = (roleValue: string | null | undefined): boolean => {
 		if (!roleValue) {
 			return false;
 		}
 		return INTERACTIVE_ROLES.has(roleValue);
 	};
 
-	const isInteractive = $derived(() => {
+	const isInteractive = $derived.by(() => {
 		if (isInteractiveRole(role)) {
 			return true;
 		}
-		if (hasInteractiveHandlers()) {
+		if (hasInteractiveHandlers) {
 			return true;
 		}
-		const parsedValue = parsedTabIndex();
+		const parsedValue = parsedTabIndex;
 		if (parsedValue !== undefined && parsedValue >= 0) {
 			return true;
 		}
@@ -92,7 +92,7 @@
 	});
 
 	// Compute skeleton classes
-	const skeletonClass = $derived(() => {
+	const skeletonClass = $derived.by(() => {
 		const classes = [
 			'gr-skeleton',
 			`gr-skeleton--${variant}`,
@@ -115,9 +115,9 @@
 {/snippet}
 
 {#if loading}
-	{#if isInteractive()}
+	{#if isInteractive}
 		<button
-			class={skeletonClass()}
+			class={skeletonClass}
 			{role}
 			aria-label={ariaLabel ?? 'Loading'}
 			aria-labelledby={ariaLabelledby}
@@ -130,14 +130,14 @@
 			{onblur}
 			{onkeydown}
 			{onkeyup}
-			tabindex={parsedTabIndex()}
+			tabindex={parsedTabIndex}
 			type="button"
 		>
 			{@render SkeletonContent()}
 		</button>
 	{:else}
 		<div
-			class={skeletonClass()}
+			class={skeletonClass}
 			aria-hidden="true"
 			role={role ?? 'status'}
 			aria-label={ariaLabel ?? 'Loading'}

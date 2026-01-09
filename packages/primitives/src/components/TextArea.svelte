@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { HTMLTextAreaAttributes } from 'svelte/elements';
+	import type { HTMLTextareaAttributes } from 'svelte/elements';
 	import { useStableId } from '@equaltoai/greater-components-utils';
 
-	interface Props extends Omit<HTMLTextAreaAttributes, 'value'> {
+	interface Props extends Omit<HTMLTextareaAttributes, 'value' | 'onchange' | 'oninput'> {
 		value?: string;
 		label?: string;
 		helpText?: string;

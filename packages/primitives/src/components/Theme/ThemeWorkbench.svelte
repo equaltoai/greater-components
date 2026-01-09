@@ -84,19 +84,19 @@
 		</SettingsSection>
 
 		<div class="gr-theme-workbench__actions">
-			<Button variant="primary" onclick={handleSave} fullWidth>Save Theme</Button>
+			<Button variant="solid" onclick={handleSave}>Save Theme</Button>
 		</div>
 	</div>
 
 	<div class="gr-theme-workbench__preview">
-		<ThemeProvider {theme}>
+		<ThemeProvider>
 			<Card>
 				<h2 class="gr-theme-workbench__preview-heading">Component Preview</h2>
 				<p>This is how your components will look with the generated theme.</p>
 
 				<div class="gr-theme-workbench__component-grid">
-					<Button variant="primary">Primary Button</Button>
-					<Button variant="secondary">Secondary Button</Button>
+					<Button variant="solid">Primary Button</Button>
+					<Button variant="outline">Secondary Button</Button>
 					<Button variant="ghost">Ghost Button</Button>
 				</div>
 
