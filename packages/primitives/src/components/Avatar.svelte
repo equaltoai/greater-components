@@ -15,7 +15,7 @@
 		'2xl': 'lg',
 	};
 
-	interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+	interface Props extends Omit<HTMLAttributes<HTMLElement>, 'role'> {
 		src?: string;
 		alt?: string;
 		name?: string;
@@ -171,7 +171,9 @@
 		const words = name.trim().split(/\s+/);
 		if (words.length === 1) {
 			// Single word - take first two characters
-			return words[0].substring(0, 2).toUpperCase();
+			const firstWord = words[0];
+			if (!firstWord) return '';
+			return firstWord.substring(0, 2).toUpperCase();
 		} else {
 			// Multiple words - take first character of first two words
 			return words

@@ -8,6 +8,7 @@ const config: CodegenConfig = {
 		'packages/faces/social/src/adapters/graphql/generated/types.ts': {
 			plugins: ['typescript', 'typescript-operations', 'typed-document-node'],
 			config: {
+				useTypeImports: true,
 				skipTypename: false,
 				withHooks: false,
 				withComponent: false,
@@ -39,6 +40,7 @@ const config: CodegenConfig = {
 		'packages/adapters/src/graphql/generated/types.ts': {
 			plugins: ['typescript', 'typescript-operations', 'typed-document-node'],
 			config: {
+				useTypeImports: true,
 				skipTypename: false,
 				withHooks: false,
 				withComponent: false,

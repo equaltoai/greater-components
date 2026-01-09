@@ -30,7 +30,7 @@ Card component - Content container with elevation, borders, and semantic section
 	 *
 	 * @public
 	 */
-	interface Props extends HTMLAttributes<HTMLDivElement> {
+	interface Props extends HTMLAttributes<HTMLElement> {
 		/**
 		 * Visual variant of the card.
 		 * - `elevated`: Card with shadow (default)
@@ -159,7 +159,7 @@ Card component - Content container with elevation, borders, and semantic section
 	});
 
 	// Compute card classes
-	const cardClass = $derived(() => {
+	const cardClass = $derived.by(() => {
 		const classes = [
 			'gr-card',
 			`gr-card--${variant}`,
@@ -176,17 +176,13 @@ Card component - Content container with elevation, borders, and semantic section
 	});
 
 	// Handle keyboard activation for clickable cards
-	function handleKeydown(event: KeyboardEvent) {
-		if (clickable && (event.key === 'Enter' || event.key === ' ')) {
-			event.preventDefault();
-			if (onclick) {
-				onclick(event as unknown as MouseEvent);
-			}
-		}
+	function handleKeydown(
+		event: KeyboardEvent & { currentTarget: EventTarget & HTMLButtonElement }
+	) {
 		onkeydown?.(event);
 	}
 
-	function handleClick(event: MouseEvent) {
+	function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
 		if (clickable && onclick) {
 			onclick(event);
 		}
@@ -214,12 +210,12 @@ Card component - Content container with elevation, borders, and semantic section
 {/snippet}
 
 {#if isLink}
-	<a class={cardClass()} {href} {target} rel={computedRel} {...restProps}>
+	<a class={cardClass} {href} {target} rel={computedRel} {...restProps}>
 		{@render cardContent()}
 	</a>
 {:else if clickable}
 	<button
-		class={cardClass()}
+		class={cardClass}
 		onclick={handleClick}
 		onkeydown={handleKeydown}
 		role={role || 'button'}
@@ -230,7 +226,7 @@ Card component - Content container with elevation, borders, and semantic section
 	</button>
 {:else}
 	<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-	<div class={cardClass()} {role} {tabindex} {...restProps}>
+	<div class={cardClass} {role} {tabindex} {...restProps}>
 		{@render cardContent()}
 	</div>
 {/if}

@@ -236,9 +236,12 @@ Modal component - Accessible dialog with focus management, backdrop handling, an
 			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 		);
 
-		const focusableArray = Array.from(focusableElements).filter(
-			(el) => !(el as HTMLElement).disabled && (el as HTMLElement).tabIndex >= 0
-		) as HTMLElement[];
+		const focusableArray = Array.from(focusableElements)
+			.map((element) => element as HTMLElement)
+			.filter((element) => {
+				const disableableElement = element as HTMLElement & { disabled?: boolean };
+				return !disableableElement.disabled && element.tabIndex >= 0;
+			});
 
 		firstFocusable = focusableArray[0];
 		lastFocusable = focusableArray[focusableArray.length - 1];

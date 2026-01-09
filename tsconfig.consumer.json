@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "composite": false,
+    "incremental": false,
+    "verbatimModuleSyntax": true,
+    "types": []
+  },
+  "include": [
+    "packages/adapters/src/**/*.ts",
+    "packages/content/src/**/*.ts",
+    "packages/faces/social/src/**/*.ts"
+  ],
+  "exclude": ["**/*.test.ts", "**/__tests__/**", "**/dist/**", "**/node_modules/**"]
+}
