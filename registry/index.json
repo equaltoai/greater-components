@@ -1,9 +1,9 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-01-07T03:54:51.204Z",
-  "ref": "d8372fa974df",
-  "version": "0.1.0",
+  "generatedAt": "2026-01-09T16:01:29.737Z",
+  "ref": "greater-v0.1.1",
+  "version": "0.1.1",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
     "packages/primitives/src/assets.d.ts": "sha256-mcuvYSPf1CA84g8LB5UTkxkmJIqwt8oxWdhiebocyfI=",
@@ -7027,7 +7027,14 @@
           "PremiumBadge",
           "InstitutionalTools"
         ],
-        "shared": ["primitives", "headless", "icons", "tokens", "adapters", "utils"],
+        "shared": [
+          "primitives",
+          "headless",
+          "icons",
+          "tokens",
+          "adapters",
+          "utils"
+        ],
         "patterns": [],
         "components": [
           "Artwork",
@@ -8269,7 +8276,15 @@
       "name": "search",
       "version": "4.0.1",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
-      "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
+      "exports": [
+        "Root",
+        "Bar",
+        "Filters",
+        "Results",
+        "ActorResult",
+        "NoteResult",
+        "TagResult"
+      ],
       "files": [
         {
           "path": "src/ActorResult.svelte",
