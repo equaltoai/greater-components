@@ -214,7 +214,7 @@ jobs:
       - name: Generate comprehensive accessibility report
         run: |
           node scripts/generate-comprehensive-report.js \
-            --input=../test-artifacts \
+            --input=../../test-artifacts \
             --output=compliance-report.html \
             --format=html \
             --include-recommendations
@@ -223,7 +223,7 @@ jobs:
       - name: Generate JSON report for PR comments
         run: |
           node scripts/generate-comprehensive-report.js \
-            --input=../test-artifacts \
+            --input=../../test-artifacts \
             --output=compliance-report.json \
             --format=json
         working-directory: packages/testing
@@ -243,56 +243,145 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const path = './packages/testing/compliance-report.json';
+            const reportPath = './packages/testing/compliance-report.json';
 
-            if (!fs.existsSync(path)) {
+            if (!fs.existsSync(reportPath)) {
               console.log('No compliance report found');
               return;
             }
 
-            const report = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+            const components = Array.isArray(report.componentScores) ? report.componentScores : [];
+            const componentIssues = components.flatMap((component) =>
+              Array.isArray(component.issues) ? component.issues : []
+            );
 
-            const totalViolations = report.summary.criticalIssues;
-            const averageScore = report.summary.averageScore;
-            const wcagCompliant = report.summary.wcagCompliant;
+            const overallScore =
+              typeof report.summary?.overallScore === 'number' ? report.summary.overallScore : undefined;
+            const totalComponents =
+              typeof report.summary?.totalComponents === 'number'
+                ? report.summary.totalComponents
+                : components.length;
 
-            const statusEmoji = totalViolations === 0 ? '✅' : totalViolations <= 5 ? '⚠️' : '❌';
-            const complianceStatus = wcagCompliant === report.summary.totalComponents ? '✅ Fully Compliant' : `❌ ${wcagCompliant}/${report.summary.totalComponents} Components Compliant`;
+            const countIssues = (severity) =>
+              componentIssues.filter((issue) => issue?.severity === severity).length;
 
-            const comment = `
+            const criticalIssues = countIssues('critical');
+            const seriousIssues = countIssues('serious');
+            const moderateIssues = countIssues('moderate');
+            const minorIssues = countIssues('minor');
+            const totalIssues = criticalIssues + seriousIssues + moderateIssues + minorIssues;
+
+            const isCompliant = (component) => {
+              const overall = component?.scores?.overall ?? 0;
+              const issues = Array.isArray(component?.issues) ? component.issues : [];
+              const hasHighSeverityIssue = issues.some(
+                (issue) => issue?.severity === 'critical' || issue?.severity === 'serious'
+              );
+              return overall >= 85 && !hasHighSeverityIssue;
+            };
+
+            const passingComponents = components.filter(isCompliant).length;
+            const complianceStatus =
+              totalComponents > 0 && passingComponents === totalComponents
+                ? '✅ Fully Compliant'
+                : totalComponents > 0
+                  ? `⚠️ ${passingComponents}/${totalComponents} Components Passing`
+                  : '⚠️ No components detected';
+
+            const hasHighSeverityIssue = criticalIssues > 0 || seriousIssues > 0;
+
+            let statusEmoji = '⚠️';
+            if (overallScore !== undefined) {
+              statusEmoji = !hasHighSeverityIssue && overallScore >= 85 ? '✅' : overallScore >= 85 ? '⚠️' : '❌';
+            }
+
+            const scoreLabel = overallScore === undefined ? '' : ` (Score: ${overallScore}%)`;
+            const overallStatus =
+              overallScore === undefined
+                ? 'UNKNOWN'
+                : overallScore >= 85 && !hasHighSeverityIssue
+                  ? 'PASS'
+                  : 'NEEDS IMPROVEMENT';
+
+            const componentLines = components
+              .slice()
+              .sort((a, b) => (b.violations ?? 0) - (a.violations ?? 0))
+              .slice(0, 10)
+              .map((component) => {
+                const overall = component?.scores?.overall ?? 0;
+                const issues = Array.isArray(component?.issues) ? component.issues : [];
+                const critical = issues.some((issue) => issue?.severity === 'critical');
+                const serious = issues.some((issue) => issue?.severity === 'serious');
+                const marker = critical ? '❌' : overall >= 85 && !serious ? '✅' : '⚠️';
+                return `- **${component.name}**: ${overall}% ${marker}`;
+              })
+              .join('\n');
+
+            const recommendations = Array.isArray(report.recommendations) ? report.recommendations : [];
+            const issuesSummary =
+              totalIssues > 0
+                ? `Critical: ${criticalIssues}, Serious: ${seriousIssues}, Moderate: ${moderateIssues}, Minor: ${minorIssues}`
+                : 'No issues detected';
+
+            const commentBody = `
             ## ${statusEmoji} Accessibility Test Results
 
-            **Overall Status:** ${averageScore >= 85 ? 'PASS' : 'NEEDS IMPROVEMENT'} (Score: ${averageScore}%)
+            **Overall Status:** ${overallStatus}${scoreLabel}
             **WCAG 2.1 AA Compliance:** ${complianceStatus}
-            **Critical Issues:** ${totalViolations}
+            **Issues:** ${issuesSummary}
 
-            ### Component Scores
-            ${report.componentScores.slice(0, 10).map(c => 
-              `- **${c.component}**: ${c.overall}% ${c.issues.critical > 0 ? '❌' : c.overall >= 85 ? '✅' : '⚠️'}`
-            ).join('\n')}
+            ### Component Scores (Top 10 by violations)
+            ${componentLines || '_No component scores available_'}
 
             ### Recommendations
-            ${report.recommendations.slice(0, 5).map(r => `- ${r}`).join('\n')}
+            ${recommendations.slice(0, 5).map((r) => `- ${r}`).join('\n') || '_No recommendations available_'}
 
             <details>
             <summary>View detailed results</summary>
 
             **Test Coverage:**
-            - Axe Tests: ${report.axeResults.length} components
-            - Contrast Tests: ${report.contrastResults.length} elements
-            - Keyboard Tests: ${report.keyboardResults?.length || 0} interactions
-            - Focus Tests: ${report.focusResults?.length || 0} elements
+            - Axe Results: ${Array.isArray(report.axeResults) ? report.axeResults.length : 0}
+            - Contrast Results: ${Array.isArray(report.contrastResults) ? report.contrastResults.length : 0}
 
             </details>
 
             > 📊 [View full accessibility report](${context.payload.pull_request.html_url}/checks) in the CI artifacts.
             `;
 
-            github.rest.issues.createComment({
+            const marker = '<!-- greater-components:a11y-report -->';
+            const body = `${marker}\n${commentBody}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment
+            });
+
+            const existing = comments.find((c) => c.body?.includes(marker));
+            const legacy = comments.find(
+              (c) =>
+                c.user?.login === 'github-actions[bot]' &&
+                typeof c.body === 'string' &&
+                c.body.includes('Accessibility Test Results')
+            );
+
+            const commentToUpdate = existing || legacy;
+            if (commentToUpdate) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: commentToUpdate.id,
+                body,
+              });
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
             });
 
   publish-results:

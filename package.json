@@ -29,7 +29,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:types": "prettier --write \"packages/**/src/**/*.d.ts\"",
-    "check:svelte": "pnpm --dir packages/primitives exec svelte-check --tsconfig ./tsconfig.json",
+    "check:svelte": "pnpm --dir packages/primitives exec svelte-check --tsconfig ./tsconfig.check.json",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte --fix",
     "preinstall": "npx only-allow pnpm",
