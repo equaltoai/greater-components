@@ -1,17 +1,3 @@
-<svelte:options
-	customElement={{
-		props: {
-			content: {},
-			placement: {},
-			trigger: {},
-			delay: {},
-			disabled: {},
-			class: {},
-			children: {},
-		},
-	}}
-/>
-
 <script lang="ts">
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
@@ -43,10 +29,10 @@
 		children,
 		style: _style,
 		...restProps
-	}: Props = $props<Props>();
+	}: Props = $props();
 
 	// Normalize delay prop
-	const normalizedDelay = $derived(() => {
+	const normalizedDelay = $derived.by(() => {
 		if (typeof delay === 'number') {
 			return { show: delay, hide: delay };
 		}
@@ -132,7 +118,7 @@
 				actualPlacement = calculatePlacement();
 			}
 			isVisible = true;
-		}, normalizedDelay().show);
+		}, normalizedDelay.show);
 	}
 
 	function hide() {
@@ -141,7 +127,7 @@
 		clearTimeouts();
 		hideTimeout = setTimeout(() => {
 			isVisible = false;
-		}, normalizedDelay().hide);
+		}, normalizedDelay.hide);
 	}
 
 	function handleMouseEnter() {
@@ -220,17 +206,17 @@
 
 	// Effects
 	$effect(() => {
-		if (isVisible) {
-			document.addEventListener('click', handleClickOutside);
-			window.addEventListener('resize', handleResize);
-			window.addEventListener('scroll', handleResize);
+		if (!isVisible) return;
 
-			return () => {
-				document.removeEventListener('click', handleClickOutside);
-				window.removeEventListener('resize', handleResize);
-				window.removeEventListener('scroll', handleResize);
-			};
-		}
+		document.addEventListener('click', handleClickOutside);
+		window.addEventListener('resize', handleResize);
+		window.addEventListener('scroll', handleResize);
+
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+			window.removeEventListener('resize', handleResize);
+			window.removeEventListener('scroll', handleResize);
+		};
 	});
 
 	// Cleanup on unmount
@@ -241,7 +227,7 @@
 	});
 
 	// Compute tooltip classes - CSP compliant (no inline styles)
-	const tooltipClass = $derived(() => {
+	const tooltipClass = $derived.by(() => {
 		const classes = [
 			'gr-tooltip',
 			`gr-tooltip--${actualPlacement}`,
@@ -282,7 +268,7 @@
 	{#if isVisible}
 		<div
 			bind:this={tooltipElement}
-			class={tooltipClass()}
+			class={tooltipClass}
 			id={tooltipId}
 			role="tooltip"
 			{...restProps}

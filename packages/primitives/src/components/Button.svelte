@@ -27,7 +27,7 @@ Button component - Accessible interactive element with loading states, variants,
 	 *
 	 * @public
 	 */
-	interface Props extends Omit<HTMLButtonAttributes, 'type'> {
+	interface Props extends Omit<HTMLButtonAttributes, 'type' | 'prefix'> {
 		/**
 		 * Visual variant of the button.
 		 * - `solid`: Primary button with filled background (default)
@@ -143,7 +143,7 @@ Button component - Accessible interactive element with loading states, variants,
 	const spinnerSize = $derived(spinnerSizeMap[size] || 'sm');
 
 	// Compute button classes
-	const buttonClass = $derived(() => {
+	const buttonClass = $derived.by(() => {
 		const classes = [
 			'gr-button',
 			`gr-button--${variant}`,
@@ -160,30 +160,23 @@ Button component - Accessible interactive element with loading states, variants,
 	});
 
 	// Determine visibility of prefix based on loading state and behavior
-	const showPrefix = $derived(() => {
-		if (!prefix) return false;
-		if (!loading) return true;
-		// When loading, only hide prefix if behavior is 'replace-prefix'
-		return loadingBehavior !== 'replace-prefix';
-	});
+	const showPrefix = $derived(
+		Boolean(prefix) && (!loading || loadingBehavior !== 'replace-prefix')
+	);
 
 	// Determine where to show spinner
-	const showSpinnerInPrefix = $derived(() => loading && loadingBehavior === 'replace-prefix');
-	const showSpinnerPrepend = $derived(() => loading && loadingBehavior === 'prepend');
-	const showSpinnerAppend = $derived(() => loading && loadingBehavior === 'append');
+	const showSpinnerInPrefix = $derived(loading && loadingBehavior === 'replace-prefix');
+	const showSpinnerPrepend = $derived(loading && loadingBehavior === 'prepend');
+	const showSpinnerAppend = $derived(loading && loadingBehavior === 'append');
 
 	// Handle keyboard activation
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			if (!disabled && !loading && onclick) {
-				onclick(event as unknown as MouseEvent);
-			}
-		}
+	function handleKeydown(
+		event: KeyboardEvent & { currentTarget: EventTarget & HTMLButtonElement }
+	) {
 		onkeydown?.(event);
 	}
 
-	function handleClick(event: MouseEvent) {
+	function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
 		if (disabled || loading) {
 			event.preventDefault();
 			event.stopPropagation();
@@ -194,7 +187,7 @@ Button component - Accessible interactive element with loading states, variants,
 </script>
 
 <button
-	class={buttonClass()}
+	class={buttonClass}
 	{type}
 	disabled={disabled || loading}
 	aria-disabled={disabled || loading}
@@ -205,18 +198,18 @@ Button component - Accessible interactive element with loading states, variants,
 	{...restProps}
 >
 	<!-- Prepend spinner (before everything) -->
-	{#if showSpinnerPrepend()}
+	{#if showSpinnerPrepend}
 		<span class="gr-button__spinner gr-button__spinner--prepend" aria-hidden="true">
 			<Spinner size={spinnerSize} color="current" label="Loading" />
 		</span>
 	{/if}
 
 	<!-- Prefix slot or replace-prefix spinner -->
-	{#if showSpinnerInPrefix()}
+	{#if showSpinnerInPrefix}
 		<span class="gr-button__spinner gr-button__spinner--prefix" aria-hidden="true">
 			<Spinner size={spinnerSize} color="current" label="Loading" />
 		</span>
-	{:else if showPrefix()}
+	{:else if prefix && showPrefix}
 		<span class="gr-button__prefix">
 			{@render prefix()}
 		</span>
@@ -230,14 +223,14 @@ Button component - Accessible interactive element with loading states, variants,
 	</span>
 
 	<!-- Suffix slot -->
-	{#if suffix && !showSpinnerAppend()}
+	{#if suffix && !showSpinnerAppend}
 		<span class="gr-button__suffix">
 			{@render suffix()}
 		</span>
 	{/if}
 
 	<!-- Append spinner (after text, in suffix position) -->
-	{#if showSpinnerAppend()}
+	{#if showSpinnerAppend}
 		<span class="gr-button__spinner gr-button__spinner--append" aria-hidden="true">
 			<Spinner size={spinnerSize} color="current" label="Loading" />
 		</span>

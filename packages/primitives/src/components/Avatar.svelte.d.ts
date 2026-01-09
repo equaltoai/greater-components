@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'svelte/elements';
 import type { Snippet } from 'svelte';
-interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+interface Props extends Omit<HTMLAttributes<HTMLElement>, 'role'> {
 	src?: string;
 	alt?: string;
 	name?: string;

@@ -1,21 +1,22 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-01-06T23:05:30.020Z",
-  "ref": "greater-v0.1.0",
-  "version": "0.1.0",
+  "generatedAt": "2026-01-09T16:02:31.950Z",
+  "ref": "greater-v0.1.1",
+  "version": "0.1.1",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
+    "packages/primitives/src/assets.d.ts": "sha256-mcuvYSPf1CA84g8LB5UTkxkmJIqwt8oxWdhiebocyfI=",
     "packages/primitives/src/components/Alert.svelte": "sha256-u2NxgZaKcWBdBgWD6zO/V0fmcWkeYvG+naIJd9TjcJg=",
     "packages/primitives/src/components/Alert.svelte.d.ts": "sha256-ZZFhf55zlzdqspt6SOYlu6ncN6SQyCPyqU4s1PSMy98=",
-    "packages/primitives/src/components/Avatar.svelte": "sha256-2BrPlIpr7C7S/SaHWD9EBJjsoR2T4UCyhNRqu4gNlSk=",
-    "packages/primitives/src/components/Avatar.svelte.d.ts": "sha256-LYtGGNuH+n3UhsPZVoy4xamgka88AH77ytsoZojg2Vk=",
+    "packages/primitives/src/components/Avatar.svelte": "sha256-w/Yti2oW85dhNjprwAmyPXezqq422MJpexNTqEF/nEA=",
+    "packages/primitives/src/components/Avatar.svelte.d.ts": "sha256-LvjSF5wfCyFn8PCsC5RphW//hNv4lJDleL+DI0LTTX8=",
     "packages/primitives/src/components/Badge.svelte": "sha256-6G++/Iegkm9IlCoNHCYAaN2CpsBs5S4I1kLR4B8m54w=",
     "packages/primitives/src/components/Badge.svelte.d.ts": "sha256-qlpp4eQEppw8qO0Ga6Q0AD52gyAKjQjY77wLNCfJRzo=",
-    "packages/primitives/src/components/Button.svelte": "sha256-5bu3U3w7ClPEP+vgjEU+pDuOwB2XMhaspMXVmJQJZLQ=",
-    "packages/primitives/src/components/Button.svelte.d.ts": "sha256-Ndgio8ngKJteW1oSEPBKKxnUvBMiI9Q36rVdLIcETbk=",
-    "packages/primitives/src/components/Card.svelte": "sha256-xS4gllJ8LU9L9xQ5PaDNyh3PtY8eaxray7Bz87oh9wE=",
-    "packages/primitives/src/components/Card.svelte.d.ts": "sha256-y5bN2Sbzts1EgrpG7q5dKzn9XTkN+i7UJOcRQBG4M5E=",
+    "packages/primitives/src/components/Button.svelte": "sha256-gnap0DXuwB6Kp04wFZ6n3chXdIEhIou1CDA5yTnrgdU=",
+    "packages/primitives/src/components/Button.svelte.d.ts": "sha256-g7RZr2nkOx0R0IirEfAjehYv0oA13m9vYRosCYWWjhI=",
+    "packages/primitives/src/components/Card.svelte": "sha256-Ike3vrVeG8Sayf3mLgF+yrKl0LCCrxid5d+P/l7FVzE=",
+    "packages/primitives/src/components/Card.svelte.d.ts": "sha256-myieE48DEynvFAXDYzUgbaq2RWKAjgwlRHqcNWpWaIU=",
     "packages/primitives/src/components/Checkbox.svelte": "sha256-2/M0OBAg/0Bu1kNCSy5AjclISNt7mgjWyAkHE3msRpo=",
     "packages/primitives/src/components/Checkbox.svelte.d.ts": "sha256-zbh+1tn6aMK9moFz7oKYAtKuHGgUMlfXTadzi6SLK98=",
     "packages/primitives/src/components/Container.svelte": "sha256-TycKqIX51g6Dfyh5iHQk6o8y18C4I2V/oad9lH5e4gs=",
@@ -26,8 +27,8 @@
     "packages/primitives/src/components/DefinitionItem.svelte.d.ts": "sha256-VZw3eDKmfW005yIs0hdGBpERqmITkTXUb3ZwykpNiNc=",
     "packages/primitives/src/components/DefinitionList.svelte": "sha256-rtoTxmSxPAyS8LBJWGphjKY0lL/dp1WZ0yURCzy36Fw=",
     "packages/primitives/src/components/DefinitionList.svelte.d.ts": "sha256-GetFE2LUG+mB0xeEpC2qqojQ7vQElZPr8hqTBvaXUlg=",
-    "packages/primitives/src/components/DropZone.svelte": "sha256-0bx2L6kSWsKwT1Aay09sRSdGtMk1r1UDsQDQ2xb06mY=",
-    "packages/primitives/src/components/DropZone.svelte.d.ts": "sha256-foBPUtQVZwl9DWErXO+2DcQiPbfCX6mW2VexF568XTE=",
+    "packages/primitives/src/components/DropZone.svelte": "sha256-RtFs7J2uwC4uIfhNsjRHI8b2fz0xZk8sriMChj6FyH8=",
+    "packages/primitives/src/components/DropZone.svelte.d.ts": "sha256-MF8AbJdpdSeCvX59+I45P1ry2YxsBpUgnmeunGpGUeA=",
     "packages/primitives/src/components/FileUpload.svelte": "sha256-i2uKmSm1yKZFCylMyUJVM1R+MZaK/6yR9ozV23G8rxc=",
     "packages/primitives/src/components/FileUpload.svelte.d.ts": "sha256-eFyEDM61OSTFb21L0h8N2ExmddL/KRjzvxfG1gwOabE=",
     "packages/primitives/src/components/GradientText.svelte": "sha256-E8cV43szxhF3OksTno9TNVMPGB3RuSZLDHNN1ptJ0lY=",
@@ -60,8 +61,9 @@
     "packages/primitives/src/components/Menu/Separator.svelte.d.ts": "sha256-3g8bs+z984mpCLy6sMuar/c4x2/9jb36H4yamJlIAw4=",
     "packages/primitives/src/components/Menu/Trigger.svelte": "sha256-Y07Jt5IRU7WH9qsd1PXmKA93AQgDe3Hcl5YPU7svEic=",
     "packages/primitives/src/components/Menu/Trigger.svelte.d.ts": "sha256-ZEpRFtoA9gkKeMmyHozcsBaSOPiltIoSLe6xlAJz7uA=",
-    "packages/primitives/src/components/Menu.svelte": "sha256-Yv3RUm4ji5Oy+v4TeemgJgxJTuE0PJGyoSP1geRWAw8=",
-    "packages/primitives/src/components/Modal.svelte": "sha256-Ck/hULEx55xbIAFzxt5PM9Lw2LU+HMSIKnPM8cpc6mg=",
+    "packages/primitives/src/components/Menu.svelte": "sha256-mdBYt13hY2J66lTMAft0DuISg1XQcV5SNhVHSzlIn5s=",
+    "packages/primitives/src/components/Menu.svelte.d.ts": "sha256-2gHPPT+PGWRe/ZFV5JpkO/VkzOGLp/5p5g9P1oM82N4=",
+    "packages/primitives/src/components/Modal.svelte": "sha256-EfxToTIIbneYs7eHhnQA4EwElVHlqx5n3p9hRZBZ9GI=",
     "packages/primitives/src/components/Modal.svelte.d.ts": "sha256-+gXwIDzccV+jjP7Fx5urz8ZLKlcMXfdK05OSDYcc33s=",
     "packages/primitives/src/components/Section.svelte": "sha256-P9kJR5TNX5o4pY0jPTaLYmEzy30NMbOfTjHdCuC4Mx4=",
     "packages/primitives/src/components/Section.svelte.d.ts": "sha256-9UDDilE16tx/yybZPVM+ueKNxTjFvPEnpXYCIjj/G3E=",
@@ -77,37 +79,37 @@
     "packages/primitives/src/components/Settings/SettingsSelect.svelte.d.ts": "sha256-TRvourhur7CGcQdZRPTX+Ees6gntZFlLHWxPLZeKga8=",
     "packages/primitives/src/components/Settings/SettingsToggle.svelte": "sha256-kuwHWdWSJQz71ABK+G5h0aKv5kYTwkcUfBc9W44DcyY=",
     "packages/primitives/src/components/Settings/SettingsToggle.svelte.d.ts": "sha256-yov7gyRTzoIp2p1Knbhn/evxWVcab577lEGBU9eHtp8=",
-    "packages/primitives/src/components/SimpleMenu.svelte": "sha256-wNqgSh1VwOd0ar9kFnyctmrntSlzkwVPJj6WNnbubN0=",
-    "packages/primitives/src/components/SimpleMenu.svelte.d.ts": "sha256-0DOLxc8EtwSg5DXB2Du/VKGElR1FmpAqqZcjOZNM0EM=",
-    "packages/primitives/src/components/Skeleton.svelte": "sha256-9mHi4SbUgANi6YjDvt2SzdanrjeKZ49PU7ALDOkZh7s=",
-    "packages/primitives/src/components/Skeleton.svelte.d.ts": "sha256-AIO5s5IBufm80NIzpDZUwHLyYNj36lETduj1JaoDhgA=",
-    "packages/primitives/src/components/Spinner.svelte": "sha256-TDDLQN1xb6YLVRgPQDPPJ2xogXQh2zXWWkobjwiVHGU=",
+    "packages/primitives/src/components/SimpleMenu.svelte": "sha256-sU//GEtCDPSK9GAxUw00K3MumPE4D+VjCXEl569oY7E=",
+    "packages/primitives/src/components/SimpleMenu.svelte.d.ts": "sha256-07EquhRy4JMoHjicB9BfjfYDBdNr1rMq/inS8ZRCwJc=",
+    "packages/primitives/src/components/Skeleton.svelte": "sha256-TFJEllCXSb71ZCOot85ixb5YyV/HtdBFuX4X/rNnczg=",
+    "packages/primitives/src/components/Skeleton.svelte.d.ts": "sha256-ytt0M4azUxBvYW4CiavpKh169gWPPS8r2bxGKO5JWSI=",
+    "packages/primitives/src/components/Spinner.svelte": "sha256-Gd5p+wZX8yGgz/Bjld083ifoW1F8BkDFMxRhIP0I1uw=",
     "packages/primitives/src/components/Spinner.svelte.d.ts": "sha256-EY77Iok3tYG11dpuSgxeye0TMMLOJcgjR2ayUBwCexE=",
     "packages/primitives/src/components/StepIndicator.svelte": "sha256-tx1fW2x7VQ4Yt8t2yO1xJbKCuq8gJuAwfXOpa4vK0nk=",
     "packages/primitives/src/components/StepIndicator.svelte.d.ts": "sha256-1KiJEjZL6ghr29WGpaag1CF0t+cpq2aVYAVVl1T4s6A=",
     "packages/primitives/src/components/StreamingText.svelte": "sha256-M/hodorc395Sf0KFlEXxaXswh3NFShm7A87ltP8pYC0=",
     "packages/primitives/src/components/StreamingText.svelte.d.ts": "sha256-mulMvCLNqlC5yjGSsKV5D12YcNVt1SWb5ZqvvJrltxU=",
-    "packages/primitives/src/components/Switch.svelte": "sha256-pK+otUUbwuF7G4scO4Y+6QBEtZB+nKPHZ4QMg2UiH+U=",
-    "packages/primitives/src/components/Switch.svelte.d.ts": "sha256-EbgmCy7IjoP87s6XJeM8ux9CWA5UbESWuADu8S5Ve5I=",
-    "packages/primitives/src/components/Tabs.svelte": "sha256-VLlakOOk9Sh3g4rqUkeGT4tOrzfVmZuNFl9PU0Z4Arg=",
+    "packages/primitives/src/components/Switch.svelte": "sha256-InaOFSyW7jJgGWPxks/wXkbHNdX0tTJPNr1fc+BCK1o=",
+    "packages/primitives/src/components/Switch.svelte.d.ts": "sha256-DuUTAK2mdlpPBAFNhumhjUYO8UYej1J1Tfz9zMq2Zbs=",
+    "packages/primitives/src/components/Tabs.svelte": "sha256-HjmHxE0GYcw/wE9jhzD9+843d13iaUNsUg/FAqrZuxQ=",
     "packages/primitives/src/components/Tabs.svelte.d.ts": "sha256-s+nlRBFBl4TJ1Elu0hdlrhqRH7qCp1kEMixk/3WPrDk=",
     "packages/primitives/src/components/Text.svelte": "sha256-g11glxMUNOlmoBbaz9OsLUUQVGqwFlw3xZVQpgN/NM0=",
     "packages/primitives/src/components/Text.svelte.d.ts": "sha256-fHfy7jod4/xI/l0i0+x1rnF/ZrCsAyvc25aYGgmTTw8=",
-    "packages/primitives/src/components/TextArea.svelte": "sha256-kA3DRCXPzLKMd0/2A2zhp77LyAvSpvvLzkpZ3ZdI3X0=",
-    "packages/primitives/src/components/TextArea.svelte.d.ts": "sha256-rdWU743muQaV+GWcEbvFhMdeAifaRMYSatkAWPMH76M=",
-    "packages/primitives/src/components/TextField.svelte": "sha256-oXf4gw0LCbtPvmelHyAVeq30Y2ON98Ls5MiA4zhIiIE=",
-    "packages/primitives/src/components/TextField.svelte.d.ts": "sha256-Y++LKbkrvNvoXLTuSQWjjd0FrLQs9DoKmAUQfG7hF4w=",
+    "packages/primitives/src/components/TextArea.svelte": "sha256-oNFLLrWiMNqsqIXPISb/tvhF3u1vmGQnl5yluUPuvfo=",
+    "packages/primitives/src/components/TextArea.svelte.d.ts": "sha256-5lJysohsLco2uSv6S2puAztekX+UvU4xyG85ZVkDfNY=",
+    "packages/primitives/src/components/TextField.svelte": "sha256-9q6cUTxwIKrQ+JYYJM366pbkeaGUICfV86Ukn58a0TM=",
+    "packages/primitives/src/components/TextField.svelte.d.ts": "sha256-rxnOju+TicsfrosnJEmaVat9pOG4ESa8J6AXnrHxK6Q=",
     "packages/primitives/src/components/Theme/ColorHarmonyPicker.svelte": "sha256-8ETkzGWJsjXlpNQMsLoS5vrPJkdi5Ew98L6oK6/jl28=",
     "packages/primitives/src/components/Theme/ColorHarmonyPicker.svelte.d.ts": "sha256-fP4M5nXdBinb/uMw0TgH8oy3Z0aG46uH0sTos81dUQA=",
     "packages/primitives/src/components/Theme/ContrastChecker.svelte": "sha256-n7Dj6sGwmWleNjMssTBgvbTV2P6CMmr9gkaCtBfO3CQ=",
-    "packages/primitives/src/components/Theme/ContrastChecker.svelte.d.ts": "sha256-CfSDEpbv/qEMI9Btjsr7i6tuYMi2cCFb1vfZ6epZmzY=",
-    "packages/primitives/src/components/Theme/ThemeWorkbench.svelte": "sha256-Vev5z53Gpj1irLntBvHbEk9e5rDj0cKA52Irp0z6F4Y=",
+    "packages/primitives/src/components/Theme/ContrastChecker.svelte.d.ts": "sha256-6zNDewWUE/j64LK6zsLrRx1k1/PTEQ+1Ar4sTQ4IzXc=",
+    "packages/primitives/src/components/Theme/ThemeWorkbench.svelte": "sha256-pYYTHvG3RC7CZFCfExdAax6BCR0gw69pQ4bvoP2COh8=",
     "packages/primitives/src/components/Theme/ThemeWorkbench.svelte.d.ts": "sha256-97U+zLtFUgPuhsrf88yd3FX9B9cJ1P8s2uujhrLEamg=",
     "packages/primitives/src/components/ThemeProvider.svelte": "sha256-N4oW20A9h10SgHiq2z5qqHrpRAdI15Mp8G3pJ5NJsJM=",
     "packages/primitives/src/components/ThemeProvider.svelte.d.ts": "sha256-Ur9ixWuA+0/308M4KyoA+4wC+/8DT5Q2SCYxACRswFw=",
-    "packages/primitives/src/components/ThemeSwitcher.svelte": "sha256-48BRyFQ0wcHik4bR0svHXQi08WIqMfh2ojtGUJLxQYk=",
+    "packages/primitives/src/components/ThemeSwitcher.svelte": "sha256-6SJOid5Sbp1/prkL/irSkgpyQov5hr+g08RZf6USkmE=",
     "packages/primitives/src/components/ThemeSwitcher.svelte.d.ts": "sha256-5gEI/eMnbVuBQ+3ZGuzp7z7+72y6cyHhVrJeOZ2GCRs=",
-    "packages/primitives/src/components/Tooltip.svelte": "sha256-nmEWGhaRLKU0gF1qaevNSM/aWAx8KXfDEwyP/SAVNsM=",
+    "packages/primitives/src/components/Tooltip.svelte": "sha256-SE3drzVXEWW6Eu3Rg1E8EwZbPCL6xwsOD6rNqcsnruE=",
     "packages/primitives/src/components/Tooltip.svelte.d.ts": "sha256-AONAs4rh/azRKJJyEf8DXerK0GYMYbb4FPpK9wsWAJE=",
     "packages/primitives/src/index.d.ts": "sha256-FO7LbcX55HnyxSPxlSHeQH2AK9Ku8HsCfiClnahhtC8=",
     "packages/primitives/src/index.ts": "sha256-PyX2fozobFl7Zn//U/DeT9LIquZJOva/+XlB8DLkGTE=",
@@ -781,7 +783,7 @@
     "packages/utils/src/export-markdown.d.ts": "sha256-XyDPSBBcJrYsfl/VCvepqVfETNsGlODit/VIVh96xuI=",
     "packages/utils/src/export-markdown.ts": "sha256-hSfIb9d0RPL5xdMnP391eIPCibSTLGFFW3fcEAZNWqU=",
     "packages/utils/src/html-to-markdown.d.ts": "sha256-q/rxUiILYSpq4eAY1lvBYZ74WfmTiLFW4X6FxaKLdrA=",
-    "packages/utils/src/html-to-markdown.ts": "sha256-w3DSxpxQYgm8ZT8GqC1zIss5MPglBkb09K/Exvut+T8=",
+    "packages/utils/src/html-to-markdown.ts": "sha256-Gn1FiDTKyFGcI44yTBzNpYoXOo/iTw1KykCfJwnayA4=",
     "packages/utils/src/id-provider.svelte": "sha256-4Zq2+FaQ/gXsxJfzOWHTKfwiwhKItJZyDZM7YZX59/8=",
     "packages/utils/src/id-provider.svelte.d.ts": "sha256-OcA49GzcbA7PY5cN+HANtN4vOhnN1WTV0G1FzqVBdtA=",
     "packages/utils/src/index.d.ts": "sha256-4qSOem5NA5KzILNdctJ/GHfIFc4XgMZ+iML/KTdQnOU=",
@@ -818,7 +820,7 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-M0UwWko7U1Cgv/EZv6CStGHfwidKao9BxgJRvKcF8N8=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-kBSv2BrFyurBE6riWv9mzCDlQyP/zjiBPOUrR+xpdTM=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-mGlTlweIFpniiUd3yDWdkdgZ53oer6ocR7nY3Z37dd0=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-ux8c3zpaXnQ5+dqMK+YgJ2f3qG78u/qkoqj5S1A+9dQ=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-oxd6nEvGRW6xM+FlLeQdyIIIShGu/tYv7Eej9MvzWNg=",
@@ -878,15 +880,15 @@
     "packages/adapters/src/WebSocketClient.d.ts": "sha256-BL+G+MihfyouWCGXaKlbnJe3CxnKaoyqsB5aUu0irWg=",
     "packages/adapters/src/WebSocketClient.ts": "sha256-bL5wFt5Cs3UHeVG+ogzUDoFM4vMSk+dWbFJqYsU+1Lg=",
     "packages/adapters/src/WebSocketPool.d.ts": "sha256-Cf+2MEOzhTdTmP6bgPdN5jzeJNq3pdOkFB1lZLJJ4M0=",
-    "packages/adapters/src/WebSocketPool.ts": "sha256-h5Vh/XkQAM7XPpIF0iMj3d/zBZvGHt/mTSoAYCihyv4=",
+    "packages/adapters/src/WebSocketPool.ts": "sha256-mwnjYAqsl+7arWdkR+2rVff0LpogWKIiOSOxXkB+ri8=",
     "packages/content/src/components/CodeBlock.svelte": "sha256-ZU2eLzVkmD4hAWlrBDFKN8ZSlNr1R+BLn7UwjDhIaf8=",
     "packages/content/src/components/MarkdownRenderer.svelte": "sha256-QDI+xz6KliGlz3YV4aCWAoqUmX4cajonVHV/+1doQL0=",
-    "packages/content/src/index.ts": "sha256-eDgL/y0d9meAEwZubA3DM7kozEj8i30UJdkFvHxlKDs=",
+    "packages/content/src/index.ts": "sha256-scEWe7C3B3+/JBaILqZd8c1ZiqZnKapfy8kz4SPFZSY=",
     "packages/faces/social/src/adapters/batcher.ts": "sha256-6PnUshOPk84U+PSnkADYzhN9SpUrvwiy+tN10HPaVeE=",
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-gT7brhxX/HWQSvwr7XkbIHD7r77jK5XVmnkTR1M7jtA=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-mGlTlweIFpniiUd3yDWdkdgZ53oer6ocR7nY3Z37dd0=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
     "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
@@ -1342,6 +1344,11 @@
           "size": 1539338
         },
         {
+          "path": "src/assets.d.ts",
+          "checksum": "sha256-mcuvYSPf1CA84g8LB5UTkxkmJIqwt8oxWdhiebocyfI=",
+          "size": 276
+        },
+        {
           "path": "src/components/Alert.svelte",
           "checksum": "sha256-u2NxgZaKcWBdBgWD6zO/V0fmcWkeYvG+naIJd9TjcJg=",
           "size": 6156
@@ -1353,13 +1360,13 @@
         },
         {
           "path": "src/components/Avatar.svelte",
-          "checksum": "sha256-2BrPlIpr7C7S/SaHWD9EBJjsoR2T4UCyhNRqu4gNlSk=",
-          "size": 9352
+          "checksum": "sha256-w/Yti2oW85dhNjprwAmyPXezqq422MJpexNTqEF/nEA=",
+          "size": 9411
         },
         {
           "path": "src/components/Avatar.svelte.d.ts",
-          "checksum": "sha256-LYtGGNuH+n3UhsPZVoy4xamgka88AH77ytsoZojg2Vk=",
-          "size": 1203
+          "checksum": "sha256-LvjSF5wfCyFn8PCsC5RphW//hNv4lJDleL+DI0LTTX8=",
+          "size": 1200
         },
         {
           "path": "src/components/Badge.svelte",
@@ -1373,23 +1380,23 @@
         },
         {
           "path": "src/components/Button.svelte",
-          "checksum": "sha256-5bu3U3w7ClPEP+vgjEU+pDuOwB2XMhaspMXVmJQJZLQ=",
-          "size": 6052
+          "checksum": "sha256-gnap0DXuwB6Kp04wFZ6n3chXdIEhIou1CDA5yTnrgdU=",
+          "size": 5872
         },
         {
           "path": "src/components/Button.svelte.d.ts",
-          "checksum": "sha256-Ndgio8ngKJteW1oSEPBKKxnUvBMiI9Q36rVdLIcETbk=",
-          "size": 2692
+          "checksum": "sha256-g7RZr2nkOx0R0IirEfAjehYv0oA13m9vYRosCYWWjhI=",
+          "size": 2703
         },
         {
           "path": "src/components/Card.svelte",
-          "checksum": "sha256-xS4gllJ8LU9L9xQ5PaDNyh3PtY8eaxray7Bz87oh9wE=",
-          "size": 4550
+          "checksum": "sha256-Ike3vrVeG8Sayf3mLgF+yrKl0LCCrxid5d+P/l7FVzE=",
+          "size": 4489
         },
         {
           "path": "src/components/Card.svelte.d.ts",
-          "checksum": "sha256-y5bN2Sbzts1EgrpG7q5dKzn9XTkN+i7UJOcRQBG4M5E=",
-          "size": 2439
+          "checksum": "sha256-myieE48DEynvFAXDYzUgbaq2RWKAjgwlRHqcNWpWaIU=",
+          "size": 2436
         },
         {
           "path": "src/components/Checkbox.svelte",
@@ -1443,13 +1450,13 @@
         },
         {
           "path": "src/components/DropZone.svelte",
-          "checksum": "sha256-0bx2L6kSWsKwT1Aay09sRSdGtMk1r1UDsQDQ2xb06mY=",
-          "size": 10849
+          "checksum": "sha256-RtFs7J2uwC4uIfhNsjRHI8b2fz0xZk8sriMChj6FyH8=",
+          "size": 10944
         },
         {
           "path": "src/components/DropZone.svelte.d.ts",
-          "checksum": "sha256-foBPUtQVZwl9DWErXO+2DcQiPbfCX6mW2VexF568XTE=",
-          "size": 1731
+          "checksum": "sha256-MF8AbJdpdSeCvX59+I45P1ry2YxsBpUgnmeunGpGUeA=",
+          "size": 1825
         },
         {
           "path": "src/components/FileUpload.svelte",
@@ -1613,13 +1620,18 @@
         },
         {
           "path": "src/components/Menu.svelte",
-          "checksum": "sha256-Yv3RUm4ji5Oy+v4TeemgJgxJTuE0PJGyoSP1geRWAw8=",
-          "size": 9989
+          "checksum": "sha256-mdBYt13hY2J66lTMAft0DuISg1XQcV5SNhVHSzlIn5s=",
+          "size": 9851
+        },
+        {
+          "path": "src/components/Menu.svelte.d.ts",
+          "checksum": "sha256-2gHPPT+PGWRe/ZFV5JpkO/VkzOGLp/5p5g9P1oM82N4=",
+          "size": 891
         },
         {
           "path": "src/components/Modal.svelte",
-          "checksum": "sha256-Ck/hULEx55xbIAFzxt5PM9Lw2LU+HMSIKnPM8cpc6mg=",
-          "size": 6926
+          "checksum": "sha256-EfxToTIIbneYs7eHhnQA4EwElVHlqx5n3p9hRZBZ9GI=",
+          "size": 7042
         },
         {
           "path": "src/components/Modal.svelte.d.ts",
@@ -1698,28 +1710,28 @@
         },
         {
           "path": "src/components/SimpleMenu.svelte",
-          "checksum": "sha256-wNqgSh1VwOd0ar9kFnyctmrntSlzkwVPJj6WNnbubN0=",
-          "size": 2245
+          "checksum": "sha256-sU//GEtCDPSK9GAxUw00K3MumPE4D+VjCXEl569oY7E=",
+          "size": 2252
         },
         {
           "path": "src/components/SimpleMenu.svelte.d.ts",
-          "checksum": "sha256-0DOLxc8EtwSg5DXB2Du/VKGElR1FmpAqqZcjOZNM0EM=",
-          "size": 1218
+          "checksum": "sha256-07EquhRy4JMoHjicB9BfjfYDBdNr1rMq/inS8ZRCwJc=",
+          "size": 1225
         },
         {
           "path": "src/components/Skeleton.svelte",
-          "checksum": "sha256-9mHi4SbUgANi6YjDvt2SzdanrjeKZ49PU7ALDOkZh7s=",
-          "size": 3376
+          "checksum": "sha256-TFJEllCXSb71ZCOot85ixb5YyV/HtdBFuX4X/rNnczg=",
+          "size": 3371
         },
         {
           "path": "src/components/Skeleton.svelte.d.ts",
-          "checksum": "sha256-AIO5s5IBufm80NIzpDZUwHLyYNj36lETduj1JaoDhgA=",
-          "size": 704
+          "checksum": "sha256-ytt0M4azUxBvYW4CiavpKh169gWPPS8r2bxGKO5JWSI=",
+          "size": 701
         },
         {
           "path": "src/components/Spinner.svelte",
-          "checksum": "sha256-TDDLQN1xb6YLVRgPQDPPJ2xogXQh2zXWWkobjwiVHGU=",
-          "size": 3250
+          "checksum": "sha256-Gd5p+wZX8yGgz/Bjld083ifoW1F8BkDFMxRhIP0I1uw=",
+          "size": 3253
         },
         {
           "path": "src/components/Spinner.svelte.d.ts",
@@ -1748,18 +1760,18 @@
         },
         {
           "path": "src/components/Switch.svelte",
-          "checksum": "sha256-pK+otUUbwuF7G4scO4Y+6QBEtZB+nKPHZ4QMg2UiH+U=",
-          "size": 984
+          "checksum": "sha256-InaOFSyW7jJgGWPxks/wXkbHNdX0tTJPNr1fc+BCK1o=",
+          "size": 997
         },
         {
           "path": "src/components/Switch.svelte.d.ts",
-          "checksum": "sha256-EbgmCy7IjoP87s6XJeM8ux9CWA5UbESWuADu8S5Ve5I=",
-          "size": 429
+          "checksum": "sha256-DuUTAK2mdlpPBAFNhumhjUYO8UYej1J1Tfz9zMq2Zbs=",
+          "size": 442
         },
         {
           "path": "src/components/Tabs.svelte",
-          "checksum": "sha256-VLlakOOk9Sh3g4rqUkeGT4tOrzfVmZuNFl9PU0Z4Arg=",
-          "size": 6254
+          "checksum": "sha256-HjmHxE0GYcw/wE9jhzD9+843d13iaUNsUg/FAqrZuxQ=",
+          "size": 6076
         },
         {
           "path": "src/components/Tabs.svelte.d.ts",
@@ -1778,23 +1790,23 @@
         },
         {
           "path": "src/components/TextArea.svelte",
-          "checksum": "sha256-kA3DRCXPzLKMd0/2A2zhp77LyAvSpvvLzkpZ3ZdI3X0=",
-          "size": 2456
+          "checksum": "sha256-oNFLLrWiMNqsqIXPISb/tvhF3u1vmGQnl5yluUPuvfo=",
+          "size": 2481
         },
         {
           "path": "src/components/TextArea.svelte.d.ts",
-          "checksum": "sha256-rdWU743muQaV+GWcEbvFhMdeAifaRMYSatkAWPMH76M=",
-          "size": 530
+          "checksum": "sha256-5lJysohsLco2uSv6S2puAztekX+UvU4xyG85ZVkDfNY=",
+          "size": 555
         },
         {
           "path": "src/components/TextField.svelte",
-          "checksum": "sha256-oXf4gw0LCbtPvmelHyAVeq30Y2ON98Ls5MiA4zhIiIE=",
-          "size": 3415
+          "checksum": "sha256-9q6cUTxwIKrQ+JYYJM366pbkeaGUICfV86Ukn58a0TM=",
+          "size": 3598
         },
         {
           "path": "src/components/TextField.svelte.d.ts",
-          "checksum": "sha256-Y++LKbkrvNvoXLTuSQWjjd0FrLQs9DoKmAUQfG7hF4w=",
-          "size": 691
+          "checksum": "sha256-rxnOju+TicsfrosnJEmaVat9pOG4ESa8J6AXnrHxK6Q=",
+          "size": 702
         },
         {
           "path": "src/components/Theme/ColorHarmonyPicker.svelte",
@@ -1813,13 +1825,13 @@
         },
         {
           "path": "src/components/Theme/ContrastChecker.svelte.d.ts",
-          "checksum": "sha256-CfSDEpbv/qEMI9Btjsr7i6tuYMi2cCFb1vfZ6epZmzY=",
-          "size": 280
+          "checksum": "sha256-6zNDewWUE/j64LK6zsLrRx1k1/PTEQ+1Ar4sTQ4IzXc=",
+          "size": 365
         },
         {
           "path": "src/components/Theme/ThemeWorkbench.svelte",
-          "checksum": "sha256-Vev5z53Gpj1irLntBvHbEk9e5rDj0cKA52Irp0z6F4Y=",
-          "size": 4731
+          "checksum": "sha256-pYYTHvG3RC7CZFCfExdAax6BCR0gw69pQ4bvoP2COh8=",
+          "size": 4707
         },
         {
           "path": "src/components/Theme/ThemeWorkbench.svelte.d.ts",
@@ -1838,8 +1850,8 @@
         },
         {
           "path": "src/components/ThemeSwitcher.svelte",
-          "checksum": "sha256-48BRyFQ0wcHik4bR0svHXQi08WIqMfh2ojtGUJLxQYk=",
-          "size": 11620
+          "checksum": "sha256-6SJOid5Sbp1/prkL/irSkgpyQov5hr+g08RZf6USkmE=",
+          "size": 11675
         },
         {
           "path": "src/components/ThemeSwitcher.svelte.d.ts",
@@ -1848,8 +1860,8 @@
         },
         {
           "path": "src/components/Tooltip.svelte",
-          "checksum": "sha256-nmEWGhaRLKU0gF1qaevNSM/aWAx8KXfDEwyP/SAVNsM=",
-          "size": 7052
+          "checksum": "sha256-SE3drzVXEWW6Eu3Rg1E8EwZbPCL6xwsOD6rNqcsnruE=",
+          "size": 6871
         },
         {
           "path": "src/components/Tooltip.svelte.d.ts",
@@ -5275,8 +5287,8 @@
         },
         {
           "path": "src/html-to-markdown.ts",
-          "checksum": "sha256-w3DSxpxQYgm8ZT8GqC1zIss5MPglBkb09K/Exvut+T8=",
-          "size": 2148
+          "checksum": "sha256-Gn1FiDTKyFGcI44yTBzNpYoXOo/iTw1KykCfJwnayA4=",
+          "size": 2068
         },
         {
           "path": "src/id-provider.svelte",
@@ -5429,9 +5441,7 @@
         { "name": "rehype-stringify", "version": "^10.0.1" },
         { "name": "unified", "version": "^11.0.5" },
         { "name": "svelte", "version": "^5.43.6" },
-        { "name": "hast", "version": "latest" },
-        { "name": "hast-util-sanitize", "version": "^5.0.2" },
-        { "name": "mdast", "version": "latest" }
+        { "name": "hast-util-sanitize", "version": "^5.0.2" }
       ],
       "tags": []
     },
@@ -5483,8 +5493,8 @@
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
-          "size": 1014252
+          "checksum": "sha256-mGlTlweIFpniiUd3yDWdkdgZ53oer6ocR7nY3Z37dd0=",
+          "size": 1014258
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -5783,8 +5793,8 @@
         },
         {
           "path": "src/WebSocketPool.ts",
-          "checksum": "sha256-h5Vh/XkQAM7XPpIF0iMj3d/zBZvGHt/mTSoAYCihyv4=",
-          "size": 11423
+          "checksum": "sha256-mwnjYAqsl+7arWdkR+2rVff0LpogWKIiOSOxXkB+ri8=",
+          "size": 11439
         }
       ],
       "dependencies": [],
@@ -5816,8 +5826,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-eDgL/y0d9meAEwZubA3DM7kozEj8i30UJdkFvHxlKDs=",
-          "size": 1242
+          "checksum": "sha256-scEWe7C3B3+/JBaILqZd8c1ZiqZnKapfy8kz4SPFZSY=",
+          "size": 1119
         }
       ],
       "dependencies": [{ "name": "primitives", "version": "3.0.1" }],
@@ -5935,8 +5945,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-wEu+pDWlLwlRsLmLKGyyQgiUR+F5SgMZ46njxbVcZKM=",
-          "size": 1014252
+          "checksum": "sha256-mGlTlweIFpniiUd3yDWdkdgZ53oer6ocR7nY3Z37dd0=",
+          "size": 1014258
         },
         {
           "path": "src/adapters/graphql/index.ts",

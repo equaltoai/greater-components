@@ -34,7 +34,7 @@
 
 	// Get reactive state from preferences store
 	let preferences = $state(preferencesStore.preferences);
-	let state = $state(preferencesStore.state);
+	let preferencesState = $state(preferencesStore.state);
 
 	// Use value prop if provided, otherwise use store
 	const currentScheme = $derived(value ?? preferences.colorScheme);
@@ -46,7 +46,7 @@
 
 	function syncPreferences() {
 		preferences = preferencesStore.preferences;
-		state = preferencesStore.state;
+		preferencesState = preferencesStore.state;
 	}
 
 	syncPreferences();
@@ -249,7 +249,7 @@
 							<span class="gr-theme-switcher__option-description">{scheme.description}</span>
 							{#if scheme.value === 'auto'}
 								<span class="gr-theme-switcher__option-badge">
-									Currently: {state.systemColorScheme}
+									Currently: {preferencesState.systemColorScheme}
 								</span>
 							{/if}
 						</div>
@@ -321,14 +321,14 @@
 							name="motion"
 							value={motion.value}
 							checked={preferences.motion === motion.value}
-							disabled={state.systemMotion === 'reduced'}
+							disabled={preferencesState.systemMotion === 'reduced'}
 							onchange={() => handleMotionChange(motion.value)}
 							class="gr-theme-switcher__radio"
 						/>
 						<div class="gr-theme-switcher__option-content">
 							<span class="gr-theme-switcher__option-label">{motion.label}</span>
 							<span class="gr-theme-switcher__option-description">{motion.description}</span>
-							{#if state.systemMotion === 'reduced' && motion.value === 'normal'}
+							{#if preferencesState.systemMotion === 'reduced' && motion.value === 'normal'}
 								<span class="gr-theme-switcher__option-badge"> System prefers reduced motion </span>
 							{/if}
 						</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	interface Props extends Omit<HTMLInputAttributes, 'type' | 'checked'> {
+	interface Props extends Omit<HTMLInputAttributes, 'type' | 'checked' | 'onchange'> {
 		checked?: boolean;
 		disabled?: boolean;
 		class?: string;

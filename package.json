@@ -1,6 +1,6 @@
 {
   "name": "greater-components",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Fediverse UI components built with Svelte 5, TypeScript, and pnpm workspaces",
   "repository": {
@@ -29,6 +29,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:types": "prettier --write \"packages/**/src/**/*.d.ts\"",
+    "check:svelte": "pnpm --dir packages/primitives exec svelte-check --tsconfig ./tsconfig.check.json",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte --fix",
     "preinstall": "npx only-allow pnpm",
@@ -53,6 +54,7 @@
     "playwright:install": "pnpm --filter @equaltoai/greater-components-testing exec playwright install",
     "playwright:install:with-deps": "pnpm --filter @equaltoai/greater-components-testing exec playwright install --with-deps",
     "typecheck": "NODE_OPTIONS='--max-old-space-size=16384' pnpm run sveltekit:sync && NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit",
+    "typecheck:consumer": "tsc --noEmit -p tsconfig.consumer.json",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "analyze:bundles": "node scripts/analyze-bundles.js",
     "release:prepare": "node scripts/prepare-github-release.js",
