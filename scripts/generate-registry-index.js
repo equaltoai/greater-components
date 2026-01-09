@@ -787,7 +787,8 @@ async function main() {
 		let output = JSON.stringify(registryIndex);
 		try {
 			const prettier = await import('prettier');
-			output = await prettier.format(output, { filepath: OUTPUT_PATH });
+			const prettierConfig = (await prettier.resolveConfig(OUTPUT_PATH)) ?? {};
+			output = await prettier.format(output, { ...prettierConfig, filepath: OUTPUT_PATH });
 		} catch {
 			// Fallback for environments without Prettier installed.
 			output = JSON.stringify(registryIndex, null, 2) + '\n';
