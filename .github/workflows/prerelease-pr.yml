@@ -138,6 +138,7 @@ jobs:
 
           echo "dispatch-ci: triggering CI for PR #${pr_number} on ${RELEASE_BRANCH}"
 
+          gh workflow run premain-guard.yml --ref "${RELEASE_BRANCH}" --field base_ref="${BASE_BRANCH}"
           gh workflow run dco.yml --ref "${RELEASE_BRANCH}" --field base_ref="${BASE_BRANCH}"
           gh workflow run lint.yml --ref "${RELEASE_BRANCH}"
           gh workflow run test.yml --ref "${RELEASE_BRANCH}"

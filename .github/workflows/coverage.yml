@@ -55,7 +55,9 @@ jobs:
         continue-on-error: true
 
       - name: Upload coverage reports to Codecov
+        if: ${{ secrets.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v4
+        continue-on-error: true
         with:
           directory: ./packages/
           files: ./packages/*/coverage/lcov.info

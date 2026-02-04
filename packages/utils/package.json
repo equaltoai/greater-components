@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-utils",
   "private": true,
-  "version": "0.1.2-rc.1",
+  "version": "0.1.2-rc.2",
   "type": "module",
   "description": "Utility functions for Greater Components",
   "license": "AGPL-3.0-only",
