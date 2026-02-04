@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-testing",
   "private": true,
-  "version": "2.0.0",
+  "version": "0.1.2-rc.1",
   "type": "module",
   "description": "Shared testing utilities for accessibility, keyboard navigation, and visual regression testing",
   "license": "AGPL-3.0-only",
@@ -46,32 +46,32 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@axe-core/playwright": "^4.11.0",
+    "@axe-core/playwright": "^4.11.1",
     "axe-core": "^4.11.1",
     "axe-playwright": "^2.2.2",
-    "focus-trap": "^7.7.1",
+    "focus-trap": "^8.0.0",
     "tabbable": "^6.4.0"
   },
   "devDependencies": {
     "@percy/playwright": "^1.0.10",
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.1",
     "@testing-library/svelte": "^5.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "@vitest/coverage-v8": "^4.0.16",
-    "@vitest/ui": "^4.0.16",
-    "chromatic": "^13.3.5",
-    "commander": "^14.0.2",
-    "jsdom": "^27.4.0",
-    "playwright": "^1.57.0",
-    "svelte": "^5.46.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
+    "chromatic": "^15.0.0",
+    "commander": "^14.0.3",
+    "jsdom": "^28.0.0",
+    "playwright": "^1.58.1",
+    "svelte": "^5.49.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.0",
-    "vitest": "^4.0.16"
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.1",
     "svelte": "^5.43.6",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.18"
   },
   "peerDependenciesMeta": {
     "@playwright/test": {

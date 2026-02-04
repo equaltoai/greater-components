@@ -557,7 +557,7 @@ export const components: Component[] = [
 		registryDependencies: [],
 		npm: {
 			package: '@equaltoai/greater-components',
-			version: '4.2.6',
+			version: '0.1.1',
 		},
 		github: {
 			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/faces/social/src/components/Timeline',
@@ -628,7 +628,7 @@ export const components: Component[] = [
 		registryDependencies: ['button'],
 		npm: {
 			package: '@equaltoai/greater-components',
-			version: '4.2.6',
+			version: '0.1.1',
 		},
 		github: {
 			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/shared/auth/src',
@@ -690,7 +690,7 @@ export const components: Component[] = [
 		registryDependencies: [],
 		npm: {
 			package: '@equaltoai/greater-components',
-			version: '4.2.6',
+			version: '0.1.1',
 		},
 		github: {
 			url: 'https://github.com/equaltoai/greater-components/tree/main/packages/adapters/src/graphql',

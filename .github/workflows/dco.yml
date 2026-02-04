@@ -3,6 +3,12 @@ name: DCO Check
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: 'Base branch to compare against for signoffs (e.g., premain or main)'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -15,11 +21,46 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: DCO Check
+      - name: DCO Check (pull_request)
+        if: github.event_name == 'pull_request'
         uses: tim-actions/dco@v1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: DCO Check (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          BASE_REF: ${{ inputs.base_ref }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${BASE_REF}" ]]; then
+            echo "::error::Missing required input: base_ref"
+            exit 1
+          fi
+
+          git fetch origin "${BASE_REF}:${BASE_REF}" --force
+
+          head_sha="$(git rev-parse HEAD)"
+          mapfile -t commits < <(git rev-list "${BASE_REF}..${head_sha}")
+
+          if [[ ${#commits[@]} -eq 0 ]]; then
+            echo "dco: no commits to check in ${BASE_REF}..${head_sha}"
+            exit 0
+          fi
+
+          missing=0
+          for sha in "${commits[@]}"; do
+            if ! git show -s --format=%B "${sha}" | grep -qi '^Signed-off-by:'; then
+              echo "::error::Commit ${sha} is missing Signed-off-by"
+              missing=1
+            fi
+          done
+
+          if [[ "${missing}" -ne 0 ]]; then
+            exit 1
+          fi

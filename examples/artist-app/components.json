@@ -1,6 +1,6 @@
 {
   "face": "artist",
-  "ref": "greater-v4.1.0",
+  "ref": "greater-v0.1.0",
   "style": "default",
   "tailwind": false,
   "typescript": true,

@@ -435,7 +435,7 @@ Options:
    {
    	"$schema": "https://greater.components.dev/schema.json",
    	"version": "1.0.0",
-   	"ref": "greater-v4.2.0",
+   	"ref": "greater-v0.1.1",
    	"style": "default",
    	"aliases": {
    		"components": "$lib/components/ui",
@@ -534,8 +534,8 @@ Options:
    ```json
    {
    	"installed": [
-   		{ "name": "button", "version": "4.2.0", "installedAt": "2024-12-10T12:00:00Z" },
-   		{ "name": "timeline", "version": "4.2.0", "installedAt": "2024-12-10T12:00:00Z" }
+   		{ "name": "button", "version": "0.1.1", "installedAt": "2024-12-10T12:00:00Z" },
+   		{ "name": "timeline", "version": "0.1.1", "installedAt": "2024-12-10T12:00:00Z" }
    	]
    }
    ```
@@ -759,7 +759,7 @@ The CLI fetches a registry index on each operation:
 {
 	"schemaVersion": "1.0.0",
 	"generatedAt": "2024-12-10T12:00:00Z",
-	"ref": "greater-v4.2.0",
+	"ref": "greater-v0.1.1",
 	"checksums": {
 		"button": "sha256-abc123...",
 		"timeline": "sha256-def456..."
@@ -799,11 +799,9 @@ greater-v{MAJOR}.{MINOR}.{PATCH}
 
 ### 8.2 Compatibility Matrix
 
-| Greater Version | Lesser Version | Svelte Version | Node.js |
-| --------------- | -------------- | -------------- | ------- |
-| greater-v4.x    | lesser-v1.3.x  | ^5.0.0         | ^18.0.0 |
-| greater-v3.x    | lesser-v1.2.x  | ^5.0.0         | ^18.0.0 |
-| greater-v2.x    | lesser-v1.1.x  | ^4.2.0         | ^16.0.0 |
+| Greater Version | Lesser Version | Svelte Version | Node.js  |
+| --------------- | -------------- | -------------- | -------- |
+| greater-v0.1.x  | lesser-v\*     | ^5.0.0         | >=24.0.0 |
 
 ### 8.3 Schema Coupling
 
@@ -838,11 +836,11 @@ Releases are tagged in the Greater Components repository:
 
 ```bash
 # Release tags
-git tag greater-v4.2.0 -m "Release 4.2.0"
-git tag greater-v4.2.0-lesser-v1.3.0  # Explicit compatibility tag
+git tag greater-v0.1.1 -m "Release 0.1.1"
+git tag greater-v0.1.1-lesser-v1.3.0  # Explicit compatibility tag
 
 # Push with signatures (WebAuthn/GPG)
-git push origin greater-v4.2.0
+git push origin greater-v0.1.1
 ```
 
 The CLI fetches from these tags:

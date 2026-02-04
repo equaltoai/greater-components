@@ -51,7 +51,7 @@ vi.mock('../src/utils/logger.js', () => ({
 }));
 
 vi.mock('../src/utils/registry-index.js', () => ({
-	resolveRef: vi.fn().mockResolvedValue({ ref: 'greater-v4.2.0', source: 'fallback' }),
+	resolveRef: vi.fn().mockResolvedValue({ ref: 'greater-v0.1.1', source: 'fallback' }),
 	fetchRegistryIndex: vi.fn().mockRejectedValue(new Error('Registry index not available in tests')),
 }));
 

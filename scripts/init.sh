@@ -7,20 +7,21 @@ echo "🚀 Initializing Greater Components repository..."
 
 # Check Node version
 if ! command -v node &> /dev/null; then
-    echo "❌ Node.js is not installed. Please install Node.js v20 or higher."
+    echo "❌ Node.js is not installed. Please install Node.js v24 or higher."
     exit 1
 fi
 
 NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
-if [ "$NODE_VERSION" -lt 20 ]; then
-    echo "❌ Node.js version is too old. Please install Node.js v20 or higher."
+if [ "$NODE_VERSION" -lt 24 ]; then
+    echo "❌ Node.js version is too old. Please install Node.js v24 or higher."
     exit 1
 fi
 
 # Check pnpm
 if ! command -v pnpm &> /dev/null; then
-    echo "📦 Installing pnpm..."
-    npm install -g pnpm@9
+    echo "📦 Enabling pnpm via Corepack..."
+    corepack enable
+    corepack prepare pnpm@10.25.0 --activate
 fi
 
 echo "📦 Installing dependencies..."

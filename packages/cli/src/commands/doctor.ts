@@ -58,10 +58,10 @@ export interface DiagnosticSummary {
 }
 
 /**
- * Required Node.js version (per official documentation: Node.js >= 20.0.0)
+ * Required Node.js version (per official documentation: Node.js >= 24.0.0)
  * @see https://greater.fediverse.dev/getting-started
  */
-const REQUIRED_NODE_VERSION = 20;
+const REQUIRED_NODE_VERSION = 24;
 
 /**
  * Required Svelte version (per official documentation: Svelte >= 5.0.0)
@@ -100,7 +100,7 @@ export function formatResult(result: DiagnosticResult): string {
 
 /**
  * Check if Node.js version meets requirements
- * Per official documentation: Node.js >= 20.0.0 required
+ * Per official documentation: Node.js >= 24.0.0 required
  */
 export function checkNodeVersion(): DiagnosticResult {
 	const nodeVersion = process.versions.node;

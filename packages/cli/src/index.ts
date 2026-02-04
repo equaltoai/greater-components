@@ -16,6 +16,7 @@ import { auditCommand } from './commands/audit.js';
 import { cacheCommand } from './commands/cache.js';
 import { logger } from './utils/logger.js';
 import { ensureLocalRepoRoot } from './utils/local-repo.js';
+import { getCliVersion } from './utils/version.js';
 
 ensureLocalRepoRoot(process.cwd());
 logger.debug(
@@ -25,7 +26,7 @@ logger.debug(
 const program = new Command()
 	.name('greater')
 	.description('CLI for adding Greater Components to your project')
-	.version('0.1.0');
+	.version(getCliVersion());
 
 // Add commands
 program.addCommand(initCommand);

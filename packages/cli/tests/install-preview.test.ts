@@ -29,7 +29,7 @@ vi.mock('../src/utils/logger.js', () => ({
 function createMockConfig(): ComponentConfig {
 	return {
 		version: '1.0.0',
-		ref: 'greater-v4.2.0',
+		ref: 'greater-v0.1.1',
 		style: 'default' as const,
 		rsc: false,
 		tsx: false,

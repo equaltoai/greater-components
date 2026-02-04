@@ -347,7 +347,7 @@ describe('Config Schema Validation', () => {
 			const completeConfig = {
 				$schema: 'https://greater.components.dev/schema.json',
 				version: '1.0.0',
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				installMode: 'vendored',
 				css: { tokens: true, primitives: true, face: null },
 				installed: [],
@@ -498,7 +498,7 @@ describe('Config Schema Validation', () => {
 			const completeConfig = {
 				$schema: 'https://greater.components.dev/schema.json',
 				version: '1.0.0',
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				installMode: 'vendored',
 				style: 'default',
 				rsc: false,

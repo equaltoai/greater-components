@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-notifications",
-  "version": "4.0.1",
+  "version": "0.1.2-rc.1",
   "description": "Notification components for ActivityPub/Fediverse applications",
   "components": {
     "Root": {

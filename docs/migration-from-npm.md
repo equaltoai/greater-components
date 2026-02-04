@@ -19,7 +19,7 @@ The CLI distribution model offers several advantages:
 
 ## Prerequisites
 
-- Node.js >= 20.0.0
+- Node.js >= 24.0.0
 - Svelte >= 5.0.0
 - Greater CLI installed (see [CLI Guide](./cli-guide.md#installation))
 - Existing project using `@equaltoai/greater-components` npm packages

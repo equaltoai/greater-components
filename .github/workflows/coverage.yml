@@ -2,9 +2,10 @@ name: Test Coverage
 
 on:
   push:
-    branches: [premain, main]
+    branches: [staging, premain, main]
   pull_request:
-    branches: [premain, main]
+    branches: [staging, premain, main]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

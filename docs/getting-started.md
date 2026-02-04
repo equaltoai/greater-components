@@ -6,8 +6,8 @@ This guide walks you through installing, configuring, and deploying Greater Comp
 
 **Required:**
 
-- Node.js >= 20.0.0
-- pnpm >= 9.0.0 (recommended; via Corepack)
+- Node.js >= 24.0.0
+- pnpm >= 10.0.0 (recommended; via Corepack)
 - Svelte >= 5.0.0 (must support runes system)
 - TypeScript >= 5.0.0 (strongly recommended)
 

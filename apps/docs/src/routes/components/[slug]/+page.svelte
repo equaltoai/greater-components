@@ -14,12 +14,8 @@
 		setTimeout(() => (copiedCode = false), 2000);
 	}
 
-	function installCommand(pkg: string) {
-		if (!component) return `pnpm add @equaltoai/greater-components`;
-		if (component.npm.package === '@equaltoai/greater-components-primitives') {
-			return `pnpm add @equaltoai/greater-components`;
-		}
-		return `greater add ${pkg}`;
+	function installCommand(item: string) {
+		return `greater add ${item}`;
 	}
 </script>
 
@@ -89,11 +85,10 @@
 				<div class="meta-info">
 					<h3>Package Info</h3>
 					<dl>
-						<dt>Package</dt>
-						<dd><code>{component.npm.package}</code></dd>
-
-						<dt>Version</dt>
-						<dd>{component.npm.version}</dd>
+						<dt>Source</dt>
+						<dd>
+							<a href={component.github.url} target="_blank" rel="noreferrer">View on GitHub</a>
+						</dd>
 
 						{#if component.bundleSize}
 							<dt>Bundle Size</dt>
@@ -269,18 +264,10 @@
 					<div class="code-block">
 						<pre><code>{installCommand(component.slug)}</code></pre>
 					</div>
-
-					<h3>Manual Installation</h3>
-					<p>Install from npm:</p>
-					<div class="code-block">
-						<pre><code>npm install {component.npm.package}</code></pre>
-					</div>
-
-					<p>Then import in your components:</p>
-					<div class="code-block">
-						<pre><code>import {'{'} {component.name} {'}'} from '{component.npm.package}';</code
-							></pre>
-					</div>
+					<p>
+						Greater Components is distributed via GitHub Releases and the `greater` CLI (not the npm
+						registry).
+					</p>
 				</section>
 
 				<section id="accessibility">

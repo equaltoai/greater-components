@@ -93,7 +93,7 @@ vi.mock('../src/utils/registry-index.js', () => ({
 
 vi.mock('../src/utils/config.js', () => ({
 	DEFAULT_REF: 'main',
-	FALLBACK_REF: 'greater-v4.0.0',
+	FALLBACK_REF: 'greater-v0.1.1',
 }));
 
 describe('Cache Command', () => {
@@ -103,10 +103,10 @@ describe('Cache Command', () => {
 
 	describe('cache ls', () => {
 		it('lists cached refs', async () => {
-			mockGetCachedRefs.mockResolvedValue(['greater-v4.1.0', 'greater-v4.2.0']);
+			mockGetCachedRefs.mockResolvedValue(['greater-v0.1.0', 'greater-v0.1.1']);
 			mockGetCacheStatus.mockImplementation(async (ref: string) => ({
 				ref,
-				hasRegistryIndex: ref === 'greater-v4.2.0',
+				hasRegistryIndex: ref === 'greater-v0.1.1',
 				cachedFiles: ['file1.ts', 'file2.ts'],
 				cacheDir: `${mockCacheDir}/${ref}`,
 			}));
@@ -119,8 +119,8 @@ describe('Cache Command', () => {
 			await program.parseAsync(['node', 'test', 'cache', 'ls']);
 
 			expect(mockGetCachedRefs).toHaveBeenCalled();
-			expect(mockGetCacheStatus).toHaveBeenCalledWith('greater-v4.1.0');
-			expect(mockGetCacheStatus).toHaveBeenCalledWith('greater-v4.2.0');
+			expect(mockGetCacheStatus).toHaveBeenCalledWith('greater-v0.1.0');
+			expect(mockGetCacheStatus).toHaveBeenCalledWith('greater-v0.1.1');
 		});
 
 		it('handles empty cache', async () => {
@@ -142,9 +142,9 @@ describe('Cache Command', () => {
 
 			const program = new Command();
 			program.addCommand(cacheCommand);
-			await program.parseAsync(['node', 'test', 'cache', 'clear', 'greater-v4.1.0']);
+			await program.parseAsync(['node', 'test', 'cache', 'clear', 'greater-v0.1.0']);
 
-			expect(mockClearCache).toHaveBeenCalledWith('greater-v4.1.0');
+			expect(mockClearCache).toHaveBeenCalledWith('greater-v0.1.0');
 		});
 
 		it('clears all cache with --all flag', async () => {
@@ -174,13 +174,13 @@ describe('Cache Command', () => {
 	describe('cache prefetch', () => {
 		beforeEach(() => {
 			mockResolveRef.mockResolvedValue({
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				source: 'explicit',
 			});
 
 			mockFetchRegistryIndex.mockResolvedValue({
-				version: '4.2.0',
-				ref: 'greater-v4.2.0',
+				version: '0.1.1',
+				ref: 'greater-v0.1.1',
 				generatedAt: new Date().toISOString(),
 				components: {
 					button: { name: 'button', files: [{ path: 'button.svelte' }] },
@@ -212,7 +212,7 @@ describe('Cache Command', () => {
 
 			const program = new Command();
 			program.addCommand(cacheCommand);
-			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v4.2.0', 'button']);
+			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v0.1.1', 'button']);
 
 			expect(mockResolveRef).toHaveBeenCalled();
 			expect(mockFetchRegistryIndex).toHaveBeenCalled();
@@ -224,7 +224,7 @@ describe('Cache Command', () => {
 
 			const program = new Command();
 			program.addCommand(cacheCommand);
-			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v4.2.0', '--all']);
+			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v0.1.1', '--all']);
 
 			expect(mockResolveRef).toHaveBeenCalled();
 			expect(mockFetchRegistryIndex).toHaveBeenCalled();
@@ -243,7 +243,7 @@ describe('Cache Command', () => {
 			program.addCommand(cacheCommand);
 
 			// Should not throw
-			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v4.2.0', 'button']);
+			await program.parseAsync(['node', 'test', 'cache', 'prefetch', 'greater-v0.1.1', 'button']);
 
 			// Should have attempted the fetch
 			expect(mockFetchFromGitTag).toHaveBeenCalled();
@@ -259,7 +259,7 @@ describe('Cache Command', () => {
 				'test',
 				'cache',
 				'prefetch',
-				'greater-v4.2.0',
+				'greater-v0.1.1',
 				'faces/social',
 			]);
 
@@ -276,7 +276,7 @@ describe('Cache Command', () => {
 				'test',
 				'cache',
 				'prefetch',
-				'greater-v4.2.0',
+				'greater-v0.1.1',
 				'shared/auth',
 			]);
 
@@ -292,17 +292,17 @@ describe('Cache Status', () => {
 
 	it('returns correct cache status structure', async () => {
 		mockGetCacheStatus.mockResolvedValue({
-			ref: 'greater-v4.2.0',
+			ref: 'greater-v0.1.1',
 			hasRegistryIndex: true,
 			cachedFiles: ['file1.ts', 'file2.ts', 'file3.ts'],
-			cacheDir: `${mockCacheDir}/greater-v4.2.0`,
+			cacheDir: `${mockCacheDir}/greater-v0.1.1`,
 		});
 
-		const status = await mockGetCacheStatus('greater-v4.2.0');
+		const status = await mockGetCacheStatus('greater-v0.1.1');
 
-		expect(status.ref).toBe('greater-v4.2.0');
+		expect(status.ref).toBe('greater-v0.1.1');
 		expect(status.hasRegistryIndex).toBe(true);
 		expect(status.cachedFiles).toHaveLength(3);
-		expect(status.cacheDir).toContain('greater-v4.2.0');
+		expect(status.cacheDir).toContain('greater-v0.1.1');
 	});
 });

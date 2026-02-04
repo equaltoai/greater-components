@@ -205,7 +205,13 @@ async function main() {
 	run('pnpm', ['release:prepare', version]);
 
 	// Commit
-	run('git', ['add', 'package.json', 'registry/index.json', 'registry/latest.json']);
+	run('git', [
+		'add',
+		'package.json',
+		'packages/cli/package.json',
+		'registry/index.json',
+		'registry/latest.json',
+	]);
 	run('git', ['commit', '-s', '-m', releaseTitle]);
 	run('git', ['push', '-u', 'origin', releaseBranch]);
 
@@ -217,6 +223,7 @@ async function main() {
 			'',
 			'This PR is safe to merge immediately. It updates:',
 			'- root version (package.json)',
+			'- CLI version (packages/cli/package.json)',
 			'- registry/latest.json (ref/version)',
 			'- registry/index.json (ref/version/checksums)',
 		].join('\n');
