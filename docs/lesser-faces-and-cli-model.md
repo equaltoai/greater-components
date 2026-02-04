@@ -801,7 +801,7 @@ greater-v{MAJOR}.{MINOR}.{PATCH}
 
 | Greater Version | Lesser Version | Svelte Version | Node.js  |
 | --------------- | -------------- | -------------- | -------- |
-| greater-v0.1.x  | lesser-v\*     | ^5.0.0         | >=20.0.0 |
+| greater-v0.1.x  | lesser-v\*     | ^5.0.0         | >=24.0.0 |
 
 ### 8.3 Schema Coupling
 

@@ -1,0 +1,159 @@
+name: Prerelease (premain)
+
+on:
+  push:
+    branches: ['premain']
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release Please (Prerelease)
+        id: release
+        uses: googleapis/release-please-action@16a9c90856f42705d54a6fda1823352bdc62cf38 # v4
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          target-branch: premain
+          config-file: release-please-config.premain.json
+          manifest-file: .release-please-manifest.premain.json
+          # Prevent release-please from opening the *next* prerelease PR on release commits.
+          # PR generation runs in prerelease-pr.yml.
+          skip-github-pull-request: true
+
+      - name: Checkout (for release assets)
+        if: steps.release.outputs.release_created == 'true'
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        if: steps.release.outputs.release_created == 'true'
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        if: steps.release.outputs.release_created == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        if: steps.release.outputs.release_created == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Fetch main + premain (release branch verification)
+        if: steps.release.outputs.release_created == 'true'
+        run: git fetch origin main premain --force
+
+      - name: Verify tag was cut from the correct branch
+        if: steps.release.outputs.release_created == 'true'
+        run: bash scripts/verify-release-branch.sh "${{ steps.release.outputs.tag_name }}"
+
+      - name: Build packages
+        if: steps.release.outputs.release_created == 'true'
+        run: pnpm build
+
+      - name: Validate registry index
+        if: steps.release.outputs.release_created == 'true'
+        run: node scripts/validate-registry-index.js --strict
+
+      - name: Validate release metadata
+        if: steps.release.outputs.release_created == 'true'
+        run: node scripts/validate-release-versions.js
+
+      - name: Pack release artifacts
+        if: steps.release.outputs.release_created == 'true'
+        run: node scripts/pack-for-release.js
+
+      - name: Upload release assets
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${TAG_NAME}" ]]; then
+            echo "release-assets: FAIL (missing tag_name output)"
+            exit 1
+          fi
+
+          # Immutable releases block asset changes after publication.
+          # release-please creates the GitHub release as a draft; assert that before uploading.
+          is_draft="$(gh release view "${TAG_NAME}" --json isDraft --jq '.isDraft')"
+          if [[ "${is_draft}" != "true" ]]; then
+            echo "release-assets: FAIL (release is already published; cannot upload assets/notes under immutable releases)"
+            exit 1
+          fi
+
+          mapfile -t existing_assets < <(gh release view "${TAG_NAME}" --json assets --jq '.assets[].name' 2>/dev/null || true)
+
+          shopt -s nullglob
+          assets=(
+            registry/index.json
+            registry/latest.json
+            artifacts/*
+          )
+
+          for asset_path in "${assets[@]}"; do
+            asset_name="$(basename "${asset_path}")"
+            if printf '%s\n' "${existing_assets[@]}" | grep -Fxq "${asset_name}"; then
+              echo "release-assets: skip existing ${asset_name}"
+              continue
+            fi
+            gh release upload "${TAG_NAME}" "${asset_path}"
+          done
+
+      - name: Publish prerelease (immutable)
+        if: steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${TAG_NAME}" ]]; then
+            echo "release-assets: FAIL (missing tag_name output)"
+            exit 1
+          fi
+
+          # If the release is already published, it is immutable (no edits allowed). Treat as no-op.
+          is_draft="$(gh release view "${TAG_NAME}" --json isDraft --jq '.isDraft')"
+          if [[ "${is_draft}" != "true" ]]; then
+            echo "release-assets: skip publish (already published)"
+            exit 0
+          fi
+
+          prerelease_flag=""
+          if [[ "${TAG_NAME}" =~ -rc(\.|$) ]]; then
+            prerelease_flag="--prerelease"
+          fi
+
+          gh release edit "${TAG_NAME}" --draft=false ${prerelease_flag}
+
+      - name: Cleanup failed draft prerelease (no remnants)
+        if: failure() && steps.release.outputs.release_created == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: |
+          if [[ -z "${TAG_NAME}" ]]; then
+            echo "release-cleanup: SKIP (missing tag_name output)"
+            exit 0
+          fi
+
+          # Only delete draft releases. If it's already published, do nothing.
+          is_draft="$(gh release view "${TAG_NAME}" --json isDraft --jq '.isDraft' 2>/dev/null || true)"
+          if [[ "${is_draft}" != "true" ]]; then
+            echo "release-cleanup: SKIP (release not draft or not found)"
+            exit 0
+          fi
+
+          echo "release-cleanup: deleting draft release and tag ${TAG_NAME}"
+          gh release delete "${TAG_NAME}" --yes --cleanup-tag

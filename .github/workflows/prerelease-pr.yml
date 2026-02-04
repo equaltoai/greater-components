@@ -22,6 +22,29 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Release Please (PR only, signed-off)
         env:
           RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
@@ -35,3 +58,44 @@ jobs:
             --config-file release-please-config.premain.json \
             --manifest-file .release-please-manifest.premain.json \
             --signoff "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
+
+      - name: Prepare release metadata (versions + registry refs)
+        run: |
+          set -euo pipefail
+
+          RELEASE_BRANCH="release-please--branches--premain--components--greater"
+
+          if ! git ls-remote --exit-code --heads origin "${RELEASE_BRANCH}" >/dev/null; then
+            echo "prepare-release-metadata: no release branch; skipping"
+            exit 0
+          fi
+
+          git fetch origin "${RELEASE_BRANCH}:${RELEASE_BRANCH}" --force
+          git checkout "${RELEASE_BRANCH}"
+
+          VERSION="$(node -p "require('./package.json').version")"
+          node scripts/prepare-github-release.js "${VERSION}"
+
+          pnpm exec prettier --write \
+            CHANGELOG.md \
+            registry/index.json \
+            registry/latest.json \
+            package.json \
+            ".release-please-manifest.premain.json" \
+            "packages/**/package.json" \
+            "packages/**/manifest.json"
+
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "prepare-release-metadata: no changes"
+            exit 0
+          fi
+
+          git add CHANGELOG.md package.json packages registry/index.json registry/latest.json .release-please-manifest.premain.json
+
+          if [[ -z "$(git diff --cached --name-only)" ]]; then
+            echo "prepare-release-metadata: no staged changes"
+            exit 0
+          fi
+
+          git commit -s -m "chore(release): prepare metadata"
+          git push origin "${RELEASE_BRANCH}"
