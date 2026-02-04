@@ -640,7 +640,7 @@ describe('List Display', () => {
 		it('lists components with installed status', async () => {
 			const config = {
 				version: '1.0.0',
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				style: 'default',
 				aliases: {
 					components: '$lib/components',

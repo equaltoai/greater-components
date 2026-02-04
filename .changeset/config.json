@@ -4,6 +4,9 @@
   "commit": false,
   "fixed": [
     [
+      "greater-components",
+      "@equaltoai/greater-components-cli",
+      "@equaltoai/greater-components",
       "@equaltoai/greater-components-primitives",
       "@equaltoai/greater-components-headless",
       "@equaltoai/greater-components-icons",
@@ -11,6 +14,7 @@
       "@equaltoai/greater-components-utils",
       "@equaltoai/greater-components-adapters",
       "@equaltoai/greater-components-content",
+      "@equaltoai/greater-components-testing",
       "@equaltoai/greater-components-auth",
       "@equaltoai/greater-components-compose",
       "@equaltoai/greater-components-notifications",
@@ -26,7 +30,7 @@
   ],
   "linked": [],
   "access": "public",
-  "baseBranch": "main",
+  "baseBranch": "staging",
   "updateInternalDependencies": "patch",
   "bumpVersionsWithWorkspaceProtocolOnly": true,
   "ignore": ["@greater-components/docs", "@equaltoai/playground"],

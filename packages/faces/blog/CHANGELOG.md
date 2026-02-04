@@ -1,7 +1,12 @@
 # @equaltoai/greater-components-blog
 
-## 1.0.0
+This package is versioned and released in lockstep with Greater Components tags (`greater-vX.Y.Z`).
+See the repo release changelog at `CHANGELOG.md`.
 
-### Major Changes
+## 0.1.1
 
-- Initial release of the Blog face components.
+- Align package versioning to repo releases.
+
+## 0.1.0
+
+- Initial 0.1.0 release.

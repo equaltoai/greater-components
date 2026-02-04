@@ -104,7 +104,7 @@ async function clearAction(ref?: string, options?: { all?: boolean }): Promise<v
 			logger.info('');
 			logger.info('Examples:');
 			logger.info('  greater cache clear --all');
-			logger.info('  greater cache clear greater-v4.2.0');
+			logger.info('  greater cache clear greater-v0.1.1');
 			return;
 		}
 

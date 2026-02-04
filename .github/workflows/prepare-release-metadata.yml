@@ -1,0 +1,56 @@
+name: Prepare Release Metadata (release-please branches)
+
+on:
+  push:
+    branches:
+      - 'release-please--branches--premain--components--greater'
+      - 'release-please--branches--main--components--greater'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Prepare release metadata (versions + registry refs)
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./package.json').version")"
+          node scripts/prepare-github-release.js "${VERSION}"
+
+      - name: Commit and push (if needed)
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "prepare-release-metadata: no changes"
+            exit 0
+          fi
+
+          git add package.json packages registry/index.json registry/latest.json
+
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "prepare-release-metadata: no staged changes"
+            exit 0
+          fi
+
+          git commit -s -m "chore(release): prepare metadata"
+          git push

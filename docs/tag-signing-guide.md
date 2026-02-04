@@ -51,7 +51,7 @@ Signed releases provide:
 
 ```bash
 # Sign a tag (explicit)
-git tag -s greater-v4.2.0 -m "Release 4.2.0"
+git tag -s greater-v0.1.1 -m "Release 0.1.1"
 
 # Or use the release script with --sign
 pnpm release:tag --sign
@@ -88,7 +88,7 @@ SSH signing is simpler if you already use SSH keys for GitHub authentication.
 
 ```bash
 # Sign a tag (explicit)
-git tag -s greater-v4.2.0 -m "Release 4.2.0"
+git tag -s greater-v0.1.1 -m "Release 0.1.1"
 
 # Or use the release script with --sign
 pnpm release:tag --sign
@@ -125,7 +125,7 @@ git clone https://github.com/equaltoai/greater-components.git
 cd greater-components
 
 # Verify a specific tag
-git tag -v greater-v4.2.0
+git tag -v greater-v0.1.1
 ```
 
 Expected output for a valid GPG signature:

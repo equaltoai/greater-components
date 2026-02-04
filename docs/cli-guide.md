@@ -149,7 +149,7 @@ greater init
 greater init -y --face social
 
 # Pin to specific version
-greater init --ref greater-v4.1.0
+greater init --ref greater-v0.1.0
 ```
 
 ---
@@ -295,7 +295,7 @@ greater diff [item] [options]
 greater diff button
 
 # Compare against specific version
-greater diff button --ref greater-v4.1.0
+greater diff button --ref greater-v0.1.0
 ```
 
 ---
@@ -368,10 +368,10 @@ greater cache <command> [options]
 greater cache ls
 
 # Prefetch everything for a ref
-greater cache prefetch greater-v4.2.0 --all
+greater cache prefetch greater-v0.1.1 --all
 
 # Prefetch a face + a few components
-greater cache prefetch greater-v4.2.0 faces/social shared/auth button
+greater cache prefetch greater-v0.1.1 faces/social shared/auth button
 ```
 
 ---

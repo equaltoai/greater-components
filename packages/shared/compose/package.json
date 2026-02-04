@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-compose",
-  "version": "4.0.1",
+  "version": "0.1.1",
   "type": "module",
   "description": "Post/content composer components for Greater Components",
   "license": "AGPL-3.0-only",

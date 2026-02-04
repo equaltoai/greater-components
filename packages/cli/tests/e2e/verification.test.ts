@@ -88,7 +88,7 @@ vi.mock('../../src/utils/fetch.js', () => ({
 				type: 'component',
 			},
 		],
-		ref: 'greater-v4.2.0',
+		ref: 'greater-v0.1.1',
 		verified: true,
 		integrityReport: {
 			allVerified: true,
@@ -99,14 +99,14 @@ vi.mock('../../src/utils/fetch.js', () => ({
 
 vi.mock('../../src/utils/registry-index.js', () => ({
 	fetchRegistryIndex: vi.fn().mockResolvedValue({
-		version: '4.2.0',
-		ref: 'greater-v4.2.0',
+		version: '0.1.1',
+		ref: 'greater-v0.1.1',
 		generatedAt: new Date().toISOString(),
 		schemaVersion: '1.0.0',
 		components: {
 			button: {
 				name: 'button',
-				version: '4.2.0',
+				version: '0.1.1',
 				files: [{ path: 'button.svelte', checksum: 'sha256-abc123' }],
 			},
 		},
@@ -117,7 +117,7 @@ vi.mock('../../src/utils/registry-index.js', () => ({
 		},
 	}),
 	resolveRef: vi.fn().mockResolvedValue({
-		ref: 'greater-v4.2.0',
+		ref: 'greater-v0.1.1',
 		source: 'explicit',
 	}),
 	getComponentChecksums: vi.fn().mockReturnValue({
@@ -145,7 +145,7 @@ describe('E2E Verification Workflows', () => {
 			mockFs.setupProject(SVELTEKIT_PROJECT);
 
 			mockVerifyGitTag.mockResolvedValue({
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				verified: true,
 				signatureStatus: 'valid',
 				signatureType: 'gpg',
@@ -154,7 +154,7 @@ describe('E2E Verification Workflows', () => {
 			});
 
 			const { verifyGitTag } = await import('../../src/utils/security.js');
-			const result = await verifyGitTag('greater-v4.2.0');
+			const result = await verifyGitTag('greater-v0.1.1');
 
 			expect(result.verified).toBe(true);
 			expect(result.signatureStatus).toBe('valid');
@@ -166,7 +166,7 @@ describe('E2E Verification Workflows', () => {
 			mockFs.setupProject(SVELTEKIT_PROJECT);
 
 			mockVerifyGitTag.mockResolvedValue({
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				verified: true,
 				signatureStatus: 'valid',
 				signatureType: 'ssh',
@@ -174,7 +174,7 @@ describe('E2E Verification Workflows', () => {
 			});
 
 			const { verifyGitTag } = await import('../../src/utils/security.js');
-			const result = await verifyGitTag('greater-v4.2.0');
+			const result = await verifyGitTag('greater-v0.1.1');
 
 			expect(result.verified).toBe(true);
 			expect(result.signatureType).toBe('ssh');
@@ -182,7 +182,7 @@ describe('E2E Verification Workflows', () => {
 
 		it('handles unsigned tags', async () => {
 			mockVerifyGitTag.mockResolvedValue({
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				verified: false,
 				signatureStatus: 'unsigned',
 				signatureType: 'unknown',
@@ -190,7 +190,7 @@ describe('E2E Verification Workflows', () => {
 			});
 
 			const { verifyGitTag } = await import('../../src/utils/security.js');
-			const result = await verifyGitTag('greater-v4.2.0');
+			const result = await verifyGitTag('greater-v0.1.1');
 
 			expect(result.verified).toBe(false);
 			expect(result.signatureStatus).toBe('unsigned');
@@ -198,7 +198,7 @@ describe('E2E Verification Workflows', () => {
 
 		it('handles unknown keys', async () => {
 			mockVerifyGitTag.mockResolvedValue({
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				verified: false,
 				signatureStatus: 'unknown_key',
 				signatureType: 'gpg',
@@ -206,7 +206,7 @@ describe('E2E Verification Workflows', () => {
 			});
 
 			const { verifyGitTag } = await import('../../src/utils/security.js');
-			const result = await verifyGitTag('greater-v4.2.0');
+			const result = await verifyGitTag('greater-v0.1.1');
 
 			expect(result.verified).toBe(false);
 			expect(result.signatureStatus).toBe('unknown_key');
@@ -220,12 +220,12 @@ describe('E2E Verification Workflows', () => {
 			const { fetchComponentFiles } = await import('../../src/utils/fetch.js');
 
 			const result = await fetchComponentFiles(MOCK_BUTTON_COMPONENT as any, {
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				skipVerification: false,
 			});
 
 			expect(result.verified).toBe(true);
-			expect(result.ref).toBe('greater-v4.2.0');
+			expect(result.ref).toBe('greater-v0.1.1');
 		});
 
 		it('tracks modified files for upgrade detection', async () => {
@@ -236,7 +236,7 @@ describe('E2E Verification Workflows', () => {
 				await import('../../src/utils/config.js');
 
 			const config = createDefaultConfig();
-			const configWithButton = addInstalledComponent(config, 'button', 'greater-v4.1.0');
+			const configWithButton = addInstalledComponent(config, 'button', 'greater-v0.1.0');
 			await writeConfig(configWithButton, '/');
 
 			// Read back and verify
@@ -261,7 +261,7 @@ describe('E2E Verification Workflows', () => {
 			mockFs.setupProject(SVELTEKIT_PROJECT);
 
 			mockVerifyGitTag.mockResolvedValue({
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				verified: true,
 				signatureStatus: 'valid',
 				signatureType: 'gpg',
@@ -274,26 +274,26 @@ describe('E2E Verification Workflows', () => {
 
 			// 1. Create config (init)
 			const config = createDefaultConfig();
-			config.ref = 'greater-v4.2.0';
+			config.ref = 'greater-v0.1.1';
 			await writeConfig(config, '/');
 
 			// 2. Add component (add)
 			const { fetchComponentFiles } = await import('../../src/utils/fetch.js');
 			const fetchResult = await fetchComponentFiles(MOCK_BUTTON_COMPONENT as any, {
-				ref: 'greater-v4.2.0',
+				ref: 'greater-v0.1.1',
 				verifySignature: true,
 			});
 
 			expect(fetchResult.verified).toBe(true);
 
 			// 3. Update config with installed component
-			const updatedConfig = addInstalledComponent(config, 'button', 'greater-v4.2.0');
+			const updatedConfig = addInstalledComponent(config, 'button', 'greater-v0.1.1');
 			await writeConfig(updatedConfig, '/');
 
 			// 4. Verify final state
 			const finalConfig = await readConfig('/');
 			expect(finalConfig?.installed).toHaveLength(1);
-			expect(finalConfig?.installed[0].version).toBe('greater-v4.2.0');
+			expect(finalConfig?.installed[0].version).toBe('greater-v0.1.1');
 		});
 	});
 
@@ -306,7 +306,7 @@ describe('E2E Verification Workflows', () => {
 
 			// Setup existing installation at v4.1.0
 			let config = createDefaultConfig();
-			config = addInstalledComponent(config, 'button', 'greater-v4.1.0');
+			config = addInstalledComponent(config, 'button', 'greater-v0.1.0');
 			await writeConfig(config, '/');
 
 			// Simulate upgrade to v4.2.0
@@ -315,11 +315,11 @@ describe('E2E Verification Workflows', () => {
 
 			// Update version (simulating upgrade command)
 			if (savedConfig) {
-				const upgraded = addInstalledComponent(savedConfig, 'button', 'greater-v4.2.0');
+				const upgraded = addInstalledComponent(savedConfig, 'button', 'greater-v0.1.1');
 				await writeConfig(upgraded, '/');
 
 				const verifyUpgrade = await readConfig('/');
-				expect(verifyUpgrade?.installed[0].version).toBe('greater-v4.2.0');
+				expect(verifyUpgrade?.installed[0].version).toBe('greater-v0.1.1');
 			}
 		});
 
@@ -378,7 +378,7 @@ describe('Error Scenarios', () => {
 
 	it('handles signature verification failure', async () => {
 		mockVerifyGitTag.mockResolvedValue({
-			ref: 'greater-v4.2.0',
+			ref: 'greater-v0.1.1',
 			verified: false,
 			signatureStatus: 'invalid',
 			signatureType: 'gpg',
@@ -386,7 +386,7 @@ describe('Error Scenarios', () => {
 		});
 
 		const { verifyGitTag } = await import('../../src/utils/security.js');
-		const result = await verifyGitTag('greater-v4.2.0');
+		const result = await verifyGitTag('greater-v0.1.1');
 
 		expect(result.verified).toBe(false);
 		expect(result.signatureStatus).toBe('invalid');
@@ -394,7 +394,7 @@ describe('Error Scenarios', () => {
 
 	it('handles network errors during verification', async () => {
 		mockVerifyGitTag.mockResolvedValue({
-			ref: 'greater-v4.2.0',
+			ref: 'greater-v0.1.1',
 			verified: false,
 			signatureStatus: 'error',
 			signatureType: 'unknown',
@@ -402,7 +402,7 @@ describe('Error Scenarios', () => {
 		});
 
 		const { verifyGitTag } = await import('../../src/utils/security.js');
-		const result = await verifyGitTag('greater-v4.2.0');
+		const result = await verifyGitTag('greater-v0.1.1');
 
 		expect(result.verified).toBe(false);
 		expect(result.signatureStatus).toBe('error');

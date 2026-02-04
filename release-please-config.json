@@ -1,0 +1,11 @@
+{
+  "component": "greater",
+  "release-type": "node",
+  "include-component-in-tag": true,
+  "include-v-in-tag": true,
+  "tag-separator": "-",
+  "draft": true,
+  "packages": {
+    ".": {}
+  }
+}

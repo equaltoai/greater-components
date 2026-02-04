@@ -53,7 +53,7 @@ vi.mock('../../src/utils/logger.js', () => ({
 vi.mock('../../src/utils/fetch.js', () => ({
 	fetchComponentFiles: vi.fn().mockResolvedValue({
 		files: [{ path: 'button.ts', content: 'export const button = {};', type: 'component' }],
-		ref: 'greater-v4.2.0',
+		ref: 'greater-v0.1.1',
 	}),
 }));
 
@@ -111,12 +111,12 @@ describe('E2E Workflows', () => {
 
 			// Step 6: Update component (simulating update)
 			if (!savedConfig) throw new Error('Config not found');
-			const finalConfig = addInstalledComponent(savedConfig, 'button', 'greater-v4.3.0');
+			const finalConfig = addInstalledComponent(savedConfig, 'button', 'greater-v0.1.2');
 			await writeConfig(finalConfig, '/');
 
 			// Step 7: Verify update
 			const verifyConfig = await readConfig('/');
-			expect(verifyConfig?.installed[0].version).toBe('greater-v4.3.0');
+			expect(verifyConfig?.installed[0].version).toBe('greater-v0.1.2');
 		});
 	});
 
@@ -196,9 +196,9 @@ describe('E2E Workflows', () => {
 		it('gets cache status', async () => {
 			const { getCacheStatus } = await import('../../src/utils/offline.js');
 
-			const status = await getCacheStatus('greater-v4.2.0');
+			const status = await getCacheStatus('greater-v0.1.1');
 
-			expect(status.ref).toBe('greater-v4.2.0');
+			expect(status.ref).toBe('greater-v0.1.1');
 			expect(typeof status.hasRegistryIndex).toBe('boolean');
 			expect(Array.isArray(status.cachedFiles)).toBe(true);
 		});

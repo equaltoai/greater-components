@@ -17,6 +17,6 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
-    "@equaltoai/greater-components": "^4.0.0"
+    "@equaltoai/greater-components": "^0.1.1"
   }
 }
