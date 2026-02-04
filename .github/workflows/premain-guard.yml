@@ -3,6 +3,12 @@ name: Premain Branch Guard
 on:
   pull_request:
     branches: [premain]
+  workflow_dispatch:
+    inputs:
+      base_ref:
+        description: 'Base branch for policy evaluation (e.g., premain)'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -15,10 +21,20 @@ jobs:
     steps:
       - name: Require PR from staging or prerelease PR branch
         run: |
-          echo "Base: ${{ github.base_ref }}"
-          echo "Head: ${{ github.head_ref }}"
+          base_ref="${{ github.base_ref }}"
+          if [[ -z "${base_ref}" ]]; then
+            base_ref="${{ github.event.inputs.base_ref }}"
+          fi
 
-          if [ "${{ github.head_ref }}" != "staging" ] && [ "${{ github.head_ref }}" != "release-please--branches--premain--components--greater" ]; then
+          head_ref="${{ github.head_ref }}"
+          if [[ -z "${head_ref}" ]]; then
+            head_ref="${{ github.ref_name }}"
+          fi
+
+          echo "Base: ${base_ref}"
+          echo "Head: ${head_ref}"
+
+          if [ "${head_ref}" != "staging" ] && [ "${head_ref}" != "release-please--branches--premain--components--greater" ]; then
             echo "::error::premain is release-candidate only. Allowed sources: staging (promotion), release-please--branches--premain--components--greater (prerelease PR)."
             exit 1
           fi
