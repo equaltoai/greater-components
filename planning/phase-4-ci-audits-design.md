@@ -254,8 +254,9 @@ Reference: `scripts/audit-cli-registry.mjs:1`.
 
 - Registry schema: `schemas/registry-index.schema.json:1`
 - Registry checksum validator (recommended in tag workflow): `scripts/validate-registry-index.js:1`
-- Tag workflow currently runs strict validation:
-  - `.github/workflows/generate-registry.yml:47`
+- Release workflows currently run strict validation:
+  - `.github/workflows/prerelease.yml:61`
+  - `.github/workflows/release.yml:174`
 
 Policy choice:
 
@@ -264,7 +265,7 @@ Policy choice:
 
 Current implementation:
 
-- Tag-time validation always runs: `.github/workflows/generate-registry.yml:47`
+- Release-time validation always runs (on RC + stable): `.github/workflows/prerelease.yml:61`
 - PR-time validation runs only when registry-related files change: `.github/workflows/test.yml:39`
 
 ---
@@ -320,7 +321,7 @@ Implemented:
 
 ### 5.3 Standardize Node version
 
-- CI uses `.nvmrc` (Node 20): `.nvmrc:1`
+- CI uses `.nvmrc` (Node 24): `.nvmrc:1`
 - Ensure all workflows prefer `.nvmrc` where possible (most already do).
 
 ---
@@ -402,4 +403,6 @@ pnpm validate:registry
 - Registry generator: `scripts/generate-registry-index.js:1`
 - Registry validator: `scripts/validate-registry-index.js:1`
 - Registry schema: `schemas/registry-index.schema.json:1`
-- Tag-time registry workflow: `.github/workflows/generate-registry.yml:44`
+- Release registry workflows:
+  - `.github/workflows/prerelease.yml:61`
+  - `.github/workflows/release.yml:174`
