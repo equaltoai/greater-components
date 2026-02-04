@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-social",
   "private": true,
-  "version": "4.0.1",
+  "version": "0.1.1",
   "type": "module",
   "description": "Social/Twitter-style UI components for Greater Components (formerly fediverse)",
   "license": "AGPL-3.0-only",
@@ -101,24 +101,24 @@
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@tanstack/svelte-virtual": "^3.13.17"
+    "@tanstack/svelte-virtual": "^3.13.18"
   },
   "devDependencies": {
-    "@babel/parser": "^7.28.5",
-    "@babel/traverse": "^7.28.5",
-    "@playwright/test": "^1.57.0",
-    "@sveltejs/vite-plugin-svelte": "^6.2.2",
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
+    "@playwright/test": "^1.58.1",
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.3.1",
-    "@types/node": "^25.0.3",
-    "@vitest/coverage-v8": "^4.0.16",
-    "@vitest/ui": "^4.0.16",
+    "@types/node": "^25.2.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
     "axe-core": "^4.11.1",
-    "jsdom": "^27.4.0",
-    "svelte": "^5.46.1",
+    "jsdom": "^28.0.0",
+    "svelte": "^5.49.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.0",
-    "vitest": "^4.0.16"
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

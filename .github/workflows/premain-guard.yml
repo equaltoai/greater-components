@@ -1,0 +1,35 @@
+name: Premain Branch Guard
+
+on:
+  pull_request:
+    branches: [premain]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: Enforce release-candidate-only premain
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Require PR from staging or prerelease PR branch
+        run: |
+          echo "Base: ${{ github.base_ref }}"
+          echo "Head: ${{ github.head_ref }}"
+
+          if [ "${{ github.head_ref }}" != "staging" ] && [ "${{ github.head_ref }}" != "release-please--branches--premain--components--greater" ]; then
+            echo "::error::premain is release-candidate only. Allowed sources: staging (promotion), release-please--branches--premain--components--greater (prerelease PR)."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Validate release versions
+        run: node scripts/validate-release-versions.js

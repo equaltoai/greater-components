@@ -278,7 +278,7 @@ export async function clearAllRegistryCache(): Promise<void> {
 /**
  * Fetch and parse the registry index for a Git ref
  *
- * @param ref Git tag or branch reference (e.g., 'greater-v4.2.0')
+ * @param ref Git tag or branch reference (e.g., 'greater-v0.1.1')
  * @param options Fetch options
  * @returns Parsed and validated registry index
  */

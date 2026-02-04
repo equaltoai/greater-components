@@ -70,7 +70,7 @@ vi.mock('../src/utils/fetch.js', () => ({
 				type: 'component',
 			},
 		],
-		ref: 'greater-v5.0.0',
+		ref: 'greater-v0.1.1',
 	}),
 }));
 
@@ -139,7 +139,7 @@ describe('Update Command Execution', () => {
 		const configContent = mockFs.get('/components.json');
 		const updatedConfig = JSON.parse(configContent || '{}');
 		expect(updatedConfig.installed.find((c: any) => c.name === 'button').version).toBe(
-			'greater-v4.2.0'
+			'greater-v0.1.1'
 		);
 	});
 

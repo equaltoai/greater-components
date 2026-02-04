@@ -52,7 +52,7 @@ vi.mock('../src/utils/fetch.js', () => ({
 				type: 'component',
 			},
 		],
-		ref: 'greater-v4.3.0',
+		ref: 'greater-v0.1.2',
 	}),
 }));
 

@@ -7,6 +7,8 @@ node_modules/
 dist/
 build/
 .svelte-kit/
+artifacts/
+*.tgz
 
 # Registry (index.json is tracked, temp files are not)
 registry/*.tmp
@@ -89,3 +91,6 @@ working/
 trial/
 
 .pai
+
+typecheck.out
+PACKAGING_PLAN.md

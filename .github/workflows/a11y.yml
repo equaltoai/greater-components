@@ -2,9 +2,9 @@ name: Accessibility Testing
 
 on:
   push:
-    branches: [premain, main]
+    branches: [staging, premain, main]
   pull_request:
-    branches: [premain, main]
+    branches: [staging, premain, main]
   schedule:
     # Run accessibility tests daily at 2 AM UTC
     - cron: '0 2 * * *'

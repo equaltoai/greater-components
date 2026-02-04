@@ -175,7 +175,7 @@ async function main() {
 			exec(
 				'git add registry/ package.json pnpm-lock.yaml CHANGELOG.md packages/*/package.json packages/*/CHANGELOG.md packages/*/*/package.json packages/*/*/CHANGELOG.md || true'
 			);
-			exec(`git commit -m "chore(release): ${tagName}"`);
+			exec(`git commit -s -m "chore(release): ${tagName}"`);
 			log('✅ Changes committed', colors.green);
 		} else {
 			log('   No changes to commit', colors.yellow);

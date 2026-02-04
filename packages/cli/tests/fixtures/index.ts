@@ -14,7 +14,7 @@ import type { FaceManifest } from '../../src/registry/index.js';
 export const DEFAULT_TEST_CONFIG: ComponentConfig = {
 	$schema: 'https://greater.components.dev/schema.json',
 	version: '1.0.0',
-	ref: 'greater-v4.2.0',
+	ref: 'greater-v0.1.1',
 	installMode: 'vendored',
 	style: 'default',
 	rsc: false,
@@ -58,7 +58,7 @@ export function createInstalledComponent(
 ): InstalledComponent {
 	return {
 		name,
-		version: 'greater-v4.2.0',
+		version: 'greater-v0.1.1',
 		installedAt: new Date().toISOString(),
 		modified: false,
 		checksums: [],
@@ -233,7 +233,7 @@ export const BARE_PROJECT: MockProjectStructure = {
 
 export const MOCK_REGISTRY_INDEX = {
 	version: '1.0.0',
-	ref: 'greater-v4.2.0',
+	ref: 'greater-v0.1.1',
 	components: {
 		button: {
 			name: 'button',

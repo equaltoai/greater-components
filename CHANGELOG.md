@@ -1,70 +1,23 @@
-# Changelog
+# Greater Components Release Changelog
 
-## [4.1.0] - 2025-02-14
+This changelog tracks **Greater Components releases** (Git tags `greater-vX.Y.Z`) that distribute:
 
-### Added
+- the `greater` CLI (`greater-components-cli.tgz`)
+- the registry metadata (`registry/index.json`, `registry/latest.json`)
 
-- Rolled out the new AI chat component suite (Container, Messages, Message, Input, Header, ToolCall, Suggestions, Settings) with streaming response support, tool-call visualization, markdown rendering, and WCAG-compliant accessibility. See `@equaltoai/greater-components` and `@equaltoai/greater-components-chat` packages for full details.
+Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packages/greater-components/CHANGELOG.md`).
 
-## [2.2.0] - 2025-11-23
+## Unreleased
 
-### Added
+- Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
+- Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
-#### Fediverse Package
+## [0.1.1] - 2026-01-09
 
-- **Profile.Timeline component** - Dedicated profile timeline with filtering options
-  - Props: `username`, `adapter`, `showReplies`, `showBoosts`, `onlyMedia`, `showPinned`
-  - Integrates with Profile.Root context
-  - Supports virtualized scrolling
+- Release tag: `greater-v0.1.1`
+- Registry metadata updated for `greater-v0.1.1`
 
-#### Primitives Package
+## [0.1.0] - 2026-01-07
 
-- **Settings Components** - Composable settings panel primitives
-  - `SettingsSection` - Group settings with title and description
-  - `SettingsGroup` - Nest related settings
-  - `SettingsField` - Individual setting field with label
-  - `SettingsToggle` - Pre-composed toggle switch
-  - `SettingsSelect` - Pre-composed dropdown select
-- **Theme Components** - Advanced theme customization tools
-  - `ThemeWorkbench` - Visual theme builder with live preview
-  - `ColorHarmonyPicker` - Generate color harmonies (complementary, analogous, triadic, etc.)
-  - `ContrastChecker` - WCAG contrast ratio validator
-
-#### Utils Package
-
-- **Preference Store** - Persistent user preferences with localStorage
-  - `createPreferenceStore()` - Type-safe preference management
-  - Auto-save to localStorage
-  - Export/import functionality
-- **Theme Utilities** - Programmatic theme generation
-  - `generateTheme()` - Create complete theme from brand color
-  - `generateColorHarmony()` - Generate color schemes
-  - `hexToHsl()` / `hslToHex()` - Color space conversion
-  - `getContrastRatio()` - Calculate WCAG contrast ratio
-  - `meetsWCAG()` - Validate accessibility compliance
-  - `suggestTextColor()` - Optimal text color for background
-
-#### Adapters Package
-
-- **LesserGraphQLAdapter enhancements**
-  - `verifyCredentials()` - Verify authentication and get current user
-  - `isAuthenticated()` - Check if adapter has valid auth token
-  - `getToken()` - Retrieve current authentication token
-  - `refreshToken()` - Update authentication token
-
-### Changed
-
-- Documentation reorganized with implementation guide and troubleshooting section
-- API reference expanded with new components and utilities
-- Migration guide added for v2.2.0 adoption
-
-### Performance
-
-- All new components are tree-shakeable
-- Bundle size increase: <10KB (verified)
-
-### Testing
-
-- 80%+ test coverage across all new features
-- Comprehensive unit tests for all components
-- Integration tests for adapter methods
+- Release tag: `greater-v0.1.0`
+- Initial GitHub Release distribution (CLI + registry metadata)

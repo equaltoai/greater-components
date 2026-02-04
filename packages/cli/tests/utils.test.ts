@@ -73,7 +73,7 @@ describe('config utilities', () => {
 			},
 			installed: [],
 			$schema: 'https://greater.components.dev/schema.json',
-			ref: 'greater-v4.2.0',
+			ref: 'greater-v0.1.1',
 			version: '1.0.0',
 		};
 

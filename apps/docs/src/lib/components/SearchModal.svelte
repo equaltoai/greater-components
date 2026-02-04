@@ -54,6 +54,19 @@
 		searchQuery = '';
 	}
 
+	function handleOverlayPointerDown(e: PointerEvent) {
+		if (e.target === e.currentTarget) {
+			open = false;
+		}
+	}
+
+	function handleOverlayKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			open = false;
+		}
+	}
+
 	function getIcon(type: SearchDocument['type']) {
 		switch (type) {
 			case 'component':
@@ -77,8 +90,15 @@
 </script>
 
 {#if open}
-	<div class="search-modal-overlay" on:pointerdown={() => (open = false)}>
-		<div class="search-modal" on:pointerdown|stopPropagation>
+	<div
+		class="search-modal-overlay"
+		role="button"
+		tabindex="0"
+		aria-label="Close search"
+		on:pointerdown={handleOverlayPointerDown}
+		on:keydown={handleOverlayKeydown}
+	>
+		<div class="search-modal" role="dialog" aria-modal="true">
 			<div class="search-header">
 				<SearchIcon size={20} />
 				<input

@@ -10,7 +10,7 @@ Build conversational AI interfaces with the Greater Components Chat suite. These
 | ------------------ | ---------------------- |
 | **CLI Item**       | `shared/chat`          |
 | **Import Path**    | `$lib/components/chat` |
-| **Version**        | 4.0.0                  |
+| **Version**        | 0.1.1                  |
 | **Components**     | 8                      |
 | **Svelte Version** | 5.x (Runes)            |
 
