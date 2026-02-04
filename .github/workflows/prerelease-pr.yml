@@ -17,6 +17,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  actions: write
 
 jobs:
   release-please:
@@ -99,3 +100,49 @@ jobs:
 
           git commit -s -m "chore(release): prepare metadata"
           git push origin "${RELEASE_BRANCH}"
+
+      - name: Dispatch CI workflows for prerelease PR branch (GITHUB_TOKEN fallback)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_BRANCH: release-please--branches--premain--components--greater
+          BASE_BRANCH: premain
+          RELEASE_PLEASE_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${RELEASE_PLEASE_TOKEN:-}" ]]; then
+            echo "dispatch-ci: RELEASE_PLEASE_TOKEN is set; PR checks should trigger normally; skipping."
+            exit 0
+          fi
+
+          if ! git ls-remote --exit-code --heads origin "${RELEASE_BRANCH}" >/dev/null; then
+            echo "dispatch-ci: no release branch; skipping"
+            exit 0
+          fi
+
+          pr_number="$(
+            gh pr list \
+              --head "${RELEASE_BRANCH}" \
+              --base "${BASE_BRANCH}" \
+              --state open \
+              --json number \
+              --jq '.[0].number' \
+            || true
+          )"
+
+          if [[ -z "${pr_number}" || "${pr_number}" == "null" ]]; then
+            echo "dispatch-ci: no open PR for ${RELEASE_BRANCH} -> ${BASE_BRANCH}; skipping"
+            exit 0
+          fi
+
+          echo "dispatch-ci: triggering CI for PR #${pr_number} on ${RELEASE_BRANCH}"
+
+          gh workflow run dco.yml --ref "${RELEASE_BRANCH}" --field base_ref="${BASE_BRANCH}"
+          gh workflow run lint.yml --ref "${RELEASE_BRANCH}"
+          gh workflow run test.yml --ref "${RELEASE_BRANCH}"
+          gh workflow run e2e.yml --ref "${RELEASE_BRANCH}"
+          gh workflow run a11y.yml --ref "${RELEASE_BRANCH}"
+          gh workflow run coverage.yml --ref "${RELEASE_BRANCH}"
+          gh workflow run docs.yml --ref "${RELEASE_BRANCH}"
+          gh workflow run codeql.yml --ref "${RELEASE_BRANCH}"
