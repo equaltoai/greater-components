@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-messaging",
-  "version": "0.1.2-rc",
+  "version": "0.1.2-rc.1",
   "type": "module",
   "description": "Direct messaging components for Greater Components",
   "license": "AGPL-3.0-only",
