@@ -1,6 +1,6 @@
 {
   "name": "greater-components",
-  "version": "0.1.1",
+  "version": "0.1.2-rc",
   "private": true,
   "description": "Fediverse UI components built with Svelte 5, TypeScript, and pnpm workspaces",
   "repository": {
