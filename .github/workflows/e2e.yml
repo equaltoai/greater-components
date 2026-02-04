@@ -5,6 +5,7 @@ on:
     branches: [staging, premain, main]
   pull_request:
     branches: [staging, premain, main]
+  workflow_dispatch: {}
 
 permissions:
   contents: read
