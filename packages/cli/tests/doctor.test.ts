@@ -63,9 +63,9 @@ describe('doctor command utilities', () => {
 			expect(result.name).toBe('Node.js Version');
 			expect(typeof result.passed).toBe('boolean');
 			expect(result.severity).toBe('error');
-			// Node 20+ should pass per official documentation
+			// Node 24+ should pass per official documentation
 			const majorVersion = parseInt(process.versions.node.split('.')[0], 10);
-			expect(result.passed).toBe(majorVersion >= 20);
+			expect(result.passed).toBe(majorVersion >= 24);
 		});
 	});
 

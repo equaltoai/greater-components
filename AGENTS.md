@@ -9,7 +9,7 @@
 
 ## Build, Test, and Development Commands
 
-- Install with `pnpm install`; the `preinstall` hook enforces pnpm and Node 20 (`.nvmrc`).
+- Install with `pnpm install`; the `preinstall` hook enforces pnpm and Node 24 (`.nvmrc`).
 - `pnpm dev` runs docs and the playground in parallel; narrow focus with `pnpm --filter <package> <command>` when iterating on a single module.
 - `pnpm build` compiles every workspace; `pnpm check` calls each package’s `check` script when present.
 - `pnpm lint`, `pnpm format`, `pnpm typecheck`, and `pnpm changeset` should be clean before requesting review.

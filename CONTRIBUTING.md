@@ -74,7 +74,7 @@ By making a contribution to this project, I certify that:
 
 ### Prerequisites
 
-- Node.js v20 or higher (check `.nvmrc`)
+- Node.js v24 or higher (check `.nvmrc`)
 - pnpm v9 or higher
 - Git
 

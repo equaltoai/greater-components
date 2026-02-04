@@ -20,7 +20,7 @@ concepts:
     requires:
       - svelte: '>=5.0.0'
       - typescript: '>=5.0.0'
-      - node: '>=20.0.0'
+      - node: '>=24.0.0'
     replaces:
       - custom_ui_components
       - handwritten_fediverse_components

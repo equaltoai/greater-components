@@ -77,13 +77,13 @@ pnpm not enabled (or not installed)
 **Solution:**
 
 ```bash
-# Node 20+ includes Corepack
+# Node 24+ includes Corepack
 corepack enable
-corepack prepare pnpm@9 --activate
+corepack prepare pnpm@10.25.0 --activate
 
 # Verify installation
 pnpm --version
-# Should show 9.0.0 or higher
+# Should show 10.0.0 or higher
 ```
 
 ---
@@ -1209,7 +1209,7 @@ VITE_LESSER_TOKEN=production-token
 ### Before Reporting Issues
 
 1. **Search existing issues** - Problem may already be solved
-2. **Check version compatibility** - Ensure Svelte 5, Node 20+
+2. **Check version compatibility** - Ensure Svelte 5, Node 24+
 3. **Try minimal reproduction** - Isolate the problem
 4. **Check browser console** - Look for error messages
 5. **Review documentation** - Check API reference and patterns
