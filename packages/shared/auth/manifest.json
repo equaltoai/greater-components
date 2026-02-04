@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-auth",
-  "version": "0.1.1",
+  "version": "0.1.2-rc",
   "description": "Authentication components for ActivityPub/Fediverse applications",
   "components": {
     "Root": {
