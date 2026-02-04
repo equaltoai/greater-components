@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-cli",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "CLI for adding Greater Components to your project",
   "type": "module",
   "bin": {

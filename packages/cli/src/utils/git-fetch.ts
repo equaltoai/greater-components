@@ -192,7 +192,7 @@ export async function clearAllCache(): Promise<void> {
 
 /**
  * Fetch a file from GitHub with retry logic
- * @param ref Git tag or branch reference (e.g., 'greater-v4.2.0')
+ * @param ref Git tag or branch reference (e.g., 'greater-v0.1.1')
  * @param filePath Path to the file within the repository
  * @returns File content as a Buffer
  */
@@ -277,7 +277,7 @@ async function fetchWithRetry(ref: string, filePath: string): Promise<Buffer> {
  * Fetch a file from a Git tag with caching support
  * Uses cache-first strategy: checks local cache before making network request
  *
- * @param ref Git tag or branch reference (e.g., 'greater-v4.2.0')
+ * @param ref Git tag or branch reference (e.g., 'greater-v0.1.1')
  * @param filePath Path to the file within the repository
  * @param options Fetch options
  * @returns File content as a Buffer

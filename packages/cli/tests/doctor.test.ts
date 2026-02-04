@@ -31,7 +31,7 @@ vi.mock('../src/registry/index.js', async (importOriginal) => {
 
 const BASE_COMPONENT_CONFIG = {
 	version: '1.0.0',
-	ref: 'greater-v4.2.0',
+	ref: 'greater-v0.1.1',
 	installMode: 'vendored' as const,
 	style: 'default' as const,
 	rsc: false,

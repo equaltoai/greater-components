@@ -33,11 +33,19 @@ jobs:
             exit 1
           fi
 
+          if [[ "$VERSION" == *"-"* ]]; then
+            echo "Skipping stable tag: main currently has a prerelease version ($VERSION)"
+            echo "should_tag=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           TAG="greater-v${VERSION}"
+          echo "should_tag=true" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Create annotated tag (if missing)
+        if: steps.meta.outputs.should_tag == 'true'
         run: |
           TAG="${{ steps.meta.outputs.tag }}"
           VERSION="${{ steps.meta.outputs.version }}"
@@ -48,8 +56,8 @@ jobs:
             TAG_COMMIT="$(git rev-list -n 1 "$TAG")"
             HEAD_COMMIT="$(git rev-parse HEAD)"
             if [ "$TAG_COMMIT" != "$HEAD_COMMIT" ]; then
-              echo "::error::Tag $TAG already exists but points to $TAG_COMMIT (expected $HEAD_COMMIT)"
-              exit 1
+              echo "Tag $TAG already exists (points to $TAG_COMMIT); skipping on $HEAD_COMMIT"
+              exit 0
             fi
 
             echo "Tag already exists for this commit: $TAG"

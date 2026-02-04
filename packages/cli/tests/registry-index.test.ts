@@ -81,8 +81,8 @@ const mockIndex = {
 };
 
 const mockLatestRef = {
-	ref: 'greater-v2.0.0',
-	version: '2.0.0',
+	ref: 'greater-v0.1.1',
+	version: '0.1.1',
 	updatedAt: '2023-02-01T00:00:00.000Z',
 };
 

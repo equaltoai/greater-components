@@ -4,8 +4,9 @@ Greater Components distributes the `greater` CLI via GitHub Releases (it is not 
 
 ## Branching Model
 
-- `premain` is the default integration branch; feature PRs should target `premain`.
-- `main` is release-only; the only PR allowed into `main` is `premain → main` for a release cut.
+- `staging` is the default integration branch; feature PRs target `staging` and must include a changeset.
+- `premain` is release-candidate only; changes are promoted from `staging → premain` for integration testing.
+- `main` is release-only; changes are promoted from `premain → main` for stable releases.
 
 ## Release Definition (Client-Facing)
 
@@ -19,19 +20,26 @@ A **Greater Components release** is a single, immutable reference that clients c
 - **Quality gates:** CI is green for the tag’s commit (lint/format, build, unit, a11y, e2e, CodeQL).
 - **Upgrade path:** clients install the CLI from the Release and pin `--ref greater-vX.Y.Z`.
 
-## Creating a Release (Maintainers)
+## Creating a Release Candidate (Maintainers)
 
-If you want a single command that orchestrates the full flow (prepare → PR → merge premain → open release PR), run:
+Release candidates are cut from `premain` using a version like `X.Y.Z-rc.N`. They are used for client integration testing.
 
-- `pnpm release:cut 0.1.0`
+1. Promote changes from `staging → premain` via PR.
+2. On merge, GitHub Actions opens a prerelease PR into `premain` (release-please).
+3. Approve + merge the prerelease PR (no manual versioning).
+4. GitHub Actions tags `greater-vX.Y.Z-rc.N` from `premain` and publishes prerelease artifacts automatically.
 
-1. Prepare the release commit on `premain` (bump version + update registry refs):
-   - `pnpm release:prepare 0.1.0`
-   - Commit and merge to `premain` via PR.
-2. Cut the release by merging `premain → main` via PR.
-3. Tag + artifacts are published automatically:
-   - `Tag Release` creates the `greater-vX.Y.Z` tag from `main`.
-   - `Publish GitHub Release Artifacts` attaches `greater-components-cli.tgz`, `registry/index.json`, and `registry/latest.json`.
+## Creating a Stable Release (Maintainers)
+
+1. Promote changes from `premain → main` via PR.
+2. On merge, GitHub Actions opens a stable release PR into `main` (release-please), aligned to the latest `premain` RC baseline.
+3. Approve + merge the stable release PR (no manual versioning).
+4. GitHub Actions tags `greater-vX.Y.Z` from `main` and publishes release artifacts automatically.
+
+## Notes
+
+- `staging` runs checks only; release tags are only ever created from `premain` (RC) and `main` (stable).
+- `registry/latest.json` always points to the latest **stable** tag (it is not updated by `-rc.*` prereleases).
 
 ## Installing the CLI (Consumers)
 
@@ -39,22 +47,6 @@ If you want a single command that orchestrates the full flow (prepare → PR →
 # Replace `greater-vX.Y.Z` with a real tag from https://github.com/equaltoai/greater-components/releases
 npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
 greater --version
-```
-
-## Verifying a Release (Maintainers)
-
-Run locally before tagging:
-
-```bash
-pnpm format:check
-pnpm lint
-pnpm typecheck
-pnpm build
-pnpm validate:package
-pnpm validate:registry
-pnpm test:unit
-pnpm test:a11y:ci
-pnpm test:e2e
 ```
 
 ## Client Announcement Template
@@ -74,8 +66,3 @@ Upgrade:
   npm install -g https://github.com/equaltoai/greater-components/releases/download/greater-vX.Y.Z/greater-components-cli.tgz
   greater update --all --ref greater-vX.Y.Z --yes
 ```
-
-## Notes
-
-- `node scripts/pack-for-release.js` deletes and recreates `artifacts/`.
-- For signed tags, see `docs/tag-signing-guide.md`.
