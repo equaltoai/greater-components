@@ -498,9 +498,7 @@ export const initAction = async (options: {
 
 						if (result.success) {
 							if (result.addedImports.length > 0) {
-								cssSpinner.succeed(
-									`Added CSS imports to ${path.relative(cwd, result.filePath)}`
-								);
+								cssSpinner.succeed(`Added CSS imports to ${path.relative(cwd, result.filePath)}`);
 								cssInjected = true;
 							} else {
 								cssSpinner.info('CSS imports already present');
