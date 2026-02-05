@@ -49,6 +49,24 @@ vi.mock('../src/utils/registry-index.js', () => ({
 	resolveRef: vi.fn().mockResolvedValue({ ref: 'greater-v0.1.1', source: 'fallback' }),
 }));
 
+vi.mock('../src/utils/css-inject.js', () => ({
+	copyCssFiles: vi.fn().mockResolvedValue({
+		success: true,
+		copiedFiles: ['tokens.css', 'primitives.css'],
+		skippedFiles: [],
+		targetDir: '/src/lib/styles/greater',
+	}),
+	injectCssImports: vi.fn().mockResolvedValue({
+		success: true,
+		filePath: '/src/routes/+layout.svelte',
+		addedImports: ['tokens', 'primitives'],
+		existingImports: [],
+	}),
+	getRecommendedEntryPoint: vi.fn((entryPoints) => entryPoints[0] ?? null),
+}));
+
+import * as cssInjectUtils from '../src/utils/css-inject.js';
+
 describe('Init Command', () => {
 	beforeEach(() => {
 		mockFs.clear();
@@ -312,6 +330,39 @@ describe('Init Command', () => {
 			const { configExists } = await import('../src/utils/config.js');
 			expect(await configExists('/')).toBe(true);
 			expect(exitSpy).not.toHaveBeenCalled();
+		});
+
+		it('skips local CSS import injection when CSS copy fails', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+			vi.mocked(cssInjectUtils.copyCssFiles).mockResolvedValueOnce({
+				success: false,
+				copiedFiles: [],
+				skippedFiles: [],
+				targetDir: '/src/lib/styles/greater',
+				error: 'missing theme.css',
+			});
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/', yes: true });
+
+			expect(cssInjectUtils.copyCssFiles).toHaveBeenCalled();
+			expect(cssInjectUtils.injectCssImports).not.toHaveBeenCalled();
+		});
+
+		it('injects CSS imports when local CSS copy succeeds', async () => {
+			mockFs.setupProject(SVELTEKIT_PROJECT);
+			vi.mocked(cssInjectUtils.copyCssFiles).mockResolvedValueOnce({
+				success: true,
+				copiedFiles: ['tokens.css', 'primitives.css'],
+				skippedFiles: [],
+				targetDir: '/src/lib/styles/greater',
+			});
+
+			const { initAction } = await import('../src/commands/init.js');
+			await initAction({ cwd: '/', yes: true });
+
+			expect(cssInjectUtils.copyCssFiles).toHaveBeenCalled();
+			expect(cssInjectUtils.injectCssImports).toHaveBeenCalled();
 		});
 
 		it('prompts for configuration and creates config', async () => {
