@@ -391,7 +391,7 @@ export const initAction = async (options: {
 
 	// CSS injection
 	let cssInjected = false;
-	let _cssCopied = false;
+	let localCssReady = true;
 
 	if (!options.skipCss && projectDetails.cssEntryPoints.length > 0) {
 		const isLocalMode = config.css?.source === 'local';
@@ -423,16 +423,16 @@ export const initAction = async (options: {
 						copySpinner.succeed(
 							`Copied ${copyResult.copiedFiles.length} CSS file(s) to ${path.relative(cwd, copyResult.targetDir)}`
 						);
-						_cssCopied = true;
 					} else if (copyResult.skippedFiles.length > 0) {
 						copySpinner.info('CSS files already exist (skipped)');
-						_cssCopied = true;
 					}
 				} else {
 					copySpinner.warn(`Could not copy CSS files: ${copyResult.error}`);
+					localCssReady = false;
 				}
 			} catch {
 				copySpinner.warn('CSS file copying failed, you can copy files manually');
+				localCssReady = false;
 			}
 		}
 
@@ -479,24 +479,37 @@ export const initAction = async (options: {
 			}
 
 			if (targetEntry) {
-				const cssSpinner = ora('Injecting CSS imports...').start();
+				if (isLocalMode && !localCssReady) {
+					logger.warn(
+						chalk.yellow(
+							'⚠️  Skipping local CSS import injection because required CSS files were not copied.'
+						)
+					);
+					logger.note(
+						chalk.dim(
+							`  Resolve CSS copy errors and run \`greater init --skip-css\` to add imports manually.`
+						)
+					);
+				} else {
+					const cssSpinner = ora('Injecting CSS imports...').start();
 
-				try {
-					const result = await injectCssImports(targetEntry, extendedCssConfig);
+					try {
+						const result = await injectCssImports(targetEntry, extendedCssConfig);
 
-					if (result.success) {
-						if (result.addedImports.length > 0) {
-							cssSpinner.succeed(`Added CSS imports to ${path.relative(cwd, result.filePath)}`);
-							cssInjected = true;
+						if (result.success) {
+							if (result.addedImports.length > 0) {
+								cssSpinner.succeed(`Added CSS imports to ${path.relative(cwd, result.filePath)}`);
+								cssInjected = true;
+							} else {
+								cssSpinner.info('CSS imports already present');
+								cssInjected = true;
+							}
 						} else {
-							cssSpinner.info('CSS imports already present');
-							cssInjected = true;
+							cssSpinner.warn(`Could not inject CSS: ${result.error}`);
 						}
-					} else {
-						cssSpinner.warn(`Could not inject CSS: ${result.error}`);
+					} catch {
+						cssSpinner.warn('CSS injection failed, you can add imports manually');
 					}
-				} catch {
-					cssSpinner.warn('CSS injection failed, you can add imports manually');
 				}
 			}
 		}
