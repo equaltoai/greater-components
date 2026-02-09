@@ -61,6 +61,7 @@
     "release:prepare": "node scripts/prepare-github-release.js",
     "release:cut": "node scripts/cut-github-release.js",
     "release:tag": "node scripts/release-tag.js",
+    "release:artifacts": "bash scripts/build-release-artifacts.sh",
     "release:tag:dry": "node scripts/release-tag.js --dry-run"
   },
   "devDependencies": {
