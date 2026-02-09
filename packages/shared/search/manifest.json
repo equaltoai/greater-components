@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-search",
-  "version": "0.1.2-rc.4",
+  "version": "0.1.4-rc.0",
   "description": "Search components for ActivityPub/Fediverse applications with federated search support",
   "components": {
     "Root": {
