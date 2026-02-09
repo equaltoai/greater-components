@@ -14,6 +14,60 @@
 - `pnpm build` compiles every workspace; `pnpm check` calls each package’s `check` script when present.
 - `pnpm lint`, `pnpm format`, `pnpm typecheck`, and `pnpm changeset` should be clean before requesting review.
 
+## Release & RC Flow
+
+### Branches (policy-enforced)
+
+- `staging` → `premain`: promotion into the release-candidate line (`premain` is *RC-only*).
+- `premain` → `main`: promotion into the stable release line (`main` is *release-only*).
+- Guardrails live in `.github/workflows/premain-guard.yml` and `.github/workflows/main-guard.yml`.
+
+### Versioning + tags
+
+- Tags are always `greater-v<version>` (see `release-please-config*.json`).
+- Stable releases:
+  - Branch: `main`
+  - Version: `X.Y.Z`
+  - Tag: `greater-vX.Y.Z`
+- Prereleases (RC):
+  - Branch: `premain`
+  - Version: `X.Y.Z-rc.N`
+  - Tag: `greater-vX.Y.Z-rc.N`
+- `premain` prerelease base **must** stay ahead of the latest stable on `main`.
+  - Example: if `main` is `0.1.3`, RCs must be `0.1.4-rc.N` (not `0.1.2-rc.N`).
+  - Enforced by `scripts/verify-release-branch.sh` and the `prerelease-pr.yml` “Compute release-as” step.
+
+### Automation (GitHub Actions)
+
+- Release PR generation (Release Please):
+  - `.github/workflows/prerelease-pr.yml` opens/updates the prerelease PR branch
+    `release-please--branches--premain--components--greater`.
+  - `.github/workflows/release-pr.yml` opens/updates the stable release PR branch
+    `release-please--branches--main--components--greater`.
+  - Both workflows run `node scripts/prepare-github-release.js <version>` on the release-please branch to
+    keep versions + registry refs in sync.
+- Cutting + publishing releases:
+  - `.github/workflows/prerelease.yml` cuts/publishes RCs from `premain`.
+  - `.github/workflows/release.yml` cuts/publishes stable releases from `main`.
+  - Both verify branch/tag correctness with `bash scripts/verify-release-branch.sh <tag>`, build artifacts via
+    `bash scripts/build-release-artifacts.sh`, upload assets to the draft GitHub Release, then publish it
+    (immutable).
+
+### Artifacts (what gets released)
+
+- The canonical release build is `pnpm release:artifacts` (runs `bash scripts/build-release-artifacts.sh`).
+- Output folder: `artifacts/`
+- Uploaded release assets include:
+  - `registry/index.json` (must have `ref: greater-v<version>`)
+  - `registry/latest.json` (tracks latest **stable** only; must remain stable during RCs)
+  - `artifacts/*` (package tarballs + `greater-components-cli.tgz`)
+
+### Local verification (matches CI)
+
+- Build the exact release payload locally: `pnpm release:artifacts`
+- Install the built CLI tarball: `npm install -g ./artifacts/greater-components-cli.tgz`
+- Sanity check: `greater --version` and `greater list --json`
+
 ## Coding Style & Naming Conventions
 
 - Prettier (tabs, width 100, single quotes, trailing commas) plus `prettier-plugin-svelte` governs formatting; JSON/YAML use two-space indents.
