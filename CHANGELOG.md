@@ -12,6 +12,23 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.2-rc.4](https://github.com/equaltoai/greater-components/compare/greater-v0.1.2-rc.3...greater-v0.1.2-rc.4) (2026-02-09)
+
+### Bug Fixes
+
+- **cli:** reliable CSS + consistent release artifacts ([68649a9](https://github.com/equaltoai/greater-components/commit/68649a92d6b8d30ba304b36462bfb72d13d6aa3b))
+- **cli:** stabilize local CSS + ref fetching ([4fd1c25](https://github.com/equaltoai/greater-components/commit/4fd1c257d1cd612ff9b5810888990bd84020c859))
+
+### CI
+
+- **release:** unify build + pack pipeline ([ab70579](https://github.com/equaltoai/greater-components/commit/ab705792be3d497409ea1661be5512cb18ba914d))
+
+### Chores
+
+- add changeset and format new CLI files ([78adf68](https://github.com/equaltoai/greater-components/commit/78adf68841307a84b3df951bb5a6a724a59ff0f7))
+- **deps:** update workspace dependencies ([0e44a94](https://github.com/equaltoai/greater-components/commit/0e44a94edcfe74ed9e12cdfa16adbb012e2b710f))
+- promote staging to premain ([4198cf0](https://github.com/equaltoai/greater-components/commit/4198cf0cd6dc661dcad0fbbc64015289aa9d74a9))
+
 ## [0.1.2-rc.3](https://github.com/equaltoai/greater-components/compare/greater-v0.1.2-rc.2...greater-v0.1.2-rc.3) (2026-02-05)
 
 ### Bug Fixes
