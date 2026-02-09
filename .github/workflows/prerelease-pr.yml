@@ -97,7 +97,7 @@ jobs:
 
           # If premain is behind (or equal) to stable, bump prerelease to the next patch line.
           if parse_base(stable_base) >= parse_base(premain_base):
-              print(bump_patch(stable_base))
+              print(f"{bump_patch(stable_base)}-rc.0")
           PY
           )"
 
