@@ -28,7 +28,7 @@
     "mdsvex": "^0.12.6",
     "prismjs": "^1.30.0",
     "shiki": "^3.22.0",
-    "svelte": "^5.49.1",
+    "svelte": "^5.50.0",
     "svelte-check": "^4.3.6",
     "tailwind-merge": "^3.4.0",
     "tslib": "^2.8.1",
