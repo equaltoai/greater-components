@@ -29,6 +29,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - **deps:** update workspace dependencies ([0e44a94](https://github.com/equaltoai/greater-components/commit/0e44a94edcfe74ed9e12cdfa16adbb012e2b710f))
 - promote staging to premain ([4198cf0](https://github.com/equaltoai/greater-components/commit/4198cf0cd6dc661dcad0fbbc64015289aa9d74a9))
 
+## [0.1.3](https://github.com/equaltoai/greater-components/compare/greater-v0.1.2...greater-v0.1.3) (2026-02-05)
+
+### Bug Fixes
+
+- **cli:** skip local CSS import injection when local CSS copy fails ([5ac951b](https://github.com/equaltoai/greater-components/commit/5ac951bfedbc5e2f9c18616f3b7c0aca9be09bf0))
+- **cli:** skip local CSS injection when copy fails ([fc52dbc](https://github.com/equaltoai/greater-components/commit/fc52dbcbf9c23ed8b77f0e0b1166d41a75d17df9))
+
+### Chores
+
+- fix PR 136 CI failures ([1a25642](https://github.com/equaltoai/greater-components/commit/1a2564251aeeccc917babd653a2793c7cf32fa1d))
+- **premain:** release greater 0.1.2-rc.3 ([bd7113f](https://github.com/equaltoai/greater-components/commit/bd7113f64f34d859d456c1e0151ee84193bc9792))
+- **premain:** release greater 0.1.2-rc.3 ([8b2abda](https://github.com/equaltoai/greater-components/commit/8b2abdaef2e825df1674980238fce40c399bb822))
+- **release:** prepare metadata ([f4044fe](https://github.com/equaltoai/greater-components/commit/f4044fe8f98fcc633d5333024ec41708d70295b5))
+
 ## [0.1.2-rc.3](https://github.com/equaltoai/greater-components/compare/greater-v0.1.2-rc.2...greater-v0.1.2-rc.3) (2026-02-05)
 
 ### Bug Fixes
