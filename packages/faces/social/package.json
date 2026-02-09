@@ -106,11 +106,11 @@
   "devDependencies": {
     "@babel/parser": "^7.29.0",
     "@babel/traverse": "^7.29.0",
-    "@playwright/test": "^1.58.1",
+    "@playwright/test": "^1.58.2",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.3.1",
-    "@types/node": "^25.2.0",
+    "@types/node": "^25.2.2",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.18",
     "axe-core": "^4.11.1",

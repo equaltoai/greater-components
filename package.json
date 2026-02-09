@@ -73,7 +73,7 @@
     "@graphql-codegen/typescript": "^5.0.7",
     "@graphql-codegen/typescript-operations": "^5.0.7",
     "@sveltejs/package": "^2.5.7",
-    "@types/node": "^25.2.0",
+    "@types/node": "^25.2.2",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "eslint": "^9.39.2",
@@ -84,7 +84,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "node-html-parser": "^7.0.2",
-    "openapi-typescript": "^7.10.1",
+    "openapi-typescript": "^7.12.0",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.4.1",
     "svelte": "^5.49.1",
@@ -101,7 +101,7 @@
     "pnpm": ">=9.0.0"
   },
   "dependencies": {
-    "undici": "^7.20.0"
+    "undici": "^7.21.0"
   },
   "pnpm": {
     "overrides": {
