@@ -5,6 +5,8 @@ import { join, resolve } from 'path';
 const rootDir = process.cwd();
 const artifactsDir = join(rootDir, 'artifacts');
 const packagesDir = join(rootDir, 'packages');
+const args = new Set(process.argv.slice(2));
+const skipBuild = args.has('--skip-build') || args.has('--no-build');
 
 // Map of package folder names to desired artifact names
 // format: directory: 'name-without-extension'
@@ -33,6 +35,9 @@ function run(command, cwd = rootDir) {
 
 function main() {
 	console.log('📦 Preparing release artifacts...');
+	if (skipBuild) {
+		console.log('ℹ️  Skipping package builds (expects existing dist/ outputs)');
+	}
 
 	// 1. Clean and create artifacts directory
 	if (existsSync(artifactsDir)) {
@@ -54,14 +59,29 @@ function main() {
 
 		console.log(`\nProcessing ${artifactName}...`);
 
-		// Ensure clean build
-		if (!run('pnpm build', packagePath)) {
-			errors.push(`${artifactName}: Build failed`);
-			continue;
+		if (!skipBuild) {
+			// Ensure clean build
+			if (!run('pnpm build', packagePath)) {
+				errors.push(`${artifactName}: Build failed`);
+				continue;
+			}
+		} else {
+			const distPath = join(packagePath, 'dist');
+			if (!existsSync(distPath)) {
+				errors.push(`${artifactName}: Missing dist/ output (run pnpm build first)`);
+				continue;
+			}
 		}
 
 		// Pack (creates .tgz in the package dir)
 		try {
+			// Avoid picking up stale archives from prior runs.
+			for (const file of readdirSync(packagePath)) {
+				if (file.endsWith('.tgz')) {
+					rmSync(join(packagePath, file), { force: true });
+				}
+			}
+
 			// pnpm pack returns the filename it created on stdout, but run() inherits stdio.
 			// We'll trust it creates a .tgz file.
 			run('pnpm pack', packagePath);
