@@ -13,6 +13,7 @@ import fs from 'fs-extra';
 import { readFile, writeFile, fileExists } from './files.js';
 import type { CssEntryPoint, ProjectType } from './files.js';
 import { fetchFromGitTag } from './git-fetch.js';
+import { generateTokensThemeCssFromRepo } from './tokens-theme-css.js';
 
 /**
  * CSS import configuration
@@ -62,10 +63,13 @@ const CSS_IMPORTS_NPM = {
 
 /**
  * CSS source file paths in the Greater Components repository
- * These are the relative paths from the repo root to the CSS source files
+ * These are the relative paths from the repo root to the CSS source files.
+ *
+ * Note: tokens/theme.css is generated during package builds and is not present in git refs.
+ * For local mode we generate an equivalent tokens.css from the token source JSON files.
  */
 export const CSS_SOURCE_PATHS = {
-	tokens: 'packages/tokens/dist/theme.css',
+	tokens: '__generated__/tokens/theme.css',
 	primitives: 'packages/primitives/src/theme.css',
 	faces: {
 		social: 'packages/faces/social/src/theme.css',
@@ -253,8 +257,11 @@ export async function copyCssFiles(options: CopyCssFilesOptions): Promise<CssCop
 			}
 
 			try {
-				// Fetch the file from the Git tag
-				const content = await fetchFromGitTag(ref, sourcePath, { skipCache });
+				// Fetch (or generate) the file from the Git ref.
+				const content =
+					sourcePath === CSS_SOURCE_PATHS.tokens
+						? await generateTokensThemeCssFromRepo(ref, { skipCache })
+						: await fetchFromGitTag(ref, sourcePath, { skipCache });
 
 				// Write to the target path
 				await fs.writeFile(targetPath, content);
@@ -267,7 +274,10 @@ export async function copyCssFiles(options: CopyCssFilesOptions): Promise<CssCop
 					copiedFiles,
 					skippedFiles,
 					targetDir,
-					error: `Failed to copy ${sourcePath}: ${errorMessage}`,
+					error:
+						sourcePath === CSS_SOURCE_PATHS.tokens
+							? `Failed to generate tokens theme CSS for ${ref}: ${errorMessage}`
+							: `Failed to copy ${sourcePath}: ${errorMessage}`,
 				};
 			}
 		}

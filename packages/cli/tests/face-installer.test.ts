@@ -35,6 +35,12 @@ vi.mock('../src/utils/files.js', () => ({
 
 vi.mock('../src/utils/css-inject.js', () => ({
 	injectCssImports: vi.fn(),
+	copyCssFiles: vi.fn().mockResolvedValue({
+		success: true,
+		copiedFiles: [],
+		skippedFiles: [],
+		targetDir: '/project/src/lib/styles/greater',
+	}),
 }));
 
 vi.mock('../src/utils/config.js', async (importOriginal) => {
@@ -85,6 +91,8 @@ function createMockConfig(overrides: Partial<ComponentConfig> = {}): ComponentCo
 			tokens: true,
 			primitives: true,
 			face: null,
+			source: 'npm',
+			localDir: 'styles/greater',
 		},
 		installed: [],
 		...overrides,
@@ -283,6 +291,40 @@ describe('Face Installer', () => {
 
 			expect(result).toBe(true);
 			expect(cssInject.injectCssImports).toHaveBeenCalled();
+		});
+
+		it('skips local injection when CSS copy fails in local mode', async () => {
+			vi.mocked(files.detectProjectDetails).mockResolvedValue({
+				type: 'sveltekit',
+				hasTypeScript: true,
+				cssEntryPoints: [{ path: '/project/src/app.css', type: 'global' }],
+				svelteConfigPath: null,
+				viteConfigPath: null,
+			});
+
+			vi.mocked(cssInject.copyCssFiles).mockResolvedValueOnce({
+				success: false,
+				copiedFiles: [],
+				skippedFiles: [],
+				targetDir: '/project/src/lib/styles/greater',
+				error: 'missing theme.css',
+			});
+
+			const config = createMockConfig({
+				css: {
+					tokens: true,
+					primitives: true,
+					face: null,
+					source: 'local',
+					localDir: 'styles/greater',
+				},
+			});
+
+			const result = await injectFaceCss('social', config, '/project');
+
+			expect(result).toBe(false);
+			expect(cssInject.copyCssFiles).toHaveBeenCalled();
+			expect(cssInject.injectCssImports).not.toHaveBeenCalled();
 		});
 
 		it('handles injection failure', async () => {

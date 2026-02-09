@@ -226,6 +226,9 @@ describe('git-fetch utilities', () => {
 
 			expect(result.toString()).toBe(networkContent);
 			expect(mockFetch).toHaveBeenCalled();
+			expect(String(mockFetch.mock.calls[0]?.[0] ?? '')).toBe(
+				'https://raw.githubusercontent.com/equaltoai/greater-components/v1.0.0/test.ts'
+			);
 		});
 
 		it('should bypass cache with skipCache option', async () => {
