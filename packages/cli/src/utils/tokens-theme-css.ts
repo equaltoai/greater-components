@@ -212,7 +212,9 @@ export async function generateTokensThemeCssFromRepo(
 	combinedThemeCSS += `
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    ${Object.entries(resolveReferences(flattenTokens(darkTheme), flatBaseTokens, { mode: 'css-var' }))
+    ${Object.entries(
+			resolveReferences(flattenTokens(darkTheme), flatBaseTokens, { mode: 'css-var' })
+		)
 			.map(([key, value]) => `    --gr-${key}: ${value};`)
 			.join('\n')}
   }

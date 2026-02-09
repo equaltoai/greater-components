@@ -87,7 +87,9 @@ describe('copyCssFiles', () => {
 		});
 
 		expect(result.success).toBe(true);
-		expect(result.copiedFiles).toEqual(expect.arrayContaining(['tokens.css', 'primitives.css', 'social.css']));
+		expect(result.copiedFiles).toEqual(
+			expect.arrayContaining(['tokens.css', 'primitives.css', 'social.css'])
+		);
 
 		const tokensPath = '/project/src/lib/styles/greater/tokens.css';
 		const primitivesPath = '/project/src/lib/styles/greater/primitives.css';
