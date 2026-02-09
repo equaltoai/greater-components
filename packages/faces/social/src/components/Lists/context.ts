@@ -28,15 +28,17 @@ export interface ListData {
 /**
  * List member data
  */
+export interface ListActor {
+	id: string;
+	username: string;
+	displayName: string;
+	avatar?: string;
+}
+
 export interface ListMember {
 	id: string;
 	listId: string;
-	actor: {
-		id: string;
-		username: string;
-		displayName: string;
-		avatar?: string;
-	};
+	actor: ListActor;
 	addedAt: string;
 }
 
@@ -104,7 +106,7 @@ export interface ListsHandlers {
 	/**
 	 * Search accounts to add to lists
 	 */
-	onSearchAccounts?: (query: string) => Promise<ListMember[]>;
+	onSearchAccounts?: (query: string) => Promise<ListActor[]>;
 
 	/**
 	 * Fetch a single list with its members

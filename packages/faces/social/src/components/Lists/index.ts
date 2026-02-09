@@ -44,6 +44,7 @@ export { default as Settings } from './Settings.svelte';
 // Export types and context utilities
 export type {
 	ListData,
+	ListActor,
 	ListMember,
 	ListFormData,
 	ListsHandlers,

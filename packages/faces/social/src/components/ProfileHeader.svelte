@@ -86,22 +86,22 @@
 	let bannerElement: HTMLImageElement | null = $state(null);
 
 	// Component class computation
-	const profileHeaderClass = $derived(() => {
+	const profileHeaderClass = $derived.by(() => {
 		const classes = ['gr-profile-header', className].filter(Boolean).join(' ');
 
 		return classes;
 	});
 
 	// Display name with emoji support
-	const processedDisplayName = $derived(() => {
+	const processedDisplayName = $derived.by(() => {
 		if (emojiRenderer) {
 			return emojiRenderer(account.displayName || account.username);
 		}
 		return account.displayName || account.username;
 	});
 
-	const sanitizedDisplayName = $derived(() =>
-		sanitizeHtml(processedDisplayName() || account.username || 'Profile', {
+	const sanitizedDisplayName = $derived.by(() =>
+		sanitizeHtml(processedDisplayName || account.username || 'Profile', {
 			allowedTags: ['span', 'em', 'strong', 'b', 'i', 'u', 'img'],
 			allowedAttributes: [
 				'class',
@@ -137,7 +137,7 @@
 	}
 
 	// Format join date
-	const formattedJoinDate = $derived(() => {
+	const formattedJoinDate = $derived.by(() => {
 		if (!account.createdAt) return '';
 		try {
 			const date = new Date(account.createdAt);

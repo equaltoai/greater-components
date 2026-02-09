@@ -54,7 +54,7 @@ Shows trust score, reputation details, and vouch count for accounts on Lesser in
 	);
 
 	// Trust score color and label
-	const trustLevel = $derived(() => {
+	const trustLevel = $derived.by(() => {
 		if (!trustScore) return null;
 		if (trustScore >= 80) return { color: 'green', label: 'High Trust' };
 		if (trustScore >= 50) return { color: 'medium', label: 'Medium Trust' };
@@ -74,21 +74,21 @@ Shows trust score, reputation details, and vouch count for accounts on Lesser in
 		{#if content}
 			{@render content()}
 		{:else}
-			<!-- Trust Score Badge -->
-			{#if trustScore !== undefined}
-				<div class={`trust-badge trust-badge--${trustLevel()?.color}`}>
-					<svg class="trust-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
-						<path
-							fill="currentColor"
-							d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"
-						/>
-					</svg>
-					<div class="trust-badge__content">
-						<div class="trust-badge__score">{trustScore}</div>
-						<div class="trust-badge__label">{trustLevel()?.label}</div>
+				<!-- Trust Score Badge -->
+				{#if trustScore !== undefined}
+					<div class={`trust-badge trust-badge--${trustLevel?.color}`}>
+						<svg class="trust-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								fill="currentColor"
+								d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"
+							/>
+						</svg>
+						<div class="trust-badge__content">
+							<div class="trust-badge__score">{trustScore}</div>
+							<div class="trust-badge__label">{trustLevel?.label}</div>
+						</div>
 					</div>
-				</div>
-			{/if}
+				{/if}
 
 			<!-- Vouch Count -->
 			{#if showVouches && vouches.length > 0}

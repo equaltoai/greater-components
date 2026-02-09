@@ -13,6 +13,12 @@ import type { ApolloCache, InMemoryCacheConfig, TypePolicies } from '@apollo/cli
 type TimestampedNode = { createdAt?: string | null };
 type ConnectionEdges = { edges?: Array<{ node: TimestampedNode }> };
 type ReadFieldFn = <T>(fieldName: string, from: unknown) => T | undefined;
+type PagedEdgesConnection = { edges: unknown[]; pageInfo: Record<string, unknown> };
+type ActorListPage = {
+	actors?: unknown[];
+	nextCursor?: string | null;
+	totalCount?: number;
+};
 
 /**
  * Type policies for Apollo Client cache
@@ -25,7 +31,7 @@ export const typePolicies: TypePolicies = {
 			 */
 			homeTimeline: {
 				keyArgs: false,
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -35,7 +41,7 @@ export const typePolicies: TypePolicies = {
 			},
 			publicTimeline: {
 				keyArgs: ['local'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -45,7 +51,7 @@ export const typePolicies: TypePolicies = {
 			},
 			hashtagTimeline: {
 				keyArgs: ['hashtag'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -55,7 +61,7 @@ export const typePolicies: TypePolicies = {
 			},
 			listTimeline: {
 				keyArgs: ['listId'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -69,7 +75,7 @@ export const typePolicies: TypePolicies = {
 			 */
 			notifications: {
 				keyArgs: ['types'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -83,7 +89,7 @@ export const typePolicies: TypePolicies = {
 			 */
 			searchStatuses: {
 				keyArgs: ['query', 'resolve'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -93,7 +99,7 @@ export const typePolicies: TypePolicies = {
 			},
 			searchAccounts: {
 				keyArgs: ['query', 'resolve', 'following'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -103,7 +109,7 @@ export const typePolicies: TypePolicies = {
 			},
 			searchHashtags: {
 				keyArgs: ['query'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -117,7 +123,7 @@ export const typePolicies: TypePolicies = {
 			 */
 			conversations: {
 				keyArgs: false,
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -127,7 +133,7 @@ export const typePolicies: TypePolicies = {
 			},
 			conversationMessages: {
 				keyArgs: ['conversationId'],
-				merge(existing = { edges: [], pageInfo: {} }, incoming) {
+				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -141,7 +147,7 @@ export const typePolicies: TypePolicies = {
 			 */
 			followers: {
 				keyArgs: ['username'],
-				merge(existing, incoming) {
+				merge(existing: ActorListPage | undefined, incoming: ActorListPage) {
 					if (!existing) {
 						return incoming;
 					}
@@ -160,7 +166,7 @@ export const typePolicies: TypePolicies = {
 			},
 			following: {
 				keyArgs: ['username'],
-				merge(existing, incoming) {
+				merge(existing: ActorListPage | undefined, incoming: ActorListPage) {
 					if (!existing) {
 						return incoming;
 					}
@@ -182,7 +188,7 @@ export const typePolicies: TypePolicies = {
 			 * User preferences - always use latest
 			 */
 			userPreferences: {
-				merge(_, incoming) {
+				merge(_existing: unknown, incoming: unknown) {
 					return incoming;
 				},
 			},
@@ -191,7 +197,7 @@ export const typePolicies: TypePolicies = {
 			 * Push subscription - always use latest
 			 */
 			pushSubscription: {
-				merge(_, incoming) {
+				merge(_existing: unknown, incoming: unknown) {
 					return incoming;
 				},
 			},
@@ -204,12 +210,12 @@ export const typePolicies: TypePolicies = {
 			 * Merge replies and context
 			 */
 			replies: {
-				merge(existing = [], incoming) {
+				merge(existing: unknown[] = [], incoming: unknown[]) {
 					return [...existing, ...incoming];
 				},
 			},
 			context: {
-				merge(existing, incoming) {
+				merge(existing: unknown, incoming: unknown) {
 					return incoming || existing;
 				},
 			},
@@ -223,7 +229,7 @@ export const typePolicies: TypePolicies = {
 			 * Merge actor fields (Lesser uses Actor type)
 			 */
 			fields: {
-				merge(existing = [], incoming) {
+				merge(existing: unknown[] = [], incoming: unknown) {
 					return incoming || existing;
 				},
 			},
@@ -236,12 +242,12 @@ export const typePolicies: TypePolicies = {
 			 * Merge account fields
 			 */
 			fields: {
-				merge(existing = [], incoming) {
+				merge(existing: unknown[] = [], incoming: unknown) {
 					return incoming || existing;
 				},
 			},
 			emojis: {
-				merge(existing = [], incoming) {
+				merge(existing: unknown[] = [], incoming: unknown) {
 					return incoming || existing;
 				},
 			},
@@ -272,7 +278,7 @@ export const typePolicies: TypePolicies = {
 			 * Always use latest account list
 			 */
 			accounts: {
-				merge(_, incoming) {
+				merge(_existing: unknown, incoming: unknown) {
 					return incoming;
 				},
 			},
@@ -285,7 +291,7 @@ export const typePolicies: TypePolicies = {
 			 * Merge poll options
 			 */
 			options: {
-				merge(_, incoming) {
+				merge(_existing: unknown, incoming: unknown) {
 					return incoming;
 				},
 			},

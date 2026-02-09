@@ -149,7 +149,7 @@
 	}
 
 	const preview = $derived(getPreview(htmlContent));
-	const sanitizedHtmlContent = $derived(() =>
+	const sanitizedHtmlContent = $derived.by(() =>
 		htmlContent
 			? sanitizeHtml(htmlContent, {
 					allowedTags: [

@@ -4,7 +4,7 @@
   Interface for managing list membership by adding and removing accounts.
 -->
 <script lang="ts">
-	import { getListsContext, type ListMember } from './context.js';
+	import { getListsContext, type ListActor } from './context.js';
 
 	interface Props {
 		/**
@@ -15,14 +15,14 @@
 
 	let { class: className = '' }: Props = $props();
 
-	const { state: listsState, handlers } = getListsContext();
+	const { state: listsState, handlers, addMember, removeMember } = getListsContext();
 
 	let searchQuery = $state('');
-	let searchResults = $state<ListMember[]>([]);
+	let searchResults = $state<ListActor[]>([]);
 	let searching = $state(false);
 
 	const currentList = $derived(listsState.selectedList);
-	const currentMembers = $derived(currentList?.members || []);
+	const currentMembers = $derived(listsState.members);
 
 	async function handleSearch() {
 		if (!searchQuery.trim() || !currentList || searching) return;
@@ -34,6 +34,8 @@
 			const results = await handlers.onSearchAccounts?.(searchQuery.trim());
 			if (results) {
 				searchResults = results;
+			} else {
+				searchResults = [];
 			}
 		} catch (error) {
 			console.error('Search failed:', error);
@@ -42,32 +44,28 @@
 		}
 	}
 
-	async function handleAddMember(member: ListMember) {
+	async function handleAddMember(actor: ListActor) {
 		if (!currentList) return;
-
 		try {
-			await handlers.onAddListMember?.(currentList.id, member.id);
-			// Refresh list to get updated members
-			await handlers.onFetchList?.(currentList.id);
+			await addMember(actor.id);
 		} catch (error) {
 			console.error('Failed to add member:', error);
 		}
 	}
 
-	async function handleRemoveMember(memberId: string) {
+	async function handleRemoveMember(actorId: string) {
 		if (!currentList) return;
-
+		const membership = currentMembers.find((member) => member.actor.id === actorId);
+		if (!membership) return;
 		try {
-			await handlers.onRemoveListMember?.(currentList.id, memberId);
-			// Refresh list to get updated members
-			await handlers.onFetchList?.(currentList.id);
+			await removeMember(membership.id);
 		} catch (error) {
 			console.error('Failed to remove member:', error);
 		}
 	}
 
 	function isMember(accountId: string): boolean {
-		return currentMembers.some((m) => m.id === accountId);
+		return currentMembers.some((member) => member.actor.id === accountId);
 	}
 
 	// Debounced search
@@ -102,7 +100,7 @@
 		<div class="member-picker__header">
 			<h3 class="member-picker__title">Manage Members</h3>
 			<p class="member-picker__subtitle">
-				{currentList.members.length} member{currentList.members.length === 1 ? '' : 's'}
+				{currentList.membersCount} member{currentList.membersCount === 1 ? '' : 's'}
 			</p>
 		</div>
 

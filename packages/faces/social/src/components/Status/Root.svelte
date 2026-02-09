@@ -67,7 +67,7 @@ Provides context for child components and handles root-level interactions.
 			tombstoneMetadata?.isDeleted === true ||
 			(status as unknown as { isDeleted?: boolean }).isDeleted === true
 	);
-	const tombstoneTimestamp = $derived(() => {
+	const tombstoneTimestamp = $derived.by(() => {
 		if (!tombstoneDeletedAt) return null;
 		return formatDateTime(tombstoneDeletedAt);
 	});
