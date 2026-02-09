@@ -161,6 +161,7 @@ export async function injectFaceCss(
 	const isLocalMode = config.css?.source === 'local';
 	const localDir = config.css?.localDir ?? 'styles/greater';
 	const libAlias = config.aliases.lib;
+	let localCssReady = true;
 
 	if (projectDetails.cssEntryPoints.length === 0) {
 		logger.warn(chalk.yellow('⚠️  No CSS entry point found. Please add CSS imports manually.'));
@@ -207,6 +208,7 @@ export async function injectFaceCss(
 				}
 			} else {
 				logger.warn(chalk.yellow(`⚠️  Could not copy CSS files: ${copyResult.error}`));
+				localCssReady = false;
 			}
 		} catch (error) {
 			logger.warn(
@@ -214,7 +216,22 @@ export async function injectFaceCss(
 					`⚠️  CSS file copying failed: ${error instanceof Error ? error.message : String(error)}`
 				)
 			);
+			localCssReady = false;
 		}
+	}
+
+	if (isLocalMode && !localCssReady) {
+		logger.warn(
+			chalk.yellow(
+				'⚠️  Skipping local CSS import injection because required CSS files were not copied.'
+			)
+		);
+		logger.note(
+			chalk.dim(
+				'  Fix the CSS copy errors or set `css.source` to "npm" in components.json to use package CSS imports.'
+			)
+		);
+		return false;
 	}
 
 	// Build extended config for import generation
