@@ -14,32 +14,29 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.1.4](https://github.com/equaltoai/greater-components/compare/greater-v0.1.3...greater-v0.1.4) (2026-02-09)
 
-
 ### Bug Fixes
 
-* **cli:** reliable CSS + consistent release artifacts ([68649a9](https://github.com/equaltoai/greater-components/commit/68649a92d6b8d30ba304b36462bfb72d13d6aa3b))
-* **cli:** stabilize local CSS + ref fetching ([4fd1c25](https://github.com/equaltoai/greater-components/commit/4fd1c257d1cd612ff9b5810888990bd84020c859))
-
+- **cli:** reliable CSS + consistent release artifacts ([68649a9](https://github.com/equaltoai/greater-components/commit/68649a92d6b8d30ba304b36462bfb72d13d6aa3b))
+- **cli:** stabilize local CSS + ref fetching ([4fd1c25](https://github.com/equaltoai/greater-components/commit/4fd1c257d1cd612ff9b5810888990bd84020c859))
 
 ### CI
 
-* **coverage:** make workflow dispatchable ([52a06d0](https://github.com/equaltoai/greater-components/commit/52a06d09f57dc9d7df0b9c6a7b8cac2981ba47a1))
-* **release:** keep premain prereleases ahead of stable ([af0d06b](https://github.com/equaltoai/greater-components/commit/af0d06b4c1df9353ac64b22371e1cf2040048c86))
-* **release:** keep premain prereleases ahead of stable ([dec045f](https://github.com/equaltoai/greater-components/commit/dec045fb6d3d41d3eca10dc8c51094d63ee3dcb4))
-* **release:** keep premain release-as prerelease ([44853fe](https://github.com/equaltoai/greater-components/commit/44853fe6e958ffa8a0c6d134d860d547fa54f310))
-* **release:** unify build + pack pipeline ([ab70579](https://github.com/equaltoai/greater-components/commit/ab705792be3d497409ea1661be5512cb18ba914d))
-
+- **coverage:** make workflow dispatchable ([52a06d0](https://github.com/equaltoai/greater-components/commit/52a06d09f57dc9d7df0b9c6a7b8cac2981ba47a1))
+- **release:** keep premain prereleases ahead of stable ([af0d06b](https://github.com/equaltoai/greater-components/commit/af0d06b4c1df9353ac64b22371e1cf2040048c86))
+- **release:** keep premain prereleases ahead of stable ([dec045f](https://github.com/equaltoai/greater-components/commit/dec045fb6d3d41d3eca10dc8c51094d63ee3dcb4))
+- **release:** keep premain release-as prerelease ([44853fe](https://github.com/equaltoai/greater-components/commit/44853fe6e958ffa8a0c6d134d860d547fa54f310))
+- **release:** unify build + pack pipeline ([ab70579](https://github.com/equaltoai/greater-components/commit/ab705792be3d497409ea1661be5512cb18ba914d))
 
 ### Chores
 
-* add changeset and format new CLI files ([78adf68](https://github.com/equaltoai/greater-components/commit/78adf68841307a84b3df951bb5a6a724a59ff0f7))
-* **deps:** update workspace dependencies ([0e44a94](https://github.com/equaltoai/greater-components/commit/0e44a94edcfe74ed9e12cdfa16adbb012e2b710f))
-* merge main into premain ([3f2ba88](https://github.com/equaltoai/greater-components/commit/3f2ba88b26ace6b4814e903f3780065944c5f942))
-* **premain:** release greater 0.1.2-rc.4 ([351802b](https://github.com/equaltoai/greater-components/commit/351802bb15064caba6f78018d3ae029f7e646d7f))
-* **premain:** release greater 0.1.2-rc.4 ([d0ea8c7](https://github.com/equaltoai/greater-components/commit/d0ea8c78088cfae8123bbc35e6165f3d4938b10c))
-* promote premain to main ([124fa61](https://github.com/equaltoai/greater-components/commit/124fa61d0360490765090d2a9064dc8496c5ce99))
-* promote staging to premain ([4198cf0](https://github.com/equaltoai/greater-components/commit/4198cf0cd6dc661dcad0fbbc64015289aa9d74a9))
-* **release:** prepare metadata ([078e714](https://github.com/equaltoai/greater-components/commit/078e71455c269c0bbec6a9b673d5999451fd492c))
+- add changeset and format new CLI files ([78adf68](https://github.com/equaltoai/greater-components/commit/78adf68841307a84b3df951bb5a6a724a59ff0f7))
+- **deps:** update workspace dependencies ([0e44a94](https://github.com/equaltoai/greater-components/commit/0e44a94edcfe74ed9e12cdfa16adbb012e2b710f))
+- merge main into premain ([3f2ba88](https://github.com/equaltoai/greater-components/commit/3f2ba88b26ace6b4814e903f3780065944c5f942))
+- **premain:** release greater 0.1.2-rc.4 ([351802b](https://github.com/equaltoai/greater-components/commit/351802bb15064caba6f78018d3ae029f7e646d7f))
+- **premain:** release greater 0.1.2-rc.4 ([d0ea8c7](https://github.com/equaltoai/greater-components/commit/d0ea8c78088cfae8123bbc35e6165f3d4938b10c))
+- promote premain to main ([124fa61](https://github.com/equaltoai/greater-components/commit/124fa61d0360490765090d2a9064dc8496c5ce99))
+- promote staging to premain ([4198cf0](https://github.com/equaltoai/greater-components/commit/4198cf0cd6dc661dcad0fbbc64015289aa9d74a9))
+- **release:** prepare metadata ([078e714](https://github.com/equaltoai/greater-components/commit/078e71455c269c0bbec6a9b673d5999451fd492c))
 
 ## [0.1.2-rc.4](https://github.com/equaltoai/greater-components/compare/greater-v0.1.2-rc.3...greater-v0.1.2-rc.4) (2026-02-09)
 
