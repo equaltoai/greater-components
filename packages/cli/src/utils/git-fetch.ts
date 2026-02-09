@@ -12,7 +12,8 @@ import { logger } from './logger.js';
  * GitHub repository configuration
  */
 const GITHUB_REPO = 'equaltoai/greater-components';
-const GITHUB_RAW_URL = `https://github.com/${GITHUB_REPO}/raw`;
+// Use raw.githubusercontent.com for reliable access across tags/branches/commit SHAs without redirects.
+const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}`;
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}`;
 
 const RESOLVE_REF_TIMEOUT_MS = 5_000;

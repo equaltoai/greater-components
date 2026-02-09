@@ -12,6 +12,7 @@ const FIXTURE_TEMPLATE_ROOT = path.resolve(__dirname, '../fixtures/cli-fixture')
 const TMP_ROOT = path.resolve(__dirname, '../.tmp');
 const REPO_ROOT = path.resolve(CLI_ROOT, '../../');
 const CONTENT_NODE_MODULES = path.join(REPO_ROOT, 'packages/content/node_modules');
+const HEADLESS_NODE_MODULES = path.join(REPO_ROOT, 'packages/headless/node_modules');
 const CONTENT_DEPENDENCIES = [
 	'hast-util-sanitize',
 	'rehype-sanitize',
@@ -22,6 +23,7 @@ const CONTENT_DEPENDENCIES = [
 	'shiki',
 	'unified',
 ] as const;
+const HEADLESS_DEPENDENCIES = ['focus-trap', 'tabbable'] as const;
 
 const FACE_CASES = [
 	{
@@ -57,8 +59,9 @@ const FACE_CASES = [
 ] as const;
 
 beforeAll(async () => {
-	// Build CLI
-	await execa('pnpm', ['build'], { cwd: CLI_ROOT });
+	if (!(await fs.pathExists(CLI_BIN))) {
+		await execa('pnpm', ['build'], { cwd: CLI_ROOT });
+	}
 });
 
 test.each(FACE_CASES)(
@@ -96,6 +99,16 @@ test.each(FACE_CASES)(
 				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
 			});
 			expect(await fs.pathExists(path.join(fixtureRoot, 'components.json'))).toBe(true);
+			const cssDir = path.join(fixtureRoot, 'src/lib/styles/greater');
+			expect(await fs.pathExists(path.join(cssDir, 'tokens.css'))).toBe(true);
+			expect(await fs.pathExists(path.join(cssDir, 'primitives.css'))).toBe(true);
+			expect(await fs.pathExists(path.join(cssDir, `${face}.css`))).toBe(true);
+
+			const layoutPath = path.join(fixtureRoot, 'src/routes/+layout.svelte');
+			const layoutContent = await fs.readFile(layoutPath, 'utf-8');
+			expect(layoutContent).toContain(`import '$lib/styles/greater/tokens.css';`);
+			expect(layoutContent).toContain(`import '$lib/styles/greater/primitives.css';`);
+			expect(layoutContent).toContain(`import '$lib/styles/greater/${face}.css';`);
 
 			// 2. Add Face
 			await execa('node', [CLI_BIN, 'add', '--yes', `faces/${face}`, '--cwd', fixtureRoot], {
@@ -123,6 +136,9 @@ test.each(FACE_CASES)(
 			// Provide required third-party deps by linking from the monorepo workspace.
 			for (const dep of CONTENT_DEPENDENCIES) {
 				await ensureNodeModuleLink(fixtureRoot, dep, path.join(CONTENT_NODE_MODULES, dep));
+			}
+			for (const dep of HEADLESS_DEPENDENCIES) {
+				await ensureNodeModuleLink(fixtureRoot, dep, path.join(HEADLESS_NODE_MODULES, dep));
 			}
 
 			// Verify key files exist

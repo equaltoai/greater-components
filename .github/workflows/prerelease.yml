@@ -55,21 +55,9 @@ jobs:
         if: steps.release.outputs.release_created == 'true'
         run: bash scripts/verify-release-branch.sh "${{ steps.release.outputs.tag_name }}"
 
-      - name: Build packages
+      - name: Build + test + pack artifacts
         if: steps.release.outputs.release_created == 'true'
-        run: pnpm build
-
-      - name: Validate registry index
-        if: steps.release.outputs.release_created == 'true'
-        run: node scripts/validate-registry-index.js --strict
-
-      - name: Validate release metadata
-        if: steps.release.outputs.release_created == 'true'
-        run: node scripts/validate-release-versions.js
-
-      - name: Pack release artifacts
-        if: steps.release.outputs.release_created == 'true'
-        run: node scripts/pack-for-release.js
+        run: bash scripts/build-release-artifacts.sh
 
       - name: Upload release assets
         if: steps.release.outputs.release_created == 'true'

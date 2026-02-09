@@ -46,6 +46,48 @@ if [[ "${version}" =~ -rc(\.|$) ]]; then
 		echo "release-branch: FAIL (${expected_tag} must be tagged from ${premain_branch})"
 		exit 1
 	fi
+
+	# Prereleases must always be on a version line *ahead* of the latest stable on main.
+	# Example: if main is 0.1.3, premain prereleases must be 0.1.4-rc.N (not 0.1.2-rc.N).
+	stable_version="$(
+		git show "${main_ref}:.release-please-manifest.json" 2>/dev/null \
+			| node -p "JSON.parse(require('fs').readFileSync(0,'utf8'))['.'] || ''" \
+			|| true
+	)"
+	prerelease_base="${version%%-*}"
+
+	if [[ -n "${stable_version}" && -n "${prerelease_base}" ]]; then
+		STABLE_VERSION="${stable_version}" PRERELEASE_BASE="${prerelease_base}" node - <<'NODE'
+const stable = process.env.STABLE_VERSION || '';
+const prereleaseBase = process.env.PRERELEASE_BASE || '';
+
+function parseBase(v) {
+	const match = v.trim().match(/^(\d+)\.(\d+)\.(\d+)$/);
+	if (!match) return null;
+	return [Number(match[1]), Number(match[2]), Number(match[3])];
+}
+
+function compare(a, b) {
+	for (let i = 0; i < 3; i += 1) {
+		if (a[i] > b[i]) return 1;
+		if (a[i] < b[i]) return -1;
+	}
+	return 0;
+}
+
+const stableParsed = parseBase(stable);
+const prereleaseParsed = parseBase(prereleaseBase);
+
+if (!stableParsed || !prereleaseParsed) process.exit(0);
+
+if (compare(prereleaseParsed, stableParsed) <= 0) {
+	console.error(
+		`release-branch: FAIL (prerelease base ${prereleaseBase} must be > stable ${stable} on main)`
+	);
+	process.exit(1);
+}
+NODE
+	fi
 else
 	if ! git merge-base --is-ancestor "${commit}" "${main_ref}"; then
 		echo "release-branch: FAIL (${expected_tag} must be tagged from ${main_branch})"
@@ -54,4 +96,3 @@ else
 fi
 
 echo "release-branch: PASS (${expected_tag})"
-
