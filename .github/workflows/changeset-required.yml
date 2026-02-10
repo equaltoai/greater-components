@@ -38,7 +38,12 @@ jobs:
 
             const hasChangeset = files.some((f) => isChangeset(f.filename));
             if (!hasChangeset) {
-              core.setFailed(
-                'This PR targets `staging` and must include a changeset file in `.changeset/*.md` (create one with `pnpm changeset`).'
+              core.warning(
+                'Changesets are no longer required for PRs targeting `staging` (Greater releases are governed by staging -> premain -> main promotions + release-please).'
               );
+              core.warning(
+                'If you still want a changeset for internal notes, add one in `.changeset/*.md` (create one with `pnpm changeset`).'
+              );
+            } else {
+              core.notice('Found a changeset file in this PR.');
             }

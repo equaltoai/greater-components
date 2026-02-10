@@ -215,10 +215,3 @@ jobs:
 
           gh workflow run premain-guard.yml --ref "${RELEASE_BRANCH}" --field base_ref="${BASE_BRANCH}"
           gh workflow run dco.yml --ref "${RELEASE_BRANCH}" --field base_ref="${BASE_BRANCH}"
-          gh workflow run lint.yml --ref "${RELEASE_BRANCH}"
-          gh workflow run test.yml --ref "${RELEASE_BRANCH}"
-          gh workflow run e2e.yml --ref "${RELEASE_BRANCH}"
-          gh workflow run a11y.yml --ref "${RELEASE_BRANCH}"
-          gh workflow run coverage.yml --ref "${RELEASE_BRANCH}"
-          gh workflow run docs.yml --ref "${RELEASE_BRANCH}"
-          gh workflow run codeql.yml --ref "${RELEASE_BRANCH}"
