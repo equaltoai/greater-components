@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-10T02:52:15.606Z",
+  "generatedAt": "2026-02-10T03:04:19.590Z",
   "ref": "greater-v0.1.4",
   "version": "0.1.4",
   "checksums": {
@@ -967,7 +967,7 @@
     "packages/faces/social/src/components/Timeline/Item.svelte": "sha256-KKuzFKxTM1QbbBWpYPPkjnsFTG9/yCEa+CuKNbZD+c8=",
     "packages/faces/social/src/components/Timeline/LoadMore.svelte": "sha256-h2Qkk6sYP7fltXVAGeLcZNgFV0nH5cuAQcATolGFHmA=",
     "packages/faces/social/src/components/Timeline/Root.svelte": "sha256-8KMfTRWFazX5pi7k092G3nCdB7i/uqfkJoHbhkTdQRY=",
-    "packages/faces/social/src/components/TimelineVirtualized.svelte": "sha256-GvrkTB/7CeQQoy4XIN909H2U6cqDWUpmPNuK6NXYVWA=",
+    "packages/faces/social/src/components/TimelineVirtualized.svelte": "sha256-QiZNQ9pJOSENahpJJS3R3lRHSryo0XRkckSX0wjuv7c=",
     "packages/faces/social/src/components/TimelineVirtualizedReactive.svelte": "sha256-JOooeKArUSx5WvvXN+J/spznMoVLfTDPEQoH476sLu0=",
     "packages/faces/social/src/generics/adapters.ts": "sha256-OQGSKHoGtXkCt6TKwOhYOrkJFzx4Nzi2tEIKvyNL0KA=",
     "packages/faces/social/src/generics/index.ts": "sha256-1J12dnWSSWFzBffByAVaxrEjo4w1wHd9Pvv9ZFHrDi0=",
@@ -6345,8 +6345,8 @@
         },
         {
           "path": "src/components/TimelineVirtualized.svelte",
-          "checksum": "sha256-GvrkTB/7CeQQoy4XIN909H2U6cqDWUpmPNuK6NXYVWA=",
-          "size": 5809
+          "checksum": "sha256-QiZNQ9pJOSENahpJJS3R3lRHSryo0XRkckSX0wjuv7c=",
+          "size": 5823
         },
         {
           "path": "src/components/TimelineVirtualizedReactive.svelte",

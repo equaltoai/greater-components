@@ -148,7 +148,7 @@
 		class="timeline-scroll"
 		bind:this={scrollElement}
 		onscroll={handleScroll}
-		role="feed"
+		role="region"
 		aria-label="Timeline"
 		aria-busy={loadingTop || loadingBottom}
 	>
@@ -158,7 +158,7 @@
 			</div>
 		{/if}
 
-		<div class="virtual-list">
+		<div class="virtual-list" role="feed">
 			{#if virtualScrolling}
 				{@const virtualRows = $rowVirtualizer.getVirtualItems?.() ?? []}
 				{@const totalSize = $rowVirtualizer.getTotalSize?.() ?? 0}
