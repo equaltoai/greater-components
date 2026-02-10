@@ -26,6 +26,7 @@ import type {
 	GenericStatus,
 	GenericTimelineItem,
 } from '../generics/index.js';
+import { SvelteDate, SvelteMap, SvelteSet } from 'svelte/reactivity';
 
 export interface LesserTimelineConfig {
 	/** Maximum number of items to keep in memory */
@@ -95,7 +96,7 @@ export class LesserTimelineStore {
 	private readonly config: NormalizedTimelineConfig;
 	private cursor: string | null = null;
 	private abortController: AbortController | null = null;
-	private readonly statusCache = new Map<string, GenericStatus>();
+	private readonly statusCache = new SvelteMap<string, GenericStatus>();
 
 	constructor(config: LesserTimelineConfig) {
 		const {
@@ -146,7 +147,7 @@ export class LesserTimelineStore {
 
 	private async hydrateParents(items: GenericTimelineItem[]): Promise<void> {
 		const adapter = this.config.adapter;
-		const missingParentIds = new Set<string>();
+		const missingParentIds = new SvelteSet<string>();
 
 		for (const item of items) {
 			const status = item.status;
@@ -159,7 +160,7 @@ export class LesserTimelineStore {
 			return;
 		}
 
-		const parentStatuses = new Map<string, GenericStatus>();
+		const parentStatuses = new SvelteMap<string, GenericStatus>();
 
 		await Promise.all(
 			Array.from(missingParentIds).map(async (parentId) => {
@@ -226,7 +227,7 @@ export class LesserTimelineStore {
 			this.state.items = timelineItems;
 			this.state.hasMore = response.pageInfo?.hasNextPage ?? false;
 			this.cursor = response.pageInfo?.endCursor ?? null;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 			this.state.connected = true;
 			await this.hydrateParents(this.state.items);
 		} catch (error) {
@@ -260,7 +261,7 @@ export class LesserTimelineStore {
 			);
 
 			if (newItems.length > 0) {
-				const existingIds = new Set(this.state.items.map((item) => item.id));
+				const existingIds = new SvelteSet(this.state.items.map((item) => item.id));
 				const filteredNewItems = newItems.filter(
 					(item: GenericTimelineItem) => !existingIds.has(item.id)
 				);
@@ -271,7 +272,7 @@ export class LesserTimelineStore {
 
 			this.state.hasMore = response.pageInfo?.hasNextPage ?? false;
 			this.cursor = response.pageInfo?.endCursor ?? null;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error && error.name !== 'AbortError') {
 				this.state.error = error.message;
@@ -301,7 +302,7 @@ export class LesserTimelineStore {
 		const deduped = [newItem, ...this.state.items.filter((item) => item.id !== newItem.id)];
 
 		this.state.items = deduped.slice(0, this.config.maxItems);
-		this.state.lastUpdated = new Date();
+		this.state.lastUpdated = new SvelteDate(Date.now());
 		void this.hydrateParents([newItem]);
 	}
 
@@ -311,7 +312,7 @@ export class LesserTimelineStore {
 	removeStatus(statusId: string): void {
 		this.statusCache.delete(statusId);
 		this.state.items = this.state.items.filter((item) => item.id !== statusId);
-		this.state.lastUpdated = new Date();
+		this.state.lastUpdated = new SvelteDate(Date.now());
 	}
 
 	/**
@@ -569,8 +570,8 @@ function convertUnifiedStatusToGeneric(
 		content: status.content,
 		summary: status.spoilerText,
 		sensitive: status.sensitive,
-		published: new Date(status.createdAt),
-		updated: status.editedAt ? new Date(status.editedAt) : undefined,
+		published: new SvelteDate(status.createdAt),
+		updated: status.editedAt ? new SvelteDate(status.editedAt) : undefined,
 		inReplyTo: status.inReplyTo?.id,
 		attachment: mediaAttachments.length ? mediaAttachments : undefined,
 		tag: [...mentions, ...hashtags, ...emojis],
@@ -601,8 +602,8 @@ function convertUnifiedStatusToGeneric(
 		mentions,
 		hashtags,
 		emojis,
-		createdAt: new Date(status.createdAt),
-		updatedAt: status.editedAt ? new Date(status.editedAt) : undefined,
+		createdAt: new SvelteDate(status.createdAt),
+		updatedAt: status.editedAt ? new SvelteDate(status.editedAt) : undefined,
 		repliesCount: status.repliesCount,
 		reblogsCount: status.reblogsCount,
 		favouritesCount: status.favouritesCount,
@@ -638,7 +639,7 @@ function convertUnifiedStatusToTimelineItem(
 		id: status.id,
 		type: 'status',
 		status: genericStatus,
-		timestamp: new Date(status.createdAt),
+		timestamp: new SvelteDate(status.createdAt),
 		context: {
 			isThread: status.repliesCount > 0,
 			isReply: Boolean(status.inReplyTo),

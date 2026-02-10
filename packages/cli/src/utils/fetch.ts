@@ -141,7 +141,8 @@ function buildSourcePathCandidates(component: ComponentMetadata, installPath: st
 	const normalized = installPath.replace(/\\/g, '/').replace(/^\/+/, '');
 	const candidates: string[] = [];
 	const faceCandidates = getFaceCandidateOrder(component);
-	const isHeadlessPrimitive = component.type === 'primitive' || component.tags?.includes('headless');
+	const isHeadlessPrimitive =
+		component.type === 'primitive' || component.tags?.includes('headless');
 
 	// shared/<module>/... -> packages/shared/<module>/src/...
 	const sharedMatch = normalized.match(/^shared\/([^/]+)\/(.+)$/);

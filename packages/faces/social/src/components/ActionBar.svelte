@@ -1,15 +1,15 @@
-	<script lang="ts">
-		import { Button } from '@equaltoai/greater-components-primitives';
-		import {
-			ReplyIcon as Reply,
-			RepeatIcon as Boost,
-			FavoriteIcon as Favorite,
-			ShareIcon as Share,
-			RepeatIcon as Unboost,
-			UnfavoriteIcon as Unfavorite,
-		} from '@equaltoai/greater-components-icons';
-		import { copyToClipboard } from '@equaltoai/greater-components-utils';
-		import type { Snippet } from 'svelte';
+<script lang="ts">
+	import { Button } from '@equaltoai/greater-components-primitives';
+	import {
+		ReplyIcon as Reply,
+		RepeatIcon as Boost,
+		FavoriteIcon as Favorite,
+		ShareIcon as Share,
+		RepeatIcon as Unboost,
+		UnfavoriteIcon as Unfavorite,
+	} from '@equaltoai/greater-components-icons';
+	import { copyToClipboard } from '@equaltoai/greater-components-utils';
+	import type { Snippet } from 'svelte';
 
 	interface ActionCounts {
 		replies: number;
@@ -79,19 +79,19 @@
 		idPrefix?: string;
 	}
 
-		let {
-			counts,
-			states = {},
-			handlers = {},
-			readonly = false,
-			size = 'sm',
-			class: className = '',
-			extensions,
-			idPrefix = 'action',
-			shareUrl,
-			shareTitle,
-			shareText,
-		}: Props = $props();
+	let {
+		counts,
+		states = {},
+		handlers = {},
+		readonly = false,
+		size = 'sm',
+		class: className = '',
+		extensions,
+		idPrefix = 'action',
+		shareUrl,
+		shareTitle,
+		shareText,
+	}: Props = $props();
 
 	// Loading states for each action
 	let replyLoading = $state(false);
@@ -154,34 +154,34 @@
 		}
 	}
 
-		async function handleShare() {
-			if (readonly || shareLoading) return;
-			if (!handlers.onShare && !shareUrl) return;
+	async function handleShare() {
+		if (readonly || shareLoading) return;
+		if (!handlers.onShare && !shareUrl) return;
 
-			shareLoading = true;
-			try {
-				if (handlers.onShare) {
-					await handlers.onShare();
-					return;
-				}
-
-				const url = shareUrl!;
-				if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
-					const data: ShareData = { url };
-					if (shareTitle) data.title = shareTitle;
-					if (shareText) data.text = shareText;
-					await navigator.share(data);
-				} else {
-					const result = await copyToClipboard(url);
-					if (!result.success) {
-						throw new Error(result.error || 'Failed to copy link');
-					}
-				}
-			} catch (error) {
-				console.error('Share action failed:', error);
-			} finally {
-				shareLoading = false;
+		shareLoading = true;
+		try {
+			if (handlers.onShare) {
+				await handlers.onShare();
+				return;
 			}
+
+			const url = shareUrl!;
+			if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+				const data: { url: string; title?: string; text?: string } = { url };
+				if (shareTitle) data.title = shareTitle;
+				if (shareText) data.text = shareText;
+				await navigator.share(data);
+			} else {
+				const result = await copyToClipboard(url);
+				if (!result.success) {
+					throw new Error(result.error || 'Failed to copy link');
+				}
+			}
+		} catch (error) {
+			console.error('Share action failed:', error);
+		} finally {
+			shareLoading = false;
+		}
 	}
 
 	async function handleQuote() {

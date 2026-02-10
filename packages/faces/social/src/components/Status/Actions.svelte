@@ -117,27 +117,27 @@ Uses handlers from context.
 				</button>
 			{/snippet}
 
-				<ActionBar
-					counts={{
-						replies: actualStatus.repliesCount,
-						boosts: actualStatus.reblogsCount,
-						favorites: actualStatus.favouritesCount,
-						quotes: quoteCount,
-					}}
-					states={{
-						// Only show active styling when the current user has boosted
-						boosted: actualStatus.reblogged,
-						favorited: actualStatus.favourited,
-						bookmarked: actualStatus.bookmarked,
-					}}
-					handlers={wrappedHandlers}
-					shareUrl={actualStatus.url}
-					shareTitle={`Post by ${context.account.displayName || context.account.username || 'Unknown'}`}
-					{readonly}
-					{size}
-					idPrefix={`status-${actualStatus.id}`}
-					extensions={shouldShowDelete ? deleteExtension : undefined}
-				/>
+			<ActionBar
+				counts={{
+					replies: actualStatus.repliesCount,
+					boosts: actualStatus.reblogsCount,
+					favorites: actualStatus.favouritesCount,
+					quotes: quoteCount,
+				}}
+				states={{
+					// Only show active styling when the current user has boosted
+					boosted: actualStatus.reblogged,
+					favorited: actualStatus.favourited,
+					bookmarked: actualStatus.bookmarked,
+				}}
+				handlers={wrappedHandlers}
+				shareUrl={actualStatus.url}
+				shareTitle={`Post by ${context.account.displayName || context.account.username || 'Unknown'}`}
+				{readonly}
+				{size}
+				idPrefix={`status-${actualStatus.id}`}
+				extensions={shouldShowDelete ? deleteExtension : undefined}
+			/>
 		{/if}
 	</div>
 {/if}

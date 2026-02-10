@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { createVirtualizer } from '@tanstack/svelte-virtual';
+	import { untrack, type Snippet } from 'svelte';
 	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
-	import type { Snippet } from 'svelte';
 	import type { TimelineIntegrationConfig } from '../lib/integration';
 	import { createTimelineIntegration, createGraphQLTimelineIntegration } from '../lib/integration';
 	import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
@@ -124,24 +124,24 @@
 			| ((status: Status) => StatusCardActionHandlers | undefined);
 	}
 
-		let {
-			items: propItems = [],
-			virtualScrolling = true,
-			integration,
-			loadingTop: propLoadingTop = false,
-			loadingBottom: propLoadingBottom = false,
-			endReached: propEndReached = false,
-			onLoadMore,
-			onLoadPrevious,
-			onStatusClick,
-			onStatusUpdate,
-			gapLoader,
-			empty,
-			endOfFeed,
-			realtimeIndicator,
-			class: className = '',
-			density = 'comfortable',
-			autoConnect = true,
+	let {
+		items: propItems = [],
+		virtualScrolling = true,
+		integration,
+		loadingTop: propLoadingTop = false,
+		loadingBottom: propLoadingBottom = false,
+		endReached: propEndReached = false,
+		onLoadMore,
+		onLoadPrevious,
+		onStatusClick,
+		onStatusUpdate,
+		gapLoader,
+		empty,
+		endOfFeed,
+		realtimeIndicator,
+		class: className = '',
+		density = 'comfortable',
+		autoConnect = true,
 		showRealtimeIndicator = true,
 		actionHandlers,
 		adapter,
@@ -180,17 +180,17 @@
 	let prevItemCount = 0;
 
 	const rowVirtualizer = createVirtualizer<HTMLDivElement, HTMLElement>({
-		count: items.length,
+		count: untrack(() => items.length),
 		getScrollElement: () => scrollElement ?? null,
 		estimateSize: () => estimateSize,
-		overscan,
-		enabled: virtualScrolling,
+		overscan: untrack(() => overscan),
+		enabled: untrack(() => virtualScrolling),
 		getItemKey: (index) => items[index]?.id ?? index,
 		indexAttribute: 'data-index',
 	});
 
 	$effect(() => {
-		get(rowVirtualizer).setOptions({
+		get(rowVirtualizer).setOptions?.({
 			count: items.length,
 			estimateSize: () => estimateSize,
 			overscan,
@@ -200,9 +200,9 @@
 	});
 
 	function measureRow(node: HTMLElement) {
-		get(rowVirtualizer).measureElement(node);
+		get(rowVirtualizer).measureElement?.(node);
 		return {
-			update: () => get(rowVirtualizer).measureElement(node),
+			update: () => get(rowVirtualizer).measureElement?.(node),
 		};
 	}
 

@@ -13,6 +13,7 @@
 -->
 <script lang="ts">
 	import { createTabs } from '@equaltoai/greater-components-headless/tabs';
+	import { untrack } from 'svelte';
 	import { getProfileContext } from './context.js';
 
 	interface Props {
@@ -32,7 +33,7 @@
 	});
 
 	const tabs = createTabs({
-		defaultTab: activeTabIndex,
+		defaultTab: untrack(() => activeTabIndex),
 		onChange: (index) => {
 			const tabId = profileState.tabs[index]?.id;
 			if (!tabId) return;

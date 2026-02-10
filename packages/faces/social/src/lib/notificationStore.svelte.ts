@@ -6,6 +6,7 @@
 import type { Notification, NotificationGroup } from '../types';
 import type { TransportManager } from './transport';
 import { groupNotifications } from '../utils/notificationGrouping';
+import { SvelteDate, SvelteMap, SvelteURL } from 'svelte/reactivity';
 
 export interface NotificationState {
 	items: Notification[];
@@ -46,7 +47,7 @@ export class NotificationStore {
 
 	private config: Required<NotificationConfig>;
 	private transport: TransportManager | null = null;
-	private itemsMap = new Map<string, Notification>();
+	private itemsMap = new SvelteMap<string, Notification>();
 	private abortController: AbortController | null = null;
 
 	constructor(config: NotificationConfig = {}) {
@@ -97,7 +98,7 @@ export class NotificationStore {
 				this.addNotification(notification);
 				this.updateCounts();
 				this.updateGroups();
-				this.state.lastUpdated = new Date();
+				this.state.lastUpdated = new SvelteDate(Date.now());
 			});
 
 			this.transport.on('notification.update', (notification) => {
@@ -134,7 +135,7 @@ export class NotificationStore {
 		this.abortController = new AbortController();
 
 		try {
-			const url = new URL('/api/v1/notifications', baseUrl);
+			const url = new SvelteURL('/api/v1/notifications', baseUrl);
 			url.searchParams.set('limit', this.config.preloadCount.toString());
 
 			const headers: Record<string, string> = {};
@@ -161,7 +162,7 @@ export class NotificationStore {
 			this.updateGroups();
 
 			this.state.hasMore = notifications.length >= this.config.preloadCount;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error && error.name !== 'AbortError') {
 				this.state.error = error.message;
@@ -182,7 +183,7 @@ export class NotificationStore {
 		this.state.error = null;
 
 		try {
-			const url = new URL('/api/v1/notifications', baseUrl);
+			const url = new SvelteURL('/api/v1/notifications', baseUrl);
 			const lastItem = this.state.items[this.state.items.length - 1];
 			if (!lastItem) return;
 			url.searchParams.set('max_id', lastItem.id);
@@ -208,7 +209,7 @@ export class NotificationStore {
 			this.updateGroups();
 
 			this.state.hasMore = notifications.length >= this.config.preloadCount;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error) {
 				this.state.error = error.message;
@@ -231,7 +232,7 @@ export class NotificationStore {
 
 		try {
 			if (baseUrl && accessToken) {
-				const url = new URL(`/api/v1/notifications/${notificationId}/dismiss`, baseUrl);
+				const url = new SvelteURL(`/api/v1/notifications/${notificationId}/dismiss`, baseUrl);
 				const headers = {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
@@ -274,7 +275,7 @@ export class NotificationStore {
 
 		try {
 			if (baseUrl && accessToken) {
-				const url = new URL('/api/v1/notifications/clear', baseUrl);
+				const url = new SvelteURL('/api/v1/notifications/clear', baseUrl);
 				const headers = {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
@@ -316,7 +317,7 @@ export class NotificationStore {
 
 		try {
 			if (baseUrl && accessToken) {
-				const url = new URL(`/api/v1/notifications/${notificationId}/dismiss`, baseUrl);
+				const url = new SvelteURL(`/api/v1/notifications/${notificationId}/dismiss`, baseUrl);
 				const headers = {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',

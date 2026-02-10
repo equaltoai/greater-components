@@ -122,10 +122,10 @@ for statuses from Lesser instances.
 
 				<!-- Trust Score Badge -->
 				{#if showTrust && trustScore !== undefined}
-						<span
-							class={`lesser-badge lesser-badge--trust lesser-badge--trust-${trustColor}`}
-							title={`Account trust score: ${trustScore}/100`}
-						>
+					<span
+						class={`lesser-badge lesser-badge--trust lesser-badge--trust-${trustColor}`}
+						title={`Account trust score: ${trustScore}/100`}
+					>
 						<svg class="lesser-badge__icon" viewBox="0 0 24 24" aria-hidden="true">
 							<path
 								fill="currentColor"

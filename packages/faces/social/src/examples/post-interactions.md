@@ -3,6 +3,7 @@
 This example shows how to wire interaction handlers to `StatusCard` and how to provide an inline reply composer.
 
 Notes:
+
 - `ActionBar` disables each action when its handler is missing.
 - If you pass `shareUrl`, the Share button uses the Web Share API when available, otherwise it copies the URL.
 - `StatusCard` passes `shareUrl={status.url}` by default, so sharing/copying can work even if you don’t provide `onShare`.
@@ -50,4 +51,3 @@ Notes:
 	</Compose.Root>
 {/if}
 ```
-

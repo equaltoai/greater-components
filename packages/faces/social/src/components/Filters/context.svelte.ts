@@ -8,6 +8,7 @@
  */
 
 import { getContext, setContext } from 'svelte';
+import { SvelteDate } from 'svelte/reactivity';
 
 const FILTERS_CONTEXT_KEY = Symbol('filters-context');
 
@@ -284,7 +285,7 @@ export function createFiltersContext(
 		},
 		checkFilters: (content: string, context: FilterContext) => {
 			const lowerContent = content.toLowerCase();
-			const now = new Date();
+			const now = new SvelteDate(Date.now());
 
 			return state.filters.filter((filter) => {
 				// Check if filter applies to this context
@@ -293,7 +294,7 @@ export function createFiltersContext(
 				}
 
 				// Check if filter is expired
-				if (filter.expiresAt && new Date(filter.expiresAt) < now) {
+				if (filter.expiresAt && new SvelteDate(filter.expiresAt) < now) {
 					return false;
 				}
 
@@ -348,8 +349,8 @@ export function getFiltersContext(): FiltersContext {
 export function formatExpiration(expiresAt: string | null): string {
 	if (!expiresAt) return 'Never';
 
-	const now = new Date();
-	const expires = new Date(expiresAt);
+	const now = new SvelteDate(Date.now());
+	const expires = new SvelteDate(expiresAt);
 	const diff = expires.getTime() - now.getTime();
 
 	if (diff < 0) return 'Expired';
@@ -368,7 +369,6 @@ export function formatExpiration(expiresAt: string | null): string {
 export function calculateExpiresAt(expiresIn: number | null): string | null {
 	if (!expiresIn) return null;
 
-	const now = new Date();
-	const expiresAt = new Date(now.getTime() + expiresIn * 1000);
+	const expiresAt = new SvelteDate(Date.now() + expiresIn * 1000);
 	return expiresAt.toISOString();
 }

@@ -5,6 +5,7 @@
 
 import type { Status } from '../types';
 import type { TransportManager } from './transport';
+import { SvelteDate, SvelteMap, SvelteURL } from 'svelte/reactivity';
 
 export interface TimelineState {
 	items: Status[];
@@ -40,7 +41,7 @@ export class TimelineStore {
 
 	private config: Required<TimelineConfig>;
 	private transport: TransportManager | null = null;
-	private itemsMap = new Map<string, Status>();
+	private itemsMap = new SvelteMap<string, Status>();
 	private abortController: AbortController | null = null;
 
 	constructor(config: TimelineConfig = {}) {
@@ -87,7 +88,7 @@ export class TimelineStore {
 			this.transport.on('status.update', (status) => {
 				this.addStatus(status, 'prepend');
 				this.state.unreadCount++;
-				this.state.lastUpdated = new Date();
+				this.state.lastUpdated = new SvelteDate(Date.now());
 			});
 
 			this.transport.on('status.delete', ({ id }) => {
@@ -122,7 +123,7 @@ export class TimelineStore {
 		this.abortController = new AbortController();
 
 		try {
-			const url = new URL(`/api/v1/timelines/${this.config.type}`, baseUrl);
+			const url = new SvelteURL(`/api/v1/timelines/${this.config.type}`, baseUrl);
 			url.searchParams.set('limit', this.config.preloadCount.toString());
 
 			const headers: Record<string, string> = {};
@@ -146,7 +147,7 @@ export class TimelineStore {
 			statuses.forEach((status) => this.itemsMap.set(status.id, status));
 
 			this.state.endReached = statuses.length < this.config.preloadCount;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error && error.name !== 'AbortError') {
 				this.state.error = error.message;
@@ -167,7 +168,7 @@ export class TimelineStore {
 		this.state.error = null;
 
 		try {
-			const url = new URL(`/api/v1/timelines/${this.config.type}`, baseUrl);
+			const url = new SvelteURL(`/api/v1/timelines/${this.config.type}`, baseUrl);
 			const firstItem = this.state.items[0];
 			if (!firstItem) return;
 			url.searchParams.set('since_id', firstItem.id);
@@ -189,7 +190,7 @@ export class TimelineStore {
 			// Add new statuses to the beginning
 			statuses.reverse().forEach((status) => this.addStatus(status, 'prepend'));
 
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error) {
 				this.state.error = error.message;
@@ -209,7 +210,7 @@ export class TimelineStore {
 		this.state.error = null;
 
 		try {
-			const url = new URL(`/api/v1/timelines/${this.config.type}`, baseUrl);
+			const url = new SvelteURL(`/api/v1/timelines/${this.config.type}`, baseUrl);
 			const lastItem = this.state.items[this.state.items.length - 1];
 			if (!lastItem) return;
 			url.searchParams.set('max_id', lastItem.id);
@@ -232,7 +233,7 @@ export class TimelineStore {
 			statuses.forEach((status) => this.addStatus(status, 'append'));
 
 			this.state.endReached = statuses.length < this.config.preloadCount;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error) {
 				this.state.error = error.message;

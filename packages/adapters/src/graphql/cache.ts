@@ -31,7 +31,10 @@ export const typePolicies: TypePolicies = {
 			 */
 			homeTimeline: {
 				keyArgs: false,
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -41,7 +44,10 @@ export const typePolicies: TypePolicies = {
 			},
 			publicTimeline: {
 				keyArgs: ['local'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -51,7 +57,10 @@ export const typePolicies: TypePolicies = {
 			},
 			hashtagTimeline: {
 				keyArgs: ['hashtag'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -61,7 +70,10 @@ export const typePolicies: TypePolicies = {
 			},
 			listTimeline: {
 				keyArgs: ['listId'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -75,7 +87,10 @@ export const typePolicies: TypePolicies = {
 			 */
 			notifications: {
 				keyArgs: ['types'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -89,7 +104,10 @@ export const typePolicies: TypePolicies = {
 			 */
 			searchStatuses: {
 				keyArgs: ['query', 'resolve'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -99,7 +117,10 @@ export const typePolicies: TypePolicies = {
 			},
 			searchAccounts: {
 				keyArgs: ['query', 'resolve', 'following'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -109,7 +130,10 @@ export const typePolicies: TypePolicies = {
 			},
 			searchHashtags: {
 				keyArgs: ['query'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -123,7 +147,10 @@ export const typePolicies: TypePolicies = {
 			 */
 			conversations: {
 				keyArgs: false,
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],
@@ -133,7 +160,10 @@ export const typePolicies: TypePolicies = {
 			},
 			conversationMessages: {
 				keyArgs: ['conversationId'],
-				merge(existing: PagedEdgesConnection = { edges: [], pageInfo: {} }, incoming: PagedEdgesConnection) {
+				merge(
+					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
+					incoming: PagedEdgesConnection
+				) {
 					return {
 						...incoming,
 						edges: [...existing.edges, ...incoming.edges],

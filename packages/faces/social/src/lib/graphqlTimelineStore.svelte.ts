@@ -7,6 +7,7 @@
 
 import type { Status, Account, MediaAttachment, Card } from '../types';
 import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+import { SvelteDate } from 'svelte/reactivity';
 type UnknownRecord = Record<string, unknown>;
 
 const isRecord = (value: unknown): value is UnknownRecord =>
@@ -80,7 +81,7 @@ export class GraphQLTimelineStore {
 			const statuses = await this.fetchStatuses();
 			this.state.items = statuses;
 			this.state.endReached = statuses.length < 20;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error) {
 				this.state.error = error.message;
@@ -111,7 +112,7 @@ export class GraphQLTimelineStore {
 			}
 
 			this.state.unreadCount = 0;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error) {
 				this.state.error = error.message;
@@ -139,7 +140,7 @@ export class GraphQLTimelineStore {
 			}
 
 			this.state.endReached = statuses.length < 20;
-			this.state.lastUpdated = new Date();
+			this.state.lastUpdated = new SvelteDate(Date.now());
 		} catch (error) {
 			if (error instanceof Error) {
 				this.state.error = error.message;
@@ -302,7 +303,7 @@ export class GraphQLTimelineStore {
 		const createdAt =
 			typeof item['createdAt'] === 'string' || item['createdAt'] instanceof Date
 				? item['createdAt']
-				: new Date().toISOString();
+				: new SvelteDate(Date.now()).toISOString();
 
 		const mediaAttachmentsRaw = item['mediaAttachments'];
 		const mediaAttachments = Array.isArray(mediaAttachmentsRaw)
@@ -368,7 +369,7 @@ export class GraphQLTimelineStore {
 			createdAt:
 				typeof item['createdAt'] === 'string' || item['createdAt'] instanceof Date
 					? item['createdAt']
-					: new Date().toISOString(),
+					: new SvelteDate(Date.now()).toISOString(),
 			bot: typeof item['bot'] === 'boolean' ? item['bot'] : false,
 			locked: typeof item['locked'] === 'boolean' ? item['locked'] : false,
 			verified: typeof item['verified'] === 'boolean' ? item['verified'] : false,

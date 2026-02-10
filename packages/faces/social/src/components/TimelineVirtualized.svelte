@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { createVirtualizer } from '@tanstack/svelte-virtual';
+	import { untrack, type Snippet } from 'svelte';
 	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
-	import type { Snippet } from 'svelte';
 
 	interface StatusCardActionHandlers {
 		onReply?: (status: Status) => Promise<void> | void;
@@ -96,16 +96,16 @@
 	let prevScrollTop = 0;
 
 	const rowVirtualizer = createVirtualizer<HTMLDivElement, HTMLElement>({
-		count: items.length,
+		count: untrack(() => items.length),
 		getScrollElement: () => scrollElement,
 		estimateSize: () => estimateSize,
-		overscan,
+		overscan: untrack(() => overscan),
 		getItemKey: (index) => items[index]?.id ?? index,
 		indexAttribute: 'data-index',
 	});
 
 	$effect(() => {
-		get(rowVirtualizer).setOptions({
+		get(rowVirtualizer).setOptions?.({
 			count: items.length,
 			estimateSize: () => estimateSize,
 			overscan,
@@ -115,9 +115,9 @@
 	});
 
 	function measureRow(node: HTMLElement) {
-		get(rowVirtualizer).measureElement(node);
+		get(rowVirtualizer).measureElement?.(node);
 		return {
-			update: () => get(rowVirtualizer).measureElement(node),
+			update: () => get(rowVirtualizer).measureElement?.(node),
 		};
 	}
 
@@ -189,7 +189,12 @@
 					{@const handlersForItem =
 						typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
 					<div class="virtual-row" role="article">
-						<StatusCard status={item} {density} showActions={true} actionHandlers={handlersForItem} />
+						<StatusCard
+							status={item}
+							{density}
+							showActions={true}
+							actionHandlers={handlersForItem}
+						/>
 					</div>
 				{/each}
 			{/if}

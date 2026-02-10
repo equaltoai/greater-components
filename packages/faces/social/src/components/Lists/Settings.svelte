@@ -164,14 +164,14 @@
 					</span>
 				</div>
 
-					<div class="list-settings__info-item">
-						<span class="list-settings__info-label">Members</span>
-						<span class="list-settings__info-value">
-							{currentList.membersCount}
-						</span>
-					</div>
+				<div class="list-settings__info-item">
+					<span class="list-settings__info-label">Members</span>
+					<span class="list-settings__info-value">
+						{currentList.membersCount}
+					</span>
 				</div>
 			</div>
+		</div>
 
 		{#if hasChanges}
 			<div class="list-settings__footer">

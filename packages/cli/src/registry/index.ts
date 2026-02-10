@@ -257,8 +257,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 	'social-timeline': {
 		name: 'social-timeline',
 		type: 'shared',
-		description:
-			'Virtualized timelines and realtime integration utilities for the social face',
+		description: 'Virtualized timelines and realtime integration utilities for the social face',
 		files: [
 			{ path: 'lib/components/TimelineVirtualized.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/TimelineVirtualizedReactive.svelte', content: '', type: 'component' },

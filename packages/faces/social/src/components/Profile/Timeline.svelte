@@ -78,12 +78,7 @@
 		</div>
 	{/if}
 
-	<TimelineVirtualizedReactive
-		{adapter}
-		{view}
-		{virtualScrolling}
-		{estimateSize}
-	>
+	<TimelineVirtualizedReactive {adapter} {view} {virtualScrolling} {estimateSize}>
 		{#snippet empty()}
 			{#if emptyState}
 				{@render emptyState()}

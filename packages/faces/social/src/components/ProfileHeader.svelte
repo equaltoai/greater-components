@@ -199,7 +199,7 @@
 	const fieldsId = $derived(profileHeaderId ? `${profileHeaderId}-fields` : undefined);
 </script>
 
-<article class={profileHeaderClass()}>
+<article class={profileHeaderClass}>
 	<!-- Banner Section -->
 	{#if showBanner}
 		<div
@@ -276,9 +276,9 @@
 		<div class="gr-profile-header__identity">
 			<h1
 				class="gr-profile-header__display-name"
-				aria-label={processedDisplayName() || account.username || 'Profile'}
+				aria-label={processedDisplayName || account.username || 'Profile'}
 			>
-				<span class="gr-profile-header__display-name-text" use:setHtml={sanitizedDisplayName()}
+				<span class="gr-profile-header__display-name-text" use:setHtml={sanitizedDisplayName}
 				></span>
 				{#if account.locked}
 					<svg
@@ -357,7 +357,7 @@
 
 		<!-- Join Date and Counts -->
 		<div class="gr-profile-header__stats">
-			{#if showJoinDate && formattedJoinDate()}
+			{#if showJoinDate && formattedJoinDate}
 				<div class="gr-profile-header__join-date">
 					<svg
 						class="gr-profile-header__calendar-icon"
@@ -371,7 +371,7 @@
 							d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"
 						/>
 					</svg>
-					<span>Joined {formattedJoinDate()}</span>
+					<span>Joined {formattedJoinDate}</span>
 				</div>
 			{/if}
 

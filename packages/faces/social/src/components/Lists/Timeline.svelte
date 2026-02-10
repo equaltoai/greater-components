@@ -135,10 +135,7 @@
 			{#if children}
 				{@render children()}
 			{:else if adapter && activeListId}
-				<TimelineVirtualizedReactive
-					{adapter}
-					view={{ type: 'list', listId: activeListId }}
-				/>
+				<TimelineVirtualizedReactive {adapter} view={{ type: 'list', listId: activeListId }} />
 			{:else}
 				<div class="lists-timeline__empty">
 					<svg viewBox="0 0 24 24" fill="currentColor">

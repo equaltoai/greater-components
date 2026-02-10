@@ -9,6 +9,7 @@ import { NotificationStore, type NotificationConfig } from './notificationStore'
 import { TransportManager, type TransportConfig } from './transport';
 import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 import { GraphQLTimelineStore, type GraphQLTimelineView } from './graphqlTimelineStore';
+import { SvelteSet } from 'svelte/reactivity';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -21,7 +22,7 @@ function normalizeError(error: unknown, message: string): Error {
 }
 
 export class RealtimeErrorBoundary {
-	private errorHandlers = new Set<(error: Error) => void>();
+	private errorHandlers = new SvelteSet<(error: Error) => void>();
 
 	onError(handler: (error: Error) => void): () => void {
 		this.errorHandlers.add(handler);

@@ -268,26 +268,26 @@
 		</div>
 	{/if}
 
-		{#if showActions}
-			<ActionBar
-				counts={{
-					replies: actualStatus.repliesCount,
-					boosts: actualStatus.reblogsCount,
-					favorites: actualStatus.favouritesCount,
-					quotes: actualStatus.quoteCount,
-				}}
-				states={{
-					boosted: actualStatus.reblogged,
-					favorited: actualStatus.favourited,
-					bookmarked: actualStatus.bookmarked,
-				}}
-				handlers={wrappedActionHandlers}
-				shareUrl={actualStatus.url}
-				shareTitle={`Post by ${account.displayName || account.username}`}
-				size={density === 'compact' ? 'sm' : 'sm'}
-				idPrefix={`status-${actualStatus.id}`}
-			/>
-		{/if}
+	{#if showActions}
+		<ActionBar
+			counts={{
+				replies: actualStatus.repliesCount,
+				boosts: actualStatus.reblogsCount,
+				favorites: actualStatus.favouritesCount,
+				quotes: actualStatus.quoteCount,
+			}}
+			states={{
+				boosted: actualStatus.reblogged,
+				favorited: actualStatus.favourited,
+				bookmarked: actualStatus.bookmarked,
+			}}
+			handlers={wrappedActionHandlers}
+			shareUrl={actualStatus.url}
+			shareTitle={`Post by ${account.displayName || account.username}`}
+			size={density === 'compact' ? 'sm' : 'sm'}
+			idPrefix={`status-${actualStatus.id}`}
+		/>
+	{/if}
 
 	{#if footer}
 		<div class="custom-footer">

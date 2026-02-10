@@ -43,18 +43,18 @@ deepfake detection, and moderation recommendations.
 	let error = $state<Error | null>(null);
 	let requesting = $state(false);
 
-		async function loadAnalysis() {
-			if (!objectId) return;
+	async function loadAnalysis() {
+		if (!objectId) return;
 
-			loading = true;
-			error = null;
-			try {
-				const result = await context.config.adapter.getAIAnalysis(objectId);
-				analysis = result ?? null;
+		loading = true;
+		error = null;
+		try {
+			const result = await context.config.adapter.getAIAnalysis(objectId);
+			analysis = result ?? null;
 
-				if (!result && autoRequest) {
-					await requestAnalysis();
-				}
+			if (!result && autoRequest) {
+				await requestAnalysis();
+			}
 		} catch (err) {
 			error = err instanceof Error ? err : new Error('Failed to load AI analysis');
 		} finally {
@@ -93,13 +93,13 @@ deepfake detection, and moderation recommendations.
 		return `${(value * 100).toFixed(1)}%`;
 	}
 
-		const overallRiskPercent = $derived.by(() =>
-			analysis ? Math.max(0, Math.min(100, analysis.overallRisk * 100)) : 0
-		);
-		const overallRiskSeverity = $derived.by(() =>
-			analysis ? getSeverity(analysis.overallRisk) : 'success'
-		);
-	</script>
+	const overallRiskPercent = $derived.by(() =>
+		analysis ? Math.max(0, Math.min(100, analysis.overallRisk * 100)) : 0
+	);
+	const overallRiskSeverity = $derived.by(() =>
+		analysis ? getSeverity(analysis.overallRisk) : 'success'
+	);
+</script>
 
 <div class={`ai-analysis ${className}`}>
 	<div class="ai-analysis__header">

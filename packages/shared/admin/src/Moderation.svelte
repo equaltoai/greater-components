@@ -159,10 +159,10 @@
 				</button>
 			</div>
 
-				<div class="admin-moderation__actions-grid">
-					{#if selectedUser.status === 'active'}
-						<button
-							class="admin-moderation__action-card"
+			<div class="admin-moderation__actions-grid">
+				{#if selectedUser.status === 'active'}
+					<button
+						class="admin-moderation__action-card"
 						class:admin-moderation__action-card--selected={selectedAction === 'suspend'}
 						onclick={() => (selectedAction = 'suspend')}
 					>
@@ -186,23 +186,23 @@
 						</svg>
 						<span>Unsuspend User</span>
 					</button>
-					{/if}
+				{/if}
 
-					{#if handlers.onDeleteUserContent}
-						<button
-							class="admin-moderation__action-card admin-moderation__action-card--danger"
-							class:admin-moderation__action-card--selected={selectedAction === 'delete'}
-							onclick={() => (selectedAction = 'delete')}
-						>
-							<svg viewBox="0 0 24 24" fill="currentColor">
-								<path
-									d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-								/>
-							</svg>
-							<span>Delete Content</span>
-						</button>
-					{/if}
-				</div>
+				{#if handlers.onDeleteUserContent}
+					<button
+						class="admin-moderation__action-card admin-moderation__action-card--danger"
+						class:admin-moderation__action-card--selected={selectedAction === 'delete'}
+						onclick={() => (selectedAction = 'delete')}
+					>
+						<svg viewBox="0 0 24 24" fill="currentColor">
+							<path
+								d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+							/>
+						</svg>
+						<span>Delete Content</span>
+					</button>
+				{/if}
+			</div>
 
 			{#if selectedAction}
 				<div class="admin-moderation__form">
@@ -230,22 +230,22 @@
 						<p class="admin-moderation__form-text">
 							This will restore access for <strong>@{selectedUser.username}</strong>.
 						</p>
-						{:else if selectedAction === 'delete'}
-							<p class="admin-moderation__form-text">
-								This will delete recent content from <strong>@{selectedUser.username}</strong>. This
-								action cannot be undone.
-							</p>
-							<div class="admin-moderation__field">
-								<label for="reason" class="admin-moderation__label">Reason (Optional)</label>
-								<textarea
-									id="reason"
-									class="admin-moderation__textarea"
-									bind:value={actionReason}
-									placeholder="Enter reason for deletion..."
-									rows="3"
-								></textarea>
-							</div>
-						{/if}
+					{:else if selectedAction === 'delete'}
+						<p class="admin-moderation__form-text">
+							This will delete recent content from <strong>@{selectedUser.username}</strong>. This
+							action cannot be undone.
+						</p>
+						<div class="admin-moderation__field">
+							<label for="reason" class="admin-moderation__label">Reason (Optional)</label>
+							<textarea
+								id="reason"
+								class="admin-moderation__textarea"
+								bind:value={actionReason}
+								placeholder="Enter reason for deletion..."
+								rows="3"
+							></textarea>
+						</div>
+					{/if}
 
 					<div class="admin-moderation__form-actions">
 						<button

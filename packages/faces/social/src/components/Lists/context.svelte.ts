@@ -287,10 +287,21 @@ export function createListsContext(
 			if (list) {
 				state.loading = true;
 				try {
-					const members = await handlers.onFetchMembers?.(list.id);
-					if (members) {
-						state.members = members;
+					const refreshedList = await handlers.onFetchList?.(list.id);
+					if (refreshedList) {
+						state.selectedList = refreshedList;
+						state.lists = state.lists.map((l) => (l.id === refreshedList.id ? refreshedList : l));
+
+						const membersFromList = (refreshedList as unknown as { members?: ListMember[] })
+							.members;
+						if (Array.isArray(membersFromList)) {
+							state.members = membersFromList;
+							return;
+						}
 					}
+
+					const members = await handlers.onFetchMembers?.(list.id);
+					if (members) state.members = members;
 				} catch (error) {
 					state.error = error instanceof Error ? error.message : 'Failed to fetch members';
 				} finally {
@@ -368,9 +379,27 @@ export function createListsContext(
 			state.error = null;
 
 			try {
-				await handlers.onAddMember?.(state.selectedList.id, actorId);
-				// Refresh members
-				await context.selectList(state.selectedList);
+				const listId = state.selectedList.id;
+				await (handlers.onAddMember ?? handlers.onAddListMember)?.(listId, actorId);
+
+				const refreshedList = await handlers.onFetchList?.(listId);
+				if (refreshedList) {
+					state.selectedList = refreshedList;
+					state.lists = state.lists.map((l) => (l.id === refreshedList.id ? refreshedList : l));
+
+					const membersFromList = (refreshedList as unknown as { members?: ListMember[] }).members;
+					if (Array.isArray(membersFromList)) {
+						state.members = membersFromList;
+					}
+				} else {
+					state.selectedList = {
+						...state.selectedList,
+						membersCount: state.selectedList.membersCount + 1,
+					};
+				}
+
+				const members = await handlers.onFetchMembers?.(listId);
+				if (members) state.members = members;
 			} catch (error) {
 				state.error = error instanceof Error ? error.message : 'Failed to add member';
 				throw error;
@@ -385,7 +414,8 @@ export function createListsContext(
 			state.error = null;
 
 			try {
-				await handlers.onRemoveMember?.(state.selectedList.id, memberId);
+				const listId = state.selectedList.id;
+				await (handlers.onRemoveMember ?? handlers.onRemoveListMember)?.(listId, memberId);
 				state.members = state.members.filter((m) => m.id !== memberId);
 				// Update member count
 				if (state.selectedList) {
@@ -393,6 +423,20 @@ export function createListsContext(
 						...state.selectedList,
 						membersCount: Math.max(0, state.selectedList.membersCount - 1),
 					};
+				}
+
+				const refreshedList = await handlers.onFetchList?.(listId);
+				if (refreshedList) {
+					state.selectedList = refreshedList;
+					state.lists = state.lists.map((l) => (l.id === refreshedList.id ? refreshedList : l));
+
+					const membersFromList = (refreshedList as unknown as { members?: ListMember[] }).members;
+					if (Array.isArray(membersFromList)) {
+						state.members = membersFromList;
+					}
+				} else {
+					const members = await handlers.onFetchMembers?.(listId);
+					if (members) state.members = members;
 				}
 			} catch (error) {
 				state.error = error instanceof Error ? error.message : 'Failed to remove member';
