@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-adapters",
   "private": true,
-  "version": "0.1.6",
+  "version": "0.1.7-rc.0",
   "type": "module",
   "description": "Transport adapters and state management for Greater Components",
   "license": "AGPL-3.0-only",

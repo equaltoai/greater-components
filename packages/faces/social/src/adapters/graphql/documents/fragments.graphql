@@ -20,6 +20,8 @@ fragment ActorSummary on Actor {
 	bot
 	locked
 	updatedAt
+	tipAddress
+	tipChainId
 	trustScore
 	fields {
 		...FieldFields
@@ -99,6 +101,9 @@ fragment ObjectContentFields on Object {
 	repliesCount
 	likesCount
 	sharesCount
+	boosted
+	relationshipType
+	contentHash
 	estimatedCost
 	moderationScore
 	quoteUrl

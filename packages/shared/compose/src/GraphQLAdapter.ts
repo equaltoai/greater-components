@@ -119,10 +119,11 @@ function createOptimisticObject(data: {
 	account: ActorLike;
 }): OptimisticObject {
 	const now = new Date().toISOString();
+	const id = `optimistic-${Date.now()}`;
 
 	return {
 		__typename: 'Object',
-		id: `optimistic-${Date.now()}`,
+		id,
 		type: 'NOTE',
 		content: data.content,
 		contentMap: [],
@@ -137,6 +138,9 @@ function createOptimisticObject(data: {
 		repliesCount: 0,
 		likesCount: 0,
 		sharesCount: 0,
+		boosted: false,
+		relationshipType: 'ORIGINAL',
+		contentHash: id,
 		estimatedCost: 0,
 		moderationScore: null,
 		quoteUrl: null,

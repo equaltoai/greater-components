@@ -1,0 +1,36 @@
+# Instance info queries
+
+#import "./fragments.graphql"
+
+query Instance {
+	instance {
+		domain
+		title
+		shortDescription
+		description
+		email
+		version
+		sourceUrl
+		streamingUrl
+		thumbnailUrl
+		languages
+		registrationsOpen
+		approvalRequired
+		invitesEnabled
+		userCount
+		statusCount
+		domainCount
+		contactAccount {
+			...ActorSummary
+		}
+		rules {
+			id
+			text
+		}
+		tips {
+			enabled
+			chainId
+			contractAddress
+		}
+	}
+}
