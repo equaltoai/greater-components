@@ -12,6 +12,22 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.7](https://github.com/equaltoai/greater-components/compare/greater-v0.1.6...greater-v0.1.7) (2026-02-10)
+
+
+### Bug Fixes
+
+* **compose:** include new object fields in optimistic updates ([9f28a34](https://github.com/equaltoai/greater-components/commit/9f28a3440484eec3906b8fd32c22ecc792c32fd2))
+* **graphql:** pin Lesser v1.1.1 + expand fragments ([d68fd59](https://github.com/equaltoai/greater-components/commit/d68fd592e3e1e18b0bd08d925a5d6a1d2afbf19b)), closes [#168](https://github.com/equaltoai/greater-components/issues/168)
+* **registry:** keep index ref on release tag ([6664cdb](https://github.com/equaltoai/greater-components/commit/6664cdb208ab951fa8c2861a2eca6ed5645ddefe))
+
+
+### Chores
+
+* **premain:** release greater 0.1.7-rc.0 ([28fe63e](https://github.com/equaltoai/greater-components/commit/28fe63e368431d6e202ad2ff2a59c31408233ba4))
+* **premain:** release greater 0.1.7-rc.0 ([532c688](https://github.com/equaltoai/greater-components/commit/532c688b7cc54bfa4fb4bce307ddc89bac596663))
+* **release:** prepare metadata ([9f62828](https://github.com/equaltoai/greater-components/commit/9f62828301f7532fc0f7e27cb6dc31e965b3b29d))
+
 ## [0.1.7-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.6-rc.0...greater-v0.1.7-rc.0) (2026-02-10)
 
 ### Bug Fixes
