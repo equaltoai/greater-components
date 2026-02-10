@@ -15688,6 +15688,12 @@ h1 {
 	position: relative;
 }
 
+.virtual-spacer {
+	display: block;
+	width: 100%;
+	flex: 0 0 auto;
+}
+
 .loading-indicator {
 	display: flex;
 	justify-content: center;

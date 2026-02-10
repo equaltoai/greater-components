@@ -158,23 +158,22 @@
 			</div>
 		{/if}
 
-		<div
-			class="virtual-list"
-			style:height={virtualScrolling ? `${$rowVirtualizer.getTotalSize()}px` : 'auto'}
-		>
+		<div class="virtual-list">
 			{#if virtualScrolling}
-				{#each $rowVirtualizer.getVirtualItems() as virtualRow (virtualRow.key)}
+				{@const virtualRows = $rowVirtualizer.getVirtualItems?.() ?? []}
+				{@const totalSize = $rowVirtualizer.getTotalSize?.() ?? 0}
+				{@const paddingTop = virtualRows[0]?.start ?? 0}
+				{@const paddingBottom = Math.max(
+					0,
+					totalSize - (virtualRows[virtualRows.length - 1]?.end ?? 0)
+				)}
+				<svg class="virtual-spacer" width="100%" height={paddingTop} aria-hidden="true" />
+				{#each virtualRows as virtualRow (virtualRow.key)}
 					{@const item = items[virtualRow.index]}
 					{#if item}
 						{@const handlersForItem =
 							typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-						<div
-							class="virtual-row"
-							role="article"
-							data-index={virtualRow.index}
-							use:measureRow
-							style={`position:absolute;top:0;left:0;width:100%;transform:translateY(${virtualRow.start}px)`}
-						>
+						<div class="virtual-row" role="article" data-index={virtualRow.index} use:measureRow>
 							<StatusCard
 								status={item}
 								{density}
@@ -184,6 +183,7 @@
 						</div>
 					{/if}
 				{/each}
+				<svg class="virtual-spacer" width="100%" height={paddingBottom} aria-hidden="true" />
 			{:else}
 				{#each items as item, index (item?.id || index)}
 					{@const handlersForItem =
