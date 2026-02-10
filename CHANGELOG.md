@@ -38,6 +38,19 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - promote staging to premain ([4198cf0](https://github.com/equaltoai/greater-components/commit/4198cf0cd6dc661dcad0fbbc64015289aa9d74a9))
 - **release:** prepare metadata ([078e714](https://github.com/equaltoai/greater-components/commit/078e71455c269c0bbec6a9b673d5999451fd492c))
 
+## [0.1.4-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.2-rc.4...greater-v0.1.4-rc.0) (2026-02-09)
+
+### CI
+
+- **coverage:** make workflow dispatchable ([52a06d0](https://github.com/equaltoai/greater-components/commit/52a06d09f57dc9d7df0b9c6a7b8cac2981ba47a1))
+- **release:** keep premain prereleases ahead of stable ([af0d06b](https://github.com/equaltoai/greater-components/commit/af0d06b4c1df9353ac64b22371e1cf2040048c86))
+- **release:** keep premain prereleases ahead of stable ([dec045f](https://github.com/equaltoai/greater-components/commit/dec045fb6d3d41d3eca10dc8c51094d63ee3dcb4))
+- **release:** keep premain release-as prerelease ([44853fe](https://github.com/equaltoai/greater-components/commit/44853fe6e958ffa8a0c6d134d860d547fa54f310))
+
+### Chores
+
+- merge main into premain ([3f2ba88](https://github.com/equaltoai/greater-components/commit/3f2ba88b26ace6b4814e903f3780065944c5f942))
+
 ## [0.1.2-rc.4](https://github.com/equaltoai/greater-components/compare/greater-v0.1.2-rc.3...greater-v0.1.2-rc.4) (2026-02-09)
 
 ### Bug Fixes
