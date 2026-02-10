@@ -34,6 +34,10 @@
 	const iconName = $derived(getNotificationIcon(notification.type));
 	const iconColor = $derived(getNotificationColor(notification.type));
 	const timeString = $derived(formatNotificationTime(notification.createdAt));
+	const createdAtDate = $derived.by(() => {
+		const date = new Date(notification.createdAt);
+		return Number.isNaN(date.getTime()) ? null : date;
+	});
 
 	const displayTitle = $derived.by(() => {
 		if (group) {
@@ -68,10 +72,10 @@
 	});
 
 	const avatars = $derived.by(() => {
-		if (group) {
-			return group.accounts.slice(0, 4); // Show up to 4 avatars
-		}
-		return [notification.account];
+		const accounts = group ? group.accounts : [notification.account];
+		return accounts
+			.filter((account): account is typeof notification.account => Boolean(account?.id))
+			.slice(0, 4);
 	});
 
 	function getNotificationStatus(value: Notification): Status | null {
@@ -227,8 +231,8 @@
 			<time
 				class="notification-time"
 				id={`notification-time-${notification.id}`}
-				datetime={new Date(notification.createdAt).toISOString()}
-				title={new Date(notification.createdAt).toLocaleString()}
+				datetime={createdAtDate?.toISOString()}
+				title={createdAtDate?.toLocaleString()}
 			>
 				{timeString}
 			</time>

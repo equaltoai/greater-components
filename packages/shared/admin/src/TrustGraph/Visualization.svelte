@@ -155,7 +155,7 @@
 				context.state.rootActorId,
 				context.config.category
 			);
-			edges = (result || []) as TrustEdge[];
+			edges = (result ?? []).map((edge) => edge as unknown as TrustEdge);
 			buildGraphLayout(edges);
 		} catch (err) {
 			error = err instanceof Error ? err : new Error('Failed to load trust graph');

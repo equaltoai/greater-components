@@ -59,13 +59,13 @@
 	{#if subscription}
 		<p>Push notifications are enabled.</p>
 		<Button
-			variant="secondary"
+			variant="outline"
 			onclick={() => {
 				subscription = null;
 			}}>Disable Push Notifications</Button
 		>
 	{:else}
-		<Button variant="primary" disabled={isLoading} onclick={enablePush}>
+		<Button variant="solid" disabled={isLoading} onclick={enablePush}>
 			{isLoading ? 'Enabling...' : 'Enable Push Notifications'}
 		</Button>
 	{/if}

@@ -98,12 +98,14 @@ export interface AdminHandlers {
 	onSuspendUser?: (userId: string, reason: string) => Promise<void>;
 	onUnsuspendUser?: (userId: string) => Promise<void>;
 	onChangeUserRole?: (userId: string, role: 'admin' | 'moderator' | 'user') => Promise<void>;
+	onDeleteUserContent?: (userId: string, reason?: string) => Promise<void>;
 	onSearchUsers?: (query: string) => Promise<AdminUser[]>;
 
 	// Reports
 	onFetchReports?: (status?: 'pending' | 'resolved' | 'dismissed') => Promise<AdminReport[]>;
 	onResolveReport?: (reportId: string, action: string) => Promise<void>;
 	onDismissReport?: (reportId: string) => Promise<void>;
+	onAssignReport?: (reportId: string, assigneeId: string | null) => Promise<void>;
 
 	// Federation
 	onFetchInstances?: () => Promise<FederatedInstance[]>;
@@ -145,11 +147,11 @@ export interface AdminContext {
 	updateState: (partial: Partial<AdminState>) => void;
 	clearError: () => void;
 	fetchStats: () => Promise<void>;
-	fetchUsers: (filters?: { role?: string; status?: string }) => Promise<void>;
+	fetchUsers: (filters?: { role?: string; status?: string; search?: string }) => Promise<void>;
 	fetchReports: (status?: 'pending' | 'resolved' | 'dismissed') => Promise<void>;
 	fetchInstances: () => Promise<void>;
 	fetchSettings: () => Promise<void>;
-	fetchLogs: (filters?: { level?: string; category?: string }) => Promise<void>;
+	fetchLogs: (filters?: { level?: string; category?: string; limit?: number }) => Promise<void>;
 	fetchAnalytics: (period: 'day' | 'week' | 'month') => Promise<void>;
 }
 

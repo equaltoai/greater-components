@@ -14,6 +14,7 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 						const count = options.count || 0;
 						return Array.from({ length: count }).map((_, i) => ({
 							index: i,
+							key: i,
 							start: i * 200,
 							size: 200,
 							measureElement: () => {},
@@ -27,6 +28,7 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 				const count = options.count || 0;
 				return Array.from({ length: count }).map((_, i) => ({
 					index: i,
+					key: i,
 					start: i * 200,
 					size: 200,
 					measureElement: () => {},

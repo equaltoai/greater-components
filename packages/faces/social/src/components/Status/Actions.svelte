@@ -131,6 +131,8 @@ Uses handlers from context.
 					bookmarked: actualStatus.bookmarked,
 				}}
 				handlers={wrappedHandlers}
+				shareUrl={actualStatus.url}
+				shareTitle={`Post by ${context.account.displayName || context.account.username || 'Unknown'}`}
 				{readonly}
 				{size}
 				idPrefix={`status-${actualStatus.id}`}

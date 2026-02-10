@@ -2199,7 +2199,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					},
 				},
 				action: async () => {
-					const deleteBtn = screen.getByLabelText('Delete filter To Delete');
+					const deleteBtn = await waitFor(() => screen.getByLabelText('Delete filter To Delete'));
 					await fireEvent.click(deleteBtn);
 
 					// Wait for modal
@@ -2240,7 +2240,7 @@ export const componentsToCover: Record<string, ComponentDefinition> = {
 					},
 				},
 				action: async () => {
-					const editBtn = screen.getByLabelText('Edit filter To Edit');
+					const editBtn = await waitFor(() => screen.getByLabelText('Edit filter To Edit'));
 					await fireEvent.click(editBtn);
 				},
 			},

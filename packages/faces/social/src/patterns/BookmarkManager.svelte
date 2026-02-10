@@ -273,7 +273,7 @@
 	/**
 	 * Filter bookmarks
 	 */
-	const filteredBookmarks = $derived(() => {
+	const filteredBookmarks = $derived.by(() => {
 		let results = bookmarks;
 
 		// Filter by archive status

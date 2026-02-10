@@ -3,7 +3,7 @@
 	import ContentRenderer from './ContentRenderer.svelte';
 	import ActionBar from './ActionBar.svelte';
 	import { ReplyIcon, RepeatIcon } from '@equaltoai/greater-components-icons';
-	import type { Status } from '../types';
+	import type { MediaAttachment, Status } from '../types';
 	import type { Snippet } from 'svelte';
 
 	interface ActionHandlers {
@@ -69,10 +69,13 @@
 			(actualStatus.inReplyToId ? `#/status/${actualStatus.inReplyToId}` : undefined)
 	);
 
-	function handleCardClick(event: MouseEvent) {
+	function handleCardClick(event: MouseEvent | KeyboardEvent) {
 		// Don't trigger if clicking on links or buttons
-		const target = event.target as HTMLElement;
-		if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a, button')) {
+		const target = event.target;
+		if (
+			target instanceof HTMLElement &&
+			(target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a, button'))
+		) {
 			return;
 		}
 		onclick?.(status);
@@ -89,9 +92,7 @@
 
 	let sensitiveVisibility = $state<Record<string, boolean>>({});
 
-	function getPreviewType(
-		media: (typeof actualStatus.mediaAttachments)[number]
-	): 'image' | 'video' | 'audio' | 'file' {
+	function getPreviewType(media: MediaAttachment): 'image' | 'video' | 'audio' | 'file' {
 		if (media.mediaCategory) {
 			switch (media.mediaCategory) {
 				case 'IMAGE':
@@ -119,7 +120,7 @@
 		}
 	}
 
-	function isMediaHidden(media: (typeof actualStatus.mediaAttachments)[number]): boolean {
+	function isMediaHidden(media: MediaAttachment): boolean {
 		return media.sensitive === true && sensitiveVisibility[media.id] !== true;
 	}
 
@@ -281,7 +282,8 @@
 				bookmarked: actualStatus.bookmarked,
 			}}
 			handlers={wrappedActionHandlers}
-			readonly={!actionHandlers}
+			shareUrl={actualStatus.url}
+			shareTitle={`Post by ${account.displayName || account.username}`}
 			size={density === 'compact' ? 'sm' : 'sm'}
 			idPrefix={`status-${actualStatus.id}`}
 		/>

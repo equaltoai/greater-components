@@ -9,8 +9,12 @@ describe('MemberPicker', () => {
 		visibility: 'public' as const,
 		membersCount: 1,
 		members: [
-			// MemberPicker expects flattened members with actor fields
-			{ id: 'u1', username: 'user1', displayName: 'User One', avatar: 'u1.jpg' },
+			{
+				id: 'm1',
+				listId: '1',
+				actor: { id: 'u1', username: 'user1', displayName: 'User One', avatar: 'u1.jpg' },
+				addedAt: '2024-01-01T00:00:00Z',
+			},
 		],
 	};
 
@@ -173,7 +177,7 @@ describe('MemberPicker', () => {
 		const removeButtons = screen.getAllByText('Remove');
 		await fireEvent.click(removeButtons[0]);
 
-		expect(onRemoveListMember).toHaveBeenCalledWith('1', 'u1');
+		expect(onRemoveListMember).toHaveBeenCalledWith('1', 'm1');
 		expect(onFetchList).toHaveBeenCalledWith('1');
 		vi.useRealTimers();
 	});
@@ -193,7 +197,7 @@ describe('MemberPicker', () => {
 		const removeButton = screen.getByLabelText('Remove User One from list');
 		await fireEvent.click(removeButton);
 
-		expect(onRemoveListMember).toHaveBeenCalledWith('1', 'u1'); // memberId is u1 (Actor ID)
+		expect(onRemoveListMember).toHaveBeenCalledWith('1', 'm1');
 		expect(onFetchList).toHaveBeenCalledWith('1');
 	});
 

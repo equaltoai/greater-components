@@ -1,18 +1,32 @@
 <script lang="ts">
+	import { createVirtualizer } from '@tanstack/svelte-virtual';
+	import { untrack, type Snippet } from 'svelte';
+	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
-	import type { StatusActionHandlers } from './Status/context.js';
-	import type { Snippet } from 'svelte';
 	import type { TimelineIntegrationConfig } from '../lib/integration';
 	import { createTimelineIntegration, createGraphQLTimelineIntegration } from '../lib/integration';
 	import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 	import type { GraphQLTimelineView } from '../lib/graphqlTimelineStore';
+
+	interface StatusCardActionHandlers {
+		onReply?: (status: Status) => Promise<void> | void;
+		onBoost?: (status: Status) => Promise<void> | void;
+		onFavorite?: (status: Status) => Promise<void> | void;
+		onShare?: (status: Status) => Promise<void> | void;
+		onQuote?: (status: Status) => Promise<void> | void;
+	}
 
 	interface Props {
 		/**
 		 * Array of status items to display (optional when using store integration)
 		 */
 		items?: Status[];
+		/**
+		 * Enable virtual scrolling (recommended for large timelines)
+		 * @default true
+		 */
+		virtualScrolling?: boolean;
 		/**
 		 * Store integration configuration (enables real-time updates)
 		 */
@@ -66,6 +80,10 @@
 		 */
 		gapLoader?: Snippet;
 		/**
+		 * Custom empty state content
+		 */
+		empty?: Snippet;
+		/**
 		 * Custom end of feed content
 		 */
 		endOfFeed?: Snippet;
@@ -101,11 +119,14 @@
 		/**
 		 * Action handlers for timeline status cards
 		 */
-		actionHandlers?: StatusActionHandlers | ((status: Status) => StatusActionHandlers | undefined);
+		actionHandlers?:
+			| StatusCardActionHandlers
+			| ((status: Status) => StatusCardActionHandlers | undefined);
 	}
 
 	let {
 		items: propItems = [],
+		virtualScrolling = true,
 		integration,
 		loadingTop: propLoadingTop = false,
 		loadingBottom: propLoadingBottom = false,
@@ -115,6 +136,7 @@
 		onStatusClick,
 		onStatusUpdate,
 		gapLoader,
+		empty,
 		endOfFeed,
 		realtimeIndicator,
 		class: className = '',
@@ -124,6 +146,8 @@
 		actionHandlers,
 		adapter,
 		view,
+		estimateSize = 400,
+		overscan = 5,
 	}: Props = $props();
 
 	// Create integration instance if config is provided
@@ -154,6 +178,33 @@
 	let scrollElement = $state<HTMLDivElement>();
 	let prevScrollTop = 0;
 	let prevItemCount = 0;
+
+	const rowVirtualizer = createVirtualizer<HTMLDivElement, HTMLElement>({
+		count: untrack(() => items.length),
+		getScrollElement: () => scrollElement ?? null,
+		estimateSize: () => estimateSize,
+		overscan: untrack(() => overscan),
+		enabled: untrack(() => virtualScrolling),
+		getItemKey: (index) => items[index]?.id ?? index,
+		indexAttribute: 'data-index',
+	});
+
+	$effect(() => {
+		get(rowVirtualizer).setOptions?.({
+			count: items.length,
+			estimateSize: () => estimateSize,
+			overscan,
+			enabled: virtualScrolling,
+			getItemKey: (index) => items[index]?.id ?? index,
+		});
+	});
+
+	function measureRow(node: HTMLElement) {
+		get(rowVirtualizer).measureElement?.(node);
+		return {
+			update: () => get(rowVirtualizer).measureElement?.(node),
+		};
+	}
 
 	// Auto-connect on mount
 	$effect(() => {
@@ -304,36 +355,76 @@
 			</div>
 		{/if}
 
-		{#each items as item (item.id)}
-			{@const handlersForItem =
-				typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-			<StatusCard
-				status={item}
-				{density}
-				showActions={true}
-				actionHandlers={handlersForItem}
-				onClick={() => handleStatusCardClick(item)}
-			/>
-		{/each}
-
-		{#if loadingBottom && !endReached}
-			<div class="loading-indicator bottom">
-				{#if gapLoader}
-					{@render gapLoader()}
+		{#if items.length === 0 && !loadingTop && !loadingBottom}
+			<div class="timeline-empty" role="status" aria-live="polite">
+				{#if empty}
+					{@render empty()}
 				{:else}
-					<div class="spinner" aria-label="Loading more items"></div>
+					<p>No items to display</p>
 				{/if}
 			</div>
-		{/if}
-
-		{#if endReached}
-			<div class="end-of-feed">
-				{#if endOfFeed}
-					{@render endOfFeed()}
+		{:else}
+			<div class="virtual-list">
+				{#if virtualScrolling}
+					{@const virtualRows = $rowVirtualizer.getVirtualItems?.() ?? []}
+					{@const totalSize = $rowVirtualizer.getTotalSize?.() ?? 0}
+					{@const paddingTop = virtualRows[0]?.start ?? 0}
+					{@const paddingBottom = Math.max(
+						0,
+						totalSize - (virtualRows[virtualRows.length - 1]?.end ?? 0)
+					)}
+					<svg class="virtual-spacer" width="100%" height={paddingTop} aria-hidden="true" />
+					{#each virtualRows as virtualRow (virtualRow.key)}
+						{@const item = items[virtualRow.index]}
+						{#if item}
+							{@const handlersForItem =
+								typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
+							<div class="virtual-row" role="article" data-index={virtualRow.index} use:measureRow>
+								<StatusCard
+									status={item}
+									{density}
+									showActions={true}
+									actionHandlers={handlersForItem}
+									onclick={handleStatusCardClick}
+								/>
+							</div>
+						{/if}
+					{/each}
+					<svg class="virtual-spacer" width="100%" height={paddingBottom} aria-hidden="true" />
 				{:else}
-					<p>You've reached the end</p>
+					{#each items as item (item.id)}
+						{@const handlersForItem =
+							typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
+						<StatusCard
+							status={item}
+							{density}
+							showActions={true}
+							actionHandlers={handlersForItem}
+							onclick={handleStatusCardClick}
+						/>
+					{/each}
 				{/if}
 			</div>
+
+			{#if loadingBottom && !endReached}
+				<div class="loading-indicator bottom">
+					{#if gapLoader}
+						{@render gapLoader()}
+					{:else}
+						<div class="spinner" aria-label="Loading more items"></div>
+					{/if}
+				</div>
+			{/if}
+
+			{#if endReached}
+				<div class="end-of-feed">
+					{#if endOfFeed}
+						{@render endOfFeed()}
+					{:else}
+						<p>You've reached the end</p>
+					{/if}
+				</div>
+			{/if}
 		{/if}
 	</div>
 </div>
