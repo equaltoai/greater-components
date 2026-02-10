@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-notifications",
-  "version": "0.1.6-rc.0",
+  "version": "0.1.6",
   "type": "module",
   "description": "Notification components for Greater Components",
   "license": "AGPL-3.0-only",
