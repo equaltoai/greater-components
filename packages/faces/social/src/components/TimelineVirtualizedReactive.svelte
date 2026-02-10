@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { createVirtualizer } from '@tanstack/svelte-virtual';
+	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
 	import type { StatusActionHandlers } from './Status/context.js';
@@ -13,6 +15,11 @@
 		 * Array of status items to display (optional when using store integration)
 		 */
 		items?: Status[];
+		/**
+		 * Enable virtual scrolling (recommended for large timelines)
+		 * @default true
+		 */
+		virtualScrolling?: boolean;
 		/**
 		 * Store integration configuration (enables real-time updates)
 		 */
@@ -106,6 +113,7 @@
 
 	let {
 		items: propItems = [],
+		virtualScrolling = true,
 		integration,
 		loadingTop: propLoadingTop = false,
 		loadingBottom: propLoadingBottom = false,
@@ -124,6 +132,8 @@
 		actionHandlers,
 		adapter,
 		view,
+		estimateSize = 400,
+		overscan = 5,
 	}: Props = $props();
 
 	// Create integration instance if config is provided
@@ -154,6 +164,33 @@
 	let scrollElement = $state<HTMLDivElement>();
 	let prevScrollTop = 0;
 	let prevItemCount = 0;
+
+	const rowVirtualizer = createVirtualizer<HTMLDivElement, HTMLElement>({
+		count: items.length,
+		getScrollElement: () => scrollElement ?? null,
+		estimateSize: () => estimateSize,
+		overscan,
+		enabled: virtualScrolling,
+		getItemKey: (index) => items[index]?.id ?? index,
+		indexAttribute: 'data-index',
+	});
+
+	$effect(() => {
+		get(rowVirtualizer).setOptions({
+			count: items.length,
+			estimateSize: () => estimateSize,
+			overscan,
+			enabled: virtualScrolling,
+			getItemKey: (index) => items[index]?.id ?? index,
+		});
+	});
+
+	function measureRow(node: HTMLElement) {
+		get(rowVirtualizer).measureElement(node);
+		return {
+			update: () => get(rowVirtualizer).measureElement(node),
+		};
+	}
 
 	// Auto-connect on mount
 	$effect(() => {
@@ -304,17 +341,47 @@
 			</div>
 		{/if}
 
-		{#each items as item (item.id)}
-			{@const handlersForItem =
-				typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-			<StatusCard
-				status={item}
-				{density}
-				showActions={true}
-				actionHandlers={handlersForItem}
-				onClick={() => handleStatusCardClick(item)}
-			/>
-		{/each}
+		<div
+			class="virtual-list"
+			style:height={virtualScrolling ? `${$rowVirtualizer.getTotalSize()}px` : 'auto'}
+		>
+			{#if virtualScrolling}
+				{#each $rowVirtualizer.getVirtualItems() as virtualRow (virtualRow.key)}
+					{@const item = items[virtualRow.index]}
+					{#if item}
+						{@const handlersForItem =
+							typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
+						<div
+							class="virtual-row"
+							role="article"
+							data-index={virtualRow.index}
+							use:measureRow
+							style={`position:absolute;top:0;left:0;width:100%;transform:translateY(${virtualRow.start}px)`}
+						>
+							<StatusCard
+								status={item}
+								{density}
+								showActions={true}
+								actionHandlers={handlersForItem}
+								onclick={handleStatusCardClick}
+							/>
+						</div>
+					{/if}
+				{/each}
+			{:else}
+				{#each items as item (item.id)}
+					{@const handlersForItem =
+						typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
+					<StatusCard
+						status={item}
+						{density}
+						showActions={true}
+						actionHandlers={handlersForItem}
+						onclick={handleStatusCardClick}
+					/>
+				{/each}
+			{/if}
+		</div>
 
 		{#if loadingBottom && !endReached}
 			<div class="loading-indicator bottom">

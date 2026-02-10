@@ -5,8 +5,29 @@
 
 import type { AIAnalysis, Notification, QuoteContext, Status } from '../types';
 import type { Conversation, DirectMessage } from '@equaltoai/greater-components-messaging';
-import type { ListData } from '../components/Lists/context.js';
-import type { ProfileRelationship } from '../components/Profile/context.js';
+
+export interface ListData {
+	id: string;
+	title: string;
+	description?: string;
+	visibility: 'public' | 'private';
+	membersCount: number;
+	createdAt?: string;
+	updatedAt?: string;
+}
+
+export interface ProfileRelationship {
+	following: boolean;
+	followedBy: boolean;
+	blocking: boolean;
+	blockedBy: boolean;
+	muting: boolean;
+	mutingNotifications: boolean;
+	requested: boolean;
+	domainBlocking: boolean;
+	endorsed: boolean;
+	note?: string;
+}
 
 type SeverityLevel = 'low' | 'medium' | 'high' | 'critical';
 type TimelineStreamType = 'public' | 'home' | 'local' | 'direct' | 'list' | 'hashtag';

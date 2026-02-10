@@ -212,6 +212,79 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		domain: 'social',
 	},
 
+	'social-types': {
+		name: 'social-types',
+		type: 'shared',
+		description: 'Domain types used by social face components',
+		files: [{ path: 'lib/types.ts', content: '', type: 'types' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['social', 'types'],
+		version: '1.0.0',
+		domain: 'social',
+	},
+
+	'social-renderers': {
+		name: 'social-renderers',
+		type: 'shared',
+		description: 'Shared renderers used by social components (ActionBar, ContentRenderer)',
+		files: [
+			{ path: 'lib/components/ActionBar.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/ContentRenderer.svelte', content: '', type: 'component' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['social-types'],
+		tags: ['social', 'renderer', 'component'],
+		version: '1.0.0',
+		domain: 'social',
+	},
+
+	'social-status-card': {
+		name: 'social-status-card',
+		type: 'shared',
+		description: 'Standalone status card component used by virtualized timelines',
+		files: [{ path: 'lib/components/StatusCard.svelte', content: '', type: 'component' }],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: ['social-renderers', 'social-types'],
+		tags: ['social', 'status', 'card', 'component'],
+		version: '1.0.0',
+		domain: 'social',
+	},
+
+	'social-timeline': {
+		name: 'social-timeline',
+		type: 'shared',
+		description:
+			'Virtualized timelines and realtime integration utilities for the social face',
+		files: [
+			{ path: 'lib/components/TimelineVirtualized.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/TimelineVirtualizedReactive.svelte', content: '', type: 'component' },
+			{ path: 'lib/lib/graphqlTimelineStore.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/graphqlTimelineStore.svelte.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/integration.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/integration.svelte.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/lesserTimelineStore.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/lesserTimelineStore.svelte.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/notificationStore.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/notificationStore.svelte.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/timelineStore.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/timelineStore.svelte.ts', content: '', type: 'utils' },
+			{ path: 'lib/lib/transport.ts', content: '', type: 'utils' },
+		],
+		dependencies: [
+			{ name: 'svelte', version: '^5.0.0' },
+			{ name: '@tanstack/svelte-virtual', version: '^3.13.13' },
+		],
+		devDependencies: [],
+		registryDependencies: ['social-status-card', 'social-types', 'messaging'],
+		tags: ['social', 'timeline', 'virtual', 'realtime'],
+		version: '1.0.0',
+		domain: 'social',
+	},
+
 	// ====================
 	// HEADLESS PRIMITIVES
 	// ====================
@@ -398,12 +471,18 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				content: '',
 				type: 'types',
 			},
+			{
+				path: 'lib/components/Timeline/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'social-generics'],
 		tags: ['activitypub', 'timeline', 'feed', 'compound', 'virtual-scroll'],
 		version: '1.0.0',
+		domain: 'social',
 	},
 
 	// ====================
@@ -1129,16 +1208,32 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 			{
+				path: 'lib/components/Status/LesserMetadata.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Status/CommunityNotes.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
 				path: 'lib/components/Status/context.ts',
 				content: '',
 				type: 'types',
 			},
+			{
+				path: 'lib/components/Status/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['social-generics'],
+		registryDependencies: ['social-renderers', 'social-generics'],
 		tags: ['activitypub', 'status', 'post', 'compound'],
 		version: '1.0.0',
+		domain: 'social',
 	},
 
 	// ====================
@@ -1180,16 +1275,92 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				type: 'component',
 			},
 			{
+				path: 'lib/components/Profile/VerifiedFields.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/PrivacySettings.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/FollowRequests.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/FollowersList.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/FollowingList.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/EndorsedAccounts.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/FeaturedHashtags.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/AccountMigration.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/TrustBadge.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/Timeline.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/components/Profile/GraphQLAdapter.ts',
+				content: '',
+				type: 'utils',
+			},
+			{
+				path: 'lib/components/Profile/PreferencesController.ts',
+				content: '',
+				type: 'utils',
+			},
+			{
+				path: 'lib/components/Profile/PushNotificationsController.ts',
+				content: '',
+				type: 'utils',
+			},
+			{
 				path: 'lib/components/Profile/context.ts',
 				content: '',
 				type: 'types',
 			},
+			{
+				path: 'lib/components/Profile/context.svelte.ts',
+				content: '',
+				type: 'types',
+			},
+			{
+				path: 'lib/components/Profile/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['button', 'tabs'],
+		registryDependencies: ['button', 'tabs', 'social-timeline'],
 		tags: ['profile', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
+		domain: 'social',
 	},
 
 	lists: {
@@ -1232,12 +1403,23 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				content: '',
 				type: 'types',
 			},
+			{
+				path: 'lib/components/Lists/context.svelte.ts',
+				content: '',
+				type: 'types',
+			},
+			{
+				path: 'lib/components/Lists/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['button', 'modal', 'social-generics'],
+		registryDependencies: ['button', 'modal', 'social-generics', 'social-timeline'],
 		tags: ['lists', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
+		domain: 'social',
 	},
 
 	filters: {
@@ -1271,12 +1453,23 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 				content: '',
 				type: 'types',
 			},
+			{
+				path: 'lib/components/Filters/context.svelte.ts',
+				content: '',
+				type: 'types',
+			},
+			{
+				path: 'lib/components/Filters/index.ts',
+				content: '',
+				type: 'component',
+			},
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: ['button', 'modal'],
 		tags: ['filters', 'moderation', 'activitypub', 'lesser', 'compound'],
 		version: '1.0.0',
+		domain: 'social',
 	},
 
 	hashtags: {
@@ -1288,7 +1481,9 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 			{ path: 'lib/components/Hashtags/FollowedList.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Hashtags/MutedList.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Hashtags/Controls.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Hashtags/context.js', content: '', type: 'utils' },
 			{ path: 'lib/components/Hashtags/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/Hashtags/index.ts', content: '', type: 'component' },
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],

@@ -123,9 +123,25 @@ function buildCorePackageFileList(index: RegistryIndex, packageName: string): Co
 	});
 }
 
-function buildSourcePathCandidates(_component: ComponentMetadata, installPath: string): string[] {
+type FaceCandidate = (typeof FACE_CANDIDATES)[number];
+
+function isFaceCandidateDomain(domain: ComponentMetadata['domain']): domain is FaceCandidate {
+	return typeof domain === 'string' && (FACE_CANDIDATES as readonly string[]).includes(domain);
+}
+
+function getFaceCandidateOrder(component: ComponentMetadata): FaceCandidate[] {
+	if (isFaceCandidateDomain(component.domain)) {
+		const domain = component.domain;
+		return [domain, ...FACE_CANDIDATES.filter((face) => face !== domain)];
+	}
+	return [...FACE_CANDIDATES];
+}
+
+function buildSourcePathCandidates(component: ComponentMetadata, installPath: string): string[] {
 	const normalized = installPath.replace(/\\/g, '/').replace(/^\/+/, '');
 	const candidates: string[] = [];
+	const faceCandidates = getFaceCandidateOrder(component);
+	const isHeadlessPrimitive = component.type === 'primitive' || component.tags?.includes('headless');
 
 	// shared/<module>/... -> packages/shared/<module>/src/...
 	const sharedMatch = normalized.match(/^shared\/([^/]+)\/(.+)$/);
@@ -147,6 +163,25 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 		candidates.push(`packages/adapters/src/${rest}`);
 	}
 
+	// lib/types.ts -> packages/faces/<face>/src/types.ts
+	if (normalized === 'lib/types.ts') {
+		if (isFaceCandidateDomain(component.domain)) {
+			candidates.push(`packages/faces/${component.domain}/src/types.ts`);
+		} else {
+			for (const face of FACE_CANDIDATES) {
+				candidates.push(`packages/faces/${face}/src/types.ts`);
+			}
+		}
+	}
+
+	// lib/lib/... -> packages/faces/<face>/src/lib/...
+	if (normalized.startsWith('lib/lib/')) {
+		const rest = normalized.slice('lib/lib/'.length);
+		for (const face of faceCandidates) {
+			candidates.push(`packages/faces/${face}/src/lib/${rest}`);
+		}
+	}
+
 	// lib/primitives/<name>.ts -> packages/headless/src/...
 	const primitiveMatch = normalized.match(/^lib\/primitives\/([^/]+)\.ts$/);
 	if (primitiveMatch?.[1]) {
@@ -161,16 +196,25 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 		candidates.push(`packages/headless/src/types/${rest}`);
 	}
 
-	// lib/utils/... -> packages/headless/src/utils/...
+	// lib/utils/... -> packages/headless/src/utils/... (and face utils when applicable)
 	if (normalized.startsWith('lib/utils/')) {
 		const rest = normalized.slice('lib/utils/'.length);
+		if (!isHeadlessPrimitive) {
+			if (isFaceCandidateDomain(component.domain)) {
+				candidates.push(`packages/faces/${component.domain}/src/utils/${rest}`);
+			} else {
+				for (const face of FACE_CANDIDATES) {
+					candidates.push(`packages/faces/${face}/src/utils/${rest}`);
+				}
+			}
+		}
 		candidates.push(`packages/headless/src/utils/${rest}`);
 	}
 
 	// lib/components/... -> packages/faces/<face>/src/components/...
 	if (normalized.startsWith('lib/components/')) {
 		const rest = normalized.slice('lib/components/'.length);
-		for (const face of FACE_CANDIDATES) {
+		for (const face of faceCandidates) {
 			candidates.push(`packages/faces/${face}/src/components/${rest}`);
 		}
 
@@ -184,7 +228,7 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 	// lib/generics/... -> packages/faces/<face>/src/generics/...
 	if (normalized.startsWith('lib/generics/')) {
 		const rest = normalized.slice('lib/generics/'.length);
-		for (const face of FACE_CANDIDATES) {
+		for (const face of faceCandidates) {
 			candidates.push(`packages/faces/${face}/src/generics/${rest}`);
 		}
 	}
@@ -192,7 +236,7 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 	// lib/patterns/... -> packages/faces/<face>/src/patterns/...
 	if (normalized.startsWith('lib/patterns/')) {
 		const rest = normalized.slice('lib/patterns/'.length);
-		for (const face of FACE_CANDIDATES) {
+		for (const face of faceCandidates) {
 			candidates.push(`packages/faces/${face}/src/patterns/${rest}`);
 		}
 	}
@@ -200,7 +244,7 @@ function buildSourcePathCandidates(_component: ComponentMetadata, installPath: s
 	// patterns/... -> packages/faces/<face>/src/patterns/...
 	if (normalized.startsWith('patterns/')) {
 		const rest = normalized.slice('patterns/'.length);
-		for (const face of FACE_CANDIDATES) {
+		for (const face of faceCandidates) {
 			candidates.push(`packages/faces/${face}/src/patterns/${rest}`);
 		}
 	}
