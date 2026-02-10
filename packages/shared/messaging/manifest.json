@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-messaging",
-  "version": "0.1.6",
+  "version": "0.1.7-rc.0",
   "description": "Direct messaging components for ActivityPub/Fediverse applications",
   "components": {
     "Root": {

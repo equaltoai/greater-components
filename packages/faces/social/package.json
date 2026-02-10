@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-social",
   "private": true,
-  "version": "0.1.6",
+  "version": "0.1.7-rc.0",
   "type": "module",
   "description": "Social/Twitter-style UI components for Greater Components (formerly fediverse)",
   "license": "AGPL-3.0-only",
