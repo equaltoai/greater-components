@@ -500,6 +500,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/agents/{username}/unverify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_admin_agents_by_username_unverify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/agents/{username}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_admin_agents_by_username_verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/agents/policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_admin_agents_policy"];
+        put: operations["put_api_v1_admin_agents_policy"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/announcements": {
         parameters: {
             query?: never;
@@ -974,6 +1022,198 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_api_v1_admin_statuses_by_id_unsensitive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_by_username"];
+        put?: never;
+        post?: never;
+        delete: operations["delete_api_v1_agents_by_username"];
+        options?: never;
+        head?: never;
+        patch: operations["patch_api_v1_agents_by_username"];
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_by_username_activity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/rotate-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_rotate_key"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/rotate-key/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_rotate_key_challenge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_suspend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/auth/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_auth_challenge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/auth/token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_auth_token"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/delegate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_delegate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/memory/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_memory_search"];
+        put?: never;
+        post: operations["post_api_v1_agents_memory_search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/register/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_register_challenge"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2708,6 +2948,230 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/trust/ai/claims/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_trust_ai_claims_verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/ai/jobs/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_ai_jobs_by_jobId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/attestations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_attestations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/attestations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_attestations_by_id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/jwks.json": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_jwks_json"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/previews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_trust_previews"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/previews/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_previews_by_id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/previews/images/{imageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_previews_images_by_imageId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/publish/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_trust_publish_jobs"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/publish/jobs/{jobId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_publish_jobs_by_jobId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/renders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_trust_renders"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/renders/{renderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_renders_by_renderId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/renders/{renderId}/snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_renders_by_renderId_snapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/trust/renders/{renderId}/thumbnail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_trust_renders_by_renderId_thumbnail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/vouches": {
         parameters: {
             query?: never;
@@ -3268,6 +3732,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/robots.txt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_robots_txt"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/setup/admin": {
         parameters: {
             query?: never;
@@ -3479,6 +3959,7 @@ export interface components {
             password?: string;
             reason?: string;
             username: string;
+            wallet_challenge_id?: string;
         };
         AccountRegistrationResponse: {
             created: boolean;
@@ -3532,6 +4013,23 @@ export interface components {
             warning_preset_id?: string;
         };
         AdminAccountList: components["schemas"]["AdminAccount"][];
+        AdminAgentPolicy: {
+            agent_max_follows_per_hour: number;
+            agent_max_posts_per_hour: number;
+            allow_agent_registration: boolean;
+            allow_agents: boolean;
+            allow_remote_agents: boolean;
+            blocked_agent_domains?: string[];
+            default_quarantine_days: number;
+            hybrid_retrieval_enabled: boolean;
+            hybrid_retrieval_max_candidates: number;
+            max_agents_per_owner: number;
+            remote_quarantine_days: number;
+            trusted_agent_domains?: string[];
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            verified_agent_max_follows_per_hour: number;
+            verified_agent_max_posts_per_hour: number;
+        };
         AdminCreateUserRequest: {
             display_name?: string;
             email?: string;
@@ -3695,6 +4193,135 @@ export interface components {
             trust: number;
             updated_at: components["schemas"]["RFC3339DateTime"];
             updated_by: string;
+        };
+        AdminVerifyAgentRequest: {
+            exit_quarantine?: boolean;
+            reason?: string;
+        };
+        Agent: {
+            agent_capabilities: components["schemas"]["AgentCapabilities"];
+            agent_owner?: string;
+            agent_type: string;
+            agent_version: string;
+            bio?: string;
+            created_at?: components["schemas"]["RFC3339DateTime"] | null;
+            delegated_scopes?: string[];
+            display_name: string;
+            username: string;
+            verified: boolean;
+            verified_at?: components["schemas"]["RFC3339DateTime"] | null;
+        };
+        AgentActivityLogEntry: {
+            action: string;
+            agent_username: string;
+            metadata?: unknown;
+            target_id?: string;
+            timestamp: components["schemas"]["RFC3339DateTime"];
+        };
+        AgentActivityLogList: components["schemas"]["AgentActivityLogEntry"][];
+        AgentCapabilities: {
+            can_boost: boolean;
+            can_dm: boolean;
+            can_follow: boolean;
+            can_post: boolean;
+            can_reply: boolean;
+            max_posts_per_hour: number;
+            requires_approval: boolean;
+            restricted_domains?: string[];
+        };
+        AgentDelegationRequest: {
+            agent_info?: unknown;
+            agent_username: string;
+            bio?: string;
+            display_name: string;
+            expires_in?: number;
+            scopes: string[];
+        };
+        AgentDelegationResponse: {
+            account: components["schemas"]["Account"];
+            token: components["schemas"]["OAuthTokenResponse"];
+        };
+        AgentKeyChallengeRequest: {
+            username: string;
+        };
+        AgentKeyChallengeResponse: {
+            action: string;
+            expires_at: components["schemas"]["RFC3339DateTime"];
+            id: string;
+            issued_at: components["schemas"]["RFC3339DateTime"];
+            message: string;
+            username: string;
+        };
+        AgentList: components["schemas"]["Agent"][];
+        AgentMemoryEventRequest: {
+            event_type?: string;
+            original_id?: string;
+            reason?: string;
+        };
+        AgentMemorySearchContext: {
+            event_type?: string;
+            original_id?: string;
+            reply_count?: number;
+            tags?: string[];
+            thread_root?: string;
+        };
+        AgentMemorySearchRequest: {
+            date_range?: components["schemas"]["DateRange"] | null;
+            include_threads?: boolean;
+            limit?: number;
+            mode?: string;
+            options?: {
+                [key: string]: unknown;
+            };
+            query?: string;
+            tags?: string[];
+            thread_id?: string;
+        };
+        AgentMemorySearchResponse: {
+            query_time_ms: number;
+            results: components["schemas"]["AgentMemorySearchResult"][];
+            total: number;
+        };
+        AgentMemorySearchResult: {
+            context?: components["schemas"]["AgentMemorySearchContext"] | null;
+            relevance_score: number;
+            status?: components["schemas"]["Status"] | null;
+            thread?: (components["schemas"]["Status"] | null)[];
+        };
+        AgentPostAttribution: {
+            constraints?: string[];
+            delegated_by?: string;
+            memory_citations?: string[];
+            model_version?: string;
+            scopes?: string[];
+            trigger_details?: string;
+            trigger_type?: string;
+        };
+        AgentRotateKeyRequest: {
+            challenge_id: string;
+            key_type: string;
+            public_key: string;
+            signature: string;
+        };
+        AgentSelfAuthTokenRequest: {
+            challenge_id: string;
+            signature: string;
+            username: string;
+        };
+        AgentSelfRegistrationRequest: {
+            agent_info?: unknown;
+            bio?: string;
+            challenge_id: string;
+            display_name: string;
+            key_type: string;
+            public_key: string;
+            scopes?: string[];
+            signature: string;
+            username: string;
+        };
+        AgentSelfRegistrationResponse: {
+            account: components["schemas"]["Account"];
+            token: components["schemas"]["OAuthTokenResponse"];
         };
         Announcement: {
             all_day: boolean;
@@ -3895,9 +4522,11 @@ export interface components {
             status_ids?: string[];
         };
         CreateStatusRequest: {
+            agent_attribution?: components["schemas"]["AgentPostAttribution"] | null;
             in_reply_to_id?: string;
             language?: string;
             media_ids?: string[];
+            memory_event?: components["schemas"]["AgentMemoryEventRequest"] | null;
             poll?: components["schemas"]["Poll"] | null;
             scheduled_at?: string | null;
             sensitive: boolean;
@@ -3918,6 +4547,10 @@ export interface components {
             visible_in_picker: boolean;
         };
         CustomEmojiList: components["schemas"]["CustomEmoji"][];
+        DateRange: {
+            end?: string;
+            start?: string;
+        };
         DomainBlock: {
             created_at: components["schemas"]["RFC3339DateTime"];
             domain: string;
@@ -4858,6 +5491,7 @@ export interface components {
         SnowflakeID: string;
         Status: {
             account: components["schemas"]["Account"];
+            agent_attribution?: components["schemas"]["AgentPostAttribution"] | null;
             application?: {
                 [key: string]: unknown;
             };
@@ -4952,6 +5586,23 @@ export interface components {
                     type: string;
                     updated?: components["schemas"]["RFC3339DateTime"] | null;
                 };
+                agentManifest?: {
+                    capabilities?: {
+                        canBoost: boolean;
+                        canDM: boolean;
+                        canFollow: boolean;
+                        canPost: boolean;
+                        canReply: boolean;
+                        maxPostsPerHour?: number;
+                        requiresApproval?: boolean;
+                        restrictedDomains?: string[];
+                    } | null;
+                    operatedBy?: string;
+                    purpose?: string;
+                    source?: string;
+                    type: string;
+                    version?: string;
+                } | null;
                 alsoKnownAs?: string[];
                 attachment?: {
                     height?: number;
@@ -5219,7 +5870,61 @@ export interface components {
             media_count: number;
             mentions?: string[];
             modified_at: components["schemas"]["RFC3339DateTime"];
-            note?: components["schemas"]["StorageModelsNoteField"] | null;
+            note?: {
+                "_:agentAttribution"?: {
+                    constraints?: string[];
+                    delegated_by?: string;
+                    memory_citations?: string[];
+                    model_version?: string;
+                    scopes?: string[];
+                    trigger_details?: string;
+                    trigger_type?: string;
+                } | null;
+                "_:quoteContext"?: {
+                    allowWithdrawal: boolean;
+                    originalAuthor: string;
+                    originalAuthorUsername?: string;
+                    originalNoteId?: string;
+                    quoteAllowed: boolean;
+                    quoteCount: number;
+                    withdrawn: boolean;
+                } | null;
+                "_:quoteNotifications"?: boolean;
+                "_:quoteable"?: boolean;
+                "_:visibility"?: string;
+                BaseObject: {
+                    "@context"?: unknown[];
+                    bcc?: string[];
+                    bto?: string[];
+                    cc?: string[];
+                    id: string;
+                    inReplyTo?: string;
+                    published?: components["schemas"]["RFC3339DateTime"] | null;
+                    sensitive?: boolean;
+                    summary?: string;
+                    to?: string[];
+                    type: string;
+                    updated?: components["schemas"]["RFC3339DateTime"] | null;
+                };
+                attachment?: {
+                    height?: number;
+                    mediaType: string;
+                    name?: string;
+                    type: string;
+                    url: string;
+                    value?: string;
+                    width?: number;
+                }[];
+                attributedTo: string;
+                content: string;
+                conversationId?: string;
+                quoteUrl?: string;
+                tag?: {
+                    href?: string;
+                    name: string;
+                    type: string;
+                }[];
+            } | null;
             pk: string;
             published_at: components["schemas"]["RFC3339DateTime"];
             quote_count?: number;
@@ -5296,6 +6001,22 @@ export interface components {
             url?: string;
         };
         StorageUser: {
+            agent_capabilities?: {
+                can_boost: boolean;
+                can_dm: boolean;
+                can_follow: boolean;
+                can_post: boolean;
+                can_reply: boolean;
+                max_posts_per_hour: number;
+                requires_approval: boolean;
+                restricted_domains?: string[];
+            } | null;
+            agent_created_by?: string;
+            agent_key_type?: string;
+            agent_owner?: string;
+            agent_public_key?: string;
+            agent_type?: string;
+            agent_version?: string;
             allow_nsfw: boolean;
             approved: boolean;
             avatar?: string;
@@ -5308,6 +6029,7 @@ export interface components {
             }[];
             header?: string;
             id: string;
+            is_agent: boolean;
             locale?: string;
             locked: boolean;
             metadata?: {
@@ -5423,6 +6145,30 @@ export interface components {
         };
         /** Format: uri */
         URI: string;
+        UpdateAdminAgentPolicyRequest: {
+            agent_max_follows_per_hour: number;
+            agent_max_posts_per_hour: number;
+            allow_agent_registration: boolean;
+            allow_agents: boolean;
+            allow_remote_agents: boolean;
+            blocked_agent_domains?: string[];
+            default_quarantine_days: number;
+            hybrid_retrieval_enabled: boolean;
+            hybrid_retrieval_max_candidates: number;
+            max_agents_per_owner: number;
+            remote_quarantine_days: number;
+            trusted_agent_domains?: string[];
+            verified_agent_max_follows_per_hour: number;
+            verified_agent_max_posts_per_hour: number;
+        };
+        UpdateAgentRequest: {
+            agent_capabilities?: components["schemas"]["AgentCapabilities"] | null;
+            agent_type?: string;
+            agent_version?: string;
+            bio?: string;
+            display_name?: string;
+            exit_quarantine?: boolean;
+        };
         UpdateCredentialsRequest: {
             avatar: string;
             bot: boolean;
@@ -6707,6 +7453,123 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    post_api_v1_admin_agents_by_username_unverify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AdminVerifyAgentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Agent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_admin_agents_by_username_verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AdminVerifyAgentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Agent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_admin_agents_policy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAgentPolicy"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    put_api_v1_admin_agents_policy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdminAgentPolicyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminAgentPolicy"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     post_api_v1_admin_announcements: {
         parameters: {
             query?: never;
@@ -7772,6 +8635,417 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_agents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_agents_by_username: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Agent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    delete_api_v1_agents_by_username: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Agent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    patch_api_v1_agents_by_username: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateAgentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Agent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_agents_by_username_activity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentActivityLogList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_rotate_key: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentRotateKeyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Agent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_rotate_key_challenge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentKeyChallengeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_suspend: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Agent"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_auth_challenge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentKeyChallengeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentKeyChallengeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_auth_token: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentSelfAuthTokenRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthTokenResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_delegate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AgentDelegationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentDelegationResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_agents_memory_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentMemorySearchResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_memory_search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentMemorySearchRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentMemorySearchResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentSelfRegistrationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentSelfRegistrationResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_register_challenge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentKeyChallengeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentKeyChallengeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     get_api_v1_announcements: {
         parameters: {
             query?: never;
@@ -8546,7 +9820,7 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description OK */
-            200: {
+            302: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10102,6 +11376,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -10126,6 +11402,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
@@ -10155,6 +11433,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
@@ -10181,6 +11461,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
@@ -10817,6 +12099,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
@@ -11616,6 +12900,342 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_trust_ai_claims_verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_ai_jobs_by_jobId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_attestations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_attestations_by_id: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_jwks_json: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_trust_previews: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_previews_by_id: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_previews_images_by_imageId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                imageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_trust_publish_jobs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_publish_jobs_by_jobId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                jobId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_trust_renders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_renders_by_renderId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                renderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_renders_by_renderId_snapshot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                renderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_trust_renders_by_renderId_thumbnail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                renderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -12750,6 +14370,26 @@ export interface operations {
             };
             400: components["responses"]["BadRequest"];
             404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_robots_txt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
             500: components["responses"]["InternalServerError"];
         };
     };

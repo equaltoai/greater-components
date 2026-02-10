@@ -153,6 +153,8 @@ export type Actor = {
   readonly reputation?: Maybe<Reputation>;
   readonly statusesCount: Scalars['Int']['output'];
   readonly summary?: Maybe<Scalars['String']['output']>;
+  readonly tipAddress?: Maybe<Scalars['String']['output']>;
+  readonly tipChainId?: Maybe<Scalars['Int']['output']>;
   readonly trustScore: Scalars['Float']['output'];
   readonly updatedAt: Scalars['Time']['output'];
   readonly username: Scalars['String']['output'];
@@ -1692,6 +1694,7 @@ export type InstanceInfo = {
   readonly statusCount: Scalars['Int']['output'];
   readonly streamingUrl?: Maybe<Scalars['String']['output']>;
   readonly thumbnailUrl?: Maybe<Scalars['String']['output']>;
+  readonly tips: TipsConfig;
   readonly title: Scalars['String']['output'];
   readonly userCount: Scalars['Int']['output'];
   readonly version: Scalars['String']['output'];
@@ -3107,6 +3110,7 @@ export type Object = {
   readonly boostedObject?: Maybe<Object>;
   readonly communityNotes: ReadonlyArray<CommunityNote>;
   readonly content: Scalars['String']['output'];
+  readonly contentHash: Scalars['String']['output'];
   readonly contentMap: ReadonlyArray<ContentMap>;
   readonly createdAt: Scalars['Time']['output'];
   readonly estimatedCost: Scalars['Int']['output'];
@@ -4952,6 +4956,13 @@ export type TimelineType =
   | 'LIST'
   | 'LOCAL'
   | 'PUBLIC';
+
+export type TipsConfig = {
+  readonly __typename: 'TipsConfig';
+  readonly chainId?: Maybe<Scalars['Int']['output']>;
+  readonly contractAddress?: Maybe<Scalars['String']['output']>;
+  readonly enabled: Scalars['Boolean']['output'];
+};
 
 export type TrainingResult = {
   readonly __typename: 'TrainingResult';
