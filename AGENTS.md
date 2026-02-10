@@ -14,6 +14,49 @@
 - `pnpm build` compiles every workspace; `pnpm check` calls each package’s `check` script when present.
 - `pnpm lint`, `pnpm format`, `pnpm typecheck`, and `pnpm changeset` should be clean before requesting review.
 
+## Critical: Sync Lesser Contracts + Regenerate Adapters
+
+Greater’s adapters are generated from Lesser’s published **file-only contracts** (OpenAPI + aggregated GraphQL schema).
+Any time Lesser’s API surface changes, you must update the pinned contracts in this repo and regenerate the derived
+artifacts before shipping changes.
+
+Why this is critical:
+
+- `packages/adapters` REST and GraphQL types are generated from `docs/lesser/contracts/*`.
+- The `greater` CLI fetches files using `registry/index.json` checksums; if generated files change but the registry
+  checksums are not regenerated, installs/updates can fail integrity verification.
+
+Pinned contract snapshots live here:
+
+- OpenAPI: `docs/lesser/contracts/openapi.yaml`
+- GraphQL schema: `docs/lesser/contracts/graphql-schema.graphql`
+- Pin record: `docs/lesser/contracts/LESSER_REF.txt` (must include the Lesser tag + commit)
+
+Update workflow (assumes `../lesser` exists as a sibling checkout; always run on Node 24):
+
+```bash
+cd /path/to/greater-components
+nvm use  # should resolve to Node v24 per .nvmrc
+
+LESSER_TAG="$(git -C ../lesser tag --sort=-v:refname | head -n 1)"
+LESSER_COMMIT="$(git -C ../lesser rev-parse "${LESSER_TAG}")"
+
+git -C ../lesser show "${LESSER_TAG}:docs/contracts/openapi.yaml" \
+  > docs/lesser/contracts/openapi.yaml
+git -C ../lesser show "${LESSER_TAG}:docs/contracts/graphql-schema.graphql" \
+  > docs/lesser/contracts/graphql-schema.graphql
+
+printf "tag: %s\ncommit: %s\n" "${LESSER_TAG}" "${LESSER_COMMIT}" \
+  > docs/lesser/contracts/LESSER_REF.txt
+
+corepack pnpm generate:openapi
+corepack pnpm generate:graphql
+corepack pnpm generate-registry
+
+corepack pnpm --filter @equaltoai/greater-components-adapters typecheck
+corepack pnpm --filter @equaltoai/greater-components-social typecheck
+```
+
 ## Coding Style & Naming Conventions
 
 - Prettier (tabs, width 100, single quotes, trailing commas) plus `prettier-plugin-svelte` governs formatting; JSON/YAML use two-space indents.

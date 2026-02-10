@@ -15,7 +15,6 @@
  */
 
 import { createHash } from 'node:crypto';
-import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -181,26 +180,167 @@ function analyzeDependencies(dir, extensions) {
 /**
  * Get Git ref (tag or commit)
  */
-function getGitRef() {
+function readTextFile(filePath) {
 	try {
-		// Try to get the current tag
-		const tag = execSync('git describe --tags --exact-match 2>/dev/null', {
-			encoding: 'utf8',
-			cwd: rootDir,
-		}).trim();
-		return tag;
+		return fs.readFileSync(filePath, 'utf8');
 	} catch {
-		// Fall back to commit SHA
-		try {
-			const commit = execSync('git rev-parse HEAD', {
-				encoding: 'utf8',
-				cwd: rootDir,
-			}).trim();
-			return commit.substring(0, 12);
-		} catch {
-			return 'unknown';
+		return null;
+	}
+}
+
+function resolveGitDir(repoRoot) {
+	const dotGitPath = path.join(repoRoot, '.git');
+
+	try {
+		const stat = fs.statSync(dotGitPath);
+		if (stat.isDirectory()) return dotGitPath;
+		if (!stat.isFile()) return null;
+	} catch {
+		return null;
+	}
+
+	const content = readTextFile(dotGitPath);
+	if (!content) return null;
+
+	const match = content.match(/^gitdir:\s*(.+)\s*$/m);
+	if (!match) return null;
+
+	const gitDir = match[1];
+	return path.isAbsolute(gitDir) ? gitDir : path.resolve(repoRoot, gitDir);
+}
+
+function parsePackedRefs(gitDir) {
+	const packedRefsPath = path.join(gitDir, 'packed-refs');
+	const content = readTextFile(packedRefsPath);
+	if (!content) return new Map();
+
+	const refs = new Map();
+
+	for (const line of content.split('\n')) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('^')) continue;
+
+		const [hash, ref] = trimmed.split(' ');
+		if (!hash || !ref) continue;
+
+		refs.set(ref, hash);
+	}
+
+	return refs;
+}
+
+function readHeadCommit(gitDir) {
+	const headPath = path.join(gitDir, 'HEAD');
+	const head = readTextFile(headPath)?.trim();
+	if (!head) return null;
+
+	if (head.startsWith('ref:')) {
+		const refPath = head.replace(/^ref:\s*/i, '').trim();
+		const refFilePath = path.join(gitDir, refPath);
+		const refHash = readTextFile(refFilePath)?.trim();
+		if (refHash) return refHash;
+
+		const packedRefs = parsePackedRefs(gitDir);
+		return packedRefs.get(refPath) ?? null;
+	}
+
+	return head;
+}
+
+function collectLooseTags(tagsDir, prefix = '') {
+	const tags = new Map();
+
+	if (!fs.existsSync(tagsDir)) return tags;
+
+	const entries = fs.readdirSync(tagsDir, { withFileTypes: true });
+	for (const entry of entries) {
+		const entryPath = path.join(tagsDir, entry.name);
+		const tagName = prefix ? `${prefix}/${entry.name}` : entry.name;
+
+		if (entry.isDirectory()) {
+			for (const [nestedName, nestedHash] of collectLooseTags(entryPath, tagName)) {
+				tags.set(nestedName, nestedHash);
+			}
+		} else if (entry.isFile()) {
+			const hash = readTextFile(entryPath)?.trim();
+			if (hash) tags.set(tagName, hash);
 		}
 	}
+
+	return tags;
+}
+
+function parsePackedTagCommits(gitDir) {
+	const packedRefsPath = path.join(gitDir, 'packed-refs');
+	const content = readTextFile(packedRefsPath);
+	if (!content) return new Map();
+
+	const tagCommits = new Map();
+
+	let lastTagName = null;
+	let lastTagHash = null;
+
+	for (const line of content.split('\n')) {
+		const trimmed = line.trim();
+		if (!trimmed || trimmed.startsWith('#')) continue;
+
+		if (trimmed.startsWith('^')) {
+			if (lastTagName && lastTagHash) {
+				// Peeled commit for an annotated tag
+				tagCommits.set(lastTagName, trimmed.slice(1));
+			}
+			continue;
+		}
+
+		const [hash, ref] = trimmed.split(' ');
+		if (!hash || !ref) continue;
+
+		if (ref.startsWith('refs/tags/')) {
+			const tagName = ref.replace(/^refs\/tags\//, '');
+			lastTagName = tagName;
+			lastTagHash = hash;
+			// Lightweight tags point directly at the commit hash
+			tagCommits.set(tagName, hash);
+		} else {
+			lastTagName = null;
+			lastTagHash = null;
+		}
+	}
+
+	return tagCommits;
+}
+
+function getGitRef(version) {
+	const gitDir = resolveGitDir(rootDir);
+	if (!gitDir) return 'unknown';
+
+	const headCommit = readHeadCommit(gitDir);
+	if (!headCommit) return 'unknown';
+
+	const tags = new Map();
+	for (const [tagName, hash] of collectLooseTags(path.join(gitDir, 'refs', 'tags'))) {
+		tags.set(tagName, hash);
+	}
+	for (const [tagName, hash] of parsePackedTagCommits(gitDir)) {
+		tags.set(tagName, hash);
+	}
+
+	const matchingTags = [];
+	for (const [tagName, hash] of tags) {
+		if (hash === headCommit) matchingTags.push(tagName);
+	}
+
+	if (matchingTags.length > 0) {
+		const exactVersionTag = version ? `greater-v${version}` : null;
+		if (exactVersionTag && matchingTags.includes(exactVersionTag)) return exactVersionTag;
+
+		const greaterTags = matchingTags.filter((t) => t.startsWith('greater-v')).sort();
+		if (greaterTags.length > 0) return greaterTags[greaterTags.length - 1];
+
+		return matchingTags.sort()[0];
+	}
+
+	return headCommit.substring(0, 12);
 }
 
 /**
@@ -689,7 +829,7 @@ async function main() {
 
 	// Get metadata
 	const version = getVersion();
-	const ref = refOverride ?? getGitRef();
+	const ref = refOverride ?? getGitRef(version);
 	const generatedAt = new Date().toISOString();
 
 	// Get workspace versions
