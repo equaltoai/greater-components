@@ -8,6 +8,7 @@
 		RepeatIcon as Unboost,
 		UnfavoriteIcon as Unfavorite,
 	} from '@equaltoai/greater-components-icons';
+	import { copyToClipboard } from '@equaltoai/greater-components-utils';
 	import type { Snippet } from 'svelte';
 
 	interface ActionCounts {
@@ -45,6 +46,18 @@
 		 */
 		handlers?: ActionHandlers;
 		/**
+		 * URL to share/copy when `handlers.onShare` is not provided.
+		 */
+		shareUrl?: string;
+		/**
+		 * Optional title for Web Share API.
+		 */
+		shareTitle?: string;
+		/**
+		 * Optional text for Web Share API.
+		 */
+		shareText?: string;
+		/**
 		 * Whether the action bar is in read-only mode (disables all actions)
 		 */
 		readonly?: boolean;
@@ -75,6 +88,9 @@
 		class: className = '',
 		extensions,
 		idPrefix = 'action',
+		shareUrl,
+		shareTitle,
+		shareText,
 	}: Props = $props();
 
 	// Loading states for each action
@@ -139,11 +155,28 @@
 	}
 
 	async function handleShare() {
-		if (readonly || shareLoading || !handlers.onShare) return;
+		if (readonly || shareLoading) return;
+		if (!handlers.onShare && !shareUrl) return;
 
 		shareLoading = true;
 		try {
-			await handlers.onShare();
+			if (handlers.onShare) {
+				await handlers.onShare();
+				return;
+			}
+
+			const url = shareUrl!;
+			if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+				const data: { url: string; title?: string; text?: string } = { url };
+				if (shareTitle) data.title = shareTitle;
+				if (shareText) data.text = shareText;
+				await navigator.share(data);
+			} else {
+				const result = await copyToClipboard(url);
+				if (!result.success) {
+					throw new Error(result.error || 'Failed to copy link');
+				}
+			}
 		} catch (error) {
 			console.error('Share action failed:', error);
 		} finally {
@@ -169,7 +202,7 @@
 	<Button
 		variant="ghost"
 		{size}
-		disabled={readonly || replyLoading}
+		disabled={readonly || replyLoading || !handlers.onReply}
 		loading={replyLoading}
 		onclick={handleReply}
 		class="gr-action-bar__button gr-action-bar__button--reply"
@@ -193,7 +226,7 @@
 	<Button
 		variant="ghost"
 		{size}
-		disabled={readonly || boostLoading}
+		disabled={readonly || boostLoading || !handlers.onBoost}
 		loading={boostLoading}
 		onclick={handleBoost}
 		class={`gr-action-bar__button gr-action-bar__button--boost${isBoosted ? ' gr-action-bar__button--active' : ''}`}
@@ -264,7 +297,7 @@
 	<Button
 		variant="ghost"
 		{size}
-		disabled={readonly || favoriteLoading}
+		disabled={readonly || favoriteLoading || !handlers.onFavorite}
 		loading={favoriteLoading}
 		onclick={handleFavorite}
 		class={`gr-action-bar__button gr-action-bar__button--favorite${isFavorited ? ' gr-action-bar__button--active' : ''}`}
@@ -295,7 +328,7 @@
 	<Button
 		variant="ghost"
 		{size}
-		disabled={readonly || shareLoading}
+		disabled={readonly || shareLoading || (!handlers.onShare && !shareUrl)}
 		loading={shareLoading}
 		onclick={handleShare}
 		class="gr-action-bar__button gr-action-bar__button--share"

@@ -36,8 +36,17 @@ Hashtags.MutedList - List of Muted Hashtags
 		loading = true;
 		try {
 			const result = await context.config.adapter.getFollowedHashtags();
-			const edges = (result?.edges ?? []) as Array<{ node: FollowedHashtag }>;
-			const nodes = edges.map((edge) => edge.node);
+			const nodes: FollowedHashtag[] = (result?.edges ?? []).map((edge) => ({
+				name: edge.node.name,
+				notificationSettings: edge.node.notificationSettings
+					? {
+							level: edge.node.notificationSettings.level,
+							muted: edge.node.notificationSettings.muted,
+							mutedUntil: edge.node.notificationSettings.mutedUntil,
+						}
+					: undefined,
+			}));
+
 			mutedHashtags = nodes.filter((node) => node.notificationSettings?.muted === true);
 		} finally {
 			loading = false;

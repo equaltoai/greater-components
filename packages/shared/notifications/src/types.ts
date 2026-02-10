@@ -93,6 +93,7 @@ export interface BaseNotification {
 	account: Account;
 	read?: boolean;
 	dismissed?: boolean;
+	status?: Status;
 }
 
 export interface MentionNotification extends BaseNotification {
@@ -156,7 +157,52 @@ export type Notification =
 	| StatusNotification
 	| UpdateNotification
 	| AdminSignUpNotification
-	| AdminReportNotification;
+	| AdminReportNotification
+	| QuoteNotification
+	| CommunityNoteNotification
+	| TrustUpdateNotification
+	| CostAlertNotification
+	| ModerationActionNotification;
+
+export interface QuoteNotification extends BaseNotification {
+	type: 'quote';
+	status: Status;
+	quoteStatus: Status;
+}
+
+export interface CommunityNote {
+	id: string;
+	content: string;
+	createdAt: string | Date;
+	author?: Account;
+}
+
+export interface CommunityNoteNotification extends BaseNotification {
+	type: 'community_note';
+	status: Status;
+	communityNote: CommunityNote;
+}
+
+export interface TrustUpdateNotification extends BaseNotification {
+	type: 'trust_update';
+	trustScore: number;
+	previousScore?: number;
+	reason?: string;
+}
+
+export interface CostAlertNotification extends BaseNotification {
+	type: 'cost_alert';
+	amount: number;
+	threshold: number;
+	message?: string;
+}
+
+export interface ModerationActionNotification extends BaseNotification {
+	type: 'moderation_action';
+	status?: Status;
+	action: string;
+	reason: string;
+}
 
 export interface NotificationGroup {
 	id: string;

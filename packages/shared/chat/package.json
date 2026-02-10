@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-chat",
-  "version": "0.1.4-rc.0",
+  "version": "0.1.4",
   "type": "module",
   "description": "AI chat interface components for Greater Components",
   "license": "AGPL-3.0-only",

@@ -28,9 +28,39 @@ export interface ActivityPubActor<TExtensions = Record<string, unknown>> {
 	name?: string;
 
 	/**
+	 * Display name (UI-friendly alias)
+	 */
+	displayName?: string;
+
+	/**
 	 * Preferred username (handle)
 	 */
 	preferredUsername?: string;
+
+	/**
+	 * Username (UI-friendly alias)
+	 */
+	username?: string;
+
+	/**
+	 * Account identifier (e.g. `user@example.com`)
+	 */
+	acct?: string;
+
+	/**
+	 * Bot account indicator (UI-friendly alias)
+	 */
+	bot?: boolean;
+
+	/**
+	 * Avatar URL (UI-friendly alias)
+	 */
+	avatar?: string;
+
+	/**
+	 * Header/banner URL (UI-friendly alias)
+	 */
+	header?: string;
 
 	/**
 	 * Actor summary/bio

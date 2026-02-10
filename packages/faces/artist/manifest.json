@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-artist",
-  "version": "0.1.4-rc.0",
+  "version": "0.1.4",
   "description": "Artist portfolio and gallery UI components for visual artists and creative professionals",
   "components": {
     "Artwork": {

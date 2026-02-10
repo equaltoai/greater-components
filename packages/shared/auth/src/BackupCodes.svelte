@@ -193,7 +193,7 @@
 	 * Open regeneration confirmation modal
 	 */
 	function handleRegenerateClick() {
-		regenerateModal.open();
+		regenerateModal.helpers.open();
 	}
 
 	/**
@@ -207,7 +207,7 @@
 
 		try {
 			await onRegenerate?.();
-			regenerateModal.close();
+			regenerateModal.helpers.close();
 			// Reset saved states since codes are new
 			copiedAll = false;
 			downloaded = false;
@@ -270,7 +270,7 @@
 
 	<div class="backup-codes__actions">
 		<button
-			{...copyButton.props}
+			use:copyButton.actions.button
 			class="backup-codes__action backup-codes__action--primary"
 			onclick={handleCopyAll}
 			aria-label="Copy all codes to clipboard"
@@ -280,7 +280,7 @@
 		</button>
 
 		<button
-			{...downloadButton.props}
+			use:downloadButton.actions.button
 			class="backup-codes__action"
 			onclick={handleDownload}
 			aria-label="Download codes as text file"
@@ -290,7 +290,7 @@
 		</button>
 
 		<button
-			{...printButton.props}
+			use:printButton.actions.button
 			class="backup-codes__action"
 			onclick={handlePrint}
 			aria-label="Print backup codes"
@@ -319,7 +319,7 @@
 	{#if !isSetup}
 		<div class="backup-codes__regenerate">
 			<button
-				{...regenerateButton.props}
+				use:regenerateButton.actions.button
 				class="backup-codes__regenerate-button"
 				onclick={handleRegenerateClick}
 				aria-label="Regenerate backup codes"
@@ -332,16 +332,17 @@
 </div>
 
 <!-- Regeneration confirmation modal -->
-{#if regenerateModal.isOpen}
+{#if regenerateModal.state.open}
 	<div class="backup-codes-modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
 		<button
+			use:regenerateModal.actions.backdrop
 			class="backup-codes-modal__backdrop"
-			onclick={() => regenerateModal.close()}
-			onkeydown={(e) => e.key === 'Escape' && regenerateModal.close()}
+			onclick={() => regenerateModal.helpers.close()}
+			onkeydown={(e) => e.key === 'Escape' && regenerateModal.helpers.close()}
 			aria-label="Close modal"
 			type="button"
 		></button>
-		<div class="backup-codes-modal__content">
+		<div class="backup-codes-modal__content" use:regenerateModal.actions.content>
 			<h3 id="modal-title" class="backup-codes-modal__title">Regenerate Backup Codes?</h3>
 			<p class="backup-codes-modal__text">
 				This will invalidate all your existing backup codes. Any codes you've saved will no longer
@@ -353,7 +354,7 @@
 			<div class="backup-codes-modal__actions">
 				<button
 					class="backup-codes-modal__button backup-codes-modal__button--cancel"
-					onclick={() => regenerateModal.close()}
+					onclick={() => regenerateModal.helpers.close()}
 					disabled={regenerating}
 				>
 					Cancel

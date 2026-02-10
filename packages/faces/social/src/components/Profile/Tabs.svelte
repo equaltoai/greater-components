@@ -13,6 +13,7 @@
 -->
 <script lang="ts">
 	import { createTabs } from '@equaltoai/greater-components-headless/tabs';
+	import { untrack } from 'svelte';
 	import { getProfileContext } from './context.js';
 
 	interface Props {
@@ -26,21 +27,35 @@
 
 	const { state: profileState, setActiveTab } = getProfileContext();
 
+	const activeTabIndex = $derived.by(() => {
+		const index = profileState.tabs.findIndex((tab) => tab.id === profileState.activeTab);
+		return index >= 0 ? index : 0;
+	});
+
 	const tabs = createTabs({
-		defaultTab: profileState.activeTab,
-		onChange: (tabId) => setActiveTab(tabId),
+		defaultTab: untrack(() => activeTabIndex),
+		onChange: (index) => {
+			const tabId = profileState.tabs[index]?.id;
+			if (!tabId) return;
+			setActiveTab(tabId);
+		},
+	});
+
+	$effect(() => {
+		if (tabs.state.activeTab !== activeTabIndex) {
+			tabs.helpers.setActiveTab(activeTabIndex);
+		}
 	});
 </script>
 
 <div class={`profile-tabs ${className}`}>
-	<div class="profile-tabs__list" use:tabs.actions.list role="tablist">
-		{#each profileState.tabs as tab (tab.id)}
+	<div class="profile-tabs__list" use:tabs.actions.tabList>
+		{#each profileState.tabs as tab, index (tab.id)}
 			<button
 				class="profile-tabs__tab"
-				class:profile-tabs__tab--active={profileState.activeTab === tab.id}
-				use:tabs.actions.tab={tab.id}
-				role="tab"
-				aria-selected={profileState.activeTab === tab.id}
+				class:profile-tabs__tab--active={tabs.state.activeTab === index}
+				use:tabs.actions.tab={{ index }}
+				type="button"
 			>
 				{#if tab.icon}
 					<svg class="profile-tabs__icon" viewBox="0 0 24 24" fill="currentColor">

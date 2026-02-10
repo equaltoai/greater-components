@@ -162,9 +162,9 @@
 	{#if !spoilerText || expanded}
 		<div
 			class="content"
-			class:collapsed={spoilerText && !expanded}
+			class:collapsed={!!spoilerText && !expanded}
 			id={contentId}
-			aria-hidden={spoilerText && !expanded}
+			aria-hidden={!!spoilerText && !expanded}
 			use:setHtml={processedContent}
 		></div>
 	{/if}

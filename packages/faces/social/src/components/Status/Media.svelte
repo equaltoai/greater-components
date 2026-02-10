@@ -43,7 +43,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 		attachment: (typeof actualStatus.mediaAttachments)[number]
 	): 'image' | 'video' | 'audio' | 'file' {
 		if (attachment.mediaCategory) {
-			switch (attachment.mediaCategory) {
+			switch (attachment.mediaCategory.toUpperCase()) {
 				case 'IMAGE':
 					return 'image';
 				case 'VIDEO':
@@ -56,7 +56,17 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 			}
 		}
 
-		switch (attachment.type) {
+		const mime =
+			(attachment as unknown as { mimeType?: string; mediaType?: string }).mimeType ||
+			(attachment as unknown as { mimeType?: string; mediaType?: string }).mediaType;
+		if (mime) {
+			if (mime.startsWith('image/')) return 'image';
+			if (mime.startsWith('video/')) return 'video';
+			if (mime.startsWith('audio/')) return 'audio';
+		}
+
+		switch ((attachment as unknown as { type?: string }).type) {
+			case 'Image':
 			case 'image':
 				return 'image';
 			case 'video':
@@ -70,12 +80,20 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 	}
 
 	function isAttachmentHidden(attachment: (typeof actualStatus.mediaAttachments)[number]): boolean {
-		return attachment.sensitive === true && sensitiveVisibility[attachment.id] !== true;
+		return attachment.sensitive === true && sensitiveVisibility[attachment.url] !== true;
 	}
 
-	function toggleAttachmentVisibility(id: string) {
-		const current = sensitiveVisibility[id] === true;
-		sensitiveVisibility = { ...sensitiveVisibility, [id]: !current };
+	function toggleAttachmentVisibility(url: string) {
+		const current = sensitiveVisibility[url] === true;
+		sensitiveVisibility = { ...sensitiveVisibility, [url]: !current };
+	}
+
+	function getAttachmentDescription(
+		attachment: (typeof actualStatus.mediaAttachments)[number]
+	): string {
+		const maybeDescription = (attachment as unknown as { description?: unknown }).description;
+		if (typeof maybeDescription === 'string') return maybeDescription;
+		return attachment.name || '';
 	}
 </script>
 
@@ -88,8 +106,9 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 		{#if media}
 			{@render media()}
 		{:else}
-			{#each actualStatus.mediaAttachments! as attachment (attachment.id)}
+			{#each actualStatus.mediaAttachments! as attachment (attachment.url)}
 				{@const previewType = getPreviewType(attachment)}
+				{@const description = getAttachmentDescription(attachment)}
 				<div
 					class="status-media__item"
 					class:status-media__item--blurred={isAttachmentHidden(attachment)}
@@ -97,7 +116,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 					{#if previewType === 'image'}
 						<img
 							src={attachment.previewUrl || attachment.url}
-							alt={attachment.description || ''}
+							alt={description}
 							loading="lazy"
 							class="status-media__image"
 						/>
@@ -107,7 +126,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 							poster={attachment.previewUrl}
 							controls
 							class="status-media__video"
-							aria-label={attachment.description || 'Video'}
+							aria-label={description || 'Video'}
 						>
 							<track kind="captions" />
 						</video>
@@ -116,7 +135,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 							src={attachment.url}
 							controls
 							class="status-media__audio"
-							aria-label={attachment.description || 'Audio'}
+							aria-label={description || 'Audio'}
 						>
 							<track kind="captions" />
 						</audio>
@@ -127,7 +146,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 									d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
 								/>
 							</svg>
-							<span>{attachment.description || 'Attachment'}</span>
+							<span>{description || 'Attachment'}</span>
 						</div>
 					{/if}
 
@@ -141,7 +160,7 @@ Handles images, videos, audio, and GIFs with proper accessibility.
 								<button
 									type="button"
 									class="status-media__reveal"
-									onclick={() => toggleAttachmentVisibility(attachment.id)}
+									onclick={() => toggleAttachmentVisibility(attachment.url)}
 								>
 									Show media
 								</button>

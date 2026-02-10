@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-chat",
-  "version": "0.1.4-rc.0",
+  "version": "0.1.4",
   "description": "AI chat interface components with streaming responses, tool calls, and settings",
   "components": {
     "Container": {
