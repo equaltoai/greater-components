@@ -229,13 +229,14 @@ const trusted: TimelineItem[] = timeline.getItemsWithTrustScore(75);
 
 ## GraphQL Fragments
 
-All Lesser fields are included in existing fragments (from Phase 1):
+Common Lesser UI fields are included in the shared fragments (and used by the generated operations):
 
-- **ActorSummary**: includes `trustScore`
-- **ObjectFields**: includes `estimatedCost`, `moderationScore`, `communityNotes`, quote fields
+- **ActorSummary**: includes `trustScore`, `tipAddress`, `tipChainId`
+- **ObjectFields**: includes `boosted`, `relationshipType`, `contentHash`, `estimatedCost`, `moderationScore`, `communityNotes`, quote fields
 - **CommunityNoteFields**: full community note structure
 - **QuoteContextFields**: quote metadata
 - **Notifications query**: includes `quoteStatus`, `communityNote`, `trustUpdate`, `costAlert`, `moderationAction`
+- **Instance query**: includes `instance.tips` config fields
 
 No additional GraphQL configuration required - fragments are ready!
 
