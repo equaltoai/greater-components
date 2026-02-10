@@ -1,8 +1,8 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-10T20:25:19.134Z",
-  "ref": "6fb2eb7daaa3",
+  "generatedAt": "2026-02-10T20:47:42.313Z",
+  "ref": "greater-v0.1.6",
   "version": "0.1.6",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
@@ -1245,7 +1245,7 @@
     "packages/shared/compose/src/DraftSaver.svelte": "sha256-2vZgRCkfSyKT7hmuE8fG9WpSJ0M/e3gYYZeRANa/dN0=",
     "packages/shared/compose/src/Editor.svelte": "sha256-OILbpQeWc08Nc586jmY118ojsRXjoh7jZGsCjokylBY=",
     "packages/shared/compose/src/EditorWithAutocomplete.svelte": "sha256-u4oIKBkUpc7bbjQmyJ0lfnhFUgL8MNbnxtF6r3pvMLM=",
-    "packages/shared/compose/src/GraphQLAdapter.ts": "sha256-JIl/NoTyi8sL43p1VGktR0hyXXrUIceGt3e+weHF+XU=",
+    "packages/shared/compose/src/GraphQLAdapter.ts": "sha256-ovmaVCf8BlGIgn30N+S8SvR2Bju/VO3QGwRMYLKyBi8=",
     "packages/shared/compose/src/ImageEditor.svelte": "sha256-BSJFkCPs1AqAeGyt1f7vxZd3JwzboWVxUlzRwyAQE5I=",
     "packages/shared/compose/src/index.ts": "sha256-AultexGFcwRrujaZYtuu6hJc7PMdJBvR/oznEEfOGw4=",
     "packages/shared/compose/src/MediaUpload.svelte": "sha256-GGkLgf+duniKyv7tc+ZHBhLpL9jDyBYmepFehKbXS2Y=",
@@ -8064,8 +8064,8 @@
         },
         {
           "path": "src/GraphQLAdapter.ts",
-          "checksum": "sha256-JIl/NoTyi8sL43p1VGktR0hyXXrUIceGt3e+weHF+XU=",
-          "size": 13148
+          "checksum": "sha256-ovmaVCf8BlGIgn30N+S8SvR2Bju/VO3QGwRMYLKyBi8=",
+          "size": 13229
         },
         {
           "path": "src/ImageEditor.svelte",

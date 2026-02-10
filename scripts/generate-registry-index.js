@@ -311,6 +311,11 @@ function parsePackedTagCommits(gitDir) {
 }
 
 function getGitRef(version) {
+	const expectedVersionTag = version ? `greater-v${version}` : null;
+	// `registry/index.json` is versioned by release ref, not the current commit hash.
+	// Keep this stable so `pnpm validate:versions` passes on non-tagged commits.
+	if (expectedVersionTag) return expectedVersionTag;
+
 	const gitDir = resolveGitDir(rootDir);
 	if (!gitDir) return 'unknown';
 
