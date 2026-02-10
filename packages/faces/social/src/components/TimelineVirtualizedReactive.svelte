@@ -3,12 +3,19 @@
 	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
-	import type { StatusActionHandlers } from './Status/context.js';
 	import type { Snippet } from 'svelte';
 	import type { TimelineIntegrationConfig } from '../lib/integration';
 	import { createTimelineIntegration, createGraphQLTimelineIntegration } from '../lib/integration';
 	import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
 	import type { GraphQLTimelineView } from '../lib/graphqlTimelineStore';
+
+	interface StatusCardActionHandlers {
+		onReply?: (status: Status) => Promise<void> | void;
+		onBoost?: (status: Status) => Promise<void> | void;
+		onFavorite?: (status: Status) => Promise<void> | void;
+		onShare?: (status: Status) => Promise<void> | void;
+		onQuote?: (status: Status) => Promise<void> | void;
+	}
 
 	interface Props {
 		/**
@@ -73,6 +80,10 @@
 		 */
 		gapLoader?: Snippet;
 		/**
+		 * Custom empty state content
+		 */
+		empty?: Snippet;
+		/**
 		 * Custom end of feed content
 		 */
 		endOfFeed?: Snippet;
@@ -108,26 +119,29 @@
 		/**
 		 * Action handlers for timeline status cards
 		 */
-		actionHandlers?: StatusActionHandlers | ((status: Status) => StatusActionHandlers | undefined);
+		actionHandlers?:
+			| StatusCardActionHandlers
+			| ((status: Status) => StatusCardActionHandlers | undefined);
 	}
 
-	let {
-		items: propItems = [],
-		virtualScrolling = true,
-		integration,
-		loadingTop: propLoadingTop = false,
-		loadingBottom: propLoadingBottom = false,
-		endReached: propEndReached = false,
-		onLoadMore,
-		onLoadPrevious,
-		onStatusClick,
-		onStatusUpdate,
-		gapLoader,
-		endOfFeed,
-		realtimeIndicator,
-		class: className = '',
-		density = 'comfortable',
-		autoConnect = true,
+		let {
+			items: propItems = [],
+			virtualScrolling = true,
+			integration,
+			loadingTop: propLoadingTop = false,
+			loadingBottom: propLoadingBottom = false,
+			endReached: propEndReached = false,
+			onLoadMore,
+			onLoadPrevious,
+			onStatusClick,
+			onStatusUpdate,
+			gapLoader,
+			empty,
+			endOfFeed,
+			realtimeIndicator,
+			class: className = '',
+			density = 'comfortable',
+			autoConnect = true,
 		showRealtimeIndicator = true,
 		actionHandlers,
 		adapter,
@@ -341,66 +355,76 @@
 			</div>
 		{/if}
 
-		<div
-			class="virtual-list"
-			style:height={virtualScrolling ? `${$rowVirtualizer.getTotalSize()}px` : 'auto'}
-		>
-			{#if virtualScrolling}
-				{#each $rowVirtualizer.getVirtualItems() as virtualRow (virtualRow.key)}
-					{@const item = items[virtualRow.index]}
-					{#if item}
+		{#if items.length === 0 && !loadingTop && !loadingBottom}
+			<div class="timeline-empty" role="status" aria-live="polite">
+				{#if empty}
+					{@render empty()}
+				{:else}
+					<p>No items to display</p>
+				{/if}
+			</div>
+		{:else}
+			<div
+				class="virtual-list"
+				style:height={virtualScrolling ? `${$rowVirtualizer.getTotalSize()}px` : 'auto'}
+			>
+				{#if virtualScrolling}
+					{#each $rowVirtualizer.getVirtualItems() as virtualRow (virtualRow.key)}
+						{@const item = items[virtualRow.index]}
+						{#if item}
+							{@const handlersForItem =
+								typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
+							<div
+								class="virtual-row"
+								role="article"
+								data-index={virtualRow.index}
+								use:measureRow
+								style={`position:absolute;top:0;left:0;width:100%;transform:translateY(${virtualRow.start}px)`}
+							>
+								<StatusCard
+									status={item}
+									{density}
+									showActions={true}
+									actionHandlers={handlersForItem}
+									onclick={handleStatusCardClick}
+								/>
+							</div>
+						{/if}
+					{/each}
+				{:else}
+					{#each items as item (item.id)}
 						{@const handlersForItem =
 							typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-						<div
-							class="virtual-row"
-							role="article"
-							data-index={virtualRow.index}
-							use:measureRow
-							style={`position:absolute;top:0;left:0;width:100%;transform:translateY(${virtualRow.start}px)`}
-						>
-							<StatusCard
-								status={item}
-								{density}
-								showActions={true}
-								actionHandlers={handlersForItem}
-								onclick={handleStatusCardClick}
-							/>
-						</div>
+						<StatusCard
+							status={item}
+							{density}
+							showActions={true}
+							actionHandlers={handlersForItem}
+							onclick={handleStatusCardClick}
+						/>
+					{/each}
+				{/if}
+			</div>
+
+			{#if loadingBottom && !endReached}
+				<div class="loading-indicator bottom">
+					{#if gapLoader}
+						{@render gapLoader()}
+					{:else}
+						<div class="spinner" aria-label="Loading more items"></div>
 					{/if}
-				{/each}
-			{:else}
-				{#each items as item (item.id)}
-					{@const handlersForItem =
-						typeof actionHandlers === 'function' ? actionHandlers(item) : actionHandlers}
-					<StatusCard
-						status={item}
-						{density}
-						showActions={true}
-						actionHandlers={handlersForItem}
-						onclick={handleStatusCardClick}
-					/>
-				{/each}
+				</div>
 			{/if}
-		</div>
 
-		{#if loadingBottom && !endReached}
-			<div class="loading-indicator bottom">
-				{#if gapLoader}
-					{@render gapLoader()}
-				{:else}
-					<div class="spinner" aria-label="Loading more items"></div>
-				{/if}
-			</div>
-		{/if}
-
-		{#if endReached}
-			<div class="end-of-feed">
-				{#if endOfFeed}
-					{@render endOfFeed()}
-				{:else}
-					<p>You've reached the end</p>
-				{/if}
-			</div>
+			{#if endReached}
+				<div class="end-of-feed">
+					{#if endOfFeed}
+						{@render endOfFeed()}
+					{:else}
+						<p>You've reached the end</p>
+					{/if}
+				</div>
+			{/if}
 		{/if}
 	</div>
 </div>

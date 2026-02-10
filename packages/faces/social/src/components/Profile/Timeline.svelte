@@ -83,7 +83,6 @@
 		{view}
 		{virtualScrolling}
 		{estimateSize}
-		enableRealtime={true}
 	>
 		{#snippet empty()}
 			{#if emptyState}

@@ -273,6 +273,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 			{ path: 'lib/lib/timelineStore.ts', content: '', type: 'utils' },
 			{ path: 'lib/lib/timelineStore.svelte.ts', content: '', type: 'utils' },
 			{ path: 'lib/lib/transport.ts', content: '', type: 'utils' },
+			{ path: 'lib/utils/notificationGrouping.ts', content: '', type: 'utils' },
 		],
 		dependencies: [
 			{ name: 'svelte', version: '^5.0.0' },

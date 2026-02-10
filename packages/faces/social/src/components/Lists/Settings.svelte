@@ -45,7 +45,9 @@
 		saveSuccess = false;
 
 		try {
-			const updateData: Partial<ListFormData> = {
+			const updateData: ListFormData = {
+				title: currentList.title,
+				description: currentList.description,
 				visibility,
 			};
 
@@ -151,14 +153,14 @@
 				<div class="list-settings__info-item">
 					<span class="list-settings__info-label">Created</span>
 					<span class="list-settings__info-value">
-						{new Date(currentList.createdAt).toLocaleDateString()}
+						{currentList.createdAt ? new Date(currentList.createdAt).toLocaleDateString() : '—'}
 					</span>
 				</div>
 
 				<div class="list-settings__info-item">
 					<span class="list-settings__info-label">Last updated</span>
 					<span class="list-settings__info-value">
-						{new Date(currentList.updatedAt).toLocaleDateString()}
+						{currentList.updatedAt ? new Date(currentList.updatedAt).toLocaleDateString() : '—'}
 					</span>
 				</div>
 

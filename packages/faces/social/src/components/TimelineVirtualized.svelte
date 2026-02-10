@@ -3,8 +3,15 @@
 	import { get } from 'svelte/store';
 	import StatusCard from './StatusCard.svelte';
 	import type { Status } from '../types';
-	import type { StatusActionHandlers } from './Status/context.js';
 	import type { Snippet } from 'svelte';
+
+	interface StatusCardActionHandlers {
+		onReply?: (status: Status) => Promise<void> | void;
+		onBoost?: (status: Status) => Promise<void> | void;
+		onFavorite?: (status: Status) => Promise<void> | void;
+		onShare?: (status: Status) => Promise<void> | void;
+		onQuote?: (status: Status) => Promise<void> | void;
+	}
 
 	interface Props {
 		/**
@@ -63,7 +70,9 @@
 		/**
 		 * Action handlers to pass into StatusCard
 		 */
-		actionHandlers?: StatusActionHandlers | ((status: Status) => StatusActionHandlers | undefined);
+		actionHandlers?:
+			| StatusCardActionHandlers
+			| ((status: Status) => StatusCardActionHandlers | undefined);
 	}
 
 	let {

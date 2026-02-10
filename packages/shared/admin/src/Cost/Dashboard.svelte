@@ -46,16 +46,16 @@ Shows cost breakdown by service and operation.
 	<h4>Cost Dashboard</h4>
 	{#if loading}
 		<p>Loading...</p>
-	{:else if breakdown}
-		{@const data = breakdown as {
-			totalCost: number;
-			breakdown: Array;
-		}}
-		<div>Total: {fmt(data.totalCost)}</div>
-		<ul>
-			{#each data.breakdown as item (item.operation)}
-				<li>{item.operation}: {fmt(item.cost)} ({item.count} calls)</li>
-			{/each}
-		</ul>
-	{/if}
-</div>
+		{:else if breakdown}
+			{@const data = breakdown as {
+				totalCost: number;
+				breakdown: Array<{ operation: string; cost: number; count: number }>;
+			}}
+			<div>Total: {fmt(data.totalCost)}</div>
+			<ul>
+				{#each data.breakdown as item (item.operation)}
+					<li>{item.operation}: {fmt(item.cost)} ({item.count} calls)</li>
+				{/each}
+			</ul>
+		{/if}
+	</div>

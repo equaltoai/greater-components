@@ -49,9 +49,7 @@ Provides context for child components and handles root-level interactions.
 
 	// Handle reblogs - display the reblogged status
 	const actualStatus = $derived(status.reblog || status);
-	const account = $derived(
-		(status.reblog?.account || status.account) as GenericStatus['account'] | undefined
-	);
+	const account = $derived((status.reblog?.account || status.account) as GenericStatus['account']);
 	const isReblog = $derived(!!status.reblog);
 	const tombstoneMetadata = $derived(
 		(status as unknown as { metadata?: { lesser?: { isDeleted?: boolean; deletedAt?: string } } })
@@ -71,7 +69,7 @@ Provides context for child components and handles root-level interactions.
 		if (!tombstoneDeletedAt) return null;
 		return formatDateTime(tombstoneDeletedAt);
 	});
-	const accountLabel = $derived(account ? account.displayName || account.username : 'Deleted post');
+	const accountLabel = $derived(account.displayName || account.username || 'Deleted post');
 
 	// Create context for child components
 	// Create context for child components

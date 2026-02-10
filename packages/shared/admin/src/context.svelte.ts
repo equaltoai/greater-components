@@ -145,11 +145,11 @@ export interface AdminContext {
 	updateState: (partial: Partial<AdminState>) => void;
 	clearError: () => void;
 	fetchStats: () => Promise<void>;
-	fetchUsers: (filters?: { role?: string; status?: string }) => Promise<void>;
+	fetchUsers: (filters?: { role?: string; status?: string; search?: string }) => Promise<void>;
 	fetchReports: (status?: 'pending' | 'resolved' | 'dismissed') => Promise<void>;
 	fetchInstances: () => Promise<void>;
 	fetchSettings: () => Promise<void>;
-	fetchLogs: (filters?: { level?: string; category?: string }) => Promise<void>;
+	fetchLogs: (filters?: { level?: string; category?: string; limit?: number }) => Promise<void>;
 	fetchAnalytics: (period: 'day' | 'week' | 'month') => Promise<void>;
 }
 

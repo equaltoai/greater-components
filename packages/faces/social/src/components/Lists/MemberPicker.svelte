@@ -177,24 +177,28 @@
 				<div class="member-picker__members-header">Current Members</div>
 				{#each currentMembers as member (member.id)}
 					<div class="member-picker__member">
-						{#if member.avatar}
-							<img src={member.avatar} alt={member.displayName} class="member-picker__avatar" />
+						{#if member.actor.avatar}
+							<img
+								src={member.actor.avatar}
+								alt={member.actor.displayName}
+								class="member-picker__avatar"
+							/>
 						{:else}
 							<div class="member-picker__avatar-placeholder">
-								{member.displayName.charAt(0).toUpperCase()}
+								{member.actor.displayName.charAt(0).toUpperCase()}
 							</div>
 						{/if}
 
 						<div class="member-picker__info">
-							<div class="member-picker__name">{member.displayName}</div>
-							<div class="member-picker__username">@{member.username}</div>
+							<div class="member-picker__name">{member.actor.displayName}</div>
+							<div class="member-picker__username">@{member.actor.username}</div>
 						</div>
 
 						<button
 							class="member-picker__remove-button"
-							onclick={() => handleRemoveMember(member.id)}
+							onclick={() => handleRemoveMember(member.actor.id)}
 							title="Remove from list"
-							aria-label={`Remove ${member.displayName} from list`}
+							aria-label={`Remove ${member.actor.displayName} from list`}
 						>
 							<svg viewBox="0 0 24 24" fill="currentColor">
 								<path

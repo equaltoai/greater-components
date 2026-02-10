@@ -422,7 +422,7 @@
 				{@const buttonInstance = walletButtons.get(walletInfo.provider)}
 				{#if buttonInstance}
 					<button
-						{...buttonInstance.props}
+						use:buttonInstance.actions.button
 						class="wallet-connect__wallet"
 						class:wallet-connect__wallet--unavailable={!walletInfo.available}
 						class:wallet-connect__wallet--connecting={connecting &&
@@ -517,7 +517,7 @@
 			{/if}
 
 			<button
-				{...disconnectButton.props}
+				use:disconnectButton.actions.button
 				class="wallet-connect__disconnect"
 				onclick={handleDisconnect}
 				aria-label="Disconnect wallet"

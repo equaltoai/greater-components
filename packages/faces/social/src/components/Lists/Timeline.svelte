@@ -138,7 +138,6 @@
 				<TimelineVirtualizedReactive
 					{adapter}
 					view={{ type: 'list', listId: activeListId }}
-					enableRealtime={true}
 				/>
 			{:else}
 				<div class="lists-timeline__empty">
