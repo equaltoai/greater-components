@@ -61,7 +61,7 @@ Can be used with Status compound component or custom content.
 		(item?.metadata as { lesser?: { deletedAt?: string } } | undefined)?.lesser?.deletedAt ||
 			(item as { status?: { deletedAt?: string } } | undefined)?.status?.deletedAt
 	);
-	const deletedLabel = $derived(() => {
+	const deletedLabel = $derived.by(() => {
 		if (!deletedAt) return null;
 		const parsed = formatDateTime(deletedAt);
 		return parsed.relative;

@@ -16,8 +16,8 @@ Tabular view of trust relationships and scores.
 	import { getTrustGraphContext } from './context.js';
 
 	interface TrustEdge {
-		from: { id: string; username: string; displayName: string };
-		to: { id: string; username: string; displayName: string };
+		from: { id: string; username: string; displayName?: string };
+		to: { id: string; username: string; displayName?: string };
 		category: string;
 		score: number;
 		updatedAt: string;
@@ -47,7 +47,7 @@ Tabular view of trust relationships and scores.
 				context.state.rootActorId,
 				context.config.category
 			);
-			relationships = result || [];
+			relationships = (result ?? []).map((edge) => edge as unknown as TrustEdge);
 		} catch (err) {
 			error = err instanceof Error ? err : new Error('Failed to load trust relationships');
 		} finally {

@@ -78,13 +78,7 @@
 		</div>
 	{/if}
 
-	<TimelineVirtualizedReactive
-		{adapter}
-		{view}
-		{virtualScrolling}
-		{estimateSize}
-		enableRealtime={true}
-	>
+	<TimelineVirtualizedReactive {adapter} {view} {virtualScrolling} {estimateSize}>
 		{#snippet empty()}
 			{#if emptyState}
 				{@render emptyState()}

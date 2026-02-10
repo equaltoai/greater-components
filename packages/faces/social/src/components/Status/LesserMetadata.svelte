@@ -93,7 +93,7 @@ for statuses from Lesser instances.
 	const formattedCost = $derived(estimatedCost ? `$${(estimatedCost / 1000000).toFixed(4)}` : null);
 
 	// Trust score color
-	const trustColor = $derived(() => {
+	const trustColor = $derived.by(() => {
 		if (!trustScore) return 'gray';
 		if (trustScore >= 80) return 'green';
 		if (trustScore >= 50) return 'yellow';
@@ -123,7 +123,7 @@ for statuses from Lesser instances.
 				<!-- Trust Score Badge -->
 				{#if showTrust && trustScore !== undefined}
 					<span
-						class={`lesser-badge lesser-badge--trust lesser-badge--trust-${trustColor()}`}
+						class={`lesser-badge lesser-badge--trust lesser-badge--trust-${trustColor}`}
 						title={`Account trust score: ${trustScore}/100`}
 					>
 						<svg class="lesser-badge__icon" viewBox="0 0 24 24" aria-hidden="true">

@@ -50,7 +50,7 @@ describe('TimelineVirtualized', () => {
 	it('renders timeline items', () => {
 		const items = [mockStatus, { ...mockStatus, id: 'status2', content: 'Second post' }];
 
-		render(TimelineVirtualized, { props: { items } });
+		render(TimelineVirtualized, { props: { items, virtualScrolling: false } });
 
 		// Items should be rendered (assuming virtual list renders visible items)
 		// Since we didn't mock virtualizer here (unlike NotificationsFeed test),
@@ -79,17 +79,23 @@ describe('TimelineVirtualized', () => {
 	});
 
 	it('shows top loading indicator', () => {
-		render(TimelineVirtualized, { props: { items: [], loadingTop: true } });
+		render(TimelineVirtualized, {
+			props: { items: [], loadingTop: true, virtualScrolling: false },
+		});
 		expect(screen.getByLabelText('Loading new items')).toBeTruthy();
 	});
 
 	it('shows bottom loading indicator', () => {
-		render(TimelineVirtualized, { props: { items: [mockStatus], loadingBottom: true } });
+		render(TimelineVirtualized, {
+			props: { items: [mockStatus], loadingBottom: true, virtualScrolling: false },
+		});
 		expect(screen.getByLabelText('Loading more items')).toBeTruthy();
 	});
 
 	it('shows end of feed message', () => {
-		render(TimelineVirtualized, { props: { items: [mockStatus], endReached: true } });
+		render(TimelineVirtualized, {
+			props: { items: [mockStatus], endReached: true, virtualScrolling: false },
+		});
 		expect(screen.getByText("You've reached the end")).toBeTruthy();
 	});
 
@@ -101,6 +107,7 @@ describe('TimelineVirtualized', () => {
 			props: {
 				items: [mockStatus],
 				actionHandlers,
+				virtualScrolling: false,
 			},
 		});
 

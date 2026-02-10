@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-community",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Community/Reddit-style UI components for forum-based discussion applications",
   "components": {
     "Community": {

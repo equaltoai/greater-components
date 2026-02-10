@@ -10,6 +10,12 @@ Set and manage instance budgets and cost limits.
 	import { onMount } from 'svelte';
 	import { getCostContext } from './context.js';
 
+	interface InstanceBudget {
+		domain: string;
+		monthlyBudgetUSD: number;
+		currentSpendUSD: number;
+	}
+
 	interface Props {
 		class?: string;
 	}
@@ -17,7 +23,7 @@ Set and manage instance budgets and cost limits.
 	let { class: className = '' }: Props = $props();
 
 	const context = getCostContext();
-	let budgets = $state<Array<Record<string, unknown>>>([]);
+	let budgets = $state<InstanceBudget[]>([]);
 	let loading = $state(false);
 	let domain = $state('');
 	let monthlyUSD = $state(100);
@@ -26,7 +32,12 @@ Set and manage instance budgets and cost limits.
 	async function load() {
 		loading = true;
 		try {
-			budgets = await context.config.adapter.getInstanceBudgets();
+			const result = await context.config.adapter.getInstanceBudgets();
+			budgets = result.map((budget) => ({
+				domain: budget.domain,
+				monthlyBudgetUSD: budget.monthlyBudgetUSD,
+				currentSpendUSD: budget.currentSpendUSD,
+			}));
 		} finally {
 			loading = false;
 		}

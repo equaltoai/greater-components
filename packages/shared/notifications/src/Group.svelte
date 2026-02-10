@@ -16,7 +16,7 @@ Displays multiple similar notifications grouped together.
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { NotificationGroup } from './types.js';
+	import type { NotificationGroup, NotificationType } from './types.js';
 	import { getNotificationsContext } from './context.svelte.js';
 
 	interface Props {
@@ -43,39 +43,49 @@ Displays multiple similar notifications grouped together.
 	/**
 	 * Get group icon based on type
 	 */
-	const icon = $derived(
-		{
-			follow: '👤',
-			mention: '@',
-			reblog: '🔁',
-			favourite: '⭐',
-			poll: '📊',
-			follow_request: '👥',
-			status: '📝',
-			update: '✏️',
-			'admin.sign_up': '🎉',
-			'admin.report': '⚠️',
-		}[group.type] || '🔔'
-	);
+	const iconMap: Partial<Record<NotificationType, string>> = {
+		follow: '👤',
+		mention: '@',
+		reblog: '🔁',
+		favourite: '⭐',
+		poll: '📊',
+		follow_request: '👥',
+		status: '📝',
+		update: '✏️',
+		'admin.sign_up': '🎉',
+		'admin.report': '⚠️',
+		quote: '💬',
+		community_note: '📝',
+		trust_update: '🔒',
+		cost_alert: '💸',
+		moderation_action: '🛡️',
+	};
+
+	const icon = $derived(iconMap[group.type] ?? '🔔');
 
 	/**
 	 * Get group title based on type and count
 	 */
 	const title = $derived.by(() => {
-		const count = group.notifications.length;
-		const baseTitle =
-			{
-				follow: count > 1 ? 'followed you' : 'followed you',
-				mention: count > 1 ? 'mentioned you' : 'mentioned you',
-				reblog: count > 1 ? 'boosted your post' : 'boosted your post',
-				favourite: count > 1 ? 'favorited your post' : 'favorited your post',
-				poll: 'poll ended',
-				follow_request: count > 1 ? 'requested to follow you' : 'requested to follow you',
-				status: count > 1 ? 'posted' : 'posted',
-				update: 'edited a post',
-				'admin.sign_up': 'signed up',
-				'admin.report': 'reported',
-			}[group.type] || 'sent notifications';
+		const baseTitleMap: Partial<Record<NotificationType, string>> = {
+			follow: 'followed you',
+			mention: 'mentioned you',
+			reblog: 'boosted your post',
+			favourite: 'favorited your post',
+			poll: 'poll ended',
+			follow_request: 'requested to follow you',
+			status: 'posted',
+			update: 'edited a post',
+			'admin.sign_up': 'signed up',
+			'admin.report': 'reported',
+			quote: 'quoted your post',
+			community_note: 'added a community note',
+			trust_update: 'updated your trust score',
+			cost_alert: 'sent a cost alert',
+			moderation_action: 'performed a moderation action',
+		};
+
+		const baseTitle = baseTitleMap[group.type] ?? 'sent notifications';
 
 		return baseTitle;
 	});
@@ -158,8 +168,12 @@ Displays multiple similar notifications grouped together.
 				</p>
 
 				{#if context.config.showTimestamps && group.notifications[0]?.createdAt}
-					<time class="notification-group__timestamp" datetime={group.notifications[0].createdAt}>
-						{new Date(group.notifications[0].createdAt).toLocaleDateString()}
+					{@const createdAt = group.notifications[0].createdAt}
+					<time
+						class="notification-group__timestamp"
+						datetime={typeof createdAt === 'string' ? createdAt : createdAt.toISOString()}
+					>
+						{new Date(createdAt).toLocaleDateString()}
 					</time>
 				{/if}
 

@@ -208,7 +208,7 @@
 	/**
 	 * Get categories from emojis
 	 */
-	const categories = $derived(() => {
+	const categories = $derived.by(() => {
 		const cats = new Set<string>();
 		emojis.forEach((emoji) => {
 			if (emoji.category && emoji.visibleInPicker !== false) {
@@ -221,7 +221,7 @@
 	/**
 	 * Group emojis by category
 	 */
-	const emojisByCategory = $derived(() => {
+	const emojisByCategory = $derived.by(() => {
 		const grouped: Record<string, CustomEmoji[]> = {};
 
 		emojis
@@ -243,7 +243,7 @@
 	/**
 	 * Get recent emojis
 	 */
-	const recentEmojisList = $derived(() => {
+	const recentEmojisList = $derived.by(() => {
 		return recentEmojis
 			.map((shortcode) => emojis.find((e) => e.shortcode === shortcode))
 			.filter((e): e is CustomEmoji => e !== undefined)
@@ -253,7 +253,7 @@
 	/**
 	 * Get favorite emojis
 	 */
-	const favoriteEmojisList = $derived(() => {
+	const favoriteEmojisList = $derived.by(() => {
 		return favoriteEmojis
 			.map((shortcode) => emojis.find((e) => e.shortcode === shortcode))
 			.filter((e): e is CustomEmoji => e !== undefined);
@@ -262,7 +262,7 @@
 	/**
 	 * Filter emojis by search query
 	 */
-	const filteredEmojis = $derived(() => {
+	const filteredEmojis = $derived.by(() => {
 		if (!searchQuery.trim()) {
 			if (selectedCategory === 'all') {
 				return emojis.filter((e) => e.visibleInPicker !== false).slice(0, maxVisible);

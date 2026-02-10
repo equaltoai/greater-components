@@ -50,7 +50,7 @@ deepfake detection, and moderation recommendations.
 		error = null;
 		try {
 			const result = await context.config.adapter.getAIAnalysis(objectId);
-			analysis = result;
+			analysis = result ?? null;
 
 			if (!result && autoRequest) {
 				await requestAnalysis();
@@ -93,10 +93,10 @@ deepfake detection, and moderation recommendations.
 		return `${(value * 100).toFixed(1)}%`;
 	}
 
-	const overallRiskPercent = $derived(() =>
+	const overallRiskPercent = $derived.by(() =>
 		analysis ? Math.max(0, Math.min(100, analysis.overallRisk * 100)) : 0
 	);
-	const overallRiskSeverity = $derived(() =>
+	const overallRiskSeverity = $derived.by(() =>
 		analysis ? getSeverity(analysis.overallRisk) : 'success'
 	);
 </script>

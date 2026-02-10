@@ -155,8 +155,14 @@ export class MastodonAdapter implements GenericAdapter<MastodonStatus, GenericSt
 			id: mastodon.account.url,
 			type: 'Person',
 			name: mastodon.account.display_name,
+			displayName: mastodon.account.display_name,
 			preferredUsername: mastodon.account.username,
+			username: mastodon.account.username,
+			acct: mastodon.account.acct,
+			bot: mastodon.account.bot,
 			summary: mastodon.account.note,
+			avatar: mastodon.account.avatar,
+			header: mastodon.account.header,
 			icon: {
 				type: 'Image',
 				url: mastodon.account.avatar,
@@ -463,6 +469,11 @@ export class LesserAdapter implements GenericAdapter<LesserStatus, GenericStatus
 			},
 			account: {
 				...actor,
+				displayName: actor.displayName ?? actor.name,
+				username: actor.username ?? actor.preferredUsername,
+				avatar: actor.avatar ?? (Array.isArray(actor.icon) ? actor.icon[0]?.url : actor.icon?.url),
+				header:
+					actor.header ?? (Array.isArray(actor.image) ? actor.image[0]?.url : actor.image?.url),
 				// Only add extensions if there are Lesser fields
 				extensions: hasActorExtensions
 					? {

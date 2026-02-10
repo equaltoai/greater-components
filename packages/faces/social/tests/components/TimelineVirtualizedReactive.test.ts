@@ -13,6 +13,7 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 						const count = options.count || 0;
 						return Array.from({ length: count }).map((_, i) => ({
 							index: i,
+							key: i,
 							start: i * 200,
 							size: 200,
 							measureElement: () => {},
@@ -26,6 +27,7 @@ vi.mock('@tanstack/svelte-virtual', () => ({
 				const count = options.count || 0;
 				return Array.from({ length: count }).map((_, i) => ({
 					index: i,
+					key: i,
 					start: i * 200,
 					size: 200,
 					measureElement: () => {},
@@ -77,7 +79,7 @@ describe('TimelineVirtualizedReactive', () => {
 
 	it('renders end of feed', () => {
 		render(TimelineVirtualizedReactive, {
-			items: [],
+			items: [mockStatuses[0]],
 			endReached: true,
 		});
 
@@ -117,9 +119,10 @@ describe('TimelineVirtualizedReactive', () => {
 		render(TimelineVirtualizedReactive, {
 			items: [],
 			integration: {
-				fetchItems: async () => [],
-				subscribe: () => () => {},
+				baseUrl: 'https://example.com',
+				timeline: { type: 'home' },
 			},
+			autoConnect: false,
 			showRealtimeIndicator: true,
 		});
 
