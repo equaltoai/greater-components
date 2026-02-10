@@ -1,0 +1,2 @@
+tag: v1.1.0
+commit: b8475a9a8c2303db9e707165061a017dc3df2749

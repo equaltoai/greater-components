@@ -38,5 +38,9 @@ LICENSE
 packages/tokens/src/index.ts
 .pai/
 
+# Vendored Lesser contract snapshots (keep byte-for-byte from the pinned Lesser release)
+docs/lesser/contracts/openapi.yaml
+docs/lesser/contracts/graphql-schema.graphql
+
 # Prettier is non-idempotent on this large snapshot file
 planning/csp-violations-baseline.md
