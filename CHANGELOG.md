@@ -12,6 +12,28 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.5-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.4-rc.0...greater-v0.1.5-rc.0) (2026-02-10)
+
+### Features
+
+- **admin:** improve moderation workflows ([1b5c2d4](https://github.com/equaltoai/greater-components/commit/1b5c2d4acf790e17cc80f585f9f0125ef23c902e)), closes [#154](https://github.com/equaltoai/greater-components/issues/154)
+- **social:** improve post interactions ([c6c12bf](https://github.com/equaltoai/greater-components/commit/c6c12bf83cdf52fbb5029d4db92480d0a7c06c20)), closes [#153](https://github.com/equaltoai/greater-components/issues/153)
+
+### Bug Fixes
+
+- **a11y:** keep status roles out of feed ([724abfb](https://github.com/equaltoai/greater-components/commit/724abfbec3363004deecc2655c73324928506519))
+- **ci:** resolve lint/format/test failures ([634e629](https://github.com/equaltoai/greater-components/commit/634e6290b33d687e7100f01d620640a77a55768d))
+- **cli,social:** install social timeline + virtual scrolling ([92c544f](https://github.com/equaltoai/greater-components/commit/92c544f463204136410097978fa2f7781f8da15b)), closes [#152](https://github.com/equaltoai/greater-components/issues/152)
+- **csp:** remove inline styles from virtualized timelines ([22aa0fc](https://github.com/equaltoai/greater-components/commit/22aa0fc2a8f4d041cf92f92f4ead819337774742))
+- make social scaffold pass strict checks ([a72e19b](https://github.com/equaltoai/greater-components/commit/a72e19b5d54e1c932a91dea20e096d06d46e3560)), closes [#152](https://github.com/equaltoai/greater-components/issues/152)
+- reduce social face svelte-check errors ([2833ed4](https://github.com/equaltoai/greater-components/commit/2833ed4ee12b79eb4a3dbcac5ffe97f00d9379d7)), closes [#152](https://github.com/equaltoai/greater-components/issues/152)
+
+### Chores
+
+- **main:** release greater 0.1.4 ([dcf4a35](https://github.com/equaltoai/greater-components/commit/dcf4a3555d1a5cb54b9ea73e28099225d1725223))
+- merge premain into staging ([5401dc9](https://github.com/equaltoai/greater-components/commit/5401dc947959e547fca08ec7da624556f27abc1f))
+- **registry:** regenerate index ([0cd0f1b](https://github.com/equaltoai/greater-components/commit/0cd0f1b1c44d346593fdf2cc6850167754a31581))
+
 ## [0.1.4](https://github.com/equaltoai/greater-components/compare/greater-v0.1.3...greater-v0.1.4) (2026-02-09)
 
 ### Bug Fixes
