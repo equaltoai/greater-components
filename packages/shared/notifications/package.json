@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "@equaltoai/greater-components-icons": "workspace:*",
-    "@equaltoai/greater-components-primitives": "workspace:*"
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
