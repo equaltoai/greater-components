@@ -49,6 +49,21 @@
       "props": ["data", "period"],
       "exports": true
     },
+    "AgentBadge": {
+      "description": "Agent badge (type + verified state)",
+      "props": ["agentType", "verified", "label", "size"],
+      "exports": true
+    },
+    "AgentDirectory": {
+      "description": "Agent directory list (search + paging hooks)",
+      "props": ["agents", "loading", "error", "query", "canLoadMore"],
+      "exports": true
+    },
+    "AgentAttribution": {
+      "description": "Renders AgentPostAttribution for an Object",
+      "props": ["attribution"],
+      "exports": true
+    },
     "Cost": {
       "description": "Lesser cost analytics and budget controls",
       "subcomponents": ["Root", "Dashboard", "Alerts", "BudgetControls"],

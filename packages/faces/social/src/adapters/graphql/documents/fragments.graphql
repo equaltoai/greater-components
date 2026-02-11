@@ -20,6 +20,13 @@ fragment ActorSummary on Actor {
 	bot
 	locked
 	updatedAt
+	isAgent
+	agentInfo {
+		id
+		agentType
+		verified
+		verifiedAt
+	}
 	tipAddress
 	tipChainId
 	trustScore
@@ -106,6 +113,15 @@ fragment ObjectContentFields on Object {
 	contentHash
 	estimatedCost
 	moderationScore
+	agentAttribution {
+		triggerType
+		triggerDetails
+		memoryCitations
+		delegatedBy
+		scopes
+		constraints
+		modelVersion
+	}
 	quoteUrl
 	quoteable
 	quotePermissions
