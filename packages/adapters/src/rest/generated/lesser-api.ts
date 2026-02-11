@@ -2676,6 +2676,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/streaming/oauth/device": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_streaming_oauth_device"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/streaming/public": {
         parameters: {
             query?: never;
@@ -3700,6 +3716,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/oauth/device/code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_oauth_device_code"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/device/consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_oauth_device_consent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/device/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_oauth_device_verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_oauth_revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/oauth/token": {
         parameters: {
             query?: never;
@@ -4366,6 +4446,7 @@ export interface components {
             [key: string]: unknown;
         };
         AppRegistrationRequest: {
+            client_class?: string;
             client_name: string;
             redirect_uris: string;
             scopes: string;
@@ -5070,6 +5151,40 @@ export interface components {
         OAuthConsentResponse: {
             redirect_uri: string;
         };
+        OAuthDeviceCodeRequest: {
+            client_id: string;
+            client_secret?: string;
+            scope?: string;
+        };
+        OAuthDeviceCodeResponse: {
+            device_code: string;
+            expires_in: number;
+            interval: number;
+            user_code: string;
+            verification_uri: string;
+            verification_uri_complete?: string;
+        };
+        OAuthDeviceConsentRequest: {
+            action: string;
+            user_code: string;
+        };
+        OAuthDeviceConsentResponse: {
+            message?: string;
+            status: string;
+        };
+        OAuthDeviceVerifyRequest: {
+            user_code: string;
+        };
+        OAuthDeviceVerifyResponse: {
+            client_id: string;
+            client_name?: string;
+            client_url?: string;
+            expires_in: number;
+            interval: number;
+            scopes?: string[];
+            status: string;
+            user_code: string;
+        };
         OAuthErrorResponse: {
             error: string;
             error_description?: string;
@@ -5086,6 +5201,7 @@ export interface components {
             client_secret?: string;
             code?: string;
             code_verifier?: string;
+            device_code?: string;
             grant_type: string;
             redirect_uri?: string;
             refresh_token?: string;
@@ -12459,6 +12575,31 @@ export interface operations {
             503: components["responses"]["ServiceUnavailable"];
         };
     };
+    get_api_v1_streaming_oauth_device: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SSE stream */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalServerError"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
     get_api_v1_streaming_public: {
         parameters: {
             query?: never;
@@ -14308,6 +14449,140 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OAuthConsentResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_oauth_device_code: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["OAuthDeviceCodeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthDeviceCodeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_oauth_device_consent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["OAuthDeviceConsentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthDeviceConsentResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_oauth_device_verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["OAuthDeviceVerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OAuthDeviceVerifyResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_oauth_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Map7d31df2b"];
                 };
             };
             400: components["responses"]["BadRequest"];

@@ -139,6 +139,7 @@ export type ActivityType =
 
 export type Actor = {
   readonly __typename: 'Actor';
+  readonly agentInfo?: Maybe<Agent>;
   readonly avatar?: Maybe<Scalars['String']['output']>;
   readonly bot: Scalars['Boolean']['output'];
   readonly createdAt: Scalars['Time']['output'];
@@ -149,6 +150,7 @@ export type Actor = {
   readonly following: Scalars['Int']['output'];
   readonly header?: Maybe<Scalars['String']['output']>;
   readonly id: Scalars['ID']['output'];
+  readonly isAgent: Scalars['Boolean']['output'];
   readonly locked: Scalars['Boolean']['output'];
   readonly reputation?: Maybe<Reputation>;
   readonly statusesCount: Scalars['Int']['output'];
@@ -209,6 +211,25 @@ export type AdminAccountConnection = {
   readonly __typename: 'AdminAccountConnection';
   readonly accounts: ReadonlyArray<AdminAccount>;
   readonly nextCursor?: Maybe<Scalars['Cursor']['output']>;
+};
+
+export type AdminAgentPolicy = {
+  readonly __typename: 'AdminAgentPolicy';
+  readonly agentMaxFollowsPerHour: Scalars['Int']['output'];
+  readonly agentMaxPostsPerHour: Scalars['Int']['output'];
+  readonly allowAgentRegistration: Scalars['Boolean']['output'];
+  readonly allowAgents: Scalars['Boolean']['output'];
+  readonly allowRemoteAgents: Scalars['Boolean']['output'];
+  readonly blockedAgentDomains: ReadonlyArray<Scalars['String']['output']>;
+  readonly defaultQuarantineDays: Scalars['Int']['output'];
+  readonly hybridRetrievalEnabled: Scalars['Boolean']['output'];
+  readonly hybridRetrievalMaxCandidates: Scalars['Int']['output'];
+  readonly maxAgentsPerOwner: Scalars['Int']['output'];
+  readonly remoteQuarantineDays: Scalars['Int']['output'];
+  readonly trustedAgentDomains: ReadonlyArray<Scalars['String']['output']>;
+  readonly updatedAt: Scalars['Time']['output'];
+  readonly verifiedAgentMaxFollowsPerHour: Scalars['Int']['output'];
+  readonly verifiedAgentMaxPostsPerHour: Scalars['Int']['output'];
 };
 
 export type AdminCreateAnnouncementInput = {
@@ -509,6 +530,11 @@ export type AdminUpdateTrustResult = {
   readonly updatedBy: Scalars['String']['output'];
 };
 
+export type AdminVerifyAgentInput = {
+  readonly exitQuarantine?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly reason?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type AffectedRelationship = {
   readonly __typename: 'AffectedRelationship';
   readonly actor: Actor;
@@ -529,6 +555,120 @@ export type AffectedRelationshipEdge = {
   readonly cursor: Scalars['Cursor']['output'];
   readonly node: AffectedRelationship;
 };
+
+export type Agent = {
+  readonly __typename: 'Agent';
+  readonly activityCount: Scalars['Int']['output'];
+  readonly agentCapabilities: AgentCapabilities;
+  readonly agentOwner?: Maybe<Scalars['String']['output']>;
+  readonly agentType: AgentType;
+  readonly agentVersion: Scalars['String']['output'];
+  readonly bio?: Maybe<Scalars['String']['output']>;
+  /** @deprecated Use agentCapabilities */
+  readonly capabilities: AgentCapabilities;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly delegatedScopes: ReadonlyArray<Scalars['String']['output']>;
+  readonly displayName: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+  /** @deprecated Use ownerActor / agentOwner */
+  readonly owner?: Maybe<Actor>;
+  readonly ownerActor?: Maybe<Actor>;
+  /** @deprecated Use agentType */
+  readonly type: AgentType;
+  readonly username: Scalars['String']['output'];
+  readonly verified: Scalars['Boolean']['output'];
+  readonly verifiedAt?: Maybe<Scalars['Time']['output']>;
+  /** @deprecated Use agentVersion */
+  readonly version: Scalars['String']['output'];
+};
+
+export type AgentActivityConnection = {
+  readonly __typename: 'AgentActivityConnection';
+  readonly edges: ReadonlyArray<AgentActivityEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type AgentActivityEdge = {
+  readonly __typename: 'AgentActivityEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: AgentActivityEvent;
+};
+
+export type AgentActivityEvent = {
+  readonly __typename: 'AgentActivityEvent';
+  readonly action: Scalars['String']['output'];
+  readonly agentUsername: Scalars['String']['output'];
+  readonly eventId: Scalars['ID']['output'];
+  readonly metadataJson?: Maybe<Scalars['String']['output']>;
+  readonly targetId?: Maybe<Scalars['String']['output']>;
+  readonly timestamp: Scalars['Time']['output'];
+};
+
+export type AgentCapabilities = {
+  readonly __typename: 'AgentCapabilities';
+  readonly canBoost: Scalars['Boolean']['output'];
+  readonly canDM: Scalars['Boolean']['output'];
+  readonly canFollow: Scalars['Boolean']['output'];
+  readonly canPost: Scalars['Boolean']['output'];
+  readonly canReply: Scalars['Boolean']['output'];
+  readonly maxPostsPerHour: Scalars['Int']['output'];
+  readonly requiresApproval: Scalars['Boolean']['output'];
+  readonly restrictedDomains?: Maybe<ReadonlyArray<Scalars['String']['output']>>;
+};
+
+export type AgentCapabilitiesInput = {
+  readonly canBoost?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly canDM?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly canFollow?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly canPost?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly canReply?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly maxPostsPerHour?: InputMaybe<Scalars['Int']['input']>;
+  readonly requiresApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly restrictedDomains?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+};
+
+export type AgentConnection = {
+  readonly __typename: 'AgentConnection';
+  readonly edges: ReadonlyArray<AgentEdge>;
+  readonly pageInfo: PageInfo;
+  readonly totalCount: Scalars['Int']['output'];
+};
+
+export type AgentEdge = {
+  readonly __typename: 'AgentEdge';
+  readonly cursor: Scalars['Cursor']['output'];
+  readonly node: Agent;
+};
+
+export type AgentPostAttribution = {
+  readonly __typename: 'AgentPostAttribution';
+  readonly constraints?: Maybe<ReadonlyArray<Scalars['String']['output']>>;
+  readonly delegatedBy?: Maybe<Scalars['String']['output']>;
+  readonly memoryCitations?: Maybe<ReadonlyArray<Scalars['String']['output']>>;
+  readonly modelVersion?: Maybe<Scalars['String']['output']>;
+  readonly scopes?: Maybe<ReadonlyArray<Scalars['String']['output']>>;
+  readonly triggerDetails?: Maybe<Scalars['String']['output']>;
+  readonly triggerType?: Maybe<Scalars['String']['output']>;
+};
+
+export type AgentPostAttributionInput = {
+  readonly constraints?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly delegatedBy?: InputMaybe<Scalars['String']['input']>;
+  readonly memoryCitations?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly modelVersion?: InputMaybe<Scalars['String']['input']>;
+  readonly scopes?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly triggerDetails?: InputMaybe<Scalars['String']['input']>;
+  readonly triggerType?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AgentType =
+  | 'ASSISTANT'
+  | 'BRIDGE'
+  | 'CURATOR'
+  | 'CUSTOM'
+  | 'MODERATOR'
+  | 'RESEARCHER';
 
 export type AlertLevel =
   | 'CRITICAL'
@@ -903,6 +1043,7 @@ export type CreateListInput = {
 };
 
 export type CreateNoteInput = {
+  readonly agentAttribution?: InputMaybe<AgentPostAttributionInput>;
   readonly attachmentIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
   readonly content: Scalars['String']['input'];
   readonly contentMap?: InputMaybe<ReadonlyArray<ContentMapInput>>;
@@ -993,6 +1134,28 @@ export type DatabaseStatus = {
 export type DateRangeInput = {
   readonly end: Scalars['Time']['input'];
   readonly start: Scalars['Time']['input'];
+};
+
+export type DelegateToAgentInput = {
+  readonly agentType: AgentType;
+  readonly agentUsername: Scalars['String']['input'];
+  readonly agentVersion?: InputMaybe<Scalars['String']['input']>;
+  readonly bio?: InputMaybe<Scalars['String']['input']>;
+  readonly displayName: Scalars['String']['input'];
+  readonly expiresIn?: InputMaybe<Scalars['Int']['input']>;
+  readonly scopes: ReadonlyArray<Scalars['String']['input']>;
+  readonly version: Scalars['String']['input'];
+};
+
+export type DelegationPayload = {
+  readonly __typename: 'DelegationPayload';
+  readonly accessToken: Scalars['String']['output'];
+  readonly agent: Agent;
+  readonly createdAt: Scalars['Time']['output'];
+  readonly expiresIn: Scalars['Int']['output'];
+  readonly refreshToken: Scalars['String']['output'];
+  readonly scope: Scalars['String']['output'];
+  readonly tokenType: Scalars['String']['output'];
 };
 
 export type DigestFrequency =
@@ -2165,8 +2328,11 @@ export type Mutation = {
   readonly adminPromoteReviewer: AdminReviewerRoleResult;
   readonly adminReportAction: AdminReport;
   readonly adminSetStatusSensitive: Object;
+  readonly adminSuspendAgent: Agent;
+  readonly adminUnverifyAgent: Agent;
   readonly adminUpdateDomainBlock: AdminDomainBlock;
   readonly adminUpdateTrust: AdminUpdateTrustResult;
+  readonly adminVerifyAgent: Agent;
   readonly attemptReconnection: ReconnectionPayload;
   readonly autosaveDraft: Draft;
   readonly blockActor: Relationship;
@@ -2190,6 +2356,8 @@ export type Mutation = {
   readonly createReport: Report;
   readonly createSeries: Series;
   readonly createVouch: Vouch;
+  readonly delegateToAgent: DelegationPayload;
+  readonly deleteAgent: Agent;
   readonly deleteArticle: Scalars['Boolean']['output'];
   readonly deleteCategory: Scalars['Boolean']['output'];
   readonly deleteConversation: Scalars['Boolean']['output'];
@@ -2223,6 +2391,7 @@ export type Mutation = {
   readonly preloadMedia: ReadonlyArray<MediaStream>;
   readonly publishDraft: Article;
   readonly registerAccount: RegisterAccountPayload;
+  readonly registerAgent: RegisterAgentPayload;
   readonly registerPushSubscription: PushSubscription;
   readonly rejectFollowRequest: Relationship;
   readonly removeAccountsFromList: List;
@@ -2237,6 +2406,7 @@ export type Mutation = {
   readonly requestStreamingUrl: MediaStream;
   readonly restoreRevision: Article;
   readonly resumeFederation: FederationManagementStatus;
+  readonly revokeAgentToken: Scalars['Boolean']['output'];
   readonly revokeVouch: Scalars['Boolean']['output'];
   readonly saveMarkers: MarkerSet;
   readonly scheduleDraft: Draft;
@@ -2259,6 +2429,8 @@ export type Mutation = {
   readonly unpinObject: Scalars['Boolean']['output'];
   readonly unshareObject: Object;
   readonly updateAccountQuotePermissions: AccountQuotePermissions;
+  readonly updateAdminAgentPolicy: AdminAgentPolicy;
+  readonly updateAgent: Agent;
   readonly updateArticle: Article;
   readonly updateCategory: Category;
   readonly updateDraft: Draft;
@@ -2421,6 +2593,17 @@ export type MutationAdminSetStatusSensitiveArgs = {
 };
 
 
+export type MutationAdminSuspendAgentArgs = {
+  username: Scalars['String']['input'];
+};
+
+
+export type MutationAdminUnverifyAgentArgs = {
+  input?: InputMaybe<AdminVerifyAgentInput>;
+  username: Scalars['String']['input'];
+};
+
+
 export type MutationAdminUpdateDomainBlockArgs = {
   id: Scalars['ID']['input'];
   input: AdminDomainBlockUpdateInput;
@@ -2429,6 +2612,12 @@ export type MutationAdminUpdateDomainBlockArgs = {
 
 export type MutationAdminUpdateTrustArgs = {
   input: AdminUpdateTrustInput;
+};
+
+
+export type MutationAdminVerifyAgentArgs = {
+  input?: InputMaybe<AdminVerifyAgentInput>;
+  username: Scalars['String']['input'];
 };
 
 
@@ -2540,6 +2729,16 @@ export type MutationCreateSeriesArgs = {
 
 export type MutationCreateVouchArgs = {
   input: CreateVouchInput;
+};
+
+
+export type MutationDelegateToAgentArgs = {
+  input: DelegateToAgentInput;
+};
+
+
+export type MutationDeleteAgentArgs = {
+  username: Scalars['String']['input'];
 };
 
 
@@ -2708,6 +2907,11 @@ export type MutationRegisterAccountArgs = {
 };
 
 
+export type MutationRegisterAgentArgs = {
+  input: RegisterAgentInput;
+};
+
+
 export type MutationRegisterPushSubscriptionArgs = {
   input: RegisterPushSubscriptionInput;
 };
@@ -2785,6 +2989,11 @@ export type MutationRestoreRevisionArgs = {
 
 export type MutationResumeFederationArgs = {
   domain: Scalars['String']['input'];
+};
+
+
+export type MutationRevokeAgentTokenArgs = {
+  username: Scalars['String']['input'];
 };
 
 
@@ -2901,6 +3110,17 @@ export type MutationUnshareObjectArgs = {
 
 export type MutationUpdateAccountQuotePermissionsArgs = {
   input: UpdateAccountQuotePermissionsInput;
+};
+
+
+export type MutationUpdateAdminAgentPolicyArgs = {
+  input: UpdateAdminAgentPolicyInput;
+};
+
+
+export type MutationUpdateAgentArgs = {
+  input: UpdateAgentInput;
+  username: Scalars['String']['input'];
 };
 
 
@@ -3105,6 +3325,7 @@ export type NotificationPreferences = {
 export type Object = {
   readonly __typename: 'Object';
   readonly actor: Actor;
+  readonly agentAttribution?: Maybe<AgentPostAttribution>;
   readonly attachments: ReadonlyArray<Attachment>;
   readonly boosted: Scalars['Boolean']['output'];
   readonly boostedObject?: Maybe<Object>;
@@ -3437,6 +3658,7 @@ export type Query = {
   readonly actor?: Maybe<Actor>;
   readonly adminAccount?: Maybe<AdminAccount>;
   readonly adminAccounts: AdminAccountConnection;
+  readonly adminAgentPolicy: AdminAgentPolicy;
   readonly adminDomainAllows: AdminDomainAllowConnection;
   readonly adminDomainBlock?: Maybe<AdminDomainBlock>;
   readonly adminDomainBlocks: AdminDomainBlockConnection;
@@ -3452,6 +3674,10 @@ export type Query = {
   readonly adminStatuses: AdminStatusConnection;
   readonly adminTrustGraph: AdminTrustGraph;
   readonly affectedRelationships: AffectedRelationshipConnection;
+  readonly agent?: Maybe<Agent>;
+  readonly agentActivity: AgentActivityConnection;
+  readonly agentMemorySearch: ObjectConnection;
+  readonly agents: AgentConnection;
   readonly aiAnalysis?: Maybe<AiAnalysis>;
   readonly aiCapabilities: AiCapabilities;
   readonly aiStats: AiStats;
@@ -3523,6 +3749,7 @@ export type Query = {
   readonly moderatorActivity: ModeratorStats;
   readonly multiHashtagTimeline: PostConnection;
   readonly mutes: ActorListPage;
+  readonly myAgents: ReadonlyArray<Agent>;
   readonly myDrafts: DraftConnection;
   readonly myPublications: ReadonlyArray<Publication>;
   readonly notification?: Maybe<Notification>;
@@ -3671,6 +3898,37 @@ export type QueryAdminTrustGraphArgs = {
 
 export type QueryAffectedRelationshipsArgs = {
   severedRelationshipId: Scalars['ID']['input'];
+};
+
+
+export type QueryAgentArgs = {
+  username: Scalars['String']['input'];
+};
+
+
+export type QueryAgentActivityArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  username: Scalars['String']['input'];
+};
+
+
+export type QueryAgentMemorySearchArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  dateRange?: InputMaybe<DateRangeInput>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  query: Scalars['String']['input'];
+  tags?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+};
+
+
+export type QueryAgentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  ownerUsername?: InputMaybe<Scalars['String']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<AgentType>;
+  verified?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
@@ -4207,6 +4465,7 @@ export type QueryThreadContextArgs = {
 export type QueryTimelineArgs = {
   actorId?: InputMaybe<Scalars['ID']['input']>;
   after?: InputMaybe<Scalars['Cursor']['input']>;
+  excludeAgents?: InputMaybe<Scalars['Boolean']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   hashtag?: InputMaybe<Scalars['String']['input']>;
   listId?: InputMaybe<Scalars['ID']['input']>;
@@ -4358,6 +4617,22 @@ export type RegisterAccountPayload = {
   readonly __typename: 'RegisterAccountPayload';
   readonly actor: Actor;
   readonly created: Scalars['Boolean']['output'];
+};
+
+export type RegisterAgentInput = {
+  readonly agentType: AgentType;
+  readonly bio?: InputMaybe<Scalars['String']['input']>;
+  readonly displayName: Scalars['String']['input'];
+  readonly keyType?: InputMaybe<Scalars['String']['input']>;
+  readonly publicKey?: InputMaybe<Scalars['String']['input']>;
+  readonly purpose?: InputMaybe<Scalars['String']['input']>;
+  readonly username: Scalars['String']['input'];
+  readonly version: Scalars['String']['input'];
+};
+
+export type RegisterAgentPayload = {
+  readonly __typename: 'RegisterAgentPayload';
+  readonly agent: Agent;
 };
 
 export type RegisterPushSubscriptionInput = {
@@ -4733,6 +5008,7 @@ export type StreamingQualityReport = {
 export type Subscription = {
   readonly __typename: 'Subscription';
   readonly activityStream: Activity;
+  readonly agentActivity: AgentActivityEvent;
   readonly aiAnalysisUpdates: AiAnalysis;
   readonly budgetAlerts: BudgetAlert;
   readonly conversationUpdates: Conversation;
@@ -4758,6 +5034,11 @@ export type Subscription = {
 
 export type SubscriptionActivityStreamArgs = {
   types?: InputMaybe<ReadonlyArray<ActivityType>>;
+};
+
+
+export type SubscriptionAgentActivityArgs = {
+  username: Scalars['String']['input'];
 };
 
 
@@ -5085,6 +5366,34 @@ export type UpdateAccountQuotePermissionsInput = {
   readonly allowMentioned?: InputMaybe<Scalars['Boolean']['input']>;
   readonly allowPublic?: InputMaybe<Scalars['Boolean']['input']>;
   readonly blockList?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+};
+
+export type UpdateAdminAgentPolicyInput = {
+  readonly agentMaxFollowsPerHour: Scalars['Int']['input'];
+  readonly agentMaxPostsPerHour: Scalars['Int']['input'];
+  readonly allowAgentRegistration: Scalars['Boolean']['input'];
+  readonly allowAgents: Scalars['Boolean']['input'];
+  readonly allowRemoteAgents: Scalars['Boolean']['input'];
+  readonly blockedAgentDomains?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly defaultQuarantineDays: Scalars['Int']['input'];
+  readonly hybridRetrievalEnabled: Scalars['Boolean']['input'];
+  readonly hybridRetrievalMaxCandidates: Scalars['Int']['input'];
+  readonly maxAgentsPerOwner: Scalars['Int']['input'];
+  readonly remoteQuarantineDays: Scalars['Int']['input'];
+  readonly trustedAgentDomains?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+  readonly verifiedAgentMaxFollowsPerHour: Scalars['Int']['input'];
+  readonly verifiedAgentMaxPostsPerHour: Scalars['Int']['input'];
+};
+
+export type UpdateAgentInput = {
+  readonly agentCapabilities?: InputMaybe<AgentCapabilitiesInput>;
+  readonly agentType?: InputMaybe<AgentType>;
+  readonly agentVersion?: InputMaybe<Scalars['String']['input']>;
+  readonly bio?: InputMaybe<Scalars['String']['input']>;
+  readonly displayName?: InputMaybe<Scalars['String']['input']>;
+  readonly exitQuarantine?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly purpose?: InputMaybe<Scalars['String']['input']>;
+  readonly version?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateArticleInput = {
