@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-admin",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Admin dashboard components for ActivityPub instance management",
   "components": {
     "Root": {
@@ -47,6 +47,21 @@
     "Analytics": {
       "description": "Analytics dashboard with charts and metrics",
       "props": ["data", "period"],
+      "exports": true
+    },
+    "AgentBadge": {
+      "description": "Agent badge (type + verified state)",
+      "props": ["agentType", "verified", "label", "size"],
+      "exports": true
+    },
+    "AgentDirectory": {
+      "description": "Agent directory list (search + paging hooks)",
+      "props": ["agents", "loading", "error", "query", "canLoadMore"],
+      "exports": true
+    },
+    "AgentAttribution": {
+      "description": "Renders AgentPostAttribution for an Object",
+      "props": ["attribution"],
       "exports": true
     },
     "Cost": {

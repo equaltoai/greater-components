@@ -1,0 +1,239 @@
+# Agent directory + delegation + admin ops
+
+#import "./fragments.graphql"
+
+fragment AgentCapabilitiesFields on AgentCapabilities {
+	canPost
+	canReply
+	canBoost
+	canFollow
+	canDM
+	maxPostsPerHour
+	requiresApproval
+	restrictedDomains
+}
+
+fragment AgentFields on Agent {
+	id
+	username
+	displayName
+	bio
+	agentType
+	agentVersion
+	agentCapabilities {
+		...AgentCapabilitiesFields
+	}
+	agentOwner
+	delegatedScopes
+	verified
+	verifiedAt
+	ownerActor {
+		...ActorSummary
+	}
+	createdAt
+	activityCount
+}
+
+query AgentByUsername($username: String!) {
+	agent(username: $username) {
+		...AgentFields
+	}
+}
+
+query Agents(
+	$first: Int = 20
+	$after: Cursor
+	$type: AgentType
+	$query: String
+	$verified: Boolean
+	$ownerUsername: String
+) {
+	agents(
+		first: $first
+		after: $after
+		type: $type
+		query: $query
+		verified: $verified
+		ownerUsername: $ownerUsername
+	) {
+		edges {
+			cursor
+			node {
+				...AgentFields
+			}
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		}
+		totalCount
+	}
+}
+
+query MyAgents {
+	myAgents {
+		...AgentFields
+	}
+}
+
+query AgentActivity($username: String!, $first: Int = 20, $after: Cursor) {
+	agentActivity(username: $username, first: $first, after: $after) {
+		edges {
+			cursor
+			node {
+				eventId
+				agentUsername
+				action
+				targetId
+				metadataJson
+				timestamp
+			}
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		}
+		totalCount
+	}
+}
+
+query AdminAgentPolicy {
+	adminAgentPolicy {
+		allowAgents
+		allowAgentRegistration
+		defaultQuarantineDays
+		maxAgentsPerOwner
+		allowRemoteAgents
+		remoteQuarantineDays
+		blockedAgentDomains
+		trustedAgentDomains
+		agentMaxPostsPerHour
+		verifiedAgentMaxPostsPerHour
+		agentMaxFollowsPerHour
+		verifiedAgentMaxFollowsPerHour
+		hybridRetrievalEnabled
+		hybridRetrievalMaxCandidates
+		updatedAt
+	}
+}
+
+mutation UpdateAdminAgentPolicy($input: UpdateAdminAgentPolicyInput!) {
+	updateAdminAgentPolicy(input: $input) {
+		allowAgents
+		allowAgentRegistration
+		defaultQuarantineDays
+		maxAgentsPerOwner
+		allowRemoteAgents
+		remoteQuarantineDays
+		blockedAgentDomains
+		trustedAgentDomains
+		agentMaxPostsPerHour
+		verifiedAgentMaxPostsPerHour
+		agentMaxFollowsPerHour
+		verifiedAgentMaxFollowsPerHour
+		hybridRetrievalEnabled
+		hybridRetrievalMaxCandidates
+		updatedAt
+	}
+}
+
+query AgentMemorySearch(
+	$query: String!
+	$tags: [String!]
+	$dateRange: DateRangeInput
+	$first: Int = 20
+	$after: Cursor
+) {
+	agentMemorySearch(
+		query: $query
+		tags: $tags
+		dateRange: $dateRange
+		first: $first
+		after: $after
+	) {
+		edges {
+			cursor
+			node {
+				...ObjectFields
+			}
+		}
+		pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		}
+		totalCount
+	}
+}
+
+mutation RegisterAgent($input: RegisterAgentInput!) {
+	registerAgent(input: $input) {
+		agent {
+			...AgentFields
+		}
+	}
+}
+
+mutation UpdateAgent($username: String!, $input: UpdateAgentInput!) {
+	updateAgent(username: $username, input: $input) {
+		...AgentFields
+	}
+}
+
+mutation DeleteAgent($username: String!) {
+	deleteAgent(username: $username) {
+		...AgentFields
+	}
+}
+
+mutation DelegateToAgent($input: DelegateToAgentInput!) {
+	delegateToAgent(input: $input) {
+		agent {
+			...AgentFields
+		}
+		accessToken
+		refreshToken
+		tokenType
+		scope
+		createdAt
+		expiresIn
+	}
+}
+
+mutation RevokeAgentToken($username: String!) {
+	revokeAgentToken(username: $username)
+}
+
+mutation AdminVerifyAgent($username: String!, $input: AdminVerifyAgentInput) {
+	adminVerifyAgent(username: $username, input: $input) {
+		...AgentFields
+	}
+}
+
+mutation AdminUnverifyAgent($username: String!, $input: AdminVerifyAgentInput) {
+	adminUnverifyAgent(username: $username, input: $input) {
+		...AgentFields
+	}
+}
+
+mutation AdminSuspendAgent($username: String!) {
+	adminSuspendAgent(username: $username) {
+		...AgentFields
+	}
+}
+
+subscription AgentActivityUpdates($username: String!) {
+	agentActivity(username: $username) {
+		eventId
+		agentUsername
+		action
+		targetId
+		metadataJson
+		timestamp
+	}
+}
