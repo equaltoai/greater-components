@@ -54,12 +54,13 @@ describe('ActorResult Component', () => {
 		isFollowing: false,
 	};
 
-	it('renders actor details', () => {
+	it('renders actor details', async () => {
 		const target = document.createElement('div');
 		const instance = mount(ActorResult, {
 			target,
 			props: { actor: mockActor },
 		});
+		await flushSync();
 
 		expect(target.textContent).toContain('Alice');
 		expect(target.textContent).toContain('@alice');
@@ -131,6 +132,29 @@ describe('ActorResult Component', () => {
 		await flushSync();
 
 		expect(mockHandlers.onActorClick).toHaveBeenCalledWith(mockActor);
+
+		unmount(instance);
+	});
+
+	it('sanitizes bio HTML before rendering', async () => {
+		const target = document.createElement('div');
+		const instance = mount(ActorResult, {
+			target,
+			props: {
+				actor: {
+					...mockActor,
+					bio: '<p>Bio</p><img src=x onerror="alert(1)" /><a href="javascript:alert(1)">bad</a>',
+				},
+			},
+		});
+		await flushSync();
+
+		const bio = target.querySelector('.actor-result__bio-content') as HTMLElement | null;
+		expect(bio).toBeTruthy();
+		expect(bio?.innerHTML).toContain('<p>Bio</p>');
+		expect(bio?.innerHTML).not.toContain('<img');
+		expect(bio?.innerHTML).not.toContain('onerror');
+		expect(bio?.innerHTML).not.toContain('javascript:');
 
 		unmount(instance);
 	});
