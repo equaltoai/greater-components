@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-11T16:54:38.540Z",
+  "generatedAt": "2026-02-11T17:27:33.510Z",
   "ref": "greater-v0.1.7",
   "version": "0.1.7",
   "checksums": {
@@ -824,7 +824,7 @@
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-vx9eW1qaNYFapkiwHFSEQ4z/aZ/73qlqP4RELiKT6Gg=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-sUunoWzr6cbUidVZHSUHU4+2rtqL/xi3PKNn7GD++OQ=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.ts": "sha256-4U/b1aHeGBfl+YC+R+XaeY0Ts8hY8Er+3XfqUhSpqWY=",
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
@@ -1280,11 +1280,11 @@
     "packages/shared/search/src/Results.svelte": "sha256-ZTgcoB8HmzoLGnkwfS9/gaz+/ITLPIgFLnJWJDd/Zzk=",
     "packages/shared/search/src/Root.svelte": "sha256-/9ZGb8r/4y0b+shvGlmOdo5ANPFqfWjpqQSggOSQBpk=",
     "packages/shared/search/src/TagResult.svelte": "sha256-HxW5fPk+WPfsOR5QUMFC6tVNgSufQKLbTm5paEL1ypk=",
-    "packages/shared/admin/src/Agents/AgentAttribution.svelte": "sha256-jBUb+4Yd9sR+5M66eudwjzdgnUBWdLuLEwOwgsZjo5U=",
-    "packages/shared/admin/src/Agents/AgentBadge.svelte": "sha256-8YdTK1ehHFs9EO0VslL9ikf0AJyBqvRBjrOVI9iNp/Y=",
-    "packages/shared/admin/src/Agents/AgentDirectory.svelte": "sha256-zeeiSP1xN0wb4AelwV1O0m5ojO2eeiWfPvHZdWrHmE4=",
+    "packages/shared/admin/src/Agents/AgentAttribution.svelte": "sha256-sKioFed9/cv+upwowFCwvXfJtli9XX/fXtR/UB5QVS8=",
+    "packages/shared/admin/src/Agents/AgentBadge.svelte": "sha256-4kHvblc7JyIHEmS54toH8xMxfykb1y2aRopKPDEOvjk=",
+    "packages/shared/admin/src/Agents/AgentDirectory.svelte": "sha256-CnEow3iNirpcL1n4qURCCfiQf2X6WKkQ+aH5FtzNMtQ=",
     "packages/shared/admin/src/Agents/index.ts": "sha256-AeYdVBEjQMSPjkOhzSW6HRbuQx7v4EiPl39ZAoMG8jQ=",
-    "packages/shared/admin/src/Agents/types.ts": "sha256-qlgRhoOBfIFQZy7Ys/Pzlqz5NwfrRVZuJyGF3shxFyI=",
+    "packages/shared/admin/src/Agents/types.ts": "sha256-eqK8lFK2qH0H96qttvXxRobFYjqQADtG6HKo0c6wYGU=",
     "packages/shared/admin/src/Analytics.svelte": "sha256-MyX4gIc2WV46JBYb1FEPQY+wEMw+dqbKrPx/zONYL+o=",
     "packages/shared/admin/src/context.svelte.ts": "sha256-YLYxhI8ljapxnRJa8cfbFVDjGSwrIOvvCTsG5TyL6u4=",
     "packages/shared/admin/src/Cost/Alerts.svelte": "sha256-eoQJxtsnb03xDJLyPVy/wRzHKG/E1JrEzb67n2W5xXE=",
@@ -5526,8 +5526,8 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
-          "checksum": "sha256-vx9eW1qaNYFapkiwHFSEQ4z/aZ/73qlqP4RELiKT6Gg=",
-          "size": 45208
+          "checksum": "sha256-sUunoWzr6cbUidVZHSUHU4+2rtqL/xi3PKNn7GD++OQ=",
+          "size": 45194
         },
         {
           "path": "src/graphql/optimistic.d.ts",
@@ -8365,18 +8365,18 @@
       "files": [
         {
           "path": "src/Agents/AgentAttribution.svelte",
-          "checksum": "sha256-jBUb+4Yd9sR+5M66eudwjzdgnUBWdLuLEwOwgsZjo5U=",
-          "size": 1780
+          "checksum": "sha256-sKioFed9/cv+upwowFCwvXfJtli9XX/fXtR/UB5QVS8=",
+          "size": 1779
         },
         {
           "path": "src/Agents/AgentBadge.svelte",
-          "checksum": "sha256-8YdTK1ehHFs9EO0VslL9ikf0AJyBqvRBjrOVI9iNp/Y=",
-          "size": 718
+          "checksum": "sha256-4kHvblc7JyIHEmS54toH8xMxfykb1y2aRopKPDEOvjk=",
+          "size": 717
         },
         {
           "path": "src/Agents/AgentDirectory.svelte",
-          "checksum": "sha256-zeeiSP1xN0wb4AelwV1O0m5ojO2eeiWfPvHZdWrHmE4=",
-          "size": 2260
+          "checksum": "sha256-CnEow3iNirpcL1n4qURCCfiQf2X6WKkQ+aH5FtzNMtQ=",
+          "size": 2240
         },
         {
           "path": "src/Agents/index.ts",
@@ -8385,8 +8385,8 @@
         },
         {
           "path": "src/Agents/types.ts",
-          "checksum": "sha256-qlgRhoOBfIFQZy7Ys/Pzlqz5NwfrRVZuJyGF3shxFyI=",
-          "size": 201
+          "checksum": "sha256-eqK8lFK2qH0H96qttvXxRobFYjqQADtG6HKo0c6wYGU=",
+          "size": 200
         },
         {
           "path": "src/Analytics.svelte",
