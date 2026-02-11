@@ -12,6 +12,37 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.9-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.7-rc.0...greater-v0.1.9-rc.0) (2026-02-11)
+
+### Features
+
+- **agents:** add GraphQL adapters and UI primitives ([bce6159](https://github.com/equaltoai/greater-components/commit/bce6159864a4cdf94e5d771662aee7e4c01a6335))
+- **agents:** pin Lesser v1.1.3 + add agent GraphQL support ([0de5c02](https://github.com/equaltoai/greater-components/commit/0de5c028cb4ffc97788f596451f360110b0a8537))
+
+### Bug Fixes
+
+- **notifications:** add utils dependency ([3400e55](https://github.com/equaltoai/greater-components/commit/3400e553cde5bae810037bdcca9600f68c58af83))
+- **security:** harden HTML rendering and path handling ([d6f3bc9](https://github.com/equaltoai/greater-components/commit/d6f3bc94f52e9ffa778ce2a349110abc198723fa))
+- **security:** harden HTML rendering and path handling ([f871ece](https://github.com/equaltoai/greater-components/commit/f871ece4e14464ee60d0ff1aa0315fa8c7ae826e))
+
+### Docs
+
+- clarify Lesser sync and release flow ([ea06384](https://github.com/equaltoai/greater-components/commit/ea0638498cd4514d98ac4d75da59080d0626a30a))
+
+### Chores
+
+- **ci:** cancel redundant workflow runs ([32f251c](https://github.com/equaltoai/greater-components/commit/32f251c6ef6c28a6cd2f78c7d81c7fabbfe3db31))
+- **format:** run prettier ([14a81e1](https://github.com/equaltoai/greater-components/commit/14a81e15b4921dce3f3496eb8c494c9284bb7335))
+- **lesser:** pin contracts to v1.1.3 ([cd0d981](https://github.com/equaltoai/greater-components/commit/cd0d981b3e1c6c444dbdff0f1351f6941e50c68f))
+- **main:** release greater 0.1.7 ([c1970f1](https://github.com/equaltoai/greater-components/commit/c1970f1f7d51d69b1d924be718765c52b2c75d75))
+- **main:** release greater 0.1.7 ([8182b0e](https://github.com/equaltoai/greater-components/commit/8182b0e056d49bf6b69fb8a50541cc36e5ea9539))
+- **premain:** release greater 0.1.8-rc.0 ([0d24dd7](https://github.com/equaltoai/greater-components/commit/0d24dd75a2a79972384fde1492604763c15c17c0))
+- **premain:** release greater 0.1.8-rc.0 ([b8602f3](https://github.com/equaltoai/greater-components/commit/b8602f3be0aa9e1f685f1e714bbb1df76ed24c29))
+- **registry:** regenerate index ([18cff39](https://github.com/equaltoai/greater-components/commit/18cff39803bbbd30f7cd72bdc24bdf0bafc56cd8))
+- **registry:** update checksums ([f03a4e9](https://github.com/equaltoai/greater-components/commit/f03a4e99941602fb8545cb5aa3f23dbfc0700042))
+- **release:** prepare metadata ([a489bac](https://github.com/equaltoai/greater-components/commit/a489baccac3e0f9746fb9476ec71e7b56ca77123))
+- **release:** prepare metadata ([59b93e6](https://github.com/equaltoai/greater-components/commit/59b93e66e7af639ce9f8f2be5d1215910b8f7fe7))
+
 ## [0.1.7](https://github.com/equaltoai/greater-components/compare/greater-v0.1.6...greater-v0.1.7) (2026-02-10)
 
 ### Bug Fixes
