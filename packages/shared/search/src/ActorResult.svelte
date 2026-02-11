@@ -3,6 +3,7 @@
 -->
 <script lang="ts">
 	import { createButton } from '@equaltoai/greater-components-headless/button';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import { getSearchContext, formatCount } from './context.svelte.js';
 	import type { SearchActor } from './context.svelte.js';
 
@@ -33,6 +34,24 @@
 			handleClick();
 		}
 	}
+
+	const sanitizedBio = $derived(
+		actor.bio
+			? sanitizeHtml(actor.bio, {
+					allowedTags: ['p', 'br', 'span', 'a', 'strong', 'em', 'b', 'i', 'u', 'code'],
+					allowedAttributes: ['href', 'rel', 'target', 'class', 'title'],
+				}).trim()
+			: ''
+	);
+
+	function setHtml(node: HTMLElement, html: string) {
+		node.innerHTML = html;
+		return {
+			update(newHtml: string) {
+				node.innerHTML = newHtml;
+			},
+		};
+	}
 </script>
 
 <article class={`actor-result ${className}`}>
@@ -58,10 +77,9 @@
 				<h4 class="actor-result__name">{actor.displayName}</h4>
 				<span class="actor-result__username">@{actor.username}</span>
 			</div>
-			{#if actor.bio}
+			{#if sanitizedBio}
 				<div class="actor-result__bio">
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					<div class="actor-result__bio-content">{@html actor.bio}</div>
+					<div class="actor-result__bio-content" use:setHtml={sanitizedBio}></div>
 				</div>
 			{/if}
 			{#if actor.followersCount !== undefined}

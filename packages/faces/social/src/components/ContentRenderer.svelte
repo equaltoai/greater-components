@@ -65,6 +65,26 @@
 		}
 	}
 
+	const allowedLinkProtocols = new Set(['http:', 'https:', 'mailto:']);
+
+	function escapeRegExp(value: string): string {
+		return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
+
+	function toSafeHref(url: string): string | null {
+		if (!url || typeof url !== 'string') return null;
+		const trimmed = url.trim();
+		if (!trimmed) return null;
+
+		try {
+			const parsed = new URL(trimmed, 'https://example.invalid');
+			if (!allowedLinkProtocols.has(parsed.protocol)) return null;
+			return encodeURI(trimmed);
+		} catch {
+			return null;
+		}
+	}
+
 	function processContent(html: string): string {
 		// First sanitize the HTML
 		let processed = sanitizeHtml(html, {
@@ -100,9 +120,10 @@
 		// Replace mention links if we have mention data
 		if (mentions.length > 0) {
 			mentions.forEach((mention) => {
-				const pattern = new RegExp(`@${mention.username}(@[\\w.-]+)?`, 'g');
-				const safeUrl = encodeURI(mention.url);
+				const pattern = new RegExp(`@${escapeRegExp(mention.username)}(@[\\w.-]+)?`, 'g');
+				const safeUrl = toSafeHref(mention.url);
 				processed = processed.replace(pattern, (match) => {
+					if (!safeUrl) return match;
 					return `<a href="${safeUrl}" class="mention" rel="noopener noreferrer" target="_blank">${match}</a>`;
 				});
 			});
@@ -111,10 +132,11 @@
 		// Replace hashtag links if we have tag data
 		if (tags.length > 0) {
 			tags.forEach((tag) => {
-				const pattern = new RegExp(`#${tag.name}\\b`, 'gi');
-				const safeUrl = encodeURI(tag.url);
-				processed = processed.replace(pattern, () => {
-					return `<a href="${safeUrl}" class="hashtag" rel="noopener noreferrer" target="_blank">#${tag.name}</a>`;
+				const pattern = new RegExp(`#${escapeRegExp(tag.name)}\\b`, 'gi');
+				const safeUrl = toSafeHref(tag.url);
+				processed = processed.replace(pattern, (match) => {
+					if (!safeUrl) return match;
+					return `<a href="${safeUrl}" class="hashtag" rel="noopener noreferrer" target="_blank">${match}</a>`;
 				});
 			});
 		}

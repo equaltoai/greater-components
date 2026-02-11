@@ -5,9 +5,9 @@
  * This module converts those virtual paths into consumer-project filesystem paths based on `components.json`.
  */
 
-import path from 'node:path';
 import type { ComponentConfig } from './config.js';
 import { resolveAlias } from './config.js';
+import { resolvePathWithinDir } from './path-safety.js';
 
 export interface InstallTarget {
 	/** Absolute base directory to write into */
@@ -74,5 +74,5 @@ export function getInstalledFilePath(
 	cwd: string = process.cwd()
 ): string {
 	const target = getInstallTarget(filePath, config, cwd);
-	return path.join(target.targetDir, target.relativePath);
+	return resolvePathWithinDir(target.targetDir, target.relativePath, 'install path');
 }

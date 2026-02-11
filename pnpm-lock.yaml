@@ -1229,6 +1229,9 @@ importers:
       '@equaltoai/greater-components-primitives':
         specifier: workspace:*
         version: link:../../primitives
+      '@equaltoai/greater-components-utils':
+        specifier: workspace:*
+        version: link:../../utils
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^6.2.4

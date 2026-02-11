@@ -7,6 +7,7 @@ import type { ArticleData } from '../src/types.js';
 // Mock dependencies
 vi.mock('@equaltoai/greater-components-utils', () => ({
 	formatDateTime: (date: Date) => date.toISOString().split('T')[0],
+	sanitizeHtml: (html: string) => html,
 }));
 
 describe('Article Component', () => {

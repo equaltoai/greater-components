@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import type { ComponentFile } from '../registry/index.js';
 import type { ComponentConfig } from './config.js';
+import { resolvePathWithinDir } from './path-safety.js';
 import { transformImports, getTransformSummary, type TransformResult } from './transform.js';
 
 /**
@@ -64,7 +65,7 @@ export async function writeComponentFiles(
 	targetDir: string
 ): Promise<void> {
 	for (const file of files) {
-		const filePath = path.join(targetDir, file.path);
+		const filePath = resolvePathWithinDir(targetDir, file.path, 'component file path');
 		await writeFile(filePath, file.raw ?? file.content);
 	}
 }
@@ -82,7 +83,7 @@ export async function writeComponentFilesWithTransform(
 	const transformResults: TransformResult[] = [];
 
 	for (const file of files) {
-		const filePath = path.join(targetDir, file.path);
+		const filePath = resolvePathWithinDir(targetDir, file.path, 'component file path');
 
 		// Binary files (or explicitly non-transforming files) are written as-is.
 		if (file.raw || file.transform === false) {
