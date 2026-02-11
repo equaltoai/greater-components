@@ -12,6 +12,30 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.8](https://github.com/equaltoai/greater-components/compare/greater-v0.1.7...greater-v0.1.8) (2026-02-11)
+
+
+### Features
+
+* **agents:** add GraphQL adapters and UI primitives ([bce6159](https://github.com/equaltoai/greater-components/commit/bce6159864a4cdf94e5d771662aee7e4c01a6335))
+* **agents:** pin Lesser v1.1.3 + add agent GraphQL support ([0de5c02](https://github.com/equaltoai/greater-components/commit/0de5c028cb4ffc97788f596451f360110b0a8537))
+
+
+### Docs
+
+* clarify Lesser sync and release flow ([ea06384](https://github.com/equaltoai/greater-components/commit/ea0638498cd4514d98ac4d75da59080d0626a30a))
+
+
+### Chores
+
+* **ci:** cancel redundant workflow runs ([32f251c](https://github.com/equaltoai/greater-components/commit/32f251c6ef6c28a6cd2f78c7d81c7fabbfe3db31))
+* **format:** run prettier ([14a81e1](https://github.com/equaltoai/greater-components/commit/14a81e15b4921dce3f3496eb8c494c9284bb7335))
+* **lesser:** pin contracts to v1.1.3 ([cd0d981](https://github.com/equaltoai/greater-components/commit/cd0d981b3e1c6c444dbdff0f1351f6941e50c68f))
+* **premain:** release greater 0.1.8-rc.0 ([0d24dd7](https://github.com/equaltoai/greater-components/commit/0d24dd75a2a79972384fde1492604763c15c17c0))
+* **premain:** release greater 0.1.8-rc.0 ([b8602f3](https://github.com/equaltoai/greater-components/commit/b8602f3be0aa9e1f685f1e714bbb1df76ed24c29))
+* **registry:** update checksums ([f03a4e9](https://github.com/equaltoai/greater-components/commit/f03a4e99941602fb8545cb5aa3f23dbfc0700042))
+* **release:** prepare metadata ([a489bac](https://github.com/equaltoai/greater-components/commit/a489baccac3e0f9746fb9476ec71e7b56ca77123))
+
 ## [0.1.8-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.7-rc.0...greater-v0.1.8-rc.0) (2026-02-11)
 
 ### Features
