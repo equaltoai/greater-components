@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-11T17:27:33.510Z",
+  "generatedAt": "2026-02-11T23:35:18.257Z",
   "ref": "greater-v0.1.7",
   "version": "0.1.7",
   "checksums": {
@@ -898,7 +898,7 @@
     "packages/faces/social/src/components/ActionBar.svelte": "sha256-X0WDW8ny1lzhigsgvl9w1B7G05f4reiMf58RFLJFMWQ=",
     "packages/faces/social/src/components/Auth/index.ts": "sha256-I2AozOALfKpQeqC0mbRy72f3JBlAwkB/NLgAqOAOsgc=",
     "packages/faces/social/src/components/ComposeBox.svelte": "sha256-XX6Jh67nj7I4MXY0EUhMsd9qaTllbtiHQqojlf07ydY=",
-    "packages/faces/social/src/components/ContentRenderer.svelte": "sha256-S8TWeR99791jTpFdy+ih00bzzAKqzsIJiyhEOy8stj0=",
+    "packages/faces/social/src/components/ContentRenderer.svelte": "sha256-MTdVs16n8HmyNOHT1124Nb/KqQ7M7jrUQkJgjv3BZi0=",
     "packages/faces/social/src/components/Filters/context.svelte.ts": "sha256-mIoBx0MkzLYNEc7GdgmJyR+uOxu0R1wuV0Z6f3TkJiU=",
     "packages/faces/social/src/components/Filters/context.ts": "sha256-/bT3CNRb56JquXkckVAd4EI0uxWYj+ZiKNmknjedu3w=",
     "packages/faces/social/src/components/Filters/Editor.svelte": "sha256-+FJIp0t2oUoZXAfj/p1KpP5YjVdD+bDAMl9i25TX7JM=",
@@ -1001,7 +1001,7 @@
     "packages/faces/social/src/theme.css": "sha256-3zK8naW/JHCOUfeJSifKyTQyNUvaD6ydynfvH0Hn+wo=",
     "packages/faces/social/src/types.ts": "sha256-6NYrNcSGwHuIJ98n5v5+jPut3crbOhP4mUPoHkS67OQ=",
     "packages/faces/social/src/utils/notificationGrouping.ts": "sha256-h/6xwSoua5lvEsXzV66EhlKfxdH5VySXQs3hs7uuN5M=",
-    "packages/faces/blog/src/components/Article/Content.svelte": "sha256-cFXiN8Mnpxwj1U8kECrbMeSVvitQ/PNsNMCxASYAgGA=",
+    "packages/faces/blog/src/components/Article/Content.svelte": "sha256-yxnJHl75OM52nOstB8fd9q7pGjyNb8xX3fzD2hiK9mw=",
     "packages/faces/blog/src/components/Article/context.ts": "sha256-bYXS4NwSLcHdl8QnpVedTKNR94Tq1CjD+lUzj4zuwKI=",
     "packages/faces/blog/src/components/Article/Footer.svelte": "sha256-4ko7rj3fBa6Wd3qPjppbqGxBXukvBrz50TgFFqMobkk=",
     "packages/faces/blog/src/components/Article/Header.svelte": "sha256-uK21b88M/aZuGibnesH7hC3VNlSkyypPTK9FkUc34xM=",
@@ -1262,7 +1262,7 @@
     "packages/shared/notifications/src/Filter.svelte": "sha256-vYfqHN/0a3T4e6IAaZm8OHeLrsMSU13lFRrhwlqm7Mk=",
     "packages/shared/notifications/src/Group.svelte": "sha256-yRJrEhxGOSW5UJuigffopEU6hPcH4JOOUtOVoVW5Vyg=",
     "packages/shared/notifications/src/index.ts": "sha256-W4PuVIdmAwdqyKvwI+Y/PYQ8wtxer5Z4xIiBwo+ljOE=",
-    "packages/shared/notifications/src/Item.svelte": "sha256-fAEO+ygLEzW7oUqHkBOUChrK4NfRIIlzrSXIGWRfxjc=",
+    "packages/shared/notifications/src/Item.svelte": "sha256-i88S5S3c4NhCBMzYszLqJfse3ESLPZ7uqbsKHbFoKV0=",
     "packages/shared/notifications/src/LesserNotificationItem.svelte": "sha256-5t6c2CfohfEah6P4wmk1L/5YhAuEo8gQb2X7klRAxJU=",
     "packages/shared/notifications/src/mockData.ts": "sha256-tWv3AiO1o7SmeNGzMHafe7/4WXW6ZtqeO8RuzUvhZ48=",
     "packages/shared/notifications/src/NotificationFilters.svelte": "sha256-YRHkSnWW/euDHafGWKskxQOlyiNoDvh/6lcmWIKBZuw=",
@@ -1270,7 +1270,7 @@
     "packages/shared/notifications/src/Root.svelte": "sha256-3HnRKd8wRgk9RcZ6p5U1cm9iKWjko7jlDYhJVPo0uvM=",
     "packages/shared/notifications/src/types.ts": "sha256-N2EeaLZzVEspPeL2tEnZKnM8DiaqnrCd9pYet5yHc0k=",
     "packages/shared/notifications/src/utils/notificationGrouping.ts": "sha256-47/SGAF5pQfWKpJvvKIC0aV22hNzDVWRHqMYPmw9GpI=",
-    "packages/shared/search/src/ActorResult.svelte": "sha256-+O6kYsW0YZR+ztebg2NdUXDTgaZUoxZO1n/5DBJBYmc=",
+    "packages/shared/search/src/ActorResult.svelte": "sha256-oPg89O7Eebi1SOfk4zN/SvkMGPSC/WDyfaNkWjsfIUo=",
     "packages/shared/search/src/Bar.svelte": "sha256-g4snrnmzDkEt8TWrq0ZDRTJGKUovIdGFStqB7NPLOxU=",
     "packages/shared/search/src/context.svelte.ts": "sha256-bvLIQS+K47zmCQ83SrMzIfpeB+G8ESql9KJL7OC6eh8=",
     "packages/shared/search/src/FederatedSearch.svelte": "sha256-Jy6Ij6I5xU0eG0Dv9zNCBwqy2TANBc5QV4FsJ79x8QU=",
@@ -6005,8 +6005,8 @@
         },
         {
           "path": "src/components/ContentRenderer.svelte",
-          "checksum": "sha256-S8TWeR99791jTpFdy+ih00bzzAKqzsIJiyhEOy8stj0=",
-          "size": 3729
+          "checksum": "sha256-MTdVs16n8HmyNOHT1124Nb/KqQ7M7jrUQkJgjv3BZi0=",
+          "size": 4369
         },
         {
           "path": "src/components/Filters/context.svelte.ts",
@@ -6594,8 +6594,8 @@
       "files": [
         {
           "path": "src/components/Article/Content.svelte",
-          "checksum": "sha256-cFXiN8Mnpxwj1U8kECrbMeSVvitQ/PNsNMCxASYAgGA=",
-          "size": 1199
+          "checksum": "sha256-yxnJHl75OM52nOstB8fd9q7pGjyNb8xX3fzD2hiK9mw=",
+          "size": 1397
         },
         {
           "path": "src/components/Article/context.ts",
@@ -8195,8 +8195,8 @@
         },
         {
           "path": "src/Item.svelte",
-          "checksum": "sha256-fAEO+ygLEzW7oUqHkBOUChrK4NfRIIlzrSXIGWRfxjc=",
-          "size": 4558
+          "checksum": "sha256-i88S5S3c4NhCBMzYszLqJfse3ESLPZ7uqbsKHbFoKV0=",
+          "size": 5245
         },
         {
           "path": "src/LesserNotificationItem.svelte",
@@ -8237,11 +8237,13 @@
       "dependencies": [
         { "name": "adapters", "version": "latest" },
         { "name": "icons", "version": "0.1.7" },
-        { "name": "primitives", "version": "0.1.7" }
+        { "name": "primitives", "version": "0.1.7" },
+        { "name": "utils", "version": "0.1.7" }
       ],
       "peerDependencies": [
         { "name": "@equaltoai/greater-components-icons", "version": "0.1.7" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.1.7" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.1.7" },
         { "name": "svelte", "version": "^5.50.0" }
       ],
       "types": [
@@ -8266,8 +8268,8 @@
       "files": [
         {
           "path": "src/ActorResult.svelte",
-          "checksum": "sha256-+O6kYsW0YZR+ztebg2NdUXDTgaZUoxZO1n/5DBJBYmc=",
-          "size": 2178
+          "checksum": "sha256-oPg89O7Eebi1SOfk4zN/SvkMGPSC/WDyfaNkWjsfIUo=",
+          "size": 2615
         },
         {
           "path": "src/Bar.svelte",
