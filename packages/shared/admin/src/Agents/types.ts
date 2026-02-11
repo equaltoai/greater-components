@@ -7,4 +7,3 @@ export type AgentDirectoryEntry = {
 	verified: boolean;
 	agentOwner?: string | null;
 };
-

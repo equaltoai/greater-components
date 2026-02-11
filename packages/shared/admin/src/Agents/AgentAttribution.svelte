@@ -50,4 +50,3 @@
 		</DefinitionList>
 	</div>
 {/if}
-

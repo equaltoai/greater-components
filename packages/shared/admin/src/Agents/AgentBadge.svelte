@@ -30,4 +30,3 @@
 	description={status}
 	class={['admin-agent-badge', className].filter(Boolean).join(' ')}
 />
-

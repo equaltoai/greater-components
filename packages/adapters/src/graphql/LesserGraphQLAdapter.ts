@@ -738,18 +738,12 @@ export class LesserGraphQLAdapter {
 		return data.revokeAgentToken;
 	}
 
-	async adminVerifyAgent(
-		username: string,
-		input?: AdminVerifyAgentMutationVariables['input']
-	) {
+	async adminVerifyAgent(username: string, input?: AdminVerifyAgentMutationVariables['input']) {
 		const data = await this.mutate(AdminVerifyAgentDocument, { username, input });
 		return data.adminVerifyAgent;
 	}
 
-	async adminUnverifyAgent(
-		username: string,
-		input?: AdminUnverifyAgentMutationVariables['input']
-	) {
+	async adminUnverifyAgent(username: string, input?: AdminUnverifyAgentMutationVariables['input']) {
 		const data = await this.mutate(AdminUnverifyAgentDocument, { username, input });
 		return data.adminUnverifyAgent;
 	}

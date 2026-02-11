@@ -237,4 +237,3 @@ subscription AgentActivityUpdates($username: String!) {
 		timestamp
 	}
 }
-
