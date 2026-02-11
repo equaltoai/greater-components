@@ -7,12 +7,17 @@ Article.Content - Renders article body content with proper typography
 <script lang="ts">
 	import { getArticleContext, updateHeadings } from './context.js';
 	import { onMount } from 'svelte';
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import type { HeadingData } from '../../types.js';
 
 	const context = getArticleContext();
 	const article = $derived(context.article);
 
 	let contentElement: HTMLElement;
+
+	const sanitizedContent = $derived.by(() =>
+		article.contentFormat === 'html' ? sanitizeHtml(article.content).trim() : ''
+	);
 
 	// Extract headings for table of contents
 	onMount(() => {
@@ -40,7 +45,7 @@ Article.Content - Renders article body content with proper typography
 <div class="gr-blog-article__content" bind:this={contentElement}>
 	{#if article.contentFormat === 'html'}
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html article.content}
+		{@html sanitizedContent}
 	{:else}
 		<!-- Markdown content would be rendered here -->
 		<p>{article.content}</p>

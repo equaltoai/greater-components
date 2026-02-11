@@ -90,6 +90,11 @@ describe('git-fetch utilities', () => {
 			expect(cacheDir).toContain('cache');
 			expect(cacheDir).toContain('v1.0.0');
 		});
+
+		it('should reject traversal refs', async () => {
+			const { getCacheDir } = await import('../src/utils/git-fetch.js');
+			expect(() => getCacheDir('..')).toThrow();
+		});
 	});
 
 	describe('getCachedFilePath', () => {
@@ -100,6 +105,11 @@ describe('git-fetch utilities', () => {
 
 			expect(cachedPath).toContain('v1.0.0');
 			expect(cachedPath).toContain('path/to/file.ts');
+		});
+
+		it('should reject traversal file paths', async () => {
+			const { getCachedFilePath } = await import('../src/utils/git-fetch.js');
+			expect(() => getCachedFilePath('v1.0.0', '../evil.ts')).toThrow();
 		});
 	});
 
@@ -199,6 +209,22 @@ describe('git-fetch utilities', () => {
 	});
 
 	describe('fetchFromGitTag', () => {
+		it('should reject traversal file paths in local repo mode', async () => {
+			const original = process.env['GREATER_CLI_LOCAL_REPO_ROOT'];
+			process.env['GREATER_CLI_LOCAL_REPO_ROOT'] = '/tmp/greater-components-local';
+
+			try {
+				const { fetchFromGitTag } = await import('../src/utils/git-fetch.js');
+				await expect(fetchFromGitTag('v1.0.0', '../evil.ts')).rejects.toThrow();
+			} finally {
+				if (original === undefined) {
+					delete process.env['GREATER_CLI_LOCAL_REPO_ROOT'];
+				} else {
+					process.env['GREATER_CLI_LOCAL_REPO_ROOT'] = original;
+				}
+			}
+		});
+
 		it('should return cached content when available', async () => {
 			const { fetchFromGitTag, getCachedFilePath } = await import('../src/utils/git-fetch.js');
 

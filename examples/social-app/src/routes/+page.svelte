@@ -6,6 +6,7 @@
 	// For this example, we import from npm package
 	// Replace with local imports after CLI installation
 	import { Button } from '@equaltoai/greater-components/primitives';
+	import { sanitizeHtml } from '@equaltoai/greater-components/utils';
 
 	// Mock data for demonstration
 	const mockStatuses = [
@@ -66,7 +67,7 @@
 				</div>
 				<div class="status-content">
 					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html status.content}
+					{@html sanitizeHtml(status.content)}
 				</div>
 				<div class="status-actions">
 					<button class="action-btn">
