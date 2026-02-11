@@ -10,6 +10,7 @@ query Timeline(
 	$listId: ID
 	$actorId: ID
 	$mediaOnly: Boolean = false
+	$excludeAgents: Boolean = false
 ) {
 	timeline(
 		type: $type
@@ -19,6 +20,7 @@ query Timeline(
 		listId: $listId
 		actorId: $actorId
 		mediaOnly: $mediaOnly
+		excludeAgents: $excludeAgents
 	) {
 		edges {
 			cursor

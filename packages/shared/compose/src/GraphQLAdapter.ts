@@ -105,6 +105,8 @@ function toOptimisticActor(account: ActorLike): Actor {
 		createdAt: now,
 		updatedAt: now,
 		trustScore: 0,
+		isAgent: false,
+		agentInfo: null,
 		fields: [],
 		vouches: [],
 		reputation: null,
