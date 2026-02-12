@@ -32,9 +32,5 @@
   "packages/primitives/src/stores/preferences.ts:343:7:runtime-style-setProperty",
   "packages/primitives/src/stores/preferences.ts:351:7:runtime-style-setProperty",
   "packages/primitives/src/utils/smoothThemeTransition.ts:103:10:runtime-style-property",
-  "packages/primitives/src/utils/smoothThemeTransition.ts:81:18:runtime-style-tag",
-  "packages/utils/src/clipboard.ts:45:12:runtime-style-property",
-  "packages/utils/src/clipboard.ts:46:12:runtime-style-property",
-  "packages/utils/src/clipboard.ts:47:12:runtime-style-property",
-  "packages/utils/src/export-markdown.ts:144:6:runtime-style-property"
+  "packages/primitives/src/utils/smoothThemeTransition.ts:81:18:runtime-style-tag"
 ]
