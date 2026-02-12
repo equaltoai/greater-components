@@ -14,40 +14,36 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.1.10](https://github.com/equaltoai/greater-components/compare/greater-v0.1.9...greater-v0.1.10) (2026-02-12)
 
-
 ### Features
 
-* **cli:** add doctor --csp and strict CSP docs ([1cfdd12](https://github.com/equaltoai/greater-components/commit/1cfdd12300e4862b414cd563d3116775ef4d3b84))
-
+- **cli:** add doctor --csp and strict CSP docs ([1cfdd12](https://github.com/equaltoai/greater-components/commit/1cfdd12300e4862b414cd563d3116775ef4d3b84))
 
 ### Bug Fixes
 
-* **cli:** include admin Agents files in vendored installs ([68c8541](https://github.com/equaltoai/greater-components/commit/68c8541aec282ef3a17add072ee46fc55ba114e3))
-* **csp:** make primitives transitions WAAPI-based ([703b1bd](https://github.com/equaltoai/greater-components/commit/703b1bda9aafd3d5b9939c8c6af160725fae502a))
-* **csp:** remove inline style writes from utils ([79bb770](https://github.com/equaltoai/greater-components/commit/79bb770ec53125f283e9f2310d4012d174a764df))
-* **csp:** remove runtime inline-style writes from primitives ([b4e8a3d](https://github.com/equaltoai/greater-components/commit/b4e8a3dcf541bc3e0862692c864cd254a6aa831f))
-* **csp:** remove runtime style injection from artist face ([c62a4d9](https://github.com/equaltoai/greater-components/commit/c62a4d979e74d3d9292bc1b8c89d71f8c4b92dfe))
-* **csp:** remove runtime style writes from headless ([9858a2b](https://github.com/equaltoai/greater-components/commit/9858a2bc563480b9f2eb54be7a7d1fd2776c9971))
-* **csp:** replace textarea autosize with CSS-driven helper ([c845b6a](https://github.com/equaltoai/greater-components/commit/c845b6a205af850efd3a9e9fca8746742ae56110))
-* **csp:** strict CSP issue sweep ([#180](https://github.com/equaltoai/greater-components/issues/180), [#187](https://github.com/equaltoai/greater-components/issues/187)–[#195](https://github.com/equaltoai/greater-components/issues/195)) ([241aeab](https://github.com/equaltoai/greater-components/commit/241aeabfc01754668dad1a2fca5aa54492bcf9e5))
-* **social:** remove global BackupCodes theme styles ([8c9405a](https://github.com/equaltoai/greater-components/commit/8c9405adbf6bbf45941df99255b6d3c5264e4964))
-
+- **cli:** include admin Agents files in vendored installs ([68c8541](https://github.com/equaltoai/greater-components/commit/68c8541aec282ef3a17add072ee46fc55ba114e3))
+- **csp:** make primitives transitions WAAPI-based ([703b1bd](https://github.com/equaltoai/greater-components/commit/703b1bda9aafd3d5b9939c8c6af160725fae502a))
+- **csp:** remove inline style writes from utils ([79bb770](https://github.com/equaltoai/greater-components/commit/79bb770ec53125f283e9f2310d4012d174a764df))
+- **csp:** remove runtime inline-style writes from primitives ([b4e8a3d](https://github.com/equaltoai/greater-components/commit/b4e8a3dcf541bc3e0862692c864cd254a6aa831f))
+- **csp:** remove runtime style injection from artist face ([c62a4d9](https://github.com/equaltoai/greater-components/commit/c62a4d979e74d3d9292bc1b8c89d71f8c4b92dfe))
+- **csp:** remove runtime style writes from headless ([9858a2b](https://github.com/equaltoai/greater-components/commit/9858a2bc563480b9f2eb54be7a7d1fd2776c9971))
+- **csp:** replace textarea autosize with CSS-driven helper ([c845b6a](https://github.com/equaltoai/greater-components/commit/c845b6a205af850efd3a9e9fca8746742ae56110))
+- **csp:** strict CSP issue sweep ([#180](https://github.com/equaltoai/greater-components/issues/180), [#187](https://github.com/equaltoai/greater-components/issues/187)–[#195](https://github.com/equaltoai/greater-components/issues/195)) ([241aeab](https://github.com/equaltoai/greater-components/commit/241aeabfc01754668dad1a2fca5aa54492bcf9e5))
+- **social:** remove global BackupCodes theme styles ([8c9405a](https://github.com/equaltoai/greater-components/commit/8c9405adbf6bbf45941df99255b6d3c5264e4964))
 
 ### Docs
 
-* add issue sweep plan for open issues ([7e9c169](https://github.com/equaltoai/greater-components/commit/7e9c169b7d4199341cbf20c07955acd0c0d77d71))
-
+- add issue sweep plan for open issues ([7e9c169](https://github.com/equaltoai/greater-components/commit/7e9c169b7d4199341cbf20c07955acd0c0d77d71))
 
 ### Chores
 
-* **csp:** extend validate:csp for runtime strict CSP ([a8139a5](https://github.com/equaltoai/greater-components/commit/a8139a571164ba9b7e590f79c343585d8afc27de))
-* **premain:** release greater 0.1.10-rc.0 ([315a795](https://github.com/equaltoai/greater-components/commit/315a7953d6b3877c768c38d65b6b20782666e0be))
-* **premain:** release greater 0.1.10-rc.0 ([c01b453](https://github.com/equaltoai/greater-components/commit/c01b45380a1d832c0978fe505bb1200f491fe22c))
-* regenerate registry ([1760bcc](https://github.com/equaltoai/greater-components/commit/1760bcc3ee8f1009462128dc01b25c1a929ad2cf))
-* regenerate src type artifacts ([7bf3011](https://github.com/equaltoai/greater-components/commit/7bf3011db543b411156c0fb7d10d7d89b3bf2968))
-* **release:** prepare metadata ([0c69583](https://github.com/equaltoai/greater-components/commit/0c695831df309a10d522dbad42f58452bc515875))
-* run prettier ([f927a03](https://github.com/equaltoai/greater-components/commit/f927a03bd013bedd1702f3e142c1e60938f59ae8))
-* update registry checksums ([df448b6](https://github.com/equaltoai/greater-components/commit/df448b64e38e5e3b99a9c42f938086ff573723cd))
+- **csp:** extend validate:csp for runtime strict CSP ([a8139a5](https://github.com/equaltoai/greater-components/commit/a8139a571164ba9b7e590f79c343585d8afc27de))
+- **premain:** release greater 0.1.10-rc.0 ([315a795](https://github.com/equaltoai/greater-components/commit/315a7953d6b3877c768c38d65b6b20782666e0be))
+- **premain:** release greater 0.1.10-rc.0 ([c01b453](https://github.com/equaltoai/greater-components/commit/c01b45380a1d832c0978fe505bb1200f491fe22c))
+- regenerate registry ([1760bcc](https://github.com/equaltoai/greater-components/commit/1760bcc3ee8f1009462128dc01b25c1a929ad2cf))
+- regenerate src type artifacts ([7bf3011](https://github.com/equaltoai/greater-components/commit/7bf3011db543b411156c0fb7d10d7d89b3bf2968))
+- **release:** prepare metadata ([0c69583](https://github.com/equaltoai/greater-components/commit/0c695831df309a10d522dbad42f58452bc515875))
+- run prettier ([f927a03](https://github.com/equaltoai/greater-components/commit/f927a03bd013bedd1702f3e142c1e60938f59ae8))
+- update registry checksums ([df448b6](https://github.com/equaltoai/greater-components/commit/df448b64e38e5e3b99a9c42f938086ff573723cd))
 
 ## [0.1.10-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.9-rc.0...greater-v0.1.10-rc.0) (2026-02-12)
 
