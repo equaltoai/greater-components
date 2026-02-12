@@ -92,6 +92,17 @@ describe('shared module registry', () => {
 			expect(admin?.exports).toContain('Overview');
 			expect(admin?.exports).toContain('Users');
 		});
+
+		it('admin module should include Agents files (vendored install)', () => {
+			const admin = getSharedModule('admin') as SharedModuleMetadata;
+			const paths = admin.files.map((f) => f.path);
+
+			expect(paths).toContain('shared/admin/Agents/index.ts');
+			expect(paths).toContain('shared/admin/Agents/types.ts');
+			expect(paths).toContain('shared/admin/Agents/AgentBadge.svelte');
+			expect(paths).toContain('shared/admin/Agents/AgentDirectory.svelte');
+			expect(paths).toContain('shared/admin/Agents/AgentAttribution.svelte');
+		});
 	});
 
 	describe('getAllSharedModuleNames', () => {
