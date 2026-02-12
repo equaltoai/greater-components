@@ -6,6 +6,7 @@ export default mergeConfig(
 	defineConfig({
 		test: {
 			environment: 'jsdom',
+			setupFiles: ['./tests/setup.ts'],
 			globals: true,
 			coverage: {
 				provider: 'v8',

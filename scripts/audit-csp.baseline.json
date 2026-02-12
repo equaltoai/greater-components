@@ -7,19 +7,5 @@
   "packages/faces/artist/src/utils/reducedMotion.ts:204:8:runtime-style-property",
   "packages/faces/artist/src/utils/reducedMotion.ts:209:7:runtime-style-property",
   "packages/faces/artist/src/utils/reducedMotion.ts:213:8:runtime-style-setProperty",
-  "packages/faces/artist/src/utils/reducedMotion.ts:73:11:runtime-style-property",
-  "packages/headless/src/behaviors/live-region.ts:161:9:runtime-style-cssText",
-  "packages/headless/src/behaviors/popover.ts:477:18:runtime-style-property",
-  "packages/headless/src/behaviors/popover.ts:478:18:runtime-style-property",
-  "packages/headless/src/behaviors/popover.ts:479:18:runtime-style-property",
-  "packages/headless/src/primitives/modal.ts:273:17:runtime-style-property",
-  "packages/headless/src/primitives/modal.ts:292:17:runtime-style-property",
-  "packages/headless/src/primitives/modal.ts:362:17:runtime-style-property",
-  "packages/headless/src/primitives/modal.ts:490:19:runtime-style-property",
-  "packages/headless/src/primitives/skeleton.ts:258:7:runtime-style-setProperty",
-  "packages/headless/src/primitives/skeleton.ts:262:7:runtime-style-setProperty",
-  "packages/headless/src/primitives/skeleton.ts:266:7:runtime-style-setProperty",
-  "packages/headless/src/primitives/tooltip.ts:418:17:runtime-style-property",
-  "packages/headless/src/primitives/tooltip.ts:419:17:runtime-style-property",
-  "packages/headless/src/primitives/tooltip.ts:420:17:runtime-style-property"
+  "packages/faces/artist/src/utils/reducedMotion.ts:73:11:runtime-style-property"
 ]
