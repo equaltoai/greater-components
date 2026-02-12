@@ -174,16 +174,18 @@ describe('reducedMotion Utils', () => {
 				removeEventListener: removeEventListenerMock,
 			});
 			const node = document.createElement('div');
-			node.style.setProperty = vi.fn();
 
 			const action = motionSafe(node, { animation: FADE_IN });
 
-			expect(node.style.transition).toContain('opacity');
-			expect(node.style.setProperty).toHaveBeenCalledWith('opacity', '1');
+			const animation = (node as unknown as { __grLastAnimation?: unknown }).__grLastAnimation as
+				| { __grKeyframes?: Keyframe[]; cancel?: () => void }
+				| undefined;
+
+			expect(animation?.__grKeyframes).toEqual([{}, { opacity: '1' }]);
 
 			// Update
 			action.update({ animation: FADE_IN, active: false });
-			expect(node.style.transition).toBe('');
+			expect(animation?.cancel).toHaveBeenCalledTimes(1);
 
 			action.destroy();
 		});

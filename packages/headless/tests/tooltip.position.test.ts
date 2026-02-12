@@ -251,14 +251,9 @@ describe('Tooltip Positioning', () => {
 
 	describe('Update on events', () => {
 		it('should update position on scroll', () => {
-			setupTooltip('top');
+			const t = setupTooltip('top');
 
-			// Need to re-bind action to get the spy working on the listener?
-			// The listener calls internal updatePosition, not the helper.
-			// But we can check if calculatePosition is called or style is updated.
-
-			// Let's check style directly
-			const initialTop = contentEl.style.top;
+			const initialY = t.state.position.y;
 
 			// Change mock rect
 			triggerEl.getBoundingClientRect = vi.fn(() => ({
@@ -275,15 +270,12 @@ describe('Tooltip Positioning', () => {
 
 			window.dispatchEvent(new Event('scroll'));
 
-			// Wait for update
-			vi.runAllTimers();
-
-			expect(contentEl.style.top).not.toBe(initialTop);
+			expect(t.state.position.y).not.toBe(initialY);
 		});
 
 		it('should update position on resize', () => {
-			setupTooltip('top');
-			const initialTop = contentEl.style.top;
+			const t = setupTooltip('top');
+			const initialY = t.state.position.y;
 
 			// Change mock rect
 			triggerEl.getBoundingClientRect = vi.fn(() => ({
@@ -299,9 +291,8 @@ describe('Tooltip Positioning', () => {
 			}));
 
 			window.dispatchEvent(new Event('resize'));
-			vi.runAllTimers();
 
-			expect(contentEl.style.top).not.toBe(initialTop);
+			expect(t.state.position.y).not.toBe(initialY);
 		});
 	});
 });

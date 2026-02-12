@@ -114,15 +114,15 @@ describe('Editor', () => {
 		document.body.removeChild(formEl);
 	});
 
-	it('should auto-resize on input', async () => {
+	it('should not write inline styles for autosize (CSP-safe)', async () => {
 		render(Editor);
-		const textarea = screen.getByRole('textbox');
-
-		// Mock scrollHeight
-		Object.defineProperty(textarea, 'scrollHeight', { value: 100, configurable: true });
+		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
+		const wrapper = textarea.parentElement;
 
 		await fireEvent.input(textarea, { target: { value: 'Line 1\nLine 2' } });
 
-		expect(textarea.style.height).toBe('100px');
+		expect(textarea.style.height).toBe('');
+		expect(wrapper?.classList.contains('gr-autosize-textarea')).toBe(true);
+		expect(wrapper?.getAttribute('data-gr-value')).toBeDefined();
 	});
 });

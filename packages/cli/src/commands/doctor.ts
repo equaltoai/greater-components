@@ -26,6 +26,7 @@ import { computeChecksum } from '../utils/integrity.js';
 import { getAllComponentNames, getComponent } from '../registry/index.js';
 import { logger } from '../utils/logger.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
+import { scanTextForCspFindings, type CspFinding } from '../utils/csp-doctor.js';
 
 /**
  * Severity levels for diagnostic checks
@@ -602,8 +603,18 @@ export async function runAutoFix(
 	return { fixed, failed };
 }
 
-export const doctorAction = async (options: { cwd?: string; fix?: boolean; json?: boolean }) => {
+export const doctorAction = async (options: {
+	cwd?: string;
+	fix?: boolean;
+	json?: boolean;
+	csp?: boolean;
+}) => {
 	const cwd = path.resolve(options.cwd || process.cwd());
+
+	if (options.csp) {
+		await runCspDoctor(cwd, options);
+		return;
+	}
 
 	if (!options.json) {
 		logger.info(chalk.bold('\n🩺 Greater Components Doctor\n'));
@@ -736,10 +747,167 @@ export const doctorAction = async (options: { cwd?: string; fix?: boolean; json?
 	process.exit(summary.errors > 0 ? 1 : 0);
 };
 
+async function runCspDoctor(cwd: string, options: { json?: boolean }): Promise<void> {
+	if (!(await isValidProject(cwd))) {
+		if (options.json) {
+			logger.info(
+				JSON.stringify(
+					{
+						error: 'Not a valid project',
+						message: 'No package.json found in the current directory',
+					},
+					null,
+					2
+				)
+			);
+		} else {
+			logger.error(chalk.red('✖ Not a valid project'));
+			logger.note(chalk.dim('  No package.json found. Run this command in a project root.\n'));
+		}
+		process.exit(1);
+	}
+
+	if (!(await configExists(cwd))) {
+		if (options.json) {
+			logger.info(
+				JSON.stringify(
+					{
+						error: 'components.json not found',
+						message: 'Greater Components has not been initialized in this project',
+						fix: 'greater init',
+					},
+					null,
+					2
+				)
+			);
+		} else {
+			logger.error(chalk.red('✖ components.json not found'));
+			logger.note(chalk.dim(`  Run ${chalk.cyan('greater init')} to initialize this project.\n`));
+		}
+		process.exit(1);
+	}
+
+	const config = await readConfig(cwd);
+	if (!config) {
+		logger.error(chalk.red('✖ components.json is invalid or corrupted'));
+		process.exit(1);
+	}
+
+	const installed = config.installed ?? [];
+	if (installed.length === 0) {
+		if (options.json) {
+			logger.info(JSON.stringify({ cwd, scannedFiles: 0, findings: [] }, null, 2));
+		} else {
+			logger.success(chalk.green('✓ No installed components to scan'));
+		}
+		process.exit(0);
+	}
+
+	const spinner = ora('Scanning installed Greater code for strict CSP violations...').start();
+
+	const filesToScan = new Set<string>();
+	const missingFiles: string[] = [];
+	const orphanedComponents: string[] = [];
+
+	for (const entry of installed) {
+		const component = getComponent(entry.name);
+		if (!component) {
+			orphanedComponents.push(entry.name);
+			continue;
+		}
+
+		for (const file of component.files) {
+			const localPath = getInstalledFilePath(file.path, config, cwd);
+			if (await fs.pathExists(localPath)) {
+				filesToScan.add(localPath);
+			} else {
+				missingFiles.push(path.relative(cwd, localPath));
+			}
+		}
+	}
+
+	const findings: CspFinding[] = [];
+	for (const absolutePath of filesToScan) {
+		const relativePath = path.relative(cwd, absolutePath);
+		try {
+			const content = await fs.readFile(absolutePath, 'utf8');
+			findings.push(...scanTextForCspFindings(content, relativePath));
+		} catch {
+			// Ignore unreadable files (handled elsewhere by doctor checks)
+		}
+	}
+
+	spinner.stop();
+
+	const hasIssues = findings.length > 0 || missingFiles.length > 0 || orphanedComponents.length > 0;
+
+	if (options.json) {
+		logger.info(
+			JSON.stringify(
+				{
+					cwd,
+					scannedFiles: filesToScan.size,
+					findings,
+					missingFiles,
+					orphanedComponents,
+				},
+				null,
+				2
+			)
+		);
+	} else {
+		if (missingFiles.length > 0) {
+			logger.error(chalk.red(`✖ ${missingFiles.length} installed file(s) missing`));
+			for (const missing of missingFiles.slice(0, 10)) {
+				logger.note(chalk.dim(`  - ${missing}`));
+			}
+			if (missingFiles.length > 10) {
+				logger.note(chalk.dim(`  (+${missingFiles.length - 10} more)`));
+			}
+			logger.newline();
+		}
+
+		if (orphanedComponents.length > 0) {
+			logger.warn(
+				chalk.yellow(`⚠ ${orphanedComponents.length} component(s) not found in registry`)
+			);
+			logger.note(chalk.dim(`  ${orphanedComponents.join(', ')}`));
+			logger.newline();
+		}
+
+		if (findings.length === 0) {
+			logger.success(
+				chalk.green(`✓ No strict CSP issues found (${filesToScan.size} files scanned)`)
+			);
+		} else {
+			logger.error(
+				chalk.red(
+					`✖ Found ${findings.length} strict CSP issue(s) (${filesToScan.size} files scanned)`
+				)
+			);
+
+			for (const finding of findings.slice(0, 50)) {
+				logger.note(
+					`${chalk.dim(finding.file)}:${finding.line}:${finding.column} ` +
+						`${chalk.yellow(finding.type)} ` +
+						`${chalk.dim(finding.snippet)}`
+				);
+			}
+
+			if (findings.length > 50) {
+				logger.note(chalk.dim(`(+${findings.length - 50} more)`));
+			}
+		}
+	}
+
+	process.exit(hasIssues ? 1 : 0);
+}
+
 export const doctorCommand = new Command()
 	.name('doctor')
 	.description('Diagnose common issues with Greater Components setup')
 	.option('--cwd <path>', 'Working directory (default: current directory)')
+	.option('--csp', 'Scan installed Greater code for strict CSP violations')
 	.option('--fix', 'Attempt to auto-fix simple issues')
 	.option('--json', 'Output results as JSON')
 	.action(doctorAction);

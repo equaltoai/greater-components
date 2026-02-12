@@ -50,7 +50,7 @@ describe('smoothThemeTransition', () => {
 		expect(document.documentElement.classList.contains('gr-theme-transitioning')).toBe(false);
 	});
 
-	it('should apply transition class and style, run callback, then cleanup', async () => {
+	it('should apply transition class, run callback, then cleanup', async () => {
 		const callback = vi.fn();
 
 		// Use a small duration for real timers
@@ -60,10 +60,8 @@ describe('smoothThemeTransition', () => {
 		// Check if class added to REAL documentElement
 		expect(document.documentElement.classList.contains('gr-theme-transitioning')).toBe(true);
 
-		// Check if style element created
-		const styleEl = document.getElementById('gr-theme-transition-style');
-		expect(styleEl).toBeTruthy();
-		expect(styleEl?.textContent).toContain(`transition: background-color ${duration}ms ease`);
+		// No runtime <style> injection in strict CSP mode
+		expect(document.getElementById('gr-theme-transition-style')).toBeFalsy();
 
 		expect(callback).toHaveBeenCalled();
 
@@ -71,7 +69,6 @@ describe('smoothThemeTransition', () => {
 
 		// Check cleanup
 		expect(document.documentElement.classList.contains('gr-theme-transitioning')).toBe(false);
-		expect(document.getElementById('gr-theme-transition-style')).toBeFalsy();
 	});
 
 	it('should create a theme toggle function', async () => {

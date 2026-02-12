@@ -1,5 +1,78 @@
 /* Greater Components Primitives Theme */
 
+/* CSP-safe textarea autosize (no runtime inline styles) */
+.gr-autosize-textarea {
+	display: grid;
+}
+
+.gr-autosize-textarea::after {
+	content: attr(data-gr-value) ' ';
+	white-space: pre-wrap;
+	word-break: break-word;
+	visibility: hidden;
+	grid-area: 1 / 1 / 2 / 2;
+}
+
+.gr-autosize-textarea > textarea {
+	grid-area: 1 / 1 / 2 / 2;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	outline: none;
+	resize: none;
+	overflow-y: auto;
+	min-width: 0;
+	min-height: 0;
+	box-sizing: border-box;
+}
+
+.gr-offscreen-input {
+	position: fixed;
+	left: -9999px;
+	top: 0;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.gr-sr-only {
+	position: fixed;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.gr-floating-layer {
+	left: 0;
+	top: 0;
+}
+
+.gr-floating-layer--fixed {
+	position: fixed;
+}
+
+.gr-floating-layer--absolute {
+	position: absolute;
+}
+
+body.gr-scroll-locked {
+	overflow: hidden;
+}
+
 /* Button Styles */
 .gr-button {
 	/* Base styles */
@@ -3893,8 +3966,20 @@ body {
 		color var(--gr-motion-duration-base) var(--gr-motion-easing-out);
 }
 
+.gr-theme-transitioning,
+.gr-theme-transitioning * {
+	transition-property: background-color, color, border-color, box-shadow, fill, stroke;
+	transition-duration: var(--gr-motion-duration-base);
+	transition-timing-function: var(--gr-motion-easing-out);
+}
+
 [data-motion='reduced'] body {
 	transition: none;
+}
+
+[data-motion='reduced'] .gr-theme-transitioning,
+[data-motion='reduced'] .gr-theme-transitioning * {
+	transition: none !important;
 }
 
 /* ThemeSwitcher Styles */
