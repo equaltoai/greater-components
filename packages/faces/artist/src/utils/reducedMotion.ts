@@ -7,6 +7,8 @@
  * @module @equaltoai/greater-components-artist/utils/reducedMotion
  */
 
+import { applyCspSafeStyles, clearCspSafeStyles } from './cspSafeStyles';
+
 // ============================================================================
 // Reduced Motion Detection
 // ============================================================================
@@ -70,7 +72,7 @@ export interface AnimationConfig {
  *   properties: { opacity: '1', transform: 'translateY(0)' },
  *   reducedMotionBehavior: 'instant'
  * });
- * element.style.transition = animation.transition;
+ * // In strict CSP mode, avoid inline styles. Prefer WAAPI or external CSS.
  * ```
  */
 export function createMotionSafeAnimation(config: AnimationConfig): {
@@ -196,21 +198,43 @@ export function motionSafe(
 	params: MotionSafeParams
 ): { update: (params: MotionSafeParams) => void; destroy: () => void } {
 	let cleanup: (() => void) | null = null;
+	let currentAnimation: Animation | null = null;
+
+	function stop(): void {
+		currentAnimation?.cancel();
+		currentAnimation = null;
+		clearCspSafeStyles(node);
+	}
 
 	const applyAnimation = (params: MotionSafeParams) => {
 		const { animation, active = true } = params;
 
 		if (!active) {
-			node.style.transition = '';
+			stop();
 			return;
 		}
 
 		const result = createMotionSafeAnimation(animation);
-		node.style.transition = result.transition;
+		stop();
 
-		// Apply final properties
-		Object.entries(animation.properties).forEach(([prop, value]) => {
-			node.style.setProperty(prop, value);
+		if (result.duration === 0 || typeof node.animate !== 'function') {
+			applyCspSafeStyles(node, animation.properties);
+			return;
+		}
+
+		const easing =
+			result.isReduced && animation.reducedMotionBehavior === 'subtle' ? 'linear' : animation.easing;
+
+		currentAnimation = node.animate([{}, animation.properties], {
+			duration: result.duration,
+			easing,
+			fill: 'forwards',
+		});
+
+		currentAnimation.addEventListener('finish', () => {
+			applyCspSafeStyles(node, animation.properties);
+			currentAnimation?.cancel();
+			currentAnimation = null;
 		});
 	};
 
@@ -228,6 +252,7 @@ export function motionSafe(
 		},
 		destroy() {
 			cleanup?.();
+			stop();
 		},
 	};
 }

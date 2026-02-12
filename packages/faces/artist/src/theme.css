@@ -332,6 +332,70 @@
 }
 
 /* ============================================================================
+ * High Contrast Utility Overlay (strict CSP safe)
+ * ============================================================================ */
+
+.gr-high-contrast {
+	--gr-hc-text: #000000;
+	--gr-hc-bg: #ffffff;
+	--gr-hc-border: #000000;
+	--gr-hc-link: #0000ee;
+	--gr-hc-focus: #000000;
+}
+
+.gr-high-contrast[data-gr-high-contrast='dark'] {
+	--gr-hc-text: #ffffff;
+	--gr-hc-bg: #000000;
+	--gr-hc-border: #ffffff;
+	--gr-hc-link: #ffff00;
+	--gr-hc-focus: #ffffff;
+}
+
+/* Apply to UI elements only, not artwork */
+.gr-high-contrast body:not(.gr-artwork-container) {
+	color: var(--gr-hc-text) !important;
+	background-color: var(--gr-hc-bg) !important;
+}
+
+.gr-high-contrast button,
+.gr-high-contrast input,
+.gr-high-contrast select,
+.gr-high-contrast textarea {
+	color: var(--gr-hc-text) !important;
+	background-color: var(--gr-hc-bg) !important;
+	border-color: var(--gr-hc-border) !important;
+	border-width: 2px !important;
+}
+
+.gr-high-contrast a {
+	color: var(--gr-hc-link) !important;
+	text-decoration: underline !important;
+}
+
+.gr-high-contrast *:focus {
+	outline: 3px solid var(--gr-hc-focus) !important;
+	outline-offset: 2px !important;
+}
+
+/* Preserve artwork colors - do not modify */
+.gr-high-contrast .gr-artwork-image,
+.gr-high-contrast .gr-artwork-container img,
+.gr-high-contrast [data-preserve-colors='true'] {
+	filter: none !important;
+}
+
+/* ============================================================================
+ * Virtualization Utilities
+ * ============================================================================ */
+
+.gr-virtual-item {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+/* ============================================================================
  * Reduced Motion Support
  * ============================================================================ */
 
