@@ -7,6 +7,7 @@ import fs from 'fs-extra';
 import path from 'node:path';
 import os from 'node:os';
 import { logger } from './logger.js';
+import { resolvePathWithinDir, sanitizeRelativePath } from './path-safety.js';
 
 /**
  * GitHub repository configuration
@@ -23,6 +24,11 @@ const resolvedRefCache = new Map<string, string>();
  * Cache configuration
  */
 const CACHE_DIR = path.join(os.homedir(), '.greater-components', 'cache');
+
+function sanitizeCacheRef(ref: string): string {
+	const safeRef = ref.replace(/[^a-zA-Z0-9.-]/g, '_');
+	return sanitizeRelativePath(safeRef, 'ref');
+}
 
 /**
  * Validate that a URL uses HTTPS protocol
@@ -129,14 +135,18 @@ export async function resolveGitRefToCommit(ref: string): Promise<string | null>
  * Get the cache directory path for a specific Git ref
  */
 export function getCacheDir(ref: string): string {
-	return path.join(CACHE_DIR, ref);
+	const trimmed = ref.trim();
+	if (!trimmed) return CACHE_DIR;
+
+	const safeRef = sanitizeCacheRef(trimmed);
+	return resolvePathWithinDir(CACHE_DIR, safeRef, 'ref');
 }
 
 /**
  * Get the cached file path for a specific ref and file
  */
 export function getCachedFilePath(ref: string, filePath: string): string {
-	return path.join(getCacheDir(ref), filePath);
+	return resolvePathWithinDir(getCacheDir(ref), filePath, 'cache file path');
 }
 
 /**
@@ -201,7 +211,7 @@ async function fetchWithRetry(ref: string, filePath: string): Promise<Buffer> {
 	// Check for local repo override
 	const localRepoRoot = process.env['GREATER_CLI_LOCAL_REPO_ROOT'];
 	if (localRepoRoot) {
-		const localPath = path.join(localRepoRoot, filePath);
+		const localPath = resolvePathWithinDir(localRepoRoot, filePath, 'local repo file path');
 		logger.debug(`Fetching local file: ${localPath}`);
 		try {
 			return await fs.readFile(localPath);

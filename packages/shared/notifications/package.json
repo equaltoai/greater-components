@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-notifications",
-  "version": "0.1.8",
+  "version": "0.1.9-rc.0",
   "type": "module",
   "description": "Notification components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "@equaltoai/greater-components-icons": "workspace:*",
-    "@equaltoai/greater-components-primitives": "workspace:*"
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.4",

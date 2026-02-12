@@ -83,6 +83,28 @@ describe('Notifications.Item', () => {
 		expect(screen.getByRole('img', { name: 'Test User avatar' })).toBeTruthy();
 	});
 
+	it('sanitizes status HTML content before rendering', () => {
+		const notification = {
+			...mockNotification,
+			status: {
+				...mockNotification.status,
+				content:
+					'<p>Hello</p><img src=x onerror="alert(1)" /><a href="javascript:alert(1)">bad</a>',
+			},
+		} as any;
+
+		render(Item, { notification });
+
+		const statusContent = document.querySelector(
+			'.notification-item__status-content'
+		) as HTMLElement | null;
+		expect(statusContent).toBeTruthy();
+		expect(statusContent?.innerHTML).toContain('<p>Hello</p>');
+		expect(statusContent?.innerHTML).not.toContain('<img');
+		expect(statusContent?.innerHTML).not.toContain('onerror');
+		expect(statusContent?.innerHTML).not.toContain('javascript:');
+	});
+
 	it('renders timestamp if enabled', () => {
 		render(Item, { notification: mockNotification });
 		// Date formatting might depend on locale, just check if time element exists

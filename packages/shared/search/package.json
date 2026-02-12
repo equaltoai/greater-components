@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-search",
-  "version": "0.1.8",
+  "version": "0.1.9-rc.0",
   "type": "module",
   "description": "Search components for Greater Components",
   "license": "AGPL-3.0-only",

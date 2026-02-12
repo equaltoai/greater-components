@@ -15,6 +15,7 @@ Displays a single notification with type-specific rendering.
 -->
 
 <script lang="ts">
+	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import type { Snippet } from 'svelte';
 	import type { Notification, NotificationType } from './types.js';
 	import { getNotificationsContext } from './context.svelte.js';
@@ -115,6 +116,43 @@ Displays a single notification with type-specific rendering.
 			handleClick();
 		}
 	}
+
+	const sanitizedStatusContent = $derived(
+		notification.status
+			? sanitizeHtml(notification.status.content, {
+					allowedTags: [
+						'p',
+						'br',
+						'span',
+						'a',
+						'del',
+						'pre',
+						'code',
+						'em',
+						'strong',
+						'b',
+						'i',
+						'u',
+						's',
+						'strike',
+						'ul',
+						'ol',
+						'li',
+						'blockquote',
+					],
+					allowedAttributes: ['href', 'title', 'class', 'rel', 'target'],
+				}).trim()
+			: ''
+	);
+
+	function setHtml(node: HTMLElement, html: string) {
+		node.innerHTML = html;
+		return {
+			update(newHtml: string) {
+				node.innerHTML = newHtml;
+			},
+		};
+	}
 </script>
 
 <article
@@ -162,10 +200,12 @@ Displays a single notification with type-specific rendering.
 					</time>
 				{/if}
 
-				{#if notification.status}
+				{#if notification.status && sanitizedStatusContent}
 					<div class="notification-item__status">
-						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-						<div class="notification-item__status-content">{@html notification.status.content}</div>
+						<div
+							class="notification-item__status-content"
+							use:setHtml={sanitizedStatusContent}
+						></div>
 					</div>
 				{/if}
 			</div>
