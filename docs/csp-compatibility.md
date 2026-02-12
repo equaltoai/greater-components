@@ -17,6 +17,8 @@ Content-Security-Policy:
   default-src 'self';
   script-src 'self' 'nonce-{random}';
   style-src 'self' 'nonce-{random}';
+  # CSP Level 3 (explicitly lock down style attributes)
+  style-src-attr 'none';
   img-src 'self' data: https:;
   font-src 'self' data:;
   connect-src 'self' https://api.lesser.app;
@@ -40,12 +42,22 @@ The `script-src` directive uses nonce-based script loading and does NOT include 
 The `style-src` directive uses nonce-based stylesheet loading and does NOT include `'unsafe-inline'` or `'unsafe-hashes'`. This means:
 
 - Inline `<style>` tags without a matching nonce are blocked
-- **`style="..."` attributes on HTML elements are blocked**
+- **`style="..."` attributes on HTML elements are blocked** (see also `style-src-attr` below)
 - CSS loaded via `@import` without proper nonce is blocked
 
 **Requirement 1.4: style attributes are blocked**
 
 Under this policy, any HTML element with a `style="..."` attribute will have that style declaration ignored by the browser. This is the primary constraint that Greater Components must address.
+
+### CSP Level 3: `style-src-attr`
+
+Some deployments explicitly add:
+
+```
+style-src-attr 'none'
+```
+
+This blocks **all** style attribute application, including any runtime DOM writes via `element.style.*` and any Svelte transitions that attempt to update `style=""`.
 
 ## No Shipped Inline Styles/Scripts Policy
 
@@ -67,6 +79,37 @@ This policy is:
 - Dynamic styling is achieved through class toggles, not inline styles
 - CSS custom properties (CSS variables) are set via external stylesheets or consumer-provided classes
 - Component props that previously accepted arbitrary style values now use preset-based APIs
+
+## CSP-Safe Patterns (Recommended)
+
+### 1) Dynamic values without `style=""`: prefer WAAPI
+
+When you must set a dynamic value (positioning, transforms, animations), prefer **Web Animations API**:
+
+- `element.animate(keyframes, { fill: 'both' | 'forwards' })`
+- avoid `element.style.*`, `style.setProperty`, or `setAttribute('style', ...)`
+
+This is the approach used for:
+
+- Headless popover/tooltip positioning
+- Artist face virtualization positioning
+- Primitives transition helpers
+
+### 2) Shipped CSS utilities
+
+Greater ships a small set of CSP-safe CSS utilities used by multiple packages:
+
+- `.gr-autosize-textarea` (textarea autosize without inline styles)
+- `.gr-offscreen-input` (clipboard fallback without inline styles)
+- `body.gr-scroll-locked` (scroll locking via class toggle)
+- `.gr-theme-transitioning` (theme transition without `<style>` injection)
+- `.gr-sr-only` (visually-hidden utility without inline styles)
+- `.gr-floating-layer` / `.gr-floating-layer--fixed|--absolute` (baseline positioning for WAAPI-driven floating UIs)
+
+### 3) Validate in CI / local installs
+
+- Repo CI uses `pnpm validate:csp` to prevent regressions.
+- Downstream apps can run `greater doctor --csp` to scan a vendored install for strict-CSP-hostile patterns.
 
 ## Style Prop Support
 
@@ -180,6 +223,15 @@ To maintain CSP compliance while providing flexibility, Greater Components use p
 <Skeleton height="sm" />
 <Skeleton height="md" />
 ```
+
+## Tracking Issues
+
+If you hit a strict CSP incompatibility, track it here:
+
+- https://github.com/equaltoai/greater-components/issues/192
+- https://github.com/equaltoai/greater-components/issues/193
+- https://github.com/equaltoai/greater-components/issues/194
+- https://github.com/equaltoai/greater-components/issues/195
 
 **Avatar Component**:
 

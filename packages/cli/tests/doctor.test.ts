@@ -431,6 +431,15 @@ describe('doctor command integration', () => {
 		expect(cwdOption).toBeDefined();
 	});
 
+	it('should have --csp option', async () => {
+		const { doctorCommand } = await import('../src/commands/doctor.js');
+
+		const options = doctorCommand.options;
+		const cspOption = options.find((opt) => opt.long === '--csp');
+
+		expect(cspOption).toBeDefined();
+	});
+
 	it('should export diagnostic types', async () => {
 		const doctorModule = await import('../src/commands/doctor.js');
 
