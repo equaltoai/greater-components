@@ -14,12 +14,11 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.1.10-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.9-rc.0...greater-v0.1.10-rc.0) (2026-02-12)
 
-
 ### Chores
 
-* **main:** release greater 0.1.9 ([c697281](https://github.com/equaltoai/greater-components/commit/c6972811cb190941800ca06992d8eba1ba76466c))
-* **main:** release greater 0.1.9 ([b295a9f](https://github.com/equaltoai/greater-components/commit/b295a9f802c7b88debf3d8de84cffedcbb16ec43))
-* **release:** prepare metadata ([d3c0378](https://github.com/equaltoai/greater-components/commit/d3c0378b33f3945e5a12acee43791847775b1c48))
+- **main:** release greater 0.1.9 ([c697281](https://github.com/equaltoai/greater-components/commit/c6972811cb190941800ca06992d8eba1ba76466c))
+- **main:** release greater 0.1.9 ([b295a9f](https://github.com/equaltoai/greater-components/commit/b295a9f802c7b88debf3d8de84cffedcbb16ec43))
+- **release:** prepare metadata ([d3c0378](https://github.com/equaltoai/greater-components/commit/d3c0378b33f3945e5a12acee43791847775b1c48))
 
 ## [0.1.9](https://github.com/equaltoai/greater-components/compare/greater-v0.1.7...greater-v0.1.9) (2026-02-12)
 
