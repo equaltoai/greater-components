@@ -19,22 +19,37 @@ describe('Transitions', () => {
 			const config = fadeDown(mockElement);
 			expect(config).toHaveProperty('duration', 250);
 			expect(config).toHaveProperty('delay', 0);
-			expect(config.css).toBeDefined();
+			expect(config.tick).toBeInstanceOf(Function);
+			expect(config.css).toBeUndefined();
+
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ opacity: 0, transform: 'translateY(-16px)' });
+			expect(keyframes?.[1]).toMatchObject({ opacity: 1, transform: 'translateY(0)' });
+
+			config.tick?.(0.5, 0.5);
+			const animation = (animate as unknown as { mock: { results: Array<{ value: unknown }> } }).mock
+				.results[0]?.value as { currentTime?: number } | undefined;
+			expect(animation?.currentTime).toBe(125);
 		});
 
 		it('returns custom config', () => {
 			const config = fadeDown(mockElement, { duration: 500, delay: 100, y: 50 });
 			expect(config).toHaveProperty('duration', 500);
 			expect(config).toHaveProperty('delay', 100);
+
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ transform: 'translateY(-50px)' });
 		});
 
-		it('generates correct css', () => {
+		it('applies progress via tick', () => {
 			const config = fadeDown(mockElement, { y: 20 });
-			const css = config.css ? config.css(0.5, 0.5) : ''; // t=0.5
-			// opacity: 0.5 * 1 = 0.5
-			// translateY: (0.5 - 1) * 20 = -0.5 * 20 = -10
-			expect(css).toContain('opacity: 0.5');
-			expect(css).toContain('translateY(-10px)');
+			config.tick?.(0.25, 0.75);
+
+			const animate = Element.prototype.animate as unknown as { mock: { results: Array<{ value: unknown }> } };
+			const animation = animate.mock.results[0]?.value as { currentTime?: number } | undefined;
+			expect(animation?.currentTime).toBe(62.5);
 		});
 	});
 
@@ -43,23 +58,17 @@ describe('Transitions', () => {
 			const config = fadeUp(mockElement);
 			expect(config).toHaveProperty('duration', 250);
 			expect(config).toHaveProperty('delay', 0);
+			expect(config.tick).toBeInstanceOf(Function);
 		});
 
-		it('generates correct css', () => {
+		it('generates correct keyframes', () => {
 			const config = fadeUp(mockElement, { y: 20 });
-			// fadeUp usually translates from y to 0, or from positive y (down) to 0?
-			// Actually fadeUp typically enters FROM down (positive Y) to 0, or FROM up (negative Y)?
-			// "Fade Up" usually means moving UP as it fades in. So starting from lower (positive Y).
-			// Let's verify by checking the file, but typically:
-			// transform: translateY((1-t) * y)
+			expect(config.tick).toBeInstanceOf(Function);
 
-			const css = config.css ? config.css(0.5, 0.5) : '';
-			// We assume fadeUp implementation is similar but inverted or positive Y.
-			// If I haven't read fadeUp, I should probably check logic or just assert loosely.
-			expect(css).toContain('opacity: 0.5');
-			// Assuming default implementation:
-			// transform: translateY(${(1 - t) * y}px) -> (0.5) * 20 = 10px
-			// OR if it moves UP, it might be starting at positive Y.
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ opacity: 0, transform: 'translateY(20px)' });
+			expect(keyframes?.[1]).toMatchObject({ opacity: 1, transform: 'translateY(0)' });
 		});
 	});
 
@@ -67,22 +76,23 @@ describe('Transitions', () => {
 		it('returns default config', () => {
 			const config = slideIn(mockElement);
 			expect(config).toHaveProperty('duration', 250);
+			expect(config.tick).toBeInstanceOf(Function);
 		});
 
 		it('handles x parameter (positive)', () => {
 			const config = slideIn(mockElement, { x: 100 });
-			const css = config.css ? config.css(0.5, 0.5) : '';
-			// t=0.5, (1-0.5)*100 = 50
-			expect(css).toContain('translateX(50px)');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ transform: 'translateX(100px)' });
+			expect(keyframes?.[1]).toMatchObject({ transform: 'translateX(0)' });
 		});
 
 		it('handles opacity parameter', () => {
 			const config = slideIn(mockElement, { opacity: false });
-			const css = config.css ? config.css(0.5, 0.5) : '';
-			// Should not affect opacity if false?
-			// Code: opacityValue = fadeOpacity ? t * currentOpacity : currentOpacity;
-			// if false -> currentOpacity (1)
-			expect(css).toContain('opacity: 1');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ opacity: 1 });
+			expect(keyframes?.[1]).toMatchObject({ opacity: 1 });
 		});
 	});
 
@@ -90,14 +100,15 @@ describe('Transitions', () => {
 		it('returns default config', () => {
 			const config = scaleIn(mockElement);
 			expect(config).toHaveProperty('duration', 250);
+			expect(config.tick).toBeInstanceOf(Function);
 		});
 
-		it('generates correct css for scale', () => {
+		it('generates correct keyframes for scale', () => {
 			const config = scaleIn(mockElement, { start: 0.5 });
-			const css = config.css ? config.css(0.5, 0.5) : '';
-			// scale = start + (1 - start) * t
-			// 0.5 + (0.5 * 0.5) = 0.75
-			expect(css).toContain('scale(0.75)');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ transform: 'scale(0.5)' });
+			expect(keyframes?.[1]).toMatchObject({ transform: 'scale(1)' });
 		});
 	});
 });
