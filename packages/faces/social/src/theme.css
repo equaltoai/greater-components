@@ -4736,17 +4736,17 @@
 	transition: border-color 0.2s;
 }
 
-.compose-editor:focus {
+.compose-editor:focus-within {
 	border-color: var(--compose-focus-color, #1d9bf0);
 	box-shadow: 0 0 0 1px var(--compose-focus-color, #1d9bf0);
 }
 
-.compose-editor:disabled {
+.compose-editor--disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
 }
 
-.compose-editor::placeholder {
+.compose-editor textarea::placeholder {
 	color: var(--compose-text-secondary, #536471);
 }
 
@@ -4769,20 +4769,6 @@
 	resize: none;
 	outline: none;
 	transition: border-color 0.2s;
-}
-
-.compose-editor:focus {
-	border-color: var(--compose-focus-color, #1d9bf0);
-	box-shadow: 0 0 0 1px var(--compose-focus-color, #1d9bf0);
-}
-
-.compose-editor:disabled {
-	opacity: 0.6;
-	cursor: not-allowed;
-}
-
-.compose-editor::placeholder {
-	color: var(--compose-text-secondary, #536471);
 }
 
 /* Compose/ImageEditor.svelte Styles */
@@ -5841,7 +5827,7 @@
 	font-family: inherit;
 }
 
-.gr-compose-box__textarea::placeholder {
+.gr-compose-box__textarea textarea::placeholder {
 	color: var(--gr-semantic-foreground-tertiary);
 }
 
