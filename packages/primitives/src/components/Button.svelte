@@ -129,6 +129,7 @@ Button component - Accessible interactive element with loading states, variants,
 		suffix,
 		onclick,
 		onkeydown,
+		onkeyup,
 		style: _style,
 		...restProps
 	}: Props = $props();
@@ -174,6 +175,30 @@ Button component - Accessible interactive element with loading states, variants,
 		event: KeyboardEvent & { currentTarget: EventTarget & HTMLButtonElement }
 	) {
 		onkeydown?.(event);
+
+		if (disabled || loading) return;
+
+		// Ensure keyboard activation works consistently in strict environments/tests.
+		// Enter activates on keydown; Space activates on keyup.
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			event.currentTarget.click();
+		}
+
+		if (event.key === ' ') {
+			event.preventDefault();
+		}
+	}
+
+	function handleKeyup(event: KeyboardEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
+		onkeyup?.(event);
+
+		if (disabled || loading) return;
+
+		if (event.key === ' ') {
+			event.preventDefault();
+			event.currentTarget.click();
+		}
 	}
 
 	function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
@@ -195,6 +220,7 @@ Button component - Accessible interactive element with loading states, variants,
 	tabindex={disabled ? -1 : 0}
 	onclick={handleClick}
 	onkeydown={handleKeydown}
+	onkeyup={handleKeyup}
 	{...restProps}
 >
 	<!-- Prepend spinner (before everything) -->

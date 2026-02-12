@@ -44,6 +44,10 @@
 	pointer-events: none;
 }
 
+body.gr-scroll-locked {
+	overflow: hidden;
+}
+
 /* Button Styles */
 .gr-button {
 	/* Base styles */
@@ -3937,8 +3941,20 @@ body {
 		color var(--gr-motion-duration-base) var(--gr-motion-easing-out);
 }
 
+.gr-theme-transitioning,
+.gr-theme-transitioning * {
+	transition-property: background-color, color, border-color, box-shadow, fill, stroke;
+	transition-duration: var(--gr-motion-duration-base);
+	transition-timing-function: var(--gr-motion-easing-out);
+}
+
 [data-motion='reduced'] body {
 	transition: none;
+}
+
+[data-motion='reduced'] .gr-theme-transitioning,
+[data-motion='reduced'] .gr-theme-transitioning * {
+	transition: none !important;
 }
 
 /* ThemeSwitcher Styles */
