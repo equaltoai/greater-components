@@ -10,8 +10,6 @@
   "packages/faces/artist/src/utils/reducedMotion.ts:73:11:runtime-style-property",
   "packages/faces/social/src/components/ComposeBox.svelte:136:11:runtime-style-property",
   "packages/faces/social/src/components/ComposeBox.svelte:137:11:runtime-style-property",
-  "packages/faces/social/src/theme.css:2302:1:css-global-selector",
-  "packages/faces/social/src/theme.css:2308:1:css-global-selector",
   "packages/headless/src/behaviors/live-region.ts:161:9:runtime-style-cssText",
   "packages/headless/src/behaviors/popover.ts:477:18:runtime-style-property",
   "packages/headless/src/behaviors/popover.ts:478:18:runtime-style-property",
