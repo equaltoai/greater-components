@@ -1,4 +1,4 @@
-import { afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/svelte';
 
 const matchMediaMock = vi.fn((query: string) => ({
@@ -70,6 +70,11 @@ if (typeof Element !== 'undefined' && !Element.prototype.animate) {
 		removeEventListener: vi.fn(),
 	}));
 }
+
+beforeEach(() => {
+	const animate = Element.prototype.animate as unknown as { mockClear?: () => void };
+	animate.mockClear?.();
+});
 
 afterEach(() => {
 	cleanup();

@@ -140,6 +140,7 @@ Card component - Content container with elevation, borders, and semantic section
 		children,
 		onclick,
 		onkeydown,
+		onkeyup,
 		role,
 		tabindex,
 		style: _style,
@@ -180,6 +181,24 @@ Card component - Content container with elevation, borders, and semantic section
 		event: KeyboardEvent & { currentTarget: EventTarget & HTMLButtonElement }
 	) {
 		onkeydown?.(event);
+
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			event.currentTarget.click();
+		}
+
+		if (event.key === ' ') {
+			event.preventDefault();
+		}
+	}
+
+	function handleKeyup(event: KeyboardEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
+		onkeyup?.(event);
+
+		if (event.key === ' ') {
+			event.preventDefault();
+			event.currentTarget.click();
+		}
 	}
 
 	function handleClick(event: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
@@ -218,6 +237,7 @@ Card component - Content container with elevation, borders, and semantic section
 		class={cardClass}
 		onclick={handleClick}
 		onkeydown={handleKeydown}
+		onkeyup={handleKeyup}
 		role={role || 'button'}
 		tabindex={tabindex ?? 0}
 		{...restProps}

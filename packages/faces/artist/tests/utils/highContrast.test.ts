@@ -215,38 +215,36 @@ describe('highContrast Utils', () => {
 		beforeEach(() => {
 			document.head.innerHTML = '';
 			document.documentElement.classList.remove('gr-high-contrast');
+			document.documentElement.removeAttribute('data-gr-high-contrast');
 		});
 
 		it('applies styles to document', () => {
 			const cleanup = applyHighContrastStyles();
 
 			expect(document.documentElement.classList.contains('gr-high-contrast')).toBe(true);
-			const styleEl = document.getElementById('gr-high-contrast-styles');
-			expect(styleEl).toBeTruthy();
-			expect(styleEl?.textContent).toContain(HIGH_CONTRAST_STYLES.textColor);
+			expect(document.documentElement.getAttribute('data-gr-high-contrast')).toBe('light');
+			expect(document.getElementById('gr-high-contrast-styles')).toBeNull();
 
 			cleanup();
 			expect(document.documentElement.classList.contains('gr-high-contrast')).toBe(false);
-			expect(document.getElementById('gr-high-contrast-styles')).toBeNull();
+			expect(document.documentElement.getAttribute('data-gr-high-contrast')).toBeNull();
 		});
 
 		it('supports custom styles', () => {
 			applyHighContrastStyles(HIGH_CONTRAST_DARK_STYLES);
 
-			const styleEl = document.getElementById('gr-high-contrast-styles');
-			expect(styleEl?.textContent).toContain(HIGH_CONTRAST_DARK_STYLES.textColor);
+			expect(document.documentElement.getAttribute('data-gr-high-contrast')).toBe('dark');
+			expect(document.getElementById('gr-high-contrast-styles')).toBeNull();
 		});
 
 		it('replaces existing styles if called again', () => {
 			applyHighContrastStyles();
-			const style1 = document.getElementById('gr-high-contrast-styles');
+			expect(document.documentElement.getAttribute('data-gr-high-contrast')).toBe('light');
 
 			applyHighContrastStyles(HIGH_CONTRAST_DARK_STYLES);
-			const style2 = document.getElementById('gr-high-contrast-styles');
+			expect(document.documentElement.getAttribute('data-gr-high-contrast')).toBe('dark');
 
-			expect(style2).not.toBe(style1); // Should be a new element or at least content changed if we were just updating text, but implementation removes and recreates
-			expect(document.querySelectorAll('#gr-high-contrast-styles').length).toBe(1);
-			expect(style2?.textContent).toContain(HIGH_CONTRAST_DARK_STYLES.textColor);
+			expect(document.getElementById('gr-high-contrast-styles')).toBeNull();
 		});
 	});
 

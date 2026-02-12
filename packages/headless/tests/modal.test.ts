@@ -46,11 +46,15 @@ async function flushMicrotasks(): Promise<void> {
 describe('Modal Primitive', () => {
 	beforeEach(() => {
 		document.body.innerHTML = '';
+		document.body.classList.remove('gr-scroll-locked');
+		document.body.removeAttribute('data-gr-scroll-lock-count');
 		document.body.style.overflow = '';
 	});
 
 	afterEach(() => {
 		document.body.innerHTML = '';
+		document.body.classList.remove('gr-scroll-locked');
+		document.body.removeAttribute('data-gr-scroll-lock-count');
 		document.body.style.overflow = '';
 		vi.useRealTimers();
 		vi.restoreAllMocks();
@@ -85,12 +89,16 @@ describe('Modal Primitive', () => {
 			expect(modal.state.open).toBe(true);
 			expect(onOpen).toHaveBeenCalledTimes(1);
 			expect(onOpenChange).toHaveBeenLastCalledWith(true);
-			expect(document.body.style.overflow).toBe('hidden');
+			expect(document.body.classList.contains('gr-scroll-locked')).toBe(true);
+			expect(document.body.getAttribute('data-gr-scroll-lock-count')).toBe('1');
+			expect(document.body.style.overflow).toBe('auto');
 
 			modal.helpers.close();
 			expect(modal.state.open).toBe(false);
 			expect(onClose).toHaveBeenCalledTimes(1);
 			expect(onOpenChange).toHaveBeenLastCalledWith(false);
+			expect(document.body.classList.contains('gr-scroll-locked')).toBe(false);
+			expect(document.body.getAttribute('data-gr-scroll-lock-count')).toBeNull();
 			expect(document.body.style.overflow).toBe('auto');
 
 			cleanup(actions);
@@ -103,9 +111,11 @@ describe('Modal Primitive', () => {
 			const actions = [modal.actions.content(content)];
 
 			modal.helpers.open();
+			expect(document.body.classList.contains('gr-scroll-locked')).toBe(false);
 			expect(document.body.style.overflow).toBe('scroll');
 
 			modal.helpers.close();
+			expect(document.body.classList.contains('gr-scroll-locked')).toBe(false);
 			expect(document.body.style.overflow).toBe('scroll');
 
 			cleanup(actions);
