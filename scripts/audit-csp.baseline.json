@@ -1,11 +1,1 @@
-[
-  "packages/faces/artist/src/utils/highContrast.ts:226:23:runtime-style-tag",
-  "packages/faces/artist/src/utils/performance.ts:429:7:runtime-style-property",
-  "packages/faces/artist/src/utils/performance.ts:430:7:runtime-style-property",
-  "packages/faces/artist/src/utils/performance.ts:431:7:runtime-style-property",
-  "packages/faces/artist/src/utils/performance.ts:432:7:runtime-style-property",
-  "packages/faces/artist/src/utils/reducedMotion.ts:204:8:runtime-style-property",
-  "packages/faces/artist/src/utils/reducedMotion.ts:209:7:runtime-style-property",
-  "packages/faces/artist/src/utils/reducedMotion.ts:213:8:runtime-style-setProperty",
-  "packages/faces/artist/src/utils/reducedMotion.ts:73:11:runtime-style-property"
-]
+[]

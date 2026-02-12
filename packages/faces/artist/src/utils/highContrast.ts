@@ -211,6 +211,8 @@ export const HIGH_CONTRAST_DARK_STYLES: HighContrastStyles = {
 	focusColor: '#ffffff',
 };
 
+let activeHighContrastToken: symbol | null = null;
+
 /**
  * Apply high contrast styles to document
  * Preserves artwork colors per REQ-A11Y-003
@@ -218,65 +220,31 @@ export const HIGH_CONTRAST_DARK_STYLES: HighContrastStyles = {
 export function applyHighContrastStyles(
 	styles: HighContrastStyles = HIGH_CONTRAST_STYLES
 ): () => void {
-	const styleId = 'gr-high-contrast-styles';
+	const token = Symbol('gr-high-contrast');
+	activeHighContrastToken = token;
 
-	// Remove existing styles
-	document.getElementById(styleId)?.remove();
-
-	const styleElement = document.createElement('style');
-	styleElement.id = styleId;
-	styleElement.textContent = `
-		/* High Contrast Mode Overrides */
-		/* REQ-A11Y-003: Preserve artwork visibility while enhancing UI contrast */
-		
-		:root {
-			--gr-hc-text: ${styles.textColor};
-			--gr-hc-bg: ${styles.backgroundColor};
-			--gr-hc-border: ${styles.borderColor};
-			--gr-hc-link: ${styles.linkColor};
-			--gr-hc-focus: ${styles.focusColor};
-		}
-
-		/* Apply to UI elements only, not artwork */
-		.gr-high-contrast body:not(.gr-artwork-container) {
-			color: var(--gr-hc-text) !important;
-			background-color: var(--gr-hc-bg) !important;
-		}
-
-		.gr-high-contrast button,
-		.gr-high-contrast input,
-		.gr-high-contrast select,
-		.gr-high-contrast textarea {
-			color: var(--gr-hc-text) !important;
-			background-color: var(--gr-hc-bg) !important;
-			border-color: var(--gr-hc-border) !important;
-			border-width: 2px !important;
-		}
-
-		.gr-high-contrast a {
-			color: var(--gr-hc-link) !important;
-			text-decoration: underline !important;
-		}
-
-		.gr-high-contrast *:focus {
-			outline: 3px solid var(--gr-hc-focus) !important;
-			outline-offset: 2px !important;
-		}
-
-		/* Preserve artwork colors - do not modify */
-		.gr-high-contrast .gr-artwork-image,
-		.gr-high-contrast .gr-artwork-container img,
-		.gr-high-contrast [data-preserve-colors="true"] {
-			filter: none !important;
-		}
-	`;
-
-	document.head.appendChild(styleElement);
 	document.documentElement.classList.add('gr-high-contrast');
 
+	const variant =
+		styles === HIGH_CONTRAST_DARK_STYLES ||
+		(styles.textColor === HIGH_CONTRAST_DARK_STYLES.textColor &&
+			styles.backgroundColor === HIGH_CONTRAST_DARK_STYLES.backgroundColor &&
+			styles.borderColor === HIGH_CONTRAST_DARK_STYLES.borderColor)
+			? 'dark'
+			: styles === HIGH_CONTRAST_STYLES ||
+					(styles.textColor === HIGH_CONTRAST_STYLES.textColor &&
+						styles.backgroundColor === HIGH_CONTRAST_STYLES.backgroundColor &&
+						styles.borderColor === HIGH_CONTRAST_STYLES.borderColor)
+				? 'light'
+				: 'custom';
+
+	document.documentElement.setAttribute('data-gr-high-contrast', variant);
+
 	return () => {
-		styleElement.remove();
+		if (activeHighContrastToken !== token) return;
 		document.documentElement.classList.remove('gr-high-contrast');
+		document.documentElement.removeAttribute('data-gr-high-contrast');
+		activeHighContrastToken = null;
 	};
 }
 
