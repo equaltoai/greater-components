@@ -1,0 +1,5 @@
+import{a,f as s}from"../chunks/D4cnu5Tr.js";import"../chunks/DUGlQOFW.js";import{e as c,s as i,c as o,$ as h,r}from"../chunks/CWo3Zl3o.js";import{h as d}from"../chunks/BzXnuaPr.js";import{C as f}from"../chunks/Bp-7xVB_.js";var u=s('<meta name="description" content="Utility functions exported by Greater Components."/>'),g=s(`<article class="guide-page"><header><p class="eyebrow">API Reference</p> <h1>Utilities</h1> <p class="lead">The <code>utils</code> package exports common helpers for formatting, sanitization, and general
+			app utilities.</p></header> <section><h2 id="theme">Theme utilities</h2> <p>Use theme helpers to persist preferences and smooth transitions.</p></section> <section><h2>Example</h2> <!></section></article>`);function T(n){var e=g();d("pf6uyw",p=>{var l=u();c(()=>{h.title="Utilities API - Greater Components"}),a(p,l)});var t=i(o(e),4),m=i(o(t),2);f(m,{language:"typescript",code:`import { formatRelativeTime, sanitizeHtml } from '@equaltoai/greater-components/utils';
+
+formatRelativeTime(new Date());
+sanitizeHtml('<b>hello</b>');`}),r(t),r(e),a(n,e)}export{T as component};

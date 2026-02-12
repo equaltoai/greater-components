@@ -1,0 +1,4 @@
+import{a as o,f as i}from"../chunks/D4cnu5Tr.js";import"../chunks/DUGlQOFW.js";import{e as l,s,c as r,$ as d,r as t}from"../chunks/CWo3Zl3o.js";import{h as g}from"../chunks/BzXnuaPr.js";import{C as h}from"../chunks/Bp-7xVB_.js";var f=i('<meta name="description" content="Typography design tokens used by Greater Components."/>'),y=i(`<article class="guide-page"><header><p class="eyebrow">Design Tokens</p> <h1>Typography</h1> <p class="lead">Typography tokens control font families, sizes, line heights, and weights via CSS variables
+			under <code>--gr-typography-*</code>.</p></header> <section><h2>Override font family</h2> <!></section></article>`);function k(n){var e=y();g("8ff37d",m=>{var c=f();l(()=>{d.title="Typography Tokens - Greater Components"}),o(m,c)});var a=s(r(e),2),p=s(r(a),2);h(p,{language:"css",code:`:global(:root) {
+  --gr-typography-fontFamily-sans: ui-sans-serif, system-ui, sans-serif;
+}`}),t(a),t(e),o(n,e)}export{k as component};
