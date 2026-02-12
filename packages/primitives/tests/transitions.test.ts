@@ -28,8 +28,8 @@ describe('Transitions', () => {
 			expect(keyframes?.[1]).toMatchObject({ opacity: 1, transform: 'translateY(0)' });
 
 			config.tick?.(0.5, 0.5);
-			const animation = (animate as unknown as { mock: { results: Array<{ value: unknown }> } }).mock
-				.results[0]?.value as { currentTime?: number } | undefined;
+			const animation = (animate as unknown as { mock: { results: Array<{ value: unknown }> } })
+				.mock.results[0]?.value as { currentTime?: number } | undefined;
 			expect(animation?.currentTime).toBe(125);
 		});
 
@@ -47,7 +47,9 @@ describe('Transitions', () => {
 			const config = fadeDown(mockElement, { y: 20 });
 			config.tick?.(0.25, 0.75);
 
-			const animate = Element.prototype.animate as unknown as { mock: { results: Array<{ value: unknown }> } };
+			const animate = Element.prototype.animate as unknown as {
+				mock: { results: Array<{ value: unknown }> };
+			};
 			const animation = animate.mock.results[0]?.value as { currentTime?: number } | undefined;
 			expect(animation?.currentTime).toBe(62.5);
 		});

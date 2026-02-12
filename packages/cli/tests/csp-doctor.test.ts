@@ -35,17 +35,20 @@ describe('csp-doctor', () => {
 	});
 
 	it('flags global element selectors in CSS', () => {
-		const findings = scanTextForCspFindings(['body { margin: 0; }', 'h1 { color: red; }'].join('\n'), 'theme.css');
-
-		expect(findings.map((f) => f.type)).toEqual(
-			expect.arrayContaining(['css-global-selector'])
+		const findings = scanTextForCspFindings(
+			['body { margin: 0; }', 'h1 { color: red; }'].join('\n'),
+			'theme.css'
 		);
+
+		expect(findings.map((f) => f.type)).toEqual(expect.arrayContaining(['css-global-selector']));
 	});
 
 	it('does not flag scoped element selectors in CSS', () => {
-		const findings = scanTextForCspFindings(['.gr-high-contrast body { color: black; }'].join('\n'), 'theme.css');
+		const findings = scanTextForCspFindings(
+			['.gr-high-contrast body { color: black; }'].join('\n'),
+			'theme.css'
+		);
 
 		expect(findings.length).toBe(0);
 	});
 });
-

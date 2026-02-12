@@ -223,7 +223,9 @@ export function motionSafe(
 		}
 
 		const easing =
-			result.isReduced && animation.reducedMotionBehavior === 'subtle' ? 'linear' : animation.easing;
+			result.isReduced && animation.reducedMotionBehavior === 'subtle'
+				? 'linear'
+				: animation.easing;
 
 		currentAnimation = node.animate([{}, animation.properties], {
 			duration: result.duration,

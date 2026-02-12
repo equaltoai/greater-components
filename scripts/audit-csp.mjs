@@ -179,7 +179,8 @@ function scanRuntimeStrictCspPatterns(code, codeStartIndex, addViolation) {
 		{
 			type: 'runtime-style-attr',
 			regex: /\bsetAttribute\(\s*['"]style['"]\s*,/g,
-			remediation: "Avoid setting the 'style' attribute; use classes/external CSS or CSP-safe alternatives",
+			remediation:
+				"Avoid setting the 'style' attribute; use classes/external CSS or CSP-safe alternatives",
 		},
 		{
 			type: 'runtime-style-cssText',
@@ -189,17 +190,20 @@ function scanRuntimeStrictCspPatterns(code, codeStartIndex, addViolation) {
 		{
 			type: 'runtime-style-setProperty',
 			regex: /\.style\.setProperty\b/g,
-			remediation: 'Avoid style.setProperty; prefer classes/external CSS (or a CSP-safe dynamic styling helper)',
+			remediation:
+				'Avoid style.setProperty; prefer classes/external CSS (or a CSP-safe dynamic styling helper)',
 		},
 		{
 			type: 'runtime-style-assign',
 			regex: /\.style\s*([+*/-]?=|\+\+|--)/g,
-			remediation: 'Avoid assigning element.style; use classes/external CSS or CSP-safe alternatives',
+			remediation:
+				'Avoid assigning element.style; use classes/external CSS or CSP-safe alternatives',
 		},
 		{
 			type: 'runtime-style-property',
 			regex: /\.style\.(?!cssText\b)[a-zA-Z_$][a-zA-Z0-9_$-]*\s*([+*/-]?=|\+\+|--)/g,
-			remediation: 'Avoid element.style.* writes; use classes/external CSS or CSP-safe alternatives',
+			remediation:
+				'Avoid element.style.* writes; use classes/external CSS or CSP-safe alternatives',
 		},
 	];
 
@@ -364,13 +368,17 @@ export function scanFaceThemeCss(pattern) {
 	const searchPath =
 		pattern.startsWith('/') || pattern.startsWith('C:') ? pattern : join(workspaceRoot, pattern);
 
-	const cssFiles = findFiles(searchPath, '.css').filter((p) => p.endsWith(`${join('src', 'theme.css')}`));
+	const cssFiles = findFiles(searchPath, '.css').filter((p) =>
+		p.endsWith(`${join('src', 'theme.css')}`)
+	);
 
 	for (const filePath of cssFiles) {
 		try {
 			const content = readFileSync(filePath, 'utf-8');
 			const relPath = relative(workspaceRoot, filePath);
-			const withoutComments = content.replace(/\/\*[\s\S]*?\*\//g, (match) => match.replace(/[^\n]/g, ' '));
+			const withoutComments = content.replace(/\/\*[\s\S]*?\*\//g, (match) =>
+				match.replace(/[^\n]/g, ' ')
+			);
 
 			const lines = withoutComments.split('\n');
 			for (let i = 0; i < lines.length; i += 1) {
@@ -386,7 +394,8 @@ export function scanFaceThemeCss(pattern) {
 					type: 'css-global-selector',
 					snippet: line.trim(),
 					category: categorizeViolation(relPath),
-					remediation: 'Scope selectors to a component root class; avoid global body/html/h1 rules in face themes',
+					remediation:
+						'Scope selectors to a component root class; avoid global body/html/h1 rules in face themes',
 				});
 			}
 		} catch (err) {
@@ -608,7 +617,8 @@ function formatReportMarkdown(report, baselineReport) {
 	md += `## Summary\n\n`;
 
 	if (baselineReport) {
-		const newTotal = baselineReport.newSourceViolations.length + baselineReport.newBuildViolations.length;
+		const newTotal =
+			baselineReport.newSourceViolations.length + baselineReport.newBuildViolations.length;
 		const baselineTotal = baselineReport.matchedKeys.size;
 		const resolvedBaseline = baselineReport.baselineKeys.size - baselineReport.matchedKeys.size;
 
@@ -623,8 +633,12 @@ function formatReportMarkdown(report, baselineReport) {
 
 	md += `\n`;
 
-	const sourceViolations = baselineReport ? baselineReport.newSourceViolations : report.sourceViolations;
-	const buildViolations = baselineReport ? baselineReport.newBuildViolations : report.buildViolations;
+	const sourceViolations = baselineReport
+		? baselineReport.newSourceViolations
+		: report.sourceViolations;
+	const buildViolations = baselineReport
+		? baselineReport.newBuildViolations
+		: report.buildViolations;
 
 	if (report.shipBlockingComponents.length > 0 && !baselineReport) {
 		md += `## Ship-Blocking Components\n\n`;
@@ -635,9 +649,7 @@ function formatReportMarkdown(report, baselineReport) {
 	}
 
 	// Group violations by category for clearer reporting
-	const shipBlockingViolations = sourceViolations.filter(
-		(v) => v.category === 'ship-blocking'
-	);
+	const shipBlockingViolations = sourceViolations.filter((v) => v.category === 'ship-blocking');
 	const followUpViolations = sourceViolations.filter((v) => v.category === 'follow-up');
 
 	if (shipBlockingViolations.length > 0) {

@@ -24,7 +24,11 @@ function normalizeOptions(
 	return options;
 }
 
-function createMockAnimation(element: Element, keyframes: Keyframe[], options: KeyframeAnimationOptions) {
+function createMockAnimation(
+	element: Element,
+	keyframes: Keyframe[],
+	options: KeyframeAnimationOptions
+) {
 	let currentKeyframes = keyframes;
 
 	const animation: Animation & {

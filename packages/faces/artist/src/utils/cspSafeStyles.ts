@@ -70,4 +70,3 @@ export function clearCspSafeStyles(element: Element): void {
 	animation.cancel();
 	elementStyles.delete(element);
 }
-

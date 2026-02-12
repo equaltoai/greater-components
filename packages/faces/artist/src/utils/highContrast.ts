@@ -232,7 +232,7 @@ export function applyHighContrastStyles(
 			styles.borderColor === HIGH_CONTRAST_DARK_STYLES.borderColor)
 			? 'dark'
 			: styles === HIGH_CONTRAST_STYLES ||
-					(styles.textColor === HIGH_CONTRAST_STYLES.textColor &&
+				  (styles.textColor === HIGH_CONTRAST_STYLES.textColor &&
 						styles.backgroundColor === HIGH_CONTRAST_STYLES.backgroundColor &&
 						styles.borderColor === HIGH_CONTRAST_STYLES.borderColor)
 				? 'light'

@@ -320,7 +320,6 @@
 		if (autoFocus && textareaElement) {
 			textareaElement.focus();
 		}
-
 	});
 
 	onDestroy(() => {

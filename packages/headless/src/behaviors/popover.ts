@@ -477,7 +477,10 @@ export function createPopover(config: PopoverConfig = {}): Popover {
 
 		if (position && state.floating) {
 			state.floating.classList.add('gr-floating-layer');
-			state.floating.classList.toggle('gr-floating-layer--fixed', currentConfig.strategy === 'fixed');
+			state.floating.classList.toggle(
+				'gr-floating-layer--fixed',
+				currentConfig.strategy === 'fixed'
+			);
 			state.floating.classList.toggle(
 				'gr-floating-layer--absolute',
 				currentConfig.strategy === 'absolute'

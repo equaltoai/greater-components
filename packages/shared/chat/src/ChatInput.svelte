@@ -455,7 +455,7 @@
 			</Button>
 		{/if}
 
-	<!-- Textarea -->
+		<!-- Textarea -->
 		<div class="chat-input__textarea-wrapper gr-autosize-textarea" data-gr-value={`${value}\n`}>
 			<textarea
 				bind:this={textareaEl}

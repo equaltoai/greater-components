@@ -45,7 +45,11 @@ export function scanTextForCspFindings(text: string, filePath: string): CspFindi
 	const lines = text.split(/\r?\n/);
 
 	const patterns =
-		ext === '.css' ? CSS_PATTERNS : ext === '.svelte' ? [...JS_PATTERNS, ...SVELTE_PATTERNS] : JS_PATTERNS;
+		ext === '.css'
+			? CSS_PATTERNS
+			: ext === '.svelte'
+				? [...JS_PATTERNS, ...SVELTE_PATTERNS]
+				: JS_PATTERNS;
 
 	const findings: CspFinding[] = [];
 
@@ -68,4 +72,3 @@ export function scanTextForCspFindings(text: string, filePath: string): CspFindi
 
 	return findings;
 }
-

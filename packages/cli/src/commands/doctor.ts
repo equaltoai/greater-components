@@ -876,7 +876,9 @@ async function runCspDoctor(cwd: string, options: { json?: boolean }): Promise<v
 		}
 
 		if (findings.length === 0) {
-			logger.success(chalk.green(`✓ No strict CSP issues found (${filesToScan.size} files scanned)`));
+			logger.success(
+				chalk.green(`✓ No strict CSP issues found (${filesToScan.size} files scanned)`)
+			);
 		} else {
 			logger.error(
 				chalk.red(

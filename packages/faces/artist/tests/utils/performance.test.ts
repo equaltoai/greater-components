@@ -232,9 +232,8 @@ describe('performance Utils', () => {
 			expect(container.children[0]).toBe(firstChild); // Same node
 			expect(firstChild.classList.contains('gr-virtual-item')).toBe(true);
 
-			const animation = (firstChild as unknown as { __grLastAnimation?: unknown }).__grLastAnimation as
-				| { __grKeyframes?: Keyframe[] }
-				| undefined;
+			const animation = (firstChild as unknown as { __grLastAnimation?: unknown })
+				.__grLastAnimation as { __grKeyframes?: Keyframe[] } | undefined;
 			expect(animation?.__grKeyframes?.[0]).toMatchObject({ transform: 'translate3d(0, 50px, 0)' });
 
 			// Third render (new item)
