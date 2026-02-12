@@ -31,6 +31,19 @@
 	box-sizing: border-box;
 }
 
+.gr-offscreen-input {
+	position: fixed;
+	left: -9999px;
+	top: 0;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
 /* Button Styles */
 .gr-button {
 	/* Base styles */
