@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-12T17:33:31.609Z",
+  "generatedAt": "2026-02-12T17:40:46.076Z",
   "ref": "greater-v0.1.9",
   "version": "0.1.9",
   "checksums": {
@@ -113,7 +113,7 @@
     "packages/primitives/src/components/Tooltip.svelte.d.ts": "sha256-AONAs4rh/azRKJJyEf8DXerK0GYMYbb4FPpK9wsWAJE=",
     "packages/primitives/src/index.d.ts": "sha256-FO7LbcX55HnyxSPxlSHeQH2AK9Ku8HsCfiClnahhtC8=",
     "packages/primitives/src/index.ts": "sha256-PyX2fozobFl7Zn//U/DeT9LIquZJOva/+XlB8DLkGTE=",
-    "packages/primitives/src/stores/preferences.d.ts": "sha256-mdkFOsxs5WCjoCDJZnLws8RZlLITyDdOTnwLAWV0s6g=",
+    "packages/primitives/src/stores/preferences.d.ts": "sha256-fh+USW12Ch4qt8bz6znMeu3hxA1qlPouvt8HQn+hdjA=",
     "packages/primitives/src/stores/preferences.ts": "sha256-QNW1VLh4RsKHAhu/jQBKdPJ9eFegJKXqiUm6hacdMbc=",
     "packages/primitives/src/theme.css": "sha256-+koUti7MO4gsCREDdo6JGwny6y/IV7Ots/BD4C5jWA0=",
     "packages/primitives/src/transitions/fadeDown.d.ts": "sha256-FXf0D6TrZynSTiPhD0oDMMUlosk/uwgvq+VJyrfNnWI=",
@@ -126,6 +126,7 @@
     "packages/primitives/src/transitions/scaleIn.ts": "sha256-8Dud17lO1yt0V8mPuXtvj0frcBriBh1yq/YZ3tX2Nrg=",
     "packages/primitives/src/transitions/slideIn.d.ts": "sha256-sTt+trP/TN/INMYWM7sLdFU8xBCdTSCjVUCmg0u9zlg=",
     "packages/primitives/src/transitions/slideIn.ts": "sha256-lfT7bEKrcKzaAa4nsbpjxJevcA0yb94Msrtb/esVvJs=",
+    "packages/primitives/src/transitions/waapi.d.ts": "sha256-O8IcHMPN4aat6ranw+y9KznqUz2habNJRPhiiYScLu0=",
     "packages/primitives/src/transitions/waapi.ts": "sha256-s4a59B6Pmdwkm50szXaiVf98rdv4MyCPn++9/HD0CFM=",
     "packages/primitives/src/utils/index.d.ts": "sha256-lyBCyS1hktpEiFNCZBGzDP+4hI92TQoi2YlrdpsMXEs=",
     "packages/primitives/src/utils/index.ts": "sha256-NOWnOXoNpjs8s1B5Z1KLoRSfcX0mrcibISjAmmBnypQ=",
@@ -1896,7 +1897,7 @@
         },
         {
           "path": "src/stores/preferences.d.ts",
-          "checksum": "sha256-mdkFOsxs5WCjoCDJZnLws8RZlLITyDdOTnwLAWV0s6g=",
+          "checksum": "sha256-fh+USW12Ch4qt8bz6znMeu3hxA1qlPouvt8HQn+hdjA=",
           "size": 2046
         },
         {
@@ -1958,6 +1959,11 @@
           "path": "src/transitions/slideIn.ts",
           "checksum": "sha256-lfT7bEKrcKzaAa4nsbpjxJevcA0yb94Msrtb/esVvJs=",
           "size": 1969
+        },
+        {
+          "path": "src/transitions/waapi.d.ts",
+          "checksum": "sha256-O8IcHMPN4aat6ranw+y9KznqUz2habNJRPhiiYScLu0=",
+          "size": 338
         },
         {
           "path": "src/transitions/waapi.ts",
