@@ -393,10 +393,23 @@ greater doctor [options]
 - ✅ Component file integrity
 - ✅ Missing dependencies
 
-**Example:**
+**Strict CSP Scan:**
+
+- `greater doctor --csp` scans the installed vendored code for strict CSP issues:
+  - runtime inline-style writes (`element.style.*`, `style.setProperty`, `setAttribute('style', ...)`)
+  - runtime `<style>` injection (`document.createElement('style')`)
+  - global element selectors in face/theme CSS (`body {}`, `html {}`, `h1 {}`, etc.)
+
+**Examples:**
 
 ```bash
 greater doctor
+
+# Scan for strict CSP issues (CI-friendly exit code)
+greater doctor --csp
+
+# JSON output for CI parsing
+greater doctor --csp --json
 ```
 
 ---
