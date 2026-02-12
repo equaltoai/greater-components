@@ -349,10 +349,8 @@ describe('Live Region Behavior', () => {
 			expect(politeRegion).not.toBeNull();
 
 			if (politeRegion) {
-				expect(politeRegion.style.position).toBe('absolute');
-				expect(politeRegion.style.width).toBe('1px');
-				expect(politeRegion.style.height).toBe('1px');
-				expect(politeRegion.style.overflow).toBe('hidden');
+				expect(politeRegion.classList.contains('gr-sr-only')).toBe(true);
+				expect(politeRegion.getAttribute('style')).toBeNull();
 			}
 		});
 	});

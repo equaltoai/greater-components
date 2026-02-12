@@ -44,6 +44,31 @@
 	pointer-events: none;
 }
 
+.gr-sr-only {
+	position: fixed;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.gr-floating-layer {
+	left: 0;
+	top: 0;
+}
+
+.gr-floating-layer--fixed {
+	position: fixed;
+}
+
+.gr-floating-layer--absolute {
+	position: absolute;
+}
+
 body.gr-scroll-locked {
 	overflow: hidden;
 }
