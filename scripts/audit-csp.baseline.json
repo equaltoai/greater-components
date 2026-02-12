@@ -21,16 +21,5 @@
   "packages/headless/src/primitives/skeleton.ts:266:7:runtime-style-setProperty",
   "packages/headless/src/primitives/tooltip.ts:418:17:runtime-style-property",
   "packages/headless/src/primitives/tooltip.ts:419:17:runtime-style-property",
-  "packages/headless/src/primitives/tooltip.ts:420:17:runtime-style-property",
-  "packages/primitives/src/components/Modal.svelte:184:16:runtime-style-property",
-  "packages/primitives/src/components/Modal.svelte:185:16:runtime-style-property",
-  "packages/primitives/src/components/Modal.svelte:188:17:runtime-style-property",
-  "packages/primitives/src/components/Modal.svelte:189:17:runtime-style-property",
-  "packages/primitives/src/stores/preferences.ts:333:8:runtime-style-setProperty",
-  "packages/primitives/src/stores/preferences.ts:336:8:runtime-style-setProperty",
-  "packages/primitives/src/stores/preferences.ts:339:8:runtime-style-setProperty",
-  "packages/primitives/src/stores/preferences.ts:343:7:runtime-style-setProperty",
-  "packages/primitives/src/stores/preferences.ts:351:7:runtime-style-setProperty",
-  "packages/primitives/src/utils/smoothThemeTransition.ts:103:10:runtime-style-property",
-  "packages/primitives/src/utils/smoothThemeTransition.ts:81:18:runtime-style-tag"
+  "packages/headless/src/primitives/tooltip.ts:420:17:runtime-style-property"
 ]

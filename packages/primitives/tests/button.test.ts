@@ -100,6 +100,7 @@ describe('Button.svelte', () => {
 			const button = screen.getByRole('button');
 			button.focus();
 			await fireEvent.keyDown(button, { key: ' ' });
+			await fireEvent.keyUp(button, { key: ' ' });
 
 			expect(handleClick).toHaveBeenCalledTimes(1);
 		});
