@@ -131,17 +131,10 @@
 	const charCountId = $derived(composeId ? `${composeId}-char-count` : undefined);
 	const cwCharCountId = $derived(composeId ? `${composeId}-cw-char-count` : undefined);
 
-	// Auto-resize textarea
-	function resizeTextarea(textarea: HTMLTextAreaElement) {
-		textarea.style.height = 'auto';
-		textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
-	}
-
 	// Handle content input
 	function handleInput(event: Event) {
 		const target = event.target as HTMLTextAreaElement;
 		content = target.value;
-		resizeTextarea(target);
 		scheduleDraftSave();
 	}
 
@@ -149,7 +142,6 @@
 	function handleCwInput(event: Event) {
 		const target = event.target as HTMLTextAreaElement;
 		contentWarning = target.value;
-		resizeTextarea(target);
 		scheduleDraftSave();
 	}
 
@@ -282,11 +274,6 @@
 			mediaAttachments = [];
 			poll = undefined;
 			clearDraft();
-
-			// Reset textarea height
-			if (textareaElement) {
-				resizeTextarea(textareaElement);
-			}
 		} catch (error) {
 			console.error('Failed to submit:', error);
 		} finally {
@@ -306,10 +293,6 @@
 			mediaAttachments = [];
 			poll = undefined;
 			clearDraft();
-
-			if (textareaElement) {
-				resizeTextarea(textareaElement);
-			}
 		}
 	}
 
@@ -336,11 +319,6 @@
 		// Auto-focus if requested
 		if (autoFocus && textareaElement) {
 			textareaElement.focus();
-		}
-
-		// Initial textarea resize
-		if (textareaElement && content) {
-			resizeTextarea(textareaElement);
 		}
 	});
 
@@ -394,22 +372,23 @@
 	{/if}
 
 	<div class="gr-compose-box__content">
-		<textarea
-			bind:this={textareaElement}
-			id={textareaId}
-			class="gr-compose-box__textarea"
-			bind:value={content}
-			{placeholder}
-			{disabled}
-			aria-describedby={showCharacterCount ? charCountId : undefined}
-			aria-label={replyToStatus
-				? `Reply to ${replyToStatus.account.displayName}`
-				: 'Compose new post'}
-			oninput={handleInput}
-			onkeydown={handleKeydown}
-			onfocus={handleFocus}
-			onblur={handleBlur}
-		></textarea>
+		<div class="gr-compose-box__textarea gr-autosize-textarea" data-gr-value={`${content}\n`}>
+			<textarea
+				bind:this={textareaElement}
+				id={textareaId}
+				bind:value={content}
+				{placeholder}
+				{disabled}
+				aria-describedby={showCharacterCount ? charCountId : undefined}
+				aria-label={replyToStatus
+					? `Reply to ${replyToStatus.account.displayName}`
+					: 'Compose new post'}
+				oninput={handleInput}
+				onkeydown={handleKeydown}
+				onfocus={handleFocus}
+				onblur={handleBlur}
+			></textarea>
+		</div>
 
 		{#if showCharacterCount || isAtSoftLimit}
 			<div

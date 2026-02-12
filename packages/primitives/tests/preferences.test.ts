@@ -307,26 +307,29 @@ describe('PreferencesStore', () => {
 			expect(setAttribute).toHaveBeenCalledWith('data-theme', expect.any(String));
 		});
 
-		it('should apply custom CSS properties', () => {
+		it('should expose custom colors via data attributes (strict-CSP safe)', () => {
 			const root = document.documentElement;
-			const setProperty = vi.spyOn(root.style, 'setProperty');
+			const setAttribute = vi.spyOn(root, 'setAttribute');
 
 			preferencesStore.setCustomColors({
 				primary: '#ff0000',
 				secondary: '#00ff00',
 			});
 
-			expect(setProperty).toHaveBeenCalledWith('--gr-custom-primary', '#ff0000');
-			expect(setProperty).toHaveBeenCalledWith('--gr-custom-secondary', '#00ff00');
+			expect(setAttribute).toHaveBeenCalledWith('data-gr-custom-primary', '#ff0000');
+			expect(setAttribute).toHaveBeenCalledWith('data-gr-custom-secondary', '#00ff00');
+			expect(root.getAttribute('data-gr-custom-primary')).toBe('#ff0000');
+			expect(root.getAttribute('data-gr-custom-secondary')).toBe('#00ff00');
 		});
 
-		it('should apply font scale CSS property', () => {
+		it('should expose font scale via data attribute (strict-CSP safe)', () => {
 			const root = document.documentElement;
-			const setProperty = vi.spyOn(root.style, 'setProperty');
+			const setAttribute = vi.spyOn(root, 'setAttribute');
 
 			preferencesStore.setFontScale(1.25);
 
-			expect(setProperty).toHaveBeenCalledWith('--gr-font-scale', '1.25');
+			expect(setAttribute).toHaveBeenCalledWith('data-gr-font-scale', '1.25');
+			expect(root.getAttribute('data-gr-font-scale')).toBe('1.25');
 		});
 	});
 });

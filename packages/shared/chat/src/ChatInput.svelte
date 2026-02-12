@@ -18,7 +18,6 @@
   ```
 -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Button } from '@equaltoai/greater-components-primitives';
 	import { SendIcon, PaperclipIcon, XIcon, ImageIcon } from '@equaltoai/greater-components-icons';
 
@@ -113,11 +112,6 @@
 	let isSending = $state(false);
 	let attachmentIdCounter = 0;
 
-	// Constants
-	const MAX_ROWS = 6;
-	const LINE_HEIGHT = 24; // Approximate line height in pixels
-	const MAX_HEIGHT = MAX_ROWS * LINE_HEIGHT;
-
 	// Computed values
 	const characterCount = $derived(value.length);
 	const isOverLimit = $derived(maxLength ? characterCount > maxLength : false);
@@ -129,38 +123,11 @@
 	const canAttachMore = $derived(attachedFiles.length < maxFiles);
 
 	/**
-	 * Auto-resize textarea based on content
-	 */
-	function autoResize() {
-		if (!textareaEl) return;
-
-		// Reset height to auto to get the correct scrollHeight
-		textareaEl.style.height = 'auto';
-
-		// Calculate new height, capped at max
-		const newHeight = Math.min(textareaEl.scrollHeight, MAX_HEIGHT);
-		textareaEl.style.height = `${newHeight}px`;
-
-		// Enable scrolling if content exceeds max height
-		textareaEl.style.overflowY = textareaEl.scrollHeight > MAX_HEIGHT ? 'auto' : 'hidden';
-	}
-
-	/**
-	 * Reset textarea height after sending
-	 */
-	function resetHeight() {
-		if (!textareaEl) return;
-		textareaEl.style.height = 'auto';
-		textareaEl.style.overflowY = 'hidden';
-	}
-
-	/**
 	 * Handle input changes
 	 */
 	function handleInput(event: Event) {
 		const target = event.target as HTMLTextAreaElement;
 		value = target.value;
-		autoResize();
 	}
 
 	/**
@@ -232,7 +199,6 @@
 			// Clear input after successful send
 			value = '';
 			clearAttachments();
-			resetHeight();
 		} finally {
 			isSending = false;
 		}
@@ -244,7 +210,6 @@
 	function clearInput() {
 		value = '';
 		clearAttachments();
-		resetHeight();
 		textareaEl?.focus();
 	}
 
@@ -393,12 +358,6 @@
 		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 	}
 
-	// Focus textarea on mount
-	onMount(() => {
-		// Initial resize
-		autoResize();
-	});
-
 	// Cleanup on unmount
 	$effect(() => {
 		return () => {
@@ -497,7 +456,7 @@
 		{/if}
 
 		<!-- Textarea -->
-		<div class="chat-input__textarea-wrapper">
+		<div class="chat-input__textarea-wrapper gr-autosize-textarea" data-gr-value={`${value}\n`}>
 			<textarea
 				bind:this={textareaEl}
 				bind:value
@@ -729,24 +688,18 @@
 	.chat-input__textarea-wrapper {
 		flex: 1;
 		min-width: 0;
-		display: flex;
-		align-items: center;
-	}
-
-	.chat-input__textarea {
-		width: 100%;
+		display: grid;
 		min-height: 24px;
 		max-height: 144px; /* 6 lines * 24px */
-		padding: 0;
 		font-family: var(--gr-typography-fontFamily-sans);
 		font-size: var(--gr-typography-fontSize-base);
 		line-height: 1.5;
 		color: var(--gr-semantic-foreground-primary);
-		background: transparent;
-		border: none;
-		resize: none;
-		overflow-y: hidden;
-		outline: none;
+	}
+
+	.chat-input__textarea {
+		width: 100%;
+		overflow-y: auto;
 	}
 
 	.chat-input__textarea::placeholder {

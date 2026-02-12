@@ -7,6 +7,8 @@
  * @module @equaltoai/greater-components-artist/utils/performance
  */
 
+import { applyCspSafeStyles } from './cspSafeStyles';
+
 // ============================================================================
 // Image Optimization (REQ-PERF-001, REQ-PERF-003)
 // ============================================================================
@@ -426,10 +428,10 @@ export function recycleNodes<T>(
 			container.appendChild(node);
 		}
 
-		node.style.position = 'absolute';
-		node.style.top = `${offset}px`;
-		node.style.left = '0';
-		node.style.right = '0';
+		node.classList.add('gr-virtual-item');
+		applyCspSafeStyles(node, {
+			transform: `translate3d(0, ${offset}px, 0)`,
+		});
 	});
 
 	// Remove unused nodes

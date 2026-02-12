@@ -74,16 +74,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 	}
 
 	/**
-	 * Auto-resize textarea based on content
-	 */
-	function autoResize() {
-		if (textareaEl) {
-			textareaEl.style.height = 'auto';
-			textareaEl.style.height = `${textareaEl.scrollHeight}px`;
-		}
-	}
-
-	/**
 	 * Update autocomplete suggestions
 	 */
 	async function updateAutocomplete() {
@@ -137,7 +127,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 			overLimit: metrics.count > context.config.characterLimit,
 		});
 
-		autoResize();
 		await updateAutocomplete();
 	}
 
@@ -196,7 +185,6 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 
 		showAutocomplete = false;
 		autocompleteMatch = null;
-		autoResize();
 	}
 
 	/**
@@ -209,18 +197,23 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 </script>
 
 <div class="editor-with-autocomplete">
-	<textarea
-		bind:this={textareaEl}
-		class={`compose-editor ${className}`}
-		{rows}
-		placeholder={context.config.placeholder}
-		value={context.state.content}
-		oninput={handleInput}
-		onkeydown={handleKeyDown}
-		disabled={context.state.submitting}
-		aria-label="Compose post content"
-		aria-describedby="compose-character-count"
-	></textarea>
+	<div
+		class={`compose-editor gr-autosize-textarea ${className}`.trim()}
+		class:compose-editor--disabled={context.state.submitting}
+		data-gr-value={`${context.state.content}\n`}
+	>
+		<textarea
+			bind:this={textareaEl}
+			{rows}
+			placeholder={context.config.placeholder}
+			value={context.state.content}
+			oninput={handleInput}
+			onkeydown={handleKeyDown}
+			disabled={context.state.submitting}
+			aria-label="Compose post content"
+			aria-describedby="compose-character-count"
+		></textarea>
+	</div>
 
 	{#if showAutocomplete && autocompleteMatch}
 		<AutocompleteMenu

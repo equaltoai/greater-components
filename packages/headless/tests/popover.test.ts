@@ -234,9 +234,12 @@ describe('Popover Behavior', () => {
 
 			popover.update();
 
-			expect(floatingElement.style.position).toBe('absolute');
-			expect(floatingElement.style.left).toBeDefined();
-			expect(floatingElement.style.top).toBeDefined();
+			expect(floatingElement.classList.contains('gr-floating-layer')).toBe(true);
+			expect(floatingElement.classList.contains('gr-floating-layer--absolute')).toBe(true);
+
+			const animation = (floatingElement as unknown as { __grLastAnimation?: unknown })
+				.__grLastAnimation as { __grKeyframes?: Keyframe[] } | undefined;
+			expect(animation?.__grKeyframes?.[0]).toMatchObject({ transform: expect.any(String) });
 		});
 
 		it('should use fixed strategy when configured', () => {
@@ -246,7 +249,8 @@ describe('Popover Behavior', () => {
 
 			popover.update();
 
-			expect(floatingElement.style.position).toBe('fixed');
+			expect(floatingElement.classList.contains('gr-floating-layer')).toBe(true);
+			expect(floatingElement.classList.contains('gr-floating-layer--fixed')).toBe(true);
 		});
 	});
 

@@ -149,22 +149,21 @@ describe('Skeleton Primitive', () => {
 
 		it('should call onAnimationComplete on animation iteration', () => {
 			const onAnimationComplete = vi.fn();
-			const skeleton = createSkeleton({ animation: 'pulse', onAnimationComplete });
+			const skeleton = createSkeleton({ animation: 'pulse', duration: 100, onAnimationComplete });
 			const action = skeleton.actions.skeleton(div);
 
-			div.dispatchEvent(new Event('animationiteration'));
-
-			expect(onAnimationComplete).toHaveBeenCalled();
+			vi.advanceTimersByTime(100);
+			expect(onAnimationComplete).toHaveBeenCalledTimes(1);
 
 			action.destroy();
 		});
 
 		it('should not listen for animation events when animation is none', () => {
 			const onAnimationComplete = vi.fn();
-			const skeleton = createSkeleton({ animation: 'none', onAnimationComplete });
+			const skeleton = createSkeleton({ animation: 'none', duration: 100, onAnimationComplete });
 			const action = skeleton.actions.skeleton(div);
 
-			div.dispatchEvent(new Event('animationiteration'));
+			vi.advanceTimersByTime(500);
 
 			expect(onAnimationComplete).not.toHaveBeenCalled();
 
@@ -237,7 +236,9 @@ describe('Skeleton Primitive', () => {
 			const skeleton = createSkeleton({ width: '300px' });
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-width')).toBe('300px');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ width: '300px' });
 
 			action.destroy();
 		});
@@ -246,7 +247,9 @@ describe('Skeleton Primitive', () => {
 			const skeleton = createSkeleton({ width: 300 });
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-width')).toBe('300px');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ width: '300px' });
 
 			action.destroy();
 		});
@@ -255,7 +258,9 @@ describe('Skeleton Primitive', () => {
 			const skeleton = createSkeleton({ height: '2em' });
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-height')).toBe('2em');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ height: '2em' });
 
 			action.destroy();
 		});
@@ -264,7 +269,9 @@ describe('Skeleton Primitive', () => {
 			const skeleton = createSkeleton({ height: 150 });
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-height')).toBe('150px');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ height: '150px' });
 
 			action.destroy();
 		});
@@ -273,7 +280,9 @@ describe('Skeleton Primitive', () => {
 			const skeleton = createSkeleton({ duration: 2500 });
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-duration')).toBe('2500ms');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const options = animate.mock.calls[1]?.[1] as KeyframeAnimationOptions | undefined;
+			expect(options?.duration).toBe(2500);
 
 			action.destroy();
 		});
@@ -418,14 +427,14 @@ describe('Skeleton Primitive', () => {
 
 		it('should remove animation listeners on destroy', () => {
 			const onAnimationComplete = vi.fn();
-			const skeleton = createSkeleton({ animation: 'pulse', onAnimationComplete });
+			const skeleton = createSkeleton({ animation: 'pulse', duration: 100, onAnimationComplete });
 			const div = document.createElement('div');
 			document.body.appendChild(div);
 
 			const action = skeleton.actions.skeleton(div);
 			action.destroy();
 
-			div.dispatchEvent(new Event('animationiteration'));
+			vi.advanceTimersByTime(500);
 
 			// Should not be called after destroy
 			expect(onAnimationComplete).not.toHaveBeenCalled();
@@ -434,7 +443,7 @@ describe('Skeleton Primitive', () => {
 		});
 	});
 
-	describe('CSS Custom Properties', () => {
+	describe('CSP-safe Dimensions', () => {
 		let div: HTMLDivElement;
 
 		beforeEach(() => {
@@ -446,7 +455,7 @@ describe('Skeleton Primitive', () => {
 			document.body.removeChild(div);
 		});
 
-		it('should set all CSS custom properties', () => {
+		it('should apply width/height and duration without inline styles', () => {
 			const skeleton = createSkeleton({
 				width: '250px',
 				height: '180px',
@@ -454,9 +463,12 @@ describe('Skeleton Primitive', () => {
 			});
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-width')).toBe('250px');
-			expect(div.style.getPropertyValue('--skeleton-height')).toBe('180px');
-			expect(div.style.getPropertyValue('--skeleton-duration')).toBe('2000ms');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			const options = animate.mock.calls[1]?.[1] as KeyframeAnimationOptions | undefined;
+
+			expect(keyframes?.[0]).toMatchObject({ width: '250px', height: '180px' });
+			expect(options?.duration).toBe(2000);
 
 			action.destroy();
 		});
@@ -468,8 +480,9 @@ describe('Skeleton Primitive', () => {
 			});
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-width')).toBe('50%');
-			expect(div.style.getPropertyValue('--skeleton-height')).toBe('75%');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({ width: '50%', height: '75%' });
 
 			action.destroy();
 		});
@@ -481,8 +494,12 @@ describe('Skeleton Primitive', () => {
 			});
 			const action = skeleton.actions.skeleton(div);
 
-			expect(div.style.getPropertyValue('--skeleton-width')).toBe('calc(100% - 20px)');
-			expect(div.style.getPropertyValue('--skeleton-height')).toBe('calc(50vh - 10px)');
+			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
+			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
+			expect(keyframes?.[0]).toMatchObject({
+				width: 'calc(100% - 20px)',
+				height: 'calc(50vh - 10px)',
+			});
 
 			action.destroy();
 		});
