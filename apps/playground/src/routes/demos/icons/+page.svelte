@@ -15,14 +15,14 @@
 		{}
 	);
 
-	const categories = ['all', 'brands', ...Object.keys(iconCategories)] as const;
-	type FilterCategory = (typeof categories)[number];
+	type FilterCategory = 'all' | CategoryKey;
+	const categories: FilterCategory[] = ['all', ...(Object.keys(iconCategories) as CategoryKey[])];
 
 	let selectedCategory = $state<FilterCategory>('all');
 	let search = $state('');
 	let previewSize = $state(48);
 	let previewStroke = $state(2);
-	let previewColor = $state('currentColor');
+	let previewColor = $state('#000000');
 	let activeIcon = $state(iconList[0]);
 	let copySuccess = $state<'idle' | 'copied'>('idle');
 
@@ -38,10 +38,7 @@
 
 	const filteredIcons = $derived(() => {
 		const query = search.trim().toLowerCase();
-		const pool =
-			selectedCategory === 'all'
-				? iconList
-				: (iconCategories[selectedCategory as CategoryKey] ?? []);
+		const pool = selectedCategory === 'all' ? iconList : (iconCategories[selectedCategory] ?? []);
 		if (!query) return pool;
 		return pool.filter(
 			(name) => name.includes(query) || aliasLookup[name]?.some((alias) => alias.includes(query))
