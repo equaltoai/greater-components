@@ -7289,7 +7289,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StorageAccount"];
+                    "application/json": components["schemas"]["Account"];
                 };
             };
             400: components["responses"]["BadRequest"];
