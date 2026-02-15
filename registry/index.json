@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-12T18:16:40.754Z",
+  "generatedAt": "2026-02-15T21:57:49.185Z",
   "ref": "greater-v0.1.10",
   "version": "0.1.10",
   "checksums": {
@@ -850,7 +850,7 @@
     "packages/adapters/src/mappers/mastodon/types.ts": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-P7MTLrDEubSZl1pZBMawRRvTOir3YTyJW9FAgVoIg3E=",
-    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-r+zz2J9L01OTrLuYZ53ZV+5mqa2egjkP3hHF1WhAUyg=",
+    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-x7n20IQ5Q5tBk61dIuPvqQWvAXwVzjcGR3TJMhTSPX0=",
     "packages/adapters/src/SseClient.d.ts": "sha256-fxMEJHoDY/ae3mkTtv9yw5N1jfD5wLSrJ4ixrJ+TYoU=",
     "packages/adapters/src/SseClient.ts": "sha256-XJ1v33MnEkm1CRobboaQ0hOpTvFjDOkd1GX6UocQ2Q4=",
     "packages/adapters/src/stores/adminStreamingStore.d.ts": "sha256-SjxwZTLzZw3QyuExX+Wt0TR7TzXTI6z+yb/aTRSyQ0M=",
@@ -5660,8 +5660,8 @@
         },
         {
           "path": "src/rest/generated/lesser-api.ts",
-          "checksum": "sha256-r+zz2J9L01OTrLuYZ53ZV+5mqa2egjkP3hHF1WhAUyg=",
-          "size": 478481
+          "checksum": "sha256-x7n20IQ5Q5tBk61dIuPvqQWvAXwVzjcGR3TJMhTSPX0=",
+          "size": 478474
         },
         {
           "path": "src/SseClient.d.ts",
