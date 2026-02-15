@@ -486,12 +486,19 @@ export class LesserGraphQLAdapter {
 
 		const errors = (result as unknown as { errors?: Array<{ message?: string }> }).errors;
 		if (Array.isArray(errors) && errors.length > 0) {
-			throw new Error(errors.map((error) => error.message).filter(Boolean).join('; '));
+			throw new Error(
+				errors
+					.map((error) => error.message)
+					.filter(Boolean)
+					.join('; ')
+			);
 		}
 
 		const transportError = (result as unknown as { error?: unknown }).error;
 		if (transportError) {
-			throw new Error(transportError instanceof Error ? transportError.message : String(transportError));
+			throw new Error(
+				transportError instanceof Error ? transportError.message : String(transportError)
+			);
 		}
 
 		if (data == null) {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-15T21:57:49.185Z",
+  "generatedAt": "2026-02-15T22:13:24.006Z",
   "ref": "greater-v0.1.10",
   "version": "0.1.10",
   "checksums": {
@@ -827,7 +827,7 @@
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-sUunoWzr6cbUidVZHSUHU4+2rtqL/xi3PKNn7GD++OQ=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-g4EDQH2+AkDq/POPfSl/AJlXM5H+UDVmdGKZnelKoXY=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.ts": "sha256-4U/b1aHeGBfl+YC+R+XaeY0Ts8hY8Er+3XfqUhSpqWY=",
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
@@ -990,7 +990,7 @@
     "packages/faces/social/src/mockData.ts": "sha256-4bTHyBTiEesD+0xsZuFR2RPurELEsigR6a4DYP14h2M=",
     "packages/faces/social/src/patterns/BookmarkManager.svelte": "sha256-K3NPszNRomo4S/hJW+mBTj6gFzwFTlDml7L6zQ32Wso=",
     "packages/faces/social/src/patterns/ContentWarningHandler.svelte": "sha256-4+ilTz+HK3nUQGImQutOyalPO98HlSN/jDnoKgQqX8c=",
-    "packages/faces/social/src/patterns/CustomEmojiPicker.svelte": "sha256-uYo9MDA1iuykJpqZD7PckkSAkE0VVff3nRKcSdebKFQ=",
+    "packages/faces/social/src/patterns/CustomEmojiPicker.svelte": "sha256-Go2FiUbEFS6LcSde+2qx/8ECrjazSOl1sZEfh4Tny98=",
     "packages/faces/social/src/patterns/FederationIndicator.svelte": "sha256-Jh/v252VLN8wxarpWI6mRzP26Q38c/fl/5XuGjwWOx0=",
     "packages/faces/social/src/patterns/index.ts": "sha256-cS6dCVI4gIhHS+0gd/lIBHqUbgiJWR2/H2WLPR4JCqs=",
     "packages/faces/social/src/patterns/InstancePicker.svelte": "sha256-1eUgvR3b1ByLk0i1Mu4B4FUaCU18JQyzklPtwBDj1OU=",
@@ -5545,8 +5545,8 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
-          "checksum": "sha256-sUunoWzr6cbUidVZHSUHU4+2rtqL/xi3PKNn7GD++OQ=",
-          "size": 45194
+          "checksum": "sha256-g4EDQH2+AkDq/POPfSl/AJlXM5H+UDVmdGKZnelKoXY=",
+          "size": 45623
         },
         {
           "path": "src/graphql/optimistic.d.ts",
@@ -6469,8 +6469,8 @@
         },
         {
           "path": "src/patterns/CustomEmojiPicker.svelte",
-          "checksum": "sha256-uYo9MDA1iuykJpqZD7PckkSAkE0VVff3nRKcSdebKFQ=",
-          "size": 22163
+          "checksum": "sha256-Go2FiUbEFS6LcSde+2qx/8ECrjazSOl1sZEfh4Tny98=",
+          "size": 33737
         },
         {
           "path": "src/patterns/FederationIndicator.svelte",

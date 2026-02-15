@@ -615,57 +615,55 @@
 						<p class="emoji-picker__empty-hint">Try a different search term</p>
 					</div>
 				{/if}
-			{:else}
-				{#if filteredCustomEmojis.length > 0}
-					<div class="emoji-picker__grid">
-						{#each filteredCustomEmojis as emoji (emoji.shortcode)}
-							<button
-								class="emoji-picker__emoji"
-								class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-								onclick={() => selectEmoji(emoji)}
-								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-								onmouseleave={() => (hoveredEmoji = null)}
-								title={`:${emoji.shortcode}:`}
-								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-							>
-								{#if renderEmoji}
-									{@render renderEmoji(emoji)}
-								{:else}
-									<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
-								{/if}
+			{:else if filteredCustomEmojis.length > 0}
+				<div class="emoji-picker__grid">
+					{#each filteredCustomEmojis as emoji (emoji.shortcode)}
+						<button
+							class="emoji-picker__emoji"
+							class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
+							onclick={() => selectEmoji(emoji)}
+							onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+							onmouseleave={() => (hoveredEmoji = null)}
+							title={`:${emoji.shortcode}:`}
+							aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+						>
+							{#if renderEmoji}
+								{@render renderEmoji(emoji)}
+							{:else}
+								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
+							{/if}
 
-								{#if showFavorites}
-									<span
-										class="emoji-picker__favorite-btn"
-										role="button"
-										tabindex="0"
-										onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-										onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-										aria-label={favoriteEmojis.includes(emoji.shortcode)
-											? 'Remove from favorites'
-											: 'Add to favorites'}
-									>
-										{#if favoriteEmojis.includes(emoji.shortcode)}
-											★
-										{:else}
-											☆
-										{/if}
-									</span>
-								{/if}
-							</button>
-						{/each}
-					</div>
-				{:else}
-					<div class="emoji-picker__empty">
-						<svg viewBox="0 0 24 24" fill="currentColor">
-							<path
-								d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-							/>
-						</svg>
-						<p>No emojis found</p>
-						<p class="emoji-picker__empty-hint">Try a different search term</p>
-					</div>
-				{/if}
+							{#if showFavorites}
+								<span
+									class="emoji-picker__favorite-btn"
+									role="button"
+									tabindex="0"
+									onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+									onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+									aria-label={favoriteEmojis.includes(emoji.shortcode)
+										? 'Remove from favorites'
+										: 'Add to favorites'}
+								>
+									{#if favoriteEmojis.includes(emoji.shortcode)}
+										★
+									{:else}
+										☆
+									{/if}
+								</span>
+							{/if}
+						</button>
+					{/each}
+				</div>
+			{:else}
+				<div class="emoji-picker__empty">
+					<svg viewBox="0 0 24 24" fill="currentColor">
+						<path
+							d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+						/>
+					</svg>
+					<p>No emojis found</p>
+					<p class="emoji-picker__empty-hint">Try a different search term</p>
+				</div>
 			{/if}
 		{:else}
 			<!-- Category view -->
@@ -693,178 +691,178 @@
 							</section>
 						{/if}
 					{/each}
-				{:else}
-					{#if unicodeEmojisByCategory[selectedCategory]?.length > 0}
+				{:else if unicodeEmojisByCategory[selectedCategory]?.length > 0}
+					<div class="emoji-picker__grid">
+						{#each unicodeEmojisByCategory[selectedCategory] as emoji (emoji.char)}
+							<button
+								class="emoji-picker__emoji"
+								onclick={() => selectUnicodeEmoji(emoji)}
+								onmouseenter={() => (hoveredEmoji = emoji.char)}
+								onmouseleave={() => (hoveredEmoji = null)}
+								title={emoji.name}
+								aria-label={emoji.name}
+							>
+								<span class="emoji-picker__unicode">{emoji.char}</span>
+							</button>
+						{/each}
+					</div>
+				{/if}
+			{:else}
+				{#if showFavorites && favoriteEmojisList.length > 0}
+					<section class="emoji-picker__section">
+						<h3 class="emoji-picker__section-title">Favorites</h3>
 						<div class="emoji-picker__grid">
-							{#each unicodeEmojisByCategory[selectedCategory] as emoji (emoji.char)}
+							{#each favoriteEmojisList as emoji (emoji.shortcode)}
+								<button
+									class="emoji-picker__emoji emoji-picker__emoji--favorite"
+									onclick={() => selectEmoji(emoji)}
+									onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+									onmouseleave={() => (hoveredEmoji = null)}
+									title={`:${emoji.shortcode}:`}
+									aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+								>
+									<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
+									<span
+										class="emoji-picker__favorite-btn"
+										role="button"
+										tabindex="0"
+										onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+										onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+										aria-label="Remove from favorites"
+									>
+										★
+									</span>
+								</button>
+							{/each}
+						</div>
+					</section>
+				{/if}
+
+				{#if showRecent && recentEmojisList.length > 0}
+					<section class="emoji-picker__section">
+						<h3 class="emoji-picker__section-title">Recently Used</h3>
+						<div class="emoji-picker__grid">
+							{#each recentEmojisList as emoji (emoji.shortcode)}
 								<button
 									class="emoji-picker__emoji"
-									onclick={() => selectUnicodeEmoji(emoji)}
-									onmouseenter={() => (hoveredEmoji = emoji.char)}
+									class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
+									onclick={() => selectEmoji(emoji)}
+									onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
 									onmouseleave={() => (hoveredEmoji = null)}
-									title={emoji.name}
-									aria-label={emoji.name}
+									title={`:${emoji.shortcode}:`}
+									aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
 								>
-									<span class="emoji-picker__unicode">{emoji.char}</span>
+									<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
+									{#if showFavorites}
+										<span
+											class="emoji-picker__favorite-btn"
+											role="button"
+											tabindex="0"
+											onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+											onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+											aria-label={favoriteEmojis.includes(emoji.shortcode)
+												? 'Remove from favorites'
+												: 'Add to favorites'}
+										>
+											{#if favoriteEmojis.includes(emoji.shortcode)}
+												★
+											{:else}
+												☆
+											{/if}
+										</span>
+									{/if}
+								</button>
+							{/each}
+						</div>
+					</section>
+				{/if}
+
+				{#if selectedCategory === 'all'}
+					<!-- Show all categories -->
+					{#each Object.entries(emojisByCategory) as [category, categoryEmojis] (category)}
+						{#if categoryEmojis.length > 0}
+							<section class="emoji-picker__section">
+								{#if renderCategory}
+									{@render renderCategory(category, categoryEmojis)}
+								{:else}
+									<h3 class="emoji-picker__section-title">{category}</h3>
+									<div class="emoji-picker__grid">
+										{#each categoryEmojis.slice(0, maxVisible) as emoji (emoji.shortcode)}
+											<button
+												class="emoji-picker__emoji"
+												class:emoji-picker__emoji--favorite={favoriteEmojis.includes(
+													emoji.shortcode
+												)}
+												onclick={() => selectEmoji(emoji)}
+												onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+												onmouseleave={() => (hoveredEmoji = null)}
+												title={`:${emoji.shortcode}:`}
+												aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+											>
+												<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
+												{#if showFavorites}
+													<span
+														class="emoji-picker__favorite-btn"
+														role="button"
+														tabindex="0"
+														onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+														onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+														aria-label={favoriteEmojis.includes(emoji.shortcode)
+															? 'Remove from favorites'
+															: 'Add to favorites'}
+													>
+														{#if favoriteEmojis.includes(emoji.shortcode)}
+															★
+														{:else}
+															☆
+														{/if}
+													</span>
+												{/if}
+											</button>
+										{/each}
+									</div>
+								{/if}
+							</section>
+						{/if}
+					{/each}
+				{:else}
+					<!-- Show selected category -->
+					{#if emojisByCategory[selectedCategory]?.length > 0}
+						<div class="emoji-picker__grid">
+							{#each emojisByCategory[selectedCategory] as emoji (emoji.shortcode)}
+								<button
+									class="emoji-picker__emoji"
+									class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
+									onclick={() => selectEmoji(emoji)}
+									onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
+									onmouseleave={() => (hoveredEmoji = null)}
+									title={`:${emoji.shortcode}:`}
+									aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
+								>
+									<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
+									{#if showFavorites}
+										<span
+											class="emoji-picker__favorite-btn"
+											role="button"
+											tabindex="0"
+											onclick={(e) => toggleFavorite(emoji.shortcode, e)}
+											onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
+											aria-label={favoriteEmojis.includes(emoji.shortcode)
+												? 'Remove from favorites'
+												: 'Add to favorites'}
+										>
+											{#if favoriteEmojis.includes(emoji.shortcode)}
+												★
+											{:else}
+												☆
+											{/if}
+										</span>
+									{/if}
 								</button>
 							{/each}
 						</div>
 					{/if}
 				{/if}
-			{:else}
-				{#if showFavorites && favoriteEmojisList.length > 0}
-				<section class="emoji-picker__section">
-					<h3 class="emoji-picker__section-title">Favorites</h3>
-					<div class="emoji-picker__grid">
-						{#each favoriteEmojisList as emoji (emoji.shortcode)}
-							<button
-								class="emoji-picker__emoji emoji-picker__emoji--favorite"
-								onclick={() => selectEmoji(emoji)}
-								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-								onmouseleave={() => (hoveredEmoji = null)}
-								title={`:${emoji.shortcode}:`}
-								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-							>
-								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
-								<span
-									class="emoji-picker__favorite-btn"
-									role="button"
-									tabindex="0"
-									onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-									onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-									aria-label="Remove from favorites"
-								>
-									★
-								</span>
-							</button>
-						{/each}
-					</div>
-				</section>
-			{/if}
-
-				{#if showRecent && recentEmojisList.length > 0}
-				<section class="emoji-picker__section">
-					<h3 class="emoji-picker__section-title">Recently Used</h3>
-					<div class="emoji-picker__grid">
-						{#each recentEmojisList as emoji (emoji.shortcode)}
-							<button
-								class="emoji-picker__emoji"
-								class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-								onclick={() => selectEmoji(emoji)}
-								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-								onmouseleave={() => (hoveredEmoji = null)}
-								title={`:${emoji.shortcode}:`}
-								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-							>
-								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
-								{#if showFavorites}
-									<span
-										class="emoji-picker__favorite-btn"
-										role="button"
-										tabindex="0"
-										onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-										onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-										aria-label={favoriteEmojis.includes(emoji.shortcode)
-											? 'Remove from favorites'
-											: 'Add to favorites'}
-									>
-										{#if favoriteEmojis.includes(emoji.shortcode)}
-											★
-										{:else}
-											☆
-										{/if}
-									</span>
-								{/if}
-							</button>
-						{/each}
-					</div>
-				</section>
-			{/if}
-
-				{#if selectedCategory === 'all'}
-				<!-- Show all categories -->
-				{#each Object.entries(emojisByCategory) as [category, categoryEmojis] (category)}
-					{#if categoryEmojis.length > 0}
-						<section class="emoji-picker__section">
-							{#if renderCategory}
-								{@render renderCategory(category, categoryEmojis)}
-							{:else}
-								<h3 class="emoji-picker__section-title">{category}</h3>
-								<div class="emoji-picker__grid">
-									{#each categoryEmojis.slice(0, maxVisible) as emoji (emoji.shortcode)}
-										<button
-											class="emoji-picker__emoji"
-											class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-											onclick={() => selectEmoji(emoji)}
-											onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-											onmouseleave={() => (hoveredEmoji = null)}
-											title={`:${emoji.shortcode}:`}
-											aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-										>
-											<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
-											{#if showFavorites}
-												<span
-													class="emoji-picker__favorite-btn"
-													role="button"
-													tabindex="0"
-													onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-													onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-													aria-label={favoriteEmojis.includes(emoji.shortcode)
-														? 'Remove from favorites'
-														: 'Add to favorites'}
-												>
-													{#if favoriteEmojis.includes(emoji.shortcode)}
-														★
-													{:else}
-														☆
-													{/if}
-												</span>
-											{/if}
-										</button>
-									{/each}
-								</div>
-							{/if}
-						</section>
-					{/if}
-				{/each}
-			{:else}
-				<!-- Show selected category -->
-				{#if emojisByCategory[selectedCategory]?.length > 0}
-					<div class="emoji-picker__grid">
-						{#each emojisByCategory[selectedCategory] as emoji (emoji.shortcode)}
-							<button
-								class="emoji-picker__emoji"
-								class:emoji-picker__emoji--favorite={favoriteEmojis.includes(emoji.shortcode)}
-								onclick={() => selectEmoji(emoji)}
-								onmouseenter={() => (hoveredEmoji = emoji.shortcode)}
-								onmouseleave={() => (hoveredEmoji = null)}
-								title={`:${emoji.shortcode}:`}
-								aria-label={emoji.description || `Emoji ${emoji.shortcode}`}
-							>
-								<img src={getEmojiUrl(emoji)} alt={`:${emoji.shortcode}:`} loading="lazy" />
-								{#if showFavorites}
-									<span
-										class="emoji-picker__favorite-btn"
-										role="button"
-										tabindex="0"
-										onclick={(e) => toggleFavorite(emoji.shortcode, e)}
-										onkeydown={(event) => handleFavoriteKeyPress(event, emoji.shortcode)}
-										aria-label={favoriteEmojis.includes(emoji.shortcode)
-											? 'Remove from favorites'
-											: 'Add to favorites'}
-									>
-										{#if favoriteEmojis.includes(emoji.shortcode)}
-											★
-										{:else}
-											☆
-										{/if}
-									</span>
-								{/if}
-							</button>
-						{/each}
-					</div>
-				{/if}
-			{/if}
 			{/if}
 		{/if}
 	</div>
