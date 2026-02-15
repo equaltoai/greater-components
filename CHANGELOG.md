@@ -14,26 +14,23 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.1.11-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.10-rc.0...greater-v0.1.11-rc.0) (2026-02-15)
 
-
 ### Features
 
-* **social:** add Unicode fallback to CustomEmojiPicker ([43ff72f](https://github.com/equaltoai/greater-components/commit/43ff72f9d7bd3f8b8e70e40df4712d30ceb22f62))
-
+- **social:** add Unicode fallback to CustomEmojiPicker ([43ff72f](https://github.com/equaltoai/greater-components/commit/43ff72f9d7bd3f8b8e70e40df4712d30ceb22f62))
 
 ### Bug Fixes
 
-* **adapters:** handle empty GraphQL query results ([58c7bfe](https://github.com/equaltoai/greater-components/commit/58c7bfece1a56eb97bab549f6c206000525d60bf))
-* **playground:** prevent icon gallery crash ([5086560](https://github.com/equaltoai/greater-components/commit/5086560fd147546b7079fd5d0d394978a66a7ffa))
-
+- **adapters:** handle empty GraphQL query results ([58c7bfe](https://github.com/equaltoai/greater-components/commit/58c7bfece1a56eb97bab549f6c206000525d60bf))
+- **playground:** prevent icon gallery crash ([5086560](https://github.com/equaltoai/greater-components/commit/5086560fd147546b7079fd5d0d394978a66a7ffa))
 
 ### Chores
 
-* format + regenerate registry ([ad0abd4](https://github.com/equaltoai/greater-components/commit/ad0abd42f5ee47f4ca35290f41de2940eee17acb))
-* **lesser:** pin contracts to v1.1.10 ([c0d8fc2](https://github.com/equaltoai/greater-components/commit/c0d8fc20e1e0756832772e478c93520c38b3a228))
-* **main:** release greater 0.1.10 ([667640a](https://github.com/equaltoai/greater-components/commit/667640a877db74622bede34003a86d9e600bb0dd))
-* **main:** release greater 0.1.10 ([6ac2237](https://github.com/equaltoai/greater-components/commit/6ac22374d04c698932972320b3c79ab67ca76402))
-* pin Lesser v1.1.10 + fix open issues ([a60c1e2](https://github.com/equaltoai/greater-components/commit/a60c1e204a512f7107ff36e2311d48756bb43afd))
-* **release:** prepare metadata ([0b46575](https://github.com/equaltoai/greater-components/commit/0b465754b1063d99b0d1078e775a10bbda883646))
+- format + regenerate registry ([ad0abd4](https://github.com/equaltoai/greater-components/commit/ad0abd42f5ee47f4ca35290f41de2940eee17acb))
+- **lesser:** pin contracts to v1.1.10 ([c0d8fc2](https://github.com/equaltoai/greater-components/commit/c0d8fc20e1e0756832772e478c93520c38b3a228))
+- **main:** release greater 0.1.10 ([667640a](https://github.com/equaltoai/greater-components/commit/667640a877db74622bede34003a86d9e600bb0dd))
+- **main:** release greater 0.1.10 ([6ac2237](https://github.com/equaltoai/greater-components/commit/6ac22374d04c698932972320b3c79ab67ca76402))
+- pin Lesser v1.1.10 + fix open issues ([a60c1e2](https://github.com/equaltoai/greater-components/commit/a60c1e204a512f7107ff36e2311d48756bb43afd))
+- **release:** prepare metadata ([0b46575](https://github.com/equaltoai/greater-components/commit/0b465754b1063d99b0d1078e775a10bbda883646))
 
 ## [0.1.10](https://github.com/equaltoai/greater-components/compare/greater-v0.1.9...greater-v0.1.10) (2026-02-12)
 
