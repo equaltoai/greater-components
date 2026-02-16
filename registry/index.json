@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-15T22:27:22.647Z",
+  "generatedAt": "2026-02-16T16:35:15.574Z",
   "ref": "greater-v0.1.11",
   "version": "0.1.11",
   "checksums": {
@@ -827,7 +827,7 @@
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-g4EDQH2+AkDq/POPfSl/AJlXM5H+UDVmdGKZnelKoXY=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-8q4YGm8CytJ6QrYlaKBJMqbBvXTRZVOY2AVhzhqlfDQ=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.ts": "sha256-4U/b1aHeGBfl+YC+R+XaeY0Ts8hY8Er+3XfqUhSpqWY=",
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
@@ -5545,8 +5545,8 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
-          "checksum": "sha256-g4EDQH2+AkDq/POPfSl/AJlXM5H+UDVmdGKZnelKoXY=",
-          "size": 45623
+          "checksum": "sha256-8q4YGm8CytJ6QrYlaKBJMqbBvXTRZVOY2AVhzhqlfDQ=",
+          "size": 45724
         },
         {
           "path": "src/graphql/optimistic.d.ts",
