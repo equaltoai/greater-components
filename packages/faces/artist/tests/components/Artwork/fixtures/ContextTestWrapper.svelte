@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import {
 		createArtworkContext,
 		type ArtworkConfig,
@@ -15,7 +16,11 @@
 
 	let props: Props = $props();
 
-	createArtworkContext(props.artwork, props.config, props.handlers);
+	createArtworkContext(
+		untrack(() => props.artwork),
+		untrack(() => props.config),
+		untrack(() => props.handlers)
+	);
 </script>
 
 {@render props.children?.()}
