@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-16T16:35:15.574Z",
+  "generatedAt": "2026-02-16T16:40:11.243Z",
   "ref": "greater-v0.1.11",
   "version": "0.1.11",
   "checksums": {
