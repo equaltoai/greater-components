@@ -14,25 +14,22 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.1.12](https://github.com/equaltoai/greater-components/compare/greater-v0.1.11...greater-v0.1.12) (2026-02-16)
 
-
 ### Bug Fixes
 
-* **adapters:** default empty conversations results ([32500ad](https://github.com/equaltoai/greater-components/commit/32500ad2e1e1055ad8418bf02daf8a88e2d1386e)), closes [#210](https://github.com/equaltoai/greater-components/issues/210)
-* **adapters:** pin Lesser v1.1.11 + suppress empty conversations error ([f4b21c0](https://github.com/equaltoai/greater-components/commit/f4b21c0049b10af8b5a605e4b7648b9a59579989))
-
+- **adapters:** default empty conversations results ([32500ad](https://github.com/equaltoai/greater-components/commit/32500ad2e1e1055ad8418bf02daf8a88e2d1386e)), closes [#210](https://github.com/equaltoai/greater-components/issues/210)
+- **adapters:** pin Lesser v1.1.11 + suppress empty conversations error ([f4b21c0](https://github.com/equaltoai/greater-components/commit/f4b21c0049b10af8b5a605e4b7648b9a59579989))
 
 ### Tests
 
-* fix wrappers and headless mocks ([14b624b](https://github.com/equaltoai/greater-components/commit/14b624b841691941bde23100a5edc1e8311a6dca))
-
+- fix wrappers and headless mocks ([14b624b](https://github.com/equaltoai/greater-components/commit/14b624b841691941bde23100a5edc1e8311a6dca))
 
 ### Chores
 
-* **deps:** update workspace dependencies ([2391851](https://github.com/equaltoai/greater-components/commit/23918518bb23851a7e06761817c2f19b57fccff0))
-* format adapter tests ([28d6a71](https://github.com/equaltoai/greater-components/commit/28d6a71874a4ca808fb017397c705606aa18ee1f))
-* **premain:** release greater 0.1.12-rc.0 ([bd75d6d](https://github.com/equaltoai/greater-components/commit/bd75d6d8174b0ce9ad6fe4c19adc17494bee8847))
-* **premain:** release greater 0.1.12-rc.0 ([ec71322](https://github.com/equaltoai/greater-components/commit/ec71322c0efeb4194730f4b9d31f81d51b9936ca))
-* **release:** prepare metadata ([8754c5b](https://github.com/equaltoai/greater-components/commit/8754c5b0306082c21245de6a3766017d2df6db0c))
+- **deps:** update workspace dependencies ([2391851](https://github.com/equaltoai/greater-components/commit/23918518bb23851a7e06761817c2f19b57fccff0))
+- format adapter tests ([28d6a71](https://github.com/equaltoai/greater-components/commit/28d6a71874a4ca808fb017397c705606aa18ee1f))
+- **premain:** release greater 0.1.12-rc.0 ([bd75d6d](https://github.com/equaltoai/greater-components/commit/bd75d6d8174b0ce9ad6fe4c19adc17494bee8847))
+- **premain:** release greater 0.1.12-rc.0 ([ec71322](https://github.com/equaltoai/greater-components/commit/ec71322c0efeb4194730f4b9d31f81d51b9936ca))
+- **release:** prepare metadata ([8754c5b](https://github.com/equaltoai/greater-components/commit/8754c5b0306082c21245de6a3766017d2df6db0c))
 
 ## [0.1.12-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.11-rc.0...greater-v0.1.12-rc.0) (2026-02-16)
 
