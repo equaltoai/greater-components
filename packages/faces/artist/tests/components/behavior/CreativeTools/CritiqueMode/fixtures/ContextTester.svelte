@@ -7,7 +7,7 @@
 		type CritiqueConfig,
 		type CritiqueHandlers,
 	} from '../../../../../../src/components/CreativeTools/CritiqueMode/context.svelte.js';
-	import { onMount, type Snippet } from 'svelte';
+	import { onMount, untrack, type Snippet } from 'svelte';
 	import type { ArtworkData } from '../../../../../../src/types/artwork.js';
 
 	interface Props {
@@ -21,30 +21,32 @@
 
 	let props: Props = $props();
 
-	if (props.checkHasContext) {
-		props.checkHasContext(hasCritiqueContext());
-	}
+	const checkHasContext = untrack(() => props.checkHasContext);
+	checkHasContext?.(hasCritiqueContext());
 
-	if (props.artwork) {
+	const artwork = untrack(() => props.artwork);
+	if (artwork) {
 		createCritiqueContext(
-			props.artwork,
-			props.config as CritiqueConfig,
-			props.handlers as CritiqueHandlers
+			artwork,
+			untrack(() => props.config) as CritiqueConfig,
+			untrack(() => props.handlers) as CritiqueHandlers
 		);
 	}
 
 	// Check again after creation if we created it
-	if (props.artwork && props.checkHasContext) {
-		props.checkHasContext(hasCritiqueContext());
+	if (artwork && checkHasContext) {
+		checkHasContext(hasCritiqueContext());
 	}
 
+	const captureContext = untrack(() => props.captureContext);
 	onMount(() => {
-		if (props.captureContext) {
-			try {
-				props.captureContext(getCritiqueContext());
-			} catch (e) {
-				props.captureContext(null, e);
-			}
+		if (!captureContext) {
+			return;
+		}
+		try {
+			captureContext(getCritiqueContext());
+		} catch (e) {
+			captureContext(null, e);
 		}
 	});
 </script>

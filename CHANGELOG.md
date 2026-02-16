@@ -12,6 +12,25 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.12-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.11-rc.0...greater-v0.1.12-rc.0) (2026-02-16)
+
+### Bug Fixes
+
+- **adapters:** default empty conversations results ([32500ad](https://github.com/equaltoai/greater-components/commit/32500ad2e1e1055ad8418bf02daf8a88e2d1386e)), closes [#210](https://github.com/equaltoai/greater-components/issues/210)
+- **adapters:** pin Lesser v1.1.11 + suppress empty conversations error ([f4b21c0](https://github.com/equaltoai/greater-components/commit/f4b21c0049b10af8b5a605e4b7648b9a59579989))
+
+### Tests
+
+- fix wrappers and headless mocks ([14b624b](https://github.com/equaltoai/greater-components/commit/14b624b841691941bde23100a5edc1e8311a6dca))
+
+### Chores
+
+- **deps:** update workspace dependencies ([2391851](https://github.com/equaltoai/greater-components/commit/23918518bb23851a7e06761817c2f19b57fccff0))
+- format adapter tests ([28d6a71](https://github.com/equaltoai/greater-components/commit/28d6a71874a4ca808fb017397c705606aa18ee1f))
+- **main:** release greater 0.1.11 ([9c0ffec](https://github.com/equaltoai/greater-components/commit/9c0ffec99ff5906d9836909d1e303f2fe3df240e))
+- **main:** release greater 0.1.11 ([7bac630](https://github.com/equaltoai/greater-components/commit/7bac6304929b7ce1e26cccaaa33057e77308f0f3))
+- **release:** prepare metadata ([d073017](https://github.com/equaltoai/greater-components/commit/d0730175366cbcc918144519ac5dfb5063c0110b))
+
 ## [0.1.11](https://github.com/equaltoai/greater-components/compare/greater-v0.1.10...greater-v0.1.11) (2026-02-15)
 
 ### Features

@@ -109,11 +109,14 @@ describe('LesserGraphQLAdapter', () => {
 	});
 
 	describe('Generic Query/Mutate Handling', () => {
-		it('should throw if query returns undefined data', async () => {
+		it('should return undefined if query returns undefined data', async () => {
 			mockApolloClient.query.mockResolvedValue({}); // No data
-			await expect(adapter.getObject('1')).rejects.toThrow(
-				'Query completed without returning data'
-			);
+			await expect(adapter.getObject('1')).resolves.toBeUndefined();
+		});
+
+		it('should return empty array if conversations query returns undefined data', async () => {
+			mockApolloClient.query.mockResolvedValue({}); // No data
+			await expect(adapter.getConversations({} as any)).resolves.toEqual([]);
 		});
 
 		it('should throw if mutation returns null data', async () => {
