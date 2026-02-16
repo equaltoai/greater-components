@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-icons",
   "private": true,
-  "version": "0.1.10",
+  "version": "0.1.11",
   "type": "module",
   "description": "Icon components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -65,12 +65,12 @@
   "devDependencies": {
     "@sveltejs/package": "^2.5.7",
     "@sveltejs/vite-plugin-svelte": "^6.2.4",
-    "@types/node": "^25.2.2",
+    "@types/node": "^25.2.3",
     "@vitest/coverage-v8": "^4.0.18",
     "chokidar": "^5.0.0",
     "feather-icons": "^4.29.2",
-    "jsdom": "^28.0.0",
-    "svelte": "^5.50.0",
+    "jsdom": "^28.1.0",
+    "svelte": "^5.51.2",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"

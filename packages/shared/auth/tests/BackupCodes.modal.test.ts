@@ -4,15 +4,26 @@ import BackupCodes from '../src/BackupCodes.svelte';
 
 // Mock headless UI dependencies
 vi.mock('@equaltoai/greater-components-headless/button', () => ({
-	createButton: () => ({ props: {} }),
+	createButton: () => ({
+		actions: {
+			button: () => ({ destroy: () => {} }),
+		},
+	}),
 }));
 
 // Mock modal - ALWAYS OPEN for this test suite
 vi.mock('@equaltoai/greater-components-headless/modal', () => ({
 	createModal: () => ({
-		isOpen: true, // Force open
-		open: vi.fn(),
-		close: vi.fn(),
+		state: { open: true }, // Force open
+		actions: {
+			backdrop: () => ({ destroy: () => {} }),
+			content: () => ({ destroy: () => {} }),
+		},
+		helpers: {
+			open: vi.fn(),
+			close: vi.fn(),
+			toggle: vi.fn(),
+		},
 	}),
 }));
 

@@ -4,7 +4,11 @@ import WalletConnect from '../src/WalletConnect.svelte';
 
 // Mock headless button
 vi.mock('@equaltoai/greater-components-headless/button', () => ({
-	createButton: () => ({ props: {} }),
+	createButton: () => ({
+		actions: {
+			button: () => ({ destroy: () => {} }),
+		},
+	}),
 }));
 
 // Mock clipboard
