@@ -53,7 +53,10 @@ describe('Admin.Reports Component', () => {
 			expect(screen.getByText('Harassment')).toBeTruthy();
 		});
 
-		const resolveButton = screen.getByText('Resolve');
+		const reportCard = screen.getByRole('button', { name: /Harassment/i });
+		await fireEvent.click(reportCard);
+
+		const resolveButton = await screen.findByText('Resolve');
 		await fireEvent.click(resolveButton);
 
 		expect(handlers.onResolveReport).toHaveBeenCalledWith('1', 'suspend');
@@ -66,7 +69,10 @@ describe('Admin.Reports Component', () => {
 			expect(screen.getByText('Harassment')).toBeTruthy();
 		});
 
-		const dismissButton = screen.getByText('Dismiss');
+		const reportCard = screen.getByRole('button', { name: /Harassment/i });
+		await fireEvent.click(reportCard);
+
+		const dismissButton = await screen.findByText('Dismiss');
 		await fireEvent.click(dismissButton);
 
 		expect(handlers.onDismissReport).toHaveBeenCalledWith('1');

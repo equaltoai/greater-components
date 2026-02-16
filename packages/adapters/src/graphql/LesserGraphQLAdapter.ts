@@ -793,7 +793,8 @@ export class LesserGraphQLAdapter {
 
 	async getConversations(variables: ConversationsQueryVariables) {
 		const data = await this.query(ConversationsDocument, variables);
-		return data.conversations;
+		const conversations = (data as Partial<typeof data>).conversations;
+		return Array.isArray(conversations) ? conversations : [];
 	}
 
 	async getConversation(id: string) {
