@@ -3,11 +3,14 @@ import { mount, unmount, flushSync } from 'svelte';
 import Thread from '../src/Thread.svelte';
 
 // Mock context
-const { mockHandlers, mockState } = vi.hoisted(() => ({
+const { mockHandlers, mockState, mockAcceptMessageRequest, mockDeclineMessageRequest } = vi.hoisted(() => ({
 	mockHandlers: {},
+	mockAcceptMessageRequest: vi.fn(),
+	mockDeclineMessageRequest: vi.fn(),
 	mockState: {
 		selectedConversation: null,
 		messages: [],
+		loading: false,
 		loadingMessages: false,
 	},
 }));
@@ -19,6 +22,8 @@ vi.mock('../src/context.svelte.js', async () => {
 		getMessagesContext: () => ({
 			handlers: mockHandlers,
 			state: mockState,
+			acceptMessageRequest: mockAcceptMessageRequest,
+			declineMessageRequest: mockDeclineMessageRequest,
 		}),
 		// Keep actual formatMessageTime if used by Message.svelte
 	};

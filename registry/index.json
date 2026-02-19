@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-16T17:25:46.807Z",
+  "generatedAt": "2026-02-19T06:25:27.786Z",
   "ref": "greater-v0.1.12",
   "version": "0.1.12",
   "checksums": {
@@ -823,7 +823,7 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-M0UwWko7U1Cgv/EZv6CStGHfwidKao9BxgJRvKcF8N8=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-faQqO3lVFeBOXb5O0tlse439H9HXgLPw7a5CU36+yxU=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-uLxyC95/6X3CBdndHpDdoy2HjLr1Cmh9qWDyk5rLd/I=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
@@ -833,7 +833,7 @@
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
     "packages/adapters/src/HttpPollingClient.ts": "sha256-3VvR+Q3A9QuT9IKrT2s2OP48Ir5wDbDiL3NFp6fhO0w=",
     "packages/adapters/src/index.d.ts": "sha256-N9rD+C+FY2TCOW91GXIb5Cqm9lMS5na3I8MoSewctBE=",
-    "packages/adapters/src/index.ts": "sha256-P6N05jIIS0IOMs5pYu6YOFycVs1F0l1HK2n+MZQ3OFc=",
+    "packages/adapters/src/index.ts": "sha256-swunljMU8rsSATxAcW06VRCr+AVOXFtdyKuigDOOVz4=",
     "packages/adapters/src/logger.d.ts": "sha256-EWrIRS5/xIIlNv5OLPY+Rf37HgYqrYhXxGlfPX8oNgc=",
     "packages/adapters/src/logger.ts": "sha256-4M5fy8SndwLJfyZ3TrT1Qmql2Jg0GlUatjIHPQOedhQ=",
     "packages/adapters/src/mappers/index.d.ts": "sha256-IVlngJIkK6cSnV1Yjhe/K8uy/QEhYXZyEY9UBk75tlk=",
@@ -848,6 +848,8 @@
     "packages/adapters/src/mappers/mastodon/mappers.ts": "sha256-azySwXrEAWqu3nuiQkR3IFQ84Z9Pr0boYFgzpqXYJtE=",
     "packages/adapters/src/mappers/mastodon/types.d.ts": "sha256-LLN8HNltLV9QnLl0tY3zOF4ovD0+sYN0UvGJIx7MH70=",
     "packages/adapters/src/mappers/mastodon/types.ts": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
+    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-xBHKgrS6cISxd8MIkTfkpVK0U67jQxcHEiGQLfCrOgQ=",
+    "packages/adapters/src/messaging/index.ts": "sha256-vosx6bnMIGgu37uhu8W/4BYLdDU98icskBzUitrcikY=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-P7MTLrDEubSZl1pZBMawRRvTOir3YTyJW9FAgVoIg3E=",
     "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-x7n20IQ5Q5tBk61dIuPvqQWvAXwVzjcGR3TJMhTSPX0=",
@@ -891,7 +893,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-gT7brhxX/HWQSvwr7XkbIHD7r77jK5XVmnkTR1M7jtA=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-faQqO3lVFeBOXb5O0tlse439H9HXgLPw7a5CU36+yxU=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-uLxyC95/6X3CBdndHpDdoy2HjLr1Cmh9qWDyk5rLd/I=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
     "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
@@ -1334,16 +1336,16 @@
     "packages/shared/chat/src/context.svelte.ts": "sha256-8uAnI1KAhil97NmMCf9mv9IlZ7T0TRKKxLmHQrbzX70=",
     "packages/shared/chat/src/index.ts": "sha256-KtSn/zWSeWambJGI8mB/57wctsck+hvZ9AZerPdrnww=",
     "packages/shared/chat/src/types.ts": "sha256-eNCurs2A2O5XysZk1u/kHxZ6N2o3kjH3sDgJJvcVS14=",
-    "packages/shared/messaging/src/Composer.svelte": "sha256-bGXqeU0k8LhLZUeEZjRc02BZSLwNvNbhJ+PHx+fu50o=",
-    "packages/shared/messaging/src/context.svelte.ts": "sha256-vrYF25kU07z9tA/N2FyYaKSZqlo0uBKCekHetfWPaLg=",
+    "packages/shared/messaging/src/Composer.svelte": "sha256-mDu8POEo19GzW1+bDIWvQauxpZ7H1gTw5r4Z7UXMUnU=",
+    "packages/shared/messaging/src/context.svelte.ts": "sha256-EFRZK5QGk9CdOv8qPfnl3uQLXXUxxncJ/YPEEW1zhwg=",
     "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-nCdGmrJsm4E/8MiUutst0CII1jGu6lJ36Gw2b2UFWyY=",
-    "packages/shared/messaging/src/Conversations.svelte": "sha256-CD2t5WEPKYvEmCAKLHei6V4/fGODG9/o3yJ8jSasFcc=",
-    "packages/shared/messaging/src/index.ts": "sha256-A6Nr/srk2DbhXIpx2JLMc32tAFvXyRgZ/+8Uw2fh/yg=",
+    "packages/shared/messaging/src/Conversations.svelte": "sha256-ZzNW5MYTm/QdfT0P+WZi2kL43v32WddypfQXTpxyLaI=",
+    "packages/shared/messaging/src/index.ts": "sha256-HBQsUxfVTOleBov417scpxK3QH8Rjz6AG6tXLliZvUQ=",
     "packages/shared/messaging/src/MediaUpload.svelte": "sha256-5ORpNjGoJKb1SXWhVzFZ80Frxi0e6VYP1oM1ow2Oejo=",
     "packages/shared/messaging/src/Message.svelte": "sha256-/4C19YSqvds1hcHJ+TglevHl2EyQLHUWjc+BGhfqPio=",
     "packages/shared/messaging/src/NewConversation.svelte": "sha256-23nXlWNf5SY+FF7NBPVU5WVMWj+ywpAq3MUbyauX8rE=",
     "packages/shared/messaging/src/Root.svelte": "sha256-uDWUKvUh69GsZBg6JhDuuniR6WhLspcYOgxP1Rv6DsQ=",
-    "packages/shared/messaging/src/Thread.svelte": "sha256-+V3ptGZXYRbwP5gRb116xFda+DWjl9DYUHBQIErVdss=",
+    "packages/shared/messaging/src/Thread.svelte": "sha256-3X8Z6Y9iZIgo8czhxumi34eqIj1fc+SED574rB8MIYc=",
     "packages/shared/messaging/src/types.ts": "sha256-gQLqfSqJJXFpvEZn9agIvg7B1Q833QCW7T8f0HznC5A=",
     "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-oo+td3vo+3SQR4zYbS0PNjHDoQ8j4qEoqyMrYrK7Z5s=",
     "packages/shared/messaging/src/utils.ts": "sha256-njdv38BQkoRz+QaAR76UJCsibJchAMYdNsTtL4+XG88="
@@ -5525,8 +5527,8 @@
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-faQqO3lVFeBOXb5O0tlse439H9HXgLPw7a5CU36+yxU=",
-          "size": 1337959
+          "checksum": "sha256-uLxyC95/6X3CBdndHpDdoy2HjLr1Cmh9qWDyk5rLd/I=",
+          "size": 1468655
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -5575,8 +5577,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-P6N05jIIS0IOMs5pYu6YOFycVs1F0l1HK2n+MZQ3OFc=",
-          "size": 7062
+          "checksum": "sha256-swunljMU8rsSATxAcW06VRCr+AVOXFtdyKuigDOOVz4=",
+          "size": 7258
         },
         {
           "path": "src/logger.d.ts",
@@ -5647,6 +5649,16 @@
           "path": "src/mappers/mastodon/types.ts",
           "checksum": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
           "size": 8699
+        },
+        {
+          "path": "src/messaging/createLesserMessagesHandlers.ts",
+          "checksum": "sha256-xBHKgrS6cISxd8MIkTfkpVK0U67jQxcHEiGQLfCrOgQ=",
+          "size": 4846
+        },
+        {
+          "path": "src/messaging/index.ts",
+          "checksum": "sha256-vosx6bnMIGgu37uhu8W/4BYLdDU98icskBzUitrcikY=",
+          "size": 170
         },
         {
           "path": "src/models/unified.d.ts",
@@ -5829,7 +5841,7 @@
           "size": 11439
         }
       ],
-      "dependencies": [],
+      "dependencies": [{ "name": "messaging", "version": "latest" }],
       "peerDependencies": [
         { "name": "@apollo/client", "version": "^4.1.4" },
         { "name": "@apollo/client-react-streaming", "version": "^0.14.4" },
@@ -5974,8 +5986,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-faQqO3lVFeBOXb5O0tlse439H9HXgLPw7a5CU36+yxU=",
-          "size": 1337959
+          "checksum": "sha256-uLxyC95/6X3CBdndHpDdoy2HjLr1Cmh9qWDyk5rLd/I=",
+          "size": 1468655
         },
         {
           "path": "src/adapters/graphql/index.ts",
@@ -8735,13 +8747,13 @@
       "files": [
         {
           "path": "src/Composer.svelte",
-          "checksum": "sha256-bGXqeU0k8LhLZUeEZjRc02BZSLwNvNbhJ+PHx+fu50o=",
-          "size": 1444
+          "checksum": "sha256-mDu8POEo19GzW1+bDIWvQauxpZ7H1gTw5r4Z7UXMUnU=",
+          "size": 1661
         },
         {
           "path": "src/context.svelte.ts",
-          "checksum": "sha256-vrYF25kU07z9tA/N2FyYaKSZqlo0uBKCekHetfWPaLg=",
-          "size": 7730
+          "checksum": "sha256-EFRZK5QGk9CdOv8qPfnl3uQLXXUxxncJ/YPEEW1zhwg=",
+          "size": 11069
         },
         {
           "path": "src/ConversationPicker.svelte",
@@ -8750,13 +8762,13 @@
         },
         {
           "path": "src/Conversations.svelte",
-          "checksum": "sha256-CD2t5WEPKYvEmCAKLHei6V4/fGODG9/o3yJ8jSasFcc=",
-          "size": 2807
+          "checksum": "sha256-ZzNW5MYTm/QdfT0P+WZi2kL43v32WddypfQXTpxyLaI=",
+          "size": 3593
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-A6Nr/srk2DbhXIpx2JLMc32tAFvXyRgZ/+8Uw2fh/yg=",
-          "size": 2175
+          "checksum": "sha256-HBQsUxfVTOleBov417scpxK3QH8Rjz6AG6tXLliZvUQ=",
+          "size": 2213
         },
         {
           "path": "src/MediaUpload.svelte",
@@ -8780,8 +8792,8 @@
         },
         {
           "path": "src/Thread.svelte",
-          "checksum": "sha256-+V3ptGZXYRbwP5gRb116xFda+DWjl9DYUHBQIErVdss=",
-          "size": 1138
+          "checksum": "sha256-3X8Z6Y9iZIgo8czhxumi34eqIj1fc+SED574rB8MIYc=",
+          "size": 2547
         },
         {
           "path": "src/types.ts",
@@ -8816,6 +8828,8 @@
         "MessageParticipant",
         "DirectMessage",
         "Conversation",
+        "ConversationFolder",
+        "DmRequestState",
         "MessagesHandlers",
         "MessagesState",
         "MessagesContext",

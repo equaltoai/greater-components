@@ -54,6 +54,10 @@ export type {
 	UploadMediaPayload,
 } from './graphql';
 
+// Messaging handlers (Lesser → shared/messaging)
+export { createLesserMessagesHandlers } from './messaging/index.js';
+export type { LesserMessagesHandlersConfig } from './messaging/index.js';
+
 // Reactive Stores (Svelte 5 Runes)
 export { createTimelineStore, createNotificationStore, createPresenceStore } from './stores';
 

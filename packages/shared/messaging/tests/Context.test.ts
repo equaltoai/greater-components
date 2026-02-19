@@ -28,6 +28,7 @@ describe('Messages Context', () => {
 
 	it('creates context with initial state', () => {
 		const context = createMessagesContext(handlers);
+		expect(context.state.folder).toBe('INBOX');
 		expect(context.state.conversations).toEqual([]);
 		expect(context.state.selectedConversation).toBeNull();
 		expect(context.state.messages).toEqual([]);
@@ -45,7 +46,7 @@ describe('Messages Context', () => {
 			const context = createMessagesContext(handlers);
 			await context.fetchConversations();
 
-			expect(handlers.onFetchConversations).toHaveBeenCalled();
+			expect(handlers.onFetchConversations).toHaveBeenCalledWith('INBOX');
 			expect(context.state.conversations).toEqual(mockConversations);
 			expect(context.state.loadingConversations).toBe(false);
 			expect(context.state.error).toBeNull();

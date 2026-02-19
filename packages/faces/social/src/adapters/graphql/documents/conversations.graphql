@@ -2,12 +2,18 @@
 
 #import "./fragments.graphql"
 
-query Conversations($first: Int = 20, $after: Cursor) {
-	conversations(first: $first, after: $after) {
+query Conversations($folder: ConversationFolder = INBOX, $first: Int = 20, $after: Cursor) {
+	conversations(folder: $folder, first: $first, after: $after) {
 		id
 		unread
 		createdAt
 		updatedAt
+		viewerMetadata {
+			requestState
+			requestedAt
+			acceptedAt
+			declinedAt
+		}
 		accounts {
 			...ActorSummary
 		}
@@ -23,6 +29,12 @@ query Conversation($id: ID!) {
 		unread
 		createdAt
 		updatedAt
+		viewerMetadata {
+			requestState
+			requestedAt
+			acceptedAt
+			declinedAt
+		}
 		accounts {
 			...ActorSummary
 		}
@@ -30,6 +42,94 @@ query Conversation($id: ID!) {
 			...ObjectFields
 		}
 	}
+}
+
+query ConversationMessages($conversationId: ID!, $first: Int = 50, $after: Cursor) {
+	conversationMessages(conversationId: $conversationId, first: $first, after: $after) {
+		edges {
+			cursor
+			node {
+				...ObjectFields
+			}
+		}
+		pageInfo {
+			hasNextPage
+			endCursor
+		}
+		totalCount
+	}
+}
+
+mutation CreateConversation($participantId: ID!) {
+	createConversation(participantId: $participantId) {
+		id
+		unread
+		createdAt
+		updatedAt
+		viewerMetadata {
+			requestState
+			requestedAt
+			acceptedAt
+			declinedAt
+		}
+		accounts {
+			...ActorSummary
+		}
+		lastStatus {
+			...ObjectFields
+		}
+	}
+}
+
+mutation SendMessage($conversationId: ID!, $content: String!, $mediaIds: [ID!]) {
+	sendMessage(conversationId: $conversationId, content: $content, mediaIds: $mediaIds) {
+		conversation {
+			id
+			unread
+			createdAt
+			updatedAt
+			viewerMetadata {
+				requestState
+				requestedAt
+				acceptedAt
+				declinedAt
+			}
+			accounts {
+				...ActorSummary
+			}
+			lastStatus {
+				...ObjectFields
+			}
+		}
+		message {
+			...ObjectFields
+		}
+	}
+}
+
+mutation AcceptMessageRequest($conversationId: ID!) {
+	acceptMessageRequest(conversationId: $conversationId) {
+		id
+		unread
+		createdAt
+		updatedAt
+		viewerMetadata {
+			requestState
+			requestedAt
+			acceptedAt
+			declinedAt
+		}
+		accounts {
+			...ActorSummary
+		}
+		lastStatus {
+			...ObjectFields
+		}
+	}
+}
+
+mutation DeclineMessageRequest($conversationId: ID!) {
+	declineMessageRequest(conversationId: $conversationId)
 }
 
 mutation MarkConversationRead($id: ID!) {

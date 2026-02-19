@@ -3,16 +3,18 @@ import { mount, unmount, flushSync } from 'svelte';
 import Conversations from '../src/Conversations.svelte';
 
 // Mock context
-const { mockHandlers, mockState, mockSelectConversation } = vi.hoisted(() => ({
+const { mockHandlers, mockState, mockSelectConversation, mockFetchConversations } = vi.hoisted(() => ({
 	mockHandlers: {
 		onConversationClick: vi.fn(),
 	},
 	mockState: {
+		folder: 'INBOX',
 		selectedConversation: null,
 		conversations: [],
 		loadingConversations: false,
 	},
 	mockSelectConversation: vi.fn(),
+	mockFetchConversations: vi.fn(),
 }));
 
 vi.mock('../src/context.svelte.js', async () => {
@@ -23,6 +25,7 @@ vi.mock('../src/context.svelte.js', async () => {
 			handlers: mockHandlers,
 			state: mockState,
 			selectConversation: mockSelectConversation,
+			fetchConversations: mockFetchConversations,
 		}),
 		getConversationName: (conversation: any) =>
 			conversation.participants[0]?.displayName || 'Unknown',
@@ -33,6 +36,7 @@ vi.mock('../src/context.svelte.js', async () => {
 describe('Conversations', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		mockState.folder = 'INBOX';
 		mockState.selectedConversation = null;
 		mockState.conversations = [];
 		mockState.loadingConversations = false;
@@ -70,6 +74,20 @@ describe('Conversations', () => {
 
 		expect(target.querySelector('.messages-conversations__empty')).toBeTruthy();
 		expect(target.textContent).toContain('No messages yet');
+
+		unmount(instance);
+	});
+
+	it('switches to Requests tab', async () => {
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		const requestsTab = target.querySelectorAll('.messages-conversations__tab')[1] as HTMLButtonElement;
+		requestsTab.click();
+		await flushSync();
+
+		expect(mockFetchConversations).toHaveBeenCalledWith('REQUESTS');
 
 		unmount(instance);
 	});

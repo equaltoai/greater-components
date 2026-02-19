@@ -60,6 +60,8 @@
     "MessageParticipant",
     "DirectMessage",
     "Conversation",
+    "ConversationFolder",
+    "DmRequestState",
     "MessagesHandlers",
     "MessagesState",
     "MessagesContext",

@@ -48,11 +48,36 @@ export interface DirectMessage {
  */
 export interface Conversation {
 	id: string;
+	/**
+	 * Folder the conversation belongs to (Inbox vs Requests).
+	 *
+	 * Optional for backwards compatibility; defaults to `INBOX` when omitted.
+	 */
+	folder?: ConversationFolder;
 	participants: MessageParticipant[];
 	lastMessage?: DirectMessage;
 	unreadCount: number;
 	updatedAt: string;
+	/**
+	 * Request state for message requests.
+	 *
+	 * Optional for backwards compatibility; treat missing as `ACCEPTED`.
+	 */
+	requestState?: DmRequestState;
+	requestedAt?: string | null;
+	acceptedAt?: string | null;
+	declinedAt?: string | null;
 }
+
+/**
+ * Conversation folder
+ */
+export type ConversationFolder = 'INBOX' | 'REQUESTS';
+
+/**
+ * DM request state
+ */
+export type DmRequestState = 'PENDING' | 'ACCEPTED' | 'DECLINED';
 
 /**
  * Messages event handlers
@@ -61,7 +86,7 @@ export interface MessagesHandlers {
 	/**
 	 * Fetch all conversations
 	 */
-	onFetchConversations?: () => Promise<Conversation[]>;
+	onFetchConversations?: (folder?: ConversationFolder) => Promise<Conversation[]>;
 
 	/**
 	 * Fetch messages for a conversation
@@ -94,6 +119,16 @@ export interface MessagesHandlers {
 	 * Create new conversation
 	 */
 	onCreateConversation?: (participantIds: string[]) => Promise<Conversation>;
+
+	/**
+	 * Accept a pending message request
+	 */
+	onAcceptMessageRequest?: (conversationId: string) => Promise<Conversation>;
+
+	/**
+	 * Decline a pending message request
+	 */
+	onDeclineMessageRequest?: (conversationId: string) => Promise<boolean>;
 
 	/**
 	 * Upload media
@@ -132,6 +167,11 @@ export interface MessageMediaUploadMetadata {
  * Messages state
  */
 export interface MessagesState {
+	/**
+	 * Active folder (Inbox vs Requests)
+	 */
+	folder: ConversationFolder;
+
 	/**
 	 * All conversations
 	 */
@@ -195,7 +235,10 @@ export interface MessagesContext {
 	/**
 	 * Fetch all conversations
 	 */
-	fetchConversations: () => Promise<void>;
+	fetchConversations: (
+		folder?: ConversationFolder,
+		options?: { preserveSelection?: boolean }
+	) => Promise<void>;
 
 	/**
 	 * Select a conversation
@@ -216,6 +259,16 @@ export interface MessagesContext {
 	 * Mark conversation as read
 	 */
 	markRead: (conversationId: string) => Promise<void>;
+
+	/**
+	 * Accept a pending message request
+	 */
+	acceptMessageRequest: (conversationId: string) => Promise<void>;
+
+	/**
+	 * Decline a pending message request
+	 */
+	declineMessageRequest: (conversationId: string) => Promise<void>;
 }
 
 /**
@@ -226,6 +279,7 @@ export interface MessagesContext {
  */
 export function createMessagesContext(handlers: MessagesHandlers = {}): MessagesContext {
 	const state = $state<MessagesState>({
+		folder: 'INBOX',
 		conversations: [],
 		selectedConversation: null,
 		messages: [],
@@ -234,6 +288,87 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		loadingConversations: false,
 		loadingMessages: false,
 	});
+
+	const fetchConversations: MessagesContext['fetchConversations'] = async (
+		folder,
+		options = {}
+	) => {
+		const nextFolder = folder ?? state.folder ?? 'INBOX';
+		const folderChanged = nextFolder !== state.folder;
+
+		state.loadingConversations = true;
+		state.error = null;
+
+		if (folderChanged) {
+			state.folder = nextFolder;
+			if (!options.preserveSelection) {
+				state.selectedConversation = null;
+				state.messages = [];
+			}
+		}
+
+		try {
+			const conversations = await handlers.onFetchConversations?.(nextFolder);
+			if (conversations) {
+				state.conversations = conversations;
+			}
+		} catch (error) {
+			state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
+		} finally {
+			state.loadingConversations = false;
+		}
+	};
+
+	const acceptMessageRequest: MessagesContext['acceptMessageRequest'] = async (conversationId) => {
+		state.loading = true;
+		state.error = null;
+
+		try {
+			const updated = await handlers.onAcceptMessageRequest?.(conversationId);
+			if (updated) {
+				const next = { ...updated, requestState: updated.requestState ?? 'ACCEPTED' } as Conversation;
+
+				if (state.selectedConversation?.id === conversationId) {
+					state.selectedConversation = { ...state.selectedConversation, ...next };
+				}
+
+				state.conversations = state.conversations.map((c) =>
+					c.id === conversationId ? { ...c, ...next } : c
+				);
+			}
+
+			if (state.folder === 'REQUESTS') {
+				await fetchConversations('INBOX', { preserveSelection: true });
+			}
+		} catch (error) {
+			state.error = error instanceof Error ? error.message : 'Failed to accept message request';
+			throw error;
+		} finally {
+			state.loading = false;
+		}
+	};
+
+	const declineMessageRequest: MessagesContext['declineMessageRequest'] = async (conversationId) => {
+		state.loading = true;
+		state.error = null;
+
+		try {
+			const ok = await handlers.onDeclineMessageRequest?.(conversationId);
+			if (ok) {
+				state.conversations = state.conversations.filter((c) => c.id !== conversationId);
+
+				if (state.selectedConversation?.id === conversationId) {
+					state.selectedConversation = null;
+					state.messages = [];
+				}
+			}
+		} catch (error) {
+			state.error = error instanceof Error ? error.message : 'Failed to decline message request';
+			throw error;
+		} finally {
+			state.loading = false;
+		}
+	};
 
 	const context: MessagesContext = {
 		state,
@@ -244,21 +379,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		clearError: () => {
 			state.error = null;
 		},
-		fetchConversations: async () => {
-			state.loadingConversations = true;
-			state.error = null;
-
-			try {
-				const conversations = await handlers.onFetchConversations?.();
-				if (conversations) {
-					state.conversations = conversations;
-				}
-			} catch (error) {
-				state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
-			} finally {
-				state.loadingConversations = false;
-			}
-		},
+		fetchConversations,
 		selectConversation: async (conversation: Conversation | null) => {
 			state.selectedConversation = conversation;
 			state.messages = [];
@@ -289,6 +410,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		},
 		sendMessage: async (content: string, mediaIds?: string[]) => {
 			if (!state.selectedConversation || !content.trim()) return;
+			if ((state.selectedConversation.requestState ?? 'ACCEPTED') === 'PENDING') return;
 
 			state.loading = true;
 			state.error = null;
@@ -340,6 +462,8 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				// Silently fail
 			}
 		},
+		acceptMessageRequest,
+		declineMessageRequest,
 	};
 
 	setContext(MESSAGES_CONTEXT_KEY, context);
