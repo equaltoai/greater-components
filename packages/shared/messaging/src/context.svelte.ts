@@ -550,18 +550,26 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 			state.error = null;
 		}
 
-		try {
-			const conversations = await handlers.onFetchConversations?.(nextFolder);
-			if (conversations) {
-				updateRequestTracker(conversations);
-				if (!isBackground) {
-					state.conversations = sortByUpdatedAt(conversations);
+			try {
+				const conversations = await handlers.onFetchConversations?.(nextFolder);
+				if (conversations) {
+					updateRequestTracker(conversations);
+					const sorted = sortByUpdatedAt(conversations);
+					if (!isBackground || nextFolder === state.folder) {
+						state.conversations = sorted;
+
+						if (state.selectedConversation) {
+							const nextSelected = sorted.find((c) => c.id === state.selectedConversation?.id);
+							if (nextSelected) {
+								state.selectedConversation = { ...state.selectedConversation, ...nextSelected };
+							}
+						}
+					}
 				}
-			}
-		} catch (error) {
-			if (!isBackground) {
-				state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
-			}
+			} catch (error) {
+				if (!isBackground) {
+					state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
+				}
 		} finally {
 			if (!isBackground) {
 				state.loadingConversations = false;

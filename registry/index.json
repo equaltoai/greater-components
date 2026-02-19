@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-19T16:32:48.163Z",
+  "generatedAt": "2026-02-19T16:39:45.659Z",
   "ref": "greater-v0.1.12",
   "version": "0.1.12",
   "checksums": {
@@ -1337,7 +1337,7 @@
     "packages/shared/chat/src/index.ts": "sha256-KtSn/zWSeWambJGI8mB/57wctsck+hvZ9AZerPdrnww=",
     "packages/shared/chat/src/types.ts": "sha256-eNCurs2A2O5XysZk1u/kHxZ6N2o3kjH3sDgJJvcVS14=",
     "packages/shared/messaging/src/Composer.svelte": "sha256-mDu8POEo19GzW1+bDIWvQauxpZ7H1gTw5r4Z7UXMUnU=",
-    "packages/shared/messaging/src/context.svelte.ts": "sha256-WOgBw9xtbiIUoYcb0QjyQn0LBbf3muxSVOpV8yOknh8=",
+    "packages/shared/messaging/src/context.svelte.ts": "sha256-dRfVmO6oOp3oZNIn6PtIIw/uZw+wQRe6Yu2/Xbyx/N8=",
     "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-nCdGmrJsm4E/8MiUutst0CII1jGu6lJ36Gw2b2UFWyY=",
     "packages/shared/messaging/src/Conversations.svelte": "sha256-awFRjVDxRa+zXoiyOKEbZEabuQ+UC+ma6l/9YNH4BmE=",
     "packages/shared/messaging/src/index.ts": "sha256-HBQsUxfVTOleBov417scpxK3QH8Rjz6AG6tXLliZvUQ=",
@@ -8752,8 +8752,8 @@
         },
         {
           "path": "src/context.svelte.ts",
-          "checksum": "sha256-WOgBw9xtbiIUoYcb0QjyQn0LBbf3muxSVOpV8yOknh8=",
-          "size": 20316
+          "checksum": "sha256-dRfVmO6oOp3oZNIn6PtIIw/uZw+wQRe6Yu2/Xbyx/N8=",
+          "size": 20650
         },
         {
           "path": "src/ConversationPicker.svelte",
