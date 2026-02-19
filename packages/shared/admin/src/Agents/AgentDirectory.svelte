@@ -42,12 +42,12 @@
 	<div class="admin-agent-directory__toolbar">
 		<TextField label="Search" type="search" placeholder="Search agents" bind:value={query} />
 
-		{#if canLoadMore}
-			<Button variant="secondary" size="sm" disabled={loading} onclick={() => onLoadMore?.()}>
-				Load more
-			</Button>
-		{/if}
-	</div>
+			{#if canLoadMore}
+				<Button variant="outline" size="sm" disabled={loading} onclick={() => onLoadMore?.()}>
+					Load more
+				</Button>
+			{/if}
+		</div>
 
 	{#if error}
 		<div class="admin-agent-directory__error" role="alert">

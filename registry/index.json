@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-02-19T16:14:32.813Z",
+  "generatedAt": "2026-02-19T16:32:48.163Z",
   "ref": "greater-v0.1.12",
   "version": "0.1.12",
   "checksums": {
@@ -1288,7 +1288,7 @@
     "packages/shared/search/src/TagResult.svelte": "sha256-HxW5fPk+WPfsOR5QUMFC6tVNgSufQKLbTm5paEL1ypk=",
     "packages/shared/admin/src/Agents/AgentAttribution.svelte": "sha256-sKioFed9/cv+upwowFCwvXfJtli9XX/fXtR/UB5QVS8=",
     "packages/shared/admin/src/Agents/AgentBadge.svelte": "sha256-4kHvblc7JyIHEmS54toH8xMxfykb1y2aRopKPDEOvjk=",
-    "packages/shared/admin/src/Agents/AgentDirectory.svelte": "sha256-CnEow3iNirpcL1n4qURCCfiQf2X6WKkQ+aH5FtzNMtQ=",
+    "packages/shared/admin/src/Agents/AgentDirectory.svelte": "sha256-pG7AG9P3yPHW2FlDdIFjk3mjJciANOfnG/V8jOm157c=",
     "packages/shared/admin/src/Agents/index.ts": "sha256-AeYdVBEjQMSPjkOhzSW6HRbuQx7v4EiPl39ZAoMG8jQ=",
     "packages/shared/admin/src/Agents/types.ts": "sha256-eqK8lFK2qH0H96qttvXxRobFYjqQADtG6HKo0c6wYGU=",
     "packages/shared/admin/src/Analytics.svelte": "sha256-MyX4gIc2WV46JBYb1FEPQY+wEMw+dqbKrPx/zONYL+o=",
@@ -8413,8 +8413,8 @@
         },
         {
           "path": "src/Agents/AgentDirectory.svelte",
-          "checksum": "sha256-CnEow3iNirpcL1n4qURCCfiQf2X6WKkQ+aH5FtzNMtQ=",
-          "size": 2240
+          "checksum": "sha256-pG7AG9P3yPHW2FlDdIFjk3mjJciANOfnG/V8jOm157c=",
+          "size": 2244
         },
         {
           "path": "src/Agents/index.ts",
