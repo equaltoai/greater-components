@@ -36,6 +36,7 @@ query UserPreferences {
 			defaultVisibility
 			indexable
 			showOnlineStatus
+			directMessagesFrom
 		}
 		reblogFilters {
 			key
@@ -80,6 +81,7 @@ mutation UpdateUserPreferences($input: UpdateUserPreferencesInput!) {
 			defaultVisibility
 			indexable
 			showOnlineStatus
+			directMessagesFrom
 		}
 		reblogFilters {
 			key
