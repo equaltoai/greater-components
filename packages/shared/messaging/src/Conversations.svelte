@@ -13,7 +13,7 @@
 
 	let { currentUserId = 'me', class: className = '' }: Props = $props();
 
-	const { state: messagesState, selectConversation, handlers, fetchConversations } =
+const { state: messagesState, selectConversation, handlers, fetchConversations, startRealtime } =
 		getMessagesContext();
 
 	function handleConversationClick(conversation: Conversation) {
@@ -45,8 +45,32 @@
 				onclick={() => fetchConversations('REQUESTS')}
 			>
 				Requests
+				{#if messagesState.requestCount > 0}
+					<span class="messages-conversations__tab-badge">{messagesState.requestCount}</span>
+				{/if}
 			</button>
 		</div>
+		{#if
+			messagesState.realtimeStatus !== 'connected' &&
+			messagesState.realtimeStatusMessage
+		}
+			<div
+				class={`messages-conversations__status messages-conversations__status--${messagesState.realtimeStatus}`}
+				role="status"
+				aria-live="polite"
+			>
+				<span>{messagesState.realtimeStatusMessage}</span>
+				{#if messagesState.realtimeStatus !== 'connecting'}
+					<button
+						type="button"
+						class="messages-conversations__status-retry"
+						onclick={() => startRealtime()}
+					>
+						Retry now
+					</button>
+				{/if}
+			</div>
+		{/if}
 	</div>
 
 	{#if messagesState.loadingConversations}

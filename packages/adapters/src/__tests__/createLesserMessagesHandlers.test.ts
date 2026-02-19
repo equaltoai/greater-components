@@ -13,6 +13,8 @@ import {
 describe('createLesserMessagesHandlers', () => {
 	const adapter = {
 		getConversations: vi.fn(),
+		getConversation: vi.fn(),
+		subscribeToConversationUpdates: vi.fn(),
 		query: vi.fn(),
 		mutate: vi.fn(),
 		markConversationAsRead: vi.fn(),
@@ -209,5 +211,58 @@ describe('createLesserMessagesHandlers', () => {
 			first: 5,
 		});
 		expect(results).toEqual([{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: undefined }]);
+	});
+
+	it('subscribes to conversation updates', async () => {
+		const unsubscribe = vi.fn();
+		adapter.subscribeToConversationUpdates.mockReturnValueOnce({
+			subscribe: ({ next }: any) => {
+				next({ data: { conversationUpdates: { id: 'c1' } } });
+				return { unsubscribe };
+			},
+		});
+
+		adapter.getConversation.mockResolvedValueOnce({
+			id: 'c1',
+			unread: true,
+			updatedAt: '2026-02-01T00:00:00.000Z',
+			accounts: [{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: null }],
+			lastStatus: {
+				id: 'm1',
+				content: 'Hello',
+				createdAt: '2026-02-01T00:00:00.000Z',
+				actor: { id: 'u1', username: 'alice', displayName: 'Alice', avatar: null },
+				attachments: [],
+			},
+			viewerMetadata: {
+				requestState: 'ACCEPTED',
+				requestedAt: null,
+				acceptedAt: null,
+				declinedAt: null,
+			},
+		});
+
+		const handlers = createLesserMessagesHandlers({ adapter });
+
+		const statuses: string[] = [];
+		const updates: any[] = [];
+		const stop = handlers.onSubscribeToConversationUpdates?.({
+			onConversationUpdate: (update) => updates.push(update),
+			onConnectionStatusChange: (status) => statuses.push(status),
+		});
+
+		expect(statuses).toEqual(['connecting', 'connected']);
+
+		await Promise.resolve();
+
+		expect(adapter.getConversation).toHaveBeenCalledWith('c1');
+		expect(updates).toHaveLength(1);
+		expect(updates[0]).toMatchObject({
+			conversation: expect.objectContaining({ id: 'c1', requestState: 'ACCEPTED', folder: 'INBOX' }),
+			message: expect.objectContaining({ id: 'm1', conversationId: 'c1' }),
+		});
+
+		stop?.();
+		expect(unsubscribe).toHaveBeenCalled();
 	});
 });

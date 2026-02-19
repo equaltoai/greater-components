@@ -12,6 +12,7 @@ import {
 
 export type ConversationFolder = 'INBOX' | 'REQUESTS';
 export type DmRequestState = 'PENDING' | 'ACCEPTED' | 'DECLINED';
+export type RealtimeConnectionStatus = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
 
 export interface MessageParticipant {
 	id: string;
@@ -48,6 +49,16 @@ export interface Conversation {
 	updatedAt: string;
 }
 
+export interface ConversationRealtimeUpdate {
+	conversation: Conversation;
+	message?: DirectMessage;
+}
+
+export interface MessagesRealtimeCallbacks {
+	onConversationUpdate: (update: ConversationRealtimeUpdate) => void;
+	onConnectionStatusChange?: (status: RealtimeConnectionStatus, reason?: string) => void;
+}
+
 export interface MessagesHandlers {
 	onFetchConversations?: (folder?: ConversationFolder) => Promise<Conversation[]>;
 	onFetchMessages?: (
@@ -66,6 +77,7 @@ export interface MessagesHandlers {
 	onAcceptMessageRequest?: (conversationId: string) => Promise<Conversation>;
 	onDeclineMessageRequest?: (conversationId: string) => Promise<boolean>;
 	onSearchParticipants?: (query: string) => Promise<MessageParticipant[]>;
+	onSubscribeToConversationUpdates?: (callbacks: MessagesRealtimeCallbacks) => () => void;
 }
 
 export interface LesserMessagesHandlersConfig {
@@ -217,6 +229,54 @@ export function createLesserMessagesHandlers(config: LesserMessagesHandlersConfi
 			});
 
 			return results.accounts.map(mapActorToParticipant);
+		},
+		onSubscribeToConversationUpdates: (callbacks) => {
+			callbacks.onConnectionStatusChange?.('connecting');
+
+			const sub = adapter.subscribeToConversationUpdates().subscribe({
+				next: ({ data }) => {
+					const conversationId = data?.conversationUpdates?.id;
+					if (!conversationId) {
+						return;
+					}
+
+					void adapter
+						.getConversation(conversationId)
+						.then((conversation) => {
+							if (!conversation) {
+								return;
+							}
+
+							const requestState = conversation.viewerMetadata.requestState ?? 'ACCEPTED';
+							const folder: ConversationFolder = requestState === 'PENDING' ? 'REQUESTS' : 'INBOX';
+							const uiConversation = mapConversationToUiConversation(
+								conversation as unknown as LesserConversationLike,
+								folder
+							);
+
+							callbacks.onConversationUpdate({
+								conversation: uiConversation,
+								message: uiConversation.lastMessage,
+							});
+						})
+						.catch(() => {
+							// Ignore per-event fetch errors; the caller can fall back to polling.
+						});
+				},
+				error: (error) => {
+					const message = error instanceof Error ? error.message : 'Realtime unavailable';
+					callbacks.onConnectionStatusChange?.('error', message);
+				},
+				complete: () => {
+					callbacks.onConnectionStatusChange?.('disconnected');
+				},
+			});
+
+			callbacks.onConnectionStatusChange?.('connected');
+
+			return () => {
+				sub.unsubscribe();
+			};
 		},
 	};
 }
