@@ -96,9 +96,7 @@
 
 		{#if isPendingRequest}
 			<div class="messages-thread__request-banner" role="status" aria-live="polite">
-				<div class="messages-thread__request-text">
-					Message request — accept to reply.
-				</div>
+				<div class="messages-thread__request-text">Message request — accept to reply.</div>
 				<div class="messages-thread__request-actions">
 					<button
 						class="messages-thread__request-button messages-thread__request-button--secondary"

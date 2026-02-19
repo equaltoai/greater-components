@@ -8,6 +8,7 @@
  */
 
 import { getContext, setContext } from 'svelte';
+import { SvelteSet } from 'svelte/reactivity';
 import type { MediaCategory } from './types.js';
 
 const MESSAGES_CONTEXT_KEY = Symbol('messages-context');
@@ -69,7 +70,12 @@ export interface Conversation {
 	declinedAt?: string | null;
 }
 
-export type RealtimeConnectionStatus = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
+export type RealtimeConnectionStatus =
+	| 'idle'
+	| 'connecting'
+	| 'connected'
+	| 'disconnected'
+	| 'error';
 
 export interface ConversationRealtimeUpdate {
 	conversation: Conversation;
@@ -278,7 +284,10 @@ export interface MessagesContext {
 	/**
 	 * Fetch all conversations
 	 */
-	fetchConversations: (folder?: ConversationFolder, options?: FetchConversationsOptions) => Promise<void>;
+	fetchConversations: (
+		folder?: ConversationFolder,
+		options?: FetchConversationsOptions
+	) => Promise<void>;
 
 	/**
 	 * Select a conversation
@@ -347,7 +356,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		realtimeStatusMessage: null,
 	});
 
-	const requestTracker = new Set<string>();
+	const requestTracker = new SvelteSet<string>();
 	const realtimeRetryDelays = [2000, 5000, 10000, 20000];
 	let realtimeRetryIndex = 0;
 	let realtimeRetryTimer: ReturnType<typeof setTimeout> | undefined;
@@ -419,7 +428,11 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 			return;
 		}
 
-		const delay = realtimeRetryDelays[Math.min(realtimeRetryIndex, realtimeRetryDelays.length - 1)];
+		const retryDelayIndex = Math.min(realtimeRetryIndex, realtimeRetryDelays.length - 1);
+		const delay =
+			realtimeRetryDelays[retryDelayIndex] ??
+			realtimeRetryDelays[realtimeRetryDelays.length - 1] ??
+			2000;
 		realtimeRetryIndex += 1;
 		setRealtimeStatus('disconnected', `Realtime paused — retrying in ${delay / 1000}s…`);
 
@@ -442,7 +455,10 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		}
 	};
 
-	const applyRealtimeConversationUpdate = ({ conversation, message }: ConversationRealtimeUpdate) => {
+	const applyRealtimeConversationUpdate = ({
+		conversation,
+		message,
+	}: ConversationRealtimeUpdate) => {
 		const existing =
 			state.conversations.find((c) => c.id === conversation.id) ?? state.selectedConversation;
 		const requestState = conversation.requestState ?? existing?.requestState ?? 'ACCEPTED';
@@ -453,10 +469,9 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 
 		const merged: Conversation = {
 			...conversation,
-			participants:
-				conversation.participants?.length
-					? conversation.participants
-					: existing?.participants ?? [],
+			participants: conversation.participants?.length
+				? conversation.participants
+				: (existing?.participants ?? []),
 			lastMessage: message ?? conversation.lastMessage ?? existing?.lastMessage,
 			requestState,
 			folder,
@@ -550,26 +565,26 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 			state.error = null;
 		}
 
-			try {
-				const conversations = await handlers.onFetchConversations?.(nextFolder);
-				if (conversations) {
-					updateRequestTracker(conversations);
-					const sorted = sortByUpdatedAt(conversations);
-					if (!isBackground || nextFolder === state.folder) {
-						state.conversations = sorted;
+		try {
+			const conversations = await handlers.onFetchConversations?.(nextFolder);
+			if (conversations) {
+				updateRequestTracker(conversations);
+				const sorted = sortByUpdatedAt(conversations);
+				if (!isBackground || nextFolder === state.folder) {
+					state.conversations = sorted;
 
-						if (state.selectedConversation) {
-							const nextSelected = sorted.find((c) => c.id === state.selectedConversation?.id);
-							if (nextSelected) {
-								state.selectedConversation = { ...state.selectedConversation, ...nextSelected };
-							}
+					if (state.selectedConversation) {
+						const nextSelected = sorted.find((c) => c.id === state.selectedConversation?.id);
+						if (nextSelected) {
+							state.selectedConversation = { ...state.selectedConversation, ...nextSelected };
 						}
 					}
 				}
-			} catch (error) {
-				if (!isBackground) {
-					state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
-				}
+			}
+		} catch (error) {
+			if (!isBackground) {
+				state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
+			}
 		} finally {
 			if (!isBackground) {
 				state.loadingConversations = false;
@@ -584,7 +599,10 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		try {
 			const updated = await handlers.onAcceptMessageRequest?.(conversationId);
 			if (updated) {
-				const next = { ...updated, requestState: updated.requestState ?? 'ACCEPTED' } as Conversation;
+				const next = {
+					...updated,
+					requestState: updated.requestState ?? 'ACCEPTED',
+				} as Conversation;
 
 				if (state.selectedConversation?.id === conversationId) {
 					state.selectedConversation = { ...state.selectedConversation, ...next };
@@ -607,7 +625,9 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 		}
 	};
 
-	const declineMessageRequest: MessagesContext['declineMessageRequest'] = async (conversationId) => {
+	const declineMessageRequest: MessagesContext['declineMessageRequest'] = async (
+		conversationId
+	) => {
 		state.loading = true;
 		state.error = null;
 
@@ -727,12 +747,13 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				if (state.selectedConversation) {
 					const deletedWasLast =
 						state.selectedConversation.lastMessage?.id === messageId ||
-						state.conversations.find((c) => c.id === state.selectedConversation?.id)?.lastMessage?.id ===
-							messageId;
+						state.conversations.find((c) => c.id === state.selectedConversation?.id)?.lastMessage
+							?.id === messageId;
 
 					if (deletedWasLast) {
 						const nextLastMessage = state.messages.at(-1);
-						const nextUpdatedAt = nextLastMessage?.createdAt ?? state.selectedConversation.updatedAt;
+						const nextUpdatedAt =
+							nextLastMessage?.createdAt ?? state.selectedConversation.updatedAt;
 
 						state.selectedConversation = {
 							...state.selectedConversation,

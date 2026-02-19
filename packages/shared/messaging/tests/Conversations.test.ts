@@ -3,19 +3,21 @@ import { mount, unmount, flushSync } from 'svelte';
 import Conversations from '../src/Conversations.svelte';
 
 // Mock context
-const { mockHandlers, mockState, mockSelectConversation, mockFetchConversations } = vi.hoisted(() => ({
-	mockHandlers: {
-		onConversationClick: vi.fn(),
-	},
-	mockState: {
-		folder: 'INBOX',
-		selectedConversation: null,
-		conversations: [],
-		loadingConversations: false,
-	},
-	mockSelectConversation: vi.fn(),
-	mockFetchConversations: vi.fn(),
-}));
+const { mockHandlers, mockState, mockSelectConversation, mockFetchConversations } = vi.hoisted(
+	() => ({
+		mockHandlers: {
+			onConversationClick: vi.fn(),
+		},
+		mockState: {
+			folder: 'INBOX',
+			selectedConversation: null,
+			conversations: [],
+			loadingConversations: false,
+		},
+		mockSelectConversation: vi.fn(),
+		mockFetchConversations: vi.fn(),
+	})
+);
 
 vi.mock('../src/context.svelte.js', async () => {
 	const actual = await vi.importActual('../src/context.svelte.js');
@@ -83,7 +85,9 @@ describe('Conversations', () => {
 		const instance = mount(Conversations, { target });
 		await flushSync();
 
-		const requestsTab = target.querySelectorAll('.messages-conversations__tab')[1] as HTMLButtonElement;
+		const requestsTab = target.querySelectorAll(
+			'.messages-conversations__tab'
+		)[1] as HTMLButtonElement;
 		requestsTab.click();
 		await flushSync();
 

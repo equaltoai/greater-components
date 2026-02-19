@@ -193,7 +193,9 @@ describe('createLesserMessagesHandlers', () => {
 		expect(deletedMessage).toBe(true);
 
 		const deletedConversation = await handlers.onDeleteConversation?.('c1');
-		expect(adapter.mutate).toHaveBeenCalledWith(DeleteConversationDocument, { conversationId: 'c1' });
+		expect(adapter.mutate).toHaveBeenCalledWith(DeleteConversationDocument, {
+			conversationId: 'c1',
+		});
 		expect(deletedConversation).toBe(true);
 	});
 
@@ -210,7 +212,9 @@ describe('createLesserMessagesHandlers', () => {
 			type: 'accounts',
 			first: 5,
 		});
-		expect(results).toEqual([{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: undefined }]);
+		expect(results).toEqual([
+			{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: undefined },
+		]);
 	});
 
 	it('subscribes to conversation updates', async () => {
@@ -258,7 +262,11 @@ describe('createLesserMessagesHandlers', () => {
 		expect(adapter.getConversation).toHaveBeenCalledWith('c1');
 		expect(updates).toHaveLength(1);
 		expect(updates[0]).toMatchObject({
-			conversation: expect.objectContaining({ id: 'c1', requestState: 'ACCEPTED', folder: 'INBOX' }),
+			conversation: expect.objectContaining({
+				id: 'c1',
+				requestState: 'ACCEPTED',
+				folder: 'INBOX',
+			}),
 			message: expect.objectContaining({ id: 'm1', conversationId: 'c1' }),
 		});
 

@@ -8001,7 +8001,10 @@
 	font-weight: 600;
 	color: var(--text-secondary, #536471);
 	cursor: pointer;
-	transition: background 0.2s, border-color 0.2s, color 0.2s;
+	transition:
+		background 0.2s,
+		border-color 0.2s,
+		color 0.2s;
 }
 
 .messages-conversations__tab:hover {
@@ -8514,7 +8517,9 @@
 	cursor: pointer;
 	color: var(--text-secondary, #536471);
 	opacity: 0.7;
-	transition: background-color 0.2s, opacity 0.2s;
+	transition:
+		background-color 0.2s,
+		opacity 0.2s;
 }
 
 .message__menu-trigger:hover {

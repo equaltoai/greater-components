@@ -13,8 +13,13 @@
 
 	let { currentUserId = 'me', class: className = '' }: Props = $props();
 
-const { state: messagesState, selectConversation, handlers, fetchConversations, startRealtime } =
-		getMessagesContext();
+	const {
+		state: messagesState,
+		selectConversation,
+		handlers,
+		fetchConversations,
+		startRealtime,
+	} = getMessagesContext();
 
 	function handleConversationClick(conversation: Conversation) {
 		selectConversation(conversation);
@@ -50,10 +55,7 @@ const { state: messagesState, selectConversation, handlers, fetchConversations, 
 				{/if}
 			</button>
 		</div>
-		{#if
-			messagesState.realtimeStatus !== 'connected' &&
-			messagesState.realtimeStatusMessage
-		}
+		{#if messagesState.realtimeStatus !== 'connected' && messagesState.realtimeStatusMessage}
 			<div
 				class={`messages-conversations__status messages-conversations__status--${messagesState.realtimeStatus}`}
 				role="status"

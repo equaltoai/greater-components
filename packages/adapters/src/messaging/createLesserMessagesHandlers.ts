@@ -12,7 +12,12 @@ import {
 
 export type ConversationFolder = 'INBOX' | 'REQUESTS';
 export type DmRequestState = 'PENDING' | 'ACCEPTED' | 'DECLINED';
-export type RealtimeConnectionStatus = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'error';
+export type RealtimeConnectionStatus =
+	| 'idle'
+	| 'connecting'
+	| 'connected'
+	| 'disconnected'
+	| 'error';
 
 export interface MessageParticipant {
 	id: string;
@@ -110,7 +115,10 @@ function mapActorToParticipant(actor: ActorSummaryFragment): MessageParticipant 
 	};
 }
 
-function mapObjectToDirectMessage(object: ObjectFieldsFragment, conversationId: string): DirectMessage {
+function mapObjectToDirectMessage(
+	object: ObjectFieldsFragment,
+	conversationId: string
+): DirectMessage {
 	return {
 		id: object.id,
 		conversationId,
@@ -147,7 +155,9 @@ function mapConversationToUiConversation(
 	};
 }
 
-export function createLesserMessagesHandlers(config: LesserMessagesHandlersConfig): MessagesHandlers {
+export function createLesserMessagesHandlers(
+	config: LesserMessagesHandlersConfig
+): MessagesHandlers {
 	const { adapter, pageSize = 20, messagePageSize = 50, searchLimit = 10 } = config;
 
 	return {
@@ -157,7 +167,9 @@ export function createLesserMessagesHandlers(config: LesserMessagesHandlersConfi
 				first: pageSize,
 			})) as unknown as LesserConversationLike[];
 
-			return conversations.map((conversation) => mapConversationToUiConversation(conversation, folder));
+			return conversations.map((conversation) =>
+				mapConversationToUiConversation(conversation, folder)
+			);
 		},
 		onFetchMessages: async (conversationId, options) => {
 			const data = await adapter.query(ConversationMessagesDocument, {

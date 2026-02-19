@@ -142,7 +142,8 @@ describe('Thread', () => {
 		await flushSync();
 
 		const items = Array.from(target.querySelectorAll('[role="menuitem"]')) as HTMLElement[];
-		const deleteItem = items.find((item) => item.textContent?.includes('Delete conversation')) ?? null;
+		const deleteItem =
+			items.find((item) => item.textContent?.includes('Delete conversation')) ?? null;
 		expect(deleteItem).toBeTruthy();
 
 		deleteItem?.click();
