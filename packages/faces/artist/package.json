@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-artist",
   "private": true,
-  "version": "0.1.11",
+  "version": "0.1.12",
   "type": "module",
   "description": "Artist portfolio and gallery UI components for Greater Components",
   "license": "AGPL-3.0-only",

@@ -43,7 +43,7 @@
 		<TextField label="Search" type="search" placeholder="Search agents" bind:value={query} />
 
 		{#if canLoadMore}
-			<Button variant="secondary" size="sm" disabled={loading} onclick={() => onLoadMore?.()}>
+			<Button variant="outline" size="sm" disabled={loading} onclick={() => onLoadMore?.()}>
 				Load more
 			</Button>
 		{/if}

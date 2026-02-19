@@ -98,6 +98,11 @@ type Actor {
   vouches: [Vouch!]!
 }
 
+type ViewerRole {
+  role: String!
+  isAdmin: Boolean!
+}
+
 type Field {
   name: String!
   value: String!
@@ -678,11 +683,35 @@ type UpdateQuotePermissionsPayload {
 }
 
 # Conversation type
+enum ConversationFolder {
+  INBOX
+  REQUESTS
+}
+
+enum DmRequestState {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+type ConversationViewerMetadata {
+  requestState: DmRequestState!
+  requestedAt: Time
+  acceptedAt: Time
+  declinedAt: Time
+}
+
+type SendMessagePayload {
+  conversation: Conversation!
+  message: Object!
+}
+
 type Conversation {
   id: ID!
   lastStatus: Object
   unread: Boolean!
   accounts: [Actor!]!
+  viewerMetadata: ConversationViewerMetadata!
   createdAt: Time!
   updatedAt: Time!
 }
@@ -1086,6 +1115,7 @@ type CostUpdate {
 type Query {
   # Mastodon compatibility
   viewer: Actor!
+  viewerRole: ViewerRole!
   actor(id: ID, username: String): Actor
   object(id: ID!): Object
   timeline(
@@ -1128,8 +1158,9 @@ type Query {
   communityNotesByAuthor(username: String!, first: Int = 20, after: Cursor): CommunityNoteConnection!
   
   # Conversations
-  conversations(first: Int = 20, after: Cursor): [Conversation!]!
+  conversations(folder: ConversationFolder = INBOX, first: Int = 20, after: Cursor): [Conversation!]!
   conversation(id: ID!): Conversation
+  conversationMessages(conversationId: ID!, first: Int = 50, after: Cursor): ObjectConnection!
   
   # Lists
   lists: [List!]!
@@ -1273,8 +1304,14 @@ type Mutation {
   removeAccountsFromList(id: ID!, accountIds: [ID!]!): List!
   
   # Conversation operations
+  createConversation(participantId: ID!): Conversation!
+  sendDirectMessage(to: ID!, content: String!, mediaIds: [ID!]): SendMessagePayload!
+  sendMessage(conversationId: ID!, content: String!, mediaIds: [ID!]): SendMessagePayload!
+  acceptMessageRequest(conversationId: ID!): Conversation!
+  declineMessageRequest(conversationId: ID!): Boolean!
   markConversationAsRead(id: ID!): Conversation!
-  deleteConversation(id: ID!): Boolean!
+  deleteConversation(conversationId: ID!): Boolean!
+  deleteMessage(messageId: ID!): Boolean!
   
   # Media operations
   uploadMedia(input: UploadMediaInput!): UploadMediaPayload!
@@ -3394,6 +3431,7 @@ input ReblogFilterInput {
 input UpdateUserPreferencesInput {
   language: String
   defaultPostingVisibility: Visibility
+  directMessagesFrom: DirectMessagesFrom
   defaultMediaSensitive: Boolean
   expandSpoilers: Boolean
   expandMedia: ExpandMediaPreference
@@ -3452,6 +3490,9 @@ extend type Query {
   adminReport(id: ID!): AdminReport
   adminStatuses(filter: AdminStatusFilter, first: Int = 20, after: Cursor): AdminStatusConnection!
   adminStatus(id: ID!): Object
+
+  # Instance-owned configuration (admin)
+  adminInstanceConfig: AdminInstanceConfig!
 }
 
 # Phase 3 Mutation Extensions
@@ -3477,6 +3518,146 @@ extend type Mutation {
   adminReportAction(id: ID!, action: AdminReportAction!): AdminReport!
   adminDeleteStatus(id: ID!): Boolean!
   adminSetStatusSensitive(id: ID!, sensitive: Boolean!): Object!
+
+  # Instance-owned configuration (admin)
+  updateAdminInstanceManagedDefaults(input: UpdateAdminInstanceManagedDefaultsInput!): AdminInstanceConfig!
+  updateAdminInstanceOverrides(input: UpdateAdminInstanceOverridesInput!): AdminInstanceConfig!
+  clearAdminInstanceOverrides(features: [InstanceConfigFeature!]!): AdminInstanceConfig!
+}
+
+enum InstanceConfigFeature {
+  TRUST
+  TRANSLATION
+  TIPS
+  AI
+}
+
+type AdminInstanceConfig {
+  trust: AdminTrustConfig!
+  translation: AdminTranslationConfig!
+  tips: AdminTipsConfig!
+  ai: AdminAIConfig!
+}
+
+type AdminTrustConfigLayer {
+  baseUrl: String!
+  attestationsUrl: String!
+  instanceKeySecretArn: String!
+}
+
+type AdminTrustConfigLayerOverride {
+  baseUrl: String
+  attestationsUrl: String
+  instanceKeySecretArn: String
+}
+
+type AdminEffectiveTrustConfig {
+  baseUrl: String!
+  attestationsUrl: String!
+  instanceKeySecretArn: String!
+  trustProxyEnabled: Boolean!
+  publicAttestationsEnabled: Boolean!
+}
+
+type AdminTrustConfig {
+  recordExists: Boolean!
+  updatedAt: Time!
+  managed: AdminTrustConfigLayer!
+  override: AdminTrustConfigLayerOverride
+  effective: AdminEffectiveTrustConfig!
+}
+
+type AdminTranslationConfig {
+  recordExists: Boolean!
+  updatedAt: Time!
+  managedEnabled: Boolean!
+  overrideEnabled: Boolean
+  effectiveEnabled: Boolean!
+}
+
+type AdminTipsConfigLayer {
+  enabled: Boolean!
+  chainId: Int!
+  contractAddress: String!
+}
+
+type AdminTipsConfigLayerOverride {
+  enabled: Boolean
+  chainId: Int
+  contractAddress: String
+}
+
+type AdminTipsConfig {
+  recordExists: Boolean!
+  updatedAt: Time!
+  managed: AdminTipsConfigLayer!
+  override: AdminTipsConfigLayerOverride
+  effective: TipsConfig!
+}
+
+type AdminAIConfigLayer {
+  aiEnabled: Boolean!
+  moderationEnabled: Boolean!
+  nsfwDetectionEnabled: Boolean!
+  spamDetectionEnabled: Boolean!
+  piiDetectionEnabled: Boolean!
+  aiContentDetection: Boolean!
+}
+
+type AdminAIConfigLayerOverride {
+  aiEnabled: Boolean
+  moderationEnabled: Boolean
+  nsfwDetectionEnabled: Boolean
+  spamDetectionEnabled: Boolean
+  piiDetectionEnabled: Boolean
+  aiContentDetection: Boolean
+}
+
+type AdminAIConfig {
+  recordExists: Boolean!
+  updatedAt: Time!
+  managed: AdminAIConfigLayer!
+  override: AdminAIConfigLayerOverride
+  effective: AdminAIConfigLayer!
+}
+
+input AdminTrustConfigPatchInput {
+  baseUrl: String
+  attestationsUrl: String
+  instanceKeySecretArn: String
+}
+
+input AdminTranslationConfigPatchInput {
+  enabled: Boolean
+}
+
+input AdminTipsConfigPatchInput {
+  enabled: Boolean
+  chainId: Int
+  contractAddress: String
+}
+
+input AdminAIConfigPatchInput {
+  aiEnabled: Boolean
+  moderationEnabled: Boolean
+  nsfwDetectionEnabled: Boolean
+  spamDetectionEnabled: Boolean
+  piiDetectionEnabled: Boolean
+  aiContentDetection: Boolean
+}
+
+input UpdateAdminInstanceManagedDefaultsInput {
+  trust: AdminTrustConfigPatchInput
+  translation: AdminTranslationConfigPatchInput
+  tips: AdminTipsConfigPatchInput
+  ai: AdminAIConfigPatchInput
+}
+
+input UpdateAdminInstanceOverridesInput {
+  trust: AdminTrustConfigPatchInput
+  translation: AdminTranslationConfigPatchInput
+  tips: AdminTipsConfigPatchInput
+  ai: AdminAIConfigPatchInput
 }
 
 # Phase 3 Subscription Extensions
@@ -3553,6 +3734,12 @@ type PrivacyPreferences {
   defaultVisibility: Visibility!
   indexable: Boolean!
   showOnlineStatus: Boolean!
+  directMessagesFrom: DirectMessagesFrom!
+}
+
+enum DirectMessagesFrom {
+  FOLLOWING_ONLY
+  ANYONE
 }
 
 type ReblogFilter {

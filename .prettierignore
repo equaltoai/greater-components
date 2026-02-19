@@ -37,6 +37,7 @@ LICENSE
 **/generated/**
 packages/tokens/src/index.ts
 .pai/
+.theory/
 
 # Vendored Lesser contract snapshots (keep byte-for-byte from the pinned Lesser release)
 docs/lesser/contracts/openapi.yaml

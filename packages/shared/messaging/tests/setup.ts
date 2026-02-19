@@ -38,6 +38,19 @@ Object.defineProperty(window, 'localStorage', {
 	value: localStorageMock,
 });
 
+class ResizeObserverMock {
+	constructor(_callback: ResizeObserverCallback) {}
+	observe(_target: Element) {}
+	unobserve(_target: Element) {}
+	disconnect() {}
+}
+
+Object.defineProperty(window, 'ResizeObserver', {
+	writable: true,
+	configurable: true,
+	value: ResizeObserverMock,
+});
+
 afterEach(() => {
 	cleanup();
 });
