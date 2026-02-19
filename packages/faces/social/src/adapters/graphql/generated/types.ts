@@ -182,6 +182,44 @@ export type AddFilterKeywordInput = {
   readonly wholeWord?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type AdminAiConfig = {
+  readonly __typename: 'AdminAIConfig';
+  readonly effective: AdminAiConfigLayer;
+  readonly managed: AdminAiConfigLayer;
+  readonly override?: Maybe<AdminAiConfigLayerOverride>;
+  readonly recordExists: Scalars['Boolean']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AdminAiConfigLayer = {
+  readonly __typename: 'AdminAIConfigLayer';
+  readonly aiContentDetection: Scalars['Boolean']['output'];
+  readonly aiEnabled: Scalars['Boolean']['output'];
+  readonly moderationEnabled: Scalars['Boolean']['output'];
+  readonly nsfwDetectionEnabled: Scalars['Boolean']['output'];
+  readonly piiDetectionEnabled: Scalars['Boolean']['output'];
+  readonly spamDetectionEnabled: Scalars['Boolean']['output'];
+};
+
+export type AdminAiConfigLayerOverride = {
+  readonly __typename: 'AdminAIConfigLayerOverride';
+  readonly aiContentDetection?: Maybe<Scalars['Boolean']['output']>;
+  readonly aiEnabled?: Maybe<Scalars['Boolean']['output']>;
+  readonly moderationEnabled?: Maybe<Scalars['Boolean']['output']>;
+  readonly nsfwDetectionEnabled?: Maybe<Scalars['Boolean']['output']>;
+  readonly piiDetectionEnabled?: Maybe<Scalars['Boolean']['output']>;
+  readonly spamDetectionEnabled?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type AdminAiConfigPatchInput = {
+  readonly aiContentDetection?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly aiEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly moderationEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly nsfwDetectionEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly piiDetectionEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  readonly spamDetectionEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type AdminAccount = {
   readonly __typename: 'AdminAccount';
   readonly actor?: Maybe<Actor>;
@@ -300,6 +338,15 @@ export type AdminDomainBlockUpdateInput = {
   readonly severity?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type AdminEffectiveTrustConfig = {
+  readonly __typename: 'AdminEffectiveTrustConfig';
+  readonly attestationsUrl: Scalars['String']['output'];
+  readonly baseUrl: Scalars['String']['output'];
+  readonly instanceKeySecretArn: Scalars['String']['output'];
+  readonly publicAttestationsEnabled: Scalars['Boolean']['output'];
+  readonly trustProxyEnabled: Scalars['Boolean']['output'];
+};
+
 export type AdminEmailDomainBlock = {
   readonly __typename: 'AdminEmailDomainBlock';
   readonly createdAt: Scalars['Time']['output'];
@@ -357,6 +404,14 @@ export type AdminIp = {
   readonly __typename: 'AdminIP';
   readonly ip: Scalars['String']['output'];
   readonly usedAt: Scalars['Time']['output'];
+};
+
+export type AdminInstanceConfig = {
+  readonly __typename: 'AdminInstanceConfig';
+  readonly ai: AdminAiConfig;
+  readonly tips: AdminTipsConfig;
+  readonly translation: AdminTranslationConfig;
+  readonly trust: AdminTrustConfig;
 };
 
 export type AdminModerationEvent = {
@@ -481,6 +536,77 @@ export type AdminStatusFilter = {
   readonly reported?: InputMaybe<Scalars['Boolean']['input']>;
   readonly sensitive?: InputMaybe<Scalars['Boolean']['input']>;
   readonly visibility?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AdminTipsConfig = {
+  readonly __typename: 'AdminTipsConfig';
+  readonly effective: TipsConfig;
+  readonly managed: AdminTipsConfigLayer;
+  readonly override?: Maybe<AdminTipsConfigLayerOverride>;
+  readonly recordExists: Scalars['Boolean']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AdminTipsConfigLayer = {
+  readonly __typename: 'AdminTipsConfigLayer';
+  readonly chainId: Scalars['Int']['output'];
+  readonly contractAddress: Scalars['String']['output'];
+  readonly enabled: Scalars['Boolean']['output'];
+};
+
+export type AdminTipsConfigLayerOverride = {
+  readonly __typename: 'AdminTipsConfigLayerOverride';
+  readonly chainId?: Maybe<Scalars['Int']['output']>;
+  readonly contractAddress?: Maybe<Scalars['String']['output']>;
+  readonly enabled?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type AdminTipsConfigPatchInput = {
+  readonly chainId?: InputMaybe<Scalars['Int']['input']>;
+  readonly contractAddress?: InputMaybe<Scalars['String']['input']>;
+  readonly enabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type AdminTranslationConfig = {
+  readonly __typename: 'AdminTranslationConfig';
+  readonly effectiveEnabled: Scalars['Boolean']['output'];
+  readonly managedEnabled: Scalars['Boolean']['output'];
+  readonly overrideEnabled?: Maybe<Scalars['Boolean']['output']>;
+  readonly recordExists: Scalars['Boolean']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AdminTranslationConfigPatchInput = {
+  readonly enabled?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type AdminTrustConfig = {
+  readonly __typename: 'AdminTrustConfig';
+  readonly effective: AdminEffectiveTrustConfig;
+  readonly managed: AdminTrustConfigLayer;
+  readonly override?: Maybe<AdminTrustConfigLayerOverride>;
+  readonly recordExists: Scalars['Boolean']['output'];
+  readonly updatedAt: Scalars['Time']['output'];
+};
+
+export type AdminTrustConfigLayer = {
+  readonly __typename: 'AdminTrustConfigLayer';
+  readonly attestationsUrl: Scalars['String']['output'];
+  readonly baseUrl: Scalars['String']['output'];
+  readonly instanceKeySecretArn: Scalars['String']['output'];
+};
+
+export type AdminTrustConfigLayerOverride = {
+  readonly __typename: 'AdminTrustConfigLayerOverride';
+  readonly attestationsUrl?: Maybe<Scalars['String']['output']>;
+  readonly baseUrl?: Maybe<Scalars['String']['output']>;
+  readonly instanceKeySecretArn?: Maybe<Scalars['String']['output']>;
+};
+
+export type AdminTrustConfigPatchInput = {
+  readonly attestationsUrl?: InputMaybe<Scalars['String']['input']>;
+  readonly baseUrl?: InputMaybe<Scalars['String']['input']>;
+  readonly instanceKeySecretArn?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AdminTrustGraph = {
@@ -897,6 +1023,19 @@ export type Conversation = {
   readonly lastStatus?: Maybe<Object>;
   readonly unread: Scalars['Boolean']['output'];
   readonly updatedAt: Scalars['Time']['output'];
+  readonly viewerMetadata: ConversationViewerMetadata;
+};
+
+export type ConversationFolder =
+  | 'INBOX'
+  | 'REQUESTS';
+
+export type ConversationViewerMetadata = {
+  readonly __typename: 'ConversationViewerMetadata';
+  readonly acceptedAt?: Maybe<Scalars['Time']['output']>;
+  readonly declinedAt?: Maybe<Scalars['Time']['output']>;
+  readonly requestState: DmRequestState;
+  readonly requestedAt?: Maybe<Scalars['Time']['output']>;
 };
 
 export type Coordinates = {
@@ -1164,6 +1303,10 @@ export type DigestFrequency =
   | 'NEVER'
   | 'WEEKLY';
 
+export type DirectMessagesFrom =
+  | 'ANYONE'
+  | 'FOLLOWING_ONLY';
+
 export type DirectoryFiltersInput = {
   readonly active?: InputMaybe<Scalars['Boolean']['input']>;
   readonly local?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1181,6 +1324,11 @@ export type DiscoveryPreferences = {
   readonly searchSuggestionsEnabled: Scalars['Boolean']['output'];
   readonly showFollowCounts: Scalars['Boolean']['output'];
 };
+
+export type DmRequestState =
+  | 'ACCEPTED'
+  | 'DECLINED'
+  | 'PENDING';
 
 export type DomainBlockPage = {
   readonly __typename: 'DomainBlockPage';
@@ -1787,6 +1935,12 @@ export type InstanceCluster = {
   readonly totalVolume: Scalars['Int']['output'];
 };
 
+export type InstanceConfigFeature =
+  | 'AI'
+  | 'TIPS'
+  | 'TRANSLATION'
+  | 'TRUST';
+
 export type InstanceConnection = {
   readonly __typename: 'InstanceConnection';
   readonly connectionType: ConnectionType;
@@ -2304,6 +2458,7 @@ export type ModeratorStats = {
 export type Mutation = {
   readonly __typename: 'Mutation';
   readonly acceptFollowRequest: Relationship;
+  readonly acceptMessageRequest: Conversation;
   readonly acknowledgeSeverance: AcknowledgePayload;
   readonly addAccountsToList: List;
   readonly addAnnouncementReaction: Scalars['Boolean']['output'];
@@ -2340,9 +2495,11 @@ export type Mutation = {
   readonly cancelImport: ImportJob;
   readonly cancelScheduledDraft: Draft;
   readonly cancelScheduledStatus: Scalars['Boolean']['output'];
+  readonly clearAdminInstanceOverrides: AdminInstanceConfig;
   readonly clearNotifications: Scalars['Boolean']['output'];
   readonly createArticle: Article;
   readonly createCategory: Category;
+  readonly createConversation: Conversation;
   readonly createDraft: Draft;
   readonly createEmoji: CustomEmoji;
   readonly createExport: ExportJob;
@@ -2356,6 +2513,7 @@ export type Mutation = {
   readonly createReport: Report;
   readonly createSeries: Series;
   readonly createVouch: Vouch;
+  readonly declineMessageRequest: Scalars['Boolean']['output'];
   readonly delegateToAgent: DelegationPayload;
   readonly deleteAgent: Agent;
   readonly deleteArticle: Scalars['Boolean']['output'];
@@ -2411,6 +2569,8 @@ export type Mutation = {
   readonly saveMarkers: MarkerSet;
   readonly scheduleDraft: Draft;
   readonly scheduleStatus: ScheduledStatus;
+  readonly sendDirectMessage: SendMessagePayload;
+  readonly sendMessage: SendMessagePayload;
   readonly setFederationLimit: FederationLimit;
   readonly setInstanceBudget: InstanceBudget;
   readonly shareObject: Object;
@@ -2430,6 +2590,8 @@ export type Mutation = {
   readonly unshareObject: Object;
   readonly updateAccountQuotePermissions: AccountQuotePermissions;
   readonly updateAdminAgentPolicy: AdminAgentPolicy;
+  readonly updateAdminInstanceManagedDefaults: AdminInstanceConfig;
+  readonly updateAdminInstanceOverrides: AdminInstanceConfig;
   readonly updateAgent: Agent;
   readonly updateArticle: Article;
   readonly updateCategory: Category;
@@ -2461,6 +2623,11 @@ export type Mutation = {
 
 export type MutationAcceptFollowRequestArgs = {
   accountId: Scalars['ID']['input'];
+};
+
+
+export type MutationAcceptMessageRequestArgs = {
+  conversationId: Scalars['ID']['input'];
 };
 
 
@@ -2657,6 +2824,11 @@ export type MutationCancelScheduledStatusArgs = {
 };
 
 
+export type MutationClearAdminInstanceOverridesArgs = {
+  features: ReadonlyArray<InstanceConfigFeature>;
+};
+
+
 export type MutationCreateArticleArgs = {
   input: CreateArticleInput;
 };
@@ -2664,6 +2836,11 @@ export type MutationCreateArticleArgs = {
 
 export type MutationCreateCategoryArgs = {
   input: CreateCategoryInput;
+};
+
+
+export type MutationCreateConversationArgs = {
+  participantId: Scalars['ID']['input'];
 };
 
 
@@ -2729,6 +2906,11 @@ export type MutationCreateSeriesArgs = {
 
 export type MutationCreateVouchArgs = {
   input: CreateVouchInput;
+};
+
+
+export type MutationDeclineMessageRequestArgs = {
+  conversationId: Scalars['ID']['input'];
 };
 
 
@@ -3018,6 +3200,20 @@ export type MutationScheduleStatusArgs = {
 };
 
 
+export type MutationSendDirectMessageArgs = {
+  content: Scalars['String']['input'];
+  mediaIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+  to: Scalars['ID']['input'];
+};
+
+
+export type MutationSendMessageArgs = {
+  content: Scalars['String']['input'];
+  conversationId: Scalars['ID']['input'];
+  mediaIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+};
+
+
 export type MutationSetFederationLimitArgs = {
   domain: Scalars['String']['input'];
   limit: FederationLimitInput;
@@ -3115,6 +3311,16 @@ export type MutationUpdateAccountQuotePermissionsArgs = {
 
 export type MutationUpdateAdminAgentPolicyArgs = {
   input: UpdateAdminAgentPolicyInput;
+};
+
+
+export type MutationUpdateAdminInstanceManagedDefaultsArgs = {
+  input: UpdateAdminInstanceManagedDefaultsInput;
+};
+
+
+export type MutationUpdateAdminInstanceOverridesArgs = {
+  input: UpdateAdminInstanceOverridesInput;
 };
 
 
@@ -3540,6 +3746,7 @@ export type Priority =
 export type PrivacyPreferences = {
   readonly __typename: 'PrivacyPreferences';
   readonly defaultVisibility: Visibility;
+  readonly directMessagesFrom: DirectMessagesFrom;
   readonly indexable: Scalars['Boolean']['output'];
   readonly showOnlineStatus: Scalars['Boolean']['output'];
 };
@@ -3666,6 +3873,7 @@ export type Query = {
   readonly adminFederationInstance: AdminFederationInstance;
   readonly adminFederationInstances: AdminFederationInstanceConnection;
   readonly adminFederationStatistics: AdminFederationStatistics;
+  readonly adminInstanceConfig: AdminInstanceConfig;
   readonly adminModerationEvents: AdminModerationEventConnection;
   readonly adminModerationReviewers: ReadonlyArray<AdminReviewer>;
   readonly adminReport?: Maybe<AdminReport>;
@@ -3694,6 +3902,7 @@ export type Query = {
   readonly categoryBySlug?: Maybe<Category>;
   readonly communityNotesByAuthor: CommunityNoteConnection;
   readonly conversation?: Maybe<Conversation>;
+  readonly conversationMessages: ObjectConnection;
   readonly conversations: ReadonlyArray<Conversation>;
   readonly costBreakdown: CostBreakdown;
   readonly costProjections: CostProjection;
@@ -3794,6 +4003,7 @@ export type Query = {
   readonly trustGraph: ReadonlyArray<TrustEdge>;
   readonly userPreferences: UserPreferences;
   readonly viewer: Actor;
+  readonly viewerRole: ViewerRole;
   readonly vouches: ReadonlyArray<Vouch>;
 };
 
@@ -4012,9 +4222,17 @@ export type QueryConversationArgs = {
 };
 
 
+export type QueryConversationMessagesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  conversationId: Scalars['ID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryConversationsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  folder?: InputMaybe<ConversationFolder>;
 };
 
 
@@ -4793,6 +5011,12 @@ export type SearchResult = {
   readonly statuses: ReadonlyArray<Object>;
 };
 
+export type SendMessagePayload = {
+  readonly __typename: 'SendMessagePayload';
+  readonly conversation: Conversation;
+  readonly message: Object;
+};
+
 export type Sentiment =
   | 'MIXED'
   | 'NEGATIVE'
@@ -5385,6 +5609,20 @@ export type UpdateAdminAgentPolicyInput = {
   readonly verifiedAgentMaxPostsPerHour: Scalars['Int']['input'];
 };
 
+export type UpdateAdminInstanceManagedDefaultsInput = {
+  readonly ai?: InputMaybe<AdminAiConfigPatchInput>;
+  readonly tips?: InputMaybe<AdminTipsConfigPatchInput>;
+  readonly translation?: InputMaybe<AdminTranslationConfigPatchInput>;
+  readonly trust?: InputMaybe<AdminTrustConfigPatchInput>;
+};
+
+export type UpdateAdminInstanceOverridesInput = {
+  readonly ai?: InputMaybe<AdminAiConfigPatchInput>;
+  readonly tips?: InputMaybe<AdminTipsConfigPatchInput>;
+  readonly translation?: InputMaybe<AdminTranslationConfigPatchInput>;
+  readonly trust?: InputMaybe<AdminTrustConfigPatchInput>;
+};
+
 export type UpdateAgentInput = {
   readonly agentCapabilities?: InputMaybe<AgentCapabilitiesInput>;
   readonly agentType?: InputMaybe<AgentType>;
@@ -5526,6 +5764,7 @@ export type UpdateUserPreferencesInput = {
   readonly autoplayGifs?: InputMaybe<Scalars['Boolean']['input']>;
   readonly defaultMediaSensitive?: InputMaybe<Scalars['Boolean']['input']>;
   readonly defaultPostingVisibility?: InputMaybe<Visibility>;
+  readonly directMessagesFrom?: InputMaybe<DirectMessagesFrom>;
   readonly expandMedia?: InputMaybe<ExpandMediaPreference>;
   readonly expandSpoilers?: InputMaybe<Scalars['Boolean']['input']>;
   readonly language?: InputMaybe<Scalars['String']['input']>;
@@ -5564,6 +5803,12 @@ export type UserPreferences = {
   readonly reading: ReadingPreferences;
   readonly reblogFilters: ReadonlyArray<ReblogFilter>;
   readonly streaming: StreamingPreferences;
+};
+
+export type ViewerRole = {
+  readonly __typename: 'ViewerRole';
+  readonly isAdmin: Scalars['Boolean']['output'];
+  readonly role: Scalars['String']['output'];
 };
 
 export type Visibility =
