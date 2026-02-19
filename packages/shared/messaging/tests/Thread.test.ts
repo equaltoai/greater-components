@@ -3,10 +3,17 @@ import { mount, unmount, flushSync } from 'svelte';
 import Thread from '../src/Thread.svelte';
 
 // Mock context
-const { mockHandlers, mockState, mockAcceptMessageRequest, mockDeclineMessageRequest } = vi.hoisted(() => ({
-	mockHandlers: {},
+const {
+	mockHandlers,
+	mockState,
+	mockAcceptMessageRequest,
+	mockDeclineMessageRequest,
+	mockDeleteConversation,
+} = vi.hoisted(() => ({
+	mockHandlers: {} as any,
 	mockAcceptMessageRequest: vi.fn(),
 	mockDeclineMessageRequest: vi.fn(),
+	mockDeleteConversation: vi.fn(),
 	mockState: {
 		selectedConversation: null,
 		messages: [],
@@ -24,6 +31,7 @@ vi.mock('../src/context.svelte.js', async () => {
 			state: mockState,
 			acceptMessageRequest: mockAcceptMessageRequest,
 			declineMessageRequest: mockDeclineMessageRequest,
+			deleteConversation: mockDeleteConversation,
 		}),
 		// Keep actual formatMessageTime if used by Message.svelte
 	};
@@ -35,6 +43,7 @@ describe('Thread', () => {
 		mockState.selectedConversation = null;
 		mockState.messages = [];
 		mockState.loadingMessages = false;
+		delete mockHandlers.onDeleteConversation;
 	});
 
 	it('renders no selection state', () => {
@@ -114,6 +123,35 @@ describe('Thread', () => {
 		expect(messages[1].textContent).toContain('Hi there');
 		expect(messages[1].classList.contains('message--own')).toBe(true); // Own message
 
+		unmount(instance);
+	});
+
+	it('shows delete conversation action and triggers delete', async () => {
+		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0, updatedAt: '' };
+		mockHandlers.onDeleteConversation = vi.fn();
+
+		const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+		const target = document.createElement('div');
+		const instance = mount(Thread, { target });
+		await flushSync();
+
+		const trigger = target.querySelector('.messages-thread__menu-trigger') as HTMLElement | null;
+		expect(trigger).toBeTruthy();
+		trigger?.click();
+		await flushSync();
+
+		const items = Array.from(target.querySelectorAll('[role="menuitem"]')) as HTMLElement[];
+		const deleteItem = items.find((item) => item.textContent?.includes('Delete conversation')) ?? null;
+		expect(deleteItem).toBeTruthy();
+
+		deleteItem?.click();
+		await flushSync();
+
+		expect(confirmSpy).toHaveBeenCalledWith('Delete this conversation for you?');
+		expect(mockDeleteConversation).toHaveBeenCalledWith('c1');
+
+		confirmSpy.mockRestore();
 		unmount(instance);
 	});
 });

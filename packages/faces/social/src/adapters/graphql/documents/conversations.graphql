@@ -140,6 +140,10 @@ mutation MarkConversationRead($id: ID!) {
 	}
 }
 
-mutation DeleteConversation($id: ID!) {
-	deleteConversation(id: $id)
+mutation DeleteConversation($conversationId: ID!) {
+	deleteConversation(conversationId: $conversationId)
+}
+
+mutation DeleteMessage($messageId: ID!) {
+	deleteMessage(messageId: $messageId)
 }

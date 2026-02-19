@@ -79,7 +79,13 @@
     "optional": []
   },
   "lesserSchema": {
-    "mutations": ["sendMessage", "markConversationRead", "deleteMessage", "createConversation"],
+    "mutations": [
+      "sendMessage",
+      "markConversationRead",
+      "deleteMessage",
+      "deleteConversation",
+      "createConversation"
+    ],
     "queries": ["conversations", "conversationMessages", "searchParticipants"],
     "subscriptions": ["messageReceived", "conversationUpdated", "typingIndicator"]
   },

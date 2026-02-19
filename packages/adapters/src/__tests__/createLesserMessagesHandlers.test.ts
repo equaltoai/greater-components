@@ -5,6 +5,8 @@ import {
 	ConversationMessagesDocument,
 	CreateConversationDocument,
 	DeclineMessageRequestDocument,
+	DeleteConversationDocument,
+	DeleteMessageDocument,
 	SendMessageDocument,
 } from '../graphql/generated/types.js';
 
@@ -177,6 +179,22 @@ describe('createLesserMessagesHandlers', () => {
 		expect(adapter.markConversationAsRead).toHaveBeenCalledWith('c1');
 	});
 
+	it('deletes messages and conversations', async () => {
+		adapter.mutate
+			.mockResolvedValueOnce({ deleteMessage: true })
+			.mockResolvedValueOnce({ deleteConversation: true });
+
+		const handlers = createLesserMessagesHandlers({ adapter });
+
+		const deletedMessage = await handlers.onDeleteMessage?.('m1');
+		expect(adapter.mutate).toHaveBeenCalledWith(DeleteMessageDocument, { messageId: 'm1' });
+		expect(deletedMessage).toBe(true);
+
+		const deletedConversation = await handlers.onDeleteConversation?.('c1');
+		expect(adapter.mutate).toHaveBeenCalledWith(DeleteConversationDocument, { conversationId: 'c1' });
+		expect(deletedConversation).toBe(true);
+	});
+
 	it('searches participants', async () => {
 		adapter.search.mockResolvedValueOnce({
 			accounts: [{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: null }],
@@ -193,4 +211,3 @@ describe('createLesserMessagesHandlers', () => {
 		expect(results).toEqual([{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: undefined }]);
 	});
 });
-

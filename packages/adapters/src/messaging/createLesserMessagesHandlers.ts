@@ -5,6 +5,8 @@ import {
 	ConversationMessagesDocument,
 	CreateConversationDocument,
 	DeclineMessageRequestDocument,
+	DeleteConversationDocument,
+	DeleteMessageDocument,
 	SendMessageDocument,
 } from '../graphql/generated/types.js';
 
@@ -58,6 +60,8 @@ export interface MessagesHandlers {
 		mediaIds?: string[]
 	) => Promise<DirectMessage>;
 	onMarkRead?: (conversationId: string) => Promise<void>;
+	onDeleteMessage?: (messageId: string) => Promise<boolean>;
+	onDeleteConversation?: (conversationId: string) => Promise<boolean>;
 	onCreateConversation?: (participantIds: string[]) => Promise<Conversation>;
 	onAcceptMessageRequest?: (conversationId: string) => Promise<Conversation>;
 	onDeclineMessageRequest?: (conversationId: string) => Promise<boolean>;
@@ -196,6 +200,14 @@ export function createLesserMessagesHandlers(config: LesserMessagesHandlersConfi
 		},
 		onMarkRead: async (conversationId) => {
 			await adapter.markConversationAsRead(conversationId);
+		},
+		onDeleteMessage: async (messageId) => {
+			const data = await adapter.mutate(DeleteMessageDocument, { messageId });
+			return data.deleteMessage;
+		},
+		onDeleteConversation: async (conversationId) => {
+			const data = await adapter.mutate(DeleteConversationDocument, { conversationId });
+			return data.deleteConversation;
 		},
 		onSearchParticipants: async (query) => {
 			const results = await adapter.search({

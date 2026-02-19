@@ -113,7 +113,12 @@ export interface MessagesHandlers {
 	/**
 	 * Delete a message
 	 */
-	onDeleteMessage?: (messageId: string) => Promise<void>;
+	onDeleteMessage?: (messageId: string) => Promise<boolean | void>;
+
+	/**
+	 * Delete a conversation (delete-for-me)
+	 */
+	onDeleteConversation?: (conversationId: string) => Promise<boolean | void>;
 
 	/**
 	 * Create new conversation
@@ -254,6 +259,11 @@ export interface MessagesContext {
 	 * Delete a message
 	 */
 	deleteMessage: (messageId: string) => Promise<void>;
+
+	/**
+	 * Delete a conversation (delete-for-me)
+	 */
+	deleteConversation: (conversationId: string) => Promise<void>;
 
 	/**
 	 * Mark conversation as read
@@ -439,14 +449,75 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 			}
 		},
 		deleteMessage: async (messageId: string) => {
+			if (!handlers.onDeleteMessage) {
+				state.error = 'Delete message handler is not provided';
+				throw new Error(state.error);
+			}
+
 			state.loading = true;
 			state.error = null;
 
 			try {
-				await handlers.onDeleteMessage?.(messageId);
+				const ok = await handlers.onDeleteMessage(messageId);
+				if (ok === false) {
+					return;
+				}
+
 				state.messages = state.messages.filter((m) => m.id !== messageId);
+
+				if (state.selectedConversation) {
+					const deletedWasLast =
+						state.selectedConversation.lastMessage?.id === messageId ||
+						state.conversations.find((c) => c.id === state.selectedConversation?.id)?.lastMessage?.id ===
+							messageId;
+
+					if (deletedWasLast) {
+						const nextLastMessage = state.messages.at(-1);
+						const nextUpdatedAt = nextLastMessage?.createdAt ?? state.selectedConversation.updatedAt;
+
+						state.selectedConversation = {
+							...state.selectedConversation,
+							lastMessage: nextLastMessage,
+							updatedAt: nextUpdatedAt,
+						};
+
+						state.conversations = state.conversations.map((c) =>
+							c.id === state.selectedConversation?.id
+								? { ...c, lastMessage: nextLastMessage, updatedAt: nextUpdatedAt }
+								: c
+						);
+					}
+				}
 			} catch (error) {
 				state.error = error instanceof Error ? error.message : 'Failed to delete message';
+				throw error;
+			} finally {
+				state.loading = false;
+			}
+		},
+		deleteConversation: async (conversationId: string) => {
+			if (!handlers.onDeleteConversation) {
+				state.error = 'Delete conversation handler is not provided';
+				throw new Error(state.error);
+			}
+
+			state.loading = true;
+			state.error = null;
+
+			try {
+				const ok = await handlers.onDeleteConversation(conversationId);
+				if (ok === false) {
+					return;
+				}
+
+				state.conversations = state.conversations.filter((c) => c.id !== conversationId);
+
+				if (state.selectedConversation?.id === conversationId) {
+					state.selectedConversation = null;
+					state.messages = [];
+				}
+			} catch (error) {
+				state.error = error instanceof Error ? error.message : 'Failed to delete conversation';
 				throw error;
 			} finally {
 				state.loading = false;
