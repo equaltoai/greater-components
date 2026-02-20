@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-icons",
   "private": true,
-  "version": "0.1.12-rc.0",
+  "version": "0.1.12",
   "type": "module",
   "description": "Icon components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -70,7 +70,7 @@
     "chokidar": "^5.0.0",
     "feather-icons": "^4.29.2",
     "jsdom": "^28.1.0",
-    "svelte": "^5.51.2",
+    "svelte": "^5.53.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"

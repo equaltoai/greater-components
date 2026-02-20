@@ -6,7 +6,9 @@ import Root from '../src/Root.svelte';
 const { mockContext, mockCreateMessagesContext } = vi.hoisted(() => {
 	const mockContext = {
 		handlers: {},
-		fetchConversations: vi.fn(),
+		fetchConversations: vi.fn(() => Promise.resolve()),
+		startRealtime: vi.fn(),
+		stopRealtime: vi.fn(),
 		state: { conversations: [] },
 	};
 	return {
@@ -28,6 +30,7 @@ describe('Root', () => {
 		vi.clearAllMocks();
 		// Reset context mocks
 		mockContext.fetchConversations.mockReset();
+		mockContext.fetchConversations.mockImplementation(() => Promise.resolve());
 		mockContext.handlers = {};
 	});
 

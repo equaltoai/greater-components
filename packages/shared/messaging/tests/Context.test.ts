@@ -23,11 +23,13 @@ describe('Messages Context', () => {
 			onSendMessage: vi.fn(),
 			onMarkRead: vi.fn(),
 			onDeleteMessage: vi.fn(),
+			onDeleteConversation: vi.fn(),
 		};
 	});
 
 	it('creates context with initial state', () => {
 		const context = createMessagesContext(handlers);
+		expect(context.state.folder).toBe('INBOX');
 		expect(context.state.conversations).toEqual([]);
 		expect(context.state.selectedConversation).toBeNull();
 		expect(context.state.messages).toEqual([]);
@@ -45,7 +47,7 @@ describe('Messages Context', () => {
 			const context = createMessagesContext(handlers);
 			await context.fetchConversations();
 
-			expect(handlers.onFetchConversations).toHaveBeenCalled();
+			expect(handlers.onFetchConversations).toHaveBeenCalledWith('INBOX');
 			expect(context.state.conversations).toEqual(mockConversations);
 			expect(context.state.loadingConversations).toBe(false);
 			expect(context.state.error).toBeNull();
@@ -188,12 +190,89 @@ describe('Messages Context', () => {
 			expect(context.state.messages).toHaveLength(0);
 		});
 
+		it('updates lastMessage when deleting the latest message', async () => {
+			(handlers.onDeleteMessage as any).mockResolvedValue(true);
+
+			const firstMessage: DirectMessage = {
+				id: 'm1',
+				conversationId: 'c1',
+				sender: { id: 'u1', username: 'alice', displayName: 'Alice' },
+				content: 'First',
+				createdAt: '2026-02-01T00:00:00.000Z',
+				read: true,
+			};
+
+			const lastMessage: DirectMessage = {
+				id: 'm2',
+				conversationId: 'c1',
+				sender: { id: 'u2', username: 'bob', displayName: 'Bob' },
+				content: 'Last',
+				createdAt: '2026-02-01T00:05:00.000Z',
+				read: true,
+			};
+
+			const conversation: Conversation = {
+				id: 'c1',
+				participants: [],
+				unreadCount: 0,
+				updatedAt: lastMessage.createdAt,
+				lastMessage,
+			};
+
+			const context = createMessagesContext(handlers);
+			context.state.selectedConversation = conversation;
+			context.state.conversations = [conversation];
+			context.state.messages = [firstMessage, lastMessage];
+
+			await context.deleteMessage('m2');
+
+			expect(context.state.messages).toHaveLength(1);
+			expect(context.state.messages[0]?.id).toBe('m1');
+			expect(context.state.selectedConversation?.lastMessage?.id).toBe('m1');
+			expect(context.state.conversations[0]?.lastMessage?.id).toBe('m1');
+			expect(context.state.selectedConversation?.updatedAt).toBe(firstMessage.createdAt);
+		});
+
 		it('handles delete error', async () => {
 			(handlers.onDeleteMessage as any).mockRejectedValue(new Error('Delete failed'));
 
 			const context = createMessagesContext(handlers);
 
 			await expect(context.deleteMessage('msg1')).rejects.toThrow('Delete failed');
+			expect(context.state.error).toBe('Delete failed');
+		});
+	});
+
+	describe('deleteConversation', () => {
+		it('deletes conversation successfully', async () => {
+			const conversation: Conversation = {
+				id: 'c1',
+				participants: [],
+				unreadCount: 0,
+				updatedAt: new Date().toISOString(),
+			};
+
+			(handlers.onDeleteConversation as any).mockResolvedValue(true);
+
+			const context = createMessagesContext(handlers);
+			context.state.conversations = [conversation];
+			context.state.selectedConversation = conversation;
+			context.state.messages = [{ id: 'msg1' } as DirectMessage];
+
+			await context.deleteConversation('c1');
+
+			expect(handlers.onDeleteConversation).toHaveBeenCalledWith('c1');
+			expect(context.state.conversations).toEqual([]);
+			expect(context.state.selectedConversation).toBeNull();
+			expect(context.state.messages).toEqual([]);
+		});
+
+		it('handles delete conversation error', async () => {
+			(handlers.onDeleteConversation as any).mockRejectedValue(new Error('Delete failed'));
+
+			const context = createMessagesContext(handlers);
+
+			await expect(context.deleteConversation('c1')).rejects.toThrow('Delete failed');
 			expect(context.state.error).toBe('Delete failed');
 		});
 	});

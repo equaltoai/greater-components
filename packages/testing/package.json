@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-testing",
   "private": true,
-  "version": "0.1.12-rc.0",
+  "version": "0.1.12",
   "type": "module",
   "description": "Shared testing utilities for accessibility, keyboard navigation, and visual regression testing",
   "license": "AGPL-3.0-only",
@@ -63,7 +63,7 @@
     "commander": "^14.0.3",
     "jsdom": "^28.1.0",
     "playwright": "^1.58.2",
-    "svelte": "^5.51.2",
+    "svelte": "^5.53.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"

@@ -55,6 +55,8 @@ export type {
 	MessageParticipant,
 	DirectMessage,
 	Conversation,
+	ConversationFolder,
+	DmRequestState,
 	MessagesHandlers,
 	MessagesState,
 	MessagesContext,
