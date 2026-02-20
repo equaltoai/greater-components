@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-messaging",
-  "version": "0.1.12",
+  "version": "0.1.13-rc.0",
   "description": "Direct messaging components for ActivityPub/Fediverse applications",
   "components": {
     "Root": {
@@ -60,6 +60,8 @@
     "MessageParticipant",
     "DirectMessage",
     "Conversation",
+    "ConversationFolder",
+    "DmRequestState",
     "MessagesHandlers",
     "MessagesState",
     "MessagesContext",
@@ -77,7 +79,13 @@
     "optional": []
   },
   "lesserSchema": {
-    "mutations": ["sendMessage", "markConversationRead", "deleteMessage", "createConversation"],
+    "mutations": [
+      "sendMessage",
+      "markConversationRead",
+      "deleteMessage",
+      "deleteConversation",
+      "createConversation"
+    ],
     "queries": ["conversations", "conversationMessages", "searchParticipants"],
     "subscriptions": ["messageReceived", "conversationUpdated", "typingIndicator"]
   },

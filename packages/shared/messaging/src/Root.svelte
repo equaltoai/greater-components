@@ -6,7 +6,7 @@
 	import { untrack } from 'svelte';
 	import { createMessagesContext } from './context.svelte.js';
 	import type { MessagesHandlers } from './context.svelte.js';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	interface Props {
 		handlers?: MessagesHandlers;
@@ -25,8 +25,18 @@
 
 	onMount(() => {
 		if (autoFetch) {
-			context.fetchConversations();
+			context.fetchConversations().then(() => {
+				context.fetchConversations('REQUESTS', { background: true }).catch(() => {
+					/* ignore */
+				});
+			});
 		}
+
+		context.startRealtime();
+	});
+
+	onDestroy(() => {
+		context.stopRealtime();
 	});
 </script>
 

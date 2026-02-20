@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-social",
   "private": true,
-  "version": "0.1.12",
+  "version": "0.1.13-rc.0",
   "type": "module",
   "description": "Social/Twitter-style UI components for Greater Components (formerly fediverse)",
   "license": "AGPL-3.0-only",
@@ -115,7 +115,7 @@
     "@vitest/ui": "^4.0.18",
     "axe-core": "^4.11.1",
     "jsdom": "^28.1.0",
-    "svelte": "^5.51.2",
+    "svelte": "^5.53.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18"

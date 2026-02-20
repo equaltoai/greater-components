@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "0.1.12",
+  "version": "0.1.13-rc.0",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -422,6 +422,7 @@
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@vitest/coverage-v8": "^4.0.18",
+    "svelte": "^5.53.0",
     "vitest": "^4.0.18"
   }
 }

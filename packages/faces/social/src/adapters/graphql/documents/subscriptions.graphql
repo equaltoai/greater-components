@@ -26,15 +26,6 @@ subscription NotificationStream($types: [String!]) {
 subscription ConversationUpdates {
 	conversationUpdates {
 		id
-		unread
-		createdAt
-		updatedAt
-		accounts {
-			...ActorSummary
-		}
-		lastStatus {
-			...ObjectFields
-		}
 	}
 }
 

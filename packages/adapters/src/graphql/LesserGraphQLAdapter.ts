@@ -807,8 +807,8 @@ export class LesserGraphQLAdapter {
 		return data.markConversationAsRead;
 	}
 
-	async deleteConversation(id: string) {
-		const data = await this.mutate(DeleteConversationDocument, { id });
+	async deleteConversation(conversationId: string) {
+		const data = await this.mutate(DeleteConversationDocument, { conversationId });
 		return data.deleteConversation;
 	}
 

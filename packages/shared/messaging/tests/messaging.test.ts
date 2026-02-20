@@ -12,14 +12,25 @@ import Conversations from '../src/Conversations.svelte';
 // import * as context from '../src/context.svelte.js';
 
 // Mock getMessagesContext with hoisted state
-const { mockHandlers, mockSelectConversation, mockState } = vi.hoisted(() => ({
+const {
+	mockHandlers,
+	mockSelectConversation,
+	mockState,
+	mockAcceptMessageRequest,
+	mockDeclineMessageRequest,
+	mockFetchConversations,
+} = vi.hoisted(() => ({
 	mockHandlers: {
 		onUploadMedia: vi.fn(),
 		onSearchParticipants: vi.fn(),
 		onCreateConversation: vi.fn(),
 	},
 	mockSelectConversation: vi.fn(),
+	mockAcceptMessageRequest: vi.fn(),
+	mockDeclineMessageRequest: vi.fn(),
+	mockFetchConversations: vi.fn(),
 	mockState: {
+		folder: 'INBOX',
 		conversations: [],
 		selectedConversation: null as any,
 		messages: [],
@@ -38,6 +49,9 @@ vi.mock('../src/context.svelte.js', async () => {
 			handlers: mockHandlers,
 			selectConversation: mockSelectConversation,
 			state: mockState,
+			acceptMessageRequest: mockAcceptMessageRequest,
+			declineMessageRequest: mockDeclineMessageRequest,
+			fetchConversations: mockFetchConversations,
 		}),
 	};
 });
@@ -312,6 +326,7 @@ describe('NewConversation', () => {
 describe('Messaging Smoke Tests', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		mockState.folder = 'INBOX';
 		mockState.selectedConversation = null;
 		mockState.conversations = [];
 	});
@@ -325,10 +340,35 @@ describe('Messaging Smoke Tests', () => {
 
 	it('renders Composer', async () => {
 		const target = document.createElement('div');
-		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0, updatedAt: '' };
+		mockState.selectedConversation = {
+			id: 'c1',
+			participants: [],
+			unreadCount: 0,
+			updatedAt: '',
+			requestState: 'ACCEPTED',
+		};
 		const instance = mount(Composer, { target });
 		await flushSync();
 		expect(target.querySelector('.messages-composer')).toBeTruthy();
+		unmount(instance);
+	});
+
+	it('disables Composer when request is pending', async () => {
+		const target = document.createElement('div');
+		mockState.selectedConversation = {
+			id: 'c1',
+			participants: [],
+			unreadCount: 0,
+			updatedAt: '',
+			requestState: 'PENDING',
+		};
+
+		const instance = mount(Composer, { target });
+		await flushSync();
+
+		const input = target.querySelector('.messages-composer__input') as HTMLTextAreaElement;
+		expect(input.disabled).toBe(true);
+
 		unmount(instance);
 	});
 
@@ -355,12 +395,46 @@ describe('Messaging Smoke Tests', () => {
 		unmount(instance);
 
 		// With selection
-		mockState.selectedConversation = { id: 'c1', participants: [], unreadCount: 0, updatedAt: '' };
+		mockState.selectedConversation = {
+			id: 'c1',
+			participants: [],
+			unreadCount: 0,
+			updatedAt: '',
+			requestState: 'ACCEPTED',
+		};
 		const target2 = document.createElement('div');
 		const instance2 = mount(Thread, { target: target2 });
 		await flushSync();
 		expect(target2.querySelector('.messages-thread')).toBeTruthy();
 		unmount(instance2);
+	});
+
+	it('shows request banner and triggers accept/decline', async () => {
+		mockState.selectedConversation = {
+			id: 'c1',
+			participants: [],
+			unreadCount: 0,
+			updatedAt: '',
+			requestState: 'PENDING',
+		};
+
+		const target = document.createElement('div');
+		const instance = mount(Thread, { target });
+		await flushSync();
+
+		expect(target.querySelector('.messages-thread__request-banner')).toBeTruthy();
+
+		const buttons = target.querySelectorAll(
+			'.messages-thread__request-button'
+		) as NodeListOf<HTMLButtonElement>;
+		buttons[0].click();
+		buttons[1].click();
+		await flushSync();
+
+		expect(mockDeclineMessageRequest).toHaveBeenCalledWith('c1');
+		expect(mockAcceptMessageRequest).toHaveBeenCalledWith('c1');
+
+		unmount(instance);
 	});
 
 	it('renders Message', () => {
