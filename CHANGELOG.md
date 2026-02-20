@@ -12,6 +12,35 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.13-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.12-rc.0...greater-v0.1.13-rc.0) (2026-02-20)
+
+
+### Features
+
+* **messaging:** allow background refresh ([fba11d5](https://github.com/equaltoai/greater-components/commit/fba11d5208add59c540dbca992afed1fc1989c06))
+* **messaging:** delete-for-me (M4) ([f5c1501](https://github.com/equaltoai/greater-components/commit/f5c15016935c9e2cf9b667384f0242b79ee5cefb))
+* **messaging:** inbox/requests dm handlers ([d579ac8](https://github.com/equaltoai/greater-components/commit/d579ac86822e043299f96e5bec81cbb2c7dc7be1))
+* **messaging:** realtime updates (M5) ([d28af50](https://github.com/equaltoai/greater-components/commit/d28af5054e43b82ab7309e91505037b294f80f6b))
+* **prefs:** expose dm delivery setting ([b7d7fee](https://github.com/equaltoai/greater-components/commit/b7d7feecd4953b441cb17414d0c863e6fd7026a8))
+
+
+### Bug Fixes
+
+* **admin:** use valid Button variant ([638824f](https://github.com/equaltoai/greater-components/commit/638824ff110a150621058572f7ad09e2d94523f3))
+* **ci:** pass lint workflow ([d6a1c96](https://github.com/equaltoai/greater-components/commit/d6a1c96df1dfb813a5d9a2b6803ed7e5a7505c4b))
+* **registry:** regenerate index ([43978b6](https://github.com/equaltoai/greater-components/commit/43978b6d293e385c040a96274f19302dbcb1c93d))
+* **registry:** regenerate index ([17142da](https://github.com/equaltoai/greater-components/commit/17142da9d2b3f847cb9b856afd7d2fcb46ba246d))
+
+
+### Chores
+
+* bump svelte to 5.53.0 ([9d6a300](https://github.com/equaltoai/greater-components/commit/9d6a300f6032dd345b581240348eb947667664bf))
+* bump svelte to 5.53.0 ([acc3ce0](https://github.com/equaltoai/greater-components/commit/acc3ce071df62d17a6d5ba615369e192bdff53e0))
+* **lesser:** pin contracts to 9f072443 ([2ef3e4b](https://github.com/equaltoai/greater-components/commit/2ef3e4bfa65d1f9d5839552ebdaf79eba5e25b0e))
+* **main:** release greater 0.1.12 ([4c0a357](https://github.com/equaltoai/greater-components/commit/4c0a35779d1e5fe72cbe4bb3277d04a0cff9b72a))
+* **main:** release greater 0.1.12 ([1b07132](https://github.com/equaltoai/greater-components/commit/1b071322ea489d2e37d00b4187060ad64fa98c02))
+* **release:** prepare metadata ([d8ae17e](https://github.com/equaltoai/greater-components/commit/d8ae17ed46bf0fbfc68896a8b58fc70b167d21f1))
+
 ## [0.1.12](https://github.com/equaltoai/greater-components/compare/greater-v0.1.11...greater-v0.1.12) (2026-02-16)
 
 ### Bug Fixes
