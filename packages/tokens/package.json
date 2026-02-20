@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-tokens",
   "private": true,
-  "version": "0.1.13-rc.0",
+  "version": "0.1.13",
   "type": "module",
   "description": "Design tokens for Greater Components",
   "license": "AGPL-3.0-only",
