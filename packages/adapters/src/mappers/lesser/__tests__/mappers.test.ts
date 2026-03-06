@@ -371,6 +371,43 @@ describe('Lesser Mappers', () => {
 			expect(result.data?.costAlert?.amount).toBe(50);
 		});
 
+		it('should map communication notifications', () => {
+			const commNotif: LesserNotificationFragment = {
+				...mockNotification,
+				notificationType: 'COMMUNICATION_INBOUND',
+				communication: {
+					channel: 'email',
+					from: {
+						address: 'sender@example.com',
+						displayName: 'Sender',
+						soulAgentId: 'agent_1',
+					},
+					to: { address: 'inbox@example.com' },
+					attachments: [
+						{
+							id: 'att_1',
+							filename: 'note.txt',
+							contentType: 'text/plain',
+							sizeBytes: 128,
+							sha256: 'deadbeef',
+						},
+					],
+					subject: 'Hello',
+					body: 'Test message',
+					receivedAt: '2023-01-04T00:00:00Z',
+					messageId: 'msg_1',
+					inReplyTo: null,
+					threadId: 'thread_1',
+				},
+			};
+
+			const result = mapLesserNotification(commNotif);
+			expect(result.success).toBe(true);
+			expect(result.data?.type).toBe('communication_inbound');
+			expect(result.data?.communication?.channel).toBe('email');
+			expect(result.data?.communication?.from.address).toBe('sender@example.com');
+		});
+
 		it('should return error for invalid notification', () => {
 			const result = mapLesserNotification({} as any);
 			expect(result.success).toBe(false);

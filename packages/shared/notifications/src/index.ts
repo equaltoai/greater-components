@@ -78,6 +78,10 @@ export type {
 	NotificationType,
 	Account,
 	Status,
+	CommunicationNotification,
+	CommunicationFrom,
+	CommunicationTo,
+	CommunicationAttachment,
 } from './types.js';
 
 // Export grouping utilities

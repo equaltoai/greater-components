@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-06T14:24:28.380Z",
+  "generatedAt": "2026-03-06T22:32:04.348Z",
   "ref": "greater-v0.1.14-rc.0",
   "version": "0.1.14-rc.0",
   "checksums": {
@@ -21,8 +21,8 @@
     "packages/primitives/src/components/Checkbox.svelte.d.ts": "sha256-zbh+1tn6aMK9moFz7oKYAtKuHGgUMlfXTadzi6SLK98=",
     "packages/primitives/src/components/Container.svelte": "sha256-TycKqIX51g6Dfyh5iHQk6o8y18C4I2V/oad9lH5e4gs=",
     "packages/primitives/src/components/Container.svelte.d.ts": "sha256-YNICvYcGsoTwVYloZ5vTq2xUXdO+tFjxcTMmJUVxXP0=",
-    "packages/primitives/src/components/CopyButton.svelte": "sha256-syBr5K89Y8Y/2lQ47r6nEy6oGdy39yyvuDfnzsNrYI4=",
-    "packages/primitives/src/components/CopyButton.svelte.d.ts": "sha256-7LUligFuM4XNGE32wuruCNcy11n7Fkx4JUfdkgsoXF0=",
+    "packages/primitives/src/components/CopyButton.svelte": "sha256-YSQuxe9h3gHvwdhnpODbVAzPSwiFxbX4hiZFhR/xX40=",
+    "packages/primitives/src/components/CopyButton.svelte.d.ts": "sha256-yFaOca+bnx/cvwXrOYgaahhkkeRhR0oyanjIgwRMODU=",
     "packages/primitives/src/components/DefinitionItem.svelte": "sha256-dnoPUzcpLAFuGJRuGuKzVOcJK1oo0T7KUHW8pT+10fo=",
     "packages/primitives/src/components/DefinitionItem.svelte.d.ts": "sha256-VZw3eDKmfW005yIs0hdGBpERqmITkTXUb3ZwykpNiNc=",
     "packages/primitives/src/components/DefinitionList.svelte": "sha256-rtoTxmSxPAyS8LBJWGphjKY0lL/dp1WZ0yURCzy36Fw=",
@@ -823,7 +823,7 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-M0UwWko7U1Cgv/EZv6CStGHfwidKao9BxgJRvKcF8N8=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-3GmZsCPfMmH5rc4SitcCVK/3gU8tf4qPAalks09ONa8=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
@@ -839,11 +839,11 @@
     "packages/adapters/src/mappers/index.d.ts": "sha256-IVlngJIkK6cSnV1Yjhe/K8uy/QEhYXZyEY9UBk75tlk=",
     "packages/adapters/src/mappers/index.ts": "sha256-/fup8QkDm/L5GviUHQEWmHa+3NjOieFwMo6OKLCKToo=",
     "packages/adapters/src/mappers/lesser/graphqlConverters.d.ts": "sha256-siPKHz6jxTh5f7FoUi9304FpiYae8w8uLjVB+RvEdrQ=",
-    "packages/adapters/src/mappers/lesser/graphqlConverters.ts": "sha256-m/MhUXN8RdvjcZ7KoWwQg1l29SjIwcMMlWf/XGXxwW0=",
+    "packages/adapters/src/mappers/lesser/graphqlConverters.ts": "sha256-0bLj18pKcysJ10SH2BTshYjugC753uVmdDe9lnYuwCU=",
     "packages/adapters/src/mappers/lesser/mappers.d.ts": "sha256-nCiGCe8DqPTSXyuTkVaWSrFJ/TZQRuI9jXYqeJvJK0Q=",
-    "packages/adapters/src/mappers/lesser/mappers.ts": "sha256-32QfGxSNJXYNnq7hvjXhqqtuniysUBIN6RvvxcaFaVo=",
+    "packages/adapters/src/mappers/lesser/mappers.ts": "sha256-XrreozJ1smZmwOtG4JZu4cjNL5E/yiJmgwchAacxVMw=",
     "packages/adapters/src/mappers/lesser/types.d.ts": "sha256-YmLtvkMIU0AKzjp54SKx3PyeSbUTOUKxIoeMwWWM+ck=",
-    "packages/adapters/src/mappers/lesser/types.ts": "sha256-9/XaCMfNiiqwrGhVPVt+BWtaXPVTPSW5XkFAQ+9POEQ=",
+    "packages/adapters/src/mappers/lesser/types.ts": "sha256-3bWNv9BZu0pziam2r8Vrp99T8pURJRJdCdWrMULq98I=",
     "packages/adapters/src/mappers/mastodon/mappers.d.ts": "sha256-tFQ+GW1t6rmqaXJxtSRHmqcHbE8i+RALj6XMPxTYZhA=",
     "packages/adapters/src/mappers/mastodon/mappers.ts": "sha256-azySwXrEAWqu3nuiQkR3IFQ84Z9Pr0boYFgzpqXYJtE=",
     "packages/adapters/src/mappers/mastodon/types.d.ts": "sha256-LLN8HNltLV9QnLl0tY3zOF4ovD0+sYN0UvGJIx7MH70=",
@@ -851,9 +851,9 @@
     "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-auhGngSfS+LxK6ghv53K01hMOpbxcaQZU2vON93P6Ag=",
     "packages/adapters/src/messaging/index.ts": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
-    "packages/adapters/src/models/unified.ts": "sha256-P7MTLrDEubSZl1pZBMawRRvTOir3YTyJW9FAgVoIg3E=",
+    "packages/adapters/src/models/unified.ts": "sha256-ehDle02wDrnpb+OmdCcEZKSJ9q942CMqtvncdlM22bU=",
     "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-xHA0ag5HbmIJyIFDpFfv5kmhCtBk59HmVhKGvg8uc4k=",
-    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-IF+nHyvYFdtCMLUpNjorvntILywkOPJBB0NFFf9rSCY=",
+    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-ecIzrQ6hv70Ulrnr7IieJswb5zbIGD6b358YI9T8IQg=",
     "packages/adapters/src/soul/client.ts": "sha256-zhOZXfs+0+CvDv9BMgPRKDslCHYBYfzz0sIicZsbSr8=",
     "packages/adapters/src/soul/ens.ts": "sha256-CI8WkwLMw8ZXNPrN+LpQdK81vud8ecgQc3xOXFMvK2o=",
     "packages/adapters/src/soul/index.ts": "sha256-EfkSnwZPSyZwCrZYy/cwAl8Pqf9xijHFYp7O1/JUkk4=",
@@ -862,11 +862,11 @@
     "packages/adapters/src/stores/adminStreamingStore.d.ts": "sha256-SjxwZTLzZw3QyuExX+Wt0TR7TzXTI6z+yb/aTRSyQ0M=",
     "packages/adapters/src/stores/adminStreamingStore.ts": "sha256-gOl6BUCNpoi+8bfMHjwKCMuYXOFyJ42QJkIfbtd9ij4=",
     "packages/adapters/src/stores/fetchHelpers.d.ts": "sha256-w69ObtwehydOkFq5vF6DN21PaJ2bLn8Vh+uofEiPtkI=",
-    "packages/adapters/src/stores/fetchHelpers.ts": "sha256-SX3A5gDixWZMlygrWDxeww6B6UzBKrFb5riWH1tjBF8=",
+    "packages/adapters/src/stores/fetchHelpers.ts": "sha256-0acOPJyN1hWjSLXD+XfJZ07rIKCU7tZcb+Dk3tyueEo=",
     "packages/adapters/src/stores/index.d.ts": "sha256-TizATIopvpJ4bpSmQiAJaMBPAz2aVfT1Nhkwm6zChzU=",
     "packages/adapters/src/stores/index.ts": "sha256-B6Jue43k5vSxjSCiHU3hiFasDKEbWiGbMKqoVCNmCyQ=",
     "packages/adapters/src/stores/notificationStore.d.ts": "sha256-XdEwb/hr4cQYdXUd3Cdb48fXho9/ELcKbq3ELEDo5Hk=",
-    "packages/adapters/src/stores/notificationStore.ts": "sha256-ZRht+j9NV0SEb5Gh0G5NheVR24s/a14RN5bdzgTbMoE=",
+    "packages/adapters/src/stores/notificationStore.ts": "sha256-8Nfkv+8tkxUOKYKirQDI4Afr+lVmSbd84PaMoQMw4Iw=",
     "packages/adapters/src/stores/presenceStore.d.ts": "sha256-A9+pEhr9YNk9Tbtc/MPo0gadUaHPrRNYY928TnAZ5aU=",
     "packages/adapters/src/stores/presenceStore.ts": "sha256-9yGO/68FqS9Ofd15aAYnhPySR1pJxSd18l6aKUMMdqA=",
     "packages/adapters/src/stores/timelineStore.d.ts": "sha256-vcIpheIZwTRmn88plt5WsxwXrGRK+LtVcW63fFgJXcE=",
@@ -874,7 +874,7 @@
     "packages/adapters/src/stores/types.d.ts": "sha256-EJsjt8cbqdi4xA+qIJ0Tx9CtYn96zQMwzete6ATsdgU=",
     "packages/adapters/src/stores/types.ts": "sha256-0o0+xirB1nG4TKI6FvkItjjSpY0h0mymIgTySfllTmk=",
     "packages/adapters/src/stores/unifiedToNotification.d.ts": "sha256-qUqXLK/jNwUYdzdt33WPZegGdsXmzYCVdq9CTYjkCM0=",
-    "packages/adapters/src/stores/unifiedToNotification.ts": "sha256-mM/VTneq1vSYRxh2YpFINa6JSbYewgXl8GlmSyfSus8=",
+    "packages/adapters/src/stores/unifiedToNotification.ts": "sha256-7DsC92pJlyoRFfjWXsjEzKPqcIreoe8R6vZVZnGf8GA=",
     "packages/adapters/src/stores/unifiedToTimeline.d.ts": "sha256-VuKcDFIpGUjjxUYEsVS/sT4XPUkbUHAZ6eq8LWeja7Q=",
     "packages/adapters/src/stores/unifiedToTimeline.ts": "sha256-wIV4SmRSM87BYijL4PaBEkmgcJHFZd9ElCU94MZZdbI=",
     "packages/adapters/src/streaming/index.ts": "sha256-RN34wqFaSAkMNbpYxznJuV9I7O1WPpbxs/T/b279Tz4=",
@@ -897,7 +897,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-3GmZsCPfMmH5rc4SitcCVK/3gU8tf4qPAalks09ONa8=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
     "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
@@ -1267,19 +1267,19 @@
     "packages/shared/compose/src/types.ts": "sha256-8ovFbZvdAJ0m03hrxIOeAPd9aimhX2mAt/DQ8HZcby0=",
     "packages/shared/compose/src/UnicodeCounter.ts": "sha256-NSa7uxa1qqByrpywxeCI1RQG0BZZYujkKCMYgVI74z0=",
     "packages/shared/compose/src/VisibilitySelect.svelte": "sha256-cguhZxbRISAreQO4QEkW5DOJXvTiz+1iB6CS5dwhszg=",
-    "packages/shared/notifications/src/CommunicationNotificationItem.svelte": "sha256-Ho7uQ0ulaYQB1rSMnYx58xki9etshkTn15s8LdsSDeg=",
+    "packages/shared/notifications/src/CommunicationNotificationItem.svelte": "sha256-Tk+BCXJQIehdy+B2C1MxB4+En0QWaUNRJL36NFI679M=",
     "packages/shared/notifications/src/components/Notifications/context.ts": "sha256-ZIahHLN75uqj58+s9KTYLXte5DRYLiGx8YK9qwWqsNI=",
     "packages/shared/notifications/src/context.svelte.ts": "sha256-d14bVvqv1AhU/ALFY2f/0mzcvAecnWKLwRVJVuDM82U=",
     "packages/shared/notifications/src/Filter.svelte": "sha256-vYfqHN/0a3T4e6IAaZm8OHeLrsMSU13lFRrhwlqm7Mk=",
     "packages/shared/notifications/src/Group.svelte": "sha256-yRJrEhxGOSW5UJuigffopEU6hPcH4JOOUtOVoVW5Vyg=",
-    "packages/shared/notifications/src/index.ts": "sha256-IZpHjxQFSBOdF1F/bvutz97J4UM/jL62lPlsfw/fE6g=",
+    "packages/shared/notifications/src/index.ts": "sha256-9nRMyXcBpOvckw4A84SIpRUotcKGGpc72A0oC1lfeZ4=",
     "packages/shared/notifications/src/Item.svelte": "sha256-i88S5S3c4NhCBMzYszLqJfse3ESLPZ7uqbsKHbFoKV0=",
     "packages/shared/notifications/src/LesserNotificationItem.svelte": "sha256-5t6c2CfohfEah6P4wmk1L/5YhAuEo8gQb2X7klRAxJU=",
     "packages/shared/notifications/src/mockData.ts": "sha256-tWv3AiO1o7SmeNGzMHafe7/4WXW6ZtqeO8RuzUvhZ48=",
     "packages/shared/notifications/src/NotificationFilters.svelte": "sha256-YRHkSnWW/euDHafGWKskxQOlyiNoDvh/6lcmWIKBZuw=",
     "packages/shared/notifications/src/PushNotificationSettings.svelte": "sha256-MYvWpZYHiO5upPP766MIcRro77YJvyQt7aB9yCozK/c=",
     "packages/shared/notifications/src/Root.svelte": "sha256-3HnRKd8wRgk9RcZ6p5U1cm9iKWjko7jlDYhJVPo0uvM=",
-    "packages/shared/notifications/src/types.ts": "sha256-N2EeaLZzVEspPeL2tEnZKnM8DiaqnrCd9pYet5yHc0k=",
+    "packages/shared/notifications/src/types.ts": "sha256-VZXSG0aRJNvVxf+RK03qtEbcYfTsMAe10uub0zGFhp4=",
     "packages/shared/notifications/src/utils/notificationGrouping.ts": "sha256-47/SGAF5pQfWKpJvvKIC0aV22hNzDVWRHqMYPmw9GpI=",
     "packages/shared/search/src/ActorResult.svelte": "sha256-oPg89O7Eebi1SOfk4zN/SvkMGPSC/WDyfaNkWjsfIUo=",
     "packages/shared/search/src/Bar.svelte": "sha256-g4snrnmzDkEt8TWrq0ZDRTJGKUovIdGFStqB7NPLOxU=",
@@ -1354,9 +1354,9 @@
     "packages/shared/messaging/src/types.ts": "sha256-gQLqfSqJJXFpvEZn9agIvg7B1Q833QCW7T8f0HznC5A=",
     "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-oo+td3vo+3SQR4zYbS0PNjHDoQ8j4qEoqyMrYrK7Z5s=",
     "packages/shared/messaging/src/utils.ts": "sha256-njdv38BQkoRz+QaAR76UJCsibJchAMYdNsTtL4+XG88=",
-    "packages/shared/soul/src/BestWayToContact.svelte": "sha256-y8ano24GOp1KRGdcBOem3t+GSV2vL2SJFb+Uya2k610=",
-    "packages/shared/soul/src/ChannelsDisplay.svelte": "sha256-3975gqW1RTMsgbmME/3KKL6AS2GOlK/g2hiy6fHrIJs=",
-    "packages/shared/soul/src/ContactPreferencesEditor.svelte": "sha256-3zUDsP1j6xO/QHKB3QvdRneQ+p9XOk0j5y6phDtyBzQ=",
+    "packages/shared/soul/src/BestWayToContact.svelte": "sha256-IBt7PZbUifeYI0DjsiPxTYLBwJj2k5cX0mw/J6DGf9k=",
+    "packages/shared/soul/src/ChannelsDisplay.svelte": "sha256-8bKSDKLlzfLUeMgpQYVkWpon0ueamVCO01Ydub2JYh4=",
+    "packages/shared/soul/src/ContactPreferencesEditor.svelte": "sha256-gkLWB1luu79pVIaSNe69cTbad00zTpCh0JVRO8SWOCQ=",
     "packages/shared/soul/src/ContactPreferencesViewer.svelte": "sha256-7cU44eKMlSkNo7HFP+OPEqEJEuJK8XQHNCa5m9e5lJc=",
     "packages/shared/soul/src/index.ts": "sha256-/pDWdlYQIwoQVFS3FGKUh9PYkCWnrlTcrJ/w2WWe/x0=",
     "packages/shared/soul/src/types.ts": "sha256-5wfrofk4a2S+lQjBXkKj7n8LtQB4DhKLLi8Bgk5D8es=",
@@ -1451,13 +1451,13 @@
         },
         {
           "path": "src/components/CopyButton.svelte",
-          "checksum": "sha256-syBr5K89Y8Y/2lQ47r6nEy6oGdy39yyvuDfnzsNrYI4=",
-          "size": 4296
+          "checksum": "sha256-YSQuxe9h3gHvwdhnpODbVAzPSwiFxbX4hiZFhR/xX40=",
+          "size": 4669
         },
         {
           "path": "src/components/CopyButton.svelte.d.ts",
-          "checksum": "sha256-7LUligFuM4XNGE32wuruCNcy11n7Fkx4JUfdkgsoXF0=",
-          "size": 1707
+          "checksum": "sha256-yFaOca+bnx/cvwXrOYgaahhkkeRhR0oyanjIgwRMODU=",
+          "size": 1910
         },
         {
           "path": "src/components/DefinitionItem.svelte",
@@ -5539,8 +5539,8 @@
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
-          "size": 1445470
+          "checksum": "sha256-3GmZsCPfMmH5rc4SitcCVK/3gU8tf4qPAalks09ONa8=",
+          "size": 1454575
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -5619,8 +5619,8 @@
         },
         {
           "path": "src/mappers/lesser/graphqlConverters.ts",
-          "checksum": "sha256-m/MhUXN8RdvjcZ7KoWwQg1l29SjIwcMMlWf/XGXxwW0=",
-          "size": 21002
+          "checksum": "sha256-0bLj18pKcysJ10SH2BTshYjugC753uVmdDe9lnYuwCU=",
+          "size": 23836
         },
         {
           "path": "src/mappers/lesser/mappers.d.ts",
@@ -5629,8 +5629,8 @@
         },
         {
           "path": "src/mappers/lesser/mappers.ts",
-          "checksum": "sha256-32QfGxSNJXYNnq7hvjXhqqtuniysUBIN6RvvxcaFaVo=",
-          "size": 39150
+          "checksum": "sha256-XrreozJ1smZmwOtG4JZu4cjNL5E/yiJmgwchAacxVMw=",
+          "size": 40491
         },
         {
           "path": "src/mappers/lesser/types.d.ts",
@@ -5639,8 +5639,8 @@
         },
         {
           "path": "src/mappers/lesser/types.ts",
-          "checksum": "sha256-9/XaCMfNiiqwrGhVPVt+BWtaXPVTPSW5XkFAQ+9POEQ=",
-          "size": 17763
+          "checksum": "sha256-3bWNv9BZu0pziam2r8Vrp99T8pURJRJdCdWrMULq98I=",
+          "size": 18577
         },
         {
           "path": "src/mappers/mastodon/mappers.d.ts",
@@ -5679,8 +5679,8 @@
         },
         {
           "path": "src/models/unified.ts",
-          "checksum": "sha256-P7MTLrDEubSZl1pZBMawRRvTOir3YTyJW9FAgVoIg3E=",
-          "size": 15357
+          "checksum": "sha256-ehDle02wDrnpb+OmdCcEZKSJ9q942CMqtvncdlM22bU=",
+          "size": 15900
         },
         {
           "path": "src/rest/generated/lesser-api.ts",
@@ -5689,8 +5689,8 @@
         },
         {
           "path": "src/rest/generated/lesser-host-api.ts",
-          "checksum": "sha256-IF+nHyvYFdtCMLUpNjorvntILywkOPJBB0NFFf9rSCY=",
-          "size": 25026
+          "checksum": "sha256-ecIzrQ6hv70Ulrnr7IieJswb5zbIGD6b358YI9T8IQg=",
+          "size": 29414
         },
         {
           "path": "src/soul/client.ts",
@@ -5734,8 +5734,8 @@
         },
         {
           "path": "src/stores/fetchHelpers.ts",
-          "checksum": "sha256-SX3A5gDixWZMlygrWDxeww6B6UzBKrFb5riWH1tjBF8=",
-          "size": 5524
+          "checksum": "sha256-0acOPJyN1hWjSLXD+XfJZ07rIKCU7tZcb+Dk3tyueEo=",
+          "size": 5959
         },
         {
           "path": "src/stores/index.d.ts",
@@ -5754,8 +5754,8 @@
         },
         {
           "path": "src/stores/notificationStore.ts",
-          "checksum": "sha256-ZRht+j9NV0SEb5Gh0G5NheVR24s/a14RN5bdzgTbMoE=",
-          "size": 30076
+          "checksum": "sha256-8Nfkv+8tkxUOKYKirQDI4Afr+lVmSbd84PaMoQMw4Iw=",
+          "size": 30469
         },
         {
           "path": "src/stores/presenceStore.d.ts",
@@ -5794,8 +5794,8 @@
         },
         {
           "path": "src/stores/unifiedToNotification.ts",
-          "checksum": "sha256-mM/VTneq1vSYRxh2YpFINa6JSbYewgXl8GlmSyfSus8=",
-          "size": 4179
+          "checksum": "sha256-7DsC92pJlyoRFfjWXsjEzKPqcIreoe8R6vZVZnGf8GA=",
+          "size": 4726
         },
         {
           "path": "src/stores/unifiedToTimeline.d.ts",
@@ -6019,8 +6019,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
-          "size": 1445470
+          "checksum": "sha256-3GmZsCPfMmH5rc4SitcCVK/3gU8tf4qPAalks09ONa8=",
+          "size": 1454575
         },
         {
           "path": "src/adapters/graphql/index.ts",
@@ -8240,8 +8240,8 @@
       "files": [
         {
           "path": "src/CommunicationNotificationItem.svelte",
-          "checksum": "sha256-Ho7uQ0ulaYQB1rSMnYx58xki9etshkTn15s8LdsSDeg=",
-          "size": 6688
+          "checksum": "sha256-Tk+BCXJQIehdy+B2C1MxB4+En0QWaUNRJL36NFI679M=",
+          "size": 7300
         },
         {
           "path": "src/components/Notifications/context.ts",
@@ -8265,8 +8265,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-IZpHjxQFSBOdF1F/bvutz97J4UM/jL62lPlsfw/fE6g=",
-          "size": 3878
+          "checksum": "sha256-9nRMyXcBpOvckw4A84SIpRUotcKGGpc72A0oC1lfeZ4=",
+          "size": 3970
         },
         {
           "path": "src/Item.svelte",
@@ -8300,8 +8300,8 @@
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-N2EeaLZzVEspPeL2tEnZKnM8DiaqnrCd9pYet5yHc0k=",
-          "size": 4294
+          "checksum": "sha256-VZXSG0aRJNvVxf+RK03qtEbcYfTsMAe10uub0zGFhp4=",
+          "size": 4983
         },
         {
           "path": "src/utils/notificationGrouping.ts",
@@ -8889,18 +8889,18 @@
       "files": [
         {
           "path": "src/BestWayToContact.svelte",
-          "checksum": "sha256-y8ano24GOp1KRGdcBOem3t+GSV2vL2SJFb+Uya2k610=",
-          "size": 4839
+          "checksum": "sha256-IBt7PZbUifeYI0DjsiPxTYLBwJj2k5cX0mw/J6DGf9k=",
+          "size": 4853
         },
         {
           "path": "src/ChannelsDisplay.svelte",
-          "checksum": "sha256-3975gqW1RTMsgbmME/3KKL6AS2GOlK/g2hiy6fHrIJs=",
-          "size": 6558
+          "checksum": "sha256-8bKSDKLlzfLUeMgpQYVkWpon0ueamVCO01Ydub2JYh4=",
+          "size": 6395
         },
         {
           "path": "src/ContactPreferencesEditor.svelte",
-          "checksum": "sha256-3zUDsP1j6xO/QHKB3QvdRneQ+p9XOk0j5y6phDtyBzQ=",
-          "size": 21534
+          "checksum": "sha256-gkLWB1luu79pVIaSNe69cTbad00zTpCh0JVRO8SWOCQ=",
+          "size": 21748
         },
         {
           "path": "src/ContactPreferencesViewer.svelte",

@@ -20,6 +20,9 @@ subscription NotificationStream($types: [String!]) {
 		status {
 			...ObjectFields
 		}
+		communication {
+			...CommunicationNotificationFields
+		}
 	}
 }
 

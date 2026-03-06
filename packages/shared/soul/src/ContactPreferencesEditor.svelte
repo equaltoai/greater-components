@@ -133,7 +133,12 @@
 		partial: Partial<NonNullable<SoulContactPreferences['firstContact']>>
 	) {
 		const current = ensureValue();
-		update('firstContact', { ...(current.firstContact ?? {}), ...partial });
+		const defaults: NonNullable<SoulContactPreferences['firstContact']> = {
+			requireSoul: false,
+			requireReputation: null,
+			introductionExpected: true,
+		};
+		update('firstContact', { ...defaults, ...(current.firstContact ?? {}), ...partial });
 	}
 
 	function parseCsv(input: string): string[] {
@@ -303,11 +308,12 @@
 						{disabled}
 						value={value.availability.schedule}
 						onchange={(e) => {
+							const current = ensureValue();
 							const schedule = (e.currentTarget as HTMLSelectElement)
 								.value as SoulContactPreferences['availability']['schedule'];
 							updateAvailability({
 								schedule,
-								windows: schedule === 'custom' ? (value.availability.windows ?? []) : null,
+								windows: schedule === 'custom' ? (current.availability.windows ?? []) : null,
 							});
 						}}
 					>
