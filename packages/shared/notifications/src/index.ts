@@ -46,6 +46,7 @@ import NotificationsItem from './Item.svelte';
 import NotificationsGroup from './Group.svelte';
 import NotificationsFilter from './Filter.svelte';
 import NotificationsLesserNotificationItem from './LesserNotificationItem.svelte';
+import NotificationsCommunicationNotificationItem from './CommunicationNotificationItem.svelte';
 import NotificationFiltersComponent from './NotificationFilters.svelte';
 import PushNotificationSettingsComponent from './PushNotificationSettings.svelte';
 
@@ -55,6 +56,7 @@ export {
 	NotificationsGroup as Group,
 	NotificationsFilter as Filter,
 	NotificationsLesserNotificationItem as LesserNotificationItem,
+	NotificationsCommunicationNotificationItem as CommunicationNotificationItem,
 	NotificationFiltersComponent as NotificationFilters,
 	PushNotificationSettingsComponent as PushNotificationSettings,
 };
@@ -117,6 +119,11 @@ export const Notifications = {
 	 * Lesser-specific notification item (quote, community_note, trust_update, cost_alert, moderation_action)
 	 */
 	LesserNotificationItem: NotificationsLesserNotificationItem,
+
+	/**
+	 * Communication notification item (inbound email/SMS/voice delivered via `communication:*`)
+	 */
+	CommunicationNotificationItem: NotificationsCommunicationNotificationItem,
 
 	/**
 	 * Settings component for configuring which notification types to receive

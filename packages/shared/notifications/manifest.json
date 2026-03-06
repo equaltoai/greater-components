@@ -29,6 +29,11 @@
       "props": ["notification"],
       "exports": true
     },
+    "CommunicationNotificationItem": {
+      "description": "Renderer for `communication:*` inbound notifications (email, SMS, voice/voicemail)",
+      "props": ["notification", "content", "onClick", "class"],
+      "exports": true
+    },
     "NotificationFilters": {
       "description": "Settings component for configuring which notification types to receive",
       "props": ["filters", "onChange"],

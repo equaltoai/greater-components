@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-06T04:12:06.499Z",
+  "generatedAt": "2026-03-06T04:20:03.507Z",
   "ref": "greater-v0.1.13",
   "version": "0.1.13",
   "checksums": {
@@ -1007,7 +1007,7 @@
     "packages/faces/social/src/patterns/ThreadView.svelte": "sha256-aBLxcKZgbRmyE/ryjmaIIfer5sB9GwjISTN9uldUdDQ=",
     "packages/faces/social/src/patterns/ThreadView.types.ts": "sha256-ujiFoiGKR4V2AOnsfgVHoBcdJDas4iAR2q6hzcWiGts=",
     "packages/faces/social/src/patterns/VisibilitySelector.svelte": "sha256-u0lxPUqzx59glvkW1CH+oZSEO/hOj3uOruK9w69yIvM=",
-    "packages/faces/social/src/theme.css": "sha256-v07UiKAnERNkPfTCJPc+uZu4uGVU6mpnKPr98jKrFqA=",
+    "packages/faces/social/src/theme.css": "sha256-m70mS6KwvdFuzZi6UNwi3wLUhlNsRNkFxsKgvOvhnTM=",
     "packages/faces/social/src/types.ts": "sha256-6NYrNcSGwHuIJ98n5v5+jPut3crbOhP4mUPoHkS67OQ=",
     "packages/faces/social/src/utils/notificationGrouping.ts": "sha256-h/6xwSoua5lvEsXzV66EhlKfxdH5VySXQs3hs7uuN5M=",
     "packages/faces/blog/src/components/Article/Content.svelte": "sha256-yxnJHl75OM52nOstB8fd9q7pGjyNb8xX3fzD2hiK9mw=",
@@ -1267,11 +1267,12 @@
     "packages/shared/compose/src/types.ts": "sha256-8ovFbZvdAJ0m03hrxIOeAPd9aimhX2mAt/DQ8HZcby0=",
     "packages/shared/compose/src/UnicodeCounter.ts": "sha256-NSa7uxa1qqByrpywxeCI1RQG0BZZYujkKCMYgVI74z0=",
     "packages/shared/compose/src/VisibilitySelect.svelte": "sha256-cguhZxbRISAreQO4QEkW5DOJXvTiz+1iB6CS5dwhszg=",
+    "packages/shared/notifications/src/CommunicationNotificationItem.svelte": "sha256-FcAe/8YSzTDMe7RJbmw5FWvS7OSdyWJnlG46wv7NCG8=",
     "packages/shared/notifications/src/components/Notifications/context.ts": "sha256-ZIahHLN75uqj58+s9KTYLXte5DRYLiGx8YK9qwWqsNI=",
     "packages/shared/notifications/src/context.svelte.ts": "sha256-d14bVvqv1AhU/ALFY2f/0mzcvAecnWKLwRVJVuDM82U=",
     "packages/shared/notifications/src/Filter.svelte": "sha256-vYfqHN/0a3T4e6IAaZm8OHeLrsMSU13lFRrhwlqm7Mk=",
     "packages/shared/notifications/src/Group.svelte": "sha256-yRJrEhxGOSW5UJuigffopEU6hPcH4JOOUtOVoVW5Vyg=",
-    "packages/shared/notifications/src/index.ts": "sha256-W4PuVIdmAwdqyKvwI+Y/PYQ8wtxer5Z4xIiBwo+ljOE=",
+    "packages/shared/notifications/src/index.ts": "sha256-IZpHjxQFSBOdF1F/bvutz97J4UM/jL62lPlsfw/fE6g=",
     "packages/shared/notifications/src/Item.svelte": "sha256-i88S5S3c4NhCBMzYszLqJfse3ESLPZ7uqbsKHbFoKV0=",
     "packages/shared/notifications/src/LesserNotificationItem.svelte": "sha256-5t6c2CfohfEah6P4wmk1L/5YhAuEo8gQb2X7klRAxJU=",
     "packages/shared/notifications/src/mockData.ts": "sha256-tWv3AiO1o7SmeNGzMHafe7/4WXW6ZtqeO8RuzUvhZ48=",
@@ -6568,8 +6569,8 @@
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-v07UiKAnERNkPfTCJPc+uZu4uGVU6mpnKPr98jKrFqA=",
-          "size": 310726
+          "checksum": "sha256-m70mS6KwvdFuzZi6UNwi3wLUhlNsRNkFxsKgvOvhnTM=",
+          "size": 311206
         },
         {
           "path": "src/types.ts",
@@ -8232,10 +8233,16 @@
         "Group",
         "Filter",
         "LesserNotificationItem",
+        "CommunicationNotificationItem",
         "NotificationFilters",
         "PushNotificationSettings"
       ],
       "files": [
+        {
+          "path": "src/CommunicationNotificationItem.svelte",
+          "checksum": "sha256-FcAe/8YSzTDMe7RJbmw5FWvS7OSdyWJnlG46wv7NCG8=",
+          "size": 6689
+        },
         {
           "path": "src/components/Notifications/context.ts",
           "checksum": "sha256-ZIahHLN75uqj58+s9KTYLXte5DRYLiGx8YK9qwWqsNI=",
@@ -8258,8 +8265,8 @@
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-W4PuVIdmAwdqyKvwI+Y/PYQ8wtxer5Z4xIiBwo+ljOE=",
-          "size": 3522
+          "checksum": "sha256-IZpHjxQFSBOdF1F/bvutz97J4UM/jL62lPlsfw/fE6g=",
+          "size": 3878
         },
         {
           "path": "src/Item.svelte",

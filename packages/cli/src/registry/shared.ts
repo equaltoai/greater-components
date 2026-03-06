@@ -141,6 +141,7 @@ export const sharedModuleRegistry: Record<string, SharedModuleMetadata> = {
 			'Group',
 			'Filter',
 			'LesserNotificationItem',
+			'CommunicationNotificationItem',
 			'NotificationFilters',
 			'PushNotificationSettings',
 		],
@@ -151,6 +152,11 @@ export const sharedModuleRegistry: Record<string, SharedModuleMetadata> = {
 			{ path: 'shared/notifications/Filter.svelte', content: '', type: 'component' },
 			{
 				path: 'shared/notifications/LesserNotificationItem.svelte',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'shared/notifications/CommunicationNotificationItem.svelte',
 				content: '',
 				type: 'component',
 			},
