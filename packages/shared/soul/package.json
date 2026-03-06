@@ -1,0 +1,56 @@
+{
+  "name": "@equaltoai/greater-components-soul",
+  "version": "0.1.13",
+  "type": "module",
+  "description": "Reachability and contact-preferences components for lesser-soul v3",
+  "license": "AGPL-3.0-only",
+  "author": "Greater Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/equaltoai/greater-components.git",
+    "directory": "packages/shared/soul"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "svelte": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build && tsc -b --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js",
+    "dev": "vite build --watch",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@equaltoai/greater-components-adapters": "workspace:*",
+    "@equaltoai/greater-components-primitives": "workspace:*",
+    "@equaltoai/greater-components-utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@testing-library/svelte": "^5.3.1",
+    "@types/node": "^25.2.3",
+    "@vitest/coverage-v8": "^4.0.18",
+    "jsdom": "^28.1.0",
+    "svelte": "^5.53.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "svelte": "^5.43.6"
+  },
+  "private": true
+}
+

@@ -66,6 +66,7 @@ export type {
 	LesserHostSoulClientConfig,
 	ResolveEnsOptions,
 	SoulAgentChannelsResponse,
+	SoulAgentChannelPreferencesResponse,
 	SoulResolveResponse,
 } from './soul/index.js';
 

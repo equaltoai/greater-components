@@ -218,6 +218,38 @@ export const sharedModuleRegistry: Record<string, SharedModuleMetadata> = {
 	},
 
 	// ====================
+	// SOUL MODULE
+	// ====================
+	soul: {
+		name: 'soul',
+		type: 'shared',
+		description: 'Reachability channels + contact preferences UI for lesser-soul v3',
+		packageName: '@equaltoai/greater-components',
+		exportPath: '@equaltoai/greater-components/shared/soul',
+		exports: [
+			'ChannelsDisplay',
+			'ContactPreferencesViewer',
+			'ContactPreferencesEditor',
+			'BestWayToContact',
+		],
+		files: [
+			{ path: 'shared/soul/ChannelsDisplay.svelte', content: '', type: 'component' },
+			{ path: 'shared/soul/ContactPreferencesViewer.svelte', content: '', type: 'component' },
+			{ path: 'shared/soul/ContactPreferencesEditor.svelte', content: '', type: 'component' },
+			{ path: 'shared/soul/BestWayToContact.svelte', content: '', type: 'component' },
+			{ path: 'shared/soul/index.ts', content: '', type: 'component' },
+			{ path: 'shared/soul/types.ts', content: '', type: 'types' },
+			{ path: 'shared/soul/utils.ts', content: '', type: 'utils' },
+		],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['soul', 'reachability', 'channels', 'contact-preferences', 'shared'],
+		version: '1.0.0',
+		domain: 'core',
+	},
+
+	// ====================
 	// CHAT MODULE
 	// ====================
 	chat: {

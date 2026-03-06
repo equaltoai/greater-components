@@ -3,6 +3,8 @@ import { resolveSoulAgentIdFromEnsTextRecord } from './ens.js';
 
 export type ErrorEnvelope = components['schemas']['ErrorEnvelope'];
 export type SoulAgentChannelsResponse = components['schemas']['SoulAgentChannelsResponse'];
+export type SoulAgentChannelPreferencesResponse =
+	components['schemas']['SoulAgentChannelPreferencesResponse'];
 export type SoulResolveResponse = components['schemas']['SoulResolveResponse'];
 
 export type FetchLike = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
@@ -61,6 +63,13 @@ export class LesserHostSoulClient {
 		return this.requestJson(`/api/v1/soul/agents/${encodeURIComponent(id)}/channels`);
 	}
 
+	async getAgentChannelPreferences(agentId: string): Promise<SoulAgentChannelPreferencesResponse> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		return this.requestJson(`/api/v1/soul/agents/${encodeURIComponent(id)}/channels/preferences`);
+	}
+
 	async resolveEns(ensName: string): Promise<SoulResolveResponse> {
 		const name = ensName.trim();
 		if (!name) throw new Error('ensName is required');
@@ -109,6 +118,13 @@ export class LesserHostSoulClient {
 	async getAgentChannelsByEnsName(options: ResolveEnsOptions): Promise<SoulAgentChannelsResponse> {
 		const agentId = await this.resolveEnsAgentId(options);
 		return this.getAgentChannels(agentId);
+	}
+
+	async getAgentChannelPreferencesByEnsName(
+		options: ResolveEnsOptions
+	): Promise<SoulAgentChannelPreferencesResponse> {
+		const agentId = await this.resolveEnsAgentId(options);
+		return this.getAgentChannelPreferences(agentId);
 	}
 
 	private async requestJson<T>(pathname: string): Promise<T> {
