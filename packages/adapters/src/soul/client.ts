@@ -47,10 +47,11 @@ export class LesserHostSoulClient {
 	private readonly headers: Record<string, string>;
 
 	constructor(config: LesserHostSoulClientConfig) {
-		if (!config.baseUrl.trim()) {
+		const baseUrl = config.baseUrl.trim();
+		if (!baseUrl) {
 			throw new Error('LesserHostSoulClient requires baseUrl');
 		}
-		this.baseUrl = config.baseUrl.replace(/\/+$/, '');
+		this.baseUrl = trimTrailingSlashes(baseUrl);
 		this.fetch = config.fetch ?? fetch;
 		this.headers = {
 			accept: 'application/json',
@@ -139,6 +140,14 @@ export class LesserHostSoulClient {
 
 		return (await response.json()) as T;
 	}
+}
+
+function trimTrailingSlashes(value: string): string {
+	let trimmed = value;
+	while (trimmed.endsWith('/')) {
+		trimmed = trimmed.slice(0, -1);
+	}
+	return trimmed;
 }
 
 async function createLesserHostSoulClientError(
