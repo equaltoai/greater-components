@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-send.error.schema.json",
+  "title": "POST /api/v1/soul/comm/send error envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "comm.invalid_request",
+            "comm.unauthorized",
+            "comm.agent_not_active",
+            "comm.channel_not_provisioned",
+            "comm.channel_unverified",
+            "comm.rate_limited",
+            "comm.boundary_violation",
+            "comm.insufficient_credits",
+            "comm.provider_unavailable",
+            "comm.provider_rejected",
+            "comm.internal"
+          ]
+        },
+        "message": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}

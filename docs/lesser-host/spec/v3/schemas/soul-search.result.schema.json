@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-search.result.schema.json",
+  "title": "GET /api/v1/soul/search result entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["agent_id", "domain", "local_id"],
+  "properties": {
+    "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "domain": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "local_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+  }
+}

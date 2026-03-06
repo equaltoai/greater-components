@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/communication-outbound-notification.schema.json",
+  "title": "communication:outbound notification payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "channel", "to", "body", "sentAt", "messageId", "status"],
+  "properties": {
+    "type": { "const": "communication:outbound" },
+    "channel": { "type": "string", "enum": ["email", "sms", "voice"] },
+    "to": {
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["address"] }, { "required": ["number"] }],
+      "properties": {
+        "address": { "type": "string", "format": "email" },
+        "number": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" },
+        "soulAgentId": { "type": ["string", "null"], "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
+    "body": { "type": "string", "minLength": 1 },
+    "bodyMimeType": { "type": "string", "minLength": 1, "maxLength": 64, "default": "text/plain" },
+    "sentAt": { "type": "string", "format": "date-time" },
+    "messageId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "inReplyTo": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+    "status": {
+      "type": "string",
+      "enum": ["accepted", "sent", "delivered", "failed"]
+    },
+    "provider": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "providerMessageId": { "type": "string", "minLength": 1, "maxLength": 256 }
+  }
+}

@@ -34,6 +34,7 @@ const packages = [
 	{ key: 'shared/search', dir: 'shared/search' },
 	{ key: 'shared/notifications', dir: 'shared/notifications' },
 	{ key: 'shared/chat', dir: 'shared/chat' },
+	{ key: 'shared/soul', dir: 'shared/soul' },
 	// Faces
 	{ key: 'faces/social', dir: 'faces/social' },
 	{ key: 'faces/blog', dir: 'faces/blog' },

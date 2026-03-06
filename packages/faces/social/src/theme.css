@@ -9744,6 +9744,22 @@
 	color: var(--notification-moderation-color, #ef4444);
 }
 
+.lesser-notification-item__icon--communication_email {
+	color: var(--notification-communication-email-color, #0ea5e9);
+}
+
+.lesser-notification-item__icon--communication_sms {
+	color: var(--notification-communication-sms-color, #22c55e);
+}
+
+.lesser-notification-item__icon--communication_voice {
+	color: var(--notification-communication-voice-color, #a855f7);
+}
+
+.lesser-notification-item__icon--communication_inbound {
+	color: var(--notification-communication-color, #0ea5e9);
+}
+
 .lesser-notification-item__icon svg {
 	width: 24px;
 	height: 24px;

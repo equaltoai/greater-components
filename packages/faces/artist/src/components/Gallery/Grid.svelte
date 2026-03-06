@@ -149,7 +149,7 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 	function handleKeydown(event: KeyboardEvent) {
 		if (focusedIndex < 0) return;
 
-		let direction: 'up' | 'down' | 'left' | 'right' | null = null;
+		let direction: 'up' | 'down' | 'left' | 'right';
 
 		switch (event.key) {
 			case 'ArrowUp':
@@ -176,17 +176,15 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 				return;
 		}
 
-		if (direction) {
-			event.preventDefault();
-			const nextIndex = getNextIndex(focusedIndex, direction, actualColumns, processedItems.length);
-			focusedIndex = nextIndex;
+		event.preventDefault();
+		const nextIndex = getNextIndex(focusedIndex, direction, actualColumns, processedItems.length);
+		focusedIndex = nextIndex;
 
-			// Focus the element (button inside the wrapper)
-			const element = containerRef?.querySelector(
-				`[data-index="${nextIndex}"] button`
-			) as HTMLElement;
-			element?.focus();
-		}
+		// Focus the element (button inside the wrapper)
+		const element = containerRef?.querySelector(
+			`[data-index="${nextIndex}"] button`
+		) as HTMLElement;
+		element?.focus();
 	}
 
 	// Handle item focus

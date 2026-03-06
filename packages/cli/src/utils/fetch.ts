@@ -367,7 +367,8 @@ export async function fetchComponentFiles(
 				throw new Error(
 					`Failed to load registry index for core package "${component.name}": ${
 						error instanceof Error ? error.message : String(error)
-					}`
+					}`,
+					{ cause: error }
 				);
 			}
 
@@ -463,7 +464,8 @@ export async function fetchComponentFiles(
 			});
 		} catch (error) {
 			throw new Error(
-				`Failed to fetch file ${file.path} for component ${component.name}: ${error instanceof Error ? error.message : String(error)}`
+				`Failed to fetch file ${file.path} for component ${component.name}: ${error instanceof Error ? error.message : String(error)}`,
+				{ cause: error }
 			);
 		}
 	}

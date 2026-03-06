@@ -124,24 +124,14 @@ export function filterSuggestions(
 	// Score each suggestion
 	const scored = suggestions.map((suggestion) => {
 		const lowerText = suggestion.text.toLowerCase();
-		let score = 0;
-
-		// Exact match
-		if (lowerText === lowerQuery) {
-			score = 1000;
-		}
-		// Starts with query
-		else if (lowerText.startsWith(lowerQuery)) {
-			score = 100;
-		}
-		// Contains query
-		else if (lowerText.includes(lowerQuery)) {
-			score = 10;
-		}
-		// No match
-		else {
-			score = 0;
-		}
+		const score =
+			lowerText === lowerQuery
+				? 1000
+				: lowerText.startsWith(lowerQuery)
+					? 100
+					: lowerText.includes(lowerQuery)
+						? 10
+						: 0;
 
 		return { suggestion, score };
 	});

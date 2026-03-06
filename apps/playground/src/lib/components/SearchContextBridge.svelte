@@ -3,7 +3,9 @@
 
 	let { context = $bindable<SearchContext | null>(null) } = $props();
 
-	$effect(() => {
+	if (context === null) {
 		context = Search.getSearchContext();
-	});
+	}
+
+	void context;
 </script>

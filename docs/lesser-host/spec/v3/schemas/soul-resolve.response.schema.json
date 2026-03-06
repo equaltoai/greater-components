@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-resolve.response.schema.json",
+  "title": "GET /api/v1/soul/resolve/* response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "agent"],
+  "properties": {
+    "version": { "type": "string", "enum": ["1"] },
+    "agent": {
+      "$ref": "https://lesser.host/spec/v3/schemas/soul-agent-identity.schema.json"
+    }
+  }
+}
