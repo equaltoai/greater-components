@@ -1,0 +1,571 @@
+openapi: 3.1.0
+info:
+  title: lesser-host REST API (contracts)
+  version: 0.1.0
+  description: |
+    Contract snapshot for build-time client generation. This file is not served at runtime.
+
+components:
+  securitySchemes:
+    instanceKeyAuth:
+      type: http
+      scheme: bearer
+      description: "Instance API key: `Authorization: Bearer <instance_key>`."
+
+  schemas:
+    ErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              minLength: 1
+              maxLength: 128
+            message:
+              type: string
+              minLength: 1
+              maxLength: 2048
+            request_id:
+              type: string
+              minLength: 1
+              maxLength: 128
+
+    SoulAgentChannelsResponse:
+      type: object
+      additionalProperties: false
+      required: [agentId, channels, contactPreferences, updatedAt]
+      properties:
+        agentId:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        channels:
+          type: object
+          additionalProperties: false
+          required: [ens, email, phone]
+          properties:
+            ens:
+              type: [object, "null"]
+              additionalProperties: false
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  pattern: "^[a-z0-9][a-z0-9_.-]*\\.eth$"
+                resolverAddress:
+                  type: string
+                  pattern: "^0x[0-9a-fA-F]{40}$"
+                chain:
+                  type: string
+                  default: mainnet
+            email:
+              type: [object, "null"]
+              additionalProperties: false
+              required: [address, capabilities, verified]
+              properties:
+                address:
+                  type: string
+                  format: email
+                capabilities:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    enum: [receive, send]
+                protocols:
+                  type: array
+                  items:
+                    type: string
+                    enum: [smtp, imap]
+                verified:
+                  type: boolean
+                verifiedAt:
+                  type: string
+                  format: date-time
+                status:
+                  type: string
+                  enum: [active, paused, decommissioned]
+            phone:
+              type: [object, "null"]
+              additionalProperties: false
+              required: [number, capabilities, verified]
+              properties:
+                number:
+                  type: string
+                  pattern: "^\\+[1-9]\\d{1,14}$"
+                capabilities:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                    enum: [sms-receive, sms-send, voice-receive, voice-send]
+                provider:
+                  type: string
+                verified:
+                  type: boolean
+                verifiedAt:
+                  type: string
+                  format: date-time
+                status:
+                  type: string
+                  enum: [active, paused, decommissioned]
+        contactPreferences:
+          type: [object, "null"]
+          additionalProperties: false
+          required: [preferred, availability, responseExpectation, languages]
+          properties:
+            preferred:
+              type: string
+              enum: [email, sms, voice, activitypub, mcp]
+            fallback:
+              type: string
+              enum: [email, sms, voice, activitypub, mcp]
+            availability:
+              type: object
+              additionalProperties: false
+              required: [schedule]
+              properties:
+                schedule:
+                  type: string
+                  enum: [always, business-hours, custom]
+                timezone:
+                  type: string
+                windows:
+                  type: [array, "null"]
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [days, startTime, endTime]
+                    properties:
+                      days:
+                        type: array
+                        minItems: 1
+                        items:
+                          type: string
+                          enum: [mon, tue, wed, thu, fri, sat, sun]
+                      startTime:
+                        type: string
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
+                      endTime:
+                        type: string
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
+            responseExpectation:
+              type: object
+              additionalProperties: false
+              required: [target, guarantee]
+              properties:
+                target:
+                  type: string
+                guarantee:
+                  type: string
+                  enum: [guaranteed, best-effort]
+            rateLimits:
+              type: object
+              additionalProperties: false
+              properties:
+                email:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    maxInboundPerHour:
+                      type: integer
+                      minimum: 1
+                    maxInboundPerDay:
+                      type: integer
+                      minimum: 1
+                sms:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    maxInboundPerHour:
+                      type: integer
+                      minimum: 1
+                    maxInboundPerDay:
+                      type: integer
+                      minimum: 1
+                voice:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    maxConcurrentCalls:
+                      type: integer
+                      minimum: 1
+                    maxCallsPerDay:
+                      type: integer
+                      minimum: 1
+            languages:
+              type: array
+              minItems: 1
+              items:
+                type: string
+                pattern: "^[a-z]{2}$"
+            contentTypes:
+              type: array
+              items:
+                type: string
+            firstContact:
+              type: object
+              additionalProperties: false
+              properties:
+                requireSoul:
+                  type: boolean
+                  default: false
+                requireReputation:
+                  type: [number, "null"]
+                  minimum: 0
+                  maximum: 1
+                introductionExpected:
+                  type: boolean
+                  default: false
+        updatedAt:
+          type: string
+          format: date-time
+
+    SoulAgentChannelPreferencesResponse:
+      $ref: "../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json"
+
+    SoulAgentIdentity:
+      $ref: "../spec/v3/schemas/soul-agent-identity.schema.json"
+
+    SoulResolveResponse:
+      type: object
+      additionalProperties: false
+      required: [version, agent]
+      properties:
+        version:
+          type: string
+          enum: ["1"]
+        agent:
+          $ref: "#/components/schemas/SoulAgentIdentity"
+
+    SoulSearchResult:
+      $ref: "../spec/v3/schemas/soul-search.result.schema.json"
+
+    SoulSearchResponse:
+      $ref: "../spec/v3/schemas/soul-search.response.schema.json"
+
+    SoulCommSendRequest:
+      $ref: "../spec/v3/schemas/soul-comm-send.request.schema.json"
+
+    SoulCommSendResponse:
+      $ref: "../spec/v3/schemas/soul-comm-send.response.schema.json"
+
+    SoulCommSendErrorEnvelope:
+      $ref: "../spec/v3/schemas/soul-comm-send.error.schema.json"
+
+    SoulCommStatusResponse:
+      $ref: "../spec/v3/schemas/soul-comm-status.response.schema.json"
+
+    SoulCommStatusErrorEnvelope:
+      $ref: "../spec/v3/schemas/soul-comm-status.error.schema.json"
+
+paths:
+  /api/v1/soul/agents/{agentId}/channels:
+    get:
+      operationId: soulGetAgentChannels
+      summary: Get agent reachability channels (v3)
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentChannelsResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/{agentId}/channels/preferences:
+    get:
+      operationId: soulGetAgentChannelPreferences
+      summary: Get agent contact preferences (v3)
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/resolve/ens/{ensName}:
+    get:
+      operationId: soulResolveEns
+      summary: Resolve an ENS name to a soul agent
+      parameters:
+        - name: ensName
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 255
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/resolve/email/{emailAddress}:
+    get:
+      operationId: soulResolveEmail
+      summary: Resolve an email address to a soul agent
+      parameters:
+        - name: emailAddress
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/resolve/phone/{phoneNumber}:
+    get:
+      operationId: soulResolvePhone
+      summary: Resolve an E.164 phone number to a soul agent
+      parameters:
+        - name: phoneNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^\\+[1-9]\\d{1,14}$"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/search:
+    get:
+      operationId: soulSearch
+      summary: Search soul agents (including channel + ens filters)
+      parameters:
+        - name: domain
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: capability
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: boundary
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: ens
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: channel
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [email, phone]
+          explode: true
+          style: form
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulSearchResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/comm/send:
+    post:
+      operationId: soulCommSend
+      summary: Send an outbound comm message
+      security:
+        - instanceKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulCommSendRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommSendResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+
+  /api/v1/soul/comm/status/{messageId}:
+    get:
+      operationId: soulCommStatus
+      summary: Get outbound comm delivery status
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommStatusResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"

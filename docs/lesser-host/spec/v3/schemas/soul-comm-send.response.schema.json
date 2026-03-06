@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-send.response.schema.json",
+  "title": "POST /api/v1/soul/comm/send response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["messageId", "status", "channel", "agentId", "to", "createdAt"],
+  "properties": {
+    "messageId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "status": { "type": "string", "enum": ["accepted", "sent", "failed"] },
+    "channel": { "type": "string", "enum": ["email", "sms", "voice"] },
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "to": { "type": "string", "minLength": 3, "maxLength": 512 },
+    "provider": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "providerMessageId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
+

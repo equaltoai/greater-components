@@ -1,0 +1,9 @@
+{
+  "channel": "email",
+  "agentId": "0x2222222222222222222222222222222222222222222222222222222222222222",
+  "to": "alice@example.com",
+  "subject": "Re: Project collaboration",
+  "body": "Hi Alice,\\n\\nYes — happy to collaborate.\\n",
+  "inReplyTo": "comm-msg-001"
+}
+

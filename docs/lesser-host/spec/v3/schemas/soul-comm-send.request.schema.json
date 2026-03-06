@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-send.request.schema.json",
+  "title": "POST /api/v1/soul/comm/send request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["channel", "agentId", "to", "body"],
+  "properties": {
+    "channel": { "type": "string", "enum": ["email", "sms", "voice"] },
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "to": { "type": "string", "minLength": 3, "maxLength": 512 },
+    "cc": {
+      "type": "array",
+      "items": { "type": "string", "format": "email" }
+    },
+    "bcc": {
+      "type": "array",
+      "items": { "type": "string", "format": "email" }
+    },
+    "replyTo": { "type": "string", "format": "email" },
+    "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
+    "body": { "type": "string", "minLength": 1 },
+    "inReplyTo": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "channel": { "const": "email" } } },
+      "then": {
+        "required": ["subject"],
+        "properties": { "to": { "type": "string", "format": "email" } }
+      }
+    },
+    {
+      "if": { "properties": { "channel": { "const": "sms" } } },
+      "then": {
+        "properties": { "to": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" } }
+      }
+    },
+    {
+      "if": { "properties": { "channel": { "const": "voice" } } },
+      "then": {
+        "properties": { "to": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" } }
+      }
+    }
+  ]
+}
+
