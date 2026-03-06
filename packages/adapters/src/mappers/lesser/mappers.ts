@@ -181,12 +181,14 @@ function mapLesserNotificationType(type: string): UnifiedNotification['type'] {
 			return 'trust_update';
 		case 'COST_ALERT':
 			return 'cost_alert';
-		case 'MODERATION_ACTION':
-			return 'moderation_action';
-		default:
-			return 'mention';
+			case 'MODERATION_ACTION':
+				return 'moderation_action';
+			case 'COMMUNICATION_INBOUND':
+				return 'communication_inbound';
+			default:
+				return 'mention';
+		}
 	}
-}
 
 /**
  * Map Lesser account to unified account model
@@ -856,10 +858,10 @@ export function mapLesserNotification(
 		const statusResult = notification.status ? mapLesserObject(notification.status) : undefined;
 		const status = statusResult && statusResult.success ? statusResult.data : undefined;
 
-		let report: AdminReport | undefined;
-		if (notification.adminReport) {
-			const reportedAccountResult = mapLesserAccount(notification.adminReport.reportedAccount);
-			const reporterAccountResult = mapLesserAccount(notification.adminReport.reporterAccount);
+			let report: AdminReport | undefined;
+			if (notification.adminReport) {
+				const reportedAccountResult = mapLesserAccount(notification.adminReport.reportedAccount);
+				const reporterAccountResult = mapLesserAccount(notification.adminReport.reporterAccount);
 			if (
 				reportedAccountResult.success &&
 				reportedAccountResult.data &&
@@ -874,18 +876,49 @@ export function mapLesserNotification(
 					actionTaken: safeBoolean(notification.adminReport.isActionTaken),
 					createdAt: safeString(notification.adminReport.submittedAt),
 				};
+				}
 			}
-		}
 
-		const unified: UnifiedNotification = {
-			id: notification.id,
-			type: mapLesserNotificationType(notification.notificationType),
-			createdAt: safeString(notification.createdAt),
-			account,
-			status,
-			report,
-			read: notification.isRead,
-			metadata: createLesserMetadata(notification),
+			const communication = notification.communication
+				? {
+						channel: safeString(notification.communication.channel),
+						from: {
+							address: safeString(notification.communication.from.address),
+							displayName: notification.communication.from.displayName,
+							soulAgentId: notification.communication.from.soulAgentId,
+						},
+						to:
+							notification.communication.to === undefined
+								? undefined
+								: notification.communication.to === null
+									? null
+									: { address: safeString(notification.communication.to.address) },
+						attachments: (notification.communication.attachments ?? []).map((attachment) => ({
+							id: safeString(attachment.id),
+							filename: safeString(attachment.filename),
+							contentType: safeString(attachment.contentType),
+							sizeBytes: safeNumber(attachment.sizeBytes),
+							sha256: safeString(attachment.sha256),
+						})),
+						subject: notification.communication.subject,
+						body: notification.communication.body,
+						receivedAt: safeString(notification.communication.receivedAt),
+						messageId: safeString(notification.communication.messageId),
+						inReplyTo: notification.communication.inReplyTo,
+						threadId: safeString(notification.communication.threadId),
+					}
+				: undefined;
+
+			const unified: UnifiedNotification = {
+				id: notification.id,
+				type: mapLesserNotificationType(notification.notificationType),
+				createdAt: safeString(notification.createdAt),
+				account,
+				status,
+				report,
+				read: notification.isRead,
+				communication,
+				metadata: createLesserMetadata(notification),
 
 			// Derive Lesser-specific notification payloads from status/account fields
 			// Since Lesser schema doesn't expose separate payload fields, we infer them

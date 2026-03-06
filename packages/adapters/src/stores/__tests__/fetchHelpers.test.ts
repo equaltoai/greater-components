@@ -21,6 +21,7 @@ vi.mock('../../mappers/lesser/graphqlConverters', () => ({
 		if (!actor) return undefined;
 		return { id: 'actor_1', handle: 'actor' };
 	}),
+	convertGraphQLCommunicationNotificationToLesser: vi.fn(() => null),
 }));
 
 vi.mock('../../mappers/lesser/mappers', () => ({

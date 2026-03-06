@@ -11,36 +11,48 @@ Safe by default: message previews are rendered as plain text.
 
 	interface CommunicationFrom {
 		address: string;
+		displayName?: string | null;
 		display_name?: string;
+		soulAgentId?: string | null;
 		soul_agent_id?: string;
 	}
 
 	interface CommunicationAttachment {
 		id: string;
 		filename: string;
-		content_type: string;
-		size_bytes: number;
+		contentType?: string;
+		content_type?: string;
+		sizeBytes?: number;
+		size_bytes?: number;
 		sha256: string;
 	}
 
 	interface CommunicationNotification {
 		channel: string;
 		from: CommunicationFrom;
-		subject?: string;
-		body?: string;
-		received_at: string;
-		message_id: string;
-		thread_id?: string;
-		in_reply_to?: string;
 		to?: { address: string } | null;
 		attachments?: CommunicationAttachment[];
+		subject?: string | null;
+		body?: string | null;
+		receivedAt?: string;
+		received_at?: string;
+		messageId?: string;
+		message_id?: string;
+		inReplyTo?: string | null;
+		in_reply_to?: string | null;
+		threadId?: string;
+		thread_id?: string;
 	}
 
 	interface LesserNotification {
 		id: string;
 		type: string;
-		created_at: string | Date;
-		read: boolean;
+		createdAt?: string | Date;
+		created_at?: string | Date;
+		read?: boolean;
+		isRead?: boolean;
+		subject?: string;
+		body?: string;
 		communication?: CommunicationNotification | null;
 	}
 
@@ -54,6 +66,8 @@ Safe by default: message previews are rendered as plain text.
 	let { notification, content, onClick, class: className = '' }: Props = $props();
 
 	const comm = $derived(notification.communication ?? null);
+	const isRead = $derived(notification.read ?? notification.isRead ?? false);
+	const createdAt = $derived(notification.createdAt ?? notification.created_at ?? new Date(0));
 
 	const channel = $derived((comm?.channel ?? '').toLowerCase());
 	const iconVariant = $derived.by(() => {
@@ -72,12 +86,12 @@ Safe by default: message previews are rendered as plain text.
 
 	const fromLabel = $derived.by(() => {
 		if (!comm) return '';
-		return (comm.from.display_name || comm.from.address).trim();
+		return (comm.from.displayName || comm.from.display_name || comm.from.address).trim();
 	});
 
 	const receivedAt = $derived.by(() => {
-		if (!comm) return notification.created_at;
-		return comm.received_at;
+		if (!comm) return createdAt;
+		return comm.receivedAt ?? comm.received_at ?? createdAt;
 	});
 
 	const bodyPreview = $derived.by(() => {
@@ -122,7 +136,7 @@ Safe by default: message previews are rendered as plain text.
 {#if comm}
 	<button
 		class={`lesser-notification-item ${className}`}
-		class:unread={!notification.read}
+		class:unread={!isRead}
 		type="button"
 		aria-label={`${notification.type} notification`}
 		onclick={handleClick}
@@ -145,7 +159,7 @@ Safe by default: message previews are rendered as plain text.
 				<div class="lesser-notification-item__body">
 					<p class="lesser-notification-item__text">
 						{title}
-						{#if comm.from.soul_agent_id}
+						{#if comm.from.soulAgentId || comm.from.soul_agent_id}
 							<span class="communication-notification__badge">soul</span>
 						{/if}
 					</p>
@@ -169,7 +183,7 @@ Safe by default: message previews are rendered as plain text.
 									<li class="communication-notification__attachment">
 										<span class="communication-notification__attachment-name">{att.filename}</span>
 										<span class="communication-notification__attachment-meta">
-											{Math.round(att.size_bytes / 1024)} KB · {att.content_type}
+											{Math.round(((att.sizeBytes ?? att.size_bytes ?? 0) as number) / 1024)} KB · {att.contentType ?? att.content_type}
 										</span>
 									</li>
 								{/each}
