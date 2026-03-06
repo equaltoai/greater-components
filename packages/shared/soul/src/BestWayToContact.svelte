@@ -71,30 +71,31 @@
 	{#if !rec.recommended}
 		<Text size="sm" color="secondary">No inbound contact channels available.</Text>
 	{:else}
+		{@const recommended = rec.recommended}
+		{@const recommendedHref = contactHref(recommended)}
+		{@const recommendedValue = contactValue(recommended)}
 		<DefinitionList density="sm">
 			<DefinitionItem label="Recommended">
 				<div class="soul-best-contact__row">
-					<Badge variant="outlined" size="sm" color="primary" label={rec.recommended.label} />
-					{#if contactHref(rec.recommended) && contactValue(rec.recommended)}
-						<a class="soul-best-contact__link" href={contactHref(rec.recommended) as string}
-							>{contactValue(rec.recommended)}</a
-						>
+					<Badge variant="outlined" size="sm" color="primary" label={recommended.label} />
+					{#if recommendedHref && recommendedValue}
+						<a class="soul-best-contact__link" href={recommendedHref}>{recommendedValue}</a>
 					{/if}
-					{#if 'verified' in rec.recommended}
+					{#if 'verified' in recommended}
 						<Badge
 							variant="outlined"
 							size="sm"
-							color={rec.recommended.verified ? 'success' : 'warning'}
-							label={rec.recommended.verified ? 'Verified' : 'Unverified'}
+							color={recommended.verified ? 'success' : 'warning'}
+							label={recommended.verified ? 'Verified' : 'Unverified'}
 						/>
 					{/if}
 				</div>
 
-				{#if contactValue(rec.recommended)}
+				{#if recommendedValue}
 					<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 					{#snippet actions()}
 						<CopyButton
-							text={contactValue(rec.recommended) as string}
+							text={recommendedValue}
 							variant="icon"
 							size="sm"
 							aria-label="Copy contact value"
@@ -103,13 +104,13 @@
 				{/if}
 			</DefinitionItem>
 
-			{#if rec.preferred && rec.preferred.channel !== rec.recommended.channel}
+			{#if rec.preferred && rec.preferred.channel !== recommended.channel}
 				<DefinitionItem label="Preferred">
 					<Text size="sm" color="secondary">{rec.preferred.label} (unavailable)</Text>
 				</DefinitionItem>
 			{/if}
 
-			{#if rec.fallback && rec.fallback.channel !== rec.recommended.channel}
+			{#if rec.fallback && rec.fallback.channel !== recommended.channel}
 				<DefinitionItem label="Fallback">
 					<Text size="sm" color="secondary">{rec.fallback.label}</Text>
 				</DefinitionItem>
