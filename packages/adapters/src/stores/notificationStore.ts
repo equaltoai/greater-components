@@ -91,7 +91,9 @@ function convertNotificationStreamPayload(
 
 	return {
 		id: payload.id,
-		notificationType: communicationFragment ? 'COMMUNICATION_INBOUND' : normalizeNotificationType(typeValue),
+		notificationType: communicationFragment
+			? 'COMMUNICATION_INBOUND'
+			: normalizeNotificationType(typeValue),
 		createdAt,
 		triggerAccount,
 		status: statusFragment ?? undefined,

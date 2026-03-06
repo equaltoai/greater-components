@@ -169,7 +169,7 @@ CopyButton component - A button that copies text to the clipboard with visual fe
 	class={className}
 	onclick={handleCopy}
 	aria-label={copied ? currentLabels.success : currentLabels.default}
-	{...(restProps as Record<string, unknown>)}
+	{...restProps as Record<string, unknown>}
 >
 	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 	{#snippet prefix()}

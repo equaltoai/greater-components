@@ -478,37 +478,37 @@ export interface UnifiedNotification {
 		threshold: number;
 		message: string;
 	};
-		/** Moderation action details (for moderation_action notifications) */
-		moderationAction?: {
-			action: string;
-			reason: string;
-			statusId?: string;
-		};
+	/** Moderation action details (for moderation_action notifications) */
+	moderationAction?: {
+		action: string;
+		reason: string;
+		statusId?: string;
+	};
 
-		/** Communication payload (for communication_inbound notifications) */
-		communication?: {
-			channel: string;
-			from: {
-				address: string;
-				displayName?: string;
-				soulAgentId?: string | null;
-			};
-			to?: { address: string } | null;
-			attachments: Array<{
-				id: string;
-				filename: string;
-				contentType: string;
-				sizeBytes: number;
-				sha256: string;
-			}>;
-			subject?: string | null;
-			body?: string | null;
-			receivedAt: string;
-			messageId: string;
-			inReplyTo?: string | null;
-			threadId: string;
+	/** Communication payload (for communication_inbound notifications) */
+	communication?: {
+		channel: string;
+		from: {
+			address: string;
+			displayName?: string;
+			soulAgentId?: string | null;
 		};
-	}
+		to?: { address: string } | null;
+		attachments: Array<{
+			id: string;
+			filename: string;
+			contentType: string;
+			sizeBytes: number;
+			sha256: string;
+		}>;
+		subject?: string | null;
+		body?: string | null;
+		receivedAt: string;
+		messageId: string;
+		inReplyTo?: string | null;
+		threadId: string;
+	};
+}
 
 // Admin report model (for admin notifications)
 export interface AdminReport {

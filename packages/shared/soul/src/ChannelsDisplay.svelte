@@ -91,12 +91,7 @@
 				{#if showCopy}
 					<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 					{#snippet actions()}
-						<CopyButton
-							text={ens.name}
-							variant="icon"
-							size="sm"
-							aria-label="Copy ENS name"
-						/>
+						<CopyButton text={ens.name} variant="icon" size="sm" aria-label="Copy ENS name" />
 					{/snippet}
 				{/if}
 			{:else}

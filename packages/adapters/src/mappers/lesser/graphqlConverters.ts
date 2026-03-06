@@ -268,28 +268,30 @@ export function convertGraphQLCommunicationNotificationToLesser(
 
 	const attachments = Array.isArray(comm['attachments'])
 		? comm['attachments']
-				.map((attachment): LesserCommunicationNotificationFragment['attachments'][number] | null => {
-					if (!isRecord(attachment)) {
-						return null;
-					}
-					const id = toString(attachment['id']);
-					const filename = toString(attachment['filename']);
-					const contentType = toString(attachment['contentType'] ?? attachment['content_type']);
-					const sizeBytesValue = attachment['sizeBytes'] ?? attachment['size_bytes'];
-					const sha256 = toString(attachment['sha256']);
+				.map(
+					(attachment): LesserCommunicationNotificationFragment['attachments'][number] | null => {
+						if (!isRecord(attachment)) {
+							return null;
+						}
+						const id = toString(attachment['id']);
+						const filename = toString(attachment['filename']);
+						const contentType = toString(attachment['contentType'] ?? attachment['content_type']);
+						const sizeBytesValue = attachment['sizeBytes'] ?? attachment['size_bytes'];
+						const sha256 = toString(attachment['sha256']);
 
-					if (!id || !filename || !contentType || !sha256 || !isNumber(sizeBytesValue)) {
-						return null;
-					}
+						if (!id || !filename || !contentType || !sha256 || !isNumber(sizeBytesValue)) {
+							return null;
+						}
 
-					return {
-						id,
-						filename,
-						contentType,
-						sizeBytes: sizeBytesValue,
-						sha256,
-					};
-				})
+						return {
+							id,
+							filename,
+							contentType,
+							sizeBytes: sizeBytesValue,
+							sha256,
+						};
+					}
+				)
 				.filter(
 					(
 						attachment

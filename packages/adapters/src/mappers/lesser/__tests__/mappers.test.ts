@@ -321,10 +321,10 @@ describe('Lesser Mappers', () => {
 		});
 	});
 
-		describe('mapLesserNotification', () => {
-			it('should map a notification correctly', () => {
-				const result = mapLesserNotification(mockNotification);
-				expect(result.success).toBe(true);
+	describe('mapLesserNotification', () => {
+		it('should map a notification correctly', () => {
+			const result = mapLesserNotification(mockNotification);
+			expect(result.success).toBe(true);
 			if (!result.success) return;
 
 			const notif = result.data;
@@ -356,10 +356,10 @@ describe('Lesser Mappers', () => {
 			expect(result.data?.report?.comment).toBe('Spam');
 		});
 
-			it('should map derived types (COST_ALERT)', () => {
-				const costNotif: LesserNotificationFragment = {
-					...mockNotification,
-					notificationType: 'COST_ALERT',
+		it('should map derived types (COST_ALERT)', () => {
+			const costNotif: LesserNotificationFragment = {
+				...mockNotification,
+				notificationType: 'COST_ALERT',
 				status: {
 					...mockObject,
 					estimatedCost: 50,
@@ -368,50 +368,50 @@ describe('Lesser Mappers', () => {
 			const result = mapLesserNotification(costNotif);
 			expect(result.success).toBe(true);
 			expect(result.data?.costAlert).toBeDefined();
-				expect(result.data?.costAlert?.amount).toBe(50);
-			});
+			expect(result.data?.costAlert?.amount).toBe(50);
+		});
 
-			it('should map communication notifications', () => {
-				const commNotif: LesserNotificationFragment = {
-					...mockNotification,
-					notificationType: 'COMMUNICATION_INBOUND',
-					communication: {
-						channel: 'email',
-						from: {
-							address: 'sender@example.com',
-							displayName: 'Sender',
-							soulAgentId: 'agent_1',
-						},
-						to: { address: 'inbox@example.com' },
-						attachments: [
-							{
-								id: 'att_1',
-								filename: 'note.txt',
-								contentType: 'text/plain',
-								sizeBytes: 128,
-								sha256: 'deadbeef',
-							},
-						],
-						subject: 'Hello',
-						body: 'Test message',
-						receivedAt: '2023-01-04T00:00:00Z',
-						messageId: 'msg_1',
-						inReplyTo: null,
-						threadId: 'thread_1',
+		it('should map communication notifications', () => {
+			const commNotif: LesserNotificationFragment = {
+				...mockNotification,
+				notificationType: 'COMMUNICATION_INBOUND',
+				communication: {
+					channel: 'email',
+					from: {
+						address: 'sender@example.com',
+						displayName: 'Sender',
+						soulAgentId: 'agent_1',
 					},
-				};
+					to: { address: 'inbox@example.com' },
+					attachments: [
+						{
+							id: 'att_1',
+							filename: 'note.txt',
+							contentType: 'text/plain',
+							sizeBytes: 128,
+							sha256: 'deadbeef',
+						},
+					],
+					subject: 'Hello',
+					body: 'Test message',
+					receivedAt: '2023-01-04T00:00:00Z',
+					messageId: 'msg_1',
+					inReplyTo: null,
+					threadId: 'thread_1',
+				},
+			};
 
-				const result = mapLesserNotification(commNotif);
-				expect(result.success).toBe(true);
-				expect(result.data?.type).toBe('communication_inbound');
-				expect(result.data?.communication?.channel).toBe('email');
-				expect(result.data?.communication?.from.address).toBe('sender@example.com');
-			});
+			const result = mapLesserNotification(commNotif);
+			expect(result.success).toBe(true);
+			expect(result.data?.type).toBe('communication_inbound');
+			expect(result.data?.communication?.channel).toBe('email');
+			expect(result.data?.communication?.from.address).toBe('sender@example.com');
+		});
 
-			it('should return error for invalid notification', () => {
-				const result = mapLesserNotification({} as any);
-				expect(result.success).toBe(false);
-			});
+		it('should return error for invalid notification', () => {
+			const result = mapLesserNotification({} as any);
+			expect(result.success).toBe(false);
+		});
 	});
 
 	describe('mapLesserObject', () => {

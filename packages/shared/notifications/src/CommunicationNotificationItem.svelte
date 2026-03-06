@@ -183,7 +183,8 @@ Safe by default: message previews are rendered as plain text.
 									<li class="communication-notification__attachment">
 										<span class="communication-notification__attachment-name">{att.filename}</span>
 										<span class="communication-notification__attachment-meta">
-											{Math.round(((att.sizeBytes ?? att.size_bytes ?? 0) as number) / 1024)} KB · {att.contentType ?? att.content_type}
+											{Math.round(((att.sizeBytes ?? att.size_bytes ?? 0) as number) / 1024)} KB · {att.contentType ??
+												att.content_type}
 										</span>
 									</li>
 								{/each}
