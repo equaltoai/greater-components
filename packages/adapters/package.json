@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-adapters",
   "private": true,
-  "version": "0.1.13",
+  "version": "0.1.14-rc.0",
   "type": "module",
   "description": "Transport adapters and state management for Greater Components",
   "license": "AGPL-3.0-only",
@@ -33,18 +33,19 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.4",
+    "@apollo/client": "^4.1.6",
     "@apollo/client-react-streaming": "^0.14.4",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "graphql": "^16.12.0",
-    "graphql-ws": "^6.0.7"
+    "graphql": "^16.13.1",
+    "graphql-ws": "^6.0.7",
+    "viem": "^2.47.0"
   },
   "devDependencies": {
-    "@types/node": "^25.2.3",
+    "@types/node": "^25.3.5",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.18",
     "jsdom": "^28.1.0",
-    "svelte": "^5.53.0",
+    "svelte": "^5.53.7",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vitest": "^4.0.18",

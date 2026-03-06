@@ -20,6 +20,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/.well-known/lesser-soul-agent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_well_known_lesser_soul_agent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/.well-known/nodeinfo": {
         parameters: {
             query?: never;
@@ -958,6 +974,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_api_v1_admin_reports_by_id_unassign"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/soul/well-known": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["put_api_v1_admin_soul_well_known"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2078,6 +2110,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_api_v1_notifications_clear"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/deliver": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_notifications_deliver"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4478,6 +4526,33 @@ export interface components {
             signature: string;
         };
         ClearNotificationsRequest: Record<string, never>;
+        CommunicationAttachment: {
+            content_type: string;
+            filename: string;
+            id: string;
+            sha256: string;
+            size_bytes: number;
+        };
+        CommunicationFrom: {
+            address: string;
+            display_name?: string;
+            soul_agent_id?: string;
+        };
+        CommunicationNotification: {
+            attachments?: components["schemas"]["CommunicationAttachment"][];
+            body?: string;
+            channel: string;
+            from: components["schemas"]["CommunicationFrom"];
+            in_reply_to?: string;
+            message_id: string;
+            received_at: components["schemas"]["RFC3339DateTime"];
+            subject?: string;
+            thread_id: string;
+            to?: components["schemas"]["CommunicationTo"] | null;
+        };
+        CommunicationTo: {
+            address: string;
+        };
         CommunityNoteRateLimit: {
             limit: number;
             remaining: number;
@@ -5126,10 +5201,39 @@ export interface components {
         };
         Notification: {
             account: components["schemas"]["Account"];
+            communication?: components["schemas"]["CommunicationNotification"] | null;
             created_at: components["schemas"]["RFC3339DateTime"];
             id: string;
+            read: boolean;
             status?: components["schemas"]["Status"] | null;
             type: string;
+        };
+        NotificationDeliveryAttachment: {
+            contentType: string;
+            filename: string;
+            id: string;
+            sha256: string;
+            sizeBytes: number;
+        };
+        NotificationDeliveryFrom: {
+            address: string;
+            displayName: string;
+            soulAgentId?: string | null;
+        };
+        NotificationDeliveryRequest: {
+            attachments?: components["schemas"]["NotificationDeliveryAttachment"][];
+            body: string;
+            channel: string;
+            from: components["schemas"]["NotificationDeliveryFrom"];
+            inReplyTo?: string | null;
+            messageId: string;
+            receivedAt: string;
+            subject: string;
+            to?: components["schemas"]["NotificationDeliveryTo"] | null;
+            type: string;
+        };
+        NotificationDeliveryTo: {
+            address: string;
         };
         NotificationFilter: {
             AccountID: string;
@@ -6616,6 +6720,28 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_well_known_lesser_soul_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Map7d31df2b"];
+                };
             };
             400: components["responses"]["BadRequest"];
             500: components["responses"]["InternalServerError"];
@@ -8599,6 +8725,31 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    put_api_v1_admin_soul_well_known: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Map7d31df2b"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
         };
@@ -11145,6 +11296,31 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_notifications_deliver: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["NotificationDeliveryRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
         };

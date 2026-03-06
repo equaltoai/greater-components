@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-soul",
+  "version": "0.1.14-rc.0",
+  "description": "Reachability and contact-preferences UI for lesser-soul v3 (channels, preferences, best-contact helper).",
+  "components": {
+    "ChannelsDisplay": {
+      "description": "Displays ENS/email/phone channels with verification and status.",
+      "props": ["agentId", "channels", "updatedAt", "title", "showCopy", "class"],
+      "exports": true
+    },
+    "ContactPreferencesViewer": {
+      "description": "Read-only renderer for v3 contact preferences (availability, languages, rate limits).",
+      "props": ["preferences", "updatedAt", "title", "class"],
+      "exports": true
+    },
+    "ContactPreferencesEditor": {
+      "description": "Editor for v3 contact preferences with safe defaults and structured inputs.",
+      "props": ["value", "disabled", "title", "class", "onchange"],
+      "exports": true
+    },
+    "BestWayToContact": {
+      "description": "Helper UI that recommends the best inbound contact channel based on declared preferences and available channels.",
+      "props": ["channels", "preferences", "title", "class"],
+      "exports": true
+    }
+  },
+  "utilities": {
+    "utils": {
+      "description": "Recommendation and formatting helpers for channels/preferences.",
+      "exports": ["getAvailabilityStatus", "recommendContactTarget", "formatAvailabilitySummary"]
+    }
+  },
+  "types": [
+    "ContactRecommendation",
+    "AvailabilityStatus",
+    "ContactTarget",
+    "SoulChannels",
+    "SoulContactPreferences",
+    "SoulContactChannel"
+  ],
+  "dependencies": {
+    "internal": [
+      "@equaltoai/greater-components-primitives",
+      "@equaltoai/greater-components-utils",
+      "@equaltoai/greater-components-adapters"
+    ],
+    "peer": ["svelte@^5.43.6"],
+    "optional": []
+  },
+  "features": {
+    "channels": true,
+    "contactPreferences": true,
+    "recommendations": true
+  },
+  "accessibility": {
+    "wcag": "2.1 AA",
+    "features": ["keyboard-navigation", "screen-reader-labels"]
+  }
+}

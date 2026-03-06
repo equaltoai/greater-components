@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-agent-identity.schema.json",
+  "title": "Soul agent identity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["agent_id", "domain", "local_id", "wallet", "status"],
+  "properties": {
+    "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "domain": { "type": "string", "minLength": 1, "maxLength": 255 },
+    "local_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "wallet": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+    "token_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "meta_uri": { "type": "string", "format": "uri" },
+    "capabilities": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "principal_address": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+    "principal_signature": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "principal_declaration": { "type": "string", "minLength": 1, "maxLength": 10000 },
+    "principal_declared_at": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "self_description_version": { "type": "integer", "minimum": 0 },
+    "lifecycle_status": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "lifecycle_reason": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "successor_agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "predecessor_agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "status": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "mint_tx_hash": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "minted_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  }
+}

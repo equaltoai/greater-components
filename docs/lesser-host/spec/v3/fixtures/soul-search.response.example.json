@@ -1,0 +1,12 @@
+{
+  "version": "1",
+  "results": [
+    {
+      "agent_id": "0x2222222222222222222222222222222222222222222222222222222222222222",
+      "domain": "example.com",
+      "local_id": "alice"
+    }
+  ],
+  "count": 1,
+  "has_more": false
+}

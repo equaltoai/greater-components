@@ -62,6 +62,7 @@ const SHARED_MODULES = [
 	'search',
 	'notifications',
 	'chat',
+	'soul',
 ] as const;
 
 const HEADLESS_PRIMITIVE_SUBPATHS = ['button', 'menu', 'modal', 'tooltip', 'tabs'] as const;

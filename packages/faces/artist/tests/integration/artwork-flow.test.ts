@@ -109,6 +109,9 @@ describe('Artwork Flow Integration', () => {
 			let lightboxOpen = false;
 			let lightboxArtwork: typeof artwork | null = null;
 
+			expect(lightboxOpen).toBe(false);
+			expect(lightboxArtwork).toBeNull();
+
 			// Simulate click
 			lightboxOpen = true;
 			lightboxArtwork = artwork;
@@ -134,6 +137,8 @@ describe('Artwork Flow Integration', () => {
 			const artwork = createMockArtwork('zoom-1');
 			let currentResolution = 'standard';
 
+			expect(currentResolution).toBe('standard');
+
 			// Zoom triggers full resolution load
 			currentResolution = 'full';
 			expect(artwork.images[currentResolution as keyof typeof artwork.images]).toContain('full');
@@ -142,6 +147,8 @@ describe('Artwork Flow Integration', () => {
 		it('shows metadata panel', () => {
 			const artwork = createMockArtwork('meta-1');
 			let metadataVisible = false;
+
+			expect(metadataVisible).toBe(false);
 
 			// Toggle metadata
 			metadataVisible = true;
@@ -159,6 +166,8 @@ describe('Artwork Flow Integration', () => {
 
 			mockAdapter.likeArtwork.mockResolvedValue({ success: true });
 
+			expect(isLiked).toBe(false);
+
 			// Like
 			isLiked = true;
 			likeCount++;
@@ -175,6 +184,8 @@ describe('Artwork Flow Integration', () => {
 
 			mockAdapter.unlikeArtwork.mockResolvedValue({ success: true });
 
+			expect(isLiked).toBe(true);
+
 			// Unlike
 			isLiked = false;
 			likeCount--;
@@ -189,6 +200,8 @@ describe('Artwork Flow Integration', () => {
 			let isCollected = false;
 
 			mockAdapter.collectArtwork.mockResolvedValue({ success: true });
+
+			expect(isCollected).toBe(false);
 
 			isCollected = true;
 			await mockAdapter.collectArtwork(artwork.id);
@@ -207,6 +220,8 @@ describe('Artwork Flow Integration', () => {
 			const artwork = createMockArtwork('error-1');
 			let isLiked = false;
 			let likeCount = artwork.stats.likes;
+
+			expect(isLiked).toBe(false);
 
 			// Optimistic update
 			isLiked = true;

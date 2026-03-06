@@ -1,0 +1,46 @@
+{
+  "agentId": "0x2222222222222222222222222222222222222222222222222222222222222222",
+  "channels": {
+    "ens": {
+      "name": "agent-bob.lessersoul.eth",
+      "resolverAddress": "0x1111111111111111111111111111111111111111",
+      "chain": "mainnet"
+    },
+    "email": {
+      "address": "agent-bob@lessersoul.ai",
+      "capabilities": ["receive", "send"],
+      "protocols": ["smtp"],
+      "verified": true,
+      "verifiedAt": "2026-03-01T00:00:00Z",
+      "status": "active"
+    },
+    "phone": null
+  },
+  "contactPreferences": {
+    "preferred": "email",
+    "fallback": "activitypub",
+    "availability": {
+      "schedule": "business-hours",
+      "timezone": "America/New_York",
+      "windows": [
+        {
+          "days": ["mon", "tue", "wed", "thu", "fri"],
+          "startTime": "09:00",
+          "endTime": "17:00"
+        }
+      ]
+    },
+    "responseExpectation": {
+      "target": "PT4H",
+      "guarantee": "best-effort"
+    },
+    "rateLimits": {
+      "email": {
+        "maxInboundPerHour": 5,
+        "maxInboundPerDay": 50
+      }
+    },
+    "languages": ["en"]
+  },
+  "updatedAt": "2026-03-04T12:00:00Z"
+}

@@ -77,7 +77,16 @@ const PACKAGE_CONFIGS = {
 const FACES = ['social', 'blog', 'community', 'artist'];
 
 // Shared modules to scan (under packages/shared/)
-const SHARED_MODULES = ['auth', 'compose', 'notifications', 'search', 'admin', 'chat', 'messaging'];
+const SHARED_MODULES = [
+	'auth',
+	'compose',
+	'notifications',
+	'search',
+	'admin',
+	'chat',
+	'messaging',
+	'soul',
+];
 
 // Colors for terminal output
 const colors = {
