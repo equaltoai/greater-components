@@ -175,3 +175,28 @@ fragment CostUpdateFields on CostUpdate {
 	dailyTotal
 	monthlyProjection
 }
+
+fragment CommunicationNotificationFields on CommunicationNotification {
+	channel
+	from {
+		address
+		displayName
+		soulAgentId
+	}
+	to {
+		address
+	}
+	attachments {
+		id
+		filename
+		contentType
+		sizeBytes
+		sha256
+	}
+	subject
+	body
+	receivedAt
+	messageId
+	inReplyTo
+	threadId
+}

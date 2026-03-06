@@ -46,6 +46,37 @@ export interface Tag {
 	url: string;
 }
 
+export interface CommunicationFrom {
+	address: string;
+	displayName?: string | null;
+	soulAgentId?: string | null;
+}
+
+export interface CommunicationTo {
+	address: string;
+}
+
+export interface CommunicationAttachment {
+	id: string;
+	filename: string;
+	contentType: string;
+	sizeBytes: number;
+	sha256: string;
+}
+
+export interface CommunicationNotification {
+	channel: string;
+	from: CommunicationFrom;
+	to?: CommunicationTo | null;
+	attachments: CommunicationAttachment[];
+	subject?: string | null;
+	body?: string | null;
+	receivedAt: string;
+	messageId: string;
+	inReplyTo?: string | null;
+	threadId: string;
+}
+
 export interface Status {
 	id: string;
 	createdAt: string | Date;
@@ -84,7 +115,8 @@ export type NotificationType =
 	| 'community_note'
 	| 'trust_update'
 	| 'cost_alert'
-	| 'moderation_action';
+	| 'moderation_action'
+	| 'communication_inbound';
 
 export interface BaseNotification {
 	id: string;
@@ -94,6 +126,7 @@ export interface BaseNotification {
 	read?: boolean;
 	dismissed?: boolean;
 	status?: Status;
+	communication?: CommunicationNotification | null;
 }
 
 export interface MentionNotification extends BaseNotification {

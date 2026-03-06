@@ -17,6 +17,9 @@ query Notifications($types: [String!], $excludeTypes: [String!], $first: Int = 2
 				status {
 					...ObjectFields
 				}
+				communication {
+					...CommunicationNotificationFields
+				}
 			}
 		}
 		pageInfo {

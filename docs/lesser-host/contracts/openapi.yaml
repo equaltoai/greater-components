@@ -7,6 +7,10 @@ info:
 
 components:
   securitySchemes:
+    sessionAuth:
+      type: http
+      scheme: bearer
+      description: 'Control plane session token: `Authorization: Bearer <session_token>`.'
     instanceKeyAuth:
       type: http
       scheme: bearer
@@ -229,6 +233,9 @@ components:
     SoulAgentChannelPreferencesResponse:
       $ref: '../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json'
 
+    SoulAgentChannelPreferencesRequest:
+      $ref: '../spec/v3/schemas/soul-agent-channel-preferences.request.schema.json'
+
     SoulAgentIdentity:
       $ref: '../spec/v3/schemas/soul-agent-identity.schema.json'
 
@@ -322,6 +329,61 @@ paths:
                 $ref: '#/components/schemas/ErrorEnvelope'
         '404':
           description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+    put:
+      operationId: soulUpdateAgentChannelPreferences
+      summary: Update agent contact preferences (v3)
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoulAgentChannelPreferencesRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulAgentChannelPreferencesResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflict
           content:
             application/json:
               schema:

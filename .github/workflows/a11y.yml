@@ -115,7 +115,7 @@ jobs:
         working-directory: packages/testing
 
       - name: Upload accessibility test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: accessibility-results-${{ matrix.theme }}-${{ matrix.density }}
@@ -178,7 +178,7 @@ jobs:
         working-directory: packages/testing
 
       - name: Upload visual test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: visual-regression-results
@@ -212,7 +212,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Download all test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: test-artifacts/
 
@@ -234,7 +234,7 @@ jobs:
         working-directory: packages/testing
 
       - name: Upload compliance report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: accessibility-compliance-report
           path: |
@@ -399,7 +399,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download compliance report
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: accessibility-compliance-report
           path: accessibility-report/
