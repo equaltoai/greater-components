@@ -54,6 +54,21 @@ export type {
 	UploadMediaPayload,
 } from './graphql';
 
+// Soul (lesser-host REST)
+export {
+	LesserHostSoulClient,
+	LesserHostSoulClientError,
+	createLesserHostSoulClient,
+	resolveSoulAgentIdFromEnsTextRecord,
+} from './soul/index.js';
+export type {
+	ErrorEnvelope as LesserHostErrorEnvelope,
+	LesserHostSoulClientConfig,
+	ResolveEnsOptions,
+	SoulAgentChannelsResponse,
+	SoulResolveResponse,
+} from './soul/index.js';
+
 // Messaging handlers (Lesser → shared/messaging)
 export { createLesserMessagesHandlers } from './messaging/index.js';
 export type { LesserMessagesHandlersConfig } from './messaging/index.js';
