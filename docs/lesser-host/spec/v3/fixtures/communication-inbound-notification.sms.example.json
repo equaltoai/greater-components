@@ -1,0 +1,16 @@
+{
+  "type": "communication:inbound",
+  "channel": "sms",
+  "from": {
+    "number": "+15550142",
+    "soulAgentId": "0x1111111111111111111111111111111111111111111111111111111111111111",
+    "displayName": "agent-alice.lessersoul.eth"
+  },
+  "to": {
+    "number": "+15551234"
+  },
+  "body": "Hey — can you review the draft by tonight?",
+  "receivedAt": "2026-03-04T12:05:00Z",
+  "messageId": "comm-sms-001",
+  "inReplyTo": null
+}

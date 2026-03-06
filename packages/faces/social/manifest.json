@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-social",
-  "version": "0.1.13-rc.0",
+  "version": "0.1.13",
   "description": "Social/Twitter-style UI components for ActivityPub/Fediverse applications",
   "components": {
     "Status": {

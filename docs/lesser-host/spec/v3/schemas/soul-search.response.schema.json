@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-search.response.schema.json",
+  "title": "GET /api/v1/soul/search response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "results", "count", "has_more"],
+  "properties": {
+    "version": { "type": "string", "enum": ["1"] },
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "https://lesser.host/spec/v3/schemas/soul-search.result.schema.json"
+      }
+    },
+    "count": { "type": "integer", "minimum": 0 },
+    "has_more": { "type": "boolean" },
+    "next_cursor": { "type": "string", "minLength": 1, "maxLength": 2048 }
+  }
+}

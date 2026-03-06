@@ -81,6 +81,9 @@ describe('Discovery Flow Integration', () => {
 			let searchQuery = 'test query';
 			let showingResults = true;
 
+			expect(searchQuery).toBe('test query');
+			expect(showingResults).toBe(true);
+
 			// Clear search
 			searchQuery = '';
 			showingResults = false;
@@ -200,6 +203,8 @@ describe('Discovery Flow Integration', () => {
 				style: 'Abstract',
 				mood: 'energetic',
 			};
+
+			expect(filters.medium).toBe('Digital');
 
 			// Clear all
 			filters = {};

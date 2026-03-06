@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components",
-  "version": "0.1.13-rc.0",
+  "version": "0.1.13",
   "type": "module",
   "description": "Aggregate Greater Components library for EqualToAI",
   "license": "AGPL-3.0-only",
@@ -118,6 +118,11 @@
       "types": "./dist/shared/chat/index.d.ts",
       "svelte": "./dist/shared/chat/index.js",
       "import": "./dist/shared/chat/index.js"
+    },
+    "./shared/soul": {
+      "types": "./dist/shared/soul/index.d.ts",
+      "svelte": "./dist/shared/soul/index.js",
+      "import": "./dist/shared/soul/index.js"
     },
     "./chat": {
       "types": "./dist/shared/chat/index.d.ts",
@@ -373,18 +378,18 @@
     }
   },
   "dependencies": {
-    "@apollo/client": "^4.1.4",
+    "@apollo/client": "^4.1.6",
     "@apollo/client-react-streaming": "^0.14.4",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@playwright/test": "^1.58.2",
-    "@tanstack/svelte-virtual": "^3.13.18",
+    "@tanstack/svelte-virtual": "^3.13.21",
     "axe-playwright": "^2.2.2",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
     "execa": "^9.6.1",
     "focus-trap": "^8.0.0",
-    "fs-extra": "^11.3.3",
-    "graphql": "^16.12.0",
+    "fs-extra": "^11.3.4",
+    "graphql": "^16.13.1",
     "graphql-ws": "^6.0.7",
     "hast-util-sanitize": "^5.0.2",
     "hast-util-to-mdast": "^10.1.2",
@@ -398,9 +403,10 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
-    "shiki": "^3.22.0",
+    "shiki": "^4.0.1",
     "tabbable": "^6.4.0",
     "unified": "^11.0.5",
+    "viem": "^2.47.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -418,11 +424,12 @@
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-search": "workspace:*",
     "@equaltoai/greater-components-social": "workspace:*",
+    "@equaltoai/greater-components-soul": "workspace:*",
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@vitest/coverage-v8": "^4.0.18",
-    "svelte": "^5.53.0",
+    "svelte": "^5.53.7",
     "vitest": "^4.0.18"
   }
 }

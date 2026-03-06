@@ -297,7 +297,7 @@ export function createGridNavigation(config: GridNavigationConfig): () => void {
 		const currentIndex = items.findIndex((item) => item === document.activeElement);
 		if (currentIndex === -1) return;
 
-		let nextIndex = currentIndex;
+		let nextIndex: number;
 
 		switch (event.key) {
 			case 'ArrowRight':

@@ -297,7 +297,7 @@ export class GraphQLClient {
 			clearTimeout(timeout);
 
 			if (error instanceof Error && error.name === 'AbortError') {
-				throw new Error('GraphQL request timeout');
+				throw new Error('GraphQL request timeout', { cause: error });
 			}
 
 			throw error;

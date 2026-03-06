@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/communication-inbound-notification.schema.json",
+  "title": "communication:inbound notification payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "channel", "from", "body", "receivedAt", "messageId"],
+  "properties": {
+    "type": { "const": "communication:inbound" },
+    "channel": { "type": "string", "enum": ["email", "sms", "voice"] },
+    "from": {
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["address"] }, { "required": ["number"] }],
+      "properties": {
+        "address": { "type": "string", "format": "email" },
+        "number": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" },
+        "soulAgentId": { "type": ["string", "null"], "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "to": {
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["address"] }, { "required": ["number"] }],
+      "properties": {
+        "address": { "type": "string", "format": "email" },
+        "number": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" }
+      }
+    },
+    "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
+    "body": { "type": "string", "minLength": 1 },
+    "bodyMimeType": { "type": "string", "minLength": 1, "maxLength": 64, "default": "text/plain" },
+    "receivedAt": { "type": "string", "format": "date-time" },
+    "messageId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "inReplyTo": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "filename", "contentType", "sizeBytes"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "filename": { "type": "string", "minLength": 1, "maxLength": 512 },
+          "contentType": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "sizeBytes": { "type": "integer", "minimum": 0 },
+          "sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+        }
+      }
+    }
+  }
+}

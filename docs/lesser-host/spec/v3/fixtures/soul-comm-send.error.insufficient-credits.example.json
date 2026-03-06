@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "comm.insufficient_credits",
+    "message": "Insufficient credits to send SMS.",
+    "request_id": "req_123"
+  }
+}

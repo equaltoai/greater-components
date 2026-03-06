@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-notifications",
-  "version": "0.1.13-rc.0",
+  "version": "0.1.13",
   "description": "Notification components for ActivityPub/Fediverse applications",
   "components": {
     "Root": {
@@ -27,6 +27,11 @@
     "LesserNotificationItem": {
       "description": "Lesser-specific notification types (quote, community_note, trust_update, cost_alert, moderation_action)",
       "props": ["notification"],
+      "exports": true
+    },
+    "CommunicationNotificationItem": {
+      "description": "Renderer for `communication:*` inbound notifications (email, SMS, voice/voicemail)",
+      "props": ["notification", "content", "onClick", "class"],
       "exports": true
     },
     "NotificationFilters": {

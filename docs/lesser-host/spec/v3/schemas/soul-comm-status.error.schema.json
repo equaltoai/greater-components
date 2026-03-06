@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-status.error.schema.json",
+  "title": "GET /api/v1/soul/comm/status/{messageId} error envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": ["comm.invalid_request", "comm.unauthorized", "comm.internal"]
+        },
+        "message": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
+      }
+    }
+  }
+}

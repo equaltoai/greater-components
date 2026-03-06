@@ -137,12 +137,12 @@ I'm currently searching for relevant files in your project...`,
 Each knowledge base can be enabled in settings to provide contextual assistance.`,
 		`To create a new workflow, you can use the following pattern:
 
-\`\`\`typescript
-import { createWorkflow } from '@pai/core';
+	\`\`\`typescript
+	import { createWorkflow } from '@equaltoai/greater-components-social';
 
-const workflow = createWorkflow({
-  name: 'code-review',
-  steps: [
+	const workflow = createWorkflow({
+	  name: 'code-review',
+	  steps: [
     { action: 'analyze', target: 'src/**/*.ts' },
     { action: 'suggest', type: 'improvements' },
     { action: 'generate', output: 'report.md' },

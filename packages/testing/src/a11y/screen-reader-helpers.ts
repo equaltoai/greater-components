@@ -35,8 +35,8 @@ export function getAccessibleNameComputation(element: HTMLElement): {
 	computation: string[];
 } {
 	const computation: string[] = [];
-	let name = '';
-	let source = '';
+	let name: string;
+	let source: string;
 
 	// Step 1: Check aria-labelledby
 	if (element.hasAttribute('aria-labelledby')) {
