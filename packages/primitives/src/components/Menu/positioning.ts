@@ -33,7 +33,10 @@ export function calculatePlacement(config: PositionConfig): MenuPlacement {
 			case 'top-start':
 				return { x: triggerRect.left, y: triggerRect.top - contentRect.height - offset };
 			case 'top-end':
-				return { x: triggerRect.right - contentRect.width, y: triggerRect.top - contentRect.height - offset };
+				return {
+					x: triggerRect.right - contentRect.width,
+					y: triggerRect.top - contentRect.height - offset,
+				};
 		}
 	})();
 

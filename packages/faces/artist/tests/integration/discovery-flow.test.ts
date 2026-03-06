@@ -77,18 +77,18 @@ describe('Discovery Flow Integration', () => {
 			expect(result.suggestions.length).toBe(3);
 		});
 
-			it('clears search and returns to browse', () => {
-				let searchQuery = 'test query';
-				let showingResults = true;
+		it('clears search and returns to browse', () => {
+			let searchQuery = 'test query';
+			let showingResults = true;
 
-				expect(searchQuery).toBe('test query');
-				expect(showingResults).toBe(true);
+			expect(searchQuery).toBe('test query');
+			expect(showingResults).toBe(true);
 
-				// Clear search
-				searchQuery = '';
-				showingResults = false;
+			// Clear search
+			searchQuery = '';
+			showingResults = false;
 
-				expect(searchQuery).toBe('');
+			expect(searchQuery).toBe('');
 			expect(showingResults).toBe(false);
 		});
 	});
@@ -197,20 +197,20 @@ describe('Discovery Flow Integration', () => {
 			expect(filters.style).toBe('Abstract');
 		});
 
-			it('clears all filters', async () => {
-				let filters: Record<string, unknown> = {
-					medium: 'Digital',
-					style: 'Abstract',
-					mood: 'energetic',
-				};
+		it('clears all filters', async () => {
+			let filters: Record<string, unknown> = {
+				medium: 'Digital',
+				style: 'Abstract',
+				mood: 'energetic',
+			};
 
-				expect(filters.medium).toBe('Digital');
+			expect(filters.medium).toBe('Digital');
 
-				// Clear all
-				filters = {};
+			// Clear all
+			filters = {};
 
-				mockAdapter.searchArtworks.mockResolvedValue({
-					results: createMockArtworkList(20),
+			mockAdapter.searchArtworks.mockResolvedValue({
+				results: createMockArtworkList(20),
 				total: 20,
 			});
 

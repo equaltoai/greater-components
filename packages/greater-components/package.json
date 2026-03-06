@@ -406,6 +406,7 @@
     "shiki": "^4.0.1",
     "tabbable": "^6.4.0",
     "unified": "^11.0.5",
+    "viem": "^2.47.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

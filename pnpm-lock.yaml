@@ -845,6 +845,9 @@ importers:
       unified:
         specifier: ^11.0.5
         version: 11.0.5
+      viem:
+        specifier: ^2.47.0
+        version: 2.47.0(typescript@5.9.3)(zod@4.3.6)
       zod:
         specifier: ^4.3.6
         version: 4.3.6

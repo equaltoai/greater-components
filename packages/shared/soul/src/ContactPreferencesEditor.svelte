@@ -46,18 +46,27 @@
 		{ value: 'mcp', label: 'MCP' },
 	];
 
-	const SCHEDULES: Array<{ value: SoulContactPreferences['availability']['schedule']; label: string }> = [
+	const SCHEDULES: Array<{
+		value: SoulContactPreferences['availability']['schedule'];
+		label: string;
+	}> = [
 		{ value: 'always', label: 'Always' },
 		{ value: 'business-hours', label: 'Business hours' },
 		{ value: 'custom', label: 'Custom' },
 	];
 
-	const GUARANTEES: Array<{ value: SoulContactPreferences['responseExpectation']['guarantee']; label: string }> = [
+	const GUARANTEES: Array<{
+		value: SoulContactPreferences['responseExpectation']['guarantee'];
+		label: string;
+	}> = [
 		{ value: 'best-effort', label: 'Best effort' },
 		{ value: 'guaranteed', label: 'Guaranteed' },
 	];
 
-	const DAYS: Array<{ value: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'; label: string }> = [
+	const DAYS: Array<{
+		value: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
+		label: string;
+	}> = [
 		{ value: 'mon', label: 'Mon' },
 		{ value: 'tue', label: 'Tue' },
 		{ value: 'wed', label: 'Wed' },
@@ -113,12 +122,16 @@
 		update('availability', { ...current.availability, ...partial });
 	}
 
-	function updateResponseExpectation(partial: Partial<SoulContactPreferences['responseExpectation']>) {
+	function updateResponseExpectation(
+		partial: Partial<SoulContactPreferences['responseExpectation']>
+	) {
 		const current = ensureValue();
 		update('responseExpectation', { ...current.responseExpectation, ...partial });
 	}
 
-	function updateFirstContact(partial: Partial<NonNullable<SoulContactPreferences['firstContact']>>) {
+	function updateFirstContact(
+		partial: Partial<NonNullable<SoulContactPreferences['firstContact']>>
+	) {
 		const current = ensureValue();
 		update('firstContact', { ...(current.firstContact ?? {}), ...partial });
 	}
@@ -180,43 +193,48 @@
 		setWindow(index, { ...win, days: (nextDays.length ? nextDays : [day]) as Window['days'] });
 	}
 
-	function setRateLimit(path: ['email' | 'sms', 'maxInboundPerHour' | 'maxInboundPerDay'], raw: string) {
+	function setRateLimit(
+		path: ['email' | 'sms', 'maxInboundPerHour' | 'maxInboundPerDay'],
+		raw: string
+	) {
 		const current = ensureValue();
-			const num = raw.trim() === '' ? undefined : Number(raw);
-			const next = Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
+		const num = raw.trim() === '' ? undefined : Number(raw);
+		const next =
+			Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
 
-			const rateLimits: RateLimits = { ...(current.rateLimits ?? {}) };
-			const channel = path[0];
-			const key = path[1] satisfies EmailSmsRateLimitKey;
-			const channelLimits: EmailSmsRateLimits = { ...(rateLimits[channel] ?? {}) };
+		const rateLimits: RateLimits = { ...(current.rateLimits ?? {}) };
+		const channel = path[0];
+		const key = path[1] satisfies EmailSmsRateLimitKey;
+		const channelLimits: EmailSmsRateLimits = { ...(rateLimits[channel] ?? {}) };
 
-			if (next === undefined) delete channelLimits[key];
-			else channelLimits[key] = next;
+		if (next === undefined) delete channelLimits[key];
+		else channelLimits[key] = next;
 
-			if (Object.keys(channelLimits).length === 0) delete rateLimits[channel];
-			else rateLimits[channel] = channelLimits;
+		if (Object.keys(channelLimits).length === 0) delete rateLimits[channel];
+		else rateLimits[channel] = channelLimits;
 
-			update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
-		}
+		update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
+	}
 
-		function setVoiceRateLimit(path: ['maxConcurrentCalls' | 'maxCallsPerDay'], raw: string) {
-			const current = ensureValue();
-			const num = raw.trim() === '' ? undefined : Number(raw);
-			const next = Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
+	function setVoiceRateLimit(path: ['maxConcurrentCalls' | 'maxCallsPerDay'], raw: string) {
+		const current = ensureValue();
+		const num = raw.trim() === '' ? undefined : Number(raw);
+		const next =
+			Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
 
-			const rateLimits: RateLimits = { ...(current.rateLimits ?? {}) };
-			const key = path[0] satisfies VoiceRateLimitKey;
-			const voiceLimits: VoiceRateLimits = { ...(rateLimits.voice ?? {}) };
+		const rateLimits: RateLimits = { ...(current.rateLimits ?? {}) };
+		const key = path[0] satisfies VoiceRateLimitKey;
+		const voiceLimits: VoiceRateLimits = { ...(rateLimits.voice ?? {}) };
 
-			if (next === undefined) delete voiceLimits[key];
-			else voiceLimits[key] = next;
+		if (next === undefined) delete voiceLimits[key];
+		else voiceLimits[key] = next;
 
-			if (Object.keys(voiceLimits).length === 0) delete rateLimits.voice;
-			else rateLimits.voice = voiceLimits;
+		if (Object.keys(voiceLimits).length === 0) delete rateLimits.voice;
+		else rateLimits.voice = voiceLimits;
 
-			update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
-		}
-	</script>
+		update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
+	}
+</script>
 
 <Card variant="outlined" padding="lg" class={`soul-preferences-editor ${className}`}>
 	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
@@ -227,7 +245,7 @@
 	{#if !value}
 		<Text size="sm" color="secondary">No preferences set.</Text>
 		<div class="soul-preferences-editor__actions">
-			<Button variant="outline" size="sm" disabled={disabled} onclick={() => ensureValue()}>
+			<Button variant="outline" size="sm" {disabled} onclick={() => ensureValue()}>
 				Create defaults
 			</Button>
 		</div>
@@ -243,9 +261,10 @@
 				<SettingsField label="Preferred channel">
 					<select
 						class="soul-preferences-editor__select"
-						disabled={disabled}
+						{disabled}
 						value={value.preferred}
-						onchange={(e) => update('preferred', (e.currentTarget as HTMLSelectElement).value as Channel)}
+						onchange={(e) =>
+							update('preferred', (e.currentTarget as HTMLSelectElement).value as Channel)}
 					>
 						{#each CHANNELS as opt (opt.value)}
 							<option value={opt.value}>{opt.label}</option>
@@ -253,30 +272,26 @@
 					</select>
 				</SettingsField>
 
-					<SettingsField label="Fallback channel" description="Used when preferred is unavailable.">
-						<select
-							class="soul-preferences-editor__select"
-							disabled={disabled}
-							value={value.fallback ?? ''}
-							onchange={(e) => {
-								const raw = (e.currentTarget as HTMLSelectElement).value;
-								update('fallback', raw ? (raw as Channel) : undefined);
-							}}
-						>
-							<option value="">None</option>
-							{#each CHANNELS as opt (opt.value)}
-								<option value={opt.value}>{opt.label}</option>
+				<SettingsField label="Fallback channel" description="Used when preferred is unavailable.">
+					<select
+						class="soul-preferences-editor__select"
+						{disabled}
+						value={value.fallback ?? ''}
+						onchange={(e) => {
+							const raw = (e.currentTarget as HTMLSelectElement).value;
+							update('fallback', raw ? (raw as Channel) : undefined);
+						}}
+					>
+						<option value="">None</option>
+						{#each CHANNELS as opt (opt.value)}
+							<option value={opt.value}>{opt.label}</option>
 						{/each}
 					</select>
 				</SettingsField>
 			</div>
 
 			<div class="soul-preferences-editor__group">
-				<Text
-					as="div"
-					size="sm"
-					weight="semibold"
-					class="soul-preferences-editor__group-title"
+				<Text as="div" size="sm" weight="semibold" class="soul-preferences-editor__group-title"
 					>Availability</Text
 				>
 				<Text as="div" size="sm" color="secondary" class="soul-preferences-editor__group-desc"
@@ -285,20 +300,20 @@
 				<SettingsField label="Schedule">
 					<select
 						class="soul-preferences-editor__select"
-							disabled={disabled}
-							value={value.availability.schedule}
-							onchange={(e) => {
-								const schedule = (e.currentTarget as HTMLSelectElement)
-									.value as SoulContactPreferences['availability']['schedule'];
-								updateAvailability({
-									schedule,
-									windows: schedule === 'custom' ? value.availability.windows ?? [] : null,
-								});
-							}}
-						>
-							{#each SCHEDULES as opt (opt.value)}
-								<option value={opt.value}>{opt.label}</option>
-							{/each}
+						{disabled}
+						value={value.availability.schedule}
+						onchange={(e) => {
+							const schedule = (e.currentTarget as HTMLSelectElement)
+								.value as SoulContactPreferences['availability']['schedule'];
+							updateAvailability({
+								schedule,
+								windows: schedule === 'custom' ? (value.availability.windows ?? []) : null,
+							});
+						}}
+					>
+						{#each SCHEDULES as opt (opt.value)}
+							<option value={opt.value}>{opt.label}</option>
+						{/each}
 					</select>
 				</SettingsField>
 
@@ -308,10 +323,12 @@
 				>
 					<TextField
 						value={value.availability.timezone ?? ''}
-						disabled={disabled}
+						{disabled}
 						placeholder="UTC"
 						oninput={(e) =>
-							updateAvailability({ timezone: (e.currentTarget as HTMLInputElement).value.trim() || undefined })}
+							updateAvailability({
+								timezone: (e.currentTarget as HTMLInputElement).value.trim() || undefined,
+							})}
 					/>
 				</SettingsField>
 
@@ -319,9 +336,7 @@
 					<div class="soul-preferences-editor__windows">
 						<div class="soul-preferences-editor__windows-header">
 							<Text size="sm" weight="medium">Windows</Text>
-							<Button variant="outline" size="sm" disabled={disabled} onclick={addWindow}>
-								Add window
-							</Button>
+							<Button variant="outline" size="sm" {disabled} onclick={addWindow}>Add window</Button>
 						</div>
 
 						{#if !value.availability.windows?.length}
@@ -334,10 +349,14 @@
 											<label class="soul-preferences-editor__day">
 												<input
 													type="checkbox"
-													disabled={disabled}
+													{disabled}
 													checked={win.days.includes(d.value)}
 													onchange={(e) =>
-														toggleWindowDay(i, d.value, (e.currentTarget as HTMLInputElement).checked)}
+														toggleWindowDay(
+															i,
+															d.value,
+															(e.currentTarget as HTMLInputElement).checked
+														)}
 												/>
 												<span>{d.label}</span>
 											</label>
@@ -349,28 +368,29 @@
 											<span>Start</span>
 											<input
 												type="time"
-												disabled={disabled}
+												{disabled}
 												value={win.startTime}
 												onchange={(e) =>
-													setWindow(i, { ...win, startTime: (e.currentTarget as HTMLInputElement).value })}
+													setWindow(i, {
+														...win,
+														startTime: (e.currentTarget as HTMLInputElement).value,
+													})}
 											/>
 										</label>
 										<label class="soul-preferences-editor__time">
 											<span>End</span>
 											<input
 												type="time"
-												disabled={disabled}
+												{disabled}
 												value={win.endTime}
 												onchange={(e) =>
-													setWindow(i, { ...win, endTime: (e.currentTarget as HTMLInputElement).value })}
+													setWindow(i, {
+														...win,
+														endTime: (e.currentTarget as HTMLInputElement).value,
+													})}
 											/>
 										</label>
-										<Button
-											variant="ghost"
-											size="sm"
-											disabled={disabled}
-											onclick={() => removeWindow(i)}
-										>
+										<Button variant="ghost" size="sm" {disabled} onclick={() => removeWindow(i)}>
 											Remove
 										</Button>
 									</div>
@@ -382,48 +402,44 @@
 			</div>
 
 			<div class="soul-preferences-editor__group">
-				<Text
-					as="div"
-					size="sm"
-					weight="semibold"
-					class="soul-preferences-editor__group-title"
+				<Text as="div" size="sm" weight="semibold" class="soul-preferences-editor__group-title"
 					>Response expectation</Text
 				>
-				<SettingsField label="Target response time" description="Duration like 5m, 1h, 24h, or best-effort.">
+				<SettingsField
+					label="Target response time"
+					description="Duration like 5m, 1h, 24h, or best-effort."
+				>
 					<TextField
 						value={value.responseExpectation.target}
-						disabled={disabled}
+						{disabled}
 						placeholder="1h"
 						oninput={(e) =>
-							updateResponseExpectation({ target: (e.currentTarget as HTMLInputElement).value.trim() })}
+							updateResponseExpectation({
+								target: (e.currentTarget as HTMLInputElement).value.trim(),
+							})}
 					/>
 				</SettingsField>
 
 				<SettingsField label="Guarantee">
 					<select
-							class="soul-preferences-editor__select"
-							disabled={disabled}
-							value={value.responseExpectation.guarantee}
-							onchange={(e) =>
-								updateResponseExpectation({
-									guarantee:
-										(e.currentTarget as HTMLSelectElement)
-											.value as SoulContactPreferences['responseExpectation']['guarantee'],
-								})}
-						>
-							{#each GUARANTEES as opt (opt.value)}
-								<option value={opt.value}>{opt.label}</option>
+						class="soul-preferences-editor__select"
+						{disabled}
+						value={value.responseExpectation.guarantee}
+						onchange={(e) =>
+							updateResponseExpectation({
+								guarantee: (e.currentTarget as HTMLSelectElement)
+									.value as SoulContactPreferences['responseExpectation']['guarantee'],
+							})}
+					>
+						{#each GUARANTEES as opt (opt.value)}
+							<option value={opt.value}>{opt.label}</option>
 						{/each}
 					</select>
 				</SettingsField>
 			</div>
 
 			<div class="soul-preferences-editor__group">
-				<Text
-					as="div"
-					size="sm"
-					weight="semibold"
-					class="soul-preferences-editor__group-title"
+				<Text as="div" size="sm" weight="semibold" class="soul-preferences-editor__group-title"
 					>Rate limits</Text
 				>
 				<Text as="div" size="sm" color="secondary" class="soul-preferences-editor__group-desc"
@@ -435,20 +451,26 @@
 						<input
 							type="number"
 							min="1"
-							disabled={disabled}
+							{disabled}
 							placeholder="/hour"
 							value={value.rateLimits?.email?.maxInboundPerHour ?? ''}
 							oninput={(e) =>
-								setRateLimit(['email', 'maxInboundPerHour'], (e.currentTarget as HTMLInputElement).value)}
+								setRateLimit(
+									['email', 'maxInboundPerHour'],
+									(e.currentTarget as HTMLInputElement).value
+								)}
 						/>
 						<input
 							type="number"
 							min="1"
-							disabled={disabled}
+							{disabled}
 							placeholder="/day"
 							value={value.rateLimits?.email?.maxInboundPerDay ?? ''}
 							oninput={(e) =>
-								setRateLimit(['email', 'maxInboundPerDay'], (e.currentTarget as HTMLInputElement).value)}
+								setRateLimit(
+									['email', 'maxInboundPerDay'],
+									(e.currentTarget as HTMLInputElement).value
+								)}
 						/>
 					</div>
 
@@ -457,20 +479,26 @@
 						<input
 							type="number"
 							min="1"
-							disabled={disabled}
+							{disabled}
 							placeholder="/hour"
 							value={value.rateLimits?.sms?.maxInboundPerHour ?? ''}
 							oninput={(e) =>
-								setRateLimit(['sms', 'maxInboundPerHour'], (e.currentTarget as HTMLInputElement).value)}
+								setRateLimit(
+									['sms', 'maxInboundPerHour'],
+									(e.currentTarget as HTMLInputElement).value
+								)}
 						/>
 						<input
 							type="number"
 							min="1"
-							disabled={disabled}
+							{disabled}
 							placeholder="/day"
 							value={value.rateLimits?.sms?.maxInboundPerDay ?? ''}
 							oninput={(e) =>
-								setRateLimit(['sms', 'maxInboundPerDay'], (e.currentTarget as HTMLInputElement).value)}
+								setRateLimit(
+									['sms', 'maxInboundPerDay'],
+									(e.currentTarget as HTMLInputElement).value
+								)}
 						/>
 					</div>
 
@@ -479,16 +507,19 @@
 						<input
 							type="number"
 							min="1"
-							disabled={disabled}
+							{disabled}
 							placeholder="concurrent"
 							value={value.rateLimits?.voice?.maxConcurrentCalls ?? ''}
 							oninput={(e) =>
-								setVoiceRateLimit(['maxConcurrentCalls'], (e.currentTarget as HTMLInputElement).value)}
+								setVoiceRateLimit(
+									['maxConcurrentCalls'],
+									(e.currentTarget as HTMLInputElement).value
+								)}
 						/>
 						<input
 							type="number"
 							min="1"
-							disabled={disabled}
+							{disabled}
 							placeholder="/day"
 							value={value.rateLimits?.voice?.maxCallsPerDay ?? ''}
 							oninput={(e) =>
@@ -499,17 +530,16 @@
 			</div>
 
 			<div class="soul-preferences-editor__group">
-				<Text
-					as="div"
-					size="sm"
-					weight="semibold"
-					class="soul-preferences-editor__group-title"
+				<Text as="div" size="sm" weight="semibold" class="soul-preferences-editor__group-title"
 					>Language and content</Text
 				>
-				<SettingsField label="Languages" description="Comma-separated ISO 639-1 codes (e.g. en, es).">
+				<SettingsField
+					label="Languages"
+					description="Comma-separated ISO 639-1 codes (e.g. en, es)."
+				>
 					<TextField
 						value={value.languages.join(', ')}
-						disabled={disabled}
+						{disabled}
 						placeholder="en"
 						oninput={(e) => updateLanguages((e.currentTarget as HTMLInputElement).value)}
 					/>
@@ -518,7 +548,7 @@
 				<SettingsField label="Accepted content types" description="Comma-separated MIME types.">
 					<TextField
 						value={(value.contentTypes ?? ['text/plain']).join(', ')}
-						disabled={disabled}
+						{disabled}
 						placeholder="text/plain"
 						oninput={(e) => updateContentTypes((e.currentTarget as HTMLInputElement).value)}
 					/>
@@ -526,11 +556,7 @@
 			</div>
 
 			<div class="soul-preferences-editor__group">
-				<Text
-					as="div"
-					size="sm"
-					weight="semibold"
-					class="soul-preferences-editor__group-title"
+				<Text as="div" size="sm" weight="semibold" class="soul-preferences-editor__group-title"
 					>First contact policy</Text
 				>
 				<SettingsField
@@ -539,7 +565,7 @@
 				>
 					<Switch
 						checked={Boolean(value.firstContact?.requireSoul)}
-						disabled={disabled}
+						{disabled}
 						onchange={(checked) => updateFirstContact({ requireSoul: checked })}
 					/>
 				</SettingsField>
@@ -550,7 +576,7 @@
 				>
 					<Switch
 						checked={Boolean(value.firstContact?.introductionExpected)}
-						disabled={disabled}
+						{disabled}
 						onchange={(checked) => updateFirstContact({ introductionExpected: checked })}
 					/>
 				</SettingsField>
@@ -564,13 +590,11 @@
 						min="0"
 						max="1"
 						step="0.01"
-						disabled={disabled}
-						value={
-							value.firstContact?.requireReputation === null ||
-							value.firstContact?.requireReputation === undefined
-								? ''
-								: value.firstContact.requireReputation
-						}
+						{disabled}
+						value={value.firstContact?.requireReputation === null ||
+						value.firstContact?.requireReputation === undefined
+							? ''
+							: value.firstContact.requireReputation}
 						oninput={(e) => {
 							const raw = (e.currentTarget as HTMLInputElement).value.trim();
 							updateFirstContact({

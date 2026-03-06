@@ -5,7 +5,11 @@ import type { SoulChannels, SoulContactPreferences } from '../src/types.js';
 describe('recommendContactTarget', () => {
 	it('prefers preferred channel when available', () => {
 		const channels: SoulChannels = {
-			ens: { name: 'agent-alice.lessersoul.eth', chain: 'mainnet', resolverAddress: '0x0000000000000000000000000000000000000000' },
+			ens: {
+				name: 'agent-alice.lessersoul.eth',
+				chain: 'mainnet',
+				resolverAddress: '0x0000000000000000000000000000000000000000',
+			},
 			email: {
 				address: 'agent-alice@lessersoul.ai',
 				capabilities: ['receive', 'send'],
@@ -59,4 +63,3 @@ describe('recommendContactTarget', () => {
 		expect(rec.recommended?.channel).toBe('sms');
 	});
 });
-

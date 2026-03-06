@@ -79,13 +79,23 @@
 	<DefinitionList density="sm">
 		<DefinitionItem label="ENS" monospace wrap={false}>
 			{#if channels.ens}
-				<a class="soul-channels__link" href={`https://app.ens.domains/${channels.ens.name}`} target="_blank" rel="noreferrer">
+				<a
+					class="soul-channels__link"
+					href={`https://app.ens.domains/${channels.ens.name}`}
+					target="_blank"
+					rel="noreferrer"
+				>
 					{channels.ens.name}
 				</a>
 				{#if showCopy}
 					<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 					{#snippet actions()}
-						<CopyButton text={channels.ens.name} variant="icon" size="sm" aria-label="Copy ENS name" />
+						<CopyButton
+							text={channels.ens.name}
+							variant="icon"
+							size="sm"
+							aria-label="Copy ENS name"
+						/>
 					{/snippet}
 				{/if}
 			{:else}
@@ -98,7 +108,9 @@
 				{@const emailVerification = verificationBadge(Boolean(channels.email.verified))}
 				{@const emailStatus = channels.email.status ? statusBadge(channels.email.status) : null}
 				<div class="soul-channels__row">
-					<a class="soul-channels__link" href={`mailto:${channels.email.address}`}>{channels.email.address}</a>
+					<a class="soul-channels__link" href={`mailto:${channels.email.address}`}
+						>{channels.email.address}</a
+					>
 					<div class="soul-channels__badges">
 						<Badge
 							variant="outlined"
@@ -107,7 +119,12 @@
 							label={emailVerification.label}
 						/>
 						{#if emailStatus}
-							<Badge variant="outlined" size="sm" color={emailStatus.color} label={emailStatus.label} />
+							<Badge
+								variant="outlined"
+								size="sm"
+								color={emailStatus.color}
+								label={emailStatus.label}
+							/>
 						{/if}
 					</div>
 				</div>
@@ -138,7 +155,9 @@
 				{@const phoneVerification = verificationBadge(Boolean(channels.phone.verified))}
 				{@const phoneStatus = channels.phone.status ? statusBadge(channels.phone.status) : null}
 				<div class="soul-channels__row">
-					<a class="soul-channels__link" href={`tel:${channels.phone.number}`}>{channels.phone.number}</a>
+					<a class="soul-channels__link" href={`tel:${channels.phone.number}`}
+						>{channels.phone.number}</a
+					>
 					<div class="soul-channels__badges">
 						<Badge
 							variant="outlined"
@@ -147,7 +166,12 @@
 							label={phoneVerification.label}
 						/>
 						{#if phoneStatus}
-							<Badge variant="outlined" size="sm" color={phoneStatus.color} label={phoneStatus.label} />
+							<Badge
+								variant="outlined"
+								size="sm"
+								color={phoneStatus.color}
+								label={phoneStatus.label}
+							/>
 						{/if}
 					</div>
 				</div>

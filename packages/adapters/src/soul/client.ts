@@ -35,7 +35,9 @@ export interface ResolveEnsOptions {
 	textKey?: string;
 }
 
-export function createLesserHostSoulClient(config: LesserHostSoulClientConfig): LesserHostSoulClient {
+export function createLesserHostSoulClient(
+	config: LesserHostSoulClientConfig
+): LesserHostSoulClient {
 	return new LesserHostSoulClient(config);
 }
 
@@ -139,7 +141,9 @@ export class LesserHostSoulClient {
 	}
 }
 
-async function createLesserHostSoulClientError(response: Response): Promise<LesserHostSoulClientError> {
+async function createLesserHostSoulClientError(
+	response: Response
+): Promise<LesserHostSoulClientError> {
 	const fallbackMessage = `Request failed (${response.status})`;
 
 	let body: unknown = null;

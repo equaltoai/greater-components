@@ -172,8 +172,8 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 				}
 				event.preventDefault();
 				return;
-				default:
-					return;
+			default:
+				return;
 		}
 
 		event.preventDefault();
@@ -181,7 +181,9 @@ Implements REQ-A11Y-004: Keyboard navigation with arrow keys
 		focusedIndex = nextIndex;
 
 		// Focus the element (button inside the wrapper)
-		const element = containerRef?.querySelector(`[data-index="${nextIndex}"] button`) as HTMLElement;
+		const element = containerRef?.querySelector(
+			`[data-index="${nextIndex}"] button`
+		) as HTMLElement;
 		element?.focus();
 	}
 

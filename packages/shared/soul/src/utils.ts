@@ -24,7 +24,10 @@ function isActiveStatus(status?: string): boolean {
 	return status === 'active';
 }
 
-function resolveTargetForChannel(channels: SoulChannels, channel: SoulContactChannel): ContactTarget | null {
+function resolveTargetForChannel(
+	channels: SoulChannels,
+	channel: SoulContactChannel
+): ContactTarget | null {
 	switch (channel) {
 		case 'email': {
 			if (!channels.email) return null;
@@ -70,7 +73,9 @@ function resolveTargetForChannel(channels: SoulChannels, channel: SoulContactCha
 	}
 }
 
-export function getAvailabilityStatus(preferences: SoulContactPreferences | null): AvailabilityStatus | undefined {
+export function getAvailabilityStatus(
+	preferences: SoulContactPreferences | null
+): AvailabilityStatus | undefined {
 	if (!preferences) return undefined;
 	return {
 		schedule: preferences.availability.schedule,
@@ -108,15 +113,9 @@ export function recommendContactTarget(
 			: null;
 
 	const orderedCandidateChannels: SoulContactChannel[] = unique(
-		[
-			preferredChannel,
-			fallbackChannel,
-			'email',
-			'sms',
-			'voice',
-			'activitypub',
-			'mcp',
-		].filter(Boolean) as SoulContactChannel[]
+		[preferredChannel, fallbackChannel, 'email', 'sms', 'voice', 'activitypub', 'mcp'].filter(
+			Boolean
+		) as SoulContactChannel[]
 	);
 
 	const candidates = orderedCandidateChannels

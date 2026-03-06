@@ -81,4 +81,3 @@ describe('CommunicationNotificationItem', () => {
 		unmount(instance);
 	});
 });
-

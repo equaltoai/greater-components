@@ -2,7 +2,14 @@
   Soul.ContactPreferencesViewer - Read-only view for lesser-soul v3 contact preferences
 -->
 <script lang="ts">
-	import { Badge, Card, DefinitionItem, DefinitionList, Heading, Text } from '@equaltoai/greater-components-primitives';
+	import {
+		Badge,
+		Card,
+		DefinitionItem,
+		DefinitionList,
+		Heading,
+		Text,
+	} from '@equaltoai/greater-components-primitives';
 
 	import type { SoulContactPreferences } from './types.js';
 	import { formatAvailabilitySummary } from './utils.js';
@@ -59,18 +66,34 @@
 	{:else}
 		<DefinitionList density="sm">
 			<DefinitionItem label="Preferred">
-				<Badge variant="outlined" size="sm" color="primary" label={channelLabel(preferences.preferred)} />
+				<Badge
+					variant="outlined"
+					size="sm"
+					color="primary"
+					label={channelLabel(preferences.preferred)}
+				/>
 			</DefinitionItem>
 
 			{#if preferences.fallback}
 				<DefinitionItem label="Fallback">
-					<Badge variant="outlined" size="sm" color="gray" label={channelLabel(preferences.fallback)} />
+					<Badge
+						variant="outlined"
+						size="sm"
+						color="gray"
+						label={channelLabel(preferences.fallback)}
+					/>
 				</DefinitionItem>
 			{/if}
 
 			<DefinitionItem label="Availability">
 				<div class="soul-preferences__stack">
-					<span>{formatAvailabilitySummary({ schedule: preferences.availability.schedule, timezone: preferences.availability.timezone, windows: preferences.availability.windows ?? null })}</span>
+					<span
+						>{formatAvailabilitySummary({
+							schedule: preferences.availability.schedule,
+							timezone: preferences.availability.timezone,
+							windows: preferences.availability.windows ?? null,
+						})}</span
+					>
 					{#if preferences.availability.schedule === 'custom' && preferences.availability.windows?.length}
 						<ul class="soul-preferences__windows">
 							{#each preferences.availability.windows as w (JSON.stringify(w))}
@@ -210,4 +233,3 @@
 		color: var(--gr-color-text-muted, #6b7280);
 	}
 </style>
-

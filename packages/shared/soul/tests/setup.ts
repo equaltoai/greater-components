@@ -19,4 +19,3 @@ Object.defineProperty(window, 'matchMedia', {
 afterEach(() => {
 	cleanup();
 });
-

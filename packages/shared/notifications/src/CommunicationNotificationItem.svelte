@@ -227,4 +227,3 @@ Safe by default: message previews are rendered as plain text.
 		margin-left: 0.4rem;
 	}
 </style>
-

@@ -7,4 +7,3 @@ UI components for `lesser-soul v3` reachability features:
 - “Best way to contact” helper UI driven by preferences
 
 These components are designed to be used by `simulacrum` without forking vendored code.
-

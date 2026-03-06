@@ -104,19 +104,19 @@ describe('Artwork Flow Integration', () => {
 			expect(result.edges.length).toBe(10);
 		});
 
-			it('opens lightbox on artwork click', () => {
-				const artwork = createMockArtwork('view-1');
-				let lightboxOpen = false;
-				let lightboxArtwork: typeof artwork | null = null;
+		it('opens lightbox on artwork click', () => {
+			const artwork = createMockArtwork('view-1');
+			let lightboxOpen = false;
+			let lightboxArtwork: typeof artwork | null = null;
 
-				expect(lightboxOpen).toBe(false);
-				expect(lightboxArtwork).toBeNull();
+			expect(lightboxOpen).toBe(false);
+			expect(lightboxArtwork).toBeNull();
 
-				// Simulate click
-				lightboxOpen = true;
-				lightboxArtwork = artwork;
+			// Simulate click
+			lightboxOpen = true;
+			lightboxArtwork = artwork;
 
-				expect(lightboxOpen).toBe(true);
+			expect(lightboxOpen).toBe(true);
 			expect(lightboxArtwork?.id).toBe('view-1');
 		});
 
@@ -133,80 +133,80 @@ describe('Artwork Flow Integration', () => {
 			expect(artworks[currentIndex].id).toBe('artwork-3');
 		});
 
-			it('loads full resolution on zoom', async () => {
-				const artwork = createMockArtwork('zoom-1');
-				let currentResolution = 'standard';
+		it('loads full resolution on zoom', async () => {
+			const artwork = createMockArtwork('zoom-1');
+			let currentResolution = 'standard';
 
-				expect(currentResolution).toBe('standard');
+			expect(currentResolution).toBe('standard');
 
-				// Zoom triggers full resolution load
-				currentResolution = 'full';
-				expect(artwork.images[currentResolution as keyof typeof artwork.images]).toContain('full');
-			});
+			// Zoom triggers full resolution load
+			currentResolution = 'full';
+			expect(artwork.images[currentResolution as keyof typeof artwork.images]).toContain('full');
+		});
 
-			it('shows metadata panel', () => {
-				const artwork = createMockArtwork('meta-1');
-				let metadataVisible = false;
+		it('shows metadata panel', () => {
+			const artwork = createMockArtwork('meta-1');
+			let metadataVisible = false;
 
-				expect(metadataVisible).toBe(false);
+			expect(metadataVisible).toBe(false);
 
-				// Toggle metadata
-				metadataVisible = true;
+			// Toggle metadata
+			metadataVisible = true;
 
-				expect(metadataVisible).toBe(true);
+			expect(metadataVisible).toBe(true);
 			expect(artwork.metadata).toBeDefined();
 		});
 	});
 
 	describe('Artwork Interaction Flow', () => {
-			it('likes artwork and updates count', async () => {
-				const artwork = createMockArtwork('like-1');
-				let isLiked = false;
-				let likeCount = artwork.stats.likes;
+		it('likes artwork and updates count', async () => {
+			const artwork = createMockArtwork('like-1');
+			let isLiked = false;
+			let likeCount = artwork.stats.likes;
 
-				mockAdapter.likeArtwork.mockResolvedValue({ success: true });
+			mockAdapter.likeArtwork.mockResolvedValue({ success: true });
 
-				expect(isLiked).toBe(false);
+			expect(isLiked).toBe(false);
 
-				// Like
-				isLiked = true;
-				likeCount++;
-				await mockAdapter.likeArtwork(artwork.id);
+			// Like
+			isLiked = true;
+			likeCount++;
+			await mockAdapter.likeArtwork(artwork.id);
 
 			expect(isLiked).toBe(true);
 			expect(likeCount).toBe(artwork.stats.likes + 1);
 		});
 
-			it('unlikes artwork and updates count', async () => {
-				const artwork = createMockArtwork('unlike-1');
-				let isLiked = true;
-				let likeCount = artwork.stats.likes + 1;
+		it('unlikes artwork and updates count', async () => {
+			const artwork = createMockArtwork('unlike-1');
+			let isLiked = true;
+			let likeCount = artwork.stats.likes + 1;
 
-				mockAdapter.unlikeArtwork.mockResolvedValue({ success: true });
+			mockAdapter.unlikeArtwork.mockResolvedValue({ success: true });
 
-				expect(isLiked).toBe(true);
+			expect(isLiked).toBe(true);
 
-				// Unlike
-				isLiked = false;
-				likeCount--;
-				await mockAdapter.unlikeArtwork(artwork.id);
+			// Unlike
+			isLiked = false;
+			likeCount--;
+			await mockAdapter.unlikeArtwork(artwork.id);
 
 			expect(isLiked).toBe(false);
 			expect(likeCount).toBe(artwork.stats.likes);
 		});
 
-			it('collects artwork to collection', async () => {
-				const artwork = createMockArtwork('collect-1');
-				let isCollected = false;
+		it('collects artwork to collection', async () => {
+			const artwork = createMockArtwork('collect-1');
+			let isCollected = false;
 
-				mockAdapter.collectArtwork.mockResolvedValue({ success: true });
+			mockAdapter.collectArtwork.mockResolvedValue({ success: true });
 
-				expect(isCollected).toBe(false);
+			expect(isCollected).toBe(false);
 
-				isCollected = true;
-				await mockAdapter.collectArtwork(artwork.id);
+			isCollected = true;
+			await mockAdapter.collectArtwork(artwork.id);
 
-				expect(isCollected).toBe(true);
+			expect(isCollected).toBe(true);
 		});
 
 		it('shares artwork', () => {
@@ -216,18 +216,18 @@ describe('Artwork Flow Integration', () => {
 			expect(shareUrl).toContain(artwork.id);
 		});
 
-			it('handles interaction errors with rollback', async () => {
-				const artwork = createMockArtwork('error-1');
-				let isLiked = false;
-				let likeCount = artwork.stats.likes;
+		it('handles interaction errors with rollback', async () => {
+			const artwork = createMockArtwork('error-1');
+			let isLiked = false;
+			let likeCount = artwork.stats.likes;
 
-				expect(isLiked).toBe(false);
+			expect(isLiked).toBe(false);
 
-				// Optimistic update
-				isLiked = true;
-				likeCount++;
+			// Optimistic update
+			isLiked = true;
+			likeCount++;
 
-				mockAdapter.likeArtwork.mockRejectedValue(new Error('Network error'));
+			mockAdapter.likeArtwork.mockRejectedValue(new Error('Network error'));
 
 			try {
 				await mockAdapter.likeArtwork(artwork.id);

@@ -19,5 +19,8 @@ export type {
 	ContactRecommendation,
 } from './types.js';
 
-export { getAvailabilityStatus, recommendContactTarget, formatAvailabilitySummary } from './utils.js';
-
+export {
+	getAvailabilityStatus,
+	recommendContactTarget,
+	formatAvailabilitySummary,
+} from './utils.js';
