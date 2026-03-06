@@ -958,6 +958,41 @@ export type ChangeType =
   | 'RESTORE'
   | 'UPDATE';
 
+export type CommunicationAttachment = {
+  readonly __typename: 'CommunicationAttachment';
+  readonly contentType: Scalars['String']['output'];
+  readonly filename: Scalars['String']['output'];
+  readonly id: Scalars['ID']['output'];
+  readonly sha256: Scalars['String']['output'];
+  readonly sizeBytes: Scalars['Int']['output'];
+};
+
+export type CommunicationFrom = {
+  readonly __typename: 'CommunicationFrom';
+  readonly address: Scalars['String']['output'];
+  readonly displayName?: Maybe<Scalars['String']['output']>;
+  readonly soulAgentId?: Maybe<Scalars['String']['output']>;
+};
+
+export type CommunicationNotification = {
+  readonly __typename: 'CommunicationNotification';
+  readonly attachments: ReadonlyArray<CommunicationAttachment>;
+  readonly body?: Maybe<Scalars['String']['output']>;
+  readonly channel: Scalars['String']['output'];
+  readonly from: CommunicationFrom;
+  readonly inReplyTo?: Maybe<Scalars['String']['output']>;
+  readonly messageId: Scalars['String']['output'];
+  readonly receivedAt: Scalars['Time']['output'];
+  readonly subject?: Maybe<Scalars['String']['output']>;
+  readonly threadId: Scalars['String']['output'];
+  readonly to?: Maybe<CommunicationTo>;
+};
+
+export type CommunicationTo = {
+  readonly __typename: 'CommunicationTo';
+  readonly address: Scalars['String']['output'];
+};
+
 export type CommunityNote = {
   readonly __typename: 'CommunityNote';
   readonly author: Actor;
@@ -3489,6 +3524,7 @@ export type MuteHashtagPayload = {
 export type Notification = {
   readonly __typename: 'Notification';
   readonly account: Actor;
+  readonly communication?: Maybe<CommunicationNotification>;
   readonly createdAt: Scalars['Time']['output'];
   readonly id: Scalars['ID']['output'];
   readonly read: Scalars['Boolean']['output'];

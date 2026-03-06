@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-06T13:43:46.858Z",
+  "generatedAt": "2026-03-06T21:13:54.974Z",
   "ref": "greater-v0.1.13",
   "version": "0.1.13",
   "checksums": {
@@ -823,7 +823,7 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-M0UwWko7U1Cgv/EZv6CStGHfwidKao9BxgJRvKcF8N8=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-SVEV87fCh8PUHlksm+7o7uYwdSS+s1+pxn+7MwxyVXk=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-cadeAZBeEBoSNZJ2Isu+Wo1XD9UUVu2UF3I6wLJlT80=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
@@ -853,7 +853,7 @@
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-P7MTLrDEubSZl1pZBMawRRvTOir3YTyJW9FAgVoIg3E=",
     "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-xHA0ag5HbmIJyIFDpFfv5kmhCtBk59HmVhKGvg8uc4k=",
-    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-IF+nHyvYFdtCMLUpNjorvntILywkOPJBB0NFFf9rSCY=",
+    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-ecIzrQ6hv70Ulrnr7IieJswb5zbIGD6b358YI9T8IQg=",
     "packages/adapters/src/soul/client.ts": "sha256-zhOZXfs+0+CvDv9BMgPRKDslCHYBYfzz0sIicZsbSr8=",
     "packages/adapters/src/soul/ens.ts": "sha256-CI8WkwLMw8ZXNPrN+LpQdK81vud8ecgQc3xOXFMvK2o=",
     "packages/adapters/src/soul/index.ts": "sha256-EfkSnwZPSyZwCrZYy/cwAl8Pqf9xijHFYp7O1/JUkk4=",
@@ -897,7 +897,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-SVEV87fCh8PUHlksm+7o7uYwdSS+s1+pxn+7MwxyVXk=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
     "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
@@ -5539,8 +5539,8 @@
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
-          "size": 1445470
+          "checksum": "sha256-SVEV87fCh8PUHlksm+7o7uYwdSS+s1+pxn+7MwxyVXk=",
+          "size": 1446852
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -5689,8 +5689,8 @@
         },
         {
           "path": "src/rest/generated/lesser-host-api.ts",
-          "checksum": "sha256-IF+nHyvYFdtCMLUpNjorvntILywkOPJBB0NFFf9rSCY=",
-          "size": 25026
+          "checksum": "sha256-ecIzrQ6hv70Ulrnr7IieJswb5zbIGD6b358YI9T8IQg=",
+          "size": 29414
         },
         {
           "path": "src/soul/client.ts",
@@ -6019,8 +6019,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-K0t6Wyqng2Rqrc32LS9W/xFbXhfVPncCGMcKmISp+6A=",
-          "size": 1445470
+          "checksum": "sha256-SVEV87fCh8PUHlksm+7o7uYwdSS+s1+pxn+7MwxyVXk=",
+          "size": 1446852
         },
         {
           "path": "src/adapters/graphql/index.ts",

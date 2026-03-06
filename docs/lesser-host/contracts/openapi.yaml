@@ -7,10 +7,14 @@ info:
 
 components:
   securitySchemes:
+    sessionAuth:
+      type: http
+      scheme: bearer
+      description: "Control plane session token: `Authorization: Bearer <session_token>`."
     instanceKeyAuth:
       type: http
       scheme: bearer
-      description: 'Instance API key: `Authorization: Bearer <instance_key>`.'
+      description: "Instance API key: `Authorization: Bearer <instance_key>`."
 
   schemas:
     ErrorEnvelope:
@@ -43,14 +47,14 @@ components:
       properties:
         agentId:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         channels:
           type: object
           additionalProperties: false
           required: [ens, email, phone]
           properties:
             ens:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [name]
               properties:
@@ -59,12 +63,12 @@ components:
                   pattern: "^[a-z0-9][a-z0-9_.-]*\\.eth$"
                 resolverAddress:
                   type: string
-                  pattern: '^0x[0-9a-fA-F]{40}$'
+                  pattern: "^0x[0-9a-fA-F]{40}$"
                 chain:
                   type: string
                   default: mainnet
             email:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [address, capabilities, verified]
               properties:
@@ -91,7 +95,7 @@ components:
                   type: string
                   enum: [active, paused, decommissioned]
             phone:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [number, capabilities, verified]
               properties:
@@ -115,7 +119,7 @@ components:
                   type: string
                   enum: [active, paused, decommissioned]
         contactPreferences:
-          type: [object, 'null']
+          type: [object, "null"]
           additionalProperties: false
           required: [preferred, availability, responseExpectation, languages]
           properties:
@@ -136,7 +140,7 @@ components:
                 timezone:
                   type: string
                 windows:
-                  type: [array, 'null']
+                  type: [array, "null"]
                   items:
                     type: object
                     additionalProperties: false
@@ -150,10 +154,10 @@ components:
                           enum: [mon, tue, wed, thu, fri, sat, sun]
                       startTime:
                         type: string
-                        pattern: '^[0-2][0-9]:[0-5][0-9]$'
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
                       endTime:
                         type: string
-                        pattern: '^[0-2][0-9]:[0-5][0-9]$'
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
             responseExpectation:
               type: object
               additionalProperties: false
@@ -203,7 +207,7 @@ components:
               minItems: 1
               items:
                 type: string
-                pattern: '^[a-z]{2}$'
+                pattern: "^[a-z]{2}$"
             contentTypes:
               type: array
               items:
@@ -216,7 +220,7 @@ components:
                   type: boolean
                   default: false
                 requireReputation:
-                  type: [number, 'null']
+                  type: [number, "null"]
                   minimum: 0
                   maximum: 1
                 introductionExpected:
@@ -227,10 +231,13 @@ components:
           format: date-time
 
     SoulAgentChannelPreferencesResponse:
-      $ref: '../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json"
+
+    SoulAgentChannelPreferencesRequest:
+      $ref: "../spec/v3/schemas/soul-agent-channel-preferences.request.schema.json"
 
     SoulAgentIdentity:
-      $ref: '../spec/v3/schemas/soul-agent-identity.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-identity.schema.json"
 
     SoulResolveResponse:
       type: object
@@ -239,30 +246,30 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         agent:
-          $ref: '#/components/schemas/SoulAgentIdentity'
+          $ref: "#/components/schemas/SoulAgentIdentity"
 
     SoulSearchResult:
-      $ref: '../spec/v3/schemas/soul-search.result.schema.json'
+      $ref: "../spec/v3/schemas/soul-search.result.schema.json"
 
     SoulSearchResponse:
-      $ref: '../spec/v3/schemas/soul-search.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-search.response.schema.json"
 
     SoulCommSendRequest:
-      $ref: '../spec/v3/schemas/soul-comm-send.request.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.request.schema.json"
 
     SoulCommSendResponse:
-      $ref: '../spec/v3/schemas/soul-comm-send.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.response.schema.json"
 
     SoulCommSendErrorEnvelope:
-      $ref: '../spec/v3/schemas/soul-comm-send.error.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.error.schema.json"
 
     SoulCommStatusResponse:
-      $ref: '../spec/v3/schemas/soul-comm-status.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-status.response.schema.json"
 
     SoulCommStatusErrorEnvelope:
-      $ref: '../spec/v3/schemas/soul-comm-status.error.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-status.error.schema.json"
 
 paths:
   /api/v1/soul/agents/{agentId}/channels:
@@ -275,26 +282,26 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelsResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelsResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/channels/preferences:
     get:
@@ -306,26 +313,81 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelPreferencesResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
+    put:
+      operationId: soulUpdateAgentChannelPreferences
+      summary: Update agent contact preferences (v3)
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulAgentChannelPreferencesRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/ens/{ensName}:
     get:
@@ -340,24 +402,24 @@ paths:
             minLength: 1
             maxLength: 255
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/email/{emailAddress}:
     get:
@@ -371,24 +433,24 @@ paths:
             type: string
             format: email
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/phone/{phoneNumber}:
     get:
@@ -402,24 +464,24 @@ paths:
             type: string
             pattern: "^\\+[1-9]\\d{1,14}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/search:
     get:
@@ -467,24 +529,24 @@ paths:
             minimum: 1
             maximum: 100
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulSearchResponse'
-        '400':
+                $ref: "#/components/schemas/SoulSearchResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/comm/send:
     post:
@@ -497,38 +559,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulCommSendRequest'
+              $ref: "#/components/schemas/SoulCommSendRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommSendResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '429':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "429":
           description: Rate limited
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
 
   /api/v1/soul/comm/status/{messageId}:
     get:
@@ -545,27 +607,27 @@ paths:
             minLength: 1
             maxLength: 128
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommStatusResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
