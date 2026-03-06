@@ -14,32 +14,28 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.1.15-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.14-rc.0...greater-v0.1.15-rc.0) (2026-03-06)
 
-
 ### Features
 
-* **notifications:** support communication payloads ([1b1f5a1](https://github.com/equaltoai/greater-components/commit/1b1f5a1575e3a8c0c437587658d70a706764f7c3))
-
+- **notifications:** support communication payloads ([1b1f5a1](https://github.com/equaltoai/greater-components/commit/1b1f5a1575e3a8c0c437587658d70a706764f7c3))
 
 ### Bug Fixes
 
-* **soul:** satisfy strict svelte-check ([0603c37](https://github.com/equaltoai/greater-components/commit/0603c377420e7b28e5467b286876af2c4fc63be0))
-
+- **soul:** satisfy strict svelte-check ([0603c37](https://github.com/equaltoai/greater-components/commit/0603c377420e7b28e5467b286876af2c4fc63be0))
 
 ### CI
 
-* **deps:** bump artifact actions ([6bcd038](https://github.com/equaltoai/greater-components/commit/6bcd03801a04a4af9e613094907a7a90dfcbadeb))
-
+- **deps:** bump artifact actions ([6bcd038](https://github.com/equaltoai/greater-components/commit/6bcd03801a04a4af9e613094907a7a90dfcbadeb))
 
 ### Chores
 
-* backmerge premain into staging ([ff92e4c](https://github.com/equaltoai/greater-components/commit/ff92e4cbf8426191120b36b21583493ba340200b))
-* backmerge premain into staging ([7f259f7](https://github.com/equaltoai/greater-components/commit/7f259f7aa6852ee3ebb54a4a7629c879a611c258))
-* **contracts:** bump lesser to v1.1.24 ([81a9829](https://github.com/equaltoai/greater-components/commit/81a98290895b06e9ace85e12454ab4aa1550d57d))
-* **contracts:** bump lesser to v1.1.24 ([9c1f3ab](https://github.com/equaltoai/greater-components/commit/9c1f3ab54c263760d32e47fbbbc41ca0a323d8cd))
-* **deps:** bump graphql-codegen ([d2490c5](https://github.com/equaltoai/greater-components/commit/d2490c5890f00641783c1c8637e6cb64237e7da0))
-* format and regenerate registry ([148f214](https://github.com/equaltoai/greater-components/commit/148f214da81663a646ebc2615791de1988318dce))
-* promote staging to premain ([abc0eb6](https://github.com/equaltoai/greater-components/commit/abc0eb64b79466de07d90495fad75c2ca628091e))
-* regenerate registry ([fe70f15](https://github.com/equaltoai/greater-components/commit/fe70f152ca7dc75f7a41fa04ae9e9ed713b40389))
+- backmerge premain into staging ([ff92e4c](https://github.com/equaltoai/greater-components/commit/ff92e4cbf8426191120b36b21583493ba340200b))
+- backmerge premain into staging ([7f259f7](https://github.com/equaltoai/greater-components/commit/7f259f7aa6852ee3ebb54a4a7629c879a611c258))
+- **contracts:** bump lesser to v1.1.24 ([81a9829](https://github.com/equaltoai/greater-components/commit/81a98290895b06e9ace85e12454ab4aa1550d57d))
+- **contracts:** bump lesser to v1.1.24 ([9c1f3ab](https://github.com/equaltoai/greater-components/commit/9c1f3ab54c263760d32e47fbbbc41ca0a323d8cd))
+- **deps:** bump graphql-codegen ([d2490c5](https://github.com/equaltoai/greater-components/commit/d2490c5890f00641783c1c8637e6cb64237e7da0))
+- format and regenerate registry ([148f214](https://github.com/equaltoai/greater-components/commit/148f214da81663a646ebc2615791de1988318dce))
+- promote staging to premain ([abc0eb6](https://github.com/equaltoai/greater-components/commit/abc0eb64b79466de07d90495fad75c2ca628091e))
+- regenerate registry ([fe70f15](https://github.com/equaltoai/greater-components/commit/fe70f152ca7dc75f7a41fa04ae9e9ed713b40389))
 
 ## [0.1.14-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.13-rc.0...greater-v0.1.14-rc.0) (2026-03-06)
 

@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-soul",
-  "version": "0.1.14-rc.0",
+  "version": "0.1.15-rc.0",
   "type": "module",
   "description": "Reachability and contact-preferences components for lesser-soul v3",
   "license": "AGPL-3.0-only",
