@@ -30,7 +30,8 @@ export interface paths {
         };
         /** Get agent contact preferences (v3) */
         get: operations["soulGetAgentChannelPreferences"];
-        put?: never;
+        /** Update agent contact preferences (v3) */
+        put: operations["soulUpdateAgentChannelPreferences"];
         post?: never;
         delete?: never;
         options?: never;
@@ -230,6 +231,7 @@ export interface components {
             updatedAt: string;
         };
         SoulAgentChannelPreferencesResponse: components["schemas"]["soul-agent-channel-preferences.response.schema"];
+        SoulAgentChannelPreferencesRequest: components["schemas"]["soul-agent-channel-preferences.request.schema"];
         SoulAgentIdentity: components["schemas"]["soul-agent-identity.schema"];
         SoulResolveResponse: {
             /** @enum {string} */
@@ -292,6 +294,53 @@ export interface components {
             } | null;
             /** Format: date-time */
             updatedAt: string;
+        };
+        /** PUT /api/v1/soul/agents/{agentId}/channels/preferences request */
+        "soul-agent-channel-preferences.request.schema": {
+            contactPreferences: {
+                /** @enum {string} */
+                preferred: "email" | "sms" | "voice" | "activitypub" | "mcp";
+                /** @enum {string} */
+                fallback?: "email" | "sms" | "voice" | "activitypub" | "mcp";
+                availability: {
+                    /** @enum {string} */
+                    schedule: "always" | "business-hours" | "custom";
+                    timezone?: string;
+                    windows?: {
+                        days: ("mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun")[];
+                        startTime: string;
+                        endTime: string;
+                    }[] | null;
+                };
+                responseExpectation: {
+                    target: string;
+                    /** @enum {string} */
+                    guarantee: "guaranteed" | "best-effort";
+                };
+                rateLimits?: {
+                    email?: {
+                        maxInboundPerHour?: number;
+                        maxInboundPerDay?: number;
+                    };
+                    sms?: {
+                        maxInboundPerHour?: number;
+                        maxInboundPerDay?: number;
+                    };
+                    voice?: {
+                        maxConcurrentCalls?: number;
+                        maxCallsPerDay?: number;
+                    };
+                };
+                languages: string[];
+                contentTypes?: string[];
+                firstContact?: {
+                    /** @default false */
+                    requireSoul: boolean;
+                    requireReputation?: number | null;
+                    /** @default false */
+                    introductionExpected: boolean;
+                };
+            };
         };
         /** Soul agent identity */
         "soul-agent-identity.schema": {
@@ -478,6 +527,77 @@ export interface operations {
             };
             /** @description Not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulUpdateAgentChannelPreferences: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["soul-agent-channel-preferences.request.schema"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-agent-channel-preferences.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

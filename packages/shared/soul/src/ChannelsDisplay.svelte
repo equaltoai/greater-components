@@ -79,23 +79,19 @@
 	<DefinitionList density="sm">
 		<DefinitionItem label="ENS" monospace wrap={false}>
 			{#if channels.ens}
+				{@const ens = channels.ens}
 				<a
 					class="soul-channels__link"
-					href={`https://app.ens.domains/${channels.ens.name}`}
+					href={`https://app.ens.domains/${ens.name}`}
 					target="_blank"
 					rel="noreferrer"
 				>
-					{channels.ens.name}
+					{ens.name}
 				</a>
 				{#if showCopy}
 					<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 					{#snippet actions()}
-						<CopyButton
-							text={channels.ens.name}
-							variant="icon"
-							size="sm"
-							aria-label="Copy ENS name"
-						/>
+						<CopyButton text={ens.name} variant="icon" size="sm" aria-label="Copy ENS name" />
 					{/snippet}
 				{/if}
 			{:else}
@@ -105,12 +101,11 @@
 
 		<DefinitionItem label="Email" monospace wrap={false}>
 			{#if channels.email}
-				{@const emailVerification = verificationBadge(Boolean(channels.email.verified))}
-				{@const emailStatus = channels.email.status ? statusBadge(channels.email.status) : null}
+				{@const email = channels.email}
+				{@const emailVerification = verificationBadge(Boolean(email.verified))}
+				{@const emailStatus = email.status ? statusBadge(email.status) : null}
 				<div class="soul-channels__row">
-					<a class="soul-channels__link" href={`mailto:${channels.email.address}`}
-						>{channels.email.address}</a
-					>
+					<a class="soul-channels__link" href={`mailto:${email.address}`}>{email.address}</a>
 					<div class="soul-channels__badges">
 						<Badge
 							variant="outlined"
@@ -129,16 +124,16 @@
 					</div>
 				</div>
 				<Text size="sm" color="secondary" class="soul-channels__meta">
-					Capabilities: {channels.email.capabilities.join(', ')}
-					{#if channels.email.verifiedAt}
-						· Verified {formatDateTime(channels.email.verifiedAt)}
+					Capabilities: {email.capabilities.join(', ')}
+					{#if email.verifiedAt}
+						· Verified {formatDateTime(email.verifiedAt)}
 					{/if}
 				</Text>
 				{#if showCopy}
 					<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 					{#snippet actions()}
 						<CopyButton
-							text={channels.email.address}
+							text={email.address}
 							variant="icon"
 							size="sm"
 							aria-label="Copy email address"
@@ -152,12 +147,11 @@
 
 		<DefinitionItem label="Phone" monospace wrap={false}>
 			{#if channels.phone}
-				{@const phoneVerification = verificationBadge(Boolean(channels.phone.verified))}
-				{@const phoneStatus = channels.phone.status ? statusBadge(channels.phone.status) : null}
+				{@const phone = channels.phone}
+				{@const phoneVerification = verificationBadge(Boolean(phone.verified))}
+				{@const phoneStatus = phone.status ? statusBadge(phone.status) : null}
 				<div class="soul-channels__row">
-					<a class="soul-channels__link" href={`tel:${channels.phone.number}`}
-						>{channels.phone.number}</a
-					>
+					<a class="soul-channels__link" href={`tel:${phone.number}`}>{phone.number}</a>
 					<div class="soul-channels__badges">
 						<Badge
 							variant="outlined"
@@ -176,19 +170,19 @@
 					</div>
 				</div>
 				<Text size="sm" color="secondary" class="soul-channels__meta">
-					Capabilities: {channels.phone.capabilities.join(', ')}
-					{#if channels.phone.verifiedAt}
-						· Verified {formatDateTime(channels.phone.verifiedAt)}
+					Capabilities: {phone.capabilities.join(', ')}
+					{#if phone.verifiedAt}
+						· Verified {formatDateTime(phone.verifiedAt)}
 					{/if}
-					{#if channels.phone.provider}
-						· Provider {channels.phone.provider}
+					{#if phone.provider}
+						· Provider {phone.provider}
 					{/if}
 				</Text>
 				{#if showCopy}
 					<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
 					{#snippet actions()}
 						<CopyButton
-							text={channels.phone.number}
+							text={phone.number}
 							variant="icon"
 							size="sm"
 							aria-label="Copy phone number"
