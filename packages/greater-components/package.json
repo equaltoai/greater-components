@@ -428,7 +428,7 @@
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
     "@vitest/coverage-v8": "^4.0.18",
-    "svelte": "^5.53.0",
+    "svelte": "^5.53.5",
     "vitest": "^4.0.18"
   }
 }
