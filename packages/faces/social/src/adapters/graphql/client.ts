@@ -293,16 +293,16 @@ export class GraphQLClient {
 			}
 
 			return await response.json();
-		} catch (error) {
-			clearTimeout(timeout);
+			} catch (error) {
+				clearTimeout(timeout);
 
-			if (error instanceof Error && error.name === 'AbortError') {
-				throw new Error('GraphQL request timeout');
+				if (error instanceof Error && error.name === 'AbortError') {
+					throw new Error('GraphQL request timeout', { cause: error });
+				}
+
+				throw error;
 			}
-
-			throw error;
 		}
-	}
 
 	/**
 	 * Handle GraphQL response

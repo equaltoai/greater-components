@@ -429,16 +429,16 @@ export class LesserGraphQLAdapter {
 			}
 
 			return data.viewer;
-		} catch (error) {
-			if (error instanceof Error) {
-				if (error.message.includes('401') || error.message.includes('403')) {
-					throw new Error('Authentication failed: Invalid or expired token');
+			} catch (error) {
+				if (error instanceof Error) {
+					if (error.message.includes('401') || error.message.includes('403')) {
+						throw new Error('Authentication failed: Invalid or expired token', { cause: error });
+					}
+					throw new Error(`Failed to verify credentials: ${error.message}`, { cause: error });
 				}
-				throw new Error(`Failed to verify credentials: ${error.message}`);
+				throw error;
 			}
-			throw error;
 		}
-	}
 
 	/**
 	 * Check if currently authenticated

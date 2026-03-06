@@ -77,15 +77,18 @@ describe('Discovery Flow Integration', () => {
 			expect(result.suggestions.length).toBe(3);
 		});
 
-		it('clears search and returns to browse', () => {
-			let searchQuery = 'test query';
-			let showingResults = true;
+			it('clears search and returns to browse', () => {
+				let searchQuery = 'test query';
+				let showingResults = true;
 
-			// Clear search
-			searchQuery = '';
-			showingResults = false;
+				expect(searchQuery).toBe('test query');
+				expect(showingResults).toBe(true);
 
-			expect(searchQuery).toBe('');
+				// Clear search
+				searchQuery = '';
+				showingResults = false;
+
+				expect(searchQuery).toBe('');
 			expect(showingResults).toBe(false);
 		});
 	});
@@ -194,18 +197,20 @@ describe('Discovery Flow Integration', () => {
 			expect(filters.style).toBe('Abstract');
 		});
 
-		it('clears all filters', async () => {
-			let filters: Record<string, unknown> = {
-				medium: 'Digital',
-				style: 'Abstract',
-				mood: 'energetic',
-			};
+			it('clears all filters', async () => {
+				let filters: Record<string, unknown> = {
+					medium: 'Digital',
+					style: 'Abstract',
+					mood: 'energetic',
+				};
 
-			// Clear all
-			filters = {};
+				expect(filters.medium).toBe('Digital');
 
-			mockAdapter.searchArtworks.mockResolvedValue({
-				results: createMockArtworkList(20),
+				// Clear all
+				filters = {};
+
+				mockAdapter.searchArtworks.mockResolvedValue({
+					results: createMockArtworkList(20),
 				total: 20,
 			});
 

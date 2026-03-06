@@ -24,67 +24,50 @@ export function calculatePlacement(config: PositionConfig): MenuPlacement {
 	const viewportWidth = window.innerWidth;
 	const viewportHeight = window.innerHeight;
 
-	let x = 0;
-	let y = 0;
-	let finalPlacement = placement;
+	const { x, y } = (() => {
+		switch (placement) {
+			case 'bottom-start':
+				return { x: triggerRect.left, y: triggerRect.bottom + offset };
+			case 'bottom-end':
+				return { x: triggerRect.right - contentRect.width, y: triggerRect.bottom + offset };
+			case 'top-start':
+				return { x: triggerRect.left, y: triggerRect.top - contentRect.height - offset };
+			case 'top-end':
+				return { x: triggerRect.right - contentRect.width, y: triggerRect.top - contentRect.height - offset };
+		}
+	})();
 
-	// Calculate initial position based on placement
-	switch (placement) {
-		case 'bottom-start':
-			x = triggerRect.left;
-			y = triggerRect.bottom + offset;
-			break;
-		case 'bottom-end':
-			x = triggerRect.right - contentRect.width;
-			y = triggerRect.bottom + offset;
-			break;
-		case 'top-start':
-			x = triggerRect.left;
-			y = triggerRect.top - contentRect.height - offset;
-			break;
-		case 'top-end':
-			x = triggerRect.right - contentRect.width;
-			y = triggerRect.top - contentRect.height - offset;
-			break;
-	}
+	let finalPlacement = placement;
 
 	// Viewport boundary detection and auto-flip
 	const wouldOverflowBottom = y + contentRect.height > viewportHeight - viewportMargin;
 	const wouldOverflowTop = y < viewportMargin;
-	const wouldOverflowRight = x + contentRect.width > viewportWidth - viewportMargin;
-	const wouldOverflowLeft = x < viewportMargin;
 
 	// Vertical flip
 	if (placement.startsWith('bottom') && wouldOverflowBottom) {
 		const topY = triggerRect.top - contentRect.height - offset;
 		if (topY >= viewportMargin) {
-			y = topY;
 			finalPlacement = placement.replace('bottom', 'top') as MenuPlacement;
 		}
 	} else if (placement.startsWith('top') && wouldOverflowTop) {
 		const bottomY = triggerRect.bottom + offset;
 		if (bottomY + contentRect.height <= viewportHeight - viewportMargin) {
-			y = bottomY;
 			finalPlacement = placement.replace('top', 'bottom') as MenuPlacement;
 		}
 	}
 
 	// Horizontal adjustment
+	const wouldOverflowRight = x + contentRect.width > viewportWidth - viewportMargin;
+	const wouldOverflowLeft = x < viewportMargin;
 	if (wouldOverflowRight) {
-		x = Math.max(viewportMargin, viewportWidth - contentRect.width - viewportMargin);
 		if (finalPlacement.endsWith('-start')) {
 			finalPlacement = finalPlacement.replace('-start', '-end') as MenuPlacement;
 		}
 	} else if (wouldOverflowLeft) {
-		x = viewportMargin;
 		if (finalPlacement.endsWith('-end')) {
 			finalPlacement = finalPlacement.replace('-end', '-start') as MenuPlacement;
 		}
 	}
-
-	// Ensure within viewport bounds
-	x = Math.max(viewportMargin, Math.min(x, viewportWidth - contentRect.width - viewportMargin));
-	y = Math.max(viewportMargin, Math.min(y, viewportHeight - contentRect.height - viewportMargin));
 
 	return finalPlacement;
 }

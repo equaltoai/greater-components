@@ -292,17 +292,17 @@ export function createGridNavigation(config: GridNavigationConfig): () => void {
 
 	const getItems = () => Array.from(container.querySelectorAll<HTMLElement>(itemSelector));
 
-	const handleKeyDown = (event: KeyboardEvent) => {
-		const items = getItems();
-		const currentIndex = items.findIndex((item) => item === document.activeElement);
-		if (currentIndex === -1) return;
+		const handleKeyDown = (event: KeyboardEvent) => {
+			const items = getItems();
+			const currentIndex = items.findIndex((item) => item === document.activeElement);
+			if (currentIndex === -1) return;
 
-		let nextIndex = currentIndex;
+			let nextIndex: number;
 
-		switch (event.key) {
-			case 'ArrowRight':
-				nextIndex = currentIndex + 1;
-				if (nextIndex >= items.length) {
+			switch (event.key) {
+				case 'ArrowRight':
+					nextIndex = currentIndex + 1;
+					if (nextIndex >= items.length) {
 					nextIndex = wrap ? 0 : items.length - 1;
 				}
 				break;
@@ -339,13 +339,13 @@ export function createGridNavigation(config: GridNavigationConfig): () => void {
 				}
 				return;
 			}
-			default:
-				return;
-		}
+				default:
+					return;
+			}
 
-		event.preventDefault();
-		items[nextIndex]?.focus();
-	};
+			event.preventDefault();
+			items[nextIndex]?.focus();
+		};
 
 	container.addEventListener('keydown', handleKeyDown);
 

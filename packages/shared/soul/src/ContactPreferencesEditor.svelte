@@ -16,6 +16,11 @@
 
 	type Channel = SoulContactPreferences['preferred'];
 	type Window = NonNullable<NonNullable<SoulContactPreferences['availability']['windows']>[number]>;
+	type RateLimits = NonNullable<SoulContactPreferences['rateLimits']>;
+	type EmailSmsRateLimits = NonNullable<RateLimits['email']>;
+	type VoiceRateLimits = NonNullable<RateLimits['voice']>;
+	type EmailSmsRateLimitKey = keyof EmailSmsRateLimits;
+	type VoiceRateLimitKey = keyof VoiceRateLimits;
 
 	interface Props {
 		value: SoulContactPreferences | null;
@@ -177,28 +182,41 @@
 
 	function setRateLimit(path: ['email' | 'sms', 'maxInboundPerHour' | 'maxInboundPerDay'], raw: string) {
 		const current = ensureValue();
-		const num = raw.trim() === '' ? undefined : Number(raw);
-		const next = Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
+			const num = raw.trim() === '' ? undefined : Number(raw);
+			const next = Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
 
-		const rateLimits = { ...(current.rateLimits ?? {}) } as any;
-		rateLimits[path[0]] = { ...(rateLimits[path[0]] ?? {}) };
-		if (next === undefined) delete rateLimits[path[0]][path[1]];
-		else rateLimits[path[0]][path[1]] = next;
-		update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
-	}
+			const rateLimits: RateLimits = { ...(current.rateLimits ?? {}) };
+			const channel = path[0];
+			const key = path[1] satisfies EmailSmsRateLimitKey;
+			const channelLimits: EmailSmsRateLimits = { ...(rateLimits[channel] ?? {}) };
 
-	function setVoiceRateLimit(path: ['maxConcurrentCalls' | 'maxCallsPerDay'], raw: string) {
-		const current = ensureValue();
-		const num = raw.trim() === '' ? undefined : Number(raw);
-		const next = Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
+			if (next === undefined) delete channelLimits[key];
+			else channelLimits[key] = next;
 
-		const rateLimits = { ...(current.rateLimits ?? {}) } as any;
-		rateLimits.voice = { ...(rateLimits.voice ?? {}) };
-		if (next === undefined) delete rateLimits.voice[path[0]];
-		else rateLimits.voice[path[0]] = next;
-		update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
-	}
-</script>
+			if (Object.keys(channelLimits).length === 0) delete rateLimits[channel];
+			else rateLimits[channel] = channelLimits;
+
+			update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
+		}
+
+		function setVoiceRateLimit(path: ['maxConcurrentCalls' | 'maxCallsPerDay'], raw: string) {
+			const current = ensureValue();
+			const num = raw.trim() === '' ? undefined : Number(raw);
+			const next = Number.isFinite(num) && num !== undefined ? Math.max(1, Math.floor(num)) : undefined;
+
+			const rateLimits: RateLimits = { ...(current.rateLimits ?? {}) };
+			const key = path[0] satisfies VoiceRateLimitKey;
+			const voiceLimits: VoiceRateLimits = { ...(rateLimits.voice ?? {}) };
+
+			if (next === undefined) delete voiceLimits[key];
+			else voiceLimits[key] = next;
+
+			if (Object.keys(voiceLimits).length === 0) delete rateLimits.voice;
+			else rateLimits.voice = voiceLimits;
+
+			update('rateLimits', Object.keys(rateLimits).length ? rateLimits : undefined);
+		}
+	</script>
 
 <Card variant="outlined" padding="lg" class={`soul-preferences-editor ${className}`}>
 	<!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
@@ -235,17 +253,19 @@
 					</select>
 				</SettingsField>
 
-				<SettingsField label="Fallback channel" description="Used when preferred is unavailable.">
-					<select
-						class="soul-preferences-editor__select"
-						disabled={disabled}
-						value={value.fallback ?? ''}
-						onchange={(e) =>
-							update('fallback', ((e.currentTarget as HTMLSelectElement).value || undefined) as any)}
-					>
-						<option value="">None</option>
-						{#each CHANNELS as opt (opt.value)}
-							<option value={opt.value}>{opt.label}</option>
+					<SettingsField label="Fallback channel" description="Used when preferred is unavailable.">
+						<select
+							class="soul-preferences-editor__select"
+							disabled={disabled}
+							value={value.fallback ?? ''}
+							onchange={(e) => {
+								const raw = (e.currentTarget as HTMLSelectElement).value;
+								update('fallback', raw ? (raw as Channel) : undefined);
+							}}
+						>
+							<option value="">None</option>
+							{#each CHANNELS as opt (opt.value)}
+								<option value={opt.value}>{opt.label}</option>
 						{/each}
 					</select>
 				</SettingsField>
@@ -265,20 +285,20 @@
 				<SettingsField label="Schedule">
 					<select
 						class="soul-preferences-editor__select"
-						disabled={disabled}
-						value={value.availability.schedule}
-						onchange={(e) =>
-							updateAvailability({
-								schedule: (e.currentTarget as HTMLSelectElement).value as any,
-								windows:
-									(e.currentTarget as HTMLSelectElement).value === 'custom'
-										? value.availability.windows ?? []
-										: null,
-							})}
-					>
-						{#each SCHEDULES as opt (opt.value)}
-							<option value={opt.value}>{opt.label}</option>
-						{/each}
+							disabled={disabled}
+							value={value.availability.schedule}
+							onchange={(e) => {
+								const schedule = (e.currentTarget as HTMLSelectElement)
+									.value as SoulContactPreferences['availability']['schedule'];
+								updateAvailability({
+									schedule,
+									windows: schedule === 'custom' ? value.availability.windows ?? [] : null,
+								});
+							}}
+						>
+							{#each SCHEDULES as opt (opt.value)}
+								<option value={opt.value}>{opt.label}</option>
+							{/each}
 					</select>
 				</SettingsField>
 
@@ -381,16 +401,18 @@
 
 				<SettingsField label="Guarantee">
 					<select
-						class="soul-preferences-editor__select"
-						disabled={disabled}
-						value={value.responseExpectation.guarantee}
-						onchange={(e) =>
-							updateResponseExpectation({
-								guarantee: (e.currentTarget as HTMLSelectElement).value as any,
-							})}
-					>
-						{#each GUARANTEES as opt (opt.value)}
-							<option value={opt.value}>{opt.label}</option>
+							class="soul-preferences-editor__select"
+							disabled={disabled}
+							value={value.responseExpectation.guarantee}
+							onchange={(e) =>
+								updateResponseExpectation({
+									guarantee:
+										(e.currentTarget as HTMLSelectElement)
+											.value as SoulContactPreferences['responseExpectation']['guarantee'],
+								})}
+						>
+							{#each GUARANTEES as opt (opt.value)}
+								<option value={opt.value}>{opt.label}</option>
 						{/each}
 					</select>
 				</SettingsField>

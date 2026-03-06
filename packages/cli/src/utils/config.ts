@@ -255,12 +255,13 @@ export async function readConfig(cwd: string = process.cwd()): Promise<Component
 		}
 
 		return componentConfigSchema.parse(json);
-	} catch (error) {
-		throw new Error(
-			`Failed to read config from ${configPath}: ${error instanceof Error ? error.message : String(error)}`
-		);
+		} catch (error) {
+			throw new Error(
+				`Failed to read config from ${configPath}: ${error instanceof Error ? error.message : String(error)}`,
+				{ cause: error }
+			);
+		}
 	}
-}
 
 /**
  * Read configuration without auto-migration
@@ -278,12 +279,13 @@ export async function readConfigRaw(
 	try {
 		const content = await fs.readFile(configPath, 'utf-8');
 		return JSON.parse(content);
-	} catch (error) {
-		throw new Error(
-			`Failed to read config from ${configPath}: ${error instanceof Error ? error.message : String(error)}`
-		);
+		} catch (error) {
+			throw new Error(
+				`Failed to read config from ${configPath}: ${error instanceof Error ? error.message : String(error)}`,
+				{ cause: error }
+			);
+		}
 	}
-}
 
 /**
  * Write configuration to file
@@ -298,7 +300,8 @@ export async function writeConfig(
 		await fs.writeFile(configPath, JSON.stringify(config, null, 2));
 	} catch (error) {
 		throw new Error(
-			`Failed to write config to ${configPath}: ${error instanceof Error ? error.message : String(error)}`
+			`Failed to write config to ${configPath}: ${error instanceof Error ? error.message : String(error)}`,
+			{ cause: error }
 		);
 	}
 }

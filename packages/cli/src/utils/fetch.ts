@@ -362,14 +362,15 @@ export async function fetchComponentFiles(
 				forceRefresh: options.forceRefresh,
 			});
 			checksums = registryIndex.checksums;
-		} catch (error) {
-			if (corePackage) {
-				throw new Error(
-					`Failed to load registry index for core package "${component.name}": ${
-						error instanceof Error ? error.message : String(error)
-					}`
-				);
-			}
+			} catch (error) {
+				if (corePackage) {
+					throw new Error(
+						`Failed to load registry index for core package "${component.name}": ${
+							error instanceof Error ? error.message : String(error)
+						}`,
+						{ cause: error }
+					);
+				}
 
 			// Registry index not available, continue without verification
 			if (options.verbose) {
@@ -461,12 +462,13 @@ export async function fetchComponentFiles(
 				raw: isBinary ? buffer : undefined,
 				transform: isBinary ? false : file.transform,
 			});
-		} catch (error) {
-			throw new Error(
-				`Failed to fetch file ${file.path} for component ${component.name}: ${error instanceof Error ? error.message : String(error)}`
-			);
+			} catch (error) {
+				throw new Error(
+					`Failed to fetch file ${file.path} for component ${component.name}: ${error instanceof Error ? error.message : String(error)}`,
+					{ cause: error }
+				);
+			}
 		}
-	}
 
 	// Verify all files at once
 	let integrityReport: IntegrityReport | undefined;
