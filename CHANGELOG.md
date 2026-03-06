@@ -12,6 +12,32 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.14-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.13-rc.0...greater-v0.1.14-rc.0) (2026-03-06)
+
+### Features
+
+- **adapters:** add lesser-host soul client utilities ([9e80a9b](https://github.com/equaltoai/greater-components/commit/9e80a9bee5150d0fc166ef5d514f567338910b19))
+- Add initial system configuration and logging setup under the new .theory directory. ([7320f65](https://github.com/equaltoai/greater-components/commit/7320f65c6d4e011df71d599b624d22cca5d9c151))
+- **notifications:** render communication notifications ([4b645f8](https://github.com/equaltoai/greater-components/commit/4b645f8217c21bd4a1ecdb5583917867331e4491))
+- **soul:** add channels and preferences UI components ([1bd005b](https://github.com/equaltoai/greater-components/commit/1bd005b88ed663acd7c46437d30c0602aecc5cb3))
+
+### Bug Fixes
+
+- **adapters:** trim baseUrl without regex ([f3cbe99](https://github.com/equaltoai/greater-components/commit/f3cbe9900a7f3fac06f569fdd167236c01f09683))
+- **playground:** bind search context ([ac0aa64](https://github.com/equaltoai/greater-components/commit/ac0aa64c912d8bb0f92c87ee3253282a3e755ea9))
+
+### Chores
+
+- **deps:** patch audited vulnerabilities ([c9902e6](https://github.com/equaltoai/greater-components/commit/c9902e6d560a76f27e5a6d67da765b8b264b06f1))
+- **deps:** update workspace dependencies ([5e15fbc](https://github.com/equaltoai/greater-components/commit/5e15fbc3223cf96ef26d305506f705132fc1488d))
+- fix CI validation ([f8c2958](https://github.com/equaltoai/greater-components/commit/f8c2958546c380839f30f3a1c4faed244a05dd0e))
+- **main:** release greater 0.1.13 ([0587386](https://github.com/equaltoai/greater-components/commit/0587386f177206f3c2c639909a2d1444b92856c9))
+- **main:** release greater 0.1.13 ([c1ce3a6](https://github.com/equaltoai/greater-components/commit/c1ce3a6e4c30d584ad39d99c317783eae7fe6d59))
+- pin lesser v1.1.23 and lesser-host v0.1.0 contracts ([c47e701](https://github.com/equaltoai/greater-components/commit/c47e70193c0ada34aa08f2ece49b2068379b0fcc))
+- **playground:** drop [@pai](https://github.com/pai) snippet ([484bfb4](https://github.com/equaltoai/greater-components/commit/484bfb4725485ec21d1336e9a2c5b6042ade83c2))
+- regenerate registry ([58abe16](https://github.com/equaltoai/greater-components/commit/58abe161740f37a93ec8d35b4df1d9a5d3fce339))
+- **release:** prepare metadata ([f97aa37](https://github.com/equaltoai/greater-components/commit/f97aa37a5094f75a567871c61a08899b06dd36e1))
+
 ## [0.1.13](https://github.com/equaltoai/greater-components/compare/greater-v0.1.12...greater-v0.1.13) (2026-02-20)
 
 ### Features
