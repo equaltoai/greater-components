@@ -14,19 +14,17 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.1.17](https://github.com/equaltoai/greater-components/compare/greater-v0.1.16...greater-v0.1.17) (2026-03-07)
 
-
 ### Bug Fixes
 
-* **cli:** update full core package file sets ([0757d28](https://github.com/equaltoai/greater-components/commit/0757d28759e7dd99af091c6b59d8460fc2a49bd9))
-* **cli:** update full core package file sets ([16df66b](https://github.com/equaltoai/greater-components/commit/16df66b8d9cebcf2113b997a748551b63f97ccea))
-
+- **cli:** update full core package file sets ([0757d28](https://github.com/equaltoai/greater-components/commit/0757d28759e7dd99af091c6b59d8460fc2a49bd9))
+- **cli:** update full core package file sets ([16df66b](https://github.com/equaltoai/greater-components/commit/16df66b8d9cebcf2113b997a748551b63f97ccea))
 
 ### Chores
 
-* backmerge main into premain ([04e265f](https://github.com/equaltoai/greater-components/commit/04e265f44442dfea7841b9b3607b3e64be9c7594))
-* **premain:** release greater 0.1.17-rc.0 ([7dca1e8](https://github.com/equaltoai/greater-components/commit/7dca1e810ef99fae7b05c604590105246e3cba3c))
-* **premain:** release greater 0.1.17-rc.0 ([b0a9c47](https://github.com/equaltoai/greater-components/commit/b0a9c47df11ed1191971130ffdfe6f733b8733d1))
-* **release:** prepare metadata ([84a143b](https://github.com/equaltoai/greater-components/commit/84a143b1dd990fe0019c6fafb65f03d123476ba0))
+- backmerge main into premain ([04e265f](https://github.com/equaltoai/greater-components/commit/04e265f44442dfea7841b9b3607b3e64be9c7594))
+- **premain:** release greater 0.1.17-rc.0 ([7dca1e8](https://github.com/equaltoai/greater-components/commit/7dca1e810ef99fae7b05c604590105246e3cba3c))
+- **premain:** release greater 0.1.17-rc.0 ([b0a9c47](https://github.com/equaltoai/greater-components/commit/b0a9c47df11ed1191971130ffdfe6f733b8733d1))
+- **release:** prepare metadata ([84a143b](https://github.com/equaltoai/greater-components/commit/84a143b1dd990fe0019c6fafb65f03d123476ba0))
 
 ## [0.1.17-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.16-rc.0...greater-v0.1.17-rc.0) (2026-03-07)
 
