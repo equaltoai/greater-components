@@ -172,10 +172,10 @@ async function updateComponent(
 	};
 
 	// Fetch remote files
-	let remoteFiles: Map<string, string>;
+	let remoteFiles: typeof component.files;
 	try {
 		const fetchResult = await fetchComponentFiles(component, fetchOptions);
-		remoteFiles = new Map(fetchResult.files.map((f) => [f.path, f.content]));
+		remoteFiles = fetchResult.files;
 	} catch (error) {
 		return {
 			componentName,
@@ -192,9 +192,9 @@ async function updateComponent(
 	let hasConflicts = false;
 	let skipComponent = false;
 
-	for (const file of component.files) {
+	for (const file of remoteFiles) {
 		const localPath = getInstalledFilePath(file.path, config, cwd);
-		const remoteContent = remoteFiles.get(file.path) || '';
+		const remoteContent = file.content;
 
 		const status: FileUpdateStatus = {
 			filePath: file.path,

@@ -12,22 +12,18 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
-## [0.1.16](https://github.com/equaltoai/greater-components/compare/greater-v0.1.15...greater-v0.1.16) (2026-03-07)
+## [0.1.17-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.16-rc.0...greater-v0.1.17-rc.0) (2026-03-07)
 
-### Features
+### Bug Fixes
 
-- **adapters:** sync lesser v1.1.25 and lesser-host v0.1.3 ([a043b15](https://github.com/equaltoai/greater-components/commit/a043b15f594bfcef1f46b807d8676f746b84f078))
-- **adapters:** sync lesser v1.1.25 and lesser-host v0.1.3 ([812335b](https://github.com/equaltoai/greater-components/commit/812335b117e5e3cfa59a380fb8e92bcf37f65995))
+- **cli:** update full core package file sets ([0757d28](https://github.com/equaltoai/greater-components/commit/0757d28759e7dd99af091c6b59d8460fc2a49bd9))
+- **cli:** update full core package file sets ([16df66b](https://github.com/equaltoai/greater-components/commit/16df66b8d9cebcf2113b997a748551b63f97ccea))
 
 ### Chores
 
-- backmerge main into premain ([fdf8266](https://github.com/equaltoai/greater-components/commit/fdf8266bc275606183afc684dd7d1fc2d6bb1378))
-- backmerge premain into staging ([b52676d](https://github.com/equaltoai/greater-components/commit/b52676d60fefa9a6f1b027684dac079929285a2d))
-- backmerge premain into staging ([ee5d81c](https://github.com/equaltoai/greater-components/commit/ee5d81ce4a17202df4a1b773eb8bb6ca272c633d))
-- **premain:** release greater 0.1.16-rc.0 ([0731fc4](https://github.com/equaltoai/greater-components/commit/0731fc4dae688130c4b6e4998e4f84311d75e12f))
-- **premain:** release greater 0.1.16-rc.0 ([0856c42](https://github.com/equaltoai/greater-components/commit/0856c42967ce71adaf93e7e0f064573f4ba17d38))
-- promote staging to premain ([0a5170e](https://github.com/equaltoai/greater-components/commit/0a5170e4c23e572e37390cec1943dde624e4a630))
-- **release:** prepare metadata ([9f83bd0](https://github.com/equaltoai/greater-components/commit/9f83bd089ce1f65f8645dcc67d152d9bdd127d48))
+- **premain:** release greater 0.1.16-rc.0 ([0fbf993](https://github.com/equaltoai/greater-components/commit/0fbf993256f120a7b632c80bece9eb918de52785))
+- **premain:** release greater 0.1.16-rc.0 ([54eed32](https://github.com/equaltoai/greater-components/commit/54eed323791ee1ac483db64903a66aa841868748))
+- **release:** prepare metadata ([e2d7489](https://github.com/equaltoai/greater-components/commit/e2d7489b31a19d8766948156c3d33bf7c3a58043))
 
 ## [0.1.16-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.15-rc.1...greater-v0.1.16-rc.0) (2026-03-07)
 
@@ -205,6 +201,7 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - add changeset and format new CLI files ([78adf68](https://github.com/equaltoai/greater-components/commit/78adf68841307a84b3df951bb5a6a724a59ff0f7))
 - align versions and automate releases ([d0d449b](https://github.com/equaltoai/greater-components/commit/d0d449bb72358549815e8e42851267ace75a4a6a))
 - align versions and automate releases ([6c9496f](https://github.com/equaltoai/greater-components/commit/6c9496f3d7efa4902f604b9aacf5cf3b112c539f))
+- backmerge main into premain ([fdf8266](https://github.com/equaltoai/greater-components/commit/fdf8266bc275606183afc684dd7d1fc2d6bb1378))
 - backmerge main into premain ([31cc7aa](https://github.com/equaltoai/greater-components/commit/31cc7aab4c70967a93743e47c6b2b12b55b65136))
 - backmerge main into staging ([bcb6e55](https://github.com/equaltoai/greater-components/commit/bcb6e554ec6953131a859c3fb767a517ed874275))
 - backmerge main into staging ([eacd418](https://github.com/equaltoai/greater-components/commit/eacd41859475c6fac063b40e4b7fcef4fbcbc2ac))
@@ -257,6 +254,8 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - **main:** release greater 0.1.13 ([c1ce3a6](https://github.com/equaltoai/greater-components/commit/c1ce3a6e4c30d584ad39d99c317783eae7fe6d59))
 - **main:** release greater 0.1.14 ([df67b91](https://github.com/equaltoai/greater-components/commit/df67b911564eb3fcb13bf912302623d6d64cf90d))
 - **main:** release greater 0.1.14 ([505dffe](https://github.com/equaltoai/greater-components/commit/505dffe6186e189cada19d7ad90502e00ecde878))
+- **main:** release greater 0.1.15 ([fee7e6c](https://github.com/equaltoai/greater-components/commit/fee7e6cd9fcb907072fd304dcc0f6c88a640faf6))
+- **main:** release greater 0.1.15 ([eea6ed8](https://github.com/equaltoai/greater-components/commit/eea6ed8915bb01ee5c15130cabb1755a981211b5))
 - **main:** release greater 0.1.2 ([14081f1](https://github.com/equaltoai/greater-components/commit/14081f1dbd06a8bdb1e214e746c130c90e9fcf50))
 - **main:** release greater 0.1.2 ([6c38f5b](https://github.com/equaltoai/greater-components/commit/6c38f5b88a7a5cd75c0a3f6eaa8ef05f95216a8d))
 - **main:** release greater 0.1.3 ([4d2bdb1](https://github.com/equaltoai/greater-components/commit/4d2bdb1324069c57beb002ca2a392843bc672807))
@@ -315,6 +314,7 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - **premain:** release greater 0.1.8-rc.0 ([b8602f3](https://github.com/equaltoai/greater-components/commit/b8602f3be0aa9e1f685f1e714bbb1df76ed24c29))
 - **premain:** release greater 0.1.9-rc.0 ([c35b372](https://github.com/equaltoai/greater-components/commit/c35b372afa15e9ffc58c6e74a2cf9c04e8337ae6))
 - **premain:** release greater 0.1.9-rc.0 ([07321c3](https://github.com/equaltoai/greater-components/commit/07321c3f4c3dd6d959fc11008107a8bdb4977ba9))
+- promote premain to main ([6831a05](https://github.com/equaltoai/greater-components/commit/6831a0546c000f25926deee7fab310cf3935d1aa))
 - promote premain to main ([124fa61](https://github.com/equaltoai/greater-components/commit/124fa61d0360490765090d2a9064dc8496c5ce99))
 - promote premain to main ([b7918d1](https://github.com/equaltoai/greater-components/commit/b7918d11f9e24b42995a728e1b574cf1b3a8b2f9))
 - promote staging to premain ([0a5170e](https://github.com/equaltoai/greater-components/commit/0a5170e4c23e572e37390cec1943dde624e4a630))
@@ -349,6 +349,7 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - **release:** greater-v0.1.1 ([ebb24dc](https://github.com/equaltoai/greater-components/commit/ebb24dc35afeb811dcd6f265e3b279196ff61067))
 - **release:** greater-v0.1.1 ([0e26e63](https://github.com/equaltoai/greater-components/commit/0e26e6354ca6ef56ee3d462144d20812dbafc102))
 - **release:** greater-v0.1.1 ([8c15a59](https://github.com/equaltoai/greater-components/commit/8c15a59b092ac3dcfb4c841836e8a4f646ccb854))
+- **release:** prepare metadata ([38ce978](https://github.com/equaltoai/greater-components/commit/38ce978189f739a06bc65858e3c363b94901335a))
 - **release:** prepare metadata ([dc957c0](https://github.com/equaltoai/greater-components/commit/dc957c0e79dd5d66c7ab2dba77a1b72d3b252701))
 - **release:** prepare metadata ([d665069](https://github.com/equaltoai/greater-components/commit/d665069c5bfe443897250023407ffa6c6b12920e))
 - **release:** prepare metadata ([85e6bf4](https://github.com/equaltoai/greater-components/commit/85e6bf431ec844ba66967b06f3049cdaab033f26))
