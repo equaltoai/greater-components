@@ -9,8 +9,18 @@ export type {
 	LesserHostSoulClientConfig,
 	ResolveEnsOptions,
 	SoulAgentChannelsResponse,
+	SoulAgentChannelPreferencesRequest,
 	SoulAgentChannelPreferencesResponse,
+	SoulAgentIdentity,
+	SoulCommSendErrorEnvelope,
+	SoulCommSendRequest,
+	SoulCommSendResponse,
+	SoulCommStatusErrorEnvelope,
+	SoulCommStatusResponse,
 	SoulResolveResponse,
+	SoulSearchQuery,
+	SoulSearchResponse,
+	SoulSearchResult,
 } from './client.js';
 
 export { resolveSoulAgentIdFromEnsTextRecord } from './ens.js';

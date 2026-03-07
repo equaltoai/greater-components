@@ -36,6 +36,12 @@ import type {
 	CreateListMutationVariables,
 	UpdateListMutationVariables,
 	ConversationsQueryVariables,
+	ConversationMessagesQueryVariables,
+	CreateConversationMutationVariables,
+	SendMessageMutationVariables,
+	AcceptMessageRequestMutationVariables,
+	DeclineMessageRequestMutationVariables,
+	DeleteMessageMutationVariables,
 	UpdateRelationshipMutationVariables,
 	AgentsQueryVariables,
 	AgentActivityQueryVariables,
@@ -96,6 +102,7 @@ import type {
 	UploadMediaInput,
 	UploadMediaMutation,
 	UploadMediaMutationVariables,
+	UpdateMediaMutationVariables,
 	Actor,
 } from './generated/types.js';
 
@@ -138,10 +145,18 @@ import {
 	AddAccountsToListDocument,
 	RemoveAccountsFromListDocument,
 	UploadMediaDocument,
+	MediaDocument,
+	UpdateMediaDocument,
 	ConversationsDocument,
 	ConversationDocument,
+	ConversationMessagesDocument,
+	CreateConversationDocument,
+	SendMessageDocument,
+	AcceptMessageRequestDocument,
+	DeclineMessageRequestDocument,
 	MarkConversationReadDocument,
 	DeleteConversationDocument,
+	DeleteMessageDocument,
 	RelationshipDocument,
 	RelationshipsDocument,
 	FollowActorDocument,
@@ -179,6 +194,7 @@ import {
 	AiCapabilitiesDocument,
 	TrustGraphDocument,
 	CostBreakdownDocument,
+	InstanceDocument,
 	InstanceBudgetsDocument,
 	SetInstanceBudgetDocument,
 	OptimizeFederationCostsDocument,
@@ -391,6 +407,10 @@ export type LesserGraphQLAdapterConfig = GraphQLClientConfig;
 export type TimelineVariables = TimelineQueryVariables;
 export type SearchVariables = SearchQueryVariables;
 export type CreateNoteVariables = CreateNoteMutationVariables;
+export type ConversationMessagesVariables = ConversationMessagesQueryVariables;
+export type CreateConversationVariables = CreateConversationMutationVariables;
+export type SendMessageVariables = SendMessageMutationVariables;
+export type UpdateMediaVariables = UpdateMediaMutationVariables;
 
 export class LesserGraphQLAdapter {
 	private readonly client: GraphQLClientInstance;
@@ -692,6 +712,11 @@ export class LesserGraphQLAdapter {
 		return data.actor;
 	}
 
+	async getInstance() {
+		const data = await this.query(InstanceDocument);
+		return data.instance;
+	}
+
 	// ============================================================================
 	// AGENTS
 	// ============================================================================
@@ -802,6 +827,39 @@ export class LesserGraphQLAdapter {
 		return data.conversation;
 	}
 
+	async getConversationMessages(variables: ConversationMessagesQueryVariables) {
+		const data = await this.query(ConversationMessagesDocument, variables);
+		return data.conversationMessages;
+	}
+
+	async createConversation(participantId: string) {
+		const data = await this.mutate(CreateConversationDocument, { participantId });
+		return data.createConversation;
+	}
+
+	async sendMessage(conversationId: string, content: string, mediaIds?: string[]) {
+		const data = await this.mutate(SendMessageDocument, {
+			conversationId,
+			content,
+			mediaIds,
+		});
+		return data.sendMessage;
+	}
+
+	async acceptMessageRequest(
+		conversationId: AcceptMessageRequestMutationVariables['conversationId']
+	) {
+		const data = await this.mutate(AcceptMessageRequestDocument, { conversationId });
+		return data.acceptMessageRequest;
+	}
+
+	async declineMessageRequest(
+		conversationId: DeclineMessageRequestMutationVariables['conversationId']
+	) {
+		const data = await this.mutate(DeclineMessageRequestDocument, { conversationId });
+		return data.declineMessageRequest;
+	}
+
 	async markConversationAsRead(id: string) {
 		const data = await this.mutate(MarkConversationReadDocument, { id });
 		return data.markConversationAsRead;
@@ -810,6 +868,11 @@ export class LesserGraphQLAdapter {
 	async deleteConversation(conversationId: string) {
 		const data = await this.mutate(DeleteConversationDocument, { conversationId });
 		return data.deleteConversation;
+	}
+
+	async deleteMessage(messageId: DeleteMessageMutationVariables['messageId']) {
+		const data = await this.mutate(DeleteMessageDocument, { messageId });
+		return data.deleteMessage;
 	}
 
 	async getLists() {
@@ -906,6 +969,16 @@ export class LesserGraphQLAdapter {
 		}
 
 		return payload;
+	}
+
+	async getMedia(id: string) {
+		const data = await this.query(MediaDocument, { id });
+		return data.media;
+	}
+
+	async updateMedia(id: string, input: UpdateMediaMutationVariables['input']) {
+		const data = await this.mutate(UpdateMediaDocument, { id, input });
+		return data.updateMedia;
 	}
 
 	async createNote(input: CreateNoteMutationVariables['input']) {
