@@ -4,7 +4,12 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { SVELTEKIT_PROJECT, createTestConfig, createInstalledComponent } from './fixtures/index.js';
+import {
+	SVELTEKIT_PROJECT,
+	createTestConfig,
+	createInstalledComponent,
+	createTestComponentMetadata,
+} from './fixtures/index.js';
 
 const { mockFs } = await vi.hoisted(async () => {
 	const { MockFileSystem } = await import('./fixtures/index.js');
@@ -88,6 +93,7 @@ vi.mock('../src/utils/diff.js', () => ({
 vi.mock('../src/utils/install-path.js', () => ({
 	getInstalledFilePath: vi.fn((path) => {
 		// Simple mapping for test
+		if (path.startsWith('greater/')) return `/src/lib/${path}`;
 		if (path.includes('button.ts')) return '/src/lib/primitives/button.ts';
 		return `/src/${path}`;
 	}),
@@ -161,6 +167,55 @@ describe('Update Command', () => {
 			expect(writeFile).toHaveBeenCalledWith(
 				expect.stringContaining('button.ts'),
 				expect.stringContaining('version: 2')
+			);
+		});
+
+		it('updates every fetched file for core packages', async () => {
+			const config = createTestConfig({
+				installed: [createInstalledComponent('adapters')],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+
+			const { getComponent } = await import('../src/registry/index.js');
+			vi.mocked(getComponent).mockReturnValueOnce(
+				createTestComponentMetadata('adapters', {
+					type: 'shared',
+					files: [{ path: 'greater/adapters/index.ts', content: '', type: 'utils' }],
+					tags: ['core', 'adapters'],
+				})
+			);
+
+			const { fetchComponentFiles } = await import('../src/utils/fetch.js');
+			vi.mocked(fetchComponentFiles).mockResolvedValueOnce({
+				files: [
+					{
+						path: 'greater/adapters/index.ts',
+						content: 'export * from "./graphql";',
+						type: 'utils',
+					},
+					{
+						path: 'greater/adapters/graphql/index.ts',
+						content: 'export type { ConversationMessagesVariables } from "./LesserGraphQLAdapter";',
+						type: 'utils',
+					},
+					{
+						path: 'greater/adapters/soul/index.ts',
+						content: 'export type { SoulAgentChannelPreferencesRequest } from "./client.js";',
+						type: 'utils',
+					},
+				],
+				ref: 'greater-v0.1.17',
+			});
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['adapters'], { cwd: '/', yes: true, force: true });
+
+			expect(mockFs.get('/src/lib/greater/adapters/index.ts')).toContain('export * from "./graphql";');
+			expect(mockFs.get('/src/lib/greater/adapters/graphql/index.ts')).toContain(
+				'ConversationMessagesVariables'
+			);
+			expect(mockFs.get('/src/lib/greater/adapters/soul/index.ts')).toContain(
+				'SoulAgentChannelPreferencesRequest'
 			);
 		});
 
