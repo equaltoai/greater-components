@@ -210,7 +210,9 @@ describe('Update Command', () => {
 			const { updateAction } = await import('../src/commands/update.js');
 			await updateAction(['adapters'], { cwd: '/', yes: true, force: true });
 
-			expect(mockFs.get('/src/lib/greater/adapters/index.ts')).toContain('export * from "./graphql";');
+			expect(mockFs.get('/src/lib/greater/adapters/index.ts')).toContain(
+				'export * from "./graphql";'
+			);
 			expect(mockFs.get('/src/lib/greater/adapters/graphql/index.ts')).toContain(
 				'ConversationMessagesVariables'
 			);
