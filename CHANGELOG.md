@@ -12,6 +12,21 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.17-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.16-rc.0...greater-v0.1.17-rc.0) (2026-03-07)
+
+
+### Bug Fixes
+
+* **cli:** update full core package file sets ([0757d28](https://github.com/equaltoai/greater-components/commit/0757d28759e7dd99af091c6b59d8460fc2a49bd9))
+* **cli:** update full core package file sets ([16df66b](https://github.com/equaltoai/greater-components/commit/16df66b8d9cebcf2113b997a748551b63f97ccea))
+
+
+### Chores
+
+* **premain:** release greater 0.1.16-rc.0 ([0fbf993](https://github.com/equaltoai/greater-components/commit/0fbf993256f120a7b632c80bece9eb918de52785))
+* **premain:** release greater 0.1.16-rc.0 ([54eed32](https://github.com/equaltoai/greater-components/commit/54eed323791ee1ac483db64903a66aa841868748))
+* **release:** prepare metadata ([e2d7489](https://github.com/equaltoai/greater-components/commit/e2d7489b31a19d8766948156c3d33bf7c3a58043))
+
 ## [0.1.16-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.15-rc.1...greater-v0.1.16-rc.0) (2026-03-07)
 
 ### Features
