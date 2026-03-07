@@ -304,6 +304,12 @@ describe('LesserGraphQLAdapter', () => {
 			expect(mockApolloClient.query).toHaveBeenCalled();
 		});
 
+		it('getConversationMessages', async () => {
+			mockApolloClient.query.mockResolvedValue({ data: { conversationMessages: { edges: [] } } });
+			await adapter.getConversationMessages({ conversationId: '1' });
+			expect(mockApolloClient.query).toHaveBeenCalled();
+		});
+
 		it('getLists', async () => {
 			mockApolloClient.query.mockResolvedValue({ data: { lists: [] } });
 			await adapter.getLists();
@@ -355,6 +361,18 @@ describe('LesserGraphQLAdapter', () => {
 		it('getPushSubscription', async () => {
 			mockApolloClient.query.mockResolvedValue({ data: { pushSubscription: {} } });
 			await adapter.getPushSubscription();
+			expect(mockApolloClient.query).toHaveBeenCalled();
+		});
+
+		it('getInstance', async () => {
+			mockApolloClient.query.mockResolvedValue({ data: { instance: {} } });
+			await adapter.getInstance();
+			expect(mockApolloClient.query).toHaveBeenCalled();
+		});
+
+		it('getMedia', async () => {
+			mockApolloClient.query.mockResolvedValue({ data: { media: {} } });
+			await adapter.getMedia('media-1');
 			expect(mockApolloClient.query).toHaveBeenCalled();
 		});
 
@@ -462,9 +480,39 @@ describe('LesserGraphQLAdapter', () => {
 			expect(mockApolloClient.mutate).toHaveBeenCalled();
 		});
 
+		it('createConversation', async () => {
+			mockApolloClient.mutate.mockResolvedValue({ data: { createConversation: {} } });
+			await adapter.createConversation('1');
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('sendMessage', async () => {
+			mockApolloClient.mutate.mockResolvedValue({ data: { sendMessage: {} } });
+			await adapter.sendMessage('conversation-1', 'hello', ['media-1']);
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('acceptMessageRequest', async () => {
+			mockApolloClient.mutate.mockResolvedValue({ data: { acceptMessageRequest: {} } });
+			await adapter.acceptMessageRequest('conversation-1');
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('declineMessageRequest', async () => {
+			mockApolloClient.mutate.mockResolvedValue({ data: { declineMessageRequest: true } });
+			await adapter.declineMessageRequest('conversation-1');
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
 		it('deleteConversation', async () => {
 			mockApolloClient.mutate.mockResolvedValue({ data: { deleteConversation: true } });
 			await adapter.deleteConversation('1');
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('deleteMessage', async () => {
+			mockApolloClient.mutate.mockResolvedValue({ data: { deleteMessage: true } });
+			await adapter.deleteMessage('message-1');
 			expect(mockApolloClient.mutate).toHaveBeenCalled();
 		});
 
@@ -645,6 +693,12 @@ describe('LesserGraphQLAdapter', () => {
 		it('deletePushSubscription', async () => {
 			mockApolloClient.mutate.mockResolvedValue({ data: { deletePushSubscription: true } });
 			await adapter.deletePushSubscription();
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('updateMedia', async () => {
+			mockApolloClient.mutate.mockResolvedValue({ data: { updateMedia: {} } });
+			await adapter.updateMedia('media-1', { description: 'alt text' });
 			expect(mockApolloClient.mutate).toHaveBeenCalled();
 		});
 
