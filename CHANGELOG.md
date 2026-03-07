@@ -12,31 +12,36 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
-## [0.1.14](https://github.com/equaltoai/greater-components/compare/greater-v0.1.13...greater-v0.1.14) (2026-03-06)
-
-### Features
-
-- **adapters:** add lesser-host soul client utilities ([9e80a9b](https://github.com/equaltoai/greater-components/commit/9e80a9bee5150d0fc166ef5d514f567338910b19))
-- Add initial system configuration and logging setup under the new .theory directory. ([7320f65](https://github.com/equaltoai/greater-components/commit/7320f65c6d4e011df71d599b624d22cca5d9c151))
-- **notifications:** render communication notifications ([4b645f8](https://github.com/equaltoai/greater-components/commit/4b645f8217c21bd4a1ecdb5583917867331e4491))
-- **soul:** add channels and preferences UI components ([1bd005b](https://github.com/equaltoai/greater-components/commit/1bd005b88ed663acd7c46437d30c0602aecc5cb3))
-
-### Bug Fixes
-
-- **adapters:** trim baseUrl without regex ([f3cbe99](https://github.com/equaltoai/greater-components/commit/f3cbe9900a7f3fac06f569fdd167236c01f09683))
-- **playground:** bind search context ([ac0aa64](https://github.com/equaltoai/greater-components/commit/ac0aa64c912d8bb0f92c87ee3253282a3e755ea9))
+## [0.1.15-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.1.15-rc.0...greater-v0.1.15-rc.1) (2026-03-06)
 
 ### Chores
 
-- **deps:** patch audited vulnerabilities ([c9902e6](https://github.com/equaltoai/greater-components/commit/c9902e6d560a76f27e5a6d67da765b8b264b06f1))
-- **deps:** update workspace dependencies ([5e15fbc](https://github.com/equaltoai/greater-components/commit/5e15fbc3223cf96ef26d305506f705132fc1488d))
-- fix CI validation ([f8c2958](https://github.com/equaltoai/greater-components/commit/f8c2958546c380839f30f3a1c4faed244a05dd0e))
-- pin lesser v1.1.23 and lesser-host v0.1.0 contracts ([c47e701](https://github.com/equaltoai/greater-components/commit/c47e70193c0ada34aa08f2ece49b2068379b0fcc))
-- **playground:** drop [@pai](https://github.com/pai) snippet ([484bfb4](https://github.com/equaltoai/greater-components/commit/484bfb4725485ec21d1336e9a2c5b6042ade83c2))
-- **premain:** release greater 0.1.14-rc.0 ([d00b84d](https://github.com/equaltoai/greater-components/commit/d00b84d2d27c66dbc2fa2e43e6b8a181b4867696))
-- **premain:** release greater 0.1.14-rc.0 ([20cd845](https://github.com/equaltoai/greater-components/commit/20cd8450daecb015bd8f7213305d5f97112614d6))
-- regenerate registry ([58abe16](https://github.com/equaltoai/greater-components/commit/58abe161740f37a93ec8d35b4df1d9a5d3fce339))
-- **release:** prepare metadata ([788a1c9](https://github.com/equaltoai/greater-components/commit/788a1c91af968f7c0e40d119d5e2b3e84518ba4c))
+- backmerge main into premain ([31cc7aa](https://github.com/equaltoai/greater-components/commit/31cc7aab4c70967a93743e47c6b2b12b55b65136))
+
+## [0.1.15-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.14-rc.0...greater-v0.1.15-rc.0) (2026-03-06)
+
+### Features
+
+- **notifications:** support communication payloads ([1b1f5a1](https://github.com/equaltoai/greater-components/commit/1b1f5a1575e3a8c0c437587658d70a706764f7c3))
+
+### Bug Fixes
+
+- **soul:** satisfy strict svelte-check ([0603c37](https://github.com/equaltoai/greater-components/commit/0603c377420e7b28e5467b286876af2c4fc63be0))
+
+### CI
+
+- **deps:** bump artifact actions ([6bcd038](https://github.com/equaltoai/greater-components/commit/6bcd03801a04a4af9e613094907a7a90dfcbadeb))
+
+### Chores
+
+- backmerge premain into staging ([ff92e4c](https://github.com/equaltoai/greater-components/commit/ff92e4cbf8426191120b36b21583493ba340200b))
+- backmerge premain into staging ([7f259f7](https://github.com/equaltoai/greater-components/commit/7f259f7aa6852ee3ebb54a4a7629c879a611c258))
+- **contracts:** bump lesser to v1.1.24 ([81a9829](https://github.com/equaltoai/greater-components/commit/81a98290895b06e9ace85e12454ab4aa1550d57d))
+- **contracts:** bump lesser to v1.1.24 ([9c1f3ab](https://github.com/equaltoai/greater-components/commit/9c1f3ab54c263760d32e47fbbbc41ca0a323d8cd))
+- **deps:** bump graphql-codegen ([d2490c5](https://github.com/equaltoai/greater-components/commit/d2490c5890f00641783c1c8637e6cb64237e7da0))
+- format and regenerate registry ([148f214](https://github.com/equaltoai/greater-components/commit/148f214da81663a646ebc2615791de1988318dce))
+- promote staging to premain ([abc0eb6](https://github.com/equaltoai/greater-components/commit/abc0eb64b79466de07d90495fad75c2ca628091e))
+- regenerate registry ([fe70f15](https://github.com/equaltoai/greater-components/commit/fe70f152ca7dc75f7a41fa04ae9e9ed713b40389))
 
 ## [0.1.14-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.13-rc.0...greater-v0.1.14-rc.0) (2026-03-06)
 
