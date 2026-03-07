@@ -245,7 +245,11 @@ function buildUrl(
 	return url.toString();
 }
 
-function appendQueryParam(searchParams: URLSearchParams, key: string, value: QueryParamValue): void {
+function appendQueryParam(
+	searchParams: URLSearchParams,
+	key: string,
+	value: QueryParamValue
+): void {
 	if (value == null) {
 		return;
 	}
