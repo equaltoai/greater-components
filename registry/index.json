@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-07T20:22:31.961Z",
+  "generatedAt": "2026-03-08T17:15:58.426Z",
   "ref": "greater-v0.1.17",
   "version": "0.1.17",
   "checksums": {
@@ -852,8 +852,8 @@
     "packages/adapters/src/messaging/index.ts": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-ehDle02wDrnpb+OmdCcEZKSJ9q942CMqtvncdlM22bU=",
-    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-xHA0ag5HbmIJyIFDpFfv5kmhCtBk59HmVhKGvg8uc4k=",
-    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-ecIzrQ6hv70Ulrnr7IieJswb5zbIGD6b358YI9T8IQg=",
+    "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-YJL5CV8syWfC24W7kLSCyx2BGAMuUgahzs7x+6z7pSw=",
+    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-w9YIa3KCj/8eJDJpfsIF+fnX/QUZcg5UXKkRgSUh85U=",
     "packages/adapters/src/soul/client.ts": "sha256-e4/AA0ev8F2ecGkEw/cTRugBEIP3lfXJW8LlyhKfl14=",
     "packages/adapters/src/soul/ens.ts": "sha256-CI8WkwLMw8ZXNPrN+LpQdK81vud8ecgQc3xOXFMvK2o=",
     "packages/adapters/src/soul/index.ts": "sha256-pUyYXfQbyXrB4QXjAAKMqVX/bnI3IdQ4Ll+GUu7FZqU=",
@@ -5684,13 +5684,13 @@
         },
         {
           "path": "src/rest/generated/lesser-api.ts",
-          "checksum": "sha256-xHA0ag5HbmIJyIFDpFfv5kmhCtBk59HmVhKGvg8uc4k=",
-          "size": 483894
+          "checksum": "sha256-YJL5CV8syWfC24W7kLSCyx2BGAMuUgahzs7x+6z7pSw=",
+          "size": 487576
         },
         {
           "path": "src/rest/generated/lesser-host-api.ts",
-          "checksum": "sha256-ecIzrQ6hv70Ulrnr7IieJswb5zbIGD6b358YI9T8IQg=",
-          "size": 29414
+          "checksum": "sha256-w9YIa3KCj/8eJDJpfsIF+fnX/QUZcg5UXKkRgSUh85U=",
+          "size": 29450
         },
         {
           "path": "src/soul/client.ts",
