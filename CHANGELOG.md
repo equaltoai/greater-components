@@ -14,17 +14,15 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.3.0](https://github.com/equaltoai/greater-components/compare/greater-v0.2.0...greater-v0.3.0) (2026-03-08)
 
-
 ### Features
 
-* **adapters:** sync lesser graphql v1.1.28 ([9c15385](https://github.com/equaltoai/greater-components/commit/9c153850d123a7f892b5f997c97158ff04225bb1))
-* **adapters:** sync lesser graphql v1.1.28 ([723e5f8](https://github.com/equaltoai/greater-components/commit/723e5f87ec7336c5b1e5945719c948d45f537316))
-
+- **adapters:** sync lesser graphql v1.1.28 ([9c15385](https://github.com/equaltoai/greater-components/commit/9c153850d123a7f892b5f997c97158ff04225bb1))
+- **adapters:** sync lesser graphql v1.1.28 ([723e5f8](https://github.com/equaltoai/greater-components/commit/723e5f87ec7336c5b1e5945719c948d45f537316))
 
 ### Chores
 
-* backmerge main into premain ([e611522](https://github.com/equaltoai/greater-components/commit/e611522b33c4ffa43be5c81d3d19aaa773579515))
-* backmerge premain into staging ([9cfb655](https://github.com/equaltoai/greater-components/commit/9cfb655745de8345691bd2302881410adbe1cb56))
+- backmerge main into premain ([e611522](https://github.com/equaltoai/greater-components/commit/e611522b33c4ffa43be5c81d3d19aaa773579515))
+- backmerge premain into staging ([9cfb655](https://github.com/equaltoai/greater-components/commit/9cfb655745de8345691bd2302881410adbe1cb56))
 
 ## [0.2.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.18...greater-v0.2.0) (2026-03-08)
 
