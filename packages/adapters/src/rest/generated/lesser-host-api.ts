@@ -734,6 +734,7 @@ export interface operations {
                 capability?: string;
                 boundary?: string;
                 ens?: string;
+                principal?: string;
                 channel?: "email" | "phone";
                 cursor?: string;
                 limit?: number;
