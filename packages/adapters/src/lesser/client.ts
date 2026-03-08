@@ -105,7 +105,7 @@ function mergeHeaders(baseHeaders: Record<string, string>, headers?: HeadersInit
 async function createLesserSoulClientError(response: Response): Promise<LesserSoulClientError> {
 	const fallbackMessage = `Request failed (${response.status})`;
 
-	let details: unknown = null;
+	let details: unknown;
 	let message = fallbackMessage;
 
 	try {
@@ -114,7 +114,7 @@ async function createLesserSoulClientError(response: Response): Promise<LesserSo
 		try {
 			details = await response.text();
 		} catch {
-			details = null;
+			details = undefined;
 		}
 	}
 
