@@ -90,6 +90,7 @@ describe('LesserHostSoulClient', () => {
 			channel: 'email',
 			cursor: 'cursor-1',
 			limit: 10,
+			principal: '0x1234567890abcdef1234567890abcdef12345678',
 		});
 
 		const [url] = fetchMock.mock.calls[0] as [string];
@@ -100,6 +101,9 @@ describe('LesserHostSoulClient', () => {
 		expect(parsed.searchParams.get('channel')).toBe('email');
 		expect(parsed.searchParams.get('cursor')).toBe('cursor-1');
 		expect(parsed.searchParams.get('limit')).toBe('10');
+		expect(parsed.searchParams.get('principal')).toBe(
+			'0x1234567890abcdef1234567890abcdef12345678'
+		);
 	});
 
 	it('sends outbound communication requests', async () => {

@@ -2292,6 +2292,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/souls/{agentId}/incorporate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_souls_by_agentId_incorporate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/souls/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_souls_mine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/statuses": {
         parameters: {
             query?: never;
@@ -5709,6 +5741,39 @@ export interface components {
         };
         /** @description Mastodon-compatible snowflake identifier (stringified uint). */
         SnowflakeID: string;
+        SoulAgentIdentity: {
+            agent_id: string;
+            capabilities?: string[];
+            domain: string;
+            lifecycle_status?: string;
+            local_id: string;
+            mint_tx_hash?: string;
+            minted_at?: components["schemas"]["RFC3339DateTime"] | null;
+            principal_address?: string;
+            self_description_version?: number | null;
+            status: string;
+            updated_at?: components["schemas"]["RFC3339DateTime"] | null;
+            wallet: string;
+        };
+        SoulBodyBinding: {
+            bound_at: components["schemas"]["RFC3339DateTime"];
+            principal_address?: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            username: string;
+        };
+        SoulIncorporateResponse: {
+            soul: components["schemas"]["SoulInventoryItem"];
+        };
+        SoulInventoryItem: {
+            agent: components["schemas"]["SoulAgentIdentity"];
+            available_for_incorporation: boolean;
+            binding?: components["schemas"]["SoulBodyBinding"] | null;
+            binding_state: string;
+        };
+        SoulsMineResponse: {
+            count: number;
+            souls: components["schemas"]["SoulInventoryItem"][];
+        };
         Status: {
             account: components["schemas"]["Account"];
             agent_attribution?: components["schemas"]["AgentPostAttribution"] | null;
@@ -11843,6 +11908,56 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_souls_by_agentId_incorporate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulIncorporateResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_souls_mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulsMineResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             500: components["responses"]["InternalServerError"];
         };
     };
