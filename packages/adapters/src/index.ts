@@ -58,6 +58,18 @@ export type {
 	UploadMediaPayload,
 } from './graphql';
 
+// Soul inventory (Lesser REST)
+export { LesserSoulClient, LesserSoulClientError, createLesserSoulClient } from './lesser/index.js';
+export type {
+	LesserFetchLike,
+	LesserSoulAgentIdentity,
+	LesserSoulBodyBinding,
+	LesserSoulClientConfig,
+	LesserSoulIncorporateResponse,
+	LesserSoulInventoryItem,
+	LesserSoulsMineResponse,
+} from './lesser/index.js';
+
 // Soul (lesser-host REST)
 export {
 	LesserHostSoulClient,

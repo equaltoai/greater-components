@@ -5745,6 +5745,7 @@ export interface components {
             agent_id: string;
             capabilities?: string[];
             domain: string;
+            ens_name?: string | null;
             lifecycle_status?: string;
             local_id: string;
             mint_tx_hash?: string;
