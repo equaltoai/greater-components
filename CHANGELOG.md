@@ -12,6 +12,19 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.1.18-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.1.17-rc.0...greater-v0.1.18-rc.0) (2026-03-08)
+
+### Chores
+
+- **adapters:** sync lesser v1.1.26 and lesser-host v0.1.5 ([7b8c0d6](https://github.com/equaltoai/greater-components/commit/7b8c0d633e9e76e79a0943e6c6c721eb5c435b2c))
+- **adapters:** sync lesser v1.1.26 and lesser-host v0.1.5 ([d4fd4e3](https://github.com/equaltoai/greater-components/commit/d4fd4e39d6518025996bc0e72142ece720c73e1a))
+- backmerge main into premain ([ae103e6](https://github.com/equaltoai/greater-components/commit/ae103e689a6246cdb5a54f229e16bc739430114a))
+- backmerge main into premain ([04e265f](https://github.com/equaltoai/greater-components/commit/04e265f44442dfea7841b9b3607b3e64be9c7594))
+- backmerge premain into staging ([b7fe9fb](https://github.com/equaltoai/greater-components/commit/b7fe9fb091b54202b764ffba693478f24e7adad4))
+- **main:** release greater 0.1.17 ([7d18a8b](https://github.com/equaltoai/greater-components/commit/7d18a8b734bc583edf8e03ce0907f2d55538c07c))
+- **main:** release greater 0.1.17 ([ff15bde](https://github.com/equaltoai/greater-components/commit/ff15bdeb7ecd509ab4e2922898e53186df685270))
+- **release:** prepare metadata ([1f929ab](https://github.com/equaltoai/greater-components/commit/1f929ab539b2c5096c00e26fa697fe0b2c4afcfd))
+
 ## [0.1.17](https://github.com/equaltoai/greater-components/compare/greater-v0.1.16...greater-v0.1.17) (2026-03-07)
 
 ### Bug Fixes
