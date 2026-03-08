@@ -1,0 +1,47 @@
+# Soul inventory + incorporation parity
+
+fragment SoulAgentIdentityFields on SoulAgentIdentity {
+	agentId
+	domain
+	localId
+	ensName
+	wallet
+	principalAddress
+	status
+	lifecycleStatus
+	selfDescriptionVersion
+	capabilities
+	mintTxHash
+	mintedAt
+	updatedAt
+}
+
+fragment SoulBodyBindingFields on SoulBodyBinding {
+	username
+	principalAddress
+	boundAt
+	updatedAt
+}
+
+fragment SoulInventoryItemFields on SoulInventoryItem {
+	agent {
+		...SoulAgentIdentityFields
+	}
+	bindingState
+	availableForIncorporation
+	binding {
+		...SoulBodyBindingFields
+	}
+}
+
+query MySouls {
+	mySouls {
+		...SoulInventoryItemFields
+	}
+}
+
+mutation IncorporateSoul($agentId: ID!) {
+	incorporateSoul(agentId: $agentId) {
+		...SoulInventoryItemFields
+	}
+}
