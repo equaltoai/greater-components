@@ -101,9 +101,7 @@ describe('LesserHostSoulClient', () => {
 		expect(parsed.searchParams.get('channel')).toBe('email');
 		expect(parsed.searchParams.get('cursor')).toBe('cursor-1');
 		expect(parsed.searchParams.get('limit')).toBe('10');
-		expect(parsed.searchParams.get('principal')).toBe(
-			'0x1234567890abcdef1234567890abcdef12345678'
-		);
+		expect(parsed.searchParams.get('principal')).toBe('0x1234567890abcdef1234567890abcdef12345678');
 	});
 
 	it('sends outbound communication requests', async () => {
