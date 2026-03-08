@@ -370,6 +370,45 @@ describe('LesserGraphQLAdapter', () => {
 			expect(mockApolloClient.query).toHaveBeenCalled();
 		});
 
+		it('getMySouls', async () => {
+			mockApolloClient.query.mockResolvedValue({
+				data: {
+					mySouls: [
+						{
+							agent: {
+								agentId: 'agent-1',
+								domain: 'lesser.example',
+								localId: 'local-1',
+								ensName: 'soul-agent.eth',
+								wallet: '0x1234',
+								principalAddress: 'principal.test',
+								status: 'ACTIVE',
+								lifecycleStatus: 'MINTED',
+								selfDescriptionVersion: 3,
+								capabilities: ['chat'],
+								mintTxHash: '0xmint',
+								mintedAt: '2026-03-08T00:00:00.000Z',
+								updatedAt: '2026-03-08T00:00:00.000Z',
+							},
+							bindingState: 'BOUND',
+							availableForIncorporation: false,
+							binding: {
+								username: 'aron',
+								principalAddress: 'principal.test',
+								boundAt: '2026-03-08T00:00:00.000Z',
+								updatedAt: '2026-03-08T00:00:00.000Z',
+							},
+						},
+					],
+				},
+			});
+
+			const result = await adapter.getMySouls();
+			expect(result[0]?.agent.ensName).toBe('soul-agent.eth');
+			expect(result[0]?.bindingState).toBe('BOUND');
+			expect(mockApolloClient.query).toHaveBeenCalled();
+		});
+
 		it('getMedia', async () => {
 			mockApolloClient.query.mockResolvedValue({ data: { media: {} } });
 			await adapter.getMedia('media-1');
@@ -700,6 +739,51 @@ describe('LesserGraphQLAdapter', () => {
 			mockApolloClient.mutate.mockResolvedValue({ data: { updateMedia: {} } });
 			await adapter.updateMedia('media-1', { description: 'alt text' });
 			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('incorporateSoul', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					incorporateSoul: {
+						agent: {
+							agentId: 'agent-1',
+							domain: 'lesser.example',
+							localId: 'local-1',
+							ensName: 'soul-agent.eth',
+							wallet: '0x1234',
+							principalAddress: 'principal.test',
+							status: 'ACTIVE',
+							lifecycleStatus: 'MINTED',
+							selfDescriptionVersion: 3,
+							capabilities: ['chat'],
+							mintTxHash: '0xmint',
+							mintedAt: '2026-03-08T00:00:00.000Z',
+							updatedAt: '2026-03-08T00:00:00.000Z',
+						},
+						bindingState: 'BOUND',
+						availableForIncorporation: false,
+						binding: {
+							username: 'aron',
+							principalAddress: 'principal.test',
+							boundAt: '2026-03-08T00:00:00.000Z',
+							updatedAt: '2026-03-08T00:00:00.000Z',
+						},
+					},
+				},
+			});
+
+			const result = await adapter.incorporateSoul(' agent-1 ');
+			expect(result.agent.ensName).toBe('soul-agent.eth');
+			expect(mockApolloClient.mutate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: { agentId: 'agent-1' },
+				})
+			);
+		});
+
+		it('incorporateSoul validates agentId', async () => {
+			await expect(adapter.incorporateSoul('   ')).rejects.toThrow('agentId is required');
+			expect(mockApolloClient.mutate).not.toHaveBeenCalled();
 		});
 
 		it('addCommunityNote', async () => {

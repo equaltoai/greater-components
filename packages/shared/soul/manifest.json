@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-soul",
-  "version": "0.2.0",
+  "version": "0.1.19-rc.0",
   "description": "Reachability and contact-preferences UI for lesser-soul v3 (channels, preferences, best-contact helper).",
   "components": {
     "ChannelsDisplay": {
