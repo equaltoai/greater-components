@@ -118,6 +118,7 @@ import {
 	AgentByUsernameDocument,
 	AgentsDocument,
 	MyAgentsDocument,
+	MySoulsDocument,
 	AgentActivityDocument,
 	AdminAgentPolicyDocument,
 	UpdateAdminAgentPolicyDocument,
@@ -237,6 +238,7 @@ import {
 	AdminVerifyAgentDocument,
 	AdminUnverifyAgentDocument,
 	AdminSuspendAgentDocument,
+	IncorporateSoulDocument,
 	AgentActivityUpdatesDocument,
 } from './generated/types.js';
 
@@ -736,6 +738,11 @@ export class LesserGraphQLAdapter {
 		return data.myAgents;
 	}
 
+	async getMySouls() {
+		const data = await this.query(MySoulsDocument);
+		return data.mySouls;
+	}
+
 	async getAgentActivity(variables: AgentActivityQueryVariables) {
 		const data = await this.query(AgentActivityDocument, variables);
 		return data.agentActivity;
@@ -794,6 +801,16 @@ export class LesserGraphQLAdapter {
 	async adminSuspendAgent(username: string) {
 		const data = await this.mutate(AdminSuspendAgentDocument, { username });
 		return data.adminSuspendAgent;
+	}
+
+	async incorporateSoul(agentId: string) {
+		const id = agentId.trim();
+		if (!id) {
+			throw new Error('agentId is required');
+		}
+
+		const data = await this.mutate(IncorporateSoulDocument, { agentId: id });
+		return data.incorporateSoul;
 	}
 
 	async search(variables: SearchQueryVariables) {
