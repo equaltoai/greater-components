@@ -14,12 +14,11 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.3.1-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.2.1-rc.0...greater-v0.3.1-rc.0) (2026-03-09)
 
-
 ### Chores
 
-* backmerge main into premain ([8e71eb1](https://github.com/equaltoai/greater-components/commit/8e71eb1b3a1fd4c12d7f8a76ff4286d5519b83bb))
-* **main:** release greater 0.3.0 ([5fd2740](https://github.com/equaltoai/greater-components/commit/5fd27404174e90b28de231540e84be400940edbe))
-* **release:** prepare metadata ([404f4ad](https://github.com/equaltoai/greater-components/commit/404f4ad5e72ca074fd3281e0c5d015deeb7089db))
+- backmerge main into premain ([8e71eb1](https://github.com/equaltoai/greater-components/commit/8e71eb1b3a1fd4c12d7f8a76ff4286d5519b83bb))
+- **main:** release greater 0.3.0 ([5fd2740](https://github.com/equaltoai/greater-components/commit/5fd27404174e90b28de231540e84be400940edbe))
+- **release:** prepare metadata ([404f4ad](https://github.com/equaltoai/greater-components/commit/404f4ad5e72ca074fd3281e0c5d015deeb7089db))
 
 ## [0.3.0](https://github.com/equaltoai/greater-components/compare/greater-v0.2.0...greater-v0.3.0) (2026-03-08)
 

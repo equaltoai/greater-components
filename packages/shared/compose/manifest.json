@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-compose",
-  "version": "0.2.1-rc.0",
+  "version": "0.3.1-rc.0",
   "description": "Post/content composer components for ActivityPub/Fediverse applications",
   "components": {
     "Root": {
