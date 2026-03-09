@@ -1,7 +1,8 @@
 import type { components } from '../rest/generated/lesser-api.js';
 
 export type LesserSoulAgentIdentity = components['schemas']['SoulAgentIdentity'];
-export type LesserSoulBodyBinding = components['schemas']['SoulBodyBinding'];
+export type LesserSoulAgentBinding = components['schemas']['SoulAgentBinding'];
+export type LesserSoulBodyBinding = LesserSoulAgentBinding;
 export type LesserSoulInventoryItem = components['schemas']['SoulInventoryItem'];
 export type LesserSoulsMineResponse = components['schemas']['SoulsMineResponse'];
 export type LesserSoulIncorporateResponse = components['schemas']['SoulIncorporateResponse'];
@@ -29,6 +30,7 @@ export class LesserSoulClientError extends Error {
 interface RequestJsonOptions {
 	method?: 'GET' | 'POST';
 	headers?: HeadersInit;
+	body?: BodyInit | null;
 }
 
 export function createLesserSoulClient(config: LesserSoulClientConfig): LesserSoulClient {
@@ -58,12 +60,23 @@ export class LesserSoulClient {
 		return this.requestJson('/api/v1/souls/mine');
 	}
 
-	async incorporateSoul(agentId: string): Promise<LesserSoulIncorporateResponse> {
+	async incorporateSoul(
+		agentId: string,
+		targetAgentUsername: string
+	): Promise<LesserSoulIncorporateResponse> {
 		const id = agentId.trim();
 		if (!id) throw new Error('agentId is required');
+		const targetUsername = targetAgentUsername.trim();
+		if (!targetUsername) throw new Error('targetAgentUsername is required');
 
 		return this.requestJson(`/api/v1/souls/${encodeURIComponent(id)}/incorporate`, {
 			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify({
+				target_agent_username: targetUsername,
+			}),
 		});
 	}
 
@@ -71,6 +84,7 @@ export class LesserSoulClient {
 		const response = await this.fetch(`${this.baseUrl}${pathname}`, {
 			method: options.method,
 			headers: mergeHeaders(this.headers, options.headers),
+			body: options.body,
 		});
 
 		if (!response.ok) {
