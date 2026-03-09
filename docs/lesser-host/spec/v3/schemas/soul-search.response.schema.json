@@ -10,7 +10,7 @@
     "results": {
       "type": "array",
       "items": {
-        "$ref": "https://lesser.host/spec/v3/schemas/soul-search.result.schema.json"
+        "$ref": "./soul-search.result.schema.json"
       }
     },
     "count": { "type": "integer", "minimum": 0 },

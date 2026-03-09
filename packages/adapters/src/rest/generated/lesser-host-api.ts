@@ -141,6 +141,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/agents/{agentId}/comm/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List communication activity for a soul agent */
+        get: operations["soulAgentCommActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/{agentId}/comm/queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List queued inbound communications for a soul agent */
+        get: operations["soulAgentCommQueue"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/{agentId}/comm/status/{messageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get outbound comm delivery status for a soul agent */
+        get: operations["soulAgentCommStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -245,6 +296,10 @@ export interface components {
         SoulCommSendErrorEnvelope: components["schemas"]["soul-comm-send.error.schema"];
         SoulCommStatusResponse: components["schemas"]["soul-comm-status.response.schema"];
         SoulCommStatusErrorEnvelope: components["schemas"]["soul-comm-status.error.schema"];
+        SoulAgentCommActivityItem: components["schemas"]["soul-agent-comm-activity-item.schema"];
+        SoulAgentCommActivityResponse: components["schemas"]["soul-agent-comm-activity.response.schema"];
+        SoulAgentCommQueueItem: components["schemas"]["soul-agent-comm-queue-item.schema"];
+        SoulAgentCommQueueResponse: components["schemas"]["soul-agent-comm-queue.response.schema"];
         /** GET /api/v1/soul/agents/{agentId}/channels/preferences response */
         "soul-agent-channel-preferences.response.schema": {
             agentId: string;
@@ -433,6 +488,11 @@ export interface components {
             providerMessageId?: string;
             errorCode?: string;
             errorMessage?: string;
+            replyMessageId?: string;
+            replyBody?: string;
+            replyConfidence?: number;
+            /** Format: date-time */
+            replyReceivedAt?: string;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -446,6 +506,59 @@ export interface components {
                 message: string;
                 request_id?: string;
             };
+        };
+        /** Soul agent communication activity item */
+        "soul-agent-comm-activity-item.schema": {
+            agent_id: string;
+            activity_id: string;
+            /** @enum {string} */
+            channel_type: "email" | "sms" | "voice";
+            /** @enum {string} */
+            direction: "inbound" | "outbound";
+            counterparty?: string;
+            action?: string;
+            message_id?: string;
+            in_reply_to?: string;
+            /** @enum {string} */
+            boundary_check?: "passed" | "violated" | "skipped";
+            preference_respected?: boolean;
+            /** Format: date-time */
+            timestamp: string;
+        };
+        /** GET /api/v1/soul/agents/{agentId}/comm/activity response */
+        "soul-agent-comm-activity.response.schema": {
+            /** @enum {string} */
+            version: "1";
+            activities: components["schemas"]["soul-agent-comm-activity-item.schema"][];
+            count: number;
+        };
+        /** Soul agent queued communication item */
+        "soul-agent-comm-queue-item.schema": {
+            agent_id: string;
+            message_id: string;
+            /** @enum {string} */
+            channel_type: "email" | "sms" | "voice";
+            /** Format: email */
+            from_address?: string;
+            from_number?: string;
+            from_soul_agent_id?: string;
+            from_display_name?: string;
+            subject?: string;
+            body: string;
+            in_reply_to?: string;
+            /** Format: date-time */
+            received_at: string;
+            /** Format: date-time */
+            scheduled_delivery_time: string;
+            /** @enum {string} */
+            status: "queued" | "delivered" | "expired";
+        };
+        /** GET /api/v1/soul/agents/{agentId}/comm/queue response */
+        "soul-agent-comm-queue.response.schema": {
+            /** @enum {string} */
+            version: "1";
+            items: components["schemas"]["soul-agent-comm-queue-item.schema"][];
+            count: number;
         };
     };
     responses: never;
@@ -879,6 +992,185 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["soul-comm-status.error.schema"];
+                };
+            };
+        };
+    };
+    soulAgentCommActivity: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-agent-comm-activity.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulAgentCommQueue: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-agent-comm-queue.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulAgentCommStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                messageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-status.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
         };
