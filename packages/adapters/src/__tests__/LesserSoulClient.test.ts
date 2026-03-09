@@ -75,7 +75,7 @@ describe('LesserSoulClient', () => {
 				available_for_incorporation: false,
 				binding_state: 'bound',
 				binding: {
-					username: 'alice',
+					agent_username: 'agent-owner',
 					bound_at: '2026-03-08T00:00:00Z',
 					updated_at: '2026-03-08T00:00:00Z',
 				},
@@ -84,16 +84,28 @@ describe('LesserSoulClient', () => {
 
 		fetchMock.mockResolvedValueOnce(jsonResponse(responseBody));
 
-		const response = await client.incorporateSoul('agent-1');
+		const response = await client.incorporateSoul('agent-1', 'owner-agent');
 		const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+		const headers = new Headers(init.headers);
 
 		expect(url).toBe('https://lesser.example/api/v1/souls/agent-1/incorporate');
 		expect(init.method).toBe('POST');
-		expect(response.soul.binding?.username).toBe('alice');
+		expect(headers.get('content-type')).toBe('application/json');
+		expect(init.body).toBe(JSON.stringify({ target_agent_username: 'owner-agent' }));
+		expect(response.soul.binding?.agent_username).toBe('agent-owner');
 	});
 
 	it('rejects blank agent ids', async () => {
-		await expect(client.incorporateSoul('   ')).rejects.toThrow('agentId is required');
+		await expect(client.incorporateSoul('   ', 'owner-agent')).rejects.toThrow(
+			'agentId is required'
+		);
+		expect(fetchMock).not.toHaveBeenCalled();
+	});
+
+	it('rejects blank target agent usernames', async () => {
+		await expect(client.incorporateSoul('agent-1', '   ')).rejects.toThrow(
+			'targetAgentUsername is required'
+		);
 		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
@@ -108,7 +120,7 @@ describe('LesserSoulClient', () => {
 		);
 
 		try {
-			await client.incorporateSoul('missing-agent');
+			await client.incorporateSoul('missing-agent', 'owner-agent');
 			throw new Error('Expected incorporateSoul to throw');
 		} catch (error) {
 			expect(error).toBeInstanceOf(LesserSoulClientError);
