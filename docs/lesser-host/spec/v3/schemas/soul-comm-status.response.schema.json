@@ -15,6 +15,10 @@
     "providerMessageId": { "type": "string", "minLength": 1, "maxLength": 256 },
     "errorCode": { "type": "string", "minLength": 1, "maxLength": 128 },
     "errorMessage": { "type": "string", "minLength": 1, "maxLength": 2048 },
+    "replyMessageId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "replyBody": { "type": "string", "minLength": 1, "maxLength": 4096 },
+    "replyConfidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "replyReceivedAt": { "type": "string", "format": "date-time" },
     "createdAt": { "type": "string", "format": "date-time" },
     "updatedAt": { "type": "string", "format": "date-time" }
   }
