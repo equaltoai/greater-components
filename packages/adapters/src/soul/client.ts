@@ -8,6 +8,16 @@ export type SoulAgentChannelPreferencesRequest =
 export type SoulAgentChannelPreferencesResponse =
 	components['schemas']['SoulAgentChannelPreferencesResponse'];
 export type SoulAgentIdentity = components['schemas']['SoulAgentIdentity'];
+export type SoulAgentCommActivityQuery = NonNullable<
+	operations['soulAgentCommActivity']['parameters']['query']
+>;
+export type SoulAgentCommActivityItem = components['schemas']['SoulAgentCommActivityItem'];
+export type SoulAgentCommActivityResponse = components['schemas']['SoulAgentCommActivityResponse'];
+export type SoulAgentCommQueueQuery = NonNullable<
+	operations['soulAgentCommQueue']['parameters']['query']
+>;
+export type SoulAgentCommQueueItem = components['schemas']['SoulAgentCommQueueItem'];
+export type SoulAgentCommQueueResponse = components['schemas']['SoulAgentCommQueueResponse'];
 export type SoulResolveResponse = components['schemas']['SoulResolveResponse'];
 export type SoulSearchQuery = NonNullable<operations['soulSearch']['parameters']['query']>;
 export type SoulSearchResult = components['schemas']['SoulSearchResult'];
@@ -141,6 +151,45 @@ export class LesserHostSoulClient {
 			method: 'POST',
 			body: request,
 		});
+	}
+
+	async getAgentCommunicationActivity(
+		agentId: string,
+		query: SoulAgentCommActivityQuery = {}
+	): Promise<SoulAgentCommActivityResponse> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		return this.requestJson(`/api/v1/soul/agents/${encodeURIComponent(id)}/comm/activity`, {
+			query,
+		});
+	}
+
+	async getAgentCommunicationQueue(
+		agentId: string,
+		query: SoulAgentCommQueueQuery = {}
+	): Promise<SoulAgentCommQueueResponse> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		return this.requestJson(`/api/v1/soul/agents/${encodeURIComponent(id)}/comm/queue`, {
+			query,
+		});
+	}
+
+	async getAgentCommunicationStatus(
+		agentId: string,
+		messageId: string
+	): Promise<SoulCommStatusResponse> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		const message = messageId.trim();
+		if (!message) throw new Error('messageId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/${encodeURIComponent(id)}/comm/status/${encodeURIComponent(message)}`
+		);
 	}
 
 	async getCommunicationStatus(messageId: string): Promise<SoulCommStatusResponse> {
