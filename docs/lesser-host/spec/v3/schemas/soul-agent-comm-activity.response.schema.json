@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-agent-comm-activity.response.schema.json",
+  "title": "GET /api/v1/soul/agents/{agentId}/comm/activity response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "activities", "count"],
+  "properties": {
+    "version": { "type": "string", "enum": ["1"] },
+    "activities": {
+      "type": "array",
+      "items": {
+        "$ref": "./soul-agent-comm-activity-item.schema.json"
+      }
+    },
+    "count": { "type": "integer", "minimum": 0 }
+  }
+}
