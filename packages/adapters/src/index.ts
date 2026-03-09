@@ -63,6 +63,7 @@ export { LesserSoulClient, LesserSoulClientError, createLesserSoulClient } from 
 export type {
 	LesserFetchLike,
 	LesserSoulAgentIdentity,
+	LesserSoulAgentBinding,
 	LesserSoulBodyBinding,
 	LesserSoulClientConfig,
 	LesserSoulIncorporateResponse,

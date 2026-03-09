@@ -393,7 +393,7 @@ describe('LesserGraphQLAdapter', () => {
 							bindingState: 'BOUND',
 							availableForIncorporation: false,
 							binding: {
-								username: 'aron',
+								agentUsername: 'agent-owner',
 								principalAddress: 'principal.test',
 								boundAt: '2026-03-08T00:00:00.000Z',
 								updatedAt: '2026-03-08T00:00:00.000Z',
@@ -763,7 +763,7 @@ describe('LesserGraphQLAdapter', () => {
 						bindingState: 'BOUND',
 						availableForIncorporation: false,
 						binding: {
-							username: 'aron',
+							agentUsername: 'agent-owner',
 							principalAddress: 'principal.test',
 							boundAt: '2026-03-08T00:00:00.000Z',
 							updatedAt: '2026-03-08T00:00:00.000Z',
@@ -772,17 +772,27 @@ describe('LesserGraphQLAdapter', () => {
 				},
 			});
 
-			const result = await adapter.incorporateSoul(' agent-1 ');
+			const result = await adapter.incorporateSoul(' agent-1 ', ' owner-agent ');
 			expect(result.agent.ensName).toBe('soul-agent.eth');
+			expect(result.binding?.agentUsername).toBe('agent-owner');
 			expect(mockApolloClient.mutate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					variables: { agentId: 'agent-1' },
+					variables: { agentId: 'agent-1', targetAgentUsername: 'owner-agent' },
 				})
 			);
 		});
 
 		it('incorporateSoul validates agentId', async () => {
-			await expect(adapter.incorporateSoul('   ')).rejects.toThrow('agentId is required');
+			await expect(adapter.incorporateSoul('   ', 'owner-agent')).rejects.toThrow(
+				'agentId is required'
+			);
+			expect(mockApolloClient.mutate).not.toHaveBeenCalled();
+		});
+
+		it('incorporateSoul validates targetAgentUsername', async () => {
+			await expect(adapter.incorporateSoul('agent-1', '   ')).rejects.toThrow(
+				'targetAgentUsername is required'
+			);
 			expect(mockApolloClient.mutate).not.toHaveBeenCalled();
 		});
 
