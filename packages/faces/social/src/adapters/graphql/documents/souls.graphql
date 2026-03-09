@@ -16,8 +16,8 @@ fragment SoulAgentIdentityFields on SoulAgentIdentity {
 	updatedAt
 }
 
-fragment SoulBodyBindingFields on SoulBodyBinding {
-	username
+fragment SoulAgentBindingFields on SoulAgentBinding {
+	agentUsername
 	principalAddress
 	boundAt
 	updatedAt
@@ -30,7 +30,7 @@ fragment SoulInventoryItemFields on SoulInventoryItem {
 	bindingState
 	availableForIncorporation
 	binding {
-		...SoulBodyBindingFields
+		...SoulAgentBindingFields
 	}
 }
 
@@ -40,8 +40,8 @@ query MySouls {
 	}
 }
 
-mutation IncorporateSoul($agentId: ID!) {
-	incorporateSoul(agentId: $agentId) {
+mutation IncorporateSoul($agentId: ID!, $targetAgentUsername: String!) {
+	incorporateSoul(agentId: $agentId, targetAgentUsername: $targetAgentUsername) {
 		...SoulInventoryItemFields
 	}
 }

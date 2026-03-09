@@ -5741,6 +5741,12 @@ export interface components {
         };
         /** @description Mastodon-compatible snowflake identifier (stringified uint). */
         SnowflakeID: string;
+        SoulAgentBinding: {
+            agent_username: string;
+            bound_at: components["schemas"]["RFC3339DateTime"];
+            principal_address?: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+        };
         SoulAgentIdentity: {
             agent_id: string;
             capabilities?: string[];
@@ -5762,13 +5768,16 @@ export interface components {
             updated_at: components["schemas"]["RFC3339DateTime"];
             username: string;
         };
+        SoulIncorporateRequest: {
+            target_agent_username: string;
+        };
         SoulIncorporateResponse: {
             soul: components["schemas"]["SoulInventoryItem"];
         };
         SoulInventoryItem: {
             agent: components["schemas"]["SoulAgentIdentity"];
             available_for_incorporation: boolean;
-            binding?: components["schemas"]["SoulBodyBinding"] | null;
+            binding?: components["schemas"]["SoulAgentBinding"] | null;
             binding_state: string;
         };
         SoulsMineResponse: {
@@ -11921,7 +11930,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SoulIncorporateRequest"];
+            };
+        };
         responses: {
             /** @description OK */
             200: {

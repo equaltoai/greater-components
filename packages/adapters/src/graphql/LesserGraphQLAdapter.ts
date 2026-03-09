@@ -803,13 +803,20 @@ export class LesserGraphQLAdapter {
 		return data.adminSuspendAgent;
 	}
 
-	async incorporateSoul(agentId: string) {
+	async incorporateSoul(agentId: string, targetAgentUsername: string) {
 		const id = agentId.trim();
 		if (!id) {
 			throw new Error('agentId is required');
 		}
+		const targetUsername = targetAgentUsername.trim();
+		if (!targetUsername) {
+			throw new Error('targetAgentUsername is required');
+		}
 
-		const data = await this.mutate(IncorporateSoulDocument, { agentId: id });
+		const data = await this.mutate(IncorporateSoulDocument, {
+			agentId: id,
+			targetAgentUsername: targetUsername,
+		});
 		return data.incorporateSoul;
 	}
 
