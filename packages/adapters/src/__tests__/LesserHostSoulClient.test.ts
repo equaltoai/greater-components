@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	LesserHostSoulClient,
 	LesserHostSoulClientError,
+	type SoulCommSendErrorEnvelope,
 	type SoulCommSendRequest,
 } from '../soul/client';
 
@@ -256,19 +257,16 @@ describe('LesserHostSoulClient', () => {
 		);
 	});
 
-	it('surfaces typed lesser-host comm errors', async () => {
-		fetchMock.mockResolvedValueOnce(
-			jsonResponse(
-				{
-					error: {
-						code: 'comm.rate_limited',
-						message: 'Too many requests',
-						request_id: 'req-123',
-					},
-				},
-				429
-			)
-		);
+	it('surfaces typed lesser-host preference violations', async () => {
+		const errorBody: SoulCommSendErrorEnvelope = {
+			error: {
+				code: 'comm.preference_violation',
+				message: 'Outbound communication blocked by first-contact policy.',
+				request_id: 'req-123',
+			},
+		};
+
+		fetchMock.mockResolvedValueOnce(jsonResponse(errorBody, 409));
 
 		try {
 			await client.sendCommunication({
@@ -282,8 +280,8 @@ describe('LesserHostSoulClient', () => {
 			expect(error).toBeInstanceOf(LesserHostSoulClientError);
 			expect(error).toMatchObject({
 				name: 'LesserHostSoulClientError',
-				status: 429,
-				code: 'comm.rate_limited',
+				status: 409,
+				code: 'comm.preference_violation',
 				requestId: 'req-123',
 			});
 		}

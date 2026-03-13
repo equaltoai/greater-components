@@ -22,6 +22,60 @@ describe('LesserGraphQLAdapter', () => {
 		headers: { 'X-Custom': 'header' },
 	};
 
+	const agentAccessLeasePayload = {
+		id: 'lease-1',
+		username: 'agent-owner',
+		principalUsername: 'principal-user',
+		principalWallet: '0xprincipal',
+		agentWallet: '0xagent',
+		scopes: ['post', 'reply'],
+		deviceLabel: 'Studio Mac',
+		status: 'active',
+		idleTimeoutHours: 12,
+		idleExpiresAt: '2026-03-12T13:00:00.000Z',
+		absoluteExpiresAt: '2026-03-13T01:00:00.000Z',
+		lastUsedAt: '2026-03-12T01:00:00.000Z',
+		leaseVersion: 2,
+		sessionPublicKey: '0xsession',
+		sessionKeyType: 'ed25519',
+		sessionKeyCreatedAt: '2026-03-12T00:00:00.000Z',
+		sessionKeyLastUsedAt: '2026-03-12T01:00:00.000Z',
+		createdAt: '2026-03-11T23:00:00.000Z',
+		updatedAt: '2026-03-12T01:00:00.000Z',
+		revokedAt: null,
+		revokedBy: null,
+		revokedReason: null,
+	};
+
+	const agentAccessLeaseChallengePayload = {
+		id: 'challenge-1',
+		leaseID: 'lease-1',
+		username: 'agent-owner',
+		action: 'create',
+		walletAddress: '0xprincipal',
+		principalWallet: '0xprincipal',
+		agentWallet: '0xagent',
+		sessionPublicKey: '0xsession',
+		sessionKeyType: 'ed25519',
+		scopes: ['post', 'reply'],
+		deviceLabel: 'Studio Mac',
+		idleTimeoutHours: 12,
+		absoluteTTLHours: 24,
+		message: 'Sign this challenge',
+		typedDataJson: '{"domain":"lesser"}',
+		issuedAt: '2026-03-12T00:00:00.000Z',
+		expiresAt: '2026-03-12T01:00:00.000Z',
+	};
+
+	const agentAccessLeaseTokenPayload = {
+		leaseID: 'lease-1',
+		accessToken: 'lease-token',
+		tokenType: 'Bearer',
+		scope: 'post reply',
+		createdAt: '2026-03-12T00:00:00.000Z',
+		expiresIn: 3600,
+	};
+
 	beforeEach(() => {
 		vi.clearAllMocks();
 
@@ -409,6 +463,23 @@ describe('LesserGraphQLAdapter', () => {
 			expect(mockApolloClient.query).toHaveBeenCalled();
 		});
 
+		it('getAgentAccessLeases', async () => {
+			mockApolloClient.query.mockResolvedValue({
+				data: {
+					agentAccessLeases: [agentAccessLeasePayload],
+				},
+			});
+
+			const result = await adapter.getAgentAccessLeases({ username: 'agent-owner' });
+			expect(result[0]?.principalUsername).toBe('principal-user');
+			expect(result[0]?.sessionPublicKey).toBe('0xsession');
+			expect(mockApolloClient.query).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: { username: 'agent-owner' },
+				})
+			);
+		});
+
 		it('getMedia', async () => {
 			mockApolloClient.query.mockResolvedValue({ data: { media: {} } });
 			await adapter.getMedia('media-1');
@@ -739,6 +810,145 @@ describe('LesserGraphQLAdapter', () => {
 			mockApolloClient.mutate.mockResolvedValue({ data: { updateMedia: {} } });
 			await adapter.updateMedia('media-1', { description: 'alt text' });
 			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('createAgentAccessLeasePrincipalChallenge', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					createAgentAccessLeasePrincipalChallenge: agentAccessLeaseChallengePayload,
+				},
+			});
+
+			const result = await adapter.createAgentAccessLeasePrincipalChallenge('agent-owner', {
+				principalWallet: '0xprincipal',
+				agentWallet: '0xagent',
+				scopes: ['post', 'reply'],
+				deviceLabel: 'Studio Mac',
+			});
+
+			expect(result.leaseID).toBe('lease-1');
+			expect(mockApolloClient.mutate).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: {
+						username: 'agent-owner',
+						input: {
+							principalWallet: '0xprincipal',
+							agentWallet: '0xagent',
+							scopes: ['post', 'reply'],
+							deviceLabel: 'Studio Mac',
+						},
+					},
+				})
+			);
+		});
+
+		it('createAgentAccessLeaseAgentChallenge', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					createAgentAccessLeaseAgentChallenge: agentAccessLeaseChallengePayload,
+				},
+			});
+			await adapter.createAgentAccessLeaseAgentChallenge('agent-owner', {
+				principalWallet: '0xprincipal',
+				agentWallet: '0xagent',
+				scopes: ['post'],
+			});
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('createAgentAccessLease', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					createAgentAccessLease: agentAccessLeasePayload,
+				},
+			});
+
+			const result = await adapter.createAgentAccessLease('agent-owner', {
+				principalChallengeID: 'principal-challenge',
+				principalSignature: '0xprincipal-signature',
+				agentChallengeID: 'agent-challenge',
+				agentSignature: '0xagent-signature',
+			});
+
+			expect(result.id).toBe('lease-1');
+			expect(result.principalUsername).toBe('principal-user');
+		});
+
+		it('revokeAgentAccessLease', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					revokeAgentAccessLease: {
+						...agentAccessLeasePayload,
+						status: 'revoked',
+						revokedAt: '2026-03-12T02:00:00.000Z',
+						revokedBy: 'agent-owner',
+						revokedReason: 'rotated',
+					},
+				},
+			});
+
+			const result = await adapter.revokeAgentAccessLease('agent-owner', 'lease-1', {
+				reason: 'rotated',
+			});
+
+			expect(result.status).toBe('revoked');
+			expect(result.revokedReason).toBe('rotated');
+		});
+
+		it('createAgentAccessLeaseSessionKeyChallenge', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					createAgentAccessLeaseSessionKeyChallenge: agentAccessLeaseChallengePayload,
+				},
+			});
+			await adapter.createAgentAccessLeaseSessionKeyChallenge('agent-owner', 'lease-1', {
+				sessionPublicKey: '0xsession',
+			});
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('authorizeAgentAccessLeaseSessionKey', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					authorizeAgentAccessLeaseSessionKey: agentAccessLeasePayload,
+				},
+			});
+			await adapter.authorizeAgentAccessLeaseSessionKey('agent-owner', 'lease-1', {
+				challengeID: 'challenge-1',
+				signature: '0xsignature',
+			});
+			expect(mockApolloClient.mutate).toHaveBeenCalled();
+		});
+
+		it('createAgentAccessLeaseRenewChallenge', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					createAgentAccessLeaseRenewChallenge: {
+						...agentAccessLeaseChallengePayload,
+						action: 'renew',
+					},
+				},
+			});
+
+			const result = await adapter.createAgentAccessLeaseRenewChallenge('agent-owner', 'lease-1');
+
+			expect(result.action).toBe('renew');
+		});
+
+		it('exchangeAgentAccessLeaseToken', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: {
+					exchangeAgentAccessLeaseToken: agentAccessLeaseTokenPayload,
+				},
+			});
+
+			const result = await adapter.exchangeAgentAccessLeaseToken('agent-owner', 'lease-1', {
+				challengeID: 'challenge-1',
+				signature: '0xsignature',
+			});
+
+			expect(result.accessToken).toBe('lease-token');
+			expect(result.expiresIn).toBe(3600);
 		});
 
 		it('incorporateSoul', async () => {
