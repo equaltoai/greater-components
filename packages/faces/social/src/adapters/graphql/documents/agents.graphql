@@ -34,6 +34,60 @@ fragment AgentFields on Agent {
 	activityCount
 }
 
+fragment AgentAccessLeaseFields on AgentAccessLease {
+	id
+	username
+	principalUsername
+	principalWallet
+	agentWallet
+	scopes
+	deviceLabel
+	status
+	idleTimeoutHours
+	idleExpiresAt
+	absoluteExpiresAt
+	lastUsedAt
+	leaseVersion
+	sessionPublicKey
+	sessionKeyType
+	sessionKeyCreatedAt
+	sessionKeyLastUsedAt
+	createdAt
+	updatedAt
+	revokedAt
+	revokedBy
+	revokedReason
+}
+
+fragment AgentAccessLeaseChallengeFields on AgentAccessLeaseChallenge {
+	id
+	leaseID
+	username
+	action
+	walletAddress
+	principalWallet
+	agentWallet
+	sessionPublicKey
+	sessionKeyType
+	scopes
+	deviceLabel
+	idleTimeoutHours
+	absoluteTTLHours
+	message
+	typedDataJson
+	issuedAt
+	expiresAt
+}
+
+fragment AgentAccessLeaseTokenPayloadFields on AgentAccessLeaseTokenPayload {
+	leaseID
+	accessToken
+	tokenType
+	scope
+	createdAt
+	expiresIn
+}
+
 query AgentByUsername($username: String!) {
 	agent(username: $username) {
 		...AgentFields
@@ -98,6 +152,12 @@ query AgentActivity($username: String!, $first: Int = 20, $after: Cursor) {
 			endCursor
 		}
 		totalCount
+	}
+}
+
+query AgentAccessLeases($username: String!) {
+	agentAccessLeases(username: $username) {
+		...AgentAccessLeaseFields
 	}
 }
 
@@ -207,6 +267,76 @@ mutation DelegateToAgent($input: DelegateToAgentInput!) {
 
 mutation RevokeAgentToken($username: String!) {
 	revokeAgentToken(username: $username)
+}
+
+mutation CreateAgentAccessLeasePrincipalChallenge(
+	$username: String!
+	$input: AgentAccessLeaseChallengeInput!
+) {
+	createAgentAccessLeasePrincipalChallenge(username: $username, input: $input) {
+		...AgentAccessLeaseChallengeFields
+	}
+}
+
+mutation CreateAgentAccessLeaseAgentChallenge(
+	$username: String!
+	$input: AgentAccessLeaseChallengeInput!
+) {
+	createAgentAccessLeaseAgentChallenge(username: $username, input: $input) {
+		...AgentAccessLeaseChallengeFields
+	}
+}
+
+mutation CreateAgentAccessLease($username: String!, $input: CreateAgentAccessLeaseInput!) {
+	createAgentAccessLease(username: $username, input: $input) {
+		...AgentAccessLeaseFields
+	}
+}
+
+mutation RevokeAgentAccessLease(
+	$username: String!
+	$leaseID: ID!
+	$input: RevokeAgentAccessLeaseInput
+) {
+	revokeAgentAccessLease(username: $username, leaseID: $leaseID, input: $input) {
+		...AgentAccessLeaseFields
+	}
+}
+
+mutation CreateAgentAccessLeaseSessionKeyChallenge(
+	$username: String!
+	$leaseID: ID!
+	$input: AgentAccessLeaseSessionKeyChallengeInput!
+) {
+	createAgentAccessLeaseSessionKeyChallenge(username: $username, leaseID: $leaseID, input: $input) {
+		...AgentAccessLeaseChallengeFields
+	}
+}
+
+mutation AuthorizeAgentAccessLeaseSessionKey(
+	$username: String!
+	$leaseID: ID!
+	$input: AuthorizeAgentAccessLeaseSessionKeyInput!
+) {
+	authorizeAgentAccessLeaseSessionKey(username: $username, leaseID: $leaseID, input: $input) {
+		...AgentAccessLeaseFields
+	}
+}
+
+mutation CreateAgentAccessLeaseRenewChallenge($username: String!, $leaseID: ID!) {
+	createAgentAccessLeaseRenewChallenge(username: $username, leaseID: $leaseID) {
+		...AgentAccessLeaseChallengeFields
+	}
+}
+
+mutation ExchangeAgentAccessLeaseToken(
+	$username: String!
+	$leaseID: ID!
+	$input: ExchangeAgentAccessLeaseTokenInput!
+) {
+	exchangeAgentAccessLeaseToken(username: $username, leaseID: $leaseID, input: $input) {
+		...AgentAccessLeaseTokenPayloadFields
+	}
 }
 
 mutation AdminVerifyAgent($username: String!, $input: AdminVerifyAgentInput) {

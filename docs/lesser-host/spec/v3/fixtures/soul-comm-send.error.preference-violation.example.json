@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "comm.preference_violation",
+    "message": "Outbound communication blocked: recipient first-contact policy requires soul reputation >= 0.90.",
+    "request_id": "req_123"
+  }
+}
