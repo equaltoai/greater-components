@@ -14,19 +14,17 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.4.2](https://github.com/equaltoai/greater-components/compare/greater-v0.4.1...greater-v0.4.2) (2026-03-13)
 
-
 ### Features
 
-* **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([915021e](https://github.com/equaltoai/greater-components/commit/915021e5bf5f5aaedc45c93244d17b5b43f3af3a))
-* **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([6d9bd15](https://github.com/equaltoai/greater-components/commit/6d9bd153c28de85e72a782606fa0794e79a696e5))
-
+- **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([915021e](https://github.com/equaltoai/greater-components/commit/915021e5bf5f5aaedc45c93244d17b5b43f3af3a))
+- **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([6d9bd15](https://github.com/equaltoai/greater-components/commit/6d9bd153c28de85e72a782606fa0794e79a696e5))
 
 ### Chores
 
-* **deps:** bump devalue to 5.6.4 ([da6279a](https://github.com/equaltoai/greater-components/commit/da6279a3850392a79bdb9a9687813b0b45801e79))
-* **premain:** release greater 0.4.2-rc.0 ([627ba90](https://github.com/equaltoai/greater-components/commit/627ba90f1665cfd7bdd1cc52afed06dacc21123a))
-* **premain:** release greater 0.4.2-rc.0 ([4601c8c](https://github.com/equaltoai/greater-components/commit/4601c8c434422fe330a6fa4aca651f84e1dbf2a6))
-* **release:** prepare metadata ([d9b9510](https://github.com/equaltoai/greater-components/commit/d9b95107cde7657c8236d289bf5b8325cf12dc86))
+- **deps:** bump devalue to 5.6.4 ([da6279a](https://github.com/equaltoai/greater-components/commit/da6279a3850392a79bdb9a9687813b0b45801e79))
+- **premain:** release greater 0.4.2-rc.0 ([627ba90](https://github.com/equaltoai/greater-components/commit/627ba90f1665cfd7bdd1cc52afed06dacc21123a))
+- **premain:** release greater 0.4.2-rc.0 ([4601c8c](https://github.com/equaltoai/greater-components/commit/4601c8c434422fe330a6fa4aca651f84e1dbf2a6))
+- **release:** prepare metadata ([d9b9510](https://github.com/equaltoai/greater-components/commit/d9b95107cde7657c8236d289bf5b8325cf12dc86))
 
 ## [0.4.2-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.1-rc.0...greater-v0.4.2-rc.0) (2026-03-13)
 
