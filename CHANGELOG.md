@@ -14,19 +14,17 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.4.2-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.1-rc.0...greater-v0.4.2-rc.0) (2026-03-13)
 
-
 ### Features
 
-* **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([915021e](https://github.com/equaltoai/greater-components/commit/915021e5bf5f5aaedc45c93244d17b5b43f3af3a))
-* **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([6d9bd15](https://github.com/equaltoai/greater-components/commit/6d9bd153c28de85e72a782606fa0794e79a696e5))
-
+- **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([915021e](https://github.com/equaltoai/greater-components/commit/915021e5bf5f5aaedc45c93244d17b5b43f3af3a))
+- **adapters:** sync lesser v1.1.38 and lesser-host v0.1.10 ([6d9bd15](https://github.com/equaltoai/greater-components/commit/6d9bd153c28de85e72a782606fa0794e79a696e5))
 
 ### Chores
 
-* **deps:** bump devalue to 5.6.4 ([da6279a](https://github.com/equaltoai/greater-components/commit/da6279a3850392a79bdb9a9687813b0b45801e79))
-* **main:** release greater 0.4.1 ([a8c7da6](https://github.com/equaltoai/greater-components/commit/a8c7da649cd324bb83ee7260550c472be4b37a99))
-* **main:** release greater 0.4.1 ([526225d](https://github.com/equaltoai/greater-components/commit/526225d60f3d838f4b9fd381f6063fa9c38d0768))
-* **release:** prepare metadata ([da8cc98](https://github.com/equaltoai/greater-components/commit/da8cc9824f1b898597726ba6cfeee80cd9af0326))
+- **deps:** bump devalue to 5.6.4 ([da6279a](https://github.com/equaltoai/greater-components/commit/da6279a3850392a79bdb9a9687813b0b45801e79))
+- **main:** release greater 0.4.1 ([a8c7da6](https://github.com/equaltoai/greater-components/commit/a8c7da649cd324bb83ee7260550c472be4b37a99))
+- **main:** release greater 0.4.1 ([526225d](https://github.com/equaltoai/greater-components/commit/526225d60f3d838f4b9fd381f6063fa9c38d0768))
+- **release:** prepare metadata ([da8cc98](https://github.com/equaltoai/greater-components/commit/da8cc9824f1b898597726ba6cfeee80cd9af0326))
 
 ## [0.4.1](https://github.com/equaltoai/greater-components/compare/greater-v0.4.0...greater-v0.4.1) (2026-03-09)
 
