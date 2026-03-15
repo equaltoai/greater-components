@@ -271,6 +271,18 @@ components:
     SoulCommStatusErrorEnvelope:
       $ref: '../spec/v3/schemas/soul-comm-status.error.schema.json'
 
+    SoulAgentCommActivityItem:
+      $ref: '../spec/v3/schemas/soul-agent-comm-activity-item.schema.json'
+
+    SoulAgentCommActivityResponse:
+      $ref: '../spec/v3/schemas/soul-agent-comm-activity.response.schema.json'
+
+    SoulAgentCommQueueItem:
+      $ref: '../spec/v3/schemas/soul-agent-comm-queue-item.schema.json'
+
+    SoulAgentCommQueueResponse:
+      $ref: '../spec/v3/schemas/soul-agent-comm-queue.response.schema.json'
+
 paths:
   /api/v1/soul/agents/{agentId}/channels:
     get:
@@ -508,6 +520,12 @@ paths:
           required: false
           schema:
             type: string
+        - name: principal
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{40}$'
         - name: channel
           in: query
           required: false
@@ -631,3 +649,159 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/comm/activity:
+    get:
+      operationId: soulAgentCommActivity
+      summary: List communication activity for a soul agent
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulAgentCommActivityResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/comm/queue:
+    get:
+      operationId: soulAgentCommQueue
+      summary: List queued inbound communications for a soul agent
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulAgentCommQueueResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/comm/status/{messageId}:
+    get:
+      operationId: soulAgentCommStatus
+      summary: Get outbound comm delivery status for a soul agent
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulCommStatusResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'

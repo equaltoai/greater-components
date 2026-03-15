@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-agent-comm-activity-item.schema.json",
+  "title": "Soul agent communication activity item",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["agent_id", "activity_id", "channel_type", "direction", "timestamp"],
+  "properties": {
+    "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "activity_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "channel_type": { "type": "string", "enum": ["email", "sms", "voice"] },
+    "direction": { "type": "string", "enum": ["inbound", "outbound"] },
+    "counterparty": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "action": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "message_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "in_reply_to": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "boundary_check": { "type": "string", "enum": ["passed", "violated", "skipped"] },
+    "preference_respected": { "type": "boolean" },
+    "timestamp": { "type": "string", "format": "date-time" }
+  }
+}

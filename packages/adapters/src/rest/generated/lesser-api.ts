@@ -164,6 +164,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/accounts/{id}/followers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_accounts_by_id_followers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accounts/{id}/following": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_accounts_by_id_following"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/accounts/{id}/mute": {
         parameters: {
             query?: never;
@@ -510,6 +542,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_api_v1_admin_accounts_by_id_unsuspend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/agents/{username}/unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_admin_agents_by_username_unlock"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1090,6 +1138,134 @@ export interface paths {
         options?: never;
         head?: never;
         patch: operations["patch_api_v1_agents_by_username"];
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_by_username_access_leases"];
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases/{leaseID}/renew/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases_by_leaseID_renew_challenge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases/{leaseID}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases_by_leaseID_revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases/{leaseID}/session-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases_by_leaseID_session_key"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases/{leaseID}/session-key/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases_by_leaseID_session_key_challenge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases/{leaseID}/token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases_by_leaseID_token"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases/challenge/agent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases_challenge_agent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/access-leases/challenge/principal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_access_leases_challenge_principal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/agents/{username}/activity": {
@@ -2286,6 +2462,38 @@ export interface paths {
         get: operations["get_api_v1_search_statuses"];
         put?: never;
         post: operations["post_api_v1_search_statuses"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/souls/{agentId}/incorporate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_souls_by_agentId_incorporate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/souls/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_souls_mine"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -4308,6 +4516,16 @@ export interface components {
             total_edges: number;
             total_nodes: number;
         };
+        AdminUnlockAgentRequest: {
+            reason?: string;
+        };
+        AdminUnlockAgentResponse: {
+            reason?: string;
+            unlocked: boolean;
+            unlocked_at: components["schemas"]["RFC3339DateTime"];
+            unlocked_by: string;
+            username: string;
+        };
         AdminUpdateTrustRequest: {
             category?: string;
             reason: string;
@@ -4338,6 +4556,69 @@ export interface components {
             username: string;
             verified: boolean;
             verified_at?: components["schemas"]["RFC3339DateTime"] | null;
+        };
+        AgentAccessLease: {
+            absolute_expires_at: components["schemas"]["RFC3339DateTime"];
+            agent_wallet: string;
+            created_at: components["schemas"]["RFC3339DateTime"];
+            device_label: string;
+            id: string;
+            idle_expires_at: components["schemas"]["RFC3339DateTime"];
+            idle_timeout_hours: number;
+            last_used_at: components["schemas"]["RFC3339DateTime"];
+            lease_version: number;
+            principal_username: string;
+            principal_wallet: string;
+            revoked_at?: components["schemas"]["RFC3339DateTime"] | null;
+            revoked_by?: string;
+            revoked_reason?: string;
+            scopes: string[];
+            session_key_created_at?: components["schemas"]["RFC3339DateTime"] | null;
+            session_key_last_used_at?: components["schemas"]["RFC3339DateTime"] | null;
+            session_key_type?: string;
+            session_public_key?: string;
+            status: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            username: string;
+        };
+        AgentAccessLeaseChallengeRequest: {
+            absolute_ttl_hours?: number;
+            agent_wallet: string;
+            device_label: string;
+            idle_timeout_hours?: number;
+            lease_id?: string;
+            principal_wallet: string;
+            scopes: string[];
+            session_public_key?: string;
+        };
+        AgentAccessLeaseChallengeResponse: {
+            absolute_ttl_hours: number;
+            action: string;
+            agent_wallet: string;
+            device_label: string;
+            expires_at: components["schemas"]["RFC3339DateTime"];
+            id: string;
+            idle_timeout_hours: number;
+            issued_at: components["schemas"]["RFC3339DateTime"];
+            lease_id: string;
+            message: string;
+            principal_wallet: string;
+            scopes: string[];
+            session_key_type?: string;
+            session_public_key?: string;
+            typed_data?: unknown;
+            username: string;
+            wallet_address: string;
+        };
+        AgentAccessLeaseListResponse: {
+            leases: components["schemas"]["AgentAccessLease"][];
+        };
+        AgentAccessLeaseSessionKeyChallengeRequest: {
+            session_public_key: string;
+        };
+        AgentAccessLeaseTokenResponse: {
+            lease_id: string;
+            token: components["schemas"]["OAuthTokenResponse"];
         };
         AgentActivityLogEntry: {
             action: string;
@@ -4525,6 +4806,10 @@ export interface components {
             message: string;
             signature: string;
         };
+        AuthorizeAgentAccessLeaseSessionKeyRequest: {
+            challenge_id: string;
+            signature: string;
+        };
         ClearNotificationsRequest: Record<string, never>;
         CommunicationAttachment: {
             content_type: string;
@@ -4615,6 +4900,12 @@ export interface components {
             unread: boolean;
         };
         ConversationList: components["schemas"]["Conversation"][];
+        CreateAgentAccessLeaseRequest: {
+            agent_challenge_id: string;
+            agent_signature: string;
+            principal_challenge_id: string;
+            principal_signature: string;
+        };
         CreateAnnouncementRequest: {
             all_day: boolean;
             content: string;
@@ -5464,6 +5755,10 @@ export interface components {
         RemoveAccountsRequest: {
             account_ids: string[];
         };
+        RenewAgentAccessLeaseTokenRequest: {
+            challenge_id: string;
+            signature: string;
+        };
         Report: {
             action_taken: boolean;
             action_taken_at?: string | null;
@@ -5591,6 +5886,9 @@ export interface components {
             notes?: string;
             severity: number;
         };
+        RevokeAgentAccessLeaseRequest: {
+            reason?: string;
+        };
         Role: {
             color?: string;
             highlighted: boolean;
@@ -5709,6 +6007,49 @@ export interface components {
         };
         /** @description Mastodon-compatible snowflake identifier (stringified uint). */
         SnowflakeID: string;
+        SoulAgentBinding: {
+            agent_username: string;
+            bound_at: components["schemas"]["RFC3339DateTime"];
+            principal_address?: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+        };
+        SoulAgentIdentity: {
+            agent_id: string;
+            capabilities?: string[];
+            domain: string;
+            ens_name?: string | null;
+            lifecycle_status?: string;
+            local_id: string;
+            mint_tx_hash?: string;
+            minted_at?: components["schemas"]["RFC3339DateTime"] | null;
+            principal_address?: string;
+            self_description_version?: number | null;
+            status: string;
+            updated_at?: components["schemas"]["RFC3339DateTime"] | null;
+            wallet: string;
+        };
+        SoulBodyBinding: {
+            bound_at: components["schemas"]["RFC3339DateTime"];
+            principal_address?: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            username: string;
+        };
+        SoulIncorporateRequest: {
+            target_agent_username: string;
+        };
+        SoulIncorporateResponse: {
+            soul: components["schemas"]["SoulInventoryItem"];
+        };
+        SoulInventoryItem: {
+            agent: components["schemas"]["SoulAgentIdentity"];
+            available_for_incorporation: boolean;
+            binding?: components["schemas"]["SoulAgentBinding"] | null;
+            binding_state: string;
+        };
+        SoulsMineResponse: {
+            count: number;
+            souls: components["schemas"]["SoulInventoryItem"][];
+        };
         Status: {
             account: components["schemas"]["Account"];
             agent_attribution?: components["schemas"]["AgentPostAttribution"] | null;
@@ -7009,6 +7350,56 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_accounts_by_id_followers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_accounts_by_id_following: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     post_api_v1_accounts_by_id_mute: {
         parameters: {
             query?: never;
@@ -7686,6 +8077,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_admin_agents_by_username_unlock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AdminUnlockAgentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminUnlockAgentResponse"];
+                };
             };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
@@ -9003,6 +9426,272 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_agents_by_username_access_leases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLeaseListResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreateAgentAccessLeaseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLease"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases_by_leaseID_renew_challenge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaseID: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLeaseChallengeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases_by_leaseID_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaseID: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RevokeAgentAccessLeaseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLease"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases_by_leaseID_session_key: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaseID: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AuthorizeAgentAccessLeaseSessionKeyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLease"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases_by_leaseID_session_key_challenge: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaseID: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentAccessLeaseSessionKeyChallengeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLeaseChallengeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases_by_leaseID_token: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaseID: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RenewAgentAccessLeaseTokenRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLeaseTokenResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases_challenge_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentAccessLeaseChallengeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLeaseChallengeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_access_leases_challenge_principal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AgentAccessLeaseChallengeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentAccessLeaseChallengeResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
@@ -11843,6 +12532,60 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_souls_by_agentId_incorporate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SoulIncorporateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulIncorporateResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_souls_mine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulsMineResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             500: components["responses"]["InternalServerError"];
         };
     };

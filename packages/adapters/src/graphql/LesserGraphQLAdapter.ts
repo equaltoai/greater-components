@@ -45,10 +45,19 @@ import type {
 	UpdateRelationshipMutationVariables,
 	AgentsQueryVariables,
 	AgentActivityQueryVariables,
+	AgentAccessLeasesQueryVariables,
 	AgentMemorySearchQueryVariables,
 	RegisterAgentMutationVariables,
 	UpdateAgentMutationVariables,
 	DelegateToAgentMutationVariables,
+	CreateAgentAccessLeasePrincipalChallengeMutationVariables,
+	CreateAgentAccessLeaseAgentChallengeMutationVariables,
+	CreateAgentAccessLeaseMutationVariables,
+	RevokeAgentAccessLeaseMutationVariables,
+	CreateAgentAccessLeaseSessionKeyChallengeMutationVariables,
+	AuthorizeAgentAccessLeaseSessionKeyMutationVariables,
+	CreateAgentAccessLeaseRenewChallengeMutationVariables,
+	ExchangeAgentAccessLeaseTokenMutationVariables,
 	UpdateAdminAgentPolicyMutationVariables,
 	AdminVerifyAgentMutationVariables,
 	AdminUnverifyAgentMutationVariables,
@@ -118,7 +127,9 @@ import {
 	AgentByUsernameDocument,
 	AgentsDocument,
 	MyAgentsDocument,
+	MySoulsDocument,
 	AgentActivityDocument,
+	AgentAccessLeasesDocument,
 	AdminAgentPolicyDocument,
 	UpdateAdminAgentPolicyDocument,
 	AgentMemorySearchDocument,
@@ -234,9 +245,18 @@ import {
 	DeleteAgentDocument,
 	DelegateToAgentDocument,
 	RevokeAgentTokenDocument,
+	CreateAgentAccessLeasePrincipalChallengeDocument,
+	CreateAgentAccessLeaseAgentChallengeDocument,
+	CreateAgentAccessLeaseDocument,
+	RevokeAgentAccessLeaseDocument,
+	CreateAgentAccessLeaseSessionKeyChallengeDocument,
+	AuthorizeAgentAccessLeaseSessionKeyDocument,
+	CreateAgentAccessLeaseRenewChallengeDocument,
+	ExchangeAgentAccessLeaseTokenDocument,
 	AdminVerifyAgentDocument,
 	AdminUnverifyAgentDocument,
 	AdminSuspendAgentDocument,
+	IncorporateSoulDocument,
 	AgentActivityUpdatesDocument,
 } from './generated/types.js';
 
@@ -736,9 +756,19 @@ export class LesserGraphQLAdapter {
 		return data.myAgents;
 	}
 
+	async getMySouls() {
+		const data = await this.query(MySoulsDocument);
+		return data.mySouls;
+	}
+
 	async getAgentActivity(variables: AgentActivityQueryVariables) {
 		const data = await this.query(AgentActivityDocument, variables);
 		return data.agentActivity;
+	}
+
+	async getAgentAccessLeases(variables: AgentAccessLeasesQueryVariables) {
+		const data = await this.query(AgentAccessLeasesDocument, variables);
+		return data.agentAccessLeases;
 	}
 
 	async getAdminAgentPolicy() {
@@ -781,6 +811,96 @@ export class LesserGraphQLAdapter {
 		return data.revokeAgentToken;
 	}
 
+	async createAgentAccessLeasePrincipalChallenge(
+		username: string,
+		input: CreateAgentAccessLeasePrincipalChallengeMutationVariables['input']
+	) {
+		const data = await this.mutate(CreateAgentAccessLeasePrincipalChallengeDocument, {
+			username,
+			input,
+		});
+		return data.createAgentAccessLeasePrincipalChallenge;
+	}
+
+	async createAgentAccessLeaseAgentChallenge(
+		username: string,
+		input: CreateAgentAccessLeaseAgentChallengeMutationVariables['input']
+	) {
+		const data = await this.mutate(CreateAgentAccessLeaseAgentChallengeDocument, {
+			username,
+			input,
+		});
+		return data.createAgentAccessLeaseAgentChallenge;
+	}
+
+	async createAgentAccessLease(
+		username: string,
+		input: CreateAgentAccessLeaseMutationVariables['input']
+	) {
+		const data = await this.mutate(CreateAgentAccessLeaseDocument, { username, input });
+		return data.createAgentAccessLease;
+	}
+
+	async revokeAgentAccessLease(
+		username: string,
+		leaseID: string,
+		input?: RevokeAgentAccessLeaseMutationVariables['input']
+	) {
+		const data = await this.mutate(RevokeAgentAccessLeaseDocument, {
+			username,
+			leaseID,
+			input,
+		});
+		return data.revokeAgentAccessLease;
+	}
+
+	async createAgentAccessLeaseSessionKeyChallenge(
+		username: string,
+		leaseID: string,
+		input: CreateAgentAccessLeaseSessionKeyChallengeMutationVariables['input']
+	) {
+		const data = await this.mutate(CreateAgentAccessLeaseSessionKeyChallengeDocument, {
+			username,
+			leaseID,
+			input,
+		});
+		return data.createAgentAccessLeaseSessionKeyChallenge;
+	}
+
+	async authorizeAgentAccessLeaseSessionKey(
+		username: string,
+		leaseID: string,
+		input: AuthorizeAgentAccessLeaseSessionKeyMutationVariables['input']
+	) {
+		const data = await this.mutate(AuthorizeAgentAccessLeaseSessionKeyDocument, {
+			username,
+			leaseID,
+			input,
+		});
+		return data.authorizeAgentAccessLeaseSessionKey;
+	}
+
+	async createAgentAccessLeaseRenewChallenge(username: string, leaseID: string) {
+		const data = await this.mutate(CreateAgentAccessLeaseRenewChallengeDocument, {
+			username,
+			leaseID,
+		});
+		return data.createAgentAccessLeaseRenewChallenge;
+	}
+
+	async exchangeAgentAccessLeaseToken(
+		username: string,
+		leaseID: string,
+		input: ExchangeAgentAccessLeaseTokenMutationVariables['input']
+	) {
+		const data = await this.mutate(ExchangeAgentAccessLeaseTokenDocument, {
+			username,
+			leaseID,
+			input,
+		});
+		return data.exchangeAgentAccessLeaseToken;
+	}
+
 	async adminVerifyAgent(username: string, input?: AdminVerifyAgentMutationVariables['input']) {
 		const data = await this.mutate(AdminVerifyAgentDocument, { username, input });
 		return data.adminVerifyAgent;
@@ -794,6 +914,23 @@ export class LesserGraphQLAdapter {
 	async adminSuspendAgent(username: string) {
 		const data = await this.mutate(AdminSuspendAgentDocument, { username });
 		return data.adminSuspendAgent;
+	}
+
+	async incorporateSoul(agentId: string, targetAgentUsername: string) {
+		const id = agentId.trim();
+		if (!id) {
+			throw new Error('agentId is required');
+		}
+		const targetUsername = targetAgentUsername.trim();
+		if (!targetUsername) {
+			throw new Error('targetAgentUsername is required');
+		}
+
+		const data = await this.mutate(IncorporateSoulDocument, {
+			agentId: id,
+			targetAgentUsername: targetUsername,
+		});
+		return data.incorporateSoul;
 	}
 
 	async search(variables: SearchQueryVariables) {

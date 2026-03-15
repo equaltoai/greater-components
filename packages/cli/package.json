@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-cli",
   "private": true,
-  "version": "0.1.15-rc.1",
+  "version": "0.4.2",
   "description": "CLI for adding Greater Components to your project",
   "type": "module",
   "bin": {
@@ -63,7 +63,7 @@
     "rehype-parse": "^9.0.1",
     "rehype-sanitize": "^6.0.0",
     "rehype-stringify": "^10.0.1",
-    "svelte-check": "^4.4.4",
+    "svelte-check": "^4.4.5",
     "typescript": "^5.9.3",
     "unified": "^11.0.5",
     "vite": "^7.3.1",

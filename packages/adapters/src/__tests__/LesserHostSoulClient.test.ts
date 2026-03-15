@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	LesserHostSoulClient,
 	LesserHostSoulClientError,
+	type SoulCommSendErrorEnvelope,
 	type SoulCommSendRequest,
 } from '../soul/client';
 
@@ -90,6 +91,7 @@ describe('LesserHostSoulClient', () => {
 			channel: 'email',
 			cursor: 'cursor-1',
 			limit: 10,
+			principal: '0x1234567890abcdef1234567890abcdef12345678',
 		});
 
 		const [url] = fetchMock.mock.calls[0] as [string];
@@ -100,6 +102,7 @@ describe('LesserHostSoulClient', () => {
 		expect(parsed.searchParams.get('channel')).toBe('email');
 		expect(parsed.searchParams.get('cursor')).toBe('cursor-1');
 		expect(parsed.searchParams.get('limit')).toBe('10');
+		expect(parsed.searchParams.get('principal')).toBe('0x1234567890abcdef1234567890abcdef12345678');
 	});
 
 	it('sends outbound communication requests', async () => {
@@ -130,6 +133,108 @@ describe('LesserHostSoulClient', () => {
 		expect(init.body).toBe(JSON.stringify(request));
 	});
 
+	it('lists agent communication activity with query params', async () => {
+		fetchMock.mockResolvedValueOnce(
+			jsonResponse({
+				version: '1',
+				count: 1,
+				activities: [
+					{
+						agent_id: 'agent-1',
+						activity_id: 'activity-1',
+						channel_type: 'email',
+						direction: 'outbound',
+						counterparty: 'artist@example.com',
+						action: 'sent',
+						message_id: 'msg-1',
+						boundary_check: 'passed',
+						preference_respected: true,
+						timestamp: '2026-03-09T00:00:00Z',
+					},
+				],
+			})
+		);
+
+		const response = await client.getAgentCommunicationActivity('agent-1', { limit: 25 });
+		const [url] = fetchMock.mock.calls[0] as [string];
+		const parsed = new URL(url);
+
+		expect(parsed.pathname).toBe('/api/v1/soul/agents/agent-1/comm/activity');
+		expect(parsed.searchParams.get('limit')).toBe('25');
+		expect(response.activities[0]).toMatchObject({
+			activity_id: 'activity-1',
+			channel_type: 'email',
+			direction: 'outbound',
+			counterparty: 'artist@example.com',
+		});
+	});
+
+	it('lists queued inbound communications for an agent', async () => {
+		fetchMock.mockResolvedValueOnce(
+			jsonResponse({
+				version: '1',
+				count: 1,
+				items: [
+					{
+						agent_id: 'agent-1',
+						message_id: 'msg-queue-1',
+						channel_type: 'sms',
+						from_number: '+15555550123',
+						from_display_name: 'Collector',
+						body: 'Interested in the new release.',
+						received_at: '2026-03-09T00:00:00Z',
+						scheduled_delivery_time: '2026-03-09T00:05:00Z',
+						status: 'queued',
+					},
+				],
+			})
+		);
+
+		const response = await client.getAgentCommunicationQueue('agent-1', { limit: 10 });
+		const [url] = fetchMock.mock.calls[0] as [string];
+		const parsed = new URL(url);
+
+		expect(parsed.pathname).toBe('/api/v1/soul/agents/agent-1/comm/queue');
+		expect(parsed.searchParams.get('limit')).toBe('10');
+		expect(response.items[0]).toMatchObject({
+			message_id: 'msg-queue-1',
+			channel_type: 'sms',
+			from_number: '+15555550123',
+			status: 'queued',
+		});
+	});
+
+	it('fetches agent-scoped communication status with reply details', async () => {
+		fetchMock.mockResolvedValueOnce(
+			jsonResponse({
+				messageId: 'msg-1',
+				status: 'sent',
+				channel: 'email',
+				agentId: 'agent-1',
+				to: 'artist@example.com',
+				replyMessageId: 'reply-1',
+				replyBody: 'Happy to connect.',
+				replyConfidence: 0.98,
+				replyReceivedAt: '2026-03-09T00:06:00Z',
+				createdAt: '2026-03-09T00:00:00Z',
+				updatedAt: '2026-03-09T00:05:00Z',
+			})
+		);
+
+		const response = await client.getAgentCommunicationStatus('agent-1', 'msg-1');
+
+		expect(response).toMatchObject({
+			messageId: 'msg-1',
+			replyMessageId: 'reply-1',
+			replyBody: 'Happy to connect.',
+			replyConfidence: 0.98,
+		});
+		expect(fetchMock).toHaveBeenCalledWith(
+			'https://lesser.host/api/v1/soul/agents/agent-1/comm/status/msg-1',
+			expect.any(Object)
+		);
+	});
+
 	it('fetches communication delivery status', async () => {
 		fetchMock.mockResolvedValueOnce(
 			jsonResponse({
@@ -152,19 +257,16 @@ describe('LesserHostSoulClient', () => {
 		);
 	});
 
-	it('surfaces typed lesser-host comm errors', async () => {
-		fetchMock.mockResolvedValueOnce(
-			jsonResponse(
-				{
-					error: {
-						code: 'comm.rate_limited',
-						message: 'Too many requests',
-						request_id: 'req-123',
-					},
-				},
-				429
-			)
-		);
+	it('surfaces typed lesser-host preference violations', async () => {
+		const errorBody: SoulCommSendErrorEnvelope = {
+			error: {
+				code: 'comm.preference_violation',
+				message: 'Outbound communication blocked by first-contact policy.',
+				request_id: 'req-123',
+			},
+		};
+
+		fetchMock.mockResolvedValueOnce(jsonResponse(errorBody, 409));
 
 		try {
 			await client.sendCommunication({
@@ -178,8 +280,8 @@ describe('LesserHostSoulClient', () => {
 			expect(error).toBeInstanceOf(LesserHostSoulClientError);
 			expect(error).toMatchObject({
 				name: 'LesserHostSoulClientError',
-				status: 429,
-				code: 'comm.rate_limited',
+				status: 409,
+				code: 'comm.preference_violation',
 				requestId: 'req-123',
 			});
 		}
