@@ -14,14 +14,13 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.4.3](https://github.com/equaltoai/greater-components/compare/greater-v0.4.2...greater-v0.4.3) (2026-03-15)
 
-
 ### Chores
 
-* **deps:** patch undici and flatted ([b8b6043](https://github.com/equaltoai/greater-components/commit/b8b6043f068f268d0d987bb477e25d91d3772ab1))
-* **deps:** patch undici and flatted ([da8a266](https://github.com/equaltoai/greater-components/commit/da8a266130baa45cea4ac243f27552623a47091b))
-* **premain:** release greater 0.4.3-rc.0 ([80933c4](https://github.com/equaltoai/greater-components/commit/80933c47dee2178a0dbe462da6ce43511d22427c))
-* **premain:** release greater 0.4.3-rc.0 ([2f911ab](https://github.com/equaltoai/greater-components/commit/2f911abc0e8516a2f2bfa3baeb4fa75265db1ab5))
-* **release:** prepare metadata ([78117f0](https://github.com/equaltoai/greater-components/commit/78117f0af1560bd57ebcfb30ce880b1fd2088c80))
+- **deps:** patch undici and flatted ([b8b6043](https://github.com/equaltoai/greater-components/commit/b8b6043f068f268d0d987bb477e25d91d3772ab1))
+- **deps:** patch undici and flatted ([da8a266](https://github.com/equaltoai/greater-components/commit/da8a266130baa45cea4ac243f27552623a47091b))
+- **premain:** release greater 0.4.3-rc.0 ([80933c4](https://github.com/equaltoai/greater-components/commit/80933c47dee2178a0dbe462da6ce43511d22427c))
+- **premain:** release greater 0.4.3-rc.0 ([2f911ab](https://github.com/equaltoai/greater-components/commit/2f911abc0e8516a2f2bfa3baeb4fa75265db1ab5))
+- **release:** prepare metadata ([78117f0](https://github.com/equaltoai/greater-components/commit/78117f0af1560bd57ebcfb30ce880b1fd2088c80))
 
 ## [0.4.3-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.2-rc.0...greater-v0.4.3-rc.0) (2026-03-15)
 
