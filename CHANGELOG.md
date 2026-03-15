@@ -12,6 +12,15 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.4.3-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.2-rc.0...greater-v0.4.3-rc.0) (2026-03-15)
+
+
+### Chores
+
+* **main:** release greater 0.4.2 ([2a41018](https://github.com/equaltoai/greater-components/commit/2a41018a1fc0cf130510f1b8a5dfcdcd562e23f0))
+* **main:** release greater 0.4.2 ([dbf2696](https://github.com/equaltoai/greater-components/commit/dbf26965d62b31ff8a6d213aee54d3499732491b))
+* **release:** prepare metadata ([e648c68](https://github.com/equaltoai/greater-components/commit/e648c68ba2f321b0b025da6c50823aef4634146b))
+
 ## [0.4.2](https://github.com/equaltoai/greater-components/compare/greater-v0.4.1...greater-v0.4.2) (2026-03-13)
 
 ### Features
