@@ -7096,6 +7096,22 @@
             "deprecationReason": null
           },
           {
+            "name": "tokenTTLHours",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "updatedAt",
             "description": null,
             "args": [],
@@ -7364,6 +7380,22 @@
             "deprecationReason": null
           },
           {
+            "name": "tokenTTLHours",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "typedDataJson",
             "description": null,
             "args": [],
@@ -7530,6 +7562,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tokenTTLHours",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
               "ofType": null
             },
             "defaultValue": null,
@@ -8300,6 +8344,18 @@
             "deprecationReason": null
           },
           {
+            "name": "delegatedByDid",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "memoryCitations",
             "description": null,
             "args": [],
@@ -8320,7 +8376,19 @@
             "deprecationReason": null
           },
           {
-            "name": "modelVersion",
+            "name": "modelId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "schemaVersion",
             "description": null,
             "args": [],
             "type": {
@@ -8421,6 +8489,18 @@
             "deprecationReason": null
           },
           {
+            "name": "delegatedByDid",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "memoryCitations",
             "description": null,
             "type": {
@@ -8441,7 +8521,19 @@
             "deprecationReason": null
           },
           {
-            "name": "modelVersion",
+            "name": "modelId",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "schemaVersion",
             "description": null,
             "type": {
               "kind": "SCALAR",
