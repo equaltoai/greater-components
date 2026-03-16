@@ -158,9 +158,11 @@ type AgentPostAttribution {
   triggerDetails: String
   memoryCitations: [String!]
   delegatedBy: String
+  delegatedByDid: String
   scopes: [String!]
   constraints: [String!]
-  modelVersion: String
+  schemaVersion: String
+  modelId: String
 }
 
 input AgentPostAttributionInput {
@@ -168,9 +170,11 @@ input AgentPostAttributionInput {
   triggerDetails: String
   memoryCitations: [String!]
   delegatedBy: String
+  delegatedByDid: String
   scopes: [String!]
   constraints: [String!]
-  modelVersion: String
+  schemaVersion: String
+  modelId: String
 }
 
 type ContentMap {
@@ -4226,6 +4230,7 @@ type AgentAccessLease {
   deviceLabel: String!
   status: String!
   idleTimeoutHours: Int!
+  tokenTTLHours: Int!
   idleExpiresAt: Time!
   absoluteExpiresAt: Time!
   lastUsedAt: Time!
@@ -4255,6 +4260,7 @@ type AgentAccessLeaseChallenge {
   deviceLabel: String!
   idleTimeoutHours: Int!
   absoluteTTLHours: Int!
+  tokenTTLHours: Int!
   message: String!
   typedDataJson: String
   issuedAt: Time!
@@ -4279,6 +4285,7 @@ input AgentAccessLeaseChallengeInput {
   leaseID: ID
   idleTimeoutHours: Int
   absoluteTTLHours: Int
+  tokenTTLHours: Int
 }
 
 input CreateAgentAccessLeaseInput {
