@@ -1,7 +1,6 @@
 import { render, fireEvent, screen } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import Annotations from '../../../../../src/components/CreativeTools/CritiqueMode/Annotations.svelte';
-import TestCritiqueContext from './TestCritiqueContext.svelte';
+import AnnotationsScenario from './AnnotationsScenario.svelte';
 import type { CritiqueAnnotation } from '../../../../../src/components/CreativeTools/CritiqueMode/context.svelte';
 
 const mockArtwork = { id: 'a1', title: 'Art' } as any;
@@ -31,12 +30,8 @@ const mockAnnotations: CritiqueAnnotation[] = [
 
 describe('CritiqueMode Annotations', () => {
 	it('renders annotations', () => {
-		render(TestCritiqueContext, {
-			props: {
-				artwork: mockArtwork,
-				initialAnnotations: mockAnnotations,
-				children: () => render(Annotations),
-			},
+		render(AnnotationsScenario, {
+			props: { artwork: mockArtwork, initialAnnotations: mockAnnotations },
 		});
 
 		const markers = screen.getAllByRole('button', { name: /Annotation/ });
@@ -44,12 +39,8 @@ describe('CritiqueMode Annotations', () => {
 	});
 
 	it.skip('shows tooltip on click', async () => {
-		render(TestCritiqueContext, {
-			props: {
-				artwork: mockArtwork,
-				initialAnnotations: mockAnnotations,
-				children: () => render(Annotations),
-			},
+		render(AnnotationsScenario, {
+			props: { artwork: mockArtwork, initialAnnotations: mockAnnotations },
 		});
 
 		const marker = screen.getByLabelText(/Annotation 1/);
@@ -61,12 +52,8 @@ describe('CritiqueMode Annotations', () => {
 	});
 
 	it.skip('toggles selection on click', async () => {
-		render(TestCritiqueContext, {
-			props: {
-				artwork: mockArtwork,
-				initialAnnotations: mockAnnotations,
-				children: () => render(Annotations),
-			},
+		render(AnnotationsScenario, {
+			props: { artwork: mockArtwork, initialAnnotations: mockAnnotations },
 		});
 
 		const marker = screen.getByLabelText(/Annotation 1/);
@@ -98,12 +85,8 @@ describe('CritiqueMode Annotations', () => {
 	});
 
 	it('applies category colors', () => {
-		render(TestCritiqueContext, {
-			props: {
-				artwork: mockArtwork,
-				initialAnnotations: mockAnnotations,
-				children: () => render(Annotations),
-			},
+		render(AnnotationsScenario, {
+			props: { artwork: mockArtwork, initialAnnotations: mockAnnotations },
 		});
 
 		const fills = document.body.querySelectorAll('.critique-annotations__marker-fill');
@@ -112,12 +95,11 @@ describe('CritiqueMode Annotations', () => {
 	});
 
 	it('does not render when disabled in config', () => {
-		render(TestCritiqueContext, {
+		render(AnnotationsScenario, {
 			props: {
 				artwork: mockArtwork,
 				config: { enableAnnotations: false },
 				initialAnnotations: mockAnnotations,
-				children: () => render(Annotations),
 			},
 		});
 

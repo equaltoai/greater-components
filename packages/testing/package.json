@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-testing",
   "private": true,
-  "version": "0.4.3",
+  "version": "0.4.4-rc.0",
   "type": "module",
   "description": "Shared testing utilities for accessibility, keyboard navigation, and visual regression testing",
   "license": "AGPL-3.0-only",
@@ -57,16 +57,16 @@
     "@playwright/test": "^1.58.2",
     "@testing-library/svelte": "^5.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "@vitest/coverage-v8": "^4.0.18",
-    "@vitest/ui": "^4.0.18",
+    "@vitest/coverage-v8": "^4.1.0",
+    "@vitest/ui": "^4.1.0",
     "chromatic": "^15.2.0",
     "commander": "^14.0.3",
-    "jsdom": "^28.1.0",
+    "jsdom": "^29.0.0",
     "playwright": "^1.58.2",
-    "svelte": "^5.53.7",
+    "svelte": "^5.53.12",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18"
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0"
   },
   "peerDependencies": {
     "@playwright/test": "^1.58.1",
