@@ -1,7 +1,6 @@
 import { render } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import TestContextWrapper from './TestContextWrapper.svelte';
-import TestContextConsumer from './TestContextConsumer.svelte';
+import ContextScenario from './ContextScenario.svelte';
 import {
 	canManage,
 	canContribute,
@@ -47,12 +46,8 @@ describe('Collaboration Context', () => {
 				context = ctx;
 			};
 
-			render(TestContextWrapper, {
-				props: {
-					collaboration: mockCollaboration,
-					role: 'owner',
-					children: () => render(TestContextConsumer, { props: { onContext } }),
-				},
+			render(ContextScenario, {
+				props: { collaboration: mockCollaboration, role: 'owner', onContext },
 			});
 
 			expect(context).toBeDefined();
@@ -67,12 +62,8 @@ describe('Collaboration Context', () => {
 				context = ctx;
 			};
 
-			render(TestContextWrapper, {
-				props: {
-					collaboration: mockCollaboration,
-					role: 'contributor',
-					children: () => render(TestContextConsumer, { props: { onContext } }),
-				},
+			render(ContextScenario, {
+				props: { collaboration: mockCollaboration, role: 'contributor', onContext },
 			});
 
 			expect(context?.currentMember?.role).toBe('contributor');
@@ -84,11 +75,11 @@ describe('Collaboration Context', () => {
 				context = ctx;
 			};
 
-			render(TestContextWrapper, {
+			render(ContextScenario, {
 				props: {
 					collaboration: mockCollaboration,
 					config: { showProject: false },
-					children: () => render(TestContextConsumer, { props: { onContext } }),
+					onContext,
 				},
 			});
 

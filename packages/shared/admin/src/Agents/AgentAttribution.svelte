@@ -6,9 +6,11 @@
 		triggerDetails?: string | null;
 		memoryCitations?: string[] | null;
 		delegatedBy?: string | null;
+		delegatedByDid?: string | null;
 		scopes?: string[] | null;
 		constraints?: string[] | null;
-		modelVersion?: string | null;
+		schemaVersion?: string | null;
+		modelId?: string | null;
 	};
 
 	interface Props {
@@ -32,8 +34,14 @@
 			{#if attribution.delegatedBy}
 				<DefinitionItem label="Delegated By">{attribution.delegatedBy}</DefinitionItem>
 			{/if}
-			{#if attribution.modelVersion}
-				<DefinitionItem label="Model">{attribution.modelVersion}</DefinitionItem>
+			{#if attribution.delegatedByDid}
+				<DefinitionItem label="Delegated By DID">{attribution.delegatedByDid}</DefinitionItem>
+			{/if}
+			{#if attribution.modelId}
+				<DefinitionItem label="Model">{attribution.modelId}</DefinitionItem>
+			{/if}
+			{#if attribution.schemaVersion}
+				<DefinitionItem label="Schema Version">{attribution.schemaVersion}</DefinitionItem>
 			{/if}
 			{#if scopes}
 				<DefinitionItem label="Scopes">{scopes}</DefinitionItem>

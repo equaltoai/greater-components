@@ -50,8 +50,14 @@ function getDistDirs(dir) {
 function scanFile(filePath) {
 	const content = fs.readFileSync(filePath, 'utf8');
 	const issues = [];
-	if (content.includes('.pnpm')) {
-		issues.push('Contains ".pnpm"');
+
+	const pnpmLines = content
+		.split('\n')
+		.filter((line) => line.includes('.pnpm'))
+		.filter((line) => !line.trimStart().startsWith('//#region '));
+
+	if (pnpmLines.length > 0) {
+		issues.push('Contains ".pnpm" outside generated source-region comments');
 	}
 	return issues;
 }
