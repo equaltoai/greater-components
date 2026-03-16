@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-adapters",
   "private": true,
-  "version": "0.4.3",
+  "version": "0.4.4-rc.0",
   "type": "module",
   "description": "Transport adapters and state management for Greater Components",
   "license": "AGPL-3.0-only",
@@ -38,17 +38,17 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "graphql": "^16.13.1",
     "graphql-ws": "^6.0.7",
-    "viem": "^2.47.0"
+    "viem": "^2.47.4"
   },
   "devDependencies": {
-    "@types/node": "^25.3.5",
-    "@vitest/coverage-v8": "^4.0.18",
-    "@vitest/ui": "^4.0.18",
-    "jsdom": "^28.1.0",
-    "svelte": "^5.53.7",
+    "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.0",
+    "@vitest/ui": "^4.1.0",
+    "jsdom": "^29.0.0",
+    "svelte": "^5.53.12",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vitest": "^4.0.18",
+    "vite": "^8.0.0",
+    "vitest": "^4.1.0",
     "ws": "^8.19.0"
   },
   "peerDependencies": {

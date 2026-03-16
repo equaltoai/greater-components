@@ -5,9 +5,20 @@ import { fileURLToPath } from 'node:url';
 
 const projectDir = path.dirname(fileURLToPath(import.meta.url));
 
+const forceEsbuildCssMinify = () => ({
+	name: 'playground-force-esbuild-css-minify',
+	config() {
+		return {
+			build: {
+				cssMinify: 'esbuild' as const,
+			},
+		};
+	},
+});
+
 export default defineConfig({
 	envPrefix: ['VITE_', 'PLAYGROUND_'],
-	plugins: [sveltekit()],
+	plugins: [sveltekit(), forceEsbuildCssMinify()],
 	server: {
 		port: 5173,
 		host: true,
