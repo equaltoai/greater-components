@@ -867,6 +867,21 @@ export type AgentPostAttributionInput = {
   readonly triggerType?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type AgentRuntimeSession = {
+  readonly __typename: 'AgentRuntimeSession';
+  readonly absoluteExpiresAt: Scalars['Time']['output'];
+  readonly clientID: Scalars['String']['output'];
+  readonly createdAt: Scalars['Time']['output'];
+  readonly deviceLabel: Scalars['String']['output'];
+  readonly idleExpiresAt: Scalars['Time']['output'];
+  readonly lastUsedAt: Scalars['Time']['output'];
+  readonly revoked: Scalars['Boolean']['output'];
+  readonly revokedAt?: Maybe<Scalars['Time']['output']>;
+  readonly revokedReason?: Maybe<Scalars['String']['output']>;
+  readonly scope: Scalars['String']['output'];
+  readonly sessionID: Scalars['ID']['output'];
+};
+
 export type AgentType =
   | 'ASSISTANT'
   | 'BRIDGE'
@@ -2705,6 +2720,7 @@ export type Mutation = {
   readonly restoreRevision: Article;
   readonly resumeFederation: FederationManagementStatus;
   readonly revokeAgentAccessLease: AgentAccessLease;
+  readonly revokeAgentRuntimeSession: AgentRuntimeSession;
   readonly revokeAgentToken: Scalars['Boolean']['output'];
   readonly revokeVouch: Scalars['Boolean']['output'];
   readonly saveMarkers: MarkerSet;
@@ -3374,6 +3390,13 @@ export type MutationResumeFederationArgs = {
 export type MutationRevokeAgentAccessLeaseArgs = {
   input?: InputMaybe<RevokeAgentAccessLeaseInput>;
   leaseID: Scalars['ID']['input'];
+  username: Scalars['String']['input'];
+};
+
+
+export type MutationRevokeAgentRuntimeSessionArgs = {
+  reason?: InputMaybe<Scalars['String']['input']>;
+  sessionID: Scalars['ID']['input'];
   username: Scalars['String']['input'];
 };
 
@@ -4091,6 +4114,7 @@ export type Query = {
   readonly agentAccessLeases: ReadonlyArray<AgentAccessLease>;
   readonly agentActivity: AgentActivityConnection;
   readonly agentMemorySearch: ObjectConnection;
+  readonly agentRuntimeSessions: ReadonlyArray<AgentRuntimeSession>;
   readonly agents: AgentConnection;
   readonly aiAnalysis?: Maybe<AiAnalysis>;
   readonly aiCapabilities: AiCapabilities;
@@ -4341,6 +4365,11 @@ export type QueryAgentMemorySearchArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   query: Scalars['String']['input'];
   tags?: InputMaybe<ReadonlyArray<Scalars['String']['input']>>;
+};
+
+
+export type QueryAgentRuntimeSessionsArgs = {
+  username: Scalars['String']['input'];
 };
 
 
