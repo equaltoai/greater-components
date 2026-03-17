@@ -1316,6 +1316,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/agents/{username}/runtime-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_agents_by_username_runtime_sessions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{username}/runtime-sessions/{sessionID}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_agents_by_username_runtime_sessions_by_sessionID_revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/agents/{username}/suspend": {
         parameters: {
             query?: never;
@@ -4645,6 +4677,7 @@ export interface components {
             agent_info?: unknown;
             agent_username: string;
             bio?: string;
+            device_label?: string;
             display_name: string;
             expires_in?: number;
             scopes: string[];
@@ -4717,8 +4750,23 @@ export interface components {
             public_key: string;
             signature: string;
         };
+        AgentRuntimeSession: {
+            absolute_expires_at: components["schemas"]["RFC3339DateTime"];
+            client_id: string;
+            created_at: components["schemas"]["RFC3339DateTime"];
+            device_label: string;
+            idle_expires_at: components["schemas"]["RFC3339DateTime"];
+            last_used_at: components["schemas"]["RFC3339DateTime"];
+            revoked: boolean;
+            revoked_at?: components["schemas"]["RFC3339DateTime"] | null;
+            revoked_reason?: string;
+            scope: string;
+            session_id: string;
+        };
+        AgentRuntimeSessionList: components["schemas"]["AgentRuntimeSession"][];
         AgentSelfAuthTokenRequest: {
             challenge_id: string;
+            device_label?: string;
             signature: string;
             username: string;
         };
@@ -4726,6 +4774,7 @@ export interface components {
             agent_info?: unknown;
             bio?: string;
             challenge_id: string;
+            device_label?: string;
             display_name: string;
             key_type: string;
             public_key: string;
@@ -5892,6 +5941,9 @@ export interface components {
             severity: number;
         };
         RevokeAgentAccessLeaseRequest: {
+            reason?: string;
+        };
+        RevokeAgentRuntimeSessionRequest: {
             reason?: string;
         };
         Role: {
@@ -9786,6 +9838,62 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_agents_by_username_runtime_sessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRuntimeSessionList"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_agents_by_username_runtime_sessions_by_sessionID_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionID: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RevokeAgentRuntimeSessionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRuntimeSession"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
