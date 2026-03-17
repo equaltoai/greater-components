@@ -14,24 +14,21 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.4.5-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.4-rc.0...greater-v0.4.5-rc.0) (2026-03-17)
 
-
 ### Features
 
-* **adapters:** sync lesser contract updates ([71fd0c1](https://github.com/equaltoai/greater-components/commit/71fd0c1e64f8925537ae51f2682a09f6ceec3a99))
-* **adapters:** sync lesser contract updates ([76fa189](https://github.com/equaltoai/greater-components/commit/76fa1895a3b557f192486e12321dda05254da735))
-
+- **adapters:** sync lesser contract updates ([71fd0c1](https://github.com/equaltoai/greater-components/commit/71fd0c1e64f8925537ae51f2682a09f6ceec3a99))
+- **adapters:** sync lesser contract updates ([76fa189](https://github.com/equaltoai/greater-components/commit/76fa1895a3b557f192486e12321dda05254da735))
 
 ### Bug Fixes
 
-* **ci:** skip a11y comments on fork PRs ([8d44561](https://github.com/equaltoai/greater-components/commit/8d445617cf6308c70e0202c0d2c80a116722a950))
-* **ci:** skip coverage comments on fork PRs ([e3f7fee](https://github.com/equaltoai/greater-components/commit/e3f7fee538a6794baa36067ed732b4aa437b82cc))
-* **registry:** align staging release metadata ([8bfc673](https://github.com/equaltoai/greater-components/commit/8bfc6735580edb8b90efbe89d8e9f2d22e6bc41f))
-
+- **ci:** skip a11y comments on fork PRs ([8d44561](https://github.com/equaltoai/greater-components/commit/8d445617cf6308c70e0202c0d2c80a116722a950))
+- **ci:** skip coverage comments on fork PRs ([e3f7fee](https://github.com/equaltoai/greater-components/commit/e3f7fee538a6794baa36067ed732b4aa437b82cc))
+- **registry:** align staging release metadata ([8bfc673](https://github.com/equaltoai/greater-components/commit/8bfc6735580edb8b90efbe89d8e9f2d22e6bc41f))
 
 ### Chores
 
-* **premain:** promote staging adapter sync ([282a959](https://github.com/equaltoai/greater-components/commit/282a95915b0cae995a46eab0926295f34dd5ed23))
-* **premain:** promote staging adapter sync ([548e7a2](https://github.com/equaltoai/greater-components/commit/548e7a266f36b3202846bdf14fd80f6cb6d45823))
+- **premain:** promote staging adapter sync ([282a959](https://github.com/equaltoai/greater-components/commit/282a95915b0cae995a46eab0926295f34dd5ed23))
+- **premain:** promote staging adapter sync ([548e7a2](https://github.com/equaltoai/greater-components/commit/548e7a266f36b3202846bdf14fd80f6cb6d45823))
 
 ## [0.4.4-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.3-rc.0...greater-v0.4.4-rc.0) (2026-03-16)
 
