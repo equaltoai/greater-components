@@ -6853,13 +6853,7 @@
           "StructuredData",
           "OpenGraphMeta"
         ],
-        "shared": [
-          "primitives",
-          "icons",
-          "content",
-          "utils",
-          "headless"
-        ],
+        "shared": ["primitives", "icons", "content", "utils", "headless"],
         "patterns": [],
         "components": [
           "Article",
@@ -7126,13 +7120,7 @@
           "RulesSidebar",
           "WikiPage"
         ],
-        "shared": [
-          "primitives",
-          "icons",
-          "content",
-          "utils",
-          "headless"
-        ],
+        "shared": ["primitives", "icons", "content", "utils", "headless"],
         "patterns": [],
         "components": [
           "Community",
@@ -7433,14 +7421,7 @@
           "PremiumBadge",
           "InstitutionalTools"
         ],
-        "shared": [
-          "primitives",
-          "headless",
-          "icons",
-          "tokens",
-          "adapters",
-          "utils"
-        ],
+        "shared": ["primitives", "headless", "icons", "tokens", "adapters", "utils"],
         "patterns": [],
         "components": [
           "Artwork",
@@ -8794,15 +8775,7 @@
       "name": "search",
       "version": "0.4.2",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
-      "exports": [
-        "Root",
-        "Bar",
-        "Filters",
-        "Results",
-        "ActorResult",
-        "NoteResult",
-        "TagResult"
-      ],
+      "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
       "files": [
         {
           "path": "src/ActorResult.svelte",
