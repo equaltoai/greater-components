@@ -14,16 +14,14 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.5.1-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.5.1-rc.0...greater-v0.5.1-rc.1) (2026-03-19)
 
-
 ### CI
 
-* **prerelease:** ignore stable manifest changes ([f087528](https://github.com/equaltoai/greater-components/commit/f087528bb68ef9aba9cf184739e861470cd26d57))
-
+- **prerelease:** ignore stable manifest changes ([f087528](https://github.com/equaltoai/greater-components/commit/f087528bb68ef9aba9cf184739e861470cd26d57))
 
 ### Chores
 
-* **staging:** backmerge main into staging ([49300c5](https://github.com/equaltoai/greater-components/commit/49300c5cf8d8b4b480f57dfff5549a72ddb16cac))
-* **staging:** backmerge main into staging (repair promotion flow) ([5aec240](https://github.com/equaltoai/greater-components/commit/5aec24097c6404c95cd6d10cc4bf93d828d4e8a4))
+- **staging:** backmerge main into staging ([49300c5](https://github.com/equaltoai/greater-components/commit/49300c5cf8d8b4b480f57dfff5549a72ddb16cac))
+- **staging:** backmerge main into staging (repair promotion flow) ([5aec240](https://github.com/equaltoai/greater-components/commit/5aec24097c6404c95cd6d10cc4bf93d828d4e8a4))
 
 ## [0.5.1-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.5-rc.0...greater-v0.5.1-rc.0) (2026-03-19)
 
