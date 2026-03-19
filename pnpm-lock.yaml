@@ -25,7 +25,7 @@ overrides:
   serialize-javascript@^6.0.0: ^7.0.3
   serialize-javascript@^7.0.0: ^7.0.3
   tmp: ^0.2.4
-  undici: ^7.24.3
+  undici: ^7.24.4
   workbox-build: ^7.4.0
 
 importers:
