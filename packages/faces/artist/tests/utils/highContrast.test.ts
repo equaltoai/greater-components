@@ -8,7 +8,6 @@ import {
 	applyHighContrastStyles,
 	preserveArtworkColors,
 	removeColorPreservation,
-	HIGH_CONTRAST_STYLES,
 	HIGH_CONTRAST_DARK_STYLES,
 } from '../../src/utils/highContrast';
 

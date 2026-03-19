@@ -12,7 +12,33 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
-## [0.5.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.4...greater-v0.5.0) (2026-03-17)
+## [0.5.1-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.5.1-rc.0...greater-v0.5.1-rc.1) (2026-03-19)
+
+### CI
+
+- **prerelease:** ignore stable manifest changes ([f087528](https://github.com/equaltoai/greater-components/commit/f087528bb68ef9aba9cf184739e861470cd26d57))
+
+### Chores
+
+- **staging:** backmerge main into staging ([49300c5](https://github.com/equaltoai/greater-components/commit/49300c5cf8d8b4b480f57dfff5549a72ddb16cac))
+- **staging:** backmerge main into staging (repair promotion flow) ([5aec240](https://github.com/equaltoai/greater-components/commit/5aec24097c6404c95cd6d10cc4bf93d828d4e8a4))
+
+## [0.5.1-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.5-rc.0...greater-v0.5.1-rc.0) (2026-03-19)
+
+### Bug Fixes
+
+- **adapters:** guard conversation participant id ([0c9db51](https://github.com/equaltoai/greater-components/commit/0c9db51e2387396487d9bfbf04cc0e292fe63e7e))
+- **deps:** align undici override with lockfile ([5c2ae6b](https://github.com/equaltoai/greater-components/commit/5c2ae6b2fadd3f7bbe806c3630746176e7e1f976))
+- **registry:** refresh checksums after warning cleanup ([76250a5](https://github.com/equaltoai/greater-components/commit/76250a5e8fcd8af84afe63a9c7b69fe0f68192b5))
+
+### Chores
+
+- **staging:** backmerge premain into staging ([d906466](https://github.com/equaltoai/greater-components/commit/d906466b6eb819818a12cab7527f3224dd7fa479))
+- **staging:** backmerge premain into staging ([5f4b78e](https://github.com/equaltoai/greater-components/commit/5f4b78e593fe5da09fad4d0a170c2a029f004dfb))
+- sync lesser v1.1.52 and refresh dependencies ([0fc9d8b](https://github.com/equaltoai/greater-components/commit/0fc9d8b087e59b4f6c097900822623e1cb02e65f))
+- sync lesser v1.1.52 and refresh dependencies ([11ee095](https://github.com/equaltoai/greater-components/commit/11ee095af48f583cc7dda49e4e7adb26b98d7e35))
+
+## [0.4.5-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.4-rc.0...greater-v0.4.5-rc.0) (2026-03-17)
 
 ### Features
 
@@ -27,21 +53,8 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ### Chores
 
-- **main:** promote premain adapter sync ([af34ff6](https://github.com/equaltoai/greater-components/commit/af34ff6474c6ca70e1b1b9dc48d3f5185377a5b6))
-- **main:** promote premain adapter sync ([af369e8](https://github.com/equaltoai/greater-components/commit/af369e88a1ee5f24c7b852da93262bd24aa25891))
+- **premain:** promote staging adapter sync ([282a959](https://github.com/equaltoai/greater-components/commit/282a95915b0cae995a46eab0926295f34dd5ed23))
 - **premain:** promote staging adapter sync ([548e7a2](https://github.com/equaltoai/greater-components/commit/548e7a266f36b3202846bdf14fd80f6cb6d45823))
-
-## [0.4.4](https://github.com/equaltoai/greater-components/compare/greater-v0.4.3...greater-v0.4.4) (2026-03-16)
-
-### Chores
-
-- **premain:** release greater 0.4.4-rc.0 ([6e86938](https://github.com/equaltoai/greater-components/commit/6e86938e02d6cc52a7a642b8cffb664d8c01a398))
-- **premain:** release greater 0.4.4-rc.0 ([55f8b66](https://github.com/equaltoai/greater-components/commit/55f8b664c3de11dae97889f59dfc7de8323a1c4c))
-- promote premain into main ([2ae6bbc](https://github.com/equaltoai/greater-components/commit/2ae6bbcf6a0a9a7e256c90bf188c13912ae7dc84))
-- promote staging into premain ([19eddb3](https://github.com/equaltoai/greater-components/commit/19eddb33fd025be463efd0e4a620db5daa9a5e4c))
-- **release:** prepare metadata ([8a923d9](https://github.com/equaltoai/greater-components/commit/8a923d9ebe5fef01b0c23708e1f8ba75b5edd9c4))
-- sync lesser contracts and refresh dependencies ([ba941c0](https://github.com/equaltoai/greater-components/commit/ba941c01830eea459a3351755aeedfc5f97d199f))
-- sync Lesser contracts and refresh dependencies ([8fe9cee](https://github.com/equaltoai/greater-components/commit/8fe9cee039f23cbfd946654a60b1134bd38a25c7))
 
 ## [0.4.4-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.3-rc.0...greater-v0.4.4-rc.0) (2026-03-16)
 
@@ -50,16 +63,6 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - promote staging into premain ([19eddb3](https://github.com/equaltoai/greater-components/commit/19eddb33fd025be463efd0e4a620db5daa9a5e4c))
 - sync lesser contracts and refresh dependencies ([ba941c0](https://github.com/equaltoai/greater-components/commit/ba941c01830eea459a3351755aeedfc5f97d199f))
 - sync Lesser contracts and refresh dependencies ([8fe9cee](https://github.com/equaltoai/greater-components/commit/8fe9cee039f23cbfd946654a60b1134bd38a25c7))
-
-## [0.4.3](https://github.com/equaltoai/greater-components/compare/greater-v0.4.2...greater-v0.4.3) (2026-03-15)
-
-### Chores
-
-- **deps:** patch undici and flatted ([b8b6043](https://github.com/equaltoai/greater-components/commit/b8b6043f068f268d0d987bb477e25d91d3772ab1))
-- **deps:** patch undici and flatted ([da8a266](https://github.com/equaltoai/greater-components/commit/da8a266130baa45cea4ac243f27552623a47091b))
-- **premain:** release greater 0.4.3-rc.0 ([80933c4](https://github.com/equaltoai/greater-components/commit/80933c47dee2178a0dbe462da6ce43511d22427c))
-- **premain:** release greater 0.4.3-rc.0 ([2f911ab](https://github.com/equaltoai/greater-components/commit/2f911abc0e8516a2f2bfa3baeb4fa75265db1ab5))
-- **release:** prepare metadata ([78117f0](https://github.com/equaltoai/greater-components/commit/78117f0af1560bd57ebcfb30ce880b1fd2088c80))
 
 ## [0.4.3-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.4.2-rc.0...greater-v0.4.3-rc.0) (2026-03-15)
 

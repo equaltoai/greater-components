@@ -76,13 +76,12 @@ describe('Transitions', () => {
 
 	describe('slideIn', () => {
 		it('returns default config', () => {
-			const config = slideIn(mockElement);
-			expect(config).toHaveProperty('duration', 250);
-			expect(config.tick).toBeInstanceOf(Function);
+			expect(slideIn(mockElement)).toHaveProperty('duration', 250);
+			expect(slideIn(mockElement).tick).toBeInstanceOf(Function);
 		});
 
 		it('handles x parameter (positive)', () => {
-			const config = slideIn(mockElement, { x: 100 });
+			slideIn(mockElement, { x: 100 });
 			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
 			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
 			expect(keyframes?.[0]).toMatchObject({ transform: 'translateX(100px)' });
@@ -90,7 +89,7 @@ describe('Transitions', () => {
 		});
 
 		it('handles opacity parameter', () => {
-			const config = slideIn(mockElement, { opacity: false });
+			slideIn(mockElement, { opacity: false });
 			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
 			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
 			expect(keyframes?.[0]).toMatchObject({ opacity: 1 });
@@ -100,13 +99,12 @@ describe('Transitions', () => {
 
 	describe('scaleIn', () => {
 		it('returns default config', () => {
-			const config = scaleIn(mockElement);
-			expect(config).toHaveProperty('duration', 250);
-			expect(config.tick).toBeInstanceOf(Function);
+			expect(scaleIn(mockElement)).toHaveProperty('duration', 250);
+			expect(scaleIn(mockElement).tick).toBeInstanceOf(Function);
 		});
 
 		it('generates correct keyframes for scale', () => {
-			const config = scaleIn(mockElement, { start: 0.5 });
+			scaleIn(mockElement, { start: 0.5 });
 			const animate = Element.prototype.animate as unknown as { mock: { calls: unknown[][] } };
 			const keyframes = animate.mock.calls[0]?.[0] as Keyframe[] | undefined;
 			expect(keyframes?.[0]).toMatchObject({ transform: 'scale(0.5)' });
