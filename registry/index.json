@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-19T13:49:54.111Z",
+  "generatedAt": "2026-03-19T14:13:05.017Z",
   "ref": "greater-v0.4.2",
   "version": "0.4.2",
   "checksums": {
@@ -155,7 +155,7 @@
     "packages/headless/src/primitives/tooltip.ts": "sha256-3mLjfRU+IBnD+dc3wMvyHpCJRB5WyauJKc2PXi8GV+k=",
     "packages/headless/src/tabs.ts": "sha256-nozuXtrzLWRkw2pAhVIndVwBAF9ay57HuZU26tfhPME=",
     "packages/headless/src/tooltip.ts": "sha256-FFVOJjNJhjWhdQdlTZADvbeCRMYy/eq3dqlHWVwOvDo=",
-    "packages/headless/src/types/common.ts": "sha256-RSOUXgYFxyMiAvV15yfn+x3ULmxwUGuPxyiZlfU6FJM=",
+    "packages/headless/src/types/common.ts": "sha256-FCVaVH6EIKuVKKfHPDd/Dc63OdfFq+yyB5XQ0QjaQy4=",
     "packages/headless/src/utils/csp-safe-styles.ts": "sha256-A0sV4vQaD+nAucaO6P2K+Ogjz5s5Q/7wOqR+ZXun6Vs=",
     "packages/headless/src/utils/id.ts": "sha256-DAeQKdvPyUXsLpJc7koR+HKWCOnmzSGUvj+m7GZwAkM=",
     "packages/headless/src/utils/keyboard.ts": "sha256-b3+V6UrcoO1rPpQ6KfdH9HApWevCCKAvQt1/FNh12lA=",
@@ -827,7 +827,7 @@
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-13y12ovgBLm5aZQ7K90w+XVxhUWIKB/eaPVEJ4kPeBI=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-Y7ffj8POCjxK2nqjrGFA/Ts1BKDEEb8h2yy/utHh9D8=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-CNespFL+Oe/SQS6WpPNJLSdB7qXnNOp7mhBqylR3thw=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.ts": "sha256-4U/b1aHeGBfl+YC+R+XaeY0Ts8hY8Er+3XfqUhSpqWY=",
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
@@ -850,7 +850,7 @@
     "packages/adapters/src/mappers/mastodon/mappers.ts": "sha256-azySwXrEAWqu3nuiQkR3IFQ84Z9Pr0boYFgzpqXYJtE=",
     "packages/adapters/src/mappers/mastodon/types.d.ts": "sha256-LLN8HNltLV9QnLl0tY3zOF4ovD0+sYN0UvGJIx7MH70=",
     "packages/adapters/src/mappers/mastodon/types.ts": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
-    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-auhGngSfS+LxK6ghv53K01hMOpbxcaQZU2vON93P6Ag=",
+    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-aV9GjCb7HOCFIGzIvcCuZL5VaV/LJrZAr151Ddtq4lk=",
     "packages/adapters/src/messaging/index.ts": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-ehDle02wDrnpb+OmdCcEZKSJ9q942CMqtvncdlM22bU=",
@@ -2143,8 +2143,8 @@
         },
         {
           "path": "src/types/common.ts",
-          "checksum": "sha256-RSOUXgYFxyMiAvV15yfn+x3ULmxwUGuPxyiZlfU6FJM=",
-          "size": 2480
+          "checksum": "sha256-FCVaVH6EIKuVKKfHPDd/Dc63OdfFq+yyB5XQ0QjaQy4=",
+          "size": 2488
         },
         {
           "path": "src/utils/csp-safe-styles.ts",
@@ -5561,8 +5561,8 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
-          "checksum": "sha256-Y7ffj8POCjxK2nqjrGFA/Ts1BKDEEb8h2yy/utHh9D8=",
-          "size": 52204
+          "checksum": "sha256-CNespFL+Oe/SQS6WpPNJLSdB7qXnNOp7mhBqylR3thw=",
+          "size": 52148
         },
         {
           "path": "src/graphql/optimistic.d.ts",
@@ -5676,8 +5676,8 @@
         },
         {
           "path": "src/messaging/createLesserMessagesHandlers.ts",
-          "checksum": "sha256-auhGngSfS+LxK6ghv53K01hMOpbxcaQZU2vON93P6Ag=",
-          "size": 8674
+          "checksum": "sha256-aV9GjCb7HOCFIGzIvcCuZL5VaV/LJrZAr151Ddtq4lk=",
+          "size": 8821
         },
         {
           "path": "src/messaging/index.ts",
