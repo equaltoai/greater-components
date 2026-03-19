@@ -4,6 +4,7 @@ on:
   push:
     branches: ['premain']
     paths-ignore:
+      - '.release-please-manifest.json'
       - '.release-please-manifest.premain.json'
       - 'CHANGELOG.md'
       - 'package.json'
