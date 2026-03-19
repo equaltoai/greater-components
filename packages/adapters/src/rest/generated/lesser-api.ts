@@ -52,6 +52,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/.well-known/oauth-authorization-server": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_well_known_oauth_authorization_server"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/.well-known/reputation-keys": {
         parameters: {
             query?: never;
@@ -4829,6 +4845,7 @@ export interface components {
             [key: string]: unknown;
         };
         AppRegistrationRequest: {
+            agent_username?: string;
             client_class?: string;
             client_name: string;
             redirect_uris: string;
@@ -7163,6 +7180,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NodeInfoWellKnown"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_well_known_oauth_authorization_server: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Map7d31df2b"];
                 };
             };
             400: components["responses"]["BadRequest"];
