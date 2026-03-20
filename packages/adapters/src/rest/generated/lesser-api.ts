@@ -1540,6 +1540,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/apps/{id}/rotate_secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_apps_by_id_rotate_secret"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/webauthn/credentials": {
         parameters: {
             query?: never;
@@ -3796,6 +3812,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/device": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_auth_device"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/wallet/challenge": {
         parameters: {
             query?: never;
@@ -4062,6 +4094,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_oauth_device_verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/oauth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_oauth_register"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4848,18 +4896,35 @@ export interface components {
             agent_username?: string;
             client_class?: string;
             client_name: string;
+            grant_types?: string;
             redirect_uris: string;
             scopes: string;
+            token_endpoint_auth_method?: string;
             website?: string;
         };
         AppRegistrationResponse: {
             client_id: string;
             client_secret?: string;
+            grant_types?: string[];
             id: string;
             name: string;
             redirect_uri: string;
+            token_endpoint_auth_method?: string;
             vapid_key?: string;
             website?: string;
+        };
+        AppSecretRotationRequest: {
+            force_invalidate?: boolean;
+            grace_period_seconds?: number;
+        };
+        AppSecretRotationResponse: {
+            client_id: string;
+            client_secret: string;
+            forced_invalidation?: boolean;
+            grace_period_seconds?: number;
+            previous_secret_valid_until?: string;
+            rotated_at?: string;
+            token_endpoint_auth_method?: string;
         };
         AuthAuthResponse: {
             access_token: string;
@@ -5650,6 +5715,35 @@ export interface components {
             scopes?: string[];
             status: string;
             user_code: string;
+        };
+        OAuthDynamicClientRegistrationRequest: {
+            agent_username?: string;
+            client_class?: string;
+            client_name?: string;
+            client_uri?: string;
+            grant_types?: string[];
+            redirect_uris?: string[];
+            scope?: string;
+            software_id?: string;
+            software_version?: string;
+            token_endpoint_auth_method?: string;
+        };
+        OAuthDynamicClientRegistrationResponse: {
+            agent_username?: string;
+            client_class?: string;
+            client_id: string;
+            client_id_issued_at: number;
+            client_name?: string;
+            client_secret?: string;
+            client_secret_expires_at: number;
+            client_uri?: string;
+            grant_types?: string[];
+            redirect_uris?: string[];
+            registration_source?: string;
+            scope?: string;
+            software_id?: string;
+            software_version?: string;
+            token_endpoint_auth_method?: string;
         };
         OAuthErrorResponse: {
             error: string;
@@ -10292,6 +10386,34 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_apps_by_id_rotate_secret: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppSecretRotationResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
         };
@@ -15130,6 +15252,26 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_auth_device: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     post_auth_wallet_challenge: {
         parameters: {
             query?: never;
@@ -15629,6 +15771,87 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_oauth_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    agent_username?: string;
+                    client_class?: string;
+                    client_name: string;
+                    /** Format: uri */
+                    client_uri?: string;
+                    grant_types?: unknown[];
+                    redirect_uris: unknown[];
+                    scope?: string;
+                    software_id?: string;
+                    software_version?: string;
+                    token_endpoint_auth_method?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        agent_username?: string;
+                        client_class?: string;
+                        client_id: string;
+                        /** Format: int64 */
+                        client_id_issued_at: number;
+                        client_name?: string;
+                        client_secret?: string;
+                        /** Format: int64 */
+                        client_secret_expires_at: number;
+                        /** Format: uri */
+                        client_uri?: string;
+                        grant_types?: unknown[];
+                        redirect_uris?: unknown[];
+                        registration_source?: string;
+                        scope?: string;
+                        software_id?: string;
+                        software_version?: string;
+                        token_endpoint_auth_method?: string;
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            /** @description Unsupported media type */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
             422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalServerError"];
