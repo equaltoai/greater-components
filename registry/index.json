@@ -1,9 +1,9 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-20T15:36:12.327Z",
-  "ref": "greater-v0.5.3-rc.0",
-  "version": "0.5.3-rc.0",
+  "generatedAt": "2026-03-20T19:55:19.723Z",
+  "ref": "greater-v0.5.3",
+  "version": "0.5.3",
   "checksums": {
     "packages/primitives/src/assets/greater-default-profile.png": "sha256-fiYnr2MUUA1ZEBJHvY1Ppn00rF9WSgA8IAxwb0umSeU=",
     "packages/primitives/src/assets.d.ts": "sha256-mcuvYSPf1CA84g8LB5UTkxkmJIqwt8oxWdhiebocyfI=",
@@ -823,7 +823,7 @@
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-M0UwWko7U1Cgv/EZv6CStGHfwidKao9BxgJRvKcF8N8=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
-    "packages/adapters/src/graphql/generated/types.ts": "sha256-G5NFTyVGkz/sL1N4NY485xUFeeJ4oZfM7uJCE6WHmg4=",
+    "packages/adapters/src/graphql/generated/types.ts": "sha256-DPLar6rX8bRFD3pbCbb58YjRib0zwYbCIOBTwzI7RPc=",
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-13y12ovgBLm5aZQ7K90w+XVxhUWIKB/eaPVEJ4kPeBI=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
@@ -899,7 +899,7 @@
     "packages/faces/social/src/adapters/cache.ts": "sha256-32jUHLAsYoK4U0JZ6hswGUlQOmwhJ5yquqhMqyfrc4I=",
     "packages/faces/social/src/adapters/graphql/client.ts": "sha256-yor+sP4J7hzK+igh2s4mujPOUZTRDN/e3nU1eccrSyo=",
     "packages/faces/social/src/adapters/graphql/generated/possible-types.ts": "sha256-jICUa0Jvj62nX0BdiBLTWoH2TII2SjAkM3ivA4dyuyA=",
-    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-G5NFTyVGkz/sL1N4NY485xUFeeJ4oZfM7uJCE6WHmg4=",
+    "packages/faces/social/src/adapters/graphql/generated/types.ts": "sha256-DPLar6rX8bRFD3pbCbb58YjRib0zwYbCIOBTwzI7RPc=",
     "packages/faces/social/src/adapters/graphql/index.ts": "sha256-SMi4iyLZqIOJKJyIpt2msJuQELlVAFJlnxBOdaL0ftY=",
     "packages/faces/social/src/adapters/graphql/queries.ts": "sha256-uiYJnwcQO+eaZUiTgyKJMxpeoluOuagazSLjQUdMR8M=",
     "packages/faces/social/src/adapters/graphql/types.ts": "sha256-0GgEc9AYxNSfWTVE9POQu0haMmO+PydpLzVw90hoDls=",
@@ -1367,7 +1367,7 @@
   "components": {
     "primitives": {
       "name": "primitives",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Primitive UI components for Greater Components",
       "type": "primitives",
       "files": [
@@ -2008,21 +2008,21 @@
         }
       ],
       "dependencies": [
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "tokens", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "tokens", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "tags": []
     },
     "headless": {
       "name": "headless",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Headless UI primitives for Greater Components - behavior without styling",
       "type": "primitives",
       "files": [
@@ -2172,7 +2172,7 @@
     },
     "icons": {
       "name": "icons",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Icon components for Greater Components",
       "type": "primitives",
       "files": [
@@ -5233,7 +5233,7 @@
     },
     "tokens": {
       "name": "tokens",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Design tokens for Greater Components",
       "type": "utilities",
       "files": [
@@ -5304,7 +5304,7 @@
     },
     "utils": {
       "name": "utils",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Utility functions for Greater Components",
       "type": "utilities",
       "files": [
@@ -5495,7 +5495,7 @@
     },
     "adapters": {
       "name": "adapters",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Transport adapters and state management for Greater Components",
       "type": "adapters",
       "files": [
@@ -5541,8 +5541,8 @@
         },
         {
           "path": "src/graphql/generated/types.ts",
-          "checksum": "sha256-G5NFTyVGkz/sL1N4NY485xUFeeJ4oZfM7uJCE6WHmg4=",
-          "size": 1529987
+          "checksum": "sha256-DPLar6rX8bRFD3pbCbb58YjRib0zwYbCIOBTwzI7RPc=",
+          "size": 1530557
         },
         {
           "path": "src/graphql/index.d.ts",
@@ -5899,7 +5899,7 @@
     },
     "content": {
       "name": "content",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Content rendering components (CodeBlock, MarkdownRenderer) for Greater Components",
       "type": "utilities",
       "files": [
@@ -5919,7 +5919,7 @@
           "size": 1119
         }
       ],
-      "dependencies": [{ "name": "primitives", "version": "0.5.3-rc.0" }],
+      "dependencies": [{ "name": "primitives", "version": "0.5.3" }],
       "peerDependencies": [
         { "name": "hast-util-sanitize", "version": "^5.0.2" },
         { "name": "rehype-sanitize", "version": "^6.0.0" },
@@ -5929,8 +5929,8 @@
         { "name": "remark-rehype", "version": "^11.1.2" },
         { "name": "shiki", "version": "^4.0.2" },
         { "name": "unified", "version": "^11.0.5" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "tags": []
@@ -5939,7 +5939,7 @@
   "faces": {
     "social": {
       "name": "social",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Social/Twitter-style UI components for ActivityPub/Fediverse applications",
       "includes": {
         "primitives": [
@@ -6031,8 +6031,8 @@
         },
         {
           "path": "src/adapters/graphql/generated/types.ts",
-          "checksum": "sha256-G5NFTyVGkz/sL1N4NY485xUFeeJ4oZfM7uJCE6WHmg4=",
-          "size": 1529987
+          "checksum": "sha256-DPLar6rX8bRFD3pbCbb58YjRib0zwYbCIOBTwzI7RPc=",
+          "size": 1530557
         },
         {
           "path": "src/adapters/graphql/index.ts",
@@ -6601,32 +6601,32 @@
       },
       "dependencies": [
         { "name": "@equaltoai/greater-components", "version": "latest" },
-        { "name": "adapters", "version": "0.5.3-rc.0" },
-        { "name": "admin", "version": "0.5.3-rc.0" },
-        { "name": "auth", "version": "0.5.3-rc.0" },
-        { "name": "compose", "version": "0.5.3-rc.0" },
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "messaging", "version": "0.5.3-rc.0" },
-        { "name": "notifications", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "search", "version": "0.5.3-rc.0" },
-        { "name": "tokens", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "adapters", "version": "0.5.3" },
+        { "name": "admin", "version": "0.5.3" },
+        { "name": "auth", "version": "0.5.3" },
+        { "name": "compose", "version": "0.5.3" },
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "messaging", "version": "0.5.3" },
+        { "name": "notifications", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "search", "version": "0.5.3" },
+        { "name": "tokens", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-adapters", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-admin", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-compose", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-messaging", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-notifications", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-search", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-admin", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-compose", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-messaging", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-search", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "@graphql-typed-document-node/core", "version": "^3.2.0" },
         { "name": "@tanstack/svelte-virtual", "version": "^3.13.23" },
         { "name": "svelte", "version": "^5.54.0" }
@@ -6634,7 +6634,7 @@
     },
     "blog": {
       "name": "blog",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Blog/Medium-style UI components for long-form publishing applications",
       "includes": {
         "primitives": [
@@ -6835,27 +6835,27 @@
       },
       "dependencies": [
         { "name": "@equaltoai/greater-components", "version": "latest" },
-        { "name": "content", "version": "0.5.3-rc.0" },
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "content", "version": "0.5.3" },
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-content", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-search", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-content", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-search", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ]
     },
     "community": {
       "name": "community",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Community/Reddit-style UI components for forum-based discussion applications",
       "includes": {
         "primitives": [
@@ -7074,29 +7074,29 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "content", "version": "0.5.3-rc.0" },
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "content", "version": "0.5.3" },
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-admin", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-content", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-notifications", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-search", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-admin", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-content", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-search", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ]
     },
     "artist": {
       "name": "artist",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Artist portfolio and gallery UI components for visual artists and creative professionals",
       "includes": {
         "primitives": [
@@ -7937,23 +7937,23 @@
       },
       "dependencies": [
         { "name": "@equaltoai/greater-components", "version": "latest" },
-        { "name": "adapters", "version": "0.5.3-rc.0" },
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "tokens", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "adapters", "version": "0.5.3" },
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "tokens", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
         { "name": "@apollo/client", "version": "^4.1.6" },
-        { "name": "@equaltoai/greater-components-adapters", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-notifications", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-auth", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-tokens", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ]
     }
@@ -7961,7 +7961,7 @@
   "shared": {
     "auth": {
       "name": "auth",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Authentication components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -8061,14 +8061,14 @@
         }
       ],
       "dependencies": [
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" }
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [
@@ -8092,7 +8092,7 @@
     },
     "compose": {
       "name": "compose",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Post/content composer components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -8211,16 +8211,16 @@
       ],
       "dependencies": [
         { "name": "adapters", "version": "latest" },
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [
@@ -8237,7 +8237,7 @@
     },
     "notifications": {
       "name": "notifications",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Notification components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -8323,14 +8323,14 @@
       ],
       "dependencies": [
         { "name": "adapters", "version": "latest" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [
@@ -8349,7 +8349,7 @@
     },
     "search": {
       "name": "search",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Search components for ActivityPub/Fediverse applications with federated search support",
       "exports": ["Root", "Bar", "Filters", "Results", "ActorResult", "NoteResult", "TagResult"],
       "files": [
@@ -8405,16 +8405,16 @@
         }
       ],
       "dependencies": [
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [
@@ -8431,7 +8431,7 @@
     },
     "admin": {
       "name": "admin",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Admin dashboard components for ActivityPub instance management",
       "exports": [
         "Root",
@@ -8640,14 +8640,14 @@
       ],
       "dependencies": [
         { "name": "adapters", "version": "latest" },
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" }
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [
@@ -8665,7 +8665,7 @@
     },
     "chat": {
       "name": "chat",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "AI chat interface components with streaming responses, tool calls, and settings",
       "exports": [
         "Container",
@@ -8746,15 +8746,15 @@
         }
       ],
       "dependencies": [
-        { "name": "content", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" }
+        { "name": "content", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-content", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-content", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [
@@ -8783,7 +8783,7 @@
     },
     "messaging": {
       "name": "messaging",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Direct messaging components for ActivityPub/Fediverse applications",
       "exports": [
         "Root",
@@ -8863,16 +8863,16 @@
         }
       ],
       "dependencies": [
-        { "name": "compose", "version": "0.5.3-rc.0" },
-        { "name": "headless", "version": "0.5.3-rc.0" },
-        { "name": "icons", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" }
+        { "name": "compose", "version": "0.5.3" },
+        { "name": "headless", "version": "0.5.3" },
+        { "name": "icons", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-compose", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-compose", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-headless", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-icons", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [
@@ -8890,7 +8890,7 @@
     },
     "soul": {
       "name": "soul",
-      "version": "0.5.3-rc.0",
+      "version": "0.5.3",
       "description": "Reachability and contact-preferences UI for lesser-soul v3 (channels, preferences, best-contact helper).",
       "exports": [
         "ChannelsDisplay",
@@ -8936,14 +8936,14 @@
         }
       ],
       "dependencies": [
-        { "name": "adapters", "version": "0.5.3-rc.0" },
-        { "name": "primitives", "version": "0.5.3-rc.0" },
-        { "name": "utils", "version": "0.5.3-rc.0" }
+        { "name": "adapters", "version": "0.5.3" },
+        { "name": "primitives", "version": "0.5.3" },
+        { "name": "utils", "version": "0.5.3" }
       ],
       "peerDependencies": [
-        { "name": "@equaltoai/greater-components-adapters", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3-rc.0" },
-        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3-rc.0" },
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-primitives", "version": "0.5.3" },
+        { "name": "@equaltoai/greater-components-utils", "version": "0.5.3" },
         { "name": "svelte", "version": "^5.54.0" }
       ],
       "types": [

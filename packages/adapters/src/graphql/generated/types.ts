@@ -870,6 +870,7 @@ export type AgentPostAttributionInput = {
 export type AgentRuntimeSession = {
   readonly __typename: 'AgentRuntimeSession';
   readonly absoluteExpiresAt: Scalars['Time']['output'];
+  readonly authDiagnostic: AgentRuntimeSessionAuthDiagnostic;
   readonly clientID: Scalars['String']['output'];
   readonly createdAt: Scalars['Time']['output'];
   readonly deviceLabel: Scalars['String']['output'];
@@ -881,6 +882,21 @@ export type AgentRuntimeSession = {
   readonly scope: Scalars['String']['output'];
   readonly sessionID: Scalars['ID']['output'];
 };
+
+export type AgentRuntimeSessionAuthDiagnostic = {
+  readonly __typename: 'AgentRuntimeSessionAuthDiagnostic';
+  readonly failureAt?: Maybe<Scalars['Time']['output']>;
+  readonly failureCode?: Maybe<Scalars['String']['output']>;
+  readonly failureMessage?: Maybe<Scalars['String']['output']>;
+  readonly lastSuccessAt?: Maybe<Scalars['Time']['output']>;
+  readonly status: AgentRuntimeSessionAuthStatus;
+};
+
+export type AgentRuntimeSessionAuthStatus =
+  | 'EXPIRED'
+  | 'FAILED'
+  | 'HEALTHY'
+  | 'REVOKED';
 
 export type AgentType =
   | 'ASSISTANT'
