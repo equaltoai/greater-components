@@ -14,14 +14,13 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.5.4-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.3-rc.0...greater-v0.5.4-rc.0) (2026-03-20)
 
-
 ### Chores
 
-* **main:** release greater 0.5.3 ([e7f76c5](https://github.com/equaltoai/greater-components/commit/e7f76c5a7e61e8577ab140b9164edcbbf56b99a9))
-* **main:** release greater 0.5.3 ([8708a78](https://github.com/equaltoai/greater-components/commit/8708a78631f6dfc425ea5a0f02b1da1c62f99ddc))
-* **release:** prepare metadata ([b8a1e18](https://github.com/equaltoai/greater-components/commit/b8a1e18a7e9e73a9af1cad5a379ccbf7300ef3be))
-* **staging:** sync lesser contracts v1.1.54 ([82fd622](https://github.com/equaltoai/greater-components/commit/82fd6228e9e27d11362ad9c5c3258de2a5d3a23e))
-* sync lesser contracts v1.1.54 ([65e54e0](https://github.com/equaltoai/greater-components/commit/65e54e05341e7c414329f439be09fe1284090e5d))
+- **main:** release greater 0.5.3 ([e7f76c5](https://github.com/equaltoai/greater-components/commit/e7f76c5a7e61e8577ab140b9164edcbbf56b99a9))
+- **main:** release greater 0.5.3 ([8708a78](https://github.com/equaltoai/greater-components/commit/8708a78631f6dfc425ea5a0f02b1da1c62f99ddc))
+- **release:** prepare metadata ([b8a1e18](https://github.com/equaltoai/greater-components/commit/b8a1e18a7e9e73a9af1cad5a379ccbf7300ef3be))
+- **staging:** sync lesser contracts v1.1.54 ([82fd622](https://github.com/equaltoai/greater-components/commit/82fd6228e9e27d11362ad9c5c3258de2a5d3a23e))
+- sync lesser contracts v1.1.54 ([65e54e0](https://github.com/equaltoai/greater-components/commit/65e54e05341e7c414329f439be09fe1284090e5d))
 
 ## [0.5.3](https://github.com/equaltoai/greater-components/compare/greater-v0.5.2...greater-v0.5.3) (2026-03-20)
 
