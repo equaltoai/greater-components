@@ -1585,9 +1585,13 @@ components:
                     type: string
                 client_name:
                     type: string
+                grant_types:
+                    type: string
                 redirect_uris:
                     type: string
                 scopes:
+                    type: string
+                token_endpoint_auth_method:
                     type: string
                 website:
                     type: string
@@ -1603,11 +1607,17 @@ components:
                     type: string
                 client_secret:
                     type: string
+                grant_types:
+                    items:
+                        type: string
+                    type: array
                 id:
                     type: string
                 name:
                     type: string
                 redirect_uri:
+                    type: string
+                token_endpoint_auth_method:
                     type: string
                 vapid_key:
                     type: string
@@ -1618,6 +1628,35 @@ components:
                 - id
                 - name
                 - redirect_uri
+            type: object
+        AppSecretRotationRequest:
+            additionalProperties: false
+            properties:
+                force_invalidate:
+                    type: boolean
+                grace_period_seconds:
+                    type: integer
+            type: object
+        AppSecretRotationResponse:
+            additionalProperties: false
+            properties:
+                client_id:
+                    type: string
+                client_secret:
+                    type: string
+                forced_invalidation:
+                    type: boolean
+                grace_period_seconds:
+                    type: integer
+                previous_secret_valid_until:
+                    type: string
+                rotated_at:
+                    type: string
+                token_endpoint_auth_method:
+                    type: string
+            required:
+                - client_id
+                - client_secret
             type: object
         AuthAuthResponse:
             additionalProperties: false
@@ -3818,6 +3857,76 @@ components:
                 - interval
                 - status
                 - user_code
+            type: object
+        OAuthDynamicClientRegistrationRequest:
+            additionalProperties: false
+            properties:
+                agent_username:
+                    type: string
+                client_class:
+                    type: string
+                client_name:
+                    type: string
+                client_uri:
+                    type: string
+                grant_types:
+                    items:
+                        type: string
+                    type: array
+                redirect_uris:
+                    items:
+                        type: string
+                    type: array
+                scope:
+                    type: string
+                software_id:
+                    type: string
+                software_version:
+                    type: string
+                token_endpoint_auth_method:
+                    type: string
+            type: object
+        OAuthDynamicClientRegistrationResponse:
+            additionalProperties: false
+            properties:
+                agent_username:
+                    type: string
+                client_class:
+                    type: string
+                client_id:
+                    type: string
+                client_id_issued_at:
+                    type: integer
+                client_name:
+                    type: string
+                client_secret:
+                    type: string
+                client_secret_expires_at:
+                    type: integer
+                client_uri:
+                    type: string
+                grant_types:
+                    items:
+                        type: string
+                    type: array
+                redirect_uris:
+                    items:
+                        type: string
+                    type: array
+                registration_source:
+                    type: string
+                scope:
+                    type: string
+                software_id:
+                    type: string
+                software_version:
+                    type: string
+                token_endpoint_auth_method:
+                    type: string
+            required:
+                - client_id
+                - client_id_issued_at
+                - client_secret_expires_at
             type: object
         OAuthErrorResponse:
             additionalProperties: false
@@ -11834,6 +11943,40 @@ paths:
                 - cmd/api/routes.go
             x-oauth-scopes:
                 - write
+    /api/v1/apps/{id}/rotate_secret:
+        post:
+            operationId: post_api_v1_apps_by_id_rotate_secret
+            tags:
+                - apps
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AppSecretRotationResponse'
+                "400":
+                    $ref: '#/components/responses/BadRequest'
+                "401":
+                    $ref: '#/components/responses/Unauthorized'
+                "403":
+                    $ref: '#/components/responses/Forbidden'
+                "404":
+                    $ref: '#/components/responses/NotFound'
+                "422":
+                    $ref: '#/components/responses/UnprocessableEntity'
+                "500":
+                    $ref: '#/components/responses/InternalServerError'
+            x-lesser-handler: HandleAppRotateSecretLift
+            x-lesser-lambda: api
+            x-lesser-routeSources:
+                - cmd/api/routes.go
     /api/v1/auth/webauthn/credentials:
         get:
             operationId: get_api_v1_auth_webauthn_credentials
@@ -17964,6 +18107,22 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
+    /auth/device:
+        get:
+            operationId: get_auth_device
+            tags:
+                - auth
+            responses:
+                "200":
+                    description: OK
+                "400":
+                    $ref: '#/components/responses/BadRequest'
+                "500":
+                    $ref: '#/components/responses/InternalServerError'
+            x-lesser-handler: HandleOAuthDevicePageLift
+            x-lesser-lambda: api
+            x-lesser-routeSources:
+                - cmd/api/routes.go
     /auth/wallet/challenge:
         post:
             operationId: post_auth_wallet_challenge
@@ -18595,6 +18754,124 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
+    /oauth/register:
+        post:
+            operationId: post_oauth_register
+            tags:
+                - oauth
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                agent_username:
+                                    type: string
+                                client_class:
+                                    type: string
+                                client_name:
+                                    type: string
+                                client_uri:
+                                    type: string
+                                    format: uri
+                                grant_types:
+                                    type: array
+                                redirect_uris:
+                                    type: array
+                                scope:
+                                    type: string
+                                software_id:
+                                    type: string
+                                software_version:
+                                    type: string
+                                token_endpoint_auth_method:
+                                    type: string
+                            required:
+                                - client_name
+                                - redirect_uris
+                            additionalProperties: false
+            responses:
+                "200":
+                    description: OK
+                "201":
+                    description: Created
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    agent_username:
+                                        type: string
+                                    client_class:
+                                        type: string
+                                    client_id:
+                                        type: string
+                                    client_id_issued_at:
+                                        type: integer
+                                        format: int64
+                                    client_name:
+                                        type: string
+                                    client_secret:
+                                        type: string
+                                    client_secret_expires_at:
+                                        type: integer
+                                        format: int64
+                                    client_uri:
+                                        type: string
+                                        format: uri
+                                    grant_types:
+                                        type: array
+                                    redirect_uris:
+                                        type: array
+                                    registration_source:
+                                        type: string
+                                    scope:
+                                        type: string
+                                    software_id:
+                                        type: string
+                                    software_version:
+                                        type: string
+                                    token_endpoint_auth_method:
+                                        type: string
+                                required:
+                                    - client_id
+                                    - client_id_issued_at
+                                    - client_secret_expires_at
+                                additionalProperties: false
+                    headers:
+                        X-RateLimit-Limit:
+                            description: Request limit per window.
+                            schema:
+                                type: integer
+                                format: int32
+                        X-RateLimit-Remaining:
+                            description: Requests remaining in the current window.
+                            schema:
+                                type: integer
+                                format: int32
+                        X-RateLimit-Reset:
+                            description: Unix timestamp (seconds) when the current window resets.
+                            schema:
+                                type: integer
+                                format: int64
+                "400":
+                    $ref: '#/components/responses/BadRequest'
+                "401":
+                    $ref: '#/components/responses/Unauthorized'
+                "403":
+                    $ref: '#/components/responses/Forbidden'
+                "415":
+                    description: Unsupported media type
+                "422":
+                    $ref: '#/components/responses/UnprocessableEntity'
+                "429":
+                    $ref: '#/components/responses/TooManyRequests'
+                "500":
+                    $ref: '#/components/responses/InternalServerError'
+            x-lesser-lambda: api
+            x-lesser-routeSources:
+                - cmd/api/routes.go
     /oauth/revoke:
         post:
             operationId: post_oauth_revoke
@@ -18677,7 +18954,6 @@ paths:
                     $ref: '#/components/responses/TooManyRequests'
                 "500":
                     $ref: '#/components/responses/InternalServerError'
-            x-lesser-handler: HandleOAuthTokenLift
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
