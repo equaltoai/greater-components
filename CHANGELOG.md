@@ -12,6 +12,21 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.3-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.2-rc.0...greater-v0.5.3-rc.0) (2026-03-20)
+
+
+### Bug Fixes
+
+* **deps:** patch flatted vulnerability ([9b20492](https://github.com/equaltoai/greater-components/commit/9b20492b3620bd5c93f6f2c56b731b0bc9168bfe))
+* **staging:** patch flatted vulnerability ([c0d6109](https://github.com/equaltoai/greater-components/commit/c0d6109afd70b3b76ae36457b8e5c3c587a99b9f))
+
+
+### Chores
+
+* **main:** release greater 0.5.2 ([c8c2c51](https://github.com/equaltoai/greater-components/commit/c8c2c512d568659d9592a904abce812f552aa5ba))
+* **main:** release greater 0.5.2 ([79ee5ab](https://github.com/equaltoai/greater-components/commit/79ee5abbaa0fcd69b4641a3b2927993f4919b8c5))
+* **release:** prepare metadata ([232e330](https://github.com/equaltoai/greater-components/commit/232e330b1787cb28f77976dd828deda211ab7d49))
+
 ## [0.5.2](https://github.com/equaltoai/greater-components/compare/greater-v0.5.1...greater-v0.5.2) (2026-03-20)
 
 ### Chores
