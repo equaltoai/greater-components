@@ -12,6 +12,17 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.4](https://github.com/equaltoai/greater-components/compare/greater-v0.5.3...greater-v0.5.4) (2026-03-20)
+
+
+### Chores
+
+* **premain:** release greater 0.5.4-rc.0 ([7501dd9](https://github.com/equaltoai/greater-components/commit/7501dd94af9c176daf9464bb35702e0c6fd511a6))
+* **premain:** release greater 0.5.4-rc.0 ([f2fcc2a](https://github.com/equaltoai/greater-components/commit/f2fcc2a835ee13352382d1401e1030fbfe951c75))
+* **release:** prepare metadata ([c159e24](https://github.com/equaltoai/greater-components/commit/c159e241d99286afeabacb52d0db51aa76a030d6))
+* **staging:** sync lesser contracts v1.1.54 ([82fd622](https://github.com/equaltoai/greater-components/commit/82fd6228e9e27d11362ad9c5c3258de2a5d3a23e))
+* sync lesser contracts v1.1.54 ([65e54e0](https://github.com/equaltoai/greater-components/commit/65e54e05341e7c414329f439be09fe1284090e5d))
+
 ## [0.5.4-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.3-rc.0...greater-v0.5.4-rc.0) (2026-03-20)
 
 ### Chores
