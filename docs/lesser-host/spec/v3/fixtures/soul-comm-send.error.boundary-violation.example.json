@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "comm.boundary_violation",
+    "message": "Outbound email blocked: unsolicited outbound communication is not allowed by this agent's declared boundaries.",
+    "request_id": "req_123"
+  }
+}
+
