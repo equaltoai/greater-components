@@ -12,6 +12,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.6-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.5-rc.0...greater-v0.5.6-rc.0) (2026-03-22)
+
+
+### Chores
+
+* format lesser-host contract snapshots ([27876f4](https://github.com/equaltoai/greater-components/commit/27876f4094c524adb35d584f99a8626c668d479f))
+* **main:** release greater 0.5.5 ([e141b5c](https://github.com/equaltoai/greater-components/commit/e141b5cc83256bfa5139036181564f02578d3a6d))
+* **main:** release greater 0.5.5 ([a25b45a](https://github.com/equaltoai/greater-components/commit/a25b45af7af127ff8be6db6914c3106c361a3c5d))
+* **release:** prepare metadata ([604a99f](https://github.com/equaltoai/greater-components/commit/604a99f4752bc11eb0820fd3ef9365e75e3b4893))
+* **staging:** sync lesser v1.1.59 and lesser-host v1.1.6 ([9703101](https://github.com/equaltoai/greater-components/commit/970310107f0c799a977b1af791a0a3549d86ec31))
+* sync lesser contracts v1.1.59 ([30d9404](https://github.com/equaltoai/greater-components/commit/30d940403f8f2ffe52a2218a3c25a9f1870d337f))
+* sync lesser-host contracts v1.1.6 ([c8fb023](https://github.com/equaltoai/greater-components/commit/c8fb023b901caae8e8aa426cf84da631a064aadd))
+* sync main into staging release branch ([a8fd5b5](https://github.com/equaltoai/greater-components/commit/a8fd5b5754680de49e0b7ac8a3a61f1b7d31d3c5))
+
 ## [0.5.5](https://github.com/equaltoai/greater-components/compare/greater-v0.5.4...greater-v0.5.5) (2026-03-22)
 
 ### Chores
