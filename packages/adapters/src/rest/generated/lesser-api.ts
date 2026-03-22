@@ -5645,11 +5645,13 @@ export interface components {
         NotificationDeliveryFrom: {
             address: string;
             displayName: string;
+            number?: string;
             soulAgentId?: string | null;
         };
         NotificationDeliveryRequest: {
             attachments?: components["schemas"]["NotificationDeliveryAttachment"][];
             body: string;
+            bodyMimeType?: string;
             channel: string;
             from: components["schemas"]["NotificationDeliveryFrom"];
             inReplyTo?: string | null;
@@ -5661,6 +5663,7 @@ export interface components {
         };
         NotificationDeliveryTo: {
             address: string;
+            number?: string;
         };
         NotificationFilter: {
             AccountID: string;

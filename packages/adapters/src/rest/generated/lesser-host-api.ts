@@ -470,7 +470,7 @@ export interface components {
         "soul-comm-send.error.schema": {
             error: {
                 /** @enum {string} */
-                code: "comm.invalid_request" | "comm.unauthorized" | "comm.agent_not_active" | "comm.channel_not_provisioned" | "comm.channel_unverified" | "comm.rate_limited" | "comm.preference_violation" | "comm.insufficient_credits" | "comm.provider_unavailable" | "comm.provider_rejected" | "comm.internal";
+                code: "comm.invalid_request" | "comm.unauthorized" | "comm.agent_not_active" | "comm.channel_not_provisioned" | "comm.channel_unverified" | "comm.rate_limited" | "comm.boundary_violation" | "comm.insufficient_credits" | "comm.provider_unavailable" | "comm.provider_rejected" | "comm.internal";
                 message: string;
                 request_id?: string;
             };

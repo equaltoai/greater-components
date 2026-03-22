@@ -12,6 +12,26 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.5](https://github.com/equaltoai/greater-components/compare/greater-v0.5.4...greater-v0.5.5) (2026-03-22)
+
+### Chores
+
+- **premain:** release greater 0.5.5-rc.0 ([58c8944](https://github.com/equaltoai/greater-components/commit/58c89447bd2524aeccacdb413e9f408ab0d3f565))
+- **premain:** release greater 0.5.5-rc.0 ([6a9df23](https://github.com/equaltoai/greater-components/commit/6a9df23e7ab0f780f9e372bdab561c61be6b9225))
+- **release:** prepare metadata ([6ae00c6](https://github.com/equaltoai/greater-components/commit/6ae00c654001d29a9307dd8a1ef81011959f41cc))
+- sync lesser contracts v1.1.57 ([1357771](https://github.com/equaltoai/greater-components/commit/13577714d66f90ccc6733c9424396b6562e5d498))
+- sync main into staging release branch ([4349fb0](https://github.com/equaltoai/greater-components/commit/4349fb0da99ac49622e7eb9d5980312897187793))
+
+## [0.5.5-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.4-rc.0...greater-v0.5.5-rc.0) (2026-03-22)
+
+### Chores
+
+- **main:** release greater 0.5.4 ([dd71101](https://github.com/equaltoai/greater-components/commit/dd711019639341f1f90550e9f5fcd264923e1bf2))
+- **main:** release greater 0.5.4 ([1138d79](https://github.com/equaltoai/greater-components/commit/1138d792ea52d59182f58e1083a746dab16b7e66))
+- **release:** prepare metadata ([8dc7f57](https://github.com/equaltoai/greater-components/commit/8dc7f57593b03a2167d87bbb705df55be0f49a0e))
+- sync lesser contracts v1.1.57 ([1357771](https://github.com/equaltoai/greater-components/commit/13577714d66f90ccc6733c9424396b6562e5d498))
+- sync main into staging release branch ([4349fb0](https://github.com/equaltoai/greater-components/commit/4349fb0da99ac49622e7eb9d5980312897187793))
+
 ## [0.5.4](https://github.com/equaltoai/greater-components/compare/greater-v0.5.3...greater-v0.5.4) (2026-03-20)
 
 ### Chores
