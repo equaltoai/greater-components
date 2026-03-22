@@ -14,17 +14,16 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.5.6](https://github.com/equaltoai/greater-components/compare/greater-v0.5.5...greater-v0.5.6) (2026-03-22)
 
-
 ### Chores
 
-* format lesser-host contract snapshots ([27876f4](https://github.com/equaltoai/greater-components/commit/27876f4094c524adb35d584f99a8626c668d479f))
-* **premain:** release greater 0.5.6-rc.0 ([550fb61](https://github.com/equaltoai/greater-components/commit/550fb6179b3d25e4f47488e0b1987cd9386e8007))
-* **premain:** release greater 0.5.6-rc.0 ([b0c5b86](https://github.com/equaltoai/greater-components/commit/b0c5b8625700b0f9b99aa62c415c51e6e2d4e701))
-* **release:** prepare metadata ([480be09](https://github.com/equaltoai/greater-components/commit/480be09472323ae4bab9c3a5eb6a4146ad76385c))
-* **staging:** sync lesser v1.1.59 and lesser-host v1.1.6 ([9703101](https://github.com/equaltoai/greater-components/commit/970310107f0c799a977b1af791a0a3549d86ec31))
-* sync lesser contracts v1.1.59 ([30d9404](https://github.com/equaltoai/greater-components/commit/30d940403f8f2ffe52a2218a3c25a9f1870d337f))
-* sync lesser-host contracts v1.1.6 ([c8fb023](https://github.com/equaltoai/greater-components/commit/c8fb023b901caae8e8aa426cf84da631a064aadd))
-* sync main into staging release branch ([a8fd5b5](https://github.com/equaltoai/greater-components/commit/a8fd5b5754680de49e0b7ac8a3a61f1b7d31d3c5))
+- format lesser-host contract snapshots ([27876f4](https://github.com/equaltoai/greater-components/commit/27876f4094c524adb35d584f99a8626c668d479f))
+- **premain:** release greater 0.5.6-rc.0 ([550fb61](https://github.com/equaltoai/greater-components/commit/550fb6179b3d25e4f47488e0b1987cd9386e8007))
+- **premain:** release greater 0.5.6-rc.0 ([b0c5b86](https://github.com/equaltoai/greater-components/commit/b0c5b8625700b0f9b99aa62c415c51e6e2d4e701))
+- **release:** prepare metadata ([480be09](https://github.com/equaltoai/greater-components/commit/480be09472323ae4bab9c3a5eb6a4146ad76385c))
+- **staging:** sync lesser v1.1.59 and lesser-host v1.1.6 ([9703101](https://github.com/equaltoai/greater-components/commit/970310107f0c799a977b1af791a0a3549d86ec31))
+- sync lesser contracts v1.1.59 ([30d9404](https://github.com/equaltoai/greater-components/commit/30d940403f8f2ffe52a2218a3c25a9f1870d337f))
+- sync lesser-host contracts v1.1.6 ([c8fb023](https://github.com/equaltoai/greater-components/commit/c8fb023b901caae8e8aa426cf84da631a064aadd))
+- sync main into staging release branch ([a8fd5b5](https://github.com/equaltoai/greater-components/commit/a8fd5b5754680de49e0b7ac8a3a61f1b7d31d3c5))
 
 ## [0.5.6-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.5-rc.0...greater-v0.5.6-rc.0) (2026-03-22)
 
