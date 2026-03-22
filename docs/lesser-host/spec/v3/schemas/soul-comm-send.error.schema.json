@@ -20,7 +20,7 @@
             "comm.channel_not_provisioned",
             "comm.channel_unverified",
             "comm.rate_limited",
-            "comm.preference_violation",
+            "comm.boundary_violation",
             "comm.insufficient_credits",
             "comm.provider_unavailable",
             "comm.provider_rejected",
