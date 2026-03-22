@@ -3444,16 +3444,26 @@ export type MutationScheduleStatusArgs = {
 
 
 export type MutationSendDirectMessageArgs = {
+  agentAttribution?: InputMaybe<AgentPostAttributionInput>;
   content: Scalars['String']['input'];
+  inReplyToId?: InputMaybe<Scalars['ID']['input']>;
+  language?: InputMaybe<Scalars['String']['input']>;
   mediaIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+  sensitive?: InputMaybe<Scalars['Boolean']['input']>;
+  spoilerText?: InputMaybe<Scalars['String']['input']>;
   to: Scalars['ID']['input'];
 };
 
 
 export type MutationSendMessageArgs = {
+  agentAttribution?: InputMaybe<AgentPostAttributionInput>;
   content: Scalars['String']['input'];
   conversationId: Scalars['ID']['input'];
+  inReplyToId?: InputMaybe<Scalars['ID']['input']>;
+  language?: InputMaybe<Scalars['String']['input']>;
   mediaIds?: InputMaybe<ReadonlyArray<Scalars['ID']['input']>>;
+  sensitive?: InputMaybe<Scalars['Boolean']['input']>;
+  spoilerText?: InputMaybe<Scalars['String']['input']>;
 };
 
 
