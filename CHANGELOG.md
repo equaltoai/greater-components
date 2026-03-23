@@ -12,6 +12,12 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.8-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.5.8-rc.0...greater-v0.5.8-rc.1) (2026-03-23)
+
+### Chores
+
+- **deps-dev:** bump vite from 8.0.1 to 8.0.2 in the dependencies group across 1 directory ([f834fb8](https://github.com/equaltoai/greater-components/commit/f834fb8641cf5360007fc426d486bd4560690a9e))
+
 ## [0.5.8-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.7-rc.0...greater-v0.5.8-rc.0) (2026-03-23)
 
 ### CI
