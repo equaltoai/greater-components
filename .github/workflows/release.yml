@@ -27,7 +27,7 @@ jobs:
 
       - name: Setup pnpm
         if: inputs.tag_name != ''
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Setup Node.js
         if: inputs.tag_name != ''
@@ -115,7 +115,7 @@ jobs:
 
       - name: Setup pnpm
         if: steps.release.outputs.release_created == 'true'
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Setup Node.js
         if: steps.release.outputs.release_created == 'true'

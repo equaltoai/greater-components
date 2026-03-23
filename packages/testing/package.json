@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-testing",
   "private": true,
-  "version": "0.5.7-rc.0",
+  "version": "0.5.7",
   "type": "module",
   "description": "Shared testing utilities for accessibility, keyboard navigation, and visual regression testing",
   "license": "AGPL-3.0-only",
@@ -49,7 +49,7 @@
     "@axe-core/playwright": "^4.11.1",
     "axe-core": "^4.11.1",
     "axe-playwright": "^2.2.2",
-    "focus-trap": "^8.0.0",
+    "focus-trap": "^8.0.1",
     "tabbable": "^6.4.0"
   },
   "devDependencies": {
@@ -61,9 +61,9 @@
     "@vitest/ui": "^4.1.0",
     "chromatic": "^15.3.0",
     "commander": "^14.0.3",
-    "jsdom": "^29.0.0",
+    "jsdom": "^29.0.1",
     "playwright": "^1.58.2",
-    "svelte": "^5.54.0",
+    "svelte": "^5.54.1",
     "typescript": "^5.9.3",
     "vite": "^8.0.1",
     "vitest": "^4.1.0"
