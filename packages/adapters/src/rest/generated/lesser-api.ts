@@ -5724,12 +5724,17 @@ export interface components {
             client_class?: string;
             client_name?: string;
             client_uri?: string;
+            contacts?: string[];
             grant_types?: string[];
+            logo_uri?: string;
+            policy_uri?: string;
             redirect_uris?: string[];
+            response_types?: string[];
             scope?: string;
             software_id?: string;
             software_version?: string;
             token_endpoint_auth_method?: string;
+            tos_uri?: string;
         };
         OAuthDynamicClientRegistrationResponse: {
             agent_username?: string;
@@ -5740,13 +5745,18 @@ export interface components {
             client_secret?: string;
             client_secret_expires_at: number;
             client_uri?: string;
+            contacts?: string[];
             grant_types?: string[];
+            logo_uri?: string;
+            policy_uri?: string;
             redirect_uris?: string[];
             registration_source?: string;
+            response_types?: string[];
             scope?: string;
             software_id?: string;
             software_version?: string;
             token_endpoint_auth_method?: string;
+            tos_uri?: string;
         };
         OAuthErrorResponse: {
             error: string;

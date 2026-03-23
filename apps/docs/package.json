@@ -28,12 +28,12 @@
     "mdsvex": "^0.12.7",
     "prismjs": "^1.30.0",
     "shiki": "^4.0.2",
-    "svelte": "^5.54.0",
+    "svelte": "^5.54.1",
     "svelte-check": "^4.4.5",
     "tailwind-merge": "^3.5.0",
     "tslib": "^2.8.1",
     "typescript": "^5.9.3",
-    "vite": "^8.0.1",
+    "vite": "^8.0.2",
     "vite-plugin-pwa": "^1.2.0"
   },
   "dependencies": {

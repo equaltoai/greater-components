@@ -12,6 +12,30 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.8-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.5.8-rc.0...greater-v0.5.8-rc.1) (2026-03-23)
+
+### Chores
+
+- **deps-dev:** bump vite from 8.0.1 to 8.0.2 in the dependencies group across 1 directory ([f834fb8](https://github.com/equaltoai/greater-components/commit/f834fb8641cf5360007fc426d486bd4560690a9e))
+
+## [0.5.8-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.7-rc.0...greater-v0.5.8-rc.0) (2026-03-23)
+
+### CI
+
+- **deps:** bump pnpm/action-setup from 4 to 5 ([6051090](https://github.com/equaltoai/greater-components/commit/6051090056a24ea42c5a941beb07cdbe0c5b406b))
+
+### Chores
+
+- **deps-dev:** bump svelte from 5.54.0 to 5.54.1 in the svelte group ([3e3f57d](https://github.com/equaltoai/greater-components/commit/3e3f57d293192fdfbf50e1614859575f16b2e583))
+- **deps:** bump the dependencies group with 7 updates ([3bec0f0](https://github.com/equaltoai/greater-components/commit/3bec0f0441c95ec26b193a7e12b5c3dccf3a8611))
+- **main:** release greater 0.5.7 ([57734f6](https://github.com/equaltoai/greater-components/commit/57734f676f8c7612a56eb322799346ca0c22ba96))
+- **main:** release greater 0.5.7 ([8cc42ab](https://github.com/equaltoai/greater-components/commit/8cc42abd54323e5667b0d7a8d6731d3ce48e7dcd))
+- **release:** prepare metadata ([89909f8](https://github.com/equaltoai/greater-components/commit/89909f8b3efa6f21fcdc2ab08f0b22a3de15bc1b))
+- **staging:** sync lesser v1.1.65 and lesser-host v0.1.21 ([cb64237](https://github.com/equaltoai/greater-components/commit/cb642376ab51462ff74479176ccb109461c26b58))
+- sync lesser contracts v1.1.65 ([b82bb26](https://github.com/equaltoai/greater-components/commit/b82bb26f9857d24c390deb95c2fe88b35f17e094))
+- sync lesser-host contracts v0.1.21 ([e9ccd00](https://github.com/equaltoai/greater-components/commit/e9ccd00fa20d78a7433a58c66e0c17529903f2d2))
+- sync main into staging release branch ([9c228b5](https://github.com/equaltoai/greater-components/commit/9c228b50bde702cb33eb8267f338a2c4fc3eb88e))
+
 ## [0.5.7](https://github.com/equaltoai/greater-components/compare/greater-v0.5.6...greater-v0.5.7) (2026-03-23)
 
 ### Chores
