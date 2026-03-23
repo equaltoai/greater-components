@@ -1,6 +1,6 @@
 {
   "name": "greater-components",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "private": true,
   "description": "Fediverse UI components built with Svelte 5, TypeScript, and pnpm workspaces",
   "repository": {
@@ -78,9 +78,9 @@
     "@types/node": "^25.5.0",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
-    "eslint": "^10.0.3",
+    "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-svelte": "^3.15.2",
+    "eslint-plugin-svelte": "^3.16.0",
     "fast-check": "^4.6.0",
     "globals": "^17.4.0",
     "husky": "^9.1.7",
@@ -89,7 +89,7 @@
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.5.1",
-    "svelte": "^5.54.0",
+    "svelte": "^5.54.1",
     "svelte-check": "^4.4.5",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
@@ -103,7 +103,7 @@
     "pnpm": ">=9.0.0"
   },
   "dependencies": {
-    "undici": "^7.24.4"
+    "undici": "^7.24.5"
   },
   "pnpm": {
     "overrides": {

@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-chat",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "type": "module",
   "description": "AI chat interface components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -45,7 +45,7 @@
     "@testing-library/svelte": "^5.3.1",
     "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.0",
-    "svelte": "^5.54.0",
+    "svelte": "^5.54.1",
     "typescript": "^5.9.3",
     "vite": "^8.0.1",
     "vitest": "^4.1.0"
