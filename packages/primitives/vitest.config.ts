@@ -15,11 +15,29 @@ export default defineConfig({
 	resolve: {
 		conditions: ['browser'],
 		alias: {
+			'@equaltoai/greater-components-community': path.resolve(
+				__dirname,
+				'../faces/community/src/index.ts'
+			),
 			'@equaltoai/greater-components-content': path.resolve(__dirname, '../content/src/index.ts'),
+			'@equaltoai/greater-components-headless': path.resolve(__dirname, '../headless/src/index.ts'),
 			'@equaltoai/greater-components-primitives': path.resolve(__dirname, './src/index.ts'),
 			'@equaltoai/greater-components-utils': path.resolve(__dirname, '../utils/src/index.ts'),
 			'@equaltoai/greater-components-icons': path.resolve(__dirname, '../icons/src/index.ts'),
 			'@equaltoai/greater-components-tokens': path.resolve(__dirname, '../tokens/src/index.ts'),
+			'@equaltoai/greater-components-auth': path.resolve(__dirname, '../shared/auth/src/index.ts'),
+			'@equaltoai/greater-components-admin': path.resolve(
+				__dirname,
+				'../shared/admin/src/index.ts'
+			),
+			'@equaltoai/greater-components-notifications': path.resolve(
+				__dirname,
+				'../shared/notifications/src/index.ts'
+			),
+			'@equaltoai/greater-components-search': path.resolve(
+				__dirname,
+				'../shared/search/src/index.ts'
+			),
 		},
 	},
 	test: {

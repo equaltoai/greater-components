@@ -765,6 +765,18 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
 		});
 	}
 
+	function getLocationSourceForMonitoring(): PresenceLocationSource | null {
+		if (config.locationSource) {
+			return config.locationSource;
+		}
+
+		if (config.enableLocationTracking) {
+			return createBrowserPresenceLocationSource();
+		}
+
+		return null;
+	}
+
 	// Store methods
 	function updatePresence(presenceUpdates: Partial<Omit<UserPresence, 'userId'>>): void {
 		const currentUserPresence = state.value.currentUser;
@@ -936,8 +948,10 @@ export function createPresenceStore(config: PresenceConfig): PresenceStore {
 			streamingUnsubscribers.push(attachActivitySource(config.activitySource));
 		}
 
-		if (config.locationSource) {
-			streamingUnsubscribers.push(attachLocationSource(config.locationSource));
+		const locationSource = getLocationSourceForMonitoring();
+
+		if (locationSource) {
+			streamingUnsubscribers.push(attachLocationSource(locationSource));
 		}
 
 		// Start the transport connection

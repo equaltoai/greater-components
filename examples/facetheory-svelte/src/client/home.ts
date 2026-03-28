@@ -1,6 +1,10 @@
 import { hydrate } from 'svelte';
-import PostRoot from '../../../../packages/faces/community/src/components/Post/Root.svelte';
+import { Post } from '@equaltoai/greater-components-community';
+import { preferencesStore } from '@equaltoai/greater-components-primitives';
 import type { FaceTheoryDemoProps } from '../demo-data.js';
+import './home.css';
+
+const CommunityPostRoot = Post.Root;
 
 function readHydrationData(): FaceTheoryDemoProps {
 	const payload = document.getElementById('__FACETHEORY_DATA__');
@@ -13,9 +17,16 @@ function readHydrationData(): FaceTheoryDemoProps {
 }
 
 const hydrationData = readHydrationData();
+const target = document.getElementById('facetheory-post-root');
 
-hydrate(PostRoot, {
-	target: document.body,
+if (!target) {
+	throw new Error('FaceTheory post hydration root is missing');
+}
+
+preferencesStore.hydrate(hydrationData.themeSnapshot);
+
+hydrate(CommunityPostRoot, {
+	target,
 	props: {
 		post: hydrationData.post,
 	},

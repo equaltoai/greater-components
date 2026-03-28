@@ -4,15 +4,17 @@ This guide describes the current hosting boundary for Greater Components in Face
 
 ## Official Example
 
-The repo now includes a blessed FaceTheory host example at [`examples/facetheory-svelte`](../examples/facetheory-svelte). It wires:
+The repo now includes a blessed FaceTheory host example at [`examples/facetheory-svelte`](../examples/facetheory-svelte). It is currently validated against FaceTheory `v0.3.0`, the release that includes the runtime-session fixes from FaceTheory issues `#6` and `#7`. It wires:
 
 - `createSvelteFace()` for the SSR route module
-- `viteAssetsForEntry()` for preload and stylesheet tags
+- `viteAssetsForEntry()` against a real Vite-built manifest for preload and stylesheet tags
 - `viteHydrationForEntry()` for the hydration payload and bootstrap module
 - Greater tokens, primitives, and a reusable face in one server-rendered page
+- public `@equaltoai/*` package imports instead of monorepo-relative source paths
 
 Validate the example locally with:
 
+- `pnpm build:facetheory-example`
 - `pnpm test:facetheory`
 - `pnpm exec tsc --noEmit -p examples/facetheory-svelte/tsconfig.json`
 
@@ -72,7 +74,7 @@ This lets FaceTheory, SvelteKit, and other hosts decide how route state, canonic
 
 ## Theme Bootstrap For SSR
 
-Use the primitives theme helpers to derive a server snapshot, emit strict-CSP-safe document attributes, and then hydrate the client store from the same snapshot:
+Use the primitives theme helpers to derive a server snapshot, emit strict-CSP-safe document attributes on `<html>`, and then hydrate the client store from the same snapshot before mounting:
 
 ```ts
 import {

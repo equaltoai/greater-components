@@ -2,15 +2,17 @@ import type { FaceContext } from '@theory-cloud/facetheory';
 import {
 	createThemeBootstrapSnapshot,
 	getThemeDocumentAttributes,
+	type ThemeBootstrapSnapshot,
 	type ThemeDocumentAttributes,
 } from '@equaltoai/greater-components-primitives';
+import type { PostData } from '@equaltoai/greater-components-community';
 import { tokens } from '@equaltoai/greater-components-tokens';
-import type { PostData } from '../../../packages/faces/community/src/types.ts';
 
-export interface FaceTheoryDemoProps {
+export interface FaceTheoryDemoProps extends Record<string, unknown> {
 	post: PostData;
 	docsHref: string;
 	hostLabel: string;
+	themeSnapshot: ThemeBootstrapSnapshot;
 	themeAttributes: ThemeDocumentAttributes;
 }
 
@@ -76,6 +78,7 @@ This example renders a reusable community post through \`createSvelteFace()\` wh
 		},
 		docsHref,
 		hostLabel,
+		themeSnapshot,
 		themeAttributes,
 	};
 }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Greater Components</title>
+  <desc id="desc">A blue rounded square with stacked white bars.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="32" fill="url(#bg)" />
+  <path
+    d="M42 44h76c4.418 0 8 3.582 8 8v4c0 4.418-3.582 8-8 8H42c-4.418 0-8-3.582-8-8v-4c0-4.418 3.582-8 8-8Zm0 32h52c4.418 0 8 3.582 8 8v4c0 4.418-3.582 8-8 8H42c-4.418 0-8-3.582-8-8v-4c0-4.418 3.582-8 8-8Zm0 32h76c4.418 0 8 3.582 8 8v4c0 4.418-3.582 8-8 8H42c-4.418 0-8-3.582-8-8v-4c0-4.418 3.582-8 8-8Z"
+    fill="#f8fafc"
+  />
+</svg>

@@ -106,6 +106,71 @@ describe('PresenceStore host boundaries', () => {
 		expect(transportManager.disconnect).toHaveBeenCalled();
 	});
 
+	it('preserves deprecated enableLocationTracking as an explicit browser opt-in', () => {
+		const transportManager = createMockTransportManager();
+		const listeners = new Map<string, () => void>();
+		const originalWindow = globalThis.window;
+		const hadWindow = 'window' in globalThis;
+		const windowStub = {
+			location: {
+				pathname: '/legacy',
+				hash: '#overview',
+			},
+			addEventListener: vi.fn((eventName: string, handler: () => void) => {
+				listeners.set(eventName, handler);
+			}),
+			removeEventListener: vi.fn((eventName: string) => {
+				listeners.delete(eventName);
+			}),
+		};
+
+		Object.defineProperty(globalThis, 'window', {
+			value: windowStub,
+			configurable: true,
+			writable: true,
+		});
+
+		try {
+			const store = createPresenceStore({
+				transportManager: transportManager as any,
+				currentUser: {
+					userId: 'legacy-user',
+					displayName: 'Legacy User',
+				},
+				enableLocationTracking: true,
+			});
+
+			store.startMonitoring();
+
+			expect(store.get().currentUser?.location).toEqual({
+				page: '/legacy',
+				section: 'overview',
+			});
+
+			windowStub.location.pathname = '/legacy/updated';
+			windowStub.location.hash = '#details';
+			listeners.get('popstate')?.();
+
+			expect(store.get().currentUser?.location).toEqual({
+				page: '/legacy/updated',
+				section: 'details',
+			});
+
+			store.stopMonitoring();
+			expect(windowStub.removeEventListener).toHaveBeenCalled();
+		} finally {
+			if (hadWindow) {
+				Object.defineProperty(globalThis, 'window', {
+					value: originalWindow,
+					configurable: true,
+					writable: true,
+				});
+			} else {
+				Reflect.deleteProperty(globalThis, 'window');
+			}
+		}
+	});
+
 	it('builds browser activity and location sources from an explicit host target', () => {
 		const listeners = new Map<string, () => void>();
 		const target = {
