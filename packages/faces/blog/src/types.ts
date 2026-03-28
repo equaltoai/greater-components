@@ -100,8 +100,14 @@ export interface ArticleConfig {
  * Article action handlers
  */
 export interface ArticleHandlers {
+	/** Resolve the canonical share URL for the current host */
+	resolveShareUrl?: (article: ArticleData) => string | URL | null | undefined;
 	/** Called when article is bookmarked */
 	onBookmark?: (article: ArticleData) => Promise<void> | void;
+	/** Called when a host copies the canonical article link */
+	onCopyLink?: (article: ArticleData, url: string) => Promise<void> | void;
+	/** Called when a host opens an outbound share URL */
+	onOpenShareLink?: (article: ArticleData, platform: string, shareUrl: string) => Promise<void> | void;
 	/** Called when article is shared */
 	onShare?: (article: ArticleData, platform?: string) => Promise<void> | void;
 	/** Called when reaction is added */

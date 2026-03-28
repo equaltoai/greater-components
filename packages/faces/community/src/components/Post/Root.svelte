@@ -50,9 +50,11 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 			.join(' ')
 	);
 
-	const postHref = $derived(
-		postState.type === 'link' && postState.url ? postState.url : `/posts/${postState.id}`
-	);
+	function getDefaultPostHref(): string {
+		return postState.type === 'link' && postState.url ? postState.url : `/posts/${postState.id}`;
+	}
+
+	const postHref = $derived(context.handlers.resolveHref?.(postState) ?? getDefaultPostHref());
 
 	function formatTimestamp(value: Date | string): string {
 		const date = typeof value === 'string' ? new Date(value) : value;
@@ -91,7 +93,10 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 	function handleNavigate(event: MouseEvent) {
 		if (!context.handlers.onNavigate) return;
 		event.preventDefault();
-		context.handlers.onNavigate(postState.id);
+		context.handlers.onNavigate(postState.id, {
+			href: postHref,
+			post: postState,
+		});
 	}
 </script>
 

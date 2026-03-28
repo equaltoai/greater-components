@@ -42,3 +42,13 @@ The following integrations remain intentionally browser-only and should be isola
 - push notification registration flows in `faces/social`
 
 When hosting Greater Components through FaceTheory, prefer explicit host wiring for navigation, location, hydration, and browser-only capabilities instead of depending on implicit `window` fallbacks.
+
+## Route-Aware Face Contracts
+
+Route-aware faces expose host hooks so the host can own URL semantics directly:
+
+- community posts accept `resolveHref(post)` and `onNavigate(postId, { href, post })`
+- article sharing accepts `resolveShareUrl(article)`, `onCopyLink(article, url)`, and `onOpenShareLink(article, platform, shareUrl)`
+- browser defaults can live in a host-only wrapper such as `createBrowserArticleShareHandlers()`
+
+This lets FaceTheory, SvelteKit, and other hosts decide how route state, canonical URLs, and share flows are derived without patching vendored Greater code.

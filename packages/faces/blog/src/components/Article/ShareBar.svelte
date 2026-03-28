@@ -7,6 +7,7 @@ Article.ShareBar - Social sharing buttons
 <script lang="ts">
 	import { getArticleContext } from './context.js';
 	import { Button } from '@equaltoai/greater-components-primitives';
+	import { buildArticleShareUrl, resolveArticleShareUrl } from '../../share.js';
 
 	interface Props {
 		/**
@@ -19,38 +20,9 @@ Article.ShareBar - Social sharing buttons
 
 	const context = getArticleContext();
 	const article = $derived(context.article);
-	const shareTargetUrl = $derived(resolveShareTargetUrl());
-	const canUseClipboard = $derived(
-		!!shareTargetUrl && typeof navigator !== 'undefined' && !!navigator.clipboard
-	);
-
-	function resolveShareTargetUrl(): string | null {
-		if (article.metadata.canonicalUrl) {
-			return article.metadata.canonicalUrl;
-		}
-
-		if (typeof window !== 'undefined') {
-			return window.location.href;
-		}
-
-		return null;
-	}
-
-	function getShareUrl(platform: string, targetUrl: string): string {
-		const url = encodeURIComponent(targetUrl);
-		const title = encodeURIComponent(article.metadata.title);
-
-		switch (platform) {
-			case 'twitter':
-				return `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
-			case 'facebook':
-				return `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-			case 'linkedin':
-				return `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-			default:
-				return '';
-		}
-	}
+	const shareTargetUrl = $derived(resolveArticleShareUrl(article, context.handlers));
+	const canCopyLink = $derived(!!shareTargetUrl && !!context.handlers.onCopyLink);
+	const canOpenShareLink = $derived(!!shareTargetUrl && !!context.handlers.onOpenShareLink);
 
 	async function handleShare(platform: string) {
 		if (!shareTargetUrl) {
@@ -59,11 +31,10 @@ Article.ShareBar - Social sharing buttons
 		}
 
 		if (platform === 'copy') {
-			if (typeof navigator !== 'undefined' && navigator.clipboard) {
-				await navigator.clipboard.writeText(shareTargetUrl);
-			}
-		} else if (typeof window !== 'undefined') {
-			window.open(getShareUrl(platform, shareTargetUrl), '_blank', 'width=600,height=400');
+			await context.handlers.onCopyLink?.(article, shareTargetUrl);
+		} else {
+			const shareUrl = buildArticleShareUrl(platform, shareTargetUrl, article.metadata.title);
+			await context.handlers.onOpenShareLink?.(article, platform, shareUrl);
 		}
 
 		context.handlers.onShare?.(article, platform);
@@ -75,7 +46,7 @@ Article.ShareBar - Social sharing buttons
 		<Button
 			variant="outline"
 			size="sm"
-			disabled={platform === 'copy' ? !canUseClipboard : !shareTargetUrl}
+			disabled={platform === 'copy' ? !canCopyLink : !canOpenShareLink}
 			onclick={() => handleShare(platform)}
 		>
 			{platform === 'copy' ? 'Copy Link' : platform.charAt(0).toUpperCase() + platform.slice(1)}
