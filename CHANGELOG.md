@@ -12,6 +12,74 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.9-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.8-rc.1...greater-v0.5.9-rc.0) (2026-03-28)
+
+### Features
+
+- add agent face demo adoption path ([93aec51](https://github.com/equaltoai/greater-components/commit/93aec514138bdf142d9b0b6c655996b1205f9b45))
+- add async workflow messaging surfaces ([d9ce302](https://github.com/equaltoai/greater-components/commit/d9ce3027c2d4c80b1d933b4c85a08c8d8fb3b9f4))
+- add FaceTheory example and smoke coverage ([8bd2318](https://github.com/equaltoai/greater-components/commit/8bd2318c3703e4ea363c9ab493a8eb484618b64b))
+- add host-provided face navigation contracts ([a772933](https://github.com/equaltoai/greater-components/commit/a772933004f2cff4276b1b1102d18f0687fc57c2))
+- add reusable shared agent workflow surfaces ([81e05b7](https://github.com/equaltoai/greater-components/commit/81e05b71095f177d5036de7c19e85c4729a9b408))
+- add shared agent workflow packages ([e3ca5a6](https://github.com/equaltoai/greater-components/commit/e3ca5a6a73d9c3b7c3627351149ad1157ac2000b))
+- add SSR theme bootstrap helpers ([c1894be](https://github.com/equaltoai/greater-components/commit/c1894be95f05da97ecee62bbbfa1d6902942fa6d))
+- add workflow lifecycle notifications ([a1832e2](https://github.com/equaltoai/greater-components/commit/a1832e2f19ef41645e56e9512d5f51b0dfbd666b))
+- add workflow moments to shared chat ([35d3564](https://github.com/equaltoai/greater-components/commit/35d35648e85e5bfbaa9de1b116284cae50b9d279))
+- compose agent profile and continuity surfaces ([3d978c8](https://github.com/equaltoai/greater-components/commit/3d978c83bf6314622cd6dfcd08cc648f8fd7e7f2))
+- compose agent signing and declaration surfaces ([0e6675a](https://github.com/equaltoai/greater-components/commit/0e6675acb82b071bc296521b62d783fb7e9156e2))
+- compose agent workflow inbox surfaces ([f90f246](https://github.com/equaltoai/greater-components/commit/f90f24663f36439fcbeff3cae05d90e24c09a4d5))
+- freeze agent workflow package boundaries ([#387](https://github.com/equaltoai/greater-components/issues/387)) ([b308466](https://github.com/equaltoai/greater-components/commit/b308466083cf418e31631dddf2a13e431a24fd4e))
+- freeze reusable agent workflow contracts ([#388](https://github.com/equaltoai/greater-components/issues/388)) ([6f4f980](https://github.com/equaltoai/greater-components/commit/6f4f980f30fed90af50b39bef172ad1b1e97d682))
+- harden FaceTheory host boundaries and add smoke coverage ([7f506ad](https://github.com/equaltoai/greater-components/commit/7f506ad2479f0f699c82da3809c561fe8505b70d))
+- map agent stitch anchors to reusable surfaces ([#389](https://github.com/equaltoai/greater-components/issues/389)) ([2fe69a5](https://github.com/equaltoai/greater-components/commit/2fe69a5428db34ba1a2efa76471545e625f82006))
+- refresh lesser v1.2.0 and lesser-host v0.2.0 contracts ([63ce0b9](https://github.com/equaltoai/greater-components/commit/63ce0b9d8c92a4beaab998ca037881a07517b112))
+- refresh lesser v1.2.0 contracts ([baa2c68](https://github.com/equaltoai/greater-components/commit/baa2c68a0840f30fbe8403d23b96de64bcdf42ba))
+- scaffold canonical agent face exports ([89a9c63](https://github.com/equaltoai/greater-components/commit/89a9c6350fc0eb06e42511ccc0562639b2343180))
+
+### Bug Fixes
+
+- commit generated primitives declarations ([320f89c](https://github.com/equaltoai/greater-components/commit/320f89c1bdafea370be8f66950b16e27ace92015))
+- complete workflow registry and grouping coverage ([4595d34](https://github.com/equaltoai/greater-components/commit/4595d342ad91492be88552d41dec53c5d95a48a3))
+- harden facetheory example contract coverage ([08f5558](https://github.com/equaltoai/greater-components/commit/08f55583b318fdec82fe9af89ca0fb9e22050b57))
+- harden SSR-safe face render paths ([eecad59](https://github.com/equaltoai/greater-components/commit/eecad593fe54166775217745005025fdaeb108d0))
+- preserve agent face and workflow contracts ([493e996](https://github.com/equaltoai/greater-components/commit/493e996a4926ee9547cdcd44acddba6be509d4f0))
+- preserve high-contrast preference overrides ([0b135e9](https://github.com/equaltoai/greater-components/commit/0b135e9e40609be25a3d77d62c41a5bbacd46f05))
+- refresh registry checksums ([fea5ea9](https://github.com/equaltoai/greater-components/commit/fea5ea9b78ad63005421e03a1a2a13d6fea728bd))
+- refresh registry checksums for agent workflow ([363e374](https://github.com/equaltoai/greater-components/commit/363e374f702187322c22a3de3fe9b7ce2af9efed))
+- refresh workspace lockfile for agent packages ([967943f](https://github.com/equaltoai/greater-components/commit/967943fb2f588a5566cf267a2618e7d8cd8af193))
+- satisfy CI registry and formatting checks ([9ac1526](https://github.com/equaltoai/greater-components/commit/9ac152617db037b5fba9a191d1d9159c3e783849))
+- stabilize agent face ci build ([1ab307e](https://github.com/equaltoai/greater-components/commit/1ab307e4324c79fe3be7d47a41ea847744d63256))
+- tighten agent workflow contracts and notification grouping ([45e773c](https://github.com/equaltoai/greater-components/commit/45e773c6285741a716fb13a2e270e9fbfe68a5e3))
+- unblock agent face ci validation ([232eb7d](https://github.com/equaltoai/greater-components/commit/232eb7d443ed11eb15e96b27b46fcb0fd634b272))
+- use workflow titles in grouped notifications ([d9a5043](https://github.com/equaltoai/greater-components/commit/d9a50433a23f78b3f8c3db5dbbc65c9b8f49d801))
+
+### Refactors
+
+- split browser presence tracking from store core ([e3fb9c3](https://github.com/equaltoai/greater-components/commit/e3fb9c34d6a3099e08fd1a7ef2701591399bafb0))
+
+### Docs
+
+- document agent face adoption patterns ([d5a3887](https://github.com/equaltoai/greater-components/commit/d5a388771963deadb480092928cd59610654d6f4))
+- publish Simulacrum agent migration checklist ([8b40d4e](https://github.com/equaltoai/greater-components/commit/8b40d4e8d8602f5716d27554639e6aa8617ec216))
+
+### Tests
+
+- add agent face smoke coverage ([03de544](https://github.com/equaltoai/greater-components/commit/03de544f4f4011e5ce1d6b40bfcec1623841a588))
+
+### Chores
+
+- bump facetheory to v0.3.1 ([cbf9e6e](https://github.com/equaltoai/greater-components/commit/cbf9e6ece0d961f6d151135a8b14005678bfa9dc))
+- finalize shared agent workflow surfaces ([6b63208](https://github.com/equaltoai/greater-components/commit/6b6320810ab6cf08bae011a56cc2aac793bb18bb))
+- ignore repo-local codex workspace ([585398a](https://github.com/equaltoai/greater-components/commit/585398a0bc976b57658498877d1934b12ae85195))
+- **main:** release greater 0.5.8 ([95edac2](https://github.com/equaltoai/greater-components/commit/95edac284e3e5df5dc7f89ae278386ffdfa12b55))
+- **main:** release greater 0.5.8 ([8263395](https://github.com/equaltoai/greater-components/commit/82633957c991936cbb33d8d2b89dad0380499bff))
+- patch dependabot transitive alerts ([b87c223](https://github.com/equaltoai/greater-components/commit/b87c223dc839b862ddd1e46463f12c4285763c58))
+- reconcile main promotion state ([1cf83aa](https://github.com/equaltoai/greater-components/commit/1cf83aa5553d395d0e82dfe775d935f15b0b9cf3))
+- reconcile premain promotion state ([493b13e](https://github.com/equaltoai/greater-components/commit/493b13e1ca02ecba541785979f2fd79da55f4e3c))
+- reconcile staging promotion branches ([a04f0ca](https://github.com/equaltoai/greater-components/commit/a04f0ca3bd6f4376472ca795a985be3e5e54ce82))
+- **release:** prepare metadata ([cefd0bd](https://github.com/equaltoai/greater-components/commit/cefd0bdec17d4e1c1f41d12b5d573fd79f8ce8c3))
+- stabilize registry metadata for promotions ([42b4f54](https://github.com/equaltoai/greater-components/commit/42b4f54e9d9818e8f6f35481a6a9a8934842e184))
+
 ## [0.5.8](https://github.com/equaltoai/greater-components/compare/greater-v0.5.7...greater-v0.5.8) (2026-03-23)
 
 ### CI
