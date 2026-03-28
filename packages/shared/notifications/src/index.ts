@@ -47,6 +47,7 @@ import NotificationsGroup from './Group.svelte';
 import NotificationsFilter from './Filter.svelte';
 import NotificationsLesserNotificationItem from './LesserNotificationItem.svelte';
 import NotificationsCommunicationNotificationItem from './CommunicationNotificationItem.svelte';
+import NotificationsWorkflowNotificationItem from './WorkflowNotificationItem.svelte';
 import NotificationFiltersComponent from './NotificationFilters.svelte';
 import PushNotificationSettingsComponent from './PushNotificationSettings.svelte';
 
@@ -57,6 +58,7 @@ export {
 	NotificationsFilter as Filter,
 	NotificationsLesserNotificationItem as LesserNotificationItem,
 	NotificationsCommunicationNotificationItem as CommunicationNotificationItem,
+	NotificationsWorkflowNotificationItem as WorkflowNotificationItem,
 	NotificationFiltersComponent as NotificationFilters,
 	PushNotificationSettingsComponent as PushNotificationSettings,
 };
@@ -82,6 +84,9 @@ export type {
 	CommunicationFrom,
 	CommunicationTo,
 	CommunicationAttachment,
+	WorkflowEventKind,
+	WorkflowEventPayload,
+	WorkflowEventNotification,
 } from './types.js';
 
 // Export grouping utilities
@@ -128,6 +133,11 @@ export const Notifications = {
 	 * Communication notification item (inbound email/SMS/voice delivered via `communication:*`)
 	 */
 	CommunicationNotificationItem: NotificationsCommunicationNotificationItem,
+
+	/**
+	 * Workflow lifecycle notification item
+	 */
+	WorkflowNotificationItem: NotificationsWorkflowNotificationItem,
 
 	/**
 	 * Settings component for configuring which notification types to receive

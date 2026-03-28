@@ -90,6 +90,7 @@ function getGroupKey(notification: Notification): string {
 			return `${notification.type}-${notification.id}`;
 		case 'admin.sign_up':
 		case 'admin.report':
+		case 'workflow_event':
 			return `${notification.type}-group`;
 		default:
 			return fallbackKey;
@@ -126,6 +127,8 @@ export function getGroupTitle(group: NotificationGroup): string {
 				return 'New user registration';
 			case 'admin.report':
 				return 'New report submitted';
+			case 'workflow_event':
+				return 'Workflow event';
 			default:
 				return 'Notification';
 		}
@@ -185,6 +188,8 @@ export function getGroupTitle(group: NotificationGroup): string {
 			return `${count} new user registrations`;
 		case 'admin.report':
 			return `${count} new reports`;
+		case 'workflow_event':
+			return `${count} workflow update${count === 1 ? '' : 's'}`;
 		default:
 			return `${count} notifications`;
 	}
@@ -212,6 +217,8 @@ export function getNotificationIcon(type: NotificationType): string {
 			return 'user-check';
 		case 'admin.report':
 			return 'flag';
+		case 'workflow_event':
+			return 'git-branch';
 		default:
 			return 'bell';
 	}
@@ -236,6 +243,8 @@ export function getNotificationColor(type: NotificationType): string {
 		case 'admin.sign_up':
 		case 'admin.report':
 			return 'var(--color-warning, #ffad1f)';
+		case 'workflow_event':
+			return 'var(--color-primary, #1d9bf0)';
 		default:
 			return 'var(--color-text-secondary, #536471)';
 	}

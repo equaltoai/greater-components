@@ -77,6 +77,23 @@ export interface CommunicationNotification {
 	threadId: string;
 }
 
+export type WorkflowEventKind =
+	| 'request_submitted'
+	| 'review_requested'
+	| 'approval_requested'
+	| 'finalize_ready'
+	| 'graduated';
+
+export interface WorkflowEventPayload {
+	kind: WorkflowEventKind;
+	title: string;
+	summary: string;
+	phase?: string;
+	actorLabel?: string;
+	targetLabel?: string;
+	actionLabel?: string;
+}
+
 export interface Status {
 	id: string;
 	createdAt: string | Date;
@@ -116,7 +133,8 @@ export type NotificationType =
 	| 'trust_update'
 	| 'cost_alert'
 	| 'moderation_action'
-	| 'communication_inbound';
+	| 'communication_inbound'
+	| 'workflow_event';
 
 export interface BaseNotification {
 	id: string;
@@ -195,7 +213,8 @@ export type Notification =
 	| CommunityNoteNotification
 	| TrustUpdateNotification
 	| CostAlertNotification
-	| ModerationActionNotification;
+	| ModerationActionNotification
+	| WorkflowEventNotification;
 
 export interface QuoteNotification extends BaseNotification {
 	type: 'quote';
@@ -235,6 +254,11 @@ export interface ModerationActionNotification extends BaseNotification {
 	status?: Status;
 	action: string;
 	reason: string;
+}
+
+export interface WorkflowEventNotification extends BaseNotification {
+	type: 'workflow_event';
+	workflowEvent: WorkflowEventPayload;
 }
 
 export interface NotificationGroup {

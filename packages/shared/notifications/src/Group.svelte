@@ -59,6 +59,7 @@ Displays multiple similar notifications grouped together.
 		trust_update: '🔒',
 		cost_alert: '💸',
 		moderation_action: '🛡️',
+		workflow_event: '🧭',
 	};
 
 	const icon = $derived(iconMap[group.type] ?? '🔔');
@@ -83,6 +84,7 @@ Displays multiple similar notifications grouped together.
 			trust_update: 'updated your trust score',
 			cost_alert: 'sent a cost alert',
 			moderation_action: 'performed a moderation action',
+			workflow_event: 'updated a workflow',
 		};
 
 		const baseTitle = baseTitleMap[group.type] ?? 'sent notifications';

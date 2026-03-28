@@ -211,4 +211,24 @@ describe('Notifications.Item', () => {
 
 		expect(screen.getByText('followed you')).toBeTruthy();
 	});
+
+	it('renders workflow lifecycle notifications as first-class items', () => {
+		const workflowNotification = {
+			...mockNotification,
+			type: 'workflow_event',
+			workflowEvent: {
+				kind: 'finalize_ready',
+				title: 'Finalize ready',
+				summary: 'All review checkpoints are complete and ready for promotion.',
+				phase: 'graduation',
+				actionLabel: 'Open graduation thread',
+			},
+			status: undefined,
+		} as any;
+
+		render(Item, { notification: workflowNotification });
+
+		expect(screen.getByText('Finalize ready')).toBeTruthy();
+		expect(screen.getByText('Open graduation thread')).toBeTruthy();
+	});
 });
