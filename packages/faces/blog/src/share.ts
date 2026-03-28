@@ -1,8 +1,6 @@
 import type { ArticleData, ArticleHandlers } from './types.js';
 
-export function normalizeArticleShareUrl(
-	value: string | URL | null | undefined
-): string | null {
+export function normalizeArticleShareUrl(value: string | URL | null | undefined): string | null {
 	if (!value) {
 		return null;
 	}
@@ -14,7 +12,9 @@ export function resolveArticleShareUrl(
 	article: ArticleData,
 	handlers?: Pick<ArticleHandlers, 'resolveShareUrl'>
 ): string | null {
-	return normalizeArticleShareUrl(handlers?.resolveShareUrl?.(article) ?? article.metadata.canonicalUrl);
+	return normalizeArticleShareUrl(
+		handlers?.resolveShareUrl?.(article) ?? article.metadata.canonicalUrl
+	);
 }
 
 export function buildArticleShareUrl(platform: string, url: string, title: string): string {

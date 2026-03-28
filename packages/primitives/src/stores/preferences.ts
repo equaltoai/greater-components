@@ -234,7 +234,7 @@ export function createThemeBootstrapSnapshot(
 ): ThemeBootstrapSnapshot {
 	const basePreferences = mergePreferences(DEFAULT_PREFERENCES, options.defaults ?? {});
 	const cookiePreferences = parsePreferencesCookie(options.cookie, options.cookieName) ?? {};
-	const storedPreferences = validatePreferences(options.stored ?? {}) ? options.stored ?? {} : {};
+	const storedPreferences = validatePreferences(options.stored ?? {}) ? (options.stored ?? {}) : {};
 	const preferences = mergePreferences(
 		mergePreferences(basePreferences, cookiePreferences),
 		storedPreferences
@@ -454,11 +454,7 @@ class PreferencesStore {
 
 	get resolvedColorScheme(): 'light' | 'dark' | 'high-contrast' {
 		this.ensureInitialized();
-		return resolveColorScheme(
-			this._preferences,
-			this._systemColorScheme,
-			this._systemHighContrast
-		);
+		return resolveColorScheme(this._preferences, this._systemColorScheme, this._systemHighContrast);
 	}
 
 	get resolvedMotion(): MotionPreference {

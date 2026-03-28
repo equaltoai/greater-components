@@ -107,7 +107,11 @@ export interface ArticleHandlers {
 	/** Called when a host copies the canonical article link */
 	onCopyLink?: (article: ArticleData, url: string) => Promise<void> | void;
 	/** Called when a host opens an outbound share URL */
-	onOpenShareLink?: (article: ArticleData, platform: string, shareUrl: string) => Promise<void> | void;
+	onOpenShareLink?: (
+		article: ArticleData,
+		platform: string,
+		shareUrl: string
+	) => Promise<void> | void;
 	/** Called when article is shared */
 	onShare?: (article: ArticleData, platform?: string) => Promise<void> | void;
 	/** Called when reaction is added */
