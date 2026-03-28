@@ -4649,6 +4649,8 @@ export interface components {
             created_at?: components["schemas"]["RFC3339DateTime"] | null;
             delegated_scopes?: string[];
             display_name: string;
+            identity_semantics: components["schemas"]["AgentIdentitySemantics"];
+            mcp_access: components["schemas"]["AgentMCPAccess"];
             username: string;
             verified: boolean;
             verified_at?: components["schemas"]["RFC3339DateTime"] | null;
@@ -4750,6 +4752,20 @@ export interface components {
             account: components["schemas"]["Account"];
             token: components["schemas"]["OAuthTokenResponse"];
         };
+        AgentIdentitySemantics: {
+            attribution_label: string;
+            body_identity_preserved: boolean;
+            continuity_state: string;
+            continuity_summary: string;
+            identity_label: string;
+            identity_state: string;
+            lifecycle_state: string;
+            memory_references_preserved: boolean;
+            moderation_label: string;
+            soul_agent_id?: string;
+            soul_binding_state: string;
+            timeline_presence_preserved: boolean;
+        };
         AgentKeyChallengeRequest: {
             username: string;
         };
@@ -4762,6 +4778,14 @@ export interface components {
             username: string;
         };
         AgentList: components["schemas"]["Agent"][];
+        AgentMCPAccess: {
+            authorization_server_url: string;
+            guidance: string[];
+            mcp_url: string;
+            protected_resource_url: string;
+            registration_url: string;
+            scopes: string[];
+        };
         AgentMemoryEventRequest: {
             event_type?: string;
             original_id?: string;
@@ -4799,12 +4823,18 @@ export interface components {
         };
         AgentPostAttribution: {
             constraints?: string[];
+            continuity_state?: string;
+            continuity_summary?: string;
             delegated_by?: string;
             delegated_by_did?: string;
+            identity_label?: string;
+            identity_state?: string;
             memory_citations?: string[];
             model_id?: string;
+            moderation_label?: string;
             schema_version?: string;
             scopes?: string[];
+            soul_agent_id?: string;
             trigger_details?: string;
             trigger_type?: string;
         };
@@ -4893,7 +4923,7 @@ export interface components {
             [key: string]: unknown;
         };
         AppRegistrationRequest: {
-            agent_username?: string;
+            /** @description Optional Lesser client classification. Public registration accepts `cli` and `web`; `agent` is not accepted on public registration surfaces. */
             client_class?: string;
             client_name: string;
             grant_types?: string;
@@ -5720,7 +5750,7 @@ export interface components {
             user_code: string;
         };
         OAuthDynamicClientRegistrationRequest: {
-            agent_username?: string;
+            /** @description Optional Lesser client classification. Public registration accepts `cli` and `web`; `agent` is not accepted on public registration surfaces. */
             client_class?: string;
             client_name?: string;
             client_uri?: string;
@@ -5737,7 +5767,7 @@ export interface components {
             tos_uri?: string;
         };
         OAuthDynamicClientRegistrationResponse: {
-            agent_username?: string;
+            /** @description Lesser client classification persisted for the registered public client. */
             client_class?: string;
             client_id: string;
             client_id_issued_at: number;
@@ -5778,6 +5808,8 @@ export interface components {
             grant_type: string;
             redirect_uri?: string;
             refresh_token?: string;
+            /** @description Canonical target resource URI. For remote MCP authorization, this must match the actor-scoped MCP URL used during the authorize request. */
+            resource?: string;
             scope?: string;
         };
         OAuthTokenResponse: {
@@ -6641,12 +6673,18 @@ export interface components {
                 };
                 agentAttribution?: {
                     constraints?: string[];
+                    continuity_state?: string;
+                    continuity_summary?: string;
                     delegated_by?: string;
                     delegated_by_did?: string;
+                    identity_label?: string;
+                    identity_state?: string;
                     memory_citations?: string[];
                     model_id?: string;
+                    moderation_label?: string;
                     schema_version?: string;
                     scopes?: string[];
+                    soul_agent_id?: string;
                     trigger_details?: string;
                     trigger_type?: string;
                 } | null;
@@ -6799,6 +6837,7 @@ export interface components {
             issued_at: components["schemas"]["RFC3339DateTime"];
             message: string;
             nonce: string;
+            registration_completed?: boolean;
             spent: boolean;
             used: boolean;
             username: string;
@@ -12875,6 +12914,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -15609,6 +15650,8 @@ export interface operations {
                 mode?: string;
                 /** @description OAuth redirect URI (must match registered redirect URI). */
                 redirect_uri: string;
+                /** @description Canonical target resource URI. Required for remote MCP authorization; must be the actor-scoped MCP URL served by this Lesser instance. */
+                resource?: string;
                 /** @description OAuth response type (must be `code`). */
                 response_type: string;
                 /** @description Space-delimited OAuth scope list. */
@@ -15798,29 +15841,10 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    agent_username?: string;
-                    client_class?: string;
-                    client_name: string;
-                    /** Format: uri */
-                    client_uri?: string;
-                    grant_types?: unknown[];
-                    redirect_uris: unknown[];
-                    scope?: string;
-                    software_id?: string;
-                    software_version?: string;
-                    token_endpoint_auth_method?: string;
-                };
+                "application/json": components["schemas"]["OAuthDynamicClientRegistrationRequest"];
             };
         };
         responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
             /** @description Created */
             201: {
                 headers: {
@@ -15833,26 +15857,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        agent_username?: string;
-                        client_class?: string;
-                        client_id: string;
-                        /** Format: int64 */
-                        client_id_issued_at: number;
-                        client_name?: string;
-                        client_secret?: string;
-                        /** Format: int64 */
-                        client_secret_expires_at: number;
-                        /** Format: uri */
-                        client_uri?: string;
-                        grant_types?: unknown[];
-                        redirect_uris?: unknown[];
-                        registration_source?: string;
-                        scope?: string;
-                        software_id?: string;
-                        software_version?: string;
-                        token_endpoint_auth_method?: string;
-                    };
+                    "application/json": components["schemas"]["OAuthDynamicClientRegistrationResponse"];
                 };
             };
             400: components["responses"]["BadRequest"];

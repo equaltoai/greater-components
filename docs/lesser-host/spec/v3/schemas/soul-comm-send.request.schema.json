@@ -20,7 +20,8 @@
     "replyTo": { "type": "string", "format": "email" },
     "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
     "body": { "type": "string", "minLength": 1 },
-    "inReplyTo": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 }
+    "inReplyTo": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 }
   },
   "allOf": [
     {

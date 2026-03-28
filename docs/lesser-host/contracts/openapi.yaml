@@ -10,11 +10,11 @@ components:
     sessionAuth:
       type: http
       scheme: bearer
-      description: 'Control plane session token: `Authorization: Bearer <session_token>`.'
+      description: "Control plane session token: `Authorization: Bearer <session_token>`."
     instanceKeyAuth:
       type: http
       scheme: bearer
-      description: 'Instance API key: `Authorization: Bearer <instance_key>`.'
+      description: "Instance API key: `Authorization: Bearer <instance_key>`."
 
   schemas:
     ErrorEnvelope:
@@ -47,14 +47,14 @@ components:
       properties:
         agentId:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         channels:
           type: object
           additionalProperties: false
           required: [ens, email, phone]
           properties:
             ens:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [name]
               properties:
@@ -63,12 +63,12 @@ components:
                   pattern: "^[a-z0-9][a-z0-9_.-]*\\.eth$"
                 resolverAddress:
                   type: string
-                  pattern: '^0x[0-9a-fA-F]{40}$'
+                  pattern: "^0x[0-9a-fA-F]{40}$"
                 chain:
                   type: string
                   default: mainnet
             email:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [address, capabilities, verified]
               properties:
@@ -95,7 +95,7 @@ components:
                   type: string
                   enum: [active, paused, decommissioned]
             phone:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [number, capabilities, verified]
               properties:
@@ -119,7 +119,7 @@ components:
                   type: string
                   enum: [active, paused, decommissioned]
         contactPreferences:
-          type: [object, 'null']
+          type: [object, "null"]
           additionalProperties: false
           required: [preferred, availability, responseExpectation, languages]
           properties:
@@ -140,7 +140,7 @@ components:
                 timezone:
                   type: string
                 windows:
-                  type: [array, 'null']
+                  type: [array, "null"]
                   items:
                     type: object
                     additionalProperties: false
@@ -154,10 +154,10 @@ components:
                           enum: [mon, tue, wed, thu, fri, sat, sun]
                       startTime:
                         type: string
-                        pattern: '^[0-2][0-9]:[0-5][0-9]$'
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
                       endTime:
                         type: string
-                        pattern: '^[0-2][0-9]:[0-5][0-9]$'
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
             responseExpectation:
               type: object
               additionalProperties: false
@@ -207,7 +207,7 @@ components:
               minItems: 1
               items:
                 type: string
-                pattern: '^[a-z]{2}$'
+                pattern: "^[a-z]{2}$"
             contentTypes:
               type: array
               items:
@@ -220,7 +220,7 @@ components:
                   type: boolean
                   default: false
                 requireReputation:
-                  type: [number, 'null']
+                  type: [number, "null"]
                   minimum: 0
                   maximum: 1
                 introductionExpected:
@@ -231,13 +231,13 @@ components:
           format: date-time
 
     SoulAgentChannelPreferencesResponse:
-      $ref: '../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json"
 
     SoulAgentChannelPreferencesRequest:
-      $ref: '../spec/v3/schemas/soul-agent-channel-preferences.request.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-channel-preferences.request.schema.json"
 
     SoulAgentIdentity:
-      $ref: '../spec/v3/schemas/soul-agent-identity.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-identity.schema.json"
 
     SoulResolveResponse:
       type: object
@@ -246,42 +246,654 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         agent:
-          $ref: '#/components/schemas/SoulAgentIdentity'
+          $ref: "#/components/schemas/SoulAgentIdentity"
 
     SoulSearchResult:
-      $ref: '../spec/v3/schemas/soul-search.result.schema.json'
+      $ref: "../spec/v3/schemas/soul-search.result.schema.json"
 
     SoulSearchResponse:
-      $ref: '../spec/v3/schemas/soul-search.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-search.response.schema.json"
 
     SoulCommSendRequest:
-      $ref: '../spec/v3/schemas/soul-comm-send.request.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.request.schema.json"
 
     SoulCommSendResponse:
-      $ref: '../spec/v3/schemas/soul-comm-send.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.response.schema.json"
 
     SoulCommSendErrorEnvelope:
-      $ref: '../spec/v3/schemas/soul-comm-send.error.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.error.schema.json"
 
     SoulCommStatusResponse:
-      $ref: '../spec/v3/schemas/soul-comm-status.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-status.response.schema.json"
 
     SoulCommStatusErrorEnvelope:
-      $ref: '../spec/v3/schemas/soul-comm-status.error.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-status.error.schema.json"
 
     SoulAgentCommActivityItem:
-      $ref: '../spec/v3/schemas/soul-agent-comm-activity-item.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-activity-item.schema.json"
 
     SoulAgentCommActivityResponse:
-      $ref: '../spec/v3/schemas/soul-agent-comm-activity.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-activity.response.schema.json"
 
     SoulAgentCommQueueItem:
-      $ref: '../spec/v3/schemas/soul-agent-comm-queue-item.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-queue-item.schema.json"
 
     SoulAgentCommQueueResponse:
-      $ref: '../spec/v3/schemas/soul-agent-comm-queue.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-queue.response.schema.json"
+
+    SafeTxPayload:
+      type: object
+      additionalProperties: false
+      required: [safe_address, to, value, data]
+      properties:
+        safe_address:
+          type: string
+        to:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        value:
+          type: string
+        data:
+          type: string
+          pattern: "^0x[0-9a-fA-F]*$"
+
+    SoulOperation:
+      type: object
+      additionalProperties: false
+      required: [operation_id, kind, status, created_at, updated_at]
+      properties:
+        operation_id:
+          type: string
+        kind:
+          type: string
+        agent_id:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        status:
+          type: string
+          enum: [pending, proposed, executed, failed]
+        safe_payload:
+          type: string
+        exec_tx_hash:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        exec_block_number:
+          type: integer
+        exec_success:
+          type: boolean
+        receipt_json:
+          type: string
+        snapshot_json:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        executed_at:
+          type: string
+          format: date-time
+
+    WalletChallengeResponse:
+      type: object
+      additionalProperties: false
+      required: [id, address, chainId, nonce, message, issuedAt, expiresAt]
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        address:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        chainId:
+          type: integer
+        nonce:
+          type: string
+        message:
+          type: string
+        issuedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+
+    SoulRegistryProofInstructions:
+      type: object
+      additionalProperties: false
+      required: [method]
+      properties:
+        method:
+          type: string
+          enum: [dns_txt, https_well_known]
+        dns_name:
+          type: string
+        dns_value:
+          type: string
+        https_url:
+          type: string
+          format: uri
+        https_body:
+          type: string
+
+    SoulAgentRegistration:
+      type: object
+      additionalProperties: false
+      required: [id, domain_normalized, local_id, agent_id, wallet_address, status, created_at, updated_at]
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        domain_raw:
+          type: string
+        domain_normalized:
+          type: string
+        local_id_raw:
+          type: string
+        local_id:
+          type: string
+        agent_id:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        wallet_address:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        capabilities:
+          type: array
+          items:
+            type: string
+        wallet_nonce:
+          type: string
+        wallet_message:
+          type: string
+        proof_token:
+          type: string
+        dns_verified:
+          type: boolean
+        https_verified:
+          type: boolean
+        wallet_verified:
+          type: boolean
+        verified_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [pending, completed]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+
+    SoulAgentPromotionPrerequisites:
+      type: object
+      additionalProperties: false
+      required:
+        - principal_declaration_recorded
+        - mint_operation_created
+        - mint_executed
+        - conversation_started
+        - conversation_completed
+        - review_draft_ready
+        - ready_for_finalize
+        - graduated
+      properties:
+        principal_declaration_recorded:
+          type: boolean
+        mint_operation_created:
+          type: boolean
+        mint_executed:
+          type: boolean
+        conversation_started:
+          type: boolean
+        conversation_completed:
+          type: boolean
+        review_draft_ready:
+          type: boolean
+        ready_for_finalize:
+          type: boolean
+        graduated:
+          type: boolean
+
+    SoulAgentPromotion:
+      type: object
+      additionalProperties: false
+      required:
+        - agent_id
+        - domain
+        - local_id
+        - wallet
+        - stage
+        - request_status
+        - review_status
+        - approval_status
+        - readiness_status
+        - created_at
+        - updated_at
+        - prerequisites
+      properties:
+        agent_id:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        registration_id:
+          type: string
+        requested_by:
+          type: string
+        domain:
+          type: string
+        local_id:
+          type: string
+        wallet:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        stage:
+          type: string
+          enum: [requested, approved, minted, reviewing, ready_to_finalize, graduated]
+        request_status:
+          type: string
+          enum: [requested, verified, minted, graduated]
+        review_status:
+          type: string
+          enum: [not_started, conversation_in_progress, draft_ready, published]
+        approval_status:
+          type: string
+          enum: [pending, approved]
+        readiness_status:
+          type: string
+          enum: [awaiting_verification, awaiting_mint, ready_for_conversation, ready_for_finalize, graduated]
+        mint_operation_id:
+          type: string
+        mint_operation_status:
+          type: string
+          enum: [pending, proposed, executed, failed]
+        principal_address:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        latest_conversation_id:
+          type: string
+        latest_conversation_status:
+          type: string
+          enum: [in_progress, completed, failed]
+        latest_review_sha256:
+          type: string
+          pattern: "^[0-9a-f]{64}$"
+        latest_boundary_count:
+          type: integer
+          minimum: 0
+        latest_capability_count:
+          type: integer
+          minimum: 0
+        published_version:
+          type: integer
+          minimum: 0
+        requested_at:
+          type: string
+          format: date-time
+        verified_at:
+          type: string
+          format: date-time
+        approved_at:
+          type: string
+          format: date-time
+        minted_at:
+          type: string
+          format: date-time
+        review_started_at:
+          type: string
+          format: date-time
+        review_ready_at:
+          type: string
+          format: date-time
+        graduated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        prerequisites:
+          $ref: "#/components/schemas/SoulAgentPromotionPrerequisites"
+        next_actions:
+          type: array
+          items:
+            type: string
+            enum:
+              - verify_request
+              - record_mint_execution
+              - start_review_conversation
+              - complete_review_conversation
+              - begin_finalize
+
+    SoulAgentPromotionResponse:
+      type: object
+      additionalProperties: false
+      required: [version, promotion]
+      properties:
+        version:
+          type: string
+          enum: ["1"]
+        promotion:
+          $ref: "#/components/schemas/SoulAgentPromotion"
+
+    SoulAgentPromotionListResponse:
+      type: object
+      additionalProperties: false
+      required: [version, promotions, count, has_more]
+      properties:
+        version:
+          type: string
+          enum: ["1"]
+        promotions:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoulAgentPromotion"
+        count:
+          type: integer
+          minimum: 0
+        has_more:
+          type: boolean
+        next_cursor:
+          type: string
+
+    SoulAgentPromotionLifecycleEvent:
+      type: object
+      additionalProperties: false
+      required: [event_id, event_type, occurred_at, promotion]
+      properties:
+        event_id:
+          type: string
+        event_type:
+          type: string
+          enum:
+            - request_created
+            - request_approved
+            - mint_executed
+            - review_started
+            - finalize_ready
+            - graduated
+        summary:
+          type: string
+        occurred_at:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+        operation_id:
+          type: string
+        conversation_id:
+          type: string
+        promotion:
+          $ref: "#/components/schemas/SoulAgentPromotion"
+
+    SoulAgentPromotionLifecycleEventListResponse:
+      type: object
+      additionalProperties: false
+      required: [version, events, count, has_more]
+      properties:
+        version:
+          type: string
+          enum: ["1"]
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoulAgentPromotionLifecycleEvent"
+        count:
+          type: integer
+          minimum: 0
+        has_more:
+          type: boolean
+        next_cursor:
+          type: string
+
+    SoulAgentRegistrationBeginRequest:
+      type: object
+      additionalProperties: false
+      required: [domain, local_id, wallet_address]
+      properties:
+        domain:
+          type: string
+        local_id:
+          type: string
+        wallet_address:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        capabilities:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - type: object
+                additionalProperties: true
+
+    SoulAgentRegistrationBeginResponse:
+      type: object
+      additionalProperties: false
+      required: [registration, wallet, proofs]
+      properties:
+        registration:
+          $ref: "#/components/schemas/SoulAgentRegistration"
+        wallet:
+          $ref: "#/components/schemas/WalletChallengeResponse"
+        proofs:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoulRegistryProofInstructions"
+        promotion:
+          $ref: "#/components/schemas/SoulAgentPromotion"
+
+    SoulAgentRegistrationVerifyRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - signature
+        - principal_address
+        - principal_declaration
+        - principal_signature
+        - declared_at
+      properties:
+        signature:
+          type: string
+        principal_address:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        principal_declaration:
+          type: string
+        principal_signature:
+          type: string
+        declared_at:
+          type: string
+          format: date-time
+
+    SoulAgentRegistrationVerifyResponse:
+      type: object
+      additionalProperties: false
+      required: [registration, operation]
+      properties:
+        registration:
+          $ref: "#/components/schemas/SoulAgentRegistration"
+        operation:
+          $ref: "#/components/schemas/SoulOperation"
+        safe_tx:
+          $ref: "#/components/schemas/SafeTxPayload"
+        promotion:
+          $ref: "#/components/schemas/SoulAgentPromotion"
+
+    SoulMintConversationFinalizeBeginRequest:
+      type: object
+      additionalProperties: false
+      required: [boundary_signatures]
+      properties:
+        boundary_signatures:
+          type: object
+          additionalProperties:
+            type: string
+
+    SoulMintConversationDeclarationPreview:
+      type: object
+      additionalProperties: false
+      required: [selfDescription, capabilities, boundaries, transparency]
+      properties:
+        selfDescription:
+          type: object
+          additionalProperties: true
+        capabilities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        boundaries:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        transparency:
+          type: object
+          additionalProperties: true
+
+    SoulMintConversationFinalizeBoundaryRequirement:
+      type: object
+      additionalProperties: false
+      required:
+        - boundary_id
+        - category
+        - statement
+        - signer_wallet
+        - signing_method
+        - message_encoding
+        - message
+        - digest_hex
+      properties:
+        boundary_id:
+          type: string
+        category:
+          type: string
+        statement:
+          type: string
+        rationale:
+          type: string
+        supersedes:
+          type: string
+        signature_hex:
+          type: string
+        signer_wallet:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        signing_method:
+          type: string
+          enum: [eip191_personal_sign]
+        message_encoding:
+          type: string
+          enum: [utf8]
+        message:
+          type: string
+        digest_hex:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+
+    SoulMintConversationFinalizeSigningInput:
+      type: object
+      additionalProperties: false
+      required:
+        - signer_wallet
+        - signing_method
+        - message_encoding
+        - message_hex
+        - digest_hex
+        - canonical_json
+      properties:
+        signer_wallet:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{40}$"
+        signing_method:
+          type: string
+          enum: [eip191_personal_sign]
+        message_encoding:
+          type: string
+          enum: [hex_bytes]
+        message_hex:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        digest_hex:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        canonical_json:
+          type: string
+
+    SoulMintConversationFinalizeRequestTemplate:
+      type: object
+      additionalProperties: false
+      required: [boundary_signatures, issued_at, expected_version, self_attestation]
+      properties:
+        boundary_signatures:
+          type: object
+          additionalProperties:
+            type: string
+        issued_at:
+          type: string
+          format: date-time
+        expected_version:
+          type: integer
+          minimum: 0
+        self_attestation:
+          type: string
+
+    SoulMintConversationFinalizePreflightResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - digest_hex
+        - issued_at
+        - expected_version
+        - next_version
+        - declarations_preview
+        - boundary_requirements
+        - self_attestation_signing
+        - finalize_request_template
+      properties:
+        version:
+          type: string
+          enum: ["1"]
+        digest_hex:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        issued_at:
+          type: string
+          format: date-time
+        expected_version:
+          type: integer
+          minimum: 0
+        next_version:
+          type: integer
+          minimum: 1
+        declarations_preview:
+          $ref: "#/components/schemas/SoulMintConversationDeclarationPreview"
+        boundary_requirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoulMintConversationFinalizeBoundaryRequirement"
+        self_attestation_signing:
+          $ref: "#/components/schemas/SoulMintConversationFinalizeSigningInput"
+        finalize_request_template:
+          $ref: "#/components/schemas/SoulMintConversationFinalizeRequestTemplate"
+        registration_preview:
+          type: object
+          additionalProperties: true
 
 paths:
   /api/v1/soul/agents/{agentId}/channels:
@@ -294,26 +906,26 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelsResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelsResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/channels/preferences:
     get:
@@ -325,26 +937,26 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelPreferencesResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
     put:
       operationId: soulUpdateAgentChannelPreferences
       summary: Update agent contact preferences (v3)
@@ -356,50 +968,50 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulAgentChannelPreferencesRequest'
+              $ref: "#/components/schemas/SoulAgentChannelPreferencesRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelPreferencesResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/ens/{ensName}:
     get:
@@ -414,24 +1026,24 @@ paths:
             minLength: 1
             maxLength: 255
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/email/{emailAddress}:
     get:
@@ -445,24 +1057,24 @@ paths:
             type: string
             format: email
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/phone/{phoneNumber}:
     get:
@@ -476,24 +1088,24 @@ paths:
             type: string
             pattern: "^\\+[1-9]\\d{1,14}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/search:
     get:
@@ -525,7 +1137,7 @@ paths:
           required: false
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{40}$'
+            pattern: "^0x[0-9a-fA-F]{40}$"
         - name: channel
           in: query
           required: false
@@ -547,24 +1159,619 @@ paths:
             minimum: 1
             maximum: 100
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulSearchResponse'
-        '400':
+                $ref: "#/components/schemas/SoulSearchResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/register/begin:
+    post:
+      operationId: soulRegisterBegin
+      summary: Begin a soul promotion request
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulAgentRegistrationBeginRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentRegistrationBeginResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/register/{id}/verify:
+    post:
+      operationId: soulRegisterVerify
+      summary: Verify proofs and principal approval for a soul promotion request
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulAgentRegistrationVerifyRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentRegistrationVerifyResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize/preflight:
+    post:
+      operationId: soulMintConversationFinalizePreflight
+      summary: Build finalize preflight data for a completed mint conversation
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize/begin:
+    post:
+      operationId: soulMintConversationFinalizeBegin
+      summary: Compatibility alias for finalize preflight
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize/preflight:
+    post:
+      operationId: soulAgentMintConversationFinalizePreflight
+      summary: Build finalize preflight data using the stable agentId handle
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize/begin:
+    post:
+      operationId: soulAgentMintConversationFinalizeBegin
+      summary: Compatibility alias for finalize preflight via the stable agentId handle
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/promotions/mine:
+    get:
+      operationId: soulListMyPromotions
+      summary: List durable promotion workflows for the authenticated requester
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentPromotionListResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/promotions/mine/events:
+    get:
+      operationId: soulListMyPromotionLifecycleEvents
+      summary: List structured promotion lifecycle events for the authenticated requester
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentPromotionLifecycleEventListResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/{agentId}/promotion:
+    get:
+      operationId: soulGetPromotion
+      summary: Get the durable, agent-centered promotion state
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentPromotionResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/{agentId}/promotion/verify:
+    post:
+      operationId: soulVerifyPromotion
+      summary: Verify a soul promotion request using the stable agentId handle
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulAgentRegistrationVerifyRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentRegistrationVerifyResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/agents/{agentId}/promotion/events:
+    get:
+      operationId: soulListAgentPromotionLifecycleEvents
+      summary: List structured lifecycle events for a single agent promotion workflow
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulAgentPromotionLifecycleEventListResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/comm/send:
     post:
@@ -577,38 +1784,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulCommSendRequest'
+              $ref: "#/components/schemas/SoulCommSendRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommSendResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '429':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "429":
           description: Rate limited
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
 
   /api/v1/soul/comm/status/{messageId}:
     get:
@@ -625,30 +1832,30 @@ paths:
             minLength: 1
             maxLength: 128
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommStatusResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/comm/activity:
     get:
@@ -662,7 +1869,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: limit
           in: query
           required: false
@@ -671,36 +1878,36 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentCommActivityResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentCommActivityResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/comm/queue:
     get:
@@ -714,7 +1921,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: limit
           in: query
           required: false
@@ -723,36 +1930,36 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentCommQueueResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentCommQueueResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/comm/status/{messageId}:
     get:
@@ -766,7 +1973,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: messageId
           in: path
           required: true
@@ -775,33 +1982,33 @@ paths:
             minLength: 1
             maxLength: 128
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommStatusResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
