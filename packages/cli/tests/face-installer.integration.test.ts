@@ -1,6 +1,12 @@
+import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { getFaceManifest, getFaceExports, getFaceSurfaces } from '../src/registry/faces.js';
 import { resolveFaceDependencies } from '../src/utils/face-installer.js';
+import type { RegistryIndex } from '../src/utils/registry-index.js';
+
+const registryIndex = JSON.parse(
+	fs.readFileSync(new URL('../../../registry/index.json', import.meta.url), 'utf8')
+) as RegistryIndex;
 
 describe('agent face dependency resolution', () => {
 	it('keeps exported agent compositions as face surfaces instead of installable components', () => {
@@ -50,4 +56,22 @@ describe('agent face dependency resolution', () => {
 			])
 		);
 	});
+
+	it.each(['social', 'blog', 'artist'] as const)(
+		'keeps %s registry dependencies limited to vendorable workspace packages',
+		(faceName) => {
+			const faceEntry = registryIndex.faces[faceName];
+
+			expect(faceEntry).toBeDefined();
+			expect(faceEntry?.dependencies.map((dependency) => dependency.name)).not.toContain(
+				'@equaltoai/greater-components'
+			);
+
+			const resolution = resolveFaceDependencies(faceName, { registryIndex });
+
+			expect(resolution).not.toBeNull();
+			expect(resolution?.success).toBe(true);
+			expect(resolution?.missing).toEqual([]);
+		}
+	);
 });

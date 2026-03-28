@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-28T21:19:48.278Z",
+  "generatedAt": "2026-03-28T21:34:27.274Z",
   "ref": "greater-v0.5.9-rc.0",
   "version": "0.5.9-rc.0",
   "checksums": {
@@ -6637,7 +6637,6 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "@equaltoai/greater-components", "version": "latest" },
         { "name": "adapters", "version": "0.5.9-rc.0" },
         { "name": "admin", "version": "0.5.9-rc.0" },
         { "name": "auth", "version": "0.5.9-rc.0" },
@@ -6946,7 +6945,6 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "@equaltoai/greater-components", "version": "latest" },
         { "name": "content", "version": "0.5.9-rc.0" },
         { "name": "headless", "version": "0.5.9-rc.0" },
         { "name": "icons", "version": "0.5.9-rc.0" },
@@ -8115,7 +8113,6 @@
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
       "dependencies": [
-        { "name": "@equaltoai/greater-components", "version": "latest" },
         { "name": "adapters", "version": "0.5.9-rc.0" },
         { "name": "headless", "version": "0.5.9-rc.0" },
         { "name": "icons", "version": "0.5.9-rc.0" },
@@ -8189,18 +8186,7 @@
       ],
       "includes": {
         "primitives": [],
-        "shared": [
-          "shared/agent",
-          "shared/chat",
-          "shared/messaging",
-          "shared/notifications",
-          "shared/soul",
-          "agent",
-          "chat",
-          "messaging",
-          "notifications",
-          "soul"
-        ],
+        "shared": ["agent", "chat", "messaging", "notifications", "soul"],
         "patterns": [],
         "components": []
       },
@@ -8265,12 +8251,7 @@
         { "name": "chat", "version": "0.5.9-rc.0" },
         { "name": "messaging", "version": "0.5.9-rc.0" },
         { "name": "notifications", "version": "0.5.9-rc.0" },
-        { "name": "soul", "version": "0.5.9-rc.0" },
-        { "name": "shared/agent", "version": "latest" },
-        { "name": "shared/chat", "version": "latest" },
-        { "name": "shared/messaging", "version": "latest" },
-        { "name": "shared/notifications", "version": "latest" },
-        { "name": "shared/soul", "version": "latest" }
+        { "name": "soul", "version": "0.5.9-rc.0" }
       ],
       "peerDependencies": [
         { "name": "@equaltoai/greater-components-agent", "version": "0.5.9-rc.0" },
