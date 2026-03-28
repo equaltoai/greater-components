@@ -30,6 +30,7 @@ export type ComponentDomain =
 	| 'social'
 	| 'blog'
 	| 'community'
+	| 'agent'
 	| 'auth'
 	| 'admin'
 	| 'chat'
@@ -73,6 +74,12 @@ export interface FaceManifest extends ComponentMetadata {
 		/** Compound components specific to this face */
 		components: string[];
 	};
+	/** Named surfaces exposed by the face package but not installed as standalone registry items */
+	surfaces?: string[];
+	/** Exported constants, functions, or metadata from the face package */
+	exports?: string[];
+	/** Exported type names from the face package */
+	types?: string[];
 	/** Style configuration */
 	styles: {
 		/** Main CSS bundle path */
@@ -2006,5 +2013,5 @@ export function getAllComponentTypes(): ComponentType[] {
  * Get all available domains
  */
 export function getAllDomains(): ComponentDomain[] {
-	return ['social', 'blog', 'community', 'artist', 'auth', 'admin', 'chat', 'core'];
+	return ['social', 'blog', 'community', 'agent', 'artist', 'auth', 'admin', 'chat', 'core'];
 }

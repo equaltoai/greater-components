@@ -58,6 +58,7 @@ const CSS_IMPORTS_NPM = {
 		blog: '@equaltoai/greater-components/faces/blog/style.css',
 		community: '@equaltoai/greater-components/faces/community/style.css',
 		artist: '@equaltoai/greater-components/faces/artist/style.css',
+		agent: '@equaltoai/greater-components/faces/agent/style.css',
 	},
 } as const;
 
@@ -76,6 +77,7 @@ export const CSS_SOURCE_PATHS = {
 		blog: 'packages/faces/blog/src/theme.css',
 		community: 'packages/faces/community/src/theme.css',
 		artist: 'packages/faces/artist/src/theme.css',
+		agent: 'packages/faces/agent/src/theme.css',
 	},
 } as const;
 
@@ -90,6 +92,7 @@ export const CSS_LOCAL_FILES = {
 		blog: 'blog.css',
 		community: 'community.css',
 		artist: 'artist.css',
+		agent: 'agent.css',
 	},
 } as const;
 
@@ -335,6 +338,7 @@ export function detectExistingCssImports(content: string): {
 		[/greater-components.*faces\/social.*\.css/, 'social'],
 		[/greater-components.*faces\/blog.*\.css/, 'blog'],
 		[/greater-components.*faces\/community.*\.css/, 'community'],
+		[/greater-components.*faces\/agent.*\.css/, 'agent'],
 		[/greater-components-social.*\.css/, 'social'],
 	];
 	for (const [pattern, face] of facePatterns) {

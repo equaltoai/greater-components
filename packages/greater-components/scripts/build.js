@@ -33,9 +33,11 @@ const packages = [
 	{ key: 'shared/messaging', dir: 'shared/messaging' },
 	{ key: 'shared/search', dir: 'shared/search' },
 	{ key: 'shared/notifications', dir: 'shared/notifications' },
+	{ key: 'shared/agent', dir: 'shared/agent' },
 	{ key: 'shared/chat', dir: 'shared/chat' },
 	{ key: 'shared/soul', dir: 'shared/soul' },
 	// Faces
+	{ key: 'faces/agent', dir: 'faces/agent' },
 	{ key: 'faces/social', dir: 'faces/social' },
 	{ key: 'faces/blog', dir: 'faces/blog' },
 	{ key: 'faces/community', dir: 'faces/community' },
@@ -114,6 +116,10 @@ function rewriteImports() {
 
 	function resolvePackageKey(pkgName) {
 		if (packageNames.has(pkgName)) return pkgName;
+		if (pkgName.endsWith('-face')) {
+			const faceKey = `faces/${pkgName.slice(0, -'-face'.length)}`;
+			if (packageNames.has(faceKey)) return faceKey;
+		}
 		const sharedKey = `shared/${pkgName}`;
 		if (packageNames.has(sharedKey)) return sharedKey;
 		const faceKey = `faces/${pkgName}`;
@@ -190,6 +196,7 @@ function generateRootBarrels() {
 		'adapters',
 		'testing',
 		'cli',
+		'faces/agent',
 		'faces/social',
 		'faces/blog',
 		'faces/community',
@@ -226,6 +233,7 @@ function aggregateStyles() {
 			'greater-components-blog.css',
 			'greater-components-community.css',
 			'greater-components-artist.css',
+			'greater-components-agent.css',
 			'greater-components-fediverse.css',
 		];
 		let foundStyle = false;

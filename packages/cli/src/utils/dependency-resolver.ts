@@ -20,6 +20,8 @@ import { logger } from './logger.js';
  * Resolved dependency with depth information
  */
 export interface ResolvedDependency {
+	/** Internal unique resolution key */
+	key: string;
 	/** Component name */
 	name: string;
 	/** Component type */
@@ -68,6 +70,58 @@ export interface ResolutionOptions {
 	registryIndex?: RegistryIndex;
 }
 
+interface DependencyRequest {
+	name: string;
+	preferredType?: ResolvedDependency['type'];
+	metadata?: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata | null;
+}
+
+function createDependencyRequest(
+	name: string,
+	preferredType?: ResolvedDependency['type'],
+	metadata?: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata | null
+): DependencyRequest {
+	return {
+		name,
+		preferredType,
+		metadata,
+	};
+}
+
+function getResolutionKey(name: string, type: ResolvedDependency['type']): string {
+	return `${type}:${name}`;
+}
+
+function getDisplayNameFromKey(key: string): string {
+	return key.includes(':') ? key.slice(key.indexOf(':') + 1) : key;
+}
+
+function formatDependencyLabel(name: string, type: ResolvedDependency['type']): string {
+	switch (type) {
+		case 'face':
+			return `faces/${name}`;
+		case 'shared':
+			return `shared/${name}`;
+		case 'pattern':
+			return `patterns/${name}`;
+		default:
+			return name;
+	}
+}
+
+function dedupeDependencyRequests(requests: DependencyRequest[]): DependencyRequest[] {
+	const deduped = new Map<string, DependencyRequest>();
+
+	for (const request of requests) {
+		const existing = deduped.get(request.name);
+		if (!existing || (!existing.preferredType && request.preferredType)) {
+			deduped.set(request.name, request);
+		}
+	}
+
+	return Array.from(deduped.values());
+}
+
 /**
  * Internal state for tracking resolution
  */
@@ -89,8 +143,8 @@ function getComponentDependencies(
 	name: string,
 	metadata: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata,
 	registryIndex?: RegistryIndex
-): string[] {
-	const deps: string[] = [];
+): DependencyRequest[] {
+	const deps: DependencyRequest[] = [];
 
 	// If we have a registry index, use it as the source of truth for internal dependencies
 	if (registryIndex) {
@@ -102,7 +156,7 @@ function getComponentDependencies(
 			if (indexEntry.dependencies) {
 				const names = indexEntry.dependencies.map((d) => d.name);
 				logger.debug(`Resolved dependencies for ${name} from registry: ${names.join(', ')}`);
-				deps.push(...names);
+				deps.push(...indexEntry.dependencies.map((dep) => createDependencyRequest(dep.name)));
 			}
 		} else {
 			logger.debug(`Entry not found in registry for ${name}`);
@@ -115,7 +169,7 @@ function getComponentDependencies(
 	if (!registryIndex || deps.length === 0) {
 		// Registry dependencies (other Greater components)
 		if ('registryDependencies' in metadata && metadata.registryDependencies) {
-			deps.push(...metadata.registryDependencies);
+			deps.push(...metadata.registryDependencies.map((dep) => createDependencyRequest(dep)));
 		}
 	}
 
@@ -126,20 +180,22 @@ function getComponentDependencies(
 	// We should preserve them.
 	if ('includes' in metadata) {
 		const face = metadata as FaceManifest;
-		deps.push(...face.includes.primitives);
-		deps.push(...face.includes.shared);
-		deps.push(...face.includes.patterns);
-		deps.push(...face.includes.components);
+		deps.push(
+			...face.includes.primitives.map((dep) => createDependencyRequest(dep, 'primitive')),
+			...face.includes.shared.map((dep) => createDependencyRequest(dep, 'shared')),
+			...face.includes.patterns.map((dep) => createDependencyRequest(dep, 'pattern')),
+			...face.includes.components.map((dep) => createDependencyRequest(dep))
+		);
 	}
 
-	return [...new Set(deps)]; // Deduplicate
+	return dedupeDependencyRequests(deps);
 }
 
 /**
  * Resolve a single component and its dependencies recursively
  */
 function resolveComponent(
-	name: string,
+	request: DependencyRequest,
 	state: ResolutionState,
 	depth: number,
 	isDirectRequest: boolean,
@@ -151,25 +207,100 @@ function resolveComponent(
 		return;
 	}
 
+	// Try to find the component in registries
+	let metadata = request.metadata ?? null;
+	let type: ResolvedDependency['type'] = request.preferredType ?? 'primitive';
+
+	if (!metadata) {
+		switch (request.preferredType) {
+			case 'face': {
+				const face = getFaceManifest(request.name);
+				if (face) {
+					metadata = face;
+					type = 'face';
+				}
+				break;
+			}
+			case 'shared': {
+				const shared = getSharedModule(request.name);
+				if (shared) {
+					metadata = shared;
+					type = 'shared';
+				}
+				break;
+			}
+			case 'pattern': {
+				const pattern = getPattern(request.name);
+				if (pattern) {
+					metadata = pattern;
+					type = 'pattern';
+				}
+				break;
+			}
+			default: {
+				const component = getComponent(request.name);
+				if (component) {
+					metadata = component;
+					type = component.type as ResolvedDependency['type'];
+				}
+
+				if (!metadata) {
+					const face = getFaceManifest(request.name);
+					if (face) {
+						metadata = face;
+						type = 'face';
+					}
+				}
+
+				if (!metadata) {
+					const shared = getSharedModule(request.name);
+					if (shared) {
+						metadata = shared;
+						type = 'shared';
+					}
+				}
+
+				if (!metadata) {
+					const pattern = getPattern(request.name);
+					if (pattern) {
+						metadata = pattern;
+						type = 'pattern';
+					}
+				}
+			}
+		}
+	}
+
+	// Not found
+	if (!metadata) {
+		state.missing.push({
+			name: request.name,
+			requiredBy: requiredBy || 'direct request',
+		});
+		return;
+	}
+
+	const key = getResolutionKey(request.name, type);
+
 	// Skip if already resolved
-	if (state.resolved.has(name)) {
-		// Update to direct request if needed
-		const existing = state.resolved.get(name);
+	if (state.resolved.has(key)) {
+		const existing = state.resolved.get(key);
 		if (existing && isDirectRequest && !existing.isDirectRequest) {
 			existing.isDirectRequest = true;
 		}
 		return;
 	}
 
-	// Skip if in skip list
-	if (options.skipInstalled?.includes(name)) {
+	// Faces are intentionally always reconsidered from the selected face manifest instead of the
+	// installed-name list, because a face can share a bare name with a shared module (for example agent).
+	if (type !== 'face' && options.skipInstalled?.includes(request.name)) {
 		return;
 	}
 
 	// Check for circular dependency
-	if (state.visiting.has(name)) {
-		const cycleStart = state.path.indexOf(name);
-		const cyclePath = [...state.path.slice(cycleStart), name];
+	if (state.visiting.has(key)) {
+		const cycleStart = state.path.indexOf(key);
+		const cyclePath = [...state.path.slice(cycleStart), key].map(getDisplayNameFromKey);
 		state.circular.push({
 			path: cyclePath,
 			message: `Circular dependency detected: ${cyclePath.join(' -> ')}`,
@@ -177,57 +308,9 @@ function resolveComponent(
 		return;
 	}
 
-	// Try to find the component in registries
-	let metadata: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata | null =
-		null;
-	let type: ResolvedDependency['type'] = 'primitive';
-
-	// Check main registry
-	const component = getComponent(name);
-	if (component) {
-		metadata = component;
-		type = component.type as ResolvedDependency['type'];
-	}
-
-	// Check face registry
-	if (!metadata) {
-		const face = getFaceManifest(name);
-		if (face) {
-			metadata = face;
-			type = 'face';
-		}
-	}
-
-	// Check shared registry
-	if (!metadata) {
-		const shared = getSharedModule(name);
-		if (shared) {
-			metadata = shared;
-			type = 'shared';
-		}
-	}
-
-	// Check pattern registry
-	if (!metadata) {
-		const pattern = getPattern(name);
-		if (pattern) {
-			metadata = pattern;
-			type = 'pattern';
-		}
-	}
-
-	// Not found
-	if (!metadata) {
-		state.missing.push({
-			name,
-			requiredBy: requiredBy || 'direct request',
-		});
-		return;
-	}
-
 	// Mark as visiting
-	state.visiting.add(name);
-	state.path.push(name);
+	state.visiting.add(key);
+	state.path.push(key);
 
 	// Collect NPM dependencies
 	// Priority: Registry Index (dynamic) > Static Metadata
@@ -235,9 +318,9 @@ function resolveComponent(
 
 	if (state.registryIndex) {
 		const indexEntry =
-			state.registryIndex.components[name] ||
-			state.registryIndex.faces?.[name] ||
-			state.registryIndex.shared?.[name];
+			state.registryIndex.components[request.name] ||
+			state.registryIndex.faces?.[request.name] ||
+			state.registryIndex.shared?.[request.name];
 
 		if (indexEntry && indexEntry.peerDependencies && indexEntry.peerDependencies.length > 0) {
 			for (const dep of indexEntry.peerDependencies) {
@@ -261,25 +344,40 @@ function resolveComponent(
 	}
 
 	// Get and resolve dependencies
-	const dependencies = getComponentDependencies(name, metadata, state.registryIndex);
+	const dependencies = getComponentDependencies(request.name, metadata, state.registryIndex);
 
-	for (const depName of dependencies) {
-		resolveComponent(depName, state, depth + 1, false, options, name);
+	for (const dependency of dependencies) {
+		resolveComponent(
+			dependency,
+			state,
+			depth + 1,
+			false,
+			options,
+			formatDependencyLabel(request.name, type)
+		);
 	}
 
 	// Add to resolved (after dependencies)
-	state.resolved.set(name, {
-		name,
+	state.resolved.set(key, {
+		key,
+		name: request.name,
 		type,
 		depth,
-		dependencies,
+		dependencies: dependencies.map((dependency) => {
+			const dependencyType =
+				dependency.preferredType ??
+				(dependency.metadata?.type as ResolvedDependency['type'] | undefined);
+			return dependencyType
+				? formatDependencyLabel(dependency.name, dependencyType)
+				: dependency.name;
+		}),
 		metadata,
 		isDirectRequest,
 		isOptional: false,
 	});
 
 	// Unmark visiting
-	state.visiting.delete(name);
+	state.visiting.delete(key);
 	state.path.pop();
 }
 
@@ -304,7 +402,17 @@ export function resolveDependencies(
 	// Resolve each requested item
 	for (const item of items) {
 		if (item.found && item.metadata) {
-			resolveComponent(item.name, state, 0, true, options);
+			resolveComponent(
+				createDependencyRequest(
+					item.name,
+					item.type,
+					item.metadata as ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata
+				),
+				state,
+				0,
+				true,
+				options
+			);
 		}
 	}
 
@@ -327,6 +435,14 @@ export function resolveDependencies(
 export function getInstallationOrder(result: DependencyResolutionResult): string[] {
 	// Already sorted by depth (deepest first), so dependencies come before dependents
 	return result.resolved.map((dep) => dep.name);
+}
+
+/**
+ * Get internal installation keys (dependencies first)
+ */
+export function getInstallationKeys(result: DependencyResolutionResult): string[] {
+	// Already sorted by depth (deepest first), so dependencies come before dependents
+	return result.resolved.map((dep) => dep.key);
 }
 
 /**

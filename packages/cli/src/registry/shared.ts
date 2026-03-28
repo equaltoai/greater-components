@@ -256,6 +256,42 @@ export const sharedModuleRegistry: Record<string, SharedModuleMetadata> = {
 	},
 
 	// ====================
+	// AGENT MODULE
+	// ====================
+	agent: {
+		name: 'agent',
+		type: 'shared',
+		description: 'Agent workflow contracts, lifecycle naming, and Stitch anchor metadata',
+		packageName: '@equaltoai/greater-components',
+		exportPath: '@equaltoai/greater-components/shared/agent',
+		exports: [
+			'AGENT_DIRECT_PACKAGE_NAMES',
+			'AGENT_PACKAGE_BOUNDARIES',
+			'AGENT_WORKFLOW_IMPLEMENTATION_SHAPE',
+			'getAgentPackageBoundary',
+			'AGENT_WORKFLOW_PHASES',
+			'AGENT_WORKFLOW_PHASE_DEFINITIONS',
+			'AGENT_WORKFLOW_SLOT_NAMES',
+			'AGENT_WORKFLOW_STATE_NAMES',
+			'getAgentWorkflowPhaseDefinition',
+			'AGENT_STITCH_ANCHOR_DEFINITIONS',
+			'getAgentStitchAnchor',
+		],
+		files: [
+			{ path: 'shared/agent/index.ts', content: '', type: 'types' },
+			{ path: 'shared/agent/boundaries.ts', content: '', type: 'types' },
+			{ path: 'shared/agent/workflow.ts', content: '', type: 'types' },
+			{ path: 'shared/agent/stitch.ts', content: '', type: 'types' },
+		],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['agent', 'workflow', 'contracts', 'stitch', 'shared'],
+		version: '1.0.0',
+		domain: 'agent',
+	},
+
+	// ====================
 	// CHAT MODULE
 	// ====================
 	chat: {

@@ -1,0 +1,67 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-agent",
+  "version": "0.5.8-rc.0",
+  "description": "Agent-first workflow contracts, package boundaries, and rollout shape metadata for Greater Components.",
+  "components": {
+    "PackageBoundaries": {
+      "description": "Frozen ownership map across shared workflow packages and the agent face.",
+      "exports": true
+    },
+    "ImplementationShape": {
+      "description": "Concrete M2 and M3 rollout shape derived from the boundary freeze.",
+      "exports": true
+    }
+  },
+  "utilities": {
+    "boundaries": {
+      "description": "Boundary lookup helpers and direct package naming metadata.",
+      "exports": [
+        "AGENT_DIRECT_PACKAGE_NAMES",
+        "AGENT_PACKAGE_BOUNDARIES",
+        "AGENT_WORKFLOW_IMPLEMENTATION_SHAPE",
+        "getAgentPackageBoundary"
+      ]
+    },
+    "workflow": {
+      "description": "Reusable workflow phases, slot naming, state definitions, and lookup helpers.",
+      "exports": [
+        "AGENT_WORKFLOW_PHASES",
+        "AGENT_WORKFLOW_PHASE_DEFINITIONS",
+        "AGENT_WORKFLOW_SLOT_NAMES",
+        "AGENT_WORKFLOW_STATE_NAMES",
+        "getAgentWorkflowPhaseDefinition"
+      ]
+    },
+    "stitch": {
+      "description": "Stitch anchor mapping from real design screens into reusable component families and export surfaces.",
+      "exports": ["AGENT_STITCH_ANCHOR_DEFINITIONS", "getAgentStitchAnchor"]
+    }
+  },
+  "types": [
+    "AgentPackageKey",
+    "AgentPackageRole",
+    "AgentPackageBoundary",
+    "AgentWorkflowMilestoneShape",
+    "AgentWorkflowPhase",
+    "AgentWorkflowPhaseDefinition",
+    "AgentWorkflowSlotDefinition",
+    "AgentWorkflowSlotName",
+    "AgentWorkflowStateDefinition",
+    "AgentWorkflowState",
+    "AgentWorkflowEnvelope",
+    "AgentStitchAnchorDefinition",
+    "AgentStitchAnchorKey"
+  ],
+  "dependencies": {
+    "internal": [],
+    "peer": [],
+    "optional": []
+  },
+  "features": {
+    "workflowBoundaries": true,
+    "workflowContracts": true,
+    "stitchAnchorMapping": true,
+    "implementationShape": true
+  }
+}

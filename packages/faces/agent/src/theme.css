@@ -1,0 +1,5 @@
+:root {
+	--gr-agent-surface-gap: var(--gr-spacing-scale-4);
+	--gr-agent-rail-max-width: 24rem;
+	--gr-agent-panel-min-width: 18rem;
+}
