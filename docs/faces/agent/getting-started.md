@@ -85,4 +85,4 @@ Keep the contract split between `shared/agent` and `faces/agent` intact:
 - `shared/agent` owns workflow contracts, lifecycle metadata, and reusable workflow cards
 - `faces/agent` owns route shells, screen presets, stitch-aligned compositions, and host-facing screen metadata
 
-If you need host integration details beyond the basic setup, continue with [Agent Face Adoption Patterns](./integration-patterns.md) and [FaceTheory Integration](../../facetheory-integration.md).
+If you need host integration details beyond the basic setup, continue with [Agent Face Adoption Patterns](./integration-patterns.md), [Simulacrum Migration Checklist](./simulacrum-migration-checklist.md), and [FaceTheory Integration](../../facetheory-integration.md).

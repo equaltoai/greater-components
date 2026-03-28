@@ -2,6 +2,8 @@
 
 This guide documents the supported host patterns for `faces/agent` so downstream products can adopt the canonical screen bundle instead of rebuilding the same shells locally.
 
+For the concrete project 15 to project 9 handoff, continue with [Simulacrum Migration Checklist](./simulacrum-migration-checklist.md).
+
 ## FaceTheory Hosts
 
 FaceTheory `v0.3.0` is the compatible baseline for the current Greater hosting path.
@@ -112,4 +114,5 @@ When wiring a new host, validate the contract with the same checks this repo use
 pnpm exec tsc --noEmit -p examples/agent-face-svelte/tsconfig.json
 pnpm exec vite build --config examples/agent-face-svelte/vite.config.ts
 pnpm --filter @equaltoai/playground build
+pnpm test:agent-face
 ```

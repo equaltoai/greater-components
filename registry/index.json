@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-28T16:59:03.033Z",
+  "generatedAt": "2026-03-28T18:34:13.482Z",
   "ref": "greater-v0.5.8-rc.0",
   "version": "0.5.8-rc.0",
   "checksums": {
@@ -1234,9 +1234,16 @@
     "packages/faces/artist/src/utils/monitoring.ts": "sha256-1XzA2K10tz1VmAMT/mJq6XBIKt+ZUpFKWAjY76oIdzU=",
     "packages/faces/artist/src/utils/performance.ts": "sha256-baSEGEET52y1tua9r/UrNH+3C+cltnKvHsSC5BuJAjE=",
     "packages/faces/artist/src/utils/reducedMotion.ts": "sha256-tGbuosv9hwDj1ALLdsdhiD5jViVc9WXsq25nAycnWt0=",
-    "packages/faces/agent/src/compositions.ts": "sha256-QW1wmgByB6Kkpt1q/5ny1xgfLwxwptJROmyNKWtPK/M=",
-    "packages/faces/agent/src/index.ts": "sha256-Vo9f7oDYoCxK9NyAM7mz06DlACFuqTSkXkAf2Cqqh5s=",
-    "packages/faces/agent/src/theme.css": "sha256-Y3DpC9QJ0IdSgDESQRCMRilcauH8b89TnuBK35UqYDs=",
+    "packages/faces/agent/src/AgentGenesisWorkspace.svelte": "sha256-asOoozJGF34phYTzYe6F6qCB9sWechkxjVDOTznmnsU=",
+    "packages/faces/agent/src/compositions.ts": "sha256-cS0RwNs7h7JRd9CSNi19DqIOzbpHl0BSnXqsRPR747Y=",
+    "packages/faces/agent/src/GraduationApprovalThread.svelte": "sha256-hIri46kxR2b+fgLhjTENVbidFA+ahjJzS0kqepYIDdQ=",
+    "packages/faces/agent/src/IdentityNexus.svelte": "sha256-U0/stVClR2Ju5VEJtHo14PWa72YX7yyG1qxXCbEil50=",
+    "packages/faces/agent/src/index.ts": "sha256-UIP068rPypWZdSCBUq7GmnDP3fLN/Jbkqn6ROiLjtuI=",
+    "packages/faces/agent/src/internal/AgentFaceFrame.svelte": "sha256-S/Fse9wh43QSwyOBYs9S/0LWUvGEfdcYe0dq/LVa6r4=",
+    "packages/faces/agent/src/NexusDashboard.svelte": "sha256-kDEW3AM3GqUgSdV3NMlbUjzUw+8q5VSamsZc1/ugHAc=",
+    "packages/faces/agent/src/SoulRequestCenter.svelte": "sha256-A5pL9lb/lP0CKhuG8gvcOjcBLc5tfY65aPNEa656zP4=",
+    "packages/faces/agent/src/theme.css": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
+    "packages/faces/agent/src/types.ts": "sha256-jT27z4WRCcXVEIVlR33DsbDZsYsxaw4XUAPhM1r0Ww0=",
     "packages/shared/auth/src/BackupCodes.svelte": "sha256-pSuAGwmoGpDFNpo10avTzrdpYe7OsoB8o/c+7dCai9s=",
     "packages/shared/auth/src/context.ts": "sha256-lAMwah47PV11KmyQZfA9hvA69IIPvJv+czihr/jyfQI=",
     "packages/shared/auth/src/index.ts": "sha256-Zh8kb9HfRMEsvO5vziM1oWKEAyytVsOttIMO865gEsI=",
@@ -8168,38 +8175,132 @@
     "agent": {
       "name": "agent",
       "version": "0.5.8-rc.0",
-      "description": "Agent-first face composition metadata and route-shell boundaries for Greater Components.",
+      "description": "Agent-first face compositions and route-shell boundaries for Greater Components.",
       "exports": [
+        "AgentGenesisWorkspace",
+        "SoulRequestCenter",
+        "GraduationApprovalThread",
+        "NexusDashboard",
+        "IdentityNexus",
         "AgentFacePackageRole",
         "AGENT_FACE_PACKAGE_ROLE",
         "AGENT_FACE_COMPOSITIONS",
         "getAgentFaceComposition"
       ],
-      "includes": { "primitives": [], "shared": [], "patterns": [], "components": [] },
+      "includes": {
+        "primitives": [],
+        "shared": [
+          "shared/agent",
+          "shared/chat",
+          "shared/messaging",
+          "shared/notifications",
+          "shared/soul",
+          "agent",
+          "chat",
+          "messaging",
+          "notifications",
+          "soul"
+        ],
+        "patterns": [],
+        "components": []
+      },
       "files": [
         {
+          "path": "src/AgentGenesisWorkspace.svelte",
+          "checksum": "sha256-asOoozJGF34phYTzYe6F6qCB9sWechkxjVDOTznmnsU=",
+          "size": 12881
+        },
+        {
           "path": "src/compositions.ts",
-          "checksum": "sha256-QW1wmgByB6Kkpt1q/5ny1xgfLwxwptJROmyNKWtPK/M=",
-          "size": 3714
+          "checksum": "sha256-cS0RwNs7h7JRd9CSNi19DqIOzbpHl0BSnXqsRPR747Y=",
+          "size": 4061
+        },
+        {
+          "path": "src/GraduationApprovalThread.svelte",
+          "checksum": "sha256-hIri46kxR2b+fgLhjTENVbidFA+ahjJzS0kqepYIDdQ=",
+          "size": 9265
+        },
+        {
+          "path": "src/IdentityNexus.svelte",
+          "checksum": "sha256-U0/stVClR2Ju5VEJtHo14PWa72YX7yyG1qxXCbEil50=",
+          "size": 8181
         },
         {
           "path": "src/index.ts",
-          "checksum": "sha256-Vo9f7oDYoCxK9NyAM7mz06DlACFuqTSkXkAf2Cqqh5s=",
-          "size": 1415
+          "checksum": "sha256-UIP068rPypWZdSCBUq7GmnDP3fLN/Jbkqn6ROiLjtuI=",
+          "size": 2217
+        },
+        {
+          "path": "src/internal/AgentFaceFrame.svelte",
+          "checksum": "sha256-S/Fse9wh43QSwyOBYs9S/0LWUvGEfdcYe0dq/LVa6r4=",
+          "size": 11464
+        },
+        {
+          "path": "src/NexusDashboard.svelte",
+          "checksum": "sha256-kDEW3AM3GqUgSdV3NMlbUjzUw+8q5VSamsZc1/ugHAc=",
+          "size": 10793
+        },
+        {
+          "path": "src/SoulRequestCenter.svelte",
+          "checksum": "sha256-A5pL9lb/lP0CKhuG8gvcOjcBLc5tfY65aPNEa656zP4=",
+          "size": 9943
         },
         {
           "path": "src/theme.css",
-          "checksum": "sha256-Y3DpC9QJ0IdSgDESQRCMRilcauH8b89TnuBK35UqYDs=",
-          "size": 133
+          "checksum": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
+          "size": 201
+        },
+        {
+          "path": "src/types.ts",
+          "checksum": "sha256-jT27z4WRCcXVEIVlR33DsbDZsYsxaw4XUAPhM1r0Ww0=",
+          "size": 4581
         }
       ],
       "styles": {
         "main": "@equaltoai/greater-components/faces/agent/style.css",
         "tokens": "@equaltoai/greater-components/tokens/theme.css"
       },
-      "dependencies": [],
-      "peerDependencies": [],
-      "types": ["AgentFacePackageRole", "AgentFaceComposition"]
+      "dependencies": [
+        { "name": "agent", "version": "0.5.8-rc.0" },
+        { "name": "chat", "version": "0.5.8-rc.0" },
+        { "name": "messaging", "version": "0.5.8-rc.0" },
+        { "name": "notifications", "version": "0.5.8-rc.0" },
+        { "name": "soul", "version": "0.5.8-rc.0" },
+        { "name": "shared/agent", "version": "latest" },
+        { "name": "shared/chat", "version": "latest" },
+        { "name": "shared/messaging", "version": "latest" },
+        { "name": "shared/notifications", "version": "latest" },
+        { "name": "shared/soul", "version": "latest" }
+      ],
+      "peerDependencies": [
+        { "name": "@equaltoai/greater-components-agent", "version": "0.5.8-rc.0" },
+        { "name": "@equaltoai/greater-components-chat", "version": "0.5.8-rc.0" },
+        { "name": "@equaltoai/greater-components-messaging", "version": "0.5.8-rc.0" },
+        { "name": "@equaltoai/greater-components-notifications", "version": "0.5.8-rc.0" },
+        { "name": "@equaltoai/greater-components-soul", "version": "0.5.8-rc.0" },
+        { "name": "svelte", "version": "^5.54.1" }
+      ],
+      "types": [
+        "AgentFacePackageRole",
+        "AgentFaceComposition",
+        "AgentFaceAction",
+        "AgentFaceAttributionRecord",
+        "AgentFaceBaseData",
+        "AgentFaceBrand",
+        "AgentFaceCallout",
+        "AgentFaceConversationEntry",
+        "AgentFaceHero",
+        "AgentFaceMetric",
+        "AgentFaceNavItem",
+        "AgentFaceRequestFilter",
+        "AgentFaceStatusChip",
+        "AgentFaceTimelineMoment",
+        "AgentGenesisWorkspaceData",
+        "GraduationApprovalThreadData",
+        "IdentityNexusData",
+        "NexusDashboardData",
+        "SoulRequestCenterData"
+      ]
     }
   },
   "shared": {
@@ -8591,12 +8692,13 @@
         }
       ],
       "dependencies": [
-        { "name": "adapters", "version": "latest" },
+        { "name": "adapters", "version": "0.5.8-rc.0" },
         { "name": "icons", "version": "0.5.8-rc.0" },
         { "name": "primitives", "version": "0.5.8-rc.0" },
         { "name": "utils", "version": "0.5.8-rc.0" }
       ],
       "peerDependencies": [
+        { "name": "@equaltoai/greater-components-adapters", "version": "0.5.8-rc.0" },
         { "name": "@equaltoai/greater-components-icons", "version": "0.5.8-rc.0" },
         { "name": "@equaltoai/greater-components-primitives", "version": "0.5.8-rc.0" },
         { "name": "@equaltoai/greater-components-utils", "version": "0.5.8-rc.0" },

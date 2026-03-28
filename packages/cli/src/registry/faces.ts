@@ -235,6 +235,7 @@ export const faceRegistry: Record<string, FaceManifest> = {
 		docs: [
 			'docs/faces/agent/getting-started.md',
 			'docs/faces/agent/integration-patterns.md',
+			'docs/faces/agent/simulacrum-migration-checklist.md',
 			'docs/agent-workflow-expansion.md',
 		],
 		recommendedShared: ['agent', 'soul', 'notifications', 'messaging', 'chat'],

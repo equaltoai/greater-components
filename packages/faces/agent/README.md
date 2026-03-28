@@ -32,4 +32,5 @@ The current composition map mirrors the workflow-relevant Stitch anchors:
 
 - `docs/faces/agent/getting-started.md`
 - `docs/faces/agent/integration-patterns.md`
+- `docs/faces/agent/simulacrum-migration-checklist.md`
 - `examples/agent-face-svelte/README.md`
