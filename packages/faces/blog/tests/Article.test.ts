@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import ArticleRoot from '../src/components/Article/Root.svelte';
+import { createBrowserArticleShareHandlers } from '../src/share.js';
 import FullArticleTestWrapper from './fixtures/FullArticleTestWrapper.svelte';
 import type { ArticleData } from '../src/types.js';
 
@@ -68,7 +69,12 @@ describe('Article Component', () => {
 
 	describe('Article Integration', () => {
 		it('renders header, content, and footer via wrapper', async () => {
-			render(FullArticleTestWrapper, { article: _mockArticle });
+			render(FullArticleTestWrapper, {
+				article: _mockArticle,
+				handlers: {
+					...createBrowserArticleShareHandlers(),
+				},
+			});
 
 			// Header
 			expect(screen.getByRole('heading', { name: 'Test Article Title' })).toBeTruthy();
@@ -94,14 +100,19 @@ describe('Article Component', () => {
 		});
 
 		it('handles share actions', async () => {
-			render(FullArticleTestWrapper, { article: _mockArticle });
-
 			// Mock window.open and clipboard
 			const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 			const writeTextSpy = vi.fn().mockResolvedValue(undefined);
 			Object.assign(navigator, {
 				clipboard: {
 					writeText: writeTextSpy,
+				},
+			});
+
+			render(FullArticleTestWrapper, {
+				article: _mockArticle,
+				handlers: {
+					...createBrowserArticleShareHandlers(),
 				},
 			});
 

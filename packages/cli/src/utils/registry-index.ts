@@ -73,6 +73,7 @@ export const registryFaceSchema = z.object({
 	name: z.string(),
 	version: z.string(),
 	description: z.string().optional(),
+	exports: z.array(z.string()).optional().default([]),
 	includes: z
 		.object({
 			primitives: z.array(z.string()).optional().default([]),
@@ -90,6 +91,7 @@ export const registryFaceSchema = z.object({
 		.optional(),
 	dependencies: z.array(componentDependencySchema).optional().default([]),
 	peerDependencies: z.array(componentDependencySchema).optional().default([]),
+	types: z.array(z.string()).optional().default([]),
 });
 
 export type RegistryFace = z.infer<typeof registryFaceSchema>;

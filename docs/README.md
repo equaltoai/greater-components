@@ -13,6 +13,7 @@
 ### 📚 Core Documentation
 
 - [API Reference](./api-reference.md) – Complete API for all packages (primitives, headless, faces/\*, adapters, icons, tokens, utils)
+- [Agent Workflow Expansion](./agent-workflow-expansion.md) – Frozen package boundaries and rollout shape for agent-first workflow UI
 - [Chat Component Suite](./chat-suite.md) – AI chat interface components with streaming, tool calls, and settings
 - [Core Patterns](./core-patterns.md) – Canonical usage patterns with examples for styled components, headless components, theming, and Lesser integration
 - [CSS Architecture](./css-architecture.md) – Two-layer CSS system, import configurations, and styling troubleshooting
@@ -35,6 +36,7 @@
 - [Migration from npm](./migration-from-npm.md) – Migrating from npm packages to CLI distribution
 - [Shadcn-Style Transition Plan](./shadcn-style-transition-plan.md) – Execution plan for a shadcn-style “CLI installs from tags” approach
 - [Face Development](./face-development.md) – Creating custom faces with manifest structure and theming
+- [FaceTheory Integration](./facetheory-integration.md) – SSR-safe hosting boundaries, hydration notes, and browser-only callouts
 - [GitHub Releases](./devops/github-releases.md) – Publishing release artifacts (including the CLI)
 
 ### 📦 Additional Resources
@@ -42,7 +44,7 @@
 - [Lesser Integration Guide](./lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
 - [Playground](../apps/playground) – Interactive component demos and examples
 - [Migration Guide](./migration-guide.md) – Upgrading from legacy versions
-- [Example Apps](../examples) – Complete example applications (social, blog, custom face)
+- [Example Apps](../examples) – Complete example applications (social, blog, artist, FaceTheory, custom face)
 
 ## Audience
 
@@ -101,6 +103,8 @@ Greater Components is a **monorepo of composable packages** for building Fediver
 - **faces/blog** – Blog/publishing components (vendored under `$lib/components/*`)
 - **faces/community** – Community/forum components (vendored under `$lib/components/*`)
 - **faces/artist** – Visual artist portfolio components (vendored under `$lib/components/*`)
+- **shared/agent** – Agent workflow surface components, package boundaries, and reusable lifecycle metadata
+- **faces/agent** – Agent-first workflow shell and composition boundaries
 - **content** – Rich content rendering components (Markdown, CodeBlock)
 - **adapters** – Transport + Lesser GraphQL adapter + stores + mappers
 - **utils** – Common utilities for web applications

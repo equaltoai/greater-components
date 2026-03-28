@@ -1,0 +1,21 @@
+{
+  "name": "agent-face-svelte-example",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@equaltoai/greater-components": "^0.5.8-rc.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "svelte": "^5.54.1",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.2"
+  }
+}

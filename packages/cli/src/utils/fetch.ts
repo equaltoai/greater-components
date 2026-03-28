@@ -158,6 +158,12 @@ function buildSourcePathCandidates(component: ComponentMetadata, installPath: st
 		candidates.push(`packages/${pkg}/src/${rest}`);
 	}
 
+	// greater/faces/<face>/... -> packages/faces/<face>/src/...
+	const greaterFaceMatch = normalized.match(/^greater\/faces\/([^/]+)\/(.+)$/);
+	if (greaterFaceMatch?.[1] && greaterFaceMatch?.[2]) {
+		candidates.push(`packages/faces/${greaterFaceMatch[1]}/src/${greaterFaceMatch[2]}`);
+	}
+
 	// lib/adapters/... -> packages/adapters/src/...
 	if (normalized.startsWith('lib/adapters/')) {
 		const rest = normalized.slice('lib/adapters/'.length);

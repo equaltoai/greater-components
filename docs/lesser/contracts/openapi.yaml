@@ -889,6 +889,10 @@ components:
                     type: array
                 display_name:
                     type: string
+                identity_semantics:
+                    $ref: '#/components/schemas/AgentIdentitySemantics'
+                mcp_access:
+                    $ref: '#/components/schemas/AgentMCPAccess'
                 username:
                     type: string
                 verified:
@@ -902,6 +906,8 @@ components:
                 - agent_type
                 - agent_version
                 - display_name
+                - identity_semantics
+                - mcp_access
                 - username
                 - verified
             type: object
@@ -1180,6 +1186,46 @@ components:
                 - account
                 - token
             type: object
+        AgentIdentitySemantics:
+            additionalProperties: false
+            properties:
+                attribution_label:
+                    type: string
+                body_identity_preserved:
+                    type: boolean
+                continuity_state:
+                    type: string
+                continuity_summary:
+                    type: string
+                identity_label:
+                    type: string
+                identity_state:
+                    type: string
+                lifecycle_state:
+                    type: string
+                memory_references_preserved:
+                    type: boolean
+                moderation_label:
+                    type: string
+                soul_agent_id:
+                    type: string
+                soul_binding_state:
+                    type: string
+                timeline_presence_preserved:
+                    type: boolean
+            required:
+                - attribution_label
+                - body_identity_preserved
+                - continuity_state
+                - continuity_summary
+                - identity_label
+                - identity_state
+                - lifecycle_state
+                - memory_references_preserved
+                - moderation_label
+                - soul_binding_state
+                - timeline_presence_preserved
+            type: object
         AgentKeyChallengeRequest:
             additionalProperties: false
             properties:
@@ -1215,6 +1261,33 @@ components:
             items:
                 $ref: '#/components/schemas/Agent'
             type: array
+        AgentMCPAccess:
+            additionalProperties: false
+            properties:
+                authorization_server_url:
+                    type: string
+                guidance:
+                    items:
+                        type: string
+                    type: array
+                mcp_url:
+                    type: string
+                protected_resource_url:
+                    type: string
+                registration_url:
+                    type: string
+                scopes:
+                    items:
+                        type: string
+                    type: array
+            required:
+                - authorization_server_url
+                - guidance
+                - mcp_url
+                - protected_resource_url
+                - registration_url
+                - scopes
+            type: object
         AgentMemoryEventRequest:
             additionalProperties: false
             properties:
@@ -1311,9 +1384,17 @@ components:
                     items:
                         type: string
                     type: array
+                continuity_state:
+                    type: string
+                continuity_summary:
+                    type: string
                 delegated_by:
                     type: string
                 delegated_by_did:
+                    type: string
+                identity_label:
+                    type: string
+                identity_state:
                     type: string
                 memory_citations:
                     items:
@@ -1321,12 +1402,16 @@ components:
                     type: array
                 model_id:
                     type: string
+                moderation_label:
+                    type: string
                 schema_version:
                     type: string
                 scopes:
                     items:
                         type: string
                     type: array
+                soul_agent_id:
+                    type: string
                 trigger_details:
                     type: string
                 trigger_type:
@@ -1579,9 +1664,8 @@ components:
         AppRegistrationRequest:
             additionalProperties: false
             properties:
-                agent_username:
-                    type: string
                 client_class:
+                    description: Optional Lesser client classification. Public registration accepts `cli` and `web`; `agent` is not accepted on public registration surfaces.
                     type: string
                 client_name:
                     type: string
@@ -3867,9 +3951,8 @@ components:
         OAuthDynamicClientRegistrationRequest:
             additionalProperties: false
             properties:
-                agent_username:
-                    type: string
                 client_class:
+                    description: Optional Lesser client classification. Public registration accepts `cli` and `web`; `agent` is not accepted on public registration surfaces.
                     type: string
                 client_name:
                     type: string
@@ -3909,9 +3992,8 @@ components:
         OAuthDynamicClientRegistrationResponse:
             additionalProperties: false
             properties:
-                agent_username:
-                    type: string
                 client_class:
+                    description: Lesser client classification persisted for the registered public client.
                     type: string
                 client_id:
                     type: string
@@ -4008,6 +4090,9 @@ components:
                 redirect_uri:
                     type: string
                 refresh_token:
+                    type: string
+                resource:
+                    description: Canonical target resource URI. For remote MCP authorization, this must match the actor-scoped MCP URL used during the authorize request.
                     type: string
                 scope:
                     type: string
@@ -6519,9 +6604,17 @@ components:
                                             items:
                                                 type: string
                                             type: array
+                                        continuity_state:
+                                            type: string
+                                        continuity_summary:
+                                            type: string
                                         delegated_by:
                                             type: string
                                         delegated_by_did:
+                                            type: string
+                                        identity_label:
+                                            type: string
+                                        identity_state:
                                             type: string
                                         memory_citations:
                                             items:
@@ -6529,12 +6622,16 @@ components:
                                             type: array
                                         model_id:
                                             type: string
+                                        moderation_label:
+                                            type: string
                                         schema_version:
                                             type: string
                                         scopes:
                                             items:
                                                 type: string
                                             type: array
+                                        soul_agent_id:
+                                            type: string
                                         trigger_details:
                                             type: string
                                         trigger_type:
@@ -6945,6 +7042,8 @@ components:
                     type: string
                 nonce:
                     type: string
+                registration_completed:
+                    type: boolean
                 spent:
                     type: boolean
                 used:
@@ -11939,9 +12038,6 @@ paths:
             operationId: post_api_v1_apps
             tags:
                 - apps
-            security:
-                - {}
-                - bearerAuth: []
             requestBody:
                 required: true
                 content:
@@ -11975,13 +12071,13 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
-            x-oauth-scopes:
-                - write
     /api/v1/apps/{id}/rotate_secret:
         post:
             operationId: post_api_v1_apps_by_id_rotate_secret
             tags:
                 - apps
+            security:
+                - bearerAuth: []
             parameters:
                 - name: id
                   in: path
@@ -12011,6 +12107,8 @@ paths:
             x-lesser-lambda: api
             x-lesser-routeSources:
                 - cmd/api/routes.go
+            x-oauth-scopes:
+                - write
     /api/v1/auth/webauthn/credentials:
         get:
             operationId: get_api_v1_auth_webauthn_credentials
@@ -15105,6 +15203,10 @@ paths:
                                 $ref: '#/components/schemas/SoulsMineResponse'
                 "400":
                     $ref: '#/components/responses/BadRequest'
+                "401":
+                    $ref: '#/components/responses/Unauthorized'
+                "403":
+                    $ref: '#/components/responses/Forbidden'
                 "500":
                     $ref: '#/components/responses/InternalServerError'
             x-lesser-handler: HandleGetMySoulsLift
@@ -18538,6 +18640,12 @@ paths:
                   schema:
                     type: string
                     format: uri
+                - name: resource
+                  in: query
+                  description: Canonical target resource URI. Required for remote MCP authorization; must be the actor-scoped MCP URL served by this Lesser instance.
+                  schema:
+                    type: string
+                    format: uri
                 - name: response_type
                   in: query
                   required: true
@@ -18798,81 +18906,14 @@ paths:
                 content:
                     application/json:
                         schema:
-                            type: object
-                            properties:
-                                agent_username:
-                                    type: string
-                                client_class:
-                                    type: string
-                                client_name:
-                                    type: string
-                                client_uri:
-                                    type: string
-                                    format: uri
-                                grant_types:
-                                    type: array
-                                redirect_uris:
-                                    type: array
-                                scope:
-                                    type: string
-                                software_id:
-                                    type: string
-                                software_version:
-                                    type: string
-                                token_endpoint_auth_method:
-                                    type: string
-                            required:
-                                - client_name
-                                - redirect_uris
-                            additionalProperties: false
+                            $ref: '#/components/schemas/OAuthDynamicClientRegistrationRequest'
             responses:
-                "200":
-                    description: OK
                 "201":
                     description: Created
                     content:
                         application/json:
                             schema:
-                                type: object
-                                properties:
-                                    agent_username:
-                                        type: string
-                                    client_class:
-                                        type: string
-                                    client_id:
-                                        type: string
-                                    client_id_issued_at:
-                                        type: integer
-                                        format: int64
-                                    client_name:
-                                        type: string
-                                    client_secret:
-                                        type: string
-                                    client_secret_expires_at:
-                                        type: integer
-                                        format: int64
-                                    client_uri:
-                                        type: string
-                                        format: uri
-                                    grant_types:
-                                        type: array
-                                    redirect_uris:
-                                        type: array
-                                    registration_source:
-                                        type: string
-                                    scope:
-                                        type: string
-                                    software_id:
-                                        type: string
-                                    software_version:
-                                        type: string
-                                    token_endpoint_auth_method:
-                                        type: string
-                                required:
-                                    - client_id
-                                    - client_id_issued_at
-                                    - client_secret_expires_at
-                                additionalProperties: false
+                                $ref: '#/components/schemas/OAuthDynamicClientRegistrationResponse'
                     headers:
                         X-RateLimit-Limit:
                             description: Request limit per window.

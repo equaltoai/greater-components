@@ -5,6 +5,7 @@
 	import { getMessagesContext } from './context.svelte.js';
 	import { getConversationName, formatMessageTime } from './utils.js';
 	import type { Conversation } from './context.svelte.js';
+	import ConversationWorkflowSummary from './ConversationWorkflowSummary.svelte';
 
 	interface Props {
 		currentUserId?: string;
@@ -110,6 +111,9 @@
 						<div class="messages-conversations__name">
 							{getConversationName(conversation, currentUserId)}
 						</div>
+						{#if conversation.workflowSummary}
+							<ConversationWorkflowSummary summary={conversation.workflowSummary} compact />
+						{/if}
 						{#if conversation.lastMessage}
 							<div class="messages-conversations__preview">
 								{conversation.lastMessage.content}

@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-notifications",
-  "version": "0.5.8",
+  "version": "0.6.0-rc.0",
   "description": "Notification components for ActivityPub/Fediverse applications",
   "components": {
     "Root": {
@@ -34,6 +34,11 @@
       "props": ["notification", "content", "onClick", "class"],
       "exports": true
     },
+    "WorkflowNotificationItem": {
+      "description": "Renderer for workflow lifecycle events such as review requests, approvals, finalize readiness, and graduation.",
+      "props": ["notification", "class"],
+      "exports": true
+    },
     "NotificationFilters": {
       "description": "Settings component for configuring which notification types to receive",
       "props": ["filters", "onChange"],
@@ -62,7 +67,10 @@
     "NotificationGroup",
     "NotificationType",
     "Account",
-    "Status"
+    "Status",
+    "WorkflowEventKind",
+    "WorkflowEventPayload",
+    "WorkflowEventNotification"
   ],
   "dependencies": {
     "internal": ["@equaltoai/greater-components-primitives", "@equaltoai/greater-components-icons"],
@@ -82,5 +90,8 @@
       "screen-reader-announcements",
       "focus-management"
     ]
+  },
+  "features": {
+    "workflowLifecycleEvents": true
   }
 }

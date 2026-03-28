@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { preferencesStore, type UserPreferences } from '../src/stores/preferences';
+import {
+	applyThemeDocumentAttributes,
+	createThemeBootstrapSnapshot,
+	getThemeDocumentAttributes,
+	preferencesStore,
+	readThemeBootstrapSnapshotFromDocument,
+	type UserPreferences,
+} from '../src/stores/preferences';
 
 describe('PreferencesStore', () => {
 	// Mock localStorage
@@ -63,20 +70,97 @@ describe('PreferencesStore', () => {
 			};
 
 			localStorageMock.getItem.mockReturnValue(JSON.stringify(storedPrefs));
+			document.documentElement.removeAttribute('data-theme');
+			document.documentElement.removeAttribute('data-density');
+			document.documentElement.removeAttribute('data-font-size');
+			document.documentElement.removeAttribute('data-motion');
+			document.documentElement.removeAttribute('data-gr-font-scale');
 
 			// Re-initialize store
-			new (preferencesStore.constructor as any)();
+			const instance = new (preferencesStore.constructor as any)();
+			void instance.preferences;
 
 			expect(localStorageMock.getItem).toHaveBeenCalledWith('gr-preferences-v1');
 		});
 
 		it('should handle invalid localStorage data gracefully', () => {
 			localStorageMock.getItem.mockReturnValue('invalid json');
+			document.documentElement.removeAttribute('data-theme');
+			document.documentElement.removeAttribute('data-density');
+			document.documentElement.removeAttribute('data-font-size');
+			document.documentElement.removeAttribute('data-motion');
+			document.documentElement.removeAttribute('data-gr-font-scale');
 
 			// Should not throw
 			expect(() => {
-				new (preferencesStore.constructor as any)();
+				const instance = new (preferencesStore.constructor as any)();
+				void instance.preferences;
 			}).not.toThrow();
+		});
+	});
+
+	describe('Theme Bootstrap', () => {
+		it('creates strict-CSP-safe document attributes from cookies and host state', () => {
+			const snapshot = createThemeBootstrapSnapshot({
+				cookie: {
+					'gr-preferences': encodeURIComponent(
+						JSON.stringify({
+							colorScheme: 'dark',
+							density: 'compact',
+							fontScale: 1.25,
+						})
+					),
+				},
+				system: {
+					colorScheme: 'dark',
+					motion: 'reduced',
+				},
+			});
+
+			const attributes = getThemeDocumentAttributes(snapshot);
+			expect(attributes['data-theme']).toBe('dark');
+			expect(attributes['data-density']).toBe('compact');
+			expect(attributes['data-motion']).toBe('reduced');
+			expect(attributes['data-gr-font-scale']).toBe('1.25');
+		});
+
+		it('hydrates the preferences store from a server snapshot', () => {
+			const snapshot = createThemeBootstrapSnapshot({
+				defaults: {
+					density: 'compact',
+				},
+				stored: {
+					fontSize: 'large',
+				},
+				system: {
+					colorScheme: 'dark',
+				},
+			});
+
+			preferencesStore.hydrate(snapshot);
+
+			expect(preferencesStore.preferences.density).toBe('compact');
+			expect(preferencesStore.preferences.fontSize).toBe('large');
+			expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+		});
+
+		it('reads a bootstrap snapshot back from document attributes', () => {
+			const snapshot = createThemeBootstrapSnapshot({
+				defaults: {
+					density: 'spacious',
+					fontSize: 'large',
+				},
+				system: {
+					colorScheme: 'dark',
+				},
+			});
+
+			applyThemeDocumentAttributes(snapshot);
+			const restored = readThemeBootstrapSnapshotFromDocument();
+
+			expect(restored?.preferences.density).toBe('spacious');
+			expect(restored?.preferences.fontSize).toBe('large');
+			expect(restored?.preferences.colorScheme).toBe('dark');
 		});
 	});
 

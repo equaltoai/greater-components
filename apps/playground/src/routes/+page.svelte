@@ -78,6 +78,9 @@
 			<Button variant="outline" size="lg" onclick={() => navigateTo('/timeline')}>
 				Timeline Demo
 			</Button>
+			<Button variant="outline" size="lg" onclick={() => navigateTo('/agent')}>
+				Agent Face Demo
+			</Button>
 		</div>
 	</section>
 

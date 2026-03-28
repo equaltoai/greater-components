@@ -70,6 +70,24 @@ export type {
 	ToolCall,
 	/** Chat message with role, content, timestamp, and status */
 	ChatMessage,
+	/** Structured workflow moment rendered alongside a chat message */
+	ChatMessageMoment,
+	/** Artifact-card workflow moment */
+	ChatArtifactCardMoment,
+	/** Checkpoint banner workflow moment */
+	ChatCheckpointBannerMoment,
+	/** Action-request workflow moment */
+	ChatActionRequestMoment,
+	/** Typed declaration/approval/finalize message metadata */
+	ChatMessageWorkflowMetadata,
+	/** Declaration metadata payload */
+	ChatDeclarationMetadata,
+	/** Approval metadata payload */
+	ChatApprovalMetadata,
+	/** Finalize output metadata payload */
+	ChatFinalizeMetadata,
+	/** Visual tone for workflow moments */
+	ChatWorkflowTone,
 	/** Props for Chat.Container component */
 	ChatContainerProps,
 	/** Props for Chat.Message component */
@@ -138,6 +156,8 @@ export { createChatContext } from './context.svelte.js';
 
 // Additional components
 export { default as ThreadView } from './ChatThreadView.svelte';
+export { default as WorkflowMoment } from './ChatWorkflowMoment.svelte';
+export { default as WorkflowMetadata } from './ChatWorkflowMetadata.svelte';
 
 /**
  * Retrieves the current chat context from a parent Chat.Container.

@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-chat",
-  "version": "0.5.8",
+  "version": "0.6.0-rc.0",
   "description": "AI chat interface components with streaming responses, tool calls, and settings",
   "components": {
     "Container": {
@@ -48,6 +48,16 @@
       "description": "Action button for message interactions (copy, regenerate, etc.)",
       "props": ["action", "onClick"],
       "exports": true
+    },
+    "WorkflowMoment": {
+      "description": "Structured workflow moment renderer for artifact cards, checkpoint banners, and action-request cards.",
+      "props": ["moment"],
+      "exports": true
+    },
+    "WorkflowMetadata": {
+      "description": "Typed metadata renderer for declaration, approval, and finalize outputs.",
+      "props": ["metadata"],
+      "exports": true
     }
   },
   "utilities": {
@@ -71,6 +81,15 @@
     "ToolCallStatus",
     "ToolCall",
     "ChatMessage",
+    "ChatWorkflowTone",
+    "ChatMessageMoment",
+    "ChatArtifactCardMoment",
+    "ChatCheckpointBannerMoment",
+    "ChatActionRequestMoment",
+    "ChatMessageWorkflowMetadata",
+    "ChatDeclarationMetadata",
+    "ChatApprovalMetadata",
+    "ChatFinalizeMetadata",
     "ChatContainerProps",
     "ChatMessageProps",
     "ChatMessagesProps",
@@ -101,6 +120,7 @@
   "features": {
     "streaming": true,
     "toolCalls": true,
+    "workflowMoments": true,
     "markdown": true,
     "fileUpload": true,
     "keyboardShortcuts": true,

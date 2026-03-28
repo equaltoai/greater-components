@@ -1,0 +1,75 @@
+.ft-shell {
+	margin: 0 auto;
+	max-width: 72rem;
+	padding: 2.5rem 1.5rem 4rem;
+	font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+}
+
+.ft-shell__header {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 1.25rem;
+	align-items: start;
+	margin-bottom: 2rem;
+	padding: 1.25rem 1.5rem;
+	border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+	border-radius: 1rem;
+	background:
+		linear-gradient(135deg, color-mix(in srgb, currentColor 5%, transparent), transparent),
+		color-mix(in srgb, canvas 92%, transparent);
+}
+
+.ft-shell__mark {
+	display: block;
+	inline-size: 3.5rem;
+	block-size: 3.5rem;
+	border-radius: 1rem;
+	background:
+		url('../assets/greater-mark.svg') center / cover no-repeat,
+		linear-gradient(135deg, #2563eb, #0f172a);
+	box-shadow: 0 0.75rem 2rem color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.ft-shell__copy {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.ft-shell__eyebrow {
+	margin: 0;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	opacity: 0.72;
+}
+
+.ft-shell__title {
+	margin: 0;
+	font-size: clamp(1.85rem, 3vw, 2.6rem);
+	line-height: 1.05;
+}
+
+.ft-shell__lede {
+	margin: 0;
+	max-width: 44rem;
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+.ft-shell__link {
+	width: fit-content;
+	color: inherit;
+	font-weight: 600;
+	text-underline-offset: 0.18em;
+}
+
+@media (max-width: 640px) {
+	.ft-shell {
+		padding-inline: 1rem;
+	}
+
+	.ft-shell__header {
+		grid-template-columns: 1fr;
+	}
+}

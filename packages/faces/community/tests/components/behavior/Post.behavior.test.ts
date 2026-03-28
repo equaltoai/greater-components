@@ -109,7 +109,12 @@ describe('Post Behavior', () => {
 		const titleLink = screen.getByText(mockPost.title);
 		await fireEvent.click(titleLink);
 
-		expect(handlers.onNavigate).toHaveBeenCalledWith(mockPost.id);
+		expect(handlers.onNavigate).toHaveBeenCalledWith(
+			mockPost.id,
+			expect.objectContaining({
+				href: `/posts/${mockPost.id}`,
+			})
+		);
 	});
 
 	it('falls back to default navigation if onNavigate is missing', async () => {
@@ -127,5 +132,19 @@ describe('Post Behavior', () => {
 
 		// We can also try clicking it and ensuring no error is thrown
 		await fireEvent.click(titleLink);
+	});
+
+	it('uses a host-provided href resolver when present', () => {
+		render(Post.Root, {
+			props: {
+				post: mockPost,
+				handlers: {
+					resolveHref: (post) => `/community/posts/${post.id}`,
+				},
+			},
+		});
+
+		const titleLink = screen.getByText(mockPost.title);
+		expect(titleLink.closest('a')).toHaveAttribute('href', `/community/posts/${mockPost.id}`);
 	});
 });

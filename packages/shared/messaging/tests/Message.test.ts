@@ -91,4 +91,35 @@ describe('Message', () => {
 
 		unmount(instance);
 	});
+
+	it('renders workflow moments for async review and approval threads', () => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm4',
+			conversationId: 'c1',
+			sender: bob,
+			content: 'Please review the declaration thread.',
+			createdAt: new Date().toISOString(),
+			read: true,
+			workflowMoments: [
+				{
+					id: 'moment-1',
+					kind: 'review_request',
+					title: 'Review requested',
+					summary: 'Please evaluate the declaration and signer memo.',
+					phase: 'review',
+					requestedBy: 'Drone Zephyr-2',
+					actionLabel: 'Open review thread',
+				},
+			],
+		};
+
+		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+
+		expect(target.textContent).toContain('Review requested');
+		expect(target.textContent).toContain('Open review thread');
+		expect(target.querySelector('.workflow-thread-moment')).toBeTruthy();
+
+		unmount(instance);
+	});
 });

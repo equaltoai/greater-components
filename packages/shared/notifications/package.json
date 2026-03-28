@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-notifications",
-  "version": "0.5.8",
+  "version": "0.6.0-rc.0",
   "type": "module",
   "description": "Notification components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -33,6 +33,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@equaltoai/greater-components-adapters": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*"
