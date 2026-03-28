@@ -20,7 +20,13 @@
 	import { MarkdownRenderer } from '@equaltoai/greater-components-content';
 	import { RefreshCwIcon } from '@equaltoai/greater-components-icons';
 	import { formatMessageTime } from './context.svelte.js';
-	import type { MessageRole } from './types.js';
+	import ChatWorkflowMetadata from './ChatWorkflowMetadata.svelte';
+	import ChatWorkflowMoment from './ChatWorkflowMoment.svelte';
+	import type {
+		ChatMessageMoment,
+		ChatMessageWorkflowMetadata,
+		MessageRole,
+	} from './types.js';
 
 	/**
 	 * ChatMessage component props
@@ -110,6 +116,16 @@
 		 * Custom CSS class
 		 */
 		class?: string;
+
+		/**
+		 * Structured workflow moments shown alongside the message bubble.
+		 */
+		workflowMoments?: readonly ChatMessageMoment[];
+
+		/**
+		 * Typed workflow metadata describing declarations, approvals, or finalize outputs.
+		 */
+		workflowMetadata?: readonly ChatMessageWorkflowMetadata[];
 	}
 
 	let {
@@ -129,6 +145,8 @@
 		assistantAvatar,
 		renderContent,
 		class: className = '',
+		workflowMoments = [],
+		workflowMetadata = [],
 	}: Props = $props();
 
 	// Track hover state for copy button visibility
@@ -237,6 +255,18 @@
 				</div>
 			{/if}
 
+			{#if workflowMoments.length || workflowMetadata.length}
+				<div class="chat-message__structured">
+					{#each workflowMoments as moment (moment.id)}
+						<ChatWorkflowMoment {moment} />
+					{/each}
+
+					{#each workflowMetadata as metadata, index (`${metadata.kind}-${index}`)}
+						<ChatWorkflowMetadata {metadata} />
+					{/each}
+				</div>
+			{/if}
+
 			{#if hasError && error}
 				<div class="chat-message__error">
 					<span class="chat-message__error-text">{error}</span>
@@ -324,6 +354,12 @@
 		padding-left: var(--gr-spacing-scale-1);
 	}
 
+	.chat-message__structured {
+		display: grid;
+		gap: var(--gr-spacing-scale-2);
+		margin-top: var(--gr-spacing-scale-3);
+	}
+
 	.chat-message__actions {
 		display: flex;
 		align-items: center;
@@ -356,6 +392,11 @@
 		background-color: var(--gr-color-primary-600);
 		color: var(--gr-color-base-white);
 		border-bottom-right-radius: var(--gr-radii-sm);
+	}
+
+	.chat-message--user .chat-message__structured :global(.chat-workflow-moment),
+	.chat-message--user .chat-message__structured :global(.chat-workflow-metadata) {
+		color: var(--gr-semantic-foreground-primary);
 	}
 
 	.chat-message--user .chat-message__timestamp {

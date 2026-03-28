@@ -42,6 +42,67 @@ export interface ToolCall {
 	error?: string;
 }
 
+export type ChatWorkflowTone = 'neutral' | 'accent' | 'success' | 'warning' | 'critical';
+
+export interface ChatWorkflowMomentBase {
+	id: string;
+	title: string;
+	summary?: string;
+	phase?: string;
+	tone?: ChatWorkflowTone;
+}
+
+export interface ChatArtifactCardMoment extends ChatWorkflowMomentBase {
+	kind: 'artifact';
+	artifactLabel?: string;
+	href?: string;
+	facts?: string[];
+}
+
+export interface ChatCheckpointBannerMoment extends ChatWorkflowMomentBase {
+	kind: 'checkpoint';
+	status: 'queued' | 'ready' | 'blocked' | 'approved';
+	detail?: string;
+}
+
+export interface ChatActionRequestMoment extends ChatWorkflowMomentBase {
+	kind: 'action-request';
+	actionLabel: string;
+	assignee?: string;
+	dueLabel?: string;
+}
+
+export type ChatMessageMoment =
+	| ChatArtifactCardMoment
+	| ChatCheckpointBannerMoment
+	| ChatActionRequestMoment;
+
+export interface ChatDeclarationMetadata {
+	kind: 'declaration';
+	statement: string;
+	confidence: string;
+	scope?: string[];
+}
+
+export interface ChatApprovalMetadata {
+	kind: 'approval';
+	reviewer: string;
+	outcome: 'approved' | 'changes_requested' | 'rejected';
+	note?: string;
+}
+
+export interface ChatFinalizeMetadata {
+	kind: 'finalize';
+	readiness: 'ready' | 'watch' | 'hold';
+	nextStep: string;
+	outputs?: string[];
+}
+
+export type ChatMessageWorkflowMetadata =
+	| ChatDeclarationMetadata
+	| ChatApprovalMetadata
+	| ChatFinalizeMetadata;
+
 /**
  * Chat message
  */
@@ -60,6 +121,10 @@ export interface ChatMessage {
 	status: MessageStatus;
 	/** Error message if status is 'error' */
 	error?: string;
+	/** Structured workflow moments rendered alongside message content */
+	moments?: ChatMessageMoment[];
+	/** Typed declaration, approval, and finalize metadata emitted with the message */
+	workflowMetadata?: ChatMessageWorkflowMetadata[];
 }
 
 /**
