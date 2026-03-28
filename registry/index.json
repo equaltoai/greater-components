@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-28T18:34:13.482Z",
+  "generatedAt": "2026-03-28T19:00:46.475Z",
   "ref": "greater-v0.5.8-rc.0",
   "version": "0.5.8-rc.0",
   "checksums": {
@@ -1239,7 +1239,7 @@
     "packages/faces/agent/src/GraduationApprovalThread.svelte": "sha256-hIri46kxR2b+fgLhjTENVbidFA+ahjJzS0kqepYIDdQ=",
     "packages/faces/agent/src/IdentityNexus.svelte": "sha256-U0/stVClR2Ju5VEJtHo14PWa72YX7yyG1qxXCbEil50=",
     "packages/faces/agent/src/index.ts": "sha256-UIP068rPypWZdSCBUq7GmnDP3fLN/Jbkqn6ROiLjtuI=",
-    "packages/faces/agent/src/internal/AgentFaceFrame.svelte": "sha256-S/Fse9wh43QSwyOBYs9S/0LWUvGEfdcYe0dq/LVa6r4=",
+    "packages/faces/agent/src/internal/AgentFaceFrame.svelte": "sha256-cXb00ztqbcDNvYODM0n6nqOreEAIQjdil8EMSlTBmro=",
     "packages/faces/agent/src/NexusDashboard.svelte": "sha256-kDEW3AM3GqUgSdV3NMlbUjzUw+8q5VSamsZc1/ugHAc=",
     "packages/faces/agent/src/SoulRequestCenter.svelte": "sha256-A5pL9lb/lP0CKhuG8gvcOjcBLc5tfY65aPNEa656zP4=",
     "packages/faces/agent/src/theme.css": "sha256-FsJB9imFWOyYfnWaZZnTw3Vw10nofdARPmC5fU5dlRo=",
@@ -8232,8 +8232,8 @@
         },
         {
           "path": "src/internal/AgentFaceFrame.svelte",
-          "checksum": "sha256-S/Fse9wh43QSwyOBYs9S/0LWUvGEfdcYe0dq/LVa6r4=",
-          "size": 11464
+          "checksum": "sha256-cXb00ztqbcDNvYODM0n6nqOreEAIQjdil8EMSlTBmro=",
+          "size": 11469
         },
         {
           "path": "src/NexusDashboard.svelte",
