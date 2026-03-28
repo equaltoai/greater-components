@@ -73,6 +73,7 @@ CI expectations:
 - `staging` is where we run the full suite (lint/typecheck, unit tests, e2e, a11y).
 - `premain` and `main` are promotion/release-only; PRs into these branches are guarded (`.github/workflows/premain-guard.yml`, `.github/workflows/main-guard.yml`) and should not require re-running the full staging suite.
 - Changesets are optional (not required for PRs to `staging`); releases are automated via release-please on `premain`/`main`.
+- Any branch targeting `staging` must also be promotion-safe: before shipping, rehearse the exact merge path `candidate -> staging`, `staging -> premain`, and `premain -> main`. If any conflict appears in that chain, resolve it on the staging-targeted branch before merge so promotions stay clean.
 
 ## CLI: Build + Install Locally
 
