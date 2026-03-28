@@ -2,12 +2,12 @@
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
     "allowJs": false,
     "checkJs": false,
     "skipLibCheck": true,
-    "noEmit": true,
     "paths": {
       "@equaltoai/greater-components-adapters": ["./packages/adapters/dist/index.d.ts"],
       "@equaltoai/greater-components-agent": ["./packages/shared/agent/dist/index.d.ts"],

@@ -18,6 +18,8 @@ Validate the example locally with:
 - `pnpm test:facetheory`
 - `pnpm exec tsc --noEmit -p examples/facetheory-svelte/tsconfig.json`
 
+Agent-first hosts should pair that host example with [`examples/agent-face-svelte`](../examples/agent-face-svelte/README.md) and the dedicated [`faces/agent` adoption guide](./faces/agent/integration-patterns.md). The FaceTheory example proves the server/runtime boundary; the agent-face example proves the public screen composition contract that sits inside that boundary.
+
 ## SSR-safe surfaces
 
 The following surfaces are intended to be import-safe and initial-render-safe in Node-backed SSR:

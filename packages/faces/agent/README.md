@@ -1,16 +1,24 @@
 # @equaltoai/greater-components-agent-face
 
-Face-level composition metadata for agent-first workflow screens.
+Canonical route-level compositions for agent-first products built on Greater Components.
 
-This package is the home for:
+This package now exports the stitched screen families that sit on top of the reusable workflow
+building blocks from `shared/agent`, `shared/chat`, `shared/messaging`, `shared/notifications`,
+and `shared/soul`.
 
-- page-shell and route-shell boundaries
-- composition presets that combine shared workflow, messaging, notifications, and chat surfaces
-- future agent-face screen families built on top of the shared workflow contracts
+## Exported screens
 
-It intentionally does not define canonical workflow naming. That responsibility stays in `@equaltoai/greater-components-agent`.
+- `AgentGenesisWorkspace`
+- `SoulRequestCenter`
+- `GraduationApprovalThread`
+- `NexusDashboard`
+- `IdentityNexus`
 
-## Current composition anchors
+## Metadata surfaces
+
+- `AGENT_FACE_PACKAGE_ROLE`
+- `AGENT_FACE_COMPOSITIONS`
+- `getAgentFaceComposition()`
 
 The current composition map mirrors the workflow-relevant Stitch anchors:
 
@@ -19,3 +27,10 @@ The current composition map mirrors the workflow-relevant Stitch anchors:
 - `Identity Nexus`
 - `Notification Center: Soul Requests`
 - `Direct Message: Graduation Approval`
+
+## Adoption References
+
+- `docs/faces/agent/getting-started.md`
+- `docs/faces/agent/integration-patterns.md`
+- `docs/faces/agent/simulacrum-migration-checklist.md`
+- `examples/agent-face-svelte/README.md`

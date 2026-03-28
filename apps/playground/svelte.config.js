@@ -34,7 +34,18 @@ const config = {
 		},
 		alias: {
 			$lib: './src/lib',
+			'@equaltoai/greater-components/faces/agent/style.css': resolvePackageDist(
+				'packages/faces/agent/src/theme.css'
+			),
+			'@equaltoai/greater-components/faces/agent': resolvePackageDist('packages/faces/agent/src'),
+			'@equaltoai/greater-components/primitives/style.css': resolvePackageDist(
+				'packages/primitives/dist/style.css'
+			),
+			'@equaltoai/greater-components/primitives': resolvePackageDist('packages/primitives/src'),
 			'@equaltoai/greater-components-tokens/theme.css': resolvePackageDist(
+				'packages/tokens/dist/theme.css'
+			),
+			'@equaltoai/greater-components/tokens/theme.css': resolvePackageDist(
 				'packages/tokens/dist/theme.css'
 			),
 			'@equaltoai/greater-components-primitives/theme.css': resolvePackageDist(

@@ -33,6 +33,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@equaltoai/greater-components-adapters": "workspace:*",
     "@equaltoai/greater-components-icons": "workspace:*",
     "@equaltoai/greater-components-primitives": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*"

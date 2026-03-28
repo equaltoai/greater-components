@@ -2,7 +2,7 @@
   "name": "@equaltoai/greater-components-agent-face",
   "version": "0.5.8-rc.0",
   "type": "module",
-  "description": "Agent-first face composition metadata and route-shell boundaries for Greater Components",
+  "description": "Agent-first face compositions and route-shell boundaries for Greater Components",
   "license": "AGPL-3.0-only",
   "author": "Greater Contributors",
   "repository": {
@@ -28,18 +28,32 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build && tsc -b --force --emitDeclarationOnly && cp src/theme.css dist/greater-components-agent.css",
+    "build": "vite build && tsc -b tsconfig.build.json --force --emitDeclarationOnly && node ../../../scripts/copy-svelte-to-dist.js && cp src/theme.css dist/greater-components-agent.css",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@equaltoai/greater-components-agent": "workspace:*",
+    "@equaltoai/greater-components-chat": "workspace:*",
+    "@equaltoai/greater-components-messaging": "workspace:*",
+    "@equaltoai/greater-components-notifications": "workspace:*",
+    "@equaltoai/greater-components-soul": "workspace:*"
+  },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@testing-library/svelte": "^5.3.1",
     "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.0",
+    "jsdom": "^29.0.1",
+    "svelte": "^5.54.1",
     "typescript": "^5.9.3",
     "vite": "^8.0.2",
     "vitest": "^4.1.0"
+  },
+  "peerDependencies": {
+    "svelte": "^5.43.6"
   },
   "private": true
 }
