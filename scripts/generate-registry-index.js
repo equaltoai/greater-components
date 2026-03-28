@@ -525,6 +525,13 @@ function mapDependencies(depNames, packageJson, workspaceVersions) {
 	}));
 }
 
+function getWorkspaceInternalDependencies(depNames, packageJson, workspaceVersions) {
+	return Array.from(new Set(depNames))
+		.filter((dep) => dep.startsWith('@equaltoai/greater-components'))
+		.filter((dep) => dep !== packageJson.name)
+		.filter((dep) => Boolean(workspaceVersions?.[dep]));
+}
+
 /**
  * Process a package and extract component metadata
  */
@@ -544,8 +551,10 @@ function processPackage(packageName, config, verbose, workspaceVersions) {
 	const detectedDeps = analyzeDependencies(path.join(packageDir, config.srcDir), config.extensions);
 
 	// Filter for internal dependencies (Greater components)
-	const internalDeps = detectedDeps.filter(
-		(dep) => dep.startsWith('@equaltoai/greater-components') && dep !== packageJson.name
+	const internalDeps = getWorkspaceInternalDependencies(
+		detectedDeps,
+		packageJson,
+		workspaceVersions
 	);
 
 	// Filter for external dependencies (everything else)
@@ -617,13 +626,17 @@ function processFace(faceName, verbose, workspaceVersions) {
 	]);
 
 	// Internal dependencies often come from manifest, but we can verify with detected ones
-	const internalDeps = new Set([
-		...(manifest.dependencies?.internal || []),
-		...detectedDeps.filter((dep) => dep.startsWith('@equaltoai/greater-components')),
-	]);
+	const internalDeps = getWorkspaceInternalDependencies(
+		[
+			...(manifest.dependencies?.internal || []),
+			...detectedDeps.filter((dep) => dep.startsWith('@equaltoai/greater-components')),
+		],
+		packageJson,
+		workspaceVersions
+	);
 
 	// Filter self-dependency if packageJson has name
-	const filteredInternalDeps = Array.from(internalDeps).filter((dep) => dep !== packageJson.name);
+	const filteredInternalDeps = Array.from(internalDeps);
 	const exportedMembers = getManifestExports(manifest);
 
 	return {
@@ -694,13 +707,17 @@ function processSharedModule(moduleName, verbose, workspaceVersions) {
 		...detectedDeps.filter((dep) => !dep.startsWith('@equaltoai/greater-components')),
 	]);
 
-	const internalDeps = new Set([
-		...(manifest.dependencies?.internal || []),
-		...detectedDeps.filter((dep) => dep.startsWith('@equaltoai/greater-components')),
-	]);
+	const internalDeps = getWorkspaceInternalDependencies(
+		[
+			...(manifest.dependencies?.internal || []),
+			...detectedDeps.filter((dep) => dep.startsWith('@equaltoai/greater-components')),
+		],
+		packageJson,
+		workspaceVersions
+	);
 
 	// Filter self-dependency
-	const filteredInternalDeps = Array.from(internalDeps).filter((dep) => dep !== packageJson.name);
+	const filteredInternalDeps = Array.from(internalDeps);
 
 	return {
 		name: moduleName,
