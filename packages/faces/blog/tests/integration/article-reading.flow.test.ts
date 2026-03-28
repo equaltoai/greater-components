@@ -1,5 +1,6 @@
 import { render, fireEvent, screen } from '@testing-library/svelte';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { createBrowserArticleShareHandlers } from '../../src/share.js';
 import FullArticleTestWrapper from '../fixtures/FullArticleTestWrapper.svelte';
 import { createMockArticle } from '../mocks/mockArticle.js';
 import { createMockAdapter } from '../mocks/mockAdapter.js';
@@ -15,6 +16,7 @@ describe('Integration: Article Reading Flow', () => {
 		onShare: mockAdapter.shareArticle,
 		onHeadingClick: vi.fn(),
 		onBookmark: mockAdapter.bookmarkArticle,
+		...createBrowserArticleShareHandlers(),
 	};
 
 	beforeEach(() => {

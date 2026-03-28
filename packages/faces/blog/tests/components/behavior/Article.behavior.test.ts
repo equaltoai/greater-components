@@ -1,6 +1,7 @@
 import { render, fireEvent, screen, waitFor } from '@testing-library/svelte';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Article } from '../../../src/components/Article/index.js';
+import { createBrowserArticleShareHandlers } from '../../../src/share.js';
 import ArticleTestWrapper from '../../fixtures/ArticleTestWrapper.svelte';
 import ArticleWithTOC from '../../fixtures/ArticleWithTOC.svelte';
 import { createMockArticle } from '../../mocks/mockArticle.js';
@@ -35,7 +36,10 @@ describe('Article Behavior', () => {
 			render(ArticleTestWrapper, {
 				props: {
 					article: mockArticle,
-					handlers,
+					handlers: {
+						...handlers,
+						...createBrowserArticleShareHandlers(),
+					},
 					component: Article.ShareBar,
 				},
 			});
@@ -54,7 +58,10 @@ describe('Article Behavior', () => {
 			render(ArticleTestWrapper, {
 				props: {
 					article: mockArticle,
-					handlers,
+					handlers: {
+						...handlers,
+						...createBrowserArticleShareHandlers(),
+					},
 					component: Article.ShareBar,
 				},
 			});

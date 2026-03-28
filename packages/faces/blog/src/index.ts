@@ -39,6 +39,11 @@ export { Navigation } from './components/Navigation/index.js';
  * Editor compound component for content creation
  */
 export { Editor } from './components/Editor/index.js';
+export {
+	buildArticleShareUrl,
+	createBrowserArticleShareHandlers,
+	resolveArticleShareUrl,
+} from './share.js';
 
 // ============================================================================
 // Patterns

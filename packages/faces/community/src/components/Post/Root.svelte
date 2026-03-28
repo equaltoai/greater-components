@@ -50,9 +50,11 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 			.join(' ')
 	);
 
-	const postHref = $derived(
-		postState.type === 'link' && postState.url ? postState.url : `/posts/${postState.id}`
-	);
+	function getDefaultPostHref(): string {
+		return postState.type === 'link' && postState.url ? postState.url : `/posts/${postState.id}`;
+	}
+
+	const postHref = $derived(context.handlers.resolveHref?.(postState) ?? getDefaultPostHref());
 
 	function formatTimestamp(value: Date | string): string {
 		const date = typeof value === 'string' ? new Date(value) : value;
@@ -91,15 +93,10 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 	function handleNavigate(event: MouseEvent) {
 		if (!context.handlers.onNavigate) return;
 		event.preventDefault();
-		context.handlers.onNavigate(postState.id);
-	}
-
-	function navigateToPost() {
-		if (context.handlers.onNavigate) {
-			context.handlers.onNavigate(postState.id);
-		} else {
-			window.location.href = postHref;
-		}
+		context.handlers.onNavigate(postState.id, {
+			href: postHref,
+			post: postState,
+		});
 	}
 </script>
 
@@ -156,9 +153,9 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 			{/if}
 
 			<div class="gr-community-post__actions">
-				<button type="button" class="gr-community-post__action" onclick={navigateToPost}>
+				<a href={postHref} class="gr-community-post__action" onclick={handleNavigate}>
 					{postState.commentCount} comments
-				</button>
+				</a>
 				<button
 					type="button"
 					class="gr-community-post__action"

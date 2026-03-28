@@ -1,0 +1,9 @@
+{
+  "name": "facetheory-svelte-example",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json"
+  }
+}

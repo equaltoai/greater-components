@@ -35,6 +35,7 @@
 - [Migration from npm](./migration-from-npm.md) – Migrating from npm packages to CLI distribution
 - [Shadcn-Style Transition Plan](./shadcn-style-transition-plan.md) – Execution plan for a shadcn-style “CLI installs from tags” approach
 - [Face Development](./face-development.md) – Creating custom faces with manifest structure and theming
+- [FaceTheory Integration](./facetheory-integration.md) – SSR-safe hosting boundaries, hydration notes, and browser-only callouts
 - [GitHub Releases](./devops/github-releases.md) – Publishing release artifacts (including the CLI)
 
 ### 📦 Additional Resources
@@ -42,7 +43,7 @@
 - [Lesser Integration Guide](./lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
 - [Playground](../apps/playground) – Interactive component demos and examples
 - [Migration Guide](./migration-guide.md) – Upgrading from legacy versions
-- [Example Apps](../examples) – Complete example applications (social, blog, custom face)
+- [Example Apps](../examples) – Complete example applications (social, blog, artist, FaceTheory, custom face)
 
 ## Audience
 

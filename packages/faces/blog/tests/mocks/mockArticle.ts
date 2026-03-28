@@ -15,6 +15,7 @@ export function createMockArticle(id: string, overrides: Partial<ArticleData> = 
 			title: `Test Article ${id}`,
 			description: `Description for article ${id}`,
 			publishedAt: new Date('2024-01-15'),
+			canonicalUrl: `https://example.com/articles/${id}`,
 			readingTime: 5,
 			tags: ['test', 'svelte'],
 			series: undefined,

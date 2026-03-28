@@ -70,10 +70,12 @@ const animateMock = vi.fn(function (
 	return createMockAnimation(this, normalizedKeyframes, normalizedOptions);
 });
 
-Object.defineProperty(Element.prototype, 'animate', {
-	value: animateMock,
-	writable: true,
-});
+if (typeof Element !== 'undefined') {
+	Object.defineProperty(Element.prototype, 'animate', {
+		value: animateMock,
+		writable: true,
+	});
+}
 
 beforeEach(() => {
 	animateMock.mockClear();
