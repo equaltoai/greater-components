@@ -4,7 +4,15 @@
   "title": "Soul agent queued communication item",
   "type": "object",
   "additionalProperties": false,
-  "required": ["agent_id", "message_id", "channel_type", "body", "received_at", "scheduled_delivery_time", "status"],
+  "required": [
+    "agent_id",
+    "message_id",
+    "channel_type",
+    "body",
+    "received_at",
+    "scheduled_delivery_time",
+    "status"
+  ],
   "properties": {
     "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
     "message_id": { "type": "string", "minLength": 1, "maxLength": 128 },
