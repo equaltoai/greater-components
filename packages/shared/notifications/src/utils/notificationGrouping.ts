@@ -225,6 +225,8 @@ export function getGroupTitle(group: NotificationGroup): string {
 				return `${primary.displayName ?? primary.username} and ${
 					second.displayName ?? second.username
 				} voted in your poll`;
+			case 'workflow_event':
+				return getWorkflowEventGroupTitle(group);
 			default:
 				return `${count} notifications`;
 		}

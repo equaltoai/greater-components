@@ -63,6 +63,7 @@
     "workflow": {
       "description": "Reusable workflow phases, slot naming, state definitions, and lookup helpers.",
       "exports": [
+        "AGENT_WORKFLOW_CONSUMERS",
         "AGENT_WORKFLOW_PHASES",
         "AGENT_WORKFLOW_PHASE_DEFINITIONS",
         "AGENT_WORKFLOW_SLOT_NAMES",
@@ -89,6 +90,7 @@
     "AgentPackageRole",
     "AgentPackageBoundary",
     "AgentWorkflowMilestoneShape",
+    "AgentWorkflowConsumer",
     "AgentWorkflowPhase",
     "AgentWorkflowPhaseDefinition",
     "AgentWorkflowSlotDefinition",
@@ -96,6 +98,7 @@
     "AgentWorkflowStateDefinition",
     "AgentWorkflowState",
     "AgentWorkflowEnvelope",
+    "AgentWorkflowValueKind",
     "AgentStitchAnchorDefinition",
     "AgentStitchAnchorKey",
     "AgentSurfaceTone",

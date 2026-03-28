@@ -317,6 +317,25 @@ describe('Notification Grouping Utilities', () => {
 
 			expect(getGroupTitle(group)).toBe('Approval requested');
 		});
+
+		it('uses workflow payload titles for exactly two grouped workflow notifications', () => {
+			const first = createWorkflowNotification('workflow-title-1');
+			const second = createWorkflowNotification('workflow-title-2', {
+				account: mockNotifications[1].account,
+			});
+			const group: NotificationGroup = {
+				id: 'workflow-group',
+				type: 'workflow_event',
+				notifications: [first, second],
+				accounts: [first.account, second.account],
+				sampleNotification: first,
+				count: 2,
+				latestCreatedAt: new Date().toISOString(),
+				allRead: false,
+			};
+
+			expect(getGroupTitle(group)).toBe('Approval requested (2)');
+		});
 	});
 
 	describe('getNotificationIcon', () => {
