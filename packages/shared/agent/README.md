@@ -22,3 +22,13 @@ The reusable lifecycle is intentionally ordered as:
 6. `continuity`
 
 Every slot and state is phase-prefixed so multiple consumers can safely merge data without inventing project-specific field names.
+
+## Stitch anchor map
+
+The current workflow anchor map is derived from the Stitch `Agent Genesis` project and currently freezes these titles as reusable surfaces:
+
+- `Agent Genesis`
+- `Nexus Dashboard`
+- `Identity Nexus`
+- `Notification Center: Soul Requests`
+- `Direct Message: Graduation Approval`

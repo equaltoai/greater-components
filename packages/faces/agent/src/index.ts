@@ -39,3 +39,7 @@ export const AGENT_FACE_PACKAGE_ROLE = {
 } as const;
 
 export type AgentFacePackageRole = typeof AGENT_FACE_PACKAGE_ROLE;
+
+export { AGENT_FACE_COMPOSITIONS, getAgentFaceComposition } from './compositions.js';
+
+export type { AgentFaceComposition } from './compositions.js';

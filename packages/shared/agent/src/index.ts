@@ -32,3 +32,7 @@ export type {
 	AgentWorkflowStateDefinition,
 	AgentWorkflowValueKind,
 } from './workflow.js';
+
+export { AGENT_STITCH_ANCHOR_DEFINITIONS, getAgentStitchAnchor } from './stitch.js';
+
+export type { AgentStitchAnchorDefinition, AgentStitchAnchorKey } from './stitch.js';

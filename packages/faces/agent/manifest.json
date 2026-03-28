@@ -12,10 +12,14 @@
   "utilities": {
     "composition": {
       "description": "Composition-level metadata for route shells and future screen presets.",
-      "exports": ["AGENT_FACE_PACKAGE_ROLE"]
+      "exports": [
+        "AGENT_FACE_PACKAGE_ROLE",
+        "AGENT_FACE_COMPOSITIONS",
+        "getAgentFaceComposition"
+      ]
     }
   },
-  "types": ["AgentFacePackageRole"],
+  "types": ["AgentFacePackageRole", "AgentFaceComposition"],
   "dependencies": {
     "internal": [],
     "peer": [],
@@ -23,6 +27,7 @@
   },
   "features": {
     "routeShellBoundaries": true,
-    "compositionMetadata": true
+    "compositionMetadata": true,
+    "stitchCompositionMap": true
   }
 }

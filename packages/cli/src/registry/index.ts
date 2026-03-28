@@ -30,6 +30,7 @@ export type ComponentDomain =
 	| 'social'
 	| 'blog'
 	| 'community'
+	| 'agent'
 	| 'auth'
 	| 'admin'
 	| 'chat'
@@ -2006,5 +2007,5 @@ export function getAllComponentTypes(): ComponentType[] {
  * Get all available domains
  */
 export function getAllDomains(): ComponentDomain[] {
-	return ['social', 'blog', 'community', 'artist', 'auth', 'admin', 'chat', 'core'];
+	return ['social', 'blog', 'community', 'agent', 'artist', 'auth', 'admin', 'chat', 'core'];
 }

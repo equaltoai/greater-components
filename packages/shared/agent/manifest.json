@@ -32,6 +32,13 @@
         "AGENT_WORKFLOW_STATE_NAMES",
         "getAgentWorkflowPhaseDefinition"
       ]
+    },
+    "stitch": {
+      "description": "Stitch anchor mapping from real design screens into reusable component families and export surfaces.",
+      "exports": [
+        "AGENT_STITCH_ANCHOR_DEFINITIONS",
+        "getAgentStitchAnchor"
+      ]
     }
   },
   "types": [
@@ -45,7 +52,9 @@
     "AgentWorkflowSlotName",
     "AgentWorkflowStateDefinition",
     "AgentWorkflowState",
-    "AgentWorkflowEnvelope"
+    "AgentWorkflowEnvelope",
+    "AgentStitchAnchorDefinition",
+    "AgentStitchAnchorKey"
   ],
   "dependencies": {
     "internal": [],
@@ -55,6 +64,7 @@
   "features": {
     "workflowBoundaries": true,
     "workflowContracts": true,
+    "stitchAnchorMapping": true,
     "implementationShape": true
   }
 }

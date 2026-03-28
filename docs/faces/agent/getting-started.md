@@ -21,6 +21,7 @@ greater add shared/agent
 import { AGENT_FACE_PACKAGE_ROLE } from '@equaltoai/greater-components-agent-face';
 import {
 	AGENT_PACKAGE_BOUNDARIES,
+	AGENT_STITCH_ANCHOR_DEFINITIONS,
 	AGENT_WORKFLOW_IMPLEMENTATION_SHAPE,
 } from '@equaltoai/greater-components-agent';
 ```
@@ -28,8 +29,14 @@ import {
 Aggregate consumers can use:
 
 ```ts
-import { AGENT_FACE_PACKAGE_ROLE } from '@equaltoai/greater-components/faces/agent';
-import { AGENT_PACKAGE_BOUNDARIES } from '@equaltoai/greater-components/shared/agent';
+import {
+	AGENT_FACE_PACKAGE_ROLE,
+	AGENT_FACE_COMPOSITIONS,
+} from '@equaltoai/greater-components/faces/agent';
+import {
+	AGENT_PACKAGE_BOUNDARIES,
+	AGENT_STITCH_ANCHOR_DEFINITIONS,
+} from '@equaltoai/greater-components/shared/agent';
 ```
 
 ## Current scope

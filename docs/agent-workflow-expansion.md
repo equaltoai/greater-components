@@ -34,6 +34,14 @@ The current Stitch `Agent Genesis` project provides the initial face anchor set:
 
 These anchors establish the face-level shell categories we want to preserve while the shared packages stay reusable.
 
+| Stitch anchor | Reusable component families | Primary package home |
+| --- | --- | --- |
+| `Agent Genesis` | `RequestIntakeRail`, `ReviewQueuePanel`, `DecisionSummaryCard` | `faces/agent` + `shared/agent` |
+| `Nexus Dashboard` | `GraduationReadinessBoard`, `OperationalSnapshotGrid`, `ContinuityOwnerPanel` | `faces/agent` + `shared/agent` |
+| `Identity Nexus` | `IdentitySummaryPanel`, `DeclarationLedger`, `ReachabilityEvidenceRail` | `faces/agent` + `shared/agent` + `shared/soul` |
+| `Notification Center: Soul Requests` | `SoulRequestInbox`, `PriorityNotificationDigest`, `RouteFilterTabs` | `shared/notifications` + `shared/soul` + `faces/agent` |
+| `Direct Message: Graduation Approval` | `ApprovalConversationThread`, `SignerChecklistRail`, `PromotionDecisionPanel` | `shared/messaging` + `shared/agent` + `faces/agent` |
+
 ## Reusable workflow contracts
 
 The lifecycle naming is frozen as:

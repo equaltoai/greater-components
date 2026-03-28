@@ -74,7 +74,7 @@ const PACKAGE_CONFIGS = {
 };
 
 // Faces to scan (under packages/faces/)
-const FACES = ['social', 'blog', 'community', 'artist'];
+const FACES = ['social', 'blog', 'community', 'artist', 'agent'];
 
 // Shared modules to scan (under packages/shared/)
 const SHARED_MODULES = [
@@ -86,6 +86,7 @@ const SHARED_MODULES = [
 	'chat',
 	'messaging',
 	'soul',
+	'agent',
 ];
 
 // Colors for terminal output

@@ -192,6 +192,42 @@ export const faceRegistry: Record<string, FaceManifest> = {
 		recommendedShared: ['auth', 'compose', 'notifications', 'search'],
 		lesserVersion: '1.0.0',
 	},
+
+	// ====================
+	// AGENT FACE
+	// ====================
+	agent: {
+		name: 'agent',
+		type: 'face',
+		description: 'Agent-first workflow shells for request, review, declaration, signing, graduation, and continuity',
+		files: [],
+		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['face', 'agent', 'workflow', 'request', 'graduation'],
+		version: '1.0.0',
+		domain: 'agent',
+		includes: {
+			primitives: ['button', 'modal', 'tabs'],
+			shared: ['agent', 'soul', 'notifications', 'messaging', 'chat'],
+			patterns: [],
+			components: [
+				'genesis-workspace',
+				'nexus-dashboard',
+				'identity-nexus',
+				'soul-request-center',
+				'graduation-approval-thread',
+			],
+		},
+		styles: {
+			main: '@equaltoai/greater-components/faces/agent/style.css',
+			tokens: '@equaltoai/greater-components/tokens/theme.css',
+		},
+		examples: [],
+		docs: ['docs/faces/agent/getting-started.md', 'docs/agent-workflow-expansion.md'],
+		recommendedShared: ['agent', 'soul', 'notifications', 'messaging', 'chat'],
+		lesserVersion: '1.0.0',
+	},
 };
 
 /**
