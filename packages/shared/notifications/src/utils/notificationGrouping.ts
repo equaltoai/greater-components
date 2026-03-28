@@ -69,7 +69,11 @@ function getWorkflowEventGroupKey(notification: Notification): string {
 }
 
 function getWorkflowEventGroupTitle(group: NotificationGroup): string {
-	const workflowEvent = getWorkflowEventPayload(group.sampleNotification);
+	const workflowSource =
+		group.sampleNotification.type === 'workflow_event'
+			? group.sampleNotification
+			: group.notifications.find((notification) => notification.type === 'workflow_event');
+	const workflowEvent = workflowSource ? getWorkflowEventPayload(workflowSource) : undefined;
 	if (!workflowEvent) {
 		return `${group.count} workflow update${group.count === 1 ? '' : 's'}`;
 	}
@@ -158,7 +162,11 @@ function getGroupKey(notification: Notification): string {
 }
 
 export function getGroupTitle(group: NotificationGroup): string {
-	const { type, count, accounts } = group;
+	const { type, count } = group;
+	const accounts =
+		group.accounts.length > 0
+			? group.accounts
+			: group.notifications.map((notification) => notification.account);
 	const primary = accounts[0];
 
 	if (!primary) {

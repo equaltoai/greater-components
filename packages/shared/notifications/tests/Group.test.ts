@@ -110,4 +110,63 @@ describe('Notifications.Group', () => {
 
 		expect(screen.getByText(/User One and 2 others/)).toBeTruthy();
 	});
+
+	it('renders workflow-specific grouped titles', () => {
+		const workflowGroup: NotificationGroup = {
+			id: 'workflow-group',
+			type: 'workflow_event',
+			notifications: [
+				{
+					id: 'workflow-1',
+					type: 'workflow_event',
+					createdAt: '2026-03-28T12:00:00Z',
+					account: {
+						id: 'acc1',
+						username: 'zephyr',
+						displayName: 'Drone Zephyr-2',
+						avatar: 'avatar1.png',
+					},
+					read: false,
+					workflowEvent: {
+						kind: 'approval_requested',
+						title: 'Approval requested',
+						summary: 'The declaration is ready for signer review.',
+						phase: 'signing',
+						targetLabel: 'Archon Prime',
+						actionLabel: 'Review approval thread',
+					},
+				},
+				{
+					id: 'workflow-2',
+					type: 'workflow_event',
+					createdAt: '2026-03-28T12:05:00Z',
+					account: {
+						id: 'acc2',
+						username: 'aurora',
+						displayName: 'Drone Aurora-7',
+						avatar: 'avatar2.png',
+					},
+					read: true,
+					workflowEvent: {
+						kind: 'approval_requested',
+						title: 'Approval requested',
+						summary: 'The declaration is ready for signer review.',
+						phase: 'signing',
+						targetLabel: 'Archon Prime',
+						actionLabel: 'Review approval thread',
+					},
+				},
+			],
+			accounts: [],
+			count: 2,
+			latestCreatedAt: '2026-03-28T12:05:00Z',
+			allRead: false,
+			sampleNotification: {} as any,
+		} as any;
+
+		render(Group, { group: workflowGroup });
+
+		expect(screen.getByText(/Drone Zephyr-2 and Drone Aurora-7/)).toBeTruthy();
+		expect(screen.getByText('Approval requested (2)')).toBeTruthy();
+	});
 });
