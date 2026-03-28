@@ -27,3 +27,9 @@ The current composition map mirrors the workflow-relevant Stitch anchors:
 - `Identity Nexus`
 - `Notification Center: Soul Requests`
 - `Direct Message: Graduation Approval`
+
+## Adoption References
+
+- `docs/faces/agent/getting-started.md`
+- `docs/faces/agent/integration-patterns.md`
+- `examples/agent-face-svelte/README.md`
