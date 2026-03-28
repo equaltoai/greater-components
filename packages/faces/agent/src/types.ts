@@ -70,6 +70,25 @@ export interface AgentFaceCallout {
 	tone?: AgentSurfaceTone;
 }
 
+export interface AgentFaceTimelineMoment {
+	id: string;
+	title: string;
+	summary: string;
+	meta?: string;
+	phase?: string;
+	tone?: AgentSurfaceTone;
+}
+
+export interface AgentFaceAttributionRecord {
+	id: string;
+	title: string;
+	summary: string;
+	sourceLabel?: string;
+	targetLabel?: string;
+	timestampLabel?: string;
+	tone?: AgentSurfaceTone;
+}
+
 export interface AgentFaceRequestFilter {
 	id: string;
 	label: string;
@@ -132,6 +151,8 @@ export interface NexusDashboardData extends AgentFaceBaseData {
 	graduation: GraduationSummaryCardData;
 	continuity: ContinuityPanelData;
 	lifecycle?: readonly AgentLifecycleStep[];
+	roster?: readonly AgentIdentityCardData[];
+	continuityMoments?: readonly AgentFaceTimelineMoment[];
 	workflowNotifications?: readonly WorkflowEventNotification[];
 	callouts?: readonly AgentFaceCallout[];
 }
@@ -143,6 +164,8 @@ export interface IdentityNexusData extends AgentFaceBaseData {
 	preferences: SoulContactPreferences | null;
 	lifecycle?: readonly AgentLifecycleStep[];
 	continuity?: ContinuityPanelData;
+	timeline?: readonly AgentFaceTimelineMoment[];
+	attributions?: readonly AgentFaceAttributionRecord[];
 	evidence?: readonly AgentSurfaceArtifact[];
 	callouts?: readonly AgentFaceCallout[];
 }

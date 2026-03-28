@@ -44,6 +44,7 @@
     "AgentFacePackageRole",
     "AgentFaceComposition",
     "AgentFaceAction",
+    "AgentFaceAttributionRecord",
     "AgentFaceBaseData",
     "AgentFaceBrand",
     "AgentFaceCallout",
@@ -53,6 +54,7 @@
     "AgentFaceNavItem",
     "AgentFaceRequestFilter",
     "AgentFaceStatusChip",
+    "AgentFaceTimelineMoment",
     "AgentGenesisWorkspaceData",
     "GraduationApprovalThreadData",
     "IdentityNexusData",
@@ -60,7 +62,13 @@
     "SoulRequestCenterData"
   ],
   "dependencies": {
-    "internal": ["shared/agent", "shared/chat", "shared/messaging", "shared/notifications", "shared/soul"],
+    "internal": [
+      "shared/agent",
+      "shared/chat",
+      "shared/messaging",
+      "shared/notifications",
+      "shared/soul"
+    ],
     "peer": ["svelte"],
     "optional": []
   },

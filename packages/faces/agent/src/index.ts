@@ -53,6 +53,7 @@ export { default as IdentityNexus } from './IdentityNexus.svelte';
 
 export type {
 	AgentFaceAction,
+	AgentFaceAttributionRecord,
 	AgentFaceBaseData,
 	AgentFaceBrand,
 	AgentFaceCallout,
@@ -62,6 +63,7 @@ export type {
 	AgentFaceNavItem,
 	AgentFaceRequestFilter,
 	AgentFaceStatusChip,
+	AgentFaceTimelineMoment,
 	AgentGenesisWorkspaceData,
 	GraduationApprovalThreadData,
 	IdentityNexusData,
