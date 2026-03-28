@@ -3,7 +3,8 @@ export const AGENT_FACE_PACKAGE_ROLE = {
 	role: 'face-composition',
 	directPackageName: '@equaltoai/greater-components-agent-face',
 	aggregateExport: '@equaltoai/greater-components/faces/agent',
-	remit: 'Compose shared workflow, messaging, chat, notifications, and reachability surfaces into agent-first screens.',
+	remit:
+		'Compose shared workflow, messaging, chat, notifications, and reachability surfaces into agent-first screens.',
 	owns: [
 		'page-level layouts and shell boundaries',
 		'screen composition presets',

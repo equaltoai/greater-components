@@ -41,7 +41,8 @@ export const AGENT_PACKAGE_BOUNDARIES = [
 		role: 'shared-domain',
 		directPackageName: AGENT_DIRECT_PACKAGE_NAMES['shared/soul'],
 		aggregateExport: '@equaltoai/greater-components/shared/soul',
-		remit: 'Identity-adjacent reachability surfaces: channels, contact preferences, and best-contact guidance.',
+		remit:
+			'Identity-adjacent reachability surfaces: channels, contact preferences, and best-contact guidance.',
 		owns: [
 			'verified channel display',
 			'contact preference viewing and editing',
@@ -59,7 +60,8 @@ export const AGENT_PACKAGE_BOUNDARIES = [
 		role: 'shared-domain',
 		directPackageName: AGENT_DIRECT_PACKAGE_NAMES['shared/agent'],
 		aggregateExport: '@equaltoai/greater-components/shared/agent',
-		remit: 'Neutral workflow contracts, lifecycle naming, and reusable metadata for agent-first work.',
+		remit:
+			'Neutral workflow contracts, lifecycle naming, and reusable metadata for agent-first work.',
 		owns: [
 			'workflow contracts and slot naming',
 			'state labels and milestone sequencing',
@@ -84,7 +86,11 @@ export const AGENT_PACKAGE_BOUNDARIES = [
 		directPackageName: AGENT_DIRECT_PACKAGE_NAMES['shared/chat'],
 		aggregateExport: '@equaltoai/greater-components/shared/chat',
 		remit: 'Assistant-style conversational panels, transcripts, and tool-call views.',
-		owns: ['multi-turn assistant conversations', 'tool-call transcript rendering', 'assistant settings'],
+		owns: [
+			'multi-turn assistant conversations',
+			'tool-call transcript rendering',
+			'assistant settings',
+		],
 		composesWith: ['shared/agent', 'shared/messaging', 'faces/agent'],
 		avoids: ['request queue ownership', 'workflow schema naming', 'notification feeds'],
 	},
@@ -113,7 +119,8 @@ export const AGENT_PACKAGE_BOUNDARIES = [
 		role: 'face-composition',
 		directPackageName: AGENT_DIRECT_PACKAGE_NAMES['faces/agent'],
 		aggregateExport: '@equaltoai/greater-components/faces/agent',
-		remit: 'Compose shared workflow, messaging, chat, notifications, and reachability surfaces into agent-first screens.',
+		remit:
+			'Compose shared workflow, messaging, chat, notifications, and reachability surfaces into agent-first screens.',
 		owns: [
 			'page-level layouts and shell boundaries',
 			'screen composition presets',
@@ -137,8 +144,15 @@ export const AGENT_PACKAGE_BOUNDARIES = [
 export const AGENT_WORKFLOW_IMPLEMENTATION_SHAPE = [
 	{
 		milestone: 'M2',
-		focus: 'Implement reusable shared workflow families without binding them to a single app shell.',
-		packages: ['shared/agent', 'shared/soul', 'shared/chat', 'shared/notifications', 'shared/messaging'],
+		focus:
+			'Implement reusable shared workflow families without binding them to a single app shell.',
+		packages: [
+			'shared/agent',
+			'shared/soul',
+			'shared/chat',
+			'shared/notifications',
+			'shared/messaging',
+		],
 		outcomes: [
 			'typed workflow surfaces and cards',
 			'neutral request and review building blocks',
@@ -147,8 +161,15 @@ export const AGENT_WORKFLOW_IMPLEMENTATION_SHAPE = [
 	},
 	{
 		milestone: 'M3',
-		focus: 'Compose the reusable families into route-level workspaces and checkpoints inside faces/agent.',
-		packages: ['faces/agent', 'shared/agent', 'shared/messaging', 'shared/chat', 'shared/notifications'],
+		focus:
+			'Compose the reusable families into route-level workspaces and checkpoints inside faces/agent.',
+		packages: [
+			'faces/agent',
+			'shared/agent',
+			'shared/messaging',
+			'shared/chat',
+			'shared/notifications',
+		],
 		outcomes: [
 			'request workspace and review cockpit shells',
 			'graduation and continuity page compositions',

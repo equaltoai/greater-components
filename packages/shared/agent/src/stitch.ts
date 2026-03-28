@@ -26,21 +26,27 @@ export const AGENT_STITCH_ANCHOR_DEFINITIONS = [
 			'@equaltoai/greater-components/shared/messaging',
 			'@equaltoai/greater-components/faces/agent',
 		],
-		notes: 'Primary agent-first workspace where new work enters, gets triaged, and moves into review.',
+		notes:
+			'Primary agent-first workspace where new work enters, gets triaged, and moves into review.',
 	},
 	{
 		key: 'nexus-dashboard',
 		stitchScreenTitle: 'Nexus Dashboard',
 		workflowPhases: ['graduation', 'continuity'],
 		workflowSurface: 'continuity-dashboard',
-		componentFamilies: ['GraduationReadinessBoard', 'OperationalSnapshotGrid', 'ContinuityOwnerPanel'],
+		componentFamilies: [
+			'GraduationReadinessBoard',
+			'OperationalSnapshotGrid',
+			'ContinuityOwnerPanel',
+		],
 		sharedPackages: ['shared/agent', 'shared/notifications', 'faces/agent'],
 		aggregateExports: [
 			'@equaltoai/greater-components/shared/agent',
 			'@equaltoai/greater-components/shared/notifications',
 			'@equaltoai/greater-components/faces/agent',
 		],
-		notes: 'Dashboard shell for promotion readiness, post-launch visibility, and continuity follow-through.',
+		notes:
+			'Dashboard shell for promotion readiness, post-launch visibility, and continuity follow-through.',
 	},
 	{
 		key: 'identity-nexus',
@@ -54,7 +60,8 @@ export const AGENT_STITCH_ANCHOR_DEFINITIONS = [
 			'@equaltoai/greater-components/shared/soul',
 			'@equaltoai/greater-components/faces/agent',
 		],
-		notes: 'Identity-focused shell where declarations and reachability evidence meet a reusable profile context.',
+		notes:
+			'Identity-focused shell where declarations and reachability evidence meet a reusable profile context.',
 	},
 	{
 		key: 'soul-request-center',
@@ -69,14 +76,19 @@ export const AGENT_STITCH_ANCHOR_DEFINITIONS = [
 			'@equaltoai/greater-components/shared/agent',
 			'@equaltoai/greater-components/faces/agent',
 		],
-		notes: 'Async intake view that keeps soul-specific requests out of the main face shell until they are routed.',
+		notes:
+			'Async intake view that keeps soul-specific requests out of the main face shell until they are routed.',
 	},
 	{
 		key: 'graduation-approval-thread',
 		stitchScreenTitle: 'Direct Message: Graduation Approval',
 		workflowPhases: ['signing', 'graduation'],
 		workflowSurface: 'graduation-approval-thread',
-		componentFamilies: ['ApprovalConversationThread', 'SignerChecklistRail', 'PromotionDecisionPanel'],
+		componentFamilies: [
+			'ApprovalConversationThread',
+			'SignerChecklistRail',
+			'PromotionDecisionPanel',
+		],
 		sharedPackages: ['shared/messaging', 'shared/agent', 'shared/chat', 'faces/agent'],
 		aggregateExports: [
 			'@equaltoai/greater-components/shared/messaging',

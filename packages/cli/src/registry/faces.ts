@@ -199,7 +199,8 @@ export const faceRegistry: Record<string, FaceManifest> = {
 	agent: {
 		name: 'agent',
 		type: 'face',
-		description: 'Agent-first workflow shells for request, review, declaration, signing, graduation, and continuity',
+		description:
+			'Agent-first workflow shells for request, review, declaration, signing, graduation, and continuity',
 		files: [],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],

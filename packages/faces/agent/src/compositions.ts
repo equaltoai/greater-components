@@ -23,7 +23,11 @@ export const AGENT_FACE_COMPOSITIONS = [
 			'@equaltoai/greater-components/shared/notifications',
 			'@equaltoai/greater-components/shared/messaging',
 		],
-		layoutBoundaries: ['left rail: intake queue', 'center pane: active work item', 'right rail: decision context'],
+		layoutBoundaries: [
+			'left rail: intake queue',
+			'center pane: active work item',
+			'right rail: decision context',
+		],
 	},
 	{
 		key: 'nexus-dashboard',
@@ -31,7 +35,11 @@ export const AGENT_FACE_COMPOSITIONS = [
 		stitchAnchor: 'Nexus Dashboard',
 		surfaceKind: 'dashboard',
 		workflowPhases: ['graduation', 'continuity'],
-		componentFamilies: ['GraduationReadinessBoard', 'OperationalSnapshotGrid', 'ContinuityOwnerPanel'],
+		componentFamilies: [
+			'GraduationReadinessBoard',
+			'OperationalSnapshotGrid',
+			'ContinuityOwnerPanel',
+		],
 		aggregateExports: [
 			'@equaltoai/greater-components/faces/agent',
 			'@equaltoai/greater-components/shared/agent',
@@ -51,7 +59,11 @@ export const AGENT_FACE_COMPOSITIONS = [
 			'@equaltoai/greater-components/shared/agent',
 			'@equaltoai/greater-components/shared/soul',
 		],
-		layoutBoundaries: ['identity summary header', 'declaration ledger column', 'reachability evidence rail'],
+		layoutBoundaries: [
+			'identity summary header',
+			'declaration ledger column',
+			'reachability evidence rail',
+		],
 	},
 	{
 		key: 'soul-request-center',
@@ -74,7 +86,11 @@ export const AGENT_FACE_COMPOSITIONS = [
 		stitchAnchor: 'Direct Message: Graduation Approval',
 		surfaceKind: 'checkpoint',
 		workflowPhases: ['signing', 'graduation'],
-		componentFamilies: ['ApprovalConversationThread', 'SignerChecklistRail', 'PromotionDecisionPanel'],
+		componentFamilies: [
+			'ApprovalConversationThread',
+			'SignerChecklistRail',
+			'PromotionDecisionPanel',
+		],
 		aggregateExports: [
 			'@equaltoai/greater-components/faces/agent',
 			'@equaltoai/greater-components/shared/messaging',

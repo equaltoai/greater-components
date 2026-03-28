@@ -64,8 +64,10 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 	{
 		phase: 'request',
 		title: 'Request',
-		objective: 'Capture the inbound objective with enough context for humans and agents to triage it safely.',
-		summary: 'Intake, normalize, and route the work request without assuming the final workflow owner.',
+		objective:
+			'Capture the inbound objective with enough context for humans and agents to triage it safely.',
+		summary:
+			'Intake, normalize, and route the work request without assuming the final workflow owner.',
 		supportedConsumers: ['human', 'llm', 'hybrid'],
 		inputSlots: [
 			{
@@ -89,7 +91,8 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 			{
 				name: 'request.artifacts',
 				label: 'Request Artifacts',
-				description: 'Links, attachments, or prior references that should travel with the workflow.',
+				description:
+					'Links, attachments, or prior references that should travel with the workflow.',
 				valueKind: 'links',
 				required: false,
 				preferredConsumers: ['human', 'llm'],
@@ -104,18 +107,40 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 			},
 		],
 		states: [
-			{ value: 'request.draft', label: 'Draft', description: 'The request exists but has not been submitted.' },
-			{ value: 'request.submitted', label: 'Submitted', description: 'The request is ready for intake and triage.' },
-			{ value: 'request.triaged', label: 'Triaged', description: 'The request has enough context to route downstream.' },
-			{ value: 'request.accepted', label: 'Accepted', description: 'The request is accepted into the workflow pipeline.' },
-			{ value: 'request.declined', label: 'Declined', description: 'The request was rejected or closed without proceeding.' },
+			{
+				value: 'request.draft',
+				label: 'Draft',
+				description: 'The request exists but has not been submitted.',
+			},
+			{
+				value: 'request.submitted',
+				label: 'Submitted',
+				description: 'The request is ready for intake and triage.',
+			},
+			{
+				value: 'request.triaged',
+				label: 'Triaged',
+				description: 'The request has enough context to route downstream.',
+			},
+			{
+				value: 'request.accepted',
+				label: 'Accepted',
+				description: 'The request is accepted into the workflow pipeline.',
+			},
+			{
+				value: 'request.declined',
+				label: 'Declined',
+				description: 'The request was rejected or closed without proceeding.',
+			},
 		],
 	},
 	{
 		phase: 'review',
 		title: 'Review',
-		objective: 'Evaluate the request or work-in-progress and capture findings that can drive decisions.',
-		summary: 'Turn evidence into a structured decision point without coupling review logic to one screen.',
+		objective:
+			'Evaluate the request or work-in-progress and capture findings that can drive decisions.',
+		summary:
+			'Turn evidence into a structured decision point without coupling review logic to one screen.',
 		supportedConsumers: ['human', 'llm', 'hybrid'],
 		inputSlots: [
 			{
@@ -154,18 +179,35 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 			},
 		],
 		states: [
-			{ value: 'review.queued', label: 'Queued', description: 'Waiting for a reviewer or review window.' },
+			{
+				value: 'review.queued',
+				label: 'Queued',
+				description: 'Waiting for a reviewer or review window.',
+			},
 			{ value: 'review.in_review', label: 'In Review', description: 'Actively being evaluated.' },
-			{ value: 'review.changes_requested', label: 'Changes Requested', description: 'Needs follow-up work before approval.' },
-			{ value: 'review.approved', label: 'Approved', description: 'Review passed and can advance.' },
-			{ value: 'review.blocked', label: 'Blocked', description: 'Cannot advance until a blocking issue is resolved.' },
+			{
+				value: 'review.changes_requested',
+				label: 'Changes Requested',
+				description: 'Needs follow-up work before approval.',
+			},
+			{
+				value: 'review.approved',
+				label: 'Approved',
+				description: 'Review passed and can advance.',
+			},
+			{
+				value: 'review.blocked',
+				label: 'Blocked',
+				description: 'Cannot advance until a blocking issue is resolved.',
+			},
 		],
 	},
 	{
 		phase: 'declaration',
 		title: 'Declaration',
 		objective: 'State the official claim, status, or readiness posture in a reusable format.',
-		summary: 'Capture the authoritative statement that downstream signing and launch steps rely on.',
+		summary:
+			'Capture the authoritative statement that downstream signing and launch steps rely on.',
 		supportedConsumers: ['human', 'llm', 'hybrid'],
 		inputSlots: [
 			{
@@ -204,10 +246,26 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 			},
 		],
 		states: [
-			{ value: 'declaration.draft', label: 'Draft', description: 'Statement is being composed or revised.' },
-			{ value: 'declaration.ready', label: 'Ready for Attestation', description: 'Prepared for formal acknowledgement.' },
-			{ value: 'declaration.attested', label: 'Attested', description: 'Formally acknowledged and ready for signing.' },
-			{ value: 'declaration.superseded', label: 'Superseded', description: 'Replaced by a newer declaration.' },
+			{
+				value: 'declaration.draft',
+				label: 'Draft',
+				description: 'Statement is being composed or revised.',
+			},
+			{
+				value: 'declaration.ready',
+				label: 'Ready for Attestation',
+				description: 'Prepared for formal acknowledgement.',
+			},
+			{
+				value: 'declaration.attested',
+				label: 'Attested',
+				description: 'Formally acknowledged and ready for signing.',
+			},
+			{
+				value: 'declaration.superseded',
+				label: 'Superseded',
+				description: 'Replaced by a newer declaration.',
+			},
 		],
 	},
 	{
@@ -253,17 +311,35 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 			},
 		],
 		states: [
-			{ value: 'signing.preparing', label: 'Preparing', description: 'Sign-off packet is being assembled.' },
-			{ value: 'signing.pending', label: 'Pending Signature', description: 'Waiting on at least one signer.' },
-			{ value: 'signing.signed', label: 'Signed', description: 'All required signatories have approved.' },
-			{ value: 'signing.expired', label: 'Expired', description: 'The signing window closed before completion.' },
+			{
+				value: 'signing.preparing',
+				label: 'Preparing',
+				description: 'Sign-off packet is being assembled.',
+			},
+			{
+				value: 'signing.pending',
+				label: 'Pending Signature',
+				description: 'Waiting on at least one signer.',
+			},
+			{
+				value: 'signing.signed',
+				label: 'Signed',
+				description: 'All required signatories have approved.',
+			},
+			{
+				value: 'signing.expired',
+				label: 'Expired',
+				description: 'The signing window closed before completion.',
+			},
 		],
 	},
 	{
 		phase: 'graduation',
 		title: 'Graduation',
-		objective: 'Verify readiness and complete the promotion from candidate state into active operation.',
-		summary: 'Bundle launch readiness, promotion gating, and rollback posture into one reusable contract.',
+		objective:
+			'Verify readiness and complete the promotion from candidate state into active operation.',
+		summary:
+			'Bundle launch readiness, promotion gating, and rollback posture into one reusable contract.',
 		supportedConsumers: ['human', 'llm', 'hybrid'],
 		inputSlots: [
 			{
@@ -302,18 +378,39 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 			},
 		],
 		states: [
-			{ value: 'graduation.planning', label: 'Planning', description: 'Preparing the promotion plan and checklist.' },
-			{ value: 'graduation.verifying', label: 'Verifying', description: 'Actively validating readiness gates.' },
-			{ value: 'graduation.ready', label: 'Ready', description: 'Ready to graduate when the launch window opens.' },
-			{ value: 'graduation.launched', label: 'Launched', description: 'Promotion completed successfully.' },
-			{ value: 'graduation.rolled_back', label: 'Rolled Back', description: 'Promotion was reversed after launch.' },
+			{
+				value: 'graduation.planning',
+				label: 'Planning',
+				description: 'Preparing the promotion plan and checklist.',
+			},
+			{
+				value: 'graduation.verifying',
+				label: 'Verifying',
+				description: 'Actively validating readiness gates.',
+			},
+			{
+				value: 'graduation.ready',
+				label: 'Ready',
+				description: 'Ready to graduate when the launch window opens.',
+			},
+			{
+				value: 'graduation.launched',
+				label: 'Launched',
+				description: 'Promotion completed successfully.',
+			},
+			{
+				value: 'graduation.rolled_back',
+				label: 'Rolled Back',
+				description: 'Promotion was reversed after launch.',
+			},
 		],
 	},
 	{
 		phase: 'continuity',
 		title: 'Continuity',
 		objective: 'Carry the work forward through monitoring, handoff, and ongoing stewardship.',
-		summary: 'Keep ownership and post-launch care reusable rather than hardcoded into one application shell.',
+		summary:
+			'Keep ownership and post-launch care reusable rather than hardcoded into one application shell.',
 		supportedConsumers: ['human', 'llm', 'hybrid'],
 		inputSlots: [
 			{
@@ -352,11 +449,31 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 			},
 		],
 		states: [
-			{ value: 'continuity.observing', label: 'Observing', description: 'Monitoring the newly launched change.' },
-			{ value: 'continuity.stable', label: 'Stable', description: 'The change is healthy and under routine stewardship.' },
-			{ value: 'continuity.tuning', label: 'Tuning', description: 'Making follow-up adjustments based on observed behavior.' },
-			{ value: 'continuity.handoff_ready', label: 'Handoff Ready', description: 'Prepared for longer-term ownership transfer.' },
-			{ value: 'continuity.retired', label: 'Retired', description: 'The continuity record is closed or archived.' },
+			{
+				value: 'continuity.observing',
+				label: 'Observing',
+				description: 'Monitoring the newly launched change.',
+			},
+			{
+				value: 'continuity.stable',
+				label: 'Stable',
+				description: 'The change is healthy and under routine stewardship.',
+			},
+			{
+				value: 'continuity.tuning',
+				label: 'Tuning',
+				description: 'Making follow-up adjustments based on observed behavior.',
+			},
+			{
+				value: 'continuity.handoff_ready',
+				label: 'Handoff Ready',
+				description: 'Prepared for longer-term ownership transfer.',
+			},
+			{
+				value: 'continuity.retired',
+				label: 'Retired',
+				description: 'The continuity record is closed or archived.',
+			},
 		],
 	},
 ] as const satisfies readonly AgentWorkflowPhaseDefinition[];
@@ -370,8 +487,12 @@ export const AGENT_WORKFLOW_STATE_NAMES = AGENT_WORKFLOW_PHASE_DEFINITIONS.flatM
 	definition.states.map((state) => state.value)
 ) as AgentWorkflowState[];
 
-export function getAgentWorkflowPhaseDefinition(phase: AgentWorkflowPhase): AgentWorkflowPhaseDefinition {
-	const definition = AGENT_WORKFLOW_PHASE_DEFINITIONS.find((candidate) => candidate.phase === phase);
+export function getAgentWorkflowPhaseDefinition(
+	phase: AgentWorkflowPhase
+): AgentWorkflowPhaseDefinition {
+	const definition = AGENT_WORKFLOW_PHASE_DEFINITIONS.find(
+		(candidate) => candidate.phase === phase
+	);
 
 	if (!definition) {
 		throw new Error(`Unknown workflow phase: ${phase}`);

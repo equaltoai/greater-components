@@ -12,11 +12,7 @@
   "utilities": {
     "composition": {
       "description": "Composition-level metadata for route shells and future screen presets.",
-      "exports": [
-        "AGENT_FACE_PACKAGE_ROLE",
-        "AGENT_FACE_COMPOSITIONS",
-        "getAgentFaceComposition"
-      ]
+      "exports": ["AGENT_FACE_PACKAGE_ROLE", "AGENT_FACE_COMPOSITIONS", "getAgentFaceComposition"]
     }
   },
   "types": ["AgentFacePackageRole", "AgentFaceComposition"],

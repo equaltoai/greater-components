@@ -4,14 +4,14 @@ This document freezes the package boundaries for the Drones prerequisite milesto
 
 ## Package ownership
 
-| Package | Direct package | Aggregate export | Owns | Must not own |
-| --- | --- | --- | --- | --- |
-| `shared/soul` | `@equaltoai/greater-components-soul` | `@equaltoai/greater-components/shared/soul` | reachability channels, contact preferences, best-contact guidance | request/review/graduation flow shells |
-| `shared/agent` | `@equaltoai/greater-components-agent` | `@equaltoai/greater-components/shared/agent` | workflow contracts, slot naming, lifecycle metadata, reusable agent workflow building blocks | inbox delivery, chat transport, route composition |
-| `shared/chat` | `@equaltoai/greater-components-chat` | `@equaltoai/greater-components/shared/chat` | assistant transcripts, tool-call views, agent-side conversation panels | request queues, signing checkpoints, notification feeds |
-| `shared/notifications` | `@equaltoai/greater-components-notifications` | `@equaltoai/greater-components/shared/notifications` | ambient alerts, grouping, delivery preferences | primary editors, full workflow state |
-| `shared/messaging` | `@equaltoai/greater-components-messaging` | `@equaltoai/greater-components/shared/messaging` | direct conversations, request inbox threads, handoff messaging | lifecycle schema ownership, route shells |
-| `faces/agent` | `@equaltoai/greater-components-agent-face` | `@equaltoai/greater-components/faces/agent` | page shells, screen presets, route-level composition boundaries | canonical workflow naming, reachability primitives, transport details |
+| Package                | Direct package                                | Aggregate export                                     | Owns                                                                                         | Must not own                                                          |
+| ---------------------- | --------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `shared/soul`          | `@equaltoai/greater-components-soul`          | `@equaltoai/greater-components/shared/soul`          | reachability channels, contact preferences, best-contact guidance                            | request/review/graduation flow shells                                 |
+| `shared/agent`         | `@equaltoai/greater-components-agent`         | `@equaltoai/greater-components/shared/agent`         | workflow contracts, slot naming, lifecycle metadata, reusable agent workflow building blocks | inbox delivery, chat transport, route composition                     |
+| `shared/chat`          | `@equaltoai/greater-components-chat`          | `@equaltoai/greater-components/shared/chat`          | assistant transcripts, tool-call views, agent-side conversation panels                       | request queues, signing checkpoints, notification feeds               |
+| `shared/notifications` | `@equaltoai/greater-components-notifications` | `@equaltoai/greater-components/shared/notifications` | ambient alerts, grouping, delivery preferences                                               | primary editors, full workflow state                                  |
+| `shared/messaging`     | `@equaltoai/greater-components-messaging`     | `@equaltoai/greater-components/shared/messaging`     | direct conversations, request inbox threads, handoff messaging                               | lifecycle schema ownership, route shells                              |
+| `faces/agent`          | `@equaltoai/greater-components-agent-face`    | `@equaltoai/greater-components/faces/agent`          | page shells, screen presets, route-level composition boundaries                              | canonical workflow naming, reachability primitives, transport details |
 
 ## Naming freeze
 
@@ -34,26 +34,26 @@ The current Stitch `Agent Genesis` project provides the initial face anchor set:
 
 These anchors establish the face-level shell categories we want to preserve while the shared packages stay reusable.
 
-| Stitch anchor | Reusable component families | Primary package home |
-| --- | --- | --- |
-| `Agent Genesis` | `RequestIntakeRail`, `ReviewQueuePanel`, `DecisionSummaryCard` | `faces/agent` + `shared/agent` |
-| `Nexus Dashboard` | `GraduationReadinessBoard`, `OperationalSnapshotGrid`, `ContinuityOwnerPanel` | `faces/agent` + `shared/agent` |
-| `Identity Nexus` | `IdentitySummaryPanel`, `DeclarationLedger`, `ReachabilityEvidenceRail` | `faces/agent` + `shared/agent` + `shared/soul` |
-| `Notification Center: Soul Requests` | `SoulRequestInbox`, `PriorityNotificationDigest`, `RouteFilterTabs` | `shared/notifications` + `shared/soul` + `faces/agent` |
-| `Direct Message: Graduation Approval` | `ApprovalConversationThread`, `SignerChecklistRail`, `PromotionDecisionPanel` | `shared/messaging` + `shared/agent` + `faces/agent` |
+| Stitch anchor                         | Reusable component families                                                   | Primary package home                                   |
+| ------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `Agent Genesis`                       | `RequestIntakeRail`, `ReviewQueuePanel`, `DecisionSummaryCard`                | `faces/agent` + `shared/agent`                         |
+| `Nexus Dashboard`                     | `GraduationReadinessBoard`, `OperationalSnapshotGrid`, `ContinuityOwnerPanel` | `faces/agent` + `shared/agent`                         |
+| `Identity Nexus`                      | `IdentitySummaryPanel`, `DeclarationLedger`, `ReachabilityEvidenceRail`       | `faces/agent` + `shared/agent` + `shared/soul`         |
+| `Notification Center: Soul Requests`  | `SoulRequestInbox`, `PriorityNotificationDigest`, `RouteFilterTabs`           | `shared/notifications` + `shared/soul` + `faces/agent` |
+| `Direct Message: Graduation Approval` | `ApprovalConversationThread`, `SignerChecklistRail`, `PromotionDecisionPanel` | `shared/messaging` + `shared/agent` + `faces/agent`    |
 
 ## Reusable workflow contracts
 
 The lifecycle naming is frozen as:
 
-| Phase | Purpose | Representative slots |
-| --- | --- | --- |
-| `request` | intake and triage | `request.summary`, `request.constraints`, `request.routeDecision` |
-| `review` | evidence-based evaluation | `review.scope`, `review.evidence`, `review.decision` |
-| `declaration` | formal statement of status or readiness | `declaration.statement`, `declaration.scope`, `declaration.confidence` |
-| `signing` | approvals and audit trail | `signing.signatories`, `signing.approvalMemo`, `signing.auditTrail` |
-| `graduation` | readiness gate and launch promotion | `graduation.checklist`, `graduation.rollbackPlan`, `graduation.readiness` |
-| `continuity` | post-launch stewardship and feedback loop | `continuity.owner`, `continuity.monitoring`, `continuity.feedbackLoop` |
+| Phase         | Purpose                                   | Representative slots                                                      |
+| ------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
+| `request`     | intake and triage                         | `request.summary`, `request.constraints`, `request.routeDecision`         |
+| `review`      | evidence-based evaluation                 | `review.scope`, `review.evidence`, `review.decision`                      |
+| `declaration` | formal statement of status or readiness   | `declaration.statement`, `declaration.scope`, `declaration.confidence`    |
+| `signing`     | approvals and audit trail                 | `signing.signatories`, `signing.approvalMemo`, `signing.auditTrail`       |
+| `graduation`  | readiness gate and launch promotion       | `graduation.checklist`, `graduation.rollbackPlan`, `graduation.readiness` |
+| `continuity`  | post-launch stewardship and feedback loop | `continuity.owner`, `continuity.monitoring`, `continuity.feedbackLoop`    |
 
 Rules frozen in this milestone:
 
