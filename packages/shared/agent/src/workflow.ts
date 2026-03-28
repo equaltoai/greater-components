@@ -22,8 +22,8 @@ export type AgentWorkflowValueKind =
 	| 'metrics'
 	| 'links';
 
-export interface AgentWorkflowSlotDefinition {
-	name: `${AgentWorkflowPhase}.${string}`;
+export interface AgentWorkflowSlotDefinition<P extends AgentWorkflowPhase = AgentWorkflowPhase> {
+	name: `${P}.${string}`;
 	label: string;
 	description: string;
 	valueKind: AgentWorkflowValueKind;
@@ -31,37 +31,31 @@ export interface AgentWorkflowSlotDefinition {
 	preferredConsumers: readonly AgentWorkflowConsumer[];
 }
 
-export interface AgentWorkflowStateDefinition {
-	value: string;
+export interface AgentWorkflowStateDefinition<P extends AgentWorkflowPhase = AgentWorkflowPhase> {
+	value: `${P}.${string}`;
 	label: string;
 	description: string;
 }
 
-export interface AgentWorkflowPhaseDefinition {
-	phase: AgentWorkflowPhase;
+export interface AgentWorkflowPhaseDefinition<P extends AgentWorkflowPhase = AgentWorkflowPhase> {
+	phase: P;
 	title: string;
 	objective: string;
 	summary: string;
 	supportedConsumers: readonly AgentWorkflowConsumer[];
-	inputSlots: readonly AgentWorkflowSlotDefinition[];
-	outputSlots: readonly AgentWorkflowSlotDefinition[];
-	states: readonly AgentWorkflowStateDefinition[];
+	inputSlots: readonly AgentWorkflowSlotDefinition<P>[];
+	outputSlots: readonly AgentWorkflowSlotDefinition<P>[];
+	states: readonly AgentWorkflowStateDefinition<P>[];
 }
 
-export type AgentWorkflowSlotName = AgentWorkflowSlotDefinition['name'];
-export type AgentWorkflowState = AgentWorkflowStateDefinition['value'];
-
-export interface AgentWorkflowEnvelope {
-	id: string;
-	phase: AgentWorkflowPhase;
-	state: AgentWorkflowState;
-	title: string;
-	summary: string;
-	slots: Partial<Record<AgentWorkflowSlotName, unknown>>;
+function defineAgentWorkflowPhaseDefinition<const P extends AgentWorkflowPhase>(
+	definition: AgentWorkflowPhaseDefinition<P>
+): AgentWorkflowPhaseDefinition<P> {
+	return definition;
 }
 
 export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
-	{
+	defineAgentWorkflowPhaseDefinition({
 		phase: 'request',
 		title: 'Request',
 		objective:
@@ -133,8 +127,8 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 				description: 'The request was rejected or closed without proceeding.',
 			},
 		],
-	},
-	{
+	}),
+	defineAgentWorkflowPhaseDefinition({
 		phase: 'review',
 		title: 'Review',
 		objective:
@@ -184,7 +178,11 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 				label: 'Queued',
 				description: 'Waiting for a reviewer or review window.',
 			},
-			{ value: 'review.in_review', label: 'In Review', description: 'Actively being evaluated.' },
+			{
+				value: 'review.in_review',
+				label: 'In Review',
+				description: 'Actively being evaluated.',
+			},
 			{
 				value: 'review.changes_requested',
 				label: 'Changes Requested',
@@ -201,8 +199,8 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 				description: 'Cannot advance until a blocking issue is resolved.',
 			},
 		],
-	},
-	{
+	}),
+	defineAgentWorkflowPhaseDefinition({
 		phase: 'declaration',
 		title: 'Declaration',
 		objective: 'State the official claim, status, or readiness posture in a reusable format.',
@@ -267,8 +265,8 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 				description: 'Replaced by a newer declaration.',
 			},
 		],
-	},
-	{
+	}),
+	defineAgentWorkflowPhaseDefinition({
 		phase: 'signing',
 		title: 'Signing',
 		objective: 'Collect the approvals or signatures that make the declaration actionable.',
@@ -332,8 +330,8 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 				description: 'The signing window closed before completion.',
 			},
 		],
-	},
-	{
+	}),
+	defineAgentWorkflowPhaseDefinition({
 		phase: 'graduation',
 		title: 'Graduation',
 		objective:
@@ -404,8 +402,8 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 				description: 'Promotion was reversed after launch.',
 			},
 		],
-	},
-	{
+	}),
+	defineAgentWorkflowPhaseDefinition({
 		phase: 'continuity',
 		title: 'Continuity',
 		objective: 'Carry the work forward through monitoring, handoff, and ongoing stewardship.',
@@ -475,8 +473,30 @@ export const AGENT_WORKFLOW_PHASE_DEFINITIONS = [
 				description: 'The continuity record is closed or archived.',
 			},
 		],
-	},
-] as const satisfies readonly AgentWorkflowPhaseDefinition[];
+	}),
+] as const;
+
+type AgentWorkflowPhaseDefinitionRecord = (typeof AGENT_WORKFLOW_PHASE_DEFINITIONS)[number];
+type AgentWorkflowDefinitionFor<P extends AgentWorkflowPhase> = Extract<
+	AgentWorkflowPhaseDefinitionRecord,
+	{ phase: P }
+>;
+
+export type AgentWorkflowSlotName<P extends AgentWorkflowPhase = AgentWorkflowPhase> =
+	| AgentWorkflowDefinitionFor<P>['inputSlots'][number]['name']
+	| AgentWorkflowDefinitionFor<P>['outputSlots'][number]['name'];
+
+export type AgentWorkflowState<P extends AgentWorkflowPhase = AgentWorkflowPhase> =
+	AgentWorkflowDefinitionFor<P>['states'][number]['value'];
+
+export interface AgentWorkflowEnvelope<P extends AgentWorkflowPhase = AgentWorkflowPhase> {
+	id: string;
+	phase: P;
+	state: AgentWorkflowState<P>;
+	title: string;
+	summary: string;
+	slots: Partial<Record<AgentWorkflowSlotName<P>, unknown>>;
+}
 
 export const AGENT_WORKFLOW_SLOT_NAMES = AGENT_WORKFLOW_PHASE_DEFINITIONS.flatMap((definition) => [
 	...definition.inputSlots.map((slot) => slot.name),
@@ -487,9 +507,9 @@ export const AGENT_WORKFLOW_STATE_NAMES = AGENT_WORKFLOW_PHASE_DEFINITIONS.flatM
 	definition.states.map((state) => state.value)
 ) as AgentWorkflowState[];
 
-export function getAgentWorkflowPhaseDefinition(
-	phase: AgentWorkflowPhase
-): AgentWorkflowPhaseDefinition {
+export function getAgentWorkflowPhaseDefinition<P extends AgentWorkflowPhase>(
+	phase: P
+): AgentWorkflowDefinitionFor<P> {
 	const definition = AGENT_WORKFLOW_PHASE_DEFINITIONS.find(
 		(candidate) => candidate.phase === phase
 	);
@@ -498,5 +518,5 @@ export function getAgentWorkflowPhaseDefinition(
 		throw new Error(`Unknown workflow phase: ${phase}`);
 	}
 
-	return definition;
+	return definition as AgentWorkflowDefinitionFor<P>;
 }

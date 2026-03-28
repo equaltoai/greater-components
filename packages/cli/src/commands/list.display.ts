@@ -151,6 +151,15 @@ export function formatFaceDetails(face: FaceDisplayItem): string {
 	if (face.includes.components.length > 0) {
 		lines.push(`  ${chalk.green('Components:')} ${face.includes.components.join(', ')}`);
 	}
+	if (face.surfaces?.length) {
+		lines.push(`  ${chalk.magenta('Surfaces:')} ${face.surfaces.join(', ')}`);
+	}
+
+	if (face.exports?.length) {
+		lines.push('');
+		lines.push(chalk.bold('Exported Symbols:'));
+		lines.push(`  ${face.exports.join(', ')}`);
+	}
 
 	// Recommended shared modules
 	if (face.recommendedShared?.length) {

@@ -74,6 +74,12 @@ export interface FaceManifest extends ComponentMetadata {
 		/** Compound components specific to this face */
 		components: string[];
 	};
+	/** Named surfaces exposed by the face package but not installed as standalone registry items */
+	surfaces?: string[];
+	/** Exported constants, functions, or metadata from the face package */
+	exports?: string[];
+	/** Exported type names from the face package */
+	types?: string[];
 	/** Style configuration */
 	styles: {
 		/** Main CSS bundle path */

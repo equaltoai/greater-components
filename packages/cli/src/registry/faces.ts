@@ -201,7 +201,11 @@ export const faceRegistry: Record<string, FaceManifest> = {
 		type: 'face',
 		description:
 			'Agent-first workflow shells for request, review, declaration, signing, graduation, and continuity',
-		files: [],
+		files: [
+			{ path: 'greater/faces/agent/index.ts', content: '', type: 'component' },
+			{ path: 'greater/faces/agent/compositions.ts', content: '', type: 'types' },
+			{ path: 'greater/faces/agent/theme.css', content: '', type: 'styles' },
+		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
 		registryDependencies: [],
@@ -212,14 +216,17 @@ export const faceRegistry: Record<string, FaceManifest> = {
 			primitives: ['button', 'modal', 'tabs'],
 			shared: ['agent', 'soul', 'notifications', 'messaging', 'chat'],
 			patterns: [],
-			components: [
-				'genesis-workspace',
-				'nexus-dashboard',
-				'identity-nexus',
-				'soul-request-center',
-				'graduation-approval-thread',
-			],
+			components: [],
 		},
+		surfaces: [
+			'genesis-workspace',
+			'nexus-dashboard',
+			'identity-nexus',
+			'soul-request-center',
+			'graduation-approval-thread',
+		],
+		exports: ['AGENT_FACE_PACKAGE_ROLE', 'AGENT_FACE_COMPOSITIONS', 'getAgentFaceComposition'],
+		types: ['AgentFacePackageRole', 'AgentFaceComposition'],
 		styles: {
 			main: '@equaltoai/greater-components/faces/agent/style.css',
 			tokens: '@equaltoai/greater-components/tokens/theme.css',
@@ -266,6 +273,22 @@ export function getFaceComponents(name: string): string[] {
 export function getFaceRecommendedShared(name: string): string[] {
 	const face = getFaceManifest(name);
 	return face?.recommendedShared ?? [];
+}
+
+/**
+ * Get named face surfaces that are exported from the face package
+ */
+export function getFaceSurfaces(name: string): string[] {
+	const face = getFaceManifest(name);
+	return face?.surfaces ?? [];
+}
+
+/**
+ * Get exported symbols for a face package
+ */
+export function getFaceExports(name: string): string[] {
+	const face = getFaceManifest(name);
+	return face?.exports ?? [];
 }
 
 /**

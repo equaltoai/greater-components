@@ -187,6 +187,22 @@ function analyzeDependencies(dir, extensions) {
 	return Array.from(externalDeps).sort();
 }
 
+function getManifestComponentExports(manifest) {
+	return Object.entries(manifest.components || {})
+		.filter(([, definition]) => definition.exports !== false)
+		.map(([name]) => name);
+}
+
+function getManifestUtilityExports(manifest) {
+	return Object.values(manifest.utilities || {}).flatMap((utility) => utility.exports || []);
+}
+
+function getManifestExports(manifest) {
+	return [
+		...new Set([...getManifestComponentExports(manifest), ...getManifestUtilityExports(manifest)]),
+	];
+}
+
 /**
  * Get Git ref (tag or commit)
  */
@@ -608,20 +624,20 @@ function processFace(faceName, verbose, workspaceVersions) {
 
 	// Filter self-dependency if packageJson has name
 	const filteredInternalDeps = Array.from(internalDeps).filter((dep) => dep !== packageJson.name);
+	const exportedMembers = getManifestExports(manifest);
 
 	return {
 		name: faceName,
 		version,
 		description: manifest.description,
+		exports: exportedMembers,
 		includes: {
-			primitives: Object.keys(manifest.components || {}).filter(
-				(c) => manifest.components[c].subcomponents === undefined
-			),
+			primitives: [],
 			shared: filteredInternalDeps
 				.map((dep) => dep.replace('@equaltoai/greater-components-', ''))
 				.filter((name) => !name.startsWith('@equaltoai/greater-components')), // Clean up any misses
 			patterns: [],
-			components: Object.keys(manifest.components || {}),
+			components: [],
 		},
 		files,
 		styles: {
@@ -637,6 +653,7 @@ function processFace(faceName, verbose, workspaceVersions) {
 			packageJson,
 			workspaceVersions
 		),
+		types: manifest.types || [],
 	};
 }
 
@@ -689,7 +706,7 @@ function processSharedModule(moduleName, verbose, workspaceVersions) {
 		name: moduleName,
 		version: manifest.version,
 		description: manifest.description,
-		exports: Object.keys(manifest.components || {}),
+		exports: getManifestExports(manifest),
 		files,
 		dependencies: filteredInternalDeps.sort().map((dep) => ({
 			name: dep.replace('@equaltoai/greater-components-', ''),

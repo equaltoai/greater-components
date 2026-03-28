@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 import {
 	AGENT_WORKFLOW_PHASES,
 	AGENT_WORKFLOW_PHASE_DEFINITIONS,
@@ -6,6 +6,7 @@ import {
 	AGENT_WORKFLOW_STATE_NAMES,
 	getAgentWorkflowPhaseDefinition,
 } from '../src/index.js';
+import type { AgentWorkflowEnvelope } from '../src/index.js';
 
 describe('AGENT_WORKFLOW_PHASE_DEFINITIONS', () => {
 	it('freezes the lifecycle order for downstream consumers', () => {
@@ -57,5 +58,51 @@ describe('AGENT_WORKFLOW_PHASE_DEFINITIONS', () => {
 			phase: 'graduation',
 			title: 'Graduation',
 		});
+	});
+
+	it('ties workflow envelopes to phase-specific states and slots at the type level', () => {
+		const requestEnvelope: AgentWorkflowEnvelope<'request'> = {
+			id: 'req-1',
+			phase: 'request',
+			state: 'request.submitted',
+			title: 'Request intake',
+			summary: 'Ready for triage',
+			slots: {
+				'request.summary': 'Ship the new workflow shell',
+				'request.routeDecision': 'send-to-review',
+			},
+		};
+
+		expectTypeOf(requestEnvelope.state).toEqualTypeOf<
+			| 'request.draft'
+			| 'request.submitted'
+			| 'request.triaged'
+			| 'request.accepted'
+			| 'request.declined'
+		>();
+		expectTypeOf(requestEnvelope.slots).toEqualTypeOf<
+			Partial<
+				Record<
+					'request.summary' | 'request.constraints' | 'request.artifacts' | 'request.routeDecision',
+					unknown
+				>
+			>
+		>();
+
+		// @ts-expect-error Request envelopes cannot carry cross-phase states.
+		const invalidRequestState: AgentWorkflowEnvelope<'request'> = {
+			...requestEnvelope,
+			state: 'graduation.ready',
+		};
+		void invalidRequestState;
+
+		// @ts-expect-error Request envelopes cannot carry continuity slots.
+		const invalidRequestSlot: AgentWorkflowEnvelope<'request'> = {
+			...requestEnvelope,
+			slots: {
+				'continuity.feedbackLoop': 'wrong phase',
+			},
+		};
+		void invalidRequestSlot;
 	});
 });
