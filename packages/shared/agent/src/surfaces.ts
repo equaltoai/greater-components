@@ -1,4 +1,8 @@
-import { AGENT_WORKFLOW_PHASE_DEFINITIONS, type AgentWorkflowPhase, type AgentWorkflowState } from './workflow.js';
+import {
+	AGENT_WORKFLOW_PHASE_DEFINITIONS,
+	type AgentWorkflowPhase,
+	type AgentWorkflowState,
+} from './workflow.js';
 
 export type AgentSurfaceTone = 'neutral' | 'accent' | 'success' | 'warning' | 'critical';
 
@@ -133,12 +137,14 @@ export interface GraduationSummaryCardData {
 }
 
 export function getAgentPhaseTitle(phase: AgentWorkflowPhase): string {
-	const definition = AGENT_WORKFLOW_PHASE_DEFINITIONS.find((candidate) => candidate.phase === phase);
+	const definition = AGENT_WORKFLOW_PHASE_DEFINITIONS.find(
+		(candidate) => candidate.phase === phase
+	);
 	return definition?.title ?? formatAgentWorkflowLabel(phase);
 }
 
 export function formatAgentWorkflowLabel(value: string): string {
-	const workflowValue = value.includes('.') ? value.split('.').pop() ?? value : value;
+	const workflowValue = value.includes('.') ? (value.split('.').pop() ?? value) : value;
 	return workflowValue
 		.split(/[_-]/g)
 		.filter(Boolean)
@@ -184,7 +190,11 @@ export function getAgentWorkflowTone(
 		return 'warning';
 	}
 
-	if (value.startsWith('request') || value.startsWith('declaration') || value.startsWith('continuity')) {
+	if (
+		value.startsWith('request') ||
+		value.startsWith('declaration') ||
+		value.startsWith('continuity')
+	) {
 		return 'accent';
 	}
 

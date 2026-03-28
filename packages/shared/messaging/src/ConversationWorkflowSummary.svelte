@@ -18,7 +18,9 @@
 	}
 </script>
 
-<div class={`conversation-workflow-summary ${compact ? 'conversation-workflow-summary--compact' : ''} ${className}`}>
+<div
+	class={`conversation-workflow-summary ${compact ? 'conversation-workflow-summary--compact' : ''} ${className}`}
+>
 	<div class="conversation-workflow-summary__header">
 		<p class="conversation-workflow-summary__title">{summary.title}</p>
 		<span class="conversation-workflow-summary__state">{formatLabel(summary.state)}</span>

@@ -4,10 +4,7 @@
 
 export type MediaCategory = 'IMAGE' | 'VIDEO' | 'AUDIO' | 'GIFV' | 'DOCUMENT';
 
-export type MessagingWorkflowThreadMomentKind =
-	| 'review_request'
-	| 'approval_request'
-	| 'decision';
+export type MessagingWorkflowThreadMomentKind = 'review_request' | 'approval_request' | 'decision';
 
 export interface MessagingWorkflowThreadMoment {
 	id: string;

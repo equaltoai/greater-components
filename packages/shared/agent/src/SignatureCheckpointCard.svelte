@@ -16,7 +16,9 @@
 			<p class="signature-checkpoint-card__eyebrow">Signature checkpoint</p>
 			<h3>{checkpoint.title}</h3>
 			{#if checkpoint.dueAt}
-				<p class="signature-checkpoint-card__meta">Due {formatAgentSurfaceDate(checkpoint.dueAt)}</p>
+				<p class="signature-checkpoint-card__meta">
+					Due {formatAgentSurfaceDate(checkpoint.dueAt)}
+				</p>
 			{/if}
 		</div>
 
@@ -40,7 +42,11 @@
 
 				<AgentStateBadge
 					label={signer.status}
-					tone={signer.status === 'approved' ? 'success' : signer.status === 'rejected' ? 'critical' : 'neutral'}
+					tone={signer.status === 'approved'
+						? 'success'
+						: signer.status === 'rejected'
+							? 'critical'
+							: 'neutral'}
 				/>
 			</div>
 		{/each}

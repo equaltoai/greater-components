@@ -24,7 +24,11 @@
 
 		<AgentStateBadge
 			label={summary.readiness}
-			tone={summary.readiness === 'ready' ? 'success' : summary.readiness === 'watch' ? 'warning' : 'critical'}
+			tone={summary.readiness === 'ready'
+				? 'success'
+				: summary.readiness === 'watch'
+					? 'warning'
+					: 'critical'}
 		/>
 	</div>
 
@@ -82,7 +86,11 @@
 		gap: 1rem;
 		padding: 1.35rem;
 		border-radius: 1.2rem;
-		background: linear-gradient(180deg, color-mix(in srgb, var(--gr-color-success-100) 30%, white 70%), white);
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--gr-color-success-100) 30%, white 70%),
+			white
+		);
 		border: 1px solid color-mix(in srgb, var(--gr-color-success-300) 54%, white 46%);
 	}
 

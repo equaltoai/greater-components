@@ -15,14 +15,7 @@
 		class?: string;
 	}
 
-	let {
-		label,
-		phase,
-		state,
-		tone,
-		emphasis = 'soft',
-		class: className = '',
-	}: Props = $props();
+	let { label, phase, state, tone, emphasis = 'soft', class: className = '' }: Props = $props();
 
 	const displayLabel = $derived(
 		label ? formatAgentWorkflowLabel(label) : formatAgentWorkflowLabel(state ?? phase ?? 'pending')

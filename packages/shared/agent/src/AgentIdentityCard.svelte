@@ -71,8 +71,11 @@
 		gap: 1rem;
 		padding: 1.5rem;
 		border-radius: 1.25rem;
-		background:
-			linear-gradient(180deg, color-mix(in srgb, var(--gr-color-primary-100) 22%, white 78%), white);
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--gr-color-primary-100) 22%, white 78%),
+			white
+		);
 		border: 1px solid color-mix(in srgb, var(--gr-color-primary-200) 45%, white 55%);
 		box-shadow: 0 18px 40px rgba(48, 20, 0, 0.08);
 	}

@@ -2,10 +2,7 @@
 	import AgentStateBadge from './AgentStateBadge.svelte';
 	import type { AgentWorkflowPhase } from './workflow.js';
 	import { AGENT_WORKFLOW_PHASE_DEFINITIONS } from './workflow.js';
-	import {
-		getAgentPhaseTitle,
-		type AgentLifecycleStep,
-	} from './surfaces.js';
+	import { getAgentPhaseTitle, type AgentLifecycleStep } from './surfaces.js';
 
 	interface Props {
 		steps?: readonly AgentLifecycleStep[];

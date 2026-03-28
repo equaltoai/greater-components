@@ -1,6 +1,6 @@
 # Agent Workflow Expansion
 
-This document freezes the package boundaries for the Drones prerequisite milestone before M2 and M3 implementation work spreads across the repo.
+This document freezes the package boundaries for the Drones prerequisite milestone and now tracks the reusable M2 workflow surfaces that landed before the face-level M3 expansion spreads across the repo.
 
 ## Package ownership
 
@@ -66,7 +66,14 @@ Rules frozen in this milestone:
 
 The milestone leaves a concrete handoff for later work:
 
-- `M2`: implement reusable request/review/declaration/signing/graduation/continuity families inside `shared/agent`, while composing with `shared/soul`, `shared/chat`, `shared/notifications`, and `shared/messaging`.
+- `M2`: reusable request/review/declaration/signing/graduation/continuity families now live in `shared/agent`, with supporting workflow views in `shared/chat`, `shared/notifications`, and `shared/messaging`.
 - `M3`: assemble those reusable families into route-level workspaces and checkpoints inside `faces/agent` without leaking Simulacrum-only assumptions back into shared packages.
 
 The canonical metadata lives in [`packages/shared/agent/src/boundaries.ts`](../packages/shared/agent/src/boundaries.ts) and [`packages/faces/agent/src/index.ts`](../packages/faces/agent/src/index.ts).
+
+## Implemented M2 surfaces
+
+- `shared/agent`: `AgentIdentityCard`, `AgentStateBadge`, `SoulRequestCard`, `SoulLifecycleRail`, `ReviewDecisionCard`, `DeclarationPreviewCard`, `SignatureCheckpointCard`, `ContinuityPanel`, and `GraduationSummaryCard`
+- `shared/chat`: workflow moments plus typed declaration, approval, and finalize metadata attached to chat messages
+- `shared/notifications`: `WorkflowNotificationItem` for lifecycle feed events
+- `shared/messaging`: `WorkflowThreadMoment` and `ConversationWorkflowSummary` for async approval and graduation threads

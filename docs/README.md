@@ -103,7 +103,7 @@ Greater Components is a **monorepo of composable packages** for building Fediver
 - **faces/blog** – Blog/publishing components (vendored under `$lib/components/*`)
 - **faces/community** – Community/forum components (vendored under `$lib/components/*`)
 - **faces/artist** – Visual artist portfolio components (vendored under `$lib/components/*`)
-- **shared/agent** – Agent workflow contracts, package boundaries, and reusable lifecycle metadata
+- **shared/agent** – Agent workflow surface components, package boundaries, and reusable lifecycle metadata
 - **faces/agent** – Agent-first workflow shell and composition boundaries
 - **content** – Rich content rendering components (Markdown, CodeBlock)
 - **adapters** – Transport + Lesser GraphQL adapter + stores + mappers

@@ -197,7 +197,7 @@ Displays a single notification with type-specific rendering.
 
 			<div class="notification-item__body">
 				{#if isWorkflowEventNotification(notification)}
-					<WorkflowNotificationItem notification={notification} />
+					<WorkflowNotificationItem {notification} />
 				{:else}
 					<p class="notification-item__text">
 						<strong class="notification-item__name">

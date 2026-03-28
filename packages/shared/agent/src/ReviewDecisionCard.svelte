@@ -20,7 +20,16 @@
 			</p>
 		</div>
 
-		<AgentStateBadge label={decision.decision} tone={decision.decision === 'approved' ? 'success' : decision.decision === 'blocked' ? 'critical' : decision.decision === 'changes_requested' ? 'warning' : 'neutral'} />
+		<AgentStateBadge
+			label={decision.decision}
+			tone={decision.decision === 'approved'
+				? 'success'
+				: decision.decision === 'blocked'
+					? 'critical'
+					: decision.decision === 'changes_requested'
+						? 'warning'
+						: 'neutral'}
+		/>
 	</div>
 
 	<p class="review-decision-card__summary">{decision.decisionSummary}</p>

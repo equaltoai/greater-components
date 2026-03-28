@@ -22,11 +22,7 @@
 	import { formatMessageTime } from './context.svelte.js';
 	import ChatWorkflowMetadata from './ChatWorkflowMetadata.svelte';
 	import ChatWorkflowMoment from './ChatWorkflowMoment.svelte';
-	import type {
-		ChatMessageMoment,
-		ChatMessageWorkflowMetadata,
-		MessageRole,
-	} from './types.js';
+	import type { ChatMessageMoment, ChatMessageWorkflowMetadata, MessageRole } from './types.js';
 
 	/**
 	 * ChatMessage component props

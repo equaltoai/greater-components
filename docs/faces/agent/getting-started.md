@@ -34,9 +34,17 @@ import {
 	AGENT_FACE_COMPOSITIONS,
 } from '@equaltoai/greater-components/faces/agent';
 import {
+	AgentIdentityCard,
+	SoulLifecycleRail,
 	AGENT_PACKAGE_BOUNDARIES,
 	AGENT_STITCH_ANCHOR_DEFINITIONS,
 } from '@equaltoai/greater-components/shared/agent';
+import { WorkflowMoment } from '@equaltoai/greater-components/shared/chat';
+import { WorkflowNotificationItem } from '@equaltoai/greater-components/shared/notifications';
+import {
+	ConversationWorkflowSummary,
+	WorkflowThreadMoment,
+} from '@equaltoai/greater-components/shared/messaging';
 ```
 
 ## Current scope

@@ -109,7 +109,8 @@ describe('shared/agent surface components', () => {
 						name: 'Drone Zephyr-2',
 						role: 'Approver',
 					},
-					decisionSummary: 'The evidence is strong, but signing coverage still needs one more approver.',
+					decisionSummary:
+						'The evidence is strong, but signing coverage still needs one more approver.',
 					findings: [
 						{
 							id: 'finding-1',
