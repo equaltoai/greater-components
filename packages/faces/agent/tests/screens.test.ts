@@ -203,7 +203,8 @@ const dashboardData: NexusDashboardData = {
 	hero: {
 		eyebrow: 'Nexus Dashboard',
 		title: 'Nexus Dashboard',
-		summary: 'Keep launch readiness, continuity loops, and workflow activity in one operational view.',
+		summary:
+			'Keep launch readiness, continuity loops, and workflow activity in one operational view.',
 	},
 	identity,
 	graduation,
@@ -261,7 +262,7 @@ describe('faces/agent screens', () => {
 		});
 
 		expect(screen.getByRole('heading', { name: 'Soul Request Center', level: 1 })).toBeTruthy();
-		expect(screen.getByText('Approval requested')).toBeTruthy();
+		expect(screen.getAllByText('Approval requested').length).toBeGreaterThan(0);
 	});
 
 	it('renders the graduation approval thread shell', () => {

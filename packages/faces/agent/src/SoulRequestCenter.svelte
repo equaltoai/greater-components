@@ -1,6 +1,14 @@
 <script lang="ts">
-	import { ReviewDecisionCard, SoulRequestCard } from '@equaltoai/greater-components-agent';
-	import { WorkflowNotificationItem } from '@equaltoai/greater-components-notifications';
+	import {
+		ReviewDecisionCard,
+		SoulRequestCard,
+		formatAgentWorkflowLabel,
+		type AgentSurfaceTone,
+	} from '@equaltoai/greater-components-agent';
+	import {
+		NotificationGrouping,
+		WorkflowNotificationItem,
+	} from '@equaltoai/greater-components-notifications';
 	import AgentFaceFrame from './internal/AgentFaceFrame.svelte';
 	import type { SoulRequestCenterData } from './types.js';
 
@@ -12,6 +20,82 @@
 	let { data, class: className = '' }: Props = $props();
 
 	const focusRequest = $derived(data.focusRequest ?? data.requestQueue[0]);
+	const notificationGroups = $derived.by(() =>
+		NotificationGrouping.groupNotifications([...data.notifications])
+	);
+	const notificationHighlights = $derived.by(() =>
+		notificationGroups.slice(0, 3).map((group) => {
+			const workflowNotification =
+				group.sampleNotification.type === 'workflow_event'
+					? group.sampleNotification
+					: group.notifications.find((notification) => notification.type === 'workflow_event');
+			const workflowEvent = workflowNotification?.workflowEvent;
+			let tone: AgentSurfaceTone = 'neutral';
+
+			switch (workflowEvent?.kind) {
+				case 'request_submitted':
+					tone = 'accent';
+					break;
+				case 'review_requested':
+				case 'approval_requested':
+					tone = 'warning';
+					break;
+				case 'finalize_ready':
+				case 'graduated':
+					tone = 'success';
+					break;
+			}
+
+			return {
+				id: group.id,
+				title: NotificationGrouping.getGroupTitle(group),
+				detail:
+					workflowEvent?.summary ??
+					`${group.count} workflow event${group.count === 1 ? '' : 's'} in this queue`,
+				meta: workflowEvent?.actionLabel
+					? workflowEvent.actionLabel
+					: workflowEvent?.phase
+						? `${formatAgentWorkflowLabel(workflowEvent.phase)} phase`
+						: undefined,
+				tone,
+			};
+		})
+	);
+	const requestStateHighlights = $derived.by(() => {
+		const states = new Map<
+			string,
+			{
+				count: number;
+				routeDecision?: string;
+			}
+		>();
+
+		for (const request of data.requestQueue) {
+			const key = request.currentState ?? 'request.submitted';
+			const existing = states.get(key);
+			if (existing) {
+				existing.count += 1;
+				existing.routeDecision ??= request.routeDecision;
+				continue;
+			}
+
+			states.set(key, {
+				count: 1,
+				routeDecision: request.routeDecision,
+			});
+		}
+
+		return Array.from(states.entries())
+			.slice(0, 3)
+			.map(([state, summary]) => ({
+				id: state,
+				label: formatAgentWorkflowLabel(state),
+				value: `${summary.count} request${summary.count === 1 ? '' : 's'}`,
+				detail: summary.routeDecision
+					? `Route ${formatAgentWorkflowLabel(summary.routeDecision)}`
+					: 'Routing decision pending',
+			}));
+	});
 </script>
 
 <AgentFaceFrame
@@ -48,6 +132,21 @@
 						<p>Workflow notifications</p>
 						<h2>Notification center</h2>
 					</header>
+					{#if notificationHighlights.length}
+						<div class="soul-request-center__digest">
+							{#each notificationHighlights as highlight (highlight.id)}
+								<article
+									class={`soul-request-center__digest-card soul-request-center__digest-card--${highlight.tone}`}
+								>
+									<p>{highlight.title}</p>
+									<h3>{highlight.detail}</h3>
+									{#if highlight.meta}
+										<small>{highlight.meta}</small>
+									{/if}
+								</article>
+							{/each}
+						</div>
+					{/if}
 					<div class="soul-request-center__list">
 						{#each data.notifications as notification (notification.id)}
 							<WorkflowNotificationItem {notification} />
@@ -60,6 +159,19 @@
 						<p>Request queue</p>
 						<h2>Review routing</h2>
 					</header>
+					{#if requestStateHighlights.length}
+						<div class="soul-request-center__digest">
+							{#each requestStateHighlights as state (state.id)}
+								<article
+									class="soul-request-center__digest-card soul-request-center__digest-card--accent"
+								>
+									<p>{state.label}</p>
+									<h3>{state.value}</h3>
+									<small>{state.detail}</small>
+								</article>
+							{/each}
+						</div>
+					{/if}
 					<div class="soul-request-center__list">
 						{#each data.requestQueue as request (request.id)}
 							<SoulRequestCard {request} />
@@ -97,7 +209,9 @@
 				</header>
 				<div class="soul-request-center__callouts">
 					{#each data.callouts as callout (callout.id)}
-						<article class={`soul-request-center__callout soul-request-center__callout--${callout.tone ?? 'neutral'}`}>
+						<article
+							class={`soul-request-center__callout soul-request-center__callout--${callout.tone ?? 'neutral'}`}
+						>
 							<h3>{callout.title}</h3>
 							<p>{callout.summary}</p>
 							{#if callout.meta}
@@ -115,7 +229,8 @@
 	.soul-request-center,
 	.soul-request-center__grid,
 	.soul-request-center__list,
-	.soul-request-center__callouts {
+	.soul-request-center__callouts,
+	.soul-request-center__digest {
 		display: grid;
 		gap: 1rem;
 	}
@@ -167,12 +282,16 @@
 	.soul-request-center__panel-header h2,
 	.soul-request-center__callout h3,
 	.soul-request-center__callout p,
-	.soul-request-center__callout small {
+	.soul-request-center__callout small,
+	.soul-request-center__digest-card p,
+	.soul-request-center__digest-card h3,
+	.soul-request-center__digest-card small {
 		margin: 0;
 	}
 
 	.soul-request-center__panel-header p,
-	.soul-request-center__callout small {
+	.soul-request-center__callout small,
+	.soul-request-center__digest-card p {
 		font-size: 0.78rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
@@ -195,6 +314,41 @@
 	.soul-request-center__callout p {
 		color: var(--gr-semantic-foreground-secondary);
 		line-height: 1.5;
+	}
+
+	.soul-request-center__digest {
+		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+	}
+
+	.soul-request-center__digest-card {
+		display: grid;
+		gap: 0.45rem;
+		padding: 1rem 1.05rem;
+		border-radius: 1.15rem;
+		background: color-mix(in srgb, var(--gr-semantic-background-secondary) 82%, white 18%);
+		border: 1px solid color-mix(in srgb, var(--gr-semantic-border-subtle) 68%, white 32%);
+	}
+
+	.soul-request-center__digest-card h3 {
+		font-size: 1rem;
+		line-height: 1.5;
+	}
+
+	.soul-request-center__digest-card small {
+		color: var(--gr-semantic-foreground-secondary);
+		line-height: 1.5;
+	}
+
+	.soul-request-center__digest-card--accent {
+		border-color: color-mix(in srgb, var(--gr-color-primary-300) 65%, white 35%);
+	}
+
+	.soul-request-center__digest-card--warning {
+		border-color: color-mix(in srgb, var(--gr-color-warning-300) 65%, white 35%);
+	}
+
+	.soul-request-center__digest-card--success {
+		border-color: color-mix(in srgb, var(--gr-color-success-300) 65%, white 35%);
 	}
 
 	.soul-request-center__callout--warning {

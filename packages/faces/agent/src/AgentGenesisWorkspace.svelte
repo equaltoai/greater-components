@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { AgentIdentityCard, ReviewDecisionCard, SoulLifecycleRail, SoulRequestCard } from '@equaltoai/greater-components-agent';
+	import {
+		AgentIdentityCard,
+		ReviewDecisionCard,
+		SoulLifecycleRail,
+		SoulRequestCard,
+		formatAgentWorkflowLabel,
+		type AgentSurfaceTone,
+	} from '@equaltoai/greater-components-agent';
 	import { Message } from '@equaltoai/greater-components-chat';
 	import AgentFaceFrame from './internal/AgentFaceFrame.svelte';
 	import type { AgentGenesisWorkspaceData } from './types.js';
@@ -12,6 +19,69 @@
 	let { data, class: className = '' }: Props = $props();
 
 	const activeRequest = $derived(data.activeRequest ?? data.requestQueue[0]);
+	const reviewFindings = $derived(data.reviewDecision?.findings ?? []);
+	const reviewEvidence = $derived(data.reviewDecision?.evidence ?? []);
+	const prioritySignals = $derived.by(() => {
+		const decisionTone = (
+			decision?: AgentGenesisWorkspaceData['reviewDecision']
+		): AgentSurfaceTone => {
+			if (!decision) {
+				return 'neutral';
+			}
+
+			switch (decision.decision) {
+				case 'approved':
+					return 'success';
+				case 'blocked':
+					return 'critical';
+				case 'changes_requested':
+				case 'queued':
+					return 'warning';
+				default:
+					return 'neutral';
+			}
+		};
+
+		return [
+			{
+				id: 'queue-depth',
+				label: 'Queue depth',
+				value: String(data.requestQueue.length),
+				detail: `${data.requestQueue.length} request${
+					data.requestQueue.length === 1 ? '' : 's'
+				} awaiting review`,
+				tone: 'accent' as const,
+			},
+			{
+				id: 'active-state',
+				label: 'Active state',
+				value: activeRequest
+					? formatAgentWorkflowLabel(
+							activeRequest.currentState ?? activeRequest.routeDecision ?? 'request.submitted'
+						)
+					: 'Unassigned',
+				detail: activeRequest?.routeDecision
+					? `Route ${formatAgentWorkflowLabel(activeRequest.routeDecision)}`
+					: 'Waiting for routing',
+				tone: activeRequest ? ('warning' as const) : ('neutral' as const),
+			},
+			{
+				id: 'review-decision',
+				label: 'Current decision',
+				value: data.reviewDecision
+					? formatAgentWorkflowLabel(data.reviewDecision.decision)
+					: 'Pending review',
+				detail: data.reviewDecision
+					? `${reviewFindings.length} finding${
+							reviewFindings.length === 1 ? '' : 's'
+						} across ${reviewEvidence.length} evidence item${
+							reviewEvidence.length === 1 ? '' : 's'
+						}`
+					: 'No reviewer feedback yet',
+				tone: decisionTone(data.reviewDecision),
+			},
+		];
+	});
 </script>
 
 <AgentFaceFrame
@@ -25,6 +95,22 @@
 >
 	{#snippet children()}
 		<div class="agent-genesis">
+			<section class="agent-genesis__panel agent-genesis__panel--signals">
+				<header class="agent-genesis__panel-header">
+					<p>Workflow digest</p>
+					<h2>Genesis command surface</h2>
+				</header>
+				<div class="agent-genesis__signals">
+					{#each prioritySignals as signal (signal.id)}
+						<article class={`agent-genesis__signal agent-genesis__signal--${signal.tone}`}>
+							<p>{signal.label}</p>
+							<h3>{signal.value}</h3>
+							<small>{signal.detail}</small>
+						</article>
+					{/each}
+				</div>
+			</section>
+
 			<section class="agent-genesis__panel">
 				<header class="agent-genesis__panel-header">
 					<p>Genesis conversation</p>
@@ -63,6 +149,24 @@
 							<p>Active request</p>
 							<h2>Current review target</h2>
 						</header>
+						<div class="agent-genesis__meta">
+							{#if activeRequest.currentState}
+								<span class="agent-genesis__pill">
+									{formatAgentWorkflowLabel(activeRequest.currentState)}
+								</span>
+							{/if}
+							{#if activeRequest.routeDecision}
+								<span class="agent-genesis__pill">
+									Route {formatAgentWorkflowLabel(activeRequest.routeDecision)}
+								</span>
+							{/if}
+							<span class="agent-genesis__pill">
+								{activeRequest.artifacts?.length ?? 0} artifact{activeRequest.artifacts?.length ===
+								1
+									? ''
+									: 's'}
+							</span>
+						</div>
 						<SoulRequestCard request={activeRequest} />
 					</section>
 				{/if}
@@ -74,6 +178,44 @@
 							<h2>Decision context</h2>
 						</header>
 						<ReviewDecisionCard decision={data.reviewDecision} />
+						{#if reviewFindings.length || reviewEvidence.length}
+							<div class="agent-genesis__review-grid">
+								{#if reviewFindings.length}
+									<article class="agent-genesis__summary-card">
+										<p class="agent-genesis__summary-label">Review findings</p>
+										<h3>{reviewFindings.length} finding{reviewFindings.length === 1 ? '' : 's'}</h3>
+										<ul class="agent-genesis__summary-list">
+											{#each reviewFindings.slice(0, 3) as finding (finding.id)}
+												<li>
+													<strong>{finding.title}</strong>
+													<span>{finding.detail}</span>
+												</li>
+											{/each}
+										</ul>
+									</article>
+								{/if}
+
+								{#if reviewEvidence.length}
+									<article class="agent-genesis__summary-card">
+										<p class="agent-genesis__summary-label">Decision evidence</p>
+										<h3>
+											{reviewEvidence.length} reference{reviewEvidence.length === 1 ? '' : 's'}
+										</h3>
+										<ul class="agent-genesis__summary-list">
+											{#each reviewEvidence.slice(0, 3) as artifact (artifact.id)}
+												<li>
+													<strong>{artifact.title}</strong>
+													<span
+														>{artifact.description ??
+															'Supporting context attached to the decision.'}</span
+													>
+												</li>
+											{/each}
+										</ul>
+									</article>
+								{/if}
+							</div>
+						{/if}
 					</section>
 				{/if}
 
@@ -126,7 +268,11 @@
 	.agent-genesis__stack,
 	.agent-genesis__conversation,
 	.agent-genesis__queue,
-	.agent-genesis__notes {
+	.agent-genesis__notes,
+	.agent-genesis__signals,
+	.agent-genesis__review-grid,
+	.agent-genesis__summary-list,
+	.agent-genesis__meta {
 		display: grid;
 		gap: 1rem;
 	}
@@ -145,19 +291,34 @@
 		border: 1px solid color-mix(in srgb, var(--gr-semantic-border-subtle) 68%, white 32%);
 	}
 
+	.agent-genesis__panel--signals {
+		grid-column: 1 / -1;
+	}
+
 	.agent-genesis__panel-header p,
 	.agent-genesis__panel-header h2,
 	.agent-genesis__speaker,
 	.agent-genesis__empty,
 	.agent-genesis__note h3,
 	.agent-genesis__note p,
-	.agent-genesis__note small {
+	.agent-genesis__note small,
+	.agent-genesis__signal p,
+	.agent-genesis__signal h3,
+	.agent-genesis__signal small,
+	.agent-genesis__summary-card p,
+	.agent-genesis__summary-card h3,
+	.agent-genesis__summary-list,
+	.agent-genesis__summary-list li,
+	.agent-genesis__summary-list strong,
+	.agent-genesis__summary-list span {
 		margin: 0;
 	}
 
 	.agent-genesis__panel-header p,
 	.agent-genesis__speaker,
-	.agent-genesis__note small {
+	.agent-genesis__note small,
+	.agent-genesis__signal p,
+	.agent-genesis__summary-label {
 		font-size: 0.78rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
@@ -172,6 +333,75 @@
 	.agent-genesis__speaker {
 		font-weight: 700;
 		margin-bottom: 0.35rem;
+	}
+
+	.agent-genesis__signals,
+	.agent-genesis__review-grid {
+		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+	}
+
+	.agent-genesis__signal,
+	.agent-genesis__summary-card {
+		display: grid;
+		gap: 0.45rem;
+		padding: 1rem 1.05rem;
+		border-radius: 1.15rem;
+		background: color-mix(in srgb, var(--gr-semantic-background-secondary) 82%, white 18%);
+	}
+
+	.agent-genesis__signal h3,
+	.agent-genesis__summary-card h3 {
+		font-size: 1.25rem;
+	}
+
+	.agent-genesis__signal small,
+	.agent-genesis__summary-list span {
+		color: var(--gr-semantic-foreground-secondary);
+		line-height: 1.5;
+	}
+
+	.agent-genesis__signal--accent {
+		border: 1px solid color-mix(in srgb, var(--gr-color-primary-300) 65%, white 35%);
+	}
+
+	.agent-genesis__signal--warning {
+		border: 1px solid color-mix(in srgb, var(--gr-color-warning-300) 65%, white 35%);
+	}
+
+	.agent-genesis__signal--success {
+		border: 1px solid color-mix(in srgb, var(--gr-color-success-300) 65%, white 35%);
+	}
+
+	.agent-genesis__signal--critical {
+		border: 1px solid color-mix(in srgb, var(--gr-color-error-300) 65%, white 35%);
+	}
+
+	.agent-genesis__meta {
+		grid-template-columns: repeat(auto-fit, minmax(10rem, max-content));
+		gap: 0.75rem;
+	}
+
+	.agent-genesis__pill {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.35rem 0.75rem;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.82);
+		border: 1px solid color-mix(in srgb, var(--gr-semantic-border-subtle) 72%, white 28%);
+		font-size: 0.78rem;
+		font-weight: 700;
+	}
+
+	.agent-genesis__summary-list {
+		padding: 0;
+		list-style: none;
+	}
+
+	.agent-genesis__summary-list li {
+		display: grid;
+		gap: 0.15rem;
+		padding-top: 0.7rem;
+		border-top: 1px solid color-mix(in srgb, var(--gr-semantic-border-subtle) 72%, white 28%);
 	}
 
 	.agent-genesis__empty {
