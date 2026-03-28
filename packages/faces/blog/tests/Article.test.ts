@@ -94,8 +94,6 @@ describe('Article Component', () => {
 		});
 
 		it('handles share actions', async () => {
-			render(FullArticleTestWrapper, { article: _mockArticle });
-
 			// Mock window.open and clipboard
 			const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
 			const writeTextSpy = vi.fn().mockResolvedValue(undefined);
@@ -104,6 +102,8 @@ describe('Article Component', () => {
 					writeText: writeTextSpy,
 				},
 			});
+
+			render(FullArticleTestWrapper, { article: _mockArticle });
 
 			// Twitter share
 			const twitterBtn = screen.getByText('Twitter');

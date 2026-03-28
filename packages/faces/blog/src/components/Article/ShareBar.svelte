@@ -19,9 +19,25 @@ Article.ShareBar - Social sharing buttons
 
 	const context = getArticleContext();
 	const article = $derived(context.article);
+	const shareTargetUrl = $derived(resolveShareTargetUrl());
+	const canUseClipboard = $derived(
+		!!shareTargetUrl && typeof navigator !== 'undefined' && !!navigator.clipboard
+	);
 
-	function getShareUrl(platform: string): string {
-		const url = encodeURIComponent(window.location.href);
+	function resolveShareTargetUrl(): string | null {
+		if (article.metadata.canonicalUrl) {
+			return article.metadata.canonicalUrl;
+		}
+
+		if (typeof window !== 'undefined') {
+			return window.location.href;
+		}
+
+		return null;
+	}
+
+	function getShareUrl(platform: string, targetUrl: string): string {
+		const url = encodeURIComponent(targetUrl);
 		const title = encodeURIComponent(article.metadata.title);
 
 		switch (platform) {
@@ -37,18 +53,31 @@ Article.ShareBar - Social sharing buttons
 	}
 
 	async function handleShare(platform: string) {
-		if (platform === 'copy') {
-			await navigator.clipboard.writeText(window.location.href);
-		} else {
-			window.open(getShareUrl(platform), '_blank', 'width=600,height=400');
+		if (!shareTargetUrl) {
+			context.handlers.onShare?.(article, platform);
+			return;
 		}
+
+		if (platform === 'copy') {
+			if (typeof navigator !== 'undefined' && navigator.clipboard) {
+				await navigator.clipboard.writeText(shareTargetUrl);
+			}
+		} else if (typeof window !== 'undefined') {
+			window.open(getShareUrl(platform, shareTargetUrl), '_blank', 'width=600,height=400');
+		}
+
 		context.handlers.onShare?.(article, platform);
 	}
 </script>
 
 <div class="gr-blog-share-bar">
 	{#each platforms as platform (platform)}
-		<Button variant="outline" size="sm" onclick={() => handleShare(platform)}>
+		<Button
+			variant="outline"
+			size="sm"
+			disabled={platform === 'copy' ? !canUseClipboard : !shareTargetUrl}
+			onclick={() => handleShare(platform)}
+		>
 			{platform === 'copy' ? 'Copy Link' : platform.charAt(0).toUpperCase() + platform.slice(1)}
 		</Button>
 	{/each}

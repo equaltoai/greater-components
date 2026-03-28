@@ -93,14 +93,6 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 		event.preventDefault();
 		context.handlers.onNavigate(postState.id);
 	}
-
-	function navigateToPost() {
-		if (context.handlers.onNavigate) {
-			context.handlers.onNavigate(postState.id);
-		} else {
-			window.location.href = postHref;
-		}
-	}
 </script>
 
 <article class={rootClass} data-post-id={postState.id}>
@@ -156,9 +148,9 @@ Renders a Reddit-style post card with voting, metadata, and actions.
 			{/if}
 
 			<div class="gr-community-post__actions">
-				<button type="button" class="gr-community-post__action" onclick={navigateToPost}>
+				<a href={postHref} class="gr-community-post__action" onclick={handleNavigate}>
 					{postState.commentCount} comments
-				</button>
+				</a>
 				<button
 					type="button"
 					class="gr-community-post__action"
