@@ -102,6 +102,13 @@ describe('Conversations', () => {
 				id: 'c1',
 				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
 				unreadCount: 2,
+				workflowSummary: {
+					kind: 'approval',
+					title: 'Approval thread',
+					state: 'open',
+					phase: 'signing',
+					summary: 'Awaiting final approval',
+				},
 				lastMessage: { content: 'Hello', createdAt: '' },
 			},
 			{
@@ -121,6 +128,7 @@ describe('Conversations', () => {
 
 		expect(items[0].textContent).toContain('Alice');
 		expect(items[0].textContent).toContain('Hello');
+		expect(items[0].textContent).toContain('Approval thread');
 		expect(items[0].querySelector('.messages-conversations__badge')?.textContent).toBe('2');
 
 		expect(items[1].textContent).toContain('Bob');
