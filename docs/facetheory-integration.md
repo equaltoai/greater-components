@@ -2,12 +2,28 @@
 
 This guide describes the current hosting boundary for Greater Components in FaceTheory and other server-rendered hosts.
 
+## Official Example
+
+The repo now includes a blessed FaceTheory host example at [`examples/facetheory-svelte`](../examples/facetheory-svelte). It wires:
+
+- `createSvelteFace()` for the SSR route module
+- `viteAssetsForEntry()` for preload and stylesheet tags
+- `viteHydrationForEntry()` for the hydration payload and bootstrap module
+- Greater tokens, primitives, and a reusable face in one server-rendered page
+
+Validate the example locally with:
+
+- `pnpm test:facetheory`
+- `pnpm exec tsc --noEmit -p examples/facetheory-svelte/tsconfig.json`
+
 ## SSR-safe surfaces
 
 The following surfaces are intended to be import-safe and initial-render-safe in Node-backed SSR:
 
+- `@equaltoai/greater-components/tokens`
 - `@equaltoai/greater-components/primitives`
 - `@equaltoai/greater-components/headless`
+- `@equaltoai/greater-components/adapters` core stores and mappers
 - `@equaltoai/greater-components/faces/blog`
 - `@equaltoai/greater-components/faces/community`
 - `@equaltoai/greater-components/faces/social`
@@ -20,7 +36,8 @@ Some exported surfaces are server-safe to import and render, but still expect cl
 
 - `preferencesStore` and theme controls hydrate client preferences after SSR
 - transport- or session-aware adapter stores can be rendered on the server, then enhanced on the client
-- sharing, clipboard, and push-notification flows need either browser APIs or host-provided handlers
+- `createBrowserPresenceActivitySource()` and `createBrowserPresenceLocationSource()` are client-only enhancers for the SSR-safe presence core
+- `createBrowserArticleShareHandlers()`, clipboard flows, and push-notification flows need either browser APIs or host-provided handlers
 
 ## Presence Store Host Boundary
 

@@ -43,7 +43,7 @@
 - [Lesser Integration Guide](./lesser-integration-guide.md) – Comprehensive guide for using Greater Components in Lesser ActivityPub applications
 - [Playground](../apps/playground) – Interactive component demos and examples
 - [Migration Guide](./migration-guide.md) – Upgrading from legacy versions
-- [Example Apps](../examples) – Complete example applications (social, blog, custom face)
+- [Example Apps](../examples) – Complete example applications (social, blog, artist, FaceTheory, custom face)
 
 ## Audience
 

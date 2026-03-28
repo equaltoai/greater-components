@@ -15,8 +15,11 @@ export default defineConfig({
 	resolve: {
 		conditions: ['browser'],
 		alias: {
+			'@equaltoai/greater-components-content': path.resolve(__dirname, '../content/src/index.ts'),
+			'@equaltoai/greater-components-primitives': path.resolve(__dirname, './src/index.ts'),
 			'@equaltoai/greater-components-utils': path.resolve(__dirname, '../utils/src/index.ts'),
 			'@equaltoai/greater-components-icons': path.resolve(__dirname, '../icons/src/index.ts'),
+			'@equaltoai/greater-components-tokens': path.resolve(__dirname, '../tokens/src/index.ts'),
 		},
 	},
 	test: {
