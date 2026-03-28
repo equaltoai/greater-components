@@ -101,6 +101,8 @@ export interface AgentGenesisWorkspaceData extends AgentFaceBaseData {
 	requestQueue: readonly SoulRequestCardData[];
 	activeRequest?: SoulRequestCardData;
 	reviewDecision?: ReviewDecisionCardData;
+	declaration?: DeclarationPreviewCardData;
+	checkpoint?: SignatureCheckpointCardData;
 	lifecycle?: readonly AgentLifecycleStep[];
 	conversation?: readonly AgentFaceConversationEntry[];
 	focusNotes?: readonly AgentFaceCallout[];

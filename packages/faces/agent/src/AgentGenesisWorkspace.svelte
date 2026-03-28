@@ -1,7 +1,9 @@
 <script lang="ts">
 	import {
 		AgentIdentityCard,
+		DeclarationPreviewCard,
 		ReviewDecisionCard,
+		SignatureCheckpointCard,
 		SoulLifecycleRail,
 		SoulRequestCard,
 		formatAgentWorkflowLabel,
@@ -219,6 +221,23 @@
 					</section>
 				{/if}
 
+				{#if data.declaration || data.checkpoint}
+					<section class="agent-genesis__panel">
+						<header class="agent-genesis__panel-header">
+							<p>Declaration lane</p>
+							<h2>Issuance packet and signer checkpoint</h2>
+						</header>
+						<div class="agent-genesis__artifacts">
+							{#if data.declaration}
+								<DeclarationPreviewCard declaration={data.declaration} />
+							{/if}
+							{#if data.checkpoint}
+								<SignatureCheckpointCard checkpoint={data.checkpoint} />
+							{/if}
+						</div>
+					</section>
+				{/if}
+
 				{#if data.requestQueue.length}
 					<section class="agent-genesis__panel">
 						<header class="agent-genesis__panel-header">
@@ -272,7 +291,8 @@
 	.agent-genesis__signals,
 	.agent-genesis__review-grid,
 	.agent-genesis__summary-list,
-	.agent-genesis__meta {
+	.agent-genesis__meta,
+	.agent-genesis__artifacts {
 		display: grid;
 		gap: 1rem;
 	}
@@ -336,7 +356,8 @@
 	}
 
 	.agent-genesis__signals,
-	.agent-genesis__review-grid {
+	.agent-genesis__review-grid,
+	.agent-genesis__artifacts {
 		grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
 	}
 
