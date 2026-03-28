@@ -68,8 +68,8 @@ importers:
         specifier: ^2.5.7
         version: 2.5.7(svelte@5.54.1)(typescript@5.9.3)
       '@theory-cloud/facetheory':
-        specifier: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz
-        version: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.54.1)
+        specifier: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.1/theory-cloud-facetheory-0.3.1.tgz
+        version: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.1/theory-cloud-facetheory-0.3.1.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.54.1)
       '@types/node':
         specifier: ^25.5.0
         version: 25.5.0
@@ -3308,9 +3308,9 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz':
-    resolution: {tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz}
-    version: 0.3.0
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.1/theory-cloud-facetheory-0.3.1.tgz':
+    resolution: {tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.1/theory-cloud-facetheory-0.3.1.tgz}
+    version: 0.3.1
     engines: {node: '>=24'}
     peerDependencies:
       '@emotion/cache': '>=11'
@@ -8795,7 +8795,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
-  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.54.1)':
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.1/theory-cloud-facetheory-0.3.1.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.54.1)':
     dependencies:
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)

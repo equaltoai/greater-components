@@ -4,7 +4,7 @@ This guide describes the current hosting boundary for Greater Components in Face
 
 ## Official Example
 
-The repo now includes a blessed FaceTheory host example at [`examples/facetheory-svelte`](../examples/facetheory-svelte). It is currently validated against FaceTheory `v0.3.0`, the release that includes the runtime-session fixes from FaceTheory issues `#6` and `#7`. It wires:
+The repo now includes a blessed FaceTheory host example at [`examples/facetheory-svelte`](../examples/facetheory-svelte). It is currently validated against FaceTheory `v0.3.1`, the release that includes the runtime-session fixes from FaceTheory issues `#6` and `#7`. It wires:
 
 - `createSvelteFace()` for the SSR route module
 - `viteAssetsForEntry()` against a real Vite-built manifest for preload and stylesheet tags
