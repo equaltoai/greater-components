@@ -12,6 +12,36 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.5.9-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.8-rc.1...greater-v0.5.9-rc.0) (2026-03-28)
+
+
+### Features
+
+* add FaceTheory example and smoke coverage ([8bd2318](https://github.com/equaltoai/greater-components/commit/8bd2318c3703e4ea363c9ab493a8eb484618b64b))
+* add host-provided face navigation contracts ([a772933](https://github.com/equaltoai/greater-components/commit/a772933004f2cff4276b1b1102d18f0687fc57c2))
+* add SSR theme bootstrap helpers ([c1894be](https://github.com/equaltoai/greater-components/commit/c1894be95f05da97ecee62bbbfa1d6902942fa6d))
+* harden FaceTheory host boundaries and add smoke coverage ([7f506ad](https://github.com/equaltoai/greater-components/commit/7f506ad2479f0f699c82da3809c561fe8505b70d))
+
+
+### Bug Fixes
+
+* commit generated primitives declarations ([320f89c](https://github.com/equaltoai/greater-components/commit/320f89c1bdafea370be8f66950b16e27ace92015))
+* harden facetheory example contract coverage ([08f5558](https://github.com/equaltoai/greater-components/commit/08f55583b318fdec82fe9af89ca0fb9e22050b57))
+* harden SSR-safe face render paths ([eecad59](https://github.com/equaltoai/greater-components/commit/eecad593fe54166775217745005025fdaeb108d0))
+* preserve high-contrast preference overrides ([0b135e9](https://github.com/equaltoai/greater-components/commit/0b135e9e40609be25a3d77d62c41a5bbacd46f05))
+* refresh registry checksums ([fea5ea9](https://github.com/equaltoai/greater-components/commit/fea5ea9b78ad63005421e03a1a2a13d6fea728bd))
+* satisfy CI registry and formatting checks ([9ac1526](https://github.com/equaltoai/greater-components/commit/9ac152617db037b5fba9a191d1d9159c3e783849))
+
+
+### Refactors
+
+* split browser presence tracking from store core ([e3fb9c3](https://github.com/equaltoai/greater-components/commit/e3fb9c34d6a3099e08fd1a7ef2701591399bafb0))
+
+
+### Chores
+
+* stabilize registry metadata for promotions ([42b4f54](https://github.com/equaltoai/greater-components/commit/42b4f54e9d9818e8f6f35481a6a9a8934842e184))
+
 ## [0.5.8-rc.1](https://github.com/equaltoai/greater-components/compare/greater-v0.5.8-rc.0...greater-v0.5.8-rc.1) (2026-03-23)
 
 ### Chores
