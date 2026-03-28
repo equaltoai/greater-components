@@ -22,6 +22,17 @@ Some exported surfaces are server-safe to import and render, but still expect cl
 - transport- or session-aware adapter stores can be rendered on the server, then enhanced on the client
 - sharing, clipboard, and push-notification flows need either browser APIs or host-provided handlers
 
+## Presence Store Host Boundary
+
+`createPresenceStore()` is intended to stay server-safe. Browser activity and route tracking should be attached explicitly instead of being assumed inside the core store:
+
+- seed SSR state with `initialLocation`
+- pass a host-owned `locationSource` when the runtime knows the current route
+- pass a host-owned `activitySource` when the client wants idle/active tracking
+- use `createBrowserPresenceLocationSource()` and `createBrowserPresenceActivitySource()` only in browser entry points
+
+This keeps FaceTheory and other SSR hosts in control of routing semantics while still allowing thin browser wrappers where they are appropriate.
+
 ## Intentionally browser-only surfaces
 
 The following integrations remain intentionally browser-only and should be isolated behind host guards or client-only entry points:
