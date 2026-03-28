@@ -8,11 +8,7 @@
 		SoulRequestCenter,
 		type AgentFaceComposition,
 	} from '@equaltoai/greater-components/faces/agent';
-	import {
-		Button,
-		ThemeProvider,
-		ThemeSwitcher,
-	} from '@equaltoai/greater-components/primitives';
+	import { Button, ThemeProvider, ThemeSwitcher } from '@equaltoai/greater-components/primitives';
 	import { agentFaceDemoScreens, type AgentFaceDemoKey } from './demo-data.js';
 	import '@equaltoai/greater-components/tokens/theme.css';
 	import '@equaltoai/greater-components/primitives/style.css';

@@ -129,7 +129,9 @@
 		{#if metrics.length}
 			<div class="agent-face-frame__metrics">
 				{#each metrics as metric (metric.id)}
-					<article class={`agent-face-frame__metric agent-face-frame__metric--${metric.tone ?? 'neutral'}`}>
+					<article
+						class={`agent-face-frame__metric agent-face-frame__metric--${metric.tone ?? 'neutral'}`}
+					>
 						<p class="agent-face-frame__metric-value">{metric.value}</p>
 						<p class="agent-face-frame__metric-label">{metric.label}</p>
 						{#if metric.detail}
@@ -194,12 +196,11 @@
 		display: grid;
 		gap: 1.5rem;
 		padding: 2rem 1.5rem;
-		background:
-			linear-gradient(
-				180deg,
-				color-mix(in srgb, var(--gr-semantic-background-primary) 78%, white 22%),
-				color-mix(in srgb, var(--gr-semantic-background-secondary) 92%, white 8%)
-			);
+		background: linear-gradient(
+			180deg,
+			color-mix(in srgb, var(--gr-semantic-background-primary) 78%, white 22%),
+			color-mix(in srgb, var(--gr-semantic-background-secondary) 92%, white 8%)
+		);
 		border-right: 1px solid color-mix(in srgb, var(--gr-semantic-border-subtle) 65%, white 35%);
 	}
 

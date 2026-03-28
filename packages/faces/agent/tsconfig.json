@@ -4,6 +4,8 @@
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
+    "allowJs": false,
+    "checkJs": false,
     "skipLibCheck": true,
     "noEmit": true,
     "paths": {

@@ -15,10 +15,7 @@ export default defineConfig({
 		conditions: ['browser'],
 		alias: {
 			'@equaltoai/greater-components-agent': resolve(__dirname, '../../shared/agent/src/index.ts'),
-			'@equaltoai/greater-components-adapters': resolve(
-				__dirname,
-				'../../adapters/src/index.ts'
-			),
+			'@equaltoai/greater-components-adapters': resolve(__dirname, '../../adapters/src/index.ts'),
 			'@equaltoai/greater-components-chat': resolve(__dirname, '../../shared/chat/src/index.ts'),
 			'@equaltoai/greater-components-content': resolve(__dirname, '../../content/src/index.ts'),
 			'@equaltoai/greater-components-icons': resolve(__dirname, '../../icons/src/index.ts'),

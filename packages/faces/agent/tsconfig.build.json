@@ -5,6 +5,8 @@
     "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
+    "allowJs": false,
+    "checkJs": false,
     "skipLibCheck": true,
     "paths": {
       "@equaltoai/greater-components-adapters": ["./packages/adapters/dist/index.d.ts"],
