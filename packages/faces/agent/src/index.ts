@@ -44,3 +44,27 @@ export type AgentFacePackageRole = typeof AGENT_FACE_PACKAGE_ROLE;
 export { AGENT_FACE_COMPOSITIONS, getAgentFaceComposition } from './compositions.js';
 
 export type { AgentFaceComposition } from './compositions.js';
+
+export { default as AgentGenesisWorkspace } from './AgentGenesisWorkspace.svelte';
+export { default as SoulRequestCenter } from './SoulRequestCenter.svelte';
+export { default as GraduationApprovalThread } from './GraduationApprovalThread.svelte';
+export { default as NexusDashboard } from './NexusDashboard.svelte';
+export { default as IdentityNexus } from './IdentityNexus.svelte';
+
+export type {
+	AgentFaceAction,
+	AgentFaceBaseData,
+	AgentFaceBrand,
+	AgentFaceCallout,
+	AgentFaceConversationEntry,
+	AgentFaceHero,
+	AgentFaceMetric,
+	AgentFaceNavItem,
+	AgentFaceRequestFilter,
+	AgentFaceStatusChip,
+	AgentGenesisWorkspaceData,
+	GraduationApprovalThreadData,
+	IdentityNexusData,
+	NexusDashboardData,
+	SoulRequestCenterData,
+} from './types.js';

@@ -3,6 +3,12 @@ export interface AgentFaceComposition {
 	title: string;
 	stitchAnchor: string;
 	surfaceKind: 'workspace' | 'dashboard' | 'identity-shell' | 'inbox' | 'checkpoint';
+	componentExport:
+		| 'AgentGenesisWorkspace'
+		| 'NexusDashboard'
+		| 'IdentityNexus'
+		| 'SoulRequestCenter'
+		| 'GraduationApprovalThread';
 	workflowPhases: readonly string[];
 	componentFamilies: readonly string[];
 	aggregateExports: readonly string[];
@@ -15,6 +21,7 @@ export const AGENT_FACE_COMPOSITIONS = [
 		title: 'Genesis Workspace',
 		stitchAnchor: 'Agent Genesis',
 		surfaceKind: 'workspace',
+		componentExport: 'AgentGenesisWorkspace',
 		workflowPhases: ['request', 'review'],
 		componentFamilies: ['RequestIntakeRail', 'ReviewQueuePanel', 'DecisionSummaryCard'],
 		aggregateExports: [
@@ -34,6 +41,7 @@ export const AGENT_FACE_COMPOSITIONS = [
 		title: 'Nexus Dashboard',
 		stitchAnchor: 'Nexus Dashboard',
 		surfaceKind: 'dashboard',
+		componentExport: 'NexusDashboard',
 		workflowPhases: ['graduation', 'continuity'],
 		componentFamilies: [
 			'GraduationReadinessBoard',
@@ -52,6 +60,7 @@ export const AGENT_FACE_COMPOSITIONS = [
 		title: 'Identity Nexus',
 		stitchAnchor: 'Identity Nexus',
 		surfaceKind: 'identity-shell',
+		componentExport: 'IdentityNexus',
 		workflowPhases: ['declaration', 'continuity'],
 		componentFamilies: ['IdentitySummaryPanel', 'DeclarationLedger', 'ReachabilityEvidenceRail'],
 		aggregateExports: [
@@ -70,6 +79,7 @@ export const AGENT_FACE_COMPOSITIONS = [
 		title: 'Soul Request Center',
 		stitchAnchor: 'Notification Center: Soul Requests',
 		surfaceKind: 'inbox',
+		componentExport: 'SoulRequestCenter',
 		workflowPhases: ['request', 'review'],
 		componentFamilies: ['SoulRequestInbox', 'PriorityNotificationDigest', 'RouteFilterTabs'],
 		aggregateExports: [
@@ -85,6 +95,7 @@ export const AGENT_FACE_COMPOSITIONS = [
 		title: 'Graduation Approval Thread',
 		stitchAnchor: 'Direct Message: Graduation Approval',
 		surfaceKind: 'checkpoint',
+		componentExport: 'GraduationApprovalThread',
 		workflowPhases: ['signing', 'graduation'],
 		componentFamilies: [
 			'ApprovalConversationThread',

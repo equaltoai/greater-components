@@ -2,8 +2,33 @@
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-agent-face",
   "version": "0.5.8-rc.0",
-  "description": "Agent-first face composition metadata and route-shell boundaries for Greater Components.",
+  "description": "Agent-first face compositions and route-shell boundaries for Greater Components.",
   "components": {
+    "AgentGenesisWorkspace": {
+      "description": "Genesis-oriented workspace for request intake, conversation context, and review focus.",
+      "props": ["data"],
+      "exports": true
+    },
+    "SoulRequestCenter": {
+      "description": "Workflow inbox composition for soul requests, grouped notifications, and review routing.",
+      "props": ["data"],
+      "exports": true
+    },
+    "GraduationApprovalThread": {
+      "description": "Conversation-first approval screen for declaration review, signing, and graduation follow-through.",
+      "props": ["data"],
+      "exports": true
+    },
+    "NexusDashboard": {
+      "description": "Dashboard composition for graduation readiness, operational metrics, and continuity monitoring.",
+      "props": ["data"],
+      "exports": true
+    },
+    "IdentityNexus": {
+      "description": "Identity shell that composes declaration state, reachability surfaces, and continuity context.",
+      "props": ["data"],
+      "exports": true
+    },
     "AgentFacePackageRole": {
       "description": "Frozen face-level remit for composing shared workflow surfaces into agent-first screens.",
       "exports": true
@@ -11,19 +36,38 @@
   },
   "utilities": {
     "composition": {
-      "description": "Composition-level metadata for route shells and future screen presets.",
+      "description": "Composition-level metadata for route shells and screen exports.",
       "exports": ["AGENT_FACE_PACKAGE_ROLE", "AGENT_FACE_COMPOSITIONS", "getAgentFaceComposition"]
     }
   },
-  "types": ["AgentFacePackageRole", "AgentFaceComposition"],
+  "types": [
+    "AgentFacePackageRole",
+    "AgentFaceComposition",
+    "AgentFaceAction",
+    "AgentFaceBaseData",
+    "AgentFaceBrand",
+    "AgentFaceCallout",
+    "AgentFaceConversationEntry",
+    "AgentFaceHero",
+    "AgentFaceMetric",
+    "AgentFaceNavItem",
+    "AgentFaceRequestFilter",
+    "AgentFaceStatusChip",
+    "AgentGenesisWorkspaceData",
+    "GraduationApprovalThreadData",
+    "IdentityNexusData",
+    "NexusDashboardData",
+    "SoulRequestCenterData"
+  ],
   "dependencies": {
-    "internal": [],
-    "peer": [],
+    "internal": ["shared/agent", "shared/chat", "shared/messaging", "shared/notifications", "shared/soul"],
+    "peer": ["svelte"],
     "optional": []
   },
   "features": {
     "routeShellBoundaries": true,
     "compositionMetadata": true,
-    "stitchCompositionMap": true
+    "stitchCompositionMap": true,
+    "screenPresets": true
   }
 }
