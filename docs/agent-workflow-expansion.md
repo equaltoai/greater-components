@@ -34,6 +34,26 @@ The current Stitch `Agent Genesis` project provides the initial face anchor set:
 
 These anchors establish the face-level shell categories we want to preserve while the shared packages stay reusable.
 
+## Reusable workflow contracts
+
+The lifecycle naming is frozen as:
+
+| Phase | Purpose | Representative slots |
+| --- | --- | --- |
+| `request` | intake and triage | `request.summary`, `request.constraints`, `request.routeDecision` |
+| `review` | evidence-based evaluation | `review.scope`, `review.evidence`, `review.decision` |
+| `declaration` | formal statement of status or readiness | `declaration.statement`, `declaration.scope`, `declaration.confidence` |
+| `signing` | approvals and audit trail | `signing.signatories`, `signing.approvalMemo`, `signing.auditTrail` |
+| `graduation` | readiness gate and launch promotion | `graduation.checklist`, `graduation.rollbackPlan`, `graduation.readiness` |
+| `continuity` | post-launch stewardship and feedback loop | `continuity.owner`, `continuity.monitoring`, `continuity.feedbackLoop` |
+
+Rules frozen in this milestone:
+
+- every slot name is phase-prefixed
+- every state name is phase-prefixed
+- every phase definition supports both human and LLM-oriented consumption
+- the definitions are reusable across host apps instead of being tied to one Simulacrum screen
+
 ## Implementation shape
 
 The milestone leaves a concrete handoff for later work:
