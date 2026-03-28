@@ -44,7 +44,7 @@
 
 	{#if identity.tags?.length}
 		<div class="agent-surface-card__tags" aria-label="Agent tags">
-			{#each identity.tags as tag}
+			{#each identity.tags as tag, tagIndex (`${tag}-${tagIndex}`)}
 				<span class="agent-surface-card__tag">{tag}</span>
 			{/each}
 		</div>
@@ -52,7 +52,7 @@
 
 	{#if identity.metrics?.length}
 		<div class="agent-surface-card__metrics">
-			{#each identity.metrics as metric}
+			{#each identity.metrics as metric, metricIndex (`${metric.label}-${metric.value}-${metricIndex}`)}
 				<div class="agent-surface-card__metric">
 					<p class="agent-surface-card__metric-value">{metric.value}</p>
 					<p class="agent-surface-card__metric-label">{metric.label}</p>

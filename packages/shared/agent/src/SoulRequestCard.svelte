@@ -53,7 +53,7 @@
 		<section class="agent-request-card__section">
 			<h4>Constraints</h4>
 			<ul>
-				{#each request.constraints as constraint}
+				{#each request.constraints as constraint, constraintIndex (`${constraint}-${constraintIndex}`)}
 					<li>{constraint}</li>
 				{/each}
 			</ul>
@@ -64,7 +64,7 @@
 		<section class="agent-request-card__section">
 			<h4>Attached artifacts</h4>
 			<div class="agent-request-card__artifacts">
-				{#each request.artifacts as artifact}
+				{#each request.artifacts as artifact (artifact.id)}
 					<div class="agent-request-card__artifact">
 						<p class="agent-request-card__artifact-title">{artifact.title}</p>
 						{#if artifact.description}

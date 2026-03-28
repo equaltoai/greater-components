@@ -30,7 +30,7 @@
 	{/if}
 
 	<div class="signature-checkpoint-card__signers">
-		{#each checkpoint.signers as signer}
+		{#each checkpoint.signers as signer (signer.id)}
 			<div class="signature-checkpoint-card__signer">
 				<div>
 					<p class="signature-checkpoint-card__signer-name">{signer.name}</p>

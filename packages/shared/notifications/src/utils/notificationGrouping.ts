@@ -1,4 +1,10 @@
-import type { Notification, NotificationGroup, NotificationType, Status } from '../types.js';
+import type {
+	Notification,
+	NotificationGroup,
+	NotificationType,
+	Status,
+	WorkflowEventPayload,
+} from '../types.js';
 
 type NotificationWithStatus = Extract<Notification, { status: Status }>;
 
@@ -20,6 +26,59 @@ function getStatusId(notification: Notification): string | undefined {
 	}
 
 	return notification.status?.id ?? undefined;
+}
+
+function getWorkflowEventPayload(notification: Notification): WorkflowEventPayload | undefined {
+	if (notification.type !== 'workflow_event') {
+		return undefined;
+	}
+
+	return notification.workflowEvent;
+}
+
+function normalizeWorkflowGroupSegment(value: string): string {
+	return value
+		.trim()
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
+function getWorkflowEventGroupKey(notification: Notification): string {
+	const workflowEvent = getWorkflowEventPayload(notification);
+	if (!workflowEvent) {
+		return `workflow_event-${notification.id}`;
+	}
+
+	const segments = [
+		workflowEvent.kind,
+		workflowEvent.phase,
+		workflowEvent.targetLabel,
+		workflowEvent.actionLabel,
+		workflowEvent.title,
+	]
+		.filter((value): value is string => Boolean(value))
+		.map(normalizeWorkflowGroupSegment)
+		.filter(Boolean);
+
+	if (segments.length === 0) {
+		return `workflow_event-${notification.id}`;
+	}
+
+	return `workflow_event-${segments.join('-')}`;
+}
+
+function getWorkflowEventGroupTitle(group: NotificationGroup): string {
+	const workflowEvent = getWorkflowEventPayload(group.sampleNotification);
+	if (!workflowEvent) {
+		return `${group.count} workflow update${group.count === 1 ? '' : 's'}`;
+	}
+
+	if (group.count === 1) {
+		return workflowEvent.title;
+	}
+
+	return `${workflowEvent.title} (${group.count})`;
 }
 
 export function groupNotifications(notifications: Notification[]): NotificationGroup[] {
@@ -90,8 +149,9 @@ function getGroupKey(notification: Notification): string {
 			return `${notification.type}-${notification.id}`;
 		case 'admin.sign_up':
 		case 'admin.report':
-		case 'workflow_event':
 			return `${notification.type}-group`;
+		case 'workflow_event':
+			return getWorkflowEventGroupKey(notification);
 		default:
 			return fallbackKey;
 	}
@@ -128,7 +188,7 @@ export function getGroupTitle(group: NotificationGroup): string {
 			case 'admin.report':
 				return 'New report submitted';
 			case 'workflow_event':
-				return 'Workflow event';
+				return getWorkflowEventGroupTitle(group);
 			default:
 				return 'Notification';
 		}
@@ -189,7 +249,7 @@ export function getGroupTitle(group: NotificationGroup): string {
 		case 'admin.report':
 			return `${count} new reports`;
 		case 'workflow_event':
-			return `${count} workflow update${count === 1 ? '' : 's'}`;
+			return getWorkflowEventGroupTitle(group);
 		default:
 			return `${count} notifications`;
 	}

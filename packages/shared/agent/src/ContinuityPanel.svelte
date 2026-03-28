@@ -29,7 +29,7 @@
 
 	{#if panel.metrics?.length}
 		<div class="continuity-panel__metrics">
-			{#each panel.metrics as metric}
+			{#each panel.metrics as metric, metricIndex (`${metric.label}-${metric.value}-${metricIndex}`)}
 				<div class="continuity-panel__metric">
 					<p class="continuity-panel__metric-value">{metric.value}</p>
 					<p class="continuity-panel__metric-label">{metric.label}</p>
@@ -45,7 +45,7 @@
 		<section class="continuity-panel__followups">
 			<h4>Follow-up loops</h4>
 			<div class="continuity-panel__followup-grid">
-				{#each panel.followUps as followUp}
+				{#each panel.followUps as followUp (followUp.id)}
 					<div class="continuity-panel__followup">
 						<p class="continuity-panel__followup-title">{followUp.title}</p>
 						<p class="continuity-panel__followup-summary">{followUp.summary}</p>

@@ -26,7 +26,7 @@
 		</p>
 		{#if metadata.scope?.length}
 			<div class="chat-workflow-metadata__chips">
-				{#each metadata.scope as scopeItem}
+				{#each metadata.scope as scopeItem, scopeIndex (`${scopeItem}-${scopeIndex}`)}
 					<span>{scopeItem}</span>
 				{/each}
 			</div>
@@ -47,7 +47,7 @@
 		<p class="chat-workflow-metadata__secondary">{metadata.nextStep}</p>
 		{#if metadata.outputs?.length}
 			<ul class="chat-workflow-metadata__list">
-				{#each metadata.outputs as output}
+				{#each metadata.outputs as output, outputIndex (`${output}-${outputIndex}`)}
 					<li>{output}</li>
 				{/each}
 			</ul>

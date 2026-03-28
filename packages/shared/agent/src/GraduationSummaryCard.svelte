@@ -36,7 +36,7 @@
 
 	{#if summary.metrics?.length}
 		<div class="graduation-summary-card__metrics">
-			{#each summary.metrics as metric}
+			{#each summary.metrics as metric, metricIndex (`${metric.label}-${metric.value}-${metricIndex}`)}
 				<div class="graduation-summary-card__metric">
 					<p class="graduation-summary-card__metric-value">{metric.value}</p>
 					<p class="graduation-summary-card__metric-label">{metric.label}</p>
@@ -53,7 +53,7 @@
 			<section>
 				<h4>Completed milestones</h4>
 				<ul>
-					{#each summary.completedMilestones as milestone}
+					{#each summary.completedMilestones as milestone, milestoneIndex (`${milestone}-${milestoneIndex}`)}
 						<li>{milestone}</li>
 					{/each}
 				</ul>
@@ -64,7 +64,7 @@
 			<section>
 				<h4>Exit criteria</h4>
 				<ul>
-					{#each summary.exitCriteria as criterion}
+					{#each summary.exitCriteria as criterion, criterionIndex (`${criterion}-${criterionIndex}`)}
 						<li>{criterion}</li>
 					{/each}
 				</ul>

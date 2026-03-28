@@ -31,7 +31,7 @@
 	<section class="declaration-preview-card__section">
 		<h4>Declared scope</h4>
 		<div class="declaration-preview-card__chips">
-			{#each declaration.declaredScope as item}
+			{#each declaration.declaredScope as item, itemIndex (`${item}-${itemIndex}`)}
 				<span>{item}</span>
 			{/each}
 		</div>
@@ -41,7 +41,7 @@
 		<section class="declaration-preview-card__section">
 			<h4>Risks and caveats</h4>
 			<ul>
-				{#each declaration.risks as risk}
+				{#each declaration.risks as risk, riskIndex (`${risk}-${riskIndex}`)}
 					<li>{risk}</li>
 				{/each}
 			</ul>
@@ -52,7 +52,7 @@
 		<section class="declaration-preview-card__section">
 			<h4>Supporting artifacts</h4>
 			<div class="declaration-preview-card__artifact-grid">
-				{#each declaration.supportingArtifacts as artifact}
+				{#each declaration.supportingArtifacts as artifact (artifact.id)}
 					<div class="declaration-preview-card__artifact">
 						<p>{artifact.title}</p>
 						{#if artifact.description}

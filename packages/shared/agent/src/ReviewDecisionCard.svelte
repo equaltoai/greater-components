@@ -38,7 +38,7 @@
 		<section class="review-decision-card__section">
 			<h4>Key findings</h4>
 			<ul class="review-decision-card__findings">
-				{#each decision.findings as finding}
+				{#each decision.findings as finding (finding.id)}
 					<li>
 						<p class="review-decision-card__finding-title">{finding.title}</p>
 						<p class="review-decision-card__finding-detail">{finding.detail}</p>
@@ -52,7 +52,7 @@
 		<section class="review-decision-card__section">
 			<h4>Evidence</h4>
 			<div class="review-decision-card__evidence-grid">
-				{#each decision.evidence as artifact}
+				{#each decision.evidence as artifact (artifact.id)}
 					<div class="review-decision-card__evidence">
 						<p>{artifact.title}</p>
 						{#if artifact.description}

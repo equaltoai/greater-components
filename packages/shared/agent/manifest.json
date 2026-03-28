@@ -48,14 +48,6 @@
       "description": "Graduation summary card for readiness, exit criteria, and next steps.",
       "props": ["summary"],
       "exports": true
-    },
-    "PackageBoundaries": {
-      "description": "Frozen ownership map across shared workflow packages and the agent face.",
-      "exports": true
-    },
-    "ImplementationShape": {
-      "description": "Concrete M2 and M3 rollout shape derived from the boundary freeze.",
-      "exports": true
     }
   },
   "utilities": {

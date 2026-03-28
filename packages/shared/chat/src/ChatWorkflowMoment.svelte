@@ -55,7 +55,7 @@
 	{#if moment.kind === 'artifact'}
 		{#if moment.facts?.length}
 			<ul class="chat-workflow-moment__list">
-				{#each moment.facts as fact}
+				{#each moment.facts as fact, factIndex (`${fact}-${factIndex}`)}
 					<li>{fact}</li>
 				{/each}
 			</ul>
