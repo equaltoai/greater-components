@@ -383,7 +383,10 @@ export function readThemeBootstrapSnapshotFromDocument(
 		preferences,
 		systemColorScheme: theme === 'dark' ? 'dark' : 'light',
 		systemMotion: motion === 'reduced' ? 'reduced' : 'normal',
-		systemHighContrast: theme === 'high-contrast',
+		// `data-theme` captures the resolved theme, not whether the OS is actively forcing high contrast.
+		// Treating a resolved high-contrast document as a live system preference locks the user into that
+		// mode until a matchMedia change event fires.
+		systemHighContrast: false,
 	};
 }
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-28T04:57:52.352Z",
+  "generatedAt": "2026-03-28T05:08:07.801Z",
   "ref": "greater-v0.5.8-rc.0",
   "version": "0.5.8-rc.0",
   "checksums": {
@@ -114,7 +114,7 @@
     "packages/primitives/src/index.d.ts": "sha256-hGjXFKeQ3ZvVc0+dXaEMMYHMSrSfZMGSbAS8MEfjYWY=",
     "packages/primitives/src/index.ts": "sha256-a6qCP88DqcK7y7Xm6xl6eU1UGHSvXZ0hxyjgUDK/6gQ=",
     "packages/primitives/src/stores/preferences.d.ts": "sha256-GL7rI1+5S8FcclMz8SCqfGyjyhRjcU4FXocMVq8SCJw=",
-    "packages/primitives/src/stores/preferences.ts": "sha256-VdA1zkZDIpGYJNYYVd7CC+QpDjhLqarsvlSvKoFEM+w=",
+    "packages/primitives/src/stores/preferences.ts": "sha256-VCztWHIEKWganxzse2nh21Ngv4QkwMCbB3pJvxTqrgs=",
     "packages/primitives/src/theme.css": "sha256-+koUti7MO4gsCREDdo6JGwny6y/IV7Ots/BD4C5jWA0=",
     "packages/primitives/src/transitions/fadeDown.d.ts": "sha256-FXf0D6TrZynSTiPhD0oDMMUlosk/uwgvq+VJyrfNnWI=",
     "packages/primitives/src/transitions/fadeDown.ts": "sha256-jLBp3teCghGZrIvdIjNXAvWCFrJxM1kqby0xcR1Kl/c=",
@@ -1919,8 +1919,8 @@
         },
         {
           "path": "src/stores/preferences.ts",
-          "checksum": "sha256-VdA1zkZDIpGYJNYYVd7CC+QpDjhLqarsvlSvKoFEM+w=",
-          "size": 17497
+          "checksum": "sha256-VCztWHIEKWganxzse2nh21Ngv4QkwMCbB3pJvxTqrgs=",
+          "size": 17728
         },
         {
           "path": "src/theme.css",
