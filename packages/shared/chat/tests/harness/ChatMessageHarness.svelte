@@ -1,6 +1,10 @@
 <script lang="ts">
 	import Message from '../../src/ChatMessage.svelte';
-	import type { MessageRole } from '../../src/types.js';
+	import type {
+		ChatMessageMoment,
+		ChatMessageWorkflowMetadata,
+		MessageRole,
+	} from '../../src/types.js';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -18,6 +22,8 @@
 		userAvatar?: Snippet;
 		assistantAvatar?: Snippet;
 		renderContent?: Snippet<[{ content: string; streaming: boolean }]>;
+		workflowMoments?: readonly ChatMessageMoment[];
+		workflowMetadata?: readonly ChatMessageWorkflowMetadata[];
 		class?: string;
 	}
 
@@ -36,6 +42,8 @@
 		userAvatar,
 		assistantAvatar,
 		renderContent,
+		workflowMoments = [],
+		workflowMetadata = [],
 		class: className = '',
 	}: Props = $props();
 </script>
@@ -55,5 +63,7 @@
 	{userAvatar}
 	{assistantAvatar}
 	{renderContent}
+	{workflowMoments}
+	{workflowMetadata}
 	class={className}
 />

@@ -2,14 +2,51 @@
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-agent",
   "version": "0.5.8-rc.0",
-  "description": "Agent-first workflow contracts, package boundaries, and rollout shape metadata for Greater Components.",
+  "description": "Agent-first workflow surfaces, contracts, package boundaries, and rollout shape metadata for Greater Components.",
   "components": {
-    "PackageBoundaries": {
-      "description": "Frozen ownership map across shared workflow packages and the agent face.",
+    "AgentIdentityCard": {
+      "description": "Identity summary card for agent handles, stewardship, and readiness metrics.",
+      "props": ["identity"],
       "exports": true
     },
-    "ImplementationShape": {
-      "description": "Concrete M2 and M3 rollout shape derived from the boundary freeze.",
+    "AgentStateBadge": {
+      "description": "Phase/state badge for workflow-aware agent surfaces.",
+      "props": ["label", "phase", "state", "tone"],
+      "exports": true
+    },
+    "SoulRequestCard": {
+      "description": "Request intake card for soul requests, constraints, and artifacts.",
+      "props": ["request"],
+      "exports": true
+    },
+    "SoulLifecycleRail": {
+      "description": "Lifecycle rail showing request through continuity phases with active status.",
+      "props": ["steps", "currentPhase", "orientation"],
+      "exports": true
+    },
+    "ReviewDecisionCard": {
+      "description": "Review summary card for decision state, findings, and evidence.",
+      "props": ["decision"],
+      "exports": true
+    },
+    "DeclarationPreviewCard": {
+      "description": "Preview card for declaration statements, scope, and risks.",
+      "props": ["declaration"],
+      "exports": true
+    },
+    "SignatureCheckpointCard": {
+      "description": "Signer checklist and readiness card for approval checkpoints.",
+      "props": ["checkpoint"],
+      "exports": true
+    },
+    "ContinuityPanel": {
+      "description": "Continuity ownership panel for follow-up loops, metrics, and feedback.",
+      "props": ["panel"],
+      "exports": true
+    },
+    "GraduationSummaryCard": {
+      "description": "Graduation summary card for readiness, exit criteria, and next steps.",
+      "props": ["summary"],
       "exports": true
     }
   },
@@ -26,6 +63,7 @@
     "workflow": {
       "description": "Reusable workflow phases, slot naming, state definitions, and lookup helpers.",
       "exports": [
+        "AGENT_WORKFLOW_CONSUMERS",
         "AGENT_WORKFLOW_PHASES",
         "AGENT_WORKFLOW_PHASE_DEFINITIONS",
         "AGENT_WORKFLOW_SLOT_NAMES",
@@ -36,6 +74,15 @@
     "stitch": {
       "description": "Stitch anchor mapping from real design screens into reusable component families and export surfaces.",
       "exports": ["AGENT_STITCH_ANCHOR_DEFINITIONS", "getAgentStitchAnchor"]
+    },
+    "surfaces": {
+      "description": "Shared data models and formatting helpers for reusable agent workflow surfaces.",
+      "exports": [
+        "formatAgentSurfaceDate",
+        "formatAgentWorkflowLabel",
+        "getAgentPhaseTitle",
+        "getAgentWorkflowTone"
+      ]
     }
   },
   "types": [
@@ -43,6 +90,7 @@
     "AgentPackageRole",
     "AgentPackageBoundary",
     "AgentWorkflowMilestoneShape",
+    "AgentWorkflowConsumer",
     "AgentWorkflowPhase",
     "AgentWorkflowPhaseDefinition",
     "AgentWorkflowSlotDefinition",
@@ -50,18 +98,35 @@
     "AgentWorkflowStateDefinition",
     "AgentWorkflowState",
     "AgentWorkflowEnvelope",
+    "AgentWorkflowValueKind",
     "AgentStitchAnchorDefinition",
-    "AgentStitchAnchorKey"
+    "AgentStitchAnchorKey",
+    "AgentSurfaceTone",
+    "AgentSurfaceMetric",
+    "AgentSurfaceActor",
+    "AgentSurfaceArtifact",
+    "AgentIdentityCardData",
+    "SoulRequestCardData",
+    "AgentLifecycleStep",
+    "ReviewFinding",
+    "ReviewDecisionCardData",
+    "DeclarationPreviewCardData",
+    "SignatureCheckpointSigner",
+    "SignatureCheckpointCardData",
+    "ContinuityFollowUp",
+    "ContinuityPanelData",
+    "GraduationSummaryCardData"
   ],
   "dependencies": {
     "internal": [],
-    "peer": [],
+    "peer": ["svelte@^5.43.6"],
     "optional": []
   },
   "features": {
     "workflowBoundaries": true,
     "workflowContracts": true,
     "stitchAnchorMapping": true,
-    "implementationShape": true
+    "implementationShape": true,
+    "surfaceComponents": true
   }
 }

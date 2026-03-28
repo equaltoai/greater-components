@@ -17,7 +17,8 @@ Displays a single notification with type-specific rendering.
 <script lang="ts">
 	import { sanitizeHtml } from '@equaltoai/greater-components-utils';
 	import type { Snippet } from 'svelte';
-	import type { Notification, NotificationType } from './types.js';
+	import WorkflowNotificationItem from './WorkflowNotificationItem.svelte';
+	import type { Notification, NotificationType, WorkflowEventNotification } from './types.js';
 	import { getNotificationsContext } from './context.svelte.js';
 
 	interface Props {
@@ -60,6 +61,7 @@ Displays a single notification with type-specific rendering.
 		trust_update: '🔒',
 		cost_alert: '💸',
 		moderation_action: '🛡️',
+		workflow_event: '🧭',
 	};
 
 	const icon = $derived(iconMap[notification.type] ?? '🔔');
@@ -83,9 +85,20 @@ Displays a single notification with type-specific rendering.
 		trust_update: 'updated your trust score',
 		cost_alert: 'sent a cost alert',
 		moderation_action: 'performed a moderation action',
+		workflow_event: 'updated a workflow',
 	};
 
-	const title = $derived(titleMap[notification.type] ?? 'sent a notification');
+	function isWorkflowEventNotification(
+		candidate: Notification
+	): candidate is WorkflowEventNotification {
+		return candidate.type === 'workflow_event';
+	}
+
+	const title = $derived(
+		isWorkflowEventNotification(notification)
+			? notification.workflowEvent.title
+			: (titleMap[notification.type] ?? 'sent a notification')
+	);
 
 	/**
 	 * Handle notification click
@@ -183,30 +196,34 @@ Displays a single notification with type-specific rendering.
 			{/if}
 
 			<div class="notification-item__body">
-				<p class="notification-item__text">
-					<strong class="notification-item__name">
-						{notification.account?.displayName || notification.account?.username}
-					</strong>
-					<span class="notification-item__action">{title}</span>
-				</p>
+				{#if isWorkflowEventNotification(notification)}
+					<WorkflowNotificationItem {notification} />
+				{:else}
+					<p class="notification-item__text">
+						<strong class="notification-item__name">
+							{notification.account?.displayName || notification.account?.username}
+						</strong>
+						<span class="notification-item__action">{title}</span>
+					</p>
 
-				{#if context.config.showTimestamps && notification.createdAt}
-					{@const createdAt = notification.createdAt}
-					<time
-						class="notification-item__timestamp"
-						datetime={typeof createdAt === 'string' ? createdAt : createdAt.toISOString()}
-					>
-						{new Date(notification.createdAt).toLocaleDateString()}
-					</time>
-				{/if}
+					{#if context.config.showTimestamps && notification.createdAt}
+						{@const createdAt = notification.createdAt}
+						<time
+							class="notification-item__timestamp"
+							datetime={typeof createdAt === 'string' ? createdAt : createdAt.toISOString()}
+						>
+							{new Date(notification.createdAt).toLocaleDateString()}
+						</time>
+					{/if}
 
-				{#if notification.status && sanitizedStatusContent}
-					<div class="notification-item__status">
-						<div
-							class="notification-item__status-content"
-							use:setHtml={sanitizedStatusContent}
-						></div>
-					</div>
+					{#if notification.status && sanitizedStatusContent}
+						<div class="notification-item__status">
+							<div
+								class="notification-item__status-content"
+								use:setHtml={sanitizedStatusContent}
+							></div>
+						</div>
+					{/if}
 				{/if}
 			</div>
 

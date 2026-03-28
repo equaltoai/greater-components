@@ -36,3 +36,38 @@ export type {
 export { AGENT_STITCH_ANCHOR_DEFINITIONS, getAgentStitchAnchor } from './stitch.js';
 
 export type { AgentStitchAnchorDefinition, AgentStitchAnchorKey } from './stitch.js';
+
+export {
+	formatAgentSurfaceDate,
+	formatAgentWorkflowLabel,
+	getAgentPhaseTitle,
+	getAgentWorkflowTone,
+} from './surfaces.js';
+
+export type {
+	AgentIdentityCardData,
+	AgentLifecycleStep,
+	AgentSurfaceActor,
+	AgentSurfaceArtifact,
+	AgentSurfaceMetric,
+	AgentSurfaceTone,
+	ContinuityFollowUp,
+	ContinuityPanelData,
+	DeclarationPreviewCardData,
+	GraduationSummaryCardData,
+	ReviewDecisionCardData,
+	ReviewFinding,
+	SignatureCheckpointCardData,
+	SignatureCheckpointSigner,
+	SoulRequestCardData,
+} from './surfaces.js';
+
+export { default as AgentStateBadge } from './AgentStateBadge.svelte';
+export { default as AgentIdentityCard } from './AgentIdentityCard.svelte';
+export { default as SoulRequestCard } from './SoulRequestCard.svelte';
+export { default as SoulLifecycleRail } from './SoulLifecycleRail.svelte';
+export { default as ReviewDecisionCard } from './ReviewDecisionCard.svelte';
+export { default as DeclarationPreviewCard } from './DeclarationPreviewCard.svelte';
+export { default as SignatureCheckpointCard } from './SignatureCheckpointCard.svelte';
+export { default as ContinuityPanel } from './ContinuityPanel.svelte';
+export { default as GraduationSummaryCard } from './GraduationSummaryCard.svelte';

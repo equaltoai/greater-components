@@ -13,6 +13,29 @@ import type { Notification, NotificationGroup } from '../src/types';
 describe('Notification Grouping Utilities', () => {
 	const mockNotifications = generateMockNotifications(20);
 
+	function createWorkflowNotification(
+		id: string,
+		overrides: Partial<Extract<Notification, { type: 'workflow_event' }>> = {}
+	): Notification {
+		return {
+			id,
+			type: 'workflow_event',
+			account: overrides.account ?? mockNotifications[0].account,
+			createdAt: overrides.createdAt ?? new Date().toISOString(),
+			read: overrides.read ?? false,
+			workflowEvent: {
+				kind: 'approval_requested',
+				title: 'Approval requested',
+				summary: 'The declaration is ready for signer review.',
+				phase: 'signing',
+				actorLabel: 'Drone Zephyr-2',
+				targetLabel: 'Archon Prime',
+				actionLabel: 'Review approval thread',
+				...overrides.workflowEvent,
+			},
+		};
+	}
+
 	describe('groupNotifications', () => {
 		it('should group notifications by type and content', () => {
 			// Create notifications with same status for favourites to ensure grouping
@@ -168,6 +191,31 @@ describe('Notification Grouping Utilities', () => {
 			const groups = groupNotifications([]);
 			expect(groups).toHaveLength(0);
 		});
+
+		it('keeps unrelated workflow lifecycle events in separate groups', () => {
+			const notifications: Notification[] = [
+				createWorkflowNotification('workflow-1'),
+				createWorkflowNotification('workflow-2', {
+					account: mockNotifications[1].account,
+				}),
+				createWorkflowNotification('workflow-3', {
+					workflowEvent: {
+						kind: 'graduated',
+						title: 'Graduated',
+						summary: 'The rollout is ready for promotion.',
+						phase: 'graduation',
+						targetLabel: 'Nexus Horizon',
+						actionLabel: 'Review graduation summary',
+					},
+				}),
+			];
+
+			const groups = groupNotifications(notifications);
+
+			expect(groups).toHaveLength(2);
+			expect(groups.find((group) => group.id.includes('approval-requested'))?.count).toBe(2);
+			expect(groups.find((group) => group.id.includes('graduated'))?.count).toBe(1);
+		});
 	});
 
 	describe('getGroupTitle', () => {
@@ -252,6 +300,41 @@ describe('Notification Grouping Utilities', () => {
 				expect(title).toBeTruthy();
 				expect(typeof title).toBe('string');
 			});
+		});
+
+		it('uses workflow payload titles for workflow lifecycle groups', () => {
+			const workflowNotification = createWorkflowNotification('workflow-title');
+			const group: NotificationGroup = {
+				id: 'workflow-group',
+				type: 'workflow_event',
+				notifications: [workflowNotification],
+				accounts: [workflowNotification.account],
+				sampleNotification: workflowNotification,
+				count: 1,
+				latestCreatedAt: new Date().toISOString(),
+				allRead: false,
+			};
+
+			expect(getGroupTitle(group)).toBe('Approval requested');
+		});
+
+		it('uses workflow payload titles for exactly two grouped workflow notifications', () => {
+			const first = createWorkflowNotification('workflow-title-1');
+			const second = createWorkflowNotification('workflow-title-2', {
+				account: mockNotifications[1].account,
+			});
+			const group: NotificationGroup = {
+				id: 'workflow-group',
+				type: 'workflow_event',
+				notifications: [first, second],
+				accounts: [first.account, second.account],
+				sampleNotification: first,
+				count: 2,
+				latestCreatedAt: new Date().toISOString(),
+				allRead: false,
+			};
+
+			expect(getGroupTitle(group)).toBe('Approval requested (2)');
 		});
 	});
 

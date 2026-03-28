@@ -18,6 +18,7 @@ Displays multiple similar notifications grouped together.
 	import type { Snippet } from 'svelte';
 	import type { NotificationGroup, NotificationType } from './types.js';
 	import { getNotificationsContext } from './context.svelte.js';
+	import { getGroupTitle } from './utils/notificationGrouping.js';
 
 	interface Props {
 		/**
@@ -59,6 +60,7 @@ Displays multiple similar notifications grouped together.
 		trust_update: '🔒',
 		cost_alert: '💸',
 		moderation_action: '🛡️',
+		workflow_event: '🧭',
 	};
 
 	const icon = $derived(iconMap[group.type] ?? '🔔');
@@ -67,6 +69,10 @@ Displays multiple similar notifications grouped together.
 	 * Get group title based on type and count
 	 */
 	const title = $derived.by(() => {
+		if (group.type === 'workflow_event') {
+			return getGroupTitle(group);
+		}
+
 		const baseTitleMap: Partial<Record<NotificationType, string>> = {
 			follow: 'followed you',
 			mention: 'mentioned you',

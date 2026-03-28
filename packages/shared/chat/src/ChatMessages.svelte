@@ -320,6 +320,8 @@
 						streaming={message.status === 'streaming'}
 						status={message.status}
 						error={message.error}
+						workflowMoments={message.moments ?? []}
+						workflowMetadata={message.workflowMetadata ?? []}
 						avatar={message.role === 'assistant' ? assistantAvatar : userAvatar}
 						showAvatar={showAvatars}
 						avatarLabel={message.role === 'assistant' ? assistantAvatarLabel : userAvatarLabel}

@@ -49,8 +49,17 @@ export { default as NewConversation } from './NewConversation.svelte';
 export { default as MediaUpload } from './MediaUpload.svelte';
 export { default as UnreadIndicator } from './UnreadIndicator.svelte';
 export { default as ConversationPicker } from './ConversationPicker.svelte';
+export { default as WorkflowThreadMoment } from './WorkflowThreadMoment.svelte';
+export { default as ConversationWorkflowSummary } from './ConversationWorkflowSummary.svelte';
 
 // Export types and context utilities
+export type {
+	MediaCategory,
+	MessagingWorkflowConversationSummary,
+	MessagingWorkflowThreadMoment,
+	MessagingWorkflowThreadMomentKind,
+} from './types.js';
+
 export type {
 	MessageParticipant,
 	DirectMessage,
@@ -60,6 +69,7 @@ export type {
 	MessagesHandlers,
 	MessagesState,
 	MessagesContext,
+	MessageMediaUploadMetadata,
 } from './context.svelte.js';
 
 export { createMessagesContext, getMessagesContext } from './context.svelte.js';

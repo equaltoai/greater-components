@@ -95,6 +95,47 @@ describe('ChatMessage.svelte', () => {
 
 			expect(container.textContent).toContain('System notification');
 		});
+
+		it('renders structured workflow moments below the message copy', () => {
+			const { container } = render(ChatMessageHarness, {
+				props: {
+					role: 'assistant',
+					content: 'Attached the declaration bundle for review.',
+					workflowMoments: [
+						{
+							id: 'artifact-1',
+							kind: 'artifact',
+							title: 'Declaration bundle',
+							summary: 'Evidence collected for the current request.',
+							facts: ['2 artifacts attached'],
+						},
+					],
+				},
+			});
+
+			expect(container.textContent).toContain('Declaration bundle');
+			expect(container.querySelector('.chat-message__structured')).toBeTruthy();
+		});
+
+		it('renders typed workflow metadata for finalize outputs', () => {
+			const { container } = render(ChatMessageHarness, {
+				props: {
+					role: 'assistant',
+					content: 'Everything is lined up for graduation.',
+					workflowMetadata: [
+						{
+							kind: 'finalize',
+							readiness: 'ready',
+							nextStep: 'Promote to the graduation checkpoint.',
+							outputs: ['Launch memo'],
+						},
+					],
+				},
+			});
+
+			expect(container.textContent).toContain('Promote to the graduation checkpoint.');
+			expect(container.textContent).toContain('Launch memo');
+		});
 	});
 
 	describe('Streaming State', () => {
