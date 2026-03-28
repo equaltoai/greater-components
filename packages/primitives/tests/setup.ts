@@ -10,11 +10,13 @@ const matchMediaMock = vi.fn((query: string) => ({
 	dispatchEvent: vi.fn(),
 }));
 
-Object.defineProperty(window, 'matchMedia', {
-	writable: true,
-	configurable: true,
-	value: matchMediaMock,
-});
+if (typeof window !== 'undefined') {
+	Object.defineProperty(window, 'matchMedia', {
+		writable: true,
+		configurable: true,
+		value: matchMediaMock,
+	});
+}
 
 const localStorageMock = (() => {
 	const store = new Map<string, string>();
@@ -32,11 +34,13 @@ const localStorageMock = (() => {
 	};
 })();
 
-Object.defineProperty(window, 'localStorage', {
-	writable: true,
-	configurable: true,
-	value: localStorageMock,
-});
+if (typeof window !== 'undefined') {
+	Object.defineProperty(window, 'localStorage', {
+		writable: true,
+		configurable: true,
+		value: localStorageMock,
+	});
+}
 
 global.ResizeObserver = class ResizeObserver {
 	observe() {}
@@ -72,8 +76,10 @@ if (typeof Element !== 'undefined' && !Element.prototype.animate) {
 }
 
 beforeEach(() => {
-	const animate = Element.prototype.animate as unknown as { mockClear?: () => void };
-	animate.mockClear?.();
+	if (typeof Element !== 'undefined') {
+		const animate = Element.prototype.animate as unknown as { mockClear?: () => void };
+		animate.mockClear?.();
+	}
 });
 
 afterEach(() => {

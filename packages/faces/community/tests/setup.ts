@@ -33,20 +33,22 @@ if (typeof runtime.$effect !== 'function') {
 	runtime.$effect = () => {};
 }
 
-// Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
-	writable: true,
-	value: vi.fn().mockImplementation((query: string) => ({
-		matches: false,
-		media: query,
-		onchange: null,
-		addListener: vi.fn(),
-		removeListener: vi.fn(),
-		addEventListener: vi.fn(),
-		removeEventListener: vi.fn(),
-		dispatchEvent: vi.fn(),
-	})),
-});
+if (typeof window !== 'undefined') {
+	// Mock window.matchMedia
+	Object.defineProperty(window, 'matchMedia', {
+		writable: true,
+		value: vi.fn().mockImplementation((query: string) => ({
+			matches: false,
+			media: query,
+			onchange: null,
+			addListener: vi.fn(),
+			removeListener: vi.fn(),
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+			dispatchEvent: vi.fn(),
+		})),
+	});
+}
 
 // Mock IntersectionObserver
 class MockIntersectionObserver {
@@ -64,10 +66,12 @@ class MockIntersectionObserver {
 	takeRecords = vi.fn().mockReturnValue([]);
 }
 
-Object.defineProperty(window, 'IntersectionObserver', {
-	writable: true,
-	value: MockIntersectionObserver,
-});
+if (typeof window !== 'undefined') {
+	Object.defineProperty(window, 'IntersectionObserver', {
+		writable: true,
+		value: MockIntersectionObserver,
+	});
+}
 
 // Mock ResizeObserver
 class MockResizeObserver {
@@ -82,29 +86,35 @@ class MockResizeObserver {
 	disconnect = vi.fn();
 }
 
-Object.defineProperty(window, 'ResizeObserver', {
-	writable: true,
-	value: MockResizeObserver,
-});
+if (typeof window !== 'undefined') {
+	Object.defineProperty(window, 'ResizeObserver', {
+		writable: true,
+		value: MockResizeObserver,
+	});
+}
 
-// Mock scrollIntoView
-Element.prototype.scrollIntoView = vi.fn();
+if (typeof Element !== 'undefined') {
+	// Mock scrollIntoView
+	Element.prototype.scrollIntoView = vi.fn();
+}
 
-// Mock canvas context for image processing
-HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
-	drawImage: vi.fn(),
-	getImageData: vi.fn().mockReturnValue({ data: new Uint8ClampedArray(4) }),
-	putImageData: vi.fn(),
-	createImageData: vi.fn(),
-	scale: vi.fn(),
-	translate: vi.fn(),
-	rotate: vi.fn(),
-	save: vi.fn(),
-	restore: vi.fn(),
-	fillRect: vi.fn(),
-	clearRect: vi.fn(),
-	measureText: vi.fn().mockReturnValue({ width: 0 }),
-});
+if (typeof HTMLCanvasElement !== 'undefined') {
+	// Mock canvas context for image processing
+	HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
+		drawImage: vi.fn(),
+		getImageData: vi.fn().mockReturnValue({ data: new Uint8ClampedArray(4) }),
+		putImageData: vi.fn(),
+		createImageData: vi.fn(),
+		scale: vi.fn(),
+		translate: vi.fn(),
+		rotate: vi.fn(),
+		save: vi.fn(),
+		restore: vi.fn(),
+		fillRect: vi.fn(),
+		clearRect: vi.fn(),
+		measureText: vi.fn().mockReturnValue({ width: 0 }),
+	});
+}
 
 // Mock requestIdleCallback
 // @ts-expect-error - Mock return type doesn't match exactly
@@ -132,16 +142,20 @@ const mockIndexedDB = {
 	deleteDatabase: vi.fn(),
 };
 
-Object.defineProperty(window, 'indexedDB', {
-	writable: true,
-	value: mockIndexedDB,
-});
+if (typeof window !== 'undefined') {
+	Object.defineProperty(window, 'indexedDB', {
+		writable: true,
+		value: mockIndexedDB,
+	});
+}
 
-// Mock navigator.onLine for offline tests
-Object.defineProperty(navigator, 'onLine', {
-	writable: true,
-	value: true,
-});
+if (typeof navigator !== 'undefined') {
+	// Mock navigator.onLine for offline tests
+	Object.defineProperty(navigator, 'onLine', {
+		writable: true,
+		value: true,
+	});
+}
 
 // Set up environment variables for testing
 beforeAll(() => {

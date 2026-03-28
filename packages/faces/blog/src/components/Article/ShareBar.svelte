@@ -7,6 +7,7 @@ Article.ShareBar - Social sharing buttons
 <script lang="ts">
 	import { getArticleContext } from './context.js';
 	import { Button } from '@equaltoai/greater-components-primitives';
+	import { buildArticleShareUrl, resolveArticleShareUrl } from '../../share.js';
 
 	interface Props {
 		/**
@@ -19,36 +20,35 @@ Article.ShareBar - Social sharing buttons
 
 	const context = getArticleContext();
 	const article = $derived(context.article);
-
-	function getShareUrl(platform: string): string {
-		const url = encodeURIComponent(window.location.href);
-		const title = encodeURIComponent(article.metadata.title);
-
-		switch (platform) {
-			case 'twitter':
-				return `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
-			case 'facebook':
-				return `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-			case 'linkedin':
-				return `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-			default:
-				return '';
-		}
-	}
+	const shareTargetUrl = $derived(resolveArticleShareUrl(article, context.handlers));
+	const canCopyLink = $derived(!!shareTargetUrl && !!context.handlers.onCopyLink);
+	const canOpenShareLink = $derived(!!shareTargetUrl && !!context.handlers.onOpenShareLink);
 
 	async function handleShare(platform: string) {
-		if (platform === 'copy') {
-			await navigator.clipboard.writeText(window.location.href);
-		} else {
-			window.open(getShareUrl(platform), '_blank', 'width=600,height=400');
+		if (!shareTargetUrl) {
+			context.handlers.onShare?.(article, platform);
+			return;
 		}
+
+		if (platform === 'copy') {
+			await context.handlers.onCopyLink?.(article, shareTargetUrl);
+		} else {
+			const shareUrl = buildArticleShareUrl(platform, shareTargetUrl, article.metadata.title);
+			await context.handlers.onOpenShareLink?.(article, platform, shareUrl);
+		}
+
 		context.handlers.onShare?.(article, platform);
 	}
 </script>
 
 <div class="gr-blog-share-bar">
 	{#each platforms as platform (platform)}
-		<Button variant="outline" size="sm" onclick={() => handleShare(platform)}>
+		<Button
+			variant="outline"
+			size="sm"
+			disabled={platform === 'copy' ? !canCopyLink : !canOpenShareLink}
+			onclick={() => handleShare(platform)}
+		>
 			{platform === 'copy' ? 'Copy Link' : platform.charAt(0).toUpperCase() + platform.slice(1)}
 		</Button>
 	{/each}

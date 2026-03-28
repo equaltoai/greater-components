@@ -209,6 +209,8 @@ export interface PostConfig {
  * Post action handlers
  */
 export interface PostHandlers {
+	/** Resolve the canonical href for a post in the current host */
+	resolveHref?: (post: PostData) => string;
 	/** Upvote post */
 	onUpvote?: (postId: string) => Promise<void> | void;
 	/** Downvote post */
@@ -232,7 +234,7 @@ export interface PostHandlers {
 	/** Delete post (author only) */
 	onDelete?: (postId: string) => Promise<void> | void;
 	/** Navigate to post */
-	onNavigate?: (postId: string) => void;
+	onNavigate?: (postId: string, navigation?: { href: string; post: PostData }) => void;
 }
 
 // ============================================================================

@@ -63,6 +63,9 @@ importers:
       '@sveltejs/package':
         specifier: ^2.5.7
         version: 2.5.7(svelte@5.54.1)(typescript@5.9.3)
+      '@theory-cloud/facetheory':
+        specifier: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz
+        version: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.54.1)
       '@types/node':
         specifier: ^25.5.0
         version: 25.5.0
@@ -3215,6 +3218,36 @@ packages:
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
+
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz':
+    resolution: {tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz}
+    version: 0.3.0
+    engines: {node: '>=24'}
+    peerDependencies:
+      '@emotion/cache': '>=11'
+      '@emotion/react': '>=11'
+      '@emotion/server': '>=11'
+      '@vue/server-renderer': '>=3'
+      antd: '>=5'
+      react: '>=18'
+      react-dom: '>=18'
+      svelte: '>=4'
+      vue: '>=3'
+    peerDependenciesMeta:
+      '@emotion/cache':
+        optional: true
+      '@emotion/react':
+        optional: true
+      '@emotion/server':
+        optional: true
+      '@vue/server-renderer':
+        optional: true
+      antd:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -8659,6 +8692,13 @@ snapshots:
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.1)':
     dependencies:
       '@testing-library/dom': 10.4.1
+
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.54.1)':
+    dependencies:
+      react: 19.2.1
+      react-dom: 19.2.1(react@19.2.1)
+    optionalDependencies:
+      svelte: 5.54.1
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
