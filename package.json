@@ -120,7 +120,8 @@
       "esbuild": "^0.25.8",
       "flatted": "^3.4.2",
       "immutable": "^4.3.8",
-      "@isaacs/brace-expansion": "^5.0.1",
+      "brace-expansion@^2.0.0": "^2.0.3",
+      "brace-expansion@^5.0.0": "^5.0.5",
       "lodash": "^4.17.23",
       "mdast-util-to-hast": "^13.2.1",
       "minimatch@^3.0.0": "3.1.4",
@@ -128,13 +129,16 @@
       "minimatch@^9.0.0": "9.0.7",
       "minimatch@^10.0.0": "10.2.3",
       "node-domexception": "^2.0.2",
+      "picomatch@^2.0.0": "^2.3.2",
+      "picomatch@^4.0.0": "^4.0.4",
       "rollup@^2.0.0": "2.80.0",
       "rollup@^4.0.0": "^4.59.0",
-      "serialize-javascript@^6.0.0": "^7.0.3",
-      "serialize-javascript@^7.0.0": "^7.0.3",
+      "serialize-javascript@^6.0.0": "^7.0.5",
+      "serialize-javascript@^7.0.0": "^7.0.5",
       "tmp": "^0.2.4",
       "undici": "^7.24.4",
-      "workbox-build": "^7.4.0"
+      "workbox-build": "^7.4.0",
+      "yaml@^2.0.0": "^2.8.3"
     }
   }
 }
