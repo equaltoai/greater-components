@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-28T05:08:07.801Z",
+  "generatedAt": "2026-03-28T13:04:48.229Z",
   "ref": "greater-v0.5.8-rc.0",
   "version": "0.5.8-rc.0",
   "checksums": {
@@ -870,7 +870,7 @@
     "packages/adapters/src/stores/notificationStore.d.ts": "sha256-XdEwb/hr4cQYdXUd3Cdb48fXho9/ELcKbq3ELEDo5Hk=",
     "packages/adapters/src/stores/notificationStore.ts": "sha256-8Nfkv+8tkxUOKYKirQDI4Afr+lVmSbd84PaMoQMw4Iw=",
     "packages/adapters/src/stores/presenceStore.d.ts": "sha256-A9+pEhr9YNk9Tbtc/MPo0gadUaHPrRNYY928TnAZ5aU=",
-    "packages/adapters/src/stores/presenceStore.ts": "sha256-WOJsQa1qpHrm0AlxQGEmCZcRl+HggB2QX0m/Dchxh1s=",
+    "packages/adapters/src/stores/presenceStore.ts": "sha256-uYKL9wUZrKvy+7v5673yVu6ZNPSInphoaarYaGf8lm8=",
     "packages/adapters/src/stores/timelineStore.d.ts": "sha256-vcIpheIZwTRmn88plt5WsxwXrGRK+LtVcW63fFgJXcE=",
     "packages/adapters/src/stores/timelineStore.ts": "sha256-gANI/otmRyIH1EZ84znIgqhoTwVcd9YSJ8ECiKkHsFg=",
     "packages/adapters/src/stores/types.d.ts": "sha256-EJsjt8cbqdi4xA+qIJ0Tx9CtYn96zQMwzete6ATsdgU=",
@@ -5777,8 +5777,8 @@
         },
         {
           "path": "src/stores/presenceStore.ts",
-          "checksum": "sha256-WOJsQa1qpHrm0AlxQGEmCZcRl+HggB2QX0m/Dchxh1s=",
-          "size": 28119
+          "checksum": "sha256-uYKL9wUZrKvy+7v5673yVu6ZNPSInphoaarYaGf8lm8=",
+          "size": 28422
         },
         {
           "path": "src/stores/timelineStore.d.ts",
