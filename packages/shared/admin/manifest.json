@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-admin",
-  "version": "0.5.8-rc.1",
+  "version": "0.5.9-rc.0",
   "description": "Admin dashboard components for ActivityPub instance management",
   "components": {
     "Root": {
