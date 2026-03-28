@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../schemas/module-manifest.schema.json",
+  "name": "@equaltoai/greater-components-agent-face",
+  "version": "0.5.8-rc.0",
+  "description": "Agent-first face composition metadata and route-shell boundaries for Greater Components.",
+  "components": {
+    "AgentFacePackageRole": {
+      "description": "Frozen face-level remit for composing shared workflow surfaces into agent-first screens.",
+      "exports": true
+    }
+  },
+  "utilities": {
+    "composition": {
+      "description": "Composition-level metadata for route shells and future screen presets.",
+      "exports": ["AGENT_FACE_PACKAGE_ROLE"]
+    }
+  },
+  "types": ["AgentFacePackageRole"],
+  "dependencies": {
+    "internal": [],
+    "peer": [],
+    "optional": []
+  },
+  "features": {
+    "routeShellBoundaries": true,
+    "compositionMetadata": true
+  }
+}
