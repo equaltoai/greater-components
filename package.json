@@ -12,6 +12,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r build && pnpm format:types",
+    "build:agent-face-example": "pnpm exec vite build --config examples/agent-face-svelte/vite.config.ts",
     "build:facetheory-example": "pnpm exec vite build --config examples/facetheory-svelte/vite.config.ts",
     "build:registry": "pnpm build && node scripts/generate-registry-index.js",
     "generate-registry": "node scripts/generate-registry-index.js",
@@ -43,6 +44,8 @@
     "test:unit": "pnpm -r test:unit",
     "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
     "test:a11y:ci": "node scripts/run-a11y-ci.js",
+    "smoke:agent-face": "pnpm --filter @equaltoai/greater-components-agent-face... build && pnpm build:agent-face-example && pnpm exec tsc --noEmit -p examples/agent-face-svelte/tsconfig.json && pnpm --filter @equaltoai/playground build && pnpm --filter @equaltoai/greater-components exec vitest run tests/agent-face.smoke.test.ts",
+    "test:agent-face": "pnpm smoke:agent-face",
     "test:facetheory": "pnpm build:facetheory-example && pnpm --filter @equaltoai/greater-components-primitives exec vitest run tests/facetheory.integration.test.ts && pnpm exec tsc --noEmit -p examples/facetheory-svelte/tsconfig.json",
     "test:visual": "pnpm -r test:visual",
     "validate:cli": "node scripts/audit-cli-registry.mjs",

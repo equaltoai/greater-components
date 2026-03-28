@@ -1329,6 +1329,9 @@ importers:
 
   packages/shared/notifications:
     dependencies:
+      '@equaltoai/greater-components-adapters':
+        specifier: workspace:*
+        version: link:../../adapters
       '@equaltoai/greater-components-icons':
         specifier: workspace:*
         version: link:../../icons

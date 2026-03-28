@@ -7,11 +7,14 @@
     "skipLibCheck": true,
     "noEmit": true,
     "paths": {
-      "@equaltoai/greater-components-agent": ["../../shared/agent/dist/index.d.ts"],
-      "@equaltoai/greater-components-chat": ["../../shared/chat/dist/index.d.ts"],
-      "@equaltoai/greater-components-messaging": ["../../shared/messaging/dist/index.d.ts"],
-      "@equaltoai/greater-components-notifications": ["../../shared/notifications/dist/index.d.ts"],
-      "@equaltoai/greater-components-soul": ["../../shared/soul/dist/index.d.ts"]
+      "@equaltoai/greater-components-adapters": ["./packages/adapters/dist/index.d.ts"],
+      "@equaltoai/greater-components-agent": ["./packages/shared/agent/dist/index.d.ts"],
+      "@equaltoai/greater-components-chat": ["./packages/shared/chat/dist/index.d.ts"],
+      "@equaltoai/greater-components-messaging": ["./packages/shared/messaging/dist/index.d.ts"],
+      "@equaltoai/greater-components-notifications": [
+        "./packages/shared/notifications/dist/index.d.ts"
+      ],
+      "@equaltoai/greater-components-soul": ["./packages/shared/soul/dist/index.d.ts"]
     }
   },
   "include": ["src/**/*", "src/**/*.svelte"],
