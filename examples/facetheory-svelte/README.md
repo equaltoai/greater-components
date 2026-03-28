@@ -2,7 +2,7 @@
 
 This example shows the recommended FaceTheory host path for Greater Components inside this repo.
 
-The workspace pins FaceTheory `v0.3.0` for this example so the published package includes the runtime-session fixes from FaceTheory issues `#6` and `#7`.
+The workspace pins FaceTheory `v0.3.1` for this example so the published package includes the runtime-session fixes from FaceTheory issues `#6` and `#7`.
 
 ## What It Covers
 

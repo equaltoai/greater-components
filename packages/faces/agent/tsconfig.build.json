@@ -1,0 +1,24 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "allowJs": false,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "paths": {
+      "@equaltoai/greater-components-adapters": ["./packages/adapters/dist/index.d.ts"],
+      "@equaltoai/greater-components-agent": ["./packages/shared/agent/dist/index.d.ts"],
+      "@equaltoai/greater-components-chat": ["./packages/shared/chat/dist/index.d.ts"],
+      "@equaltoai/greater-components-messaging": ["./packages/shared/messaging/dist/index.d.ts"],
+      "@equaltoai/greater-components-notifications": [
+        "./packages/shared/notifications/dist/index.d.ts"
+      ],
+      "@equaltoai/greater-components-soul": ["./packages/shared/soul/dist/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*", "src/**/*.svelte"],
+  "exclude": ["dist", "node_modules", "tests"]
+}

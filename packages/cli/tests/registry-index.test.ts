@@ -64,6 +64,8 @@ const mockIndex = {
 			files: [{ path: 'blog-layout.svelte', checksum: 'sha256-def=' }],
 			dependencies: [],
 			peerDependencies: [],
+			exports: [],
+			types: [],
 		},
 	},
 	shared: {

@@ -34,7 +34,7 @@ import { logger } from '../utils/logger.js';
 import { parseItems, parseItemName, validateParseResult } from '../utils/item-parser.js';
 import {
 	resolveDependencies,
-	getInstallationOrder,
+	getInstallationKeys,
 	type DependencyResolutionResult,
 } from '../utils/dependency-resolver.js';
 import {
@@ -270,7 +270,7 @@ export const addAction = async (
 			});
 			// Merge resolutions
 			for (const dep of additionalResolution.resolved) {
-				if (!resolution.resolved.some((r) => r.name === dep.name)) {
+				if (!resolution.resolved.some((r) => r.key === dep.key)) {
 					resolution.resolved.push(dep);
 				}
 			}
@@ -340,7 +340,7 @@ export const addAction = async (
 			}
 
 			for (const dep of coreResolution.resolved) {
-				if (!resolution.resolved.some((r) => r.name === dep.name)) {
+				if (!resolution.resolved.some((r) => r.key === dep.key)) {
 					resolution.resolved.push(dep);
 				}
 			}
@@ -434,7 +434,7 @@ export const addAction = async (
 	}
 
 	// Get installation order (dependencies first)
-	const installOrder = getInstallationOrder(resolution);
+	const installOrder = getInstallationKeys(resolution);
 
 	// Fetch components
 	const fetchSpinner = ora('Fetching components...').start();
@@ -452,7 +452,7 @@ export const addAction = async (
 		// Build registry map for fetching
 		const registryMap: Record<string, ComponentMetadata> = {};
 		for (const dep of resolution.resolved) {
-			registryMap[dep.name] = dep.metadata;
+			registryMap[dep.key] = dep.metadata;
 		}
 
 		componentFiles = await fetchComponents(installOrder, registryMap, fetchOptions);
@@ -496,7 +496,7 @@ export const addAction = async (
 		let totalFiles = 0;
 
 		for (const dep of resolution.resolved) {
-			const files = componentFiles.get(dep.name);
+			const files = componentFiles.get(dep.key);
 			if (!files) continue;
 
 			const overrideDir = options.path ? path.resolve(cwd, options.path) : null;
@@ -560,7 +560,9 @@ export const addAction = async (
 		let updatedConfig = config;
 
 		for (const dep of resolution.resolved) {
-			updatedConfig = addInstalledComponent(updatedConfig, dep.name, targetRef);
+			if (dep.type !== 'face') {
+				updatedConfig = addInstalledComponent(updatedConfig, dep.name, targetRef);
+			}
 		}
 
 		// Update face in config if face installation

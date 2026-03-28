@@ -5,6 +5,7 @@
 	import { Menu } from '@equaltoai/greater-components-primitives';
 	import { MoreVerticalIcon, TrashIcon } from '@equaltoai/greater-components-icons';
 	import { getMessagesContext } from './context.svelte.js';
+	import ConversationWorkflowSummary from './ConversationWorkflowSummary.svelte';
 	import Message from './Message.svelte';
 	import { getConversationName } from './utils.js';
 
@@ -93,6 +94,13 @@
 				</Menu.Root>
 			{/if}
 		</div>
+
+		{#if messagesState.selectedConversation?.workflowSummary}
+			<ConversationWorkflowSummary
+				summary={messagesState.selectedConversation.workflowSummary}
+				class="messages-thread__workflow-summary"
+			/>
+		{/if}
 
 		{#if isPendingRequest}
 			<div class="messages-thread__request-banner" role="status" aria-live="polite">

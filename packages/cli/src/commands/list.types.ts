@@ -62,6 +62,8 @@ export interface ComponentDisplayItem {
 export interface FaceDisplayItem extends ComponentDisplayItem {
 	type: 'face';
 	includes: FaceManifest['includes'];
+	surfaces?: FaceManifest['surfaces'];
+	exports?: FaceManifest['exports'];
 	styles: FaceManifest['styles'];
 	recommendedShared?: string[];
 	examples?: string[];

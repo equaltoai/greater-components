@@ -9,7 +9,9 @@ import {
 	getFaceManifest,
 	getAllFaceNames,
 	getFaceComponents,
+	getFaceExports,
 	getFaceRecommendedShared,
+	getFaceSurfaces,
 	isComponentInFace,
 } from '../src/registry/faces.js';
 
@@ -30,6 +32,17 @@ describe('faceRegistry', () => {
 		expect(faceRegistry.community).toBeDefined();
 		expect(faceRegistry.community.name).toBe('community');
 		expect(faceRegistry.community.type).toBe('face');
+	});
+
+	it('contains agent face surfaces and exports without treating them as installable components', () => {
+		expect(faceRegistry.agent).toBeDefined();
+		expect(faceRegistry.agent.includes.components).toEqual([]);
+		expect(faceRegistry.agent.surfaces).toHaveLength(5);
+		expect(faceRegistry.agent.exports).toEqual([
+			'AGENT_FACE_PACKAGE_ROLE',
+			'AGENT_FACE_COMPOSITIONS',
+			'getAgentFaceComposition',
+		]);
 	});
 
 	it('all faces have required fields', () => {
@@ -209,6 +222,36 @@ describe('getFaceRecommendedShared', () => {
 		for (const item of shared) {
 			expect(typeof item).toBe('string');
 		}
+	});
+});
+
+describe('agent face exports', () => {
+	it('returns agent face surfaces separately from installable components', () => {
+		expect(getFaceComponents('agent')).toEqual([
+			'button',
+			'modal',
+			'tabs',
+			'agent',
+			'soul',
+			'notifications',
+			'messaging',
+			'chat',
+		]);
+		expect(getFaceSurfaces('agent')).toEqual([
+			'genesis-workspace',
+			'nexus-dashboard',
+			'identity-nexus',
+			'soul-request-center',
+			'graduation-approval-thread',
+		]);
+	});
+
+	it('returns the exported face package symbols for agent', () => {
+		expect(getFaceExports('agent')).toEqual([
+			'AGENT_FACE_PACKAGE_ROLE',
+			'AGENT_FACE_COMPOSITIONS',
+			'getAgentFaceComposition',
+		]);
 	});
 });
 

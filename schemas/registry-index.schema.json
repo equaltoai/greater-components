@@ -165,6 +165,11 @@
           "type": "string",
           "description": "Brief description of the face"
         },
+        "exports": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Exported constants, functions, or metadata from the face package"
+        },
         "includes": {
           "type": "object",
           "properties": {
@@ -210,6 +215,11 @@
           "items": {
             "$ref": "#/definitions/Dependency"
           }
+        },
+        "types": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Exported type names from the face package"
         }
       }
     },

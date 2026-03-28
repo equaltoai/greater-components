@@ -1,0 +1,79 @@
+# Agent Workflow Expansion
+
+This document freezes the package boundaries for the Drones prerequisite milestone and now tracks the reusable M2 workflow surfaces that landed before the face-level M3 expansion spreads across the repo.
+
+## Package ownership
+
+| Package                | Direct package                                | Aggregate export                                     | Owns                                                                                         | Must not own                                                          |
+| ---------------------- | --------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `shared/soul`          | `@equaltoai/greater-components-soul`          | `@equaltoai/greater-components/shared/soul`          | reachability channels, contact preferences, best-contact guidance                            | request/review/graduation flow shells                                 |
+| `shared/agent`         | `@equaltoai/greater-components-agent`         | `@equaltoai/greater-components/shared/agent`         | workflow contracts, slot naming, lifecycle metadata, reusable agent workflow building blocks | inbox delivery, chat transport, route composition                     |
+| `shared/chat`          | `@equaltoai/greater-components-chat`          | `@equaltoai/greater-components/shared/chat`          | assistant transcripts, tool-call views, agent-side conversation panels                       | request queues, signing checkpoints, notification feeds               |
+| `shared/notifications` | `@equaltoai/greater-components-notifications` | `@equaltoai/greater-components/shared/notifications` | ambient alerts, grouping, delivery preferences                                               | primary editors, full workflow state                                  |
+| `shared/messaging`     | `@equaltoai/greater-components-messaging`     | `@equaltoai/greater-components/shared/messaging`     | direct conversations, request inbox threads, handoff messaging                               | lifecycle schema ownership, route shells                              |
+| `faces/agent`          | `@equaltoai/greater-components-agent-face`    | `@equaltoai/greater-components/faces/agent`          | page shells, screen presets, route-level composition boundaries                              | canonical workflow naming, reachability primitives, transport details |
+
+## Naming freeze
+
+`shared/agent` and `faces/agent` intentionally use different direct package names:
+
+- `@equaltoai/greater-components-agent` for reusable workflow contracts and shared metadata
+- `@equaltoai/greater-components-agent-face` for face-level composition surfaces
+
+That split avoids a direct-package collision while preserving the aggregate export paths we want consumers to use inside `@equaltoai/greater-components`.
+
+## Stitch anchors frozen in this milestone
+
+The current Stitch `Agent Genesis` project provides the initial face anchor set:
+
+- `Agent Genesis`
+- `Nexus Dashboard`
+- `Identity Nexus`
+- `Notification Center: Soul Requests`
+- `Direct Message: Graduation Approval`
+
+These anchors establish the face-level shell categories we want to preserve while the shared packages stay reusable.
+
+| Stitch anchor                         | Reusable component families                                                   | Primary package home                                   |
+| ------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `Agent Genesis`                       | `RequestIntakeRail`, `ReviewQueuePanel`, `DecisionSummaryCard`                | `faces/agent` + `shared/agent`                         |
+| `Nexus Dashboard`                     | `GraduationReadinessBoard`, `OperationalSnapshotGrid`, `ContinuityOwnerPanel` | `faces/agent` + `shared/agent`                         |
+| `Identity Nexus`                      | `IdentitySummaryPanel`, `DeclarationLedger`, `ReachabilityEvidenceRail`       | `faces/agent` + `shared/agent` + `shared/soul`         |
+| `Notification Center: Soul Requests`  | `SoulRequestInbox`, `PriorityNotificationDigest`, `RouteFilterTabs`           | `shared/notifications` + `shared/soul` + `faces/agent` |
+| `Direct Message: Graduation Approval` | `ApprovalConversationThread`, `SignerChecklistRail`, `PromotionDecisionPanel` | `shared/messaging` + `shared/agent` + `faces/agent`    |
+
+## Reusable workflow contracts
+
+The lifecycle naming is frozen as:
+
+| Phase         | Purpose                                   | Representative slots                                                      |
+| ------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
+| `request`     | intake and triage                         | `request.summary`, `request.constraints`, `request.routeDecision`         |
+| `review`      | evidence-based evaluation                 | `review.scope`, `review.evidence`, `review.decision`                      |
+| `declaration` | formal statement of status or readiness   | `declaration.statement`, `declaration.scope`, `declaration.confidence`    |
+| `signing`     | approvals and audit trail                 | `signing.signatories`, `signing.approvalMemo`, `signing.auditTrail`       |
+| `graduation`  | readiness gate and launch promotion       | `graduation.checklist`, `graduation.rollbackPlan`, `graduation.readiness` |
+| `continuity`  | post-launch stewardship and feedback loop | `continuity.owner`, `continuity.monitoring`, `continuity.feedbackLoop`    |
+
+Rules frozen in this milestone:
+
+- every slot name is phase-prefixed
+- every state name is phase-prefixed
+- every phase definition supports both human and LLM-oriented consumption
+- the definitions are reusable across host apps instead of being tied to one Simulacrum screen
+
+## Implementation shape
+
+The milestone leaves a concrete handoff for later work:
+
+- `M2`: reusable request/review/declaration/signing/graduation/continuity families now live in `shared/agent`, with supporting workflow views in `shared/chat`, `shared/notifications`, and `shared/messaging`.
+- `M3`: assemble those reusable families into route-level workspaces and checkpoints inside `faces/agent` without leaking Simulacrum-only assumptions back into shared packages.
+
+The canonical metadata lives in [`packages/shared/agent/src/boundaries.ts`](../packages/shared/agent/src/boundaries.ts) and [`packages/faces/agent/src/index.ts`](../packages/faces/agent/src/index.ts).
+
+## Implemented M2 surfaces
+
+- `shared/agent`: `AgentIdentityCard`, `AgentStateBadge`, `SoulRequestCard`, `SoulLifecycleRail`, `ReviewDecisionCard`, `DeclarationPreviewCard`, `SignatureCheckpointCard`, `ContinuityPanel`, and `GraduationSummaryCard`
+- `shared/chat`: workflow moments plus typed declaration, approval, and finalize metadata attached to chat messages
+- `shared/notifications`: `WorkflowNotificationItem` for lifecycle feed events
+- `shared/messaging`: `WorkflowThreadMoment` and `ConversationWorkflowSummary` for async approval and graduation threads

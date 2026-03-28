@@ -236,6 +236,8 @@ export function toFaceDisplayItem(
 		matchScore,
 		matchedTerms,
 		includes: face.includes,
+		surfaces: face.surfaces,
+		exports: face.exports,
 		styles: face.styles,
 		recommendedShared: face.recommendedShared,
 		examples: face.examples,

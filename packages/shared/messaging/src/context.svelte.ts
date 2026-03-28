@@ -9,7 +9,11 @@
 
 import { getContext, setContext } from 'svelte';
 import { SvelteSet } from 'svelte/reactivity';
-import type { MediaCategory } from './types.js';
+import type {
+	MediaCategory,
+	MessagingWorkflowConversationSummary,
+	MessagingWorkflowThreadMoment,
+} from './types.js';
 
 const MESSAGES_CONTEXT_KEY = Symbol('messages-context');
 
@@ -33,6 +37,7 @@ export interface DirectMessage {
 	content: string;
 	createdAt: string;
 	read: boolean;
+	workflowMoments?: MessagingWorkflowThreadMoment[];
 	mediaAttachments?: {
 		url: string;
 		type: string;
@@ -57,6 +62,7 @@ export interface Conversation {
 	folder?: ConversationFolder;
 	participants: MessageParticipant[];
 	lastMessage?: DirectMessage;
+	workflowSummary?: MessagingWorkflowConversationSummary;
 	unreadCount: number;
 	updatedAt: string;
 	/**

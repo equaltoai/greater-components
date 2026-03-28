@@ -117,8 +117,8 @@ describe('Face Installer', () => {
 
 			const items = getFaceItemsForResolution(mockManifest);
 
-			expect(items).toHaveLength(4);
-			expect(items.map((i) => i.name)).toEqual(['button', 'auth', 'feed', 'post']);
+			expect(items).toHaveLength(5);
+			expect(items.map((i) => i.name)).toEqual(['social', 'button', 'auth', 'feed', 'post']);
 		});
 
 		it('filters out not found items', () => {
@@ -170,6 +170,7 @@ describe('Face Installer', () => {
 			resolveFaceDependencies('social', { skipOptional: false });
 
 			// Check that 'shared/notifications' was parsed/included
+			expect(itemParser.parseItemName).toHaveBeenCalledWith('faces/social');
 			expect(itemParser.parseItemName).toHaveBeenCalledWith('shared/notifications');
 		});
 	});

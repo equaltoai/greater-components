@@ -12,6 +12,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r build && pnpm format:types",
+    "build:agent-face-example": "pnpm exec vite build --config examples/agent-face-svelte/vite.config.ts",
     "build:facetheory-example": "pnpm exec vite build --config examples/facetheory-svelte/vite.config.ts",
     "build:registry": "pnpm build && node scripts/generate-registry-index.js",
     "generate-registry": "node scripts/generate-registry-index.js",
@@ -43,6 +44,8 @@
     "test:unit": "pnpm -r test:unit",
     "test:a11y": "pnpm --filter @equaltoai/greater-components-testing run test:a11y",
     "test:a11y:ci": "node scripts/run-a11y-ci.js",
+    "smoke:agent-face": "pnpm --filter @equaltoai/greater-components-agent-face... build && pnpm build:agent-face-example && pnpm exec tsc --noEmit -p examples/agent-face-svelte/tsconfig.json && pnpm --filter @equaltoai/playground build && pnpm --filter @equaltoai/greater-components exec vitest run tests/agent-face.smoke.test.ts",
+    "test:agent-face": "pnpm smoke:agent-face",
     "test:facetheory": "pnpm build:facetheory-example && pnpm --filter @equaltoai/greater-components-primitives exec vitest run tests/facetheory.integration.test.ts && pnpm exec tsc --noEmit -p examples/facetheory-svelte/tsconfig.json",
     "test:visual": "pnpm -r test:visual",
     "validate:cli": "node scripts/audit-cli-registry.mjs",
@@ -77,7 +80,7 @@
     "@graphql-codegen/typescript": "^5.0.9",
     "@graphql-codegen/typescript-operations": "^5.0.9",
     "@sveltejs/package": "^2.5.7",
-    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.0/theory-cloud-facetheory-0.3.0.tgz",
+    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v0.3.1/theory-cloud-facetheory-0.3.1.tgz",
     "@types/node": "^25.5.0",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
@@ -117,7 +120,8 @@
       "esbuild": "^0.25.8",
       "flatted": "^3.4.2",
       "immutable": "^4.3.8",
-      "@isaacs/brace-expansion": "^5.0.1",
+      "brace-expansion@^2.0.0": "^2.0.3",
+      "brace-expansion@^5.0.0": "^5.0.5",
       "lodash": "^4.17.23",
       "mdast-util-to-hast": "^13.2.1",
       "minimatch@^3.0.0": "3.1.4",
@@ -125,13 +129,16 @@
       "minimatch@^9.0.0": "9.0.7",
       "minimatch@^10.0.0": "10.2.3",
       "node-domexception": "^2.0.2",
+      "picomatch@^2.0.0": "^2.3.2",
+      "picomatch@^4.0.0": "^4.0.4",
       "rollup@^2.0.0": "2.80.0",
       "rollup@^4.0.0": "^4.59.0",
-      "serialize-javascript@^6.0.0": "^7.0.3",
-      "serialize-javascript@^7.0.0": "^7.0.3",
+      "serialize-javascript@^6.0.0": "^7.0.5",
+      "serialize-javascript@^7.0.0": "^7.0.5",
       "tmp": "^0.2.4",
       "undici": "^7.24.4",
-      "workbox-build": "^7.4.0"
+      "workbox-build": "^7.4.0",
+      "yaml@^2.0.0": "^2.8.3"
     }
   }
 }

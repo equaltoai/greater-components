@@ -51,6 +51,9 @@ jobs:
       - name: Run unit tests
         run: pnpm test:unit
 
+      - name: Run agent face smoke coverage
+        run: pnpm smoke:agent-face
+
       - name: Build Storybook
         run: |
           if [ -d "apps/playground" ] && [ -f "apps/playground/package.json" ]; then

@@ -7,6 +7,7 @@
 	import { formatMessageTime } from './utils.js';
 	import { getMessagesContext } from './context.svelte.js';
 	import type { DirectMessage, MessagesContext } from './context.svelte.js';
+	import WorkflowThreadMoment from './WorkflowThreadMoment.svelte';
 
 	interface Props {
 		message: DirectMessage;
@@ -79,6 +80,13 @@
 		</div>
 
 		<div class="message__content">{message.content}</div>
+		{#if message.workflowMoments?.length}
+			<div class="message__workflow">
+				{#each message.workflowMoments as moment (moment.id)}
+					<WorkflowThreadMoment {moment} />
+				{/each}
+			</div>
+		{/if}
 		<time class="message__time">{formatMessageTime(message.createdAt)}</time>
 	</div>
 </div>

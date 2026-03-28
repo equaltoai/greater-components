@@ -1,4 +1,10 @@
-import type { Notification, NotificationGroup, NotificationType, Status } from '../types.js';
+import type {
+	Notification,
+	NotificationGroup,
+	NotificationType,
+	Status,
+	WorkflowEventPayload,
+} from '../types.js';
 
 type NotificationWithStatus = Extract<Notification, { status: Status }>;
 
@@ -20,6 +26,63 @@ function getStatusId(notification: Notification): string | undefined {
 	}
 
 	return notification.status?.id ?? undefined;
+}
+
+function getWorkflowEventPayload(notification: Notification): WorkflowEventPayload | undefined {
+	if (notification.type !== 'workflow_event') {
+		return undefined;
+	}
+
+	return notification.workflowEvent;
+}
+
+function normalizeWorkflowGroupSegment(value: string): string {
+	return value
+		.trim()
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
+function getWorkflowEventGroupKey(notification: Notification): string {
+	const workflowEvent = getWorkflowEventPayload(notification);
+	if (!workflowEvent) {
+		return `workflow_event-${notification.id}`;
+	}
+
+	const segments = [
+		workflowEvent.kind,
+		workflowEvent.phase,
+		workflowEvent.targetLabel,
+		workflowEvent.actionLabel,
+		workflowEvent.title,
+	]
+		.filter((value): value is string => Boolean(value))
+		.map(normalizeWorkflowGroupSegment)
+		.filter(Boolean);
+
+	if (segments.length === 0) {
+		return `workflow_event-${notification.id}`;
+	}
+
+	return `workflow_event-${segments.join('-')}`;
+}
+
+function getWorkflowEventGroupTitle(group: NotificationGroup): string {
+	const workflowSource =
+		group.sampleNotification.type === 'workflow_event'
+			? group.sampleNotification
+			: group.notifications.find((notification) => notification.type === 'workflow_event');
+	const workflowEvent = workflowSource ? getWorkflowEventPayload(workflowSource) : undefined;
+	if (!workflowEvent) {
+		return `${group.count} workflow update${group.count === 1 ? '' : 's'}`;
+	}
+
+	if (group.count === 1) {
+		return workflowEvent.title;
+	}
+
+	return `${workflowEvent.title} (${group.count})`;
 }
 
 export function groupNotifications(notifications: Notification[]): NotificationGroup[] {
@@ -91,13 +154,19 @@ function getGroupKey(notification: Notification): string {
 		case 'admin.sign_up':
 		case 'admin.report':
 			return `${notification.type}-group`;
+		case 'workflow_event':
+			return getWorkflowEventGroupKey(notification);
 		default:
 			return fallbackKey;
 	}
 }
 
 export function getGroupTitle(group: NotificationGroup): string {
-	const { type, count, accounts } = group;
+	const { type, count } = group;
+	const accounts =
+		group.accounts.length > 0
+			? group.accounts
+			: group.notifications.map((notification) => notification.account);
 	const primary = accounts[0];
 
 	if (!primary) {
@@ -126,6 +195,8 @@ export function getGroupTitle(group: NotificationGroup): string {
 				return 'New user registration';
 			case 'admin.report':
 				return 'New report submitted';
+			case 'workflow_event':
+				return getWorkflowEventGroupTitle(group);
 			default:
 				return 'Notification';
 		}
@@ -162,6 +233,8 @@ export function getGroupTitle(group: NotificationGroup): string {
 				return `${primary.displayName ?? primary.username} and ${
 					second.displayName ?? second.username
 				} voted in your poll`;
+			case 'workflow_event':
+				return getWorkflowEventGroupTitle(group);
 			default:
 				return `${count} notifications`;
 		}
@@ -185,6 +258,8 @@ export function getGroupTitle(group: NotificationGroup): string {
 			return `${count} new user registrations`;
 		case 'admin.report':
 			return `${count} new reports`;
+		case 'workflow_event':
+			return getWorkflowEventGroupTitle(group);
 		default:
 			return `${count} notifications`;
 	}
@@ -212,6 +287,8 @@ export function getNotificationIcon(type: NotificationType): string {
 			return 'user-check';
 		case 'admin.report':
 			return 'flag';
+		case 'workflow_event':
+			return 'git-branch';
 		default:
 			return 'bell';
 	}
@@ -236,6 +313,8 @@ export function getNotificationColor(type: NotificationType): string {
 		case 'admin.sign_up':
 		case 'admin.report':
 			return 'var(--color-warning, #ffad1f)';
+		case 'workflow_event':
+			return 'var(--color-primary, #1d9bf0)';
 		default:
 			return 'var(--color-text-secondary, #536471)';
 	}

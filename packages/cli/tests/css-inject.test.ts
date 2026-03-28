@@ -67,6 +67,14 @@ describe('generateCssImports', () => {
 		expect(imports[0]).toContain('@equaltoai/greater-components/faces/community/style.css');
 	});
 
+	it('generates agent face import', () => {
+		const config: CssImportConfig = { tokens: false, primitives: false, face: 'agent' };
+		const imports = generateCssImports(config);
+
+		expect(imports).toHaveLength(1);
+		expect(imports[0]).toContain('@equaltoai/greater-components/faces/agent/style.css');
+	});
+
 	it('ignores invalid face names', () => {
 		const config: CssImportConfig = { tokens: false, primitives: false, face: 'invalid-face' };
 		const imports = generateCssImports(config);
@@ -130,6 +138,13 @@ describe('detectExistingCssImports', () => {
 		const result = detectExistingCssImports(content);
 
 		expect(result.hasFace).toBe('community');
+	});
+
+	it('detects agent face import', () => {
+		const content = `import '@equaltoai/greater-components/faces/agent/style.css';`;
+		const result = detectExistingCssImports(content);
+
+		expect(result.hasFace).toBe('agent');
 	});
 
 	it('detects legacy tokens package format', () => {

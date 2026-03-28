@@ -43,6 +43,16 @@
       "description": "Unread message count badge",
       "props": ["count", "max"],
       "exports": true
+    },
+    "WorkflowThreadMoment": {
+      "description": "Structured review and approval thread card for async workflow moments inside messaging threads.",
+      "props": ["moment", "class"],
+      "exports": true
+    },
+    "ConversationWorkflowSummary": {
+      "description": "Compact workflow summary for inbox entries and thread headers.",
+      "props": ["summary", "compact", "class"],
+      "exports": true
     }
   },
   "utilities": {
@@ -66,7 +76,10 @@
     "MessagesState",
     "MessagesContext",
     "MessageMediaUploadMetadata",
-    "MediaCategory"
+    "MediaCategory",
+    "MessagingWorkflowThreadMomentKind",
+    "MessagingWorkflowThreadMoment",
+    "MessagingWorkflowConversationSummary"
   ],
   "dependencies": {
     "internal": [
@@ -94,7 +107,8 @@
     "readReceipts": true,
     "mediaAttachments": true,
     "typingIndicators": true,
-    "virtualScrolling": true
+    "virtualScrolling": true,
+    "workflowThreads": true
   },
   "accessibility": {
     "wcag": "2.1 AA",

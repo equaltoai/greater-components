@@ -43,6 +43,7 @@
 
 	const navLinks = [
 		{ href: '/', label: 'Overview', icon: HomeIcon },
+		{ href: '/agent', label: 'Agent Face', icon: CpuIcon },
 		{ href: '/chat', label: 'Chat Demo', icon: MessageCircleIcon },
 		{ href: '/status', label: 'Status Card Demo', icon: MessageSquareIcon },
 		{ href: '/compose', label: 'Compose Demo', icon: Edit3Icon },

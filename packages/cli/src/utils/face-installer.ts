@@ -59,6 +59,9 @@ export interface FaceInstallResult {
 export function getFaceItemsForResolution(manifest: FaceManifest): ParsedItem[] {
 	const items: ParsedItem[] = [];
 
+	// Add the face package root so metadata-only face exports are vendored alongside its dependencies.
+	items.push(parseItemName(`faces/${manifest.name}`));
+
 	// Add primitives
 	for (const name of manifest.includes.primitives) {
 		items.push(parseItemName(name));
@@ -74,7 +77,7 @@ export function getFaceItemsForResolution(manifest: FaceManifest): ParsedItem[] 
 		items.push(parseItemName(`patterns/${name}`));
 	}
 
-	// Add face-specific components
+	// Add installable face-specific components
 	for (const name of manifest.includes.components) {
 		items.push(parseItemName(name));
 	}
@@ -101,7 +104,7 @@ export function resolveFaceDependencies(
 	if (!options.skipOptional && manifest.recommendedShared) {
 		for (const name of manifest.recommendedShared) {
 			const item = parseItemName(`shared/${name}`);
-			if (item.found && !items.some((i) => i.name === item.name)) {
+			if (item.found && !items.some((i) => i.type === item.type && i.name === item.name)) {
 				items.push(item);
 			}
 		}
@@ -288,6 +291,9 @@ export function displayFaceInstallSummary(result: FaceInstallResult): void {
 	logger.info(`  Shared:     ${chalk.cyan(manifest.includes.shared.length)}`);
 	logger.info(`  Patterns:   ${chalk.cyan(manifest.includes.patterns.length)}`);
 	logger.info(`  Components: ${chalk.cyan(manifest.includes.components.length)}`);
+	if (manifest.surfaces?.length) {
+		logger.info(`  Surfaces:   ${chalk.cyan(manifest.surfaces.length)}`);
+	}
 
 	if (result.cssInjected) {
 		logger.info(chalk.green('\n✓ CSS imports configured'));

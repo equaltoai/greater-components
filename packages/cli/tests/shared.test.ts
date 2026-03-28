@@ -83,6 +83,27 @@ describe('shared module registry', () => {
 			expect(chat?.exports).toContain('Messages');
 		});
 
+		it('should return the full frozen workflow contract for the agent module', () => {
+			const agent = getSharedModule('agent');
+
+			expect(agent).not.toBeNull();
+			expect(agent?.exports).toEqual(
+				expect.arrayContaining([
+					'AGENT_DIRECT_PACKAGE_NAMES',
+					'AGENT_PACKAGE_BOUNDARIES',
+					'AGENT_WORKFLOW_IMPLEMENTATION_SHAPE',
+					'getAgentPackageBoundary',
+					'AGENT_WORKFLOW_PHASES',
+					'AGENT_WORKFLOW_PHASE_DEFINITIONS',
+					'AGENT_WORKFLOW_SLOT_NAMES',
+					'AGENT_WORKFLOW_STATE_NAMES',
+					'getAgentWorkflowPhaseDefinition',
+					'AGENT_STITCH_ANCHOR_DEFINITIONS',
+					'getAgentStitchAnchor',
+				])
+			);
+		});
+
 		it('should return correct metadata for admin module', () => {
 			const admin = getSharedModule('admin');
 
@@ -241,10 +262,11 @@ describe('shared module registry', () => {
 	});
 
 	describe('module dependencies', () => {
-		it('all modules should have svelte as a dependency', () => {
+		it('shared modules with Svelte component files should have svelte as a dependency', () => {
 			for (const module of Object.values(sharedModuleRegistry)) {
+				const hasComponentFiles = module.files.some((file) => file.type === 'component');
 				const hasSvelte = module.dependencies.some((dep) => dep.name === 'svelte');
-				expect(hasSvelte).toBe(true);
+				expect(hasSvelte).toBe(hasComponentFiles);
 			}
 		});
 
@@ -264,10 +286,9 @@ describe('shared module registry', () => {
 	});
 
 	describe('module files', () => {
-		it('all modules should have at least one component file', () => {
+		it('all modules should have at least one vendorable source file', () => {
 			for (const module of Object.values(sharedModuleRegistry)) {
-				const hasComponentFile = module.files.some((f) => f.type === 'component');
-				expect(hasComponentFile).toBe(true);
+				expect(module.files.length).toBeGreaterThan(0);
 			}
 		});
 
