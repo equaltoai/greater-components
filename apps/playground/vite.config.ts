@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectDir = path.dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = path.resolve(projectDir, '..', '..');
 
 const forceEsbuildCssMinify = () => ({
 	name: 'playground-force-esbuild-css-minify',
@@ -29,9 +30,32 @@ export default defineConfig({
 	},
 	resolve: {
 		dedupe: ['svelte'],
-		alias: {
-			$lib: path.resolve(projectDir, 'src/lib'),
-		},
+		alias: [
+			{
+				find: /^@equaltoai\/greater-components\/faces\/agent\/style\.css$/,
+				replacement: path.resolve(workspaceRoot, 'packages/faces/agent/src/theme.css'),
+			},
+			{
+				find: /^@equaltoai\/greater-components\/faces\/agent$/,
+				replacement: path.resolve(workspaceRoot, 'packages/faces/agent/src/index.ts'),
+			},
+			{
+				find: /^@equaltoai\/greater-components\/primitives\/style\.css$/,
+				replacement: path.resolve(workspaceRoot, 'packages/primitives/dist/style.css'),
+			},
+			{
+				find: /^@equaltoai\/greater-components\/primitives$/,
+				replacement: path.resolve(workspaceRoot, 'packages/primitives/src/index.ts'),
+			},
+			{
+				find: /^@equaltoai\/greater-components\/tokens\/theme\.css$/,
+				replacement: path.resolve(workspaceRoot, 'packages/tokens/dist/theme.css'),
+			},
+			{
+				find: '$lib',
+				replacement: path.resolve(projectDir, 'src/lib'),
+			},
+		],
 	},
 	optimizeDeps: {
 		exclude: ['@equaltoai/greater-components-icons'],

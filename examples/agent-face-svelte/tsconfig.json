@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": false,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "paths": {
+      "@equaltoai/greater-components/faces/agent": ["./packages/faces/agent/src/index.ts"],
+      "@equaltoai/greater-components/faces/agent/style.css": [
+        "./packages/faces/agent/src/theme.css"
+      ],
+      "@equaltoai/greater-components/primitives": ["./packages/primitives/src/index.ts"],
+      "@equaltoai/greater-components/primitives/style.css": [
+        "./packages/primitives/dist/style.css"
+      ],
+      "@equaltoai/greater-components/tokens/theme.css": ["./packages/tokens/dist/theme.css"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"],
+  "exclude": ["dist", "node_modules"]
+}
