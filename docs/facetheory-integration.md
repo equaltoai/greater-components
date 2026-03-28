@@ -52,3 +52,32 @@ Route-aware faces expose host hooks so the host can own URL semantics directly:
 - browser defaults can live in a host-only wrapper such as `createBrowserArticleShareHandlers()`
 
 This lets FaceTheory, SvelteKit, and other hosts decide how route state, canonical URLs, and share flows are derived without patching vendored Greater code.
+
+## Theme Bootstrap For SSR
+
+Use the primitives theme helpers to derive a server snapshot, emit strict-CSP-safe document attributes, and then hydrate the client store from the same snapshot:
+
+```ts
+import {
+	createThemeBootstrapSnapshot,
+	getThemeDocumentAttributes,
+	preferencesStore,
+} from '@equaltoai/greater-components/primitives';
+
+const snapshot = createThemeBootstrapSnapshot({
+	cookie: request.headers.get('cookie') ?? '',
+	system: {
+		colorScheme: 'dark',
+		motion: 'normal',
+		highContrast: false,
+	},
+});
+
+const themeAttributes = getThemeDocumentAttributes(snapshot);
+
+// Server: spread themeAttributes onto <html> or <body>.
+// Client: hydrate before mounting the host shell.
+preferencesStore.hydrate(snapshot);
+```
+
+This flow keeps `data-theme`, density, font size, motion, and custom theme attributes aligned across server render and hydration without inline styles or CSP exceptions.
