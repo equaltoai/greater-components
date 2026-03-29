@@ -99,6 +99,9 @@ describe('transformPath (vendored mode)', () => {
 		expect(transformPath('@equaltoai/greater-components-auth', mappings)).toBe(
 			'$lib/components/auth'
 		);
+		expect(transformPath('@equaltoai/greater-components-agent', mappings)).toBe(
+			'$lib/components/agent'
+		);
 	});
 
 	it('rewrites core package imports to greater alias', () => {
@@ -344,6 +347,24 @@ describe('transformImports (auto-detection)', () => {
 		const result = transformImports(content, config);
 
 		expect(result.hasChanges).toBe(true);
+	});
+
+	it('trusts TypeScript extensions even when comments include <script> examples', () => {
+		const content = `/**
+ * @example
+ * \`\`\`svelte
+ * <script>
+ *   import { createGalleryStore } from '@equaltoai/greater-components-artist/subscriptions';
+ * </script>
+ * \`\`\`
+ */
+import type { LesserGraphQLAdapter } from '@equaltoai/greater-components-adapters';
+`;
+
+		const result = transformImports(content, config, 'subscriptions/index.ts');
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("from '$lib/greater/adapters'");
 	});
 });
 
