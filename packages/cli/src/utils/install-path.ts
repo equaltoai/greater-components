@@ -33,6 +33,15 @@ export function getInstallTarget(
 ): InstallTarget {
 	const normalized = normalizeRegistryPath(filePath);
 
+	// Face utility files under src/lib/* use the virtual lib/lib/... prefix so fetch can resolve
+	// them back to packages/faces/*/src/lib/*. They should still install at the lib alias root.
+	if (normalized.startsWith('lib/lib/')) {
+		return {
+			targetDir: resolveAlias(config.aliases.lib, config, cwd),
+			relativePath: normalized.slice('lib/lib/'.length),
+		};
+	}
+
 	// Headless primitives are installed relative to `aliases.hooks` (default: `$lib/primitives`)
 	if (normalized.startsWith('lib/primitives/')) {
 		return {

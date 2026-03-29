@@ -17,6 +17,16 @@ import type { ParsedItem } from './item-parser.js';
 import { logger } from './logger.js';
 import type { RegistryComponent, RegistryFace, RegistryShared } from './registry-index.js';
 
+const CORE_PACKAGE_NAMES = new Set([
+	'primitives',
+	'icons',
+	'tokens',
+	'utils',
+	'content',
+	'adapters',
+	'headless',
+]);
+
 /**
  * Resolved dependency with depth information
  */
@@ -137,6 +147,74 @@ function getRegistryIndexEntry(
 				registryIndex.shared?.[name]
 			);
 	}
+}
+
+function inferRegistryFileType(relativePath: string): ComponentMetadata['files'][number]['type'] {
+	if (relativePath.endsWith('.css')) return 'styles';
+	if (relativePath.endsWith('.d.ts') || relativePath.endsWith('.d.ts.map')) return 'types';
+	if (relativePath.endsWith('.svelte') || relativePath.includes('.svelte.')) return 'component';
+	return 'utils';
+}
+
+function mapRegistryFilePathToInstallPath(
+	name: string,
+	type: ResolvedDependency['type'],
+	sourcePath: string
+): string | null {
+	const withoutSrc = sourcePath.startsWith('src/') ? sourcePath.slice('src/'.length) : sourcePath;
+
+	if (type === 'face') {
+		return `greater/faces/${name}/${withoutSrc}`;
+	}
+
+	if (type === 'shared') {
+		if (CORE_PACKAGE_NAMES.has(name)) {
+			return `greater/${name}/${withoutSrc}`;
+		}
+		return `shared/${name}/${withoutSrc}`;
+	}
+
+	return null;
+}
+
+function hydrateMetadataFilesFromRegistryIndex(
+	name: string,
+	type: ResolvedDependency['type'],
+	metadata: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata,
+	registryIndex?: RegistryIndex
+): ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata {
+	if (!registryIndex) {
+		return metadata;
+	}
+
+	const indexEntry = getRegistryIndexEntry(registryIndex, name, type);
+	if (!indexEntry?.files?.length) {
+		return metadata;
+	}
+
+	const mappedFiles = indexEntry.files
+		.map((file) => {
+			const installPath = mapRegistryFilePathToInstallPath(name, type, file.path);
+			if (!installPath) {
+				return null;
+			}
+
+			return {
+				path: installPath,
+				content: '',
+				type: inferRegistryFileType(installPath),
+			};
+		})
+		.filter((file): file is NonNullable<typeof file> => file !== null);
+
+	if (mappedFiles.length === 0) {
+		return metadata;
+	}
+
+	return {
+		...metadata,
+		files: mappedFiles,
+	};
 }
 
 function dedupeDependencyRequests(requests: DependencyRequest[]): DependencyRequest[] {
@@ -312,6 +390,13 @@ function resolveComponent(
 		});
 		return;
 	}
+
+	metadata = hydrateMetadataFilesFromRegistryIndex(
+		request.name,
+		type,
+		metadata,
+		state.registryIndex
+	);
 
 	const key = getResolutionKey(request.name, type);
 

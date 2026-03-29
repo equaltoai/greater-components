@@ -74,6 +74,23 @@ describe('agent face dependency resolution', () => {
 		);
 	});
 
+	it('hydrates vendored face files from the registry index for the agent face package', () => {
+		const resolution = resolveFaceDependencies('agent', { registryIndex });
+		const faceDependency = resolution?.resolved.find(
+			(dependency) => dependency.name === 'agent' && dependency.type === 'face'
+		);
+
+		expect(faceDependency).toBeDefined();
+		expect(faceDependency?.metadata.files.map((file) => file.path)).toEqual(
+			expect.arrayContaining([
+				'greater/faces/agent/AgentGenesisWorkspace.svelte',
+				'greater/faces/agent/internal/AgentFaceFrame.svelte',
+				'greater/faces/agent/SoulRequestCenter.svelte',
+			])
+		);
+		expect(faceDependency?.metadata.files).toHaveLength(10);
+	});
+
 	it.each([
 		['agent', 'shared'],
 		['shared/agent', 'shared'],
