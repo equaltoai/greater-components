@@ -29,8 +29,8 @@ const FACE_CASES = [
 	{
 		face: 'social',
 		componentFile: 'src/lib/components/Status/Root.svelte',
-		componentImport: '$lib/components/Status/Root.svelte',
 		componentName: 'StatusRoot',
+		componentImportLine: `import StatusRoot from '$lib/components/Status/Root.svelte';`,
 		extraChecks: async (fixtureRoot: string) => {
 			expect(await fs.pathExists(path.join(fixtureRoot, 'src/lib/generics/index.ts'))).toBe(true);
 		},
@@ -38,22 +38,29 @@ const FACE_CASES = [
 	{
 		face: 'blog',
 		componentFile: 'src/lib/components/Article/Root.svelte',
-		componentImport: '$lib/components/Article/Root.svelte',
 		componentName: 'ArticleRoot',
+		componentImportLine: `import ArticleRoot from '$lib/components/Article/Root.svelte';`,
 		extraChecks: async () => {},
 	},
 	{
 		face: 'community',
 		componentFile: 'src/lib/components/Thread/Root.svelte',
-		componentImport: '$lib/components/Thread/Root.svelte',
 		componentName: 'ThreadRoot',
+		componentImportLine: `import ThreadRoot from '$lib/components/Thread/Root.svelte';`,
 		extraChecks: async () => {},
 	},
 	{
 		face: 'artist',
 		componentFile: 'src/lib/components/Artwork/Root.svelte',
-		componentImport: '$lib/components/Artwork/Root.svelte',
 		componentName: 'ArtworkRoot',
+		componentImportLine: `import ArtworkRoot from '$lib/components/Artwork/Root.svelte';`,
+		extraChecks: async () => {},
+	},
+	{
+		face: 'agent',
+		componentFile: 'src/lib/greater/faces/agent/AgentGenesisWorkspace.svelte',
+		componentName: 'AgentGenesisWorkspace',
+		componentImportLine: `import { AgentGenesisWorkspace } from '$lib/greater/faces/agent';`,
 		extraChecks: async () => {},
 	},
 ] as const;
@@ -66,7 +73,7 @@ beforeAll(async () => {
 
 test.each(FACE_CASES)(
 	'CLI Smoke Test: Init, Add, Build ($face face)',
-	async ({ face, componentFile, componentImport, componentName, extraChecks }) => {
+	async ({ face, componentFile, componentImportLine, componentName, extraChecks }) => {
 		await fs.ensureDir(TMP_ROOT);
 		const fixtureRoot = await fs.mkdtemp(path.join(TMP_ROOT, 'cli-fixture-'));
 
@@ -119,7 +126,7 @@ test.each(FACE_CASES)(
 			await fs.writeFile(
 				path.join(fixtureRoot, 'src/routes/+page.svelte'),
 				`<script lang="ts">
-\timport ${componentName} from '${componentImport}';
+\t${componentImportLine}
 \timport { createButton } from '$lib/greater/headless/button';
 
 \tconst button = createButton();

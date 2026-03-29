@@ -53,7 +53,20 @@ const AVAILABLE_FACES = [
 		value: 'artist',
 		description: 'Visual artist portfolios and gallery platforms',
 	},
+	{
+		title: 'Agent',
+		value: 'agent',
+		description: 'Agent workflow shells and lifecycle-driven workspace UI',
+	},
 ] as const;
+
+const AVAILABLE_FACE_VALUES = AVAILABLE_FACES.map((face) => face.value).filter(
+	(face): face is Exclude<(typeof AVAILABLE_FACES)[number]['value'], null> => face !== null
+);
+
+function isAvailableFace(face: string): face is (typeof AVAILABLE_FACE_VALUES)[number] {
+	return AVAILABLE_FACE_VALUES.includes(face as (typeof AVAILABLE_FACE_VALUES)[number]);
+}
 
 /**
  * Format project type for display
@@ -260,9 +273,9 @@ export const initAction = async (options: {
 
 	// Validate face option if provided
 	let selectedFace: string | null = options.face || null;
-	if (selectedFace && !['social', 'blog', 'community', 'artist'].includes(selectedFace)) {
+	if (selectedFace && !isAvailableFace(selectedFace)) {
 		logger.error(chalk.red(`\n✖ Invalid face: ${selectedFace}`));
-		logger.note(chalk.dim('  Available faces: social, blog, community, artist\n'));
+		logger.note(chalk.dim(`  Available faces: ${AVAILABLE_FACE_VALUES.join(', ')}\n`));
 		process.exit(1);
 	}
 
@@ -548,5 +561,5 @@ export const initCommand = new Command()
 	.option('--cwd <path>', 'Working directory (default: current directory)')
 	.option('--ref <tag>', 'Pin to a specific version tag (default: latest stable)')
 	.option('--skip-css', 'Skip automatic CSS injection')
-	.option('--face <name>', 'Pre-select a face (social, blog, community, artist)')
+	.option('--face <name>', `Pre-select a face (${AVAILABLE_FACE_VALUES.join(', ')})`)
 	.action(initAction);
