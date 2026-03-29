@@ -12,6 +12,7 @@
 		content: string;
 		timestamp?: Date;
 		avatar?: string;
+		avatarLabel?: string;
 		streaming?: boolean;
 		status?: 'pending' | 'streaming' | 'complete' | 'error';
 		error?: string;
@@ -32,6 +33,7 @@
 		content,
 		timestamp,
 		avatar,
+		avatarLabel,
 		streaming = false,
 		status = 'complete',
 		error,
@@ -53,6 +55,7 @@
 	{content}
 	{timestamp}
 	{avatar}
+	{avatarLabel}
 	{streaming}
 	{status}
 	{error}
