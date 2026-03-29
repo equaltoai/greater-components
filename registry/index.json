@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-03-28T21:44:46.421Z",
+  "generatedAt": "2026-03-29T04:36:17.210Z",
   "ref": "greater-v0.6.0",
   "version": "0.6.0",
   "checksums": {
@@ -1345,10 +1345,10 @@
     "packages/shared/chat/src/ChatContainer.svelte": "sha256-4L3qh3ZYzITj/wNgVQ4SyUL0uPzj75GflXgEJxADyGA=",
     "packages/shared/chat/src/ChatHeader.svelte": "sha256-KlBPVy0gdgTJ0mgn4/InoGnwSxyuJvwsP0DS2q0kxYg=",
     "packages/shared/chat/src/ChatInput.svelte": "sha256-lU6LPsynBURd6Mb4hNJ4SiRIQ5EtrFVChV4KbrvWGOo=",
-    "packages/shared/chat/src/ChatMessage.svelte": "sha256-KctMvuR3m9bI+cQY9CQgk9isJLCv5j3wGtQ8di/TbZ4=",
+    "packages/shared/chat/src/ChatMessage.svelte": "sha256-PpUf+DIw5R0FvGV4g9b4qHU8hrZQceQ9al/ha3R1y20=",
     "packages/shared/chat/src/ChatMessageAction.svelte": "sha256-pEcRybpKjXTvpfBEUzEK5ZsqQFY7Mequc8wdLyCBHso=",
     "packages/shared/chat/src/ChatMessages.svelte": "sha256-QB0ljSSirBW556RPlFF3AksCrw21dxW8tjoFq4XYz84=",
-    "packages/shared/chat/src/ChatSettings.svelte": "sha256-zIVcGor/IlsIxCLVf1qHxyEkS2Kje/YvbSYbhNs2S0E=",
+    "packages/shared/chat/src/ChatSettings.svelte": "sha256-G6aFv+AQ6MQa8eVDZGZFAB2kiWZK8f0pI3bcu+fO1YI=",
     "packages/shared/chat/src/ChatSuggestions.svelte": "sha256-xJJBHn5k57LVPEZMJJw4QY754aK1w3DDSl+u1RC4DMI=",
     "packages/shared/chat/src/ChatThreadView.svelte": "sha256-znXq/fPkCGPHD/HWkIGWK7JFFXC47q3yhqHN1O5YfcY=",
     "packages/shared/chat/src/ChatToolCall.svelte": "sha256-HlxCSmS74iaX3wSVYFTawJOqbyj6JJ4qP8ZPKtmQnH0=",
@@ -9078,8 +9078,8 @@
         },
         {
           "path": "src/ChatMessage.svelte",
-          "checksum": "sha256-KctMvuR3m9bI+cQY9CQgk9isJLCv5j3wGtQ8di/TbZ4=",
-          "size": 12636
+          "checksum": "sha256-PpUf+DIw5R0FvGV4g9b4qHU8hrZQceQ9al/ha3R1y20=",
+          "size": 12849
         },
         {
           "path": "src/ChatMessageAction.svelte",
@@ -9093,8 +9093,8 @@
         },
         {
           "path": "src/ChatSettings.svelte",
-          "checksum": "sha256-zIVcGor/IlsIxCLVf1qHxyEkS2Kje/YvbSYbhNs2S0E=",
-          "size": 11235
+          "checksum": "sha256-G6aFv+AQ6MQa8eVDZGZFAB2kiWZK8f0pI3bcu+fO1YI=",
+          "size": 11298
         },
         {
           "path": "src/ChatSuggestions.svelte",
