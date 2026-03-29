@@ -12,6 +12,27 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.6.2-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.6.1-rc.0...greater-v0.6.2-rc.0) (2026-03-29)
+
+
+### Bug Fixes
+
+* flatten lib alias install targets ([4e94ea2](https://github.com/equaltoai/greater-components/commit/4e94ea2b96139c5fffd18fb02350792dadcab870))
+* restore vendored add paths for social and agent flows ([83d3fc2](https://github.com/equaltoai/greater-components/commit/83d3fc213e8cdcfb505809cbf29240e28cb119b4))
+* vendor full face package files ([0628d5c](https://github.com/equaltoai/greater-components/commit/0628d5c368704563e5eaaf6bfc05f60e9ae5214f))
+
+
+### Tests
+
+* align add command mocks with resolver keys ([9f113ac](https://github.com/equaltoai/greater-components/commit/9f113ac823f3ee852095eb95a4f7c0c63bfa0ed1))
+
+
+### Chores
+
+* **main:** release greater 0.6.1 ([a18809f](https://github.com/equaltoai/greater-components/commit/a18809f86b319798f507a50620f3a2e5109804c6))
+* **main:** release greater 0.6.1 ([54b4c42](https://github.com/equaltoai/greater-components/commit/54b4c4250ab1584e60c7ac2acf6b23b7dbbfa1d2))
+* **release:** prepare metadata ([036243b](https://github.com/equaltoai/greater-components/commit/036243b67f98e21b47f49e0c0243cc51bd49ee1a))
+
 ## [0.6.1](https://github.com/equaltoai/greater-components/compare/greater-v0.6.0...greater-v0.6.1) (2026-03-29)
 
 ### Bug Fixes
