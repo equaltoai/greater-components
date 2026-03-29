@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { getFaceManifest, getFaceExports, getFaceSurfaces } from '../src/registry/faces.js';
+import { resolveDependencies } from '../src/utils/dependency-resolver.js';
 import { resolveFaceDependencies } from '../src/utils/face-installer.js';
+import { parseItemName } from '../src/utils/item-parser.js';
 import type { RegistryIndex } from '../src/utils/registry-index.js';
 
 const registryIndex = JSON.parse(
@@ -56,6 +58,39 @@ describe('agent face dependency resolution', () => {
 			])
 		);
 	});
+
+	it('resolves the agent face against the registry index without self-cycling', () => {
+		const resolution = resolveFaceDependencies('agent', { registryIndex });
+
+		expect(resolution).not.toBeNull();
+		expect(resolution?.success).toBe(true);
+		expect(resolution?.circular).toEqual([]);
+		expect(resolution?.missing).toEqual([]);
+		expect(resolution?.resolved).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ name: 'agent', type: 'face', isDirectRequest: true }),
+				expect.objectContaining({ name: 'agent', type: 'shared' }),
+			])
+		);
+	});
+
+	it.each([
+		['agent', 'shared'],
+		['shared/agent', 'shared'],
+		['faces/agent', 'face'],
+	] as const)(
+		'resolves %s against the registry index without circular dependencies',
+		(input, type) => {
+			const resolution = resolveDependencies([parseItemName(input)], { registryIndex });
+
+			expect(resolution.success).toBe(true);
+			expect(resolution.circular).toEqual([]);
+			expect(resolution.missing).toEqual([]);
+			expect(resolution.resolved).toEqual(
+				expect.arrayContaining([expect.objectContaining({ name: 'agent', type })])
+			);
+		}
+	);
 
 	it.each(['social', 'blog', 'artist'] as const)(
 		'keeps %s registry dependencies limited to vendorable workspace packages',

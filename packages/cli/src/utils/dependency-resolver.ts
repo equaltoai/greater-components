@@ -15,6 +15,7 @@ import { getSharedModule, type SharedModuleMetadata } from '../registry/shared.j
 import { getPattern, type PatternMetadata } from '../registry/patterns.js';
 import type { ParsedItem } from './item-parser.js';
 import { logger } from './logger.js';
+import type { RegistryComponent, RegistryFace, RegistryShared } from './registry-index.js';
 
 /**
  * Resolved dependency with depth information
@@ -76,6 +77,8 @@ interface DependencyRequest {
 	metadata?: ComponentMetadata | FaceManifest | SharedModuleMetadata | PatternMetadata | null;
 }
 
+type RegistryIndexEntry = RegistryComponent | RegistryFace | RegistryShared;
+
 function createDependencyRequest(
 	name: string,
 	preferredType?: ResolvedDependency['type'],
@@ -106,6 +109,33 @@ function formatDependencyLabel(name: string, type: ResolvedDependency['type']): 
 			return `patterns/${name}`;
 		default:
 			return name;
+	}
+}
+
+function getRegistryIndexEntry(
+	registryIndex: RegistryIndex,
+	name: string,
+	type?: ResolvedDependency['type']
+): RegistryIndexEntry | undefined {
+	switch (type) {
+		case 'face':
+			return (
+				registryIndex.faces?.[name] ??
+				registryIndex.shared?.[name] ??
+				registryIndex.components[name]
+			);
+		case 'shared':
+			return (
+				registryIndex.shared?.[name] ??
+				registryIndex.faces?.[name] ??
+				registryIndex.components[name]
+			);
+		default:
+			return (
+				registryIndex.components[name] ??
+				registryIndex.faces?.[name] ??
+				registryIndex.shared?.[name]
+			);
 	}
 }
 
@@ -148,8 +178,11 @@ function getComponentDependencies(
 
 	// If we have a registry index, use it as the source of truth for internal dependencies
 	if (registryIndex) {
-		const indexEntry =
-			registryIndex.components[name] || registryIndex.faces?.[name] || registryIndex.shared?.[name];
+		const indexEntry = getRegistryIndexEntry(
+			registryIndex,
+			name,
+			metadata.type as ResolvedDependency['type']
+		);
 
 		if (indexEntry) {
 			// In registry-index schema: 'dependencies' are internal registry deps
@@ -317,10 +350,7 @@ function resolveComponent(
 	let npmDepsFound = false;
 
 	if (state.registryIndex) {
-		const indexEntry =
-			state.registryIndex.components[request.name] ||
-			state.registryIndex.faces?.[request.name] ||
-			state.registryIndex.shared?.[request.name];
+		const indexEntry = getRegistryIndexEntry(state.registryIndex, request.name, type);
 
 		if (indexEntry && indexEntry.peerDependencies && indexEntry.peerDependencies.length > 0) {
 			for (const dep of indexEntry.peerDependencies) {
