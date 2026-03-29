@@ -200,6 +200,18 @@ describe('ChatMessage.svelte', () => {
 
 			expect(container.querySelector('.chat-message__avatar')).toBeTruthy();
 		});
+
+		it('uses a custom avatar label when provided', () => {
+			const { getByText } = render(ChatMessageHarness, {
+				props: {
+					role: 'assistant',
+					content: 'Hello',
+					avatarLabel: 'PAI',
+				},
+			});
+
+			expect(getByText('PAI')).toBeInTheDocument();
+		});
 	});
 
 	describe('Copy Button', () => {

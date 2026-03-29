@@ -97,6 +97,18 @@ describe('ChatSettings.svelte', () => {
 			expect(container.querySelector('select')).toBeTruthy();
 		});
 
+		it('renders the model label in markup', () => {
+			const { getByText, container } = render(ChatSettingsHarness, {
+				props: {
+					open: true,
+					settings: createDefaultSettings(),
+				},
+			});
+
+			expect(getByText('Model')).toBeInTheDocument();
+			expect(container.querySelector('#chat-settings-model')).toBeTruthy();
+		});
+
 		it('displays available models', () => {
 			const availableModels = [
 				{ id: 'gpt-4', name: 'GPT-4' },
