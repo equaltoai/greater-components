@@ -14,22 +14,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.6.1-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.6.0-rc.0...greater-v0.6.1-rc.0) (2026-03-29)
 
-
 ### Bug Fixes
 
-* address chat and agent installer regressions ([4a59b4d](https://github.com/equaltoai/greater-components/commit/4a59b4ddfe3662c3a6e89283d445300021471ac3))
-* align shared chat with primitive props ([f2bbd4e](https://github.com/equaltoai/greater-components/commit/f2bbd4eb98f9ece3f08250cc6d27a554c96ee430))
-* preserve binary assets during greater update ([78ed152](https://github.com/equaltoai/greater-components/commit/78ed152055f599877f4ffdeb2f831045b859bb2e))
-* preserve binary assets during update ([9f8c075](https://github.com/equaltoai/greater-components/commit/9f8c07560d2b4ee8316a0938bf76087dfa85f8ff))
-* resolve agent face registry collisions ([d8fdbd6](https://github.com/equaltoai/greater-components/commit/d8fdbd67f76548d4f5b0770086ff15979658b730))
-
+- address chat and agent installer regressions ([4a59b4d](https://github.com/equaltoai/greater-components/commit/4a59b4ddfe3662c3a6e89283d445300021471ac3))
+- align shared chat with primitive props ([f2bbd4e](https://github.com/equaltoai/greater-components/commit/f2bbd4eb98f9ece3f08250cc6d27a554c96ee430))
+- preserve binary assets during greater update ([78ed152](https://github.com/equaltoai/greater-components/commit/78ed152055f599877f4ffdeb2f831045b859bb2e))
+- preserve binary assets during update ([9f8c075](https://github.com/equaltoai/greater-components/commit/9f8c07560d2b4ee8316a0938bf76087dfa85f8ff))
+- resolve agent face registry collisions ([d8fdbd6](https://github.com/equaltoai/greater-components/commit/d8fdbd67f76548d4f5b0770086ff15979658b730))
 
 ### Chores
 
-* **main:** release greater 0.6.0 ([e402979](https://github.com/equaltoai/greater-components/commit/e402979259132d49076faed18bc062538c870efd))
-* **main:** release greater 0.6.0 ([74fc2d6](https://github.com/equaltoai/greater-components/commit/74fc2d675bcc673dab6564e06e7218b4ec276f5b))
-* refresh registry checksums for chat fixes ([7d6cbaa](https://github.com/equaltoai/greater-components/commit/7d6cbaa0037d793102b5d91f0766bfc6e5fafefb))
-* **release:** prepare metadata ([5edebd1](https://github.com/equaltoai/greater-components/commit/5edebd1c410c3de428e5463d4abe7f0e0a080cd8))
+- **main:** release greater 0.6.0 ([e402979](https://github.com/equaltoai/greater-components/commit/e402979259132d49076faed18bc062538c870efd))
+- **main:** release greater 0.6.0 ([74fc2d6](https://github.com/equaltoai/greater-components/commit/74fc2d675bcc673dab6564e06e7218b4ec276f5b))
+- refresh registry checksums for chat fixes ([7d6cbaa](https://github.com/equaltoai/greater-components/commit/7d6cbaa0037d793102b5d91f0766bfc6e5fafefb))
+- **release:** prepare metadata ([5edebd1](https://github.com/equaltoai/greater-components/commit/5edebd1c410c3de428e5463d4abe7f0e0a080cd8))
 
 ## [0.6.0](https://github.com/equaltoai/greater-components/compare/greater-v0.5.8...greater-v0.6.0) (2026-03-28)
 
