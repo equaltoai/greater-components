@@ -57,6 +57,7 @@ const LEGACY_PACKAGE_REWRITES: Record<string, string> = {
 const SHARED_MODULES = [
 	'auth',
 	'admin',
+	'agent',
 	'compose',
 	'messaging',
 	'search',
@@ -430,7 +431,7 @@ export function transformImports(
 	// Detect file type from extension or content
 	const ext = filePath?.split('.').pop()?.toLowerCase();
 
-	if (ext === 'svelte' || content.includes('<script')) {
+	if (ext === 'svelte') {
 		return transformSvelteImports(content, config);
 	}
 
@@ -438,7 +439,17 @@ export function transformImports(
 		return transformCssFileImports(content, config);
 	}
 
-	// Default to TypeScript/JavaScript handling
+	// Trust explicit file extensions before content sniffing so JSDoc examples like
+	// `<script>` inside .ts files do not get misclassified as Svelte.
+	if (ext) {
+		return transformTypeScriptImports(content, config);
+	}
+
+	if (content.includes('<script')) {
+		return transformSvelteImports(content, config);
+	}
+
+	// Default to TypeScript/JavaScript handling for extensionless text files.
 	return transformTypeScriptImports(content, config);
 }
 

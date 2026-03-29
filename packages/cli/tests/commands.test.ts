@@ -199,7 +199,7 @@ describe('cli commands', () => {
 		mockFetchComponents.mockResolvedValue(
 			new Map([
 				[
-					'button',
+					'primitive:button',
 					[
 						{
 							path: 'Button.svelte',
@@ -367,7 +367,7 @@ describe('cli commands', () => {
 		mockFetchComponents.mockResolvedValue(
 			new Map([
 				[
-					'button',
+					'primitive:button',
 					[
 						{
 							path: 'Button.svelte',
@@ -441,7 +441,7 @@ describe('cli commands', () => {
 		mockFetchComponents.mockResolvedValue(
 			new Map([
 				[
-					'button',
+					'primitive:button',
 					[
 						{
 							path: 'Button.svelte',
