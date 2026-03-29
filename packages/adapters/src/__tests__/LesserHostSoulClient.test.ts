@@ -257,6 +257,111 @@ describe('LesserHostSoulClient', () => {
 		);
 	});
 
+	it('starts registration-scoped mint conversations as an SSE request', async () => {
+		fetchMock.mockResolvedValueOnce(
+			new Response('event: token\ndata: {"chunk":"Hello"}\n\n', {
+				status: 200,
+				headers: {
+					'content-type': 'text/event-stream',
+				},
+			})
+		);
+
+		const response = await client.startMintConversationStream('registration-1', {
+			model: 'gpt-5.4',
+			message: 'Draft the declaration.',
+		});
+
+		const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+		const headers = new Headers(init.headers);
+		expect(response.headers.get('content-type')).toBe('text/event-stream');
+		expect(fetchMock).toHaveBeenCalledWith(
+			'https://lesser.host/api/v1/soul/agents/register/registration-1/mint-conversation',
+			expect.any(Object)
+		);
+		expect(init.method).toBe('POST');
+		expect(headers.get('accept')).toBe('text/event-stream');
+		expect(init.body).toBe(
+			JSON.stringify({
+				model: 'gpt-5.4',
+				message: 'Draft the declaration.',
+			})
+		);
+	});
+
+	it('lists agent-scoped mint conversations with query params', async () => {
+		fetchMock.mockResolvedValueOnce(
+			jsonResponse({
+				version: '1',
+				count: 1,
+				conversations: [
+					{
+						agent_id: 'agent-1',
+						conversation_id: 'conversation-1',
+						model: 'gpt-5.4',
+						status: 'completed',
+						created_at: '2026-03-29T00:00:00Z',
+					},
+				],
+			})
+		);
+
+		const response = await client.listAgentMintConversations('agent-1', { limit: 5 });
+		const [url] = fetchMock.mock.calls[0] as [string];
+		const parsed = new URL(url);
+
+		expect(parsed.pathname).toBe('/api/v1/soul/agents/agent-1/mint-conversations');
+		expect(parsed.searchParams.get('limit')).toBe('5');
+		expect(response.conversations[0]).toMatchObject({
+			agent_id: 'agent-1',
+			conversation_id: 'conversation-1',
+			status: 'completed',
+		});
+	});
+
+	it('finalizes agent-scoped mint conversations with the published request shape', async () => {
+		fetchMock.mockResolvedValueOnce(
+			jsonResponse({
+				version: '1',
+				agent: {
+					agent_id: '0x' + '1'.repeat(64),
+					status: 'active',
+					profile: {
+						display_name: 'Agent One',
+					},
+				},
+				published_version: 3,
+			})
+		);
+
+		const response = await client.finalizeAgentMintConversation('agent-1', 'conversation-1', {
+			boundary_signatures: {
+				memory: '0xsigned',
+			},
+			issued_at: '2026-03-29T00:00:00Z',
+			expected_version: 2,
+			self_attestation: 'I affirm these declarations.',
+		});
+
+		const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+		expect(fetchMock).toHaveBeenCalledWith(
+			'https://lesser.host/api/v1/soul/agents/agent-1/mint-conversation/conversation-1/finalize',
+			expect.any(Object)
+		);
+		expect(init.method).toBe('POST');
+		expect(init.body).toBe(
+			JSON.stringify({
+				boundary_signatures: {
+					memory: '0xsigned',
+				},
+				issued_at: '2026-03-29T00:00:00Z',
+				expected_version: 2,
+				self_attestation: 'I affirm these declarations.',
+			})
+		);
+		expect(response.published_version).toBe(3);
+	});
+
 	it('surfaces typed lesser-host preference violations', async () => {
 		const errorBody: SoulCommSendErrorEnvelope = {
 			error: {

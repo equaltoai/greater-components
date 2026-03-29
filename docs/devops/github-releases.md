@@ -4,9 +4,9 @@ Greater Components distributes the `greater` CLI via GitHub Releases (it is not 
 
 ## Branching Model
 
-- `staging` is the default integration branch; feature PRs target `staging` and must include a changeset.
+- `staging` is the default integration branch; feature PRs target `staging` and may include a changeset when you want release notes or internal bookkeeping.
 - `premain` is release-candidate only; changes are promoted from `staging → premain` for integration testing.
-- `main` is release-only; changes are promoted from `premain → main` for stable releases.
+- `main` is stable release promotion only; changes are normally promoted from `premain → main`, and may be promoted directly from `staging → main` when we intentionally bypass the RC lane.
 
 ## Release Definition (Client-Facing)
 
@@ -31,7 +31,7 @@ Release candidates are cut from `premain` using a version like `X.Y.Z-rc.N`. The
 
 ## Creating a Stable Release (Maintainers)
 
-1. Promote changes from `premain → main` via PR.
+1. Promote changes from `premain → main` via PR, or from `staging → main` when you explicitly want to bypass the RC lane.
 2. On merge, GitHub Actions opens a stable release PR into `main` (release-please), aligned to the latest `premain` RC baseline.
 3. Approve + merge the stable release PR (no manual versioning).
 4. GitHub Actions tags `greater-vX.Y.Z` from `main` and publishes release artifacts automatically.
@@ -40,6 +40,7 @@ Release candidates are cut from `premain` using a version like `X.Y.Z-rc.N`. The
 
 - `staging` runs checks only; release tags are only ever created from `premain` (RC) and `main` (stable).
 - `registry/latest.json` always points to the latest **stable** tag (it is not updated by `-rc.*` prereleases).
+- When bypassing RC, rehearse both `staging → premain` and `staging → main` merge paths before merging the staging PR so either promotion lane stays conflict-free.
 
 ## Installing the CLI (Consumers)
 
