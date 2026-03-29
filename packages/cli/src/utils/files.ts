@@ -38,6 +38,13 @@ export async function readFile(filePath: string): Promise<string> {
 }
 
 /**
+ * Read file as raw bytes
+ */
+export async function readFileBuffer(filePath: string): Promise<Buffer> {
+	return fs.readFile(filePath);
+}
+
+/**
  * Check if file exists
  */
 export async function fileExists(filePath: string): Promise<boolean> {

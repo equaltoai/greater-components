@@ -102,6 +102,10 @@ vi.mock('../src/utils/install-path.js', () => ({
 // We mock files.js to verify calls and simulate errors
 vi.mock('../src/utils/files.js', () => ({
 	readFile: vi.fn(async (p) => mockFs.createFsMock().readFile(p)),
+	readFileBuffer: vi.fn(async (p) => {
+		const content = await mockFs.createFsMock().readFile(p);
+		return Buffer.isBuffer(content) ? content : Buffer.from(content, 'utf-8');
+	}),
 	writeFile: vi.fn(async (p, c) => mockFs.createFsMock().writeFile(p, c)),
 	fileExists: vi.fn(async (p) => mockFs.createFsMock().pathExists(p)),
 }));
@@ -218,6 +222,55 @@ describe('Update Command', () => {
 			);
 			expect(mockFs.get('/src/lib/greater/adapters/soul/index.ts')).toContain(
 				'SoulAgentChannelPreferencesRequest'
+			);
+		});
+
+		it('preserves binary assets when updating core packages', async () => {
+			const config = createTestConfig({
+				installed: [createInstalledComponent('primitives')],
+			});
+			mockFs.set('/components.json', JSON.stringify(config));
+			mockFs.set('/src/lib/greater/primitives/assets/greater-default-profile.png', 'old-bytes');
+
+			const avatarBytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+			const { getComponent } = await import('../src/registry/index.js');
+			vi.mocked(getComponent).mockReturnValueOnce(
+				createTestComponentMetadata('primitives', {
+					type: 'shared',
+					files: [
+						{
+							path: 'greater/primitives/assets/greater-default-profile.png',
+							content: '',
+							type: 'styles',
+							transform: false,
+						},
+					],
+					tags: ['core', 'primitives'],
+				})
+			);
+
+			const { fetchComponentFiles } = await import('../src/utils/fetch.js');
+			vi.mocked(fetchComponentFiles).mockResolvedValueOnce({
+				files: [
+					{
+						path: 'greater/primitives/assets/greater-default-profile.png',
+						content: '',
+						raw: avatarBytes,
+						type: 'styles',
+						transform: false,
+					},
+				],
+				ref: 'greater-v0.6.0',
+			});
+
+			const { updateAction } = await import('../src/commands/update.js');
+			await updateAction(['primitives'], { cwd: '/', yes: true, force: true });
+
+			const { writeFile } = await import('../src/utils/files.js');
+			expect(writeFile).toHaveBeenCalledWith(
+				expect.stringContaining('greater-default-profile.png'),
+				avatarBytes
 			);
 		});
 
