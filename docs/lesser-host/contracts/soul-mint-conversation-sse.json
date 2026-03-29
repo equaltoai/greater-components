@@ -1,0 +1,99 @@
+{
+  "kind": "lesser-host.soul-mint-conversation-sse",
+  "version": "1",
+  "contentType": "text/event-stream",
+  "routes": [
+    "/api/v1/soul/agents/register/{id}/mint-conversation",
+    "/api/v1/soul/agents/{agentId}/mint-conversation"
+  ],
+  "request": {
+    "contentType": "application/json",
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["message"],
+      "properties": {
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conversation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "events": {
+    "conversation_start": {
+      "terminal": false,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["conversation_id", "model"],
+        "properties": {
+          "conversation_id": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "delta": {
+      "terminal": false,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text"],
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "conversation_done": {
+      "terminal": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["conversation_id", "full_response"],
+        "properties": {
+          "conversation_id": {
+            "type": "string"
+          },
+          "full_response": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "error": {
+      "terminal": true,
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "completion": {
+    "terminalEvents": ["conversation_done", "error"],
+    "resume": {
+      "lastEventIdSupported": false,
+      "conversationIdInput": "conversation_id",
+      "strategy": "start a later POST on the same route with conversation_id set to the existing conversation id"
+    }
+  }
+}
