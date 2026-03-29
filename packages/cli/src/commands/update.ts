@@ -22,7 +22,7 @@ import {
 import { resolveRef } from '../utils/registry-index.js';
 import { getComponent } from '../registry/index.js';
 import { fetchComponentFiles, type FetchOptions } from '../utils/fetch.js';
-import { readFile, writeFile, fileExists } from '../utils/files.js';
+import { readFile, readFileBuffer, writeFile, fileExists } from '../utils/files.js';
 import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js';
 
 import { transformImports } from '../utils/transform.js';
@@ -136,6 +136,22 @@ function displayConflictDiff(diff: DiffResult): void {
 	logger.info('\n' + coloredLines.join('\n') + '\n');
 }
 
+function createBinaryDiffResult(filePath: string, identical: boolean): DiffResult {
+	return {
+		identical,
+		isBinary: true,
+		hunks: [],
+		stats: identical
+			? { additions: 0, deletions: 0, unchanged: 1, totalLines: 1 }
+			: { additions: 1, deletions: 1, unchanged: 0, totalLines: 2 },
+		unifiedDiff: identical
+			? ''
+			: filePath
+				? `Binary files a/${filePath} and b/${filePath} differ`
+				: 'Binary files differ',
+	};
+}
+
 /**
  * Update a single component
  */
@@ -195,6 +211,9 @@ async function updateComponent(
 	for (const file of remoteFiles) {
 		const localPath = getInstalledFilePath(file.path, config, cwd);
 		const remoteContent = file.content;
+		const remoteRaw = file.raw;
+		const isBinaryFile = !!remoteRaw;
+		const shouldBypassTransform = file.transform === false;
 
 		const status: FileUpdateStatus = {
 			filePath: file.path,
@@ -207,11 +226,12 @@ async function updateComponent(
 
 		if (localExists) {
 			try {
-				const localContent = await readFile(localPath);
-				const diff = computeDiff(localContent, remoteContent, {
-					filePath: file.path,
-					contextLines: 3,
-				});
+				const diff = isBinaryFile
+					? createBinaryDiffResult(file.path, (await readFileBuffer(localPath)).equals(remoteRaw))
+					: computeDiff(await readFile(localPath), remoteContent, {
+							filePath: file.path,
+							contextLines: 3,
+						});
 
 				status.diff = diff;
 
@@ -266,8 +286,14 @@ async function updateComponent(
 
 				// Apply transformation and write file
 				if (!options.dryRun) {
-					const transformed = transformImports(remoteContent, config, file.path);
-					await writeFile(localPath, transformed.content);
+					if (isBinaryFile) {
+						await writeFile(localPath, remoteRaw);
+					} else if (shouldBypassTransform) {
+						await writeFile(localPath, remoteContent);
+					} else {
+						const transformed = transformImports(remoteContent, config, file.path);
+						await writeFile(localPath, transformed.content);
+					}
 				}
 
 				status.status = 'updated';
@@ -281,8 +307,14 @@ async function updateComponent(
 
 			if (!options.dryRun) {
 				try {
-					const transformed = transformImports(remoteContent, config, file.path);
-					await writeFile(localPath, transformed.content);
+					if (isBinaryFile) {
+						await writeFile(localPath, remoteRaw);
+					} else if (shouldBypassTransform) {
+						await writeFile(localPath, remoteContent);
+					} else {
+						const transformed = transformImports(remoteContent, config, file.path);
+						await writeFile(localPath, transformed.content);
+					}
 				} catch (error) {
 					status.status = 'error';
 					status.error = error instanceof Error ? error.message : String(error);
