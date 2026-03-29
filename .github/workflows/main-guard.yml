@@ -15,11 +15,11 @@ permissions:
 
 jobs:
   guard:
-    name: Enforce release-only main
+    name: Enforce promotion-only main
     runs-on: ubuntu-latest
 
     steps:
-      - name: Require PR from premain or release PR branch
+      - name: Require PR from staging, premain, or release PR branch
         run: |
           base_ref="${{ github.base_ref }}"
           if [[ -z "${base_ref}" ]]; then
@@ -34,8 +34,8 @@ jobs:
           echo "Base: ${base_ref}"
           echo "Head: ${head_ref}"
 
-          if [ "${head_ref}" != "premain" ] && [ "${head_ref}" != "release-please--branches--main--components--greater" ]; then
-            echo "::error::main is release-only. Allowed sources: premain (promotion), release-please--branches--main--components--greater (release PR)."
+          if [ "${head_ref}" != "staging" ] && [ "${head_ref}" != "premain" ] && [ "${head_ref}" != "release-please--branches--main--components--greater" ]; then
+            echo "::error::main is promotion-only. Allowed sources: staging (direct promotion), premain (rc promotion), release-please--branches--main--components--greater (release PR)."
             exit 1
           fi
 

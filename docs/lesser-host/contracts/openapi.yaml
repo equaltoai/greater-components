@@ -741,6 +741,106 @@ components:
         promotion:
           $ref: '#/components/schemas/SoulAgentPromotion'
 
+    AIUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        provider:
+          type: string
+        model:
+          type: string
+        input_tokens:
+          type: integer
+          minimum: 0
+        output_tokens:
+          type: integer
+          minimum: 0
+        total_tokens:
+          type: integer
+          minimum: 0
+        duration_ms:
+          type: integer
+          minimum: 0
+        tool_calls:
+          type: integer
+          minimum: 0
+
+    SoulMintConversationSSEInput:
+      type: object
+      additionalProperties: false
+      required: [message]
+      properties:
+        model:
+          type: string
+          minLength: 1
+        conversation_id:
+          type: string
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+
+    SoulMintConversation:
+      type: object
+      additionalProperties: false
+      required:
+        - agent_id
+        - conversation_id
+        - model
+        - status
+        - created_at
+      properties:
+        agent_id:
+          type: string
+          pattern: '^0x[0-9a-fA-F]{64}$'
+        conversation_id:
+          type: string
+        model:
+          type: string
+        messages:
+          type: string
+        produced_declarations:
+          type: string
+        status:
+          type: string
+          enum: [in_progress, completed, failed]
+        usage:
+          $ref: '#/components/schemas/AIUsage'
+        charged_credits:
+          type: integer
+          minimum: 0
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+
+    SoulMintConversationCompleteRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        declarations:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/SoulMintConversationDeclarationPreview'
+
+    SoulAgentMintConversationsResponse:
+      type: object
+      additionalProperties: false
+      required: [version, conversations, count]
+      properties:
+        version:
+          type: string
+          enum: ['1']
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SoulMintConversation'
+        count:
+          type: integer
+          minimum: 0
+
     SoulMintConversationFinalizeBeginRequest:
       type: object
       additionalProperties: false
@@ -860,6 +960,24 @@ components:
         self_attestation:
           type: string
 
+    SoulMintConversationFinalizeRequest:
+      type: object
+      additionalProperties: false
+      required: [boundary_signatures, issued_at, expected_version, self_attestation]
+      properties:
+        boundary_signatures:
+          type: object
+          additionalProperties:
+            type: string
+        issued_at:
+          type: string
+          format: date-time
+        expected_version:
+          type: integer
+          minimum: 0
+        self_attestation:
+          type: string
+
     SoulMintConversationFinalizePreflightResponse:
       type: object
       additionalProperties: false
@@ -902,6 +1020,20 @@ components:
         registration_preview:
           type: object
           additionalProperties: true
+
+    SoulMintConversationFinalizeResponse:
+      type: object
+      additionalProperties: false
+      required: [version, agent, published_version]
+      properties:
+        version:
+          type: string
+          enum: ['1']
+        agent:
+          $ref: '#/components/schemas/SoulAgentIdentity'
+        published_version:
+          type: integer
+          minimum: 1
 
 paths:
   /api/v1/soul/agents/{agentId}/channels:
@@ -1286,6 +1418,178 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorEnvelope'
 
+  /api/v1/soul/agents/register/{id}/mint-conversation:
+    post:
+      operationId: soulStartMintConversationSSE
+      summary: Start or continue a registration-scoped mint conversation over SSE
+      description: |
+        Streams the assistant response using `text/event-stream`.
+        Canonical SSE event names and payload schemas are published in `docs/contracts/soul-mint-conversation-sse.json`.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoulMintConversationSSEInput'
+      responses:
+        '200':
+          description: SSE stream of mint-conversation events
+          content:
+            text/event-stream:
+              schema:
+                type: string
+          x-sse-contract:
+            file: './soul-mint-conversation-sse.json'
+            version: '1'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}:
+    get:
+      operationId: soulGetMintConversation
+      summary: Get a registration-scoped mint conversation record
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulMintConversation'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/complete:
+    post:
+      operationId: soulCompleteMintConversation
+      summary: Complete a registration-scoped mint conversation and persist declarations
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoulMintConversationCompleteRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulMintConversation'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize/preflight:
     post:
       operationId: soulMintConversationFinalizePreflight
@@ -1377,6 +1681,294 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SoulMintConversationFinalizePreflightResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize:
+    post:
+      operationId: soulMintConversationFinalize
+      summary: Finalize and publish a registration-scoped mint conversation
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoulMintConversationFinalizeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulMintConversationFinalizeResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/mint-conversations:
+    get:
+      operationId: soulAgentListMintConversations
+      summary: List agent-scoped mint conversation records
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulAgentMintConversationsResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/mint-conversation:
+    post:
+      operationId: soulStartAgentMintConversationSSE
+      summary: Start or continue an agent-scoped mint conversation over SSE
+      description: |
+        Streams the assistant response using `text/event-stream`.
+        Canonical SSE event names and payload schemas are published in `docs/contracts/soul-mint-conversation-sse.json`.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoulMintConversationSSEInput'
+      responses:
+        '200':
+          description: SSE stream of mint-conversation events
+          content:
+            text/event-stream:
+              schema:
+                type: string
+          x-sse-contract:
+            file: './soul-mint-conversation-sse.json'
+            version: '1'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}:
+    get:
+      operationId: soulAgentGetMintConversation
+      summary: Get an agent-scoped mint conversation record
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulMintConversation'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/complete:
+    post:
+      operationId: soulAgentCompleteMintConversation
+      summary: Complete an agent-scoped mint conversation and persist declarations
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoulMintConversationCompleteRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulMintConversation'
         '400':
           description: Invalid request
           content:
@@ -1501,6 +2093,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SoulMintConversationFinalizePreflightResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize:
+    post:
+      operationId: soulAgentMintConversationFinalize
+      summary: Finalize and publish an agent-scoped mint conversation
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^0x[0-9a-fA-F]{64}$'
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoulMintConversationFinalizeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoulMintConversationFinalizeResponse'
         '400':
           description: Invalid request
           content:

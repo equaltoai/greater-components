@@ -2,13 +2,14 @@
 	import {
 		AgentIdentityCard,
 		ContinuityPanel,
+		type ContinuityFollowUp,
 		DeclarationPreviewCard,
 		SoulLifecycleRail,
 		formatAgentWorkflowLabel,
 	} from '@equaltoai/greater-components-agent';
 	import { BestWayToContact, ChannelsDisplay } from '@equaltoai/greater-components-soul';
 	import AgentFaceFrame from './internal/AgentFaceFrame.svelte';
-	import type { IdentityNexusData } from './types.js';
+	import type { AgentFaceTimelineMoment, IdentityNexusData } from './types.js';
 
 	interface Props {
 		data: IdentityNexusData;
@@ -16,18 +17,17 @@
 	}
 
 	let { data, class: className = '' }: Props = $props();
+	const mapFollowUpToTimelineMoment = (followUp: ContinuityFollowUp): AgentFaceTimelineMoment => ({
+		id: followUp.id,
+		title: followUp.title,
+		summary: followUp.summary,
+		meta: followUp.cadence ? `${followUp.owner.name} · ${followUp.cadence}` : followUp.owner.name,
+		tone: 'accent',
+	});
 	const continuityTimeline = $derived.by(() =>
 		data.timeline?.length
 			? data.timeline
-			: (data.continuity?.followUps ?? []).map((followUp) => ({
-					id: followUp.id,
-					title: followUp.title,
-					summary: followUp.summary,
-					meta: followUp.cadence
-						? `${followUp.owner.name} · ${followUp.cadence}`
-						: followUp.owner.name,
-					tone: 'accent' as const,
-				}))
+			: (data.continuity?.followUps ?? []).map(mapFollowUpToTimelineMoment)
 	);
 </script>
 

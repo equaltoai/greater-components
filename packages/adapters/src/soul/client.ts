@@ -18,6 +18,23 @@ export type SoulAgentCommQueueQuery = NonNullable<
 >;
 export type SoulAgentCommQueueItem = components['schemas']['SoulAgentCommQueueItem'];
 export type SoulAgentCommQueueResponse = components['schemas']['SoulAgentCommQueueResponse'];
+export type SoulMintConversationSSEInput = components['schemas']['SoulMintConversationSSEInput'];
+export type SoulMintConversation = components['schemas']['SoulMintConversation'];
+export type SoulMintConversationCompleteRequest =
+	components['schemas']['SoulMintConversationCompleteRequest'];
+export type SoulMintConversationFinalizeBeginRequest =
+	components['schemas']['SoulMintConversationFinalizeBeginRequest'];
+export type SoulMintConversationFinalizePreflightResponse =
+	components['schemas']['SoulMintConversationFinalizePreflightResponse'];
+export type SoulMintConversationFinalizeRequest =
+	components['schemas']['SoulMintConversationFinalizeRequest'];
+export type SoulMintConversationFinalizeResponse =
+	components['schemas']['SoulMintConversationFinalizeResponse'];
+export type SoulAgentMintConversationsQuery = NonNullable<
+	operations['soulAgentListMintConversations']['parameters']['query']
+>;
+export type SoulAgentMintConversationsResponse =
+	components['schemas']['SoulAgentMintConversationsResponse'];
 export type SoulResolveResponse = components['schemas']['SoulResolveResponse'];
 export type SoulSearchQuery = NonNullable<operations['soulSearch']['parameters']['query']>;
 export type SoulSearchResult = components['schemas']['SoulSearchResult'];
@@ -63,11 +80,12 @@ type QueryParamValue =
 	| undefined
 	| ReadonlyArray<QueryParamPrimitive | null | undefined>;
 
-interface RequestJsonOptions {
+interface RequestOptions {
 	method?: 'GET' | 'POST' | 'PUT';
 	body?: unknown;
 	query?: Record<string, QueryParamValue>;
 	headers?: HeadersInit;
+	accept?: string;
 }
 
 export function createLesserHostSoulClient(
@@ -199,6 +217,200 @@ export class LesserHostSoulClient {
 		return this.requestJson(`/api/v1/soul/comm/status/${encodeURIComponent(id)}`);
 	}
 
+	async startMintConversationStream(
+		registrationId: string,
+		request: SoulMintConversationSSEInput
+	): Promise<Response> {
+		const id = registrationId.trim();
+		if (!id) throw new Error('registrationId is required');
+
+		return this.requestEventStream(
+			`/api/v1/soul/agents/register/${encodeURIComponent(id)}/mint-conversation`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
+	async getMintConversation(
+		registrationId: string,
+		conversationId: string
+	): Promise<SoulMintConversation> {
+		const id = registrationId.trim();
+		if (!id) throw new Error('registrationId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/register/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}`
+		);
+	}
+
+	async completeMintConversation(
+		registrationId: string,
+		conversationId: string,
+		request: SoulMintConversationCompleteRequest = {}
+	): Promise<SoulMintConversation> {
+		const id = registrationId.trim();
+		if (!id) throw new Error('registrationId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/register/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}/complete`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
+	async buildMintConversationFinalizePreflight(
+		registrationId: string,
+		conversationId: string,
+		request: SoulMintConversationFinalizeBeginRequest
+	): Promise<SoulMintConversationFinalizePreflightResponse> {
+		const id = registrationId.trim();
+		if (!id) throw new Error('registrationId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/register/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}/finalize/preflight`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
+	async finalizeMintConversation(
+		registrationId: string,
+		conversationId: string,
+		request: SoulMintConversationFinalizeRequest
+	): Promise<SoulMintConversationFinalizeResponse> {
+		const id = registrationId.trim();
+		if (!id) throw new Error('registrationId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/register/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}/finalize`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
+	async listAgentMintConversations(
+		agentId: string,
+		query: SoulAgentMintConversationsQuery = {}
+	): Promise<SoulAgentMintConversationsResponse> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		return this.requestJson(`/api/v1/soul/agents/${encodeURIComponent(id)}/mint-conversations`, {
+			query,
+		});
+	}
+
+	async startAgentMintConversationStream(
+		agentId: string,
+		request: SoulMintConversationSSEInput
+	): Promise<Response> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		return this.requestEventStream(
+			`/api/v1/soul/agents/${encodeURIComponent(id)}/mint-conversation`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
+	async getAgentMintConversation(
+		agentId: string,
+		conversationId: string
+	): Promise<SoulMintConversation> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}`
+		);
+	}
+
+	async completeAgentMintConversation(
+		agentId: string,
+		conversationId: string,
+		request: SoulMintConversationCompleteRequest = {}
+	): Promise<SoulMintConversation> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}/complete`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
+	async buildAgentMintConversationFinalizePreflight(
+		agentId: string,
+		conversationId: string,
+		request: SoulMintConversationFinalizeBeginRequest
+	): Promise<SoulMintConversationFinalizePreflightResponse> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}/finalize/preflight`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
+	async finalizeAgentMintConversation(
+		agentId: string,
+		conversationId: string,
+		request: SoulMintConversationFinalizeRequest
+	): Promise<SoulMintConversationFinalizeResponse> {
+		const id = agentId.trim();
+		if (!id) throw new Error('agentId is required');
+
+		const conversation = conversationId.trim();
+		if (!conversation) throw new Error('conversationId is required');
+
+		return this.requestJson(
+			`/api/v1/soul/agents/${encodeURIComponent(id)}/mint-conversation/${encodeURIComponent(conversation)}/finalize`,
+			{
+				method: 'POST',
+				body: request,
+			}
+		);
+	}
+
 	/**
 	 * Resolve `*.lessersoul.eth` to an agentId via ENS text records if possible,
 	 * otherwise fall back to lesser-host's resolve endpoint.
@@ -243,9 +455,27 @@ export class LesserHostSoulClient {
 		return this.updateAgentChannelPreferences(agentId, request);
 	}
 
-	private async requestJson<T>(pathname: string, options: RequestJsonOptions = {}): Promise<T> {
+	private async requestJson<T>(pathname: string, options: RequestOptions = {}): Promise<T> {
+		const response = await this.request(pathname, options);
+		return (await response.json()) as T;
+	}
+
+	private async requestEventStream(
+		pathname: string,
+		options: RequestOptions = {}
+	): Promise<Response> {
+		return this.request(pathname, {
+			...options,
+			accept: 'text/event-stream',
+		});
+	}
+
+	private async request(pathname: string, options: RequestOptions = {}): Promise<Response> {
 		const url = buildUrl(this.baseUrl, pathname, options.query);
 		const headers = mergeHeaders(this.headers, options.headers);
+		if (options.accept) {
+			headers.set('accept', options.accept);
+		}
 
 		let body: BodyInit | undefined;
 		if (options.body !== undefined) {
@@ -265,7 +495,7 @@ export class LesserHostSoulClient {
 			throw await createLesserHostSoulClientError(response);
 		}
 
-		return (await response.json()) as T;
+		return response;
 	}
 }
 
