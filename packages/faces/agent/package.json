@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-agent-face",
-  "version": "0.6.0",
+  "version": "0.6.1-rc.0",
   "type": "module",
   "description": "Agent-first face compositions and route-shell boundaries for Greater Components",
   "license": "AGPL-3.0-only",

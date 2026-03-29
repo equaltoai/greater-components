@@ -49,6 +49,11 @@
 		avatar?: string;
 
 		/**
+		 * Optional short label used when the avatar falls back to text.
+		 */
+		avatarLabel?: string;
+
+		/**
 		 * Whether to show the avatar
 		 * @default true
 		 */
@@ -129,6 +134,7 @@
 		content,
 		timestamp,
 		avatar,
+		avatarLabel,
 		showAvatar = true,
 		streaming = false,
 		status = 'complete',
@@ -186,7 +192,7 @@
 	});
 
 	// Avatar label for display (short text for chat bubbles)
-	const avatarLabel = $derived.by(() => {
+	const computedAvatarLabel = $derived.by(() => {
 		switch (role) {
 			case 'user':
 				return 'You';
@@ -198,6 +204,8 @@
 				return '?';
 		}
 	});
+
+	const effectiveAvatarLabel = $derived(avatarLabel ?? computedAvatarLabel);
 </script>
 
 <div
@@ -217,7 +225,7 @@
 				<Avatar
 					src={avatar}
 					name={avatarName}
-					label={avatarLabel}
+					label={effectiveAvatarLabel}
 					fallbackMode="label"
 					size="sm"
 					shape="circle"

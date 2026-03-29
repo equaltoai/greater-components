@@ -209,20 +209,15 @@
 </script>
 
 {#if open}
-	<Modal
-		bind:open
-		title="Chat Settings"
-		size="md"
-		closable={true}
-		class={`chat-settings ${className}`.trim()}
-	>
+	<Modal bind:open title="Chat Settings" size="md" class={`chat-settings ${className}`.trim()}>
 		<div class="chat-settings__content">
 			<!-- Model Selection -->
 			<div class="chat-settings__group">
+				<label class="chat-settings__label" for="chat-settings-model">Model</label>
 				<Select
+					id="chat-settings-model"
 					value={localSettings.model ?? ''}
 					options={modelOptions}
-					label="Model"
 					placeholder="Select a model"
 					onchange={handleModelChange}
 				/>
