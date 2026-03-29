@@ -12,6 +12,29 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.7.0](https://github.com/equaltoai/greater-components/compare/greater-v0.6.1...greater-v0.7.0) (2026-03-29)
+
+### Bug Fixes
+
+- flatten lib alias install targets ([4e94ea2](https://github.com/equaltoai/greater-components/commit/4e94ea2b96139c5fffd18fb02350792dadcab870))
+- harden vendored face export transforms ([6557b2c](https://github.com/equaltoai/greater-components/commit/6557b2c5f09e27796199d7f522859c5783ca54b8))
+- harden vendored face export transforms ([2d21a8d](https://github.com/equaltoai/greater-components/commit/2d21a8d5a8ae324004f73e79b0cdaa85fe10eb82))
+- restore vendored add paths for social and agent flows ([83d3fc2](https://github.com/equaltoai/greater-components/commit/83d3fc213e8cdcfb505809cbf29240e28cb119b4))
+- vendor full face package files ([0628d5c](https://github.com/equaltoai/greater-components/commit/0628d5c368704563e5eaaf6bfc05f60e9ae5214f))
+
+### Tests
+
+- align add command mocks with resolver keys ([9f113ac](https://github.com/equaltoai/greater-components/commit/9f113ac823f3ee852095eb95a4f7c0c63bfa0ed1))
+
+### Chores
+
+- **premain:** release greater 0.6.2-rc.0 ([136347e](https://github.com/equaltoai/greater-components/commit/136347ef0035a1d2fea2b4dc7c143cf6b4b28e89))
+- **premain:** release greater 0.6.2-rc.0 ([30de810](https://github.com/equaltoai/greater-components/commit/30de81015589a655ce2c31b94235aa9a5b1e5ec0))
+- **premain:** release greater 0.7.0-rc.0 ([37b119c](https://github.com/equaltoai/greater-components/commit/37b119c26adace6f7935828d75a1438f3477ecb0))
+- **premain:** release greater 0.7.0-rc.0 ([cd4e858](https://github.com/equaltoai/greater-components/commit/cd4e858745dedff05d24a260ea2b22c3c28e6269))
+- **release:** prepare metadata ([3c544ef](https://github.com/equaltoai/greater-components/commit/3c544efada421686274b915fcff50fa498abb705))
+- **release:** prepare metadata ([0f790d7](https://github.com/equaltoai/greater-components/commit/0f790d7437873ec8580d93445f831b61494ba3e1))
+
 ## [0.7.0-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.6.2-rc.0...greater-v0.7.0-rc.0) (2026-03-29)
 
 ### Features
