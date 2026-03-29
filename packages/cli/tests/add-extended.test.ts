@@ -178,7 +178,7 @@ describe('Add Command Extended', () => {
 			vi.mocked(faceInstaller.updateConfigWithFace).mockResolvedValue(
 				createTestConfig({ css: { face: 'social' } })
 			);
-			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(new Map([['button', []]]));
+			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(new Map([['primitive:button', []]]));
 
 			await addAction(['faces/social'], { cwd: '/' });
 
@@ -286,7 +286,7 @@ describe('Add Command Extended', () => {
 
 			(getComponent as any).mockReturnValue(MOCK_BUTTON_COMPONENT);
 			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(
-				new Map([['button', [{ path: 'p', content: 'c', type: 'component' }]]])
+				new Map([['primitive:button', [{ path: 'p', content: 'c', type: 'component' }]]])
 			);
 			vi.mocked(files.writeComponentFilesWithTransform).mockRejectedValue(new Error('Write Error'));
 
@@ -435,7 +435,7 @@ describe('Add Command Extended', () => {
 
 			vi.mocked(files.fileExists).mockResolvedValue(true);
 			vi.mocked(fetchUtils.fetchComponents).mockResolvedValue(
-				new Map([['button', MOCK_BUTTON_COMPONENT.files]])
+				new Map([['primitive:button', MOCK_BUTTON_COMPONENT.files]])
 			);
 
 			// Confirm install: true
