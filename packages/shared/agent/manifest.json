@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-agent",
-  "version": "0.6.1",
+  "version": "0.6.2-rc.0",
   "description": "Agent-first workflow surfaces, contracts, package boundaries, and rollout shape metadata for Greater Components.",
   "components": {
     "AgentIdentityCard": {
