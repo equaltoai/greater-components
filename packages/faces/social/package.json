@@ -116,7 +116,7 @@
     "axe-core": "^4.11.1",
     "jsdom": "^29.0.1",
     "svelte": "^5.54.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "vite": "^8.0.2",
     "vitest": "^4.1.0"
   },
