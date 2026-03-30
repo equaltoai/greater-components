@@ -59,7 +59,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@vitest/coverage-v8": "^4.1.0",
     "@vitest/ui": "^4.1.0",
-    "chromatic": "^15.3.0",
+    "chromatic": "^16.0.0",
     "commander": "^14.0.3",
     "jsdom": "^29.0.1",
     "playwright": "^1.58.2",
