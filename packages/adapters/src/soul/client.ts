@@ -1,5 +1,8 @@
 import type { components, operations } from '../rest/generated/lesser-host-api.js';
+import { resolveFetchLike, type FetchLike } from '../fetch.js';
 import { resolveSoulAgentIdFromEnsTextRecord } from './ens.js';
+
+export type { FetchLike } from '../fetch.js';
 
 export type ErrorEnvelope = components['schemas']['ErrorEnvelope'];
 export type SoulAgentChannelsResponse = components['schemas']['SoulAgentChannelsResponse'];
@@ -44,8 +47,6 @@ export type SoulCommSendResponse = components['schemas']['SoulCommSendResponse']
 export type SoulCommSendErrorEnvelope = components['schemas']['SoulCommSendErrorEnvelope'];
 export type SoulCommStatusResponse = components['schemas']['SoulCommStatusResponse'];
 export type SoulCommStatusErrorEnvelope = components['schemas']['SoulCommStatusErrorEnvelope'];
-
-export type FetchLike = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
 export interface LesserHostSoulClientConfig {
 	baseUrl: string;
@@ -105,7 +106,7 @@ export class LesserHostSoulClient {
 			throw new Error('LesserHostSoulClient requires baseUrl');
 		}
 		this.baseUrl = trimTrailingSlashes(baseUrl);
-		this.fetch = config.fetch ?? fetch;
+		this.fetch = resolveFetchLike(config.fetch);
 		this.headers = {
 			accept: 'application/json',
 			...(config.headers ?? {}),

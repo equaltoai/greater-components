@@ -18,10 +18,12 @@ function jsonResponse(body: unknown, status = 200): Response {
 
 describe('LesserSoulClient', () => {
 	const fetchMock = vi.fn();
+	const originalFetch = globalThis.fetch;
 	let client: LesserSoulClient;
 
 	beforeEach(() => {
 		fetchMock.mockReset();
+		globalThis.fetch = originalFetch;
 		client = new LesserSoulClient({
 			baseUrl: 'https://lesser.example/',
 			fetch: fetchMock,
@@ -29,6 +31,10 @@ describe('LesserSoulClient', () => {
 				authorization: 'Bearer test-token',
 			},
 		});
+	});
+
+	afterEach(() => {
+		globalThis.fetch = originalFetch;
 	});
 
 	it('fetches soul inventory and preserves ens_name for consumers', async () => {
@@ -130,5 +136,36 @@ describe('LesserSoulClient', () => {
 				message: 'Soul not found',
 			});
 		}
+	});
+
+	it('wraps the default browser fetch so it keeps the global receiver', async () => {
+		const browserFetch = vi.fn(function (
+			this: typeof globalThis,
+			_input: RequestInfo | URL,
+			_init?: RequestInit
+		) {
+			if (this !== globalThis) {
+				throw new TypeError("Failed to execute 'fetch' on 'Window': Illegal invocation");
+			}
+
+			return Promise.resolve(
+				jsonResponse({
+					count: 0,
+					souls: [],
+				})
+			);
+		});
+
+		globalThis.fetch = browserFetch as typeof globalThis.fetch;
+
+		const browserClient = new LesserSoulClient({
+			baseUrl: 'https://lesser.example/',
+		});
+
+		await expect(browserClient.getMySouls()).resolves.toMatchObject({
+			count: 0,
+			souls: [],
+		});
+		expect(browserFetch).toHaveBeenCalledOnce();
 	});
 });
