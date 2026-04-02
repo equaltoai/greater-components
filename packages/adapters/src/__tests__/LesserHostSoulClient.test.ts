@@ -18,10 +18,12 @@ function jsonResponse(body: unknown, status = 200): Response {
 
 describe('LesserHostSoulClient', () => {
 	const fetchMock = vi.fn();
+	const originalFetch = globalThis.fetch;
 	let client: LesserHostSoulClient;
 
 	beforeEach(() => {
 		fetchMock.mockReset();
+		globalThis.fetch = originalFetch;
 		client = new LesserHostSoulClient({
 			baseUrl: 'https://lesser.host/',
 			fetch: fetchMock,
@@ -29,6 +31,10 @@ describe('LesserHostSoulClient', () => {
 				authorization: 'Bearer test-token',
 			},
 		});
+	});
+
+	afterEach(() => {
+		globalThis.fetch = originalFetch;
 	});
 
 	it('updates channel preferences with JSON request bodies', async () => {
@@ -390,5 +396,41 @@ describe('LesserHostSoulClient', () => {
 				requestId: 'req-123',
 			});
 		}
+	});
+
+	it('wraps the default browser fetch so lesser-host lookups keep the global receiver', async () => {
+		const browserFetch = vi.fn(function (
+			this: typeof globalThis,
+			_input: RequestInfo | URL,
+			_init?: RequestInit
+		) {
+			if (this !== globalThis) {
+				throw new TypeError("Failed to execute 'fetch' on 'Window': Illegal invocation");
+			}
+
+			return Promise.resolve(
+				jsonResponse({
+					agentId: 'agent-1',
+					channels: {
+						ens: null,
+						email: null,
+						phone: null,
+					},
+					contactPreferences: null,
+					updatedAt: '2026-04-02T00:00:00Z',
+				})
+			);
+		});
+
+		globalThis.fetch = browserFetch as typeof globalThis.fetch;
+
+		const browserClient = new LesserHostSoulClient({
+			baseUrl: 'https://lesser.host/',
+		});
+
+		await expect(browserClient.getAgentChannels('agent-1')).resolves.toMatchObject({
+			agentId: 'agent-1',
+		});
+		expect(browserFetch).toHaveBeenCalledOnce();
 	});
 });
