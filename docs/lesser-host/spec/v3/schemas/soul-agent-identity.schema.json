@@ -5,13 +5,44 @@
   "type": "object",
   "additionalProperties": false,
   "required": ["agent_id", "domain", "local_id", "wallet", "status"],
+  "$defs": {
+    "avatar_style": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["style_id"],
+      "properties": {
+        "style_id": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "style_name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "renderer_address": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+        "image": { "type": "string", "minLength": 1 }
+      }
+    },
+    "avatar": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "token_uri": { "type": "string", "minLength": 1 },
+        "image": { "type": "string", "minLength": 1 },
+        "current_style_id": { "type": "integer", "minimum": 0, "maximum": 255 },
+        "current_style_name": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "current_renderer_address": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
+        "styles": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/avatar_style" },
+          "maxItems": 16
+        }
+      }
+    }
+  },
   "properties": {
     "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
     "domain": { "type": "string", "minLength": 1, "maxLength": 255 },
     "local_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "ens_name": { "type": "string", "minLength": 1, "maxLength": 255 },
     "wallet": { "type": "string", "pattern": "^0x[0-9a-fA-F]{40}$" },
     "token_id": { "type": "string", "minLength": 1, "maxLength": 256 },
     "meta_uri": { "type": "string", "format": "uri" },
+    "avatar": { "$ref": "#/$defs/avatar" },
     "capabilities": {
       "type": "array",
       "items": { "type": "string", "minLength": 1, "maxLength": 128 }

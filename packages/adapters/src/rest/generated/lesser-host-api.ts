@@ -1062,15 +1062,31 @@ export interface components {
                 };
             };
         };
+        avatar_style: {
+            style_id: number;
+            style_name?: string;
+            renderer_address?: string;
+            image?: string;
+        };
+        avatar: {
+            token_uri?: string;
+            image?: string;
+            current_style_id?: number;
+            current_style_name?: string;
+            current_renderer_address?: string;
+            styles?: components["schemas"]["avatar_style"][];
+        };
         /** Soul agent identity */
         "soul-agent-identity.schema": {
             agent_id: string;
             domain: string;
             local_id: string;
+            ens_name?: string;
             wallet: string;
             token_id?: string;
             /** Format: uri */
             meta_uri?: string;
+            avatar?: components["schemas"]["avatar"];
             capabilities?: string[];
             principal_address?: string;
             principal_signature?: string;
@@ -1087,6 +1103,22 @@ export interface components {
             minted_at?: string;
             /** Format: date-time */
             updated_at?: string;
+            $defs: {
+                avatar_style: {
+                    style_id: number;
+                    style_name?: string;
+                    renderer_address?: string;
+                    image?: string;
+                };
+                avatar: {
+                    token_uri?: string;
+                    image?: string;
+                    current_style_id?: number;
+                    current_style_name?: string;
+                    current_renderer_address?: string;
+                    styles?: components["schemas"]["avatar_style"][];
+                };
+            };
         };
         /** GET /api/v1/soul/search result entry */
         "soul-search.result.schema": {
