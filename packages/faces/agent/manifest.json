@@ -1,7 +1,7 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-agent-face",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Agent-first face compositions and route-shell boundaries for Greater Components.",
   "components": {
     "AgentGenesisWorkspace": {

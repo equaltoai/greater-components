@@ -14,11 +14,10 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.2](https://github.com/equaltoai/greater-components/compare/greater-v0.8.1...greater-v0.8.2) (2026-04-02)
 
-
 ### Chores
 
-* format lesser-host contract snapshots ([c4251ca](https://github.com/equaltoai/greater-components/commit/c4251ca97da7a73f5bd9c69967a856ed5a637cfd))
-* sync lesser and lesser-host contracts ([16a52bc](https://github.com/equaltoai/greater-components/commit/16a52bccf8f18703a38d6faa4dcaaf2cd60a9094))
+- format lesser-host contract snapshots ([c4251ca](https://github.com/equaltoai/greater-components/commit/c4251ca97da7a73f5bd9c69967a856ed5a637cfd))
+- sync lesser and lesser-host contracts ([16a52bc](https://github.com/equaltoai/greater-components/commit/16a52bccf8f18703a38d6faa4dcaaf2cd60a9094))
 
 ## [0.8.1](https://github.com/equaltoai/greater-components/compare/greater-v0.8.0...greater-v0.8.1) (2026-04-02)
 
