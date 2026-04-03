@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-04-02T21:21:02.109Z",
+  "generatedAt": "2026-04-03T22:19:23.231Z",
   "ref": "greater-v0.8.2",
   "version": "0.8.2",
   "checksums": {
@@ -856,7 +856,7 @@
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-ehDle02wDrnpb+OmdCcEZKSJ9q942CMqtvncdlM22bU=",
     "packages/adapters/src/rest/generated/lesser-api.ts": "sha256-fllSRIRX0SINkaaGdA4jHwWEnBmK73g3X7olIcb6SjI=",
-    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-YCRtcIgrVvJDMBkfS1mQSBh/6G1hyE87fdyszMC7WiM=",
+    "packages/adapters/src/rest/generated/lesser-host-api.ts": "sha256-Nd/g4fsds72y+9NdF7HKigaeJ8nCI6bakPpFxDCNLUE=",
     "packages/adapters/src/soul/client.ts": "sha256-82J6CnYAwElBka8d6vJxrxOBci2zME4U0JYvfCgY3oo=",
     "packages/adapters/src/soul/ens.ts": "sha256-CI8WkwLMw8ZXNPrN+LpQdK81vud8ecgQc3xOXFMvK2o=",
     "packages/adapters/src/soul/index.ts": "sha256-zJBrsW/9opaTOio0/p/fuDXWD2O+vIDUKt1G63H8WJ4=",
@@ -5737,8 +5737,8 @@
         },
         {
           "path": "src/rest/generated/lesser-host-api.ts",
-          "checksum": "sha256-YCRtcIgrVvJDMBkfS1mQSBh/6G1hyE87fdyszMC7WiM=",
-          "size": 103560
+          "checksum": "sha256-Nd/g4fsds72y+9NdF7HKigaeJ8nCI6bakPpFxDCNLUE=",
+          "size": 104688
         },
         {
           "path": "src/soul/client.ts",
