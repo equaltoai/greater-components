@@ -1251,10 +1251,28 @@ paths:
     get:
       operationId: soulSearch
       summary: Search soul agents (including channel + ens filters)
+      description: |
+        Accepted lookup forms include domain-only queries (`q=example.com`), domain-qualified agent queries
+        (`q=example.com/medic`), explicit domain plus local queries (`q=medic&domain=example.com`), and bare local
+        queries such as `q=medic`, `q=@medic`, or `q=medic/` when the request host maps to a verified instance domain.
+
+        The endpoint stays fail-closed for cross-domain ambiguity: it does not perform an unbounded local-ID scan, and
+        requests where `q` and `domain` specify conflicting domains reject with `400`.
       parameters:
+        - name: q
+          in: query
+          required: false
+          description: |
+            Domain-only, domain-qualified, or local query. Bare local queries require either `domain` or a request
+            host that maps to a verified instance domain.
+          schema:
+            type: string
         - name: domain
           in: query
           required: false
+          description: |
+            Optional domain override for local queries. Managed stage aliases are canonicalized to the indexed primary
+            instance domain before lookup.
           schema:
             type: string
         - name: capability
