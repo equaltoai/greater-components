@@ -28,9 +28,7 @@
 
 		hasAutoFetched = true;
 		context.fetchConversations().then(() => {
-			context.fetchConversations('REQUESTS', { background: true }).catch(() => {
-				/* ignore */
-			});
+			void context.fetchConversations('REQUESTS', { background: true });
 		});
 	}
 

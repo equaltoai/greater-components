@@ -62,6 +62,19 @@ describe('Messages Context', () => {
 			expect(context.state.error).toBe('Fetch failed');
 			expect(context.state.loadingConversations).toBe(false);
 		});
+
+		it('stores background fetch errors', async () => {
+			(handlers.onFetchConversations as any).mockRejectedValue(
+				new Error('Background fetch failed')
+			);
+
+			const context = createMessagesContext(handlers);
+			await context.fetchConversations('REQUESTS', { background: true });
+
+			expect(context.state.error).toBe('Background fetch failed');
+			expect(context.state.loadingConversations).toBe(false);
+			expect(context.state.folder).toBe('INBOX');
+		});
 	});
 
 	describe('selectConversation', () => {
