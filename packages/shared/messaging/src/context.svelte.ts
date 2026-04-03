@@ -588,9 +588,7 @@ export function createMessagesContext(handlers: MessagesHandlers = {}): Messages
 				}
 			}
 		} catch (error) {
-			if (!isBackground) {
-				state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
-			}
+			state.error = error instanceof Error ? error.message : 'Failed to fetch conversations';
 		} finally {
 			if (!isBackground) {
 				state.loadingConversations = false;

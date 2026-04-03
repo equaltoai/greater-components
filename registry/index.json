@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-04-03T22:29:26.926Z",
+  "generatedAt": "2026-04-03T23:47:33.288Z",
   "ref": "greater-v0.8.3",
   "version": "0.8.3",
   "checksums": {
@@ -828,7 +828,7 @@
     "packages/adapters/src/graphql/index.d.ts": "sha256-orLx9yyDGxzzxd5wHeLg/XKql86ntzhZSG6iUj6Tjx8=",
     "packages/adapters/src/graphql/index.ts": "sha256-13y12ovgBLm5aZQ7K90w+XVxhUWIKB/eaPVEJ4kPeBI=",
     "packages/adapters/src/graphql/LesserGraphQLAdapter.d.ts": "sha256-IaAk0WgvAp2OkEzu4npQZMfWN2vd6MERvs54nLoVpOs=",
-    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-CNespFL+Oe/SQS6WpPNJLSdB7qXnNOp7mhBqylR3thw=",
+    "packages/adapters/src/graphql/LesserGraphQLAdapter.ts": "sha256-V7lpzp4D5nqJkolgtDNyGN83KbAFdTlSs0SWeAhsfcs=",
     "packages/adapters/src/graphql/optimistic.d.ts": "sha256-DO9Yg7q9e9k3+suvhBSBWMn+8+pVGydTpC7e70EPO1w=",
     "packages/adapters/src/graphql/optimistic.ts": "sha256-4U/b1aHeGBfl+YC+R+XaeY0Ts8hY8Er+3XfqUhSpqWY=",
     "packages/adapters/src/HttpPollingClient.d.ts": "sha256-6UbsJSk+ur6Rth93w5bnSj3HOl2teXThMIBozc0TQqI=",
@@ -1359,15 +1359,15 @@
     "packages/shared/chat/src/index.ts": "sha256-cnoREudZzKi9Jn0PUM29xc1qTB7Z8j5QnIBKKyN64ps=",
     "packages/shared/chat/src/types.ts": "sha256-Is+6F4dmZJbGDL1BvPlo+97bUZtNQrzEjdjx7IgMGak=",
     "packages/shared/messaging/src/Composer.svelte": "sha256-mDu8POEo19GzW1+bDIWvQauxpZ7H1gTw5r4Z7UXMUnU=",
-    "packages/shared/messaging/src/context.svelte.ts": "sha256-hYDAHMPdOFsLTUbOoKA3r0AJubVQJa9xrgffQRmdtU4=",
-    "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-nCdGmrJsm4E/8MiUutst0CII1jGu6lJ36Gw2b2UFWyY=",
+    "packages/shared/messaging/src/context.svelte.ts": "sha256-x4gtNWxpggWJIO0vrhmrqrVB7rIg8aIbr3rsp40xVG8=",
+    "packages/shared/messaging/src/ConversationPicker.svelte": "sha256-GyuC58bLhCyxEV1cl8m1bykp3fKVsOKjPZ+/GeihVq8=",
     "packages/shared/messaging/src/Conversations.svelte": "sha256-DXB3cT2dpgFHHiIRQj1oCTy4MaRBQgp6QbmWggRpciE=",
     "packages/shared/messaging/src/ConversationWorkflowSummary.svelte": "sha256-1dbfzcaC40nFEyFdXGelgFB2yiiCkeMDPXCuP26M3n0=",
     "packages/shared/messaging/src/index.ts": "sha256-51SFnggIOSpqEXRczLt8ySe8GJM2LmokXYfhkNtVcp4=",
     "packages/shared/messaging/src/MediaUpload.svelte": "sha256-5ORpNjGoJKb1SXWhVzFZ80Frxi0e6VYP1oM1ow2Oejo=",
     "packages/shared/messaging/src/Message.svelte": "sha256-yBOr2oq5cOPQa51Gi5zokROVo7uIgSoU6aXoCJhuJoI=",
     "packages/shared/messaging/src/NewConversation.svelte": "sha256-23nXlWNf5SY+FF7NBPVU5WVMWj+ywpAq3MUbyauX8rE=",
-    "packages/shared/messaging/src/Root.svelte": "sha256-wtOna4Jpt0XrK8W718Qu//OCIBEgiB/Su4hGx4QMGe0=",
+    "packages/shared/messaging/src/Root.svelte": "sha256-ayF6lgF3ZxI5MuuIcj1zCntD+iSfaS7lCkRRQx54NZY=",
     "packages/shared/messaging/src/Thread.svelte": "sha256-wF052p+7XJQJ2ccM+j9Za+DROrObEKmYCS+MXfBmTGU=",
     "packages/shared/messaging/src/types.ts": "sha256-hHc+ulSYjI46KKV/O+h845OcqMhB6feSn6oR7CV76JY=",
     "packages/shared/messaging/src/UnreadIndicator.svelte": "sha256-oo+td3vo+3SQR4zYbS0PNjHDoQ8j4qEoqyMrYrK7Z5s=",
@@ -5597,8 +5597,8 @@
         },
         {
           "path": "src/graphql/LesserGraphQLAdapter.ts",
-          "checksum": "sha256-CNespFL+Oe/SQS6WpPNJLSdB7qXnNOp7mhBqylR3thw=",
-          "size": 52148
+          "checksum": "sha256-V7lpzp4D5nqJkolgtDNyGN83KbAFdTlSs0SWeAhsfcs=",
+          "size": 52073
         },
         {
           "path": "src/graphql/optimistic.d.ts",
@@ -9216,13 +9216,13 @@
         },
         {
           "path": "src/context.svelte.ts",
-          "checksum": "sha256-hYDAHMPdOFsLTUbOoKA3r0AJubVQJa9xrgffQRmdtU4=",
-          "size": 21025
+          "checksum": "sha256-x4gtNWxpggWJIO0vrhmrqrVB7rIg8aIbr3rsp40xVG8=",
+          "size": 20995
         },
         {
           "path": "src/ConversationPicker.svelte",
-          "checksum": "sha256-nCdGmrJsm4E/8MiUutst0CII1jGu6lJ36Gw2b2UFWyY=",
-          "size": 10764
+          "checksum": "sha256-GyuC58bLhCyxEV1cl8m1bykp3fKVsOKjPZ+/GeihVq8=",
+          "size": 11412
         },
         {
           "path": "src/Conversations.svelte",
@@ -9256,8 +9256,8 @@
         },
         {
           "path": "src/Root.svelte",
-          "checksum": "sha256-wtOna4Jpt0XrK8W718Qu//OCIBEgiB/Su4hGx4QMGe0=",
-          "size": 1051
+          "checksum": "sha256-ayF6lgF3ZxI5MuuIcj1zCntD+iSfaS7lCkRRQx54NZY=",
+          "size": 1299
         },
         {
           "path": "src/Thread.svelte",

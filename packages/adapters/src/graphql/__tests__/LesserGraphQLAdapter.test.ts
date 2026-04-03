@@ -139,6 +139,46 @@ describe('LesserGraphQLAdapter', () => {
 			expect(result.id).toBe('1');
 		});
 
+		it('uses the current Lesser viewer fields', async () => {
+			mockApolloClient.query.mockResolvedValue({
+				data: { viewer: { id: '1', username: 'user' } },
+			});
+
+			await adapter.verifyCredentials();
+
+			const queryDocument = mockApolloClient.query.mock.calls[0]?.[0]?.query as {
+				definitions: Array<{
+					selectionSet?: {
+						selections?: Array<{
+							selectionSet?: {
+								selections?: Array<{ name?: { value?: string } }>;
+							};
+						}>;
+					};
+				}>;
+			};
+			const viewerSelections =
+				queryDocument.definitions[0]?.selectionSet?.selections?.[0]?.selectionSet?.selections?.map(
+					(selection) => selection.name?.value
+				) ?? [];
+
+			expect(viewerSelections).toEqual(
+				expect.arrayContaining([
+					'id',
+					'username',
+					'displayName',
+					'avatar',
+					'header',
+					'followers',
+					'following',
+					'statusesCount',
+				])
+			);
+			expect(viewerSelections).not.toContain('url');
+			expect(viewerSelections).not.toContain('followersCount');
+			expect(viewerSelections).not.toContain('followingCount');
+		});
+
 		it('should throw if no token', async () => {
 			const noAuthAdapter = new LesserGraphQLAdapter({ ...config, token: undefined });
 			await expect(noAuthAdapter.verifyCredentials()).rejects.toThrow(
