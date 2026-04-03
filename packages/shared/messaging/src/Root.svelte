@@ -18,20 +18,33 @@
 	let { handlers = {}, autoFetch = true, children, class: className = '' }: Props = $props();
 
 	const context = createMessagesContext(untrack(() => handlers));
+	let hasMounted = $state(false);
+	let hasAutoFetched = $state(false);
+
+	function runAutoFetch() {
+		if (!hasMounted || !autoFetch || hasAutoFetched || !handlers.onFetchConversations) {
+			return;
+		}
+
+		hasAutoFetched = true;
+		context.fetchConversations().then(() => {
+			context.fetchConversations('REQUESTS', { background: true }).catch(() => {
+				/* ignore */
+			});
+		});
+	}
 
 	$effect(() => {
 		Object.assign(context.handlers, handlers);
 	});
 
-	onMount(() => {
-		if (autoFetch) {
-			context.fetchConversations().then(() => {
-				context.fetchConversations('REQUESTS', { background: true }).catch(() => {
-					/* ignore */
-				});
-			});
-		}
+	$effect(() => {
+		runAutoFetch();
+	});
 
+	onMount(() => {
+		hasMounted = true;
+		runAutoFetch();
 		context.startRealtime();
 	});
 

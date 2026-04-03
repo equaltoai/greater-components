@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, unmount, flushSync } from 'svelte';
 import Root from '../src/Root.svelte';
+import RootDelayedHandlersHarness from './fixtures/RootDelayedHandlersHarness.svelte';
 
 // Mock context creation
 const { mockContext, mockCreateMessagesContext } = vi.hoisted(() => {
@@ -62,7 +63,13 @@ describe('Root', () => {
 
 	it('fetches conversations on mount when autoFetch is true', async () => {
 		const target = document.createElement('div');
-		const instance = mount(Root, { target, props: { autoFetch: true } });
+		const instance = mount(Root, {
+			target,
+			props: {
+				autoFetch: true,
+				handlers: { onFetchConversations: vi.fn() },
+			},
+		});
 		await flushSync();
 
 		expect(mockContext.fetchConversations).toHaveBeenCalled();
@@ -76,6 +83,31 @@ describe('Root', () => {
 		await flushSync();
 
 		expect(mockContext.fetchConversations).not.toHaveBeenCalled();
+
+		unmount(instance);
+	});
+
+	it('fetches once handlers become available after mount', async () => {
+		const target = document.createElement('div');
+		const instance = mount(RootDelayedHandlersHarness, {
+			target,
+			props: {
+				nextHandlers: { onFetchConversations: vi.fn() },
+				delay: 5,
+			},
+		});
+		await flushSync();
+
+		expect(mockContext.fetchConversations).not.toHaveBeenCalled();
+
+		await new Promise((resolve) => setTimeout(resolve, 15));
+		await flushSync();
+
+		expect(mockContext.fetchConversations.mock.calls[0]).toEqual([]);
+		expect(mockContext.fetchConversations.mock.calls[1]).toEqual([
+			'REQUESTS',
+			{ background: true },
+		]);
 
 		unmount(instance);
 	});
