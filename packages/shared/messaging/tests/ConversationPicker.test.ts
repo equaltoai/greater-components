@@ -136,6 +136,44 @@ describe('ConversationPicker', () => {
 		unmount(instance);
 	});
 
+	it('shows participant search errors and clears them after a successful retry', async () => {
+		const target = document.createElement('div');
+		const instance = mount(ConversationPicker, { target });
+		await flushSync();
+
+		mockHandlers.onSearchParticipants
+			.mockRejectedValueOnce(new Error('Search failed'))
+			.mockResolvedValueOnce([
+				{ id: 'u3', displayName: 'Charlie', username: 'charlie', avatar: '' },
+			]);
+
+		const input = target.querySelector('input') as HTMLInputElement;
+		input.value = 'Cha';
+		input.dispatchEvent(new Event('input', { bubbles: true }));
+
+		await new Promise((resolve) => setTimeout(resolve, 350));
+		await flushSync();
+
+		expect(target.querySelector('.conversation-picker__error')?.textContent).toContain(
+			'Search failed'
+		);
+
+		input.value = 'Char';
+		input.dispatchEvent(new Event('input', { bubbles: true }));
+
+		await new Promise((resolve) => setTimeout(resolve, 350));
+		await flushSync();
+
+		expect(target.querySelector('.conversation-picker__error')).toBeFalsy();
+
+		const charlieItem = Array.from(target.querySelectorAll('.conversation-picker__item')).find(
+			(item) => item.textContent?.includes('Charlie')
+		);
+		expect(charlieItem).toBeTruthy();
+
+		unmount(instance);
+	});
+
 	it('handles selecting a participant and creating a conversation', async () => {
 		const target = document.createElement('div');
 		const onCreateNew = vi.fn();
