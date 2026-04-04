@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-04-03T23:55:06.474Z",
+  "generatedAt": "2026-04-04T00:43:19.786Z",
   "ref": "greater-v0.8.4",
   "version": "0.8.4",
   "checksums": {
@@ -820,7 +820,7 @@
     "packages/adapters/src/fixtures/lesser.ts": "sha256-T8RxdwFIXpkNDa8eokqyDMOoaBeZYHOvv4Ydi8O6Mtw=",
     "packages/adapters/src/fixtures/mastodon.ts": "sha256-hw9cbIlcUSVl3cFy3CvbA6+W9YZggV8OwkFlqiE58Vw=",
     "packages/adapters/src/graphql/cache.d.ts": "sha256-3YyrtfDiMSwiqju/cWC+4AprTMRm/ACRKfd46UcRr/E=",
-    "packages/adapters/src/graphql/cache.ts": "sha256-U/ki1QixuyN9rkbI/vMTwwCqVe+8dDB4opYmrFgspcw=",
+    "packages/adapters/src/graphql/cache.ts": "sha256-l0A4zZ3Qo/gEXWbZLAvpMOK7O/qCwC0mkaF/EsRfW+4=",
     "packages/adapters/src/graphql/client.d.ts": "sha256-pJIC62N40bdFXhryg13X0HezmJFinzT2I9n/6qK1iJo=",
     "packages/adapters/src/graphql/client.ts": "sha256-M0UwWko7U1Cgv/EZv6CStGHfwidKao9BxgJRvKcF8N8=",
     "packages/adapters/src/graphql/generated/types.d.ts": "sha256-06CrbILnoClJ2Egs3gR2tZE271RgSroJXY7QxF46uLI=",
@@ -851,7 +851,7 @@
     "packages/adapters/src/mappers/mastodon/mappers.ts": "sha256-azySwXrEAWqu3nuiQkR3IFQ84Z9Pr0boYFgzpqXYJtE=",
     "packages/adapters/src/mappers/mastodon/types.d.ts": "sha256-LLN8HNltLV9QnLl0tY3zOF4ovD0+sYN0UvGJIx7MH70=",
     "packages/adapters/src/mappers/mastodon/types.ts": "sha256-54WrBVIzEH/QIxzBUL6OOjfsanvpM8WNkpJjKSVFSlA=",
-    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-aV9GjCb7HOCFIGzIvcCuZL5VaV/LJrZAr151Ddtq4lk=",
+    "packages/adapters/src/messaging/createLesserMessagesHandlers.ts": "sha256-J7IkxdiJz+NWuTt+1/NwMyX2MVW/5H25v+B3XHTuI0M=",
     "packages/adapters/src/messaging/index.ts": "sha256-2P3bCyR2sBhuV0GrrVnAaqGSq8dMVhA95dIJZ2s+eKw=",
     "packages/adapters/src/models/unified.d.ts": "sha256-8Z2SFddm7Cszpe6EoB85lJVH0xW16xjo68PhJGuvmeQ=",
     "packages/adapters/src/models/unified.ts": "sha256-ehDle02wDrnpb+OmdCcEZKSJ9q942CMqtvncdlM22bU=",
@@ -5557,8 +5557,8 @@
         },
         {
           "path": "src/graphql/cache.ts",
-          "checksum": "sha256-U/ki1QixuyN9rkbI/vMTwwCqVe+8dDB4opYmrFgspcw=",
-          "size": 9176
+          "checksum": "sha256-l0A4zZ3Qo/gEXWbZLAvpMOK7O/qCwC0mkaF/EsRfW+4=",
+          "size": 10012
         },
         {
           "path": "src/graphql/client.d.ts",
@@ -5712,8 +5712,8 @@
         },
         {
           "path": "src/messaging/createLesserMessagesHandlers.ts",
-          "checksum": "sha256-aV9GjCb7HOCFIGzIvcCuZL5VaV/LJrZAr151Ddtq4lk=",
-          "size": 8821
+          "checksum": "sha256-J7IkxdiJz+NWuTt+1/NwMyX2MVW/5H25v+B3XHTuI0M=",
+          "size": 9455
         },
         {
           "path": "src/messaging/index.ts",
