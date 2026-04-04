@@ -106,7 +106,9 @@ type LesserConversationLike = {
 	};
 };
 
-function getCanonicalParticipantId(actor: Pick<ActorSummaryFragment, 'id' | 'username' | 'domain'>) {
+function getCanonicalParticipantId(
+	actor: Pick<ActorSummaryFragment, 'id' | 'username' | 'domain'>
+) {
 	if (actor.domain) {
 		return actor.id;
 	}

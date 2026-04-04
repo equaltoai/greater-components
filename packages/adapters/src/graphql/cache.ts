@@ -8,7 +8,14 @@
  * - Garbage collection
  */
 
-import type { ApolloCache, InMemoryCacheConfig, TypePolicies } from '@apollo/client';
+import type {
+	ApolloCache,
+	FieldFunctionOptions,
+	InMemoryCacheConfig,
+	Reference,
+	StoreObject,
+	TypePolicies,
+} from '@apollo/client';
 
 type TimestampedNode = { createdAt?: string | null };
 type ConnectionEdges = { edges?: Array<{ node: TimestampedNode }> };
@@ -19,12 +26,11 @@ type ActorListPage = {
 	nextCursor?: string | null;
 	totalCount?: number;
 };
-type MergeArrayContext = {
-	args?: {
-		after?: string | null;
-	};
-	readField: ReadFieldFn;
-};
+type CacheEntity = Reference | StoreObject;
+type MergeArrayContext = Pick<
+	FieldFunctionOptions<Record<string, unknown>, Record<string, unknown>>,
+	'args' | 'readField'
+>;
 
 function mergeArrayById(
 	existing: unknown[] = [],
@@ -35,19 +41,20 @@ function mergeArrayById(
 		return existing;
 	}
 
-	if (!args?.after) {
+	const after = args?.['after'];
+	if (typeof after !== 'string' || after.length === 0) {
 		return incoming;
 	}
 
 	const merged = [...existing];
 	const seenIds = new Set(
 		existing
-			.map((item) => readField<string>('id', item))
+			.map((item) => readField<string>('id', item as CacheEntity))
 			.filter((id): id is string => typeof id === 'string' && id.length > 0)
 	);
 
 	for (const item of incoming) {
-		const id = readField<string>('id', item);
+		const id = readField<string>('id', item as CacheEntity);
 		if (id && seenIds.has(id)) {
 			continue;
 		}
