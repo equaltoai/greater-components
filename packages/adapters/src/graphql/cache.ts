@@ -8,7 +8,14 @@
  * - Garbage collection
  */
 
-import type { ApolloCache, InMemoryCacheConfig, TypePolicies } from '@apollo/client';
+import type {
+	ApolloCache,
+	FieldFunctionOptions,
+	InMemoryCacheConfig,
+	Reference,
+	StoreObject,
+	TypePolicies,
+} from '@apollo/client';
 
 type TimestampedNode = { createdAt?: string | null };
 type ConnectionEdges = { edges?: Array<{ node: TimestampedNode }> };
@@ -19,6 +26,47 @@ type ActorListPage = {
 	nextCursor?: string | null;
 	totalCount?: number;
 };
+type CacheEntity = Reference | StoreObject;
+type MergeArrayContext = Pick<
+	FieldFunctionOptions<Record<string, unknown>, Record<string, unknown>>,
+	'args' | 'readField'
+>;
+
+function mergeArrayById(
+	existing: unknown[] = [],
+	incoming: unknown,
+	{ args, readField }: MergeArrayContext
+) {
+	if (!Array.isArray(incoming)) {
+		return existing;
+	}
+
+	const after = args?.['after'];
+	if (typeof after !== 'string' || after.length === 0) {
+		return incoming;
+	}
+
+	const merged = [...existing];
+	const seenIds = new Set(
+		existing
+			.map((item) => readField<string>('id', item as CacheEntity))
+			.filter((id): id is string => typeof id === 'string' && id.length > 0)
+	);
+
+	for (const item of incoming) {
+		const id = readField<string>('id', item as CacheEntity);
+		if (id && seenIds.has(id)) {
+			continue;
+		}
+
+		if (id) {
+			seenIds.add(id);
+		}
+		merged.push(item);
+	}
+
+	return merged;
+}
 
 /**
  * Type policies for Apollo Client cache
@@ -146,16 +194,9 @@ export const typePolicies: TypePolicies = {
 			 * Conversations/Messages
 			 */
 			conversations: {
-				keyArgs: false,
-				merge(
-					existing: PagedEdgesConnection = { edges: [], pageInfo: {} },
-					incoming: PagedEdgesConnection
-				) {
-					return {
-						...incoming,
-						edges: [...existing.edges, ...incoming.edges],
-						pageInfo: incoming.pageInfo,
-					};
+				keyArgs: ['folder'],
+				merge(existing: unknown[] = [], incoming: unknown, context: MergeArrayContext) {
+					return mergeArrayById(existing, incoming, context);
 				},
 			},
 			conversationMessages: {

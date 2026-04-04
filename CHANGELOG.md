@@ -12,6 +12,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.4](https://github.com/equaltoai/greater-components/compare/greater-v0.8.3...greater-v0.8.4) (2026-04-03)
+
+### Bug Fixes
+
+- **adapters:** align verifyCredentials with Lesser viewer schema ([ff2c7df](https://github.com/equaltoai/greater-components/commit/ff2c7dfe1dae8731ffdf53f62a5ab7f0292ba4c5))
+- **deps:** address dependabot alerts 77 and 78 ([15824ba](https://github.com/equaltoai/greater-components/commit/15824ba795fc117ba366eb7184f72febebfb37d6))
+- **messaging:** refetch when handlers arrive after mount ([ecbddf6](https://github.com/equaltoai/greater-components/commit/ecbddf6245c7443c702f785eb5684dd1c233645b))
+- **messaging:** store background preload failures ([e7441b5](https://github.com/equaltoai/greater-components/commit/e7441b543bf3afa397f2474c6d8bf194f7903ad5))
+- **messaging:** surface conversation picker search errors ([d3cad13](https://github.com/equaltoai/greater-components/commit/d3cad13659859ee760c9c2a43bacc46ce8c5fbae))
+
+### Chores
+
+- refresh registry checksums ([9f0430c](https://github.com/equaltoai/greater-components/commit/9f0430cc1e077a1a5111de3e1448a59c93a29768))
+
 ## [0.8.3](https://github.com/equaltoai/greater-components/compare/greater-v0.8.2...greater-v0.8.3) (2026-04-03)
 
 ### Chores

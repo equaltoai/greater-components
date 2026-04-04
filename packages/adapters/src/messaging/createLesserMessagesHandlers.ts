@@ -106,9 +106,35 @@ type LesserConversationLike = {
 	};
 };
 
+function getCanonicalParticipantId(
+	actor: Pick<ActorSummaryFragment, 'id' | 'username' | 'domain'>
+) {
+	if (actor.domain) {
+		return actor.id;
+	}
+
+	const localUserPath = /^\/users\/([^/]+)\/?$/;
+	const directPathMatch = actor.id.match(localUserPath);
+	if (directPathMatch?.[1] === actor.username) {
+		return actor.username;
+	}
+
+	try {
+		const url = new URL(actor.id);
+		const urlPathMatch = url.pathname.match(localUserPath);
+		if (urlPathMatch?.[1] === actor.username) {
+			return actor.username;
+		}
+	} catch {
+		// Ignore unparseable ids and fall back to the original identifier.
+	}
+
+	return actor.id;
+}
+
 function mapActorToParticipant(actor: ActorSummaryFragment): MessageParticipant {
 	return {
-		id: actor.id,
+		id: getCanonicalParticipantId(actor),
 		username: actor.username,
 		displayName: actor.displayName ?? actor.username,
 		avatar: actor.avatar ?? undefined,
