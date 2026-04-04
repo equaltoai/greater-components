@@ -12,6 +12,19 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.5](https://github.com/equaltoai/greater-components/compare/greater-v0.8.4...greater-v0.8.5) (2026-04-04)
+
+
+### Bug Fixes
+
+* **adapters:** cache conversations as folder-keyed arrays ([feba5e5](https://github.com/equaltoai/greater-components/commit/feba5e5fb4169fe1b563337070ed37b1c4f1740d))
+* **adapters:** normalize local dm participant ids ([e1258c3](https://github.com/equaltoai/greater-components/commit/e1258c3aae44cfc2ed7a98c3bd59176b30dc14e0))
+
+
+### Chores
+
+* refresh registry for adapter fixes ([261e1d6](https://github.com/equaltoai/greater-components/commit/261e1d6da1e79767801e601467c5dd2aabbcfd14))
+
 ## [0.8.4](https://github.com/equaltoai/greater-components/compare/greater-v0.8.3...greater-v0.8.4) (2026-04-03)
 
 ### Bug Fixes
