@@ -1555,8 +1555,8 @@ export interface operations {
                  */
                 q?: string;
                 /**
-                 * @description Optional domain override for local queries. Managed stage aliases are canonicalized to the indexed primary
-                 *     instance domain before lookup.
+                 * @description Optional domain override for local queries. Stage-qualified domains stay exact for lookup and are not
+                 *     canonicalized to the base instance domain.
                  */
                 domain?: string;
                 capability?: string;

@@ -1,2 +1,2 @@
-tag: v1.2.18
-commit: 3c46ea427fda2acc19d9cf2f161d0d4ac825120c
+tag: v1.2.20
+commit: d8f292dd2296b7e56315b770c133de594bebcf38

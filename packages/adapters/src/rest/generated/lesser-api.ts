@@ -4651,6 +4651,12 @@ export interface components {
             display_name: string;
             identity_semantics: components["schemas"]["AgentIdentitySemantics"];
             mcp_access: components["schemas"]["AgentMCPAccess"];
+            quarantine_active: boolean;
+            quarantine_approved_at?: components["schemas"]["RFC3339DateTime"] | null;
+            quarantine_approved_by?: string;
+            quarantine_end?: components["schemas"]["RFC3339DateTime"] | null;
+            quarantine_start?: components["schemas"]["RFC3339DateTime"] | null;
+            quarantine_status?: string;
             username: string;
             verified: boolean;
             verified_at?: components["schemas"]["RFC3339DateTime"] | null;
