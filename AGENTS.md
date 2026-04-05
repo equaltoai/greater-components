@@ -38,7 +38,8 @@ Update workflow (assumes `../lesser` exists as a sibling checkout; always run on
 cd /path/to/greater-components
 nvm use  # should resolve to Node v24 per .nvmrc
 
-LESSER_TAG="$(git -C ../lesser tag --sort=-v:refname | head -n 1)"
+# Read tags from origin so stale local tags cannot outrank deleted releases.
+LESSER_TAG="$(git -C ../lesser ls-remote --tags origin | sed 's#refs/tags/##' | awk '{print $2}' | sort -V | tail -n 1)"
 LESSER_COMMIT="$(git -C ../lesser rev-parse "${LESSER_TAG}")"
 
 git -C ../lesser show "${LESSER_TAG}:docs/contracts/openapi.yaml" \
@@ -81,7 +82,8 @@ Update workflow (assumes `../lesser-host` exists as a sibling checkout; always r
 cd /path/to/greater-components
 nvm use  # should resolve to Node v24 per .nvmrc
 
-LESSER_HOST_TAG="$(git -C ../lesser-host tag --sort=-v:refname | head -n 1)"
+# Read tags from origin so stale local tags cannot outrank deleted releases.
+LESSER_HOST_TAG="$(git -C ../lesser-host ls-remote --tags origin | sed 's#refs/tags/##' | awk '{print $2}' | sort -V | tail -n 1)"
 LESSER_HOST_COMMIT="$(git -C ../lesser-host rev-parse "${LESSER_HOST_TAG}")"
 
 git -C ../lesser-host show "${LESSER_HOST_TAG}:docs/contracts/openapi.yaml" \
