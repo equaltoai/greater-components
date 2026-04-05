@@ -701,6 +701,12 @@ export type Agent = {
   /** @deprecated Use ownerActor / agentOwner */
   readonly owner?: Maybe<Actor>;
   readonly ownerActor?: Maybe<Actor>;
+  readonly quarantineActive: Scalars['Boolean']['output'];
+  readonly quarantineApprovedAt?: Maybe<Scalars['Time']['output']>;
+  readonly quarantineApprovedBy?: Maybe<Scalars['String']['output']>;
+  readonly quarantineEnd?: Maybe<Scalars['Time']['output']>;
+  readonly quarantineStart?: Maybe<Scalars['Time']['output']>;
+  readonly quarantineStatus?: Maybe<Scalars['String']['output']>;
   /** @deprecated Use agentType */
   readonly type: AgentType;
   readonly username: Scalars['String']['output'];
