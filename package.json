@@ -109,7 +109,7 @@
     "pnpm": ">=9.0.0"
   },
   "dependencies": {
-    "undici": "^7.24.5"
+    "undici": "^8.0.2"
   },
   "pnpm": {
     "overrides": {
