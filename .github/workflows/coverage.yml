@@ -87,7 +87,7 @@ jobs:
       - name: Comment PR with coverage results
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -191,7 +191,7 @@ jobs:
           destination_dir: coverage
 
       - name: Update README badge
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

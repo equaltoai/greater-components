@@ -245,7 +245,7 @@ jobs:
       - name: Comment PR with accessibility results
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         continue-on-error: true
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -414,7 +414,7 @@ jobs:
 
       - name: Create GitHub Issue for failures
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.issues.create({
