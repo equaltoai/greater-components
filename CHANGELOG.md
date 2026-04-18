@@ -12,6 +12,92 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.6](https://github.com/equaltoai/greater-components/compare/greater-v0.8.5...greater-v0.8.6) (2026-04-05)
+
+### Chores
+
+- format lesser-host contract snapshots ([de5c8d0](https://github.com/equaltoai/greater-components/commit/de5c8d011ef2ee3a601c67346a821aefd41a9032))
+- sync lesser and lesser-host contracts ([744c552](https://github.com/equaltoai/greater-components/commit/744c552ea18503fa6fe88b1436dfeb2b15c01377))
+
+## [0.8.5](https://github.com/equaltoai/greater-components/compare/greater-v0.8.4...greater-v0.8.5) (2026-04-04)
+
+### Bug Fixes
+
+- **adapters:** cache conversations as folder-keyed arrays ([feba5e5](https://github.com/equaltoai/greater-components/commit/feba5e5fb4169fe1b563337070ed37b1c4f1740d))
+- **adapters:** normalize local dm participant ids ([e1258c3](https://github.com/equaltoai/greater-components/commit/e1258c3aae44cfc2ed7a98c3bd59176b30dc14e0))
+
+### Chores
+
+- refresh registry for adapter fixes ([261e1d6](https://github.com/equaltoai/greater-components/commit/261e1d6da1e79767801e601467c5dd2aabbcfd14))
+
+## [0.8.4](https://github.com/equaltoai/greater-components/compare/greater-v0.8.3...greater-v0.8.4) (2026-04-03)
+
+### Bug Fixes
+
+- **adapters:** align verifyCredentials with Lesser viewer schema ([ff2c7df](https://github.com/equaltoai/greater-components/commit/ff2c7dfe1dae8731ffdf53f62a5ab7f0292ba4c5))
+- **deps:** address dependabot alerts 77 and 78 ([15824ba](https://github.com/equaltoai/greater-components/commit/15824ba795fc117ba366eb7184f72febebfb37d6))
+- **messaging:** refetch when handlers arrive after mount ([ecbddf6](https://github.com/equaltoai/greater-components/commit/ecbddf6245c7443c702f785eb5684dd1c233645b))
+- **messaging:** store background preload failures ([e7441b5](https://github.com/equaltoai/greater-components/commit/e7441b543bf3afa397f2474c6d8bf194f7903ad5))
+- **messaging:** surface conversation picker search errors ([d3cad13](https://github.com/equaltoai/greater-components/commit/d3cad13659859ee760c9c2a43bacc46ce8c5fbae))
+
+### Chores
+
+- refresh registry checksums ([9f0430c](https://github.com/equaltoai/greater-components/commit/9f0430cc1e077a1a5111de3e1448a59c93a29768))
+
+## [0.8.3](https://github.com/equaltoai/greater-components/compare/greater-v0.8.2...greater-v0.8.3) (2026-04-03)
+
+### Chores
+
+- sync lesser and lesser-host contracts ([482bfb3](https://github.com/equaltoai/greater-components/commit/482bfb3c29cd615398d9050820af4c8ae76d8c37))
+
+## [0.8.2](https://github.com/equaltoai/greater-components/compare/greater-v0.8.1...greater-v0.8.2) (2026-04-02)
+
+### Chores
+
+- format lesser-host contract snapshots ([c4251ca](https://github.com/equaltoai/greater-components/commit/c4251ca97da7a73f5bd9c69967a856ed5a637cfd))
+- sync lesser and lesser-host contracts ([16a52bc](https://github.com/equaltoai/greater-components/commit/16a52bccf8f18703a38d6faa4dcaaf2cd60a9094))
+
+## [0.8.1](https://github.com/equaltoai/greater-components/compare/greater-v0.8.0...greater-v0.8.1) (2026-04-02)
+
+### Bug Fixes
+
+- preserve adapter fetch receiver context ([ef3bdc4](https://github.com/equaltoai/greater-components/commit/ef3bdc445b41320f3205e92befb51372d0594f6f))
+- preserve adapter fetch receiver context ([5b13c31](https://github.com/equaltoai/greater-components/commit/5b13c318ab152e038ca9e3574f488c822dcb88cf))
+
+## [0.8.0](https://github.com/equaltoai/greater-components/compare/greater-v0.7.0...greater-v0.8.0) (2026-03-29)
+
+### Features
+
+- integrate lesser-host v0.2.2 contracts ([e43ac69](https://github.com/equaltoai/greater-components/commit/e43ac69c5b8d283df205066d1bdc32637fe25c41))
+- integrate lesser-host v0.2.2 contracts ([fc1ec34](https://github.com/equaltoai/greater-components/commit/fc1ec34ba3bec95bc17ce46c1496197e15352ab2))
+
+### Bug Fixes
+
+- refresh registry checksums for lesser-host update ([413de7a](https://github.com/equaltoai/greater-components/commit/413de7ad8a090d4b8b7fbf293e63553d1604953f))
+
+## [0.7.0](https://github.com/equaltoai/greater-components/compare/greater-v0.6.1...greater-v0.7.0) (2026-03-29)
+
+### Bug Fixes
+
+- flatten lib alias install targets ([4e94ea2](https://github.com/equaltoai/greater-components/commit/4e94ea2b96139c5fffd18fb02350792dadcab870))
+- harden vendored face export transforms ([6557b2c](https://github.com/equaltoai/greater-components/commit/6557b2c5f09e27796199d7f522859c5783ca54b8))
+- harden vendored face export transforms ([2d21a8d](https://github.com/equaltoai/greater-components/commit/2d21a8d5a8ae324004f73e79b0cdaa85fe10eb82))
+- restore vendored add paths for social and agent flows ([83d3fc2](https://github.com/equaltoai/greater-components/commit/83d3fc213e8cdcfb505809cbf29240e28cb119b4))
+- vendor full face package files ([0628d5c](https://github.com/equaltoai/greater-components/commit/0628d5c368704563e5eaaf6bfc05f60e9ae5214f))
+
+### Tests
+
+- align add command mocks with resolver keys ([9f113ac](https://github.com/equaltoai/greater-components/commit/9f113ac823f3ee852095eb95a4f7c0c63bfa0ed1))
+
+### Chores
+
+- **premain:** release greater 0.6.2-rc.0 ([136347e](https://github.com/equaltoai/greater-components/commit/136347ef0035a1d2fea2b4dc7c143cf6b4b28e89))
+- **premain:** release greater 0.6.2-rc.0 ([30de810](https://github.com/equaltoai/greater-components/commit/30de81015589a655ce2c31b94235aa9a5b1e5ec0))
+- **premain:** release greater 0.7.0-rc.0 ([37b119c](https://github.com/equaltoai/greater-components/commit/37b119c26adace6f7935828d75a1438f3477ecb0))
+- **premain:** release greater 0.7.0-rc.0 ([cd4e858](https://github.com/equaltoai/greater-components/commit/cd4e858745dedff05d24a260ea2b22c3c28e6269))
+- **release:** prepare metadata ([3c544ef](https://github.com/equaltoai/greater-components/commit/3c544efada421686274b915fcff50fa498abb705))
+- **release:** prepare metadata ([0f790d7](https://github.com/equaltoai/greater-components/commit/0f790d7437873ec8580d93445f831b61494ba3e1))
+
 ## [0.7.0-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.6.2-rc.0...greater-v0.7.0-rc.0) (2026-03-29)
 
 ### Features

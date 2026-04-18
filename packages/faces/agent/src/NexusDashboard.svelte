@@ -5,11 +5,12 @@
 		GraduationSummaryCard,
 		SoulLifecycleRail,
 		formatAgentWorkflowLabel,
+		type ContinuityFollowUp,
 		type AgentSurfaceTone,
 	} from '@equaltoai/greater-components-agent';
 	import { WorkflowNotificationItem } from '@equaltoai/greater-components-notifications';
 	import AgentFaceFrame from './internal/AgentFaceFrame.svelte';
-	import type { NexusDashboardData } from './types.js';
+	import type { AgentFaceTimelineMoment, NexusDashboardData } from './types.js';
 
 	interface Props {
 		data: NexusDashboardData;
@@ -17,18 +18,17 @@
 	}
 
 	let { data, class: className = '' }: Props = $props();
+	const mapFollowUpToTimelineMoment = (followUp: ContinuityFollowUp): AgentFaceTimelineMoment => ({
+		id: followUp.id,
+		title: followUp.title,
+		summary: followUp.summary,
+		meta: followUp.cadence ? `${followUp.owner.name} · ${followUp.cadence}` : followUp.owner.name,
+		tone: 'accent',
+	});
 	const continuityMoments = $derived.by(() =>
 		data.continuityMoments?.length
 			? data.continuityMoments
-			: (data.continuity.followUps ?? []).map((followUp) => ({
-					id: followUp.id,
-					title: followUp.title,
-					summary: followUp.summary,
-					meta: followUp.cadence
-						? `${followUp.owner.name} · ${followUp.cadence}`
-						: followUp.owner.name,
-					tone: 'accent' as const,
-				}))
+			: (data.continuity.followUps ?? []).map(mapFollowUpToTimelineMoment)
 	);
 	const dashboardSignals = $derived.by(() => {
 		const readinessTone = (

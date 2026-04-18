@@ -97,7 +97,15 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Search soul agents (including channel + ens filters) */
+        /**
+         * Search soul agents (including channel + ens filters)
+         * @description Accepted lookup forms include domain-only queries (`q=example.com`), domain-qualified agent queries
+         *     (`q=example.com/medic`), explicit domain plus local queries (`q=medic&domain=example.com`), and bare local
+         *     queries such as `q=medic`, `q=@medic`, or `q=medic/` when the request host maps to a verified instance domain.
+         *
+         *     The endpoint stays fail-closed for cross-domain ambiguity: it does not perform an unbounded local-ID scan, and
+         *     requests where `q` and `domain` specify conflicting domains reject with `400`.
+         */
         get: operations["soulSearch"];
         put?: never;
         post?: never;
@@ -141,6 +149,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/agents/register/{id}/mint-conversation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start or continue a registration-scoped mint conversation over SSE
+         * @description Streams the assistant response using `text/event-stream`.
+         *     Canonical SSE event names and payload schemas are published in `docs/contracts/soul-mint-conversation-sse.json`.
+         */
+        post: operations["soulStartMintConversationSSE"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a registration-scoped mint conversation record */
+        get: operations["soulGetMintConversation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Complete a registration-scoped mint conversation and persist declarations */
+        post: operations["soulCompleteMintConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize/preflight": {
         parameters: {
             query?: never;
@@ -175,6 +238,95 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Finalize and publish a registration-scoped mint conversation */
+        post: operations["soulMintConversationFinalize"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/{agentId}/mint-conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List agent-scoped mint conversation records */
+        get: operations["soulAgentListMintConversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/{agentId}/mint-conversation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start or continue an agent-scoped mint conversation over SSE
+         * @description Streams the assistant response using `text/event-stream`.
+         *     Canonical SSE event names and payload schemas are published in `docs/contracts/soul-mint-conversation-sse.json`.
+         */
+        post: operations["soulStartAgentMintConversationSSE"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get an agent-scoped mint conversation record */
+        get: operations["soulAgentGetMintConversation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Complete an agent-scoped mint conversation and persist declarations */
+        post: operations["soulAgentCompleteMintConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize/preflight": {
         parameters: {
             query?: never;
@@ -203,6 +355,23 @@ export interface paths {
         put?: never;
         /** Compatibility alias for finalize preflight via the stable agentId handle */
         post: operations["soulAgentMintConversationFinalizeBegin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Finalize and publish an agent-scoped mint conversation */
+        post: operations["soulAgentMintConversationFinalize"];
         delete?: never;
         options?: never;
         head?: never;
@@ -682,6 +851,44 @@ export interface components {
             safe_tx?: components["schemas"]["SafeTxPayload"];
             promotion?: components["schemas"]["SoulAgentPromotion"];
         };
+        AIUsage: {
+            provider?: string;
+            model?: string;
+            input_tokens?: number;
+            output_tokens?: number;
+            total_tokens?: number;
+            duration_ms?: number;
+            tool_calls?: number;
+        };
+        SoulMintConversationSSEInput: {
+            model?: string;
+            conversation_id?: string;
+            message: string;
+        };
+        SoulMintConversation: {
+            agent_id: string;
+            conversation_id: string;
+            model: string;
+            messages?: string;
+            produced_declarations?: string;
+            /** @enum {string} */
+            status: "in_progress" | "completed" | "failed";
+            usage?: components["schemas"]["AIUsage"];
+            charged_credits?: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            completed_at?: string;
+        };
+        SoulMintConversationCompleteRequest: {
+            declarations?: string | components["schemas"]["SoulMintConversationDeclarationPreview"];
+        };
+        SoulAgentMintConversationsResponse: {
+            /** @enum {string} */
+            version: "1";
+            conversations: components["schemas"]["SoulMintConversation"][];
+            count: number;
+        };
         SoulMintConversationFinalizeBeginRequest: {
             boundary_signatures: {
                 [key: string]: string;
@@ -735,6 +942,15 @@ export interface components {
             expected_version: number;
             self_attestation: string;
         };
+        SoulMintConversationFinalizeRequest: {
+            boundary_signatures: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            issued_at: string;
+            expected_version: number;
+            self_attestation: string;
+        };
         SoulMintConversationFinalizePreflightResponse: {
             /** @enum {string} */
             version: "1";
@@ -750,6 +966,12 @@ export interface components {
             registration_preview?: {
                 [key: string]: unknown;
             };
+        };
+        SoulMintConversationFinalizeResponse: {
+            /** @enum {string} */
+            version: "1";
+            agent: components["schemas"]["soul-agent-identity.schema"];
+            published_version: number;
         };
         /** GET /api/v1/soul/agents/{agentId}/channels/preferences response */
         "soul-agent-channel-preferences.response.schema": {
@@ -848,15 +1070,31 @@ export interface components {
                 };
             };
         };
+        avatar_style: {
+            style_id: number;
+            style_name?: string;
+            renderer_address?: string;
+            image?: string;
+        };
+        avatar: {
+            token_uri?: string;
+            image?: string;
+            current_style_id?: number;
+            current_style_name?: string;
+            current_renderer_address?: string;
+            styles?: components["schemas"]["avatar_style"][];
+        };
         /** Soul agent identity */
         "soul-agent-identity.schema": {
             agent_id: string;
             domain: string;
             local_id: string;
+            ens_name?: string;
             wallet: string;
             token_id?: string;
             /** Format: uri */
             meta_uri?: string;
+            avatar?: components["schemas"]["avatar"];
             capabilities?: string[];
             principal_address?: string;
             principal_signature?: string;
@@ -873,6 +1111,22 @@ export interface components {
             minted_at?: string;
             /** Format: date-time */
             updated_at?: string;
+            $defs: {
+                avatar_style: {
+                    style_id: number;
+                    style_name?: string;
+                    renderer_address?: string;
+                    image?: string;
+                };
+                avatar: {
+                    token_uri?: string;
+                    image?: string;
+                    current_style_id?: number;
+                    current_style_name?: string;
+                    current_renderer_address?: string;
+                    styles?: components["schemas"]["avatar_style"][];
+                };
+            };
         };
         /** GET /api/v1/soul/search result entry */
         "soul-search.result.schema": {
@@ -1295,6 +1549,15 @@ export interface operations {
     soulSearch: {
         parameters: {
             query?: {
+                /**
+                 * @description Domain-only, domain-qualified, or local query. Bare local queries require either `domain` or a request
+                 *     host that maps to a verified instance domain.
+                 */
+                q?: string;
+                /**
+                 * @description Optional domain override for local queries. Stage-qualified domains stay exact for lookup and are not
+                 *     canonicalized to the base instance domain.
+                 */
                 domain?: string;
                 capability?: string;
                 boundary?: string;
@@ -1421,6 +1684,208 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SoulAgentRegistrationVerifyResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulStartMintConversationSSE: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationSSEInput"];
+            };
+        };
+        responses: {
+            /** @description SSE stream of mint-conversation events */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulGetMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulCompleteMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationCompleteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversation"];
                 };
             };
             /** @description Invalid request */
@@ -1614,6 +2079,340 @@ export interface operations {
             };
         };
     };
+    soulMintConversationFinalize: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationFinalizeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationFinalizeResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulAgentListMintConversations: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulAgentMintConversationsResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulStartAgentMintConversationSSE: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationSSEInput"];
+            };
+        };
+        responses: {
+            /** @description SSE stream of mint-conversation events */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulAgentGetMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulAgentCompleteMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationCompleteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversation"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
     soulAgentMintConversationFinalizePreflight: {
         parameters: {
             query?: never;
@@ -1709,6 +2508,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SoulMintConversationFinalizePreflightResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulAgentMintConversationFinalize: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoulMintConversationFinalizeRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationFinalizeResponse"];
                 };
             };
             /** @description Invalid request */

@@ -4651,6 +4651,12 @@ export interface components {
             display_name: string;
             identity_semantics: components["schemas"]["AgentIdentitySemantics"];
             mcp_access: components["schemas"]["AgentMCPAccess"];
+            quarantine_active: boolean;
+            quarantine_approved_at?: components["schemas"]["RFC3339DateTime"] | null;
+            quarantine_approved_by?: string;
+            quarantine_end?: components["schemas"]["RFC3339DateTime"] | null;
+            quarantine_start?: components["schemas"]["RFC3339DateTime"] | null;
+            quarantine_status?: string;
             username: string;
             verified: boolean;
             verified_at?: components["schemas"]["RFC3339DateTime"] | null;
@@ -6220,6 +6226,21 @@ export interface components {
         };
         /** @description Mastodon-compatible snowflake identifier (stringified uint). */
         SnowflakeID: string;
+        SoulAgentAvatar: {
+            current_renderer_address?: string;
+            current_style_id?: number | null;
+            current_style_name?: string;
+            image?: string;
+            styles?: components["schemas"]["SoulAgentAvatarStyle"][];
+            token_uri?: string;
+        };
+        SoulAgentAvatarStyle: {
+            image?: string;
+            renderer_address?: string;
+            selected?: boolean;
+            style_id: number;
+            style_name?: string;
+        };
         SoulAgentBinding: {
             agent_username: string;
             bound_at: components["schemas"]["RFC3339DateTime"];
@@ -6228,16 +6249,25 @@ export interface components {
         };
         SoulAgentIdentity: {
             agent_id: string;
+            avatar?: components["schemas"]["SoulAgentAvatar"] | null;
             capabilities?: string[];
             domain: string;
             ens_name?: string | null;
+            lifecycle_reason?: string;
             lifecycle_status?: string;
             local_id: string;
+            meta_uri?: string;
             mint_tx_hash?: string;
             minted_at?: components["schemas"]["RFC3339DateTime"] | null;
+            predecessor_agent_id?: string;
             principal_address?: string;
+            principal_declaration?: string;
+            principal_declared_at?: string;
+            principal_signature?: string;
             self_description_version?: number | null;
             status: string;
+            successor_agent_id?: string;
+            token_id?: string;
             updated_at?: components["schemas"]["RFC3339DateTime"] | null;
             wallet: string;
         };

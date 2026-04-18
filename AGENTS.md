@@ -38,7 +38,8 @@ Update workflow (assumes `../lesser` exists as a sibling checkout; always run on
 cd /path/to/greater-components
 nvm use  # should resolve to Node v24 per .nvmrc
 
-LESSER_TAG="$(git -C ../lesser tag --sort=-v:refname | head -n 1)"
+# Read tags from origin so stale local tags cannot outrank deleted releases.
+LESSER_TAG="$(git -C ../lesser ls-remote --tags origin | sed 's#refs/tags/##' | awk '{print $2}' | sort -V | tail -n 1)"
 LESSER_COMMIT="$(git -C ../lesser rev-parse "${LESSER_TAG}")"
 
 git -C ../lesser show "${LESSER_TAG}:docs/contracts/openapi.yaml" \
@@ -62,18 +63,64 @@ Notes:
 - Prefer pinning to a Lesser **release tag** (example: `v1.1.3`) over a moving branch ref.
 - If the Lesser schema/contracts look invalid, stop and ask for the Lesser team to fix the release/tag rather than patching around it in Greater.
 
+## Critical: Sync Lesser Host Contracts + Regenerate Adapters
+
+Greater’s soul adapters also depend on Lesser Host’s published **file-only contracts**.
+Any time Lesser Host’s API surface changes, update the pinned artifacts in this repo and regenerate the derived client
+before shipping changes.
+
+Pinned Lesser Host snapshots live here:
+
+- OpenAPI: `docs/lesser-host/contracts/openapi.yaml`
+- SSE contract: `docs/lesser-host/contracts/soul-mint-conversation-sse.json`
+- JSON Schema + fixtures: `docs/lesser-host/spec/v3/`
+- Pin record: `docs/lesser-host/contracts/LESSER_HOST_REF.txt` (must include the Lesser Host tag + commit)
+
+Update workflow (assumes `../lesser-host` exists as a sibling checkout; always run on Node 24):
+
+```bash
+cd /path/to/greater-components
+nvm use  # should resolve to Node v24 per .nvmrc
+
+# Read tags from origin so stale local tags cannot outrank deleted releases.
+LESSER_HOST_TAG="$(git -C ../lesser-host ls-remote --tags origin | sed 's#refs/tags/##' | awk '{print $2}' | sort -V | tail -n 1)"
+LESSER_HOST_COMMIT="$(git -C ../lesser-host rev-parse "${LESSER_HOST_TAG}")"
+
+git -C ../lesser-host show "${LESSER_HOST_TAG}:docs/contracts/openapi.yaml" \
+  > docs/lesser-host/contracts/openapi.yaml
+git -C ../lesser-host show "${LESSER_HOST_TAG}:docs/contracts/soul-mint-conversation-sse.json" \
+  > docs/lesser-host/contracts/soul-mint-conversation-sse.json
+rsync -a --delete ../lesser-host/docs/spec/v3/ docs/lesser-host/spec/v3/
+
+printf "tag: %s\ncommit: %s\n" "${LESSER_HOST_TAG}" "${LESSER_HOST_COMMIT}" \
+  > docs/lesser-host/contracts/LESSER_HOST_REF.txt
+
+corepack pnpm generate:openapi:lesser-host
+corepack pnpm generate-registry
+
+corepack pnpm --filter @equaltoai/greater-components-adapters typecheck
+corepack pnpm --filter @equaltoai/greater-components-adapters test
+```
+
+Notes:
+
+- Prefer pinning to a Lesser Host **release tag** (example: `v0.2.2`) over a moving branch ref.
+- If the published Lesser Host OpenAPI references new companion files, vendor those alongside the OpenAPI snapshot so the pinned contract set stays self-consistent.
+
 ## Critical: Release Flow + CI Governance
 
-Every Greater release is promoted through:
+Every Greater release is normally promoted through:
 
 - `staging` → `premain` (rc) → `main` (stable)
+
+When we explicitly need to bypass the RC lane, direct `staging` → `main` promotions are also allowed.
 
 CI expectations:
 
 - `staging` is where we run the full suite (lint/typecheck, unit tests, e2e, a11y).
 - `premain` and `main` are promotion/release-only; PRs into these branches are guarded (`.github/workflows/premain-guard.yml`, `.github/workflows/main-guard.yml`) and should not require re-running the full staging suite.
 - Changesets are optional (not required for PRs to `staging`); releases are automated via release-please on `premain`/`main`.
-- Any branch targeting `staging` must also be promotion-safe: before shipping, rehearse the exact merge path `candidate -> staging`, `staging -> premain`, and `premain -> main`. If any conflict appears in that chain, resolve it on the staging-targeted branch before merge so promotions stay clean.
+- Any branch targeting `staging` must also be promotion-safe: before shipping, rehearse the exact merge path `candidate -> staging`, `staging -> premain`, and `staging -> main`. If the RC lane remains in play for that train, also rehearse `premain -> main`. If any conflict appears in that chain, resolve it on the staging-targeted branch before merge so promotions stay clean.
 
 ## CLI: Build + Install Locally
 

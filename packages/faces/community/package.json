@@ -1,7 +1,7 @@
 {
   "name": "@equaltoai/greater-components-community",
   "private": true,
-  "version": "0.7.0-rc.0",
+  "version": "0.8.6",
   "type": "module",
   "description": "Community/Reddit-style UI components for Greater Components",
   "license": "AGPL-3.0-only",
@@ -91,18 +91,18 @@
     "@equaltoai/greater-components-utils": "workspace:*"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.3.1",
-    "@types/node": "^25.5.0",
-    "@vitest/coverage-v8": "^4.1.0",
-    "@vitest/ui": "^4.1.0",
-    "jsdom": "^29.0.1",
-    "svelte": "^5.54.0",
-    "typescript": "^5.9.3",
-    "vite": "^8.0.2",
-    "vitest": "^4.1.0"
+    "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "^4.1.4",
+    "@vitest/ui": "^4.1.4",
+    "jsdom": "^29.0.2",
+    "svelte": "^5.55.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

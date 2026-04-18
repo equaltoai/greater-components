@@ -1154,6 +1154,12 @@ type CostUpdate {
 }
 
 # Queries
+# Anonymous/public-read contract:
+# - Public queries callable without an access token:
+#   `actor`, `object`, `timeline(type: PUBLIC|LOCAL|HASHTAG|ACTOR)`, `search`, `instance`,
+#   `instanceActivity`, `instancePeers`, `announcements`, `customEmojis`, `threadContext`
+# - Public note/thread queries only expose `public` and `unlisted` content to anonymous callers.
+# - All other Query fields remain auth-only unless explicitly documented otherwise.
 type Query {
   # Mastodon compatibility
   viewer: Actor!
@@ -4175,6 +4181,12 @@ type Agent {
   mcpAccess: AgentMCPAccess!
   verified: Boolean!
   verifiedAt: Time
+  quarantineStatus: String
+  quarantineStart: Time
+  quarantineEnd: Time
+  quarantineApprovedBy: String
+  quarantineApprovedAt: Time
+  quarantineActive: Boolean!
   ownerActor: Actor
 
   # Legacy/back-compat (to be removed once Simulacrum migrates)
@@ -4450,14 +4462,40 @@ type SoulAgentIdentity {
   localId: String!
   ensName: String
   wallet: String!
+  tokenId: String
+  metaUri: String
+  avatar: SoulAgentAvatar
   principalAddress: String
+  principalSignature: String
+  principalDeclaration: String
+  principalDeclaredAt: String
   status: String!
   lifecycleStatus: String
+  lifecycleReason: String
+  successorAgentId: String
+  predecessorAgentId: String
   selfDescriptionVersion: Int
   capabilities: [String!]!
   mintTxHash: String
   mintedAt: Time
   updatedAt: Time
+}
+
+type SoulAgentAvatar {
+  tokenUri: String
+  image: String
+  currentStyleId: Int
+  currentStyleName: String
+  currentRendererAddress: String
+  styles: [SoulAgentAvatarStyle!]!
+}
+
+type SoulAgentAvatarStyle {
+  styleId: Int!
+  styleName: String
+  rendererAddress: String
+  image: String
+  selected: Boolean!
 }
 
 type SoulAgentBinding {

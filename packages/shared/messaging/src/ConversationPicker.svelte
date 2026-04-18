@@ -59,6 +59,7 @@
 
 	let searchQuery = $state('');
 	let isSearching = $state(false);
+	let searchError = $state<string | null>(null);
 	let searchResults: MessageParticipant[] = $state([]);
 	let selectedParticipants: MessageParticipant[] = $state([]);
 	let mode: 'browse' | 'search' | 'create' = $state('browse');
@@ -80,11 +81,14 @@
 		if (!searchQuery || !context.handlers.onSearchParticipants) return;
 
 		isSearching = true;
+		searchError = null;
 		try {
 			searchResults = await context.handlers.onSearchParticipants(searchQuery);
 			mode = 'search';
 		} catch (error) {
-			console.error('Search failed:', error);
+			searchResults = [];
+			mode = 'search';
+			searchError = error instanceof Error ? error.message : 'Failed to search participants';
 		} finally {
 			isSearching = false;
 		}
@@ -117,10 +121,12 @@
 	$effect(() => {
 		clearTimeout(searchTimeout);
 		if (searchQuery.length >= 2) {
+			searchError = null;
 			searchTimeout = setTimeout(handleSearch, 300);
 		} else if (searchQuery.length === 0) {
 			mode = 'browse';
 			searchResults = [];
+			searchError = null;
 		}
 	});
 </script>
@@ -138,6 +144,12 @@
 			{/snippet}
 		</TextField>
 	</div>
+
+	{#if searchError}
+		<div class="conversation-picker__error" role="alert">
+			{searchError}
+		</div>
+	{/if}
 
 	{#if selectedParticipants.length > 0}
 		<div class="conversation-picker__selected" role="list" aria-label="Selected participants">
@@ -257,6 +269,15 @@
 		gap: var(--gr-spacing-scale-2);
 		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
 		background: var(--gr-color-surface-secondary);
+	}
+
+	.conversation-picker__error {
+		margin: 0 var(--gr-spacing-scale-3);
+		padding: var(--gr-spacing-scale-2) var(--gr-spacing-scale-3);
+		border-radius: var(--gr-radii-md);
+		background: var(--gr-color-error-50, rgba(239, 68, 68, 0.08));
+		color: var(--gr-color-error-700, #b91c1c);
+		font-size: var(--gr-typography-fontSize-sm);
 	}
 
 	.conversation-picker__chip {

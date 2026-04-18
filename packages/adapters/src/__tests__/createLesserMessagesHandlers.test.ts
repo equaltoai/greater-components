@@ -217,6 +217,82 @@ describe('createLesserMessagesHandlers', () => {
 		]);
 	});
 
+	it('normalizes local participant ids from search results before creating a conversation', async () => {
+		adapter.search.mockResolvedValueOnce({
+			accounts: [
+				{
+					id: 'https://dev.simulacrum.greater.website/users/arch',
+					username: 'arch',
+					domain: null,
+					displayName: 'Arch',
+					avatar: null,
+				},
+			],
+		});
+		adapter.mutate.mockResolvedValueOnce({
+			createConversation: {
+				id: 'c-arch',
+				unread: false,
+				updatedAt: '2026-02-01T00:00:00.000Z',
+				accounts: [
+					{
+						id: 'https://dev.simulacrum.greater.website/users/arch',
+						username: 'arch',
+						domain: null,
+						displayName: 'Arch',
+						avatar: null,
+					},
+				],
+				lastStatus: null,
+				viewerMetadata: {
+					requestState: 'ACCEPTED',
+					requestedAt: null,
+					acceptedAt: null,
+					declinedAt: null,
+				},
+			},
+		});
+
+		const handlers = createLesserMessagesHandlers({ adapter });
+		const results = await handlers.onSearchParticipants?.('arch');
+		const participantId = results?.[0]?.id;
+
+		expect(participantId).toBe('arch');
+
+		await handlers.onCreateConversation?.([participantId as string]);
+
+		expect(adapter.mutate).toHaveBeenCalledWith(
+			CreateConversationDocument,
+			expect.objectContaining({ participantId: 'arch' })
+		);
+	});
+
+	it('preserves remote participant ids from search results', async () => {
+		adapter.search.mockResolvedValueOnce({
+			accounts: [
+				{
+					id: 'https://remote.example/users/arch',
+					username: 'arch',
+					domain: 'remote.example',
+					displayName: 'Remote Arch',
+					avatar: null,
+				},
+			],
+		});
+
+		const handlers = createLesserMessagesHandlers({ adapter });
+		const results = await handlers.onSearchParticipants?.('arch');
+
+		expect(results).toEqual([
+			{
+				id: 'https://remote.example/users/arch',
+				username: 'arch',
+				displayName: 'Remote Arch',
+				avatar: undefined,
+			},
+		]);
+	});
+
 	it('subscribes to conversation updates', async () => {
 		const unsubscribe = vi.fn();
 		adapter.subscribeToConversationUpdates.mockReturnValueOnce({
