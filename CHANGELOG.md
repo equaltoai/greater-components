@@ -14,72 +14,67 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.7-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.7.0-rc.0...greater-v0.8.7-rc.0) (2026-04-18)
 
-
 ### Features
 
-* integrate lesser-host v0.2.2 contracts ([e43ac69](https://github.com/equaltoai/greater-components/commit/e43ac69c5b8d283df205066d1bdc32637fe25c41))
-* integrate lesser-host v0.2.2 contracts ([fc1ec34](https://github.com/equaltoai/greater-components/commit/fc1ec34ba3bec95bc17ce46c1496197e15352ab2))
-
+- integrate lesser-host v0.2.2 contracts ([e43ac69](https://github.com/equaltoai/greater-components/commit/e43ac69c5b8d283df205066d1bdc32637fe25c41))
+- integrate lesser-host v0.2.2 contracts ([fc1ec34](https://github.com/equaltoai/greater-components/commit/fc1ec34ba3bec95bc17ce46c1496197e15352ab2))
 
 ### Bug Fixes
 
-* **adapters:** align verifyCredentials with Lesser viewer schema ([ff2c7df](https://github.com/equaltoai/greater-components/commit/ff2c7dfe1dae8731ffdf53f62a5ab7f0292ba4c5))
-* **adapters:** cache conversations as folder-keyed arrays ([feba5e5](https://github.com/equaltoai/greater-components/commit/feba5e5fb4169fe1b563337070ed37b1c4f1740d))
-* **adapters:** normalize local dm participant ids ([e1258c3](https://github.com/equaltoai/greater-components/commit/e1258c3aae44cfc2ed7a98c3bd59176b30dc14e0))
-* **deps:** address dependabot alerts 77 and 78 ([15824ba](https://github.com/equaltoai/greater-components/commit/15824ba795fc117ba366eb7184f72febebfb37d6))
-* **messaging:** refetch when handlers arrive after mount ([ecbddf6](https://github.com/equaltoai/greater-components/commit/ecbddf6245c7443c702f785eb5684dd1c233645b))
-* **messaging:** store background preload failures ([e7441b5](https://github.com/equaltoai/greater-components/commit/e7441b543bf3afa397f2474c6d8bf194f7903ad5))
-* **messaging:** surface conversation picker search errors ([d3cad13](https://github.com/equaltoai/greater-components/commit/d3cad13659859ee760c9c2a43bacc46ce8c5fbae))
-* preserve adapter fetch receiver context ([ef3bdc4](https://github.com/equaltoai/greater-components/commit/ef3bdc445b41320f3205e92befb51372d0594f6f))
-* preserve adapter fetch receiver context ([5b13c31](https://github.com/equaltoai/greater-components/commit/5b13c318ab152e038ca9e3574f488c822dcb88cf))
-* refresh registry checksums for lesser-host update ([413de7a](https://github.com/equaltoai/greater-components/commit/413de7ad8a090d4b8b7fbf293e63553d1604953f))
-
+- **adapters:** align verifyCredentials with Lesser viewer schema ([ff2c7df](https://github.com/equaltoai/greater-components/commit/ff2c7dfe1dae8731ffdf53f62a5ab7f0292ba4c5))
+- **adapters:** cache conversations as folder-keyed arrays ([feba5e5](https://github.com/equaltoai/greater-components/commit/feba5e5fb4169fe1b563337070ed37b1c4f1740d))
+- **adapters:** normalize local dm participant ids ([e1258c3](https://github.com/equaltoai/greater-components/commit/e1258c3aae44cfc2ed7a98c3bd59176b30dc14e0))
+- **deps:** address dependabot alerts 77 and 78 ([15824ba](https://github.com/equaltoai/greater-components/commit/15824ba795fc117ba366eb7184f72febebfb37d6))
+- **messaging:** refetch when handlers arrive after mount ([ecbddf6](https://github.com/equaltoai/greater-components/commit/ecbddf6245c7443c702f785eb5684dd1c233645b))
+- **messaging:** store background preload failures ([e7441b5](https://github.com/equaltoai/greater-components/commit/e7441b543bf3afa397f2474c6d8bf194f7903ad5))
+- **messaging:** surface conversation picker search errors ([d3cad13](https://github.com/equaltoai/greater-components/commit/d3cad13659859ee760c9c2a43bacc46ce8c5fbae))
+- preserve adapter fetch receiver context ([ef3bdc4](https://github.com/equaltoai/greater-components/commit/ef3bdc445b41320f3205e92befb51372d0594f6f))
+- preserve adapter fetch receiver context ([5b13c31](https://github.com/equaltoai/greater-components/commit/5b13c318ab152e038ca9e3574f488c822dcb88cf))
+- refresh registry checksums for lesser-host update ([413de7a](https://github.com/equaltoai/greater-components/commit/413de7ad8a090d4b8b7fbf293e63553d1604953f))
 
 ### Docs
 
-* initialize .codex directory with stack documentation and automated skill workflows ([4c78cbc](https://github.com/equaltoai/greater-components/commit/4c78cbc680ad94c8b684b0aa376712eb66640848))
-
+- initialize .codex directory with stack documentation and automated skill workflows ([4c78cbc](https://github.com/equaltoai/greater-components/commit/4c78cbc680ad94c8b684b0aa376712eb66640848))
 
 ### CI
 
-* **deps:** update GitHub Actions dependency pins ([af66152](https://github.com/equaltoai/greater-components/commit/af66152202739410f33fe4f6310f32ab55ca3f74))
-
+- **deps:** update GitHub Actions dependency pins ([af66152](https://github.com/equaltoai/greater-components/commit/af66152202739410f33fe4f6310f32ab55ca3f74))
 
 ### Chores
 
-* **deps:** consolidate dependabot alerts 79-86 and open updates ([f1dfc95](https://github.com/equaltoai/greater-components/commit/f1dfc95ae824d9ef0247ec64e434e76ba34f1f0a))
-* **deps:** consolidate dependabot security updates ([0ba5269](https://github.com/equaltoai/greater-components/commit/0ba52695397673eeabcd7f1fb9cbe14d6f433931))
-* format lesser-host contract snapshots ([de5c8d0](https://github.com/equaltoai/greater-components/commit/de5c8d011ef2ee3a601c67346a821aefd41a9032))
-* format lesser-host contract snapshots ([c4251ca](https://github.com/equaltoai/greater-components/commit/c4251ca97da7a73f5bd9c69967a856ed5a637cfd))
-* **main:** release greater 0.7.0 ([3c302f3](https://github.com/equaltoai/greater-components/commit/3c302f3a28354783229bd185d94095439f359156))
-* **main:** release greater 0.7.0 ([29d0857](https://github.com/equaltoai/greater-components/commit/29d0857d430a4e7a0b34cf272d51fbc600681438))
-* **main:** release greater 0.8.0 ([6d25e04](https://github.com/equaltoai/greater-components/commit/6d25e04b1129e16bd0c333ba4253b11a5dc897d1))
-* **main:** release greater 0.8.0 ([b0f39fc](https://github.com/equaltoai/greater-components/commit/b0f39fc9531cccb5ac958c8acbad86f4bc5f4254))
-* **main:** release greater 0.8.1 ([ef7e8e6](https://github.com/equaltoai/greater-components/commit/ef7e8e6b4c84ae14b6205015561392e9fd75e7ff))
-* **main:** release greater 0.8.1 ([06e41ef](https://github.com/equaltoai/greater-components/commit/06e41ef52ee2b752ec8901a50eea06e8b593d77b))
-* **main:** release greater 0.8.2 ([96c854d](https://github.com/equaltoai/greater-components/commit/96c854d1a13859c45926f5f435c72fdd122328ed))
-* **main:** release greater 0.8.2 ([e8b7792](https://github.com/equaltoai/greater-components/commit/e8b7792d98bae9a2fee2c741909e04417258aec0))
-* **main:** release greater 0.8.3 ([b28d66e](https://github.com/equaltoai/greater-components/commit/b28d66ea37a9e326c2499b38122d750f6ff59055))
-* **main:** release greater 0.8.3 ([9b1a930](https://github.com/equaltoai/greater-components/commit/9b1a9302ea5bc4caef28a33ff66a750365c1e0f9))
-* **main:** release greater 0.8.4 ([e9f8f93](https://github.com/equaltoai/greater-components/commit/e9f8f9341863e244d8afabf75c3cfc3dbdec0dff))
-* **main:** release greater 0.8.4 ([40308f7](https://github.com/equaltoai/greater-components/commit/40308f77b15a542997c59b7e88c7098b748b0fd8))
-* **main:** release greater 0.8.5 ([68ba22e](https://github.com/equaltoai/greater-components/commit/68ba22e1844d005b0dee9a57a3870f11ce7575f5))
-* **main:** release greater 0.8.5 ([849abb6](https://github.com/equaltoai/greater-components/commit/849abb66042cb7225e2847cce2dd3a1eec8ab6cb))
-* **main:** release greater 0.8.6 ([cfc128e](https://github.com/equaltoai/greater-components/commit/cfc128e7af169a70104ed77043746c2e25e181d6))
-* **main:** release greater 0.8.6 ([dea082c](https://github.com/equaltoai/greater-components/commit/dea082c8e25d9e9f3626043b2211cd6720d98a0f))
-* refresh registry checksums ([9f0430c](https://github.com/equaltoai/greater-components/commit/9f0430cc1e077a1a5111de3e1448a59c93a29768))
-* refresh registry for adapter fixes ([261e1d6](https://github.com/equaltoai/greater-components/commit/261e1d6da1e79767801e601467c5dd2aabbcfd14))
-* **release:** prepare metadata ([364bc7e](https://github.com/equaltoai/greater-components/commit/364bc7e691294701ba66a400f16e992b1d6ba586))
-* **release:** prepare metadata ([090f148](https://github.com/equaltoai/greater-components/commit/090f148d299905d657bf92b42705139041afab34))
-* **release:** prepare metadata ([1ed92cf](https://github.com/equaltoai/greater-components/commit/1ed92cf49522a848ec1d9a8b85f9488165664dc4))
-* **release:** prepare metadata ([3114db7](https://github.com/equaltoai/greater-components/commit/3114db768f6368d722ff8eb3d008b68128f8da49))
-* **release:** prepare metadata ([4a56f63](https://github.com/equaltoai/greater-components/commit/4a56f6309eab468afea1068b2ad19ae3b4a9ac9c))
-* **release:** prepare metadata ([a9392d7](https://github.com/equaltoai/greater-components/commit/a9392d7e96b1e9e702d09c2922118be80cf5fbcc))
-* **release:** prepare metadata ([7c9188a](https://github.com/equaltoai/greater-components/commit/7c9188a50696cd5790712d0e82f243d2e87d630c))
-* **release:** prepare metadata ([20f0654](https://github.com/equaltoai/greater-components/commit/20f0654a668e578d625d8858816af54945009789))
-* sync lesser and lesser-host contracts ([744c552](https://github.com/equaltoai/greater-components/commit/744c552ea18503fa6fe88b1436dfeb2b15c01377))
-* sync lesser and lesser-host contracts ([482bfb3](https://github.com/equaltoai/greater-components/commit/482bfb3c29cd615398d9050820af4c8ae76d8c37))
-* sync lesser and lesser-host contracts ([16a52bc](https://github.com/equaltoai/greater-components/commit/16a52bccf8f18703a38d6faa4dcaaf2cd60a9094))
+- **deps:** consolidate dependabot alerts 79-86 and open updates ([f1dfc95](https://github.com/equaltoai/greater-components/commit/f1dfc95ae824d9ef0247ec64e434e76ba34f1f0a))
+- **deps:** consolidate dependabot security updates ([0ba5269](https://github.com/equaltoai/greater-components/commit/0ba52695397673eeabcd7f1fb9cbe14d6f433931))
+- format lesser-host contract snapshots ([de5c8d0](https://github.com/equaltoai/greater-components/commit/de5c8d011ef2ee3a601c67346a821aefd41a9032))
+- format lesser-host contract snapshots ([c4251ca](https://github.com/equaltoai/greater-components/commit/c4251ca97da7a73f5bd9c69967a856ed5a637cfd))
+- **main:** release greater 0.7.0 ([3c302f3](https://github.com/equaltoai/greater-components/commit/3c302f3a28354783229bd185d94095439f359156))
+- **main:** release greater 0.7.0 ([29d0857](https://github.com/equaltoai/greater-components/commit/29d0857d430a4e7a0b34cf272d51fbc600681438))
+- **main:** release greater 0.8.0 ([6d25e04](https://github.com/equaltoai/greater-components/commit/6d25e04b1129e16bd0c333ba4253b11a5dc897d1))
+- **main:** release greater 0.8.0 ([b0f39fc](https://github.com/equaltoai/greater-components/commit/b0f39fc9531cccb5ac958c8acbad86f4bc5f4254))
+- **main:** release greater 0.8.1 ([ef7e8e6](https://github.com/equaltoai/greater-components/commit/ef7e8e6b4c84ae14b6205015561392e9fd75e7ff))
+- **main:** release greater 0.8.1 ([06e41ef](https://github.com/equaltoai/greater-components/commit/06e41ef52ee2b752ec8901a50eea06e8b593d77b))
+- **main:** release greater 0.8.2 ([96c854d](https://github.com/equaltoai/greater-components/commit/96c854d1a13859c45926f5f435c72fdd122328ed))
+- **main:** release greater 0.8.2 ([e8b7792](https://github.com/equaltoai/greater-components/commit/e8b7792d98bae9a2fee2c741909e04417258aec0))
+- **main:** release greater 0.8.3 ([b28d66e](https://github.com/equaltoai/greater-components/commit/b28d66ea37a9e326c2499b38122d750f6ff59055))
+- **main:** release greater 0.8.3 ([9b1a930](https://github.com/equaltoai/greater-components/commit/9b1a9302ea5bc4caef28a33ff66a750365c1e0f9))
+- **main:** release greater 0.8.4 ([e9f8f93](https://github.com/equaltoai/greater-components/commit/e9f8f9341863e244d8afabf75c3cfc3dbdec0dff))
+- **main:** release greater 0.8.4 ([40308f7](https://github.com/equaltoai/greater-components/commit/40308f77b15a542997c59b7e88c7098b748b0fd8))
+- **main:** release greater 0.8.5 ([68ba22e](https://github.com/equaltoai/greater-components/commit/68ba22e1844d005b0dee9a57a3870f11ce7575f5))
+- **main:** release greater 0.8.5 ([849abb6](https://github.com/equaltoai/greater-components/commit/849abb66042cb7225e2847cce2dd3a1eec8ab6cb))
+- **main:** release greater 0.8.6 ([cfc128e](https://github.com/equaltoai/greater-components/commit/cfc128e7af169a70104ed77043746c2e25e181d6))
+- **main:** release greater 0.8.6 ([dea082c](https://github.com/equaltoai/greater-components/commit/dea082c8e25d9e9f3626043b2211cd6720d98a0f))
+- refresh registry checksums ([9f0430c](https://github.com/equaltoai/greater-components/commit/9f0430cc1e077a1a5111de3e1448a59c93a29768))
+- refresh registry for adapter fixes ([261e1d6](https://github.com/equaltoai/greater-components/commit/261e1d6da1e79767801e601467c5dd2aabbcfd14))
+- **release:** prepare metadata ([364bc7e](https://github.com/equaltoai/greater-components/commit/364bc7e691294701ba66a400f16e992b1d6ba586))
+- **release:** prepare metadata ([090f148](https://github.com/equaltoai/greater-components/commit/090f148d299905d657bf92b42705139041afab34))
+- **release:** prepare metadata ([1ed92cf](https://github.com/equaltoai/greater-components/commit/1ed92cf49522a848ec1d9a8b85f9488165664dc4))
+- **release:** prepare metadata ([3114db7](https://github.com/equaltoai/greater-components/commit/3114db768f6368d722ff8eb3d008b68128f8da49))
+- **release:** prepare metadata ([4a56f63](https://github.com/equaltoai/greater-components/commit/4a56f6309eab468afea1068b2ad19ae3b4a9ac9c))
+- **release:** prepare metadata ([a9392d7](https://github.com/equaltoai/greater-components/commit/a9392d7e96b1e9e702d09c2922118be80cf5fbcc))
+- **release:** prepare metadata ([7c9188a](https://github.com/equaltoai/greater-components/commit/7c9188a50696cd5790712d0e82f243d2e87d630c))
+- **release:** prepare metadata ([20f0654](https://github.com/equaltoai/greater-components/commit/20f0654a668e578d625d8858816af54945009789))
+- sync lesser and lesser-host contracts ([744c552](https://github.com/equaltoai/greater-components/commit/744c552ea18503fa6fe88b1436dfeb2b15c01377))
+- sync lesser and lesser-host contracts ([482bfb3](https://github.com/equaltoai/greater-components/commit/482bfb3c29cd615398d9050820af4c8ae76d8c37))
+- sync lesser and lesser-host contracts ([16a52bc](https://github.com/equaltoai/greater-components/commit/16a52bccf8f18703a38d6faa4dcaaf2cd60a9094))
 
 ## [0.8.6](https://github.com/equaltoai/greater-components/compare/greater-v0.8.5...greater-v0.8.6) (2026-04-05)
 
