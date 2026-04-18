@@ -301,7 +301,13 @@ export function formatErrorMessage(
 	if (!error) return fallback;
 
 	// Don't expose internal error details in production
-	if (typeof process !== 'undefined' && process.env['NODE_ENV'] === 'production') {
+	const runtimeNodeEnv =
+		typeof globalThis === 'object' && 'process' in globalThis
+			? (globalThis as typeof globalThis & { process?: { env?: { NODE_ENV?: string } } }).process
+					?.env?.NODE_ENV
+			: undefined;
+
+	if (runtimeNodeEnv === 'production') {
 		return fallback;
 	}
 
