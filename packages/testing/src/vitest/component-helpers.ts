@@ -153,6 +153,7 @@ export function setupA11yTestEnvironment() {
 	class MockIntersectionObserver implements IntersectionObserver {
 		readonly root: Element | null = null;
 		readonly rootMargin = '0px';
+		readonly scrollMargin = '0px';
 		readonly thresholds: ReadonlyArray<number> = [0];
 		constructor(_callback: IntersectionObserverCallback) {}
 		observe(_target: Element): void {}

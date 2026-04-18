@@ -5,6 +5,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "moduleResolution": "bundler",
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": true,
@@ -16,7 +17,6 @@
       "./apps/docs/.svelte-kit/types/src"
     ],
     "jsx": "preserve",
-
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -33,7 +33,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -92,12 +91,10 @@
       "@equaltoai/greater-components-community": ["./packages/faces/community/src/index.ts"],
       "@equaltoai/greater-components-community/*": ["./packages/faces/community/src/*"]
     },
-
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "inlineSources": false,
-
     "incremental": true,
     "composite": true
   },
