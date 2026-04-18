@@ -1,0 +1,6 @@
+import{D as e,G as t,T as n,Y as r,q as i,ut as a,v as o,z as s}from"../chunks/Bov5pycq.js";import"../chunks/Cs5QDfgy.js";import"../chunks/Bq1ElFeL.js";import{t as c}from"../chunks/D7myQBsm.js";var l=e(`<meta name="description" content="Reactive stores and state helpers exported by Greater Components."/>`),u=e(`<article class="guide-page"><header><p class="eyebrow">API Reference</p> <h1>Stores</h1> <p class="lead">For GraphQL-backed timelines and notifications, the adapters package exports reactive stores
+			designed to work with Svelte reactivity.</p></header> <section><h2>Example</h2> <!></section></article>`);function d(e){var d=u();o(`1uvy7j8`,e=>{var r=l();s(()=>{t.title=`Stores API - Greater Components`}),n(e,r)});var f=r(i(d),2);c(r(i(f),2),{language:`typescript`,code:`import { createTimelineStore } from '@equaltoai/greater-components/adapters';
+
+const timeline = createTimelineStore({ adapter, timeline: { type: 'home' } });
+timeline.subscribe((state) => console.log(state.items.length));
+await timeline.refresh();`}),a(f),a(d),n(e,d)}export{d as component};
