@@ -14,21 +14,18 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.7](https://github.com/equaltoai/greater-components/compare/greater-v0.8.6...greater-v0.8.7) (2026-04-18)
 
-
 ### Docs
 
-* initialize .codex directory with stack documentation and automated skill workflows ([4c78cbc](https://github.com/equaltoai/greater-components/commit/4c78cbc680ad94c8b684b0aa376712eb66640848))
-
+- initialize .codex directory with stack documentation and automated skill workflows ([4c78cbc](https://github.com/equaltoai/greater-components/commit/4c78cbc680ad94c8b684b0aa376712eb66640848))
 
 ### CI
 
-* **deps:** update GitHub Actions dependency pins ([af66152](https://github.com/equaltoai/greater-components/commit/af66152202739410f33fe4f6310f32ab55ca3f74))
-
+- **deps:** update GitHub Actions dependency pins ([af66152](https://github.com/equaltoai/greater-components/commit/af66152202739410f33fe4f6310f32ab55ca3f74))
 
 ### Chores
 
-* **deps:** consolidate dependabot alerts 79-86 and open updates ([f1dfc95](https://github.com/equaltoai/greater-components/commit/f1dfc95ae824d9ef0247ec64e434e76ba34f1f0a))
-* **deps:** consolidate dependabot security updates ([0ba5269](https://github.com/equaltoai/greater-components/commit/0ba52695397673eeabcd7f1fb9cbe14d6f433931))
+- **deps:** consolidate dependabot alerts 79-86 and open updates ([f1dfc95](https://github.com/equaltoai/greater-components/commit/f1dfc95ae824d9ef0247ec64e434e76ba34f1f0a))
+- **deps:** consolidate dependabot security updates ([0ba5269](https://github.com/equaltoai/greater-components/commit/0ba52695397673eeabcd7f1fb9cbe14d6f433931))
 
 ## [0.8.6](https://github.com/equaltoai/greater-components/compare/greater-v0.8.5...greater-v0.8.6) (2026-04-05)
 
