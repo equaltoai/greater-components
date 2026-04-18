@@ -38,7 +38,7 @@
     "@graphql-typed-document-node/core": "^3.2.0",
     "graphql": "^16.13.2",
     "graphql-ws": "^6.0.8",
-    "viem": "^2.47.14"
+    "viem": "^2.48.1"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
