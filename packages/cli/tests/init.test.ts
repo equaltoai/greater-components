@@ -49,6 +49,10 @@ vi.mock('../src/utils/registry-index.js', () => ({
 	resolveRef: vi.fn().mockResolvedValue({ ref: 'greater-v0.1.1', source: 'fallback' }),
 }));
 
+vi.mock('../src/utils/ref.js', () => ({
+	resolveRefForFetch: vi.fn(async (ref: string) => ref),
+}));
+
 vi.mock('../src/utils/css-inject.js', () => ({
 	copyCssFiles: vi.fn().mockResolvedValue({
 		success: true,

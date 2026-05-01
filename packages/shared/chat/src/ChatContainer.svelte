@@ -130,9 +130,7 @@
 
 	// Sync external props with context state
 	$effect(() => {
-		if (messages.length > 0) {
-			context.updateState({ messages });
-		}
+		context.updateState({ messages });
 	});
 
 	$effect(() => {

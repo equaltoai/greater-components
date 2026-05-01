@@ -12,6 +12,29 @@
 	}
 
 	let { request, class: className = '' }: Props = $props();
+
+	const allowedLinkProtocols = new Set(['http:', 'https:', 'mailto:']);
+
+	function toSafeHref(value?: string | null): string | null {
+		if (!value || typeof value !== 'string') return null;
+		const trimmed = value.trim();
+		if (!trimmed) return null;
+
+		try {
+			const parsed = new URL(trimmed, 'https://example.invalid');
+			if (!allowedLinkProtocols.has(parsed.protocol)) return null;
+			return encodeURI(trimmed);
+		} catch {
+			return null;
+		}
+	}
+
+	const artifacts = $derived.by(() =>
+		(request.artifacts ?? []).map((artifact) => ({
+			...artifact,
+			safeHref: toSafeHref(artifact.href),
+		}))
+	);
 </script>
 
 <article class={`agent-request-card ${className}`}>
@@ -60,18 +83,18 @@
 		</section>
 	{/if}
 
-	{#if request.artifacts?.length}
+	{#if artifacts.length}
 		<section class="agent-request-card__section">
 			<h4>Attached artifacts</h4>
 			<div class="agent-request-card__artifacts">
-				{#each request.artifacts as artifact (artifact.id)}
+				{#each artifacts as artifact (artifact.id)}
 					<div class="agent-request-card__artifact">
 						<p class="agent-request-card__artifact-title">{artifact.title}</p>
 						{#if artifact.description}
 							<p class="agent-request-card__artifact-copy">{artifact.description}</p>
 						{/if}
-						{#if artifact.href}
-							<a href={artifact.href} target="_blank" rel="noreferrer">Open artifact</a>
+						{#if artifact.safeHref}
+							<a href={artifact.safeHref} target="_blank" rel="noreferrer">Open artifact</a>
 						{/if}
 					</div>
 				{/each}

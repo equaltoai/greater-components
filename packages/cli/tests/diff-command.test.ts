@@ -39,6 +39,10 @@ vi.mock('../src/utils/registry-index.js', () => ({
 	resolveRef: vi.fn().mockResolvedValue({ ref: 'v1', source: 'config' }),
 }));
 
+vi.mock('../src/utils/ref.js', () => ({
+	resolveRefForFetch: vi.fn(async (ref: string) => ref),
+}));
+
 vi.mock('../src/registry/index.js', () => ({
 	getComponent: vi.fn(),
 }));

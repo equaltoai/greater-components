@@ -8,7 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Mock dependencies
 vi.mock('../src/utils/git-fetch.js', () => ({
 	fetchFromGitTag: vi.fn(),
-	resolveGitRefToCommit: vi.fn().mockResolvedValue(null),
+	resolveGitRefToCommit: vi.fn().mockResolvedValue('0123456789abcdef0123456789abcdef01234567'),
 	NetworkError: class NetworkError extends Error {
 		constructor(
 			message: string,
@@ -47,6 +47,8 @@ vi.mock('../src/utils/security.js', () => ({
 	},
 }));
 
+const PINNED_REF = '0123456789abcdef0123456789abcdef01234567';
+
 describe('fetch utilities', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -77,7 +79,7 @@ describe('fetch utilities', () => {
 			const result = await fetchComponentFiles(component, { ref: 'v1.0.0' });
 
 			expect(result.files).toHaveLength(1);
-			expect(result.ref).toBe('v1.0.0');
+			expect(result.ref).toBe(PINNED_REF);
 		});
 
 		it('should use default ref when not specified', async () => {

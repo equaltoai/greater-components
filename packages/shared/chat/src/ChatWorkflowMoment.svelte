@@ -8,6 +8,22 @@
 
 	let { moment, class: className = '' }: Props = $props();
 
+	const allowedLinkProtocols = new Set(['http:', 'https:', 'mailto:']);
+
+	function toSafeHref(value?: string | null): string | null {
+		if (!value || typeof value !== 'string') return null;
+		const trimmed = value.trim();
+		if (!trimmed) return null;
+
+		try {
+			const parsed = new URL(trimmed, 'https://example.invalid');
+			if (!allowedLinkProtocols.has(parsed.protocol)) return null;
+			return encodeURI(trimmed);
+		} catch {
+			return null;
+		}
+	}
+
 	function formatLabel(value: string): string {
 		return value
 			.split(/[_-]/g)
@@ -28,6 +44,8 @@
 		}
 		return 'neutral';
 	});
+
+	const safeHref = $derived.by(() => toSafeHref(moment.href));
 
 	const eyebrow = $derived.by(() => {
 		if (moment.kind === 'artifact') return moment.artifactLabel ?? 'Artifact';
@@ -60,8 +78,8 @@
 				{/each}
 			</ul>
 		{/if}
-		{#if moment.href}
-			<a class="chat-workflow-moment__link" href={moment.href} target="_blank" rel="noreferrer">
+		{#if safeHref}
+			<a class="chat-workflow-moment__link" href={safeHref} target="_blank" rel="noreferrer">
 				Open attachment
 			</a>
 		{/if}
