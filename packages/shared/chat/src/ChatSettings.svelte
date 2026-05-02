@@ -164,6 +164,10 @@
 		}
 	}
 
+	function handleMaxTokensInput(event: Event) {
+		handleMaxTokensChange((event.currentTarget as HTMLInputElement).value);
+	}
+
 	/**
 	 * Handle knowledge base toggle
 	 */
@@ -264,7 +268,7 @@
 					value={String(localSettings.maxTokens ?? 4096)}
 					type="text"
 					placeholder="4096"
-					oninput={(e) => handleMaxTokensChange((e.target as HTMLInputElement).value)}
+					oninput={handleMaxTokensInput}
 				/>
 				<Text size="sm" color="secondary" class="chat-settings__helper">
 					Maximum number of tokens in the response. Higher values allow longer responses.
