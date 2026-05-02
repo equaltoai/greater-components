@@ -5,7 +5,8 @@
     "incremental": false,
     "composite": false,
     "declaration": false,
-    "declarationMap": false
+    "declarationMap": false,
+    "types": ["node", "vite/client"]
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"],
   "exclude": ["dist", "node_modules"]
