@@ -14,17 +14,15 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.9](https://github.com/equaltoai/greater-components/compare/greater-v0.8.8...greater-v0.8.9) (2026-05-02)
 
-
 ### Bug Fixes
 
-* restore sim social update compatibility ([747ccfc](https://github.com/equaltoai/greater-components/commit/747ccfc38b1907a2e37fa9d37478f30d73c05157))
-
+- restore sim social update compatibility ([747ccfc](https://github.com/equaltoai/greater-components/commit/747ccfc38b1907a2e37fa9d37478f30d73c05157))
 
 ### Chores
 
-* **premain:** release greater 0.8.9-rc.0 ([8809f3e](https://github.com/equaltoai/greater-components/commit/8809f3ecb0f11a81665d9e9fecd61148df9b6bda))
-* **premain:** release greater 0.8.9-rc.0 ([f9f9585](https://github.com/equaltoai/greater-components/commit/f9f9585d500e3a4f5c99ede469022fbc5ca55f09))
-* **release:** prepare metadata ([f8b0c84](https://github.com/equaltoai/greater-components/commit/f8b0c84a1c3537019992ba6686f54228a74273db))
+- **premain:** release greater 0.8.9-rc.0 ([8809f3e](https://github.com/equaltoai/greater-components/commit/8809f3ecb0f11a81665d9e9fecd61148df9b6bda))
+- **premain:** release greater 0.8.9-rc.0 ([f9f9585](https://github.com/equaltoai/greater-components/commit/f9f9585d500e3a4f5c99ede469022fbc5ca55f09))
+- **release:** prepare metadata ([f8b0c84](https://github.com/equaltoai/greater-components/commit/f8b0c84a1c3537019992ba6686f54228a74273db))
 
 ## [0.8.9-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.8-rc.0...greater-v0.8.9-rc.0) (2026-05-02)
 
