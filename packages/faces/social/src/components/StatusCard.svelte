@@ -74,10 +74,34 @@
 	const actualStatus = $derived(status.reblog || status);
 	const dateTime = $derived(formatDateTime(actualStatus.createdAt));
 	const replyAccount = $derived(actualStatus.inReplyToAccount);
+	const ALLOWED_LINK_PROTOCOLS = new Set(['http:', 'https:']);
 	const replyTargetUrl = $derived(
 		actualStatus.inReplyToStatus?.url ||
 			(actualStatus.inReplyToId ? `#/status/${actualStatus.inReplyToId}` : undefined)
 	);
+	const safeReplyTargetUrl = $derived(toSafeHref(replyTargetUrl, { allowInternalRoutes: true }));
+	const safeAccountUrl = $derived(toSafeHref(account.url));
+
+	function toSafeHref(
+		value?: string | null,
+		options: { allowInternalRoutes?: boolean } = {}
+	): string | null {
+		const href = value?.trim();
+		if (!href) return null;
+
+		if (options.allowInternalRoutes) {
+			if (href.startsWith('#/')) return href;
+			if (href.startsWith('/') && !href.startsWith('//')) return href;
+		}
+
+		try {
+			const parsed = new URL(href);
+			if (!ALLOWED_LINK_PROTOCOLS.has(parsed.protocol)) return null;
+			return parsed.href;
+		} catch {
+			return null;
+		}
+	}
 
 	function handleCardClick(event: MouseEvent | KeyboardEvent) {
 		// Don't trigger if clicking on links or buttons
@@ -167,12 +191,12 @@
 		</div>
 	{/if}
 
-	{#if replyAccount || replyTargetUrl}
+	{#if replyAccount || safeReplyTargetUrl}
 		<div class="reply-indicator">
 			<ReplyIcon class="reply-icon" size={16} />
 			<span>Replying to </span>
-			{#if replyTargetUrl}
-				<a href={replyTargetUrl} class="reply-indicator__link">
+			{#if safeReplyTargetUrl}
+				<a href={safeReplyTargetUrl} class="reply-indicator__link">
 					post from {replyAccount?.displayName || replyAccount?.username || 'original author'}
 				</a>
 			{:else if replyAccount}
@@ -184,21 +208,36 @@
 	{/if}
 
 	<div class="status-header">
-		<a
-			href={account.url}
-			class="avatar-link"
-			aria-label={`View ${account.displayName || account.username}'s profile`}
-		>
-			<img src={account.avatar} alt="" class="avatar" loading="lazy" width="48" height="48" />
-		</a>
+		{#if safeAccountUrl}
+			<a
+				href={safeAccountUrl}
+				class="avatar-link"
+				aria-label={`View ${account.displayName || account.username}'s profile`}
+			>
+				<img src={account.avatar} alt="" class="avatar" loading="lazy" width="48" height="48" />
+			</a>
+		{:else}
+			<span class="avatar-link" aria-hidden="true">
+				<img src={account.avatar} alt="" class="avatar" loading="lazy" width="48" height="48" />
+			</span>
+		{/if}
 
 		<div class="account-info">
-			<a href={account.url} class="display-name">
-				{account.displayName || account.username}
-				{#if account.bot}
-					<span class="bot-badge" aria-label="Bot account">BOT</span>
-				{/if}
-			</a>
+			{#if safeAccountUrl}
+				<a href={safeAccountUrl} class="display-name">
+					{account.displayName || account.username}
+					{#if account.bot}
+						<span class="bot-badge" aria-label="Bot account">BOT</span>
+					{/if}
+				</a>
+			{:else}
+				<span class="display-name">
+					{account.displayName || account.username}
+					{#if account.bot}
+						<span class="bot-badge" aria-label="Bot account">BOT</span>
+					{/if}
+				</span>
+			{/if}
 			<div class="account-handle">@{account.acct}</div>
 		</div>
 

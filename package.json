@@ -1,6 +1,6 @@
 {
   "name": "greater-components",
-  "version": "0.8.10-rc.0",
+  "version": "0.8.10",
   "private": true,
   "description": "Fediverse UI components built with Svelte 5, TypeScript, and pnpm workspaces",
   "repository": {
@@ -80,7 +80,7 @@
     "@graphql-codegen/typescript": "^5.0.9",
     "@graphql-codegen/typescript-operations": "^5.0.9",
     "@sveltejs/package": "^2.5.7",
-    "@theory-cloud/facetheory": "git+https://github.com/theory-cloud/FaceTheory.git#7f85c05e4060dcd44ba24e84542cc2d0be4871ac&path:ts",
+    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v2.0.0/theory-cloud-facetheory-2.0.0.tgz",
     "@types/node": "^25.6.0",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",

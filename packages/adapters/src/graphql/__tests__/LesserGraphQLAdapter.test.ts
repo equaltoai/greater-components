@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { LesserGraphQLAdapter, createLesserGraphQLAdapter } from '../LesserGraphQLAdapter';
+import {
+	LesserGraphQLAdapter,
+	LesserGraphQLAdapterError,
+	createLesserGraphQLAdapter,
+} from '../LesserGraphQLAdapter';
 import { createGraphQLClient } from '../client';
 
 // Mock createGraphQLClient
@@ -10,6 +14,7 @@ vi.mock('../client', () => ({
 // Mock global fetch
 const globalFetch = vi.fn();
 global.fetch = globalFetch;
+const USER_SAFE_REQUEST_MESSAGE = 'The request could not be completed. Please try again.';
 
 describe('LesserGraphQLAdapter', () => {
 	let adapter!: LesserGraphQLAdapter;
@@ -215,9 +220,58 @@ describe('LesserGraphQLAdapter', () => {
 
 		it('should throw if mutation returns null data', async () => {
 			mockApolloClient.mutate.mockResolvedValue({ data: null });
-			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toThrow(
-				'Mutation completed without returning data'
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toMatchObject({
+				message: USER_SAFE_REQUEST_MESSAGE,
+				debugMessages: ['Mutation completed without returning data.'],
+			});
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toBeInstanceOf(
+				LesserGraphQLAdapterError
 			);
+		});
+
+		it('normalizes GraphQL query errors to user-safe messages', async () => {
+			mockApolloClient.query.mockResolvedValue({
+				errors: [{ message: 'resolver leaked internal table name users_private' }],
+			});
+
+			await expect(adapter.getObject('1')).rejects.toThrow(USER_SAFE_REQUEST_MESSAGE);
+			await expect(adapter.getObject('1')).rejects.toBeInstanceOf(LesserGraphQLAdapterError);
+		});
+
+		it('normalizes thrown transport errors while preserving debug detail', async () => {
+			mockApolloClient.query.mockRejectedValue(new Error('database timeout: shard-7'));
+
+			await expect(adapter.getObject('1')).rejects.toMatchObject({
+				message: 'The request could not be completed. Please try again.',
+				debugMessages: ['database timeout: shard-7'],
+			});
+		});
+
+		it('normalizes resolved GraphQL mutation errors before returning partial data', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: { createNote: { id: 'partial-note' } },
+				errors: [{ message: 'authorization denied for actor_private_acl' }],
+			});
+
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toMatchObject({
+				message: USER_SAFE_REQUEST_MESSAGE,
+				debugMessages: ['authorization denied for actor_private_acl'],
+			});
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toBeInstanceOf(
+				LesserGraphQLAdapterError
+			);
+		});
+
+		it('normalizes resolved GraphQL mutation transport errors', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: { createNote: { id: 'partial-note' } },
+				error: new Error('network gateway leaked upstream host'),
+			});
+
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toMatchObject({
+				message: USER_SAFE_REQUEST_MESSAGE,
+				debugMessages: ['network gateway leaked upstream host'],
+			});
 		});
 	});
 
@@ -260,7 +314,10 @@ describe('LesserGraphQLAdapter', () => {
 				text: async () => 'Server Error',
 			} as Response);
 
-			await expect(adapter.uploadMedia({ file })).rejects.toThrow('Upload failed (500)');
+			await expect(adapter.uploadMedia({ file })).rejects.toMatchObject({
+				message: 'The upload could not be completed. Please try again.',
+				debugMessages: ['Upload failed (500): Server Error'],
+			});
 		});
 
 		it('should handle GraphQL errors in upload response', async () => {
@@ -271,7 +328,10 @@ describe('LesserGraphQLAdapter', () => {
 				}),
 			} as Response);
 
-			await expect(adapter.uploadMedia({ file })).rejects.toThrow('File too large');
+			await expect(adapter.uploadMedia({ file })).rejects.toMatchObject({
+				message: 'The upload could not be completed. Please try again.',
+				debugMessages: ['File too large'],
+			});
 		});
 
 		it('should throw if upload mutation returns no payload', async () => {
@@ -301,7 +361,9 @@ describe('LesserGraphQLAdapter', () => {
 
 		it('should rethrow if error is not target id related', async () => {
 			mockApolloClient.query.mockRejectedValue(new Error('Other error'));
-			await expect(adapter.getRelationship('1')).rejects.toThrow('Other error');
+			await expect(adapter.getRelationship('1')).rejects.toThrow(
+				'The request could not be completed. Please try again.'
+			);
 		});
 	});
 

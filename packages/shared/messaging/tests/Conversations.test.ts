@@ -137,6 +137,31 @@ describe('Conversations', () => {
 		unmount(instance);
 	});
 
+	it('does not expose sensitive last-message content in previews', async () => {
+		mockState.conversations = [
+			{
+				id: 'c-sensitive',
+				participants: [{ id: 'u1', displayName: 'Alice', avatar: '' }],
+				unreadCount: 0,
+				lastMessage: {
+					content: 'Hidden sensitive preview',
+					createdAt: '',
+					sensitive: true,
+					spoilerText: 'CW: sensitive preview',
+				},
+			},
+		];
+
+		const target = document.createElement('div');
+		const instance = mount(Conversations, { target });
+		await flushSync();
+
+		expect(target.textContent).toContain('CW: sensitive preview');
+		expect(target.textContent).not.toContain('Hidden sensitive preview');
+
+		unmount(instance);
+	});
+
 	it('handles selection', async () => {
 		mockState.conversations = [
 			{

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { mount, unmount } from 'svelte';
+import { flushSync } from 'svelte';
 import Message from '../src/Message.svelte';
 
 // Mock context helpers
@@ -42,6 +43,31 @@ describe('Message', () => {
 
 		expect(target.querySelector('.message__content')?.textContent).toBe('My message');
 		expect(target.querySelector('.message__time')?.textContent).toBe('10:00 AM');
+
+		unmount(instance);
+	});
+
+	it('matches own messages by original actor id when participant id is normalized', () => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm1-actor',
+			conversationId: 'c1',
+			sender: {
+				...alice,
+				id: 'alice',
+				actorId: 'https://dev.simulacrum.greater.website/users/alice',
+			},
+			content: 'My normalized message',
+			createdAt: new Date().toISOString(),
+			read: true,
+		};
+
+		const instance = mount(Message, {
+			target,
+			props: { message, currentUserId: 'https://dev.simulacrum.greater.website/users/alice' },
+		});
+
+		expect(target.querySelector('.message')?.classList.contains('message--own')).toBe(true);
 
 		unmount(instance);
 	});
@@ -119,6 +145,35 @@ describe('Message', () => {
 		expect(target.textContent).toContain('Review requested');
 		expect(target.textContent).toContain('Open review thread');
 		expect(target.querySelector('.workflow-thread-moment')).toBeTruthy();
+
+		unmount(instance);
+	});
+
+	it('hides sensitive message content until explicitly revealed', () => {
+		const target = document.createElement('div');
+		const message = {
+			id: 'm-sensitive',
+			conversationId: 'c1',
+			sender: bob,
+			content: 'Hidden message body',
+			createdAt: new Date().toISOString(),
+			read: true,
+			sensitive: true,
+			spoilerText: 'CW: private topic',
+		};
+
+		const instance = mount(Message, { target, props: { message, currentUserId: 'u1' } });
+
+		expect(target.textContent).toContain('CW: private topic');
+		expect(target.querySelector('.message__content')).toBeNull();
+
+		const button = target.querySelector('.message__content-warning-toggle') as HTMLButtonElement;
+		expect(button?.getAttribute('aria-expanded')).toBe('false');
+		button.click();
+		flushSync();
+
+		expect(button.getAttribute('aria-expanded')).toBe('true');
+		expect(target.querySelector('.message__content')?.textContent).toBe('Hidden message body');
 
 		unmount(instance);
 	});

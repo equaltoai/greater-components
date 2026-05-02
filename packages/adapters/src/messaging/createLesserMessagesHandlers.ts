@@ -21,9 +21,11 @@ export type RealtimeConnectionStatus =
 
 export interface MessageParticipant {
 	id: string;
+	actorId?: string;
 	username: string;
 	displayName: string;
 	avatar?: string;
+	handle?: string;
 }
 
 export interface DirectMessage {
@@ -33,6 +35,8 @@ export interface DirectMessage {
 	content: string;
 	createdAt: string;
 	read: boolean;
+	sensitive?: boolean;
+	spoilerText?: string | null;
 	mediaAttachments?: {
 		url: string;
 		type: string;
@@ -132,12 +136,18 @@ function getCanonicalParticipantId(
 	return actor.id;
 }
 
+function getParticipantHandle(actor: Pick<ActorSummaryFragment, 'username' | 'domain'>): string {
+	return actor.domain ? `${actor.username}@${actor.domain}` : actor.username;
+}
+
 function mapActorToParticipant(actor: ActorSummaryFragment): MessageParticipant {
 	return {
 		id: getCanonicalParticipantId(actor),
+		actorId: actor.id,
 		username: actor.username,
 		displayName: actor.displayName ?? actor.username,
 		avatar: actor.avatar ?? undefined,
+		handle: getParticipantHandle(actor),
 	};
 }
 
@@ -152,6 +162,8 @@ function mapObjectToDirectMessage(
 		content: object.content,
 		createdAt: object.createdAt,
 		read: true,
+		sensitive: object.sensitive,
+		spoilerText: object.spoilerText ?? null,
 		mediaAttachments: object.attachments.map((attachment) => ({
 			url: attachment.url,
 			type: attachment.type,

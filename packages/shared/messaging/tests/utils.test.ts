@@ -67,6 +67,26 @@ describe('utils', () => {
 			expect(getConversationName(conversation, currentUserId)).toBe('Other User');
 		});
 
+		it('matches current user by actorId when id was normalized', () => {
+			const conversation: Conversation = {
+				id: 'c1',
+				participants: [
+					{
+						id: 'me',
+						actorId: 'https://dev.simulacrum.greater.website/users/me',
+						displayName: 'Me',
+						username: 'me',
+					},
+					otherUser,
+				],
+				unreadCount: 0,
+				updatedAt: '',
+			};
+			expect(
+				getConversationName(conversation, 'https://dev.simulacrum.greater.website/users/me')
+			).toBe('Other User');
+		});
+
 		it('returns joined names for group chat', () => {
 			const conversation: Conversation = {
 				id: 'c1',

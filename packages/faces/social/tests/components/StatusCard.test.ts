@@ -211,6 +211,29 @@ describe('StatusCard', () => {
 		expect(onclick).not.toHaveBeenCalled();
 	});
 
+	it('drops unsafe account and reply href schemes', () => {
+		const unsafeStatus: Status = {
+			...mockStatus,
+			account: {
+				...mockAccount,
+				url: 'javascript:alert(1)',
+			},
+			inReplyToStatus: {
+				...mockStatus,
+				id: 'reply-1',
+				url: 'data:text/html,<script>alert(1)</script>',
+			},
+		};
+
+		const { container } = render(StatusCard, { props: { status: unsafeStatus } });
+
+		expect(container.querySelector('.avatar-link[href]')).toBeNull();
+		expect(container.querySelector('.display-name[href]')).toBeNull();
+		expect(container.querySelector('.reply-indicator__link[href]')).toBeNull();
+		expect(container.innerHTML).not.toContain('javascript:');
+		expect(container.innerHTML).not.toContain('data:text/html');
+	});
+
 	it('triggers onclick on Enter keypress', async () => {
 		const onclick = vi.fn();
 		render(StatusCard, { props: { status: mockStatus, onclick } });
