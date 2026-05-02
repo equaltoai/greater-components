@@ -12,6 +12,10 @@ import {
 	createTestComponentMetadata,
 } from './fixtures/index.js';
 
+const mockRefs = vi.hoisted(() => ({
+	immutableRef: '0123456789abcdef0123456789abcdef01234567',
+}));
+
 // Custom error to simulate process.exit
 class ProcessExitError extends Error {
 	code: number;
@@ -72,6 +76,10 @@ vi.mock('../src/utils/fetch.js', () => ({
 		],
 		ref: 'greater-v0.1.1',
 	}),
+}));
+
+vi.mock('../src/utils/ref.js', () => ({
+	resolveRefForFetch: vi.fn(async () => mockRefs.immutableRef),
 }));
 
 // Mock Registry
@@ -139,7 +147,7 @@ describe('Update Command Execution', () => {
 		const configContent = mockFs.get('/components.json');
 		const updatedConfig = JSON.parse(configContent || '{}');
 		expect(updatedConfig.installed.find((c: any) => c.name === 'button').version).toBe(
-			'greater-v0.1.1'
+			mockRefs.immutableRef
 		);
 	});
 
