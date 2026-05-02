@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-mailbox-message.schema.json",
+  "title": "Soul comm mailbox redacted message metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["messageRef", "deliveryId", "messageId", "threadId", "direction", "channelType", "status", "content", "state", "createdAt"],
+  "properties": {
+    "messageRef": { "type": "string", "minLength": 1, "maxLength": 128, "description": "Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId." },
+    "deliveryId": { "type": "string", "minLength": 1, "maxLength": 128, "description": "Canonical host delivery identity; exposed for diagnostics." },
+    "messageId": { "type": "string", "minLength": 1, "maxLength": 128, "description": "Legacy/idempotency/provider-adjacent metadata; not the primary mailbox reference." },
+    "threadId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "direction": { "type": "string", "enum": ["inbound", "outbound"] },
+    "channelType": { "type": "string", "enum": ["email", "sms", "voice"] },
+    "provider": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "providerMessageId": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "status": { "type": "string", "enum": ["accepted", "sent", "delivered", "queued", "failed", "bounced", "dropped"] },
+    "from": { "$ref": "#/definitions/party" },
+    "to": { "$ref": "#/definitions/party" },
+    "subject": { "type": "string", "maxLength": 512 },
+    "preview": { "type": "string", "maxLength": 512 },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available"],
+      "properties": {
+        "available": { "type": "boolean" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "mimeType": { "type": "string", "maxLength": 128 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "contentHref": { "type": "string", "minLength": 1, "maxLength": 512 }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["read", "archived", "deleted"],
+      "properties": {
+        "read": { "type": "boolean" },
+        "archived": { "type": "boolean" },
+        "deleted": { "type": "boolean" }
+      }
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "definitions": {
+    "party": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "address": { "type": "string", "maxLength": 512 },
+        "number": { "type": "string", "maxLength": 32 },
+        "soulAgentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "displayName": { "type": "string", "maxLength": 256 }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-mailbox-list.response.schema.json",
+  "title": "GET /api/v1/soul/comm/mailbox/{agentId}/messages response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["instanceSlug", "agentId", "messages", "count", "hasMore"],
+  "properties": {
+    "instanceSlug": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "messages": {
+      "type": "array",
+      "items": { "$ref": "soul-comm-mailbox-message.schema.json" }
+    },
+    "count": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "hasMore": { "type": "boolean" },
+    "nextCursor": { "type": "string", "minLength": 1, "maxLength": 2048 }
+  }
+}

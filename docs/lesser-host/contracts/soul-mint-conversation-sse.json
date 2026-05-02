@@ -11,7 +11,9 @@
     "schema": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["message"],
+      "required": [
+        "message"
+      ],
       "properties": {
         "model": {
           "type": "string",
@@ -34,7 +36,10 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["conversation_id", "model"],
+        "required": [
+          "conversation_id",
+          "model"
+        ],
         "properties": {
           "conversation_id": {
             "type": "string"
@@ -50,7 +55,9 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["text"],
+        "required": [
+          "text"
+        ],
         "properties": {
           "text": {
             "type": "string"
@@ -63,7 +70,10 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["conversation_id", "full_response"],
+        "required": [
+          "conversation_id",
+          "full_response"
+        ],
         "properties": {
           "conversation_id": {
             "type": "string"
@@ -79,7 +89,9 @@
       "schema": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
           "error": {
             "type": "string"
@@ -89,7 +101,10 @@
     }
   },
   "completion": {
-    "terminalEvents": ["conversation_done", "error"],
+    "terminalEvents": [
+      "conversation_done",
+      "error"
+    ],
     "resume": {
       "lastEventIdSupported": false,
       "conversationIdInput": "conversation_id",
