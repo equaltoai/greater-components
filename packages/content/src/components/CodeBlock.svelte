@@ -139,6 +139,19 @@ CodeBlock component - Syntax highlighting code block with copy button.
 			.replace(/'/g, '&#039;');
 	}
 
+	function appendNodeClass(node: { properties: Record<string, unknown> }, className: string) {
+		const existingClass = node.properties['class'];
+		const classes =
+			typeof existingClass === 'string'
+				? existingClass.split(/\s+/).filter(Boolean)
+				: Array.isArray(existingClass)
+					? existingClass.map(String).filter(Boolean)
+					: [];
+
+		classes.push(className);
+		node.properties['class'] = classes.join(' ');
+	}
+
 	async function highlight() {
 		if (!code) {
 			highlightedCode = '';
@@ -170,10 +183,10 @@ CodeBlock component - Syntax highlighting code block with copy button.
 					{
 						line(node, line) {
 							if (showLineNumbers) {
-								node.properties.class += ' line-number';
+								appendNodeClass(node, 'line-number');
 							}
 							if (highlightLines.includes(line)) {
-								node.properties.class += ' highlighted-line';
+								appendNodeClass(node, 'highlighted-line');
 							}
 						},
 					},

@@ -1,6 +1,6 @@
 {
   "name": "greater-components",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "private": true,
   "description": "Fediverse UI components built with Svelte 5, TypeScript, and pnpm workspaces",
   "repository": {
@@ -32,7 +32,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:types": "prettier --write \"packages/**/src/**/*.d.ts\"",
-    "check:svelte": "pnpm --dir packages/primitives exec svelte-check --tsconfig ./tsconfig.check.json && pnpm --dir packages/shared/soul exec svelte-check --tsconfig ./tsconfig.check.json",
+    "check:svelte": "pnpm --dir packages/primitives exec svelte-check --tsconfig ./tsconfig.check.json && pnpm --dir packages/shared/soul exec svelte-check --tsconfig ./tsconfig.check.json && pnpm --dir packages/shared/chat exec svelte-check --tsconfig ./tsconfig.check.json",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx,.svelte --fix",
     "preinstall": "npx only-allow pnpm",

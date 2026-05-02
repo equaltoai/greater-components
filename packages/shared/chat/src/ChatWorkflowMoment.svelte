@@ -28,8 +28,13 @@
 		return value
 			.split(/[_-]/g)
 			.filter(Boolean)
-			.map((part) => part[0].toUpperCase() + part.slice(1))
+			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
 			.join(' ');
+	}
+
+	function getArtifactHref(value: ChatMessageMoment): string | null {
+		if (value.kind !== 'artifact') return null;
+		return toSafeHref(value.href);
 	}
 
 	const tone = $derived.by(() => {
@@ -45,7 +50,7 @@
 		return 'neutral';
 	});
 
-	const safeHref = $derived.by(() => toSafeHref(moment.href));
+	const safeHref = $derived.by(() => getArtifactHref(moment));
 
 	const eyebrow = $derived.by(() => {
 		if (moment.kind === 'artifact') return moment.artifactLabel ?? 'Artifact';

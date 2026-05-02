@@ -1,6 +1,6 @@
 {
   "name": "@equaltoai/greater-components-agent",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "type": "module",
   "description": "Agent-first workflow surfaces, contracts, boundary metadata, and rollout shape for Greater Components",
   "license": "AGPL-3.0-only",
