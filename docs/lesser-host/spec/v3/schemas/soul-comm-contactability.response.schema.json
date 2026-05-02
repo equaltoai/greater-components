@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-contactability.response.schema.json",
+  "title": "GET /api/v1/soul/comm/contactability/{agentId} response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["instanceSlug", "agentId", "contactable", "channels", "mailbox", "availability", "firstContact", "updatedAt"],
+  "properties": {
+    "instanceSlug": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "contactable": { "type": "boolean" },
+    "preferred": { "type": "string", "enum": ["email", "phone", "sms", "voice"] },
+    "fallback": { "type": "string", "enum": ["email", "phone", "sms", "voice"] },
+    "channels": {
+      "type": "array",
+      "maxItems": 2,
+      "items": { "$ref": "#/definitions/channel" }
+    },
+    "mailbox": { "$ref": "#/definitions/mailbox" },
+    "availability": { "$ref": "#/definitions/availability" },
+    "firstContact": { "$ref": "#/definitions/firstContact" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "definitions": {
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["channelType", "capabilities", "verified", "status", "receiveAllowed", "sendAllowed"],
+      "properties": {
+        "channelType": { "type": "string", "enum": ["email", "phone"] },
+        "address": { "type": "string", "format": "email", "maxLength": 512 },
+        "number": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" },
+        "provider": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "capabilities": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 64 }
+        },
+        "protocols": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 64 }
+        },
+        "verified": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["active"] },
+        "receiveAllowed": { "type": "boolean" },
+        "sendAllowed": { "type": "boolean" }
+      }
+    },
+    "mailbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["listAllowed", "getAllowed", "contentAllowed", "stateAllowed"],
+      "properties": {
+        "listAllowed": { "type": "boolean" },
+        "getAllowed": { "type": "boolean" },
+        "contentAllowed": { "type": "boolean" },
+        "stateAllowed": { "type": "boolean" }
+      }
+    },
+    "availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schedule"],
+      "properties": {
+        "schedule": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "timezone": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "windows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["days", "startTime", "endTime"],
+            "properties": {
+              "days": {
+                "type": "array",
+                "items": { "type": "string", "maxLength": 16 }
+              },
+              "startTime": { "type": "string", "maxLength": 16 },
+              "endTime": { "type": "string", "maxLength": 16 }
+            }
+          }
+        }
+      }
+    },
+    "firstContact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requireSoul", "requireReputation", "introductionExpected"],
+      "properties": {
+        "requireSoul": { "type": "boolean" },
+        "requireReputation": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "introductionExpected": { "type": "boolean" }
+      }
+    }
+  }
+}

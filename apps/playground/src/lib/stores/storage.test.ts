@@ -31,6 +31,24 @@ describe('storage helpers', () => {
 		expect(result.notifications.email).toBe(true);
 	});
 
+	it('ignores prototype-polluting persisted object keys', async () => {
+		window.localStorage.setItem(
+			'settings',
+			'{"appearance":{"density":"compact","__proto__":{"polluted":true},"constructor":{"prototype":{"polluted":true}}},"prototype":{"polluted":true}}'
+		);
+
+		const { loadPersistedState } = await importStorage();
+		const result = loadPersistedState('settings', {
+			appearance: { density: 'comfortable', theme: 'auto' },
+		});
+
+		expect(result.appearance.density).toBe('compact');
+		expect(result.appearance.theme).toBe('auto');
+		expect(({} as Record<string, unknown>)['polluted']).toBeUndefined();
+		expect(Object.hasOwn(result.appearance, 'constructor')).toBe(false);
+		expect(Object.hasOwn(result, 'prototype')).toBe(false);
+	});
+
 	it('returns fallback when JSON parsing fails', async () => {
 		window.localStorage.setItem('broken', '{not-json');
 		const { loadPersistedState } = await importStorage();

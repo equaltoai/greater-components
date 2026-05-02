@@ -14,7 +14,7 @@
  * Options:
  *   --dry-run       Preview changes without committing or tagging
  *   --skip-version  Skip changeset version step (if already done)
- *   --sign          Sign the git tag with GPG
+ *   --no-sign       Create an unsigned annotated tag (requires explicit operator approval)
  *   --push          Push commits and tag to remote after creation
  */
 
@@ -98,7 +98,7 @@ async function main() {
 	const args = process.argv.slice(2);
 	const dryRun = args.includes('--dry-run');
 	const skipVersion = args.includes('--skip-version');
-	const signTag = args.includes('--sign');
+	const signTag = !args.includes('--no-sign');
 	const push = args.includes('--push');
 
 	log('\n' + '='.repeat(60), colors.bold);

@@ -430,31 +430,17 @@ function resolveComponent(
 	state.visiting.add(key);
 	state.path.push(key);
 
-	// Collect NPM dependencies
-	// Priority: Registry Index (dynamic) > Static Metadata
-	let npmDepsFound = false;
-
-	if (state.registryIndex) {
-		const indexEntry = getRegistryIndexEntry(state.registryIndex, request.name, type);
-
-		if (indexEntry && indexEntry.peerDependencies && indexEntry.peerDependencies.length > 0) {
-			for (const dep of indexEntry.peerDependencies) {
-				state.npmDeps.set(dep.name, { name: dep.name, version: dep.version, dev: dep.dev });
-			}
-			npmDepsFound = true;
+	// Collect NPM dependencies only from bundled static metadata. The registry index is
+	// network-fetched and may be used for file lists/internal registry dependencies, but it must
+	// not be able to introduce arbitrary npm packages into the consumer install plan.
+	if ('dependencies' in metadata && metadata.dependencies) {
+		for (const dep of metadata.dependencies) {
+			state.npmDeps.set(dep.name, dep);
 		}
 	}
-
-	if (!npmDepsFound) {
-		if ('dependencies' in metadata && metadata.dependencies) {
-			for (const dep of metadata.dependencies) {
-				state.npmDeps.set(dep.name, dep);
-			}
-		}
-		if ('devDependencies' in metadata && metadata.devDependencies) {
-			for (const dep of metadata.devDependencies) {
-				state.npmDevDeps.set(dep.name, dep);
-			}
+	if ('devDependencies' in metadata && metadata.devDependencies) {
+		for (const dep of metadata.devDependencies) {
+			state.npmDevDeps.set(dep.name, dep);
 		}
 	}
 

@@ -4,28 +4,36 @@
   "title": "Soul agent queued communication item",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "agent_id",
-    "message_id",
-    "channel_type",
-    "body",
-    "received_at",
-    "scheduled_delivery_time",
-    "status"
-  ],
+  "required": ["agent_id", "message_id", "channel_type", "received_at", "scheduled_delivery_time", "status"],
   "properties": {
     "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "delivery_id": { "type": "string", "minLength": 1, "maxLength": 128 },
     "message_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "thread_id": { "type": "string", "minLength": 1, "maxLength": 128 },
     "channel_type": { "type": "string", "enum": ["email", "sms", "voice"] },
     "from_address": { "type": "string", "format": "email" },
     "from_number": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" },
     "from_soul_agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
     "from_display_name": { "type": "string", "minLength": 1, "maxLength": 256 },
     "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
-    "body": { "type": "string", "minLength": 1 },
+    "preview": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available"],
+      "properties": {
+        "available": { "type": "boolean" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "mime_type": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+      }
+    },
     "in_reply_to": { "type": "string", "minLength": 1, "maxLength": 128 },
     "received_at": { "type": "string", "format": "date-time" },
     "scheduled_delivery_time": { "type": "string", "format": "date-time" },
-    "status": { "type": "string", "enum": ["queued", "delivered", "expired"] }
+    "status": { "type": "string", "enum": ["queued", "delivered", "expired"] },
+    "read": { "type": "boolean" },
+    "archived": { "type": "boolean" },
+    "deleted": { "type": "boolean" }
   }
 }

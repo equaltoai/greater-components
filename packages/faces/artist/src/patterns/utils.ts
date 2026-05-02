@@ -6,6 +6,8 @@
  * @module @equaltoai/greater-components-artist/patterns/utils
  */
 
+declare const process: { env?: { NODE_ENV?: string } } | undefined;
+
 // ============================================================================
 // Responsive Breakpoint Utilities
 // ============================================================================
@@ -301,13 +303,25 @@ export function formatErrorMessage(
 	if (!error) return fallback;
 
 	// Don't expose internal error details in production
+	const moduleProcessEnv = typeof process !== 'undefined' ? process.env?.NODE_ENV : undefined;
 	const runtimeNodeEnv =
 		typeof globalThis === 'object' && 'process' in globalThis
 			? (globalThis as typeof globalThis & { process?: { env?: { NODE_ENV?: string } } }).process
 					?.env?.NODE_ENV
 			: undefined;
+	const importMetaEnv = (
+		import.meta as ImportMeta & {
+			env?: { PROD?: boolean; MODE?: string; NODE_ENV?: string };
+		}
+	).env;
 
-	if (runtimeNodeEnv === 'production') {
+	if (
+		moduleProcessEnv === 'production' ||
+		runtimeNodeEnv === 'production' ||
+		importMetaEnv?.PROD === true ||
+		importMetaEnv?.MODE === 'production' ||
+		importMetaEnv?.NODE_ENV === 'production'
+	) {
 		return fallback;
 	}
 

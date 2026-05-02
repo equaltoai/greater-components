@@ -20,7 +20,26 @@ describe('Chat workflow renderers', () => {
 
 		expect(screen.getByText('Declaration bundle')).toBeTruthy();
 		expect(screen.getByText('2 artifacts attached')).toBeTruthy();
-		expect(screen.getByText('Open attachment')).toBeTruthy();
+		expect(screen.getByRole('link', { name: 'Open attachment' })).toHaveAttribute(
+			'href',
+			'https://example.com/artifact'
+		);
+	});
+
+	it('does not render artifact links with unsafe URL schemes', () => {
+		render(WorkflowMoment, {
+			props: {
+				moment: {
+					id: 'artifact-unsafe',
+					kind: 'artifact',
+					title: 'Unsafe artifact',
+					href: 'javascript:alert(1)',
+				},
+			},
+		});
+
+		expect(screen.getByText('Unsafe artifact')).toBeTruthy();
+		expect(screen.queryByRole('link', { name: 'Open attachment' })).not.toBeInTheDocument();
 	});
 
 	it('renders checkpoint banner moments with structured status', () => {

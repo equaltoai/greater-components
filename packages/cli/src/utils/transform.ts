@@ -305,18 +305,37 @@ function extractStyleBlocks(
 /**
  * Extract blocks by tag name using indexOf instead of regex
  */
+function isTagNameBoundary(value: string | undefined): boolean {
+	return value === undefined || value === '>' || value === '/' || /\s/.test(value);
+}
+
+function findOpeningTag(lowerContent: string, tagName: string, searchFrom: number): number {
+	const openTag = `<${tagName.toLowerCase()}`;
+	let index = searchFrom;
+
+	while (true) {
+		const startIdx = lowerContent.indexOf(openTag, index);
+		if (startIdx === -1) return -1;
+
+		if (isTagNameBoundary(lowerContent[startIdx + openTag.length])) {
+			return startIdx;
+		}
+
+		index = startIdx + openTag.length;
+	}
+}
+
 function extractTagBlocks(
 	content: string,
 	tagName: string
 ): Array<{ start: number; end: number; content: string }> {
 	const blocks: Array<{ start: number; end: number; content: string }> = [];
 	const lowerContent = content.toLowerCase();
-	const openTag = `<${tagName}`;
 	const closeTag = `</${tagName}>`;
 
 	let searchFrom = 0;
 	while (true) {
-		const startIdx = lowerContent.indexOf(openTag, searchFrom);
+		const startIdx = findOpeningTag(lowerContent, tagName, searchFrom);
 		if (startIdx === -1) break;
 
 		// Find the end of the opening tag

@@ -81,6 +81,34 @@ export interface GraphQLClientInstance {
 	close: () => void;
 }
 
+function parseWebSocketEndpoint(endpoint: string): URL | null {
+	try {
+		const parsed = new URL(endpoint);
+		return parsed.protocol === 'ws:' || parsed.protocol === 'wss:' ? parsed : null;
+	} catch {
+		return null;
+	}
+}
+
+function hasUrlCredentials(parsed: URL): boolean {
+	if (parsed.username || parsed.password) {
+		return true;
+	}
+
+	for (const key of parsed.searchParams.keys()) {
+		const normalized = key.toLowerCase();
+		if (
+			normalized === 'auth' ||
+			normalized.includes('authorization') ||
+			normalized.includes('token')
+		) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /**
  * Create Apollo Client with Lesser-specific configuration
  */
@@ -143,7 +171,6 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 	// NO FALLBACKS - if wsEndpoint is missing/invalid, skip WebSocket entirely
 	let wsClient: Client | null = null;
 	let wsLink: GraphQLWsLink | null = null;
-	let wsUrl: string | null = null;
 	let baseWsEndpoint: string | null = null; // Store original endpoint without token for token updates
 
 	if (configWsEndpoint) {
@@ -156,11 +183,16 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 			logDebugError('[GraphQL] wsEndpoint is empty. Skipping WebSocket.');
 		} else {
 			const wsEndpoint = configWsEndpoint.trim();
+			const parsedWsEndpoint = parseWebSocketEndpoint(wsEndpoint);
 
 			// Validate wsEndpoint is a valid WebSocket URL
-			if (!wsEndpoint.startsWith('ws://') && !wsEndpoint.startsWith('wss://')) {
+			if (!parsedWsEndpoint) {
 				logDebugError(
-					`[GraphQL] wsEndpoint must start with 'ws://' or 'wss://', got: ${wsEndpoint}. Skipping WebSocket.`
+					"[GraphQL] wsEndpoint must be a valid 'ws://' or 'wss://' URL. Skipping WebSocket."
+				);
+			} else if (hasUrlCredentials(parsedWsEndpoint)) {
+				logDebugError(
+					'[GraphQL] wsEndpoint must not include credentials or authentication query parameters. Skipping WebSocket.'
 				);
 			} else {
 				// Ensure wsEndpoint is NOT derived from httpEndpoint - skip if it appears to be
@@ -173,7 +205,6 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				if (derivedFromHttp) {
 					logDebugError(
 						`[GraphQL] wsEndpoint appears to be derived from httpEndpoint! ` +
-							`httpEndpoint: ${httpEndpoint}, wsEndpoint: ${wsEndpoint}. ` +
 							'Skipping WebSocket - wsEndpoint must be explicitly provided.'
 					);
 				} else {
@@ -188,66 +219,15 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 						);
 					}
 
-					// IMPORTANT: Add token to query string (server requires token in URL)
-					let finalWsUrl = String(wsEndpoint);
-
-					// Log token status for debugging
-					logDebug(`[GraphQL] Token available for WebSocket: ${currentToken.substring(0, 10)}...`);
-
-					try {
-						const url = new URL(finalWsUrl);
-						// Use 'access_token' as query param name (can be 'token' if server prefers that)
-						url.searchParams.set('access_token', currentToken);
-						finalWsUrl = url.toString();
-						logDebug(
-							`[GraphQL] Added token to WebSocket URL query string: ${finalWsUrl.replace(currentToken, '***REDACTED***')}`
-						);
-					} catch (error) {
-						logDebugError(`[GraphQL] Failed to add token to WebSocket URL: ${error}`);
-						// Fallback: manually append if URL parsing fails
-						const separator = finalWsUrl.includes('?') ? '&' : '?';
-						finalWsUrl = `${finalWsUrl}${separator}access_token=${encodeURIComponent(currentToken)}`;
-						logDebug(
-							`[GraphQL] Manually added token to WebSocket URL: ${finalWsUrl.replace(currentToken, '***REDACTED***')}`
-						);
-					}
-
-					wsUrl = finalWsUrl;
-					logDebug(
-						`[GraphQL] Creating WebSocket client with EXPLICIT endpoint: ${wsUrl.replace(currentToken || '', '***REDACTED***')}`
-					);
-
-					// CRITICAL: graphql-ws strips query parameters from URLs
-					// We need to use a custom WebSocket implementation that preserves the full URL
-					// Create a WebSocket factory that uses the native WebSocket API with the full URL
-					const webSocketImpl = class PreserveQueryParamsWebSocket extends WebSocket {
-						constructor(url: string | URL, protocols?: string | string[]) {
-							// Always use the full URL with query parameters
-							super(url, protocols);
-							logDebug(
-								`[GraphQL] Native WebSocket created with URL: ${String(url).replace(currentToken || '', '***REDACTED***')}`
-							);
-						}
-					};
-
-					// CRITICAL: Log the actual URL that will be used (for debugging)
-					logDebug(
-						'[GraphQL] DEBUG: WebSocket URL being passed to createClient',
-						wsUrl.replace(currentToken || '', '***REDACTED***')
-					);
-					logDebug('[GraphQL] DEBUG: Has token?', !!currentToken);
-					logDebug('[GraphQL] DEBUG: Token length', currentToken?.length ?? 0);
+					logDebug('[GraphQL] Creating WebSocket client with explicit endpoint');
 
 					wsClient = createClient({
-						url: wsUrl, // This is the ONLY URL that will be used - no fallbacks
-						webSocketImpl: webSocketImpl, // CRITICAL: Use custom WebSocket that preserves query params
+						url: wsEndpoint, // This is the ONLY URL that will be used - no fallbacks
 						connectionParams: () => {
-							// Also include in connectionParams for protocols that support it
 							const params: Record<string, string> = {};
 							if (currentToken) {
 								params['authorization'] = `Bearer ${currentToken}`;
 							}
-							logDebug(`[GraphQL] WebSocket connectionParams:`, Object.keys(params));
 							return params;
 						},
 						retryAttempts: maxRetries,
@@ -255,42 +235,25 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 						connectionAckWaitTimeout: connectionTimeout,
 						on: {
 							connecting: () => {
-								logDebug(
-									`[GraphQL] WebSocket connecting to URL: ${wsUrl?.replace(currentToken || '', '***REDACTED***')}`
-								);
-								// Log the actual URL being used when connecting
-								logDebug(
-									'[GraphQL] DEBUG: WebSocket connecting - URL',
-									wsUrl?.replace(currentToken || '', '***REDACTED***')
-								);
+								logDebug('[GraphQL] WebSocket connecting to explicit endpoint');
 							},
 							connected: () => {
-								logDebug(`[GraphQL] WebSocket connected to EXPLICIT URL: ${wsEndpoint}`);
+								logDebug('[GraphQL] WebSocket connected to explicit endpoint');
 							},
 							closed: () => {
 								logDebug('[GraphQL] WebSocket closed');
 							},
 							error: (error) => {
 								logDebugError(
-									`[GraphQL] WebSocket error connecting to EXPLICIT URL ${wsEndpoint}`,
+									'[GraphQL] WebSocket error while connecting to explicit endpoint',
 									error
 								);
-								// Log the actual URL being used for debugging
-								if (wsUrl) {
-									logDebugError(
-										`[GraphQL] WebSocket URL used: ${wsUrl.replace(currentToken || '', '***REDACTED***')}`
-									);
-									console.error(
-										'[GraphQL] DEBUG: WebSocket error - URL was:',
-										wsUrl.replace(currentToken || '', '***REDACTED***')
-									);
-								}
 							},
 						},
 					});
 
 					wsLink = new GraphQLWsLink(wsClient);
-					logDebug(`[GraphQL] GraphQLWsLink created - WebSocket will ONLY use URL: ${wsUrl}`);
+					logDebug('[GraphQL] GraphQLWsLink created for explicit WebSocket endpoint');
 				}
 			}
 		}
@@ -403,7 +366,6 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				wsClient.dispose();
 			}
 			wsClient = null;
-			wsUrl = null;
 			wsLink = null;
 
 			const newLink = from([errorLink, retryLink, newHttpLink]);
@@ -418,51 +380,11 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 		if (wsClient && baseWsEndpoint) {
 			wsClient.dispose();
 
-			// Rebuild URL with new token using base endpoint
-			let finalWsUrl: string;
-			try {
-				const url = new URL(baseWsEndpoint);
-				if (currentToken) {
-					url.searchParams.set('access_token', currentToken);
-				} else {
-					// Remove token if logging out
-					url.searchParams.delete('access_token');
-				}
-				finalWsUrl = url.toString();
-				logDebug(
-					`[GraphQL] Updated WebSocket URL with new token: ${finalWsUrl.replace(currentToken || '', '***REDACTED***')}`
-				);
-			} catch (error) {
-				logDebugError(`[GraphQL] Failed to rebuild WebSocket URL with token: ${error}`);
-				// Fallback: manually append if URL parsing fails
-				const separator = baseWsEndpoint.includes('?') ? '&' : '?';
-				if (currentToken) {
-					finalWsUrl = `${baseWsEndpoint}${separator}access_token=${encodeURIComponent(currentToken)}`;
-				} else {
-					finalWsUrl = baseWsEndpoint;
-				}
-				logDebug(
-					`[GraphQL] Manually rebuilt WebSocket URL: ${finalWsUrl.replace(currentToken || '', '***REDACTED***')}`
-				);
-			}
-
-			wsUrl = finalWsUrl;
-
-			// CRITICAL: Use custom WebSocket implementation that preserves query parameters
-			const webSocketImpl = class PreserveQueryParamsWebSocket extends WebSocket {
-				constructor(url: string | URL, protocols?: string | string[]) {
-					super(url, protocols);
-					logDebug(
-						`[GraphQL] Native WebSocket recreated with URL: ${String(url).replace(currentToken || '', '***REDACTED***')}`
-					);
-				}
-			};
+			logDebug('[GraphQL] Rebuilding WebSocket transport for updated token');
 
 			const newWsClient = createClient({
-				url: finalWsUrl, // Use URL with token in query string
-				webSocketImpl: webSocketImpl, // CRITICAL: Use custom WebSocket that preserves query params
+				url: baseWsEndpoint,
 				connectionParams: () => ({
-					// Also include in connectionParams for protocols that support it
 					...(currentToken && { authorization: `Bearer ${currentToken}` }),
 				}),
 				retryAttempts: maxRetries,
@@ -470,14 +392,14 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 				connectionAckWaitTimeout: connectionTimeout,
 				on: {
 					connected: () => {
-						logDebug(`[GraphQL] WebSocket reconnected to EXPLICIT URL: ${baseWsEndpoint}`);
+						logDebug('[GraphQL] WebSocket reconnected to explicit endpoint');
 					},
 					closed: () => {
 						logDebug('[GraphQL] WebSocket closed after token update');
 					},
 					error: (error) => {
 						logDebugError(
-							`[GraphQL] WebSocket error after token update connecting to EXPLICIT URL ${baseWsEndpoint}`,
+							'[GraphQL] WebSocket error after token update while connecting to explicit endpoint',
 							error
 						);
 					},
@@ -488,7 +410,7 @@ export function createGraphQLClient(config: GraphQLClientConfig): GraphQLClientI
 
 			// Update the wsLink with new client
 			const newWsLink = new GraphQLWsLink(wsClient);
-			logDebug(`[GraphQL] Recreated wsLink with EXPLICIT URL: ${wsUrl}`);
+			logDebug('[GraphQL] Recreated wsLink with explicit WebSocket endpoint');
 
 			// Recreate split link with new WebSocket link
 			const newSplitLink = split(

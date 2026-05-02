@@ -48,11 +48,29 @@ Features:
 
 	const ctx = getArtistProfileContext();
 	const { artist } = ctx;
+
+	const allowedLinkProtocols = new Set(['http:', 'https:', 'mailto:']);
+
+	function toSafeHref(value?: string | null): string | null {
+		if (!value || typeof value !== 'string') return null;
+		const trimmed = value.trim();
+		if (!trimmed) return null;
+
+		try {
+			const parsed = new URL(trimmed, 'https://example.invalid');
+			if (!allowedLinkProtocols.has(parsed.protocol)) return null;
+			return encodeURI(trimmed);
+		} catch {
+			return null;
+		}
+	}
+
+	const safeProfileUrl = $derived.by(() => toSafeHref(artist.profileUrl));
 </script>
 
 <div class={`profile-name ${className}`}>
-	{#if linkToProfile}
-		<a href={artist.profileUrl} class="profile-name__link">
+	{#if linkToProfile && safeProfileUrl}
+		<a href={safeProfileUrl} class="profile-name__link">
 			<svelte:element this={`h${level}`} class="profile-name__display">
 				{artist.displayName}
 				{#if artist.verified}

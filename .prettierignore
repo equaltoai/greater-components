@@ -39,9 +39,12 @@ packages/tokens/src/index.ts
 .pai/
 .theory/
 
-# Vendored Lesser contract snapshots (keep byte-for-byte from the pinned Lesser release)
+# Vendored Lesser / Lesser Host contract snapshots (keep byte-for-byte from the pinned releases)
 docs/lesser/contracts/openapi.yaml
 docs/lesser/contracts/graphql-schema.graphql
+docs/lesser-host/contracts/openapi.yaml
+docs/lesser-host/contracts/soul-mint-conversation-sse.json
+docs/lesser-host/spec/v3/
 
 # Prettier is non-idempotent on this large snapshot file
 planning/csp-violations-baseline.md

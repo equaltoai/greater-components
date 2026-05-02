@@ -497,6 +497,199 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/comm/contactability/{agentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Resolve bounded soul comm contactability for one agent
+         * @description Resolves mailbox/read and send affordances for exactly one agent owned by the authenticated instance.
+         *     This endpoint intentionally has no search or list mode and does not expose channel secrets.
+         */
+        get: operations["soulCommContactability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List redacted canonical mailbox messages
+         * @description Returns bounded metadata and previews only. Full message content is fetched explicitly from the content endpoint.
+         *     Filters are evaluated within the authenticated instance + exact agent mailbox. `query` is bounded metadata/preview
+         *     matching only; it is not full-body search and never scans across tenants or agents.
+         */
+        get: operations["soulCommMailboxList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get canonical mailbox message metadata
+         * @description Accepts canonical messageRef/deliveryId and legacy messageId values only when unambiguous for the authenticated instance + agent.
+         */
+        get: operations["soulCommMailboxGet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Explicitly fetch bounded mailbox message content
+         * @description Returns full content only for a specific messageRef/delivery. Calls are instance-key authenticated, rate-limited, and audit logged.
+         */
+        get: operations["soulCommMailboxContent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reply to a canonical mailbox message
+         * @description Resolves the messageRef against host's canonical mailbox state, derives recipient/thread/provider reply context,
+         *     and sends a new outbound soul comm. Body should call this endpoint instead of reconstructing reply recipients or
+         *     provider headers locally. The request is authenticated with strict hash-only instance API key auth.
+         */
+        post: operations["soulCommMailboxReply"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a mailbox message read */
+        post: operations["soulCommMailboxMarkRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/unread": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a mailbox message unread */
+        post: operations["soulCommMailboxMarkUnread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive a mailbox message */
+        post: operations["soulCommMailboxArchive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/unarchive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Unarchive a mailbox message */
+        post: operations["soulCommMailboxUnarchive"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Soft-delete a mailbox message
+         * @description Sets bounded mailbox delete state. The content object remains lifecycle-bound and is no longer returned by content fetches.
+         */
+        post: operations["soulCommMailboxDelete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/agents/{agentId}/comm/activity": {
         parameters: {
             query?: never;
@@ -652,6 +845,12 @@ export interface components {
         SoulCommSendErrorEnvelope: components["schemas"]["soul-comm-send.error.schema"];
         SoulCommStatusResponse: components["schemas"]["soul-comm-status.response.schema"];
         SoulCommStatusErrorEnvelope: components["schemas"]["soul-comm-status.error.schema"];
+        SoulCommContactabilityResponse: components["schemas"]["soul-comm-contactability.response.schema"];
+        SoulCommMailboxMessage: components["schemas"]["soul-comm-mailbox-message.schema"];
+        SoulCommMailboxListResponse: components["schemas"]["soul-comm-mailbox-list.response.schema"];
+        SoulCommMailboxGetResponse: components["schemas"]["soul-comm-mailbox-get.response.schema"];
+        SoulCommMailboxContentResponse: components["schemas"]["soul-comm-mailbox-content.response.schema"];
+        SoulCommMailboxReplyRequest: components["schemas"]["soul-comm-mailbox-reply.request.schema"];
         SoulAgentCommActivityItem: components["schemas"]["soul-agent-comm-activity-item.schema"];
         SoulAgentCommActivityResponse: components["schemas"]["soul-agent-comm-activity.response.schema"];
         SoulAgentCommQueueItem: components["schemas"]["soul-agent-comm-queue-item.schema"];
@@ -1171,6 +1370,10 @@ export interface components {
             providerMessageId?: string;
             /** Format: date-time */
             createdAt: string;
+            /** @description Opaque stable body-facing mailbox reference for the created outbound delivery; v1 equals deliveryId. */
+            messageRef: string;
+            deliveryId: string;
+            threadId: string;
         };
         /** POST /api/v1/soul/comm/send error envelope */
         "soul-comm-send.error.schema": {
@@ -1213,10 +1416,143 @@ export interface components {
                 request_id?: string;
             };
         };
+        channel: {
+            /** @enum {string} */
+            channelType: "email" | "phone";
+            /** Format: email */
+            address?: string;
+            number?: string;
+            provider?: string;
+            capabilities: string[];
+            protocols?: string[];
+            verified: boolean;
+            /** @enum {string} */
+            status: "active";
+            receiveAllowed: boolean;
+            sendAllowed: boolean;
+        };
+        mailbox: {
+            listAllowed: boolean;
+            getAllowed: boolean;
+            contentAllowed: boolean;
+            stateAllowed: boolean;
+        };
+        availability: {
+            schedule: string;
+            timezone?: string;
+            windows?: {
+                days: string[];
+                startTime: string;
+                endTime: string;
+            }[];
+        };
+        firstContact: {
+            requireSoul: boolean;
+            requireReputation: number | null;
+            introductionExpected: boolean;
+        };
+        /** GET /api/v1/soul/comm/contactability/{agentId} response */
+        "soul-comm-contactability.response.schema": {
+            instanceSlug: string;
+            agentId: string;
+            contactable: boolean;
+            /** @enum {string} */
+            preferred?: "email" | "phone" | "sms" | "voice";
+            /** @enum {string} */
+            fallback?: "email" | "phone" | "sms" | "voice";
+            channels: components["schemas"]["channel"][];
+            mailbox: components["schemas"]["mailbox"];
+            availability: components["schemas"]["availability"];
+            firstContact: components["schemas"]["firstContact"];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        party: {
+            address?: string;
+            number?: string;
+            soulAgentId?: string;
+            displayName?: string;
+        };
+        /** Soul comm mailbox redacted message metadata */
+        "soul-comm-mailbox-message.schema": {
+            /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId. */
+            messageRef: string;
+            /** @description Canonical host delivery identity; exposed for diagnostics. */
+            deliveryId: string;
+            /** @description Legacy/idempotency/provider-adjacent metadata; not the primary mailbox reference. */
+            messageId: string;
+            threadId: string;
+            /** @enum {string} */
+            direction: "inbound" | "outbound";
+            /** @enum {string} */
+            channelType: "email" | "sms" | "voice";
+            provider?: string;
+            providerMessageId?: string;
+            /** @enum {string} */
+            status: "accepted" | "sent" | "delivered" | "queued" | "failed" | "bounced" | "dropped";
+            from?: components["schemas"]["party"];
+            to?: components["schemas"]["party"];
+            subject?: string;
+            preview?: string;
+            content: {
+                available: boolean;
+                bytes?: number;
+                mimeType?: string;
+                sha256?: string;
+                contentHref?: string;
+            };
+            state: {
+                read: boolean;
+                archived: boolean;
+                deleted: boolean;
+            };
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        /** GET /api/v1/soul/comm/mailbox/{agentId}/messages response */
+        "soul-comm-mailbox-list.response.schema": {
+            instanceSlug: string;
+            agentId: string;
+            messages: components["schemas"]["soul-comm-mailbox-message.schema"][];
+            count: number;
+            hasMore: boolean;
+            nextCursor?: string;
+        };
+        /** GET /api/v1/soul/comm/mailbox/{agentId}/messages/{deliveryId} response */
+        "soul-comm-mailbox-get.response.schema": {
+            message: components["schemas"]["soul-comm-mailbox-message.schema"];
+        };
+        /** GET /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/content response */
+        "soul-comm-mailbox-content.response.schema": {
+            instanceSlug: string;
+            agentId: string;
+            messageRef: string;
+            deliveryId: string;
+            messageId: string;
+            contentType: string;
+            sha256: string;
+            bytes: number;
+            body: string;
+        };
+        /** POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply request */
+        "soul-comm-mailbox-reply.request.schema": {
+            body: string;
+            /** @description Optional email subject override. Defaults to Re: <source subject>. */
+            subject?: string;
+            cc?: string[];
+            bcc?: string[];
+            /** Format: email */
+            replyTo?: string;
+            idempotencyKey?: string;
+        };
         /** Soul agent communication activity item */
         "soul-agent-comm-activity-item.schema": {
             agent_id: string;
             activity_id: string;
+            delivery_id?: string;
+            thread_id?: string;
             /** @enum {string} */
             channel_type: "email" | "sms" | "voice";
             /** @enum {string} */
@@ -1224,6 +1560,19 @@ export interface components {
             counterparty?: string;
             action?: string;
             message_id?: string;
+            /** @enum {string} */
+            status?: "accepted" | "sent" | "delivered" | "queued" | "failed" | "bounced" | "dropped";
+            subject?: string;
+            preview?: string;
+            content?: {
+                available: boolean;
+                bytes?: number;
+                mime_type?: string;
+                sha256?: string;
+            };
+            read?: boolean;
+            archived?: boolean;
+            deleted?: boolean;
             in_reply_to?: string;
             /** @enum {string} */
             boundary_check?: "passed" | "violated" | "skipped";
@@ -1241,7 +1590,9 @@ export interface components {
         /** Soul agent queued communication item */
         "soul-agent-comm-queue-item.schema": {
             agent_id: string;
+            delivery_id?: string;
             message_id: string;
+            thread_id?: string;
             /** @enum {string} */
             channel_type: "email" | "sms" | "voice";
             /** Format: email */
@@ -1250,7 +1601,13 @@ export interface components {
             from_soul_agent_id?: string;
             from_display_name?: string;
             subject?: string;
-            body: string;
+            preview?: string;
+            content?: {
+                available: boolean;
+                bytes?: number;
+                mime_type?: string;
+                sha256?: string;
+            };
             in_reply_to?: string;
             /** Format: date-time */
             received_at: string;
@@ -1258,6 +1615,9 @@ export interface components {
             scheduled_delivery_time: string;
             /** @enum {string} */
             status: "queued" | "delivered" | "expired";
+            read?: boolean;
+            archived?: boolean;
+            deleted?: boolean;
         };
         /** GET /api/v1/soul/agents/{agentId}/comm/queue response */
         "soul-agent-comm-queue.response.schema": {
@@ -1267,8 +1627,68 @@ export interface components {
             count: number;
         };
     };
-    responses: never;
-    parameters: never;
+    responses: {
+        /** @description Invalid request */
+        BadRequest: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorEnvelope"];
+            };
+        };
+        /** @description Unauthorized */
+        Unauthorized: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorEnvelope"];
+            };
+        };
+        /** @description Not found */
+        NotFound: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorEnvelope"];
+            };
+        };
+        /** @description Rate limited */
+        RateLimited: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorEnvelope"];
+            };
+        };
+        /** @description Conflict */
+        Conflict: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorEnvelope"];
+            };
+        };
+        /** @description Internal error */
+        InternalError: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ErrorEnvelope"];
+            };
+        };
+    };
+    parameters: {
+        SoulMailboxAgentId: string;
+        SoulMailboxDeliveryId: string;
+        /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent. */
+        SoulMailboxMessageRef: string;
+    };
     requestBodies: never;
     headers: never;
     pathItems: never;
@@ -3026,6 +3446,433 @@ export interface operations {
                     "application/json": components["schemas"]["soul-comm-status.error.schema"];
                 };
             };
+        };
+    };
+    soulCommContactability: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: components["parameters"]["SoulMailboxAgentId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-contactability.response.schema"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    soulCommMailboxList: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+                includeDeleted?: boolean;
+                /** @description When present, filters exactly by deleted state. `deleted=true` implies deleted rows may be returned. */
+                deleted?: boolean;
+                /** @description Set false to exclude archived messages. Omitted preserves legacy behavior and may include archived messages. */
+                includeArchived?: boolean;
+                /** @description When present, filters exactly by archived state. */
+                archived?: boolean;
+                /** @description When present, filters exactly by read state. */
+                read?: boolean;
+                /** @description Convenience alias for `read=false`. */
+                unreadOnly?: boolean;
+                channelType?: "email" | "sms" | "voice";
+                direction?: "inbound" | "outbound";
+                threadId?: string;
+                /** @description Bounded metadata/preview match within the authenticated instance + exact agent mailbox. */
+                query?: string;
+            };
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-list.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulCommMailboxGet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                /** @description Opaque stable body-facing mailbox reference; v1 equals deliveryId and legacy messageId aliases are accepted only when unambiguous. */
+                messageRef: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-get.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            409: components["responses"]["Conflict"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulCommMailboxContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                /** @description Opaque stable body-facing mailbox reference; v1 equals deliveryId and legacy messageId aliases are accepted only when unambiguous. */
+                messageRef: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-content.response.schema"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            409: components["responses"]["Conflict"];
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulCommMailboxReply: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: components["parameters"]["SoulMailboxAgentId"];
+                /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent. */
+                messageRef: components["parameters"]["SoulMailboxMessageRef"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["soul-comm-mailbox-reply.request.schema"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-send.response.schema"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    soulCommMailboxMarkRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: components["parameters"]["SoulMailboxAgentId"];
+                /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent. */
+                messageRef: components["parameters"]["SoulMailboxMessageRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-get.response.schema"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    soulCommMailboxMarkUnread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: components["parameters"]["SoulMailboxAgentId"];
+                /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent. */
+                messageRef: components["parameters"]["SoulMailboxMessageRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-get.response.schema"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    soulCommMailboxArchive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: components["parameters"]["SoulMailboxAgentId"];
+                /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent. */
+                messageRef: components["parameters"]["SoulMailboxMessageRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-get.response.schema"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    soulCommMailboxUnarchive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: components["parameters"]["SoulMailboxAgentId"];
+                /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent. */
+                messageRef: components["parameters"]["SoulMailboxMessageRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-get.response.schema"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
+        };
+    };
+    soulCommMailboxDelete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: components["parameters"]["SoulMailboxAgentId"];
+                /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent. */
+                messageRef: components["parameters"]["SoulMailboxMessageRef"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-mailbox-get.response.schema"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["RateLimited"];
+            500: components["responses"]["InternalError"];
         };
     };
     soulAgentCommActivity: {

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-mailbox-reply.request.schema.json",
+  "title": "POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["body"],
+  "properties": {
+    "body": { "type": "string", "minLength": 1, "maxLength": 65536 },
+    "subject": { "type": "string", "maxLength": 512, "description": "Optional email subject override. Defaults to Re: <source subject>." },
+    "cc": { "type": "array", "items": { "type": "string", "format": "email" }, "maxItems": 25 },
+    "bcc": { "type": "array", "items": { "type": "string", "format": "email" }, "maxItems": 25 },
+    "replyTo": { "type": "string", "format": "email" },
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 }
+  }
+}

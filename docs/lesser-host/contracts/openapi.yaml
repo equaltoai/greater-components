@@ -6,15 +6,79 @@ info:
     Contract snapshot for build-time client generation. This file is not served at runtime.
 
 components:
+  parameters:
+    SoulMailboxAgentId:
+      name: agentId
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: "^0x[0-9a-fA-F]{64}$"
+    SoulMailboxDeliveryId:
+      name: deliveryId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+    SoulMailboxMessageRef:
+      name: messageRef
+      in: path
+      required: true
+      description: Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId; legacy messageId values are accepted only when unambiguous for the authenticated instance and agent.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    RateLimited:
+      description: Rate limited
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+    InternalError:
+      description: Internal error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorEnvelope"
+
   securitySchemes:
     sessionAuth:
       type: http
       scheme: bearer
-      description: 'Control plane session token: `Authorization: Bearer <session_token>`.'
+      description: "Control plane session token: `Authorization: Bearer <session_token>`."
     instanceKeyAuth:
       type: http
       scheme: bearer
-      description: 'Instance API key: `Authorization: Bearer <instance_key>`.'
+      description: "Instance API key: `Authorization: Bearer <instance_key>`."
 
   schemas:
     ErrorEnvelope:
@@ -47,14 +111,14 @@ components:
       properties:
         agentId:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         channels:
           type: object
           additionalProperties: false
           required: [ens, email, phone]
           properties:
             ens:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [name]
               properties:
@@ -63,12 +127,12 @@ components:
                   pattern: "^[a-z0-9][a-z0-9_.-]*\\.eth$"
                 resolverAddress:
                   type: string
-                  pattern: '^0x[0-9a-fA-F]{40}$'
+                  pattern: "^0x[0-9a-fA-F]{40}$"
                 chain:
                   type: string
                   default: mainnet
             email:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [address, capabilities, verified]
               properties:
@@ -95,7 +159,7 @@ components:
                   type: string
                   enum: [active, paused, decommissioned]
             phone:
-              type: [object, 'null']
+              type: [object, "null"]
               additionalProperties: false
               required: [number, capabilities, verified]
               properties:
@@ -119,7 +183,7 @@ components:
                   type: string
                   enum: [active, paused, decommissioned]
         contactPreferences:
-          type: [object, 'null']
+          type: [object, "null"]
           additionalProperties: false
           required: [preferred, availability, responseExpectation, languages]
           properties:
@@ -140,7 +204,7 @@ components:
                 timezone:
                   type: string
                 windows:
-                  type: [array, 'null']
+                  type: [array, "null"]
                   items:
                     type: object
                     additionalProperties: false
@@ -154,10 +218,10 @@ components:
                           enum: [mon, tue, wed, thu, fri, sat, sun]
                       startTime:
                         type: string
-                        pattern: '^[0-2][0-9]:[0-5][0-9]$'
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
                       endTime:
                         type: string
-                        pattern: '^[0-2][0-9]:[0-5][0-9]$'
+                        pattern: "^[0-2][0-9]:[0-5][0-9]$"
             responseExpectation:
               type: object
               additionalProperties: false
@@ -207,7 +271,7 @@ components:
               minItems: 1
               items:
                 type: string
-                pattern: '^[a-z]{2}$'
+                pattern: "^[a-z]{2}$"
             contentTypes:
               type: array
               items:
@@ -220,7 +284,7 @@ components:
                   type: boolean
                   default: false
                 requireReputation:
-                  type: [number, 'null']
+                  type: [number, "null"]
                   minimum: 0
                   maximum: 1
                 introductionExpected:
@@ -231,13 +295,13 @@ components:
           format: date-time
 
     SoulAgentChannelPreferencesResponse:
-      $ref: '../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-channel-preferences.response.schema.json"
 
     SoulAgentChannelPreferencesRequest:
-      $ref: '../spec/v3/schemas/soul-agent-channel-preferences.request.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-channel-preferences.request.schema.json"
 
     SoulAgentIdentity:
-      $ref: '../spec/v3/schemas/soul-agent-identity.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-identity.schema.json"
 
     SoulResolveResponse:
       type: object
@@ -246,42 +310,60 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         agent:
-          $ref: '#/components/schemas/SoulAgentIdentity'
+          $ref: "#/components/schemas/SoulAgentIdentity"
 
     SoulSearchResult:
-      $ref: '../spec/v3/schemas/soul-search.result.schema.json'
+      $ref: "../spec/v3/schemas/soul-search.result.schema.json"
 
     SoulSearchResponse:
-      $ref: '../spec/v3/schemas/soul-search.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-search.response.schema.json"
 
     SoulCommSendRequest:
-      $ref: '../spec/v3/schemas/soul-comm-send.request.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.request.schema.json"
 
     SoulCommSendResponse:
-      $ref: '../spec/v3/schemas/soul-comm-send.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.response.schema.json"
 
     SoulCommSendErrorEnvelope:
-      $ref: '../spec/v3/schemas/soul-comm-send.error.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-send.error.schema.json"
 
     SoulCommStatusResponse:
-      $ref: '../spec/v3/schemas/soul-comm-status.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-status.response.schema.json"
 
     SoulCommStatusErrorEnvelope:
-      $ref: '../spec/v3/schemas/soul-comm-status.error.schema.json'
+      $ref: "../spec/v3/schemas/soul-comm-status.error.schema.json"
+
+    SoulCommContactabilityResponse:
+      $ref: "../spec/v3/schemas/soul-comm-contactability.response.schema.json"
+
+    SoulCommMailboxMessage:
+      $ref: "../spec/v3/schemas/soul-comm-mailbox-message.schema.json"
+
+    SoulCommMailboxListResponse:
+      $ref: "../spec/v3/schemas/soul-comm-mailbox-list.response.schema.json"
+
+    SoulCommMailboxGetResponse:
+      $ref: "../spec/v3/schemas/soul-comm-mailbox-get.response.schema.json"
+
+    SoulCommMailboxContentResponse:
+      $ref: "../spec/v3/schemas/soul-comm-mailbox-content.response.schema.json"
+
+    SoulCommMailboxReplyRequest:
+      $ref: "../spec/v3/schemas/soul-comm-mailbox-reply.request.schema.json"
 
     SoulAgentCommActivityItem:
-      $ref: '../spec/v3/schemas/soul-agent-comm-activity-item.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-activity-item.schema.json"
 
     SoulAgentCommActivityResponse:
-      $ref: '../spec/v3/schemas/soul-agent-comm-activity.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-activity.response.schema.json"
 
     SoulAgentCommQueueItem:
-      $ref: '../spec/v3/schemas/soul-agent-comm-queue-item.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-queue-item.schema.json"
 
     SoulAgentCommQueueResponse:
-      $ref: '../spec/v3/schemas/soul-agent-comm-queue.response.schema.json'
+      $ref: "../spec/v3/schemas/soul-agent-comm-queue.response.schema.json"
 
     SafeTxPayload:
       type: object
@@ -292,12 +374,12 @@ components:
           type: string
         to:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         value:
           type: string
         data:
           type: string
-          pattern: '^0x[0-9a-fA-F]*$'
+          pattern: "^0x[0-9a-fA-F]*$"
 
     SoulOperation:
       type: object
@@ -310,7 +392,7 @@ components:
           type: string
         agent_id:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         status:
           type: string
           enum: [pending, proposed, executed, failed]
@@ -318,7 +400,7 @@ components:
           type: string
         exec_tx_hash:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         exec_block_number:
           type: integer
         exec_success:
@@ -348,7 +430,7 @@ components:
           type: string
         address:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         chainId:
           type: integer
         nonce:
@@ -383,8 +465,7 @@ components:
     SoulAgentRegistration:
       type: object
       additionalProperties: false
-      required:
-        [id, domain_normalized, local_id, agent_id, wallet_address, status, created_at, updated_at]
+      required: [id, domain_normalized, local_id, agent_id, wallet_address, status, created_at, updated_at]
       properties:
         id:
           type: string
@@ -400,10 +481,10 @@ components:
           type: string
         agent_id:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         wallet_address:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         capabilities:
           type: array
           items:
@@ -488,7 +569,7 @@ components:
       properties:
         agent_id:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         registration_id:
           type: string
         requested_by:
@@ -499,7 +580,7 @@ components:
           type: string
         wallet:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         stage:
           type: string
           enum: [requested, approved, minted, reviewing, ready_to_finalize, graduated]
@@ -514,14 +595,7 @@ components:
           enum: [pending, approved]
         readiness_status:
           type: string
-          enum:
-            [
-              awaiting_verification,
-              awaiting_mint,
-              ready_for_conversation,
-              ready_for_finalize,
-              graduated,
-            ]
+          enum: [awaiting_verification, awaiting_mint, ready_for_conversation, ready_for_finalize, graduated]
         mint_operation_id:
           type: string
         mint_operation_status:
@@ -529,7 +603,7 @@ components:
           enum: [pending, proposed, executed, failed]
         principal_address:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         latest_conversation_id:
           type: string
         latest_conversation_status:
@@ -537,7 +611,7 @@ components:
           enum: [in_progress, completed, failed]
         latest_review_sha256:
           type: string
-          pattern: '^[0-9a-f]{64}$'
+          pattern: "^[0-9a-f]{64}$"
         latest_boundary_count:
           type: integer
           minimum: 0
@@ -575,7 +649,7 @@ components:
           type: string
           format: date-time
         prerequisites:
-          $ref: '#/components/schemas/SoulAgentPromotionPrerequisites'
+          $ref: "#/components/schemas/SoulAgentPromotionPrerequisites"
         next_actions:
           type: array
           items:
@@ -594,9 +668,9 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         promotion:
-          $ref: '#/components/schemas/SoulAgentPromotion'
+          $ref: "#/components/schemas/SoulAgentPromotion"
 
     SoulAgentPromotionListResponse:
       type: object
@@ -605,11 +679,11 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         promotions:
           type: array
           items:
-            $ref: '#/components/schemas/SoulAgentPromotion'
+            $ref: "#/components/schemas/SoulAgentPromotion"
         count:
           type: integer
           minimum: 0
@@ -646,7 +720,7 @@ components:
         conversation_id:
           type: string
         promotion:
-          $ref: '#/components/schemas/SoulAgentPromotion'
+          $ref: "#/components/schemas/SoulAgentPromotion"
 
     SoulAgentPromotionLifecycleEventListResponse:
       type: object
@@ -655,11 +729,11 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         events:
           type: array
           items:
-            $ref: '#/components/schemas/SoulAgentPromotionLifecycleEvent'
+            $ref: "#/components/schemas/SoulAgentPromotionLifecycleEvent"
         count:
           type: integer
           minimum: 0
@@ -679,7 +753,7 @@ components:
           type: string
         wallet_address:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         capabilities:
           type: array
           items:
@@ -694,15 +768,15 @@ components:
       required: [registration, wallet, proofs]
       properties:
         registration:
-          $ref: '#/components/schemas/SoulAgentRegistration'
+          $ref: "#/components/schemas/SoulAgentRegistration"
         wallet:
-          $ref: '#/components/schemas/WalletChallengeResponse'
+          $ref: "#/components/schemas/WalletChallengeResponse"
         proofs:
           type: array
           items:
-            $ref: '#/components/schemas/SoulRegistryProofInstructions'
+            $ref: "#/components/schemas/SoulRegistryProofInstructions"
         promotion:
-          $ref: '#/components/schemas/SoulAgentPromotion'
+          $ref: "#/components/schemas/SoulAgentPromotion"
 
     SoulAgentRegistrationVerifyRequest:
       type: object
@@ -718,7 +792,7 @@ components:
           type: string
         principal_address:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         principal_declaration:
           type: string
         principal_signature:
@@ -733,13 +807,13 @@ components:
       required: [registration, operation]
       properties:
         registration:
-          $ref: '#/components/schemas/SoulAgentRegistration'
+          $ref: "#/components/schemas/SoulAgentRegistration"
         operation:
-          $ref: '#/components/schemas/SoulOperation'
+          $ref: "#/components/schemas/SoulOperation"
         safe_tx:
-          $ref: '#/components/schemas/SafeTxPayload'
+          $ref: "#/components/schemas/SafeTxPayload"
         promotion:
-          $ref: '#/components/schemas/SoulAgentPromotion'
+          $ref: "#/components/schemas/SoulAgentPromotion"
 
     AIUsage:
       type: object
@@ -792,7 +866,7 @@ components:
       properties:
         agent_id:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         conversation_id:
           type: string
         model:
@@ -805,7 +879,7 @@ components:
           type: string
           enum: [in_progress, completed, failed]
         usage:
-          $ref: '#/components/schemas/AIUsage'
+          $ref: "#/components/schemas/AIUsage"
         charged_credits:
           type: integer
           minimum: 0
@@ -823,7 +897,7 @@ components:
         declarations:
           oneOf:
             - type: string
-            - $ref: '#/components/schemas/SoulMintConversationDeclarationPreview'
+            - $ref: "#/components/schemas/SoulMintConversationDeclarationPreview"
 
     SoulAgentMintConversationsResponse:
       type: object
@@ -832,11 +906,11 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         conversations:
           type: array
           items:
-            $ref: '#/components/schemas/SoulMintConversation'
+            $ref: "#/components/schemas/SoulMintConversation"
         count:
           type: integer
           minimum: 0
@@ -900,7 +974,7 @@ components:
           type: string
         signer_wallet:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         signing_method:
           type: string
           enum: [eip191_personal_sign]
@@ -911,7 +985,7 @@ components:
           type: string
         digest_hex:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
 
     SoulMintConversationFinalizeSigningInput:
       type: object
@@ -926,7 +1000,7 @@ components:
       properties:
         signer_wallet:
           type: string
-          pattern: '^0x[0-9a-fA-F]{40}$'
+          pattern: "^0x[0-9a-fA-F]{40}$"
         signing_method:
           type: string
           enum: [eip191_personal_sign]
@@ -935,10 +1009,10 @@ components:
           enum: [hex_bytes]
         message_hex:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         digest_hex:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         canonical_json:
           type: string
 
@@ -994,10 +1068,10 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         digest_hex:
           type: string
-          pattern: '^0x[0-9a-fA-F]{64}$'
+          pattern: "^0x[0-9a-fA-F]{64}$"
         issued_at:
           type: string
           format: date-time
@@ -1008,15 +1082,15 @@ components:
           type: integer
           minimum: 1
         declarations_preview:
-          $ref: '#/components/schemas/SoulMintConversationDeclarationPreview'
+          $ref: "#/components/schemas/SoulMintConversationDeclarationPreview"
         boundary_requirements:
           type: array
           items:
-            $ref: '#/components/schemas/SoulMintConversationFinalizeBoundaryRequirement'
+            $ref: "#/components/schemas/SoulMintConversationFinalizeBoundaryRequirement"
         self_attestation_signing:
-          $ref: '#/components/schemas/SoulMintConversationFinalizeSigningInput'
+          $ref: "#/components/schemas/SoulMintConversationFinalizeSigningInput"
         finalize_request_template:
-          $ref: '#/components/schemas/SoulMintConversationFinalizeRequestTemplate'
+          $ref: "#/components/schemas/SoulMintConversationFinalizeRequestTemplate"
         registration_preview:
           type: object
           additionalProperties: true
@@ -1028,9 +1102,9 @@ components:
       properties:
         version:
           type: string
-          enum: ['1']
+          enum: ["1"]
         agent:
-          $ref: '#/components/schemas/SoulAgentIdentity'
+          $ref: "#/components/schemas/SoulAgentIdentity"
         published_version:
           type: integer
           minimum: 1
@@ -1046,26 +1120,26 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelsResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelsResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/channels/preferences:
     get:
@@ -1077,26 +1151,26 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelPreferencesResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
     put:
       operationId: soulUpdateAgentChannelPreferences
       summary: Update agent contact preferences (v3)
@@ -1108,50 +1182,50 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulAgentChannelPreferencesRequest'
+              $ref: "#/components/schemas/SoulAgentChannelPreferencesRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentChannelPreferencesResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/ens/{ensName}:
     get:
@@ -1166,24 +1240,24 @@ paths:
             minLength: 1
             maxLength: 255
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/email/{emailAddress}:
     get:
@@ -1197,24 +1271,24 @@ paths:
             type: string
             format: email
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/resolve/phone/{phoneNumber}:
     get:
@@ -1228,24 +1302,24 @@ paths:
             type: string
             pattern: "^\\+[1-9]\\d{1,14}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulResolveResponse'
-        '400':
+                $ref: "#/components/schemas/SoulResolveResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/search:
     get:
@@ -1295,7 +1369,7 @@ paths:
           required: false
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{40}$'
+            pattern: "^0x[0-9a-fA-F]{40}$"
         - name: channel
           in: query
           required: false
@@ -1317,24 +1391,24 @@ paths:
             minimum: 1
             maximum: 100
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulSearchResponse'
-        '400':
+                $ref: "#/components/schemas/SoulSearchResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/begin:
     post:
@@ -1347,38 +1421,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulAgentRegistrationBeginRequest'
+              $ref: "#/components/schemas/SoulAgentRegistrationBeginRequest"
       responses:
-        '201':
+        "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentRegistrationBeginResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentRegistrationBeginResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/{id}/verify:
     post:
@@ -1397,44 +1471,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulAgentRegistrationVerifyRequest'
+              $ref: "#/components/schemas/SoulAgentRegistrationVerifyRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentRegistrationVerifyResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentRegistrationVerifyResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/{id}/mint-conversation:
     post:
@@ -1456,47 +1530,47 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationSSEInput'
+              $ref: "#/components/schemas/SoulMintConversationSSEInput"
       responses:
-        '200':
+        "200":
           description: SSE stream of mint-conversation events
           content:
             text/event-stream:
               schema:
                 type: string
           x-sse-contract:
-            file: './soul-mint-conversation-sse.json'
-            version: '1'
-        '400':
+            file: "./soul-mint-conversation-sse.json"
+            version: "1"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}:
     get:
@@ -1516,36 +1590,36 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversation'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversation"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/complete:
     post:
@@ -1569,44 +1643,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationCompleteRequest'
+              $ref: "#/components/schemas/SoulMintConversationCompleteRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversation'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversation"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize/preflight:
     post:
@@ -1630,44 +1704,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationFinalizeBeginRequest'
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversationFinalizePreflightResponse'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize/begin:
     post:
@@ -1691,44 +1765,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationFinalizeBeginRequest'
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversationFinalizePreflightResponse'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/register/{id}/mint-conversation/{conversationId}/finalize:
     post:
@@ -1752,44 +1826,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationFinalizeRequest'
+              $ref: "#/components/schemas/SoulMintConversationFinalizeRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversationFinalizeResponse'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversationFinalizeResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/mint-conversations:
     get:
@@ -1803,7 +1877,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: limit
           in: query
           required: false
@@ -1812,36 +1886,36 @@ paths:
             minimum: 1
             maximum: 100
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentMintConversationsResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentMintConversationsResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/mint-conversation:
     post:
@@ -1858,53 +1932,53 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationSSEInput'
+              $ref: "#/components/schemas/SoulMintConversationSSEInput"
       responses:
-        '200':
+        "200":
           description: SSE stream of mint-conversation events
           content:
             text/event-stream:
               schema:
                 type: string
           x-sse-contract:
-            file: './soul-mint-conversation-sse.json'
-            version: '1'
-        '400':
+            file: "./soul-mint-conversation-sse.json"
+            version: "1"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}:
     get:
@@ -1918,43 +1992,43 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: conversationId
           in: path
           required: true
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversation'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversation"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/complete:
     post:
@@ -1968,7 +2042,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: conversationId
           in: path
           required: true
@@ -1979,44 +2053,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationCompleteRequest'
+              $ref: "#/components/schemas/SoulMintConversationCompleteRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversation'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversation"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize/preflight:
     post:
@@ -2030,7 +2104,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: conversationId
           in: path
           required: true
@@ -2041,44 +2115,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationFinalizeBeginRequest'
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversationFinalizePreflightResponse'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize/begin:
     post:
@@ -2092,7 +2166,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: conversationId
           in: path
           required: true
@@ -2103,44 +2177,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationFinalizeBeginRequest'
+              $ref: "#/components/schemas/SoulMintConversationFinalizeBeginRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversationFinalizePreflightResponse'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversationFinalizePreflightResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/finalize:
     post:
@@ -2154,7 +2228,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: conversationId
           in: path
           required: true
@@ -2165,44 +2239,44 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulMintConversationFinalizeRequest'
+              $ref: "#/components/schemas/SoulMintConversationFinalizeRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulMintConversationFinalizeResponse'
-        '400':
+                $ref: "#/components/schemas/SoulMintConversationFinalizeResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/promotions/mine:
     get:
@@ -2224,30 +2298,30 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentPromotionListResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentPromotionListResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/promotions/mine/events:
     get:
@@ -2269,30 +2343,30 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentPromotionLifecycleEventListResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentPromotionLifecycleEventListResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/promotion:
     get:
@@ -2306,38 +2380,38 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentPromotionResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentPromotionResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/promotion/verify:
     post:
@@ -2351,50 +2425,50 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulAgentRegistrationVerifyRequest'
+              $ref: "#/components/schemas/SoulAgentRegistrationVerifyRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentRegistrationVerifyResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentRegistrationVerifyResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '409':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409":
           description: Conflict
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/promotion/events:
     get:
@@ -2408,7 +2482,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: cursor
           in: query
           required: false
@@ -2422,36 +2496,36 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentPromotionLifecycleEventListResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentPromotionLifecycleEventListResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '403':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
           description: Forbidden
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/comm/send:
     post:
@@ -2464,38 +2538,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SoulCommSendRequest'
+              $ref: "#/components/schemas/SoulCommSendRequest"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommSendResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '429':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "429":
           description: Rate limited
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommSendErrorEnvelope'
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
 
   /api/v1/soul/comm/status/{messageId}:
     get:
@@ -2512,30 +2586,449 @@ paths:
             minLength: 1
             maxLength: 128
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommStatusResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusErrorEnvelope'
+                $ref: "#/components/schemas/SoulCommStatusErrorEnvelope"
+
+  /api/v1/soul/comm/contactability/{agentId}:
+    get:
+      operationId: soulCommContactability
+      summary: Resolve bounded soul comm contactability for one agent
+      description: |
+        Resolves mailbox/read and send affordances for exactly one agent owned by the authenticated instance.
+        This endpoint intentionally has no search or list mode and does not expose channel secrets.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SoulMailboxAgentId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommContactabilityResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages:
+    get:
+      operationId: soulCommMailboxList
+      summary: List redacted canonical mailbox messages
+      description: |
+        Returns bounded metadata and previews only. Full message content is fetched explicitly from the content endpoint.
+        Filters are evaluated within the authenticated instance + exact agent mailbox. `query` is bounded metadata/preview
+        matching only; it is not full-body search and never scans across tenants or agents.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 2048
+        - name: includeDeleted
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: deleted
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: When present, filters exactly by deleted state. `deleted=true` implies deleted rows may be returned.
+        - name: includeArchived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Set false to exclude archived messages. Omitted preserves legacy behavior and may include archived messages.
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: When present, filters exactly by archived state.
+        - name: read
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: When present, filters exactly by read state.
+        - name: unreadOnly
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Convenience alias for `read=false`.
+        - name: channelType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [email, sms, voice]
+        - name: direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [inbound, outbound]
+        - name: threadId
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+        - name: query
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+          description: Bounded metadata/preview match within the authenticated instance + exact agent mailbox.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxListResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}:
+    get:
+      operationId: soulCommMailboxGet
+      summary: Get canonical mailbox message metadata
+      description: Accepts canonical messageRef/deliveryId and legacy messageId values only when unambiguous for the authenticated instance + agent.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: messageRef
+          in: path
+          required: true
+          description: Opaque stable body-facing mailbox reference; v1 equals deliveryId and legacy messageId aliases are accepted only when unambiguous.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxGetResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/content:
+    get:
+      operationId: soulCommMailboxContent
+      summary: Explicitly fetch bounded mailbox message content
+      description: Returns full content only for a specific messageRef/delivery. Calls are instance-key authenticated, rate-limited, and audit logged.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: messageRef
+          in: path
+          required: true
+          description: Opaque stable body-facing mailbox reference; v1 equals deliveryId and legacy messageId aliases are accepted only when unambiguous.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxContentResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply:
+    post:
+      operationId: soulCommMailboxReply
+      summary: Reply to a canonical mailbox message
+      description: |
+        Resolves the messageRef against host's canonical mailbox state, derives recipient/thread/provider reply context,
+        and sends a new outbound soul comm. Body should call this endpoint instead of reconstructing reply recipients or
+        provider headers locally. The request is authenticated with strict hash-only instance API key auth.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SoulMailboxAgentId"
+        - $ref: "#/components/parameters/SoulMailboxMessageRef"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulCommMailboxReplyRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommSendResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/read:
+    post:
+      operationId: soulCommMailboxMarkRead
+      summary: Mark a mailbox message read
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SoulMailboxAgentId"
+        - $ref: "#/components/parameters/SoulMailboxMessageRef"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxGetResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/unread:
+    post:
+      operationId: soulCommMailboxMarkUnread
+      summary: Mark a mailbox message unread
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SoulMailboxAgentId"
+        - $ref: "#/components/parameters/SoulMailboxMessageRef"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxGetResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/archive:
+    post:
+      operationId: soulCommMailboxArchive
+      summary: Archive a mailbox message
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SoulMailboxAgentId"
+        - $ref: "#/components/parameters/SoulMailboxMessageRef"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxGetResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/unarchive:
+    post:
+      operationId: soulCommMailboxUnarchive
+      summary: Unarchive a mailbox message
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SoulMailboxAgentId"
+        - $ref: "#/components/parameters/SoulMailboxMessageRef"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxGetResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/delete:
+    post:
+      operationId: soulCommMailboxDelete
+      summary: Soft-delete a mailbox message
+      description: Sets bounded mailbox delete state. The content object remains lifecycle-bound and is no longer returned by content fetches.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SoulMailboxAgentId"
+        - $ref: "#/components/parameters/SoulMailboxMessageRef"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommMailboxGetResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+        "500": { $ref: "#/components/responses/InternalError" }
 
   /api/v1/soul/agents/{agentId}/comm/activity:
     get:
@@ -2549,7 +3042,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: limit
           in: query
           required: false
@@ -2558,36 +3051,36 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentCommActivityResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentCommActivityResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/comm/queue:
     get:
@@ -2601,7 +3094,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: limit
           in: query
           required: false
@@ -2610,36 +3103,36 @@ paths:
             minimum: 1
             maximum: 200
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulAgentCommQueueResponse'
-        '400':
+                $ref: "#/components/schemas/SoulAgentCommQueueResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
 
   /api/v1/soul/agents/{agentId}/comm/status/{messageId}:
     get:
@@ -2653,7 +3146,7 @@ paths:
           required: true
           schema:
             type: string
-            pattern: '^0x[0-9a-fA-F]{64}$'
+            pattern: "^0x[0-9a-fA-F]{64}$"
         - name: messageId
           in: path
           required: true
@@ -2662,33 +3155,33 @@ paths:
             minLength: 1
             maxLength: 128
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SoulCommStatusResponse'
-        '400':
+                $ref: "#/components/schemas/SoulCommStatusResponse"
+        "400":
           description: Invalid request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '401':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '404':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "404":
           description: Not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
-        '500':
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "500":
           description: Internal error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorEnvelope'
+                $ref: "#/components/schemas/ErrorEnvelope"
