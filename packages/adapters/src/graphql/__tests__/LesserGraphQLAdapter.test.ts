@@ -220,8 +220,12 @@ describe('LesserGraphQLAdapter', () => {
 
 		it('should throw if mutation returns null data', async () => {
 			mockApolloClient.mutate.mockResolvedValue({ data: null });
-			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toThrow(
-				'Mutation completed without returning data'
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toMatchObject({
+				message: USER_SAFE_REQUEST_MESSAGE,
+				debugMessages: ['Mutation completed without returning data.'],
+			});
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toBeInstanceOf(
+				LesserGraphQLAdapterError
 			);
 		});
 
@@ -240,6 +244,33 @@ describe('LesserGraphQLAdapter', () => {
 			await expect(adapter.getObject('1')).rejects.toMatchObject({
 				message: 'The request could not be completed. Please try again.',
 				debugMessages: ['database timeout: shard-7'],
+			});
+		});
+
+		it('normalizes resolved GraphQL mutation errors before returning partial data', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: { createNote: { id: 'partial-note' } },
+				errors: [{ message: 'authorization denied for actor_private_acl' }],
+			});
+
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toMatchObject({
+				message: USER_SAFE_REQUEST_MESSAGE,
+				debugMessages: ['authorization denied for actor_private_acl'],
+			});
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toBeInstanceOf(
+				LesserGraphQLAdapterError
+			);
+		});
+
+		it('normalizes resolved GraphQL mutation transport errors', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: { createNote: { id: 'partial-note' } },
+				error: new Error('network gateway leaked upstream host'),
+			});
+
+			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toMatchObject({
+				message: USER_SAFE_REQUEST_MESSAGE,
+				debugMessages: ['network gateway leaked upstream host'],
 			});
 		});
 	});

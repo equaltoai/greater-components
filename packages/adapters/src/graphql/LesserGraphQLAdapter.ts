@@ -642,15 +642,39 @@ export class LesserGraphQLAdapter {
 			mutation: document,
 			variables,
 		} as unknown as MutationOptionsFor<TData, TVariables>;
-		let data: TData | null | undefined;
+		let result: {
+			data?: TData | null;
+			errors?: Array<{ message?: string }>;
+			error?: unknown;
+		};
 		try {
-			({ data } = await this.client.client.mutate<TData, TVariables>(options));
+			result = (await this.client.client.mutate<TData, TVariables>(options)) as typeof result;
 		} catch (error) {
 			throw createUserSafeAdapterError(USER_SAFE_GRAPHQL_ERROR_MESSAGE, error);
 		}
 
+		const errors = result.errors;
+		if (Array.isArray(errors) && errors.length > 0) {
+			throw createUserSafeAdapterError(
+				USER_SAFE_GRAPHQL_ERROR_MESSAGE,
+				result,
+				errors
+					.map((error) => error.message)
+					.filter((message): message is string => Boolean(message))
+			);
+		}
+
+		const transportError = result.error;
+		if (transportError) {
+			throw createUserSafeAdapterError(USER_SAFE_GRAPHQL_ERROR_MESSAGE, transportError);
+		}
+
+		const { data } = result;
 		if (data == null) {
-			throw new Error('Mutation completed without returning data.');
+			throw createUserSafeAdapterError(
+				USER_SAFE_GRAPHQL_ERROR_MESSAGE,
+				new Error('Mutation completed without returning data.')
+			);
 		}
 
 		return data;
