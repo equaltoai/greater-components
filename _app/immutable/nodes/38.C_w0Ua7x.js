@@ -1,0 +1,22 @@
+import{n as e}from"../chunks/9qPbz94-.js";import{B as t,F as n,I as r,K as i,M as a,Q as o,R as s,Tt as c,at as l,bt as u,ct as d,ft as f,it as p,ot as m,rt as h,ut as g,wt as _,yt as v}from"../chunks/HZEZB441.js";import"../chunks/DW7QIeR-.js";import{Rn as y}from"../chunks/CqG1B6Ni.js";import{t as b}from"../chunks/BrMfcLY_.js";import{t as x}from"../chunks/BuX9N8RZ.js";import{r as S,t as C}from"../chunks/BZjtlogg.js";import{n as w,s as T}from"../chunks/CY9MFrBS.js";var E=e({load:()=>D}),D=(()=>({metadata:{slug:`notifications-demo`,title:`Notifications Demo`,description:`ProfileHeader and NotificationsFeed wired with mock handlers to illustrate follows, mentions, dismissals, and accessibility cues.`,sections:[`Profile header`,`Notification list`,`Accessibility guidance`]}})),O=s(`<li> </li>`),k=s(`<section class="notifications-section svelte-1ce0uvz"><header><p class="section-eyebrow svelte-1ce0uvz">01 · Profile header</p> <h2>Federated account overview + action slot</h2> <p>The published <code>ProfileHeader</code> component accepts a <code>UnifiedAccount</code> so you
+				can feed it data from Mastodon, Lesser, or any adapter. Drop a follow button into the provided
+				snippet to wire up your own action semantics.</p></header> <!> <!></section> <section class="notifications-section svelte-1ce0uvz"><header><p class="section-eyebrow svelte-1ce0uvz">02 · Notification list</p> <h2>Mentions, boosts, likes, follows</h2> <p>\`NotificationsFeed\` virtualizes large collections and emits callbacks when users interact
+				with a row. We mark items read in-place so the UI stays responsive even before API calls
+				settle.</p></header> <!> <div class="notifications-actions svelte-1ce0uvz"><!> <!></div> <!></section> <section class="notifications-section svelte-1ce0uvz"><header><p class="section-eyebrow svelte-1ce0uvz">03 · Accessibility guidance</p> <h2>ARIA roles + keyboard cues</h2></header> <ul class="guidance-list svelte-1ce0uvz"></ul></section>`,1);function A(e,s){u(s,!0);let E=e=>{{let a=f(()=>A.relationship?.following?`ghost`:`solid`);y(e,{get variant(){return i(a)},size:`sm`,children:(e,i)=>{_();var a=t();o(()=>n(a,A.relationship?.following?`Following`:`Follow`)),r(e,a)},$$slots:{default:!0}})}},D=g(m(w())),A=T();function j(e){d(D,i(D).map(t=>t.id===e?{...t,read:!0}:t),!0)}function M(){d(D,i(D).map(e=>({...e,read:!0})),!0)}function N(e){d(D,i(D).filter(t=>t.id!==e),!0)}let P=['Expose the list as a `region` with `aria-label="Notifications"` so screen readers can jump quickly.',"When focus enters a notification, announce its type (mention, boost, follow) using `aria-label`.","Keyboard shortcuts (e.g., `Shift + C` to clear, `Enter` to open) should be documented near the list.",`Batch actions like “Mark all as read” should use real buttons to inherit semantics and focus.`];b(e,{eyebrow:`Fediverse Surface`,get title(){return s.data.metadata.title},get description(){return s.data.metadata.description},children:(e,s)=>{var u=k(),f=p(u),m=l(h(f),2);S(m,{get account(){return A},showFields:!0,showCounts:!0,get followButton(){return E}}),x(l(m,2),{title:`ProfileHeader snippet`,description:`Supply a UnifiedAccount from your adapter`,code:`
+<ProfileHeader
+  account={profile}
+  followButton={FollowButtonSnippet}
+/>
+
+{#snippet FollowButtonSnippet()}
+  <Button variant={profile.relationship?.following ? 'ghost' : 'solid'}>
+    {profile.relationship?.following ? 'Following' : 'Follow'}
+  </Button>
+{/snippet}`}),c(f);var g=l(f,2),v=l(h(g),2);C(v,{get notifications(){return i(D)},grouped:!1,density:`comfortable`,onNotificationClick:e=>j(e.id),onMarkAsRead:j,onMarkAllAsRead:M,onDismiss:N});var b=l(v,2),T=h(b);y(T,{size:`sm`,variant:`outline`,onclick:M,children:(e,n)=>{_(),r(e,t(`Mark all as read`))},$$slots:{default:!0}}),y(l(T,2),{size:`sm`,variant:`ghost`,onclick:()=>d(D,w(),!0),children:(e,n)=>{_(),r(e,t(`Reset data`))},$$slots:{default:!0}}),c(b),x(l(b,2),{title:`Notifications snippet`,description:`Hooking callbacks for mark-as-read + dismiss`,code:`
+<NotificationsFeed
+  notifications={notifications}
+  onNotificationClick={(notification) => console.log(notification.id)}
+  onMarkAsRead={markAsRead}
+  onMarkAllAsRead={markAll}
+  onDismiss={dismiss}
+/>`}),c(g);var F=l(g,2),I=l(h(F),2);a(I,20,()=>P,e=>e,(e,t)=>{var i=O(),a=h(i,!0);c(i),o(()=>n(a,t)),r(e,i)}),c(I),c(F),r(e,u)},$$slots:{default:!0}}),v()}export{A as component,E as universal};

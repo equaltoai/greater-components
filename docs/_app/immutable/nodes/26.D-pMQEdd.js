@@ -1,0 +1,5 @@
+import{D as e,G as t,T as n,Y as r,q as i,ut as a,v as o,z as s}from"../chunks/Bov5pycq.js";import"../chunks/Cs5QDfgy.js";import"../chunks/Bq1ElFeL.js";import{t as c}from"../chunks/D7myQBsm.js";var l=e(`<meta name="description" content="Spacing design tokens used by Greater Components."/>`),u=e(`<article class="guide-page"><header><p class="eyebrow">Design Tokens</p> <h1>Spacing</h1> <p class="lead">Spacing tokens define the scale used for margins, padding, gaps, and layout rhythms via CSS
+			variables under <code>--gr-spacing-*</code>.</p></header> <section><h2>Override spacing</h2> <!></section></article>`);function d(e){var d=u();o(`1br2fnt`,e=>{var r=l();s(()=>{t.title=`Spacing Tokens - Greater Components`}),n(e,r)});var f=r(i(d),2);c(r(i(f),2),{language:`css`,code:`:global(:root) {
+  --gr-spacing-scale-4: 1rem;
+  --gr-spacing-scale-6: 1.5rem;
+}`}),a(f),a(d),n(e,d)}export{d as component};
