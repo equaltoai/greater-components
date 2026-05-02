@@ -22,6 +22,18 @@
 		 * Unique shortcode (e.g., "blobcat")
 		 */
 		shortcode: string;
+		/**
+		 * True when this selection represents a Unicode fallback emoji rather than
+		 * an instance-hosted custom emoji.
+		 */
+		isUnicode?: boolean;
+
+		/**
+		 * Raw Unicode character for fallback selections. Consumers that only
+		 * implement `onSelect` can use this instead of wrapping `shortcode` in
+		 * Mastodon-style shortcode delimiters.
+		 */
+		unicode?: string;
 
 		/**
 		 * Display URL
@@ -467,6 +479,8 @@
 		}
 		handlers.onSelect?.({
 			shortcode: emoji.char,
+			isUnicode: true,
+			unicode: emoji.char,
 			url: '',
 			description: emoji.name,
 			tags: emoji.tags,

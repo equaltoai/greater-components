@@ -12,6 +12,32 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.10](https://github.com/equaltoai/greater-components/compare/greater-v0.8.9...greater-v0.8.10) (2026-05-02)
+
+### Bug Fixes
+
+- narrow chat workflow artifact hrefs ([f6ba496](https://github.com/equaltoai/greater-components/commit/f6ba496b565f6f9b5021ef06763e7d3ecb22f9bb))
+- stabilize chat svelte check ([a7a361c](https://github.com/equaltoai/greater-components/commit/a7a361c4deceec539cfbf6bc7d72bc229c46433d))
+
+### Chores
+
+- **premain:** release greater 0.8.10-rc.0 ([8722651](https://github.com/equaltoai/greater-components/commit/872265104ba31ef4f3e10bbedea7e252f089fd03))
+- **premain:** release greater 0.8.10-rc.0 ([686e46b](https://github.com/equaltoai/greater-components/commit/686e46b77ba54c9f33cd7c1a301dd1a027895ae2))
+- **release:** prepare metadata ([a7fd234](https://github.com/equaltoai/greater-components/commit/a7fd234757cbd2fe1100a6d14fb8ed92e00b1643))
+
+## [0.8.10-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.9-rc.0...greater-v0.8.10-rc.0) (2026-05-02)
+
+### Bug Fixes
+
+- narrow chat workflow artifact hrefs ([f6ba496](https://github.com/equaltoai/greater-components/commit/f6ba496b565f6f9b5021ef06763e7d3ecb22f9bb))
+- stabilize chat svelte check ([a7a361c](https://github.com/equaltoai/greater-components/commit/a7a361c4deceec539cfbf6bc7d72bc229c46433d))
+
+### Chores
+
+- **main:** release greater 0.8.9 ([e7d54cc](https://github.com/equaltoai/greater-components/commit/e7d54cc426809eabfcdb3c8046b1971d2d8f6662))
+- **main:** release greater 0.8.9 ([c2418fc](https://github.com/equaltoai/greater-components/commit/c2418fce71c0553445197afc4873073abdb26ff8))
+- **release:** prepare metadata ([89f28ce](https://github.com/equaltoai/greater-components/commit/89f28ce6aee15079e552a7a2b3421d4b9da520e7))
+
 ## [0.8.9](https://github.com/equaltoai/greater-components/compare/greater-v0.8.8...greater-v0.8.9) (2026-05-02)
 
 ### Bug Fixes

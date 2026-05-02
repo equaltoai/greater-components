@@ -4,7 +4,7 @@
 <script lang="ts">
 	import { Menu } from '@equaltoai/greater-components-primitives';
 	import { MoreVerticalIcon, TrashIcon } from '@equaltoai/greater-components-icons';
-	import { formatMessageTime } from './utils.js';
+	import { formatMessageTime, isParticipantId } from './utils.js';
 	import { getMessagesContext } from './context.svelte.js';
 	import type { DirectMessage, MessagesContext } from './context.svelte.js';
 	import WorkflowThreadMoment from './WorkflowThreadMoment.svelte';
@@ -17,7 +17,13 @@
 
 	let { message, currentUserId = 'me', class: className = '' }: Props = $props();
 
-	const isOwnMessage = $derived(message.sender.id === currentUserId);
+	let sensitiveContentRevealed = $state(false);
+	let lastMessageId = $state<string | null>(null);
+
+	const isOwnMessage = $derived(isParticipantId(message.sender, currentUserId));
+	const isSensitive = $derived(message.sensitive === true);
+	const isContentVisible = $derived(!isSensitive || sensitiveContentRevealed);
+	const messageContentId = $derived(`message-content-${message.id.replace(/[^\w-]/g, '-')}`);
 
 	const context = (() => {
 		try {
@@ -41,6 +47,24 @@
 			// Error handled by context
 		}
 	}
+
+	function toggleSensitiveContent() {
+		sensitiveContentRevealed = !sensitiveContentRevealed;
+	}
+
+	$effect(() => {
+		const currentMessageId = message.id;
+
+		if (lastMessageId === null) {
+			lastMessageId = currentMessageId;
+			return;
+		}
+
+		if (currentMessageId !== lastMessageId) {
+			lastMessageId = currentMessageId;
+			sensitiveContentRevealed = false;
+		}
+	});
 </script>
 
 <div class={`message ${className}`} class:message--own={isOwnMessage}>
@@ -79,7 +103,25 @@
 			{/if}
 		</div>
 
-		<div class="message__content">{message.content}</div>
+		{#if isSensitive}
+			<div class="message__content-warning">
+				<div class="message__content-warning-label">
+					{message.spoilerText?.trim() || 'Sensitive message'}
+				</div>
+				<button
+					type="button"
+					class="message__content-warning-toggle"
+					aria-expanded={isContentVisible}
+					aria-controls={messageContentId}
+					onclick={toggleSensitiveContent}
+				>
+					{isContentVisible ? 'Hide message' : 'Show message'}
+				</button>
+			</div>
+		{/if}
+		{#if isContentVisible}
+			<div class="message__content" id={messageContentId}>{message.content}</div>
+		{/if}
 		{#if message.workflowMoments?.length}
 			<div class="message__workflow">
 				{#each message.workflowMoments as moment (moment.id)}

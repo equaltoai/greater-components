@@ -84,6 +84,18 @@ export type LesserGraphQLAdapterConfig = GraphQLClientConfig;
 export type TimelineVariables = TimelineQueryVariables;
 export type SearchVariables = SearchQueryVariables;
 export type CreateNoteVariables = CreateNoteMutationVariables;
+export declare class LesserGraphQLAdapterError extends Error {
+	readonly code: string;
+	readonly debugMessages: readonly string[];
+	constructor(
+		message: string,
+		options?: {
+			code?: string;
+			debugMessages?: readonly string[];
+			cause?: unknown;
+		}
+	);
+}
 export declare class LesserGraphQLAdapter {
 	private readonly client;
 	private readonly httpEndpoint;

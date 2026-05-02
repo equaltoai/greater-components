@@ -22,9 +22,17 @@ const MESSAGES_CONTEXT_KEY = Symbol('messages-context');
  */
 export interface MessageParticipant {
 	id: string;
+	/**
+	 * Original ActivityPub / Lesser actor id when `id` is normalized for mutations.
+	 */
+	actorId?: string;
 	username: string;
 	displayName: string;
 	avatar?: string;
+	/**
+	 * Human-facing handle, e.g. `alice` for local actors or `alice@example.social`.
+	 */
+	handle?: string;
 }
 
 /**
@@ -37,6 +45,11 @@ export interface DirectMessage {
 	content: string;
 	createdAt: string;
 	read: boolean;
+	/**
+	 * Whether the message body should be hidden behind a content warning by default.
+	 */
+	sensitive?: boolean;
+	spoilerText?: string | null;
 	workflowMoments?: MessagingWorkflowThreadMoment[];
 	mediaAttachments?: {
 		url: string;

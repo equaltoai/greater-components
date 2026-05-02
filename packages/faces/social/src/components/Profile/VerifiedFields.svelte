@@ -63,17 +63,55 @@ Supports external link icons and verification tooltips.
 
 	// Limit fields if maxFields is set
 	const displayFields = $derived(maxFields > 0 ? fields.slice(0, maxFields) : fields);
+	const ALLOWED_FIELD_LINK_PROTOCOLS = new Set(['http:', 'https:']);
 
 	/**
-	 * Check if value is a URL
+	 * Return a public web URL that is safe to bind to href.
 	 */
-	function isUrl(value: string): boolean {
+	function toSafeFieldHref(value?: string | null): string | null {
+		const href = value?.trim();
+		if (!href) return null;
+
 		try {
-			new URL(value);
-			return true;
+			const url = new URL(href);
+			if (!ALLOWED_FIELD_LINK_PROTOCOLS.has(url.protocol)) return null;
+			return url.href;
 		} catch {
-			return false;
+			return null;
 		}
+	}
+
+	function stripHtml(value: string): string {
+		return value
+			.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+			.replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
+			.replace(/<[^>]*>/g, '')
+			.replace(/\s+/g, ' ')
+			.trim();
+	}
+
+	function parseHtmlFieldValue(value: string): { text: string; href?: string } {
+		if (typeof DOMParser !== 'undefined') {
+			const doc = new DOMParser().parseFromString(value, 'text/html');
+			const anchor = doc.querySelector('a[href]');
+			const text = (anchor?.textContent ?? doc.body.textContent ?? '').trim();
+			return {
+				text,
+				href: anchor?.getAttribute('href') ?? undefined,
+			};
+		}
+
+		const linkMatch = value.match(
+			/<a\b[^>]*\bhref=(?:"([^"]*)"|'([^']*)'|([^\s>]+))[^>]*>([\s\S]*?)<\/a>/i
+		);
+		if (linkMatch) {
+			return {
+				text: stripHtml(linkMatch[4] ?? ''),
+				href: linkMatch[1] ?? linkMatch[2] ?? linkMatch[3],
+			};
+		}
+
+		return { text: stripHtml(value) };
 	}
 
 	/**
@@ -103,20 +141,28 @@ Supports external link icons and verification tooltips.
 	 * Parse HTML value safely (for Mastodon-style fields)
 	 */
 	function parseValue(value: string): { text: string; url?: string } {
-		// Check if value contains HTML link
-		const linkMatch = value.match(/<a[^>]*href="([^"]*)"[^>]*>([^<]*)<\/a>/);
-		if (linkMatch) {
+		const trimmedValue = value.trim();
+
+		if (trimmedValue.includes('<')) {
+			const parsed = parseHtmlFieldValue(trimmedValue);
+			const safeUrl = toSafeFieldHref(parsed.href);
+			if (safeUrl) {
+				return {
+					text: parsed.text || safeUrl,
+					url: safeUrl,
+				};
+			}
+
 			return {
-				text: linkMatch[2],
-				url: linkMatch[1],
+				text: parsed.text || stripHtml(trimmedValue),
 			};
 		}
 
-		// Check if value is a plain URL
-		if (isUrl(value)) {
+		const safeUrl = toSafeFieldHref(trimmedValue);
+		if (safeUrl) {
 			return {
-				text: value,
-				url: value,
+				text: trimmedValue,
+				url: safeUrl,
 			};
 		}
 
