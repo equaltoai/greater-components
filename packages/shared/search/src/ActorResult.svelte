@@ -15,12 +15,14 @@
 	let { actor, class: className = '' }: Props = $props();
 
 	const { handlers } = getSearchContext();
+	const canFollow = $derived(Boolean(handlers.onFollow) && actor.isSelf !== true);
 
 	const followButton = createButton({
 		onClick: () => handleFollow(),
 	});
 
 	async function handleFollow() {
+		if (!canFollow) return;
 		await handlers.onFollow?.(actor.id);
 	}
 
@@ -90,15 +92,17 @@
 		</div>
 	</div>
 
-	<button
-		use:followButton.actions.button
-		class="actor-result__follow"
-		class:actor-result__follow--following={actor.isFollowing}
-		onclick={(e) => {
-			e.stopPropagation();
-			handleFollow();
-		}}
-	>
-		{actor.isFollowing ? 'Following' : 'Follow'}
-	</button>
+	{#if canFollow}
+		<button
+			use:followButton.actions.button
+			class="actor-result__follow"
+			class:actor-result__follow--following={actor.isFollowing}
+			onclick={(e) => {
+				e.stopPropagation();
+				handleFollow();
+			}}
+		>
+			{actor.isFollowing ? 'Following' : 'Follow'}
+		</button>
+	{/if}
 </article>

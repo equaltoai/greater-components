@@ -102,6 +102,36 @@ describe('ActorResult Component', () => {
 		unmount(instance);
 	});
 
+	it('does not render follow button without a follow handler', async () => {
+		const previousFollow = mockHandlers.onFollow;
+		(mockHandlers as any).onFollow = undefined;
+
+		const target = document.createElement('div');
+		const instance = mount(ActorResult, {
+			target,
+			props: { actor: mockActor },
+		});
+		await flushSync();
+
+		expect(target.querySelector('.actor-result__follow')).toBeNull();
+
+		unmount(instance);
+		mockHandlers.onFollow = previousFollow;
+	});
+
+	it('does not render follow button for the current actor', async () => {
+		const target = document.createElement('div');
+		const instance = mount(ActorResult, {
+			target,
+			props: { actor: { ...mockActor, isSelf: true } },
+		});
+		await flushSync();
+
+		expect(target.querySelector('.actor-result__follow')).toBeNull();
+
+		unmount(instance);
+	});
+
 	it('handles card click', async () => {
 		const target = document.createElement('div');
 		const instance = mount(ActorResult, {

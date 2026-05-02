@@ -65,6 +65,8 @@ describe('createLesserMessagesHandlers', () => {
 							id: 'm1',
 							content: 'Hello',
 							createdAt: '2026-02-01T00:00:00.000Z',
+							sensitive: true,
+							spoilerText: 'CW',
 							actor: { id: 'u1', username: 'alice', displayName: 'Alice', avatar: null },
 							attachments: [],
 						},
@@ -81,7 +83,13 @@ describe('createLesserMessagesHandlers', () => {
 			expect.objectContaining({ conversationId: 'c1', first: 25 })
 		);
 		expect(messages).toHaveLength(1);
-		expect(messages?.[0]).toMatchObject({ id: 'm1', conversationId: 'c1', content: 'Hello' });
+		expect(messages?.[0]).toMatchObject({
+			id: 'm1',
+			conversationId: 'c1',
+			content: 'Hello',
+			sensitive: true,
+			spoilerText: 'CW',
+		});
 	});
 
 	it('sends a message', async () => {
@@ -91,6 +99,8 @@ describe('createLesserMessagesHandlers', () => {
 					id: 'm1',
 					content: 'Hi',
 					createdAt: '2026-02-01T00:00:00.000Z',
+					sensitive: false,
+					spoilerText: null,
 					actor: { id: 'u1', username: 'alice', displayName: 'Alice', avatar: null },
 					attachments: [],
 				},
@@ -213,7 +223,14 @@ describe('createLesserMessagesHandlers', () => {
 			first: 5,
 		});
 		expect(results).toEqual([
-			{ id: 'u1', username: 'alice', displayName: 'Alice', avatar: undefined },
+			{
+				id: 'u1',
+				actorId: 'u1',
+				username: 'alice',
+				displayName: 'Alice',
+				avatar: undefined,
+				handle: 'alice',
+			},
 		]);
 	});
 
@@ -286,9 +303,11 @@ describe('createLesserMessagesHandlers', () => {
 		expect(results).toEqual([
 			{
 				id: 'https://remote.example/users/arch',
+				actorId: 'https://remote.example/users/arch',
 				username: 'arch',
 				displayName: 'Remote Arch',
 				avatar: undefined,
+				handle: 'arch@remote.example',
 			},
 		]);
 	});
