@@ -2548,6 +2548,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/souls/bound/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Return the active soul identity bound to the authenticated local runtime-agent principal. The endpoint is fail-closed: unbound, inactive, missing host identity, or wrong-domain identities return 404. */
+        get: operations["get_api_v1_souls_bound_me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/souls/mine": {
         parameters: {
             query?: never;
@@ -2573,6 +2590,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** @description Create a status. `in_reply_to_id` accepts local status IDs and canonical remote status URLs. When a canonical remote URL is not yet materialized locally, Lesser performs request-scoped remote parent acquisition on the write path only. Direct replies continue through the conversations service. Failure classes distinguish invalid references (400), acquisition timeouts (408), fetched-but-unusable parents (422), and upstream unavailability (503). */
         post: operations["post_api_v1_statuses"];
         delete?: never;
         options?: never;
@@ -4004,6 +4022,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_inbox"];
+        put?: never;
+        post: operations["post_inbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/nodeinfo/2.0": {
         parameters: {
             query?: never;
@@ -4350,6 +4384,22 @@ export interface paths {
         get: operations["get_users_by_username_outbox"];
         put?: never;
         post: operations["post_users_by_username_outbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{username}/statuses/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_users_by_username_statuses_by_id"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -4982,6 +5032,11 @@ export interface components {
             challenge_id: string;
             signature: string;
         };
+        BoundSoulResponse: {
+            agent: components["schemas"]["SoulAgentIdentity"];
+            binding: components["schemas"]["SoulAgentBinding"];
+            binding_state: string;
+        };
         ClearNotificationsRequest: Record<string, never>;
         CommunicationAttachment: {
             content_type: string;
@@ -5016,6 +5071,7 @@ export interface components {
             reset: string;
         };
         CommunityNoteSource: {
+            /** Format: uri */
             url: string;
         };
         CommunityNoteStats: {
@@ -5142,6 +5198,7 @@ export interface components {
         };
         CreateStatusRequest: {
             agent_attribution?: components["schemas"]["AgentPostAttribution"] | null;
+            /** @description Reply parent reference. Accepts a local status ID or a canonical remote status URL. Canonical remote URLs are resolved locally first and materialized on the create path when needed. Direct replies remain conversations-owned. */
             in_reply_to_id?: string;
             language?: string;
             media_ids?: string[];
@@ -5151,7 +5208,11 @@ export interface components {
             sensitive: boolean;
             spoiler_text?: string;
             status: string;
-            visibility: string;
+            /**
+             * @description Status visibility. `direct` creates are 1:1 only: the content must contain exactly one resolvable local or remote @mention, and Lesser serializes that resolved actor into the ActivityPub addressing fields. Stored DM visibility and repair tooling use the addressing fields as the source of truth; content mentions alone do not authorize or backfill participants.
+             * @enum {string}
+             */
+            visibility: "public" | "unlisted" | "private" | "direct";
         };
         CreateVouchRequest: {
             confidence: number;
@@ -5736,6 +5797,8 @@ export interface components {
         };
         OAuthDeviceConsentRequest: {
             action: string;
+            client_id: string;
+            scope: string;
             user_code: string;
         };
         OAuthDeviceConsentResponse: {
@@ -7093,7 +7156,8 @@ export interface components {
         };
         VoteCommunityNoteRequest: {
             reason?: string;
-            vote_type: string;
+            /** @enum {string} */
+            vote_type: "helpful" | "not_helpful" | "neutral";
         };
         VoteCommunityNoteResponse: {
             note_id: string;
@@ -7224,6 +7288,15 @@ export interface components {
         };
         /** @description Not Found */
         NotFound: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Request Timeout */
+        RequestTimeout: {
             headers: {
                 [name: string]: unknown;
             };
@@ -7798,6 +7871,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
@@ -12143,6 +12218,19 @@ export interface operations {
         };
         responses: {
             /** @description OK */
+            200: {
+                headers: {
+                    /** @description Request limit per window. */
+                    "X-RateLimit-Limit"?: number;
+                    /** @description Requests remaining in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    /** @description Unix timestamp (seconds) when the current window resets. */
+                    "X-RateLimit-Reset"?: number;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description OK */
             201: {
                 headers: {
                     /** @description Request limit per window. */
@@ -12360,6 +12448,13 @@ export interface operations {
             };
         };
         responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
             /** @description No Content */
             204: {
                 headers: {
@@ -12925,6 +13020,32 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_souls_bound_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoundSoulResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     get_api_v1_souls_mine: {
         parameters: {
             query?: never;
@@ -12980,9 +13101,11 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
+            408: components["responses"]["RequestTimeout"];
             422: components["responses"]["UnprocessableEntity"];
             429: components["responses"]["TooManyRequests"];
             500: components["responses"]["InternalServerError"];
+            503: components["responses"]["ServiceUnavailable"];
         };
     };
     get_api_v1_statuses_by_id: {
@@ -13208,6 +13331,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
@@ -13469,6 +13594,8 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
@@ -15645,6 +15772,62 @@ export interface operations {
             503: components["responses"]["ServiceUnavailable"];
         };
     };
+    get_inbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            /** @description Method Not Allowed */
+            405: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_inbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     get_nodeinfo_2_0: {
         parameters: {
             query?: never;
@@ -16339,6 +16522,30 @@ export interface operations {
             400: components["responses"]["BadRequest"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_users_by_username_statuses_by_id: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+                username: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
     };
