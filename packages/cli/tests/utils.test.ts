@@ -218,8 +218,8 @@ describe('fetch utilities', () => {
 	it('fetches component files and handles errors', async () => {
 		const { fetchComponents } = await import('../src/utils/fetch.js');
 		const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
-			const url = String(input);
-			if (url.includes('api.github.com')) {
+			const url = new URL(String(input));
+			if (url.hostname === 'api.github.com') {
 				return {
 					ok: true,
 					json: async () => ({ sha: '0123456789abcdef0123456789abcdef01234567' }),
