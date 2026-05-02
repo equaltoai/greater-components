@@ -8,11 +8,30 @@
   "properties": {
     "agent_id": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
     "activity_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "delivery_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "thread_id": { "type": "string", "minLength": 1, "maxLength": 128 },
     "channel_type": { "type": "string", "enum": ["email", "sms", "voice"] },
     "direction": { "type": "string", "enum": ["inbound", "outbound"] },
     "counterparty": { "type": "string", "minLength": 1, "maxLength": 512 },
     "action": { "type": "string", "minLength": 1, "maxLength": 64 },
     "message_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "status": { "type": "string", "enum": ["accepted", "sent", "delivered", "queued", "failed", "bounced", "dropped"] },
+    "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
+    "preview": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["available"],
+      "properties": {
+        "available": { "type": "boolean" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "mime_type": { "type": "string", "minLength": 1, "maxLength": 255 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+      }
+    },
+    "read": { "type": "boolean" },
+    "archived": { "type": "boolean" },
+    "deleted": { "type": "boolean" },
     "in_reply_to": { "type": "string", "minLength": 1, "maxLength": 128 },
     "boundary_check": { "type": "string", "enum": ["passed", "violated", "skipped"] },
     "preference_respected": { "type": "boolean" },

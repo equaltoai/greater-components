@@ -8,3 +8,4 @@ surfaces implemented by `lesser-host`.
 
 These files are intended to be stable. If you need to change a schema, treat it as a protocol change (reviewed
 alongside the spec).
+

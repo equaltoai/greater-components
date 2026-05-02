@@ -57,7 +57,7 @@ vi.mock('../src/utils/git-fetch.js', () => ({
 	clearCache: mockClearCache,
 	clearAllCache: mockClearAllCache,
 	fetchFromGitTag: mockFetchFromGitTag,
-	resolveGitRefToCommit: vi.fn().mockResolvedValue(null),
+	resolveGitRefToCommit: vi.fn().mockResolvedValue('0123456789abcdef0123456789abcdef01234567'),
 	isCached: vi.fn(),
 }));
 

@@ -12,6 +12,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, fireEvent, waitFor } from '@testing-library/svelte';
 import ChatContainerHarness from './harness/ChatContainerHarness.svelte';
+import ChatContainerStateHarness from './harness/ChatContainerStateHarness.svelte';
 import type { ChatMessage } from '../src/types.js';
 import type { ChatHandlers } from '../src/context.svelte.js';
 
@@ -196,6 +197,26 @@ describe('ChatContainer.svelte', () => {
 			});
 
 			expect(container.querySelector('.chat-container')).toBeTruthy();
+		});
+
+		it('clears context messages when the external messages prop becomes empty', async () => {
+			const messages: ChatMessage[] = [createMockMessage({ content: 'Private prior chat' })];
+
+			const { getByTestId, rerender } = render(ChatContainerStateHarness, {
+				props: { messages },
+			});
+
+			await waitFor(() => {
+				expect(getByTestId('message-count')).toHaveTextContent('1');
+			});
+			expect(getByTestId('message-contents')).toHaveTextContent('Private prior chat');
+
+			await rerender({ messages: [] });
+
+			await waitFor(() => {
+				expect(getByTestId('message-count')).toHaveTextContent('0');
+			});
+			expect(getByTestId('message-contents')).toHaveTextContent('');
 		});
 	});
 });

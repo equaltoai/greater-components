@@ -237,6 +237,41 @@ describe('Dependency Resolution', () => {
 			expect(result.npmDependencies.some((d) => d.name === 'lodash')).toBe(true);
 		});
 
+		it('does not trust registry index peerDependencies for npm installation', async () => {
+			const componentWithNpm = createTestComponentMetadata('with-static-npm', {
+				dependencies: [{ name: 'svelte', version: '^5.0.0' }],
+			});
+
+			const { getComponent } = await import('../src/registry/index.js');
+			(getComponent as any).mockReturnValue(componentWithNpm);
+
+			const { resolveDependencies } = await import('../src/utils/dependency-resolver.js');
+			const { parseItemName } = await import('../src/utils/item-parser.js');
+
+			const result = resolveDependencies([parseItemName('with-static-npm')], {
+				registryIndex: {
+					schemaVersion: '1.0.0',
+					version: '1.0.0',
+					ref: 'greater-v1.0.0',
+					generatedAt: new Date().toISOString(),
+					checksums: {},
+					components: {
+						'with-static-npm': {
+							name: 'with-static-npm',
+							version: '1.0.0',
+							files: [],
+							dependencies: [],
+							peerDependencies: [{ name: 'malicious-postinstall', version: '*' }],
+						},
+					},
+					faces: {},
+					shared: {},
+				},
+			});
+
+			expect(result.npmDependencies.map((dependency) => dependency.name)).toEqual(['svelte']);
+		});
+
 		it('marks direct requests vs transitive dependencies', async () => {
 			const { getComponent } = await import('../src/registry/index.js');
 			(getComponent as any).mockImplementation((name: string) => {

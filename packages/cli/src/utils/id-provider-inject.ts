@@ -113,14 +113,34 @@ export async function injectIdProvider(
  * Extract blocks of a given tag type from content using indexOf.
  * Safer than regex for CodeQL analysis.
  */
+function isTagNameBoundary(value: string | undefined): boolean {
+	return value === undefined || value === '>' || value === '/' || /\s/.test(value);
+}
+
+function findOpeningTag(content: string, tagName: string, searchFrom: number): number {
+	const lowerContent = content.toLowerCase();
+	const openTag = `<${tagName.toLowerCase()}`;
+	let index = searchFrom;
+
+	while (true) {
+		const startIdx = lowerContent.indexOf(openTag, index);
+		if (startIdx === -1) return -1;
+
+		if (isTagNameBoundary(content[startIdx + openTag.length])) {
+			return startIdx;
+		}
+
+		index = startIdx + openTag.length;
+	}
+}
+
 function extractBlocks(content: string, tagName: string, blocks: string[]): string {
 	let result = content;
-	const openTag = `<${tagName}`;
 	const closeTag = `</${tagName}>`;
 
 	const searchFrom = 0;
 	while (true) {
-		const startIdx = result.toLowerCase().indexOf(openTag.toLowerCase(), searchFrom);
+		const startIdx = findOpeningTag(result, tagName, searchFrom);
 		if (startIdx === -1) break;
 
 		// Find the end of the opening tag

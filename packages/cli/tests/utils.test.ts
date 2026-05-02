@@ -217,11 +217,21 @@ describe('fetch utilities', () => {
 
 	it('fetches component files and handles errors', async () => {
 		const { fetchComponents } = await import('../src/utils/fetch.js');
-		const fetchMock = vi.fn(async () => ({
-			ok: true,
-			text: async () => 'file content',
-			arrayBuffer: async () => Buffer.from('file content'),
-		}));
+		const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+			const url = new URL(String(input));
+			if (url.hostname === 'api.github.com') {
+				return {
+					ok: true,
+					json: async () => ({ sha: '0123456789abcdef0123456789abcdef01234567' }),
+				};
+			}
+
+			return {
+				ok: true,
+				text: async () => 'file content',
+				arrayBuffer: async () => Buffer.from('file content'),
+			};
+		});
 		// @ts-expect-error global override for tests
 		global.fetch = fetchMock;
 
@@ -239,7 +249,7 @@ describe('fetch utilities', () => {
 			},
 		};
 
-		const result = await fetchComponents(['button'], registry as any);
+		const result = await fetchComponents(['button'], registry as any, { skipVerification: true });
 		expect(result.get('button')?.[0]?.content).toBe('file content');
 		expect(fetchMock).toHaveBeenCalled();
 

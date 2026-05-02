@@ -55,6 +55,10 @@ vi.mock('../src/utils/registry-index.js', () => ({
 	fetchRegistryIndex: vi.fn().mockRejectedValue(new Error('Registry index not available in tests')),
 }));
 
+vi.mock('../src/utils/ref.js', () => ({
+	resolveRefForFetch: vi.fn(async (ref: string) => ref),
+}));
+
 vi.mock('../src/utils/face-installer.js', () => ({
 	resolveFaceDependencies: vi.fn(),
 	updateConfigWithFace: vi.fn(),

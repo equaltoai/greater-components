@@ -121,6 +121,10 @@ vi.mock(srcPath('utils/registry-index.js'), () => ({
 	fetchRegistryIndex: vi.fn().mockRejectedValue(new Error('Registry index not available in tests')),
 }));
 
+vi.mock(srcPath('utils/ref.js'), () => ({
+	resolveRefForFetch: vi.fn(async (ref: string) => ref),
+}));
+
 vi.mock(srcPath('utils/files.js'), () => ({
 	isValidProject: mockIsValidProject,
 	detectProjectType: mockDetectProjectType,

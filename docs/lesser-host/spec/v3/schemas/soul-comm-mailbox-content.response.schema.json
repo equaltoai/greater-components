@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-mailbox-content.response.schema.json",
+  "title": "GET /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/content response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["instanceSlug", "agentId", "messageRef", "deliveryId", "messageId", "contentType", "sha256", "bytes", "body"],
+  "properties": {
+    "instanceSlug": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "messageRef": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "deliveryId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "messageId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "contentType": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "bytes": { "type": "integer", "minimum": 0, "maximum": 1048576 },
+    "body": { "type": "string", "maxLength": 1048576 }
+  }
+}

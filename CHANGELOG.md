@@ -12,6 +12,24 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.7](https://github.com/equaltoai/greater-components/compare/greater-v0.8.6...greater-v0.8.7) (2026-04-18)
+
+### Docs
+
+- initialize .codex directory with stack documentation and automated skill workflows ([4c78cbc](https://github.com/equaltoai/greater-components/commit/4c78cbc680ad94c8b684b0aa376712eb66640848))
+
+### CI
+
+- **deps:** update GitHub Actions dependency pins ([af66152](https://github.com/equaltoai/greater-components/commit/af66152202739410f33fe4f6310f32ab55ca3f74))
+
+### Chores
+
+- **deps:** consolidate dependabot alerts 79-86 and open updates ([f1dfc95](https://github.com/equaltoai/greater-components/commit/f1dfc95ae824d9ef0247ec64e434e76ba34f1f0a))
+- **deps:** consolidate dependabot security updates ([0ba5269](https://github.com/equaltoai/greater-components/commit/0ba52695397673eeabcd7f1fb9cbe14d6f433931))
+- **premain:** release greater 0.8.7-rc.0 ([2ca17e3](https://github.com/equaltoai/greater-components/commit/2ca17e3758340c48b04d112ac416787fae48f964))
+- **premain:** release greater 0.8.7-rc.0 ([fae2edc](https://github.com/equaltoai/greater-components/commit/fae2edc8771db57d5f173c08451a15e8516eccb3))
+- **release:** prepare metadata ([1b99484](https://github.com/equaltoai/greater-components/commit/1b994849ccb4cca3ea55919b3941af5ba21171f0))
+
 ## [0.8.7-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.7.0-rc.0...greater-v0.8.7-rc.0) (2026-04-18)
 
 ### Features

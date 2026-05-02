@@ -15,7 +15,7 @@ import * as security from '../src/utils/security.js';
 
 vi.mock('../src/utils/git-fetch.js', () => ({
 	fetchFromGitTag: vi.fn(),
-	resolveGitRefToCommit: vi.fn().mockResolvedValue(null),
+	resolveGitRefToCommit: vi.fn().mockResolvedValue('0123456789abcdef0123456789abcdef01234567'),
 	NetworkError: class NetworkError extends Error {},
 }));
 
@@ -64,6 +64,8 @@ const mockIndex = {
 	},
 };
 
+const PINNED_REF = '0123456789abcdef0123456789abcdef01234567';
+
 describe('Fetch Utils', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -79,7 +81,7 @@ describe('Fetch Utils', () => {
 			await fetchComponentFiles(mockComponent);
 
 			expect(gitFetch.fetchFromGitTag).toHaveBeenCalledWith(
-				'v1.0.0',
+				PINNED_REF,
 				'packages/headless/src/primitives/button.ts', // From candidates
 				expect.any(Object)
 			);
@@ -93,7 +95,7 @@ describe('Fetch Utils', () => {
 			await fetchComponentFiles(sharedComponent);
 
 			expect(gitFetch.fetchFromGitTag).toHaveBeenCalledWith(
-				'v1.0.0',
+				PINNED_REF,
 				'packages/shared/auth/src/index.ts',
 				expect.any(Object)
 			);
@@ -106,7 +108,7 @@ describe('Fetch Utils', () => {
 			};
 			await fetchComponentFiles(adapterComponent);
 			expect(gitFetch.fetchFromGitTag).toHaveBeenCalledWith(
-				'v1.0.0',
+				PINNED_REF,
 				'packages/adapters/src/svelte.ts',
 				expect.any(Object)
 			);
@@ -119,7 +121,7 @@ describe('Fetch Utils', () => {
 			};
 			await fetchComponentFiles(typesComponent);
 			expect(gitFetch.fetchFromGitTag).toHaveBeenCalledWith(
-				'v1.0.0',
+				PINNED_REF,
 				'packages/headless/src/types/index.ts',
 				expect.any(Object)
 			);
@@ -132,7 +134,7 @@ describe('Fetch Utils', () => {
 			};
 			await fetchComponentFiles(utilsComponent);
 			expect(gitFetch.fetchFromGitTag).toHaveBeenCalledWith(
-				'v1.0.0',
+				PINNED_REF,
 				'packages/headless/src/utils/index.ts',
 				expect.any(Object)
 			);
@@ -160,7 +162,7 @@ describe('Fetch Utils', () => {
 			await fetchComponentFiles(faceComponent);
 
 			expect(gitFetch.fetchFromGitTag).toHaveBeenCalledWith(
-				'v1.0.0',
+				PINNED_REF,
 				'packages/faces/social/src/components/Timeline/Root.svelte',
 				expect.any(Object)
 			);
@@ -228,16 +230,16 @@ describe('Fetch Utils', () => {
 					expect.objectContaining({ path: 'packages/headless/src/primitives/button.ts' }),
 				]),
 				mockIndex.checksums,
-				expect.any(Object)
+				expect.objectContaining({ skipMissing: false })
 			);
 		});
 
-		it('skips verification if registry index missing', async () => {
+		it('fails closed if registry index is unavailable for verification', async () => {
 			vi.mocked(registryIndex.fetchRegistryIndex).mockRejectedValue(new Error('Network'));
 
-			const result = await fetchComponentFiles(mockComponent, { verbose: true });
-
-			expect(result.verified).toBe(false);
+			await expect(fetchComponentFiles(mockComponent, { verbose: true })).rejects.toThrow(
+				'Failed to load registry index for verification'
+			);
 		});
 
 		it('fails fast on integrity failure', async () => {

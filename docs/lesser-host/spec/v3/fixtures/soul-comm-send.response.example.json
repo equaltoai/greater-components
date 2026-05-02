@@ -1,5 +1,8 @@
 {
   "messageId": "comm-out-001",
+  "messageRef": "comm-delivery-example",
+  "deliveryId": "comm-delivery-example",
+  "threadId": "comm-thread-example",
   "status": "accepted",
   "channel": "email",
   "agentId": "0x2222222222222222222222222222222222222222222222222222222222222222",

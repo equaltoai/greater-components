@@ -128,6 +128,27 @@ describe('injectIdProvider', () => {
 		expect(writtenContent).toContain('<script>');
 		expect(writtenContent).toContain("import { IdProvider } from '$lib/greater/utils';");
 	});
+
+	it('does not treat custom elements with script prefixes as script blocks', async () => {
+		const content = `<script-foo>custom element content</script-foo>
+
+<script>
+	import { page } from '$app/stores';
+</script>
+
+<slot />`;
+
+		vi.mocked(files.readFile).mockResolvedValue(content);
+
+		const result = await injectIdProvider('src/routes/+layout.svelte', mockConfig);
+
+		expect(result.success).toBe(true);
+		const writtenContent = vi.mocked(files.writeFile).mock.calls[0][1] as string;
+
+		expect(writtenContent).toContain('<script-foo>custom element content</script-foo>');
+		expect(writtenContent).toContain("import { IdProvider } from '$lib/greater/utils';");
+		expect(writtenContent.indexOf('<script>')).toBeLessThan(writtenContent.indexOf('<IdProvider>'));
+	});
 });
 
 function writtenContentContains(mock: any, str: string): boolean {
