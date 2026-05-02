@@ -12,6 +12,21 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.11](https://github.com/equaltoai/greater-components/compare/greater-v0.8.10...greater-v0.8.11) (2026-05-02)
+
+### Bug Fixes
+
+- harden sim-reported greater surfaces ([22958b6](https://github.com/equaltoai/greater-components/commit/22958b6330f31db5095ce51bfcfcafc8abca04f9))
+- harden sim-reported greater surfaces ([b92c0a8](https://github.com/equaltoai/greater-components/commit/b92c0a8b4324a8f829d038f4065698e0969b3130))
+- normalize mutation result errors ([28301a1](https://github.com/equaltoai/greater-components/commit/28301a1a5c16cdd9b1b469cd744f397a6fd3639b))
+
+### Chores
+
+- align FaceTheory platform pin ([ca074c5](https://github.com/equaltoai/greater-components/commit/ca074c55e9347df589468b03a79fb337c954336f))
+- **premain:** release greater 0.8.11-rc.0 ([01aefbc](https://github.com/equaltoai/greater-components/commit/01aefbc6597d5ee67728ed344a32bb944a5e76b6))
+- **premain:** release greater 0.8.11-rc.0 ([2d4a788](https://github.com/equaltoai/greater-components/commit/2d4a788803037fad07bfb53c12847ba97d909c28))
+- **release:** prepare metadata ([e856ab3](https://github.com/equaltoai/greater-components/commit/e856ab38247279b2afab5f60f0270774bd02b01e))
+
 ## [0.8.11-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.10-rc.0...greater-v0.8.11-rc.0) (2026-05-02)
 
 ### Bug Fixes
