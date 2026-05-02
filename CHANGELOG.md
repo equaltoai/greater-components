@@ -12,6 +12,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.9-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.8-rc.0...greater-v0.8.9-rc.0) (2026-05-02)
+
+
+### Bug Fixes
+
+* restore sim social update compatibility ([747ccfc](https://github.com/equaltoai/greater-components/commit/747ccfc38b1907a2e37fa9d37478f30d73c05157))
+
+
+### Chores
+
+* **main:** release greater 0.8.8 ([636e765](https://github.com/equaltoai/greater-components/commit/636e76505e10876c1195da82ccc5dff3e553ad05))
+* **main:** release greater 0.8.8 ([af379f4](https://github.com/equaltoai/greater-components/commit/af379f4d864b33b0c931a3ab854bece492c0612b))
+* **release:** prepare metadata ([370c2ac](https://github.com/equaltoai/greater-components/commit/370c2acd2a5de886ce863271bc5f75ba9bb3e718))
+
 ## [0.8.8](https://github.com/equaltoai/greater-components/compare/greater-v0.8.7...greater-v0.8.8) (2026-05-02)
 
 ### Bug Fixes
