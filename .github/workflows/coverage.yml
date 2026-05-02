@@ -12,16 +12,14 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+  contents: read
 
 jobs:
   coverage:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -62,18 +60,16 @@ jobs:
         continue-on-error: true
 
       - name: Upload coverage reports to Codecov
-        if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v4
         continue-on-error: true
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/
           files: ./packages/*/coverage/lcov.info
           flags: unittests
           name: greater-components-coverage
           fail_ci_if_error: false
           verbose: true
-        env:
-          CODECOV_TOKEN: ${{ env.CODECOV_TOKEN }}
 
       - name: Upload coverage report artifacts
         uses: actions/upload-artifact@v7
@@ -85,8 +81,25 @@ jobs:
             ./packages/*/coverage/
           retention-days: 30
 
+  comment-coverage:
+    runs-on: ubuntu-latest
+    needs: coverage
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+      pull-requests: read
+
+    steps:
+      - name: Download coverage report artifacts
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          name: coverage-reports
+          path: coverage-reports/
+
       - name: Comment PR with coverage results
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         continue-on-error: true
         uses: actions/github-script@v9
         with:
@@ -94,7 +107,7 @@ jobs:
             const fs = require('fs');
             const path = require('path');
 
-            const coverageFile = './coverage/combined-coverage.json';
+            const coverageFile = './coverage-reports/coverage/combined-coverage.json';
 
             if (!fs.existsSync(coverageFile)) {
               console.log('No combined coverage report found');
@@ -173,6 +186,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: coverage
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository

@@ -306,6 +306,25 @@ describe('transformSvelteImports', () => {
 		expect(result.content).toContain("from '$lib/greater/headless/modal'");
 	});
 
+	it('does not treat custom elements with script/style prefixes as script or style blocks', () => {
+		const content = `<script-foo>custom element content</script-foo>
+<style-guide>design notes</style-guide>
+<script lang="ts">
+	import { cn } from '@equaltoai/greater-components-utils';
+</script>
+<style>
+	@import '@equaltoai/greater-components-tokens/theme.css';
+</style>`;
+
+		const result = transformSvelteImports(content, config);
+
+		expect(result.transformedCount).toBe(2);
+		expect(result.content).toContain('<script-foo>custom element content</script-foo>');
+		expect(result.content).toContain('<style-guide>design notes</style-guide>');
+		expect(result.content).toContain("from '$lib/greater/utils'");
+		expect(result.content).toContain("@import '$lib/greater/tokens/theme.css'");
+	});
+
 	it('returns unchanged content when there are no Greater imports', () => {
 		const content = `<script>
 \timport { onMount } from 'svelte';

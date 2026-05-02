@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-comm-mailbox-get.response.schema.json",
+  "title": "GET /api/v1/soul/comm/mailbox/{agentId}/messages/{deliveryId} response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["message"],
+  "properties": {
+    "message": { "$ref": "soul-comm-mailbox-message.schema.json" }
+  }
+}

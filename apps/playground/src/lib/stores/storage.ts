@@ -3,6 +3,8 @@ const isBrowser = typeof window !== 'undefined';
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
 	typeof value === 'object' && value !== null && !Array.isArray(value);
 
+const POLLUTION_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
 const mergeObjects = <T extends Record<string, unknown>>(
 	fallback: T,
 	parsed: Record<string, unknown>
@@ -10,6 +12,10 @@ const mergeObjects = <T extends Record<string, unknown>>(
 	const result: Record<string, unknown> = { ...fallback };
 
 	for (const [key, value] of Object.entries(parsed)) {
+		if (POLLUTION_KEYS.has(key)) {
+			continue;
+		}
+
 		const fallbackValue = result[key];
 
 		if (isPlainObject(fallbackValue) && isPlainObject(value)) {

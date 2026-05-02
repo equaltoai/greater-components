@@ -91,6 +91,20 @@ describe('ArtistProfile.Name', () => {
 		expect(link).toHaveTextContent('Test Artist');
 	});
 
+	it('does not link unsafe profile URL schemes', () => {
+		const unsafeContext = {
+			...mockContext,
+			artist: { ...mockArtist, profileUrl: 'javascript:alert(1)' },
+		};
+
+		render(NameTestWrapper, {
+			props: { context: unsafeContext, componentProps: { linkToProfile: true } },
+		});
+
+		expect(screen.queryByRole('link')).not.toBeInTheDocument();
+		expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Test Artist');
+	});
+
 	it('renders verified badge inside link when linkToProfile is true', () => {
 		const verifiedContext = { ...mockContext, artist: { ...mockArtist, verified: true } };
 		render(NameTestWrapper, {

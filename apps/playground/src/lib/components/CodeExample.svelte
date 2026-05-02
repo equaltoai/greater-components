@@ -45,7 +45,6 @@
 	}
 </script>
 
-```
 <div class="code-example">
 	<div class="code-example__header">
 		<div>

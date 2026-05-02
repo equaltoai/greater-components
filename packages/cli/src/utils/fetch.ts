@@ -331,6 +331,7 @@ export async function fetchComponentFiles(
 		undefined,
 		FALLBACK_REF
 	);
+	const signatureRef = resolvedRef;
 	const ref = await resolveRefForFetch(resolvedRef);
 	const files: ComponentFile[] = [];
 	const fetchedFiles: FetchedFile[] = [];
@@ -343,7 +344,7 @@ export async function fetchComponentFiles(
 
 	// Verify Git tag signature if requested
 	if (options.verifySignature && performVerification) {
-		signatureVerification = await verifyGitTag(ref);
+		signatureVerification = await verifyGitTag(signatureRef);
 
 		if (options.verbose) {
 			if (signatureVerification.verified) {
@@ -351,7 +352,7 @@ export async function fetchComponentFiles(
 					`  ✓ Tag signature verified: ${signatureVerification.signer || 'unknown signer'}`
 				);
 			} else if (signatureVerification.signatureStatus === 'unsigned') {
-				warnUnsignedTag(ref);
+				warnUnsignedTag(signatureRef);
 			} else {
 				logger.warn(`  ⚠ Signature verification: ${signatureVerification.signatureStatus}`);
 			}
@@ -369,20 +370,13 @@ export async function fetchComponentFiles(
 			});
 			checksums = registryIndex.checksums;
 		} catch (error) {
-			if (corePackage) {
-				throw new Error(
-					`Failed to load registry index for core package "${component.name}": ${
-						error instanceof Error ? error.message : String(error)
-					}`,
-					{ cause: error }
-				);
-			}
-
-			// Registry index not available, continue without verification
-			if (options.verbose) {
-				logger.warn(`  ⚠ Registry index not available, skipping verification`);
-			}
-			allVerified = false;
+			const reason = error instanceof Error ? error.message : String(error);
+			throw new Error(
+				`Failed to load registry index for ${
+					corePackage ? `core package "${component.name}"` : `verification of "${component.name}"`
+				}: ${reason}`,
+				{ cause: error }
+			);
 		}
 	}
 
@@ -481,7 +475,7 @@ export async function fetchComponentFiles(
 	if (performVerification && checksums) {
 		integrityReport = verifyFileIntegrity(fetchedFiles, checksums, {
 			failFast: options.failFast ?? true, // Fail fast by default for security
-			skipMissing: true,
+			skipMissing: false,
 		});
 
 		allVerified = integrityReport.allVerified;
