@@ -105,6 +105,10 @@
 		 */
 		class?: string;
 		/**
+		 * Stable browser-test hook for the timeline root
+		 */
+		testId?: string;
+		/**
 		 * Density for status cards
 		 */
 		density?: 'compact' | 'comfortable';
@@ -122,6 +126,14 @@
 		actionHandlers?:
 			| StatusCardActionHandlers
 			| ((status: Status) => StatusCardActionHandlers | undefined);
+		/**
+		 * Stable browser-test hook for rendered status cards
+		 */
+		statusCardTestId?: string;
+		/**
+		 * Whether to surface status ids on rendered cards for browser validation
+		 */
+		statusCardDataStatusId?: boolean;
 	}
 
 	let {
@@ -140,10 +152,13 @@
 		endOfFeed,
 		realtimeIndicator,
 		class: className = '',
+		testId,
 		density = 'comfortable',
 		autoConnect = true,
 		showRealtimeIndicator = true,
 		actionHandlers,
+		statusCardTestId,
+		statusCardDataStatusId = false,
 		adapter,
 		view,
 		estimateSize = 400,
@@ -308,6 +323,7 @@
 	role="feed"
 	aria-label="Timeline"
 	aria-busy={loadingTop || loadingBottom}
+	data-testid={testId}
 >
 	{#if showRealtimeIndicator && timelineIntegration}
 		<div class="realtime-status" class:connected class:error={!!error}>
@@ -386,6 +402,8 @@
 									showActions={true}
 									actionHandlers={handlersForItem}
 									onclick={handleStatusCardClick}
+									testId={statusCardTestId}
+									dataStatusId={statusCardDataStatusId ? item.id : null}
 								/>
 							</div>
 						{/if}
@@ -401,6 +419,8 @@
 							showActions={true}
 							actionHandlers={handlersForItem}
 							onclick={handleStatusCardClick}
+							testId={statusCardTestId}
+							dataStatusId={statusCardDataStatusId ? item.id : null}
 						/>
 					{/each}
 				{/if}

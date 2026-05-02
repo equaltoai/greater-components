@@ -179,6 +179,71 @@ export function transformPath(importPath: string, mappings: PathMapping[]): stri
 	return null; // No transformation needed
 }
 
+function normalizeTransformFilePath(filePath?: string): string {
+	return filePath?.replace(/\\/g, '/').replace(/^\/+/, '') ?? '';
+}
+
+function isFlattenedFaceLibInstall(filePath?: string): boolean {
+	const normalized = normalizeTransformFilePath(filePath);
+	if (!normalized) return false;
+
+	if (normalized.startsWith('lib/lib/')) return true;
+	if (normalized.includes('/')) return false;
+
+	return /\.(?:svelte\.)?[cm]?[jt]s$/.test(normalized);
+}
+
+function isLibComponentInstall(filePath?: string): boolean {
+	const normalized = normalizeTransformFilePath(filePath);
+	return normalized.startsWith('lib/components/') || normalized.startsWith('components/');
+}
+
+function replaceRelativePrefix(
+	importPath: string,
+	fromPrefix: string,
+	toPrefix: string
+): string | null {
+	if (importPath === fromPrefix) return toPrefix;
+	if (importPath.startsWith(`${fromPrefix}/`)) {
+		return `${toPrefix}${importPath.slice(fromPrefix.length)}`;
+	}
+	return null;
+}
+
+/**
+ * Registry virtual paths can map face files to flatter consumer install paths.
+ * Rewrite only the relative imports whose source layout differs from the installed layout.
+ */
+function transformRelativeInstallPath(importPath: string, filePath?: string): string | null {
+	if (!importPath.startsWith('../')) return null;
+
+	if (isFlattenedFaceLibInstall(filePath)) {
+		for (const [fromPrefix, toPrefix] of [
+			['../generics', './generics'],
+			['../types', './types'],
+			['../utils', './utils'],
+		] as const) {
+			const transformed = replaceRelativePrefix(importPath, fromPrefix, toPrefix);
+			if (transformed) return transformed;
+		}
+	}
+
+	if (isLibComponentInstall(filePath)) {
+		const transformed = replaceRelativePrefix(importPath, '../lib', '..');
+		if (transformed) return transformed;
+	}
+
+	return null;
+}
+
+function transformImportPath(
+	importPath: string,
+	mappings: PathMapping[],
+	filePath?: string
+): string | null {
+	return transformPath(importPath, mappings) ?? transformRelativeInstallPath(importPath, filePath);
+}
+
 /**
  * Regex patterns for different import types
  * Patterns are designed to avoid ReDoS (no nested quantifiers on overlapping character classes)
@@ -200,7 +265,11 @@ const IMPORT_PATTERNS = {
 /**
  * Transform imports in TypeScript/JavaScript content
  */
-function transformScriptImports(content: string, mappings: PathMapping[]): TransformResult {
+function transformScriptImports(
+	content: string,
+	mappings: PathMapping[],
+	filePath?: string
+): TransformResult {
 	let transformedContent = content;
 	let transformedCount = 0;
 	const transformedPaths: Array<{ from: string; to: string }> = [];
@@ -209,7 +278,7 @@ function transformScriptImports(content: string, mappings: PathMapping[]): Trans
 	transformedContent = transformedContent.replace(
 		IMPORT_PATTERNS.esImport,
 		(match, _quote, importPath) => {
-			const newPath = transformPath(importPath, mappings);
+			const newPath = transformImportPath(importPath, mappings, filePath);
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -223,7 +292,7 @@ function transformScriptImports(content: string, mappings: PathMapping[]): Trans
 	transformedContent = transformedContent.replace(
 		IMPORT_PATTERNS.dynamicImport,
 		(match, _quote, importPath) => {
-			const newPath = transformPath(importPath, mappings);
+			const newPath = transformImportPath(importPath, mappings, filePath);
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -237,7 +306,7 @@ function transformScriptImports(content: string, mappings: PathMapping[]): Trans
 	transformedContent = transformedContent.replace(
 		IMPORT_PATTERNS.reExport,
 		(match, _quote, importPath) => {
-			const newPath = transformPath(importPath, mappings);
+			const newPath = transformImportPath(importPath, mappings, filePath);
 			if (newPath) {
 				transformedCount++;
 				transformedPaths.push({ from: importPath, to: newPath });
@@ -366,6 +435,14 @@ function extractTagBlocks(
  * Handles both <script> and <style> blocks
  */
 export function transformSvelteImports(content: string, config: ComponentConfig): TransformResult {
+	return transformSvelteImportsForFile(content, config);
+}
+
+function transformSvelteImportsForFile(
+	content: string,
+	config: ComponentConfig,
+	filePath?: string
+): TransformResult {
 	const mappings = buildPathMappings(config);
 	let transformedContent = content;
 	let totalTransformed = 0;
@@ -375,7 +452,7 @@ export function transformSvelteImports(content: string, config: ComponentConfig)
 	const scriptBlocks = extractScriptBlocks(content);
 	// Process in reverse order to maintain correct positions
 	for (const block of scriptBlocks.reverse()) {
-		const result = transformScriptImports(block.content, mappings);
+		const result = transformScriptImports(block.content, mappings, filePath);
 		if (result.hasChanges) {
 			const before = transformedContent.slice(0, block.start);
 			const after = transformedContent.slice(block.end);
@@ -421,10 +498,11 @@ export function transformSvelteImports(content: string, config: ComponentConfig)
  */
 export function transformTypeScriptImports(
 	content: string,
-	config: ComponentConfig
+	config: ComponentConfig,
+	filePath?: string
 ): TransformResult {
 	const mappings = buildPathMappings(config);
-	return transformScriptImports(content, mappings);
+	return transformScriptImports(content, mappings, filePath);
 }
 
 /**
@@ -451,7 +529,7 @@ export function transformImports(
 	const ext = filePath?.split('.').pop()?.toLowerCase();
 
 	if (ext === 'svelte') {
-		return transformSvelteImports(content, config);
+		return transformSvelteImportsForFile(content, config, filePath);
 	}
 
 	if (ext === 'css' || ext === 'scss' || ext === 'less') {
@@ -461,15 +539,15 @@ export function transformImports(
 	// Trust explicit file extensions before content sniffing so JSDoc examples like
 	// `<script>` inside .ts files do not get misclassified as Svelte.
 	if (ext) {
-		return transformTypeScriptImports(content, config);
+		return transformTypeScriptImports(content, config, filePath);
 	}
 
 	if (content.includes('<script')) {
-		return transformSvelteImports(content, config);
+		return transformSvelteImportsForFile(content, config, filePath);
 	}
 
 	// Default to TypeScript/JavaScript handling for extensionless text files.
-	return transformTypeScriptImports(content, config);
+	return transformTypeScriptImports(content, config, filePath);
 }
 
 /**
