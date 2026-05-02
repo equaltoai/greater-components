@@ -63,6 +63,21 @@ describe('TimelineVirtualizedReactive', () => {
 		expect(feed).toBeTruthy();
 	});
 
+	it('renders optional browser validation hooks', () => {
+		const { container } = render(TimelineVirtualizedReactive, {
+			items: mockStatuses.slice(0, 2),
+			testId: 'public-explore-timeline',
+			statusCardTestId: 'public-status-card',
+			statusCardDataStatusId: true,
+		});
+
+		const feed = screen.getByTestId('public-explore-timeline');
+		expect(feed).toBeTruthy();
+		const cards = container.querySelectorAll('[data-testid="public-status-card"]');
+		expect(cards.length).toBe(2);
+		expect(cards[0]?.getAttribute('data-status-id')).toBe(mockStatuses[0]?.id);
+	});
+
 	it('renders loading indicators from props', () => {
 		render(TimelineVirtualizedReactive, {
 			items: [],

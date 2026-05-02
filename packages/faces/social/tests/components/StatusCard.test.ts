@@ -49,6 +49,16 @@ describe('StatusCard', () => {
 		expect(screen.getByText(/Hello world/)).toBeTruthy();
 	});
 
+	it('renders optional browser validation hooks', () => {
+		const { container } = render(StatusCard, {
+			props: { status: mockStatus, testId: 'public-status-card', dataStatusId: mockStatus.id },
+		});
+
+		const article = container.querySelector('[data-testid="public-status-card"]');
+		expect(article).toBeTruthy();
+		expect(article?.getAttribute('data-status-id')).toBe(mockStatus.id);
+	});
+
 	it('renders bot badge', () => {
 		const botAccount = { ...mockAccount, bot: true };
 		const botStatus = { ...mockStatus, account: botAccount };

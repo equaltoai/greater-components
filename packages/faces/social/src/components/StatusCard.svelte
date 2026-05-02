@@ -47,6 +47,14 @@
 		 * Click handler for the card
 		 */
 		onclick?: (status: Status) => void;
+		/**
+		 * Optional stable test id for browser validation hooks
+		 */
+		testId?: string;
+		/**
+		 * Optional stable status id marker for browser validation hooks
+		 */
+		dataStatusId?: string | null;
 	}
 
 	let {
@@ -58,6 +66,8 @@
 		header,
 		footer,
 		onclick,
+		testId,
+		dataStatusId = null,
 	}: Props = $props();
 
 	const account = $derived(status.reblog?.account || status.account);
@@ -141,6 +151,8 @@
 	onclick={onclick ? handleCardClick : undefined}
 	onkeypress={onclick ? (e) => e.key === 'Enter' && handleCardClick(e) : undefined}
 	aria-label={`Status by ${account.displayName || account.username}`}
+	data-testid={testId}
+	data-status-id={dataStatusId ?? undefined}
 >
 	{#if status.reblog}
 		<div class="reblog-indicator">
