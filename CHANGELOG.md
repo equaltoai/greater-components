@@ -12,6 +12,26 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.8-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.7-rc.0...greater-v0.8.8-rc.0) (2026-05-02)
+
+### Bug Fixes
+
+- harden codex security findings ([1b5a347](https://github.com/equaltoai/greater-components/commit/1b5a34793f4b80bbddd56ac1d50fdcb6b4fccad0))
+- harden Codex Security findings and sync contracts ([a343047](https://github.com/equaltoai/greater-components/commit/a343047e94e0c589ff8ce33d50cde373801c2f1f))
+- stabilize ci after contract sync ([2b65053](https://github.com/equaltoai/greater-components/commit/2b65053df2c6d058aa23808a9881847e5459ae68))
+
+### Tests
+
+- avoid substring URL match in cli fetch test ([a04a9c0](https://github.com/equaltoai/greater-components/commit/a04a9c0a48bcbffc57573e80a0a4ef74ccbaa954))
+
+### Chores
+
+- **main:** release greater 0.8.7 ([3ccb873](https://github.com/equaltoai/greater-components/commit/3ccb8738fa4c98ac2eea11515552b1a9d853496b))
+- **main:** release greater 0.8.7 ([aa9595d](https://github.com/equaltoai/greater-components/commit/aa9595d77f0fb96a4f24a32742af4c309164edce))
+- **release:** prepare metadata ([fba65ae](https://github.com/equaltoai/greater-components/commit/fba65aea9cc27169e493a3c47af9ecb01077049f))
+- sync lesser contracts v1.2.54 ([e4119e1](https://github.com/equaltoai/greater-components/commit/e4119e1f2d2f675b76626951c55266e9229b7712))
+- sync lesser-host contracts v0.2.6 ([ad5dbe5](https://github.com/equaltoai/greater-components/commit/ad5dbe523fb9ca1e6cd1434bd291a984b161dd69))
+
 ## [0.8.7](https://github.com/equaltoai/greater-components/compare/greater-v0.8.6...greater-v0.8.7) (2026-04-18)
 
 ### Docs
