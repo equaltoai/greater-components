@@ -26,6 +26,15 @@
 		selectConversation(conversation);
 		handlers.onConversationClick?.(conversation);
 	}
+
+	function getMessagePreview(conversation: Conversation): string {
+		const message = conversation.lastMessage;
+		if (!message) return '';
+		if (message.sensitive) {
+			return message.spoilerText?.trim() || 'Sensitive message';
+		}
+		return message.content;
+	}
 </script>
 
 <div class={`messages-conversations ${className}`}>
@@ -116,7 +125,7 @@
 						{/if}
 						{#if conversation.lastMessage}
 							<div class="messages-conversations__preview">
-								{conversation.lastMessage.content}
+								{getMessagePreview(conversation)}
 							</div>
 						{/if}
 					</div>

@@ -430,6 +430,82 @@ export type CreateConversationVariables = CreateConversationMutationVariables;
 export type SendMessageVariables = SendMessageMutationVariables;
 export type UpdateMediaVariables = UpdateMediaMutationVariables;
 
+export class LesserGraphQLAdapterError extends Error {
+	readonly code: string;
+	readonly debugMessages: readonly string[];
+
+	constructor(
+		message: string,
+		options: { code?: string; debugMessages?: readonly string[]; cause?: unknown } = {}
+	) {
+		super(message, { cause: options.cause });
+		this.name = 'LesserGraphQLAdapterError';
+		this.code = options.code ?? 'LESSER_GRAPHQL_REQUEST_FAILED';
+		this.debugMessages = options.debugMessages ?? [];
+	}
+}
+
+const USER_SAFE_GRAPHQL_ERROR_MESSAGE = 'The request could not be completed. Please try again.';
+const USER_SAFE_UPLOAD_ERROR_MESSAGE = 'The upload could not be completed. Please try again.';
+
+function extractDebugMessages(error: unknown): string[] {
+	const messages: string[] = [];
+	const append = (message?: string | null) => {
+		const trimmed = message?.trim();
+		if (trimmed && !messages.includes(trimmed)) {
+			messages.push(trimmed);
+		}
+	};
+
+	if (error instanceof LesserGraphQLAdapterError) {
+		messages.push(...error.debugMessages);
+		append(error.message);
+		return messages;
+	}
+
+	if (error instanceof Error) {
+		append(error.message);
+	}
+
+	if (error && typeof error === 'object') {
+		const { graphQLErrors, networkError, message } = error as {
+			graphQLErrors?: Array<{ message?: string }>;
+			networkError?: {
+				message?: string;
+				result?: { errors?: Array<{ message?: string }> };
+			};
+			message?: string;
+		};
+
+		append(message);
+
+		if (Array.isArray(graphQLErrors)) {
+			for (const graphQLError of graphQLErrors) {
+				append(graphQLError.message);
+			}
+		}
+
+		append(networkError?.message);
+
+		const networkErrors = networkError?.result?.errors;
+		if (Array.isArray(networkErrors)) {
+			for (const networkResultError of networkErrors) {
+				append(networkResultError.message);
+			}
+		}
+	}
+
+	return messages;
+}
+
+function createUserSafeAdapterError(
+	message: string,
+	cause: unknown,
+	debugMessages: readonly string[] = extractDebugMessages(cause)
+): LesserGraphQLAdapterError {
+	return new LesserGraphQLAdapterError(message, { cause, debugMessages });
+}
+
 export class LesserGraphQLAdapter {
 	private readonly client: GraphQLClientInstance;
 	private readonly httpEndpoint: string;
@@ -469,10 +545,14 @@ export class LesserGraphQLAdapter {
 			return data.viewer;
 		} catch (error) {
 			if (error instanceof Error) {
-				if (error.message.includes('401') || error.message.includes('403')) {
+				if (error.message === 'Invalid authentication token') {
+					throw error;
+				}
+				const messages = [error.message, ...extractDebugMessages(error)];
+				if (messages.some((message) => message.includes('401') || message.includes('403'))) {
 					throw new Error('Authentication failed: Invalid or expired token', { cause: error });
 				}
-				throw new Error(`Failed to verify credentials: ${error.message}`, { cause: error });
+				throw createUserSafeAdapterError('Failed to verify credentials.', error);
 			}
 			throw error;
 		}
@@ -518,25 +598,33 @@ export class LesserGraphQLAdapter {
 			fetchPolicy,
 		} as unknown as QueryOptionsFor<TData, TVariables>;
 
-		const result = await this.client.client.query<TData, TVariables>(options);
+		let result: {
+			data?: TData | null;
+			errors?: Array<{ message?: string }>;
+			error?: unknown;
+		};
+		try {
+			result = (await this.client.client.query<TData, TVariables>(options)) as typeof result;
+		} catch (error) {
+			throw createUserSafeAdapterError(USER_SAFE_GRAPHQL_ERROR_MESSAGE, error);
+		}
 
 		const { data } = result;
 
-		const errors = (result as unknown as { errors?: Array<{ message?: string }> }).errors;
+		const errors = result.errors;
 		if (Array.isArray(errors) && errors.length > 0) {
-			throw new Error(
+			throw createUserSafeAdapterError(
+				USER_SAFE_GRAPHQL_ERROR_MESSAGE,
+				result,
 				errors
 					.map((error) => error.message)
-					.filter(Boolean)
-					.join('; ')
+					.filter((message): message is string => Boolean(message))
 			);
 		}
 
-		const transportError = (result as unknown as { error?: unknown }).error;
+		const transportError = result.error;
 		if (transportError) {
-			throw new Error(
-				transportError instanceof Error ? transportError.message : String(transportError)
-			);
+			throw createUserSafeAdapterError(USER_SAFE_GRAPHQL_ERROR_MESSAGE, transportError);
 		}
 
 		if (data == null) {
@@ -554,7 +642,12 @@ export class LesserGraphQLAdapter {
 			mutation: document,
 			variables,
 		} as unknown as MutationOptionsFor<TData, TVariables>;
-		const { data } = await this.client.client.mutate<TData, TVariables>(options);
+		let data: TData | null | undefined;
+		try {
+			({ data } = await this.client.client.mutate<TData, TVariables>(options));
+		} catch (error) {
+			throw createUserSafeAdapterError(USER_SAFE_GRAPHQL_ERROR_MESSAGE, error);
+		}
 
 		if (data == null) {
 			throw new Error('Mutation completed without returning data.');
@@ -573,6 +666,13 @@ export class LesserGraphQLAdapter {
 		};
 
 		if (error instanceof Error && containsTargetId(error.message)) {
+			return true;
+		}
+
+		if (
+			error instanceof LesserGraphQLAdapterError &&
+			error.debugMessages.some((message) => containsTargetId(message))
+		) {
 			return true;
 		}
 
@@ -1081,10 +1181,12 @@ export class LesserGraphQLAdapter {
 
 		if (!response.ok) {
 			const errorBody = await response.text().catch(() => '');
-			throw new Error(
+			throw createUserSafeAdapterError(
+				USER_SAFE_UPLOAD_ERROR_MESSAGE,
+				undefined,
 				errorBody
-					? `Upload failed (${response.status}): ${errorBody}`
-					: `Upload failed with status ${response.status}`
+					? [`Upload failed (${response.status}): ${errorBody}`]
+					: [`Upload failed with status ${response.status}`]
 			);
 		}
 
@@ -1094,8 +1196,11 @@ export class LesserGraphQLAdapter {
 		};
 
 		if (result.errors?.length) {
-			const message = result.errors.map((error) => error.message).join('; ');
-			throw new Error(message);
+			throw createUserSafeAdapterError(
+				USER_SAFE_UPLOAD_ERROR_MESSAGE,
+				result,
+				result.errors.map((error) => error.message)
+			);
 		}
 
 		const payload = result.data?.uploadMedia;
