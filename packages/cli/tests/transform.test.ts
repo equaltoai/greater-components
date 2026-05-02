@@ -232,6 +232,47 @@ export * from '@equaltoai/greater-components-utils';`;
 		expect(result.transformedCount).toBe(0);
 		expect(result.content).toBe(content);
 	});
+
+	it('rewrites social lib imports when lib/lib virtual files install at the lib root', () => {
+		const content = `import type { Status } from '../types';
+import { groupNotifications } from '../utils/notificationGrouping';
+import type { GenericStatus } from '../generics/index.js';`;
+
+		const result = transformImports(content, config, 'lib/lib/graphqlTimelineStore.svelte.ts');
+
+		expect(result.transformedCount).toBe(3);
+		expect(result.content).toContain("from './types'");
+		expect(result.content).toContain("from './utils/notificationGrouping'");
+		expect(result.content).toContain("from './generics/index.js'");
+	});
+
+	it('rewrites social lib imports after add maps files to root-relative paths', () => {
+		const content = `import type { Status } from '../types';`;
+
+		const result = transformImports(content, config, 'graphqlTimelineStore.svelte.ts');
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("from './types'");
+	});
+
+	it('rewrites social component imports from flattened lib utilities', () => {
+		const content = `<script lang="ts">
+\timport type { TimelineIntegrationConfig } from '../lib/integration';
+\timport { createTimelineIntegration } from '../lib/integration';
+\timport type { Status } from '../types';
+</script>`;
+
+		const result = transformImports(
+			content,
+			config,
+			'lib/components/TimelineVirtualizedReactive.svelte'
+		);
+
+		expect(result.transformedCount).toBe(2);
+		expect(result.content).toContain("from '../integration'");
+		expect(result.content).not.toContain("from '../lib/integration'");
+		expect(result.content).toContain("from '../types'");
+	});
 });
 
 describe('transformCssFileImports', () => {
