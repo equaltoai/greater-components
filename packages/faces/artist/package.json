@@ -112,7 +112,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.7",
+    "@apollo/client": "^4.1.9",
     "@equaltoai/greater-components-adapters": "workspace:*",
     "@equaltoai/greater-components-auth": "workspace:*",
     "@equaltoai/greater-components-headless": "workspace:^",
@@ -128,13 +128,13 @@
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/svelte": "5.3.1",
     "@types/node": "^25.6.0",
-    "@vitest/coverage-v8": "^4.1.4",
-    "@vitest/ui": "^4.1.4",
-    "jsdom": "^29.0.2",
+    "@vitest/coverage-v8": "^4.1.5",
+    "@vitest/ui": "^4.1.5",
+    "jsdom": "^29.1.1",
     "svelte": "^5.55.1",
     "typescript": "^6.0.2",
-    "vite": "^8.0.8",
-    "vitest": "^4.1.4"
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
   },
   "peerDependencies": {
     "svelte": "^5.43.6"

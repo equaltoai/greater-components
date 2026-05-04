@@ -389,16 +389,16 @@
     }
   },
   "dependencies": {
-    "@apollo/client": "^4.1.7",
+    "@apollo/client": "^4.1.9",
     "@apollo/client-react-streaming": "^0.14.5",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@playwright/test": "^1.59.1",
-    "@tanstack/svelte-virtual": "^3.13.23",
+    "@tanstack/svelte-virtual": "^3.13.24",
     "axe-playwright": "^2.2.2",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
     "execa": "^9.6.1",
-    "focus-trap": "^8.0.1",
+    "focus-trap": "^8.2.0",
     "fs-extra": "^11.3.4",
     "graphql": "^16.13.2",
     "graphql-ws": "^6.0.8",
@@ -406,7 +406,7 @@
     "hast-util-to-mdast": "^10.1.2",
     "mdast-util-gfm": "^3.1.0",
     "mdast-util-to-markdown": "^2.1.2",
-    "ora": "^9.3.0",
+    "ora": "^9.4.0",
     "prompts": "^2.4.2",
     "rehype-parse": "^9.0.1",
     "rehype-sanitize": "^6.0.0",
@@ -417,8 +417,8 @@
     "shiki": "^4.0.2",
     "tabbable": "^6.4.0",
     "unified": "^11.0.5",
-    "viem": "^2.47.14",
-    "zod": "^4.3.6"
+    "viem": "^2.48.8",
+    "zod": "^4.4.2"
   },
   "devDependencies": {
     "@equaltoai/greater-components-adapters": "workspace:*",
@@ -441,8 +441,8 @@
     "@equaltoai/greater-components-testing": "workspace:*",
     "@equaltoai/greater-components-tokens": "workspace:*",
     "@equaltoai/greater-components-utils": "workspace:*",
-    "@vitest/coverage-v8": "^4.1.4",
+    "@vitest/coverage-v8": "^4.1.5",
     "svelte": "^5.55.1",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.5"
   }
 }

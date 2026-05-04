@@ -17,7 +17,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
-    "@docsearch/js": "^4.6.2",
+    "@docsearch/js": "^4.6.3",
     "@sveltejs/adapter-static": "^3.0.10",
     "@sveltejs/kit": "^2.57.1",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
@@ -29,11 +29,11 @@
     "prismjs": "^1.30.0",
     "shiki": "^4.0.2",
     "svelte": "^5.55.1",
-    "svelte-check": "^4.4.6",
+    "svelte-check": "^4.4.7",
     "tailwind-merge": "^3.5.0",
     "tslib": "^2.8.1",
     "typescript": "^6.0.2",
-    "vite": "^8.0.8",
+    "vite": "^8.0.10",
     "vite-plugin-pwa": "^1.2.0"
   },
   "dependencies": {
