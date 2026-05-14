@@ -51,7 +51,11 @@ jobs:
             exit 1
           fi
 
+          pnpm audit:tarball-integrity
           pnpm install --frozen-lockfile
+
+          VERSION="$(node -p "require('./package.json').version")"
+          node scripts/prepare-github-release.js "${VERSION}"
 
           # Immutable releases block asset/notes changes after publication.
           # We only support mutating draft releases (or creating a draft release) here.
@@ -130,11 +134,19 @@ jobs:
 
       - name: Install dependencies
         if: steps.release.outputs.release_created == 'true'
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm audit:tarball-integrity
+          pnpm install --frozen-lockfile
 
       - name: Fetch main + premain (release branch verification)
         if: steps.release.outputs.release_created == 'true'
         run: git fetch origin main premain --force
+
+      - name: Prepare immutable registry metadata
+        if: steps.release.outputs.release_created == 'true'
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          node scripts/prepare-github-release.js "${VERSION}"
 
       - name: Verify tag was cut from the correct branch
         if: steps.release.outputs.release_created == 'true'

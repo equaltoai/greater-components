@@ -36,6 +36,21 @@ function writeJson(filePath, value) {
 	fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + '\n');
 }
 
+function resolveCommit(ref) {
+	try {
+		const commit = execSync(`git rev-parse --verify "${ref}^{commit}"`, {
+			cwd: rootDir,
+			encoding: 'utf8',
+			stdio: ['ignore', 'pipe', 'ignore'],
+		})
+			.trim()
+			.toLowerCase();
+		return /^[0-9a-f]{40}$/.test(commit) ? commit : null;
+	} catch {
+		return null;
+	}
+}
+
 function skipWhitespace(text, i) {
 	while (i < text.length && /\s/.test(text[i])) i += 1;
 	return i;
@@ -200,6 +215,8 @@ function registryIndexMatchesTag({ version, tag }) {
 		const index = readJson(indexPath);
 		if (index?.version !== version) return false;
 		if (index?.ref !== tag) return false;
+		const commit = resolveCommit(tag);
+		if (commit && index?.commit !== commit) return false;
 
 		// Ensure checksums are valid so we don't skip regeneration when files changed.
 		execSync('node scripts/validate-registry-index.js --strict', {
@@ -238,10 +255,16 @@ function main() {
 
 	if (isStableSemver(version)) {
 		const existingLatest = fs.existsSync(latestPath) ? readJson(latestPath) : null;
-		if (existingLatest?.ref !== tag || existingLatest?.version !== version) {
+		const commit = resolveCommit(tag);
+		if (
+			existingLatest?.ref !== tag ||
+			existingLatest?.version !== version ||
+			(commit && existingLatest?.commit !== commit)
+		) {
 			writeJson(latestPath, {
 				ref: tag,
 				version,
+				...(commit ? { commit } : {}),
 				updatedAt: new Date().toISOString(),
 			});
 		}

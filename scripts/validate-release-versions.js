@@ -40,6 +40,10 @@ function isIsoDate(value) {
 	return !Number.isNaN(date.getTime()) && value.includes('T');
 }
 
+function isCommitSha(value) {
+	return typeof value === 'string' && /^[0-9a-f]{40}$/i.test(value);
+}
+
 function isStableSemver(value) {
 	return typeof value === 'string' && /^\d+\.\d+\.\d+$/.test(value);
 }
@@ -125,6 +129,10 @@ function main() {
 		errors.push(`registry/index.json ref (${index?.ref ?? 'missing'}) must be ${expectedRef}`);
 	}
 
+	if (index?.commit !== undefined && !isCommitSha(index.commit)) {
+		errors.push(`registry/index.json commit is not a 40-character SHA: ${String(index.commit)}`);
+	}
+
 	// `registry/latest.json` is the *latest stable* release ref.
 	if (isStableSemver(version)) {
 		if (latest?.version !== version) {
@@ -135,6 +143,12 @@ function main() {
 
 		if (latest?.ref !== expectedRef) {
 			errors.push(`registry/latest.json ref (${latest?.ref ?? 'missing'}) must be ${expectedRef}`);
+		}
+
+		if (latest?.commit !== undefined && !isCommitSha(latest.commit)) {
+			errors.push(
+				`registry/latest.json commit is not a 40-character SHA: ${String(latest.commit)}`
+			);
 		}
 
 		if (latest?.updatedAt && !isIsoDate(latest.updatedAt)) {
@@ -156,6 +170,12 @@ function main() {
 		if (latest?.ref !== latestExpectedRef) {
 			errors.push(
 				`registry/latest.json ref (${latest?.ref ?? 'missing'}) must be ${latestExpectedRef || 'greater-v<stable>'}`
+			);
+		}
+
+		if (latest?.commit !== undefined && !isCommitSha(latest.commit)) {
+			errors.push(
+				`registry/latest.json commit is not a 40-character SHA: ${String(latest.commit)}`
 			);
 		}
 

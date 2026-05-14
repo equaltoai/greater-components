@@ -68,7 +68,8 @@
     "release:cut": "node scripts/cut-github-release.js",
     "release:tag": "node scripts/release-tag.js",
     "release:artifacts": "bash scripts/build-release-artifacts.sh",
-    "release:tag:dry": "node scripts/release-tag.js --dry-run"
+    "release:tag:dry": "node scripts/release-tag.js --dry-run",
+    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
@@ -138,6 +139,12 @@
       "tmp": "^0.2.4",
       "workbox-build": "^7.4.0",
       "yaml@^2.0.0": "^2.8.3"
+    }
+  },
+  "greaterVerifiedTarballs": {
+    "@theory-cloud/facetheory": {
+      "url": "https://github.com/theory-cloud/FaceTheory/releases/download/v2.0.0/theory-cloud-facetheory-2.0.0.tgz",
+      "integrity": "sha512-+fYcw0uCZZZZMg2m+uWwEFSjhIuL91dCOqgQ5QGI7jNpqKxOZxoKcKSYO9Y0P+rGnCzNiiI73tGjw8oVKa4RCg=="
     }
   }
 }

@@ -3327,7 +3327,7 @@ packages:
       '@testing-library/dom': '>=7.21.4'
 
   '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v2.0.0/theory-cloud-facetheory-2.0.0.tgz':
-    resolution: {tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v2.0.0/theory-cloud-facetheory-2.0.0.tgz}
+    resolution: {integrity: sha512-+fYcw0uCZZZZMg2m+uWwEFSjhIuL91dCOqgQ5QGI7jNpqKxOZxoKcKSYO9Y0P+rGnCzNiiI73tGjw8oVKa4RCg==, tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v2.0.0/theory-cloud-facetheory-2.0.0.tgz}
     version: 2.0.0
     engines: {node: '>=24'}
     peerDependencies:

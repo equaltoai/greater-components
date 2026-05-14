@@ -15,6 +15,7 @@
  */
 
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -372,6 +373,36 @@ function getGitRef(version) {
 	}
 
 	return headCommit.substring(0, 12);
+}
+
+function resolveGitCommit(ref) {
+	if (!ref || ref === 'unknown') return null;
+
+	try {
+		const commit = execFileSync(
+			'git',
+			['-C', rootDir, 'rev-parse', '--verify', `${ref}^{commit}`],
+			{
+				encoding: 'utf8',
+				stdio: ['ignore', 'pipe', 'ignore'],
+			}
+		).trim();
+		return /^[0-9a-f]{40}$/i.test(commit) ? commit : null;
+	} catch {
+		return null;
+	}
+}
+
+function resolveRegistryCommit(ref) {
+	if (!/^greater-v/.test(ref) && !/^[0-9a-f]{7,40}$/i.test(ref)) return null;
+
+	const commit = resolveGitCommit(ref);
+	if (!commit) return null;
+
+	const head = resolveGitCommit('HEAD');
+	if (!head || commit.toLowerCase() !== head.toLowerCase()) return null;
+
+	return commit;
 }
 
 /**
@@ -879,6 +910,7 @@ async function main() {
 	// Get metadata
 	const version = getVersion();
 	const ref = refOverride ?? getGitRef(version);
+	const commit = resolveRegistryCommit(ref);
 	const generatedAt = new Date().toISOString();
 
 	// Get workspace versions
@@ -886,6 +918,9 @@ async function main() {
 
 	log(`📋 Version: ${version}`, colors.cyan);
 	log(`🏷️  Git ref: ${ref}`, colors.cyan);
+	if (commit) {
+		log(`🔒 Commit: ${commit}`, colors.cyan);
+	}
 	log(`📅 Generated: ${generatedAt}\n`, colors.cyan);
 
 	// Process packages
@@ -936,6 +971,7 @@ async function main() {
 		schemaVersion: SCHEMA_VERSION,
 		generatedAt,
 		ref,
+		...(commit ? { commit } : {}),
 		version,
 		checksums,
 		components,

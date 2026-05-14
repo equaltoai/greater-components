@@ -88,6 +88,11 @@ const mockLatestRef = {
 	updatedAt: '2023-02-01T00:00:00.000Z',
 };
 
+const mockLatestImmutableRef = {
+	...mockLatestRef,
+	commit: '0123456789abcdef0123456789abcdef01234567',
+};
+
 describe('Registry Index', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -295,6 +300,16 @@ describe('Registry Index', () => {
 			);
 			const result = await resolveRef();
 			expect(result).toEqual({ ref: mockLatestRef.ref, source: 'latest' });
+		});
+
+		it('prefers immutable latest commit when registry/latest.json provides one', async () => {
+			vi.mocked(gitFetch.fetchFromGitTag).mockResolvedValue(
+				Buffer.from(JSON.stringify(mockLatestImmutableRef))
+			);
+
+			const result = await resolveRef();
+
+			expect(result).toEqual({ ref: mockLatestImmutableRef.commit, source: 'latest' });
 		});
 
 		it('uses fallback if everything else fails', async () => {
