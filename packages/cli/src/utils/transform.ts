@@ -250,17 +250,92 @@ function transformImportPath(
  */
 const IMPORT_PATTERNS = {
 	// ES module imports: import { x } from 'path' or import x from 'path'
-	// Simplified to avoid nested quantifiers - matches import ... from 'path'
-	esImport: /import\s+[^'"]+from\s*(['"])([^'"]+)\1/g,
+	// Statement imports are anchored to statement starts so comment prose such as
+	// "Re-export ..." cannot consume the following executable import/export.
+	esImport: /(?:^|[;\n\r])\s*import\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
 	// Side-effect imports: import 'path'
-	sideEffectImport: /import\s*(['"])([^'"]+)\1/g,
+	sideEffectImport: /(?:^|[;\n\r])\s*import\s*(['"])([^'"]+)\1/g,
 	// Dynamic imports: import('path') or import("path")
-	dynamicImport: /import\s*\(\s*(['"])([^'"]+)\1\s*\)/g,
+	dynamicImport: /(?<![\w$])import\s*\(\s*(['"])([^'"]+)\1\s*\)/g,
 	// Re-exports: export { x } from 'path' or export * from 'path'
-	reExport: /export\s+[^'"]+from\s*(['"])([^'"]+)\1/g,
+	reExport: /(?:^|[;\n\r])\s*export\s+[^'"]+?from\s*(['"])([^'"]+)\1/g,
 	// CSS @import: @import 'path' or @import url('path')
 	cssImport: /@import\s+(?:url\s*\(\s*)?(['"])([^'"]+)\1(?:\s*\))?/g,
 };
+
+function isExecutableScriptMatch(content: string, offset: number): boolean {
+	let state: StripState = 'normal';
+	let escaped = false;
+
+	for (let i = 0; i < offset; i++) {
+		const char = content[i] ?? '';
+		const next = content[i + 1] ?? '';
+
+		if (state === 'line-comment') {
+			if (char === '\n') {
+				state = 'normal';
+			}
+			continue;
+		}
+
+		if (state === 'block-comment') {
+			if (char === '*' && next === '/') {
+				state = 'normal';
+				i++;
+			}
+			continue;
+		}
+
+		if (state === 'single' || state === 'double' || state === 'template') {
+			if (escaped) {
+				escaped = false;
+				continue;
+			}
+
+			if (char === '\\') {
+				escaped = true;
+				continue;
+			}
+
+			if (
+				(state === 'single' && char === "'") ||
+				(state === 'double' && char === '"') ||
+				(state === 'template' && char === '`')
+			) {
+				state = 'normal';
+			}
+			continue;
+		}
+
+		if (char === '/' && next === '/') {
+			state = 'line-comment';
+			i++;
+			continue;
+		}
+
+		if (char === '/' && next === '*') {
+			state = 'block-comment';
+			i++;
+			continue;
+		}
+
+		if (char === "'") {
+			state = 'single';
+			continue;
+		}
+
+		if (char === '"') {
+			state = 'double';
+			continue;
+		}
+
+		if (char === '`') {
+			state = 'template';
+		}
+	}
+
+	return state === 'normal';
+}
 
 /**
  * Transform imports in TypeScript/JavaScript content
@@ -275,9 +350,33 @@ function transformScriptImports(
 	const transformedPaths: Array<{ from: string; to: string }> = [];
 
 	// Process ES imports
+	const beforeEsImports = transformedContent;
 	transformedContent = transformedContent.replace(
 		IMPORT_PATTERNS.esImport,
-		(match, _quote, importPath) => {
+		(match, _quote, importPath, offset) => {
+			const statementOffset = offset + match.search(/\bimport\b/);
+			if (!isExecutableScriptMatch(beforeEsImports, statementOffset)) {
+				return match;
+			}
+			const newPath = transformImportPath(importPath, mappings, filePath);
+			if (newPath) {
+				transformedCount++;
+				transformedPaths.push({ from: importPath, to: newPath });
+				return match.replace(importPath, newPath);
+			}
+			return match;
+		}
+	);
+
+	// Process side-effect imports
+	const beforeSideEffectImports = transformedContent;
+	transformedContent = transformedContent.replace(
+		IMPORT_PATTERNS.sideEffectImport,
+		(match, _quote, importPath, offset) => {
+			const statementOffset = offset + match.search(/\bimport\b/);
+			if (!isExecutableScriptMatch(beforeSideEffectImports, statementOffset)) {
+				return match;
+			}
 			const newPath = transformImportPath(importPath, mappings, filePath);
 			if (newPath) {
 				transformedCount++;
@@ -289,9 +388,14 @@ function transformScriptImports(
 	);
 
 	// Process dynamic imports
+	const beforeDynamicImports = transformedContent;
 	transformedContent = transformedContent.replace(
 		IMPORT_PATTERNS.dynamicImport,
-		(match, _quote, importPath) => {
+		(match, _quote, importPath, offset) => {
+			const statementOffset = offset + match.search(/\bimport\b/);
+			if (!isExecutableScriptMatch(beforeDynamicImports, statementOffset)) {
+				return match;
+			}
 			const newPath = transformImportPath(importPath, mappings, filePath);
 			if (newPath) {
 				transformedCount++;
@@ -303,9 +407,14 @@ function transformScriptImports(
 	);
 
 	// Process re-exports
+	const beforeReExports = transformedContent;
 	transformedContent = transformedContent.replace(
 		IMPORT_PATTERNS.reExport,
-		(match, _quote, importPath) => {
+		(match, _quote, importPath, offset) => {
+			const statementOffset = offset + match.search(/\bexport\b/);
+			if (!isExecutableScriptMatch(beforeReExports, statementOffset)) {
+				return match;
+			}
 			const newPath = transformImportPath(importPath, mappings, filePath);
 			if (newPath) {
 				transformedCount++;

@@ -120,6 +120,10 @@ export const registryIndexSchema = z.object({
 	schemaVersion: z.string().optional().default('1.0.0'),
 	version: z.string(),
 	ref: z.string(),
+	commit: z
+		.string()
+		.regex(/^[0-9a-f]{40}$/i, 'Invalid commit SHA')
+		.optional(),
 	generatedAt: z.string().datetime(),
 	checksums: z.record(z.string(), z.string()).optional().default({}),
 	components: z.record(z.string(), registryComponentSchema),
@@ -135,6 +139,10 @@ export type RegistryIndex = z.infer<typeof registryIndexSchema>;
 export const latestRefSchema = z.object({
 	ref: z.string(),
 	version: z.string(),
+	commit: z
+		.string()
+		.regex(/^[0-9a-f]{40}$/i, 'Invalid commit SHA')
+		.optional(),
 	updatedAt: z.string().optional(),
 });
 
@@ -142,6 +150,10 @@ export type LatestRef = z.infer<typeof latestRefSchema>;
 
 function isLatestAlias(ref?: string): boolean {
 	return (ref ?? '').trim().toLowerCase() === 'latest';
+}
+
+function isImmutableCommit(ref?: string): ref is string {
+	return /^[0-9a-f]{40}$/i.test((ref ?? '').trim());
 }
 
 /**
@@ -570,6 +582,9 @@ export async function resolveRef(
 	// Priority 3: Latest stable from registry/latest.json
 	try {
 		const latest = await fetchLatestRef();
+		if (isImmutableCommit(latest?.commit)) {
+			return { ref: latest.commit, source: 'latest' };
+		}
 		if (latest?.ref) {
 			return { ref: latest.ref, source: 'latest' };
 		}

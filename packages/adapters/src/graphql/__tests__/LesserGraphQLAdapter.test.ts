@@ -249,7 +249,7 @@ describe('LesserGraphQLAdapter', () => {
 
 		it('normalizes resolved GraphQL mutation errors before returning partial data', async () => {
 			mockApolloClient.mutate.mockResolvedValue({
-				data: { createNote: { id: 'partial-note' } },
+				data: { createNote: { id: 'partial-note', accessToken: 'secret-token' } },
 				errors: [{ message: 'authorization denied for actor_private_acl' }],
 			});
 
@@ -260,6 +260,29 @@ describe('LesserGraphQLAdapter', () => {
 			await expect(adapter.createNote({ content: 'test' } as any)).rejects.toBeInstanceOf(
 				LesserGraphQLAdapterError
 			);
+		});
+
+		it('does not expose partial mutation data through the public error cause', async () => {
+			mockApolloClient.mutate.mockResolvedValue({
+				data: { createNote: { id: 'partial-note', accessToken: 'secret-token' } },
+				errors: [{ message: 'authorization denied for actor_private_acl' }],
+			});
+
+			try {
+				await adapter.createNote({ content: 'test' } as any);
+				throw new Error('Expected mutation to fail');
+			} catch (error) {
+				expect(error).toBeInstanceOf(LesserGraphQLAdapterError);
+				const adapterError = error as LesserGraphQLAdapterError;
+				expect(adapterError.cause).toEqual({
+					code: 'LESSER_GRAPHQL_REQUEST_FAILED',
+					errorCount: 1,
+					hadPartialData: true,
+					kind: 'graphql-result',
+				});
+				expect(JSON.stringify(adapterError.cause)).not.toContain('partial-note');
+				expect(JSON.stringify(adapterError.cause)).not.toContain('secret-token');
+			}
 		});
 
 		it('normalizes resolved GraphQL mutation transport errors', async () => {
