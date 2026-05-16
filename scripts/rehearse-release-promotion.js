@@ -10,6 +10,13 @@
 
 import { spawnSync } from 'node:child_process';
 
+const gitIdentityEnv = {
+	GIT_AUTHOR_NAME: process.env.GIT_AUTHOR_NAME || 'greater release rehearsal',
+	GIT_AUTHOR_EMAIL: process.env.GIT_AUTHOR_EMAIL || 'release-rehearsal@equalto.ai',
+	GIT_COMMITTER_NAME: process.env.GIT_COMMITTER_NAME || 'greater release rehearsal',
+	GIT_COMMITTER_EMAIL: process.env.GIT_COMMITTER_EMAIL || 'release-rehearsal@equalto.ai',
+};
+
 function parseArgs(argv) {
 	const args = {
 		candidate: 'HEAD',
@@ -52,6 +59,7 @@ function die(message) {
 function git(args, { allowFailure = false, input = undefined } = {}) {
 	const result = spawnSync('git', args, {
 		encoding: 'utf8',
+		env: { ...process.env, ...gitIdentityEnv },
 		input,
 		stdio: ['pipe', 'pipe', 'pipe'],
 	});
