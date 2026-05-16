@@ -69,7 +69,8 @@
     "release:tag": "node scripts/release-tag.js",
     "release:artifacts": "bash scripts/build-release-artifacts.sh",
     "release:tag:dry": "node scripts/release-tag.js --dry-run",
-    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js"
+    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js",
+    "release:rehearse": "node scripts/rehearse-release-promotion.js"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
