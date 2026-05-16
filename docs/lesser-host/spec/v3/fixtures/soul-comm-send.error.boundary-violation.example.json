@@ -1,0 +1,13 @@
+{
+  "error": {
+    "code": "comm.boundary_violation",
+    "message": "inReplyTo does not match a prior conversation with every recipient",
+    "status_code": 403,
+    "details": {
+      "boundary": "conversation",
+      "field": "inReplyTo",
+      "reason": "no_prior_conversation"
+    },
+    "request_id": "req_123"
+  }
+}

@@ -11,7 +11,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get agent reachability channels (v3) */
+        /** Get authenticated agent reachability channels (v3) */
         get: operations["soulGetAgentChannels"];
         put?: never;
         post?: never;
@@ -28,7 +28,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get agent contact preferences (v3) */
+        /** Get authenticated agent contact preferences (v3) */
         get: operations["soulGetAgentChannelPreferences"];
         /** Update agent contact preferences (v3) */
         put: operations["soulUpdateAgentChannelPreferences"];
@@ -63,7 +63,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Resolve an email address to a soul agent */
+        /** Resolve an email address to an owned soul agent */
         get: operations["soulResolveEmail"];
         put?: never;
         post?: never;
@@ -80,7 +80,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Resolve an E.164 phone number to a soul agent */
+        /** Resolve an E.164 phone number to an owned soul agent */
         get: operations["soulResolvePhone"];
         put?: never;
         post?: never;
@@ -310,6 +310,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/soul/instance/agents/{agentId}/mint-conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List compact mint-conversation metadata for an instance-owned agent
+         * @description Instance-key authenticated read used by Lesser's self-scope proxy. The list response is compact and never
+         *     includes private `messages` or `produced_declarations`; use the explicit single-conversation route for a
+         *     bounded full private record.
+         */
+        get: operations["soulInstanceListMintConversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soul/instance/agents/{agentId}/mint-conversations/{conversationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a bounded private mint-conversation record for an instance-owned agent
+         * @description Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route may
+         *     include private `messages` and `produced_declarations`, subject to a 2 MiB response cap and tenant-boundary
+         *     enforcement.
+         */
+        get: operations["soulInstanceGetMintConversation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/complete": {
         parameters: {
             query?: never;
@@ -472,7 +516,17 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Send an outbound comm message */
+        /**
+         * Send an outbound comm message
+         * @description Sends a new outbound comm through host. Host always generates the outgoing `messageId`, `messageRef`, and
+         *     `deliveryId`; callers must not use this endpoint to supply outbound message identity.
+         *
+         *     `inReplyTo`, when present, is a reply/conversation boundary reference rather than an identity override. Host
+         *     checks it against prior host/provider conversation state for every recipient and fails closed with HTTP 403
+         *     `comm.boundary_violation` plus `error.details.field=inReplyTo` when the reference is invalid. Canonical mailbox
+         *     replies should use `POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply`, which derives
+         *     recipient, thread, and provider reply headers from host's mailbox state.
+         */
         post: operations["soulCommSend"];
         delete?: never;
         options?: never;
@@ -530,6 +584,11 @@ export interface paths {
          * @description Returns bounded metadata and previews only. Full message content is fetched explicitly from the content endpoint.
          *     Filters are evaluated within the authenticated instance + exact agent mailbox. `query` is bounded metadata/preview
          *     matching only; it is not full-body search and never scans across tenants or agents.
+         *
+         *     `fields` may be used by MCP clients to request compact projected message objects. `hasMore` and `nextCursor`
+         *     describe the filtered result set. If bounded server-side filtering stops before exhausting broad mailbox rows,
+         *     `partialScan`, `scanHasMore`, and `scanCursor` expose that broad scan state separately so MCP callers do not treat
+         *     broad mailbox pagination as matching SMS/voice pagination.
          */
         get: operations["soulCommMailboxList"];
         put?: never;
@@ -1088,6 +1147,52 @@ export interface components {
             conversations: components["schemas"]["SoulMintConversation"][];
             count: number;
         };
+        SoulInstanceMintConversationSummary: {
+            agent_id: string;
+            conversation_id: string;
+            model?: string;
+            /** @enum {string} */
+            status: "in_progress" | "completed" | "failed";
+            usage?: components["schemas"]["AIUsage"];
+            charged_credits?: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            completed_at?: string;
+        };
+        SoulInstanceMintConversationsResponse: {
+            /** @enum {string} */
+            version: "1";
+            conversations: components["schemas"]["SoulInstanceMintConversationSummary"][];
+            count: number;
+            limit: number;
+        };
+        SoulInstanceMintConversationResponse: {
+            /** @enum {string} */
+            version: "1";
+            conversation: components["schemas"]["SoulMintConversation"];
+        };
+        SoulMintConversationInstanceReadErrorEnvelope: {
+            error: {
+                /** @enum {string} */
+                code: "soul_mint.invalid_request" | "soul_mint.unauthorized" | "soul_mint.boundary_violation" | "soul_mint.not_found" | "soul_mint.conflict" | "soul_mint.rate_limited" | "soul_mint.response_too_large" | "soul_mint.internal";
+                message: string;
+                status_code?: number;
+                /** @description Client-safe metadata for validation, tenant-boundary, rate-limit, or oversize failures. */
+                details?: {
+                    /** @enum {string} */
+                    boundary?: "instance_domain";
+                    /** @enum {string} */
+                    field?: "agentId" | "conversationId" | "limit" | "body";
+                    /** @enum {string} */
+                    reason?: "invalid_agent_id" | "invalid_conversation_id" | "invalid_limit" | "request_body_present" | "tenant_domain_mismatch" | "domain_not_verified" | "response_too_large";
+                    retry_after_seconds?: number;
+                } & {
+                    [key: string]: unknown;
+                };
+                request_id?: string;
+            };
+        };
         SoulMintConversationFinalizeBeginRequest: {
             boundary_signatures: {
                 [key: string]: string;
@@ -1342,7 +1447,10 @@ export interface components {
             has_more: boolean;
             next_cursor?: string;
         };
-        /** POST /api/v1/soul/comm/send request */
+        /**
+         * POST /api/v1/soul/comm/send request
+         * @description Sends a new outbound comm. Host always generates the outgoing messageId/messageRef; callers must not supply outgoing message identity. The optional inReplyTo field is only a reply/conversation boundary reference for legacy send callers and must match prior host/provider conversation state for every recipient. Canonical mailbox replies should use POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply instead.
+         */
         "soul-comm-send.request.schema": {
             /** @enum {string} */
             channel: "email" | "sms" | "voice";
@@ -1354,11 +1462,13 @@ export interface components {
             replyTo?: string;
             subject?: string;
             body: string;
+            /** @description Optional reply/conversation boundary reference, not an outgoing message identity. If present, it must match a prior conversation with every recipient; invalid refs fail closed with 403 comm.boundary_violation and error.details.field=inReplyTo. Prefer the canonical mailbox reply endpoint for replies. */
             inReplyTo?: string | null;
             idempotencyKey?: string;
         } & (unknown & unknown & unknown);
         /** POST /api/v1/soul/comm/send response */
         "soul-comm-send.response.schema": {
+            /** @description Host-generated outbound send/status identifier. Callers cannot supply this value on POST /api/v1/soul/comm/send. */
             messageId: string;
             /** @enum {string} */
             status: "accepted" | "sent" | "failed";
@@ -1372,6 +1482,7 @@ export interface components {
             createdAt: string;
             /** @description Opaque stable body-facing mailbox reference for the created outbound delivery; v1 equals deliveryId. */
             messageRef: string;
+            /** @description Host-generated canonical mailbox delivery identifier; v1 also backs messageRef. */
             deliveryId: string;
             threadId: string;
         };
@@ -1379,8 +1490,20 @@ export interface components {
         "soul-comm-send.error.schema": {
             error: {
                 /** @enum {string} */
-                code: "comm.invalid_request" | "comm.unauthorized" | "comm.agent_not_active" | "comm.channel_not_provisioned" | "comm.channel_unverified" | "comm.rate_limited" | "comm.preference_violation" | "comm.insufficient_credits" | "comm.provider_unavailable" | "comm.provider_rejected" | "comm.internal";
+                code: "comm.invalid_request" | "comm.unauthorized" | "comm.agent_not_active" | "comm.channel_not_provisioned" | "comm.channel_unverified" | "comm.rate_limited" | "comm.preference_violation" | "comm.boundary_violation" | "comm.insufficient_credits" | "comm.provider_unavailable" | "comm.provider_rejected" | "comm.idempotency_conflict" | "comm.internal";
                 message: string;
+                status_code?: number;
+                /** @description Optional structured, client-safe metadata. For comm.boundary_violation caused by an invalid reply/conversation reference, Host returns field=inReplyTo, boundary=conversation, and a reason such as no_prior_conversation. */
+                details?: {
+                    /** @enum {string} */
+                    boundary?: "conversation";
+                    /** @enum {string} */
+                    field?: "inReplyTo" | "to";
+                    /** @enum {string} */
+                    reason?: "no_prior_conversation" | "missing_recipient" | "reply_boundary_violation";
+                } & {
+                    [key: string]: unknown;
+                };
                 request_id?: string;
             };
         };
@@ -1473,6 +1596,61 @@ export interface components {
             soulAgentId?: string;
             displayName?: string;
         };
+        content: {
+            available?: boolean;
+            bytes?: number;
+            mimeType?: string;
+            sha256?: string;
+            contentHref?: string;
+        };
+        state: {
+            read?: boolean;
+            archived?: boolean;
+            deleted?: boolean;
+        };
+        /** Soul comm mailbox projected message metadata */
+        "soul-comm-mailbox-message-projection.schema": {
+            /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId. */
+            messageRef?: string;
+            /** @description Canonical host delivery identity; exposed for diagnostics. */
+            deliveryId?: string;
+            /** @description Legacy/idempotency/provider-adjacent metadata; not the primary mailbox reference. */
+            messageId?: string;
+            threadId?: string;
+            /** @enum {string} */
+            direction?: "inbound" | "outbound";
+            /** @enum {string} */
+            channelType?: "email" | "sms" | "voice";
+            provider?: string;
+            providerMessageId?: string;
+            /** @enum {string} */
+            status?: "accepted" | "sent" | "delivered" | "queued" | "failed" | "bounced" | "dropped";
+            from?: components["schemas"]["party"];
+            to?: components["schemas"]["party"];
+            subject?: string;
+            preview?: string;
+            content?: components["schemas"]["content"];
+            state?: components["schemas"]["state"];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        /** GET /api/v1/soul/comm/mailbox/{agentId}/messages response */
+        "soul-comm-mailbox-list.response.schema": {
+            instanceSlug: string;
+            agentId: string;
+            messages: components["schemas"]["soul-comm-mailbox-message-projection.schema"][];
+            count: number;
+            hasMore: boolean;
+            nextCursor?: string;
+            /** @description True when bounded server-side filtering stopped before exhausting the broad mailbox scan. MCP-facing hasMore remains filtered-result pagination, not broad scan state. */
+            partialScan?: boolean;
+            /** @description When partialScan is true, indicates the underlying broad mailbox scan has more rows. */
+            scanHasMore?: boolean;
+            /** @description Underlying broad mailbox cursor for diagnostics or explicit follow-up scans when partialScan is true. */
+            scanCursor?: string;
+        };
         /** Soul comm mailbox redacted message metadata */
         "soul-comm-mailbox-message.schema": {
             /** @description Opaque stable body-facing mailbox reference. In v1 this is backed by deliveryId. */
@@ -1510,15 +1688,6 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt?: string;
-        };
-        /** GET /api/v1/soul/comm/mailbox/{agentId}/messages response */
-        "soul-comm-mailbox-list.response.schema": {
-            instanceSlug: string;
-            agentId: string;
-            messages: components["schemas"]["soul-comm-mailbox-message.schema"][];
-            count: number;
-            hasMore: boolean;
-            nextCursor?: string;
         };
         /** GET /api/v1/soul/comm/mailbox/{agentId}/messages/{deliveryId} response */
         "soul-comm-mailbox-get.response.schema": {
@@ -1724,6 +1893,16 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            401: components["responses"]["Unauthorized"];
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
             /** @description Not found */
             404: {
                 headers: {
@@ -1757,6 +1936,16 @@ export interface operations {
             };
             /** @description Invalid request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1915,6 +2104,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            401: components["responses"]["Unauthorized"];
             /** @description Not found */
             404: {
                 headers: {
@@ -1955,6 +2145,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelope"];
                 };
             };
+            401: components["responses"]["Unauthorized"];
             /** @description Not found */
             404: {
                 headers: {
@@ -2761,6 +2952,183 @@ export interface operations {
             };
         };
     };
+    soulInstanceListMintConversations: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulInstanceMintConversationsResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Agent not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Response too large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    /** @description Seconds until the caller should retry when available. */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+        };
+    };
+    soulInstanceGetMintConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulInstanceMintConversationResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Missing, invalid, or revoked instance key */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Tenant/domain boundary mismatch */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Conversation not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Response too large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Rate limited */
+            429: {
+                headers: {
+                    /** @description Seconds until the caller should retry when available. */
+                    "Retry-After"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+            /** @description Internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationInstanceReadErrorEnvelope"];
+                };
+            };
+        };
+    };
     soulAgentCompleteMintConversation: {
         parameters: {
             query?: never;
@@ -3379,6 +3747,15 @@ export interface operations {
                     "application/json": components["schemas"]["soul-comm-send.error.schema"];
                 };
             };
+            /** @description Boundary or preference violation */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["soul-comm-send.error.schema"];
+                };
+            };
             /** @description Rate limited */
             429: {
                 headers: {
@@ -3495,6 +3872,19 @@ export interface operations {
                 threadId?: string;
                 /** @description Bounded metadata/preview match within the authenticated instance + exact agent mailbox. */
                 query?: string;
+                /**
+                 * @description Comma-separated projection list for compact MCP responses. Supported fields are
+                 *     `messageRef`, `deliveryId`, `messageId`, `threadId`, `direction`, `channelType`, `provider`,
+                 *     `providerMessageId`, `status`, `from`, `to`, `subject`, `preview`, `content`, `state`, `createdAt`,
+                 *     `updatedAt`, and nested fields such as `content.available`, `state.read`, `from.address`, and `to.number`.
+                 *     When omitted, the legacy full metadata object is returned.
+                 */
+                fields?: string;
+                /**
+                 * @description Defaults to false. Host mailbox list responses do not expose raw upstream provider payloads; when false,
+                 *     any future raw diagnostic payload is omitted unless explicitly requested and available.
+                 */
+                include_raw?: boolean;
             };
             header?: never;
             path: {

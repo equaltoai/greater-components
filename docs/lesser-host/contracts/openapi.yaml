@@ -915,6 +915,128 @@ components:
           type: integer
           minimum: 0
 
+    SoulInstanceMintConversationSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - agent_id
+        - conversation_id
+        - status
+        - created_at
+      properties:
+        agent_id:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        conversation_id:
+          type: string
+          minLength: 1
+          maxLength: 128
+        model:
+          type: string
+        status:
+          type: string
+          enum: [in_progress, completed, failed]
+        usage:
+          $ref: "#/components/schemas/AIUsage"
+        charged_credits:
+          type: integer
+          minimum: 0
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+
+    SoulInstanceMintConversationsResponse:
+      type: object
+      additionalProperties: false
+      required: [version, conversations, count, limit]
+      properties:
+        version:
+          type: string
+          enum: ["1"]
+        conversations:
+          type: array
+          items:
+            $ref: "#/components/schemas/SoulInstanceMintConversationSummary"
+        count:
+          type: integer
+          minimum: 0
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+
+    SoulInstanceMintConversationResponse:
+      type: object
+      additionalProperties: false
+      required: [version, conversation]
+      properties:
+        version:
+          type: string
+          enum: ["1"]
+        conversation:
+          $ref: "#/components/schemas/SoulMintConversation"
+
+    SoulMintConversationInstanceReadErrorEnvelope:
+      type: object
+      additionalProperties: false
+      required: [error]
+      properties:
+        error:
+          type: object
+          additionalProperties: false
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum:
+                - soul_mint.invalid_request
+                - soul_mint.unauthorized
+                - soul_mint.boundary_violation
+                - soul_mint.not_found
+                - soul_mint.conflict
+                - soul_mint.rate_limited
+                - soul_mint.response_too_large
+                - soul_mint.internal
+            message:
+              type: string
+              minLength: 1
+              maxLength: 2048
+            status_code:
+              type: integer
+              minimum: 400
+              maximum: 599
+            details:
+              type: object
+              additionalProperties: true
+              description: Client-safe metadata for validation, tenant-boundary, rate-limit, or oversize failures.
+              properties:
+                boundary:
+                  type: string
+                  enum: [instance_domain]
+                field:
+                  type: string
+                  enum: [agentId, conversationId, limit, body]
+                reason:
+                  type: string
+                  enum:
+                    - invalid_agent_id
+                    - invalid_conversation_id
+                    - invalid_limit
+                    - request_body_present
+                    - tenant_domain_mismatch
+                    - domain_not_verified
+                    - response_too_large
+                retry_after_seconds:
+                  type: integer
+                  minimum: 1
+            request_id:
+              type: string
+              minLength: 1
+              maxLength: 128
+
     SoulMintConversationFinalizeBeginRequest:
       type: object
       additionalProperties: false
@@ -1113,7 +1235,9 @@ paths:
   /api/v1/soul/agents/{agentId}/channels:
     get:
       operationId: soulGetAgentChannels
-      summary: Get agent reachability channels (v3)
+      summary: Get authenticated agent reachability channels (v3)
+      security:
+        - sessionAuth: []
       parameters:
         - name: agentId
           in: path
@@ -1134,6 +1258,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
         "404":
           description: Not found
           content:
@@ -1144,7 +1276,9 @@ paths:
   /api/v1/soul/agents/{agentId}/channels/preferences:
     get:
       operationId: soulGetAgentChannelPreferences
-      summary: Get agent contact preferences (v3)
+      summary: Get authenticated agent contact preferences (v3)
+      security:
+        - sessionAuth: []
       parameters:
         - name: agentId
           in: path
@@ -1161,6 +1295,14 @@ paths:
                 $ref: "#/components/schemas/SoulAgentChannelPreferencesResponse"
         "400":
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -1262,7 +1404,9 @@ paths:
   /api/v1/soul/resolve/email/{emailAddress}:
     get:
       operationId: soulResolveEmail
-      summary: Resolve an email address to a soul agent
+      summary: Resolve an email address to an owned soul agent
+      security:
+        - sessionAuth: []
       parameters:
         - name: emailAddress
           in: path
@@ -1283,6 +1427,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           description: Not found
           content:
@@ -1293,7 +1439,9 @@ paths:
   /api/v1/soul/resolve/phone/{phoneNumber}:
     get:
       operationId: soulResolvePhone
-      summary: Resolve an E.164 phone number to a soul agent
+      summary: Resolve an E.164 phone number to an owned soul agent
+      security:
+        - sessionAuth: []
       parameters:
         - name: phoneNumber
           in: path
@@ -1314,6 +1462,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "404":
           description: Not found
           content:
@@ -2030,6 +2180,168 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
 
+  /api/v1/soul/instance/agents/{agentId}/mint-conversations:
+    get:
+      operationId: soulInstanceListMintConversations
+      summary: List compact mint-conversation metadata for an instance-owned agent
+      description: |
+        Instance-key authenticated read used by Lesser's self-scope proxy. The list response is compact and never
+        includes private `messages` or `produced_declarations`; use the explicit single-conversation route for a
+        bounded full private record.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 50
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceMintConversationsResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "401":
+          description: Missing, invalid, or revoked instance key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "403":
+          description: Tenant/domain boundary mismatch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "404":
+          description: Agent not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "413":
+          description: Response too large
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "429":
+          description: Rate limited
+          headers:
+            Retry-After:
+              description: Seconds until the caller should retry when available.
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+
+  /api/v1/soul/instance/agents/{agentId}/mint-conversations/{conversationId}:
+    get:
+      operationId: soulInstanceGetMintConversation
+      summary: Get a bounded private mint-conversation record for an instance-owned agent
+      description: |
+        Instance-key authenticated read used by Lesser's self-scope proxy. This explicit single-conversation route may
+        include private `messages` and `produced_declarations`, subject to a 2 MiB response cap and tenant-boundary
+        enforcement.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^0x[0-9a-fA-F]{64}$"
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+            pattern: "^[A-Za-z0-9._:-]{1,128}$"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulInstanceMintConversationResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "401":
+          description: Missing, invalid, or revoked instance key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "403":
+          description: Tenant/domain boundary mismatch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "413":
+          description: Response too large
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "429":
+          description: Rate limited
+          headers:
+            Retry-After:
+              description: Seconds until the caller should retry when available.
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulMintConversationInstanceReadErrorEnvelope"
+
   /api/v1/soul/agents/{agentId}/mint-conversation/{conversationId}/complete:
     post:
       operationId: soulAgentCompleteMintConversation
@@ -2531,6 +2843,15 @@ paths:
     post:
       operationId: soulCommSend
       summary: Send an outbound comm message
+      description: |
+        Sends a new outbound comm through host. Host always generates the outgoing `messageId`, `messageRef`, and
+        `deliveryId`; callers must not use this endpoint to supply outbound message identity.
+
+        `inReplyTo`, when present, is a reply/conversation boundary reference rather than an identity override. Host
+        checks it against prior host/provider conversation state for every recipient and fails closed with HTTP 403
+        `comm.boundary_violation` plus `error.details.field=inReplyTo` when the reference is invalid. Canonical mailbox
+        replies should use `POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply`, which derives
+        recipient, thread, and provider reply headers from host's mailbox state.
       security:
         - instanceKeyAuth: []
       requestBody:
@@ -2554,6 +2875,12 @@ paths:
                 $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
         "401":
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulCommSendErrorEnvelope"
+        "403":
+          description: Boundary or preference violation
           content:
             application/json:
               schema:
@@ -2642,6 +2969,11 @@ paths:
         Returns bounded metadata and previews only. Full message content is fetched explicitly from the content endpoint.
         Filters are evaluated within the authenticated instance + exact agent mailbox. `query` is bounded metadata/preview
         matching only; it is not full-body search and never scans across tenants or agents.
+
+        `fields` may be used by MCP clients to request compact projected message objects. `hasMore` and `nextCursor`
+        describe the filtered result set. If bounded server-side filtering stops before exhausting broad mailbox rows,
+        `partialScan`, `scanHasMore`, and `scanCursor` expose that broad scan state separately so MCP callers do not treat
+        broad mailbox pagination as matching SMS/voice pagination.
       security:
         - instanceKeyAuth: []
       parameters:
@@ -2727,6 +3059,28 @@ paths:
             minLength: 1
             maxLength: 128
           description: Bounded metadata/preview match within the authenticated instance + exact agent mailbox.
+        - name: fields
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 512
+          description: |
+            Comma-separated projection list for compact MCP responses. Supported fields are
+            `messageRef`, `deliveryId`, `messageId`, `threadId`, `direction`, `channelType`, `provider`,
+            `providerMessageId`, `status`, `from`, `to`, `subject`, `preview`, `content`, `state`, `createdAt`,
+            `updatedAt`, and nested fields such as `content.available`, `state.read`, `from.address`, and `to.number`.
+            When omitted, the legacy full metadata object is returned.
+        - name: include_raw
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          description: |
+            Defaults to false. Host mailbox list responses do not expose raw upstream provider payloads; when false,
+            any future raw diagnostic payload is omitted unless explicitly requested and available.
       responses:
         "200":
           description: OK
