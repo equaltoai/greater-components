@@ -12,6 +12,38 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.12](https://github.com/equaltoai/greater-components/compare/greater-v0.8.11...greater-v0.8.12) (2026-05-16)
+
+
+### Bug Fixes
+
+* **release:** flag squashed topology repairs ([a9018d2](https://github.com/equaltoai/greater-components/commit/a9018d22538a01badf1c31d43469804da42f760b))
+* remediate Greater security project 28 findings ([#532](https://github.com/equaltoai/greater-components/issues/532)) ([ddfbb79](https://github.com/equaltoai/greater-components/commit/ddfbb798b43c8af16da53fa540b89def1ec77fe5))
+
+
+### CI
+
+* **dco:** allow remediation commits ([655ff12](https://github.com/equaltoai/greater-components/commit/655ff121af333e7f942ed4a1f377e967ac6f1cdc))
+* **dco:** carry remediation workflow on staging ([8e242ec](https://github.com/equaltoai/greater-components/commit/8e242ec400da13a2614d1eeab6098f3e74f52557))
+* **dco:** remediate staging promotion signoff ([f6f3fe5](https://github.com/equaltoai/greater-components/commit/f6f3fe55c2592d41fcf6ed343d77ab6de6b64a3f))
+* **dco:** support signed remediation commits ([be14655](https://github.com/equaltoai/greater-components/commit/be14655b47aa2a432a9bc9ca91cb47bf16a12423))
+* **dco:** support signed remediation commits ([e06caa5](https://github.com/equaltoai/greater-components/commit/e06caa5316b9ac513ec08932f584b5ac7574164b))
+* **dco:** support signed remediation commits ([6f24828](https://github.com/equaltoai/greater-components/commit/6f248281e98be8bb0de0c46f0ed0e4836c54e9c9))
+
+
+### Chores
+
+* backmerge premain dco repair into staging ([bd02133](https://github.com/equaltoai/greater-components/commit/bd0213310bdaf11579b0172fd36bcc819c80cd3e))
+* **contracts:** sync Lesser and Host snapshots ([#536](https://github.com/equaltoai/greater-components/issues/536)) ([caed245](https://github.com/equaltoai/greater-components/commit/caed2452acebe53e1483e1b21099b5605358549a))
+* **deps:** remediate Dependabot alerts ([#534](https://github.com/equaltoai/greater-components/issues/534)) ([e32a7ae](https://github.com/equaltoai/greater-components/commit/e32a7ae56497aa03f102cef09c4b61f162f29fd3))
+* **premain:** release greater 0.8.12-rc.0 ([bc84203](https://github.com/equaltoai/greater-components/commit/bc842035cb5165b9a1738b0391944c03faaeb69e))
+* **premain:** release greater 0.8.12-rc.0 ([59ccbc1](https://github.com/equaltoai/greater-components/commit/59ccbc1cc1171732c03a192a58b1f39779a8232b))
+* **release:** prepare metadata ([f4f81f8](https://github.com/equaltoai/greater-components/commit/f4f81f8445b01015d9fefa4293b6632e1881a07d))
+* **release:** repair staging promotion topology ([#538](https://github.com/equaltoai/greater-components/issues/538)) ([c34cfab](https://github.com/equaltoai/greater-components/commit/c34cfabcbd2206cc2c70d06838bd461bce1928f3))
+* **release:** restitch staging promotion topology ([a5b3639](https://github.com/equaltoai/greater-components/commit/a5b36392ee78a51f8607f307e501d0103a4da912))
+* restitch main ancestry after squash ([641301f](https://github.com/equaltoai/greater-components/commit/641301ff66217300113de37aee1dedf1a1a0a252))
+* restitch premain ancestry after squash ([e2c812c](https://github.com/equaltoai/greater-components/commit/e2c812c8915606005b84463e344786b1c845a410))
+
 ## [0.8.12-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.11-rc.0...greater-v0.8.12-rc.0) (2026-05-16)
 
 ### Bug Fixes
