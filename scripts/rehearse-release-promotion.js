@@ -97,6 +97,26 @@ function commitTree(tree, parents, message) {
 	return git(args, { input: `${message}\n` }).stdout.trim();
 }
 
+function isAncestor(ancestor, descendant) {
+	return (
+		git(['merge-base', '--is-ancestor', ancestor, descendant], { allowFailure: true }).status === 0
+	);
+}
+
+function assertReleaseAncestry(candidate, refs) {
+	const missing = refs.filter(({ commit }) => !isAncestor(commit, candidate));
+	if (missing.length === 0) return;
+
+	const missingLabels = missing
+		.map(({ label, commit }) => `${label} (${short(commit)})`)
+		.join(', ');
+	die(
+		`candidate is missing release-branch ancestry: ${missingLabels}.\n` +
+			'For a release-topology/backmerge branch, merge the PR with "Create a merge commit"; do not squash.\n' +
+			'If this is a push to staging, staging was likely repaired with a squash merge and must be restitched.'
+	);
+}
+
 function mergeTree(base, head, label) {
 	const result = git(['merge-tree', '--write-tree', base, head], { allowFailure: true });
 	if (result.status !== 0) {
@@ -134,6 +154,11 @@ function main() {
 
 	if (args.simulateSquash) {
 		console.log(`  synthetic staging: ${short(stagedCandidate)}`);
+	} else {
+		assertReleaseAncestry(stagedCandidate, [
+			{ label: args.premain, commit: premain },
+			{ label: args.main, commit: mainBranch },
+		]);
 	}
 
 	const stagingToPremainTree = mergeTree(premain, stagedCandidate, 'staging -> premain promotion');
