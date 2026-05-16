@@ -7,4 +7,4 @@ This directory contains operational documentation for maintaining and running Gr
 ## Guides
 
 - [Playwright](./playwright.md) – Installing browsers and running E2E/a11y/visual suites in this repo
-- [GitHub Releases](./github-releases.md) – Tagging and publishing release artifacts (including the CLI)
+- [GitHub Releases](./github-releases.md) – Tagging, promotion rehearsal, release-topology repair, and publishing release artifacts (including the CLI)
