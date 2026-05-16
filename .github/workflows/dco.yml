@@ -25,11 +25,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch pull request refs
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --no-tags --prune origin \
+            "+refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }}" \
+            "+refs/pull/${{ github.event.pull_request.number }}/head:refs/remotes/pull/${{ github.event.pull_request.number }}/head"
+
       - name: DCO Check (pull_request)
         if: github.event_name == 'pull_request'
-        uses: tim-actions/dco@v1.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-dco.js --base "${BASE_REF}" --head "${HEAD_REF}"
 
       - name: DCO Check (workflow_dispatch)
         if: github.event_name == 'workflow_dispatch'
@@ -44,23 +52,4 @@ jobs:
           fi
 
           git fetch origin "${BASE_REF}:${BASE_REF}" --force
-
-          head_sha="$(git rev-parse HEAD)"
-          mapfile -t commits < <(git rev-list "${BASE_REF}..${head_sha}")
-
-          if [[ ${#commits[@]} -eq 0 ]]; then
-            echo "dco: no commits to check in ${BASE_REF}..${head_sha}"
-            exit 0
-          fi
-
-          missing=0
-          for sha in "${commits[@]}"; do
-            if ! git show -s --format=%B "${sha}" | grep -qi '^Signed-off-by:'; then
-              echo "::error::Commit ${sha} is missing Signed-off-by"
-              missing=1
-            fi
-          done
-
-          if [[ "${missing}" -ne 0 ]]; then
-            exit 1
-          fi
+          node scripts/check-dco.js --base "${BASE_REF}" --head HEAD
