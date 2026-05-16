@@ -2,8 +2,7 @@
   "channel": "email",
   "agentId": "0x2222222222222222222222222222222222222222222222222222222222222222",
   "to": "alice@example.com",
-  "subject": "Re: Project collaboration",
-  "body": "Hi Alice,\\n\\nYes — happy to collaborate.\\n",
-  "inReplyTo": "comm-msg-001",
+  "subject": "Project collaboration",
+  "body": "Hi Alice,\\n\\nStarting a new thread about the collaboration.\\n",
   "idempotencyKey": "mcp-email-send-6a4b7a70-0c4d-4b1d-8e18-7b6f55f3f3e5"
 }

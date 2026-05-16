@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://lesser.host/spec/v3/schemas/soul-comm-send.request.schema.json",
   "title": "POST /api/v1/soul/comm/send request",
+  "description": "Sends a new outbound comm. Host always generates the outgoing messageId/messageRef; callers must not supply outgoing message identity. The optional inReplyTo field is only a reply/conversation boundary reference for legacy send callers and must match prior host/provider conversation state for every recipient. Canonical mailbox replies should use POST /api/v1/soul/comm/mailbox/{agentId}/messages/{messageRef}/reply instead.",
   "type": "object",
   "additionalProperties": false,
   "required": ["channel", "agentId", "to", "body"],
@@ -20,7 +21,12 @@
     "replyTo": { "type": "string", "format": "email" },
     "subject": { "type": "string", "minLength": 1, "maxLength": 998 },
     "body": { "type": "string", "minLength": 1 },
-    "inReplyTo": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+    "inReplyTo": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Optional reply/conversation boundary reference, not an outgoing message identity. If present, it must match a prior conversation with every recipient; invalid refs fail closed with 403 comm.boundary_violation and error.details.field=inReplyTo. Prefer the canonical mailbox reply endpoint for replies."
+    },
     "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 }
   },
   "allOf": [
