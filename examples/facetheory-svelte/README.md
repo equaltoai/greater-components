@@ -2,7 +2,7 @@
 
 This example shows the recommended FaceTheory host path for Greater Components inside this repo.
 
-The workspace pins FaceTheory `v2.0.0` for this example so Greater stays aligned with the current Theory Cloud platform release and consumes the built FaceTheory package artifact rather than a source checkout.
+The workspace pins FaceTheory `v3.1.2` for this example so Greater stays aligned with the current Theory Cloud platform release and consumes the built FaceTheory package artifact rather than a source checkout.
 
 ## What It Covers
 
