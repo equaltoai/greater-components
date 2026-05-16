@@ -30,6 +30,12 @@ Client generation guidance:
 
 - `docs/specs/openapi-client-generation.md`
 
+Security/auth metadata guidance:
+
+- Treat missing or incorrect auth/security metadata in these snapshots as an upstream Lesser contract issue.
+- Do not hand-edit `openapi.yaml` in Greater to add auth requirements; fix the Lesser route contract, publish a Lesser
+  release tag, then resync this directory from that tag so the pinned snapshot remains auditable.
+
 ## GraphQL (Published schema)
 
 - Published contract: `docs/contracts/graphql-schema.graphql`

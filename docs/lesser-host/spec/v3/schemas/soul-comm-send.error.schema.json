@@ -21,13 +21,26 @@
             "comm.channel_unverified",
             "comm.rate_limited",
             "comm.preference_violation",
+            "comm.boundary_violation",
             "comm.insufficient_credits",
             "comm.provider_unavailable",
             "comm.provider_rejected",
+            "comm.idempotency_conflict",
             "comm.internal"
           ]
         },
         "message": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "status_code": { "type": "integer", "minimum": 400, "maximum": 599 },
+        "details": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional structured, client-safe metadata. For comm.boundary_violation caused by an invalid reply/conversation reference, Host returns field=inReplyTo, boundary=conversation, and a reason such as no_prior_conversation.",
+          "properties": {
+            "boundary": { "type": "string", "enum": ["conversation"] },
+            "field": { "type": "string", "enum": ["inReplyTo", "to"] },
+            "reason": { "type": "string", "enum": ["no_prior_conversation", "missing_recipient", "reply_boundary_violation"] }
+          }
+        },
         "request_id": { "type": "string", "minLength": 1, "maxLength": 128 }
       }
     }

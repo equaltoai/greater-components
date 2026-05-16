@@ -10,6 +10,7 @@ import {
 	transformTypeScriptImports,
 	type TransformResult,
 } from '../src/utils/transform.js';
+import { readFileSync } from 'node:fs';
 
 import { createTestConfig } from './fixtures/index.js';
 
@@ -185,6 +186,15 @@ import { AuthGate } from '@equaltoai/greater-components-auth';`;
 		expect(result.content).toContain("from '$lib/components/auth'");
 	});
 
+	it('transforms side-effect imports', () => {
+		const content = `import '@equaltoai/greater-components-tokens/theme.css';`;
+
+		const result = transformTypeScriptImports(content, config);
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toBe(`import '$lib/greater/tokens/theme.css';`);
+	});
+
 	it('transforms type-only imports', () => {
 		const content = `import type { ButtonProps } from '@equaltoai/greater-components-primitives';`;
 
@@ -272,6 +282,33 @@ import type { GenericStatus } from '../generics/index.js';`;
 		expect(result.content).toContain("from '../integration'");
 		expect(result.content).not.toContain("from '../lib/integration'");
 		expect(result.content).toContain("from '../types'");
+	});
+
+	it('rewrites executable exports after comment prose that mentions re-exporting', () => {
+		const content = `// Re-export palette types for ThemeProvider consumers
+export type { PalettePreset } from '@equaltoai/greater-components-tokens';
+`;
+
+		const result = transformImports(content, config, 'greater/primitives/index.ts');
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toContain("from '$lib/greater/tokens'");
+		expect(hasGreaterImports(result.content)).toBe(false);
+	});
+
+	it('does not rewrite headless primitive package examples inside comments', () => {
+		const source = readFileSync(
+			new URL('../../headless/src/primitives/button.ts', import.meta.url),
+			'utf8'
+		);
+
+		const result = transformImports(source, config, 'greater/headless/primitives/button.ts');
+
+		expect(result.transformedCount).toBe(0);
+		expect(result.content).toContain(
+			"import { createButton } from '@equaltoai/greater-components-headless/button';"
+		);
+		expect(result.content).toContain('@module @equaltoai/greater-components-headless/button');
 	});
 });
 
@@ -505,13 +542,13 @@ describe('edge cases', () => {
 		expect(() => transformTypeScriptImports(content, config)).not.toThrow();
 	});
 
-	it('handles string literals that look like imports', () => {
+	it('does not transform string literals that look like imports', () => {
 		const content = `const example = "import { x } from '@equaltoai/greater-components-utils'";`;
 
 		const result = transformTypeScriptImports(content, config);
 
-		expect(result.transformedCount).toBe(1);
-		expect(result.content).toContain('$lib/greater/utils');
+		expect(result.transformedCount).toBe(0);
+		expect(result.content).toBe(content);
 	});
 
 	it('does not transform template literal dynamic imports', () => {

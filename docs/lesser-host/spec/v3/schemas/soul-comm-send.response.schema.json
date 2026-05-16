@@ -19,7 +19,8 @@
     "messageId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "description": "Host-generated outbound send/status identifier. Callers cannot supply this value on POST /api/v1/soul/comm/send."
     },
     "status": {
       "type": "string",
@@ -69,7 +70,8 @@
     "deliveryId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "description": "Host-generated canonical mailbox delivery identifier; v1 also backs messageRef."
     },
     "threadId": {
       "type": "string",

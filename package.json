@@ -1,6 +1,6 @@
 {
   "name": "greater-components",
-  "version": "0.8.11-rc.0",
+  "version": "0.8.11",
   "private": true,
   "description": "Fediverse UI components built with Svelte 5, TypeScript, and pnpm workspaces",
   "repository": {
@@ -68,7 +68,9 @@
     "release:cut": "node scripts/cut-github-release.js",
     "release:tag": "node scripts/release-tag.js",
     "release:artifacts": "bash scripts/build-release-artifacts.sh",
-    "release:tag:dry": "node scripts/release-tag.js --dry-run"
+    "release:tag:dry": "node scripts/release-tag.js --dry-run",
+    "audit:tarball-integrity": "node scripts/verify-tarball-integrity.js",
+    "release:rehearse": "node scripts/rehearse-release-promotion.js"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
@@ -80,7 +82,7 @@
     "@graphql-codegen/typescript": "^5.0.9",
     "@graphql-codegen/typescript-operations": "^5.0.9",
     "@sveltejs/package": "^2.5.7",
-    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v2.0.0/theory-cloud-facetheory-2.0.0.tgz",
+    "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz",
     "@types/node": "^25.6.0",
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
@@ -115,7 +117,7 @@
     "overrides": {
       "ajv@^6.0.0": "^6.14.0",
       "cookie": "^0.7.0",
-      "devalue": "^5.6.4",
+      "devalue": "^5.8.1",
       "dompurify@^3.0.0": "^3.4.0",
       "esbuild": "^0.25.8",
       "flatted": "^3.4.2",
@@ -137,7 +139,16 @@
       "serialize-javascript@^7.0.0": "^7.0.5",
       "tmp": "^0.2.4",
       "workbox-build": "^7.4.0",
-      "yaml@^2.0.0": "^2.8.3"
+      "yaml@^2.0.0": "^2.8.3",
+      "@babel/plugin-transform-modules-systemjs": "^7.29.4",
+      "fast-uri": "^3.1.2",
+      "svelte": "^5.55.7"
+    }
+  },
+  "greaterVerifiedTarballs": {
+    "@theory-cloud/facetheory": {
+      "url": "https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz",
+      "integrity": "sha512-kCbAq14OFxbidL/SV7HOfOE8G4A6s3mgtjR1FJg+nEb18yFwde9UbTCtmAsePQgvoF3vBoYqCHuO4mb+Pc0nrQ=="
     }
   }
 }

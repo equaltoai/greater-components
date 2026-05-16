@@ -1044,6 +1044,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/skills/{skillId}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_admin_skills_by_skillId_assignments"];
+        put?: never;
+        post: operations["post_api_v1_admin_skills_by_skillId_assignments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skills/{skillId}/assignments/{assignmentId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_admin_skills_by_skillId_assignments_by_assignmentId_revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skills/{skillId}/proposals/{proposalId}/promote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_admin_skills_by_skillId_proposals_by_proposalId_promote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skills/{skillId}/revisions/{revisionNumber}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_admin_skills_by_skillId_revisions_by_revisionNumber_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skills/{skillId}/revisions/{revisionNumber}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post_api_v1_admin_skills_by_skillId_revisions_by_revisionNumber_revoke"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skills/proposals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_admin_skills_proposals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skills/proposals/{proposalId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_admin_skills_proposals_by_proposalId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/soul/well-known": {
         parameters: {
             query?: never;
@@ -2532,6 +2644,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_skills"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills/{skillId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_skills_by_skillId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills/{skillId}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_skills_by_skillId_revisions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills/{skillId}/revisions/{revisionNumber}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_skills_by_skillId_revisions_by_revisionNumber"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills/{skillId}/revisions/{revisionNumber}/bundle": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_skills_by_skillId_revisions_by_revisionNumber_bundle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_skills_catalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/skills/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_skills_resolve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/souls/{agentId}/incorporate": {
         parameters: {
             query?: never;
@@ -2565,6 +2789,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/souls/bound/me/mint-conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Return compact private mint-conversation metadata for the authenticated local principal's bound soul. Lesser derives the Host agent ID from the existing bound-self authority and calls lesser-host with instance trust only; caller bearer tokens are never forwarded upstream. */
+        get: operations["get_api_v1_souls_bound_me_mint_conversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/souls/bound/me/mint-conversations/{conversationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Return one bounded private mint-conversation record for the authenticated local principal's bound soul. Lesser validates the opaque conversation ID, derives the Host agent ID from bound self, and calls lesser-host with instance trust only. */
+        get: operations["get_api_v1_souls_bound_me_mint_conversations_by_conversationId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/souls/mine": {
         parameters: {
             query?: never;
@@ -2590,7 +2848,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Create a status. `in_reply_to_id` accepts local status IDs and canonical remote status URLs. When a canonical remote URL is not yet materialized locally, Lesser performs request-scoped remote parent acquisition on the write path only. Direct replies continue through the conversations service. Failure classes distinguish invalid references (400), acquisition timeouts (408), fetched-but-unusable parents (422), and upstream unavailability (503). */
+        /** @description Create a status. `in_reply_to_id` accepts local status IDs and canonical remote status URLs. When a canonical remote URL is not yet materialized locally, Lesser performs request-scoped remote parent acquisition on the write path only. Direct replies continue through the conversations service. Self-directed direct posts are intentionally rejected with `DIRECT_SELF_POST_NOT_ALLOWED`. Failure classes distinguish invalid references (400), acquisition timeouts (408), fetched-but-unusable parents (422), and upstream unavailability (503). */
         post: operations["post_api_v1_statuses"];
         delete?: never;
         options?: never;
@@ -5012,6 +5270,17 @@ export interface components {
             rotated_at?: string;
             token_endpoint_auth_method?: string;
         };
+        ApproveSkillRevisionRequest: {
+            approval_authority_id?: string;
+            approval_authority_type?: string;
+            approval_digest?: string;
+            approval_id?: string;
+            approval_reason?: string;
+            approval_ref?: string;
+            approval_signature?: string;
+            principal_approval_id?: string;
+            principal_id?: string;
+        };
         AuthAuthResponse: {
             access_token: string;
             created_at: number;
@@ -5196,6 +5465,16 @@ export interface components {
             rule_ids?: number[];
             status_ids?: string[];
         };
+        CreateSkillAssignmentRequest: {
+            approval_id?: string;
+            assignment_id?: string;
+            exposure?: string;
+            principal_approval_id?: string;
+            principal_id?: string;
+            revision_number?: number;
+            subject_id: string;
+            subject_type: string;
+        };
         CreateStatusRequest: {
             agent_attribution?: components["schemas"]["AgentPostAttribution"] | null;
             /** @description Reply parent reference. Accepts a local status ID or a canonical remote status URL. Canonical remote URLs are resolved locally first and materialized on the create path when needed. Direct replies remain conversations-owned. */
@@ -5241,6 +5520,18 @@ export interface components {
             reject_media: boolean;
             reject_reports: boolean;
             severity: string;
+        };
+        EffectiveSkillResource: {
+            assignment: components["schemas"]["SkillAssignmentResource"];
+            revision: components["schemas"]["SkillRevisionResource"];
+            skill: components["schemas"]["SkillResource"];
+        };
+        EffectiveSkillsResponse: {
+            count: number;
+            next_cursor?: string;
+            skills: components["schemas"]["EffectiveSkillResource"][];
+            subject_id: string;
+            subject_type: string;
         };
         EmailDomainBlockRequest: {
             domain: string;
@@ -5951,6 +6242,24 @@ export interface components {
             width: number;
         };
         PreviewCardList: components["schemas"]["PreviewCard"][];
+        PromoteSkillProposalRequest: {
+            approval_authority_id?: string;
+            approval_authority_type?: string;
+            approval_digest?: string;
+            approval_id?: string;
+            approval_reason?: string;
+            approval_ref?: string;
+            approval_signature?: string;
+            expected_manifest_digest?: string;
+            expected_source_digest?: string;
+            principal_approval_id?: string;
+            principal_id?: string;
+        };
+        PromoteSkillProposalResponse: {
+            created: boolean;
+            proposal: components["schemas"]["SkillProposalResource"];
+            revision: components["schemas"]["SkillRevisionResource"];
+        };
         PushNotification: {
             access_token: string;
             body: string;
@@ -6171,6 +6480,14 @@ export interface components {
         RevokeAgentRuntimeSessionRequest: {
             reason?: string;
         };
+        RevokeSkillAssignmentRequest: {
+            reason?: string;
+            subject_id: string;
+            subject_type: string;
+        };
+        RevokeSkillRevisionRequest: {
+            reason?: string;
+        };
         Role: {
             color?: string;
             highlighted: boolean;
@@ -6287,6 +6604,216 @@ export interface components {
             locked: boolean;
             urls: components["schemas"]["SetupStageURLs"];
         };
+        SkillAssignmentResource: {
+            approval_id?: string;
+            assigned_at: components["schemas"]["RFC3339DateTime"];
+            assigned_by?: string;
+            created_at: components["schemas"]["RFC3339DateTime"];
+            exposure: string;
+            id: string;
+            principal_approval_id?: string;
+            principal_id?: string;
+            provenance?: components["schemas"]["SkillProvenanceRef"][];
+            revision_id?: string;
+            revision_number?: number;
+            revoked_at?: components["schemas"]["RFC3339DateTime"] | null;
+            revoked_by?: string;
+            revoked_reason?: string;
+            skill_id: string;
+            status: string;
+            subject_id: string;
+            subject_type: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            version: number;
+        };
+        SkillAssignmentResponse: {
+            assignment: components["schemas"]["SkillAssignmentResource"];
+        };
+        SkillAssignmentsResponse: {
+            assignments: components["schemas"]["SkillAssignmentResource"][];
+            count: number;
+            next_cursor?: string;
+        };
+        SkillBundleDigestsResource: {
+            approval_digest?: string;
+            bundle_digest: string;
+            content_digest?: string;
+            manifest_digest?: string;
+            publication_digest: string;
+        };
+        SkillBundleFileResource: {
+            content?: string;
+            content_included: boolean;
+            content_type?: string;
+            digest: string;
+            encoding?: string;
+            install_path: string;
+            path: string;
+            role?: string;
+            size_bytes?: number;
+        };
+        SkillBundleResource: {
+            approval_authority_id?: string;
+            approval_authority_type?: string;
+            approval_id?: string;
+            approval_ref?: string;
+            approval_signature?: string;
+            approved_at?: components["schemas"]["RFC3339DateTime"] | null;
+            approved_by?: string;
+            bundle_id: string;
+            default_exposure: string;
+            digests: components["schemas"]["SkillBundleDigestsResource"];
+            files?: components["schemas"]["SkillBundleFileResource"][];
+            install_hints: components["schemas"]["SkillInstallHintsResource"];
+            principal_approval_id?: string;
+            principal_id?: string;
+            provenance?: components["schemas"]["SkillProvenanceRef"][];
+            published: boolean;
+            revision_id: string;
+            revision_number: number;
+            schema_version: string;
+            skill_id: string;
+            source: string;
+        };
+        SkillBundleResponse: {
+            bundle: components["schemas"]["SkillBundleResource"];
+        };
+        SkillCatalogEntryResource: {
+            bundle: components["schemas"]["SkillBundleResource"];
+            revision: components["schemas"]["SkillRevisionResource"];
+            skill: components["schemas"]["SkillResource"];
+        };
+        SkillCatalogResponse: {
+            count: number;
+            entries: components["schemas"]["SkillCatalogEntryResource"][];
+            next_cursor?: string;
+        };
+        SkillInstallHintsResource: {
+            directory_name: string;
+            entrypoint: string;
+            layout: string;
+            required_files?: string[];
+            runtime_targets?: string[];
+        };
+        SkillListResponse: {
+            count: number;
+            next_cursor?: string;
+            skills: components["schemas"]["SkillResource"][];
+        };
+        SkillProposalResource: {
+            conversation_id?: string;
+            conversation_message_id?: string;
+            created_at: components["schemas"]["RFC3339DateTime"];
+            created_by?: string;
+            id: string;
+            principal_approval_id?: string;
+            principal_id?: string;
+            promoted_at?: components["schemas"]["RFC3339DateTime"] | null;
+            promoted_by?: string;
+            promoted_revision_id?: string;
+            promoted_revision_number?: number;
+            promotion_digest?: string;
+            proposed_manifest_digest?: string;
+            proposed_revision_number?: number;
+            provenance?: components["schemas"]["SkillProvenanceRef"][];
+            requested_exposure: string;
+            review_reason?: string;
+            reviewed_at?: components["schemas"]["RFC3339DateTime"] | null;
+            reviewed_by?: string;
+            skill_id: string;
+            source_digest?: string;
+            source_type?: string;
+            source_uri?: string;
+            status: string;
+            summary?: string;
+            title?: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            version: number;
+        };
+        SkillProposalResponse: {
+            proposal: components["schemas"]["SkillProposalResource"];
+        };
+        SkillProposalsResponse: {
+            count: number;
+            next_cursor?: string;
+            proposals: components["schemas"]["SkillProposalResource"][];
+        };
+        SkillProvenanceRef: {
+            digest?: string;
+            notes?: string;
+            ref?: string;
+            source_type: string;
+            source_uri?: string;
+        };
+        SkillResource: {
+            capabilities?: string[];
+            created_at: components["schemas"]["RFC3339DateTime"];
+            created_by?: string;
+            current_revision_id?: string;
+            current_revision_number?: number;
+            default_exposure: string;
+            description?: string;
+            id: string;
+            name: string;
+            provenance?: components["schemas"]["SkillProvenanceRef"][];
+            slug: string;
+            status: string;
+            tags?: string[];
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            updated_by?: string;
+            version: number;
+        };
+        SkillResponse: {
+            skill: components["schemas"]["SkillResource"];
+        };
+        SkillRevisionFile: {
+            content_type?: string;
+            digest: string;
+            path: string;
+            role?: string;
+            size_bytes?: number;
+        };
+        SkillRevisionResource: {
+            approval_authority_id?: string;
+            approval_authority_type?: string;
+            approval_digest?: string;
+            approval_id?: string;
+            approval_reason?: string;
+            approval_ref?: string;
+            approval_signature?: string;
+            approved_at?: components["schemas"]["RFC3339DateTime"] | null;
+            approved_by?: string;
+            bundle_digest?: string;
+            capabilities?: string[];
+            content_digest?: string;
+            created_at: components["schemas"]["RFC3339DateTime"];
+            created_by?: string;
+            default_exposure: string;
+            files?: components["schemas"]["SkillRevisionFile"][];
+            id: string;
+            manifest_digest?: string;
+            principal_approval_id?: string;
+            principal_id?: string;
+            proposal_id?: string;
+            provenance?: components["schemas"]["SkillProvenanceRef"][];
+            revision_number: number;
+            revoked_at?: components["schemas"]["RFC3339DateTime"] | null;
+            revoked_by?: string;
+            revoked_reason?: string;
+            skill_id: string;
+            status: string;
+            updated_at: components["schemas"]["RFC3339DateTime"];
+            updated_by?: string;
+            version: number;
+        };
+        SkillRevisionResponse: {
+            revision: components["schemas"]["SkillRevisionResource"];
+        };
+        SkillRevisionsResponse: {
+            count: number;
+            next_cursor?: string;
+            revisions: components["schemas"]["SkillRevisionResource"][];
+        };
         /** @description Mastodon-compatible snowflake identifier (stringified uint). */
         SnowflakeID: string;
         SoulAgentAvatar: {
@@ -6351,6 +6878,50 @@ export interface components {
             available_for_incorporation: boolean;
             binding?: components["schemas"]["SoulAgentBinding"] | null;
             binding_state: string;
+        };
+        SoulMintConversation: {
+            agent_id: string;
+            charged_credits?: number | null;
+            /** Format: date-time */
+            completed_at?: string;
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            messages?: string;
+            model: string;
+            produced_declarations?: string;
+            /** @enum {string} */
+            status: "in_progress" | "completed" | "failed";
+            usage?: {
+                [key: string]: unknown;
+            };
+        };
+        SoulMintConversationResponse: {
+            conversation: components["schemas"]["SoulMintConversation"];
+            /** @enum {string} */
+            version: "1";
+        };
+        SoulMintConversationSummary: {
+            agent_id: string;
+            charged_credits?: number | null;
+            /** Format: date-time */
+            completed_at?: string;
+            conversation_id: string;
+            /** Format: date-time */
+            created_at: string;
+            model?: string;
+            /** @enum {string} */
+            status: "in_progress" | "completed" | "failed";
+            usage?: {
+                [key: string]: unknown;
+            };
+        };
+        SoulMintConversationsResponse: {
+            conversations: components["schemas"]["SoulMintConversationSummary"][];
+            count: number;
+            limit: number;
+            /** @enum {string} */
+            version: "1";
         };
         SoulsMineResponse: {
             count: number;
@@ -9498,6 +10069,249 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_admin_skills_by_skillId_assignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillAssignmentsResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_admin_skills_by_skillId_assignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreateSkillAssignmentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillAssignmentResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_admin_skills_by_skillId_assignments_by_assignmentId_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assignmentId: string;
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RevokeSkillAssignmentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillAssignmentResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_admin_skills_by_skillId_proposals_by_proposalId_promote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                proposalId: string;
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PromoteSkillProposalRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromoteSkillProposalResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_admin_skills_by_skillId_revisions_by_revisionNumber_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                revisionNumber: string;
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ApproveSkillRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRevisionResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    post_api_v1_admin_skills_by_skillId_revisions_by_revisionNumber_revoke: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                revisionNumber: string;
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RevokeSkillRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRevisionResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_admin_skills_proposals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillProposalsResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_admin_skills_proposals_by_proposalId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                proposalId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillProposalResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -12988,6 +13802,187 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_skills: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillListResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_skills_by_skillId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_skills_by_skillId_revisions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRevisionsResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_skills_by_skillId_revisions_by_revisionNumber: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                revisionNumber: string;
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRevisionResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_skills_by_skillId_revisions_by_revisionNumber_bundle: {
+        parameters: {
+            query?: {
+                /** @description When true, include inline file content that is present in the approved canonical revision manifest. Lesser never writes files into the caller workspace. */
+                include_content?: boolean;
+            };
+            header?: never;
+            path: {
+                revisionNumber: string;
+                skillId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillBundleResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_skills_catalog: {
+        parameters: {
+            query?: {
+                /** @description Optional approved catalog exposure filter: public, instance, or private. Visibility remains fail-closed for the caller. */
+                exposure?: string;
+                /** @description Maximum catalog entries to return. Defaults to 25 and is capped at 100. */
+                limit?: number;
+                /** @description Opaque pagination cursor returned by a previous catalog response. */
+                cursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillCatalogResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_skills_resolve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EffectiveSkillsResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     post_api_v1_souls_by_agentId_incorporate: {
         parameters: {
             query?: never;
@@ -13044,6 +14039,88 @@ export interface operations {
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
             500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_souls_bound_me_mint_conversations: {
+        parameters: {
+            query?: {
+                /** @description Maximum compact conversations to return. Defaults to 20 and is capped at 50. */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationsResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            /** @description Private conversation response too large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    get_api_v1_souls_bound_me_mint_conversations_by_conversationId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Opaque safe mint-conversation identifier. */
+                conversationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoulMintConversationResponse"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            /** @description Private conversation response too large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            422: components["responses"]["UnprocessableEntity"];
+            429: components["responses"]["TooManyRequests"];
+            500: components["responses"]["InternalServerError"];
+            503: components["responses"]["ServiceUnavailable"];
         };
     };
     get_api_v1_souls_mine: {
@@ -14515,8 +15592,6 @@ export interface operations {
                 content?: never;
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -14539,8 +15614,6 @@ export interface operations {
                 content?: never;
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
@@ -14562,8 +15635,6 @@ export interface operations {
                 content?: never;
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
             500: components["responses"]["InternalServerError"];
         };
     };

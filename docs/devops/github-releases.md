@@ -42,6 +42,101 @@ Release candidates are cut from `premain` using a version like `X.Y.Z-rc.N`. The
 - `registry/latest.json` always points to the latest **stable** tag (it is not updated by `-rc.*` prereleases).
 - When bypassing RC, rehearse both `staging → premain` and `staging → main` merge paths before merging the staging PR so either promotion lane stays conflict-free.
 
+## Promotion Rehearsal (Required)
+
+Every staging-targeted branch must prove the exact merge path that operators will use next. The important detail is that ordinary PRs into `staging` are often squash-merged; rehearsing only the feature branch topology can produce a false pass because the squash commit loses ancestry from `main` or `premain`.
+
+Use the dedicated rehearsal script instead of ad-hoc `git merge-tree` commands:
+
+```bash
+# Ordinary staging PRs that will be squash-merged.
+git fetch origin staging premain main --force
+pnpm release:rehearse -- --candidate HEAD --simulate-squash
+
+# Release-topology/backmerge branches that must preserve merge ancestry.
+# These PRs must be merged with "Create a merge commit", not squash.
+git fetch origin staging premain main --force
+pnpm release:rehearse -- --candidate HEAD
+```
+
+The script validates all promotion lanes that must remain available:
+
+- candidate `staging → premain` for the RC lane
+- candidate `staging → main` for an explicitly approved direct stable promotion
+- synthetic `premain → main` after the candidate has landed in `premain`
+
+CI runs the same rehearsal in `.github/workflows/promotion-rehearsal.yml`:
+
+- ordinary PRs to `staging` are checked as a **squash** result;
+- branches named `chore/release-topology-*` or `chore/backmerge-*` are checked with their merge ancestry preserved;
+- pushes to `staging` check the actual resulting branch state.
+
+If rehearsal fails, do not merge and do not open a `staging → premain` PR. Fix the release topology first.
+
+## Release-Topology Repair Branches
+
+Use a release-topology branch when a normal staging PR cannot be made promotion-safe by content changes alone (for example, after `staging` was squash-merged while `premain` still contains prerelease metadata).
+
+1. Start from current `origin/staging`:
+
+   ```bash
+   git fetch origin staging premain main --force
+   git switch -c chore/release-topology-YYYY-MM-DD origin/staging
+   ```
+
+2. Merge the release branches into the repair branch so ancestry is explicit:
+
+   ```bash
+   git merge --no-ff --signoff origin/premain \
+     -m "chore: stitch premain ancestry into staging release path"
+   # Resolve conflicts by keeping the intended staging source state, then regenerate registry metadata.
+   pnpm generate-registry
+   git add <resolved-files> registry/index.json registry/latest.json
+   git commit -s --no-edit
+
+   git merge --no-ff --signoff origin/main \
+     -m "chore: stitch main ancestry into staging release path"
+   # Resolve generated registry/latest conflicts the same way: intended staging source + regenerated registry.
+   pnpm generate-registry
+   git add registry/index.json registry/latest.json
+   git commit -s --no-edit
+   ```
+
+3. Rehearse the topology-preserving path:
+
+   ```bash
+   pnpm release:rehearse -- --candidate HEAD
+   ```
+
+4. Open the PR to `staging` and label the PR body clearly:
+
+   ```text
+   Release-topology repair: merge with "Create a merge commit" only. Do not squash.
+   ```
+
+   Prefer merging these PRs with the CLI so the merge method is unambiguous:
+
+   ```bash
+   gh pr merge <PR_NUMBER> --repo equaltoai/greater-components --merge
+   ```
+
+   Do **not** use the default green button if it says **Squash and merge**. Open the merge-method dropdown
+   and choose **Create a merge commit**.
+
+5. After the PR is merged to `staging`, confirm the push check passed and confirm the release branches are
+   ancestors of `staging`:
+
+   ```bash
+   git fetch origin staging premain main --force
+   git merge-base --is-ancestor origin/premain origin/staging
+   git merge-base --is-ancestor origin/main origin/staging
+   pnpm release:rehearse -- --candidate origin/staging
+   ```
+
+   Then create the `staging → premain` promotion PR.
+
+Do **not** squash a release-topology repair PR. Squashing discards the `premain`/`main` ancestry that the branch exists to restore, and can recreate the same promotion conflict.
+
 ## Installing the CLI (Consumers)
 
 ```bash
