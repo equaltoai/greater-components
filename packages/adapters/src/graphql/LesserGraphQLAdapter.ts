@@ -503,7 +503,61 @@ function createUserSafeAdapterError(
 	cause: unknown,
 	debugMessages: readonly string[] = extractDebugMessages(cause)
 ): LesserGraphQLAdapterError {
-	return new LesserGraphQLAdapterError(message, { cause, debugMessages });
+	return new LesserGraphQLAdapterError(message, {
+		cause: createSanitizedAdapterCause(cause),
+		debugMessages,
+	});
+}
+
+function createSanitizedAdapterCause(cause: unknown): Record<string, unknown> {
+	const sanitized: Record<string, unknown> = {
+		code: 'LESSER_GRAPHQL_REQUEST_FAILED',
+	};
+
+	if (cause instanceof Error) {
+		sanitized['kind'] = 'error';
+		sanitized['name'] = cause.name || 'Error';
+		return sanitized;
+	}
+
+	if (cause && typeof cause === 'object') {
+		const result = cause as {
+			data?: unknown;
+			errors?: unknown[];
+			error?: unknown;
+			graphQLErrors?: unknown[];
+			networkError?: {
+				result?: { errors?: unknown[] };
+			};
+		};
+
+		sanitized['kind'] = 'graphql-result';
+
+		if (Array.isArray(result.errors)) {
+			sanitized['errorCount'] = result.errors.length;
+		}
+
+		if (Array.isArray(result.graphQLErrors)) {
+			sanitized['graphQLErrorCount'] = result.graphQLErrors.length;
+		}
+
+		if (Array.isArray(result.networkError?.result?.errors)) {
+			sanitized['networkErrorCount'] = result.networkError.result.errors.length;
+		}
+
+		if (result.error) {
+			sanitized['hasTransportError'] = true;
+		}
+
+		if ('data' in result) {
+			sanitized['hadPartialData'] = result.data != null;
+		}
+
+		return sanitized;
+	}
+
+	sanitized['kind'] = typeof cause;
+	return sanitized;
 }
 
 export class LesserGraphQLAdapter {

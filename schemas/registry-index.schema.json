@@ -33,6 +33,11 @@
       "type": "string",
       "description": "Git tag or commit SHA this registry was generated from"
     },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{40}$",
+      "description": "Immutable commit SHA resolved from ref when available"
+    },
     "version": {
       "type": "string",
       "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.]+)?$",

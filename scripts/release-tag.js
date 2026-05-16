@@ -52,6 +52,17 @@ function exec(command, options = {}) {
 	});
 }
 
+function resolveCommit(ref) {
+	try {
+		const commit = exec(`git rev-parse --verify "${ref}^{commit}"`, { silent: true, stdio: 'pipe' })
+			.trim()
+			.toLowerCase();
+		return /^[0-9a-f]{40}$/.test(commit) ? commit : null;
+	} catch {
+		return null;
+	}
+}
+
 function getVersion() {
 	const packageJsonPath = path.join(rootDir, 'package.json');
 	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
@@ -60,9 +71,12 @@ function getVersion() {
 
 function updateLatestJson(version, dryRun = false) {
 	const latestPath = path.join(rootDir, 'registry', 'latest.json');
+	const ref = `greater-v${version}`;
+	const commit = resolveCommit(ref);
 	const data = {
-		ref: `greater-v${version}`,
+		ref,
 		version,
+		...(commit ? { commit } : {}),
 		updatedAt: new Date().toISOString(),
 	};
 
