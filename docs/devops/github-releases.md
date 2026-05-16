@@ -114,7 +114,26 @@ Use a release-topology branch when a normal staging PR cannot be made promotion-
    Release-topology repair: merge with "Create a merge commit" only. Do not squash.
    ```
 
-5. After the PR is merged to `staging`, confirm the push check passed, then create the `staging → premain` promotion PR.
+   Prefer merging these PRs with the CLI so the merge method is unambiguous:
+
+   ```bash
+   gh pr merge <PR_NUMBER> --repo equaltoai/greater-components --merge
+   ```
+
+   Do **not** use the default green button if it says **Squash and merge**. Open the merge-method dropdown
+   and choose **Create a merge commit**.
+
+5. After the PR is merged to `staging`, confirm the push check passed and confirm the release branches are
+   ancestors of `staging`:
+
+   ```bash
+   git fetch origin staging premain main --force
+   git merge-base --is-ancestor origin/premain origin/staging
+   git merge-base --is-ancestor origin/main origin/staging
+   pnpm release:rehearse -- --candidate origin/staging
+   ```
+
+   Then create the `staging → premain` promotion PR.
 
 Do **not** squash a release-topology repair PR. Squashing discards the `premain`/`main` ancestry that the branch exists to restore, and can recreate the same promotion conflict.
 
