@@ -14,19 +14,17 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.13](https://github.com/equaltoai/greater-components/compare/greater-v0.8.12...greater-v0.8.13) (2026-05-17)
 
-
 ### Features
 
-* **soul:** surface anchor assurance metadata ([b5fd78c](https://github.com/equaltoai/greater-components/commit/b5fd78ca7b54703e53bbf9991e96f4f31181274a))
-* **soul:** surface anchor assurance metadata ([02441ca](https://github.com/equaltoai/greater-components/commit/02441cae1910ed98df3bb88b1da2bfd36f9910bd))
-
+- **soul:** surface anchor assurance metadata ([b5fd78c](https://github.com/equaltoai/greater-components/commit/b5fd78ca7b54703e53bbf9991e96f4f31181274a))
+- **soul:** surface anchor assurance metadata ([02441ca](https://github.com/equaltoai/greater-components/commit/02441cae1910ed98df3bb88b1da2bfd36f9910bd))
 
 ### Chores
 
-* **premain:** release greater 0.8.13-rc.0 ([500a660](https://github.com/equaltoai/greater-components/commit/500a6600e263e998c0dd631d7f16274d1c15dfd9))
-* **premain:** release greater 0.8.13-rc.0 ([fefde68](https://github.com/equaltoai/greater-components/commit/fefde6842e39555dd585438a7e971f636c7ee4e9))
-* **release:** backmerge main for anchor assurance ([e48fdad](https://github.com/equaltoai/greater-components/commit/e48fdad66f7c18817ec322b71fef877e8bd23d87))
-* **release:** prepare metadata ([7f9daa5](https://github.com/equaltoai/greater-components/commit/7f9daa555b6f7a27d0258b731fb3df958a1fcb9e))
+- **premain:** release greater 0.8.13-rc.0 ([500a660](https://github.com/equaltoai/greater-components/commit/500a6600e263e998c0dd631d7f16274d1c15dfd9))
+- **premain:** release greater 0.8.13-rc.0 ([fefde68](https://github.com/equaltoai/greater-components/commit/fefde6842e39555dd585438a7e971f636c7ee4e9))
+- **release:** backmerge main for anchor assurance ([e48fdad](https://github.com/equaltoai/greater-components/commit/e48fdad66f7c18817ec322b71fef877e8bd23d87))
+- **release:** prepare metadata ([7f9daa5](https://github.com/equaltoai/greater-components/commit/7f9daa555b6f7a27d0258b731fb3df958a1fcb9e))
 
 ## [0.8.13-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.12-rc.0...greater-v0.8.13-rc.0) (2026-05-17)
 
