@@ -1,12 +1,21 @@
 {
   "$schema": "../../../schemas/module-manifest.schema.json",
   "name": "@equaltoai/greater-components-soul",
-  "version": "0.8.12-rc.0",
-  "description": "Reachability and contact-preferences UI for lesser-soul v3 (channels, preferences, best-contact helper).",
+  "version": "0.8.12",
+  "description": "Reachability, contact-preferences, and anchor-assurance UI for lesser-soul v3.",
   "components": {
     "ChannelsDisplay": {
-      "description": "Displays ENS/email/phone channels with verification and status.",
-      "props": ["agentId", "channels", "updatedAt", "title", "showCopy", "class"],
+      "description": "Displays ENS/email/phone channels with verification, status, and optional anchor assurance.",
+      "props": [
+        "agentId",
+        "channels",
+        "updatedAt",
+        "anchorAssurance",
+        "showAnchorAssurance",
+        "title",
+        "showCopy",
+        "class"
+      ],
       "exports": true
     },
     "ContactPreferencesViewer": {
@@ -23,12 +32,28 @@
       "description": "Helper UI that recommends the best inbound contact channel based on declared preferences and available channels.",
       "props": ["channels", "preferences", "title", "class"],
       "exports": true
+    },
+    "AnchorAssuranceBadge": {
+      "description": "Displays Lesser Host anchor_assurance as hosted/offchain or immutable/onchain trust metadata without treating it as capability authority.",
+      "props": ["assurance", "showDetails", "showTrustNotice", "title", "class"],
+      "exports": true
     }
   },
   "utilities": {
     "utils": {
       "description": "Recommendation and formatting helpers for channels/preferences.",
-      "exports": ["getAvailabilityStatus", "recommendContactTarget", "formatAvailabilitySummary"]
+      "exports": [
+        "getAvailabilityStatus",
+        "recommendContactTarget",
+        "formatAvailabilitySummary",
+        "getAnchorAssuranceStateLabel",
+        "getAnchorAssuranceSourceLabel",
+        "getAnchorEvidenceKindLabel",
+        "getAnchorAssuranceBadgeColor",
+        "formatAnchorAssuranceSummary",
+        "formatAnchorAssuranceTrustNotice",
+        "anchorAssuranceAllowsCapability"
+      ]
     }
   },
   "types": [
@@ -37,7 +62,11 @@
     "ContactTarget",
     "SoulChannels",
     "SoulContactPreferences",
-    "SoulContactChannel"
+    "SoulContactChannel",
+    "SoulAnchorAssurance",
+    "SoulAnchorEvidence",
+    "AdapterSoulAnchorAssuranceContract",
+    "AdapterSoulAnchorEvidenceContract"
   ],
   "dependencies": {
     "internal": [
@@ -51,7 +80,8 @@
   "features": {
     "channels": true,
     "contactPreferences": true,
-    "recommendations": true
+    "recommendations": true,
+    "anchorAssurance": true
   },
   "accessibility": {
     "wcag": "2.1 AA",
