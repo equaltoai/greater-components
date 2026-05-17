@@ -11,6 +11,8 @@ export type SoulAgentChannelPreferencesRequest =
 export type SoulAgentChannelPreferencesResponse =
 	components['schemas']['SoulAgentChannelPreferencesResponse'];
 export type SoulAgentIdentity = components['schemas']['SoulAgentIdentity'];
+export type SoulAnchorEvidence = components['schemas']['SoulAnchorEvidence'];
+export type SoulAnchorAssurance = components['schemas']['SoulAnchorAssurance'];
 export type SoulAgentCommActivityQuery = NonNullable<
 	operations['soulAgentCommActivity']['parameters']['query']
 >;

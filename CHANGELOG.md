@@ -12,6 +12,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.13-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.12-rc.0...greater-v0.8.13-rc.0) (2026-05-17)
+
+### Features
+
+- **soul:** surface anchor assurance metadata ([b5fd78c](https://github.com/equaltoai/greater-components/commit/b5fd78ca7b54703e53bbf9991e96f4f31181274a))
+- **soul:** surface anchor assurance metadata ([02441ca](https://github.com/equaltoai/greater-components/commit/02441cae1910ed98df3bb88b1da2bfd36f9910bd))
+
+### Chores
+
+- **main:** release greater 0.8.12 ([a1e5b26](https://github.com/equaltoai/greater-components/commit/a1e5b269af454978e235b94ab605139af581ca14))
+- **main:** release greater 0.8.12 ([6a5ec53](https://github.com/equaltoai/greater-components/commit/6a5ec532e512bd9626e3f4495af3194fbe82321c))
+- **release:** backmerge main for anchor assurance ([e48fdad](https://github.com/equaltoai/greater-components/commit/e48fdad66f7c18817ec322b71fef877e8bd23d87))
+- **release:** prepare metadata ([5205e6a](https://github.com/equaltoai/greater-components/commit/5205e6ac1de403825ed1d61087760dcc726f6aa8))
+
 ## [0.8.12](https://github.com/equaltoai/greater-components/compare/greater-v0.8.11...greater-v0.8.12) (2026-05-16)
 
 ### Bug Fixes

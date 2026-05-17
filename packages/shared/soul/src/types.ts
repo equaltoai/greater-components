@@ -1,9 +1,21 @@
-import type { SoulAgentChannelsResponse } from '@equaltoai/greater-components-adapters';
+import type {
+	SoulAgentChannelsResponse,
+	SoulAgentIdentity,
+	SoulAnchorAssurance as AdapterSoulAnchorAssurance,
+	SoulAnchorEvidence as AdapterSoulAnchorEvidence,
+} from '@equaltoai/greater-components-adapters';
 
 export type SoulAgentId = string;
 
 export type SoulChannels = SoulAgentChannelsResponse['channels'];
 export type SoulContactPreferences = NonNullable<SoulAgentChannelsResponse['contactPreferences']>;
+export type SoulAnchorAssurance = NonNullable<SoulAgentIdentity['anchor_assurance']>;
+export type SoulAnchorEvidence = NonNullable<SoulAnchorAssurance['evidence']>[number];
+
+// Keep adapter-level generated names available for consumers that want to type helper inputs
+// directly against Lesser Host's OpenAPI components.
+export type AdapterSoulAnchorAssuranceContract = AdapterSoulAnchorAssurance;
+export type AdapterSoulAnchorEvidenceContract = AdapterSoulAnchorEvidence;
 
 export type SoulContactChannel = SoulContactPreferences['preferred'];
 

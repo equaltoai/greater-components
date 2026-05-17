@@ -20,6 +20,8 @@ export type {
 	SoulAgentCommQueueQuery,
 	SoulAgentCommQueueResponse,
 	SoulAgentIdentity,
+	SoulAnchorAssurance,
+	SoulAnchorEvidence,
 	SoulCommSendErrorEnvelope,
 	SoulCommSendRequest,
 	SoulCommSendResponse,

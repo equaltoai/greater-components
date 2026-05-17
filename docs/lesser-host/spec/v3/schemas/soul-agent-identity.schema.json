@@ -32,6 +32,36 @@
           "maxItems": 16
         }
       }
+    },
+    "anchor_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["host_registry_record", "mint_transaction"] },
+        "tx_hash": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+        "operation_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "token_id": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "chain_id": { "type": "integer", "minimum": 1 },
+        "recorded_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "anchor_assurance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "source", "capability_gate", "mutable", "revocable"],
+      "properties": {
+        "state": { "type": "string", "enum": ["hosted_offchain", "immutable_onchain"] },
+        "source": { "type": "string", "enum": ["host_record", "onchain_receipt"] },
+        "capability_gate": { "type": "boolean", "const": false },
+        "mutable": { "type": "boolean" },
+        "revocable": { "type": "boolean" },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/anchor_evidence" },
+          "maxItems": 8
+        }
+      }
     }
   },
   "properties": {
@@ -43,6 +73,7 @@
     "token_id": { "type": "string", "minLength": 1, "maxLength": 256 },
     "meta_uri": { "type": "string", "format": "uri" },
     "avatar": { "$ref": "#/$defs/avatar" },
+    "anchor_assurance": { "$ref": "#/$defs/anchor_assurance" },
     "capabilities": {
       "type": "array",
       "items": { "type": "string", "minLength": 1, "maxLength": 128 }
