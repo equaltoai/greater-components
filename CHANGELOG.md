@@ -14,22 +14,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.14](https://github.com/equaltoai/greater-components/compare/greater-v0.8.13...greater-v0.8.14) (2026-05-17)
 
-
 ### Bug Fixes
 
-* **cli:** ship browser-valid raw css selectors ([17f5a54](https://github.com/equaltoai/greater-components/commit/17f5a54c7fd2e0707a09fd0269afd590a2fb25a8))
-* **cli:** ship browser-valid raw css selectors ([468a647](https://github.com/equaltoai/greater-components/commit/468a647b1bceffb34230798477ad763a92637c33))
-
+- **cli:** ship browser-valid raw css selectors ([17f5a54](https://github.com/equaltoai/greater-components/commit/17f5a54c7fd2e0707a09fd0269afd590a2fb25a8))
+- **cli:** ship browser-valid raw css selectors ([468a647](https://github.com/equaltoai/greater-components/commit/468a647b1bceffb34230798477ad763a92637c33))
 
 ### Chores
 
-* **contracts:** advance Lesser and Host pins ([e4ae164](https://github.com/equaltoai/greater-components/commit/e4ae164caa05513a4ad7c8e1b769c49c94321b99))
-* **contracts:** advance Lesser and Host pins ([8b266c3](https://github.com/equaltoai/greater-components/commit/8b266c39ca5c35c38b465a5a233501898f69ed51))
-* **premain:** release greater 0.8.14-rc.0 ([b4133ce](https://github.com/equaltoai/greater-components/commit/b4133ce96e7f45e17ac43096d5b91085630075e8))
-* **premain:** release greater 0.8.14-rc.0 ([4f938e5](https://github.com/equaltoai/greater-components/commit/4f938e56943f4930dde58e868c3a8e49912152c9))
-* **release:** backmerge main into staging after 546 ([33e2760](https://github.com/equaltoai/greater-components/commit/33e2760ac3e6b1b6e4e9b5cb60798fc4594be328))
-* **release:** prepare metadata ([b299676](https://github.com/equaltoai/greater-components/commit/b299676d262711c3bc54e74580182ad50796f65e))
-* **release:** refresh backmerge checks after 546 ([77029fc](https://github.com/equaltoai/greater-components/commit/77029fc18b26edae2e4cecd1d038c3d9eb08d76e))
+- **contracts:** advance Lesser and Host pins ([e4ae164](https://github.com/equaltoai/greater-components/commit/e4ae164caa05513a4ad7c8e1b769c49c94321b99))
+- **contracts:** advance Lesser and Host pins ([8b266c3](https://github.com/equaltoai/greater-components/commit/8b266c39ca5c35c38b465a5a233501898f69ed51))
+- **premain:** release greater 0.8.14-rc.0 ([b4133ce](https://github.com/equaltoai/greater-components/commit/b4133ce96e7f45e17ac43096d5b91085630075e8))
+- **premain:** release greater 0.8.14-rc.0 ([4f938e5](https://github.com/equaltoai/greater-components/commit/4f938e56943f4930dde58e868c3a8e49912152c9))
+- **release:** backmerge main into staging after 546 ([33e2760](https://github.com/equaltoai/greater-components/commit/33e2760ac3e6b1b6e4e9b5cb60798fc4594be328))
+- **release:** prepare metadata ([b299676](https://github.com/equaltoai/greater-components/commit/b299676d262711c3bc54e74580182ad50796f65e))
+- **release:** refresh backmerge checks after 546 ([77029fc](https://github.com/equaltoai/greater-components/commit/77029fc18b26edae2e4cecd1d038c3d9eb08d76e))
 
 ## [0.8.14-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.13-rc.0...greater-v0.8.14-rc.0) (2026-05-17)
 
