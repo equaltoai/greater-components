@@ -753,7 +753,7 @@ body.gr-scroll-locked {
 	height: 0.75rem;
 }
 
-.gr-badge--sm .gr-badge__icon :global(svg) {
+.gr-badge--sm .gr-badge__icon svg {
 	width: 0.75rem;
 	height: 0.75rem;
 }
@@ -763,7 +763,7 @@ body.gr-scroll-locked {
 	height: 0.875rem;
 }
 
-.gr-badge--md .gr-badge__icon :global(svg) {
+.gr-badge--md .gr-badge__icon svg {
 	width: 0.875rem;
 	height: 0.875rem;
 }
@@ -773,7 +773,7 @@ body.gr-scroll-locked {
 	height: 1rem;
 }
 
-.gr-badge--lg .gr-badge__icon :global(svg) {
+.gr-badge--lg .gr-badge__icon svg {
 	width: 1rem;
 	height: 1rem;
 }
@@ -2192,7 +2192,7 @@ body.gr-scroll-locked {
 	gap: 1.5rem;
 }
 
-.gr-list > :global(li) {
+.gr-list > li {
 	display: flex;
 	align-items: flex-start;
 	gap: 0.75rem;
@@ -3429,8 +3429,8 @@ body.gr-scroll-locked {
 }
 
 /* High contrast explicit overrides */
-[data-theme='high-contrast'] .gr-action-bar :global(.gr-action-bar__button:hover:not(:disabled)),
-[data-theme='high-contrast'] .gr-action-bar :global(.gr-action-bar__button--active) {
+[data-theme='high-contrast'] .gr-action-bar .gr-action-bar__button:hover:not(:disabled),
+[data-theme='high-contrast'] .gr-action-bar .gr-action-bar__button--active {
 	color: var(--gr-color-base-black);
 }
 
