@@ -303,6 +303,56 @@ components:
     SoulAgentIdentity:
       $ref: "../spec/v3/schemas/soul-agent-identity.schema.json"
 
+    SoulAnchorEvidence:
+      type: object
+      additionalProperties: false
+      required: [kind]
+      properties:
+        kind:
+          type: string
+          enum: [host_registry_record, mint_transaction]
+        tx_hash:
+          type: string
+          pattern: "^0x[0-9a-fA-F]{64}$"
+        operation_id:
+          type: string
+          minLength: 1
+          maxLength: 256
+        token_id:
+          type: string
+          minLength: 1
+          maxLength: 256
+        chain_id:
+          type: integer
+          minimum: 1
+        recorded_at:
+          type: string
+          format: date-time
+
+    SoulAnchorAssurance:
+      type: object
+      additionalProperties: false
+      required: [state, source, capability_gate, mutable, revocable]
+      properties:
+        state:
+          type: string
+          enum: [hosted_offchain, immutable_onchain]
+        source:
+          type: string
+          enum: [host_record, onchain_receipt]
+        capability_gate:
+          type: boolean
+          enum: [false]
+        mutable:
+          type: boolean
+        revocable:
+          type: boolean
+        evidence:
+          type: array
+          maxItems: 8
+          items:
+            $ref: "#/components/schemas/SoulAnchorEvidence"
+
     SoulResolveResponse:
       type: object
       additionalProperties: false
@@ -337,6 +387,21 @@ components:
 
     SoulCommContactabilityResponse:
       $ref: "../spec/v3/schemas/soul-comm-contactability.response.schema.json"
+
+    SoulX402InvocationGrant:
+      $ref: "../spec/v3/schemas/soul-x402-invocation-grant.schema.json"
+
+    SoulX402InvocationGrantIssueRequest:
+      $ref: "../spec/v3/schemas/soul-x402-invocation-grant.issue.request.schema.json"
+
+    SoulX402InvocationGrantIssueResponse:
+      $ref: "../spec/v3/schemas/soul-x402-invocation-grant.issue.response.schema.json"
+
+    SoulX402InvocationGrantConsumeRequest:
+      $ref: "../spec/v3/schemas/soul-x402-invocation-grant.consume.request.schema.json"
+
+    SoulX402InvocationGrantConsumeResponse:
+      $ref: "../spec/v3/schemas/soul-x402-invocation-grant.consume.response.schema.json"
 
     SoulCommMailboxMessage:
       $ref: "../spec/v3/schemas/soul-comm-mailbox-message.schema.json"
@@ -719,6 +784,8 @@ components:
           type: string
         conversation_id:
           type: string
+        anchor_assurance:
+          $ref: "#/components/schemas/SoulAnchorAssurance"
         promotion:
           $ref: "#/components/schemas/SoulAgentPromotion"
 
@@ -2838,6 +2905,81 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
+
+  /api/v1/soul/x402/grants:
+    post:
+      operationId: soulX402IssueInvocationGrant
+      summary: Issue a scoped x402 invocation grant
+      description: |
+        Issues a host-side off-chain invocation grant for a configured public paid caller. The grant binds the
+        `agentId`, `capability`, `tool`, `resource`, invocation `requestHash`, caller subject hash, payment evidence
+        hash, amount/network metadata, nonce, idempotency key hash, expiry, max usage, and caller-access payment policy
+        version.
+
+        This public route returns a raw `grantToken` only on the first successful issue. Idempotent replays return the
+        same grant metadata with `tokenReturned=false`; callers must retain the original token. Host stores only hashes
+        of caller subject, payment evidence, optional payment id, idempotency key, and grant token. Generic
+        `x402.grant_unavailable` errors avoid exposing private soul state, private comm reachability, unresolved payment
+        detail, wallet material, or tenant data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulX402InvocationGrantIssueRequest"
+      responses:
+        "200":
+          description: Grant issued or idempotently replayed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulX402InvocationGrantIssueResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "500": { $ref: "#/components/responses/InternalError" }
+
+  /api/v1/soul/x402/grants/{grantId}/consume:
+    post:
+      operationId: soulX402ConsumeInvocationGrant
+      summary: Consume a scoped x402 invocation grant
+      description: |
+        Consumes a host-issued x402 invocation grant from an authenticated managed instance. The bearer token is the
+        instance API key; public paid callers never receive principal/operator/session authority. The authenticated
+        instance must own the agent domain, present the one-time raw grant token, and repeat the original
+        agent/capability/tool/resource/request hash binding.
+
+        Consumption writes a bounded usage slot keyed by the consume idempotency key hash. Repeating the same consume
+        idempotency key with the same consume request hash is a replay and does not increment usage. Distinct consume
+        idempotency keys cannot exceed `maxUsage`.
+      security:
+        - instanceKeyAuth: []
+      parameters:
+        - name: grantId
+          in: path
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SoulX402InvocationGrantConsumeRequest"
+      responses:
+        "200":
+          description: Grant consumed or idempotently replayed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SoulX402InvocationGrantConsumeResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Unauthorized" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "500": { $ref: "#/components/responses/InternalError" }
 
   /api/v1/soul/comm/send:
     post:

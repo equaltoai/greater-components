@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-x402-invocation-grant.consume.request.schema.json",
+  "title": "POST /api/v1/soul/x402/grants/{grantId}/consume request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["grantToken", "agentId", "capability", "tool", "resource", "requestHash", "idempotencyKey"],
+  "properties": {
+    "grantToken": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "tool": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "resource": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "requestHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" },
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 }
+  }
+}

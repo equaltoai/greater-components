@@ -13,12 +13,15 @@
 	} from '@equaltoai/greater-components-primitives';
 	import { truncateMiddle } from '@equaltoai/greater-components-utils';
 
-	import type { SoulChannels } from './types.js';
+	import AnchorAssuranceBadge from './AnchorAssuranceBadge.svelte';
+	import type { SoulAnchorAssurance, SoulChannels } from './types.js';
 
 	interface Props {
 		agentId?: string;
 		channels: SoulChannels;
 		updatedAt?: string;
+		anchorAssurance?: SoulAnchorAssurance | null;
+		showAnchorAssurance?: boolean;
 		title?: string;
 		showCopy?: boolean;
 		class?: string;
@@ -28,6 +31,8 @@
 		agentId,
 		channels,
 		updatedAt,
+		anchorAssurance = null,
+		showAnchorAssurance = true,
 		title = 'Reachability',
 		showCopy = true,
 		class: className = '',
@@ -77,6 +82,12 @@
 	{/snippet}
 
 	<DefinitionList density="sm">
+		{#if showAnchorAssurance}
+			<DefinitionItem label="Anchor assurance">
+				<AnchorAssuranceBadge assurance={anchorAssurance} />
+			</DefinitionItem>
+		{/if}
+
 		<DefinitionItem label="ENS" monospace wrap={false}>
 			{#if channels.ens}
 				{@const ens = channels.ens}

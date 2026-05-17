@@ -1,0 +1,7 @@
+{
+  "error": {
+    "code": "comm.entitlement_required",
+    "message": "channel entitlement required",
+    "request_id": "req_123"
+  }
+}
