@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-x402-invocation-grant.issue.response.schema.json",
+  "title": "POST /api/v1/soul/x402/grants response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["grant", "replayed", "tokenReturned"],
+  "properties": {
+    "grant": { "$ref": "soul-x402-invocation-grant.schema.json" },
+    "replayed": { "type": "boolean" },
+    "tokenReturned": {
+      "type": "boolean",
+      "description": "False on idempotent replay because raw grant tokens are returned only once."
+    }
+  }
+}

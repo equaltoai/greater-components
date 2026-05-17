@@ -116,3 +116,14 @@ pnpm exec vite build --config examples/agent-face-svelte/vite.config.ts
 pnpm --filter @equaltoai/playground build
 pnpm test:agent-face
 ```
+
+## Anchor assurance display
+
+Lesser Host `anchor_assurance` metadata is display/trust metadata, not a
+capability authority signal. Greater shared soul components expose
+`AnchorAssuranceBadge` and optional `ChannelsDisplay.anchorAssurance` rendering
+so host shells can distinguish hosted/offchain souls from immutable/onchain souls
+without implying hosted souls are permanent or onchain.
+
+Do not use `anchor_assurance.state` as a permission gate. Capability decisions
+must come from explicit Host policy, not from the assurance badge.

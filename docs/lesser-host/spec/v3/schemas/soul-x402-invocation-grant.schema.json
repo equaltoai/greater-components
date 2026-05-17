@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-x402-invocation-grant.schema.json",
+  "title": "Soul x402 invocation grant",
+  "description": "A minimized host-issued off-chain grant for one bounded public paid invocation. It is scoped invocation authority only and does not confer principal, operator, wallet, or tenant-data authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "grantId",
+    "agentId",
+    "capability",
+    "tool",
+    "resource",
+    "requestHash",
+    "callerSubjectHash",
+    "payment",
+    "nonce",
+    "idempotencyKeyHash",
+    "policyVersion",
+    "authority",
+    "status",
+    "maxUsage",
+    "usedCount",
+    "issuedAt",
+    "expiresAt"
+  ],
+  "properties": {
+    "grantId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "grantToken": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "description": "Raw opaque grant token returned once on first issue. Host stores only sha256(grantToken); idempotent replays intentionally omit it."
+    },
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "tool": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "resource": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "requestHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "description": "sha256 hash of the concrete invocation request Body must present later; raw request body is not stored."
+    },
+    "callerSubjectHash": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "description": "sha256 hash of the public caller subject. The raw subject is not returned."
+    },
+    "payment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scheme", "network", "amount", "facilitatorTrustBoundary", "evidenceHash"],
+      "properties": {
+        "scheme": { "type": "string", "enum": ["x402"] },
+        "network": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "asset": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "amount": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "currency": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "facilitator": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "facilitatorTrustBoundary": {
+          "type": "string",
+          "enum": ["caller_provided_unverified"],
+          "description": "The facilitator value is caller-provided payment-binding metadata, not host-verified settlement proof."
+        },
+        "evidenceHash": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+        "paymentIdHash": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+      }
+    },
+    "nonce": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "idempotencyKeyHash": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+    "policyVersion": { "type": "string", "enum": ["caller-access-payment/v1"] },
+    "authority": { "type": "string", "enum": ["scoped_invocation"] },
+    "status": { "type": "string", "enum": ["issued", "revoked"] },
+    "maxUsage": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "usedCount": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "issuedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" }
+  }
+}

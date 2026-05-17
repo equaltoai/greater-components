@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lesser.host/spec/v3/schemas/soul-x402-invocation-grant.issue.request.schema.json",
+  "title": "POST /api/v1/soul/x402/grants request",
+  "description": "Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the public route.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["agentId", "capability", "tool", "resource", "requestHash", "caller", "payment", "nonce", "idempotencyKey", "expiresAt"],
+  "properties": {
+    "agentId": { "type": "string", "pattern": "^0x[0-9a-fA-F]{64}$" },
+    "capability": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "tool": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "resource": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "requestHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" },
+    "caller": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Provide either subject or subjectHash. If subject is supplied, host hashes it and returns only subjectHash.",
+      "anyOf": [
+        {
+          "type": "object",
+          "required": ["subject"],
+          "properties": {
+            "subject": { "type": "string", "minLength": 1, "maxLength": 512 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["subjectHash"],
+          "properties": {
+            "subjectHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" }
+          }
+        }
+      ],
+      "properties": {
+        "subject": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "subjectHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" }
+      }
+    },
+    "payment": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Provide either evidence or evidenceHash. If raw evidence is supplied, host hashes it and returns only evidenceHash.",
+      "required": ["network", "amount"],
+      "anyOf": [
+        {
+          "type": "object",
+          "required": ["evidence"],
+          "properties": {
+            "evidence": { "type": "string", "minLength": 1, "maxLength": 4096 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["evidenceHash"],
+          "properties": {
+            "evidenceHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" }
+          }
+        }
+      ],
+      "properties": {
+        "scheme": { "type": "string", "enum": ["x402"] },
+        "network": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "asset": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "amount": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "currency": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "facilitator": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "evidence": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "evidenceHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" },
+        "paymentId": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "paymentIdHash": { "type": "string", "pattern": "^(sha256:)?[0-9a-fA-F]{64}$" }
+      }
+    },
+    "nonce": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "idempotencyKey": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "maxUsage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "description": "Optional; host defaults omitted maxUsage to 1."
+    }
+  }
+}
