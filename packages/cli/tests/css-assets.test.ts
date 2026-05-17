@@ -14,10 +14,7 @@ import { CSS_SOURCE_PATHS } from '../src/utils/css-inject.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '../../..');
 
-const rawCssAssetPaths = [
-	CSS_SOURCE_PATHS.primitives,
-	...Object.values(CSS_SOURCE_PATHS.faces),
-];
+const rawCssAssetPaths = [CSS_SOURCE_PATHS.primitives, ...Object.values(CSS_SOURCE_PATHS.faces)];
 
 describe('registry-managed raw CSS assets', () => {
 	it('do not contain Svelte-only :global selectors', async () => {
