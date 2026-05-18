@@ -80,7 +80,7 @@
     "@graphql-codegen/introspection": "^5.0.1",
     "@graphql-codegen/typed-document-node": "^6.1.7",
     "@graphql-codegen/typescript": "^5.0.9",
-    "@graphql-codegen/typescript-operations": "^5.0.9",
+    "@graphql-codegen/typescript-operations": "^6.0.2",
     "@sveltejs/package": "^2.5.7",
     "@theory-cloud/facetheory": "https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz",
     "@types/node": "^25.6.0",
