@@ -54,9 +54,15 @@ export interface ArticleData {
 	slug: string;
 	/** Article metadata */
 	metadata: ArticleMetadata;
-	/** Article content (HTML or Markdown) */
+	/**
+	 * Article content.
+	 *
+	 * For Lesser-backed public articles, pass server-rendered/sanitized HTML when
+	 * available. Markdown is displayed by Article.Content only as escaped fallback
+	 * source text, not as canonical publication rendering.
+	 */
 	content: string;
-	/** Content format */
+	/** Content format: `html` is the public render path; `markdown` is an escaped fallback. */
 	contentFormat: 'html' | 'markdown';
 	/** Article author */
 	author: AuthorData;
@@ -224,9 +230,9 @@ export interface DraftData {
 	id: string;
 	/** Draft title */
 	title: string;
-	/** Draft content */
+	/** Draft source content. Canonical public rendering happens after server publication. */
 	content: string;
-	/** Content format */
+	/** Draft source format. Markdown preview is authoring-only, not public Article rendering. */
 	contentFormat: 'html' | 'markdown';
 	/** Last saved timestamp */
 	savedAt: Date | string;

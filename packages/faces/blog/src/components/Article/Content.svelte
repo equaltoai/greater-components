@@ -19,6 +19,10 @@ Article.Content - Renders article body content with proper typography
 		article.contentFormat === 'html' ? sanitizeHtml(article.content).trim() : ''
 	);
 
+	// Lesser/server owns canonical public rendering and sanitization. If an adapter hands
+	// markdown source to Article.Content before rendered HTML exists, keep it escaped as a
+	// fallback rather than creating a second canonical public markdown renderer here.
+
 	// Extract headings for table of contents
 	onMount(() => {
 		if (contentElement) {
@@ -47,7 +51,7 @@ Article.Content - Renders article body content with proper typography
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		{@html sanitizedContent}
 	{:else}
-		<!-- Markdown content would be rendered here -->
+		<!-- Markdown source fallback: escaped plain text, not canonical publication HTML. -->
 		<p>{article.content}</p>
 	{/if}
 </div>
