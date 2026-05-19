@@ -46,16 +46,16 @@ import '@equaltoai/greater-components-blog/style.css';
 
 ### Article Components
 
-| Component                 | Description                               | Props                           |
-| ------------------------- | ----------------------------------------- | ------------------------------- |
-| `Article.Root`            | Container for article compound component  | `article`, `config`, `handlers` |
-| `Article.Header`          | Title, subtitle, metadata, featured image | -                               |
-| `Article.Content`         | Rendered article body with typography     | -                               |
-| `Article.Footer`          | Author card, tags, share buttons          | -                               |
-| `Article.TableOfContents` | Auto-generated navigation from headings   | `position`                      |
-| `Article.ReadingProgress` | Scroll progress indicator                 | `position`                      |
-| `Article.ShareBar`        | Social sharing buttons                    | `platforms`                     |
-| `Article.RelatedPosts`    | Related content suggestions               | `posts`, `limit`                |
+| Component                 | Description                                      | Props                           |
+| ------------------------- | ------------------------------------------------ | ------------------------------- |
+| `Article.Root`            | Container for article compound component         | `article`, `config`, `handlers` |
+| `Article.Header`          | Title, subtitle, metadata, featured image        | -                               |
+| `Article.Content`         | Public article body with safe HTML/fallback text | -                               |
+| `Article.Footer`          | Author card, tags, share buttons                 | -                               |
+| `Article.TableOfContents` | Auto-generated navigation from headings          | `position`                      |
+| `Article.ReadingProgress` | Scroll progress indicator                        | `position`                      |
+| `Article.ShareBar`        | Social sharing buttons                           | `platforms`                     |
+| `Article.RelatedPosts`    | Related content suggestions                      | `posts`, `limit`                |
 
 ### Author Components
 
@@ -208,6 +208,18 @@ Override design tokens to customize the theme:
 	<Article.Footer />
 </Article.Root>
 ```
+
+### Lesser-backed article rendering
+
+For public Lesser-backed articles, pass server-rendered/sanitized HTML from the adapter with
+`contentFormat: 'html'`. `Article.Content` sanitizes again before `{@html}` as defense-in-depth.
+
+If an adapter only has raw Markdown source, `contentFormat: 'markdown'` is treated as an escaped
+plain-text fallback. Greater does not use the client `MarkdownRenderer` as a second canonical public
+renderer; use it only for draft/editor previews.
+
+See `docs/faces/blog/lesser-cms-contract-audit.md` for the field-by-field Lesser CMS mapping and gap
+list.
 
 ### Newsletter Signup
 

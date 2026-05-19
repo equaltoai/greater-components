@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-17T17:28:48.041Z",
+  "generatedAt": "2026-05-19T21:30:36.032Z",
   "ref": "greater-v0.8.13",
   "version": "0.8.13",
   "checksums": {
@@ -1013,7 +1013,7 @@
     "packages/faces/social/src/theme.css": "sha256-wiMgWvybANnq8ikC0qHMur1K0g4iwepGGozhYuV6QCI=",
     "packages/faces/social/src/types.ts": "sha256-WNFevRWg2/Rq6uCALtBoVQql9JGaV4B63JYW2IkZSYQ=",
     "packages/faces/social/src/utils/notificationGrouping.ts": "sha256-h/6xwSoua5lvEsXzV66EhlKfxdH5VySXQs3hs7uuN5M=",
-    "packages/faces/blog/src/components/Article/Content.svelte": "sha256-yxnJHl75OM52nOstB8fd9q7pGjyNb8xX3fzD2hiK9mw=",
+    "packages/faces/blog/src/components/Article/Content.svelte": "sha256-paCAdQ5yRDaVEpY5pwfmcU6Akx1gAPOnIqSNK3WYKo0=",
     "packages/faces/blog/src/components/Article/context.ts": "sha256-bYXS4NwSLcHdl8QnpVedTKNR94Tq1CjD+lUzj4zuwKI=",
     "packages/faces/blog/src/components/Article/Footer.svelte": "sha256-4ko7rj3fBa6Wd3qPjppbqGxBXukvBrz50TgFFqMobkk=",
     "packages/faces/blog/src/components/Article/Header.svelte": "sha256-uK21b88M/aZuGibnesH7hC3VNlSkyypPTK9FkUc34xM=",
@@ -1045,7 +1045,7 @@
     "packages/faces/blog/src/patterns/index.ts": "sha256-meoG+gNvG1Os36voxE5lVckTjWYsOZA+Tdff8i7HsDY=",
     "packages/faces/blog/src/share.ts": "sha256-zh34kdwk9EtN/we6XkorjmvX8eXNRaQQBC1YKwVOSCo=",
     "packages/faces/blog/src/theme.css": "sha256-MUgaehwVg/hmQEVDoMD07vDfivv1LEcjxz24fX0OZts=",
-    "packages/faces/blog/src/types.ts": "sha256-58Z/JCPvUl0GPBj9FHSo038pGr89iB8TChpdzQ2Fx1Q=",
+    "packages/faces/blog/src/types.ts": "sha256-mVXkcB9E/hVsSr5NaLkGvS0smN0ARhuHIFDrRkfcCgg=",
     "packages/faces/community/src/components/Community/context.ts": "sha256-o7hAokh6NA8qRTQSPQx4gZSwM2yKGGWlgI9xWCCQTY8=",
     "packages/faces/community/src/components/Community/Header.svelte": "sha256-Cgg2NDuydM3itR8WioXBTqcdGuRWBeMnvmi/yfg7yCc=",
     "packages/faces/community/src/components/Community/index.ts": "sha256-O2i+BMNyHIDeaNrAk13XiIJjifx4MiVDHa1A5eSMJLg=",
@@ -6783,8 +6783,8 @@
       "files": [
         {
           "path": "src/components/Article/Content.svelte",
-          "checksum": "sha256-yxnJHl75OM52nOstB8fd9q7pGjyNb8xX3fzD2hiK9mw=",
-          "size": 1397
+          "checksum": "sha256-paCAdQ5yRDaVEpY5pwfmcU6Akx1gAPOnIqSNK3WYKo0=",
+          "size": 1697
         },
         {
           "path": "src/components/Article/context.ts",
@@ -6943,8 +6943,8 @@
         },
         {
           "path": "src/types.ts",
-          "checksum": "sha256-58Z/JCPvUl0GPBj9FHSo038pGr89iB8TChpdzQ2Fx1Q=",
-          "size": 11920
+          "checksum": "sha256-mVXkcB9E/hVsSr5NaLkGvS0smN0ARhuHIFDrRkfcCgg=",
+          "size": 12341
         }
       ],
       "styles": {
