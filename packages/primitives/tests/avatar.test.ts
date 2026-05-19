@@ -161,7 +161,9 @@ describe('Avatar.svelte - CSP Compliance Property Tests', () => {
 
 					// Check that appropriate fallback is rendered
 					if (fallbackMode === 'initials') {
-						return container.querySelector('.gr-avatar__initials') !== null;
+						return name.trim().length > 0
+							? container.querySelector('.gr-avatar__initials') !== null
+							: container.querySelector('.gr-avatar__fallback-image') !== null;
 					} else if (fallbackMode === 'label') {
 						return container.querySelector('.gr-avatar__label') !== null;
 					} else if (fallbackMode === 'icon') {
