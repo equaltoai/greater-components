@@ -6,8 +6,8 @@ canonical Article reader page.
 -->
 
 <script lang="ts">
-	import { formatDateTime } from '@equaltoai/greater-components-utils';
 	import type { ArticleInputData } from '../../types.js';
+	import { formatArticleDateTime } from './date.js';
 	import { normalizeArticleData } from './normalize.js';
 
 	interface Props {
@@ -54,12 +54,11 @@ canonical Article reader page.
 	const tags = $derived((metadata.tags ?? []).slice(0, maxTags));
 	const cardClass = $derived(['gr-blog-article-card', className].filter(Boolean).join(' '));
 	const headingTag = $derived(`h${headingLevel}` as 'h2' | 'h3' | 'h4');
-	const publishedIso = $derived(toIso(metadata.publishedAt));
-	const publishedLabel = $derived(formatDate(metadata.publishedAt));
+	const publishedDate = $derived(formatArticleDateTime(metadata.publishedAt));
 	const metaItems = $derived.by(() => {
 		const items: Array<{ label: string; datetime?: string }> = [];
-		if (showPublishedAt && publishedLabel) {
-			items.push({ label: publishedLabel, datetime: publishedIso });
+		if (showPublishedAt && publishedDate.label) {
+			items.push({ label: publishedDate.label, datetime: publishedDate.iso });
 		}
 		if (showAuthor) {
 			items.push({ label: normalizedArticle.author.name });
@@ -69,19 +68,6 @@ canonical Article reader page.
 		}
 		return items;
 	});
-
-	function toIso(value: Date | string): string | undefined {
-		const date = value instanceof Date ? value : new Date(value);
-		return Number.isNaN(date.valueOf()) ? undefined : date.toISOString();
-	}
-
-	function formatDate(value: Date | string): string {
-		try {
-			return formatDateTime(value);
-		} catch {
-			return String(value);
-		}
-	}
 </script>
 
 <article class={cardClass} aria-labelledby={titleId} data-article-id={normalizedArticle.id}>

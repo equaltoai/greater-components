@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
+import { formatDateTime } from '@equaltoai/greater-components-utils';
+import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import {
 	Article,
@@ -8,11 +9,6 @@ import {
 	normalizeArticleData,
 } from '../../src/components/Article/index.js';
 import type { ArticleDisplayData } from '../../src/types.js';
-
-vi.mock('@equaltoai/greater-components-utils', () => ({
-	formatDateTime: (date: Date | string) => new Date(date).toISOString().split('T')[0],
-	sanitizeHtml: (html: string) => html,
-}));
 
 const flatArticle: ArticleDisplayData = {
 	id: 'emdash-article-1',
@@ -64,9 +60,12 @@ describe('Article complete display exports', () => {
 
 	it('renders an SSR-friendly ArticleReader without browser-only affordances by default', () => {
 		render(ArticleReader, { props: { article: flatArticle } });
+		const publishedLabel = formatDateTime(flatArticle.publishedAt as string).absolute;
 
 		expect(screen.getByRole('article')).toBeInTheDocument();
 		expect(screen.getByRole('heading', { level: 1, name: 'Proven Blog Gaps' })).toBeInTheDocument();
+		expect(screen.getByText(publishedLabel)).toBeInTheDocument();
+		expect(screen.queryByText('[object Object]')).toBeNull();
 		expect(screen.getByText('What Emdash needs from Greater')).toBeInTheDocument();
 		expect(screen.getByText('Rendered by Lesser.')).toBeInTheDocument();
 		expect(screen.getByText('Demo Writer')).toBeInTheDocument();
@@ -80,10 +79,13 @@ describe('Article complete display exports', () => {
 				href: '/journal/proven-blog-gaps',
 			},
 		});
+		const published = formatDateTime(flatArticle.publishedAt as string);
 
 		const link = screen.getByRole('link');
 		expect(link).toHaveAttribute('href', '/journal/proven-blog-gaps');
 		expect(screen.getByRole('heading', { level: 2, name: 'Proven Blog Gaps' })).toBeInTheDocument();
+		expect(screen.getByText(published.absolute)).toHaveAttribute('datetime', published.iso);
+		expect(screen.queryByText('[object Object]')).toBeNull();
 		expect(screen.getByText('Demo Writer')).toBeInTheDocument();
 		expect(screen.getByText('4 min read')).toBeInTheDocument();
 		expect(screen.getByText('Fediverse')).toBeInTheDocument();

@@ -46,6 +46,7 @@ describe('Blog face SSR safety', () => {
 
 		expect(result.body).toContain('SSR Reader');
 		expect(result.body).toContain('Rendered by Lesser.');
+		expect(result.body).not.toContain('[object Object]');
 		expect(result.body).not.toContain('role="progressbar"');
 	});
 
@@ -65,5 +66,6 @@ describe('Blog face SSR safety', () => {
 		expect(result.body).toContain('href="/articles/server-card"');
 		expect(result.body).toContain('Server Card');
 		expect(result.body).toContain('Article tags');
+		expect(result.body).not.toContain('[object Object]');
 	});
 });
