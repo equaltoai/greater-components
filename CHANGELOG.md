@@ -12,6 +12,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.16-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.15-rc.0...greater-v0.8.16-rc.0) (2026-05-20)
+
+
+### Features
+
+* **blog:** add article display surface ([#573](https://github.com/equaltoai/greater-components/issues/573)) ([30b9f30](https://github.com/equaltoai/greater-components/commit/30b9f301ff407e0b62a1b4b42a7315b8fe27f3ff))
+
+
+### Chores
+
+* **main:** release greater 0.8.15 ([269daf8](https://github.com/equaltoai/greater-components/commit/269daf85dc4e79f20e6942ed0a9765b6db513888))
+* **main:** release greater 0.8.15 ([2ba7bc3](https://github.com/equaltoai/greater-components/commit/2ba7bc3a30f1b5ae994736e67df9db4dfd9cf093))
+* **release:** prepare metadata ([2b9aedc](https://github.com/equaltoai/greater-components/commit/2b9aedcda8fed1742600383b123fd7342c957ea3))
+
 ## [0.8.15](https://github.com/equaltoai/greater-components/compare/greater-v0.8.14...greater-v0.8.15) (2026-05-20)
 
 ### Docs
