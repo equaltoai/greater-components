@@ -12,6 +12,26 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.15-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.14-rc.0...greater-v0.8.15-rc.0) (2026-05-20)
+
+### Docs
+
+- **blog:** define Lesser CMS rendering boundary ([224c54d](https://github.com/equaltoai/greater-components/commit/224c54d7cb7f6ded2aa6c87a2dc773e77f0c7a58))
+
+### Tests
+
+- **primitives:** cover blank avatar initials fallback ([dd4d75e](https://github.com/equaltoai/greater-components/commit/dd4d75e15124bba9a2359e314defbf64cd51c8f5))
+
+### Chores
+
+- **ci:** refresh project 36 promotion rehearsal ([9389843](https://github.com/equaltoai/greater-components/commit/93898430c6c4761fd909995b8118c8c58d851fc8))
+- **contracts:** sync lesser v1.4.9 ([ed8ddf7](https://github.com/equaltoai/greater-components/commit/ed8ddf795de3840eae6a3196a1ad69888a44a960))
+- **contracts:** sync Lesser v1.4.9 ([5a4e4dd](https://github.com/equaltoai/greater-components/commit/5a4e4dd25f33b479c435e1ec2ff200e42231be22))
+- **main:** release greater 0.8.14 ([74ce648](https://github.com/equaltoai/greater-components/commit/74ce64890bab7c85b83847a1ff72dc882b66ebc5))
+- **main:** release greater 0.8.14 ([19cc1a2](https://github.com/equaltoai/greater-components/commit/19cc1a2c52c4c48948c6f61f401b4c4a1f139bf1))
+- **release:** backmerge main for project 36 blog support ([27be724](https://github.com/equaltoai/greater-components/commit/27be724f343ebf47863c961b4a08fe751d214ef5))
+- **release:** prepare metadata ([e4024aa](https://github.com/equaltoai/greater-components/commit/e4024aa1beba238c0147d63e27f02dc5b3e82709))
+
 ## [0.8.14](https://github.com/equaltoai/greater-components/compare/greater-v0.8.13...greater-v0.8.14) (2026-05-17)
 
 ### Bug Fixes
