@@ -12,6 +12,23 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.16](https://github.com/equaltoai/greater-components/compare/greater-v0.8.15...greater-v0.8.16) (2026-05-20)
+
+
+### Features
+
+* **blog:** add article display surface ([#573](https://github.com/equaltoai/greater-components/issues/573)) ([30b9f30](https://github.com/equaltoai/greater-components/commit/30b9f301ff407e0b62a1b4b42a7315b8fe27f3ff))
+
+
+### Chores
+
+* backmerge premain release ancestry ([4368fb0](https://github.com/equaltoai/greater-components/commit/4368fb0226d989776ba9042cd3baa8b6013f200d))
+* **premain:** release greater 0.8.16-rc.0 ([1347b23](https://github.com/equaltoai/greater-components/commit/1347b237c92eb594b9dad703f62572fe4cfa86b3))
+* **premain:** release greater 0.8.16-rc.0 ([dadf671](https://github.com/equaltoai/greater-components/commit/dadf671ef20b69509cedde781052549c1e9f3888))
+* **release:** prepare metadata ([cf32f91](https://github.com/equaltoai/greater-components/commit/cf32f91be8bcdafccd1677c42d9ba387c6e3cc4f))
+* remediate DCO for blog article squash ([b5c8986](https://github.com/equaltoai/greater-components/commit/b5c89864157afb31386fe5e3f1fb7749bae9bb7a))
+* restitch staging with premain release ancestry ([45fffc2](https://github.com/equaltoai/greater-components/commit/45fffc281fae19c2cff6ad04f5c4ecbfbe2f6d41))
+
 ## [0.8.16-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.15-rc.0...greater-v0.8.16-rc.0) (2026-05-20)
 
 ### Features
