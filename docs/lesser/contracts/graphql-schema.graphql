@@ -2374,6 +2374,10 @@ type Article {
   editorNotes: String
   reviewStatus: String
 
+  generatedBy: Actor
+  reviewedBy: Actor
+  publishedBy: Actor
+
   publishedAt: Time!
   createdAt: Time!
   updatedAt: Time!
@@ -2404,6 +2408,9 @@ type Draft {
   scheduledAt: Time
   objectId: ID
 
+  generatedBy: Actor
+  reviewedBy: Actor
+
   autosaveVersion: Int!
   lastSavedAt: Time!
 
@@ -2422,6 +2429,16 @@ type DraftConnection {
   totalCount: Int!
 }
 
+type DraftPreview {
+  draftId: ID!
+  success: Boolean!
+  renderedHtml: String
+  sourceFormat: String!
+  sourceBytes: Int!
+  renderedBytes: Int!
+  errors: [String!]!
+}
+
 type Revision {
   id: ID!
   objectId: ID!
@@ -2431,6 +2448,9 @@ type Revision {
   changedBy: Actor!
   changeSummary: String
   changeType: ChangeType!
+  generatedBy: Actor
+  reviewedBy: Actor
+  publishedBy: Actor
   createdAt: Time!
 }
 
@@ -2517,6 +2537,7 @@ type PublicationMember {
 extend type Query {
   # Draft operations
   draft(id: ID!): Draft
+  draftPreview(id: ID!): DraftPreview!
   myDrafts(contentType: ObjectType, status: DraftStatus, first: Int, after: Cursor): DraftConnection!
 
   # Revision history

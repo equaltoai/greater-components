@@ -55,8 +55,8 @@ import '$lib/styles/greater/blog.css';
 			readingTime: 5,
 			tags: ['demo', 'tutorial'],
 		},
-		content: '# Introduction\n\nThis is a demo article with full markdown support.',
-		contentFormat: 'markdown',
+		content: '<h2>Introduction</h2><p>This is server-rendered article HTML.</p>',
+		contentFormat: 'html',
 		author: {
 			id: 'u1',
 			name: 'Demo Author',
@@ -126,13 +126,21 @@ import '$lib/styles/greater/blog.css';
 
 ## Content Rendering
 
-The blog face integrates with the `content` package for markdown rendering:
+For public Lesser-backed articles, pass canonical server-rendered HTML into `Article.Content` with
+`contentFormat: 'html'`. If a Blog adapter only has raw Markdown source, `Article.Content` displays it
+as escaped fallback text instead of creating a second public renderer.
+
+The blog face can still integrate with the `content` package for draft/editor Markdown previews:
 
 ```typescript
 import { MarkdownRenderer } from '$lib/greater/content';
 ```
 
+See [Article Rendering](./article-rendering.md) for the renderer/sanitizer boundary and
+[Lesser CMS Contract Audit](./lesser-cms-contract-audit.md) for the field-by-field adapter gap list.
+
 ## Next Steps
 
-- [Article Rendering](./article-rendering.md) – Markdown and rich content
+- [Article Rendering](./article-rendering.md) – Public article rendering boundary
+- [Lesser CMS Contract Audit](./lesser-cms-contract-audit.md) – Lesser CMS adapter boundary
 - [Core Patterns](../../core-patterns.md) – Common patterns and best practices

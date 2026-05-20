@@ -1,10 +1,12 @@
 # Blog Face: Article Rendering
 
-> Rendering markdown content with syntax highlighting and rich formatting.
+> Public article display for Lesser-backed Blog/CMS apps.
 
-The Blog Face uses the `content` package for flexible content rendering, supporting Markdown, HTML, and custom block types.
+`Article.Content` displays a prepared article body. For Lesser-backed publications, Lesser/server owns
+the canonical render and sanitize step; Greater does not create a second public Markdown renderer that
+can diverge from the server contract.
 
-## Article Component
+## Article component
 
 ```svelte
 <script lang="ts">
@@ -19,105 +21,87 @@ The Blog Face uses the `content` package for flexible content rendering, support
 </Article.Root>
 ```
 
-## Content Formats
+## Public content formats
 
-### Markdown
+### Server-rendered HTML (canonical public path)
 
-```typescript
-const article = {
-	content: '# Hello World\n\nThis is **markdown** content.',
-	contentFormat: 'markdown',
-};
-```
-
-### HTML
+Use `contentFormat: 'html'` for public articles when the backend has rendered and sanitized the
+canonical article body. Greater still sanitizes before `{@html}` as defense-in-depth.
 
 ```typescript
 const article = {
-	content: '<h1>Hello World</h1><p>This is <strong>HTML</strong> content.</p>',
+	content: '<h2>Hello World</h2><p>This is the server-rendered article body.</p>',
 	contentFormat: 'html',
 };
 ```
 
-## Markdown Renderer
+### Markdown source (escaped fallback only)
 
-Direct usage of the markdown renderer:
+Use `contentFormat: 'markdown'` only when the adapter has raw source and no canonical rendered public
+HTML yet. `Article.Content` displays that source as escaped plain text. It does not parse Markdown into
+public HTML and it does not treat raw Markdown as trusted content.
+
+```typescript
+const article = {
+	content: '# Draft source\n\nThis Markdown is shown as escaped fallback text.',
+	contentFormat: 'markdown',
+};
+```
+
+For authoring previews, use `Editor.Root` split mode or the `content` package's `MarkdownRenderer`.
+Those previews are draft/editor conveniences, not the canonical public renderer for Lesser-backed
+articles.
+
+## Lesser CMS adapter boundary
+
+Adapters should map Lesser's pinned CMS contract into Blog face view models before rendering:
+
+- Lesser `ContentFormat.HTML` / `ContentFormat.MARKDOWN` → Greater `html` / `markdown`
+- Lesser `Article.title`, `subtitle`, `excerpt`, `publishedAt`, `updatedAt`, `readingTimeMinutes`,
+  and `wordCount` → `ArticleData.metadata.*`
+- Lesser `Actor` → `AuthorData`
+- Lesser `Media` → featured-image URL/alt metadata
+- Lesser private workflow fields (`editorNotes`, `reviewStatus`) stay out of reusable public UI types
+
+See [Lesser CMS Contract Audit](./lesser-cms-contract-audit.md) for the complete field-by-field gap
+list.
+
+## Table of contents
+
+`Article.TableOfContents` uses headings discovered from the rendered article DOM. The Lesser M0
+`tableOfContents` field remains outside the Blog face public API for this milestone; add a server-TOC
+input only after a concrete app integration proves that `Article.Content`'s DOM-derived headings are
+insufficient.
+
+```svelte
+<Article.Root {article}>
+	<Article.Header />
+	<div class="article-layout">
+		<Article.TableOfContents />
+		<Article.Content />
+	</div>
+	<Article.Footer />
+</Article.Root>
+```
+
+## Syntax highlighting and custom Markdown rendering
+
+The `content` package still exports `MarkdownRenderer` for draft previews or non-Lesser content
+surfaces:
 
 ```svelte
 <script lang="ts">
 	import { MarkdownRenderer } from '$lib/greater/content';
 </script>
 
-<MarkdownRenderer content={markdownString} allowHtml={false} syntaxHighlight={true} />
+<MarkdownRenderer content={draftMarkdown} sanitize={true} />
 ```
 
-## Syntax Highlighting
+Do not substitute this client renderer for Lesser's canonical public article renderer. If a consuming
+app needs temporary Markdown display before server-rendered HTML exists, keep that behavior clearly
+labeled as fallback/plain/escaped content.
 
-Code blocks are automatically highlighted using Shiki:
-
-````markdown
-```typescript
-function hello(name: string): void {
-	console.log(`Hello, ${name}!`);
-}
-```
-````
-
-### Supported Languages
-
-The renderer supports 100+ languages including:
-
-- JavaScript/TypeScript
-- Python, Ruby, Go, Rust
-- HTML, CSS, SCSS
-- Svelte, Vue, React
-- SQL, GraphQL, JSON/YAML
-
-## Table of Contents
-
-Auto-generated from headings:
-
-```svelte
-<Article.TableOfContents maxDepth={3} scrollOffset={80} smooth={true} />
-```
-
-## Custom Blocks
-
-Define custom content blocks:
-
-```typescript
-const blocks = {
-	callout: ({ type, content }) => {
-		return `<div class="callout callout-${type}">${content}</div>`;
-	},
-	embed: ({ url }) => {
-		return `<iframe src="${url}" />`;
-	},
-};
-```
-
-Usage in markdown:
-
-```markdown
-:::callout[info]
-This is an informational callout.
-:::
-
-:::embed[https://example.com/video]
-:::
-```
-
-## Image Handling
-
-```svelte
-<Article.Content
-	imageLoading="lazy"
-	imagePlaceholder="/placeholder.jpg"
-	onImageClick={openLightbox}
-/>
-```
-
-## Reading Progress
+## Reading progress
 
 ```svelte
 <script lang="ts">
@@ -127,7 +111,8 @@ This is an informational callout.
 <ReadingProgress position="top" color="var(--gr-color-primary-500)" />
 ```
 
-## Related Documentation
+## Related documentation
 
 - [Getting Started](./getting-started.md)
+- [Lesser CMS Contract Audit](./lesser-cms-contract-audit.md)
 - [Core Patterns](../../core-patterns.md)
