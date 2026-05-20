@@ -16,9 +16,15 @@
 // ============================================================================
 
 /**
- * Article compound component for long-form content display
+ * Article compound and complete SSR components for long-form content display
  */
-export { Article } from './components/Article/index.js';
+export {
+	Article,
+	ArticleReader,
+	ArticleCard,
+	ArticleIndexCard,
+	normalizeArticleData,
+} from './components/Article/index.js';
 
 /**
  * Author compound component for author profiles and bios
@@ -58,6 +64,12 @@ export * from './patterns/index.js';
 export type {
 	// Article types
 	ArticleData,
+	ArticleDisplayData,
+	ArticleInputData,
+	ArticleInputAuthor,
+	ArticleInputCategory,
+	ArticleInputFeaturedImage,
+	ArticleInputContentFormat,
 	ArticleMetadata,
 	ArticleConfig,
 	ArticleHandlers,

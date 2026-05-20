@@ -56,6 +56,9 @@ import '@equaltoai/greater-components-blog/style.css';
 | `Article.ReadingProgress` | Scroll progress indicator                        | `position`                      |
 | `Article.ShareBar`        | Social sharing buttons                           | `platforms`                     |
 | `Article.RelatedPosts`    | Related content suggestions                      | `posts`, `limit`                |
+| `Article.Reader`          | Complete SSR-safe article reader                 | `article`, `config`, `handlers` |
+| `Article.Card`            | Accessible article list/index card               | `article`, `href`               |
+| `Article.IndexCard`       | Alias of `Article.Card` for index routes         | `article`, `href`               |
 
 ### Author Components
 
@@ -169,6 +172,25 @@ Override design tokens to customize the theme:
 ```
 
 ## Usage Examples
+
+### Complete SSR Reader and Index Card
+
+```svelte
+<script lang="ts">
+	import { ArticleReader, ArticleIndexCard } from '@equaltoai/greater-components-blog';
+
+	export let article;
+	export let articles = [];
+</script>
+
+<ArticleReader {article} />
+
+<section aria-label="Article index">
+	{#each articles as post (post.id)}
+		<ArticleIndexCard article={post} href={`/articles/${post.slug}`} />
+	{/each}
+</section>
+```
 
 ### Basic Article Display
 
