@@ -76,6 +76,31 @@ import '$lib/styles/greater/blog.css';
 </Article.Root>
 ```
 
+### SSR-friendly reader and index card
+
+For first-app public display routes that do not need custom composition, use the complete SSR-safe
+exports instead of assembling the compound parts manually:
+
+```svelte
+<script lang="ts">
+	import { ArticleReader, ArticleIndexCard } from '@equaltoai/greater-components/faces/blog';
+
+	export let article;
+	export let articles = [];
+</script>
+
+<ArticleReader {article} />
+
+<section aria-label="Article index">
+	{#each articles as post (post.id)}
+		<ArticleIndexCard article={post} href={`/articles/${post.slug}`} />
+	{/each}
+</section>
+```
+
+See [Emdash Article Surface Migration](./emdash-article-surface.md) for the Project 36 migration note,
+SSR import path, and release/export verification command.
+
 ### Author Card
 
 ```svelte
@@ -142,5 +167,6 @@ See [Article Rendering](./article-rendering.md) for the renderer/sanitizer bound
 ## Next Steps
 
 - [Article Rendering](./article-rendering.md) – Public article rendering boundary
+- [Emdash Article Surface Migration](./emdash-article-surface.md) – Replacing first-app reader/index render glue
 - [Lesser CMS Contract Audit](./lesser-cms-contract-audit.md) – Lesser CMS adapter boundary
 - [Core Patterns](../../core-patterns.md) – Common patterns and best practices

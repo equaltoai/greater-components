@@ -81,6 +81,90 @@ export interface ArticleData {
 }
 
 /**
+ * Content formats accepted by the complete Article display components.
+ *
+ * Lowercase values are the canonical Greater view-model format. Uppercase values
+ * mirror Lesser's GraphQL enum casing so first-app adapters can hand the Blog
+ * face their ArticleData-shaped display object without a local rendering layer.
+ */
+export type ArticleInputContentFormat = ArticleData['contentFormat'] | 'HTML' | 'MARKDOWN';
+
+/**
+ * Minimal flat author shape accepted by Article.Reader and Article.Card.
+ * Canonical Greater `AuthorData` remains the normalized public view model.
+ */
+export interface ArticleInputAuthor {
+	id: string;
+	username?: string;
+	displayName?: string;
+	avatarUrl?: string;
+	bio?: string;
+}
+
+/**
+ * Minimal category/tag shape accepted by Article.Reader and Article.Card.
+ */
+export interface ArticleInputCategory {
+	id?: string;
+	name: string;
+	slug?: string;
+}
+
+/**
+ * Minimal featured image shape accepted by Article.Reader and Article.Card.
+ */
+export interface ArticleInputFeaturedImage {
+	url?: string;
+	src?: string;
+	alt?: string;
+	altText?: string;
+	caption?: string;
+	width?: number;
+	height?: number;
+}
+
+/**
+ * Flat ArticleData-shaped display input accepted by the complete Article
+ * components. This keeps first-app SSR consumers from maintaining their own
+ * article-reader/card HTML while preserving the canonical nested `ArticleData`
+ * type used by the existing compound Article.* primitives.
+ */
+export interface ArticleDisplayData {
+	id: string;
+	slug: string;
+	metadata?: Partial<ArticleMetadata>;
+	title?: string;
+	subtitle?: string;
+	description?: string;
+	excerpt?: string;
+	content: string;
+	contentFormat: ArticleInputContentFormat;
+	author: AuthorData | ArticleInputAuthor;
+	publication?: PublicationData;
+	isPublished?: boolean;
+	isFeatured?: boolean;
+	viewCount?: number;
+	reactions?: ReactionData;
+	commentCount?: number;
+	canonicalUrl?: string;
+	publishedAt?: Date | string;
+	updatedAt?: Date | string;
+	readingTime?: number;
+	readingTimeMinutes?: number;
+	wordCount?: number;
+	tags?: readonly string[];
+	category?: string;
+	categories?: ReadonlyArray<string | ArticleInputCategory>;
+	featuredImage?: string | ArticleInputFeaturedImage;
+	seoDescription?: string;
+}
+
+/**
+ * Article input accepted by complete Article display components.
+ */
+export type ArticleInputData = ArticleData | ArticleDisplayData;
+
+/**
  * Article component configuration
  */
 export interface ArticleConfig {

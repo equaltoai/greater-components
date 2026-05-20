@@ -6,11 +6,12 @@ Article.Header - Article header with title, metadata, and featured image
 
 <script lang="ts">
 	import { getArticleContext } from './context.js';
-	import { formatDateTime } from '@equaltoai/greater-components-utils';
+	import { formatArticleDateTime } from './date.js';
 
 	const context = getArticleContext();
 	const article = $derived(context.article);
 	const metadata = $derived(article.metadata);
+	const publishedDate = $derived(formatArticleDateTime(metadata.publishedAt));
 </script>
 
 <header class="gr-blog-article__header">
@@ -37,9 +38,11 @@ Article.Header - Article header with title, metadata, and featured image
 	{/if}
 
 	<div class="gr-blog-article__meta">
-		<time datetime={new Date(metadata.publishedAt).toISOString()}>
-			{formatDateTime(metadata.publishedAt)}
-		</time>
+		{#if publishedDate.label}
+			<time datetime={publishedDate.iso}>
+				{publishedDate.label}
+			</time>
+		{/if}
 
 		{#if metadata.readingTime}
 			<span class="gr-blog-article__reading-time">

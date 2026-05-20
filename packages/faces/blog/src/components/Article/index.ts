@@ -4,7 +4,11 @@
  * A flexible, composable article component for displaying long-form blog content.
  * Built using compound component pattern for maximum flexibility and customization.
  *
- * @example Basic usage
+ * Complete display helpers (`ArticleReader`, `ArticleCard`, and `ArticleIndexCard`)
+ * are SSR-friendly entry points for first-app reader/index pages that do not need
+ * to compose the lower-level primitives manually.
+ *
+ * @example Basic compound usage
  * ```svelte
  * <script>
  *   import { Article } from '@equaltoai/greater-components/faces/blog';
@@ -17,37 +21,19 @@
  * </Article.Root>
  * ```
  *
+ * @example Complete SSR reader usage
+ * ```svelte
+ * <script>
+ *   import { ArticleReader, ArticleIndexCard } from '@equaltoai/greater-components/faces/blog';
+ * </script>
+ *
+ * <ArticleReader article={post} />
+ * <ArticleIndexCard article={post} />
+ * ```
+ *
  * @module @equaltoai/greater-components/faces/blog/Article
  */
 
-// Placeholder exports - components to be implemented
-export { default as Root } from './Root.svelte';
-export { default as Header } from './Header.svelte';
-export { default as Content } from './Content.svelte';
-export { default as Footer } from './Footer.svelte';
-export { default as TableOfContents } from './TableOfContents.svelte';
-export { default as ReadingProgress } from './ReadingProgress.svelte';
-export { default as ShareBar } from './ShareBar.svelte';
-export { default as RelatedPosts } from './RelatedPosts.svelte';
-
-// Export types
-export type { ArticleContext, ArticleConfig, ArticleHandlers } from './context.js';
-
-/**
- * Article compound component
- */
-export const Article = {
-	Root: {} as typeof import('./Root.svelte').default,
-	Header: {} as typeof import('./Header.svelte').default,
-	Content: {} as typeof import('./Content.svelte').default,
-	Footer: {} as typeof import('./Footer.svelte').default,
-	TableOfContents: {} as typeof import('./TableOfContents.svelte').default,
-	ReadingProgress: {} as typeof import('./ReadingProgress.svelte').default,
-	ShareBar: {} as typeof import('./ShareBar.svelte').default,
-	RelatedPosts: {} as typeof import('./RelatedPosts.svelte').default,
-};
-
-// Dynamic imports for tree-shaking
 import Root from './Root.svelte';
 import Header from './Header.svelte';
 import Content from './Content.svelte';
@@ -56,12 +42,40 @@ import TableOfContents from './TableOfContents.svelte';
 import ReadingProgress from './ReadingProgress.svelte';
 import ShareBar from './ShareBar.svelte';
 import RelatedPosts from './RelatedPosts.svelte';
+import Reader from './Reader.svelte';
+import Card from './Card.svelte';
 
-Article.Root = Root;
-Article.Header = Header;
-Article.Content = Content;
-Article.Footer = Footer;
-Article.TableOfContents = TableOfContents;
-Article.ReadingProgress = ReadingProgress;
-Article.ShareBar = ShareBar;
-Article.RelatedPosts = RelatedPosts;
+export { default as Root } from './Root.svelte';
+export { default as Header } from './Header.svelte';
+export { default as Content } from './Content.svelte';
+export { default as Footer } from './Footer.svelte';
+export { default as TableOfContents } from './TableOfContents.svelte';
+export { default as ReadingProgress } from './ReadingProgress.svelte';
+export { default as ShareBar } from './ShareBar.svelte';
+export { default as RelatedPosts } from './RelatedPosts.svelte';
+export { default as Reader } from './Reader.svelte';
+export { default as Card } from './Card.svelte';
+export { default as ArticleReader } from './Reader.svelte';
+export { default as ArticleCard } from './Card.svelte';
+export { default as ArticleIndexCard } from './Card.svelte';
+export { normalizeArticleData } from './normalize.js';
+
+// Export types
+export type { ArticleContext, ArticleConfig, ArticleHandlers } from './context.js';
+
+/**
+ * Article compound component
+ */
+export const Article = {
+	Root,
+	Header,
+	Content,
+	Footer,
+	TableOfContents,
+	ReadingProgress,
+	ShareBar,
+	RelatedPosts,
+	Reader,
+	Card,
+	IndexCard: Card,
+};
