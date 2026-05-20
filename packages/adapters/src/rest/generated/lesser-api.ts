@@ -1819,7 +1819,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["get_api_v1_conversations_by_id"];
         put?: never;
         post?: never;
         delete: operations["delete_api_v1_conversations_by_id"];
@@ -1838,6 +1838,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["post_api_v1_conversations_by_id_read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_api_v1_conversations_lookup"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -4088,6 +4104,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/articles/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_articles_by_slug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/device": {
         parameters: {
             query?: never;
@@ -5394,6 +5426,13 @@ export interface components {
             accounts: components["schemas"]["Account"][];
             id: string;
             last_status?: components["schemas"]["Status"] | null;
+            unread: boolean;
+        };
+        ConversationDetail: {
+            accounts: components["schemas"]["Account"][];
+            id: string;
+            last_status?: components["schemas"]["Status"] | null;
+            messages: components["schemas"]["Status"][];
             unread: boolean;
         };
         ConversationList: components["schemas"]["Conversation"][];
@@ -11706,6 +11745,40 @@ export interface operations {
             500: components["responses"]["InternalServerError"];
         };
     };
+    get_api_v1_conversations_by_id: {
+        parameters: {
+            query?: {
+                /** @description Maximum number of items to return. */
+                limit?: components["parameters"]["Limit"];
+                /** @description Return results with an ID less than this value. */
+                max_id?: components["parameters"]["MaxID"];
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description RFC 8288 pagination links for recent messages. */
+                    Link?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
     delete_api_v1_conversations_by_id: {
         parameters: {
             query?: never;
@@ -11758,6 +11831,40 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             422: components["responses"]["UnprocessableEntity"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_api_v1_conversations_lookup: {
+        parameters: {
+            query: {
+                /** @description Exact 1:1 direct-message counterpart identifier. Accepts local username, acct value, or actor URL where resolvable. */
+                counterpart: string;
+                /** @description Maximum number of items to return. */
+                limit?: components["parameters"]["Limit"];
+                /** @description Return results with an ID less than this value. */
+                max_id?: components["parameters"]["MaxID"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    /** @description RFC 8288 pagination links for recent messages. */
+                    Link?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationDetail"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
     };
@@ -16531,6 +16638,29 @@ export interface operations {
                 };
             };
             400: components["responses"]["BadRequest"];
+            500: components["responses"]["InternalServerError"];
+        };
+    };
+    get_articles_by_slug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            404: components["responses"]["NotFound"];
             500: components["responses"]["InternalServerError"];
         };
     };
