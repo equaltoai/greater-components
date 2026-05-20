@@ -8,6 +8,23 @@ can diverge from the server contract.
 
 ## Article component
 
+For a complete SSR-safe public reader route, prefer `ArticleReader`:
+
+```svelte
+<script lang="ts">
+	import { ArticleReader } from '@equaltoai/greater-components/faces/blog';
+</script>
+
+<ArticleReader {article} />
+```
+
+`ArticleReader` accepts canonical Greater `ArticleData` and flat Lesser/Emdash
+`ArticleData`-shaped display input. It defaults browser-only affordances such as reading progress,
+table-of-contents extraction, and share actions off so server-rendered reader routes can adopt it
+without a client-only lifecycle.
+
+For custom layouts, continue using the compound components:
+
 ```svelte
 <script lang="ts">
 	import { Article } from '$lib/components/faces/blog';
@@ -114,5 +131,6 @@ labeled as fallback/plain/escaped content.
 ## Related documentation
 
 - [Getting Started](./getting-started.md)
+- [Emdash Article Surface Migration](./emdash-article-surface.md)
 - [Lesser CMS Contract Audit](./lesser-cms-contract-audit.md)
 - [Core Patterns](../../core-patterns.md)
