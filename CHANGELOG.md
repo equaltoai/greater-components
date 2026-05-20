@@ -14,26 +14,23 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.15](https://github.com/equaltoai/greater-components/compare/greater-v0.8.14...greater-v0.8.15) (2026-05-20)
 
-
 ### Docs
 
-* **blog:** define Lesser CMS rendering boundary ([224c54d](https://github.com/equaltoai/greater-components/commit/224c54d7cb7f6ded2aa6c87a2dc773e77f0c7a58))
-
+- **blog:** define Lesser CMS rendering boundary ([224c54d](https://github.com/equaltoai/greater-components/commit/224c54d7cb7f6ded2aa6c87a2dc773e77f0c7a58))
 
 ### Tests
 
-* **primitives:** cover blank avatar initials fallback ([dd4d75e](https://github.com/equaltoai/greater-components/commit/dd4d75e15124bba9a2359e314defbf64cd51c8f5))
-
+- **primitives:** cover blank avatar initials fallback ([dd4d75e](https://github.com/equaltoai/greater-components/commit/dd4d75e15124bba9a2359e314defbf64cd51c8f5))
 
 ### Chores
 
-* **ci:** refresh project 36 promotion rehearsal ([9389843](https://github.com/equaltoai/greater-components/commit/93898430c6c4761fd909995b8118c8c58d851fc8))
-* **contracts:** sync lesser v1.4.9 ([ed8ddf7](https://github.com/equaltoai/greater-components/commit/ed8ddf795de3840eae6a3196a1ad69888a44a960))
-* **contracts:** sync Lesser v1.4.9 ([5a4e4dd](https://github.com/equaltoai/greater-components/commit/5a4e4dd25f33b479c435e1ec2ff200e42231be22))
-* **premain:** release greater 0.8.15-rc.0 ([bbc79fa](https://github.com/equaltoai/greater-components/commit/bbc79faba4f30894d64d5fb837af44f6d140c5eb))
-* **premain:** release greater 0.8.15-rc.0 ([559fb67](https://github.com/equaltoai/greater-components/commit/559fb67b39eff933f9800df516dadac5588c2dd3))
-* **release:** backmerge main for project 36 blog support ([27be724](https://github.com/equaltoai/greater-components/commit/27be724f343ebf47863c961b4a08fe751d214ef5))
-* **release:** prepare metadata ([1f31c54](https://github.com/equaltoai/greater-components/commit/1f31c54e741d4ab9947042d7fa13584e382bb690))
+- **ci:** refresh project 36 promotion rehearsal ([9389843](https://github.com/equaltoai/greater-components/commit/93898430c6c4761fd909995b8118c8c58d851fc8))
+- **contracts:** sync lesser v1.4.9 ([ed8ddf7](https://github.com/equaltoai/greater-components/commit/ed8ddf795de3840eae6a3196a1ad69888a44a960))
+- **contracts:** sync Lesser v1.4.9 ([5a4e4dd](https://github.com/equaltoai/greater-components/commit/5a4e4dd25f33b479c435e1ec2ff200e42231be22))
+- **premain:** release greater 0.8.15-rc.0 ([bbc79fa](https://github.com/equaltoai/greater-components/commit/bbc79faba4f30894d64d5fb837af44f6d140c5eb))
+- **premain:** release greater 0.8.15-rc.0 ([559fb67](https://github.com/equaltoai/greater-components/commit/559fb67b39eff933f9800df516dadac5588c2dd3))
+- **release:** backmerge main for project 36 blog support ([27be724](https://github.com/equaltoai/greater-components/commit/27be724f343ebf47863c961b4a08fe751d214ef5))
+- **release:** prepare metadata ([1f31c54](https://github.com/equaltoai/greater-components/commit/1f31c54e741d4ab9947042d7fa13584e382bb690))
 
 ## [0.8.15-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.14-rc.0...greater-v0.8.15-rc.0) (2026-05-20)
 
