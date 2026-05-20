@@ -134,6 +134,10 @@ Concrete adapter work needed by Emdash before handing Lesser CMS objects to the 
   `publishedBy`, `Draft.author`, `Publication.actor`) out
   of reusable Blog UI types.
 - Leave `tableOfContents`, `series`, `seriesOrder`, draft scheduling, publication members, newsletter
-  stats, reactions, comments, and view counts out of this milestone until Emdash proves a concrete gap.
+  stats, reactions, comments, and view counts out of reusable Blog UI until Emdash proves a concrete
+  display gap for each surface.
 
-Issue #573 polish remains gated; this audit intentionally does not add speculative component features.
+Issue #573's proven display gap is covered by `ArticleReader` and `ArticleCard` /
+`ArticleIndexCard`; those components normalize the flat Lesser/Emdash ArticleData-shaped display
+object without adding richer editor, comments, newsletter, search, RSS, timeline, trending, or
+document-hosting scope.

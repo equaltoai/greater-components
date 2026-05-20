@@ -14,9 +14,47 @@
         "TableOfContents",
         "ReadingProgress",
         "ShareBar",
-        "RelatedPosts"
+        "RelatedPosts",
+        "Reader",
+        "Card",
+        "IndexCard"
       ],
       "props": ["article", "config", "handlers"],
+      "exports": true
+    },
+    "ArticleReader": {
+      "description": "SSR-friendly complete public article reader accepting canonical or flat ArticleData-shaped input",
+      "props": ["article", "config", "handlers"],
+      "exports": true
+    },
+    "ArticleCard": {
+      "description": "Accessible article index card for listing public articles",
+      "props": [
+        "article",
+        "href",
+        "headingLevel",
+        "showExcerpt",
+        "showAuthor",
+        "showPublishedAt",
+        "showReadingTime",
+        "showTags",
+        "maxTags"
+      ],
+      "exports": true
+    },
+    "ArticleIndexCard": {
+      "description": "Alias of ArticleCard for article index routes",
+      "props": [
+        "article",
+        "href",
+        "headingLevel",
+        "showExcerpt",
+        "showAuthor",
+        "showPublishedAt",
+        "showReadingTime",
+        "showTags",
+        "maxTags"
+      ],
       "exports": true
     },
     "Author": {
