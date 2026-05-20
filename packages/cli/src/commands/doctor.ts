@@ -27,6 +27,7 @@ import { getAllComponentNames, getComponent } from '../registry/index.js';
 import { logger } from '../utils/logger.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
 import { scanTextForCspFindings, type CspFinding } from '../utils/csp-doctor.js';
+import { fetchRegistryIndex, type RegistryIndex } from '../utils/registry-index.js';
 
 /**
  * Severity levels for diagnostic checks
@@ -56,6 +57,35 @@ export interface DiagnosticSummary {
 	warnings: number;
 	errors: number;
 	results: DiagnosticResult[];
+}
+
+function normalizeInstalledFaceName(name: string): string | null {
+	const match = name.match(/^faces?\/(.+)$/i);
+	if (match?.[1]) return match[1];
+	return null;
+}
+
+function getInstalledFaceFilePath(
+	faceName: string,
+	filePath: string,
+	config: ComponentConfig,
+	cwd: string
+): string {
+	const withoutSrc = filePath.startsWith('src/') ? filePath.slice('src/'.length) : filePath;
+	return path.join(
+		resolveAlias(config.aliases.greater, config, cwd),
+		'faces',
+		faceName,
+		withoutSrc
+	);
+}
+
+async function loadRegistryForDoctor(config: ComponentConfig): Promise<RegistryIndex | null> {
+	try {
+		return await fetchRegistryIndex(config.ref || 'latest');
+	} catch {
+		return null;
+	}
 }
 
 /**
@@ -320,8 +350,30 @@ export async function checkInstalledComponents(
 	let validFiles = 0;
 	const orphanedComponents: string[] = [];
 	const modifiedComponents: string[] = [];
+	const registryIndex = await loadRegistryForDoctor(config);
 
 	for (const installed of installedComponents) {
+		const faceName = normalizeInstalledFaceName(installed.name);
+		if (faceName) {
+			const face = registryIndex?.faces[faceName];
+			if (!face) {
+				orphanedComponents.push(installed.name);
+				continue;
+			}
+
+			for (const file of face.files) {
+				const localPath = getInstalledFaceFilePath(faceName, file.path, config, cwd);
+				const exists = await fileExists(localPath);
+
+				if (!exists) {
+					missingFiles++;
+				} else {
+					validFiles++;
+				}
+			}
+			continue;
+		}
+
 		const component = getComponent(installed.name);
 
 		if (!component) {
@@ -422,6 +474,9 @@ export async function checkOrphanedFiles(
 	const expectedFiles = new Set<string>();
 
 	for (const installed of config.installed ?? []) {
+		const faceName = normalizeInstalledFaceName(installed.name);
+		if (faceName) continue;
+
 		const component = getComponent(installed.name);
 		if (!component) continue;
 

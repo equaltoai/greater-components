@@ -67,6 +67,7 @@ const SHARED_MODULES = [
 ] as const;
 
 const HEADLESS_PRIMITIVE_SUBPATHS = ['button', 'menu', 'modal', 'tooltip', 'tabs'] as const;
+const BLOG_COMPONENT_ROOTS = new Set(['Article', 'Author', 'Publication', 'Navigation', 'Editor']);
 
 /**
  * Core packages that should be mapped to the greater alias
@@ -198,12 +199,20 @@ function isLibComponentInstall(filePath?: string): boolean {
 	return normalized.startsWith('lib/components/') || normalized.startsWith('components/');
 }
 
+function isBlogComponentInstall(filePath?: string): boolean {
+	const normalized = normalizeTransformFilePath(filePath);
+	const match = normalized.match(/^(?:lib\/)?components\/([^/]+)\//);
+	return !!match?.[1] && BLOG_COMPONENT_ROOTS.has(match[1]);
+}
+
 function replaceRelativePrefix(
 	importPath: string,
 	fromPrefix: string,
 	toPrefix: string
 ): string | null {
 	if (importPath === fromPrefix) return toPrefix;
+	if (importPath === `${fromPrefix}.js`) return `${toPrefix}.js`;
+	if (importPath === `${fromPrefix}.ts`) return `${toPrefix}.ts`;
 	if (importPath.startsWith(`${fromPrefix}/`)) {
 		return `${toPrefix}${importPath.slice(fromPrefix.length)}`;
 	}
@@ -215,6 +224,12 @@ function replaceRelativePrefix(
  * Rewrite only the relative imports whose source layout differs from the installed layout.
  */
 function transformRelativeInstallPath(importPath: string, filePath?: string): string | null {
+	const normalizedFilePath = normalizeTransformFilePath(filePath);
+	if (normalizedFilePath === 'lib/blog-share.ts' || normalizedFilePath === 'blog-share.ts') {
+		const transformed = replaceRelativePrefix(importPath, './types', './blog-types');
+		if (transformed) return transformed;
+	}
+
 	if (!importPath.startsWith('../')) return null;
 
 	if (isFlattenedFaceLibInstall(filePath)) {
@@ -222,6 +237,16 @@ function transformRelativeInstallPath(importPath: string, filePath?: string): st
 			['../generics', './generics'],
 			['../types', './types'],
 			['../utils', './utils'],
+		] as const) {
+			const transformed = replaceRelativePrefix(importPath, fromPrefix, toPrefix);
+			if (transformed) return transformed;
+		}
+	}
+
+	if (isBlogComponentInstall(filePath)) {
+		for (const [fromPrefix, toPrefix] of [
+			['../../types', '../../blog-types'],
+			['../../share', '../../blog-share'],
 		] as const) {
 			const transformed = replaceRelativePrefix(importPath, fromPrefix, toPrefix);
 			if (transformed) return transformed;

@@ -181,6 +181,16 @@ function buildSourcePathCandidates(component: ComponentMetadata, installPath: st
 		}
 	}
 
+	const faceScopedTypesMatch = normalized.match(/^lib\/([a-z0-9-]+)-types\.ts$/);
+	if (faceScopedTypesMatch?.[1]) {
+		candidates.push(`packages/faces/${faceScopedTypesMatch[1]}/src/types.ts`);
+	}
+
+	const faceScopedShareMatch = normalized.match(/^lib\/([a-z0-9-]+)-share\.ts$/);
+	if (faceScopedShareMatch?.[1]) {
+		candidates.push(`packages/faces/${faceScopedShareMatch[1]}/src/share.ts`);
+	}
+
 	// lib/lib/... -> packages/faces/<face>/src/lib/...
 	if (normalized.startsWith('lib/lib/')) {
 		const rest = normalized.slice('lib/lib/'.length);
