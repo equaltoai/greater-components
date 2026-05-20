@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-type CmsContractType = 'Article' | 'Draft' | 'Publication';
+type CmsContractType = 'Article' | 'Draft' | 'Publication' | 'DraftPreview';
 type ContractDirection =
 	| 'matches-greater-field'
 	| 'needs-adapter-mapping'
@@ -20,6 +20,7 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		content: 'matches-greater-field',
 		contentFormat: 'needs-adapter-mapping',
 		featuredImage: 'needs-adapter-mapping',
+		generatedBy: 'should-not-leak-into-ui',
 		tableOfContents: 'out-of-scope-for-mvp',
 		readingTimeMinutes: 'needs-adapter-mapping',
 		wordCount: 'needs-adapter-mapping',
@@ -32,6 +33,8 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		ogImage: 'needs-adapter-mapping',
 		editorNotes: 'should-not-leak-into-ui',
 		reviewStatus: 'should-not-leak-into-ui',
+		reviewedBy: 'should-not-leak-into-ui',
+		publishedBy: 'should-not-leak-into-ui',
 		publishedAt: 'needs-adapter-mapping',
 		createdAt: 'out-of-scope-for-mvp',
 		updatedAt: 'needs-adapter-mapping',
@@ -49,6 +52,8 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		objectId: 'out-of-scope-for-mvp',
 		autosaveVersion: 'out-of-scope-for-mvp',
 		lastSavedAt: 'needs-adapter-mapping',
+		generatedBy: 'should-not-leak-into-ui',
+		reviewedBy: 'should-not-leak-into-ui',
 		createdAt: 'out-of-scope-for-mvp',
 		updatedAt: 'out-of-scope-for-mvp',
 	},
@@ -66,7 +71,7 @@ const LESSER_CMS_FIELD_DIRECTIONS = {
 		createdAt: 'out-of-scope-for-mvp',
 		updatedAt: 'out-of-scope-for-mvp',
 	},
-} satisfies Record<CmsContractType, Record<string, ContractDirection>>;
+} satisfies Record<Exclude<CmsContractType, 'DraftPreview'>, Record<string, ContractDirection>>;
 
 function findRepoRoot(start = process.cwd()): string {
 	let current = start;
@@ -105,6 +110,20 @@ function extractTypeFields(schema: string, typeName: CmsContractType): string[] 
 		.sort();
 }
 
+function extractQueryFields(schema: string): string[] {
+	const match = /^extend type Query \{\n([\s\S]*?)^\}/m.exec(schema);
+	if (!match) {
+		throw new Error('Could not find GraphQL Query extension');
+	}
+
+	return match[1]
+		.split('\n')
+		.map((line) => line.trim())
+		.filter((line) => line && !line.startsWith('#'))
+		.map((line) => line.split('(')[0].split(':')[0].trim())
+		.sort();
+}
+
 function extractEnumValues(schema: string, enumName: string): string[] {
 	const match = new RegExp(`^enum ${enumName} \\{\\n([\\s\\S]*?)^\\}`, 'm').exec(schema);
 	if (!match) {
@@ -120,7 +139,7 @@ function extractEnumValues(schema: string, enumName: string): string[] {
 describe('Lesser CMS contract boundary', () => {
 	const schema = readLesserSchema();
 
-	it.each(Object.keys(LESSER_CMS_FIELD_DIRECTIONS) as CmsContractType[])(
+	it.each(Object.keys(LESSER_CMS_FIELD_DIRECTIONS) as Exclude<CmsContractType, 'DraftPreview'>[])(
 		'lists every Lesser %s field in the adapter-gap audit',
 		(typeName) => {
 			const contractFields = extractTypeFields(schema, typeName);
@@ -129,6 +148,19 @@ describe('Lesser CMS contract boundary', () => {
 			expect(auditedFields).toEqual(contractFields);
 		}
 	);
+
+	it('keeps Lesser server-side draft preview explicit for editor rendering boundaries', () => {
+		expect(extractTypeFields(schema, 'DraftPreview' as CmsContractType)).toEqual([
+			'draftId',
+			'errors',
+			'renderedBytes',
+			'renderedHtml',
+			'sourceBytes',
+			'sourceFormat',
+			'success',
+		]);
+		expect(extractQueryFields(schema)).toContain('draftPreview');
+	});
 
 	it('keeps the Article/Draft content-format boundary explicit', () => {
 		expect(extractEnumValues(schema, 'ContentFormat')).toEqual(['HTML', 'MARKDOWN']);

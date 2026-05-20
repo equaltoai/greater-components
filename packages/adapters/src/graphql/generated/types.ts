@@ -1077,11 +1077,14 @@ export type Article = {
   readonly editorNotes?: Maybe<Scalars['String']['output']>;
   readonly excerpt?: Maybe<Scalars['String']['output']>;
   readonly featuredImage?: Maybe<Media>;
+  readonly generatedBy?: Maybe<Actor>;
   readonly id: Scalars['ID']['output'];
   readonly ogImage?: Maybe<Scalars['String']['output']>;
   readonly publishedAt: Scalars['Time']['output'];
+  readonly publishedBy?: Maybe<Actor>;
   readonly readingTimeMinutes: Scalars['Int']['output'];
   readonly reviewStatus?: Maybe<Scalars['String']['output']>;
+  readonly reviewedBy?: Maybe<Actor>;
   readonly seoDescription?: Maybe<Scalars['String']['output']>;
   readonly seoTitle?: Maybe<Scalars['String']['output']>;
   readonly series?: Maybe<Series>;
@@ -1660,9 +1663,11 @@ export type Draft = {
   readonly contentFormat: ContentFormat;
   readonly contentType: ObjectType;
   readonly createdAt: Scalars['Time']['output'];
+  readonly generatedBy?: Maybe<Actor>;
   readonly id: Scalars['ID']['output'];
   readonly lastSavedAt: Scalars['Time']['output'];
   readonly objectId?: Maybe<Scalars['ID']['output']>;
+  readonly reviewedBy?: Maybe<Actor>;
   readonly scheduledAt?: Maybe<Scalars['Time']['output']>;
   readonly slug?: Maybe<Scalars['String']['output']>;
   readonly status: DraftStatus;
@@ -1681,6 +1686,17 @@ export type DraftEdge = {
   readonly __typename: 'DraftEdge';
   readonly cursor: Scalars['Cursor']['output'];
   readonly node: Draft;
+};
+
+export type DraftPreview = {
+  readonly __typename: 'DraftPreview';
+  readonly draftId: Scalars['ID']['output'];
+  readonly errors: ReadonlyArray<Scalars['String']['output']>;
+  readonly renderedBytes: Scalars['Int']['output'];
+  readonly renderedHtml?: Maybe<Scalars['String']['output']>;
+  readonly sourceBytes: Scalars['Int']['output'];
+  readonly sourceFormat: Scalars['String']['output'];
+  readonly success: Scalars['Boolean']['output'];
 };
 
 export type DraftStatus =
@@ -4379,6 +4395,7 @@ export type Query = {
   readonly customEmojis: ReadonlyArray<CustomEmoji>;
   readonly domainBlocks: DomainBlockPage;
   readonly draft?: Maybe<Draft>;
+  readonly draftPreview: DraftPreview;
   readonly droneWorkflow?: Maybe<AgentWorkflowSurface>;
   readonly endorsements: ReadonlyArray<Actor>;
   readonly explainObject: ObjectExplanation;
@@ -4737,6 +4754,11 @@ export type QueryDomainBlocksArgs = {
 
 
 export type QueryDraftArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryDraftPreviewArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -5493,9 +5515,12 @@ export type Revision = {
   readonly changedBy: Actor;
   readonly content: Scalars['String']['output'];
   readonly createdAt: Scalars['Time']['output'];
+  readonly generatedBy?: Maybe<Actor>;
   readonly id: Scalars['ID']['output'];
   readonly metadataJson?: Maybe<Scalars['String']['output']>;
   readonly objectId: Scalars['ID']['output'];
+  readonly publishedBy?: Maybe<Actor>;
+  readonly reviewedBy?: Maybe<Actor>;
   readonly version: Scalars['Int']['output'];
 };
 

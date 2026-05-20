@@ -5,7 +5,7 @@ Lesser's pinned CMS GraphQL contract.
 
 ## Evidence
 
-- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.4.2`, commit `b3263624550731a2999ab64120c0c58471616a81`)
+- Lesser pin: `docs/lesser/contracts/LESSER_REF.txt` (`v1.4.9`, commit `8a9325a76a09c47f8c42b80b378ea25e366a01cf`)
 - Contract source: `docs/lesser/contracts/graphql-schema.graphql`
 - Greater Blog public types: `packages/faces/blog/src/types.ts`
 - Article display implementation: `packages/faces/blog/src/components/Article/Content.svelte`
@@ -25,32 +25,35 @@ Field direction legend:
 
 ## `Article` field audit
 
-| Lesser field         | Direction            | Greater boundary                                                                                                                |
-| -------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                 | Matches Greater      | `ArticleData.id`                                                                                                                |
-| `slug`               | Matches Greater      | `ArticleData.slug`                                                                                                              |
-| `author`             | Adapter mapping      | Map `Actor` to `AuthorData` (`id`, display name, username/handle, avatar, bio, links as available).                             |
-| `title`              | Adapter mapping      | `ArticleData.metadata.title`                                                                                                    |
-| `subtitle`           | Adapter mapping      | `ArticleData.metadata.subtitle`                                                                                                 |
-| `excerpt`            | Adapter mapping      | Prefer for `ArticleData.metadata.description` when present; fall back to `seoDescription`/`subtitle` as app policy.             |
-| `content`            | Matches Greater      | `ArticleData.content`; for public articles this should be server-rendered/sanitized HTML when available.                        |
-| `contentFormat`      | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`. `markdown` is escaped fallback text in public `Article.Content`. |
-| `featuredImage`      | Adapter mapping      | Map `Media` URL/description to `metadata.featuredImage` and `metadata.featuredImageAlt`.                                        |
-| `tableOfContents`    | Out of scope for MVP | `Article.Content` currently derives headings from rendered HTML. Do not add a server-TOC prop without a proven app need.        |
-| `readingTimeMinutes` | Adapter mapping      | `ArticleData.metadata.readingTime`                                                                                              |
-| `wordCount`          | Adapter mapping      | `ArticleData.metadata.wordCount`                                                                                                |
-| `series`             | Out of scope for MVP | Greater `SeriesData` is a richer navigation model and requires article-list context not present on the `Series` object alone.   |
-| `seriesOrder`        | Out of scope for MVP | Only map with `series` once a proven series navigation UI exists.                                                               |
-| `categories`         | Adapter mapping      | Map a primary category to `metadata.category`; navigation/category lists can map to `CategoryData` separately.                  |
-| `seoTitle`           | Adapter mapping      | SEO-layer input; may feed page metadata outside the Article components.                                                         |
-| `seoDescription`     | Adapter mapping      | SEO-layer input; may backfill `metadata.description` when `excerpt` is absent.                                                  |
-| `canonicalUrl`       | Adapter mapping      | `ArticleData.metadata.canonicalUrl`                                                                                             |
-| `ogImage`            | Adapter mapping      | `SEOData.ogImage` or host page metadata, not Article display by default.                                                        |
-| `editorNotes`        | Do not leak          | Editorial/private workflow state; keep out of public reusable Article UI.                                                       |
-| `reviewStatus`       | Do not leak          | Review workflow state; keep out of public reusable Article UI for this MVP.                                                     |
-| `publishedAt`        | Adapter mapping      | `ArticleData.metadata.publishedAt`                                                                                              |
-| `createdAt`          | Out of scope for MVP | Not displayed by existing Blog face components.                                                                                 |
-| `updatedAt`          | Adapter mapping      | `ArticleData.metadata.updatedAt`                                                                                                |
+| Lesser field         | Direction            | Greater boundary                                                                                                                 |
+| -------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                 | Matches Greater      | `ArticleData.id`                                                                                                                 |
+| `slug`               | Matches Greater      | `ArticleData.slug`                                                                                                               |
+| `author`             | Adapter mapping      | Map `Actor` to `AuthorData` (`id`, display name, username/handle, avatar, bio, links as available).                              |
+| `title`              | Adapter mapping      | `ArticleData.metadata.title`                                                                                                     |
+| `subtitle`           | Adapter mapping      | `ArticleData.metadata.subtitle`                                                                                                  |
+| `excerpt`            | Adapter mapping      | Prefer for `ArticleData.metadata.description` when present; fall back to `seoDescription`/`subtitle` as app policy.              |
+| `content`            | Matches Greater      | `ArticleData.content`; for public articles this should be server-rendered/sanitized HTML when available.                         |
+| `contentFormat`      | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`. `markdown` is escaped fallback text in public `Article.Content`.  |
+| `featuredImage`      | Adapter mapping      | Map `Media` URL/description to `metadata.featuredImage` and `metadata.featuredImageAlt`.                                         |
+| `generatedBy`        | Do not leak          | Generation provenance is workflow state; do not surface in reusable public Article UI without a proven app provenance design.    |
+| `tableOfContents`    | Out of scope for MVP | `Article.Content` currently derives headings from rendered HTML. Do not add a server-TOC prop without a proven app need.         |
+| `readingTimeMinutes` | Adapter mapping      | `ArticleData.metadata.readingTime`                                                                                               |
+| `wordCount`          | Adapter mapping      | `ArticleData.metadata.wordCount`                                                                                                 |
+| `series`             | Out of scope for MVP | Greater `SeriesData` is a richer navigation model and requires article-list context not present on the `Series` object alone.    |
+| `seriesOrder`        | Out of scope for MVP | Only map with `series` once a proven series navigation UI exists.                                                                |
+| `categories`         | Adapter mapping      | Map a primary category to `metadata.category`; navigation/category lists can map to `CategoryData` separately.                   |
+| `seoTitle`           | Adapter mapping      | SEO-layer input; may feed page metadata outside the Article components.                                                          |
+| `seoDescription`     | Adapter mapping      | SEO-layer input; may backfill `metadata.description` when `excerpt` is absent.                                                   |
+| `canonicalUrl`       | Adapter mapping      | `ArticleData.metadata.canonicalUrl`                                                                                              |
+| `ogImage`            | Adapter mapping      | `SEOData.ogImage` or host page metadata, not Article display by default.                                                         |
+| `editorNotes`        | Do not leak          | Editorial/private workflow state; keep out of public reusable Article UI.                                                        |
+| `reviewStatus`       | Do not leak          | Review workflow state; keep out of public reusable Article UI for this MVP.                                                      |
+| `reviewedBy`         | Do not leak          | Review actor state is backend/workflow provenance; keep out of reusable Article UI until an app-specific moderation UI needs it. |
+| `publishedBy`        | Do not leak          | Publishing actor state is workflow provenance; public author attribution remains `author`.                                       |
+| `publishedAt`        | Adapter mapping      | `ArticleData.metadata.publishedAt`                                                                                               |
+| `createdAt`          | Out of scope for MVP | Not displayed by existing Blog face components.                                                                                  |
+| `updatedAt`          | Adapter mapping      | `ArticleData.metadata.updatedAt`                                                                                                 |
 
 Greater-only `ArticleData` fields (`isPublished`, `isFeatured`, `viewCount`, `reactions`,
 `commentCount`) are not in the Lesser M0 CMS contract. Set `isPublished: true` for returned public
@@ -59,25 +62,32 @@ proves them.
 
 ## `Draft` field audit
 
-| Lesser field      | Direction            | Greater boundary                                                                                         |
-| ----------------- | -------------------- | -------------------------------------------------------------------------------------------------------- |
-| `id`              | Matches Greater      | `DraftData.id`                                                                                           |
-| `author`          | Do not leak          | Existing editor UI does not display draft author state.                                                  |
-| `contentType`     | Out of scope for MVP | Greater Blog editor is article-shaped for this milestone.                                                |
-| `title`           | Adapter mapping      | `DraftData.title`; normalize nullable Lesser values to an empty/untitled string at the adapter boundary. |
-| `slug`            | Out of scope for MVP | Routing belongs to the consuming app until a concrete editor slug UI is needed.                          |
-| `content`         | Matches Greater      | `DraftData.content`                                                                                      |
-| `contentFormat`   | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`.                                           |
-| `status`          | Out of scope for MVP | Scheduling/publish lifecycle UI is explicitly outside this support milestone.                            |
-| `scheduledAt`     | Out of scope for MVP | No scheduling UI in scope.                                                                               |
-| `objectId`        | Out of scope for MVP | Backend linkage, not reusable editor display state.                                                      |
-| `autosaveVersion` | Out of scope for MVP | Use only if a later autosave-conflict UI is proven.                                                      |
-| `lastSavedAt`     | Adapter mapping      | `DraftData.savedAt`                                                                                      |
-| `createdAt`       | Out of scope for MVP | Not displayed by existing editor UI.                                                                     |
-| `updatedAt`       | Out of scope for MVP | Existing editor status uses `savedAt`; do not add another timestamp without a UI need.                   |
+| Lesser field      | Direction            | Greater boundary                                                                                                        |
+| ----------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `id`              | Matches Greater      | `DraftData.id`                                                                                                          |
+| `author`          | Do not leak          | Existing editor UI does not display draft author state.                                                                 |
+| `contentType`     | Out of scope for MVP | Greater Blog editor is article-shaped for this milestone.                                                               |
+| `title`           | Adapter mapping      | `DraftData.title`; normalize nullable Lesser values to an empty/untitled string at the adapter boundary.                |
+| `slug`            | Out of scope for MVP | Routing belongs to the consuming app until a concrete editor slug UI is needed.                                         |
+| `content`         | Matches Greater      | `DraftData.content`                                                                                                     |
+| `contentFormat`   | Adapter mapping      | Convert Lesser `HTML`/`MARKDOWN` to Greater `html`/`markdown`.                                                          |
+| `status`          | Out of scope for MVP | Scheduling/publish lifecycle UI is explicitly outside this support milestone.                                           |
+| `scheduledAt`     | Out of scope for MVP | No scheduling UI in scope.                                                                                              |
+| `objectId`        | Out of scope for MVP | Backend linkage, not reusable editor display state.                                                                     |
+| `autosaveVersion` | Out of scope for MVP | Use only if a later autosave-conflict UI is proven.                                                                     |
+| `lastSavedAt`     | Adapter mapping      | `DraftData.savedAt`                                                                                                     |
+| `generatedBy`     | Do not leak          | Generation provenance is workflow state; keep out of reusable editor data until an app-specific provenance UI needs it. |
+| `reviewedBy`      | Do not leak          | Review actor state is workflow/moderation provenance and should not become reusable editor data by default.             |
+| `createdAt`       | Out of scope for MVP | Not displayed by existing editor UI.                                                                                    |
+| `updatedAt`       | Out of scope for MVP | Existing editor status uses `savedAt`; do not add another timestamp without a UI need.                                  |
 
 Greater-only `DraftData.autoSave` and `DraftData.wordCount` remain local UI concerns. The editor can
 derive word count and autosave behavior from configuration; Lesser does not need to mirror them.
+
+Lesser v1.4.9 also exposes `DraftPreview` via `Query.draftPreview(id: ID!)`. That supports the
+existing rendering boundary: adapters may use the server-rendered `renderedHtml` for draft/editor
+preview surfaces, but it does not make Greater the canonical public Markdown renderer and does not
+change `Article.Content` public fallback behavior.
 
 ## `Publication` field audit
 
@@ -120,7 +130,8 @@ Concrete adapter work needed by Emdash before handing Lesser CMS objects to the 
 - Normalize `ContentFormat` casing (`HTML`/`MARKDOWN` → `html`/`markdown`).
 - Map `Actor`, `Media`, `Category`, and SEO fields into Greater view-model fields.
 - Normalize nullable `Draft.title` to a string for `DraftData.title`.
-- Keep workflow/admin fields (`editorNotes`, `reviewStatus`, `Draft.author`, `Publication.actor`) out
+- Keep workflow/admin/provenance fields (`editorNotes`, `reviewStatus`, `generatedBy`, `reviewedBy`,
+  `publishedBy`, `Draft.author`, `Publication.actor`) out
   of reusable Blog UI types.
 - Leave `tableOfContents`, `series`, `seriesOrder`, draft scheduling, publication members, newsletter
   stats, reactions, comments, and view counts out of this milestone until Emdash proves a concrete gap.
