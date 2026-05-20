@@ -560,9 +560,8 @@ export const addAction = async (
 		let updatedConfig = config;
 
 		for (const dep of resolution.resolved) {
-			if (dep.type !== 'face') {
-				updatedConfig = addInstalledComponent(updatedConfig, dep.name, targetRef);
-			}
+			const installedName = dep.type === 'face' ? `faces/${dep.name}` : dep.name;
+			updatedConfig = addInstalledComponent(updatedConfig, installedName, targetRef);
 		}
 
 		// Update face in config if face installation
