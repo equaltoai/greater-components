@@ -20,6 +20,12 @@
       "default": "latest",
       "examples": ["greater-v0.1.1", "greater-v0.1.0", "main"]
     },
+    "installMode": {
+      "type": "string",
+      "enum": ["vendored", "hybrid"],
+      "default": "vendored",
+      "description": "Installation mode. vendored copies Greater runtime code into aliases.greater; hybrid is legacy and keeps core package imports external."
+    },
     "style": {
       "type": "string",
       "enum": ["default", "new-york", "minimal", "custom"],
@@ -90,6 +96,11 @@
           "type": "string",
           "default": "$lib/primitives",
           "description": "Headless primitives directory"
+        },
+        "greater": {
+          "type": "string",
+          "default": "$lib/greater",
+          "description": "Vendored Greater core packages directory"
         }
       },
       "required": ["components", "utils"]
@@ -113,6 +124,17 @@
           "default": null,
           "description": "Face-specific CSS bundle to import (e.g., 'social', 'blog', 'community')",
           "examples": ["social", "blog", "community", null]
+        },
+        "source": {
+          "type": "string",
+          "enum": ["local", "npm"],
+          "default": "local",
+          "description": "CSS source mode. local copies CSS files; npm uses package CSS imports."
+        },
+        "localDir": {
+          "type": "string",
+          "default": "styles/greater",
+          "description": "Local CSS directory path relative to aliases.lib when css.source is local"
         }
       }
     },

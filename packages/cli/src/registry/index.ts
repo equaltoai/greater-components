@@ -185,6 +185,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 			{ name: '@graphql-typed-document-node/core', version: '^3.2.0' },
 			{ name: 'graphql', version: '^16.12.0' },
 			{ name: 'graphql-ws', version: '^6.0.6' },
+			{ name: 'viem', version: '^2.47.14' },
 		],
 		devDependencies: [],
 		registryDependencies: [],
@@ -230,6 +231,32 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		tags: ['social', 'types'],
 		version: '1.0.0',
 		domain: 'social',
+	},
+
+	'blog-types': {
+		name: 'blog-types',
+		type: 'shared',
+		description: 'Domain types used by blog face components',
+		files: [{ path: 'lib/blog-types.ts', content: '', type: 'types' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['blog', 'types'],
+		version: '1.0.0',
+		domain: 'blog',
+	},
+
+	'blog-share': {
+		name: 'blog-share',
+		type: 'shared',
+		description: 'SSR-safe article sharing URL helpers used by blog face components',
+		files: [{ path: 'lib/blog-share.ts', content: '', type: 'utils' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: ['blog-types'],
+		tags: ['blog', 'share', 'utils'],
+		version: '1.0.0',
+		domain: 'blog',
 	},
 
 	'social-renderers': {
@@ -1508,20 +1535,24 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		type: 'compound',
 		description: 'Long-form article layout with reading progress and table of contents',
 		files: [
+			{ path: 'lib/components/Article/Card.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/Root.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/Header.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/Content.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/Footer.svelte', content: '', type: 'component' },
+			{ path: 'lib/components/Article/Reader.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/ReadingProgress.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/TableOfContents.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/RelatedPosts.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/ShareBar.svelte', content: '', type: 'component' },
 			{ path: 'lib/components/Article/context.ts', content: '', type: 'types' },
+			{ path: 'lib/components/Article/date.ts', content: '', type: 'utils' },
 			{ path: 'lib/components/Article/index.ts', content: '', type: 'component' },
+			{ path: 'lib/components/Article/normalize.ts', content: '', type: 'utils' },
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: [],
+		registryDependencies: ['blog-types', 'blog-share'],
 		tags: ['compound', 'blog', 'article', 'reading'],
 		version: '1.0.0',
 		domain: 'blog',
@@ -1539,7 +1570,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: [],
+		registryDependencies: ['blog-types'],
 		tags: ['compound', 'blog', 'author', 'profile'],
 		version: '1.0.0',
 		domain: 'blog',
@@ -1562,7 +1593,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['button'],
+		registryDependencies: ['button', 'blog-types'],
 		tags: ['compound', 'blog', 'publication', 'newsletter'],
 		version: '1.0.0',
 		domain: 'blog',
@@ -1581,7 +1612,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: [],
+		registryDependencies: ['blog-types'],
 		tags: ['compound', 'blog', 'navigation', 'tags'],
 		version: '1.0.0',
 		domain: 'blog',
@@ -1599,7 +1630,7 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		],
 		dependencies: [{ name: 'svelte', version: '^5.0.0' }],
 		devDependencies: [],
-		registryDependencies: ['button'],
+		registryDependencies: ['button', 'blog-types'],
 		tags: ['compound', 'blog', 'editor', 'markdown'],
 		version: '1.0.0',
 		domain: 'blog',
@@ -1823,6 +1854,14 @@ import { faceRegistry } from './faces.js';
  * Searches across all registries: components, shared, patterns
  */
 export function getComponent(name: string): ComponentMetadata | null {
+	const faceMatch = name.match(/^faces?\//i);
+	if (faceMatch) {
+		const faceName = name.replace(/^faces?\//i, '');
+		if (faceRegistry[faceName]) {
+			return faceRegistry[faceName] as ComponentMetadata;
+		}
+	}
+
 	// Check main component registry first
 	if (componentRegistry[name]) {
 		return componentRegistry[name];
@@ -1836,6 +1875,10 @@ export function getComponent(name: string): ComponentMetadata | null {
 	// Check pattern registry
 	if (patternRegistry[name]) {
 		return patternRegistry[name] as ComponentMetadata;
+	}
+
+	if (faceRegistry[name]) {
+		return faceRegistry[name] as ComponentMetadata;
 	}
 
 	return null;
