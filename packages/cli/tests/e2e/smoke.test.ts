@@ -37,10 +37,71 @@ const FACE_CASES = [
 	},
 	{
 		face: 'blog',
-		componentFile: 'src/lib/components/Article/Root.svelte',
-		componentName: 'ArticleRoot',
-		componentImportLine: `import ArticleRoot from '$lib/components/Article/Root.svelte';`,
-		extraChecks: async () => {},
+		componentFile: 'src/lib/components/Article/Reader.svelte',
+		componentName: 'ArticleReader',
+		componentImportLine: `import { ArticleReader } from '$lib/components/Article';`,
+		extraChecks: async (fixtureRoot: string) => {
+			const articleDir = path.join(fixtureRoot, 'src/lib/components/Article');
+			const articleFiles = (await fs.readdir(articleDir)).sort();
+			expect(articleFiles).toEqual(
+				[
+					'Card.svelte',
+					'Content.svelte',
+					'Footer.svelte',
+					'Header.svelte',
+					'Reader.svelte',
+					'ReadingProgress.svelte',
+					'RelatedPosts.svelte',
+					'Root.svelte',
+					'ShareBar.svelte',
+					'TableOfContents.svelte',
+					'context.ts',
+					'date.ts',
+					'index.ts',
+					'normalize.ts',
+				].sort()
+			);
+
+			const blogTypesPath = path.join(fixtureRoot, 'src/lib/blog-types.ts');
+			const blogSharePath = path.join(fixtureRoot, 'src/lib/blog-share.ts');
+			expect(await fs.pathExists(blogTypesPath)).toBe(true);
+			expect(await fs.pathExists(blogSharePath)).toBe(true);
+			expect(await fs.readFile(blogTypesPath, 'utf-8')).toContain('export interface ArticleData');
+			expect(await fs.readFile(path.join(articleDir, 'context.ts'), 'utf-8')).toContain(
+				'../../blog-types.js'
+			);
+			expect(await fs.readFile(path.join(articleDir, 'ShareBar.svelte'), 'utf-8')).toContain(
+				'../../blog-share.js'
+			);
+			expect(await fs.readFile(blogSharePath, 'utf-8')).toContain('./blog-types.js');
+
+			const componentsJson = await fs.readJson(path.join(fixtureRoot, 'components.json'));
+			const installedNames = componentsJson.installed.map((entry: { name: string }) => entry.name);
+			expect(installedNames).toContain('faces/blog');
+			expect(installedNames).toContain('blog-types');
+			expect(installedNames).toContain('blog-share');
+
+			await expectNoMissingRelativeImports(articleDir);
+
+			await execa('node', [CLI_BIN, 'diff', '--summary', '--cwd', fixtureRoot], {
+				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
+			});
+			await execa('node', [CLI_BIN, 'diff', 'faces/blog', '--summary', '--cwd', fixtureRoot], {
+				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
+			});
+
+			const doctor = await execa('node', [CLI_BIN, 'doctor', '--json', '--cwd', fixtureRoot], {
+				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
+			});
+			const doctorSummary = JSON.parse(doctor.stdout) as {
+				results: Array<{ name: string; passed: boolean; message: string }>;
+			};
+			const componentFilesResult = doctorSummary.results.find(
+				(result) => result.name === 'Component Files'
+			);
+			expect(componentFilesResult?.passed).toBe(true);
+			expect(componentFilesResult?.message).toContain('file(s) verified');
+		},
 	},
 	{
 		face: 'community',
@@ -118,7 +179,11 @@ test.each(FACE_CASES)(
 			expect(layoutContent).toContain(`import '$lib/styles/greater/${face}.css';`);
 
 			// 2. Add Face
-			await execa('node', [CLI_BIN, 'add', '--yes', `faces/${face}`, '--cwd', fixtureRoot], {
+			const addArgs = ['add', '--yes', `faces/${face}`, '--cwd', fixtureRoot];
+			if (face === 'blog') {
+				addArgs.push('--all');
+			}
+			await execa('node', [CLI_BIN, ...addArgs], {
 				env: { ...process.env, GREATER_CLI_LOCAL_REPO_ROOT: REPO_ROOT },
 			});
 
@@ -130,13 +195,29 @@ test.each(FACE_CASES)(
 \timport { createButton } from '$lib/greater/headless/button';
 
 \tconst button = createButton();
+\tconst article = {
+\t\tid: 'article-1',
+\t\tslug: 'article-1',
+\t\tcontent: '<p>Hello from Greater Blog</p>',
+\t\tcontentFormat: 'html',
+\t\tmetadata: {
+\t\t\ttitle: 'Hello from Greater Blog',
+\t\t\tdescription: 'A fixture article',
+\t\t\tpublishedAt: new Date('2026-01-01T00:00:00.000Z'),
+\t\t},
+\t\tauthor: {
+\t\t\tid: 'author-1',
+\t\t\tname: 'Ada Writer',
+\t\t\thandle: '@ada@example.test',
+\t\t},
+\t};
 </script>
 
 <h1>Greater CLI Smoke (${face})</h1>
 
 <button use:button.actions.button>Click</button>
 
-<${componentName} />\n`
+<${face === 'blog' ? `${componentName} {article} />` : `${componentName} />`}\n`
 			);
 
 			// The fixture does not install dependencies from the network.
@@ -218,4 +299,38 @@ async function ensureNodeModuleLink(
 		targetPath,
 		process.platform === 'win32' ? 'junction' : 'dir'
 	);
+}
+
+async function expectNoMissingRelativeImports(dir: string): Promise<void> {
+	const files = await getFilesRecursively(dir);
+	const missing: string[] = [];
+
+	for (const file of files) {
+		if (!file.endsWith('.svelte') && !file.endsWith('.ts')) continue;
+
+		const content = await fs.readFile(file, 'utf-8');
+		const importPattern = /(?:from\s+|import\s*\(\s*)(['"])([^'"]+)\1/g;
+		let match: RegExpExecArray | null;
+
+		while ((match = importPattern.exec(content))) {
+			const importPath = match[2];
+			if (!importPath?.startsWith('.')) continue;
+
+			const resolved = path.resolve(path.dirname(file), importPath);
+			const candidates = resolved.endsWith('.js')
+				? [resolved.replace(/\.js$/, '.ts'), resolved.replace(/\.js$/, '.svelte'), resolved]
+				: path.extname(resolved)
+					? [resolved]
+					: [`${resolved}.ts`, `${resolved}.svelte`, path.join(resolved, 'index.ts')];
+
+			const candidateExists = await Promise.all(
+				candidates.map((candidate) => fs.pathExists(candidate))
+			);
+			if (!candidateExists.some(Boolean)) {
+				missing.push(`${path.relative(dir, file)} -> ${importPath}`);
+			}
+		}
+	}
+
+	expect(missing).toEqual([]);
 }

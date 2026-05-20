@@ -284,6 +284,30 @@ import type { GenericStatus } from '../generics/index.js';`;
 		expect(result.content).toContain("from '../types'");
 	});
 
+	it('rewrites shallow blog component type and share imports to face-scoped files', () => {
+		const content = `<script lang="ts">
+\timport type { ArticleData } from '../../types.js';
+\timport { buildArticleShareUrl } from '../../share.js';
+</script>`;
+
+		const result = transformImports(content, config, 'lib/components/Article/ShareBar.svelte');
+
+		expect(result.transformedCount).toBe(2);
+		expect(result.content).toContain("from '../../blog-types.js'");
+		expect(result.content).toContain("from '../../blog-share.js'");
+	});
+
+	it('rewrites shallow blog share helper imports to face-scoped types', () => {
+		const content = `import type { ArticleData, ArticleHandlers } from './types.js';`;
+
+		const result = transformImports(content, config, 'lib/blog-share.ts');
+
+		expect(result.transformedCount).toBe(1);
+		expect(result.content).toBe(
+			`import type { ArticleData, ArticleHandlers } from './blog-types.js';`
+		);
+	});
+
 	it('rewrites executable exports after comment prose that mentions re-exporting', () => {
 		const content = `// Re-export palette types for ThemeProvider consumers
 export type { PalettePreset } from '@equaltoai/greater-components-tokens';

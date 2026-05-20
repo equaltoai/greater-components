@@ -19,10 +19,12 @@ import { fetchComponentFiles, type FetchOptions } from '../utils/fetch.js';
 import { readFile, fileExists } from '../utils/files.js';
 import { computeDiff, formatDiffStats, type DiffResult } from '../utils/diff.js';
 import { logger } from '../utils/logger.js';
-import { resolveRef } from '../utils/registry-index.js';
+import { fetchRegistryIndex, resolveRef } from '../utils/registry-index.js';
 import { getInstalledFilePath } from '../utils/install-path.js';
 import { ensureLocalRepoRoot } from '../utils/local-repo.js';
 import { resolveRefForFetch } from '../utils/ref.js';
+import { transformImports } from '../utils/transform.js';
+import type { ComponentFile, ComponentMetadata } from '../registry/index.js';
 
 /**
  * Result of diffing a single component
@@ -43,6 +45,42 @@ interface FileDiffResult {
 	exists: boolean;
 	diff: DiffResult | null;
 	error?: string;
+}
+
+function normalizeDiffItemName(name: string): string {
+	return name.replace(/^faces?\//i, 'faces/');
+}
+
+function inferDiffFileType(filePath: string): ComponentFile['type'] {
+	if (filePath.endsWith('.css')) return 'styles';
+	if (filePath.endsWith('.d.ts') || filePath.endsWith('.d.ts.map')) return 'types';
+	if (filePath.endsWith('.svelte') || filePath.includes('.svelte.')) return 'component';
+	return filePath.endsWith('.ts') ? 'types' : 'utils';
+}
+
+async function hydrateFaceMetadataForDiff(
+	componentName: string,
+	component: ComponentMetadata,
+	ref: string
+): Promise<ComponentMetadata> {
+	if (component.type !== 'face' || component.files.length > 0) return component;
+
+	const faceName = componentName.replace(/^faces?\//i, '') || component.name;
+	const registryIndex = await fetchRegistryIndex(ref);
+	const face = registryIndex.faces[faceName];
+	if (!face?.files.length) return component;
+
+	return {
+		...component,
+		files: face.files.map((file) => {
+			const withoutSrc = file.path.startsWith('src/') ? file.path.slice('src/'.length) : file.path;
+			return {
+				path: `greater/faces/${faceName}/${withoutSrc}`,
+				content: '',
+				type: inferDiffFileType(withoutSrc),
+			};
+		}),
+	};
 }
 
 /**
@@ -82,9 +120,9 @@ async function diffComponent(
 	cwd: string,
 	options: { ref: string }
 ): Promise<ComponentDiffResult> {
-	const component = getComponent(componentName);
+	const baseComponent = getComponent(componentName);
 
-	if (!component) {
+	if (!baseComponent) {
 		return {
 			componentName,
 			files: [],
@@ -93,16 +131,19 @@ async function diffComponent(
 		};
 	}
 
+	const component = await hydrateFaceMetadataForDiff(componentName, baseComponent, options.ref);
 	const installed = getInstalledComponent(componentName, config);
 	const fetchOptions: FetchOptions = {
 		ref: options.ref,
 	};
 
 	// Fetch remote files
-	let remoteFiles: Map<string, string>;
+	let remoteFiles: Map<string, { content: string; transform?: boolean }>;
 	try {
 		const fetchResult = await fetchComponentFiles(component, fetchOptions);
-		remoteFiles = new Map(fetchResult.files.map((f) => [f.path, f.content]));
+		remoteFiles = new Map(
+			fetchResult.files.map((f) => [f.path, { content: f.content, transform: f.transform }])
+		);
 	} catch (error) {
 		return {
 			componentName,
@@ -126,7 +167,11 @@ async function diffComponent(
 
 	for (const file of component.files) {
 		const localPath = getInstalledFilePath(file.path, config, cwd);
-		const remoteContent = remoteFiles.get(file.path) || '';
+		const remoteFile = remoteFiles.get(file.path);
+		const remoteContent =
+			remoteFile && remoteFile.transform !== false
+				? transformImports(remoteFile.content, config, file.path).content
+				: (remoteFile?.content ?? '');
 
 		const result: FileDiffResult = {
 			filePath: file.path,
@@ -285,7 +330,8 @@ export const diffCommand = new Command()
 
 		if (items.length > 0) {
 			// Validate specified components exist
-			const invalid = items.filter((name) => !getComponent(name));
+			componentNames = items.map(normalizeDiffItemName);
+			const invalid = componentNames.filter((name) => !getComponent(name));
 			if (invalid.length > 0) {
 				logger.error(chalk.red(`\n✖ Unknown components: ${invalid.join(', ')}`));
 				logger.note(
@@ -295,10 +341,9 @@ export const diffCommand = new Command()
 				);
 				process.exit(1);
 			}
-			componentNames = items;
 		} else {
 			// Diff all installed components
-			componentNames = getInstalledComponentNames(config);
+			componentNames = getInstalledComponentNames(config).map(normalizeDiffItemName);
 
 			if (componentNames.length === 0) {
 				logger.info(chalk.yellow('\n✖ No components installed'));

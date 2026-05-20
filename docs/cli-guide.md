@@ -505,6 +505,18 @@ Notes:
 | `css.localDir`       | string       | Local CSS directory path (relative to `aliases.lib`)      |
 | `installed`          | array        | List of installed components                              |
 
+### Install modes
+
+`installMode: "vendored"` is the supported default and the release-tested path. In this mode the CLI
+copies Greater runtime code into `aliases.greater` (default `$lib/greater`) and rewrites installed
+face/component imports to that vendored source. Consumers should treat those files as
+upstream-managed Greater source and update them only with `greater add` / `greater update`.
+
+`installMode: "hybrid"` is a legacy compatibility mode for apps that deliberately keep Greater core
+package imports external. It does **not** vendor core packages into `$lib/greater`, and it expects the
+consumer to provide compatible Greater package dependencies. New Greater consumers should use
+`vendored`; do not mix vendored core files and external package imports as parallel sources of truth.
+
 ### Installed Component Entry
 
 ```json
