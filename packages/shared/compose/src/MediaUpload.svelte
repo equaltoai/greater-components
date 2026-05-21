@@ -128,7 +128,7 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 		// Validate files
 		const validation = validateFiles(fileArray, { ...config, maxFiles });
 		if (!validation.valid) {
-			error = validation.errors[0];
+			error = validation.errors[0] ?? 'Invalid file selection';
 			return;
 		}
 
@@ -142,7 +142,10 @@ Upload images, videos, and audio with drag & drop, progress tracking, and valida
 		// Start uploading if handler provided
 		if (onUpload) {
 			for (let i = 0; i < processedFiles.length; i++) {
-				uploadFile(files[startIndex + i]);
+				const mediaFile = files[startIndex + i];
+				if (mediaFile) {
+					void uploadFile(mediaFile);
+				}
 			}
 		}
 	}
