@@ -278,7 +278,10 @@
 				throw new Error('No accounts found. Please unlock your wallet.');
 			}
 
-			const [address] = accountsResult;
+			const address = accountsResult[0];
+			if (!address) {
+				throw new Error('No accounts found. Please unlock your wallet.');
+			}
 
 			// Get chain ID
 			const chainIdResult = await ethereum.request({
