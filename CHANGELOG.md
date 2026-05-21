@@ -14,18 +14,16 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 
 ## [0.8.18](https://github.com/equaltoai/greater-components/compare/greater-v0.8.17...greater-v0.8.18) (2026-05-21)
 
-
 ### Bug Fixes
 
-* clear CLI-installed svelte check errors ([f815f93](https://github.com/equaltoai/greater-components/commit/f815f9303675b9574d6e2449c7359f1c8a09ba7d))
-* **release:** surface release PR checks ([ab0e48a](https://github.com/equaltoai/greater-components/commit/ab0e48a86bfc472761a3cef9fae84c084f1467c0))
-
+- clear CLI-installed svelte check errors ([f815f93](https://github.com/equaltoai/greater-components/commit/f815f9303675b9574d6e2449c7359f1c8a09ba7d))
+- **release:** surface release PR checks ([ab0e48a](https://github.com/equaltoai/greater-components/commit/ab0e48a86bfc472761a3cef9fae84c084f1467c0))
 
 ### Chores
 
-* **premain:** release greater 0.8.18-rc.0 ([32e7a22](https://github.com/equaltoai/greater-components/commit/32e7a223959a458437c2e4ed0da52064eadff327))
-* **premain:** release greater 0.8.18-rc.0 ([e3c3df3](https://github.com/equaltoai/greater-components/commit/e3c3df32e35fefdb63a96f100d5d493104791a18))
-* **release:** prepare metadata ([e6c8550](https://github.com/equaltoai/greater-components/commit/e6c8550c7d3ab20beabb58003adaba39d197a475))
+- **premain:** release greater 0.8.18-rc.0 ([32e7a22](https://github.com/equaltoai/greater-components/commit/32e7a223959a458437c2e4ed0da52064eadff327))
+- **premain:** release greater 0.8.18-rc.0 ([e3c3df3](https://github.com/equaltoai/greater-components/commit/e3c3df32e35fefdb63a96f100d5d493104791a18))
+- **release:** prepare metadata ([e6c8550](https://github.com/equaltoai/greater-components/commit/e6c8550c7d3ab20beabb58003adaba39d197a475))
 
 ## [0.8.18-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.17-rc.0...greater-v0.8.18-rc.0) (2026-05-21)
 
