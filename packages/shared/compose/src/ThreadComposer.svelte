@@ -179,7 +179,12 @@ Create threads with multiple connected posts, each with its own character limit.
 	function movePostUp(postId: string) {
 		const index = posts.findIndex((p) => p.id === postId);
 		if (index > 0) {
-			[posts[index], posts[index - 1]] = [posts[index - 1], posts[index]];
+			const currentPost = posts[index];
+			const previousPost = posts[index - 1];
+			if (!currentPost || !previousPost) return;
+
+			posts[index - 1] = currentPost;
+			posts[index] = previousPost;
 		}
 	}
 
@@ -189,7 +194,12 @@ Create threads with multiple connected posts, each with its own character limit.
 	function movePostDown(postId: string) {
 		const index = posts.findIndex((p) => p.id === postId);
 		if (index < posts.length - 1) {
-			[posts[index], posts[index + 1]] = [posts[index + 1], posts[index]];
+			const currentPost = posts[index];
+			const nextPost = posts[index + 1];
+			if (!currentPost || !nextPost) return;
+
+			posts[index + 1] = currentPost;
+			posts[index] = nextPost;
 		}
 	}
 
@@ -213,6 +223,7 @@ Create threads with multiple connected posts, each with its own character limit.
 		if (draggedIndex !== -1 && targetIndex !== -1) {
 			const newPosts = [...posts];
 			const [draggedPost] = newPosts.splice(draggedIndex, 1);
+			if (!draggedPost) return;
 			newPosts.splice(targetIndex, 0, draggedPost);
 			posts = newPosts;
 		}

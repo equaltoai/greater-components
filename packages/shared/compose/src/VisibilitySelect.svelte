@@ -29,18 +29,22 @@ Dropdown for selecting post visibility (public, unlisted, private, direct).
 
 	const context = getComposeContext();
 
-	const visibilityOptions: Array<{
+	type VisibilityOption = {
 		value: PostVisibility;
 		label: string;
 		icon: string;
 		description: string;
-	}> = [
-		{
-			value: 'public',
-			label: 'Public',
-			icon: '🌐',
-			description: 'Anyone can see this post',
-		},
+	};
+
+	const defaultVisibilityOption: VisibilityOption = {
+		value: 'public',
+		label: 'Public',
+		icon: '🌐',
+		description: 'Anyone can see this post',
+	};
+
+	const visibilityOptions: VisibilityOption[] = [
+		defaultVisibilityOption,
 		{
 			value: 'unlisted',
 			label: 'Unlisted',
@@ -62,7 +66,8 @@ Dropdown for selecting post visibility (public, unlisted, private, direct).
 	];
 
 	const currentOption = $derived(
-		visibilityOptions.find((opt) => opt.value === context.state.visibility) || visibilityOptions[0]
+		visibilityOptions.find((opt) => opt.value === context.state.visibility) ??
+			defaultVisibilityOption
 	);
 
 	function handleChange(event: Event) {

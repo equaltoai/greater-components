@@ -16,7 +16,7 @@ Displays multiple similar notifications grouped together.
 
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import type { NotificationGroup, NotificationType } from './types.js';
+	import type { Notification, NotificationGroup, NotificationType } from './types.js';
 	import { getNotificationsContext } from './context.svelte.js';
 	import { getGroupTitle } from './utils/notificationGrouping.js';
 
@@ -96,6 +96,10 @@ Displays multiple similar notifications grouped together.
 		return baseTitle;
 	});
 
+	function getAccountName(notification: Notification | undefined): string {
+		return notification?.account?.displayName || notification?.account?.username || '';
+	}
+
 	/**
 	 * Format the names of accounts
 	 */
@@ -103,12 +107,14 @@ Displays multiple similar notifications grouped together.
 		const notifications = group.notifications;
 		const count = notifications.length;
 
-		if (count === 1) {
-			return notifications[0].account?.displayName || notifications[0].account?.username || '';
+		if (count === 0) {
+			return '';
+		} else if (count === 1) {
+			return getAccountName(notifications[0]);
 		} else if (count === 2) {
-			return `${notifications[0].account?.displayName || notifications[0].account?.username} and ${notifications[1].account?.displayName || notifications[1].account?.username}`;
+			return `${getAccountName(notifications[0])} and ${getAccountName(notifications[1])}`;
 		} else {
-			return `${notifications[0].account?.displayName || notifications[0].account?.username} and ${count - 1} others`;
+			return `${getAccountName(notifications[0])} and ${count - 1} others`;
 		}
 	});
 
