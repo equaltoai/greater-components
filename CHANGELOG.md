@@ -12,6 +12,20 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.8.18-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.17-rc.0...greater-v0.8.18-rc.0) (2026-05-21)
+
+### Bug Fixes
+
+- clear CLI-installed svelte check errors ([f815f93](https://github.com/equaltoai/greater-components/commit/f815f9303675b9574d6e2449c7359f1c8a09ba7d))
+- **release:** surface release PR checks ([ab0e48a](https://github.com/equaltoai/greater-components/commit/ab0e48a86bfc472761a3cef9fae84c084f1467c0))
+- **release:** surface release PR checks ([c8072b9](https://github.com/equaltoai/greater-components/commit/c8072b91f5f3de48da1d71cc6844e736afcab431))
+
+### Chores
+
+- **main:** release greater 0.8.17 ([a0490b4](https://github.com/equaltoai/greater-components/commit/a0490b4151c870a9ae8d987e2dcc0e80d9f570fa))
+- **main:** release greater 0.8.17 ([546ec7c](https://github.com/equaltoai/greater-components/commit/546ec7c22f8cfd6b0aae86eb22d808dc741e4c1c))
+- **release:** prepare metadata ([682b37c](https://github.com/equaltoai/greater-components/commit/682b37c28835c42d45155a66bbbdeb728c18d057))
+
 ## [0.8.17](https://github.com/equaltoai/greater-components/compare/greater-v0.8.16...greater-v0.8.17) (2026-05-20)
 
 ### Bug Fixes
