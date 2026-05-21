@@ -148,8 +148,9 @@ Text editor with hashtag, mention, and emoji autocomplete support.
 			}
 			if (event.key === 'Enter' || event.key === 'Tab') {
 				event.preventDefault();
-				if (suggestions[selectedIndex]) {
-					handleSelectSuggestion(suggestions[selectedIndex]);
+				const suggestion = suggestions[selectedIndex];
+				if (suggestion) {
+					handleSelectSuggestion(suggestion);
 				}
 				return;
 			}

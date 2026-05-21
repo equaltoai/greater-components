@@ -26,7 +26,7 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 	const initialDraft = untrack(() => draft);
 	const initialConfig = untrack(() => config);
 
-	const state = $state<EditorContext>({
+	const editorState = $state<EditorContext>({
 		draft: initialDraft,
 		config: {
 			...DEFAULT_EDITOR_CONFIG,
@@ -37,10 +37,10 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 		lastSaved: initialDraft.savedAt ? new Date(initialDraft.savedAt) : null,
 	});
 
-	createEditorContext(state);
+	createEditorContext(editorState);
 
 	$effect(() => {
-		state.config = {
+		editorState.config = {
 			...DEFAULT_EDITOR_CONFIG,
 			...config,
 		};
@@ -48,53 +48,55 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 
 	$effect(() => {
 		// Sync draft only when the identity changes to avoid clobbering edits.
-		if (draft.id !== state.draft.id) {
-			state.draft = draft;
-			state.isDirty = false;
-			state.lastSaved = draft.savedAt ? new Date(draft.savedAt) : null;
+		if (draft.id !== editorState.draft.id) {
+			editorState.draft = draft;
+			editorState.isDirty = false;
+			editorState.lastSaved = draft.savedAt ? new Date(draft.savedAt) : null;
 		}
 	});
 
 	let textarea: HTMLTextAreaElement | null = $state(null);
 
 	const wordCount = $derived(
-		state.config.showWordCount ? (state.draft.content.trim().match(/\S+/g)?.length ?? 0) : undefined
+		editorState.config.showWordCount
+			? (editorState.draft.content.trim().match(/\S+/g)?.length ?? 0)
+			: undefined
 	);
 	const readingMinutes = $derived(
-		state.config.showReadingTime && wordCount !== undefined
+		editorState.config.showReadingTime && wordCount !== undefined
 			? Math.max(1, Math.ceil(wordCount / 200))
 			: undefined
 	);
 
 	const previewHtml = $derived(
-		state.draft.contentFormat !== 'markdown' ? sanitizeHtml(state.draft.content) : ''
+		editorState.draft.contentFormat !== 'markdown' ? sanitizeHtml(editorState.draft.content) : ''
 	);
 
 	function emitChange() {
-		state.isDirty = true;
-		onChange?.({ ...state.draft });
+		editorState.isDirty = true;
+		onChange?.({ ...editorState.draft });
 	}
 
 	async function saveDraft() {
-		if (!onSave || state.isSaving) return;
-		state.isSaving = true;
+		if (!onSave || editorState.isSaving) return;
+		editorState.isSaving = true;
 		try {
-			await onSave({ ...state.draft });
-			state.isDirty = false;
-			state.lastSaved = new Date();
-			state.draft.savedAt = state.lastSaved.toISOString();
+			await onSave({ ...editorState.draft });
+			editorState.isDirty = false;
+			editorState.lastSaved = new Date();
+			editorState.draft.savedAt = editorState.lastSaved.toISOString();
 		} finally {
-			state.isSaving = false;
+			editorState.isSaving = false;
 		}
 	}
 
 	$effect(() => {
 		if (!onSave) return;
-		const interval = state.config.autoSaveInterval;
+		const interval = editorState.config.autoSaveInterval;
 		if (!interval || interval <= 0) return;
 
 		const id = setInterval(() => {
-			if (state.isDirty && !state.isSaving) {
+			if (editorState.isDirty && !editorState.isSaving) {
 				void saveDraft();
 			}
 		}, interval);
@@ -107,12 +109,12 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 
 		const start = textarea.selectionStart ?? 0;
 		const end = textarea.selectionEnd ?? 0;
-		const value = state.draft.content;
+		const value = editorState.draft.content;
 		const before = value.slice(0, start);
 		const selected = value.slice(start, end);
 		const after = value.slice(end);
 
-		state.draft.content = `${before}${prefix}${selected}${suffix}${after}`;
+		editorState.draft.content = `${before}${prefix}${selected}${suffix}${after}`;
 		emitChange();
 
 		queueMicrotask(() => {
@@ -128,17 +130,17 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 
 		const start = textarea.selectionStart ?? 0;
 		const end = textarea.selectionEnd ?? 0;
-		const value = state.draft.content;
+		const value = editorState.draft.content;
 		const selection = value.slice(start, end) || value;
 		const next = selection
 			.split('\n')
-			.map((line) => (line.trim() ? `${prefix}${line}` : line))
+			.map((line: string) => (line.trim() ? `${prefix}${line}` : line))
 			.join('\n');
 
 		if (value.slice(start, end)) {
-			state.draft.content = `${value.slice(0, start)}${next}${value.slice(end)}`;
+			editorState.draft.content = `${value.slice(0, start)}${next}${value.slice(end)}`;
 		} else {
-			state.draft.content = next;
+			editorState.draft.content = next;
 		}
 
 		emitChange();
@@ -164,11 +166,11 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 				if (!textarea) return;
 				const start = textarea.selectionStart ?? 0;
 				const end = textarea.selectionEnd ?? 0;
-				const value = state.draft.content;
+				const value = editorState.draft.content;
 				const selected = value.slice(start, end) || 'link text';
 				const before = value.slice(0, start);
 				const after = value.slice(end);
-				state.draft.content = `${before}[${selected}](${href})${after}`;
+				editorState.draft.content = `${before}[${selected}](${href})${after}`;
 				emitChange();
 				break;
 			}
@@ -178,25 +180,25 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 	}
 </script>
 
-<section class={state.config.class} aria-label="Editor">
+<section class={editorState.config.class} aria-label="Editor">
 	{#if children}
 		{@render children?.()}
 	{:else}
-		<Toolbar disabled={state.isSaving} onAction={handleToolbarAction} />
+		<Toolbar disabled={editorState.isSaving} onAction={handleToolbarAction} />
 
 		<div class="gr-blog-editor__body">
 			<textarea
 				bind:this={textarea}
-				placeholder={state.config.placeholder}
-				bind:value={state.draft.content}
+				placeholder={editorState.config.placeholder}
+				bind:value={editorState.draft.content}
 				oninput={emitChange}
-				disabled={state.isSaving}
+				disabled={editorState.isSaving}
 			></textarea>
 
-			{#if state.config.mode === 'split'}
+			{#if editorState.config.mode === 'split'}
 				<div class="gr-blog-editor__preview" aria-label="Preview">
-					{#if state.draft.contentFormat === 'markdown'}
-						<MarkdownRenderer content={state.draft.content} />
+					{#if editorState.draft.contentFormat === 'markdown'}
+						<MarkdownRenderer content={editorState.draft.content} />
 					{:else}
 						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 						{@html previewHtml}
@@ -212,14 +214,14 @@ Provides a minimal authoring experience for markdown/HTML drafts with optional a
 			{#if readingMinutes !== undefined}
 				<span>{readingMinutes} min read</span>
 			{/if}
-			{#if state.isSaving}
+			{#if editorState.isSaving}
 				<span>Saving…</span>
-			{:else if state.isDirty}
+			{:else if editorState.isDirty}
 				<span>Unsaved changes</span>
-			{:else if state.lastSaved}
+			{:else if editorState.lastSaved}
 				<span>Saved</span>
 			{/if}
-			{#if onSave && state.isDirty && !state.isSaving}
+			{#if onSave && editorState.isDirty && !editorState.isSaving}
 				<button type="button" onclick={saveDraft}>Save</button>
 			{/if}
 		</div>
