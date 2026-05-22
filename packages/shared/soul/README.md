@@ -14,10 +14,10 @@ These components are designed to be used by `simulacrum` without forking vendore
 Lesser Host-managed `@lessersoul.ai` email values are rendered as opaque strings. Current
 public channels use the Project 37 instance-scoped form
 `<agent-local-id>.<instance-slug>@lessersoul.ai`; components do not split the dotted
-local-part or infer agent/instance identity from it. Bare
-`<agent-local-id>@lessersoul.ai` values are treated as migrated inbound aliases and are
-labelled as legacy only when that exact address is explicitly provided by the contract
-payload.
+local-part or infer agent/instance identity from it. The v0.4.3 contract text describes
+legacy bare inbound aliases, but the channel payload does not expose authoritative alias
+state metadata. Components therefore fail closed and do not infer or render a legacy label
+from address shape.
 
 ## Anchor assurance
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isLegacyManagedSoulEmailAlias, recommendContactTarget } from '../src/utils.js';
+import { recommendContactTarget } from '../src/utils.js';
 import type { SoulChannels, SoulContactPreferences } from '../src/types.js';
 
 describe('recommendContactTarget', () => {
@@ -66,10 +66,4 @@ describe('recommendContactTarget', () => {
 		expect(rec.recommended?.channel).toBe('sms');
 	});
 
-	it('only marks explicitly bare managed lessersoul.ai addresses as legacy aliases', () => {
-		expect(isLegacyManagedSoulEmailAlias('agent-alice@lessersoul.ai')).toBe(true);
-		expect(isLegacyManagedSoulEmailAlias('agent-alice.simulacrum@lessersoul.ai')).toBe(false);
-		expect(isLegacyManagedSoulEmailAlias('agent-alice.team.simulacrum@lessersoul.ai')).toBe(false);
-		expect(isLegacyManagedSoulEmailAlias('agent-alice@example.com')).toBe(false);
-	});
 });

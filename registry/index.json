@@ -1,7 +1,7 @@
 {
   "$schema": "https://equalto.ai/schemas/registry-index.schema.json",
   "schemaVersion": "1.0.0",
-  "generatedAt": "2026-05-22T18:32:06.581Z",
+  "generatedAt": "2026-05-22T19:09:40.303Z",
   "ref": "greater-v0.8.18",
   "version": "0.8.18",
   "checksums": {
@@ -1378,13 +1378,13 @@
     "packages/shared/messaging/src/utils.ts": "sha256-n5s8ZSURaYg3TP01VFafGTH43dn04IiTwLtAKMU1Hyk=",
     "packages/shared/messaging/src/WorkflowThreadMoment.svelte": "sha256-IM+qoJZEMS44ujczVD9hiWnpPQBeb37zfG3JipVeFq0=",
     "packages/shared/soul/src/AnchorAssuranceBadge.svelte": "sha256-IUAvzymXQ8r/oY6B5JmwdkHQ+mhW5aZzmMQC74KwkiE=",
-    "packages/shared/soul/src/BestWayToContact.svelte": "sha256-upi8q1yth1eCootcTazC7OMI3xSn7YzF3UN6U5iy0sw=",
-    "packages/shared/soul/src/ChannelsDisplay.svelte": "sha256-22hgIR8jdM0ec+zkMSq1LSKuOSSXwJJ2sh/Wkt6oCKw=",
+    "packages/shared/soul/src/BestWayToContact.svelte": "sha256-IBt7PZbUifeYI0DjsiPxTYLBwJj2k5cX0mw/J6DGf9k=",
+    "packages/shared/soul/src/ChannelsDisplay.svelte": "sha256-wNJoj3WNDXaqcmsxBOPQtuQJyeA/XX6jaH5wQaC4Vdg=",
     "packages/shared/soul/src/ContactPreferencesEditor.svelte": "sha256-gkLWB1luu79pVIaSNe69cTbad00zTpCh0JVRO8SWOCQ=",
     "packages/shared/soul/src/ContactPreferencesViewer.svelte": "sha256-7cU44eKMlSkNo7HFP+OPEqEJEuJK8XQHNCa5m9e5lJc=",
     "packages/shared/soul/src/index.ts": "sha256-Vncqk2a362dW6wuohewE+iX9FNK1lh2YgGrozSRKOlc=",
     "packages/shared/soul/src/types.ts": "sha256-ENdFiwk3YwQDwbVqP0FM9hZpa2mVPOODZt1au2B+yl0=",
-    "packages/shared/soul/src/utils.ts": "sha256-zYzyWV30tpW75+ubdxrZ0vtwqYDFoKvWt2G/Yk0DJFU=",
+    "packages/shared/soul/src/utils.ts": "sha256-CaCSx7yKwUy5bQd0xDTYsJ9KtwYlNg2xEv5WZh0BvFk=",
     "packages/shared/agent/src/AgentIdentityCard.svelte": "sha256-9QWSA/MhN/orzEXgxWgYPiLWssOrRVbNYIrvXz0mm40=",
     "packages/shared/agent/src/AgentStateBadge.svelte": "sha256-e0ar0LCNboYOhnJJsagodHminlOlLQ7tYJYzt4ENMJA=",
     "packages/shared/agent/src/boundaries.ts": "sha256-jfxRLFtKF55AJlaKaA6D59PcVoX78vOLNmXkd2/oJbk=",
@@ -9371,13 +9371,13 @@
         },
         {
           "path": "src/BestWayToContact.svelte",
-          "checksum": "sha256-upi8q1yth1eCootcTazC7OMI3xSn7YzF3UN6U5iy0sw=",
-          "size": 5383
+          "checksum": "sha256-IBt7PZbUifeYI0DjsiPxTYLBwJj2k5cX0mw/J6DGf9k=",
+          "size": 4853
         },
         {
           "path": "src/ChannelsDisplay.svelte",
-          "checksum": "sha256-22hgIR8jdM0ec+zkMSq1LSKuOSSXwJJ2sh/Wkt6oCKw=",
-          "size": 7042
+          "checksum": "sha256-wNJoj3WNDXaqcmsxBOPQtuQJyeA/XX6jaH5wQaC4Vdg=",
+          "size": 6780
         },
         {
           "path": "src/ContactPreferencesEditor.svelte",
@@ -9401,8 +9401,8 @@
         },
         {
           "path": "src/utils.ts",
-          "checksum": "sha256-zYzyWV30tpW75+ubdxrZ0vtwqYDFoKvWt2G/Yk0DJFU=",
-          "size": 6596
+          "checksum": "sha256-CaCSx7yKwUy5bQd0xDTYsJ9KtwYlNg2xEv5WZh0BvFk=",
+          "size": 6034
         }
       ],
       "dependencies": [

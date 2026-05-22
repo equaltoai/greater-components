@@ -6,7 +6,8 @@ import ChannelsDisplay from '../src/ChannelsDisplay.svelte';
 import type { SoulChannels, SoulContactPreferences } from '../src/types.js';
 
 const compoundAddress = 'agent-bob.simulacrum@lessersoul.ai';
-const legacyAddress = 'agent-bob@lessersoul.ai';
+const bareManagedAddress = 'agent-bob@lessersoul.ai';
+const dottedLocalManagedAddress = 'ops.v2@lessersoul.ai';
 
 function channelsWithEmail(address: string): SoulChannels {
 	return {
@@ -68,22 +69,22 @@ describe('soul email rendering', () => {
 		expect(screen.queryByText('Legacy alias')).toBeNull();
 	});
 
-	it('labels explicitly provided bare managed email addresses as legacy aliases', () => {
-		render(ChannelsDisplay, { props: { channels: channelsWithEmail(legacyAddress) } });
+	it('does not infer legacy state from bare managed email address shape', () => {
+		render(ChannelsDisplay, { props: { channels: channelsWithEmail(bareManagedAddress) } });
 
-		expect(screen.getByRole('link', { name: legacyAddress })).toBeTruthy();
-		expect(screen.getByText('Legacy alias')).toBeTruthy();
+		expect(screen.getByRole('link', { name: bareManagedAddress })).toBeTruthy();
+		expect(screen.queryByText('Legacy alias')).toBeNull();
 	});
 
-	it('carries the legacy-alias label into best-contact rendering', () => {
+	it('does not infer legacy state from dotted managed email local-parts', () => {
 		render(BestWayToContact, {
 			props: {
-				channels: channelsWithEmail(legacyAddress),
+				channels: channelsWithEmail(dottedLocalManagedAddress),
 				preferences: emailPreferences,
 			},
 		});
 
-		expect(screen.getByRole('link', { name: legacyAddress })).toBeTruthy();
-		expect(screen.getByText('Legacy alias')).toBeTruthy();
+		expect(screen.getByRole('link', { name: dottedLocalManagedAddress })).toBeTruthy();
+		expect(screen.queryByText('Legacy alias')).toBeNull();
 	});
 });
