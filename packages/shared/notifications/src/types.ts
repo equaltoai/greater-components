@@ -54,6 +54,7 @@ export interface CommunicationFrom {
 
 export interface CommunicationTo {
 	address: string;
+	soulAgentId?: string | null;
 }
 
 export interface CommunicationAttachment {

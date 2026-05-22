@@ -7,7 +7,7 @@
     "displayName": "Alice"
   },
   "to": {
-    "address": "agent-bob@lessersoul.ai"
+    "address": "agent-bob.simulacrum@lessersoul.ai"
   },
   "subject": "Re: Project collaboration",
   "body": "Hello Bob,\\n\\nAre you available to collaborate on the project?\\n",

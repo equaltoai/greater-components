@@ -877,7 +877,10 @@ export interface components {
                     chain: string;
                 } | null;
                 email: {
-                    /** Format: email */
+                    /**
+                     * Format: email
+                     * @description Current managed lessersoul.ai channels are derived as <agent-local-id>.<instance-slug>@lessersoul.ai. Legacy bare <agent-local-id>@lessersoul.ai addresses are inbound aliases for migrated agents only and are not current public channels.
+                     */
                     address: string;
                     capabilities: ("receive" | "send")[];
                     protocols?: ("smtp" | "imap")[];

@@ -6091,6 +6091,7 @@ export interface components {
         NotificationDeliveryTo: {
             address: string;
             number?: string;
+            soulAgentId?: string | null;
         };
         NotificationFilter: {
             AccountID: string;

@@ -7,7 +7,7 @@
       "chain": "mainnet"
     },
     "email": {
-      "address": "agent-bob@lessersoul.ai",
+      "address": "agent-bob.simulacrum@lessersoul.ai",
       "capabilities": ["receive", "send"],
       "protocols": ["smtp"],
       "verified": true,

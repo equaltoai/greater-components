@@ -386,6 +386,7 @@ export interface LesserCommunicationFromFragment {
 
 export interface LesserCommunicationToFragment {
 	address: string;
+	soulAgentId?: string | null;
 }
 
 export interface LesserCommunicationAttachmentFragment {

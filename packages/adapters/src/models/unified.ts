@@ -493,7 +493,10 @@ export interface UnifiedNotification {
 			displayName?: string;
 			soulAgentId?: string | null;
 		};
-		to?: { address: string } | null;
+		to?: {
+			address: string;
+			soulAgentId?: string | null;
+		} | null;
 		attachments: Array<{
 			id: string;
 			filename: string;
