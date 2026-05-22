@@ -65,5 +65,4 @@ describe('recommendContactTarget', () => {
 		const rec = recommendContactTarget(channels, preferences);
 		expect(rec.recommended?.channel).toBe('sms');
 	});
-
 });
