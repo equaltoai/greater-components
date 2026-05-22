@@ -892,7 +892,10 @@ export function mapLesserNotification(
 							? undefined
 							: notification.communication.to === null
 								? null
-								: { address: safeString(notification.communication.to.address) },
+								: {
+										address: safeString(notification.communication.to.address),
+										soulAgentId: notification.communication.to.soulAgentId,
+									},
 					attachments: (notification.communication.attachments ?? []).map((attachment) => ({
 						id: safeString(attachment.id),
 						filename: safeString(attachment.filename),
