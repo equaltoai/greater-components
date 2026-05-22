@@ -32,6 +32,8 @@ const CONTACT_CHANNEL_LABELS: Record<SoulContactChannel, string> = {
 	mcp: 'MCP',
 };
 
+const MANAGED_SOUL_EMAIL_DOMAIN = '@lessersoul.ai';
+
 function unique<T>(items: T[]): T[] {
 	return Array.from(new Set(items));
 }
@@ -39,6 +41,16 @@ function unique<T>(items: T[]): T[] {
 function isActiveStatus(status?: string): boolean {
 	if (!status) return true;
 	return status === 'active';
+}
+
+export function isLegacyManagedSoulEmailAlias(address: string): boolean {
+	const normalized = address.trim().toLowerCase();
+	if (!normalized.endsWith(MANAGED_SOUL_EMAIL_DOMAIN)) return false;
+
+	const localPart = normalized.slice(0, -MANAGED_SOUL_EMAIL_DOMAIN.length);
+	// Host v0.4.3 defines bare managed lessersoul.ai addresses as migrated inbound aliases.
+	// This deliberately does not derive agent or instance identity from dotted local-parts.
+	return localPart.length > 0 && !localPart.includes('.');
 }
 
 function resolveTargetForChannel(

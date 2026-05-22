@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { recommendContactTarget } from '../src/utils.js';
+import { isLegacyManagedSoulEmailAlias, recommendContactTarget } from '../src/utils.js';
 import type { SoulChannels, SoulContactPreferences } from '../src/types.js';
 
 describe('recommendContactTarget', () => {
@@ -11,7 +11,7 @@ describe('recommendContactTarget', () => {
 				resolverAddress: '0x0000000000000000000000000000000000000000',
 			},
 			email: {
-				address: 'agent-alice@lessersoul.ai',
+				address: 'agent-alice.simulacrum@lessersoul.ai',
 				capabilities: ['receive', 'send'],
 				verified: true,
 				verifiedAt: '2026-03-01T00:00:00Z',
@@ -33,6 +33,9 @@ describe('recommendContactTarget', () => {
 
 		const rec = recommendContactTarget(channels, preferences);
 		expect(rec.recommended?.channel).toBe('email');
+		expect(rec.recommended).toMatchObject({
+			address: 'agent-alice.simulacrum@lessersoul.ai',
+		});
 	});
 
 	it('falls back when preferred is unavailable', () => {
@@ -61,5 +64,12 @@ describe('recommendContactTarget', () => {
 
 		const rec = recommendContactTarget(channels, preferences);
 		expect(rec.recommended?.channel).toBe('sms');
+	});
+
+	it('only marks explicitly bare managed lessersoul.ai addresses as legacy aliases', () => {
+		expect(isLegacyManagedSoulEmailAlias('agent-alice@lessersoul.ai')).toBe(true);
+		expect(isLegacyManagedSoulEmailAlias('agent-alice.simulacrum@lessersoul.ai')).toBe(false);
+		expect(isLegacyManagedSoulEmailAlias('agent-alice.team.simulacrum@lessersoul.ai')).toBe(false);
+		expect(isLegacyManagedSoulEmailAlias('agent-alice@example.com')).toBe(false);
 	});
 });

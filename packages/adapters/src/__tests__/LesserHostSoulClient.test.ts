@@ -111,6 +111,27 @@ describe('LesserHostSoulClient', () => {
 		expect(parsed.searchParams.get('principal')).toBe('0x1234567890abcdef1234567890abcdef12345678');
 	});
 
+	it('resolves compound managed soul email addresses as opaque path values', async () => {
+		fetchMock.mockResolvedValueOnce(
+			jsonResponse({
+				version: '1',
+				agent: {
+					agent_id: 'agent-bob',
+					status: 'active',
+					profile: { display_name: 'Agent Bob' },
+				},
+			})
+		);
+
+		const response = await client.resolveEmail(' agent-bob.simulacrum@lessersoul.ai ');
+
+		expect(response.agent.agent_id).toBe('agent-bob');
+		expect(fetchMock).toHaveBeenCalledWith(
+			'https://lesser.host/api/v1/soul/resolve/email/agent-bob.simulacrum%40lessersoul.ai',
+			expect.any(Object)
+		);
+	});
+
 	it('sends outbound communication requests', async () => {
 		const request: SoulCommSendRequest = {
 			channel: 'email',

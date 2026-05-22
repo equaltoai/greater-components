@@ -15,6 +15,7 @@
 
 	import AnchorAssuranceBadge from './AnchorAssuranceBadge.svelte';
 	import type { SoulAnchorAssurance, SoulChannels } from './types.js';
+	import { isLegacyManagedSoulEmailAlias } from './utils.js';
 
 	interface Props {
 		agentId?: string;
@@ -115,6 +116,7 @@
 				{@const email = channels.email}
 				{@const emailVerification = verificationBadge(Boolean(email.verified))}
 				{@const emailStatus = email.status ? statusBadge(email.status) : null}
+				{@const emailLegacyAlias = isLegacyManagedSoulEmailAlias(email.address)}
 				<div class="soul-channels__row">
 					<a class="soul-channels__link" href={`mailto:${email.address}`}>{email.address}</a>
 					<div class="soul-channels__badges">
@@ -131,6 +133,9 @@
 								color={emailStatus.color}
 								label={emailStatus.label}
 							/>
+						{/if}
+						{#if emailLegacyAlias}
+							<Badge variant="outlined" size="sm" color="warning" label="Legacy alias" />
 						{/if}
 					</div>
 				</div>

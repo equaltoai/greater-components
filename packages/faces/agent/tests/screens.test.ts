@@ -225,20 +225,21 @@ const identityData: IdentityNexusData = {
 	channels: {
 		ens: { name: 'aurelius.eth' },
 		email: {
-			address: 'ops@example.com',
+			address: 'agent-aurelius.simulacrum@lessersoul.ai',
 			verified: true,
-			capabilities: ['inbound', 'reply'],
+			capabilities: ['receive', 'send'],
 		},
 	},
 	preferences: {
 		preferred: 'email',
 		fallback: 'activitypub',
-		inboundPriority: ['email', 'activitypub'],
 		availability: {
-			schedule: 'BUSINESS_HOURS',
+			schedule: 'business-hours',
 			timezone: 'America/New_York',
 			windows: null,
 		},
+		responseExpectation: { target: '1h', guarantee: 'best-effort' },
+		languages: ['en'],
 	},
 };
 
@@ -298,5 +299,8 @@ describe('faces/agent screens', () => {
 
 		expect(screen.getByRole('heading', { name: 'Identity Nexus', level: 1 })).toBeTruthy();
 		expect(screen.getByText('Reachability ledger')).toBeTruthy();
+		expect(screen.getAllByText('agent-aurelius.simulacrum@lessersoul.ai').length).toBeGreaterThan(
+			0
+		);
 	});
 });

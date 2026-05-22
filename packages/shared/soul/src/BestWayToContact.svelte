@@ -13,7 +13,11 @@
 	} from '@equaltoai/greater-components-primitives';
 
 	import type { SoulChannels, SoulContactPreferences, ContactTarget } from './types.js';
-	import { formatAvailabilitySummary, recommendContactTarget } from './utils.js';
+	import {
+		formatAvailabilitySummary,
+		isLegacyManagedSoulEmailAlias,
+		recommendContactTarget,
+	} from './utils.js';
 
 	interface Props {
 		channels: SoulChannels;
@@ -74,6 +78,8 @@
 		{@const recommended = rec.recommended}
 		{@const recommendedHref = contactHref(recommended)}
 		{@const recommendedValue = contactValue(recommended)}
+		{@const recommendedLegacyEmail =
+			recommended.channel === 'email' && isLegacyManagedSoulEmailAlias(recommended.address)}
 		<DefinitionList density="sm">
 			<DefinitionItem label="Recommended">
 				<div class="soul-best-contact__row">
@@ -88,6 +94,9 @@
 							color={recommended.verified ? 'success' : 'warning'}
 							label={recommended.verified ? 'Verified' : 'Unverified'}
 						/>
+					{/if}
+					{#if recommendedLegacyEmail}
+						<Badge variant="outlined" size="sm" color="warning" label="Legacy alias" />
 					{/if}
 				</div>
 
@@ -120,6 +129,8 @@
 				<DefinitionItem label="Alternatives">
 					<ul class="soul-best-contact__alts">
 						{#each rec.alternatives as alt (alt.channel)}
+							{@const altLegacyEmail =
+								alt.channel === 'email' && isLegacyManagedSoulEmailAlias(alt.address)}
 							<li class="soul-best-contact__alt">
 								<Badge variant="outlined" size="sm" color="gray" label={alt.label} />
 								{#if contactHref(alt) && contactValue(alt)}
@@ -134,6 +145,9 @@
 										color={alt.verified ? 'success' : 'warning'}
 										label={alt.verified ? 'Verified' : 'Unverified'}
 									/>
+								{/if}
+								{#if altLegacyEmail}
+									<Badge variant="outlined" size="sm" color="warning" label="Legacy alias" />
 								{/if}
 							</li>
 						{/each}
