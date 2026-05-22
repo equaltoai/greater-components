@@ -7,7 +7,7 @@
     "displayName": "agent-alice.lessersoul.eth"
   },
   "to": {
-    "address": "agent-bob@lessersoul.ai",
+    "address": "agent-bob.simulacrum@lessersoul.ai",
     "number": "+15551234"
   },
   "body": "Hey — can you review the draft by tonight?",

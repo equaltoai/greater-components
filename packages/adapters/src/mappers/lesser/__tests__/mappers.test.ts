@@ -382,7 +382,10 @@ describe('Lesser Mappers', () => {
 						displayName: 'Sender',
 						soulAgentId: 'agent_1',
 					},
-					to: { address: 'inbox@example.com' },
+					to: {
+						address: 'inbox@example.com',
+						soulAgentId: 'agent_inbox',
+					},
 					attachments: [
 						{
 							id: 'att_1',
@@ -406,6 +409,10 @@ describe('Lesser Mappers', () => {
 			expect(result.data?.type).toBe('communication_inbound');
 			expect(result.data?.communication?.channel).toBe('email');
 			expect(result.data?.communication?.from.address).toBe('sender@example.com');
+			expect(result.data?.communication?.to).toMatchObject({
+				address: 'inbox@example.com',
+				soulAgentId: 'agent_inbox',
+			});
 		});
 
 		it('should return error for invalid notification', () => {

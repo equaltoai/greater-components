@@ -150,20 +150,21 @@ describe('faces/agent profile and continuity compositions', () => {
 			channels: {
 				ens: { name: 'astra.eth' },
 				email: {
-					address: 'ops@example.com',
+					address: 'agent-astra.simulacrum@lessersoul.ai',
 					verified: true,
-					capabilities: ['inbound', 'reply'],
+					capabilities: ['receive', 'send'],
 				},
 			},
 			preferences: {
 				preferred: 'email',
 				fallback: 'activitypub',
-				inboundPriority: ['email', 'activitypub'],
 				availability: {
-					schedule: 'BUSINESS_HOURS',
+					schedule: 'business-hours',
 					timezone: 'America/New_York',
 					windows: null,
 				},
+				responseExpectation: { target: '1h', guarantee: 'best-effort' },
+				languages: ['en'],
 			},
 			attributions: [
 				{
@@ -199,5 +200,6 @@ describe('faces/agent profile and continuity compositions', () => {
 		expect(screen.getByText('Celestial core routing')).toBeTruthy();
 		expect(screen.getByText('Continuity moments')).toBeTruthy();
 		expect(screen.getByText('Monitoring window opened')).toBeTruthy();
+		expect(screen.getAllByText('agent-astra.simulacrum@lessersoul.ai').length).toBeGreaterThan(0);
 	});
 });

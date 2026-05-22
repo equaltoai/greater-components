@@ -30,7 +30,11 @@ Safe by default: message previews are rendered as plain text.
 	interface CommunicationNotification {
 		channel: string;
 		from: CommunicationFrom;
-		to?: { address: string } | null;
+		to?: {
+			address: string;
+			soulAgentId?: string | null;
+			soul_agent_id?: string;
+		} | null;
 		attachments?: CommunicationAttachment[];
 		subject?: string | null;
 		body?: string | null;

@@ -263,7 +263,10 @@ export function convertGraphQLCommunicationNotificationToLesser(
 		if (!isRecord(toValue)) return undefined;
 		const address = toString(toValue['address']);
 		if (!address) return undefined;
-		return { address };
+		return {
+			address,
+			soulAgentId: resolveNullableString(toValue['soulAgentId'] ?? toValue['soul_agent_id']),
+		};
 	})() satisfies LesserCommunicationNotificationFragment['to'];
 
 	const attachments = Array.isArray(comm['attachments'])

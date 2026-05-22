@@ -11,7 +11,7 @@ describe('recommendContactTarget', () => {
 				resolverAddress: '0x0000000000000000000000000000000000000000',
 			},
 			email: {
-				address: 'agent-alice@lessersoul.ai',
+				address: 'agent-alice.simulacrum@lessersoul.ai',
 				capabilities: ['receive', 'send'],
 				verified: true,
 				verifiedAt: '2026-03-01T00:00:00Z',
@@ -33,6 +33,9 @@ describe('recommendContactTarget', () => {
 
 		const rec = recommendContactTarget(channels, preferences);
 		expect(rec.recommended?.channel).toBe('email');
+		expect(rec.recommended).toMatchObject({
+			address: 'agent-alice.simulacrum@lessersoul.ai',
+		});
 	});
 
 	it('falls back when preferred is unavailable', () => {
