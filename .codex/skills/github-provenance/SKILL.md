@@ -1,6 +1,6 @@
 ---
 name: github-provenance
-description: "Use when Codex handles GitHub activity for equaltoai/greater-components and should preserve routed-agent provenance: reading issues or PRs, commenting, reviewing, creating agent-scoped branches, committing bounded file changes, opening PRs, or creating truthful check runs. Prefer the mcp__greater_lab__ GitHub tools whenever they can perform the needed operation; fall back to the general GitHub plugin or gh only for capabilities the routed tools do not expose."
+description: 'Use when Codex handles GitHub activity for equaltoai/greater-components and should preserve routed-agent provenance: reading issues or PRs, commenting, reviewing, creating agent-scoped branches, committing bounded file changes, opening PRs, or creating truthful check runs. Prefer the mcp__greater_lab__ GitHub tools whenever they can perform the needed operation; fall back to the general GitHub plugin or gh only for capabilities the routed tools do not expose.'
 ---
 
 # GitHub Provenance
@@ -51,6 +51,7 @@ Before any GitHub write:
 
 ```markdown
 ---
+
 Provenance: posted via greater steward routed GitHub tool (`mcp__greater_lab__`).
 ```
 
