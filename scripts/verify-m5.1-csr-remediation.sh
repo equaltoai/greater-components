@@ -19,16 +19,23 @@ MCP_FILE="${REPO_ROOT}/.mcp.json"
 if [[ ! -f "${MCP_FILE}" ]]; then
   fail ".mcp.json not found"
 else
+  # Strict JSON validation — must parse without errors (no leading // comments)
+  if jq . "${MCP_FILE}" >/dev/null 2>&1; then
+    pass ".mcp.json is valid strict JSON (jq parse succeeds)"
+  else
+    fail ".mcp.json fails strict JSON parsing"
+  fi
+
   if grep -q "steward agent" "${MCP_FILE}" && \
      grep -q "lab.theorymcp.ai" "${MCP_FILE}" && \
      grep -q "NOT a general-purpose" "${MCP_FILE}"; then
-    pass ".mcp.json has steward infrastructure documentation comment"
+    pass ".mcp.json has steward infrastructure documentation in _metadata"
   else
     fail ".mcp.json missing steward infrastructure documentation"
   fi
 
   if grep -q "greater-agent mailbox" "${MCP_FILE}"; then
-    pass ".mcp.json documents agent-identity scoping"
+    pass ".mcp.json documents agent-identity scoping in _metadata"
   else
     fail ".mcp.json missing agent-identity scoping documentation"
   fi
