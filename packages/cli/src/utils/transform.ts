@@ -66,7 +66,18 @@ const SHARED_MODULES = [
 	'soul',
 ] as const;
 
-const HEADLESS_PRIMITIVE_SUBPATHS = ['button', 'menu', 'modal', 'tooltip', 'tabs'] as const;
+const HEADLESS_PRIMITIVE_SUBPATHS = [
+	'alert',
+	'avatar',
+	'button',
+	'menu',
+	'modal',
+	'skeleton',
+	'spinner',
+	'tabs',
+	'textfield',
+	'tooltip',
+] as const;
 const BLOG_COMPONENT_ROOTS = new Set(['Article', 'Author', 'Publication', 'Navigation', 'Editor']);
 
 /**

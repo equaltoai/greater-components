@@ -467,6 +467,126 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		version: '1.0.0',
 	},
 
+	alert: {
+		name: 'alert',
+		type: 'primitive',
+		description: 'Headless alert primitive with ARIA live-region support and dismiss handling',
+		files: [
+			{
+				path: 'lib/primitives/alert.ts',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/types/common.ts',
+				content: '',
+				type: 'types',
+			},
+			{
+				path: 'lib/utils/id.ts',
+				content: '',
+				type: 'utils',
+			},
+			{
+				path: 'lib/utils/keyboard.ts',
+				content: '',
+				type: 'utils',
+			},
+		],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['headless', 'primitive', 'alert', 'accessibility'],
+		version: '1.0.0',
+	},
+
+	avatar: {
+		name: 'avatar',
+		type: 'primitive',
+		description: 'Headless avatar primitive with image fallback, loading states, and status indicators',
+		files: [
+			{
+				path: 'lib/primitives/avatar.ts',
+				content: '',
+				type: 'component',
+			},
+		],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['headless', 'primitive', 'avatar', 'accessibility'],
+		version: '1.0.0',
+	},
+
+	skeleton: {
+		name: 'skeleton',
+		type: 'primitive',
+		description: 'Headless skeleton primitive for loading state placeholders with animation control',
+		files: [
+			{
+				path: 'lib/primitives/skeleton.ts',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/utils/csp-safe-styles.ts',
+				content: '',
+				type: 'utils',
+			},
+		],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['headless', 'primitive', 'skeleton', 'loading'],
+		version: '1.0.0',
+	},
+
+	spinner: {
+		name: 'spinner',
+		type: 'primitive',
+		description: 'Headless spinner primitive for loading indicator states with animation control',
+		files: [
+			{
+				path: 'lib/primitives/spinner.ts',
+				content: '',
+				type: 'component',
+			},
+			{
+				path: 'lib/types/common.ts',
+				content: '',
+				type: 'types',
+			},
+			{
+				path: 'lib/utils/id.ts',
+				content: '',
+				type: 'utils',
+			},
+		],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['headless', 'primitive', 'spinner', 'loading'],
+		version: '1.0.0',
+	},
+
+	textfield: {
+		name: 'textfield',
+		type: 'primitive',
+		description: 'Headless text field primitive with validation, formatting, and accessibility',
+		files: [
+			{
+				path: 'lib/primitives/textfield.ts',
+				content: '',
+				type: 'component',
+			},
+		],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: [],
+		tags: ['headless', 'primitive', 'textfield', 'input', 'accessibility'],
+		version: '1.0.0',
+	},
+
 	// ====================
 	// COMPOUND COMPONENTS
 	// ====================
