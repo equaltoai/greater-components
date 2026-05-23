@@ -2915,13 +2915,15 @@ paths:
     post:
       operationId: soulX402IssueInvocationGrant
       summary: Issue a scoped x402 invocation grant
+      security:
+        - instanceKeyAuth: []
       description: |
         Issues a host-side off-chain invocation grant for a configured public paid caller. The grant binds the
         `agentId`, `capability`, `tool`, `resource`, invocation `requestHash`, caller subject hash, payment evidence
         hash, amount/network metadata, nonce, idempotency key hash, expiry, max usage, and caller-access payment policy
         version.
 
-        This public route returns a raw `grantToken` only on the first successful issue. Idempotent replays return the
+        This instance-key authenticated route returns a raw `grantToken` only on the first successful issue. Idempotent replays return the
         same grant metadata with `tokenReturned=false`; callers must retain the original token. Host stores only hashes
         of caller subject, payment evidence, optional payment id, idempotency key, and grant token. Generic
         `x402.grant_unavailable` errors avoid exposing private soul state, private comm reachability, unresolved payment
