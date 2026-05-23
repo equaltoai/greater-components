@@ -70,8 +70,8 @@ importers:
         specifier: ^2.5.7
         version: 2.5.7(svelte@5.55.7(@typescript-eslint/types@8.58.0))(typescript@6.0.2)
       '@theory-cloud/facetheory':
-        specifier: https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz
-        version: https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))
+        specifier: https://github.com/theory-cloud/FaceTheory/releases/download/v3.3.0/theory-cloud-facetheory-3.3.0.tgz
+        version: https://github.com/theory-cloud/FaceTheory/releases/download/v3.3.0/theory-cloud-facetheory-3.3.0.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0
@@ -3329,9 +3329,9 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz':
-    resolution: {integrity: sha512-kCbAq14OFxbidL/SV7HOfOE8G4A6s3mgtjR1FJg+nEb18yFwde9UbTCtmAsePQgvoF3vBoYqCHuO4mb+Pc0nrQ==, tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz}
-    version: 3.1.2
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v3.3.0/theory-cloud-facetheory-3.3.0.tgz':
+    resolution: {tarball: https://github.com/theory-cloud/FaceTheory/releases/download/v3.3.0/theory-cloud-facetheory-3.3.0.tgz}
+    version: 3.3.0
     engines: {node: '>=24'}
     peerDependencies:
       '@emotion/cache': '>=11'
@@ -8792,7 +8792,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.1
 
-  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v3.1.2/theory-cloud-facetheory-3.1.2.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))':
+  '@theory-cloud/facetheory@https://github.com/theory-cloud/FaceTheory/releases/download/v3.3.0/theory-cloud-facetheory-3.3.0.tgz(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(svelte@5.55.7(@typescript-eslint/types@8.58.0))':
     dependencies:
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
