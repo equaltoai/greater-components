@@ -523,7 +523,7 @@ export interface paths {
          *     hash, amount/network metadata, nonce, idempotency key hash, expiry, max usage, and caller-access payment policy
          *     version.
          *
-         *     This public route returns a raw `grantToken` only on the first successful issue. Idempotent replays return the
+         *     This instance-key authenticated route returns a raw `grantToken` only on the first successful issue. Idempotent replays return the
          *     same grant metadata with `tokenReturned=false`; callers must retain the original token. Host stores only hashes
          *     of caller subject, payment evidence, optional payment id, idempotency key, and grant token. Generic
          *     `x402.grant_unavailable` errors avoid exposing private soul state, private comm reachability, unresolved payment
@@ -1578,7 +1578,7 @@ export interface components {
         };
         /**
          * POST /api/v1/soul/x402/grants request
-         * @description Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the public route.
+         * @description Issues a host-side scoped x402 invocation grant for configured public paid callers. Raw caller and payment evidence may be supplied for hashing but is never returned by the instance-key authenticated route.
          */
         "soul-x402-invocation-grant.issue.request.schema": {
             agentId: string;
@@ -1682,6 +1682,8 @@ export interface components {
             tool: string;
             resource: string;
             requestHash: string;
+            /** @description Hash of the x402 payment evidence presented by the caller. Host compares against the stored grant payment evidence hash before any usage is recorded. */
+            paymentEvidenceHash: string;
             idempotencyKey: string;
         };
         /** POST /api/v1/soul/x402/grants/{grantId}/consume response */
