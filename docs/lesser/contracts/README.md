@@ -36,6 +36,40 @@ Security/auth metadata guidance:
 - Do not hand-edit `openapi.yaml` in Greater to add auth requirements; fix the Lesser route contract, publish a Lesser
   release tag, then resync this directory from that tag so the pinned snapshot remains auditable.
 
+### Auth gap verification (CSR-041)
+
+Greater includes an auth contract probe (`scripts/check-openapi-auth.mjs`) that audits the pinned OpenAPI
+snapshot for sensitive endpoints (POST, PUT, DELETE, PATCH) that are missing a `security:` block.
+The probe compares against a committable baseline (`openapi-auth-baseline.json`) that records the exact
+endpoints known to lack auth metadata.
+
+**Run the probe:**
+
+```bash
+# Check for new auth gaps (exit 0 if all gaps are known, exit 1 if new gaps found)
+pnpm check:openapi-auth
+
+# Strict mode — treat known upstream gaps as errors (exit non-zero)
+pnpm check:openapi-auth:strict
+```
+
+**When you resync the OpenAPI snapshot from Lesser:**
+
+1. Copy the updated `openapi.yaml` into this directory.
+2. Run `pnpm check:openapi-auth` — if new gaps appear, investigate whether they are:
+   - New upstream gaps (Lesser needs to fix route contracts) → update the baseline
+   - New intentionally-public endpoints → add to `KNOWN_PUBLIC_PATHS` in the probe
+3. Regenerate the baseline to match current state:
+   ```bash
+   node scripts/check-openapi-auth.mjs --write-baseline
+   ```
+4. Commit `openapi.yaml`, the updated baseline, and any probe changes together.
+
+**Known state (as of Lesser snapshot sync):** 32 sensitive endpoints lack `security:` blocks in
+the pinned Lesser OpenAPI snapshot. The fix belongs in Lesser's route contracts — specifically,
+adding per-endpoint `security:` declarations or a global `security:` default with explicit
+`security: [{}]` overrides on public endpoints. See the baseline file for the full inventory.
+
 ## GraphQL (Published schema)
 
 - Published contract: `docs/contracts/graphql-schema.graphql`
@@ -69,3 +103,25 @@ wallet-backed agent access lease flow.
 ```bash
 ./lesser verify
 ```
+
+## Greater-side resync workflow
+
+When Lesser publishes a new release and this directory is resynced:
+
+1. Copy the updated contracts from the Lesser release tag into this directory.
+2. Regenerate Greater adapter code:
+   ```bash
+   pnpm generate
+   ```
+3. Run the auth contract probe to detect new auth gaps:
+   ```bash
+   pnpm check:openapi-auth
+   ```
+4. If new gaps appear, investigate and update the baseline:
+   ```bash
+   node scripts/check-openapi-auth.mjs --write-baseline
+   ```
+5. Run the full validation suite:
+   ```bash
+   pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm generate-registry:validate
+   ```
