@@ -1,4 +1,10 @@
 {
+  "_metadata": {
+    "description": "Project steward agent MCP configuration for the greater-components repo.",
+    "endpoint": "lab.theorymcp.ai — equaltoai TheoryMCP infrastructure that serves the greater steward agent's tools (email, GitHub operations, memory, knowledge). Intentionally committed so the steward agent can function when this repo is opened in Claude Code.",
+    "scoping": "This is NOT a general-purpose developer tool endpoint; it is scoped to the greater-agent mailbox and routed through TheoryMCP's agent-identity isolation.",
+    "intentionalCommit": true
+  },
   "mcpServers": {
     "lesser": {
       "type": "http",
