@@ -47,6 +47,7 @@ const LEGACY_PACKAGE_REWRITES: Record<string, string> = {
 	'@equaltoai/greater-components-content': '@equaltoai/greater-components/content',
 	'@equaltoai/greater-components-adapters': '@equaltoai/greater-components/adapters',
 	'@equaltoai/greater-components-headless': '@equaltoai/greater-components/headless',
+	'@equaltoai/greater-components-shell': '@equaltoai/greater-components/shell',
 	// Social face legacy name
 	'@equaltoai/greater-components-fediverse': '@equaltoai/greater-components/faces/social',
 };
@@ -91,6 +92,7 @@ const CORE_PACKAGES = [
 	'content',
 	'adapters',
 	'headless',
+	'shell',
 ] as const;
 
 /**

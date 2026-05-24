@@ -203,6 +203,18 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 		tags: ['core', 'headless'],
 		version: '1.0.0',
 	},
+	shell: {
+		name: 'shell',
+		type: 'shared',
+		description:
+			'App shell layout components (Shell, Sidebar, Topbar, Panel, StatCard, SummaryStrip, PageFrame, PageTitle, Breadcrumb, Callout) for app-shaped Fediverse / Lesser-aware consumers',
+		files: [{ path: 'greater/shell/index.ts', content: '', type: 'component' }],
+		dependencies: [],
+		devDependencies: [],
+		registryDependencies: ['tokens'],
+		tags: ['core', 'shell', 'layout', 'navigation'],
+		version: '1.0.0',
+	},
 
 	'social-generics': {
 		name: 'social-generics',
