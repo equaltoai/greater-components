@@ -1467,6 +1467,9 @@ importers:
 
   packages/shell:
     dependencies:
+      '@equaltoai/greater-components-headless':
+        specifier: workspace:*
+        version: link:../headless
       '@equaltoai/greater-components-utils':
         specifier: workspace:*
         version: link:../utils

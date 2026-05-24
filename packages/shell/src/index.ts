@@ -36,6 +36,14 @@ export { default as PageFrame } from './components/PageFrame.svelte';
 export { default as PageTitle } from './components/PageTitle.svelte';
 export { default as Breadcrumb } from './components/Breadcrumb.svelte';
 export { default as Callout } from './components/Callout.svelte';
+export { default as CommandPalette } from './components/CommandPalette.svelte';
+
+// Utilities (dependency-free, strict-CSP-safe).
+export {
+	scoreCommandPaletteItem,
+	filterAndRankItems as filterAndRankCommandPaletteItems,
+	tokenizeQuery as tokenizeCommandPaletteQuery,
+} from './utils/fuzzy-filter.js';
 
 // Shared types
 export type {
@@ -56,4 +64,7 @@ export type {
 	BreadcrumbItem,
 	CalloutTone,
 	CalloutRole,
+	CommandPaletteItem,
+	CommandPaletteGroup,
+	CommandPaletteFilter,
 } from './types.js';
