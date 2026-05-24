@@ -503,7 +503,8 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 	avatar: {
 		name: 'avatar',
 		type: 'primitive',
-		description: 'Headless avatar primitive with image fallback, loading states, and status indicators',
+		description:
+			'Headless avatar primitive with image fallback, loading states, and status indicators',
 		files: [
 			{
 				path: 'lib/primitives/avatar.ts',
@@ -521,7 +522,8 @@ export const componentRegistry: Record<string, ComponentMetadata> = {
 	skeleton: {
 		name: 'skeleton',
 		type: 'primitive',
-		description: 'Headless skeleton primitive for loading state placeholders with animation control',
+		description:
+			'Headless skeleton primitive for loading state placeholders with animation control',
 		files: [
 			{
 				path: 'lib/primitives/skeleton.ts',

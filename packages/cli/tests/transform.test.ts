@@ -43,8 +43,16 @@ describe('buildPathMappings', () => {
 		const mappings = buildPathMappings(config);
 
 		const allPrimitives = [
-			'alert', 'avatar', 'button', 'menu', 'modal',
-			'skeleton', 'spinner', 'tabs', 'textfield', 'tooltip',
+			'alert',
+			'avatar',
+			'button',
+			'menu',
+			'modal',
+			'skeleton',
+			'spinner',
+			'tabs',
+			'textfield',
+			'tooltip',
 		];
 		for (const primitive of allPrimitives) {
 			const hyphenatedMapping = mappings.find(
@@ -100,15 +108,23 @@ describe('transformPath (vendored mode)', () => {
 
 	it('rewrites all 10 headless primitives to local paths (vendored mode)', () => {
 		for (const primitive of [
-			'alert', 'avatar', 'button', 'menu', 'modal',
-			'skeleton', 'spinner', 'tabs', 'textfield', 'tooltip',
+			'alert',
+			'avatar',
+			'button',
+			'menu',
+			'modal',
+			'skeleton',
+			'spinner',
+			'tabs',
+			'textfield',
+			'tooltip',
 		]) {
-			expect(
-				transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)
-			).toBe(`$lib/greater/headless/${primitive}`);
-			expect(
-				transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)
-			).toBe(`$lib/greater/headless/${primitive}`);
+			expect(transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
+			expect(transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
 		}
 	});
 
@@ -603,8 +619,16 @@ describe('edge cases', () => {
 
 describe('CSR-054: headless primitive import rewriting completeness', () => {
 	const ALL_HEADLESS_PRIMITIVES = [
-		'alert', 'avatar', 'button', 'menu', 'modal',
-		'skeleton', 'spinner', 'tabs', 'textfield', 'tooltip',
+		'alert',
+		'avatar',
+		'button',
+		'menu',
+		'modal',
+		'skeleton',
+		'spinner',
+		'tabs',
+		'textfield',
+		'tooltip',
 	] as const;
 
 	it('canonicalizes hyphenated headless primitive imports in hybrid mode', () => {
@@ -612,13 +636,13 @@ describe('CSR-054: headless primitive import rewriting completeness', () => {
 		const mappings = buildPathMappings(config);
 
 		for (const primitive of ALL_HEADLESS_PRIMITIVES) {
-			expect(
-				transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)
-			).toBe(`$lib/primitives/${primitive}`);
+			expect(transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)).toBe(
+				`$lib/primitives/${primitive}`
+			);
 
-			expect(
-				transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)
-			).toBe(`$lib/primitives/${primitive}`);
+			expect(transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)).toBe(
+				`$lib/primitives/${primitive}`
+			);
 		}
 	});
 
@@ -636,13 +660,13 @@ describe('CSR-054: headless primitive import rewriting completeness', () => {
 		const mappings = buildPathMappings(config);
 
 		for (const primitive of ALL_HEADLESS_PRIMITIVES) {
-			expect(
-				transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)
-			).toBe(`$lib/greater/headless/${primitive}`);
+			expect(transformPath(`@equaltoai/greater-components-headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
 
-			expect(
-				transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)
-			).toBe(`$lib/greater/headless/${primitive}`);
+			expect(transformPath(`@equaltoai/greater-components/headless/${primitive}`, mappings)).toBe(
+				`$lib/greater/headless/${primitive}`
+			);
 		}
 	});
 

@@ -5,226 +5,162 @@
     {
       "method": "POST",
       "path": "/api/v1/agents/delegate",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "PATCH",
       "path": "/api/v1/agents/{username}",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "DELETE",
       "path": "/api/v1/agents/{username}",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/challenge/agent",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/challenge/principal",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/renew/challenge",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/revoke",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/session-key/challenge",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/access-leases/{leaseID}/token",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/agents/{username}/runtime-sessions/{sessionID}/revoke",
-      "tags": [
-        "agents"
-      ]
+      "tags": ["agents"]
     },
     {
       "method": "POST",
       "path": "/api/v1/announcements/{id}/dismiss",
-      "tags": [
-        "announcements"
-      ]
+      "tags": ["announcements"]
     },
     {
       "method": "POST",
       "path": "/api/v1/follow_requests/{account_id}/authorize",
-      "tags": [
-        "follow_requests"
-      ]
+      "tags": ["follow_requests"]
     },
     {
       "method": "POST",
       "path": "/api/v1/follow_requests/{account_id}/reject",
-      "tags": [
-        "follow_requests"
-      ]
+      "tags": ["follow_requests"]
     },
     {
       "method": "POST",
       "path": "/api/v1/moderation/flag",
-      "tags": [
-        "moderation"
-      ]
+      "tags": ["moderation"]
     },
     {
       "method": "POST",
       "path": "/api/v1/moderation/review",
-      "tags": [
-        "moderation"
-      ]
+      "tags": ["moderation"]
     },
     {
       "method": "PUT",
       "path": "/api/v1/moderation/trust",
-      "tags": [
-        "moderation"
-      ]
+      "tags": ["moderation"]
     },
     {
       "method": "POST",
       "path": "/api/v1/notes",
-      "tags": [
-        "notes"
-      ]
+      "tags": ["notes"]
     },
     {
       "method": "POST",
       "path": "/api/v1/notes/{id}/vote",
-      "tags": [
-        "notes"
-      ]
+      "tags": ["notes"]
     },
     {
       "method": "POST",
       "path": "/api/v1/notifications/deliver",
-      "tags": [
-        "notifications"
-      ]
+      "tags": ["notifications"]
     },
     {
       "method": "POST",
       "path": "/api/v1/push/subscription",
-      "tags": [
-        "push"
-      ]
+      "tags": ["push"]
     },
     {
       "method": "PUT",
       "path": "/api/v1/push/subscription",
-      "tags": [
-        "push"
-      ]
+      "tags": ["push"]
     },
     {
       "method": "DELETE",
       "path": "/api/v1/push/subscription",
-      "tags": [
-        "push"
-      ]
+      "tags": ["push"]
     },
     {
       "method": "POST",
       "path": "/api/v1/reports",
-      "tags": [
-        "reports"
-      ]
+      "tags": ["reports"]
     },
     {
       "method": "POST",
       "path": "/api/v1/reputation/export",
-      "tags": [
-        "reputation"
-      ]
+      "tags": ["reputation"]
     },
     {
       "method": "POST",
       "path": "/api/v1/reputation/import",
-      "tags": [
-        "reputation"
-      ]
+      "tags": ["reputation"]
     },
     {
       "method": "POST",
       "path": "/api/v1/reputation/verify",
-      "tags": [
-        "reputation"
-      ]
+      "tags": ["reputation"]
     },
     {
       "method": "POST",
       "path": "/api/v1/statuses/{id}/translate",
-      "tags": [
-        "statuses"
-      ]
+      "tags": ["statuses"]
     },
     {
       "method": "DELETE",
       "path": "/api/v1/suggestions/{account_id}",
-      "tags": [
-        "suggestions"
-      ]
+      "tags": ["suggestions"]
     },
     {
       "method": "POST",
       "path": "/api/v1/vouches",
-      "tags": [
-        "vouches"
-      ]
+      "tags": ["vouches"]
     },
     {
       "method": "DELETE",
       "path": "/api/v1/vouches/{vouch_id}",
-      "tags": [
-        "vouches"
-      ]
+      "tags": ["vouches"]
     }
   ],
   "meta": {
@@ -232,11 +168,7 @@
     "generated_at": "2026-05-23T20:40:49.741Z",
     "has_global_security": false,
     "has_security_schemes": true,
-    "security_scheme_names": [
-      "bearerAuth",
-      "oauth2",
-      "setupBearer"
-    ],
+    "security_scheme_names": ["bearerAuth", "oauth2", "setupBearer"],
     "total_paths": 293,
     "sensitive_checked": 169,
     "with_security": 115,
