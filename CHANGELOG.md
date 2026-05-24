@@ -12,6 +12,44 @@ Package/library changelogs live in `packages/*/CHANGELOG.md` (for example `packa
 - Fix: `greater --version` now reports the packaged CLI version (no more hardcoded `0.1.0`).
 - Tooling: `scripts/prepare-github-release.js` now keeps `packages/cli/package.json` in sync with the release version.
 
+## [0.9.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.19...greater-v0.9.0) (2026-05-24)
+
+
+### Bug Fixes
+
+* complete headless primitive CLI import rewriting ([#621](https://github.com/equaltoai/greater-components/issues/621)) ([2aa57d0](https://github.com/equaltoai/greater-components/commit/2aa57d06869dd655be304303d6caa75f9f517bbe)), closes [#616](https://github.com/equaltoai/greater-components/issues/616)
+* remediate project 38 staging CI ([5cd9060](https://github.com/equaltoai/greater-components/commit/5cd9060343a76305d1ceccd1718c3c01411a327c))
+* restore release tarball integrity audit ([18aae13](https://github.com/equaltoai/greater-components/commit/18aae13a5c1c25a2e07f78c726aaec2b94e898e7))
+* restore release tarball integrity audit ([9521395](https://github.com/equaltoai/greater-components/commit/952139578d3ba28aae21e377e624bebb73c16d34))
+* **security:** sync lesser-host x402 grant contracts for CSR-035 ([#622](https://github.com/equaltoai/greater-components/issues/622)) ([8565650](https://github.com/equaltoai/greater-components/commit/85656505548358a550899c1acc577bd2412228dd))
+
+
+### Docs
+
+* add greater github provenance guidance ([f47fa30](https://github.com/equaltoai/greater-components/commit/f47fa303aca04619aa877d6192440aad5c731d07))
+* add greater github provenance guidance ([66cd378](https://github.com/equaltoai/greater-components/commit/66cd378b9a7c3db443df1f4b845ce6be571713e4))
+
+
+### CI
+
+* detect release ancestry in promotion rehearsal ([c3e0819](https://github.com/equaltoai/greater-components/commit/c3e0819dd8110a1dadc4aaf148a315148a7f56ff))
+
+
+### Chores
+
+* **premain:** release greater 0.8.20-rc.0 ([c0eb79a](https://github.com/equaltoai/greater-components/commit/c0eb79af59f3f2fea4622229ed1b34356f209d99))
+* **premain:** release greater 0.8.20-rc.0 ([83055d4](https://github.com/equaltoai/greater-components/commit/83055d4ac208cac9854d092eb37d6ce9c89a6607))
+* **premain:** release greater 0.9.0-rc.0 ([5ca0f49](https://github.com/equaltoai/greater-components/commit/5ca0f495d0525db2fea452227bd56118cf0c2b20))
+* **premain:** release greater 0.9.0-rc.0 ([31a03c1](https://github.com/equaltoai/greater-components/commit/31a03c10a0ed5061cbacfdb88b2e07fc0a15665f))
+* **release:** prepare metadata ([37c8b68](https://github.com/equaltoai/greater-components/commit/37c8b6845b0f175f7484065e9bcd1568b58c41ca))
+* **release:** prepare metadata ([c327558](https://github.com/equaltoai/greater-components/commit/c327558c631c7dac147318fdcdb4ee3ad8245adb))
+* restitch staging release topology ([2a8e0bc](https://github.com/equaltoai/greater-components/commit/2a8e0bc3946f69dfcc7cc85926d7c1c5e1ce2e59))
+* restitch staging release topology after failed RC ([e740d60](https://github.com/equaltoai/greater-components/commit/e740d60d7773585dfbb90ed81ab07d5192174ee4))
+* sync Lesser contracts to latest releases ([655048e](https://github.com/equaltoai/greater-components/commit/655048ee5a71d93116a96462a458dc4832eef821))
+* sync Lesser contracts to latest releases ([27874a4](https://github.com/equaltoai/greater-components/commit/27874a4947a28039f1f9910bba7912903a511a2d))
+* update @theory-cloud/facetheory pin v3.1.2 → v3.3.0 ([0b80c2b](https://github.com/equaltoai/greater-components/commit/0b80c2b2afd0e2115f1f5762dbe19acabc1d60b2))
+* update @theory-cloud/facetheory pin v3.1.2 → v3.3.0 ([2979289](https://github.com/equaltoai/greater-components/commit/297928949724d3363c78b4cdcad7f473a2038999))
+
 ## [0.9.0-rc.0](https://github.com/equaltoai/greater-components/compare/greater-v0.8.20-rc.0...greater-v0.9.0-rc.0) (2026-05-24)
 
 ### Features
