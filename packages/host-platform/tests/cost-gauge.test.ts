@@ -151,6 +151,59 @@ describe('CostGauge', () => {
 		}
 	});
 
+	it('no-meter fallback with label: aria-labelledby composes label + value text (Arch PR #669 re-review regression)', () => {
+		// ARIA precedence: when both aria-labelledby and aria-label are
+		// present, labelledby wins. A previous revision set aria-labelledby
+		// (pointing only at the visible label) AND aria-label (the composed
+		// value text) — meaning AT only heard the label name and silently
+		// dropped the value text.
+		//
+		// The corrected behavior: when label is supplied, aria-labelledby
+		// is a multi-id IDREF that references BOTH the visible label and
+		// a visually-hidden span carrying the value text, joining them into
+		// a single accessible name. aria-label is omitted entirely so it
+		// cannot lose the precedence race.
+		const { container } = render(CostGauge, {
+			current: 10,
+			limit: 0,
+			currency: 'USD',
+			label: 'Monthly spend',
+		});
+		const img = container.querySelector('[role="img"]');
+		expect(img).toBeTruthy();
+		// aria-label MUST be absent so labelledby is the authoritative source.
+		expect(img?.hasAttribute('aria-label')).toBe(false);
+		// aria-labelledby references >= 2 ids that both resolve and contain
+		// the expected text.
+		const labelledby = img?.getAttribute('aria-labelledby');
+		expect(labelledby).toBeTruthy();
+		const ids = labelledby!.split(/\s+/).filter(Boolean);
+		expect(ids.length).toBeGreaterThanOrEqual(2);
+		const composed = ids
+			.map((id) => container.ownerDocument.getElementById(id)?.textContent ?? '')
+			.join(' ');
+		expect(composed).toContain('Monthly spend');
+		expect(composed).toContain('$10.00');
+		expect(composed).toContain('$0.00');
+	});
+
+	it('no-meter fallback without label: aria-label carries the full composed name', () => {
+		const { container } = render(CostGauge, {
+			current: 10,
+			limit: 0,
+			currency: 'USD',
+		});
+		const img = container.querySelector('[role="img"]');
+		expect(img).toBeTruthy();
+		// No labelledby (no visible label to reference); aria-label carries
+		// the entire composed name.
+		expect(img?.hasAttribute('aria-labelledby')).toBe(false);
+		const ariaLabel = img?.getAttribute('aria-label') ?? '';
+		expect(ariaLabel).toContain('Cost gauge');
+		expect(ariaLabel).toContain('$10.00');
+		expect(ariaLabel).toContain('$0.00');
+	});
+
 	it('renders description with linked aria-describedby', () => {
 		const { container } = render(CostGauge, {
 			current: 10,

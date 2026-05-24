@@ -110,6 +110,11 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 	const descriptionId = $derived(
 		description && stableId.value ? `${stableId.value}-description` : undefined
 	);
+	// A hidden span carries the composed value text for the no-meter
+	// fallback. Aria-labelledby (multi-id) composes the visible label and
+	// this hidden text into a single accessible name. See the role="img"
+	// branch in the template below.
+	const valueTextId = $derived(stableId.value ? `${stableId.value}-valuetext` : undefined);
 
 	const ratio = $derived(computeRatio(current, limit));
 	const ratioPercent = $derived(Math.round(ratio * 1000) / 10);
@@ -231,16 +236,30 @@ ratio crossing optional thresholds (default `warning: 0.75`, `danger: 0.9`).
 			</div>
 		{:else}
 			<!--
-				No valid meter range (limit <= 0 or non-finite). Render the bar
-				as a labelled graphic instead — `role="img"` + composed
-				`aria-label` so AT users still get the current / limit values
+				No valid meter range (limit <= 0 or non-finite). Render the
+				bar as a labelled graphic instead of a meter — `role="img"`
+				with a composed accessible name that includes the value
+				readout, so AT users still get the current / limit values
 				without violating the ARIA meter contract.
+
+				When the consumer supplies a visible `label`, the accessible
+				name is composed by `aria-labelledby` referencing BOTH the
+				visible label and a visually-hidden span carrying the
+				`valueText`. (ARIA precedence: when both `aria-labelledby`
+				and `aria-label` are present, labelledby wins — so a single
+				labelledby pointing only at the visible label would silently
+				drop the value text. Multi-id IDREFs join the strings with
+				a space, exposing "Monthly spend $10.00 of $0.00" to AT.)
+
+				When no `label` is supplied, the composed name is carried
+				by `aria-label` alone.
 			-->
+			<span class="gr-sr-only" id={valueTextId}>{valueText}</span>
 			<div
 				class="gr-host-platform-cost-gauge__meter"
 				role="img"
-				aria-labelledby={label ? labelId : undefined}
-				aria-label={!label ? `${accessibleName}: ${valueText}` : valueText}
+				aria-labelledby={label && labelId && valueTextId ? `${labelId} ${valueTextId}` : undefined}
+				aria-label={!label ? `${accessibleName}: ${valueText}` : undefined}
 				aria-describedby={descriptionId}
 				data-ratio={ratioStep}
 				data-no-meter="true"
